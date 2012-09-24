@@ -1,0 +1,21 @@
+[class^="icon-"],
+[class*=" icon-"] {
+  font-family: 'icons_antragsgruen';
+  font-style: normal;
+  font-weight: normal;
+/* fix buttons height */
+  line-height: 1em;
+/* you can be more comfortable with increased icons size */
+/* font-zize: 120%; */
+}
+
+.icon-heart-1 { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe800;&nbsp;'); }
+.icon-edit { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#x270d;&nbsp;'); }
+.icon-down-circle { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe4a4;&nbsp;'); }
+.icon-comment { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe718;&nbsp;'); }
+.icon-location { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe724;&nbsp;'); }
+.icon-user { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#x1f464;&nbsp;'); }
+.icon-doc { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#x1f4c4;&nbsp;'); }
+.icon-pin { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#x1f4cc;&nbsp;'); }
+.icon-attach { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#x1f4ce;&nbsp;'); }
+.icon-clock { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#x1f554;&nbsp;'); }

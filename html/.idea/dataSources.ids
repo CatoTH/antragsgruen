@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><component name="dataSourceStorage">
+  <data-source source="LOCAL" name="Data Source" product="MySQL" version="5.5.21-55-log" jdbc-version="4.0" driver-version="mysql-connector-java-5.1.18 ( Revision: tonci.grgin@oracle.com-20110930151701-jfj14ddfq48ifkfq )" uuid="02e741cd-8539-4082-983d-841839e0204f">
+    <extra-name-characters>#@</extra-name-characters>
+    <identifier-quote-string>`</identifier-quote-string>
+    <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+    <jdbc-url>jdbc:mysql://hoessl.eu/antraege</jdbc-url>
+    <user-name>readonly</user-name>
+    <user-password>dfd9dfdfdff0dfdfdfc7df9bdfd3dfcb</user-password>
+    <schema-pattern>antraege.*</schema-pattern>
+    <default-schemas>antraege.*</default-schemas>
+    <default-dialect>MySQL</default-dialect>
+    <driver-properties>
+      <property name="useCompression" value="yes" />
+    </driver-properties>
+    <libraries>
+      <library>
+        <url>jar://$PROJECT_DIR$/mysql-connector-java-5.1.18-bin.jar!/</url>
+      </library>
+      <library>
+        <url>file://$PROJECT_DIR$/mysql-connector-license.txt</url>
+      </library>
+    </libraries>
+    <table name="AuthAssignment" schema="" catalog="antraege" type="TABLE">
+      <column name="itemname" sqlType="VARCHAR" length="64" precision="0" nullable="false" jdbcType="12" />
+      <column name="userid" sqlType="VARCHAR" length="64" precision="0" nullable="false" jdbcType="12" />
+      <column name="bizrule" sqlType="TEXT" length="65535" precision="0" nullable="true" jdbcType="-1" />
+      <column name="data" sqlType="TEXT" length="65535" precision="0" nullable="true" jdbcType="-1" />
+      <primary-key name="PRIMARY" columns="itemname,userid" />
+      <foreign-key name="AuthAssignment_ibfk_1" columns="itemname" ref-table="AuthItem" ref-schema="" ref-catalog="antraege" ref-columns="name" cascade-update="true" cascade-remove="true" />
+    </table>
+    <table name="AuthItem" schema="" catalog="antraege" type="TABLE">
+      <column name="name" sqlType="VARCHAR" length="64" precision="0" nullable="false" jdbcType="12" />
+      <column name="type" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" />
+      <column name="description" sqlType="TEXT" length="65535" precision="0" nullable="true" jdbcType="-1" />
+      <column name="bizrule" sqlType="TEXT" length="65535" precision="0" nullable="true" jdbcType="-1" />
+      <column name="data" sqlType="TEXT" length="65535" precision="0" nullable="true" jdbcType="-1" />
+      <primary-key name="PRIMARY" columns="name" />
+    </table>
+    <table name="AuthItemChild" schema="" catalog="antraege" type="TABLE">
+      <column name="parent" sqlType="VARCHAR" length="64" precision="0" nullable="false" jdbcType="12" />
+      <column name="child" sqlType="VARCHAR" length="64" precision="0" nullable="false" jdbcType="12" />
+      <primary-key name="PRIMARY" columns="parent,child" />
+      <foreign-key name="AuthItemChild_ibfk_1" columns="parent" ref-table="AuthItem" ref-schema="" ref-catalog="antraege" ref-columns="name" cascade-update="true" cascade-remove="true" />
+      <foreign-key name="AuthItemChild_ibfk_2" columns="child" ref-table="AuthItem" ref-schema="" ref-catalog="antraege" ref-columns="name" cascade-update="true" cascade-remove="true" />
+      <index name="child" unique="false" columns="child" />
+    </table>
+    <table name="aenderungsantrag" schema="" catalog="antraege" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true" />
+      <column name="antrag_id" sqlType="INT UNSIGNED" length="10" precision="0" nullable="true" jdbcType="4" />
+      <column name="text_neu" sqlType="MEDIUMTEXT" length="16777215" precision="0" nullable="false" jdbcType="-1" />
+      <column name="begruendung_neu" sqlType="MEDIUMTEXT" length="16777215" precision="0" nullable="false" jdbcType="-1" />
+      <column name="aenderung_text" sqlType="MEDIUMTEXT" length="16777215" precision="0" nullable="false" jdbcType="-1" />
+      <column name="aenderung_begruendung" sqlType="MEDIUMTEXT" length="16777215" precision="0" nullable="false" jdbcType="-1" />
+      <column name="datum_einreichung" sqlType="TIMESTAMP" length="19" precision="0" nullable="false" jdbcType="93" def="Q1VSUkVOVF9USU1FU1RBTVA=" />
+      <column name="datum_beschluss" sqlType="TIMESTAMP" length="19" precision="0" nullable="true" jdbcType="93" />
+      <column name="status" sqlType="TINYINT" length="3" precision="0" nullable="false" jdbcType="-6" />
+      <column name="status_string" sqlType="VARCHAR" length="55" precision="0" nullable="false" jdbcType="12" />
+      <primary-key name="PRIMARY" columns="id" />
+      <foreign-key name="fk_aenderungsantrag_antrag1" columns="antrag_id" ref-table="antrag" ref-schema="" ref-catalog="antraege" ref-columns="id" />
+    </table>
+    <table name="aenderungsantrag_kommentar" schema="" catalog="antraege" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true" />
+      <column name="person_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4" />
+      <column name="aenderungsantrag_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4" />
+      <column name="text" sqlType="VARCHAR" length="45" precision="0" nullable="true" jdbcType="12" />
+      <column name="datum" sqlType="TIMESTAMP" length="19" precision="0" nullable="false" jdbcType="93" def="Q1VSUkVOVF9USU1FU1RBTVA=" />
+      <column name="status" sqlType="TINYINT" length="3" precision="0" nullable="true" jdbcType="-6" />
+      <primary-key name="PRIMARY" columns="id" />
+      <foreign-key name="fk_aenderungsantrag_kommentar_person1" columns="person_id" ref-table="person" ref-schema="" ref-catalog="antraege" ref-columns="id" />
+      <foreign-key name="fk_aenderungsantrag_kommentar_aenderungsantrag1" columns="aenderungsantrag_id" ref-table="aenderungsantrag" ref-schema="" ref-catalog="antraege" ref-columns="id" />
+    </table>
+    <table name="aenderungsantrag_unterstuetzer" schema="" catalog="antraege" type="TABLE">
+      <column name="person_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" />
+      <column name="aenderungsantrag_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" />
+      <column name="rolle" sqlType="ENUM" length="13" precision="0" nullable="true" jdbcType="1" />
+      <column name="text" sqlType="TEXT" length="65535" precision="0" nullable="true" jdbcType="-1" />
+      <primary-key name="PRIMARY" columns="person_id,aenderungsantrag_id" />
+      <foreign-key name="fk_person_has_aenderungsantrag_person1" columns="person_id" ref-table="person" ref-schema="" ref-catalog="antraege" ref-columns="id" cascade-remove="true" />
+      <foreign-key name="fk_person_has_aenderungsantrag_aenderungsantrag1" columns="aenderungsantrag_id" ref-table="aenderungsantrag" ref-schema="" ref-catalog="antraege" ref-columns="id" cascade-remove="true" />
+    </table>
+    <table name="antrag" schema="" catalog="antraege" type="TABLE">
+      <column name="id" sqlType="INT UNSIGNED" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true" />
+      <column name="veranstaltung" sqlType="SMALLINT UNSIGNED" length="5" precision="0" nullable="false" jdbcType="5" />
+      <column name="abgeleitet_von" sqlType="INT UNSIGNED" length="10" precision="0" nullable="true" jdbcType="4" />
+      <column name="typ" sqlType="TINYINT" length="3" precision="0" nullable="true" jdbcType="-6" />
+      <column name="name" sqlType="TINYTEXT" length="255" precision="0" nullable="false" jdbcType="12" />
+      <column name="revision_name" sqlType="VARCHAR" length="50" precision="0" nullable="false" jdbcType="12" />
+      <column name="datum_einreichung" sqlType="TIMESTAMP" length="19" precision="0" nullable="false" jdbcType="93" def="Q1VSUkVOVF9USU1FU1RBTVA=" />
+      <column name="datum_beschluss" sqlType="VARCHAR" length="45" precision="0" nullable="true" jdbcType="12" />
+      <column name="text" sqlType="MEDIUMTEXT" length="16777215" precision="0" nullable="true" jdbcType="-1" />
+      <column name="begruendung" sqlType="MEDIUMTEXT" length="16777215" precision="0" nullable="true" jdbcType="-1" />
+      <column name="status" sqlType="TINYINT" length="3" precision="0" nullable="true" jdbcType="-6" />
+      <column name="status_string" sqlType="VARCHAR" length="55" precision="0" nullable="true" jdbcType="12" />
+      <primary-key name="PRIMARY" columns="id" />
+      <foreign-key name="fk_antrag_veranstaltung" columns="veranstaltung" ref-table="veranstaltung" ref-schema="" ref-catalog="antraege" ref-columns="id" />
+      <foreign-key name="fk_antrag_antrag1" columns="abgeleitet_von" ref-table="antrag" ref-schema="" ref-catalog="antraege" ref-columns="id" />
+      <index name="veranstaltung" unique="false" columns="veranstaltung" />
+      <index name="abgeleitet_von" unique="false" columns="abgeleitet_von" />
+    </table>
+    <table name="antrag_abo" schema="" catalog="antraege" type="TABLE">
+      <column name="antrag_id" sqlType="INT UNSIGNED" length="10" precision="0" nullable="false" jdbcType="4" />
+      <column name="person_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" />
+      <primary-key name="PRIMARY" columns="antrag_id,person_id" />
+      <foreign-key name="fk_antrag_has_person1_antrag1" columns="antrag_id" ref-table="antrag" ref-schema="" ref-catalog="antraege" ref-columns="id" />
+      <foreign-key name="fk_antrag_has_person1_person1" columns="person_id" ref-table="person" ref-schema="" ref-catalog="antraege" ref-columns="id" />
+    </table>
+    <table name="antrag_kommentar" schema="" catalog="antraege" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true" />
+      <column name="person_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4" />
+      <column name="antrag_id" sqlType="INT UNSIGNED" length="10" precision="0" nullable="true" jdbcType="4" />
+      <column name="absatz" sqlType="SMALLINT" length="5" precision="0" nullable="true" jdbcType="5" />
+      <column name="text" sqlType="TEXT" length="65535" precision="0" nullable="false" jdbcType="-1" />
+      <column name="datum" sqlType="TIMESTAMP" length="19" precision="0" nullable="false" jdbcType="93" def="Q1VSUkVOVF9USU1FU1RBTVA=" />
+      <column name="status" sqlType="TINYINT" length="3" precision="0" nullable="true" jdbcType="-6" />
+      <primary-key name="PRIMARY" columns="id" />
+      <foreign-key name="fk_antrag_kommentar_person1" columns="person_id" ref-table="person" ref-schema="" ref-catalog="antraege" ref-columns="id" cascade-remove="true" />
+      <foreign-key name="fk_antrag_kommentar_antrag1" columns="antrag_id" ref-table="antrag" ref-schema="" ref-catalog="antraege" ref-columns="id" cascade-remove="true" />
+    </table>
+    <table name="antrag_unterstuetzer" schema="" catalog="antraege" type="TABLE">
+      <column name="antrag_id" sqlType="INT UNSIGNED" length="10" precision="0" nullable="false" jdbcType="4" />
+      <column name="person_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" />
+      <column name="rolle" sqlType="ENUM" length="12" precision="0" nullable="false" jdbcType="1" />
+      <column name="kommentar" sqlType="TEXT" length="65535" precision="0" nullable="true" jdbcType="-1" />
+      <primary-key name="PRIMARY" columns="antrag_id,person_id,rolle" />
+      <foreign-key name="fk_antrag_has_person_antrag1" columns="antrag_id" ref-table="antrag" ref-schema="" ref-catalog="antraege" ref-columns="id" cascade-remove="true" />
+      <foreign-key name="fk_antrag_has_person_person1" columns="person_id" ref-table="person" ref-schema="" ref-catalog="antraege" ref-columns="id" cascade-remove="true" />
+    </table>
+    <table name="person" schema="" catalog="antraege" type="TABLE">
+      <column name="id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" autoIncrement="true" />
+      <column name="typ" sqlType="ENUM" length="12" precision="0" nullable="false" jdbcType="1" />
+      <column name="name" sqlType="VARCHAR" length="100" precision="0" nullable="false" jdbcType="12" />
+      <column name="email" sqlType="VARCHAR" length="200" precision="0" nullable="true" jdbcType="12" />
+      <column name="telefon" sqlType="VARCHAR" length="100" precision="0" nullable="true" jdbcType="12" />
+      <column name="auth" sqlType="VARCHAR" length="200" precision="0" nullable="true" jdbcType="12" />
+      <column name="angelegt_datum" sqlType="TIMESTAMP" length="19" precision="0" nullable="false" jdbcType="93" def="Q1VSUkVOVF9USU1FU1RBTVA=" />
+      <column name="angelegt_von" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4" />
+      <column name="admin" sqlType="TINYINT" length="3" precision="0" nullable="false" jdbcType="-6" />
+      <column name="status" sqlType="TINYINT" length="3" precision="0" nullable="false" jdbcType="-6" />
+      <primary-key name="PRIMARY" columns="id" />
+      <foreign-key name="angelegt_von" columns="angelegt_von" ref-table="person" ref-schema="" ref-catalog="antraege" ref-columns="id" />
+      <index name="auth_UNIQUE" unique="true" columns="auth" />
+    </table>
+    <table name="veranstaltung" schema="" catalog="antraege" type="TABLE">
+      <column name="id" sqlType="SMALLINT UNSIGNED" length="5" precision="0" nullable="false" jdbcType="5" autoIncrement="true" />
+      <column name="name" sqlType="VARCHAR" length="200" precision="0" nullable="false" jdbcType="12" />
+      <column name="datum_von" sqlType="DATE" length="10" precision="0" nullable="false" jdbcType="91" />
+      <column name="datum_bis" sqlType="DATE" length="10" precision="0" nullable="false" jdbcType="91" />
+      <primary-key name="PRIMARY" columns="id" />
+    </table>
+    <table name="veranstaltung_abo" schema="" catalog="antraege" type="TABLE">
+      <column name="veranstaltung_id" sqlType="SMALLINT UNSIGNED" length="5" precision="0" nullable="false" jdbcType="5" />
+      <column name="person_id" sqlType="INT" length="10" precision="0" nullable="false" jdbcType="4" />
+      <primary-key name="PRIMARY" columns="veranstaltung_id,person_id" />
+      <foreign-key name="fk_veranstaltung_has_person_veranstaltung1" columns="veranstaltung_id" ref-table="veranstaltung" ref-schema="" ref-catalog="antraege" ref-columns="id" cascade-remove="true" />
+      <foreign-key name="fk_veranstaltung_has_person_person1" columns="person_id" ref-table="person" ref-schema="" ref-catalog="antraege" ref-columns="id" cascade-remove="true" />
+    </table>
+  </data-source>
+</component>
