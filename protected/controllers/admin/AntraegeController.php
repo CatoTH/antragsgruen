@@ -11,6 +11,9 @@ class AntraegeController extends AdminControllerBase
 
 		if (isset($_POST['Antrag'])) {
 			$model->setAttributes($_POST['Antrag']);
+			Yii::import('ext.datetimepicker.EDateTimePicker');
+			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Antrag"], "datum_einreichung");
+			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Antrag"], "datum_beschluss");
 			$relatedData = array(
 				'abonnenten' => $_POST['Antrag']['abonnenten'] === '' ? null : $_POST['Antrag']['abonnenten'],
 			);

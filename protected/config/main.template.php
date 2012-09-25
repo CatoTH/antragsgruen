@@ -8,6 +8,8 @@
 
 mb_internal_encoding("UTF-8");
 
+define("SEED_KEY", "randomkey");
+
 return array(
 	'basePath'  => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
 	'name'      => 'Grüne Anträge',

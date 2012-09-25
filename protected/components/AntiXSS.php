@@ -10,7 +10,7 @@ class AntiXSS
 	 */
 	private static function getSeed()
 	{
-		if (static::$seed === null) static::$seed = file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . '../../seed-key.txt');
+		if (static::$seed === null) static::$seed = SEED_KEY;
 		return static::$seed;
 	}
 

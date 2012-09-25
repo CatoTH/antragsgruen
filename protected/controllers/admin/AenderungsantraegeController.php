@@ -9,6 +9,9 @@ class AenderungsantraegeController extends AdminControllerBase {
 
         if (isset($_POST['Aenderungsantrag'])) {
             $model->setAttributes($_POST['Aenderungsantrag']);
+			Yii::import('ext.datetimepicker.EDateTimePicker');
+			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_einreichung");
+			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_beschluss");
             $relatedData = array();
 
             if ($model->saveWithRelated($relatedData)) {
