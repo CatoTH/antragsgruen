@@ -47,9 +47,8 @@ $this->breadcrumbs = array(
 	if ($login_warnung) {
 		Yii::app()->user->setFlash('error', '<strong>Achtung!</strong> Es ist zwar auch möglich, Anträge einzureichen, ohne eingeloggt zu sein. Allerdings kann man nur eingeloggt den Antrag später wieder bearbeiten, daher empfehlen wir sehr, <a href="/site/login" style="font-weight: bold;">dich einzuloggen</a>.');
 		$this->widget('bootstrap.widgets.TbAlert', array(
-			'block'=>true, // display a larger alert block?
-			'fade'=>true, // use transitions?
-			'closeText'=>'&times;', // close link text - if set to false, no close link is displayed
+			'block'=>true,
+			'fade'=>true,
 		));
 	}
 
@@ -131,13 +130,14 @@ $this->breadcrumbs = array(
 		<legend>UnterstützerInnen</legend>
 
 		<div class="control-group unterstuetzer">
-			<? foreach ($model_unterstuetzer as $nr=>$u) { ?>
+			<?php foreach ($model_unterstuetzer as $nr=>$u) { ?>
 			<div style="margin-bottom: 5px;">
 				<label style="display: inline; margin-right: 10px;"><input type="radio" name="UnterstuetzerTyp[<?=$nr?>]" value="<?=Person::$TYP_PERSON?>" <? if ($u["typ"] == Person::$TYP_PERSON) echo "checked"; ?>> Person</label>
 				<label style="display: inline; margin-right: 40px;"><input type="radio" name="UnterstuetzerTyp[<?=$nr?>]" value="<?=Person::$TYP_ORGANISATION?>" <? if ($u["typ"] == Person::$TYP_ORGANISATION) echo "checked"; ?>> Organisation</label>
 				<label style="display: inline;">Name: <input type="text" name="UnterstuetzerName[<?=$nr?>]" value="<?=CHtml::encode($u["name"])?>"></label>
 			</div>
-			<? } ?>
+			<?php } ?>
+
 		</div>
 	</fieldset>
 </div>
