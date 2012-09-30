@@ -24,12 +24,50 @@ class AntragController extends Controller
 			}
 		}
 
+		if (AntiXSS::isTokenSet("mag") && !Yii::app()->user->isGuest) {
+			$userid = Yii::app()->user->getState("person_id");
+			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
+			$unt                   = new AntragUnterstuetzer();
+			$unt->antrag_id        = $antrag->id;
+			$unt->unterstuetzer_id = $userid;
+			$unt->rolle            = "mag";
+			$unt->kommentar        = "";
+			if ($unt->save()) Yii::app()->user->setFlash("success", "Du unterstützt diesen Antrag nun.");
+			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
+			$this->redirect("/antrag/anzeige/?id=" . $id);
+		}
+
+		if (AntiXSS::isTokenSet("magnicht") && !Yii::app()->user->isGuest) {
+			$userid = Yii::app()->user->getState("person_id");
+			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
+			$unt                   = new AntragUnterstuetzer();
+			$unt->antrag_id        = $antrag->id;
+			$unt->unterstuetzer_id = $userid;
+			$unt->rolle            = "magnicht";
+			$unt->kommentar        = "";
+			$unt->save();
+			if ($unt->save()) Yii::app()->user->setFlash("success", "Du lehnst diesen Antrag nun ab.");
+			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
+			$this->redirect("/antrag/anzeige/?id=" . $id);
+		}
+
+		if (AntiXSS::isTokenSet("dochnicht") && !Yii::app()->user->isGuest) {
+			$userid = Yii::app()->user->getState("person_id");
+			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
+			Yii::app()->user->setFlash("success", "Du stehst diesem Antrag wieder neutral gegenüber.");
+			$this->redirect("/antrag/anzeige/?id=" . $id);
+		}
+
 		/** @var $antragstellerinnen array|Person[] $antragstellerinnen  */
 		$antragstellerinnen = array();
 		$unterstuetzerinnen = array();
+		$zustimmung_von     = array();
+		$ablehnung_von      = array();
 		if (count($antrag->antragUnterstuetzer) > 0) foreach ($antrag->antragUnterstuetzer as $relatedModel) {
 			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $antragstellerinnen[] = $relatedModel->unterstuetzer;
 			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzerinnen[] = $relatedModel->unterstuetzer;
+			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->unterstuetzer;
+			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->unterstuetzer;
 		}
 
 
@@ -83,10 +121,17 @@ class AntragController extends Controller
 		if (Yii::app()->user->isGuest) $kommentar_person = new Person();
 		else $kommentar_person = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 
+		$support_status = "";
+		if (!Yii::app()->user->isGuest) {
+			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->unterstuetzer->id == Yii::app()->user->getState("person_id")) $support_status = $unt->rolle;
+		}
+
 		$this->render("anzeige", array(
 			"antrag"              => $antrag,
 			"antragstellerinnen"  => $antragstellerinnen,
 			"unterstuetzerinnen"  => $unterstuetzerinnen,
+			"zustimmung_von"      => $zustimmung_von,
+			"ablehnung_von"       => $ablehnung_von,
 			"aenderungsantraege"  => $aenderungsantraege,
 			"edit_link"           => $antrag->binInitiatorIn(),
 			"kommentare_offen"    => $kommentare_offen,
@@ -95,6 +140,8 @@ class AntragController extends Controller
 			"komm_del_link"       => "/antrag/anzeige/?id=${id}&" . AntiXSS::createToken("komm_del") . "=#komm_id#",
 			"hiddens"             => $hiddens,
 			"js_protection"       => $js_protection,
+			"support_form"        => !Yii::app()->user->isGuest,
+			"support_status"      => $support_status,
 		));
 	}
 

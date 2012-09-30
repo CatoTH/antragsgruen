@@ -5,6 +5,8 @@
  * @var Antrag $antrag
  * @var array|Person[] $antragstellerinnen
  * @var array|Person[] $unterstuetzerinnen
+ * @var array|Person[] $ablehnung_von
+ * @var array|Person[] $zustimmung_von
  * @var array|Aenderungsantrag[] $aenderungsantraege
  * @var bool $js_protection
  * @var array $hiddens
@@ -13,6 +15,8 @@
  * @var string $komm_del_link
  * @var string|null $admin_edit
  * @var Person $kommentar_person
+ * @var bool $support_form
+ * @var string $support_status
  */
 
 $this->breadcrumbs = array(
@@ -48,9 +52,9 @@ $this->menus_html[] = $html;
     <div id="socialshareprivacy"></div>
     <script>
         $(function ($) {
-			$('#socialshareprivacy').socialSharePrivacy({
-                    css_path:"/js/socialshareprivacy/socialshareprivacy/socialshareprivacy.css"
-                });
+            $('#socialshareprivacy').socialSharePrivacy({
+                css_path:"/js/socialshareprivacy/socialshareprivacy/socialshareprivacy.css"
+            });
         });
     </script>
     <div class="content">
@@ -133,7 +137,8 @@ foreach ($absae as $i=> $abs) {
 		$par = $ant->getDiffParagraphs();
 		if ($par[$i] != "") {
 			?>
-            <div class="absatz_text ae_<?php echo $ant->id; ?> antragabsatz_holder antrags_text_holder_nummern" style="display: none; position: relative; border-right: solid 1px lightgray; margin-left: 0;">
+            <div class="absatz_text ae_<?php echo $ant->id; ?> antragabsatz_holder antrags_text_holder_nummern"
+                 style="display: none; position: relative; border-right: solid 1px lightgray; margin-left: 0;">
                 <div class="text"><?php
 					echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i]);
 					?></div>
@@ -244,18 +249,85 @@ foreach ($absae as $i=> $abs) {
 
     <div class="content">
 		<?php
+		$curr_user_id = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
+
+		echo "<strong>UnterstützerInnen:</strong><br>";
 		if (count($unterstuetzerinnen) > 0) {
 			echo CHtml::openTag('ul');
 			foreach ($unterstuetzerinnen as $p) {
 				echo CHtml::openTag('li');
+				if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
 				echo CHtml::encode($p->name);
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');
-
 		} else echo '<em>keine</em>';
+
+		if (count($zustimmung_von) > 0) {
+			echo "<strong>Zustimmung von:</strong><br>";
+			echo CHtml::openTag('ul');
+			foreach ($zustimmung_von as $p) {
+				echo CHtml::openTag('li');
+				if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
+				echo CHtml::encode($p->name);
+				echo CHtml::closeTag('li');
+			}
+			echo CHtml::closeTag('ul');
+		}
+
+		if (count($ablehnung_von) > 0) {
+			echo "<strong>Abgelehnt von:</strong><br>";
+			echo CHtml::openTag('ul');
+			foreach ($ablehnung_von as $p) {
+				echo CHtml::openTag('li');
+				if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
+				echo CHtml::encode($p->name);
+				echo CHtml::closeTag('li');
+			}
+			echo CHtml::closeTag('ul');
+		}
 		?>
     </div>
+
+	<?php
+	if ($support_form) {
+		$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+			'type'       => 'inline',
+			'htmlOptions'=> array('class'=> 'well'),
+		));
+		echo "<div style='text-align: center; margin-bottom: 20px;'>";
+		switch ($support_status) {
+			case IUnterstuetzer::$ROLLE_INITIATOR:
+				break;
+			case IUnterstuetzer::$ROLLE_MAG:
+				$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'label'=> 'Zurückziehen', 'icon' => 'icon-remove', 'htmlOptions'=> array('name'=> AntiXSS::createToken('dochnicht'))));
+				break;
+			case IUnterstuetzer::$ROLLE_MAG_NICHT:
+				$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'label'=> 'Zurückziehen', 'icon' => 'icon-remove', 'htmlOptions'=> array('name'=> AntiXSS::createToken('dochnicht'))));
+				break;
+			default:
+				?>
+                    <div style="display: inline-block; width: 49%; text-align: center;">
+						<?php
+						$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type' => 'success', 'label'=> 'Zustimmen', 'icon' => 'icon-thumbs-up', 'htmlOptions'=> array('name'=> AntiXSS::createToken('mag'))));
+						?>
+                    </div>
+                    <div style="display: inline-block; width: 49%; text-align: center;">
+						<?php
+						$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type' => 'danger', 'label'=> 'Ablehnen', 'icon' => 'icon-thumbs-down', 'htmlOptions'=> array('name'=> AntiXSS::createToken('magnicht'))));
+						?>
+                    </div>
+					<?php
+		}
+		echo "</div>";
+		$this->endWidget();
+	} else {
+		Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen oder ablehnen zu können, musst du <a href="/site/login" style="font-weight: bold;">dich einzuloggen</a>.');
+		$this->widget('bootstrap.widgets.TbAlert', array(
+			'block'=> true,
+			'fade' => true,
+		));
+	} ?>
 </div>
 
 <div class="well">
