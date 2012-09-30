@@ -8,6 +8,7 @@
  * @var array $model_unterstuetzer
  * @var array $hiddens
  * @var bool $js_protection
+ * @var bool $login_warnung
  */
 
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor/ckeditor.js');
@@ -41,6 +42,15 @@ $this->breadcrumbs = array(
 
 	foreach ($hiddens as $name=>$value) {
 		echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
+	}
+
+	if ($login_warnung) {
+		Yii::app()->user->setFlash('error', '<strong>Achtung!</strong> Es ist zwar auch möglich, Anträge einzureichen, ohne eingeloggt zu sein. Allerdings kann man nur eingeloggt den Antrag später wieder bearbeiten, daher empfehlen wir sehr, <a href="/site/login" style="font-weight: bold;">dich einzuloggen</a>.');
+		$this->widget('bootstrap.widgets.TbAlert', array(
+			'block'=>true, // display a larger alert block?
+			'fade'=>true, // use transitions?
+			'closeText'=>'&times;', // close link text - if set to false, no close link is displayed
+		));
 	}
 
 	if ($js_protection) { ?>

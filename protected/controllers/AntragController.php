@@ -238,6 +238,7 @@ class AntragController extends Controller
 			"model_unterstuetzer"      => $model_unterstuetzer,
 			"veranstaltung"            => $antrag->veranstaltung0,
 			"js_protection"            => $js_protection,
+			"login_warnung"            => Yii::app()->user->isGuest,
 		));
 
 
@@ -388,6 +389,7 @@ class AntragController extends Controller
 			"veranstaltung"          => $veranstaltung,
 			"hiddens"                => $hiddens,
 			"js_protection"          => $js_protection,
+			"login_warnung"          => Yii::app()->user->isGuest,
 		));
 	}
 
