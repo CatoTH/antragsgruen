@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var CController $this
+ * @var AenderungsantragController $this
  * @var Aenderungsantrag $aenderungsantrag
  */
 
