@@ -11,7 +11,7 @@
 
     <!-- ### neu ### -->
     <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-    <?php /* <link href="" rel="stylesheet" type="text/css" /> Wir verwenden eine kommerzielle Schriftart, die daher hier nicht mitgeliefert werden kann */ ?>
+    <link href="//cloud.webtype.com/css/a47fbad3-f89b-4172-b851-d8bd6b49eb71.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 8]><link rel="stylesheet" href="/css/antraege-ie7.css"><![endif]-->
     <!-- ### /neu ### -->
 
