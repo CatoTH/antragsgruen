@@ -261,7 +261,8 @@ foreach ($absae as $i=> $abs) {
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');
-		} else echo '<em>keine</em>';
+		} else echo '<em>keine</em><br>';
+		echo "<br>";
 
 		if (count($zustimmung_von) > 0) {
 			echo "<strong>Zustimmung von:</strong><br>";
@@ -273,6 +274,7 @@ foreach ($absae as $i=> $abs) {
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');
+			echo "<br>";
 		}
 
 		if (count($ablehnung_von) > 0) {
@@ -285,6 +287,7 @@ foreach ($absae as $i=> $abs) {
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');
+			echo "<br>";
 		}
 		?>
     </div>

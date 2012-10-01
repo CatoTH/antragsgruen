@@ -28,6 +28,39 @@ class AenderungsantragController extends Controller
 				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
 			}
 		}
+		if (AntiXSS::isTokenSet("mag") && !Yii::app()->user->isGuest) {
+			$userid = Yii::app()->user->getState("person_id");
+			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
+			$unt                      = new AenderungsantragUnterstuetzer();
+			$unt->aenderungsantrag_id = $aenderungsantrag->id;
+			$unt->unterstuetzer_id    = $userid;
+			$unt->rolle               = "mag";
+			$unt->kommentar           = "";
+			if ($unt->save()) Yii::app()->user->setFlash("success", "Du unterstützt diesen Änderungsantrag nun.");
+			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
+			$this->redirect("/aenderungsantrag/anzeige/?id=" . $id);
+		}
+
+		if (AntiXSS::isTokenSet("magnicht") && !Yii::app()->user->isGuest) {
+			$userid = Yii::app()->user->getState("person_id");
+			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
+			$unt                      = new AenderungsantragUnterstuetzer();
+			$unt->aenderungsantrag_id = $aenderungsantrag->id;
+			$unt->unterstuetzer_id    = $userid;
+			$unt->rolle               = "magnicht";
+			$unt->kommentar           = "";
+			$unt->save();
+			if ($unt->save()) Yii::app()->user->setFlash("success", "Du lehnst diesen Änderungsantrag nun ab.");
+			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
+			$this->redirect("/aenderungsantrag/anzeige/?id=" . $id);
+		}
+
+		if (AntiXSS::isTokenSet("dochnicht") && !Yii::app()->user->isGuest) {
+			$userid = Yii::app()->user->getState("person_id");
+			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
+			Yii::app()->user->setFlash("success", "Du stehst diesem Änderungsantrag wieder neutral gegenüber.");
+			$this->redirect("/aenderungsantrag/anzeige/?id=" . $id);
+		}
 
 		$kommentare_offen = array();
 
@@ -68,9 +101,13 @@ class AenderungsantragController extends Controller
 
 		$antragstellerinnen = array();
 		$unterstuetzerinnen = array();
+		$zustimmung_von     = array();
+		$ablehnung_von      = array();
 		if (count($aenderungsantrag->aenderungsantragUnterstuetzer) > 0) foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $relatedModel) {
 			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $antragstellerinnen[] = $relatedModel->unterstuetzer;
 			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzerinnen[] = $relatedModel->unterstuetzer;
+			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->unterstuetzer;
+			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->unterstuetzer;
 		}
 
 		$hiddens       = array();
@@ -85,10 +122,17 @@ class AenderungsantragController extends Controller
 		if (Yii::app()->user->isGuest) $kommentar_person = new Person();
 		else $kommentar_person = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 
+		$support_status = "";
+		if (!Yii::app()->user->isGuest) {
+			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer->id == Yii::app()->user->getState("person_id")) $support_status = $unt->rolle;
+		}
+
 		$this->render("anzeige", array(
 			"aenderungsantrag"    => $aenderungsantrag,
 			"antragstellerinnen"  => $antragstellerinnen,
 			"unterstuetzerinnen"  => $unterstuetzerinnen,
+			"zustimmung_von"      => $zustimmung_von,
+			"ablehnung_von"       => $ablehnung_von,
 			"edit_link"           => $aenderungsantrag->binInitiatorIn(),
 			"admin_edit"          => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $id : null),
 			"kommentare_offen"    => $kommentare_offen,
@@ -96,6 +140,8 @@ class AenderungsantragController extends Controller
 			"komm_del_link"       => "/aenderungsantrag/anzeige/?id=${id}&" . AntiXSS::createToken("komm_del") . "=#komm_id#",
 			"hiddens"             => $hiddens,
 			"js_protection"       => $js_protection,
+			"support_form"        => !Yii::app()->user->isGuest,
+			"support_status"      => $support_status,
 		));
 	}
 
@@ -263,7 +309,7 @@ class AenderungsantragController extends Controller
 				/** @var AntragAbsatz $abs  */
 				$abs = $orig_absaetze[$i];
 				if (isset($_REQUEST["change_text"][$i])) {
-					$abs_text = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["neu_text"][$i]);
+					$abs_text          = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["neu_text"][$i]);
 					$neue_absaetze[$i] = $abs_text;
 					$neuer_text .= $abs_text . "\n\n";
 					$changed = true;
@@ -327,9 +373,9 @@ class AenderungsantragController extends Controller
 				if ($antragstellerin === null) $antragstellerin = new Person();
 				$this->render('bearbeiten_form', array(
 					"mode"                  => "neu",
-					"antrag"               => $antrag,
-					"aenderungsantrag"     => $aenderungsantrag,
-					"antragstellerin"      => $antragstellerin,
+					"antrag"                => $antrag,
+					"aenderungsantrag"      => $aenderungsantrag,
+					"antragstellerin"       => $antragstellerin,
 					"hiddens"               => $hiddens,
 					"js_protection"         => $js_protection,
 				));
@@ -343,7 +389,8 @@ class AenderungsantragController extends Controller
 			if (!$init->save()) {
 				var_dump($init->getErrors());
 				die();
-			};
+			}
+			;
 
 			$this->redirect("/aenderungsantrag/neuConfirm/?id=" . $aenderungsantrag->id);
 
