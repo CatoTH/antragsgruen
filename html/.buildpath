@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<buildpath>
-	<buildpathentry external="true" kind="lib" path="/home/tobias/netzbegruenung/yii-1.1.10.r3566/framework"/>
-	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
-	<buildpathentry kind="src" path=""/>
-</buildpath>
