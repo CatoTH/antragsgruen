@@ -20,6 +20,11 @@ $form = $this->beginWidget('GxActiveForm', array(
 <?php echo $form->errorSummary($model); ?>
 
 <div>
+	<?php echo $form->labelEx($model, 'typ'); ?>
+	<?php echo $form->dropDownList($model, 'typ', Veranstaltung::$TYPEN); ?>
+	<?php echo $form->error($model, 'typ'); ?>
+</div>
+<div>
 	<?php echo $form->labelEx($model, 'name'); ?>
 	<?php echo $form->textField($model, 'name', array('maxlength' => 200)); ?>
 	<?php echo $form->error($model, 'name'); ?>

@@ -17,11 +17,12 @@
  * @var Person $kommentar_person
  * @var bool $support_form
  * @var string $support_status
+ * @var Sprache $sprache
  */
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
-	"Antrag"
+	$sprache->get("Antrag"),
 );
 
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/socialshareprivacy/jquery.socialshareprivacy.min.js');

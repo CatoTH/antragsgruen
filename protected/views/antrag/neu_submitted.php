@@ -1,12 +1,12 @@
 <?php
 /**
  * @var AenderungsantragController $this
- * @var Aenderungsantrag $aenderungsantrag
+ * @var Antrag $antrag
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($aenderungsantrag->antrag->veranstaltung0->name_kurz) => "/",
-	"Antrag" => "/antrag/anzeige/?id=" . $aenderungsantrag->antrag->id,
+	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
+	"Antrag" => "/antrag/anzeige/?id=" . $antrag->id,
 	'Neuer Änderungsantrag',
 	'Bestätigen'
 );?>

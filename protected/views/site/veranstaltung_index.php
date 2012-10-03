@@ -10,30 +10,33 @@
  * @var array|Aenderungsantrag[] $neueste_aenderungsantraege
  * @var array|AntragUnterstuetzer[] $meine_antraege
  * @var array|AenderungsantragUnterstuetzer[] $meine_aenderungsantraege
+ * @var Sprache $sprache
  */
 
 $this->breadcrumbs = array(
 	CHtml::encode($veranstaltung->name_kurz),
 );
 
-$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>Neue Anträge</li>";
-if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
-else foreach ($neueste_antraege as $ant) {
-	$html .= "<li";
-	switch ($ant->typ) {
-		case Antrag::$TYP_ANTRAG:
-			$html .= " class='antrag'";
-			break;
-		case Antrag::$TYP_RESOLUTION:
-			$html .= " class='resolution'";
-			break;
-		default:
-			$html .= " class='resolution'";
+if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) {
+	$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>Neue Anträge</li>";
+	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
+	else foreach ($neueste_antraege as $ant) {
+		$html .= "<li";
+		switch ($ant->typ) {
+			case Antrag::$TYP_ANTRAG:
+				$html .= " class='antrag'";
+				break;
+			case Antrag::$TYP_RESOLUTION:
+				$html .= " class='resolution'";
+				break;
+			default:
+				$html .= " class='resolution'";
+		}
+		$html .= ">" . CHtml::link($ant["name"], "/antrag/anzeige/?id=" . $ant["id"]) . "</li>\n";
 	}
-	$html .= ">" . CHtml::link($ant["name"], "/antrag/anzeige/?id=" . $ant["id"]) . "</li>\n";
+	$html .= "</ul></div>";
+	$this->menus_html[] = $html;
 }
-$html .= "</ul></div>";
-$this->menus_html[] = $html;
 
 if ($veranstaltung->darfEroeffnenAntrag()) {
 	$this->menus_html[] = '<a class="neuer-antrag" href="http://parteitool.netzbegruenung.de/antrag/neu/?veranstaltung=' . $veranstaltung->id . '">
@@ -62,7 +65,7 @@ $html .= "</ul></div>";
 $this->menus_html[] = $html;
 
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Feeds</li>";
-$html .= "<li><a href='/site/feedAntraege/?id=" . $veranstaltung->id . "'>Anträge</a></li>";
+if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) $html .= "<li><a href='/site/feedAntraege/?id=" . $veranstaltung->id . "'>Anträge</a></li>";
 $html .= "<li><a href='/site/feedAenderungsantraege/?id=" . $veranstaltung->id . "'>Änderungsanträge</a></li>";
 $html .= "<li><a href='/site/feedKommentare/?id=" . $veranstaltung->id . "'>Kommentare</a></li>";
 $html .= "<li><a href='/site/feedAlles/?id=" . $veranstaltung->id . "'><b>Alles</b></a></li>";
@@ -111,7 +114,7 @@ foreach ($antraege as $name=> $antrs) {
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
 		echo CHtml::link(CHtml::encode($antrag->revision_name . ": " . $antrag->name), "/antrag/anzeige/?id=" . $antrag->id);
-		echo CHtml::link("PDF", "/antrag/pdf/?id=" . $antrag->id, array("class"=>"pdfLink"));
+		echo CHtml::link("PDF", "/antrag/pdf/?id=" . $antrag->id, array("class"=> "pdfLink"));
 		echo "</p>\n";
 		echo "<p class='info'>von ";
 		$vons = array();
@@ -145,34 +148,38 @@ foreach ($antraege as $name=> $antrs) {
 	if (count($meine_antraege) > 0) {
 		?>
         <h3>Meine Anträge</h3>
-        <ul>
-			<?php foreach ($meine_antraege as $antragu) {
-			$antrag = $antragu->antrag;
-			echo "<li>";
-			echo CHtml::link(CHtml::encode($antrag->name), "/antrag/anzeige/?id=" . $antrag->id);
-			if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
-			if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
-			echo "</li>\n";
-		} ?>
-        </ul>
+        <div class="content">
+            <ul>
+				<?php foreach ($meine_antraege as $antragu) {
+				$antrag = $antragu->antrag;
+				echo "<li>";
+				echo CHtml::link(CHtml::encode($antrag->name), "/antrag/anzeige/?id=" . $antrag->id);
+				if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
+				if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
+				echo "</li>\n";
+			} ?>
+            </ul>
+        </div>
 		<?php
 	}
 
 	if (count($meine_aenderungsantraege) > 0) {
 		?>
         <h3>Meine Änderungsanträge</h3>
-        <ul>
-			<?php foreach ($meine_aenderungsantraege as $antragu) {
-			/** @var AenderungsantragUnterstuetzer $antragu */
-			/** @var Aenderungsantrag $antrag */
-			$antrag = $antragu->aenderungsantrag;
-			echo "<li>";
-			echo CHtml::link(CHtml::encode($antrag->revision_name . " zu " . $antrag->antrag->revision_name), "/aenderungsantrag/anzeige/?id=" . $antrag->id);
-			if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
-			if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
-			echo "</li>\n";
-		} ?>
-        </ul>
+        <div class="content">
+            <ul>
+				<?php foreach ($meine_aenderungsantraege as $antragu) {
+				/** @var AenderungsantragUnterstuetzer $antragu */
+				/** @var Aenderungsantrag $antrag */
+				$antrag = $antragu->aenderungsantrag;
+				echo "<li>";
+				echo CHtml::link(CHtml::encode($antrag->revision_name . " zu " . $antrag->antrag->revision_name), "/aenderungsantrag/anzeige/?id=" . $antrag->id);
+				if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
+				if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
+				echo "</li>\n";
+			} ?>
+            </ul>
+        </div>
 		<?php
 	}
 	?></div><?php

@@ -27,7 +27,8 @@ class Veranstaltung extends BaseVeranstaltung
 	);
 
 	/** @return IPolicyAntraege */
-	public function getPolicyAntraege() {
+	public function getPolicyAntraege()
+	{
 		if (is_null($this->policy_antraege_obj)) $this->policy_antraege_obj = IPolicyAntraege::getInstanceByID($this->policy_antraege);
 		return $this->policy_antraege_obj;
 	}
@@ -62,6 +63,17 @@ class Veranstaltung extends BaseVeranstaltung
 	public function darfEroeffnenKommentar()
 	{
 		return $this->darfEroeffnen_intern($this->policy_kommentare);
+	}
+
+
+	public function getSprache()
+	{
+		switch ($this->typ) {
+			case Veranstaltung::$TYP_PROGRAMM:
+				return new SpracheProgramm();
+			default:
+				return new Sprache();
+		}
 	}
 
 	/**

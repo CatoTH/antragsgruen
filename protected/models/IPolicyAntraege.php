@@ -8,6 +8,7 @@ abstract class IPolicyAntraege
 	// Ich hab leider keine Ahnung, wie man hier einen eleganteren Auto-Discovery-Mechanmismus implementieren kann...
 	private static $POLICIES = array(
 		"ByLDK" => "PolicyAntraegeByLDK",
+		"Admins" => "PolicyAntraegeAdmins",
 	);
 
 

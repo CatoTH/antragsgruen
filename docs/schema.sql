@@ -9,7 +9,7 @@ USE `parteitool` ;
 -- Table `parteitool`.`veranstaltung`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `parteitool`.`veranstaltung` (
-  `id` SMALLINT NOT NULL ,
+  `id` SMALLINT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(200) NOT NULL ,
   `name_kurz` VARCHAR(45) NOT NULL ,
   `antrag_einleitung` TEXT NOT NULL ,

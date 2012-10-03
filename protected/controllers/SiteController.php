@@ -236,6 +236,7 @@ class SiteController extends Controller
 			"neueste_aenderungsantraege" => $neueste_aenderungsantraege,
 			"meine_antraege"             => $meine_antraege,
 			"meine_aenderungsantraege"   => $meine_aenderungsantraege,
+			"sprache"                    => new SpracheProgramm(),
 		));
 	}
 

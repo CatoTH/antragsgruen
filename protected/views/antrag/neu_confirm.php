@@ -24,7 +24,7 @@ $this->breadcrumbs = array(
 <h1 class="well"><?php echo CHtml::encode($antrag->name); ?></h1>
 
 <div class="antrags_text_holder well well_first">
-	<h3>Antragstext</h3>
+    <h3>Antragstext</h3>
 
 	<?php
 
@@ -35,7 +35,7 @@ Falls es Probleme gibt, die sich nicht lösen lassen, gib uns bitte per Mail an 
 
 	?>
 
-	<div class="textholder consolidated">
+    <div class="textholder consolidated">
 		<?php
 		$absae = $antrag->getParagraphs();
 		foreach ($absae as $i=> $abs) {
@@ -45,32 +45,34 @@ Falls es Probleme gibt, die sich nicht lösen lassen, gib uns bitte per Mail an 
 			echo "</div>";
 		}
 		?>
-	</div>
+    </div>
 </div>
 
 <div class="begruendungs_text_holder well">
-	<h3>Begründung</h3>
+    <h3>Begründung</h3>
 
-	<div class="textholder consolidated">
+    <div class="textholder consolidated">
 		<?php echo HtmlBBcodeUtils::bbcode2html($antrag->begruendung) ?>
-	</div>
+    </div>
 </div>
 
 <div class="antrags_text_holder well">
-	<h3>UnterstützerInnen</h3>
+    <h3>UnterstützerInnen</h3>
 
-	<?php
-	if (count($unterstuetzerinnen) > 0) {
-		echo CHtml::openTag('ul');
-		foreach ($unterstuetzerinnen as $p) {
-			echo CHtml::openTag('li');
-			echo CHtml::encode($p->name);
-			echo CHtml::closeTag('li');
-		}
-		echo CHtml::closeTag('ul');
+    <div class="content">
+		<?php
+		if (count($unterstuetzerinnen) > 0) {
+			echo CHtml::openTag('ul');
+			foreach ($unterstuetzerinnen as $p) {
+				echo CHtml::openTag('li');
+				echo CHtml::encode($p->name);
+				echo CHtml::closeTag('li');
+			}
+			echo CHtml::closeTag('ul');
 
-	} else echo "<em>keine</em>";
-	?>
+		} else echo "<em>keine</em>";
+		?>
+    </div>
 </div>
 <?php
 /** @var TbActiveForm $form */
@@ -82,12 +84,12 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 <input type="hidden" name="<?=AntiXSS::createToken("antragbestaetigen")?>" value="1">
 
 <div class="form-actions">
-	<div style="float: right;">
+    <div style="float: right;">
 		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> 'Antrag einreichen')); ?>
-	</div>
-	<div style="float: left;">
+    </div>
+    <div style="float: left;">
 		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submitlink', 'url' => "/antrag/aendern/?id=" . $antrag->id, 'icon'=> 'remove', 'label'=> 'Korrigieren')); ?>
-	</div>
+    </div>
 </div>
 
 <?php $this->endWidget(); ?>

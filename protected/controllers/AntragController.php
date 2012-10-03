@@ -142,6 +142,7 @@ class AntragController extends Controller
 			"js_protection"       => $js_protection,
 			"support_form"        => !Yii::app()->user->isGuest,
 			"support_status"      => $support_status,
+			"sprache"             => $antrag->veranstaltung0->getSprache(),
 		));
 	}
 
