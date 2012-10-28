@@ -1,8 +1,9 @@
 <?php
 
-ini_set('include_path', ini_get('include_path') . ":/var/www/parteitool/libraries/");
-
 setlocale(LC_ALL, 'de_DE');
+
+ini_set('include_path', ini_get('include_path') . ":" . dirname(__FILE__) . "/../libraries/");
+require_once(dirname(__FILE__) . "/../vendor/autoload.php");
 
 // change the following paths if necessary
 $yii=dirname(__FILE__).'/../libraries/yii-1.1.12.b600af/framework/yii.php';
@@ -14,6 +15,7 @@ defined('YII_DEBUG') or define('YII_DEBUG',true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
 
 require_once($yii);
+
 $app = Yii::createWebApplication($config);
 $app->language = "de";
 $app->layout = "bootstrap";
