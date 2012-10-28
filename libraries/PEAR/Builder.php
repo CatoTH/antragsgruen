@@ -317,6 +317,8 @@ class PEAR_Builder extends PEAR_Common
         }
 
         if (!$err) {
+             print "If the command failed with 'phpize: not found' then you need to install php5-dev package";
+             print "You can do it by running 'apt-get install php5-dev' as a root user";
             return $this->raiseError("`phpize' failed");
         }
 
