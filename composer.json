@@ -1,0 +1,26 @@
+{
+	"name": "catoth/antragsgruen",
+	"description": "Die Antragsbegrünung",
+	"type": "library",
+	"license": "AGPL-3.0",
+	"keywords": [
+		"gruen",
+		"antrag",
+		"netzbegruenung"
+	],
+	"minimum-stability": "dev",
+	"homepage": "http://parteitool.netzbegruenung.de/",
+	"autoload": {
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "http://packages.zendframework.com/"
+		}
+	],
+	"require": {
+		"php": ">=5.3.3",
+		"zendframework/zend-feed": "2.0.*",
+		"tcpdf/tcpdf": "dev-master"
+	}
+}
