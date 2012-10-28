@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var CController $this
+ * @var AntragController $this
  * @var $antrag $antrag
  */
 

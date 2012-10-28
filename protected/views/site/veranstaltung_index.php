@@ -39,7 +39,7 @@ if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) {
 }
 
 if ($veranstaltung->darfEroeffnenAntrag()) {
-	$this->menus_html[] = '<a class="neuer-antrag" href="http://parteitool.netzbegruenung.de/antrag/neu/?veranstaltung=' . $veranstaltung->id . '">
+	$this->menus_html[] = '<a class="neuer-antrag" href="/antrag/neu/?veranstaltung=' . $veranstaltung->id . '">
 <img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
 </a>';
 }

@@ -7,13 +7,13 @@ class AntragController extends Controller
 	public function actionAnzeige()
 	{
 		$id = IntVal($_REQUEST["id"]);
-		/** @var Antrag $antrag  */
+		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($id);
 
 		$this->layout = '//layouts/column2';
 
 		if (AntiXSS::isTokenSet("komm_del")) {
-			/** @var AntragKommentar $komm  */
+			/** @var AntragKommentar $komm */
 			$komm = AntragKommentar::model()->findByPk(AntiXSS::getTokenVal("komm_del"));
 			if ($komm->antrag_id == $antrag->id && $komm->kannLoeschen(Yii::app()->user) && $komm->status == IKommentar::$STATUS_FREI) {
 				$komm->status = IKommentar::$STATUS_GELOESCHT;
@@ -58,7 +58,7 @@ class AntragController extends Controller
 			$this->redirect("/antrag/anzeige/?id=" . $id);
 		}
 
-		/** @var $antragstellerinnen array|Person[] $antragstellerinnen  */
+		/** @var $antragstellerinnen array|Person[] $antragstellerinnen */
 		$antragstellerinnen = array();
 		$unterstuetzerinnen = array();
 		$zustimmung_von     = array();
@@ -127,22 +127,22 @@ class AntragController extends Controller
 		}
 
 		$this->render("anzeige", array(
-			"antrag"              => $antrag,
-			"antragstellerinnen"  => $antragstellerinnen,
-			"unterstuetzerinnen"  => $unterstuetzerinnen,
-			"zustimmung_von"      => $zustimmung_von,
-			"ablehnung_von"       => $ablehnung_von,
-			"aenderungsantraege"  => $aenderungsantraege,
-			"edit_link"           => $antrag->binInitiatorIn(),
-			"kommentare_offen"    => $kommentare_offen,
-			"kommentar_person"    => $kommentar_person,
-			"admin_edit"          => (Yii::app()->user->getState("role") == "admin" ? "/admin/antraege/update/id/" . $id : null),
-			"komm_del_link"       => "/antrag/anzeige/?id=${id}&" . AntiXSS::createToken("komm_del") . "=#komm_id#",
-			"hiddens"             => $hiddens,
-			"js_protection"       => $js_protection,
-			"support_form"        => !Yii::app()->user->isGuest,
-			"support_status"      => $support_status,
-			"sprache"             => $antrag->veranstaltung0->getSprache(),
+			"antrag"             => $antrag,
+			"antragstellerinnen" => $antragstellerinnen,
+			"unterstuetzerinnen" => $unterstuetzerinnen,
+			"zustimmung_von"     => $zustimmung_von,
+			"ablehnung_von"      => $ablehnung_von,
+			"aenderungsantraege" => $aenderungsantraege,
+			"edit_link"          => $antrag->binInitiatorIn(),
+			"kommentare_offen"   => $kommentare_offen,
+			"kommentar_person"   => $kommentar_person,
+			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/antraege/update/id/" . $id : null),
+			"komm_del_link"      => "/antrag/anzeige/?id=${id}&" . AntiXSS::createToken("komm_del") . "=#komm_id#",
+			"hiddens"            => $hiddens,
+			"js_protection"      => $js_protection,
+			"support_form"       => !Yii::app()->user->isGuest,
+			"support_status"     => $support_status,
+			"sprache"            => $antrag->veranstaltung0->getSprache(),
 		));
 	}
 
@@ -209,9 +209,9 @@ class AntragController extends Controller
 			$goon = true;
 
 			$model_unterstuetzer_int = array();
-			/** @var array|AntragUnterstuetzer[] $model_unterstuetzer_obj  */
+			/** @var array|AntragUnterstuetzer[] $model_unterstuetzer_obj */
 			$model_unterstuetzer_obj = array();
-			if (isset($_REQUEST["UnterstuetzerTyp"])) foreach ($_REQUEST["UnterstuetzerTyp"] as $key=> $typ) if ($typ != "" && $_REQUEST["UnterstuetzerName"][$key] != "") {
+			if (isset($_REQUEST["UnterstuetzerTyp"])) foreach ($_REQUEST["UnterstuetzerTyp"] as $key => $typ) if ($typ != "" && $_REQUEST["UnterstuetzerName"][$key] != "") {
 				$name = trim($_REQUEST["UnterstuetzerName"][$key]);
 				// Man soll keinen bestätigten Nutzer eintragen können, das kann der dann selbvst machen
 				$p = Person::model()->findByAttributes(array("typ" => $typ, "name" => $name, "status" => Person::$STATUS_UNCONFIRMED));
@@ -279,14 +279,15 @@ class AntragController extends Controller
 		}
 
 		$this->render('bearbeiten_form', array(
-			"mode"                     => "bearbeiten",
-			"model"                    => $antrag,
-			"hiddens"                  => $hiddens,
-			"antragstellerin"          => $antragstellerin,
-			"model_unterstuetzer"      => $model_unterstuetzer,
-			"veranstaltung"            => $antrag->veranstaltung0,
-			"js_protection"            => $js_protection,
-			"login_warnung"            => Yii::app()->user->isGuest,
+			"mode"                => "bearbeiten",
+			"model"               => $antrag,
+			"hiddens"             => $hiddens,
+			"antragstellerin"     => $antragstellerin,
+			"model_unterstuetzer" => $model_unterstuetzer,
+			"veranstaltung"       => $antrag->veranstaltung0,
+			"js_protection"       => $js_protection,
+			"login_warnung"       => Yii::app()->user->isGuest,
+			"sprache"             => $antrag->veranstaltung0->getSprache(),
 		));
 
 
@@ -297,7 +298,7 @@ class AntragController extends Controller
 	{
 		$this->layout = '//layouts/column2';
 
-		/** @var Antrag $antrag  */
+		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByAttributes(array("id" => $_REQUEST["id"], "status" => Antrag::$STATUS_UNBESTAETIGT));
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
@@ -313,8 +314,8 @@ class AntragController extends Controller
 			for ($i = 0; $i < 15; $i++) $model_unterstuetzer[] = array("typ" => Person::$TYP_PERSON, "name" => "");
 
 			$this->render('neu_confirm', array(
-				"antrag"               => $antrag,
-				"model_unterstuetzer"  => $model_unterstuetzer,
+				"antrag"              => $antrag,
+				"model_unterstuetzer" => $model_unterstuetzer,
 			));
 
 		}
@@ -330,7 +331,7 @@ class AntragController extends Controller
 		$model->typ    = Antrag::$TYP_ANTRAG;
 
 
-		/** @var Veranstaltung $veranstaltung  */
+		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung         = Veranstaltung::model()->findByPk($_REQUEST["veranstaltung"]);
 		$model->veranstaltung  = $veranstaltung->id;
 		$model->veranstaltung0 = $veranstaltung;
@@ -354,9 +355,9 @@ class AntragController extends Controller
 			if (!$antragstellerin) $goon = false;
 
 			$model_unterstuetzer_int = array();
-			/** @var array|AntragUnterstuetzer[] $model_unterstuetzer_obj  */
+			/** @var array|AntragUnterstuetzer[] $model_unterstuetzer_obj */
 			$model_unterstuetzer_obj = array();
-			if (isset($_REQUEST["UnterstuetzerTyp"])) foreach ($_REQUEST["UnterstuetzerTyp"] as $key=> $typ) if ($typ != "" && $_REQUEST["UnterstuetzerName"][$key] != "") {
+			if (isset($_REQUEST["UnterstuetzerTyp"])) foreach ($_REQUEST["UnterstuetzerTyp"] as $key => $typ) if ($typ != "" && $_REQUEST["UnterstuetzerName"][$key] != "") {
 				$name = trim($_REQUEST["UnterstuetzerName"][$key]);
 				// Man soll keinen bestätigten Nutzer eintragen können, das kann der dann selbvst machen
 				$p = Person::model()->findByAttributes(array("typ" => $typ, "name" => $name, "status" => Person::$STATUS_UNCONFIRMED));
@@ -431,13 +432,14 @@ class AntragController extends Controller
 		}
 
 		$this->render('bearbeiten_form', array(
-			"model"                  => $model,
-			"antragstellerin"        => $antragstellerin,
-			"model_unterstuetzer"    => $model_unterstuetzer,
-			"veranstaltung"          => $veranstaltung,
-			"hiddens"                => $hiddens,
-			"js_protection"          => $js_protection,
-			"login_warnung"          => Yii::app()->user->isGuest,
+			"model"               => $model,
+			"antragstellerin"     => $antragstellerin,
+			"model_unterstuetzer" => $model_unterstuetzer,
+			"veranstaltung"       => $veranstaltung,
+			"hiddens"             => $hiddens,
+			"js_protection"       => $js_protection,
+			"login_warnung"       => Yii::app()->user->isGuest,
+			"sprache"             => $model->veranstaltung0->getSprache(),
 		));
 	}
 

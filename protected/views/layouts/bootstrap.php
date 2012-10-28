@@ -60,7 +60,7 @@
 	)); ?>
 	</div>
 
-    <a href="http://parteitool.netzbegruenung.de/" class="logo"><img src="/css/img/logo.png" alt="Antragsgrün"></a>
+    <a href="/" class="logo"><img src="/css/img/logo.png" alt="Antragsgrün"></a>
 
 	<!-- mainmenu -->
 	<?php if (isset($this->breadcrumbs)): ?>

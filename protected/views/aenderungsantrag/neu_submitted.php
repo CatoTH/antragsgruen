@@ -1,6 +1,6 @@
 <?php
 /**
- * @var AntragController $this
+ * @var AenderungsantraegeController $this
  * @var Antrag $antrag
  */
 
