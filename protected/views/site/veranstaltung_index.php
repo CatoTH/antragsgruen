@@ -40,12 +40,12 @@ if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) {
 	}
 	$html .= "</ul></div>";
 	$this->menus_html[] = $html;
-}
 
-if ($veranstaltung->darfEroeffnenAntrag()) {
-	$this->menus_html[] = '<a class="neuer-antrag" href="/antrag/neu/?veranstaltung=' . $veranstaltung->id . '">
+	if ($veranstaltung->darfEroeffnenAntrag()) {
+		$this->menus_html[] = '<a class="neuer-antrag" href="/antrag/neu/?veranstaltung=' . $veranstaltung->id . '">
 <img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
 </a>';
+	}
 }
 
 
@@ -56,6 +56,14 @@ else foreach ($neueste_aenderungsantraege as $ant) {
 }
 $html .= "</ul></div>";
 $this->menus_html[] = $html;
+
+if ($veranstaltung->typ == Veranstaltung::$TYP_PROGRAMM) {
+	if ($veranstaltung->darfEroeffnenAntrag()) {
+		$this->menus_html[] = '<a class="neuer-antrag" href="/antrag/neu/?veranstaltung=' . $veranstaltung->id . '">
+<img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
+</a>';
+	}
+}
 
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Neue Kommentare</li>";
 if (count($neueste_kommentare) == 0) $html .= "<li><i>keine</i></li>";
