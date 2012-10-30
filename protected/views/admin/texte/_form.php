@@ -47,7 +47,7 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 		<?php echo $form->error($model, 'edit_person'); ?>
     </div>
     <!-- row -->
-    <div style="margin-left: -15px;">
+    <div style="margin-left: 10px;">
 		<?php echo $form->textArea($model, 'text'); ?>
 		<?php echo $form->error($model, 'text'); ?>
     </div>
