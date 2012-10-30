@@ -3,6 +3,7 @@
 /**
  * @var AenderungsantragController $this
  * @var Aenderungsantrag $aenderungsantrag
+ * @var Sprache $sprache
  */
 
 $antrag = $aenderungsantrag->antrag;
@@ -19,7 +20,9 @@ $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
 	"Antrag"                                          => "/antrag/anzeige/?id=" . $antrag->id,
 	'Änderungsantrag bestätigen'
-);?>
+);
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+?>
 
 <h1 class="well">Änderungsantrag zu <?php echo CHtml::encode($antrag->name); ?></h1>
 

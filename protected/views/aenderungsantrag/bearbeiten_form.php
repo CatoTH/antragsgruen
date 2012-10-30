@@ -7,6 +7,7 @@
  * @var Aenderungsantrag $aenderungsantrag
  * @var array $hiddens
  * @var bool $js_protection
+ * @var Sprache $sprache
  */
 
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor/ckeditor.js');
@@ -14,12 +15,14 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
-	"Antrag" => "/antrag/anzeige/?id=" . $antrag->id,
-	'Neuer Änderungsantrag'
-);?>
+	$sprache->get("Antrag") => "/antrag/anzeige/?id=" . $antrag->id,
+	$sprache->get("Neuer Änderungsantrag"),
+);
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+?>
 
 
-<h1 class="well">Änderungsantrag stellen: <?php echo CHtml::encode($antrag->name)?></h1>
+<h1 class="well"><?=$sprache->get("Änderungsantrag stellen")?>: <?php echo CHtml::encode($antrag->name)?></h1>
 
 <?php
 /** @var TbActiveForm $form */
@@ -36,7 +39,7 @@ foreach ($hiddens as $name=>$value) {
 ?>
 <div class="antrags_text_holder ae_absatzwahl_modus well well_first" style="overflow: auto;">
 	<?php
-	Yii::app()->user->setFlash("info", "Bitte wähle nun die Absätze aus, die geändert werden sollen. Du kannst dann die beantragte neue Fassung sowie die Begründung für den Änderungsantrag angeben.");
+	Yii::app()->user->setFlash("info", str_replace("###", $sprache->get("Änderungsantrag"), "Bitte wähle nun die Absätze aus, die geändert werden sollen. Du kannst dann die beantragte neue Fassung sowie die Begründung für den ### angeben."));
 	$this->widget('bootstrap.widgets.TbAlert');
 
 	if ($js_protection) { ?>
@@ -48,7 +51,7 @@ foreach ($hiddens as $name=>$value) {
 	<input id="Aenderungsantrag_name_neu" type="text" value="<?php echo CHtml::encode($aenderungsantrag->name_neu); ?>" name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
 	<br>
 	<br>
-	<h3>Neuer Antragstext</h3>
+	<h3><?=$sprache->get("Neuer Antragstext")?></h3>
 	<br>
 
 	<div class="textholder consolidated">
@@ -86,7 +89,7 @@ foreach ($hiddens as $name=>$value) {
 </div>
 
 <div class="well">
-	<h3><label for="ae_begruendung">Begründung für den Änderungsantrag</label></h3>
+	<h3><label for="ae_begruendung"><?=$sprache->get("Begründung für den Änderungsantrag")?></label></h3>
 	<br>
 	<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php
 		echo CHtml::encode($aenderungsantrag->aenderung_begruendung);
@@ -106,7 +109,7 @@ foreach ($hiddens as $name=>$value) {
 	/** @var Person $antragstellerin */
 	?>
 <div class="well">
-	<h3>AntragstellerIn</h3>
+	<h3><?=$sprache->get("AntragstellerIn")?></h3>
 	<br>
 
 	<?php echo $form->textFieldRow($antragstellerin, 'name'); ?>
@@ -117,7 +120,7 @@ foreach ($hiddens as $name=>$value) {
 
 
 	<div class="ae_select_confirm">
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> 'Änderungsantrag stellen')); ?>
+		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> $sprache->get("Änderungsantrag stellen"))); ?>
 	</div>
 
 	<br><br>

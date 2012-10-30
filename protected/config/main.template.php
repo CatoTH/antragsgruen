@@ -112,9 +112,8 @@ return array(
 		   */
 	),
 
-	// application-level parameters that can be accessed
-	// using Yii::app()->params['paramName']
 	'params'    => array(
-		'adminEmail'=> 'meine@email.tld',
+		'standardVeranstaltung'=> 1,
+		'pdf_logo' => '/var/www/antragsbegruenung/html/images/MCS_Gruene_Logo_weiss_RZ.jpg',
 	),
 );

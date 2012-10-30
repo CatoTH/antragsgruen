@@ -113,25 +113,6 @@ $form = $this->beginWidget('GxActiveForm', array(
 	})
 </script>
 
-<div style="overflow: auto;">
-	<label style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('abonnenten')); ?></label>
-
-	<div style="float: left;">
-		<?php echo $form->checkBoxList($model, 'abonnenten', GxHtml::encodeEx(GxHtml::listDataEx(Person::model()->findAllAttributes("name", true), null, "name"), false, true)); ?>
-	</div>
-</div>
-
-<div style="overflow: auto;">
-	<label style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('antragKommentare')); ?></label>
-
-	<div style="float: left;">
-		<?php
-		$kommentare = AntragKommentar::model()->findAllAttributes(null, true);
-		if (count($kommentare) == 0) echo "<em>keine</em>";
-		else echo $form->checkBoxList($model, 'antragKommentare', GxHtml::encodeEx(GxHtml::listDataEx($kommentare), false, true));
-		?>
-	</div>
-</div>
 
 <div style="overflow: auto;">
 	<label style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('antragUnterstuetzer')); ?></label>

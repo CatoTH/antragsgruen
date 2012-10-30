@@ -10,7 +10,7 @@ $this->breadcrumbs = array(
 	"Antrag"                                          => "/antrag/anzeige/?id=" . $antrag->id,
 	"Bearbeiten",
 );
-
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 ?>
 

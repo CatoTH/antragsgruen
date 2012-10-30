@@ -1,5 +1,8 @@
 <?php
-/* @var $model Antrag */
+/**
+ * @var $model Antrag
+ * @var Sprache $sprache
+ */
 
 // Muss am Anfang stehen, ansonsten zerhaut's die Zeilenumbrüche; irgendwas mit dem internen Encoding
 $absae = $model->getParagraphs();
@@ -18,8 +21,8 @@ foreach ($model->antragUnterstuetzer as $unt) {
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 if ($initiator) $pdf->SetAuthor($initiator->name);
-$pdf->SetTitle("Antrag " . $model->revision_name . ": " . $model->name);
-$pdf->SetSubject("Antrag " . $model->revision_name . ": " . $model->name);
+$pdf->SetTitle($sprache->get("Antrag") . " " . $model->revision_name . ": " . $model->name);
+$pdf->SetSubject($sprache->get("Antrag") . " " . $model->revision_name . ": " . $model->name);
 //$pdf->SetSubject($model->name);
 //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -55,8 +58,11 @@ $pdf->SetFont('dejavusans', '', 10);
 // add a page
 $pdf->AddPage();
 
-$pdf->setJPEGQuality(100);
-$pdf->Image("/var/www/parteitool/html/images/MCS_Gruene_Logo_weiss_RZ.jpg", 22, 32, 47, 26);
+$logo = Yii::app()->params['pdf_logo'];
+if (file_exists($logo)) {
+	$pdf->setJPEGQuality(100);
+	$pdf->Image($logo, 22, 32, 47, 26);
+}
 
 $pdf->SetXY(155, 37, true);
 
@@ -92,7 +98,7 @@ $pdf->MultiCell(160, 13, $model->veranstaltung0->antrag_einleitung);
 $pdf->SetXY(25, 110);
 
 $pdf->SetFont("helvetica", "B", 12);
-$pdf->MultiCell(50, 0, "AntragsstellerIn:", 0, "L", false, 0);
+$pdf->MultiCell(50, 0, $sprache->get("AntragsstellerIn") . ":", 0, "L", false, 0);
 $pdf->SetFont("helvetica", "", 12);
 $pdf->MultiCell(150, 0, $initiator->name, 0, "L");
 
@@ -111,7 +117,7 @@ $pdf->Ln();
 
 $pdf->SetFont("helvetica", "", 12);
 
-$pdf->writeHTML("<h3>Antrag</h3>");
+$pdf->writeHTML("<h3>" . $sprache->get("Antragstext") .  "</h3>");
 $pdf->SetFont("Courier", "", 10);
 $pdf->Ln(8);
 
@@ -150,7 +156,7 @@ foreach ($absae as $i=>$abs) {
 
 }
 
-$html = '
+if (trim($model->begruendung) != "") $html = '
 	</div>
 	<h3>Begründung</h3>
 	<div class="textholder consolidated">

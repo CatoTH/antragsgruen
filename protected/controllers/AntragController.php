@@ -3,6 +3,7 @@
 class AntragController extends Controller
 {
 	public $menus_html = null;
+	public $breadcrumbs_topname = null;
 
 	public function actionAnzeige()
 	{
@@ -73,8 +74,8 @@ class AntragController extends Controller
 
 		$kommentare_offen = array();
 
-		if (AntiXSS::isTokenSet("kommentar_absatz") && $antrag->veranstaltung0->darfEroeffnenKommentar()) {
-			$zeile = AntiXSS::getTokenVal("kommentar_absatz");
+		if (AntiXSS::isTokenSet("kommentar_schreiben") && $antrag->veranstaltung0->darfEroeffnenKommentar()) {
+			$zeile = IntVal($_REQUEST["absatz_nr"]);
 
 			$person        = $_REQUEST["Person"];
 			$person["typ"] = Person::$TYP_PERSON;
@@ -113,9 +114,9 @@ class AntragController extends Controller
 		$hiddens       = array();
 		$js_protection = Yii::app()->user->isGuest;
 		if ($js_protection) {
-			$hiddens["form_token"] = AntiXSS::createToken("kommentar_absatz");
+			$hiddens["form_token"] = AntiXSS::createToken("kommentar_schreiben");
 		} else {
-			$hiddens[AntiXSS::createToken("kommentar_absatz")] = "1";
+			$hiddens[AntiXSS::createToken("kommentar_schreiben")] = "1";
 		}
 
 		if (Yii::app()->user->isGuest) $kommentar_person = new Person();
@@ -152,7 +153,8 @@ class AntragController extends Controller
 		$antrag = Antrag::model()->findByPk($id);
 
 		$this->renderPartial("pdf", array(
-			'model' => $antrag,
+			'model'   => $antrag,
+			"sprache" => $antrag->veranstaltung0->getSprache(),
 		));
 	}
 
@@ -181,7 +183,8 @@ class AntragController extends Controller
 		}
 
 		$this->render("bearbeiten_start", array(
-			"antrag" => $antrag,
+			"antrag"  => $antrag,
+			"sprache" => $antrag->veranstaltung0->getSprache(),
 		));
 	}
 
@@ -316,6 +319,7 @@ class AntragController extends Controller
 			$this->render('neu_confirm', array(
 				"antrag"              => $antrag,
 				"model_unterstuetzer" => $model_unterstuetzer,
+				"sprache"             => $antrag->veranstaltung0->getSprache(),
 			));
 
 		}

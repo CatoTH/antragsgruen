@@ -3,11 +3,12 @@
 class AenderungsantragController extends Controller
 {
 	public $menus_html = null;
+	public $breadcrumbs_topname = null;
 
 	public function actionAnzeige()
 	{
 		$id = IntVal($_REQUEST["id"]);
-		/** @var Aenderungsantrag $aenderungsantrag  */
+		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($id);
 
 		$this->layout = '//layouts/column2';
@@ -18,7 +19,7 @@ class AenderungsantragController extends Controller
 		}
 
 		if (AntiXSS::isTokenSet("komm_del")) {
-			/** @var AenderungsantragKommentar $komm  */
+			/** @var AenderungsantragKommentar $komm */
 			$komm = AenderungsantragKommentar::model()->findByPk(AntiXSS::getTokenVal("komm_del"));
 			if ($komm->aenderungsantrag_id == $aenderungsantrag->id && $komm->kannLoeschen(Yii::app()->user) && $komm->status == IKommentar::$STATUS_FREI) {
 				$komm->status = IKommentar::$STATUS_GELOESCHT;
@@ -64,8 +65,8 @@ class AenderungsantragController extends Controller
 
 		$kommentare_offen = array();
 
-		if (AntiXSS::isTokenSet("kommentar_absatz") && $aenderungsantrag->antrag->veranstaltung0->darfEroeffnenKommentar()) {
-			$zeile = AntiXSS::getTokenVal("kommentar_absatz");
+		if (AntiXSS::isTokenSet("kommentar_schreiben") && $aenderungsantrag->antrag->veranstaltung0->darfEroeffnenKommentar()) {
+			$zeile = IntVal($_REQUEST["absatz_nr"]);
 
 			$person        = $_REQUEST["Person"];
 			$person["typ"] = Person::$TYP_PERSON;
@@ -113,9 +114,9 @@ class AenderungsantragController extends Controller
 		$hiddens       = array();
 		$js_protection = Yii::app()->user->isGuest;
 		if ($js_protection) {
-			$hiddens["form_token"] = AntiXSS::createToken("kommentar_absatz");
+			$hiddens["form_token"] = AntiXSS::createToken("kommentar_schreiben");
 		} else {
-			$hiddens[AntiXSS::createToken("kommentar_absatz")] = "1";
+			$hiddens[AntiXSS::createToken("kommentar_schreiben")] = "1";
 		}
 
 
@@ -128,30 +129,33 @@ class AenderungsantragController extends Controller
 		}
 
 		$this->render("anzeige", array(
-			"aenderungsantrag"    => $aenderungsantrag,
-			"antragstellerinnen"  => $antragstellerinnen,
-			"unterstuetzerinnen"  => $unterstuetzerinnen,
-			"zustimmung_von"      => $zustimmung_von,
-			"ablehnung_von"       => $ablehnung_von,
-			"edit_link"           => $aenderungsantrag->binInitiatorIn(),
-			"admin_edit"          => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $id : null),
-			"kommentare_offen"    => $kommentare_offen,
-			"kommentar_person"    => $kommentar_person,
-			"komm_del_link"       => "/aenderungsantrag/anzeige/?id=${id}&" . AntiXSS::createToken("komm_del") . "=#komm_id#",
-			"hiddens"             => $hiddens,
-			"js_protection"       => $js_protection,
-			"support_form"        => !Yii::app()->user->isGuest,
-			"support_status"      => $support_status,
+			"aenderungsantrag"   => $aenderungsantrag,
+			"antragstellerinnen" => $antragstellerinnen,
+			"unterstuetzerinnen" => $unterstuetzerinnen,
+			"zustimmung_von"     => $zustimmung_von,
+			"ablehnung_von"      => $ablehnung_von,
+			"edit_link"          => $aenderungsantrag->binInitiatorIn(),
+			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $id : null),
+			"kommentare_offen"   => $kommentare_offen,
+			"kommentar_person"   => $kommentar_person,
+			"komm_del_link"      => "/aenderungsantrag/anzeige/?id=${id}&" . AntiXSS::createToken("komm_del") . "=#komm_id#",
+			"hiddens"            => $hiddens,
+			"js_protection"      => $js_protection,
+			"support_form"       => !Yii::app()->user->isGuest,
+			"support_status"     => $support_status,
+			"sprache"            => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 		));
 	}
 
 	public function actionPdf()
 	{
-		$id     = IntVal($_REQUEST["id"]);
+		$id = IntVal($_REQUEST["id"]);
+		/** @var Aenderungsantrag $antrag */
 		$antrag = Aenderungsantrag::model()->findByPk($id);
 
 		$this->renderPartial("pdf", array(
-			'model' => $antrag,
+			'model'   => $antrag,
+			"sprache" => $antrag->antrag->veranstaltung0->getSprache(),
 		));
 	}
 
@@ -180,6 +184,7 @@ class AenderungsantragController extends Controller
 
 		$this->render("bearbeiten_start", array(
 			"aenderungsantrag" => $aenderungsantrag,
+			"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 		));
 	}
 
@@ -213,11 +218,12 @@ class AenderungsantragController extends Controller
 		}
 
 		$this->render('bearbeiten_form', array(
-			"mode"                  => "bearbeiten",
-			"antrag"                => $antrag,
-			"aenderungsantrag"      => $aenderungsantrag,
-			"hiddens"               => $hiddens,
-			"js_protection"         => $js_protection,
+			"mode"             => "bearbeiten",
+			"antrag"           => $antrag,
+			"aenderungsantrag" => $aenderungsantrag,
+			"hiddens"          => $hiddens,
+			"js_protection"    => $js_protection,
+			"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 		));
 
 
@@ -228,7 +234,7 @@ class AenderungsantragController extends Controller
 	{
 		$this->layout = '//layouts/column2';
 
-		/** @var Aenderungsantrag $aenderungsantrag  */
+		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByAttributes(array("id" => $_REQUEST["id"]));
 		if ($aenderungsantrag->status != Aenderungsantrag::$STATUS_UNBESTAETIGT) {
 			$this->redirect("/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id);
@@ -244,7 +250,8 @@ class AenderungsantragController extends Controller
 		} else {
 
 			$this->render('neu_confirm', array(
-				"aenderungsantrag"               => $aenderungsantrag,
+				"aenderungsantrag" => $aenderungsantrag,
+				"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 			));
 
 		}
@@ -257,11 +264,11 @@ class AenderungsantragController extends Controller
 		if (!isset($_REQUEST["absaetze"])) return;
 
 		$antrag_id = IntVal($_REQUEST["antrag_id"]);
-		/** @var Antrag $antrag  */
+		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
 
 		$diffs = array();
-		/** @var array|AntragAbsatz[] $pars  */
+		/** @var array|AntragAbsatz[] $pars */
 		$pars = $antrag->getParagraphs();
 		foreach ($_REQUEST["absaetze"] as $absatznr => $text_neu) {
 			$diffs[$absatznr] = DiffUtils::renderBBCodeDiff2HTML($pars[$absatznr]->str_bbcode, $text_neu);
@@ -275,7 +282,7 @@ class AenderungsantragController extends Controller
 		$this->layout = '//layouts/column2';
 
 		$antrag_id = IntVal($_REQUEST["antrag_id"]);
-		/** @var Antrag $antrag  */
+		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
 
 		if (!$antrag->veranstaltung0->darfEroeffnenAntrag()) {
@@ -306,7 +313,7 @@ class AenderungsantragController extends Controller
 			$neue_absaetze = array();
 			$neuer_text    = "";
 			for ($i = 0; $i < count($orig_absaetze); $i++) {
-				/** @var AntragAbsatz $abs  */
+				/** @var AntragAbsatz $abs */
 				$abs = $orig_absaetze[$i];
 				if (isset($_REQUEST["change_text"][$i])) {
 					$abs_text          = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["neu_text"][$i]);
@@ -372,12 +379,13 @@ class AenderungsantragController extends Controller
 				foreach ($aenderungsantrag->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht angelegt werden: " . $val2);
 				if ($antragstellerin === null) $antragstellerin = new Person();
 				$this->render('bearbeiten_form', array(
-					"mode"                  => "neu",
-					"antrag"                => $antrag,
-					"aenderungsantrag"      => $aenderungsantrag,
-					"antragstellerin"       => $antragstellerin,
-					"hiddens"               => $hiddens,
-					"js_protection"         => $js_protection,
+					"mode"             => "neu",
+					"antrag"           => $antrag,
+					"aenderungsantrag" => $aenderungsantrag,
+					"antragstellerin"  => $antragstellerin,
+					"hiddens"          => $hiddens,
+					"js_protection"    => $js_protection,
+					"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 				));
 				return;
 			}
@@ -401,12 +409,13 @@ class AenderungsantragController extends Controller
 
 
 			$this->render('bearbeiten_form', array(
-				"mode"                  => "neu",
-				"antrag"                => $antrag,
-				"aenderungsantrag"      => $aenderungsantrag,
-				"antragstellerin"       => $antragstellerin,
-				"hiddens"               => $hiddens,
-				"js_protection"         => $js_protection,
+				"mode"             => "neu",
+				"antrag"           => $antrag,
+				"aenderungsantrag" => $aenderungsantrag,
+				"antragstellerin"  => $antragstellerin,
+				"hiddens"          => $hiddens,
+				"js_protection"    => $js_protection,
+				"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 			));
 		}
 	}

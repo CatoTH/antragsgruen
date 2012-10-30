@@ -1,7 +1,9 @@
 <?php
 
 /**
+ * @var AenderungsantragController $this
  * @var Aenderungsantrag $aenderungsantrag
+ * @var Sprache $sprache
  */
 
 $antrag = $aenderungsantrag->antrag;
@@ -12,7 +14,7 @@ $this->breadcrumbs = array(
 	"Änderungsantrag"                                 => "/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id,
 	"Bearbeiten",
 );
-
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 ?>
 

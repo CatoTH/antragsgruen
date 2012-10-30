@@ -3,11 +3,12 @@
 /**
  * @var AntragController $this
  * @var Antrag $antrag
+ * @var Sprache $sprache
  */
 
-/** @var $antragstellerinnen array|Person[] */
+/** @var array|Person[] $antragstellerinnen */
 $antragstellerinnen = array();
-/** @var $unterstuetzerinnen array|Person[] */
+/** @var array|Person[] $unterstuetzerinnen */
 $unterstuetzerinnen = array();
 
 if (count($antrag->antragUnterstuetzer) > 0) foreach ($antrag->antragUnterstuetzer as $relatedModel) {
@@ -19,7 +20,9 @@ $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
 	'Neuer Antrag',
 	'Bestätigen'
-);?>
+);
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+?>
 
 <h1 class="well"><?php echo CHtml::encode($antrag->name); ?></h1>
 

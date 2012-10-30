@@ -5,33 +5,22 @@ class SiteController extends Controller
 
 	public $multimenu = null;
 	public $menus_html = null;
+	public $breadcrumbs_topname = null;
 
-	/*
-	public function actions()
-	{
-		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=> array(
-				'class'    => 'CCaptchaAction',
-				'backColor'=> 0xFFFFFF,
-			),
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'   => array(
-				'class'=> 'CViewAction',
-			),
-		);
-	}
-	*/
-
+	/**
+	 *
+	 */
 	public function actionIndex()
 	{
-		$this->actionVeranstaltung(2);
+		$this->actionVeranstaltung(Yii::app()->params['standardVeranstaltung']);
 	}
 
+	/**
+	 *
+	 */
 	public function actionImpressum()
 	{
-		/** @var Texte $v  */
+		/** @var Texte $v */
 		$v = Texte::model()->findByAttributes(array("text_id" => "impressum"));
 
 		$this->render('content', array(
@@ -42,9 +31,12 @@ class SiteController extends Controller
 		));
 	}
 
+	/**
+	 *
+	 */
 	public function actionHilfe()
 	{
-		/** @var Texte $v  */
+		/** @var Texte $v */
 		$v = Texte::model()->findByAttributes(array("text_id" => "hilfe"));
 
 		$this->render('content', array(
@@ -55,97 +47,143 @@ class SiteController extends Controller
 		));
 	}
 
-	private function getFeedAntraegeData($veranstaltung_id = 0) {
-		$veranstaltung_id = IntVal($veranstaltung_id);
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @return array
+	 */
+	private function getFeedAntraegeData(&$veranstaltung)
+	{
+		$veranstaltung_id = IntVal($veranstaltung->id);
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 
 		$antraege = Antrag::holeNeueste($veranstaltung_id, 20);
 
 		$data = array();
 		foreach ($antraege as $ant) $data[ZendHelper::date_iso2timestamp($ant->datum_einreichung) . "_antrag_" . $ant->id] = array(
-			"title" => "Neuer Antrag: " . $ant->revision_name . " - " . $ant->name,
-			"link" => Yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $ant->id,
+			"title"       => "Neuer Antrag: " . $ant->revision_name . " - " . $ant->name,
+			"link"        => Yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $ant->id,
 			"dateCreated" => ZendHelper::date_iso2timestamp($ant->datum_einreichung),
-			"content" => "<h2>Antrag</h2>" . HtmlBBcodeUtils::bbcode2html($ant->text) . "<br>\n<br>\n<br>\n<h2>Begründung</h2>" . HtmlBBcodeUtils::bbcode2html($ant->begruendung),
+			"content"     => "<h2>Antrag</h2>" . HtmlBBcodeUtils::bbcode2html($ant->text) . "<br>\n<br>\n<br>\n<h2>Begründung</h2>" . HtmlBBcodeUtils::bbcode2html($ant->begruendung),
 		);
 		return $data;
 	}
 
-	private function getFeedAenderungsantraegeData($veranstaltung_id = 0) {
-		$veranstaltung_id = IntVal($veranstaltung_id);
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @return array
+	 */
+	private function getFeedAenderungsantraegeData(&$veranstaltung)
+	{
+		$veranstaltung_id = IntVal($veranstaltung->id);
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 
 		$antraege = Aenderungsantrag::holeNeueste($veranstaltung_id, 20);
 
 		$data = array();
 		foreach ($antraege as $ant) $data[ZendHelper::date_iso2timestamp($ant->datum_einreichung) . "_aenderungsantrag_" . $ant->id] = array(
-			"title" => "Neuer Änderungsantrag: " . $ant->revision_name . " zu " . $ant->antrag->revision_name . " - " . $ant->antrag->name,
-			"link" => Yii::app()->getBaseUrl(true) . "/aenderungsantrag/anzeige/?id=" . $ant->id,
+			"title"       => "Neuer Änderungsantrag: " . $ant->revision_name . " zu " . $ant->antrag->revision_name . " - " . $ant->antrag->name,
+			"link"        => Yii::app()->getBaseUrl(true) . "/aenderungsantrag/anzeige/?id=" . $ant->id,
 			"dateCreated" => ZendHelper::date_iso2timestamp($ant->datum_einreichung),
-			"content" => "<h2>Antrag</h2>" . HtmlBBcodeUtils::bbcode2html($ant->aenderung_text) . "<br>\n<br>\n<br>\n<h2>Begründung</h2>" . HtmlBBcodeUtils::bbcode2html($ant->aenderung_begruendung),
+			"content"     => "<h2>Antrag</h2>" . HtmlBBcodeUtils::bbcode2html($ant->aenderung_text) . "<br>\n<br>\n<br>\n<h2>Begründung</h2>" . HtmlBBcodeUtils::bbcode2html($ant->aenderung_begruendung),
 		);
 		return $data;
 	}
 
-	private function getFeedAntragKommentarData($veranstaltung_id = 0) {
-		$veranstaltung_id = IntVal($veranstaltung_id);
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @return array
+	 */
+	private function getFeedAntragKommentarData(&$veranstaltung)
+	{
+		$veranstaltung_id = IntVal($veranstaltung->id);
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 
 		$antraege = AntragKommentar::holeNeueste($veranstaltung_id, 20);
 
 		$data = array();
 		foreach ($antraege as $ant) $data[ZendHelper::date_iso2timestamp($ant->datum) . "_kommentar_" . $ant->id] = array(
-			"title" => "Neuer Kommentar zu: " . $ant->antrag->revision_name . " - " . $ant->antrag->name,
-			"link" => Yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $ant->antrag->id . "&kommentar=" . $ant->id . "#komm" . $ant->id,
+			"title"       => "Neuer Kommentar zu: " . $ant->antrag->revision_name . " - " . $ant->antrag->name,
+			"link"        => Yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $ant->antrag->id . "&kommentar=" . $ant->id . "#komm" . $ant->id,
 			"dateCreated" => ZendHelper::date_iso2timestamp($ant->datum),
-			"content" => HtmlBBcodeUtils::bbcode2html($ant->text),
+			"content"     => HtmlBBcodeUtils::bbcode2html($ant->text),
 		);
 		return $data;
 	}
 
+	/**
+	 * @param int $veranstaltung_id
+	 */
 	public function actionFeedAntraege($veranstaltung_id = 0)
 	{
+		/** @var Veranstaltung $veranstaltung */
+		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
-			"feed_title" => "Anträge",
-			"data" => $this->getFeedAntraegeData($veranstaltung_id),
+			"feed_title"       => "Anträge",
+			"data"             => $this->getFeedAntraegeData($veranstaltung),
+			"sprache"          => $veranstaltung->getSprache(),
 		));
 	}
 
-	public function actionFeedAenderungsantraege($veranstaltung_id = 0) {
+	/**
+	 * @param int $veranstaltung_id
+	 */
+	public function actionFeedAenderungsantraege($veranstaltung_id = 0)
+	{
+		/** @var Veranstaltung $veranstaltung */
+		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
-			"feed_title" => "Änderungsanträge",
-			"data" => $this->getFeedAenderungsantraegeData($veranstaltung_id),
+			"feed_title"       => "Änderungsanträge",
+			"data"             => $this->getFeedAenderungsantraegeData($veranstaltung),
+			"sprache"          => $veranstaltung->getSprache(),
 		));
 	}
 
-	public function actionFeedKommentare($veranstaltung_id = 0) {
+	/**
+	 * @param int $veranstaltung_id
+	 */
+	public function actionFeedKommentare($veranstaltung_id = 0)
+	{
+		/** @var Veranstaltung $veranstaltung */
+		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
-			"feed_title" => "Kommentare",
-			"data" => $this->getFeedAntragKommentarData($veranstaltung_id),
+			"feed_title"       => "Kommentare",
+			"data"             => $this->getFeedAntragKommentarData($veranstaltung),
+			"sprache"          => $veranstaltung->getSprache(),
 		));
 	}
 
 
-	public function actionFeedAlles($veranstaltung_id = 0) {
-		$data1 = $this->getFeedAntraegeData($veranstaltung_id);
-		$data2 = $this->getFeedAenderungsantraegeData($veranstaltung_id);
-		$data3 = $this->getFeedAntragKommentarData($veranstaltung_id);
+	/**
+	 * @param int $veranstaltung_id
+	 */
+	public function actionFeedAlles($veranstaltung_id = 0)
+	{
+		/** @var Veranstaltung $veranstaltung */
+		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+
+		$data1 = $this->getFeedAntraegeData($veranstaltung);
+		$data2 = $this->getFeedAenderungsantraegeData($veranstaltung);
+		$data3 = $this->getFeedAntragKommentarData($veranstaltung);
 
 		$data = array_merge($data1, $data2, $data3);
 		krsort($data);
 
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
-			"feed_title" => "Anträge, Änderungsanträge und Kommentare",
-			"data" => $data,
+			"feed_title"       => "Anträge, Änderungsanträge und Kommentare",
+			"data"             => $data,
+			"sprache"          => $veranstaltung->getSprache(),
 		));
 
 	}
 
 
+	/**
+	 * @param int $veranstaltung_id
+	 */
 	public function actionVeranstaltung($veranstaltung_id = 0)
 	{
 		$veranstaltung_id = IntVal($veranstaltung_id);
@@ -203,7 +241,7 @@ class SiteController extends Controller
 			$oCriteria->addCondition("`antrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
 			$oCriteria->order = '`datum_einreichung` DESC';
 			$dataProvider     = new CActiveDataProvider('AntragUnterstuetzer', array(
-				'criteria'      => $oCriteria,
+				'criteria' => $oCriteria,
 			));
 			$meine_antraege   = $dataProvider->data;
 
@@ -217,12 +255,12 @@ class SiteController extends Controller
 			$oCriteria->addCondition("`aenderungsantrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
 			$oCriteria->order         = '`aenderungsantrag`.`datum_einreichung` DESC';
 			$dataProvider             = new CActiveDataProvider('AenderungsantragUnterstuetzer', array(
-				'criteria'      => $oCriteria,
+				'criteria' => $oCriteria,
 			));
 			$meine_aenderungsantraege = $dataProvider->data;
 		}
 
-		/** @var Texte $texto  */
+		/** @var Texte $texto */
 		$texto           = Texte::model()->findByAttributes(array("veranstaltung_id" => $veranstaltung->id, "text_id" => "startseite"));
 		$einleitungstext = ($texto ? $texto->text : null);
 
@@ -236,11 +274,14 @@ class SiteController extends Controller
 			"neueste_aenderungsantraege" => $neueste_aenderungsantraege,
 			"meine_antraege"             => $meine_antraege,
 			"meine_aenderungsantraege"   => $meine_aenderungsantraege,
-			"sprache"                    => new SpracheProgramm(),
+			"sprache"                    => $veranstaltung->getSprache(),
 		));
 	}
 
 
+	/**
+	 *
+	 */
 	public function actionMeineAntraege()
 	{
 		$this->render('meineAntraege');
@@ -259,6 +300,9 @@ class SiteController extends Controller
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function actionLogin()
 	{
 		$model = new OAuthLoginForm();
@@ -328,6 +372,9 @@ class SiteController extends Controller
 	}
 
 
+	/**
+	 *
+	 */
 	public function actionLogout()
 	{
 		Yii::app()->user->logout();

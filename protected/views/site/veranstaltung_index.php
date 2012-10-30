@@ -1,6 +1,7 @@
-<?php $this->pageTitle = Yii::app()->name;
+<?php
 
 /**
+ * @var SiteController $this
  * @var Veranstaltung $veranstaltung
  * @var string|null $einleitungstext
  * @var array $antraege
@@ -13,12 +14,15 @@
  * @var Sprache $sprache
  */
 
+$this->pageTitle = Yii::app()->name;
+
 $this->breadcrumbs = array(
 	CHtml::encode($veranstaltung->name_kurz),
 );
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) {
-	$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>Neue Anträge</li>";
+	$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Antrag stellen") . "Neue Anträge</li>";
 	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
 	else foreach ($neueste_antraege as $ant) {
 		$html .= "<li";
@@ -45,7 +49,7 @@ if ($veranstaltung->darfEroeffnenAntrag()) {
 }
 
 
-$html = "<div class='well'><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>Neue Änderungsanträge</li>";
+$html = "<div class='well'><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
 if (count($neueste_aenderungsantraege) == 0) $html .= "<li><i>keine</i></li>";
 else foreach ($neueste_aenderungsantraege as $ant) {
 	$html .= "<li class='aeantrag'>" . CHtml::link("<strong>" . CHtml::encode($ant["revision_name"]) . "</strong> zu " . CHtml::encode($ant->antrag->revision_name), "/aenderungsantrag/anzeige/?id=" . $ant["id"]) . "</li>\n";
@@ -65,8 +69,8 @@ $html .= "</ul></div>";
 $this->menus_html[] = $html;
 
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Feeds</li>";
-if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) $html .= "<li><a href='/site/feedAntraege/?id=" . $veranstaltung->id . "'>Anträge</a></li>";
-$html .= "<li><a href='/site/feedAenderungsantraege/?id=" . $veranstaltung->id . "'>Änderungsanträge</a></li>";
+if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) $html .= "<li><a href='/site/feedAntraege/?id=" . $veranstaltung->id . "'>" . $sprache->get("Anträge") . "</a></li>";
+$html .= "<li><a href='/site/feedAenderungsantraege/?id=" . $veranstaltung->id . "'>" . $sprache->get("Änderungsanträge") . "</a></li>";
 $html .= "<li><a href='/site/feedKommentare/?id=" . $veranstaltung->id . "'>Kommentare</a></li>";
 $html .= "<li><a href='/site/feedAlles/?id=" . $veranstaltung->id . "'><b>Alles</b></a></li>";
 $html .= "</ul></div>";
@@ -78,7 +82,12 @@ $this->menus_html[] = $html;
 	<?php
 	echo CHtml::encode($veranstaltung->name);
 	if ($veranstaltung->datum_von != "") {
-		echo ", " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von) . " - " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von);
+		if ($veranstaltung->datum_von != $veranstaltung->datum_bis) {
+			echo ", " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von) . " - " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_bis);
+		} else {
+			echo ", " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von);
+		}
+
 	}
 	?>
 </h1>
@@ -147,7 +156,7 @@ foreach ($antraege as $name=> $antrs) {
 	<?php
 	if (count($meine_antraege) > 0) {
 		?>
-        <h3>Meine Anträge</h3>
+        <h3><?=$sprache->get("Meine Anträge")?></h3>
         <div class="content">
             <ul>
 				<?php foreach ($meine_antraege as $antragu) {
@@ -165,7 +174,7 @@ foreach ($antraege as $name=> $antrs) {
 
 	if (count($meine_aenderungsantraege) > 0) {
 		?>
-        <h3>Meine Änderungsanträge</h3>
+        <h3><?=$sprache->get("Meine Änderungsanträge")?></h3>
         <div class="content">
             <ul>
 				<?php foreach ($meine_aenderungsantraege as $antragu) {

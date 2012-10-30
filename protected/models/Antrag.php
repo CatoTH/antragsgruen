@@ -9,6 +9,8 @@ class Antrag extends BaseAntrag
     public static $TYP_RESOLUTION = 2;
     public static $TYP_INITIATIVANTRAG = 3;
     public static $TYP_GO = 4;
+	public static $TYP_FINANZANTRAG = 5;
+	public static $TYP_WAHLPROGRAMM = 6;
     public static $TYPEN = array(
         0 => "Antrag",
         1 => "Satzung",
@@ -16,6 +18,7 @@ class Antrag extends BaseAntrag
         3 => "Initiativantrag",
         4 => "GO-Antrag",
 		5 => "Finanzantrag",
+		6 => "Wahlprogramm",
     );
 
 	public static $TYP_PREFIX = array(
@@ -25,6 +28,7 @@ class Antrag extends BaseAntrag
 		3 => "I",
 		4 => "GO",
 		5 => "F",
+		6 => "Kapitel ",
 	);
 
 	private $absaetze = null;

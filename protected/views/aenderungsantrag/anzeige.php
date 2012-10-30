@@ -16,6 +16,7 @@
  * @var Person $kommentar_person
  * @var bool $support_form
  * @var string $support_status
+ * @var Sprache $sprache
  */
 
 $this->breadcrumbs = array(
@@ -23,6 +24,7 @@ $this->breadcrumbs = array(
 	"Antrag"                                                            => "/antrag/anzeige/?id=" . $aenderungsantrag->antrag->id,
 	'Änderungsantrag'
 );
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 
 $html = '<ul class="funktionen">';
@@ -185,6 +187,7 @@ kasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfhkasjdh sdfsd 
 					foreach ($hiddens as $name=> $value) {
 						echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
 					}
+					echo '<input type="hidden" name="absatz_nr" value="' . $abs->absatz_nr . '">';
 
 					echo $form->textFieldRow($kommentar_person, 'name', array("id" => "Person_name_" . $i, 'labelOptions'=> array("for" => "Person_name_" . $i, 'label'=> 'Name')));
 					echo $form->textFieldRow($kommentar_person, 'email', array("id" => "Person_email_" . $i, 'labelOptions'=> array("for" => "Person_email_" . $i, 'label'=> 'E-Mail')));

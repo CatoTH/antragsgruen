@@ -1,6 +1,7 @@
 <?php
 /**
  * @var Aenderungsantrag $model
+ * @var Sprache $sprache
  */
 
 // Muss am Anfang stehen, ansonsten zerhaut's die Zeilenumbrüche; irgendwas mit dem internen Encoding
@@ -60,8 +61,11 @@ $pdf->SetFont('dejavusans', '', 10);
 // add a page
 $pdf->AddPage();
 
-$pdf->setJPEGQuality(100);
-$pdf->Image("/var/www/parteitool/html/images/MCS_Gruene_Logo_weiss_RZ.jpg", 22, 32, 47, 26);
+$logo = Yii::app()->params['pdf_logo'];
+if (file_exists($logo)) {
+	$pdf->setJPEGQuality(100);
+	$pdf->Image($logo, 22, 32, 47, 26);
+}
 
 $pdf->SetXY(155, 37, true);
 

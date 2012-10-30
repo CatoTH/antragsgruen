@@ -33,6 +33,10 @@ class Veranstaltung extends BaseVeranstaltung
 		return $this->policy_antraege_obj;
 	}
 
+	/**
+	 * @param int $policy
+	 * @return bool
+	 */
 	private function darfEroeffnen_intern($policy)
 	{
 		switch ($policy) {
@@ -48,36 +52,48 @@ class Veranstaltung extends BaseVeranstaltung
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function darfEroeffnenAntrag()
 	{
 		if ($this->antragsschluss != "" && date("YmdHis") > str_replace(array(" ", ":", "-"), array("", "", ""), $this->antragsschluss)) return false;
 		return $this->getPolicyAntraege()->checkCurUserHeuristically();
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function darfEroeffnenAenderungsAntrag()
 	{
 		if ($this->antragsschluss != "" && date("YmdHis") > str_replace(array(" ", ":", "-"), array("", "", ""), $this->antragsschluss)) return false;
 		return $this->darfEroeffnen_intern($this->policy_aenderungsantraege);
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function darfEroeffnenKommentar()
 	{
 		return $this->darfEroeffnen_intern($this->policy_kommentare);
 	}
 
 
+	/**
+	 * @return Sprache
+	 */
 	public function getSprache()
 	{
 		switch ($this->typ) {
 			case Veranstaltung::$TYP_PROGRAMM:
 				return new SpracheProgramm();
 			default:
-				return new Sprache();
+				return new SpracheAntraege();
 		}
 	}
 
 	/**
-	 * @var $clasName string
+	 * @var string $className
 	 * @return GxActiveRecord
 	 */
 	public static function model($className = __CLASS__)

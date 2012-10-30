@@ -2,6 +2,7 @@
 /**
  * @var AntragController $this
  * @var Antrag $antrag
+ * @var Sprache $sprache
  */
 
 $this->breadcrumbs = array(
@@ -9,7 +10,9 @@ $this->breadcrumbs = array(
 	"Antrag" => "/antrag/anzeige/?id=" . $antrag->id,
 	'Neuer Änderungsantrag',
 	'Bestätigen'
-);?>
+);
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+?>
 
 <h1>Änderungsantrag eingereicht</h1>
 <div class="form well">

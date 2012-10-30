@@ -65,8 +65,9 @@
 	<!-- mainmenu -->
 	<?php if (isset($this->breadcrumbs)): ?>
 		<?php
+		$top_name = (isset($this->breadcrumbs_topname) && $this->breadcrumbs_topname !== null ? $this->breadcrumbs_topname : "Anträge");
 		$this->widget('bootstrap.widgets.TbBreadcrumbs', array(
-			'homeLink' => CHtml::link("Anträge", "/"),
+			'homeLink' => CHtml::link($top_name, "/"),
 			'links'=> $this->breadcrumbs,
 		)); ?><!-- breadcrumbs -->
 	<?php endif?>

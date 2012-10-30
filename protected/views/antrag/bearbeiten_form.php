@@ -18,7 +18,10 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 $this->breadcrumbs = array(
 	CHtml::encode($model->veranstaltung0->name_kurz) => "/",
 	'Neuer Antrag',
-);?>
+);
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+
+?>
 <h1 class="well"><?php echo $sprache->get("Antrag stellen")?></h1>
 
 <div class="form well well_first">

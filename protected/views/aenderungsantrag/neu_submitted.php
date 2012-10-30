@@ -1,14 +1,17 @@
 <?php
 /**
- * @var AenderungsantraegeController $this
+ * @var AenderungsantragController $this
  * @var Antrag $antrag
+ * @var Sprache $sprache
  */
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
 	'Neuer Antrag',
 	'Bestätigen'
-);?>
+);
+$this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+?>
 
 <h1>Antrag eingereicht</h1>
 <div class="form well">
