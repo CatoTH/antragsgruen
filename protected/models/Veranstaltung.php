@@ -58,7 +58,7 @@ class Veranstaltung extends BaseVeranstaltung
 	public function darfEroeffnenAntrag()
 	{
 		if ($this->antragsschluss != "" && date("YmdHis") > str_replace(array(" ", ":", "-"), array("", "", ""), $this->antragsschluss)) return false;
-		return $this->getPolicyAntraege()->checkCurUserHeuristically();
+		return $this->darfEroeffnen_intern($this->policy_antraege);
 	}
 
 	/**
