@@ -8,7 +8,7 @@ class SpracheProgramm extends Sprache
 		"breadcrumb_top"                     => "Wahlprogramm",
 		"Meine Anträge"                      => "Meine Kapitel",
 		"Meine Änderungsanträge"             => "Meine Änderungsvorschläge",
-		"Neue Änderungsanträge"              => "Neue Änderungsvorschläge",
+		"Neue Änderungsanträge"              => "Neue Vorschläge",
 		"Änderungsanträge"                   => "Änderungsvorschläge",
 		"Änderungsantrag stellen"            => "Änderungsvorschlag machen",
 		"Antrag bearbeiten"                  => "Kapitel bearbeiten",

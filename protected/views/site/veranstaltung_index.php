@@ -22,7 +22,7 @@ $this->breadcrumbs = array(
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) {
-	$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Antrag stellen") . "Neue Anträge</li>";
+	$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Neue Anträge") . "</li>";
 	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
 	else foreach ($neueste_antraege as $ant) {
 		$html .= "<li";
