@@ -17,14 +17,14 @@ abstract class IPolicyAntraege
 	 * @abstract
 	 * @return string
 	 */
-	abstract static public function getPolicyID();
+	static public function getPolicyID() { return ""; }
 
 	/**
 	 * @static
 	 * @abstract
 	 * @return string
 	 */
-	abstract static public function getPolicyName();
+	static public function getPolicyName() { return ""; }
 
 
 	/**

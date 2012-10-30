@@ -26,7 +26,7 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 	 * @return bool
 	 */
 	public function checkCurUserHeuristically() {
-		return true;
+		return false;
 	}
 
 	/**
