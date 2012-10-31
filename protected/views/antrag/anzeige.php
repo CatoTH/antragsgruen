@@ -175,7 +175,7 @@ foreach ($absae as $i => $abs) {
 	/** @var AntragKommentar $komm */
 	foreach ($abs->kommentare as $komm) {
 		?>
-	<div class="kommentarform well">
+	<div class="kommentarform well" id="komm_<?php echo $komm->id; ?>">
 		<div class="datum"><?php echo HtmlBBcodeUtils::formatMysqlDateTime($komm->datum)?></div>
 		<h3>Kommentar von <?php echo CHtml::encode($komm->verfasser->name); ?></h3>
 		<?php
