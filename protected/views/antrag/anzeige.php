@@ -322,11 +322,13 @@ foreach ($absae as $i => $abs) {
 						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'success', 'label' => 'Zustimmen', 'icon' => 'icon-thumbs-up', 'htmlOptions' => array('name' => AntiXSS::createToken('mag'))));
 						?>
 					</div>
+						<!--
 					<div style="display: inline-block; width: 49%; text-align: center;">
 						<?php
 						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'danger', 'label' => 'Ablehnen', 'icon' => 'icon-thumbs-down', 'htmlOptions' => array('name' => AntiXSS::createToken('magnicht'))));
 						?>
 					</div>
+					-->
 					<?php
 		}
 		echo "</div>";
