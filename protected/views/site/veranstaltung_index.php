@@ -89,7 +89,7 @@ $this->menus_html[] = $html;
 <h1 class="well">
 	<?php
 	echo CHtml::encode($veranstaltung->name);
-	if ($veranstaltung->datum_von != "") {
+	if ($veranstaltung->datum_von != "" && $veranstaltung->datum_von != "0000-00-00") {
 		if ($veranstaltung->datum_von != $veranstaltung->datum_bis) {
 			echo ", " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von) . " - " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_bis);
 		} else {
