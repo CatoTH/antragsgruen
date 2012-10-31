@@ -156,18 +156,17 @@ foreach ($absae as $i=>$abs) {
 
 }
 
-if (trim($model->begruendung) != "") $html = '
+if (trim($model->begruendung) != "") {
+	$html = '
 	</div>
 	<h3>Begründung</h3>
 	<div class="textholder consolidated">
 		' . HtmlBBcodeUtils::bbcode2html($model->begruendung) . '
 	</div>
 </div>';
-
-
-$pdf->SetFont("helvetica", "", 10);
-$pdf->writeHTML($html, true, false, true, false, '');
-
+	$pdf->SetFont("helvetica", "", 10);
+	$pdf->writeHTML($html, true, false, true, false, '');
+}
 
 //Close and output PDF document
 $pdf->Output('Antrag_' . $model->revision_name . '.pdf', 'I');
