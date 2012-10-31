@@ -248,6 +248,10 @@ class HtmlBBcodeUtils
 		$aktuelle_zeile            = "";
 		$aktuelle_zeile_count      = 0;
 
+		$cache_key = md5("text2zeilen" . $max_len . $text);
+		$cached = Cache::getObject($cache_key);
+		if (is_array($cached)) return $cached;
+
 		for ($i = 0; $i < mb_strlen($text); $i++) {
 			$curr_char = mb_substr($text, $i, 1);
 			if ($in_html_modus) {
@@ -293,6 +297,7 @@ class HtmlBBcodeUtils
 		}
 		if (mb_strlen(trim($aktuelle_zeile)) > 0) $zeilen[] = $aktuelle_zeile;
 
+		Cache::setObject($cache_key, $zeilen);
 
 		return $zeilen;
 	}

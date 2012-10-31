@@ -37,8 +37,6 @@ class HTML_BBCodeParser_Filter_Antraege extends HTML_BBCodeParser_Filter
 
 	function _preparse()
 	{
-		$options = PEAR::getStaticProperty('HTML_BBCodeParser', '_options');
-
 		$options = array(
 			"quotestyle" => "double",
 			"quotewhat"  => "all",

@@ -293,6 +293,19 @@ CREATE  TABLE IF NOT EXISTS `parteitool`.`texte` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `parteitool`.`cache`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `parteitool`.`cache` (
+  `id` CHAR(32) NOT NULL ,
+  `datum` TIMESTAMP NULL ,
+  `daten` LONGBLOB NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
