@@ -28,8 +28,14 @@ class HtmlBBcodeUtils
 		$text = preg_replace("/\[(\/?)i\]/siu", "[\\1I]", $text);
 		$text = preg_replace("/\[(\/?)u\]/siu", "[\\1U]", $text);
 		$text = preg_replace("/\[(\/?)url([^\]]*)\]/siu", "[\\1URL\\2]", $text);
-		$text = preg_replace("/\\n +\\n/siu", "\n\n", $text);
-		return $text;
+		
+		$text = str_replace(chr(194).chr(160), " ", $text);
+		
+		$x = explode("\n", $text);
+		foreach ($x as $i=>$zeile) {
+			$x[$i] = trim($zeile);
+		}
+		return implode("\n", $x);
 	}
 
 	/**
