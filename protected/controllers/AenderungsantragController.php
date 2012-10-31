@@ -291,7 +291,7 @@ class AenderungsantragController extends Controller
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
 
-		if (!$antrag->veranstaltung0->darfEroeffnenAntrag()) {
+		if (!$antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) {
 			Yii::app()->user->setFlash("error", "Es kann kein Antrag angelegt werden.");
 			$this->redirect("/antrag/anzeige/?id=" . $antrag->id);
 		}
