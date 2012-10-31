@@ -2,6 +2,8 @@
 
 setlocale(LC_ALL, 'de_DE');
 
+if (ini_get("max_execution_time") < 180) ini_set("max_execution_time", 180);
+
 ini_set('include_path', ini_get('include_path') . ":" . dirname(__FILE__) . "/../libraries/");
 require_once(dirname(__FILE__) . "/../vendor/autoload.php");
 
