@@ -10,6 +10,10 @@ class AntragController extends Controller
 		$id = IntVal($_REQUEST["id"]);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect("/");
+		}
 
 		$this->layout = '//layouts/column2';
 

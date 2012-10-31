@@ -11,6 +11,12 @@ class AenderungsantragController extends Controller
 		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($id);
 
+		if (is_null($aenderungsantrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
+			$this->redirect("/");
+		}
+
+
 		$this->layout = '//layouts/column2';
 
 		if (!$aenderungsantrag) {

@@ -26,6 +26,11 @@ class VeranstaltungenController extends AdminControllerBase {
 		/** @var Veranstaltung $model  */
 		$model = $this->loadModel($id, 'Veranstaltung');
 
+		if (is_null($model)) {
+			Yii::app()->user->setFlash("error", "Die angegebene Veranstaltungen wurde nicht gefunden.");
+			$this->redirect("/admin/veranstaltungen/");
+		}
+
 		$this->performAjaxValidation($model, 'veranstaltung-form');
 
 		if (isset($_POST['Veranstaltung'])) {

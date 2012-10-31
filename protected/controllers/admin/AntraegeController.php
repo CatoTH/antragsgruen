@@ -37,6 +37,11 @@ class AntraegeController extends AdminControllerBase
 		/** @var $model Antrag */
 		$model = Antrag::model()->with("antragUnterstuetzer", "antragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
 
+		if (is_null($model)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect("/admin/antraege/");
+		}
+
 		$this->performAjaxValidation($model, 'antrag-form');
 
 		$messages = array();

@@ -32,6 +32,11 @@ class AenderungsantraegeController extends AdminControllerBase {
         /** @var $model Aenderungsantrag */
         $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
 
+		if (is_null($model)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
+			$this->redirect("/admin/aenderungsantraege/");
+		}
+
         $this->performAjaxValidation($model, 'aenderungsantrag-form');
 
         $messages = array();

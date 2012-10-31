@@ -30,6 +30,10 @@ class TexteController extends GxController {
 	public function actionUpdate($id) {
 		$model = $this->loadModel($id, 'Texte');
 
+		if (is_null($model)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Text wurde nicht gefunden.");
+			$this->redirect("/admin/texte/");
+		}
 
 		if (isset($_POST['Texte'])) {
 			$model->setAttributes($_POST['Texte']);

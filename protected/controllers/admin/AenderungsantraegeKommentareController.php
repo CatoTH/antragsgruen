@@ -25,6 +25,11 @@ class AenderungsantraegeKommentareController extends AdminControllerBase {
 		/** @var AenderungsantragKommentar $model  */
         $model = $this->loadModel($id, 'AenderungsantragKommentar');
 
+		if (is_null($model)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Kommentar wurde nicht gefunden.");
+			$this->redirect("/admin/aenderungsantraegeKommentare/");
+		}
+
         $this->performAjaxValidation($model, 'aenderungsantrag-kommentar-form');
 
         if (isset($_POST['AenderungsantragKommentar'])) {

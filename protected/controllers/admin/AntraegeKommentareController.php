@@ -25,6 +25,11 @@ class AntraegeKommentareController extends AdminControllerBase {
 		/** @var AntragKommentar $model  */
         $model = $this->loadModel($id, 'AntragKommentar');
 
+		if (is_null($model)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Kommentar wurde nicht gefunden.");
+			$this->redirect("/admin/antraegeKommentare/");
+		}
+
         $this->performAjaxValidation($model, 'antrag-kommentar-form');
 
         if (isset($_POST['AntragKommentar'])) {

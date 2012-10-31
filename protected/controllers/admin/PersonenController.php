@@ -30,6 +30,11 @@ class PersonenController extends AdminControllerBase {
 		/** @var Person $model */
 		$model = $this->loadModel($id, 'Person');
 
+		if (is_null($model)) {
+			Yii::app()->user->setFlash("error", "Die angegebene Person wurde nicht gefunden.");
+			$this->redirect("/admin/personen/");
+		}
+
         $this->performAjaxValidation($model, 'person-form');
 
         if (isset($_POST['Person'])) {
