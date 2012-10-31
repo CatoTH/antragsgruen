@@ -11,6 +11,8 @@ class AntraegeController extends AdminControllerBase
 
 		if (isset($_POST['Antrag'])) {
 			$model->setAttributes($_POST['Antrag']);
+			$model->text = HtmlBBcodeUtils::bbcode_normalize($model->text);
+			$model->begruendung = HtmlBBcodeUtils::bbcode_normalize($model->begruendung);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Antrag"], "datum_einreichung");
 			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Antrag"], "datum_beschluss");
@@ -56,6 +58,8 @@ class AntraegeController extends AdminControllerBase
 
 		if (isset($_POST['Antrag'])) {
 			$model->setAttributes($_POST['Antrag']);
+			$model->text = HtmlBBcodeUtils::bbcode_normalize($model->text);
+			$model->begruendung = HtmlBBcodeUtils::bbcode_normalize($model->begruendung);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Antrag"], "datum_einreichung");
 			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Antrag"], "datum_beschluss");
