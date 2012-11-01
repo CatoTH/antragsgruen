@@ -1,12 +1,12 @@
 <?php
 /**
  * @var AenderungsantragController $this
- * @var Antrag $antrag
+ * @var Aenderungsantrag $aenderungsantrag
  * @var Sprache $sprache
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
+	CHtml::encode($aenderungsantrag->antrag->veranstaltung0->name_kurz) => "/",
 	$sprache->get("Antrag"),
 	$sprache->get("Neuer Änderungsantrag")
 );
