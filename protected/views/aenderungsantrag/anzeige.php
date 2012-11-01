@@ -31,7 +31,7 @@ $html = '<ul class="funktionen">';
 $html .= '<li class="unterstuetzen"><a href="#">Änderungsantrag unterstützen</a></li>';
 $html .= '<li class="download"><a href="#">PDF-Version herunterladen</a></li>';
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
-if ($edit_link) $html .= '<li class="edit">' . CHtml::link("Änderungsantrag bearbeiten", "/aenderungsantrag/bearbeiten/?id=" . $antrag->id) . '</li>';
+if ($edit_link) $html .= '<li class="edit">' . CHtml::link("Änderungsantrag bearbeiten", "/aenderungsantrag/bearbeiten/?id=" . $aenderungsantrag->id) . '</li>';
 $html .= '<li class="zurueck"><a href="/antrag/anzeige/?id=' . $aenderungsantrag->antrag_id . '">Zurück zum Antrag</a></li>
 </ul>';
 
