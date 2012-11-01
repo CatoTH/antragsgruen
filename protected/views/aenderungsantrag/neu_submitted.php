@@ -7,15 +7,15 @@
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
-	'Neuer Antrag',
-	'Bestätigen'
+	$sprache->get("Antrag"),
+	$sprache->get("Neuer Änderungsantrag")
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 ?>
 
 <h1>Antrag eingereicht</h1>
 <div class="form well">
-    <p>Der Antrag wurde eingereicht. Eventuell prüfen wir die Anträge vorab noch, um zu verhindern, dass Spam-Bots hier Inhalte einstellen. Bei Problemen melde dich einfach per Mail
+    <p>Der <?php echo $sprache->get("Änderungsantrag"); ?> wurde eingereicht. Eventuell prüfen wir die <?php echo $sprache->get("Änderungsantrag"); ?> vorab noch, um zu verhindern, dass Spam-Bots hier Inhalte einstellen. Bei Problemen melde dich einfach per Mail
         bei der LGS.</p>
     <p><?php
 

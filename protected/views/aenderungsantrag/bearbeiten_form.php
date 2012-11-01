@@ -39,7 +39,7 @@ foreach ($hiddens as $name=>$value) {
 ?>
 <div class="antrags_text_holder ae_absatzwahl_modus well well_first" style="overflow: auto;">
 	<?php
-	Yii::app()->user->setFlash("info", str_replace("###", $sprache->get("Änderungsantrag"), "Bitte wähle nun die Absätze aus, die geändert werden sollen. Du kannst dann die beantragte neue Fassung sowie die Begründung für den ### angeben."));
+	Yii::app()->user->setFlash("info", str_replace(array("#1#", "#2#"), array($sprache->get("beantragte"), $sprache->get("Änderungsantrag")), "Bitte wähle nun die Absätze aus, die geändert werden sollen. Du kannst dann die #1# neue Fassung sowie die Begründung für den #2# angeben."));
 	$this->widget('bootstrap.widgets.TbAlert');
 
 	if ($js_protection) { ?>
@@ -58,7 +58,8 @@ foreach ($hiddens as $name=>$value) {
 		<?php
 
 		$absae = $antrag->getParagraphs();
-		$text_pre = ($mode == "bearbeiten" ? $aenderungsantrag->getDiffParagraphs() : null);
+		$text_pre = $aenderungsantrag->getDiffParagraphs();
+
 		foreach ($absae as $i=> $abs) {
 			/** @var AntragAbsatz $abs */
 			echo "<div class='row-fluid row-absatz' id='absatz_" . $i . "'>";
@@ -80,7 +81,9 @@ foreach ($hiddens as $name=>$value) {
 			<h4>Neue Fassung</h4>
 			<textarea id='neu_text_$i' name='neu_text[$i]' style='width: 550px; height: 200px;'>";
 			$str_neu = ($text_pre && $text_pre[$i] != "" ? $text_pre[$i] : $abs->str_bbcode);
-			echo CHtml::encode($str_neu) . "</textarea></div>";
+			echo CHtml::encode($str_neu) . "</textarea><div style='text-align: center;'>";
+			$this->widget('bootstrap.widgets.TbButton', array('type' => 'success', 'icon' => 'chevron-right white', 'label' => 'Weiter', 'url' => '#begruendungs_holder'));
+			echo "</div></div>";
 
 			echo "</div>";
 		}
@@ -88,7 +91,7 @@ foreach ($hiddens as $name=>$value) {
 	</div>
 </div>
 
-<div class="well">
+<div class="well" id="begruendungs_holder">
 	<h3><label for="ae_begruendung"><?=$sprache->get("Begründung für den Änderungsantrag")?></label></h3>
 	<br>
 	<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php

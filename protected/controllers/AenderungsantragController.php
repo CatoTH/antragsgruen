@@ -251,7 +251,10 @@ class AenderungsantragController extends Controller
 			$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 			$aenderungsantrag->save();
 
-			$this->render("neu_submitted", array("aenderungsantrag" => $aenderungsantrag));
+			$this->render("neu_submitted", array(
+				"aenderungsantrag" => $aenderungsantrag,
+				"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			));
 
 		} else {
 
@@ -292,7 +295,7 @@ class AenderungsantragController extends Controller
 		$antrag = Antrag::model()->findByPk($antrag_id);
 
 		if (!$antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) {
-			Yii::app()->user->setFlash("error", "Es kann kein Antrag angelegt werden.");
+			Yii::app()->user->setFlash("error", "Es kann kein Antrag Änderungsantrag werden.");
 			$this->redirect("/antrag/anzeige/?id=" . $antrag->id);
 		}
 
@@ -339,14 +342,6 @@ class AenderungsantragController extends Controller
 				if ($aenderungsantrag->name_neu != $antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $aenderungsantrag->name_neu . "[/QUOTE]\n\n";
 				$diff_text .= DiffUtils::diff2text($diff);
 
-				/*
-				echo "<pre>";
-				echo CHtml::encode($diff_text);
-				echo "</pre>";
-				die();
-				*/
-
-
 				$aenderungsantrag->aenderung_text    = $diff_text;
 				$aenderungsantrag->datum_einreichung = new CDbExpression('NOW()');
 			} else {
@@ -382,7 +377,7 @@ class AenderungsantragController extends Controller
 			}
 
 			if (!$aenderungsantrag->save()) {
-				foreach ($aenderungsantrag->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht angelegt werden: " . $val2);
+				foreach ($aenderungsantrag->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Änderungsantrag konnte nicht angelegt werden: " . $val2);
 				if ($antragstellerin === null) $antragstellerin = new Person();
 				$this->render('bearbeiten_form', array(
 					"mode"             => "neu",
