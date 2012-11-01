@@ -253,9 +253,10 @@ class AenderungsantragController extends Controller
 			$aenderungsantrag->save();
 
 			if ($aenderungsantrag->antrag->veranstaltung0->admin_email != "") {
-				mail($aenderungsantrag->antrag->veranstaltung0->admin_email, "Neuer Änderungsantrag",
+				mb_send_mail($aenderungsantrag->antrag->veranstaltung0->admin_email, "Neuer Änderungsantrag",
 					"Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
-					"Link: " . yii::app()->getBaseUrl(true) . "/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id
+					"Link: " . yii::app()->getBaseUrl(true) . "/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id,
+					"From: " . Yii::app()->params['mail_from']
 				);
 			}
 
