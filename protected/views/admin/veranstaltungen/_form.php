@@ -104,7 +104,26 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<?php echo $form->dropDownList($model, 'policy_kommentare', Veranstaltung::$POLICIES); ?>
 	<?php echo $form->error($model, 'policy_kommentare'); ?>
 </div>
-
+<div>
+	<?php echo $form->labelEx($model, 'admin_email'); ?>
+	<?php echo $form->textField($model, 'admin_email', array('maxlength' => 150)); ?>
+	<?php echo $form->error($model, 'admin_email'); ?>
+</div>
+<div>
+	<?php echo $form->labelEx($model, 'freischaltung_antraege'); ?>
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_antraege]" value="0" <?php if ($model->freischaltung_antraege != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_antraege]" value="1" <?php if ($model->freischaltung_antraege == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+</div>
+<div>
+	<?php echo $form->labelEx($model, 'freischaltung_aenderungsantraege'); ?>
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_aenderungsantraege]" value="0" <?php if ($model->freischaltung_aenderungsantraege != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_aenderungsantraege]" value="1" <?php if ($model->freischaltung_aenderungsantraege == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+</div>
+<div>
+	<?php echo $form->labelEx($model, 'freischaltung_kommentare'); ?> <small>(noch nicht implementiert)</small>
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="0" <?php if ($model->freischaltung_kommentare != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="1" <?php if ($model->freischaltung_kommentare == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+</div>
 <div class="saveholder">
 	<?php
 	echo GxHtml::submitButton(Yii::t('app', 'Save'), array("class" => "btn btn-primary"));

@@ -248,8 +248,16 @@ class AenderungsantragController extends Controller
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
-			$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
+			$freischaltung = $aenderungsantrag->antrag->veranstaltung0->freischaltung_aenderungsantraege;
+			$aenderungsantrag->status = ($freischaltung ? Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT : Aenderungsantrag::$STATUS_EINGEREICHT_GEPRUEFT);
 			$aenderungsantrag->save();
+
+			if ($aenderungsantrag->antrag->veranstaltung0->admin_email != "") {
+				mail($aenderungsantrag->antrag->veranstaltung0->admin_email, "Neuer Änderungsantrag",
+					"Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
+					"Link: " . yii::app()->getBaseUrl(true) . "/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id
+				);
+			}
 
 			$this->render("neu_submitted", array(
 				"aenderungsantrag" => $aenderungsantrag,

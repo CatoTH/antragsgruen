@@ -20,6 +20,10 @@ CREATE  TABLE IF NOT EXISTS `parteitool`.`veranstaltung` (
   `policy_aenderungsantraege` VARCHAR(20) NULL ,
   `policy_kommentare` VARCHAR(20) NULL ,
   `typ` TINYINT NULL ,
+  `admin_email` VARCHAR(150) NULL ,
+  `freischaltung_antraege` TINYINT NULL DEFAULT 1 ,
+  `freischaltung_aenderungsantraege` TINYINT NULL DEFAULT 1 ,
+  `freischaltung_kommentare` TINYINT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8

@@ -310,10 +310,21 @@ class AntragController extends Controller
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
-			$antrag->status = IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
+			$freischaltung = $antrag->veranstaltung0->freischaltung_aenderungsantraege;
+			$antrag->status = ($freischaltung ? Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT : Antrag::$STATUS_EINGEREICHT_GEPRUEFT);
 			$antrag->save();
 
-			$this->render("neu_submitted", array("antrag" => $antrag));
+			if ($antrag->veranstaltung0->admin_email != "") {
+				mail($antrag->veranstaltung0->admin_email, "Neuer Antrag",
+					"Es wurde ein neuer Antrag \"" . $antrag->name . "\" eingereicht.\n" .
+						"Link: " . yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $antrag->id
+				);
+			}
+
+			$this->render("neu_submitted", array(
+				"antrag" => $antrag,
+				"sprache" => $antrag->veranstaltung0->getSprache(),
+			));
 
 		} else {
 
