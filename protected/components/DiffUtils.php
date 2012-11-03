@@ -49,7 +49,7 @@ class DiffUtils
 					if (mb_strpos($final, "#ZEILE#") === 0) {
 						$diff_text2 .= "Nach Zeile " . $line . " einfügen: [QUOTE]" . nl2br(CHtml::encode($final, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]\n\n";
 					} else {
-						$diff_text2 .= print_r($edit, true);
+						$diff_text2 .= "Folgenden Absatz einfügen: [QUOTE]" . nl2br(CHtml::encode($final, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]\n\n";
 					}
 				}
 			}
@@ -63,7 +63,7 @@ class DiffUtils
 						$diff_text2 .= ": [QUOTE]" . nl2br(CHtml::encode($orig, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]\n\n";
 					}
 				} else {
-					$diff_text2 .= print_r($edit, true);
+					$diff_text2 .= "Folgenden Absatz löschen: [QUOTE]" . nl2br(CHtml::encode($orig, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]\n\n";
 				}
 			}
 			if (get_class($edit) == "Horde_Text_Diff_Op_Change") {

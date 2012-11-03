@@ -28,7 +28,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 
 $html = '<ul class="funktionen">';
-$html .= '<li class="unterstuetzen"><a href="#">Änderungsantrag unterstützen</a></li>';
+//$html .= '<li class="unterstuetzen"><a href="#">Änderungsantrag unterstützen</a></li>';
 $html .= '<li class="download"><a href="#">PDF-Version herunterladen</a></li>';
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
 if ($edit_link) $html .= '<li class="edit">' . CHtml::link("Änderungsantrag bearbeiten", "/aenderungsantrag/bearbeiten/?id=" . $aenderungsantrag->id) . '</li>';
