@@ -24,6 +24,7 @@ Zeit: 			'🕔'
 Hinzufügen: 	'\2795' 
 Löschen: 		"✕"
 Zurück.			"←"
+RSS:            '\e73a'
 
 
 ***************************************************************/
@@ -821,6 +822,17 @@ form {
 .span3 .neue-kommentare .komm strong {
 	font-weight: normal;
 	font-style: italic;
+}
+
+.span3 .neue-kommentare .feed:before {
+	content: '\e73a';
+	color: #A2BC04;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
+	margin-left: -20px;
 }
 
 .span3 .well .nav-list > li a,

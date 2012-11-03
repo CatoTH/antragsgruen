@@ -77,14 +77,13 @@ $html .= "</ul></div>";
 $this->menus_html[] = $html;
 
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Feeds</li>";
-/*
-if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) $html .= "<li><a href='/site/feedAntraege/?id=" . $veranstaltung->id . "'>" . $sprache->get("Anträge") . "</a></li>";
-$html .= "<li><a href='/site/feedAenderungsantraege/?id=" . $veranstaltung->id . "'>" . $sprache->get("Änderungsanträge") . "</a></li>";
-$html .= "<li><a href='/site/feedKommentare/?id=" . $veranstaltung->id . "'>Kommentare</a></li>";
-$html .= "<li><a href='/site/feedAlles/?id=" . $veranstaltung->id . "'><b>Alles</b></a></li>";
+
+if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) $html .= "<li class='feed'><a href='/site/feedAntraege/?id=" . $veranstaltung->id . "'>" . $sprache->get("Anträge") . "</a></li>";
+$html .= "<li class='feed'><a href='/site/feedAenderungsantraege/?id=" . $veranstaltung->id . "'>" . $sprache->get("Änderungsanträge") . "</a></li>";
+$html .= "<li class='feed'><a href='/site/feedKommentare/?id=" . $veranstaltung->id . "'>Kommentare</a></li>";
+$html .= "<li class='feed'><a href='/site/feedAlles/?id=" . $veranstaltung->id . "'><b>Alles</b></a></li>";
 $html .= "</ul></div>";
-*/
-$html .= "<br><br><i>kommen in Kürze</i><br><br>";
+
 $this->menus_html[] = $html;
 
 ?>

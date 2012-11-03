@@ -115,6 +115,7 @@ class SiteController extends Controller
 	 */
 	public function actionFeedAntraege($veranstaltung_id = 0)
 	{
+		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 		$this->renderPartial('feed', array(
@@ -130,6 +131,7 @@ class SiteController extends Controller
 	 */
 	public function actionFeedAenderungsantraege($veranstaltung_id = 0)
 	{
+		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 		$this->renderPartial('feed', array(
@@ -145,6 +147,7 @@ class SiteController extends Controller
 	 */
 	public function actionFeedKommentare($veranstaltung_id = 0)
 	{
+		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 		$this->renderPartial('feed', array(
@@ -161,6 +164,7 @@ class SiteController extends Controller
 	 */
 	public function actionFeedAlles($veranstaltung_id = 0)
 	{
+		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 
