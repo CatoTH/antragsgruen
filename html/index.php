@@ -31,4 +31,7 @@ $boot = $app->getComponent("bootstrap");
 $app->getClientScript()->registerCssFile(Yii::app()->request->baseUrl.'/css/antraege.css');
 $app->getClientScript()->registerCssFile(Yii::app()->request->baseUrl.'/css/antraege-print.css', 'print');
 
+$font_css = Yii::app()->params['font_css'];
+if ($font_css != "") $app->getClientScript()->registerCssFile($font_css);
+
 $app->run();

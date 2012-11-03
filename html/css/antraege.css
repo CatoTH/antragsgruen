@@ -962,6 +962,9 @@ ins {
 .antragstext_diff ul li {
 	width: 480px;
 }
+.unterstuetzer_neu_holder input {
+	border: solid 1px gray;
+}
 .unterstuetzer label input, .form input, .form label {
 	display: inline-block;
 }

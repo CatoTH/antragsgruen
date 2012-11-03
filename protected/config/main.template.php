@@ -114,8 +114,9 @@ return array(
 
 	'params'    => array(
 		'standardVeranstaltung'=> 1,
-		'pdf_logo' => '/var/www/antragsbegruenung/html/images/MCS_Gruene_Logo_weiss_RZ.jpg',
+		'pdf_logo' => 'LOGO_PFAD',
 		'kontakt_email' => 'EMAILADRESSE',
-		'mail_from' => "Antragsgrün <EMAILADRESSE>",
+		'mail_from' => 'Antragsgrün <EMAILADRESSE>',
+		'font_css' => '/css/font.css',
 	),
 );
