@@ -12,7 +12,8 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$this->actionVeranstaltung(Yii::app()->params['standardVeranstaltung']);
+		$veranstaltung_id = (isset($_REQUEST["id"]) ? IntVal($_REQUEST["id"]) : Yii::app()->params['standardVeranstaltung']);
+		$this->actionVeranstaltung($veranstaltung_id);
 	}
 
 	/**

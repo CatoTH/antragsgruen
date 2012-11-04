@@ -30,7 +30,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		'type'      => 'primary',
 		'size'      => 'large',
 		'buttonType'=> 'submitlink',
-		'url'       => "/",
+		'url'       => "/?id=" . $antrag->veranstaltung,
 		'label'     => 'Zurück zur Startseite',
 	));
 	$this->endWidget();
