@@ -23,7 +23,7 @@ $app = Yii::createWebApplication($config);
 $app->language = "de";
 $app->layout = "bootstrap";
 $app->getClientScript()->registerScriptFile(
-    Yii::app()->request->baseUrl.'/antraege.js',
+    Yii::app()->request->baseUrl.'/js/antraege.js',
     CClientScript::POS_END
 );
 /** @var Bootstrap $boot  */
