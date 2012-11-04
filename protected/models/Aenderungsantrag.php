@@ -32,17 +32,17 @@ class Aenderungsantrag extends BaseAenderungsantrag
 	}
 
 	/**
-	 * return array|AntragAbsatz[]
+	 * @return array
 	 */
-	public function getDiffParagraphs($nurfreigeschaltete = true) {
+	public function getDiffParagraphs() {
 		return json_decode($this->text_neu);
 	}
 
 
 	/**
-	 * return array|AntragAbsatz[]
+	 * @return array|AntragAbsatz[]
 	 */
-	public function getAntragstextParagraphs($nurfreigeschaltete = true) {
+	public function getAntragstextParagraphs() {
 		if (!is_null($this->absaetze)) return $this->absaetze;
 		$this->absaetze = array();
 		$komms = $this->aenderungsantragKommentare;
@@ -50,7 +50,10 @@ class Aenderungsantrag extends BaseAenderungsantrag
 		HtmlBBcodeUtils::initZeilenCounter();
 		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->aenderung_text));
 
-		for ($i = 0; $i < count($arr["html"]); $i++) $this->absaetze[] = new AntragAbsatz($arr["html"][$i], $arr["html_plain"][$i], $arr["bbcode"][$i], $this->id, $i, $komms, array());
+		for ($i = 0; $i < count($arr["html"]); $i++) {
+			$html_plain = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
+			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, array());
+		}
 		return $this->absaetze;
 	}
 

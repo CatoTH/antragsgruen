@@ -175,6 +175,16 @@ class HtmlBBcodeUtils
 		return array("html" => $absaetze_html, "html_plain" => $absaetze_html_plain, "bbcode" => $absaetze_bbcode);
 	}
 
+	static function wrapWithTextClass($text) {
+		if (mb_stripos($text, "<ul") === 0) $text = str_ireplace("<ul", "<ul class='text'", $text);
+		if (mb_stripos($text, "<ol") === 0) $text = str_ireplace("<ol", "<ol class='text'", $text);
+
+		if (mb_stripos($text, "<ul") !== 0 && mb_stripos($text, "<ol") !== 0 && mb_stripos($text, "<blockquote") !== 0) {
+			$text = "<div class='text'>" . $text . "</div>";
+		}
+		return $text;
+	}
+
 
 	static function bbcode2html_absaetze2_block($text, $maxlen)
 	{

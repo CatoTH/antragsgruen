@@ -26,14 +26,8 @@ $this->menu = array(
 	<?php
 	if ($model->status == Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) {
 		$form        = $this->beginWidget('GxActiveForm');
-		$max_rev     = 0;
-		$andereantrs = $model->veranstaltung0->antraege;
-		foreach ($andereantrs as $antr) if ($antr->typ == $model->typ) {
-			$revs  = substr($antr->revision_name, strlen(Antrag::$TYP_PREFIX[$antr->typ]));
-			$revnr = IntVal($revs);
-			if ($revnr > $max_rev) $max_rev = $revnr;
-		}
-		$new_rev = Antrag::$TYP_PREFIX[$model->typ] . ($max_rev + 1);
+		$new_rev = $model->veranstaltung0->naechsteAntragRevNr($model->typ);
+
 		echo '<input type="hidden" name="' . AntiXSS::createToken("antrag_freischalten") . '" value="' . CHtml::encode($new_rev) . '">';
 		echo "<div style='text-align: center;'>";
 		$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type' => 'primary', 'icon'=> 'ok white', 'label'=> 'Freischalten als ' . $new_rev));

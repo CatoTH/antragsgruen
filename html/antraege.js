@@ -4,7 +4,7 @@
 (function () {
 	"use strict";
 
-	$(".unterstuetzerwidget .unterstuetzerwidget_add_caller a").on("click", function (ev) {
+	$(".unterstuetzerwidget .unterstuetzerwidget_add_caller a").click(function (ev) {
 		var text = $(this).parents(".unterstuetzerwidget").data("neutemplate");
 		$(text).insertBefore($(this).parents(".unterstuetzerwidget_add_caller"));
 		//$(this).parents(".unterstuetzerwidget_add_caller").insertBefore(text);

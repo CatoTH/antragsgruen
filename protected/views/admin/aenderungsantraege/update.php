@@ -22,20 +22,8 @@ $this->menu = array(
 <?php
 	if ($model->status == Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) {
 		$form = $this->beginWidget('GxActiveForm');
-		$max_rev = 0;
 
-		$andereantrs = $model->antrag->aenderungsantraege;
-		foreach ($andereantrs as $antr) {
-			// Etwas messy, wg. "Ä" und UTF-8. Alternative Implementierung: auf mbstring.func_overload testen und entsprechend vorgehen
-			$index = -1;
-			for ($i = 0; $i < strlen($antr->revision_name) && $index == -1; $i++) {
-				if (is_numeric(substr($antr->revision_name, $i, 1))) $index = $i;
-			}
-			$revs = substr($antr->revision_name, $index);
-			$revnr = IntVal($revs);
-			if ($revnr > $max_rev) $max_rev = $revnr;
-		}
-		$new_rev = "Ä" . ($max_rev + 1);
+		$new_rev = $model->antrag->naechsteAenderungsRevNr();
 		$new_rev_long = $new_rev . " zu " . $model->antrag->revision_name;
 		echo '<input type="hidden" name="' . AntiXSS::createToken("antrag_freischalten") . '" value="' . CHtml::encode($new_rev). '">';
 		echo "<div style='text-align: center;'>";

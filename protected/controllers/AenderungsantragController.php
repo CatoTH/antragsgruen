@@ -249,7 +249,12 @@ class AenderungsantragController extends Controller
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
 			$freischaltung = $aenderungsantrag->antrag->veranstaltung0->freischaltung_aenderungsantraege;
-			$aenderungsantrag->status = ($freischaltung ? Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT : Aenderungsantrag::$STATUS_EINGEREICHT_GEPRUEFT);
+			if ($freischaltung) {
+				$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
+			} else {
+				$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_GEPRUEFT;
+				$aenderungsantrag->revision_name = $aenderungsantrag->antrag->naechsteAenderungsRevNr();
+			}
 			$aenderungsantrag->save();
 
 			if ($aenderungsantrag->antrag->veranstaltung0->admin_email != "") {
@@ -348,6 +353,7 @@ class AenderungsantragController extends Controller
 				$aenderungsantrag->setDiffParagraphs($neue_absaetze);
 				$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($antrag->text), trim($neuer_text));
 				$diff_text = "";
+
 				if ($aenderungsantrag->name_neu != $antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $aenderungsantrag->name_neu . "[/QUOTE]\n\n";
 				$diff_text .= DiffUtils::diff2text($diff);
 
@@ -408,7 +414,6 @@ class AenderungsantragController extends Controller
 				var_dump($init->getErrors());
 				die();
 			}
-			;
 
 			$this->redirect("/aenderungsantrag/neuConfirm/?id=" . $aenderungsantrag->id);
 

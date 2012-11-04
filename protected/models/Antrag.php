@@ -88,7 +88,10 @@ class Antrag extends BaseAntrag
 
 		HtmlBBcodeUtils::initZeilenCounter();
 		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text));
-		for ($i = 0; $i < count($arr["html"]); $i++) $this->absaetze[] = new AntragAbsatz($arr["html"][$i], $arr["html_plain"][$i], $arr["bbcode"][$i], $this->id, $i, $komms, $aenders);
+		for ($i = 0; $i < count($arr["html"]); $i++) {
+			$html_plain = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
+			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, $aenders);
+		}
 		return $this->absaetze;
 	}
 
@@ -126,6 +129,26 @@ class Antrag extends BaseAntrag
 			),
 		));
 		return $dataProvider->data;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function naechsteAenderungsRevNr() {
+		$max_rev = 0;
+		$andereantrs = $this->aenderungsantraege;
+		foreach ($andereantrs as $antr) {
+			// Etwas messy, wg. "Ä" und UTF-8. Alternative Implementierung: auf mbstring.func_overload testen und entsprechend vorgehen
+			$index = -1;
+			for ($i = 0; $i < strlen($antr->revision_name) && $index == -1; $i++) {
+				if (is_numeric(substr($antr->revision_name, $i, 1))) $index = $i;
+			}
+			$revs = substr($antr->revision_name, $index);
+			$revnr = IntVal($revs);
+			if ($revnr > $max_rev) $max_rev = $revnr;
+		}
+		return "Ä" . ($max_rev + 1);
 	}
 
     /*

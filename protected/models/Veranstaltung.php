@@ -92,6 +92,22 @@ class Veranstaltung extends BaseVeranstaltung
 		}
 	}
 
+
+	/**
+	 * @param int $antrag_typ
+	 * @return string
+	 */
+	public function naechsteAntragRevNr($antrag_typ) {
+		$max_rev     = 0;
+		$andereantrs = $this->antraege;
+		foreach ($andereantrs as $antr) if ($antr->typ == $antrag_typ) {
+			$revs  = substr($antr->revision_name, strlen(Antrag::$TYP_PREFIX[$antr->typ]));
+			$revnr = IntVal($revs);
+			if ($revnr > $max_rev) $max_rev = $revnr;
+		}
+		return Antrag::$TYP_PREFIX[$antrag_typ] . ($max_rev + 1);
+	}
+
 	/**
 	 * @var string $className
 	 * @return GxActiveRecord

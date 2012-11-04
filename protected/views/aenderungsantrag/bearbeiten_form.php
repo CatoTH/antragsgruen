@@ -67,12 +67,6 @@ foreach ($hiddens as $name=>$value) {
 			echo "<div class='absatz_text orig antragabsatz_holder antrags_text_holder_nummern' ";
 			if ($text_pre && $text_pre[$i] != "") echo " style='display: none;'";
 			echo ">" . $abs->str_html . "</div>";
-			echo "<div class='antragstext_diff' ";
-			if (!$text_pre || $text_pre[$i] == "") echo "style='display: none;'";
-			echo ">";
-			if ($text_pre && $text_pre[$i] != "") echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $text_pre[$i]);
-			else echo $abs->str_html_plain;
-			echo "</div>";
 
 			echo "<div class='ae_text_holder'>
 			<label><input type='checkbox' name='change_text[$i]' data-absatz='$i' class='change_checkbox' ";
@@ -83,7 +77,14 @@ foreach ($hiddens as $name=>$value) {
 			$str_neu = ($text_pre && $text_pre[$i] != "" ? $text_pre[$i] : $abs->str_bbcode);
 			echo CHtml::encode($str_neu) . "</textarea><div style='text-align: center;'>";
 			$this->widget('bootstrap.widgets.TbButton', array('type' => 'success', 'icon' => 'chevron-right white', 'label' => 'Weiter', 'url' => '#begruendungs_holder'));
-			echo "</div></div>";
+			echo "</div></div>\n";
+
+			echo "<div class='antragstext_diff antrags_text_holder_keinenummern absatz_text' ";
+			if (!$text_pre || $text_pre[$i] == "") echo "style='display: none;'";
+			echo ">";
+			if ($text_pre && $text_pre[$i] != "") echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $text_pre[$i]);
+			else echo $abs->str_html_plain;
+			echo "</div>";
 
 			echo "</div>";
 		}

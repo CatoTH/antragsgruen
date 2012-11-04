@@ -47,9 +47,9 @@ class DiffUtils
 				$final = implode("\n", $edit->final);
 				if (trim($final, " \t\n\r") != "") {
 					if (mb_strpos($final, "#ZEILE#") === 0) {
-						$diff_text2 .= "Nach Zeile " . $line . " einfügen: [QUOTE]" . nl2br(CHtml::encode($final, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]\n\n";
+						$diff_text2 .= "Nach Zeile " . $line . " einfügen: [QUOTE]" . $final . "[/QUOTE]\n\n";
 					} else {
-						$diff_text2 .= "Folgenden Absatz einfügen: [QUOTE]" . nl2br(CHtml::encode($final, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]\n\n";
+						$diff_text2 .= "Folgenden Absatz einfügen: [QUOTE]" . $final . "[/QUOTE]\n\n";
 					}
 				}
 			}
@@ -60,10 +60,10 @@ class DiffUtils
 					if (mb_strpos($orig, "#ZEILE#") === 0) {
 						$diff_text2 .= "Streiche Zeile " . ($line + 1);
 						if ($zeilen > 1) $diff_text2 .= " bis " . ($line + $zeilen);
-						$diff_text2 .= ": [QUOTE]" . nl2br(CHtml::encode($orig, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]\n\n";
+						$diff_text2 .= ": [QUOTE]" . $orig . "[/QUOTE]\n\n";
 					}
 				} else {
-					$diff_text2 .= "Folgenden Absatz löschen: [QUOTE]" . nl2br(CHtml::encode($orig, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]\n\n";
+					$diff_text2 .= "Folgenden Absatz löschen: [QUOTE]" . $orig . "[/QUOTE]\n\n";
 				}
 			}
 			if (get_class($edit) == "Horde_Text_Diff_Op_Change") {
@@ -72,7 +72,7 @@ class DiffUtils
 
 				if (trim($orig, " \t\n\r") != "" || trim($final, " \t\n\r") != "") {
 					$inab = (substr_count($orig, "#ZEILE#") > 1 ? "ab" : "in");
-					$diff_text2 .= "Ersetze $inab Zeile " . ($line + 1) . ":\n[QUOTE]" . nl2br(CHtml::encode($orig, ENT_COMPAT, 'UTF-8')) . "[/QUOTE]durch:[QUOTE]" . nl2br(CHtml::encode($final, ENT_COMPAT, "UTF-8")) . "[/QUOTE]\n\n";
+					$diff_text2 .= "Ersetze $inab Zeile " . ($line + 1) . ":\n[QUOTE]" . $orig . "[/QUOTE]durch:[QUOTE]" . $final . "[/QUOTE]\n\n";
 				}
 			}
 
@@ -81,6 +81,7 @@ class DiffUtils
 			}
 		}
 
+		$diff_text2 = str_replace("\n#ZEILE#", "", $diff_text2);
 		$diff_text2 = str_replace("#ZEILE#", "", $diff_text2);
 		$diff_text2 = str_replace("#ABSATZ#", "", $diff_text2);
 
@@ -148,6 +149,9 @@ class DiffUtils
 	 */
 	private static function bbNormalizeForDiff($text)
 	{
+		$text = str_replace("\r", "", $text);
+		$text = str_replace(chr(13), "", $text);
+		$text = preg_replace("/ {2,}/siu", " ", $text);
 		$text = trim($text);
 		$text = preg_replace_callback("/(\[\/?(?:b|i|u|s|list|ulist|quote))([^a-z])/siu", function($matches) { return mb_strtoupper($matches[1]) . $matches[2]; }, $text);
 		$text = preg_replace("/(\[list[^\]]*\])\\n*\[/siu", "\\1\n[", $text);
@@ -185,6 +189,7 @@ class DiffUtils
 
 		$diff = DiffUtils::getTextDiff($text_alt, $text_neu);
 		$absatz = DiffUtils::renderAbsatzDiff($diff);
+
 		$diffstr = HtmlBBcodeUtils::bbcode2html($absatz);
 
 		$diffstr = str_ireplace(
@@ -192,11 +197,9 @@ class DiffUtils
 			array("<ins>", "</ins>", "<del>", "</del>"),
 			$diffstr);
 
-		if (mb_stripos($diffstr, "<ul") === 0) $diffstr = str_ireplace("<ul", "<ul class='text'", $diffstr);
-		if (mb_stripos($diffstr, "<ol") === 0) $diffstr = str_ireplace("<ol", "<ol class='text'", $diffstr);
+		if ($diffstr == "") $diffstr = HtmlBBcodeUtils::bbcode2html($text_alt);
 
-		if ($diffstr == "") $diffstr = $text_alt;
-
+		$diffstr = HtmlBBcodeUtils::wrapWithTextClass($diffstr);
 		return $diffstr;
 	}
 
