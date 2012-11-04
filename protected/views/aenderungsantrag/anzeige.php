@@ -204,15 +204,17 @@ $rows = 10;
 <div style="text-align: center; display: none;" id="antrags_diff_closer">
 	<a href="#" onClick="$('#antrags_diff_holder').hide(); $('#antrags_diff_opener').show(); $('#antrags_diff_closer').hide(); return false;"><i class="icon-up-open"></i> Antragstext mit Änderungen anzeigen</a>
 </div>
-<div id="antrags_diff_holder" class="textholder consolidated antrags_text_holder_nummern" style="display: none;">
+<div id="antrags_diff_holder" class="content" style="display: none;">
 	<?php
 	$abs_alt = $aenderungsantrag->antrag->getParagraphs();
 	$abs_neu = json_decode($aenderungsantrag->text_neu);
 	foreach ($abs_alt as $i=> $abs) {
+		echo "<div class='row-fluid'>";
 		/** @var AntragAbsatz $abs */
 		if ($abs_neu[$i] != "") {
 			echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i]);
 		} else echo HtmlBBcodeUtils::bbcode2html($abs->str_bbcode);
+		echo "</div>\n";
 	}
 	?>
 </div>

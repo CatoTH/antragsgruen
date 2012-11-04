@@ -149,7 +149,7 @@ class DiffUtils
 	private static function bbNormalizeForDiff($text)
 	{
 		$text = trim($text);
-		$text = str_ireplace(array("[list]", "[b]", "[i]", "[quote]", "[u]", "[/list]"), array("[list]", "[b]", "[i]", "[quote]", "[u]", "[/list]"), $text);
+		$text = preg_replace_callback("/(\[\/?(?:b|i|u|s|list|ulist|quote))([^a-z])/siu", function($matches) { return mb_strtoupper($matches[1]) . $matches[2]; }, $text);
 		$text = preg_replace("/(\[list[^\]]*\])\\n*\[/siu", "\\1\n[", $text);
 		$text = preg_replace("/\n*\[\*/siu", "\n[*", $text);
 		$text = str_replace("\r", "", $text);
@@ -186,6 +186,11 @@ class DiffUtils
 		$diff = DiffUtils::getTextDiff($text_alt, $text_neu);
 		$absatz = DiffUtils::renderAbsatzDiff($diff);
 		$diffstr = HtmlBBcodeUtils::bbcode2html($absatz);
+
+		$diffstr = str_ireplace(
+			array("&lt;ins&gt;", "&lt;/ins&gt;", "&lt;del&gt;", "&lt;/del&gt;"),
+			array("<ins>", "</ins>", "<del>", "</del>"),
+			$diffstr);
 
 		if (mb_stripos($diffstr, "<ul") === 0) $diffstr = str_ireplace("<ul", "<ul class='text'", $diffstr);
 		if (mb_stripos($diffstr, "<ol") === 0) $diffstr = str_ireplace("<ol", "<ol class='text'", $diffstr);

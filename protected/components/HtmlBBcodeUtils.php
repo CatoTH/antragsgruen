@@ -331,7 +331,6 @@ class HtmlBBcodeUtils
 			return $matches[1] . $matches[2] . $matches[3];
 		}, $text);
 
-
 		//echo "<br>IN========<br>";
 		//echo CHtml::encode($text);
 		$code = new \mjohnson\decoda\Decoda();
