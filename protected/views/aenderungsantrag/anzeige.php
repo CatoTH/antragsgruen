@@ -100,25 +100,6 @@ $rows = 10;
 </div>
 <br>
 
-<?php
-
-$txt = '
-Test asd asd asd asd asdasda dsa asd asdlkja skdjhasd kjhaskdj haksdjh askjdh aksjdha skjdhas kdjhaskjdha skjdhas kdjhaskdashd kjasdhkasjdhas dkjh Test asd asd asd asd asdasda dsa asd asdlkja skdjhasd kjhaskdj haksdjh askjdh aksjdha skjdhas kdjhaskjdha skjdhas kdjhaskdashd kjasdhkasjdhas dkj Test asd asd asd asd asdasda dsa asd asdlkja skdjhasd kjhaskdj haksdjh askjdh aksjdha skjdhas kdjhaskjdha skjdhas kdjhaskdashd kjasdhkasjdhas dkjh
-Test asd asd asd asd asdasda dsa asd asdlkja skdjhasd kjhaskdj haksdjh askjdh aksjdha skjdhas kdjhaskjdha skjdhas kdjhaskdashd kjasdhkasjdhas dkjh
-[BLOCKQUOTE]
-Test kasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfh
-[LIST]
-[*] BLa blabla
-[*] kasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfh kasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfhkasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfhkasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfh
-[/LIST]
-kasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfhkasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfhkasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfh
-[/BLOCKQUOTE]
-kasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfhkasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfhkasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfh';
-
-
-?>
-
-
 
 <div class="antrags_text_holder well">
 <h3>Änderungsantragstext</h3>
@@ -217,7 +198,12 @@ kasjdh sdfsd ljfhskdfjh sdkfjhsdk fjhsdk fjhsdfkjs dhfkjsdfh ksdjfhkasjdh sdfsd 
 	//echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_text);
 	?>
 </div>
-<div style="text-align: center;">[<a href="#" onClick="$('#antrags_diff_holder').toggle(); return false;">Antragstext mit Änderungen anzeigen</a>]</div>
+<div style="text-align: center;" id="antrags_diff_opener">
+	<a href="#" onClick="$('#antrags_diff_holder').show(); $('#antrags_diff_opener').hide(); $('#antrags_diff_closer').show(); return false;"><i class="icon-down-open"></i> Antragstext mit Änderungen anzeigen</a>
+</div>
+<div style="text-align: center; display: none;" id="antrags_diff_closer">
+	<a href="#" onClick="$('#antrags_diff_holder').hide(); $('#antrags_diff_opener').show(); $('#antrags_diff_closer').hide(); return false;"><i class="icon-up-open"></i> Antragstext mit Änderungen anzeigen</a>
+</div>
 <div id="antrags_diff_holder" class="textholder consolidated antrags_text_holder_nummern" style="display: none;">
 	<?php
 	$abs_alt = $aenderungsantrag->antrag->getParagraphs();

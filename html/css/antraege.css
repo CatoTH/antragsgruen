@@ -12,23 +12,22 @@ dunkelgrün		rgb(40, 95, 25)
 
 Iconcodes
 Herz: 			'\e800'
-Antragt: 		'\270d'
+Antrag: 		'\e800'
 Download:		'\e4a4'
 Kommentar: 		'\e718'
 Ort: 			'\e724' 
 Benutzer: 		'👤'
-Resolution: 	'📄'
+Resolution: 	'\e731'
 Pin: 			'📌'
 Änderungsantrag: '📎'
 Zeit: 			'🕔'
 Hinzufügen: 	'\2795' 
 Löschen: 		"✕"
 Zurück.			"←"
-RSS:            '\e73a'
+RSS:            '\e801'
 
 
 ***************************************************************/
-
 
 /************************* BASICS *****************************/
 
@@ -57,12 +56,28 @@ li {
 }
 
 @font-face {
-  font-family: 'icons_antragsgruen';
-  src: url("font/icons_antragsgruen.eot");
-  src: url("font/icons_antragsgruen.eot?#iefix") format('embedded-opentype'), url("font/icons_antragsgruen.woff") format('woff'), url("font/icons_antragsgruen.ttf") format('truetype'), url("font/icons_antragsgruen.svg#icons_antragsgruen") format('svg');
-  font-weight: normal;
-  font-style: normal;
+	font-family: 'icons_antragsgruen';
+	src: url("font/icons_antragsgruen.eot");
+	src: url("font/icons_antragsgruen.eot?#iefix") format('embedded-opentype'), url("font/icons_antragsgruen.woff") format('woff'), url("font/icons_antragsgruen.ttf") format('truetype'), url("font/icons_antragsgruen.svg#icons_antragsgruen") format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
+
+.icon-down-open:before, .icon-up-open:before {
+	font-family: icons_antragsgruen;
+	font-style: normal;
+	font-weight: normal;
+	speak: none;
+	display: inline-block;
+	text-decoration: inherit;
+	width: 1em;
+	margin-right: 0.2em;
+	text-align: center;
+	opacity: 0.7;
+}
+
+.icon-down-open:before { content: '\e75c'; }
+.icon-up-open:before { content: '\e75f'; }
 
 p, ul {
 	margin-bottom: 10px;
@@ -97,17 +112,17 @@ a:hover {
 .navbar-inner {
 	background: none 0 0 transparent;
 	filter: none;
-    border: none;
-    box-shadow: none;
-    min-height: 0;
-    padding: 0;
+	border: none;
+	box-shadow: none;
+	min-height: 0;
+	padding: 0;
 	text-align: right;
 	margin-top: 10px;
 	border-radius: 0;
 }
 
 .navbar .nav {
-    margin: 0;
+	margin: 0;
 	float: right;
 }
 
@@ -121,18 +136,18 @@ a:hover {
 	font-weight: bold;
 	text-transform: uppercase;
 	font-size: 18px;
-    text-shadow: none;
+	text-shadow: none;
 }
 
-.navbar .nav li.active a, 
-.navbar .nav li a:hover, 
+.navbar .nav li.active a,
+.navbar .nav li a:hover,
 .navbar .nav li a:focus,
-.navbar .nav li.active a:hover, 
+.navbar .nav li.active a:hover,
 .navbar .nav li.active a:focus {
-    background: none;
+	background: none;
 	filter: none;
-    box-shadow: none;
-    color: rgb(40, 95, 25) !important;
+	box-shadow: none;
+	color: rgb(40, 95, 25) !important;
 }
 
 .logo {
@@ -140,18 +155,18 @@ a:hover {
 	display: block;
 }
 
-.breadcrumb, 
+.breadcrumb,
 .breadcrumbs {
-    background: none;
+	background: none;
 	filter: none;
-    border-radius: 0;
-    margin: 0;
+	border-radius: 0;
+	margin: 0;
 	margin-top: 30px;
-    padding: 0;
+	padding: 0;
 }
 
 .breadcrumb li {
-    text-shadow: none;
+	text-shadow: none;
 }
 
 .breadcrumb,
@@ -161,7 +176,7 @@ a:hover {
 	font-weight: bold;
 	text-transform: uppercase;
 	font-size: 15px;
-    color: rgb(115, 115, 115);
+	color: rgb(115, 115, 115);
 }
 
 .breadcrumb a {
@@ -174,7 +189,7 @@ h1.well {
 
 .span,
 .row-fluid .span9 {
-	width: 715px;	
+	width: 715px;
 }
 
 .span3,
@@ -185,43 +200,43 @@ h1.well {
 
 .span9,
 .span3,
-/* #content { */
+	/* #content { */
 .antragcontent, ul.funktionen {
 	position: relative;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	border-radius: 10px;
 	-webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
-	-moz-box-shadow:    0px 0px 15px rgba(0, 0, 0, 0.4);
-	box-shadow:         0px 0px 15px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+	box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
 	background-color: #fff;
 }
 
 .span9 h1,
 #content h1 {
 	margin: 0;
-    color: #fff;
+	color: #fff;
 	background: rgb(11, 47, 8);
 	background: -moz-linear-gradient(90deg, rgb(11, 47, 8) 0%, rgb(40, 95, 25) 100%);
 	background: -webkit-linear-gradient(90deg, rgb(11, 47, 8) 0%, rgb(40, 95, 25) 100%);
 	background: -o-linear-gradient(90deg, rgb(11, 47, 8) 0%, rgb(40, 95, 25) 100%);
 	background: -ms-linear-gradient(90deg, rgb(11, 47, 8) 0%, rgb(40, 95, 25) 100%);
 	background: linear-gradient(90deg, rgb(11, 47, 8) 0%, rgb(40, 95, 25) 100%);
-    padding: 5px 20px 4px;
+	padding: 5px 20px 4px;
 	font-family: "BentonSansCond Regular";
 	font-weight: bold;
-    font-size: 15px;
-    line-height: 18px;
-    text-transform: uppercase;
+	font-size: 15px;
+	line-height: 18px;
+	text-transform: uppercase;
 	-moz-border-radius-topleft: 10px;
 	-webkit-border-top-left-radius: 10px;
-	 border-top-left-radius: 10px;
+	border-top-left-radius: 10px;
 	-moz-border-radius-topright: 10px;
 	-webkit-border-top-right-radius: 10px;
 	border-top-right-radius: 10px;
 }
 
-.well, 
+.well,
 .span9 .antrag,
 .antragabsatz_holder {
 	background: rgb(246, 246, 246);
@@ -232,10 +247,10 @@ h1.well {
 	background: linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
 	padding: 0;
 	margin: 0;
-    border: 0;
+	border: 0;
 	border-bottom: 1px solid rgb(209, 209, 210);
-    border-radius: 0;
-    box-shadow: none;
+	border-radius: 0;
+	box-shadow: none;
 	position: relative;
 }
 
@@ -244,7 +259,7 @@ h1.well {
 #content .well:first-child {
 	-moz-border-radius-topleft: 10px;
 	-webkit-border-top-left-radius: 10px;
-	 border-top-left-radius: 10px;
+	border-top-left-radius: 10px;
 	-moz-border-radius-topright: 10px;
 	-webkit-border-top-right-radius: 10px;
 	border-top-right-radius: 10px;
@@ -279,6 +294,7 @@ h1.well {
 .antragabsatz_holder.orig {
 	padding: 15px 20px 25px 0;
 }
+
 .antragstext_diff {
 	padding: 20px 20px 30px 60px;
 }
@@ -294,19 +310,19 @@ h2,
 .span3 .well .nav-list .nav-header {
 	margin: 0;
 	margin-top: 1px;
-    color: #fff;
+	color: #fff;
 	background: rgb(175, 203, 8);
 	background: -moz-linear-gradient(90deg, rgb(175, 203, 8) 0%, rgb(185, 209, 38) 100%);
 	background: -webkit-linear-gradient(90deg, rgb(175, 203, 8) 0%, rgb(185, 209, 38) 100%);
 	background: -o-linear-gradient(90deg, rgb(175, 203, 8) 0%, rgb(185, 209, 38) 100%);
 	background: -ms-linear-gradient(90deg, rgb(175, 203, 8) 0%, rgb(185, 209, 38) 100%);
 	background: linear-gradient(90deg, rgb(175, 203, 8) 0%, rgb(185, 209, 38) 100%);
-    padding: 6px 20px 4px;
+	padding: 6px 20px 4px;
 	font-family: "BentonSansCond Regular";
 	font-weight: bold;
-    font-size: 15px;
-    line-height: 18px;
-    text-transform: uppercase;
+	font-size: 15px;
+	line-height: 18px;
+	text-transform: uppercase;
 }
 
 .span9 .antragsschluss {
@@ -325,10 +341,10 @@ h2,
 	overflow: hidden;
 	font-family: "BentonSansCond Regular";
 	font-weight: bold;
-    font-size: 15px;
-    line-height: 17px;
-    text-transform: uppercase;
-    color: #fff;
+	font-size: 15px;
+	line-height: 17px;
+	text-transform: uppercase;
+	color: #fff;
 	margin-left: 40px;
 	-webkit-border-radius: 90px;
 	-moz-border-radius: 90px;
@@ -351,10 +367,10 @@ h2,
 }
 
 .span9 .antrag .titel:before {
-	content: '\270d';
-  	font-family: 'icons_antragsgruen';
-  	display: inline-block;
-  	width: 30px;
+	content: '\e800';
+	font-family: 'icons_antragsgruen';
+	display: inline-block;
+	width: 30px;
 	font-size: 20px;
 	margin-left: -30px;
 	vertical-align: bottom;
@@ -362,7 +378,7 @@ h2,
 }
 
 .span9 .resolution .titel:before {
-	content: '📄';
+	content: '\e731';
 }
 
 .span9 .antrag .titel a {
@@ -394,11 +410,11 @@ h2,
 .span9 .antrag .titel .pdfLink:before {
 	content: '\e4a4';
 	color: rgb(175, 203, 8);
-    font-family: 'icons_antragsgruen';
+	font-family: 'icons_antragsgruen';
 	display: inline-block;
-    width: 16px;
-    font-size: 14px;
-    vertical-align: text-bottom;
+	width: 16px;
+	font-size: 14px;
+	vertical-align: text-bottom;
 }
 
 .span9 .antrag .info {
@@ -415,11 +431,11 @@ h2,
 .span9 .aenderungsantraege li:before {
 	content: '📎';
 	color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 14px;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 14px;
 }
 
 .span9 .aenderungsantraege li {
@@ -431,8 +447,8 @@ h2,
 	margin-right: 5px;
 }
 
-.antrags_text_holder .text, 
-.antrags_text_holder .text li, 
+.antrags_text_holder .text,
+.antrags_text_holder .text li,
 .antragstext_diff {
 	font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
 }
@@ -450,20 +466,20 @@ h2,
 .antrags_text_holder_nummern .text {
 	padding-left: 40px;
 }
+
 .ae_text_holder {
 	padding-left: 60px;
 }
 
-
 .antrags_text_holder_nummern .zeilennummer {
 	color: #C3C3C3;
-    display: inline-block;
-    font-style: normal;
-    font-weight: normal;
-    left: -20px;
-    position: relative;
-    text-decoration: none;
-    width: 20px;
+	display: inline-block;
+	font-style: normal;
+	font-weight: normal;
+	left: -20px;
+	position: relative;
+	text-decoration: none;
+	width: 20px;
 }
 
 .antrags_text_holder_nummern ul.text li .zeilennummer,
@@ -476,6 +492,7 @@ h2,
 	border-left: dotted 2px gray;
 	padding: 5px;
 }
+
 .antrags_text_holder_nummern blockquote.text .zeilennummer {
 	left: -46px;
 }
@@ -484,7 +501,7 @@ h2,
 	position: relative;
 }
 
-.aenders, 
+.aenders,
 .kommentare {
 	display: block;
 	position: absolute;
@@ -540,19 +557,19 @@ h2,
 }
 
 .kommentare .shower:before,
-.kommentare .hider:before {	
+.kommentare .hider:before {
 	content: '\e718';
 	color: #fff;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
 }
 
 .kommentare a {
 	font-weight: bold;
-	color: #fff !important;	
+	color: #fff !important;
 }
 
 .aenders {
@@ -575,43 +592,43 @@ h2,
 
 .aenders a {
 	font-weight: bold;
-	color: #fff !important;	
+	color: #fff !important;
 }
 
 .aenders a:hover {
-	color: rgb(40, 95, 25) !important;	
+	color: rgb(40, 95, 25) !important;
 }
 
-.aenders a:before {	
-	content: '\270d';
+.aenders a:before {
+	content: '\e800';
 	color: #fff;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
 }
 
 .kommentarform {
-	 padding: 12px 20px 25px;
+	padding: 12px 20px 25px;
 }
 
 .kommentarform h3 {
 	background: none;
-    color: rgb(162, 188, 4);
-    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: rgb(162, 188, 4);
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
-    font-weight: bold;
-    line-height: 18px;
-    margin: 0 0 5px 0;
+	font-weight: bold;
+	line-height: 18px;
+	margin: 0 0 5px 0;
 	text-transform: none;
 	padding: 0;
 }
 
 .kommentarform .datum {
 	color: #B3B4B4;
-    float: right;
-    margin-left: 20px;
+	float: right;
+	margin-left: 20px;
 }
 
 .kommentarform .del_link {
@@ -619,16 +636,16 @@ h2,
 	margin-left: 20px;
 }
 
-.kommentarform .del_link a {	
+.kommentarform .del_link a {
 	color: #ccc;
-    display: block;
-    font-family: 'icons_antragsgruen';
-    font-size: 12px;
-    vertical-align: bottom;
+	display: block;
+	font-family: 'icons_antragsgruen';
+	font-size: 12px;
+	vertical-align: bottom;
 }
 
 .kommentarform .del_link a:hover,
-.kommentarform .del_link a:focus {	
+.kommentarform .del_link a:focus {
 	color: #bbb;
 }
 
@@ -637,27 +654,28 @@ h2,
 	margin-bottom: 20px;
 }
 
- legend {
-    border: none;
-    color: rgb(40, 95, 25);
+legend {
+	border: none;
+	color: rgb(40, 95, 25);
 	font-size: 13px;
-    font-weight: bold;
-    line-height: 18px;
-    margin: 0 0 5px 0;
+	font-weight: bold;
+	line-height: 18px;
+	margin: 0 0 5px 0;
 }
 
 .control-group {
-    margin-bottom: 10px;
-    margin-top: 10px;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
 .control-label {
-    width: 100px;
+	width: 100px;
 	font-size: 13px;
 	float: left;
 	text-align: right;
 	padding-top: 5px;
 }
+
 /*
 .controls {
     margin-left: 118px;
@@ -668,6 +686,7 @@ h2,
 	display: inline-block;
 	width: 220px;
 }
+
 #antrag-form label, #aenderungsantrag-form label {
 	display: inline-block;;
 	width: 180px;
@@ -682,8 +701,8 @@ h2,
 	background: linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
 	padding: 0;
 	margin: 0;
-    border: 0;
-    border-radius: 0;
+	border: 0;
+	border-radius: 0;
 	position: relative;
 	-moz-border-radius-bottomright: 10px;
 	-webkit-border-bottom-right-radius: 10px;
@@ -695,21 +714,21 @@ h2,
 }
 
 .btn-primary {
-    border: none;
-    text-shadow: none;
-    color: #fff;
+	border: none;
+	text-shadow: none;
+	color: #fff;
 	background: rgb(226, 0, 122);
 	background: -moz-linear-gradient(90deg, rgb(226, 0, 122) 0%, rgb(234, 74, 161) 100%);
 	background: -webkit-linear-gradient(90deg, rgb(226, 0, 122) 0%, rgb(234, 74, 161) 100%);
 	background: -o-linear-gradient(90deg, rgb(226, 0, 122) 0%, rgb(234, 74, 161) 100%);
 	background: -ms-linear-gradient(90deg, rgb(226, 0, 122) 0%, rgb(234, 74, 161) 100%);
 	background: linear-gradient(90deg, rgb(226, 0, 122) 0%, rgb(234, 74, 161) 100%);
-    padding: 6px 30px 4px;
+	padding: 6px 30px 4px;
 	font-family: "BentonSansCond Regular";
 	font-weight: bold;
-    font-size: 15px;
-    line-height: 18px;
-    text-transform: uppercase;
+	font-size: 15px;
+	line-height: 18px;
+	text-transform: uppercase;
 }
 
 .span9 .btn-primary {
@@ -730,7 +749,7 @@ h3 label {
 }
 
 .form .radio {
-    min-width: 140px;
+	min-width: 140px;
 }
 
 form {
@@ -746,13 +765,10 @@ form {
 	border: none !important;
 }
 
-
-
-
 .span3 .well:first-child .nav-list .nav-header {
 	-moz-border-radius-topleft: 10px;
 	-webkit-border-top-left-radius: 10px;
-	 border-top-left-radius: 10px;
+	border-top-left-radius: 10px;
 	-moz-border-radius-topright: 10px;
 	-webkit-border-top-right-radius: 10px;
 	border-top-right-radius: 10px;
@@ -765,16 +781,16 @@ form {
 }
 
 .span3 .well .nav-list li {
-    padding: 0 20px 10px 38px;
+	padding: 0 20px 10px 38px;
 	line-height: 18px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
 .span3 .well .nav-list li a {
-    display: inline;
+	display: inline;
 }
-	
+
 .span3 .well .neue-antraege li a {
 	color: rgb(40, 95, 25);
 }
@@ -784,47 +800,47 @@ form {
 	color: rgb(73, 127, 55);
 }
 
-.span3 .well .neue-antraege .antrag:before {	
-	content: '\270d';
+.span3 .well .neue-antraege .antrag:before {
+	content: '\e800';
 	color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
 	margin-left: -20px;
 }
 
 .span3 .well .neue-antraege .resolution:before {
-	content: '📄';
+	content: '\e731';
 	color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
 	margin-left: -20px;
 }
 
 .span3 .neue-aenderungsantraege .aeantrag:before {
 	content: '📎';
 	color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
 	margin-left: -20px;
 }
 
 .span3 .neue-kommentare .komm:before {
 	content: '\e718';
 	color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
 	margin-left: -20px;
 }
 
@@ -834,7 +850,7 @@ form {
 }
 
 .span3 .neue-kommentare .feed:before {
-	content: '\e73a';
+	content: '\e801';
 	color: #A2BC04;
 	display: inline-block;
 	font-family: 'icons_antragsgruen';
@@ -847,15 +863,15 @@ form {
 .span3 .well .nav-list > li a,
 .span3 .well .nav-list > li a:hover,
 .span3 .well .nav-list > li a:focus {
-    padding: 0px;
+	padding: 0px;
 	background: none;
 	filter: none;
 }
 
-.span3 .well .nav-list > li a, 
+.span3 .well .nav-list > li a,
 .span3 .well .nav-list .nav-header {
-    margin: 0;
-    text-shadow: none;
+	margin: 0;
+	text-shadow: none;
 }
 
 .span3 .well .nav-list .nav-header {
@@ -901,11 +917,11 @@ ul.funktionen .aender-stellen a:before,
 ul.funktionen .download a:before,
 ul.funktionen .zurueck a:before {
 	content: '\e800';
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 24px;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 24px;
 	margin-left: -24px;
 	color: #fff;
 }
@@ -934,44 +950,50 @@ ul.funktionen .zurueck a:before {
 }
 
 .footer_bar .navbar-inner {
-    text-align: left;
+	text-align: left;
 }
 
 .clear {
 	clear: both;
-}						
-
-
+}
 
 /**************************** ALT ***************************** */
 
 .row {
 	overflow: auto;
 }
+
 .unterstuetzerwidget_adder {
 	border: dotted 1px gray;
 }
+
 .unterstuetzerwidget_adder .person_selector {
 	width: 240px;
 	margin-right: 10px;
 }
+
 .antragsdaten th {
 	text-align: left;
 	padding-right: 10px;
 }
+
 table.view {
 	border: dotted 1px gray;
 	border-spacing: 0;
 }
+
 table.view > tbody > tr > td, table.view > tbody > tr > th {
 	padding: 2px;
 }
+
 table.view > tbody > tr > td {
 	width: 75%;
 }
+
 del {
 	color: #880000;
 }
+
 ins {
 	color: #008800;
 }
@@ -979,39 +1001,51 @@ ins {
 .antragstext_diff {
 	cursor: pointer;
 }
+
 .antragstext_diff ul {
 	margin-left: 45px;
 }
+
 .antragstext_diff ul li {
 	width: 480px;
 }
+
 .unterstuetzer_neu_holder input {
 	border: solid 1px gray;
 }
+
 .unterstuetzer label input, .form input, .form label {
 	display: inline-block;
 }
+
 #aenderungsantrag-form textarea, #texte-form textarea {
 	width: 400px;
 }
+
 #aenderungsantrag-form textarea {
 	height: 150px;
 }
+
 #texte-form textarea {
 	height: 400px;
 }
+
 #aenderungsantrag-form select, #antrag-form select, #texte-form input, #texte-form select {
 	width: 405px;
 }
+
 #Antrag_status_string, #antrag-form select#Antrag_status {
 	width: 200px;
 }
+
 #aenderungsantrag-form #Aenderungsantrag_status, #aenderungsantrag-form #Aenderungsantrag_status_string {
 	width: 200px;
 }
+
 #aenderungsantrag-form .unterstuetzerwidget select, #antrag-form .unterstuetzerwidget select {
 	width: 200px;
 }
+
 .js_protection_hint {
 	width: 90%;
 	margin-left: auto;
@@ -1021,6 +1055,7 @@ ins {
 	margin: 15px;
 	padding: 5px;
 }
+
 blockquote {
 	margin: 3px 3px 3px 15px;
 	border-left: dotted 2px gray;
