@@ -93,7 +93,7 @@ return array(
 			),
 		),
 		'bootstrap'=>array(
-			'class'=>'ext.bootstrap.components.Bootstrap',
+			'class' => 'composer.chris83.yii-bootstrap.components.Bootstrap',
 		),
 		'datetimepicker'=>array(
 			'class' => 'ext.datetimepicker.EDateTimePicker',

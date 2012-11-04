@@ -2,7 +2,6 @@
 
 require_once("HTML/BBCodeParser.php");
 
-
 class HtmlBBcodeUtils
 {
 
@@ -317,48 +316,31 @@ class HtmlBBcodeUtils
 	 */
 	static function bbcode2html($text)
 	{
+		$text = preg_replace_callback("/(\[o?list[^\]]*\])(.*)(\[\/o?list\])/siuU", function($matches) {
+			$parts = explode("[*]", trim($matches[2]));
+			$str = $matches[1];
+			foreach ($parts as $part) if ($part != "") $str .= "[LI]" . trim($part) . "[/LI]";
+			$str .= $matches[3];
+			return  $str;
+		}, $text);
 
-		//$text = preg_replace("/([^\n\r ?&\[\]\"]{80})/iu", "\\1[[CHAR=&#8203;]]", $text);
-
-
-		$GLOBALS["bb_tags"] = array();
-		global $bb_tags;
-		$bb_tags[] = "B";
-		$bb_tags[] = "I";
-		$bb_tags[] = "U";
-		$bb_tags[] = "S";
-		$bb_tags[] = "URL";
-		$bb_tags[] = "EMAIL";
-
-		$bb_tags[] = "UL";
-		$bb_tags[] = "OL";
-		$bb_tags[] = "QUOTE";
-		$text      = preg_replace("/\[\/li\][\\n\\r ]+\[li\]/siU", "[/li][li]", $text);
-		$text      = preg_replace("/\[ul\][\\n\\r ]+\[li\]/siU", "[ul][li]", $text);
-		$text      = preg_replace("/\[\/li\][\\n\\r ]+\[\/ul\]/siU", "[/li][/ul]", $text);
-		$text      = preg_replace("/\[ol\][\\n\\r ]+\[li\]/siU", "[ol][li]", $text);
-		$text      = preg_replace("/\[\/li\][\\n\\r ]+\[\/ol\]/siU", "[/li][/ol]", $text);
-
-		$text      = str_replace("[/QUOTE]<br>", "[/QUOTE]", $text);
-		$text      = str_replace("[/quote]<br>", "[/quote]", $text);
-		$text      = str_ireplace(array("\n[right]", "[/right]\n"), array("[right]", "[/right]"), $text);
-		$text      = str_ireplace(array("\n[left]", "[/left]\n"), array("[left]", "[/left]"), $text);
-		$bb_tags[] = "RIGHT";
-		$bb_tags[] = "LEFT";
-		$text      = str_ireplace(array("\n[center]", "[/center]\n"), array("[center]", "[/center]"), $text);
-		$bb_tags[] = "CENTER";
-		$text      = str_ireplace(array("\n[justify]", "[/justify]\n"), array("[justify]", "[/justify]"), $text);
-		$bb_tags[] = "JUSTIFY";
-
-		$text = str_replace("[[CHAR=&amp;#8203;]]", "&#8203;", $text);
+		$text = preg_replace_callback("/(\[quote[^\]]*\])(.*)(\[\/o?quote\])/siuU", function($matches) {
+			$first_open = mb_stripos($matches[2], "[LIST");
+			$first_close = mb_stripos($matches[2], "[/LIST]");
+			if ($first_close !== false && ($first_open === false || $first_close > $first_open)) $matches[2] = trim(mb_substr($matches[2], 0, $first_close) . "\n" . mb_substr($matches[2], $first_close + 7));
+			return $matches[1] . $matches[2] . $matches[3];
+		}, $text);
 
 
-		if (count($bb_tags) > 0) {
-			$parser = new HTML_BBCodeParser(array("filters" => "Antraege", "quotestyle" => "double"));
-			$parser->setText($text);
-			$parser->parse();
-			$text = $parser->getParsed();
-		}
+		//echo "<br>IN========<br>";
+		//echo CHtml::encode($text);
+		$code = new \mjohnson\decoda\Decoda();
+		$code->addFilter(new AntraegeBBCodeFilter());
+		$code->addFilter(new \mjohnson\decoda\filters\UrlFilter());
+		$code->reset($text);
+		$text = $code->parse();
+		//echo "<br>OUT========<br>";
+		//echo CHtml::encode($text);
 
 		$text = str_replace("\n", "<br>", $text);
 		$text = preg_replace("/<br *\/>/siu", "<br>", $text);

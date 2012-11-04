@@ -8,7 +8,7 @@ ini_set('include_path', ini_get('include_path') . ":" . dirname(__FILE__) . "/..
 require_once(dirname(__FILE__) . "/../vendor/autoload.php");
 
 // change the following paths if necessary
-$yii=dirname(__FILE__).'/../libraries/yii-1.1.12.b600af/framework/yii.php';
+$yii=dirname(__FILE__).'/../vendor/yiisoft/yii/framework/yii.php';
 $config=dirname(__FILE__).'/../protected/config/main.php';
 
 // remove the following lines when in production mode
@@ -18,6 +18,7 @@ defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
 
 require_once($yii);
 
+Yii::setPathOfAlias("composer", __DIR__ . "/../vendor/");
 $app = Yii::createWebApplication($config);
 $app->language = "de";
 $app->layout = "bootstrap";

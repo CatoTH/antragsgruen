@@ -277,7 +277,7 @@ h1.well {
 }
 
 .antragabsatz_holder.orig {
-	padding: 20px 20px 30px 0;
+	padding: 15px 20px 25px 0;
 }
 .antragstext_diff {
 	padding: 20px 20px 30px 60px;
@@ -469,6 +469,15 @@ h2,
 .antrags_text_holder_nummern ul.text li .zeilennummer,
 .antrags_text_holder_nummern ol.text li .zeilennummer {
 	left: -60px;
+}
+
+.antrags_text_holder_nummern blockquote.text {
+	margin: 3px 3px 3px 60px;
+	border-left: dotted 2px gray;
+	padding: 5px;
+}
+.antrags_text_holder_nummern blockquote.text .zeilennummer {
+	left: -46px;
 }
 
 .textabschnitt {

@@ -11,12 +11,8 @@ AutorInnen:
 
 
 
-VERWENDETE SOFTWARE-BIBLIOTHEKEN
-================================
-
-Yii Framework
-http://www.yiiframework.com/
-Lizenz: BSD License
+EINGEBUNDENE SOFTWARE-BIBLIOTHEKEN
+==================================
 
 Yii Extension: giix
 http://www.yiiframework.com/extension/giix/
@@ -26,10 +22,6 @@ Yii Extension: LightOpenID
 https://github.com/Dreyer/LightOpenID/blob/master/openid.php
 Lizenz: MIT
 
-Yii Extension: Bootstrap
-http://www.yiiframework.com/extension/bootstrap/
-Lizenz: New BSD License
-
 TimePicker
 https://github.com/perifer/timePicker
 Lizenz: MIT / GPL
@@ -37,14 +29,6 @@ Lizenz: MIT / GPL
 jQuery / jQueryUI
 http://jquery.com/
 Lizenz: MIT
-
-Zend Framework
-http://framework.zend.com/
-Lizenz: New BSD License
-
-TCPDF
-http://www.tcpdf.org/
-Lizenz: GPL v3
 
 Horde Text Diff
 http://pear.horde.org/
@@ -54,16 +38,33 @@ Pear / HTML BBCode Parser
 http://pear.php.net/package/HTML_BBCodeParser
 Lizenz: PHP License
 
-Twitter Bootstrap
-http://twitter.github.com/bootstrap/
-Lizenz: Apache License v2.0
-
 Heise socialshareprivacy
 http://www.heise.de/extras/socialshareprivacy/
 Lizenz: MIT
 
 
+NACHGELADENE SOFTWARE-BIBLIOTHEKEN
+==================================
 
+Yii Framework
+http://www.yiiframework.com/
+Lizenz: BSD License
+
+Twitter Bootstrap
+http://twitter.github.com/bootstrap/
+Lizenz: Apache License v2.0
+
+Yii Extension: Bootstrap
+http://www.yiiframework.com/extension/bootstrap/
+Lizenz: New BSD License
+
+TCPDF
+http://www.tcpdf.org/
+Lizenz: GPL v3
+
+Decoda
+http://milesj.me/code/php/decoda
+Lizenz: MIT
 
 
 

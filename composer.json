@@ -11,9 +11,37 @@
 	"minimum-stability": "dev",
 	"homepage": "http://parteitool.netzbegruenung.de/",
 	"autoload": {
+		"psr-0": { "mjohnson\\decoda": "vendor/" }
 	},
+	"repositories": [
+		{
+			"type": "package",
+			"package": {
+				"name": "yiisoft/yii",
+				"version": "1.1.12",
+				"dist": {
+					"url": "http://yii.googlecode.com/files/yii-1.1.12.b600af.zip",
+					"type": "zip"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "chris83/yii-bootstrap",
+				"version": "1.2.0",
+				"dist": {
+					"url": "http://www.yiiframework.com/extension/bootstrap/files/yii-bootstrap-1.2.0.r300.zip",
+					"type": "zip"
+				}
+			}
+		}
+	],
 	"require": {
 		"php": ">=5.3.3",
-		"tcpdf/tcpdf": "dev-master"
+		"tcpdf/tcpdf": "dev-master",
+		"mjohnson/decoda": "dev-master",
+		"yiisoft/yii": "1.1.12",
+		"chris83/yii-bootstrap": "1.2.0"
 	}
 }
