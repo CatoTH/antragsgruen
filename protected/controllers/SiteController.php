@@ -119,11 +119,13 @@ class SiteController extends Controller
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
-			"feed_title"       => "Anträge",
+			"feed_title"       => $sprache->get("Anträge"),
+			"feed_description" => str_replace("%veranstaltung%", $veranstaltung->name, $sprache->get("feed_desc_antraege")),
 			"data"             => $this->getFeedAntraegeData($veranstaltung),
-			"sprache"          => $veranstaltung->getSprache(),
+			"sprache"          => $sprache,
 		));
 	}
 
@@ -135,11 +137,13 @@ class SiteController extends Controller
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
-			"feed_title"       => "Änderungsanträge",
+			"feed_title"       => $sprache->get("Änderungsanträge"),
+			"feed_description" => str_replace("%veranstaltung%", $veranstaltung->name, $sprache->get("feed_desc_aenderungsantraege")),
 			"data"             => $this->getFeedAenderungsantraegeData($veranstaltung),
-			"sprache"          => $veranstaltung->getSprache(),
+			"sprache"          => $sprache,
 		));
 	}
 
@@ -151,9 +155,11 @@ class SiteController extends Controller
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
-			"feed_title"       => "Kommentare",
+			"feed_title"       => $sprache->get("Kommentare"),
+			"feed_description" => str_replace("%veranstaltung%", $veranstaltung->name, $sprache->get("feed_desc_kommentare")),
 			"data"             => $this->getFeedAntragKommentarData($veranstaltung),
 			"sprache"          => $veranstaltung->getSprache(),
 		));

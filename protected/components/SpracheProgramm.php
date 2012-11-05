@@ -21,5 +21,8 @@ class SpracheProgramm extends Sprache
 		"Neuer Änderungsantrag"              => "Änderungsvorschlag",
 		"Neuer Antragstext"                  => "Neuer Text",
 		"Begründung für den Änderungsantrag" => "Begründung für den Änderungsvorschlag",
+		"feed_desc_antraege"                 => "%veranstaltung%: Neue Kapitel des Wahlprogramms",
+		"feed_desc_aenderungsantraege"       => "%veranstaltung%: Neue Änderungsvorschläge für das Wahlprogramm",
+		"feed_desc_kommentare"               => "%veranstaltung%: Neue Kommentare",
 	);
 }

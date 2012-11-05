@@ -6,6 +6,7 @@
  * @var string $feed_title
  * @var array $data
  * @var Sprache $sprache
+ * @var string $feed_description
  */
 
 $this->layout=false;
@@ -18,7 +19,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<atom:link href="<?php echo CHtml::encode(Yii::app()->getBaseUrl(true) . Yii::app()->request->requestUri); ?>" rel="self" type="application/rss+xml" />
 		<title><?php echo CHtml::encode($feed_title); ?></title>
 		<link><?php echo CHtml::encode(Yii::app()->getBaseUrl(true)); ?></link>
-		<description>Ein Weblog auf www.animexx.de</description>
+		<description><?php echo CHtml::encode($feed_description); ?></description>
 		<image>
 			<url><?php echo CHtml::encode(Yii::app()->getBaseUrl(true)); ?>/css/img/logo.png</url>
 			<title><?php echo CHtml::encode($feed_title); ?></title>
