@@ -68,19 +68,22 @@ class HtmlBBcodeUtils
 
 					return $out;
 				}, $y);
+
 				$str_neu = preg_replace_callback("/(\[list[^\]]*\])(.*)(\[\/list\])/siuU", function ($matches) {
 					$out = $matches[1];
 					$x = explode("[*]", $matches[2]);
-					if (count($x) > 1) for ($i = 1; $i < count($x); $i++) {
+
+					if (count($x) > 1) for ($i = 1; $i < count($x); $i++) if (trim($x[$i]) != "") {
 						$zeils = explode("\n", trim($x[$i]));
 						$zeils_neu = array();
 						foreach ($zeils as $zeile) {
 							$z           = HtmlBBcodeUtils::text2zeilen($zeile, 70);
 							$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $z);
 						}
-						$out .= implode("[*]", $zeils_neu);
-						$out .= $matches[3];
+						$out .= "[*]" . implode("[*]", $zeils_neu);
 					}
+					$out .= $matches[3];
+
 					return $out;
 				}, $str_neu);
 
@@ -335,7 +338,8 @@ class HtmlBBcodeUtils
 		$text = preg_replace_callback("/(\[quote[^\]]*\])(.*)(\[\/o?quote\])/siuU", function($matches) {
 			$first_open = mb_stripos($matches[2], "[LIST");
 			$first_close = mb_stripos($matches[2], "[/LIST]");
-			if ($first_close !== false && ($first_open === false || $first_close > $first_open)) $matches[2] = trim(mb_substr($matches[2], 0, $first_close) . "\n" . mb_substr($matches[2], $first_close + 7));
+
+			if ($first_close !== false && ($first_open === false || $first_close < $first_open)) $matches[2] = trim(mb_substr($matches[2], 0, $first_close) . "\n" . mb_substr($matches[2], $first_close + 7));
 			return $matches[1] . $matches[2] . $matches[3];
 		}, $text);
 

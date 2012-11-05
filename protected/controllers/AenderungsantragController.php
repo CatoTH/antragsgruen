@@ -351,7 +351,9 @@ class AenderungsantragController extends Controller
 			}
 
 			if ($changed) {
+				echo "<pre>";
 				$aenderungsantrag->setDiffParagraphs($neue_absaetze);
+
 				$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($antrag->text), trim($neuer_text));
 				$diff_text = "";
 
@@ -360,6 +362,9 @@ class AenderungsantragController extends Controller
 
 				$aenderungsantrag->aenderung_text    = $diff_text;
 				$aenderungsantrag->datum_einreichung = new CDbExpression('NOW()');
+
+				echo $diff_text;
+				die();
 			} else {
 				Yii::app()->user->setFlash("error", "Es wurde nichts am Text geändert.");
 			}
