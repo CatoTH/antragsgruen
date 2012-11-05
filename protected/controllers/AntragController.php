@@ -315,7 +315,8 @@ class AntragController extends Controller
 			$antrag->save();
 
 			if ($antrag->veranstaltung0->admin_email != "") {
-				mb_send_mail($antrag->veranstaltung0->admin_email, "Neuer Antrag",
+				$mails = explode(",", $antrag->veranstaltung0->admin_email);
+				foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Antrag",
 					"Es wurde ein neuer Antrag \"" . $antrag->name . "\" eingereicht.\n" .
 						"Link: " . yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $antrag->id,
 					"From: " . Yii::app()->params['mail_from']
