@@ -8,9 +8,6 @@
 
 $antrag = $aenderungsantrag->antrag;
 
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor/ckeditor.js');
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/antraege_bbcode_plugin.js');
-
 /** @var $antragstellerinnen array|Person[] */
 $antragstellerinnen = array();
 /** @var $unterstuetzerinnen array|Person[] */
