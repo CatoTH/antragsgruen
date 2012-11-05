@@ -1,5 +1,6 @@
 <?php
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor/ckeditor.js');
+Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor.abbr/plugin.js');
 ?>
 
 <div class="form">
@@ -54,7 +55,7 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 
     <script>
         $(function () {
-            CKEDITOR.replace('Texte_text', {'customConfig':"/js/ckconfig-html.js", width:690 });
+            CKEDITOR.replace('Texte_text', {'customConfig':"/js/ckconfig-html.js", extraPlugins : 'abbr', width:690 });
         })
     </script>
 

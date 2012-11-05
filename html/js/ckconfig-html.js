@@ -9,6 +9,7 @@ CKEDITOR.editorConfig = function (config) {
 			{ name: 'insert', items : [ 'Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ] },
 			'/',
 			{ name: 'basicstyles', items : [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+			{ name: 'custom', items : [ 'Abbr', 'Italic' ] },
 			{ name: 'paragraph', items : [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
 				'-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
 			{ name: 'links', items : [ 'Link', 'Unlink', 'Anchor' ] },
