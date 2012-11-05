@@ -20,7 +20,7 @@
  * @var Sprache $sprache
  */
 
-$this->breadcrumbs = array(
+$this->breadcrumbs         = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
 	$sprache->get("Antrag"),
 );
@@ -141,9 +141,9 @@ foreach ($absae as $i => $abs) {
 			?>
 			<div class="absatz_text ae_<?php echo $ant->id; ?> antragabsatz_holder antrags_text_holder_nummern"
 					style="display: none; position: relative; border-right: solid 1px lightgray; margin-left: 0;">
-				<div class="text"><?php
-					echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i]);
-					?></div>
+				<?php
+				echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i]);
+				?>
 			</div>
 			<?php
 		}
@@ -322,11 +322,11 @@ foreach ($absae as $i => $abs) {
 						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'success', 'label' => 'Zustimmen', 'icon' => 'icon-thumbs-up', 'htmlOptions' => array('name' => AntiXSS::createToken('mag'))));
 						?>
 					</div>
-						<!--
+					<!--
 					<div style="display: inline-block; width: 49%; text-align: center;">
 						<?php
-						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'danger', 'label' => 'Ablehnen', 'icon' => 'icon-thumbs-down', 'htmlOptions' => array('name' => AntiXSS::createToken('magnicht'))));
-						?>
+					$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'danger', 'label' => 'Ablehnen', 'icon' => 'icon-thumbs-down', 'htmlOptions' => array('name' => AntiXSS::createToken('magnicht'))));
+					?>
 					</div>
 					-->
 					<?php
