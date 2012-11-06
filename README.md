@@ -1,7 +1,7 @@
 Antragsgrün
 ===========
 
-Antragsgrün ist ein Antragsverwaltungssystem, das mit der Netzbegrünung (http://blog.netzbegruenung.de/) entwickelt wird.
+Antragsgrün ist ein Antragsverwaltungssystem, das mit der [Netzbegrünung](http://blog.netzbegruenung.de/) entwickelt wird.
 
 Es ist auf zwei Szenarien zugeschnitten:
 - Das Kommentieren von Dokumenten - insbesondere des Wahlprogramms
@@ -9,7 +9,7 @@ Es ist auf zwei Szenarien zugeschnitten:
 
 Es ist NICHT:
 - Ein Abstimmungstool. Eine eventuelle Beschlussfassung über Anträge findet auf andere Weise statt (Parteitag, Programmkommission, etc.)
-- Ein "Vor-Ort"-Tool. Dafür empfehle ich http://openslides.org/de/ . Ich strebe mittelfristig an, den Export von Anträgen von Antragsgrün zu Openslides soweit möglich zu erleichtern.
+- Ein "Vor-Ort"-Tool. Dafür empfehle ich [OpenSlides](http://openslides.org/de/) . Ich strebe mittelfristig an, den Export von Anträgen von Antragsgrün zu Openslides soweit möglich zu erleichtern.
 
 
 Login und Berechtigungen
@@ -54,6 +54,7 @@ Im Testbetrieb wird es derzeit hier eingestzt: http://antraege.hoessl.eu/
 
 
 Kontakt:
-tobias@hoessl.eu
-[@TobiasHoessl](https://twitter.com/TobiasHoessl)
-http://www.hoessl.eu/
+--------
+- tobias@hoessl.eu
+- [@TobiasHoessl](https://twitter.com/TobiasHoessl)
+- http://www.hoessl.eu/
