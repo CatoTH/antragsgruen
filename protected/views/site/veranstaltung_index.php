@@ -132,7 +132,10 @@ foreach ($antraege as $name=> $antrs) {
 		echo ">";
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
-		echo CHtml::link(CHtml::encode($antrag->revision_name . ": " . $antrag->name), "/antrag/anzeige/?id=" . $antrag->id);
+		$name = $antrag->revision_name;
+		if (strlen($antrag->revision_name) > 1 && !in_array($antrag->revision_name[strlen($antrag->revision_name -1)], array(":", "."))) $name .= ":";
+		$name .= " " . $antrag->name;
+		echo CHtml::link(CHtml::encode($name), "/antrag/anzeige/?id=" . $antrag->id);
 		echo CHtml::link("PDF", "/antrag/pdf/?id=" . $antrag->id, array("class"=> "pdfLink"));
 		echo "</p>\n";
 		echo "<p class='info'>von ";

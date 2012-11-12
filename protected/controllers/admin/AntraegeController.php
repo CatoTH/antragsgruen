@@ -17,7 +17,6 @@ class AntraegeController extends AdminControllerBase
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Antrag"], "datum_einreichung");
 			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Antrag"], "datum_beschluss");
 			$relatedData = array(
-				'abonnenten' => $_POST['Antrag']['abonnenten'] === '' ? null : $_POST['Antrag']['abonnenten'],
 			);
 
 			if ($model->saveWithRelated($relatedData)) {
