@@ -109,7 +109,6 @@ $this->menus_html[] = $html;
 
 		if ($einleitungstext !== null) echo $einleitungstext;
 		?>
-        <br><br><span style="color: red; font-weight: bold;">BETA</span> - Bugs und Verbesserungsvorschläge auf <a href="https://textbegruenung.de/p/antragsgruen_testphase">https://textbegruenung.de/p/Antragstool_ToDo</a>
     </div>
 </div>
 <?php
