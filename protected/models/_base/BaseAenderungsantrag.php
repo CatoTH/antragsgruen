@@ -46,7 +46,7 @@ abstract class BaseAenderungsantrag extends IAntrag {
 
 	public function rules() {
 		return array(
-			array('text_neu, begruendung_neu, aenderung_text, aenderung_begruendung, datum_einreichung, status, status_string', 'required'),
+			array('text_neu, aenderung_text, datum_einreichung, status, status_string', 'required'),
 			array('antrag_id, status', 'numerical', 'integerOnly'=>true),
 			array('revision_name', 'length', 'max'=>45),
 			array('status_string', 'length', 'max'=>55),
