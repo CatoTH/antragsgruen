@@ -21,6 +21,8 @@ $this->breadcrumbs = array(
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
+$this->pageTitle = $veranstaltung->name . " (Antragsgrün)";
+
 if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) {
 	$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Neue Anträge") . "</li>";
 	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
@@ -131,10 +133,7 @@ foreach ($antraege as $name=> $antrs) {
 		echo ">";
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
-		$name = $antrag->revision_name;
-		if (strlen($antrag->revision_name) > 1 && !in_array($antrag->revision_name[strlen($antrag->revision_name -1)], array(":", "."))) $name .= ":";
-		$name .= " " . $antrag->name;
-		echo CHtml::link(CHtml::encode($name), "/antrag/anzeige/?id=" . $antrag->id);
+		echo CHtml::link(CHtml::encode($antrag->nameMitRev()), "/antrag/anzeige/?id=" . $antrag->id);
 		echo CHtml::link("PDF", "/antrag/pdf/?id=" . $antrag->id, array("class"=> "pdfLink"));
 		echo "</p>\n";
 		echo "<p class='info'>von ";

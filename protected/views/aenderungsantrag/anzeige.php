@@ -25,7 +25,7 @@ $this->breadcrumbs = array(
 	'Änderungsantrag'
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
-
+$this->pageTitle = $aenderungsantrag->revision_name . " zu: " . $aenderungsantrag->antrag->nameMitRev();
 
 $html = '<ul class="funktionen">';
 //$html .= '<li class="unterstuetzen"><a href="#">Änderungsantrag unterstützen</a></li>';

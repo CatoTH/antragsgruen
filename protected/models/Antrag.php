@@ -151,6 +151,17 @@ class Antrag extends BaseAntrag
 		return "Ä" . ($max_rev + 1);
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function nameMitRev() {
+		$name = $this->revision_name;
+		if (strlen($this->revision_name) > 1 && !in_array($this->revision_name[strlen($this->revision_name -1)], array(":", "."))) $name .= ":";
+		$name .= " " . $this->name;
+		return $name;
+	}
+
     /*
     public function getRelationLabel($relationName, $n = null, $useRelationLabel = true) {
         if ($relationName == "abonnenten") return Yii::t('app', ($n == 1 ? 'AbonnentIn' : 'AbonnentInnen'));

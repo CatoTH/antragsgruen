@@ -26,6 +26,8 @@ $this->breadcrumbs         = array(
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
+$this->pageTitle = $antrag->nameMitRev() . " (" . $antrag->veranstaltung0->name . ", Antragsgrün)";
+
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/socialshareprivacy/jquery.socialshareprivacy.min.js');
 
 

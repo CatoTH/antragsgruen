@@ -3,6 +3,7 @@
 /**
  * @var AntragController $this
  * @var $antrag $antrag
+ * @var Sprache $sprache
  */
 
 $this->breadcrumbs = array(
