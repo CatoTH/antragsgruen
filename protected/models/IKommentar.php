@@ -11,7 +11,7 @@ abstract class IKommentar extends GxActiveRecord {
 
 	public function kannLoeschen(CWebUser $c) {
 		if ($c->getState("role") == "admin") return true;
-		if ($c->getId() == $this->verfasser->auth) return true;
+		if (!is_null($this->verfasser->auth) && $c->getId() == $this->verfasser->auth) return true;
 		return false;
 	}
 
