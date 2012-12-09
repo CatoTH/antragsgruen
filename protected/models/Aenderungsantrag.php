@@ -119,7 +119,7 @@ class Aenderungsantrag extends BaseAenderungsantrag
 	 * @return array|Aenderungsantrag[]
 	 */
 	public static function suche($suchbegriff) {
-		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%')");
+		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")");
 	}
 
 

@@ -168,7 +168,7 @@ class Antrag extends BaseAntrag
 	 * @return array|Antrag[]
 	 */
 	public static function suche($suchbegriff) {
-		return Antrag::model()->findAll("(`text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%')");
+		return Antrag::model()->findAll("(`text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")");
 	}
 
     /*
