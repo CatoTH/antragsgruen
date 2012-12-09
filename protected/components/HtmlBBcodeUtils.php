@@ -657,4 +657,10 @@ class HtmlBBcodeUtils
 	}
 
 
+
+	static function removeBBCode($text) {
+		return str_ireplace(array("[b]", "[/b]", "[quote]", "[/quote]", "[*]", "[i]", "[/i]", "[list]", "[/list]", "[u]", "[/u]", "[s]", "[/s]"), "", $text);
+	}
+
+
 }

@@ -119,7 +119,7 @@ class SiteController extends Controller
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
-		$sprache = $veranstaltung->getSprache();
+		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
 			"feed_title"       => $sprache->get("Anträge"),
@@ -137,7 +137,7 @@ class SiteController extends Controller
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
-		$sprache = $veranstaltung->getSprache();
+		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
 			"feed_title"       => $sprache->get("Änderungsanträge"),
@@ -155,7 +155,7 @@ class SiteController extends Controller
 		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
-		$sprache = $veranstaltung->getSprache();
+		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung_id,
 			"feed_title"       => $sprache->get("Kommentare"),
@@ -192,6 +192,38 @@ class SiteController extends Controller
 	}
 
 
+	public function actionSuche($veranstaltung_id = 0)
+	{
+		$veranstaltung_id = IntVal($veranstaltung_id);
+		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
+
+		$this->layout = '//layouts/column2';
+
+		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($veranstaltung_id, 5);
+		$neueste_antraege           = Antrag::holeNeueste($veranstaltung_id, 5);
+		$neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung_id, 3);
+
+		/** @var Veranstaltung $veranstaltung */
+		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+
+		$suchbegriff = $_REQUEST["suchbegriff"];
+		$antraege = Antrag::suche($suchbegriff);
+		$aenderungsantraege = Aenderungsantrag::suche($suchbegriff);
+
+		$this->render('suche', array(
+			"veranstaltung"              => $veranstaltung,
+			"neueste_antraege"           => $neueste_antraege,
+			"neueste_kommentare"         => $neueste_kommentare,
+			"neueste_aenderungsantraege" => $neueste_aenderungsantraege,
+			"suche_antraege"             => $antraege,
+			"suche_aenderungsantraege"   => $aenderungsantraege,
+			"suchbegriff"                => $suchbegriff,
+			"sprache"                    => $veranstaltung->getSprache(),
+		));
+
+	}
+
+
 	/**
 	 * @param int $veranstaltung_id
 	 */
@@ -203,7 +235,7 @@ class SiteController extends Controller
 		$this->layout = '//layouts/column2';
 
 
-		/** @var $veranstaltung Veranstaltung */
+		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->
 			with(array(
 			'antraege'                    => array(
@@ -216,7 +248,7 @@ class SiteController extends Controller
 			),
 		))->findByPk($veranstaltung_id);
 
-		/** @var $antraege array|Antrag[] */
+		/** @var array|Antrag[] $antraege */
 		$antraege        = $veranstaltung->antraege;
 		$antraege_sorted = array();
 		$warnung         = false;

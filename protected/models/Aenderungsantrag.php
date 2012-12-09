@@ -114,4 +114,13 @@ class Aenderungsantrag extends BaseAenderungsantrag
 		return false;
 	}
 
+	/**
+	 * @param string $suchbegriff
+	 * @return array|Aenderungsantrag[]
+	 */
+	public static function suche($suchbegriff) {
+		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%')");
+	}
+
+
 }

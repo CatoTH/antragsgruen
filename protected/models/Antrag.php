@@ -162,6 +162,15 @@ class Antrag extends BaseAntrag
 		return $name;
 	}
 
+
+	/**
+	 * @param string $suchbegriff
+	 * @return array|Antrag[]
+	 */
+	public static function suche($suchbegriff) {
+		return Antrag::model()->findAll("(`text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%')");
+	}
+
     /*
     public function getRelationLabel($relationName, $n = null, $useRelationLabel = true) {
         if ($relationName == "abonnenten") return Yii::t('app', ($n == 1 ? 'AbonnentIn' : 'AbonnentInnen'));
