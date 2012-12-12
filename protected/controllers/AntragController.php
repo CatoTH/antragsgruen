@@ -4,6 +4,8 @@ class AntragController extends Controller
 {
 	public $menus_html = null;
 	public $breadcrumbs_topname = null;
+	public $text_comments = true;
+	public $shrink_cols = false;
 
 	public function actionAnzeige()
 	{

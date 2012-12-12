@@ -917,6 +917,8 @@ ul.funktionen li a:hover {
 	color: rgb(246, 224, 235);
 }
 
+.icon-aender-stellen:before,
+.icon-pdf:before,
 ul.funktionen .unterstuetzen a:before,
 ul.funktionen .aender-stellen a:before,
 ul.funktionen .download a:before,
@@ -931,13 +933,23 @@ ul.funktionen .zurueck a:before {
 	color: #fff;
 }
 
+.icon-aender-stellen:before,
+.icon-pdf:before {
+	margin-left: 0;
+	font-style: normal;
+}
+
+.icon-aender-stellen:before,
 ul.funktionen .aender-stellen a:before {
 	content: '\2795';
 }
 
+.icon-pdf:before,
 ul.funktionen .download a:before {
 	content: '\e4a4';
 }
+
+.btn .icon-pdf:before { color: #000000; }
 
 ul.funktionen .zurueck a:before {
 	content: "←";
@@ -1113,7 +1125,8 @@ blockquote {
 @media screen and (max-width: 979px) {
 	h3, h2, .span3 .well .nav-list .nav-header { padding: 6px 10px 4px }
 	#page, .footer_bar { width: 760px; }
-	.span9, .row-fluid .span9 { width: 550px; }
-	.span3, .row-fluid .span3 { width: 190px; margin-left: 15px; }
-	.span3 .search-query { width: 110px; }
+	.shrink_cols .span9, .shrink_cols .row-fluid .span9 { width: 550px; }
+	.shrink_cols .span3, .shrink_cols  .row-fluid .span3 { width: 190px; margin-left: 15px; }
+	.shrink_cols .span3 .search-query { width: 110px; }
+	.text_comments .span9, .text_comments .row-fluid .span9 { width: 695px; }
 }

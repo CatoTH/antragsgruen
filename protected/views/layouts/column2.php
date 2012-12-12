@@ -16,7 +16,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 		<?php echo $content; ?>
     </div>
 	<?php  if ($this->menu || isset($this->multimenu) || isset($this->menus_html)) { ?>
-    <div class="span3">
+    <div class="span3<? if (isset($this->text_comments) && $this->text_comments) echo " visible-desktop"; ?>">
 
 		<?php
 		$menus = array();
