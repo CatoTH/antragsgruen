@@ -5,10 +5,13 @@
  */
 $this->beginContent('//layouts/bootstrap');
 
+$row_classes = array("row-fluid");
+if (isset($this->shrink_cols) && $this->shrink_cols) $row_classes[] = "shrink_cols";
+if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_comments";
 ?>
 
 
-<div class="row-fluid">
+<div class="<?=implode(" ", $row_classes)?>">
     <div class="span9">
 		<?php echo $content; ?>
     </div>

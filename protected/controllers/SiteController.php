@@ -6,6 +6,8 @@ class SiteController extends Controller
 	public $multimenu = null;
 	public $menus_html = null;
 	public $breadcrumbs_topname = null;
+	public $text_comments = false;
+	public $shrink_cols = true;
 
 	/**
 	 *

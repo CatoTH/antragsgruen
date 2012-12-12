@@ -187,7 +187,7 @@ h1.well {
 	margin: 0;;
 }
 
-.span,
+.span9,
 .row-fluid .span9 {
 	width: 715px;
 }
@@ -962,6 +962,9 @@ ul.funktionen .zurueck a:before {
 	clear: both;
 }
 
+.span3 .search-query { width: 140px; }
+
+
 /**************************** ALT ***************************** */
 
 .row {
@@ -1054,8 +1057,6 @@ ins {
 
 .js_protection_hint {
 	width: 90%;
-	margin-left: auto;
-	margin-right: auto;
 	background-color: #f08080;
 	border: solid 1px red;
 	margin: 15px;
@@ -1068,3 +1069,51 @@ blockquote {
 	padding: 5px;
 }
 
+
+
+
+
+
+
+/**************************** RESPONSIVE ***************************** */
+
+
+.visible-phone {
+	display: none !important;
+}
+
+.visible-tablet {
+	display: none !important;
+}
+
+.hidden-desktop {
+	display: none !important;
+}
+
+.visible-desktop {
+	display: inherit !important;
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+	.hidden-desktop {
+		display: inherit !important;
+	}
+	.visible-desktop {
+		display: none !important ;
+	}
+	.visible-tablet {
+		display: inherit !important;
+	}
+	.hidden-tablet {
+		display: none !important;
+	}
+}
+
+
+@media screen and (max-width: 979px) {
+	h3, h2, .span3 .well .nav-list .nav-header { padding: 6px 10px 4px }
+	#page, .footer_bar { width: 760px; }
+	.span9, .row-fluid .span9 { width: 550px; }
+	.span3, .row-fluid .span3 { width: 190px; margin-left: 15px; }
+	.span3 .search-query { width: 110px; }
+}
