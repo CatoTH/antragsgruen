@@ -108,6 +108,15 @@ $this->menus_html[] = $html;
 			</tr>
 			<?php } ?>
 		</table>
+
+		<div class="hidden-desktop">
+			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
+				<a href="/antrag/pdf/?id=<?php echo $antrag->id; ?>" class="btn" type="button" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
+			</div>
+			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
+				<a href="/aenderungsantrag/neu/?antrag_id=<?php echo $antrag->id; ?>" class="btn btn-danger" type="button" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
+			</div>
+		</div>
 	</div>
 </div>
 
