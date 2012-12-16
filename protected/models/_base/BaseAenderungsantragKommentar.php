@@ -42,7 +42,6 @@ abstract class BaseAenderungsantragKommentar extends IKommentar {
 		return array(
 			array('datum', 'required'),
 			array('verfasser_id, aenderungsantrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
-			array('text', 'length', 'max'=>45),
 			array('verfasser_id, aenderungsantrag_id, absatz, text, status', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('id, verfasser_id, aenderungsantrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
 		);

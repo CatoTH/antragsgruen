@@ -94,6 +94,7 @@ class AenderungsantragController extends Controller
 				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert.");
 				$this->redirect("/aenderungsantrag/anzeige/?id=" . $id . "&kommentar=" . $kommentar->id . "#komm" . $kommentar->id);
 			} else {
+				foreach ($kommentar->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 				foreach ($model_person->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 			}
 		}

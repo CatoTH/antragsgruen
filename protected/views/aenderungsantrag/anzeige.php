@@ -95,7 +95,12 @@ $rows = 10;
 					?></td>
             </tr>
         </table>
-
+	<?php
+	$this->widget('bootstrap.widgets.TbAlert', array(
+        	'block'=> true,
+        	'fade' => true,
+        ));
+	?>
     </div>
 </div>
 <br>
@@ -140,7 +145,7 @@ $rows = 10;
                     <h3>Kommentar von <?php echo CHtml::encode($komm->verfasser->name); ?></h3>
 					<?php
 					echo nl2br(CHtml::encode($komm->text));
-					if (!is_null($komm_del_link)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace("#komm_id#", $komm->id, $komm_del_link)) . "'>x</a></div>";
+					if (!is_null($komm_del_link) && $komm->kannLoeschen(Yii::app()->user)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace("#komm_id#", $komm->id, $komm_del_link)) . "'>x</a></div>";
 					?>
                 </div>
 				<?php
