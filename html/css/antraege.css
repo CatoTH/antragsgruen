@@ -510,8 +510,8 @@ h2,
 .kommentare {
 	display: block;
 	position: absolute;
-	width: 57px;
-	right: -57px;
+	width: 60px;
+	right: -60px;
 	color: #fff;
 	-moz-border-radius-topright: 10px;
 	-webkit-border-top-right-radius: 10px;
@@ -586,7 +586,7 @@ h2,
 	background: -ms-linear-gradient(90deg, rgb(175, 203, 8) 0%, rgb(185, 209, 38) 100%);
 	background: linear-gradient(90deg, rgb(175, 203, 8) 0%, rgb(185, 209, 38) 100%);
 	padding: 10px 0 10px 10px;
-	width: 47px;
+	width: 50px;
 }
 
 .aenders ul {
