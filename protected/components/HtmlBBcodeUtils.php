@@ -345,9 +345,9 @@ class HtmlBBcodeUtils
 
 		//echo "<br>IN========<br>";
 		//echo CHtml::encode($text);
-		$code = new \mjohnson\decoda\Decoda();
+		$code = new \Decoda\Decoda();
 		$code->addFilter(new AntraegeBBCodeFilter());
-		$code->addFilter(new \mjohnson\decoda\filters\UrlFilter());
+		$code->addFilter(new \Decoda\Filter\UrlFilter());
 		$code->reset($text);
 		$text = $code->parse();
 		//echo "<br>OUT========<br>";

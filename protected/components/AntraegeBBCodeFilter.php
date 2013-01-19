@@ -6,15 +6,15 @@
  * @link        http://milesj.me/code/php/decoda
  */
 
-use mjohnson\decoda\Decoda;
-use mjohnson\decoda\filters\FilterAbstract;
+use \Decoda\Decoda;
+use \Decoda\Filter\AbstractFilter;
 
 /**
  * Provides tags for basic font styling.
  *
  * @package    mjohnson.decoda.filters
  */
-class AntraegeBBCodeFilter extends FilterAbstract
+class AntraegeBBCodeFilter extends AbstractFilter
 {
 
 	/**

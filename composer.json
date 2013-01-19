@@ -18,9 +18,9 @@
 			"type": "package",
 			"package": {
 				"name": "yiisoft/yii",
-				"version": "1.1.12",
+				"version": "1.1.13",
 				"dist": {
-					"url": "http://yii.googlecode.com/files/yii-1.1.12.b600af.zip",
+					"url": "http://yii.googlecode.com/files/yii-1.1.13.e9e4a0.zip",
 					"type": "zip"
 				}
 			}
@@ -29,9 +29,9 @@
 			"type": "package",
 			"package": {
 				"name": "chris83/yii-bootstrap",
-				"version": "1.2.0",
+				"version": "2.0.3",
 				"dist": {
-					"url": "http://www.yiiframework.com/extension/bootstrap/files/yii-bootstrap-1.2.0.r300.zip",
+					"url": "http://www.yiiframework.com/extension/bootstrap/files/yii-bootstrap-2.0.3.r329.zip",
 					"type": "zip"
 				}
 			}
@@ -41,7 +41,7 @@
 		"php": ">=5.3.3",
 		"tcpdf/tcpdf": "dev-master",
 		"mjohnson/decoda": "dev-master",
-		"yiisoft/yii": "1.1.12",
-		"chris83/yii-bootstrap": "1.2.0"
+		"yiisoft/yii": "1.1.13",
+		"chris83/yii-bootstrap": "2.0.3"
 	}
 }
