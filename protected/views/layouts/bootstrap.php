@@ -6,6 +6,7 @@
 <html lang="de">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 
@@ -23,44 +24,33 @@
 
 <div class="container" id="page">
 	<div id="mainmenu">
-		<?php
+		<div class="navbar">
+			<div class="navbar-inner">
+				<div class="container">
+					<form class='form-search visible-phone' action='/site/suche/' method='GET'>
+						<input type='hidden' name='id' value=''>
+						<div class='input-append'><input class='search-query' type='search' name='suchbegriff' value='' autofocus placeholder='Suche'><button type='submit' class='btn'><i style='height: 18px;' class='icon-search'></i></button></div>
+					</form>
 
-		/*
-		 			array('label'   => 'Einstellungen',
-				  'url'     => array("/einstellungen/"),
-				  "visible" => !Yii::app()->user->isGuest),
-		 */
-		$items = array(
-			array('label' => 'Start',
-				  'url'   => array('/site/index')),
-			array('label' => 'Hilfe',
-				  'url'   => array('/site/hilfe')),
-			array('label'   => 'Administration',
-				  'url'     => array('/admin/'),
-				  'visible' => (Yii::app()->user->getState("role") == "admin"),
-			),
-			array('label'   => 'Login',
-				  'url'     => array('/site/login'),
-				  'visible' => Yii::app()->user->isGuest),
-			array('label'   => 'Logout',
-				  'url'     => array('/site/logout'),
-				  'visible' => !Yii::app()->user->isGuest)
-		);
-
-		$this->widget('bootstrap.widgets.TbNavbar', array(
-			'fixed'    => false,
-			'brand'    => "",
-			'brandUrl' => '/',
-			'collapse' => false,
-			'items'    => array(
-				array(
-					'class' => 'bootstrap.widgets.TbMenu',
-
-					'items' => $items,
-				)
-			),
-		)); ?>
+					<ul class="nav">
+						<li class="active"><a href="/site/index">Start</a></li>
+						<li><a href="/site/hilfe">Hilfe</a></li>
+						<?php if (Yii::app()->user->isGuest) { ?>
+						<li><a href="/site/login">Login</a></li>
+						<?php } else { ?>
+						<li><a href="/site/logout">Logout</a></li>
+						<?php
+					}
+						if (Yii::app()->user->getState("role") == "admin") {
+							?>
+							<li><a href="/site/admin">Admin</a></li>
+							<?php } ?>
+					</ul>
+				</div>
+			</div>
+		</div>
 	</div>
+
 
 	<a href="/" class="logo"><img src="/css/img/logo.png" alt="Antragsgrün"></a>
 

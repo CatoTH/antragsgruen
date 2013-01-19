@@ -1130,3 +1130,47 @@ blockquote {
 	.shrink_cols .span3 .search-query { width: 110px; }
 	.text_comments .span9, .text_comments .row-fluid .span9 { width: 695px; }
 }
+@media screen and (max-width: 767px) {
+	.hidden-phone {
+		display: none !important;
+	}
+
+	.visible-phone {
+		display: inherit !important;
+	}
+
+	.visible-tablet {
+		display: none !important;
+	}
+
+	.visible-desktop {
+		display: none !important;
+	}
+
+	#page, .footer_bar { width: 95%; }
+	#page > div > div.span9 { width: 100%; display: block; margin: 0 auto 0; float: none; }
+	#page > div > div.span3 { width: 100%; display: block; margin: 20px auto 0; float: none; }
+	#mainmenu .form-search { float: right; }
+	#mainmenu .form-search input[type=search] { width: 50px; }
+	#mainmenu ul.nav { padding-top: 7px; position: absolute; margin-right: 120px; }
+	.navbar .nav li a { margin-left: 20px; }
+	.navbar .nav li.active a, .navbar .nav li a:hover, .navbar .nav li a:focus, .navbar .nav li.active a:hover, .navbar .nav li.active a:focus { margin-left: 20px; }
+}
+
+@media screen and (max-width: 500px) {
+	#page, .footer_bar { width: auto; }
+	.logo { text-align: center; }
+	.logo img { width: 188.5px; height: 27.5px; }
+
+	.antrags_text_holder_nummern .text { padding-left: 10px; }
+	.antrags_text_holder_nummern .text br { display: none; }
+	.antrags_text_holder_nummern .zeilennummer { display: none; }
+	#socialshareprivacy { display: none; }
+}
+@media screen and (max-width: 450px) {
+	.navbar .nav li a { font-size: 16px; }
+	.navbar .nav li a { margin-left: 10px; }
+	.navbar .nav li.active a, .navbar .nav li a:hover, .navbar .nav li a:focus, .navbar .nav li.active a:hover, .navbar .nav li.active a:focus { margin-left: 10px; }
+	.navbar .nav li:first-child a { margin-left: 0; }
+	.span9 .antrag .datum { display: none; }
+}
