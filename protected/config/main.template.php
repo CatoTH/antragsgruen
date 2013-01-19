@@ -10,6 +10,8 @@ mb_internal_encoding("UTF-8");
 
 define("SEED_KEY", "randomkey");
 
+Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../../vendor/chris83/yii-bootstrap');
+
 return array(
 	'basePath'  => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
 	'name'      => 'Grüne Anträge',
