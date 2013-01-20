@@ -1155,6 +1155,21 @@ blockquote {
 	#mainmenu ul.nav { padding-top: 7px; position: absolute; margin-right: 120px; }
 	.navbar .nav li a { margin-left: 20px; }
 	.navbar .nav li.active a, .navbar .nav li a:hover, .navbar .nav li a:focus, .navbar .nav li.active a:hover, .navbar .nav li.active a:focus { margin-left: 20px; }
+	body.text_comments #page { margin-left: 0; margin-right: 40px; width: auto; }
+	.absatz_text .text > br { display: none; }
+	.antrags_text_holder_nummern .zeilennummer { margin-right: -20px; }
+	.kommentare .shower:before, .kommentare .hider:before, .aenders a:before { width: 17px; }
+	.kommentare .shower, .kommentare .hider { font-size: 12px; padding-left: 2px; }
+	.aenders { font-size: 12px; padding-left: 0; }
+	.aenders, .kommentare { width: 40px; right: -40px; }
+	.aenders a { padding-left: 2px; }
+	.antragabsatz_holder.orig { padding-right: 5px; }
+	.well .content, .antragabsatz_holder, .begruendungs_text_holder .textholder, #cke_ae_begruendung { padding-left: 0; padding-right: 5px; }
+	.antrags_text_holder .absatz_text ul, .antrags_text_holder .absatz_text ol { margin-left: 15px; }
+	.kommentarform { padding: 12px 0 25px; }
+	.form-horizontal .control-label { float: none; width: auto; text-align: left; }
+	.form-horizontal .controls { float: none; width: auto; margin: 0; }
+	.span9 .btn-primary { margin: 0; }
 }
 
 @media screen and (max-width: 500px) {

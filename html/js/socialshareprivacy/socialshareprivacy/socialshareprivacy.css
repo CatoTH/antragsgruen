@@ -152,9 +152,6 @@
 	-moz-box-shadow: 2px 2px 3px #c1c1c1;
 	-webkit-box-shadow: 2px 2px 3px #c1c1c1;
     box-shadow: 3px 3px 3px #c1c1c1;
-    left: 0;
-    position: absolute;
-    top: 0;
     width: 135px;
     z-index: 1000;
     margin: 0;
@@ -224,3 +221,14 @@
 	color: #090;
 }
 /* Settings/Info end */
+
+
+
+
+@media screen and (max-width: 767px) {
+	.social_share_privacy_area { margin: 20px 0 0 10px !important; }
+	.social_share_privacy_area .facebook { width: 150px; }
+	.social_share_privacy_area li div.tweet { width: 95px; }
+	.social_share_privacy_area .twitter { width: 130px; }
+	.social_share_privacy_area .gplus { width: 127px; }
+}

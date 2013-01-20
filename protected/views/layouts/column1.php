@@ -1,4 +1,9 @@
-<?php $this->beginContent('//layouts/bootstrap');
+<?php
+/**
+ * @var CController $this
+ * @var string $content
+ */
+$this->beginContent('//layouts/bootstrap');
 /** @var string $content */
 ?>
 <div id="content">

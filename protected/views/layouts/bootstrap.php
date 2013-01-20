@@ -2,6 +2,9 @@
 /**
  * @var CController $this
  */
+$row_classes = array();
+if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_comments";
+
 ?><!DOCTYPE HTML>
 <html lang="de">
 <head>
@@ -20,7 +23,7 @@
 
 </head>
 
-<body>
+<body <?php if (count($row_classes) > 0) echo "class='" . implode(" ", $row_classes) . "'"; ?>>
 
 <div class="container" id="page">
 	<div id="mainmenu">
