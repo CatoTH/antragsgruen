@@ -105,7 +105,7 @@ class SiteController extends Controller
 
 		$data = array();
 		foreach ($antraege as $ant) $data[AntraegeUtils::date_iso2timestamp($ant->datum) . "_kommentar_" . $ant->id] = array(
-			"title"       => "Neuer Kommentar zu: " . $ant->antrag->revision_name . " - " . $ant->antrag->name,
+			"title"       => "Kommentar von " . $ant->verfasser->name . " zu: " . $ant->antrag->revision_name . " - " . $ant->antrag->name,
 			"link"        => Yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $ant->antrag->id . "&kommentar=" . $ant->id . "#komm" . $ant->id,
 			"dateCreated" => AntraegeUtils::date_iso2timestamp($ant->datum),
 			"content"     => HtmlBBcodeUtils::bbcode2html($ant->text),
