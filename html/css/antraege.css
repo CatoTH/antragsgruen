@@ -1155,8 +1155,8 @@ blockquote {
 	#mainmenu ul.nav { padding-top: 7px; position: absolute; margin-right: 120px; }
 	.navbar .nav li a { margin-left: 20px; }
 	.navbar .nav li.active a, .navbar .nav li a:hover, .navbar .nav li a:focus, .navbar .nav li.active a:hover, .navbar .nav li.active a:focus { margin-left: 20px; }
-	body.text_comments #page { margin-left: 0; margin-right: 40px; width: auto; }
-	.absatz_text .text > br { display: none; }
+	body.text_comments #page { margin-left: 10px; margin-right: 40px; width: auto; }
+	.absatz_text .text > br.implicit { display: none; }
 	.antrags_text_holder_nummern .zeilennummer { margin-right: -20px; }
 	.kommentare .shower:before, .kommentare .hider:before, .aenders a:before { width: 17px; }
 	.kommentare .shower, .kommentare .hider { font-size: 12px; padding-left: 2px; }
@@ -1173,12 +1173,12 @@ blockquote {
 }
 
 @media screen and (max-width: 500px) {
-	#page, .footer_bar { width: auto; }
+	#page, .footer_bar { width: auto; margin-left: 10px; margin-right: 10px;}
 	.logo { text-align: center; }
 	.logo img { width: 188.5px; height: 27.5px; }
 
 	.antrags_text_holder_nummern .text { padding-left: 10px; }
-	.antrags_text_holder_nummern .text br { display: none; }
+	.antrags_text_holder_nummern .text br.implicit { display: none; }
 	.antrags_text_holder_nummern .zeilennummer { display: none; }
 	#socialshareprivacy { display: none; }
 }

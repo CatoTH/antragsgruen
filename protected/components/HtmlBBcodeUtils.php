@@ -3,6 +3,8 @@
 class HtmlBBcodeUtils
 {
 
+	public static $br_implicit, $br_explicit;
+
 	public static $zeilen_counter = 0;
 
 	/**
@@ -113,9 +115,10 @@ class HtmlBBcodeUtils
 	/**
 	 * @static
 	 * @param string $text
+	 * @param bool $praesentations_hacks
 	 * @return array|string[]
 	 */
-	static function bbcode2html_absaetze($text)
+	static function bbcode2html_absaetze($text, $praesentations_hacks = false)
 	{
 		$text = str_replace("\r", "", $text);
 		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
@@ -128,6 +131,9 @@ class HtmlBBcodeUtils
 		$absaetze_html       = array();
 		$absaetze_bbcode     = array();
 		$absaetze_html_plain = array();
+
+		HtmlBBcodeUtils::$br_implicit = ($praesentations_hacks ? " <br class='implicit'>" : "<br>"); // wird bei responsiver Ansicht manchmal ausgeblendet
+		HtmlBBcodeUtils::$br_explicit = "<br>";
 
 		foreach ($x as $y) {
 			$absaetze_bbcode[]     = $y;
@@ -146,7 +152,7 @@ class HtmlBBcodeUtils
 					$zeils_neu = array();
 					foreach ($zeils as $zeile) {
 						$x           = HtmlBBcodeUtils::text2zeilen($zeile, 70);
-						$zeils_neu[] = "###ZEILENNUMMER###" . implode("<br>###ZEILENNUMMER###", $x);
+						$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 					}
 					$out .= implode("<br>", $zeils_neu);
 					$out .= $matches[4];
@@ -158,7 +164,7 @@ class HtmlBBcodeUtils
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
 					$x           = HtmlBBcodeUtils::text2zeilen($zeile, 80);
-					$zeils_neu[] = "###ZEILENNUMMER###" . implode("<br>###ZEILENNUMMER###", $x);
+					$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 				}
 
 				$str_neu = "<div class='text'>";

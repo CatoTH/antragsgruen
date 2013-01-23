@@ -73,9 +73,11 @@ class Antrag extends BaseAntrag
 
 
 	/**
-	 * return array|AntragAbsatz[]
+	 * @param bool $nurfreigeschaltete
+	 * @param bool $praesentations_hacks
+	 * @return array|AntragAbsatz[]
 	 */
-	public function getParagraphs($nurfreigeschaltete = true) {
+	public function getParagraphs($nurfreigeschaltete = true, $praesentations_hacks = false) {
 		if (!is_null($this->absaetze)) return $this->absaetze;
 		$this->absaetze = array();
 		if ($nurfreigeschaltete) {
@@ -87,7 +89,7 @@ class Antrag extends BaseAntrag
 		$komms = $this->antragKommentare;
 
 		HtmlBBcodeUtils::initZeilenCounter();
-		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text));
+		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text), $praesentations_hacks);
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
 			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, $aenders);

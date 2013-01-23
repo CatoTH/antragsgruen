@@ -127,7 +127,7 @@ $this->menus_html[] = $html;
 <?php
 $dummy_komm = new AntragKommentar();
 
-$absae = $antrag->getParagraphs();
+$absae = $antrag->getParagraphs(true, true);
 
 
 
