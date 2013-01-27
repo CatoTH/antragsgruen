@@ -46,7 +46,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 					}
 						if (Yii::app()->user->getState("role") == "admin") {
 							?>
-							<li><a href="/site/admin">Admin</a></li>
+							<li><a href="/admin">Admin</a></li>
 							<?php } ?>
 					</ul>
 				</div>
