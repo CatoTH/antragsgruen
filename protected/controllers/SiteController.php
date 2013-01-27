@@ -14,8 +14,13 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
+		try {
 		$veranstaltung_id = (isset($_REQUEST["id"]) ? IntVal($_REQUEST["id"]) : Yii::app()->params['standardVeranstaltung']);
 		$this->actionVeranstaltung($veranstaltung_id);
+		} catch (CDbException $e) {
+			echo "Es konnte keine Datenbankverbindung hergestellt werden.<br>";
+			if (YII_DEBUG) echo "Die Fehlermeldung lautete:<blockquote>" . $e->getMessage() . "</blockquote>";
+		}
 	}
 
 	/**
