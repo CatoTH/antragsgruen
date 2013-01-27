@@ -10,8 +10,10 @@ class TexteController extends GxController {
 	}
 
 	public function actionCreate() {
+		/** @var $model Texte */
 		$model = new Texte;
 
+		if (isset($_REQUEST["key"])) $model->text_id = $_REQUEST["key"];
 
 		if (isset($_POST['Texte'])) {
 			$model->setAttributes($_POST['Texte']);

@@ -46,12 +46,19 @@ class SiteController extends Controller
 	{
 		/** @var Texte $v */
 		$v = Texte::model()->findByAttributes(array("text_id" => "hilfe"));
+		if (is_null($v)) {
+			$edit_link = "/admin/texte/create?key=hilfe";
+			$text = "";
+		} else {
+			$edit_link = "/admin/texte/update/id/" . $v->id . "/";
+			$text = $v->text;
+		}
 
 		$this->render('content', array(
 			"title"            => "Hilfe",
 			"breadcrumb_title" => "Hilfe",
-			"content"          => $v->text,
-			"editlink"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/texte/update/id/" . $v->id . "/" : null),
+			"content"          => $text,
+			"editlink"         => (Yii::app()->user->getState("role") == "admin" ? $edit_link : null),
 		));
 	}
 
