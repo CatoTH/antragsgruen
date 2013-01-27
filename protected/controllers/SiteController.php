@@ -15,8 +15,8 @@ class SiteController extends Controller
 	public function actionIndex()
 	{
 		try {
-		$veranstaltung_id = (isset($_REQUEST["id"]) ? IntVal($_REQUEST["id"]) : Yii::app()->params['standardVeranstaltung']);
-		$this->actionVeranstaltung($veranstaltung_id);
+			$veranstaltung_id = (isset($_REQUEST["id"]) ? IntVal($_REQUEST["id"]) : Yii::app()->params['standardVeranstaltung']);
+			$this->actionVeranstaltung($veranstaltung_id);
 		} catch (CDbException $e) {
 			echo "Es konnte keine Datenbankverbindung hergestellt werden.<br>";
 			if (YII_DEBUG) echo "Die Fehlermeldung lautete:<blockquote>" . $e->getMessage() . "</blockquote>";
@@ -213,8 +213,8 @@ class SiteController extends Controller
 		/** @var Veranstaltung $veranstaltung */
 		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 
-		$suchbegriff = $_REQUEST["suchbegriff"];
-		$antraege = Antrag::suche($suchbegriff);
+		$suchbegriff        = $_REQUEST["suchbegriff"];
+		$antraege           = Antrag::suche($suchbegriff);
 		$aenderungsantraege = Aenderungsantrag::suche($suchbegriff);
 
 		$this->render('suche', array(
@@ -230,6 +230,25 @@ class SiteController extends Controller
 
 	}
 
+	/**
+	 * @param int $veranstaltung_id
+	 * @return Veranstaltung|null
+	 */
+	private function actionVeranstaltung_loadData($veranstaltung_id) {
+		/** @var Veranstaltung $veranstaltung */
+		return Veranstaltung::model()->
+			with(array(
+				'antraege'                    => array(
+					'joinType' => "LEFT OUTER JOIN",
+					'on'       => "`antraege`.`veranstaltung` = `t`.`id` AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
+				),
+				'antraege.aenderungsantraege' => array(
+					'joinType' => "LEFT OUTER JOIN",
+					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
+				),
+			))->findByPk($veranstaltung_id);
+	}
+
 
 	/**
 	 * @param int $veranstaltung_id
@@ -242,18 +261,26 @@ class SiteController extends Controller
 		$this->layout = '//layouts/column2';
 
 
-		/** @var Veranstaltung $veranstaltung */
-		$veranstaltung = Veranstaltung::model()->
-			with(array(
-			'antraege'                    => array(
-				'joinType' => "LEFT OUTER JOIN",
-				'on'       => "`antraege`.`veranstaltung` = `t`.`id` AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
-			),
-			'antraege.aenderungsantraege' => array(
-				'joinType' => "LEFT OUTER JOIN",
-				"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
-			),
-		))->findByPk($veranstaltung_id);
+		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
+		if (is_null($veranstaltung)) {
+			if (Yii::app()->params['standardVeranstaltungAutoCreate']) {
+				$veranstaltung = new Veranstaltung();
+				$veranstaltung->id = $veranstaltung_id;
+				$veranstaltung->name = "Standard-Veranstaltung";
+				$veranstaltung->freischaltung_antraege = 1;
+				$veranstaltung->freischaltung_aenderungsantraege = 1;
+				$veranstaltung->freischaltung_kommentare = 1;
+				$veranstaltung->policy_kommentare = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->policy_aenderungsantraege = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->policy_antraege = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->typ = Veranstaltung::$TYP_PROGRAMM;
+				$veranstaltung->save();
+
+				$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
+			} else {
+				Header("Location: /site/login/");
+			}
+		}
 
 		/** @var array|Antrag[] $antraege */
 		$antraege        = $veranstaltung->antraege;

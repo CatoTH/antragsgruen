@@ -116,6 +116,7 @@ return array(
 
 	'params'    => array(
 		'standardVeranstaltung'=> 1,
+		'standardVeranstaltungAutoCreate' => true,
 		'pdf_logo' => 'LOGO_PFAD',
 		'kontakt_email' => 'EMAILADRESSE',
 		'mail_from' => 'Antragsgrün <EMAILADRESSE>',

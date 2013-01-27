@@ -53,6 +53,30 @@ Im Testbetrieb wird es derzeit hier eingestzt: http://antraege.hoessl.eu/
 
 
 
+Installation
+------------
+
+Datenbank anlegen:
+- Eine Datenbank u. Benutzer für Antragsgrün anlegen; Antragsgrün braucht mindestens Rechte für SELECT/INSERT/UPDATE/DELETE
+- cat docs/schema.sql | mysql -u [benutzername] -p [datenbankname] -h localhost
+
+Konfigurationsdatei erstellen:
+- cp protected/config/main.template.php protected/config/main.php
+- [vi|emacs] protected/config/main.php
+- Besonders wichtige Teile der Konfigurationsdatei:
+-- SEED_KEY: zufälligen String setzen
+-- 'name' (Anfang): Name der Installation
+-- 'db' (Mitte): Die Datenbank-Konfiguration
+-- 'params' (Ende): Diverse Parameter der Installation
+
+Berechtigungen setzen:
+- chown www-data:www-data protected/runtime
+- chown www-data:www-data html/assets
+
+
+
+
+
 Kontakt:
 --------
 - tobias@hoessl.eu

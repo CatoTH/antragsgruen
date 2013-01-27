@@ -47,7 +47,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name, freischaltung_antraege, freischaltung_aenderungsantraege, freischaltung_kommentare, admin_email, name_kurz, antrag_einleitung, datum_von, datum_bis, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ', 'required'),
+			array('name, freischaltung_antraege, freischaltung_aenderungsantraege, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ', 'required'),
 			array('name', 'length', 'max' => 200),
 			array('name_kurz', 'length', 'max' => 45),
 			array('antragsschluss, admin_email', 'safe'),
