@@ -26,7 +26,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 <div class="form well well_first">
     <fieldset>
-        <legend><?php echo $sprache->get("Antrag stellen")?>Voraussetzungen für einen Antrag</legend>
+        <legend><?php echo $sprache->get("Voraussetzungen für einen Antrag")?></legend>
     </fieldset>
 
 	<?php
