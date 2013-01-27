@@ -73,6 +73,7 @@ Berechtigungen setzen:
 - chown www-data:www-data protected/runtime
 - chown www-data:www-data html/assets
 
+Antragsgrün sollte nun schon funktionieren. Der erste Nutzer, der sich (per OpenID) authentifiziert einloggt, wird als Admin markiert.
 
 
 

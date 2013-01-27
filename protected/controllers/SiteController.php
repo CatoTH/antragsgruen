@@ -234,7 +234,8 @@ class SiteController extends Controller
 	 * @param int $veranstaltung_id
 	 * @return Veranstaltung|null
 	 */
-	private function actionVeranstaltung_loadData($veranstaltung_id) {
+	private function actionVeranstaltung_loadData($veranstaltung_id)
+	{
 		/** @var Veranstaltung $veranstaltung */
 		return Veranstaltung::model()->
 			with(array(
@@ -264,16 +265,16 @@ class SiteController extends Controller
 		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 		if (is_null($veranstaltung)) {
 			if (Yii::app()->params['standardVeranstaltungAutoCreate']) {
-				$veranstaltung = new Veranstaltung();
-				$veranstaltung->id = $veranstaltung_id;
-				$veranstaltung->name = "Standard-Veranstaltung";
-				$veranstaltung->freischaltung_antraege = 1;
+				$veranstaltung                                   = new Veranstaltung();
+				$veranstaltung->id                               = $veranstaltung_id;
+				$veranstaltung->name                             = "Standard-Veranstaltung";
+				$veranstaltung->freischaltung_antraege           = 1;
 				$veranstaltung->freischaltung_aenderungsantraege = 1;
-				$veranstaltung->freischaltung_kommentare = 1;
-				$veranstaltung->policy_kommentare = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->policy_aenderungsantraege = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->policy_antraege = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->typ = Veranstaltung::$TYP_PROGRAMM;
+				$veranstaltung->freischaltung_kommentare         = 1;
+				$veranstaltung->policy_kommentare                = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->policy_aenderungsantraege        = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->policy_antraege                  = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->typ                              = Veranstaltung::$TYP_PROGRAMM;
 				$veranstaltung->save();
 
 				$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
@@ -404,7 +405,12 @@ class SiteController extends Controller
 							$user->angelegt_datum = date("Y-m-d H:i:s");
 							$user->status         = Person::$STATUS_CONFIRMED;
 							$user->typ            = Person::$TYP_PERSON;
-							$user->admin          = 0;
+							if (Person::model()->count() == 0) {
+								$user->admin = 1;
+								Yii::app()->user->setState("role", "admin");
+							} else {
+								$user->admin = 0;
+							}
 							$user->save();
 						} else {
 							if ($user->admin) {
@@ -417,12 +423,14 @@ class SiteController extends Controller
 						$this->redirect(Yii::app()->homeUrl);
 					} else {
 						Yii::app()->user->setFlash("error", "Leider ist beim Einloggen ein Fehler aufgetreten.");
-						$this->render('login', array());
+						$this->render('login', array("model" => $model));
+						return;
 					}
 				} catch (Exception $e) {
 					$err = Yii::t('core', $e->getMessage());
 					Yii::app()->user->setFlash("error", "Leider ist beim Einloggen ein Fehler aufgetreten:<br>" . $e->getMessage());
-					$this->render('login', array());
+					$this->render('login', array("model" => $model));
+					return;
 				}
 			}
 
