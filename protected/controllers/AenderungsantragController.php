@@ -1,17 +1,15 @@
 <?php
 
-class AenderungsantragController extends Controller
+class AenderungsantragController extends VeranstaltungsControllerBase
 {
-	public $menus_html = null;
-	public $breadcrumbs_topname = null;
-	public $text_comments = true;
-	public $shrink_cols = false;
 
 	public function actionAnzeige()
 	{
 		$id = IntVal($_REQUEST["id"]);
 		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($id);
+
+		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
 
 		if (is_null($aenderungsantrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
@@ -176,6 +174,8 @@ class AenderungsantragController extends Controller
 		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($id);
 
+		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
+
 		if (!$aenderungsantrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Änderungsantrag");
 			$this->redirect("/aenderungsantrag/anzeige/?id=$id");
@@ -204,6 +204,8 @@ class AenderungsantragController extends Controller
 		$id = IntVal($_REQUEST["id"]);
 		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($id);
+
+		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
 
 		if (!$aenderungsantrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Änderungsantrag");
@@ -248,6 +250,8 @@ class AenderungsantragController extends Controller
 		if ($aenderungsantrag->status != Aenderungsantrag::$STATUS_UNBESTAETIGT) {
 			$this->redirect("/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id);
 		}
+
+		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
@@ -311,6 +315,8 @@ class AenderungsantragController extends Controller
 		$antrag_id = IntVal($_REQUEST["antrag_id"]);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
+
+		$this->veranstaltung = $antrag->veranstaltung0;
 
 		if (!$antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) {
 			Yii::app()->user->setFlash("error", "Es kann kein Antrag Änderungsantrag werden.");

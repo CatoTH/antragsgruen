@@ -1,6 +1,6 @@
 <?php
 /**
- * @var CController $this
+ * @var Controller $this
  */
 $row_classes = array();
 if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_comments";
@@ -12,7 +12,11 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
-
+	<?php
+	if (is_subclass_of($this, "VeranstaltungsControllerBase") && is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->fb_logo_url != "") {
+		echo '<link rel="image_src" href="' . CHtml::encode($this->veranstaltung->fb_logo_url) . '">';
+	}
+	?>
 	<!-- ### neu ### -->
 	<!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -55,16 +59,26 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 	</div>
 
 
-	<a href="/" class="logo"><img src="/css/img/logo.png" alt="Antragsgrün"></a>
+	<a href="/" class="logo"><?php
+		if (is_subclass_of($this, "VeranstaltungsControllerBase") && is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->logo_url != "") {
+			echo '<img src="' . CHtml::encode($this->veranstaltung->logo_url) . '" alt="Logo">';
+		}  else {
+			echo '<img src="/css/img/logo.png" alt="Antragsgrün">';
+		}
+	?></a>
 
 	<!-- mainmenu -->
 	<?php if (isset($this->breadcrumbs)): ?>
 		<?php
-		$top_name = (isset($this->breadcrumbs_topname) && $this->breadcrumbs_topname !== null ? $this->breadcrumbs_topname : "Anträge");
+		$breadcrumbs = array();
+		foreach ($this->breadcrumbs as $key=>$val) if ($key !== "" && !($key === 0 && $val === "")) $breadcrumbs[$key] = $val;
+		$top_name = (isset($this->breadcrumbs_topname) && $this->breadcrumbs_topname !== null ? $this->breadcrumbs_topname : "Start");
 		$this->widget('bootstrap.widgets.TbBreadcrumbs', array(
 			'homeLink' => CHtml::link($top_name, "/"),
-			'links'    => $this->breadcrumbs,
-		)); ?><!-- breadcrumbs -->
+			'links'    => $breadcrumbs,
+		));
+		if (count($breadcrumbs) == 0) echo "<br><br>";
+		?><!-- breadcrumbs -->
 	<?php endif?>
 
 	<?php

@@ -1,11 +1,7 @@
 <?php
 
-class AntragController extends Controller
+class AntragController extends VeranstaltungsControllerBase
 {
-	public $menus_html = null;
-	public $breadcrumbs_topname = null;
-	public $text_comments = true;
-	public $shrink_cols = false;
 
 	public function actionAnzeige()
 	{
@@ -16,6 +12,8 @@ class AntragController extends Controller
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
 			$this->redirect("/");
 		}
+
+		$this->veranstaltung = $antrag->veranstaltung0;
 
 		$this->layout = '//layouts/column2';
 
@@ -173,6 +171,8 @@ class AntragController extends Controller
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($id);
 
+		$this->veranstaltung = $antrag->veranstaltung0;
+
 		if (!$antrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
 			$this->redirect("/antrag/anzeige/?id=$id");
@@ -202,6 +202,8 @@ class AntragController extends Controller
 		$id = IntVal($_REQUEST["id"]);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($id);
+
+		$this->veranstaltung = $antrag->veranstaltung0;
 
 		if (!$antrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
@@ -310,6 +312,8 @@ class AntragController extends Controller
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByAttributes(array("id" => $_REQUEST["id"], "status" => Antrag::$STATUS_UNBESTAETIGT));
 
+		$this->veranstaltung = $antrag->veranstaltung0;
+
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
 			$freischaltung = $antrag->veranstaltung0->freischaltung_aenderungsantraege;
@@ -355,7 +359,7 @@ class AntragController extends Controller
 
 
 		/** @var Veranstaltung $veranstaltung */
-		$veranstaltung         = Veranstaltung::model()->findByPk($_REQUEST["veranstaltung"]);
+		$this->veranstaltung = $veranstaltung         = Veranstaltung::model()->findByPk($_REQUEST["veranstaltung"]);
 		$model->veranstaltung  = $veranstaltung->id;
 		$model->veranstaltung0 = $veranstaltung;
 

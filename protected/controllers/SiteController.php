@@ -1,14 +1,7 @@
 <?php
 
-class SiteController extends Controller
+class SiteController extends VeranstaltungsControllerBase
 {
-
-	public $multimenu = null;
-	public $menus_html = null;
-	public $breadcrumbs_topname = null;
-	public $text_comments = false;
-	public $shrink_cols = true;
-
 	/**
 	 *
 	 */
@@ -28,14 +21,23 @@ class SiteController extends Controller
 	 */
 	public function actionImpressum()
 	{
+		$this->setStdVeranstaltung();
+
 		/** @var Texte $v */
 		$v = Texte::model()->findByAttributes(array("text_id" => "impressum"));
+		if (is_null($v)) {
+			$edit_link = "/admin/texte/create?key=impressum";
+			$text = "";
+		} else {
+			$edit_link = "/admin/texte/update/id/" . $v->id . "/";
+			$text = $v->text;
+		}
 
 		$this->render('content', array(
 			"title"            => "Impressum",
 			"breadcrumb_title" => "Impressum",
-			"content"          => $v->text,
-			"editlink"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/texte/update/id/" . $v->id . "/" : null),
+			"content"          => $text,
+			"editlink"         => (Yii::app()->user->getState("role") == "admin" ? $edit_link : null),
 		));
 	}
 
@@ -44,6 +46,8 @@ class SiteController extends Controller
 	 */
 	public function actionHilfe()
 	{
+		$this->setStdVeranstaltung();
+
 		/** @var Texte $v */
 		$v = Texte::model()->findByAttributes(array("text_id" => "hilfe"));
 		if (is_null($v)) {
@@ -218,7 +222,7 @@ class SiteController extends Controller
 		$neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung_id, 3);
 
 		/** @var Veranstaltung $veranstaltung */
-		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$this->veranstaltung = $veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
 
 		$suchbegriff        = $_REQUEST["suchbegriff"];
 		$antraege           = Antrag::suche($suchbegriff);
@@ -269,7 +273,7 @@ class SiteController extends Controller
 		$this->layout = '//layouts/column2';
 
 
-		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
+		$this->veranstaltung = $veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 		if (is_null($veranstaltung)) {
 			if (Yii::app()->params['standardVeranstaltungAutoCreate']) {
 				$veranstaltung                                   = new Veranstaltung();
@@ -390,6 +394,8 @@ class SiteController extends Controller
 	 */
 	public function actionLogin()
 	{
+		$this->setStdVeranstaltung();
+
 		$model = new OAuthLoginForm();
 		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
 

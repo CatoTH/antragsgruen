@@ -2,9 +2,11 @@
 
 
 <?php
-/* @var $this VeranstaltungenController */
-/* @var $form GxActiveForm */
-/* @var $model Veranstaltung */
+/**
+ * @var $this VeranstaltungenController
+ * @var GxActiveForm $form
+ * @var $model Veranstaltung
+ */
 
 $form = $this->beginWidget('GxActiveForm', array(
 	'id'                   => 'veranstaltung-form',
@@ -23,6 +25,11 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<?php echo $form->labelEx($model, 'typ'); ?>
 	<?php echo $form->dropDownList($model, 'typ', Veranstaltung::$TYPEN); ?>
 	<?php echo $form->error($model, 'typ'); ?>
+</div>
+<div>
+	<?php echo $form->labelEx($model, 'yii_url'); ?>
+	<?php echo $form->textField($model, 'yii_url', array('maxlength' => 45)); ?>
+	<?php echo $form->error($model, 'yii_url'); ?>
 </div>
 <div>
 	<?php echo $form->labelEx($model, 'name'); ?>
@@ -123,6 +130,16 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<?php echo $form->labelEx($model, 'freischaltung_kommentare'); ?> <small>(noch nicht implementiert)</small>
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="0" <?php if ($model->freischaltung_kommentare != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="1" <?php if ($model->freischaltung_kommentare == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+</div>
+<div>
+	<?php echo $form->labelEx($model, 'logo_url'); ?>
+	<?php echo $form->textField($model, 'logo_url', array('maxlength' => 200)); ?>
+	<?php echo $form->error($model, 'logo_url'); ?>
+</div>
+<div>
+	<?php echo $form->labelEx($model, 'fb_logo_url'); ?>
+	<?php echo $form->textField($model, 'fb_logo_url', array('maxlength' => 200)); ?>
+	<?php echo $form->error($model, 'fb_logo_url'); ?>
 </div>
 <div class="saveholder">
 	<?php

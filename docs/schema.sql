@@ -17,10 +17,13 @@ CREATE  TABLE IF NOT EXISTS `veranstaltung` (
   `policy_aenderungsantraege` VARCHAR(20) NULL ,
   `policy_kommentare` VARCHAR(20) NULL ,
   `typ` TINYINT NULL ,
+  `yii_url` VARCHAR(45) NULL ,
   `admin_email` VARCHAR(150) NULL ,
   `freischaltung_antraege` TINYINT NULL DEFAULT 1 ,
   `freischaltung_aenderungsantraege` TINYINT NULL DEFAULT 1 ,
   `freischaltung_kommentare` TINYINT NULL DEFAULT 0 ,
+  `logo_url` VARCHAR(200) NULL ,
+  `fb_logo_url` VARCHAR(200) NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8

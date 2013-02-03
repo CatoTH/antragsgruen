@@ -47,12 +47,12 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name, freischaltung_antraege, freischaltung_aenderungsantraege, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ', 'required'),
-			array('name', 'length', 'max' => 200),
-			array('name_kurz', 'length', 'max' => 45),
+			array('name, freischaltung_antraege, yii_url, freischaltung_aenderungsantraege, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ', 'required'),
+			array('name, logo_url, fb_logo_url', 'length', 'max' => 200),
+			array('name_kurz, yii_url', 'length', 'max' => 45),
 			array('antragsschluss, admin_email', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, name, freischaltung_antraege, name_kurz, antrag_einleitung, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ', 'safe', 'on' => 'search'),
+			array('id, name, yii_url, logo_url, fb_logo_url, freischaltung_antraege, name_kurz, antrag_einleitung, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -90,6 +90,9 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 			'freischaltung_antraege'           => Yii::t('app', 'Freischaltung von Anträgen'),
 			'freischaltung_aenderungsantraege' => Yii::t('app', 'Freischaltung von Änderungsanträgen'),
 			'freischaltung_kommentare'         => Yii::t('app', 'Freischaltung von Kommentaren'),
+			'yii_url'                          => Yii::t('app', 'URL-Kürzel'),
+			'logo_url'                         => Yii::t('app', 'Logo-URL'),
+			'fb_logo_url'                      => Yii::t('app', 'Facebook-Bild URL'),
 			'antraege'                         => null,
 			'abonnenten'                       => null,
 			'texte'                            => null,
