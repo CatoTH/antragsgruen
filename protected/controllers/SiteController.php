@@ -27,10 +27,10 @@ class SiteController extends VeranstaltungsControllerBase
 		$v = Texte::model()->findByAttributes(array("text_id" => "impressum"));
 		if (is_null($v)) {
 			$edit_link = "/admin/texte/create?key=impressum";
-			$text = "";
+			$text      = "";
 		} else {
 			$edit_link = "/admin/texte/update/id/" . $v->id . "/";
-			$text = $v->text;
+			$text      = $v->text;
 		}
 
 		$this->render('content', array(
@@ -52,10 +52,10 @@ class SiteController extends VeranstaltungsControllerBase
 		$v = Texte::model()->findByAttributes(array("text_id" => "hilfe"));
 		if (is_null($v)) {
 			$edit_link = "/admin/texte/create?key=hilfe";
-			$text = "";
+			$text      = "";
 		} else {
 			$edit_link = "/admin/texte/update/id/" . $v->id . "/";
-			$text = $v->text;
+			$text      = $v->text;
 		}
 
 		$this->render('content', array(
@@ -364,6 +364,7 @@ class SiteController extends VeranstaltungsControllerBase
 			"meine_antraege"             => $meine_antraege,
 			"meine_aenderungsantraege"   => $meine_aenderungsantraege,
 			"sprache"                    => $veranstaltung->getSprache(),
+			"editlink"                   => (Yii::app()->user->getState("role") == "admin" ? "/admin/veranstaltungen/update/id/" . $veranstaltung_id : null),
 		));
 	}
 
