@@ -12,6 +12,7 @@
  * @var array|AntragUnterstuetzer[] $meine_antraege
  * @var array|AenderungsantragUnterstuetzer[] $meine_aenderungsantraege
  * @var Sprache $sprache
+ * @var string|null $editlink
  */
 
 $this->pageTitle = Yii::app()->name;
@@ -38,6 +39,7 @@ include(__DIR__ . "/sidebar.php");
 		}
 
 	}
+	if ($editlink !== null) echo "<a style='font-size: 10px;' href='" . $editlink . "'>Bearbeiten</a>";
 	?>
 </h1>
 
