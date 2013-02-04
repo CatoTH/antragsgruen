@@ -50,7 +50,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 			array('name, freischaltung_antraege, yii_url, freischaltung_aenderungsantraege, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ', 'required'),
 			array('name, logo_url, fb_logo_url', 'length', 'max' => 200),
 			array('name_kurz, yii_url', 'length', 'max' => 45),
-			array('antragsschluss, admin_email', 'safe'),
+			array('antragsschluss, antrag_einleitung, admin_email', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('id, name, yii_url, logo_url, fb_logo_url, freischaltung_antraege, name_kurz, antrag_einleitung, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ', 'safe', 'on' => 'search'),
 		);
