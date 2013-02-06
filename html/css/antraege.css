@@ -383,7 +383,11 @@ h2,
 	font-weight: bold;
 	font-size: 16px;
 	line-height: 18px;
-	text-indent: 0px;
+	text-indent: 0;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
 }
 
 .span9 .antrag .titel a:hover,

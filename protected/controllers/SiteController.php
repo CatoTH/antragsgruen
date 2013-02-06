@@ -2,6 +2,9 @@
 
 class SiteController extends VeranstaltungsControllerBase
 {
+
+	public $text_comments = false;
+
 	/**
 	 *
 	 */
@@ -352,6 +355,11 @@ class SiteController extends VeranstaltungsControllerBase
 		/** @var Texte $texto */
 		$texto           = Texte::model()->findByAttributes(array("veranstaltung_id" => $veranstaltung->id, "text_id" => "startseite"));
 		$einleitungstext = ($texto ? $texto->text : null);
+		if (is_null($einleitungstext)) {
+                        $edit_link = "/admin/texte/create?key=startseite";
+                } else {
+                        $edit_link = "/admin/texte/update/id/" . $texto->id . "/";
+                }
 
 		$this->render('veranstaltung_index', array(
 			"veranstaltung"              => $veranstaltung,
@@ -364,7 +372,7 @@ class SiteController extends VeranstaltungsControllerBase
 			"meine_antraege"             => $meine_antraege,
 			"meine_aenderungsantraege"   => $meine_aenderungsantraege,
 			"sprache"                    => $veranstaltung->getSprache(),
-			"editlink"                   => (Yii::app()->user->getState("role") == "admin" ? "/admin/veranstaltungen/update/id/" . $veranstaltung_id : null),
+			"editlink"                   => (Yii::app()->user->getState("role") == "admin" ? $edit_link : null),
 		));
 	}
 
