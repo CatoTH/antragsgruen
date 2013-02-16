@@ -14,22 +14,22 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor.bbcode.js');
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
-	$sprache->get("Antrag") => "/antrag/anzeige/?id=" . $antrag->id,
+	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	$sprache->get("Antrag") => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 	$sprache->get("Neuer Änderungsantrag"),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 ?>
 
 
-<h1 class="well"><?=$sprache->get("Änderungsantrag stellen")?>: <?php echo CHtml::encode($antrag->name)?></h1>
+<h1 class="well"><?php echo $sprache->get("Änderungsantrag stellen")?>: <?php echo CHtml::encode($antrag->name); ?></h1>
 
 <?php
 /** @var TbActiveForm $form */
 $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 	'id'     => 'horizontalForm',
 	'type'   => 'horizontal',
-	"action" => "/aenderungsantrag/neu/",
+	"action" => $this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id)),
 ));
 
 foreach ($hiddens as $name=>$value) {
@@ -51,7 +51,7 @@ foreach ($hiddens as $name=>$value) {
 	<input id="Aenderungsantrag_name_neu" type="text" value="<?php echo CHtml::encode($aenderungsantrag->name_neu); ?>" name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
 	<br>
 	<br>
-	<h3><?=$sprache->get("Neuer Antragstext")?></h3>
+	<h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
 	<br>
 
 	<div class="textholder consolidated">
@@ -93,7 +93,7 @@ foreach ($hiddens as $name=>$value) {
 </div>
 
 <div class="well" id="begruendungs_holder">
-	<h3><label for="ae_begruendung"><?=$sprache->get("Begründung für den Änderungsantrag")?></label></h3>
+	<h3><label for="ae_begruendung"><?php echo $sprache->get("Begründung für den Änderungsantrag"); ?></label></h3>
 	<br>
 	<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php
 		echo CHtml::encode($aenderungsantrag->aenderung_begruendung);
@@ -130,9 +130,11 @@ foreach ($hiddens as $name=>$value) {
 	<br><br>
 
 </div>
-<?php } ?>
+<?php }
+$ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
+?>
 <script>
-	var antrag_id = <?=$antrag["id"]?>;
+	var antrag_id = <?php echo $antrag["id"]; ?>;
 
 	function antragstext_init_aes() {
 		"use strict";
@@ -169,7 +171,7 @@ foreach ($hiddens as $name=>$value) {
 			str = CKEDITOR.instances["neu_text_" + absatznr].getData();
 			abss[absatznr] = str;
 		});
-		$.ajax({ "url":"/aenderungsantrag/ajaxCalcDiff/", "dataType":"json", "type":"POST", "data":{ "antrag_id":antrag_id, "absaetze":abss }, "error":function (xht, status) {
+		$.ajax({ "url":<?php echo json_encode($ajax_link); ?>, "dataType":"json", "type":"POST", "data":{ "antrag_id":antrag_id, "absaetze":abss }, "error":function (xht, status) {
 			window.setTimeout(antragstext_show_diff, 10000);
 		}, "success":function (dat) {
 			for (var i in dat) if (dat.hasOwnProperty(i)) {

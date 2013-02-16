@@ -8,10 +8,10 @@ class SiteController extends VeranstaltungsControllerBase
 	/**
 	 *
 	 */
-	public function actionIndex()
+	public function actionIndex($veranstaltung_id = 0)
 	{
 		try {
-			$veranstaltung_id = (isset($_REQUEST["id"]) ? IntVal($_REQUEST["id"]) : Yii::app()->params['standardVeranstaltung']);
+			$veranstaltung_id = ($veranstaltung_id > 0 ? IntVal($veranstaltung_id) : Yii::app()->params['standardVeranstaltung']);
 			$this->actionVeranstaltung($veranstaltung_id);
 		} catch (CDbException $e) {
 			echo "Es konnte keine Datenbankverbindung hergestellt werden.<br>";
@@ -137,12 +137,10 @@ class SiteController extends VeranstaltungsControllerBase
 	 */
 	public function actionFeedAntraege($veranstaltung_id = 0)
 	{
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
-		/** @var Veranstaltung $veranstaltung */
-		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
-			"veranstaltung_id" => $veranstaltung_id,
+			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Anträge"),
 			"feed_description" => str_replace("%veranstaltung%", $veranstaltung->name, $sprache->get("feed_desc_antraege")),
 			"data"             => $this->getFeedAntraegeData($veranstaltung),
@@ -155,12 +153,10 @@ class SiteController extends VeranstaltungsControllerBase
 	 */
 	public function actionFeedAenderungsantraege($veranstaltung_id = 0)
 	{
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
-		/** @var Veranstaltung $veranstaltung */
-		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
-			"veranstaltung_id" => $veranstaltung_id,
+			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Änderungsanträge"),
 			"feed_description" => str_replace("%veranstaltung%", $veranstaltung->name, $sprache->get("feed_desc_aenderungsantraege")),
 			"data"             => $this->getFeedAenderungsantraegeData($veranstaltung),
@@ -173,12 +169,10 @@ class SiteController extends VeranstaltungsControllerBase
 	 */
 	public function actionFeedKommentare($veranstaltung_id = 0)
 	{
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
-		/** @var Veranstaltung $veranstaltung */
-		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
-			"veranstaltung_id" => $veranstaltung_id,
+			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Kommentare"),
 			"feed_description" => str_replace("%veranstaltung%", $veranstaltung->name, $sprache->get("feed_desc_kommentare")),
 			"data"             => $this->getFeedAntragKommentarData($veranstaltung),
@@ -192,9 +186,7 @@ class SiteController extends VeranstaltungsControllerBase
 	 */
 	public function actionFeedAlles($veranstaltung_id = 0)
 	{
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
-		/** @var Veranstaltung $veranstaltung */
-		$veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 
 		$data1 = $this->getFeedAntraegeData($veranstaltung);
 		$data2 = $this->getFeedAenderungsantraegeData($veranstaltung);
@@ -204,7 +196,7 @@ class SiteController extends VeranstaltungsControllerBase
 		krsort($data);
 
 		$this->renderPartial('feed', array(
-			"veranstaltung_id" => $veranstaltung_id,
+			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => "Anträge, Änderungsanträge und Kommentare",
 			"data"             => $data,
 			"sprache"          => $veranstaltung->getSprache(),
@@ -215,17 +207,12 @@ class SiteController extends VeranstaltungsControllerBase
 
 	public function actionSuche($veranstaltung_id = 0)
 	{
-		$veranstaltung_id = IntVal($veranstaltung_id);
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
-
 		$this->layout = '//layouts/column2';
 
-		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($veranstaltung_id, 5);
-		$neueste_antraege           = Antrag::holeNeueste($veranstaltung_id, 5);
-		$neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung_id, 3);
-
-		/** @var Veranstaltung $veranstaltung */
-		$this->veranstaltung = $veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($veranstaltung->id, 5);
+		$neueste_antraege           = Antrag::holeNeueste($veranstaltung->id, 5);
+		$neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung->id, 3);
 
 		$suchbegriff        = $_REQUEST["suchbegriff"];
 		$antraege           = Antrag::suche($suchbegriff);
@@ -250,8 +237,10 @@ class SiteController extends VeranstaltungsControllerBase
 	 */
 	private function actionVeranstaltung_loadData($veranstaltung_id)
 	{
+		$att = (is_numeric($veranstaltung_id) ? "id" : "yii_url");
+
 		/** @var Veranstaltung $veranstaltung */
-		return Veranstaltung::model()->
+		$this->veranstaltung = Veranstaltung::model()->
 			with(array(
 				'antraege'                    => array(
 					'joinType' => "LEFT OUTER JOIN",
@@ -261,7 +250,8 @@ class SiteController extends VeranstaltungsControllerBase
 					'joinType' => "LEFT OUTER JOIN",
 					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
 				),
-			))->findByPk($veranstaltung_id);
+			))->findByAttributes(array($att => $veranstaltung_id));
+		return $this->veranstaltung;
 	}
 
 
@@ -270,13 +260,9 @@ class SiteController extends VeranstaltungsControllerBase
 	 */
 	public function actionVeranstaltung($veranstaltung_id = 0)
 	{
-		$veranstaltung_id = IntVal($veranstaltung_id);
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
-
 		$this->layout = '//layouts/column2';
 
-
-		$this->veranstaltung = $veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
+		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 		if (is_null($veranstaltung)) {
 			if (Yii::app()->params['standardVeranstaltungAutoCreate']) {
 				$veranstaltung                                   = new Veranstaltung();

@@ -6,8 +6,8 @@
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
-	"Antrag" => "/antrag/anzeige/?id=" . $antrag->id,
+	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	"Antrag" => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 	'Neuer Änderungsantrag',
 	'Bestätigen'
 );
@@ -30,7 +30,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		'type'      => 'primary',
 		'size'      => 'large',
 		'buttonType'=> 'submitlink',
-		'url'       => "/?id=" . $antrag->veranstaltung,
+		'url'       => $this->createUrl("site/veranstaltung"),
 		'label'     => 'Zurück zur Startseite',
 	));
 	$this->endWidget();

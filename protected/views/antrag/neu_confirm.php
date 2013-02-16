@@ -17,7 +17,7 @@ if (count($antrag->antragUnterstuetzer) > 0) foreach ($antrag->antragUnterstuetz
 }
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
+	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
 	'Neuer Antrag',
 	'Bestätigen'
 );
@@ -91,7 +91,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> 'Antrag einreichen')); ?>
     </div>
     <div style="float: left;">
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submitlink', 'url' => "/antrag/aendern/?id=" . $antrag->id, 'icon'=> 'remove', 'label'=> 'Korrigieren')); ?>
+		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submitlink', 'url' => $this->createUrl("/antrag/aendern", array("antrag_id" => $antrag->id)), 'icon'=> 'remove', 'label'=> 'Korrigieren')); ?>
     </div>
 </div>
 

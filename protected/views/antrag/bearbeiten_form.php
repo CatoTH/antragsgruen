@@ -16,7 +16,7 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor.bbcode.js');
 
 $this->breadcrumbs = array(
-	CHtml::encode($model->veranstaltung0->name_kurz) => "/",
+	CHtml::encode($model->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
 	'Neuer Antrag',
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");

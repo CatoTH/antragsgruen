@@ -34,23 +34,23 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container">
-					<form class='form-search visible-phone' action='/site/suche/' method='GET'>
+					<form class='form-search visible-phone' action='<?=CHtml::encode($this->createUrl("site/suche"))?>' method='GET'>
 						<input type='hidden' name='id' value=''>
 						<div class='input-append'><input class='search-query' type='search' name='suchbegriff' value='' autofocus placeholder='Suche'><button type='submit' class='btn'><i style='height: 18px;' class='icon-search'></i></button></div>
 					</form>
 
 					<ul class="nav">
-						<li class="active"><a href="/site/index">Start</a></li>
-						<li><a href="/site/hilfe">Hilfe</a></li>
+						<li class="active"><a href="<?=CHtml::encode($this->createUrl("site/suche"))?>">Start</a></li>
+						<li><a href="<?=CHtml::encode($this->createUrl("site/hilfe"))?>">Hilfe</a></li>
 						<?php if (Yii::app()->user->isGuest) { ?>
-						<li><a href="/site/login">Login</a></li>
+						<li><a href="<?=CHtml::encode($this->createUrl("site/login"))?>">Login</a></li>
 						<?php } else { ?>
-						<li><a href="/site/logout">Logout</a></li>
+						<li><a href="<?=CHtml::encode($this->createUrl("site/logout"))?>">Logout</a></li>
 						<?php
 					}
 						if (Yii::app()->user->getState("role") == "admin") {
 							?>
-							<li><a href="/admin">Admin</a></li>
+							<li><a href="<?=CHtml::encode($this->createUrl("admin/index"))?>">Admin</a></li>
 							<?php } ?>
 					</ul>
 				</div>

@@ -7,8 +7,8 @@
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
-	"Antrag"                                          => "/antrag/anzeige/?id=" . $antrag->id,
+	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	"Antrag"                                          => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 	"Bearbeiten",
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
@@ -20,7 +20,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 <div class="well well_first">
 	<h3>Nachträglich Bearbeiten</h3>
 
-	<a class="btn btn-small btn-info" href="/antrag/aendern/?id=<?php echo $antrag->id; ?>"><i class="icon-wrench icon-white"></i> Ändern</a>
+	<a class="btn btn-small btn-info" href="<?=CHtml::encode($this->createUrl("antrag/aendern", array("antrag_id" => $antrag->id)))?>"><i class="icon-wrench icon-white"></i> Ändern</a>
 
 	<br><br>
 

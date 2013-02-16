@@ -3,14 +3,20 @@
 class AntragController extends VeranstaltungsControllerBase
 {
 
-	public function actionAnzeige()
+	public function actionAnzeige($veranstaltung_id, $antrag_id)
 	{
-		$id = IntVal($_REQUEST["id"]);
+		$veranstaltung_id = IntVal($veranstaltung_id);
+		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
-		$antrag = Antrag::model()->findByPk($id);
+		$antrag = Antrag::model()->findByPk($antrag_id);
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
 			$this->redirect("/");
+		}
+
+		if ($antrag->veranstaltung0->yii_url != $veranstaltung_id) {
+			Yii::app()->user->setFlash("error", "Fehlerhafte Parameter.");
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 
 		$this->veranstaltung = $antrag->veranstaltung0;
@@ -39,7 +45,7 @@ class AntragController extends VeranstaltungsControllerBase
 			$unt->kommentar        = "";
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du unterstützt diesen Antrag nun.");
 			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-			$this->redirect("/antrag/anzeige/?id=" . $id);
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
 		}
 
 		if (AntiXSS::isTokenSet("magnicht") && !Yii::app()->user->isGuest) {
@@ -53,14 +59,14 @@ class AntragController extends VeranstaltungsControllerBase
 			$unt->save();
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du lehnst diesen Antrag nun ab.");
 			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-			$this->redirect("/antrag/anzeige/?id=" . $id);
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
 		}
 
 		if (AntiXSS::isTokenSet("dochnicht") && !Yii::app()->user->isGuest) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
 			Yii::app()->user->setFlash("success", "Du stehst diesem Antrag wieder neutral gegenüber.");
-			$this->redirect("/antrag/anzeige/?id=" . $id);
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
 		}
 
 		/** @var $antragstellerinnen array|Person[] $antragstellerinnen */
@@ -92,14 +98,14 @@ class AntragController extends VeranstaltungsControllerBase
 			$kommentar->verfasser    = $model_person;
 			$kommentar->verfasser_id = $model_person->id;
 			$kommentar->antrag       = $antrag;
-			$kommentar->antrag_id    = $id;
+			$kommentar->antrag_id    = $antrag_id;
 			$kommentar->status       = IKommentar::$STATUS_FREI;
 
 			$kommentare_offen[] = $zeile;
 
 			if ($kommentar->save()) {
 				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert.");
-				$this->redirect("/antrag/anzeige/?id=" . $id . "&kommentar=" . $kommentar->id . "#komm" . $kommentar->id);
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id, "kommentar" => $kommentar->id, "#" => "komm" . $kommentar->id)));
 			} else {
 				foreach ($model_person->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 			}
@@ -141,8 +147,8 @@ class AntragController extends VeranstaltungsControllerBase
 			"edit_link"          => $antrag->binInitiatorIn(),
 			"kommentare_offen"   => $kommentare_offen,
 			"kommentar_person"   => $kommentar_person,
-			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/antraege/update/id/" . $id : null),
-			"komm_del_link"      => "/antrag/anzeige/?id=${id}&" . AntiXSS::createToken("komm_del") . "=#komm_id#",
+			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/antraege/update/id/" . $antrag_id : null),
+			"komm_del_link"      => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id, AntiXSS::createToken("komm_del") => "#komm_id#")),
 			"hiddens"            => $hiddens,
 			"js_protection"      => $js_protection,
 			"support_form"       => !Yii::app()->user->isGuest,
@@ -151,10 +157,9 @@ class AntragController extends VeranstaltungsControllerBase
 		));
 	}
 
-	public function actionPdf()
+	public function actionPdf($veranstaltung_id, $antrag_id)
 	{
-		$id     = IntVal($_REQUEST["id"]);
-		$antrag = Antrag::model()->findByPk($id);
+		$antrag = Antrag::model()->findByPk($antrag_id);
 
 		$this->renderPartial("pdf", array(
 			'model'   => $antrag,
@@ -163,26 +168,28 @@ class AntragController extends VeranstaltungsControllerBase
 	}
 
 
-	public function actionBearbeiten()
+	public function actionBearbeiten($veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
-		$id = IntVal($_REQUEST["id"]);
+		$antrag_id = IntVal($antrag_id);
+		$veranstaltung_id = IntVal($veranstaltung_id);
+
 		/** @var Antrag $antrag */
-		$antrag = Antrag::model()->findByPk($id);
+		$antrag = Antrag::model()->findByPk($antrag_id);
 
 		$this->veranstaltung = $antrag->veranstaltung0;
 
 		if (!$antrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
-			$this->redirect("/antrag/anzeige/?id=$id");
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
 		}
 
 		if (AntiXSS::isTokenSet("antrag_del")) {
 			$antrag->status = Antrag::$STATUS_ZURUECKGEZOGEN;
 			if ($antrag->save()) {
 				Yii::app()->user->setFlash("success", "Der Antrag wurde zurückgezogen.");
-				$this->redirect("/");
+				$this->redirect($this->createUrl("site/veranstaltung"));
 			} else {
 				Yii::app()->user->setFlash("error", "Der Antrag konnte nicht zurückgezogen werden.");
 			}
@@ -195,19 +202,19 @@ class AntragController extends VeranstaltungsControllerBase
 	}
 
 
-	public function actionAendern()
+	public function actionAendern($veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
-		$id = IntVal($_REQUEST["id"]);
+		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
-		$antrag = Antrag::model()->findByPk($id);
+		$antrag = Antrag::model()->findByPk($antrag_id);
 
 		$this->veranstaltung = $antrag->veranstaltung0;
 
 		if (!$antrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
-			$this->redirect("/antrag/anzeige/?id=$id");
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
 		}
 
 		if (AntiXSS::isTokenSet("antragbearbeiten")) {
@@ -261,7 +268,7 @@ class AntragController extends VeranstaltungsControllerBase
 					if ($unt->rolle == AntragUnterstuetzer::$ROLLE_UNTERSTUETZER && $unt->unterstuetzer->status == Person::$STATUS_UNCONFIRMED) $unt->delete();
 				foreach ($model_unterstuetzer_obj as $unt) $unt->save();
 
-				$this->redirect("/antrag/neuConfirm/?id=" . $antrag->id . "&next_status=" . $_REQUEST["Antrag"]["status"] . "&from_mode=aendern");
+				$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $antrag_id, "next_status" => $_REQUEST["Antrag"]["status"], "from_mode" => "aendern")));
 			} else {
 				foreach ($antrag->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht geändert werden: $key: " . $val2);
 			}
@@ -305,12 +312,18 @@ class AntragController extends VeranstaltungsControllerBase
 	}
 
 
-	public function actionNeuConfirm()
+	public function actionNeuConfirm($veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
+		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
-		$antrag = Antrag::model()->findByAttributes(array("id" => $_REQUEST["id"], "status" => Antrag::$STATUS_UNBESTAETIGT));
+		$antrag = Antrag::model()->findByAttributes(array("id" => $antrag_id, "status" => Antrag::$STATUS_UNBESTAETIGT));
+
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Antrag nicht gefunden oder bereits bestätigt.");
+			$this->redirect($this->createUrl("site/veranstaltung", array("veranstaltung_id" => $veranstaltung_id)));
+		}
 
 		$this->veranstaltung = $antrag->veranstaltung0;
 
@@ -324,7 +337,7 @@ class AntragController extends VeranstaltungsControllerBase
 				$mails = explode(",", $antrag->veranstaltung0->admin_email);
 				foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Antrag",
 					"Es wurde ein neuer Antrag \"" . $antrag->name . "\" eingereicht.\n" .
-						"Link: " . yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $antrag->id,
+						"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 					"From: " . Yii::app()->params['mail_from']
 				);
 			}
@@ -349,8 +362,9 @@ class AntragController extends VeranstaltungsControllerBase
 
 	}
 
-	public function actionNeu()
+	public function actionNeu($veranstaltung_id)
 	{
+		$veranstaltung_id = IntVal($veranstaltung_id);
 		$this->layout = '//layouts/column2';
 
 		$model         = new Antrag();
@@ -359,13 +373,13 @@ class AntragController extends VeranstaltungsControllerBase
 
 
 		/** @var Veranstaltung $veranstaltung */
-		$this->veranstaltung = $veranstaltung         = Veranstaltung::model()->findByPk($_REQUEST["veranstaltung"]);
+		$this->veranstaltung = $veranstaltung         = Veranstaltung::model()->findByAttributes(array("yii_url" => $veranstaltung_id));
 		$model->veranstaltung  = $veranstaltung->id;
 		$model->veranstaltung0 = $veranstaltung;
 
 		if (!$veranstaltung->darfEroeffnenAntrag()) {
 			Yii::app()->user->setFlash("error", "Es kann kein Antrag angelegt werden.");
-			$this->redirect("/?veranstaltung=" . $veranstaltung->id);
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 
 		$model_unterstuetzer = array();
@@ -432,7 +446,7 @@ class AntragController extends VeranstaltungsControllerBase
 					}
 
 
-					$this->redirect("/antrag/neuConfirm/?id=" . $model->id . "&next_status=" . $_REQUEST["Antrag"]["status"] . "&from_mode=neu");
+					$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $model->id, "next_status" => $_REQUEST["Antrag"]["status"], "from_mode" => "neu")));
 				} else {
 					foreach ($model->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht angelegt werden: $key: " . $val2);
 				}

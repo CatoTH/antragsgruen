@@ -21,7 +21,7 @@
  */
 
 $this->breadcrumbs         = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
+	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
 	$sprache->get("Antrag"),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
@@ -37,12 +37,12 @@ if (count($antrag->antraege) > 0) $rows++;
 
 $html = '<ul class="funktionen">';
 // $html .= '<li class="unterstuetzen"><a href="#">Antrag unterstützen</a></li>';
-if ($antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) $html .= '<li class="aender-stellen"><a href="/aenderungsantrag/neu/?antrag_id=' . $antrag->id . '">' . $sprache->get("Änderungsantrag stellen") . '</a></li>';
-$html .= '<li class="download"><a href="/antrag/pdf/?id=' . $antrag->id . '">PDF-Version herunterladen</a></li>';
-if ($edit_link) $html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), "/antrag/bearbeiten/?id=" . $antrag->id) . '</li>';
+if ($antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) $html .= '<li class="aender-stellen">' . CHtml::link($sprache->get("Änderungsantrag stellen"), $this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id))) . '</li>';
+$html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';
+if ($edit_link) $html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/bearbeiten", array("antrag_id" => $antrag->id))) . '</li>';
 
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
-else $html .= '<li class="zurueck"><a href="/">Zurück zur Übersicht</a></li>
+else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $this->createUrl("site/veranstaltung")) . '</a></li>
 					</ul>';
 $this->menus_html[] = $html;
 
@@ -102,7 +102,7 @@ $this->menus_html[] = $html;
 				<th>Ersetzt den Antrag:</th>
 				<td>
 					<?php foreach ($antrag->antraege as $a) {
-					echo CHtml::link($a->revision_name . " - " . $a->name, "/antrag/anzeige/?id=" . $a->id);
+					echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
 				} ?>
 				</td>
 			</tr>
@@ -111,10 +111,10 @@ $this->menus_html[] = $html;
 
 		<div class="hidden-desktop">
 			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-				<a href="/antrag/pdf/?id=<?php echo $antrag->id; ?>" class="btn" type="button" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
+				<a href="<?=CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id)))?>" class="btn" type="button" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
 			</div>
 			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-				<a href="/aenderungsantrag/neu/?antrag_id=<?php echo $antrag->id; ?>" class="btn btn-danger" type="button" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
+				<a href="<?=CHtml::encode($this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id)))?>" class="btn btn-danger" type="button" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
 			</div>
 		</div>
 	</div>
@@ -345,7 +345,7 @@ foreach ($absae as $i => $abs) {
 		echo "</div>";
 		$this->endWidget();
 	} else {
-		Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen zu können, musst du <a href="/site/login" style="font-weight: bold;">dich einzuloggen</a>.');
+		Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("site/login")) . '</a>.');
 		$this->widget('bootstrap.widgets.TbAlert', array(
 			'block' => true,
 			'fade'  => true,
@@ -364,7 +364,7 @@ foreach ($absae as $i => $abs) {
 				echo CHtml::openTag('li');
 				$aename = $relatedModel->revision_name;
 				if ($aename == "") $aename = $relatedModel->id;
-				echo CHtml::link(CHtml::encode($aename), array('/aenderungsantrag/anzeige/?id=' . $relatedModel->id));
+				echo CHtml::link($aename, $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag->id, "aenderungsantrag_id" => $relatedModel->id)));
 				echo " (" . CHtml::encode(Aenderungsantrag::$STATI[$relatedModel->status]) . ")";
 				echo CHtml::closeTag('li');
 			}

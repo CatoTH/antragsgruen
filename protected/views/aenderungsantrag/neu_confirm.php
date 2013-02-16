@@ -14,8 +14,8 @@ $antragstellerinnen = array();
 $unterstuetzerinnen = array();
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => "/",
-	$sprache->get("Antrag")                                          => "/antrag/anzeige/?id=" . $antrag->id,
+	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	$sprache->get("Antrag")                                          => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 	$sprache->get('Änderungsantrag bestätigen'),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
@@ -64,7 +64,9 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     </div>
 	<!--
     <div style="float: left;">
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submitlink', 'url' => "/aenderungsantrag/aendern/?id=" . $aenderungsantrag->id, 'icon'=> 'remove', 'label'=> 'Korrigieren')); ?>
+		<?php
+		$aendern_link = $this->createUrl("aenderungsantrag/aendern", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id));
+		$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submitlink', 'url' => $aendern_link, 'icon'=> 'remove', 'label'=> 'Korrigieren')); ?>
     </div>
     -->
 </div>

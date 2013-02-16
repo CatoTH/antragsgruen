@@ -20,8 +20,8 @@
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($aenderungsantrag->antrag->veranstaltung0->name_kurz) => "/",
-	"Antrag"                                                            => "/antrag/anzeige/?id=" . $aenderungsantrag->antrag->id,
+	CHtml::encode($aenderungsantrag->antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	"Antrag"                                                            => $this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag->id)),
 	'Änderungsantrag'
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
@@ -31,8 +31,8 @@ $html = '<ul class="funktionen">';
 //$html .= '<li class="unterstuetzen"><a href="#">Änderungsantrag unterstützen</a></li>';
 //$html .= '<li class="download"><a href="#">PDF-Version herunterladen</a></li>';
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
-if ($edit_link) $html .= '<li class="edit">' . CHtml::link("Änderungsantrag bearbeiten", "/aenderungsantrag/bearbeiten/?id=" . $aenderungsantrag->id) . '</li>';
-$html .= '<li class="zurueck"><a href="/antrag/anzeige/?id=' . $aenderungsantrag->antrag_id . '">Zurück zum Antrag</a></li>
+if ($edit_link) $html .= '<li class="edit">' . CHtml::link("Änderungsantrag bearbeiten", $this->createUrl("aenderungsantrag/bearbeiten", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
+$html .= '<li class="zurueck">' . CHtml::link("Zurück zum Anfang", $this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id))) . '</li>
 </ul>';
 
 $this->menus_html[] = $html;
@@ -57,13 +57,13 @@ $rows = 10;
             <tr>
                 <th>Veranstaltung:</th>
                 <td><?php
-					echo CHtml::link(CHtml::encode($aenderungsantrag->antrag->veranstaltung0->name), array('/veranstaltung/anzeige/?id=' . $aenderungsantrag->antrag->veranstaltung));
+					echo CHtml::link($aenderungsantrag->antrag->veranstaltung0->name, $this->createUrl("site/veranstaltung"));
 					?></td>
             </tr>
             <tr>
                 <th>Ursprungsantrag:</th>
                 <td><?php
-					echo CHtml::link(CHtml::encode($aenderungsantrag->antrag->name), array('/antrag/anzeige/?id=' . $aenderungsantrag->antrag->id));
+					echo CHtml::link($aenderungsantrag->antrag->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag->id)));
 					?></td>
             </tr>
             <tr>
@@ -321,7 +321,7 @@ $rows = 10;
 		echo "</div>";
 		$this->endWidget();
 	} else {
-		Yii::app()->user->setFlash('warning', 'Um diesen Änderungsantrag unterstützen oder ablehnen zu können, musst du <a href="/site/login" style="font-weight: bold;">dich einzuloggen</a>.');
+		Yii::app()->user->setFlash('warning', 'Um diesen Änderungsantrag unterstützen oder ablehnen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("site/login")) . '.');
 		$this->widget('bootstrap.widgets.TbAlert', array(
 			'block'=> true,
 			'fade' => true,

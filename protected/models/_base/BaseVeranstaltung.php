@@ -11,6 +11,7 @@
  * @property string $policy_antraege
  * @property string $policy_aenderungsantraege
  * @property string $policy_kommentare
+ * @property string $yii_url
  * @property integer $typ
  * @property string $admin_email
  * @property integer $freischaltung_antraege

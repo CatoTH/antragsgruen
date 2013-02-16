@@ -55,8 +55,8 @@ if (count($suche_antraege) > 0) {
 		echo ">";
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
-		echo CHtml::link(CHtml::encode($antrag->nameMitRev()), "/antrag/anzeige/?id=" . $antrag->id);
-		echo CHtml::link("PDF", "/antrag/pdf/?id=" . $antrag->id, array("class" => "pdfLink"));
+		echo CHtml::link(CHtml::encode($antrag->nameMitRev()), $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
+		echo CHtml::link("PDF", $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id)), array("class" => "pdfLink"));
 		echo "</p>\n";
 		echo "<p class='info'>";
 		$text       = $antrag->text . "\n" . $antrag->begruendung;
@@ -99,8 +99,8 @@ if (count($suche_aenderungsantraege) > 0) {
 		echo ">";
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($aenderungsantrag->antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
-		echo CHtml::link(CHtml::encode($aenderungsantrag->revision_name . " zu " . $aenderungsantrag->antrag->nameMitRev()), "/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id);
-		echo CHtml::link("PDF", "/aenderungsantrag/pdf/?id=" . $aenderungsantrag->id, array("class" => "pdfLink"));
+		echo CHtml::link(CHtml::encode($aenderungsantrag->revision_name . " zu " . $aenderungsantrag->antrag->nameMitRev()), $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id)));
+		echo CHtml::link("PDF", $this->createUrl("aenderungsantrag/pdf", array("antrag_id" => $antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id)), array("class" => "pdfLink"));
 		echo "</p>\n";
 		echo "<p class='info'>";
 		$text       = $aenderungsantrag->aenderung_text . "\n" . $aenderungsantrag->aenderung_begruendung;

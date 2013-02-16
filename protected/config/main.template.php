@@ -52,15 +52,28 @@ return array(
 			'allowAutoLogin'=> true,
 			'loginUrl'      => array('site/login'),
 		),
-		// uncomment the following to enable URLs in path-format
-		'urlManager'  => array(
-			'urlFormat'     => 'path',
-			'showScriptName'=> false,
-			'rules'         => array(
-				'admin'                                 => 'admin/index',
-				'<controller:\w+>/<id:\d+>'             => '<controller>/view',
-				'<controller:\w+>/<action:\w+>/<id:\d+>'=> '<controller>/<action>',
-				'<controller:\w+>/<action:\w+>'         => '<controller>/<action>',
+		'urlManager'     => array(
+			'urlFormat'      => 'path',
+			'showScriptName' => false,
+			'rules'          => array(
+				'/admin'                                                                                   => 'admin/index',
+				'<veranstaltung_id:\w+>/hilfe'                                                             => 'site/hilfe',
+				'<veranstaltung_id:\w+>/login'                                                             => 'site/login',
+				'<veranstaltung_id:\w+>/suche'                                                             => 'site/suche',
+				'<veranstaltung_id:\w+>/logout'                                                            => 'site/logout',
+				'<veranstaltung_id:\w+>/'                                                                  => 'site/veranstaltung',
+				'<veranstaltung_id:\w+>/feedAlles'                                                         => 'site/feedAlles',
+				'<veranstaltung_id:\w+>/feedAntraege'                                                      => 'site/feedAntraege',
+				'<veranstaltung_id:\w+>/feedAenderungsantraege'                                            => 'site/feedAenderungsantraege',
+				'<veranstaltung_id:\w+>/feedKommentare'                                                    => 'site/feedKommentare',
+				'<veranstaltung_id:\w+>/antrag/neu'                                                        => 'antrag/neu',
+				'<veranstaltung_id:\w+>/antrag/<antrag_id:\d+>'                                            => 'antrag/anzeige',
+				'<veranstaltung_id:\w+>/antrag/<antrag_id:\d+>/pdf'                                        => 'antrag/pdf',
+				'<veranstaltung_id:\w+>/antrag/<antrag_id:\d+>/neuConfirm'                                 => 'antrag/neuConfirm',
+				'<veranstaltung_id:\w+>/antrag/<antrag_id:\d+>/aendern'                                    => 'antrag/aendern',
+				'<veranstaltung_id:\w+>/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>' => 'aenderungsantrag/anzeige',
+				'<veranstaltung_id:\w+>/antrag/<antrag_id:\d+>/aenderungsantrag/neu'                       => 'aenderungsantrag/neu',
+				'<veranstaltung_id:\w+>/antrag/<antrag_id:\d+>/aenderungsantrag/ajaxCalcDiff'              => 'aenderungsantrag/ajaxCalcDiff',
 			),
 		),
 		'authManager' => array(

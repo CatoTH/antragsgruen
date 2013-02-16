@@ -72,8 +72,8 @@ foreach ($antraege as $name=> $antrs) {
 		echo ">";
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
-		echo CHtml::link(CHtml::encode($antrag->nameMitRev()), "/antrag/anzeige/?id=" . $antrag->id);
-		echo CHtml::link("PDF", "/antrag/pdf/?id=" . $antrag->id, array("class"=> "pdfLink"));
+		echo CHtml::link(CHtml::encode($antrag->nameMitRev()), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
+		echo CHtml::link("PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class"=> "pdfLink"));
 		echo "</p>\n";
 		echo "<p class='info'>von ";
 		$vons = array();
@@ -87,7 +87,7 @@ foreach ($antraege as $name=> $antrs) {
 			foreach ($antrag->aenderungsantraege as $ae) {
 				echo "<li>";
 				echo "<span class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($ae->datum_einreichung) . "</span>\n";
-				echo CHtml::link($ae->revision_name, "/aenderungsantrag/anzeige/?id=" . $ae->id);
+				echo CHtml::link($ae->revision_name, $this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $ae->antrag->id, "aenderungsantrag_id" => $ae->id)));
 				$vons = array();
 				foreach ($ae->aenderungsantragUnterstuetzer as $unt) if ($unt->rolle == "initiator") $vons[] = $unt->unterstuetzer->name;
 				echo "<span class='info'>" . implode(", ", $vons) . "</span>\n";
@@ -112,7 +112,7 @@ foreach ($antraege as $name=> $antrs) {
 				<?php foreach ($meine_antraege as $antragu) {
 				$antrag = $antragu->antrag;
 				echo "<li>";
-				echo CHtml::link(CHtml::encode($antrag->name), "/antrag/anzeige/?id=" . $antrag->id);
+				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
 				if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
 				if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
 				echo "</li>\n";
@@ -132,7 +132,8 @@ foreach ($antraege as $name=> $antrs) {
 				/** @var Aenderungsantrag $antrag */
 				$antrag = $antragu->aenderungsantrag;
 				echo "<li>";
-				echo CHtml::link(CHtml::encode($antrag->revision_name . " zu " . $antrag->antrag->revision_name), "/aenderungsantrag/anzeige/?id=" . $antrag->id);
+				echo CHtml::link(CHtml::encode($antrag->revision_name . " zu " . $antrag->antrag->revision_name),
+					$this->createUrl('aenderungsantrag/anzeige', array("antrag" => $antrag->antrag->id, "aenderungsantrag_id" => $antrag->id)));
 				if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
 				if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
 				echo "</li>\n";
