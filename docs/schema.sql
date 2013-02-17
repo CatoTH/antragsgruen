@@ -24,6 +24,8 @@ CREATE  TABLE IF NOT EXISTS `veranstaltung` (
   `freischaltung_kommentare` TINYINT NULL DEFAULT 0 ,
   `logo_url` VARCHAR(200) NULL ,
   `fb_logo_url` VARCHAR(200) NULL ,
+  `ae_nummerierung_global` TINYINT NULL DEFAULT 0 ,
+  `bestaetigungs_emails` TINYINT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8

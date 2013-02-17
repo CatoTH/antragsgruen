@@ -141,6 +141,16 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<?php echo $form->textField($model, 'fb_logo_url', array('maxlength' => 200)); ?>
 	<?php echo $form->error($model, 'fb_logo_url'); ?>
 </div>
+<div>
+	<?php echo $form->labelEx($model, 'ae_nummerierung_global'); ?>
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[ae_nummerierung_global]" value="0" <?php if ($model->ae_nummerierung_global != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[ae_nummerierung_global]" value="1" <?php if ($model->ae_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+</div>
+<div>
+	<?php echo $form->labelEx($model, 'bestaetigungs_emails'); ?>
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[bestaetigungs_emails]" value="0" <?php if ($model->bestaetigungs_emails != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[bestaetigungs_emails]" value="1" <?php if ($model->bestaetigungs_emails == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+</div>
 <div class="saveholder">
 	<?php
 	echo GxHtml::submitButton(Yii::t('app', 'Save'), array("class" => "btn btn-primary"));
