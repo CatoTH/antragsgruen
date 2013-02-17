@@ -28,10 +28,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 	<?php
 	$mail = "<a href='mailto:" . Yii::app()->params['kontakt_email'] . "'>" . Yii::app()->params['kontakt_email'] . "</a>";
-	Yii::app()->user->setFlash("info", str_replace(array("#1#", "#2#"), array($sprache->get("Änderungsantrag"), $mail),
-		"Bitte kontrolliere kurz, ob der Text richtig übernommen wurde. Wenn ja, kannst du den #1# unten bestätigen. Falls nicht, kannst du ihn nocheinmal korrigieren.<br>
-<br>
-Falls es Probleme gibt, die sich nicht lösen lassen, gib uns bitte per Mail an #2# Bescheid. Den #1# kannst du auch per E-Mail an die Landesgeschäftsstelle einreichen."));
+	Yii::app()->user->setFlash("info", str_replace(array("#1#", "#2#"), array($sprache->get("Änderungsantrag"), $mail), $antrag->veranstaltung0->getStandardtext("ae_confirm")->getText()));
 	$this->widget('bootstrap.widgets.TbAlert');
 	?>
 

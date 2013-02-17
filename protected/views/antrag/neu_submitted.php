@@ -8,16 +8,17 @@
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
 	"Antrag" => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
-	'Neuer Änderungsantrag',
+	'Neuer Antrag',
 	'Bestätigen'
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 ?>
 
-<h1>Änderungsantrag eingereicht</h1>
+<h1><?php echo $sprache->get("Antrag eingereicht"); ?></h1>
 <div class="form well">
-<p>Der Änderungsantrag wurde eingereicht. Eventuell prüfen wir die Anträge vorab noch, um zu verhindern, dass Spam-Bots hier Inhalte einstellen. Bei Problemen melde dich einfach per Mail
-	bei der LGS.</p>
+	<?php
+	echo $text = $antrag->veranstaltung0->getStandardtext("antrag_eingereicht")->getHTMLText();
+	?>
 <p><?php
 
 	/** @var TbActiveForm $form */

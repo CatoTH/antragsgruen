@@ -25,22 +25,10 @@ class SiteController extends VeranstaltungsControllerBase
 	public function actionImpressum()
 	{
 		$this->setStdVeranstaltung();
-
-		/** @var Texte $v */
-		$v = Texte::model()->findByAttributes(array("text_id" => "impressum"));
-		if (is_null($v)) {
-			$edit_link = "/admin/texte/create?key=impressum";
-			$text      = "";
-		} else {
-			$edit_link = "/admin/texte/update/id/" . $v->id . "/";
-			$text      = $v->text;
-		}
-
 		$this->render('content', array(
 			"title"            => "Impressum",
 			"breadcrumb_title" => "Impressum",
-			"content"          => $text,
-			"editlink"         => (Yii::app()->user->getState("role") == "admin" ? $edit_link : null),
+			"text"             => $this->veranstaltung->getStandardtext("impressum"),
 		));
 	}
 
@@ -50,22 +38,10 @@ class SiteController extends VeranstaltungsControllerBase
 	public function actionHilfe()
 	{
 		$this->setStdVeranstaltung();
-
-		/** @var Texte $v */
-		$v = Texte::model()->findByAttributes(array("text_id" => "hilfe"));
-		if (is_null($v)) {
-			$edit_link = "/admin/texte/create?key=hilfe";
-			$text      = "";
-		} else {
-			$edit_link = "/admin/texte/update/id/" . $v->id . "/";
-			$text      = $v->text;
-		}
-
 		$this->render('content', array(
 			"title"            => "Hilfe",
 			"breadcrumb_title" => "Hilfe",
-			"content"          => $text,
-			"editlink"         => (Yii::app()->user->getState("role") == "admin" ? $edit_link : null),
+			"text"             => $this->veranstaltung->getStandardtext("hilfe"),
 		));
 	}
 
@@ -340,14 +316,7 @@ class SiteController extends VeranstaltungsControllerBase
 			$meine_aenderungsantraege = $dataProvider->data;
 		}
 
-		/** @var Texte $texto */
-		$texto           = Texte::model()->findByAttributes(array("veranstaltung_id" => $veranstaltung->id, "text_id" => "startseite"));
-		$einleitungstext = ($texto ? $texto->text : null);
-		if (is_null($einleitungstext)) {
-                        $edit_link = "/admin/texte/create?key=startseite";
-                } else {
-                        $edit_link = "/admin/texte/update/id/" . $texto->id . "/";
-                }
+		$einleitungstext = $veranstaltung->getStandardtext("startseite");
 
 		$this->render('veranstaltung_index', array(
 			"veranstaltung"              => $veranstaltung,
@@ -360,7 +329,6 @@ class SiteController extends VeranstaltungsControllerBase
 			"meine_antraege"             => $meine_antraege,
 			"meine_aenderungsantraege"   => $meine_aenderungsantraege,
 			"sprache"                    => $veranstaltung->getSprache(),
-			"editlink"                   => (Yii::app()->user->getState("role") == "admin" ? $edit_link : null),
 		));
 	}
 

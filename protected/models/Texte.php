@@ -11,4 +11,6 @@ class Texte extends BaseTexte
 	public static function label($n = 1) {
 		return Yii::t('app', 'Text|Texte', $n);
 	}
+
+
 }

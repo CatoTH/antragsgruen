@@ -52,12 +52,15 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 		<?php echo $form->textArea($model, 'text'); ?>
 		<?php echo $form->error($model, 'text'); ?>
     </div>
-
+	<?php
+	if (in_array($model->text_id, Veranstaltung::getHTMLStandardtextIDs())) {
+	?>
     <script>
         $(function () {
             CKEDITOR.replace('Texte_text', {'customConfig':"/js/ckconfig-html.js", extraPlugins : 'abbr', width:690 });
         })
     </script>
+	<?php } ?>
 
     <br>
 

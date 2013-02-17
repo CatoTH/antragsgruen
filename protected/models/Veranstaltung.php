@@ -94,6 +94,47 @@ class Veranstaltung extends BaseVeranstaltung
 
 
 	/**
+	 * @return array|string[]
+	 */
+	public static function getStandardtextIDs() {
+		return array("startseite", "impressum", "hilfe", "antrag_confirm");
+	}
+
+	/**
+	 * @return array|string[]
+	 */
+	public static function getHTMLStandardtextIDs() {
+		return array("startseite", "impressum", "hilfe", "antrag_eingereicht", "antrag_confirm", "ae_eingereicht", "ae_confirm");
+	}
+
+	/**
+	 * @param string $id
+	 * @return Standardtext
+	 */
+	public function getStandardtext($id) {
+		$vtext = Texte::model()->findByAttributes(array("text_id" => $id, "veranstaltung_id" => $this->id));
+		/** @var Texte|null $vtext */
+
+		if (is_null($vtext)) {
+			$edit_link = "/admin/texte/create?key=" . rawurlencode($id);
+			$vtext = Texte::model()->findByAttributes(array("text_id" => $id, "veranstaltung_id" => null));
+			$is_fallback = true;
+		} else {
+			$edit_link = "/admin/texte/update/id/" . rawurlencode($vtext->id) . "/";
+			$is_fallback = false;
+		}
+
+		$text = (is_null($vtext) ? "" : $vtext->text);
+
+		if (Yii::app()->user->getState("role") != "admin") $edit_link = null;
+
+		$html = in_array($id, Veranstaltung::getHTMLStandardtextIDs());
+
+		return new Standardtext($id, $text, $html, $edit_link, $is_fallback);
+	}
+
+
+	/**
 	 * @param int $antrag_typ
 	 * @return string
 	 */

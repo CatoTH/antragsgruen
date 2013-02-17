@@ -3,7 +3,7 @@
 /**
  * @var SiteController $this
  * @var Veranstaltung $veranstaltung
- * @var string|null $einleitungstext
+ * @var Standardtext $einleitungstext
  * @var array $antraege
  * @var null|Person $ich
  * @var array|AntragKommentar[] $neueste_kommentare
@@ -12,7 +12,6 @@
  * @var array|AntragUnterstuetzer[] $meine_antraege
  * @var array|AenderungsantragUnterstuetzer[] $meine_aenderungsantraege
  * @var Sprache $sprache
- * @var string|null $editlink
  */
 
 $this->pageTitle = Yii::app()->name;
@@ -39,7 +38,7 @@ include(__DIR__ . "/sidebar.php");
 		}
 
 	}
-	if ($editlink !== null) echo "<a style='font-size: 10px;' href='" . $editlink . "'>Bearbeiten</a>";
+	if ($einleitungstext->getEditLink() !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($einleitungstext->getEditLink()) . "'>Bearbeiten</a>";
 	?>
 </h1>
 
@@ -48,7 +47,7 @@ include(__DIR__ . "/sidebar.php");
 		<?php
 		if ($veranstaltung->antragsschluss != "") echo '<p class="antragsschluss">Antrags&shy;schluss: ' . HtmlBBcodeUtils::formatMysqlDateTime($veranstaltung->antragsschluss) . "</p>\n";
 
-		if ($einleitungstext !== null) echo $einleitungstext;
+		echo $einleitungstext->getHTMLText();
 		?>
     </div>
 </div>

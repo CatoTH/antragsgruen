@@ -11,12 +11,12 @@ $this->breadcrumbs = array(
 	$sprache->get("Neuer Änderungsantrag")
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+$ver = $aenderungsantrag->antrag->veranstaltung0;
 ?>
 
-<h1>Antrag eingereicht</h1>
+<h1><?php echo $sprache->get("Änderungseintrag eingereicht")?></h1>
 <div class="form well">
-    <p>Der <?php echo $sprache->get("Änderungsantrag"); ?> wurde eingereicht. Eventuell prüfen wir die <?php echo $sprache->get("Änderungsantrag"); ?> vorab noch, um zu verhindern, dass Spam-Bots hier Inhalte einstellen. Bei Problemen melde dich einfach per Mail
-        bei der LGS.</p>
+    <?php echo $ver->getStandardtext("ae_eingereicht")->getHTMLText(); ?>
     <p><?php
 
 		/** @var TbActiveForm $form */

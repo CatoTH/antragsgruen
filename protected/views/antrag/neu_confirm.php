@@ -31,9 +31,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 	<?php
 
-	Yii::app()->user->setFlash("info", "<b>Bitte bestätige</b>, ob der Text richtig übernommen wurde. Wenn ja, klicke unten auf &quot;<b>Antrag einreichen</b>&quot;. Falls nicht, kannst du ihn nocheinmal korrigieren.<br>
-<br>
-Falls es Probleme gibt, die sich nicht lösen lassen, gib uns bitte per Mail an xxxxx Bescheid. Den Änderungsantrag kannst du auch per E-Mail an die Landesgeschäftsstelle einreichen.");
+	Yii::app()->user->setFlash("info", $antrag->veranstaltung0->getStandardtext("antrag_confirm")->getHTMLText());
 	$this->widget('bootstrap.widgets.TbAlert');
 
 	?>
