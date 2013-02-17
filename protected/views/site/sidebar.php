@@ -68,7 +68,7 @@ if (count($neueste_kommentare) == 0) $html .= "<li><i>keine</i></li>";
 else foreach ($neueste_kommentare as $komm) {
 	$html .= "<li class='komm'>";
 	$html .= "<strong>" . CHtml::encode($komm->verfasser->name) . "</strong>, " . HtmlBBcodeUtils::formatMysqlDateTime($komm->datum);
-	$html .= "<div>Zu " . CHtml::link(CHtml::encode($komm->antrag->name), $this->createUrl("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar" => $komm->id, "#" => "komm" . $komm->id))) . "</div>";
+	$html .= "<div>Zu " . CHtml::link(CHtml::encode($komm->antrag->name), $this->createUrl("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id))) . "</div>";
 	$html .= "</li>\n";
 }
 $html .= "</ul></div>";

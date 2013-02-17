@@ -10,8 +10,8 @@ $antrag = $aenderungsantrag->antrag;
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
-	"Antrag"                                          => "/antrag/anzeige/?id=" . $antrag->id,
-	"Änderungsantrag"                                 => "/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id,
+	"Antrag"                                          => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
+	"Änderungsantrag"                                 => $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id)),
 	"Bearbeiten",
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");

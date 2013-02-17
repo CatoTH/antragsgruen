@@ -167,7 +167,8 @@ foreach ($absae as $i => $abs) {
 				<?php
 				/** @var Aenderungsantrag $ant */
 				foreach ($abs->aenderungsantraege as $ant) {
-					echo "<li><a class='aender_link' data-id='" . $ant->id . "' href='/aenderungsantrag/anzeige/?id=" . $ant->id . "'>" . CHtml::encode($ant->revision_name) . "</a></li>\n";
+					$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $ant->antrag->veranstaltung0->yii_url, "antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id));
+					echo "<li><a class='aender_link' data-id='" . $ant->id . "' href='" . CHtml::encode($ae_link) . "'>" . CHtml::encode($ant->revision_name) . "</a></li>\n";
 				} ?>
 			</ul>
 		</div>

@@ -91,7 +91,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> 'Antrag einreichen')); ?>
     </div>
     <div style="float: left;">
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submitlink', 'url' => $this->createUrl("/antrag/aendern", array("antrag_id" => $antrag->id)), 'icon'=> 'remove', 'label'=> 'Korrigieren')); ?>
+		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submitlink', 'url' => $this->createUrl("antrag/aendern", array("antrag_id" => $antrag->id)), 'icon'=> 'remove', 'label'=> 'Korrigieren')); ?>
     </div>
 </div>
 

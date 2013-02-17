@@ -49,7 +49,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	}
 
 	if ($login_warnung) {
-		Yii::app()->user->setFlash('error', '<strong>Achtung!</strong> Es ist zwar auch möglich, Anträge einzureichen, ohne eingeloggt zu sein. Allerdings kann man nur eingeloggt den Antrag später wieder bearbeiten, daher empfehlen wir sehr, <a href="/site/login" style="font-weight: bold;">dich einzuloggen</a>.');
+		Yii::app()->user->setFlash('error', '<strong>Achtung!</strong> Es ist zwar auch möglich, Anträge einzureichen, ohne eingeloggt zu sein. Allerdings kann man nur eingeloggt den Antrag später wieder bearbeiten, daher empfehlen wir sehr, <a href="' . CHtml::encode($this->createUrl("site/login")) . '" style="font-weight: bold;">dich einzuloggen</a>.');
 		$this->widget('bootstrap.widgets.TbAlert', array(
 			'block'=> true,
 			'fade' => true,

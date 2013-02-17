@@ -3,11 +3,11 @@
 class AenderungsantragController extends VeranstaltungsControllerBase
 {
 
-	public function actionAnzeige()
+	public function actionAnzeige($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
-		$id = IntVal($_REQUEST["id"]);
+		$aenderungsantrag_id = IntVal($aenderungsantrag_id);
 		/** @var Aenderungsantrag $aenderungsantrag */
-		$aenderungsantrag = Aenderungsantrag::model()->findByPk($id);
+		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
 
 		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
 
@@ -45,7 +45,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 			$unt->kommentar           = "";
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du unterstützt diesen Änderungsantrag nun.");
 			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-			$this->redirect("/aenderungsantrag/anzeige/?id=" . $id);
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
 
 		if (AntiXSS::isTokenSet("magnicht") && !Yii::app()->user->isGuest) {
@@ -59,14 +59,14 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 			$unt->save();
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du lehnst diesen Änderungsantrag nun ab.");
 			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-			$this->redirect("/aenderungsantrag/anzeige/?id=" . $id);
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
 
 		if (AntiXSS::isTokenSet("dochnicht") && !Yii::app()->user->isGuest) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
 			Yii::app()->user->setFlash("success", "Du stehst diesem Änderungsantrag wieder neutral gegenüber.");
-			$this->redirect("/aenderungsantrag/anzeige/?id=" . $id);
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
 
 		$kommentare_offen = array();
@@ -85,14 +85,14 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 			$kommentar->verfasser           = $model_person;
 			$kommentar->verfasser_id        = $model_person->id;
 			$kommentar->aenderungsantrag    = $aenderungsantrag;
-			$kommentar->aenderungsantrag_id = $id;
+			$kommentar->aenderungsantrag_id = $aenderungsantrag_id;
 			$kommentar->status              = IKommentar::$STATUS_FREI;
 
 			$kommentare_offen[] = $zeile;
 
 			if ($kommentar->save()) {
 				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert.");
-				$this->redirect("/aenderungsantrag/anzeige/?id=" . $id . "&kommentar=" . $kommentar->id . "#komm" . $kommentar->id);
+				$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id, "kommentar_id" => $kommentar->id, "#" => "komm" . $kommentar->id)));
 			} else {
 				foreach ($kommentar->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 				foreach ($model_person->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
@@ -142,10 +142,10 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 			"zustimmung_von"     => $zustimmung_von,
 			"ablehnung_von"      => $ablehnung_von,
 			"edit_link"          => $aenderungsantrag->binInitiatorIn(),
-			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $id : null),
+			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $aenderungsantrag_id : null),
 			"kommentare_offen"   => $kommentare_offen,
 			"kommentar_person"   => $kommentar_person,
-			"komm_del_link"      => "/aenderungsantrag/anzeige/?id=${id}&" . AntiXSS::createToken("komm_del") . "=#komm_id#",
+			"komm_del_link"      => $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id, AntiXSS::createToken("komm_del") => "#komm_id#")),
 			"hiddens"            => $hiddens,
 			"js_protection"      => $js_protection,
 			"support_form"       => !Yii::app()->user->isGuest,
@@ -154,11 +154,10 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 		));
 	}
 
-	public function actionPdf()
+	public function actionPdf($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
-		$id = IntVal($_REQUEST["id"]);
 		/** @var Aenderungsantrag $antrag */
-		$antrag = Aenderungsantrag::model()->findByPk($id);
+		$antrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
 
 		$this->renderPartial("pdf", array(
 			'model'   => $antrag,
@@ -166,26 +165,25 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 		));
 	}
 
-	public function actionBearbeiten()
+	public function actionBearbeiten($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
-		$id = IntVal($_REQUEST["id"]);
 		/** @var Aenderungsantrag $aenderungsantrag */
-		$aenderungsantrag = Aenderungsantrag::model()->findByPk($id);
+		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
 
 		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
 
 		if (!$aenderungsantrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Änderungsantrag");
-			$this->redirect("/aenderungsantrag/anzeige/?id=$id");
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
 
 		if (AntiXSS::isTokenSet("ae_del")) {
 			$aenderungsantrag->status = Aenderungsantrag::$STATUS_ZURUECKGEZOGEN;
 			if ($aenderungsantrag->save()) {
 				Yii::app()->user->setFlash("success", "Der Änderungsantrag wurde zurückgezogen.");
-				$this->redirect("/antrag/anzeige/?id=" . $aenderungsantrag->antrag_id);
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id)));
 			} else {
 				Yii::app()->user->setFlash("error", "Der Änderungsantrag konnte nicht zurückgezogen werden.");
 			}
@@ -197,19 +195,18 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 		));
 	}
 
-	public function actionAendern()
+	public function actionAendern($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
-		$id = IntVal($_REQUEST["id"]);
 		/** @var Aenderungsantrag $aenderungsantrag */
-		$aenderungsantrag = Aenderungsantrag::model()->findByPk($id);
+		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
 
 		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
 
 		if (!$aenderungsantrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Änderungsantrag");
-			$this->redirect("/aenderungsantrag/anzeige/?id=$id");
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
 
 		if (AntiXSS::isTokenSet("antragbearbeiten")) {
@@ -241,14 +238,14 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 	}
 
 
-	public function actionNeuConfirm()
+	public function actionNeuConfirm($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
 		/** @var Aenderungsantrag $aenderungsantrag */
-		$aenderungsantrag = Aenderungsantrag::model()->findByAttributes(array("id" => $_REQUEST["id"]));
+		$aenderungsantrag = Aenderungsantrag::model()->findByAttributes(array("id" => $aenderungsantrag_id));
 		if ($aenderungsantrag->status != Aenderungsantrag::$STATUS_UNBESTAETIGT) {
-			$this->redirect("/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id);
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
 
 		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
@@ -268,7 +265,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 				$mails = explode(",", $aenderungsantrag->antrag->veranstaltung0->admin_email);
 				foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Änderungsantrag",
 					"Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
-					"Link: " . yii::app()->getBaseUrl(true) . "/aenderungsantrag/anzeige/?id=" . $aenderungsantrag->id,
+					"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)),
 					"From: " . Yii::app()->params['mail_from']
 				);
 			}
@@ -308,11 +305,11 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 		$this->renderPartial('ajax_diff', array("diffs" => $diffs));
 	}
 
-	public function actionNeu()
+	public function actionNeu($veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
-		$antrag_id = IntVal($_REQUEST["antrag_id"]);
+		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
 
@@ -320,7 +317,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 
 		if (!$antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) {
 			Yii::app()->user->setFlash("error", "Es kann kein Antrag Änderungsantrag werden.");
-			$this->redirect("/antrag/anzeige/?id=" . $antrag->id);
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
 
 
@@ -427,7 +424,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 				die();
 			}
 
-			$this->redirect("/aenderungsantrag/neuConfirm/?id=" . $aenderungsantrag->id);
+			$this->redirect($this->createUrl("aenderungsantrag/neuConfirm", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 
 		} else {
 			if ($antragstellerin === null) $antragstellerin = new Person();

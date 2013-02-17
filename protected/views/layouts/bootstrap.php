@@ -97,7 +97,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 	'fixed'       => false,
 	'brand'       => "",
 	'collapse'    => false,
-	'items'       => array('<a href="/site/impressum">Impressum</a>'),
+	'items'       => array('<a href="' . CHtml::encode($this->createUrl("site/impressum")) . '">Impressum</a>'),
 )); ?>
 
 	<!-- footer -->

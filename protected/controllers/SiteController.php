@@ -83,7 +83,7 @@ class SiteController extends VeranstaltungsControllerBase
 		$data = array();
 		foreach ($antraege as $ant) $data[AntraegeUtils::date_iso2timestamp($ant->datum_einreichung) . "_antrag_" . $ant->id] = array(
 			"title"       => "Neuer Antrag: " . $ant->revision_name . " - " . $ant->name,
-			"link"        => Yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $ant->id,
+			"link"        => Yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $ant->id)),
 			"dateCreated" => AntraegeUtils::date_iso2timestamp($ant->datum_einreichung),
 			"content"     => "<h2>Antrag</h2>" . HtmlBBcodeUtils::bbcode2html($ant->text) . "<br>\n<br>\n<br>\n<h2>Begründung</h2>" . HtmlBBcodeUtils::bbcode2html($ant->begruendung),
 		);
@@ -104,7 +104,7 @@ class SiteController extends VeranstaltungsControllerBase
 		$data = array();
 		foreach ($antraege as $ant) $data[AntraegeUtils::date_iso2timestamp($ant->datum_einreichung) . "_aenderungsantrag_" . $ant->id] = array(
 			"title"       => "Neuer Änderungsantrag: " . $ant->revision_name . " zu " . $ant->antrag->revision_name . " - " . $ant->antrag->name,
-			"link"        => Yii::app()->getBaseUrl(true) . "/aenderungsantrag/anzeige/?id=" . $ant->id,
+			"link"        => Yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id)),
 			"dateCreated" => AntraegeUtils::date_iso2timestamp($ant->datum_einreichung),
 			"content"     => "<h2>Antrag</h2>" . HtmlBBcodeUtils::bbcode2html($ant->aenderung_text) . "<br>\n<br>\n<br>\n<h2>Begründung</h2>" . HtmlBBcodeUtils::bbcode2html($ant->aenderung_begruendung),
 		);
@@ -125,7 +125,7 @@ class SiteController extends VeranstaltungsControllerBase
 		$data = array();
 		foreach ($antraege as $ant) $data[AntraegeUtils::date_iso2timestamp($ant->datum) . "_kommentar_" . $ant->id] = array(
 			"title"       => "Kommentar von " . $ant->verfasser->name . " zu: " . $ant->antrag->revision_name . " - " . $ant->antrag->name,
-			"link"        => Yii::app()->getBaseUrl(true) . "/antrag/anzeige/?id=" . $ant->antrag->id . "&kommentar=" . $ant->id . "#komm" . $ant->id,
+			"link"        => Yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $ant->antrag->id, "kommentar_id" => $ant->id, "#" => "komm" . $ant->id)),
 			"dateCreated" => AntraegeUtils::date_iso2timestamp($ant->datum),
 			"content"     => HtmlBBcodeUtils::bbcode2html($ant->text),
 		);
@@ -187,6 +187,7 @@ class SiteController extends VeranstaltungsControllerBase
 	public function actionFeedAlles($veranstaltung_id = 0)
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$sprache       = $veranstaltung->getSprache();
 
 		$data1 = $this->getFeedAntraegeData($veranstaltung);
 		$data2 = $this->getFeedAenderungsantraegeData($veranstaltung);
@@ -198,6 +199,7 @@ class SiteController extends VeranstaltungsControllerBase
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => "Anträge, Änderungsanträge und Kommentare",
+			"feed_description" => str_replace("%veranstaltung%", $veranstaltung->name, $sprache->get("feed_desc_alles")),
 			"data"             => $data,
 			"sprache"          => $veranstaltung->getSprache(),
 		));
@@ -279,7 +281,7 @@ class SiteController extends VeranstaltungsControllerBase
 
 				$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 			} else {
-				Header("Location: /site/login/");
+				$this->redirect($this->createUrl("site/login"));
 			}
 		}
 

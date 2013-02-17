@@ -8,10 +8,12 @@ $this->breadcrumbs = array(
 	Yii::t('app', 'Update'),
 );
 
+$komm_link = $this->createUrl($this->createUrl("antrag/anzeige", array("veranstaltung_id" => $model->antrag->veranstaltung0->yii_url, "antrag_id" => $model->antrag->id, "kommentar_id" => $model->id, "#" => "#komm" . $model->id)));
+
 $this->menu = array(
 	array('label' => $model->label(2) . ': ' . Yii::t('app', 'List'), 'url'=> array('index'), "icon" => "home"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'Create'), 'url'=> array('create'), "icon" => "plus-sign"),
-	array('label' => $model->label() . ' ' . Yii::t('app', 'View'), 'url'=> "/antrag/anzeige/?id=" . $model->antrag_id . "&kommentar=" . $model->id . "#komm" . $model->id, "icon" => "eye-open"),
+	array('label' => $model->label() . ' ' . Yii::t('app', 'View'), 'url'=> $komm_link, "icon" => "eye-open"),
 	array('label'=> $model->label() . ' ' . Yii::t('app', 'Delete'), 'url'=> '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'confirm'=> 'Are you sure you want to delete this item?'), "icon" => "remove"),
 	array('label' => $model->label(2) . ' ' . Yii::t('app', 'Manage'), 'url'=> array('admin'), "icon" => "th-list"),
 );

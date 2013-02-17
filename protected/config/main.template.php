@@ -10,27 +10,26 @@ mb_internal_encoding("UTF-8");
 
 define("SEED_KEY", "randomkey");
 
-Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../../vendor/chris83/yii-bootstrap');
+Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . '/../../vendor/chris83/yii-bootstrap');
 
 return array(
-	'basePath'  => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
-	'name'      => 'Grüne Anträge',
+	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
+	'name'       => 'Grüne Anträge',
 
 	// preloading 'log' component
-	'preload'   => array(
+	'preload'    => array(
 		'log',
 		'bootstrap',
 	),
 
 	// autoloading model and component classes
-	'import'    => array(
+	'import'     => array(
 		'application.models.*',
 		'application.components.*',
 		'ext.giix-components.*',
 	),
 
-	'modules'   => array(
-		// uncomment the following to enable the Gii tool
+	'modules'    => array(// uncomment the following to enable the Gii tool
 		/*
 		'gii'=> array(
 			'class'          => 'system.gii.GiiModule',
@@ -46,11 +45,11 @@ return array(
 	),
 
 	// application components
-	'components'=> array(
-		'user'        => array(
+	'components' => array(
+		'user'           => array(
 			// enable cookie-based authentication
-			'allowAutoLogin'=> true,
-			'loginUrl'      => array('site/login'),
+			'allowAutoLogin' => true,
+			'loginUrl'       => array('site/login'),
 		),
 		'urlManager'     => array(
 			'urlFormat'      => 'path',
@@ -76,12 +75,12 @@ return array(
 				'<veranstaltung_id:\w+>/antrag/<antrag_id:\d+>/aenderungsantrag/ajaxCalcDiff'              => 'aenderungsantrag/ajaxCalcDiff',
 			),
 		),
-		'authManager' => array(
-			'class'       => 'CDbAuthManager',
-			'connectionID'=> 'db',
+		'authManager'    => array(
+			'class'        => 'CDbAuthManager',
+			'connectionID' => 'db',
 		),
-		
-		'db'            => array(
+
+		'db'             => array(
 			"connectionString" => "mysql:host=localhost;dbname=parteitool",
 			"emulatePrepare"   => true,
 			"username"         => "parteitool",
@@ -89,16 +88,16 @@ return array(
 			"charset"          => "utf8",
 			"enableProfiling"  => true
 		),
-		'errorHandler'=> array(
+		'errorHandler'   => array(
 			// use 'site/error' action to display errors
-			'errorAction'=> 'site/error',
+			'errorAction' => 'site/error',
 		),
-		'log'         => array(
-			'class' => 'CLogRouter',
-			'routes'=> array(
+		'log'            => array(
+			'class'  => 'CLogRouter',
+			'routes' => array(
 				array(
-					'class' => 'CFileLogRoute',
-					'levels'=> 'error, warning',
+					'class'  => 'CFileLogRoute',
+					'levels' => 'error, warning',
 				),
 				/*
 				array(
@@ -107,14 +106,14 @@ return array(
 				*/
 			),
 		),
-		'bootstrap'=>array(
+		'bootstrap'      => array(
 			'class' => 'composer.chris83.yii-bootstrap.components.Bootstrap',
 		),
-		'datetimepicker'=>array(
+		'datetimepicker' => array(
 			'class' => 'ext.datetimepicker.EDateTimePicker',
 		),
-		'loid'=>array(
-			'class'=>'application.extensions.lightopenid.loid',
+		'loid'           => array(
+			'class' => 'application.extensions.lightopenid.loid',
 		),
 		/*
 	   'clientScript'=>array(
@@ -127,12 +126,12 @@ return array(
 		   */
 	),
 
-	'params'    => array(
-		'standardVeranstaltung'=> 1,
+	'params'     => array(
+		'standardVeranstaltung'           => 1,
 		'standardVeranstaltungAutoCreate' => true,
-		'pdf_logo' => 'LOGO_PFAD',
-		'kontakt_email' => 'EMAILADRESSE',
-		'mail_from' => 'Antragsgrün <EMAILADRESSE>',
-		'font_css' => '/css/font.css',
+		'pdf_logo'                        => 'LOGO_PFAD',
+		'kontakt_email'                   => 'EMAILADRESSE',
+		'mail_from'                       => 'Antragsgrün <EMAILADRESSE>',
+		'font_css'                        => '/css/font.css',
 	),
 );

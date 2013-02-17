@@ -7,5 +7,6 @@ class SpracheAntraege extends Sprache
 		"feed_desc_antraege"                 => "%veranstaltung%: Neue Anträge",
 		"feed_desc_aenderungsantraege"       => "%veranstaltung%: Neue Änderungsanträge",
 		"feed_desc_kommentare"               => "%veranstaltung%: Neue Kommentare",
+		"feed_desc_alles"                    => "%veranstaltung%: Neue (Änderungs-)Anträge und Kommentare",
 	);
 }

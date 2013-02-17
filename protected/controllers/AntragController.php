@@ -3,7 +3,7 @@
 class AntragController extends VeranstaltungsControllerBase
 {
 
-	public function actionAnzeige($veranstaltung_id, $antrag_id)
+	public function actionAnzeige($veranstaltung_id, $antrag_id, $kommentar_id = 0)
 	{
 		$veranstaltung_id = IntVal($veranstaltung_id);
 		$antrag_id = IntVal($antrag_id);
@@ -110,11 +110,11 @@ class AntragController extends VeranstaltungsControllerBase
 				foreach ($model_person->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 			}
 		}
-		if (isset($_REQUEST["kommentar"])) {
+		if ($kommentar_id > 0) {
 			$abs = $antrag->getParagraphs();
 			foreach ($abs as $ab) {
 				/** @var AntragAbsatz $ab */
-				foreach ($ab->kommentare as $komm) if ($komm->id == $_REQUEST["kommentar"]) $kommentare_offen[] = $ab->absatz_nr;
+				foreach ($ab->kommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $ab->absatz_nr;
 			}
 		}
 
