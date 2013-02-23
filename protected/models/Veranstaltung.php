@@ -150,6 +150,19 @@ class Veranstaltung extends BaseVeranstaltung
 	}
 
 	/**
+	 * @param Person $person
+	 * @return bool
+	 */
+	public function isAdmin($person) {
+		$ein = VeranstaltungPerson::model()->findAllByAttributes(array(
+			"veranstaltung_id" => $this->id,
+			"person_id" => $person->id,
+			"rolle" => VeranstaltungPerson::$STATUS_ADMIN
+		));
+		return (count($ein) > 0);
+	}
+
+	/**
 	 * @var string $className
 	 * @return GxActiveRecord
 	 */

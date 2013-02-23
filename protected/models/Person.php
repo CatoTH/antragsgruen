@@ -32,11 +32,12 @@ class Person extends BasePerson
         return Yii::t('app', 'Person|Personen', $n);
     }
 
-
+	/*
     public function attributeLabels() {
         $ret = parent::attributeLabels();
         $ret["abonnenten"] = "Hat abonniert";
         return $ret;
     }
+	*/
 
 }

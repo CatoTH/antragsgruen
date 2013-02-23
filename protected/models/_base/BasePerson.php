@@ -24,7 +24,7 @@
  * @property Antrag[] $antraege_abos
  * @property AntragKommentar[] $antragKommentare
  * @property AntragUnterstuetzer[] $antragUnterstuetzer
- * @property Veranstaltung[] $veranstaltungen
+ * @property VeranstaltungPerson[] $veranstaltungen
  */
 abstract class BasePerson extends GxActiveRecord {
 
@@ -63,14 +63,14 @@ abstract class BasePerson extends GxActiveRecord {
 			'antraege_abos' => array(self::MANY_MANY, 'Antrag', 'antrag_abo(abonnent_id, antrag_id)'),
 			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'verfasser_id'),
 			'antragUnterstuetzer' => array(self::HAS_MANY, 'AntragUnterstuetzer', 'unterstuetzer_id'),
-			'veranstaltungen' => array(self::MANY_MANY, 'Veranstaltung', 'veranstaltung_abo(abonnent_id, veranstaltung_id)'),
+			'veranstaltungen'  => array(self::HAS_MANY, 'VeranstaltungPerson', 'person_id'),
 		);
 	}
 
 	public function pivotModels() {
 		return array(
 			'antraege_abos' => 'AntragAbo',
-			'veranstaltungen' => 'VeranstaltungAbo',
+			'veranstaltungen_personen' => 'VeranstaltungPerson',
 		);
 	}
 

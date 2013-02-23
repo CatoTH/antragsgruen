@@ -48,6 +48,7 @@ include(__DIR__ . "/sidebar.php");
 		if ($veranstaltung->antragsschluss != "") echo '<p class="antragsschluss">Antrags&shy;schluss: ' . HtmlBBcodeUtils::formatMysqlDateTime($veranstaltung->antragsschluss) . "</p>\n";
 
 		echo $einleitungstext->getHTMLText();
+
 		?>
     </div>
 </div>

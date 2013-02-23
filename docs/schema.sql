@@ -249,30 +249,6 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `veranstaltung_abo`
--- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `veranstaltung_abo` (
-  `veranstaltung_id` SMALLINT NOT NULL ,
-  `abonnent_id` INT NOT NULL ,
-  PRIMARY KEY (`veranstaltung_id`, `abonnent_id`) ,
-  INDEX `fk_veranstaltung_has_person_person1` (`abonnent_id` ASC) ,
-  INDEX `fk_veranstaltung_has_person_veranstaltung1` (`veranstaltung_id` ASC) ,
-  CONSTRAINT `fk_veranstaltung_has_person_veranstaltung1`
-    FOREIGN KEY (`veranstaltung_id` )
-    REFERENCES `veranstaltung` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_veranstaltung_has_person_person1`
-    FOREIGN KEY (`abonnent_id` )
-    REFERENCES `person` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci;
-
-
--- -----------------------------------------------------
 -- Table `texte`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `texte` (
@@ -307,6 +283,31 @@ CREATE  TABLE IF NOT EXISTS `cache` (
   `datum` TIMESTAMP NULL ,
   `daten` LONGBLOB NULL ,
   PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
+-- Table `veranstaltung_person`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `veranstaltung_person` (
+  `veranstaltung_id` SMALLINT NOT NULL ,
+  `person_id` INT NOT NULL ,
+  `rolle` ENUM('admin', 'dabei', 'delegiert', 'abo') NULL ,
+  PRIMARY KEY (`veranstaltung_id`, `person_id`) ,
+  INDEX `fk_veranstaltung_has_person_person2` (`person_id` ASC) ,
+  INDEX `fk_veranstaltung_has_person_veranstaltung2` (`veranstaltung_id` ASC) ,
+  CONSTRAINT `fk_veranstaltung_has_person_veranstaltung2`
+    FOREIGN KEY (`veranstaltung_id` )
+    REFERENCES `veranstaltung` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_veranstaltung_has_person_person2`
+    FOREIGN KEY (`person_id` )
+    REFERENCES `person` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;

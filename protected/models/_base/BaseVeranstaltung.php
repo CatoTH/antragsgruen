@@ -21,7 +21,7 @@
  * @property integer $bestaetigungs_emails
  *
  * @property Antrag[] $antraege
- * @property Person[] $abonnenten
+ * @property VeranstaltungPerson[] $veranstaltung_personen
  * @property Texte[] $texte
  */
 abstract class BaseVeranstaltung extends GxActiveRecord
@@ -63,7 +63,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 	{
 		return array(
 			'antraege'   => array(self::HAS_MANY, 'Antrag', 'veranstaltung'),
-			'abonnenten' => array(self::MANY_MANY, 'Person', 'veranstaltung_abo(veranstaltung_id, abonnent_id)'),
+			'veranstaltung_personen'   => array(self::HAS_MANY, 'VeranstaltungPerson', 'veranstaltung_id'),
 			'texte'      => array(self::HAS_MANY, 'Texte', 'veranstaltung_id'),
 		);
 	}
@@ -71,7 +71,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 	public function pivotModels()
 	{
 		return array(
-			'abonnenten' => 'VeranstaltungAbo',
+			'veranstaltung_personen' => 'VeranstaltungPerson'
 		);
 	}
 
@@ -97,7 +97,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 			'logo_url'                         => Yii::t('app', 'Logo-URL'),
 			'fb_logo_url'                      => Yii::t('app', 'Facebook-Bild URL'),
 			'antraege'                         => null,
-			'abonnenten'                       => null,
+			'veranstaltung_personen'           => null,
 			'texte'                            => null,
 			'ae_nummerierung_global'           => Yii::t('app', 'ÄA-Nummerierung für die ganze Veranstaltung'),
 			'bestaetigungs_emails'             => Yii::t('app', 'Bestätigungsmails an AntragsStellerInnen'),
