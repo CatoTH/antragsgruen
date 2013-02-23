@@ -103,7 +103,7 @@ $form = $this->beginWidget('GxActiveForm', array(
 </div>
 <div>
 	<?php echo $form->labelEx($model, 'policy_aenderungsantraege'); ?>
-	<?php echo $form->dropDownList($model, 'policy_aenderungsantraege', Veranstaltung::$POLICIES); ?>
+	<?php echo $form->dropDownList($model, 'policy_aenderungsantraege', IPolicyAntraege::getAllInstances()); ?>
 	<?php echo $form->error($model, 'policy_aenderungsantraege'); ?>
 </div>
 <div>

@@ -37,7 +37,14 @@ if (count($antrag->antraege) > 0) $rows++;
 
 $html = '<ul class="funktionen">';
 // $html .= '<li class="unterstuetzen"><a href="#">Antrag unterstützen</a></li>';
-if ($antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) $html .= '<li class="aender-stellen">' . CHtml::link($sprache->get("Änderungsantrag stellen"), $this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id))) . '</li>';
+
+$policy = $antrag->veranstaltung0->getPolicyAenderungsantraege();
+if ($policy->checkCurUserHeuristically()) $html .= '<li class="aender-stellen">' . CHtml::link($sprache->get("Änderungsantrag stellen"), $this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id))) . '</li>';
+else {
+	$msg = $policy->getPermissionDeniedMsg();
+	if ($msg != "") $html .= '<li class="aender-stellen">' . CHtml::link($sprache->get("Änderungsantrag stellen")) . CHtml::encode($policy->getPermissionDeniedMsg()) . '</li>';
+}
+
 $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';
 if ($edit_link) $html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/bearbeiten", array("antrag_id" => $antrag->id))) . '</li>';
 
@@ -113,9 +120,13 @@ $this->menus_html[] = $html;
 			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
 				<a href="<?=CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id)))?>" class="btn" type="button" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
 			</div>
+			<?
+			$policy = $antrag->veranstaltung0->getPolicyAenderungsantraege();
+			if ($policy->checkCurUserHeuristically()) { ?>
 			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
 				<a href="<?=CHtml::encode($this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id)))?>" class="btn btn-danger" type="button" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
 			</div>
+			<? } ?>
 		</div>
 	</div>
 </div>

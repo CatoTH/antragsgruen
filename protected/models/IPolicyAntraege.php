@@ -9,6 +9,8 @@ abstract class IPolicyAntraege
 	private static $POLICIES = array(
 		"ByLDK" => "PolicyAntraegeByLDK",
 		"Admins" => "PolicyAntraegeAdmins",
+		"Alle" => "PolicyAntraegeAlle",
+		"Eingeloggte" => "PolicyAntraegeEingeloggte",
 	);
 
 
@@ -52,9 +54,16 @@ abstract class IPolicyAntraege
 
 	/**
 	 * @abstract
-	 * @return int
+	 * @return string
 	 */
-	abstract public function getStdUnterstuetzerFields();
+	abstract public function getAntragsstellerInView();
+
+
+	/**
+	 * @abstract
+	 * @return string
+	 */
+	abstract public function getPermissionDeniedMsg();
 
 
 	/**

@@ -19,7 +19,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	static public function getPolicyName()
 	{
-		return "Min. 15 (oder 1 Organisation)";
+		return "Organisation, Delegierte, oder 15 Mitglieder";
 	}
 
 
@@ -31,11 +31,19 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	}
 
 	/**
-	 * @return int
+	 * @abstract
+	 * @return string
 	 */
-	public function getStdUnterstuetzerFields()
+	public function getPermissionDeniedMsg() {
+		return "";
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAntragsstellerInView()
 	{
-		return 15;
+		return "antragsstellerin_delegiert_orga_15";
 	}
 
 	/**

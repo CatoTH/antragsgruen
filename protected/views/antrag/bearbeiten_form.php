@@ -117,44 +117,19 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
         </div>
     </fieldset>
 </div>
-<div class="form well">
-    <fieldset>
-
-        <legend>AntragstellerIn</legend>
-
-		<?php echo $form->radioButtonListRow($antragstellerin, 'typ', Person::$TYPEN); ?>
-
-		<?php echo $form->textFieldRow($antragstellerin, 'name'); ?>
-
-		<?php echo $form->textFieldRow($antragstellerin, 'email'); ?>
-
-		<?php echo $form->textFieldRow($antragstellerin, 'telefon'); ?>
-
-    </fieldset>
-
-	<?php if (count($model_unterstuetzer) > 0) { ?>
-    <fieldset>
-
-        <legend>UnterstützerInnen</legend>
-
-        <div class="control-group unterstuetzer">
-			<?php foreach ($model_unterstuetzer as $nr=> $u) { ?>
-            <div style="margin-bottom: 5px;">
-                <label style="display: inline; margin-right: 10px;"><input type="radio" name="UnterstuetzerTyp[<?=$nr?>]"
-                                                                           value="<?=Person::$TYP_PERSON?>" <? if ($u["typ"] == Person::$TYP_PERSON) echo "checked"; ?>>
-                    Person</label>
-                <label style="display: inline; margin-right: 40px;"><input type="radio" name="UnterstuetzerTyp[<?=$nr?>]"
-                                                                           value="<?=Person::$TYP_ORGANISATION?>" <? if ($u["typ"] == Person::$TYP_ORGANISATION) echo "checked"; ?>>
-                    Organisation</label>
-                <label style="display: inline;">Name: <input type="text" name="UnterstuetzerName[<?=$nr?>]" value="<?=CHtml::encode($u["name"])?>"></label>
-            </div>
-			<?php } ?>
-
-        </div>
-    </fieldset>
-	<?php } ?>
-</div>
-
+<?php
+$this->renderPartial($model->veranstaltung0->getPolicyAntraege()->getAntragsstellerInView(), array(
+	"form"                => $form,
+	"model"               => $model,
+	"antragstellerin"     => $antragstellerin,
+	"model_unterstuetzer" => $model_unterstuetzer,
+	"veranstaltung"       => $veranstaltung,
+	"hiddens"             => $hiddens,
+	"js_protection"       => $js_protection,
+	"login_warnung"       => Yii::app()->user->isGuest,
+	"sprache"             => $model->veranstaltung0->getSprache(),
+));
+?>
 <div class="form-actions">
     <div style="float: left;">
 		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'reset', 'icon'=> 'remove', 'label'=> 'Reset')); ?>

@@ -240,6 +240,8 @@ class SiteController extends VeranstaltungsControllerBase
 	{
 		$this->layout = '//layouts/column2';
 
+		if ($veranstaltung_id == 0) $this->redirect("/");
+
 		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 		if (is_null($veranstaltung)) {
 			if (Yii::app()->params['standardVeranstaltungAutoCreate']) {

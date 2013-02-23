@@ -461,8 +461,10 @@ class AntragController extends VeranstaltungsControllerBase
 			}
 		}
 
+		/*
 		for ($i = count($model_unterstuetzer); $i < $veranstaltung->getPolicyAntraege()->getStdUnterstuetzerFields(); $i++)
 			$model_unterstuetzer[] = array("typ" => Person::$TYP_PERSON, "name" => "");
+		*/
 
 		$hiddens       = array();
 		$js_protection = Yii::app()->user->isGuest;

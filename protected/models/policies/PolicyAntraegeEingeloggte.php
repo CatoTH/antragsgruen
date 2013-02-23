@@ -1,6 +1,6 @@
 <?php
 
-class PolicyAntraegeAdmins extends IPolicyAntraege
+class PolicyAntraegeEingeloggte extends IPolicyAntraege
 {
 
 	/**
@@ -9,7 +9,7 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 	 */
 	static public function getPolicyID()
 	{
-		return 2;
+		return 4;
 	}
 
 	/**
@@ -18,7 +18,7 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 	 */
 	static public function getPolicyName()
 	{
-		return "Nur Admins";
+		return "Nur Eingeloggte";
 	}
 
 
@@ -26,7 +26,7 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 	 * @return bool
 	 */
 	public function checkCurUserHeuristically() {
-		return false;
+		return !Yii::app()->user->isGuest;
 	}
 
 	/**
@@ -42,7 +42,7 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 	 * @return string
 	 */
 	public function getPermissionDeniedMsg() {
-		return "";
+		return "Bitte logge dich ein";
 	}
 
 
@@ -54,7 +54,7 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 	 */
 	public function checkOnCreate($antrag, $antragstellerin, $unterstuetzerinnen)
 	{
-		return ($antragstellerin->unterstuetzer->admin == 1);
+		return !Yii::app()->user->isGuest;
 	}
 
 	/**
@@ -62,7 +62,7 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 	 */
 	public function getOnCreateDescription()
 	{
-		return "Nur Admins";
+		return "Nur Eingeloggte";
 	}
 
 }
