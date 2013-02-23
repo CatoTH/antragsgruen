@@ -40,7 +40,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 					</form>
 
 					<ul class="nav">
-						<li class="active"><a href="<?=CHtml::encode($this->createUrl("site/suche"))?>">Start</a></li>
+						<li class="active"><a href="<?=CHtml::encode($this->createUrl("site/veranstaltung"))?>">Start</a></li>
 						<li><a href="<?=CHtml::encode($this->createUrl("site/hilfe"))?>">Hilfe</a></li>
 						<?php if (Yii::app()->user->isGuest) { ?>
 						<li><a href="<?=CHtml::encode($this->createUrl("site/login"))?>">Login</a></li>
