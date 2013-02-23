@@ -174,13 +174,15 @@ foreach ($absae as $i => $abs) {
 		</div>
 		<?php
 	}
+
+	if (count($abs->kommentare) > 0 || $antrag->veranstaltung0->darfEroeffnenKommentar()) {
 	?>
 	<div class='kommentare'><?
 		?>
 		<a href='#' class='shower'><?php echo count($abs->kommentare); ?></a>
 		<a href='#' class='hider'><?php echo count($abs->kommentare); ?></a>
 	</div>
-
+	<? } ?>
 </div>
 	<?php
 

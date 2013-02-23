@@ -12,10 +12,14 @@ class Veranstaltung extends BaseVeranstaltung
 	public static $POLICY_PARTEIMITGLIEDER = 1;
 	public static $POLICY_REGISTRIERTE = 2;
 	public static $POLICY_ALLE = 3;
+	public static $POLICY_NIEMAND = 4;
+	public static $POLICY_ALLE_FREISCHALTUNG = 5;
 	public static $POLICIES = array(
+		4 => "Niemand",
 		0 => "Nur Admins",
 		1 => "Nur Parteimitglieder (Wurzelwerk)",
 		2 => "Nur eingeloggte Benutzer",
+		5 => "Alle (mit Freischaltung)",
 		3 => "Alle",
 	);
 
@@ -42,12 +46,18 @@ class Veranstaltung extends BaseVeranstaltung
 		switch ($policy) {
 			case Veranstaltung::$POLICY_ALLE:
 				return true;
+			case Veranstaltung::$POLICY_ALLE_FREISCHALTUNG:
+				return true;
+			case Veranstaltung::$POLICY_REGISTRIERTE:
+				return !Yii::app()->user->isGuest;
 			case Veranstaltung::$POLICY_NUR_ADMINS:
 				if (Yii::app()->user->isGuest) return false;
 				return (Yii::app()->user->getState("role") == "admin");
 			case Veranstaltung::$POLICY_PARTEIMITGLIEDER:
 				if (Yii::app()->user->isGuest) return false;
 				return (preg_match("/^openid:https:\/\/[a-z0-9_-]+\.netzbegruener\.in\/$/i", Yii::app()->user->id));
+			case Veranstaltung::$POLICY_NIEMAND:
+				return false;
 		}
 		return false;
 	}
