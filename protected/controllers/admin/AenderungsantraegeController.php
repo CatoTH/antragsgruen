@@ -2,6 +2,7 @@
 
 class AenderungsantraegeController extends AdminControllerBase {
 
+	/*
     public function actionCreate() {
         $model = new Aenderungsantrag;
 
@@ -27,14 +28,22 @@ class AenderungsantraegeController extends AdminControllerBase {
 
         $this->render('create', array( 'model' => $model));
     }
+	*/
 
-    public function actionUpdate($id) {
+    public function actionUpdate($veranstaltung_id, $id) {
+		$this->loadVeranstaltung($veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) return;
+
         /** @var $model Aenderungsantrag */
         $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
 
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
-			$this->redirect("/admin/aenderungsantraege/");
+			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
+		}
+		if ($model->antrag->veranstaltung != $this->veranstaltung->id) {
+			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag gehört nicht zu dieser Veranstaltung.");
+			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
 		}
 
         $this->performAjaxValidation($model, 'aenderungsantrag-form');
@@ -70,9 +79,23 @@ class AenderungsantraegeController extends AdminControllerBase {
         ));
     }
 
-    public function actionDelete($id) {
-        if (Yii::app()->getRequest()->getIsPostRequest()) {
-            $this->loadModel($id, 'Aenderungsantrag')->delete();
+    public function actionDelete($veranstaltung_id, $id) {
+		$this->loadVeranstaltung($veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) return;
+
+		/** @var $model Aenderungsantrag */
+		$model = $this->loadModel($id, 'Aenderungsantrag');
+		if (is_null($model)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
+			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
+		}
+		if ($model->antrag->veranstaltung != $this->veranstaltung->id) {
+			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag gehört nicht zu dieser Veranstaltung.");
+			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
+		}
+
+		if (Yii::app()->getRequest()->getIsPostRequest()) {
+            $model->delete();
 
             if (!Yii::app()->getRequest()->getIsAjaxRequest())
                 $this->redirect(array('admin'));
@@ -80,14 +103,25 @@ class AenderungsantraegeController extends AdminControllerBase {
             throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
     }
 
-    public function actionIndex() {
-        $dataProvider = new CActiveDataProvider('Aenderungsantrag');
+    public function actionIndex($veranstaltung_id) {
+		$this->loadVeranstaltung($veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) return;
+
+		$aenderungsantraege = Aenderungsantrag::model()->with(array(
+			"antrag" => array('condition'=>'antrag.veranstaltung=' . IntVal($this->veranstaltung->id))
+		))->findAll();
+        $dataProvider = new CActiveDataProvider('Aenderungsantrag', array(
+			"data" => $aenderungsantraege
+		));
         $this->render('index', array(
             'dataProvider' => $dataProvider,
         ));
     }
 
-    public function actionAdmin() {
+    public function actionAdmin($veranstaltung_id) {
+		$this->loadVeranstaltung($veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) return;
+
         $model = new Aenderungsantrag('search');
         $model->unsetAttributes();
 

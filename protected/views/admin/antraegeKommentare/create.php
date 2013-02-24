@@ -3,7 +3,7 @@
 /* @var $model AntragKommentar */
 
 $this->breadcrumbs = array(
-	Yii::t('app', 'Administration') => '/admin',
+	Yii::t('app', 'Administration') => $this->createUrl('/admin/index'),
 	$model->label(2)                => array('index'),
 	Yii::t('app', 'Create'),
 );

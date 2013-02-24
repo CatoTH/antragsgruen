@@ -1,6 +1,36 @@
 <?php
 
-class VeranstaltungenController extends AdminControllerBase {
+class VeranstaltungenController extends GxController {
+
+
+	public function filters() {
+		return array(
+			'accessControl',
+		);
+	}
+
+	public function accessRules() {
+		return array(
+			array('allow',
+				'actions'=>array('minicreate', 'create', 'update', 'admin', 'delete', 'index', 'view'),
+				//'roles'=>array('admin'),
+				'expression' => function($user, $rule) {
+					/* @var $user CWebUser */
+					return ($user->getState("role") === "admin");
+				}
+			),
+			array('allow',
+				'actions'=>array('update'),
+				//'roles'=>array('admin'),
+				'users' => array('*'),
+			),
+			array('deny',
+				'users'=>array('*'),
+			),
+		);
+	}
+
+
 
 	public function actionCreate() {
 		$model = new Veranstaltung;
@@ -25,6 +55,7 @@ class VeranstaltungenController extends AdminControllerBase {
 	public function actionUpdate($id) {
 		/** @var Veranstaltung $model  */
 		$model = $this->loadModel($id, 'Veranstaltung');
+		if (!$model->isAdminCurUser()) return;
 
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Die angegebene Veranstaltungen wurde nicht gefunden.");
@@ -50,6 +81,10 @@ class VeranstaltungenController extends AdminControllerBase {
 	}
 
 	public function actionDelete($id) {
+		/** @var Veranstaltung $model  */
+		$model = $this->loadModel($id, 'Veranstaltung');
+		if (!$model->isAdminCurUser()) return;
+
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
 			$this->loadModel($id, 'Veranstaltung')->delete();
 
@@ -60,6 +95,8 @@ class VeranstaltungenController extends AdminControllerBase {
 	}
 
 	public function actionIndex() {
+
+
 		$dataProvider = new CActiveDataProvider('Veranstaltung');
 		$this->render('index', array(
 			'dataProvider' => $dataProvider,

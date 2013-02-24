@@ -6,7 +6,7 @@
 <table class="view">
 
 	<tr>
-		<th colspan="2"><?php echo GxHtml::link(GxHtml::encode("ID " . $data->id . ": " . $data->name), array('update', 'id' => $data->id)); ?></th>
+		<th colspan="2"><?php echo CHtml::link(GxHtml::encode("ID " . $data->id . ": " . $data->name), $this->createUrl('update', array('id' => $data->id))); ?></th>
 	</tr>
 	<tr>
 		<th><?php echo GxHtml::encode($data->getAttributeLabel('datum_von')); ?>:</th>

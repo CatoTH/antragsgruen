@@ -4,12 +4,11 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs = array(
-	Yii::t('app', 'Administration') => '/admin',
+	Yii::t('app', 'Administration') => $this->createUrl('/admin/index'),
 	Aenderungsantrag::label(2),
 );
 
 $this->menu = array(
-	array('label'=> Aenderungsantrag::label() . ' ' . Yii::t('app', 'Create'), 'url' => array('create'), "icon" => "plus-sign"),
 	array('label'=> "Durchsuchen", 'url' => array('admin'), "icon" => "th-list"),
 );
 ?>

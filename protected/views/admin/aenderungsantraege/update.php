@@ -3,7 +3,7 @@
 /* @var $model Aenderungsantrag */
 
 $this->breadcrumbs = array(
-	Yii::t('app', 'Administration') => '/admin',
+	Yii::t('app', 'Administration') => $this->createUrl('/admin/index'),
 	$model->label(2)                => array('index'),
 	Yii::t('app', 'Update'),
 );
@@ -11,7 +11,6 @@ $this->breadcrumbs = array(
 $ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $model->antrag->veranstaltung0->yii_url, "antrag_id" => $model->antrag->id, "aenderungsantrag_id" => $model->id));
 $this->menu = array(
 	array('label' => "Änderungsanträge", 'url'=> array('index'), "icon" => "home"),
-	array('label' => $model->label() . ' ' . Yii::t('app', 'Create'), 'url'=> array('create'), "icon" => "plus-sign"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'View'), 'url'=> $ae_link, "icon" => "eye-open"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'Delete'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'confirm' => 'Are you sure you want to delete this item?'), "icon" => "remove"),
 	array('label' => "Durchsuchen", 'url'=> array('admin'), "icon" => "th-list"),

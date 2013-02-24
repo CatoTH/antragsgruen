@@ -1,6 +1,6 @@
 <?php
 
-class AntragController extends VeranstaltungsControllerBase
+class AntragController extends AntragsgruenController
 {
 
 	public function actionAnzeige($veranstaltung_id, $antrag_id, $kommentar_id = 0)

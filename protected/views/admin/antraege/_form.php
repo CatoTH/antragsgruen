@@ -21,12 +21,6 @@ $form = $this->beginWidget('GxActiveForm', array(
 <?php echo $form->errorSummary($model); ?>
 
 <div>
-	<?php echo $form->labelEx($model, 'veranstaltung'); ?>
-	<?php echo $form->dropDownList($model, 'veranstaltung', GxHtml::listDataEx(Veranstaltung::model()->findAllAttributes(null, true))); ?>
-	<?php echo $form->error($model, 'veranstaltung'); ?>
-</div>
-<!-- row -->
-<div>
 	<?php echo $form->labelEx($model, 'abgeleitet_von'); ?>
 	<?php echo $form->dropDownList($model, 'abgeleitet_von',
 	GxHtml::listDataEx(Antrag::model()->findAllAttributes(null, true)),

@@ -3,7 +3,7 @@
 /* @var $model Texte */
 
 $this->breadcrumbs = array(
-	Yii::t('app', 'Administration') => '/admin',
+	Yii::t('app', 'Administration') => $this->createUrl('/admin/index'),
 	$model->label(2)                => array('index'),
 	GxHtml::valueEx($model),
 );
@@ -28,14 +28,14 @@ $this->menu = array(
 		array(
 			'name'  => 'veranstaltung',
 			'type'  => 'raw',
-			'value' => $model->veranstaltung !== null ? GxHtml::link(GxHtml::encode(GxHtml::valueEx($model->veranstaltung)), array('veranstaltung/view', 'id' => GxActiveRecord::extractPkValue($model->veranstaltung, true))) : null,
+			'value' => $model->veranstaltung !== null ? GxHtml::encode(GxHtml::valueEx($model->veranstaltung)) : null,
 		),
 		'text',
 		'edit_datum',
 		array(
 			'name'  => 'editPerson',
 			'type'  => 'raw',
-			'value' => $model->editPerson !== null ? GxHtml::link(GxHtml::encode($model->editPerson->name), array('person/view', 'id' => GxActiveRecord::extractPkValue($model->editPerson, true))) : null,
+			'value' => $model->editPerson !== null ? GxHtml::encode($model->editPerson->name) : null,
 		),
 	),
 )); ?>

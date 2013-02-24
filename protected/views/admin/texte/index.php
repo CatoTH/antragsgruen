@@ -4,7 +4,7 @@
 /* @var $dataProvider CActiveDataProvider */
 
 $this->breadcrumbs = array(
-	Yii::t('app', 'Administration') => '/admin',
+	Yii::t('app', 'Administration') => $this->createUrl('/admin/index'),
 	Texte::label(2),
 );
 

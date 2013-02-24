@@ -1,6 +1,6 @@
 <?php
 
-class SiteController extends VeranstaltungsControllerBase
+class SiteController extends AntragsgruenController
 {
 
 	public $text_comments = false;

@@ -3,14 +3,13 @@
 /* @var $model Antrag */
 
 $this->breadcrumbs = array(
-	Yii::t('app', 'Administration') => '/admin',
+	Yii::t('app', 'Administration') => $this->createUrl('/admin/index'),
 	$model->label(2)                => array('index'),
 	"Durchsuchen",
 );
 
 $this->menu = array(
 	array('label'=> $model->label(2), 'url'=> array('index'), "icon" => "home"),
-	array('label'=> $model->label() . ' ' . Yii::t('app', 'Create'), 'url'=> array('create'), "icon" => "plus-sign"),
 );
 
 Yii::app()->clientScript->registerScript('search', "

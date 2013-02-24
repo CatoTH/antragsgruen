@@ -1,6 +1,6 @@
 <?php
 
-class AenderungsantragController extends VeranstaltungsControllerBase
+class AenderungsantragController extends AntragsgruenController
 {
 	/**
 	 * @param int $veranstaltung_id

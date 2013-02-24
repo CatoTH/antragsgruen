@@ -31,12 +31,6 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     </div>
     <!-- row -->
     <div>
-		<?php echo $form->labelEx($model, 'veranstaltung_id'); ?>
-		<?php echo $form->dropDownList($model, 'veranstaltung_id', GxHtml::listDataEx(Veranstaltung::model()->findAllAttributes(null, true)), array('empty' => '-')); ?>
-		<?php echo $form->error($model, 'veranstaltung_id'); ?>
-    </div>
-    <!-- row -->
-    <div>
 		<?php echo $form->labelEx($model, 'edit_datum'); ?>
 		<?php echo $form->textField($model, 'edit_datum'); ?>
 		<?php echo $form->error($model, 'edit_datum'); ?>
