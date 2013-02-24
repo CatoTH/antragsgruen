@@ -8,10 +8,10 @@ class SiteController extends VeranstaltungsControllerBase
 	/**
 	 *
 	 */
-	public function actionIndex($veranstaltung_id = 0)
+	public function actionIndex($veranstaltung_id = "")
 	{
 		try {
-			$veranstaltung_id = ($veranstaltung_id > 0 ? IntVal($veranstaltung_id) : Yii::app()->params['standardVeranstaltung']);
+			if ($veranstaltung_id == "") $veranstaltung_id =  Yii::app()->params['standardVeranstaltung'];
 			$this->actionVeranstaltung($veranstaltung_id);
 		} catch (CDbException $e) {
 			echo "Es konnte keine Datenbankverbindung hergestellt werden.<br>";
@@ -52,7 +52,6 @@ class SiteController extends VeranstaltungsControllerBase
 	private function getFeedAntraegeData(&$veranstaltung)
 	{
 		$veranstaltung_id = IntVal($veranstaltung->id);
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 
 		$antraege = Antrag::holeNeueste($veranstaltung_id, 20);
 
@@ -73,7 +72,6 @@ class SiteController extends VeranstaltungsControllerBase
 	private function getFeedAenderungsantraegeData(&$veranstaltung)
 	{
 		$veranstaltung_id = IntVal($veranstaltung->id);
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 
 		$antraege = Aenderungsantrag::holeNeueste($veranstaltung_id, 20);
 
@@ -94,7 +92,6 @@ class SiteController extends VeranstaltungsControllerBase
 	private function getFeedAntragKommentarData(&$veranstaltung)
 	{
 		$veranstaltung_id = IntVal($veranstaltung->id);
-		if ($veranstaltung_id == 0 && isset($_REQUEST["id"])) $veranstaltung_id = IntVal($_REQUEST["id"]);
 
 		$antraege = AntragKommentar::holeNeueste($veranstaltung_id, 20);
 
@@ -109,9 +106,9 @@ class SiteController extends VeranstaltungsControllerBase
 	}
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param string $veranstaltung_id
 	 */
-	public function actionFeedAntraege($veranstaltung_id = 0)
+	public function actionFeedAntraege($veranstaltung_id = "")
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$sprache       = $veranstaltung->getSprache();
@@ -125,9 +122,9 @@ class SiteController extends VeranstaltungsControllerBase
 	}
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param string $veranstaltung_id
 	 */
-	public function actionFeedAenderungsantraege($veranstaltung_id = 0)
+	public function actionFeedAenderungsantraege($veranstaltung_id = "")
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$sprache       = $veranstaltung->getSprache();
@@ -141,9 +138,9 @@ class SiteController extends VeranstaltungsControllerBase
 	}
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param string $veranstaltung_id
 	 */
-	public function actionFeedKommentare($veranstaltung_id = 0)
+	public function actionFeedKommentare($veranstaltung_id = "")
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$sprache       = $veranstaltung->getSprache();
@@ -158,9 +155,9 @@ class SiteController extends VeranstaltungsControllerBase
 
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param string $veranstaltung_id
 	 */
-	public function actionFeedAlles($veranstaltung_id = 0)
+	public function actionFeedAlles($veranstaltung_id = "")
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$sprache       = $veranstaltung->getSprache();
@@ -183,7 +180,7 @@ class SiteController extends VeranstaltungsControllerBase
 	}
 
 
-	public function actionSuche($veranstaltung_id = 0)
+	public function actionSuche($veranstaltung_id = "")
 	{
 		$this->layout = '//layouts/column2';
 
@@ -210,7 +207,7 @@ class SiteController extends VeranstaltungsControllerBase
 	}
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param string $veranstaltung_id
 	 * @return Veranstaltung|null
 	 */
 	private function actionVeranstaltung_loadData($veranstaltung_id)
@@ -234,13 +231,13 @@ class SiteController extends VeranstaltungsControllerBase
 
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param string $veranstaltung_id
 	 */
-	public function actionVeranstaltung($veranstaltung_id = 0)
+	public function actionVeranstaltung($veranstaltung_id = "")
 	{
 		$this->layout = '//layouts/column2';
 
-		if ($veranstaltung_id == 0) $this->redirect("/");
+		if ($veranstaltung_id == "") $this->redirect("/");
 
 		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 		if (is_null($veranstaltung)) {

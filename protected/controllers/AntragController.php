@@ -5,7 +5,6 @@ class AntragController extends VeranstaltungsControllerBase
 
 	public function actionAnzeige($veranstaltung_id, $antrag_id, $kommentar_id = 0)
 	{
-		$veranstaltung_id = IntVal($veranstaltung_id);
 		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
@@ -13,13 +12,7 @@ class AntragController extends VeranstaltungsControllerBase
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
 			$this->redirect("/");
 		}
-
-		if ($antrag->veranstaltung0->yii_url != $veranstaltung_id) {
-			Yii::app()->user->setFlash("error", "Fehlerhafte Parameter.");
-			$this->redirect($this->createUrl("site/veranstaltung"));
-		}
-
-		$this->veranstaltung = $antrag->veranstaltung0;
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
 
 		$this->layout = '//layouts/column2';
 
@@ -159,7 +152,14 @@ class AntragController extends VeranstaltungsControllerBase
 
 	public function actionPdf($veranstaltung_id, $antrag_id)
 	{
+		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect("/");
+		}
+
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
 
 		$this->renderPartial("pdf", array(
 			'model'   => $antrag,
@@ -173,12 +173,15 @@ class AntragController extends VeranstaltungsControllerBase
 		$this->layout = '//layouts/column2';
 
 		$antrag_id = IntVal($antrag_id);
-		$veranstaltung_id = IntVal($veranstaltung_id);
 
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect("/");
+		}
 
-		$this->veranstaltung = $antrag->veranstaltung0;
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
 
 		if (!$antrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
@@ -209,8 +212,12 @@ class AntragController extends VeranstaltungsControllerBase
 		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect("/");
+		}
 
-		$this->veranstaltung = $antrag->veranstaltung0;
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
 
 		if (!$antrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
@@ -325,7 +332,7 @@ class AntragController extends VeranstaltungsControllerBase
 			$this->redirect($this->createUrl("site/veranstaltung", array("veranstaltung_id" => $veranstaltung_id)));
 		}
 
-		$this->veranstaltung = $antrag->veranstaltung0;
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
@@ -362,18 +369,19 @@ class AntragController extends VeranstaltungsControllerBase
 
 	}
 
+	/**
+	 * @param string $veranstaltung_id
+	 */
 	public function actionNeu($veranstaltung_id)
 	{
-		$veranstaltung_id = IntVal($veranstaltung_id);
 		$this->layout = '//layouts/column2';
 
 		$model         = new Antrag();
 		$model->status = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 		$model->typ    = Antrag::$TYP_ANTRAG;
 
-
 		/** @var Veranstaltung $veranstaltung */
-		$this->veranstaltung = $veranstaltung         = Veranstaltung::model()->findByAttributes(array("yii_url" => $veranstaltung_id));
+		$this->veranstaltung = $veranstaltung         = $this->loadVeranstaltung($veranstaltung_id);
 		$model->veranstaltung  = $veranstaltung->id;
 		$model->veranstaltung0 = $veranstaltung;
 

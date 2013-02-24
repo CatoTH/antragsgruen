@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-class VeranstaltungsControllerBase extends Controller {
+class VeranstaltungsControllerBase extends AntragsgruenController {
 	public $multimenu = null;
 	public $menus_html = null;
 	public $breadcrumbs_topname = null;
@@ -37,9 +37,11 @@ class VeranstaltungsControllerBase extends Controller {
 
 	/**
 	 * @param int|string $veranstaltung_id
+	 * @param null|Antrag $check_antrag
+	 * @param null|Aenderungsantrag $check_aenderungsantrag
 	 * @return null|Veranstaltung
 	 */
-	public function loadVeranstaltung($veranstaltung_id) {
+	public function loadVeranstaltung($veranstaltung_id, $check_antrag = null, $check_aenderungsantrag = null) {
 		if (is_null($this->veranstaltung)) {
 			if (is_numeric($veranstaltung_id)) {
 				$this->veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
@@ -47,6 +49,19 @@ class VeranstaltungsControllerBase extends Controller {
 				$this->veranstaltung = Veranstaltung::model()->findByAttributes(array("yii_url" => $veranstaltung_id));
 			}
 		}
+
+		if (is_object($check_antrag) && $check_antrag->veranstaltung0->yii_url != $veranstaltung_id) {
+			Yii::app()->user->setFlash("error", "Fehlerhafte Parameter - der Antrag gehört nicht zur Veranstaltung.");
+			$this->redirect($this->createUrl("site/veranstaltung", array("veranstaltung_id" => $veranstaltung_id)));
+			return null;
+		}
+
+		if ($check_aenderungsantrag != null && ($check_antrag != null || $check_aenderungsantrag->antrag_id != $check_antrag->id)) {
+			Yii::app()->user->setFlash("error", "Fehlerhafte Parameter - der Änderungsantrag gehört nicht zum Antrag.");
+			$this->redirect($this->createUrl("site/veranstaltung", array("veranstaltung_id" => $veranstaltung_id)));
+			return null;
+		}
+
 		return $this->veranstaltung;
 	}
 }

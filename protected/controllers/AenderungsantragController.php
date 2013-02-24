@@ -2,20 +2,38 @@
 
 class AenderungsantragController extends VeranstaltungsControllerBase
 {
-
-	public function actionAnzeige($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
-	{
+	/**
+	 * @param int $veranstaltung_id
+	 * @param int $antrag_id
+	 * @param int $aenderungsantrag_id
+	 * @return Aenderungsantrag
+	 */
+	private function getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id) {
 		$aenderungsantrag_id = IntVal($aenderungsantrag_id);
 		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
-
-		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
-
 		if (is_null($aenderungsantrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
 			$this->redirect("/");
 		}
 
+		$antrag_id = IntVal($antrag_id);
+		/** @var Antrag $antrag */
+		$antrag = Antrag::model()->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect("/");
+		}
+
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag, $aenderungsantrag);
+
+		return $aenderungsantrag;
+	}
+
+
+	public function actionAnzeige($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	{
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		$this->layout = '//layouts/column2';
 
@@ -35,6 +53,8 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
 			}
 		}
+
+
 		if (AntiXSS::isTokenSet("mag") && !Yii::app()->user->isGuest) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
@@ -156,12 +176,11 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 
 	public function actionPdf($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
-		/** @var Aenderungsantrag $antrag */
-		$antrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		$this->renderPartial("pdf", array(
-			'model'   => $antrag,
-			"sprache" => $antrag->antrag->veranstaltung0->getSprache(),
+			'model'   => $aenderungsantrag,
+			"sprache" => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 		));
 	}
 
@@ -169,10 +188,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 	{
 		$this->layout = '//layouts/column2';
 
-		/** @var Aenderungsantrag $aenderungsantrag */
-		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
-
-		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		if (!$aenderungsantrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Änderungsantrag");
@@ -199,10 +215,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 	{
 		$this->layout = '//layouts/column2';
 
-		/** @var Aenderungsantrag $aenderungsantrag */
-		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
-
-		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		if (!$aenderungsantrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Änderungsantrag");
@@ -242,13 +255,11 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 	{
 		$this->layout = '//layouts/column2';
 
-		/** @var Aenderungsantrag $aenderungsantrag */
-		$aenderungsantrag = Aenderungsantrag::model()->findByAttributes(array("id" => $aenderungsantrag_id));
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+
 		if ($aenderungsantrag->status != Aenderungsantrag::$STATUS_UNBESTAETIGT) {
 			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
-
-		$this->veranstaltung = $aenderungsantrag->antrag->veranstaltung0;
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
@@ -313,7 +324,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
 
-		$this->veranstaltung = $antrag->veranstaltung0;
+		$this->loadVeranstaltung($veranstaltung_id, $antrag);
 
 		if (!$antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) {
 			Yii::app()->user->setFlash("error", "Es kann kein Antrag Änderungsantrag werden.");
@@ -401,7 +412,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 			}
 
 			if (!$aenderungsantrag->save()) {
-				foreach ($aenderungsantrag->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Änderungsantrag konnte nicht angelegt werden: " . $val2);
+				foreach ($aenderungsantrag->getErrors() as $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Änderungsantrag konnte nicht angelegt werden: " . $val2);
 				if ($antragstellerin === null) $antragstellerin = new Person();
 				$this->render('bearbeiten_form', array(
 					"mode"             => "neu",
