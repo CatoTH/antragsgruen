@@ -49,7 +49,7 @@ $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunt
 if ($edit_link) $html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/bearbeiten", array("antrag_id" => $antrag->id))) . '</li>';
 
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
-else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $this->createUrl("site/veranstaltung")) . '</a></li>
+else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $this->createUrl("site/veranstaltung")) . '</li>
 					</ul>';
 $this->menus_html[] = $html;
 
@@ -118,13 +118,13 @@ $this->menus_html[] = $html;
 
 		<div class="hidden-desktop">
 			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-				<a href="<?=CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id)))?>" class="btn" type="button" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
+				<a href="<?=CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id)))?>" class="btn" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
 			</div>
 			<?
 			$policy = $antrag->veranstaltung0->getPolicyAenderungsantraege();
 			if ($policy->checkCurUserHeuristically()) { ?>
 			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-				<a href="<?=CHtml::encode($this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id)))?>" class="btn btn-danger" type="button" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
+				<a href="<?=CHtml::encode($this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id)))?>" class="btn btn-danger" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
 			</div>
 			<? } ?>
 		</div>
@@ -359,7 +359,7 @@ foreach ($absae as $i => $abs) {
 		echo "</div>";
 		$this->endWidget();
 	} else {
-		Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("site/login")) . '</a>.');
+		Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("site/login")) . '.');
 		$this->widget('bootstrap.widgets.TbAlert', array(
 			'block' => true,
 			'fade'  => true,

@@ -2,9 +2,11 @@
 
 
 <?php
-/* @var $this AenderungsantragController */
-/* @var $form GxActiveForm */
-/* @var $model Aenderungsantrag */
+/**
+ * @var $this AenderungsantragController
+ * @var $form GxActiveForm
+ * @var $model Aenderungsantrag
+ */
 
 $form = $this->beginWidget('GxActiveForm', array(
 	'id'                   => 'aenderungsantrag-form',

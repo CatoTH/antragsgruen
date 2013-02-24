@@ -385,7 +385,7 @@ class AntragController extends VeranstaltungsControllerBase
 		$model->veranstaltung  = $veranstaltung->id;
 		$model->veranstaltung0 = $veranstaltung;
 
-		if (!$veranstaltung->darfEroeffnenAntrag()) {
+		if (!$veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
 			Yii::app()->user->setFlash("error", "Es kann kein Antrag angelegt werden.");
 			$this->redirect($this->createUrl("site/veranstaltung"));
 		}

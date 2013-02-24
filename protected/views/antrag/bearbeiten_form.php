@@ -118,7 +118,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
     </fieldset>
 </div>
 <?php
-$this->renderPartial($model->veranstaltung0->getPolicyAntraege()->getAntragsstellerInView(), array(
+$this->renderPartial($model->veranstaltung0->getPolicyAntraege()->getAntragstellerInView(), array(
 	"form"                => $form,
 	"model"               => $model,
 	"antragstellerin"     => $antragstellerin,

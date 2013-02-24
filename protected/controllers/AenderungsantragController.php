@@ -326,8 +326,9 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 
 		$this->loadVeranstaltung($veranstaltung_id, $antrag);
 
-		if (!$antrag->veranstaltung0->darfEroeffnenAenderungsAntrag()) {
-			Yii::app()->user->setFlash("error", "Es kann kein Antrag Änderungsantrag werden.");
+		if (!$antrag->veranstaltung0->getPolicyAenderungsantraege()->checkCurUserHeuristically()) {
+			$msg = $antrag->veranstaltung0->getPolicyAenderungsantraege()->getPermissionDeniedMsg();
+			Yii::app()->user->setFlash("error", "Es kann kein Änderungsantrag werden: " . $msg);
 			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
 
@@ -383,6 +384,10 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 				Yii::app()->user->setFlash("error", "Es wurde nichts am Text geändert.");
 			}
 
+			if (!$this->veranstaltung->getPolicyAenderungsantraege()->checkAenderungsantragSubmit()) {
+				Yii::app()->user->setFlash("error", "Keine Berechtigung zum Anlegen von Änderungsanträgen.");
+				$changed = false;
+			}
 		}
 
 		$hiddens = array("antrag_id" => $antrag->id);
@@ -396,20 +401,6 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 
 
 		if ($changed) {
-			if ($antragstellerin === null && isset($_REQUEST["Person"])) {
-				$antragstellerin = Person::model()->findByAttributes(array("typ" => Person::$TYP_PERSON, "name" => trim($_REQUEST["Person"]["name"]), "status" => Person::$STATUS_UNCONFIRMED));
-				if (!$antragstellerin) {
-					$antragstellerin                 = new Person();
-					$antragstellerin->attributes     = $_REQUEST["Person"];
-					$antragstellerin->typ            = Person::$TYP_PERSON;
-					$antragstellerin->admin          = 0;
-					$antragstellerin->angelegt_datum = new CDbExpression('NOW()');
-					$antragstellerin->status         = Person::$STATUS_UNCONFIRMED;
-					$antragstellerin->save();
-				}
-			} elseif ($antragstellerin === null) {
-				$antragstellerin = new Person();
-			}
 
 			if (!$aenderungsantrag->save()) {
 				foreach ($aenderungsantrag->getErrors() as $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Änderungsantrag konnte nicht angelegt werden: " . $val2);
@@ -426,14 +417,7 @@ class AenderungsantragController extends VeranstaltungsControllerBase
 				return;
 			}
 
-			$init                      = new AenderungsantragUnterstuetzer();
-			$init->aenderungsantrag_id = $aenderungsantrag->id;
-			$init->rolle               = AntragUnterstuetzer::$ROLLE_INITIATOR;
-			$init->unterstuetzer_id    = $antragstellerin->id;
-			if (!$init->save()) {
-				var_dump($init->getErrors());
-				die();
-			}
+			$this->veranstaltung->getPolicyAenderungsantraege()->submitAntragsstellerInView_Aenderungsantrag($aenderungsantrag);
 
 			$this->redirect($this->createUrl("aenderungsantrag/neuConfirm", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 

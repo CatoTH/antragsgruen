@@ -26,15 +26,7 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 	 * @return bool
 	 */
 	public function checkCurUserHeuristically() {
-		return false;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getAntragsstellerInView()
-	{
-		return "antragstellerin_std";
+		return $this->veranstaltung->isAdminCurUser();
 	}
 
 	/**
@@ -47,14 +39,20 @@ class PolicyAntraegeAdmins extends IPolicyAntraege
 
 
 	/**
-	 * @param Antrag $antrag
-	 * @param AntragUnterstuetzer $antragstellerin
-	 * @param array|AntragUnterstuetzer[] $unterstuetzerinnen
 	 * @return bool
 	 */
-	public function checkOnCreate($antrag, $antragstellerin, $unterstuetzerinnen)
+	public function checkAntragSubmit()
 	{
-		return ($antragstellerin->unterstuetzer->admin == 1);
+		return $this->veranstaltung->isAdminCurUser();
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function checkAenderungsantragSubmit()
+	{
+		return $this->veranstaltung->isAdminCurUser();
 	}
 
 	/**

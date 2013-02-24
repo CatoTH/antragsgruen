@@ -2,10 +2,13 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
+CREATE SCHEMA IF NOT EXISTS `parteitool` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `parteitool` ;
+
 -- -----------------------------------------------------
--- Table `veranstaltung`
+-- Table `parteitool`.`veranstaltung`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `veranstaltung` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`veranstaltung` (
   `id` SMALLINT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(200) NOT NULL ,
   `name_kurz` VARCHAR(45) NOT NULL ,
@@ -33,9 +36,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antrag`
+-- Table `parteitool`.`antrag`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antrag` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`antrag` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `veranstaltung` SMALLINT NOT NULL ,
   `abgeleitet_von` INT NULL ,
@@ -53,12 +56,12 @@ CREATE  TABLE IF NOT EXISTS `antrag` (
   INDEX `abgeleitet_von` (`abgeleitet_von` ASC) ,
   CONSTRAINT `fk_antrag_veranstaltung`
     FOREIGN KEY (`veranstaltung` )
-    REFERENCES `veranstaltung` (`id` )
+    REFERENCES `parteitool`.`veranstaltung` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_antrag1`
     FOREIGN KEY (`abgeleitet_von` )
-    REFERENCES `antrag` (`id` )
+    REFERENCES `parteitool`.`antrag` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -67,9 +70,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `person`
+-- Table `parteitool`.`person`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `person` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`person` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `typ` ENUM('person', 'organisation') NOT NULL ,
   `name` VARCHAR(100) NOT NULL ,
@@ -87,9 +90,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antrag_unterstuetzer`
+-- Table `parteitool`.`antrag_unterstuetzer`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antrag_unterstuetzer` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`antrag_unterstuetzer` (
   `antrag_id` INT NOT NULL ,
   `unterstuetzer_id` INT NOT NULL ,
   `rolle` ENUM('initiator', 'unterstuetzt', 'mag', 'magnicht') NOT NULL ,
@@ -99,12 +102,12 @@ CREATE  TABLE IF NOT EXISTS `antrag_unterstuetzer` (
   INDEX `fk_antrag` (`antrag_id` ASC) ,
   CONSTRAINT `fk_antrag`
     FOREIGN KEY (`antrag_id` )
-    REFERENCES `antrag` (`id` )
+    REFERENCES `parteitool`.`antrag` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_unterstuetzer`
     FOREIGN KEY (`unterstuetzer_id` )
-    REFERENCES `person` (`id` )
+    REFERENCES `parteitool`.`person` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -113,9 +116,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `aenderungsantrag`
+-- Table `parteitool`.`aenderungsantrag`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `aenderungsantrag` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`aenderungsantrag` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `antrag_id` INT NULL ,
   `revision_name` VARCHAR(45) NULL ,
@@ -132,7 +135,7 @@ CREATE  TABLE IF NOT EXISTS `aenderungsantrag` (
   INDEX `fk_aenderungsantrag_antrag1` (`antrag_id` ASC) ,
   CONSTRAINT `fk_aenderungsantrag_antrag1`
     FOREIGN KEY (`antrag_id` )
-    REFERENCES `antrag` (`id` )
+    REFERENCES `parteitool`.`antrag` (`id` )
     ON DELETE SET NULL
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -141,24 +144,24 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `aenderungsantrag_unterstuetzer`
+-- Table `parteitool`.`aenderungsantrag_unterstuetzer`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `aenderungsantrag_unterstuetzer` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`aenderungsantrag_unterstuetzer` (
   `aenderungsantrag_id` INT NOT NULL ,
   `unterstuetzer_id` INT NOT NULL ,
-  `rolle` ENUM('initiator', 'unterstuetzer', 'mag', 'magnicht') NOT NULL ,
+  `rolle` ENUM('initiator', 'unterstuetzt', 'mag', 'magnicht') NOT NULL ,
   `kommentar` TEXT NULL ,
   PRIMARY KEY (`aenderungsantrag_id`, `unterstuetzer_id`, `rolle`) ,
   INDEX `fk_person_has_aenderungsantrag_aenderungsantrag1` (`aenderungsantrag_id` ASC) ,
   INDEX `fk_person_has_aenderungsantrag_unterstuetzers1` (`unterstuetzer_id` ASC) ,
   CONSTRAINT `fk_person_has_aenderungsantrag_unterstuetzers1`
     FOREIGN KEY (`unterstuetzer_id` )
-    REFERENCES `person` (`id` )
+    REFERENCES `parteitool`.`person` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_person_has_aenderungsantrag_aenderungsantrag1`
     FOREIGN KEY (`aenderungsantrag_id` )
-    REFERENCES `aenderungsantrag` (`id` )
+    REFERENCES `parteitool`.`aenderungsantrag` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -167,9 +170,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antrag_kommentar`
+-- Table `parteitool`.`antrag_kommentar`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antrag_kommentar` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`antrag_kommentar` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `verfasser_id` INT NULL ,
   `antrag_id` INT NULL ,
@@ -182,12 +185,12 @@ CREATE  TABLE IF NOT EXISTS `antrag_kommentar` (
   INDEX `fk_antrag_kommentar_antrag1` (`antrag_id` ASC) ,
   CONSTRAINT `fk_antrag_kommentar_person1`
     FOREIGN KEY (`verfasser_id` )
-    REFERENCES `person` (`id` )
+    REFERENCES `parteitool`.`person` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_kommentar_antrag1`
     FOREIGN KEY (`antrag_id` )
-    REFERENCES `antrag` (`id` )
+    REFERENCES `parteitool`.`antrag` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -196,9 +199,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `aenderungsantrag_kommentar`
+-- Table `parteitool`.`aenderungsantrag_kommentar`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `aenderungsantrag_kommentar` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`aenderungsantrag_kommentar` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `verfasser_id` INT NULL ,
   `aenderungsantrag_id` INT NULL ,
@@ -211,12 +214,12 @@ CREATE  TABLE IF NOT EXISTS `aenderungsantrag_kommentar` (
   INDEX `fk_aenderungsantrag_kommentar_aenderungsantrag1` (`aenderungsantrag_id` ASC) ,
   CONSTRAINT `fk_aenderungsantrag_kommentar_person1`
     FOREIGN KEY (`verfasser_id` )
-    REFERENCES `person` (`id` )
+    REFERENCES `parteitool`.`person` (`id` )
     ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_aenderungsantrag_kommentar_aenderungsantrag1`
     FOREIGN KEY (`aenderungsantrag_id` )
-    REFERENCES `aenderungsantrag` (`id` )
+    REFERENCES `parteitool`.`aenderungsantrag` (`id` )
     ON DELETE SET NULL
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -225,9 +228,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antrag_abo`
+-- Table `parteitool`.`antrag_abo`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antrag_abo` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`antrag_abo` (
   `antrag_id` INT NOT NULL ,
   `abonnent_id` INT NOT NULL ,
   PRIMARY KEY (`antrag_id`, `abonnent_id`) ,
@@ -235,12 +238,12 @@ CREATE  TABLE IF NOT EXISTS `antrag_abo` (
   INDEX `fk_antrag_has_person1_antrag` (`antrag_id` ASC) ,
   CONSTRAINT `fk_antrag_has_person1_antrag`
     FOREIGN KEY (`antrag_id` )
-    REFERENCES `antrag` (`id` )
+    REFERENCES `parteitool`.`antrag` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_has_person1_abonnent`
     FOREIGN KEY (`abonnent_id` )
-    REFERENCES `person` (`id` )
+    REFERENCES `parteitool`.`person` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -249,9 +252,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `texte`
+-- Table `parteitool`.`texte`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `texte` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`texte` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `text_id` VARCHAR(20) NOT NULL ,
   `veranstaltung_id` SMALLINT NULL ,
@@ -264,21 +267,21 @@ CREATE  TABLE IF NOT EXISTS `texte` (
   PRIMARY KEY (`id`) ,
   CONSTRAINT `fk_texte_veranstaltung1`
     FOREIGN KEY (`veranstaltung_id` )
-    REFERENCES `veranstaltung` (`id` )
+    REFERENCES `parteitool`.`veranstaltung` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_texte_person1`
     FOREIGN KEY (`edit_person` )
-    REFERENCES `person` (`id` )
+    REFERENCES `parteitool`.`person` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `cache`
+-- Table `parteitool`.`cache`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `cache` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`cache` (
   `id` CHAR(32) NOT NULL ,
   `datum` TIMESTAMP NULL ,
   `daten` LONGBLOB NULL ,
@@ -289,9 +292,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `veranstaltung_person`
+-- Table `parteitool`.`veranstaltung_person`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `veranstaltung_person` (
+CREATE  TABLE IF NOT EXISTS `parteitool`.`veranstaltung_person` (
   `veranstaltung_id` SMALLINT NOT NULL ,
   `person_id` INT NOT NULL ,
   `rolle` ENUM('admin', 'dabei', 'delegiert', 'abo') NULL ,
@@ -300,12 +303,12 @@ CREATE  TABLE IF NOT EXISTS `veranstaltung_person` (
   INDEX `fk_veranstaltung_has_person_veranstaltung2` (`veranstaltung_id` ASC) ,
   CONSTRAINT `fk_veranstaltung_has_person_veranstaltung2`
     FOREIGN KEY (`veranstaltung_id` )
-    REFERENCES `veranstaltung` (`id` )
+    REFERENCES `parteitool`.`veranstaltung` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_veranstaltung_has_person_person2`
     FOREIGN KEY (`person_id` )
-    REFERENCES `person` (`id` )
+    REFERENCES `parteitool`.`person` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB

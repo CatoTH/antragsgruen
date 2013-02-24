@@ -34,13 +34,13 @@ class Veranstaltung extends BaseVeranstaltung
 	/** @return IPolicyAntraege */
 	public function getPolicyAntraege()
 	{
-		if (is_null($this->policy_antraege_obj)) $this->policy_antraege_obj = IPolicyAntraege::getInstanceByID($this->policy_antraege);
+		if (is_null($this->policy_antraege_obj)) $this->policy_antraege_obj = IPolicyAntraege::getInstanceByID($this->policy_antraege, $this);
 		return $this->policy_antraege_obj;
 	}
 
 	/** @return IPolicyAntraege */
 	public function getPolicyAenderungsantraege() {
-		if (is_null($this->policy_aenderungsantraege_obj)) $this->policy_aenderungsantraege_obj = IPolicyAntraege::getInstanceByID($this->policy_aenderungsantraege);
+		if (is_null($this->policy_aenderungsantraege_obj)) $this->policy_aenderungsantraege_obj = IPolicyAntraege::getInstanceByID($this->policy_aenderungsantraege, $this);
 		return $this->policy_aenderungsantraege_obj;
 	}
 
@@ -67,24 +67,6 @@ class Veranstaltung extends BaseVeranstaltung
 				return false;
 		}
 		return false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function darfEroeffnenAntrag()
-	{
-		if ($this->antragsschluss != "" && date("YmdHis") > str_replace(array(" ", ":", "-"), array("", "", ""), $this->antragsschluss)) return false;
-		return $this->darfEroeffnen_intern($this->policy_antraege);
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function darfEroeffnenAenderungsAntrag()
-	{
-		if ($this->antragsschluss != "" && date("YmdHis") > str_replace(array(" ", ":", "-"), array("", "", ""), $this->antragsschluss)) return false;
-		return $this->darfEroeffnen_intern($this->policy_aenderungsantraege);
 	}
 
 	/**
@@ -177,6 +159,17 @@ class Veranstaltung extends BaseVeranstaltung
 			"rolle" => VeranstaltungPerson::$STATUS_ADMIN
 		));
 		return (count($ein) > 0);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isAdminCurUser() {
+		if (Yii::app()->user->isGuest) return false;
+		/** @var Person $ich  */
+		$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+		if ($ich == null) return false;
+		return $this->isAdmin($ich);
 	}
 
 	/**

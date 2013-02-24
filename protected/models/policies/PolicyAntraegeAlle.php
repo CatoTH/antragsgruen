@@ -26,15 +26,7 @@ class PolicyAntraegeAlle extends IPolicyAntraege
 	 * @return bool
 	 */
 	public function checkCurUserHeuristically() {
-		return true;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getAntragsstellerInView()
-	{
-		return "antragstellerin_std";
+		return !$this->checkAntragsschlussVorbei();
 	}
 
 	/**
@@ -47,15 +39,22 @@ class PolicyAntraegeAlle extends IPolicyAntraege
 
 
 	/**
-	 * @param Antrag $antrag
-	 * @param AntragUnterstuetzer $antragstellerin
-	 * @param array|AntragUnterstuetzer[] $unterstuetzerinnen
 	 * @return bool
 	 */
-	public function checkOnCreate($antrag, $antragstellerin, $unterstuetzerinnen)
+	public function checkAntragSubmit()
 	{
-		return true;
+		return !$this->checkAntragsschlussVorbei();
 	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function checkAenderungsantragSubmit()
+	{
+		return !$this->checkAntragsschlussVorbei();
+	}
+
 
 	/**
 	 * @return string

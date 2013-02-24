@@ -111,7 +111,7 @@ foreach ($hiddens as $name=>$value) {
 </div>
 <?php
 
-$this->renderPartial($antrag->veranstaltung0->getPolicyAenderungsantraege()->getAntragsstellerInView(), array(
+$this->renderPartial($antrag->veranstaltung0->getPolicyAenderungsantraege()->getAntragstellerInView(), array(
 	"form"             => $form,
 	"mode"             => $mode,
 	"antrag"           => $antrag,

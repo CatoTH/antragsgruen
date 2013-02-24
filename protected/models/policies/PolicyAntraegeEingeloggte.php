@@ -26,15 +26,7 @@ class PolicyAntraegeEingeloggte extends IPolicyAntraege
 	 * @return bool
 	 */
 	public function checkCurUserHeuristically() {
-		return !Yii::app()->user->isGuest;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getAntragsstellerInView()
-	{
-		return "antragstellerin_std";
+		return (!Yii::app()->user->isGuest && !$this->checkAntragsschlussVorbei());
 	}
 
 	/**
@@ -42,20 +34,28 @@ class PolicyAntraegeEingeloggte extends IPolicyAntraege
 	 * @return string
 	 */
 	public function getPermissionDeniedMsg() {
-		return "Bitte logge dich ein";
+		if (Yii::app()->user->isGuest) return "Bitte logge dich ein";
+		return "";
 	}
 
 
 	/**
-	 * @param Antrag $antrag
-	 * @param AntragUnterstuetzer $antragstellerin
-	 * @param array|AntragUnterstuetzer[] $unterstuetzerinnen
 	 * @return bool
 	 */
-	public function checkOnCreate($antrag, $antragstellerin, $unterstuetzerinnen)
+	public function checkAntragSubmit()
 	{
-		return !Yii::app()->user->isGuest;
+		return (!Yii::app()->user->isGuest && !$this->checkAntragsschlussVorbei());
 	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function checkAenderungsantragSubmit()
+	{
+		return (!Yii::app()->user->isGuest && !$this->checkAntragsschlussVorbei());
+	}
+
 
 	/**
 	 * @return string

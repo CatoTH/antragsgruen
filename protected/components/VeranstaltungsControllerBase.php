@@ -56,7 +56,7 @@ class VeranstaltungsControllerBase extends AntragsgruenController {
 			return null;
 		}
 
-		if ($check_aenderungsantrag != null && ($check_antrag != null || $check_aenderungsantrag->antrag_id != $check_antrag->id)) {
+		if ($check_aenderungsantrag != null && ($check_antrag == null || $check_aenderungsantrag->antrag_id != $check_antrag->id)) {
 			Yii::app()->user->setFlash("error", "Fehlerhafte Parameter - der Änderungsantrag gehört nicht zum Antrag.");
 			$this->redirect($this->createUrl("site/veranstaltung", array("veranstaltung_id" => $veranstaltung_id)));
 			return null;

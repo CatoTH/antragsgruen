@@ -39,7 +39,7 @@ if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) {
 	$html .= "</ul></div>";
 	$this->menus_html[] = $html;
 
-	if ($veranstaltung->darfEroeffnenAntrag()) {
+	if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
 		$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
 <img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
 </a>';
@@ -56,7 +56,7 @@ $html .= "</ul></div>";
 $this->menus_html[] = $html;
 
 if ($veranstaltung->typ == Veranstaltung::$TYP_PROGRAMM) {
-	if ($veranstaltung->darfEroeffnenAntrag()) {
+	if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
 		$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
 <img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
 </a>';
