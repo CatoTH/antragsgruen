@@ -8,7 +8,7 @@ class Standardtext {
 	 * @param string $id
 	 * @param string $text
 	 * @param boolean $html
-	 * @param string|null $edit_link
+	 * @param array|null $edit_link
 	 * @param boolean $is_fallback
 	 */
 	public function __construct($id, $text, $html, $edit_link, $is_fallback) {
@@ -44,7 +44,7 @@ class Standardtext {
 	}
 
 	/**
-	 * @return null|string
+	 * @return null|array
 	 */
 	public function getEditLink() { return $this->edit_link; }
 

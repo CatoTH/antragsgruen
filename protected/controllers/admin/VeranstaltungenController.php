@@ -64,6 +64,8 @@ class VeranstaltungenController extends GxController {
 
 		$this->performAjaxValidation($model, 'veranstaltung-form');
 
+
+
 		if (isset($_POST['Veranstaltung'])) {
 			$model->setAttributes($_POST['Veranstaltung']);
 			Yii::import('ext.datetimepicker.EDateTimePicker');

@@ -51,7 +51,7 @@ class TexteController extends GxController {
 			Yii::app()->user->setFlash("error", "Der angegebene Text wurde nicht gefunden.");
 			$this->redirect($this->createUrl("/admin/texte/"));
 		}
-		if (!$model->veranstaltung->id != $this->veranstaltung->id) {
+		if ($model->veranstaltung->id != $this->veranstaltung->id) {
 			Yii::app()->user->setFlash("error", "Dieser Text gehört nicht zur Veranstaltung.");
 			$this->redirect($this->createUrl("/admin/texte/"));
 		}

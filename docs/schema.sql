@@ -26,7 +26,8 @@ CREATE  TABLE IF NOT EXISTS `veranstaltung` (
   `fb_logo_url` VARCHAR(200) NULL ,
   `ae_nummerierung_global` TINYINT NULL DEFAULT 0 ,
   `bestaetigungs_emails` TINYINT NULL DEFAULT 0 ,
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `yii_url_UNIQUE` (`yii_url` ASC) )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
@@ -203,7 +204,7 @@ CREATE  TABLE IF NOT EXISTS `aenderungsantrag_kommentar` (
   `verfasser_id` INT NULL ,
   `aenderungsantrag_id` INT NULL ,
   `absatz` SMALLINT NULL ,
-  `text` VARCHAR(45) NULL ,
+  `text` TEXT NULL ,
   `datum` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ,
   `status` TINYINT NULL ,
   PRIMARY KEY (`id`) ,

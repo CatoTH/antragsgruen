@@ -336,7 +336,7 @@ class AntragController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
-			$freischaltung = $antrag->veranstaltung0->freischaltung_aenderungsantraege;
+			$freischaltung = $antrag->veranstaltung0->freischaltung_antraege;
 			$antrag->status = ($freischaltung ? Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT : Antrag::$STATUS_EINGEREICHT_GEPRUEFT);
 			$antrag->save();
 
@@ -436,8 +436,8 @@ class AntragController extends AntragsgruenController
 			$initiator->unterstuetzer_id = $antragstellerin->id;
 			$initiator->unterstuetzer    = $antragstellerin;
 
-			if (!$veranstaltung->getPolicyAntraege()->checkOnCreate($model, $initiator, $model_unterstuetzer_obj)) {
-				Yii::app()->user->setFlash("error", "Nicht genügend UnterstützerInnen");
+			if (!$this->veranstaltung->getPolicyAntraege()->checkAenderungsantragSubmit()) {
+				Yii::app()->user->setFlash("error", "Keine Berechtigung zum Anlegen von Anträgen.");
 				$goon = false;
 			}
 

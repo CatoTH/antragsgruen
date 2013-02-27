@@ -115,17 +115,17 @@ class Veranstaltung extends BaseVeranstaltung
 		/** @var Texte|null $vtext */
 
 		if (is_null($vtext)) {
-			$edit_link = "/admin/texte/create?key=" . rawurlencode($id);
+			$edit_link = array("admin/texte/create", array("key"  => $id, "veranstaltung_id" => $this->yii_url));
 			$vtext = Texte::model()->findByAttributes(array("text_id" => $id, "veranstaltung_id" => null));
 			$is_fallback = true;
 		} else {
-			$edit_link = "/admin/texte/update/id/" . rawurlencode($vtext->id) . "/";
+			$edit_link = array("admin/texte/update", array("id" => $vtext->id, "veranstaltung_id" => $this->yii_url));
 			$is_fallback = false;
 		}
 
 		$text = (is_null($vtext) ? "" : $vtext->text);
 
-		if (Yii::app()->user->getState("role") != "admin") $edit_link = null;
+		if (!$this->isAdminCurUser()) $edit_link = null;
 
 		$html = in_array($id, Veranstaltung::getHTMLStandardtextIDs());
 
@@ -165,9 +165,11 @@ class Veranstaltung extends BaseVeranstaltung
 	 * @return bool
 	 */
 	public function isAdminCurUser() {
-		if (Yii::app()->user->isGuest) return false;
+		$user = Yii::app()->user;
+		if ($user->isGuest) return false;
+		if ($user->getState("role") === "admin") return true;
+		$ich = Person::model()->findByAttributes(array("auth" => $user->id));
 		/** @var Person $ich  */
-		$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 		if ($ich == null) return false;
 		return $this->isAdmin($ich);
 	}

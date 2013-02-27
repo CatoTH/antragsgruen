@@ -38,7 +38,8 @@ include(__DIR__ . "/sidebar.php");
 		}
 
 	}
-	if ($einleitungstext->getEditLink() !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($einleitungstext->getEditLink()) . "'>Bearbeiten</a>";
+	$editlink = $einleitungstext->getEditLink();
+	if ($editlink !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
 	?>
 </h1>
 

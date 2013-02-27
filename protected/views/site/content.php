@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @var AntragsgruenController $this
  * @var string $title
  * @var string $breadcrumb_title
  * @var Standardtext $text
@@ -13,7 +14,8 @@ $this->breadcrumbs = array(
 
 ?>
 <h1 class="well"><?php echo $title;
-	if ($text->getEditLink() !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($text->getEditLink()) . "'>Bearbeiten</a>";
+	$editlink = $text->getEditLink();
+	if ($editlink !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
 	?></h1>
 
 <div class="well well_first">

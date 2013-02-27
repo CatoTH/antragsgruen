@@ -1,6 +1,6 @@
 <?php
 /**
- * @var Controller $this
+ * @var AntragsgruenController $this
  */
 $row_classes = array();
 if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_comments";
@@ -48,7 +48,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 						<li><a href="<?=CHtml::encode($this->createUrl("site/logout"))?>">Logout</a></li>
 						<?php
 					}
-						if (Yii::app()->user->getState("role") == "admin") {
+						if (Yii::app()->user->getState("role") == "admin" || ($this->veranstaltung != null && $this->veranstaltung->isAdminCurUser())) {
 							?>
 							<li><a href="<?=CHtml::encode($this->createUrl("admin/index"))?>">Admin</a></li>
 							<?php } ?>

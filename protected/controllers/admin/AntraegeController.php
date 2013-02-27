@@ -1,6 +1,6 @@
 <?php
 
-class AntraegeController extends AdminControllerBase
+class AntraegeController extends GxController
 {
 
 	/*
@@ -120,8 +120,11 @@ class AntraegeController extends AdminControllerBase
 		));
 	}
 
-	public function actionAdmin()
+	public function actionAdmin($veranstaltung_id)
 	{
+		$this->loadVeranstaltung($veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) return;
+
 		$model = new Antrag('search');
 		$model->unsetAttributes();
 
