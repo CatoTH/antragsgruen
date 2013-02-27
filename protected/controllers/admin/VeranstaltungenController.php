@@ -1,38 +1,41 @@
 <?php
 
-class VeranstaltungenController extends GxController {
+class VeranstaltungenController extends GxController
+{
 
 
-	public function filters() {
+	public function filters()
+	{
 		return array(
 			'accessControl',
 		);
 	}
 
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
 			array('allow',
-				'actions'=>array('minicreate', 'create', 'update', 'admin', 'delete', 'index', 'view'),
+				'actions'    => array('minicreate', 'create', 'update', 'admin', 'delete', 'index', 'view'),
 				//'roles'=>array('admin'),
-				'expression' => function($user, $rule) {
+				'expression' => function ($user, $rule) {
 					/* @var $user CWebUser */
 					return ($user->getState("role") === "admin");
 				}
 			),
 			array('allow',
-				'actions'=>array('update'),
+				'actions' => array('update'),
 				//'roles'=>array('admin'),
-				'users' => array('*'),
+				'users'   => array('*'),
 			),
 			array('deny',
-				'users'=>array('*'),
+				'users' => array('*'),
 			),
 		);
 	}
 
 
-
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new Veranstaltung;
 
 		$this->performAjaxValidation($model, 'veranstaltung-form');
@@ -49,28 +52,28 @@ class VeranstaltungenController extends GxController {
 			}
 		}
 
-		$this->render('create', array( 'model' => $model));
+		$this->render('create', array('model' => $model));
 	}
 
-	public function actionUpdate($id) {
-		/** @var Veranstaltung $model  */
+	public function actionUpdate($id)
+	{
+		/** @var Veranstaltung $model */
 		$model = $this->loadModel($id, 'Veranstaltung');
+		$this->loadVeranstaltung($id);
 		if (!$model->isAdminCurUser()) return;
 
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Die angegebene Veranstaltungen wurde nicht gefunden.");
-			$this->redirect("/admin/veranstaltungen/");
+			$this->redirect($this->createUrl("admin/veranstaltungen"));
 		}
 
 		$this->performAjaxValidation($model, 'veranstaltung-form');
-
-
 
 		if (isset($_POST['Veranstaltung'])) {
 			$model->setAttributes($_POST['Veranstaltung']);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->antragsschluss = EDateTimePicker::parseInput($_POST["Veranstaltung"], "antragsschluss");
-			$relatedData = array();
+			$relatedData           = array();
 
 			if ($model->saveWithRelated($relatedData)) {
 				$this->redirect(array('update', 'id' => $model->id));
@@ -78,12 +81,14 @@ class VeranstaltungenController extends GxController {
 		}
 
 		$this->render('update', array(
-				'model' => $model,
-				));
+			'model'      => $model,
+			"superadmin" => (yii::app()->user->getState("role") === "admin"),
+		));
 	}
 
-	public function actionDelete($id) {
-		/** @var Veranstaltung $model  */
+	public function actionDelete($id)
+	{
+		/** @var Veranstaltung $model */
 		$model = $this->loadModel($id, 'Veranstaltung');
 		if (!$model->isAdminCurUser()) return;
 
@@ -96,7 +101,8 @@ class VeranstaltungenController extends GxController {
 			throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
 	}
 
-	public function actionIndex() {
+	public function actionIndex()
+	{
 
 
 		$dataProvider = new CActiveDataProvider('Veranstaltung');
@@ -106,7 +112,8 @@ class VeranstaltungenController extends GxController {
 		$this->layout = "bootstrap";
 	}
 
-	public function actionAdmin() {
+	public function actionAdmin()
+	{
 		$model = new Veranstaltung('search');
 		$model->unsetAttributes();
 

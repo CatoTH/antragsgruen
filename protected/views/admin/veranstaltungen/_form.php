@@ -6,6 +6,7 @@
  * @var $this VeranstaltungenController
  * @var GxActiveForm $form
  * @var $model Veranstaltung
+ * @var bool $superadmin
  */
 
 $form = $this->beginWidget('GxActiveForm', array(

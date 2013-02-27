@@ -57,6 +57,7 @@ return array(
 			'rules'          => array(
 				'<veranstaltung_id:[\w_-]+>/admin'                                                                           => 'admin/index',
 				'/admin/index'                                                                                               => 'admin/index',
+				'<veranstaltung_id:[\w_-]+>/admin/veranstaltung'                                                             => 'admin/veranstaltungen/update',
 				'/admin/veranstaltungen'                                                                                     => 'admin/veranstaltungen',
 				'/admin/veranstaltungen/<_a:(index|create|update|delete|view|admin)>'                                        => 'admin/veranstaltungen/<_a>',
 				'<veranstaltung_id:[\w_-]+>/admin/antraege'                                                                  => 'admin/antraege',
