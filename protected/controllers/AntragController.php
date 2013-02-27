@@ -338,6 +338,9 @@ class AntragController extends AntragsgruenController
 
 			$freischaltung = $antrag->veranstaltung0->freischaltung_antraege;
 			$antrag->status = ($freischaltung ? Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT : Antrag::$STATUS_EINGEREICHT_GEPRUEFT);
+			if (!$freischaltung && $antrag->revision_name == "") {
+				$antrag->revision_name = $antrag->veranstaltung0->naechsteAntragRevNr($antrag->typ);
+			}
 			$antrag->save();
 
 			if ($antrag->veranstaltung0->admin_email != "") {
