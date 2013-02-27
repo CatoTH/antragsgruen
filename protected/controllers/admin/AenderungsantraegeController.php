@@ -1,6 +1,6 @@
 <?php
 
-class AenderungsantraegeController extends AdminControllerBase {
+class AenderungsantraegeController extends GxController {
 
 	/*
     public function actionCreate() {
