@@ -1,6 +1,7 @@
 <?php
 /**
  * @var IndexController $this
+ * @var array|array[] $todo
  */
 $this->breadcrumbs = array(
 	'Administration',
@@ -9,8 +10,18 @@ $this->breadcrumbs = array(
 ?>
 <h1 class="well">Administration</h1>
 
-<div class="well well_first">
+<div class="well well_first" style="overflow: auto;">
 	<div class="content">
+		<?php
+		if (count($todo) > 0) {
+			echo "<div  class='admin_todo'><h2>To Do</h2>";
+			echo "<ul>";
+			foreach ($todo as $do) {
+				echo "<li>" . CHtml::link($do[0], $this->createUrl($do[1][0], $do[1][1])) . "</li>";
+			}
+			echo "</ul></div>";
+		}
+		?>
 		<ul>
 			<?php if (yii::app()->user->getState("role") === "admin") { ?>
 				<li><a href="<?= $this->createUrl("admin/veranstaltungen") ?>"><?=Veranstaltung::label(2)?></li>

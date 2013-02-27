@@ -1087,6 +1087,8 @@ blockquote {
 
 
 
+.admin_todo { float: right; width: 300px; }
+.admin_todo ul { margin-top: 10px; font-size: 14px; }
 
 
 
