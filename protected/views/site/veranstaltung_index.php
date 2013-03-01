@@ -113,9 +113,11 @@ foreach ($antraege as $name=> $antrs) {
 				<?php foreach ($meine_antraege as $antragu) {
 				$antrag = $antragu->antrag;
 				echo "<li>";
+				if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "<span style='text-decoration: line-through;'>";
 				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
 				if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
 				if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
+					if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "</span>";
 				echo "</li>\n";
 			} ?>
             </ul>
@@ -133,10 +135,12 @@ foreach ($antraege as $name=> $antrs) {
 				/** @var Aenderungsantrag $antrag */
 				$antrag = $antragu->aenderungsantrag;
 				echo "<li>";
+					if ($antrag->status == Aenderungsantrag::$STATUS_ZURUECKGEZOGEN) echo "<span style='text-decoration: line-through;'>";
 				echo CHtml::link(CHtml::encode($antrag->revision_name . " zu " . $antrag->antrag->revision_name),
-					$this->createUrl('aenderungsantrag/anzeige', array("antrag" => $antrag->antrag->id, "aenderungsantrag_id" => $antrag->id)));
+					$this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $antrag->antrag->id, "aenderungsantrag_id" => $antrag->id)));
 				if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
 				if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
+					if ($antrag->status == Aenderungsantrag::$STATUS_ZURUECKGEZOGEN) echo "</span>";
 				echo "</li>\n";
 			} ?>
             </ul>

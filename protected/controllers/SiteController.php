@@ -238,6 +238,7 @@ class SiteController extends AntragsgruenController
 		$this->layout = '//layouts/column2';
 
 		if ($veranstaltung_id == "") $this->redirect("/");
+		$this->loadVeranstaltung($veranstaltung_id);
 
 		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 		if (is_null($veranstaltung)) {

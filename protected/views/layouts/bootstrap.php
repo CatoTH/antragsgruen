@@ -74,7 +74,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 		foreach ($this->breadcrumbs as $key=>$val) if ($key !== "" && !($key === 0 && $val === "")) $breadcrumbs[$key] = $val;
 		$top_name = (isset($this->breadcrumbs_topname) && $this->breadcrumbs_topname !== null ? $this->breadcrumbs_topname : "Start");
 		$this->widget('bootstrap.widgets.TbBreadcrumbs', array(
-			'homeLink' => CHtml::link($top_name, "/"),
+			'homeLink' => CHtml::link($top_name, $this->createUrl("site/veranstaltung")),
 			'links'    => $breadcrumbs,
 		));
 		if (count($breadcrumbs) == 0) echo "<br><br>";

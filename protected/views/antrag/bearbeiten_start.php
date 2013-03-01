@@ -32,7 +32,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		'type'=> 'horizontal',
 	));
 	?>
-	<input type="hidden" name="<?=AntiXSS::createToken("ae_del")?>" value="1">
+	<input type="hidden" name="<?=AntiXSS::createToken("antrag_del")?>" value="1">
 	<?php
 
 	$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'danger', 'icon'=> 'trash white', 'label'=> 'Zurückziehen'));

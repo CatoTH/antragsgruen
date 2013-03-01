@@ -264,7 +264,8 @@ class AntragController extends AntragsgruenController
 			$initiator = null;
 			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->rolle == AntragUnterstuetzer::$ROLLE_INITIATOR) $initiator = $unt;
 
-			if (!$antrag->veranstaltung0->getPolicyAntraege()->checkOnCreate($antrag, $initiator, $model_unterstuetzer_obj)) {
+
+			if (!$antrag->veranstaltung0->getPolicyAntraege()->checkAntragSubmit()) {
 				Yii::app()->user->setFlash("error", "Nicht genügend UnterstützerInnen");
 				$goon = false;
 			}
@@ -439,7 +440,7 @@ class AntragController extends AntragsgruenController
 			$initiator->unterstuetzer_id = $antragstellerin->id;
 			$initiator->unterstuetzer    = $antragstellerin;
 
-			if (!$this->veranstaltung->getPolicyAntraege()->checkAenderungsantragSubmit()) {
+			if (!$this->veranstaltung->getPolicyAntraege()->checkAntragSubmit()) {
 				Yii::app()->user->setFlash("error", "Keine Berechtigung zum Anlegen von Anträgen.");
 				$goon = false;
 			}
@@ -471,11 +472,6 @@ class AntragController extends AntragsgruenController
 				$antragstellerin = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 			}
 		}
-
-		/*
-		for ($i = count($model_unterstuetzer); $i < $veranstaltung->getPolicyAntraege()->getStdUnterstuetzerFields(); $i++)
-			$model_unterstuetzer[] = array("typ" => Person::$TYP_PERSON, "name" => "");
-		*/
 
 		$hiddens       = array();
 		$js_protection = Yii::app()->user->isGuest;
