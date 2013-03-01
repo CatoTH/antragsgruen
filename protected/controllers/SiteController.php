@@ -22,9 +22,9 @@ class SiteController extends AntragsgruenController
 	/**
 	 *
 	 */
-	public function actionImpressum()
+	public function actionImpressum($veranstaltung_id = "")
 	{
-		$this->setStdVeranstaltung();
+		$this->loadVeranstaltung($veranstaltung_id);
 		$this->render('content', array(
 			"title"            => "Impressum",
 			"breadcrumb_title" => "Impressum",
@@ -35,9 +35,9 @@ class SiteController extends AntragsgruenController
 	/**
 	 *
 	 */
-	public function actionHilfe()
+	public function actionHilfe($veranstaltung_id = "")
 	{
-		$this->setStdVeranstaltung();
+		$this->loadVeranstaltung($veranstaltung_id);
 		$this->render('content', array(
 			"title"            => "Hilfe",
 			"breadcrumb_title" => "Hilfe",
@@ -280,9 +280,9 @@ class SiteController extends AntragsgruenController
 			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 		}
 
-		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($veranstaltung_id, 5);
-		$neueste_antraege           = Antrag::holeNeueste($veranstaltung_id, 5);
-		$neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung_id, 3);
+		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($this->veranstaltung->id, 5);
+		$neueste_antraege           = Antrag::holeNeueste($this->veranstaltung->id, 5);
+		$neueste_kommentare         = AntragKommentar::holeNeueste($this->veranstaltung->id, 3);
 
 		$meine_antraege           = array();
 		$meine_aenderungsantraege = array();
@@ -291,7 +291,7 @@ class SiteController extends AntragsgruenController
 			$oCriteria        = new CDbCriteria();
 			$oCriteria->alias = "antrag_unterstuetzer";
 			$oCriteria->join  = "JOIN `antrag` ON `antrag`.`id` = `antrag_unterstuetzer`.`antrag_id`";
-			$oCriteria->addCondition("`antrag`.`veranstaltung` = " . IntVal($veranstaltung_id));
+			$oCriteria->addCondition("`antrag`.`veranstaltung` = " . IntVal($this->veranstaltung->id));
 			$oCriteria->addCondition("`antrag_unterstuetzer`.`unterstuetzer_id` = " . IntVal($ich->id));
 			$oCriteria->addCondition("`antrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
 			$oCriteria->order = '`datum_einreichung` DESC';
@@ -304,7 +304,7 @@ class SiteController extends AntragsgruenController
 			$oCriteria->alias = "aenderungsantrag_unterstuetzer";
 			$oCriteria->join  = "JOIN `aenderungsantrag` ON `aenderungsantrag`.`id` = `aenderungsantrag_unterstuetzer`.`aenderungsantrag_id`";
 			$oCriteria->join .= " JOIN `antrag` ON `aenderungsantrag`.`antrag_id` = `antrag`.`id`";
-			$oCriteria->addCondition("`antrag`.`veranstaltung` = " . IntVal($veranstaltung_id));
+			$oCriteria->addCondition("`antrag`.`veranstaltung` = " . IntVal($this->veranstaltung->id));
 			$oCriteria->addCondition("`aenderungsantrag_unterstuetzer`.`unterstuetzer_id` = " . IntVal($ich->id));
 			$oCriteria->addCondition("`antrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
 			$oCriteria->addCondition("`aenderungsantrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);

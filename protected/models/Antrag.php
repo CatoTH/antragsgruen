@@ -185,7 +185,7 @@ class Antrag extends BaseAntrag
 	public function nameMitRev()
 	{
 		$name = $this->revision_name;
-		if (strlen($this->revision_name) > 1 && !in_array($this->revision_name[strlen($this->revision_name - 1)], array(":", "."))) $name .= ":";
+		if (strlen($this->revision_name) > 1 && !in_array($this->revision_name[strlen($this->revision_name) - 1], array(":", "."))) $name .= ":";
 		$name .= " " . $this->name;
 		return $name;
 	}
