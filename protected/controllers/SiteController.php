@@ -6,7 +6,7 @@ class SiteController extends AntragsgruenController
 	public $text_comments = false;
 
 	/**
-	 *
+	 * @param string $veranstaltung_id
 	 */
 	public function actionIndex($veranstaltung_id = "")
 	{
@@ -20,7 +20,7 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
-	 *
+	 * @param string $veranstaltung_id
 	 */
 	public function actionImpressum($veranstaltung_id = "")
 	{
@@ -42,6 +42,20 @@ class SiteController extends AntragsgruenController
 			"title"            => "Hilfe",
 			"breadcrumb_title" => "Hilfe",
 			"text"             => $this->veranstaltung->getStandardtext("hilfe"),
+		));
+	}
+
+	/**
+	 * @param string $veranstaltung_id
+	 */
+	public function actionPdfs($veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltung_id);
+		$antraege = $this->veranstaltung->antraegeSortiert();
+		$this->renderPartial('veranstaltung_pdfs', array(
+			"sprache"            => $this->veranstaltung->getSprache(),
+			"antraege" => $antraege,
+			"veranstaltung" => $this->veranstaltung,
 		));
 	}
 
