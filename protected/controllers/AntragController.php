@@ -10,7 +10,7 @@ class AntragController extends AntragsgruenController
 		$antrag = Antrag::model()->findByPk($antrag_id);
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect("/");
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
 
@@ -156,7 +156,7 @@ class AntragController extends AntragsgruenController
 		$antrag = Antrag::model()->findByPk($antrag_id);
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect("/");
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
@@ -178,7 +178,7 @@ class AntragController extends AntragsgruenController
 		$antrag = Antrag::model()->findByPk($antrag_id);
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect("/");
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
@@ -214,7 +214,7 @@ class AntragController extends AntragsgruenController
 		$antrag = Antrag::model()->findByPk($antrag_id);
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect("/");
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
@@ -298,10 +298,6 @@ class AntragController extends AntragsgruenController
 		foreach ($antrag->antragUnterstuetzer as $unt) {
 			if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $antragstellerin = $unt->unterstuetzer;
 			if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $model_unterstuetzer[] = $unt->unterstuetzer;
-		}
-
-		while (count($model_unterstuetzer) < 15) {
-			$model_unterstuetzer[] = array("typ" => Person::$TYP_PERSON, "name" => "");
 		}
 
 		$this->render('bearbeiten_form', array(

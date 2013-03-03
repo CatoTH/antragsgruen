@@ -8,11 +8,11 @@ class HtmlBBcodeUtils
 	public static $zeilen_counter = 0;
 
 	/**
-	 *
+	 * @param int $init
 	 */
-	public static function initZeilenCounter()
+	public static function initZeilenCounter($init = 1)
 	{
-		self::$zeilen_counter = 1;
+		self::$zeilen_counter = $init;
 	}
 
 	/**
@@ -110,6 +110,20 @@ class HtmlBBcodeUtils
 		}
 
 		return $return;
+	}
+
+	/**
+	 * @param string $text
+	 * @return array|int[]
+	 */
+	static function getBBCodeStats($text) {
+		static::initZeilenCounter(1);
+		$absaetze = static::bbcode2html_absaetze($text);
+		$strs = $absaetze["html"];
+		preg_match_all("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $strs[count($strs) - 1], $matches);
+		$anzahl_absaetze = count($strs);
+		$anzahl_zeilen = $matches[1][count($matches[1]) - 1];
+		return array($anzahl_absaetze, $anzahl_zeilen);
 	}
 
 	/**

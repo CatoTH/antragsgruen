@@ -14,7 +14,7 @@ class AenderungsantragController extends AntragsgruenController
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
 		if (is_null($aenderungsantrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
-			$this->redirect("/");
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 
 		$antrag_id = IntVal($antrag_id);
@@ -22,7 +22,7 @@ class AenderungsantragController extends AntragsgruenController
 		$antrag = Antrag::model()->findByPk($antrag_id);
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect("/");
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag, $aenderungsantrag);
@@ -39,7 +39,7 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (!$aenderungsantrag) {
 			Yii::app()->user->setFlash("error", "Eine ungültige URL wurde aufgerufen");
-			$this->redirect("/");
+			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 
 		if (AntiXSS::isTokenSet("komm_del")) {
@@ -375,7 +375,7 @@ class AenderungsantragController extends AntragsgruenController
 				$diff_text = "";
 
 				if ($aenderungsantrag->name_neu != $antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $aenderungsantrag->name_neu . "[/QUOTE]\n\n";
-				$diff_text .= DiffUtils::diff2text($diff);
+				$diff_text .= DiffUtils::diff2text($diff, $antrag->getFirstLineNo());
 
 				$aenderungsantrag->aenderung_text    = $diff_text;
 				$aenderungsantrag->datum_einreichung = new CDbExpression('NOW()');

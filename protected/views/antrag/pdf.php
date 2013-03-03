@@ -122,7 +122,8 @@ $pdf->SetFont("Courier", "", 10);
 $pdf->Ln(8);
 
 
-$linenr = 1;
+$linenr = $model->getFirstLineNo();
+
 
 foreach ($absae as $i=>$abs) {
 	/** @var AntragAbsatz $abs */

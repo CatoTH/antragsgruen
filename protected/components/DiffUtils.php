@@ -34,13 +34,14 @@ class DiffUtils
 	/**
 	 * @static
 	 * @param Horde_Text_Diff $diff
+	 * @param int $first_line_no
 	 * @return string
 	 */
-	public static function diff2text($diff)
+	public static function diff2text($diff, $first_line_no = 1)
 	{
 		$diff_text2 = "";
 		$edits      = $diff->getDiff();
-		$line       = 0;
+		$line       = $first_line_no - 1;
 
 		foreach ($edits as $edit) {
 			if (get_class($edit) == "Horde_Text_Diff_Op_Add") {
@@ -88,6 +89,11 @@ class DiffUtils
 		return $diff_text2;
 	}
 
+	/**
+	 * @param string $string1
+	 * @param string $string2
+	 * @return Horde_Text_Diff
+	 */
 	public static function getTextDiffMitZeilennummern($string1 = "", $string2 = "")
 	{
 		HtmlBBcodeUtils::initZeilenCounter();

@@ -21,6 +21,8 @@
  * @property string $begruendung
  * @property integer $status
  * @property string $status_string
+ * @property integer $cache_anzahl_zeilen
+ * @property integer $cache_anzahl_absaetze
  *
  * @property Aenderungsantrag[] $aenderungsantraege
  * @property Veranstaltung $veranstaltung0
@@ -57,7 +59,7 @@ abstract class BaseAntrag extends IAntrag {
 			array('status_string', 'length', 'max'=>55),
 			array('text, begruendung', 'safe'),
 			array('abgeleitet_von, typ, datum_beschluss, text, begruendung, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, veranstaltung, abgeleitet_von, typ, name, revision_name, datum_einreichung, datum_beschluss, text, begruendung, status, status_string', 'safe', 'on'=>'search'),
+			array('id, veranstaltung, abgeleitet_von, typ, name, revision_name, datum_einreichung, datum_beschluss, text, begruendung, status, cache_anzahl_zeilen, cache_anzahl_, status_string', 'safe', 'on'=>'search'),
 		);
 	}
 

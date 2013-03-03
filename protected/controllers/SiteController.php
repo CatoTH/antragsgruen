@@ -261,19 +261,7 @@ class SiteController extends AntragsgruenController
 			}
 		}
 
-		/** @var array|Antrag[] $antraege */
-		$antraege        = $veranstaltung->antraege;
-		$antraege_sorted = array();
-		$warnung         = false;
-		foreach ($antraege as $ant) {
-			if (!isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]])) $antraege_sorted[Antrag::$TYPEN[$ant->typ]] = array();
-			$key = $ant->revision_name;
-			if (isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key]) && !$warnung) {
-				$warnung = true;
-				Yii::app()->user->setFlash("error", "Es können nicht alle Anträge angezeigt werden, da mindestens ein Kürzel ($key) mehrfach vergeben ist.");
-			}
-			$antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key] = $ant;
-		}
+		$antraege_sorted = $veranstaltung->antraegeSortiert();
 
 		/** @var null|Person $ich */
 		if (Yii::app()->user->isGuest) $ich = null;

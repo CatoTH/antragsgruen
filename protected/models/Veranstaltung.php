@@ -149,6 +149,27 @@ class Veranstaltung extends BaseVeranstaltung
 	}
 
 	/**
+	 * @return array|array[]
+	 */
+	public function antraegeSortiert() {
+		$antraege        = $this->antraege;
+		$antraege_sorted = array();
+		// $warnung         = false;
+		foreach ($antraege as $ant) if (!in_array($ant->status, IAntrag::$STATI_UNSICHTBAR)) {
+			if (!isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]])) $antraege_sorted[Antrag::$TYPEN[$ant->typ]] = array();
+			$key = $ant->revision_name;
+			/*
+			if (isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key]) && !$warnung) {
+				$warnung = true;
+				Yii::app()->user->setFlash("error", "Es können nicht alle Anträge angezeigt werden, da mindestens ein Kürzel ($key) mehrfach vergeben ist.");
+			}
+			*/
+			$antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key] = $ant;
+		}
+		return $antraege_sorted;
+	}
+
+	/**
 	 * @param Person $person
 	 * @return bool
 	 */

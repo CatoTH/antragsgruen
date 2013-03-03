@@ -75,6 +75,26 @@ class Antrag extends BaseAntrag
 		return $rules_neu;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getFirstLineNo() {
+		$erste_zeile = 1;
+		if ($this->veranstaltung0->zeilen_nummerierung_global) {
+			$antraege = $this->veranstaltung0->antraegeSortiert();
+			$found = false;
+			foreach ($antraege as $antraege2) foreach ($antraege2 as $antrag) if (!$found) {
+				/** @var Antrag $antrag */
+				if ($antrag->id == $this->id) {
+					$found = true;
+				} else {
+					$erste_zeile += $antrag->cache_anzahl_zeilen;
+				}
+			}
+		}
+		return $erste_zeile;
+	}
+
 
 	/**
 	 * @param bool $nurfreigeschaltete
@@ -93,7 +113,9 @@ class Antrag extends BaseAntrag
 		}
 		$komms = $this->antragKommentare;
 
-		HtmlBBcodeUtils::initZeilenCounter();
+		$erste_zeile = $this->getFirstLineNo();
+
+		HtmlBBcodeUtils::initZeilenCounter($erste_zeile);
 		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text), $praesentations_hacks);
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain       = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
@@ -200,6 +222,15 @@ class Antrag extends BaseAntrag
 		return Antrag::model()->findAll("(`text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")");
 	}
 
+
+	public function save($runValidation = true, $attributes = null) {
+		HtmlBBcodeUtils::initZeilenCounter();
+		list($anzahl_absaetze, $anzahl_zeilen) = HtmlBBcodeUtils::getBBCodeStats(trim($this->text));
+		$this->cache_anzahl_absaetze = $anzahl_absaetze;
+		$this->cache_anzahl_zeilen = $anzahl_zeilen;
+		return parent::save($runValidation, $attributes);
+	}
+
 	/*
 	public function getRelationLabel($relationName, $n = null, $useRelationLabel = true) {
 		if ($relationName == "abonnenten") return Yii::t('app', ($n == 1 ? 'AbonnentIn' : 'AbonnentInnen'));
@@ -208,15 +239,6 @@ class Antrag extends BaseAntrag
 	}
 	*/
 
-	/**
-	 * @param $attribute
-	 * @param $params
-	 */
-	public function checkUnterstuetzer($attribute, $params)
-	{
-		var_dump($params);
-		echo "!";
-	}
 
 
 }

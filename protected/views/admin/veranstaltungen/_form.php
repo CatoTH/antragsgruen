@@ -148,6 +148,11 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[ae_nummerierung_global]" value="1" <?php if ($model->ae_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 </div>
 <div>
+	<?php echo $form->labelEx($model, 'zeilen_nummerierung_global'); ?>
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[zeilen_nummerierung_global]" value="0" <?php if ($model->zeilen_nummerierung_global != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[zeilen_nummerierung_global]" value="1" <?php if ($model->zeilen_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+</div>
+<div>
 	<?php echo $form->labelEx($model, 'bestaetigungs_emails'); ?>
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[bestaetigungs_emails]" value="0" <?php if ($model->bestaetigungs_emails != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[bestaetigungs_emails]" value="1" <?php if ($model->bestaetigungs_emails == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
