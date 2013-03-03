@@ -11,4 +11,12 @@ class AenderungsantragKommentar extends BaseAenderungsantragKommentar
 	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
+
+	/**
+	 * @return Veranstaltung
+	 */
+	public function getVeranstaltung()
+	{
+		return $this->aenderungsantrag->antrag->veranstaltung0;
+	}
 }

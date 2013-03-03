@@ -20,7 +20,7 @@
  * @var Sprache $sprache
  */
 
-$this->breadcrumbs         = array(
+$this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
 	$sprache->get("Antrag"),
 );
@@ -64,7 +64,7 @@ $this->menus_html[] = $html;
 	<script>
 		$(function ($) {
 			$('#socialshareprivacy').socialSharePrivacy({
-				css_path:"/js/socialshareprivacy/socialshareprivacy/socialshareprivacy.css"
+				css_path: "/js/socialshareprivacy/socialshareprivacy/socialshareprivacy.css"
 			});
 		});
 	</script>
@@ -91,12 +91,12 @@ $this->menus_html[] = $html;
 					?></td>
 			</tr>
 			<?php if ($antrag->datum_beschluss != "") { ?>
-			<tr>
-				<th>Beschlossen am:</th>
-				<td><?php
-					echo HtmlBBcodeUtils::formatMysqlDate($antrag->datum_beschluss);
-					?></td>
-			</tr>
+				<tr>
+					<th>Beschlossen am:</th>
+					<td><?php
+						echo HtmlBBcodeUtils::formatMysqlDate($antrag->datum_beschluss);
+						?></td>
+				</tr>
 			<?php } ?>
 			<tr>
 				<th>Eingereicht:</th>
@@ -105,30 +105,37 @@ $this->menus_html[] = $html;
 					?></td>
 			</tr>
 			<?php if (count($antrag->antraege) > 0) { ?>
-			<tr>
-				<th>Ersetzt den Antrag:</th>
-				<td>
-					<?php foreach ($antrag->antraege as $a) {
-					echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
-				} ?>
-				</td>
-			</tr>
+				<tr>
+					<th>Ersetzt den Antrag:</th>
+					<td>
+						<?php foreach ($antrag->antraege as $a) {
+							echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
+						} ?>
+					</td>
+				</tr>
 			<?php } ?>
 		</table>
 
 		<div class="hidden-desktop">
 			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-				<a href="<?=CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id)))?>" class="btn" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
+				<a href="<?= CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) ?>" class="btn" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
 			</div>
 			<?
 			$policy = $antrag->veranstaltung0->getPolicyAenderungsantraege();
-			if ($policy->checkCurUserHeuristically()) { ?>
-			<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-				<a href="<?=CHtml::encode($this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id)))?>" class="btn btn-danger" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
-			</div>
+			if ($policy->checkCurUserHeuristically()) {
+				?>
+				<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
+					<a href="<?= CHtml::encode($this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id))) ?>" class="btn btn-danger" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
+				</div>
 			<? } ?>
 		</div>
 	</div>
+	<?php
+	$this->widget('bootstrap.widgets.TbAlert', array(
+		'block' => true,
+		'fade'  => true,
+	));
+	?>
 </div>
 
 <div class="antrags_text_holder well">
@@ -147,68 +154,87 @@ foreach ($absae as $i => $abs) {
 
 	$kommoffenclass = (!in_array($i, $kommentare_offen) ? "kommentare_closed_absatz" : "");
 	?>
-<div class='row-fluid row-absatz <?php echo $kommoffenclass; ?>' data-absatznr='<?php echo $i; ?>'>
+	<div class='row-fluid row-absatz <?php echo $kommoffenclass; ?>' data-absatznr='<?php echo $i; ?>'>
 
-<div class="textabschnitt">
-	<div class="absatz_text orig antragabsatz_holder antrags_text_holder_nummern">
-		<?php echo $abs->str_html; ?>
+	<div class="textabschnitt">
+		<div class="absatz_text orig antragabsatz_holder antrags_text_holder_nummern">
+			<?php echo $abs->str_html; ?>
 
-	</div>
-
-	<?php
-
-	foreach ($abs->aenderungsantraege as $ant) {
-		$par = $ant->getDiffParagraphs();
-		if ($par[$i] != "") {
-			?>
-			<div class="absatz_text ae_<?php echo $ant->id; ?> antragabsatz_holder antrags_text_holder_nummern"
-					style="display: none; position: relative; border-right: solid 1px lightgray; margin-left: 0;">
-				<?php
-				echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i]);
-				?>
-			</div>
-			<?php
-		}
-	}
-
-	if (count($abs->aenderungsantraege) > 0) {
-		?>
-		<div class='aenders'>
-			<ul>
-				<?php
-				/** @var Aenderungsantrag $ant */
-				foreach ($abs->aenderungsantraege as $ant) {
-					$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $ant->antrag->veranstaltung0->yii_url, "antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id));
-					echo "<li><a class='aender_link' data-id='" . $ant->id . "' href='" . CHtml::encode($ae_link) . "'>" . CHtml::encode($ant->revision_name) . "</a></li>\n";
-				} ?>
-			</ul>
 		</div>
-		<?php
-	}
 
-	if (count($abs->kommentare) > 0 || $antrag->veranstaltung0->darfEroeffnenKommentar()) {
-	?>
-	<div class='kommentare'><?
-		?>
-		<a href='#' class='shower'><?php echo count($abs->kommentare); ?></a>
-		<a href='#' class='hider'><?php echo count($abs->kommentare); ?></a>
+		<?php
+
+		foreach ($abs->aenderungsantraege as $ant) {
+			$par = $ant->getDiffParagraphs();
+			if ($par[$i] != "") {
+				?>
+				<div class="absatz_text ae_<?php echo $ant->id; ?> antragabsatz_holder antrags_text_holder_nummern"
+					style="display: none; position: relative; border-right: solid 1px lightgray; margin-left: 0;">
+					<?php
+					echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i]);
+					?>
+				</div>
+			<?php
+			}
+		}
+
+		if (count($abs->aenderungsantraege) > 0) {
+			?>
+			<div class='aenders'>
+				<ul>
+					<?php
+					/** @var Aenderungsantrag $ant */
+					foreach ($abs->aenderungsantraege as $ant) {
+						$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $ant->antrag->veranstaltung0->yii_url, "antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id));
+						echo "<li><a class='aender_link' data-id='" . $ant->id . "' href='" . CHtml::encode($ae_link) . "'>" . CHtml::encode($ant->revision_name) . "</a></li>\n";
+					} ?>
+				</ul>
+			</div>
+		<?php
+		}
+
+		if (count($abs->kommentare) > 0 || $antrag->veranstaltung0->darfEroeffnenKommentar()) {
+			?>
+			<div class='kommentare'><?
+				?>
+				<a href='#' class='shower'><?php echo count($abs->kommentare); ?></a>
+				<a href='#' class='hider'><?php echo count($abs->kommentare); ?></a>
+			</div>
+		<? } ?>
 	</div>
-	<? } ?>
-</div>
 	<?php
 
 	/** @var AntragKommentar $komm */
 	foreach ($abs->kommentare as $komm) {
+		$komm_link = $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id));
 		?>
-	<div class="kommentarform well" id="komm<?php echo $komm->id; ?>">
-		<div class="datum"><?php echo HtmlBBcodeUtils::formatMysqlDateTime($komm->datum)?></div>
-		<h3>Kommentar von <?php echo CHtml::encode($komm->verfasser->name); ?></h3>
-		<?php
-		echo nl2br(CHtml::encode($komm->text));
-		if (!is_null($komm_del_link) && $komm->kannLoeschen(Yii::app()->user)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace("#komm_id#", $komm->id, $komm_del_link)) . "'>x</a></div>";
-		?>
-	</div>
-		<?php
+		<div class="kommentarform well" id="komm<?php echo $komm->id; ?>">
+			<div class="datum"><?php echo HtmlBBcodeUtils::formatMysqlDateTime($komm->datum)?></div>
+			<h3>Kommentar von
+				<?php echo CHtml::encode($komm->verfasser->name);
+				if ($komm->status == IKommentar::$STATUS_NICHT_FREI) echo " <em>(noch nicht freigeschaltet)</em>";
+				?></h3>
+			<?php
+			echo nl2br(CHtml::encode($komm->text));
+			if (!is_null($komm_del_link) && $komm->kannLoeschen(Yii::app()->user)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace(rawurlencode("#komm_id#"), $komm->id, $komm_del_link)) . "'>x</a></div>";
+
+			if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $antrag->veranstaltung0->isAdminCurUser()) {
+				$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+					'type'        => 'inline',
+					'htmlOptions' => array('class' => ''),
+					'action' => $komm_link,
+				));
+				echo '<div style="display: inline-block; width: 49%; text-align: center;">';
+				$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'success', 'label' => 'Freischalten', 'icon' => 'icon-thumbs-up', 'htmlOptions' => array('name' => AntiXSS::createToken('komm_freischalten'))));
+				echo '</div><div style="display: inline-block; width: 49%; text-align: center;">';
+				$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'danger', 'label' => 'Löschen', 'icon' => 'icon-thumbs-down', 'htmlOptions' => array('name' => AntiXSS::createToken('komm_nicht_freischalten'))));
+				echo '</div>';
+				$this->endWidget();
+			}
+			?>
+			<div class="kommentarlink"><?php echo CHtml::link("Kommentar verlinken", $komm_link); ?></div>
+		</div>
+	<?php
 	}
 
 	if ($antrag->veranstaltung0->darfEroeffnenKommentar()) {
@@ -220,45 +246,45 @@ foreach ($absae as $i => $abs) {
 			),
 		));
 		?>
-	<fieldset>
-		<legend>Kommentar schreiben</legend>
+		<fieldset>
+			<legend>Kommentar schreiben</legend>
 
-		<?php
-
-		if ($js_protection) {
-			?>
-			<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.</div>
 			<?php
-		}
-		foreach ($hiddens as $name => $value) {
-			echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
-		}
-		echo '<input type="hidden" name="absatz_nr" value="' . $abs->absatz_nr . '">';
 
-		echo $form->textFieldRow($kommentar_person, 'name', array("id" => "Person_name_" . $i, 'labelOptions' => array("for" => "Person_name_" . $i, 'label' => 'Name')));
-		echo $form->textFieldRow($kommentar_person, 'email', array("id" => "Person_email_" . $i, 'labelOptions' => array("for" => "Person_email_" . $i, 'label' => 'E-Mail')));
-		?>
-		<div class="control-group "><label class="control-label" for="AntragKommentar_text_<?=$i?>">Kommentar:</label>
+			if ($js_protection) {
+				?>
+				<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.</div>
+			<?php
+			}
+			foreach ($hiddens as $name => $value) {
+				echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
+			}
+			echo '<input type="hidden" name="absatz_nr" value="' . $abs->absatz_nr . '">';
 
-			<div class="controls">
-				<?php echo $form->textArea($dummy_komm, "text", array("id" => "AntragKommentar_text_" . $i)); ?>
+			echo $form->textFieldRow($kommentar_person, 'name', array("id" => "Person_name_" . $i, 'labelOptions' => array("for" => "Person_name_" . $i, 'label' => 'Name')));
+			echo $form->textFieldRow($kommentar_person, 'email', array("id" => "Person_email_" . $i, 'labelOptions' => array("for" => "Person_email_" . $i, 'label' => 'E-Mail')));
+			?>
+			<div class="control-group "><label class="control-label" for="AntragKommentar_text_<?= $i ?>">Kommentar:</label>
+
+				<div class="controls">
+					<?php echo $form->textArea($dummy_komm, "text", array("id" => "AntragKommentar_text_" . $i)); ?>
+				</div>
 			</div>
+
+		</fieldset>
+
+		<div>
+			<?php
+			$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Kommentar abschicken'));
+			?>
 		</div>
-
-	</fieldset>
-
-	<div>
-		<?php
-		$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Kommentar abschicken'));
-		?>
-	</div>
 		<?php
 		$this->endWidget();
 	}
 	?>
 
-</div>
-	<?php
+	</div>
+<?php
 }
 ?>
 </div>
@@ -266,13 +292,13 @@ foreach ($absae as $i => $abs) {
 
 <?php if (trim($antrag->begruendung) != "") { ?>
 
-<div class="begruendungs_text_holder well">
-	<h3>Begründung</h3>
+	<div class="begruendungs_text_holder well">
+		<h3>Begründung</h3>
 
-	<div class="textholder consolidated">
-		<?php echo HtmlBBcodeUtils::bbcode2html($antrag->begruendung) ?>
+		<div class="textholder consolidated">
+			<?php echo HtmlBBcodeUtils::bbcode2html($antrag->begruendung) ?>
+		</div>
 	</div>
-</div>
 
 <? } ?>
 
@@ -354,7 +380,7 @@ foreach ($absae as $i => $abs) {
 					?>
 					</div>
 					-->
-					<?php
+				<?php
 		}
 		echo "</div>";
 		$this->endWidget();

@@ -21,8 +21,8 @@
 
 $this->breadcrumbs = array(
 	CHtml::encode($aenderungsantrag->antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
-	"Antrag"                                                            => $this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag->id)),
-	'Änderungsantrag'
+	$sprache->get("Antrag")                                                            => $this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag->id)),
+	$sprache->get("Änderungsantrag")
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 $this->pageTitle = $aenderungsantrag->revision_name . " zu: " . $aenderungsantrag->antrag->nameMitRev();
@@ -146,14 +146,32 @@ $rows = 10;
 
 			/** @var AenderungsantragKommentar $komm */
 			foreach ($abs->kommentare as $komm) {
+				$komm_link = $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id));
 				?>
                 <div class="kommentarform well" id="komm<?=$komm->id?>">
                     <div class="datum"><?php echo HtmlBBcodeUtils::formatMysqlDateTime($komm->datum)?></div>
-                    <h3>Kommentar von <?php echo CHtml::encode($komm->verfasser->name); ?></h3>
+                    <h3>Kommentar von <?php echo
+						CHtml::encode($komm->verfasser->name);
+						if ($komm->status == IKommentar::$STATUS_NICHT_FREI) echo " <em>(noch nicht freigeschaltet)</em>";
+						?></h3>
 					<?php
 					echo nl2br(CHtml::encode($komm->text));
-					if (!is_null($komm_del_link) && $komm->kannLoeschen(Yii::app()->user)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace("#komm_id#", $komm->id, $komm_del_link)) . "'>x</a></div>";
+					if (!is_null($komm_del_link) && $komm->kannLoeschen(Yii::app()->user)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace(rawurlencode("#komm_id#"), $komm->id, $komm_del_link)) . "'>x</a></div>";
+					if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung0->isAdminCurUser()) {
+						$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+							'type'        => 'inline',
+							'htmlOptions' => array('class' => ''),
+							'action' => $komm_link,
+						));
+						echo '<div style="display: inline-block; width: 49%; text-align: center;">';
+						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'success', 'label' => 'Freischalten', 'icon' => 'icon-thumbs-up', 'htmlOptions' => array('name' => AntiXSS::createToken('komm_freischalten'))));
+						echo '</div><div style="display: inline-block; width: 49%; text-align: center;">';
+						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'danger', 'label' => 'Löschen', 'icon' => 'icon-thumbs-down', 'htmlOptions' => array('name' => AntiXSS::createToken('komm_nicht_freischalten'))));
+						echo '</div>';
+						$this->endWidget();
+					}
 					?>
+					<div class="kommentarlink"><?php echo CHtml::link("Kommentar verlinken", $komm_link); ?></div>
                 </div>
 				<?php
 			}

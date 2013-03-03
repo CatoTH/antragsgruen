@@ -33,4 +33,12 @@ class AntragKommentar extends BaseAntragKommentar
 		));
 		return $dataProvider->data;
 	}
+
+	/**
+	 * @return Veranstaltung
+	 */
+	public function getVeranstaltung()
+	{
+		return $this->antrag->veranstaltung0;
+	}
 }

@@ -28,6 +28,30 @@ class AntragController extends AntragsgruenController
 			}
 		}
 
+		if (AntiXSS::isTokenSet("komm_freischalten") && $kommentar_id > 0) {
+			/** @var AntragKommentar $komm */
+			$komm = AntragKommentar::model()->findByPk($kommentar_id);
+			if ($komm->antrag_id == $antrag->id && $komm->status == IKommentar::$STATUS_NICHT_FREI && $antrag->veranstaltung0->isAdminCurUser()) {
+				$komm->status = IKommentar::$STATUS_FREI;
+				$komm->save();
+				Yii::app()->user->setFlash("success", "Der Kommentar wurde freigeschaltet.");
+			} else {
+				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
+			}
+		}
+
+		if (AntiXSS::isTokenSet("komm_nicht_freischalten") && $kommentar_id > 0) {
+			/** @var AntragKommentar $komm */
+			$komm = AntragKommentar::model()->findByPk($kommentar_id);
+			if ($komm->antrag_id == $antrag->id && $komm->status == IKommentar::$STATUS_NICHT_FREI && $antrag->veranstaltung0->isAdminCurUser()) {
+				$komm->status = IKommentar::$STATUS_GELOESCHT;
+				$komm->save();
+				Yii::app()->user->setFlash("success", "Der Kommentar wurde gelöscht.");
+			} else {
+				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
+			}
+		}
+
 		if (AntiXSS::isTokenSet("mag") && !Yii::app()->user->isGuest) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
@@ -92,13 +116,25 @@ class AntragController extends AntragsgruenController
 			$kommentar->verfasser_id = $model_person->id;
 			$kommentar->antrag       = $antrag;
 			$kommentar->antrag_id    = $antrag_id;
-			$kommentar->status       = IKommentar::$STATUS_FREI;
+			$kommentar->status       = ($this->veranstaltung->freischaltung_kommentare ? IKommentar::$STATUS_NICHT_FREI : IKommentar::$STATUS_FREI);
 
 			$kommentare_offen[] = $zeile;
 
 			if ($kommentar->save()) {
-				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert.");
-				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id, "kommentar" => $kommentar->id, "#" => "komm" . $kommentar->id)));
+				$add = ($this->veranstaltung->freischaltung_kommentare ? " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
+				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);
+
+				if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
+					$kommentar_link = yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $kommentar->id, "#" => "komm" . $kommentar->id));
+					$mails = explode(",", $this->veranstaltung->admin_email);
+					foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Kommentar - bitte freischalten.",
+						"Es wurde ein neuer Kommentar zum Antrag \"" . $antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
+							"Link: " . $kommentar_link,
+						"From: " . Yii::app()->params['mail_from']
+					);
+				}
+
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id, "kommentar_id" => $kommentar->id, "#" => "komm" . $kommentar->id)));
 			} else {
 				foreach ($model_person->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 			}
@@ -260,10 +296,6 @@ class AntragController extends AntragsgruenController
 				$init->antrag_id           = $antrag->id;
 				$model_unterstuetzer_obj[] = $init;
 			}
-
-			$initiator = null;
-			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->rolle == AntragUnterstuetzer::$ROLLE_INITIATOR) $initiator = $unt;
-
 
 			if (!$antrag->veranstaltung0->getPolicyAntraege()->checkAntragSubmit()) {
 				Yii::app()->user->setFlash("error", "Nicht genügend UnterstützerInnen");

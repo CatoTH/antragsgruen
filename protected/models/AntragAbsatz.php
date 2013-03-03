@@ -55,7 +55,7 @@ class AntragAbsatz
 		$this->antrag_id = $antrag_id;
 		$this->kommentare = array();
 		$this->aenderungsantraege = array();
-		foreach ($kommentare as $komm) if ($komm->absatz == $absatz_nr && $komm->status == IKommentar::$STATUS_FREI) $this->kommentare[] = $komm;
+		foreach ($kommentare as $komm) if ($komm->absatz == $absatz_nr && $komm->istSichtbarCurrUser()) $this->kommentare[] = $komm;
 		foreach ($aenderungsantraege as $ant) if (in_array($absatz_nr, $ant->getAffectedParagraphs())) $this->aenderungsantraege[] = $ant;
 	}
 }

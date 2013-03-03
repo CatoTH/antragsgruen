@@ -622,6 +622,9 @@ h2,
 	padding: 12px 20px 25px;
 }
 
+.kommentarform .kommentarlink { visibility: hidden; text-align: right; }
+.kommentarform:hover .kommentarlink { visibility: visible; }
+
 .kommentarform h3 {
 	background: none;
 	color: rgb(162, 188, 4);

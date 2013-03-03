@@ -128,7 +128,7 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_aenderungsantraege]" value="1" <?php if ($model->freischaltung_aenderungsantraege == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 </div>
 <div>
-	<?php echo $form->labelEx($model, 'freischaltung_kommentare'); ?> <small>(noch nicht implementiert)</small>
+	<?php echo $form->labelEx($model, 'freischaltung_kommentare'); ?>
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="0" <?php if ($model->freischaltung_kommentare != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="1" <?php if ($model->freischaltung_kommentare == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 </div>

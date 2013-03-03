@@ -8,7 +8,8 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param int $aenderungsantrag_id
 	 * @return Aenderungsantrag
 	 */
-	private function getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id) {
+	private function getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	{
 		$aenderungsantrag_id = IntVal($aenderungsantrag_id);
 		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
@@ -31,7 +32,7 @@ class AenderungsantragController extends AntragsgruenController
 	}
 
 
-	public function actionAnzeige($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	public function actionAnzeige($veranstaltung_id, $antrag_id, $aenderungsantrag_id, $kommentar_id = 0)
 	{
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
@@ -54,6 +55,29 @@ class AenderungsantragController extends AntragsgruenController
 			}
 		}
 
+		if (AntiXSS::isTokenSet("komm_freischalten") && $kommentar_id > 0) {
+			/** @var AenderungsantragKommentar $komm */
+			$komm = AenderungsantragKommentar::model()->findByPk($kommentar_id);
+			if ($komm->aenderungsantrag_id == $aenderungsantrag->id && $komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung0->isAdminCurUser()) {
+				$komm->status = IKommentar::$STATUS_FREI;
+				$komm->save();
+				Yii::app()->user->setFlash("success", "Der Kommentar wurde freigeschaltet.");
+			} else {
+				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
+			}
+		}
+
+		if (AntiXSS::isTokenSet("komm_nicht_freischalten") && $kommentar_id > 0) {
+			/** @var AenderungsantragKommentar $komm */
+			$komm = AenderungsantragKommentar::model()->findByPk($kommentar_id);
+			if ($komm->aenderungsantrag_id == $aenderungsantrag->id && $komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung0->isAdminCurUser()) {
+				$komm->status = IKommentar::$STATUS_GELOESCHT;
+				$komm->save();
+				Yii::app()->user->setFlash("success", "Der Kommentar wurde gelöscht.");
+			} else {
+				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
+			}
+		}
 
 		if (AntiXSS::isTokenSet("mag") && !Yii::app()->user->isGuest) {
 			$userid = Yii::app()->user->getState("person_id");
@@ -106,23 +130,35 @@ class AenderungsantragController extends AntragsgruenController
 			$kommentar->verfasser_id        = $model_person->id;
 			$kommentar->aenderungsantrag    = $aenderungsantrag;
 			$kommentar->aenderungsantrag_id = $aenderungsantrag_id;
-			$kommentar->status              = IKommentar::$STATUS_FREI;
+			$kommentar->status              = ($this->veranstaltung->freischaltung_kommentare ? IKommentar::$STATUS_NICHT_FREI : IKommentar::$STATUS_FREI);
 
 			$kommentare_offen[] = $zeile;
 
 			if ($kommentar->save()) {
-				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert.");
+				$add = ($this->veranstaltung->freischaltung_kommentare ? " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
+				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);
+
+				if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
+					$kommentar_link = yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $aenderungsantrag->id, "antrag_id" => $aenderungsantrag->antrag->id, "kommentar_id" => $kommentar->id, "#" => "komm" . $kommentar->id));
+					$mails = explode(",", $this->veranstaltung->admin_email);
+					foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Kommentar - bitte freischalten.",
+						"Es wurde ein neuer Kommentar zum Änderungsantrag \"" . $aenderungsantrag->revision_name . " zu " . $aenderungsantrag->antrag->revision_name . " - " . $aenderungsantrag->antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
+							"Link: " . $kommentar_link,
+						"From: " . Yii::app()->params['mail_from']
+					);
+				}
+
 				$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id, "kommentar_id" => $kommentar->id, "#" => "komm" . $kommentar->id)));
 			} else {
 				foreach ($kommentar->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 				foreach ($model_person->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 			}
 		}
-		if (isset($_REQUEST["kommentar"])) {
+		if ($kommentar_id > 0) {
 			$abs = $aenderungsantrag->getAntragstextParagraphs();
 			foreach ($abs as $ab) {
 				/** @var AntragAbsatz $ab */
-				foreach ($ab->kommentare as $komm) if ($komm->id == $_REQUEST["kommentar"]) $kommentare_offen[] = $ab->absatz_nr;
+				foreach ($ab->kommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $ab->absatz_nr;
 			}
 		}
 
@@ -267,7 +303,7 @@ class AenderungsantragController extends AntragsgruenController
 			if ($freischaltung) {
 				$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 			} else {
-				$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_GEPRUEFT;
+				$aenderungsantrag->status        = Aenderungsantrag::$STATUS_EINGEREICHT_GEPRUEFT;
 				$aenderungsantrag->revision_name = $aenderungsantrag->antrag->naechsteAenderungsRevNr();
 			}
 			$aenderungsantrag->save();
@@ -276,7 +312,7 @@ class AenderungsantragController extends AntragsgruenController
 				$mails = explode(",", $aenderungsantrag->antrag->veranstaltung0->admin_email);
 				foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Änderungsantrag",
 					"Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
-					"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)),
+						"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)),
 					"From: " . Yii::app()->params['mail_from']
 				);
 			}
