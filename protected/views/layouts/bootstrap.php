@@ -59,7 +59,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 	</div>
 
 
-	<a href="/" class="logo"><?php
+	<a href="<?php echo CHtml::encode($this->createUrl("site/veranstaltung")); ?>" class="logo"><?php
 		if (is_subclass_of($this, "VeranstaltungsControllerBase") && is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->logo_url != "") {
 			echo '<img src="' . CHtml::encode($this->veranstaltung->logo_url) . '" alt="Logo">';
 		}  else {
