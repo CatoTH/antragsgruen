@@ -107,7 +107,7 @@ foreach ($absae as $i=>$abs) {
 	$text2 = implode("<br>", $zeilennrs);
 
 	$y = $pdf->getY();
-	$pdf->writeHTMLCell(10, '', 12, $y, $text2, 0, 0, 0, true, '', true);
+	$pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
 	$pdf->writeHTMLCell(170, '',24, '', $text, 0, 1, 0, true, '', true);
 
 	$pdf->Ln(8);
