@@ -357,7 +357,7 @@ class SiteController extends AntragsgruenController
 	/**
 	 *
 	 */
-	public function actionLogin()
+	public function actionLogin($back = "")
 	{
 		$this->setStdVeranstaltung();
 
@@ -398,7 +398,8 @@ class SiteController extends AntragsgruenController
 						}
 						Yii::app()->user->setState("person_id", $user->id);
 						Yii::app()->user->setFlash('success', 'Willkommen!');
-						$this->redirect(Yii::app()->homeUrl);
+						if ($back == "") $back = Yii::app()->homeUrl;
+						$this->redirect($back);
 					} else {
 						Yii::app()->user->setFlash("error", "Leider ist beim Einloggen ein Fehler aufgetreten.");
 						$this->render('login', array("model" => $model));
@@ -419,7 +420,7 @@ class SiteController extends AntragsgruenController
 
 			$loid->required  = array('namePerson/friendly', 'contact/email'); //Try to get info from openid provider
 			$loid->realm     = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-			$loid->returnUrl = $loid->realm . $_SERVER['REQUEST_URI']; //getting return URL
+			$loid->returnUrl = $loid->realm . yii::app()->getRequest()->requestUri;
 			if (empty($err)) {
 				try {
 					$url = $loid->authUrl();
@@ -438,10 +439,11 @@ class SiteController extends AntragsgruenController
 	/**
 	 *
 	 */
-	public function actionLogout()
+	public function actionLogout($back = "")
 	{
 		Yii::app()->user->logout();
 		Yii::app()->user->setFlash("success", "Bis bald!");
-		$this->redirect(Yii::app()->homeUrl);
+		if ($back == "") $back = Yii::app()->homeUrl;
+		$this->redirect($back);
 	}
 }

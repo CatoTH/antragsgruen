@@ -43,9 +43,9 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 						<li class="active"><a href="<?=CHtml::encode($this->createUrl("site/veranstaltung"))?>">Start</a></li>
 						<li><a href="<?=CHtml::encode($this->createUrl("site/hilfe"))?>">Hilfe</a></li>
 						<?php if (Yii::app()->user->isGuest) { ?>
-						<li><a href="<?=CHtml::encode($this->createUrl("site/login"))?>">Login</a></li>
+						<li><a href="<?=CHtml::encode($this->createUrl("site/login", array("back" => yii::app()->getRequest()->requestUri)))?>">Login</a></li>
 						<?php } else { ?>
-						<li><a href="<?=CHtml::encode($this->createUrl("site/logout"))?>">Logout</a></li>
+						<li><a href="<?=CHtml::encode($this->createUrl("site/logout", array("back" => yii::app()->getRequest()->requestUri)))?>">Logout</a></li>
 						<?php
 					}
 						if (Yii::app()->user->getState("role") == "admin" || ($this->veranstaltung != null && $this->veranstaltung->isAdminCurUser())) {
