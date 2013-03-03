@@ -9,7 +9,7 @@ if (ini_get("max_execution_time") < 180) ini_set("max_execution_time", 180);
 
 ini_set('include_path', ini_get('include_path') . ":" . dirname(__FILE__) . "/../libraries/");
 if (!file_exists(dirname(__FILE__) . "/../vendor/autoload.php")) {
-	die("Installation noch nicht vollständig: bitte führe 'composer install' aus. Falls composer nicht installiert ist, siehe: http://getcomposer.org/");
+	die("Installation noch nicht vollst&auml;ndig: bitte f&uuml;hre 'composer install' aus. Falls composer nicht installiert ist, siehe: http://getcomposer.org/");
 }
 require_once(dirname(__FILE__) . "/../vendor/autoload.php");
 
