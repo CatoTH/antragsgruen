@@ -136,11 +136,12 @@ $rows = 10;
 
                 </div>
 
+				<?php if (count($abs->kommentare) > 0 || $aenderungsantrag->antrag->veranstaltung0->darfEroeffnenKommentar()) { ?>
                 <div class='kommentare'>
                     <a href='#' class='shower'><?php echo count($abs->kommentare); ?></a>
                     <a href='#' class='hider'><?php echo count($abs->kommentare); ?></a>
                 </div>
-
+				<?php } ?>
             </div>
 			<?php
 
