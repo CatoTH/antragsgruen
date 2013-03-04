@@ -22,8 +22,8 @@ foreach ($model->antragUnterstuetzer as $unt) {
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 if ($initiator) $pdf->SetAuthor($initiator->name);
-$pdf->SetTitle($sprache->get("Antrag") . " " . $model->revision_name . ": " . $model->name);
-$pdf->SetSubject($sprache->get("Antrag") . " " . $model->revision_name . ": " . $model->name);
+$pdf->SetTitle($sprache->get("Antrag") . " " . $model->nameMitRev());
+$pdf->SetSubject($sprache->get("Antrag") . " " . $model->nameMitRev());
 //$pdf->SetSubject($model->name);
 //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 

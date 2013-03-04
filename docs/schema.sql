@@ -27,6 +27,7 @@ CREATE  TABLE IF NOT EXISTS `veranstaltung` (
   `ae_nummerierung_global` TINYINT NULL DEFAULT 0 ,
   `zeilen_nummerierung_global` TINYINT NULL DEFAULT 0 ,
   `bestaetigungs_emails` TINYINT NULL DEFAULT 0 ,
+  `revision_name_verstecken` TINYINT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `yii_url_UNIQUE` (`yii_url` ASC) )
 ENGINE = InnoDB
@@ -48,7 +49,7 @@ CREATE  TABLE IF NOT EXISTS `antrag` (
   `datum_beschluss` VARCHAR(45) NULL ,
   `text` MEDIUMTEXT NULL ,
   `begruendung` MEDIUMTEXT NULL ,
-  `status` TINYINT NULL ,
+  `status` TINYINT NOT NULL ,
   `status_string` VARCHAR(55) NULL ,
   `cache_anzahl_zeilen` MEDIUMINT UNSIGNED NOT NULL ,
   `cache_anzahl_absaetze` MEDIUMINT UNSIGNED NOT NULL ,

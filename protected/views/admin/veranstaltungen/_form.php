@@ -133,6 +133,11 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="1" <?php if ($model->freischaltung_kommentare == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 </div>
 <div>
+	<?php echo $form->labelEx($model, 'revision_name_verstecken'); ?>
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[revision_name_verstecken]" value="0" <?php if ($model->revision_name_verstecken != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="Veranstaltung[revision_name_verstecken]" value="1" <?php if ($model->revision_name_verstecken == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+</div>
+<div>
 	<?php echo $form->labelEx($model, 'logo_url'); ?>
 	<?php echo $form->textField($model, 'logo_url', array('maxlength' => 200)); ?>
 	<?php echo $form->error($model, 'logo_url'); ?>

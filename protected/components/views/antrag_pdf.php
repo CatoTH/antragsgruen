@@ -23,18 +23,21 @@ if (file_exists($logo)) {
 
 $pdf->SetXY(155, 37, true);
 
-if ($antrag->revision_name == "") {
-	$name = "Entwurf";
-	$pdf->SetFont("helvetica", "I", "25");
-} else {
-	$name = $antrag->revision_name;
-	$pdf->SetFont("helvetica", "B", "25");
+if (!$antrag->veranstaltung0->revision_name_verstecken) {
+
+	if ($antrag->revision_name == "") {
+		$name = "Entwurf";
+		$pdf->SetFont("helvetica", "I", "25");
+	} else {
+		$name = $antrag->revision_name;
+		$pdf->SetFont("helvetica", "B", "25");
+	}
+	$pdf->MultiCell(37, 21, $name,
+		array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
+		false, 1, "", "", true, 0, false, true, 21, // defaults
+		"M"
+	);
 }
-$pdf->MultiCell(37, 21, $name,
-	array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
-	false, 1, "", "", true, 0, false, true, 21, // defaults
-	"M"
-);
 
 $str = Antrag::$TYPEN[$antrag->typ];
 $pdf->SetFont("helvetica", "B", "25");
@@ -74,7 +77,7 @@ $pdf->Ln();
 
 $pdf->SetFont("helvetica", "", 12);
 
-$pdf->writeHTML("<h3>" . $sprache->get("Antragstext") .  "</h3>");
+$pdf->writeHTML("<h3>" . $sprache->get("Antragstext") . "</h3>");
 $pdf->SetFont("Courier", "", 10);
 $pdf->Ln(8);
 
@@ -82,9 +85,9 @@ $pdf->Ln(8);
 $linenr = $antrag->getFirstLineNo();
 
 
-foreach ($absae as $i=>$abs) {
+foreach ($absae as $i => $abs) {
 	/** @var AntragAbsatz $abs */
-	$text = $abs->str_html;
+	$text   = $abs->str_html;
 	$zeilen = substr_count($text, "<span class='zeilennummer'>");
 
 	$abstand_bevor = array();
@@ -108,7 +111,7 @@ foreach ($absae as $i=>$abs) {
 
 	$y = $pdf->getY();
 	$pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
-	$pdf->writeHTMLCell(170, '',24, '', $text, 0, 1, 0, true, '', true);
+	$pdf->writeHTMLCell(170, '', 24, '', $text, 0, 1, 0, true, '', true);
 
 	$pdf->Ln(8);
 
