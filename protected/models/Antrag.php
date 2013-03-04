@@ -230,6 +230,10 @@ class Antrag extends BaseAntrag
 		list($anzahl_absaetze, $anzahl_zeilen) = HtmlBBcodeUtils::getBBCodeStats(trim($this->text));
 		$this->cache_anzahl_absaetze = $anzahl_absaetze;
 		$this->cache_anzahl_zeilen = $anzahl_zeilen;
+
+		Yii::app()->cache->delete("pdf_" . $this->veranstaltung0->id);
+		Yii::app()->cache->delete("pdf_" . $this->veranstaltung0->id . "_" . $this->id);
+
 		return parent::save($runValidation, $attributes);
 	}
 

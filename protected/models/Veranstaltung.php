@@ -203,4 +203,10 @@ class Veranstaltung extends BaseVeranstaltung
 	{
 		return parent::model($className);
 	}
+
+
+	public function save($runValidation = true, $attributes = null) {
+		Yii::app()->cache->delete("pdf_" . $this->id);
+		return parent::save($runValidation, $attributes);
+	}
 }

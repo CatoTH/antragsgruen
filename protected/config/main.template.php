@@ -51,6 +51,9 @@ return array(
 			'allowAutoLogin' => true,
 			'loginUrl'       => array('site/login'),
 		),
+		'cache'=>array(
+			'class'=>'system.caching.CFileCache',
+		),
 		'urlManager'     => array(
 			'urlFormat'      => 'path',
 			'showScriptName' => false,
