@@ -92,7 +92,7 @@ class Antrag extends BaseAntrag
 				}
 			}
 		}
-		return $erste_zeile;
+		return $erste_zeile + 1; // wg. eigener Zeile für Überschrift
 	}
 
 
@@ -229,7 +229,7 @@ class Antrag extends BaseAntrag
 		HtmlBBcodeUtils::initZeilenCounter();
 		list($anzahl_absaetze, $anzahl_zeilen) = HtmlBBcodeUtils::getBBCodeStats(trim($this->text));
 		$this->cache_anzahl_absaetze = $anzahl_absaetze;
-		$this->cache_anzahl_zeilen = $anzahl_zeilen;
+		$this->cache_anzahl_zeilen = $anzahl_zeilen + 1; // + Überschrift
 
 		Yii::app()->cache->delete("pdf_" . $this->veranstaltung0->id);
 		Yii::app()->cache->delete("pdf_" . $this->veranstaltung0->id . "_" . $this->id);

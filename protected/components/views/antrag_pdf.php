@@ -51,19 +51,26 @@ $pdf->SetLineStyle(array(
 ));
 $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
-$pdf->SetXY(25, 90);
+$pdf->SetXY(24, 90);
 $pdf->SetFont("helvetica", "B", 12);
 $pdf->MultiCell(160, 13, $antrag->veranstaltung0->antrag_einleitung);
 
-$pdf->SetXY(25, 110);
+$pdf->SetXY(12, 110);
 
 $pdf->SetFont("helvetica", "B", 12);
+$pdf->MultiCell(12, 0, "", 0, "L", false, 0);
 $pdf->MultiCell(50, 0, $sprache->get("AntragsstellerIn") . ":", 0, "L", false, 0);
 $pdf->SetFont("helvetica", "", 12);
 $pdf->MultiCell(150, 0, $initiator->name, 0, "L");
 
 $pdf->SetFont("helvetica", "B", 8);
 $pdf->Ln();
+
+$linenr = $antrag->getFirstLineNo();
+
+$pdf->SetX(12);
+$pdf->SetFont("Courier", "", 10);
+$pdf->MultiCell(12, 0, $linenr - 1, 0, "L", false, 0);
 
 $pdf->SetFont("helvetica", "B", 12);
 $pdf->MultiCell(50, 0, "Gegenstand:", 0, "L", false, 0);
@@ -80,9 +87,6 @@ $pdf->SetFont("helvetica", "", 12);
 $pdf->writeHTML("<h3>" . $sprache->get("Antragstext") . "</h3>");
 $pdf->SetFont("Courier", "", 10);
 $pdf->Ln(8);
-
-
-$linenr = $antrag->getFirstLineNo();
 
 
 foreach ($absae as $i => $abs) {
