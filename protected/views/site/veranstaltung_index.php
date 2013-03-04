@@ -55,7 +55,8 @@ include(__DIR__ . "/sidebar.php");
 </div>
 <?php
 foreach ($antraege as $name=> $antrs) {
-	echo "<h3>" . CHtml::encode($name) . "</h3>";
+	if ($veranstaltung->yii_url == "ltwby13-programm") echo "<h3>Antrag des Parteirats mit dem Landesvorstand</h3>";
+	else echo "<h3>" . CHtml::encode($name) . "</h3>";
 	echo "<ul>";
 	foreach ($antrs as $antrag) {
 		/** @var Antrag $antrag */
