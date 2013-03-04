@@ -52,7 +52,7 @@ abstract class BaseAntrag extends IAntrag {
 
 	public function rules() {
 		return array(
-			array('veranstaltung, name, revision_name, datum_einreichung', 'required'),
+			array('veranstaltung, name, revision_name, datum_einreichung, status', 'required'),
 			array('veranstaltung, abgeleitet_von, typ, status', 'numerical', 'integerOnly'=>true),
 			array('revision_name', 'length', 'max'=>50),
 			array('datum_beschluss', 'length', 'max'=>45),
