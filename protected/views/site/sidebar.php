@@ -13,13 +13,12 @@
  */
 
 
-
 $html = "<form class='form-search well hidden-phone' action='" . $this->createUrl("site/suche") . "' method='GET'><input type='hidden' name='id' value='" . $veranstaltung->id . "'><div class='nav-list'><div class='nav-header'>" . $sprache->get("Suche") . "</div>";
 $html .= "<div style='text-align: center;'>  <div class='input-append'><input class='search-query' type='search' name='suchbegriff' value='' autofocus placeholder='Suchbegriff...'><button type='submit' class='btn'><i style='height: 18px;' class='icon-search'></i></button></div></div>";
 $html .= "</div></form>";
 $this->menus_html[] = $html;
 
-if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) {
+if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 	$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Neue Anträge") . "</li>";
 	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
 	else foreach ($neueste_antraege as $ant) {
@@ -63,23 +62,32 @@ if ($veranstaltung->typ == Veranstaltung::$TYP_PROGRAMM) {
 	}
 }
 
-$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Neue Kommentare</li>";
-if (count($neueste_kommentare) == 0) $html .= "<li><i>keine</i></li>";
-else foreach ($neueste_kommentare as $komm) {
-	$html .= "<li class='komm'>";
-	$html .= "<strong>" . CHtml::encode($komm->verfasser->name) . "</strong>, " . HtmlBBcodeUtils::formatMysqlDateTime($komm->datum);
-	$html .= "<div>Zu " . CHtml::link(CHtml::encode($komm->antrag->name), $this->createUrl("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id))) . "</div>";
-	$html .= "</li>\n";
+if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
+	$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Neue Kommentare</li>";
+	if (count($neueste_kommentare) == 0) $html .= "<li><i>keine</i></li>";
+	else foreach ($neueste_kommentare as $komm) {
+		$html .= "<li class='komm'>";
+		$html .= "<strong>" . CHtml::encode($komm->verfasser->name) . "</strong>, " . HtmlBBcodeUtils::formatMysqlDateTime($komm->datum);
+		$html .= "<div>Zu " . CHtml::link(CHtml::encode($komm->antrag->name), $this->createUrl("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id))) . "</div>";
+		$html .= "</li>\n";
+	}
+	$html .= "</ul></div>";
+	$this->menus_html[] = $html;
 }
-$html .= "</ul></div>";
-$this->menus_html[] = $html;
 
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Feeds</li>";
 
-if ($veranstaltung->typ != Veranstaltung::$TYP_PROGRAMM) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("site/feedAntraege")) . "</li>";
+if (!in_array($veranstaltung->policy_antraege, array("Admins"))) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("site/feedAntraege")) . "</li>";
 $html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("site/feedAenderungsantraege")) . "</li>";
-$html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("site/feedKommentare")) . "</li>";
+if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("site/feedKommentare")) . "</li>";
 $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("site/feedAlles")) . "</li>";
 $html .= "</ul></div>";
+
+$this->menus_html[] = $html;
+
+$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
+$html .= "<li class='pdf'>" . CHtml::link($sprache->get("Alle PDFs zusammen"), $this->createUrl("site/pdfs")) . "</li>";
+$html .= "</ul></div>";
+
 
 $this->menus_html[] = $html;

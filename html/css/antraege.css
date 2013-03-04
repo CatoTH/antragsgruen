@@ -871,6 +871,16 @@ form {
 	width: 20px;
 	margin-left: -20px;
 }
+.span3 .neue-kommentare .pdf:before {
+	content: '\e4a4';
+	color: #A2BC04;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
+	margin-left: -20px;
+}
 
 .span3 .well .nav-list > li a,
 .span3 .well .nav-list > li a:hover,
