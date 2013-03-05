@@ -19,7 +19,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	static public function getPolicyName()
 	{
-		return "Organisation, Delegierte, oder 15 Mitglieder";
+		return "Organisation, Delegierte, oder 20 Mitglieder";
 	}
 
 
@@ -45,7 +45,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	public function getAntragstellerInView()
 	{
-		return "antragstellerin_delegiert_orga_15";
+		return "antragstellerin_delegiert_orga_20";
 	}
 
 
@@ -69,7 +69,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 				return true;
 				break;
 			case "mitglied":
-				if (!isset($_REQUEST["UnterstuetzerInnen"]) || count($_REQUEST["UnterstuetzerInnen"]) < 14) return false;
+				if (!isset($_REQUEST["UnterstuetzerInnen"]) || count($_REQUEST["UnterstuetzerInnen"]) < 19) return false;
 				$incorrect = false;
 				foreach ($_REQUEST["UnterstuetzerInnen"] as $unters) if (!$this->isValidName($unters)) $incorrect = true;
 				return !$incorrect;
@@ -172,6 +172,6 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	public function getOnCreateDescription()
 	{
-		return "Mindestens 15 UnterstützerInnen (oder min. eine Organisation)";
+		return "Mindestens 20 UnterstützerInnen (oder min. eine Organisation)";
 	}
 }

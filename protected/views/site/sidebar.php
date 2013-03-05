@@ -85,8 +85,9 @@ $html .= "</ul></div>";
 
 $this->menus_html[] = $html;
 
+$name = ($veranstaltung->yii_url == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
-$html .= "<li class='pdf'>" . CHtml::link($sprache->get("Alle PDFs zusammen"), $this->createUrl("site/pdfs")) . "</li>";
+$html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("site/pdfs")) . "</li>";
 $html .= "</ul></div>";
 
 

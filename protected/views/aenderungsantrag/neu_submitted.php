@@ -12,6 +12,7 @@ $this->breadcrumbs = array(
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 $ver = $aenderungsantrag->antrag->veranstaltung0;
+$this->pageTitle = $sprache->get("Änderungseintrag eingereicht");
 ?>
 
 <h1><?php echo $sprache->get("Änderungseintrag eingereicht")?></h1>

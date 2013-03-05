@@ -19,6 +19,7 @@ $this->breadcrumbs = array(
 	$sprache->get('Änderungsantrag bestätigen'),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+$this->pageTitle = $sprache->get("Änderungseintrag bestätigen");
 ?>
 
 <h1 class="well"><?php echo $sprache->get("Änderungsantrag"); ?> zu <?php echo CHtml::encode($antrag->name); ?></h1>

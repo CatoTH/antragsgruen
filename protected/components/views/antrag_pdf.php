@@ -4,7 +4,8 @@
  * @var Antrag $antrag
  * @var TCPDF $pdf
  * @var Sprache $sprache
- * @var Person $initiator
+ * @var string $initiator
+ * @var bool $header
  */
 
 $absae = $antrag->getParagraphs();
@@ -15,76 +16,105 @@ $pdf->SetFont('dejavusans', '', 10);
 // add a page
 $pdf->AddPage();
 
-$logo = Yii::app()->params['pdf_logo'];
-if (file_exists($logo)) {
-	$pdf->setJPEGQuality(100);
-	$pdf->Image($logo, 22, 32, 47, 26);
-}
-
-$pdf->SetXY(155, 37, true);
-
-if (!$antrag->veranstaltung0->revision_name_verstecken) {
-
-	if ($antrag->revision_name == "") {
-		$name = "Entwurf";
-		$pdf->SetFont("helvetica", "I", "25");
-	} else {
-		$name = $antrag->revision_name;
-		$pdf->SetFont("helvetica", "B", "25");
-	}
-	$pdf->MultiCell(37, 21, $name,
-		array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
-		false, 1, "", "", true, 0, false, true, 21, // defaults
-		"M"
-	);
-}
-
-$str = Antrag::$TYPEN[$antrag->typ];
-$pdf->SetFont("helvetica", "B", "25");
-$width = $pdf->GetStringWidth($str);
-
-$pdf->SetXY((210 - $width) / 2, 60);
-$pdf->Write(20, $str);
-$pdf->SetLineStyle(array(
-	"width" => 3,
-	'color' => array(150, 150, 150),
-));
-$pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
-
-$pdf->SetXY(24, 90);
-$pdf->SetFont("helvetica", "B", 12);
-$pdf->MultiCell(160, 13, $antrag->veranstaltung0->antrag_einleitung);
-
-$pdf->SetXY(12, 110);
-
-$pdf->SetFont("helvetica", "B", 12);
-$pdf->MultiCell(12, 0, "", 0, "L", false, 0);
-$pdf->MultiCell(50, 0, $sprache->get("AntragsstellerIn") . ":", 0, "L", false, 0);
-$pdf->SetFont("helvetica", "", 12);
-$pdf->MultiCell(150, 0, $initiator->name, 0, "L");
-
-$pdf->SetFont("helvetica", "B", 8);
-$pdf->Ln();
-
 $linenr = $antrag->getFirstLineNo();
+
+
+if ($antrag->veranstaltung0->yii_url == "ltwby13-programm") {
+	$logo      = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
+	$initiator = "Parteirat und Landesvorstand";
+	$gegenstand = "Landtagswahlprogramm";
+	$ueberschrift = CHtml::encode($antrag->name);
+} else {
+	$logo = Yii::app()->params['pdf_logo'];
+	$gegenstand = $antrag->name;
+	$ueberschrift = $sprache->get("Antragstext");
+}
+
+if ($header) {
+
+	if (file_exists($logo)) {
+		$pdf->setJPEGQuality(100);
+		$pdf->Image($logo, 22, 32, 47, 26);
+	}
+
+	$pdf->SetXY(155, 37, true);
+
+	if (!$antrag->veranstaltung0->revision_name_verstecken) {
+
+		if ($antrag->revision_name == "") {
+			$name = "Entwurf";
+			$pdf->SetFont("helvetica", "I", "25");
+		} else {
+			$name = $antrag->revision_name;
+			$pdf->SetFont("helvetica", "B", "25");
+		}
+		$pdf->MultiCell(37, 21, $name,
+			array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
+			false, 1, "", "", true, 0, false, true, 21, // defaults
+			"M"
+		);
+	} elseif ($antrag->veranstaltung0->yii_url == "ltwby13-programm") {
+		$name = "P1";
+		$pdf->SetFont("helvetica", "B", "25");
+		$pdf->MultiCell(37, 21, $name,
+			array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
+			false, 1, "", "", true, 0, false, true, 21, // defaults
+			"M"
+		);
+	}
+
+	$str = Antrag::$TYPEN[$antrag->typ];
+	$pdf->SetFont("helvetica", "B", "25");
+	$width = $pdf->GetStringWidth($str);
+
+	$pdf->SetXY((210 - $width) / 2, 60);
+	$pdf->Write(20, $str);
+	$pdf->SetLineStyle(array(
+		"width" => 3,
+		'color' => array(150, 150, 150),
+	));
+	$pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
+
+	$pdf->SetXY(24, 90);
+	$pdf->SetFont("helvetica", "B", 12);
+	$pdf->MultiCell(160, 13, $antrag->veranstaltung0->antrag_einleitung);
+
+	$pdf->SetXY(12, 110);
+
+	$pdf->SetFont("helvetica", "B", 12);
+	$pdf->MultiCell(12, 0, "", 0, "L", false, 0);
+	$pdf->MultiCell(50, 0, $sprache->get("AntragsstellerIn") . ":", 0, "L", false, 0);
+	$pdf->SetFont("helvetica", "", 12);
+	$pdf->MultiCell(150, 0, $initiator, 0, "L");
+
+	$pdf->SetFont("helvetica", "B", 8);
+	$pdf->Ln();
+
+	$pdf->SetX(12);
+
+	$pdf->SetFont("helvetica", "B", 12);
+	$pdf->MultiCell(12, 0, "", 0, "L", false, 0);
+	$pdf->MultiCell(50, 0, "Gegenstand:", 0, "L", false, 0);
+	$pdf->SetFont("helvetica", "B", 12);
+	$pdf->MultiCell(100, 0, $gegenstand,
+		array('B' => array('width' => 0.3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))),
+		"L"
+	);
+
+	$pdf->Ln();
+
+}
+
 
 $pdf->SetX(12);
 $pdf->SetFont("Courier", "", 10);
 $pdf->MultiCell(12, 0, $linenr - 1, 0, "L", false, 0);
 
-$pdf->SetFont("helvetica", "B", 12);
-$pdf->MultiCell(50, 0, "Gegenstand:", 0, "L", false, 0);
-$pdf->SetFont("helvetica", "B", 12);
-$pdf->MultiCell(100, 0, $antrag->name,
-	array('B' => array('width' => 0.3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))),
-	"L"
-);
-
-$pdf->Ln();
 
 $pdf->SetFont("helvetica", "", 12);
+$pdf->writeHTML("<h3>" . $ueberschrift . "</h3>");
 
-$pdf->writeHTML("<h3>" . $sprache->get("Antragstext") . "</h3>");
+
 $pdf->SetFont("Courier", "", 10);
 $pdf->Ln(8);
 

@@ -10,7 +10,7 @@ $absae = $model->getParagraphs();
 
 
 // create new PDF document
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = new AntragsgruenPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $initiator = null;
 $unterstuetzer = array();
@@ -38,7 +38,7 @@ $pdf->SetSubject($sprache->get("Antrag") . " " . $model->nameMitRev());
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 $pdf->setPrintHeader(false);
-$pdf->setPrintFooter(false);
+$pdf->setPrintFooter(true);
 
 //set margins
 $pdf->SetMargins(25, 40, 25);
@@ -57,7 +57,7 @@ $this->widget("AntragPDFWidget", array(
 	"sprache" => $sprache,
 	"antrag" => $model,
 	"pdf" => $pdf,
-	"initiator" => $initiator
+	"initiator" => $initiator->name
 ));
 
 

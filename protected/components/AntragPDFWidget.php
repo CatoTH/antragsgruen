@@ -11,8 +11,11 @@ class AntragPDFWidget extends CWidget
 	/** @var Sprache */
 	public $sprache;
 
-	/** @var Person */
+	/** @var string */
 	public $initiator;
+
+	/** @var bool */
+	public $header = true;
 
 	public function run()
 	{
@@ -20,7 +23,8 @@ class AntragPDFWidget extends CWidget
 			"pdf" => $this->pdf,
 			"sprache" => $this->sprache,
 			"antrag" => $this->antrag,
-			"initiator" => $this->initiator
+			"initiator" => $this->initiator,
+			"header" => $this->header
 		));
 	}
 }
