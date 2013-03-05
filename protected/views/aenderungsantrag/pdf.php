@@ -61,7 +61,13 @@ $pdf->SetFont('dejavusans', '', 10);
 // add a page
 $pdf->AddPage();
 
-$logo = Yii::app()->params['pdf_logo'];
+
+if ($model->antrag->veranstaltung0->yii_url == "ltwby13-programm") {
+	$logo      = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
+} else {
+	$logo = Yii::app()->params['pdf_logo'];
+}
+
 if (file_exists($logo)) {
 	$pdf->setJPEGQuality(100);
 	$pdf->Image($logo, 22, 32, 47, 26);
@@ -81,6 +87,19 @@ $pdf->MultiCell(37, 21, $name,
 	false, 1, "", "", true, 0, false, true, 21, // defaults
 	"M"
 );
+
+$str = "Änderungsantrag";
+$pdf->SetFont("helvetica", "B", "25");
+$width = $pdf->GetStringWidth($str);
+
+$pdf->SetXY((210 - $width) / 2, 60);
+$pdf->Write(20, $str);
+$pdf->SetLineStyle(array(
+	"width" => 3,
+	'color' => array(150, 150, 150),
+));
+$pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
+
 
 $pdf->SetXY(25, 90);
 $pdf->SetFont("helvetica", "B", 12);
@@ -143,13 +162,13 @@ foreach ($absae as $i=>$abs) {
 	$pdf->writeHTMLCell(10, '', 12, $y, $text2, 0, 0, 0, true, '', true);
 	$pdf->writeHTMLCell(170, '',24, '', $text, 0, 1, 0, true, '', true);
 
-	$pdf->Ln(8);
+	$pdf->Ln(4);
 
 }
 
 $html = '
 	</div>
-	<h3>Begründung</h3>
+	<h3 style="margin-top: 0;">Begründung</h3>
 	<div class="textholder consolidated">
 		' . HtmlBBcodeUtils::bbcode2html($model->aenderung_begruendung) . '
 	</div>

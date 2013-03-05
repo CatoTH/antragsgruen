@@ -95,6 +95,7 @@ return array(
 				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aendern'                                                  => 'antrag/aendern',
 				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>'               => 'aenderungsantrag/anzeige',
 				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/neuConfirm'    => 'aenderungsantrag/neuConfirm',
+				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/pdf'           => 'aenderungsantrag/pdf',
 				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/neu'                                     => 'aenderungsantrag/neu',
 				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/ajaxCalcDiff'                            => 'aenderungsantrag/ajaxCalcDiff',
 				*/
@@ -127,6 +128,7 @@ return array(
 				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aendern'                                                  => 'antrag/aendern',
 				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>'               => 'aenderungsantrag/anzeige',
 				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/neuConfirm'    => 'aenderungsantrag/neuConfirm',
+				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/pdf'           => 'aenderungsantrag/pdf',
 				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/neu'                                     => 'aenderungsantrag/neu',
 				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/ajaxCalcDiff'                            => 'aenderungsantrag/ajaxCalcDiff',
 			),
