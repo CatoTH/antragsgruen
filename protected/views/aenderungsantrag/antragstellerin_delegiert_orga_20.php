@@ -21,7 +21,7 @@ if ($mode == "neu") {
 
 		<?php echo $form->textFieldRow($antragstellerin, 'name'); ?>
 
-		<?php echo $form->textFieldRow($antragstellerin, 'email'); ?>
+		<?php echo $form->textFieldRow($antragstellerin, 'email', array("required" => true)); ?>
 
 		<?php echo $form->textFieldRow($antragstellerin, 'telefon'); ?>
 

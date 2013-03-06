@@ -123,14 +123,13 @@ $pdf->MultiCell(100, 0, $model->antrag->name,
 	"L"
 );
 
+/*
 $pdf->Ln();
-
 $pdf->SetFont("helvetica", "", 12);
-
 $pdf->writeHTML("<h3>Antrag</h3>");
-$pdf->SetFont("Courier", "", 10);
+*/
 $pdf->Ln(8);
-
+$pdf->SetFont("Courier", "", 10);
 
 $linenr = 1;
 
