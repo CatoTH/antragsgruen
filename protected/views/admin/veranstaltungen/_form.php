@@ -164,24 +164,39 @@ $form = $this->beginWidget('GxActiveForm', array(
 <br>
 <!-- row -->
 <div>
-	<?php echo $form->labelEx($model, 'policy_antraege'); ?>
+	<label class="required" for="Veranstaltung_policy_antraege" style="padding-top: 10px;">
+		Anträge stellen dürfen:
+		<span class="required"></span>
+	</label>
 	<?php echo $form->dropDownList($model, 'policy_antraege', IPolicyAntraege::getAllInstances()); ?>
 	<?php echo $form->error($model, 'policy_antraege'); ?>
 </div>
-<div>
+<div style="margin-top: 10px;">
 	<?php echo $form->labelEx($model, 'freischaltung_antraege'); ?>
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_antraege]" value="0" <?php if ($model->freischaltung_antraege != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_antraege]" value="1" <?php if ($model->freischaltung_antraege == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 </div>
+
+	<div>
+		<label class="required" for="Veranstaltung_policy_unterstuetzen" style="padding-top: 10px;">
+			(Änderungs-)Anträge unterstützen dürfen:
+			<span class="required"></span>
+		</label>
+		<?php echo $form->dropDownList($model, 'policy_unterstuetzen', IPolicyUnterstuetzen::getAllInstances()); ?>
+		<?php echo $form->error($model, 'policy_unterstuetzen'); ?>
+	</div>
 <br>
 <h2>Änderungsanträge</h2>
 <br>
 <div>
-	<?php echo $form->labelEx($model, 'policy_aenderungsantraege'); ?>
+	<label class="required" for="Veranstaltung_policy_aenderungsantraege" style="padding-top: 10px;">
+		Änderungsanträge stellen dürfen:
+		<span class="required"></span>
+	</label>
 	<?php echo $form->dropDownList($model, 'policy_aenderungsantraege', IPolicyAntraege::getAllInstances()); ?>
 	<?php echo $form->error($model, 'policy_aenderungsantraege'); ?>
 </div>
-<div>
+<div style="margin-top: 10px;">
 	<?php echo $form->labelEx($model, 'freischaltung_aenderungsantraege'); ?>
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_aenderungsantraege]" value="0" <?php if ($model->freischaltung_aenderungsantraege != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_aenderungsantraege]" value="1" <?php if ($model->freischaltung_aenderungsantraege == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
@@ -191,11 +206,14 @@ $form = $this->beginWidget('GxActiveForm', array(
 <h2>Kommentare</h2>
 <br>
 <div>
-	<?php echo $form->labelEx($model, 'policy_kommentare'); ?>
+	<label class="required" for="Veranstaltung_policy_kommentare" style="padding-top: 10px;">
+		Kommentieren dürfen:
+		<span class="required"></span>
+	</label>
 	<?php echo $form->dropDownList($model, 'policy_kommentare', Veranstaltung::$POLICIES); ?>
 	<?php echo $form->error($model, 'policy_kommentare'); ?>
 </div>
-<div>
+<div style="margin-top: 10px;">
 	<?php echo $form->labelEx($model, 'freischaltung_kommentare'); ?>
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="0" <?php if ($model->freischaltung_kommentare != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
 	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="1" <?php if ($model->freischaltung_kommentare == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;

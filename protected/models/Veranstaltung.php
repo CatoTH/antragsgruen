@@ -9,6 +9,9 @@ class Veranstaltung extends BaseVeranstaltung
 	private $policy_antraege_obj = null;
 	private $policy_aenderungsantraege_obj = null;
 
+	/** @var null|IPolicyUnterstuetzen */
+	private $policy_unterstuetzen_obj = null;
+
 	public static $POLICY_NUR_ADMINS = 0;
 	public static $POLICY_PARTEIMITGLIEDER = 1;
 	public static $POLICY_REGISTRIERTE = 2;
@@ -42,6 +45,12 @@ class Veranstaltung extends BaseVeranstaltung
 	public function getPolicyAenderungsantraege() {
 		if (is_null($this->policy_aenderungsantraege_obj)) $this->policy_aenderungsantraege_obj = IPolicyAntraege::getInstanceByID($this->policy_aenderungsantraege, $this);
 		return $this->policy_aenderungsantraege_obj;
+	}
+
+	/** @return IPolicyUnterstuetzen */
+	public function getPolicyUnterstuetzen() {
+		if (is_null($this->policy_unterstuetzen_obj)) $this->policy_unterstuetzen_obj = IPolicyUnterstuetzen::getInstanceByID($this->policy_unterstuetzen, $this);
+		return $this->policy_unterstuetzen_obj;
 	}
 
 	/**

@@ -11,6 +11,7 @@
  * @property string $policy_antraege
  * @property string $policy_aenderungsantraege
  * @property string $policy_kommentare
+ * @property string $policy_unterstuetzen
  * @property string $yii_url
  * @property integer $typ
  * @property string $admin_email
@@ -54,12 +55,12 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name, freischaltung_antraege, yii_url, freischaltung_aenderungsantraege, revision_name_verstecken, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'required'),
+			array('name, freischaltung_antraege, yii_url, freischaltung_aenderungsantraege, revision_name_verstecken, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'required'),
 			array('name, logo_url, fb_logo_url', 'length', 'max' => 200),
 			array('name_kurz, yii_url', 'length', 'max' => 45),
 			array('antragsschluss, antrag_einleitung, admin_email', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, name, yii_url, logo_url, fb_logo_url, freischaltung_antraege, name_kurz, revision_name_verstecken, antrag_einleitung, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'safe', 'on' => 'search'),
+			array('id, name, yii_url, logo_url, fb_logo_url, freischaltung_antraege, name_kurz, revision_name_verstecken, antrag_einleitung, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -92,6 +93,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 			'policy_antraege'                  => Yii::t('app', 'Policy Antraege'),
 			'policy_aenderungsantraege'        => Yii::t('app', 'Policy Aenderungsantraege'),
 			'policy_kommentare'                => Yii::t('app', 'Policy Kommentare'),
+			'policy_unterstuetzen'             => Yii::t('app', 'Policy Unterstützen'),
 			'typ'                              => Yii::t('app', 'Typ'),
 			'admin_email'                      => Yii::t('app', 'E-Mail des Admins'),
 			'freischaltung_antraege'           => Yii::t('app', 'Freischaltung von Anträgen'),
@@ -124,6 +126,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 		$criteria->compare('policy_antraege', $this->policy_antraege);
 		$criteria->compare('policy_aenderungsantraege', $this->policy_aenderungsantraege);
 		$criteria->compare('policy_kommentare', $this->policy_kommentare);
+		$criteria->compare('policy_unterstuetzen', $this->policy_unterstuetzen);
 		$criteria->compare('typ', $this->typ);
 
 		return new CActiveDataProvider($this, array(

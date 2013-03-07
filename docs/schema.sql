@@ -16,6 +16,7 @@ CREATE  TABLE IF NOT EXISTS `veranstaltung` (
   `policy_antraege` VARCHAR(20) NULL ,
   `policy_aenderungsantraege` VARCHAR(20) NULL ,
   `policy_kommentare` VARCHAR(20) NULL ,
+  `policy_unterstuetzen` VARCHAR(20) NULL ,
   `typ` TINYINT NULL ,
   `yii_url` VARCHAR(45) NULL ,
   `admin_email` VARCHAR(150) NULL ,

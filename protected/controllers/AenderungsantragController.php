@@ -79,7 +79,7 @@ class AenderungsantragController extends AntragsgruenController
 			}
 		}
 
-		if (AntiXSS::isTokenSet("mag") && !Yii::app()->user->isGuest) {
+		if (AntiXSS::isTokenSet("mag")  && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
 			$unt                      = new AenderungsantragUnterstuetzer();
@@ -92,7 +92,7 @@ class AenderungsantragController extends AntragsgruenController
 			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
 
-		if (AntiXSS::isTokenSet("magnicht") && !Yii::app()->user->isGuest) {
+		if (AntiXSS::isTokenSet("magnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
 			$unt                      = new AenderungsantragUnterstuetzer();
@@ -106,7 +106,7 @@ class AenderungsantragController extends AntragsgruenController
 			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
 		}
 
-		if (AntiXSS::isTokenSet("dochnicht") && !Yii::app()->user->isGuest) {
+		if (AntiXSS::isTokenSet("dochnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
 			Yii::app()->user->setFlash("success", "Du stehst diesem Änderungsantrag wieder neutral gegenüber.");
@@ -204,7 +204,6 @@ class AenderungsantragController extends AntragsgruenController
 			"komm_del_link"      => $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id, AntiXSS::createToken("komm_del") => "#komm_id#")),
 			"hiddens"            => $hiddens,
 			"js_protection"      => $js_protection,
-			"support_form"       => !Yii::app()->user->isGuest,
 			"support_status"     => $support_status,
 			"sprache"            => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 		));

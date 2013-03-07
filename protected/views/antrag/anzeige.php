@@ -15,7 +15,6 @@
  * @var string $komm_del_link
  * @var string|null $admin_edit
  * @var Person $kommentar_person
- * @var bool $support_form
  * @var string $support_status
  * @var Sprache $sprache
  */
@@ -304,6 +303,15 @@ foreach ($absae as $i => $abs) {
 
 <? } ?>
 
+<?php
+$eintraege = (count($unterstuetzerinnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
+$unterstuetzen_policy = $antrag->veranstaltung0->getPolicyUnterstuetzen();
+$kann_unterstuetzen = $unterstuetzen_policy->checkCurUserHeuristically();
+$kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
+
+if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
+?>
+
 <div class="well">
 	<h2>UnterstützerInnen</h2>
 
@@ -353,7 +361,7 @@ foreach ($absae as $i => $abs) {
 	</div>
 
 	<?php
-	if ($support_form) {
+	if ($kann_unterstuetzen) {
 		$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 			'type'        => 'inline',
 			'htmlOptions' => array('class' => 'well'),
@@ -387,14 +395,25 @@ foreach ($absae as $i => $abs) {
 		echo "</div>";
 		$this->endWidget();
 	} else {
+		/*
 		Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("site/login")) . '.');
 		$this->widget('bootstrap.widgets.TbAlert', array(
 			'block' => true,
 			'fade'  => true,
 		));
+		*/
+		if ($kann_nicht_unterstuetzen_msg != "") {
+			Yii::app()->user->setFlash('warning', $kann_nicht_unterstuetzen_msg);
+			$this->widget('bootstrap.widgets.TbAlert', array(
+				'block' => true,
+				'fade'  => true,
+			));
+		}
 	} ?>
 </div>
-
+<?php
+}
+?>
 <div class="well">
 	<h2><?=$sprache->get("Änderungsanträge")?></h2>
 
