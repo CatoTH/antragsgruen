@@ -87,15 +87,16 @@ class AenderungsantraegeController extends GxController {
 		$model = $this->loadModel($id, 'Aenderungsantrag');
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
-			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
+			$this->redirect($this->createUrl("admin/aenderungsantraege"));
 		}
 		if ($model->antrag->veranstaltung != $this->veranstaltung->id) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag gehört nicht zu dieser Veranstaltung.");
-			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
+			$this->redirect($this->createUrl("admin/aenderungsantraege"));
 		}
 
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
-            $model->delete();
+            $model->status = IAntrag::$STATUS_GELOESCHT;
+			$model->save();
 
             if (!Yii::app()->getRequest()->getIsAjaxRequest())
                 $this->redirect(array('admin'));

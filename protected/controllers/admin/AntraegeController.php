@@ -48,7 +48,7 @@ class AntraegeController extends GxController
 		$model = Antrag::model()->with("antragUnterstuetzer", "antragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect("/admin/antraege/");
+			$this->redirect($this->createUrl("admin/antraege"));
 		}
 		if ($model->veranstaltung != $this->veranstaltung->id) return;
 
@@ -98,7 +98,8 @@ class AntraegeController extends GxController
 		if ($antrag->veranstaltung != $this->veranstaltung->id) return;
 
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
-			$antrag->delete();
+			$antrag->status = IAntrag::$STATUS_GELOESCHT;
+			$antrag->save();
 
 			if (!Yii::app()->getRequest()->getIsAjaxRequest())
 				$this->redirect(array('admin'));
