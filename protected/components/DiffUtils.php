@@ -159,7 +159,9 @@ class DiffUtils
 		$text = str_replace(chr(13), "", $text);
 		$text = preg_replace("/ {2,}/siu", " ", $text);
 		$text = trim($text);
-		$text = preg_replace_callback("/(\[\/?(?:b|i|u|s|list|ulist|quote))([^a-z])/siu", function($matches) { return mb_strtoupper($matches[1]) . $matches[2]; }, $text);
+		$text = preg_replace_callback("/(\[\/?(?:b|i|u|s|list|ulist|quote))([^a-z])/siu", function ($matches) {
+			return mb_strtoupper($matches[1]) . $matches[2];
+		}, $text);
 		$text = preg_replace("/(\[list[^\]]*\])\\n*\[/siu", "\\1\n[", $text);
 		$text = preg_replace("/\n*\[\*/siu", "\n[*", $text);
 		$text = str_replace("\r", "", $text);
@@ -182,6 +184,10 @@ class DiffUtils
 		return $text;
 	}
 
+
+	public static $ins_mode_active = false;
+	public static $del_mode_active = false;
+
 	/**
 	 * @static
 	 * @param string $text_alt
@@ -193,7 +199,7 @@ class DiffUtils
 		$text_alt = static::bbNormalizeForDiff($text_alt);
 		$text_neu = static::bbNormalizeForDiff($text_neu);
 
-		$diff = DiffUtils::getTextDiff($text_alt, $text_neu);
+		$diff   = DiffUtils::getTextDiff($text_alt, $text_neu);
 		$absatz = DiffUtils::renderAbsatzDiff($diff);
 
 		$diffstr = HtmlBBcodeUtils::bbcode2html($absatz);
@@ -202,6 +208,40 @@ class DiffUtils
 			array("&lt;ins&gt;", "&lt;/ins&gt;", "&lt;del&gt;", "&lt;/del&gt;"),
 			array("<ins>", "</ins>", "<del>", "</del>"),
 			$diffstr);
+
+		static::$ins_mode_active = false;
+		static::$del_mode_active = false;
+		$diffstr                 = preg_replace_callback("/(<li>)(.*)(<\/li>)/siuU", function ($matches) {
+			$pos_del_open  = mb_stripos($matches[2], "<del>");
+			$pos_del_close = mb_stripos($matches[2], "</del>");
+			$pos_ins_open  = mb_stripos($matches[2], "<ins>");
+			$pos_ins_close = mb_stripos($matches[2], "</ins>");
+			$middle        = $matches[2];
+			if ($pos_del_close !== false && ($pos_del_open === false || $pos_del_open > $pos_del_close)) {
+				$middle                  = "<del>" . $middle;
+				static::$del_mode_active = false;
+			}
+			if ($pos_del_open !== false && ($pos_del_close === false || $pos_del_open > $pos_del_close)) {
+				$middle .= "</del>";
+				static::$del_mode_active = true;
+			}
+
+			if ($pos_del_close === false && $pos_del_open === false && static::$del_mode_active) $middle = "<del>$middle</del>";
+
+
+			if ($pos_ins_close !== false && ($pos_ins_open === false || $pos_ins_open > $pos_ins_close)) {
+				$middle                  = "<ins>" . $middle;
+				static::$ins_mode_active = false;
+			}
+			if ($pos_ins_open !== false && ($pos_ins_close === false || $pos_ins_open > $pos_ins_close)) {
+				$middle .= "</ins>";
+				static::$ins_mode_active = true;
+			}
+
+			if ($pos_ins_close === false && $pos_ins_open === false && static::$ins_mode_active) $middle = "<ins>$middle</ins>";
+
+			return $matches[1] . $middle . $matches[3];
+		}, $diffstr);
 
 		if ($diffstr == "") $diffstr = HtmlBBcodeUtils::bbcode2html($text_alt);
 
