@@ -79,9 +79,11 @@ $this->menus_html[] = $html;
 			<tr>
 				<th><?=$sprache->get("AntragsstellerIn")?>:</th>
 				<td><?php
+					$x = array();
 					foreach ($antragstellerinnen as $a) {
-						echo CHtml::encode($a->name);
+						$x[] = CHtml::encode($a->name);
 					}
+					echo implode(", ", $x);
 					?></td>
 			</tr>
 			<tr>

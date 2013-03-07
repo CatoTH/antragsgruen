@@ -52,7 +52,7 @@ if ($cached !== false) {
 //$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 //set auto page breaks
-	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM - 5);
 
 //set image scale factor
 	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -62,19 +62,19 @@ if ($cached !== false) {
 	foreach ($antraege as $antraege2) foreach ($antraege2 as $antrag) {
 		/** @var Antrag $antrag */
 		if (!in_array($antrag->status, IAntrag::$STATI_UNSICHTBAR)) {
-			$initiator     = null;
+			$initiatorinnen     = array();
 			$unterstuetzer = array();
 			foreach ($antrag->antragUnterstuetzer as $unt) {
-				if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $initiator = $unt->unterstuetzer;
+				if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $initiatorinnen[] = $unt->unterstuetzer->name;
 				if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzer[] = $unt->unterstuetzer;
 			}
 
 			$this->widget("AntragPDFWidget", array(
-				"sprache"   => $sprache,
-				"antrag"    => $antrag,
-				"pdf"       => $pdf,
-				"initiator" => $initiator->name,
-				"header"    => ($antrag->veranstaltung0->yii_url != "ltwby13-programm" || $first),
+				"sprache"        => $sprache,
+				"antrag"         => $antrag,
+				"pdf"            => $pdf,
+				"initiatorinnen" => implode(", ", $initiatorinnen),
+				"header"         => ($antrag->veranstaltung0->yii_url != "ltwby13-programm" || $first),
 			));
 			$first = false;
 		}

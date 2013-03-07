@@ -4,7 +4,7 @@
  * @var Antrag $antrag
  * @var TCPDF $pdf
  * @var Sprache $sprache
- * @var string $initiator
+ * @var string $initiatorinnen
  * @var bool $header
  */
 
@@ -20,13 +20,13 @@ $linenr = $antrag->getFirstLineNo();
 
 
 if ($antrag->veranstaltung0->yii_url == "ltwby13-programm") {
-	$logo      = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
-	$initiator = "Parteirat und Landesvorstand";
-	$gegenstand = "Landtagswahlprogramm";
-	$ueberschrift = CHtml::encode($antrag->name);
+	$logo           = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
+	$initiatorinnen = "Parteirat und Landesvorstand";
+	$gegenstand     = "Landtagswahlprogramm";
+	$ueberschrift   = CHtml::encode($antrag->name);
 } else {
-	$logo = Yii::app()->params['pdf_logo'];
-	$gegenstand = $antrag->name;
+	$logo         = Yii::app()->params['pdf_logo'];
+	$gegenstand   = $antrag->name;
 	$ueberschrift = $sprache->get("Antragstext");
 }
 
@@ -75,21 +75,22 @@ if ($header) {
 	));
 	$pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
-	$pdf->SetXY(24, 90);
-	$pdf->SetFont("helvetica", "B", 12);
-	$pdf->MultiCell(160, 13, $antrag->veranstaltung0->antrag_einleitung);
+	$pdf->SetY(90);
+	if ($antrag->veranstaltung0->antrag_einleitung != "") {
+		$pdf->SetX(24);
+		$pdf->SetFont("helvetica", "B", 12);
+		$pdf->MultiCell(160, 13, $antrag->veranstaltung0->antrag_einleitung);
+	}
 
-	$pdf->SetXY(12, 110);
+	$pdf->SetX(12);
 
 	$pdf->SetFont("helvetica", "B", 12);
 	$pdf->MultiCell(12, 0, "", 0, "L", false, 0);
 	$pdf->MultiCell(50, 0, $sprache->get("AntragsstellerIn") . ":", 0, "L", false, 0);
 	$pdf->SetFont("helvetica", "", 12);
-	$pdf->MultiCell(150, 0, $initiator, 0, "L");
+	$pdf->MultiCell(120, 0, $initiatorinnen, 0, "L");
 
-	$pdf->SetFont("helvetica", "B", 8);
 	$pdf->Ln();
-
 	$pdf->SetX(12);
 
 	$pdf->SetFont("helvetica", "B", 12);
@@ -116,7 +117,7 @@ $pdf->writeHTML("<h3>" . $ueberschrift . "</h3>");
 
 
 $pdf->SetFont("Courier", "", 10);
-$pdf->Ln(8);
+$pdf->Ln(7);
 
 
 foreach ($absae as $i => $abs) {
@@ -147,7 +148,7 @@ foreach ($absae as $i => $abs) {
 	$pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
 	$pdf->writeHTMLCell(170, '', 24, '', $text, 0, 1, 0, true, '', true);
 
-	$pdf->Ln(8);
+	$pdf->Ln(7);
 
 }
 

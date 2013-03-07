@@ -48,7 +48,7 @@ $pdf->SetMargins(25, 40, 25);
 //$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 //set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM - 5);
 
 //set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -100,17 +100,20 @@ $pdf->SetLineStyle(array(
 ));
 $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
+$pdf->SetY(90);
 
-$pdf->SetXY(25, 90);
-$pdf->SetFont("helvetica", "B", 12);
-$pdf->MultiCell(160, 13, $model->antrag->veranstaltung0->antrag_einleitung);
+if ($model->antrag->veranstaltung0->antrag_einleitung != "") {
+	$pdf->SetX(25);
+	$pdf->SetFont("helvetica", "B", 12);
+	$pdf->MultiCell(160, 13, $model->antrag->veranstaltung0->antrag_einleitung);
+}
 
-$pdf->SetXY(25, 110);
+$pdf->SetX(25);
 
 $pdf->SetFont("helvetica", "B", 12);
 $pdf->MultiCell(50, 0, "AntragsstellerIn:", 0, "L", false, 0);
 $pdf->SetFont("helvetica", "", 12);
-$pdf->MultiCell(150, 0, implode(", ", $initiatorinnen_namen), 0, "L");
+$pdf->MultiCell(120, 0, implode(", ", $initiatorinnen_namen), 0, "L");
 
 $pdf->SetFont("helvetica", "B", 8);
 $pdf->Ln();

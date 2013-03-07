@@ -12,16 +12,18 @@ $absae = $model->getParagraphs();
 // create new PDF document
 $pdf = new AntragsgruenPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-$initiator = null;
+/** @var array|string[] $initiatorinnen  */
+$initiatorinnen = array();
+
 $unterstuetzer = array();
 foreach ($model->antragUnterstuetzer as $unt) {
-	if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $initiator = $unt->unterstuetzer;
+	if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $initiatorinnen[] = $unt->unterstuetzer->name;
 	if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzer[] = $unt->unterstuetzer;
 }
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
-if ($initiator) $pdf->SetAuthor($initiator->name);
+$pdf->SetAuthor(implode(", ", $initiatorinnen));
 $pdf->SetTitle($sprache->get("Antrag") . " " . $model->nameMitRev());
 $pdf->SetSubject($sprache->get("Antrag") . " " . $model->nameMitRev());
 //$pdf->SetSubject($model->name);
@@ -46,7 +48,7 @@ $pdf->SetMargins(25, 40, 25);
 //$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 //set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM - 5);
 
 //set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -57,7 +59,7 @@ $this->widget("AntragPDFWidget", array(
 	"sprache" => $sprache,
 	"antrag" => $model,
 	"pdf" => $pdf,
-	"initiator" => $initiator->name
+	"initiatorinnen" => implode(", ", $initiatorinnen)
 ));
 
 
