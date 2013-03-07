@@ -239,10 +239,11 @@ $rows = 10;
 	<?php
 	$abs_alt = $aenderungsantrag->antrag->getParagraphs();
 	$abs_neu = json_decode($aenderungsantrag->text_neu);
+
 	foreach ($abs_alt as $i=> $abs) {
 		echo "<div class='row-fluid'>";
 		/** @var AntragAbsatz $abs */
-		if ($abs_neu[$i] != "") {
+		if (isset($abs_neu[$i]) && $abs_neu[$i] != "") {
 			echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i]);
 		} else echo HtmlBBcodeUtils::wrapWithTextClass(HtmlBBcodeUtils::bbcode2html($abs->str_bbcode));
 		echo "</div>\n";
