@@ -49,7 +49,8 @@ if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 $html = "<div class='well'><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
 if (count($neueste_aenderungsantraege) == 0) $html .= "<li><i>keine</i></li>";
 else foreach ($neueste_aenderungsantraege as $ant) {
-	$html .= "<li class='aeantrag'>" . CHtml::link("<strong>" . CHtml::encode($ant["revision_name"]) . "</strong> zu " . CHtml::encode($ant->antrag->revision_name), $this->createUrl("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $ant->id, "antrag_id" => $ant->antrag->id))) . "</li>\n";
+	$zu_str = ($veranstaltung->revision_name_verstecken ? CHtml::encode($ant->antrag->name) : CHtml::encode($ant->antrag->revision_name));
+	$html .= "<li class='aeantrag'>" . CHtml::link("<strong>" . CHtml::encode($ant["revision_name"]) . "</strong> zu " . $zu_str, $this->createUrl("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $ant->id, "antrag_id" => $ant->antrag->id))) . "</li>\n";
 }
 $html .= "</ul></div>";
 $this->menus_html[] = $html;
