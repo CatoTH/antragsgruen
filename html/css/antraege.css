@@ -697,12 +697,24 @@ legend {
 #veranstaltung-form label, #person-form label, #antrag-kommentar-form label, #aenderungsantrag-kommentar-form label, #texte-form label {
 	display: inline-block;
 	width: 220px;
+	vertical-align: top;
+}
+
+#veranstaltung-form input[type=text], #veranstaltung-form select, #veranstaltung-form textarea {
+	margin-bottom: 0;
+	margin-top: 10px;
 }
 
 #antrag-form label, #aenderungsantrag-form label {
 	display: inline-block;;
 	width: 180px;
+	vertical-align: top;
 }
+#antrag-form input[type=text], #antrag-form select, #antrag-form textarea {
+	margin-bottom: 0;
+	margin-top: 10px;
+}
+
 
 .form-actions {
 	background: rgb(246, 246, 246);

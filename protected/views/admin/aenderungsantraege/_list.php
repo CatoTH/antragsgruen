@@ -20,6 +20,12 @@
             if ($data->status_string != "") echo GxHtml::encode($data->status_string);
             ?></td>
     </tr>
+	<tr>
+		<th>AntragstellerIn:</th>
+		<td><?php
+			foreach ($data->aenderungsantragUnterstuetzer as $unt) if ($unt->rolle == AenderungsantragUnterstuetzer::$ROLLE_INITIATOR) echo CHtml::encode($unt->unterstuetzer->name);
+			?></td>
+	</tr>
     <tr>
             <th><?php echo GxHtml::encode($data->getAttributeLabel('aenderung_text')); ?>:</th>
             <td><?php echo HtmlBBcodeUtils::bbcode2html($data->aenderung_text); ?></td>

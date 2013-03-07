@@ -50,7 +50,11 @@ $form = $this->beginWidget('GxActiveForm', array(
 <!-- row -->
 <div>
 	<?php echo $form->labelEx($model, 'revision_name'); ?>
+	<div style="display: inline-block; width: 420px;">
 	<?php echo $form->textField($model, 'revision_name', array('maxlength' => 20)); ?>
+		<br>
+		<small>z.B. "A1", "A1neu", "S1" etc. Muss unbedingt gesetzt und eindeutig sein. Anhand dieser Angabe wird außerdem auf der Startseite sortiert.</small>
+	</div>
 	<?php echo $form->error($model, 'revision_name'); ?>
 </div>
 <!-- row -->
@@ -82,6 +86,12 @@ $form = $this->beginWidget('GxActiveForm', array(
 </div>
 
 <!-- row -->
+
+
+<br><br>
+
+<span style="font-size: 14px; font-weight: bold;">Achtung: Falls schon Änderungsanträge / Kommentare eingereicht wurden, hier weiter unten möglichst gar nichts mehr ändern. Auf keinem Fall Absätze einfügen oder löschen!</span>
+<br><br>
 
 <div>
 	<?php echo $form->labelEx($model, 'text'); ?>
