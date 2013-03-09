@@ -17,21 +17,21 @@ class AntragKommentar extends BaseAntragKommentar
 	 * @param int $limit
 	 * @return array|AntragKommentar[]
 	 */
-	public static function holeNeueste($veranstaltung_id = 0, $limit = 3) {
-		$oCriteria        = new CDbCriteria();
-		$oCriteria->alias = "antrag_kommentar";
-		$oCriteria->addNotInCondition("antrag_kommentar.status", array(IKommentar::$STATUS_GELOESCHT));
-		$oCriteria->with = "antrag";
-		if ($veranstaltung_id > 0) $oCriteria->addCondition("antrag.veranstaltung = " . IntVal($veranstaltung_id));
-		$oCriteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
-		$oCriteria->order   = 'datum DESC';
-		$dataProvider       = new CActiveDataProvider('AntragKommentar', array(
-			'criteria'      => $oCriteria,
-			'pagination'    => array(
-				'pageSize'      => IntVal($limit),
-			),
-		));
-		return $dataProvider->data;
+	public static function holeNeueste($veranstaltung_id = 0, $limit = 0) {
+		$veranstaltungs_where = ($veranstaltung_id > 0 ? "AND c.veranstaltung = " . IntVal($veranstaltung_id) : "");
+		$limit = ($limit > 0 ? "LIMIT 0, " . IntVal($limit) : "");
+		$SQL = "SELECT a.* FROM antrag_kommentar a JOIN antrag c ON c.id = a.antrag_id
+			WHERE a.status != " . IKommentar::$STATUS_GELOESCHT . " AND c.status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")
+			$veranstaltungs_where ORDER BY a.datum DESC $limit";
+
+		$list= Yii::app()->db->createCommand($SQL)->queryAll();
+		$arr = array();
+		foreach ($list as $l) {
+			$x = new AntragKommentar();
+			$x->attributes = $l;
+			$arr[] = $x;
+		}
+		return $arr;
 	}
 
 	/**

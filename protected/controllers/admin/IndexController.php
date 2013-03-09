@@ -4,6 +4,24 @@ class IndexController extends AntragsgruenController
 {
 	public $layout = '//layouts/column1';
 
+	public function actionKommentareexcel($veranstaltung_id = "") {
+		if ($veranstaltung_id == "") $veranstaltung_id = Yii::app()->params['standardVeranstaltung'];
+		$this->loadVeranstaltung($veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) return;
+
+		$kommentare = array();
+
+		$antraege = AntragKommentar::holeNeueste($this->veranstaltung->id);
+		foreach ($antraege as $ant) $kommentare[] = $ant;
+
+		$aenderung = AenderungsantragKommentar::holeNeueste($this->veranstaltung->id);
+		foreach ($aenderung as $ant) $kommentare[] = $ant;
+
+		$this->renderPartial('kommentare_excel', array(
+			"kommentare" => $kommentare
+		));
+	}
+
 	public function actionIndex($veranstaltung_id = "")
 	{
 		if ($veranstaltung_id == "") $veranstaltung_id = Yii::app()->params['standardVeranstaltung'];

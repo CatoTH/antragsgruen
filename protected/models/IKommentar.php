@@ -1,9 +1,13 @@
 <?php
 
 /**
+ * @property integer $id
  * @property integer $verfasser_id
- * @property Person $verfasser
+ * @property integer $absatz
+ * @property string $text
+ * @property string $datum
  * @property integer $status
+ * @property Person $verfasser
  */
 abstract class IKommentar extends GxActiveRecord {
 

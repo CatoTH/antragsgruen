@@ -9,7 +9,7 @@
 		"netzbegruenung"
 	],
 	"minimum-stability": "dev",
-	"homepage": "http://parteitool.netzbegruenung.de/",
+	"homepage": "http://antragsgruen.de/",
 	"autoload": {
 		"psr-0": { "mjohnson\\decoda": "vendor/" }
 	},
@@ -42,6 +42,7 @@
 		"tcpdf/tcpdf": "dev-master",
 		"mjohnson/decoda": "dev-master",
 		"yiisoft/yii": "1.1.13",
-		"chris83/yii-bootstrap": "2.0.3"
+		"chris83/yii-bootstrap": "2.0.3",
+		"CodePlex/PHPExcel": "dev-master"
 	}
 }
