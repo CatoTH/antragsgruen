@@ -11,11 +11,13 @@ class IndexController extends AntragsgruenController
 
 		$kommentare = array();
 
+		$aenderung = AenderungsantragKommentar::holeNeueste($this->veranstaltung->id);
+		foreach ($aenderung as $ant) $kommentare[] = $ant;
+
 		$antraege = AntragKommentar::holeNeueste($this->veranstaltung->id);
 		foreach ($antraege as $ant) $kommentare[] = $ant;
 
-		$aenderung = AenderungsantragKommentar::holeNeueste($this->veranstaltung->id);
-		foreach ($aenderung as $ant) $kommentare[] = $ant;
+		$kommentare = array_reverse($kommentare);
 
 		$this->renderPartial('kommentare_excel', array(
 			"kommentare" => $kommentare

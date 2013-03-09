@@ -37,8 +37,11 @@ PHPExcel_Cell::setValueBinder( new PHPExcel_Cell_AdvancedValueBinder() );
 $row = 1;
 foreach ($kommentare as $kommentar) {
 	$row++;
-	$objPHPExcel->getActiveSheet()->SetCellValue('A' . $row, $kommentar->datum);
-	$objPHPExcel->getActiveSheet()->getStyle('A' . $row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_YYYYMMDDSLASH);
+
+	$timestamp = strtotime($kommentar->datum);
+	$objPHPExcel->getActiveSheet()->SetCellValue('A' . $row, PHPExcel_Shared_Date::PHPToExcel($timestamp));
+	$objPHPExcel->getActiveSheet()->getStyle('A' . $row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_DDMMYYYY);
+
 	$objPHPExcel->getActiveSheet()->SetCellValue('B' . $row, $kommentar->verfasser->name);
 
 	$objPHPExcel->getActiveSheet()->getStyle('C' . $row)->getAlignment()->setWrapText(true);
