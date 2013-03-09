@@ -366,14 +366,47 @@ class SiteController extends AntragsgruenController
 		$model = new OAuthLoginForm();
 		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
 
-		/** @var LightOpenID $loid */
-		$loid = Yii::app()->loid->load();
-		if (isset($_REQUEST["openid_mode"])) {
+		if (isset($_REQUEST["password"]) && isset($_REQUEST["OAuthLoginForm"]["wurzelwerk"])) {
+			$username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
+
+			/** @var Person $user  */
+			$user = Person::model()->findByAttributes(array("auth" => $username));
+			if ($user === null) {
+				Yii::app()->user->setFlash("error", "Benutzername nicht gefunden.");
+				$this->render('login', array("model" => $model));
+				return;
+			}
+			$correct = $user->validate_password($_REQUEST["password"]);
+			if ($correct) {
+				$identity = new AntragUserIdentityPasswd($_REQUEST["OAuthLoginForm"]["wurzelwerk"]);
+				Yii::app()->user->login($identity);
+
+				if ($user->admin) {
+					//$openid->setState("role", "admin");
+					Yii::app()->user->setState("role", "admin");
+				}
+
+				Yii::app()->user->setState("person_id", $user->id);
+				Yii::app()->user->setFlash('success', 'Willkommen!');
+				if ($back == "") $back = Yii::app()->homeUrl;
+
+				$this->redirect($back);
+			} else {
+				Yii::app()->user->setFlash("error", "Falsches Passwort.");
+				$this->render('login', array("model" => $model));
+				return;
+			}
+
+			//Yii::app()->user->login($us);
+			die();
+		} elseif (isset($_REQUEST["openid_mode"])) {
+			/** @var LightOpenID $loid */
+			$loid = Yii::app()->loid->load();
 			if ($_REQUEST['openid_mode'] == 'cancel') {
 				$err = Yii::t('core', 'Authorization cancelled');
 			} else {
 				try {
-					$us = new AntragUserIdentity($loid);
+					$us = new AntragUserIdentityOAuth($loid);
 					if ($us->authenticate()) {
 						Yii::app()->user->login($us);
 						$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
@@ -417,6 +450,8 @@ class SiteController extends AntragsgruenController
 
 			if (!empty($err)) Yii::app()->user->setFlash("error", $err);
 		} elseif (isset($_REQUEST["OAuthLoginForm"])) {
+			/** @var LightOpenID $loid */
+			$loid = Yii::app()->loid->load();
 			if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
 			else $loid->identity = $model->openid_identifier;
 

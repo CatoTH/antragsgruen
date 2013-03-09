@@ -18,6 +18,7 @@
  * @property string $angelegt_datum
  * @property integer $admin
  * @property integer $status
+ * @property string $pwd_enc
  *
  * @property AenderungsantragKommentar[] $aenderungsantragKommentare
  * @property AenderungsantragUnterstuetzer[] $aenderungsantragUnterstuetzer
@@ -51,8 +52,8 @@ abstract class BasePerson extends GxActiveRecord {
 			array('typ', 'length', 'max'=>12),
 			array('name, telefon', 'length', 'max'=>100),
 			array('email, auth', 'length', 'max'=>200),
-			array('email, telefon, auth', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, typ, name, email, telefon, auth, angelegt_datum, admin, status', 'safe', 'on'=>'search'),
+			array('email, telefon, auth, pwd_enc', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('id, typ, name, email, telefon, auth, pwd_enc, angelegt_datum, admin, status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,6 +83,7 @@ abstract class BasePerson extends GxActiveRecord {
 			'email' => Yii::t('app', 'Email'),
 			'telefon' => Yii::t('app', 'Telefon'),
 			'auth' => Yii::t('app', 'Auth'),
+			'pwd_enc' => Yii::t('app', 'Passwort-Hash'),
 			'angelegt_datum' => Yii::t('app', 'Angelegt Datum'),
 			'admin' => Yii::t('app', 'Admin'),
 			'status' => Yii::t('app', 'Status'),

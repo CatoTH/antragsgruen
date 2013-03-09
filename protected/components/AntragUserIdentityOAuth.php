@@ -1,6 +1,6 @@
 <?php
 
-class AntragUserIdentity extends CBaseUserIdentity
+class AntragUserIdentityOAuth extends CBaseUserIdentity
 {
 	/**
 	 * @var LightOpenID

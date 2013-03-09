@@ -27,6 +27,8 @@ $this->breadcrumbs = array(
 
 		<?php echo $form->textFieldRow($model, 'wurzelwerk', array('class'=> 'span3')); ?>
 
+		<label>Passwort:<br><input type="password" value="" autocomplete="false" name="password"></label>
+
         <br><br><em>oder</em><br><br>
 
 		<?php echo $form->textFieldRow($model, 'openid_identifier', array('class'=> 'span3')); ?>

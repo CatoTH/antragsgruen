@@ -85,6 +85,7 @@ CREATE  TABLE IF NOT EXISTS `person` (
   `angelegt_datum` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ,
   `admin` TINYINT NOT NULL ,
   `status` TINYINT NOT NULL ,
+  `pwd_enc` VARCHAR(100) NULL ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `auth_UNIQUE` (`auth` ASC) )
 ENGINE = InnoDB
