@@ -13,7 +13,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<?php
-	if (is_subclass_of($this, "VeranstaltungsControllerBase") && is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->fb_logo_url != "") {
+	if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->fb_logo_url != "") {
 		echo '<link rel="image_src" href="' . CHtml::encode($this->veranstaltung->fb_logo_url) . '">';
 	}
 	?>
@@ -60,7 +60,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 
 
 	<a href="<?php echo CHtml::encode($this->createUrl("site/veranstaltung")); ?>" class="logo"><?php
-		if (is_subclass_of($this, "VeranstaltungsControllerBase") && is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->logo_url != "") {
+		if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->logo_url != "") {
 			echo '<img src="' . CHtml::encode($this->veranstaltung->logo_url) . '" alt="Logo">';
 		}  else {
 			echo '<img src="/css/img/logo.png" alt="Antragsgrün">';
