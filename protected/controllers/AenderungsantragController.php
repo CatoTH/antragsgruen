@@ -120,7 +120,7 @@ class AenderungsantragController extends AntragsgruenController
 
 			$person        = $_REQUEST["Person"];
 			$person["typ"] = Person::$TYP_PERSON;
-			$model_person  = AntragUserIdentity::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
+			$model_person  = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
 
 			$kommentar                      = new AenderungsantragKommentar();
 			$kommentar->attributes          = $_REQUEST["AenderungsantragKommentar"];

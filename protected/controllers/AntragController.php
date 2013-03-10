@@ -106,7 +106,7 @@ class AntragController extends AntragsgruenController
 
 			$person        = $_REQUEST["Person"];
 			$person["typ"] = Person::$TYP_PERSON;
-			$model_person  = AntragUserIdentity::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
+			$model_person  = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
 
 			$kommentar               = new AntragKommentar();
 			$kommentar->attributes   = $_REQUEST["AntragKommentar"];
@@ -431,7 +431,7 @@ class AntragController extends AntragsgruenController
 			$model->status            = Antrag::$STATUS_UNBESTAETIGT;
 			$goon                     = true;
 
-			$antragstellerin = AntragUserIdentity::getCurrenPersonOrCreateBySubmitData($_REQUEST["Person"], Person::$STATUS_UNCONFIRMED);
+			$antragstellerin = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($_REQUEST["Person"], Person::$STATUS_UNCONFIRMED);
 			if (!$antragstellerin) $goon = false;
 
 			$model_unterstuetzer_int = array();
