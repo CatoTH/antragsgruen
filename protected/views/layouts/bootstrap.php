@@ -61,7 +61,11 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 
 	<a href="<?php echo CHtml::encode($this->createUrl("site/veranstaltung")); ?>" class="logo"><?php
 		if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->logo_url != "") {
-			echo '<img src="' . CHtml::encode($this->veranstaltung->logo_url) . '" alt="Logo">';
+			$path = parse_url($this->veranstaltung->logo_url);
+			$filename = basename($path["path"]);
+			$filename = substr($filename, 0, strrpos($filename, "."));
+			$filename = str_replace(array("_", "ue", "ae", "oe", "Ue", "Oe", "Ae"), array(" ", "ü", "ä", "ö", "Ü". "Ö", "Ä"), $filename);
+			echo '<img src="' . CHtml::encode($this->veranstaltung->logo_url) . '" alt="' . CHtml::encode($filename) . '">';
 		}  else {
 			echo '<img src="/css/img/logo.png" alt="Antragsgrün">';
 		}
