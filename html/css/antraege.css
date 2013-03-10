@@ -10,23 +10,6 @@ hellgrün text	rgb(162, 188, 4)
 magenta			rgb(226, 0, 122)
 dunkelgrün		rgb(40, 95, 25)
 
-Iconcodes
-Herz: 			'\e800'
-Antrag: 		'\e800'
-Download:		'\e4a4'
-Kommentar: 		'\e718'
-Ort: 			'\e724' 
-Benutzer: 		'👤'
-Resolution: 	'\e731'
-Pin: 			'📌'
-Änderungsantrag: '📎'
-Zeit: 			'🕔'
-Hinzufügen: 	'\2795' 
-Löschen: 		"✕"
-Zurück.			"←"
-RSS:            '\e801'
-
-
 ***************************************************************/
 
 /************************* BASICS *****************************/
@@ -76,8 +59,24 @@ li {
 	opacity: 0.7;
 }
 
-.icon-down-open:before { content: '\e75c'; }
-.icon-up-open:before { content: '\e75f'; }
+.icon-left:before { content: '\2190'; } /* '←' */
+.icon-heart:before { content: '\2665'; } /* '♥' */
+.icon-edit:before { content: '\270d'; } /* '✍' */
+.icon-cancel:before { content: '\2715'; } /* '✕' */
+.icon-plus-circle:before { content: '\2795'; } /* '➕' */
+.icon-down-circle:before { content: '\e4a4'; } /* '' */
+.icon-comment:before { content: '\e718'; } /* '' */
+.icon-location:before { content: '\e724'; } /* '' */
+.icon-doc-inv:before { content: '\e731'; } /* '' */
+.icon-rss:before { content: '\e73a'; } /* '' */
+.icon-down-open:before { content: '\e75c'; } /* '' */
+.icon-up-open:before { content: '\e75f'; } /* '' */
+.icon-thumbs-up:before { content: '👍'; } /* '\1f44d' */
+.icon-thumbs-down:before { content: '👎'; } /* '\1f44e' */
+.icon-user:before { content: '👤'; } /* '\1f464' */
+.icon-pin:before { content: '📌'; } /* '\1f4cc' */
+.icon-attach:before { content: '📎'; } /* '\1f4ce' */
+.icon-clock:before { content: '🕔'; } /* '\1f554' */
 
 p, ul {
 	margin-bottom: 10px;
@@ -364,7 +363,7 @@ h2,
 }
 
 .span9 .antrag .titel:before {
-	content: '\e800';
+	content: '\270d';
 	font-family: 'icons_antragsgruen';
 	display: inline-block;
 	width: 30px;
@@ -609,7 +608,7 @@ h2,
 }
 
 .aenders a:before {
-	content: '\e800';
+	content: '\270d';
 	color: #fff;
 	display: inline-block;
 	font-family: 'icons_antragsgruen';
@@ -825,7 +824,7 @@ form {
 }
 
 .span3 .well .neue-antraege .antrag:before {
-	content: '\e800';
+	content: '\270d';
 	color: #A2BC04;
 	display: inline-block;
 	font-family: 'icons_antragsgruen';
@@ -874,7 +873,7 @@ form {
 }
 
 .span3 .neue-kommentare .feed:before {
-	content: '\e801';
+	content: '\e73a';
 	color: #A2BC04;
 	display: inline-block;
 	font-family: 'icons_antragsgruen';
@@ -952,7 +951,7 @@ ul.funktionen .unterstuetzen a:before,
 ul.funktionen .aender-stellen a:before,
 ul.funktionen .download a:before,
 ul.funktionen .zurueck a:before {
-	content: '\e800';
+	content: '\270d';
 	display: inline-block;
 	font-family: 'icons_antragsgruen';
 	font-size: 15px;
