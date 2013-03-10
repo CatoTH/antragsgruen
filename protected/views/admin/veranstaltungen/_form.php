@@ -213,11 +213,22 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<?php echo $form->dropDownList($model, 'policy_kommentare', Veranstaltung::$POLICIES); ?>
 	<?php echo $form->error($model, 'policy_kommentare'); ?>
 </div>
-<div style="margin-top: 10px;">
-	<?php echo $form->labelEx($model, 'freischaltung_kommentare'); ?>
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="0" <?php if ($model->freischaltung_kommentare != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="1" <?php if ($model->freischaltung_kommentare == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-</div>
+
+	<fieldset style="margin-top: 10px;">
+		<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="0" <?php if ($model->freischaltung_kommentare != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="1" <?php if ($model->freischaltung_kommentare == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		Kommentare müssen durch den Admin freigeschaltet werden
+	</fieldset>
+	<br>
+
+	<fieldset>
+		<label style="display: inline;"><input type="radio" name="Veranstaltung[kommentare_unterstuetzbar]" value="0" <?php if ($model->kommentare_unterstuetzbar != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="Veranstaltung[kommentare_unterstuetzbar]" value="1" <?php if ($model->kommentare_unterstuetzbar == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		Besucher können Kommentare bewerten
+	</fieldset>
+	<br>
+
+
 <br>
 <h2>Benachrichtigungen</h2>
 <br>

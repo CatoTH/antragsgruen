@@ -7,7 +7,7 @@ class AntragController extends AntragsgruenController
 	{
 		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
-		$antrag = Antrag::model()->findByPk($antrag_id);
+		$antrag = Antrag::model()->with("antragKommentare", "antragKommentare.unterstuetzer")->findByPk($antrag_id);
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
 			$this->redirect($this->createUrl("site/veranstaltung"));
@@ -51,6 +51,41 @@ class AntragController extends AntragsgruenController
 				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
 			}
 		}
+
+		if (AntiXSS::isTokenSet("komm_dafuer") && $this->veranstaltung->kommentare_unterstuetzbar) {
+			$meine_unterstuetzung = AntragKommentarUnterstuetzer::meineUnterstuetzung($kommentar_id);
+			if ($meine_unterstuetzung === null) {
+				$unterstuetzung = new AntragKommentarUnterstuetzer();
+				$unterstuetzung->setIdentityParams();
+				$unterstuetzung->dafuer = 1;
+				$unterstuetzung->antrag_kommentar_id = $kommentar_id;
+
+				if ($unterstuetzung->save()) Yii::app()->user->setFlash("success", "Du hast den Kommentar positiv bewertet.");
+				else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $kommentar_id, "#" => "komm" . $kommentar_id)));
+			}
+		}
+		if (AntiXSS::isTokenSet("komm_dagegen") && $this->veranstaltung->kommentare_unterstuetzbar) {
+			$meine_unterstuetzung = AntragKommentarUnterstuetzer::meineUnterstuetzung($kommentar_id);
+			if ($meine_unterstuetzung === null) {
+				$unterstuetzung = new AntragKommentarUnterstuetzer();
+				$unterstuetzung->setIdentityParams();
+				$unterstuetzung->dafuer = 0;
+				$unterstuetzung->antrag_kommentar_id = $kommentar_id;
+				if ($unterstuetzung->save()) Yii::app()->user->setFlash("success", "Du hast den Kommentar negativ bewertet.");
+				else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $kommentar_id, "#" => "komm" . $kommentar_id)));
+			}
+		}
+		if (AntiXSS::isTokenSet("komm_dochnicht") && $this->veranstaltung->kommentare_unterstuetzbar) {
+			$meine_unterstuetzung = AntragKommentarUnterstuetzer::meineUnterstuetzung($kommentar_id);
+			if ($meine_unterstuetzung !== null) {
+				$meine_unterstuetzung->delete();
+				Yii::app()->user->setFlash("success", "Du hast die Bewertung des Kommentars zurückgenommen.");
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $kommentar_id, "#" => "komm" . $kommentar_id)));
+			}
+		}
+
 
 		if (AntiXSS::isTokenSet("mag") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");

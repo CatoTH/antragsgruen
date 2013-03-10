@@ -232,8 +232,44 @@ foreach ($absae as $i => $abs) {
 				echo '</div>';
 				$this->endWidget();
 			}
+
 			?>
-			<div class="kommentarlink"><?php echo CHtml::link("Kommentar verlinken", $komm_link); ?></div>
+			<div class="kommentar_bottom">
+				<div class="kommentarlink"><?php echo CHtml::link("Kommentar verlinken", $komm_link); ?></div>
+			<?php
+			if ($this->veranstaltung->kommentare_unterstuetzbar) {
+				$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+					'type'        => 'inline',
+					'htmlOptions' => array('class' => 'kommentar_unterstuetzer_holder'),
+					'action' => $komm_link,
+				));
+
+				$meine_unterstuetzung = AntragKommentarUnterstuetzer::meineUnterstuetzung($komm->id);
+
+				$anzahl_dafuer = $anzahl_dagegen = 0;
+				foreach ($komm->unterstuetzer as $unt) {
+					if ($unt->dafuer) $anzahl_dafuer++;
+					else $anzahl_dagegen++;
+				}
+				if ($meine_unterstuetzung !== null) { ?>
+					<span class="dafuer"><span class="icon-thumbs-up"></span> <?php echo $anzahl_dafuer; ?></span>
+					<span class="dagegen"><span class="icon-thumbs-down"></span> <?php echo $anzahl_dagegen; ?></span>
+					<span class="meine">
+						<span class="momentan"><?php
+						if ($meine_unterstuetzung->dafuer) echo '<span class="icon-thumbs-up"></span> Du hast diesen Kommentar positiv bewertet';
+						else echo '<span class="icon-thumbs-down"></span> Du hast diesen Kommentar negativ bewertet';
+					?></span>
+					<button class="dochnicht" type="submit" name="<?php echo AntiXSS::createToken('komm_dochnicht'); ?>">Bewertung zurücknehmen</button>
+					</span>
+				<?php } else { ?>
+					<button class="dafuer" type="submit" name="<?php echo AntiXSS::createToken('komm_dafuer'); ?>"><span class="icon-thumbs-up"></span> <?php echo $anzahl_dafuer; ?></button>
+					<button class="dagegen" type="submit" name="<?php echo AntiXSS::createToken('komm_dagegen'); ?>"><span class="icon-thumbs-down"></span> <?php echo $anzahl_dagegen; ?></button>
+				<?php
+				}
+				$this->endWidget();
+			}
+			?>
+			</div>
 		</div>
 	<?php
 	}

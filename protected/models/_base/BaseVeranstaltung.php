@@ -24,6 +24,7 @@
  * @property string $logo_url
  * @property string $fb_logo_url
  * @property integer $revision_name_verstecken
+ * @property integer $kommentare_unterstuetzbar
  *
  * @property Antrag[] $antraege
  * @property VeranstaltungPerson[] $veranstaltung_personen
@@ -55,12 +56,12 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name, freischaltung_antraege, yii_url, freischaltung_aenderungsantraege, revision_name_verstecken, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'required'),
+			array('name, freischaltung_antraege, yii_url, freischaltung_aenderungsantraege, revision_name_verstecken, kommentare_unterstuetzbar freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'required'),
 			array('name, logo_url, fb_logo_url', 'length', 'max' => 200),
 			array('name_kurz, yii_url', 'length', 'max' => 45),
 			array('antragsschluss, antrag_einleitung, admin_email', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, name, yii_url, logo_url, fb_logo_url, freischaltung_antraege, name_kurz, revision_name_verstecken, antrag_einleitung, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'safe', 'on' => 'search'),
+			array('id, name, yii_url, logo_url, fb_logo_url, freischaltung_antraege, name_kurz, revision_name_verstecken, kommentare_unterstuetzbar, antrag_einleitung, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -109,6 +110,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 			'zeilen_nummerierung_global'       => Yii::t('app', 'Zeilennummerierung durchgehend für die ganze Veranstaltung'),
 			'bestaetigungs_emails'             => Yii::t('app', 'Bestätigungsmails an AntragsStellerInnen'),
 			'revision_name_verstecken'         => Yii::t('app', 'Revisionsname verstecken'),
+			'kommentare_unterstuetzbar'        => Yii::t('app', 'Kommentare unterstützbar'),
 		);
 	}
 

@@ -59,24 +59,6 @@ li {
 	opacity: 0.7;
 }
 
-.icon-left:before { content: '\2190'; } /* '←' */
-.icon-heart:before { content: '\2665'; } /* '♥' */
-.icon-edit:before { content: '\270d'; } /* '✍' */
-.icon-cancel:before { content: '\2715'; } /* '✕' */
-.icon-plus-circle:before { content: '\2795'; } /* '➕' */
-.icon-down-circle:before { content: '\e4a4'; } /* '' */
-.icon-comment:before { content: '\e718'; } /* '' */
-.icon-location:before { content: '\e724'; } /* '' */
-.icon-doc-inv:before { content: '\e731'; } /* '' */
-.icon-rss:before { content: '\e73a'; } /* '' */
-.icon-down-open:before { content: '\e75c'; } /* '' */
-.icon-up-open:before { content: '\e75f'; } /* '' */
-.icon-thumbs-up:before { content: '👍'; } /* '\1f44d' */
-.icon-thumbs-down:before { content: '👎'; } /* '\1f44e' */
-.icon-user:before { content: '👤'; } /* '\1f464' */
-.icon-pin:before { content: '📌'; } /* '\1f4cc' */
-.icon-attach:before { content: '📎'; } /* '\1f4ce' */
-.icon-clock:before { content: '🕔'; } /* '\1f554' */
 
 p, ul {
 	margin-bottom: 10px;
@@ -580,6 +562,46 @@ h2,
 	color: #fff !important;
 }
 
+.kommentar_bottom { overflow: auto; margin-top: 15px; }
+.kommentarform .kommentarlink { visibility: hidden; float: right; margin-top: 5px; }
+.kommentarform:hover .kommentar_bottom .kommentarlink { visibility: visible; }
+
+.kommentar_unterstuetzer_holder { float: left; }
+.kommentar_unterstuetzer_holder .dafuer, .kommentar_unterstuetzer_holder .dagegen {
+	display: inline-block;
+	border: solid 1px lightgray;
+	margin: 1px;
+	padding: 2px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+}
+.kommentar_unterstuetzer_holder .dafuer span, .kommentar_unterstuetzer_holder .dagegen span { color: lightgray; }
+.kommentar_unterstuetzer_holder button.dafuer:hover { background-color: #A2BC04; }
+.kommentar_unterstuetzer_holder button.dagegen:hover { background-color: red; }
+.kommentar_unterstuetzer_holder button { background-color: transparent; }
+.kommentar_unterstuetzer_holder .momentan { display: inline-block; }
+.kommentar_unterstuetzer_holder .dochnicht { text-align: center; display: none; }
+.kommentar_unterstuetzer_holder .meine { display: inline-block; height: 20px; width: 240px; position: relative; }
+.kommentar_unterstuetzer_holder .meine:hover .dochnicht { display: inline-block; }
+.kommentar_unterstuetzer_holder .meine:hover .momentan { display: none; }
+.kommentar_unterstuetzer_holder .momentan, .kommentar_unterstuetzer_holder .dochnicht {
+	position: absolute;
+	top: 5px;
+	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+	margin-left: 20px;
+	font-size: 10px;
+	height: 20px;
+	width: 240px;
+	border: solid 1px gray;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #eee;
+}
+
 .aenders {
 	top: 48px;
 	background: rgb(175, 203, 8);
@@ -620,9 +642,6 @@ h2,
 .kommentarform {
 	padding: 12px 20px 25px;
 }
-
-.kommentarform .kommentarlink { visibility: hidden; text-align: right; }
-.kommentarform:hover .kommentarlink { visibility: visible; }
 
 .kommentarform h3 {
 	background: none;

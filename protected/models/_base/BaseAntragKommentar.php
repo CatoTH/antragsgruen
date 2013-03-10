@@ -19,6 +19,7 @@
  *
  * @property Person $verfasser
  * @property Antrag $antrag
+ * @property AntragKommentarUnterstuetzer[] $unterstuetzer
  */
 abstract class BaseAntragKommentar extends IKommentar {
 
@@ -51,6 +52,7 @@ abstract class BaseAntragKommentar extends IKommentar {
 		return array(
 			'verfasser' => array(self::BELONGS_TO, 'Person', 'verfasser_id'),
 			'antrag' => array(self::BELONGS_TO, 'Antrag', 'antrag_id'),
+			'unterstuetzer' => array(self::HAS_MANY, 'AntragKommentarUnterstuetzer', 'antrag_kommentar_id'),
 		);
 	}
 
@@ -70,6 +72,7 @@ abstract class BaseAntragKommentar extends IKommentar {
 			'status' => Yii::t('app', 'Status'),
 			'verfasser' => null,
 			'antrag' => null,
+			'unterstuetzer' => null,
 		);
 	}
 
