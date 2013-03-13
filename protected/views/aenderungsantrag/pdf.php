@@ -141,30 +141,35 @@ if ($diff_ansicht) {
 	$abs_alt = $model->antrag->getParagraphs();
 	$abs_neu = json_decode($model->text_neu);
 
+	$html = "";
+
 	$letztes_leer = true;
 	foreach ($abs_alt as $i=> $abs) {
 		if (isset($abs_neu[$i]) && $abs_neu[$i] != "") {
 			if ($letztes_leer) {
 				$letztes_leer = false;
 
-				preg_match("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $abs->str_html, $matches);
-				$zeile = (isset($matches[1]) ? IntVal($matches[1]) : "????");
+				preg_match_all("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $abs->str_html, $matches);
+				$zeile_von = (isset($matches[1][0]) ? IntVal($matches[1][0]) : "????");
+				$zeile_bis = (isset($matches[1]) ? $matches[1][count($matches[1])-1] : "???");
 
-				$pdf->writeHTML("Ab Zeile $zeile:");
+				$html .= "Im Absatz von Zeile $zeile_von - $zeile_bis:";
 			}
-			$pdf->writeHTML("<div class='row-fluid'>");
+			$html .= "<div class='row-fluid' style=\"line-height: 6px;\">";
 			/** @var AntragAbsatz $abs */
-			$str = DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i]);
+			$str = DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i], true);
+
 			$str = str_replace(
 				array("<ins>", "</ins>", "<del>", "</del>"),
 				array("<span style=\"color: green; text-decoration: underline;\">", "</span>", "<span style=\"color: red; text-decoration: line-through;\">", "</span>"),
 				$str
 			);
-			$pdf->writeHTML($str);
-			$pdf->writeHTML("</div>\n");
+			$html .= $str;
+			$html .= "</div>\n";
 		}
 	}
 
+	$pdf->writeHTML($html);
 
 } else {
 

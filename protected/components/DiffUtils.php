@@ -18,6 +18,11 @@ class Horde_Text_Diff_Renderer_Inline_Antrag extends Horde_Text_Diff_Renderer_In
 	protected $_leading_context_lines = 1;
 	protected $_trailing_context_lines = 1;
 }
+class Horde_Text_Diff_Renderer_Inline_Antrag15 extends Horde_Text_Diff_Renderer_Inline
+{
+	protected $_leading_context_lines = 15;
+	protected $_trailing_context_lines = 15;
+}
 
 class Horde_Text_Diff_Renderer_Inline_Antrag1000 extends Horde_Text_Diff_Renderer_Inline
 {
@@ -192,15 +197,21 @@ class DiffUtils
 	 * @static
 	 * @param string $text_alt
 	 * @param string $text_neu
+	 * @param bool $compact
 	 * @return string
 	 */
-	public static function renderBBCodeDiff2HTML($text_alt, $text_neu)
+	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false)
 	{
 		$text_alt = static::bbNormalizeForDiff($text_alt);
 		$text_neu = static::bbNormalizeForDiff($text_neu);
 
 		$diff   = DiffUtils::getTextDiff($text_alt, $text_neu);
-		$absatz = DiffUtils::renderAbsatzDiff($diff);
+		if ($compact) {
+			$renderer  = new Horde_Text_Diff_Renderer_Inline_Antrag15();
+			$absatz = $renderer->render($diff);
+		} else {
+			$absatz = DiffUtils::renderAbsatzDiff($diff);
+		}
 
 		$diffstr = HtmlBBcodeUtils::bbcode2html($absatz);
 
