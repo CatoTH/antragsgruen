@@ -56,6 +56,9 @@ Im Testbetrieb wird es derzeit hier eingestzt: http://antraege.hoessl.eu/
 Installation
 ------------
 
+Empfohlene PHP-Module:
+- Intl
+
 Datenbank anlegen:
 - Eine Datenbank u. Benutzer für Antragsgrün anlegen; Antragsgrün braucht mindestens Rechte für SELECT/INSERT/UPDATE/DELETE
 - cat docs/schema.sql | mysql -u [benutzername] -p [datenbankname] -h localhost

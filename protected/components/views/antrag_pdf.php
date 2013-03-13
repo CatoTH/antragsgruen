@@ -30,6 +30,8 @@ if ($antrag->veranstaltung0->yii_url == "ltwby13-programm") {
 	$ueberschrift = $sprache->get("Antragstext");
 }
 
+if (function_exists("normalizer_normalize")) $ueberschrift = normalizer_normalize($ueberschrift);
+
 if ($header) {
 
 	if (file_exists($logo)) {
@@ -140,6 +142,10 @@ foreach ($absae as $i => $abs) {
 
 	$text = preg_replace("/<span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/sii", "", $text);
 
+	// Umlaute kommen manchmal mit alternativen UTF-8-Encodings rein, die von PDF nicht richtig dargestellt werden
+	// Bsp.: 0x61CC88 für "ü"
+	if (function_exists("normalizer_normalize")) $text = normalizer_normalize($text);
+
 	$zeilennrs = array();
 	for ($i = 0; $i < $zeilen; $i++) $zeilennrs[] = $linenr++;
 	$text2 = implode("<br>", $zeilennrs);
@@ -153,11 +159,13 @@ foreach ($absae as $i => $abs) {
 }
 
 if (trim($antrag->begruendung) != "") {
+	$begruendung = HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
+	if (function_exists("normalizer_normalize")) $begruendung = normalizer_normalize($begruendung);
 	$html = '
 	</div>
 	<h3>Begründung</h3>
 	<div class="textholder consolidated">
-		' . HtmlBBcodeUtils::bbcode2html($antrag->begruendung) . '
+		' . $begruendung . '
 	</div>
 </div>';
 	$pdf->SetFont("helvetica", "", 10);

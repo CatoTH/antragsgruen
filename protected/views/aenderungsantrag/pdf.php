@@ -159,11 +159,14 @@ if ($diff_ansicht) {
 			/** @var AntragAbsatz $abs */
 			$str = DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i], true);
 
+			if (function_exists("normalizer_normalize")) $str = normalizer_normalize($str);
+
 			$str = str_replace(
 				array("<ins>", "</ins>", "<del>", "</del>"),
 				array("<span style=\"color: green; text-decoration: underline;\">", "</span>", "<span style=\"color: red; text-decoration: line-through;\">", "</span>"),
 				$str
 			);
+
 			$html .= $str;
 			$html .= "</div>\n";
 		}
@@ -195,6 +198,8 @@ if ($diff_ansicht) {
 
 		$text = preg_replace("/<span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/sii", "", $text);
 
+		if (function_exists("normalizer_normalize")) $text = normalizer_normalize($text);
+
 		$zeilennrs = array();
 		for ($i = 0; $i < $zeilen; $i++) $zeilennrs[] = $linenr++;
 		$text2 = implode("<br>", $zeilennrs);
@@ -208,11 +213,14 @@ if ($diff_ansicht) {
 	}
 
 }
+
+$begruendung = HtmlBBcodeUtils::bbcode2html($model->aenderung_begruendung);
+if (function_exists("normalizer_normalize")) $begruendung = normalizer_normalize($begruendung);
 $html = '
 	</div>
 	<h3 style="margin-top: 0;">Begründung</h3>
 	<div class="textholder consolidated">
-		' . HtmlBBcodeUtils::bbcode2html($model->aenderung_begruendung) . '
+		' . $begruendung . '
 	</div>
 </div>';
 
