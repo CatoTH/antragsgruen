@@ -126,7 +126,28 @@ abstract class IPolicyAntraege
 		$init->antrag_id        = $antrag->id;
 		$init->rolle            = AntragUnterstuetzer::$ROLLE_INITIATOR;
 		$init->unterstuetzer_id = $antragstellerin->id;
+		$init->position         = 0;
 		$init->save();
+
+		if (isset($_REQUEST["UnterstuetzerInnen"]) && is_array($_REQUEST["UnterstuetzerInnen"])) foreach ($_REQUEST["UnterstuetzerInnen"] as $i => $name) {
+			$name = trim($name);
+			if ($name != "") {
+				$person                 = new Person;
+				$person->name           = $name;
+				$person->typ            = Person::$TYP_PERSON;
+				$person->status         = Person::$STATUS_UNCONFIRMED;
+				$person->angelegt_datum = "NOW()";
+				$person->admin          = 0;
+				if ($person->save()) {
+					$unt                   = new AntragUnterstuetzer();
+					$unt->antrag_id        = $antrag->id;
+					$unt->unterstuetzer_id = $person->id;
+					$unt->rolle            = AntragUnterstuetzer::$ROLLE_UNTERSTUETZER;
+					$unt->position         = $i;
+					$unt->save();
+				}
+			}
+		}
 	}
 
 
@@ -154,7 +175,28 @@ abstract class IPolicyAntraege
 		$init->aenderungsantrag_id = $aenderungsantrag->id;
 		$init->rolle               = AenderungsantragUnterstuetzer::$ROLLE_INITIATOR;
 		$init->unterstuetzer_id    = $antragstellerin->id;
+		$init->position            = 0;
 		$init->save();
+
+		if (isset($_REQUEST["UnterstuetzerInnen"]) && is_array($_REQUEST["UnterstuetzerInnen"])) foreach ($_REQUEST["UnterstuetzerInnen"] as $i => $name) {
+			$name = trim($name);
+			if ($name != "") {
+				$person                 = new Person;
+				$person->name           = $name;
+				$person->typ            = Person::$TYP_PERSON;
+				$person->status         = Person::$STATUS_UNCONFIRMED;
+				$person->angelegt_datum = "NOW()";
+				$person->admin          = 0;
+				if ($person->save()) {
+					$unt                      = new AenderungsantragUnterstuetzer();
+					$unt->aenderungsantrag_id = $aenderungsantrag->id;
+					$unt->unterstuetzer_id    = $person->id;
+					$unt->rolle               = AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER;
+					$unt->position            = $i;
+					$unt->save();
+				}
+			}
+		}
 	}
 
 	/**

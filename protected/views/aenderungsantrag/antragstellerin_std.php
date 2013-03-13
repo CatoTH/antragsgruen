@@ -26,6 +26,27 @@ if ($mode == "neu") {
 		<?php echo $form->textFieldRow($antragstellerin, 'telefon'); ?>
 
 
+		<div class="control-group" id="UnterstuetzerInnen" style="display: none;">
+			<label class="control-label">UnterstützerInnen</label>
+			<div class="controls"></div>
+		</div>
+
+		<div style="padding-left: 162px; margin-top: -15px; margin-bottom: 20px;">
+			<a href="#" onClick="return add_unterstuetzerInnen();"><span class="icon-down-open"></span> Weitere UnterstützerInnen angeben</a>
+		</div>
+
+	<script>
+		function add_unterstuetzerInnen() {
+			var $u = $("#UnterstuetzerInnen"), str = "";
+			$u.show();
+			for (var i = 0; i < 5; i++) str += '<input type="text" name="UnterstuetzerInnen[]" value="" placeholder="Name" title="Name der UnterstützerInnen"><br>';
+			$u.find(".controls").append(str);
+			return false;
+		}
+	</script>
+
+
+
 		<div class="ae_select_confirm">
 			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> $sprache->get("Änderungsantrag stellen"))); ?>
 		</div>

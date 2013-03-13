@@ -60,7 +60,10 @@ abstract class BaseAenderungsantrag extends IAntrag {
 		return array(
 			'antrag' => array(self::BELONGS_TO, 'Antrag', 'antrag_id'),
 			'aenderungsantragKommentare' => array(self::HAS_MANY, 'AenderungsantragKommentar', 'aenderungsantrag_id'),
-			'aenderungsantragUnterstuetzer' => array(self::HAS_MANY, 'AenderungsantragUnterstuetzer', 'aenderungsantrag_id'),
+			'aenderungsantragUnterstuetzer' => array(
+				self::HAS_MANY, 'AenderungsantragUnterstuetzer', 'aenderungsantrag_id',
+				'order' => "aenderungsantragUnterstuetzer.position ASC"
+			),
 		);
 	}
 

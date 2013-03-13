@@ -56,7 +56,7 @@ class UnterstuetzerWidget
         $unterstuetzer = $antrag->$unterstuetzer_rel;
         foreach ($unterstuetzer as $unt) {
             $str .= '<div>';
-            $str .= '<span style="display: inline-block; width: 250px; overflow: hidden;">' . CHtml::encode($unt->unterstuetzer->name) . '</span>';
+            $str .= '<span style="display: inline-block; width: 250px; overflow: hidden;" class="sort_handle">' . CHtml::encode($unt->unterstuetzer->name) . '</span>';
             $str .= '<input type="hidden" name="' . get_class($antrag) . '[unterstuetzer][person_id][]" value="' . $unt->unterstuetzer->id . '">';
             $str .= '<select name="' . get_class($antrag) . '[unterstuetzer][rolle][]">';
             $str .= '<option value="del"> - ' . Yii::t('app', 'löschen') . ' - </option>';
@@ -88,10 +88,12 @@ class UnterstuetzerWidget
         if (isset($_REQUEST[get_class($model)]["unterstuetzer"])) {
             $unterstuetzer = $_REQUEST[get_class($model)]["unterstuetzer"];
             for ($i = 0; $i < count($unterstuetzer["person_id"]); $i++) if ($unterstuetzer["rolle"][$i] != "del") {
+				/** @var AntragUnterstuetzer $unt */
                 $unt = new $unterstuetzer_class;
                 $unt->$unterstuetzer_pk = $id;
                 $unt->unterstuetzer_id = IntVal($unterstuetzer["person_id"][$i]);
                 $unt->rolle = $unterstuetzer["rolle"][$i];
+				$unt->position = $i;
                 $unt->save();
             }
         }
@@ -122,6 +124,7 @@ class UnterstuetzerWidget
                         $unt->$unterstuetzer_pk = $id;
                         $unt->unterstuetzer_id = $person->id;
                         $unt->rolle = $unterstuetzer_neu["rolle"][$i];
+						$unt->position = $i;
                         $unt->save();
                     }
                 }

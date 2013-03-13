@@ -1113,6 +1113,7 @@ ins {
 #aenderungsantrag-form .unterstuetzerwidget select, #antrag-form .unterstuetzerwidget select {
 	width: 200px;
 }
+.unterstuetzerwidget .sort_handle { cursor: move; }
 
 .js_protection_hint {
 	width: 90%;

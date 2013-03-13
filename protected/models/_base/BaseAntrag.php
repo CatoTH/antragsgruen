@@ -71,7 +71,10 @@ abstract class BaseAntrag extends IAntrag {
 			'antraege' => array(self::HAS_MANY, 'Antrag', 'abgeleitet_von'),
 			'abonnenten' => array(self::MANY_MANY, 'Person', 'antrag_abo(antrag_id, abonnent_id)'),
 			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'antrag_id'),
-			'antragUnterstuetzer' => array(self::HAS_MANY, 'AntragUnterstuetzer', 'antrag_id'),
+			'antragUnterstuetzer' => array(
+				self::HAS_MANY, 'AntragUnterstuetzer', 'antrag_id',
+				'order' => "antragUnterstuetzer.position ASC"
+			),
 		);
 	}
 

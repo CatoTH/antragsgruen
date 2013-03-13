@@ -13,6 +13,7 @@
  * @property integer $unterstuetzer_id
  * @property string $rolle
  * @property string $kommentar
+ * @property integer $position
  *
  * @property Person $unterstuetzer
  * @property Aenderungsantrag $aenderungsantrag
@@ -38,11 +39,11 @@ abstract class BaseAenderungsantragUnterstuetzer extends IUnterstuetzer {
 	public function rules() {
 		return array(
 			array('aenderungsantrag_id, unterstuetzer_id, rolle', 'required'),
-			array('aenderungsantrag_id, unterstuetzer_id', 'numerical', 'integerOnly'=>true),
+			array('aenderungsantrag_id, unterstuetzer_id, position', 'numerical', 'integerOnly'=>true),
 			array('rolle', 'length', 'max'=>13),
 			array('kommentar', 'safe'),
 			array('kommentar', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('aenderungsantrag_id, unterstuetzer_id, rolle, kommentar', 'safe', 'on'=>'search'),
+			array('aenderungsantrag_id, unterstuetzer_id, rolle, kommentar, position', 'safe', 'on'=>'search'),
 		);
 	}
 

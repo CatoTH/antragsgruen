@@ -11,6 +11,14 @@
 		ev.preventDefault();
 	});
 	$(".unterstuetzerwidget_adder").hide();
+	$(function() {
+		$(".unterstuetzerwidget").sortable({
+			handle: ".sort_handle",
+			tolerance: "pointer",
+			containment: "parent",
+			axis: "y"
+		});
+	});
 
 	$(document).change(".person_selector",function () {
 		var $t = $(this);

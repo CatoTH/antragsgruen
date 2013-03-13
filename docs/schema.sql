@@ -2,13 +2,10 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-CREATE SCHEMA IF NOT EXISTS `antraege` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
-USE `antraege` ;
-
 -- -----------------------------------------------------
--- Table `antraege`.`veranstaltung`
+-- Table `veranstaltung`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`veranstaltung` (
+CREATE  TABLE IF NOT EXISTS `veranstaltung` (
   `id` SMALLINT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(200) NOT NULL ,
   `name_kurz` VARCHAR(45) NOT NULL ,
@@ -41,9 +38,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`antrag`
+-- Table `antrag`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`antrag` (
+CREATE  TABLE IF NOT EXISTS `antrag` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `veranstaltung` SMALLINT NOT NULL ,
   `abgeleitet_von` INT NULL ,
@@ -63,12 +60,12 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`antrag` (
   INDEX `abgeleitet_von` (`abgeleitet_von` ASC) ,
   CONSTRAINT `fk_antrag_veranstaltung`
     FOREIGN KEY (`veranstaltung` )
-    REFERENCES `antraege`.`veranstaltung` (`id` )
+    REFERENCES `veranstaltung` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_antrag1`
     FOREIGN KEY (`abgeleitet_von` )
-    REFERENCES `antraege`.`antrag` (`id` )
+    REFERENCES `antrag` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -77,9 +74,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`person`
+-- Table `person`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`person` (
+CREATE  TABLE IF NOT EXISTS `person` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `typ` ENUM('person', 'organisation') NOT NULL ,
   `name` VARCHAR(100) NOT NULL ,
@@ -98,9 +95,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`antrag_unterstuetzer`
+-- Table `antrag_unterstuetzer`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`antrag_unterstuetzer` (
+CREATE  TABLE IF NOT EXISTS `antrag_unterstuetzer` (
   `antrag_id` INT NOT NULL ,
   `unterstuetzer_id` INT NOT NULL ,
   `rolle` ENUM('initiator', 'unterstuetzt', 'mag', 'magnicht') NOT NULL ,
@@ -110,12 +107,12 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`antrag_unterstuetzer` (
   INDEX `fk_antrag_idx` (`antrag_id` ASC) ,
   CONSTRAINT `fk_antrag`
     FOREIGN KEY (`antrag_id` )
-    REFERENCES `antraege`.`antrag` (`id` )
+    REFERENCES `antrag` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_unterstuetzer`
     FOREIGN KEY (`unterstuetzer_id` )
-    REFERENCES `antraege`.`person` (`id` )
+    REFERENCES `person` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -124,9 +121,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`aenderungsantrag`
+-- Table `aenderungsantrag`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`aenderungsantrag` (
+CREATE  TABLE IF NOT EXISTS `aenderungsantrag` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `antrag_id` INT NULL ,
   `revision_name` VARCHAR(45) NULL ,
@@ -143,7 +140,7 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`aenderungsantrag` (
   INDEX `fk_aenderungsantrag_antrag1_idx` (`antrag_id` ASC) ,
   CONSTRAINT `fk_aenderungsantrag_antrag1`
     FOREIGN KEY (`antrag_id` )
-    REFERENCES `antraege`.`antrag` (`id` )
+    REFERENCES `antrag` (`id` )
     ON DELETE SET NULL
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -152,9 +149,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`aenderungsantrag_unterstuetzer`
+-- Table `aenderungsantrag_unterstuetzer`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`aenderungsantrag_unterstuetzer` (
+CREATE  TABLE IF NOT EXISTS `aenderungsantrag_unterstuetzer` (
   `aenderungsantrag_id` INT NOT NULL ,
   `unterstuetzer_id` INT NOT NULL ,
   `rolle` ENUM('initiator', 'unterstuetzt', 'mag', 'magnicht') NOT NULL ,
@@ -164,12 +161,12 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`aenderungsantrag_unterstuetzer` (
   INDEX `fk_person_has_aenderungsantrag_unterstuetzers1_idx` (`unterstuetzer_id` ASC) ,
   CONSTRAINT `fk_person_has_aenderungsantrag_unterstuetzers1`
     FOREIGN KEY (`unterstuetzer_id` )
-    REFERENCES `antraege`.`person` (`id` )
+    REFERENCES `person` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_person_has_aenderungsantrag_aenderungsantrag1`
     FOREIGN KEY (`aenderungsantrag_id` )
-    REFERENCES `antraege`.`aenderungsantrag` (`id` )
+    REFERENCES `aenderungsantrag` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -178,9 +175,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`antrag_kommentar`
+-- Table `antrag_kommentar`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`antrag_kommentar` (
+CREATE  TABLE IF NOT EXISTS `antrag_kommentar` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `verfasser_id` INT NULL ,
   `antrag_id` INT NULL ,
@@ -193,12 +190,12 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`antrag_kommentar` (
   INDEX `fk_antrag_kommentar_antrag1_idx` (`antrag_id` ASC) ,
   CONSTRAINT `fk_antrag_kommentar_person1`
     FOREIGN KEY (`verfasser_id` )
-    REFERENCES `antraege`.`person` (`id` )
+    REFERENCES `person` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_kommentar_antrag1`
     FOREIGN KEY (`antrag_id` )
-    REFERENCES `antraege`.`antrag` (`id` )
+    REFERENCES `antrag` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -207,9 +204,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`aenderungsantrag_kommentar`
+-- Table `aenderungsantrag_kommentar`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`aenderungsantrag_kommentar` (
+CREATE  TABLE IF NOT EXISTS `aenderungsantrag_kommentar` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `verfasser_id` INT NULL ,
   `aenderungsantrag_id` INT NULL ,
@@ -222,12 +219,12 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`aenderungsantrag_kommentar` (
   INDEX `fk_aenderungsantrag_kommentar_aenderungsantrag1_idx` (`aenderungsantrag_id` ASC) ,
   CONSTRAINT `fk_aenderungsantrag_kommentar_person1`
     FOREIGN KEY (`verfasser_id` )
-    REFERENCES `antraege`.`person` (`id` )
+    REFERENCES `person` (`id` )
     ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_aenderungsantrag_kommentar_aenderungsantrag1`
     FOREIGN KEY (`aenderungsantrag_id` )
-    REFERENCES `antraege`.`aenderungsantrag` (`id` )
+    REFERENCES `aenderungsantrag` (`id` )
     ON DELETE SET NULL
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -236,9 +233,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`antrag_abo`
+-- Table `antrag_abo`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`antrag_abo` (
+CREATE  TABLE IF NOT EXISTS `antrag_abo` (
   `antrag_id` INT NOT NULL ,
   `abonnent_id` INT NOT NULL ,
   PRIMARY KEY (`antrag_id`, `abonnent_id`) ,
@@ -246,12 +243,12 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`antrag_abo` (
   INDEX `fk_antrag_has_person1_antrag_idx` (`antrag_id` ASC) ,
   CONSTRAINT `fk_antrag_has_person1_antrag`
     FOREIGN KEY (`antrag_id` )
-    REFERENCES `antraege`.`antrag` (`id` )
+    REFERENCES `antrag` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_has_person1_abonnent`
     FOREIGN KEY (`abonnent_id` )
-    REFERENCES `antraege`.`person` (`id` )
+    REFERENCES `person` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -260,9 +257,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`texte`
+-- Table `texte`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`texte` (
+CREATE  TABLE IF NOT EXISTS `texte` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `text_id` VARCHAR(20) NOT NULL ,
   `veranstaltung_id` SMALLINT NULL ,
@@ -275,21 +272,21 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`texte` (
   PRIMARY KEY (`id`) ,
   CONSTRAINT `fk_texte_veranstaltung1`
     FOREIGN KEY (`veranstaltung_id` )
-    REFERENCES `antraege`.`veranstaltung` (`id` )
+    REFERENCES `veranstaltung` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_texte_person1`
     FOREIGN KEY (`edit_person` )
-    REFERENCES `antraege`.`person` (`id` )
+    REFERENCES `person` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`cache`
+-- Table `cache`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`cache` (
+CREATE  TABLE IF NOT EXISTS `cache` (
   `id` CHAR(32) NOT NULL ,
   `datum` TIMESTAMP NULL ,
   `daten` LONGBLOB NULL ,
@@ -300,9 +297,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`veranstaltung_person`
+-- Table `veranstaltung_person`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`veranstaltung_person` (
+CREATE  TABLE IF NOT EXISTS `veranstaltung_person` (
   `veranstaltung_id` SMALLINT NOT NULL ,
   `person_id` INT NOT NULL ,
   `rolle` ENUM('admin', 'dabei', 'delegiert', 'abo') NULL ,
@@ -311,12 +308,12 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`veranstaltung_person` (
   INDEX `fk_veranstaltung_has_person_veranstaltung2_idx` (`veranstaltung_id` ASC) ,
   CONSTRAINT `fk_veranstaltung_has_person_veranstaltung2`
     FOREIGN KEY (`veranstaltung_id` )
-    REFERENCES `antraege`.`veranstaltung` (`id` )
+    REFERENCES `veranstaltung` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_veranstaltung_has_person_person2`
     FOREIGN KEY (`person_id` )
-    REFERENCES `antraege`.`person` (`id` )
+    REFERENCES `person` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -325,9 +322,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `antraege`.`antrag_kommentar_unterstuetzer`
+-- Table `antrag_kommentar_unterstuetzer`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `antraege`.`antrag_kommentar_unterstuetzer` (
+CREATE  TABLE IF NOT EXISTS `antrag_kommentar_unterstuetzer` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `ip_hash` CHAR(32) NULL ,
   `cookie_id` INT NULL ,
@@ -339,7 +336,7 @@ CREATE  TABLE IF NOT EXISTS `antraege`.`antrag_kommentar_unterstuetzer` (
   UNIQUE INDEX `cookie_antrag` (`cookie_id` ASC, `antrag_kommentar_id` ASC) ,
   CONSTRAINT `fk_antrag_kommentar_unterstuetzer_antrag_kommentar1`
     FOREIGN KEY (`antrag_kommentar_id` )
-    REFERENCES `antraege`.`antrag_kommentar` (`id` )
+    REFERENCES `antrag_kommentar` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
