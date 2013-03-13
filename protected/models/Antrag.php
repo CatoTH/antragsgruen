@@ -19,6 +19,7 @@ class Antrag extends BaseAntrag
 		4 => "GO-Antrag",
 		5 => "Finanzantrag",
 		6 => "Wahlprogramm",
+		7 => "Dringlichkeitsantrag"
 	);
 
 	public static $TYP_PREFIX = array(
@@ -29,6 +30,7 @@ class Antrag extends BaseAntrag
 		4 => "GO",
 		5 => "F",
 		6 => "Kapitel ",
+		7 => "D"
 	);
 
 	private $absaetze = null;
