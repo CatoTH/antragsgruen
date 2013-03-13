@@ -23,7 +23,13 @@
 	<tr>
 		<th>AntragstellerIn:</th>
 		<td><?php
-			foreach ($data->aenderungsantragUnterstuetzer as $unt) if ($unt->rolle == AenderungsantragUnterstuetzer::$ROLLE_INITIATOR) echo CHtml::encode($unt->unterstuetzer->name);
+			$x = array();
+			foreach ($data->aenderungsantragUnterstuetzer as $unt) {
+				if (in_array($unt->rolle, array(AenderungsantragUnterstuetzer::$ROLLE_INITIATOR, AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER))) {
+					$x[] = CHtml::encode($unt->unterstuetzer->name);
+				}
+			}
+			echo implode(", ", $x);
 			?></td>
 	</tr>
     <tr>

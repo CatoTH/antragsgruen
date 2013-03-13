@@ -15,10 +15,14 @@
             if ($data->status_string != "") echo " (" . GxHtml::encode($data->status_string) . ")";
             ?></td>
     </tr>
-    <tr>
-        <th><?php echo GxHtml::encode($data->getAttributeLabel('veranstaltung')); ?>:</th>
-                <td><?php echo GxHtml::encode(GxHtml::valueEx($data->veranstaltung0)); ?></td>
-        </tr>
+	<tr>
+		<th>AntragstellerIn:</th>
+		<td><?php
+			$x = array();
+			foreach ($data->antragUnterstuetzer as $unt) if (in_array($unt->rolle, array(AntragUnterstuetzer::$ROLLE_INITIATOR, AntragUnterstuetzer::$ROLLE_UNTERSTUETZER))) $x[] = CHtml::encode($unt->unterstuetzer->name);
+			echo implode(", ", $x);
+			?></td>
+	</tr>
         <tr>
             <th><?php echo GxHtml::encode($data->getAttributeLabel('datum_einreichung')); ?>:</th>
             <td><?php echo HtmlBBcodeUtils::formatMysqlDateTime($data->datum_einreichung); ?></td>
