@@ -5,7 +5,7 @@ class SpracheProgramm extends Sprache
 	public $vars = array(
 		"Antrag"                             => "Kapitel",
 		"Anträge"                            => "Kapitel",
-		"breadcrumb_top"                     => "Start",
+		"breadcrumb_top"                     => "Programm",
 		"Meine Anträge"                      => "Meine Kapitel",
 		"Meine Änderungsanträge"             => "Meine Änderungsvorschläge",
 		"Neue Änderungsanträge"              => "Neue Vorschläge",
