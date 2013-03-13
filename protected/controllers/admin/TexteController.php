@@ -26,7 +26,7 @@ class TexteController extends GxController {
 		if (isset($_REQUEST["key"])) $model->text_id = $_REQUEST["key"];
 
 		if (isset($_POST['Texte'])) {
-			$model->setAttributes($_POST['Texte']);
+			$model->setAttributes($_POST['Texte'], false);
 			$model->veranstaltung = $this->veranstaltung;
 			$model->veranstaltung_id = $this->veranstaltung->id;
 

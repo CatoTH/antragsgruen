@@ -65,7 +65,7 @@ class AntraegeController extends GxController
 		}
 
 		if (isset($_POST['Antrag'])) {
-			$model->setAttributes($_POST['Antrag']);
+			$model->setAttributes($_POST['Antrag'], false);
 			$model->text = HtmlBBcodeUtils::bbcode_normalize($model->text);
 			$model->begruendung = HtmlBBcodeUtils::bbcode_normalize($model->begruendung);
 			Yii::import('ext.datetimepicker.EDateTimePicker');

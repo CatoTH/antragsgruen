@@ -8,7 +8,7 @@ class AenderungsantraegeKommentareController extends AdminControllerBase {
         $this->performAjaxValidation($model, 'aenderungsantrag-kommentar-form');
 
         if (isset($_POST['AenderungsantragKommentar'])) {
-            $model->setAttributes($_POST['AenderungsantragKommentar']);
+            $model->setAttributes($_POST['AenderungsantragKommentar'], false);
 
             if ($model->save()) {
                 if (Yii::app()->getRequest()->getIsAjaxRequest())
@@ -33,7 +33,7 @@ class AenderungsantraegeKommentareController extends AdminControllerBase {
         $this->performAjaxValidation($model, 'aenderungsantrag-kommentar-form');
 
         if (isset($_POST['AenderungsantragKommentar'])) {
-            $model->setAttributes($_POST['AenderungsantragKommentar']);
+            $model->setAttributes($_POST['AenderungsantragKommentar'], false);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum = EDateTimePicker::parseInput($_POST["AntragKommentar"], "datum");
 

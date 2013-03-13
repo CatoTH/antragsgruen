@@ -59,15 +59,15 @@ class AenderungsantraegeController extends GxController {
 		}
 
 		if (isset($_POST['Aenderungsantrag'])) {
-            $model->setAttributes($_POST['Aenderungsantrag']);
+            $model->setAttributes($_POST['Aenderungsantrag'], false);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_einreichung");
 			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_beschluss");
 
-			$relatedData = array();
+			if ($model->save()) {
 
-            if ($model->saveWithRelated($relatedData)) {
-                UnterstuetzerWidget::saveUnterstuetzerWidget($model, $messages, "AenderungsantragUnterstuetzer", "aenderungsantrag_id", $id);
+
+				//UnterstuetzerWidget::saveUnterstuetzerWidget($model, $messages, "AenderungsantragUnterstuetzer", "aenderungsantrag_id", $id);
 
                 $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
             }

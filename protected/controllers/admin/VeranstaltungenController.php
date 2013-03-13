@@ -41,7 +41,7 @@ class VeranstaltungenController extends GxController
 		$this->performAjaxValidation($model, 'veranstaltung-form');
 
 		if (isset($_POST['Veranstaltung'])) {
-			$model->setAttributes($_POST['Veranstaltung']);
+			$model->setAttributes($_POST['Veranstaltung'], false);
 			$relatedData = array();
 
 			if ($model->saveWithRelated($relatedData)) {

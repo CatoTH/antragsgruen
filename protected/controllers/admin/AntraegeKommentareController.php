@@ -33,7 +33,7 @@ class AntraegeKommentareController extends AdminControllerBase {
         $this->performAjaxValidation($model, 'antrag-kommentar-form');
 
         if (isset($_POST['AntragKommentar'])) {
-            $model->setAttributes($_POST['AntragKommentar']);
+            $model->setAttributes($_POST['AntragKommentar'], false);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum = EDateTimePicker::parseInput($_POST["AntragKommentar"], "datum");
 

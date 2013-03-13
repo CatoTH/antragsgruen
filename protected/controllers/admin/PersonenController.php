@@ -31,7 +31,7 @@ class PersonenController extends AdminControllerBase {
         $this->performAjaxValidation($model, 'person-form');
 
         if (isset($_POST['Person'])) {
-            $model->setAttributes($_POST['Person']);
+            $model->setAttributes($_POST['Person'], false);
             $relatedData = array(
                 'aenderungsantraege' => $_POST['Person']['aenderungsantraege'] === '' ? null : $_POST['Person']['aenderungsantraege'],
                 'antraege' => $_POST['Person']['antraege'] === '' ? null : $_POST['Person']['antraege'],
