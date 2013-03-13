@@ -29,9 +29,9 @@ $this->pageTitle = $aenderungsantrag->revision_name . " zu: " . $aenderungsantra
 
 $html = '<ul class="funktionen">';
 //$html .= '<li class="unterstuetzen"><a href="#">Änderungsantrag unterstützen</a></li>';
-//$html .= '<li class="download"><a href="#">PDF-Version herunterladen</a></li>';
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
 $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("aenderungsantrag/pdf", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
+$html .= '<li class="download">' . CHtml::link($sprache->get("PDF: Kompakt"), $this->createUrl("aenderungsantrag/pdfDiff", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
 if ($edit_link) $html .= '<li class="edit">' . CHtml::link("Änderungsantrag bearbeiten", $this->createUrl("aenderungsantrag/bearbeiten", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
 $html .= '<li class="zurueck">' . CHtml::link("Zurück zum Anfang", $this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id))) . '</li>
 </ul>';
@@ -243,13 +243,20 @@ $rows = 10;
 	$abs_alt = $aenderungsantrag->antrag->getParagraphs();
 	$abs_neu = json_decode($aenderungsantrag->text_neu);
 
+	$letztes_leer = false;
 	foreach ($abs_alt as $i=> $abs) {
-		echo "<div class='row-fluid'>";
-		/** @var AntragAbsatz $abs */
 		if (isset($abs_neu[$i]) && $abs_neu[$i] != "") {
+			$letztes_leer = false;
+			echo "<div class='row-fluid'>";
+			/** @var AntragAbsatz $abs */
 			echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i]);
-		} else echo HtmlBBcodeUtils::wrapWithTextClass(HtmlBBcodeUtils::bbcode2html($abs->str_bbcode));
-		echo "</div>\n";
+			echo "</div>\n";
+		} else {
+			if (!$letztes_leer) {
+				$letztes_leer = true;
+				echo "<div class='absatz_ueberspringen'>.<br>.<br>.</div>";
+			}
+		}
 	}
 	?>
 </div>

@@ -373,6 +373,7 @@ class HtmlBBcodeUtils
 		//echo "<br>OUT========<br>";
 		//echo CHtml::encode($text);
 
+		$text = str_replace("<br>\n", "<br>", $text);
 		$text = str_replace("\n", "<br>", $text);
 		$text = preg_replace("/<br *\/>/siu", "<br>", $text);
 

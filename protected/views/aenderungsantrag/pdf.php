@@ -2,6 +2,7 @@
 /**
  * @var Aenderungsantrag $model
  * @var Sprache $sprache
+ * @var bool $diff_ansicht
  */
 
 // Muss am Anfang stehen, ansonsten zerhaut's die Zeilenumbrüche; irgendwas mit dem internen Encoding
@@ -10,12 +11,12 @@ $absae = $model->getAntragstextParagraphs();
 // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-$initiatorinnen = array();
+$initiatorinnen       = array();
 $initiatorinnen_namen = array();
-$unterstuetzer = array();
+$unterstuetzer        = array();
 foreach ($model->aenderungsantragUnterstuetzer as $unt) {
 	if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) {
-		$initiatorinnen[] = $unt->unterstuetzer;
+		$initiatorinnen[]       = $unt->unterstuetzer;
 		$initiatorinnen_namen[] = $unt->unterstuetzer->name;
 	}
 	if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzer[] = $unt->unterstuetzer;
@@ -63,7 +64,7 @@ $pdf->AddPage();
 
 
 if ($model->antrag->veranstaltung0->yii_url == "ltwby13-programm") {
-	$logo      = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
+	$logo = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
 } else {
 	$logo = Yii::app()->params['pdf_logo'];
 }
@@ -134,40 +135,74 @@ $pdf->writeHTML("<h3>Antrag</h3>");
 $pdf->Ln(8);
 $pdf->SetFont("Courier", "", 10);
 
-$linenr = 1;
 
-foreach ($absae as $i=>$abs) {
-	/** @var AntragAbsatz $abs */
-	$text = $abs->str_html;
-	$zeilen = substr_count($text, "<span class='zeilennummer'>");
+if ($diff_ansicht) {
 
-	$abstand_bevor = array();
+	$abs_alt = $model->antrag->getParagraphs();
+	$abs_neu = json_decode($model->text_neu);
 
-	//preg_match_all("/<div[^>]*antragabsatz_holder[^>]*>(?:.*)<span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/siuU", $text, $matches);
-	//foreach ($matches[1] as $line) if ($line > 1) $abstand_bevor[$line] = 25;
+	$letztes_leer = true;
+	foreach ($abs_alt as $i=> $abs) {
+		if (isset($abs_neu[$i]) && $abs_neu[$i] != "") {
+			if ($letztes_leer) {
+				$letztes_leer = false;
 
-	preg_match_all("/<li><span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/siuU", $text, $matches);
-	foreach ($matches[1] as $line) if (isset($abstand_bevor[$line])) $abstand_bevor[$line] += 10;
-	else $abstand_bevor[$line] = 10;
+				preg_match("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $abs->str_html, $matches);
+				$zeile = (isset($matches[1]) ? IntVal($matches[1]) : "????");
 
-	preg_replace("/<li><span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/siuU", "<li style='margin-top: 10px;'>", $text);
+				$pdf->writeHTML("Ab Zeile $zeile:");
+			}
+			$pdf->writeHTML("<div class='row-fluid'>");
+			/** @var AntragAbsatz $abs */
+			$str = DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i]);
+			$str = str_replace(
+				array("<ins>", "</ins>", "<del>", "</del>"),
+				array("<span style=\"color: green; text-decoration: underline;\">", "</span>", "<span style=\"color: red; text-decoration: line-through;\">", "</span>"),
+				$str
+			);
+			$pdf->writeHTML($str);
+			$pdf->writeHTML("</div>\n");
+		}
+	}
 
-	preg_match_all("/<div[^>]*antragabsatz_holder[^>]*>(?:.*)<span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/siuU", $text, $matches);
 
-	$text = preg_replace("/<span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/sii", "", $text);
+} else {
 
-	$zeilennrs = array();
-	for ($i = 0; $i < $zeilen; $i++) $zeilennrs[] = $linenr++;
-	$text2 = implode("<br>", $zeilennrs);
+	$linenr = 1;
 
-	$y = $pdf->getY();
-	$pdf->writeHTMLCell(10, '', 12, $y, $text2, 0, 0, 0, true, '', true);
-	$pdf->writeHTMLCell(170, '',24, '', $text, 0, 1, 0, true, '', true);
+	foreach ($absae as $i => $abs) {
+		/** @var AntragAbsatz $abs */
+		$text   = $abs->str_html;
+		$zeilen = substr_count($text, "<span class='zeilennummer'>");
 
-	$pdf->Ln(4);
+		$abstand_bevor = array();
+
+		//preg_match_all("/<div[^>]*antragabsatz_holder[^>]*>(?:.*)<span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/siuU", $text, $matches);
+		//foreach ($matches[1] as $line) if ($line > 1) $abstand_bevor[$line] = 25;
+
+		preg_match_all("/<li><span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/siuU", $text, $matches);
+		foreach ($matches[1] as $line) if (isset($abstand_bevor[$line])) $abstand_bevor[$line] += 10;
+		else $abstand_bevor[$line] = 10;
+
+		preg_replace("/<li><span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/siuU", "<li style='margin-top: 10px;'>", $text);
+
+		preg_match_all("/<div[^>]*antragabsatz_holder[^>]*>(?:.*)<span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/siuU", $text, $matches);
+
+		$text = preg_replace("/<span class=[\"']zeilennummer[\"']>([0-9]+)<\/span>/sii", "", $text);
+
+		$zeilennrs = array();
+		for ($i = 0; $i < $zeilen; $i++) $zeilennrs[] = $linenr++;
+		$text2 = implode("<br>", $zeilennrs);
+
+		$y = $pdf->getY();
+		$pdf->writeHTMLCell(10, '', 12, $y, $text2, 0, 0, 0, true, '', true);
+		$pdf->writeHTMLCell(170, '', 24, '', $text, 0, 1, 0, true, '', true);
+
+		$pdf->Ln(4);
+
+	}
 
 }
-
 $html = '
 	</div>
 	<h3 style="margin-top: 0;">Begründung</h3>

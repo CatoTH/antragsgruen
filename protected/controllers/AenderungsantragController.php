@@ -79,7 +79,7 @@ class AenderungsantragController extends AntragsgruenController
 			}
 		}
 
-		if (AntiXSS::isTokenSet("mag")  && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
+		if (AntiXSS::isTokenSet("mag") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
 			$unt                      = new AenderungsantragUnterstuetzer();
@@ -140,7 +140,7 @@ class AenderungsantragController extends AntragsgruenController
 
 				if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
 					$kommentar_link = yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $aenderungsantrag->id, "antrag_id" => $aenderungsantrag->antrag->id, "kommentar_id" => $kommentar->id, "#" => "komm" . $kommentar->id));
-					$mails = explode(",", $this->veranstaltung->admin_email);
+					$mails          = explode(",", $this->veranstaltung->admin_email);
 					foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Kommentar - bitte freischalten.",
 						"Es wurde ein neuer Kommentar zum Änderungsantrag \"" . $aenderungsantrag->revision_name . " zu " . $aenderungsantrag->antrag->revision_name . " - " . $aenderungsantrag->antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
 							"Link: " . $kommentar_link,
@@ -214,8 +214,20 @@ class AenderungsantragController extends AntragsgruenController
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		$this->renderPartial("pdf", array(
-			'model'   => $aenderungsantrag,
-			"sprache" => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			"model"        => $aenderungsantrag,
+			"sprache"      => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			"diff_ansicht" => false,
+		));
+	}
+
+	public function actionPdfDiff($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	{
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+
+		$this->renderPartial("pdf", array(
+			"model"        => $aenderungsantrag,
+			"sprache"      => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			"diff_ansicht" => true,
 		));
 	}
 

@@ -434,6 +434,7 @@ h2,
 .antragstext_diff {
 	font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
 }
+.antrags_text_holder .absatz_ueberspringen { margin: 10px; text-align: center; font-size: 16px; }
 
 .antrags_text_holder .absatz_text ul,
 .antrags_text_holder .absatz_text ol {
