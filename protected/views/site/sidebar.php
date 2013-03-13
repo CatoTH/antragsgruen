@@ -38,13 +38,17 @@ if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 	$html .= "</ul></div>";
 	$this->menus_html[] = $html;
 
-	if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
-		$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
+//	if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
+//		$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
+// <img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
+// </a>';
+//	}
+}
+if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
+                $this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
 <img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
 </a>';
-	}
 }
-
 
 $html = "<div class='well'><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
 if (count($neueste_aenderungsantraege) == 0) $html .= "<li><i>keine</i></li>";
