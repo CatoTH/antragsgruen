@@ -96,7 +96,7 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<?php echo $form->error($model, 'status'); ?>
 </div>
 <!-- row -->
-
+<?php /*
 <div style="overflow: auto;">
     <label
             style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('aenderungsantragKommentare')); ?></label>
@@ -109,7 +109,7 @@ $form = $this->beginWidget('GxActiveForm', array(
 		?>
     </div>
 </div>
-
+*/ ?>
 <div style="overflow: auto;">
     <label
             style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('aenderungsantragUnterstuetzer')); ?></label>
