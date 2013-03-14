@@ -451,7 +451,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 <?php
 }
 
-if (count($aenderungsantraege) > 0 || $antrag->veranstaltung0->getPolicyAenderungsantraege()->getPolicyID() != "Admins") {
+if (count($aenderungsantraege) > 0 || $antrag->veranstaltung0->policy_aenderungsantraege != "Admins") {
 	?>
 	<div class="well">
 		<h2><?=$sprache->get("Änderungsanträge")?></h2>
