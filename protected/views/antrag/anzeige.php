@@ -222,7 +222,7 @@ foreach ($absae as $i => $abs) {
 			if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $antrag->veranstaltung0->isAdminCurUser()) {
 				$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 					'type'        => 'inline',
-					'htmlOptions' => array('class' => ''),
+					'htmlOptions' => array('class' => '', "style" => "clear: both;"),
 					'action' => $komm_link,
 				));
 				echo '<div style="display: inline-block; width: 49%; text-align: center;">';
