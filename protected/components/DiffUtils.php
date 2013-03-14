@@ -20,8 +20,111 @@ class Horde_Text_Diff_Renderer_Inline_Antrag extends Horde_Text_Diff_Renderer_In
 }
 class Horde_Text_Diff_Renderer_Inline_Antrag15 extends Horde_Text_Diff_Renderer_Inline
 {
-	protected $_leading_context_lines = 15;
-	protected $_trailing_context_lines = 15;
+
+	/**
+	 * Renders a diff.
+	 *
+	 * @param Horde_Text_Diff $diff  A Horde_Text_Diff object.
+	 *
+	 * @return string  The formatted output.
+	 */
+	public function render($diff)
+	{
+		$xi = $yi = 1;
+		$block = false;
+		$context = array();
+
+		$nlead = 2;
+		$ntrail = 2;
+
+		$output = $this->_startDiff();
+
+		$diffs = $diff->getDiff();
+		foreach ($diffs as $i => $edit) {
+			/* If these are unchanged (copied) lines, and we want to keep
+			 * leading or trailing context lines, extract them from the copy
+			 * block. */
+			if ($edit instanceof Horde_Text_Diff_Op_Copy) {
+				/* Do we have any diff blocks yet? */
+				if (is_array($block)) {
+					/* How many lines to keep as context from the copy
+					 * block. */
+					$keep = $i == count($diffs) - 1 ? $ntrail : $nlead + $ntrail;
+					if (count($edit->orig) <= $keep) {
+						/* We have less lines in the block than we want for
+						 * context => keep the whole block. */
+						$block[] = $edit;
+					} else {
+						if ($ntrail) {
+							/* Create a new block with as many lines as we need
+							 * for the trailing context. */
+							$context = array_slice($edit->orig, 0, $ntrail);
+							$block[] = new Horde_Text_Diff_Op_Copy($context);
+						}
+						/* @todo */
+						$output .= $this->_block($x0, $ntrail + $xi - $x0,
+							$y0, $ntrail + $yi - $y0,
+							$block);
+						$block = false;
+					}
+				}
+				/* Keep the copy block as the context for the next block. */
+				$context = $edit->orig;
+			} else {
+				/* Don't we have any diff blocks yet? */
+				if (!is_array($block)) {
+					/* Extract context lines from the preceding copy block. */
+					$context = array_slice($context, count($context) - $nlead);
+					$x0 = $xi - count($context);
+					$y0 = $yi - count($context);
+					$block = array();
+					if ($context) {
+						$block[] = new Horde_Text_Diff_Op_Copy($context);
+					}
+				}
+				$block[] = $edit;
+			}
+
+			if ($edit->orig) {
+				$xi += count($edit->orig);
+			}
+			if ($edit->final) {
+				$yi += count($edit->final);
+			}
+		}
+
+		if (is_array($block)) {
+			$output .= $this->_block($x0, $xi - $x0,
+				$y0, $yi - $y0,
+				$block);
+		}
+
+		return $output . $this->_endDiff();
+	}
+
+	protected function _block($xbeg, $xlen, $ybeg, $ylen, &$edits)
+	{
+		$output = "";
+
+		foreach ($edits as $edit) {
+			switch (get_class($edit)) {
+				case 'Horde_Text_Diff_Op_Add':
+					$output .= "Neu hinzufügen:\n" . $this->_added($edit->final);
+					break;
+
+				case 'Horde_Text_Diff_Op_Delete':
+					$output .= "Streichen:\n" . $this->_deleted($edit->orig);
+					break;
+
+				case 'Horde_Text_Diff_Op_Change':
+					$output .= $this->_changed($edit->orig, $edit->final);
+					break;
+			}
+		}
+
+		return $output;
+	}
+
 }
 
 class Horde_Text_Diff_Renderer_Inline_Antrag1000 extends Horde_Text_Diff_Renderer_Inline
@@ -209,6 +312,12 @@ class DiffUtils
 		if ($compact) {
 			$renderer  = new Horde_Text_Diff_Renderer_Inline_Antrag15();
 			$absatz = $renderer->render($diff);
+			if (isset($_REQUEST["test"])) {
+				echo "<pre>";
+				var_dump($diff);
+				var_dump($absatz);
+				die();
+			}
 		} else {
 			$absatz = DiffUtils::renderAbsatzDiff($diff);
 		}
