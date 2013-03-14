@@ -45,19 +45,22 @@ if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 //	}
 }
 if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
-                $this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
+	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
 <img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
 </a>';
 }
 
-$html = "<div class='well'><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
-if (count($neueste_aenderungsantraege) == 0) $html .= "<li><i>keine</i></li>";
-else foreach ($neueste_aenderungsantraege as $ant) {
-	$zu_str = ($veranstaltung->revision_name_verstecken ? CHtml::encode($ant->antrag->name) : CHtml::encode($ant->antrag->revision_name));
-	$html .= "<li class='aeantrag'>" . CHtml::link("<strong>" . CHtml::encode($ant["revision_name"]) . "</strong> zu " . $zu_str, $this->createUrl("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $ant->id, "antrag_id" => $ant->antrag->id))) . "</li>\n";
+
+if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
+	$html = "<div class='well'><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
+	if (count($neueste_aenderungsantraege) == 0) $html .= "<li><i>keine</i></li>";
+	else foreach ($neueste_aenderungsantraege as $ant) {
+		$zu_str = ($veranstaltung->revision_name_verstecken ? CHtml::encode($ant->antrag->name) : CHtml::encode($ant->antrag->revision_name));
+		$html .= "<li class='aeantrag'>" . CHtml::link("<strong>" . CHtml::encode($ant["revision_name"]) . "</strong> zu " . $zu_str, $this->createUrl("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $ant->id, "antrag_id" => $ant->antrag->id))) . "</li>\n";
+	}
+	$html .= "</ul></div>";
+	$this->menus_html[] = $html;
 }
-$html .= "</ul></div>";
-$this->menus_html[] = $html;
 
 if ($veranstaltung->typ == Veranstaltung::$TYP_PROGRAMM) {
 	if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
@@ -83,7 +86,7 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Feeds</li>";
 
 if (!in_array($veranstaltung->policy_antraege, array("Admins"))) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("site/feedAntraege")) . "</li>";
-$html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("site/feedAenderungsantraege")) . "</li>";
+if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("site/feedAenderungsantraege")) . "</li>";
 if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("site/feedKommentare")) . "</li>";
 $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("site/feedAlles")) . "</li>";
 $html .= "</ul></div>";
