@@ -366,7 +366,7 @@ class SiteController extends AntragsgruenController
 		$model = new OAuthLoginForm();
 		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
 
-		if (isset($_REQUEST["password"]) && isset($_REQUEST["OAuthLoginForm"]["wurzelwerk"])) {
+		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["OAuthLoginForm"]["wurzelwerk"])) {
 			$username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
 
 			/** @var Person $user  */
