@@ -40,7 +40,7 @@ $('.search-form form').submit(function(){
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'           => 'aenderungsantrag-grid',
-	'dataProvider' => $model->search(),
+	'dataProvider' => $model->search($this->veranstaltung->id),
 	'filter'       => $model,
 	'columns'      => array(
 		'id',
@@ -49,8 +49,10 @@ $('.search-form form').submit(function(){
 			'value' => 'GxHtml::valueEx($data->antrag)',
 			'filter'=> GxHtml::listDataEx(Antrag::model()->findAllAttributes("name", true), "id", "name"),
 		),
+		/*
 		'text_neu',
 		'begruendung_neu',
+		*/
 		'aenderung_text',
 		'aenderung_begruendung',
 		/*
@@ -61,6 +63,7 @@ $('.search-form form').submit(function(){
 		*/
 		array(
 			'class' => 'CButtonColumn',
+			'template'=>'{update}',
 		),
 	),
 )); ?>

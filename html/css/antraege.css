@@ -718,6 +718,11 @@ legend {
 	width: 220px;
 	vertical-align: top;
 }
+.search-form label {
+	display: inline-block;
+	width: 220px;
+	vertical-align: top;
+}
 
 #veranstaltung-form input[type=text], #veranstaltung-form select, #veranstaltung-form textarea {
 	margin-bottom: 0;

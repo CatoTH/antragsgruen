@@ -17,11 +17,6 @@ $form = $this->beginWidget('GxActiveForm', array(
 	</div>
 
 	<div>
-		<?php echo $form->label($model, 'veranstaltung'); ?>
-		<?php echo $form->dropDownList($model, 'veranstaltung', GxHtml::listDataEx(Veranstaltung::model()->findAllAttributes(null, true)), array('prompt' => Yii::t('app', 'All'))); ?>
-	</div>
-
-	<div>
 		<?php echo $form->label($model, 'abgeleitet_von'); ?>
 		<?php echo $form->dropDownList($model, 'abgeleitet_von', GxHtml::listDataEx(Antrag::model()->findAllAttributes(null, true)), array('prompt' => Yii::t('app', 'All'))); ?>
 	</div>

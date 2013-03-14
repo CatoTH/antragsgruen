@@ -88,12 +88,13 @@ class AntraegeController extends GxController
 		));
 	}
 
+
 	public function actionDelete($veranstaltung_id, $id)
 	{
 		$this->loadVeranstaltung($veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) return;
 
-		/** @var Antrag $antrag  */
+		/** @var Antrag $antrag */
 		$antrag = $this->loadModel($id, 'Antrag');
 		if ($antrag->veranstaltung != $this->veranstaltung->id) return;
 
@@ -131,6 +132,9 @@ class AntraegeController extends GxController
 
 		if (isset($_GET['Antrag']))
 			$model->setAttributes($_GET['Antrag']);
+
+		$model->veranstaltung = $this->veranstaltung->id;
+		$model->veranstaltung0 = $this->veranstaltung;
 
 		$this->render('admin', array(
 			'model' => $model,

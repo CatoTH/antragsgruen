@@ -92,11 +92,20 @@ abstract class BaseAenderungsantrag extends IAntrag {
 		);
 	}
 
-	public function search() {
+	public function search($veranstaltung_id) {
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id);
-		$criteria->compare('antrag_id', $this->antrag_id);
+
+		if (is_null($this->antrag)) {
+			$ids = array();
+			/** @var Antrag[]|array $antraege */
+			$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung" => $veranstaltung_id));
+			foreach ($antraege as $ant) $ids[] = $ant->id;
+			$criteria->addInCondition("antrag_id", $ids);
+		} else {
+			$criteria->compare('antrag_id', $this->antrag_id);
+		}
 		$criteria->compare('revision_name', $this->revision_name, true);
 		$criteria->compare('name_neu', $this->name_neu, true);
 		$criteria->compare('text_neu', $this->text_neu, true);
