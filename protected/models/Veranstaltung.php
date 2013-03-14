@@ -175,6 +175,9 @@ class Veranstaltung extends BaseVeranstaltung
 			*/
 			$antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key] = $ant;
 		}
+		if (!in_array($this->yii_url, array("ltwby13-programm", "btw13-programm"))) foreach ($antraege_sorted as $key=>$val) {
+			ksort($antraege_sorted[$key]);
+		}
 		return $antraege_sorted;
 	}
 
