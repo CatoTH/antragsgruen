@@ -3,26 +3,27 @@
 /* @var $data Texte */
 ?>
 
-<div class="view">
+<table class="view">
 
-	<?php echo GxHtml::encode($data->getAttributeLabel('id')); ?>:
-	<?php echo GxHtml::link(GxHtml::encode($data->id), array('view', 'id' => $data->id)); ?>
-    <br>
+	<tr>
+	<th><?php echo GxHtml::encode($data->getAttributeLabel('text_id')); ?>:</th>
+	<td><?php echo GxHtml::link(GxHtml::encode($data->text_id) . " (ID " . GxHtml::encode($data->id) . ")", array('update', 'id' => $data->id)); ?></td>
+	</tr>
 
-	<?php echo GxHtml::encode($data->getAttributeLabel('text_id')); ?>:
-	<?php echo GxHtml::encode($data->text_id); ?>
-    <br>
-	<?php if ($data->veranstaltung_id > 0) {
-	echo GxHtml::encode($data->getAttributeLabel('veranstaltung_id')); ?>:
-	<?php echo GxHtml::encode($data->veranstaltung->name); ?>
-    <br>
-	<?
-}
-	echo GxHtml::encode($data->getAttributeLabel('edit_datum')); ?>:
-	<?php echo GxHtml::encode($data->edit_datum); ?>
-    <br>
-	<?php echo GxHtml::encode($data->getAttributeLabel('edit_person')); ?>:
-	<?php echo GxHtml::encode($data->editPerson->name); ?>
-    <br>
+	<tr>
+		<th>Veranstaltung:</th>
+		<td>
+	<?php if ($data->veranstaltung_id > 0) echo GxHtml::encode($data->veranstaltung->name); ?>
+		</td>
+	</tr>
+	<tr>
+	<th><?php echo GxHtml::encode($data->getAttributeLabel('edit_datum')); ?>:</th>
+	<td><?php echo GxHtml::encode($data->edit_datum); ?></td>
+	</tr>
 
-</div>
+	<tr>
+	<th><?php echo GxHtml::encode($data->getAttributeLabel('edit_person')); ?>:</th>
+	<td><?php echo GxHtml::encode($data->editPerson->name); ?></td>
+	</tr>
+
+</table>

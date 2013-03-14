@@ -22,11 +22,6 @@
 	</div>
 
 	<div>
-		<?php echo $form->label($model, 'veranstaltung_id'); ?>
-		<?php echo $form->dropDownList($model, 'veranstaltung_id', GxHtml::listDataEx(Veranstaltung::model()->findAllAttributes(null, true)), array('prompt' => Yii::t('app', 'All'))); ?>
-	</div>
-
-	<div>
 		<?php echo $form->label($model, 'text'); ?>
 		<?php echo $form->textArea($model, 'text'); ?>
 	</div>
@@ -34,11 +29,6 @@
 	<div>
 		<?php echo $form->label($model, 'edit_datum'); ?>
 		<?php echo $form->textField($model, 'edit_datum'); ?>
-	</div>
-
-	<div>
-		<?php echo $form->label($model, 'edit_person'); ?>
-		<?php echo $form->dropDownList($model, 'edit_person', GxHtml::listDataEx(Person::model()->findAllAttributes(null, true)), array('prompt' => Yii::t('app', 'All'))); ?>
 	</div>
 
 	<div class="row buttons">

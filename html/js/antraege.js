@@ -11,7 +11,7 @@
 		ev.preventDefault();
 	});
 	$(".unterstuetzerwidget_adder").hide();
-	$(function() {
+	if ($(".unterstuetzerwidget").length > 0) $(function() {
 		$(".unterstuetzerwidget").sortable({
 			handle: ".sort_handle",
 			tolerance: "pointer",

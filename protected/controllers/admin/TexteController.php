@@ -59,6 +59,11 @@ class TexteController extends GxController {
 		if (isset($_POST['Texte'])) {
 			$model->setAttributes($_POST['Texte']);
 
+			$model->edit_datum = new CDbExpression('NOW()');
+			/** @var Person $ich  */
+			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			$model->edit_person = $ich->id;
+
 			if ($model->save()) {
 				$this->redirect(array('view', 'id' => $model->id));
 			}
@@ -75,7 +80,7 @@ class TexteController extends GxController {
 
 		/** @var Texte $text  */
 		$text = $this->loadModel($id, 'Texte');
-		if (!$text->veranstaltung->id != $this->veranstaltung->id) return;
+		if ($text->veranstaltung->id != $this->veranstaltung->id) return;
 
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
 			$text->delete();
@@ -107,6 +112,9 @@ class TexteController extends GxController {
 
 		if (isset($_GET['Texte']))
 			$model->setAttributes($_GET['Texte']);
+
+		$model->veranstaltung_id = $this->veranstaltung->id;
+		$model->veranstaltung = $this->veranstaltung;
 
 		$this->render('admin', array(
 			'model' => $model,

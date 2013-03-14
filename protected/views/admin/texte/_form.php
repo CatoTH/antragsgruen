@@ -30,23 +30,15 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 		<?php echo $form->error($model, 'text_id'); ?>
     </div>
     <!-- row -->
-    <div>
-		<?php echo $form->labelEx($model, 'edit_datum'); ?>
-		<?php echo $form->textField($model, 'edit_datum'); ?>
-		<?php echo $form->error($model, 'edit_datum'); ?>
-    </div>
-    <!-- row -->
-    <div>
-		<?php echo $form->labelEx($model, 'edit_person'); ?>
-		<?php echo $form->dropDownList($model, 'edit_person', GxHtml::listDataEx(Person::model()->findAllAttributes("name", true), null, "name")); ?>
-		<?php echo $form->error($model, 'edit_person'); ?>
-    </div>
-    <!-- row -->
     <div style="margin-left: 10px;">
 		<?php echo $form->textArea($model, 'text'); ?>
 		<?php echo $form->error($model, 'text'); ?>
     </div>
+
 	<?php
+
+	if ($model->editPerson != null) echo "Zuletzt geändert: " . $model->edit_datum . " von " . CHtml::encode($model->editPerson->name);
+
 	if (in_array($model->text_id, Veranstaltung::getHTMLStandardtextIDs())) {
 	?>
     <script>
