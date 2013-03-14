@@ -115,11 +115,19 @@ class Aenderungsantrag extends BaseAenderungsantrag
 	}
 
 	/**
+	 * @param int $veranstaltung_id
 	 * @param string $suchbegriff
 	 * @return array|Aenderungsantrag[]
 	 */
-	public static function suche($suchbegriff) {
-		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")");
+	public static function suche($veranstaltung_id, $suchbegriff) {
+		$ids = array();
+
+		/** @var array|Antrag[] $antraege  */
+		$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung" => $veranstaltung_id));
+		foreach ($antraege as $ant) $ids[] = $ant->id;
+		if (count($ids) == 0) return array();
+
+		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND antrag_id IN (" . implode(", ", $ids) . ")");
 	}
 
 

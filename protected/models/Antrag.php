@@ -218,12 +218,13 @@ class Antrag extends BaseAntrag
 
 
 	/**
+	 * @param int $veranstaltung_id
 	 * @param string $suchbegriff
 	 * @return array|Antrag[]
 	 */
-	public static function suche($suchbegriff)
+	public static function suche($veranstaltung_id, $suchbegriff)
 	{
-		return Antrag::model()->findAll("(`text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")");
+		return Antrag::model()->findAll("(`text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND veranstaltung = " . IntVal($veranstaltung_id));
 	}
 
 

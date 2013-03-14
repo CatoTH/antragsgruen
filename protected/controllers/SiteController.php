@@ -204,8 +204,8 @@ class SiteController extends AntragsgruenController
 		$neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung->id, 3);
 
 		$suchbegriff        = $_REQUEST["suchbegriff"];
-		$antraege           = Antrag::suche($suchbegriff);
-		$aenderungsantraege = Aenderungsantrag::suche($suchbegriff);
+		$antraege           = Antrag::suche($veranstaltung->id, $suchbegriff);
+		$aenderungsantraege = Aenderungsantrag::suche($veranstaltung->id, $suchbegriff);
 
 		$this->render('suche', array(
 			"veranstaltung"              => $veranstaltung,
