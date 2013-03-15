@@ -32,7 +32,7 @@ class AenderungsantraegeController extends GxController {
 
     public function actionUpdate($veranstaltung_id, $id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
         /** @var $model Aenderungsantrag */
         $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
@@ -81,7 +81,7 @@ class AenderungsantraegeController extends GxController {
 
     public function actionDelete($veranstaltung_id, $id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var $model Aenderungsantrag */
 		$model = $this->loadModel($id, 'Aenderungsantrag');
@@ -106,7 +106,7 @@ class AenderungsantraegeController extends GxController {
 
     public function actionIndex($veranstaltung_id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$aenderungsantraege = Aenderungsantrag::model()->with(array(
 			"antrag" => array('condition'=>'antrag.veranstaltung=' . IntVal($this->veranstaltung->id))
@@ -121,7 +121,7 @@ class AenderungsantraegeController extends GxController {
 
     public function actionAdmin($veranstaltung_id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
         $model = new Aenderungsantrag('search');
         $model->unsetAttributes();

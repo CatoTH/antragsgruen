@@ -7,7 +7,7 @@ class IndexController extends AntragsgruenController
 	public function actionKommentareexcel($veranstaltung_id = "") {
 		if ($veranstaltung_id == "") $veranstaltung_id = Yii::app()->params['standardVeranstaltung'];
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$kommentare = array();
 
@@ -28,7 +28,7 @@ class IndexController extends AntragsgruenController
 	{
 		if ($veranstaltung_id == "") $veranstaltung_id = Yii::app()->params['standardVeranstaltung'];
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$todo = array(
 //			array("Text anlegen", array("admin/texte/update", array())),

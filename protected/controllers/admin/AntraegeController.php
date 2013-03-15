@@ -42,7 +42,7 @@ class AntraegeController extends GxController
 	public function actionUpdate($veranstaltung_id, $id)
 	{
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var $model Antrag */
 		$model = Antrag::model()->with("antragUnterstuetzer", "antragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
@@ -92,7 +92,7 @@ class AntraegeController extends GxController
 	public function actionDelete($veranstaltung_id, $id)
 	{
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var Antrag $antrag */
 		$antrag = $this->loadModel($id, 'Antrag');
@@ -111,7 +111,7 @@ class AntraegeController extends GxController
 	public function actionIndex($veranstaltung_id)
 	{
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$dataProvider = new CActiveDataProvider('Antrag');
 		$dataProvider->sort->defaultOrder = "datum_einreichung DESC";
@@ -125,7 +125,7 @@ class AntraegeController extends GxController
 	public function actionAdmin($veranstaltung_id)
 	{
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$model = new Antrag('search');
 		$model->unsetAttributes();

@@ -18,7 +18,7 @@ class TexteController extends GxController {
 
 	public function actionCreate($veranstaltung_id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var $model Texte */
 		$model = new Texte;
@@ -46,7 +46,7 @@ class TexteController extends GxController {
 
 	public function actionUpdate($veranstaltung_id, $id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var Texte $model  */
 		$model = $this->loadModel($id, 'Texte');
@@ -79,7 +79,7 @@ class TexteController extends GxController {
 
 	public function actionDelete($veranstaltung_id, $id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var Texte $text  */
 		$text = $this->loadModel($id, 'Texte');
@@ -96,7 +96,7 @@ class TexteController extends GxController {
 
 	public function actionIndex($veranstaltung_id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('veranstaltung_id', $this->veranstaltung->id);
@@ -108,7 +108,7 @@ class TexteController extends GxController {
 
 	public function actionAdmin($veranstaltung_id) {
 		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$model = new Texte('search');
 		$model->unsetAttributes();
