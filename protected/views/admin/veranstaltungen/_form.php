@@ -160,7 +160,14 @@ $form = $this->beginWidget('GxActiveForm', array(
 </div>
 <br>
 
-<h2>Anträge</h2>
+	<div>
+		<label style="display: inline;"><input type="radio" name="Veranstaltung[ansicht_minimalistisch]" value="0" <?php if ($model->ansicht_minimalistisch != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="Veranstaltung[ansicht_minimalistisch]" value="1" <?php if ($model->ansicht_minimalistisch == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		<strong>Minimalistische Ansicht</strong> <small>Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>
+	</div>
+	<br>
+
+	<h2>Anträge</h2>
 <br>
 <!-- row -->
 <div>

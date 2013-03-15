@@ -58,7 +58,7 @@ $this->menus_html[] = $html;
 		else echo CHtml::encode($antrag->name);
 		?></h1>
 
-	<div class="antragsdaten well" style="min-height: 114px;">
+	<div class="antragsdaten well" style="min-height: <?php if ($antrag->veranstaltung0->ansicht_minimalistisch && Yii::app()->user->isGuest) echo "60"; else echo "114"; ?>px;">
 		<div id="socialshareprivacy"></div>
 		<script>
 			$(function ($) {
@@ -67,71 +67,75 @@ $this->menus_html[] = $html;
 				});
 			});
 		</script>
-		<div class="content">
-			<table style="width: 100%;" class="antragsdaten">
-				<tr>
-					<th><?=$sprache->get("Veranstaltung")?>:</th>
-					<td><?php
-						echo CHtml::link(CHtml::encode($antrag->veranstaltung0->name), array('/veranstaltung/anzeige/?id=' . $antrag->veranstaltung));
-						?></td>
-				</tr>
-				<tr>
-					<th><?=$sprache->get("AntragsstellerIn")?>:</th>
-					<td><?php
-						$x = array();
-						foreach ($antragstellerinnen as $a) {
-							$x[] = CHtml::encode($a->name);
-						}
-						echo implode(", ", $x);
-						?></td>
-				</tr>
-				<tr>
-					<th>Status:</th>
-					<td><?php
-						echo CHtml::encode(IAntrag::$STATI[$antrag->status]);
-						?></td>
-				</tr>
-				<?php if ($antrag->datum_beschluss != "") { ?>
+
+		<?php if (!$antrag->veranstaltung0->ansicht_minimalistisch) { ?>
+
+			<div class="content">
+				<table style="width: 100%;" class="antragsdaten">
 					<tr>
-						<th>Beschlossen am:</th>
+						<th><?=$sprache->get("Veranstaltung")?>:</th>
 						<td><?php
-							echo HtmlBBcodeUtils::formatMysqlDate($antrag->datum_beschluss);
+							echo CHtml::link(CHtml::encode($antrag->veranstaltung0->name), array('/veranstaltung/anzeige/?id=' . $antrag->veranstaltung));
 							?></td>
 					</tr>
-				<?php } ?>
-				<tr>
-					<th>Eingereicht:</th>
-					<td><?php
-						echo HtmlBBcodeUtils::formatMysqlDateTime($antrag->datum_einreichung);
-						?></td>
-				</tr>
-				<?php if (count($antrag->antraege) > 0) { ?>
 					<tr>
-						<th>Ersetzt den Antrag:</th>
-						<td>
-							<?php foreach ($antrag->antraege as $a) {
-								echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
-							} ?>
-						</td>
+						<th><?=$sprache->get("AntragsstellerIn")?>:</th>
+						<td><?php
+							$x = array();
+							foreach ($antragstellerinnen as $a) {
+								$x[] = CHtml::encode($a->name);
+							}
+							echo implode(", ", $x);
+							?></td>
 					</tr>
-				<?php } ?>
-			</table>
+					<tr>
+						<th>Status:</th>
+						<td><?php
+							echo CHtml::encode(IAntrag::$STATI[$antrag->status]);
+							?></td>
+					</tr>
+					<?php if ($antrag->datum_beschluss != "") { ?>
+						<tr>
+							<th>Beschlossen am:</th>
+							<td><?php
+								echo HtmlBBcodeUtils::formatMysqlDate($antrag->datum_beschluss);
+								?></td>
+						</tr>
+					<?php } ?>
+					<tr>
+						<th>Eingereicht:</th>
+						<td><?php
+							echo HtmlBBcodeUtils::formatMysqlDateTime($antrag->datum_einreichung);
+							?></td>
+					</tr>
+					<?php if (count($antrag->antraege) > 0) { ?>
+						<tr>
+							<th>Ersetzt den Antrag:</th>
+							<td>
+								<?php foreach ($antrag->antraege as $a) {
+									echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
+								} ?>
+							</td>
+						</tr>
+					<?php } ?>
+				</table>
 
-			<div class="hidden-desktop">
-				<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-					<a href="<?= CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) ?>" class="btn" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
-				</div>
-				<?
-				$policy = $antrag->veranstaltung0->getPolicyAenderungsantraege();
-				if ($policy->checkCurUserHeuristically()) {
-					?>
+				<div class="hidden-desktop">
 					<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-						<a href="<?= CHtml::encode($this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id))) ?>" class="btn btn-danger" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
+						<a href="<?= CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) ?>" class="btn" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
 					</div>
-				<? } ?>
+					<?
+					$policy = $antrag->veranstaltung0->getPolicyAenderungsantraege();
+					if ($policy->checkCurUserHeuristically()) {
+						?>
+						<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
+							<a href="<?= CHtml::encode($this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id))) ?>" class="btn btn-danger" style="color: white;"><i class="icon-aender-stellen"></i> <?=CHtml::encode($sprache->get("Änderungsantrag stellen"))?></a>
+						</div>
+					<? } ?>
+				</div>
 			</div>
-		</div>
 		<?php
+		}
 		$this->widget('bootstrap.widgets.TbAlert', array(
 			'block' => true,
 			'fade'  => true,

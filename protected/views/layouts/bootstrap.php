@@ -5,6 +5,8 @@
 $row_classes = array();
 if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_comments";
 
+$minimalistisch = (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->ansicht_minimalistisch);
+
 ?><!DOCTYPE HTML>
 <html lang="de">
 <head>
@@ -42,9 +44,10 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 					<ul class="nav">
 						<li class="active"><a href="<?=CHtml::encode($this->createUrl("site/veranstaltung"))?>">Start</a></li>
 						<li><a href="<?=CHtml::encode($this->createUrl("site/hilfe"))?>">Hilfe</a></li>
-						<?php if (Yii::app()->user->isGuest) { ?>
+						<?php if (Yii::app()->user->isGuest && !$minimalistisch) { ?>
 						<li><a href="<?=CHtml::encode($this->createUrl("site/login", array("back" => yii::app()->getRequest()->requestUri)))?>">Login</a></li>
-						<?php } else { ?>
+						<?php }
+						if (!Yii::app()->user->isGuest) { ?>
 						<li><a href="<?=CHtml::encode($this->createUrl("site/logout", array("back" => yii::app()->getRequest()->requestUri)))?>">Logout</a></li>
 						<?php
 					}

@@ -25,6 +25,7 @@
  * @property string $fb_logo_url
  * @property integer $revision_name_verstecken
  * @property integer $kommentare_unterstuetzbar
+ * @property integer $ansicht_minimalistisch
  *
  * @property Antrag[] $antraege
  * @property VeranstaltungPerson[] $veranstaltung_personen
@@ -56,7 +57,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name, freischaltung_antraege, yii_url, freischaltung_aenderungsantraege, revision_name_verstecken, kommentare_unterstuetzbar freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'required'),
+			array('name, freischaltung_antraege, yii_url, freischaltung_aenderungsantraege, revision_name_verstecken, kommentare_unterstuetzbar, ansicht_minimalistisch, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails', 'required'),
 			array('name, logo_url, fb_logo_url', 'length', 'max' => 200),
 			array('name_kurz, yii_url', 'length', 'max' => 45),
 			array('antragsschluss, antrag_einleitung, admin_email', 'safe'),
@@ -111,6 +112,7 @@ abstract class BaseVeranstaltung extends GxActiveRecord
 			'bestaetigungs_emails'             => Yii::t('app', 'Bestätigungsmails an AntragsStellerInnen'),
 			'revision_name_verstecken'         => Yii::t('app', 'Revisionsname verstecken'),
 			'kommentare_unterstuetzbar'        => Yii::t('app', 'Kommentare unterstützbar'),
+			'ansicht_minimalistisch'          => Yii::t('app', 'Minimalistische Ansicht'),
 		);
 	}
 
