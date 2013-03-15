@@ -359,9 +359,9 @@ class SiteController extends AntragsgruenController
 	/**
 	 *
 	 */
-	public function actionLogin($back = "")
+	public function actionLogin($veranstaltung_id = "", $back = "")
 	{
-		$this->setStdVeranstaltung();
+		$this->loadVeranstaltung($veranstaltung_id);
 
 		$model = new OAuthLoginForm();
 		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
@@ -476,8 +476,10 @@ class SiteController extends AntragsgruenController
 	/**
 	 *
 	 */
-	public function actionLogout($back = "")
+	public function actionLogout($veranstaltung_id = "", $back = "")
 	{
+		$this->loadVeranstaltung($veranstaltung_id);
+
 		Yii::app()->user->logout();
 		Yii::app()->user->setFlash("success", "Bis bald!");
 		if ($back == "") $back = Yii::app()->homeUrl;
