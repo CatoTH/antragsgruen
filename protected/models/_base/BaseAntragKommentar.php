@@ -42,7 +42,7 @@ abstract class BaseAntragKommentar extends IKommentar {
 	public function rules() {
 		return array(
 			array('text, datum', 'required'),
-			array('verfasser_id, antrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
+			array('id, verfasser_id, antrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
 			array('verfasser_id, antrag_id, absatz, status', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('id, verfasser_id, antrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
 		);

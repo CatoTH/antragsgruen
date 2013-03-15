@@ -27,19 +27,19 @@ class AenderungsantragKommentar extends BaseAenderungsantragKommentar
 	 * @return array|AenderungsantragKommentar[]
 	 */
 	public static function holeNeueste($veranstaltung_id = 0, $limit = 0) {
-		$veranstaltungs_where = ($veranstaltung_id > 0 ? "AND c.veranstaltung = " . IntVal($veranstaltung_id) : "");
-		$limit = ($limit > 0 ? "LIMIT 0, " . IntVal($limit) : "");
-		$SQL = "SELECT a.* FROM aenderungsantrag_kommentar a JOIN aenderungsantrag b ON a.aenderungsantrag_id = b.id JOIN antrag c ON c.id = b.antrag_id
-			WHERE a.status != " . IKommentar::$STATUS_GELOESCHT . " AND b.status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND c.status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")
-			$veranstaltungs_where ORDER BY a.datum DESC $limit";
+		$antrag_ids = array();
+		/** @var array|Antrag[] $antraege */
+		$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung" => $veranstaltung_id));
+		foreach ($antraege as $a) $antrag_ids[] = $a->id;
 
-		$list= Yii::app()->db->createCommand($SQL)->queryAll();
-		$arr = array();
-		foreach ($list as $l) {
-			$x = new AenderungsantragKommentar();
-			$x->attributes = $l;
-			$arr[] = $x;
-		}
+		if (count($antrag_ids) == 0) return array();
+
+		$condition = ($limit > 0 ? array("limit" => $limit) : "");
+		$arr = AenderungsantragKommentar::model()->with(array(
+			"aenderungsantrag" => array(
+				"condition" => "aenderungsantrag.status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND aenderungsantrag.antrag_id IN (" . implode(", ", $antrag_ids) . ")"
+			),
+		))->findAllByAttributes(array("status" => AenderungsantragKommentar::$STATUS_FREI), $condition);
 		return $arr;
 	}
 }
