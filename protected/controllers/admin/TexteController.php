@@ -29,6 +29,10 @@ class TexteController extends GxController {
 			$model->setAttributes($_POST['Texte'], false);
 			$model->veranstaltung = $this->veranstaltung;
 			$model->veranstaltung_id = $this->veranstaltung->id;
+			$model->edit_datum = new CDbExpression('NOW()');
+			/** @var Person $ich  */
+			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			$model->edit_person = $ich->id;
 
 			if ($model->save()) {
 				if (Yii::app()->getRequest()->getIsAjaxRequest())
