@@ -26,6 +26,7 @@ class AntragController extends AntragsgruenController
 			} else {
 				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
 			}
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
 
 		if (AntiXSS::isTokenSet("komm_freischalten") && $kommentar_id > 0) {
@@ -50,6 +51,7 @@ class AntragController extends AntragsgruenController
 			} else {
 				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
 			}
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
 
 		if (AntiXSS::isTokenSet("komm_dafuer") && $this->veranstaltung->kommentare_unterstuetzbar) {
