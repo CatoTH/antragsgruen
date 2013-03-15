@@ -62,6 +62,8 @@ class AntragsgruenController extends CController
 			return null;
 		}
 
+		if (!is_a($this->veranstaltung, "Veranstaltung") || $this->veranstaltung->policy_kommentare == Veranstaltung::$POLICY_NIEMAND) $this->text_comments = false;
+
 		return $this->veranstaltung;
 	}
 }
