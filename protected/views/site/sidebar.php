@@ -85,10 +85,20 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Feeds</li>";
 
-if (!in_array($veranstaltung->policy_antraege, array("Admins"))) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("site/feedAntraege")) . "</li>";
-if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("site/feedAenderungsantraege")) . "</li>";
-if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("site/feedKommentare")) . "</li>";
-$html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("site/feedAlles")) . "</li>";
+$feeds = 0;
+if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
+	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("site/feedAntraege")) . "</li>";
+	$feeds++;
+}
+if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
+	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("site/feedAenderungsantraege")) . "</li>";
+	$feeds++;
+}
+if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
+	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("site/feedKommentare")) . "</li>";
+	$feeds++;
+}
+if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("site/feedAlles")) . "</li>";
 $html .= "</ul></div>";
 
 $this->menus_html[] = $html;
