@@ -36,6 +36,9 @@ class TexteController extends GxController {
 				else
 					$this->redirect(array('view', 'id' => $model->id));
 			}
+		} elseif (isset($_REQUEST["key"])) {
+			$stdtext = $this->veranstaltung->getStandardtext($_REQUEST["key"]);
+			$model->text = $stdtext->getText();
 		}
 
 		$this->render('create', array( 'model' => $model));
