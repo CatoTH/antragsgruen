@@ -156,6 +156,7 @@
     z-index: 1000;
     margin: 0;
     padding: 0;
+	position: relative;
 }
 .social_share_privacy_area li.settings_info .settings_info_menu.off {
 	border-width: 0;
