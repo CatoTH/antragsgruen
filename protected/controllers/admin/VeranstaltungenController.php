@@ -42,6 +42,10 @@ class VeranstaltungenController extends GxController
 
 		if (isset($_POST['Veranstaltung'])) {
 			$model->setAttributes($_POST['Veranstaltung'], false);
+
+			$einstellungen = $model->getEinstellungen();
+			$model->setEinstellungen($einstellungen);
+
 			$relatedData = array();
 
 			if ($model->saveWithRelated($relatedData)) {
@@ -73,6 +77,10 @@ class VeranstaltungenController extends GxController
 			$model->setAttributes($_POST['Veranstaltung']);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->antragsschluss = EDateTimePicker::parseInput($_POST["Veranstaltung"], "antragsschluss");
+
+			$einstellungen = $model->getEinstellungen();
+			$model->setEinstellungen($einstellungen);
+			
 			$relatedData           = array();
 
 			if ($model->saveWithRelated($relatedData)) {

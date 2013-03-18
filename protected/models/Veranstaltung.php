@@ -34,6 +34,26 @@ class Veranstaltung extends BaseVeranstaltung
 		1 => "(Wahl-)Programm",
 	);
 
+
+	/** @var null|VeranstaltungsEinstellungen */
+	private $einstellungen_object = null;
+
+	/**
+	 * @return VeranstaltungsEinstellungen
+	 */
+	public function getEinstellungen() {
+		if (!is_object($this->einstellungen_object)) $this->einstellungen_object = new VeranstaltungsEinstellungen($this->einstellungen);
+		return $this->einstellungen_object;
+	}
+
+	/**
+	 * @param VeranstaltungsEinstellungen $einstellungen
+	 */
+	public function setEinstellungen($einstellungen) {
+		$this->einstellungen_object = $einstellungen;
+		$this->einstellungen = $einstellungen->toJSON();
+	}
+
 	/** @return IPolicyAntraege */
 	public function getPolicyAntraege()
 	{
