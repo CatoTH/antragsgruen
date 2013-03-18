@@ -26,7 +26,8 @@
 			$x = array();
 			foreach ($data->aenderungsantragUnterstuetzer as $unt) {
 				if (in_array($unt->rolle, array(AenderungsantragUnterstuetzer::$ROLLE_INITIATOR, AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER))) {
-					$x[] = CHtml::encode($unt->unterstuetzer->name);
+					if ($unt->unterstuetzer->email != "") $x[] = CHtml::encode($unt->unterstuetzer->name . " (" . $unt->unterstuetzer->email . ")");
+					else $x[] = CHtml::encode($unt->unterstuetzer->name);
 				}
 			}
 			echo implode(", ", $x);
