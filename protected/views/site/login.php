@@ -11,32 +11,87 @@ $this->breadcrumbs = array(
 ?>
 <h1>Login</h1>
 
+<h2>Wurzelwerk-Login</h2>
 <div class="well">
-    <div class="content">
+	<div class="content">
 
 		<?php /** @var TbActiveForm $form */
 		$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-			'id'                    => 'verticalForm',
-			'enableAjaxValidation'  => true,
-			'enableClientValidation'=> true,
-			'htmlOptions'           => array(
+			'id'                     => 'verticalForm',
+			'enableAjaxValidation'   => true,
+			'enableClientValidation' => true,
+			'htmlOptions'            => array(
 				'class'            => 'well well_first',
 				'validateOnSubmit' => true,
 			),
 		)); ?>
 
-		<?php echo $form->textFieldRow($model, 'wurzelwerk', array('class'=> 'span3')); ?>
+
+		<label for="OAuthLoginForm_wurzelwerk">WurzelWerk-Account</label>
+		<input class="span3" name="OAuthLoginForm[wurzelwerk]" id="OAuthLoginForm_wurzelwerk" type="text"/>
+		<span class="help-block error" id="OAuthLoginForm_wurzelwerk_em_" style="display: none"></span>
+
+		<br>
+
+		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'ok', 'label' => 'Einloggen')); ?>
+
+		<?php $this->endWidget(); ?>
+
+	</div>
+</div>
+
+<h2>OpenID-Login</h2>
+<div class="well">
+	<div class="content">
+		<?php /** @var TbActiveForm $form */
+		$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+			'id'                     => 'verticalForm',
+			'enableAjaxValidation'   => true,
+			'enableClientValidation' => true,
+			'htmlOptions'            => array(
+				'class'            => 'well well_first',
+				'validateOnSubmit' => true,
+			),
+		)); ?>
+
+		<label for="OAuthLoginForm_openid_identifier">OpenID-URL</label>
+		<input class="span3" name="OAuthLoginForm[openid_identifier]" id="OAuthLoginForm_openid_identifier" type="text"/>
+		<span class="help-block error" id="OAuthLoginForm_openid_identifier_em_" style="display: none"></span>
+
+		<br>
+
+		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'ok', 'label' => 'Einloggen')); ?>
+
+		<?php $this->endWidget(); ?>
+	</div>
+</div>
+
+
+<h2>Login per Benutzername / Passwort</h2>
+<div class="well">
+	<div class="content">
+
+		<?php /** @var TbActiveForm $form */
+		$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+			'id'                     => 'verticalForm',
+			'enableAjaxValidation'   => true,
+			'enableClientValidation' => true,
+			'htmlOptions'            => array(
+				'class'            => 'well well_first',
+				'validateOnSubmit' => true,
+			),
+		)); ?>
+
+
+		<label for="OAuthLoginForm_wurzelwerk">WurzelWerk-Account</label>
+		<input class="span3" name="OAuthLoginForm[wurzelwerk]" id="OAuthLoginForm_wurzelwerk" type="text"/>
+		<span class="help-block error" id="OAuthLoginForm_wurzelwerk_em_" style="display: none"></span>
 
 		<label>Passwort:<br><input type="password" value="" autocomplete="false" name="password"></label>
 
-        <br><br><em>oder</em><br><br>
-
-		<?php echo $form->textFieldRow($model, 'openid_identifier', array('class'=> 'span3')); ?>
-
-        <br>
-
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'icon'=> 'ok', 'label'=> 'Einloggen')); ?>
+		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'ok', 'label' => 'Einloggen')); ?>
 
 		<?php $this->endWidget(); ?>
-    </div>
+
+	</div>
 </div>
