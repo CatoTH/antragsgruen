@@ -16,6 +16,11 @@ $this->menu = array(
 
 <h1 class="well"><?php echo GxHtml::encode(Texte::label(2)); ?></h1>
 
+<br>
+<strong>Hinweis:</strong> Diese Texte sind nicht für die eigentlichen Anträge / Wahlprogramme gedacht.<br>
+<strong><?php echo CHtml::link("Hier kannst du einen Antrag anlegen.", $this->createUrl("/antrag/neu/"))?></strong>
+<br><br>
+
 <div class="well well_first">
 	<?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=> $dataProvider,
