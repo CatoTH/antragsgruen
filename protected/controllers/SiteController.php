@@ -33,11 +33,26 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
+	 * @param string $veranstaltung_id
+	 */
+	public function actionWartungsmodus($veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltung_id);
+		$this->render('content', array(
+			"title"            => "Wartungsmodus",
+			"breadcrumb_title" => "Wartungsmodus",
+			"text"             => $this->veranstaltung->getStandardtext("wartungsmodus"),
+		));
+	}
+
+	/**
 	 *
 	 */
 	public function actionHilfe($veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
+
 		$this->render('content', array(
 			"title"            => "Hilfe",
 			"breadcrumb_title" => "Hilfe",
@@ -51,6 +66,8 @@ class SiteController extends AntragsgruenController
 	public function actionPdfs($veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
+
 		$antraege = $this->veranstaltung->antraegeSortiert();
 		$this->renderPartial('veranstaltung_pdfs', array(
 			"sprache"            => $this->veranstaltung->getSprache(),
@@ -125,6 +142,8 @@ class SiteController extends AntragsgruenController
 	public function actionFeedAntraege($veranstaltung_id = "")
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
+
 		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
@@ -141,6 +160,8 @@ class SiteController extends AntragsgruenController
 	public function actionFeedAenderungsantraege($veranstaltung_id = "")
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
+
 		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
@@ -157,6 +178,8 @@ class SiteController extends AntragsgruenController
 	public function actionFeedKommentare($veranstaltung_id = "")
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
+
 		$sprache       = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
@@ -174,6 +197,8 @@ class SiteController extends AntragsgruenController
 	public function actionFeedAlles($veranstaltung_id = "")
 	{
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
+
 		$sprache       = $veranstaltung->getSprache();
 
 		$data1 = $this->getFeedAntraegeData($veranstaltung);
@@ -199,6 +224,8 @@ class SiteController extends AntragsgruenController
 		$this->layout = '//layouts/column2';
 
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
+
 		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($veranstaltung->id, 5);
 		$neueste_antraege           = Antrag::holeNeueste($veranstaltung->id, 5);
 		$neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung->id, 3);
@@ -253,6 +280,7 @@ class SiteController extends AntragsgruenController
 
 		if ($veranstaltung_id == "") $this->redirect("/");
 		$this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
 
 		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 		if (is_null($veranstaltung)) {
@@ -334,14 +362,6 @@ class SiteController extends AntragsgruenController
 		));
 	}
 
-
-	/**
-	 *
-	 */
-	public function actionMeineAntraege()
-	{
-		$this->render('meineAntraege');
-	}
 
 	/**
 	 * This is the action to handle external exceptions.

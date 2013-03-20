@@ -132,7 +132,7 @@ class Veranstaltung extends BaseVeranstaltung
 	 * @return array|string[]
 	 */
 	public static function getHTMLStandardtextIDs() {
-		return array("startseite", "impressum", "hilfe", "antrag_eingereicht", "antrag_confirm", "ae_eingereicht", "ae_confirm");
+		return array("startseite", "impressum", "hilfe", "antrag_eingereicht", "antrag_confirm", "ae_eingereicht", "ae_confirm", "wartungsmodus");
 	}
 
 	/**

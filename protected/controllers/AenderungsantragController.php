@@ -27,6 +27,7 @@ class AenderungsantragController extends AntragsgruenController
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag, $aenderungsantrag);
+		$this->testeWartungsmodus();
 
 		return $aenderungsantrag;
 	}

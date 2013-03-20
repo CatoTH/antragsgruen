@@ -17,6 +17,17 @@ class AntragsgruenController extends CController
 	/** @var null|Veranstaltung */
 	public $veranstaltung = null;
 
+
+	/**
+	 *
+	 */
+	public function testeWartungsmodus() {
+		if ($this->veranstaltung == null) return;
+		/** @var VeranstaltungsEinstellungen $einstellungen */
+		$einstellungen = $this->veranstaltung->getEinstellungen();
+		if ($einstellungen->wartungs_modus_aktiv && !$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("site/wartungsmodus"));
+	}
+
 	/**
 	 *
 	 */

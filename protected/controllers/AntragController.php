@@ -13,6 +13,7 @@ class AntragController extends AntragsgruenController
 			$this->redirect($this->createUrl("site/veranstaltung"));
 		}
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
 
 		$this->layout = '//layouts/column2';
 
@@ -232,6 +233,7 @@ class AntragController extends AntragsgruenController
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
 
 		$this->renderPartial("pdf", array(
 			'model'   => $antrag,
@@ -254,6 +256,7 @@ class AntragController extends AntragsgruenController
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
 
 		if (!$antrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
@@ -290,6 +293,7 @@ class AntragController extends AntragsgruenController
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
 
 		if (!$antrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
@@ -398,6 +402,7 @@ class AntragController extends AntragsgruenController
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
@@ -452,6 +457,7 @@ class AntragController extends AntragsgruenController
 		$this->veranstaltung = $veranstaltung         = $this->loadVeranstaltung($veranstaltung_id);
 		$model->veranstaltung  = $veranstaltung->id;
 		$model->veranstaltung0 = $veranstaltung;
+		$this->testeWartungsmodus();
 
 		if (!$veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
 			Yii::app()->user->setFlash("error", "Es kann kein Antrag angelegt werden.");

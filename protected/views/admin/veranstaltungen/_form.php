@@ -25,6 +25,13 @@ $form = $this->beginWidget('GxActiveForm', array(
 <h2>Allgemeine Einstellungen zur Veranstaltung</h2>
 <br>
 
+<fieldset style="margin-top: 10px;">
+	<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[wartungs_modus_aktiv]" value="0" <?php if (!$model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[wartungs_modus_aktiv]" value="1" <?php if ($model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+	<strong>Wartungsmodus aktiv</strong> <small>(Nur Admins können den Seiteninhalt sehen)</small>
+</fieldset>
+<br>
+
 <div>
 	<?php echo $form->labelEx($model, 'typ'); ?>
 	<div style="display: inline-block; width: 450px;">

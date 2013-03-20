@@ -4,6 +4,8 @@ class VeranstaltungsEinstellungen {
 	public $antrag_neu_braucht_email = false;
 	public $kommentar_neu_braucht_email = false;
 
+	public $wartungs_modus_aktiv = false;
+
 	/**
 	 * @param string|null $data
 	 */
