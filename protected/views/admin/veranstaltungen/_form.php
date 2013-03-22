@@ -245,14 +245,14 @@ $form = $this->beginWidget('GxActiveForm', array(
 		Kommentare müssen durch den Admin <strong>freigeschaltet</strong> werden
 	</fieldset>
 	<br>
-<!--
+
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[kommentar_neu_braucht_email]" value="0" <?php if (!$model->getEinstellungen()->kommentar_neu_braucht_email) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
 		<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[kommentar_neu_braucht_email]" value="1" <?php if ($model->getEinstellungen()->kommentar_neu_braucht_email) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 		Angabe der <strong>E-Mail-Adresse</strong> erzwingen
 	</fieldset>
 	<br>
--->
+
 	<fieldset>
 		<label style="display: inline;"><input type="radio" name="Veranstaltung[kommentare_unterstuetzbar]" value="0" <?php if ($model->kommentare_unterstuetzbar != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
 		<label style="display: inline;"><input type="radio" name="Veranstaltung[kommentare_unterstuetzbar]" value="1" <?php if ($model->kommentare_unterstuetzbar == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
