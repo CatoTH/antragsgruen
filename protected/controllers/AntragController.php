@@ -3,20 +3,11 @@
 class AntragController extends AntragsgruenController
 {
 
-	public function actionAnzeige($veranstaltung_id, $antrag_id, $kommentar_id = 0)
-	{
-		$antrag_id = IntVal($antrag_id);
-		/** @var Antrag $antrag */
-		$antrag = Antrag::model()->with("antragKommentare", "antragKommentare.unterstuetzer")->findByPk($antrag_id);
-		if (is_null($antrag)) {
-			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect($this->createUrl("site/veranstaltung"));
-		}
-		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
-		$this->testeWartungsmodus();
-
-		$this->layout = '//layouts/column2';
-
+	/**
+	 * @param Antrag $antrag
+	 * @param int $kommentar_id
+	 */
+	private function performAnzeigeActions($antrag, $kommentar_id) {
 		if (AntiXSS::isTokenSet("komm_del")) {
 			/** @var AntragKommentar $komm */
 			$komm = AntragKommentar::model()->findByPk(AntiXSS::getTokenVal("komm_del"));
@@ -100,7 +91,7 @@ class AntragController extends AntragsgruenController
 			$unt->kommentar        = "";
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du unterstützt diesen Antrag nun.");
 			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
 
 		if (AntiXSS::isTokenSet("magnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
@@ -114,15 +105,38 @@ class AntragController extends AntragsgruenController
 			$unt->save();
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du lehnst diesen Antrag nun ab.");
 			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
 
 		if (AntiXSS::isTokenSet("dochnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
 			Yii::app()->user->setFlash("success", "Du stehst diesem Antrag wieder neutral gegenüber.");
-			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
+	}
+
+
+	/**
+	 * @param int $veranstaltung_id
+	 * @param int $antrag_id
+	 * @param int $kommentar_id
+	 */
+	public function actionAnzeige($veranstaltung_id, $antrag_id, $kommentar_id = 0)
+	{
+		$antrag_id = IntVal($antrag_id);
+		/** @var Antrag $antrag */
+		$antrag = Antrag::model()->with("antragKommentare", "antragKommentare.unterstuetzer")->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect($this->createUrl("site/veranstaltung"));
+		}
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
+
+		$this->layout = '//layouts/column2';
+
+		$this->performAnzeigeActions($antrag, $kommentar_id);
 
 		/** @var $antragstellerinnen array|Person[] $antragstellerinnen */
 		$antragstellerinnen = array();
@@ -144,6 +158,11 @@ class AntragController extends AntragsgruenController
 
 			$person        = $_REQUEST["Person"];
 			$person["typ"] = Person::$TYP_PERSON;
+
+			if ($antrag->veranstaltung0->getEinstellungen()->kommentar_neu_braucht_email && trim($person["email"]) == "") {
+				Yii::app()->user->setFlash("error", "Bitte gib deine E-Mail-Adresse an.");
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
+			}
 			$model_person  = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
 
 			$kommentar               = new AntragKommentar();
@@ -198,6 +217,7 @@ class AntragController extends AntragsgruenController
 
 		if (Yii::app()->user->isGuest) $kommentar_person = new Person();
 		else $kommentar_person = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+		$kommentar_person->setEmailRequired($antrag->veranstaltung0->getEinstellungen()->kommentar_neu_braucht_email);
 
 		$support_status = "";
 		if (!Yii::app()->user->isGuest) {

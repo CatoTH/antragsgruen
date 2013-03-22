@@ -84,4 +84,16 @@
 		$(this).remove();
 	});
 
+	$(".kommentarform").submit(function(ev) {
+		$(this).find(".row").each(function() {
+			var $row = $(this);
+			if ($row.find("label.required").length > 0 && $row.find("input, textarea").val() == "") {
+				ev.preventDefault();
+				alert("Bitte fülle alle Felder aus");
+				$row.find("input, textarea").focus();
+			}
+		});
+
+	});
+
 }());

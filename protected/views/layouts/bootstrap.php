@@ -89,7 +89,7 @@ $minimalistisch = (is_a($this->veranstaltung, "Veranstaltung") && $this->veranst
 	<?php endif?>
 
 	<?php
-	$this->widget('bootstrap.widgets.TbAlert');
+	// $this->widget('bootstrap.widgets.TbAlert');
 	/** @var string $content */
 	echo $content;
 

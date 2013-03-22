@@ -32,18 +32,11 @@ class AenderungsantragController extends AntragsgruenController
 		return $aenderungsantrag;
 	}
 
-
-	public function actionAnzeige($veranstaltung_id, $antrag_id, $aenderungsantrag_id, $kommentar_id = 0)
-	{
-		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
-
-		$this->layout = '//layouts/column2';
-
-		if (!$aenderungsantrag) {
-			Yii::app()->user->setFlash("error", "Eine ungültige URL wurde aufgerufen");
-			$this->redirect($this->createUrl("site/veranstaltung"));
-		}
-
+	/**
+	 * @param Aenderungsantrag $aenderungsantrag
+	 * @param int $kommentar_id
+	 */
+	private function performAnzeigeActions($aenderungsantrag, $kommentar_id) {
 		if (AntiXSS::isTokenSet("komm_del")) {
 			/** @var AenderungsantragKommentar $komm */
 			$komm = AenderungsantragKommentar::model()->findByPk(AntiXSS::getTokenVal("komm_del"));
@@ -90,7 +83,7 @@ class AenderungsantragController extends AntragsgruenController
 			$unt->kommentar           = "";
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du unterstützt diesen Änderungsantrag nun.");
 			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 		}
 
 		if (AntiXSS::isTokenSet("magnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
@@ -104,15 +97,29 @@ class AenderungsantragController extends AntragsgruenController
 			$unt->save();
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du lehnst diesen Änderungsantrag nun ab.");
 			else Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 		}
 
 		if (AntiXSS::isTokenSet("dochnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
 			Yii::app()->user->setFlash("success", "Du stehst diesem Änderungsantrag wieder neutral gegenüber.");
-			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
+			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 		}
+	}
+
+	public function actionAnzeige($veranstaltung_id, $antrag_id, $aenderungsantrag_id, $kommentar_id = 0)
+	{
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+
+		$this->layout = '//layouts/column2';
+
+		if (!$aenderungsantrag) {
+			Yii::app()->user->setFlash("error", "Eine ungültige URL wurde aufgerufen");
+			$this->redirect($this->createUrl("site/veranstaltung"));
+		}
+
+		$this->performAnzeigeActions($aenderungsantrag, $kommentar_id);
 
 		$kommentare_offen = array();
 
@@ -121,6 +128,11 @@ class AenderungsantragController extends AntragsgruenController
 
 			$person        = $_REQUEST["Person"];
 			$person["typ"] = Person::$TYP_PERSON;
+
+			if ($aenderungsantrag->antrag->veranstaltung0->getEinstellungen()->kommentar_neu_braucht_email && trim($person["email"]) == "") {
+				Yii::app()->user->setFlash("error", "Bitte gib deine E-Mail-Adresse an.");
+				$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
+			}
 			$model_person  = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
 
 			$kommentar                      = new AenderungsantragKommentar();
@@ -186,6 +198,7 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (Yii::app()->user->isGuest) $kommentar_person = new Person();
 		else $kommentar_person = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+		$kommentar_person->setEmailRequired($aenderungsantrag->antrag->veranstaltung0->getEinstellungen()->kommentar_neu_braucht_email);
 
 		$support_status = "";
 		if (!Yii::app()->user->isGuest) {
