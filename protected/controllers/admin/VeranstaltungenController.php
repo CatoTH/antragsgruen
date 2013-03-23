@@ -64,7 +64,7 @@ class VeranstaltungenController extends GxController
 		/** @var Veranstaltung $model */
 		$model = $this->loadModel($id, 'Veranstaltung');
 		$this->loadVeranstaltung($id);
-		if (!$model->isAdminCurUser()) return;
+		if (!$model->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Die angegebene Veranstaltungen wurde nicht gefunden.");
@@ -99,7 +99,7 @@ class VeranstaltungenController extends GxController
 	{
 		/** @var Veranstaltung $model */
 		$model = $this->loadModel($id, 'Veranstaltung');
-		if (!$model->isAdminCurUser()) return;
+		if (!$model->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
 			$this->loadModel($id, 'Veranstaltung')->delete();
