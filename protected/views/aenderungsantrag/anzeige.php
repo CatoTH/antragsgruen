@@ -209,7 +209,7 @@ $rows = 10;
 					</div>
 					<div class="row">
 						<?php echo $form->labelEx($kommentar_person,'email'); ?>
-						<?php echo $form->textField($kommentar_person,'email') ?>
+						<?php echo $form->emailField($kommentar_person,'email') ?>
 					</div>
 					<div class="row">
 						<?php echo $form->labelEx($dummy_komm,'text'); ?>
