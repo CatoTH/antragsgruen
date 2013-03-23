@@ -1,7 +1,7 @@
 ANTRAGSBEGRUENUNG
 =================
 
-Das Antragsbegründungs-Tool selbst steht unter der GNU Affero General Public License. Der Lizenztext finde sich anbei.
+Das Antragsbegründungs-Tool selbst steht unter der GNU Affero General Public License. Der Lizenztext findet sich anbei.
 
 AutorInnen:
 - Tobias Hößl (Programmierung)
@@ -83,7 +83,9 @@ Decoda
 http://milesj.me/code/php/decoda
 Lizenz: MIT
 
-
+PHPExcel
+http://phpexcel.codeplex.com/
+Lizenz: LGPL 2.1
 
 
 

@@ -1,6 +1,6 @@
 <?php
 
-defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_DEBUG') or define('YII_DEBUG', false);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 
 setlocale(LC_ALL, 'de_DE');
@@ -34,20 +34,5 @@ Yii::setPathOfAlias("composer", __DIR__ . "/../vendor/");
 $app           = Yii::createWebApplication($config);
 $app->language = "de";
 $app->layout   = "bootstrap";
-$app->getClientScript()->registerScriptFile(
-	Yii::app()->request->baseUrl . '/js/antraege.js',
-	CClientScript::POS_END
-);
-/** @var Bootstrap $boot */
-$boot = $app->getComponent("bootstrap");
-$boot->registerCoreCss();
-//$boot->registerResponsiveCss();
-$app->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . '/css/antraege.css');
-$app->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . '/css/antraege-print.css', 'print');
-Yii::app()->clientScript->registerCoreScript('jquery');
-
-
-$font_css = Yii::app()->params['font_css'];
-if ($font_css != "") $app->getClientScript()->registerCssFile($font_css);
 
 $app->run();

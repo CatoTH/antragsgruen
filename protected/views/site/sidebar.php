@@ -37,17 +37,9 @@ if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 	}
 	$html .= "</ul></div>";
 	$this->menus_html[] = $html;
-
-//	if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
-//		$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
-// <img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
-// </a>';
-//	}
 }
 if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
-	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
-<img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
-</a>';
+	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '" title="Neuen Antrag stellen"></a>';
 }
 
 

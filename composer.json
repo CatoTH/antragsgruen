@@ -29,9 +29,9 @@
 			"type": "package",
 			"package": {
 				"name": "chris83/yii-bootstrap",
-				"version": "2.0.3",
+				"version": "2.1.0",
 				"dist": {
-					"url": "http://www.yiiframework.com/extension/bootstrap/files/yii-bootstrap-2.0.3.r329.zip",
+					"url": "http://www.yiiframework.com/extension/bootstrap/files/yii-bootstrap-2.1.0.r355.zip",
 					"type": "zip"
 				}
 			}
@@ -39,10 +39,10 @@
 	],
 	"require": {
 		"php": ">=5.3.3",
-		"tcpdf/tcpdf": "dev-master",
+		"tecnick.com/tcpdf": "dev-master",
 		"mjohnson/decoda": "dev-master",
 		"yiisoft/yii": "1.1.13",
-		"chris83/yii-bootstrap": "2.0.3",
+		"chris83/yii-bootstrap": "2.1.0",
 		"CodePlex/PHPExcel": "dev-master"
 	}
 }

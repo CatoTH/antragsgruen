@@ -18,6 +18,8 @@ class AntragsgruenController extends CController
 	public $veranstaltung = null;
 
 
+	private $_assetsBase;
+
 	/**
 	 *
 	 */
@@ -77,4 +79,19 @@ class AntragsgruenController extends CController
 
 		return $this->veranstaltung;
 	}
+
+
+	public function getAssetsBase()
+	{
+		if ($this->_assetsBase === null) {
+			$this->_assetsBase = Yii::app()->assetManager->publish(
+				Yii::getPathOfAlias('application.assets'),
+				false,
+				-1,
+				defined('YII_DEBUG') && YII_DEBUG
+			);
+		}
+		return $this->_assetsBase;
+	}
+
 }

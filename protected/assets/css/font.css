@@ -1,0 +1,29 @@
+ul.funktionen li a {
+	font-family: Verdana, serif;
+	font-size: 14px;
+}
+h3, h2, .span3 .well .nav-list .nav-header {
+	font-family: Verdana, serif;
+	font-size: 12px;
+}
+.span9 .antragsschluss {
+	font-family: Verdana, serif;
+	font-size: 12px;
+}
+.span9 h1, #content h1 {
+	font-family: Verdana, serif;
+	font-size: 12px;
+}
+.navbar .nav li a {
+	font-family: Verdana, serif;
+	font-size: 12px;
+}
+.breadcrumb,
+.breadcrumb .active {
+	font-family: Verdana, serif;
+	font-size: 14px;
+}
+.btn-primary {
+	font-family: Verdana, serif;
+	font-size: 14px;
+}
