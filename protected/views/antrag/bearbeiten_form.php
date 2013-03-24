@@ -12,8 +12,11 @@
  * @var Sprache $sprache
  */
 
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor/ckeditor.js');
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor.bbcode.js');
+/** @var CWebApplication $app  */
+$app = Yii::app();
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckeditor/ckeditor.js');
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/bbcode/plugin.js');
+//$app->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/bbcode/plugin.js');
 
 $this->breadcrumbs = array(
 	CHtml::encode($model->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung", array("veranstaltung_id" => $model->veranstaltung0->yii_url)),
@@ -142,8 +145,8 @@ $this->renderPartial($model->veranstaltung0->getPolicyAntraege()->getAntragstell
 
 <script>
     $(function () {
-        CKEDITOR.replace('Antrag_text', {'toolbar':'Animexx', 'customConfig':"/js/ckconfig.js", width:660 });
-        CKEDITOR.replace('Antrag_begruendung', {'toolbar':'Animexx', 'customConfig':"/js/ckconfig.js", width:660 });
+        ckeditor_bbcode("Antrag_text");
+		ckeditor_bbcode("Antrag_begruendung");
     })
 </script>
 

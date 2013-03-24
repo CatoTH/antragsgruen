@@ -454,7 +454,8 @@ h2,
 }
 
 .ae_text_holder {
-	padding-left: 60px;
+	padding-left: 30px;
+	padding-right: 20px;
 }
 
 .antrags_text_holder_nummern .zeilennummer {

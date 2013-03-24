@@ -28,6 +28,7 @@ var CKBUILDER_CONFIG = {
 		'a11yhelp' : 1,
 		'dialogadvtab' : 1,
 		'basicstyles' : 1,
+		'bidi' : 1,
 		'blockquote' : 1,
 		'clipboard' : 1,
 		'colorbutton' : 1,
@@ -93,15 +94,9 @@ var CKBUILDER_CONFIG = {
 		'listblock' : 1,
 		'menubutton' : 1,
 		'autogrow' : 1,
-		'insertpre' : 1,
-		'symbol' : 1,
-		'maxheight' : 1,
-		'mediaembed' : 1,
-		'sourcedialog' : 1,
-		'stylesheetparser' : 1,
-		'tableresize' : 1,
 		'wordcount' : 1,
-		'onchange' : 1
+		'onchange' : 1,
+		'mediaembed' : 1
 	},
 	languages : {
 		'en' : 1,

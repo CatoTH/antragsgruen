@@ -97,3 +97,40 @@
 	});
 
 }());
+
+
+function ckeditor_bbcode(id) {
+
+	CKEDITOR.replace(id, {
+		allowedContent: 'b s i u p blockquote ul ol li a[href];',
+		// Remove unused plugins.
+		//removePlugins: 'bidi,dialogadvtab,div,filebrowser,flash,format,forms,horizontalrule,iframe,justify,liststyle,pagebreak,showborders,stylescombo,table,tabletools,templates',
+		removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,magicline' + ',sourcearea',
+		extraPlugins: 'autogrow,wordcount,bbcode',
+		scayt_sLang: 'de_DE',
+		// Width and height are not supported in the BBCode format, so object resizing is disabled.
+		disableObjectResizing: true,
+		// Whether or not you want to show the Word Count
+		showWordCount: true,
+		// Whether or not you want to show the Char Count
+		showCharCount: true,
+		toolbar:
+			[
+				{ name: 'document',    items : [ 'Source','-','Save','NewPage','DocProps','Preview','Print','-','Templates' ] },
+				{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+				//{ name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+				{ name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+				{ name: 'links',       items : [ 'Link','Unlink','Anchor' ] },
+				{ name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+				{ name: 'editing',     items : [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ] },
+				{ name: 'forms',       items : [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
+				{ name: 'insert',      items : [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
+				{ name: 'styles',      items : [ 'Styles','Format','Font','FontSize' ] },
+				{ name: 'colors',      items : [ 'TextColor','BGColor' ] },
+				{ name: 'tools',       items : [ 'Maximize', 'ShowBlocks','-','About' ] }
+			]
+
+	});
+
+}
+

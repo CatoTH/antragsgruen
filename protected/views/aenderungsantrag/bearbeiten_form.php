@@ -11,8 +11,10 @@
  * @var Person $antragstellerin
  */
 
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor/ckeditor.js');
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor.bbcode.js');
+/** @var CWebApplication $app  */
+$app = Yii::app();
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckeditor/ckeditor.js');
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/bbcode/plugin.js');
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
@@ -132,9 +134,10 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 		$(".ae_text_holder input.change_checkbox").not(':checked').parents(".ae_text_holder").hide();
 		$(".change_checkbox").parents("label").hide();
 		$(".ae_text_holder textarea").each(function () {
-			CKEDITOR.replace($(this).attr("id"), {'toolbar':'Animexx', 'customConfig':"/js/ckconfig.js", width:550 });
+			ckeditor_bbcode($(this).attr("id"));
 		});
-		CKEDITOR.replace("ae_begruendung", {'toolbar':'Animexx', 'customConfig':"/js/ckconfig.js", width:680 });
+
+		ckeditor_bbcode("ae_begruendung");
 
 		$(".ae_absatzwahl_modus .antragabsatz_holder .text").click(function (ev) {
 			var $abs = $(this).parents(".row-absatz");
