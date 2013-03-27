@@ -40,7 +40,7 @@ $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckedit
 
 	<?php
 
-	if ($model->editPerson != null) echo "Zuletzt geändert: " . $model->edit_datum . " von " . CHtml::encode($model->editPerson->name);
+	if ($model->edit_datum != null) echo "Zuletzt geändert: " . $model->edit_datum;
 
 	if (in_array($model->text_id, Veranstaltung::getHTMLStandardtextIDs())) {
 		?>

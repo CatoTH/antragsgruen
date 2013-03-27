@@ -9,7 +9,7 @@ $this->breadcrumbs = array(
 );
 
 $komm_link = $this->createUrl("aenderungsantrag/anzeige", array(
-	"veranstaltung_id" => $model->aenderungsantrag->antrag->veranstaltung0->yii_url,
+	"veranstaltung_id" => $model->aenderungsantrag->antrag->veranstaltung->url_verzeichnis,
 	"antrag_id" => $model->aenderungsantrag->antrag->id,
 	"aenderungsantrag_id" => $model->aenderungsantrag->id,
 	"kommentar_id" => $model->id, "#" => "komm" . $model->id)

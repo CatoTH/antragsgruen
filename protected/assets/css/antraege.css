@@ -575,8 +575,8 @@ h2,
 .kommentarform .submitrow { margin-left: 160px; width: 320px; text-align: center; }
 .kommentarform .submitrow .btn-primary { margin: 0; }
 
-.kommentar_unterstuetzer_holder { float: left; }
-.kommentar_unterstuetzer_holder .dafuer, .kommentar_unterstuetzer_holder .dagegen {
+.kommentar_unterstuetzerInnen_holder { float: left; }
+.kommentar_unterstuetzerInnen_holder .dafuer, .kommentar_unterstuetzerInnen_holder .dagegen {
 	display: inline-block;
 	border: solid 1px lightgray;
 	margin: 1px;
@@ -586,16 +586,16 @@ h2,
 	-o-border-radius: 3px;
 	border-radius: 3px;
 }
-.kommentar_unterstuetzer_holder .dafuer span, .kommentar_unterstuetzer_holder .dagegen span { color: lightgray; }
-.kommentar_unterstuetzer_holder button.dafuer:hover { background-color: #A2BC04; }
-.kommentar_unterstuetzer_holder button.dagegen:hover { background-color: red; }
-.kommentar_unterstuetzer_holder button { background-color: transparent; }
-.kommentar_unterstuetzer_holder .momentan { display: inline-block; }
-.kommentar_unterstuetzer_holder .dochnicht { text-align: center; display: none; }
-.kommentar_unterstuetzer_holder .meine { display: inline-block; height: 20px; width: 240px; position: relative; }
-.kommentar_unterstuetzer_holder .meine:hover .dochnicht { display: inline-block; }
-.kommentar_unterstuetzer_holder .meine:hover .momentan { display: none; }
-.kommentar_unterstuetzer_holder .momentan, .kommentar_unterstuetzer_holder .dochnicht {
+.kommentar_unterstuetzerInnen_holder .dafuer span, .kommentar_unterstuetzerInnen_holder .dagegen span { color: lightgray; }
+.kommentar_unterstuetzerInnen_holder button.dafuer:hover { background-color: #A2BC04; }
+.kommentar_unterstuetzerInnen_holder button.dagegen:hover { background-color: red; }
+.kommentar_unterstuetzerInnen_holder button { background-color: transparent; }
+.kommentar_unterstuetzerInnen_holder .momentan { display: inline-block; }
+.kommentar_unterstuetzerInnen_holder .dochnicht { text-align: center; display: none; }
+.kommentar_unterstuetzerInnen_holder .meine { display: inline-block; height: 20px; width: 240px; position: relative; }
+.kommentar_unterstuetzerInnen_holder .meine:hover .dochnicht { display: inline-block; }
+.kommentar_unterstuetzerInnen_holder .meine:hover .momentan { display: none; }
+.kommentar_unterstuetzerInnen_holder .momentan, .kommentar_unterstuetzerInnen_holder .dochnicht {
 	position: absolute;
 	top: 5px;
 	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
@@ -1048,11 +1048,11 @@ ul.funktionen .zurueck a:before {
 	overflow: auto;
 }
 
-.unterstuetzerwidget_adder {
+.unterstuetzerInnenwidget_adder {
 	border: dotted 1px gray;
 }
 
-.unterstuetzerwidget_adder .person_selector {
+.unterstuetzerInnenwidget_adder .person_selector {
 	width: 240px;
 	margin-right: 10px;
 }
@@ -1096,11 +1096,11 @@ ins {
 	width: 480px;
 }
 
-.unterstuetzer_neu_holder input {
+.unterstuetzerIn_neu_holder input {
 	border: solid 1px gray;
 }
 
-.unterstuetzer label input, .form input, .form label {
+.unterstuetzerIn label input, .form input, .form label {
 	display: inline-block;
 }
 
@@ -1128,10 +1128,10 @@ ins {
 	width: 200px;
 }
 
-#aenderungsantrag-form .unterstuetzerwidget select, #antrag-form .unterstuetzerwidget select {
+#aenderungsantrag-form .unterstuetzerInnenwidget select, #antrag-form .unterstuetzerInnenwidget select {
 	width: 200px;
 }
-.unterstuetzerwidget .sort_handle { cursor: move; }
+.unterstuetzerInnenwidget .sort_handle { cursor: move; }
 
 .js_protection_hint {
 	width: 90%;

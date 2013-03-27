@@ -13,7 +13,7 @@
  */
 
 
-$html = "<form class='form-search well hidden-phone' action='" . $this->createUrl("site/suche") . "' method='GET'><input type='hidden' name='id' value='" . $veranstaltung->id . "'><div class='nav-list'><div class='nav-header'>" . $sprache->get("Suche") . "</div>";
+$html = "<form class='form-search well hidden-phone' action='" . $this->createUrl("veranstaltung/suche") . "' method='GET'><input type='hidden' name='id' value='" . $veranstaltung->id . "'><div class='nav-list'><div class='nav-header'>" . $sprache->get("Suche") . "</div>";
 $html .= "<div style='text-align: center;'>  <div class='input-append'><input class='search-query' type='search' name='suchbegriff' value='' autofocus placeholder='Suchbegriff...'><button type='submit' class='btn'><i style='height: 18px;' class='icon-search'></i></button></div></div>";
 $html .= "</div></form>";
 $this->menus_html[] = $html;
@@ -79,25 +79,25 @@ $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='n
 
 $feeds = 0;
 if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("site/feedAntraege")) . "</li>";
+	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("veranstaltung/feedAntraege")) . "</li>";
 	$feeds++;
 }
 if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("site/feedAenderungsantraege")) . "</li>";
+	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("veranstaltung/feedAenderungsantraege")) . "</li>";
 	$feeds++;
 }
 if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("site/feedKommentare")) . "</li>";
+	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("veranstaltung/feedKommentare")) . "</li>";
 	$feeds++;
 }
-if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("site/feedAlles")) . "</li>";
+if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
 $html .= "</ul></div>";
 
 $this->menus_html[] = $html;
 
-$name = ($veranstaltung->yii_url == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
+$name = ($veranstaltung->url_verzeichnis == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
-$html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("site/pdfs")) . "</li>";
+$html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("veranstaltung/pdfs")) . "</li>";
 $html .= "</ul></div>";
 
 

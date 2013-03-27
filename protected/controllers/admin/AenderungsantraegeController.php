@@ -2,46 +2,23 @@
 
 class AenderungsantraegeController extends GxController {
 
-	/*
-    public function actionCreate() {
-        $model = new Aenderungsantrag;
-
-        $this->performAjaxValidation($model, 'aenderungsantrag-form');
-
-        if (isset($_POST['Aenderungsantrag'])) {
-            $model->setAttributes($_POST['Aenderungsantrag']);
-			Yii::import('ext.datetimepicker.EDateTimePicker');
-			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_einreichung");
-			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_beschluss");
-            $relatedData = array();
-
-            if ($model->saveWithRelated($relatedData)) {
-                $id = $model->id;
-                UnterstuetzerWidget::saveUnterstuetzerWidget($model, $messages, "AenderungsantragUnterstuetzer", "aenderungsantrag_id", $id);
-
-                if (Yii::app()->getRequest()->getIsAjaxRequest())
-                    Yii::app()->end();
-
-                $this->redirect(array('update', 'id' => $model->id));
-            }
-        }
-
-        $this->render('create', array( 'model' => $model));
-    }
-	*/
-
-    public function actionUpdate($veranstaltung_id, $id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $id
+	 */
+	public function actionUpdate($veranstaltungsreihe_id, $veranstaltung_id, $id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
         /** @var $model Aenderungsantrag */
-        $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
+        $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzerInnen", "aenderungsantragUnterstuetzerInnen.person")->findByPk($id, '', array("order" => "`person`.`name"));
 
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
 			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
 		}
-		if ($model->antrag->veranstaltung != $this->veranstaltung->id) {
+		if ($model->antrag->veranstaltung_id != $this->veranstaltung->id) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag gehört nicht zu dieser Veranstaltung.");
 			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
 		}
@@ -67,9 +44,9 @@ class AenderungsantraegeController extends GxController {
 			if ($model->save()) {
 
 
-				UnterstuetzerWidget::saveUnterstuetzerWidget($model, $messages, "AenderungsantragUnterstuetzer", "aenderungsantrag_id", $id);
+				UnterstuetzerInnenWidget::saveUnterstuetzerInnenWidget($model, $messages, "AenderungsantragUnterstuetzerInnen", "aenderungsantrag_id", $id);
 
-                $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
+                $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzerInnen", "aenderungsantragUnterstuetzerInnen.person")->findByPk($id, '', array("order" => "`person`.`name"));
             }
         }
 
@@ -79,9 +56,15 @@ class AenderungsantraegeController extends GxController {
         ));
     }
 
-    public function actionDelete($veranstaltung_id, $id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $id
+	 * @throws CHttpException
+	 */
+	public function actionDelete($veranstaltungsreihe_id, $veranstaltung_id, $id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var $model Aenderungsantrag */
 		$model = $this->loadModel($id, 'Aenderungsantrag');
@@ -89,7 +72,7 @@ class AenderungsantraegeController extends GxController {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
 			$this->redirect($this->createUrl("admin/aenderungsantraege"));
 		}
-		if ($model->antrag->veranstaltung != $this->veranstaltung->id) {
+		if ($model->antrag->veranstaltung_id != $this->veranstaltung->id) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag gehört nicht zu dieser Veranstaltung.");
 			$this->redirect($this->createUrl("admin/aenderungsantraege"));
 		}
@@ -104,12 +87,16 @@ class AenderungsantraegeController extends GxController {
             throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
     }
 
-    public function actionIndex($veranstaltung_id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionIndex($veranstaltungsreihe_id, $veranstaltung_id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$aenderungsantraege = Aenderungsantrag::model()->with(array(
-			"antrag" => array('condition'=>'antrag.veranstaltung=' . IntVal($this->veranstaltung->id))
+			"antrag" => array('condition'=>'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id))
 		))->findAll();
         $dataProvider = new CActiveDataProvider('Aenderungsantrag', array(
 			"data" => $aenderungsantraege
@@ -119,9 +106,13 @@ class AenderungsantraegeController extends GxController {
         ));
     }
 
-    public function actionAdmin($veranstaltung_id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionAdmin($veranstaltungsreihe_id, $veranstaltung_id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
         $model = new Aenderungsantrag('search');
         $model->unsetAttributes();

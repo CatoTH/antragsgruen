@@ -1,8 +1,24 @@
 <?php
 
-Yii::import('application.models._base.BasePerson');
-
-class Person extends BasePerson
+/**
+ * @property integer $id
+ * @property string $typ
+ * @property string $name
+ * @property string $email
+ * @property string $telefon
+ * @property string $auth
+ * @property string $angelegt_datum
+ * @property integer $admin
+ * @property integer $status
+ * @property string $pwd_enc
+ *
+ * @property AenderungsantragKommentar[] $aenderungsantragKommentare
+ * @property AenderungsantragUnterstuetzerInnen[] $aenderungsantragUnterstuetzerInnen
+ * @property AntragKommentar[] $antragKommentare
+ * @property AntragUnterstuetzerInnen[] $antragUnterstuetzerInnen
+ * @property Veranstaltung[] $admin_veranstaltungen
+ */
+class Person extends GxActiveRecord
 {
 	public static $TYP_ORGANISATION = 'organisation';
 	public static $TYP_PERSON = 'person';
@@ -30,6 +46,62 @@ class Person extends BasePerson
 	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	public function tableName() {
+		return 'person';
+	}
+
+	public static function representingColumn() {
+		return 'typ';
+	}
+
+	public function relations() {
+		return array(
+			'aenderungsantragKommentare' => array(self::HAS_MANY, 'AenderungsantragKommentar', 'verfasser_id'),
+			'aenderungsantragUnterstuetzerInnen' => array(self::HAS_MANY, 'AenderungsantragUnterstuetzer', 'unterstuetzerIn_id'),
+			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'verfasser_id'),
+			'antragUnterstuetzerInnen' => array(self::HAS_MANY, 'AntragUnterstuetzerInnen', 'unterstuetzerIn_id'),
+			'admin_veranstaltungen'  => array(self::MANY_MANY, 'Veranstaltung', 'veranstaltungs_admins(person_id, veranstaltung_id)'),
+		);
+	}
+
+	public function attributeLabels() {
+		return array(
+			'id' => Yii::t('app', 'ID'),
+			'typ' => Yii::t('app', 'Typ'),
+			'name' => Yii::t('app', 'Name'),
+			'email' => Yii::t('app', 'Email'),
+			'telefon' => Yii::t('app', 'Telefon'),
+			'auth' => Yii::t('app', 'Auth'),
+			'pwd_enc' => Yii::t('app', 'Passwort-Hash'),
+			'angelegt_datum' => Yii::t('app', 'Angelegt Datum'),
+			'admin' => Yii::t('app', 'Admin'),
+			'status' => Yii::t('app', 'Status'),
+			'aenderungsantragKommentare' => null,
+			'aenderungsantragUnterstuetzerInnen' => null,
+			'antragKommentare' => null,
+			'antragUnterstuetzerInnen' => null,
+			'admin_veranstaltungen' => null,
+		);
+	}
+
+	public function search() {
+		$criteria = new CDbCriteria;
+
+		$criteria->compare('id', $this->id);
+		$criteria->compare('typ', $this->typ, true);
+		$criteria->compare('name', $this->name, true);
+		$criteria->compare('email', $this->email, true);
+		$criteria->compare('telefon', $this->telefon, true);
+		$criteria->compare('auth', $this->auth, true);
+		$criteria->compare('angelegt_datum', $this->angelegt_datum, true);
+		$criteria->compare('admin', $this->admin);
+		$criteria->compare('status', $this->status);
+
+		return new CActiveDataProvider($this, array(
+			'criteria' => $criteria,
+		));
 	}
 
 	public static function label($n = 1)
@@ -167,14 +239,5 @@ class Person extends BasePerson
 			)
 		);
 	}
-
-
-	/*
-    public function attributeLabels() {
-        $ret = parent::attributeLabels();
-        $ret["abonnenten"] = "Hat abonniert";
-        return $ret;
-    }
-	*/
 
 }

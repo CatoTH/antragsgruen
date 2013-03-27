@@ -21,9 +21,4 @@
 	<td><?php echo GxHtml::encode($data->edit_datum); ?></td>
 	</tr>
 
-	<tr>
-	<th><?php echo GxHtml::encode($data->getAttributeLabel('edit_person')); ?>:</th>
-	<td><?php echo GxHtml::encode($data->editPerson->name); ?></td>
-	</tr>
-
 </table>

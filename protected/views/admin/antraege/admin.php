@@ -46,7 +46,7 @@ $('.search-form form').submit(function(){
 		'id',
 		array(
 			'name'  => 'veranstaltung',
-			'value' => 'GxHtml::valueEx($data->veranstaltung0)',
+			'value' => 'GxHtml::valueEx($data->veranstaltung)',
 			'filter'=> GxHtml::listDataEx(Veranstaltung::model()->findAllAttributes(null, true)),
 		),
 		array(

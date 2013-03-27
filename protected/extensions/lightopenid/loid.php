@@ -45,6 +45,3 @@ class loid extends CApplicationComponent
 
 }
 
-
-
-?>

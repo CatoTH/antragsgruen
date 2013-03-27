@@ -11,13 +11,13 @@ $antragstellerinnen = array();
 /** @var array|Person[] $unterstuetzerinnen */
 $unterstuetzerinnen = array();
 
-if (count($antrag->antragUnterstuetzer) > 0) foreach ($antrag->antragUnterstuetzer as $relatedModel) {
-	if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $antragstellerinnen[] = $relatedModel->unterstuetzer;
-	if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzerinnen[] = $relatedModel->unterstuetzer;
+if (count($antrag->antragUnterstuetzerInnen) > 0) foreach ($antrag->antragUnterstuetzerInnen as $relatedModel) {
+	if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerinnen[] = $relatedModel->unterstuetzerIn;
+	if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerinnen[] = $relatedModel->unterstuetzerIn;
 }
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	'Neuer Antrag',
 	'Bestätigen'
 );
@@ -31,7 +31,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 	<?php
 
-	Yii::app()->user->setFlash("info", $antrag->veranstaltung0->getStandardtext("antrag_confirm")->getHTMLText());
+	Yii::app()->user->setFlash("info", $antrag->veranstaltung->getStandardtext("antrag_confirm")->getHTMLText());
 	$this->widget('bootstrap.widgets.TbAlert');
 
 	?>

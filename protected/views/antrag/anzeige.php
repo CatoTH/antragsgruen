@@ -3,8 +3,8 @@
 /**
  * @var AntragController $this
  * @var Antrag $antrag
- * @var array|Person[] $antragstellerinnen
- * @var array|Person[] $unterstuetzerinnen
+ * @var array|Person[] $antragstellerInnen
+ * @var array|Person[] $unterstuetzerInnen
  * @var array|Person[] $ablehnung_von
  * @var array|Person[] $zustimmung_von
  * @var array|Aenderungsantrag[] $aenderungsantraege
@@ -20,15 +20,14 @@
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	$sprache->get("Antrag"),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
-$this->pageTitle = $antrag->nameMitRev() . " (" . $antrag->veranstaltung0->name . ", Antragsgrün)";
+$this->pageTitle = $antrag->nameMitRev() . " (" . $antrag->veranstaltung->name . ", Antragsgrün)";
 
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/socialshareprivacy/jquery.socialshareprivacy.min.js');
-
 
 $rows = 4;
 if ($antrag->datum_beschluss != "") $rows++;
@@ -37,7 +36,7 @@ if (count($antrag->antraege) > 0) $rows++;
 $html = '<ul class="funktionen">';
 // $html .= '<li class="unterstuetzen"><a href="#">Antrag unterstützen</a></li>';
 
-$policy = $antrag->veranstaltung0->getPolicyAenderungsantraege();
+$policy = $antrag->veranstaltung->getPolicyAenderungsantraege();
 if ($policy->checkCurUserHeuristically()) $html .= '<li class="aender-stellen">' . CHtml::link($sprache->get("Änderungsantrag stellen"), $this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id))) . '</li>';
 else {
 	$msg = $policy->getPermissionDeniedMsg();
@@ -48,7 +47,7 @@ $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunt
 if ($edit_link) $html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/bearbeiten", array("antrag_id" => $antrag->id))) . '</li>';
 
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
-else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $this->createUrl("site/veranstaltung")) . '</li>
+else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $this->createUrl("veranstaltung/index")) . '</li>
 					</ul>';
 $this->menus_html[] = $html;
 
@@ -58,7 +57,7 @@ $this->menus_html[] = $html;
 		else echo CHtml::encode($antrag->name);
 		?></h1>
 
-	<div class="antragsdaten well" style="min-height: <?php if ($antrag->veranstaltung0->ansicht_minimalistisch && Yii::app()->user->isGuest) echo "60"; else echo "114"; ?>px;">
+	<div class="antragsdaten well" style="min-height: <?php if ($antrag->veranstaltung->ansicht_minimalistisch && Yii::app()->user->isGuest) echo "60"; else echo "114"; ?>px;">
 		<div id="socialshareprivacy"></div>
 		<script>
 			$(function ($) {
@@ -68,21 +67,21 @@ $this->menus_html[] = $html;
 			});
 		</script>
 
-		<?php if (!$antrag->veranstaltung0->ansicht_minimalistisch) { ?>
+		<?php if (!$antrag->veranstaltung->ansicht_minimalistisch) { ?>
 
 			<div class="content">
 				<table style="width: 100%;" class="antragsdaten">
 					<tr>
 						<th><?=$sprache->get("Veranstaltung")?>:</th>
 						<td><?php
-							echo CHtml::link(CHtml::encode($antrag->veranstaltung0->name), array('/veranstaltung/anzeige/?id=' . $antrag->veranstaltung));
+							echo CHtml::link(CHtml::encode($antrag->veranstaltung->name), array('/veranstaltung/anzeige/?id=' . $antrag->veranstaltung_id));
 							?></td>
 					</tr>
 					<tr>
 						<th><?=$sprache->get("AntragsstellerIn")?>:</th>
 						<td><?php
 							$x = array();
-							foreach ($antragstellerinnen as $a) {
+							foreach ($antragstellerInnen as $a) {
 								$x[] = CHtml::encode($a->name);
 							}
 							echo implode(", ", $x);
@@ -125,7 +124,7 @@ $this->menus_html[] = $html;
 						<a href="<?= CHtml::encode($this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) ?>" class="btn" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
 					</div>
 					<?
-					$policy = $antrag->veranstaltung0->getPolicyAenderungsantraege();
+					$policy = $antrag->veranstaltung->getPolicyAenderungsantraege();
 					if ($policy->checkCurUserHeuristically()) {
 						?>
 						<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
@@ -192,7 +191,7 @@ $this->menus_html[] = $html;
 						<?php
 						/** @var Aenderungsantrag $ant */
 						foreach ($abs->aenderungsantraege as $ant) {
-							$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $ant->antrag->veranstaltung0->yii_url, "antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id));
+							$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $ant->antrag->veranstaltung->url_verzeichnis, "antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id));
 							echo "<li><a class='aender_link' data-id='" . $ant->id . "' href='" . CHtml::encode($ae_link) . "'>" . CHtml::encode($ant->revision_name) . "</a></li>\n";
 						} ?>
 					</ul>
@@ -200,7 +199,7 @@ $this->menus_html[] = $html;
 			<?php
 			}
 
-			if (count($abs->kommentare) > 0 || $antrag->veranstaltung0->darfEroeffnenKommentar()) {
+			if (count($abs->kommentare) > 0 || $antrag->veranstaltung->darfEroeffnenKommentar()) {
 				?>
 				<div class='kommentare'><?
 					?>
@@ -225,7 +224,7 @@ $this->menus_html[] = $html;
 				echo nl2br(CHtml::encode($komm->text));
 				if (!is_null($komm_del_link) && $komm->kannLoeschen(Yii::app()->user)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace(rawurlencode("#komm_id#"), $komm->id, $komm_del_link)) . "'>x</a></div>";
 
-				if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $antrag->veranstaltung0->isAdminCurUser()) {
+				if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $antrag->veranstaltung->isAdminCurUser()) {
 					$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 						'type'                   => 'inline',
 						'htmlOptions'            => array('class' => '', "style" => "clear: both;"),
@@ -246,14 +245,14 @@ $this->menus_html[] = $html;
 					if ($this->veranstaltung->kommentare_unterstuetzbar) {
 						$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 							'type'        => 'inline',
-							'htmlOptions' => array('class' => 'kommentar_unterstuetzer_holder'),
+							'htmlOptions' => array('class' => 'kommentar_unterstuetzerInnen_holder'),
 							'action'      => $komm_link,
 						));
 
-						$meine_unterstuetzung = AntragKommentarUnterstuetzer::meineUnterstuetzung($komm->id);
+						$meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($komm->id);
 
 						$anzahl_dafuer = $anzahl_dagegen = 0;
-						foreach ($komm->unterstuetzer as $unt) {
+						foreach ($komm->unterstuetzerInnen as $unt) {
 							if ($unt->dafuer) $anzahl_dafuer++;
 							else $anzahl_dagegen++;
 						}
@@ -281,7 +280,7 @@ $this->menus_html[] = $html;
 		<?php
 		}
 
-		if ($antrag->veranstaltung0->darfEroeffnenKommentar()) {
+		if ($antrag->veranstaltung->darfEroeffnenKommentar()) {
 			/** @var CActiveForm $form */
 			$form = $this->beginWidget('CActiveForm', array(
 				"htmlOptions" => array(
@@ -348,8 +347,8 @@ $this->menus_html[] = $html;
 <? } ?>
 
 <?php
-$eintraege = (count($unterstuetzerinnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
-$unterstuetzen_policy = $antrag->veranstaltung0->getPolicyUnterstuetzen();
+$eintraege = (count($unterstuetzerInnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
+$unterstuetzen_policy = $antrag->veranstaltung->getPolicyUnterstuetzen();
 $kann_unterstuetzen = $unterstuetzen_policy->checkCurUserHeuristically();
 $kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
 
@@ -364,9 +363,9 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 			$curr_user_id = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
 
 			echo "<strong>UnterstützerInnen:</strong><br>";
-			if (count($unterstuetzerinnen) > 0) {
+			if (count($unterstuetzerInnen) > 0) {
 				echo CHtml::openTag('ul');
-				foreach ($unterstuetzerinnen as $p) {
+				foreach ($unterstuetzerInnen as $p) {
 					echo CHtml::openTag('li');
 					if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
 					echo CHtml::encode($p->name);
@@ -412,12 +411,12 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 			));
 			echo "<div style='text-align: center; margin-bottom: 20px;'>";
 			switch ($support_status) {
-				case IUnterstuetzer::$ROLLE_INITIATOR:
+				case IUnterstuetzerInnen::$ROLLE_INITIATORIN:
 					break;
-				case IUnterstuetzer::$ROLLE_MAG:
+				case IUnterstuetzerInnen::$ROLLE_MAG:
 					$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Zurückziehen', 'icon' => 'icon-remove', 'htmlOptions' => array('name' => AntiXSS::createToken('dochnicht'))));
 					break;
-				case IUnterstuetzer::$ROLLE_MAG_NICHT:
+				case IUnterstuetzerInnen::$ROLLE_MAG_NICHT:
 					$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'label' => 'Zurückziehen', 'icon' => 'icon-remove', 'htmlOptions' => array('name' => AntiXSS::createToken('dochnicht'))));
 					break;
 				default:
@@ -440,7 +439,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 			$this->endWidget();
 		} else {
 			/*
-			Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("site/login")) . '.');
+			Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("veranstaltung/login")) . '.');
 			$this->widget('bootstrap.widgets.TbAlert', array(
 				'block' => true,
 				'fade'  => true,
@@ -458,7 +457,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 <?php
 }
 
-if (count($aenderungsantraege) > 0 || $antrag->veranstaltung0->policy_aenderungsantraege != "Admins") {
+if (count($aenderungsantraege) > 0 || $antrag->veranstaltung->policy_aenderungsantraege != "Admins") {
 	?>
 	<div class="well">
 		<h2><?=$sprache->get("Änderungsanträge")?></h2>

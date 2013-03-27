@@ -55,7 +55,7 @@ if ($font_css != "") $app->getClientScript()->registerCssFile($assets_base . $fo
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container">
-					<form class='form-search visible-phone' action='<?= CHtml::encode($this->createUrl("site/suche")) ?>' method='GET'>
+					<form class='form-search visible-phone' action='<?= CHtml::encode($this->createUrl("veranstaltung/suche")) ?>' method='GET'>
 						<input type='hidden' name='id' value=''>
 
 						<div class='input-append'><input class='search-query' type='search' name='suchbegriff' value='' autofocus placeholder='Suche'>
@@ -64,15 +64,15 @@ if ($font_css != "") $app->getClientScript()->registerCssFile($assets_base . $fo
 					</form>
 
 					<ul class="nav">
-						<li class="active"><a href="<?= CHtml::encode($this->createUrl("site/veranstaltung")) ?>">Start</a></li>
-						<li><a href="<?= CHtml::encode($this->createUrl("site/hilfe")) ?>">Hilfe</a></li>
+						<li class="active"><a href="<?= CHtml::encode($this->createUrl("veranstaltung/index")) ?>">Start</a></li>
+						<li><a href="<?= CHtml::encode($this->createUrl("veranstaltung/hilfe")) ?>">Hilfe</a></li>
 						<?php if (Yii::app()->user->isGuest && !$minimalistisch) { ?>
-							<li><a href="<?= CHtml::encode($this->createUrl("site/login", array("back" => yii::app()->getRequest()->requestUri))) ?>">Login</a></li>
+							<li><a href="<?= CHtml::encode($this->createUrl("veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri))) ?>">Login</a></li>
 						<?php
 						}
 						if (!Yii::app()->user->isGuest) {
 							?>
-							<li><a href="<?= CHtml::encode($this->createUrl("site/logout", array("back" => yii::app()->getRequest()->requestUri))) ?>">Logout</a></li>
+							<li><a href="<?= CHtml::encode($this->createUrl("veranstaltung/logout", array("back" => yii::app()->getRequest()->requestUri))) ?>">Logout</a></li>
 						<?php
 						}
 						if (Yii::app()->user->getState("role") == "admin" || ($this->veranstaltung != null && $this->veranstaltung->isAdminCurUser())) {
@@ -86,7 +86,7 @@ if ($font_css != "") $app->getClientScript()->registerCssFile($assets_base . $fo
 	</div>
 
 
-	<a href="<?php echo CHtml::encode($this->createUrl("site/veranstaltung")); ?>" class="logo"><?php
+	<a href="<?php echo CHtml::encode($this->createUrl("veranstaltung/index")); ?>" class="logo"><?php
 		if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->logo_url != "") {
 			$path     = parse_url($this->veranstaltung->logo_url);
 			$filename = basename($path["path"]);
@@ -105,7 +105,7 @@ if ($font_css != "") $app->getClientScript()->registerCssFile($assets_base . $fo
 		foreach ($this->breadcrumbs as $key=>$val) if ($key !== "" && !($key === 0 && $val === "")) $breadcrumbs[$key] = $val;
 		$top_name = (isset($this->breadcrumbs_topname) && $this->breadcrumbs_topname !== null ? $this->breadcrumbs_topname : "Start");
 		$this->widget('bootstrap.widgets.TbBreadcrumbs', array(
-			'homeLink' => CHtml::link($top_name, $this->createUrl("site/veranstaltung")),
+			'homeLink' => CHtml::link($top_name, $this->createUrl("veranstaltung/index")),
 			'links'    => $breadcrumbs,
 		));
 		if (count($breadcrumbs) == 0) echo "<br><br>";
@@ -128,7 +128,7 @@ if ($font_css != "") $app->getClientScript()->registerCssFile($assets_base . $fo
 		'fixed'       => false,
 		'brand'       => "",
 		'collapse'    => false,
-		'items'       => array('<a href="' . CHtml::encode($this->createUrl("site/impressum")) . '">Impressum</a>'),
+		'items'       => array('<a href="' . CHtml::encode($this->createUrl("veranstaltung/impressum")) . '">Impressum</a>'),
 	)); ?>
 
 	<!-- footer -->

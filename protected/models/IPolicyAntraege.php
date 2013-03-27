@@ -122,10 +122,10 @@ abstract class IPolicyAntraege
 			throw new Exception("Keine AntragstellerIn gefunden");
 		}
 
-		$init                   = new AntragUnterstuetzer();
+		$init                   = new AntragUnterstuetzerInnen();
 		$init->antrag_id        = $antrag->id;
-		$init->rolle            = AntragUnterstuetzer::$ROLLE_INITIATOR;
-		$init->unterstuetzer_id = $antragstellerin->id;
+		$init->rolle            = AntragUnterstuetzerInnen::$ROLLE_INITIATORIN;
+		$init->unterstuetzerIn_id = $antragstellerin->id;
 		$init->position         = 0;
 		$init->save();
 
@@ -139,10 +139,10 @@ abstract class IPolicyAntraege
 				$person->angelegt_datum = "NOW()";
 				$person->admin          = 0;
 				if ($person->save()) {
-					$unt                   = new AntragUnterstuetzer();
+					$unt                   = new AntragUnterstuetzerInnen();
 					$unt->antrag_id        = $antrag->id;
-					$unt->unterstuetzer_id = $person->id;
-					$unt->rolle            = AntragUnterstuetzer::$ROLLE_UNTERSTUETZER;
+					$unt->unterstuetzerIn_id = $person->id;
+					$unt->rolle            = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
 					$unt->position         = $i;
 					$unt->save();
 				}
@@ -171,10 +171,10 @@ abstract class IPolicyAntraege
 			throw new Exception("Keine AntragstellerIn gefunden");
 		}
 
-		$init                      = new AenderungsantragUnterstuetzer();
+		$init                      = new AenderungsantragUnterstuetzerInnen();
 		$init->aenderungsantrag_id = $aenderungsantrag->id;
-		$init->rolle               = AenderungsantragUnterstuetzer::$ROLLE_INITIATOR;
-		$init->unterstuetzer_id    = $antragstellerin->id;
+		$init->rolle               = AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN;
+		$init->unterstuetzerIn_id    = $antragstellerin->id;
 		$init->position            = 0;
 		$init->save();
 
@@ -188,10 +188,10 @@ abstract class IPolicyAntraege
 				$person->angelegt_datum = "NOW()";
 				$person->admin          = 0;
 				if ($person->save()) {
-					$unt                      = new AenderungsantragUnterstuetzer();
+					$unt                      = new AenderungsantragUnterstuetzerInnen();
 					$unt->aenderungsantrag_id = $aenderungsantrag->id;
-					$unt->unterstuetzer_id    = $person->id;
-					$unt->rolle               = AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER;
+					$unt->unterstuetzerIn_id    = $person->id;
+					$unt->rolle               = AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
 					$unt->position            = $i;
 					$unt->save();
 				}

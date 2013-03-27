@@ -3,54 +3,23 @@
 class AntraegeController extends GxController
 {
 
-	/*
-	public function actionCreate($veranstaltung_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $id
+	 */
+	public function actionUpdate($veranstaltungsreihe_id, $veranstaltung_id, $id)
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) return;
-
-		$model = new Antrag;
-		$model->veranstaltung = $this->veranstaltung->id;
-
-		$this->performAjaxValidation($model, 'antrag-form');
-
-		if (isset($_POST['Antrag'])) {
-			$model->setAttributes($_POST['Antrag']);
-			$model->text = HtmlBBcodeUtils::bbcode_normalize($model->text);
-			$model->begruendung = HtmlBBcodeUtils::bbcode_normalize($model->begruendung);
-			Yii::import('ext.datetimepicker.EDateTimePicker');
-			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Antrag"], "datum_einreichung");
-			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Antrag"], "datum_beschluss");
-			$relatedData = array(
-			);
-
-			if ($model->saveWithRelated($relatedData)) {
-				UnterstuetzerWidget::saveUnterstuetzerWidget($model, $messages, "AntragUnterstuetzer", "antrag_id", $model->id);
-
-				if (Yii::app()->getRequest()->getIsAjaxRequest())
-					Yii::app()->end();
-				else
-					$this->redirect(array('update',
-						'id' => $model->id));
-			}
-		}
-
-		$this->render('create', array('model' => $model));
-	}
-	*/
-
-	public function actionUpdate($veranstaltung_id, $id)
-	{
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var $model Antrag */
-		$model = Antrag::model()->with("antragUnterstuetzer", "antragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
+		$model = Antrag::model()->with("antragUnterstuetzerInnen", "antragUnterstuetzerInnen.person")->findByPk($id, '', array("order" => "`person`.`name"));
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
 			$this->redirect($this->createUrl("admin/antraege"));
 		}
-		if ($model->veranstaltung != $this->veranstaltung->id) return;
+		if ($model->veranstaltung_id != $this->veranstaltung->id) return;
 
 		$this->performAjaxValidation($model, 'antrag-form');
 
@@ -76,9 +45,9 @@ class AntraegeController extends GxController
 			);
 
 			if ($model->saveWithRelated($relatedData)) {
-				UnterstuetzerWidget::saveUnterstuetzerWidget($model, $messages, "AntragUnterstuetzer", "antrag_id", $id);
+				UnterstuetzerInnenWidget::saveUnterstuetzerInnenWidget($model, $messages, "AntragUnterstuetzerInnen", "antrag_id", $id);
 
-				$model = Antrag::model()->with("antragUnterstuetzer", "antragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
+				$model = Antrag::model()->with("antragUnterstuetzerInnen", "antragUnterstuetzerInnen.person")->findByPk($id, '', array("order" => "`person`.`name"));
 			}
 		}
 
@@ -89,14 +58,20 @@ class AntraegeController extends GxController
 	}
 
 
-	public function actionDelete($veranstaltung_id, $id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $id
+	 * @throws CHttpException
+	 */
+	public function actionDelete($veranstaltungsreihe_id, $veranstaltung_id, $id)
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var Antrag $antrag */
 		$antrag = $this->loadModel($id, 'Antrag');
-		if ($antrag->veranstaltung != $this->veranstaltung->id) return;
+		if ($antrag->veranstaltung_id != $this->veranstaltung->id) return;
 
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
 			$antrag->status = IAntrag::$STATUS_GELOESCHT;
@@ -108,24 +83,32 @@ class AntraegeController extends GxController
 			throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
 	}
 
-	public function actionIndex($veranstaltung_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionIndex($veranstaltungsreihe_id, $veranstaltung_id)
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$dataProvider = new CActiveDataProvider('Antrag');
 		$dataProvider->sort->defaultOrder = "datum_einreichung DESC";
-		$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT . " AND veranstaltung = " . IntVal($this->veranstaltung->id);
+		$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
 
 		$this->render('index', array(
 			'dataProvider' => $dataProvider,
 		));
 	}
 
-	public function actionAdmin($veranstaltung_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionAdmin($veranstaltungsreihe_id, $veranstaltung_id)
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$model = new Antrag('search');
 		$model->unsetAttributes();
@@ -133,8 +116,8 @@ class AntraegeController extends GxController
 		if (isset($_GET['Antrag']))
 			$model->setAttributes($_GET['Antrag']);
 
-		$model->veranstaltung = $this->veranstaltung->id;
-		$model->veranstaltung0 = $this->veranstaltung;
+		$model->veranstaltung_id = $this->veranstaltung->id;
+		$model->veranstaltung = $this->veranstaltung;
 
 		$this->render('admin', array(
 			'model' => $model,

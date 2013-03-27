@@ -42,9 +42,9 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<?php echo $form->error($model, 'typ'); ?>
 </div>
 <div>
-	<?php echo $form->labelEx($model, 'yii_url'); ?>
-	<?php echo $form->textField($model, 'yii_url', array('maxlength' => 45)); ?>
-	<?php echo $form->error($model, 'yii_url'); ?>
+	<?php echo $form->labelEx($model, 'url_verzeichnis'); ?>
+	<?php echo $form->textField($model, 'url_verzeichnis', array('maxlength' => 45)); ?>
+	<?php echo $form->error($model, 'url_verzeichnis'); ?>
 </div>
 <div>
 	<?php echo $form->labelEx($model, 'name'); ?>

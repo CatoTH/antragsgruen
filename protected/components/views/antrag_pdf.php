@@ -19,7 +19,7 @@ $pdf->AddPage();
 $linenr = $antrag->getFirstLineNo();
 
 
-if ($antrag->veranstaltung0->yii_url == "ltwby13-programm") {
+if ($antrag->veranstaltung->url_verzeichnis == "ltwby13-programm") {
 	$logo           = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
 	$initiatorinnen = "Parteirat und Landesvorstand";
 	$gegenstand     = "Landtagswahlprogramm";
@@ -41,7 +41,7 @@ if ($header) {
 
 	$pdf->SetXY(155, 37, true);
 
-	if (!$antrag->veranstaltung0->revision_name_verstecken) {
+	if (!$antrag->veranstaltung->revision_name_verstecken) {
 
 		if ($antrag->revision_name == "") {
 			$name = "Entwurf";
@@ -55,7 +55,7 @@ if ($header) {
 			false, 1, "", "", true, 0, false, true, 21, // defaults
 			"M"
 		);
-	} elseif ($antrag->veranstaltung0->yii_url == "ltwby13-programm") {
+	} elseif ($antrag->veranstaltung->url_verzeichnis == "ltwby13-programm") {
 		$name = "P1";
 		$pdf->SetFont("helvetica", "B", "25");
 		$pdf->MultiCell(37, 21, $name,
@@ -78,10 +78,10 @@ if ($header) {
 	$pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
 	$pdf->SetY(90);
-	if ($antrag->veranstaltung0->antrag_einleitung != "") {
+	if ($antrag->veranstaltung->antrag_einleitung != "") {
 		$pdf->SetX(24);
 		$pdf->SetFont("helvetica", "B", 12);
-		$pdf->MultiCell(160, 13, $antrag->veranstaltung0->antrag_einleitung);
+		$pdf->MultiCell(160, 13, $antrag->veranstaltung->antrag_einleitung);
 	}
 
 	$pdf->SetX(12);

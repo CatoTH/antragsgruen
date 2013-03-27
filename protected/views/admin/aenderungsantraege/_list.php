@@ -24,10 +24,10 @@
 		<th>AntragstellerIn:</th>
 		<td><?php
 			$x = array();
-			foreach ($data->aenderungsantragUnterstuetzer as $unt) {
-				if (in_array($unt->rolle, array(AenderungsantragUnterstuetzer::$ROLLE_INITIATOR, AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER))) {
-					if ($unt->unterstuetzer->email != "") $x[] = CHtml::encode($unt->unterstuetzer->name . " (" . $unt->unterstuetzer->email . ")");
-					else $x[] = CHtml::encode($unt->unterstuetzer->name);
+			foreach ($data->aenderungsantragUnterstuetzerInnen as $unt) {
+				if (in_array($unt->rolle, array(AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN, AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN))) {
+					if ($unt->person->email != "") $x[] = CHtml::encode($unt->person->name . " (" . $unt->person->email . ")");
+					else $x[] = CHtml::encode($unt->person->name);
 				}
 			}
 			echo implode(", ", $x);

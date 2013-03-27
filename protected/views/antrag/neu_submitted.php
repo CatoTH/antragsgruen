@@ -6,7 +6,7 @@
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	"Antrag" => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 	'Neuer Antrag',
 	'Bestätigen'
@@ -17,7 +17,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 <h1><?php echo $sprache->get("Antrag eingereicht"); ?></h1>
 <div class="form well">
 	<?php
-	echo $text = $antrag->veranstaltung0->getStandardtext("antrag_eingereicht")->getHTMLText();
+	echo $text = $antrag->veranstaltung->getStandardtext("antrag_eingereicht")->getHTMLText();
 	?>
 <p><?php
 
@@ -31,7 +31,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		'type'      => 'primary',
 		'size'      => 'large',
 		'buttonType'=> 'submitlink',
-		'url'       => $this->createUrl("site/veranstaltung"),
+		'url'       => $this->createUrl("veranstaltung/index"),
 		'label'     => 'Zurück zur Startseite',
 	));
 	$this->endWidget();

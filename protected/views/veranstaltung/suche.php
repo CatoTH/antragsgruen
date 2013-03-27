@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var SiteController $this
+ * @var VeranstaltungController $this
  * @var Veranstaltung $veranstaltung
  * @var array $antraege
  * @var null|Person $ich

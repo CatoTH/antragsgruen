@@ -54,11 +54,6 @@ $('.search-form form').submit(function(){
 		'text',
 		'edit_datum',
 		array(
-				'name'=>'edit_person',
-				'value'=>'GxHtml::valueEx($data->editPerson)',
-				'filter'=>GxHtml::listDataEx(Person::model()->findAllAttributes(null, true)),
-				),
-		array(
 			'class' => 'CButtonColumn',
 			'template'=>'{update}',
 		),

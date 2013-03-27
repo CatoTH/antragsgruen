@@ -102,7 +102,7 @@ foreach ($kommentare as $kommentar) {
 		$positiv = $negativ = 0;
 		if (is_a($kommentar, "AntragKommentar")) {
 			/** @var AntragKommentar $kommentar */
-			foreach ($kommentar->unterstuetzer as $unt) {
+			foreach ($kommentar->unterstuetzerInnen as $unt) {
 				if ($unt->dafuer) $positiv++;
 				else $negativ++;
 			}

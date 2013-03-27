@@ -20,7 +20,7 @@
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($aenderungsantrag->antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	CHtml::encode($aenderungsantrag->antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	$sprache->get("Antrag")                                                            => $this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag->id)),
 	$sprache->get("Änderungsantrag")
 );
@@ -58,7 +58,7 @@ $rows = 10;
             <tr>
                 <th>Veranstaltung:</th>
                 <td><?php
-					echo CHtml::link($aenderungsantrag->antrag->veranstaltung0->name, $this->createUrl("site/veranstaltung"));
+					echo CHtml::link($aenderungsantrag->antrag->veranstaltung->name, $this->createUrl("veranstaltung/index"));
 					?></td>
             </tr>
             <tr>
@@ -139,7 +139,7 @@ $rows = 10;
 
                 </div>
 
-				<?php if (count($abs->kommentare) > 0 || $aenderungsantrag->antrag->veranstaltung0->darfEroeffnenKommentar()) { ?>
+				<?php if (count($abs->kommentare) > 0 || $aenderungsantrag->antrag->veranstaltung->darfEroeffnenKommentar()) { ?>
                 <div class='kommentare'>
                     <a href='#' class='shower'><?php echo count($abs->kommentare); ?></a>
                     <a href='#' class='hider'><?php echo count($abs->kommentare); ?></a>
@@ -161,7 +161,7 @@ $rows = 10;
 					<?php
 					echo nl2br(CHtml::encode($komm->text));
 					if (!is_null($komm_del_link) && $komm->kannLoeschen(Yii::app()->user)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace(rawurlencode("#komm_id#"), $komm->id, $komm_del_link)) . "'>x</a></div>";
-					if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung0->isAdminCurUser()) {
+					if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung->isAdminCurUser()) {
 						$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 							'type'        => 'inline',
 							'htmlOptions' => array('class' => ''),
@@ -180,7 +180,7 @@ $rows = 10;
 				<?php
 			}
 
-			if ($aenderungsantrag->antrag->veranstaltung0->darfEroeffnenKommentar()) {
+			if ($aenderungsantrag->antrag->veranstaltung->darfEroeffnenKommentar()) {
 				/** @var TbActiveForm $form */
 				$form = $this->beginWidget('CActiveForm', array(
 					"htmlOptions" => array(
@@ -273,7 +273,7 @@ $rows = 10;
 
 <?php
 $eintraege = (count($unterstuetzerinnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
-$unterstuetzen_policy = $aenderungsantrag->antrag->veranstaltung0->getPolicyUnterstuetzen();
+$unterstuetzen_policy = $aenderungsantrag->antrag->veranstaltung->getPolicyUnterstuetzen();
 $kann_unterstuetzen = $unterstuetzen_policy->checkCurUserHeuristically();
 $kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
 
@@ -336,12 +336,12 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 		));
 		echo "<div style='text-align: center; margin-bottom: 20px;'>";
 		switch ($support_status) {
-			case IUnterstuetzer::$ROLLE_INITIATOR:
+			case IUnterstuetzerInnen::$ROLLE_INITIATORIN:
 				break;
-			case IUnterstuetzer::$ROLLE_MAG:
+			case IUnterstuetzerInnen::$ROLLE_MAG:
 				$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'label'=> 'Zurückziehen', 'icon' => 'icon-remove', 'htmlOptions'=> array('name'=> AntiXSS::createToken('dochnicht'))));
 				break;
-			case IUnterstuetzer::$ROLLE_MAG_NICHT:
+			case IUnterstuetzerInnen::$ROLLE_MAG_NICHT:
 				$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'label'=> 'Zurückziehen', 'icon' => 'icon-remove', 'htmlOptions'=> array('name'=> AntiXSS::createToken('dochnicht'))));
 				break;
 			default:
@@ -362,7 +362,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 		$this->endWidget();
 	} else {
 		/*
-		Yii::app()->user->setFlash('warning', 'Um diesen Änderungsantrag unterstützen oder ablehnen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("site/login")) . '.');
+		Yii::app()->user->setFlash('warning', 'Um diesen Änderungsantrag unterstützen oder ablehnen zu können, musst du ' . CHtml::link("dich einzuloggen", $this->createUrl("veranstaltung/login")) . '.');
 		$this->widget('bootstrap.widgets.TbAlert', array(
 			'block'=> true,
 			'fade' => true,

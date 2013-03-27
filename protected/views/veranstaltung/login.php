@@ -1,6 +1,6 @@
 <?php
 /**
- * @var SiteController $this
+ * @var VeranstaltungController $this
  * @var OAuthLoginForm $model
  */
 $this->breadcrumbs = array(

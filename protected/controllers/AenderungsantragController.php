@@ -3,19 +3,20 @@
 class AenderungsantragController extends AntragsgruenController
 {
 	/**
-	 * @param int $veranstaltung_id
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 * @param int $aenderungsantrag_id
 	 * @return Aenderungsantrag
 	 */
-	private function getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	private function getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$aenderungsantrag_id = IntVal($aenderungsantrag_id);
 		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
 		if (is_null($aenderungsantrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
-			$this->redirect($this->createUrl("site/veranstaltung"));
+			$this->redirect($this->createUrl("veranstaltung/veranstaltung"));
 		}
 
 		$antrag_id = IntVal($antrag_id);
@@ -23,10 +24,10 @@ class AenderungsantragController extends AntragsgruenController
 		$antrag = Antrag::model()->findByPk($antrag_id);
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect($this->createUrl("site/veranstaltung"));
+			$this->redirect($this->createUrl("veranstaltung/veranstaltung"));
 		}
 
-		$this->veranstaltung = $this->loadVeranstaltung($veranstaltung_id, $antrag, $aenderungsantrag);
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag, $aenderungsantrag);
 		$this->testeWartungsmodus();
 
 		return $aenderungsantrag;
@@ -52,7 +53,7 @@ class AenderungsantragController extends AntragsgruenController
 		if (AntiXSS::isTokenSet("komm_freischalten") && $kommentar_id > 0) {
 			/** @var AenderungsantragKommentar $komm */
 			$komm = AenderungsantragKommentar::model()->findByPk($kommentar_id);
-			if ($komm->aenderungsantrag_id == $aenderungsantrag->id && $komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung0->isAdminCurUser()) {
+			if ($komm->aenderungsantrag_id == $aenderungsantrag->id && $komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung->isAdminCurUser()) {
 				$komm->status = IKommentar::$STATUS_FREI;
 				$komm->save();
 				Yii::app()->user->setFlash("success", "Der Kommentar wurde freigeschaltet.");
@@ -64,7 +65,7 @@ class AenderungsantragController extends AntragsgruenController
 		if (AntiXSS::isTokenSet("komm_nicht_freischalten") && $kommentar_id > 0) {
 			/** @var AenderungsantragKommentar $komm */
 			$komm = AenderungsantragKommentar::model()->findByPk($kommentar_id);
-			if ($komm->aenderungsantrag_id == $aenderungsantrag->id && $komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung0->isAdminCurUser()) {
+			if ($komm->aenderungsantrag_id == $aenderungsantrag->id && $komm->status == IKommentar::$STATUS_NICHT_FREI && $aenderungsantrag->antrag->veranstaltung->isAdminCurUser()) {
 				$komm->status = IKommentar::$STATUS_GELOESCHT;
 				$komm->save();
 				Yii::app()->user->setFlash("success", "Der Kommentar wurde gelöscht.");
@@ -75,10 +76,10 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("mag") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
-			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
-			$unt                      = new AenderungsantragUnterstuetzer();
+			foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->unterstuetzerIn_id == $userid) $unt->delete();
+			$unt                      = new AenderungsantragUnterstuetzerInnen();
 			$unt->aenderungsantrag_id = $aenderungsantrag->id;
-			$unt->unterstuetzer_id    = $userid;
+			$unt->unterstuetzerIn_id    = $userid;
 			$unt->rolle               = "mag";
 			$unt->kommentar           = "";
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du unterstützt diesen Änderungsantrag nun.");
@@ -88,10 +89,10 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("magnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
-			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
-			$unt                      = new AenderungsantragUnterstuetzer();
+			foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->unterstuetzerIn_id == $userid) $unt->delete();
+			$unt                      = new AenderungsantragUnterstuetzerInnen();
 			$unt->aenderungsantrag_id = $aenderungsantrag->id;
-			$unt->unterstuetzer_id    = $userid;
+			$unt->unterstuetzerIn_id    = $userid;
 			$unt->rolle               = "magnicht";
 			$unt->kommentar           = "";
 			$unt->save();
@@ -102,34 +103,41 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("dochnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAenderungsantragSubmit()) {
 			$userid = Yii::app()->user->getState("person_id");
-			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer_id == $userid) $unt->delete();
+			foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->unterstuetzerIn_id == $userid) $unt->delete();
 			Yii::app()->user->setFlash("success", "Du stehst diesem Änderungsantrag wieder neutral gegenüber.");
 			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 		}
 	}
 
-	public function actionAnzeige($veranstaltung_id, $antrag_id, $aenderungsantrag_id, $kommentar_id = 0)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 * @param int $aenderungsantrag_id
+	 * @param int $kommentar_id
+	 */
+	public function actionAnzeige($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $kommentar_id = 0)
 	{
-		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		$this->layout = '//layouts/column2';
 
 		if (!$aenderungsantrag) {
 			Yii::app()->user->setFlash("error", "Eine ungültige URL wurde aufgerufen");
-			$this->redirect($this->createUrl("site/veranstaltung"));
+			$this->redirect($this->createUrl("veranstaltung/veranstaltung"));
 		}
 
 		$this->performAnzeigeActions($aenderungsantrag, $kommentar_id);
 
 		$kommentare_offen = array();
 
-		if (AntiXSS::isTokenSet("kommentar_schreiben") && $aenderungsantrag->antrag->veranstaltung0->darfEroeffnenKommentar()) {
+		if (AntiXSS::isTokenSet("kommentar_schreiben") && $aenderungsantrag->antrag->veranstaltung->darfEroeffnenKommentar()) {
 			$zeile = IntVal($_REQUEST["absatz_nr"]);
 
 			$person        = $_REQUEST["Person"];
 			$person["typ"] = Person::$TYP_PERSON;
 
-			if ($aenderungsantrag->antrag->veranstaltung0->getEinstellungen()->kommentar_neu_braucht_email && trim($person["email"]) == "") {
+			if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->kommentar_neu_braucht_email && trim($person["email"]) == "") {
 				Yii::app()->user->setFlash("error", "Bitte gib deine E-Mail-Adresse an.");
 				$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 			}
@@ -180,11 +188,11 @@ class AenderungsantragController extends AntragsgruenController
 		$unterstuetzerinnen = array();
 		$zustimmung_von     = array();
 		$ablehnung_von      = array();
-		if (count($aenderungsantrag->aenderungsantragUnterstuetzer) > 0) foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $relatedModel) {
-			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $antragstellerinnen[] = $relatedModel->unterstuetzer;
-			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzerinnen[] = $relatedModel->unterstuetzer;
-			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->unterstuetzer;
-			if ($relatedModel->rolle == IUnterstuetzer::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->unterstuetzer;
+		if (count($aenderungsantrag->aenderungsantragUnterstuetzerInnen) > 0) foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerinnen[] = $relatedModel->person;
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerinnen[] = $relatedModel->person;
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
 		}
 
 		$hiddens       = array();
@@ -198,11 +206,11 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (Yii::app()->user->isGuest) $kommentar_person = new Person();
 		else $kommentar_person = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
-		$kommentar_person->setEmailRequired($aenderungsantrag->antrag->veranstaltung0->getEinstellungen()->kommentar_neu_braucht_email);
+		$kommentar_person->setEmailRequired($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->kommentar_neu_braucht_email);
 
 		$support_status = "";
 		if (!Yii::app()->user->isGuest) {
-			foreach ($aenderungsantrag->aenderungsantragUnterstuetzer as $unt) if ($unt->unterstuetzer->id == Yii::app()->user->getState("person_id")) $support_status = $unt->rolle;
+			foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->person->id == Yii::app()->user->getState("person_id")) $support_status = $unt->rolle;
 		}
 
 		$this->render("anzeige", array(
@@ -219,37 +227,55 @@ class AenderungsantragController extends AntragsgruenController
 			"hiddens"            => $hiddens,
 			"js_protection"      => $js_protection,
 			"support_status"     => $support_status,
-			"sprache"            => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			"sprache"            => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 		));
 	}
 
-	public function actionPdf($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 * @param int $aenderungsantrag_id
+	 */
+	public function actionPdf($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
-		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		$this->renderPartial("pdf", array(
 			"model"        => $aenderungsantrag,
-			"sprache"      => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			"sprache"      => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 			"diff_ansicht" => false,
 		));
 	}
 
-	public function actionPdfDiff($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 * @param int $aenderungsantrag_id
+	 */
+	public function actionPdfDiff($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
-		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		$this->renderPartial("pdf", array(
 			"model"        => $aenderungsantrag,
-			"sprache"      => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			"sprache"      => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 			"diff_ansicht" => true,
 		));
 	}
 
-	public function actionBearbeiten($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 * @param int $aenderungsantrag_id
+	 */
+	public function actionBearbeiten($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
-		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		if (!$aenderungsantrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Änderungsantrag");
@@ -268,15 +294,21 @@ class AenderungsantragController extends AntragsgruenController
 
 		$this->render("bearbeiten_start", array(
 			"aenderungsantrag" => $aenderungsantrag,
-			"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 		));
 	}
 
-	public function actionAendern($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 * @param int $aenderungsantrag_id
+	 */
+	public function actionAendern($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
-		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		if (!$aenderungsantrag->binInitiatorIn()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Änderungsantrag");
@@ -305,18 +337,24 @@ class AenderungsantragController extends AntragsgruenController
 			"aenderungsantrag" => $aenderungsantrag,
 			"hiddens"          => $hiddens,
 			"js_protection"    => $js_protection,
-			"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+			"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 		));
 
 
 	}
 
 
-	public function actionNeuConfirm($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 * @param int $aenderungsantrag_id
+	 */
+	public function actionNeuConfirm($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
-		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
+		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
 		if ($aenderungsantrag->status != Aenderungsantrag::$STATUS_UNBESTAETIGT) {
 			$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)));
@@ -324,7 +362,7 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
-			$freischaltung = $aenderungsantrag->antrag->veranstaltung0->freischaltung_aenderungsantraege;
+			$freischaltung = $aenderungsantrag->antrag->veranstaltung->freischaltung_aenderungsantraege;
 			if ($freischaltung) {
 				$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 			} else {
@@ -333,8 +371,8 @@ class AenderungsantragController extends AntragsgruenController
 			}
 			$aenderungsantrag->save();
 
-			if ($aenderungsantrag->antrag->veranstaltung0->admin_email != "") {
-				$mails = explode(",", $aenderungsantrag->antrag->veranstaltung0->admin_email);
+			if ($aenderungsantrag->antrag->veranstaltung->admin_email != "") {
+				$mails = explode(",", $aenderungsantrag->antrag->veranstaltung->admin_email);
 				foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Änderungsantrag",
 					"Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
 						"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)),
@@ -344,14 +382,14 @@ class AenderungsantragController extends AntragsgruenController
 
 			$this->render("neu_submitted", array(
 				"aenderungsantrag" => $aenderungsantrag,
-				"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+				"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 			));
 
 		} else {
 
 			$this->render('neu_confirm', array(
 				"aenderungsantrag" => $aenderungsantrag,
-				"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+				"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 			));
 
 		}
@@ -359,6 +397,9 @@ class AenderungsantragController extends AntragsgruenController
 	}
 
 
+	/**
+	 *
+	 */
 	public function actionAjaxCalcDiff()
 	{
 		if (!isset($_REQUEST["absaetze"])) return;
@@ -377,7 +418,12 @@ class AenderungsantragController extends AntragsgruenController
 		$this->renderPartial('ajax_diff', array("diffs" => $diffs));
 	}
 
-	public function actionNeu($veranstaltung_id, $antrag_id)
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 */
+	public function actionNeu($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
@@ -385,10 +431,10 @@ class AenderungsantragController extends AntragsgruenController
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
 
-		$this->loadVeranstaltung($veranstaltung_id, $antrag);
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag);
 
-		if (!$antrag->veranstaltung0->getPolicyAenderungsantraege()->checkCurUserHeuristically()) {
-			$msg = $antrag->veranstaltung0->getPolicyAenderungsantraege()->getPermissionDeniedMsg();
+		if (!$antrag->veranstaltung->getPolicyAenderungsantraege()->checkCurUserHeuristically()) {
+			$msg = $antrag->veranstaltung->getPolicyAenderungsantraege()->getPermissionDeniedMsg();
 			Yii::app()->user->setFlash("error", "Es kann kein Änderungsantrag werden: " . $msg);
 			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
@@ -473,7 +519,7 @@ class AenderungsantragController extends AntragsgruenController
 					"antragstellerin"  => $antragstellerin,
 					"hiddens"          => $hiddens,
 					"js_protection"    => $js_protection,
-					"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+					"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 				));
 				return;
 			}
@@ -495,7 +541,7 @@ class AenderungsantragController extends AntragsgruenController
 				"antragstellerin"  => $antragstellerin,
 				"hiddens"          => $hiddens,
 				"js_protection"    => $js_protection,
-				"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+				"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 			));
 		}
 	}

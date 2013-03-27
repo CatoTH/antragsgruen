@@ -9,7 +9,7 @@
  *
  * @property AntragKommentar $antragKommentar
  */
-class AntragKommentarUnterstuetzer extends GxActiveRecord {
+class AntragKommentarUnterstuetzerInnen extends GxActiveRecord {
 
 	public static function model($className=__CLASS__) {
 		return parent::model($className);
@@ -18,14 +18,14 @@ class AntragKommentarUnterstuetzer extends GxActiveRecord {
 	/**
 	 * @static
 	 * @param int $antrag_id
-	 * @return null|AntragKommentarUnterstuetzer
+	 * @return null|AntragKommentarUnterstuetzerInnen
 	 */
 	public static function meineUnterstuetzung($antrag_id) {
 		if (isset(Yii::app()->request->cookies['kommentar_bewertung'])) {
-			$unt = AntragKommentarUnterstuetzer::model()->findByAttributes(array("antrag_kommentar_id" => $antrag_id, "cookie_id" => Yii::app()->request->cookies['kommentar_bewertung']->value));
+			$unt = AntragKommentarUnterstuetzerInnen::model()->findByAttributes(array("antrag_kommentar_id" => $antrag_id, "cookie_id" => Yii::app()->request->cookies['kommentar_bewertung']->value));
 			if ($unt !== null) return $unt;
 		}
-		$unt = AntragKommentarUnterstuetzer::model()->findByAttributes(array("antrag_kommentar_id" => $antrag_id, "ip_hash" => md5($_SERVER["REMOTE_ADDR"])));
+		$unt = AntragKommentarUnterstuetzerInnen::model()->findByAttributes(array("antrag_kommentar_id" => $antrag_id, "ip_hash" => md5($_SERVER["REMOTE_ADDR"])));
 		return $unt;
 	}
 
@@ -46,7 +46,7 @@ class AntragKommentarUnterstuetzer extends GxActiveRecord {
 	}
 
 	public function tableName() {
-		return 'antrag_kommentar_unterstuetzer';
+		return 'antrag_kommentar_unterstuetzerInnen';
 	}
 
 	public static function label($n = 1) {

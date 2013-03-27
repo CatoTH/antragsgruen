@@ -1,30 +1,122 @@
 <?php
 
-class SiteController extends AntragsgruenController
+class VeranstaltungController extends AntragsgruenController
 {
 
 	public $text_comments = false;
 
 	/**
+	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionIndex($veranstaltung_id = "")
+	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		try {
-			if ($veranstaltung_id == "") $veranstaltung_id =  Yii::app()->params['standardVeranstaltung'];
-			$this->actionVeranstaltung($veranstaltung_id);
-		} catch (CDbException $e) {
-			echo "Es konnte keine Datenbankverbindung hergestellt werden.<br>";
-			if (YII_DEBUG) echo "Die Fehlermeldung lautete:<blockquote>" . $e->getMessage() . "</blockquote>";
+		$this->layout = '//layouts/column2';
+
+		if ($veranstaltung_id == "") {
+			/** @var Veranstaltungsreihe $reihe  */
+			$reihe = Veranstaltungsreihe::model()->findByAttributes(array("subdomain" => $veranstaltungsreihe_id));
+			if ($reihe) {
+				$veranstaltung_id = $reihe->aktuelle_veranstaltung->url_verzeichnis;
+			} else {
+				$this->render('error', array(
+					"code" => 404,
+					"message" => "Die Veranstaltungsreihe wurde nicht gefunden."
+				));
+			}
 		}
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		$this->testeWartungsmodus();
+
+		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
+		/*
+		if (is_null($veranstaltung)) {
+			if (Yii::app()->params['standardVeranstaltungAutoCreate']) {
+				$veranstaltung                                   = new Veranstaltung();
+				$veranstaltung->id                               = $veranstaltung_id;
+				$veranstaltung->name                             = "Standard-Veranstaltung";
+				$veranstaltung->freischaltung_antraege           = 1;
+				$veranstaltung->freischaltung_aenderungsantraege = 1;
+				$veranstaltung->freischaltung_kommentare         = 1;
+				$veranstaltung->policy_kommentare                = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->policy_aenderungsantraege        = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->policy_antraege                  = Veranstaltung::$POLICY_NUR_ADMINS;
+				$veranstaltung->typ                              = Veranstaltung::$TYP_PROGRAMM;
+				$veranstaltung->save();
+
+				$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
+			} else {
+				$this->redirect($this->createUrl("veranstaltung/login"));
+			}
+		}
+		*/
+
+		$antraege_sorted = $veranstaltung->antraegeSortiert();
+
+		/** @var null|Person $ich */
+		if (Yii::app()->user->isGuest) $ich = null;
+		else {
+			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+		}
+
+		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($this->veranstaltung->id, 5);
+		$neueste_antraege           = Antrag::holeNeueste($this->veranstaltung->id, 5);
+		$neueste_kommentare         = AntragKommentar::holeNeueste($this->veranstaltung->id, 3);
+
+		$meine_antraege           = array();
+		$meine_aenderungsantraege = array();
+
+		if ($ich) {
+			$oCriteria        = new CDbCriteria();
+			$oCriteria->alias = "antrag_unterstuetzerInnen";
+			$oCriteria->join  = "JOIN `antrag` ON `antrag`.`id` = `antrag_unterstuetzerInnen`.`antrag_id`";
+			$oCriteria->addCondition("`antrag`.`veranstaltung_id` = " . IntVal($this->veranstaltung->id));
+			$oCriteria->addCondition("`antrag_unterstuetzerInnen`.`unterstuetzerIn_id` = " . IntVal($ich->id));
+			$oCriteria->addCondition("`antrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
+			$oCriteria->order = '`datum_einreichung` DESC';
+			$dataProvider     = new CActiveDataProvider('AntragUnterstuetzerInnen', array(
+				'criteria' => $oCriteria,
+			));
+			$meine_antraege   = $dataProvider->data;
+
+			$oCriteria        = new CDbCriteria();
+			$oCriteria->alias = "aenderungsantrag_unterstuetzerInnen";
+			$oCriteria->join  = "JOIN `aenderungsantrag` ON `aenderungsantrag`.`id` = `aenderungsantrag_unterstuetzerInnen`.`aenderungsantrag_id`";
+			$oCriteria->join .= " JOIN `antrag` ON `aenderungsantrag`.`antrag_id` = `antrag`.`id`";
+			$oCriteria->addCondition("`antrag`.`veranstaltung_id` = " . IntVal($this->veranstaltung->id));
+			$oCriteria->addCondition("`aenderungsantrag_unterstuetzerInnen`.`unterstuetzerIn_id` = " . IntVal($ich->id));
+			$oCriteria->addCondition("`antrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
+			$oCriteria->addCondition("`aenderungsantrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
+			$oCriteria->order         = '`aenderungsantrag`.`datum_einreichung` DESC';
+			$dataProvider             = new CActiveDataProvider('AenderungsantragUnterstuetzerInnen', array(
+				'criteria' => $oCriteria,
+			));
+			$meine_aenderungsantraege = $dataProvider->data;
+		}
+
+		$einleitungstext = $veranstaltung->getStandardtext("startseite");
+
+		$this->render('index', array(
+			"veranstaltung"              => $veranstaltung,
+			"einleitungstext"            => $einleitungstext,
+			"antraege"                   => $antraege_sorted,
+			"ich"                        => $ich,
+			"neueste_antraege"           => $neueste_antraege,
+			"neueste_kommentare"         => $neueste_kommentare,
+			"neueste_aenderungsantraege" => $neueste_aenderungsantraege,
+			"meine_antraege"             => $meine_antraege,
+			"meine_aenderungsantraege"   => $meine_aenderungsantraege,
+			"sprache"                    => $veranstaltung->getSprache(),
+		));
 	}
 
 	/**
+	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionImpressum($veranstaltung_id = "")
+	public function actionImpressum($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->render('content', array(
 			"title"            => "Impressum",
 			"breadcrumb_title" => "Impressum",
@@ -33,11 +125,12 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
+	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionWartungsmodus($veranstaltung_id = "")
+	public function actionWartungsmodus($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->render('content', array(
 			"title"            => "Wartungsmodus",
 			"breadcrumb_title" => "Wartungsmodus",
@@ -46,11 +139,12 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
-	 *
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
 	 */
-	public function actionHilfe($veranstaltung_id = "")
+	public function actionHilfe($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
 		$this->render('content', array(
@@ -61,11 +155,12 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
+	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionPdfs($veranstaltung_id = "")
+	public function actionPdfs($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
 		$antraege = $this->veranstaltung->antraegeSortiert();
@@ -137,11 +232,12 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
+	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionFeedAntraege($veranstaltung_id = "")
+	public function actionFeedAntraege($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
 		$sprache       = $veranstaltung->getSprache();
@@ -155,11 +251,12 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
+	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionFeedAenderungsantraege($veranstaltung_id = "")
+	public function actionFeedAenderungsantraege($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
 		$sprache       = $veranstaltung->getSprache();
@@ -173,11 +270,12 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
+	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionFeedKommentare($veranstaltung_id = "")
+	public function actionFeedKommentare($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
 		$sprache       = $veranstaltung->getSprache();
@@ -192,11 +290,12 @@ class SiteController extends AntragsgruenController
 
 
 	/**
+	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionFeedAlles($veranstaltung_id = "")
+	public function actionFeedAlles($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
-		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
 		$sprache       = $veranstaltung->getSprache();
@@ -219,11 +318,15 @@ class SiteController extends AntragsgruenController
 	}
 
 
-	public function actionSuche($veranstaltung_id = "")
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionSuche($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
 		$this->layout = '//layouts/column2';
 
-		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
+		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
 		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($veranstaltung->id, 5);
@@ -253,14 +356,14 @@ class SiteController extends AntragsgruenController
 	 */
 	private function actionVeranstaltung_loadData($veranstaltung_id)
 	{
-		$att = (is_numeric($veranstaltung_id) ? "id" : "yii_url");
+		$att = (is_numeric($veranstaltung_id) ? "id" : "url_verzeichnis");
 
 		/** @var Veranstaltung $veranstaltung */
 		$this->veranstaltung = Veranstaltung::model()->
 			with(array(
 				'antraege'                    => array(
 					'joinType' => "LEFT OUTER JOIN",
-					'on'       => "`antraege`.`veranstaltung` = `t`.`id` AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
+					'on'       => "`antraege`.`veranstaltung_id` = `t`.`id` AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
 				),
 				'antraege.aenderungsantraege' => array(
 					'joinType' => "LEFT OUTER JOIN",
@@ -270,97 +373,6 @@ class SiteController extends AntragsgruenController
 		return $this->veranstaltung;
 	}
 
-
-	/**
-	 * @param string $veranstaltung_id
-	 */
-	public function actionVeranstaltung($veranstaltung_id = "")
-	{
-		$this->layout = '//layouts/column2';
-
-		if ($veranstaltung_id == "") $this->redirect("/");
-		$this->loadVeranstaltung($veranstaltung_id);
-		$this->testeWartungsmodus();
-
-		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
-		if (is_null($veranstaltung)) {
-			if (Yii::app()->params['standardVeranstaltungAutoCreate']) {
-				$veranstaltung                                   = new Veranstaltung();
-				$veranstaltung->id                               = $veranstaltung_id;
-				$veranstaltung->name                             = "Standard-Veranstaltung";
-				$veranstaltung->freischaltung_antraege           = 1;
-				$veranstaltung->freischaltung_aenderungsantraege = 1;
-				$veranstaltung->freischaltung_kommentare         = 1;
-				$veranstaltung->policy_kommentare                = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->policy_aenderungsantraege        = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->policy_antraege                  = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->typ                              = Veranstaltung::$TYP_PROGRAMM;
-				$veranstaltung->save();
-
-				$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
-			} else {
-				$this->redirect($this->createUrl("site/login"));
-			}
-		}
-
-		$antraege_sorted = $veranstaltung->antraegeSortiert();
-
-		/** @var null|Person $ich */
-		if (Yii::app()->user->isGuest) $ich = null;
-		else {
-			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
-		}
-
-		$neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($this->veranstaltung->id, 5);
-		$neueste_antraege           = Antrag::holeNeueste($this->veranstaltung->id, 5);
-		$neueste_kommentare         = AntragKommentar::holeNeueste($this->veranstaltung->id, 3);
-
-		$meine_antraege           = array();
-		$meine_aenderungsantraege = array();
-
-		if ($ich) {
-			$oCriteria        = new CDbCriteria();
-			$oCriteria->alias = "antrag_unterstuetzer";
-			$oCriteria->join  = "JOIN `antrag` ON `antrag`.`id` = `antrag_unterstuetzer`.`antrag_id`";
-			$oCriteria->addCondition("`antrag`.`veranstaltung` = " . IntVal($this->veranstaltung->id));
-			$oCriteria->addCondition("`antrag_unterstuetzer`.`unterstuetzer_id` = " . IntVal($ich->id));
-			$oCriteria->addCondition("`antrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
-			$oCriteria->order = '`datum_einreichung` DESC';
-			$dataProvider     = new CActiveDataProvider('AntragUnterstuetzer', array(
-				'criteria' => $oCriteria,
-			));
-			$meine_antraege   = $dataProvider->data;
-
-			$oCriteria        = new CDbCriteria();
-			$oCriteria->alias = "aenderungsantrag_unterstuetzer";
-			$oCriteria->join  = "JOIN `aenderungsantrag` ON `aenderungsantrag`.`id` = `aenderungsantrag_unterstuetzer`.`aenderungsantrag_id`";
-			$oCriteria->join .= " JOIN `antrag` ON `aenderungsantrag`.`antrag_id` = `antrag`.`id`";
-			$oCriteria->addCondition("`antrag`.`veranstaltung` = " . IntVal($this->veranstaltung->id));
-			$oCriteria->addCondition("`aenderungsantrag_unterstuetzer`.`unterstuetzer_id` = " . IntVal($ich->id));
-			$oCriteria->addCondition("`antrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
-			$oCriteria->addCondition("`aenderungsantrag`.`status` != " . IAntrag::$STATUS_GELOESCHT);
-			$oCriteria->order         = '`aenderungsantrag`.`datum_einreichung` DESC';
-			$dataProvider             = new CActiveDataProvider('AenderungsantragUnterstuetzer', array(
-				'criteria' => $oCriteria,
-			));
-			$meine_aenderungsantraege = $dataProvider->data;
-		}
-
-		$einleitungstext = $veranstaltung->getStandardtext("startseite");
-
-		$this->render('veranstaltung_index', array(
-			"veranstaltung"              => $veranstaltung,
-			"einleitungstext"            => $einleitungstext,
-			"antraege"                   => $antraege_sorted,
-			"ich"                        => $ich,
-			"neueste_antraege"           => $neueste_antraege,
-			"neueste_kommentare"         => $neueste_kommentare,
-			"neueste_aenderungsantraege" => $neueste_aenderungsantraege,
-			"meine_antraege"             => $meine_antraege,
-			"meine_aenderungsantraege"   => $meine_aenderungsantraege,
-			"sprache"                    => $veranstaltung->getSprache(),
-		));
-	}
 
 
 	/**
@@ -377,11 +389,13 @@ class SiteController extends AntragsgruenController
 	}
 
 	/**
-	 *
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param string $back
 	 */
-	public function actionLogin($veranstaltung_id = "", $back = "")
+	public function actionLogin($veranstaltungsreihe_id = "", $veranstaltung_id = "", $back = "")
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 
 		$model = new OAuthLoginForm();
 		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
@@ -494,11 +508,13 @@ class SiteController extends AntragsgruenController
 
 
 	/**
-	 *
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param string $back
 	 */
-	public function actionLogout($veranstaltung_id = "", $back = "")
+	public function actionLogout($veranstaltungsreihe_id = "", $veranstaltung_id = "", $back = "")
 	{
-		$this->loadVeranstaltung($veranstaltung_id);
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 
 		Yii::app()->user->logout();
 		Yii::app()->user->setFlash("success", "Bis bald!");

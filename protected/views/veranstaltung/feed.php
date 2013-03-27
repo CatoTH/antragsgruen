@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var SiteController $this
+ * @var VeranstaltungController $this
  * @var int $veranstaltung_id
  * @var string $feed_title
  * @var array $data

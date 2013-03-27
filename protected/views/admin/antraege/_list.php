@@ -19,7 +19,7 @@
 		<th>AntragstellerIn:</th>
 		<td><?php
 			$x = array();
-			foreach ($data->antragUnterstuetzer as $unt) if (in_array($unt->rolle, array(AntragUnterstuetzer::$ROLLE_INITIATOR, AntragUnterstuetzer::$ROLLE_UNTERSTUETZER))) $x[] = CHtml::encode($unt->unterstuetzer->name);
+			foreach ($data->antragUnterstuetzerInnen as $unt) if (in_array($unt->rolle, array(AntragUnterstuetzerInnen::$ROLLE_INITIATORIN, AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN))) $x[] = CHtml::encode($unt->person->name);
 			echo implode(", ", $x);
 			?></td>
 	</tr>

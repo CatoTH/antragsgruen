@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var SiteController $this
+ * @var VeranstaltungController $this
  * @var Veranstaltung $veranstaltung
  * @var Standardtext $einleitungstext
  * @var array $antraege
@@ -9,8 +9,8 @@
  * @var array|AntragKommentar[] $neueste_kommentare
  * @var array|Antrag[] $neueste_antraege
  * @var array|Aenderungsantrag[] $neueste_aenderungsantraege
- * @var array|AntragUnterstuetzer[] $meine_antraege
- * @var array|AenderungsantragUnterstuetzer[] $meine_aenderungsantraege
+ * @var array|AntragUnterstuetzerInnen[] $meine_antraege
+ * @var array|AenderungsantragUnterstuetzerInnen[] $meine_aenderungsantraege
  * @var Sprache $sprache
  */
 
@@ -55,7 +55,7 @@ include(__DIR__ . "/sidebar.php");
 </div>
 <?php
 foreach ($antraege as $name=> $antrs) {
-	if ($veranstaltung->yii_url == "ltwby13-programm") echo "<h3>Antrag des Parteirats mit dem Landesvorstand</h3>";
+	if ($veranstaltung->url_verzeichnis == "ltwby13-programm") echo "<h3>Antrag des Parteirats mit dem Landesvorstand</h3>";
 	else echo "<h3>" . CHtml::encode($name) . "</h3>";
 	echo "<ul>";
 	foreach ($antrs as $antrag) {
@@ -79,7 +79,7 @@ foreach ($antraege as $name=> $antrs) {
 		echo "</p>\n";
 		echo "<p class='info'>von ";
 		$vons = array();
-		foreach ($antrag->antragUnterstuetzer as $unt) if ($unt->rolle == "initiator") $vons[] = $unt->unterstuetzer->name;
+		foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == "initiator") $vons[] = $unt->person->name;
 		echo implode(", ", $vons);
 		echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
 		echo "</p>";
@@ -91,7 +91,7 @@ foreach ($antraege as $name=> $antrs) {
 				echo "<span class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($ae->datum_einreichung) . "</span>\n";
 				echo CHtml::link($ae->revision_name, $this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $ae->antrag->id, "aenderungsantrag_id" => $ae->id)));
 				$vons = array();
-				foreach ($ae->aenderungsantragUnterstuetzer as $unt) if ($unt->rolle == "initiator") $vons[] = $unt->unterstuetzer->name;
+				foreach ($ae->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->rolle == "initiator") $vons[] = $unt->person->name;
 				echo "<span class='info'>" . implode(", ", $vons) . "</span>\n";
 				echo "</li>\n";
 			}
@@ -116,8 +116,8 @@ foreach ($antraege as $name=> $antrs) {
 				echo "<li>";
 				if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "<span style='text-decoration: line-through;'>";
 				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
-				if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
-				if ($antragu->rolle == AntragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
+				if ($antragu->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN) echo " (InitiatorIn)";
+				if ($antragu->rolle == AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) echo " (UnterstützerIn)";
 					if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "</span>";
 				echo "</li>\n";
 			} ?>
@@ -132,15 +132,15 @@ foreach ($antraege as $name=> $antrs) {
         <div class="content">
             <ul>
 				<?php foreach ($meine_aenderungsantraege as $antragu) {
-				/** @var AenderungsantragUnterstuetzer $antragu */
+				/** @var AenderungsantragUnterstuetzerInnen $antragu */
 				/** @var Aenderungsantrag $antrag */
 				$antrag = $antragu->aenderungsantrag;
 				echo "<li>";
 					if ($antrag->status == Aenderungsantrag::$STATUS_ZURUECKGEZOGEN) echo "<span style='text-decoration: line-through;'>";
 				echo CHtml::link(CHtml::encode($antrag->revision_name . " zu " . $antrag->antrag->revision_name),
 					$this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $antrag->antrag->id, "aenderungsantrag_id" => $antrag->id)));
-				if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_INITIATOR) echo " (InitiatorIn)";
-				if ($antragu->rolle == AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER) echo " (UnterstützerIn)";
+				if ($antragu->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN) echo " (InitiatorIn)";
+				if ($antragu->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) echo " (UnterstützerIn)";
 					if ($antrag->status == Aenderungsantrag::$STATUS_ZURUECKGEZOGEN) echo "</span>";
 				echo "</li>\n";
 			} ?>

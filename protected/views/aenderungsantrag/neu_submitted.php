@@ -6,12 +6,12 @@
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($aenderungsantrag->antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	CHtml::encode($aenderungsantrag->antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	$sprache->get("Antrag"),
 	$sprache->get("Neuer Änderungsantrag")
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
-$ver = $aenderungsantrag->antrag->veranstaltung0;
+$ver = $aenderungsantrag->antrag->veranstaltung;
 $this->pageTitle = $sprache->get("Änderungseintrag eingereicht");
 ?>
 
@@ -30,7 +30,7 @@ $this->pageTitle = $sprache->get("Änderungseintrag eingereicht");
 			'type'      => 'primary',
 			'size'      => 'large',
 			'buttonType'=> 'submitlink',
-			'url'       => $this->createUrl("site/veranstaltung"),
+			'url'       => $this->createUrl("veranstaltung/index"),
 			'label'     => 'Zurück zur Startseite',
 		));
 		$this->endWidget();

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var SiteController $this
+ * @var VeranstaltungController $this
  * @var Veranstaltung $veranstaltung
  * @var array|array[] $antraege
  * @var Sprache $sprache
@@ -63,10 +63,10 @@ if ($cached !== false) {
 		/** @var Antrag $antrag */
 		if (!in_array($antrag->status, IAntrag::$STATI_UNSICHTBAR)) {
 			$initiatorinnen     = array();
-			$unterstuetzer = array();
-			foreach ($antrag->antragUnterstuetzer as $unt) {
-				if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $initiatorinnen[] = $unt->unterstuetzer->name;
-				if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzer[] = $unt->unterstuetzer;
+			$unterstuetzerInnen = array();
+			foreach ($antrag->antragUnterstuetzerInnen as $unt) {
+				if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $initiatorinnen[] = $unt->person->name;
+				if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $unt->person;
 			}
 
 			$this->widget("AntragPDFWidget", array(
@@ -74,7 +74,7 @@ if ($cached !== false) {
 				"antrag"         => $antrag,
 				"pdf"            => $pdf,
 				"initiatorinnen" => implode(", ", $initiatorinnen),
-				"header"         => ($antrag->veranstaltung0->yii_url != "ltwby13-programm" || $first),
+				"header"         => ($antrag->veranstaltung->url_verzeichnis != "ltwby13-programm" || $first),
 			));
 			$first = false;
 		}

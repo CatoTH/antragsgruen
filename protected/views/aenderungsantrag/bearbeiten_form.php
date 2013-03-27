@@ -17,7 +17,7 @@ $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckedit
 $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/bbcode/plugin.js');
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	$sprache->get("Antrag") => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 	$sprache->get("Neuer Änderungsantrag"),
 );
@@ -113,7 +113,7 @@ foreach ($hiddens as $name=>$value) {
 </div>
 <?php
 
-$this->renderPartial($antrag->veranstaltung0->getPolicyAenderungsantraege()->getAntragstellerInView(), array(
+$this->renderPartial($antrag->veranstaltung->getPolicyAenderungsantraege()->getAntragstellerInView(), array(
 	"form"             => $form,
 	"mode"             => $mode,
 	"antrag"           => $antrag,
@@ -121,7 +121,7 @@ $this->renderPartial($antrag->veranstaltung0->getPolicyAenderungsantraege()->get
 	"antragstellerin"  => $antragstellerin,
 	"hiddens"          => $hiddens,
 	"js_protection"    => $js_protection,
-	"sprache"          => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
+	"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 ));
 
 $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");

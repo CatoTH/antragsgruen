@@ -15,10 +15,10 @@ $pdf = new AntragsgruenPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true
 /** @var array|string[] $initiatorinnen  */
 $initiatorinnen = array();
 
-$unterstuetzer = array();
-foreach ($model->antragUnterstuetzer as $unt) {
-	if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) $initiatorinnen[] = $unt->unterstuetzer->name;
-	if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzer[] = $unt->unterstuetzer;
+$unterstuetzerInnen = array();
+foreach ($model->antragUnterstuetzerInnen as $unt) {
+	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $initiatorinnen[] = $unt->unterstuetzerIn->name;
+	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $unt->unterstuetzerIn;
 }
 
 // set document information

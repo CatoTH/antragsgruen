@@ -11,20 +11,20 @@ $absae = $model->getAntragstextParagraphs();
 // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-$initiatorinnen       = array();
-$initiatorinnen_namen = array();
-$unterstuetzer        = array();
-foreach ($model->aenderungsantragUnterstuetzer as $unt) {
-	if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) {
-		$initiatorinnen[]       = $unt->unterstuetzer;
-		$initiatorinnen_namen[] = $unt->unterstuetzer->name;
+$initiatorInnen       = array();
+$initiatorInnen_namen = array();
+$unterstuetzerInnen        = array();
+foreach ($model->aenderungsantragUnterstuetzerInnen as $unt) {
+	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+		$initiatorInnen[]       = $unt->person;
+		$initiatorInnen_namen[] = $unt->person->name;
 	}
-	if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzer[] = $unt->unterstuetzer;
+	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $unt->person;
 }
 
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
-if (count($initiatorinnen_namen) > 0) $pdf->SetAuthor(implode(", ", $initiatorinnen_namen));
+if (count($initiatorInnen_namen) > 0) $pdf->SetAuthor(implode(", ", $initiatorInnen_namen));
 $pdf->SetTitle("Änderungsantrag " . $model->revision_name . " zu " . $model->antrag->name);
 $pdf->SetSubject("Änderungsantrag " . $model->revision_name . " zu " . $model->antrag->name);
 //$pdf->SetSubject($model->name);
@@ -63,7 +63,7 @@ $pdf->SetFont('dejavusans', '', 10);
 $pdf->AddPage();
 
 
-if ($model->antrag->veranstaltung0->yii_url == "ltwby13-programm") {
+if ($model->antrag->veranstaltung->url_verzeichnis == "ltwby13-programm") {
 	$logo = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
 } else {
 	$logo = Yii::app()->params['pdf_logo'];
@@ -103,10 +103,10 @@ $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
 $pdf->SetY(90);
 
-if ($model->antrag->veranstaltung0->antrag_einleitung != "") {
+if ($model->antrag->veranstaltung->antrag_einleitung != "") {
 	$pdf->SetX(25);
 	$pdf->SetFont("helvetica", "B", 12);
-	$pdf->MultiCell(160, 13, $model->antrag->veranstaltung0->antrag_einleitung);
+	$pdf->MultiCell(160, 13, $model->antrag->veranstaltung->antrag_einleitung);
 }
 
 $pdf->SetX(25);
@@ -114,7 +114,7 @@ $pdf->SetX(25);
 $pdf->SetFont("helvetica", "B", 12);
 $pdf->MultiCell(50, 0, "AntragsstellerIn:", 0, "L", false, 0);
 $pdf->SetFont("helvetica", "", 12);
-$pdf->MultiCell(120, 0, implode(", ", $initiatorinnen_namen), 0, "L");
+$pdf->MultiCell(120, 0, implode(", ", $initiatorInnen_namen), 0, "L");
 
 $pdf->SetFont("helvetica", "B", 8);
 $pdf->Ln();

@@ -8,7 +8,7 @@ $this->breadcrumbs = array(
 	Yii::t('app', 'Update'),
 );
 
-$komm_link = $this->createUrl($this->createUrl("antrag/anzeige", array("veranstaltung_id" => $model->antrag->veranstaltung0->yii_url, "antrag_id" => $model->antrag->id, "kommentar_id" => $model->id, "#" => "#komm" . $model->id)));
+$komm_link = $this->createUrl($this->createUrl("antrag/anzeige", array("veranstaltung_id" => $model->antrag->veranstaltung->url_verzeichnis, "antrag_id" => $model->antrag->id, "kommentar_id" => $model->id, "#" => "#komm" . $model->id)));
 
 $this->menu = array(
 	array('label' => $model->label(2) . ': ' . Yii::t('app', 'List'), 'url'=> array('index'), "icon" => "home"),

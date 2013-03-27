@@ -3,8 +3,13 @@
 class TexteController extends GxController {
 
 
-	public function actionView($veranstaltung_id, $id) {
-		$this->loadVeranstaltung($veranstaltung_id);
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $id
+	 */
+	public function actionView($veranstaltungsreihe_id, $veranstaltung_id, $id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) return;
 
 		/** @var Texte $text  */
@@ -16,9 +21,13 @@ class TexteController extends GxController {
 		));
 	}
 
-	public function actionCreate($veranstaltung_id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionCreate($veranstaltungsreihe_id, $veranstaltung_id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var $model Texte */
 		$model = new Texte;
@@ -30,9 +39,6 @@ class TexteController extends GxController {
 			$model->veranstaltung = $this->veranstaltung;
 			$model->veranstaltung_id = $this->veranstaltung->id;
 			$model->edit_datum = new CDbExpression('NOW()');
-			/** @var Person $ich  */
-			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
-			$model->edit_person = $ich->id;
 
 			if ($model->save()) {
 				if (Yii::app()->getRequest()->getIsAjaxRequest())
@@ -48,9 +54,14 @@ class TexteController extends GxController {
 		$this->render('create', array( 'model' => $model));
 	}
 
-	public function actionUpdate($veranstaltung_id, $id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $id
+	 */
+	public function actionUpdate($veranstaltungsreihe_id, $veranstaltung_id, $id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var Texte $model  */
 		$model = $this->loadModel($id, 'Texte');
@@ -67,9 +78,6 @@ class TexteController extends GxController {
 			$model->setAttributes($_POST['Texte']);
 
 			$model->edit_datum = new CDbExpression('NOW()');
-			/** @var Person $ich  */
-			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
-			$model->edit_person = $ich->id;
 
 			if ($model->save()) {
 				$this->redirect(array('view', 'id' => $model->id));
@@ -81,9 +89,15 @@ class TexteController extends GxController {
 				));
 	}
 
-	public function actionDelete($veranstaltung_id, $id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $id
+	 * @throws CHttpException
+	 */
+	public function actionDelete($veranstaltungsreihe_id, $veranstaltung_id, $id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		/** @var Texte $text  */
 		$text = $this->loadModel($id, 'Texte');
@@ -98,9 +112,13 @@ class TexteController extends GxController {
 			throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
 	}
 
-	public function actionIndex($veranstaltung_id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionIndex($veranstaltungsreihe_id, $veranstaltung_id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('veranstaltung_id', $this->veranstaltung->id);
@@ -110,9 +128,13 @@ class TexteController extends GxController {
 		));
 	}
 
-	public function actionAdmin($veranstaltung_id) {
-		$this->loadVeranstaltung($veranstaltung_id);
-		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionAdmin($veranstaltungsreihe_id, $veranstaltung_id) {
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		$model = new Texte('search');
 		$model->unsetAttributes();

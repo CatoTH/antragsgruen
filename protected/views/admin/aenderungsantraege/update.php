@@ -8,7 +8,7 @@ $this->breadcrumbs = array(
 	Yii::t('app', 'Update'),
 );
 
-$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $model->antrag->veranstaltung0->yii_url, "antrag_id" => $model->antrag->id, "aenderungsantrag_id" => $model->id));
+$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $model->antrag->veranstaltung->url_verzeichnis, "antrag_id" => $model->antrag->id, "aenderungsantrag_id" => $model->id));
 $this->menu = array(
 	array('label' => "Änderungsanträge", 'url'=> array('index'), "icon" => "home"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'View'), 'url'=> $ae_link, "icon" => "eye-open"),

@@ -7,7 +7,7 @@
  */
 
 $this->breadcrumbs = array(
-	CHtml::encode($antrag->veranstaltung0->name_kurz) => $this->createUrl("site/veranstaltung"),
+	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	"Antrag"                                          => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 	"Bearbeiten",
 );

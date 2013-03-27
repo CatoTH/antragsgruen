@@ -112,11 +112,11 @@ $form = $this->beginWidget('GxActiveForm', array(
 */ ?>
 <div style="overflow: auto;">
     <label
-            style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('aenderungsantragUnterstuetzer')); ?></label>
+            style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('aenderungsantragUnterstuetzerInnen')); ?></label>
 
     <div style="float: left;">
 		<?php
-		echo UnterstuetzerWidget::printUnterstuetzerWidget($model, "aenderungsantragUnterstuetzer");
+		echo UnterstuetzerInnenWidget::printUnterstuetzerInnenWidget($model, "aenderungsantragUnterstuetzerInnen");
 		?>
     </div>
 </div>

@@ -1,8 +1,18 @@
 <?php
 
-Yii::import('application.models._base.BaseAenderungsantragKommentar');
-
-class AenderungsantragKommentar extends BaseAenderungsantragKommentar
+/**
+ * @property integer $id
+ * @property integer $verfasser_id
+ * @property integer $aenderungsantrag_id
+ * @property integer $absatz
+ * @property string $text
+ * @property string $datum
+ * @property integer $status
+ *
+ * @property Aenderungsantrag $aenderungsantrag
+ * @property Person $verfasser
+ */
+class AenderungsantragKommentar extends IKommentar
 {
     /**
      * @var $clasName string
@@ -12,12 +22,76 @@ class AenderungsantragKommentar extends BaseAenderungsantragKommentar
 		return parent::model($className);
 	}
 
+
+	public function tableName() {
+		return 'aenderungsantrag_kommentar';
+	}
+
+	public static function label($n = 1) {
+		return Yii::t('app', 'AenderungsantragKommentar|AenderungsantragKommentare', $n);
+	}
+
+	public static function representingColumn() {
+		return 'datum';
+	}
+
+	public function rules() {
+		return array(
+			array('text, datum', 'required'),
+			array('id, verfasser_id, aenderungsantrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
+			array('verfasser_id, aenderungsantrag_id, absatz, text, status', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('id, verfasser_id, aenderungsantrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
+		);
+	}
+
+	public function relations() {
+		return array(
+			'aenderungsantrag' => array(self::BELONGS_TO, 'Aenderungsantrag', 'aenderungsantrag_id'),
+			'verfasser' => array(self::BELONGS_TO, 'Person', 'verfasser_id'),
+		);
+	}
+
+	public function pivotModels() {
+		return array(
+		);
+	}
+
+	public function attributeLabels() {
+		return array(
+			'id' => Yii::t('app', 'ID'),
+			'verfasser_id' => null,
+			'aenderungsantrag_id' => null,
+			'absatz' => Yii::t('app', 'Absatz'),
+			'text' => Yii::t('app', 'Text'),
+			'datum' => Yii::t('app', 'Datum'),
+			'status' => Yii::t('app', 'Status'),
+			'aenderungsantrag' => null,
+			'verfasser' => null,
+		);
+	}
+
+	public function search() {
+		$criteria = new CDbCriteria;
+
+		$criteria->compare('id', $this->id);
+		$criteria->compare('verfasser_id', $this->verfasser_id);
+		$criteria->compare('aenderungsantrag_id', $this->aenderungsantrag_id);
+		$criteria->compare('absatz', $this->absatz);
+		$criteria->compare('text', $this->text, true);
+		$criteria->compare('datum', $this->datum, true);
+		$criteria->compare('status', $this->status);
+
+		return new CActiveDataProvider($this, array(
+			'criteria' => $criteria,
+		));
+	}
+
 	/**
 	 * @return Veranstaltung
 	 */
 	public function getVeranstaltung()
 	{
-		return $this->aenderungsantrag->antrag->veranstaltung0;
+		return $this->aenderungsantrag->antrag->veranstaltung;
 	}
 
 
@@ -29,7 +103,7 @@ class AenderungsantragKommentar extends BaseAenderungsantragKommentar
 	public static function holeNeueste($veranstaltung_id = 0, $limit = 0) {
 		$antrag_ids = array();
 		/** @var array|Antrag[] $antraege */
-		$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung" => $veranstaltung_id));
+		$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung_id" => $veranstaltung_id));
 		foreach ($antraege as $a) $antrag_ids[] = $a->id;
 
 		if (count($antrag_ids) == 0) return array();

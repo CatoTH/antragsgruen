@@ -32,11 +32,6 @@ $this->menu = array(
 		),
 		'text',
 		'edit_datum',
-		array(
-			'name'  => 'editPerson',
-			'type'  => 'raw',
-			'value' => $model->editPerson !== null ? GxHtml::encode($model->editPerson->name) : null,
-		),
 	),
 )); ?>
 

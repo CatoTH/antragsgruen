@@ -13,7 +13,7 @@
  */
 
 function relations_name_translate($modelClass, $name) {
-    if ($name == "people" && $modelClass == "Aenderungsantrag") return "aenderungsantragUnterstuetzer";
+    if ($name == "people" && $modelClass == "Aenderungsantrag") return "aenderungsantragUnterstuetzerInnen";
     if ($name == "people" && $modelClass == "Person") return "Personen";
     if ($name == "antrags" && $modelClass == "Person") return "antraege_abos";
     if ($name == "people") return "abonnenten";

@@ -1,8 +1,30 @@
 <?php
 
-Yii::import('application.models._base.BaseAntrag');
+/**
+ * @property integer $id
+ * @property integer $veranstaltung_id
+ * @property integer $abgeleitet_von
+ * @property integer $typ
+ * @property string $name
+ * @property string $revision_name
+ * @property string $datum_einreichung
+ * @property string $datum_beschluss
+ * @property string $text
+ * @property string $begruendung
+ * @property integer $status
+ * @property string $status_string
+ * @property integer $cache_anzahl_zeilen
+ * @property integer $cache_anzahl_absaetze
+ *
+ * @property Aenderungsantrag[] $aenderungsantraege
+ * @property Veranstaltung $veranstaltung
+ * @property Antrag $abgeleitetVon
+ * @property Antrag[] $antraege
+ * @property AntragKommentar[] $antragKommentare
+ * @property AntragUnterstuetzerInnen[] $antragUnterstuetzerInnen
+ */
 
-class Antrag extends BaseAntrag
+class Antrag extends IAntrag
 {
 	public static $TYP_ANTRAG = 0;
 	public static $TYP_SATZUNG = 1;
@@ -36,18 +58,6 @@ class Antrag extends BaseAntrag
 	private $absaetze = null;
 
 	/**
-	 * @return array|string[]
-	 */
-	public function attributeLabels()
-	{
-		$val                   = parent::attributeLabels();
-		$val['abgeleitet_von'] = "Abgeleitet von";
-		$val['abonnenten']     = "AbonnentInnen";
-		$val['antraege']       = "Löst ab";
-		return $val;
-	}
-
-	/**
 	 * @var $className string
 	 * @return Antrag
 	 */
@@ -56,34 +66,98 @@ class Antrag extends BaseAntrag
 		return parent::model($className);
 	}
 
-	/**
-	 * @return array|array[]
-	 */
-	public function rules()
-	{
-		$rules     = parent::rules();
-		$rules_neu = array();
-		foreach ($rules as $rule) if ($rule[1] == "required") {
-			$fields = array();
-			$x      = explode(",", $rule[0]);
-			foreach ($x as $y) if (!in_array(trim($y), array("status_string", "revision_name"))) $fields[] = trim($y);
-			if (!in_array("typ", $fields)) $fields[] = "typ";
-			if (count($fields) > 0) {
-				$rule[0]     = implode(", ", $fields);
-				$rules_neu[] = $rule;
-			}
-		} else $rules_neu[] = $rule;
 
-		return $rules_neu;
+	public function tableName() {
+		return 'antrag';
 	}
+
+	public static function label($n = 1) {
+		return Yii::t('app', 'Antrag|Antraege', $n);
+	}
+
+	public static function representingColumn() {
+		return 'name';
+	}
+
+	public function rules() {
+		return array(
+			array('veranstaltung_id, name, datum_einreichung, status', 'required'),
+			array('veranstaltung_id, abgeleitet_von, typ, status', 'numerical', 'integerOnly'=>true),
+			array('revision_name', 'length', 'max'=>50),
+			array('datum_beschluss', 'length', 'max'=>45),
+			array('status_string', 'length', 'max'=>55),
+			array('text, begruendung', 'safe'),
+			array('abgeleitet_von, typ, datum_beschluss, text, begruendung, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('id, veranstaltung_id, abgeleitet_von, typ, name, revision_name, datum_einreichung, datum_beschluss, text, begruendung, status, cache_anzahl_zeilen, cache_anzahl_, status_string', 'safe', 'on'=>'search'),
+		);
+	}
+
+	public function relations() {
+		return array(
+			'aenderungsantraege' => array(self::HAS_MANY, 'Aenderungsantrag', 'antrag_id'),
+			'veranstaltung' => array(self::BELONGS_TO, 'Veranstaltung', 'veranstaltung_id'),
+			'abgeleitetVon' => array(self::BELONGS_TO, 'Antrag', 'abgeleitet_von'),
+			'antraege' => array(self::HAS_MANY, 'Antrag', 'abgeleitet_von'),
+			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'antrag_id'),
+			'antragUnterstuetzerInnen' => array(
+				self::HAS_MANY, 'AntragUnterstuetzerInnen', 'antrag_id',
+				'order' => "antragUnterstuetzerInnen.position ASC"
+			),
+		);
+	}
+
+	public function attributeLabels() {
+		return array(
+			'id' => Yii::t('app', 'ID'),
+			'veranstaltung_id' => null,
+			'abgeleitet_von' => "Abgeleitet von",
+			'typ' => Yii::t('app', 'Typ'),
+			'name' => Yii::t('app', 'Name'),
+			'revision_name' => Yii::t('app', 'Revision Name'),
+			'datum_einreichung' => Yii::t('app', 'Datum Einreichung'),
+			'datum_beschluss' => Yii::t('app', 'Datum Beschluss'),
+			'text' => Yii::t('app', 'Text'),
+			'begruendung' => Yii::t('app', 'Begruendung'),
+			'status' => Yii::t('app', 'Status'),
+			'status_string' => Yii::t('app', 'Status String'),
+			'aenderungsantraege' => null,
+			'veranstaltung' => null,
+			'abgeleitetVon' => null,
+			'antraege' => "Löst ab",
+			'antragKommentare' => null,
+			'antragUnterstuetzerInnen' => null,
+		);
+	}
+
+	public function search() {
+		$criteria = new CDbCriteria;
+
+		$criteria->compare('id', $this->id);
+		$criteria->compare('veranstaltung_id', $this->veranstaltung_id);
+		$criteria->compare('abgeleitet_von', $this->abgeleitet_von);
+		$criteria->compare('typ', $this->typ);
+		$criteria->compare('name', $this->name, true);
+		$criteria->compare('revision_name', $this->revision_name, true);
+		$criteria->compare('datum_einreichung', $this->datum_einreichung, true);
+		$criteria->compare('datum_beschluss', $this->datum_beschluss, true);
+		$criteria->compare('text', $this->text, true);
+		$criteria->compare('begruendung', $this->begruendung, true);
+		$criteria->compare('status', $this->status);
+		$criteria->compare('status_string', $this->status_string, true);
+
+		return new CActiveDataProvider($this, array(
+			'criteria' => $criteria,
+		));
+	}
+
 
 	/**
 	 * @return int
 	 */
 	public function getFirstLineNo() {
 		$erste_zeile = 1;
-		if ($this->veranstaltung0->zeilen_nummerierung_global) {
-			$antraege = $this->veranstaltung0->antraegeSortiert();
+		if ($this->veranstaltung->zeilen_nummerierung_global) {
+			$antraege = $this->veranstaltung->antraegeSortiert();
 			$found = false;
 			foreach ($antraege as $antraege2) foreach ($antraege2 as $antrag) if (!$found) {
 				/** @var Antrag $antrag */
@@ -135,9 +209,9 @@ class Antrag extends BaseAntrag
 		$person_id = Yii::app()->user->getState("person_id");
 		if (is_null($person_id)) return false;
 
-		foreach ($this->antragUnterstuetzer as $u) {
-			/** @var AntragUnterstuetzer $u */
-			if ($u->rolle == AntragUnterstuetzer::$ROLLE_INITIATOR && $u->unterstuetzer->id == $person_id) return true;
+		foreach ($this->antragUnterstuetzerInnen as $u) {
+			/** @var AntragUnterstuetzerInnen $u */
+			if ($u->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN && $u->person->id == $person_id) return true;
 		}
 		return false;
 	}
@@ -152,7 +226,7 @@ class Antrag extends BaseAntrag
 	{
 		$oCriteria        = new CDbCriteria();
 		$oCriteria->alias = "antrag";
-		if ($veranstaltung_id > 0) $oCriteria->addCondition("antrag.veranstaltung = " . IntVal($veranstaltung_id));
+		if ($veranstaltung_id > 0) $oCriteria->addCondition("antrag.veranstaltung_id = " . IntVal($veranstaltung_id));
 		$oCriteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
 		$oCriteria->order = 'antrag.datum_einreichung DESC';
 		$dataProvider     = new CActiveDataProvider('Antrag', array(
@@ -190,8 +264,8 @@ class Antrag extends BaseAntrag
 	public function naechsteAenderungsRevNr()
 	{
 		$max_rev = 0;
-		if ($this->veranstaltung0->ae_nummerierung_global) {
-			$antraege = $this->veranstaltung0->antraege;
+		if ($this->veranstaltung->ae_nummerierung_global) {
+			$antraege = $this->veranstaltung->antraege;
 			foreach ($antraege as $ant) {
 				$m = $ant->getMaxAenderungsRevNr();
 				if ($m > $max_rev) $max_rev = $m;
@@ -208,7 +282,7 @@ class Antrag extends BaseAntrag
 	 */
 	public function nameMitRev()
 	{
-		if ($this->veranstaltung0->revision_name_verstecken) return $this->name;
+		if ($this->veranstaltung->revision_name_verstecken) return $this->name;
 
 		$name = $this->revision_name;
 		if (strlen($this->revision_name) > 1 && !in_array($this->revision_name[strlen($this->revision_name) - 1], array(":", "."))) $name .= ":";
@@ -224,7 +298,7 @@ class Antrag extends BaseAntrag
 	 */
 	public static function suche($veranstaltung_id, $suchbegriff)
 	{
-		return Antrag::model()->findAll("(`name` LIKE '%" . addslashes($suchbegriff) . "%' OR `text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND veranstaltung = " . IntVal($veranstaltung_id));
+		return Antrag::model()->findAll("(`name` LIKE '%" . addslashes($suchbegriff) . "%' OR `text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND veranstaltung_id = " . IntVal($veranstaltung_id));
 	}
 
 
@@ -234,20 +308,11 @@ class Antrag extends BaseAntrag
 		$this->cache_anzahl_absaetze = $anzahl_absaetze;
 		$this->cache_anzahl_zeilen = $anzahl_zeilen + 1; // + Überschrift
 
-		Yii::app()->cache->delete("pdf_" . $this->veranstaltung0->id);
-		Yii::app()->cache->delete("pdf_" . $this->veranstaltung0->id . "_" . $this->id);
+		Yii::app()->cache->delete("pdf_" . $this->veranstaltung->id);
+		Yii::app()->cache->delete("pdf_" . $this->veranstaltung->id . "_" . $this->id);
 
 		return parent::save($runValidation, $attributes);
 	}
-
-	/*
-	public function getRelationLabel($relationName, $n = null, $useRelationLabel = true) {
-		if ($relationName == "abonnenten") return Yii::t('app', ($n == 1 ? 'AbonnentIn' : 'AbonnentInnen'));
-		if ($relationName == "antraege") return "Wurde abgelöst von";
-		return parent::getRelationLabel($relationName, $n, $useRelationLabel);
-	}
-	*/
-
 
 
 }
