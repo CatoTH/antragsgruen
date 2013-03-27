@@ -1,48 +1,30 @@
 <?php
 
-// uncomment the following to define a path alias
-// Yii::setPathOfAlias('local','path/to/local-folder');
-
-// This is the main Web application configuration. Any writable
-// CWebApplication properties can be configured here.
-
 mb_internal_encoding("UTF-8");
 
 define("SEED_KEY", "randomkey");
 
 Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . '/../../vendor/chris83/yii-bootstrap');
 
+$dom  = "http://<veranstaltungsreihe_id:[\w_-]+>.antraege-v2.hoessl.eu/";
+$domv = $dom . "<veranstaltung_id:[\w_-]+>/";
+
 return array(
 	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
 	'name'       => 'Grüne Anträge',
 
-	// preloading 'log' component
 	'preload'    => array(
 		'log',
 		'bootstrap',
 	),
 
-	// autoloading model and component classes
 	'import'     => array(
 		'application.models.*',
 		'application.components.*',
 		'ext.giix-components.*',
 	),
 
-	'modules'    => array( // uncomment the following to enable the Gii tool
-		/*
-		'gii'=> array(
-			'class'          => 'system.gii.GiiModule',
-			'password'       => 'verysecurepassword',
-			// If removed, Gii defaults to localhost only. Edit carefully to taste.
-			'ipFilters'      => array('*', '::1'),
-			'generatorPaths' => array(
-				'ext.giix-core', // giix generators
-				'bootstrap.gii',
-			),
-		),
-		*/
-	),
+	'modules'    => array(),
 
 	// application components
 	'components' => array(
@@ -58,83 +40,44 @@ return array(
 			'urlFormat'      => 'path',
 			'showScriptName' => false,
 			'rules'          => array(
-//				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin'                                                                           => 'admin/index',
-				'<veranstaltung_id:[\w_-]+>/admin'                                                                           => 'admin/index',
-				'/admin/index'                                                                                               => 'admin/index',
-//				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/veranstaltung'                                                             => 'admin/veranstaltungen/update',
-				'<veranstaltung_id:[\w_-]+>/admin/veranstaltung'                                                             => 'admin/veranstaltungen/update',
-				'/admin/veranstaltungen'                                                                                     => 'admin/veranstaltungen',
-				'/admin/veranstaltungen/<_a:(index|create|update|delete|view|admin)>'                                        => 'admin/veranstaltungen/<_a>',
-				/*
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/antraege'                                                                  => 'admin/antraege',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/antraege/<_a:(index|create|update|delete|view|admin)>'                     => 'admin/antraege/<_a>',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/aenderungsantraege'                                                        => 'admin/aenderungsantraege',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/aenderungsantraege/<_a:(index|create|update|delete|view|admin)>'           => 'admin/aenderungsantraege/<_a>',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/antraegeKommentare'                                                        => 'admin/antraegeKommentare',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/antraegeKommentare/<_a:(index|create|update|delete|view|admin)>'           => 'admin/antraegeKommentare/<_a>',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/aenderungsantraegeKommentare'                                              => 'admin/aenderungsantraegeKommentare',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/aenderungsantraegeKommentare/<_a:(index|create|update|delete|view|admin)>' => 'admin/aenderungsantraegeKommentare/<_a>',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/texte'                                                                     => 'admin/texte',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/texte/<_a:(index|create|update|delete|view|admin)>'                        => 'admin/texte/<_a>',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/admin/kommentare_excel'                                                          => 'admin/index/kommentareexcel',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/hilfe'                                                                           => 'veranstaltung/hilfe',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/login'                                                                           => 'veranstaltung/login',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/suche'                                                                           => 'veranstaltung/suche',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/impressum'                                                                       => 'veranstaltung/impressum',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/pdfs'                                                                            => 'veranstaltung/pdfs',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/logout'                                                                          => 'veranstaltung/logout',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/'                                                                                => 'veranstaltung/veranstaltung',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/feedAlles'                                                                       => 'veranstaltung/feedAlles',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/feedAntraege'                                                                    => 'veranstaltung/feedAntraege',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/feedAenderungsantraege'                                                          => 'veranstaltung/feedAenderungsantraege',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/feedKommentare'                                                                  => 'veranstaltung/feedKommentare',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/neu'                                                                      => 'antrag/neu',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>?kommentar_id=<kommentar_id:\d+>'                          => 'antrag/anzeige',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>'                                                          => 'antrag/anzeige',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/pdf'                                                      => 'antrag/pdf',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/neuConfirm'                                               => 'antrag/neuConfirm',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aendern'                                                  => 'antrag/aendern',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>'               => 'aenderungsantrag/anzeige',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/neuConfirm'    => 'aenderungsantrag/neuConfirm',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/pdf'           => 'aenderungsantrag/pdf',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/pdf_diff'      => 'aenderungsantrag/pdfDiff',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/neu'                                     => 'aenderungsantrag/neu',
-				'http://<veranstaltung_id:[\w_-]+>.antragsgruen.de/antrag/<antrag_id:\d+>/aenderungsantrag/ajaxCalcDiff'                            => 'aenderungsantrag/ajaxCalcDiff',
-				*/
-				'<veranstaltung_id:[\w_-]+>/admin/antraege'                                                                  => 'admin/antraege',
-				'<veranstaltung_id:[\w_-]+>/admin/antraege/<_a:(index|create|update|delete|view|admin)>'                     => 'admin/antraege/<_a>',
-				'<veranstaltung_id:[\w_-]+>/admin/aenderungsantraege'                                                        => 'admin/aenderungsantraege',
-				'<veranstaltung_id:[\w_-]+>/admin/aenderungsantraege/<_a:(index|create|update|delete|view|admin)>'           => 'admin/aenderungsantraege/<_a>',
-				'<veranstaltung_id:[\w_-]+>/admin/antraegeKommentare'                                                        => 'admin/antraegeKommentare',
-				'<veranstaltung_id:[\w_-]+>/admin/antraegeKommentare/<_a:(index|create|update|delete|view|admin)>'           => 'admin/antraegeKommentare/<_a>',
-				'<veranstaltung_id:[\w_-]+>/admin/aenderungsantraegeKommentare'                                              => 'admin/aenderungsantraegeKommentare',
-				'<veranstaltung_id:[\w_-]+>/admin/aenderungsantraegeKommentare/<_a:(index|create|update|delete|view|admin)>' => 'admin/aenderungsantraegeKommentare/<_a>',
-				'<veranstaltung_id:[\w_-]+>/admin/texte'                                                                     => 'admin/texte',
-				'<veranstaltung_id:[\w_-]+>/admin/texte/<_a:(index|create|update|delete|view|admin)>'                        => 'admin/texte/<_a>',
-				'<veranstaltung_id:[\w_-]+>/admin/kommentare_excel'                                                          => 'admin/index/kommentareexcel',
-				'<veranstaltung_id:[\w_-]+>/hilfe'                                                                           => 'veranstaltung/hilfe',
-				'<veranstaltung_id:[\w_-]+>/login'                                                                           => 'veranstaltung/login',
-				'<veranstaltung_id:[\w_-]+>/suche'                                                                           => 'veranstaltung/suche',
-				'<veranstaltung_id:[\w_-]+>/impressum'                                                                       => 'veranstaltung/impressum',
-				'<veranstaltung_id:[\w_-]+>/pdfs'                                                                            => 'veranstaltung/pdfs',
-				'<veranstaltung_id:[\w_-]+>/logout'                                                                          => 'veranstaltung/logout',
-				'<veranstaltung_id:[\w_-]+>/'                                                                                => 'veranstaltung/veranstaltung',
-				'<veranstaltung_id:[\w_-]+>/feedAlles'                                                                       => 'veranstaltung/feedAlles',
-				'<veranstaltung_id:[\w_-]+>/feedAntraege'                                                                    => 'veranstaltung/feedAntraege',
-				'<veranstaltung_id:[\w_-]+>/feedAenderungsantraege'                                                          => 'veranstaltung/feedAenderungsantraege',
-				'<veranstaltung_id:[\w_-]+>/feedKommentare'                                                                  => 'veranstaltung/feedKommentare',
-				'<veranstaltung_id:[\w_-]+>/antrag/neu'                                                                      => 'antrag/neu',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>?kommentar_id=<kommentar_id:\d+>'                          => 'antrag/anzeige',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>'                                                          => 'antrag/anzeige',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/pdf'                                                      => 'antrag/pdf',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/neuConfirm'                                               => 'antrag/neuConfirm',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aendern'                                                  => 'antrag/aendern',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>'               => 'aenderungsantrag/anzeige',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/neuConfirm'    => 'aenderungsantrag/neuConfirm',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/pdf'           => 'aenderungsantrag/pdf',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/pdf_diff'      => 'aenderungsantrag/pdfDiff',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/neu'                                     => 'aenderungsantrag/neu',
-				'<veranstaltung_id:[\w_-]+>/antrag/<antrag_id:\d+>/aenderungsantrag/ajaxCalcDiff'                            => 'aenderungsantrag/ajaxCalcDiff',
+				$domv . 'admin/'                                                                          => 'admin/index',
+				$domv . 'admin/veranstaltungen/'                                                          => 'admin/veranstaltungen/update',
+				$domv . 'admin/veranstaltungen/<_a:(index|create|update|delete|view|admin)>'              => 'admin/veranstaltungen/<_a>',
+				$domv . 'admin/antraege'                                                                  => 'admin/antraege',
+				$domv . 'admin/antraege/<_a:(index|create|update|delete|view|admin)>'                     => 'admin/antraege/<_a>',
+				$domv . 'admin/aenderungsantraege'                                                        => 'admin/aenderungsantraege',
+				$domv . 'admin/aenderungsantraege/<_a:(index|create|update|delete|view|admin)>'           => 'admin/aenderungsantraege/<_a>',
+				$domv . 'admin/antraegeKommentare'                                                        => 'admin/antraegeKommentare',
+				$domv . 'admin/antraegeKommentare/<_a:(index|create|update|delete|view|admin)>'           => 'admin/antraegeKommentare/<_a>',
+				$domv . 'admin/aenderungsantraegeKommentare'                                              => 'admin/aenderungsantraegeKommentare',
+				$domv . 'admin/aenderungsantraegeKommentare/<_a:(index|create|update|delete|view|admin)>' => 'admin/aenderungsantraegeKommentare/<_a>',
+				$domv . 'admin/texte'                                                                     => 'admin/texte',
+				$domv . 'admin/texte/<_a:(index|create|update|delete|view|admin)>'                        => 'admin/texte/<_a>',
+				$domv . 'admin/kommentare_excel'                                                          => 'admin/index/kommentareexcel',
+				$domv . 'hilfe'                                                                           => 'veranstaltung/hilfe',
+				$domv . 'suche'                                                                           => 'veranstaltung/suche',
+				$domv . 'impressum'                                                                       => 'veranstaltung/impressum',
+				$domv . 'pdfs'                                                                            => 'veranstaltung/pdfs',
+				$domv . 'login'                                                                           => 'veranstaltung/login',
+				$domv . 'logout'                                                                          => 'veranstaltung/logout',
+				$domv . 'feedAlles'                                                                       => 'veranstaltung/feedAlles',
+				$domv . 'feedAntraege'                                                                    => 'veranstaltung/feedAntraege',
+				$domv . 'feedAenderungsantraege'                                                          => 'veranstaltung/feedAenderungsantraege',
+				$domv . 'feedKommentare'                                                                  => 'veranstaltung/feedKommentare',
+				$domv . 'antrag/neu'                                                                      => 'antrag/neu',
+				$domv . 'antrag/<antrag_id:\d+>?kommentar_id=<kommentar_id:\d+>'                          => 'antrag/anzeige',
+				$domv . 'antrag/<antrag_id:\d+>'                                                          => 'antrag/anzeige',
+				$domv . 'antrag/<antrag_id:\d+>/pdf'                                                      => 'antrag/pdf',
+				$domv . 'antrag/<antrag_id:\d+>/neuConfirm'                                               => 'antrag/neuConfirm',
+				$domv . 'antrag/<antrag_id:\d+>/aendern'                                                  => 'antrag/aendern',
+				$domv . 'antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>'               => 'aenderungsantrag/anzeige',
+				$domv . 'antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/neuConfirm'    => 'aenderungsantrag/neuConfirm',
+				$domv . 'antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/pdf'           => 'aenderungsantrag/pdf',
+				$domv . 'antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>/pdf_diff'      => 'aenderungsantrag/pdfDiff',
+				$domv . 'antrag/<antrag_id:\d+>/aenderungsantrag/neu'                                     => 'aenderungsantrag/neu',
+				$domv . 'antrag/<antrag_id:\d+>/aenderungsantrag/ajaxCalcDiff'                            => 'aenderungsantrag/ajaxCalcDiff',
+				$domv                                                                                     => 'veranstaltung/index',
+				$dom                                                                                      => 'veranstaltung/index',
 			),
 		),
 		'authManager'    => array(
@@ -177,15 +120,6 @@ return array(
 		'loid'           => array(
 			'class' => 'application.extensions.lightopenid.loid',
 		),
-		/*
-	   'clientScript'=>array(
-		   'class' => 'CClientScript',
-		   'scriptMap' => array(
-			   'jquery.js'=>false,
-		   ),
-		   'coreScriptPosition' => CClientScript::POS_BEGIN,
-	   ),
-		   */
 	),
 
 	'params'     => array(
