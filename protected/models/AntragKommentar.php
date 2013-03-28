@@ -2,14 +2,14 @@
 
 /**
  * @property integer $id
- * @property integer $verfasser_id
+ * @property integer $verfasserIn_id
  * @property integer $antrag_id
  * @property integer $absatz
  * @property string $text
  * @property string $datum
  * @property integer $status
  *
- * @property Person $verfasser
+ * @property Person $verfasserIn
  * @property Antrag $antrag
  * @property AntragKommentarUnterstuetzerInnen[] $unterstuetzerInnen
  */
@@ -39,15 +39,15 @@ class AntragKommentar extends IKommentar
 	public function rules() {
 		return array(
 			array('text, datum', 'required'),
-			array('id, verfasser_id, antrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
-			array('verfasser_id, antrag_id, absatz, status', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, verfasser_id, antrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
+			array('id, verfasserIn_id, antrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
+			array('verfasserIn_id, antrag_id, absatz, status', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('id, verfasserIn_id, antrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
-			'verfasser' => array(self::BELONGS_TO, 'Person', 'verfasser_id'),
+			'verfasserIn' => array(self::BELONGS_TO, 'Person', 'verfasserIn_id'),
 			'antrag' => array(self::BELONGS_TO, 'Antrag', 'antrag_id'),
 			'unterstuetzerInnen' => array(self::HAS_MANY, 'AntragKommentarUnterstuetzerInnen', 'antrag_kommentar_id'),
 		);
@@ -61,13 +61,13 @@ class AntragKommentar extends IKommentar
 	public function attributeLabels() {
 		return array(
 			'id' => Yii::t('app', 'ID'),
-			'verfasser_id' => null,
+			'verfasserIn_id' => null,
 			'antrag_id' => null,
 			'absatz' => Yii::t('app', 'Absatz'),
 			'text' => Yii::t('app', 'Text'),
 			'datum' => Yii::t('app', 'Datum'),
 			'status' => Yii::t('app', 'Status'),
-			'verfasser' => null,
+			'verfasserIn' => null,
 			'antrag' => null,
 			'unterstuetzerInnen' => null,
 		);
@@ -77,7 +77,7 @@ class AntragKommentar extends IKommentar
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id);
-		$criteria->compare('verfasser_id', $this->verfasser_id);
+		$criteria->compare('verfasserIn_id', $this->verfasserIn_id);
 		$criteria->compare('antrag_id', $this->antrag_id);
 		$criteria->compare('absatz', $this->absatz);
 		$criteria->compare('text', $this->text, true);

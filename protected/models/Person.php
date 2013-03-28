@@ -58,9 +58,9 @@ class Person extends GxActiveRecord
 
 	public function relations() {
 		return array(
-			'aenderungsantragKommentare' => array(self::HAS_MANY, 'AenderungsantragKommentar', 'verfasser_id'),
+			'aenderungsantragKommentare' => array(self::HAS_MANY, 'AenderungsantragKommentar', 'verfasserIn_id'),
 			'aenderungsantragUnterstuetzerInnen' => array(self::HAS_MANY, 'AenderungsantragUnterstuetzer', 'unterstuetzerIn_id'),
-			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'verfasser_id'),
+			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'verfasserIn_id'),
 			'antragUnterstuetzerInnen' => array(self::HAS_MANY, 'AntragUnterstuetzerInnen', 'unterstuetzerIn_id'),
 			'admin_veranstaltungen'  => array(self::MANY_MANY, 'Veranstaltung', 'veranstaltungs_admins(person_id, veranstaltung_id)'),
 		);

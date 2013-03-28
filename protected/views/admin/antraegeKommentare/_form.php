@@ -20,9 +20,9 @@
 	<?php echo $form->errorSummary($model); ?>
 
     <div>
-		<?php echo $form->labelEx($model, 'verfasser_id'); ?>
-		<?php echo $form->dropDownList($model, 'verfasser_id', GxHtml::listDataEx(Person::model()->findAllAttributes("name", true), "id", "name")); ?>
-		<?php echo $form->error($model, 'verfasser_id'); ?>
+		<?php echo $form->labelEx($model, 'verfasserIn_id'); ?>
+		<?php echo $form->dropDownList($model, 'verfasserIn_id', GxHtml::listDataEx(Person::model()->findAllAttributes("name", true), "id", "name")); ?>
+		<?php echo $form->error($model, 'verfasserIn_id'); ?>
     </div>
     <!-- row -->
     <div>

@@ -2,12 +2,12 @@
 
 /**
  * @property integer $id
- * @property integer $verfasser_id
+ * @property integer $verfasserIn_id
  * @property integer $absatz
  * @property string $text
  * @property string $datum
  * @property integer $status
- * @property Person $verfasser
+ * @property Person $verfasserIn
  */
 abstract class IKommentar extends GxActiveRecord {
 
@@ -32,7 +32,7 @@ abstract class IKommentar extends GxActiveRecord {
 	 */
 	public function kannLoeschen($c) {
 		if ($this->getVeranstaltung()->isAdminCurUser()) return true;
-		if (!is_null($this->verfasser->auth) && $c->getId() == $this->verfasser->auth) return true;
+		if (!is_null($this->verfasserIn->auth) && $c->getId() == $this->verfasserIn->auth) return true;
 		return false;
 	}
 
@@ -50,7 +50,7 @@ abstract class IKommentar extends GxActiveRecord {
 		if ($user->getState("role") === "admin") return true;
 		/** @var Person $ich  */
 		$ich = Person::model()->findByAttributes(array("auth" => $user->id));
-		return ($ich->id == $this->verfasser_id);
+		return ($ich->id == $this->verfasserIn_id);
 	}
 
 }

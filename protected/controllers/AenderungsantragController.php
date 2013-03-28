@@ -147,8 +147,8 @@ class AenderungsantragController extends AntragsgruenController
 			$kommentar->attributes          = $_REQUEST["AenderungsantragKommentar"];
 			$kommentar->absatz              = $zeile;
 			$kommentar->datum               = new CDbExpression('NOW()');
-			$kommentar->verfasser           = $model_person;
-			$kommentar->verfasser_id        = $model_person->id;
+			$kommentar->verfasserIn         = $model_person;
+			$kommentar->verfasserIn_id      = $model_person->id;
 			$kommentar->aenderungsantrag    = $aenderungsantrag;
 			$kommentar->aenderungsantrag_id = $aenderungsantrag_id;
 			$kommentar->status              = ($this->veranstaltung->freischaltung_kommentare ? IKommentar::$STATUS_NICHT_FREI : IKommentar::$STATUS_FREI);

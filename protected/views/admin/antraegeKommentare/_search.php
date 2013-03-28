@@ -17,8 +17,8 @@
 	</div>
 
 	<div>
-		<?php echo $form->label($model, 'verfasser_id'); ?>
-		<?php echo $form->dropDownList($model, 'verfasser_id', GxHtml::listDataEx(Person::model()->findAllAttributes("name", true), "id", "name"), array('prompt' => Yii::t('app', 'All'))); ?>
+		<?php echo $form->label($model, 'verfasserIn_id'); ?>
+		<?php echo $form->dropDownList($model, 'verfasserIn_id', GxHtml::listDataEx(Person::model()->findAllAttributes("name", true), "id", "name"), array('prompt' => Yii::t('app', 'All'))); ?>
 	</div>
 
 	<div>

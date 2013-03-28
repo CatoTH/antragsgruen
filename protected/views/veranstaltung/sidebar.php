@@ -67,7 +67,7 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 	if (count($neueste_kommentare) == 0) $html .= "<li><i>keine</i></li>";
 	else foreach ($neueste_kommentare as $komm) {
 		$html .= "<li class='komm'>";
-		$html .= "<strong>" . CHtml::encode($komm->verfasser->name) . "</strong>, " . HtmlBBcodeUtils::formatMysqlDateTime($komm->datum);
+		$html .= "<strong>" . CHtml::encode($komm->verfasserIn->name) . "</strong>, " . HtmlBBcodeUtils::formatMysqlDateTime($komm->datum);
 		$html .= "<div>Zu " . CHtml::link(CHtml::encode($komm->antrag->name), $this->createUrl("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id))) . "</div>";
 		$html .= "</li>\n";
 	}
@@ -99,6 +99,13 @@ $name = ($veranstaltung->url_verzeichnis == "ltwby13-programm" ? "Das gesamte Pr
 $html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
 $html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("veranstaltung/pdfs")) . "</li>";
 $html .= "</ul></div>";
+$this->menus_html[] = $html;
 
 
+
+$html = "<div class='antragsgruen_werbung well'><div class='nav-list'>";
+$html .= "<div class='nav-header'>Dein Antragsgrün</div>";
+$html .= "<div>Du willst Antragsgrün für deine(n) KV / LV / GJ / BAG / LAK / WTF einsetzen?";
+$html .= "</div>";
+$html .= "</div></div>";
 $this->menus_html[] = $html;

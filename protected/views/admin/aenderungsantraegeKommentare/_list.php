@@ -10,7 +10,7 @@
 	<br>
 
 	<?php echo GxHtml::encode($data->getAttributeLabel('person_id')); ?>:
-		<?php echo GxHtml::encode(CHtml::encode($data->verfasser->name)); ?>
+		<?php echo GxHtml::encode(CHtml::encode($data->verfasserIn->name)); ?>
 	<br>
 	<?php echo GxHtml::encode($data->getAttributeLabel('aenderungsantrag_id')); ?>:
 		<?php echo GxHtml::encode($data->aenderungsantrag->revision_name . " zu " . $data->aenderungsantrag->antrag->name); ?>

@@ -46,8 +46,8 @@ $('.search-form form').submit(function(){
 	'columns'      => array(
 		'id',
 		array(
-			'name'  => 'verfasser_id',
-			'value' => 'GxHtml::valueEx($data->verfasser)',
+			'name'  => 'verfasserIn_id',
+			'value' => 'GxHtml::valueEx($data->verfasserIn)',
 			'filter'=> GxHtml::listDataEx(Person::model()->findAllAttributes("name", true), "id", "name"),
 		),
 		array(

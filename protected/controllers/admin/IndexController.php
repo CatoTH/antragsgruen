@@ -59,7 +59,7 @@ class IndexController extends AntragsgruenController
 					"antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
 				))->findAllByAttributes(array("status" => AntragKommentar::$STATUS_NICHT_FREI));
 				foreach ($kommentare as $komm) {
-					$todo[] = array("Kommentar prüfen: " . $komm->verfasser->name . " zu " . $komm->antrag->revision_name, array("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
+					$todo[] = array("Kommentar prüfen: " . $komm->verfasserIn->name . " zu " . $komm->antrag->revision_name, array("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
 				}
 			}
 

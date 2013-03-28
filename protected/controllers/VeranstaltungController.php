@@ -223,7 +223,7 @@ class VeranstaltungController extends AntragsgruenController
 
 		$data = array();
 		foreach ($antraege as $ant) $data[AntraegeUtils::date_iso2timestamp($ant->datum) . "_kommentar_" . $ant->id] = array(
-			"title"       => "Kommentar von " . $ant->verfasser->name . " zu: " . $ant->antrag->nameMitRev(),
+			"title"       => "Kommentar von " . $ant->verfasserIn->name . " zu: " . $ant->antrag->nameMitRev(),
 			"link"        => Yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $ant->antrag->id, "kommentar_id" => $ant->id, "#" => "komm" . $ant->id)),
 			"dateCreated" => AntraegeUtils::date_iso2timestamp($ant->datum),
 			"content"     => HtmlBBcodeUtils::bbcode2html($ant->text),

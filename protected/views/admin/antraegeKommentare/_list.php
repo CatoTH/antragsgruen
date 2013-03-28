@@ -10,7 +10,7 @@
     <br>
 
     Von:
-	<?php echo GxHtml::encode($data->verfasser->name); ?>
+	<?php echo GxHtml::encode($data->verfasserIn->name); ?>
     <br>
 	<?php echo GxHtml::encode($data->getAttributeLabel('antrag_id')); ?>:
 	<?php echo GxHtml::encode(GxHtml::valueEx($data->antrag)); ?>

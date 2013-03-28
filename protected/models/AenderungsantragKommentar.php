@@ -2,7 +2,7 @@
 
 /**
  * @property integer $id
- * @property integer $verfasser_id
+ * @property integer $verfasserIn_id
  * @property integer $aenderungsantrag_id
  * @property integer $absatz
  * @property string $text
@@ -10,7 +10,7 @@
  * @property integer $status
  *
  * @property Aenderungsantrag $aenderungsantrag
- * @property Person $verfasser
+ * @property Person $verfasserIn
  */
 class AenderungsantragKommentar extends IKommentar
 {
@@ -38,16 +38,16 @@ class AenderungsantragKommentar extends IKommentar
 	public function rules() {
 		return array(
 			array('text, datum', 'required'),
-			array('id, verfasser_id, aenderungsantrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
-			array('verfasser_id, aenderungsantrag_id, absatz, text, status', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, verfasser_id, aenderungsantrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
+			array('id, verfasserIn_id, aenderungsantrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
+			array('verfasserIn_id, aenderungsantrag_id, absatz, text, status', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('id, verfasserIn_id, aenderungsantrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
 		);
 	}
 
 	public function relations() {
 		return array(
 			'aenderungsantrag' => array(self::BELONGS_TO, 'Aenderungsantrag', 'aenderungsantrag_id'),
-			'verfasser' => array(self::BELONGS_TO, 'Person', 'verfasser_id'),
+			'verfasserIn' => array(self::BELONGS_TO, 'Person', 'verfasserIn_id'),
 		);
 	}
 
@@ -59,14 +59,14 @@ class AenderungsantragKommentar extends IKommentar
 	public function attributeLabels() {
 		return array(
 			'id' => Yii::t('app', 'ID'),
-			'verfasser_id' => null,
+			'verfasserIn_id' => null,
 			'aenderungsantrag_id' => null,
 			'absatz' => Yii::t('app', 'Absatz'),
 			'text' => Yii::t('app', 'Text'),
 			'datum' => Yii::t('app', 'Datum'),
 			'status' => Yii::t('app', 'Status'),
 			'aenderungsantrag' => null,
-			'verfasser' => null,
+			'verfasserIn' => null,
 		);
 	}
 
@@ -74,7 +74,7 @@ class AenderungsantragKommentar extends IKommentar
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id);
-		$criteria->compare('verfasser_id', $this->verfasser_id);
+		$criteria->compare('verfasserIn_id', $this->verfasserIn_id);
 		$criteria->compare('aenderungsantrag_id', $this->aenderungsantrag_id);
 		$criteria->compare('absatz', $this->absatz);
 		$criteria->compare('text', $this->text, true);

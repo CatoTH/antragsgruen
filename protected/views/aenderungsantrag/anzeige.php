@@ -155,7 +155,7 @@ $rows = 10;
                 <div class="kommentarform well" id="komm<?=$komm->id?>">
                     <div class="datum"><?php echo HtmlBBcodeUtils::formatMysqlDateTime($komm->datum)?></div>
                     <h3>Kommentar von <?php echo
-						CHtml::encode($komm->verfasser->name);
+						CHtml::encode($komm->verfasserIn->name);
 						if ($komm->status == IKommentar::$STATUS_NICHT_FREI) echo " <em>(noch nicht freigeschaltet)</em>";
 						?></h3>
 					<?php

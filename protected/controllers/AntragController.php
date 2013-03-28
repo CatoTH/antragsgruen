@@ -168,15 +168,15 @@ class AntragController extends AntragsgruenController
 			}
 			$model_person = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
 
-			$kommentar               = new AntragKommentar();
-			$kommentar->attributes   = $_REQUEST["AntragKommentar"];
-			$kommentar->absatz       = $zeile;
-			$kommentar->datum        = new CDbExpression('NOW()');
-			$kommentar->verfasser    = $model_person;
-			$kommentar->verfasser_id = $model_person->id;
-			$kommentar->antrag       = $antrag;
-			$kommentar->antrag_id    = $antrag_id;
-			$kommentar->status       = ($this->veranstaltung->freischaltung_kommentare ? IKommentar::$STATUS_NICHT_FREI : IKommentar::$STATUS_FREI);
+			$kommentar                 = new AntragKommentar();
+			$kommentar->attributes     = $_REQUEST["AntragKommentar"];
+			$kommentar->absatz         = $zeile;
+			$kommentar->datum          = new CDbExpression('NOW()');
+			$kommentar->verfasserIn    = $model_person;
+			$kommentar->verfasserIn_id = $model_person->id;
+			$kommentar->antrag         = $antrag;
+			$kommentar->antrag_id      = $antrag_id;
+			$kommentar->status         = ($this->veranstaltung->freischaltung_kommentare ? IKommentar::$STATUS_NICHT_FREI : IKommentar::$STATUS_FREI);
 
 			$kommentare_offen[] = $zeile;
 

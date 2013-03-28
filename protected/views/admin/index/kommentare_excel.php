@@ -54,9 +54,9 @@ foreach ($kommentare as $kommentar) {
 	$objPHPExcel->getActiveSheet()->SetCellValue('A' . $row, PHPExcel_Shared_Date::PHPToExcel($timestamp));
 	$objPHPExcel->getActiveSheet()->getStyle('A' . $row)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_DDMMYYYY);
 
-	$verfasser = $kommentar->verfasser->name;
-	if ($kommentar->verfasser->email != "") $verfasser .= " (" . $kommentar->verfasser->email . ")";
-	$objPHPExcel->getActiveSheet()->SetCellValue('B' . $row, $verfasser);
+	$verfasserIn = $kommentar->verfasserIn->name;
+	if ($kommentar->verfasserIn->email != "") $verfasserIn .= " (" . $kommentar->verfasserIn->email . ")";
+	$objPHPExcel->getActiveSheet()->SetCellValue('B' . $row, $verfasserIn);
 
 	$objPHPExcel->getActiveSheet()->getStyle('C' . $row)->getAlignment()->setWrapText(true);
 	if (is_a($kommentar, "AntragKommentar")) {
