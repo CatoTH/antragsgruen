@@ -16,6 +16,7 @@ CREATE  TABLE IF NOT EXISTS `antragsgruen`.`veranstaltungsreihe` (
   `offiziell` TINYINT NOT NULL DEFAULT 0 ,
   `einstellungen` VARCHAR(45) NULL ,
   `aktuelle_veranstaltung_id` INT NULL ,
+  `oeffentlich` TINYINT NULL DEFAULT 1 ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `subdomain_UNIQUE` (`subdomain` ASC) ,
   INDEX `fk_veranstaltungsreihe_veranstaltung1_idx` (`aktuelle_veranstaltung_id` ASC) ,

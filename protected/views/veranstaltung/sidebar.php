@@ -103,9 +103,10 @@ $this->menus_html[] = $html;
 
 
 
-$html = "<div class='antragsgruen_werbung well'><div class='nav-list'>";
+$html = "</div><div class='span3 antragsgruen_werbung'><div class='well'><div class='nav-list'>";
 $html .= "<div class='nav-header'>Dein Antragsgrün</div>";
-$html .= "<div>Du willst Antragsgrün für deine(n) KV / LV / GJ / BAG / LAK / WTF einsetzen?";
+$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
+$html .= "<div style='text-align: center;'><a href='" . CHtml::encode($this->createUrl("infos/selbstEinsetzen")) . "' class='btn btn-primary' style='margin-top: 15px;'><span class='icon-chevron-right'></span> Infos</a></div>";
 $html .= "</div>";
 $html .= "</div></div>";
 $this->menus_html[] = $html;

@@ -50,9 +50,12 @@ class AntragsgruenController extends CController
 	 */
 	public function createUrl($path, $params = array())
 	{
-		if (!isset($params["veranstaltung_id"]) && $this->veranstaltung !== null) $params["veranstaltung_id"] = $this->veranstaltung->url_verzeichnis;
-		if (!isset($params["veranstaltungsreihe_id"]) && $this->veranstaltungsreihe != null) $params["veranstaltungsreihe_id"] = $this->veranstaltungsreihe->subdomain;
-		if ($path == "veranstaltung/index" && !is_null($this->veranstaltungsreihe) && $params["veranstaltung_id"] == $this->veranstaltungsreihe->aktuelle_veranstaltung->url_verzeichnis) unset($params["veranstaltung_id"]);
+		$p = explode("/", $path);
+		if ($p[0] != "infos") {
+			if (!isset($params["veranstaltung_id"]) && $this->veranstaltung !== null) $params["veranstaltung_id"] = $this->veranstaltung->url_verzeichnis;
+			if (!isset($params["veranstaltungsreihe_id"]) && $this->veranstaltungsreihe != null) $params["veranstaltungsreihe_id"] = $this->veranstaltungsreihe->subdomain;
+			if ($path == "veranstaltung/index" && !is_null($this->veranstaltungsreihe) && $params["veranstaltung_id"] == $this->veranstaltungsreihe->aktuelle_veranstaltung->url_verzeichnis) unset($params["veranstaltung_id"]);
+		}
 		return parent::createUrl($path, $params);
 	}
 

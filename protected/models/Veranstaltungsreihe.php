@@ -6,6 +6,7 @@
  * @property string $name
  * @property string $name_kurz
  * @property int $offiziell
+ * @property int $oeffentlich
  * @property string $einstellungen
  * @property int $aktuelle_veranstaltung_id
  *
@@ -90,12 +91,12 @@ class VeranstaltungsReihe extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('id, subdomain, name, name_kurz, offiziell', 'required'),
+			array('id, subdomain, name, name_kurz, offiziell, oeffentlich', 'required'),
 			array('name', 'length', 'max' => 200),
 			array('subdomain', 'length', 'max' => 45),
 			array('name', 'length', 'max' => 100),
 			array('name, name_kurz', 'safe'),
-			array('id, name, subdomain, name_kurz, offiziell', 'safe', 'on' => 'search'),
+			array('id, name, subdomain, name_kurz, offiziell, oeffentlich', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -117,6 +118,7 @@ class VeranstaltungsReihe extends CActiveRecord
 			'subdomain'              => Yii::t('app', 'Subdomain'),
 			'einstellungen'          => "Einstellungen",
 			'offiziell'              => 'Offizielle Veranstaltungsreihe',
+			'oeffentlich'              => 'Öffentlich',
 			'veranstaltungen'        => "Veranstaltungen",
 			'aktuelle_veranstaltung' => "Aktuelle Veranstaltung",
 			'admins'                 => null,
