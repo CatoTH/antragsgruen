@@ -81,6 +81,7 @@ return array(
 				$dom_plain                                                                                => 'infos/selbstEinsetzen',
 				$dom_plain . 'selbst-einsetzen'                                                           => 'infos/selbstEinsetzen',
 				$dom_plain . 'impressum'                                                                  => 'infos/impressum',
+				$dom_plain . 'neu-anlegen'                                                                => 'infos/neuAnlegen'
 			),
 		),
 		'authManager'    => array(

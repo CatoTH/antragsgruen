@@ -48,14 +48,23 @@ class Person extends GxActiveRecord
 		return parent::model($className);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function tableName() {
 		return 'person';
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function representingColumn() {
 		return 'typ';
 	}
 
+	/**
+	 * @return array
+	 */
 	public function relations() {
 		return array(
 			'aenderungsantragKommentare' => array(self::HAS_MANY, 'AenderungsantragKommentar', 'verfasserIn_id'),
@@ -66,6 +75,9 @@ class Person extends GxActiveRecord
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function attributeLabels() {
 		return array(
 			'id' => Yii::t('app', 'ID'),
@@ -86,6 +98,9 @@ class Person extends GxActiveRecord
 		);
 	}
 
+	/**
+	 * @return CActiveDataProvider
+	 */
 	public function search() {
 		$criteria = new CDbCriteria;
 
@@ -104,11 +119,18 @@ class Person extends GxActiveRecord
 		));
 	}
 
+	/**
+	 * @param int $n
+	 * @return string
+	 */
 	public static function label($n = 1)
 	{
 		return Yii::t('app', 'Person|Personen', $n);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function rules() {
 		$rules = array(
 			array('typ, name, angelegt_datum, admin, status', 'required'),
@@ -130,6 +152,14 @@ class Person extends GxActiveRecord
 	 */
 	public function setEmailRequired($required) {
 		$this->email_required = $required;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function istWurzelwerklerIn() {
+		return preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth);
 	}
 
 
