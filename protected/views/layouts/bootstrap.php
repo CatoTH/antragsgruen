@@ -55,6 +55,7 @@ if ($font_css != "") $app->getClientScript()->registerCssFile($assets_base . $fo
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container">
+					<?php if ($this->veranstaltung) { ?>
 					<form class='form-search visible-phone' action='<?= CHtml::encode($this->createUrl("veranstaltung/suche")) ?>' method='GET'>
 						<input type='hidden' name='id' value=''>
 
@@ -80,13 +81,14 @@ if ($font_css != "") $app->getClientScript()->registerCssFile($assets_base . $fo
 							<li><a href="<?= CHtml::encode($this->createUrl("admin/index")) ?>">Admin</a></li>
 						<?php } ?>
 					</ul>
+					<? } ?>
 				</div>
 			</div>
 		</div>
 	</div>
 
 
-	<a href="<?php echo CHtml::encode($this->createUrl("veranstaltung/index")); ?>" class="logo"><?php
+	<a href="<?php echo CHtml::encode($this->veranstaltung ? $this->createUrl("veranstaltung/index") : $this->createUrl("infos/selbstEinsetzen")); ?>" class="logo"><?php
 		if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->logo_url != "") {
 			$path     = parse_url($this->veranstaltung->logo_url);
 			$filename = basename($path["path"]);
@@ -128,7 +130,7 @@ if ($font_css != "") $app->getClientScript()->registerCssFile($assets_base . $fo
 		'fixed'       => false,
 		'brand'       => "",
 		'collapse'    => false,
-		'items'       => array('<a href="' . CHtml::encode($this->createUrl("veranstaltung/impressum")) . '">Impressum</a>'),
+		'items'       => array('<a href="' . CHtml::encode($this->veranstaltung ? $this->createUrl("veranstaltung/impressum") : $this->createUrl("infos/impressum")) . '">Impressum</a>'),
 	)); ?>
 
 	<!-- footer -->

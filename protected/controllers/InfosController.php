@@ -9,4 +9,12 @@ class InfosController extends AntragsgruenController
 			"reihen" => $reihen
 		));
 	}
+
+	public function actionImpressum() {
+		$this->layout = '//layouts/column2';
+		$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
+		$this->render('impressum', array(
+			"reihen" => $reihen
+		));
+	}
 }

@@ -78,6 +78,9 @@ return array(
 				$domv . 'antrag/<antrag_id:\d+>/aenderungsantrag/ajaxCalcDiff'                            => 'aenderungsantrag/ajaxCalcDiff',
 				$domv                                                                                     => 'veranstaltung/index',
 				$dom                                                                                      => 'veranstaltung/index',
+				$dom_plain                                                                                => 'infos/selbstEinsetzen',
+				$dom_plain . 'selbst-einsetzen'                                                           => 'infos/selbstEinsetzen',
+				$dom_plain . 'impressum'                                                                  => 'infos/impressum',
 			),
 		),
 		'authManager'    => array(
