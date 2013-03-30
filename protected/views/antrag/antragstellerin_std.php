@@ -9,6 +9,7 @@
  * @var bool $js_protection
  * @var bool $login_warnung
  * @var Sprache $sprache
+ * @var TbActiveForm $form
  */
 ?>
 

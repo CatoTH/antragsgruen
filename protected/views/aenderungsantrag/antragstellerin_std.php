@@ -9,8 +9,8 @@
  * @var bool $js_protection
  * @var Sprache $sprache
  * @var Person $antragstellerin
+ * @var TbActiveForm $form
  */
-
 
 if ($mode == "neu") {
 	/** @var Person $antragstellerin */
