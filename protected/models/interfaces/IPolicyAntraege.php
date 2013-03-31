@@ -5,8 +5,12 @@ Yii::import("application.models.policies.*");
 abstract class IPolicyAntraege
 {
 
-	// Ich hab leider keine Ahnung, wie man hier einen eleganteren Auto-Discovery-Mechanmismus implementieren kann...
-	private static $POLICIES = array(
+	public static $POLICY_BAYERN_LDK = "ByLDK";
+	public static $POLICY_ADMINS = "Admins";
+	public static $POLICY_ALLE = "Alle";
+	public static $POLICY_EINGELOGGTE = "Eingeloggte";
+
+	public static $POLICIES = array(
 		"ByLDK"       => "PolicyAntraegeByLDK",
 		"Admins"      => "PolicyAntraegeAdmins",
 		"Alle"        => "PolicyAntraegeAlle",

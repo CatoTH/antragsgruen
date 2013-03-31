@@ -37,24 +37,60 @@ class InfosController extends AntragsgruenController
 			$anlegenformmodel->setAttributes($_REQUEST["CInstanzAnlegenForm"]);
 
 			$reihe = new Veranstaltungsreihe();
-			$reihe->subdomain = $anlegenformmodel->subdomain;
+			$reihe->subdomain = trim($anlegenformmodel->subdomain);
 			$reihe->name = $reihe->name_kurz = $anlegenformmodel->name;
 			$reihe->offiziell = false;
 			$reihe->oeffentlich = true;
 			$reihe->kontakt_intern = $anlegenformmodel->kontakt;
-			if ($reihe->save()) {
+
+			$subdomain = VeranstaltungsReihe::model()->findByAttributes(array("subdomain" => $reihe->subdomain));
+			if ($subdomain) {
+				$error_str .= "Es gibt leider bereits eine Reihe mit dieser Subdomain.<br>\n";
+			} elseif ($reihe->save()) {
 				$veranstaltung = new Veranstaltung();
-				$veranstaltung->veranstaltungsreihe = $reihe->id;
+				$veranstaltung->veranstaltungsreihe_id = $reihe->id;
 				$veranstaltung->name = $veranstaltung->name_kurz = $anlegenformmodel->name;
 				$veranstaltung->antragsschluss = $anlegenformmodel->antragsschluss;
-				if ($anlegenformmodel->typ == Veranstaltung::$TYP_PROGRAMM) {
+				$veranstaltung->policy_kommentare = Veranstaltung::$POLICY_ALLE;
+				$veranstaltung->policy_unterstuetzen = Veranstaltung::$POLICY_ALLE;
+				$veranstaltung->typ = $anlegenformmodel->typ;
+				$veranstaltung->url_verzeichnis = $anlegenformmodel->subdomain;
+				$veranstaltung->admin_email = $anlegenformmodel->admin_email;
 
+				$einstellungen = $veranstaltung->getEinstellungen();
+				$einstellungen->wartungs_modus_aktiv = true;
+
+				if ($anlegenformmodel->typ == Veranstaltung::$TYP_PROGRAMM) {
+					$einstellungen->zeilen_nummerierung_global = true;
+					$einstellungen->ae_nummerierung_global = true;
+					$einstellungen->freischaltung_antraege = false;
+					$einstellungen->freischaltung_aenderungsantraege = false;
+
+					$veranstaltung->policy_antraege = IPolicyAntraege::$POLICY_ADMINS;
+					$veranstaltung->policy_aenderungsantraege = IPolicyAntraege::$POLICY_ALLE;
 				}
 				if ($anlegenformmodel->typ == Veranstaltung::$TYP_PARTEITAG) {
+					$einstellungen->zeilen_nummerierung_global = false;
+					$einstellungen->ae_nummerierung_global = false;
+					$einstellungen->freischaltung_antraege = true;
+					$einstellungen->freischaltung_aenderungsantraege = true;
 
+					$veranstaltung->policy_antraege = IPolicyAntraege::$POLICY_ALLE;
+					$veranstaltung->policy_aenderungsantraege = IPolicyAntraege::$POLICY_ALLE;
+				}
+				$veranstaltung->setEinstellungen($einstellungen);
+				if ($veranstaltung->save()) {
+					$reihe->aktuelle_veranstaltung_id = $veranstaltung->id;
+					$reihe->save();
+					Yii::app()->db->createCommand()->insert("veranstaltungsreihen_admins", array("veranstaltungsreihe_id" => $reihe->id, "person_id" => $user->id));
+
+					// @TODO
+
+				} else {
+					foreach ($veranstaltung->errors as $err) foreach ($err as $e) $error_str .= $e . "<br>\n";
 				}
 			} else {
-				foreach ($reihe->errors as $err) $error_str .= $err . "<br>\n";
+				foreach ($reihe->errors as $err) foreach ($err as $e) $error_str .= $e . "<br>\n";
 			}
 		}
 

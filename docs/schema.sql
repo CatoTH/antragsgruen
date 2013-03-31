@@ -9,7 +9,7 @@ USE `antragsgruen` ;
 -- Table `antragsgruen`.`veranstaltungsreihe`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `antragsgruen`.`veranstaltungsreihe` (
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `subdomain` VARCHAR(45) NOT NULL ,
   `name` VARCHAR(200) NOT NULL ,
   `name_kurz` VARCHAR(100) NULL ,

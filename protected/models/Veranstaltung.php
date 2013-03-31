@@ -15,6 +15,7 @@
  * @property integer $typ
  * @property string $admin_email
  * @property string $einstellungen
+ * @property integer $veranstaltungsreihe_id
  *
  * @property Antrag[] $antraege
  * @property Person[] $admins
