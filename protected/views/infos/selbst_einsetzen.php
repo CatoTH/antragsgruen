@@ -9,8 +9,6 @@ include(__DIR__ . "/sidebar.php");
 ?>
 <h1 class="well">Antragsgrün selbst einsetzen</h1>
 
-<?php $form=$this->beginWidget('CActiveForm'); ?>
-
 <div class="well well_first">
 
 	<div class="content">
