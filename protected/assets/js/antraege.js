@@ -134,3 +134,23 @@ function ckeditor_bbcode(id) {
 
 }
 
+
+function instanz_neu_anlegen_init() {
+	var $steps = $("#AnlegenWizard").find("li");
+	$("#step2").hide();
+	$("#step3").hide();
+	$("#weiter-1").click(function(ev) {
+		ev.preventDefault();
+		$("#step1").hide();
+		$("#step2").show();
+		$steps.eq(0).removeClass("active");
+		$steps.eq(1).addClass("active");
+	});
+	$("#weiter-2").click(function(ev) {
+		ev.preventDefault();
+		$("#step2").hide();
+		$("#step3").show();
+		$steps.eq(1).removeClass("active");
+		$steps.eq(2).addClass("active");
+	});
+}

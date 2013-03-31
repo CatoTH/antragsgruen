@@ -29,10 +29,13 @@ class InfosController extends AntragsgruenController
 		$user = Person::model()->findByAttributes(array("auth" => yii::app()->user->getId()));
 		if (!$user->istWurzelwerklerIn()) $this->redirect($this->createUrl("infos/selbstEinsetzen"));
 
+
+		$anlegenformmodel = new CInstanzAnlegenForm();
+
 		$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
 		$this->render('neu_anlegen', array(
 			"reihen" => $reihen,
-			"user" => $user
+			"anlegenformmodel" => $anlegenformmodel,
 		));
 	}
 }

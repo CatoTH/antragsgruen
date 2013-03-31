@@ -229,7 +229,6 @@ h1.well {
 	padding: 0;
 	margin: 0;
 	border: 0;
-	border-bottom: 1px solid rgb(209, 209, 210);
 	border-radius: 0;
 	box-shadow: none;
 	position: relative;
@@ -1160,6 +1159,47 @@ blockquote {
 .admin_todo { float: right; width: 500px; }
 .admin_todo ul { margin-top: 10px; font-size: 14px; }
 
+
+#instanz-anlegen-form .weiter {
+	text-align: right;
+}
+#instanz-anlegen-form .einsatzzweck {
+	font-size: 16px;
+	font-weight: bold;
+	vertical-align: middle;
+	margin-top: 30px;
+}
+#instanz-anlegen-form .einsatzzweck div {
+	display: inline-block;
+	vertical-align: middle;
+}
+#instanz-anlegen-form .einsatzzweck input {
+	vertical-align: middle;
+}
+#instanz-anlegen-form .einsatzzweck_erkl {
+	padding-left: 10px;
+	margin-left: 20px;
+	margin-top: 5px;
+	margin-bottom: 15px;
+	border-left: solid 3px lightgray;
+}
+#instanz-anlegen-form .url .domain {
+	font-size: 16px;
+}
+#instanz-anlegen-form label.name, #instanz-anlegen-form label.url {
+	font-weight: bold;
+}
+#instanz-anlegen-form .zahlung label {
+	display: inline;
+}
+#instanz-anlegen-form .kontakt textarea {
+	width: 300px;
+	height: 80px;
+}
+
+.span3 .well .nav-list.einsatzorte-list li {
+	padding-left: 15px;
+}
 
 
 
