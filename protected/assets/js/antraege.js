@@ -136,21 +136,36 @@ function ckeditor_bbcode(id) {
 
 
 function instanz_neu_anlegen_init() {
-	var $steps = $("#AnlegenWizard").find("li");
-	$("#step2").hide();
-	$("#step3").hide();
+	var $steps = $("#AnlegenWizard").find("li"),
+		$step2 = $("#step2"),
+		$step3 = $("#step3");
+	$step2.hide();
+	$step3.hide();
 	$("#weiter-1").click(function(ev) {
 		ev.preventDefault();
 		$("#step1").hide();
-		$("#step2").show();
+		$step2.show();
 		$steps.eq(0).removeClass("active");
 		$steps.eq(1).addClass("active");
 	});
 	$("#weiter-2").click(function(ev) {
 		ev.preventDefault();
-		$("#step2").hide();
-		$("#step3").show();
+		if ($step2.find(".name input").val() == "") {
+			$step2.find(".name .alert").show();
+			$step2.find(".name input").focus();
+			return;
+		}
+		if ($step2.find(".url input").val() == "") {
+			$step2.find(".url .alert").show();
+			$step2.find(".url input").focus();
+			return;
+		}
+		$step2.hide();
+		$step3.show();
 		$steps.eq(1).removeClass("active");
 		$steps.eq(2).addClass("active");
+	});
+	$step3.find("button[type=submit]").click(function(ev) {
+
 	});
 }

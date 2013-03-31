@@ -1186,6 +1186,12 @@ blockquote {
 #instanz-anlegen-form .url .domain {
 	font-size: 16px;
 }
+#instanz-anlegen-form .url .domain input {
+	width: 130px;
+	padding: 0;
+	margin-left: 2px;
+	margin-top: 0;
+}
 #instanz-anlegen-form label.name, #instanz-anlegen-form label.url {
 	font-weight: bold;
 }

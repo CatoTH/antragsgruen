@@ -3,6 +3,7 @@
  * @var InfosController $this
  * @var array|Veranstaltungsreihe[] $reihen
  * @var CInstanzAnlegenForm $anlegenformmodel
+ * @var string $error_string
  */
 
 include(__DIR__ . "/sidebar.php");
@@ -41,9 +42,11 @@ $app->getClientScript()->registerCssFile($assets_base . '/css/formwizard.css');
 	</div>
 	<div class="content step-content">
 		<div class="step-pane active" id="step1">
-			<?php echo $form->errorSummary($anlegenformmodel); ?>
+			<?php
+			if ($error_string != "") echo '<div class="alert alert-error">' . $error_string . '</div>';
+			?>
 
-			<label class="einsatzzweck"><?php echo CHtml::activeRadioButton($anlegenformmodel, "typ", array("value" => Veranstaltung::$TYP_PROGRAMM)); ?> <div>Programmdiskussion</div></label>
+			<label class="einsatzzweck"><?php echo CHtml::activeRadioButton($anlegenformmodel, "typ", array("value" => Veranstaltung::$TYP_PROGRAMM, "uncheckValue" => null)); ?> <div>Programmdiskussion</div></label>
 			<div class="einsatzzweck_erkl">
 				Folgendes ist hier voreingestellt <sup>1</sup>:
 				<ul>
@@ -54,7 +57,7 @@ $app->getClientScript()->registerCssFile($assets_base . '/css/formwizard.css');
 				</ul>
 			</div>
 
-			<label class="einsatzzweck"><?php echo CHtml::activeRadioButton($anlegenformmodel, "typ", array("value" => Veranstaltung::$TYP_PARTEITAG)); ?> <div>Parteitag</div></label>
+			<label class="einsatzzweck"><?php echo CHtml::activeRadioButton($anlegenformmodel, "typ", array("value" => Veranstaltung::$TYP_PARTEITAG, "uncheckValue" => null)); ?> <div>Parteitag</div></label>
 			<div class="einsatzzweck_erkl">
 				Folgendes ist hier voreingestellt <sup>1</sup>:
 				<ul>
@@ -75,19 +78,21 @@ $app->getClientScript()->registerCssFile($assets_base . '/css/formwizard.css');
 		<div class="step-pane" id="step2">
 			<br><br>
 			<div class="name">
-				<?php echo CHtml::activeLabelEx($anlegenformmodel,'name', array('label' => 'Name der Veranstaltung / des Programms:')); ?>
+				<?php echo CHtml::activeLabelEx($anlegenformmodel,'name', array('label' => '<strong>Name der Veranstaltung / des Programms:</strong>')); ?>
+				<div class="alert alert-error" style="display: none;">Bitte gib einen Namen ein.</div>
 				<?php echo CHtml::activeTextField($anlegenformmodel,'name') ?>
 			</div>
 
 			<br><br>
 			<div class="url">
-				<?php echo CHtml::activeLabelEx($anlegenformmodel,'subdomain', array('label' => 'Unter folgender Adresse soll es erreichbar sein:')); ?>
+				<?php echo CHtml::activeLabelEx($anlegenformmodel,'subdomain', array('label' => '<strong>Unter folgender Adresse soll es erreichbar sein:</strong>')); ?>
+				<div class="alert alert-error" style="display: none;">Bitte gib eine Subdomain ein.</div>
 				<span class="domain">http://<?php echo CHtml::activeTextField($anlegenformmodel,'subdomain', array('placeholder' => 'Subdomain')) ?>.antragsgruen.de</span>
 			</div>
 
 			<br><br>
 			<div class="email">
-				<?php echo CHtml::activeLabelEx($anlegenformmodel,'admin_email', array('label' => '<strong>Benachrichtigungen</strong> über neue Kommentare und Änderungsanträge sollen an diese E-Mail-Adresse geschickt werden:')); ?>
+				<?php echo CHtml::activeLabelEx($anlegenformmodel,'admin_email', array('label' => '<strong>Benachrichtigungen</strong> über neue Kommentare und Änderungsanträge sollen an diese E-Mail-Adresse geschickt werden: <small>(leer = keine Benachrichtigung)</small>')); ?>
 				<?php echo CHtml::activeEmailField($anlegenformmodel,'admin_email', array('placeholder' => 'irgendeine@email.de')) ?>
 			</div>
 
