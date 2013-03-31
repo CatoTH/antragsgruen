@@ -8,10 +8,10 @@
 
 $antrag = $aenderungsantrag->antrag;
 
-/** @var $antragstellerinnen array|Person[] */
-$antragstellerinnen = array();
-/** @var $unterstuetzerinnen array|Person[] */
-$unterstuetzerinnen = array();
+/** @var $antragstellerInnen array|Person[] */
+$antragstellerInnen = array();
+/** @var $unterstuetzerInnen array|Person[] */
+$unterstuetzerInnen = array();
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),

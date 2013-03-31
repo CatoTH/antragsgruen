@@ -3,7 +3,7 @@
 /**
  * @var AntragController $this
  * @var Antrag $model
- * @var Person $antragstellerin
+ * @var Person $antragstellerIn
  * @var Veranstaltung $veranstaltung
  * @var array $model_unterstuetzerInnen
  * @var array $hiddens
@@ -124,7 +124,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 $this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
 	"form"                     => $form,
 	"model"                    => $model,
-	"antragstellerin"          => $antragstellerin,
+	"antragstellerIn"          => $antragstellerIn,
 	"model_unterstuetzerInnen" => $model_unterstuetzerInnen,
 	"veranstaltung"            => $veranstaltung,
 	"hiddens"                  => $hiddens,

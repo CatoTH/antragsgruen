@@ -17,8 +17,8 @@ $initiatorinnen = array();
 
 $unterstuetzerInnen = array();
 foreach ($model->antragUnterstuetzerInnen as $unt) {
-	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $initiatorinnen[] = $unt->unterstuetzerIn->name;
-	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $unt->unterstuetzerIn;
+	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $initiatorinnen[] = $unt->person->name;
+	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $unt->person;
 }
 
 // set document information

@@ -103,10 +103,10 @@ $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
 $pdf->SetY(90);
 
-if ($model->antrag->veranstaltung->antrag_einleitung != "") {
+if ($model->antrag->veranstaltung->getEinstellungen()->antrag_einleitung != "") {
 	$pdf->SetX(25);
 	$pdf->SetFont("helvetica", "B", 12);
-	$pdf->MultiCell(160, 13, $model->antrag->veranstaltung->antrag_einleitung);
+	$pdf->MultiCell(160, 13, $model->antrag->veranstaltung->getEinstellungen()->antrag_einleitung);
 }
 
 $pdf->SetX(25);

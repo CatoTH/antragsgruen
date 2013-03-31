@@ -29,27 +29,6 @@ class VeranstaltungController extends AntragsgruenController
 		$this->testeWartungsmodus();
 
 		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
-		/*
-		if (is_null($veranstaltung)) {
-			if (Yii::app()->params['standardVeranstaltungAutoCreate']) {
-				$veranstaltung                                   = new Veranstaltung();
-				$veranstaltung->id                               = $veranstaltung_id;
-				$veranstaltung->name                             = "Standard-Veranstaltung";
-				$veranstaltung->freischaltung_antraege           = 1;
-				$veranstaltung->freischaltung_aenderungsantraege = 1;
-				$veranstaltung->freischaltung_kommentare         = 1;
-				$veranstaltung->policy_kommentare                = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->policy_aenderungsantraege        = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->policy_antraege                  = Veranstaltung::$POLICY_NUR_ADMINS;
-				$veranstaltung->typ                              = Veranstaltung::$TYP_PROGRAMM;
-				$veranstaltung->save();
-
-				$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
-			} else {
-				$this->redirect($this->createUrl("veranstaltung/login"));
-			}
-		}
-		*/
 
 		$antraege_sorted = $veranstaltung->antraegeSortiert();
 

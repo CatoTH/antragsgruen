@@ -6,14 +6,14 @@
  * @var Sprache $sprache
  */
 
-/** @var array|Person[] $antragstellerinnen */
-$antragstellerinnen = array();
-/** @var array|Person[] $unterstuetzerinnen */
-$unterstuetzerinnen = array();
+/** @var array|Person[] $antragstellerInnen */
+$antragstellerInnen = array();
+/** @var array|Person[] $unterstuetzerInnen */
+$unterstuetzerInnen = array();
 
 if (count($antrag->antragUnterstuetzerInnen) > 0) foreach ($antrag->antragUnterstuetzerInnen as $relatedModel) {
-	if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerinnen[] = $relatedModel->unterstuetzerIn;
-	if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerinnen[] = $relatedModel->unterstuetzerIn;
+	if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
+	if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
 }
 
 $this->breadcrumbs = array(
@@ -62,9 +62,9 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
     <div class="content">
 		<?php
-		if (count($unterstuetzerinnen) > 0) {
+		if (count($unterstuetzerInnen) > 0) {
 			echo CHtml::openTag('ul');
-			foreach ($unterstuetzerinnen as $p) {
+			foreach ($unterstuetzerInnen as $p) {
 				echo CHtml::openTag('li');
 				echo CHtml::encode($p->name);
 				echo CHtml::closeTag('li');

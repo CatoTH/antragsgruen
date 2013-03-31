@@ -41,7 +41,7 @@ if ($header) {
 
 	$pdf->SetXY(155, 37, true);
 
-	if (!$antrag->veranstaltung->revision_name_verstecken) {
+	if (!$antrag->veranstaltung->getEinstellungen()->revision_name_verstecken) {
 
 		if ($antrag->revision_name == "") {
 			$name = "Entwurf";
@@ -78,10 +78,10 @@ if ($header) {
 	$pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
 	$pdf->SetY(90);
-	if ($antrag->veranstaltung->antrag_einleitung != "") {
+	if ($antrag->veranstaltung->getEinstellungen()->antrag_einleitung != "") {
 		$pdf->SetX(24);
 		$pdf->SetFont("helvetica", "B", 12);
-		$pdf->MultiCell(160, 13, $antrag->veranstaltung->antrag_einleitung);
+		$pdf->MultiCell(160, 13, $antrag->veranstaltung->getEinstellungen()->antrag_einleitung);
 	}
 
 	$pdf->SetX(12);

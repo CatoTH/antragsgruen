@@ -53,7 +53,7 @@ class IndexController extends AntragsgruenController
 				$todo[] = array("Änderungsanträge prüfen: " . $ae->revision_name . " zu " . $ae->antrag->revision_name . " " . $ae->antrag->name, array("admin/aenderungsantraege/update", array("id" => $ae->id)));
 			}
 
-			if ($this->veranstaltung->freischaltung_kommentare) {
+			if ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare) {
 				/** @var array|AntragKommentar[] $kommentare  */
 				$kommentare = AntragKommentar::model()->with(array(
 					"antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))

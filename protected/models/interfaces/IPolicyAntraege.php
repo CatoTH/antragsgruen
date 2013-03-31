@@ -74,31 +74,31 @@ abstract class IPolicyAntraege
 	 */
 	public function getAntragstellerInView()
 	{
-		return "antragstellerin_std";
+		return "antragstellerIn_std";
 	}
 
 
 	protected function getSubmitPerson()
 	{
 		if (Yii::app()->user->isGuest) {
-			$antragstellerin = null;
+			$antragstellerIn = null;
 		} else {
-			$antragstellerin = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 		}
 
-		if ($antragstellerin === null && isset($_REQUEST["Person"])) {
-			$antragstellerin = Person::model()->findByAttributes(array("typ" => Person::$TYP_PERSON, "name" => trim($_REQUEST["Person"]["name"]), "status" => Person::$STATUS_UNCONFIRMED));
-			if (!$antragstellerin) {
-				$antragstellerin                 = new Person();
-				$antragstellerin->attributes     = $_REQUEST["Person"];
-				$antragstellerin->typ            = (isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] == "organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
-				$antragstellerin->admin          = 0;
-				$antragstellerin->angelegt_datum = new CDbExpression('NOW()');
-				$antragstellerin->status         = Person::$STATUS_UNCONFIRMED;
-				$antragstellerin->save();
+		if ($antragstellerIn === null && isset($_REQUEST["Person"])) {
+			$antragstellerIn = Person::model()->findByAttributes(array("typ" => Person::$TYP_PERSON, "name" => trim($_REQUEST["Person"]["name"]), "status" => Person::$STATUS_UNCONFIRMED));
+			if (!$antragstellerIn) {
+				$antragstellerIn                 = new Person();
+				$antragstellerIn->attributes     = $_REQUEST["Person"];
+				$antragstellerIn->typ            = (isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] == "organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
+				$antragstellerIn->admin          = 0;
+				$antragstellerIn->angelegt_datum = new CDbExpression('NOW()');
+				$antragstellerIn->status         = Person::$STATUS_UNCONFIRMED;
+				$antragstellerIn->save();
 			}
 		}
-		return $antragstellerin;
+		return $antragstellerIn;
 	}
 
 
@@ -117,15 +117,15 @@ abstract class IPolicyAntraege
 	 */
 	public function submitAntragsstellerInView_Antrag(&$antrag)
 	{
-		$antragstellerin = $this->getSubmitPerson();
-		if ($antragstellerin === null) {
+		$antragstellerIn = $this->getSubmitPerson();
+		if ($antragstellerIn === null) {
 			throw new Exception("Keine AntragstellerIn gefunden");
 		}
 
 		$init                   = new AntragUnterstuetzerInnen();
 		$init->antrag_id        = $antrag->id;
 		$init->rolle            = AntragUnterstuetzerInnen::$ROLLE_INITIATORIN;
-		$init->unterstuetzerIn_id = $antragstellerin->id;
+		$init->unterstuetzerIn_id = $antragstellerIn->id;
 		$init->position         = 0;
 		$init->save();
 
@@ -166,15 +166,15 @@ abstract class IPolicyAntraege
 	 */
 	public function submitAntragsstellerInView_Aenderungsantrag(&$aenderungsantrag)
 	{
-		$antragstellerin = $this->getSubmitPerson();
-		if ($antragstellerin === null) {
+		$antragstellerIn = $this->getSubmitPerson();
+		if ($antragstellerIn === null) {
 			throw new Exception("Keine AntragstellerIn gefunden");
 		}
 
 		$init                      = new AenderungsantragUnterstuetzerInnen();
 		$init->aenderungsantrag_id = $aenderungsantrag->id;
 		$init->rolle               = AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN;
-		$init->unterstuetzerIn_id    = $antragstellerin->id;
+		$init->unterstuetzerIn_id    = $antragstellerIn->id;
 		$init->position            = 0;
 		$init->save();
 

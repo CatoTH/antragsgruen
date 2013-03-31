@@ -4,7 +4,6 @@
  * @property integer $id
  * @property string $name
  * @property string $name_kurz
- * @property string $antrag_einleitung
  * @property string $datum_von
  * @property string $datum_bis
  * @property string $antragsschluss
@@ -15,17 +14,6 @@
  * @property string $url_verzeichnis
  * @property integer $typ
  * @property string $admin_email
- * @property integer $freischaltung_antraege
- * @property integer $freischaltung_aenderungsantraege
- * @property integer $freischaltung_kommentare
- * @property integer $ae_nummerierung_global
- * @property integer $zeilen_nummerierung_global
- * @property integer $bestaetigungs_emails
- * @property string $logo_url
- * @property string $fb_logo_url
- * @property integer $revision_name_verstecken
- * @property integer $kommentare_unterstuetzbar
- * @property integer $ansicht_minimalistisch
  * @property string $einstellungen
  *
  * @property Antrag[] $antraege
@@ -293,12 +281,12 @@ class Veranstaltung extends GxActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name, freischaltung_antraege, url_verzeichnis, freischaltung_aenderungsantraege, revision_name_verstecken, kommentare_unterstuetzbar, ansicht_minimalistisch, freischaltung_kommentare, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails, einstellungen', 'required'),
-			array('name, logo_url, fb_logo_url', 'length', 'max' => 200),
+			array('name, url_verzeichnis, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, einstellungen', 'required'),
+			array('name', 'length', 'max' => 200),
 			array('name_kurz, url_verzeichnis', 'length', 'max' => 45),
-			array('antragsschluss, antrag_einleitung, admin_email', 'safe'),
+			array('antragsschluss, admin_email', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, name, url_verzeichnis, logo_url, fb_logo_url, freischaltung_antraege, name_kurz, revision_name_verstecken, kommentare_unterstuetzbar, antrag_einleitung, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, ae_nummerierung_global, zeilen_nummerierung_global, bestaetigungs_emails, einstellungen', 'safe', 'on' => 'search'),
+			array('id, name, url_verzeichnis, name_kurz, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, einstellungen', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -318,7 +306,6 @@ class Veranstaltung extends GxActiveRecord
 			'id'                               => Yii::t('app', 'ID'),
 			'name'                             => Yii::t('app', 'Name'),
 			'name_kurz'                        => Yii::t('app', 'Name Kurz'),
-			'antrag_einleitung'                => Yii::t('app', 'Antrag Einleitung'),
 			'datum_von'                        => Yii::t('app', 'Datum Von'),
 			'datum_bis'                        => Yii::t('app', 'Datum Bis'),
 			'antragsschluss'                   => Yii::t('app', 'Antragsschluss'),
@@ -328,22 +315,11 @@ class Veranstaltung extends GxActiveRecord
 			'policy_unterstuetzen'             => Yii::t('app', 'Policy Unterstützen'),
 			'typ'                              => Yii::t('app', 'Typ'),
 			'admin_email'                      => Yii::t('app', 'E-Mail des Admins'),
-			'freischaltung_antraege'           => Yii::t('app', 'Freischaltung von Anträgen'),
-			'freischaltung_aenderungsantraege' => Yii::t('app', 'Freischaltung von Änderungsanträgen'),
-			'freischaltung_kommentare'         => Yii::t('app', 'Freischaltung von Kommentaren'),
 			'url_verzeichnis'                  => Yii::t('app', 'Unterverzeichnis'),
-			'logo_url'                         => Yii::t('app', 'Logo-URL'),
-			'fb_logo_url'                      => Yii::t('app', 'Facebook-Bild URL'),
 			'antraege'                         => null,
 			'admins'                           => null,
 			'texte'                            => null,
 			'veranstaltungsreihe'              => Yii::t('app', 'Veranstaltungsreihe'),
-			'ae_nummerierung_global'           => Yii::t('app', 'ÄA-Nummerierung für die ganze Veranstaltung'),
-			'zeilen_nummerierung_global'       => Yii::t('app', 'Zeilennummerierung durchgehend für die ganze Veranstaltung'),
-			'bestaetigungs_emails'             => Yii::t('app', 'Bestätigungsmails an AntragsStellerInnen'),
-			'revision_name_verstecken'         => Yii::t('app', 'Revisionsname verstecken'),
-			'kommentare_unterstuetzbar'        => Yii::t('app', 'Kommentare unterstützbar'),
-			'ansicht_minimalistisch'           => Yii::t('app', 'Minimalistische Ansicht'),
 		);
 	}
 
@@ -354,7 +330,6 @@ class Veranstaltung extends GxActiveRecord
 		$criteria->compare('id', $this->id);
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('name_kurz', $this->name_kurz, true);
-		$criteria->compare('antrag_einleitung', $this->antrag_einleitung, true);
 		$criteria->compare('datum_von', $this->datum_von, true);
 		$criteria->compare('datum_bis', $this->datum_bis, true);
 		$criteria->compare('antragsschluss', $this->antragsschluss, true);

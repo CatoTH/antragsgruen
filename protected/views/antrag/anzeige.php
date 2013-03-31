@@ -57,7 +57,7 @@ $this->menus_html[] = $html;
 		else echo CHtml::encode($antrag->name);
 		?></h1>
 
-	<div class="antragsdaten well" style="min-height: <?php if ($antrag->veranstaltung->ansicht_minimalistisch && Yii::app()->user->isGuest) echo "60"; else echo "114"; ?>px;">
+	<div class="antragsdaten well" style="min-height: <?php if ($antrag->veranstaltung->getEinstellungen()->ansicht_minimalistisch && Yii::app()->user->isGuest) echo "60"; else echo "114"; ?>px;">
 		<div id="socialshareprivacy"></div>
 		<script>
 			$(function ($) {
@@ -67,14 +67,14 @@ $this->menus_html[] = $html;
 			});
 		</script>
 
-		<?php if (!$antrag->veranstaltung->ansicht_minimalistisch) { ?>
+		<?php if (!$antrag->veranstaltung->getEinstellungen()->ansicht_minimalistisch) { ?>
 
 			<div class="content">
 				<table style="width: 100%;" class="antragsdaten">
 					<tr>
 						<th><?=$sprache->get("Veranstaltung")?>:</th>
 						<td><?php
-							echo CHtml::link(CHtml::encode($antrag->veranstaltung->name), array('/veranstaltung/anzeige/?id=' . $antrag->veranstaltung_id));
+							echo CHtml::link($antrag->veranstaltung->name, $this->createUrl("veranstaltung/index"));
 							?></td>
 					</tr>
 					<tr>
@@ -242,7 +242,7 @@ $this->menus_html[] = $html;
 				<div class="kommentar_bottom">
 					<div class="kommentarlink"><?php echo CHtml::link("Kommentar verlinken", $komm_link); ?></div>
 					<?php
-					if ($this->veranstaltung->kommentare_unterstuetzbar) {
+					if ($this->veranstaltung->getEinstellungen()->kommentare_unterstuetzbar) {
 						$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 							'type'        => 'inline',
 							'htmlOptions' => array('class' => 'kommentar_unterstuetzerInnen_holder'),

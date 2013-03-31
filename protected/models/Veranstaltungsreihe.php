@@ -9,6 +9,7 @@
  * @property int $oeffentlich
  * @property string $einstellungen
  * @property int $aktuelle_veranstaltung_id
+ * @property string $kontakt_intern
  *
  * @property Veranstaltung[] $veranstaltungen
  * @property Veranstaltung $aktuelle_veranstaltung
@@ -91,7 +92,7 @@ class VeranstaltungsReihe extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('id, subdomain, name, name_kurz, offiziell, oeffentlich', 'required'),
+			array('id, subdomain, name, name_kurz, offiziell, oeffentlich, kontakt_intern', 'required'),
 			array('name', 'length', 'max' => 200),
 			array('subdomain', 'length', 'max' => 45),
 			array('name', 'length', 'max' => 100),

@@ -156,7 +156,7 @@ class Antrag extends IAntrag
 	 */
 	public function getFirstLineNo() {
 		$erste_zeile = 1;
-		if ($this->veranstaltung->zeilen_nummerierung_global) {
+		if ($this->veranstaltung->getEinstellungen()->zeilen_nummerierung_global) {
 			$antraege = $this->veranstaltung->antraegeSortiert();
 			$found = false;
 			foreach ($antraege as $antraege2) foreach ($antraege2 as $antrag) if (!$found) {
@@ -264,7 +264,7 @@ class Antrag extends IAntrag
 	public function naechsteAenderungsRevNr()
 	{
 		$max_rev = 0;
-		if ($this->veranstaltung->ae_nummerierung_global) {
+		if ($this->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
 			$antraege = $this->veranstaltung->antraege;
 			foreach ($antraege as $ant) {
 				$m = $ant->getMaxAenderungsRevNr();
@@ -282,7 +282,7 @@ class Antrag extends IAntrag
 	 */
 	public function nameMitRev()
 	{
-		if ($this->veranstaltung->revision_name_verstecken) return $this->name;
+		if ($this->veranstaltung->getEinstellungen()->revision_name_verstecken) return $this->name;
 
 		$name = $this->revision_name;
 		if (strlen($this->revision_name) > 1 && !in_array($this->revision_name[strlen($this->revision_name) - 1], array(":", "."))) $name .= ":";

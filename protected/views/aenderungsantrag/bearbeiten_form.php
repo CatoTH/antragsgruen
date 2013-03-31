@@ -8,7 +8,7 @@
  * @var array $hiddens
  * @var bool $js_protection
  * @var Sprache $sprache
- * @var Person $antragstellerin
+ * @var Person $antragstellerIn
  */
 
 /** @var CWebApplication $app  */
@@ -118,7 +118,7 @@ $this->renderPartial($antrag->veranstaltung->getPolicyAenderungsantraege()->getA
 	"mode"             => $mode,
 	"antrag"           => $antrag,
 	"aenderungsantrag" => $aenderungsantrag,
-	"antragstellerin"  => $antragstellerin,
+	"antragstellerIn"  => $antragstellerIn,
 	"hiddens"          => $hiddens,
 	"js_protection"    => $js_protection,
 	"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),

@@ -211,7 +211,7 @@ class Aenderungsantrag extends IAntrag
 		$ids = array();
 
 		/** @var array|Antrag[] $antraege  */
-		$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung" => $veranstaltung_id));
+		$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung_id" => $veranstaltung_id));
 		foreach ($antraege as $ant) $ids[] = $ant->id;
 		if (count($ids) == 0) return array();
 

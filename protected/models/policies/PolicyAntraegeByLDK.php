@@ -45,7 +45,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	public function getAntragstellerInView()
 	{
-		return "antragstellerin_delegiert_orga_20";
+		return "antragstellerIn_delegiert_orga_20";
 	}
 
 

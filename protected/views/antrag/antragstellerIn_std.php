@@ -2,7 +2,7 @@
 /**
  * @var AntragController $this
  * @var Antrag $model
- * @var Person $antragstellerin
+ * @var Person $antragstellerIn
  * @var Veranstaltung $veranstaltung
  * @var array $model_unterstuetzerInnen
  * @var array $hiddens
@@ -18,13 +18,13 @@
 
 		<legend>AntragstellerIn</legend>
 
-		<?php echo $form->radioButtonListRow($antragstellerin, 'typ', Person::$TYPEN); ?>
+		<?php echo $form->radioButtonListRow($antragstellerIn, 'typ', Person::$TYPEN); ?>
 
-		<?php echo $form->textFieldRow($antragstellerin, 'name'); ?>
+		<?php echo $form->textFieldRow($antragstellerIn, 'name'); ?>
 
-		<?php echo $form->textFieldRow($antragstellerin, 'email'); ?>
+		<?php echo $form->textFieldRow($antragstellerIn, 'email'); ?>
 
-		<?php echo $form->textFieldRow($antragstellerin, 'telefon'); ?>
+		<?php echo $form->textFieldRow($antragstellerIn, 'telefon'); ?>
 
 	</fieldset>
 

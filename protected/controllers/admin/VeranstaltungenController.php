@@ -79,7 +79,7 @@ class VeranstaltungenController extends GxController
 			$model->antragsschluss = EDateTimePicker::parseInput($_POST["Veranstaltung"], "antragsschluss");
 
 			$einstellungen = $model->getEinstellungen();
-			$einstellungen->saveForm($_REQUEST["VeranstaltungEinstellungen"]);
+			$einstellungen->saveForm($_REQUEST["VeranstaltungsEinstellungen"]);
 			$model->setEinstellungen($einstellungen);
 
 			$relatedData           = array();

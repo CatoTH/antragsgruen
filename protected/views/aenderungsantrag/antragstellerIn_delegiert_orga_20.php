@@ -8,22 +8,21 @@
  * @var array $hiddens
  * @var bool $js_protection
  * @var Sprache $sprache
- * @var Person $antragstellerin
+ * @var Person $antragstellerIn
  */
 
 
 if ($mode == "neu") {
-	/** @var Person $antragstellerin */
 	?>
 	<div class="well">
 		<h3><?=$sprache->get("AntragstellerIn")?></h3>
 		<br>
 
-		<?php echo $form->textFieldRow($antragstellerin, 'name'); ?>
+		<?php echo $form->textFieldRow($antragstellerIn, 'name'); ?>
 
-		<?php echo $form->textFieldRow($antragstellerin, 'email', array("required" => true)); ?>
+		<?php echo $form->textFieldRow($antragstellerIn, 'email', array("required" => true)); ?>
 
-		<?php echo $form->textFieldRow($antragstellerin, 'telefon'); ?>
+		<?php echo $form->textFieldRow($antragstellerIn, 'telefon'); ?>
 
 		<div class="control-group" id="Person_typ_chooser">
 			<label class="control-label">Ich bin...</label>

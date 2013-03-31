@@ -151,12 +151,12 @@ class AenderungsantragController extends AntragsgruenController
 			$kommentar->verfasserIn_id      = $model_person->id;
 			$kommentar->aenderungsantrag    = $aenderungsantrag;
 			$kommentar->aenderungsantrag_id = $aenderungsantrag_id;
-			$kommentar->status              = ($this->veranstaltung->freischaltung_kommentare ? IKommentar::$STATUS_NICHT_FREI : IKommentar::$STATUS_FREI);
+			$kommentar->status              = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare ? IKommentar::$STATUS_NICHT_FREI : IKommentar::$STATUS_FREI);
 
 			$kommentare_offen[] = $zeile;
 
 			if ($kommentar->save()) {
-				$add = ($this->veranstaltung->freischaltung_kommentare ? " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
+				$add = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare ? " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
 				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);
 
 				if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
@@ -184,13 +184,13 @@ class AenderungsantragController extends AntragsgruenController
 		}
 
 
-		$antragstellerinnen = array();
-		$unterstuetzerinnen = array();
+		$antragstellerInnen = array();
+		$unterstuetzerInnen = array();
 		$zustimmung_von     = array();
 		$ablehnung_von      = array();
 		if (count($aenderungsantrag->aenderungsantragUnterstuetzerInnen) > 0) foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $relatedModel) {
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerinnen[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerinnen[] = $relatedModel->person;
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
 			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
 			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
 		}
@@ -215,8 +215,8 @@ class AenderungsantragController extends AntragsgruenController
 
 		$this->render("anzeige", array(
 			"aenderungsantrag"   => $aenderungsantrag,
-			"antragstellerinnen" => $antragstellerinnen,
-			"unterstuetzerinnen" => $unterstuetzerinnen,
+			"antragstellerInnen" => $antragstellerInnen,
+			"unterstuetzerInnen" => $unterstuetzerInnen,
 			"zustimmung_von"     => $zustimmung_von,
 			"ablehnung_von"      => $ablehnung_von,
 			"edit_link"          => $aenderungsantrag->binInitiatorIn(),
@@ -331,10 +331,13 @@ class AenderungsantragController extends AntragsgruenController
 			$hiddens[AntiXSS::createToken("antragbearbeiten")] = "1";
 		}
 
+		$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+
 		$this->render('bearbeiten_form', array(
 			"mode"             => "bearbeiten",
 			"antrag"           => $antrag,
 			"aenderungsantrag" => $aenderungsantrag,
+			"antragstellerIn"  => $antragstellerIn,
 			"hiddens"          => $hiddens,
 			"js_protection"    => $js_protection,
 			"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
@@ -362,7 +365,7 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
-			$freischaltung = $aenderungsantrag->antrag->veranstaltung->freischaltung_aenderungsantraege;
+			$freischaltung = $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->freischaltung_aenderungsantraege;
 			if ($freischaltung) {
 				$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 			} else {
@@ -446,9 +449,9 @@ class AenderungsantragController extends AntragsgruenController
 		$aenderungsantrag->status    = Aenderungsantrag::$STATUS_UNBESTAETIGT;
 
 		if (Yii::app()->user->isGuest) {
-			$antragstellerin = null;
+			$antragstellerIn = null;
 		} else {
-			$antragstellerin = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 		}
 
 		$changed = false;
@@ -511,12 +514,12 @@ class AenderungsantragController extends AntragsgruenController
 
 			if (!$aenderungsantrag->save()) {
 				foreach ($aenderungsantrag->getErrors() as $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Änderungsantrag konnte nicht angelegt werden: " . $val2);
-				if ($antragstellerin === null) $antragstellerin = new Person();
+				if ($antragstellerIn === null) $antragstellerIn = new Person();
 				$this->render('bearbeiten_form', array(
 					"mode"             => "neu",
 					"antrag"           => $antrag,
 					"aenderungsantrag" => $aenderungsantrag,
-					"antragstellerin"  => $antragstellerin,
+					"antragstellerIn"  => $antragstellerIn,
 					"hiddens"          => $hiddens,
 					"js_protection"    => $js_protection,
 					"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
@@ -529,7 +532,7 @@ class AenderungsantragController extends AntragsgruenController
 			$this->redirect($this->createUrl("aenderungsantrag/neuConfirm", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 
 		} else {
-			if ($antragstellerin === null) $antragstellerin = new Person();
+			if ($antragstellerIn === null) $antragstellerIn = new Person();
 
 			$aenderungsantrag->name_neu = $antrag->name;
 
@@ -538,7 +541,7 @@ class AenderungsantragController extends AntragsgruenController
 				"mode"             => "neu",
 				"antrag"           => $antrag,
 				"aenderungsantrag" => $aenderungsantrag,
-				"antragstellerin"  => $antragstellerin,
+				"antragstellerIn"  => $antragstellerIn,
 				"hiddens"          => $hiddens,
 				"js_protection"    => $js_protection,
 				"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),

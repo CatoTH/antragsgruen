@@ -4,15 +4,16 @@
 <?php
 /**
  * @var $this VeranstaltungenController
- * @var GxActiveForm $form
+ * @var CActiveForm $form
  * @var $model Veranstaltung
  * @var bool $superadmin
  */
 
-$form = $this->beginWidget('GxActiveForm', array(
+$form = $this->beginWidget('CActiveForm', array(
 	'id'                   => 'veranstaltung-form',
 	'enableAjaxValidation' => true,
 ));
+$einstellungen = $model->getEinstellungen();
 
 ?>
 
@@ -26,8 +27,8 @@ $form = $this->beginWidget('GxActiveForm', array(
 <br>
 
 <fieldset style="margin-top: 10px;">
-	<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[wartungs_modus_aktiv]" value="0" <?php if (!$model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-	<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[wartungs_modus_aktiv]" value="1" <?php if ($model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]" value="0" <?php if (!$model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]" value="1" <?php if ($model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 	<strong>Wartungsmodus aktiv</strong> <small>(Nur Admins können den Seiteninhalt sehen)</small>
 </fieldset>
 <br>
@@ -116,60 +117,60 @@ $form = $this->beginWidget('GxActiveForm', array(
 <br>
 
 <div>
-	<?php echo $form->labelEx($model, 'antrag_einleitung'); ?>
+	<?php echo $form->labelEx($einstellungen, 'antrag_einleitung', array("label" => "PDF-Antrags-Einleitung")); ?>
 	<div style="display: inline-block; width: 420px;">
-		<?php echo $form->textArea($model, 'antrag_einleitung'); ?>
+		<?php echo $form->textArea($einstellungen, 'antrag_einleitung'); ?>
 		<br>
 		<small>Steht im PDF unter "Antrag", also z.B. "an die Landesversammlung in Würzburg"</small>
 	</div>
-	<?php echo $form->error($model, 'antrag_einleitung'); ?>
+	<?php echo $form->error($einstellungen, 'antrag_einleitung'); ?>
 </div>
 <br>
 
 
 	<div>
-		<?php echo $form->labelEx($model, 'logo_url'); ?>
+		<?php echo $form->labelEx($einstellungen, 'logo_url', array("label" => "Logo-URL")); ?>
 		<div style="display: inline-block; width: 450px;">
-		<?php echo $form->textField($model, 'logo_url', array('maxlength' => 200)); ?>
+		<?php echo $form->textField($einstellungen, 'logo_url', array('maxlength' => 200)); ?>
 			<br>
 			<small>Im Regelfall einfach leer lassen. Falls eine URL angegeben wird, wird das angegebene Bild statt dem großen "Antragsgrün"-Logo angezeigt.</small>
 		</div>
-		<?php echo $form->error($model, 'logo_url'); ?>
+		<?php echo $form->error($einstellungen, 'logo_url'); ?>
 	</div>
 	<div>
-		<?php echo $form->labelEx($model, 'fb_logo_url'); ?>
+		<?php echo $form->labelEx($einstellungen, 'fb_logo_url', array("label" => "Facebook-Bild")); ?>
 		<div style="display: inline-block; width: 450px;">
-		<?php echo $form->textField($model, 'fb_logo_url', array('maxlength' => 200)); ?>
+		<?php echo $form->textField($einstellungen, 'fb_logo_url', array('maxlength' => 200)); ?>
 			<br>
 			<small>Dieses Bild erscheint, wenn etwas auf dieser Seite bei Facebook geteilt wird. Vorsicht: nachträglich ändern ist oft heikel, da FB viel zwischenspeichert.</small>
 		</div>
-		<?php echo $form->error($model, 'fb_logo_url'); ?>
+		<?php echo $form->error($einstellungen, 'fb_logo_url'); ?>
 	</div>
 <br>
 <div>
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[revision_name_verstecken]" value="0" <?php if ($model->revision_name_verstecken != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[revision_name_verstecken]" value="1" <?php if ($model->revision_name_verstecken == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[revision_name_verstecken]" value="0" <?php if ($einstellungen->revision_name_verstecken != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[revision_name_verstecken]" value="1" <?php if ($einstellungen->revision_name_verstecken == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 	<strong>Revisionsname verstecken</strong> <small>(Revisionsnamen wie z.B. "A1", "A2", "Ä1neu" etc.) müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt. Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small>
 </div>
 <br>
 
 <div>
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[ae_nummerierung_global]" value="0" <?php if ($model->ae_nummerierung_global != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[ae_nummerierung_global]" value="1" <?php if ($model->ae_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung_global]" value="0" <?php if ($einstellungen->ae_nummerierung_global != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung_global]" value="1" <?php if ($einstellungen->ae_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 	<strong>ÄA-Nummerierung für die ganze Veranstaltung</strong> <small>Bei "Nein" beginnt die Nummerierung der Änderungsanträge bei jedem Antrag bei 1, also "Ä1 zu A1", "Ä1 zu A2", etc. Bei "Ja" gibt es immer nur einen "Ä1", einen "Ä2" etc.</small>
 </div>
 <br>
 
 <div>
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[zeilen_nummerierung_global]" value="0" <?php if ($model->zeilen_nummerierung_global != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[zeilen_nummerierung_global]" value="1" <?php if ($model->zeilen_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]" value="0" <?php if ($einstellungen->zeilen_nummerierung_global != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]" value="1" <?php if ($einstellungen->zeilen_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 	<strong>Zeilennummerierung durchgehend für die ganze Veranstaltung</strong>
 </div>
 <br>
 
 	<div>
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[ansicht_minimalistisch]" value="0" <?php if ($model->ansicht_minimalistisch != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[ansicht_minimalistisch]" value="1" <?php if ($model->ansicht_minimalistisch == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ansicht_minimalistisch]" value="0" <?php if ($einstellungen->ansicht_minimalistisch != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ansicht_minimalistisch]" value="1" <?php if ($einstellungen->ansicht_minimalistisch == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 		<strong>Minimalistische Ansicht</strong> <small>Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>
 	</div>
 	<br>
@@ -196,15 +197,15 @@ $form = $this->beginWidget('GxActiveForm', array(
 	</div>
 <br>
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_antraege]" value="0" <?php if ($model->freischaltung_antraege != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_antraege]" value="1" <?php if ($model->freischaltung_antraege == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_antraege]" value="0" <?php if (!$einstellungen->freischaltung_antraege) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_antraege]" value="1" <?php if ($einstellungen->freischaltung_antraege) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 		<strong>Freischaltung</strong> von Anträgen
 	</fieldset>
 	<br>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[antrag_neu_braucht_email]" value="0" <?php if (!$model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-		<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[antrag_neu_braucht_email]" value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]" value="0" <?php if (!$model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]" value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 		Angabe der <strong>E-Mail-Adresse</strong> erzwingen <small>(Bei Anträgen und Änderungsanträgen)</small>
 	</fieldset>
 	<br>
@@ -221,8 +222,8 @@ $form = $this->beginWidget('GxActiveForm', array(
 </div>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_aenderungsantraege]" value="0" <?php if ($model->freischaltung_aenderungsantraege != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_aenderungsantraege]" value="1" <?php if ($model->freischaltung_aenderungsantraege == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]" value="0" <?php if (!$einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]" value="1" <?php if ($einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 		<strong>Freischaltung</strong> von Änderungsanträgen
 	</fieldset>
 	<br>
@@ -240,22 +241,22 @@ $form = $this->beginWidget('GxActiveForm', array(
 </div>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="0" <?php if ($model->freischaltung_kommentare != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[freischaltung_kommentare]" value="1" <?php if ($model->freischaltung_kommentare == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_kommentare]" value="0" <?php if (!$einstellungen->freischaltung_kommentare) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_kommentare]" value="1" <?php if ($einstellungen->freischaltung_kommentare) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 		Kommentare müssen durch den Admin <strong>freigeschaltet</strong> werden
 	</fieldset>
 	<br>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[kommentar_neu_braucht_email]" value="0" <?php if (!$model->getEinstellungen()->kommentar_neu_braucht_email) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-		<label style="display: inline;"><input type="radio" name="VeranstaltungEinstellungen[kommentar_neu_braucht_email]" value="1" <?php if ($model->getEinstellungen()->kommentar_neu_braucht_email) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]" value="0" <?php if (!$einstellungen->kommentar_neu_braucht_email) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]" value="1" <?php if ($einstellungen->kommentar_neu_braucht_email) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 		Angabe der <strong>E-Mail-Adresse</strong> erzwingen
 	</fieldset>
 	<br>
 
 	<fieldset>
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[kommentare_unterstuetzbar]" value="0" <?php if ($model->kommentare_unterstuetzbar != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-		<label style="display: inline;"><input type="radio" name="Veranstaltung[kommentare_unterstuetzbar]" value="1" <?php if ($model->kommentare_unterstuetzbar == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[kommentare_unterstuetzbar]" value="0" <?php if (!$einstellungen->kommentare_unterstuetzbar) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[kommentare_unterstuetzbar]" value="1" <?php if ($einstellungen->kommentare_unterstuetzbar) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 		Besucher können Kommentare <strong>bewerten</strong>
 	</fieldset>
 	<br>
@@ -270,16 +271,16 @@ $form = $this->beginWidget('GxActiveForm', array(
 	<?php echo $form->error($model, 'admin_email'); ?>
 </div>
 <div>
-	<?php echo $form->labelEx($model, 'bestaetigungs_emails'); ?>
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[bestaetigungs_emails]" value="0" <?php if ($model->bestaetigungs_emails != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-	<label style="display: inline;"><input type="radio" name="Veranstaltung[bestaetigungs_emails]" value="1" <?php if ($model->bestaetigungs_emails == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+	<?php echo $form->labelEx($einstellungen, 'bestaetigungs_emails'); ?>
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[bestaetigungs_emails]" value="0" <?php if (!$einstellungen->bestaetigungs_emails) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
+	<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[bestaetigungs_emails]" value="1" <?php if ($einstellungen->bestaetigungs_emails) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
 </div>
 
 
 
 <div class="saveholder">
 	<?php
-	echo GxHtml::submitButton(Yii::t('app', 'Save'), array("class" => "btn btn-primary"));
+	echo CHtml::submitButton(Yii::t('app', 'Save'), array("class" => "btn btn-primary"));
 	$this->endWidget();
 	?>
 </div>

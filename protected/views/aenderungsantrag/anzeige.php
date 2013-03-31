@@ -3,8 +3,8 @@
 /**
  * @var AenderungsantragController $this
  * @var Aenderungsantrag $aenderungsantrag
- * @var $antragstellerinnen array|Person[]
- * @var $unterstuetzerinnen array|Person[]
+ * @var $antragstellerInnen array|Person[]
+ * @var $unterstuetzerInnen array|Person[]
  * @var array|Person[] $ablehnung_von
  * @var array|Person[] $zustimmung_von
  * @var bool $js_protection
@@ -68,10 +68,10 @@ $rows = 10;
 					?></td>
             </tr>
             <tr>
-                <th><?php echo (count($antragstellerinnen) > 1 ? "AntragsstellerInnen": "AntragsstellerIn"); ?>:</th>
+                <th><?php echo (count($antragstellerInnen) > 1 ? "AntragsstellerInnen": "AntragsstellerIn"); ?>:</th>
                 <td><?php
 					$x = array();
-					foreach ($antragstellerinnen as $a) {
+					foreach ($antragstellerInnen as $a) {
 						$x[] = CHtml::encode($a->name);
 					}
 					echo implode(", ", $x);
@@ -272,7 +272,7 @@ $rows = 10;
 </div>
 
 <?php
-$eintraege = (count($unterstuetzerinnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
+$eintraege = (count($unterstuetzerInnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
 $unterstuetzen_policy = $aenderungsantrag->antrag->veranstaltung->getPolicyUnterstuetzen();
 $kann_unterstuetzen = $unterstuetzen_policy->checkCurUserHeuristically();
 $kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
@@ -288,9 +288,9 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 		$curr_user_id = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
 
 		echo "<strong>UnterstützerInnen:</strong><br>";
-		if (count($unterstuetzerinnen) > 0) {
+		if (count($unterstuetzerInnen) > 0) {
 			echo CHtml::openTag('ul');
-			foreach ($unterstuetzerinnen as $p) {
+			foreach ($unterstuetzerInnen as $p) {
 				echo CHtml::openTag('li');
 				if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
 				echo CHtml::encode($p->name);

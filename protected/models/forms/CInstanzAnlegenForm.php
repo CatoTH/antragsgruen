@@ -26,7 +26,7 @@ class CInstanzAnlegenForm extends CFormModel {
 			array('zahlung, typ', 'numerical'),
 			array('aenderungsantraege_moeglich, kommentare_moeglich', 'boolean'),
 			array('subdomain', 'unique', 'className' => 'Veranstaltungsreihe'),
-			array('kontakt, name', 'safe'),
+			array('kontakt, name, typ', 'safe'),
 		);
 	}
 

@@ -27,7 +27,7 @@ $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Person');
 $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Antrag');
 $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'Absatz / Zeilen');
 $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'Kommentar');
-if ($this->veranstaltung->kommentare_unterstuetzbar) {
+if ($this->veranstaltung->getEinstellungen()->kommentare_unterstuetzbar) {
 	$objPHPExcel->getActiveSheet()->SetCellValue('F1', 'Bewertung: Positiv');
 	$objPHPExcel->getActiveSheet()->SetCellValue('G1', 'Bewertung: Negativ');
 
@@ -62,7 +62,7 @@ foreach ($kommentare as $kommentar) {
 	if (is_a($kommentar, "AntragKommentar")) {
 		/** @var AntragKommentar $kommentar */
 		$antrag = Antrag::model()->findByPk($kommentar->antrag_id);
-		if ($this->veranstaltung->revision_name_verstecken) $objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, $kommentar->antrag->name);
+		if ($this->veranstaltung->getEinstellungen()->revision_name_verstecken) $objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, $kommentar->antrag->name);
 		else $objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, $kommentar->antrag->revision_name . " " . $kommentar->antrag->name);
 
 		/** @var Antrag $antrag */
@@ -80,7 +80,7 @@ foreach ($kommentare as $kommentar) {
 	}
 	if (is_a($kommentar, "AenderungsantragKommentar")) {
 		/** @var AenderungsantragKommentar $kommentar */
-		if ($this->veranstaltung->revision_name_verstecken) $objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, $kommentar->aenderungsantrag->revision_name);
+		if ($this->veranstaltung->getEinstellungen()->revision_name_verstecken) $objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, $kommentar->aenderungsantrag->revision_name);
 		else $objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, $kommentar->aenderungsantrag->revision_name . " zu " . $kommentar->aenderungsantrag->antrag->revision_name);
 
 		$absatz_zeilen = "";
@@ -98,7 +98,7 @@ foreach ($kommentare as $kommentar) {
 	$objPHPExcel->getActiveSheet()->SetCellValue('E' . $row, trim(implode("\n", $zeilen)));
 	$objPHPExcel->getActiveSheet()->getStyle('E' . $row)->getAlignment()->setWrapText(true);
 
-	if ($this->veranstaltung->kommentare_unterstuetzbar) {
+	if ($this->veranstaltung->getEinstellungen()->kommentare_unterstuetzbar) {
 		$positiv = $negativ = 0;
 		if (is_a($kommentar, "AntragKommentar")) {
 			/** @var AntragKommentar $kommentar */
