@@ -1,7 +1,21 @@
 <?php
 
 class VeranstaltungsreihenEinstellungen {
+
+	/** @var bool */
 	public $wartungs_modus_aktiv = false;
+
+	/** @var int */
+	public $bereit_zu_zahlen = 0;
+
+	public static $BEREIT_ZU_ZAHLEN_NEIN = 0;
+	public static $BEREIT_ZU_ZAHLEN_VIELLEICHT = 1;
+	public static $BEREIT_ZU_ZAHLEN_JA = 2;
+	public static $BEREIT_ZU_ZAHLEN = array(
+		2 => "Ja",
+		0 => "Nein",
+		1 => "Will mich später entscheiden"
+	);
 
 	/**
 	 * @param string|null $data

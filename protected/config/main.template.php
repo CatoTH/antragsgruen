@@ -20,6 +20,8 @@ return array(
 
 	'import'     => array(
 		'application.models.*',
+		'application.models.forms.*',
+		'application.models.interfaces.*',
 		'application.components.*',
 		'ext.giix-components.*',
 	),
