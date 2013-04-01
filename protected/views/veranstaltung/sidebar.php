@@ -56,9 +56,7 @@ if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
 
 if ($veranstaltung->typ == Veranstaltung::$TYP_PROGRAMM) {
 	if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
-		$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '">
-<img alt="Neuen Antrag stellen" src="/css/img/neuer-antrag.png">
-</a>';
+		$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '"></a>';
 	}
 }
 
@@ -103,7 +101,7 @@ $this->menus_html[] = $html;
 
 
 
-$html = "</div><div class='span3 antragsgruen_werbung'><div class='well'><div class='nav-list'>";
+$html = "</div><div class='antragsgruen_werbung'><div class='well'><div class='nav-list'>";
 $html .= "<div class='nav-header'>Dein Antragsgrün</div>";
 $html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
 $html .= "<div style='text-align: center;'><a href='" . CHtml::encode($this->createUrl("infos/selbstEinsetzen")) . "' class='btn btn-primary' style='margin-top: 15px;'><span class='icon-chevron-right'></span> Infos</a></div>";

@@ -127,7 +127,8 @@ class AntragsgruenController extends CController
 	 * @param string $success_redirect
 	 * @return OAuthLoginForm
 	 */
-	protected function performLogin($success_redirect) {
+	protected function performLogin($success_redirect)
+	{
 
 		$model = new OAuthLoginForm();
 		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
@@ -135,7 +136,7 @@ class AntragsgruenController extends CController
 		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["OAuthLoginForm"]["wurzelwerk"])) {
 			$username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
 
-			/** @var Person $user  */
+			/** @var Person $user */
 			$user = Person::model()->findByAttributes(array("auth" => $username));
 			if ($user === null) {
 				Yii::app()->user->setFlash("error", "Benutzername nicht gefunden.");
@@ -229,6 +230,26 @@ class AntragsgruenController extends CController
 				}
 			}
 			if (!empty($err)) Yii::app()->user->setFlash("error", $err);
+		} elseif (isset($_REQUEST["login"]) && $_REQUEST["login_sec"] == AntiXSS::createToken($_REQUEST["login"])) {
+			/** @var Person $user */
+			$user = Person::model()->findByAttributes(array("id" => $_REQUEST["login"]));
+			if ($user === null) {
+				Yii::app()->user->setFlash("error", "Benutzername nicht gefunden.");
+				return $model;
+			}
+			$identity = new AntragUserIdentityPasswd($user->getWurzelwerkName());
+			Yii::app()->user->login($identity);
+
+			if ($user->admin) {
+				//$openid->setState("role", "admin");
+				Yii::app()->user->setState("role", "admin");
+			}
+
+			Yii::app()->user->setState("person_id", $user->id);
+			Yii::app()->user->setFlash('success', 'Willkommen!');
+			if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
+
+			$this->redirect($success_redirect);
 		}
 		return $model;
 	}

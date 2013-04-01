@@ -84,7 +84,31 @@ class InfosController extends AntragsgruenController
 					$reihe->save();
 					Yii::app()->db->createCommand()->insert("veranstaltungsreihen_admins", array("veranstaltungsreihe_id" => $reihe->id, "person_id" => $user->id));
 
-					// @TODO
+					$impressum = new Texte();
+					$impressum->edit_datum = new CDbExpression("NOW()");
+					$impressum->text_id = "impressum";
+					$impressum->veranstaltung_id = $veranstaltung->id;
+					$impressum->text = "<div class='well'><div class='content'>" . nl2br(CHtml::encode($anlegenformmodel->kontakt)) . "</div></div>";
+					$impressum->save();
+
+					$impressum = new Texte();
+					$impressum->edit_datum = new CDbExpression("NOW()");
+					$impressum->text_id = "wartungsmodus";
+					$impressum->veranstaltung_id = $veranstaltung->id;
+					$impressum->text = "<div class='well'><div class='content'>Diese Veranstaltung wurde vom Admin noch nicht freigeschaltet.</div></div>";
+					$impressum->save();
+
+					$login_id = $user->id;
+					$login_code = AntiXSS::createToken($login_id);
+
+					$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
+					$this->render('neu_angelegt', array(
+						"reihen" => $reihen,
+						"reihe" => $reihe,
+						"login_id" => $login_id,
+						"login_code" => $login_code,
+					));
+					return;
 
 				} else {
 					foreach ($veranstaltung->errors as $err) foreach ($err as $e) $error_str .= $e . "<br>\n";

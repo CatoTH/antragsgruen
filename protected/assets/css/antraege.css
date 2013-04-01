@@ -180,7 +180,7 @@ h1.well {
 }
 
 .span9,
-.span3,
+.span3 > div,
 	/* #content { */
 .antragcontent, ul.funktionen {
 	position: relative;
@@ -235,7 +235,7 @@ h1.well {
 }
 
 .span9 > .well:first-child,
-.span3 > .well:first-child,
+.span3 > div > .well:first-child,
 #content .well:first-child {
 	-moz-border-radius-topleft: 10px;
 	-webkit-border-top-left-radius: 10px;
@@ -245,7 +245,7 @@ h1.well {
 	border-top-right-radius: 10px;
 }
 
-.span3 > .well:last-child,
+.span3 > div > .well:last-child,
 .span9 ul:last-child .antrag:last-child,
 .antrags_text_holder  > .well:last-child,
 .well.last,
@@ -259,13 +259,13 @@ h1.well {
 	padding-bottom: 50px;
 }
 
-.span3.antragsgruen_werbung {
+.span3 .antragsgruen_werbung {
 	margin-top: 30px;
 }
-.span3.antragsgruen_werbung > .well { padding-bottom: 10px; }
-.span3.antragsgruen_werbung > .well > div > div.content { padding: 20px; }
-.span3.antragsgruen_werbung .well:first-child .nav-list .nav-header { margin-bottom: 0; }
-.span3.antragsgruen_werbung .well .nav-list { margin-bottom: 0; }
+.span3 .antragsgruen_werbung > .well { padding-bottom: 10px; }
+.span3 .antragsgruen_werbung > .well > div > div.content { padding: 20px; }
+.span3 .antragsgruen_werbung .well:first-child .nav-list .nav-header { margin-bottom: 0; }
+.span3 .antragsgruen_werbung .well .nav-list { margin-bottom: 0; }
 
 .span9 .antrag {
 	padding: 12px 20px 17px 20px;

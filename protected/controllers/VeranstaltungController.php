@@ -26,6 +26,7 @@ class VeranstaltungController extends AntragsgruenController
 			}
 		}
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (isset($_REQUEST["login"])) $this->performLogin($this->createUrl("veranstaltung/index"));
 		$this->testeWartungsmodus();
 
 		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);

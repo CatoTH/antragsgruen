@@ -162,6 +162,12 @@ class Person extends GxActiveRecord
 		return preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth);
 	}
 
+	public function getWurzelwerkName() {
+		$x = preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches);
+		if (!$x) return null;
+		return $matches[1];
+	}
+
 
 	/**
 	 * @param string $a
