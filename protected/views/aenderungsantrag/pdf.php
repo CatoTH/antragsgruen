@@ -14,12 +14,16 @@ $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 $initiatorinnen       = array();
 $initiatorinnen_namen = array();
 $unterstuetzer        = array();
+$unterstuetzer_namen  = array();
 foreach ($model->aenderungsantragUnterstuetzer as $unt) {
 	if ($unt->rolle == IUnterstuetzer::$ROLLE_INITIATOR) {
 		$initiatorinnen[]       = $unt->unterstuetzer;
 		$initiatorinnen_namen[] = $unt->unterstuetzer->name;
 	}
-	if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) $unterstuetzer[] = $unt->unterstuetzer;
+	if ($unt->rolle == IUnterstuetzer::$ROLLE_UNTERSTUETZER) {
+		$unterstuetzer[]       = $unt->unterstuetzer;
+		$unterstuetzer_namen[] = $unt->unterstuetzer->name;
+	}
 }
 
 // set document information
@@ -119,6 +123,16 @@ $pdf->MultiCell(120, 0, implode(", ", $initiatorinnen_namen), 0, "L");
 $pdf->SetFont("helvetica", "B", 8);
 $pdf->Ln();
 
+if (count($unterstuetzer_namen) > 0) {
+	$pdf->SetFont("helvetica", "B", 12);
+	$pdf->MultiCell(50, 0, "UnterstützerInnen:", 0, "L", false, 0);
+	$pdf->SetFont("helvetica", "", 12);
+	$pdf->MultiCell(120, 0, implode(", ", $unterstuetzer_namen) . "\n\n", 0, "L", false, 0);
+
+	$pdf->SetFont("helvetica", "B", 8);
+	$pdf->Ln();
+}
+
 $pdf->SetFont("helvetica", "B", 12);
 $pdf->MultiCell(50, 0, "Gegenstand:", 0, "L", false, 0);
 $pdf->SetFont("helvetica", "B", 12);
@@ -144,14 +158,14 @@ if ($diff_ansicht) {
 	$html = "";
 
 	$letztes_leer = true;
-	foreach ($abs_alt as $i=> $abs) {
+	foreach ($abs_alt as $i => $abs) {
 		if (isset($abs_neu[$i]) && $abs_neu[$i] != "") {
 			if ($letztes_leer) {
 				$letztes_leer = false;
 
 				preg_match_all("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $abs->str_html, $matches);
 				$zeile_von = (isset($matches[1][0]) ? IntVal($matches[1][0]) : "????");
-				$zeile_bis = (isset($matches[1]) ? $matches[1][count($matches[1])-1] : "???");
+				$zeile_bis = (isset($matches[1]) ? $matches[1][count($matches[1]) - 1] : "???");
 
 				$html .= "Im Absatz von Zeile $zeile_von - $zeile_bis:";
 			}
