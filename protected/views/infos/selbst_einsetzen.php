@@ -35,7 +35,7 @@ include(__DIR__ . "/sidebar.php");
 			<li style="margin-top: 7px;">Es ist einstellbar, ob im Frontend von "Anträgen" und "Änderungsanträgen" die Rede ist (ausgelegt auf Parteitage), oder von "Kapiteln" und "Änderungswünschen" (ausgelegt auf die Diskussion von Wahlprogrammen).</li>
 			<li style="margin-top: 7px;"><strong>RSS-Feeds</strong>, damit alle Interessierte über neu eingereichte (Änderungs-)Anträge oder Kommentare auf dem Laufenden bleiben.</li>
 			<li style="margin-top: 7px;"><strong>Veranstaltungsreihen</strong> werden unterstützt - wenn Antragsgrün also für eine regelmäßig stattfindende Veranstaltung wiederholt eingesetzt werden soll (oder es mehrere Iterationen bei der Ausarbeitung eines Wahlprogramms geben soll), muss nicht
-				jedes Mal alles aufs Neue eingerichtet werden.
+				jedes Mal alles aufs Neue eingerichtet werden. <i>(kommt in Kürze)</i>
 			</li>
 		</ul>
 
@@ -85,14 +85,19 @@ include(__DIR__ . "/sidebar.php");
 	<h2 id="wer">Von wem stammt Antragsgrün?</h2>
 
 	<div class="content">
-		...
+		<p>Antragsgrün wird von "<strong>Netzbegrünung</strong> - Verein für GRÜNE Netzkultur" betrieben. Programmiert wird es von <a href="http://www.hoessl.eu/">Tobias Hößl</a> (<a href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>), das Design stammt von <a href="http://www.netzminze.de/">Karin Wehle</a>.</p>
+		<p>Erstmals eingesetzt wurde es im November 2012 vom <strong>Bayerischen Landesverband</strong> um das Landtagswahlprogramm zu diskutieren, später auch zur Vorbereitung der Programm-LDK.</p>
+		<p>Wir werden das Antragsgrün in Zukunft weiter ausbauen und um <strong>zusätzliche Funktionen</strong> ergänzen. Funktionen, für die sich <strong>Sponsoren</strong> finden, werden dabei besonders priorisiert (die Zeit, die wir in die Weiterentwicklung stecken können, ist dann doch nicht völlig unabhängig von finanziellen Aspekten).</p>
+		<p>Ihr könnt uns bevorzugt per <strong>E-Mail</strong> unter #### (at) ###.de erreichen, aber auch telefonisch unter 0151-56024223, auf <a href="https://twitter.com/Antragsgruen">Twitter</a> und auf <a href="http://www.facebook.com/Antragsgruen">Facebook</a>.</p>
 	</div>
 
 
 	<h2 id="opensource">Open Source</h2>
 
 	<div class="content">
-		...
+		<p>Wir Grüne bekennen uns schon lange zu freier Software, insofern ist es für uns selbstverständlich, dass wir Antragsgrün unter einer Open-Source-Lizenz zur Verfügung stellen.</p>
+		<p>Der komplette Quellcode von Antragsgrün ist unter <a href="https://github.com/CatoTH/antragsgruen">https://github.com/CatoTH/antragsgruen</a> abrufbar.</p>
+		<p>Antragsgrün steht unter der "GNU Affero General Public License". Das heißt, jede und jeder Interessierte kann das Tool nicht nur kostenlos einsetzen, sondern bei Bedarf auch Änderungen vornehmen (was auch die Verwendung in anderen Parteien oder völlig anderen Organisationen umfasst). Bedingung dafür ist aber unter anderem, dass wir als UrheberInnen weiter genannt werden und Änderungen am Tool ebenfalls wieder frei verfügbar gemacht werden.</p>
 	</div>
 
 </div>
