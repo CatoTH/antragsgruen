@@ -132,41 +132,8 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	public function submitAntragsstellerInView_Aenderungsantrag(&$aenderungsantrag)
 	{
 		parent::submitAntragsstellerInView_Aenderungsantrag($aenderungsantrag);
-
-		foreach ($_REQUEST["UnterstuetzerInnen"] as $unterstuetzer) {
-			$person                 = new Person();
-			$person->admin          = 0;
-			$person->name           = trim($unterstuetzer);
-			$person->typ            = Person::$TYP_PERSON;
-			$person->status         = Person::$STATUS_UNCONFIRMED;
-			$person->email          = "";
-			$person->angelegt_datum = date("Y-m-d H:i:s");
-			$person->save();
-
-			$init                      = new AenderungsantragUnterstuetzer();
-			$init->aenderungsantrag_id = $aenderungsantrag->id;
-			$init->rolle               = AenderungsantragUnterstuetzer::$ROLLE_UNTERSTUETZER;
-			$init->unterstuetzer_id    = $person->id;
-			$init->save();
-		}
 	}
-
-	/*	public function checkOnCreate($antrag, $antragstellerin, $unterstuetzerinnen)
-		{
-			if ($this->checkAntragsschlussVorbei()) return false;
-
-			$num_natuerlich = 0;
-			$num_juristisch = 0;
-			if ($antragstellerin->unterstuetzer->typ == Person::$TYP_ORGANISATION) $num_juristisch++;
-			if ($antragstellerin->unterstuetzer->typ == Person::$TYP_PERSON) $num_natuerlich++;
-			foreach ($unterstuetzerinnen as $unter) {
-				if ($unter->unterstuetzer->typ == Person::$TYP_ORGANISATION) $num_juristisch++;
-				if ($unter->unterstuetzer->typ == Person::$TYP_PERSON) $num_natuerlich++;
-			}
-			if ($num_juristisch > 0) return true;
-			return ($num_natuerlich >= 15);
-		}
-	*/
+	
 	/**
 	 * @return string
 	 */
