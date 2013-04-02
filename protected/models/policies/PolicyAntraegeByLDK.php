@@ -105,23 +105,6 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	public function submitAntragsstellerInView_Antrag(&$antrag)
 	{
 		parent::submitAntragsstellerInView_Antrag($antrag);
-
-		foreach ($_REQUEST["UnterstuetzerInnen"] as $unterstuetzerIn) {
-			$person                 = new Person();
-			$person->admin          = 0;
-			$person->name           = trim($unterstuetzerIn);
-			$person->typ            = Person::$TYP_PERSON;
-			$person->status         = Person::$STATUS_UNCONFIRMED;
-			$person->email          = "";
-			$person->angelegt_datum = date("Y-m-d H:i:s");
-			$person->save();
-
-			$init                   = new AntragUnterstuetzerInnen();
-			$init->antrag_id        = $antrag->id;
-			$init->rolle            = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-			$init->unterstuetzerIn_id = $person->id;
-			$init->save();
-		}
 	}
 
 
