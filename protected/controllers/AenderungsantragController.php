@@ -460,6 +460,8 @@ class AenderungsantragController extends AntragsgruenController
 
 			$aenderungsantrag->name_neu              = $_REQUEST["Aenderungsantrag"]["name_neu"];
 			$aenderungsantrag->aenderung_begruendung = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["ae_begruendung"]);
+			
+			if ($aenderungsantrag->name_neu != $antrag->name) $changed = true;
 
 			$orig_absaetze = $antrag->getParagraphs();
 			$neue_absaetze = array();
