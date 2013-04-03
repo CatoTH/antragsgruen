@@ -16,6 +16,7 @@ $this->menu = array(
 <h1 class="well"><?php echo GxHtml::encode(Aenderungsantrag::label(2)); ?></h1>
 
 <div class="well">
+	<a style="float: left;" href="<?php echo CHtml::encode($this->createUrl("/admin/aenderungsantraege/index", array("by_ldk" => true)))?>"><span class="icon-chevron-right"></span> Freigeschaltete, sortiert</a>
 	<?php
 	$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT;
 	$dataProvider->sort->defaultOrder = "datum_einreichung DESC";

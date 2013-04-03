@@ -1,6 +1,7 @@
 <?php
 
-class AenderungsantraegeController extends GxController {
+class AenderungsantraegeController extends GxController
+{
 
 	/*
     public function actionCreate() {
@@ -30,12 +31,13 @@ class AenderungsantraegeController extends GxController {
     }
 	*/
 
-    public function actionUpdate($veranstaltung_id, $id) {
+	public function actionUpdate($veranstaltung_id, $id)
+	{
 		$this->loadVeranstaltung($veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
-        /** @var $model Aenderungsantrag */
-        $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
+		/** @var $model Aenderungsantrag */
+		$model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
 
 		if (is_null($model)) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
@@ -46,12 +48,12 @@ class AenderungsantraegeController extends GxController {
 			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
 		}
 
-        $this->performAjaxValidation($model, 'aenderungsantrag-form');
+		$this->performAjaxValidation($model, 'aenderungsantrag-form');
 
-        $messages = array();
+		$messages = array();
 
 		if (AntiXSS::isTokenSet("antrag_freischalten")) {
-			$newvar = AntiXSS::getTokenVal("antrag_freischalten");
+			$newvar               = AntiXSS::getTokenVal("antrag_freischalten");
 			$model->revision_name = $newvar;
 			if ($model->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $model->status = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
 			$model->save();
@@ -59,27 +61,28 @@ class AenderungsantraegeController extends GxController {
 		}
 
 		if (isset($_POST['Aenderungsantrag'])) {
-            $model->setAttributes($_POST['Aenderungsantrag'], false);
+			$model->setAttributes($_POST['Aenderungsantrag'], false);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_einreichung");
-			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_beschluss");
+			$model->datum_beschluss   = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_beschluss");
 
 			if ($model->save()) {
 
 
 				UnterstuetzerWidget::saveUnterstuetzerWidget($model, $messages, "AenderungsantragUnterstuetzer", "aenderungsantrag_id", $id);
 
-                $model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
-            }
-        }
+				$model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzer", "aenderungsantragUnterstuetzer.unterstuetzer")->findByPk($id, '', array("order" => "`unterstuetzer`.`name"));
+			}
+		}
 
-        $this->render('update', array(
-            'model' => $model,
-            'messages' => $messages,
-        ));
-    }
+		$this->render('update', array(
+			'model'    => $model,
+			'messages' => $messages,
+		));
+	}
 
-    public function actionDelete($veranstaltung_id, $id) {
+	public function actionDelete($veranstaltung_id, $id)
+	{
 		$this->loadVeranstaltung($veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
@@ -95,43 +98,55 @@ class AenderungsantraegeController extends GxController {
 		}
 
 		if (Yii::app()->getRequest()->getIsPostRequest()) {
-            $model->status = IAntrag::$STATUS_GELOESCHT;
+			$model->status = IAntrag::$STATUS_GELOESCHT;
 			$model->save();
 
-            if (!Yii::app()->getRequest()->getIsAjaxRequest())
-                $this->redirect(array('admin'));
-        } else
-            throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
-    }
+			if (!Yii::app()->getRequest()->getIsAjaxRequest())
+				$this->redirect(array('admin'));
+		} else
+			throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
+	}
 
-    public function actionIndex($veranstaltung_id) {
+	public function actionIndex($veranstaltung_id, $by_ldk = false)
+	{
 		$this->loadVeranstaltung($veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
-		$aenderungsantraege = Aenderungsantrag::model()->with(array(
-			"antrag" => array('condition'=>'antrag.veranstaltung=' . IntVal($this->veranstaltung->id))
-		))->findAll();
-        $dataProvider = new CActiveDataProvider('Aenderungsantrag', array(
+		if ($by_ldk) {
+			$criteria = new CDbCriteria();
+			$criteria->alias = "aenderungsantrag";
+			$criteria->order = "LPAD(REPLACE(aenderungsantrag.revision_name, 'Ä', ''), 3, '0')";
+			$criteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
+			$aenderungsantraege = Aenderungsantrag::model()->with(array(
+				"antrag" => array('condition' => 'antrag.veranstaltung=' . IntVal($this->veranstaltung->id))
+			))->findAll($criteria);
+		} else {
+			$aenderungsantraege = Aenderungsantrag::model()->with(array(
+				"antrag" => array('condition' => 'antrag.veranstaltung=' . IntVal($this->veranstaltung->id))
+			))->findAll();
+		}
+		$dataProvider = new CActiveDataProvider('Aenderungsantrag', array(
 			"data" => $aenderungsantraege
 		));
-        $this->render('index', array(
-            'dataProvider' => $dataProvider,
-        ));
-    }
+		$this->render('index', array(
+			'dataProvider' => $dataProvider,
+		));
+	}
 
-    public function actionAdmin($veranstaltung_id) {
+	public function actionAdmin($veranstaltung_id)
+	{
 		$this->loadVeranstaltung($veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
 
-        $model = new Aenderungsantrag('search');
-        $model->unsetAttributes();
+		$model = new Aenderungsantrag('search');
+		$model->unsetAttributes();
 
-        if (isset($_GET['Aenderungsantrag']))
-            $model->setAttributes($_GET['Aenderungsantrag']);
+		if (isset($_GET['Aenderungsantrag']))
+			$model->setAttributes($_GET['Aenderungsantrag']);
 
-        $this->render('admin', array(
-            'model' => $model,
-        ));
-    }
+		$this->render('admin', array(
+			'model' => $model,
+		));
+	}
 
 }
