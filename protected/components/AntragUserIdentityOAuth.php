@@ -64,8 +64,10 @@ class AntragUserIdentityOAuth extends CBaseUserIdentity
 	public static function getCurrenPersonOrCreateBySubmitData($submit_data, $submit_status)
 	{
 		if (Yii::app()->user->isGuest) {
-			$model_person = Person::model()->findByAttributes(array("typ" => $submit_data["typ"], "name" => trim($submit_data["name"]), "status" => $submit_status));
-			if (!$model_person) {
+			$person_id = Yii::app()->user->getState("person_id");
+			if ($person_id) {
+				$model_person = Person::model()->findByAttributes(array("id" => $person_id));
+			} else {
 				$model_person                 = new Person();
 				$model_person->attributes     = $submit_data;
 				$model_person->admin          = 0;
