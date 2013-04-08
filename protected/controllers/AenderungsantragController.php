@@ -236,8 +236,9 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 * @param int $aenderungsantrag_id
+	 * @param bool $long_name
 	 */
-	public function actionPdf($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	public function actionPdf($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $long_name = false)
 	{
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
@@ -245,6 +246,7 @@ class AenderungsantragController extends AntragsgruenController
 			"model"        => $aenderungsantrag,
 			"sprache"      => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 			"diff_ansicht" => false,
+			"long_name"    => $long_name,
 		));
 	}
 
@@ -253,8 +255,9 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 * @param int $aenderungsantrag_id
+	 * @param bool $long_name
 	 */
-	public function actionPdfDiff($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	public function actionPdfDiff($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $long_name = false)
 	{
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
@@ -262,6 +265,7 @@ class AenderungsantragController extends AntragsgruenController
 			"model"        => $aenderungsantrag,
 			"sprache"      => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 			"diff_ansicht" => true,
+			"long_name"    => $long_name,
 		));
 	}
 

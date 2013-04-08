@@ -30,8 +30,10 @@ $this->pageTitle = $aenderungsantrag->revision_name . " zu: " . $aenderungsantra
 $html = '<ul class="funktionen">';
 //$html .= '<li class="unterstuetzen"><a href="#">Änderungsantrag unterstützen</a></li>';
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
-$html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("aenderungsantrag/pdf", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
-$html .= '<li class="download">' . CHtml::link($sprache->get("PDF: Kompakt"), $this->createUrl("aenderungsantrag/pdfDiff", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
+if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->kann_pdf) {
+	$html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("aenderungsantrag/pdf", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
+	$html .= '<li class="download">' . CHtml::link($sprache->get("PDF: Kompakt"), $this->createUrl("aenderungsantrag/pdfDiff", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
+}
 if ($edit_link) $html .= '<li class="edit">' . CHtml::link("Änderungsantrag bearbeiten", $this->createUrl("aenderungsantrag/bearbeiten", array("antrag_id" => $aenderungsantrag->antrag->id, "aenderungsantrag_id" => $aenderungsantrag->id))) . '</li>';
 $html .= '<li class="zurueck">' . CHtml::link("Zurück zum Anfang", $this->createUrl("antrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id))) . '</li>
 </ul>';

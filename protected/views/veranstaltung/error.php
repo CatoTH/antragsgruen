@@ -3,14 +3,17 @@
  * @var string $code
  * @var string $message
  */
-$this->pageTitle=Yii::app()->name . ' - Error';
-$this->breadcrumbs=array(
-	'Error',
+
+$this->breadcrumbs = array(
+	'Fehler',
 );
+$this->pageTitle=Yii::app()->name . ' - Fehler';
+
 ?>
+<h1>Fehler</h1>
 
-<h2>Error <?php echo $code; ?></h2>
-
-<div class="error">
-<?php echo CHtml::encode($message); ?>
+<div class="well">
+	<div class="content">
+		<?php echo CHtml::encode($message); ?>
+	</div>
 </div>

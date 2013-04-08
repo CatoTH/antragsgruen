@@ -213,20 +213,24 @@ class AntragsgruenController extends CController
 
 			if (!empty($err)) Yii::app()->user->setFlash("error", $err);
 		} elseif (isset($_REQUEST["OAuthLoginForm"])) {
-			/** @var LightOpenID $loid */
-			$loid = Yii::app()->loid->load();
-			if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
-			else $loid->identity = $model->openid_identifier;
+			if (stripos($model->openid_identifier, "yahoo") !== false) {
+				$err = "Leider ist wegen technischen Problemen ein Login mit Yahoo momentan nicht möglich.";
+			} else {
+				/** @var LightOpenID $loid */
+				$loid = Yii::app()->loid->load();
+				if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
+				else $loid->identity = $model->openid_identifier;
 
-			$loid->required  = array('namePerson/friendly', 'contact/email'); //Try to get info from openid provider
-			$loid->realm     = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-			$loid->returnUrl = $loid->realm . yii::app()->getRequest()->requestUri;
-			if (empty($err)) {
-				try {
-					$url = $loid->authUrl();
-					$this->redirect($url);
-				} catch (Exception $e) {
-					$err = Yii::t('core', $e->getMessage());
+				$loid->required  = array('namePerson/friendly', 'contact/email'); //Try to get info from openid provider
+				$loid->realm     = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+				$loid->returnUrl = $loid->realm . yii::app()->getRequest()->requestUri;
+				if (empty($err)) {
+					try {
+						$url = $loid->authUrl();
+						$this->redirect($url);
+					} catch (Exception $e) {
+						$err = Yii::t('core', $e->getMessage());
+					}
 				}
 			}
 			if (!empty($err)) Yii::app()->user->setFlash("error", $err);

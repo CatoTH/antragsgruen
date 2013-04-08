@@ -152,6 +152,30 @@ class VeranstaltungController extends AntragsgruenController
 	}
 
 	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionAenderungsantragsPdfs($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		$this->testeWartungsmodus();
+
+		$criteria        = new CDbCriteria();
+		$criteria->alias = "aenderungsantrag";
+		$criteria->order = "LPAD(REPLACE(aenderungsantrag.revision_name, 'Ä', ''), 3, '0')";
+		$criteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
+		$aenderungsantraege = Aenderungsantrag::model()->with(array(
+			"antrag" => array('condition' => 'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id))
+		))->findAll($criteria);
+
+		$this->renderPartial('veranstaltung_ae_pdfs', array(
+			"sprache"            => $this->veranstaltung->getSprache(),
+			"aenderungsantraege" => $aenderungsantraege,
+			"veranstaltung"      => $this->veranstaltung,
+		));
+	}
+
+	/**
 	 * @param Veranstaltung $veranstaltung
 	 * @return array
 	 */

@@ -93,12 +93,14 @@ $html .= "</ul></div>";
 
 $this->menus_html[] = $html;
 
-$name = ($veranstaltung->url_verzeichnis == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
-$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
-$html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("veranstaltung/pdfs")) . "</li>";
-$html .= "</ul></div>";
-$this->menus_html[] = $html;
-
+if ($veranstaltung->getEinstellungen()->kann_pdf) {
+	$name = ($veranstaltung->url_verzeichnis == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
+	$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
+	$html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("veranstaltung/pdfs")) . "</li>";
+	if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins")) || $veranstaltung->url_verzeichnis == "ltwby13-programm") $html .= "<li class='pdf'>" . CHtml::link("Alle " . $sprache->get("Änderungsanträge") . " gesammelt", $this->createUrl("veranstaltung/aenderungsantragsPdfs")) . "</li>";
+	$html .= "</ul></div>";
+	$this->menus_html[] = $html;
+}
 
 
 $html = "</div><div class='antragsgruen_werbung'><div class='well'><div class='nav-list'>";

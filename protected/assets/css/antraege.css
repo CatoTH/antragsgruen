@@ -639,6 +639,7 @@ h2,
 .aenders a {
 	font-weight: bold;
 	color: #fff !important;
+	white-space: nowrap;
 }
 
 .aenders a:hover {

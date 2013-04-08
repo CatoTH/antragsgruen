@@ -121,6 +121,19 @@ class Aenderungsantrag extends IAntrag
 		));
 	}
 
+
+	/**
+	 * @param bool $runValidation
+	 * @param null $attributes
+	 * @return bool
+	 */
+	public function save($runValidation = true, $attributes = null) {
+		Yii::app()->cache->delete("pdf_ae_" . $this->antrag->veranstaltung->id . "_" . $this->id);
+
+		return parent::save($runValidation, $attributes);
+	}
+
+
 	/**
 	 * @return array|int[]
 	 */

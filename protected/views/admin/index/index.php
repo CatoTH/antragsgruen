@@ -32,8 +32,9 @@ $this->breadcrumbs = array(
 			<?php } ?>
 			<li><a href="<?= $this->createUrl("admin/veranstaltungen/update", array("veranstaltung_id" => $this->veranstaltung->url_verzeichnis, "id" => $this->veranstaltung->id)) ?>">Diese Veranstaltung</a></li>
 			<li style="margin-top: 10px;"><a href="<?= $this->createUrl("admin/antraege") ?>"><?=Antrag::label(2)?></a></li>
-			<li><a href="<?= $this->createUrl("/antrag/neu") ?>">Neuen Antrag anlegen</a></li>
-			<li><a href="<?= $this->createUrl("admin/aenderungsantraege") ?>"><?=Aenderungsantrag::label(2)?></a></li>
+			<li style="margin-left: 20px;"><a href="<?= $this->createUrl("/antrag/neu") ?>">Neuen Antrag anlegen</a></li>
+			<li style="margin-top: 10px;"><a href="<?= $this->createUrl("admin/aenderungsantraege") ?>"><?=Aenderungsantrag::label(2)?></a></li>
+			<li style="margin-left: 20px;"><a href="<?= $this->createUrl("admin/index/aePDFList") ?>">Liste aller PDFs</a></li>
 			<li style="margin-top: 10px;"><a href="<?= $this->createUrl("admin/texte") ?>">Redaktionelle Texte</a></li>
 		</ul>
 
