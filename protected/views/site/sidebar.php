@@ -103,10 +103,16 @@ $html .= "</ul></div>";
 
 $this->menus_html[] = $html;
 
-$name = ($veranstaltung->yii_url == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
-$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
-$html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("site/pdfs")) . "</li>";
-$html .= "</ul></div>";
-
-
-$this->menus_html[] = $html;
+if ($veranstaltung->kannPDF()) {
+	$name = ($veranstaltung->yii_url == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
+	$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
+	$html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("site/pdfs")) . "</li>";
+	if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins")) || $veranstaltung->yii_url == "ltwby13-programm") $html .= "<li class='pdf'>" . CHtml::link("Alle " . $sprache->get("Änderungsanträge") . " gesammelt", $this->createUrl("site/aenderungsantragsPdfs")) . "</li>";
+	$html .= "</ul></div>";
+	$this->menus_html[] = $html;
+} elseif ($veranstaltung->yii_url == "hessen-2013") {
+	$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDF</li>";
+	$html .= "<li class='pdf'>" . CHtml::link("Das gesamte Programm als PDF", "/Hessen will den Wechsel - Das GRÜNE Regierungsprogramm 2014-2019.pdf") . "</li>";
+	$html .= "</ul></div>";
+	$this->menus_html[] = $html;
+}

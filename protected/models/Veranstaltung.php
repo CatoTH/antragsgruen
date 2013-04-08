@@ -228,6 +228,13 @@ class Veranstaltung extends BaseVeranstaltung
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function kannPDF() {
+		return ($this->yii_url != "hessen-2013");
+	}
+
+	/**
 	 * @var string $className
 	 * @return GxActiveRecord
 	 */

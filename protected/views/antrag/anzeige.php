@@ -44,7 +44,7 @@ else {
 	if ($msg != "") $html .= '<li class="aender-stellen">' . CHtml::link($sprache->get("Änderungsantrag stellen")) . CHtml::encode($policy->getPermissionDeniedMsg()) . '</li>';
 }
 
-$html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';
+if ($antrag->veranstaltung0->kannPDF()) $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';
 if ($edit_link) $html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/bearbeiten", array("antrag_id" => $antrag->id))) . '</li>';
 
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';

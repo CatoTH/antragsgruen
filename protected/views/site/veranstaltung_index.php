@@ -75,7 +75,7 @@ foreach ($antraege as $name=> $antrs) {
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
 		echo CHtml::link(CHtml::encode($antrag->nameMitRev()), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
-		echo CHtml::link("PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class"=> "pdfLink"));
+		if ($veranstaltung->kannPDF()) echo CHtml::link("PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class"=> "pdfLink"));
 		echo "</p>\n";
 		echo "<p class='info'>von ";
 		$vons = array();
