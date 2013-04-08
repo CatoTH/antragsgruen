@@ -24,6 +24,21 @@ class IndexController extends AntragsgruenController
 		));
 	}
 
+	public function actionAePDFList($veranstaltung_id = "") {
+		if ($veranstaltung_id == "") $veranstaltung_id = Yii::app()->params['standardVeranstaltung'];
+		$this->loadVeranstaltung($veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+
+		$criteria = new CDbCriteria();
+		$criteria->alias = "aenderungsantrag";
+		$criteria->order = "LPAD(REPLACE(aenderungsantrag.revision_name, 'Ä', ''), 3, '0')";
+		$criteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
+		$aenderungsantraege = Aenderungsantrag::model()->with(array(
+			"antrag" => array('condition' => 'antrag.veranstaltung=' . IntVal($this->veranstaltung->id))
+		))->findAll($criteria);
+		$this->render("ae_pdf_list", array("aes" => $aenderungsantraege));
+	}
+
 	public function actionIndex($veranstaltung_id = "")
 	{
 		if ($veranstaltung_id == "") $veranstaltung_id = Yii::app()->params['standardVeranstaltung'];
