@@ -24,6 +24,11 @@ if ($antrag->veranstaltung0->yii_url == "ltwby13-programm") {
 	$initiatorinnen = "Parteirat und Landesvorstand";
 	$gegenstand     = "Landtagswahlprogramm";
 	$ueberschrift   = CHtml::encode($antrag->name);
+} elseif ($antrag->veranstaltung0->yii_url == "hessen-2013") {
+	$logo         = Yii::app()->params['pdf_logo'];
+	$initiatorinnen = "Landesvorstand";
+        $gegenstand     = "Landtagswahlprogramm";
+        $ueberschrift   = CHtml::encode($antrag->name);
 } else {
 	$logo         = Yii::app()->params['pdf_logo'];
 	$gegenstand   = $antrag->name;

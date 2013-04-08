@@ -131,4 +131,13 @@ class Aenderungsantrag extends BaseAenderungsantrag
 	}
 
 
+
+	public function save($runValidation = true, $attributes = null) {
+		Yii::app()->cache->delete("pdf_ae_" . $this->antrag->veranstaltung0->id . "_" . $this->id);
+
+		return parent::save($runValidation, $attributes);
+	}
+
+
+
 }

@@ -11,7 +11,7 @@ class SiteController extends AntragsgruenController
 	public function actionIndex($veranstaltung_id = "")
 	{
 		try {
-			if ($veranstaltung_id == "") $veranstaltung_id =  Yii::app()->params['standardVeranstaltung'];
+			if ($veranstaltung_id == "") $veranstaltung_id = Yii::app()->params['standardVeranstaltung'];
 			$this->actionVeranstaltung($veranstaltung_id);
 		} catch (CDbException $e) {
 			echo "Es konnte keine Datenbankverbindung hergestellt werden.<br>";
@@ -70,11 +70,35 @@ class SiteController extends AntragsgruenController
 
 		$antraege = $this->veranstaltung->antraegeSortiert();
 		$this->renderPartial('veranstaltung_pdfs', array(
-			"sprache"            => $this->veranstaltung->getSprache(),
-			"antraege" => $antraege,
+			"sprache"       => $this->veranstaltung->getSprache(),
+			"antraege"      => $antraege,
 			"veranstaltung" => $this->veranstaltung,
 		));
 	}
+
+	/**
+	 * @param string $veranstaltung_id
+	 */
+	public function actionAenderungsantragsPdfs($veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltung_id);
+		$this->testeWartungsmodus();
+
+		$criteria        = new CDbCriteria();
+		$criteria->alias = "aenderungsantrag";
+		$criteria->order = "LPAD(REPLACE(aenderungsantrag.revision_name, 'Ä', ''), 3, '0')";
+		$criteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
+		$aenderungsantraege = Aenderungsantrag::model()->with(array(
+			"antrag" => array('condition' => 'antrag.veranstaltung=' . IntVal($this->veranstaltung->id))
+		))->findAll($criteria);
+
+		$this->renderPartial('veranstaltung_ae_pdfs', array(
+			"sprache"            => $this->veranstaltung->getSprache(),
+			"aenderungsantraege" => $aenderungsantraege,
+			"veranstaltung"      => $this->veranstaltung,
+		));
+	}
+
 
 	/**
 	 * @param Veranstaltung $veranstaltung
@@ -144,7 +168,7 @@ class SiteController extends AntragsgruenController
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$sprache       = $veranstaltung->getSprache();
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Anträge"),
@@ -162,7 +186,7 @@ class SiteController extends AntragsgruenController
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$sprache       = $veranstaltung->getSprache();
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Änderungsanträge"),
@@ -180,7 +204,7 @@ class SiteController extends AntragsgruenController
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$sprache       = $veranstaltung->getSprache();
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Kommentare"),
@@ -199,7 +223,7 @@ class SiteController extends AntragsgruenController
 		$veranstaltung = $this->loadVeranstaltung($veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$sprache       = $veranstaltung->getSprache();
+		$sprache = $veranstaltung->getSprache();
 
 		$data1 = $this->getFeedAntraegeData($veranstaltung);
 		$data2 = $this->getFeedAenderungsantraegeData($veranstaltung);
@@ -299,7 +323,12 @@ class SiteController extends AntragsgruenController
 
 				$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
 			} else {
-				$this->redirect($this->createUrl("site/login"));
+				if (isset($_SERVER["HTTP_HOST"]) && stripos($_SERVER["HTTP_HOST"], "konzepte-fuer-hessen.de") !== false) $this->redirect("http://konzepte-fuer-hessen.de/");
+				$this->render('error', array(
+					"code"    => 404,
+					"message" => "Diese Seite existiert nicht."
+				));
+				return;
 			}
 		}
 
@@ -389,7 +418,7 @@ class SiteController extends AntragsgruenController
 		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["OAuthLoginForm"]["wurzelwerk"])) {
 			$username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
 
-			/** @var Person $user  */
+			/** @var Person $user */
 			$user = Person::model()->findByAttributes(array("auth" => $username));
 			if ($user === null) {
 				Yii::app()->user->setFlash("error", "Benutzername nicht gefunden.");
@@ -470,23 +499,28 @@ class SiteController extends AntragsgruenController
 
 			if (!empty($err)) Yii::app()->user->setFlash("error", $err);
 		} elseif (isset($_REQUEST["OAuthLoginForm"])) {
-			/** @var LightOpenID $loid */
-			$loid = Yii::app()->loid->load();
-			if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
-			else $loid->identity = $model->openid_identifier;
 
-			$loid->required  = array('namePerson/friendly', 'contact/email'); //Try to get info from openid provider
-			$loid->realm     = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-			$loid->returnUrl = $loid->realm . yii::app()->getRequest()->requestUri;
-			if (empty($err)) {
-				try {
-					$url = $loid->authUrl();
-					$this->redirect($url);
-				} catch (Exception $e) {
-					$err = Yii::t('core', $e->getMessage());
+			if (stripos($model->openid_identifier, "yahoo") !== false) {
+				if (!empty($err)) Yii::app()->user->setFlash("error", "Leider ist wegen technischen Problemen ein Login mit Yahoo momentan nicht möglich.");
+			} else {
+				/** @var LightOpenID $loid */
+				$loid = Yii::app()->loid->load();
+				if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
+				else $loid->identity = $model->openid_identifier;
+
+				$loid->required  = array('namePerson/friendly', 'contact/email'); //Try to get info from openid provider
+				$loid->realm     = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+				$loid->returnUrl = $loid->realm . yii::app()->getRequest()->requestUri;
+				if (empty($err)) {
+					try {
+						$url = $loid->authUrl();
+						$this->redirect($url);
+					} catch (Exception $e) {
+						$err = Yii::t('core', $e->getMessage());
+					}
 				}
+				if (!empty($err)) Yii::app()->user->setFlash("error", $err);
 			}
-			if (!empty($err)) Yii::app()->user->setFlash("error", $err);
 		}
 
 		$this->render('login', array("model" => $model));
