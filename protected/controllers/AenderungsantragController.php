@@ -210,7 +210,7 @@ class AenderungsantragController extends AntragsgruenController
 		));
 	}
 
-	public function actionPdf($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	public function actionPdf($veranstaltung_id, $antrag_id, $aenderungsantrag_id, $long_name = false)
 	{
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
@@ -218,10 +218,11 @@ class AenderungsantragController extends AntragsgruenController
 			"model"        => $aenderungsantrag,
 			"sprache"      => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 			"diff_ansicht" => false,
+			"long_name"    => $long_name,
 		));
 	}
 
-	public function actionPdfDiff($veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	public function actionPdfDiff($veranstaltung_id, $antrag_id, $aenderungsantrag_id, $long_name = false)
 	{
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
@@ -229,6 +230,7 @@ class AenderungsantragController extends AntragsgruenController
 			"model"        => $aenderungsantrag,
 			"sprache"      => $aenderungsantrag->antrag->veranstaltung0->getSprache(),
 			"diff_ansicht" => true,
+			"long_name"    => $long_name,
 		));
 	}
 

@@ -3,6 +3,7 @@
  * @var Aenderungsantrag $model
  * @var Sprache $sprache
  * @var bool $diff_ansicht
+ * @var bool $long_name
  */
 
 // Muss am Anfang stehen, ansonsten zerhaut's die Zeilenumbrüche; irgendwas mit dem internen Encoding
@@ -243,5 +244,11 @@ $pdf->SetFont("helvetica", "", 10);
 $pdf->writeHTML($html, true, false, true, false, '');
 
 
-//Close and output PDF document
-$pdf->Output('Antrag_' . $model->revision_name . '.pdf', 'I');
+if ($long_name && preg_match("/^Ä[0-9]+$/", $model->revision_name)) {
+	$nr = str_replace("Ä", "", $model->revision_name);
+	if ($nr < 10) $nr = "00" . $nr;
+	elseif ($nr < 100) $nr = "0" . $nr;
+	$pdf->Output('Aenderungsantrag_' . $nr . '.pdf', 'I');
+} else {
+	$pdf->Output('Antrag_' . $model->revision_name . '.pdf', 'I');
+}
