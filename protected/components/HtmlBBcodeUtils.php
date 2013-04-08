@@ -347,6 +347,9 @@ class HtmlBBcodeUtils
 	 */
 	static function bbcode2html($text)
 	{
+		$text = preg_replace("/\[color=[#0-9a-f]+\]/siu", "", $text);
+		$text = preg_replace("/\[\/color\]/siu", "", $text);
+
 		$text = preg_replace_callback("/(\[o?list[^\]]*\])(.*)(\[\/o?list\])/siuU", function($matches) {
 			$parts = explode("[*]", trim($matches[2]));
 			$str = $matches[1];
