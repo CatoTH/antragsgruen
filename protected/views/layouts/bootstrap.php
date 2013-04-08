@@ -26,7 +26,11 @@ $minimalistisch = (is_a($this->veranstaltung, "Veranstaltung") && $this->veranst
 	<!--[if lt IE 8]>
 	<link rel="stylesheet" href="/css/antraege-ie7.css"><![endif]-->
 	<!-- ### /neu ### -->
-
+	<?php if ($this->veranstaltung != null && $this->veranstaltung->yii_url == "hessen-2013") { ?>
+		<style>
+			.zeilennummer { display: none !important; }
+		</style>
+	<?php } ?>
 </head>
 
 <body <?php if (count($row_classes) > 0) echo "class='" . implode(" ", $row_classes) . "'"; ?>>
@@ -43,7 +47,10 @@ $minimalistisch = (is_a($this->veranstaltung, "Veranstaltung") && $this->veranst
 
 					<ul class="nav">
 						<li class="active"><a href="<?=CHtml::encode($this->createUrl("site/veranstaltung"))?>">Start</a></li>
-						<li><a href="<?=CHtml::encode($this->createUrl("site/hilfe"))?>">Hilfe</a></li>
+						<li><a href="<?=CHtml::encode($this->createUrl("site/hilfe"))?>"><?
+								if ($this->veranstaltung != null && $this->veranstaltung->yii_url == "hessen-2013") echo "So funktioniert's";
+								else echo "Hilfe";
+						?></a></li>
 						<?php if (Yii::app()->user->isGuest && !$minimalistisch) { ?>
 						<li><a href="<?=CHtml::encode($this->createUrl("site/login", array("back" => yii::app()->getRequest()->requestUri)))?>">Login</a></li>
 						<?php }
@@ -51,6 +58,9 @@ $minimalistisch = (is_a($this->veranstaltung, "Veranstaltung") && $this->veranst
 						<li><a href="<?=CHtml::encode($this->createUrl("site/logout", array("back" => yii::app()->getRequest()->requestUri)))?>">Logout</a></li>
 						<?php
 					}
+						if ($this->veranstaltung != null && $this->veranstaltung->yii_url == "hessen-2013") { ?>
+							<li><a href="http://www.gruene-hessen.de/" target="_blank">GRÜNE Hessen</a></li>
+						<?php }
 						if (Yii::app()->user->getState("role") == "admin" || ($this->veranstaltung != null && $this->veranstaltung->isAdminCurUser())) {
 							?>
 							<li><a href="<?=CHtml::encode($this->createUrl("admin/index"))?>">Admin</a></li>
