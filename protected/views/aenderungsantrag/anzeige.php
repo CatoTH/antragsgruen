@@ -182,8 +182,7 @@ $rows = 10;
 
 			if ($aenderungsantrag->antrag->veranstaltung0->darfEroeffnenKommentar()) {
 				/** @var TbActiveForm $form */
-				$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-					'type'        => 'horizontal',
+				$form = $this->beginWidget('CActiveForm', array(
 					"htmlOptions" => array(
 						"class" => "kommentarform well",
 					),
@@ -203,20 +202,22 @@ $rows = 10;
 						echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
 					}
 					echo '<input type="hidden" name="absatz_nr" value="' . $abs->absatz_nr . '">';
-
-					echo $form->textFieldRow($kommentar_person, 'name', array("id" => "Person_name_" . $i, 'labelOptions'=> array("for" => "Person_name_" . $i, 'label'=> 'Name')));
-					echo $form->textFieldRow($kommentar_person, 'email', array("id" => "Person_email_" . $i, 'labelOptions'=> array("for" => "Person_email_" . $i, 'label'=> 'E-Mail')));
 					?>
-                    <div class="control-group "><label class="control-label" for="AenderungsantragKommentar_text_<?=$i?>">Kommentar:</label>
-
-                        <div class="controls">
-							<?php echo $form->textArea($dummy_komm, "text", array("id" => "AenderungsantragKommentar_text_" . $i)); ?>
-                        </div>
-                    </div>
-
+					<div class="row">
+						<?php echo $form->labelEx($kommentar_person,'name'); ?>
+						<?php echo $form->textField($kommentar_person,'name') ?>
+					</div>
+					<div class="row">
+						<?php echo $form->labelEx($kommentar_person,'email'); ?>
+						<?php echo $form->emailField($kommentar_person,'email') ?>
+					</div>
+					<div class="row">
+						<?php echo $form->labelEx($dummy_komm,'text'); ?>
+						<?php echo $form->textArea($dummy_komm,'text') ?>
+					</div>
                 </fieldset>
 
-                <div>
+				<div class="submitrow">
 					<?php
 					$this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> 'Kommentar abschicken'));
 					?>

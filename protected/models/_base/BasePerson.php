@@ -45,18 +45,6 @@ abstract class BasePerson extends GxActiveRecord {
 		return 'typ';
 	}
 
-	public function rules() {
-		return array(
-			array('typ, name, angelegt_datum, admin, status', 'required'),
-			array('admin, status', 'numerical', 'integerOnly'=>true),
-			array('typ', 'length', 'max'=>12),
-			array('name, telefon', 'length', 'max'=>100),
-			array('email, auth', 'length', 'max'=>200),
-			array('email, telefon, auth, pwd_enc', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, typ, name, email, telefon, auth, pwd_enc, angelegt_datum, admin, status', 'safe', 'on'=>'search'),
-		);
-	}
-
 	public function relations() {
 		return array(
 			'aenderungsantragKommentare' => array(self::HAS_MANY, 'AenderungsantragKommentar', 'verfasser_id'),

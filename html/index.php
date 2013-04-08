@@ -44,6 +44,8 @@ $boot->registerCoreCss();
 //$boot->registerResponsiveCss();
 $app->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . '/css/antraege.css');
 $app->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . '/css/antraege-print.css', 'print');
+Yii::app()->clientScript->registerCoreScript('jquery');
+
 
 $font_css = Yii::app()->params['font_css'];
 if ($font_css != "") $app->getClientScript()->registerCssFile($font_css);

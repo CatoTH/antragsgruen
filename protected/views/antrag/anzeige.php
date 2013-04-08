@@ -136,10 +136,12 @@ $this->menus_html[] = $html;
 			</div>
 		<?php
 		}
+		/*
 		$this->widget('bootstrap.widgets.TbAlert', array(
 			'block' => true,
 			'fade'  => true,
 		));
+		*/
 		?>
 	</div>
 
@@ -225,9 +227,9 @@ $this->menus_html[] = $html;
 
 				if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $antrag->veranstaltung0->isAdminCurUser()) {
 					$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-						'type'        => 'inline',
-						'htmlOptions' => array('class' => '', "style" => "clear: both;"),
-						'action'      => $komm_link,
+						'type'                   => 'inline',
+						'htmlOptions'            => array('class' => '', "style" => "clear: both;"),
+						'action'                 => $komm_link
 					));
 					echo '<div style="display: inline-block; width: 49%; text-align: center;">';
 					$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'success', 'label' => 'Freischalten', 'icon' => 'icon-thumbs-up', 'htmlOptions' => array('name' => AntiXSS::createToken('komm_freischalten'))));
@@ -280,9 +282,8 @@ $this->menus_html[] = $html;
 		}
 
 		if ($antrag->veranstaltung0->darfEroeffnenKommentar()) {
-			/** @var TbActiveForm $form */
-			$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-				'type'        => 'horizontal',
+			/** @var CActiveForm $form */
+			$form = $this->beginWidget('CActiveForm', array(
 				"htmlOptions" => array(
 					"class" => "kommentarform well",
 				),
@@ -302,20 +303,22 @@ $this->menus_html[] = $html;
 					echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
 				}
 				echo '<input type="hidden" name="absatz_nr" value="' . $abs->absatz_nr . '">';
-
-				echo $form->textFieldRow($kommentar_person, 'name', array("id" => "Person_name_" . $i, 'labelOptions' => array("for" => "Person_name_" . $i, 'label' => 'Name')));
-				echo $form->textFieldRow($kommentar_person, 'email', array("id" => "Person_email_" . $i, 'labelOptions' => array("for" => "Person_email_" . $i, 'label' => 'E-Mail')));
 				?>
-				<div class="control-group "><label class="control-label" for="AntragKommentar_text_<?= $i ?>">Kommentar:</label>
-
-					<div class="controls">
-						<?php echo $form->textArea($dummy_komm, "text", array("id" => "AntragKommentar_text_" . $i)); ?>
-					</div>
+				<div class="row">
+					<?php echo $form->labelEx($kommentar_person,'name'); ?>
+					<?php echo $form->textField($kommentar_person,'name') ?>
 				</div>
-
+				<div class="row">
+					<?php echo $form->labelEx($kommentar_person,'email'); ?>
+					<?php echo $form->emailField($kommentar_person,'email') ?>
+				</div>
+				<div class="row">
+					<?php echo $form->labelEx($dummy_komm,'text'); ?>
+					<?php echo $form->textArea($dummy_komm,'text') ?>
+				</div>
 			</fieldset>
 
-			<div>
+			<div class="submitrow">
 				<?php
 				$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Kommentar abschicken'));
 				?>

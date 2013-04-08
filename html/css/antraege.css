@@ -566,6 +566,13 @@ h2,
 .kommentar_bottom { overflow: auto; margin-top: 15px; }
 .kommentarform .kommentarlink { visibility: hidden; float: right; margin-top: 5px; }
 .kommentarform:hover .kommentar_bottom .kommentarlink { visibility: visible; }
+.kommentarform .row { overflow: auto; margin-top: 10px; }
+.kommentarform .row > * { float: left; }
+.kommentarform .row > label { width: 160px; text-align: right; padding-right: 20px; }
+.kommentarform .row input, .kommentarform .row textarea  { width: 300px; }
+.kommentarform .row textarea  { height: 100px; }
+.kommentarform .submitrow { margin-left: 160px; width: 320px; text-align: center; }
+.kommentarform .submitrow .btn-primary { margin: 0; }
 
 .kommentar_unterstuetzer_holder { float: left; }
 .kommentar_unterstuetzer_holder .dafuer, .kommentar_unterstuetzer_holder .dagegen {
