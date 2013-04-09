@@ -102,7 +102,7 @@ if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$this->menus_html[] = $html;
 }
 
-
+/*
 $html = "</div><div class='antragsgruen_werbung'><div class='well'><div class='nav-list'>";
 $html .= "<div class='nav-header'>Dein Antragsgrün</div>";
 $html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
@@ -110,3 +110,4 @@ $html .= "<div style='text-align: center;'><a href='" . CHtml::encode($this->cre
 $html .= "</div>";
 $html .= "</div></div>";
 $this->menus_html[] = $html;
+*/
