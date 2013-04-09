@@ -73,7 +73,7 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 	$this->menus_html[] = $html;
 }
 
-$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Feeds</li>";
+$html = "";
 
 $feeds = 0;
 if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
@@ -91,7 +91,11 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
 $html .= "</ul></div>";
 
+$feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
+$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html;
+
 $this->menus_html[] = $html;
+
 
 if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$name = ($veranstaltung->url_verzeichnis == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
