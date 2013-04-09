@@ -59,11 +59,10 @@ class VeranstaltungenController extends GxController
 		$this->render('create', array('model' => $model));
 	}
 
-	public function actionUpdate($veranstaltungsreihe_id, $id)
+	public function actionUpdate($veranstaltungsreihe_id, $veranstaltung_id)
 	{
-		/** @var Veranstaltung $model */
-		$model = $this->loadModel($id, 'Veranstaltung');
-		$this->loadVeranstaltung($veranstaltungsreihe_id, $id);
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		$model = $this->veranstaltung;
 		if (!$model->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
 		if (is_null($model)) {

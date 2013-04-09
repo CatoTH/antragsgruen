@@ -61,7 +61,7 @@ class AntragsgruenController extends CController
 
 	/**
 	 * @param string $veranstaltungsreihe_id
-	 * @param int|string $veranstaltung_id
+	 * @param string $veranstaltung_id
 	 * @param null|Antrag $check_antrag
 	 * @param null|Aenderungsantrag $check_aenderungsantrag
 	 * @return null|Veranstaltung
@@ -79,11 +79,7 @@ class AntragsgruenController extends CController
 		}
 
 		if (is_null($this->veranstaltung)) {
-			if (is_numeric($veranstaltung_id)) {
-				$this->veranstaltung = Veranstaltung::model()->findByPk($veranstaltung_id);
-			} else {
-				$this->veranstaltung = Veranstaltung::model()->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
-			}
+			$this->veranstaltung = Veranstaltung::model()->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
 		}
 
 		if ($this->veranstaltung->veranstaltungsreihe->subdomain != $veranstaltungsreihe_id) {

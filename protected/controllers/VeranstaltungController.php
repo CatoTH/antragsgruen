@@ -360,8 +360,6 @@ class VeranstaltungController extends AntragsgruenController
 	 */
 	private function actionVeranstaltung_loadData($veranstaltung_id)
 	{
-		$att = (is_numeric($veranstaltung_id) ? "id" : "url_verzeichnis");
-
 		/** @var Veranstaltung $veranstaltung */
 		$this->veranstaltung = Veranstaltung::model()->
 			with(array(
@@ -373,7 +371,7 @@ class VeranstaltungController extends AntragsgruenController
 					'joinType' => "LEFT OUTER JOIN",
 					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
 				),
-			))->findByAttributes(array($att => $veranstaltung_id));
+			))->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
 		return $this->veranstaltung;
 	}
 
