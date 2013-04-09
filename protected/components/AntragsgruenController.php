@@ -37,13 +37,14 @@ class AntragsgruenController extends CController
 	}
 
 	/**
-	 * @param string $path
+	 * @param string $route
 	 * @param array $params
+	 * @param string $ampersand
 	 * @return string
 	 */
-	public function createUrl($path, $params = array()) {
+	public function createUrl($route,$params=array(),$ampersand='&') {
 		if (!isset($params["veranstaltung_id"]) && $this->veranstaltung !== null) $params["veranstaltung_id"] = $this->veranstaltung->yii_url;
-		return parent::createUrl($path, $params);
+		return parent::createUrl($route, $params, $ampersand);
 	}
 
 	/**
