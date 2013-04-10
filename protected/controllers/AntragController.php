@@ -347,9 +347,9 @@ class AntragController extends AntragsgruenController
 
 			$goon = true;
 
-			$model_unterstuetzerIn_int = array();
-			/** @var array|AntragUnterstuetzerInnen[] $model_unterstuetzerIn_obj */
-			$model_unterstuetzerIn_obj = array();
+			$model_unterstuetzerInnen_int = array();
+			/** @var array|AntragUnterstuetzerInnen[] $model_unterstuetzerInnen_obj */
+			$model_unterstuetzerInnen_obj = array();
 			if (isset($_REQUEST["UnterstuetzerInnenTyp"])) foreach ($_REQUEST["UnterstuetzerInnenTyp"] as $key => $typ) if ($typ != "" && $_REQUEST["UnterstuetzerInnenName"][$key] != "") {
 				$name = trim($_REQUEST["UnterstuetzerInnenName"][$key]);
 				// Man soll keinen bestätigten Nutzer eintragen können, das kann der dann selbvst machen
@@ -364,15 +364,15 @@ class AntragController extends AntragsgruenController
 					$p->save();
 
 				}
-				$model_unterstuetzerIn_int[] = $p;
-				$model_unterstuetzerIn[]     = array("typ" => $typ, "name" => $name);
+				$model_unterstuetzerInnen_int[] = $p;
+				$model_unterstuetzerInnen[]     = array("typ" => $typ, "name" => $name);
 
-				$init                        = new AntragUnterstuetzerInnen();
-				$init->rolle                 = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-				$init->unterstuetzerIn_id    = $p->id;
-				$init->person                = $p;
-				$init->antrag_id             = $antrag->id;
-				$model_unterstuetzerIn_obj[] = $init;
+				$init                           = new AntragUnterstuetzerInnen();
+				$init->rolle                    = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
+				$init->unterstuetzerIn_id       = $p->id;
+				$init->person                   = $p;
+				$init->antrag_id                = $antrag->id;
+				$model_unterstuetzerInnen_obj[] = $init;
 			}
 
 			if (!$antrag->veranstaltung->getPolicyAntraege()->checkAntragSubmit()) {
@@ -384,7 +384,7 @@ class AntragController extends AntragsgruenController
 
 				foreach ($antrag->antragUnterstuetzerInnen as $unt)
 					if ($unt->rolle == AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN && $unt->person->status == Person::$STATUS_UNCONFIRMED) $unt->delete();
-				foreach ($model_unterstuetzerIn_obj as $unt) $unt->save();
+				foreach ($model_unterstuetzerInnen_obj as $unt) $unt->save();
 
 				$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $antrag_id, "next_status" => $_REQUEST["Antrag"]["status"], "from_mode" => "aendern")));
 			} else {
@@ -402,24 +402,24 @@ class AntragController extends AntragsgruenController
 			$hiddens[AntiXSS::createToken("antragbearbeiten")] = "1";
 		}
 
-		$antragstellerIn       = null;
-		$model_unterstuetzerIn = array();
+		$antragstellerIn          = null;
+		$model_unterstuetzerInnen = array();
 
 		foreach ($antrag->antragUnterstuetzerInnen as $unt) {
 			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerIn = $unt->person;
-			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $model_unterstuetzerIn[] = $unt->person;
+			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $model_unterstuetzerInnen[] = $unt->person;
 		}
 
 		$this->render('bearbeiten_form', array(
-			"mode"                  => "bearbeiten",
-			"model"                 => $antrag,
-			"hiddens"               => $hiddens,
-			"antragstellerIn"       => $antragstellerIn,
-			"model_unterstuetzerIn" => $model_unterstuetzerIn,
-			"veranstaltung"         => $antrag->veranstaltung,
-			"js_protection"         => $js_protection,
-			"login_warnung"         => Yii::app()->user->isGuest,
-			"sprache"               => $antrag->veranstaltung->getSprache(),
+			"mode"                     => "bearbeiten",
+			"model"                    => $antrag,
+			"hiddens"                  => $hiddens,
+			"antragstellerIn"          => $antragstellerIn,
+			"model_unterstuetzerInnen" => $model_unterstuetzerInnen,
+			"veranstaltung"            => $antrag->veranstaltung,
+			"js_protection"            => $js_protection,
+			"login_warnung"            => Yii::app()->user->isGuest,
+			"sprache"                  => $antrag->veranstaltung->getSprache(),
 		));
 
 
