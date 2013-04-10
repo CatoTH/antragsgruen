@@ -95,7 +95,10 @@ class AntragKommentar extends IKommentar
 	 * @return array|AntragKommentar[]
 	 */
 	public static function holeNeueste($veranstaltung_id = 0, $limit = 0) {
-		$condition = ($limit > 0 ? array("limit" => $limit) : "");
+		$condition = array(
+			"order" => "datum DESC"
+		);
+		if ($limit > 0) $condition["limit"] = $limit;
 		$arr = AntragKommentar::model()->with(array(
 			"antrag" => array(
 				"condition" => "antrag.status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND antrag.veranstaltung_id = " . IntVal($veranstaltung_id)

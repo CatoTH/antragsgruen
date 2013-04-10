@@ -108,7 +108,10 @@ class AenderungsantragKommentar extends IKommentar
 
 		if (count($antrag_ids) == 0) return array();
 
-		$condition = ($limit > 0 ? array("limit" => $limit) : "");
+		$condition = array(
+			"order" => "datum DESC"
+		);
+		if ($limit > 0) $condition["limit"] = $limit;
 		$arr = AenderungsantragKommentar::model()->with(array(
 			"aenderungsantrag" => array(
 				"condition" => "aenderungsantrag.status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND aenderungsantrag.antrag_id IN (" . implode(", ", $antrag_ids) . ")"
