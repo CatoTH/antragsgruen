@@ -571,8 +571,9 @@ class AntragController extends AntragsgruenController
 						$unterst->save();
 					}
 
-
-					$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $model->id, "next_status" => $_REQUEST["Antrag"]["status"], "from_mode" => "neu")));
+					/* $next_status = $_REQUEST["Antrag"]["status"] */
+					$next_status = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
+					$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $model->id, "next_status" => $next_status, "from_mode" => "neu")));
 				} else {
 					foreach ($model->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht angelegt werden: $key: " . $val2);
 				}
