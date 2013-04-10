@@ -6,6 +6,7 @@ define("SEED_KEY", "randomkey");
 
 Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . '/../../vendor/chris83/yii-bootstrap');
 
+$dom_plain = "http://antraege-v2.hoessl.eu/";
 $dom  = "http://<veranstaltungsreihe_id:[\w_-]+>.antraege-v2.hoessl.eu/";
 $domv = $dom . "<veranstaltung_id:[\w_-]+>/";
 
@@ -15,7 +16,6 @@ return array(
 
 	'preload'    => array(
 		'log',
-		'bootstrap',
 	),
 
 	'import'     => array(
