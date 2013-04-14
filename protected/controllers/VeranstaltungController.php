@@ -244,6 +244,7 @@ class VeranstaltungController extends AntragsgruenController
 				}
 			} else {
 				$email                    = trim($_REQUEST["email"]);
+				$passwort                 = Person::createPassword();
 				$person                   = new Person;
 				$person->auth             = "email:" . $email;
 				$person->name             = "";
@@ -252,7 +253,7 @@ class VeranstaltungController extends AntragsgruenController
 				$person->angelegt_datum   = date("Y-m-d H:i:s");
 				$person->status           = Person::$STATUS_UNCONFIRMED;
 				$person->typ              = Person::$TYP_PERSON;
-				$person->pwd_enc          = Person::createPassword();
+				$person->pwd_enc          = Person::create_hash($passwort);
 				$person->admin            = 0;
 
 				if ($person->save()) {
@@ -260,6 +261,7 @@ class VeranstaltungController extends AntragsgruenController
 					$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/ajaxEmailIstRegistriert", array("code" => $best_code));
 					mail($email, "Anmeldung bei Antragsgrün", "Hallo,\n\num Benachrichtigungen bei Antragsgrün zu erhalten, klicke entweder auf folgenden Link:\n$link\n\n"
 						. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: $best_code\n\n"
+						. "Das Passwort für den Antragsgrün-Zugang lautet: " . $passwort . "\n\n"
 						. "Liebe Grüße,\n\tDas Antragsgrün-Team.");
 					$correct_person = $person;
 
@@ -545,7 +547,7 @@ class VeranstaltungController extends AntragsgruenController
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 
 		$err_str = "";
-		$model = null;
+		$model   = null;
 		try {
 			$model = $this->performLogin($back);
 		} catch (Exception $e) {
@@ -553,7 +555,7 @@ class VeranstaltungController extends AntragsgruenController
 		}
 
 		$this->render('login', array(
-			"model" => $model,
+			"model"   => $model,
 			"msg_err" => $err_str,
 		));
 	}
