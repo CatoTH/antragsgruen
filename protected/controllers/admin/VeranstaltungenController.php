@@ -59,7 +59,7 @@ class VeranstaltungenController extends GxController
 		$this->render('create', array('model' => $model));
 	}
 
-	public function actionUpdate($veranstaltungsreihe_id, $id)
+	public function actionUpdate($veranstaltungsreihe_id = "", $id)
 	{
 		/** @var Veranstaltung $model */
 		$model = $this->loadModel($id, 'Veranstaltung');

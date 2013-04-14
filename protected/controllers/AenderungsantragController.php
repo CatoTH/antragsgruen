@@ -9,7 +9,7 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param int $aenderungsantrag_id
 	 * @return Aenderungsantrag
 	 */
-	private function getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	private function getValidatedParamObjects($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$aenderungsantrag_id = IntVal($aenderungsantrag_id);
 		/** @var Aenderungsantrag $aenderungsantrag */
@@ -116,7 +116,7 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param int $aenderungsantrag_id
 	 * @param int $kommentar_id
 	 */
-	public function actionAnzeige($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $kommentar_id = 0)
+	public function actionAnzeige($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $kommentar_id = 0)
 	{
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
@@ -238,7 +238,7 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param int $aenderungsantrag_id
 	 * @param bool $long_name
 	 */
-	public function actionPdf($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $long_name = false)
+	public function actionPdf($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $long_name = false)
 	{
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
@@ -257,7 +257,7 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param int $aenderungsantrag_id
 	 * @param bool $long_name
 	 */
-	public function actionPdfDiff($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $long_name = false)
+	public function actionPdfDiff($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $aenderungsantrag_id, $long_name = false)
 	{
 		$aenderungsantrag = $this->getValidatedParamObjects($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id);
 
@@ -275,7 +275,7 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param int $antrag_id
 	 * @param int $aenderungsantrag_id
 	 */
-	public function actionBearbeiten($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	public function actionBearbeiten($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
@@ -308,7 +308,7 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param int $antrag_id
 	 * @param int $aenderungsantrag_id
 	 */
-	public function actionAendern($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	public function actionAendern($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
@@ -357,7 +357,7 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param int $antrag_id
 	 * @param int $aenderungsantrag_id
 	 */
-	public function actionNeuConfirm($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
+	public function actionNeuConfirm($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $aenderungsantrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
@@ -430,7 +430,7 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 */
-	public function actionNeu($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id)
+	public function actionNeu($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 

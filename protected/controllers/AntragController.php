@@ -124,7 +124,7 @@ class AntragController extends AntragsgruenController
 	 * @param int $antrag_id
 	 * @param int $kommentar_id
 	 */
-	public function actionAnzeige($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id, $kommentar_id = 0)
+	public function actionAnzeige($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $kommentar_id = 0)
 	{
 		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
@@ -251,7 +251,7 @@ class AntragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 */
-	public function actionPdf($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id)
+	public function actionPdf($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
 	{
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
@@ -275,7 +275,7 @@ class AntragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 */
-	public function actionBearbeiten($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id)
+	public function actionBearbeiten($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
@@ -318,7 +318,7 @@ class AntragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 */
-	public function actionAendern($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id)
+	public function actionAendern($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
@@ -431,7 +431,7 @@ class AntragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 */
-	public function actionNeuConfirm($veranstaltungsreihe_id, $veranstaltung_id, $antrag_id)
+	public function actionNeuConfirm($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
 
@@ -489,7 +489,7 @@ class AntragController extends AntragsgruenController
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionNeu($veranstaltungsreihe_id, $veranstaltung_id)
+	public function actionNeu($veranstaltungsreihe_id = "", $veranstaltung_id)
 	{
 		$this->layout = '//layouts/column2';
 

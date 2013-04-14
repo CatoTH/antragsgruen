@@ -8,7 +8,7 @@ class AntraegeController extends GxController
 	 * @param string $veranstaltung_id
 	 * @param int $id
 	 */
-	public function actionUpdate($veranstaltungsreihe_id, $veranstaltung_id, $id)
+	public function actionUpdate($veranstaltungsreihe_id = "", $veranstaltung_id, $id)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -64,7 +64,7 @@ class AntraegeController extends GxController
 	 * @param int $id
 	 * @throws CHttpException
 	 */
-	public function actionDelete($veranstaltungsreihe_id, $veranstaltung_id, $id)
+	public function actionDelete($veranstaltungsreihe_id = "", $veranstaltung_id, $id)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -87,7 +87,7 @@ class AntraegeController extends GxController
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionIndex($veranstaltungsreihe_id, $veranstaltung_id)
+	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -105,7 +105,7 @@ class AntraegeController extends GxController
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 */
-	public function actionAdmin($veranstaltungsreihe_id, $veranstaltung_id)
+	public function actionAdmin($veranstaltungsreihe_id = "", $veranstaltung_id)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
