@@ -72,7 +72,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 			echo $form->textFieldRow($model, 'name', array('labelOptions' => array('label' => 'Antragstitel')));
 
 			echo $form->radioButtonListRow($model, 'typ', Antrag::$TYPEN);
-
+			/*
 			$stati = array(
 				Antrag::$STATUS_ENTWURF => "Entwurf",
 			);
@@ -80,6 +80,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 			if ($model->status == Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $stati[Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT] = "Fertiger Antrag";
 
 			echo $form->radioButtonListRow($model, 'status', $stati);
+			*/
 			?>
 		</fieldset>
 

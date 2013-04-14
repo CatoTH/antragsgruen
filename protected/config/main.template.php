@@ -80,7 +80,6 @@ return array(
 
 	'preload'    => array(
 		'log',
-		'bootstrap',
 	),
 
 	'import'     => array(

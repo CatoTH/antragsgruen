@@ -2,15 +2,17 @@
 
 
 <?php
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor/ckeditor.js');
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/ckeditor.bbcode.js');
-
 /**
  * @var AntraegeController $this
- * @var $form GxActiveForm
- * @var $model Antrag
- * @var $this AntraegeController
+ * @var GxActiveForm $form
+ * @var Antrag $model
+ * @var AntraegeController $this
  */
+
+/** @var CWebApplication $app */
+$app = Yii::app();
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckeditor/ckeditor.js');
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/bbcode/plugin.js');
 
 $form = $this->beginWidget('GxActiveForm', array(
 	'id'                   => 'antrag-form',
@@ -112,8 +114,8 @@ $form = $this->beginWidget('GxActiveForm', array(
 
 <script>
 	$(function () {
-		CKEDITOR.replace('Antrag_text', {'toolbar':'Animexx', 'customConfig':"/js/ckconfig.js", width:510 });
-		CKEDITOR.replace('Antrag_begruendung', {'toolbar':'Animexx', 'customConfig':"/js/ckconfig.js", width:510 });
+		ckeditor_bbcode('Antrag_text');
+		ckeditor_bbcode('Antrag_begruendung');
 	})
 </script>
 

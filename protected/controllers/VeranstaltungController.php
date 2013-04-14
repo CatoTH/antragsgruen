@@ -517,7 +517,11 @@ class VeranstaltungController extends AntragsgruenController
 					'joinType' => "LEFT OUTER JOIN",
 					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
 				),
+<<<<<<< HEAD
 			))->findByAttributes(array("id" => $this->veranstaltung->id));
+=======
+			))->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
+>>>>>>> b4ad04856370a7cec56b8bc35fa85538de64894f
 		return $this->veranstaltung;
 	}
 
