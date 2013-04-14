@@ -198,13 +198,13 @@ class VeranstaltungController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("speichern") && !yii::app()->user->isGuest) {
 			/** @var Person $ich */
-			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			$ich  = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 			$vabo = null;
 			foreach ($ich->veranstaltungsreihenAbos as $abo) if ($abo->veranstaltungsreihe_id == $this->veranstaltungsreihe->id) $vabo = $abo;
 			if (!$vabo) {
-				$vabo = new VeranstaltungsreihenAbo();
+				$vabo                         = new VeranstaltungsreihenAbo();
 				$vabo->veranstaltungsreihe_id = $this->veranstaltungsreihe->id;
-				$vabo->person_id = $ich->id;
+				$vabo->person_id              = $ich->id;
 			}
 			$vabo->antraege           = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["antraege"]);
 			$vabo->aenderungsantraege = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["aenderungsantraege"]);
@@ -517,11 +517,7 @@ class VeranstaltungController extends AntragsgruenController
 					'joinType' => "LEFT OUTER JOIN",
 					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
 				),
-<<<<<<< HEAD
 			))->findByAttributes(array("id" => $this->veranstaltung->id));
-=======
-			))->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
->>>>>>> b4ad04856370a7cec56b8bc35fa85538de64894f
 		return $this->veranstaltung;
 	}
 
