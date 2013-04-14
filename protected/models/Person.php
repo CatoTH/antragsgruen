@@ -5,18 +5,23 @@
  * @property string $typ
  * @property string $name
  * @property string $email
+ * @property integer $email_bestaetigt
  * @property string $telefon
  * @property string $auth
  * @property string $angelegt_datum
  * @property integer $admin
  * @property integer $status
  * @property string $pwd_enc
+ * @property string $benachrichtigungs_typ
  *
  * @property AenderungsantragKommentar[] $aenderungsantragKommentare
  * @property AenderungsantragUnterstuetzerInnen[] $aenderungsantragUnterstuetzerInnen
  * @property AntragKommentar[] $antragKommentare
  * @property AntragUnterstuetzerInnen[] $antragUnterstuetzerInnen
  * @property Veranstaltung[] $admin_veranstaltungen
+ * @property Veranstaltungsreihe[] $admin_veranstaltungsreihen
+ * @property VeranstaltungsreihenAbo[] $veranstaltungsreihenAbos
+ * @property Antrag[] $abonnierte_antraege
  */
 class Person extends GxActiveRecord
 {
@@ -51,57 +56,70 @@ class Person extends GxActiveRecord
 	/**
 	 * @return string
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'person';
 	}
 
 	/**
 	 * @return string
 	 */
-	public static function representingColumn() {
-		return 'typ';
+	public static function representingColumn()
+	{
+		return 'name';
 	}
 
 	/**
 	 * @return array
 	 */
-	public function relations() {
+	public function relations()
+	{
 		return array(
-			'aenderungsantragKommentare' => array(self::HAS_MANY, 'AenderungsantragKommentar', 'verfasserIn_id'),
+			'aenderungsantragKommentare'         => array(self::HAS_MANY, 'AenderungsantragKommentar', 'verfasserIn_id'),
 			'aenderungsantragUnterstuetzerInnen' => array(self::HAS_MANY, 'AenderungsantragUnterstuetzer', 'unterstuetzerIn_id'),
-			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'verfasserIn_id'),
-			'antragUnterstuetzerInnen' => array(self::HAS_MANY, 'AntragUnterstuetzerInnen', 'unterstuetzerIn_id'),
-			'admin_veranstaltungen'  => array(self::MANY_MANY, 'Veranstaltung', 'veranstaltungs_admins(person_id, veranstaltung_id)'),
+			'antragKommentare'                   => array(self::HAS_MANY, 'AntragKommentar', 'verfasserIn_id'),
+			'antragUnterstuetzerInnen'           => array(self::HAS_MANY, 'AntragUnterstuetzerInnen', 'unterstuetzerIn_id'),
+			'admin_veranstaltungen'              => array(self::MANY_MANY, 'Veranstaltung', 'veranstaltungs_admins(person_id, veranstaltung_id)'),
+			'admin_veranstaltungsreihen'         => array(self::MANY_MANY, 'Veranstaltungsreihe', 'veranstaltungsreihen_admins(person_id, veranstaltungsreihe_id)'),
+			'veranstaltungsreihenAbos'           => array(self::HAS_MANY, 'VeranstaltungsreihenAbo', 'veranstaltungsreihe_id'),
+			'abonnierte_antraege'                => array(self::MANY_MANY, 'Antrag', 'antrag_abos(person_id, antrag_id)'),
 		);
 	}
 
 	/**
 	 * @return array
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return array(
-			'id' => Yii::t('app', 'ID'),
-			'typ' => Yii::t('app', 'Typ'),
-			'name' => Yii::t('app', 'Name'),
-			'email' => Yii::t('app', 'Email'),
-			'telefon' => Yii::t('app', 'Telefon'),
-			'auth' => Yii::t('app', 'Auth'),
-			'pwd_enc' => Yii::t('app', 'Passwort-Hash'),
-			'angelegt_datum' => Yii::t('app', 'Angelegt Datum'),
-			'admin' => Yii::t('app', 'Admin'),
-			'status' => Yii::t('app', 'Status'),
-			'aenderungsantragKommentare' => null,
+			'id'                                 => Yii::t('app', 'ID'),
+			'typ'                                => Yii::t('app', 'Typ'),
+			'name'                               => Yii::t('app', 'Name'),
+			'email'                              => Yii::t('app', 'E-Mail'),
+			'email_bestaetigt'                   => Yii::t('app', 'E-Mail-Adresse bestätigt'),
+			'telefon'                            => Yii::t('app', 'Telefon'),
+			'auth'                               => Yii::t('app', 'Auth'),
+			'pwd_enc'                            => Yii::t('app', 'Passwort-Hash'),
+			'angelegt_datum'                     => Yii::t('app', 'Angelegt Datum'),
+			'admin'                              => Yii::t('app', 'Admin'),
+			'status'                             => Yii::t('app', 'Status'),
+			'benachrichtigung_typ'               => Yii::t('app', 'Benachrichtigungszeitpunkt'),
+			'aenderungsantragKommentare'         => null,
 			'aenderungsantragUnterstuetzerInnen' => null,
-			'antragKommentare' => null,
-			'antragUnterstuetzerInnen' => null,
-			'admin_veranstaltungen' => null,
+			'antragKommentare'                   => null,
+			'antragUnterstuetzerInnen'           => null,
+			'admin_veranstaltungen'              => null,
+			'admin_veranstaltungsreihen'         => null,
+			'veranstaltungsreihenAbos'           => null,
+			'antrag_abos'                        => null,
 		);
 	}
 
 	/**
 	 * @return CActiveDataProvider
 	 */
-	public function search() {
+	public function search()
+	{
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id);
@@ -131,26 +149,27 @@ class Person extends GxActiveRecord
 	/**
 	 * @return array
 	 */
-	public function rules() {
+	public function rules()
+	{
 		$rules = array(
 			array('typ, name, angelegt_datum, admin, status', 'required'),
-			array('admin, status', 'numerical', 'integerOnly'=>true),
-			array('typ', 'length', 'max'=>12),
-			array('name, telefon', 'length', 'max'=>100),
-			array('email, auth', 'length', 'max'=>200),
+			array('admin, status', 'numerical', 'integerOnly' => true),
+			array('typ', 'length', 'max' => 12),
+			array('name, telefon', 'length', 'max' => 100),
+			array('email, auth', 'length', 'max' => 200),
 			array('email, telefon, auth, pwd_enc', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, typ, name, email, telefon, auth, pwd_enc, angelegt_datum, admin, status', 'safe', 'on'=>'search'),
+			array('id, typ, name, email, telefon, auth, pwd_enc, angelegt_datum, admin, status', 'safe', 'on' => 'search'),
 		);
 		if ($this->email_required) $rules[] = array('email', 'required');
 		return $rules;
 	}
 
 
-
 	/**
 	 * @param bool $required
 	 */
-	public function setEmailRequired($required) {
+	public function setEmailRequired($required)
+	{
 		$this->email_required = $required;
 	}
 
@@ -158,11 +177,13 @@ class Person extends GxActiveRecord
 	/**
 	 * @return bool
 	 */
-	public function istWurzelwerklerIn() {
+	public function istWurzelwerklerIn()
+	{
 		return preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth);
 	}
 
-	public function getWurzelwerkName() {
+	public function getWurzelwerkName()
+	{
 		$x = preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches);
 		if (!$x) return null;
 		return $matches[1];

@@ -14,11 +14,12 @@
  * @property Veranstaltung[] $veranstaltungen
  * @property Veranstaltung $aktuelle_veranstaltung
  * @property Person[] $admins
+ * @property VeranstaltungsreihenAbo[] $veranstaltungsreihenAbos
  */
-class VeranstaltungsReihe extends CActiveRecord
+class Veranstaltungsreihe extends CActiveRecord
 {
 
-	/** @var null|VeranstaltungsReihenEinstellungen */
+	/** @var null|VeranstaltungsreihenEinstellungen */
 	private $einstellungen_object = null;
 
 	/**
@@ -105,25 +106,27 @@ class VeranstaltungsReihe extends CActiveRecord
 	public function relations()
 	{
 		return array(
-			'veranstaltungen'        => array(self::HAS_MANY, 'Veranstaltung', 'veranstaltungsreihe_id'),
-			'admins'                 => array(self::MANY_MANY, 'Person', 'veranstaltungsreihen_admins(veranstaltungsreihe_id, person_id)'),
-			'aktuelle_veranstaltung' => array(self::BELONGS_TO, 'Veranstaltung', 'aktuelle_veranstaltung_id'),
+			'veranstaltungen'          => array(self::HAS_MANY, 'Veranstaltung', 'veranstaltungsreihe_id'),
+			'admins'                   => array(self::MANY_MANY, 'Person', 'veranstaltungsreihen_admins(veranstaltungsreihe_id, person_id)'),
+			'aktuelle_veranstaltung'   => array(self::BELONGS_TO, 'Veranstaltung', 'aktuelle_veranstaltung_id'),
+			'veranstaltungsreihenAbos' => array(self::HAS_MANY, 'VeranstaltungsreihenAbo', 'veranstaltungsreihe_id'),
 		);
 	}
 
 	public function attributeLabels()
 	{
 		return array(
-			'id'                     => Yii::t('app', 'ID'),
-			'name'                   => Yii::t('app', 'Name'),
-			'name_kurz'              => Yii::t('app', 'Name Kurz'),
-			'subdomain'              => Yii::t('app', 'Subdomain'),
-			'einstellungen'          => "Einstellungen",
-			'offiziell'              => 'Offizielle Veranstaltungsreihe',
+			'id'                       => Yii::t('app', 'ID'),
+			'name'                     => Yii::t('app', 'Name'),
+			'name_kurz'                => Yii::t('app', 'Name Kurz'),
+			'subdomain'                => Yii::t('app', 'Subdomain'),
+			'einstellungen'            => "Einstellungen",
+			'offiziell'                => 'Offizielle Veranstaltungsreihe',
 			'oeffentlich'              => 'Öffentlich',
-			'veranstaltungen'        => "Veranstaltungen",
-			'aktuelle_veranstaltung' => "Aktuelle Veranstaltung",
-			'admins'                 => null,
+			'veranstaltungen'          => "Veranstaltungen",
+			'aktuelle_veranstaltung'   => "Aktuelle Veranstaltung",
+			'admins'                   => null,
+			'veranstaltungsreihenAbos' => null,
 		);
 	}
 

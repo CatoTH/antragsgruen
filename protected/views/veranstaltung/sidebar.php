@@ -73,6 +73,14 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 	$this->menus_html[] = $html;
 }
 
+
+$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Benachrichtigungen</li>";
+$html .= "<li class='benachrichtigung'>" . CHtml::link($sprache->get("E-Mail-Benachrichtigung bei neuen Anträgen"), $this->createUrl("veranstaltung/benachrichtigungen")) . "</li>";
+$html .= "</ul></div>";
+
+$this->menus_html[] = $html;
+
+
 $html = "";
 
 $feeds = 0;
@@ -89,10 +97,9 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 	$feeds++;
 }
 if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
-$html .= "</ul></div>";
 
 $feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
-$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html;
+$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
 
 $this->menus_html[] = $html;
 

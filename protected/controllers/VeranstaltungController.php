@@ -176,6 +176,45 @@ class VeranstaltungController extends AntragsgruenController
 	}
 
 	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 */
+	public function actionBenachrichtigungen($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		$this->testeWartungsmodus();
+
+		$user = Yii::app()->getUser();
+		if ($user->isGuest) {
+			$ich = null;
+			$eingeloggt = false;
+			$email_angegeben = false;
+			$email_bestaetigt = false;
+		} else {
+			$eingeloggt = true;
+			/** @var Person $ich */
+			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			if ($ich->email == "") {
+				$email_angegeben = false;
+				$email_bestaetigt = false;
+			} elseif ($ich->email_bestaetigt) {
+				$email_angegeben = true;
+				$email_bestaetigt = true;
+			} else {
+				$email_angegeben = true;
+				$email_bestaetigt = false;
+			}
+		}
+
+		$this->render('benachrichtigungen', array(
+			"eingeloggt" => $eingeloggt,
+			"email_angegeben" => $email_angegeben,
+			"email_bestaetigt" => $email_bestaetigt,
+			"ich" => $ich,
+		));
+	}
+
+	/**
 	 * @param Veranstaltung $veranstaltung
 	 * @return array
 	 */

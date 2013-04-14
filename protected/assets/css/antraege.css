@@ -40,8 +40,8 @@ li {
 
 @font-face {
 	font-family: 'icons_antragsgruen';
-	src: url("../font/icons_antragsgruen.eot");
-	src: url("../font/icons_antragsgruen.eot?#iefix") format('embedded-opentype'), url("../font/icons_antragsgruen.woff") format('woff'), url("../font/icons_antragsgruen.ttf") format('truetype'), url("../font/icons_antragsgruen.svg#icons_antragsgruen") format('svg');
+	src: url("../font/fontello.eot");
+	src: url("../font/fontello.eot?#iefix") format('embedded-opentype'), url("../font/fontello.woff") format('woff'), url("../font/fontello.ttf") format('truetype'), url("../font/fontello.svg#icons_antragsgruen") format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -912,9 +912,18 @@ form {
 	font-weight: normal;
 	font-style: italic;
 }
-
 .span3 .neue-kommentare .feed:before {
 	content: '\e73a';
+	color: #A2BC04;
+	display: inline-block;
+	font-family: 'icons_antragsgruen';
+	font-size: 15px;
+	vertical-align: bottom;
+	width: 20px;
+	margin-left: -20px;
+}
+.span3 .neue-kommentare .benachrichtigung:before {
+	content: '\1f514';
 	color: #A2BC04;
 	display: inline-block;
 	font-family: 'icons_antragsgruen';

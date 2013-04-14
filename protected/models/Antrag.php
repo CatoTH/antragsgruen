@@ -22,6 +22,7 @@
  * @property Antrag[] $antraege
  * @property AntragKommentar[] $antragKommentare
  * @property AntragUnterstuetzerInnen[] $antragUnterstuetzerInnen
+ * @property Person[] $abonnentent
  */
 
 class Antrag extends IAntrag
@@ -99,6 +100,7 @@ class Antrag extends IAntrag
 			'abgeleitetVon' => array(self::BELONGS_TO, 'Antrag', 'abgeleitet_von'),
 			'antraege' => array(self::HAS_MANY, 'Antrag', 'abgeleitet_von'),
 			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'antrag_id'),
+			'abonnenten'  => array(self::MANY_MANY, 'Person', 'antrag_abos(antrag_id, person_id)'),
 			'antragUnterstuetzerInnen' => array(
 				self::HAS_MANY, 'AntragUnterstuetzerInnen', 'antrag_id',
 				'order' => "antragUnterstuetzerInnen.position ASC"
@@ -126,6 +128,7 @@ class Antrag extends IAntrag
 			'antraege' => "Löst ab",
 			'antragKommentare' => null,
 			'antragUnterstuetzerInnen' => null,
+			'abonnenten' => null,
 		);
 	}
 

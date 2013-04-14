@@ -43,7 +43,7 @@ class InfosController extends AntragsgruenController
 			$reihe->oeffentlich = true;
 			$reihe->kontakt_intern = $anlegenformmodel->kontakt;
 
-			$subdomain = VeranstaltungsReihe::model()->findByAttributes(array("subdomain" => $reihe->subdomain));
+			$subdomain = Veranstaltungsreihe::model()->findByAttributes(array("subdomain" => $reihe->subdomain));
 			if ($subdomain) {
 				$error_str .= "Es gibt leider bereits eine Reihe mit dieser Subdomain.<br>\n";
 			} elseif ($reihe->save()) {

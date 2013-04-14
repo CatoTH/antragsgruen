@@ -105,12 +105,14 @@ CREATE  TABLE IF NOT EXISTS `antragsgruen`.`person` (
   `typ` ENUM('person', 'organisation') NOT NULL ,
   `name` VARCHAR(100) NOT NULL ,
   `email` VARCHAR(200) NULL ,
+  `email_bestaetigt` TINYINT NULL DEFAULT 0 ,
   `telefon` VARCHAR(100) NULL ,
   `auth` VARCHAR(200) NULL ,
   `angelegt_datum` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ,
   `admin` TINYINT NOT NULL ,
   `status` TINYINT NOT NULL ,
   `pwd_enc` VARCHAR(100) NULL ,
+  `benachrichtigungs_typ` ENUM('sofort', 'taeglich') NULL DEFAULT 'sofort' ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `auth_UNIQUE` (`auth` ASC) )
 ENGINE = InnoDB
@@ -211,6 +213,7 @@ CREATE  TABLE IF NOT EXISTS `antragsgruen`.`antrag_kommentar` (
   `text` TEXT NOT NULL ,
   `datum` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ,
   `status` TINYINT NULL ,
+  `antwort_benachrichtigung` TINYINT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_antrag_kommentar_person1_idx` (`verfasserIn_id` ASC) ,
   INDEX `fk_antrag_kommentar_antrag1_idx` (`antrag_id` ASC) ,
@@ -240,6 +243,7 @@ CREATE  TABLE IF NOT EXISTS `antragsgruen`.`aenderungsantrag_kommentar` (
   `text` TEXT NULL ,
   `datum` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ,
   `status` TINYINT NULL ,
+  `antwort_benachrichtigung` TINYINT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_aenderungsantrag_kommentar_person1_idx` (`verfasserIn_id` ASC) ,
   INDEX `fk_aenderungsantrag_kommentar_aenderungsantrag1_idx` (`aenderungsantrag_id` ASC) ,
@@ -351,6 +355,50 @@ CREATE  TABLE IF NOT EXISTS `antragsgruen`.`veranstaltungsreihen_admins` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_veranstaltungsreihe_has_person_person1`
+    FOREIGN KEY (`person_id` )
+    REFERENCES `antragsgruen`.`person` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `antragsgruen`.`veranstaltungsreihen_abos`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `antragsgruen`.`veranstaltungsreihen_abos` (
+  `veranstaltungsreihe_id` INT NOT NULL ,
+  `person_id` INT NOT NULL ,
+  PRIMARY KEY (`veranstaltungsreihe_id`, `person_id`) ,
+  INDEX `fk_veranstaltungsreihen_abos_veranstaltungsreihe1_idx` (`veranstaltungsreihe_id` ASC) ,
+  INDEX `fk_veranstaltungsreihen_abos_person1_idx` (`person_id` ASC) ,
+  CONSTRAINT `fk_veranstaltungsreihen_abos_veranstaltungsreihe1`
+    FOREIGN KEY (`veranstaltungsreihe_id` )
+    REFERENCES `antragsgruen`.`veranstaltungsreihe` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_veranstaltungsreihen_abos_person1`
+    FOREIGN KEY (`person_id` )
+    REFERENCES `antragsgruen`.`person` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `antragsgruen`.`antrag_abos`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `antragsgruen`.`antrag_abos` (
+  `antrag_id` INT NOT NULL ,
+  `person_id` INT NOT NULL ,
+  PRIMARY KEY (`antrag_id`, `person_id`) ,
+  INDEX `fk_antrag_abos_antrag1_idx` (`antrag_id` ASC) ,
+  INDEX `fk_antrag_abos_person1_idx` (`person_id` ASC) ,
+  CONSTRAINT `fk_antrag_abos_antrag1`
+    FOREIGN KEY (`antrag_id` )
+    REFERENCES `antragsgruen`.`antrag` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_antrag_abos_person1`
     FOREIGN KEY (`person_id` )
     REFERENCES `antragsgruen`.`person` (`id` )
     ON DELETE NO ACTION

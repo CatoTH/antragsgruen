@@ -8,6 +8,7 @@
  * @property string $text
  * @property string $datum
  * @property integer $status
+ * @property integer $antwort_benachrichtigung
  *
  * @property Person $verfasserIn
  * @property Antrag $antrag
@@ -39,7 +40,7 @@ class AntragKommentar extends IKommentar
 	public function rules() {
 		return array(
 			array('text, datum', 'required'),
-			array('id, verfasserIn_id, antrag_id, absatz, status', 'numerical', 'integerOnly'=>true),
+			array('id, verfasserIn_id, antrag_id, absatz, status, antwort_benachrichtigung', 'numerical', 'integerOnly'=>true),
 			array('verfasserIn_id, antrag_id, absatz, status', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('id, verfasserIn_id, antrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
 		);
@@ -67,6 +68,7 @@ class AntragKommentar extends IKommentar
 			'text' => Yii::t('app', 'Text'),
 			'datum' => Yii::t('app', 'Datum'),
 			'status' => Yii::t('app', 'Status'),
+			'antwort_benachrichtigung' => Yii::t('app', 'Benachrichtigung bei weiteren Antworten'),
 			'verfasserIn' => null,
 			'antrag' => null,
 			'unterstuetzerInnen' => null,
