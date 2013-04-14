@@ -81,7 +81,7 @@ class Person extends GxActiveRecord
 			'antragUnterstuetzerInnen'           => array(self::HAS_MANY, 'AntragUnterstuetzerInnen', 'unterstuetzerIn_id'),
 			'admin_veranstaltungen'              => array(self::MANY_MANY, 'Veranstaltung', 'veranstaltungs_admins(person_id, veranstaltung_id)'),
 			'admin_veranstaltungsreihen'         => array(self::MANY_MANY, 'Veranstaltungsreihe', 'veranstaltungsreihen_admins(person_id, veranstaltungsreihe_id)'),
-			'veranstaltungsreihenAbos'           => array(self::HAS_MANY, 'VeranstaltungsreihenAbo', 'veranstaltungsreihe_id'),
+			'veranstaltungsreihenAbos'           => array(self::HAS_MANY, 'VeranstaltungsreihenAbo', 'person_id'),
 			'abonnierte_antraege'                => array(self::MANY_MANY, 'Antrag', 'antrag_abos(person_id, antrag_id)'),
 		);
 	}
@@ -152,7 +152,7 @@ class Person extends GxActiveRecord
 	public function rules()
 	{
 		$rules = array(
-			array('typ, name, angelegt_datum, admin, status', 'required'),
+			array('typ, angelegt_datum, admin, status', 'required'),
 			array('admin, status', 'numerical', 'integerOnly' => true),
 			array('typ', 'length', 'max' => 12),
 			array('name, telefon', 'length', 'max' => 100),
@@ -175,6 +175,39 @@ class Person extends GxActiveRecord
 
 
 	/**
+	 * @return string
+	 */
+	public static function createPassword() {
+		$chars =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$max = strlen($chars) - 1;
+		$pw = "";
+		for ($i=0; $i < 8; $i++) $pw .= $chars[rand(0, $max)];
+		return $pw;
+	}
+
+	/**
+	 * @param string $date
+	 * @return string
+	 */
+	public function createEmailBestaetigungsCode($date = "") {
+		if ($date == "") $date=date("Ymd");
+		$code = $this->id . "-" . substr(md5($this->id . $date . SEED_KEY), 0, 8);
+		return $code;
+	}
+
+	/**
+	 * @param string $code
+	 * @return bool
+	 */
+	public function checkEmailBestaetigungsCode($code) {
+		if ($code == $this->createEmailBestaetigungsCode()) return true;
+		if ($code == $this->createEmailBestaetigungsCode(date("Ymd", time() - 24*3600))) return true;
+		if ($code == $this->createEmailBestaetigungsCode(date("Ymd", time() - 2*24*3600))) return true;
+		return false;
+	}
+
+
+	/**
 	 * @return bool
 	 */
 	public function istWurzelwerklerIn()
@@ -182,6 +215,9 @@ class Person extends GxActiveRecord
 		return preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth);
 	}
 
+	/**
+	 * @return null|string
+	 */
 	public function getWurzelwerkName()
 	{
 		$x = preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches);

@@ -13,23 +13,12 @@ class VeranstaltungController extends AntragsgruenController
 	{
 		$this->layout = '//layouts/column2';
 
-		if ($veranstaltung_id == "") {
-			/** @var Veranstaltungsreihe $reihe  */
-			$reihe = Veranstaltungsreihe::model()->findByAttributes(array("subdomain" => $veranstaltungsreihe_id));
-			if ($reihe) {
-				$veranstaltung_id = $reihe->aktuelle_veranstaltung->url_verzeichnis;
-			} else {
-				$this->render('error', array(
-					"code" => 404,
-					"message" => "Die Veranstaltungsreihe wurde nicht gefunden."
-				));
-			}
-		}
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+
 		if (isset($_REQUEST["login"])) $this->performLogin($this->createUrl("veranstaltung/index"));
 		$this->testeWartungsmodus();
 
-		$veranstaltung = $this->actionVeranstaltung_loadData($veranstaltung_id);
+		$veranstaltung = $this->actionVeranstaltung_loadData();
 
 		$antraege_sorted = $veranstaltung->antraegeSortiert();
 
@@ -145,8 +134,8 @@ class VeranstaltungController extends AntragsgruenController
 
 		$antraege = $this->veranstaltung->antraegeSortiert();
 		$this->renderPartial('veranstaltung_pdfs', array(
-			"sprache"            => $this->veranstaltung->getSprache(),
-			"antraege" => $antraege,
+			"sprache"       => $this->veranstaltung->getSprache(),
+			"antraege"      => $antraege,
 			"veranstaltung" => $this->veranstaltung,
 		));
 	}
@@ -175,42 +164,161 @@ class VeranstaltungController extends AntragsgruenController
 		));
 	}
 
-	/**
-	 * @param string $veranstaltungsreihe_id
-	 * @param string $veranstaltung_id
-	 */
-	public function actionBenachrichtigungen($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public function actionAjaxEmailIstRegistriert($veranstaltungsreihe_id = "", $veranstaltung_id = "", $email)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
+		$person = Person::model()->findAll(array(
+			"condition" => "email='" . addslashes($email) . "' AND pwd_enc != ''"
+		));
+		if (count($person) > 0) {
+			/** @var Person $p */
+			$p = $person[0];
+			if ($p->email_bestaetigt) echo "1";
+			else echo "0";
+		} else {
+			echo "-1";
+		}
+	}
+
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 */
+	public function actionBenachrichtigungen($veranstaltungsreihe_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id);
+		$this->testeWartungsmodus();
+
 		$user = Yii::app()->getUser();
+
+		$msg_ok                 = $msg_err = "";
+		$correct_person         = null;
+		$aktuelle_einstellungen = null;
+
+		if (AntiXSS::isTokenSet("speichern") && !yii::app()->user->isGuest) {
+			/** @var Person $ich */
+			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			$vabo = null;
+			foreach ($ich->veranstaltungsreihenAbos as $abo) if ($abo->veranstaltungsreihe_id == $this->veranstaltungsreihe->id) $vabo = $abo;
+			if (!$vabo) {
+				$vabo = new VeranstaltungsreihenAbo();
+				$vabo->veranstaltungsreihe_id = $this->veranstaltungsreihe->id;
+				$vabo->person_id = $ich->id;
+			}
+			$vabo->antraege           = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["antraege"]);
+			$vabo->aenderungsantraege = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["aenderungsantraege"]);
+			$vabo->kommentare         = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["kommentare"]);
+			$vabo->save();
+			$msg_ok = "Die Einstellungen wurden gespeichert.";
+		}
+
+		if (AntiXSS::isTokenSet("anmelden")) {
+			$person = Person::model()->findAll(array(
+				"condition" => "email='" . addslashes($_REQUEST["email"]) . "' AND pwd_enc != ''"
+			));
+			if (count($person) > 0) {
+				/** @var Person $p */
+				$p = $person[0];
+				if ($p->email_bestaetigt) {
+					if ($p->validate_password($_REQUEST["password"])) {
+						$correct_person = $p;
+
+						if ($p->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($p->getWurzelwerkName());
+						else $identity = new AntragUserIdentityPasswd($p->email);
+						Yii::app()->user->login($identity);
+					} else {
+						$msg_err = "Das angegebene Passwort ist leider falsch.";
+					}
+				} else {
+					if ($p->checkEmailBestaetigungsCode($_REQUEST["bestaetigungscode"])) {
+						$p->email_bestaetigt = 1;
+						if ($p->save()) {
+							$msg_ok = "Die E-Mail-Adresse wurde freigeschaltet. Ab jetzt wirst du entsprechend deinen Einstellungen benachrichtigt.";
+						} else {
+							$msg_err = "Ein sehr seltsamer Fehler ist aufgetreten.";
+						}
+					} else {
+						$msg_err = "Leider stimmt der angegebene Code nicht";
+					}
+				}
+			} else {
+				$email                    = trim($_REQUEST["email"]);
+				$person                   = new Person;
+				$person->auth             = "email:" . $email;
+				$person->name             = "";
+				$person->email            = $email;
+				$person->email_bestaetigt = 0;
+				$person->angelegt_datum   = date("Y-m-d H:i:s");
+				$person->status           = Person::$STATUS_UNCONFIRMED;
+				$person->typ              = Person::$TYP_PERSON;
+				$person->pwd_enc          = Person::createPassword();
+				$person->admin            = 0;
+
+				if ($person->save()) {
+					$best_code = $person->createEmailBestaetigungsCode();
+					$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/ajaxEmailIstRegistriert", array("code" => $best_code));
+					mail($email, "Anmeldung bei Antragsgrün", "Hallo,\n\num Benachrichtigungen bei Antragsgrün zu erhalten, klicke entweder auf folgenden Link:\n$link\n\n"
+						. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: $best_code\n\n"
+						. "Liebe Grüße,\n\tDas Antragsgrün-Team.");
+					$correct_person = $person;
+
+					$identity = new AntragUserIdentityPasswd($email);
+					Yii::app()->user->login($identity);
+				} else {
+					$msg_err = "Leider ist ein (ungewöhnlicher) Fehler aufgetreten.";
+					$errs    = $person->getErrors();
+					foreach ($errs as $err) foreach ($err as $e) $msg_err .= $e;
+				}
+
+			}
+		}
+
+		if ($correct_person) {
+			$bisherig = VeranstaltungsreihenAbo::model()->findByAttributes(array("veranstaltungsreihe_id" => $this->veranstaltungsreihe->id, "person_id" => $correct_person->id));
+			if (!$bisherig) {
+				$bisherig                         = new VeranstaltungsreihenAbo();
+				$bisherig->person_id              = $correct_person->id;
+				$bisherig->veranstaltungsreihe_id = $this->veranstaltungsreihe->id;
+			}
+			$bisherig->antraege           = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["antraege"]);
+			$bisherig->aenderungsantraege = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["aenderungsantraege"]);
+			$bisherig->kommentare         = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["kommentare"]);
+			$bisherig->save();
+			$msg_ok = "Die Einstellungen wurden gespeichert.";
+		}
+
 		if ($user->isGuest) {
-			$ich = null;
-			$eingeloggt = false;
-			$email_angegeben = false;
+			$ich              = null;
+			$eingeloggt       = false;
+			$email_angegeben  = false;
 			$email_bestaetigt = false;
 		} else {
 			$eingeloggt = true;
 			/** @var Person $ich */
 			$ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 			if ($ich->email == "") {
-				$email_angegeben = false;
+				$email_angegeben  = false;
 				$email_bestaetigt = false;
 			} elseif ($ich->email_bestaetigt) {
-				$email_angegeben = true;
+				$email_angegeben  = true;
 				$email_bestaetigt = true;
 			} else {
-				$email_angegeben = true;
+				$email_angegeben  = true;
 				$email_bestaetigt = false;
 			}
+
+			foreach ($ich->veranstaltungsreihenAbos as $abo) if ($abo->veranstaltungsreihe_id = $this->veranstaltungsreihe->id) $aktuelle_einstellungen = $abo;
 		}
 
 		$this->render('benachrichtigungen', array(
-			"eingeloggt" => $eingeloggt,
-			"email_angegeben" => $email_angegeben,
-			"email_bestaetigt" => $email_bestaetigt,
-			"ich" => $ich,
+			"eingeloggt"             => $eingeloggt,
+			"email_angegeben"        => $email_angegeben,
+			"email_bestaetigt"       => $email_bestaetigt,
+			"aktuelle_einstellungen" => $aktuelle_einstellungen,
+			"ich"                    => $ich,
+			"msg_err"                => $msg_err,
+			"msg_ok"                 => $msg_ok,
 		));
 	}
 
@@ -283,7 +391,7 @@ class VeranstaltungController extends AntragsgruenController
 		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$sprache       = $veranstaltung->getSprache();
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Anträge"),
@@ -302,7 +410,7 @@ class VeranstaltungController extends AntragsgruenController
 		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$sprache       = $veranstaltung->getSprache();
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Änderungsanträge"),
@@ -321,7 +429,7 @@ class VeranstaltungController extends AntragsgruenController
 		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$sprache       = $veranstaltung->getSprache();
+		$sprache = $veranstaltung->getSprache();
 		$this->renderPartial('feed', array(
 			"veranstaltung_id" => $veranstaltung->id,
 			"feed_title"       => $sprache->get("Kommentare"),
@@ -341,7 +449,7 @@ class VeranstaltungController extends AntragsgruenController
 		$veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$sprache       = $veranstaltung->getSprache();
+		$sprache = $veranstaltung->getSprache();
 
 		$data1 = $this->getFeedAntraegeData($veranstaltung);
 		$data2 = $this->getFeedAenderungsantraegeData($veranstaltung);
@@ -394,13 +502,10 @@ class VeranstaltungController extends AntragsgruenController
 	}
 
 	/**
-	 * @param string $veranstaltung_id
 	 * @return Veranstaltung|null
 	 */
-	private function actionVeranstaltung_loadData($veranstaltung_id)
+	private function actionVeranstaltung_loadData()
 	{
-		$att = (is_numeric($veranstaltung_id) ? "id" : "url_verzeichnis");
-
 		/** @var Veranstaltung $veranstaltung */
 		$this->veranstaltung = Veranstaltung::model()->
 			with(array(
@@ -412,10 +517,9 @@ class VeranstaltungController extends AntragsgruenController
 					'joinType' => "LEFT OUTER JOIN",
 					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
 				),
-			))->findByAttributes(array($att => $veranstaltung_id));
+			))->findByAttributes(array("id" => $this->veranstaltung->id));
 		return $this->veranstaltung;
 	}
-
 
 
 	/**

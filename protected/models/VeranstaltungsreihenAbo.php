@@ -41,7 +41,7 @@ class VeranstaltungsreihenAbo extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('person_id, veranstaltungsreihen_id', 'required'),
+			array('person_id, veranstaltungsreihe_id', 'required'),
 		);
 	}
 

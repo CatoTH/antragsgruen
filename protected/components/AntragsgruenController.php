@@ -49,13 +49,14 @@ class AntragsgruenController extends CController
 	 * @param string $ampersand
 	 * @return string
 	 */
-	public function createUrl($route,$params=array(),$ampersand='&')
+	public function createUrl($route, $params = array(), $ampersand = '&')
 	{
 		$p = explode("/", $route);
 		if ($p[0] != "infos") {
 			if (!isset($params["veranstaltung_id"]) && $this->veranstaltung !== null) $params["veranstaltung_id"] = $this->veranstaltung->url_verzeichnis;
 			if (!isset($params["veranstaltungsreihe_id"]) && $this->veranstaltungsreihe != null) $params["veranstaltungsreihe_id"] = $this->veranstaltungsreihe->subdomain;
 			if ($route == "veranstaltung/index" && !is_null($this->veranstaltungsreihe) && $params["veranstaltung_id"] == $this->veranstaltungsreihe->aktuelle_veranstaltung->url_verzeichnis) unset($params["veranstaltung_id"]);
+			if ($route == "veranstaltung/ajaxEmailIstRegistriert" || $route == "veranstaltung/benachrichtigungen") unset($params["veranstaltung_id"]);
 		}
 		return parent::createUrl($route, $params, $ampersand);
 	}
@@ -67,9 +68,23 @@ class AntragsgruenController extends CController
 	 * @param null|Aenderungsantrag $check_aenderungsantrag
 	 * @return null|Veranstaltung
 	 */
-	public function loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $check_antrag = null, $check_aenderungsantrag = null)
+	public function loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id = "", $check_antrag = null, $check_aenderungsantrag = null)
 	{
+
 		if ($veranstaltungsreihe_id == "") $veranstaltungsreihe_id = Yii::app()->params['standardVeranstaltungsreihe'];
+
+		if ($veranstaltung_id == "") {
+			/** @var Veranstaltungsreihe $reihe */
+			$reihe = Veranstaltungsreihe::model()->findByAttributes(array("subdomain" => $veranstaltungsreihe_id));
+			if ($reihe) {
+				$veranstaltung_id = $reihe->aktuelle_veranstaltung->url_verzeichnis;
+			} else {
+				$this->render('error', array(
+					"code"    => 404,
+					"message" => "Die Veranstaltungsreihe wurde nicht gefunden."
+				));
+			}
+		}
 
 		if (is_null($this->veranstaltungsreihe)) {
 			if (is_numeric($veranstaltungsreihe_id)) {
@@ -177,13 +192,14 @@ class AntragsgruenController extends CController
 						Yii::app()->user->login($us);
 						$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
 						if (!$user) {
-							$user                 = new Person;
-							$user->auth           = $us->getId();
-							$user->name           = $us->getName();
-							$user->email          = $us->getEmail();
-							$user->angelegt_datum = date("Y-m-d H:i:s");
-							$user->status         = Person::$STATUS_CONFIRMED;
-							$user->typ            = Person::$TYP_PERSON;
+							$user                   = new Person;
+							$user->auth             = $us->getId();
+							$user->name             = $us->getName();
+							$user->email            = $us->getEmail();
+							$user->email_bestaetigt = 0;
+							$user->angelegt_datum   = date("Y-m-d H:i:s");
+							$user->status           = Person::$STATUS_CONFIRMED;
+							$user->typ              = Person::$TYP_PERSON;
 							if (Person::model()->count() == 0) {
 								$user->admin = 1;
 								Yii::app()->user->setState("role", "admin");

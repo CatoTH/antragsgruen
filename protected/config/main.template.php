@@ -70,6 +70,7 @@ return array(
 				$domv . 'feedKommentare'                                                                  => 'veranstaltung/feedKommentare',
 				$domv . 'wartungsmodus'                                                                   => 'veranstaltung/wartungsmodus',
 				$domv . 'benachrichtigungen'                                                              => 'veranstaltung/benachrichtigungen',
+				$domv . 'benachrichtigungen/checkemail'                                                   => 'veranstaltung/ajaxEmailIstRegistriert',
 				$domv . 'antrag/neu'                                                                      => 'antrag/neu',
 				$domv . 'antrag/<antrag_id:\d+>?kommentar_id=<kommentar_id:\d+>'                          => 'antrag/anzeige',
 				$domv . 'antrag/<antrag_id:\d+>'                                                          => 'antrag/anzeige',
