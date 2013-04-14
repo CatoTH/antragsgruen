@@ -137,6 +137,7 @@ class AntragsgruenController extends CController
 
 	/**
 	 * @param string $success_redirect
+	 * @throws Exception
 	 * @return OAuthLoginForm
 	 */
 	protected function performLogin($success_redirect)
@@ -152,8 +153,7 @@ class AntragsgruenController extends CController
 			/** @var Person $user */
 			$user = Person::model()->findByAttributes(array("auth" => $username));
 			if ($user === null) {
-				Yii::app()->user->setFlash("error", "Benutzername nicht gefunden.");
-				return $model;
+				throw new Exception("Benutzername nicht gefunden.");
 			}
 			$correct = $user->validate_password($_REQUEST["password"]);
 			if ($correct) {
@@ -171,8 +171,7 @@ class AntragsgruenController extends CController
 
 				$this->redirect($success_redirect);
 			} else {
-				Yii::app()->user->setFlash("error", "Falsches Passwort.");
-				return $model;
+				throw new Exception("Falsches Passwort.");
 			}
 
 			//Yii::app()->user->login($us);
@@ -180,9 +179,7 @@ class AntragsgruenController extends CController
 		} elseif (isset($_REQUEST["openid_mode"])) {
 			/** @var LightOpenID $loid */
 			$loid = Yii::app()->loid->load();
-			if ($_REQUEST['openid_mode'] == 'cancel') {
-				$err = Yii::t('core', 'Authorization cancelled');
-			} else {
+			if ($_REQUEST['openid_mode'] != 'cancel') {
 				try {
 					$us = new AntragUserIdentityOAuth($loid);
 					if ($us->authenticate()) {
@@ -215,20 +212,17 @@ class AntragsgruenController extends CController
 						if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
 						$this->redirect($success_redirect);
 					} else {
-						Yii::app()->user->setFlash("error", "Leider ist beim Einloggen ein Fehler aufgetreten.");
-						return $model;
+						throw new Exception("Leider ist beim Einloggen ein Fehler aufgetreten.");
 					}
 				} catch (Exception $e) {
-					$err = Yii::t('core', $e->getMessage());
-					Yii::app()->user->setFlash("error", "Leider ist beim Einloggen ein Fehler aufgetreten:<br>" . $e->getMessage());
-					return $model;
+					throw new Exception("Leider ist beim Einloggen ein Fehler aufgetreten:<br>" . $e->getMessage());
 				}
 			}
 
 			if (!empty($err)) Yii::app()->user->setFlash("error", $err);
 		} elseif (isset($_REQUEST["OAuthLoginForm"])) {
 			if (stripos($model->openid_identifier, "yahoo") !== false) {
-				$err = "Leider ist wegen technischen Problemen ein Login mit Yahoo momentan nicht möglich.";
+				throw new Exception("Leider ist wegen technischen Problemen ein Login mit Yahoo momentan nicht möglich.");
 			} else {
 				/** @var LightOpenID $loid */
 				$loid = Yii::app()->loid->load();
@@ -243,7 +237,7 @@ class AntragsgruenController extends CController
 						$url = $loid->authUrl();
 						$this->redirect($url);
 					} catch (Exception $e) {
-						$err = Yii::t('core', $e->getMessage());
+						throw new Exception($e->getMessage());
 					}
 				}
 			}
@@ -252,8 +246,7 @@ class AntragsgruenController extends CController
 			/** @var Person $user */
 			$user = Person::model()->findByAttributes(array("id" => $_REQUEST["login"]));
 			if ($user === null) {
-				Yii::app()->user->setFlash("error", "Benutzername nicht gefunden.");
-				return $model;
+				throw new Exception("Benutzername nicht gefunden");
 			}
 			$identity = new AntragUserIdentityPasswd($user->getWurzelwerkName());
 			Yii::app()->user->login($identity);

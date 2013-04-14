@@ -2,13 +2,25 @@
 /**
  * @var VeranstaltungController $this
  * @var OAuthLoginForm $model
+ * @var string $msg_err
  */
 $this->breadcrumbs = array(
 	'Login',
 );
 
 
+if ($msg_err != "") {
+	?>
+	<h1>Fehler</h1>
+	<div class="well"><div class="content">
+	<div class="alert alert-error">
+		<?php echo $msg_err; ?>
+	</div>
+		</div></div>
+<? }
+
 ?>
+
 <h1>Login</h1>
 
 <h2>Wurzelwerk-Login</h2>

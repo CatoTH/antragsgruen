@@ -544,9 +544,18 @@ class VeranstaltungController extends AntragsgruenController
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 
-		$model = $this->performLogin($back);
+		$err_str = "";
+		$model = null;
+		try {
+			$model = $this->performLogin($back);
+		} catch (Exception $e) {
+			$err_str = $e->getMessage();
+		}
 
-		$this->render('login', array("model" => $model));
+		$this->render('login', array(
+			"model" => $model,
+			"msg_err" => $err_str,
+		));
 	}
 
 
