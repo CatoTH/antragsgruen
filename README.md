@@ -62,6 +62,7 @@ Empfohlene PHP-Module:
 Datenbank anlegen:
 - Eine Datenbank u. Benutzer für Antragsgrün anlegen; Antragsgrün braucht mindestens Rechte für SELECT/INSERT/UPDATE/DELETE
 - cat docs/schema.sql | mysql -u [benutzername] -p [datenbankname] -h localhost
+- cat docs/init-data.sql | mysql -u [benutzername] -p [datenbankname] -h localhost
 
 Konfigurationsdatei erstellen:
 - cp protected/config/main.template.php protected/config/main.php
@@ -76,7 +77,10 @@ Berechtigungen setzen:
 - chown www-data:www-data protected/runtime
 - chown www-data:www-data html/assets
 
-Antragsgrün sollte nun schon funktionieren. Der erste Nutzer, der sich (per OpenID) authentifiziert einloggt, wird als Admin markiert.
+Antragsgrün sollte nun schon funktionieren.
+Es ist eine sehr simpel gehaltene Veranstaltung voreingestellt und ein Admin-Nutzer angelegt:
+- Benutzername / E-Mail: "admin@test.de"
+- Passwort: "admin" (ohne Anführungszeichen)
 
 
 
