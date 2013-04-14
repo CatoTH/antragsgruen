@@ -146,7 +146,8 @@ class AntragsgruenController extends CController
 		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
 
 		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["OAuthLoginForm"]["wurzelwerk"])) {
-			$username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
+			if (strpos($_REQUEST["OAuthLoginForm"]["wurzelwerk"], "@")) $username = "email:" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"];
+			else $username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
 
 			/** @var Person $user */
 			$user = Person::model()->findByAttributes(array("auth" => $username));

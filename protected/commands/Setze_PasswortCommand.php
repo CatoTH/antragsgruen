@@ -3,12 +3,15 @@
 class Setze_PasswortCommand extends CConsoleCommand {
         public function run($args) {
 			if (count($args) != 2) {
-				echo "Aufruf: ./yiic [Wurzelwerk-Benutzername] [NeuesPasswort]\n";
+				echo "Aufruf: ./yiic [Wurzelwerk-Benutzername|E-Mail] [NeuesPasswort]\n";
 				return;
 			}
 
+			if (strpos($args[0], "@")) $auth = "email:" . $args[0];
+			else $auth = "openid:https://" . $args[0] . ".netzbegruener.in/";
+
 			/** @var Person $person  */
-			$person = Person::model()->findByAttributes(array("auth" => "openid:https://" . $args[0] . ".netzbegruener.in/"));
+			$person = Person::model()->findByAttributes(array("auth" => $auth));
 			if (!$person) {
 				echo "Person nicht gefunden.\n";
 				return;

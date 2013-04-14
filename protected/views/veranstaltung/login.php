@@ -69,7 +69,7 @@ $this->breadcrumbs = array(
 		)); ?>
 
 
-		<label for="OAuthLoginForm_wurzelwerk">WurzelWerk-Account</label>
+		<label for="OAuthLoginForm_wurzelwerk">E-Mail-Adresse</label>
 		<input class="span3" name="OAuthLoginForm[wurzelwerk]" id="OAuthLoginForm_wurzelwerk" type="text"/>
 		<span class="help-block error" id="OAuthLoginForm_wurzelwerk_em_" style="display: none"></span>
 
