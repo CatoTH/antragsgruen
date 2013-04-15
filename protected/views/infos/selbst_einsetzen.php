@@ -25,7 +25,7 @@ include(__DIR__ . "/sidebar.php");
 
 	<div class="content">
 		<strong>Das kann Antragsgrün:</strong>
-		<ul style="margin-bottom: 15px;">
+		<ul style="margin-bottom: 25px;">
 			<li style="margin-top: 7px;">Anträge, Änderungsanträge, Kommentare dazu, Unterstützen von (Änderungs-)Anträgen, Bewertung von Kommentaren. Alles außer die Anträge ist auch deaktivierbar.</li>
 			<li style="margin-top: 7px;">Änderungsanträge und Kommentare beziehen sich grundsätzlich immer auf ganze Absätze.</li>
 			<li style="margin-top: 7px;"><strong>Berechtigungen:</strong> Wer Anträge, Änderungsanträge und Kommentare verfassen darf, lässt sich jeweils festlegen. Niemand / nur Admins, Alle, oder nur Eingeloggte NutzerInnen.</li>
@@ -33,16 +33,16 @@ include(__DIR__ . "/sidebar.php");
 			<li style="margin-top: 7px;">Beliebige <strong>Textformatierungen</strong> in redaktionellen Texten (u.a. auch YouTube/Vimeo-Videos, Grafiken etc.). Bei Anträgen und Änderungsanträgen sind einige Standard-Textformatierungen möglich.</li>
 			<li style="margin-top: 7px;">Automatisch erzeugte <strong>PDF-Versionen</strong> der Anträge und Änderungsanträge.</li>
 			<li style="margin-top: 7px;">Es ist einstellbar, ob im Frontend von "Anträgen" und "Änderungsanträgen" die Rede ist (ausgelegt auf Parteitage), oder von "Kapiteln" und "Änderungswünschen" (ausgelegt auf die Diskussion von Wahlprogrammen).</li>
+			<li style="margin-top: 7px;"><strong>E-Mail-Benachrichtigungen</strong> über neue Anträge, Änderungsanträge und/oder Kommentare für alle Interessierte</li>
 			<li style="margin-top: 7px;"><strong>RSS-Feeds</strong>, damit alle Interessierte über neu eingereichte (Änderungs-)Anträge oder Kommentare auf dem Laufenden bleiben.</li>
-			<li style="margin-top: 7px;"><strong>Veranstaltungsreihen</strong> werden unterstützt - wenn Antragsgrün also für eine regelmäßig stattfindende Veranstaltung wiederholt eingesetzt werden soll (oder es mehrere Iterationen bei der Ausarbeitung eines Wahlprogramms geben soll), muss nicht
-				jedes Mal alles aufs Neue eingerichtet werden. <i>(kommt in Kürze)</i>
-			</li>
 		</ul>
 
 		<strong>Geplant ist außerdem:</strong>
-		<ul style="margin-bottom: 15px;">
-			<li style="margin-top: 7px;">AntragsstellerInnen sollen Anträge überarbeiten, Änderungsanträge übernehmen oder den Antrag ganz zurückziehen können.</li>
-			<li style="margin-top: 7px;">...</li>
+		<ul style="margin-bottom: 25px;">
+			<li style="margin-top: 7px;"><strong>Veranstaltungsreihen</strong> - wenn Antragsgrün also für eine regelmäßig stattfindende Veranstaltung wiederholt eingesetzt werden soll (oder es mehrere Iterationen bei der Ausarbeitung eines Wahlprogramms geben soll), muss nicht
+				jedes Mal alles aufs Neue eingerichtet werden.
+			</li>
+			<li style="margin-top: 7px;">AntragsstellerInnen sollen <strong>Anträge überarbeiten, Änderungsanträge übernehmen</strong> oder den Antrag ganz zurückziehen können.</li>
 		</ul>
 
 		<strong>Das kann Antragsgrün nicht</strong> (und ist auch nicht geplant):
