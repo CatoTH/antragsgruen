@@ -184,8 +184,9 @@ class VeranstaltungController extends AntragsgruenController
 
 	/**
 	 * @param string $veranstaltungsreihe_id
+	 * @param string $code
 	 */
-	public function actionBenachrichtigungen($veranstaltungsreihe_id = "")
+	public function actionBenachrichtigungen($veranstaltungsreihe_id = "", $code = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id);
 		$this->testeWartungsmodus();
@@ -213,7 +214,21 @@ class VeranstaltungController extends AntragsgruenController
 			$msg_ok = "Die Einstellungen wurden gespeichert.";
 		}
 
-		if (AntiXSS::isTokenSet("anmelden")) {
+		if ($code != "") {
+			$x = explode("-", $code);
+			/** @var Person $person */
+			$person = Person::model()->findByPk($x[0]);
+			if (!$person) $msg_err = "Diese Seite existiert nicht. Vielleicht wurde der Bestätigungslink falsch kopiert?";
+			elseif ($person->email_bestaetigt) $msg_err = "Dieser Account wurde bereits bestätigt.";
+			elseif (!$person->checkEmailBestaetigungsCode($code)) $msg_err = "Diese Seite existiert nicht. Vielleicht wurde der Bestätigungslink falsch kopiert? (Beachte, dass der Link in der E-Mail nur 2-3 Tage lang gültig ist.";
+			else {
+				$person->email_bestaetigt = 1;
+				$person->save();
+				$msg_ok = "Der Zugang wurde bestätigt. Ab jetzt erhältst du Benachrichtigungen per E-Mail, wenn du das so eingestellt hast.";
+				$identity = new AntragUserIdentityPasswd($person->email);
+				Yii::app()->user->login($identity);
+			}
+		} elseif (AntiXSS::isTokenSet("anmelden")) {
 			$person = Person::model()->findAll(array(
 				"condition" => "email='" . addslashes($_REQUEST["email"]) . "' AND pwd_enc != ''"
 			));
@@ -235,6 +250,8 @@ class VeranstaltungController extends AntragsgruenController
 						$p->email_bestaetigt = 1;
 						if ($p->save()) {
 							$msg_ok = "Die E-Mail-Adresse wurde freigeschaltet. Ab jetzt wirst du entsprechend deinen Einstellungen benachrichtigt.";
+							$identity = new AntragUserIdentityPasswd($p->email);
+							Yii::app()->user->login($identity);
 						} else {
 							$msg_err = "Ein sehr seltsamer Fehler ist aufgetreten.";
 						}
@@ -258,7 +275,7 @@ class VeranstaltungController extends AntragsgruenController
 
 				if ($person->save()) {
 					$best_code = $person->createEmailBestaetigungsCode();
-					$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/ajaxEmailIstRegistriert", array("code" => $best_code));
+					$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/benachrichtigungen", array("code" => $best_code));
 					mail($email, "Anmeldung bei Antragsgrün", "Hallo,\n\num Benachrichtigungen bei Antragsgrün zu erhalten, klicke entweder auf folgenden Link:\n$link\n\n"
 						. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: $best_code\n\n"
 						. "Das Passwort für den Antragsgrün-Zugang lautet: " . $passwort . "\n\n"

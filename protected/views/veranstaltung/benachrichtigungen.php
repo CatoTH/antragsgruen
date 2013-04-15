@@ -39,15 +39,15 @@ if ($msg_err != "") {
 <form method="POST">
 
 <?php if ($email_bestaetigt) { ?>
-	<div style="max-width: 500px; margin: 20px auto 10px; border: 1px solid #E1E1E8; border-radius: 4px; padding: 5px;">
+	<div style="max-width: 500px; margin: 20px auto 10px; border: 1px solid #E1E1E8; border-radius: 4px; padding: 5px; background-color: #dadada;">
 
 		Deine E-Mail-Adresse:<br><strong><?php echo CHtml::encode($ich->email); ?></strong> (bestätigt)
 
 	</div>
 
-	<div style="max-width: 500px; margin: 20px auto 10px; border: 1px solid #E1E1E8; border-radius: 4px; padding: 5px;">
+	<div style="max-width: 500px; margin: 20px auto 10px; border: 1px solid #E1E1E8; border-radius: 4px; padding: 5px; background-color: #eee;">
 
-	<fieldset>
+		<fieldset>
 			<strong>Wann sollen Benachrichtigungs-E-Mails verschickt werden?</strong>
 			<br><br>
 			<label class="checkbox">
@@ -70,7 +70,7 @@ if ($msg_err != "") {
 		</div>
 	</div>
 <?php } elseif ($email_angegeben) { ?>
-<div style="max-width: 500px; margin: 20px auto 10px; border: 1px solid #E1E1E8; border-radius: 4px; padding: 5px;">
+<div style="max-width: 500px; margin: 20px auto 10px; border: 1px solid #E1E1E8; border-radius: 4px; padding: 5px; background-color: #eee;">
 
 <label for="email"><strong>Deine E-Mail-Adresse:</strong></label>
 
@@ -94,86 +94,91 @@ if ($msg_err != "") {
 <?
 } else {
 	?>
-	<label for="email"><strong>Deine E-Mail-Adresse:</strong></label>
-	<div class="input-prepend">
-		<span class="add-on">@</span>
-		<input id="email" type="email" name="email" value="<?php if ($ich) echo CHtml::encode($ich->email); ?>">
-	</div>
-	<br><br><br>
+	<div style="max-width: 500px; margin: 20px auto 10px; border: 1px solid #E1E1E8; border-radius: 4px; padding: 5px; background-color: #eee;">
+		<label for="email"><strong>Deine E-Mail-Adresse:</strong></label>
 
-	<div id="bestaetigungscode_holder" style="display: none;">
-		Es wurde bereits eine E-Mail mit dem Bestätigungscode an diese Adresse geschickt.<br>
-		<label for="bestaetigungscode"><strong>Bitte gib den Bestätigungscode an:</strong></label>
-
-		<div>
-			<input type="text" name="bestaetigungscode" id="bestaetigungscode" value="" style="width: 280px;">
+		<div class="input-prepend">
+			<span class="add-on">@</span>
+			<input id="email" type="email" name="email" value="<?php if ($ich) echo CHtml::encode($ich->email); ?>">
 		</div>
 		<br><br><br>
-	</div>
 
-	<div id="password_holder" style="display: none;">
-		Du hast bereits einen Zugang bei Antragsgrün.<br>
-		<label for="password"><strong>Bitte gib dein Passwort ein:</strong></label>
+		<div id="bestaetigungscode_holder" style="display: none;">
+			Es wurde bereits eine E-Mail mit dem Bestätigungscode an diese Adresse geschickt.<br>
+			<label for="bestaetigungscode"><strong>Bitte gib den Bestätigungscode an:</strong></label>
 
-		<div>
-			<input type="password" name="password" id="password" value="" style="width: 280px;">
+			<div>
+				<input type="text" name="bestaetigungscode" id="bestaetigungscode" value="" style="width: 280px;">
+			</div>
+			<br><br><br>
 		</div>
-		<br><br><br>
-	</div>
 
-	<script>
-		$(function () {
-			$("#email").on("change blur", function () {
-				var val = $("#email").val(),
-					$pw = $("#password_holder"),
-					$best = $("#bestaetigungscode_holder");
-				if (val == "") {
-					$pw.hide();
-					$best.hide();
-				} else {
-					$.get("<?php echo CHtml::encode($this->createUrl("veranstaltung/ajaxEmailIstRegistriert")); ?>", {email: val }, function (ret) {
-						if (ret == "-1") {
-							$pw.hide();
-							$pw.find("input[type=password]").prop("required", false);
-							$best.hide();
-							$best.find("input[type=text]").prop("required", false);
-						} else if (ret == "1") {
-							$pw.show();
-							$pw.find("input[type=password]").prop("required", true).focus();
-							$best.hide();
-							$best.find("input[type=text]").prop("required", false);
-						} else {
-							$pw.hide();
-							$pw.find("input[type=password]").prop("required", false);
-							$best.show();
-							$best.find("input[type=text]").prop("required", true).focus();
-						}
-						$("#savebutton").prop("disabled", false);
-					});
-				}
-			});
-		})
-	</script>
+		<div id="password_holder" style="display: none;">
+			Du hast bereits einen Zugang bei Antragsgrün.<br>
+			<label for="password"><strong>Bitte gib dein Passwort ein:</strong></label>
 
-	<fieldset>
-		<strong>Wann sollen Benachrichtigungs-E-Mails verschickt werden?</strong>
+			<div>
+				<input type="password" name="password" id="password" value="" style="width: 280px;">
+			</div>
+			<br><br><br>
+		</div>
+
+		<script>
+			$(function () {
+				$("#email").on("change blur", function () {
+					var val = $("#email").val(),
+						$pw = $("#password_holder"),
+						$best = $("#bestaetigungscode_holder");
+					if (val == "") {
+						$pw.hide();
+						$best.hide();
+					} else {
+						$.get("<?php echo CHtml::encode($this->createUrl("veranstaltung/ajaxEmailIstRegistriert")); ?>", {email: val }, function (ret) {
+							if (ret == "-1") {
+								$pw.hide();
+								$pw.find("input[type=password]").prop("required", false);
+								$best.hide();
+								$best.find("input[type=text]").prop("required", false);
+							} else if (ret == "1") {
+								$pw.show();
+								$pw.find("input[type=password]").prop("required", true).focus();
+								$best.hide();
+								$best.find("input[type=text]").prop("required", false);
+							} else {
+								$pw.hide();
+								$pw.find("input[type=password]").prop("required", false);
+								$best.show();
+								$best.find("input[type=text]").prop("required", true).focus();
+							}
+							$("#savebutton").prop("disabled", false);
+						});
+					}
+				});
+			})
+		</script>
+
+		<fieldset>
+			<strong>Wann sollen Benachrichtigungs-E-Mails verschickt werden?</strong>
+			<br><br>
+			<label class="checkbox">
+				<input type="checkbox" name="Reihe[<?php echo $this->veranstaltungsreihe->id; ?>][antraege]">
+				Wenn <strong>neue Anträge</strong> eingereicht werden.
+			</label>
+			<label class="checkbox">
+				<input type="checkbox" name="Reihe[<?php echo $this->veranstaltungsreihe->id; ?>][aenderungsantraege]">
+				Wenn <strong>neue Änderungsanträge</strong> eingereicht werden.
+			</label>
+			<label class="checkbox">
+				<input type="checkbox" name="Reihe[<?php echo $this->veranstaltungsreihe->id; ?>][kommentare]">
+				Wenn <strong>neue Kommentare</strong> geschrieben werden.
+			</label>
+		</fieldset>
 		<br><br>
-		<label class="checkbox">
-			<input type="checkbox" name="Reihe[<?php echo $this->veranstaltungsreihe->id; ?>][antraege]">
-			Wenn <strong>neue Anträge</strong> eingereicht werden.
-		</label>
-		<label class="checkbox">
-			<input type="checkbox" name="Reihe[<?php echo $this->veranstaltungsreihe->id; ?>][aenderungsantraege]">
-			Wenn <strong>neue Änderungsanträge</strong> eingereicht werden.
-		</label>
-		<label class="checkbox">
-			<input type="checkbox" name="Reihe[<?php echo $this->veranstaltungsreihe->id; ?>][kommentare]">
-			Wenn <strong>neue Kommentare</strong> geschrieben werden.
-		</label>
-	</fieldset>
-	<br><br>
-	<div style="text-align: center;">
-		<button type="submit" name="<?php echo AntiXSS::createToken("anmelden"); ?>" class="btn btn-primary" id="savebutton" disabled>Speichern</button>
+
+		<div style="text-align: center;">
+			<button type="submit" name="<?php echo AntiXSS::createToken("anmelden"); ?>" class="btn btn-primary" id="savebutton" disabled>Speichern</button>
+		</div>
+
 	</div>
 <? } ?>
 </div>
@@ -182,7 +187,7 @@ if ($msg_err != "") {
 ?>
 <br><br>
 
-<div>
+<div class="content">
 	<strong>Hinweise:</strong>
 	<ul>
 		<li>Falls es Probleme mit dem Einloggen oder den Benachrichtigungen gibt, melde dich per E-Mail bei ####.##.de.</li>

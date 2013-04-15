@@ -46,29 +46,6 @@ if ($msg_err != "") {
 	</div>
 </div>
 
-<h2>OpenID-Login</h2>
-<div class="well">
-	<div class="content">
-		<?php /** @var CActiveForm $form */
-		$form = $this->beginWidget('CActiveForm', array(
-			"htmlOptions" => array(
-				"class" => "well well_first",
-			),
-		)); ?>
-
-		<label for="OAuthLoginForm_openid_identifier">OpenID-URL</label>
-		<input class="span3" name="OAuthLoginForm[openid_identifier]" id="OAuthLoginForm_openid_identifier" type="text"/>
-		<span class="help-block error" id="OAuthLoginForm_openid_identifier_em_" style="display: none"></span>
-
-		<br>
-
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'ok', 'label' => 'Einloggen')); ?>
-
-		<?php $this->endWidget(); ?>
-	</div>
-</div>
-
-
 <h2>Login per Benutzername / Passwort</h2>
 <div class="well">
 	<div class="content">
@@ -91,5 +68,27 @@ if ($msg_err != "") {
 
 		<?php $this->endWidget(); ?>
 
+	</div>
+</div>
+
+<h2>OpenID-Login</h2>
+<div class="well">
+	<div class="content">
+		<?php /** @var CActiveForm $form */
+		$form = $this->beginWidget('CActiveForm', array(
+			"htmlOptions" => array(
+				"class" => "well well_first",
+			),
+		)); ?>
+
+		<label for="OAuthLoginForm_openid_identifier">OpenID-URL</label>
+		<input class="span3" name="OAuthLoginForm[openid_identifier]" id="OAuthLoginForm_openid_identifier" type="text"/>
+		<span class="help-block error" id="OAuthLoginForm_openid_identifier_em_" style="display: none"></span>
+
+		<br>
+
+		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'ok', 'label' => 'Einloggen')); ?>
+
+		<?php $this->endWidget(); ?>
 	</div>
 </div>
