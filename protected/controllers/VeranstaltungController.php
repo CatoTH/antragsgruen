@@ -182,6 +182,39 @@ class VeranstaltungController extends AntragsgruenController
 		}
 	}
 
+
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $code
+	 */
+	public function actionBenachrichtigungenAbmelden($veranstaltungsreihe_id = "", $code = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id);
+
+		$x = explode("-", $code);
+		if (count($x) != 2) $this->render("error", array(
+			"code" => 400,
+			"message" => "Ungültiger Aufruf",
+		));
+
+		/** @var Person $person */
+		$person = Person::model()->findByPk($x[0]);
+		if ($person->getBenachrichtigungAbmeldenCode() != $code) $this->render("error", array(
+			"code" => 400,
+			"message" => "Ungültiger Aufruf. Vielleicht hast du den Link aus der Benachrichtigungsmail nicht vollständig kopiert?",
+		));
+
+		if (AntiXSS::isTokenSet("abmelden")) {
+			foreach ($person->veranstaltungsreihenAbos as $abo) $abo->delete();
+			$this->render("benachrichtigungen_abgemeldet");
+		} else {
+			$this->render("benachrichtigungen_abmelden", array(
+				"person" => $person
+			));
+		}
+
+	}
+
 	/**
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $code

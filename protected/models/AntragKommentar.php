@@ -18,25 +18,38 @@
 class AntragKommentar extends IKommentar
 {
     /**
-     * @var $clasName string
+     * @var string $className
      * @return GxActiveRecord
      */
 	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function tableName() {
 		return 'antrag_kommentar';
 	}
 
+	/**
+	 * @param int $n
+	 * @return string
+	 */
 	public static function label($n = 1) {
 		return Yii::t('app', 'AntragKommentar|AntragKommentare', $n);
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function representingColumn() {
 		return 'text';
 	}
 
+	/**
+	 * @return array
+	 */
 	public function rules() {
 		return array(
 			array('text, datum', 'required'),
@@ -46,6 +59,9 @@ class AntragKommentar extends IKommentar
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function relations() {
 		return array(
 			'verfasserIn' => array(self::BELONGS_TO, 'Person', 'verfasserIn_id'),
@@ -54,11 +70,17 @@ class AntragKommentar extends IKommentar
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function pivotModels() {
 		return array(
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function attributeLabels() {
 		return array(
 			'id' => Yii::t('app', 'ID'),
@@ -75,6 +97,9 @@ class AntragKommentar extends IKommentar
 		);
 	}
 
+	/**
+	 * @return CActiveDataProvider
+	 */
 	public function search() {
 		$criteria = new CDbCriteria;
 
@@ -115,5 +140,27 @@ class AntragKommentar extends IKommentar
 	public function getVeranstaltung()
 	{
 		return $this->antrag->veranstaltung;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAntragName()
+	{
+		return $this->antrag->nameMitRev();
+	}
+
+	/**
+	 * @param bool $absolute
+	 * @return string
+	 */
+	public function getLink($absolute = false)
+	{
+		return yii::app()->getBaseUrl($absolute) . yii::app()->createUrl("antrag/anzeige", array(
+			"veranstaltungsreihe_id" => $this->antrag->veranstaltung->veranstaltungsreihe->subdomain,
+			"veranstaltung_id" => $this->antrag->veranstaltung->url_verzeichnis,
+			"antrag_id" => $this->antrag_id,
+			"kommentar_id" => $this->id,
+			"#" => "komm" . $this->id));
 	}
 }

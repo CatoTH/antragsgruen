@@ -59,7 +59,7 @@ class Antrag extends IAntrag
 	private $absaetze = null;
 
 	/**
-	 * @var $className string
+	 * @var string $className
 	 * @return Antrag
 	 */
 	public static function model($className = __CLASS__)
@@ -68,18 +68,31 @@ class Antrag extends IAntrag
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function tableName() {
 		return 'antrag';
 	}
 
+	/**
+	 * @param int $n
+	 * @return string
+	 */
 	public static function label($n = 1) {
 		return Yii::t('app', 'Antrag|Antraege', $n);
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function representingColumn() {
 		return 'name';
 	}
 
+	/**
+	 * @return array
+	 */
 	public function rules() {
 		return array(
 			array('veranstaltung_id, name, datum_einreichung, status', 'required'),
@@ -93,6 +106,9 @@ class Antrag extends IAntrag
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function relations() {
 		return array(
 			'aenderungsantraege' => array(self::HAS_MANY, 'Aenderungsantrag', 'antrag_id'),
@@ -108,6 +124,9 @@ class Antrag extends IAntrag
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function attributeLabels() {
 		return array(
 			'id' => Yii::t('app', 'ID'),
@@ -132,6 +151,9 @@ class Antrag extends IAntrag
 		);
 	}
 
+	/**
+	 * @return CActiveDataProvider
+	 */
 	public function search() {
 		$criteria = new CDbCriteria;
 
@@ -305,6 +327,11 @@ class Antrag extends IAntrag
 	}
 
 
+	/**
+	 * @param bool $runValidation
+	 * @param null $attributes
+	 * @return bool
+	 */
 	public function save($runValidation = true, $attributes = null) {
 		HtmlBBcodeUtils::initZeilenCounter();
 		list($anzahl_absaetze, $anzahl_zeilen) = HtmlBBcodeUtils::getBBCodeStats(trim($this->text));
@@ -317,5 +344,15 @@ class Antrag extends IAntrag
 		return parent::save($runValidation, $attributes);
 	}
 
+	/**
+	 * @param bool $absolute
+	 * @return string
+	 */
+	public function getLink($absolute = false) {
+		return yii::app()->getBaseUrl($absolute) . yii::app()->createUrl("antrag/anzeige", array(
+			"veranstaltungsreihe_id" => $this->veranstaltung->veranstaltungsreihe->subdomain,
+			"veranstaltung_id" => $this->veranstaltung->url_verzeichnis,
+			"antrag_id" => $this->id));
+	}
 
 }

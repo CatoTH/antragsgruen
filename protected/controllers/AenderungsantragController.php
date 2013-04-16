@@ -45,6 +45,12 @@ class AenderungsantragController extends AntragsgruenController
 				$komm->status = IKommentar::$STATUS_GELOESCHT;
 				$komm->save();
 				Yii::app()->user->setFlash("success", "Der Kommentar wurde gelöscht.");
+
+				$benachrichtigt = array();
+				foreach ($aenderungsantrag->antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) if ($abo->kommentare && !in_array($abo->person_id, $benachrichtigt)) {
+					$abo->person->benachrichtigenKommentar($komm);
+					$benachrichtigt[] = $abo->person_id;
+				}
 			} else {
 				Yii::app()->user->setFlash("error", "Kommentar nicht gefunden oder keine Berechtigung.");
 			}
@@ -160,7 +166,7 @@ class AenderungsantragController extends AntragsgruenController
 				Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);
 
 				if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
-					$kommentar_link = yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $aenderungsantrag->id, "antrag_id" => $aenderungsantrag->antrag->id, "kommentar_id" => $kommentar->id, "#" => "komm" . $kommentar->id));
+					$kommentar_link = $kommentar->getLink(true);
 					$mails          = explode(",", $this->veranstaltung->admin_email);
 					foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Kommentar - bitte freischalten.",
 						"Es wurde ein neuer Kommentar zum Änderungsantrag \"" . $aenderungsantrag->revision_name . " zu " . $aenderungsantrag->antrag->revision_name . " - " . $aenderungsantrag->antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
@@ -169,7 +175,15 @@ class AenderungsantragController extends AntragsgruenController
 					);
 				}
 
-				$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id, "kommentar_id" => $kommentar->id, "#" => "komm" . $kommentar->id)));
+				if ($kommentar->status == IKommentar::$STATUS_FREI) {
+					$benachrichtigt = array();
+					foreach ($aenderungsantrag->antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) if ($abo->kommentare && !in_array($abo->person_id, $benachrichtigt)) {
+						$abo->person->benachrichtigenKommentar($kommentar);
+						$benachrichtigt[] = $abo->person_id;
+					}
+				}
+
+				$this->redirect($kommentar->getLink());
 			} else {
 				foreach ($kommentar->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
 				foreach ($model_person->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
@@ -385,6 +399,14 @@ class AenderungsantragController extends AntragsgruenController
 						"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)),
 					"From: " . Yii::app()->params['mail_from']
 				);
+			}
+
+			if ($aenderungsantrag->status == Antrag::$STATUS_EINGEREICHT_GEPRUEFT) {
+				$benachrichtigt = array();
+				foreach ($aenderungsantrag->antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) if ($abo->aenderungsantraege && !in_array($abo->person_id, $benachrichtigt)) {
+					$abo->person->benachrichtigenAenderungsantrag($aenderungsantrag);
+					$benachrichtigt[] = $abo->person_id;
+				}
 			}
 
 			$this->render("neu_submitted", array(

@@ -27,6 +27,17 @@ abstract class IKommentar extends GxActiveRecord {
 	abstract public function getVeranstaltung();
 
 	/**
+	 * @return string
+	 */
+	abstract public function getAntragName();
+
+	/**
+	 * @param bool $absolute
+	 * @return string
+	 */
+	abstract public function getLink($absolute = false);
+
+	/**
 	 * @param CWebUser $c
 	 * @return bool
 	 */

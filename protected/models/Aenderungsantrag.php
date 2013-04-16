@@ -23,25 +23,38 @@ class Aenderungsantrag extends IAntrag
 	private $absaetze = null;
 
     /**
-     * @var $clasName string
+     * @var string $clasName
      * @return GxActiveRecord
      */
 	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function tableName() {
 		return 'aenderungsantrag';
 	}
 
+	/**
+	 * @param int $n
+	 * @return string
+	 */
 	public static function label($n = 1) {
 		return Yii::t('app', 'Aenderungsantrag|Aenderungsantraege', $n);
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function representingColumn() {
 		return 'text_neu';
 	}
 
+	/**
+	 * @return array
+	 */
 	public function rules() {
 		return array(
 			array('text_neu, aenderung_text, datum_einreichung, status, status', 'required'),
@@ -55,6 +68,9 @@ class Aenderungsantrag extends IAntrag
 
 	}
 
+	/**
+	 * @return array
+	 */
 	public function relations() {
 		return array(
 			'antrag' => array(self::BELONGS_TO, 'Antrag', 'antrag_id'),
@@ -66,11 +82,17 @@ class Aenderungsantrag extends IAntrag
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function pivotModels() {
 		return array(
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function attributeLabels() {
 		return array(
 			'id' => Yii::t('app', 'ID'),
@@ -91,6 +113,10 @@ class Aenderungsantrag extends IAntrag
 		);
 	}
 
+	/**
+	 * @param $veranstaltung_id
+	 * @return CActiveDataProvider
+	 */
 	public function search($veranstaltung_id) {
 		$criteria = new CDbCriteria;
 
@@ -231,5 +257,18 @@ class Aenderungsantrag extends IAntrag
 		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND antrag_id IN (" . implode(", ", $ids) . ")");
 	}
 
+
+	/**
+	 * @param bool $absolute
+	 * @return string
+	 */
+	public function getLink($absolute = false) {
+		return yii::app()->getBaseUrl($absolute) . yii::app()->createUrl("aenderungsantrag/anzeige", array(
+			"veranstaltungsreihe_id" => $this->antrag->veranstaltung->veranstaltungsreihe->subdomain,
+			"veranstaltung_id" => $this->antrag->veranstaltung->url_verzeichnis,
+			"antrag_id" => $this->antrag_id,
+			"aenderungsantrag_id" => $this->id
+		));
+	}
 
 }

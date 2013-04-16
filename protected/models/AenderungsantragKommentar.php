@@ -130,4 +130,24 @@ class AenderungsantragKommentar extends IKommentar
 		))->findAllByAttributes(array("status" => AenderungsantragKommentar::$STATUS_FREI), $condition);
 		return $arr;
 	}
+
+
+	public function getAntragName()
+	{
+		return $this->aenderungsantrag->revision_name . " zu " . $this->aenderungsantrag->antrag->nameMitRev();
+	}
+
+	/**
+	 * @param bool $absolute
+	 * @return string
+	 */
+	public function getLink($absolute = false)
+	{
+		return yii::app()->getBaseUrl($absolute) . yii::app()->createUrl("aenderungsantrag/anzeige", array(
+			"veranstaltungsreihe_id" => $this->aenderungsantrag->antrag->veranstaltung->veranstaltungsreihe->subdomain,
+			"veranstaltung_id" => $this->aenderungsantrag->antrag->veranstaltung->url_verzeichnis,
+			"aenderungsantrag_id" => $this->aenderungsantrag_id,
+			"antrag_id" => $this->aenderungsantrag->antrag_id,
+			"kommentar_id" => $this->id, "#" => "komm" . $this->id));
+	}
 }

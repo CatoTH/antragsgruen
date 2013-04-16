@@ -206,6 +206,55 @@ class Person extends GxActiveRecord
 		return false;
 	}
 
+	/**
+	 * @param Veranstaltungsreihe $veranstaltungsreihe
+	 * @param string $betreff
+	 * @param string $text
+	 */
+	public function benachrichtigen($veranstaltungsreihe, $betreff, $text) {
+		if ($this->email == "" || !$this->email_bestaetigt) return;
+		$abbestellen_url = yii::app()->getBaseUrl(true) . yii::app()->createUrl("veranstaltung/benachrichtigungenAbmelden", array("veranstaltungsreihe_id" => $veranstaltungsreihe->subdomain, "code" => $this->getBenachrichtigungAbmeldenCode()));
+		$gruss = "Hallo " . $this->name . ",\n\n";
+		$sig = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\nFalls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $abbestellen_url;
+		mail($this->email, $betreff, $gruss . $text . $sig, "From: " . Yii::app()->params['mail_from']);
+	}
+
+	/**
+	 * @param Antrag $antrag
+	 */
+	public function benachrichtigenAntrag($antrag) {
+		$betreff = "[Antragsgrün] Neuer Antrag: " . $antrag->nameMitRev();
+		$text = "Es wurde ein neuer Antrag eingereicht:\nAnlass: ". $antrag->veranstaltung->name . "\nName: " . $antrag->nameMitRev() . "\nLink: " . $antrag->getLink(true);
+		$this->benachrichtigen($antrag->veranstaltung->veranstaltungsreihe, $betreff, $text);
+	}
+
+	/**
+	 * @param Aenderungsantrag $aenderungsantrag
+	 */
+	public function benachrichtigenAenderungsantrag($aenderungsantrag) {
+		$betreff = "[Antragsgrün] Neuer Änderungsantrag zu " . $aenderungsantrag->antrag->nameMitRev();
+		$text = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: ". $aenderungsantrag->antrag->veranstaltung->name . "\nAntrag: " . $aenderungsantrag->antrag->nameMitRev() . "\nLink: " . $aenderungsantrag->getLink(true);
+		$this->benachrichtigen($aenderungsantrag->antrag->veranstaltung->veranstaltungsreihe, $betreff, $text);
+	}
+
+	/**
+	 * @param IKommentar $kommentar
+	 */
+	public function benachrichtigenKommentar($kommentar) {
+		$betreff = "[Antragsgrün] Neuer Kommentar zu: " . $kommentar->getAntragName();
+		$text = "Es wurde ein neuer Kommentar zu " . $kommentar->getAntragName() . " geschrieben:\n" . $kommentar->getLink(true);
+		$this->benachrichtigen($kommentar->getVeranstaltung()->veranstaltungsreihe, $betreff, $text);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBenachrichtigungAbmeldenCode()
+	{
+		$code = $this->id . "-" . substr(md5($this->id . "abmelden" . SEED_KEY), 0, 8);
+		return $code;
+	}
+
 
 	/**
 	 * @return bool

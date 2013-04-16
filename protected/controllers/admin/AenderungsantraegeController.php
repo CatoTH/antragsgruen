@@ -33,6 +33,14 @@ class AenderungsantraegeController extends GxController {
 			if ($model->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $model->status = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
 			$model->save();
 			Yii::app()->user->setFlash("success", "Der Änderungsantrag wurde freigeschaltet.");
+
+			if ($model->status == Antrag::$STATUS_EINGEREICHT_GEPRUEFT) {
+				$benachrichtigt = array();
+				foreach ($model->antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) if ($abo->aenderungsantraege && !in_array($abo->person_id, $benachrichtigt)) {
+					$abo->person->benachrichtigenAenderungsantrag($model);
+					$benachrichtigt[] = $abo->person_id;
+				}
+			}
 		}
 
 		if (isset($_POST['Aenderungsantrag'])) {
