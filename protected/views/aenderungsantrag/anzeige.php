@@ -27,6 +27,10 @@ $this->breadcrumbs = array(
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 $this->pageTitle = $aenderungsantrag->revision_name . " zu: " . $aenderungsantrag->antrag->nameMitRev();
 
+/** @var CWebApplication $app */
+$app = Yii::app();
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/socialshareprivacy/jquery.socialshareprivacy.js');
+
 $html = '<ul class="funktionen">';
 //$html .= '<li class="unterstuetzen"><a href="#">Änderungsantrag unterstützen</a></li>';
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
@@ -49,9 +53,9 @@ $rows = 10;
     <div id="socialshareprivacy"></div>
     <script>
         $(function ($) {
-            $('#socialshareprivacy').socialSharePrivacy({
-                css_path:"/js/socialshareprivacy/socialshareprivacy/socialshareprivacy.css"
-            });
+			$('#socialshareprivacy').socialSharePrivacy({
+				css_path: "/socialshareprivacy/socialshareprivacy.css"
+			});
         });
     </script>
     <div class="content">

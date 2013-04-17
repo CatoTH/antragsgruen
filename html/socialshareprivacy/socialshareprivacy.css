@@ -54,7 +54,7 @@
 .social_share_privacy_area li .switch {
     display: inline-block;
     text-indent: -9999em;
-    background: transparent url(/protected/assets/js/socialshareprivacy/socialshareprivacy/images/socialshareprivacy_on_off.png) no-repeat 0 0 scroll;
+    background: transparent url(/socialshareprivacy/images/socialshareprivacy_on_off.png) no-repeat 0 0 scroll;
     width: 23px;
     height: 12px;
     overflow: hidden;
@@ -109,7 +109,7 @@
     display: none;
 }
 .social_share_privacy_area li .help_info.icon {
-    background: #fff url(/protected/assets/js/socialshareprivacy/socialshareprivacy/images/socialshareprivacy_info.png) no-repeat center center scroll;
+    background: #fff url(/socialshareprivacy/images/socialshareprivacy_info.png) no-repeat center center scroll;
     width: 25px;
     height: 20px;
     position: relative;
@@ -173,7 +173,7 @@
 .social_share_privacy_area li.settings_info .settings_info_menu .settings {
 	text-indent: -9999em;
 	display: inline-block;
-	background: #fff url(/protected/assets/js/socialshareprivacy/socialshareprivacy/images/settings.png) no-repeat center center scroll;
+	background: #fff url(/socialshareprivacy/images/settings.png) no-repeat center center scroll;
 	width: 25px;
 	height: 20px;
 	border: 2px solid #e7e3e3;
