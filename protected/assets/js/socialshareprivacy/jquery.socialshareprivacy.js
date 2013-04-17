@@ -125,7 +125,7 @@
             'cookie_path'       : '/',
             'cookie_domain'     : document.location.host,
             'cookie_expires'    : '365',
-            'css_path'          : 'socialshareprivacy/socialshareprivacy.css',
+            'css_path'          : './socialshareprivacy/socialshareprivacy.css',
             'uri'               : getURI
         };
 

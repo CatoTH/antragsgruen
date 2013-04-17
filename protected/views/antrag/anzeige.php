@@ -27,8 +27,11 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 $this->pageTitle = $antrag->nameMitRev() . " (" . $antrag->veranstaltung->name . ", Antragsgrün)";
 
-Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/socialshareprivacy/jquery.socialshareprivacy.min.js');
-
+/** @var CWebApplication $app */
+/*
+$app = Yii::app();
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/socialshareprivacy/jquery.socialshareprivacy.min.js');
+*/
 $rows = 4;
 if ($antrag->datum_beschluss != "") $rows++;
 if (count($antrag->antraege) > 0) $rows++;
@@ -62,7 +65,7 @@ $this->menus_html[] = $html;
 		<script>
 			$(function ($) {
 				$('#socialshareprivacy').socialSharePrivacy({
-					css_path: "/js/socialshareprivacy/socialshareprivacy/socialshareprivacy.css"
+					css_path: "<?php echo $this->getAssetsBase() . '/js/socialshareprivacy/socialshareprivacy/socialshareprivacy.css'; ?>"
 				});
 			});
 		</script>
