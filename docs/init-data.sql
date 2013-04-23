@@ -1,3 +1,5 @@
+SET foreign_key_checks = 0;
+
 INSERT INTO `person` (`id`, `typ`, `name`, `email`, `email_bestaetigt`, `telefon`, `auth`, `angelegt_datum`, `admin`, `status`, `pwd_enc`, `benachrichtigungs_typ`) VALUES
 (1, 'person', 'Admin', 'admin@test.de', 1, NULL, 'email:admin@test.de', '2013-04-14 20:33:49', 0, 0, 'sha256:1000:N9YHmSiI2PWORbyzrNAxmglojAPU0Nm6:6IzbgeTbSSjS7xONciqdEc5RxLv+gJRn', 'sofort');
 
@@ -9,3 +11,5 @@ INSERT INTO `veranstaltungsreihe` (`id`, `subdomain`, `name`, `name_kurz`, `offi
 
 INSERT INTO `veranstaltungsreihen_admins` (`veranstaltungsreihe_id`, `person_id`) VALUES
 (1, 1);
+
+SET foreign_key_checks = 1;
