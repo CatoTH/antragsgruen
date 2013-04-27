@@ -57,6 +57,7 @@ if ($font_css != "") $cs->registerCssFile($assets_base . $font_css);
 	<!--[if lt IE 8]>
 	<link rel="stylesheet" href="<?php echo $assets_base; ?>/css/antraege-ie7.css"><![endif]-->
 
+	<link rel=“icon” href=/favicon.ico sizes="16x16 32x32 48x48 64x64" type=”image/vnd.microsoft.icon”>
 </head>
 
 <body <?php if (count($row_classes) > 0) echo "class='" . implode(" ", $row_classes) . "'"; ?>>
