@@ -108,7 +108,8 @@ function ckeditor_bbcode(id) {
 		removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,magicline' + ',sourcearea',
 		extraPlugins: 'autogrow,wordcount,bbcode',
 		scayt_sLang: 'de_DE',
-		// Width and height are not supported in the BBCode format, so object resizing is disabled.
+		autoGrow_bottomSpace: 20,
+	// Width and height are not supported in the BBCode format, so object resizing is disabled.
 		disableObjectResizing: true,
 		// Whether or not you want to show the Word Count
 		showWordCount: true,
