@@ -10,7 +10,7 @@ define("MULTISITE_MODE", false);
 
 if (MULTISITE_MODE) {
 	$dom_plain = "http://antraege-v2.hoessl.eu/";
-	$dom       = "http://<veranstaltungsreihe_id:[\w_-]+>.antraege-v2.hoessl.eu/";
+	$dom       = "http://(www\.)?<veranstaltungsreihe_id:[\w_-]+>.antraege-v2.hoessl.eu/";
 	$domv      = $dom . "<veranstaltung_id:[\w_-]+>/";
 } else {
 	$dom_plain = "";
@@ -68,12 +68,13 @@ $url_rules = array(
 
 
 if (MULTISITE_MODE) {
-	$url_rules[$dom_plain]                      = 'infos/selbstEinsetzen';
-	$url_rules[$dom_plain . 'selbst-einsetzen'] = 'infos/selbstEinsetzen';
-	$url_rules[$dom_plain . 'neu-anlegen']      = 'infos/neuAnlegen';
-	$url_rules[$dom_plain . 'impressum']        = 'infos/impressum';
+	$url_rules = array_merge(array(
+		$dom_plain                      => 'infos/selbstEinsetzen',
+		$dom_plain . 'selbst-einsetzen' => 'infos/selbstEinsetzen',
+		$dom_plain . 'neu-anlegen'      => 'infos/neuAnlegen',
+		$dom_plain . 'impressum'        => 'infos/impressum',
+	), $url_rules);
 }
-
 
 return array(
 	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
