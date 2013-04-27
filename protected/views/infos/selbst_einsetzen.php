@@ -12,13 +12,13 @@ include(__DIR__ . "/sidebar.php");
 <div class="well well_first">
 
 	<div class="content">
-		<p>Antragsgrün ist <strong>Open Source</strong>, jede und jeder kann die Software herunterladen, für die eigenen Zwecke anpassen und verwenden (siehe <a href="#opensource">weiter unten</a>).</p>
+		<p>Antragsgrün ist <strong>Open Source</strong>, jede und jeder kann die Software herunterladen, für die eigenen Zwecke anpassen und verwenden (siehe <a href="#opensource" onclick="$('#opensource').next().scrollintoview(); return false;">weiter unten</a>).</p>
 
-		<p><strong>Für Mitglieder der Grünen ist es noch einfacher</strong>: einfach weiter unten <a href="#selbst_nutzen">mit dem Wurzelwerk-BenutzerInnennamen einloggen</a>, ein paar Angaben zum Einsatzzweck machen, bei Bedarf noch einige Feineinstellungen vornehmen, und los!</p>
+		<p><strong>Für Mitglieder der Grünen ist es noch einfacher</strong>: einfach weiter unten <a href="#selbst_nutzen"  onclick="$('#selbst_nutzen').next().scrollintoview(); return false;">mit dem Wurzelwerk-BenutzerInnennamen einloggen</a>, ein paar Angaben zum Einsatzzweck machen, bei Bedarf noch einige Feineinstellungen vornehmen, und los!</p>
 
 		<p>Antragsgrün wird von der <a href="http://www.netzbegruenung.de/"><strong>Netzbegrünung</strong></a> betrieben und kann kostenlos genutzt werden. Um einen freiwilligen Beitrag für den Betrieb wird aber sehr gebeten.</p>
 
-		<p>Falls Antragsgrün noch nicht alle Funktionen erfüllt, die benötigt werden, können wir es auf Auftrag auch für deine Zwecke <strong>anpassen</strong>. <a href="#wer">Einfach fragen!</a></p>
+		<p>Falls Antragsgrün noch nicht alle Funktionen erfüllt, die benötigt werden, können wir es auf Auftrag auch für deine Zwecke <strong>anpassen</strong>. <a href="#wer" onclick="$('#wer').next().scrollintoview(); return false;">Einfach fragen!</a></p>
 	</div>
 
 	<h2 id="funktionen">Welche Funktionen bietet Antragsgrün?</h2>
@@ -64,7 +64,7 @@ include(__DIR__ . "/sidebar.php");
 			),
 		));
 		?>
-		Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem Wurzelwerk-Account ein. Falls du die Zugangsdaten zurzeit nicht hast, <a href="#wer">schreib uns einfach an</a>.
+		Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem Wurzelwerk-Account ein. Falls du die Zugangsdaten zurzeit nicht hast, <a href="#wer" onclick="$('#wer').next().scrollintoview(); return false;">schreib uns einfach an</a>.
 		<div style="overflow: auto; margin-top: 25px;">
 			<div style="float: left;">
 				<label for="OAuthLoginForm_wurzelwerk">Wurzelwerk-BenutzerInnenname</label>
@@ -88,7 +88,7 @@ include(__DIR__ . "/sidebar.php");
 		<p>Antragsgrün wird von "<strong>Netzbegrünung</strong> - Verein für GRÜNE Netzkultur" betrieben. Programmiert wird es von <a href="http://www.hoessl.eu/">Tobias Hößl</a> (<a href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>), das Design stammt von <a href="http://www.netzminze.de/">Karin Wehle</a>.</p>
 		<p>Erstmals eingesetzt wurde es im November 2012 vom <strong>Bayerischen Landesverband</strong> um das Landtagswahlprogramm zu diskutieren, später auch zur Vorbereitung der Programm-LDK.</p>
 		<p>Wir werden das Antragsgrün in Zukunft weiter ausbauen und um <strong>zusätzliche Funktionen</strong> ergänzen. Funktionen, für die sich <strong>Sponsoren</strong> finden, werden dabei besonders priorisiert (die Zeit, die wir in die Weiterentwicklung stecken können, ist dann doch nicht völlig unabhängig von finanziellen Aspekten).</p>
-		<p>Ihr könnt uns bevorzugt per <strong>E-Mail</strong> unter #### (at) ###.de erreichen, aber auch telefonisch unter 0151-56024223, auf <a href="https://twitter.com/Antragsgruen">Twitter</a> und auf <a href="http://www.facebook.com/Antragsgruen">Facebook</a>.</p>
+		<p>Ihr könnt uns bevorzugt per <strong>E-Mail</strong> unter <a href="mailto:antragsgruen@netzbegruenung.de">antragsgruen@netzbegruenung.de</a> erreichen, aber auch telefonisch unter 0151-56024223, auf <a href="https://twitter.com/Antragsgruen">Twitter</a> und auf <a href="http://www.facebook.com/Antragsgruen">Facebook</a>.</p>
 	</div>
 
 

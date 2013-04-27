@@ -190,7 +190,7 @@ if ($msg_err != "") {
 <div class="content">
 	<strong>Hinweise:</strong>
 	<ul>
-		<li>Falls es Probleme mit dem Einloggen oder den Benachrichtigungen gibt, melde dich per E-Mail bei ####.##.de.</li>
+		<li>Falls es Probleme mit dem Einloggen oder den Benachrichtigungen gibt, melde dich per E-Mail bei <a href="mailto:antragsgruen@netzbegruenung.de">antragsgruen@netzbegruenung.de</a>.</li>
 		<li>Falls du das erste Mal auf Antragsgrün ie Benachrichtigung aktivierst, bekommst du einen Link an die angegebene E-Mail-Adresse geschickt. Sobald du diesen Link angeklickt hast, sind die Benachrichtigungen aktiv.</li>
 		<li>In der ersten E-Mail ist auch ein Passwort enthalten, mit dem du dich auf Antragsgrün einloggen kannst.</li>
 		<li>Du kannst die Benachrichtigungen jederzeit wieder deaktivieren, entweder mit dem Passwort, oder mit dem entsprechenden Link in jeder Benachrichtigung.</li>
