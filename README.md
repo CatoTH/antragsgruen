@@ -58,6 +58,14 @@ Installation
 
 Empfohlene PHP-Module:
 - Intl
+- APC
+
+Benötigte PHP-Module:
+- mcrypt
+- curl
+
+Benötigte PHP-Einstellungen:
+- short_open_tag = On
 
 Datenbank anlegen:
 - Eine Datenbank u. Benutzer für Antragsgrün anlegen; Antragsgrün braucht mindestens Rechte für SELECT/INSERT/UPDATE/DELETE
