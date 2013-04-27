@@ -12,7 +12,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 
 
 <div class="<?=implode(" ", $row_classes)?>">
-    <div class="span9">
+    <div class="span9 main_content">
 		<?php echo $content; ?>
     </div>
 	<?php  if ($this->menu || isset($this->multimenu) || isset($this->menus_html)) { ?>

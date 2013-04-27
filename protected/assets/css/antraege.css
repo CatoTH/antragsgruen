@@ -82,7 +82,7 @@ a:hover {
 }
 
 #page .row-fluid,
-#content {
+.content {
 	margin-top: 10px;
 }
 
@@ -181,7 +181,6 @@ h1.well {
 
 .span9,
 .span3 > div,
-	/* #content { */
 .antragcontent, ul.funktionen {
 	position: relative;
 	-moz-border-radius: 10px;
@@ -194,7 +193,7 @@ h1.well {
 }
 
 .span9 h1,
-#content h1 {
+.content h1 {
 	margin: 0;
 	color: #fff;
 	background: rgb(11, 47, 8);
@@ -236,7 +235,7 @@ h1.well {
 
 .span9 > .well:first-child,
 .span3 > div > .well:first-child,
-#content .well:first-child {
+.content .well:first-child {
 	-moz-border-radius-topleft: 10px;
 	-webkit-border-top-left-radius: 10px;
 	border-top-left-radius: 10px;
@@ -249,7 +248,7 @@ h1.well {
 .span9 ul:last-child .antrag:last-child,
 .antrags_text_holder  > .well:last-child,
 .well.last,
-#content > .well:last-child {
+.content > .well:last-child {
 	-moz-border-radius-bottomright: 10px;
 	-webkit-border-bottom-right-radius: 10px;
 	border-bottom-right-radius: 10px;
@@ -290,8 +289,8 @@ h1.well {
 	padding: 0;
 }
 
-h3,
-h2,
+.main_content > h3, .well > h3,
+.main_content > h2, .well > h2,
 .span3 .well .nav-list .nav-header {
 	margin: 0;
 	margin-top: 1px;
