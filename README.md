@@ -48,7 +48,7 @@ Es gibt je einen RSS-Feed über neue Anträge zu einer Veranstaltung, neue Ände
 
 Demo
 ----
-Im Testbetrieb wird es derzeit hier eingestzt: http://antraege.hoessl.eu/
+Hier läuft die Produktivversion von Antragsgrün: http://www.antragsgruen.de/
 
 
 
