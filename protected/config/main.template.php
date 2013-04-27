@@ -10,7 +10,7 @@ define("MULTISITE_MODE", false);
 
 if (MULTISITE_MODE) {
 	$dom_plain = "http://antraege-v2.hoessl.eu/";
-	$dom       = "http://(www\.)?<veranstaltungsreihe_id:[\w_-]+>.antraege-v2.hoessl.eu/";
+	$dom       = "http://<veranstaltungsreihe_id:[\w_-]+>.antraege-v2.hoessl.eu/";
 	$domv      = $dom . "<veranstaltung_id:[\w_-]+>/";
 } else {
 	$dom_plain = "";
@@ -74,6 +74,8 @@ if (MULTISITE_MODE) {
 		$dom_plain . 'neu-anlegen'      => 'infos/neuAnlegen',
 		$dom_plain . 'impressum'        => 'infos/impressum',
 	), $url_rules);
+
+	foreach ($url_rules as $key => $val) $url_rules[str_replace("http://", "http://www.", $key)] = $val;
 }
 
 return array(
