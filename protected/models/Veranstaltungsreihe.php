@@ -66,6 +66,17 @@ class Veranstaltungsreihe extends CActiveRecord
 	}
 
 	/**
+	 * @return Veranstaltungsreihe[]
+	 */
+	public static function getSidebarReihen() {
+		/** @var Veranstaltungsreihe[] $reihen */
+		$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
+		$reihen2 = array();
+		foreach ($reihen as $reihe) if (!$reihe->aktuelle_veranstaltung->getEinstellungen()->wartungs_modus_aktiv) $reihen2[] = $reihe;
+		return $reihen2;
+	}
+
+	/**
 	 * @var string $className
 	 * @return GxActiveRecord
 	 */

@@ -4,6 +4,8 @@
  * @var array|Veranstaltungsreihe[] $reihen
  */
 
+$this->pageTitle = "Antragsgrün selbst einsetzen";
+
 include(__DIR__ . "/sidebar.php");
 
 ?>
@@ -57,6 +59,11 @@ include(__DIR__ . "/sidebar.php");
 	<h2 id="selbst_nutzen">Antragsgrün selbst nutzen</h2>
 
 	<div class="content">
+
+		<div style="border: dotted 2px gray; margin: 20px; padding: 10px;">
+		<strong>Achtung:</strong> Antragsgrün ist noch im "<strong>Beta</strong>"-Stadium, es ist also noch mit einigen Fehlern und Ungereimtheiten zu rechnen. Falls dir etwas auffällt, schreib uns einfach eine kurze Mail.<br>
+		</div>
+		<br>
 		<?php /** @var CActiveForm $form */
 		$form = $this->beginWidget('CActiveForm', array(
 			"htmlOptions" => array(

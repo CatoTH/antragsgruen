@@ -5,6 +5,8 @@ class VeranstaltungController extends AntragsgruenController
 
 	public $text_comments = false;
 
+	public $layout = '//layouts/column2';
+
 	/**
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
@@ -595,6 +597,8 @@ class VeranstaltungController extends AntragsgruenController
 	public function actionLogin($veranstaltungsreihe_id = "", $veranstaltung_id = "", $back = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+
+		$this->layout = '//layouts/column2';
 
 		$err_str = "";
 		$model   = null;

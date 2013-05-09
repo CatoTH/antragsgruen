@@ -99,7 +99,7 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
 
 $feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
-$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
+$html      = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
 
 $this->menus_html[] = $html;
 
@@ -113,12 +113,12 @@ if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$this->menus_html[] = $html;
 }
 
-/*
-$html = "</div><div class='antragsgruen_werbung'><div class='well'><div class='nav-list'>";
-$html .= "<div class='nav-header'>Dein Antragsgrün</div>";
-$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
-$html .= "<div style='text-align: center;'><a href='" . CHtml::encode($this->createUrl("infos/selbstEinsetzen")) . "' class='btn btn-primary' style='margin-top: 15px;'><span class='icon-chevron-right'></span> Infos</a></div>";
-$html .= "</div>";
-$html .= "</div></div>";
-$this->menus_html[] = $html;
-*/
+if ($veranstaltung->veranstaltungsreihe->subdomain != "bamberg") {
+	$html = "</div><div class='antragsgruen_werbung'><div class='well'><div class='nav-list'>";
+	$html .= "<div class='nav-header'>Dein Antragsgrün</div>";
+	$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
+	$html .= "<div style='text-align: center;'><a href='" . CHtml::encode($this->createUrl("infos/selbstEinsetzen")) . "' class='btn btn-primary' style='margin-top: 15px;'><span class='icon-chevron-right'></span> Infos</a></div>";
+	$html .= "</div>";
+	$html .= "</div></div>";
+	$this->menus_html[] = $html;
+}

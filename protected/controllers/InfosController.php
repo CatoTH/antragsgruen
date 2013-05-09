@@ -7,7 +7,7 @@ class InfosController extends AntragsgruenController
 
 		$this->performLogin($this->createUrl("infos/neuAnlegen"));
 
-		$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
+		$reihen = Veranstaltungsreihe::getSidebarReihen();
 		$this->render('selbst_einsetzen', array(
 			"reihen" => $reihen
 		));
@@ -15,7 +15,7 @@ class InfosController extends AntragsgruenController
 
 	public function actionImpressum() {
 		$this->layout = '//layouts/column2';
-		$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
+		$reihen = Veranstaltungsreihe::getSidebarReihen();
 		$this->render('impressum', array(
 			"reihen" => $reihen
 		));
@@ -101,7 +101,7 @@ class InfosController extends AntragsgruenController
 					$login_id = $user->id;
 					$login_code = AntiXSS::createToken($login_id);
 
-					$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
+					$reihen = Veranstaltungsreihe::getSidebarReihen();
 					$this->render('neu_angelegt', array(
 						"reihen" => $reihen,
 						"reihe" => $reihe,
@@ -118,7 +118,7 @@ class InfosController extends AntragsgruenController
 			}
 		}
 
-		$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
+		$reihen = Veranstaltungsreihe::getSidebarReihen();
 		$this->render('neu_anlegen', array(
 			"reihen" => $reihen,
 			"anlegenformmodel" => $anlegenformmodel,
