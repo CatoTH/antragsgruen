@@ -113,7 +113,7 @@ if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$this->menus_html[] = $html;
 }
 
-if ($veranstaltung->veranstaltungsreihe->subdomain != "bamberg") {
+if (!isset($GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"]) || !in_array($veranstaltung->id, $GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"])) {
 	$html = "</div><div class='antragsgruen_werbung'><div class='well'><div class='nav-list'>";
 	$html .= "<div class='nav-header'>Dein Antragsgrün</div>";
 	$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
