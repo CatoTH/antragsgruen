@@ -289,8 +289,8 @@ h1.well {
 	padding: 0;
 }
 
-.main_content > h3, .well > h3,
-.main_content > h2, .well > h2,
+.main_content > h3, .well > h3, form > h3,
+.main_content > h2, .well > h2, form > h2,
 .span3 .well .nav-list .nav-header {
 	margin: 0;
 	margin-top: 1px;
