@@ -289,6 +289,44 @@ class AntragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 */
+	public function actionPlainHtml($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
+	{
+		/** @var Antrag $antrag */
+		$antrag = Antrag::model()->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect($this->createUrl("veranstaltung/index"));
+		}
+
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
+
+		/** @var $antragstellerInnen array|Person[] $antragstellerInnen */
+		$antragstellerInnen = array();
+		$unterstuetzerInnen = array();
+		$zustimmung_von     = array();
+		$ablehnung_von      = array();
+		if (count($antrag->antragUnterstuetzerInnen) > 0) foreach ($antrag->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
+		}
+
+		$this->renderPartial("plain_html", array(
+			'antrag'  => $antrag,
+			"sprache" => $antrag->veranstaltung->getSprache(),
+			"antragstellerInnen" => $antragstellerInnen,
+			"unterstuetzerInnen" => $unterstuetzerInnen,
+		));
+	}
+
+
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 */
 	public function actionBearbeiten($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';

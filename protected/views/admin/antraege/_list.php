@@ -31,4 +31,11 @@
             <th><?php echo GxHtml::encode($data->getAttributeLabel('datum_beschluss')); ?>:</th>
             <td><?php echo HtmlBBcodeUtils::formatMysqlDate($data->datum_beschluss); ?></td>
         </tr>
+	<tr>
+		<th>Formate:</th>
+		<td>
+			<?php echo CHtml::link("PDF", $this->createUrl("antrag/pdf", array("antrag_id" => $data->id))); ?>,
+			<a href="<?php echo CHtml::encode($this->createUrl("antrag/plainHtml", array("antrag_id" => $data->id))) ?>" download="<?php echo $data->revision_name ?>.html">HTML</a>
+		</td>
+	</tr>
 </table>

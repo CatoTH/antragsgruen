@@ -54,6 +54,7 @@ $url_rules = array(
 	$domv . 'antrag/<antrag_id:\d+>?kommentar_id=<kommentar_id:\d+>'                          => 'antrag/anzeige',
 	$domv . 'antrag/<antrag_id:\d+>'                                                          => 'antrag/anzeige',
 	$domv . 'antrag/<antrag_id:\d+>/pdf'                                                      => 'antrag/pdf',
+	$domv . 'antrag/<antrag_id:\d+>/plain_html'                                               => 'antrag/plainHtml',
 	$domv . 'antrag/<antrag_id:\d+>/neuConfirm'                                               => 'antrag/neuConfirm',
 	$domv . 'antrag/<antrag_id:\d+>/aendern'                                                  => 'antrag/aendern',
 	$domv . 'antrag/<antrag_id:\d+>/aenderungsantrag/<aenderungsantrag_id:\d+>'               => 'aenderungsantrag/anzeige',
