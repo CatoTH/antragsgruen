@@ -23,7 +23,7 @@ class UnterstuetzerInnenWidget
         }
         $neustr .= "</select>";
 
-        $neustr .= '<select name="' . get_class($antrag) . '[unterstuetzerIn_neu][rolle][]">';
+        $neustr .= '<select name="' . get_class($antrag) . '[unterstuetzerIn_neu][rolle][]" required>';
         $neustr .= '<option value=""> - </option>';
         foreach (IUnterstuetzerInnen::$ROLLEN as $key => $val) {
             $neustr .= '<option value="' . $key . '">' . CHtml::encode($val) . "</option>\n";

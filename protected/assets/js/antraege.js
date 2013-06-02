@@ -20,9 +20,8 @@
 		});
 	});
 
-	$(document).change(".person_selector",function () {
+	$(document).on("change", ".person_selector",function () {
 		var $t = $(this);
-
 		if ($t.val() === "neu") {
 			$t.parents(".unterstuetzerInnenwidget_adder").find(".unterstuetzerIn_neu_holder").show();
 		} else {
