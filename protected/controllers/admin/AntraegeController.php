@@ -100,6 +100,7 @@ class AntraegeController extends GxController
 
 		$dataProvider = new CActiveDataProvider('Antrag');
 		$dataProvider->sort->defaultOrder = "datum_einreichung DESC";
+		$dataProvider->getPagination()->pageSize = 50;
 		$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
 
 		$this->render('index', array(

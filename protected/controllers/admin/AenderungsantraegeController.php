@@ -109,6 +109,7 @@ class AenderungsantraegeController extends GxController {
         $dataProvider = new CActiveDataProvider('Aenderungsantrag', array(
 			"data" => $aenderungsantraege
 		));
+		$dataProvider->getPagination()->pageSize = 50;
         $this->render('index', array(
             'dataProvider' => $dataProvider,
         ));
