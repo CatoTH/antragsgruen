@@ -241,6 +241,16 @@ class Antrag extends IAntrag
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function kannUeberarbeiten() {
+		if ($this->veranstaltung->isAdminCurUser()) return true;
+		if ($this->veranstaltung->veranstaltungsreihe->isAdminCurUser()) return true;
+		if ($this->veranstaltung->getEinstellungen()->initiatorInnen_duerfen_aendern && $this->binInitiatorIn()) return true;
+		return false;
+	}
+
 
 	/**
 	 * @param int $veranstaltung_id

@@ -29,28 +29,31 @@
 		}
 	}).trigger("change");
 
-	$(".antragabsatz_holder .kommentare .hider").click(function (ev) {
+	var $antragabsatz_holder = $(".antragabsatz_holder"),
+		$kommentare = $(".kommentare");
+
+	$antragabsatz_holder.find(".kommentare .hider").click(function (ev) {
 		$(this).hide();
 		$(this).parents(".kommentare").find(".shower").css("display", "block");
 		$(this).parents(".kommentare").find(".text").show();
 		ev.preventDefault();
 	});
 
-	$(".antragabsatz_holder .kommentare .shower").click(function (ev) {
+	$antragabsatz_holder.find(".kommentare .shower").click(function (ev) {
 		$(this).hide();
 		$(this).parents(".kommentare").find(".hider").css("display", "block");
 		$(this).parents(".kommentare").find(".text").show();
 		ev.preventDefault();
 	});
 
-	$(".kommentare .shower").click(function (ev) {
+	$kommentare.find(" .shower").click(function (ev) {
 		ev.preventDefault();
 		$(this).parents(".row-absatz").find(".kommentarform").show();
 		$(this).hide();
 		$(this).parents(".row-absatz").find(".kommentare .hider").show();
 	});
 
-	$(".kommentare .hider").click(function (ev) {
+	$kommentare.find(".hider").click(function (ev) {
 		ev.preventDefault();
 		$(this).parents(".row-absatz").find(".kommentarform").hide();
 		$(this).hide();
@@ -99,6 +102,11 @@
 
 
 function ckeditor_bbcode(id) {
+
+	var $el = $("#" + id),
+		initialized = $el.data("ckeditor_initialized");
+	if (typeof(initialized) != "undefined" && initialized) return;
+	$el.data("ckeditor_initialized", "1");
 
 	CKEDITOR.replace(id, {
 		allowedContent: 'b s i u p blockquote ul ol li a[href];',

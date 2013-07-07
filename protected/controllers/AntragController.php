@@ -248,7 +248,7 @@ class AntragController extends AntragsgruenController
 			"zustimmung_von"     => $zustimmung_von,
 			"ablehnung_von"      => $ablehnung_von,
 			"aenderungsantraege" => $aenderungsantraege,
-			"edit_link"          => $antrag->binInitiatorIn(),
+			"edit_link"          => $antrag->kannUeberarbeiten(),
 			"kommentare_offen"   => $kommentare_offen,
 			"kommentar_person"   => $kommentar_person,
 			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/antraege/update/id/" . $antrag_id : null),
@@ -319,6 +319,48 @@ class AntragController extends AntragsgruenController
 			"antragstellerInnen" => $antragstellerInnen,
 			"unterstuetzerInnen" => $unterstuetzerInnen,
 		));
+	}
+
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 */
+	public function actionAes_Einpflegen($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
+	{
+		$this->layout = '//layouts/column2';
+
+		$antrag_id = IntVal($antrag_id);
+
+		/** @var Antrag $antrag */
+		$antrag = Antrag::model()->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect($this->createUrl("veranstaltung/index"));
+		}
+
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
+
+		if (!$antrag->kannUeberarbeiten()) {
+			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
+		}
+
+		if (AntiXSS::isTokenSet("ueberarbeiten")) {
+			echo "Save";
+			die();
+		}
+
+		$aenderungsantraege = array();
+		foreach ($antrag->aenderungsantraege as $antr) if (!in_array($antr->status, IAntrag::$STATI_UNSICHTBAR)) $aenderungsantraege[] = $antr;
+
+		$this->render("aes_einpflegen", array(
+			"antrag"             => $antrag,
+			"aenderungsantraege" => $aenderungsantraege,
+			"sprache"            => $antrag->veranstaltung->getSprache(),
+		));
+
 	}
 
 

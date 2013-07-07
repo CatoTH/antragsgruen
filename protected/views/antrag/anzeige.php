@@ -46,7 +46,10 @@ else {
 }
 
 if ($antrag->veranstaltung->getEinstellungen()->kann_pdf) $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';
-if ($edit_link) $html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/bearbeiten", array("antrag_id" => $antrag->id))) . '</li>';
+if ($edit_link) {
+	$html .= '<li class="edit">' . CHtml::link($sprache->get("Änderungsanträge einpflegen"), $this->createUrl("antrag/aes_einpflegen", array("antrag_id" => $antrag->id))) . '</li>';
+	$html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/bearbeiten", array("antrag_id" => $antrag->id))) . '</li>';
+}
 
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
 else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $this->createUrl("veranstaltung/index")) . '</li>
