@@ -110,8 +110,6 @@ function ckeditor_bbcode(id) {
 
 	CKEDITOR.replace(id, {
 		allowedContent: 'b s i u p blockquote ul ol li a[href];',
-		// Remove unused plugins.
-		//removePlugins: 'bidi,dialogadvtab,div,filebrowser,flash,format,forms,horizontalrule,iframe,justify,liststyle,pagebreak,showborders,stylescombo,table,tabletools,templates',
 		removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,magicline' + ',sourcearea',
 		extraPlugins: 'autogrow,wordcount,bbcode',
 		scayt_sLang: 'de_DE',

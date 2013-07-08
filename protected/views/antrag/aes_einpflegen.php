@@ -7,7 +7,7 @@
  * @var Sprache $sprache
  */
 
-/** @var CWebApplication $app  */
+/** @var CWebApplication $app */
 $app = Yii::app();
 $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckeditor/ckeditor.js');
 $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/bbcode/plugin.js');
@@ -28,33 +28,56 @@ if (count($x) > 1) {
 	$rev_neu = $antrag->revision_name . "neu";
 }
 
+$kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_duerfen_aes_ablehnen;
+
 ?>
-<script>
-	$(function() {
-		$(".absatz_selector_holder").each(function() {
-			var $absatz = $(this);
-			$absatz.find("input[type=radio]").on("click change", function() {
-				var curr = $absatz.find("input[type=radio]:checked").val();
-				if (curr == "original") {
-					$absatz.find("blockquote.original").show();
-					$absatz.find("textarea.neu_text").hide();
-					$absatz.find("blockquote.aenderung").hide();
-				} else if (curr == "neu") {
-					$absatz.find("blockquote.original").hide();
-					$absatz.find("blockquote.aenderung").hide();
-					var $textarea = $absatz.find("textarea.neu_text");
-					$textarea.show();
-					ckeditor_bbcode($textarea.attr("id"));
-				} else {
-					$absatz.find("blockquote.original").hide();
-					$absatz.find("textarea.neu_text").hide();
-					$absatz.find("blockquote.aenderung").hide();
-					$absatz.find("blockquote.ae_" + curr).show();
+	<script>
+		$(function () {
+			function recalc_ae_status(val) {
+				var $select = $("#ae_select_" + val),
+					absaetze = $select.data("absaetze"),
+					voll_angenommen = true;
+				for (var i in absaetze) {
+					if (!$(".absatz_" + absaetze[i]).find("input[type=radio][value=" + val + "]").prop("checked")) voll_angenommen = false;
 				}
-			}).first().change();
+				if (voll_angenommen) $select.find("option[value=<?php echo IAntrag::$STATUS_ANGENOMMEN; ?>]").prop("selected", true);
+				else $select.val("");
+			}
+
+			$(".absatz_selector_holder").each(function () {
+				var $absatz = $(this),
+					$radios = $absatz.find("input[type=radio]");
+
+				$radios.on("click change",function () {
+					var curr = $absatz.find("input[type=radio]:checked").val();
+					if (curr == "original") {
+						$absatz.find("blockquote.original").show();
+						$absatz.find("textarea.neu_text").parent().hide();
+						$absatz.find("blockquote.aenderung").hide();
+					} else if (curr == "neu") {
+						$absatz.find("blockquote.original").hide();
+						$absatz.find("blockquote.aenderung").hide();
+						var $textarea = $absatz.find("textarea.neu_text");
+						$textarea.parent().show();
+						ckeditor_bbcode($textarea.attr("id"));
+					} else {
+						$absatz.find("blockquote.original").hide();
+						$absatz.find("textarea.neu_text").parent().hide();
+						$absatz.find("blockquote.aenderung").hide();
+						$absatz.find("blockquote.ae_" + curr).show();
+					}
+				}).first().change();
+
+				$radios.on("change", function() {
+					$absatz.find("input[type=radio]").each(function() {
+						var val = $(this).val();
+						if (parseInt(val) > 0) recalc_ae_status(val);
+					});
+				});
+
+			});
 		});
-	});
-</script>
+	</script>
 	<h1 class="well">Überarbeiten: <?php
 		if ($antrag->revision_name != "") echo CHtml::encode($antrag->revision_name . ": " . $antrag->name);
 		else echo CHtml::encode($antrag->name);
@@ -81,35 +104,61 @@ if (count($x) > 1) {
 				<?
 				}
 				?>
-				<label>
-					<input type="radio" name="titel_typ" value="neu"> Neuer Titel: „<input type="text" name="titel_neu">“
-				</label>
+				<div>
+				<label style="display: inline;"><input type="radio" name="titel_typ" value="neu"> Neuer Titel:</label> „<input type="text" name="titel_neu" title="Neuer Titel">“
+				</div>
 
 			</div>
 
 			<?php
 
 			$absae = $antrag->getParagraphs(true, true);
+			$aes2absaetze = array();
+			/** @var Aenderungsantrag[] $aes */
+			$aes = array();
 			foreach ($absae as $i => $abs) {
-				echo "<h3>Absatz " . ($i + 1) . "</h3><div class='absatz_selector_holder content'>";
+				echo "<h3>Absatz " . ($i + 1) . "</h3><div class='absatz_selector_holder content absatz_" . $i . "'>";
 				/** @var AntragAbsatz $abs */
 				$full_texts = "";
 				echo "<label><input type='radio' name='absatz_typ[$i]' value='original' checked> Original beibehalten</label>";
 
 				foreach ($abs->aenderungsantraege as $ant) {
+					if (!isset($aes2absaetze[IntVal($ant->id)])) {
+						$aes2absaetze[IntVal($ant->id)] = array();
+						$aes[IntVal($ant->id)] = $ant;
+					}
+					$aes2absaetze[IntVal($ant->id)][] = IntVal($i);
+
 					$par = $ant->getDiffParagraphs();
 					if ($par[$i] != "") {
 						echo "<label><input type='radio' name='absatz_typ[$i]' value='" . $ant->id . "'> " . CHtml::encode($ant->revision_name) . "</label>";
 						$full_texts .= "<blockquote class='aenderung ae_" . $ant->id . "'>" . DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i]) . "</blockquote>";
 					}
 				}
-				echo "<label><input type='radio' name='absatz_typ[$i]' value='neu'> Neuer Text</label>";
+				echo "<label><input type='radio' name='absatz_typ[$i]' value='neu'> Neuer Text</label><br>";
 				echo "<blockquote class='original'>" . $abs->str_html_plain . "</blockquote>" . $full_texts;
-				echo "<textarea class='neu_text' name='neu_text[$i]' id='neu_text_$i' style='width: 550px; height: 200px;'>" . CHtml::encode($abs->str_bbcode) . "</textarea>";
+				echo "<div><textarea class='neu_text' name='neu_text[$i]' id='neu_text_$i' style='width: 550px; height: 200px;'>" . CHtml::encode($abs->str_bbcode) . "</textarea></div>";
 				echo "</div>";
 			}
 			?>
 
+			<h3>Stati der Änderunganträge setzen</h3>
+
+			<div id="ae_status_setter" class="content">
+				<?php foreach ($antrag->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) {
+					$absaetze = $ae->getAffectedParagraphs();
+					?>
+					<label><span class="ae"><?php echo CHtml::encode($ae->revision_name); ?></span> <select id="ae_select_<?php echo $ae->id; ?>" name="ae[<?php echo $ae->id; ?>]" required data-absaetze="<?php echo json_encode($absaetze); ?>">
+							<option value=""> - bitte auswählen -</option>
+							<option value="<?php echo IAntrag::$STATUS_ANGENOMMEN; ?>">Übernommen</option>
+							<option value="<?php echo IAntrag::$STATUS_MODIFIZIERT_ANGENOMMEN; ?>">Modifiziert Angenommen</option>
+							<option value="<?php echo IAntrag::$STATUS_EINGEREICHT_GEPRUEFT; ?>">Aufrecht erhalten</option>
+							<?php if ($kann_aes_ablehnen) { ?>
+								<option value="<?php echo IAntrag::$STATUS_ABGELEHNT; ?>">Abgelehnt</option>
+							<?php } ?>
+						</select></label>
+				<?php } ?>
+			</div>
 			<div class="submitrow content">
 				<?php
 				$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Speichern'));
