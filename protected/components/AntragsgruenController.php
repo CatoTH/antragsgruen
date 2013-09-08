@@ -100,13 +100,13 @@ class AntragsgruenController extends CController
 			$this->veranstaltung = Veranstaltung::model()->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
 		}
 
-		if ($this->veranstaltung->veranstaltungsreihe->subdomain != $veranstaltungsreihe_id) {
+		if (strtolower($this->veranstaltung->veranstaltungsreihe->subdomain) != strtolower($veranstaltungsreihe_id)) {
 			Yii::app()->user->setFlash("error", "Fehlerhafte Parameter - die Veranstaltung gehört nicht zur Veranstaltungsreihe.");
 			$this->redirect($this->createUrl("veranstaltung/index", array("veranstaltung_id" => $veranstaltung_id)));
 			return null;
 		}
 
-		if (is_object($check_antrag) && $check_antrag->veranstaltung->url_verzeichnis != $veranstaltung_id) {
+		if (is_object($check_antrag) && strtolower($check_antrag->veranstaltung->url_verzeichnis) != strtolower($veranstaltung_id)) {
 			Yii::app()->user->setFlash("error", "Fehlerhafte Parameter - der Antrag gehört nicht zur Veranstaltung.");
 			$this->redirect($this->createUrl("veranstaltung/index", array("veranstaltung_id" => $veranstaltung_id)));
 			return null;

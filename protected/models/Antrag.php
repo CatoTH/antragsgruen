@@ -198,15 +198,15 @@ class Antrag extends IAntrag
 
 
 	/**
-	 * @param bool $nurfreigeschaltete
+	 * @param bool $nurfreigeschaltete_aes
 	 * @param bool $praesentations_hacks
 	 * @return array|AntragAbsatz[]
 	 */
-	public function getParagraphs($nurfreigeschaltete = true, $praesentations_hacks = false)
+	public function getParagraphs($nurfreigeschaltete_aes = true, $praesentations_hacks = false)
 	{
 		if (!is_null($this->absaetze)) return $this->absaetze;
 		$this->absaetze = array();
-		if ($nurfreigeschaltete) {
+		if ($nurfreigeschaltete_aes) {
 			$aenders = array();
 			foreach ($this->aenderungsantraege as $ant) if (!in_array($ant->status, IAntrag::$STATI_UNSICHTBAR)) $aenders[] = $ant;
 		} else {
@@ -290,6 +290,15 @@ class Antrag extends IAntrag
 			if ($revnr > $max_rev) $max_rev = $revnr;
 		}
 		return $max_rev;
+	}
+
+	/**
+	 * @param int $ae_id
+	 * @return Aenderungsantrag
+	 */
+	public function getAenderungsAntragById($ae_id) {
+		$ae = Aenderungsantrag::model()->findAll("id = " . InTVal($ae_id) . " AND antrag_id = " . IntVal($this->id));
+		return (count($ae) > 0 ? $ae[0] : null);
 	}
 
 

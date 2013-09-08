@@ -184,6 +184,27 @@ class Aenderungsantrag extends IAntrag
 		return json_decode($this->text_neu);
 	}
 
+	/**
+	 *
+	 */
+	public function calcDiffText() {
+		$text_vorher  = $this->antrag->text;
+		$paragraphs = $this->antrag->getParagraphs(false, false);
+		$text_neu = array();
+		$diff = $this->getDiffParagraphs();
+		foreach ($paragraphs as $i => $para) {
+			if ($diff[$i] != "") $text_neu[] = $diff[$i];
+			else $text_neu[] = $para->str_bbcode;
+		}
+		$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($text_vorher), trim(implode("\n\n", $text_neu)));
+		$diff_text = "";
+
+		if ($this->name_neu != $this->antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $this->name_neu . "[/QUOTE]\n\n";
+		$diff_text .= DiffUtils::diff2text($diff, $this->antrag->getFirstLineNo());
+
+		$this->aenderung_text    = $diff_text;
+	}
+
 
 	/**
 	 * @return array|AntragAbsatz[]

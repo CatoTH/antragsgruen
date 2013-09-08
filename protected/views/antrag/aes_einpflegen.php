@@ -68,8 +68,8 @@ $kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_
 					}
 				}).first().change();
 
-				$radios.on("change", function() {
-					$absatz.find("input[type=radio]").each(function() {
+				$radios.on("change", function () {
+					$absatz.find("input[type=radio]").each(function () {
 						var val = $(this).val();
 						if (parseInt(val) > 0) recalc_ae_status(val);
 					});
@@ -105,7 +105,7 @@ $kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_
 				}
 				?>
 				<div>
-				<label style="display: inline;"><input type="radio" name="titel_typ" value="neu"> Neuer Titel:</label> „<input type="text" name="titel_neu" title="Neuer Titel">“
+					<label style="display: inline;"><input type="radio" name="titel_typ" value="neu"> Neuer Titel:</label> „<input type="text" name="titel_neu" title="Neuer Titel">“
 				</div>
 
 			</div>
@@ -125,7 +125,7 @@ $kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_
 				foreach ($abs->aenderungsantraege as $ant) {
 					if (!isset($aes2absaetze[IntVal($ant->id)])) {
 						$aes2absaetze[IntVal($ant->id)] = array();
-						$aes[IntVal($ant->id)] = $ant;
+						$aes[IntVal($ant->id)]          = $ant;
 					}
 					$aes2absaetze[IntVal($ant->id)][] = IntVal($i);
 
@@ -140,9 +140,18 @@ $kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_
 				echo "<div><textarea class='neu_text' name='neu_text[$i]' id='neu_text_$i' style='width: 550px; height: 200px;'>" . CHtml::encode($abs->str_bbcode) . "</textarea></div>";
 				echo "</div>";
 			}
-			?>
 
-			<h3>Stati der Änderunganträge setzen</h3>
+			echo "<h3>Begründung</h3><div class='absatz_selector_holder content absatz_begruendung'>";
+			/** @var AntragAbsatz $abs */
+			$full_texts = "";
+			echo "<label><input type='radio' name='begruendung_typ' value='original' checked> Original beibehalten</label>";
+			echo "<label><input type='radio' name='begruendung_typ' value='neu'> Neuer Text</label><br>";
+			echo "<blockquote class='original'>" . HtmlBBcodeUtils::bbcode2html($antrag->begruendung) . "</blockquote>" . $full_texts;
+			echo "<div><textarea class='neu_text' name='neu_begruendung' id='neu_begruendung' style='width: 550px; height: 200px;'>" . CHtml::encode($antrag->begruendung) . "</textarea></div>";
+			echo "</div>";
+
+			?>
+			<h3> Stati der Änderunganträge setzen </h3>
 
 			<div id="ae_status_setter" class="content">
 				<?php foreach ($antrag->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) {
@@ -161,7 +170,7 @@ $kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_
 			</div>
 			<div class="submitrow content">
 				<?php
-				$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Speichern'));
+				$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Speichern', 'htmlOptions' => array('name' => AntiXSS::createToken('ueberarbeiten'))));
 				?>
 			</div>
 		</form>
