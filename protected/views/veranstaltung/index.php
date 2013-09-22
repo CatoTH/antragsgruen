@@ -79,7 +79,7 @@ foreach ($antraege as $name=> $antrs) {
 		echo "</p>\n";
 		echo "<p class='info'>von ";
 		$vons = array();
-		foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == "initiator") $vons[] = $unt->person->name;
+		foreach ($antrag->getAntragstellerInnen() as $p) $vons[] = $p->name;
 		echo implode(", ", $vons);
 		echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
 		echo "</p>";
@@ -91,7 +91,7 @@ foreach ($antraege as $name=> $antrs) {
 				echo "<span class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($ae->datum_einreichung) . "</span>\n";
 				echo CHtml::link($ae->revision_name, $this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $ae->antrag->id, "aenderungsantrag_id" => $ae->id)));
 				$vons = array();
-				foreach ($ae->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->rolle == "initiator") $vons[] = $unt->person->name;
+				foreach ($ae->getAntragstellerInnen() as $p) $vons[] = $p->name;
 				echo "<span class='info'>" . implode(", ", $vons) . "</span>\n";
 				echo "</li>\n";
 			}

@@ -147,18 +147,6 @@ class AntragController extends AntragsgruenController
 
 		$this->performAnzeigeActions($antrag, $kommentar_id);
 
-		/** @var $antragstellerInnen array|Person[] $antragstellerInnen */
-		$antragstellerInnen = array();
-		$unterstuetzerInnen = array();
-		$zustimmung_von     = array();
-		$ablehnung_von      = array();
-		if (count($antrag->antragUnterstuetzerInnen) > 0) foreach ($antrag->antragUnterstuetzerInnen as $relatedModel) {
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
-		}
-
 
 		$kommentare_offen = array();
 
@@ -243,10 +231,6 @@ class AntragController extends AntragsgruenController
 
 		$this->render("anzeige", array(
 			"antrag"             => $antrag,
-			"antragstellerInnen" => $antragstellerInnen,
-			"unterstuetzerInnen" => $unterstuetzerInnen,
-			"zustimmung_von"     => $zustimmung_von,
-			"ablehnung_von"      => $ablehnung_von,
 			"aenderungsantraege" => $aenderungsantraege,
 			"edit_link"          => $antrag->kannUeberarbeiten(),
 			"kommentare_offen"   => $kommentare_offen,
@@ -348,8 +332,6 @@ class AntragController extends AntragsgruenController
 		}
 
 		if (AntiXSS::isTokenSet("ueberarbeiten")) {
-			echo "<pre>";
-
 			$neuer                   = new Antrag();
 			$neuer->veranstaltung_id = $antrag->veranstaltung_id;
 			$neuer->abgeleitet_von   = $antrag->id;
@@ -394,7 +376,7 @@ class AntragController extends AntragsgruenController
 			}
 			$neuer->text              = implode("\n\n", $neue_absaetze);
 			$neuer->revision_name     = $_REQUEST["rev_neu"];
-			$neuer->datum_einreichung = new CDbExpression('NOW()');;
+			$neuer->datum_einreichung = new CDbExpression('NOW()');
 			switch ($_REQUEST["begruendung_typ"]) {
 				case "original":
 					$neuer->begruendung = $antrag->begruendung;
@@ -418,6 +400,7 @@ class AntragController extends AntragsgruenController
 				}
 
 				$antrag->status = IAntrag::$STATUS_MODIFIZIERT;
+				$antrag->datum_beschluss = new CDbExpression('NOW()');
 				$antrag->save();
 
 				foreach ($antrag->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) {
@@ -430,7 +413,6 @@ class AntragController extends AntragsgruenController
 							// @TODO Benachrichtigen
 							break;
 						case IAntrag::$STATUS_EINGEREICHT_GEPRUEFT:
-							echo "ÄA übernehmen";
 							$neuer_ae                        = new Aenderungsantrag();
 							$neuer_ae->antrag_id             = $neuer->id;
 							$neuer_ae->revision_name         = $ae->revision_name; // @TODO

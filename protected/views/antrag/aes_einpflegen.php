@@ -75,6 +75,10 @@ $kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_
 					});
 				});
 
+				$("input[name=titel_neu]").change(function() {
+					$("input[name=titel_typ][value=neu]").prop("checked", true);
+				});
+
 			});
 		});
 	</script>
@@ -97,9 +101,10 @@ $kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_
 					<input type="radio" name="titel_typ" value="original" checked> Original beibehalten: „<?php echo CHtml::encode($antrag->name); ?>“
 				</label>
 				<?php foreach ($aenderungsantraege as $ae) if ($ae->name_neu != $antrag->name) {
+					$ae_link = CHtml::link($ae->revision_name, $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag->id, "aenderungsantrag_id" => $ae->id)));
 					?>
 					<label>
-						<input type="radio" name="titel_typ" value="<?php echo CHtml::encode($ae->id); ?>"> <?php echo CHtml::encode($ae->revision_name) ?> übernehmen: „<?php echo CHtml::encode($ae->name_neu); ?>“
+						<input type="radio" name="titel_typ" value="<?php echo CHtml::encode($ae->id); ?>"> <?php echo $ae_link ?> übernehmen: „<?php echo CHtml::encode($ae->name_neu); ?>“
 					</label>
 				<?
 				}
@@ -131,7 +136,14 @@ $kann_aes_ablehnen = $antrag->veranstaltung->getEinstellungen()->initiatorInnen_
 
 					$par = $ant->getDiffParagraphs();
 					if ($par[$i] != "") {
-						echo "<label><input type='radio' name='absatz_typ[$i]' value='" . $ant->id . "'> " . CHtml::encode($ant->revision_name) . "</label>";
+						$ae_link = "<a href=\"" . CHtml::encode($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag->id, "aenderungsantrag_id" => $ant->id))) . "\" target=\"_blank\">" . CHtml::encode($ant->revision_name) . "</a>";
+
+						$antragstellerInnen = $ant->getAntragstellerInnen();
+						$x = array();
+						foreach ($antragstellerInnen as $a) $x[] = $a->name;
+						$von = implode(", ", $x);
+
+						echo "<label><input type='radio' name='absatz_typ[$i]' value='" . $ant->id . "'> " . $ae_link . " (von " . CHtml::encode($von) . ")</label>";
 						$full_texts .= "<blockquote class='aenderung ae_" . $ant->id . "'>" . DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i]) . "</blockquote>";
 					}
 				}

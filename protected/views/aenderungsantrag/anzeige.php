@@ -3,10 +3,6 @@
 /**
  * @var AenderungsantragController $this
  * @var Aenderungsantrag $aenderungsantrag
- * @var $antragstellerInnen array|Person[]
- * @var $unterstuetzerInnen array|Person[]
- * @var array|Person[] $ablehnung_von
- * @var array|Person[] $zustimmung_von
  * @var bool $js_protection
  * @var array $hiddens
  * @var bool $edit_link
@@ -46,6 +42,7 @@ $this->menus_html[] = $html;
 
 
 $rows = 10;
+$antragstellerInnen = $aenderungsantrag->getAntragstellerInnen();
 ?>
 <h1 class="well">Änderungsantrag</h1>
 
@@ -278,6 +275,9 @@ $rows = 10;
 </div>
 
 <?php
+$zustimmung_von = $aenderungsantrag->getZustimmungen();
+$ablehnung_von = $aenderungsantrag->getAblehnungen();
+$unterstuetzerInnen = $aenderungsantrag->getUnterstuetzerInnen();
 $eintraege = (count($unterstuetzerInnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
 $unterstuetzen_policy = $aenderungsantrag->antrag->veranstaltung->getPolicyUnterstuetzen();
 $kann_unterstuetzen = $unterstuetzen_policy->checkCurUserHeuristically();

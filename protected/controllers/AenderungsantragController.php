@@ -197,18 +197,6 @@ class AenderungsantragController extends AntragsgruenController
 			}
 		}
 
-
-		$antragstellerInnen = array();
-		$unterstuetzerInnen = array();
-		$zustimmung_von     = array();
-		$ablehnung_von      = array();
-		if (count($aenderungsantrag->aenderungsantragUnterstuetzerInnen) > 0) foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $relatedModel) {
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
-		}
-
 		$hiddens       = array();
 		$js_protection = Yii::app()->user->isGuest;
 		if ($js_protection) {
@@ -229,10 +217,6 @@ class AenderungsantragController extends AntragsgruenController
 
 		$this->render("anzeige", array(
 			"aenderungsantrag"   => $aenderungsantrag,
-			"antragstellerInnen" => $antragstellerInnen,
-			"unterstuetzerInnen" => $unterstuetzerInnen,
-			"zustimmung_von"     => $zustimmung_von,
-			"ablehnung_von"      => $ablehnung_von,
 			"edit_link"          => $aenderungsantrag->binInitiatorIn(),
 			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $aenderungsantrag_id : null),
 			"kommentare_offen"   => $kommentare_offen,

@@ -25,7 +25,7 @@ $this->menu = array(
 	<?php
 	if ($model->status == Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) {
 		$form        = $this->beginWidget('GxActiveForm');
-		$new_rev = $model->veranstaltung->naechsteAntragRevNr($model->typ);
+		$new_rev = ($model->revision_name == "" ? $model->veranstaltung->naechsteAntragRevNr($model->typ) : $model->revision_name);
 
 		echo '<input type="hidden" name="' . AntiXSS::createToken("antrag_freischalten") . '" value="' . CHtml::encode($new_rev) . '">';
 		echo "<div style='text-align: center;'>";

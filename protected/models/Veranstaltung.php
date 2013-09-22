@@ -213,7 +213,10 @@ class Veranstaltung extends GxActiveRecord
 		$antraege        = $this->antraege;
 		$antraege_sorted = array();
 		// $warnung         = false;
-		foreach ($antraege as $ant) if (!in_array($ant->status, IAntrag::$STATI_UNSICHTBAR)) {
+
+		$unsichtbar = IAntrag::$STATI_UNSICHTBAR;
+		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
+		foreach ($antraege as $ant) if (!in_array($ant->status, $unsichtbar)) {
 			if (!isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]])) $antraege_sorted[Antrag::$TYPEN[$ant->typ]] = array();
 			$key = $ant->revision_name;
 			/*

@@ -262,7 +262,9 @@ class Antrag extends IAntrag
 		$oCriteria        = new CDbCriteria();
 		$oCriteria->alias = "antrag";
 		if ($veranstaltung_id > 0) $oCriteria->addCondition("antrag.veranstaltung_id = " . IntVal($veranstaltung_id));
-		$oCriteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
+		$unsichtbar = IAntrag::$STATI_UNSICHTBAR;
+		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
+		$oCriteria->addNotInCondition("antrag.status", $unsichtbar);
 		$oCriteria->order = 'antrag.datum_einreichung DESC';
 		$dataProvider     = new CActiveDataProvider('Antrag', array(
 			'criteria'   => $oCriteria,
@@ -343,6 +345,50 @@ class Antrag extends IAntrag
 	public static function suche($veranstaltung_id, $suchbegriff)
 	{
 		return Antrag::model()->findAll("(`name` LIKE '%" . addslashes($suchbegriff) . "%' OR `text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND veranstaltung_id = " . IntVal($veranstaltung_id));
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getAntragstellerInnen() {
+		$antragstellerInnen = array();
+		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
+		}
+		return $antragstellerInnen;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getUnterstuetzerInnen() {
+		$unterstuetzerInnen = array();
+		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
+		}
+		return $unterstuetzerInnen;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getZustimmungen() {
+		$zustimmung_von     = array();
+		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
+		}
+		return $zustimmung_von;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getAblehnungen() {
+		$ablehnung_von      = array();
+		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
+		}
+		return $ablehnung_von;
 	}
 
 

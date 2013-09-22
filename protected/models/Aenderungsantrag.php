@@ -247,6 +247,50 @@ class Aenderungsantrag extends IAntrag
 	}
 
 	/**
+	 * @return Person[]
+	 */
+	public function getAntragstellerInnen() {
+		$antragstellerInnen = array();
+		if (count($this->aenderungsantragUnterstuetzerInnen) > 0) foreach ($this->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
+		}
+		return $antragstellerInnen;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getUnterstuetzerInnen() {
+		$unterstuetzerInnen = array();
+		if (count($this->aenderungsantragUnterstuetzerInnen) > 0) foreach ($this->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
+		}
+		return $unterstuetzerInnen;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getZustimmungen() {
+		$zustimmung_von     = array();
+		if (count($this->aenderungsantragUnterstuetzerInnen) > 0) foreach ($this->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
+		}
+		return $zustimmung_von;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getAblehnungen() {
+		$ablehnung_von      = array();
+		if (count($this->aenderungsantragUnterstuetzerInnen) > 0) foreach ($this->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
+		}
+		return $ablehnung_von;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function binInitiatorIn() {
