@@ -294,6 +294,15 @@ class Veranstaltung extends GxActiveRecord
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function checkAntragsschlussVorbei()
+	{
+		if ($this->antragsschluss != "" && date("YmdHis") > str_replace(array(" ", ":", "-"), array("", "", ""), $this->antragsschluss)) return true;
+		return false;
+	}
+
+	/**
 	 * @var string $className
 	 * @return GxActiveRecord
 	 */

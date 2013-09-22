@@ -247,7 +247,10 @@ class Antrag extends IAntrag
 	public function kannUeberarbeiten() {
 		if ($this->veranstaltung->isAdminCurUser()) return true;
 		if ($this->veranstaltung->veranstaltungsreihe->isAdminCurUser()) return true;
-		if ($this->veranstaltung->getEinstellungen()->initiatorInnen_duerfen_aendern && $this->binInitiatorIn()) return true;
+		if ($this->veranstaltung->getEinstellungen()->initiatorInnen_duerfen_aendern && $this->binInitiatorIn()) {
+			if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
+			else return true;
+		}
 		return false;
 	}
 

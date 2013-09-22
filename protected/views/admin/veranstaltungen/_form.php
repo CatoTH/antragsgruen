@@ -25,10 +25,7 @@ $einstellungen = $model->getEinstellungen();
 	<div class="content">
 
 		<fieldset style="margin-top: 10px;">
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]" value="0" <?php if (!$model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]" value="1" <?php if ($model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			<strong>Wartungsmodus aktiv</strong>
-			<small>(Nur Admins können den Seiteninhalt sehen)</small>
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]" value="1" <?php if ($model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>> <strong>Wartungsmodus aktiv</strong> <small>(Nur Admins können den Seiteninhalt sehen)</small></label>
 		</fieldset>
 		<br>
 
@@ -151,33 +148,22 @@ $einstellungen = $model->getEinstellungen();
 		<br>
 
 		<div>
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[revision_name_verstecken]" value="0" <?php if ($einstellungen->revision_name_verstecken != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[revision_name_verstecken]" value="1" <?php if ($einstellungen->revision_name_verstecken == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			<strong>Revisionsname verstecken</strong>
-			<small>(Revisionsnamen wie z.B. "A1", "A2", "Ä1neu" etc.) müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt. Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small>
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[revision_name_verstecken]" value="1" <?php if ($einstellungen->revision_name_verstecken == 1) echo "checked"; ?>> <strong>Revisionsname verstecken</strong> <small>(Revisionsnamen wie z.B. "A1", "A2", "Ä1neu" etc.) müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt. Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small></label> &nbsp; &nbsp;
 		</div>
 		<br>
 
 		<div>
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung_global]" value="0" <?php if ($einstellungen->ae_nummerierung_global != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung_global]" value="1" <?php if ($einstellungen->ae_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			<strong>ÄA-Nummerierung für die ganze Veranstaltung</strong>
-			<small>Bei "Nein" beginnt die Nummerierung der Änderungsanträge bei jedem Antrag bei 1, also "Ä1 zu A1", "Ä1 zu A2", etc. Bei "Ja" gibt es immer nur einen "Ä1", einen "Ä2" etc.</small>
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[ae_nummerierung_global]" value="1" <?php if ($einstellungen->ae_nummerierung_global == 1) echo "checked"; ?>> <strong>ÄA-Nummerierung für die ganze Veranstaltung</strong> <small>Bei "Nein" beginnt die Nummerierung der Änderungsanträge bei jedem Antrag bei 1, also "Ä1 zu A1", "Ä1 zu A2", etc. Bei "Ja" gibt es immer nur einen "Ä1", einen "Ä2" etc.</small></label>
 		</div>
 		<br>
 
 		<div>
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]" value="0" <?php if ($einstellungen->zeilen_nummerierung_global != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]" value="1" <?php if ($einstellungen->zeilen_nummerierung_global == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			<strong>Zeilennummerierung durchgehend für die ganze Veranstaltung</strong>
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]" value="1" <?php if ($einstellungen->zeilen_nummerierung_global == 1) echo "checked"; ?>> <strong>Zeilennummerierung durchgehend für die ganze Veranstaltung</strong></label> &nbsp; &nbsp;
 		</div>
 		<br>
 
 		<div>
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ansicht_minimalistisch]" value="0" <?php if ($einstellungen->ansicht_minimalistisch != 1) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ansicht_minimalistisch]" value="1" <?php if ($einstellungen->ansicht_minimalistisch == 1) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			<strong>Minimalistische Ansicht</strong>
-			<small>Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[ansicht_minimalistisch]" value="1" <?php if ($einstellungen->ansicht_minimalistisch == 1) echo "checked"; ?>> <strong>Minimalistische Ansicht</strong> <small>Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small></label>
 		</div>
 	</div>
 </div>
@@ -209,17 +195,17 @@ $einstellungen = $model->getEinstellungen();
 		</div>
 		<br>
 		<fieldset style="margin-top: 10px;">
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_antraege]" value="0" <?php if (!$einstellungen->freischaltung_antraege) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_antraege]" value="1" <?php if ($einstellungen->freischaltung_antraege) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			<strong>Freischaltung</strong> von Anträgen
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_antraege]" value="1" <?php if ($einstellungen->freischaltung_antraege) echo "checked"; ?>> <strong>Freischaltung</strong> von Anträgen</label> &nbsp; &nbsp;
 		</fieldset>
 		<br>
 
 		<fieldset style="margin-top: 10px;">
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]" value="0" <?php if (!$model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]" value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			Angabe der <strong>E-Mail-Adresse</strong> erzwingen
-			<small>(Bei Anträgen und Änderungsanträgen)</small>
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[initiatorInnen_duerfen_aendern]" value="1" <?php if ($einstellungen->initiatorInnen_duerfen_aendern) echo "checked"; ?>> AntragstellerInnen dürfen Anträge <strong>nachträglich ändern</strong>.</label> &nbsp; &nbsp;
+		</fieldset>
+		<br>
+
+		<fieldset style="margin-top: 10px;">
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]" value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>> Angabe der <strong>E-Mail-Adresse</strong> erzwingen <small>(Bei Anträgen und Änderungsanträgen)</small></label>
 		</fieldset>
 		<br>
 	</div>
@@ -240,9 +226,7 @@ $einstellungen = $model->getEinstellungen();
 		</div>
 
 		<fieldset style="margin-top: 10px;">
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]" value="0" <?php if (!$einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]" value="1" <?php if ($einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			<strong>Freischaltung</strong> von Änderungsanträgen
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]" value="1" <?php if ($einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>> <strong>Freischaltung</strong> von Änderungsanträgen</label> &nbsp; &nbsp;
 		</fieldset>
 		<br>
 	</div>
@@ -260,25 +244,20 @@ $einstellungen = $model->getEinstellungen();
 			<?php echo $form->dropDownList($model, 'policy_kommentare', Veranstaltung::$POLICIES); ?>
 			<?php echo $form->error($model, 'policy_kommentare'); ?>
 		</div>
+		<br>
 
 		<fieldset style="margin-top: 10px;">
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_kommentare]" value="0" <?php if (!$einstellungen->freischaltung_kommentare) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[freischaltung_kommentare]" value="1" <?php if ($einstellungen->freischaltung_kommentare) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			Kommentare müssen durch den Admin <strong>freigeschaltet</strong> werden
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_kommentare]" value="1" <?php if ($einstellungen->freischaltung_kommentare) echo "checked"; ?>> Kommentare müssen durch den Admin <strong>freigeschaltet</strong> werden</label>
 		</fieldset>
 		<br>
 
 		<fieldset style="margin-top: 10px;">
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]" value="0" <?php if (!$einstellungen->kommentar_neu_braucht_email) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]" value="1" <?php if ($einstellungen->kommentar_neu_braucht_email) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			Angabe der <strong>E-Mail-Adresse</strong> erzwingen
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]" value="1" <?php if ($einstellungen->kommentar_neu_braucht_email) echo "checked"; ?>> Angabe der <strong>E-Mail-Adresse</strong> erzwingen</label>
 		</fieldset>
 		<br>
 
-		<fieldset>
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[kommentare_unterstuetzbar]" value="0" <?php if (!$einstellungen->kommentare_unterstuetzbar) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[kommentare_unterstuetzbar]" value="1" <?php if ($einstellungen->kommentare_unterstuetzbar) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
-			Besucher können Kommentare <strong>bewerten</strong>
+		<fieldset style="margin-top: 10px;">
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[kommentare_unterstuetzbar]" value="1" <?php if ($einstellungen->kommentare_unterstuetzbar) echo "checked"; ?>> Besucher können Kommentare <strong>bewerten</strong></label>
 		</fieldset>
 		<br>
 	</div>
@@ -295,10 +274,9 @@ $einstellungen = $model->getEinstellungen();
 			<?php echo $form->textField($model, 'admin_email', array('maxlength' => 150)); ?>
 			<?php echo $form->error($model, 'admin_email'); ?>
 		</div>
+		<br>
 		<div>
-			<?php echo $form->labelEx($einstellungen, 'bestaetigungs_emails'); ?>
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[bestaetigungs_emails]" value="0" <?php if (!$einstellungen->bestaetigungs_emails) echo "checked"; ?>> Nein</label> &nbsp; &nbsp;
-			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[bestaetigungs_emails]" value="1" <?php if ($einstellungen->bestaetigungs_emails) echo "checked"; ?>> Ja</label> &nbsp; &nbsp;
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[bestaetigungs_emails]" value="1" <?php if ($einstellungen->bestaetigungs_emails) echo "checked"; ?>> Bestätigungs-E-Mails an die NutzerInnen schicken</label>
 		</div>
 	</div>
 </div>

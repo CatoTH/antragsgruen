@@ -26,7 +26,7 @@ class PolicyAntraegeAlle extends IPolicyAntraege
 	 * @return bool
 	 */
 	public function checkCurUserHeuristically() {
-		return !$this->checkAntragsschlussVorbei();
+		return !$this->veranstaltung->checkAntragsschlussVorbei();
 	}
 
 	/**
@@ -43,7 +43,7 @@ class PolicyAntraegeAlle extends IPolicyAntraege
 	 */
 	public function checkAntragSubmit()
 	{
-		return !$this->checkAntragsschlussVorbei();
+		return !$this->veranstaltung->checkAntragsschlussVorbei();
 	}
 
 
@@ -52,7 +52,7 @@ class PolicyAntraegeAlle extends IPolicyAntraege
 	 */
 	public function checkAenderungsantragSubmit()
 	{
-		return !$this->checkAntragsschlussVorbei();
+		return !$this->veranstaltung->checkAntragsschlussVorbei();
 	}
 
 
