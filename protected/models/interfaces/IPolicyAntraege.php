@@ -28,15 +28,6 @@ abstract class IPolicyAntraege
 		$this->veranstaltung = $veranstaltung;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function checkAntragsschlussVorbei()
-	{
-		if ($this->veranstaltung->antragsschluss != "" && date("YmdHis") > str_replace(array(" ", ":", "-"), array("", "", ""), $this->veranstaltung->antragsschluss)) return true;
-		return false;
-	}
-
 
 	/**
 	 * @static

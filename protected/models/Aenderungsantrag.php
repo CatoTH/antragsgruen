@@ -184,6 +184,27 @@ class Aenderungsantrag extends IAntrag
 		return json_decode($this->text_neu);
 	}
 
+	/**
+	 *
+	 */
+	public function calcDiffText() {
+		$text_vorher  = $this->antrag->text;
+		$paragraphs = $this->antrag->getParagraphs(false, false);
+		$text_neu = array();
+		$diff = $this->getDiffParagraphs();
+		foreach ($paragraphs as $i => $para) {
+			if ($diff[$i] != "") $text_neu[] = $diff[$i];
+			else $text_neu[] = $para->str_bbcode;
+		}
+		$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($text_vorher), trim(implode("\n\n", $text_neu)));
+		$diff_text = "";
+
+		if ($this->name_neu != $this->antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $this->name_neu . "[/QUOTE]\n\n";
+		$diff_text .= DiffUtils::diff2text($diff, $this->antrag->getFirstLineNo());
+
+		$this->aenderung_text    = $diff_text;
+	}
+
 
 	/**
 	 * @return array|AntragAbsatz[]
@@ -223,6 +244,50 @@ class Aenderungsantrag extends IAntrag
 			),
 		));
 		return $dataProvider->data;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getAntragstellerInnen() {
+		$antragstellerInnen = array();
+		if (count($this->aenderungsantragUnterstuetzerInnen) > 0) foreach ($this->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
+		}
+		return $antragstellerInnen;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getUnterstuetzerInnen() {
+		$unterstuetzerInnen = array();
+		if (count($this->aenderungsantragUnterstuetzerInnen) > 0) foreach ($this->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
+		}
+		return $unterstuetzerInnen;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getZustimmungen() {
+		$zustimmung_von     = array();
+		if (count($this->aenderungsantragUnterstuetzerInnen) > 0) foreach ($this->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
+		}
+		return $zustimmung_von;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getAblehnungen() {
+		$ablehnung_von      = array();
+		if (count($this->aenderungsantragUnterstuetzerInnen) > 0) foreach ($this->aenderungsantragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
+		}
+		return $ablehnung_von;
 	}
 
 	/**

@@ -147,18 +147,6 @@ class AntragController extends AntragsgruenController
 
 		$this->performAnzeigeActions($antrag, $kommentar_id);
 
-		/** @var $antragstellerInnen array|Person[] $antragstellerInnen */
-		$antragstellerInnen = array();
-		$unterstuetzerInnen = array();
-		$zustimmung_von     = array();
-		$ablehnung_von      = array();
-		if (count($antrag->antragUnterstuetzerInnen) > 0) foreach ($antrag->antragUnterstuetzerInnen as $relatedModel) {
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
-			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
-		}
-
 
 		$kommentare_offen = array();
 
@@ -195,7 +183,7 @@ class AntragController extends AntragsgruenController
 					$mails          = explode(",", $this->veranstaltung->admin_email);
 					foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Kommentar - bitte freischalten.",
 						"Es wurde ein neuer Kommentar zum Antrag \"" . $antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
-							"Link: " . $kommentar_link,
+						"Link: " . $kommentar_link,
 						"From: " . Yii::app()->params['mail_from']
 					);
 				}
@@ -243,12 +231,8 @@ class AntragController extends AntragsgruenController
 
 		$this->render("anzeige", array(
 			"antrag"             => $antrag,
-			"antragstellerInnen" => $antragstellerInnen,
-			"unterstuetzerInnen" => $unterstuetzerInnen,
-			"zustimmung_von"     => $zustimmung_von,
-			"ablehnung_von"      => $ablehnung_von,
 			"aenderungsantraege" => $aenderungsantraege,
-			"edit_link"          => $antrag->binInitiatorIn(),
+			"edit_link"          => $antrag->kannUeberarbeiten(),
 			"kommentare_offen"   => $kommentare_offen,
 			"kommentar_person"   => $kommentar_person,
 			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/antraege/update/id/" . $antrag_id : null),
@@ -314,11 +298,169 @@ class AntragController extends AntragsgruenController
 		}
 
 		$this->renderPartial("plain_html", array(
-			'antrag'  => $antrag,
-			"sprache" => $antrag->veranstaltung->getSprache(),
+			'antrag'             => $antrag,
+			"sprache"            => $antrag->veranstaltung->getSprache(),
 			"antragstellerInnen" => $antragstellerInnen,
 			"unterstuetzerInnen" => $unterstuetzerInnen,
 		));
+	}
+
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 */
+	public function actionAes_Einpflegen($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
+	{
+		$this->layout = '//layouts/column2';
+
+		$antrag_id = IntVal($antrag_id);
+
+		/** @var Antrag $antrag */
+		$antrag = Antrag::model()->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect($this->createUrl("veranstaltung/index"));
+		}
+
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
+
+		if (!$antrag->kannUeberarbeiten()) {
+			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
+		}
+
+		if (AntiXSS::isTokenSet("ueberarbeiten")) {
+			$neuer                   = new Antrag();
+			$neuer->veranstaltung_id = $antrag->veranstaltung_id;
+			$neuer->abgeleitet_von   = $antrag->id;
+			$neuer->typ              = $antrag->typ;
+			switch ($_REQUEST["titel_typ"]) {
+				case "original":
+					$neuer->name = $antrag->name;
+					break;
+				case "neu":
+					$neuer->name = $_REQUEST["titel_neu"];
+					break;
+				default:
+					$ae = $antrag->getAenderungsAntragById($_REQUEST["titel_typ"]);
+					if (!$ae) die("ÄA nicht gefunden: " . $_REQUEST["titel_typ"]);
+					$neuer->name = $ae->name_neu;
+			}
+
+			$absatz_mapping = array();
+			$neue_absaetze  = array();
+			$absae          = $antrag->getParagraphs(true, false);
+			$neu_count      = 0;
+			for ($i = 0; $i < count($absae); $i++) {
+				$absatz_mapping[$i] = $neu_count;
+				switch ($_REQUEST["absatz_typ"][$i]) {
+					case "original":
+						$neuer_text = $absae[$i]->str_bbcode;
+						break;
+					case "neu":
+						$neuer_text = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["neu_text"][$i]);
+						break;
+					default:
+						$aes = $absae[$i]->aenderungsantraege;
+						foreach ($aes as $ae) if ($ae->id == $_REQUEST["absatz_typ"][$i]) {
+							$par        = $ae->getDiffParagraphs();
+							$neuer_text = $par[$i];
+						}
+						if (!isset($neuer_text)) die("ÄA nicht gefunden");
+				}
+				$neu = HtmlBBcodeUtils::bbcode2html_absaetze($neuer_text);
+				foreach ($neu["bbcode"] as $line) $neue_absaetze[] = $line;
+				$neu_count += count($neu["bbcode"]);
+			}
+			$neuer->text              = implode("\n\n", $neue_absaetze);
+			$neuer->revision_name     = $_REQUEST["rev_neu"];
+			$neuer->datum_einreichung = new CDbExpression('NOW()');
+			switch ($_REQUEST["begruendung_typ"]) {
+				case "original":
+					$neuer->begruendung = $antrag->begruendung;
+					break;
+				case "neu":
+					$neuer->begruendung = $_REQUEST["begruendung_neu"];
+					break;
+				default:
+					die("Ungültige Eingabe");
+			}
+			$neuer->status = ($antrag->status == IAntrag::$STATUS_EINGEREICHT_GEPRUEFT ? IAntrag::$STATUS_EINGEREICHT_GEPRUEFT : IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT);
+			if ($neuer->save()) {
+				foreach ($antrag->antragUnterstuetzerInnen as $init) if ($init->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+					$in                     = new AntragUnterstuetzerInnen();
+					$in->rolle              = IUnterstuetzerInnen::$ROLLE_INITIATORIN;
+					$in->position           = $init->position;
+					$in->antrag_id          = $neuer->id;
+					$in->unterstuetzerIn_id = $init->unterstuetzerIn_id;
+					$in->kommentar          = "";
+					$in->save();
+				}
+
+				$antrag->status = IAntrag::$STATUS_MODIFIZIERT;
+				$antrag->datum_beschluss = new CDbExpression('NOW()');
+				$antrag->save();
+
+				foreach ($antrag->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) {
+					switch ($_REQUEST["ae"][$ae->id]) {
+						case IAntrag::$STATUS_ANGENOMMEN:
+						case IAntrag::$STATUS_MODIFIZIERT_ANGENOMMEN:
+						case IAntrag::$STATUS_ABGELEHNT:
+							$ae->status = $_REQUEST["ae"][$ae->id];
+							$ae->save();
+							// @TODO Benachrichtigen
+							break;
+						case IAntrag::$STATUS_EINGEREICHT_GEPRUEFT:
+							$neuer_ae                        = new Aenderungsantrag();
+							$neuer_ae->antrag_id             = $neuer->id;
+							$neuer_ae->revision_name         = $ae->revision_name; // @TODO
+							$neuer_ae->name_neu              = $ae->name_neu;
+							$neuer_ae->begruendung_neu       = $ae->begruendung_neu;
+							$neuer_ae->aenderung_begruendung = $ae->begruendung_neu;
+							$neuer_ae->datum_einreichung     = $ae->datum_einreichung;
+							$neuer_ae->status                = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
+
+							$text_neu                        = array();
+							for ($i = 0; $i < $neu_count; $i++) $text_neu[$i] = "";
+							$old_abs = json_decode($ae->text_neu);
+							foreach ($old_abs as $abs => $str) $text_neu[$absatz_mapping[$abs]] = $str;
+							$neuer_ae->setDiffParagraphs($text_neu);
+
+							$neuer_ae->calcDiffText();
+
+							if (!$neuer_ae->save()) var_dump($neuer_ae->attributes);
+
+							foreach ($ae->aenderungsantragUnterstuetzerInnen as $init) if ($init->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+								$in                      = new AenderungsantragUnterstuetzerInnen();
+								$in->rolle               = IUnterstuetzerInnen::$ROLLE_INITIATORIN;
+								$in->position            = $init->position;
+								$in->aenderungsantrag_id = $neuer_ae->id;
+								$in->unterstuetzerIn_id  = $init->unterstuetzerIn_id;
+								$in->kommentar           = "";
+								$in->save();
+							}
+							break;
+					}
+				}
+
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $neuer->id)));
+			} else {
+				die("Ein Fehler ist aufgetreten");
+			}
+			die();
+		}
+
+		$aenderungsantraege = array();
+		foreach ($antrag->aenderungsantraege as $antr) if (!in_array($antr->status, IAntrag::$STATI_UNSICHTBAR)) $aenderungsantraege[] = $antr;
+
+		$this->render("aes_einpflegen", array(
+			"antrag"             => $antrag,
+			"aenderungsantraege" => $aenderungsantraege,
+			"sprache"            => $antrag->veranstaltung->getSprache(),
+		));
+
 	}
 
 
@@ -512,7 +654,7 @@ class AntragController extends AntragsgruenController
 				$mails = explode(",", $antrag->veranstaltung->admin_email);
 				foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Antrag",
 					"Es wurde ein neuer Antrag \"" . $antrag->name . "\" eingereicht.\n" .
-						"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
+					"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 					"From: " . Yii::app()->params['mail_from']
 				);
 			}

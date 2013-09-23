@@ -18,9 +18,9 @@
 			"type": "package",
 			"package": {
 				"name": "yiisoft/yii",
-				"version": "1.1.13",
+				"version": "1.1.14",
 				"dist": {
-					"url": "http://yii.googlecode.com/files/yii-1.1.13.e9e4a0.zip",
+					"url": "https://github.com/yiisoft/yii/releases/download/1.1.14/yii-1.1.14.f0fee9.zip",
 					"type": "zip"
 				}
 			}
@@ -41,7 +41,7 @@
 		"php": ">=5.3.3",
 		"tecnick.com/tcpdf": "dev-master",
 		"mjohnson/decoda": "dev-master",
-		"yiisoft/yii": "1.1.13",
+		"yiisoft/yii": "1.1.14",
 		"chris83/yii-bootstrap": "2.1.0",
 		"CodePlex/PHPExcel": "dev-master"
 	}

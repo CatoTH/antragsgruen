@@ -815,6 +815,10 @@ h3 label {
 	min-width: 140px;
 }
 
+input[type="radio"], input[type="checkbox"] {
+	margin: 0;
+}
+
 form {
 	margin: 0;
 }
@@ -1216,6 +1220,9 @@ blockquote {
 	padding-left: 15px;
 }
 
+
+
+#ae_status_setter .ae { display: inline-block; width: 40px; }
 
 
 /**************************** RESPONSIVE ***************************** */

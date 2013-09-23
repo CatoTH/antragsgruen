@@ -198,15 +198,15 @@ class Antrag extends IAntrag
 
 
 	/**
-	 * @param bool $nurfreigeschaltete
+	 * @param bool $nurfreigeschaltete_aes
 	 * @param bool $praesentations_hacks
 	 * @return array|AntragAbsatz[]
 	 */
-	public function getParagraphs($nurfreigeschaltete = true, $praesentations_hacks = false)
+	public function getParagraphs($nurfreigeschaltete_aes = true, $praesentations_hacks = false)
 	{
 		if (!is_null($this->absaetze)) return $this->absaetze;
 		$this->absaetze = array();
-		if ($nurfreigeschaltete) {
+		if ($nurfreigeschaltete_aes) {
 			$aenders = array();
 			foreach ($this->aenderungsantraege as $ant) if (!in_array($ant->status, IAntrag::$STATI_UNSICHTBAR)) $aenders[] = $ant;
 		} else {
@@ -241,6 +241,19 @@ class Antrag extends IAntrag
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function kannUeberarbeiten() {
+		if ($this->veranstaltung->isAdminCurUser()) return true;
+		if ($this->veranstaltung->veranstaltungsreihe->isAdminCurUser()) return true;
+		if ($this->veranstaltung->getEinstellungen()->initiatorInnen_duerfen_aendern && $this->binInitiatorIn()) {
+			if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
+			else return true;
+		}
+		return false;
+	}
+
 
 	/**
 	 * @param int $veranstaltung_id
@@ -252,7 +265,9 @@ class Antrag extends IAntrag
 		$oCriteria        = new CDbCriteria();
 		$oCriteria->alias = "antrag";
 		if ($veranstaltung_id > 0) $oCriteria->addCondition("antrag.veranstaltung_id = " . IntVal($veranstaltung_id));
-		$oCriteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
+		$unsichtbar = IAntrag::$STATI_UNSICHTBAR;
+		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
+		$oCriteria->addNotInCondition("antrag.status", $unsichtbar);
 		$oCriteria->order = 'antrag.datum_einreichung DESC';
 		$dataProvider     = new CActiveDataProvider('Antrag', array(
 			'criteria'   => $oCriteria,
@@ -280,6 +295,15 @@ class Antrag extends IAntrag
 			if ($revnr > $max_rev) $max_rev = $revnr;
 		}
 		return $max_rev;
+	}
+
+	/**
+	 * @param int $ae_id
+	 * @return Aenderungsantrag
+	 */
+	public function getAenderungsAntragById($ae_id) {
+		$ae = Aenderungsantrag::model()->findAll("id = " . InTVal($ae_id) . " AND antrag_id = " . IntVal($this->id));
+		return (count($ae) > 0 ? $ae[0] : null);
 	}
 
 
@@ -324,6 +348,50 @@ class Antrag extends IAntrag
 	public static function suche($veranstaltung_id, $suchbegriff)
 	{
 		return Antrag::model()->findAll("(`name` LIKE '%" . addslashes($suchbegriff) . "%' OR `text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND veranstaltung_id = " . IntVal($veranstaltung_id));
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getAntragstellerInnen() {
+		$antragstellerInnen = array();
+		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
+		}
+		return $antragstellerInnen;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getUnterstuetzerInnen() {
+		$unterstuetzerInnen = array();
+		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
+		}
+		return $unterstuetzerInnen;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getZustimmungen() {
+		$zustimmung_von     = array();
+		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
+		}
+		return $zustimmung_von;
+	}
+
+	/**
+	 * @return Person[]
+	 */
+	public function getAblehnungen() {
+		$ablehnung_von      = array();
+		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
+			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
+		}
+		return $ablehnung_von;
 	}
 
 

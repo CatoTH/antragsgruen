@@ -26,7 +26,7 @@ class PolicyAntraegeEingeloggte extends IPolicyAntraege
 	 * @return bool
 	 */
 	public function checkCurUserHeuristically() {
-		return (!Yii::app()->user->isGuest && !$this->checkAntragsschlussVorbei());
+		return (!Yii::app()->user->isGuest && !$this->veranstaltung->checkAntragsschlussVorbei());
 	}
 
 	/**
@@ -44,7 +44,7 @@ class PolicyAntraegeEingeloggte extends IPolicyAntraege
 	 */
 	public function checkAntragSubmit()
 	{
-		return (!Yii::app()->user->isGuest && !$this->checkAntragsschlussVorbei());
+		return (!Yii::app()->user->isGuest && !$this->veranstaltung->checkAntragsschlussVorbei());
 	}
 
 
@@ -53,7 +53,7 @@ class PolicyAntraegeEingeloggte extends IPolicyAntraege
 	 */
 	public function checkAenderungsantragSubmit()
 	{
-		return (!Yii::app()->user->isGuest && !$this->checkAntragsschlussVorbei());
+		return (!Yii::app()->user->isGuest && !$this->veranstaltung->checkAntragsschlussVorbei());
 	}
 
 

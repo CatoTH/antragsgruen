@@ -16,6 +16,8 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $freischaltung_antraege = false;
 	public $freischaltung_aenderungsantraege = false;
 	public $freischaltung_kommentare = false;
+	public $initiatorInnen_duerfen_aendern = false;
+	public $initiatorInnen_duerfen_aes_ablehnen = false;
 	public $kann_pdf = true; // @TODO UI dafür
 
 
@@ -53,7 +55,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 		foreach ($fields as $key => $val) if (isset($formdata[$key])) {
 			if (is_bool($val)) $this->$key = (bool)$formdata[$key];
 			elseif (is_int($val)) $this->$key = (int)$formdata[$key]; else $this->$key = $formdata[$key];
-		}
+		} elseif (is_bool($val)) $this->$key = false; // Checkbox nicht gesetzt
 	}
 
 

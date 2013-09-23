@@ -28,7 +28,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	public function checkCurUserHeuristically()
 	{
-		return !$this->checkAntragsschlussVorbei(); // Jeder darf, auch nicht Eingeloggte
+		return !$this->veranstaltung->checkAntragsschlussVorbei(); // Jeder darf, auch nicht Eingeloggte
 	}
 
 	/**
@@ -60,7 +60,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	private function checkSubmit_internal()
 	{
-		if ($this->checkAntragsschlussVorbei()) return false;
+		if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
 		if (!isset($_REQUEST["Person"]) || !isset($_REQUEST["Person"]["typ"])) return false;
 		if (!$this->isValidName($_REQUEST["Person"]["name"])) return false;
 

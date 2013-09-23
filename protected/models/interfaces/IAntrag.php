@@ -11,6 +11,7 @@ abstract class IAntrag extends GxActiveRecord
 	public static $STATUS_ANGENOMMEN = 4;
 	public static $STATUS_ABGELEHNT = 5;
 	public static $STATUS_MODIFIZIERT_ANGENOMMEN = 6;
+	public static $STATUS_MODIFIZIERT = 7;
 	public static $STATI = array(
 		-2 => "Gelöscht",
 		-1 => "Zurückgezogen",
@@ -21,6 +22,7 @@ abstract class IAntrag extends GxActiveRecord
 		4  => "Angenommen",
 		5  => "Abgelehnt",
 		6  => "Modifiziert angenommen",
+		7 => "Modifziert",
 	);
 	public static $STATI_UNSICHTBAR = array(0, 2, -2);
 
