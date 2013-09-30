@@ -46,7 +46,7 @@ if ($msg_err != "") {
 	</div>
 </div>
 
-<h2>Login per Benutzername / Passwort</h2>
+<h2>Login per BenutzerInnenname / Passwort</h2>
 <div class="well">
 	<div class="content">
 
