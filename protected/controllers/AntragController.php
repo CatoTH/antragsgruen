@@ -410,12 +410,11 @@ class AntragController extends AntragsgruenController
 						case IAntrag::$STATUS_ABGELEHNT:
 							$ae->status = $_REQUEST["ae"][$ae->id];
 							$ae->save();
-							// @TODO Benachrichtigen
 							break;
 						case IAntrag::$STATUS_EINGEREICHT_GEPRUEFT:
 							$neuer_ae                        = new Aenderungsantrag();
 							$neuer_ae->antrag_id             = $neuer->id;
-							$neuer_ae->revision_name         = $ae->revision_name; // @TODO
+							$neuer_ae->revision_name         = $ae->revision_name;
 							$neuer_ae->name_neu              = $ae->name_neu;
 							$neuer_ae->begruendung_neu       = $ae->begruendung_neu;
 							$neuer_ae->aenderung_begruendung = $ae->begruendung_neu;

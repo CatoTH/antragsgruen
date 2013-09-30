@@ -58,7 +58,7 @@ if ($msg_err != "") {
 		)); ?>
 
 
-		<label for="OAuthLoginForm_wurzelwerk">E-Mail-Adresse</label>
+		<label for="OAuthLoginForm_wurzelwerk">E-Mail-Adresse / BenutzerInnenname</label>
 		<input class="span3" name="OAuthLoginForm[wurzelwerk]" id="OAuthLoginForm_wurzelwerk" type="text"/>
 		<span class="help-block error" id="OAuthLoginForm_wurzelwerk_em_" style="display: none"></span>
 
