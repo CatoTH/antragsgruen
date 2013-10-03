@@ -37,7 +37,7 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 		?>
     </div>
 		</div>
-	<? } ?>
+	<?php } ?>
 </div>
 
 <?php $this->endContent(); ?>
