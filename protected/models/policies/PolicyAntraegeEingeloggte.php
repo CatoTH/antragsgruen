@@ -34,7 +34,7 @@ class PolicyAntraegeEingeloggte extends IPolicyAntraege
 	 * @return string
 	 */
 	public function getPermissionDeniedMsg() {
-		if (Yii::app()->user->isGuest) return "Bitte logge dich ein";
+		if (Yii::app()->user->isGuest) return "Bitte logge dich dafür ein";
 		return "";
 	}
 

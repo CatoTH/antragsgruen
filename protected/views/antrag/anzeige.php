@@ -38,7 +38,7 @@ $policy = $antrag->veranstaltung->getPolicyAenderungsantraege();
 if ($policy->checkCurUserHeuristically()) $html .= '<li class="aender-stellen">' . CHtml::link($sprache->get("Änderungsantrag stellen"), $this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id))) . '</li>';
 else {
 	$msg = $policy->getPermissionDeniedMsg();
-	if ($msg != "") $html .= '<li class="aender-stellen">' . CHtml::link($sprache->get("Änderungsantrag stellen")) . CHtml::encode($policy->getPermissionDeniedMsg()) . '</li>';
+	if ($msg != "") $html .= '<li class="aender-stellen"><span><span style="font-style: italic;">' . CHtml::encode($sprache->get("Änderungsantrag stellen")) . "</span><br><span style='font-size: 13px; color: #dbdbdb; text-transform: none;'>" . CHtml::encode($policy->getPermissionDeniedMsg()) . '</span></span></li>';
 }
 
 if ($antrag->veranstaltung->getEinstellungen()->kann_pdf) $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';

@@ -986,7 +986,7 @@ ul.funktionen {
 	margin: 0;
 }
 
-ul.funktionen li a {
+ul.funktionen li a, ul.funktionen li > span {
 	display: block;
 	font-family: "BentonSansCond Regular";
 	font-style: normal;
