@@ -43,8 +43,19 @@ $this->menus_html[] = $html;
 
 $rows = 10;
 $antragstellerInnen = $aenderungsantrag->getAntragstellerInnen();
+
+if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
+	$ae_kuerzel = $aenderungsantrag->revision_name;
+} else {
+	$arev = $aenderungsantrag->antrag->revision_name;
+	if (stripos($aenderungsantrag->revision_name, $arev) === false) {
+		$ae_kuerzel = $aenderungsantrag->revision_name . " zu " . $arev;
+	} else {
+		$ae_kuerzel = $aenderungsantrag->revision_name;
+	}
+}
 ?>
-<h1 class="well">Änderungsantrag</h1>
+<h1 class="well"><?php echo CHtml::encode($sprache->get("Änderungsantrag") . " " . $ae_kuerzel); ?></h1>
 
 <div class="antragsdaten well" style="min-height: 114px;">
     <div id="socialshareprivacy"></div>

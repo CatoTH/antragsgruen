@@ -27,19 +27,32 @@ if (file_exists($logo)) {
 	$pdf->Image($logo, 22, 32, 47, 26);
 }
 
-$pdf->SetXY(155, 37, true);
-
+$width= 37;
+$x = 155;
 if ($aenderungsantrag->revision_name == "") {
 	$name = "Entwurf";
 	$pdf->SetFont("helvetica", "I", "25");
 } else {
-	$name = $aenderungsantrag->revision_name;
+	if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
+		$name = $aenderungsantrag->revision_name;
+	} else {
+		$arev = $aenderungsantrag->antrag->revision_name;
+		if (stripos($aenderungsantrag->revision_name, $arev) === false) {
+			$name = $aenderungsantrag->revision_name . " zu " . $arev;
+			$width= 45;
+			$x = 147;
+		} else {
+			$name = $aenderungsantrag->revision_name;
+		}
+	}
 	$pdf->SetFont("helvetica", "B", "25");
 }
-$pdf->MultiCell(37, 21, $name,
+
+$pdf->SetXY($x, 37, true);
+$pdf->MultiCell($width, 21, $name,
 	array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
 	false, 1, "", "", true, 0, false, true, 21, // defaults
-	"M"
+	"M", true
 );
 
 $str = "Änderungsantrag";
