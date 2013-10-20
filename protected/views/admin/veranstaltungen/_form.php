@@ -148,7 +148,7 @@ $einstellungen = $model->getEinstellungen();
 		<br>
 
 		<div>
-			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[revision_name_verstecken]" value="1" <?php if ($einstellungen->revision_name_verstecken == 1) echo "checked"; ?>> <strong>Revisionsname verstecken</strong> <small>(Revisionsnamen wie z.B. "A1", "A2", "Ä1neu" etc.) müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt. Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small></label> &nbsp; &nbsp;
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[revision_name_verstecken]" value="1" <?php if ($einstellungen->revision_name_verstecken == 1) echo "checked"; ?>> <strong>Antragskürzel verstecken</strong> <small>(Antragskürzel wie z.B. "A1", "A2", "Ä1neu" etc.) müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt. Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small></label> &nbsp; &nbsp;
 		</div>
 		<br>
 

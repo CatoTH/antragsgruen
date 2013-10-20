@@ -54,7 +54,7 @@ return array (
   'Name' => '',
   'No' => 'Nein',
   'Person|people' => 'Person|Personen',
-  'Revision Name' => '',
+  'Revision Name' => 'Antragskürzel',
   'Rolle' => '',
   'Save' => 'Speichern',
   'Search' => 'Suche',
