@@ -248,9 +248,9 @@ class Veranstaltung extends GxActiveRecord
 				$k1 = preg_replace("/neu$/siu", "neu1", $k1);
 				$k2 = preg_replace("/neu$/siu", "neu1", $k2);
 
-				$pat1 = "/(?<str1>[^0-9]*)(?<num1>[0-9]+)/siu";
-				$pat2 = "/(?<str1>[^0-9]*)(?<num1>[0-9]+)(?<str2>[^0-9]+)(?<num2>[0-9]+)$/siu";
-				
+				$pat1 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]*)/siu";
+				$pat2 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]+)(?<str2>[^0-9]+)(?<num2>[0-9]+)$/siu";
+
 				if (preg_match($pat2, $k1, $matches1) && preg_match($pat2, $k2, $matches2)) {
 					if ($matches1["str1"] == $matches2["str1"] && $matches1["num1"] == $matches2["num1"]) {
 						return $cmp($matches1["str2"], $matches2["str2"], $matches1["num2"], $matches2["num2"]);
@@ -266,7 +266,11 @@ class Veranstaltung extends GxActiveRecord
 				} else {
 					preg_match($pat1, $k1, $matches1);
 					preg_match($pat1, $k2, $matches2);
-					return $cmp($matches1["str1"], $matches2["str1"], $matches1["num1"], $matches2["num1"]);
+					$str1 = (isset($matches1["str1"]) ? $matches1["str1"] : "");
+					$str2 = (isset($matches2["str1"]) ? $matches2["str1"] : "");
+					$num1 = (isset($matches1["num1"]) ? $matches1["num1"] : "");
+					$num2 = (isset($matches2["num1"]) ? $matches2["num1"] : "");
+					return $cmp($str1, $str2, $num1, $num2);
 				}
 			});
 		}
