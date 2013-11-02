@@ -224,7 +224,9 @@ class Aenderungsantrag extends IAntrag
 		return $this->absaetze;
 	}
 
+	private $first_diff_line = null;
 	public function getFirstDiffLine() {
+		if ($this->first_diff_line !== null) return $this->first_diff_line;
 		$text_vorher  = $this->antrag->text;
 		$paragraphs = $this->antrag->getParagraphs(false, false);
 		$text_neu = array();
@@ -234,10 +236,9 @@ class Aenderungsantrag extends IAntrag
 			else $text_neu[] = $para->str_bbcode;
 		}
 		$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($text_vorher), trim(implode("\n\n", $text_neu)));
-		$diff_text = "";
 
-		if ($this->name_neu != $this->antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $this->name_neu . "[/QUOTE]\n\n";
-		return DiffUtils::getFistDiffLine($diff, $this->antrag->getFirstLineNo());
+		$this->first_diff_line = DiffUtils::getFistDiffLine($diff, $this->antrag->getFirstLineNo());
+		return $this->first_diff_line;
 	}
 
 	/**
