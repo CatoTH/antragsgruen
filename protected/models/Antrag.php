@@ -193,7 +193,8 @@ class Antrag extends IAntrag
 				}
 			}
 		}
-		return $erste_zeile + 1; // wg. eigener Zeile für Überschrift
+		if ($this->veranstaltung->getEinstellungen()->titel_eigene_zeile) $erste_zeile++;
+		return $erste_zeile;
 	}
 
 

@@ -116,6 +116,11 @@ $einstellungen = $model->getEinstellungen();
 <div class="well">
 	<div class="content">
 		<div>
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[kann_pdf]" value="1" <?php if ($einstellungen->kann_pdf) echo "checked"; ?>> <strong>Anträge etc. als PDF anbieten</strong></label> &nbsp; &nbsp;
+		</div>
+		<br>
+
+		<div>
 			<?php echo $form->labelEx($einstellungen, 'antrag_einleitung', array("label" => "PDF-Antrags-Einleitung")); ?>
 			<div style="display: inline-block; width: 420px;">
 				<?php echo $form->textArea($einstellungen, 'antrag_einleitung'); ?>
@@ -159,6 +164,11 @@ $einstellungen = $model->getEinstellungen();
 
 		<div>
 			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]" value="1" <?php if ($einstellungen->zeilen_nummerierung_global == 1) echo "checked"; ?>> <strong>Zeilennummerierung durchgehend für die ganze Veranstaltung</strong></label> &nbsp; &nbsp;
+		</div>
+		<br>
+
+		<div>
+			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[titel_eigene_zeile]" value="1" <?php if ($einstellungen->titel_eigene_zeile == 1) echo "checked"; ?>> <strong>Die Überschrift bekommt eine eigene Zeilennummer</strong></label> &nbsp; &nbsp;
 		</div>
 		<br>
 

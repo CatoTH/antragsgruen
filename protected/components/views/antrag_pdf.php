@@ -24,6 +24,10 @@ if ($antrag->veranstaltung->url_verzeichnis == "ltwby13-programm") {
 	$initiatorinnen = "Parteirat und Landesvorstand";
 	$gegenstand     = "Landtagswahlprogramm";
 	$ueberschrift   = CHtml::encode($antrag->name);
+} elseif ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") {
+	$logo         = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
+	$gegenstand   = $antrag->name;
+	$ueberschrift = $sprache->get("Antragstext");
 } else {
 	$logo         = Yii::app()->params['pdf_logo'];
 	$gegenstand   = $antrag->name;
@@ -42,7 +46,6 @@ if ($header) {
 	$pdf->SetXY(155, 37, true);
 
 	if (!$antrag->veranstaltung->getEinstellungen()->revision_name_verstecken) {
-
 		if ($antrag->revision_name == "") {
 			$name = "Entwurf";
 			$pdf->SetFont("helvetica", "I", "25");
@@ -81,7 +84,8 @@ if ($header) {
 	if ($antrag->veranstaltung->getEinstellungen()->antrag_einleitung != "") {
 		$pdf->SetX(24);
 		$pdf->SetFont("helvetica", "B", 12);
-		$pdf->MultiCell(160, 13, $antrag->veranstaltung->getEinstellungen()->antrag_einleitung);
+		$pdf->MultiCell(160, 13, $antrag->veranstaltung->getEinstellungen()->antrag_einleitung, 0, "C");
+		$pdf->Ln(7);
 	}
 
 	$pdf->SetX(12);
@@ -104,21 +108,25 @@ if ($header) {
 		"L"
 	);
 
-	$pdf->Ln();
+	$pdf->Ln(9);
 
 }
 
 
 $pdf->SetX(12);
-$pdf->SetFont("Courier", "", 10);
-$pdf->MultiCell(12, 0, $linenr - 1, 0, "L", false, 0);
+
+if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") $pdf->SetFont("helvetica", "", 10);
+else $pdf->SetFont("Courier", "", 10);
+
+if ($antrag->veranstaltung->getEinstellungen()->titel_eigene_zeile) $pdf->MultiCell(12, 0, $linenr - 1, 0, "L", false, 0);
 
 
 $pdf->SetFont("helvetica", "", 12);
 $pdf->writeHTML("<h3>" . $ueberschrift . "</h3>");
 
 
-$pdf->SetFont("Courier", "", 10);
+if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") $pdf->SetFont("helvetica", "", 11);
+else $pdf->SetFont("Courier", "", 10);
 $pdf->Ln(7);
 
 
@@ -168,6 +176,7 @@ if (trim($antrag->begruendung) != "") {
 		' . $begruendung . '
 	</div>
 </div>';
-	$pdf->SetFont("helvetica", "", 10);
+	if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") $pdf->SetFont("helvetica", "", 10);
+	else $pdf->SetFont("helvetica", "", 10);
 	$pdf->writeHTML($html, true, false, true, false, '');
 }

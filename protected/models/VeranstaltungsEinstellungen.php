@@ -18,6 +18,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $freischaltung_kommentare = false;
 	public $initiatorInnen_duerfen_aendern = false;
 	public $initiatorInnen_duerfen_aes_ablehnen = false;
+	public $titel_eigene_zeile = true;
 	public $kann_pdf = true; // @TODO UI dafür
 
 
