@@ -103,9 +103,11 @@ class AenderungsantraegeController extends GxController {
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
-		$aenderungsantraege = Aenderungsantrag::model()->with(array(
-			"antrag" => array('condition'=>'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id))
-		))->findAll();
+		$aenderungsantraege = Aenderungsantrag::model()->findAll(array(
+				"with" => "antrag",
+				"alias" => "a",
+				"condition" => 'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id) . " AND a.status != " . IAntrag::$STATUS_GELOESCHT . " AND antrag.status != " . IAntrag::$STATUS_GELOESCHT
+			));
         $dataProvider = new CActiveDataProvider('Aenderungsantrag', array(
 			"data" => $aenderungsantraege
 		));
