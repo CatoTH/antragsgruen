@@ -20,11 +20,15 @@ $this->menu = array(
 <h1><?php echo Yii::t('app', 'Update') . ': ' . GxHtml::encode($model->label()) ?></h1>
 <br>
 <?php
-	if ($model->status == Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) {
+
+	if ($model->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) {
+
 		$form = $this->beginWidget('GxActiveForm');
 
-		$new_rev = $model->antrag->naechsteAenderungsRevNr();
-		$new_rev_long = $new_rev . " zu " . $model->antrag->revision_name;
+		$new_rev = $model->naechsteAenderungsRevNr();
+		$einst = $model->antrag->veranstaltung->getEinstellungen();
+		if (!$einst->ae_nummerierung_global && !$einst->ae_nummerierung_nach_zeile) $new_rev_long = $new_rev . " zu " . $model->antrag->revision_name;
+		else $new_rev_long = $new_rev;
 		echo '<input type="hidden" name="' . AntiXSS::createToken("antrag_freischalten") . '" value="' . CHtml::encode($new_rev). '">';
 		echo "<div style='text-align: center;'>";
 		$this->widget('bootstrap.widgets.TbButton', array('buttonType'=>'submit', 'type' => 'primary', 'icon'=>'ok white', 'label'=>'Freischalten als ' . $new_rev_long));

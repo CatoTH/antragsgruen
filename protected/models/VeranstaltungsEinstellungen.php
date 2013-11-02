@@ -10,6 +10,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $bestaetigungs_emails = false;
 	public $zeilen_nummerierung_global = false;
 	public $ae_nummerierung_global = false;
+	public $ae_nummerierung_nach_zeile = false;
 	public $revision_name_verstecken = false;
 	public $ansicht_minimalistisch = false;
 	public $kommentare_unterstuetzbar = false;
@@ -19,7 +20,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $initiatorInnen_duerfen_aendern = false;
 	public $initiatorInnen_duerfen_aes_ablehnen = false;
 	public $titel_eigene_zeile = true;
-	public $kann_pdf = true; // @TODO UI dafür
+	public $kann_pdf = true;
 
 
 	/** @var null|string */

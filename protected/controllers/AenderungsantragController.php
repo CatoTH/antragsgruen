@@ -372,7 +372,7 @@ class AenderungsantragController extends AntragsgruenController
 				$aenderungsantrag->status = Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 			} else {
 				$aenderungsantrag->status        = Aenderungsantrag::$STATUS_EINGEREICHT_GEPRUEFT;
-				$aenderungsantrag->revision_name = $aenderungsantrag->antrag->naechsteAenderungsRevNr();
+				$aenderungsantrag->revision_name = $aenderungsantrag->naechsteAenderungsRevNr();
 			}
 			$aenderungsantrag->save();
 

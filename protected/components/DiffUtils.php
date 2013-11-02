@@ -198,6 +198,35 @@ class DiffUtils
 	}
 
 	/**
+	 * @static
+	 * @param Horde_Text_Diff $diff
+	 * @param int $first_line_no
+	 * @return int
+	 */
+	public static function getFistDiffLine($diff, $first_line_no = 1)
+	{
+		$edits      = $diff->getDiff();
+		$line       = $first_line_no - 1;
+
+		foreach ($edits as $edit) {
+			if (get_class($edit) == "Horde_Text_Diff_Op_Add") {
+				return $line + 1;
+			}
+			if (get_class($edit) == "Horde_Text_Diff_Op_Delete") {
+				return $line;
+			}
+			if (get_class($edit) == "Horde_Text_Diff_Op_Change") {
+				return $line;
+			}
+			if (is_array($edit->orig)) {
+				$line += substr_count(implode("\n", $edit->orig), "#ZEILE#");
+			}
+		}
+
+		return 0;
+	}
+
+	/**
 	 * @param string $string1
 	 * @param string $string2
 	 * @return Horde_Text_Diff

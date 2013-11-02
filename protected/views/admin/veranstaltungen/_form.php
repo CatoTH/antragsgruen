@@ -158,11 +158,6 @@ $einstellungen = $model->getEinstellungen();
 		<br>
 
 		<div>
-			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[ae_nummerierung_global]" value="1" <?php if ($einstellungen->ae_nummerierung_global == 1) echo "checked"; ?>> <strong>ÄA-Nummerierung für die ganze Veranstaltung</strong> <small>Bei "Nein" beginnt die Nummerierung der Änderungsanträge bei jedem Antrag bei 1, also "Ä1 zu A1", "Ä1 zu A2", etc. Bei "Ja" gibt es immer nur einen "Ä1", einen "Ä2" etc.</small></label>
-		</div>
-		<br>
-
-		<div>
 			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]" value="1" <?php if ($einstellungen->zeilen_nummerierung_global == 1) echo "checked"; ?>> <strong>Zeilennummerierung durchgehend für die ganze Veranstaltung</strong></label> &nbsp; &nbsp;
 		</div>
 		<br>
@@ -239,6 +234,14 @@ $einstellungen = $model->getEinstellungen();
 			<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]" value="1" <?php if ($einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>> <strong>Freischaltung</strong> von Änderungsanträgen</label> &nbsp; &nbsp;
 		</fieldset>
 		<br>
+
+		<div>
+			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung]" value="0" <?php if ($einstellungen->ae_nummerierung_global != 1 && $einstellungen->ae_nummerierung_nach_zeile != 1) echo "checked"; ?>> <strong>ÄA-Nummerierung separat pro Antrag</strong> <small>"Ä1 zu A1", Ä2 zu A1", "Ä1 zu A2", usw.</small></label><br>
+			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung]" value="1" <?php if ($einstellungen->ae_nummerierung_global == 1) echo "checked"; ?>> <strong>ÄA-Nummerierung für die ganze Veranstaltung</strong> <small>"Ä1", "Ä2", "Ä3" usw.</small></label><br>
+			<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung]" value="2" <?php if ($einstellungen->ae_nummerierung_nach_zeile == 1) echo "checked"; ?>> <strong>ÄA-Nummerierung anhand der Bezugszeile</strong> <small>"A1-Ä15-1", "A1-Ä15-2", "A2-Ä15-1" usw. Wenn diese Nummerierung gewählt wird, kann sich jeder Änderungsantrag nur auf einen einzigen Absatz beziehen.</small></label>
+		</div>
+		<br>
+
 	</div>
 </div>
 

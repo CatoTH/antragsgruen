@@ -311,25 +311,6 @@ class Antrag extends IAntrag
 	/**
 	 * @return string
 	 */
-	public function naechsteAenderungsRevNr()
-	{
-		$max_rev = 0;
-		if ($this->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
-			$antraege = $this->veranstaltung->antraege;
-			foreach ($antraege as $ant) {
-				$m = $ant->getMaxAenderungsRevNr();
-				if ($m > $max_rev) $max_rev = $m;
-			}
-		} else {
-			$max_rev = $this->getMaxAenderungsRevNr();
-		}
-		return "Ä" . ($max_rev + 1);
-	}
-
-
-	/**
-	 * @return string
-	 */
 	public function nameMitRev()
 	{
 		if ($this->veranstaltung->getEinstellungen()->revision_name_verstecken) return $this->name;

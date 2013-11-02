@@ -11,21 +11,21 @@
  * @var Person $antragstellerIn
  */
 
-/** @var CWebApplication $app  */
+/** @var CWebApplication $app */
 $app = Yii::app();
 $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckeditor/ckeditor.js');
 $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/bbcode/plugin.js');
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
-	$sprache->get("Antrag") => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
+	$sprache->get("Antrag")                          => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)),
 	$sprache->get("Neuer Änderungsantrag"),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 ?>
 
 
-<h1 class="well"><?php echo $sprache->get("Änderungsantrag stellen")?>: <?php echo CHtml::encode($antrag->name); ?></h1>
+<h1 class="well"><?php echo $sprache->get("Änderungsantrag stellen") ?>: <?php echo CHtml::encode($antrag->name); ?></h1>
 
 <?php
 /** @var TbActiveForm $form */
@@ -35,18 +35,19 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 	"action" => $this->createUrl("aenderungsantrag/neu", array("antrag_id" => $antrag->id)),
 ));
 
-foreach ($hiddens as $name=>$value) {
+foreach ($hiddens as $name => $value) {
 	echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
 }
 
 ?>
-<div class="antrags_text_holder ae_absatzwahl_modus well well_first" style="overflow: auto;">
+<div class="antrags_text_holder ae_absatzwahl_modus aenderungen_moeglich well well_first" style="overflow: auto;">
 	<?php
 	Yii::app()->user->setFlash("info", str_replace(array("#1#", "#2#"), array($sprache->get("beantragte"), $sprache->get("Änderungsantrag")), "Bitte wähle nun die Absätze aus, die geändert werden sollen. Du kannst dann die #1# neue Fassung sowie die Begründung für den #2# angeben."));
 	$this->widget('bootstrap.widgets.TbAlert');
 
-	if ($js_protection) { ?>
-	<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.</div>
+	if ($js_protection) {
+		?>
+		<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.</div>
 	<?php } ?>
 
 	<h3><label for="Aenderungsantrag_name_neu">Neuer Titel</label></h3>
@@ -54,6 +55,7 @@ foreach ($hiddens as $name=>$value) {
 	<input id="Aenderungsantrag_name_neu" type="text" value="<?php echo CHtml::encode($aenderungsantrag->name_neu); ?>" name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
 	<br>
 	<br>
+
 	<h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
 	<br>
 
@@ -63,7 +65,7 @@ foreach ($hiddens as $name=>$value) {
 		$absae = $antrag->getParagraphs();
 		$text_pre = $aenderungsantrag->getDiffParagraphs();
 
-		foreach ($absae as $i=> $abs) {
+		foreach ($absae as $i => $abs) {
 			/** @var AntragAbsatz $abs */
 			echo "<div class='row-fluid row-absatz' id='absatz_" . $i . "'>";
 
@@ -78,7 +80,9 @@ foreach ($hiddens as $name=>$value) {
 			<h4>Neue Fassung</h4>
 			<textarea id='neu_text_$i' name='neu_text[$i]' style='width: 550px; height: 200px;'>";
 			$str_neu = ($text_pre && $text_pre[$i] != "" ? $text_pre[$i] : $abs->str_bbcode);
-			echo CHtml::encode($str_neu) . "</textarea><div style='text-align: center;'>";
+			echo CHtml::encode($str_neu) . "</textarea>";
+			echo "<a href='#' class='ae_verwerfen' style='float: right;'>Unverändert lassen</a>";
+			echo "<div style='text-align: center;'>";
 			$this->widget('bootstrap.widgets.TbButton', array('type' => 'success', 'icon' => 'chevron-right white', 'label' => 'Weiter', 'url' => '#begruendungs_holder'));
 			echo "</div></div>\n";
 
@@ -103,11 +107,11 @@ foreach ($hiddens as $name=>$value) {
 		?></textarea>
 
 	<?php if ($mode == "bearbeiten") { ?>
-	<div class="ae_select_confirm" style="margin-top: 20px;">
-		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> 'Speichern')); ?>
-	</div>
-<?php } ?>
-    <br><br>
+		<div class="ae_select_confirm" style="margin-top: 20px;">
+			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Speichern')); ?>
+		</div>
+	<?php } ?>
+	<br><br>
 
 
 </div>
@@ -127,7 +131,10 @@ $this->renderPartial($antrag->veranstaltung->getPolicyAenderungsantraege()->getA
 $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 ?>
 <script>
-	var antrag_id = <?php echo $antrag["id"]; ?>;
+	var antrag_id = <?php echo $antrag->id; ?>,
+		nur_ein_absatz = <?php echo ($antrag->veranstaltung->getEinstellungen()->ae_nummerierung_nach_zeile ? "true" : "false"); ?>;
+
+	console.log(nur_ein_absatz);
 
 	function antragstext_init_aes() {
 		"use strict";
@@ -139,19 +146,40 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 
 		ckeditor_bbcode("ae_begruendung");
 
+		var aenderungen_moeglich_recals = function () {
+			var moeglich = true;
+			if (nur_ein_absatz) {
+				if ($(".ae_absatzwahl_modus .change_checkbox:checked").length > 0) moeglich = false;
+			}
+			if (moeglich) {
+				console.log("Möglich");
+				$(".ae_absatzwahl_modus").addClass("aenderungen_moeglich");
+			} else {
+				console.log("Nicht Möglich");
+				$(".ae_absatzwahl_modus").removeClass("aenderungen_moeglich");
+			}
+		};
+
 		$(".ae_absatzwahl_modus .antragabsatz_holder .text").click(function (ev) {
+			ev.preventDefault();
+			if (!$(".ae_absatzwahl_modus").hasClass("aenderungen_moeglich")) return;
 			var $abs = $(this).parents(".row-absatz");
 			$abs.find(".change_checkbox").prop("checked", true);
 			$abs.find(".ae_text_holder").show().css("display", "block");
 			$abs.find(".orig").hide();
 			$abs.find(".antragstext_diff").show();
+			aenderungen_moeglich_recals();
 		});
-		$(".ae_absatzwahl_modus .antragstext_diff").click(function(ev) {
-			var $abs = $(this).parents(".row-absatz");
-			$abs.find(".change_checkbox").prop("checked", false);
-			$abs.find(".ae_text_holder").hide();
-			$abs.find(".orig").show();
-			$abs.find(".antragstext_diff").hide();
+		$(".ae_absatzwahl_modus .ae_text_holder .ae_verwerfen").click(function (ev) {
+			ev.preventDefault();
+			if (confirm("Die Änderungen wirklich verwerfen?")) {
+				var $abs = $(this).parents(".row-absatz");
+				$abs.find(".change_checkbox").prop("checked", false);
+				$abs.find(".ae_text_holder").hide();
+				$abs.find(".orig").show();
+				$abs.find(".antragstext_diff").hide();
+				aenderungen_moeglich_recals();
+			}
 		});
 
 		window.setTimeout(antragstext_show_diff, 3000);
@@ -165,9 +193,9 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 			str = CKEDITOR.instances["neu_text_" + absatznr].getData();
 			abss[absatznr] = str;
 		});
-		$.ajax({ "url":<?php echo json_encode($ajax_link); ?>, "dataType":"json", "type":"POST", "data":{ "antrag_id":antrag_id, "absaetze":abss }, "error":function (xht, status) {
+		$.ajax({ "url":<?php echo json_encode($ajax_link); ?>, "dataType": "json", "type": "POST", "data": { "antrag_id": antrag_id, "absaetze": abss }, "error": function (xht, status) {
 			window.setTimeout(antragstext_show_diff, 10000);
-		}, "success":function (dat) {
+		}, "success": function (dat) {
 			for (var i in dat) if (dat.hasOwnProperty(i)) {
 				$("#absatz_" + i + " .antragstext_diff").html(dat[i]);
 			}

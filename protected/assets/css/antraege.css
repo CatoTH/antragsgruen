@@ -823,7 +823,7 @@ form {
 	margin: 0;
 }
 
-.ae_absatzwahl_modus .antragabsatz_holder .text:hover {
+.ae_absatzwahl_modus.aenderungen_moeglich .antragabsatz_holder .text:hover {
 	background-color: #eee;
 	cursor: pointer;
 }
@@ -1105,7 +1105,6 @@ ins {
 
 .antragstext_diff {
 	padding: 15px 20px 25px 0;
-	cursor: pointer;
 }
 
 .antragstext_diff ul {

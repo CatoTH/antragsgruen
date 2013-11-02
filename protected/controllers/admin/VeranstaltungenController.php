@@ -79,6 +79,20 @@ class VeranstaltungenController extends GxController
 
 			$einstellungen = $model->getEinstellungen();
 			$einstellungen->saveForm($_REQUEST["VeranstaltungsEinstellungen"]);
+			if (isset($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"])) switch ($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"]) {
+				case 0:
+					$einstellungen->ae_nummerierung_nach_zeile = false;
+					$einstellungen->ae_nummerierung_global = false;
+					break;
+				case 1:
+					$einstellungen->ae_nummerierung_nach_zeile = false;
+					$einstellungen->ae_nummerierung_global = true;
+					break;
+				case 2:
+					$einstellungen->ae_nummerierung_nach_zeile = true;
+					$einstellungen->ae_nummerierung_global = false;
+					break;
+			}
 			$model->setEinstellungen($einstellungen);
 
 			$relatedData           = array();

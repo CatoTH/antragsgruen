@@ -224,6 +224,49 @@ class Aenderungsantrag extends IAntrag
 		return $this->absaetze;
 	}
 
+	public function getFirstDiffLine() {
+		$text_vorher  = $this->antrag->text;
+		$paragraphs = $this->antrag->getParagraphs(false, false);
+		$text_neu = array();
+		$diff = $this->getDiffParagraphs();
+		foreach ($paragraphs as $i => $para) {
+			if ($diff[$i] != "") $text_neu[] = $diff[$i];
+			else $text_neu[] = $para->str_bbcode;
+		}
+		$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($text_vorher), trim(implode("\n\n", $text_neu)));
+		$diff_text = "";
+
+		if ($this->name_neu != $this->antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $this->name_neu . "[/QUOTE]\n\n";
+		return DiffUtils::getFistDiffLine($diff, $this->antrag->getFirstLineNo());
+	}
+
+	/**
+	 * @return string
+	 */
+	public function naechsteAenderungsRevNr()
+	{
+		$max_rev = 0;
+		if ($this->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_nach_zeile) {
+			$line = $this->getFirstDiffLine();
+			$ae_rev_base = $this->antrag->revision_name . "-Ä" . $line . "-";
+			$max_rev = 0;
+			foreach ($this->antrag->aenderungsantraege as $ae) {
+				$x = explode($ae_rev_base, $ae->revision_name);
+				if (count($x) == 2 && $x[1] > $max_rev) $max_rev = IntVal($x[1]);
+			}
+			return $ae_rev_base . ($max_rev + 1);
+		} elseif ($this->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
+			$antraege = $this->antrag->veranstaltung->antraege;
+			foreach ($antraege as $ant) {
+				$m = $ant->getMaxAenderungsRevNr();
+				if ($m > $max_rev) $max_rev = $m;
+			}
+		} else {
+			$max_rev = $this->antrag->getMaxAenderungsRevNr();
+		}
+		return "Ä" . ($max_rev + 1);
+	}
+
 	/**
 	 * @param int $veranstaltung_id
 	 * @param int $limit
