@@ -95,7 +95,6 @@ var CKBUILDER_CONFIG = {
 		'menubutton' : 1,
 		'autogrow' : 1,
 		'wordcount' : 1,
-		'onchange' : 1,
 		'mediaembed' : 1,
 		'indentlist' : 1
 	},

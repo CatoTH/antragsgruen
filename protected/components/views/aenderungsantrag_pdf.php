@@ -121,7 +121,7 @@ if ($diff_ansicht) {
 
 				$html .= "Im Absatz von Zeile $zeile_von - $zeile_bis:";
 			}
-			$html .= "<div class='row-fluid' style=\"line-height: 6px;\">";
+			$html .= "<div class='row-fluid' style=\"line-height: 1.8px;\">";
 			/** @var AntragAbsatz $abs */
 			$str = DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i], true);
 
@@ -185,12 +185,13 @@ if ($diff_ansicht) {
 $begruendung = HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung);
 if (function_exists("normalizer_normalize")) $begruendung = normalizer_normalize($begruendung);
 $html = '
-	</div>
+	</div>';
+if (trim($begruendung) != "") $html .= '
 	<h3 style="margin-top: 0;">Begründung</h3>
 	<div class="textholder consolidated">
 		' . $begruendung . '
-	</div>
-</div>';
+	</div>';
+$html .= '</div>';
 
 
 $pdf->SetFont("helvetica", "", 10);
