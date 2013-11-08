@@ -94,7 +94,7 @@ class Person extends GxActiveRecord
 		return array(
 			'id'                                 => Yii::t('app', 'ID'),
 			'typ'                                => Yii::t('app', 'Typ'),
-			'name'                               => Yii::t('app', 'Name'),
+			'name'                               => Yii::t('app', 'Name(n)'),
 			'email'                              => Yii::t('app', 'E-Mail'),
 			'email_bestaetigt'                   => Yii::t('app', 'E-Mail-Adresse bestätigt'),
 			'telefon'                            => Yii::t('app', 'Telefon'),
