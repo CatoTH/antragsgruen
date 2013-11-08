@@ -126,7 +126,7 @@ $pdf->writeHTML("<h3>" . $ueberschrift . "</h3>");
 
 
 if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") $pdf->SetFont("helvetica", "", 11);
-else $pdf->SetFont("Courier", "", 10);
+else $pdf->SetFont("Courier", "", 11);
 $pdf->Ln(7);
 
 
