@@ -154,7 +154,7 @@ class Aenderungsantrag extends IAntrag
 	 * @return bool
 	 */
 	public function save($runValidation = true, $attributes = null) {
-		Yii::app()->cache->delete("pdf_ae_" . $this->antrag->veranstaltung->id . "_" . $this->id);
+		Yii::app()->cache->delete("pdf_ae_" . $this->antrag->veranstaltung->id);
 
 		return parent::save($runValidation, $attributes);
 	}
