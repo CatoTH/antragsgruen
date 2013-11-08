@@ -206,7 +206,7 @@ class DiffUtils
 	public static function getFistDiffLine($diff, $first_line_no = 1)
 	{
 		$edits      = $diff->getDiff();
-		$line       = $first_line_no - 1;
+		$line       = $first_line_no;
 
 		foreach ($edits as $edit) {
 			if (get_class($edit) == "Horde_Text_Diff_Op_Add") {
