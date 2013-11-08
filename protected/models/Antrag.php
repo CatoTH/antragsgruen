@@ -218,7 +218,7 @@ class Antrag extends IAntrag
 		$erste_zeile = $this->getFirstLineNo();
 
 		HtmlBBcodeUtils::initZeilenCounter($erste_zeile);
-		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text), $praesentations_hacks);
+		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text), $praesentations_hacks, $this->veranstaltung->getEinstellungen()->zeilenlaenge);
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain       = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
 			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, $aenders);
@@ -384,7 +384,7 @@ class Antrag extends IAntrag
 	 */
 	public function save($runValidation = true, $attributes = null) {
 		HtmlBBcodeUtils::initZeilenCounter();
-		list($anzahl_absaetze, $anzahl_zeilen) = HtmlBBcodeUtils::getBBCodeStats(trim($this->text));
+		list($anzahl_absaetze, $anzahl_zeilen) = HtmlBBcodeUtils::getBBCodeStats(trim($this->text), $this->veranstaltung->getEinstellungen()->zeilenlaenge);
 		$this->cache_anzahl_absaetze = $anzahl_absaetze;
 		$this->cache_anzahl_zeilen = $anzahl_zeilen + 1; // + Überschrift
 

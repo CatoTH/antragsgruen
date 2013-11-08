@@ -215,7 +215,7 @@ class Aenderungsantrag extends IAntrag
 		$komms = $this->aenderungsantragKommentare;
 
 		HtmlBBcodeUtils::initZeilenCounter();
-		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->aenderung_text));
+		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->aenderung_text), false, $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);

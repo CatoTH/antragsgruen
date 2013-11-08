@@ -370,7 +370,7 @@ class AntragController extends AntragsgruenController
 						}
 						if (!isset($neuer_text)) die("ÄA nicht gefunden");
 				}
-				$neu = HtmlBBcodeUtils::bbcode2html_absaetze($neuer_text);
+				$neu = HtmlBBcodeUtils::bbcode2html_absaetze($neuer_text, false, $antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 				foreach ($neu["bbcode"] as $line) $neue_absaetze[] = $line;
 				$neu_count += count($neu["bbcode"]);
 			}

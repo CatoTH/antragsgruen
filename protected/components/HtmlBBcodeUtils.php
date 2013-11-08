@@ -7,6 +7,8 @@ class HtmlBBcodeUtils
 
 	public static $zeilen_counter = 0;
 
+	public static $zeilenlaenge;
+
 	/**
 	 * @param int $init
 	 */
@@ -41,10 +43,12 @@ class HtmlBBcodeUtils
 	/**
 	 * @static
 	 * @param string $text
+	 * @param int $zeilenlaenge
 	 * @return array|string[]
 	 */
-	static function bbcode2zeilen_absaetze($text)
+	static function bbcode2zeilen_absaetze($text, $zeilenlaenge)
 	{
+		HtmlBBcodeUtils::$zeilenlaenge = $zeilenlaenge;
 		$text = str_replace("\r", "", $text);
 		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
 		$text = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
@@ -63,7 +67,7 @@ class HtmlBBcodeUtils
 					$zeils     = explode("\n", $matches[2]);
 					$zeils_neu = array();
 					foreach ($zeils as $zeile) {
-						$x           = HtmlBBcodeUtils::text2zeilen($zeile, 70);
+						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
 						$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $x);
 					}
 					$out .= implode("\n", $zeils_neu);
@@ -80,7 +84,7 @@ class HtmlBBcodeUtils
 						$zeils = explode("\n", trim($x[$i]));
 						$zeils_neu = array();
 						foreach ($zeils as $zeile) {
-							$z           = HtmlBBcodeUtils::text2zeilen($zeile, 70);
+							$z           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
 							$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $z);
 						}
 						$out .= "[*]" . implode("[*]", $zeils_neu);
@@ -94,7 +98,7 @@ class HtmlBBcodeUtils
 				$zeils     = explode("\n", $y);
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, 80);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge);
 					$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $x);
 				}
 
@@ -115,11 +119,12 @@ class HtmlBBcodeUtils
 
 	/**
 	 * @param string $text
+	 * @param int $zeilenlaenge
 	 * @return array|int[]
 	 */
-	static function getBBCodeStats($text) {
+	static function getBBCodeStats($text, $zeilenlaenge) {
 		static::initZeilenCounter(1);
-		$absaetze = static::bbcode2html_absaetze($text);
+		$absaetze = static::bbcode2html_absaetze($text, false, $zeilenlaenge);
 		$strs = $absaetze["html"];
 		preg_match_all("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $strs[count($strs) - 1], $matches);
 		$anzahl_absaetze = count($strs);
@@ -131,9 +136,10 @@ class HtmlBBcodeUtils
 	 * @static
 	 * @param string $text
 	 * @param bool $praesentations_hacks
+	 * @param int $zeilenlaenge
 	 * @return array|string[]
 	 */
-	static function bbcode2html_absaetze($text, $praesentations_hacks = false)
+	static function bbcode2html_absaetze($text, $praesentations_hacks = false, $zeilenlaenge)
 	{
 		$text = str_replace("\r", "", $text);
 		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
@@ -149,6 +155,7 @@ class HtmlBBcodeUtils
 
 		HtmlBBcodeUtils::$br_implicit = ($praesentations_hacks ? " <br class='implicit'>" : "<br>"); // wird bei responsiver Ansicht manchmal ausgeblendet
 		HtmlBBcodeUtils::$br_explicit = "<br>";
+		HtmlBBcodeUtils::$zeilenlaenge = $zeilenlaenge;
 
 		foreach ($x as $y) {
 			$absaetze_bbcode[]     = $y;
@@ -166,7 +173,7 @@ class HtmlBBcodeUtils
 					$zeils     = explode("<br>", $matches[3]);
 					$zeils_neu = array();
 					foreach ($zeils as $zeile) {
-						$x           = HtmlBBcodeUtils::text2zeilen($zeile, 70);
+						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
 						$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 					}
 					$out .= implode("<br>", $zeils_neu);
@@ -178,7 +185,7 @@ class HtmlBBcodeUtils
 				$zeils     = explode("<br>", $abs);
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, 80);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
 					$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 				}
 
@@ -220,9 +227,10 @@ class HtmlBBcodeUtils
 	/**
 	 * @static
 	 * @param string $text
+	 * @param int $zeilenlaenge
 	 * @return array|string[]
 	 */
-	static function bbcode2html_absaetze2($text)
+	static function bbcode2html_absaetze2($text, $zeilenlaenge)
 	{
 		$text = str_replace("\r", "", $text);
 		$text = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
@@ -242,7 +250,7 @@ class HtmlBBcodeUtils
 			$absaetze_html_plain[] = $abs;
 			echo $abs . "\n=================\n";
 
-			$str_neu = self::bbcode2html_absaetze2_block($abs, 80);
+			$str_neu = self::bbcode2html_absaetze2_block($abs, $zeilenlaenge);
 
 			$zeils     = explode("<br>", $abs);
 			$zeils_neu = array();
@@ -253,7 +261,7 @@ class HtmlBBcodeUtils
 
 				//$zeile = preg_replace("/(<ul([^>]*)>|<ol([^>]*)>|<blockquote([^>]*)>| )*(.*)/siu", "\\1###ZEILENNUMMER###"$zeile);
 				/*
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, 80);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, $zeilenlaenge);
 				$zeils_neu[] = "###ZEILENNUMMER###" . implode("<br>###ZEILENNUMMER###", $x);
 				*/
 			}
@@ -276,7 +284,7 @@ class HtmlBBcodeUtils
 	 * @param bool $debug
 	 * @return array|string[]
 	 */
-	static function text2zeilen($text, $max_len = 80, $debug = false)
+	static function text2zeilen($text, $max_len, $debug = false)
 	{
 
 		$zeilen                    = array();
