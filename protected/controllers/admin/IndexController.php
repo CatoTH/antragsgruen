@@ -111,16 +111,21 @@ class IndexController extends AntragsgruenController
 				$todo[] = array("Änderungsanträge prüfen: " . $ae->revision_name . " zu " . $ae->antrag->revision_name . " " . $ae->antrag->name, array("admin/aenderungsantraege/update", array("id" => $ae->id)));
 			}
 
-			if ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare) {
-				/** @var array|AntragKommentar[] $kommentare  */
-				$kommentare = AntragKommentar::model()->with(array(
-					"antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
-				))->findAllByAttributes(array("status" => AntragKommentar::$STATUS_NICHT_FREI));
-				foreach ($kommentare as $komm) {
-					$todo[] = array("Kommentar prüfen: " . $komm->verfasserIn->name . " zu " . $komm->antrag->revision_name, array("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
-				}
+			$kommentare = AntragKommentar::model()->with(array(
+				"antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
+			))->findAllByAttributes(array("status" => AntragKommentar::$STATUS_NICHT_FREI));
+			foreach ($kommentare as $komm) {
+				$todo[] = array("Kommentar prüfen: " . $komm->verfasserIn->name . " zu " . $komm->antrag->revision_name, array("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
 			}
 
+			/** @var AenderungsantragKommentar[] $kommentare */
+			$kommentare = AenderungsantragKommentar::model()->with(array(
+				"aenderungsantrag" => array("alias" => "aenderungsantrag"),
+				"aenderungsantrag.antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
+			))->findAllByAttributes(array("status" => AntragKommentar::$STATUS_NICHT_FREI));
+			foreach ($kommentare as $komm) {
+				$todo[] = array("Kommentar prüfen: " . $komm->verfasserIn->name . " zu " . $komm->aenderungsantrag->revision_name, array("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $komm->aenderungsantrag->id, "antrag_id" => $komm->aenderungsantrag->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
+			}
 
 		}
 
