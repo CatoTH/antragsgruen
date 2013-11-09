@@ -229,16 +229,17 @@ class DiffUtils
 	/**
 	 * @param string $string1
 	 * @param string $string2
+	 * @param int $zeilenlaenge
 	 * @return Horde_Text_Diff
 	 */
-	public static function getTextDiffMitZeilennummern($string1 = "", $string2 = "")
+	public static function getTextDiffMitZeilennummern($string1 = "", $string2 = "", $zeilenlaenge)
 	{
 		HtmlBBcodeUtils::initZeilenCounter();
-		$arr1  = HtmlBBcodeUtils::bbcode2zeilen_absaetze(trim($string1));
+		$arr1  = HtmlBBcodeUtils::bbcode2zeilen_absaetze(trim($string1), $zeilenlaenge);
 		$text1 = implode("\n#ABSATZ#\n", $arr1);
 
 		HtmlBBcodeUtils::initZeilenCounter();
-		$arr2  = HtmlBBcodeUtils::bbcode2zeilen_absaetze(trim($string2));
+		$arr2  = HtmlBBcodeUtils::bbcode2zeilen_absaetze(trim($string2), $zeilenlaenge);
 		$text2 = implode("\n#ABSATZ#\n", $arr2);
 
 		$diff = new Horde_Text_Diff('native', array(explode("\n", $text1), explode("\n", $text2)));
