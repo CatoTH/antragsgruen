@@ -96,7 +96,7 @@ if ($header) {
 	$pdf->SetFont("helvetica", "", 12);
 	$pdf->MultiCell(120, 0, $initiatorinnen, 0, "L");
 
-	$pdf->Ln();
+	$pdf->Ln(5);
 	$pdf->SetX(12);
 
 	$pdf->SetFont("helvetica", "B", 12);
