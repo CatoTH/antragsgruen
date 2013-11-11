@@ -261,7 +261,8 @@ class Person extends GxActiveRecord
 	 */
 	public function istWurzelwerklerIn()
 	{
-		return preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth);
+		if (preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth)) return true;
+		return preg_match("/https:\/\/service\.gruene.de\/openid\/[a-z0-9_-]+/siu", $this->auth);
 	}
 
 	/**
@@ -270,8 +271,10 @@ class Person extends GxActiveRecord
 	public function getWurzelwerkName()
 	{
 		$x = preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches);
-		if (!$x) return null;
-		return $matches[1];
+		if ($x) return $matches[1];
+		$x = preg_match("/https:\/\/service\.gruene.de\/openid\/[a-z0-9_-]+/siu", $this->auth, $matches);
+		if ($x) return $matches[1];
+		return null;
 	}
 
 

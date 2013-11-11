@@ -29,7 +29,8 @@ class AntragUserIdentityPasswd extends CBaseUserIdentity
 	public function getId()
 	{
 		if (strpos($this->username, "@")) return "email:" . $this->username;
-		else return "openid:https://" . $this->username . ".netzbegruener.in/";
+		//else return "openid:https://" . $this->username . ".netzbegruener.in/";
+		else return "openid:https://service.gruene.de/openid/" . $this->username;
 	}
 
 	/**

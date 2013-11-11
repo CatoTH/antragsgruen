@@ -150,7 +150,8 @@ class AntragsgruenController extends CController
 
 		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["OAuthLoginForm"]["wurzelwerk"])) {
 			if (strpos($_REQUEST["OAuthLoginForm"]["wurzelwerk"], "@")) $username = "email:" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"];
-			else $username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
+			//else $username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
+			else $username = "openid:https://service.gruene.de/openid/" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"];
 
 			/** @var Person $user */
 			$user = Person::model()->findByAttributes(array("auth" => $username));
@@ -228,7 +229,8 @@ class AntragsgruenController extends CController
 			} else {
 				/** @var LightOpenID $loid */
 				$loid = Yii::app()->loid->load();
-				if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
+				//if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
+				if ($model->wurzelwerk != "") $loid->identity = "https://service.gruene.de/openid/" . $model->wurzelwerk;
 				else $loid->identity = $model->openid_identifier;
 
 				$loid->required  = array('namePerson/friendly', 'contact/email'); //Try to get info from openid provider

@@ -41,6 +41,8 @@ if ($msg_err != "") {
 
 		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'ok', 'label' => 'Einloggen')); ?>
 
+		<div style="border-left: solid 1px #808080; padding-left: 10px; margin-top: 10px;"><small><strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://service.gruene.de/" umgeleitet, die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-Benutzername/Passwort eingeben und bestätigen, dass deine E-Mail-Adresse an Antragsgrün übermittelt wird. Dein Wurzelwerk-Passwort bleibt geheim und wird <i>nicht</i> an Antragsgrün übermittelt.</small></div>
+
 		<?php $this->endWidget(); ?>
 
 	</div>

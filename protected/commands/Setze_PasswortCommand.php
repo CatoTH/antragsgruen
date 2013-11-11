@@ -8,7 +8,8 @@ class Setze_PasswortCommand extends CConsoleCommand {
 			}
 
 			if (strpos($args[0], "@")) $auth = "email:" . $args[0];
-			else $auth = "openid:https://" . $args[0] . ".netzbegruener.in/";
+			//else $auth = "openid:https://" . $args[0] . ".netzbegruener.in/";
+			else $auth = "openid:https://service.gruene.de/openid/" . $args[0];
 
 			/** @var Person $person  */
 			$person = Person::model()->findByAttributes(array("auth" => $auth));
