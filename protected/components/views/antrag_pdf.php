@@ -124,9 +124,8 @@ if ($antrag->veranstaltung->getEinstellungen()->titel_eigene_zeile) $pdf->MultiC
 $pdf->SetFont("helvetica", "", 12);
 $pdf->writeHTML("<h3>" . $ueberschrift . "</h3>");
 
-
-if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") $pdf->SetFont("helvetica", "", 11);
-else $pdf->SetFont("Courier", "", 11);
+$text_size = ($antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 70 ? 10 : 11);
+$pdf->SetFont("Courier", "", $text_size);
 $pdf->Ln(7);
 
 

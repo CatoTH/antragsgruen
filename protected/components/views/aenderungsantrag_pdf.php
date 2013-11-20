@@ -99,7 +99,8 @@ $pdf->SetFont("helvetica", "", 12);
 $pdf->writeHTML("<h3>Antrag</h3>");
 */
 $pdf->Ln(8);
-$pdf->SetFont("Courier", "", 11);
+$text_size = ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 70 ? 10 : 11);
+$pdf->SetFont("Courier", "", $text_size);
 
 
 if ($diff_ansicht) {
