@@ -163,7 +163,7 @@ $this->menus_html[] = $html;
 		?>
 		<div class='row-fluid row-absatz <?php echo $kommoffenclass; ?>' data-absatznr='<?php echo $i; ?>'>
 
-		<div class="textabschnitt">
+		<div class="textabschnitt<?php if ($antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 80) echo " kleine_schrift"; ?>">
 			<div class="absatz_text orig antragabsatz_holder antrags_text_holder_nummern">
 				<?php echo $abs->str_html; ?>
 

@@ -498,6 +498,9 @@ h1.well {
 .textabschnitt {
 	position: relative;
 }
+.textabschnitt.kleine_schrift {
+	font-size: 12px;
+}
 
 .aenders,
 .kommentare {

@@ -185,7 +185,7 @@ class HtmlBBcodeUtils
 				$zeils     = explode("<br>", $abs);
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge);
 					$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 				}
 
