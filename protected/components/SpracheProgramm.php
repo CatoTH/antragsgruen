@@ -25,5 +25,6 @@ class SpracheProgramm extends Sprache
 		"feed_desc_aenderungsantraege"       => "%veranstaltung%: Neue Änderungsvorschläge für das Wahlprogramm",
 		"feed_desc_kommentare"               => "%veranstaltung%: Neue Kommentare",
 		"feed_desc_alles"                    => "%veranstaltung%: Neue Änderungsvorschläge und Kommentare",
+        "Diese Veranstaltung"                => "Diese Programmdiskussion",
 	);
 }

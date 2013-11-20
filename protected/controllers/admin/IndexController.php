@@ -130,7 +130,8 @@ class IndexController extends AntragsgruenController
 		}
 
 		$this->render('index', array(
-			"todo" => $todo
+			"todo" => $todo,
+            "sprache" => $this->veranstaltung->getSprache()
 		));
 	}
 
