@@ -255,6 +255,15 @@ class Person extends GxActiveRecord
 		return $code;
 	}
 
+    /**
+     * @param string $username
+     * @return Person|null
+     */
+    public static function getWurzelwerkler($username) {
+        $user = Person::model()->findByAttributes(array("auth" => "openid:https://service.gruene.de/openid/" . $username));
+        if ($user) return $user;
+        else return null;
+    }
 
 	/**
 	 * @return bool
@@ -272,7 +281,7 @@ class Person extends GxActiveRecord
 	{
 		$x = preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches);
 		if ($x) return $matches[1];
-		$x = preg_match("/https:\/\/service\.gruene.de\/openid\/[a-z0-9_-]+/siu", $this->auth, $matches);
+		$x = preg_match("/https:\/\/service\.gruene.de\/openid\/([a-z0-9_-]+)/siu", $this->auth, $matches);
 		if ($x) return $matches[1];
 		return null;
 	}

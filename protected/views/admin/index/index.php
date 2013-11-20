@@ -26,18 +26,19 @@ $this->breadcrumbs = array(
 		<h4>Administration</h4>
 		<ul>
 			<?php if (yii::app()->user->getState("role") === "admin") { ?>
-				<li><a href="<?= $this->createUrl("admin/veranstaltungen") ?>"><?=Veranstaltung::label(2)?></a></li>
-				<li><a href="<?= $this->createUrl("admin/personen") ?>"><?=Person::label(2)?></a></li>
-				<li><a href="<?= $this->createUrl("admin/antraegeKommentare") ?>"><?=AntragKommentar::label(2)?></a></li>
-				<li><a href="<?= $this->createUrl("admin/aenderungsantraegeKommentare") ?>"><?=AenderungsantragKommentar::label(2)?></a></li>
+				<li><a href="<?php echo $this->createUrl("admin/veranstaltungen") ?>"><?php echo Veranstaltung::label(2)?></a></li>
+				<li><a href="<?php echo $this->createUrl("admin/personen") ?>"><?php echo Person::label(2)?></a></li>
+				<li><a href="<?php echo $this->createUrl("admin/antraegeKommentare") ?>"><?php echo AntragKommentar::label(2)?></a></li>
+				<li><a href="<?php echo $this->createUrl("admin/aenderungsantraegeKommentare") ?>"><?php echo AenderungsantragKommentar::label(2)?></a></li>
 			<?php } ?>
-			<li><a href="<?= $this->createUrl("admin/veranstaltungen/update") ?>"><?php echo $sprache->get("Diese Veranstaltung"); ?></a></li>
-			<li style="margin-top: 10px;"><a href="<?= $this->createUrl("admin/antraege") ?>"><?=Antrag::label(2)?></a></li>
-			<li style="margin-left: 20px;"><a href="<?= $this->createUrl("/antrag/neu") ?>">Neuen Antrag anlegen</a></li>
-			<li style="margin-top: 10px;"><a href="<?= $this->createUrl("admin/aenderungsantraege") ?>"><?=Aenderungsantrag::label(2)?></a></li>
-			<li style="margin-left: 20px;"><a href="<?= $this->createUrl("admin/index/aePDFList") ?>">Liste aller PDFs</a></li>
-			<li style="margin-left: 20px;"><a href="<?= $this->createUrl("admin/index/aeExcelList") ?>">Änderungsanträge als Excel-Datei</a></li>
-			<li style="margin-top: 10px;"><a href="<?= $this->createUrl("admin/texte") ?>">Redaktionelle Texte</a></li>
+			<li><a href="<?php echo $this->createUrl("admin/veranstaltungen/update") ?>"><?php echo $sprache->get("Diese Veranstaltung"); ?></a></li>
+            <li><a href="<?php echo $this->createUrl("/admin/index/adminsReihe"); ?>">Weitere Admins</a></li>
+			<li style="margin-top: 10px;"><a href="<?php echo $this->createUrl("admin/antraege") ?>"><?php echo Antrag::label(2)?></a></li>
+			<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("/antrag/neu") ?>">Neuen Antrag anlegen</a></li>
+			<li style="margin-top: 10px;"><a href="<?php echo $this->createUrl("admin/aenderungsantraege") ?>"><?php echo Aenderungsantrag::label(2)?></a></li>
+			<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/aePDFList") ?>">Liste aller PDFs</a></li>
+			<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/aeExcelList") ?>">Änderungsanträge als Excel-Datei</a></li>
+			<li style="margin-top: 10px;"><a href="<?php echo $this->createUrl("admin/texte") ?>">Redaktionelle Texte</a></li>
 		</ul>
 
 		<br><br>
