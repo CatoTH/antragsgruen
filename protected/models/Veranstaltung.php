@@ -225,6 +225,25 @@ class Veranstaltung extends GxActiveRecord
 				Yii::app()->user->setFlash("error", "Es können nicht alle Anträge angezeigt werden, da mindestens ein Kürzel ($key) mehrfach vergeben ist.");
 			}
 			*/
+
+            if ($this->getEinstellungen()->ae_nummerierung_nach_zeile) {
+                $aes = array();
+                foreach ($ant->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
+
+                usort($aes, function($ae1, $ae2) {
+                    $x1 = explode("-", $ae1->revision_name);
+                    $x2 = explode("-", $ae2->revision_name);
+                    if (count($x1) == 3 && count($x2) == 3) {
+                        if ($x1[2] < $x2[2]) return -1;
+                        if ($x1[2] > $x2[2]) return 1;
+                        return 0;
+                    } else {
+                        return strcasecmp($ae1->revision_name, $ae2->revision_name);
+                    }
+                });
+                $ant->aenderungsantraege = $aes;
+            }
+
 			$antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key] = $ant;
 		}
 
