@@ -33,6 +33,7 @@ class IndexController extends AntragsgruenController
         $criteria->alias = "aenderungsantrag";
         $criteria->order = "LPAD(REPLACE(aenderungsantrag.revision_name, 'Ä', ''), 3, '0')";
         $criteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
+        $criteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
         $aenderungsantraege = Aenderungsantrag::model()->with(array(
             "antrag" => array('condition' => 'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id))
         ))->findAll($criteria);

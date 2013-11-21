@@ -155,6 +155,7 @@ class VeranstaltungController extends AntragsgruenController
 		$criteria->alias = "aenderungsantrag";
 		$criteria->order = "LPAD(REPLACE(aenderungsantrag.revision_name, 'Ä', ''), 3, '0')";
 		$criteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
+        $criteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
 		$aenderungsantraege = Aenderungsantrag::model()->with(array(
 			"antrag" => array('condition' => 'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id))
 		))->findAll($criteria);
@@ -569,7 +570,7 @@ class VeranstaltungController extends AntragsgruenController
 				),
 				'antraege.aenderungsantraege' => array(
 					'joinType' => "LEFT OUTER JOIN",
-					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
+					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
 				),
 			))->findByAttributes(array("id" => $this->veranstaltung->id));
 		return $this->veranstaltung;
