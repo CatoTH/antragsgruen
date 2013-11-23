@@ -9,17 +9,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label'=> "Durchsuchen", 'url' => array('admin'), "icon" => "th-list"),
+	array('label' => "Durchsuchen", 'url' => array('admin'), "icon" => "th-list"),
 );
 ?>
 
-<div class="well well_first">
 	<h1><?php echo GxHtml::encode(Antrag::label(2)); ?></h1>
 
-	<?php
-	$this->widget('zii.widgets.CListView', array(
-	'dataProvider'=> $dataProvider,
-	'itemView'    => '_list',
+<?php
+$this->widget('zii.widgets.CListView', array(
+	'dataProvider' => $dataProvider,
+	'itemView'     => '_list',
 ));
-	?>
-</div>

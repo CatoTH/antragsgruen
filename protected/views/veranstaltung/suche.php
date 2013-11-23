@@ -17,7 +17,7 @@
 
 $this->pageTitle = Yii::app()->name;
 
-$this->breadcrumbs         = array(
+$this->breadcrumbs = array(
 	CHtml::encode($veranstaltung->name_kurz),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
@@ -28,11 +28,10 @@ include(__DIR__ . "/sidebar.php");
 
 
 ?>
-<h1 class="well">Suche nach "<?php echo CHtml::encode($suchbegriff); ?>"</h1>
-<div class="well well_first">
-	<div class="content">
-		<strong>Hinweis:</strong> gefunden werden nur (Änderungs-)Anträge, in denen <i>genau</i> die angegebene Zeichenkette vorkommt.<br>
-	</div>
+<h1>Suche nach "<?php echo CHtml::encode($suchbegriff); ?>"</h1>
+<div class="content">
+	<strong>Hinweis:</strong> gefunden werden nur (Änderungs-)Anträge, in denen <i>genau</i> die angegebene Zeichenkette
+	vorkommt.<br>
 </div>
 
 <h3>Gefundene Anträge</h3>
@@ -77,7 +76,7 @@ if (count($suche_antraege) > 0) {
 		echo "</li>";
 	}
 	echo "</ul>";
-} else echo "<div class='well'><div class='content'><i>keine Anträge gefunden</i></div></div> ";
+} else echo "<div class='content'><i>keine Anträge gefunden</i></div> ";
 ?>
 
 <h3>Gefundene Änderungsanträge</h3>
@@ -121,6 +120,6 @@ if (count($suche_aenderungsantraege) > 0) {
 		echo "</li>";
 	}
 	echo "</ul>";
-} else echo "<div class='well'><div class='content'><i>keine Anträge gefunden</i></div></div> ";
+} else echo "<div class='content'><i>keine Anträge gefunden</i></div> ";
 ?>
 

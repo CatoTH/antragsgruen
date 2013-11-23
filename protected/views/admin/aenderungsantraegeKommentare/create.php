@@ -9,17 +9,14 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label'=> "Änderungsantrags-Kommentare", 'url' => array('index'), "icon" => "home"),
-	array('label'=> "Durchsuchen", 'url' => array('admin'), "icon" => "th-list"),
+	array('label' => "Änderungsantrags-Kommentare", 'url' => array('index'), "icon" => "home"),
+	array('label' => "Durchsuchen", 'url' => array('admin'), "icon" => "th-list"),
 );
 ?>
 
-<h1 class="well"><?php echo GxHtml::encode($model->label()) . ' ' . Yii::t('app', 'Create'); ?></h1>
+	<h1><?php echo GxHtml::encode($model->label()) . ' ' . Yii::t('app', 'Create'); ?></h1>
 
-<div class="well">
-	<?php
-	$this->renderPartial('_form', array(
-		'model'   => $model,
-		'buttons' => 'create'));
-	?>
-</div>
+<?php
+$this->renderPartial('_form', array(
+	'model'   => $model,
+	'buttons' => 'create'));

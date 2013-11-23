@@ -16,9 +16,9 @@ $app = Yii::app();
 $app->getClientScript()->registerCssFile($assets_base . '/css/formwizard.css');
 
 ?>
-<h1 class="well">Antragsgrün-Instanz anlegen</h1>
+<h1>Antragsgrün-Instanz anlegen</h1>
 
-<div class="well well_first fuelux">
+<div class="fuelux">
 
 	<?php
 	/** @var CActiveForm $form  */

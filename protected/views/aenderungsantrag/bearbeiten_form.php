@@ -25,7 +25,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 ?>
 
 
-<h1 class="well"><?php echo $sprache->get("Änderungsantrag stellen") ?>: <?php echo CHtml::encode($antrag->name); ?></h1>
+<h1><?php echo $sprache->get("Änderungsantrag stellen") ?>: <?php echo CHtml::encode($antrag->name); ?></h1>
 
 <?php
 /** @var TbActiveForm $form */
@@ -39,67 +39,68 @@ foreach ($hiddens as $name => $value) {
 	echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
 }
 
-?>
-<div class="antrags_text_holder ae_absatzwahl_modus aenderungen_moeglich well well_first" style="overflow: auto;">
-	<?php
-	Yii::app()->user->setFlash("info", str_replace(array("#1#", "#2#"), array($sprache->get("beantragte"), $sprache->get("Änderungsantrag")), "Bitte wähle nun die Absätze aus, die geändert werden sollen. Du kannst dann die #1# neue Fassung sowie die Begründung für den #2# angeben."));
-	$this->widget('bootstrap.widgets.TbAlert');
+Yii::app()->user->setFlash("info", str_replace(array("#1#", "#2#"), array($sprache->get("beantragte"), $sprache->get("Änderungsantrag")), "Bitte wähle nun die Absätze aus, die geändert werden sollen. Du kannst dann die #1# neue Fassung sowie die Begründung für den #2# angeben."));
+$this->widget('bootstrap.widgets.TbAlert');
 
-	if ($js_protection) {
-		?>
-		<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.</div>
-	<?php } ?>
+if ($js_protection) {
+	?>
+	<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein,
+		oder du musst eingeloggt sein.
+	</div>
+<?php } ?>
 
-	<h3><label for="Aenderungsantrag_name_neu">Neuer Titel</label></h3>
-	<br>
-	<input id="Aenderungsantrag_name_neu" type="text" value="<?php echo CHtml::encode($aenderungsantrag->name_neu); ?>" name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
-	<br>
-	<br>
+<h3><label for="Aenderungsantrag_name_neu">Neuer Titel</label></h3>
+<br>
+<input id="Aenderungsantrag_name_neu" type="text" value="<?php echo CHtml::encode($aenderungsantrag->name_neu); ?>"
+       name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
+<br>
+<br>
 
 	<h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
 	<br>
+<div
+	class="antrags_text_holder ae_absatzwahl_modus aenderungen_moeglich<?php if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 80) echo " kleine_schrift"; ?>"
+	style="overflow: auto;">
 
-	<div class="textholder consolidated">
-		<?php
+	<?php
 
-		$absae = $antrag->getParagraphs();
-		$text_pre = $aenderungsantrag->getDiffParagraphs();
+	$absae = $antrag->getParagraphs();
+	$text_pre = $aenderungsantrag->getDiffParagraphs();
 
-		foreach ($absae as $i => $abs) {
-			/** @var AntragAbsatz $abs */
-			echo "<div class='row-fluid row-absatz' id='absatz_" . $i . "'>";
+	foreach ($absae as $i => $abs) {
+		/** @var AntragAbsatz $abs */
+		echo "<div class='row-fluid row-absatz' id='absatz_" . $i . "'>";
 
-			echo "<div class='absatz_text orig antragabsatz_holder antrags_text_holder_nummern' ";
-			if ($text_pre && $text_pre[$i] != "") echo " style='display: none;'";
-			echo ">" . $abs->str_html . "</div>";
+		echo "<div class='absatz_text orig antragabsatz_holder antrags_text_holder_nummern' ";
+		if ($text_pre && $text_pre[$i] != "") echo " style='display: none;'";
+		echo ">" . $abs->str_html . "</div>";
 
-			echo "<div class='ae_text_holder'>
+		echo "<div class='ae_text_holder'>
 			<label><input type='checkbox' name='change_text[$i]' data-absatz='$i' class='change_checkbox' ";
-			if ($text_pre && $text_pre[$i] != "") echo "checked";
-			echo "> Ändern<br></label>
+		if ($text_pre && $text_pre[$i] != "") echo "checked";
+		echo "> Ändern<br></label>
 			<h4>Neue Fassung</h4>
 			<textarea id='neu_text_$i' name='neu_text[$i]' style='width: 550px; height: 200px;'>";
-			$str_neu = ($text_pre && $text_pre[$i] != "" ? $text_pre[$i] : $abs->str_bbcode);
-			echo CHtml::encode($str_neu) . "</textarea>";
-			echo "<a href='#' class='ae_verwerfen' style='float: right;'>Unverändert lassen</a>";
-			echo "<div style='text-align: center;'>";
-			$this->widget('bootstrap.widgets.TbButton', array('type' => 'success', 'icon' => 'chevron-right white', 'label' => 'Weiter', 'url' => '#begruendungs_holder'));
-			echo "</div></div>\n";
+		$str_neu = ($text_pre && $text_pre[$i] != "" ? $text_pre[$i] : $abs->str_bbcode);
+		echo CHtml::encode($str_neu) . "</textarea>";
+		echo "<a href='#' class='ae_verwerfen' style='float: right;'>Unverändert lassen</a>";
+		echo "<div style='text-align: center;'>";
+		$this->widget('bootstrap.widgets.TbButton', array('type' => 'success', 'icon' => 'chevron-right white', 'label' => 'Weiter', 'url' => '#begruendungs_holder'));
+		echo "</div></div>\n";
 
-			echo "<div class='antragstext_diff antrags_text_holder_keinenummern absatz_text' ";
-			if (!$text_pre || $text_pre[$i] == "") echo "style='display: none;'";
-			echo ">";
-			if ($text_pre && $text_pre[$i] != "") echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $text_pre[$i]);
-			else echo $abs->str_html_plain;
-			echo "</div>";
+		echo "<div class='antragstext_diff antrags_text_holder_keinenummern absatz_text' ";
+		if (!$text_pre || $text_pre[$i] == "") echo "style='display: none;'";
+		echo ">";
+		if ($text_pre && $text_pre[$i] != "") echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $text_pre[$i]);
+		else echo $abs->str_html_plain;
+		echo "</div>";
 
-			echo "</div>";
-		}
-		?>
-	</div>
+		echo "</div>";
+	}
+	?>
 </div>
 
-<div class="well" id="begruendungs_holder">
+<div id="begruendungs_holder">
 	<h3><label for="ae_begruendung"><?php echo $sprache->get("Begründung für den Änderungsantrag"); ?></label></h3>
 	<br>
 	<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php

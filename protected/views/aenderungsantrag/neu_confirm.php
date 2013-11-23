@@ -22,9 +22,9 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 $this->pageTitle = $sprache->get("Änderungseintrag bestätigen");
 ?>
 
-<h1 class="well"><?php echo $sprache->get("Änderungsantrag"); ?> zu <?php echo CHtml::encode($antrag->name); ?></h1>
+<h1><?php echo $sprache->get("Änderungsantrag"); ?> zu <?php echo CHtml::encode($antrag->name); ?></h1>
 
-<div class="antrags_text_holder well well_first">
+<div class="antrags_text_holder">
     <h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
 
 	<?php
@@ -40,7 +40,7 @@ $this->pageTitle = $sprache->get("Änderungseintrag bestätigen");
     </div>
 </div>
 
-<div class="begruendungs_text_holder well">
+<div class="begruendungs_text_holder">
     <h3>Begründung</h3>
 
     <div class="textholder consolidated ">

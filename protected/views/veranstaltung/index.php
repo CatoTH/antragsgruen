@@ -27,37 +27,35 @@ include(__DIR__ . "/sidebar.php");
 
 ?>
 
-<h1 class="well">
-	<?php
-	echo CHtml::encode($veranstaltung->name);
-	if ($veranstaltung->datum_von != "" && $veranstaltung->datum_von != "0000-00-00") {
-		if ($veranstaltung->datum_von != $veranstaltung->datum_bis) {
-			echo ", " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von) . " - " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_bis);
-		} else {
-			echo ", " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von);
-		}
-
-	}
-	$editlink = $einleitungstext->getEditLink();
-	if ($editlink !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
-	?>
-</h1>
-
-<div class="well well_first">
-    <div class='content' style='overflow: auto;'>
+	<h1>
 		<?php
-		if ($veranstaltung->antragsschluss != "") echo '<p class="antragsschluss">Antrags&shy;schluss: ' . HtmlBBcodeUtils::formatMysqlDateTime($veranstaltung->antragsschluss) . "</p>\n";
+		echo CHtml::encode($veranstaltung->name);
+		if ($veranstaltung->datum_von != "" && $veranstaltung->datum_von != "0000-00-00") {
+			if ($veranstaltung->datum_von != $veranstaltung->datum_bis) {
+				echo ", " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von) . " - " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_bis);
+			} else {
+				echo ", " . HtmlBBcodeUtils::formatMysqlDate($veranstaltung->datum_von);
+			}
+
+		}
+		$editlink = $einleitungstext->getEditLink();
+		if ($editlink !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
+		?>
+	</h1>
+
+	<div class='content' style='overflow: auto;'>
+		<?php
+		if ($veranstaltung->antragsschluss != "") echo '<p class="antragsschluss_kreis">Antrags&shy;schluss: ' . HtmlBBcodeUtils::formatMysqlDateTime($veranstaltung->antragsschluss) . "</p>\n";
 
 		echo $einleitungstext->getHTMLText();
 
 		?>
-    </div>
-</div>
+	</div>
 <?php
-foreach ($antraege as $name=> $antrs) {
+foreach ($antraege as $name => $antrs) {
 	if ($veranstaltung->url_verzeichnis == "ltwby13-programm") echo "<h3>Antrag des Parteirats mit dem Landesvorstand</h3>";
 	else echo "<h3>" . CHtml::encode($name) . "</h3>";
-	echo "<ul>";
+	echo "<ul class='antragsliste'>";
 	foreach ($antrs as $antrag) {
 		/** @var Antrag $antrag */
 		echo "<li";
@@ -75,7 +73,7 @@ foreach ($antraege as $name=> $antrs) {
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
 		echo CHtml::link(CHtml::encode($antrag->nameMitRev()), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
-		if ($veranstaltung->getEinstellungen()->kann_pdf) echo CHtml::link("PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class"=> "pdfLink"));
+		if ($veranstaltung->getEinstellungen()->kann_pdf) echo CHtml::link("PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class" => "pdfLink"));
 		echo "</p>\n";
 		echo "<p class='info'>von ";
 		$vons = array();
@@ -104,49 +102,47 @@ foreach ($antraege as $name=> $antrs) {
 ?>
 
 <?php if ($ich) { ?>
-<div class="well">
 	<?php
 	if (count($meine_antraege) > 0) {
 		?>
-        <h3><?=$sprache->get("Meine Anträge")?></h3>
-        <div class="content">
-            <ul>
+		<h3><?= $sprache->get("Meine Anträge") ?></h3>
+		<div class="content">
+			<ul>
 				<?php foreach ($meine_antraege as $antragu) {
-				$antrag = $antragu->antrag;
-				echo "<li>";
-				if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "<span style='text-decoration: line-through;'>";
-				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
-				if ($antragu->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN) echo " (InitiatorIn)";
-				if ($antragu->rolle == AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) echo " (UnterstützerIn)";
+					$antrag = $antragu->antrag;
+					echo "<li>";
+					if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "<span style='text-decoration: line-through;'>";
+					echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
+					if ($antragu->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN) echo " (InitiatorIn)";
+					if ($antragu->rolle == AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) echo " (UnterstützerIn)";
 					if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "</span>";
-				echo "</li>\n";
-			} ?>
-            </ul>
-        </div>
-		<?php
+					echo "</li>\n";
+				} ?>
+			</ul>
+		</div>
+	<?php
 	}
 
 	if (count($meine_aenderungsantraege) > 0) {
 		?>
-        <h3><?=$sprache->get("Meine Änderungsanträge")?></h3>
-        <div class="content">
-            <ul>
+		<h3><?= $sprache->get("Meine Änderungsanträge") ?></h3>
+		<div class="content">
+			<ul>
 				<?php foreach ($meine_aenderungsantraege as $antragu) {
-				/** @var AenderungsantragUnterstuetzerInnen $antragu */
-				/** @var Aenderungsantrag $antrag */
-				$antrag = $antragu->aenderungsantrag;
-				echo "<li>";
+					/** @var AenderungsantragUnterstuetzerInnen $antragu */
+					/** @var Aenderungsantrag $antrag */
+					$antrag = $antragu->aenderungsantrag;
+					echo "<li>";
 					if ($antrag->status == Aenderungsantrag::$STATUS_ZURUECKGEZOGEN) echo "<span style='text-decoration: line-through;'>";
-				echo CHtml::link(CHtml::encode($antrag->revision_name . " zu " . $antrag->antrag->revision_name),
-					$this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $antrag->antrag->id, "aenderungsantrag_id" => $antrag->id)));
-				if ($antragu->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN) echo " (InitiatorIn)";
-				if ($antragu->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) echo " (UnterstützerIn)";
+					echo CHtml::link(CHtml::encode($antrag->revision_name . " zu " . $antrag->antrag->revision_name),
+						$this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $antrag->antrag->id, "aenderungsantrag_id" => $antrag->id)));
+					if ($antragu->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN) echo " (InitiatorIn)";
+					if ($antragu->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) echo " (UnterstützerIn)";
 					if ($antrag->status == Aenderungsantrag::$STATUS_ZURUECKGEZOGEN) echo "</span>";
-				echo "</li>\n";
-			} ?>
-            </ul>
-        </div>
-		<?php
+					echo "</li>\n";
+				} ?>
+			</ul>
+		</div>
+	<?php
 	}
-	?></div><?php
 } // ich

@@ -30,34 +30,31 @@
 	}).trigger("change");
 
 	var $antragabsatz_holder = $(".antragabsatz_holder"),
+        $lesezeichen = $(".lesezeichen"),
 		$kommentare = $(".kommentare");
 
-	$antragabsatz_holder.find(".kommentare .hider").click(function (ev) {
-		$(this).hide();
+	$lesezeichen.find(".kommentare .hider").click(function (ev) {
+        $(this).hide();
 		$(this).parents(".kommentare").find(".shower").css("display", "block");
 		$(this).parents(".kommentare").find(".text").show();
+
+        $(this).parents(".row-absatz").find(".kommentarform").hide();
+        $(this).hide();
+        $(this).parents(".row-absatz").find(".kommentare .shower").css("display", "block");
+
 		ev.preventDefault();
 	});
 
-	$antragabsatz_holder.find(".kommentare .shower").click(function (ev) {
+    $lesezeichen.find(".kommentare .shower").click(function (ev) {
 		$(this).hide();
 		$(this).parents(".kommentare").find(".hider").css("display", "block");
 		$(this).parents(".kommentare").find(".text").show();
-		ev.preventDefault();
-	});
 
-	$kommentare.find(" .shower").click(function (ev) {
-		ev.preventDefault();
-		$(this).parents(".row-absatz").find(".kommentarform").show();
-		$(this).hide();
-		$(this).parents(".row-absatz").find(".kommentare .hider").show();
-	});
+        $(this).parents(".row-absatz").find(".kommentarform").show();
+        $(this).hide();
+        $(this).parents(".row-absatz").find(".kommentare .hider").show();
 
-	$kommentare.find(".hider").click(function (ev) {
 		ev.preventDefault();
-		$(this).parents(".row-absatz").find(".kommentarform").hide();
-		$(this).hide();
-		$(this).parents(".row-absatz").find(".kommentare .shower").css("display", "block");
 	});
 
 	$(".kommentare_closed_absatz .kommentare .hider").click();
@@ -68,7 +65,7 @@
 		}
 	});
 
-	$(".antrags_text_holder .aenders .aender_link").mouseover(function () {
+	$lesezeichen.find(".aenderungsantrag a").mouseover(function () {
 		var ae = $(this).data("id"),
 			$par = $(this).parents(".row-absatz");
 		$par.find(".ae_" + ae).show();
