@@ -37,7 +37,8 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param Aenderungsantrag $aenderungsantrag
 	 * @param int $kommentar_id
 	 */
-	private function performAnzeigeActions($aenderungsantrag, $kommentar_id) {
+	private function performAnzeigeActions($aenderungsantrag, $kommentar_id)
+	{
 		if (AntiXSS::isTokenSet("komm_del")) {
 			/** @var AenderungsantragKommentar $komm */
 			$komm = AenderungsantragKommentar::model()->findByPk(AntiXSS::getTokenVal("komm_del"));
@@ -85,7 +86,7 @@ class AenderungsantragController extends AntragsgruenController
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->unterstuetzerIn_id == $userid) $unt->delete();
 			$unt                      = new AenderungsantragUnterstuetzerInnen();
 			$unt->aenderungsantrag_id = $aenderungsantrag->id;
-			$unt->unterstuetzerIn_id    = $userid;
+			$unt->unterstuetzerIn_id  = $userid;
 			$unt->rolle               = "mag";
 			$unt->kommentar           = "";
 			if ($unt->save()) Yii::app()->user->setFlash("success", "Du unterstützt diesen Änderungsantrag nun.");
@@ -98,7 +99,7 @@ class AenderungsantragController extends AntragsgruenController
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->unterstuetzerIn_id == $userid) $unt->delete();
 			$unt                      = new AenderungsantragUnterstuetzerInnen();
 			$unt->aenderungsantrag_id = $aenderungsantrag->id;
-			$unt->unterstuetzerIn_id    = $userid;
+			$unt->unterstuetzerIn_id  = $userid;
 			$unt->rolle               = "magnicht";
 			$unt->kommentar           = "";
 			$unt->save();
@@ -147,7 +148,7 @@ class AenderungsantragController extends AntragsgruenController
 				Yii::app()->user->setFlash("error", "Bitte gib deine E-Mail-Adresse an.");
 				$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 			}
-			$model_person  = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
+			$model_person = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
 
 			$kommentar                      = new AenderungsantragKommentar();
 			$kommentar->attributes          = $_REQUEST["AenderungsantragKommentar"];
@@ -170,7 +171,7 @@ class AenderungsantragController extends AntragsgruenController
 					$mails          = explode(",", $this->veranstaltung->admin_email);
 					foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Kommentar - bitte freischalten.",
 						"Es wurde ein neuer Kommentar zum Änderungsantrag \"" . $aenderungsantrag->revision_name . " zu " . $aenderungsantrag->antrag->revision_name . " - " . $aenderungsantrag->antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
-							"Link: " . $kommentar_link,
+						"Link: " . $kommentar_link,
 						"From: " . Yii::app()->params['mail_from']
 					);
 				}
@@ -216,16 +217,16 @@ class AenderungsantragController extends AntragsgruenController
 		}
 
 		$this->render("anzeige", array(
-			"aenderungsantrag"   => $aenderungsantrag,
-			"edit_link"          => $aenderungsantrag->binInitiatorIn(),
-			"admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $aenderungsantrag_id : null),
-			"kommentare_offen"   => $kommentare_offen,
-			"kommentar_person"   => $kommentar_person,
-			"komm_del_link"      => $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id, AntiXSS::createToken("komm_del") => "#komm_id#")),
-			"hiddens"            => $hiddens,
-			"js_protection"      => $js_protection,
-			"support_status"     => $support_status,
-			"sprache"            => $aenderungsantrag->antrag->veranstaltung->getSprache(),
+			"aenderungsantrag" => $aenderungsantrag,
+			"edit_link"        => $aenderungsantrag->binInitiatorIn(),
+			"admin_edit"       => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $aenderungsantrag_id : null),
+			"kommentare_offen" => $kommentare_offen,
+			"kommentar_person" => $kommentar_person,
+			"komm_del_link"    => $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id, AntiXSS::createToken("komm_del") => "#komm_id#")),
+			"hiddens"          => $hiddens,
+			"js_protection"    => $js_protection,
+			"support_status"   => $support_status,
+			"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
 		));
 	}
 
@@ -380,7 +381,7 @@ class AenderungsantragController extends AntragsgruenController
 				$mails = explode(",", $aenderungsantrag->antrag->veranstaltung->admin_email);
 				foreach ($mails as $mail) if (trim($mail) != "") mb_send_mail(trim($mail), "Neuer Änderungsantrag",
 					"Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
-						"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)),
+					"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id)),
 					"From: " . Yii::app()->params['mail_from']
 				);
 			}
@@ -453,10 +454,11 @@ class AenderungsantragController extends AntragsgruenController
 		}
 
 
-		$aenderungsantrag            = new Aenderungsantrag();
-		$aenderungsantrag->antrag    = $antrag;
-		$aenderungsantrag->antrag_id = $antrag->id;
-		$aenderungsantrag->status    = Aenderungsantrag::$STATUS_UNBESTAETIGT;
+		$aenderungsantrag                             = new Aenderungsantrag();
+		$aenderungsantrag->aenderung_first_line_cache = -1;
+		$aenderungsantrag->antrag                     = $antrag;
+		$aenderungsantrag->antrag_id                  = $antrag->id;
+		$aenderungsantrag->status                     = Aenderungsantrag::$STATUS_UNBESTAETIGT;
 
 		if (Yii::app()->user->isGuest) {
 			$antragstellerIn = null;
@@ -470,7 +472,7 @@ class AenderungsantragController extends AntragsgruenController
 
 			$aenderungsantrag->name_neu              = $_REQUEST["Aenderungsantrag"]["name_neu"];
 			$aenderungsantrag->aenderung_begruendung = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["ae_begruendung"]);
-			
+
 			if ($aenderungsantrag->name_neu != $antrag->name) $changed = true;
 
 			$orig_absaetze = $antrag->getParagraphs();
