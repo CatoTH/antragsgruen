@@ -30,6 +30,7 @@ class AntraegeController extends GxController
 			$model->revision_name = $newvar;
 			if ($model->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $model->status = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
 			$model->save();
+			$model->veranstaltung->resetLineCache();
 			Yii::app()->user->setFlash("success", "Der Antrag wurde freigeschaltet.");
 
 			$benachrichtigt = array();
@@ -51,6 +52,7 @@ class AntraegeController extends GxController
 			);
 
 			if ($model->saveWithRelated($relatedData)) {
+				$model->veranstaltung->resetLineCache();
 				UnterstuetzerInnenWidget::saveUnterstuetzerInnenWidget($model, $messages, "AntragUnterstuetzerInnen", "antrag_id", $id);
 
 				$model = Antrag::model()->with("antragUnterstuetzerInnen", "antragUnterstuetzerInnen.person")->findByPk($id, '', array("order" => "`person`.`name"));

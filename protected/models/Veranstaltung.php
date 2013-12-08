@@ -330,6 +330,13 @@ class Veranstaltung extends GxActiveRecord
 	}
 
 	/**
+	 */
+	public function resetLineCache() {
+		$command = Yii::app()->db->createCommand("UPDATE aenderungsantrag a JOIN antrag b ON a.antrag_id = b.id SET a.aenderung_first_line_cache = -1 WHERE b.veranstaltung_id = " . IntVal($this->id));
+		$command->execute();
+	}
+
+	/**
 	 * @var string $className
 	 * @return GxActiveRecord
 	 */

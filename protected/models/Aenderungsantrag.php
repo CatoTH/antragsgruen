@@ -9,6 +9,7 @@
  * @property string $begruendung_neu
  * @property string $aenderung_text
  * @property string $aenderung_begruendung
+ * @property integer $aenderung_first_line_cache
  * @property string $datum_einreichung
  * @property string $datum_beschluss
  * @property integer $status
@@ -58,12 +59,12 @@ class Aenderungsantrag extends IAntrag
 	public function rules() {
 		return array(
 			array('text_neu, aenderung_text, datum_einreichung, status, status', 'required'),
-			array('antrag_id, status', 'numerical', 'integerOnly'=>true),
+			array('antrag_id, status, aenderung_first_line_cache', 'numerical', 'integerOnly'=>true),
 			array('revision_name', 'length', 'max'=>45),
 			array('status_string', 'length', 'max'=>55),
 			array('name_neu, datum_beschluss', 'safe'),
 			array('antrag_id, revision_name, name_neu, datum_beschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, antrag_id, revision_name, name_neu, text_neu, begruendung_neu, aenderung_text, aenderung_begruendung, datum_einreichung, datum_beschluss, status, status_string', 'safe', 'on'=>'search'),
+			array('id, antrag_id, revision_name, name_neu, text_neu, begruendung_neu, aenderung_text, aenderung_begruendung, aenderung_first_line_cache, datum_einreichung, datum_beschluss, status, status_string', 'safe', 'on'=>'search'),
 		);
 
 	}
@@ -103,6 +104,7 @@ class Aenderungsantrag extends IAntrag
 			'begruendung_neu' => Yii::t('app', 'Begruendung Neu'),
 			'aenderung_text' => Yii::t('app', 'Aenderung Text'),
 			'aenderung_begruendung' => Yii::t('app', 'Aenderung Begruendung'),
+			'aenderung_first_line_cache' => "Cache: erste Zeilennummer",
 			'datum_einreichung' => Yii::t('app', 'Datum Einreichung'),
 			'datum_beschluss' => Yii::t('app', 'Datum Beschluss'),
 			'status' => Yii::t('app', 'Status'),
@@ -137,6 +139,7 @@ class Aenderungsantrag extends IAntrag
 		$criteria->compare('begruendung_neu', $this->begruendung_neu, true);
 		$criteria->compare('aenderung_text', $this->aenderung_text, true);
 		$criteria->compare('aenderung_begruendung', $this->aenderung_begruendung, true);
+		$criteria->compare('aenderung_first_line_cache', $this->aenderung_first_line_cache, true);
 		$criteria->compare('datum_einreichung', $this->datum_einreichung, true);
 		$criteria->compare('datum_beschluss', $this->datum_beschluss, true);
 		$criteria->compare('status', $this->status);
@@ -224,21 +227,33 @@ class Aenderungsantrag extends IAntrag
 		return $this->absaetze;
 	}
 
-	private $first_diff_line = null;
+	/**
+	 * @return int
+	 */
 	public function getFirstDiffLine() {
-		if ($this->first_diff_line !== null) return $this->first_diff_line;
+		if ($this->aenderung_first_line_cache > -1) return $this->aenderung_first_line_cache;
+
 		$text_vorher  = $this->antrag->text;
 		$paragraphs = $this->antrag->getParagraphs(false, false);
 		$text_neu = array();
 		$diff = $this->getDiffParagraphs();
 		foreach ($paragraphs as $i => $para) {
-			if ($diff[$i] != "") $text_neu[] = $diff[$i];
+			if (isset($diff[$i]) && $diff[$i] != "") $text_neu[] = $diff[$i];
 			else $text_neu[] = $para->str_bbcode;
 		}
 		$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($text_vorher), trim(implode("\n\n", $text_neu)), $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 
-		$this->first_diff_line = DiffUtils::getFistDiffLine($diff, $this->antrag->getFirstLineNo());
-		return $this->first_diff_line;
+		$this->aenderung_first_line_cache = DiffUtils::getFistDiffLine($diff, $this->antrag->getFirstLineNo());
+		$this->save();
+		return $this->aenderung_first_line_cache;
+	}
+
+	/**
+	 * @param bool $save
+	 */
+	public function resetLineCache($save = true) {
+		$this->aenderung_first_line_cache = -1;
+		if ($save) $this->save();
 	}
 
 	/**
