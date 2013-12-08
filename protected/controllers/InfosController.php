@@ -52,7 +52,7 @@ class InfosController extends AntragsgruenController
 				$veranstaltung->name = $veranstaltung->name_kurz = $anlegenformmodel->name;
 				$veranstaltung->antragsschluss = $anlegenformmodel->antragsschluss;
 				$veranstaltung->policy_kommentare = Veranstaltung::$POLICY_ALLE;
-				$veranstaltung->policy_unterstuetzen = Veranstaltung::$POLICY_ALLE;
+				$veranstaltung->policy_unterstuetzen = "Niemand";
 				$veranstaltung->typ = $anlegenformmodel->typ;
 				$veranstaltung->url_verzeichnis = $anlegenformmodel->subdomain;
 				$veranstaltung->admin_email = $anlegenformmodel->admin_email;

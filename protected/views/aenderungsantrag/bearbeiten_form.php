@@ -102,7 +102,7 @@ if ($js_protection) {
 
 <div id="begruendungs_holder">
 	<h3><label for="ae_begruendung"><?php echo $sprache->get("Begründung für den Änderungsantrag"); ?></label></h3>
-	<br>
+	<div class="content">
 	<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php
 		echo CHtml::encode($aenderungsantrag->aenderung_begruendung);
 		?></textarea>
@@ -113,7 +113,7 @@ if ($js_protection) {
 		</div>
 	<?php } ?>
 	<br><br>
-
+	</div>
 
 </div>
 <?php

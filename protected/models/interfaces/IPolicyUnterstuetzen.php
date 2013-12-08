@@ -70,7 +70,7 @@ abstract class IPolicyUnterstuetzen
 		if ($id == "") return new PolicyUnterstuetzenNiemand($veranstaltung);
 		/** @var IPolicyUnterstuetzen $polClass */
 		foreach (static::$POLICIES as $polId => $polClass) if ($polId == $id) return new $polClass($veranstaltung);
-		throw new Exception("Unbekannte Policy");
+		throw new Exception("Unbekannte Policy: " . $id);
 	}
 
 

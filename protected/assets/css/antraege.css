@@ -592,6 +592,9 @@ legend {
   text-align: right;
   padding-top: 5px; }
 
+fieldset.antragstellerIn label.radio {
+  display: inline-block; }
+
 /*
 .controls {
     margin-left: 118px;

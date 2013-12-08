@@ -27,7 +27,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 ?>
 	<h1><?php echo $sprache->get("Antrag stellen")?></h1>
 
-	<div class="form">
+	<div class="form content">
 		<fieldset>
 			<legend><?php echo $sprache->get("Voraussetzungen für einen Antrag")?></legend>
 		</fieldset>
@@ -38,7 +38,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	</div>
 
 
-	<div class="form">
+	<div class="form content">
 		<?php
 
 		/** @var TbActiveForm $form */
@@ -87,7 +87,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	</div>
 
 
-	<div class="form">
+	<div class="form content">
 		<fieldset>
 
 			<legend>Antragstext</legend>
@@ -134,7 +134,7 @@ $this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstelle
 	"sprache"                  => $model->veranstaltung->getSprache(),
 ));
 ?>
-	<div class="form-actions">
+	<div class="form-actions content">
 		<div style="float: left;">
 			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'reset', 'icon' => 'remove', 'label' => 'Reset')); ?>
 		</div>

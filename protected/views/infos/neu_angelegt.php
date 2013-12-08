@@ -9,6 +9,7 @@
 
 ?>
 <h1>Veranstaltung angelegt</h1>
+<div class="content">
 Die Veranstaltung wurde angelegt.
 <p><?php
 
@@ -28,3 +29,4 @@ Die Veranstaltung wurde angelegt.
 	$this->endWidget();
 
 	?></p>
+</div>

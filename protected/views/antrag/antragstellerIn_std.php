@@ -13,7 +13,7 @@
  */
 ?>
 
-<fieldset>
+<fieldset class="antragstellerIn">
 
 	<legend>AntragstellerIn</legend>
 
