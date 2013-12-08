@@ -178,7 +178,7 @@ a {
 #page {
   min-height: 100%;
   position: relative;
-  width: 970px;
+  width: 972px;
 }
 
 #page .row-fluid,
@@ -188,6 +188,7 @@ a {
 
 .well {
   padding: 0;
+  position: relative;
 
   -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
@@ -217,7 +218,7 @@ a {
   }
 
   .content {
-    padding: 10px;
+    padding: 15px 20px 30px;
   }
 }
 
@@ -341,6 +342,10 @@ a {
 }
 
 .antragsliste {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
   .antrag {
     padding: 12px 20px 17px 50px;
 
@@ -429,7 +434,7 @@ a {
 }
 
 .antrags_text_holder {
-  font-size: 16px;
+  font-size: 13px;
   &.kleine_schrift {
     font-size: 12px;
   }
@@ -450,6 +455,10 @@ a {
     font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
     position: relative;
     margin-left: 0;
+
+    &.orig {
+      padding: 15px 20px 25px 0;
+    }
 
     ul, ol {
       margin-left: 40px;
@@ -916,17 +925,41 @@ h3 label {
   }
 }
 
+
+.icon-aender-stellen:before,
+.icon-pdf:before {
+  @extend .icon-edit;
+  @include icons-antragsgruen(15px);
+  width: 24px;
+  /*
+  color: #fff;
+  margin-left: 0;
+  */
+}
+
+.icon-aender-stellen:before {
+  @extend .icon-plus;
+}
+
+.icon-pdf:before {
+  @extend .icon-pdf;
+}
+
+.btn .icon-pdf:before {
+  color: #000000;
+}
+
+
 ul.funktionen {
   @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
-  padding: 20px 20px 21px 41px;
+  padding: 20px 0 21px 41px;
   list-style-type: none;
-  margin: 0;
+  margin: -1px; // verhindert weißen Mini-Rahmen
   position: relative;
   @include border-radius(10px);
   -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
-  background-color: #fff;
 
   li a, li > span {
     display: block;
@@ -943,10 +976,7 @@ ul.funktionen {
   li a:hover {
     color: rgb(246, 224, 235);
   }
-  .unterstuetzen a:before,
-  .aender-stellen a:before,
-  .download a:before,
-  .zurueck a:before {
+  .unterstuetzen a:before {
     @extend .icon-document;
     @include icons-antragsgruen(15px);
     width: 24px;
@@ -956,37 +986,28 @@ ul.funktionen {
 
   .zurueck a:before {
     @extend .icon-back;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
   }
 
   .download a:before {
     @extend .icon-pdf;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
   }
 
   .aender-stellen a:before {
     @extend .icon-plus;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
   }
 
-}
-
-.icon-aender-stellen:before,
-.icon-pdf:before {
-  @extend .icon-edit;
-  @include icons-antragsgruen(15px);
-  width: 24px;
-  color: #fff;
-  margin-left: 0;
-}
-
-.icon-aender-stellen:before {
-  @extend .icon-plus;
-}
-
-.icon-pdf:before {
-  @extend .icon-pdf;
-}
-
-.btn .icon-pdf:before {
-  color: #000000;
 }
 
 .footer_bar {

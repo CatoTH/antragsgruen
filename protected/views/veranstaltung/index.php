@@ -107,7 +107,7 @@ foreach ($antraege as $name => $antrs) {
 		?>
 		<h3><?= $sprache->get("Meine Anträge") ?></h3>
 		<div class="content">
-			<ul>
+			<ul class="antragsliste">
 				<?php foreach ($meine_antraege as $antragu) {
 					$antrag = $antragu->antrag;
 					echo "<li>";
@@ -127,7 +127,7 @@ foreach ($antraege as $name => $antrs) {
 		?>
 		<h3><?= $sprache->get("Meine Änderungsanträge") ?></h3>
 		<div class="content">
-			<ul>
+			<ul class="antragsliste">
 				<?php foreach ($meine_aenderungsantraege as $antragu) {
 					/** @var AenderungsantragUnterstuetzerInnen $antragu */
 					/** @var Aenderungsantrag $antrag */
