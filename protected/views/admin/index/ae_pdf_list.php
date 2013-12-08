@@ -11,9 +11,7 @@ $this->breadcrumbs = array(
 );
 
 ?>
-<h1 class="well">Änderungsantrags-PDFs</h1>
-
-<div class="well well_first" style="overflow: auto;">
+<h1>Änderungsantrags-PDFs</h1>
 
 	<ul>
 		<?php foreach ($aes as $ae) {
@@ -22,4 +20,3 @@ $this->breadcrumbs = array(
 			echo "</li>\n";
 		} ?>
 	</ul>
-</div>

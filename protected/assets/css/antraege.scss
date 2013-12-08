@@ -1,0 +1,1398 @@
+@charset "UTF-8";
+
+/************************** NOTES ****************************
+
+font-family: 	"BentonSansCond Regular";
+
+***************************************************************/
+
+$farbe_dunkelgruen: rgb(40, 95, 25);
+$farbe_hellgruen: rgb(175, 203, 8);
+$farbe_hellgruen_text: rgb(162, 188, 4);
+$farbe_magenta: rgb(226, 0, 122);
+
+@mixin border-radius-top {
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;
+  border-top-left-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+@mixin border-radius-bottom {
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+@mixin border-radius($radius) {
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin linear-gradient($deg, $color1, $color2) {
+  background: $color1;
+  background: -moz-linear-gradient($deg, $color1 0%, $color2 100%);
+  background: -webkit-linear-gradient($deg, $color1 0%, $color2 100%);
+  background: -o-linear-gradient($deg, $color1 0%, $color2 100%);
+  background: -ms-linear-gradient($deg, $color1 0%, $color2 100%);
+  background: linear-gradient($deg, $color1 0%, $color2 100%);
+}
+
+@mixin icons-antragsgruen($font-size) {
+  color: #A2BC04;
+  display: inline-block;
+  font-family: 'icons_antragsgruen';
+  font-size: $font-size;
+  vertical-align: bottom;
+  width: 20px;
+}
+
+@mixin gruene_ueberschrift($verlauf_von, $verlauf_zu) {
+  margin: 0;
+  color: #fff;
+  @include linear-gradient(90deg, $verlauf_von, $verlauf_zu);
+  padding: 6px 20px 4px;
+  font-family: "BentonSansCond Regular";
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 18px;
+  text-transform: uppercase;
+}
+
+.icon-comment {
+  content: '\e718';
+}
+
+.icon-bell {
+  content: '\1f514';
+}
+
+.icon-feed {
+  content: '\e73a';
+}
+
+.icon-attachment {
+  content: '📎';
+}
+
+.icon-edit {
+  content: '\270d';
+}
+
+.icon-document {
+  content: '\e731';
+}
+
+.icon-back {
+  content: "←";
+}
+
+.icon-pdf {
+  content: '\e4a4';
+}
+
+.icon-plus {
+  content: '\2795';
+}
+
+/************************* BASICS *****************************/
+
+* {
+  margin: 0;
+  padding: 0;
+  border: none;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+html {
+  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
+}
+
+body {
+  background: url("../img/verlauf-back.png") repeat-x scroll 0 0 transparent;
+  color: rgb(72, 70, 73);
+  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+
+body,
+li {
+  line-height: 18px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+  margin: 0;
+}
+
+form {
+  margin: 0;
+}
+
+blockquote {
+  margin: 3px 3px 3px 15px;
+  border-left: dotted 2px gray;
+  padding: 5px;
+}
+
+@font-face {
+  font-family: 'icons_antragsgruen';
+  src: url("../font/fontello.eot");
+  src: url("../font/fontello.eot?#iefix") format('embedded-opentype'), url("../font/fontello.woff") format('woff'), url("../font/fontello.ttf") format('truetype'), url("../font/fontello.svg#icons_antragsgruen") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+p, ul {
+  margin-bottom: 10px;
+}
+
+a {
+  color: $farbe_hellgruen_text;
+  &:hover {
+    text-decoration: none;
+    color: rgb(198, 214, 78);
+  }
+}
+
+/************************* LAYOUT **************************** */
+.icon-down-open:before, .icon-up-open:before {
+  font-family: icons_antragsgruen;
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: 0.2em;
+  text-align: center;
+  opacity: 0.7;
+}
+
+#page {
+  min-height: 100%;
+  position: relative;
+  width: 972px;
+}
+
+#page .row-fluid,
+.content {
+  margin-top: 10px;
+}
+
+.well {
+  padding: 0;
+  position: relative;
+
+  -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  background-color: #fff;
+
+
+
+  @include border-radius(10px);
+  > :first-child {
+    @include border-radius-top();
+    .nav-header {
+      @include border-radius-top();
+    }
+  }
+  > :last-child {
+    @include border-radius-bottom();
+  }
+
+  h1 {
+    @include gruene_ueberschrift(rgb(11, 47, 8), $farbe_dunkelgruen);
+    margin: -1px;
+  }
+  h2, h3, .nav-header {
+    @include gruene_ueberschrift($farbe_hellgruen, rgb(185, 209, 38));
+    margin: -1px;
+  }
+
+  .content {
+    padding: 15px 20px 30px;
+  }
+}
+
+.navbar {
+  margin-bottom: 0;
+
+  .navbar-inner {
+    background: none 0 0 transparent;
+    filter: none;
+    border: none;
+    box-shadow: none;
+    min-height: 0;
+    padding: 0;
+    text-align: right;
+    margin-top: 10px;
+    @include border-radius(0);
+  }
+
+  .nav {
+    margin: 0;
+    float: right;
+
+    li a {
+      display: inline;
+      padding: 0;
+      margin-left: 40px;
+      color: $farbe_hellgruen;
+      font-family: "BentonSansCond Regular";
+      font-style: normal;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 18px;
+      text-shadow: none;
+    }
+
+    li.active a,
+    li a:hover,
+    li a:focus,
+    li.active a:hover,
+    li.active a:focus {
+      background: none;
+      filter: none;
+      box-shadow: none;
+      color: $farbe_dunkelgruen !important;
+    }
+  }
+
+}
+
+.logo {
+  margin-top: 14px;
+  display: block;
+}
+
+.breadcrumb {
+  background: none;
+  filter: none;
+  @include border-radius(0);
+  margin: 0;
+  margin-top: 30px;
+  padding: 0;
+
+  &, .active {
+    font-family: "BentonSansCond Regular";
+    font-style: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 15px;
+    color: rgb(115, 115, 115);
+  }
+
+  li {
+    text-shadow: none;
+  }
+
+  a {
+    color: $farbe_hellgruen;
+  }
+
+}
+
+.span9,
+.row-fluid .span9 {
+  width: 715px;
+}
+
+.span3,
+.row-fluid .span3 {
+  width: 230px;
+  margin-left: 25px;
+}
+/*
+.span9 > ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.span9 > .well:last-child {
+  @include border-radius-bottom();
+}
+*/
+
+.antragsschluss_kreis {
+  float: right;
+  width: 105px;
+  height: 85px;
+  padding-top: 20px;
+  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  font-family: "BentonSansCond Regular";
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 17px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-left: 40px;
+  @include border-radius(90px);
+}
+
+.antragsliste {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  .antrag {
+    padding: 12px 20px 17px 50px;
+
+    .datum {
+      color: rgb(179, 180, 180);
+      display: block;
+      float: right;
+      margin-left: 20px;
+    }
+
+    .titel {
+      margin-bottom: 3px;
+
+      &:before {
+        @extend .icon-document;
+        @include icons-antragsgruen('20px');
+        width: 30px;
+        margin-left: -30px;
+        color: $farbe_hellgruen;
+      }
+
+      a {
+        color: $farbe_dunkelgruen;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 18px;
+        text-indent: 0;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+
+        &:hover, &:focus {
+          color: rgb(73, 127, 55);
+        }
+      }
+
+      .pdfLink {
+        font-size: 13px;
+        color: $farbe_hellgruen_text;
+        margin-left: 10px;
+        display: inline-block;
+        font-weight: normal;
+        &:before {
+          @extend .icon-pdf;
+          @include icons-antragsgruen('14px');
+          color: $farbe_hellgruen;
+          width: 16px;
+        }
+        a:hover {
+          text-decoration: none;
+          color: rgb(198, 214, 78);
+        }
+      }
+    }
+
+    .info {
+      font-style: italic;
+      color: rgb(115, 115, 115);
+    }
+  }
+
+  .span9 .resolution .titel:before {
+    @extend .icon-feed;
+  }
+
+  .aenderungsantraege {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin-bottom: 3px;
+      &:before {
+        @extend .icon-attachment;
+        @include icons-antragsgruen('15px');
+        color: #A2BC04;
+        width: 14px;
+      }
+      a {
+        font-weight: bold;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+.antrags_text_holder {
+  font-size: 13px;
+  &.kleine_schrift {
+    font-size: 12px;
+  }
+
+  .text li {
+    margin: 10px;
+  }
+
+  .absatz_ueberspringen {
+    margin: 10px;
+    text-align: center;
+  }
+  .antragstext_diff, {
+    font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
+  }
+
+  .absatz_text {
+    font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
+    position: relative;
+    margin-left: 0;
+
+    &.orig {
+      padding: 15px 20px 25px 0;
+    }
+
+    ul, ol {
+      margin-left: 40px;
+    }
+  }
+}
+
+.antrags_text_holder_nummern {
+  .text {
+    padding-left: 40px;
+  }
+  .zeilennummer {
+    color: #C3C3C3;
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    left: -20px;
+    position: relative;
+    text-decoration: none;
+    width: 20px;
+  }
+
+  ul.text li .zeilennummer,
+  ol.text li .zeilennummer {
+    left: -60px;
+  }
+
+  blockquote.text {
+    margin: 3px 3px 3px 60px;
+    border-left: dotted 2px gray;
+    padding: 5px;
+
+    .zeilennummer {
+      left: -46px;
+    }
+  }
+}
+
+.antrags_text_holder_keinenummern {
+  blockquote.text {
+    margin: 3px 3px 3px 80px;
+    border-left: dotted 2px gray;
+    padding: 5px;
+  }
+  .text {
+    padding-left: 60px;
+  }
+}
+
+.ae_text_holder {
+  padding-left: 30px;
+  padding-right: 20px;
+}
+
+.lesezeichen {
+  float: right;
+  width: 1px;
+  list-style-type: none;
+
+  > li {
+    width: 1px;
+    height: 38px;
+    position: relative;
+    margin-bottom: 2px;
+
+    > a {
+      display: block;
+      position: absolute;
+      white-space: nowrap;
+      padding: 10px;
+      top: 0;
+      left: 2px;
+      color: #fff;
+      min-width: 40px;
+      -moz-border-radius-topright: 10px;
+      -webkit-border-top-right-radius: 10px;
+      border-top-right-radius: 10px;
+      -moz-border-radius-bottomright: 10px;
+      -webkit-border-bottom-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      font-weight: bold;
+      &:before {
+        @include icons-antragsgruen(15px);
+        font-weight: bold;
+        color: #fff;
+      }
+    }
+    &.kommentare > a {
+      @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+      &:before {
+        @extend .icon-comment;
+      }
+    }
+    &.aenderungsantrag > a {
+      @include linear-gradient(90deg, $farbe_hellgruen, rgb(185, 209, 38));
+      &:before {
+        @extend .icon-edit;
+      }
+    }
+    .hider {
+      @include linear-gradient(90deg, rgb(180, 180, 180), rgb(220, 220, 220));
+    }
+
+    .shower {
+      display: none;
+    }
+  }
+}
+
+.kommentarform {
+  .kommentar_bottom {
+    overflow: auto;
+    margin-top: 15px;
+  }
+  &:hover .kommentar_bottom .kommentarlink {
+    visibility: visible;
+  }
+  .kommentarlink {
+    visibility: hidden;
+    float: right;
+    margin-top: 5px;
+  }
+  .row {
+    overflow: auto;
+    margin-top: 10px;
+    > * {
+      float: left;
+    }
+    > label {
+      width: 160px;
+      text-align: right;
+      padding-right: 20px;
+    }
+    .row textarea {
+      width: 300px;
+    }
+    textarea {
+      height: 100px;
+    }
+  }
+  .submitrow {
+    margin-left: 160px;
+    width: 320px;
+    text-align: center;
+  }
+  .submitrow .btn-primary {
+    margin: 0;
+  }
+}
+
+.kommentar_unterstuetzerInnen_holder {
+  float: left;
+  .dafuer, .dagegen {
+    display: inline-block;
+    border: solid 1px lightgray;
+    margin: 1px;
+    padding: 2px;
+    @include border-radius(3px);
+  }
+  .dafuer span, .dagegen span {
+    color: lightgray;
+  }
+  button.dafuer:hover {
+    background-color: #A2BC04;
+  }
+  button.dagegen:hover {
+    background-color: red;
+  }
+  button {
+    background-color: transparent;
+  }
+  .momentan {
+    display: inline-block;
+  }
+  .dochnicht {
+    text-align: center;
+    display: none;
+  }
+  .meine {
+    display: inline-block;
+    height: 20px;
+    width: 240px;
+    position: relative;
+  }
+  .meine:hover .dochnicht {
+    display: inline-block;
+  }
+  .meine:hover .momentan {
+    display: none;
+  }
+  .momentan, .dochnicht {
+    position: absolute;
+    top: 5px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-left: 20px;
+    font-size: 10px;
+    height: 20px;
+    width: 240px;
+    border: solid 1px gray;
+    @include border-radius(3px);
+    background-color: #eee;
+  }
+}
+
+.kommentarform {
+  padding: 12px 20px 25px;
+
+  h3 {
+    background: none;
+    color: $farbe_hellgruen_text;
+    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 18px;
+    margin: 0 0 5px 0;
+    text-transform: none;
+    padding: 0;
+  }
+
+  .datum {
+    color: #B3B4B4;
+    float: right;
+    margin-left: 20px;
+  }
+
+  .del_link {
+    float: right;
+    margin-left: 20px;
+
+    a {
+      color: #ccc;
+      display: block;
+      font-family: 'icons_antragsgruen';
+      font-size: 12px;
+      vertical-align: bottom;
+
+      &:hover,
+      &:focus {
+        color: #bbb;
+      }
+
+    }
+  }
+}
+
+.saveholder {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+legend {
+  border: none;
+  color: $farbe_dunkelgruen;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 18px;
+  margin: 0 0 5px 0;
+}
+
+.control-group {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.control-label {
+  width: 100px;
+  font-size: 13px;
+  float: left;
+  text-align: right;
+  padding-top: 5px;
+}
+
+/*
+.controls {
+    margin-left: 118px;
+}
+*/
+
+#veranstaltung-form label, #person-form label, #antrag-kommentar-form label, #aenderungsantrag-kommentar-form label, #texte-form label {
+  display: inline-block;
+  width: 220px;
+  vertical-align: top;
+}
+
+.search-form label {
+  display: inline-block;
+  width: 220px;
+  vertical-align: top;
+}
+
+#veranstaltung-form input[type=text], #veranstaltung-form select, #veranstaltung-form textarea {
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+#antrag-form label, #aenderungsantrag-form label {
+  display: inline-block;;
+  width: 180px;
+  vertical-align: top;
+}
+
+#antrag-form input[type=text], #antrag-form select, #antrag-form textarea {
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+.form-actions {
+  background: rgb(246, 246, 246);
+  background: -moz-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  background: -webkit-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  background: -o-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  background: -ms-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  background: linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  margin: 0;
+  border: 0;
+  @include border-radius(0);
+  @include border-radius-bottom();
+  position: relative;
+  padding: 15px 20px 50px;
+}
+
+.btn-primary {
+  border: none;
+  text-shadow: none;
+  color: #fff;
+  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  padding: 6px 30px 4px;
+  font-family: "BentonSansCond Regular";
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 18px;
+  text-transform: uppercase;
+  .span9 & {
+    margin: 10px 0 0 200px;
+  }
+}
+
+.ae_select_confirm {
+  text-align: center;
+}
+
+h3 label {
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 18px;
+  color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.form .radio {
+  min-width: 140px;
+}
+
+.ae_absatzwahl_modus.aenderungen_moeglich .antragabsatz_holder .text:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.cke_skin_kama {
+  border: none !important;
+}
+
+#sidebar {
+  .nav-list {
+    padding: 0;
+    margin-bottom: 20px;
+
+    > li {
+      padding: 0 20px 10px 38px;
+      a, a:hover, a:focus {
+        padding: 0px;
+        background: none;
+        filter: none;
+        margin: 0;
+        text-shadow: none;
+        display: inline;
+      }
+    }
+
+    .nav-header {
+      margin-bottom: 12px;
+    }
+  }
+  .neue-antraege .antrag:before {
+    @extend .icon-document;
+    @include icons-antragsgruen(15px);
+    color: #A2BC04;
+    margin-left: -20px;
+  }
+
+  .neue-antraege .resolution:before {
+    @extend .icon-feed;
+    @include icons-antragsgruen(15px);
+    color: #A2BC04;
+    margin-left: -20px;
+  }
+
+  .neue-aenderungsantraege .aeantrag:before {
+    @extend .icon-attachment;
+    @include icons-antragsgruen(15px);
+    color: #A2BC04;
+    margin-left: -20px;
+  }
+
+  .neue-kommentare {
+    .komm:before {
+      @extend .icon-comment;
+      @include icons-antragsgruen(15px);
+      color: #A2BC04;
+      margin-left: -20px;
+    }
+
+    .komm strong {
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    .feed:before {
+      @extend .icon-feed;
+      @include icons-antragsgruen(15px);
+      color: #A2BC04;
+      margin-left: -20px;
+    }
+
+    .benachrichtigung:before {
+      @extend .icon-bell;
+      @include icons-antragsgruen(15px);
+      color: #A2BC04;
+      margin-left: -20px;
+    }
+
+    .pdf:before {
+      @extend .icon-pdf;
+      @include icons-antragsgruen(15px);
+      color: #A2BC04;
+      margin-left: -20px;
+    }
+
+  }
+
+  .neuer-antrag {
+    position: absolute;
+    top: -4px;
+    right: -58px;
+    display: block;
+    width: 58px;
+    height: 276px;
+    background-image: url(../img/neuer-antrag.png);
+  }
+
+  .antragsgruen_werbung {
+    margin-top: 30px;
+  }
+
+  .nav-list.einsatzorte-list li {
+    padding-left: 15px;
+  }
+
+  .search-query {
+    width: 140px;
+  }
+}
+
+
+.icon-aender-stellen:before,
+.icon-pdf:before {
+  @extend .icon-edit;
+  @include icons-antragsgruen(15px);
+  width: 24px;
+  /*
+  color: #fff;
+  margin-left: 0;
+  */
+}
+
+.icon-aender-stellen:before {
+  @extend .icon-plus;
+}
+
+.icon-pdf:before {
+  @extend .icon-pdf;
+}
+
+.btn .icon-pdf:before {
+  color: #000000;
+}
+
+
+ul.funktionen {
+  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  padding: 20px 0 21px 41px;
+  list-style-type: none;
+  margin: -1px; // verhindert weißen Mini-Rahmen
+  position: relative;
+  @include border-radius(10px);
+  -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+
+  li a, li > span {
+    display: block;
+    font-family: "BentonSansCond Regular";
+    font-style: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 15px;
+    line-height: 18px;
+    color: #fff;
+    padding-bottom: 10px;
+  }
+
+  li a:hover {
+    color: rgb(246, 224, 235);
+  }
+  .unterstuetzen a:before {
+    @extend .icon-document;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
+  }
+
+  .zurueck a:before {
+    @extend .icon-back;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
+  }
+
+  .download a:before {
+    @extend .icon-pdf;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
+  }
+
+  .aender-stellen a:before {
+    @extend .icon-plus;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
+  }
+
+}
+
+.footer_bar {
+  clear: both;
+  width: 970px;
+  margin-bottom: 70px;
+  margin-top: 20px;
+
+  .brand {
+    display: none;
+  }
+
+  .navbar-inner {
+    text-align: left;
+  }
+
+}
+
+.clear {
+  clear: both;
+}
+
+/**************************** ALT ***************************** */
+
+.row {
+  overflow: auto;
+}
+
+.unterstuetzerInnenwidget_adder {
+  border: dotted 1px gray;
+
+  .person_selector {
+    width: 240px;
+    margin-right: 10px;
+  }
+}
+
+.antragsdaten th {
+  text-align: left;
+  padding-right: 10px;
+}
+
+table.view {
+  border: dotted 1px gray;
+  border-spacing: 0;
+
+  > tbody > tr > td, > tbody > tr > th {
+    padding: 2px;
+  }
+
+  > tbody > tr > td {
+    width: 75%;
+  }
+
+}
+
+del {
+  color: #880000;
+}
+
+ins {
+  color: #008800;
+}
+
+.antragstext_diff {
+  padding: 15px 20px 25px 0;
+  ul {
+    margin-left: 45px;
+    li {
+      width: 480px;
+    }
+  }
+}
+
+.unterstuetzerIn_neu_holder input {
+  border: solid 1px gray;
+}
+
+.unterstuetzerIn label input, .form input, .form label {
+  display: inline-block;
+}
+
+#aenderungsantrag-form textarea, #texte-form textarea {
+  width: 400px;
+}
+
+#aenderungsantrag-form textarea {
+  height: 150px;
+}
+
+#texte-form textarea {
+  height: 400px;
+}
+
+#aenderungsantrag-form select, #antrag-form select, #texte-form input, #texte-form select {
+  width: 405px;
+}
+
+#Antrag_status_string, #antrag-form select#Antrag_status {
+  width: 200px;
+}
+
+#aenderungsantrag-form #Aenderungsantrag_status, #aenderungsantrag-form #Aenderungsantrag_status_string {
+  width: 200px;
+}
+
+#aenderungsantrag-form .unterstuetzerInnenwidget select, #antrag-form .unterstuetzerInnenwidget select {
+  width: 200px;
+}
+
+.unterstuetzerInnenwidget .sort_handle {
+  cursor: move;
+}
+
+.js_protection_hint {
+  width: 90%;
+  background-color: #f08080;
+  border: solid 1px red;
+  margin: 15px;
+  padding: 5px;
+}
+
+.admin_todo {
+  float: right;
+  width: 500px;
+  ul {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+}
+
+#instanz-anlegen-form {
+  .weiter {
+    text-align: right;
+  }
+  .einsatzzweck {
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    margin-top: 30px;
+
+    div {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    input {
+      vertical-align: middle;
+    }
+  }
+  .einsatzzweck_erkl {
+    padding-left: 10px;
+    margin-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-left: solid 3px lightgray;
+  }
+  .url .domain {
+    font-size: 16px;
+  }
+  .url .domain input {
+    width: 130px;
+    padding: 0;
+    margin-left: 2px;
+    margin-top: 0;
+  }
+  label.name, label.url {
+    font-weight: bold;
+  }
+  .zahlung label {
+    display: inline;
+  }
+  .kontakt textarea {
+    width: 300px;
+    height: 80px;
+  }
+}
+
+#ae_status_setter .ae {
+  display: inline-block;
+  width: 40px;
+}
+
+/**************************** RESPONSIVE ***************************** */
+
+.visible-phone {
+  display: none !important;
+}
+
+.visible-tablet {
+  display: none !important;
+}
+
+.hidden-desktop {
+  display: none !important;
+}
+
+.visible-desktop {
+  display: inherit !important;
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+  .hidden-desktop {
+    display: inherit !important;
+  }
+  .visible-desktop {
+    display: none !important;
+  }
+  .visible-tablet {
+    display: inherit !important;
+  }
+  .hidden-tablet {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 979px) {
+  h3, h2, .span3 .well .nav-list .nav-header {
+    padding: 6px 10px 4px
+  }
+  #page, .footer_bar {
+    width: 760px;
+  }
+  .shrink_cols .span9, .shrink_cols .row-fluid .span9 {
+    width: 550px;
+  }
+  .shrink_cols .span3, .shrink_cols .row-fluid .span3 {
+    width: 190px;
+    margin-left: 15px;
+  }
+  .shrink_cols .span3 .search-query {
+    width: 110px;
+  }
+  .text_comments .span9, .text_comments .row-fluid .span9 {
+    width: 695px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hidden-phone {
+    display: none !important;
+  }
+
+  .visible-phone {
+    display: inherit !important;
+  }
+
+  .visible-tablet {
+    display: none !important;
+  }
+
+  .visible-desktop {
+    display: none !important;
+  }
+
+  #page, .footer_bar {
+    width: 95%;
+  }
+  #page > div > div.span9 {
+    width: 100%;
+    display: block;
+    margin: 0 auto 0;
+    float: none;
+  }
+  #page > div > div.span3 {
+    width: 100%;
+    display: block;
+    margin: 20px auto 0;
+    float: none;
+  }
+  #mainmenu .form-search {
+    float: right;
+  }
+  #mainmenu .form-search input[type=search] {
+    width: 50px;
+  }
+  #mainmenu ul.nav {
+    padding-top: 7px;
+    position: absolute;
+    margin-right: 120px;
+  }
+  .navbar .nav li a {
+    margin-left: 20px;
+  }
+  .navbar .nav li.active a, .navbar .nav li a:hover, .navbar .nav li a:focus, .navbar .nav li.active a:hover, .navbar .nav li.active a:focus {
+    margin-left: 20px;
+  }
+  body.text_comments #page {
+    margin-left: 10px;
+    margin-right: 40px;
+    width: auto;
+  }
+  .absatz_text .text > br.implicit {
+    display: none;
+  }
+  .antrags_text_holder_nummern .zeilennummer {
+    margin-right: -20px;
+  }
+  .kommentare .shower:before, .kommentare .hider:before, .aenders a:before {
+    width: 17px;
+  }
+  .kommentare .shower, .kommentare .hider {
+    font-size: 12px;
+    padding-left: 2px;
+  }
+  .aenders {
+    font-size: 12px;
+    padding-left: 0;
+  }
+  .aenders, .kommentare {
+    width: 40px;
+    right: -40px;
+  }
+  .aenders a {
+    padding-left: 2px;
+  }
+  .antragabsatz_holder.orig {
+    padding-right: 5px;
+  }
+  .well .content, .antragabsatz_holder, #cke_ae_begruendung {
+    padding-left: 0;
+    padding-right: 5px;
+  }
+  .antrags_text_holder .absatz_text ul, .antrags_text_holder .absatz_text ol {
+    margin-left: 15px;
+  }
+  .kommentarform {
+    padding: 12px 0 25px;
+  }
+  .form-horizontal .control-label {
+    float: none;
+    width: auto;
+    text-align: left;
+  }
+  .form-horizontal .controls {
+    float: none;
+    width: auto;
+    margin: 0;
+  }
+  .span9 .btn-primary {
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #page, .footer_bar {
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .logo {
+    text-align: center;
+  }
+  .logo img {
+    width: 188.5px;
+    height: 27.5px;
+  }
+
+  .antrags_text_holder_nummern .text {
+    padding-left: 10px;
+  }
+  .antrags_text_holder_nummern .text br.implicit {
+    display: none;
+  }
+  .antrags_text_holder_nummern .zeilennummer {
+    display: none;
+  }
+  #socialshareprivacy {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .navbar .nav li a {
+    font-size: 16px;
+  }
+  .navbar .nav li a {
+    margin-left: 10px;
+  }
+  .navbar .nav li.active a, .navbar .nav li a:hover, .navbar .nav li a:focus, .navbar .nav li.active a:hover, .navbar .nav li.active a:focus {
+    margin-left: 10px;
+  }
+  .navbar .nav li:first-child a {
+    margin-left: 0;
+  }
+  .span9 .antrag .datum {
+    display: none;
+  }
+}

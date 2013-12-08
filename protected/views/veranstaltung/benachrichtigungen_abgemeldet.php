@@ -10,14 +10,12 @@ $this->breadcrumbs = array(
 );
 
 ?>
-<h1 class="well">E-Mail-Benachrichtigungen</h1>
+<h1>E-Mail-Benachrichtigungen</h1>
 
-<div class="well well_first">
-	<div class="content">
-		<br>
+<div class="content">
+	<br>
 
-		<div class="alert alert-success">
-			Alle Benachrichtigungen wurden deaktiviert.
-		</div>
+	<div class="alert alert-success">
+		Alle Benachrichtigungen wurden deaktiviert.
 	</div>
 </div>

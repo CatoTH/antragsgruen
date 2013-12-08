@@ -16,7 +16,6 @@ $this->menu = array(
 	array('label' => "Durchsuchen", 'url'=> array('admin'), "icon" => "th-list"),
 );
 ?>
-<div class="well well_first">
 <h1><?php echo Yii::t('app', 'Update') . ': ' . GxHtml::encode($model->label()) ?></h1>
 <br>
 <?php
@@ -42,5 +41,3 @@ $this->menu = array(
 
 	$this->renderPartial('_form', array(
 	'model' => $model));
-?>
-	</div>

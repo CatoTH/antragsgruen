@@ -15,25 +15,23 @@ $ver = $aenderungsantrag->antrag->veranstaltung;
 $this->pageTitle = $sprache->get("Änderungseintrag eingereicht");
 ?>
 
-<h1><?php echo $sprache->get("Änderungseintrag eingereicht")?></h1>
-<div class="form well">
-    <?php echo $ver->getStandardtext("ae_eingereicht")->getHTMLText(); ?>
-    <p><?php
+<h1><?php echo $sprache->get("Änderungseintrag eingereicht") ?></h1>
+<?php echo $ver->getStandardtext("ae_eingereicht")->getHTMLText(); ?>
+<p><?php
 
-		/** @var TbActiveForm $form */
-		$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-			'id'  => 'horizontalForm',
-			'type'=> 'horizontal',
-		));
+	/** @var TbActiveForm $form */
+	$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+		'id'   => 'horizontalForm',
+		'type' => 'horizontal',
+	));
 
-		$this->widget('bootstrap.widgets.TbButton', array(
-			'type'      => 'primary',
-			'size'      => 'large',
-			'buttonType'=> 'submitlink',
-			'url'       => $this->createUrl("veranstaltung/index"),
-			'label'     => 'Zurück zur Startseite',
-		));
-		$this->endWidget();
+	$this->widget('bootstrap.widgets.TbButton', array(
+		'type'       => 'primary',
+		'size'       => 'large',
+		'buttonType' => 'submitlink',
+		'url'        => $this->createUrl("veranstaltung/index"),
+		'label'      => 'Zurück zur Startseite',
+	));
+	$this->endWidget();
 
-		?></p>
-</div>
+	?></p>

@@ -24,9 +24,9 @@ $this->breadcrumbs = array(
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 ?>
 
-<h1 class="well"><?php echo CHtml::encode($antrag->name); ?></h1>
+<h1><?php echo CHtml::encode($antrag->name); ?></h1>
 
-<div class="antrags_text_holder well well_first">
+<div class="antrags_text_holder">
     <h3>Antragstext</h3>
 
 	<?php
@@ -49,7 +49,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
     </div>
 </div>
 
-<div class="begruendungs_text_holder well">
+<div class="begruendungs_text_holder">
     <h3>Begründung</h3>
 
     <div class="textholder consolidated">
@@ -57,7 +57,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
     </div>
 </div>
 
-<div class="antrags_text_holder well">
+<div class="antrags_text_holder">
     <h3>UnterstützerInnen</h3>
 
     <div class="content">

@@ -25,9 +25,9 @@ $this->breadcrumbs         = array(
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 ?>
-	<h1 class="well"><?php echo $sprache->get("Antrag stellen")?></h1>
+	<h1><?php echo $sprache->get("Antrag stellen")?></h1>
 
-	<div class="form well well_first">
+	<div class="form">
 		<fieldset>
 			<legend><?php echo $sprache->get("Voraussetzungen für einen Antrag")?></legend>
 		</fieldset>
@@ -38,7 +38,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	</div>
 
 
-	<div class="form well">
+	<div class="form">
 		<?php
 
 		/** @var TbActiveForm $form */
@@ -87,7 +87,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	</div>
 
 
-	<div class="form well">
+	<div class="form">
 		<fieldset>
 
 			<legend>Antragstext</legend>

@@ -14,25 +14,26 @@
 
 if ($mode == "neu") {
 	?>
-	<div class="well">
-		<h3><?=$sprache->get("AntragstellerIn")?></h3>
-		<br>
+	<h3><?= $sprache->get("AntragstellerIn") ?></h3>
+	<br>
 
-		<?php echo $form->textFieldRow($antragstellerIn, 'name'); ?>
+	<?php echo $form->textFieldRow($antragstellerIn, 'name'); ?>
 
-		<?php echo $form->textFieldRow($antragstellerIn, 'email'); ?>
+	<?php echo $form->textFieldRow($antragstellerIn, 'email'); ?>
 
-		<?php echo $form->textFieldRow($antragstellerIn, 'telefon'); ?>
+	<?php echo $form->textFieldRow($antragstellerIn, 'telefon'); ?>
 
 
-		<div class="control-group" id="UnterstuetzerInnen" style="display: none;">
-			<label class="control-label">UnterstützerInnen</label>
-			<div class="controls"></div>
-		</div>
+	<div class="control-group" id="UnterstuetzerInnen" style="display: none;">
+		<label class="control-label">UnterstützerInnen</label>
 
-		<div style="padding-left: 162px; margin-top: -15px; margin-bottom: 20px;">
-			<a href="#" onClick="return add_unterstuetzerInnen();"><span class="icon-down-open"></span> Weitere UnterstützerInnen angeben</a>
-		</div>
+		<div class="controls"></div>
+	</div>
+
+	<div style="padding-left: 162px; margin-top: -15px; margin-bottom: 20px;">
+		<a href="#" onClick="return add_unterstuetzerInnen();"><span class="icon-down-open"></span> Weitere
+			UnterstützerInnen angeben</a>
+	</div>
 
 	<script>
 		function add_unterstuetzerInnen() {
@@ -46,11 +47,10 @@ if ($mode == "neu") {
 
 
 
-		<div class="ae_select_confirm">
-			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType'=> 'submit', 'type'=> 'primary', 'icon'=> 'ok white', 'label'=> $sprache->get("Änderungsantrag stellen"))); ?>
-		</div>
-
-		<br><br>
-
+	<div class="ae_select_confirm">
+		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => $sprache->get("Änderungsantrag stellen"))); ?>
 	</div>
-<?php }
+
+	<br><br>
+<?php
+}

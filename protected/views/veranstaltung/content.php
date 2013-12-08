@@ -13,11 +13,11 @@ $this->breadcrumbs = array(
 );
 
 ?>
-<h1 class="well"><?php echo $title;
+<h1><?php echo $title;
 	$editlink = $text->getEditLink();
 	if ($editlink !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
 	?></h1>
-<div class="well well_first">
+<div>
 	<?php
 	echo $text->getHTMLText();
 	?>

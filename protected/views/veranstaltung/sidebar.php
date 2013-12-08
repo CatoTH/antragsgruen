@@ -13,13 +13,13 @@
  */
 
 
-$html = "<form class='form-search well hidden-phone' action='" . $this->createUrl("veranstaltung/suche") . "' method='GET'><input type='hidden' name='id' value='" . $veranstaltung->id . "'><div class='nav-list'><div class='nav-header'>" . $sprache->get("Suche") . "</div>";
+$html = "<form class='form-search hidden-phone' action='" . $this->createUrl("veranstaltung/suche") . "' method='GET'><input type='hidden' name='id' value='" . $veranstaltung->id . "'><div class='nav-list'><div class='nav-header'>" . $sprache->get("Suche") . "</div>";
 $html .= "<div style='text-align: center;'>  <div class='input-append'><input class='search-query' type='search' name='suchbegriff' value='' autofocus placeholder='Suchbegriff...'><button type='submit' class='btn'><i style='height: 17px;' class='icon-search'></i></button></div></div>";
 $html .= "</div></form>";
 $this->menus_html[] = $html;
 
 if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
-	$html = "<div class='well'><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Neue Anträge") . "</li>";
+	$html = "<div><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Neue Anträge") . "</li>";
 	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
 	else foreach ($neueste_antraege as $ant) {
 		$html .= "<li";
@@ -44,7 +44,7 @@ if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
 
 
 if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
-	$html = "<div class='well'><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
+	$html = "<div><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
 	if (count($neueste_aenderungsantraege) == 0) $html .= "<li><i>keine</i></li>";
 	else foreach ($neueste_aenderungsantraege as $ant) {
 		$zu_str = ($veranstaltung->getEinstellungen()->revision_name_verstecken ? CHtml::encode($ant->antrag->name) : CHtml::encode($ant->antrag->revision_name));
@@ -61,7 +61,7 @@ if ($veranstaltung->typ == Veranstaltung::$TYP_PROGRAMM) {
 }
 
 if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
-	$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Neue Kommentare</li>";
+	$html = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Neue Kommentare</li>";
 	if (count($neueste_kommentare) == 0) $html .= "<li><i>keine</i></li>";
 	else foreach ($neueste_kommentare as $komm) {
 		$html .= "<li class='komm'>";
@@ -74,7 +74,7 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 }
 
 
-$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Benachrichtigungen</li>";
+$html = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Benachrichtigungen</li>";
 $html .= "<li class='benachrichtigung'>" . CHtml::link($sprache->get("E-Mail-Benachrichtigung bei neuen Anträgen"), $this->createUrl("veranstaltung/benachrichtigungen")) . "</li>";
 $html .= "</ul></div>";
 
@@ -99,14 +99,14 @@ if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
 if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
 
 $feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
-$html      = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
+$html      = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
 
 $this->menus_html[] = $html;
 
 
 if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$name = ($veranstaltung->url_verzeichnis == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
-	$html = "<div class='well'><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
+	$html = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
 	$html .= "<li class='pdf'>" . CHtml::link($name, $this->createUrl("veranstaltung/pdfs")) . "</li>";
 	if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins")) || $veranstaltung->url_verzeichnis == "ltwby13-programm") $html .= "<li class='pdf'>" . CHtml::link("Alle " . $sprache->get("Änderungsanträge") . " gesammelt", $this->createUrl("veranstaltung/aenderungsantragsPdfs")) . "</li>";
 	$html .= "</ul></div>";
@@ -114,11 +114,11 @@ if ($veranstaltung->getEinstellungen()->kann_pdf) {
 }
 
 if (!isset($GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"]) || !in_array($veranstaltung->id, $GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"])) {
-	$html = "</div><div class='antragsgruen_werbung'><div class='well'><div class='nav-list'>";
+	$html = "</div><div class='antragsgruen_werbung well'><div class='nav-list'>";
 	$html .= "<div class='nav-header'>Dein Antragsgrün</div>";
 	$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
 	$html .= "<div style='text-align: center;'><a href='" . CHtml::encode($this->createUrl("infos/selbstEinsetzen")) . "' class='btn btn-primary' style='margin-top: 15px;'><span class='icon-chevron-right'></span> Infos</a></div>";
 	$html .= "</div>";
-	$html .= "</div></div>";
+	$html .= "</div>";
 	$this->menus_html[] = $html;
 }

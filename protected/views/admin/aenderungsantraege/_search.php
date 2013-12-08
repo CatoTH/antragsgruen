@@ -1,4 +1,4 @@
-<div class="wide form well">
+<div class="wide form">
 
 <?php
 /* @var $this AenderungsantragController */

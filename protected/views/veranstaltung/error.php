@@ -7,13 +7,11 @@
 $this->breadcrumbs = array(
 	'Fehler',
 );
-$this->pageTitle=Yii::app()->name . ' - Fehler';
+$this->pageTitle = Yii::app()->name . ' - Fehler';
 
 ?>
 <h1>Fehler</h1>
 
-<div class="well">
-	<div class="content">
-		<?php echo CHtml::encode($message); ?>
-	</div>
+<div class="content">
+	<?php echo CHtml::encode($message); ?>
 </div>
