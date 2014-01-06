@@ -18,7 +18,7 @@ $url_rules = array(
 	$domv . 'admin/texte/<_a:(index|create|update|delete|view|admin)>'                        => 'admin/texte/<_a>',
 	$domv . 'admin/kommentare_excel'                                                          => 'admin/index/kommentareexcel',
 	$domv . 'admin/ae_pdf_list'                                                               => 'admin/index/aePDFList',
-    $domv . 'admin/admins_reihe'                                                              => 'admin/index/adminsReihe',
+	$domv . 'admin/admins_reihe'                                                              => 'admin/index/adminsReihe',
 	$domv . 'hilfe'                                                                           => 'veranstaltung/hilfe',
 	$domv . 'suche'                                                                           => 'veranstaltung/suche',
 	$dom . 'impressum'                                                                        => 'veranstaltung/impressum',
@@ -59,6 +59,7 @@ if (MULTISITE_MODE) {
 		$dom_plain . 'selbst-einsetzen' => 'infos/selbstEinsetzen',
 		$dom_plain . 'neu-anlegen'      => 'infos/neuAnlegen',
 		$dom_plain . 'impressum'        => 'infos/impressum',
+		$dom_plain . 'passwort'         => 'infos/passwort',
 	), $url_rules);
 
 	foreach ($url_rules as $key => $val) $url_rules[str_replace("http://", "http://www.", $key)] = $val;

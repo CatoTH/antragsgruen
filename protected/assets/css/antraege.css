@@ -17,10 +17,10 @@ font-family: 	"BentonSansCond Regular";
   content: '📎'; }
 
 .icon-edit, .lesezeichen > li.aenderungsantrag > a:before, .icon-aender-stellen:before,
-.antragsliste .antrag .titel .pdfLink:before,
-#sidebar .neue-kommentare .pdf:before,
-.icon-pdf:before,
-ul.funktionen .download a:before {
+.antragsliste .antrag .titel .pdfLink:before:before,
+#sidebar .neue-kommentare .pdf:before:before,
+.icon-pdf:before:before,
+ul.funktionen .download a:before:before {
   content: '\270d'; }
 
 .icon-document, .antragsliste .antrag .titel:before, #sidebar .neue-antraege .antrag:before, ul.funktionen .unterstuetzen a:before {
@@ -780,10 +780,10 @@ h3 label {
   width: 140px; }
 
 .icon-aender-stellen:before,
-.antragsliste .antrag .titel .pdfLink:before,
-#sidebar .neue-kommentare .pdf:before,
-.icon-pdf:before,
-ul.funktionen .download a:before {
+.antragsliste .antrag .titel .pdfLink:before:before,
+#sidebar .neue-kommentare .pdf:before:before,
+.icon-pdf:before:before,
+ul.funktionen .download a:before:before {
   color: #A2BC04;
   display: inline-block;
   font-family: 'icons_antragsgruen';
@@ -796,7 +796,7 @@ ul.funktionen .download a:before {
   margin-left: 0;
   */ }
 
-.btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before, .btn .icon-pdf:before, .btn ul.funktionen .download a:before, ul.funktionen .download .btn a:before {
+.btn .antragsliste .antrag .titel .pdfLink:before:before, .antragsliste .antrag .titel .btn .pdfLink:before:before, .btn #sidebar .neue-kommentare .pdf:before:before, #sidebar .neue-kommentare .btn .pdf:before:before, .btn .icon-pdf:before:before, .btn ul.funktionen .download a:before:before, ul.funktionen .download .btn a:before:before {
   color: #000000; }
 
 ul.funktionen {

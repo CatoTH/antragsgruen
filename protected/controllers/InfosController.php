@@ -125,4 +125,40 @@ class InfosController extends AntragsgruenController
 			"error_string" => $error_str
 		));
 	}
+
+
+	public function actionPasswort()
+	{
+		$this->layout = '//layouts/column2';
+		$this->performLogin($this->createUrl("veranstaltung/passwort"));
+
+		$user = Yii::app()->getUser();
+		/** @var PErson $ich */
+		$ich  = Person::model()->findByAttributes(array("auth" => $user->id));
+
+		$msg_ok                 = $msg_err = "";
+		$correct_person         = null;
+		$aktuelle_einstellungen = null;
+
+		if (AntiXSS::isTokenSet("speichern")) {
+			if ($_REQUEST["pw_neu"] != $_REQUEST["pw_neu2"]) {
+				$msg_err = "Die beiden Passwörter stimmen nicht überein.";
+			} elseif (strlen(trim($_REQUEST["pw_neu"])) < 5) {
+				$msg_err = "Das Passwort muss mindestens 5 Zeichen lang sein.";
+			} elseif (!$ich->validate_password($_REQUEST["pw_alt"])) {
+				$msg_err = "Das bisherige Passwort stimmt nicht.";
+			} else {
+				$ich->pwd_enc = Person::create_hash($_REQUEST["pw_neu"]);
+				$ich->save();
+				$msg_ok = "Das neue Passwort wurde gespeichert.";
+			}
+		}
+
+		$this->render('passwort', array(
+			"ich"                    => $ich,
+			"msg_err"                => $msg_err,
+			"msg_ok"                 => $msg_ok,
+		));
+	}
+
 }

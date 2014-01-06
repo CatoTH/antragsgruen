@@ -27,14 +27,14 @@ $this->breadcrumbs = array(
 	<div class="alert alert-success">
 		<?php echo $msg_ok; ?>
 	</div>
-<?
+<?php
 }
 if ($msg_err != "") {
 	?>
 	<div class="alert alert-error">
 		<?php echo $msg_err; ?>
 	</div>
-<? } ?>
+<?php } ?>
 
 <form method="POST">
 
@@ -91,7 +91,7 @@ if ($msg_err != "") {
 <br>
 
 <button type="submit" name="<?php echo AntiXSS::createToken("anmelden"); ?>" class="btn btn-primary">E-Mail bestätigen</button>
-<?
+	<?php
 } else {
 	?>
 	<div style="max-width: 500px; margin: 20px auto 10px; border: 1px solid #E1E1E8; border-radius: 4px; padding: 5px; background-color: #eee;">
@@ -180,7 +180,7 @@ if ($msg_err != "") {
 		</div>
 
 	</div>
-<? } ?>
+	<?php } ?>
 </div>
 </form>
 <?php

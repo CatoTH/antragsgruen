@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AntragsgruenController is the customized base controller class.
  * All controller classes for this application should extend from this base class.
@@ -58,7 +59,8 @@ class AntragsgruenController extends CController
 			if ($route == "veranstaltung/index" && !is_null($this->veranstaltungsreihe) && strtolower($params["veranstaltung_id"]) == strtolower($this->veranstaltungsreihe->aktuelle_veranstaltung->url_verzeichnis)) unset($params["veranstaltung_id"]);
 			if (in_array($route, array(
 				"veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "veranstaltung/login", "veranstaltung/logout"
-			))) unset($params["veranstaltung_id"]);
+			))
+			) unset($params["veranstaltung_id"]);
 		}
 		return parent::createUrl($route, $params, $ampersand);
 	}
@@ -148,19 +150,19 @@ class AntragsgruenController extends CController
 		$model = new OAuthLoginForm();
 		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
 
-		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["OAuthLoginForm"]["wurzelwerk"])) {
-			if (strpos($_REQUEST["OAuthLoginForm"]["wurzelwerk"], "@")) $username = "email:" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"];
+		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["username"])) {
+			if (strpos($_REQUEST["username"], "@")) $username = "email:" . $_REQUEST["username"];
 			//else $username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
-			else $username = "openid:https://service.gruene.de/openid/" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"];
+			else $username = "openid:https://service.gruene.de/openid/" . $_REQUEST["username"];
 
 			/** @var Person $user */
-			$user = Person::model()->findByAttributes(array("auth" => $username));
+			$user = Person::model()->findBySql("SELECT * FROM person WHERE auth = '" . addslashes($username) . "' OR (auth LIKE 'openid:https://service.gruene.de%' AND email = '" . addslashes($_REQUEST["username"]) . "')");
 			if ($user === null) {
-				throw new Exception("Benutzername nicht gefunden.");
+				throw new Exception("BenutzerInnenname nicht gefunden.");
 			}
 			$correct = $user->validate_password($_REQUEST["password"]);
 			if ($correct) {
-				$identity = new AntragUserIdentityPasswd($_REQUEST["OAuthLoginForm"]["wurzelwerk"]);
+				$identity = new AntragUserIdentityPasswd($_REQUEST["username"]);
 				Yii::app()->user->login($identity);
 
 				if ($user->admin) {
@@ -189,10 +191,12 @@ class AntragsgruenController extends CController
 						Yii::app()->user->login($us);
 						$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
 						if (!$user) {
+							$email = $us->getEmail();
+
 							$user                   = new Person;
 							$user->auth             = $us->getId();
 							$user->name             = $us->getName();
-							$user->email            = $us->getEmail();
+							$user->email            = $email;
 							$user->email_bestaetigt = 0;
 							$user->angelegt_datum   = date("Y-m-d H:i:s");
 							$user->status           = Person::$STATUS_CONFIRMED;
@@ -203,6 +207,18 @@ class AntragsgruenController extends CController
 							} else {
 								$user->admin = 0;
 							}
+
+							if (trim($email) != "") {
+								$password      = substr(md5(uniqid()), 0, 8);
+								$user->pwd_enc = Person::create_hash($password);
+								mail($email, "Dein Antragsgrün-Zugang", "Hallo!\n\nDein Zugang bei Antragsgrün wurde eben eingerichtet.\n\n" .
+									"Du kannst dich mit folgenden Daten einloggen:\nBenutzerInnenname: $email\nPasswort: $password\n\n" .
+									"Das Passwort kannst du hier ändern:\n" .
+									yii::app()->getBaseUrl(true) . yii::app()->createUrl("infos/passwort") . "\n\n" .
+									"Außerdem ist auch weiterhin ein Login über deinen Wurzelwerk-Zugang möglich.\n\n" .
+									"Liebe Grüße,\n  Das Antragsgrün-Team", "From: " . Yii::app()->params['mail_from']);
+							}
+
 							$user->save();
 						} else {
 							if ($user->admin) {
@@ -250,7 +266,7 @@ class AntragsgruenController extends CController
 			/** @var Person $user */
 			$user = Person::model()->findByAttributes(array("id" => $_REQUEST["login"]));
 			if ($user === null) {
-				throw new Exception("Benutzername nicht gefunden");
+				throw new Exception("BenutzerInnenname nicht gefunden");
 			}
 			$identity = new AntragUserIdentityPasswd($user->getWurzelwerkName());
 			Yii::app()->user->login($identity);

@@ -95,18 +95,17 @@ include(__DIR__ . "/sidebar.php");
 
 <div class="content">
 
-	<div style="border: dotted 2px gray; margin: 20px; padding: 10px;">
-		<strong>Achtung:</strong> Antragsgrün ist noch im "<strong>Beta</strong>"-Stadium, es ist also noch mit einigen
-		Fehlern und Ungereimtheiten zu rechnen. Falls dir etwas auffällt, schreib uns einfach eine kurze Mail.<br>
-	</div>
-	<br>
 	<?php /** @var CActiveForm $form */
 	$form = $this->beginWidget('CActiveForm');
 	?>
-	Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem Wurzelwerk-Account
-	ein. Falls du die Zugangsdaten zurzeit nicht hast, <a href="#wer"
-	                                                      onclick="$('#wer').next().scrollintoview(); return false;">schreib
-		uns einfach an</a>.
+	Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem Wurzelwerk-Account ein.<br>
+	<br>
+	<strong>Erklärung / Datenschutz:</strong><br>
+	Du wirst, nachdem du hier deinen BenutzerInnenname eingegeben hast, auf eine "OpenID"-Seite umgeleitet, die vom grünen Bundesverband betrieben wird (Adresse im Browser: https://service.gruene.de). Dort wirst du (ggf. auf englisch) aufgefordert, deinen Wurzelwerk-BenutzerInnenname und -Passwort einzugeben. Diese Seite bestätigt gegenüber Antragsgrün, dass du Parteimitglied bist und leitet deinen Namen und E-Mail-Adresse weiter - nicht aber das Wurzelwerk-Passwort.<br>
+	<br>
+	Falls du die Zugangsdaten zurzeit nicht hast, <a href="#wer" onclick="$('#wer').next().scrollintoview(); return false;">schreib uns einfach an</a>.
+	<br>
+
 	<div style="overflow: auto; margin-top: 25px;">
 		<div style="float: left;">
 			<label for="OAuthLoginForm_wurzelwerk">Wurzelwerk-BenutzerInnenname</label>
@@ -139,12 +138,11 @@ include(__DIR__ . "/sidebar.php");
 		Landtagswahlprogramm zu diskutieren, später auch zur Vorbereitung der Programm-LDK.</p>
 
 	<p>Wir werden das Antragsgrün in Zukunft weiter ausbauen und um <strong>zusätzliche Funktionen</strong> ergänzen.
-		Funktionen, für die sich <strong>Sponsoren</strong> finden, werden dabei besonders priorisiert (die Zeit, die
-		wir in die Weiterentwicklung stecken können, ist dann doch nicht völlig unabhängig von finanziellen Aspekten).
+		Funktionen, für die sich <strong>Sponsoren</strong> finden, werden dabei besonders priorisiert.
 	</p>
 
 	<p>Ihr könnt uns bevorzugt per <strong>E-Mail</strong> unter <a href="mailto:antragsgruen@netzbegruenung.de">antragsgruen@netzbegruenung.de</a>
-		erreichen, aber auch telefonisch unter 0151-56024223, auf <a href="https://twitter.com/Antragsgruen">Twitter</a>
+		erreichen, in dringenden Fällen auch telefonisch unter 0151-56024223, auf <a href="https://twitter.com/Antragsgruen">Twitter</a>
 		und auf <a href="http://www.facebook.com/Antragsgruen">Facebook</a>.</p>
 </div>
 

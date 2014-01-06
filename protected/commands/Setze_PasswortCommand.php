@@ -3,7 +3,7 @@
 class Setze_PasswortCommand extends CConsoleCommand {
         public function run($args) {
 			if (count($args) != 2) {
-				echo "Aufruf: ./yiic [Wurzelwerk-Benutzername|E-Mail] [NeuesPasswort]\n";
+				echo "Aufruf: ./yiic [Wurzelwerk-BenutzerInnenname|E-Mail] [NeuesPasswort]\n";
 				return;
 			}
 
