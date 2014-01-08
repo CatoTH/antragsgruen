@@ -53,7 +53,7 @@ $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckedit
 					// Remove unused plugins.
 					//removePlugins: 'bidi,dialogadvtab,div,filebrowser,flash,format,forms,horizontalrule,iframe,justify,liststyle,pagebreak,showborders,stylescombo,table,tabletools,templates',
 					//removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,magicline' + ',sourcearea',
-					extraPlugins: 'autogrow,mediaembed',
+					extraPlugins: 'autogrow',
 					scayt_sLang: 'de_DE',
 					toolbar:
 						[
@@ -64,7 +64,7 @@ $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckedit
 							{ name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
 							{ name: 'editing',     items : [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ] },
 							// { name: 'forms',       items : [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
-							{ name: 'insert',      items : [ 'Image','MediaEmbed','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
+							{ name: 'insert',      items : [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
 							{ name: 'styles',      items : [ 'Styles','Format','Font','FontSize' ] },
 							{ name: 'colors',      items : [ 'TextColor','BGColor' ] },
 							{ name: 'tools',       items : [ 'Maximize', 'ShowBlocks','-','About' ] }
