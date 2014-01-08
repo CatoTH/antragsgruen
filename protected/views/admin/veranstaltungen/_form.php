@@ -35,7 +35,7 @@ $einstellungen = $model->getEinstellungen();
 
 	<div>
 		<?php echo $form->labelEx($model, 'typ'); ?>
-		<div style="display: inline-block; width: 450px;">
+		<div style="display: inline-block; width: 440px;">
 			<?php echo $form->dropDownList($model, 'typ', Veranstaltung::$TYPEN); ?>
 			<br>
 			<small>Wirkt sich insb. auf das Wording aus. "Parteitag": "Anträge" und "Änderungsanträge". "Wahlprogramm":
@@ -101,7 +101,7 @@ $einstellungen = $model->getEinstellungen();
 	<!-- row -->
 	<div>
 		<?php echo $form->labelEx($model, 'antragsschluss'); ?>
-		<div style="display: inline-block; width: 450px;">
+		<div style="display: inline-block; width: 440px;">
 			<?php $form->widget('ext.datetimepicker.EDateTimePicker', array(
 				'model'     => $model,
 				'attribute' => "antragsschluss",
@@ -144,7 +144,7 @@ $einstellungen = $model->getEinstellungen();
 
 	<div>
 		<?php echo $form->labelEx($einstellungen, 'logo_url', array("label" => "Logo-URL")); ?>
-		<div style="display: inline-block; width: 450px;">
+		<div style="display: inline-block; width: 440px;">
 			<?php echo $form->textField($einstellungen, 'logo_url', array('maxlength' => 200)); ?>
 			<br>
 			<small>Im Regelfall einfach leer lassen. Falls eine URL angegeben wird, wird das angegebene Bild statt dem
@@ -155,7 +155,7 @@ $einstellungen = $model->getEinstellungen();
 	</div>
 	<div>
 		<?php echo $form->labelEx($einstellungen, 'fb_logo_url', array("label" => "Facebook-Bild")); ?>
-		<div style="display: inline-block; width: 450px;">
+		<div style="display: inline-block; width: 440px;">
 			<?php echo $form->textField($einstellungen, 'fb_logo_url', array('maxlength' => 200)); ?>
 			<br>
 			<small>Dieses Bild erscheint, wenn etwas auf dieser Seite bei Facebook geteilt wird. Vorsicht: nachträglich
