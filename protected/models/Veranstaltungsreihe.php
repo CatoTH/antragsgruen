@@ -48,6 +48,7 @@ class Veranstaltungsreihe extends CActiveRecord
 	public function isAdmin($person)
 	{
 		foreach ($this->admins as $e) if ($e->id == $person->id) return true;
+		if (Yii::app()->params['admin_user_id'] !== null && $person->id == Yii::app()->params['admin_user_id']) return true;
 		return false;
 	}
 
