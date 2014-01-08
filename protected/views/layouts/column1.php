@@ -6,7 +6,9 @@
 $this->beginContent('//layouts/bootstrap');
 /** @var string $content */
 ?>
-<div class="content main_content">
-	<?php echo $content; ?>
-</div><!-- content -->
+	<div class="row-fluid">
+		<div class="span9 well">
+			<?php echo $content; ?>
+		</div>
+	</div>
 <?php $this->endContent(); ?>

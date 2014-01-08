@@ -117,7 +117,6 @@ $einstellungen = $model->getEinstellungen();
 		<?php echo $form->error($model, 'antragsschluss'); ?>
 	</div>
 </div>
-</div>
 
 <br>
 
