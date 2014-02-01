@@ -85,8 +85,12 @@ class AntragsgruenController extends CController
 			} else {
 				$this->render('error', array(
 					"code"    => 404,
-					"message" => "Die Veranstaltungsreihe wurde nicht gefunden."
+					"html"    => true,
+					"message" => "Die angegebene Veranstaltung wurde nicht gefunden. Höchstwahrscheinlich liegt da an einem Tippfehler in der Adresse im Browser.<br>
+					<br>
+					Auf der <a href='http://www.antragsgruen.de/'>Antragsgrün-Startseite</a> siehst du rechts eine Liste der aktiven Veranstaltungen."
 				));
+				Yii::app()->end();
 			}
 		}
 
