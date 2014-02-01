@@ -58,7 +58,7 @@ class InfosController extends AntragsgruenController
 				$veranstaltung->admin_email = $anlegenformmodel->admin_email;
 
 				$einstellungen = $veranstaltung->getEinstellungen();
-				$einstellungen->wartungs_modus_aktiv = true;
+				$einstellungen->wartungs_modus_aktiv = !$anlegenformmodel->sofort_offen;
 
 				if ($anlegenformmodel->typ == Veranstaltung::$TYP_PROGRAMM) {
 					$einstellungen->zeilen_nummerierung_global = true;
@@ -88,7 +88,7 @@ class InfosController extends AntragsgruenController
 					$impressum->edit_datum = new CDbExpression("NOW()");
 					$impressum->text_id = "impressum";
 					$impressum->veranstaltung_id = $veranstaltung->id;
-					$impressum->text = "<div class='well'><div class='content'>" . nl2br(CHtml::encode($anlegenformmodel->kontakt)) . "</div></div>";
+					$impressum->text = nl2br(CHtml::encode($anlegenformmodel->kontakt));
 					$impressum->save();
 
 					$impressum = new Texte();

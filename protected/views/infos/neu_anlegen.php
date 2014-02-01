@@ -102,6 +102,9 @@ $app->getClientScript()->registerCssFile($assets_base . '/css/formwizard.css');
 			<br>
 			<label class="policy"><?php echo CHtml::activeCheckBox($anlegenformmodel, "aenderungsantraege_moeglich"); ?> BenutzerInnen können Änderungsanträge stellen</label>
 			<br>
+			<label class="policy"><?php echo CHtml::activeCheckBox($anlegenformmodel, "sofort_offen"); ?> Die neue Antragsgrün-Instanz soll sofort aufrufbar sein<br>
+				&nbsp; &nbsp; &nbsp; (ansonsten: erst, wenn du exlizit den Wartungsmodus abschaltest)</label>
+			<br>
 			<br>
 
 			<div class="weiter">

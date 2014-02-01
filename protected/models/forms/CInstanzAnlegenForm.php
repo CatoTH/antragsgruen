@@ -16,6 +16,7 @@ class CInstanzAnlegenForm extends CFormModel {
 	/** @var bool */
 	public $aenderungsantraege_moeglich = true;
 	public $kommentare_moeglich = true;
+	public $sofort_offen = true;
 
 	public function rules()
 	{
