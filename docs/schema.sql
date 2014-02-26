@@ -46,7 +46,7 @@ CREATE  TABLE IF NOT EXISTS `veranstaltung` (
   `admin_email` VARCHAR(150) NULL ,
   `einstellungen` BLOB NULL ,
   PRIMARY KEY (`id`) ,
-  UNIQUE INDEX `yii_url_UNIQUE` (`url_verzeichnis` ASC) ,
+  UNIQUE INDEX `yii_url_UNIQUE` (  `url_verzeichnis` ,  `veranstaltungsreihe_id` ) ,
   INDEX `fk_veranstaltung_veranstaltungsreihe1_idx` (`veranstaltungsreihe_id` ASC) ,
   CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1`
     FOREIGN KEY (`veranstaltungsreihe_id` )
