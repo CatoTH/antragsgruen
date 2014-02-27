@@ -110,16 +110,18 @@ $form = $this->beginWidget('GxActiveForm', array(
     </div>
 </div>
 */ ?>
+	<br>
+	<h3><?php echo GxHtml::encode($model->getRelationLabel('aenderungsantragUnterstuetzerInnen')); ?></h3>
+	<br>
 <div style="overflow: auto;">
-    <label
-            style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('aenderungsantragUnterstuetzerInnen')); ?></label>
-
     <div style="float: left;">
 		<?php
 		echo UnterstuetzerInnenWidget::printUnterstuetzerInnenWidget($model, "aenderungsantragUnterstuetzerInnen");
 		?>
     </div>
 </div>
+	<br>
+	<br>
 <div class="saveholder">
 	<?php
 	echo GxHtml::submitButton(Yii::t('app', 'Save'), array("class" => "btn btn-primary"));

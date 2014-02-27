@@ -14,7 +14,7 @@ class UnterstuetzerInnenWidget
     {
         $neustr = '<div class="unterstuetzerInnenwidget_adder">';
         $neustr .= '<select name="' . get_class($antrag) . '[unterstuetzerIn_neu][person][]" class="person_selector">';
-        $neustr .= '<option value="neu"> - neue Person alegen -</option>';
+        $neustr .= '<option value="neu"> - neue Person anlegen -</option>';
 
         $pers = Person::model()->findAllAttributes("name", true, array("order" => "name"));
         foreach ($pers as $p) {
