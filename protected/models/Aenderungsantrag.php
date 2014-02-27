@@ -168,7 +168,9 @@ class Aenderungsantrag extends IAntrag
 	 */
 	public function getAffectedParagraphs() {
 		$paras = array();
-		foreach ($this->getDiffParagraphs() as $i => $p) if ($p != "") $paras[] = $i;
+		$diffs = $this->getDiffParagraphs();
+		if (!is_array($diffs)) return array(); // @TODO Wie kommen fehlerhafte JSON-Strings rein? Bsp. Aenderungsantrag ID 4064
+		foreach ($diffs as $i => $p) if ($p != "") $paras[] = $i;
 		return $paras;
 	}
 

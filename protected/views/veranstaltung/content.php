@@ -17,7 +17,7 @@ $this->breadcrumbs = array(
 	$editlink = $text->getEditLink();
 	if ($editlink !== null) echo "<a style='font-size: 10px;' href='" . CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
 	?></h1>
-<div>
+<div class="content">
 	<?php
 	echo $text->getHTMLText();
 	?>
