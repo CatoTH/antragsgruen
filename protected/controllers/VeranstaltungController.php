@@ -230,8 +230,10 @@ class VeranstaltungController extends AntragsgruenController
 		$user = Yii::app()->getUser();
 
 		$msg_ok                 = $msg_err = "";
-		$correct_person         = null;
 		$aktuelle_einstellungen = null;
+
+		/** @var Person|null $correct_person */
+		$correct_person         = null;
 
 		if (AntiXSS::isTokenSet("speichern") && !yii::app()->user->isGuest) {
 			/** @var Person $ich */
@@ -265,68 +267,10 @@ class VeranstaltungController extends AntragsgruenController
 				Yii::app()->user->login($identity);
 			}
 		} elseif (AntiXSS::isTokenSet("anmelden")) {
-			$person = Person::model()->findAll(array(
-				"condition" => "email='" . addslashes($_REQUEST["email"]) . "' AND pwd_enc != ''"
-			));
-			if (count($person) > 0) {
-				/** @var Person $p */
-				$p = $person[0];
-				if ($p->email_bestaetigt) {
-					if ($p->validate_password($_REQUEST["password"])) {
-						$correct_person = $p;
-
-						if ($p->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($p->getWurzelwerkName());
-						else $identity = new AntragUserIdentityPasswd($p->email);
-						Yii::app()->user->login($identity);
-					} else {
-						$msg_err = "Das angegebene Passwort ist leider falsch.";
-					}
-				} else {
-					if ($p->checkEmailBestaetigungsCode($_REQUEST["bestaetigungscode"])) {
-						$p->email_bestaetigt = 1;
-						if ($p->save()) {
-							$msg_ok = "Die E-Mail-Adresse wurde freigeschaltet. Ab jetzt wirst du entsprechend deinen Einstellungen benachrichtigt.";
-							$identity = new AntragUserIdentityPasswd($p->email);
-							Yii::app()->user->login($identity);
-						} else {
-							$msg_err = "Ein sehr seltsamer Fehler ist aufgetreten.";
-						}
-					} else {
-						$msg_err = "Leider stimmt der angegebene Code nicht";
-					}
-				}
-			} else {
-				$email                    = trim($_REQUEST["email"]);
-				$passwort                 = Person::createPassword();
-				$person                   = new Person;
-				$person->auth             = "email:" . $email;
-				$person->name             = "";
-				$person->email            = $email;
-				$person->email_bestaetigt = 0;
-				$person->angelegt_datum   = date("Y-m-d H:i:s");
-				$person->status           = Person::$STATUS_UNCONFIRMED;
-				$person->typ              = Person::$TYP_PERSON;
-				$person->pwd_enc          = Person::create_hash($passwort);
-				$person->admin            = 0;
-
-				if ($person->save()) {
-					$best_code = $person->createEmailBestaetigungsCode();
-					$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/benachrichtigungen", array("code" => $best_code));
-					mail($email, "Anmeldung bei Antragsgrün", "Hallo,\n\num Benachrichtigungen bei Antragsgrün zu erhalten, klicke entweder auf folgenden Link:\n$link\n\n"
-						. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: $best_code\n\n"
-						. "Das Passwort für den Antragsgrün-Zugang lautet: " . $passwort . "\n\n"
-						. "Liebe Grüße,\n\tDas Antragsgrün-Team.");
-					$correct_person = $person;
-
-					$identity = new AntragUserIdentityPasswd($email);
-					Yii::app()->user->login($identity);
-				} else {
-					$msg_err = "Leider ist ein (ungewöhnlicher) Fehler aufgetreten.";
-					$errs    = $person->getErrors();
-					foreach ($errs as $err) foreach ($err as $e) $msg_err .= $e;
-				}
-
-			}
+			list($correct_person, $msg_ok, $msg_err) = $this->loginOderRegistrieren_backend($_REQUEST["email"],
+				(isset($_REQUEST["password"]) ? $_REQUEST["password"] : null),
+				(isset($_REQUEST["bestaetigungscode"]) ? $_REQUEST["bestaetigungscode"] : null)
+			);
 		}
 
 		if ($correct_person) {

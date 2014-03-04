@@ -1,6 +1,6 @@
 <?php
 
-class UnterstuetzerInnenWidget
+class UnterstuetzerInnenAdminWidget
 {
 
 

@@ -53,7 +53,7 @@ class AntraegeController extends GxController
 
 			if ($model->saveWithRelated($relatedData)) {
 				$model->veranstaltung->resetLineCache();
-				UnterstuetzerInnenWidget::saveUnterstuetzerInnenWidget($model, $messages, "AntragUnterstuetzerInnen", "antrag_id", $id);
+				UnterstuetzerInnenAdminWidget::saveUnterstuetzerInnenWidget($model, $messages, "AntragUnterstuetzerInnen", "antrag_id", $id);
 
 				$model = Antrag::model()->with("antragUnterstuetzerInnen", "antragUnterstuetzerInnen.person")->findByPk($id, '', array("order" => "`person`.`name"));
 			}

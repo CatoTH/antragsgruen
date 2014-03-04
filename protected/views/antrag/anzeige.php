@@ -357,6 +357,9 @@ $this->menus_html[] = $html;
 <? } ?>
 
 <?php
+
+
+
 $unterstuetzerInnen = $antrag->getUnterstuetzerInnen();
 $zustimmung_von = $antrag->getZustimmungen();
 $ablehnung_von = $antrag->getAblehnungen();

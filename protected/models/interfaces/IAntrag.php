@@ -27,4 +27,24 @@ abstract class IAntrag extends GxActiveRecord
 	public static $STATI_UNSICHTBAR = array(0, 2, -2);
 
 
+
+	/**
+	 * @return Person[]
+	 */
+	abstract public function getAntragstellerInnen();
+
+	/**
+	 * @return Person[]
+	 */
+	abstract public function getUnterstuetzerInnen();
+
+	/**
+	 * @return Person[]
+	 */
+	abstract public function getZustimmungen();
+
+	/**
+	 * @return Person[]
+	 */
+	abstract public function getAblehnungen();
 }

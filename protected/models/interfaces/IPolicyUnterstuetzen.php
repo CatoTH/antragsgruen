@@ -8,7 +8,7 @@ abstract class IPolicyUnterstuetzen
 	// Ich hab leider keine Ahnung, wie man hier einen eleganteren Auto-Discovery-Mechanmismus implementieren kann...
 	private static $POLICIES = array(
 		"Niemand" => "PolicyUnterstuetzenNiemand",
-
+		"Eingeloggte" => "PolicyUnterstuetzenEingeloggte",
 	);
 
 	/** @var null|Veranstaltung */

@@ -54,7 +54,7 @@ class AenderungsantraegeController extends GxController
 			if ($model->save()) {
 
 
-				UnterstuetzerInnenWidget::saveUnterstuetzerInnenWidget($model, $messages, "AenderungsantragUnterstuetzerInnen", "aenderungsantrag_id", $id);
+				UnterstuetzerInnenAdminWidget::saveUnterstuetzerInnenWidget($model, $messages, "AenderungsantragUnterstuetzerInnen", "aenderungsantrag_id", $id);
 
 				$model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzerInnen", "aenderungsantragUnterstuetzerInnen.person")->findByPk($id, '', array("order" => "`person`.`name"));
 			}

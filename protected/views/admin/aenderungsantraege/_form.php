@@ -116,7 +116,7 @@ $form = $this->beginWidget('GxActiveForm', array(
 <div style="overflow: auto;">
     <div style="float: left;">
 		<?php
-		echo UnterstuetzerInnenWidget::printUnterstuetzerInnenWidget($model, "aenderungsantragUnterstuetzerInnen");
+		echo UnterstuetzerInnenAdminWidget::printUnterstuetzerInnenWidget($model, "aenderungsantragUnterstuetzerInnen");
 		?>
     </div>
 </div>
