@@ -399,7 +399,7 @@ class AntragController extends AntragsgruenController
 					$in->save();
 				}
 
-				$antrag->status = IAntrag::$STATUS_MODIFIZIERT;
+				$antrag->status          = IAntrag::$STATUS_MODIFIZIERT;
 				$antrag->datum_beschluss = new CDbExpression('NOW()');
 				$antrag->save();
 
@@ -421,7 +421,7 @@ class AntragController extends AntragsgruenController
 							$neuer_ae->datum_einreichung     = $ae->datum_einreichung;
 							$neuer_ae->status                = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
 
-							$text_neu                        = array();
+							$text_neu = array();
 							for ($i = 0; $i < $neu_count; $i++) $text_neu[$i] = "";
 							$old_abs = json_decode($ae->text_neu);
 							foreach ($old_abs as $abs => $str) $text_neu[$absatz_mapping[$abs]] = $str;
@@ -798,6 +798,7 @@ class AntragController extends AntragsgruenController
 		}
 
 		$this->render('bearbeiten_form', array(
+			"mode"                     => "neu",
 			"model"                    => $model,
 			"antragstellerIn"          => $antragstellerIn,
 			"model_unterstuetzerInnen" => $model_unterstuetzerInnen,

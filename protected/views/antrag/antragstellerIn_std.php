@@ -1,10 +1,10 @@
 <?php
 /**
  * @var AntragController $this
- * @var Antrag $model
+ * @var Antrag $antrag
  * @var Person $antragstellerIn
  * @var Veranstaltung $veranstaltung
- * @var array $model_unterstuetzerInnen
+ * @var array $antrag_unterstuetzerInnen
  * @var array $hiddens
  * @var bool $js_protection
  * @var bool $login_warnung
@@ -34,13 +34,13 @@
 
 </fieldset>
 
-<?php if (count($model_unterstuetzerInnen) > 0) { ?>
+<?php if (count($antrag_unterstuetzerInnen) > 0) { ?>
 	<fieldset>
 
 		<legend>UnterstützerInnen</legend>
 
 		<div class="control-group unterstuetzerIn">
-			<?php foreach ($model_unterstuetzerInnen as $nr => $u) { ?>
+			<?php foreach ($antrag_unterstuetzerInnen as $nr => $u) { ?>
 				<div style="margin-bottom: 5px;">
 					<label style="display: inline; margin-right: 10px;"><input type="radio"
 					                                                           name="UnterstuetzerInnenTyp[<?= $nr ?>]"

@@ -711,13 +711,22 @@ a {
   margin-bottom: 20px;
 }
 
-legend {
+
+legend, label.legend {
+  display: block;
   border: none;
   color: $farbe_dunkelgruen;
   font-size: 13px;
   font-weight: bold;
   line-height: 18px;
   margin: 0 0 5px 0;
+}
+label.legend {
+  margin-top: 15px;
+}
+
+.form-horizontal .text_full_width .controls {
+  margin: 0;
 }
 
 .control-group {
@@ -1094,6 +1103,9 @@ ins {
 
 .unterstuetzerIn label input, .form input, .form label {
   display: inline-block;
+}
+.form input, .form label.legend {
+  display: block;
 }
 
 #aenderungsantrag-form textarea, #texte-form textarea {

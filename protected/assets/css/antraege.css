@@ -573,13 +573,20 @@ a {
   text-align: center;
   margin-bottom: 20px; }
 
-legend {
+legend, label.legend {
+  display: block;
   border: none;
   color: #285f19;
   font-size: 13px;
   font-weight: bold;
   line-height: 18px;
   margin: 0 0 5px 0; }
+
+label.legend {
+  margin-top: 15px; }
+
+.form-horizontal .text_full_width .controls {
+  margin: 0; }
 
 .control-group {
   margin-bottom: 10px;
@@ -923,6 +930,9 @@ ins {
 .unterstuetzerIn label input, .form input, .form label {
   display: inline-block; }
 
+.form input, .form label.legend {
+  display: block; }
+
 #aenderungsantrag-form textarea, #texte-form textarea {
   width: 400px; }
 
@@ -956,7 +966,7 @@ ins {
 
 .admin_todo {
   float: right;
-  width: 200px; }
+  width: 300px; }
   .admin_todo ul {
     margin-top: 10px;
     font-size: 14px; }
