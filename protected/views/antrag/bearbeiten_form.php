@@ -110,28 +110,29 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 			</div>
 		</fieldset>
-	</div>
-<?php
-$this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
-	"form"                      => $form,
-	"mode"                      => $mode,
-	"antrag"                    => $model,
-	"antragstellerIn"           => $antragstellerIn,
-	"antrag_unterstuetzerInnen" => $model_unterstuetzerInnen,
-	"veranstaltung"             => $veranstaltung,
-	"hiddens"                   => $hiddens,
-	"js_protection"             => $js_protection,
-	"login_warnung"             => Yii::app()->user->isGuest,
-	"sprache"                   => $model->veranstaltung->getSprache(),
-));
-?>
-	<div class="form-actions content">
+
+		<?php
+		$this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
+			"form"                      => $form,
+			"mode"                      => $mode,
+			"antrag"                    => $model,
+			"antragstellerIn"           => $antragstellerIn,
+			"antrag_unterstuetzerInnen" => $model_unterstuetzerInnen,
+			"veranstaltung"             => $veranstaltung,
+			"hiddens"                   => $hiddens,
+			"js_protection"             => $js_protection,
+			"login_warnung"             => Yii::app()->user->isGuest,
+			"sprache"                   => $model->veranstaltung->getSprache(),
+		));
+		?>
+
 		<div style="float: left;">
 			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'reset', 'icon' => 'remove', 'label' => 'Reset')); ?>
 		</div>
 		<div style="float: right;">
 			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Weiter')); ?>
 		</div>
+		<br>
 	</div>
 
 
