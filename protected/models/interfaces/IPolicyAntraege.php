@@ -78,7 +78,13 @@ abstract class IPolicyAntraege
 		if (Yii::app()->user->isGuest) {
 			$antragstellerIn = null;
 		} else {
+			/** @var Person $antragstellerIn */
 			$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+
+			if ($antragstellerIn !== null && isset($_REQUEST["Person"]["name"]) && $antragstellerIn->name !== $_REQUEST["Person"]["name"]) {
+				$antragstellerIn->name = $_REQUEST["Person"]["name"];
+				$antragstellerIn->save();
+			}
 		}
 
 		if ($antragstellerIn === null && isset($_REQUEST["Person"])) {
