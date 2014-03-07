@@ -245,9 +245,9 @@ class VeranstaltungController extends AntragsgruenController
 				$vabo->veranstaltungsreihe_id = $this->veranstaltungsreihe->id;
 				$vabo->person_id              = $ich->id;
 			}
-			$vabo->antraege           = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["antraege"]);
-			$vabo->aenderungsantraege = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["aenderungsantraege"]);
-			$vabo->kommentare         = isset($_REQUEST["Reihe"][$this->veranstaltung->id]["kommentare"]);
+			$vabo->antraege           = isset($_REQUEST["Reihe"][$this->veranstaltung->veranstaltungsreihe_id]["antraege"]);
+			$vabo->aenderungsantraege = isset($_REQUEST["Reihe"][$this->veranstaltung->veranstaltungsreihe_id]["aenderungsantraege"]);
+			$vabo->kommentare         = isset($_REQUEST["Reihe"][$this->veranstaltung->veranstaltungsreihe_id]["kommentare"]);
 			$vabo->save();
 			$msg_ok = "Die Einstellungen wurden gespeichert.";
 		}
