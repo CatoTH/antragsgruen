@@ -135,8 +135,6 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 	var antrag_id = <?php echo $antrag->id; ?>,
 		nur_ein_absatz = <?php echo ($antrag->veranstaltung->getEinstellungen()->ae_nummerierung_nach_zeile ? "true" : "false"); ?>;
 
-	console.log(nur_ein_absatz);
-
 	function antragstext_init_aes() {
 		"use strict";
 		$(".ae_text_holder input.change_checkbox").not(':checked').parents(".ae_text_holder").hide();
@@ -153,10 +151,8 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 				if ($(".ae_absatzwahl_modus .change_checkbox:checked").length > 0) moeglich = false;
 			}
 			if (moeglich) {
-				console.log("Möglich");
 				$(".ae_absatzwahl_modus").addClass("aenderungen_moeglich");
 			} else {
-				console.log("Nicht Möglich");
 				$(".ae_absatzwahl_modus").removeClass("aenderungen_moeglich");
 			}
 		};
