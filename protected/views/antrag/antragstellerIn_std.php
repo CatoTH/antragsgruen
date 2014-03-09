@@ -21,7 +21,7 @@
 
 	<div class="control-group "><label class="control-label" for="Person_name">Name(n)</label>
 		<div class="controls">
-			<input name="Person[name]" id="Person_name" type="text" maxlength="100" value="Tobi2">
+			<input name="Person[name]" id="Person_name" type="text" maxlength="100" value="<?php echo CHtml::encode($antragstellerIn->name); ?>">
 			<?php if (!Yii::app()->user->isGuest) { ?><br>
 				<small><strong>Hinweis:</strong> Wird der Name hier geändert, ändert er sich auch bei allen anderen Anträgen, die mit diesem Zugang eingereicht wurden.</small>
 			<?php } ?>
