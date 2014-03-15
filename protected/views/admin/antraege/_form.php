@@ -1,4 +1,4 @@
-<div class="form">
+<div class="form content">
 
 
 <?php
@@ -93,19 +93,19 @@ $form = $this->beginWidget('GxActiveForm', array(
 <br><br>
 
 <span style="font-size: 14px; font-weight: bold;">Achtung: Falls schon Änderungsanträge / Kommentare eingereicht wurden, hier weiter unten möglichst gar nichts mehr ändern. Auf keinem Fall Absätze einfügen oder löschen!</span>
-<br><br>
+<br>
 
-<div>
+<div style="margin-top: 30px;">
 	<?php echo $form->labelEx($model, 'text'); ?>
-	<div style="display: inline-block; width: 420px;">
+	<div>
 		<?php echo $form->textArea($model, 'text'); ?>
 	</div>
 	<?php echo $form->error($model, 'text'); ?>
 </div>
 <!-- row -->
-<div>
+<div style="margin-top: 30px;">
 	<?php echo $form->labelEx($model, 'begruendung'); ?>
-	<div style="display: inline-block; width: 420px;">
+	<div>
 		<?php echo $form->textArea($model, 'begruendung'); ?>
 	</div>
 	<?php echo $form->error($model, 'begruendung'); ?>
@@ -120,8 +120,8 @@ $form = $this->beginWidget('GxActiveForm', array(
 </script>
 
 
-<div style="overflow: auto;">
-	<label style="float: left;"><?php echo GxHtml::encode($model->getRelationLabel('antragUnterstuetzerInnen')); ?></label>
+<div style="overflow: auto; margin-top: 30px;">
+	<label style="float: left; font-weight: bold;"><?php echo GxHtml::encode($model->getRelationLabel('antragUnterstuetzerInnen')); ?></label>
 
 	<div style="float: left;">
 		<?php
@@ -129,7 +129,7 @@ $form = $this->beginWidget('GxActiveForm', array(
 		?>
 	</div>
 </div>
-<div class="saveholder">
+<div class="saveholder" style=" margin-top: 30px;">
 	<?php
 	echo GxHtml::submitButton(Yii::t('app', 'Save'), array("class" => "btn btn-primary"));
 	$this->endWidget();

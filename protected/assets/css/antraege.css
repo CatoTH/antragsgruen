@@ -625,8 +625,9 @@ fieldset.antragstellerIn label.radio {
   display: inline-block;
   width: 180px;
   vertical-align: top; }
-
-#antrag-form input[type=text], #antrag-form select, #antrag-form textarea {
+#antrag-form input, #aenderungsantrag-form input {
+  display: inline-block; }
+#antrag-form input[type=text], #antrag-form select, #antrag-form textarea, #aenderungsantrag-form input[type=text], #aenderungsantrag-form select, #aenderungsantrag-form textarea {
   margin-bottom: 0;
   margin-top: 10px; }
 

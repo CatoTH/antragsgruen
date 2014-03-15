@@ -771,15 +771,21 @@ fieldset.antragstellerIn {
   margin-top: 10px;
 }
 
-#antrag-form label, #aenderungsantrag-form label {
-  display: inline-block;;
-  width: 180px;
-  vertical-align: top;
-}
+#antrag-form, #aenderungsantrag-form {
+  label {
+    display: inline-block;;
+    width: 180px;
+    vertical-align: top;
 
-#antrag-form input[type=text], #antrag-form select, #antrag-form textarea {
-  margin-bottom: 0;
-  margin-top: 10px;
+  }
+  input {
+    display: inline-block;
+  }
+  input[type=text], select, textarea {
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+
 }
 
 .form-actions {
