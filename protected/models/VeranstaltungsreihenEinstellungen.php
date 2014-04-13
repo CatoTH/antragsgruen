@@ -4,6 +4,8 @@ class VeranstaltungsreihenEinstellungen {
 
 	/** @var bool */
 	public $wartungs_modus_aktiv = false;
+	public $rechnung_gestellt = false;
+	public $rechnung_bezahlt = false;
 
 	/** @var int */
 	public $bereit_zu_zahlen = 0;

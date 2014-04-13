@@ -55,11 +55,14 @@ $url_rules = array(
 
 if (MULTISITE_MODE) {
 	$url_rules = array_merge(array(
-		$dom_plain                      => 'infos/selbstEinsetzen',
-		$dom_plain . 'selbst-einsetzen' => 'infos/selbstEinsetzen',
-		$dom_plain . 'neu-anlegen'      => 'infos/neuAnlegen',
-		$dom_plain . 'impressum'        => 'infos/impressum',
-		$dom_plain . 'passwort'         => 'infos/passwort',
+		$dom_plain                         => 'infos/selbstEinsetzen',
+		$dom_plain . 'selbst-einsetzen'    => 'infos/selbstEinsetzen',
+		$dom_plain . 'neu-anlegen'         => 'infos/neuAnlegen',
+		$dom_plain . 'impressum'           => 'infos/impressum',
+		$dom_plain . 'passwort'            => 'infos/passwort',
+		$dom_plain . 'rechnungsverwaltung' => 'infos/rechnungsverwaltung',
+		$dom_plain . 'login'               => 'infos/login',
+		$dom_plain . 'logout'              => 'infos/logout',
 	), $url_rules);
 
 	foreach ($url_rules as $key => $val) $url_rules[str_replace("http://", "http://www.", $key)] = $val;

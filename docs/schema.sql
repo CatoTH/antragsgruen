@@ -11,7 +11,7 @@ CREATE  TABLE IF NOT EXISTS `veranstaltungsreihe` (
   `name` VARCHAR(200) NOT NULL ,
   `name_kurz` VARCHAR(100) NULL ,
   `offiziell` TINYINT NOT NULL DEFAULT 0 ,
-  `einstellungen` VARCHAR(45) NULL ,
+  `einstellungen` BLOB NULL ,
   `aktuelle_veranstaltung_id` INT NULL ,
   `oeffentlich` TINYINT NULL DEFAULT 1 ,
   `kontakt_intern` TEXT NULL ,
