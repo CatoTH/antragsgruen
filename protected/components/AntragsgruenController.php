@@ -166,7 +166,18 @@ class AntragsgruenController extends CController
 			}
 			$correct = $user->validate_password($_REQUEST["password"]);
 			if ($correct) {
-				$identity = new AntragUserIdentityPasswd($_REQUEST["username"]);
+				$x = explode(":", $user->auth);
+				switch ($x[0]) {
+					case "email":
+						$identity = new AntragUserIdentityPasswd($x[1]);
+						break;
+					case "openid":
+						if ($user->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($user->getWurzelwerkName());
+						else throw new Exception("Keine Passwort-Authentifizierung mit anderen OAuth-Implementierungen möglich.");
+						break;
+					default:
+						throw new Exception("Ungültige Authentifizierungsmethode. Wenn dieser Fehler auftritt, besteht ein Programmierfehler.");
+				}
 				Yii::app()->user->login($identity);
 
 				if ($user->admin) {
