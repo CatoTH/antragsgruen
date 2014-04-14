@@ -20,12 +20,12 @@ $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/bbcode
 
 $this->breadcrumbs = array(
 	CHtml::encode($model->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index", array("veranstaltung_id" => $model->veranstaltung->url_verzeichnis)),
-	'Neuer Antrag',
+	$sprache->get($model->id > 0 ? 'Antrag bearbeiten' : 'Neuer Antrag'),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 ?>
-	<h1><?php echo $sprache->get("Antrag stellen") ?></h1>
+	<h1><?php echo $sprache->get($model->id > 0 ? 'Antrag bearbeiten' : 'Antrag stellen') ?></h1>
 
 	<div class="form content">
 		<fieldset>
@@ -62,7 +62,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		<fieldset>
 
 			<label class="legend" for="Antrag_name">Antragstitel</label>
-			<input name="Antrag[name]" id="Antrag_name" type="text">
+			<input name="Antrag[name]" id="Antrag_name" type="text" value="<?php echo CHtml::encode($model->name); ?>">
 
 		</fieldset>
 

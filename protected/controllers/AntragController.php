@@ -526,7 +526,7 @@ class AntragController extends AntragsgruenController
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag);
 		$this->testeWartungsmodus();
 
-		if (!$antrag->binInitiatorIn()) {
+		if (!$antrag->kannUeberarbeiten()) {
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
 			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
 		}
@@ -579,7 +579,7 @@ class AntragController extends AntragsgruenController
 					if ($unt->rolle == AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN && $unt->person->status == Person::$STATUS_UNCONFIRMED) $unt->delete();
 				foreach ($model_unterstuetzerInnen_obj as $unt) $unt->save();
 
-				$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $antrag_id, "next_status" => $_REQUEST["Antrag"]["status"], "from_mode" => "aendern")));
+				$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $antrag_id, "next_status" => $antrag->status, "from_mode" => "aendern")));
 			} else {
 				foreach ($antrag->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht geändert werden: $key: " . $val2);
 			}

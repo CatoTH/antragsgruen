@@ -6,6 +6,7 @@ class SpracheProgramm extends Sprache
 		"Antrag"                             => "Kapitel",
 		"Anträge"                            => "Kapitel",
 		"breadcrumb_top"                     => "Programm",
+		"Neuer Antrag"                       => "Neues Kapitel",
 		"Meine Anträge"                      => "Meine Kapitel",
 		"Meine Änderungsanträge"             => "Meine Änderungsvorschläge",
 		"Neue Änderungsanträge"              => "Neue Vorschläge",

@@ -18,8 +18,8 @@ if (count($antrag->antragUnterstuetzerInnen) > 0) foreach ($antrag->antragUnters
 
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
-	'Neuer Antrag',
-	'Bestätigen'
+	$sprache->get('Neuer Antrag'),
+	' / Bestätigen'
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 ?>
