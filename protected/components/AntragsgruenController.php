@@ -58,7 +58,7 @@ class AntragsgruenController extends CController
 			if (MULTISITE_MODE && !isset($params["veranstaltungsreihe_id"]) && $this->veranstaltungsreihe != null) $params["veranstaltungsreihe_id"] = $this->veranstaltungsreihe->subdomain;
 			if ($route == "veranstaltung/index" && !is_null($this->veranstaltungsreihe) && strtolower($params["veranstaltung_id"]) == strtolower($this->veranstaltungsreihe->aktuelle_veranstaltung->url_verzeichnis)) unset($params["veranstaltung_id"]);
 			if (in_array($route, array(
-				"veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "veranstaltung/login", "veranstaltung/logout"
+				"veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "veranstaltung/login", "veranstaltung/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
 			))
 			) unset($params["veranstaltung_id"]);
 		}

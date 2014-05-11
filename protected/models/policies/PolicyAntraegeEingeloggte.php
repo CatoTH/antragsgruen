@@ -35,6 +35,7 @@ class PolicyAntraegeEingeloggte extends IPolicyAntraege
 	 */
 	public function getPermissionDeniedMsg() {
 		if (Yii::app()->user->isGuest) return "Bitte logge dich dafür ein";
+		if ($this->veranstaltung->checkAntragsschlussVorbei()) return "Antragsschluss vorbei.";
 		return "";
 	}
 

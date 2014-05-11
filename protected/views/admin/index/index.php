@@ -36,29 +36,32 @@ $this->breadcrumbs = array(
 				<a href="<?php echo $this->createUrl("admin/aenderungsantraegeKommentare") ?>"><?php echo AenderungsantragKommentar::label(2) ?></a>
 			</li>
 		<?php } ?>
-		<li>
-			<a href="<?php echo $this->createUrl("admin/veranstaltungen/update") ?>"><?php echo $sprache->get("Diese Veranstaltung"); ?></a>
+		<li style="font-weight: bold;">
+			<a href="<?php echo $this->createUrl("admin/veranstaltungen/update") ?>"><?php echo $sprache->get("Diese Veranstaltung / Programmdiskussion"); ?></a>
 		</li>
-		<li><a href="<?php echo $this->createUrl("/admin/index/adminsReihe"); ?>">Weitere Admins</a></li>
-		<li style="margin-top: 10px;"><a
+		<li style="margin-top: 10px; font-weight: bold;"><a
 				href="<?php echo $this->createUrl("admin/antraege") ?>"><?php echo Antrag::label(2) ?></a></li>
-		<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("/antrag/neu") ?>">Neuen Antrag anlegen</a>
+		<li style="margin-left: 20px;">
+			<?php if ($this->veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) { ?>
+			<a href="<?php echo $this->createUrl("/antrag/neu") ?>">Neuen Antrag anlegen</a>
+			<?php } else { ?>
+				Neuen Antrag anlegen: <em><?php echo CHtml::encode($this->veranstaltung->getPolicyAntraege()->getPermissionDeniedMsg()) ?></em>
+			<?php } ?>
 		</li>
-		<li style="margin-top: 10px;"><a
+		<li style="margin-top: 10px; font-weight: bold;"><a
 				href="<?php echo $this->createUrl("admin/aenderungsantraege") ?>"><?php echo Aenderungsantrag::label(2) ?></a>
 		</li>
-		<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/aePDFList") ?>">Liste aller
-				PDFs</a></li>
-		<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/aeExcelList") ?>">Änderungsanträge
-				als Excel-Datei</a></li>
-		<li style="margin-top: 10px;"><a href="<?php echo $this->createUrl("admin/texte") ?>">Redaktionelle Texte</a>
-		</li>
+		<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/aePDFList") ?>">Liste aller PDFs</a></li>
+		<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/aeExcelList") ?>">Export: Änderungsanträge als Excel-Datei</a></li>
+		<li style="margin-top: 10px;"><?php echo CHtml::link("Export: Kommentare als Excel-Datei", $this->createUrl("admin/index/kommentareexcel")); ?></li>
+		<li style="margin-top: 10px;"><a href="<?php echo $this->createUrl("admin/texte") ?>">Redaktionelle Texte</a></li>
 	</ul>
 
-	<br><br>
+	<br><br><br>
 
-	<h4>Export</h4>
+	<h4>Veranstaltungsreihe / Subdomain</h4>
 	<ul>
-		<li><?php echo CHtml::link("Kommentare als Excel-Datei", $this->createUrl("admin/index/kommentareexcel")); ?></li>
+		<li><a href="<?php echo $this->createUrl("/admin/index/reiheAdmins"); ?>">Weitere Admins</a></li>
+		<li><a href="<?php echo $this->createUrl("/admin/index/reiheVeranstaltungen"); ?>">Weitere Veranstaltungen anlegen / verwalten</a></li>
 	</ul>
 </div>

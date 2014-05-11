@@ -28,7 +28,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	public function checkCurUserHeuristically()
 	{
-		return !$this->veranstaltung->checkAntragsschlussVorbei(); // Jeder darf, auch nicht Eingeloggte
+		return !$this->veranstaltung->checkAntragsschlussVorbei(); // Jede darf, auch nicht Eingeloggte
 	}
 
 	/**
@@ -37,6 +37,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	public function getPermissionDeniedMsg()
 	{
+		if ($this->veranstaltung->checkAntragsschlussVorbei()) return "Antragsschluss vorbei.";
 		return "";
 	}
 

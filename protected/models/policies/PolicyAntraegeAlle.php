@@ -34,6 +34,7 @@ class PolicyAntraegeAlle extends IPolicyAntraege
 	 * @return string
 	 */
 	public function getPermissionDeniedMsg() {
+		if ($this->veranstaltung->checkAntragsschlussVorbei()) return "Antragsschluss vorbei.";
 		return "";
 	}
 

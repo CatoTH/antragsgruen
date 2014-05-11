@@ -15,16 +15,17 @@ $this->breadcrumbs = array(
 ?>
 <h1>Administratoren der Reihe</h1>
 
-<?php
-$this->widget('bootstrap.widgets.TbAlert', array(
-	'block' => true,
-	'fade'  => true,
-));
-?>
-
 <div class="content">
+
+	<?php
+	$this->widget('bootstrap.widgets.TbAlert', array(
+		'block' => true,
+		'fade'  => true,
+	));
+	?>
+
 	<h2>Eingetragen</h2>
-	<ul>
+	<ul style="margin-top: 10px;">
 		<?php foreach ($admins as $admin) {
 			echo "<li>" . CHtml::encode($admin->name) . " (" . CHtml::encode($admin->getWurzelwerkName()) . ")";
 			if ($admin->id != $ich->id) echo " [<a href='" . CHtml::encode(str_replace("REMOVEID", $admin->id, $del_url)) . "'>entfernen</a>]";
@@ -35,7 +36,7 @@ $this->widget('bootstrap.widgets.TbAlert', array(
 
 	<h2>Neu eintragen</h2>
 
-	<form method="POST" action="<?php echo CHtml::encode($add_url); ?>">
+	<form method="POST" action="<?php echo CHtml::encode($add_url); ?>" style="margin-top: 10px;">
 		<label>Wurzelwerk-BenutzerInnenname: <input type="text" name="username" value=""></label>
 		<button type="submit" name="<?php echo AntiXSS::createToken("adduser") ?>" class="btn btn-primary">Hinzufügen
 		</button>
