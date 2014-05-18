@@ -32,11 +32,6 @@ $cs->scriptMap=array(
 );
 */
 
-$font_css = Yii::app()->params['font_css'];
-if ($font_css != "") $cs->registerCssFile($assets_base . $font_css);
-
-
-
 ?><!DOCTYPE HTML>
 <html lang="de">
 <head>
@@ -48,10 +43,7 @@ if ($font_css != "") $cs->registerCssFile($assets_base . $font_css);
 	if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->getEinstellungen()->fb_logo_url != "") {
 		echo '<link rel="image_src" href="' . CHtml::encode($this->veranstaltung->getEinstellungen()->fb_logo_url) . '">';
 	}
-	if ($font_css == "") {
-		?>
-		<link href="//cloud.webtype.com/css/a47fbad3-f89b-4172-b851-d8bd6b49eb71.css" rel="stylesheet" type="text/css"/>
-	<?php } ?>
+	?>
 	<!--[if lt IE 9]>
 	<script src="<?php echo $assets_base; ?>/js/html5.js"></script><![endif]-->
 	<!--[if lt IE 8]>

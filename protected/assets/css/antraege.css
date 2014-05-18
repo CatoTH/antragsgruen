@@ -1,9 +1,85 @@
 @charset "UTF-8";
-/************************** NOTES ****************************
-
-font-family: 	"BentonSansCond Regular";
-
-***************************************************************/
+/* Open Sans @font-face kit */
+/* BEGIN Light */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/Light/OpenSans-Light.eot");
+  src: url("../font/OpenSans/fonts/Light/OpenSans-Light.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Light/OpenSans-Light.woff") format("woff"), url("../font/OpenSans/fonts/Light/OpenSans-Light.ttf") format("truetype"), url("../font/OpenSans/fonts/Light/OpenSans-Light.svg#OpenSansLight") format("svg");
+  font-weight: 300;
+  font-style: normal; }
+/* END Light */
+/* BEGIN Light Italic */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.eot");
+  src: url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.woff") format("woff"), url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.ttf") format("truetype"), url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.svg#OpenSansLightItalic") format("svg");
+  font-weight: 300;
+  font-style: italic; }
+/* END Light Italic */
+/* BEGIN Regular */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/Regular/OpenSans-Regular.eot");
+  src: url("../font/OpenSans/fonts/Regular/OpenSans-Regular.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Regular/OpenSans-Regular.woff") format("woff"), url("../font/OpenSans/fonts/Regular/OpenSans-Regular.ttf") format("truetype"), url("../font/OpenSans/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+/* END Regular */
+/* BEGIN Italic */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/Italic/OpenSans-Italic.eot");
+  src: url("../font/OpenSans/fonts/Italic/OpenSans-Italic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Italic/OpenSans-Italic.woff") format("woff"), url("../font/OpenSans/fonts/Italic/OpenSans-Italic.ttf") format("truetype"), url("../font/OpenSans/fonts/Italic/OpenSans-Italic.svg#OpenSansItalic") format("svg");
+  font-weight: normal;
+  font-style: italic; }
+/* END Italic */
+/* BEGIN Semibold */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.eot");
+  src: url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.woff") format("woff"), url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.ttf") format("truetype"), url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.svg#OpenSansSemibold") format("svg");
+  font-weight: 600;
+  font-style: normal; }
+/* END Semibold */
+/* BEGIN Semibold Italic */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.eot");
+  src: url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.woff") format("woff"), url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.ttf") format("truetype"), url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.svg#OpenSansSemiboldItalic") format("svg");
+  font-weight: 600;
+  font-style: italic; }
+/* END Semibold Italic */
+/* BEGIN Bold */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/Bold/OpenSans-Bold.eot");
+  src: url("../font/OpenSans/fonts/Bold/OpenSans-Bold.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Bold/OpenSans-Bold.woff") format("woff"), url("../font/OpenSans/fonts/Bold/OpenSans-Bold.ttf") format("truetype"), url("../font/OpenSans/fonts/Bold/OpenSans-Bold.svg#OpenSansBold") format("svg");
+  font-weight: bold;
+  font-style: normal; }
+/* END Bold */
+/* BEGIN Bold Italic */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.eot");
+  src: url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.woff") format("woff"), url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.ttf") format("truetype"), url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.svg#OpenSansBoldItalic") format("svg");
+  font-weight: bold;
+  font-style: italic; }
+/* END Bold Italic */
+/* BEGIN Extrabold */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.eot");
+  src: url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.woff") format("woff"), url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.ttf") format("truetype"), url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.svg#OpenSansExtrabold") format("svg");
+  font-weight: 800;
+  font-style: normal; }
+/* END Extrabold */
+/* BEGIN Extrabold Italic */
+@font-face {
+  font-family: 'Open Sans';
+  src: url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.eot");
+  src: url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.woff") format("woff"), url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.ttf") format("truetype"), url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.svg#OpenSansExtraboldItalic") format("svg");
+  font-weight: 800;
+  font-style: italic; }
+/* END Extrabold Italic */
 .icon-comment, .lesezeichen > li.kommentare > a:before, #sidebar .neue-kommentare .komm:before {
   content: '\e718'; }
 
@@ -73,7 +149,6 @@ blockquote {
   src: url("../font/fontello.eot?#iefix") format("embedded-opentype"), url("../font/fontello.woff") format("woff"), url("../font/fontello.ttf") format("truetype"), url("../font/fontello.svg#icons_antragsgruen") format("svg");
   font-weight: normal;
   font-style: normal; }
-
 p, ul {
   margin-bottom: 10px; }
 
@@ -145,12 +220,13 @@ a {
     background: -o-linear-gradient(90deg, #0b2f08 0%, #285f19 100%);
     background: -ms-linear-gradient(90deg, #0b2f08 0%, #285f19 100%);
     background: linear-gradient(90deg, #0b2f08 0%, #285f19 100%);
-    padding: 6px 20px 4px;
-    font-family: "BentonSansCond Regular";
+    padding: 5px 20px 5px;
+    font-family: "Open Sans";
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
     text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     margin: -1px; }
   .well h2, .well h3, .well .nav-header {
     margin: 0;
@@ -161,12 +237,13 @@ a {
     background: -o-linear-gradient(90deg, #afcb08 0%, #b9d126 100%);
     background: -ms-linear-gradient(90deg, #afcb08 0%, #b9d126 100%);
     background: linear-gradient(90deg, #afcb08 0%, #b9d126 100%);
-    padding: 6px 20px 4px;
-    font-family: "BentonSansCond Regular";
+    padding: 5px 20px 5px;
+    font-family: "Open Sans";
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
     text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     margin: -1px; }
   .well .content {
     padding: 15px 20px 30px; }
@@ -193,7 +270,7 @@ a {
       padding: 0;
       margin-left: 40px;
       color: #afcb08;
-      font-family: "BentonSansCond Regular";
+      font-family: "Open Sans";
       font-style: normal;
       font-weight: bold;
       text-transform: uppercase;
@@ -223,7 +300,7 @@ a {
   margin-top: 30px;
   padding: 0; }
   .breadcrumb, .breadcrumb .active {
-    font-family: "BentonSansCond Regular";
+    font-family: "Open Sans";
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;
@@ -268,7 +345,7 @@ a {
   text-align: center;
   vertical-align: middle;
   overflow: hidden;
-  font-family: "BentonSansCond Regular";
+  font-family: "Open Sans";
   font-weight: bold;
   font-size: 15px;
   line-height: 17px;
@@ -663,7 +740,7 @@ fieldset.antragstellerIn label.radio {
   background: -ms-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
   background: linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
   padding: 6px 30px 4px;
-  font-family: "BentonSansCond Regular";
+  font-family: "Open Sans";
   font-weight: bold;
   font-size: 15px;
   line-height: 18px;
@@ -704,6 +781,8 @@ h3 label {
       margin: 0;
       text-shadow: none;
       display: inline; }
+    #sidebar .nav-list > li.nav-header {
+      padding: 5px 20px 5px; }
   #sidebar .nav-list .nav-header {
     margin-bottom: 12px; }
 #sidebar .neue-antraege .antrag:before {
@@ -826,7 +905,7 @@ ul.funktionen {
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4); }
   ul.funktionen li a, ul.funktionen li > span {
     display: block;
-    font-family: "BentonSansCond Regular";
+    font-family: "Open Sans";
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;

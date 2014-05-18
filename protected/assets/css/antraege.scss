@@ -1,10 +1,8 @@
 @charset "UTF-8";
 
-/************************** NOTES ****************************
+$OpenSansPath: "../font/OpenSans/fonts";
+@import "../font/OpenSans/open-sans";
 
-font-family: 	"BentonSansCond Regular";
-
-***************************************************************/
 
 $farbe_dunkelgruen: rgb(40, 95, 25);
 $farbe_hellgruen: rgb(175, 203, 8);
@@ -57,12 +55,13 @@ $farbe_magenta: rgb(226, 0, 122);
   margin: 0;
   color: #fff;
   @include linear-gradient(90deg, $verlauf_von, $verlauf_zu);
-  padding: 6px 20px 4px;
-  font-family: "BentonSansCond Regular";
+  padding: 5px 20px 5px;
+  font-family: "Open Sans";
   font-weight: bold;
   font-size: 15px;
   line-height: 18px;
   text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
 }
 
 .icon-comment {
@@ -246,7 +245,7 @@ a {
       padding: 0;
       margin-left: 40px;
       color: $farbe_hellgruen;
-      font-family: "BentonSansCond Regular";
+      font-family: "Open Sans";
       font-style: normal;
       font-weight: bold;
       text-transform: uppercase;
@@ -282,7 +281,7 @@ a {
   padding: 0;
 
   &, .active {
-    font-family: "BentonSansCond Regular";
+    font-family: "Open Sans";
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;
@@ -331,7 +330,7 @@ a {
   text-align: center;
   vertical-align: middle;
   overflow: hidden;
-  font-family: "BentonSansCond Regular";
+  font-family: "Open Sans";
   font-weight: bold;
   font-size: 15px;
   line-height: 17px;
@@ -809,7 +808,7 @@ fieldset.antragstellerIn {
   color: #fff;
   @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
   padding: 6px 30px 4px;
-  font-family: "BentonSansCond Regular";
+  font-family: "Open Sans";
   font-weight: bold;
   font-size: 15px;
   line-height: 18px;
@@ -859,6 +858,9 @@ h3 label {
         margin: 0;
         text-shadow: none;
         display: inline;
+      }
+      &.nav-header {
+        padding: 5px 20px 5px;
       }
     }
 
@@ -984,7 +986,7 @@ ul.funktionen {
 
   li a, li > span {
     display: block;
-    font-family: "BentonSansCond Regular";
+    font-family: "Open Sans";
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;

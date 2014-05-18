@@ -100,7 +100,6 @@ return array(
 		'pdf_logo'                    => 'LOGO_PFAD',
 		'kontakt_email'               => 'EMAILADRESSE',
 		'mail_from'                   => 'Antragsgrün <EMAILADRESSE>',
-		'font_css'                    => '/css/font.css',
 		'admin_user_id'               => null,
 	),
 );
