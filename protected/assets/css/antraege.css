@@ -445,23 +445,26 @@ a {
   .antrags_text_holder .absatz_text {
     font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
     position: relative;
-    margin-left: 0; }
-    .antrags_text_holder .absatz_text.orig {
-      padding: 15px 20px 25px 0; }
+    margin-left: 0;
+    padding: 15px 23px 25px 0; }
+    .antrags_text_holder .absatz_text > .text {
+      padding-left: 50px; }
+    .antrags_text_holder .absatz_text > blockquote.text {
+      padding-left: 30px; }
     .antrags_text_holder .absatz_text ul, .antrags_text_holder .absatz_text ol {
       margin-left: 40px; }
 
 .antrags_text_holder_nummern .text {
-  padding-left: 40px; }
+  padding-left: 30px; }
 .antrags_text_holder_nummern .zeilennummer {
   color: #C3C3C3;
   display: inline-block;
   font-style: normal;
   font-weight: normal;
-  left: -20px;
+  left: -40px;
   position: relative;
   text-decoration: none;
-  width: 20px; }
+  width: 0; }
 .antrags_text_holder_nummern ul.text li .zeilennummer,
 .antrags_text_holder_nummern ol.text li .zeilennummer {
   left: -60px; }
@@ -470,7 +473,7 @@ a {
   border-left: dotted 2px gray;
   padding: 5px; }
   .antrags_text_holder_nummern blockquote.text .zeilennummer {
-    left: -46px; }
+    left: -80px; }
 
 .antrags_text_holder_keinenummern blockquote.text {
   margin: 3px 3px 3px 80px;

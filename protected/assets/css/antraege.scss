@@ -3,7 +3,6 @@
 $OpenSansPath: "../font/OpenSans/fonts";
 @import "../font/OpenSans/open-sans";
 
-
 $farbe_dunkelgruen: rgb(40, 95, 25);
 $farbe_hellgruen: rgb(175, 203, 8);
 $farbe_hellgruen_text: rgb(162, 188, 4);
@@ -61,7 +60,7 @@ $farbe_magenta: rgb(226, 0, 122);
   font-size: 15px;
   line-height: 18px;
   text-transform: uppercase;
-  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 }
 
 .icon-comment {
@@ -194,8 +193,6 @@ a {
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
   background-color: #fff;
 
-
-
   @include border-radius(10px);
   > :first-child {
     @include border-radius-top();
@@ -309,6 +306,7 @@ a {
   width: 230px;
   margin-left: 25px;
 }
+
 /*
 .span9 > ul {
   list-style-type: none;
@@ -454,9 +452,13 @@ a {
     font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
     position: relative;
     margin-left: 0;
+    padding: 15px 23px 25px 0;
 
-    &.orig {
-      padding: 15px 20px 25px 0;
+    > .text {
+      padding-left: 50px;
+    }
+    > blockquote.text {
+      padding-left: 30px;
     }
 
     ul, ol {
@@ -467,17 +469,17 @@ a {
 
 .antrags_text_holder_nummern {
   .text {
-    padding-left: 40px;
+    padding-left: 30px;
   }
   .zeilennummer {
     color: #C3C3C3;
     display: inline-block;
     font-style: normal;
     font-weight: normal;
-    left: -20px;
+    left: -40px;
     position: relative;
     text-decoration: none;
-    width: 20px;
+    width: 0;
   }
 
   ul.text li .zeilennummer,
@@ -491,7 +493,7 @@ a {
     padding: 5px;
 
     .zeilennummer {
-      left: -46px;
+      left: -80px;
     }
   }
 }
@@ -710,7 +712,6 @@ a {
   margin-bottom: 20px;
 }
 
-
 legend, label.legend {
   display: block;
   border: none;
@@ -720,6 +721,7 @@ legend, label.legend {
   line-height: 18px;
   margin: 0 0 5px 0;
 }
+
 label.legend {
   margin-top: 15px;
 }
@@ -948,7 +950,6 @@ h3 label {
   }
 }
 
-
 .icon-aender-stellen:before,
 .icon-pdf:before {
   @extend .icon-edit;
@@ -971,7 +972,6 @@ h3 label {
 .btn .icon-pdf:before {
   color: #000000;
 }
-
 
 ul.funktionen {
   @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
@@ -1112,6 +1112,7 @@ ins {
 .unterstuetzerIn label input, .form input, .form label {
   display: inline-block;
 }
+
 .form input, .form label.legend {
   display: block;
 }
