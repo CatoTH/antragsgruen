@@ -5,6 +5,7 @@ if (!file_exists(dirname(__FILE__) . "/../vendor/autoload.php")) {
 }
 require_once(dirname(__FILE__) . "/../vendor/autoload.php");
 
+ini_set('include_path', ini_get('include_path') . ":" . dirname(__FILE__) . "/../libraries/");
 
 // change the following paths if necessary
 $yiic=dirname(__FILE__).'/../vendor/yiisoft/yii/framework/yiic.php';
