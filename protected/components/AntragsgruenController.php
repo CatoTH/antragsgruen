@@ -226,7 +226,7 @@ class AntragsgruenController extends CController
 							if (trim($email) != "") {
 								$password      = substr(md5(uniqid()), 0, 8);
 								$user->pwd_enc = Person::create_hash($password);
-								mail($email, "Dein Antragsgrün-Zugang", "Hallo!\n\nDein Zugang bei Antragsgrün wurde eben eingerichtet.\n\n" .
+								mb_send_mail($email, "Dein Antragsgrün-Zugang", "Hallo!\n\nDein Zugang bei Antragsgrün wurde eben eingerichtet.\n\n" .
 									"Du kannst dich mit folgenden Daten einloggen:\nBenutzerInnenname: $email\nPasswort: $password\n\n" .
 									"Das Passwort kannst du hier ändern:\n" .
 									yii::app()->getBaseUrl(true) . yii::app()->createUrl("infos/passwort") . "\n\n" .
@@ -357,10 +357,10 @@ class AntragsgruenController extends CController
 			if ($person->save()) {
 				$best_code = $person->createEmailBestaetigungsCode();
 				$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/benachrichtigungen", array("code" => $best_code));
-				mail($email, "Anmeldung bei Antragsgrün", "Hallo,\n\num Benachrichtigungen bei Antragsgrün zu erhalten, klicke entweder auf folgenden Link:\n$link\n\n"
+				mb_send_mail($email, "Anmeldung bei Antragsgrün", "Hallo,\n\num Benachrichtigungen bei Antragsgrün zu erhalten, klicke entweder auf folgenden Link:\n$link\n\n"
 					. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: $best_code\n\n"
 					. "Das Passwort für den Antragsgrün-Zugang lautet: " . $passwort . "\n\n"
-					. "Liebe Grüße,\n\tDas Antragsgrün-Team.");
+					. "Liebe Grüße,\n\tDas Antragsgrün-Team.", "From: " . Yii::app()->params['mail_from']);
 				$correct_person = $person;
 
 				$identity = new AntragUserIdentityPasswd($email);
