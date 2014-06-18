@@ -58,18 +58,10 @@ foreach ($antraege as $name => $antrs) {
 	echo "<ul class='antragsliste'>";
 	foreach ($antrs as $antrag) {
 		/** @var Antrag $antrag */
-		echo "<li";
-		switch ($antrag->typ) {
-			case Antrag::$TYP_ANTRAG:
-				echo " class='antrag'";
-				break;
-			case Antrag::$TYP_RESOLUTION:
-				echo " class='antrag resolution'";
-				break;
-			default:
-				echo " class='antrag resolution'";
-		}
-		echo ">";
+		$classes = array("antrag");
+		if ($antrag->typ != Antrag::$TYP_ANTRAG) $classes[] = "resolution";
+		if ($antrag->status == IAntrag::$STATUS_ZURUECKGEZOGEN) $classes[] = "zurueckgezogen";
+		echo "<li class='" . implode(" ", $classes) . "'>";
 		echo "<p class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($antrag->datum_einreichung) . "</p>\n";
 		echo "<p class='titel'>\n";
 		echo CHtml::link(CHtml::encode($antrag->nameMitRev()), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
@@ -85,9 +77,10 @@ foreach ($antraege as $name => $antrs) {
 		if (count($antrag->aenderungsantraege) > 0) {
 			echo "<ul class='aenderungsantraege'>";
 			foreach ($antrag->aenderungsantraege as $ae) {
-				echo "<li>";
+				echo "<li" . ($ae->status == IAntrag::$STATUS_ZURUECKGEZOGEN ? " class='zurueckgezogen'" : "") . ">";
 				echo "<span class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($ae->datum_einreichung) . "</span>\n";
-				echo CHtml::link($ae->revision_name, $this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $ae->antrag->id, "aenderungsantrag_id" => $ae->id)));
+				$name = (trim($ae->revision_name) == "" ? "-" : $ae->revision_name);
+				echo CHtml::link($name, $this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $ae->antrag->id, "aenderungsantrag_id" => $ae->id)));
 				$vons = array();
 				foreach ($ae->getAntragstellerInnen() as $p) $vons[] = $p->name;
 				echo "<span class='info'>" . implode(", ", $vons) . "</span>\n";

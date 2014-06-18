@@ -418,6 +418,8 @@ a {
     padding: 0; }
     .antragsliste .aenderungsantraege li {
       margin-bottom: 3px; }
+      .antragsliste .aenderungsantraege li.zurueckgezogen {
+        text-decoration: line-through; }
       .antragsliste .aenderungsantraege li:before {
         color: #A2BC04;
         display: inline-block;

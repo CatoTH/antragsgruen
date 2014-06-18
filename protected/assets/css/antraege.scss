@@ -416,6 +416,9 @@ a {
 
     li {
       margin-bottom: 3px;
+      &.zurueckgezogen {
+        text-decoration: line-through;
+      }
       &:before {
         @extend .icon-attachment;
         @include icons-antragsgruen('15px');
