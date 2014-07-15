@@ -130,7 +130,7 @@ include(__DIR__ . "/sidebar.php");
 
 <div class="content">
 	<p>Antragsgrün wird von "<strong>Netzbegrünung</strong> - Verein für GRÜNE Netzkultur" betrieben. Programmiert wird
-		es von <a href="http://www.hoessl.eu/">Tobias Hößl</a> (<a
+		es von <a href="https://www.hoessl.eu/">Tobias Hößl</a> (<a
 			href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>), das Design stammt von <a
 			href="http://www.netzminze.de/">Karin Wehle</a>.</p>
 

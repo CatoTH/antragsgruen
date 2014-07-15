@@ -69,20 +69,20 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		<fieldset>
 			<label class="legend">Antragstyp</label>
 			<?php
-			foreach (Antrag::$TYPEN as $id => $name) {
+			foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) {
 				echo '<label class="radio"><input name="Antrag[typ]" value="' . $id . '" type="radio" ';
 				if ($model->typ == $id) echo ' checked';
-				echo '> ' . CHtml::encode($name) . '</label>';
+				echo ' required> ' . CHtml::encode($name) . '</label>';
 			}
 			?>
 		</fieldset>
 
 
-		<fieldset>
+		<fieldset class="control-group">
 
 			<legend>Antragstext</legend>
 
-			<div class="control-group text_full_width">
+			<div class="text_full_width">
 				<label style="display: none;" class="control-label required" for="Antrag_text">
 					Antragstext
 					<span class="required">*</span>
@@ -94,11 +94,12 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 				</div>
 
 			</div>
+		</fieldset>
 
-
+		<fieldset class="control-group">
 			<legend>Begründung</legend>
 
-			<div class="control-group text_full_width">
+			<div class="text_full_width">
 				<label style="display: none;" class="control-label required" for="Antrag_begruendung">
 					Begründung
 					<span class="required">*</span>

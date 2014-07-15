@@ -770,9 +770,18 @@ fieldset.antragstellerIn {
   vertical-align: top;
 }
 
-#veranstaltung-form input[type=text], #veranstaltung-form select, #veranstaltung-form textarea {
-  margin-bottom: 0;
-  margin-top: 10px;
+#veranstaltung-form {
+  input[type=text], select, textarea {
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+  .std_content_col {
+    display: inline-block;
+    width: 440px;
+  }
+  .antragstypen_row {
+
+  }
 }
 
 #antrag-form, #aenderungsantrag-form {
@@ -834,10 +843,6 @@ h3 label {
   color: inherit;
   font-family: inherit;
   margin: 0;
-}
-
-.form .radio {
-  min-width: 140px;
 }
 
 .ae_absatzwahl_modus.aenderungen_moeglich .antragabsatz_holder .text:hover {
@@ -1112,12 +1117,20 @@ ins {
   border: solid 1px gray;
 }
 
-.unterstuetzerIn label input, .form input, .form label {
+.unterstuetzerIn label input {
   display: inline-block;
 }
 
-.form input, .form label.legend {
-  display: block;
+.form {
+  input[type=text], label.legend {
+    display: block;
+  }
+  .radio {
+    min-width: 140px;
+  }
+  label {
+    display: inline-block;
+  }
 }
 
 #aenderungsantrag-form textarea, #texte-form textarea {

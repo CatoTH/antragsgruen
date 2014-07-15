@@ -22,7 +22,7 @@ $einstellungen = $model->getEinstellungen();
 <?php echo $form->errorSummary($model); ?>
 
 <h3>Allgemeine Einstellungen zur Veranstaltung</h3>
-<div class="content">
+<div class="content ">
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]"
@@ -132,10 +132,10 @@ $einstellungen = $model->getEinstellungen();
 
 	<div>
 		<?php echo $form->labelEx($einstellungen, 'antrag_einleitung', array("label" => "PDF-Antrags-Einleitung")); ?>
-		<div style="display: inline-block; width: 420px;">
+		<div class="std_content_col">
 			<?php echo $form->textArea($einstellungen, 'antrag_einleitung'); ?>
 			<br>
-			<small>Steht im PDF unter "Antrag", also z.B. "an die Landesversammlung in Würzburg"</small>
+			<small>Steht im PDF unter "Antrag", also z.B. "an die LDK in Würzburg"</small>
 		</div>
 		<?php echo $form->error($einstellungen, 'antrag_einleitung'); ?>
 	</div>
@@ -144,7 +144,7 @@ $einstellungen = $model->getEinstellungen();
 
 	<div>
 		<?php echo $form->labelEx($einstellungen, 'logo_url', array("label" => "Logo-URL")); ?>
-		<div style="display: inline-block; width: 440px;">
+		<div class="std_content_col">
 			<?php echo $form->textField($einstellungen, 'logo_url', array('maxlength' => 200)); ?>
 			<br>
 			<small>Im Regelfall einfach leer lassen. Falls eine URL angegeben wird, wird das angegebene Bild statt dem
@@ -155,7 +155,7 @@ $einstellungen = $model->getEinstellungen();
 	</div>
 	<div>
 		<?php echo $form->labelEx($einstellungen, 'fb_logo_url', array("label" => "Facebook-Bild")); ?>
-		<div style="display: inline-block; width: 440px;">
+		<div class="std_content_col">
 			<?php echo $form->textField($einstellungen, 'fb_logo_url', array('maxlength' => 200)); ?>
 			<br>
 			<small>Dieses Bild erscheint, wenn etwas auf dieser Seite bei Facebook geteilt wird. Vorsicht: nachträglich
@@ -169,12 +169,22 @@ $einstellungen = $model->getEinstellungen();
 	<div>
 		<label for="VeranstaltungsEinstellungen_zeilenlaenge">Maximale Zeilenlänge</label>
 
-		<div style="display: inline-block; width: 420px;">
+		<div class="std_content_col">
 			<input id="VeranstaltungsEinstellungen_zeilenlaenge" name="VeranstaltungsEinstellungen[zeilenlaenge]"
 			       type="number" value="<?= $einstellungen->zeilenlaenge ?>"> <br>
 			<small>NICHT ändern, nachdem Anträge eingereicht wurden, weil sich dann die Zeilennummern ändern!</small>
 		</div>
 	</div>
+
+	<div class="antragstypen_row">
+		<label>Auswählbare Antragstypen</label>
+		<div class="std_content_col"><?
+			foreach (Antrag::$TYPEN as $id => $name) {
+				echo '<label><input name="antrags_typen_aktiviert[]" value="' . $id . '" type="checkbox" ';
+				if (!in_array($id, $einstellungen->antrags_typen_deaktiviert)) echo ' checked';
+				echo '> ' . CHtml::encode($name) . '</label>';
+			}
+		?></div>
 	<br>
 
 	<div>

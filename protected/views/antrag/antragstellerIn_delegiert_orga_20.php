@@ -26,10 +26,9 @@ if ($mode == "neu") {
 		<label class="control-label">Ich bin...</label>
 
 		<div class="controls">
-			<label><input type="radio" name="Person[typ]" value="delegiert" required/> einE DelegierteR</label>
-			<label><input type="radio" name="Person[typ]" value="mitglied" required/> Parteimitglied (nicht
-				delegiert)</label>
-			<label><input type="radio" name="Person[typ]" value="organisation" required/> ein Gremium, LAK, ...</label>
+			<label><input type="radio" name="Person[typ]" value="delegiert" required/> einE DelegierteR</label><br>
+			<label><input type="radio" name="Person[typ]" value="mitglied" required/> Parteimitglied (nicht delegiert)</label><br>
+			<label><input type="radio" name="Person[typ]" value="organisation" required/> ein Gremium, LAK, ...</label><br>
 		</div>
 	</div>
 

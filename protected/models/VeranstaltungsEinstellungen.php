@@ -23,6 +23,9 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $kann_pdf = true;
 	public $zeilenlaenge = 80;
 
+	/** @var array */
+	public $antrags_typen_deaktiviert = array();
+
 
 	/** @var null|string */
 	public $logo_url = null;
@@ -57,8 +60,15 @@ class VeranstaltungsEinstellungen extends CFormModel
 		$fields = get_object_vars($this);
 		foreach ($fields as $key => $val) if (isset($formdata[$key])) {
 			if (is_bool($val)) $this->$key = (bool)$formdata[$key];
-			elseif (is_int($val)) $this->$key = (int)$formdata[$key]; else $this->$key = $formdata[$key];
+			elseif (is_int($val)) $this->$key = (int)$formdata[$key];
+			else $this->$key = $formdata[$key];
 		} elseif (is_bool($val)) $this->$key = false; // Checkbox nicht gesetzt
+
+		$this->antrags_typen_deaktiviert = array();
+		if (isset($_REQUEST["antrags_typen_aktiviert"])) {
+			foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $_REQUEST["antrags_typen_aktiviert"])) $this->antrags_typen_deaktiviert[] = IntVal($id);
+		}
+
 	}
 
 
