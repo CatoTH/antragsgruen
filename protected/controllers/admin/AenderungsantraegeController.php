@@ -16,7 +16,7 @@ class AenderungsantraegeController extends GxController
 		/** @var $model Aenderungsantrag */
 		$model = Aenderungsantrag::model()->with("aenderungsantragUnterstuetzerInnen", "aenderungsantragUnterstuetzerInnen.person")->findByPk($id, '', array("order" => "`person`.`name"));
 
-		if (is_null($model)) {
+		if (is_null($model) || $model->status == IAntrag::$STATUS_GELOESCHT) {
 			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
 			$this->redirect($this->createUrl("/admin/aenderungsantraege"));
 		}
@@ -93,7 +93,7 @@ class AenderungsantraegeController extends GxController
 			$model->save();
 
 			if (!Yii::app()->getRequest()->getIsAjaxRequest())
-				$this->redirect(array('admin'));
+				$this->redirect($this->createUrl("admin/aenderungsantraege"));
 		} else
 			throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
 	}
