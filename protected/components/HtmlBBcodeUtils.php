@@ -376,6 +376,7 @@ class HtmlBBcodeUtils
 		//echo "<br>IN========<br>";
 		//echo CHtml::encode($text);
 		$code = new \Decoda\Decoda();
+		$code->setEscaping(false);
 		$code->addFilter(new AntraegeBBCodeFilter());
 		$code->addFilter(new \Decoda\Filter\UrlFilter());
 		$code->reset($text);
