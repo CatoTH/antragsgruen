@@ -58,14 +58,6 @@ $this->menus_html[] = $html;
 	<div class="antragsdaten"
 	     style="min-height: <?php if ($antrag->veranstaltung->getEinstellungen()->ansicht_minimalistisch && Yii::app()->user->isGuest) echo "60"; else echo "114"; ?>px;">
 		<div id="socialshareprivacy"></div>
-		<script>
-			$(function ($) {
-				$('#socialshareprivacy').socialSharePrivacy({
-					css_path: "/socialshareprivacy/socialshareprivacy.css"
-				});
-			});
-		</script>
-
 		<?php if (!$antrag->veranstaltung->getEinstellungen()->ansicht_minimalistisch) { ?>
 
 			<div class="content">
@@ -165,6 +157,8 @@ $this->menus_html[] = $html;
 		foreach ($absae as $i => $abs) {
 			/** @var AntragAbsatz $abs */
 
+
+
 			$classes = "";
 			if (!in_array($i, $kommentare_offen)) $classes .= " kommentare_closed_absatz";
 			?>
@@ -180,10 +174,11 @@ $this->menus_html[] = $html;
 						</li>
 					<?
 					}
+
 					/** @var Aenderungsantrag $ant */
 					foreach ($abs->aenderungsantraege as $ant) {
 						$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $ant->antrag->veranstaltung->url_verzeichnis, "antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id));
-						echo "<li class='aenderungsantrag'><a class='aender_link' data-id='" . $ant->id . "' href='" . CHtml::encode($ae_link) . "'>" . CHtml::encode($ant->revision_name) . "</a></li>\n";
+						echo "<li class='aenderungsantrag' data-first-line='" . $ant->getFirstAffectedLineOfParagraph_absolute($i, $absae) . "'><a class='aender_link' data-id='" . $ant->id . "' href='" . CHtml::encode($ae_link) . "'>" . CHtml::encode($ant->revision_name) . "</a></li>\n";
 					} ?>
 				</ul>
 
@@ -491,3 +486,27 @@ if (count($aenderungsantraege) > 0 || $antrag->veranstaltung->policy_aenderungsa
 		?></div>
 <?php
 }
+
+?>
+<script>
+	$('#socialshareprivacy').socialSharePrivacy({
+		css_path: "/socialshareprivacy/socialshareprivacy.css"
+	});
+
+	$(".absatz_text.orig .text .zeilennummer").each(function() { $(this).attr("data-zeilennummer", $(this).text()); });
+	$(".row-absatz").each(function() {
+		var $absatz = $(this);
+		$absatz.find("ul.lesezeichen li.aenderungsantrag").each(function() {
+			var $aenderungsantrag = $(this),
+				marker_offset = $aenderungsantrag.offset().top,
+				first_line = $aenderungsantrag.data("first-line"),
+				$lineel = $absatz.find(".zeilennummer[data-zeilennummer=" + first_line + "]");
+			if ($lineel.length == 0) {
+				// Ergänzung am Ende des Absatzes
+				$lineel = $absatz.find(".zeilennummer").last();
+			}
+			var lineel_offset = $lineel.offset().top;
+			if ((marker_offset + 10) < lineel_offset) $aenderungsantrag.css("margin-top", (lineel_offset - (marker_offset + 10)) + "px");
+		});
+	});
+</script>

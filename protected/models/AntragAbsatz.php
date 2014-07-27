@@ -5,10 +5,6 @@ class AntragAbsatz
 {
 
 	/**
-	 * @var array|string[]
-	 */
-	public $zeilen;
-	/**
 	 * @var int
 	 */
 	public $antrag_id;
@@ -16,6 +12,10 @@ class AntragAbsatz
 	 * @var int
 	 */
 	public $absatz_nr;
+	/**
+	 * @var int
+	 */
+	public $anzahl_zeilen;
 	/**
 	 * @var array|AntragKommentar[]
 	 */
@@ -57,5 +57,16 @@ class AntragAbsatz
 		$this->aenderungsantraege = array();
 		foreach ($kommentare as $komm) if ($komm->absatz == $absatz_nr && $komm->istSichtbarCurrUser()) $this->kommentare[] = $komm;
 		foreach ($aenderungsantraege as $ant) if (in_array($absatz_nr, $ant->getAffectedParagraphs())) $this->aenderungsantraege[] = $ant;
+		$this->anzahl_zeilen = substr_count($this->str_html, "<span class='zeilennummer'>");
+
+		usort($this->aenderungsantraege, function($ae1, $ae2) use ($absatz_nr) {
+			/** @var Aenderungsantrag $ae1 */
+			/** @var Aenderungsantrag $ae2 */
+			$ae_zeile1 = $ae1->getFirstAffectedLineOfParagraph_relative($absatz_nr);
+			$ae_zeile2 = $ae2->getFirstAffectedLineOfParagraph_relative($absatz_nr);
+			if ($ae_zeile1 > $ae_zeile2) return 1;
+			if ($ae_zeile1 < $ae_zeile2) return -1;
+			return 0;
+		});
 	}
 }

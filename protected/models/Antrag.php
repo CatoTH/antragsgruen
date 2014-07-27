@@ -201,7 +201,7 @@ class Antrag extends IAntrag
 	/**
 	 * @param bool $nurfreigeschaltete_aes
 	 * @param bool $praesentations_hacks
-	 * @return array|AntragAbsatz[]
+	 * @return AntragAbsatz[]
 	 */
 	public function getParagraphs($nurfreigeschaltete_aes = true, $praesentations_hacks = false)
 	{

@@ -342,12 +342,6 @@ class DiffUtils
 		if ($compact) {
 			$renderer  = new Horde_Text_Diff_Renderer_Inline_Antrag15();
 			$absatz = $renderer->render($diff);
-			if (isset($_REQUEST["test"])) {
-				echo "<pre>";
-				var_dump($diff);
-				var_dump($absatz);
-				die();
-			}
 		} else {
 			$absatz = DiffUtils::renderAbsatzDiff($diff);
 		}
