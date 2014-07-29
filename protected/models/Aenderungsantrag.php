@@ -244,8 +244,9 @@ class Aenderungsantrag extends IAntrag
 	 */
 	public function setDiffParagraphs($paragraphs)
 	{
-		$this->text_neu                       = json_encode($paragraphs);
-		$this->_firstAffectedLineOfParagraphs = array();
+		$this->text_neu                                = json_encode($paragraphs);
+		$this->_firstAffectedLineOfParagraphs_relative = array();
+		$this->_firstAffectedLineOfParagraphs_absolute = array();
 	}
 
 	/**
