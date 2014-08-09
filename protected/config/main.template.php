@@ -63,7 +63,7 @@ return array(
 			"emulatePrepare"   => true,
 			"username"         => "parteitool",
 			"password"         => "strenggeheim",
-			"charset"          => "utf8",
+			"charset"          => "utf8mb4",
 			"enableProfiling"  => true
 		),
 		'errorHandler'   => array(
@@ -101,6 +101,6 @@ return array(
 		'kontakt_email'               => 'EMAILADRESSE',
 		'mail_from'                   => 'Antragsgrün <EMAILADRESSE>',
 		'admin_user_id'               => null,
-		'antragsgruen_version'        => '2.1.0',
+		'antragsgruen_version'        => '2.1.1',
 	),
 );
