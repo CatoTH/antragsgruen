@@ -85,6 +85,10 @@ Berechtigungen setzen:
 - chown www-data:www-data protected/runtime
 - chown www-data:www-data html/assets
 
+Abhängigkeiten installieren:
+- Zuerst [Composer](https://getcomposer.org/doc/00-intro.md) installieren
+- composer install
+
 Antragsgrün sollte nun schon funktionieren.
 Es ist eine sehr simpel gehaltene Veranstaltung voreingestellt und ein Admin-Nutzer angelegt:
 - Benutzername / E-Mail: "admin@test.de"
