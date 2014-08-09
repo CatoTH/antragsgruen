@@ -148,7 +148,7 @@ class AenderungsantragController extends AntragsgruenController
 				Yii::app()->user->setFlash("error", "Bitte gib deine E-Mail-Adresse an.");
 				$this->redirect($this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $aenderungsantrag->antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 			}
-			$model_person = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
+			$model_person = static::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED, false);
 
 			$kommentar                      = new AenderungsantragKommentar();
 			$kommentar->attributes          = $_REQUEST["AenderungsantragKommentar"];
@@ -453,18 +453,11 @@ class AenderungsantragController extends AntragsgruenController
 			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
 
-
 		$aenderungsantrag                             = new Aenderungsantrag();
 		$aenderungsantrag->aenderung_first_line_cache = -1;
 		$aenderungsantrag->antrag                     = $antrag;
 		$aenderungsantrag->antrag_id                  = $antrag->id;
 		$aenderungsantrag->status                     = Aenderungsantrag::$STATUS_UNBESTAETIGT;
-
-		if (Yii::app()->user->isGuest) {
-			$antragstellerIn = null;
-		} else {
-			$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
-		}
 
 		$changed = false;
 
@@ -528,6 +521,7 @@ class AenderungsantragController extends AntragsgruenController
 
 			if (!$aenderungsantrag->save()) {
 				foreach ($aenderungsantrag->getErrors() as $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Änderungsantrag konnte nicht angelegt werden: " . $val2);
+				$antragstellerIn = (Yii::app()->user->isGuest ? null : Person::model()->findByAttributes(array("auth" => Yii::app()->user->id)));
 				if ($antragstellerIn === null) $antragstellerIn = new Person();
 				$this->render('bearbeiten_form', array(
 					"mode"             => "neu",
@@ -546,6 +540,7 @@ class AenderungsantragController extends AntragsgruenController
 			$this->redirect($this->createUrl("aenderungsantrag/neuConfirm", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 
 		} else {
+			$antragstellerIn = (Yii::app()->user->isGuest ? null : Person::model()->findByAttributes(array("auth" => Yii::app()->user->id)));
 			if ($antragstellerIn === null) $antragstellerIn = new Person();
 
 			$aenderungsantrag->name_neu = $antrag->name;

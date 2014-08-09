@@ -73,9 +73,11 @@ abstract class IPolicyAntraege
 	}
 
 
-	protected function getSubmitPerson()
+	protected function getSubmitPerson($andereAntragstellerInErlaubt)
 	{
 		if (Yii::app()->user->isGuest) {
+			$antragstellerIn = null;
+		} elseif ($andereAntragstellerInErlaubt && isset($_REQUEST["andere_antragstellerIn"])) {
 			$antragstellerIn = null;
 		} else {
 			/** @var Person $antragstellerIn */
@@ -118,7 +120,7 @@ abstract class IPolicyAntraege
 	 */
 	public function submitAntragsstellerInView_Antrag(&$antrag)
 	{
-		$antragstellerIn = $this->getSubmitPerson();
+		$antragstellerIn = $this->getSubmitPerson($antrag->veranstaltung->isAdminCurUser());
 		if ($antragstellerIn === null) {
 			throw new Exception("Keine AntragstellerIn gefunden");
 		}
@@ -167,7 +169,7 @@ abstract class IPolicyAntraege
 	 */
 	public function submitAntragsstellerInView_Aenderungsantrag(&$aenderungsantrag)
 	{
-		$antragstellerIn = $this->getSubmitPerson();
+		$antragstellerIn = $this->getSubmitPerson($aenderungsantrag->antrag->veranstaltung->isAdminCurUser());
 		if ($antragstellerIn === null) {
 			throw new Exception("Keine AntragstellerIn gefunden");
 		}

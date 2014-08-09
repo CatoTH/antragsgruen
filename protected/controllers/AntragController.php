@@ -160,7 +160,7 @@ class AntragController extends AntragsgruenController
 				Yii::app()->user->setFlash("error", "Bitte gib deine E-Mail-Adresse an.");
 				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 			}
-			$model_person = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED);
+			$model_person = static::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED, false);
 
 			$kommentar                 = new AntragKommentar();
 			$kommentar->attributes     = $_REQUEST["AntragKommentar"];
@@ -719,42 +719,6 @@ class AntragController extends AntragsgruenController
 			$model->status            = Antrag::$STATUS_UNBESTAETIGT;
 			$goon                     = true;
 
-			$antragstellerIn = AntragUserIdentityOAuth::getCurrenPersonOrCreateBySubmitData($_REQUEST["Person"], Person::$STATUS_UNCONFIRMED);
-			if (!$antragstellerIn) $goon = false;
-
-			$model_unterstuetzerInnen_int = array();
-			/** @var array|AntragUnterstuetzerInnen[] $model_unterstuetzerIn_obj */
-			$model_unterstuetzerIn_obj = array();
-			if (isset($_REQUEST["UnterstuetzerInnenTyp"])) foreach ($_REQUEST["UnterstuetzerInnenTyp"] as $key => $typ) if ($typ != "" && $_REQUEST["UnterstuetzerInnenName"][$key] != "") {
-				$name = trim($_REQUEST["UnterstuetzerInnenName"][$key]);
-				// Man soll keinen bestätigten Nutzer eintragen können, das kann der dann selbvst machen
-				$p = Person::model()->findByAttributes(array("typ" => $typ, "name" => $name, "status" => Person::$STATUS_UNCONFIRMED));
-				if (!$p) {
-					$p                 = new Person();
-					$p->name           = $name;
-					$p->typ            = $typ;
-					$p->angelegt_datum = new CDbExpression('NOW()');
-					$p->admin          = 0;
-					$p->status         = Person::$STATUS_UNCONFIRMED;
-					$p->save();
-
-				}
-				$model_unterstuetzerInnen_int[] = $p;
-				$model_unterstuetzerInnen[]     = array("typ" => $typ, "name" => $name);
-
-				$init                        = new AntragUnterstuetzerInnen();
-				$init->rolle                 = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-				$init->unterstuetzerIn_id    = $p->id;
-				$init->person                = $p;
-				$model_unterstuetzerIn_obj[] = $init;
-			}
-
-			$initiator                     = new AntragUnterstuetzerInnen();
-			$initiator->antrag             = $model;
-			$initiator->rolle              = AntragUnterstuetzerInnen::$ROLLE_INITIATORIN;
-			$initiator->unterstuetzerIn_id = $antragstellerIn->id;
-			$initiator->person             = $antragstellerIn;
-
 			if (!$this->veranstaltung->getPolicyAntraege()->checkAntragSubmit()) {
 				Yii::app()->user->setFlash("error", "Keine Berechtigung zum Anlegen von Anträgen.");
 				$goon = false;
@@ -762,30 +726,13 @@ class AntragController extends AntragsgruenController
 
 			if ($goon) {
 				if ($model->save()) {
-					$initiator->antrag_id = $model->id;
-					if (!$initiator->save()) {
-						foreach ($initiator->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Initiator konnte nicht angelegt werden: $key: " . $val2);
-					}
-
-					foreach ($model_unterstuetzerIn_obj as $unterst) {
-						$unterst->antrag_id = $model->id;
-						$unterst->save();
-					}
-
+					$this->veranstaltung->getPolicyAntraege()->submitAntragsstellerInView_Antrag($model);
 					/* $next_status = $_REQUEST["Antrag"]["status"] */
 					$next_status = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 					$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $model->id, "next_status" => $next_status, "from_mode" => "neu")));
 				} else {
 					foreach ($model->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht angelegt werden: $key: " . $val2);
 				}
-			}
-		} else {
-
-			if (Yii::app()->user->isGuest) {
-				$antragstellerIn      = new Person();
-				$antragstellerIn->typ = Person::$TYP_PERSON;
-			} else {
-				$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 			}
 		}
 
@@ -795,6 +742,13 @@ class AntragController extends AntragsgruenController
 			$hiddens["form_token"] = AntiXSS::createToken("antragneu");
 		} else {
 			$hiddens[AntiXSS::createToken("antragneu")] = "1";
+		}
+
+		if (Yii::app()->user->isGuest) {
+			$antragstellerIn      = new Person();
+			$antragstellerIn->typ = Person::$TYP_PERSON;
+		} else {
+			$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 		}
 
 		$this->render('bearbeiten_form', array(

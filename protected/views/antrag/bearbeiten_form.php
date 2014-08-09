@@ -3,6 +3,7 @@
 /**
  * @var AntragController $this
  * @var Antrag $model
+ * @var string $mode
  * @var Person $antragstellerIn
  * @var Veranstaltung $veranstaltung
  * @var array $model_unterstuetzerInnen

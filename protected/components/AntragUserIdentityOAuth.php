@@ -54,36 +54,4 @@ class AntragUserIdentityOAuth extends CBaseUserIdentity
 		return "";
 	}
 
-
-	/**
-	 * @static
-	 * @param array $submit_data
-	 * @param int $submit_status
-	 * @return Person
-	 */
-	public static function getCurrenPersonOrCreateBySubmitData($submit_data, $submit_status)
-	{
-		if (Yii::app()->user->isGuest) {
-			$person_id = Yii::app()->user->getState("person_id");
-			if ($person_id) {
-				$model_person = Person::model()->findByAttributes(array("id" => $person_id));
-			} else {
-				$model_person                 = new Person();
-				$model_person->attributes     = $submit_data;
-				$model_person->admin          = 0;
-				$model_person->angelegt_datum = new CDbExpression('NOW()');
-				$model_person->status         = $submit_status;
-
-				if (!$model_person->save()) {
-					foreach ($model_person->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Person konnte nicht angelegt werden: $key: $val2");
-					$model_person = null;
-				} else {
-					Yii::app()->user->setState("person_id", $model_person->id);
-				}
-			}
-		} else {
-			$model_person = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
-		}
-		return $model_person;
-	}
 }

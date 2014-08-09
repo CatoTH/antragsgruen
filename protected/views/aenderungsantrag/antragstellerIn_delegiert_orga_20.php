@@ -17,11 +17,19 @@ if ($mode == "neu") {
 	<h3><?= $sprache->get("AntragstellerIn") ?></h3>
 	<br>
 
-	<?php echo $form->textFieldRow($antragstellerIn, 'name'); ?>
+	<?php if ($this->veranstaltung->isAdminCurUser()) { ?>
+		<label><input type="checkbox" name="andere_antragstellerIn"> Ich lege diesen Antrag für eine andere AntragstellerIn an
+			<small>(Admin-Funktion)</small>
+		</label>
+	<?php } ?>
 
-	<?php echo $form->textFieldRow($antragstellerIn, 'email', array("required" => true)); ?>
-
-	<?php echo $form->textFieldRow($antragstellerIn, 'telefon'); ?>
+	<div class="antragstellerIn_daten">
+		<?php
+		echo $form->textFieldRow($antragstellerIn, 'name');
+		echo $form->textFieldRow($antragstellerIn, 'email', array("required" => true));
+		echo $form->textFieldRow($antragstellerIn, 'telefon');
+		?>
+	</div>
 
 	<div class="control-group" id="Person_typ_chooser">
 		<label class="control-label">Ich bin...</label>
@@ -47,8 +55,9 @@ if ($mode == "neu") {
 
 	<script>
 		$(function () {
-			var $chooser = $("#Person_typ_chooser");
-			var $unter = $("#UnterstuetzerInnen");
+			var $chooser = $("#Person_typ_chooser"),
+				$unter = $("#UnterstuetzerInnen"),
+				$andereAntragstellerIn = $("input[name=andere_antragstellerIn]");
 			$chooser.find("input").change(function () {
 				if ($chooser.find("input:checked").val() == "mitglied") {
 					$unter.show();
@@ -58,6 +67,20 @@ if ($mode == "neu") {
 					$unter.find("input[type=text]").prop("required", false);
 				}
 			}).change();
+			if ($andereAntragstellerIn.length > 0) $andereAntragstellerIn.change(function() {
+				if ($(this).prop("checked")) {
+					$(".antragstellerIn_daten input").each(function() {
+						var $input = $(this);
+						$input.data("orig", $input.val());
+						$input.val("");
+					});
+				} else {
+					$(".antragstellerIn_daten input").each(function() {
+						var $input = $(this);
+						$input.val($input.data("orig"));
+					});
+				}
+			});
 		})
 	</script>
 

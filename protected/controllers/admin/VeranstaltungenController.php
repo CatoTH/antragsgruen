@@ -99,7 +99,7 @@ class VeranstaltungenController extends GxController
 
 			if ($model->saveWithRelated($relatedData)) {
 				$model->resetLineCache();
-				$this->redirect(array('update', 'id' => $model->id));
+				$this->redirect(array('update'));
 			}
 		}
 
