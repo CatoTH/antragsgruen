@@ -57,7 +57,7 @@ Es gibt je einen RSS-Feed über neue Anträge zu einer Veranstaltung, neue Ände
 
 Demo
 ----
-Hier läuft die Produktivversion von Antragsgrün: http://www.antragsgruen.de/
+Hier läuft die Produktivversion von Antragsgrün: https://www.antragsgruen.de/
 
 
 
@@ -110,4 +110,4 @@ Kontakt:
 --------
 - tobias@hoessl.eu
 - [@TobiasHoessl](https://twitter.com/TobiasHoessl)
-- http://www.hoessl.eu/
+- https://www.hoessl.eu/
