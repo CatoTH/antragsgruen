@@ -611,7 +611,8 @@ class AntragController extends AntragsgruenController
 			"model_unterstuetzerInnen" => $model_unterstuetzerInnen,
 			"veranstaltung"            => $antrag->veranstaltung,
 			"js_protection"            => $js_protection,
-			"login_warnung"            => Yii::app()->user->isGuest,
+			//"login_warnung"            => Yii::app()->user->isGuest,
+			"login_warnung"            => false,
 			"sprache"                  => $antrag->veranstaltung->getSprache(),
 		));
 
@@ -759,7 +760,8 @@ class AntragController extends AntragsgruenController
 			"veranstaltung"            => $veranstaltung,
 			"hiddens"                  => $hiddens,
 			"js_protection"            => $js_protection,
-			"login_warnung"            => Yii::app()->user->isGuest,
+			//"login_warnung"            => Yii::app()->user->isGuest,
+			"login_warnung"            => false,
 			"sprache"                  => $model->veranstaltung->getSprache(),
 		));
 	}
