@@ -135,7 +135,7 @@ class InfosController extends AntragsgruenController
 					$impressum->edit_datum       = new CDbExpression("NOW()");
 					$impressum->text_id          = "wartungsmodus";
 					$impressum->veranstaltung_id = $veranstaltung->id;
-					$impressum->text             = "<div class='well'><div class='content'>Diese Veranstaltung wurde vom Admin noch nicht freigeschaltet.</div></div>";
+					$impressum->text             = "Diese Veranstaltung wurde vom Admin noch nicht freigeschaltet.";
 					$impressum->save();
 
 					$login_id   = $user->id;
