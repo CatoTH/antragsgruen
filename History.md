@@ -1,4 +1,4 @@
-2.1.2 - 2014-08-08
+2.1.2 - 2014-08-17
 ==================
 
 * Die kompakte PDF-Version von Änderungsanträgen zeigte die Zeilen arg verunstaltet an.
