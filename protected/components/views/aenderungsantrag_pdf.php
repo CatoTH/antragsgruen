@@ -122,7 +122,7 @@ if ($diff_ansicht) {
 
 				$html .= "Im Absatz von Zeile $zeile_von - $zeile_bis:";
 			}
-			$html .= "<div class='row-fluid' style=\"line-height: 1.8px;\">";
+			$html .= "<div class='row-fluid' style=\"line-height: 18px;\">";
 			/** @var AntragAbsatz $abs */
 			$str = DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i], true);
 

@@ -67,7 +67,6 @@ Installation
 
 Empfohlene PHP-Module:
 - Intl
-- APC
 
 Benötigte PHP-Module:
 - mcrypt

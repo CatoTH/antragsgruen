@@ -107,7 +107,7 @@ $cs->scriptMap=array(
 	<?php if (isset($this->breadcrumbs)): ?>
 		<?php
 		$breadcrumbs = array();
-		foreach ($this->breadcrumbs as $key=>$val) if ($key !== "" && !($key === 0 && $val === "")) $breadcrumbs[$key] = $val;
+		foreach ($this->breadcrumbs as $key => $val) if ($key !== "" && !($key === 0 && $val === "")) $breadcrumbs[$key] = $val;
 		$top_name = (isset($this->breadcrumbs_topname) && $this->breadcrumbs_topname !== null ? $this->breadcrumbs_topname : "Start");
 		$this->widget('bootstrap.widgets.TbBreadcrumbs', array(
 			'homeLink' => CHtml::link($top_name, "/"),
@@ -126,15 +126,22 @@ $cs->scriptMap=array(
 
 	<div style="clear: both; padding-top: 15px;"></div>
 
-	<?php $this->widget('bootstrap.widgets.TbNavbar', array(
+	<?php
+	$impressums_link = $this->veranstaltung ? $this->createUrl("veranstaltung/impressum") : $this->createUrl("infos/impressum");
+	$version = CHtml::encode(Yii::app()->params["antragsgruen_version"]);
+	$this->widget('bootstrap.widgets.TbNavbar', array(
 		'htmlOptions' => array(
 			'class' => 'footer_bar',
 		),
 		'fixed'       => false,
 		'brand'       => "",
 		'collapse'    => false,
-		'items'       => array('<a href="' . CHtml::encode($this->veranstaltung ? $this->createUrl("veranstaltung/impressum") : $this->createUrl("infos/impressum")) . '">Impressum</a>'),
-	)); ?>
+		'items'       => array(
+			'<a href="' . CHtml::encode($impressums_link) . '">Impressum</a>',
+			' &nbsp; <small>Antragsgrün-Version: <a href="https://github.com/CatoTH/antragsgruen/blob/master/History.md">' . $version . '</a></small>',
+		),
+	));
+	?>
 
 	<!-- footer -->
 
