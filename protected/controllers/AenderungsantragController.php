@@ -191,7 +191,7 @@ class AenderungsantragController extends AntragsgruenController
 			}
 		}
 		if ($kommentar_id > 0) {
-			$abs = $aenderungsantrag->getAntragstextParagraphs();
+			$abs = $aenderungsantrag->getAntragstextParagraphs_flat();
 			foreach ($abs as $ab) {
 				/** @var AntragAbsatz $ab */
 				foreach ($ab->kommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $ab->absatz_nr;
@@ -216,7 +216,7 @@ class AenderungsantragController extends AntragsgruenController
 			foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->person->id == Yii::app()->user->getState("person_id")) $support_status = $unt->rolle;
 		}
 
-		$this->render("anzeige", array(
+		$anzeige_opts = array(
 			"aenderungsantrag" => $aenderungsantrag,
 			"edit_link"        => $aenderungsantrag->binInitiatorIn(),
 			"admin_edit"       => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $aenderungsantrag_id : null),
@@ -227,7 +227,13 @@ class AenderungsantragController extends AntragsgruenController
 			"js_protection"    => $js_protection,
 			"support_status"   => $support_status,
 			"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
-		));
+		);
+
+		if ($aenderungsantrag->kommentar_legacy) {
+			$this->render("anzeige_legacy", $anzeige_opts);
+		} else {
+			$this->render("anzeige", $anzeige_opts);
+		}
 	}
 
 	/**

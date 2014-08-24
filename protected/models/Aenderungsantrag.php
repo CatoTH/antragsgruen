@@ -14,6 +14,7 @@
  * @property string $datum_beschluss
  * @property integer $status
  * @property string $status_string
+ * @property int $kommentar_legacy
  *
  * @property Antrag $antrag
  * @property AenderungsantragKommentar[] $aenderungsantragKommentare
@@ -64,7 +65,7 @@ class Aenderungsantrag extends IAntrag
 	{
 		return array(
 			array('text_neu, aenderung_text, datum_einreichung, status, status', 'required'),
-			array('antrag_id, status, aenderung_first_line_cache', 'numerical', 'integerOnly' => true),
+			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
 			array('name_neu, datum_beschluss', 'safe'),
@@ -116,6 +117,7 @@ class Aenderungsantrag extends IAntrag
 			'datum_beschluss'                    => Yii::t('app', 'Datum Beschluss'),
 			'status'                             => Yii::t('app', 'Status'),
 			'status_string'                      => Yii::t('app', 'Status String'),
+			'kommentar_legacy'                   => Yii::t('app', 'Altes Kommentarsystem'),
 			'antrag'                             => null,
 			'aenderungsantragKommentare'         => null,
 			'aenderungsantragUnterstuetzerInnen' => null,
@@ -152,6 +154,7 @@ class Aenderungsantrag extends IAntrag
 		$criteria->compare('datum_beschluss', $this->datum_beschluss, true);
 		$criteria->compare('status', $this->status);
 		$criteria->compare('status_string', $this->status_string, true);
+		$criteria->compare('kommentar_legacy', $this->kommentar_legacy, true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
@@ -283,7 +286,7 @@ class Aenderungsantrag extends IAntrag
 	/**
 	 * @return array|AntragAbsatz[]
 	 */
-	public function getAntragstextParagraphs()
+	public function getAntragstextParagraphs_flat()
 	{
 		if (!is_null($this->absaetze)) return $this->absaetze;
 		$this->absaetze = array();
@@ -295,6 +298,28 @@ class Aenderungsantrag extends IAntrag
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain       = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
 			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, array());
+		}
+		return $this->absaetze;
+	}
+
+	/**
+	 * @return AenderungsantragAbsatz[]
+	 */
+	public function getAntragstextParagraphs_diff() {
+
+		$abs_alt = $this->antrag->getParagraphs();
+		$abs_neu = json_decode($this->text_neu);
+
+		$this->absaetze = array();
+
+		for ($i = 0; $i < count($abs_alt); $i++) {
+			if ($abs_neu[$i] == "") {
+				$this->absaetze[$i] = null;
+			} else {
+				$kommentare = array();
+				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == $i) $kommentare[] = $komm;
+				$this->absaetze[] = new AenderungsantragAbsatz($abs_alt[$i]->str_bbcode, $abs_neu[$i], $this->id, $i, $kommentare);
+			}
 		}
 		return $this->absaetze;
 	}

@@ -40,6 +40,7 @@ $html .= '<li class="zurueck">' . CHtml::link("Zurück zum Antrag", $this->creat
 
 $this->menus_html[] = $html;
 
+
 $rows = 10;
 $antragstellerInnen = $aenderungsantrag->getAntragstellerInnen();
 
@@ -137,10 +138,10 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 		<?php
 		$dummy_komm = new AenderungsantragKommentar();
 
-		$absae = $aenderungsantrag->getAntragstextParagraphs_diff();
+		$absae = $aenderungsantrag->getAntragstextParagraphs_flat();
 
-		foreach ($absae as $i => $abs) if ($abs !== null) {
-			/** @var AenderungsantragAbsatz $abs */
+		foreach ($absae as $i => $abs) {
+			/** @var AntragAbsatz $abs */
 
 			$kommoffenclass = (!in_array($i, $kommentare_offen) ? "kommentare_closed_absatz" : "");
 
@@ -156,9 +157,7 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 				</ul>
 
 				<div class="absatz_text orig antragabsatz_holder antrags_text_holder_nummern">
-					<div class="text">
-						<?php echo $abs->getDiffHTML(); ?>
-					</div>
+					<?php echo $abs->str_html; ?>
 				</div>
 				<?php
 
@@ -247,7 +246,40 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 			</div>
 		<?php
 		}
+		//echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_text);
 		?>
+		<div style="text-align: center;" id="antrags_diff_opener">
+			<a href="#"
+			   onClick="$('#antrags_diff_holder').show(); $('#antrags_diff_opener').hide(); $('#antrags_diff_closer').show(); return false;"><i
+					class="icon-down-open"></i> Antragstext mit Änderungen anzeigen</a>
+		</div>
+		<div style="text-align: center; display: none;" id="antrags_diff_closer">
+			<a href="#"
+			   onClick="$('#antrags_diff_holder').hide(); $('#antrags_diff_opener').show(); $('#antrags_diff_closer').hide(); return false;"><i
+					class="icon-up-open"></i> Antragstext mit Änderungen anzeigen</a>
+		</div>
+		<div id="antrags_diff_holder" class="content" style="display: none;">
+			<?php
+			$abs_alt = $aenderungsantrag->antrag->getParagraphs();
+			$abs_neu = json_decode($aenderungsantrag->text_neu);
+
+			$letztes_leer = false;
+			foreach ($abs_alt as $i => $abs) {
+				if (isset($abs_neu[$i]) && $abs_neu[$i] != "") {
+					$letztes_leer = false;
+					echo "<div class='row-fluid'>";
+					/** @var AntragAbsatz $abs */
+					echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $abs_neu[$i]);
+					echo "</div>\n";
+				} else {
+					if (!$letztes_leer) {
+						$letztes_leer = true;
+						echo "<div class='absatz_ueberspringen'>.<br>.<br>.</div>";
+					}
+				}
+			}
+			?>
+		</div>
 	</div>
 
 	<div class="begruendungs_text_holder">

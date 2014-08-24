@@ -7,7 +7,7 @@
  */
 
 // Muss am Anfang stehen, ansonsten zerhaut's die Zeilenumbrüche; irgendwas mit dem internen Encoding
-$absae = $model->getAntragstextParagraphs();
+$absae = $model->getAntragstextParagraphs_flat();
 
 // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

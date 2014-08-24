@@ -145,7 +145,7 @@ if ($diff_ansicht) {
 
 	$linenr = 1;
 
-	$absae = $aenderungsantrag->getAntragstextParagraphs();
+	$absae = $aenderungsantrag->getAntragstextParagraphs_flat();
 
 	foreach ($absae as $i => $abs) {
 		/** @var AntragAbsatz $abs */
