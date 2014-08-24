@@ -185,6 +185,7 @@ $einstellungen = $model->getEinstellungen();
 				echo '> ' . CHtml::encode($name) . '</label>';
 			}
 		?></div>
+	</div>
 	<br>
 
 	<div>
