@@ -66,7 +66,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 			echo CHtml::openTag('ul');
 			foreach ($unterstuetzerInnen as $p) {
 				echo CHtml::openTag('li');
-				echo CHtml::encode($p->name);
+				echo CHtml::encode($p->getNameMitOrga());
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');

@@ -191,7 +191,7 @@ abstract class IPolicyAntraege
 		$init->position            = 0;
 		$init->save();
 
-		if (isset($_REQUEST["UnterstuetzerInnen"]) && is_array($_REQUEST["UnterstuetzerInnen"])) foreach ($_REQUEST["UnterstuetzerInnen"] as $i => $name) {
+		if (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
 			$name = trim($name);
 			if ($name != "") {
 				$person                 = new Person;
@@ -200,6 +200,9 @@ abstract class IPolicyAntraege
 				$person->status         = Person::$STATUS_UNCONFIRMED;
 				$person->angelegt_datum = "NOW()";
 				$person->admin          = 0;
+				if (isset($_REQUEST["UnterstuetzerInnen_orga"]) && isset($_REQUEST["UnterstuetzerInnen_orga"][$i])) {
+					$person->organisation = $_REQUEST["UnterstuetzerInnen_orga"][$i];
+				}
 				if ($person->save()) {
 					$unt                      = new AenderungsantragUnterstuetzerInnen();
 					$unt->aenderungsantrag_id = $aenderungsantrag->id;

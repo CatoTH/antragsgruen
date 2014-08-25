@@ -97,44 +97,6 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 		return $this->checkSubmit_internal();
 	}
 
-	/**
-	 * @param Antrag $antrag
-	 * @throws Exception
-	 */
-	public function submitAntragsstellerInView_Antrag(&$antrag)
-	{
-		parent::submitAntragsstellerInView_Antrag($antrag);
-	}
-
-
-	/**
-	 * @param Aenderungsantrag $aenderungsantrag
-	 * @throws Exception
-	 */
-	public function submitAntragsstellerInView_Aenderungsantrag(&$aenderungsantrag)
-	{
-		parent::submitAntragsstellerInView_Aenderungsantrag($aenderungsantrag);
-
-		foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $unterstuetzerIn) {
-			$person                 = new Person();
-			$person->admin          = 0;
-			$person->name           = trim($unterstuetzerIn);
-			$person->typ            = Person::$TYP_PERSON;
-			$person->status         = Person::$STATUS_UNCONFIRMED;
-			$person->email          = "";
-			$person->angelegt_datum = date("Y-m-d H:i:s");
-			if (isset($_REQUEST["UnterstuetzerInnen_organisation"]) && isset($_REQUEST["UnterstuetzerInnen_organisation"][$i])) {
-				$person->organisation = $_REQUEST["UnterstuetzerInnen_organisation"][$i];
-			}
-			$person->save();
-
-			$init                      = new AenderungsantragUnterstuetzerInnen();
-			$init->aenderungsantrag_id = $aenderungsantrag->id;
-			$init->rolle               = AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-			$init->unterstuetzerIn_id    = $person->id;
-			$init->save();
-		}
-	}
 
 	/**
 	 * @return string
