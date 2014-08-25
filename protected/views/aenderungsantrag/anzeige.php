@@ -86,7 +86,7 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 					<td><?php
 						$x = array();
 						foreach ($antragstellerInnen as $a) {
-							$x[] = CHtml::encode($a->name);
+							$x[] = CHtml::encode($a->getNameMitOrga());
 						}
 						echo implode(", ", $x);
 						?></td>
@@ -169,7 +169,7 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 					<div class="kommentarform" id="komm<?= $komm->id ?>">
 						<div class="datum"><?php echo HtmlBBcodeUtils::formatMysqlDateTime($komm->datum) ?></div>
 						<h3>Kommentar von <?php echo
-							CHtml::encode($komm->verfasserIn->name);
+							CHtml::encode($komm->verfasserIn->getNameMitOrga());
 							if ($komm->status == IKommentar::$STATUS_NICHT_FREI) echo " <em>(noch nicht freigeschaltet)</em>";
 							?></h3>
 						<?php
@@ -284,7 +284,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 			foreach ($unterstuetzerInnen as $p) {
 				echo CHtml::openTag('li');
 				if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
-				echo CHtml::encode($p->name);
+				echo CHtml::encode($p->getNameMitOrga());
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');
@@ -297,7 +297,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 			foreach ($zustimmung_von as $p) {
 				echo CHtml::openTag('li');
 				if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
-				echo CHtml::encode($p->name);
+				echo CHtml::encode($p->getNameMitOrga());
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');
@@ -310,7 +310,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 			foreach ($ablehnung_von as $p) {
 				echo CHtml::openTag('li');
 				if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
-				echo CHtml::encode($p->name);
+				echo CHtml::encode($p->getNameMitOrga());
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');

@@ -4,7 +4,7 @@ Yii::import("application.models.policies.*");
 
 abstract class IPolicyAntraege
 {
-
+	public static $POLICY_HESSEN_LMV = "HeLMV";
 	public static $POLICY_BAYERN_LDK = "ByLDK";
 	public static $POLICY_ADMINS = "Admins";
 	public static $POLICY_ALLE = "Alle";
@@ -12,6 +12,7 @@ abstract class IPolicyAntraege
 
 	public static $POLICIES = array(
 		"ByLDK"       => "PolicyAntraegeByLDK",
+		"HeLMB"       => "PolicyAntraegeHeLMV",
 		"Admins"      => "PolicyAntraegeAdmins",
 		"Alle"        => "PolicyAntraegeAlle",
 		"Eingeloggte" => "PolicyAntraegeEingeloggte",
@@ -82,10 +83,16 @@ abstract class IPolicyAntraege
 		} else {
 			/** @var Person $antragstellerIn */
 			$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
-
-			if ($antragstellerIn !== null && isset($_REQUEST["Person"]["name"]) && $antragstellerIn->name !== $_REQUEST["Person"]["name"]) {
-				$antragstellerIn->name = $_REQUEST["Person"]["name"];
-				$antragstellerIn->save();
+			if ($antragstellerIn) {
+				$name_aenderung = (isset($_REQUEST["Person"]["name"]) && $antragstellerIn->name !== $_REQUEST["Person"]["name"]);
+				$orga_aenderung = (isset($_REQUEST["Person"]["organisation"]) && $antragstellerIn->organisation !== $_REQUEST["Person"]["organisation"]);
+				if ($name_aenderung || $orga_aenderung) {
+					$antragstellerIn->name = $_REQUEST["Person"]["name"];
+					if (isset($_REQUEST["Person"]["organisation"])) {
+						$antragstellerIn->organisation = $_REQUEST["Person"]["organisation"];
+					}
+					$antragstellerIn->save();
+				}
 			}
 		}
 
@@ -125,14 +132,14 @@ abstract class IPolicyAntraege
 			throw new Exception("Keine AntragstellerIn gefunden");
 		}
 
-		$init                   = new AntragUnterstuetzerInnen();
-		$init->antrag_id        = $antrag->id;
-		$init->rolle            = AntragUnterstuetzerInnen::$ROLLE_INITIATORIN;
+		$init                     = new AntragUnterstuetzerInnen();
+		$init->antrag_id          = $antrag->id;
+		$init->rolle              = AntragUnterstuetzerInnen::$ROLLE_INITIATORIN;
 		$init->unterstuetzerIn_id = $antragstellerIn->id;
-		$init->position         = 0;
+		$init->position           = 0;
 		$init->save();
 
-		if (isset($_REQUEST["UnterstuetzerInnen"]) && is_array($_REQUEST["UnterstuetzerInnen"])) foreach ($_REQUEST["UnterstuetzerInnen"] as $i => $name) {
+		if (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
 			$name = trim($name);
 			if ($name != "") {
 				$person                 = new Person;
@@ -141,12 +148,15 @@ abstract class IPolicyAntraege
 				$person->status         = Person::$STATUS_UNCONFIRMED;
 				$person->angelegt_datum = "NOW()";
 				$person->admin          = 0;
+				if (isset($_REQUEST["UnterstuetzerInnen_organisation"]) && isset($_REQUEST["UnterstuetzerInnen_organisation"][$i])) {
+					$person->organisation = $_REQUEST["UnterstuetzerInnen_organisation"][$i];
+				}
 				if ($person->save()) {
-					$unt                   = new AntragUnterstuetzerInnen();
-					$unt->antrag_id        = $antrag->id;
+					$unt                     = new AntragUnterstuetzerInnen();
+					$unt->antrag_id          = $antrag->id;
 					$unt->unterstuetzerIn_id = $person->id;
-					$unt->rolle            = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-					$unt->position         = $i;
+					$unt->rolle              = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
+					$unt->position           = $i;
 					$unt->save();
 				}
 			}
@@ -177,7 +187,7 @@ abstract class IPolicyAntraege
 		$init                      = new AenderungsantragUnterstuetzerInnen();
 		$init->aenderungsantrag_id = $aenderungsantrag->id;
 		$init->rolle               = AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN;
-		$init->unterstuetzerIn_id    = $antragstellerIn->id;
+		$init->unterstuetzerIn_id  = $antragstellerIn->id;
 		$init->position            = 0;
 		$init->save();
 
@@ -193,7 +203,7 @@ abstract class IPolicyAntraege
 				if ($person->save()) {
 					$unt                      = new AenderungsantragUnterstuetzerInnen();
 					$unt->aenderungsantrag_id = $aenderungsantrag->id;
-					$unt->unterstuetzerIn_id    = $person->id;
+					$unt->unterstuetzerIn_id  = $person->id;
 					$unt->rolle               = AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
 					$unt->position            = $i;
 					$unt->save();

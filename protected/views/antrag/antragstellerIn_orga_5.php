@@ -13,7 +13,7 @@
 
 if ($mode == "neu") {
 	?>
-	<div class="antragstellerIn_delegiert_orga_20">
+	<div class="policy_antragstellerIn_orga_5">
 		<h3><?= $sprache->get("AntragstellerIn") ?></h3>
 		<br>
 		<?php if ($this->veranstaltung->isAdminCurUser()) { ?>
@@ -25,8 +25,9 @@ if ($mode == "neu") {
 		<div class="antragstellerIn_daten">
 			<?php
 			echo $form->textFieldRow($antragstellerIn, 'name');
+			echo $form->textFieldRow($antragstellerIn, 'organisation');
 			echo $form->textFieldRow($antragstellerIn, 'email', array("required" => true));
-			echo $form->textFieldRow($antragstellerIn, 'telefon');
+			echo $form->textFieldRow($antragstellerIn, 'telefon', array("required" => true));
 			?>
 		</div>
 
@@ -34,19 +35,19 @@ if ($mode == "neu") {
 			<label class="control-label">Ich bin...</label>
 
 			<div class="controls">
-				<label><input type="radio" name="Person[typ]" value="delegiert" required/> einE DelegierteR</label><br>
-				<label><input type="radio" name="Person[typ]" value="mitglied" required/> Parteimitglied (nicht delegiert)</label><br>
-				<label><input type="radio" name="Person[typ]" value="organisation" required/> ein Gremium, LAK, ...</label><br>
+				<label><input type="radio" name="Person[typ]" value="mitglied" required checked> Parteimitglied</label><br>
+				<label><input type="radio" name="Person[typ]" value="organisation" required> ein Gremium, LAK, ...</label><br>
 			</div>
 		</div>
 
 		<div class="control-group" id="UnterstuetzerInnen">
-			<label class="control-label">UnterstützerInnen<br>(min. 19)</label>
+			<label class="control-label">UnterstützerInnen<br>(min. 4)</label>
 
 			<div class="controls">
-				<?php for ($i = 0; $i < 19; $i++) { ?>
-					<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name"
-						   title="Name der UnterstützerInnen"><br>
+				<?php for ($i = 0; $i < 4; $i++) { ?>
+					<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">
+					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="KV" title="KV">
+					<br>
 				<?php } ?>
 			</div>
 		</div>

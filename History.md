@@ -1,7 +1,9 @@
 2.2.0 - 2014-?????
-* Accounts, die nur für eine Veranstaltungsreihe gültig sind
-* Berechtigungs-Alternative: min. 5 AntragstellerInnen
-* Änderungsanträge werden standardmäßig in der "Diff-Ansicht" dargestellt. Für jeden "Ersetze [x] durch [y]"-Block (der jetzt "Ändere den Absatz wie folgt: [x]" heißt) gibt es jetzt genau einen Kommentar-Button, statt vier wie bisher.
+==================
+
+* Accounts, die nur für eine Veranstaltungsreihe gültig sind (LV Hessen)
+* Berechtigungs-Alternative: min. 5 AntragstellerInnen (LV Hessen)
+* Änderungsanträge werden standardmäßig in der "Diff-Ansicht" dargestellt. Für jeden "Ersetze [x] durch [y]"-Block (der jetzt "Ändere den Absatz wie folgt: [x]" heißt) gibt es jetzt genau einen Kommentar-Button, statt vier wie bisher. (KV Hessen)
 
 2.1.2 - 2014-08-17
 ==================

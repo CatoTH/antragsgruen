@@ -1,6 +1,6 @@
 <?php
 
-class PolicyAntraegeByLDK extends IPolicyAntraege
+class PolicyAntraegeHeLMV extends IPolicyAntraege
 {
 
 
@@ -10,7 +10,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	static public function getPolicyID()
 	{
-		return 1;
+		return 5;
 	}
 
 	/**
@@ -19,7 +19,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	static public function getPolicyName()
 	{
-		return "Organisation, Delegierte, oder 20 Mitglieder";
+		return "Organisation, oder 5 Mitglieder";
 	}
 
 
@@ -46,7 +46,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	public function getAntragstellerInView()
 	{
-		return "antragstellerIn_delegiert_orga_20";
+		return "antragstellerIn_orga_5";
 	}
 
 
@@ -66,11 +66,8 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 		if (!$this->isValidName($_REQUEST["Person"]["name"])) return false;
 
 		switch ($_REQUEST["Person"]["typ"]) {
-			case "delegiert":
-				return true;
-				break;
 			case "mitglied":
-				if (!isset($_REQUEST["UnterstuetzerInnen_name"]) || count($_REQUEST["UnterstuetzerInnen_name"]) < 19) return false;
+				if (!isset($_REQUEST["UnterstuetzerInnen_name"]) || count($_REQUEST["UnterstuetzerInnen_name"]) < 4) return false;
 				$incorrect = false;
 				foreach ($_REQUEST["UnterstuetzerInnen_name"] as $unters) if (!$this->isValidName($unters)) $incorrect = true;
 				return !$incorrect;
@@ -80,6 +77,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 			default:
 				return false;
 		}
+
 	}
 
 	/**
@@ -117,7 +115,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	{
 		parent::submitAntragsstellerInView_Aenderungsantrag($aenderungsantrag);
 
-		foreach ($_REQUEST["UnterstuetzerInnen_name"] as $unterstuetzerIn) {
+		foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $unterstuetzerIn) {
 			$person                 = new Person();
 			$person->admin          = 0;
 			$person->name           = trim($unterstuetzerIn);
@@ -125,6 +123,9 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 			$person->status         = Person::$STATUS_UNCONFIRMED;
 			$person->email          = "";
 			$person->angelegt_datum = date("Y-m-d H:i:s");
+			if (isset($_REQUEST["UnterstuetzerInnen_organisation"]) && isset($_REQUEST["UnterstuetzerInnen_organisation"][$i])) {
+				$person->organisation = $_REQUEST["UnterstuetzerInnen_organisation"][$i];
+			}
 			$person->save();
 
 			$init                      = new AenderungsantragUnterstuetzerInnen();
@@ -140,6 +141,6 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	 */
 	public function getOnCreateDescription()
 	{
-		return "Mindestens 20 UnterstützerInnen (oder min. eine Organisation)";
+		return "Mindestens 5 UnterstützerInnen (oder min. eine Organisation)";
 	}
 }

@@ -4,6 +4,7 @@
  * @property integer $id
  * @property string $typ
  * @property string $name
+ * @property string $organisation
  * @property string $email
  * @property integer $email_bestaetigt
  * @property string $telefon
@@ -13,6 +14,7 @@
  * @property integer $status
  * @property string $pwd_enc
  * @property string $benachrichtigungs_typ
+ * @property int|null $veranstaltungsreihe_namespace
  *
  * @property AenderungsantragKommentar[] $aenderungsantragKommentare
  * @property AenderungsantragUnterstuetzerInnen[] $aenderungsantragUnterstuetzerInnen
@@ -95,6 +97,7 @@ class Person extends GxActiveRecord
 			'id'                                 => Yii::t('app', 'ID'),
 			'typ'                                => Yii::t('app', 'Typ'),
 			'name'                               => Yii::t('app', 'Name(n)'),
+			'organisation'                       => Yii::t('app', 'Organisation / KV'),
 			'email'                              => Yii::t('app', 'E-Mail'),
 			'email_bestaetigt'                   => Yii::t('app', 'E-Mail-Adresse bestätigt'),
 			'telefon'                            => Yii::t('app', 'Telefon'),
@@ -104,6 +107,7 @@ class Person extends GxActiveRecord
 			'admin'                              => Yii::t('app', 'Admin'),
 			'status'                             => Yii::t('app', 'Status'),
 			'benachrichtigung_typ'               => Yii::t('app', 'Benachrichtigungszeitpunkt'),
+			'veranstaltungsreihe_namespace'      => Yii::t('app', 'Nur gültig in dieser Veranstaltungsreihe'),
 			'aenderungsantragKommentare'         => null,
 			'aenderungsantragUnterstuetzerInnen' => null,
 			'antragKommentare'                   => null,
@@ -124,6 +128,7 @@ class Person extends GxActiveRecord
 
 		$criteria->compare('id', $this->id);
 		$criteria->compare('typ', $this->typ, true);
+		$criteria->compare('organisation', $this->organisation, true);
 		$criteria->compare('name', $this->name, true);
 		$criteria->compare('email', $this->email, true);
 		$criteria->compare('telefon', $this->telefon, true);
@@ -131,6 +136,7 @@ class Person extends GxActiveRecord
 		$criteria->compare('angelegt_datum', $this->angelegt_datum, true);
 		$criteria->compare('admin', $this->admin);
 		$criteria->compare('status', $this->status);
+		$criteria->compare('veranstaltungsreihe_namespace', $this->veranstaltungsreihe_namespace);
 
 		return new CActiveDataProvider($this, array(
 			'criteria' => $criteria,
@@ -153,9 +159,9 @@ class Person extends GxActiveRecord
 	{
 		$rules = array(
 			array('typ, angelegt_datum, admin, status', 'required'),
-			array('admin, status', 'numerical', 'integerOnly' => true),
+			array('admin, status, veranstaltungsreihe_namespace', 'numerical', 'integerOnly' => true),
 			array('typ', 'length', 'max' => 12),
-			array('name, telefon', 'length', 'max' => 100),
+			array('name, telefon, organisation', 'length', 'max' => 100),
 			array('email, auth', 'length', 'max' => 200),
 			array('email, telefon, auth, pwd_enc', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('id, typ, name, email, telefon, auth, pwd_enc, angelegt_datum, admin, status', 'safe', 'on' => 'search'),
@@ -253,6 +259,15 @@ class Person extends GxActiveRecord
 	{
 		$code = $this->id . "-" . substr(md5($this->id . "abmelden" . SEED_KEY), 0, 8);
 		return $code;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNameMitOrga() {
+		$name = $this->name;
+		if ($this->organisation != "") $name .= " (" . $this->organisation . ")";
+		return $name;
 	}
 
     /**

@@ -14,42 +14,44 @@
 
 if ($mode == "neu") {
 	?>
-	<h3><?= $sprache->get("AntragstellerIn") ?></h3>
-	<br>
+	<div class="policy_antragstellerIn_delegiert_orga_20">
+		<h3><?= $sprache->get("AntragstellerIn") ?></h3>
+		<br>
 
-	<?php if ($this->veranstaltung->isAdminCurUser()) { ?>
-		<label><input type="checkbox" name="andere_antragstellerIn"> Ich lege diesen Antrag für eine andere AntragstellerIn an
-			<small>(Admin-Funktion)</small>
-		</label>
-	<?php } ?>
+		<?php if ($this->veranstaltung->isAdminCurUser()) { ?>
+			<label><input type="checkbox" name="andere_antragstellerIn"> Ich lege diesen Antrag für eine andere AntragstellerIn an
+				<small>(Admin-Funktion)</small>
+			</label>
+		<?php } ?>
 
-	<div class="antragstellerIn_daten">
-		<?php
-		echo $form->textFieldRow($antragstellerIn, 'name');
-		echo $form->textFieldRow($antragstellerIn, 'email', array("required" => true));
-		echo $form->textFieldRow($antragstellerIn, 'telefon');
-		?>
-	</div>
-
-	<div class="control-group" id="Person_typ_chooser">
-		<label class="control-label">Ich bin...</label>
-
-		<div class="controls">
-			<label><input type="radio" name="Person[typ]" value="delegiert" required/> einE DelegierteR</label>
-			<label><input type="radio" name="Person[typ]" value="mitglied" required/> Parteimitglied (nicht
-				delegiert)</label>
-			<label><input type="radio" name="Person[typ]" value="organisation" required/> ein Gremium, LAK, ...</label>
+		<div class="antragstellerIn_daten">
+			<?php
+			echo $form->textFieldRow($antragstellerIn, 'name');
+			echo $form->textFieldRow($antragstellerIn, 'email', array("required" => true));
+			echo $form->textFieldRow($antragstellerIn, 'telefon');
+			?>
 		</div>
-	</div>
 
-	<div class="control-group" id="UnterstuetzerInnen">
-		<label class="control-label">UnterstützerInnen<br>(min. 19)</label>
+		<div class="control-group" id="Person_typ_chooser">
+			<label class="control-label">Ich bin...</label>
 
-		<div class="controls">
-			<?php for ($i = 0; $i < 19; $i++) { ?>
-				<input type="text" name="UnterstuetzerInnen[]" value="" placeholder="Name"
-				       title="Name der UnterstützerInnen"><br>
-			<?php } ?>
+			<div class="controls">
+				<label><input type="radio" name="Person[typ]" value="delegiert" required/> einE DelegierteR</label>
+				<label><input type="radio" name="Person[typ]" value="mitglied" required/> Parteimitglied (nicht
+					delegiert)</label>
+				<label><input type="radio" name="Person[typ]" value="organisation" required/> ein Gremium, LAK, ...</label>
+			</div>
+		</div>
+
+		<div class="control-group" id="UnterstuetzerInnen">
+			<label class="control-label">UnterstützerInnen<br>(min. 19)</label>
+
+			<div class="controls">
+				<?php for ($i = 0; $i < 19; $i++) { ?>
+					<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name"
+						   title="Name der UnterstützerInnen"><br>
+				<?php } ?>
+			</div>
 		</div>
 	</div>
 
@@ -67,15 +69,15 @@ if ($mode == "neu") {
 					$unter.find("input[type=text]").prop("required", false);
 				}
 			}).change();
-			if ($andereAntragstellerIn.length > 0) $andereAntragstellerIn.change(function() {
+			if ($andereAntragstellerIn.length > 0) $andereAntragstellerIn.change(function () {
 				if ($(this).prop("checked")) {
-					$(".antragstellerIn_daten input").each(function() {
+					$(".antragstellerIn_daten input").each(function () {
 						var $input = $(this);
 						$input.data("orig", $input.val());
 						$input.val("");
 					});
 				} else {
-					$(".antragstellerIn_daten input").each(function() {
+					$(".antragstellerIn_daten input").each(function () {
 						var $input = $(this);
 						$input.val($input.data("orig"));
 					});

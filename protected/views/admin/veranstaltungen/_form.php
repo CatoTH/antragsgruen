@@ -26,7 +26,7 @@ $einstellungen = $model->getEinstellungen();
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]"
-		                                       value="1" <?php if ($model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>>
+											   value="1" <?php if ($model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>>
 			<strong>Wartungsmodus aktiv</strong>
 			<small>(Nur Admins können den Seiteninhalt sehen)</small>
 		</label>
@@ -125,7 +125,7 @@ $einstellungen = $model->getEinstellungen();
 <div class="content">
 	<div>
 		<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[kann_pdf]"
-		                                       value="1" <?php if ($einstellungen->kann_pdf) echo "checked"; ?>>
+											   value="1" <?php if ($einstellungen->kann_pdf) echo "checked"; ?>>
 			<strong>Anträge etc. als PDF anbieten</strong></label> &nbsp; &nbsp;
 	</div>
 	<br>
@@ -171,27 +171,28 @@ $einstellungen = $model->getEinstellungen();
 
 		<div class="std_content_col">
 			<input id="VeranstaltungsEinstellungen_zeilenlaenge" name="VeranstaltungsEinstellungen[zeilenlaenge]"
-			       type="number" value="<?= $einstellungen->zeilenlaenge ?>"> <br>
+				   type="number" value="<?= $einstellungen->zeilenlaenge ?>"> <br>
 			<small>NICHT ändern, nachdem Anträge eingereicht wurden, weil sich dann die Zeilennummern ändern!</small>
 		</div>
 	</div>
 
 	<div class="antragstypen_row">
 		<label>Auswählbare Antragstypen</label>
+
 		<div class="std_content_col"><?
 			foreach (Antrag::$TYPEN as $id => $name) {
 				echo '<label><input name="antrags_typen_aktiviert[]" value="' . $id . '" type="checkbox" ';
 				if (!in_array($id, $einstellungen->antrags_typen_deaktiviert)) echo ' checked';
 				echo '> ' . CHtml::encode($name) . '</label>';
 			}
-		?></div>
+			?></div>
 	</div>
 	<br>
 
 	<div>
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[revision_name_verstecken]"
-		                                       value="1" <?php if ($einstellungen->revision_name_verstecken == 1) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[revision_name_verstecken]"
+											   value="1" <?php if ($einstellungen->revision_name_verstecken == 1) echo "checked"; ?>>
 			<strong>Antragskürzel verstecken</strong>
 			<small>(Antragskürzel wie z.B. "A1", "A2", "Ä1neu" etc.) müssen zwar weiterhin angegeben werden, damit
 				danach sortiert werden kann. Es wird aber nicht mehr angezeigt. Das ist dann praktisch, wenn man eine
@@ -203,23 +204,23 @@ $einstellungen = $model->getEinstellungen();
 
 	<div>
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]"
-		                                       value="1" <?php if ($einstellungen->zeilen_nummerierung_global == 1) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]"
+											   value="1" <?php if ($einstellungen->zeilen_nummerierung_global == 1) echo "checked"; ?>>
 			<strong>Zeilennummerierung durchgehend für die ganze Veranstaltung</strong></label> &nbsp; &nbsp;
 	</div>
 	<br>
 
 	<div>
 		<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[titel_eigene_zeile]"
-		                                       value="1" <?php if ($einstellungen->titel_eigene_zeile == 1) echo "checked"; ?>>
+											   value="1" <?php if ($einstellungen->titel_eigene_zeile == 1) echo "checked"; ?>>
 			<strong>Die Überschrift bekommt eine eigene Zeilennummer</strong></label> &nbsp; &nbsp;
 	</div>
 	<br>
 
 	<div>
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[ansicht_minimalistisch]"
-		                                       value="1" <?php if ($einstellungen->ansicht_minimalistisch == 1) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[ansicht_minimalistisch]"
+											   value="1" <?php if ($einstellungen->ansicht_minimalistisch == 1) echo "checked"; ?>>
 			<strong>Minimalistische Ansicht</strong>
 			<small>Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>
 		</label>
@@ -253,24 +254,24 @@ $einstellungen = $model->getEinstellungen();
 	<br>
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[freischaltung_antraege]"
-		                                       value="1" <?php if ($einstellungen->freischaltung_antraege) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[freischaltung_antraege]"
+											   value="1" <?php if ($einstellungen->freischaltung_antraege) echo "checked"; ?>>
 			<strong>Freischaltung</strong> von Anträgen</label> &nbsp; &nbsp;
 	</fieldset>
 	<br>
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[initiatorInnen_duerfen_aendern]"
-		                                       value="1" <?php if ($einstellungen->initiatorInnen_duerfen_aendern) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[initiatorInnen_duerfen_aendern]"
+											   value="1" <?php if ($einstellungen->initiatorInnen_duerfen_aendern) echo "checked"; ?>>
 			AntragstellerInnen dürfen Anträge <strong>nachträglich ändern</strong>.</label> &nbsp; &nbsp;
 	</fieldset>
 	<br>
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
-		                                       value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
+											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
 			Angabe der <strong>E-Mail-Adresse</strong> erzwingen
 			<small>(Bei Anträgen und Änderungsanträgen)</small>
 		</label>
@@ -293,25 +294,25 @@ $einstellungen = $model->getEinstellungen();
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]"
-		                                       value="1" <?php if ($einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]"
+											   value="1" <?php if ($einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>>
 			<strong>Freischaltung</strong> von Änderungsanträgen</label> &nbsp; &nbsp;
 	</fieldset>
 	<br>
 
 	<div>
 		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung]"
-		                                       value="0" <?php if ($einstellungen->ae_nummerierung_global != 1 && $einstellungen->ae_nummerierung_nach_zeile != 1) echo "checked"; ?>>
+											   value="0" <?php if ($einstellungen->ae_nummerierung_global != 1 && $einstellungen->ae_nummerierung_nach_zeile != 1) echo "checked"; ?>>
 			<strong>ÄA-Nummerierung separat pro Antrag</strong>
 			<small>"Ä1 zu A1", Ä2 zu A1", "Ä1 zu A2", usw.</small>
 		</label><br>
 		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung]"
-		                                       value="1" <?php if ($einstellungen->ae_nummerierung_global == 1) echo "checked"; ?>>
+											   value="1" <?php if ($einstellungen->ae_nummerierung_global == 1) echo "checked"; ?>>
 			<strong>ÄA-Nummerierung für die ganze Veranstaltung</strong>
 			<small>"Ä1", "Ä2", "Ä3" usw.</small>
 		</label><br>
 		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung]"
-		                                       value="2" <?php if ($einstellungen->ae_nummerierung_nach_zeile == 1) echo "checked"; ?>>
+											   value="2" <?php if ($einstellungen->ae_nummerierung_nach_zeile == 1) echo "checked"; ?>>
 			<strong>ÄA-Nummerierung anhand der Bezugszeile</strong>
 			<small>"A1-Ä15-1", "A1-Ä15-2", "A2-Ä15-1" usw. Wenn diese Nummerierung gewählt wird, kann sich jeder
 				Änderungsantrag nur auf einen einzigen Absatz beziehen.
@@ -337,30 +338,57 @@ $einstellungen = $model->getEinstellungen();
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[freischaltung_kommentare]"
-		                                       value="1" <?php if ($einstellungen->freischaltung_kommentare) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[freischaltung_kommentare]"
+											   value="1" <?php if ($einstellungen->freischaltung_kommentare) echo "checked"; ?>>
 			Kommentare müssen durch den Admin <strong>freigeschaltet</strong> werden</label>
 	</fieldset>
 	<br>
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]"
-		                                       value="1" <?php if ($einstellungen->kommentar_neu_braucht_email) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]"
+											   value="1" <?php if ($einstellungen->kommentar_neu_braucht_email) echo "checked"; ?>>
 			Angabe der <strong>E-Mail-Adresse</strong> erzwingen</label>
 	</fieldset>
 	<br>
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;"><input type="checkbox"
-		                                       name="VeranstaltungsEinstellungen[kommentare_unterstuetzbar]"
-		                                       value="1" <?php if ($einstellungen->kommentare_unterstuetzbar) echo "checked"; ?>>
+											   name="VeranstaltungsEinstellungen[kommentare_unterstuetzbar]"
+											   value="1" <?php if ($einstellungen->kommentare_unterstuetzbar) echo "checked"; ?>>
 			Besucher können Kommentare <strong>bewerten</strong></label>
 	</fieldset>
 	<br>
 </div>
 
 <br>
+
+
+<? if (!$this->veranstaltungsreihe->oeffentlich) { ?>
+
+	<h3>Zugang</h3>
+
+	<div class="content">
+		<div>
+			<label style="display: inline;">
+				<input type="radio" name="zugang" value="<?=Veranstaltungsreihe::$ZUGANG_ALLE?>" <?
+				if ($model->veranstaltungsreihe->zugang == Veranstaltungsreihe::$ZUGANG_ALLE) echo "checked";
+				?>> Öffentlich
+			</label>
+		</div>
+
+		<div>
+			<label style="display: inline;">
+				<input type="radio" name="zugang" value="<?=Veranstaltungsreihe::$ZUGANG_NAMESPACE_LOGIN?>" <?
+				if ($model->veranstaltungsreihe->zugang == Veranstaltungsreihe::$ZUGANG_NAMESPACE_LOGIN) echo "checked";
+				?>> Nur eingetragene NutzerInnen
+			</label>
+			<a href="<?=Yii::app()->createUrl("admin/veranstaltungen/benutzerInnen")?>">NutzerInnen verwalten</a>
+		</div>
+
+	</div>
+
+<? } ?>
 
 <h3>Benachrichtigungen</h3>
 
@@ -374,7 +402,7 @@ $einstellungen = $model->getEinstellungen();
 
 	<div>
 		<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[bestaetigungs_emails]"
-		                                       value="1" <?php if ($einstellungen->bestaetigungs_emails) echo "checked"; ?>>
+											   value="1" <?php if ($einstellungen->bestaetigungs_emails) echo "checked"; ?>>
 			Bestätigungs-E-Mails an die NutzerInnen schicken</label>
 	</div>
 </div>

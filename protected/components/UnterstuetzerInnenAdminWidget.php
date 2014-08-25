@@ -44,8 +44,9 @@ class UnterstuetzerInnenAdminWidget
         $str = '<div style="display: inline-block; width: 500px;" class="unterstuetzerInnenwidget" data-neutemplate="' . CHtml::encode($neustr) . '">';
         $unterstuetzerInnen = $antrag->$unterstuetzerIn_rel;
         foreach ($unterstuetzerInnen as $unt) {
+			/** @var AntragUnterstuetzerInnen $unt */
             $str .= '<div>';
-            $str .= '<span style="display: inline-block; width: 250px; overflow: hidden;" class="sort_handle">' . CHtml::encode($unt->person->name) . '</span>';
+            $str .= '<span style="display: inline-block; width: 250px; overflow: hidden;" class="sort_handle">' . CHtml::encode($unt->person->getNameMitOrga()) . '</span>';
             $str .= '<input type="hidden" name="' . get_class($antrag) . '[unterstuetzerInnen][person_id][]" value="' . $unt->person->id . '">';
             $str .= '<select name="' . get_class($antrag) . '[unterstuetzerInnen][rolle][]">';
             $str .= '<option value="del"> - ' . Yii::t('app', 'löschen') . ' - </option>';

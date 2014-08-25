@@ -93,9 +93,9 @@
   content: '📎'; }
 
 .icon-edit, .lesezeichen > li.aenderungsantrag > a:before, .icon-aender-stellen:before,
+.icon-pdf:before,
 .antragsliste .antrag .titel .pdfLink:before,
 #sidebar .neue-kommentare .pdf:before,
-.icon-pdf:before,
 ul.funktionen .download a:before {
   content: '\270d'; }
 
@@ -684,6 +684,9 @@ label.legend {
 fieldset.antragstellerIn label.radio {
   display: inline-block; }
 
+.policy_antragstellerIn_orga_5 #UnterstuetzerInnen input[type=text] {
+  display: inline-block; }
+
 /*
 .controls {
     margin-left: 118px;
@@ -872,9 +875,9 @@ h3 label {
   width: 140px; }
 
 .icon-aender-stellen:before,
+.icon-pdf:before,
 .antragsliste .antrag .titel .pdfLink:before,
 #sidebar .neue-kommentare .pdf:before,
-.icon-pdf:before,
 ul.funktionen .download a:before {
   color: #A2BC04;
   display: inline-block;
@@ -888,7 +891,7 @@ ul.funktionen .download a:before {
   margin-left: 0;
   */ }
 
-.btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before, .btn .icon-pdf:before, .btn ul.funktionen .download a:before, ul.funktionen .download .btn a:before {
+.btn .icon-pdf:before, .btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before, .btn ul.funktionen .download a:before, ul.funktionen .download .btn a:before {
   color: #000000; }
 
 ul.funktionen {
@@ -1279,3 +1282,5 @@ ins {
 
   .span9 .antrag .datum {
     display: none; } }
+
+/*# sourceMappingURL=antraege.css.map */
