@@ -263,7 +263,7 @@ class VeranstaltungController extends AntragsgruenController
 				$person->email_bestaetigt = 1;
 				$person->save();
 				$msg_ok = "Der Zugang wurde bestätigt. Ab jetzt erhältst du Benachrichtigungen per E-Mail, wenn du das so eingestellt hast.";
-				$identity = new AntragUserIdentityPasswd($person->email);
+				$identity = new AntragUserIdentityPasswd($person->email, $person->auth);
 				Yii::app()->user->login($identity);
 			}
 		} elseif (AntiXSS::isTokenSet("anmelden")) {

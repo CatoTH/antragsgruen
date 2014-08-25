@@ -4,13 +4,16 @@ class AntragUserIdentityPasswd extends CBaseUserIdentity
 {
 	/** @var string */
 	private $username;
+	private $auth;
 
 	/**
 	 * @param string $username
+	 * @param string $auth
 	 */
-	public function __construct($username)
+	public function __construct($username, $auth)
 	{
 		$this->username = $username;
+		$this->auth = $auth;
 	}
 
 
@@ -28,9 +31,7 @@ class AntragUserIdentityPasswd extends CBaseUserIdentity
 	 */
 	public function getId()
 	{
-		if (strpos($this->username, "@")) return "email:" . $this->username;
-		//else return "openid:https://" . $this->username . ".netzbegruener.in/";
-		else return "openid:https://service.gruene.de/openid/" . $this->username;
+		return $this->auth;
 	}
 
 	/**

@@ -9,6 +9,7 @@
  * @property bool $oeffentlich
  * @property string $einstellungen
  * @property int $aktuelle_veranstaltung_id
+ * @property int $zugang
  * @property string $kontakt_intern
  *
  * @property Veranstaltung[] $veranstaltungen
@@ -18,6 +19,13 @@
  */
 class Veranstaltungsreihe extends CActiveRecord
 {
+
+	public static $ZUGANG_ALLE = 0;
+	public static $ZUGANG_NAMESPACE_LOGIN = 1;
+	public static $ZUGANG_TYPEN = array(
+		0 => "Alle / Öffentlich",
+		1 => "Nur vom Admin eingetragene NutzerInnen",
+	);
 
 	/** @var null|VeranstaltungsreihenEinstellungen */
 	private $einstellungen_object = null;
@@ -69,9 +77,10 @@ class Veranstaltungsreihe extends CActiveRecord
 	/**
 	 * @return Veranstaltungsreihe[]
 	 */
-	public static function getSidebarReihen() {
+	public static function getSidebarReihen()
+	{
 		/** @var Veranstaltungsreihe[] $reihen */
-		$reihen = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
+		$reihen  = Veranstaltungsreihe::model()->findAllByAttributes(array("oeffentlich" => 1));
 		$reihen2 = array();
 		foreach ($reihen as $reihe) {
 			if ($reihe->aktuelle_veranstaltung && !$reihe->aktuelle_veranstaltung->getEinstellungen()->wartungs_modus_aktiv) $reihen2[] = $reihe;
@@ -110,6 +119,7 @@ class Veranstaltungsreihe extends CActiveRecord
 			array('subdomain, name, name_kurz, kontakt_intern', 'required'),
 			array('name', 'length', 'max' => 200),
 			array('offiziell, oeffentlich', 'boolean'),
+			array('zugang', 'numerical', 'integerOnly' => true),
 			array('subdomain', 'length', 'max' => 45),
 			array('name', 'length', 'max' => 100),
 			array('name, name_kurz', 'safe'),
@@ -137,8 +147,9 @@ class Veranstaltungsreihe extends CActiveRecord
 			'einstellungen'            => "Einstellungen",
 			'offiziell'                => 'Offizielle Veranstaltungsreihe',
 			'oeffentlich'              => 'Öffentlich',
-			'veranstaltungen'          => "Veranstaltungen",
-			'aktuelle_veranstaltung'   => "Aktuelle Veranstaltung",
+			'veranstaltungen'          => 'Veranstaltungen',
+			'aktuelle_veranstaltung'   => 'Aktuelle Veranstaltung',
+			'zugang'                   => 'Zugangsbeschränkung',
 			'admins'                   => null,
 			'veranstaltungsreihenAbos' => null,
 		);

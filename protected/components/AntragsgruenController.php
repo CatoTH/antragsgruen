@@ -145,6 +145,201 @@ class AntragsgruenController extends CController
 
 	/**
 	 * @param string $success_redirect
+	 * @param string $username
+	 * @param string $password
+	 * @throws Exception
+	 */
+	protected function performLogin_username_password($success_redirect, $username, $password) {
+		/** @var Person[] $users */
+		if (strpos($username, "@")) {
+			$sql_where1 = "auth = 'email:" . addslashes($username) . "'";
+			if ($this->veranstaltungsreihe) {
+				$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
+				$users = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1 OR $sql_where2");
+			} else {
+				$users = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1");
+			}
+
+		} else {
+			$auth = "openid:https://service.gruene.de/openid/" . $username;
+			$users = Person::model()->findBySql("SELECT * FROM person WHERE auth = '" . addslashes($auth) . "' OR (auth LIKE 'openid:https://service.gruene.de%' AND email = '" . addslashes($username) . "')");
+		}
+
+		if (count($users) == 0) {
+			throw new Exception("BenutzerInnenname nicht gefunden.");
+		}
+		$correct_user = null;
+		foreach ($users as $try_user) if ($try_user->validate_password($password)) $correct_user = $try_user;
+		if ($correct_user) {
+			$x = explode(":", $correct_user->auth);
+			switch ($x[0]) {
+				case "email":
+				case "ns_admin":
+					$identity = new AntragUserIdentityPasswd($x[1], $correct_user->auth);
+					break;
+				case "openid":
+					if ($correct_user->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($correct_user->getWurzelwerkName(), $correct_user->auth);
+					else throw new Exception("Keine Passwort-Authentifizierung mit anderen OAuth-Implementierungen möglich.");
+					break;
+				default:
+					throw new Exception("Ungültige Authentifizierungsmethode. Wenn dieser Fehler auftritt, besteht ein Programmierfehler.");
+			}
+			Yii::app()->user->login($identity);
+
+			if ($correct_user->admin) {
+				//$openid->setState("role", "admin");
+				Yii::app()->user->setState("role", "admin");
+			}
+
+			Yii::app()->user->setState("person_id", $correct_user->id);
+			Yii::app()->user->setFlash('success', 'Willkommen!');
+			if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
+
+			$this->redirect($success_redirect);
+		} else {
+			throw new Exception("Falsches Passwort.");
+		}
+
+		//Yii::app()->user->login($us);
+		die();
+	}
+
+	/**
+	 * @param OAuthLoginForm $model
+	 * @param array $form_params
+	 * @throws Exception
+	 */
+	protected function performLogin_OAuth_init(&$model, $form_params)  {
+		$model->attributes = $form_params;
+
+
+		if (stripos($model->openid_identifier, "yahoo") !== false) {
+			throw new Exception("Leider ist wegen technischen Problemen ein Login mit Yahoo momentan nicht möglich.");
+		} else {
+			/** @var LightOpenID $loid */
+			$loid = Yii::app()->loid->load();
+			//if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
+			if ($model->wurzelwerk != "") $loid->identity = "https://service.gruene.de/openid/" . $model->wurzelwerk;
+			else $loid->identity = $model->openid_identifier;
+
+			$loid->required  = array('namePerson/friendly', 'contact/email'); //Try to get info from openid provider
+			$loid->realm     = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+			$loid->returnUrl = $loid->realm . yii::app()->getRequest()->requestUri;
+			if (empty($err)) {
+				try {
+					$url = $loid->authUrl();
+					$this->redirect($url);
+				} catch (Exception $e) {
+					throw new Exception($e->getMessage());
+				}
+			}
+		}
+		if (!empty($err)) Yii::app()->user->setFlash("error", $err);
+	}
+
+
+	/**
+	 * @param AntragUserIdentityOAuth $user_identity
+	 */
+	protected function performLogin_OAuth_create_user($user_identity) {
+		$email = $user_identity->getEmail();
+
+		$user                   = new Person;
+		$user->auth             = $user_identity->getId();
+		$user->name             = $user_identity->getName();
+		$user->email            = $email;
+		$user->email_bestaetigt = 0;
+		$user->angelegt_datum   = date("Y-m-d H:i:s");
+		$user->status           = Person::$STATUS_CONFIRMED;
+		$user->typ              = Person::$TYP_PERSON;
+		if (Person::model()->count() == 0) {
+			$user->admin = 1;
+			Yii::app()->user->setState("role", "admin");
+		} else {
+			$user->admin = 0;
+		}
+
+		if (trim($email) != "") {
+			$password      = substr(md5(uniqid()), 0, 8);
+			$user->pwd_enc = Person::create_hash($password);
+			mb_send_mail($email, "Dein Antragsgrün-Zugang", "Hallo!\n\nDein Zugang bei Antragsgrün wurde eben eingerichtet.\n\n" .
+				"Du kannst dich mit folgenden Daten einloggen:\nBenutzerInnenname: $email\nPasswort: $password\n\n" .
+				"Das Passwort kannst du hier ändern:\n" .
+				yii::app()->getBaseUrl(true) . yii::app()->createUrl("infos/passwort") . "\n\n" .
+				"Außerdem ist auch weiterhin ein Login über deinen Wurzelwerk-Zugang möglich.\n\n" .
+				"Liebe Grüße,\n  Das Antragsgrün-Team", "From: " . Yii::app()->params['mail_from']);
+		}
+
+		$user->save();
+	}
+
+
+	/**
+	 * @param string $success_redirect
+	 * @param string $openid_mode
+	 * @throws Exception
+	 */
+	protected function performLogin_OAuth_callback($success_redirect, $openid_mode) {
+		/** @var LightOpenID $loid */
+		$loid = Yii::app()->loid->load();
+		if ($openid_mode != 'cancel') {
+			try {
+				$us = new AntragUserIdentityOAuth($loid);
+				if ($us->authenticate()) {
+					Yii::app()->user->login($us);
+					$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
+					if (!$user) {
+						$this->performLogin_OAuth_create_user($us);
+					} else {
+						if ($user->admin) {
+							//$openid->setState("role", "admin");
+							Yii::app()->user->setState("role", "admin");
+						}
+					}
+					Yii::app()->user->setState("person_id", $user->id);
+					Yii::app()->user->setFlash('success', 'Willkommen!');
+					if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
+					$this->redirect($success_redirect);
+				} else {
+					throw new Exception("Leider ist beim Einloggen ein Fehler aufgetreten.");
+				}
+			} catch (Exception $e) {
+				throw new Exception("Leider ist beim Einloggen ein Fehler aufgetreten:<br>" . $e->getMessage());
+			}
+		}
+
+		if (!empty($err)) Yii::app()->user->setFlash("error", $err);
+	}
+
+	/**
+	 * @param string $success_redirect
+	 * @param string $login
+	 * @throws Exception
+	 */
+	protected function performLogin_from_email_params($success_redirect, $login) {
+		/** @var Person $user */
+		$user = Person::model()->findByAttributes(array("id" => $login));
+		if ($user === null) {
+			throw new Exception("BenutzerInnenname nicht gefunden");
+		}
+		$identity = new AntragUserIdentityPasswd($user->getWurzelwerkName(), $user->auth);
+		Yii::app()->user->login($identity);
+
+		if ($user->admin) {
+			//$openid->setState("role", "admin");
+			Yii::app()->user->setState("role", "admin");
+		}
+
+		Yii::app()->user->setState("person_id", $user->id);
+		Yii::app()->user->setFlash('success', 'Willkommen!');
+		if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
+
+		$this->redirect($success_redirect);
+	}
+
+
+	/**
+	 * @param string $success_redirect
 	 * @throws Exception
 	 * @return OAuthLoginForm
 	 */
@@ -152,150 +347,15 @@ class AntragsgruenController extends CController
 	{
 
 		$model = new OAuthLoginForm();
-		if (isset($_REQUEST["OAuthLoginForm"])) $model->attributes = $_REQUEST["OAuthLoginForm"];
 
 		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["username"])) {
-			if (strpos($_REQUEST["username"], "@")) $username = "email:" . $_REQUEST["username"];
-			//else $username = "openid:https://" . $_REQUEST["OAuthLoginForm"]["wurzelwerk"] . ".netzbegruener.in/";
-			else $username = "openid:https://service.gruene.de/openid/" . $_REQUEST["username"];
-
-			/** @var Person $user */
-			$user = Person::model()->findBySql("SELECT * FROM person WHERE auth = '" . addslashes($username) . "' OR (auth LIKE 'openid:https://service.gruene.de%' AND email = '" . addslashes($_REQUEST["username"]) . "')");
-			if ($user === null) {
-				throw new Exception("BenutzerInnenname nicht gefunden.");
-			}
-			$correct = $user->validate_password($_REQUEST["password"]);
-			if ($correct) {
-				$x = explode(":", $user->auth);
-				switch ($x[0]) {
-					case "email":
-						$identity = new AntragUserIdentityPasswd($x[1]);
-						break;
-					case "openid":
-						if ($user->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($user->getWurzelwerkName());
-						else throw new Exception("Keine Passwort-Authentifizierung mit anderen OAuth-Implementierungen möglich.");
-						break;
-					default:
-						throw new Exception("Ungültige Authentifizierungsmethode. Wenn dieser Fehler auftritt, besteht ein Programmierfehler.");
-				}
-				Yii::app()->user->login($identity);
-
-				if ($user->admin) {
-					//$openid->setState("role", "admin");
-					Yii::app()->user->setState("role", "admin");
-				}
-
-				Yii::app()->user->setState("person_id", $user->id);
-				Yii::app()->user->setFlash('success', 'Willkommen!');
-				if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
-
-				$this->redirect($success_redirect);
-			} else {
-				throw new Exception("Falsches Passwort.");
-			}
-
-			//Yii::app()->user->login($us);
-			die();
+			$this->performLogin_username_password($success_redirect, $_REQUEST["username"], $_REQUEST["password"]);
 		} elseif (isset($_REQUEST["openid_mode"])) {
-			/** @var LightOpenID $loid */
-			$loid = Yii::app()->loid->load();
-			if ($_REQUEST['openid_mode'] != 'cancel') {
-				try {
-					$us = new AntragUserIdentityOAuth($loid);
-					if ($us->authenticate()) {
-						Yii::app()->user->login($us);
-						$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
-						if (!$user) {
-							$email = $us->getEmail();
-
-							$user                   = new Person;
-							$user->auth             = $us->getId();
-							$user->name             = $us->getName();
-							$user->email            = $email;
-							$user->email_bestaetigt = 0;
-							$user->angelegt_datum   = date("Y-m-d H:i:s");
-							$user->status           = Person::$STATUS_CONFIRMED;
-							$user->typ              = Person::$TYP_PERSON;
-							if (Person::model()->count() == 0) {
-								$user->admin = 1;
-								Yii::app()->user->setState("role", "admin");
-							} else {
-								$user->admin = 0;
-							}
-
-							if (trim($email) != "") {
-								$password      = substr(md5(uniqid()), 0, 8);
-								$user->pwd_enc = Person::create_hash($password);
-								mb_send_mail($email, "Dein Antragsgrün-Zugang", "Hallo!\n\nDein Zugang bei Antragsgrün wurde eben eingerichtet.\n\n" .
-									"Du kannst dich mit folgenden Daten einloggen:\nBenutzerInnenname: $email\nPasswort: $password\n\n" .
-									"Das Passwort kannst du hier ändern:\n" .
-									yii::app()->getBaseUrl(true) . yii::app()->createUrl("infos/passwort") . "\n\n" .
-									"Außerdem ist auch weiterhin ein Login über deinen Wurzelwerk-Zugang möglich.\n\n" .
-									"Liebe Grüße,\n  Das Antragsgrün-Team", "From: " . Yii::app()->params['mail_from']);
-							}
-
-							$user->save();
-						} else {
-							if ($user->admin) {
-								//$openid->setState("role", "admin");
-								Yii::app()->user->setState("role", "admin");
-							}
-						}
-						Yii::app()->user->setState("person_id", $user->id);
-						Yii::app()->user->setFlash('success', 'Willkommen!');
-						if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
-						$this->redirect($success_redirect);
-					} else {
-						throw new Exception("Leider ist beim Einloggen ein Fehler aufgetreten.");
-					}
-				} catch (Exception $e) {
-					throw new Exception("Leider ist beim Einloggen ein Fehler aufgetreten:<br>" . $e->getMessage());
-				}
-			}
-
-			if (!empty($err)) Yii::app()->user->setFlash("error", $err);
+			$this->performLogin_OAuth_callback($success_redirect, $_REQUEST['openid_mode']);
 		} elseif (isset($_REQUEST["OAuthLoginForm"])) {
-			if (stripos($model->openid_identifier, "yahoo") !== false) {
-				throw new Exception("Leider ist wegen technischen Problemen ein Login mit Yahoo momentan nicht möglich.");
-			} else {
-				/** @var LightOpenID $loid */
-				$loid = Yii::app()->loid->load();
-				//if ($model->wurzelwerk != "") $loid->identity = "https://" . $model->wurzelwerk . ".netzbegruener.in/";
-				if ($model->wurzelwerk != "") $loid->identity = "https://service.gruene.de/openid/" . $model->wurzelwerk;
-				else $loid->identity = $model->openid_identifier;
-
-				$loid->required  = array('namePerson/friendly', 'contact/email'); //Try to get info from openid provider
-				$loid->realm     = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-				$loid->returnUrl = $loid->realm . yii::app()->getRequest()->requestUri;
-				if (empty($err)) {
-					try {
-						$url = $loid->authUrl();
-						$this->redirect($url);
-					} catch (Exception $e) {
-						throw new Exception($e->getMessage());
-					}
-				}
-			}
-			if (!empty($err)) Yii::app()->user->setFlash("error", $err);
+			$this->performLogin_OAuth_init($model, $_REQUEST["OAuthLoginForm"]);
 		} elseif (isset($_REQUEST["login"]) && $_REQUEST["login_sec"] == AntiXSS::createToken($_REQUEST["login"])) {
-			/** @var Person $user */
-			$user = Person::model()->findByAttributes(array("id" => $_REQUEST["login"]));
-			if ($user === null) {
-				throw new Exception("BenutzerInnenname nicht gefunden");
-			}
-			$identity = new AntragUserIdentityPasswd($user->getWurzelwerkName());
-			Yii::app()->user->login($identity);
-
-			if ($user->admin) {
-				//$openid->setState("role", "admin");
-				Yii::app()->user->setState("role", "admin");
-			}
-
-			Yii::app()->user->setState("person_id", $user->id);
-			Yii::app()->user->setFlash('success', 'Willkommen!');
-			if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
-
-			$this->redirect($success_redirect);
+			$this->performLogin_from_email_params($success_redirect, $_REQUEST["login"]);
 		}
 		return $model;
 	}
@@ -320,8 +380,8 @@ class AntragsgruenController extends CController
 				if ($p->validate_password($password)) {
 					$correct_person = $p;
 
-					if ($p->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($p->getWurzelwerkName());
-					else $identity = new AntragUserIdentityPasswd($p->email);
+					if ($p->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($p->getWurzelwerkName(), $p->auth);
+					else $identity = new AntragUserIdentityPasswd($p->email, $p->auth);
 					Yii::app()->user->login($identity);
 				} else {
 					$msg_err = "Das angegebene Passwort ist leider falsch.";
@@ -331,7 +391,7 @@ class AntragsgruenController extends CController
 					$p->email_bestaetigt = 1;
 					if ($p->save()) {
 						$msg_ok = "Die E-Mail-Adresse wurde freigeschaltet. Ab jetzt wirst du entsprechend deinen Einstellungen benachrichtigt.";
-						$identity = new AntragUserIdentityPasswd($p->email);
+						$identity = new AntragUserIdentityPasswd($p->email, $p->auth);
 						Yii::app()->user->login($identity);
 					} else {
 						$msg_err = "Ein sehr seltsamer Fehler ist aufgetreten.";
@@ -363,7 +423,7 @@ class AntragsgruenController extends CController
 					. "Liebe Grüße,\n\tDas Antragsgrün-Team.", "From: " . Yii::app()->params['mail_from']);
 				$correct_person = $person;
 
-				$identity = new AntragUserIdentityPasswd($email);
+				$identity = new AntragUserIdentityPasswd($email, $person->auth);
 				Yii::app()->user->login($identity);
 			} else {
 				$msg_err = "Leider ist ein (ungewöhnlicher) Fehler aufgetreten.";
