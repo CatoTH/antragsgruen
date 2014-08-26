@@ -684,6 +684,9 @@ label.legend {
 fieldset.antragstellerIn label.radio {
   display: inline-block; }
 
+#UnterstuetzerInnen .unterstuetzerInnen_adder {
+  text-align: center; }
+
 .policy_antragstellerIn_orga_5 #UnterstuetzerInnen input[type=text] {
   display: inline-block; }
 
@@ -986,6 +989,11 @@ ul.funktionen {
   .unterstuetzerInnenwidget_adder .person_selector {
     width: 240px;
     margin-right: 10px; }
+  .unterstuetzerInnenwidget_adder .unterstuetzerIn_neu_holder input {
+    border: solid 1px gray; }
+
+.unterstuetzerInnenwidget .sort_handle {
+  cursor: move; }
 
 .antragsdaten th {
   text-align: left;
@@ -1011,9 +1019,6 @@ ins {
     margin-left: 45px; }
     .antragstext_diff ul li {
       width: 480px; }
-
-.unterstuetzerIn_neu_holder input {
-  border: solid 1px gray; }
 
 .unterstuetzerIn label input {
   display: inline-block; }
@@ -1045,9 +1050,6 @@ ins {
 
 #aenderungsantrag-form .unterstuetzerInnenwidget select, #antrag-form .unterstuetzerInnenwidget select {
   width: 200px; }
-
-.unterstuetzerInnenwidget .sort_handle {
-  cursor: move; }
 
 .js_protection_hint {
   width: 90%;

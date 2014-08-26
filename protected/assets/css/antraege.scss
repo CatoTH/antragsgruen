@@ -752,7 +752,11 @@ fieldset.antragstellerIn {
   }
 }
 
-
+#UnterstuetzerInnen {
+  .unterstuetzerInnen_adder {
+    text-align: center;
+  }
+}
 .policy_antragstellerIn_orga_5 {
   #UnterstuetzerInnen {
     input[type=text] {
@@ -1084,6 +1088,13 @@ ul.funktionen {
     width: 240px;
     margin-right: 10px;
   }
+
+  .unterstuetzerIn_neu_holder input {
+    border: solid 1px gray;
+  }
+}
+.unterstuetzerInnenwidget .sort_handle {
+  cursor: move;
 }
 
 .antragsdaten th {
@@ -1121,10 +1132,6 @@ ins {
       width: 480px;
     }
   }
-}
-
-.unterstuetzerIn_neu_holder input {
-  border: solid 1px gray;
 }
 
 .unterstuetzerIn label input {
@@ -1171,9 +1178,6 @@ ins {
   width: 200px;
 }
 
-.unterstuetzerInnenwidget .sort_handle {
-  cursor: move;
-}
 
 .js_protection_hint {
   width: 90%;

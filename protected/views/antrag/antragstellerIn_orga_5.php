@@ -64,12 +64,15 @@ if ($mode == "neu") {
 		<div class="control-group" id="UnterstuetzerInnen">
 			<label class="control-label">UnterstützerInnen<br>(min. 4)</label>
 
-			<div class="controls">
+			<div class="controls unterstuetzerInnen_list">
 				<?php for ($i = 0; $i < 4; $i++) { ?>
 					<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">
 					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">
 					<br>
 				<?php } ?>
+			</div>
+			<div class="unterstuetzerInnen_adder">
+				<a href="#"><span class="icon icon-plus"></span> UnterstützerIn hinzufügen</a>
 			</div>
 		</div>
 	</div>
@@ -102,6 +105,12 @@ if ($mode == "neu") {
 					});
 				}
 			});
+			$(".unterstuetzerInnen_adder a").click(function(ev) {
+				ev.preventDefault();
+				$(".unterstuetzerInnen_list").append('<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">\
+					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">\
+					<br>');
+			})
 		})
 	</script>
 

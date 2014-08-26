@@ -71,6 +71,9 @@ if ($mode == "neu") {
 					<br>
 				<?php } ?>
 			</div>
+			<div class="unterstuetzerInnen_adder">
+				<a href="#"><span class="icon icon-plus"></span> UnterstützerIn hinzufügen</a>
+			</div>
 		</div>
 	</div>
 
@@ -101,6 +104,12 @@ if ($mode == "neu") {
 						$input.val($input.data("orig"));
 					});
 				}
+			});
+			$(".unterstuetzerInnen_adder a").click(function(ev) {
+				ev.preventDefault();
+				$(".unterstuetzerInnen_list").append('<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">\
+					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">\
+					<br>');
 			});
 		})
 	</script>
