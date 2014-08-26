@@ -23,12 +23,33 @@ if ($mode == "neu") {
 		<?php } ?>
 
 		<div class="antragstellerIn_daten">
-			<?php
-			echo $form->textFieldRow($antragstellerIn, 'name');
-			echo $form->textFieldRow($antragstellerIn, 'organisation');
-			echo $form->textFieldRow($antragstellerIn, 'email', array("required" => true));
-			echo $form->textFieldRow($antragstellerIn, 'telefon', array("required" => true));
-			?>
+			<div class="control-group "><label class="control-label" for="Person_name">Name(n)</label>
+
+				<div class="controls"><input name="Person[name]" id="Person_name" type="text" maxlength="100" value="<?php
+					echo CHtml::encode($antragstellerIn->name);
+					?>"></div>
+			</div>
+
+			<div class="control-group "><label class="control-label" for="Person_organisation">Gremium, LAG...</label>
+
+				<div class="controls"><input name="Person[organisation]" id="Person_organisation" type="text" maxlength="100" value="<?php
+					echo CHtml::encode($antragstellerIn->organisation);
+					?>"></div>
+			</div>
+
+			<div class="control-group "><label class="control-label" for="Person_email">E-Mail</label>
+
+				<div class="controls"><input required="required" name="Person[email]" id="Person_email" type="text" maxlength="200" value="<?php
+					echo CHtml::encode($antragstellerIn->email);
+					?>"></div>
+			</div>
+
+			<div class="control-group "><label class="control-label" for="Person_telefon">Telefon</label>
+
+				<div class="controls"><input required="required" name="Person[telefon]" id="Person_telefon" type="text" maxlength="100" value="<?php
+					echo CHtml::encode($antragstellerIn->telefon);
+					?>"></div>
+			</div>
 		</div>
 
 		<div class="control-group" id="Person_typ_chooser">
@@ -36,7 +57,7 @@ if ($mode == "neu") {
 
 			<div class="controls">
 				<label><input type="radio" name="Person[typ]" value="mitglied" required checked> Parteimitglied</label><br>
-				<label><input type="radio" name="Person[typ]" value="organisation" required> ein Gremium, LAK, ...</label><br>
+				<label><input type="radio" name="Person[typ]" value="organisation" required> Gremium, LAG...</label><br>
 			</div>
 		</div>
 
@@ -46,7 +67,7 @@ if ($mode == "neu") {
 			<div class="controls">
 				<?php for ($i = 0; $i < 4; $i++) { ?>
 					<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">
-					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="KV" title="KV">
+					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">
 					<br>
 				<?php } ?>
 			</div>

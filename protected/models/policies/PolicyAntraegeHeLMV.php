@@ -19,7 +19,7 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	 */
 	static public function getPolicyName()
 	{
-		return "Organisation, oder 5 Mitglieder";
+		return "Gremium/LAG, oder 5 Mitglieder";
 	}
 
 
@@ -103,6 +103,6 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	 */
 	public function getOnCreateDescription()
 	{
-		return "Mindestens 5 UnterstützerInnen (oder min. eine Organisation)";
+		return "Mindestens 5 UnterstützerInnen (oder min. eine Gremium, LAG...)";
 	}
 }
