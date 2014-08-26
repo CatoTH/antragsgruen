@@ -73,6 +73,11 @@ abstract class IPolicyAntraege
 		return "antragstellerIn_std";
 	}
 
+	public function isValidName($name)
+	{
+		return (trim($name) != "");
+	}
+
 
 	protected function getSubmitPerson($andereAntragstellerInErlaubt)
 	{
@@ -140,25 +145,25 @@ abstract class IPolicyAntraege
 		$init->save();
 
 		if (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
-			$name = trim($name);
-			if ($name != "") {
-				$person                 = new Person;
-				$person->name           = $name;
-				$person->typ            = Person::$TYP_PERSON;
-				$person->status         = Person::$STATUS_UNCONFIRMED;
-				$person->angelegt_datum = "NOW()";
-				$person->admin          = 0;
-				if (isset($_REQUEST["UnterstuetzerInnen_organisation"]) && isset($_REQUEST["UnterstuetzerInnen_organisation"][$i])) {
-					$person->organisation = $_REQUEST["UnterstuetzerInnen_organisation"][$i];
-				}
-				if ($person->save()) {
-					$unt                     = new AntragUnterstuetzerInnen();
-					$unt->antrag_id          = $antrag->id;
-					$unt->unterstuetzerIn_id = $person->id;
-					$unt->rolle              = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-					$unt->position           = $i;
-					$unt->save();
-				}
+			if (!$this->isValidName($name)) continue;
+			
+			$name                   = trim($name);
+			$person                 = new Person;
+			$person->name           = $name;
+			$person->typ            = Person::$TYP_PERSON;
+			$person->status         = Person::$STATUS_UNCONFIRMED;
+			$person->angelegt_datum = "NOW()";
+			$person->admin          = 0;
+			if (isset($_REQUEST["UnterstuetzerInnen_organisation"]) && isset($_REQUEST["UnterstuetzerInnen_organisation"][$i])) {
+				$person->organisation = $_REQUEST["UnterstuetzerInnen_organisation"][$i];
+			}
+			if ($person->save()) {
+				$unt                     = new AntragUnterstuetzerInnen();
+				$unt->antrag_id          = $antrag->id;
+				$unt->unterstuetzerIn_id = $person->id;
+				$unt->rolle              = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
+				$unt->position           = $i;
+				$unt->save();
 			}
 		}
 	}
@@ -193,24 +198,24 @@ abstract class IPolicyAntraege
 
 		if (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
 			$name = trim($name);
-			if ($name != "") {
-				$person                 = new Person;
-				$person->name           = $name;
-				$person->typ            = Person::$TYP_PERSON;
-				$person->status         = Person::$STATUS_UNCONFIRMED;
-				$person->angelegt_datum = "NOW()";
-				$person->admin          = 0;
-				if (isset($_REQUEST["UnterstuetzerInnen_orga"]) && isset($_REQUEST["UnterstuetzerInnen_orga"][$i])) {
-					$person->organisation = $_REQUEST["UnterstuetzerInnen_orga"][$i];
-				}
-				if ($person->save()) {
-					$unt                      = new AenderungsantragUnterstuetzerInnen();
-					$unt->aenderungsantrag_id = $aenderungsantrag->id;
-					$unt->unterstuetzerIn_id  = $person->id;
-					$unt->rolle               = AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-					$unt->position            = $i;
-					$unt->save();
-				}
+			if (!$this->isValidName($name)) continue;
+
+			$person                 = new Person;
+			$person->name           = $name;
+			$person->typ            = Person::$TYP_PERSON;
+			$person->status         = Person::$STATUS_UNCONFIRMED;
+			$person->angelegt_datum = "NOW()";
+			$person->admin          = 0;
+			if (isset($_REQUEST["UnterstuetzerInnen_orga"]) && isset($_REQUEST["UnterstuetzerInnen_orga"][$i])) {
+				$person->organisation = $_REQUEST["UnterstuetzerInnen_orga"][$i];
+			}
+			if ($person->save()) {
+				$unt                      = new AenderungsantragUnterstuetzerInnen();
+				$unt->aenderungsantrag_id = $aenderungsantrag->id;
+				$unt->unterstuetzerIn_id  = $person->id;
+				$unt->rolle               = AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
+				$unt->position            = $i;
+				$unt->save();
 			}
 		}
 	}

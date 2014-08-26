@@ -50,12 +50,6 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	}
 
 
-	private function isValidName($name)
-	{
-		return (trim($name) != "");
-	}
-
-
 	/**
 	 * @return bool
 	 */
@@ -71,9 +65,9 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 				break;
 			case "mitglied":
 				if (!isset($_REQUEST["UnterstuetzerInnen_name"]) || count($_REQUEST["UnterstuetzerInnen_name"]) < 19) return false;
-				$incorrect = false;
-				foreach ($_REQUEST["UnterstuetzerInnen_name"] as $unters) if (!$this->isValidName($unters)) $incorrect = true;
-				return !$incorrect;
+				$correct = 0;
+				foreach ($_REQUEST["UnterstuetzerInnen_name"] as $unters) if ($this->isValidName($unters)) $correct++;
+				return ($correct >= 19);
 			case "organisation":
 				return true;
 				break;

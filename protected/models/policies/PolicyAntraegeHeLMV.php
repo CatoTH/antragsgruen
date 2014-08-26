@@ -50,12 +50,6 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	}
 
 
-	private function isValidName($name)
-	{
-		return (trim($name) != "");
-	}
-
-
 	/**
 	 * @return bool
 	 */
@@ -68,9 +62,9 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 		switch ($_REQUEST["Person"]["typ"]) {
 			case "mitglied":
 				if (!isset($_REQUEST["UnterstuetzerInnen_name"]) || count($_REQUEST["UnterstuetzerInnen_name"]) < 4) return false;
-				$incorrect = false;
-				foreach ($_REQUEST["UnterstuetzerInnen_name"] as $unters) if (!$this->isValidName($unters)) $incorrect = true;
-				return !$incorrect;
+				$correct = 0;
+				foreach ($_REQUEST["UnterstuetzerInnen_name"] as $unters) if ($this->isValidName($unters)) $correct++;
+				return ($correct >= 4);
 			case "organisation":
 				return true;
 				break;
