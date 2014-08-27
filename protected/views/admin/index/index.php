@@ -63,5 +63,6 @@ $this->breadcrumbs = array(
 	<ul>
 		<li><a href="<?php echo $this->createUrl("/admin/index/reiheAdmins"); ?>">Weitere Admins</a></li>
 		<li><a href="<?php echo $this->createUrl("/admin/index/reiheVeranstaltungen"); ?>">Weitere Veranstaltungen anlegen / verwalten</a></li>
+		<li><a href="<?php echo $this->createUrl("/admin/index/namespacedAccounts"); ?>">Veranstaltungsreihen-BenutzerInnen</a></li>
 	</ul>
 </div>

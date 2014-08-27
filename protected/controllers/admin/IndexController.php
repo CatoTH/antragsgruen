@@ -24,7 +24,88 @@ class IndexController extends AntragsgruenController
 		));
 	}
 
-	public function actionAePDFList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public function actionNamespacedAccounts($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+
+		$msg = "";
+
+		if (AntiXSS::isTokenSet("eintragen")) {
+			$text = $_REQUEST["email_text"];
+
+			$zeilen            = explode("\n", $_REQUEST["email_adressen"]);
+			$email_invalid     = array();
+			$emails_verschickt = array();
+			$emails_schonda    = array();
+
+			foreach ($zeilen as $zeile) {
+				if (trim($zeile) == "") continue;
+				$email = trim($zeile);
+				$valid = preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/siu", $email);
+				if (!$valid) $email_invalid[] = $email;
+				else {
+					$schon_da = Person::model()->findByAttributes(array("veranstaltungsreihe_namespace" => $this->veranstaltungsreihe->id, "email" => $email));
+					if ($schon_da) {
+						$emails_schonda[] = $email;
+						continue;
+					}
+
+					$password = Person::createPassword();
+
+					$person                                = new Person();
+					$person->auth                          = "ns_admin:" . $email;
+					$person->name                          = "";
+					$person->email                         = $email;
+					$person->email_bestaetigt              = 0;
+					$person->angelegt_datum                = date("Y-m-d H:i:s");
+					$person->pwd_enc                       = Person::create_hash($password);
+					$person->status                        = Person::$STATUS_CONFIRMED;
+					$person->typ                           = Person::$TYP_PERSON;
+					$person->veranstaltungsreihe_namespace = $this->veranstaltungsreihe->id;
+					$person->admin                         = 0;
+					$person->save();
+
+					$link      = yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/index");
+					$mail_text = str_replace(array("%EMAIL%", "%LINK%"), array($email, $link), $text);
+					$person_id = null;
+
+					AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_NAMESPACED_ACCOUNT_ANGELEGT, $email, $person_id, "Antragsgrün-Zugang", $mail_text, null, array(
+						"%PASSWORT%" => $password
+					));
+
+					$emails_verschickt[] = $email;
+				}
+			}
+
+			if (count($emails_verschickt) > 0) {
+				$msg .= '<div class="alert alert-success" role="alert">';
+				$msg .= (count($emails_verschickt) == 1 ? "1 Zugang wurde angelegt." : count($emails_verschickt) . " Zugänge wurden angelegt.");
+				$msg .= '</div>';
+			}
+			if (count($emails_schonda) > 0) {
+				$msg .= "<div class='alert alert-danger'>Folgende angegebenen E-Mail-Adressen waren bereits registriert:<br>\n";
+				foreach ($emails_schonda as $inv) $msg .= "- " . CHtml::encode($inv) . "<br>\n";
+				$msg .= '</div>';
+			}
+			if (count($email_invalid) > 0) {
+				$msg .= "<div class='alert alert-danger'>Folgende angegebenen E-Mail-Adressen sind ungültig:<br>\n";
+				foreach ($email_invalid as $inv) $msg .= "- " . CHtml::encode($inv) . "<br>\n";
+				$msg .= '</div>';
+			}
+
+		}
+
+		$accounts = Person::model()->findAllByAttributes(array("veranstaltungsreihe_namespace" => $this->veranstaltungsreihe->id));
+
+		$this->render("namespaced_accounts", array(
+			"accounts" => $accounts,
+			"msg"      => $msg,
+		));
+	}
+
+	public
+	function actionAePDFList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -40,7 +121,8 @@ class IndexController extends AntragsgruenController
 		$this->render("ae_pdf_list", array("aes" => $aenderungsantraege));
 	}
 
-	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public
+	function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -85,7 +167,8 @@ class IndexController extends AntragsgruenController
 		$this->renderPartial("ae_excel_list", array("antraege" => $antrs));
 	}
 
-	public function actionReiheAdmins($veranstaltungsreihe_id = "")
+	public
+	function actionReiheAdmins($veranstaltungsreihe_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -122,7 +205,8 @@ class IndexController extends AntragsgruenController
 		));
 	}
 
-	public function actionReiheVeranstaltungen($veranstaltungsreihe_id = "")
+	public
+	function actionReiheVeranstaltungen($veranstaltungsreihe_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -131,7 +215,7 @@ class IndexController extends AntragsgruenController
 		$ich  = Person::model()->findByAttributes(array("auth" => $user->id));
 
 		if (AntiXSS::isTokenSet("add")) {
-			$referenz = null;
+			$referenz      = null;
 			$url_vorhanden = false;
 			foreach ($this->veranstaltungsreihe->veranstaltungen as $veranstaltung) {
 				if ($veranstaltung->id == $_REQUEST["vorlage"]) $referenz = $veranstaltung;
@@ -162,7 +246,7 @@ class IndexController extends AntragsgruenController
 		}
 
 		if (AntiXSS::isTokenSet("set_std")) {
-			$got_id = AntiXSS::getTokenVal("set_std");
+			$got_id         = AntiXSS::getTokenVal("set_std");
 			$neuer_standard = $this->veranstaltungsreihe->id;
 			foreach ($this->veranstaltungsreihe->veranstaltungen as $veranstaltung) if ($veranstaltung->id == $got_id) $neuer_standard = $got_id;
 			$this->veranstaltungsreihe->aktuelle_veranstaltung_id = $neuer_standard;
@@ -175,15 +259,16 @@ class IndexController extends AntragsgruenController
 		}
 
 		$this->render('reihe_veranstaltungen', array(
-			"sprache" => $this->veranstaltung->getSprache(),
-			"ich"     => $ich,
-			"del_url" => $this->createUrl("/admin/index/reiheVeranstaltungen", array(AntiXSS::createToken("remove") => "REMOVEID")),
-			"add_url" => $this->createUrl("/admin/index/reiheVeranstaltungen"),
+			"sprache"     => $this->veranstaltung->getSprache(),
+			"ich"         => $ich,
+			"del_url"     => $this->createUrl("/admin/index/reiheVeranstaltungen", array(AntiXSS::createToken("remove") => "REMOVEID")),
+			"add_url"     => $this->createUrl("/admin/index/reiheVeranstaltungen"),
 			"set_std_url" => $this->createUrl("/admin/index/reiheVeranstaltungen", array(AntiXSS::createToken("set_std") => "STDID")),
 		));
 	}
 
-	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public
+	function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));

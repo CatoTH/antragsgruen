@@ -146,7 +146,7 @@ abstract class IPolicyAntraege
 
 		if (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
 			if (!$this->isValidName($name)) continue;
-			
+
 			$name                   = trim($name);
 			$person                 = new Person;
 			$person->name           = $name;
