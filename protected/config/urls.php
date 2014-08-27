@@ -41,6 +41,7 @@ $url_rules = array(
 	$domv . 'antrag/<antrag_id:\d+>'                                                          => 'antrag/anzeige',
 	$domv . 'antrag/<antrag_id:\d+>/pdf'                                                      => 'antrag/pdf',
 	$domv . 'antrag/<antrag_id:\d+>/plain_html'                                               => 'antrag/plainHtml',
+	$domv . 'antrag/<antrag_id:\d+>/odt'                                                      => 'antrag/odt',
 	$domv . 'antrag/<antrag_id:\d+>/neuConfirm'                                               => 'antrag/neuConfirm',
 	$domv . 'antrag/<antrag_id:\d+>/aendern'                                                  => 'antrag/aendern',
 	$domv . 'antrag/<antrag_id:\d+>/aes_einpflegen'                                           => 'antrag/aes_einpflegen',

@@ -274,6 +274,30 @@ class AntragController extends AntragsgruenController
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
 	 */
+	public function actionOdt($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
+	{
+		/** @var Antrag $antrag */
+		$antrag = Antrag::model()->findByPk($antrag_id);
+		if (is_null($antrag)) {
+			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
+			$this->redirect($this->createUrl("veranstaltung/index"));
+		}
+
+		$this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag);
+		$this->testeWartungsmodus();
+
+		$this->renderPartial("odt", array(
+			'model'   => $antrag,
+			"sprache" => $antrag->veranstaltung->getSprache(),
+		));
+	}
+
+
+	/**
+	 * @param string $veranstaltungsreihe_id
+	 * @param string $veranstaltung_id
+	 * @param int $antrag_id
+	 */
 	public function actionPlainHtml($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
 	{
 		/** @var Antrag $antrag */
