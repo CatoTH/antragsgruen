@@ -222,7 +222,7 @@ class Person extends GxActiveRecord
 		$abbestellen_url = yii::app()->getBaseUrl(true) . yii::app()->createUrl("veranstaltung/benachrichtigungenAbmelden", array("veranstaltungsreihe_id" => $veranstaltungsreihe->subdomain, "code" => $this->getBenachrichtigungAbmeldenCode()));
 		$gruss = "Hallo " . $this->name . ",\n\n";
 		$sig = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\nFalls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $abbestellen_url;
-		mb_send_mail($this->email, $betreff, $gruss . $text . $sig, "From: " . Yii::app()->params['mail_from']);
+		AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_USER, $this->email, $this->id, $betreff, $gruss . $text . $sig);
 	}
 
 	/**

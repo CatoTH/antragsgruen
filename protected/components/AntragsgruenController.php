@@ -149,19 +149,20 @@ class AntragsgruenController extends CController
 	 * @param string $password
 	 * @throws Exception
 	 */
-	protected function performLogin_username_password($success_redirect, $username, $password) {
+	protected function performLogin_username_password($success_redirect, $username, $password)
+	{
 		/** @var Person[] $users */
 		if (strpos($username, "@")) {
 			$sql_where1 = "auth = 'email:" . addslashes($username) . "'";
 			if ($this->veranstaltungsreihe) {
 				$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
-				$users = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1 OR $sql_where2");
+				$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1 OR $sql_where2");
 			} else {
 				$users = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1");
 			}
 
 		} else {
-			$auth = "openid:https://service.gruene.de/openid/" . $username;
+			$auth  = "openid:https://service.gruene.de/openid/" . $username;
 			$users = Person::model()->findBySql("SELECT * FROM person WHERE auth = '" . addslashes($auth) . "' OR (auth LIKE 'openid:https://service.gruene.de%' AND email = '" . addslashes($username) . "')");
 		}
 
@@ -209,7 +210,8 @@ class AntragsgruenController extends CController
 	 * @param array $form_params
 	 * @throws Exception
 	 */
-	protected function performLogin_OAuth_init(&$model, $form_params)  {
+	protected function performLogin_OAuth_init(&$model, $form_params)
+	{
 		$model->attributes = $form_params;
 
 
@@ -241,7 +243,8 @@ class AntragsgruenController extends CController
 	/**
 	 * @param AntragUserIdentityOAuth $user_identity
 	 */
-	protected function performLogin_OAuth_create_user($user_identity) {
+	protected function performLogin_OAuth_create_user($user_identity)
+	{
 		$email = $user_identity->getEmail();
 
 		$user                   = new Person;
@@ -252,6 +255,10 @@ class AntragsgruenController extends CController
 		$user->angelegt_datum   = date("Y-m-d H:i:s");
 		$user->status           = Person::$STATUS_CONFIRMED;
 		$user->typ              = Person::$TYP_PERSON;
+
+		$password      = substr(md5(uniqid()), 0, 8);
+		$user->pwd_enc = Person::create_hash($password);
+
 		if (Person::model()->count() == 0) {
 			$user->admin = 1;
 			Yii::app()->user->setState("role", "admin");
@@ -259,18 +266,21 @@ class AntragsgruenController extends CController
 			$user->admin = 0;
 		}
 
+		$user->save();
+
 		if (trim($email) != "") {
-			$password      = substr(md5(uniqid()), 0, 8);
-			$user->pwd_enc = Person::create_hash($password);
-			mb_send_mail($email, "Dein Antragsgrün-Zugang", "Hallo!\n\nDein Zugang bei Antragsgrün wurde eben eingerichtet.\n\n" .
-				"Du kannst dich mit folgenden Daten einloggen:\nBenutzerInnenname: $email\nPasswort: $password\n\n" .
+			$user->refresh();
+			$send_text = "Hallo!\n\nDein Zugang bei Antragsgrün wurde eben eingerichtet.\n\n" .
+				"Du kannst dich mit folgenden Daten einloggen:\nBenutzerInnenname: $email\nPasswort: %passwort%\n\n" .
 				"Das Passwort kannst du hier ändern:\n" .
 				yii::app()->getBaseUrl(true) . yii::app()->createUrl("infos/passwort") . "\n\n" .
 				"Außerdem ist auch weiterhin ein Login über deinen Wurzelwerk-Zugang möglich.\n\n" .
-				"Liebe Grüße,\n  Das Antragsgrün-Team", "From: " . Yii::app()->params['mail_from']);
+				"Liebe Grüße,\n  Das Antragsgrün-Team";
+			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $user->id, "Dein Antragsgrün-Zugang", $send_text, null, array(
+				"%passwort%" => $password,
+			));
 		}
 
-		$user->save();
 	}
 
 
@@ -279,7 +289,8 @@ class AntragsgruenController extends CController
 	 * @param string $openid_mode
 	 * @throws Exception
 	 */
-	protected function performLogin_OAuth_callback($success_redirect, $openid_mode) {
+	protected function performLogin_OAuth_callback($success_redirect, $openid_mode)
+	{
 		/** @var LightOpenID $loid */
 		$loid = Yii::app()->loid->load();
 		if ($openid_mode != 'cancel') {
@@ -316,7 +327,8 @@ class AntragsgruenController extends CController
 	 * @param string $login
 	 * @throws Exception
 	 */
-	protected function performLogin_from_email_params($success_redirect, $login) {
+	protected function performLogin_from_email_params($success_redirect, $login)
+	{
 		/** @var Person $user */
 		$user = Person::model()->findByAttributes(array("id" => $login));
 		if ($user === null) {
@@ -366,9 +378,10 @@ class AntragsgruenController extends CController
 	 * @param string|null $bestaetigungscode
 	 * @return array
 	 */
-	protected function loginOderRegistrieren_backend($email, $password = null, $bestaetigungscode = null) {
-		$msg_ok                 = $msg_err = "";
-		$correct_person         = null;
+	protected function loginOderRegistrieren_backend($email, $password = null, $bestaetigungscode = null)
+	{
+		$msg_ok         = $msg_err = "";
+		$correct_person = null;
 
 		$person = Person::model()->findAll(array(
 			"condition" => "email='" . addslashes($email) . "' AND pwd_enc != ''"
@@ -390,7 +403,7 @@ class AntragsgruenController extends CController
 				if ($p->checkEmailBestaetigungsCode($bestaetigungscode)) {
 					$p->email_bestaetigt = 1;
 					if ($p->save()) {
-						$msg_ok = "Die E-Mail-Adresse wurde freigeschaltet. Ab jetzt wirst du entsprechend deinen Einstellungen benachrichtigt.";
+						$msg_ok   = "Die E-Mail-Adresse wurde freigeschaltet. Ab jetzt wirst du entsprechend deinen Einstellungen benachrichtigt.";
 						$identity = new AntragUserIdentityPasswd($p->email, $p->auth);
 						Yii::app()->user->login($identity);
 					} else {
@@ -415,12 +428,18 @@ class AntragsgruenController extends CController
 			$person->admin            = 0;
 
 			if ($person->save()) {
+				$person->refresh();
 				$best_code = $person->createEmailBestaetigungsCode();
 				$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/benachrichtigungen", array("code" => $best_code));
-				mb_send_mail($email, "Anmeldung bei Antragsgrün", "Hallo,\n\num Benachrichtigungen bei Antragsgrün zu erhalten, klicke entweder auf folgenden Link:\n$link\n\n"
-					. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: $best_code\n\n"
-					. "Das Passwort für den Antragsgrün-Zugang lautet: " . $passwort . "\n\n"
-					. "Liebe Grüße,\n\tDas Antragsgrün-Team.", "From: " . Yii::app()->params['mail_from']);
+				$send_text = "Hallo,\n\num Benachrichtigungen bei Antragsgrün zu erhalten, klicke entweder auf folgenden Link:\n%best_link%\n\n"
+					. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
+					. "Das Passwort für den Antragsgrün-Zugang lautet: %passwort%\n\n"
+					. "Liebe Grüße,\n\tDas Antragsgrün-Team.";
+				AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, array(
+					"%code%"      => $best_code,
+					"%best_link%" => $link,
+					"%passwort%"  => $passwort,
+				));
 				$correct_person = $person;
 
 				$identity = new AntragUserIdentityPasswd($email, $person->auth);
@@ -434,7 +453,6 @@ class AntragsgruenController extends CController
 		}
 		return array($correct_person, $msg_ok, $msg_err);
 	}
-
 
 
 	/**
