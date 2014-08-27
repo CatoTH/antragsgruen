@@ -6,17 +6,9 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema antragsgruen2
+-- Table `veranstaltungsreihe`
 -- -----------------------------------------------------
--- 
--- 
-CREATE SCHEMA IF NOT EXISTS `antragsgruen2` DEFAULT CHARACTER SET utf8mb4 ;
-USE `antragsgruen2` ;
-
--- -----------------------------------------------------
--- Table `antragsgruen2`.`veranstaltungsreihe`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltungsreihe` (
+CREATE TABLE IF NOT EXISTS `veranstaltungsreihe` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `subdomain` VARCHAR(45) NOT NULL,
   `name` VARCHAR(200) NOT NULL,
@@ -32,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltungsreihe` (
   INDEX `fk_veranstaltungsreihe_veranstaltung1_idx` (`aktuelle_veranstaltung_id` ASC),
   CONSTRAINT `fk_veranstaltungsreihe_veranstaltung1`
     FOREIGN KEY (`aktuelle_veranstaltung_id`)
-    REFERENCES `antragsgruen2`.`veranstaltung` (`id`)
+    REFERENCES `veranstaltung` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -40,9 +32,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`veranstaltung`
+-- Table `veranstaltung`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltung` (
+CREATE TABLE IF NOT EXISTS `veranstaltung` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `veranstaltungsreihe_id` INT NOT NULL,
   `name` VARCHAR(200) NOT NULL,
@@ -63,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltung` (
   INDEX `fk_veranstaltung_veranstaltungsreihe1_idx` (`veranstaltungsreihe_id` ASC),
   CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1`
     FOREIGN KEY (`veranstaltungsreihe_id`)
-    REFERENCES `antragsgruen2`.`veranstaltungsreihe` (`id`)
+    REFERENCES `veranstaltungsreihe` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -71,9 +63,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`antrag`
+-- Table `antrag`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag` (
+CREATE TABLE IF NOT EXISTS `antrag` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `veranstaltung_id` INT NOT NULL,
   `abgeleitet_von` INT NULL,
@@ -93,12 +85,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag` (
   INDEX `abgeleitet_von` (`abgeleitet_von` ASC),
   CONSTRAINT `fk_antrag_antrag1`
     FOREIGN KEY (`abgeleitet_von`)
-    REFERENCES `antragsgruen2`.`antrag` (`id`)
+    REFERENCES `antrag` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_veranstaltung`
     FOREIGN KEY (`veranstaltung_id`)
-    REFERENCES `antragsgruen2`.`veranstaltung` (`id`)
+    REFERENCES `veranstaltung` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -106,9 +98,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`aenderungsantrag`
+-- Table `aenderungsantrag`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`aenderungsantrag` (
+CREATE TABLE IF NOT EXISTS `aenderungsantrag` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `antrag_id` INT NULL,
   `revision_name` VARCHAR(45) NULL,
@@ -127,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`aenderungsantrag` (
   INDEX `fk_aenderungsantrag_antrag1_idx` (`antrag_id` ASC),
   CONSTRAINT `fk_aenderungsantrag_antrag1`
     FOREIGN KEY (`antrag_id`)
-    REFERENCES `antragsgruen2`.`antrag` (`id`)
+    REFERENCES `antrag` (`id`)
     ON DELETE SET NULL
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -135,9 +127,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`person`
+-- Table `person`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`person` (
+CREATE TABLE IF NOT EXISTS `person` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `typ` ENUM('person', 'organisation') NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -157,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`person` (
   INDEX `fk_person_veranstaltungsreihe1_idx` (`veranstaltungsreihe_namespace` ASC),
   CONSTRAINT `fk_person_veranstaltungsreihe1`
     FOREIGN KEY (`veranstaltungsreihe_namespace`)
-    REFERENCES `antragsgruen2`.`veranstaltungsreihe` (`id`)
+    REFERENCES `veranstaltungsreihe` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -165,9 +157,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`aenderungsantrag_kommentar`
+-- Table `aenderungsantrag_kommentar`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`aenderungsantrag_kommentar` (
+CREATE TABLE IF NOT EXISTS `aenderungsantrag_kommentar` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `verfasserIn_id` INT NULL,
   `aenderungsantrag_id` INT NULL,
@@ -181,12 +173,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`aenderungsantrag_kommentar` (
   INDEX `fk_aenderungsantrag_kommentar_aenderungsantrag1_idx` (`aenderungsantrag_id` ASC),
   CONSTRAINT `fk_aenderungsantrag_kommentar_aenderungsantrag1`
     FOREIGN KEY (`aenderungsantrag_id`)
-    REFERENCES `antragsgruen2`.`aenderungsantrag` (`id`)
+    REFERENCES `aenderungsantrag` (`id`)
     ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_aenderungsantrag_kommentar_person1`
     FOREIGN KEY (`verfasserIn_id`)
-    REFERENCES `antragsgruen2`.`person` (`id`)
+    REFERENCES `person` (`id`)
     ON DELETE SET NULL
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -194,9 +186,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`aenderungsantrag_unterstuetzerInnen`
+-- Table `aenderungsantrag_unterstuetzerInnen`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`aenderungsantrag_unterstuetzerInnen` (
+CREATE TABLE IF NOT EXISTS `aenderungsantrag_unterstuetzerInnen` (
   `aenderungsantrag_id` INT NOT NULL,
   `unterstuetzerIn_id` INT NOT NULL,
   `rolle` ENUM('initiator', 'unterstuetzt', 'mag', 'magnicht') NOT NULL,
@@ -207,12 +199,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`aenderungsantrag_unterstuetzerInnen`
   INDEX `fk_person_has_aenderungsantrag_unterstuetzers1_idx` (`unterstuetzerIn_id` ASC),
   CONSTRAINT `fk_person_has_aenderungsantrag_aenderungsantrag1`
     FOREIGN KEY (`aenderungsantrag_id`)
-    REFERENCES `antragsgruen2`.`aenderungsantrag` (`id`)
+    REFERENCES `aenderungsantrag` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_person_has_aenderungsantrag_unterstuetzers1`
     FOREIGN KEY (`unterstuetzerIn_id`)
-    REFERENCES `antragsgruen2`.`person` (`id`)
+    REFERENCES `person` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -220,9 +212,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`antrag_abos`
+-- Table `antrag_abos`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag_abos` (
+CREATE TABLE IF NOT EXISTS `antrag_abos` (
   `antrag_id` INT NOT NULL,
   `person_id` INT NOT NULL,
   PRIMARY KEY (`antrag_id`, `person_id`),
@@ -230,12 +222,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag_abos` (
   INDEX `fk_antrag_abos_person1_idx` (`person_id` ASC),
   CONSTRAINT `fk_antrag_abos_antrag1`
     FOREIGN KEY (`antrag_id`)
-    REFERENCES `antragsgruen2`.`antrag` (`id`)
+    REFERENCES `antrag` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_abos_person1`
     FOREIGN KEY (`person_id`)
-    REFERENCES `antragsgruen2`.`person` (`id`)
+    REFERENCES `person` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -243,9 +235,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`antrag_kommentar`
+-- Table `antrag_kommentar`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag_kommentar` (
+CREATE TABLE IF NOT EXISTS `antrag_kommentar` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `verfasserIn_id` INT NULL,
   `antrag_id` INT NULL,
@@ -259,12 +251,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag_kommentar` (
   INDEX `fk_antrag_kommentar_antrag1_idx` (`antrag_id` ASC),
   CONSTRAINT `fk_antrag_kommentar_antrag1`
     FOREIGN KEY (`antrag_id`)
-    REFERENCES `antragsgruen2`.`antrag` (`id`)
+    REFERENCES `antrag` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_antrag_kommentar_person1`
     FOREIGN KEY (`verfasserIn_id`)
-    REFERENCES `antragsgruen2`.`person` (`id`)
+    REFERENCES `person` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -272,9 +264,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`antrag_kommentar_unterstuetzerInnen`
+-- Table `antrag_kommentar_unterstuetzerInnen`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag_kommentar_unterstuetzerInnen` (
+CREATE TABLE IF NOT EXISTS `antrag_kommentar_unterstuetzerInnen` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `ip_hash` CHAR(32) NULL,
   `cookie_id` INT NULL,
@@ -286,7 +278,7 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag_kommentar_unterstuetzerInnen`
   INDEX `fk_antrag_kommentar_unterstuetzer_antrag_kommentar1_idx` (`antrag_kommentar_id` ASC),
   CONSTRAINT `fk_antrag_kommentar_unterstuetzer_antrag_kommentar1`
     FOREIGN KEY (`antrag_kommentar_id`)
-    REFERENCES `antragsgruen2`.`antrag_kommentar` (`id`)
+    REFERENCES `antrag_kommentar` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -294,9 +286,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`antrag_unterstuetzerInnen`
+-- Table `antrag_unterstuetzerInnen`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag_unterstuetzerInnen` (
+CREATE TABLE IF NOT EXISTS `antrag_unterstuetzerInnen` (
   `antrag_id` INT NOT NULL,
   `unterstuetzerIn_id` INT NOT NULL,
   `rolle` ENUM('initiator', 'unterstuetzt', 'mag', 'magnicht') NOT NULL,
@@ -307,12 +299,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`antrag_unterstuetzerInnen` (
   INDEX `fk_antrag_idx` (`antrag_id` ASC),
   CONSTRAINT `fk_antrag`
     FOREIGN KEY (`antrag_id`)
-    REFERENCES `antragsgruen2`.`antrag` (`id`)
+    REFERENCES `antrag` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_unterstuetzer`
     FOREIGN KEY (`unterstuetzerIn_id`)
-    REFERENCES `antragsgruen2`.`person` (`id`)
+    REFERENCES `person` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -320,9 +312,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`cache`
+-- Table `cache`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`cache` (
+CREATE TABLE IF NOT EXISTS `cache` (
   `id` CHAR(32) NOT NULL,
   `datum` TIMESTAMP NULL,
   `daten` LONGBLOB NULL,
@@ -332,9 +324,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`texte`
+-- Table `texte`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`texte` (
+CREATE TABLE IF NOT EXISTS `texte` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `text_id` VARCHAR(20) NOT NULL,
   `veranstaltung_id` INT NULL,
@@ -345,7 +337,7 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`texte` (
   INDEX `fk_texte_veranstaltung1_idx` (`veranstaltung_id` ASC),
   CONSTRAINT `fk_texte_veranstaltung1`
     FOREIGN KEY (`veranstaltung_id`)
-    REFERENCES `antragsgruen2`.`veranstaltung` (`id`)
+    REFERENCES `veranstaltung` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -353,9 +345,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`veranstaltungs_admins`
+-- Table `veranstaltungs_admins`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltungs_admins` (
+CREATE TABLE IF NOT EXISTS `veranstaltungs_admins` (
   `veranstaltung_id` INT NOT NULL,
   `person_id` INT NOT NULL,
   PRIMARY KEY (`veranstaltung_id`, `person_id`),
@@ -363,12 +355,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltungs_admins` (
   INDEX `fk_veranstaltung_has_person_veranstaltung2_idx` (`veranstaltung_id` ASC),
   CONSTRAINT `fk_veranstaltung_has_person_person2`
     FOREIGN KEY (`person_id`)
-    REFERENCES `antragsgruen2`.`person` (`id`)
+    REFERENCES `person` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_veranstaltung_has_person_veranstaltung2`
     FOREIGN KEY (`veranstaltung_id`)
-    REFERENCES `antragsgruen2`.`veranstaltung` (`id`)
+    REFERENCES `veranstaltung` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -376,9 +368,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`veranstaltungsreihen_abos`
+-- Table `veranstaltungsreihen_abos`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltungsreihen_abos` (
+CREATE TABLE IF NOT EXISTS `veranstaltungsreihen_abos` (
   `veranstaltungsreihe_id` INT NOT NULL,
   `person_id` INT NOT NULL,
   `antraege` TINYINT NULL,
@@ -389,12 +381,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltungsreihen_abos` (
   INDEX `fk_veranstaltungsreihen_abos_person1_idx` (`person_id` ASC),
   CONSTRAINT `fk_veranstaltungsreihen_abos_person1`
     FOREIGN KEY (`person_id`)
-    REFERENCES `antragsgruen2`.`person` (`id`)
+    REFERENCES `person` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_veranstaltungsreihen_abos_veranstaltungsreihe1`
     FOREIGN KEY (`veranstaltungsreihe_id`)
-    REFERENCES `antragsgruen2`.`veranstaltungsreihe` (`id`)
+    REFERENCES `veranstaltungsreihe` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -402,9 +394,9 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 
 -- -----------------------------------------------------
--- Table `antragsgruen2`.`veranstaltungsreihen_admins`
+-- Table `veranstaltungsreihen_admins`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltungsreihen_admins` (
+CREATE TABLE IF NOT EXISTS `veranstaltungsreihen_admins` (
   `veranstaltungsreihe_id` INT NOT NULL,
   `person_id` INT NOT NULL,
   PRIMARY KEY (`veranstaltungsreihe_id`, `person_id`),
@@ -412,12 +404,12 @@ CREATE TABLE IF NOT EXISTS `antragsgruen2`.`veranstaltungsreihen_admins` (
   INDEX `fk_veranstaltungsreihe_has_person_veranstaltungsreihe1_idx` (`veranstaltungsreihe_id` ASC),
   CONSTRAINT `fk_veranstaltungsreihe_has_person_person1`
     FOREIGN KEY (`person_id`)
-    REFERENCES `antragsgruen2`.`person` (`id`)
+    REFERENCES `person` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_veranstaltungsreihe_has_person_veranstaltungsreihe1`
     FOREIGN KEY (`veranstaltungsreihe_id`)
-    REFERENCES `antragsgruen2`.`veranstaltungsreihe` (`id`)
+    REFERENCES `veranstaltungsreihe` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
