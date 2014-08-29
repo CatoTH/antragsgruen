@@ -6,6 +6,7 @@ Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . '/../../vendor/chris83/yii-
 
 define("SEED_KEY", "randomkey");
 define("MULTISITE_MODE", false);
+define("IGNORE_PASSWORD_MODE", false);
 
 
 if (MULTISITE_MODE) {
@@ -33,6 +34,7 @@ return array(
 		'application.models.forms.*',
 		'application.models.interfaces.*',
 		'application.components.*',
+        'application.controllers.*',
 		'ext.giix-components.*',
 	),
 
