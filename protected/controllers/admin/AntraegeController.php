@@ -86,7 +86,7 @@ class AntraegeController extends GxController
 			$antrag->save();
 
 			if (!Yii::app()->getRequest()->getIsAjaxRequest())
-				$this->redirect(array('admin'));
+				$this->redirect(array('index'));
 		} else
 			throw new CHttpException(400, Yii::t('app', 'Your request is invalid.'));
 	}

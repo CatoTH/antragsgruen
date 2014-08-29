@@ -1116,6 +1116,12 @@ table.view {
 
 }
 
+.list-view .items .empty {
+  padding: 25px;
+  display: block;
+  font-style: italic;
+}
+
 del {
   color: #880000;
 }

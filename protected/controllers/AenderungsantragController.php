@@ -466,6 +466,7 @@ class AenderungsantragController extends AntragsgruenController
 		$aenderungsantrag->antrag                     = $antrag;
 		$aenderungsantrag->antrag_id                  = $antrag->id;
 		$aenderungsantrag->status                     = Aenderungsantrag::$STATUS_UNBESTAETIGT;
+        $aenderungsantrag->status_string              = "";
 
 		$changed = false;
 
@@ -473,6 +474,7 @@ class AenderungsantragController extends AntragsgruenController
 
 			$aenderungsantrag->name_neu              = $_REQUEST["Aenderungsantrag"]["name_neu"];
 			$aenderungsantrag->aenderung_begruendung = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["ae_begruendung"]);
+            $aenderungsantrag->begruendung_neu       = "";
 
 			if ($aenderungsantrag->name_neu != $antrag->name) $changed = true;
 
