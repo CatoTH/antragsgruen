@@ -15,7 +15,12 @@
 if ($mode == "neu") {
 	?>
 	<h3><?= $sprache->get("AntragstellerIn") ?></h3>
-	<br>
+    <br>
+    <?php if ($this->veranstaltung->isAdminCurUser()) { ?>
+        <label><input type="checkbox" name="andere_antragstellerIn"> Ich lege diesen Antrag für eine andere AntragstellerIn an
+            <small>(Admin-Funktion)</small>
+        </label>
+    <?php } ?>
 
 	<div class="control-group "><label class="control-label" for="Person_name">Name(n)</label>
 		<div class="controls">

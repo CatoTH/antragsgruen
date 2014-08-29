@@ -1,9 +1,13 @@
+TODO: Person VARCHAR => TEXT
+
+
 2.2.0 - 2014-?????
 ==================
 
 * Accounts, die nur für eine Veranstaltungsreihe gültig sind (LV Hessen)
-* Berechtigungs-Alternative: min. 5 AntragstellerInnen (LV Hessen)
+* Berechtigungs-Alternativen: min. 5 AntragstellerInnen (LV Hessen) bzw. min. 20 (BDK)
 * Änderungsanträge werden standardmäßig in der "Diff-Ansicht" dargestellt. Für jeden "Ersetze [x] durch [y]"-Block (der jetzt "Ändere den Absatz wie folgt: [x]" heißt) gibt es jetzt genau einen Kommentar-Button, statt vier wie bisher. (KV Hessen)
+* Einige Kompatibilitätsprobleme mit Datenbanken (bei leeren Feldern ohne Default-Wert) beheben.
 
 2.1.2 - 2014-08-17
 ==================

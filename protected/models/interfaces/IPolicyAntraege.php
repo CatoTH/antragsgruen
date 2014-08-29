@@ -6,11 +6,13 @@ abstract class IPolicyAntraege
 {
 	public static $POLICY_HESSEN_LMV = "HeLMV";
 	public static $POLICY_BAYERN_LDK = "ByLDK";
+    public static $POLICY_BDK = "BDK";
 	public static $POLICY_ADMINS = "Admins";
 	public static $POLICY_ALLE = "Alle";
 	public static $POLICY_EINGELOGGTE = "Eingeloggte";
 
 	public static $POLICIES = array(
+        "BDK"         => "PolicyAntraegeBDK",
 		"ByLDK"       => "PolicyAntraegeByLDK",
 		"HeLMB"       => "PolicyAntraegeHeLMV",
 		"Admins"      => "PolicyAntraegeAdmins",
@@ -152,7 +154,7 @@ abstract class IPolicyAntraege
 			$person->name           = $name;
 			$person->typ            = Person::$TYP_PERSON;
 			$person->status         = Person::$STATUS_UNCONFIRMED;
-			$person->angelegt_datum = "NOW()";
+			$person->angelegt_datum = new CDbExpression('NOW()');
 			$person->admin          = 0;
 			if (isset($_REQUEST["UnterstuetzerInnen_organisation"]) && isset($_REQUEST["UnterstuetzerInnen_organisation"][$i])) {
 				$person->organisation = $_REQUEST["UnterstuetzerInnen_organisation"][$i];
@@ -204,7 +206,7 @@ abstract class IPolicyAntraege
 			$person->name           = $name;
 			$person->typ            = Person::$TYP_PERSON;
 			$person->status         = Person::$STATUS_UNCONFIRMED;
-			$person->angelegt_datum = "NOW()";
+			$person->angelegt_datum = new CDbExpression('NOW()');
 			$person->admin          = 0;
 			if (isset($_REQUEST["UnterstuetzerInnen_orga"]) && isset($_REQUEST["UnterstuetzerInnen_orga"][$i])) {
 				$person->organisation = $_REQUEST["UnterstuetzerInnen_orga"][$i];
