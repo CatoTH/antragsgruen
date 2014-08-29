@@ -34,6 +34,8 @@ class Antrag extends IAntrag
 	public static $TYP_GO = 4;
 	public static $TYP_FINANZANTRAG = 5;
 	public static $TYP_WAHLPROGRAMM = 6;
+    public static $TYP_DRINGLICHKEITSANTRAG = 7;
+    public static $TYP_KAPITEL = 8;
 	public static $TYPEN = array(
 		0 => "Antrag",
 		1 => "Satzung",
@@ -42,7 +44,8 @@ class Antrag extends IAntrag
 		4 => "GO-Antrag",
 		5 => "Finanzantrag",
 		6 => "Wahlprogramm",
-		7 => "Dringlichkeitsantrag"
+		7 => "Dringlichkeitsantrag",
+        8 => "Kapitel",
 	);
 
 	public static $TYP_PREFIX = array(
