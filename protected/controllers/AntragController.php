@@ -716,6 +716,7 @@ class AntragController extends AntragsgruenController
             $model->begruendung       = HtmlBBcodeUtils::bbcode_normalize($model->begruendung);
             $model->datum_einreichung = new CDbExpression('NOW()');
             $model->status            = Antrag::$STATUS_UNBESTAETIGT;
+            $model->revision_name     = "";
             $goon                     = true;
 
             if (!$this->veranstaltung->getPolicyAntraege()->checkAntragSubmit()) {
