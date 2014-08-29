@@ -62,11 +62,17 @@ $this->menus_html[] = $html;
 
 		<div class="content">
 			<?php if (count($antrag->antraege) > 0) { ?>
-				<div class="alert alert-error" style="margin-top: 10px; margin-bottom: 25px;">Achtung: dies ist eine
-					alte Fassung; die aktuelle Fassung gibt es hier:<br>
-					<?php foreach ($antrag->antraege as $a) {
-						echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
-					} ?>
+				<div class="alert alert-error" style="margin-top: 10px; margin-bottom: 25px;">
+                    <?php if (count($antrag->antraege) == 1) {
+                        echo 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:<br>';
+                        $a = $antrag->antraege[0];
+                        echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
+					} else {
+                        echo 'Achtung: dies ist eine alte Fassung. Aktuellere Fassungen gibt es hier:<br>';
+                        foreach ($antrag->antraege as $a) {
+                            echo "- " . CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id))) . "<br>";
+                        }
+                    } ?>
 				</div>
 			<?php } ?>
 
