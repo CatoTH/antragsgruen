@@ -459,6 +459,9 @@ a {
 
     > .text {
       padding-left: 50px;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
     }
     > blockquote.text {
       padding-left: 30px;

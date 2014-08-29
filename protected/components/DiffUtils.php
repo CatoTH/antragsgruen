@@ -326,14 +326,15 @@ class DiffUtils
 	public static $ins_mode_active = false;
 	public static $del_mode_active = false;
 
-	/**
-	 * @static
-	 * @param string $text_alt
-	 * @param string $text_neu
-	 * @param bool $compact
-	 * @return string
-	 */
-	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false)
+    /**
+     * @static
+     * @param string $text_alt
+     * @param string $text_neu
+     * @param bool $compact
+     * @param int $css_width_hack
+     * @return string
+     */
+	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false, $css_width_hack = 0)
 	{
 		$text_alt = static::bbNormalizeForDiff($text_alt);
 		$text_neu = static::bbNormalizeForDiff($text_neu);
@@ -389,7 +390,7 @@ class DiffUtils
 
 		if ($diffstr == "") $diffstr = HtmlBBcodeUtils::bbcode2html($text_alt);
 
-		$diffstr = HtmlBBcodeUtils::wrapWithTextClass($diffstr);
+		$diffstr = HtmlBBcodeUtils::wrapWithTextClass($diffstr, $css_width_hack);
 		return $diffstr;
 	}
 

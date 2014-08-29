@@ -205,12 +205,13 @@ class HtmlBBcodeUtils
 		return array("html" => $absaetze_html, "html_plain" => $absaetze_html_plain, "bbcode" => $absaetze_bbcode);
 	}
 
-	static function wrapWithTextClass($text) {
-		if (mb_stripos($text, "<ul") === 0) $text = str_ireplace("<ul", "<ul class='text'", $text);
+	static function wrapWithTextClass($text, $css_hack_width = 0) {
+        if (mb_stripos($text, "<ul") === 0) $text = str_ireplace("<ul", "<ul class='text'", $text);
 		if (mb_stripos($text, "<ol") === 0) $text = str_ireplace("<ol", "<ol class='text'", $text);
 
 		if (mb_stripos($text, "<ul") !== 0 && mb_stripos($text, "<ol") !== 0 && mb_stripos($text, "<blockquote") !== 0) {
-			$text = "<div class='text'>" . $text . "</div>";
+            $css = ($css_hack_width > 0 ? "style='width: " . Ceil($css_hack_width * 8.4) . "px;'" : "");
+			$text = "<div class='text' $css>" . $text . "</div>";
 		}
 		return $text;
 	}

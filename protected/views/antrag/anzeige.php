@@ -201,7 +201,7 @@ $this->menus_html[] = $html;
 					<div
 						class="absatz_text diff ae_<?php echo $ant->id; ?>" style="display: none; position: relative; border-right: solid 1px lightgray; margin-left: 0;">
 						<?php
-						echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i]);
+						echo DiffUtils::renderBBCodeDiff2HTML($abs->str_bbcode, $par[$i], false, $this->veranstaltung->getEinstellungen()->zeilenlaenge);
 						?>
 					</div>
 				<?php

@@ -461,7 +461,10 @@ a {
     margin-left: 0;
     padding: 15px 23px 25px 0; }
     .antrags_text_holder .absatz_text > .text {
-      padding-left: 50px; }
+      padding-left: 50px;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box; }
     .antrags_text_holder .absatz_text > blockquote.text {
       padding-left: 30px; }
     .antrags_text_holder .absatz_text ul, .antrags_text_holder .absatz_text ol {
