@@ -174,6 +174,45 @@ class Aenderungsantrag extends IAntrag
 		return parent::save($runValidation, $attributes);
 	}
 
+    /**
+     * @param Antrag $neuer_antrag
+     * @param array $absatz_mapping
+     * @return Aenderungsantrag
+     */
+    public function aufrechterhaltenBeiNeuemAntrag($antrag, $anz_absaetze_neu, $absatz_mapping) {
+        $neuer_ae                             = new Aenderungsantrag();
+        $neuer_ae->antrag_id                  = $antrag->id;
+        $neuer_ae->revision_name              = $this->revision_name;
+        $neuer_ae->name_neu                   = $this->name_neu;
+        $neuer_ae->begruendung_neu            = $this->begruendung_neu;
+        $neuer_ae->aenderung_begruendung      = $this->begruendung_neu;
+        $neuer_ae->datum_einreichung          = $this->datum_einreichung;
+        $neuer_ae->aenderung_first_line_cache = -1;
+        $neuer_ae->status_string              = "";
+        $neuer_ae->status                     = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
+
+        $text_neu = array();
+        for ($i = 0; $i < $anz_absaetze_neu; $i++) $text_neu[$i] = "";
+        $old_abs = json_decode($this->text_neu);
+        foreach ($old_abs as $abs => $str) $text_neu[$absatz_mapping[$abs]] = $str;
+        $neuer_ae->setDiffParagraphs($text_neu);
+
+        $neuer_ae->calcDiffText();
+
+
+        if (!$neuer_ae->save()) var_dump($neuer_ae->attributes);
+
+        foreach ($this->aenderungsantragUnterstuetzerInnen as $init) if ($init->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+            $in                      = new AenderungsantragUnterstuetzerInnen();
+            $in->rolle               = IUnterstuetzerInnen::$ROLLE_INITIATORIN;
+            $in->position            = $init->position;
+            $in->aenderungsantrag_id = $neuer_ae->id;
+            $in->unterstuetzerIn_id  = $init->unterstuetzerIn_id;
+            $in->kommentar           = "";
+            $in->save();
+        }
+    }
+
 
 	/**
 	 * @return array|int[]
