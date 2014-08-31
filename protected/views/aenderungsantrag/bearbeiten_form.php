@@ -127,6 +127,7 @@ $this->renderPartial($antrag->veranstaltung->getPolicyAenderungsantraege()->getA
 	"hiddens"          => $hiddens,
 	"js_protection"    => $js_protection,
 	"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
+    "veranstaltung"    => $antrag->veranstaltung,
 ));
 
 $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");

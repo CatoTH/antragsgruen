@@ -8,6 +8,7 @@
  * @var bool $js_protection
  * @var Sprache $sprache
  * @var Person $antragstellerIn
+ * @var Veranstaltung $veranstaltung
  */
 
 
@@ -16,19 +17,9 @@ if ($mode == "neu") {
 	<div class="antragstellerIn_delegiert_orga_20">
 		<h3><?= $sprache->get("AntragstellerIn") ?></h3>
 		<br>
-		<?php if ($this->veranstaltung->isAdminCurUser()) { ?>
-			<label><input type="checkbox" name="andere_antragstellerIn"> Ich lege diesen Antrag für eine andere AntragstellerIn an
-				<small>(Admin-Funktion)</small>
-			</label>
-		<?php } ?>
-
-		<div class="antragstellerIn_daten">
-			<?php
-			echo $form->textFieldRow($antragstellerIn, 'name');
-			echo $form->textFieldRow($antragstellerIn, 'email', array("required" => true));
-			echo $form->textFieldRow($antragstellerIn, 'telefon');
-			?>
-		</div>
+        <?php
+        echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
+        ?>
 
 		<div class="control-group" id="Person_typ_chooser">
 			<label class="control-label">Ich bin...</label>

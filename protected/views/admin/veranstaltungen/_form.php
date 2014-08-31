@@ -268,15 +268,39 @@ $einstellungen = $model->getEinstellungen();
 	</fieldset>
 	<br>
 
-	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox"
-											   name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
-											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
-			Angabe der <strong>E-Mail-Adresse</strong> erzwingen
-			<small>(Bei Anträgen und Änderungsanträgen)</small>
-		</label>
-	</fieldset>
-	<br>
+    <fieldset style="margin-top: 10px;">
+        <label style="display: inline;"><input type="checkbox"
+                                               name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
+                                               value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
+            Angabe der <strong>E-Mail-Adresse</strong> erzwingen
+            <small>(Bei Anträgen und Änderungsanträgen)</small>
+        </label>
+    </fieldset>
+    <br>
+
+    <fieldset style="margin-top: 10px;">
+        <label style="display: inline;"><input type="checkbox" id="antrag_neu_kann_telefon"
+                                               name="VeranstaltungsEinstellungen[antrag_neu_kann_telefon]"
+                                               value="1" <?php if ($model->getEinstellungen()->antrag_neu_kann_telefon) echo "checked"; ?>>
+            Angabe der <strong>Telefonnummer</strong> ermöglichen
+            <small>(Bei Anträgen und Änderungsanträgen)</small>
+        </label>
+        <br>
+
+        <label style="display: inline-block; margin-left: 30px;" id="antrag_neu_braucht_telefon_holder"><input type="checkbox"
+                                               name="VeranstaltungsEinstellungen[antrag_neu_braucht_telefon]"
+                                               value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_telefon) echo "checked"; ?>>
+            Erzwingen</label>
+    </fieldset>
+    <script>
+        $(function() {
+            $("#antrag_neu_kann_telefon").change(function() {
+                if ($(this).prop("checked")) $("#antrag_neu_braucht_telefon_holder").show();
+                else $("#antrag_neu_braucht_telefon_holder").hide();
+            }).trigger("change");
+        })
+    </script>
+    <br>
 </div>
 
 

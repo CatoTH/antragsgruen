@@ -4,6 +4,8 @@ class VeranstaltungsEinstellungen extends CFormModel
 {
 	/** @var bool */
 	public $antrag_neu_braucht_email = false;
+    public $antrag_neu_braucht_telefon = false;
+    public $antrag_neu_kann_telefon = false;
 	public $kommentar_neu_braucht_email = false;
 
 	public $wartungs_modus_aktiv = false;
