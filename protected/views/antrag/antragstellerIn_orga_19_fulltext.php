@@ -62,7 +62,17 @@ if ($mode == "neu") {
         </div>
 
         <div class="control-group" id="UnterstuetzerInnen">
-            <label class="control-label">UnterstützerInnen<br>(min. 19)</label>
+            <label class="control-label">
+                UnterstützerInnen<br>
+                (min. 19)<br>
+                <br>
+                <a href="#" class="fulltext_opener"><span class="icon icon-arrow-right"></span> Volltextfeld</a>
+                <a href="#" class="fulltext_closer" style="display: none;"><span class="icon icon-arrow-right"></span> Volltextfeld ausblenden</a>
+            </label>
+
+            <div class="controle unterstuetzerInnen_list_fulltext_holder" style="display: none; float: left; padding-left: 20px;">
+                <textarea name="UnterstuetzerInnen_fulltext" rows="10" cols="60" style="min-width: 300px;"></textarea>
+            </div>
 
             <div class="controls unterstuetzerInnen_list">
                 <?php for ($i = 0; $i < 19; $i++) { ?>
@@ -105,12 +115,31 @@ if ($mode == "neu") {
                     });
                 }
             });
-            $(".unterstuetzerInnen_adder a").click(function(ev) {
+            $unter.find(".unterstuetzerInnen_adder a").click(function(ev) {
                 ev.preventDefault();
                 $(".unterstuetzerInnen_list").append('<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">\
 					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">\
 					<br>');
-            })
+            });
+            $unter.find(".fulltext_opener").click(function(ev) {
+                ev.preventDefault();
+                $unter.find(".unterstuetzerInnen_list").hide();
+                $unter.find(".unterstuetzerInnen_list").find("input").removeAttr("required");
+                $unter.find(".unterstuetzerInnen_adder").hide();
+                $unter.find(".unterstuetzerInnen_list_fulltext_holder").show();
+                $unter.find(".fulltext_closer").show();
+                $unter.find(".fulltext_opener").hide();
+            });
+            $unter.find(".fulltext_closer").click(function(ev) {
+                ev.preventDefault();
+                $unter.find(".unterstuetzerInnen_list").show();
+                $unter.find(".unterstuetzerInnen_list").find("input").attr("required", "required");
+                $unter.find(".unterstuetzerInnen_adder").show();
+                $unter.find(".unterstuetzerInnen_list_fulltext_holder").hide();
+                $unter.find(".unterstuetzerInnen_list_fulltext_holder textarea").val("");
+                $unter.find(".fulltext_closer").hide();
+                $unter.find(".fulltext_opener").show();
+            });
         })
     </script>
 

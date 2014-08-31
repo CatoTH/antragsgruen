@@ -61,7 +61,9 @@ class PolicyAntraegeBDK extends IPolicyAntraege
 
         switch ($_REQUEST["Person"]["typ"]) {
             case "mitglied":
-                if (!isset($_REQUEST["UnterstuetzerInnen_name"]) || count($_REQUEST["UnterstuetzerInnen_name"]) < 4) return false;
+                if (isset($_REQUEST["UnterstuetzerInnen_fulltext"]) && trim($_REQUEST["UnterstuetzerInnen_fulltext"]) != "") return true;
+
+                if (!isset($_REQUEST["UnterstuetzerInnen_name"]) || count($_REQUEST["UnterstuetzerInnen_name"]) < 19) return false;
                 $correct = 0;
                 foreach ($_REQUEST["UnterstuetzerInnen_name"] as $unters) if ($this->isValidName($unters)) $correct++;
                 return ($correct >= 19);

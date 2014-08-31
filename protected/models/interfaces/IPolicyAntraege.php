@@ -146,7 +146,23 @@ abstract class IPolicyAntraege
 		$init->position           = 0;
 		$init->save();
 
-		if (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
+        if (isset($_REQUEST["UnterstuetzerInnen_fulltext"]) && trim($_REQUEST["UnterstuetzerInnen_fulltext"]) != "") {
+            $person                 = new Person;
+            $person->name           = trim($_REQUEST["UnterstuetzerInnen_fulltext"]);
+            $person->typ            = Person::$TYP_PERSON;
+            $person->status         = Person::$STATUS_UNCONFIRMED;
+            $person->angelegt_datum = new CDbExpression('NOW()');
+            $person->admin          = 0;
+            $person->organisation = "";
+            if ($person->save()) {
+                $unt                     = new AntragUnterstuetzerInnen();
+                $unt->antrag_id          = $antrag->id;
+                $unt->unterstuetzerIn_id = $person->id;
+                $unt->rolle              = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
+                $unt->position           = 0;
+                $unt->save();
+            }
+        } elseif (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
 			if (!$this->isValidName($name)) continue;
 
 			$name                   = trim($name);
