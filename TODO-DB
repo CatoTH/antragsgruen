@@ -1,4 +1,0 @@
-ALTER TABLE `antrag_unterstuetzerInnen` ADD `beschlussdatum` DATE NULL DEFAULT NULL ;
-ALTER TABLE `aenderungsantrag_unterstuetzerInnen` ADD `beschlussdatum` DATE NULL DEFAULT NULL ;
-ALTER TABLE `person` CHANGE `name` `name` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
-ALTER TABLE `aenderungsantrag` ADD `aenderung_metatext` LONGTEXT NOT NULL AFTER `begruendung_neu`;
