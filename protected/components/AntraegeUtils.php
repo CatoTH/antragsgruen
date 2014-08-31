@@ -7,7 +7,7 @@ class AntraegeUtils
 	 * @param string $input
 	 * @return int
 	 */
-	public static function date_iso2timestamp($input)
+	public static function date_sql2timestamp($input)
 	{
 		$x    = explode(" ", $input);
 		$date = array_map("IntVal", explode("-", $x[0]));
@@ -17,6 +17,15 @@ class AntraegeUtils
 
 		return mktime($time[0], $time[1], $time[2], $date[1], $date[2], $date[0]);
 	}
+
+    /**
+     * @param string $input
+     * @return string
+     */
+    public static function date_sql2de($input) {
+        $x = explode("-", $input);
+        return $x[2] . "." . $x[1] . "." . $x[0];
+    }
 
 
 	/**

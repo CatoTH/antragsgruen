@@ -144,6 +144,11 @@ abstract class IPolicyAntraege
 		$init->rolle              = AntragUnterstuetzerInnen::$ROLLE_INITIATORIN;
 		$init->unterstuetzerIn_id = $antragstellerIn->id;
 		$init->position           = 0;
+        if (isset($_REQUEST["Organisation_Beschlussdatum"]) && $_REQUEST["Organisation_Beschlussdatum"] != "") {
+            if (preg_match("/^(?<tag>[0-9]{2})\. *(?<monat>[0-9]{2})\. *(?<jahr>[0-9]{4})$/", $_REQUEST["Organisation_Beschlussdatum"], $matches)) {
+                $init->beschlussdatum = $matches["jahr"] . "-" . $matches["monat"] . "-" . $matches["tag"];
+            }
+        }
 		$init->save();
 
         if (isset($_REQUEST["UnterstuetzerInnen_fulltext"]) && trim($_REQUEST["UnterstuetzerInnen_fulltext"]) != "") {

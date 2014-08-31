@@ -7,6 +7,7 @@
  * @property string $name_neu
  * @property string $text_neu
  * @property string $begruendung_neu
+ * @property string $aenderung_metatext
  * @property string $aenderung_text
  * @property string $aenderung_begruendung
  * @property integer $aenderung_first_line_cache
@@ -68,9 +69,9 @@ class Aenderungsantrag extends IAntrag
 			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
-			array('name_neu, datum_beschluss', 'safe'),
+			array('name_neu, datum_beschluss, aenderung_metatext', 'safe'),
 			array('antrag_id, revision_name, name_neu, datum_beschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, antrag_id, revision_name, name_neu, text_neu, begruendung_neu, aenderung_text, aenderung_begruendung, aenderung_first_line_cache, datum_einreichung, datum_beschluss, status, status_string', 'safe', 'on' => 'search'),
+			array('id, antrag_id, revision_name, name_neu, text_neu, begruendung_neu, aenderung_metatext, aenderung_text, aenderung_begruendung, aenderung_first_line_cache, datum_einreichung, datum_beschluss, status, status_string', 'safe', 'on' => 'search'),
 		);
 
 	}
@@ -110,6 +111,7 @@ class Aenderungsantrag extends IAntrag
 			'name_neu'                           => Yii::t('app', 'Name Neu'),
 			'text_neu'                           => Yii::t('app', 'Text Neu'),
 			'begruendung_neu'                    => Yii::t('app', 'Begruendung Neu'),
+            'aenderung_metatext'                 => Yii::t('app', 'Metabeschreibung der Änderung'),
 			'aenderung_text'                     => Yii::t('app', 'Aenderung Text'),
 			'aenderung_begruendung'              => Yii::t('app', 'Aenderung Begruendung'),
 			'aenderung_first_line_cache'         => "Cache: erste Zeilennummer",
@@ -185,7 +187,7 @@ class Aenderungsantrag extends IAntrag
         $neuer_ae->revision_name              = $this->revision_name;
         $neuer_ae->name_neu                   = $this->name_neu;
         $neuer_ae->begruendung_neu            = $this->begruendung_neu;
-        $neuer_ae->aenderung_begruendung      = $this->begruendung_neu;
+        $neuer_ae->aenderung_begruendung      = $this->aenderung_begruendung;
         $neuer_ae->datum_einreichung          = $this->datum_einreichung;
         $neuer_ae->aenderung_first_line_cache = -1;
         $neuer_ae->status_string              = "";

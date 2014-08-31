@@ -87,9 +87,11 @@ $this->menus_html[] = $html;
 					<th><?= $sprache->get("AntragsstellerIn") ?>:</th>
 					<td><?php
 						$x = array();
-						foreach ($antrag->getAntragstellerInnen() as $a) {
-							$x[] = CHtml::encode($a->getNameMitOrga());
-						}
+                        foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+                            $name = CHtml::encode($unt->person->getNameMitOrga());
+                            if ($unt->beschlussdatum != "") $name .= " <small>(beschlossen am " . AntraegeUtils::date_sql2de($unt->beschlussdatum). ")</small>";
+                            $x[] = $name;
+                        }
 						echo implode(", ", $x);
 						?></td>
 				</tr>

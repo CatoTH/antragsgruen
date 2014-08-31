@@ -61,6 +61,14 @@ if ($mode == "neu") {
             </div>
         </div>
 
+        <div class="control-group" id="Organisation_Beschlussdatum_holder">
+            <label class="control-label">Beschlussdatum:</label>
+
+            <div class="controls">
+                <input type="text" name="Organisation_Beschlussdatum" placeholder="TT.MM.JJJJ" id="Organisation_Beschlussdatum">
+            </div>
+        </div>
+
         <div class="control-group" id="UnterstuetzerInnen">
             <label class="control-label">
                 UnterstützerInnen<br>
@@ -91,16 +99,25 @@ if ($mode == "neu") {
         $(function () {
             var $chooser = $("#Person_typ_chooser"),
                 $unter = $("#UnterstuetzerInnen"),
-                $andereAntragstellerIn = $("input[name=andere_antragstellerIn]");
+                $andereAntragstellerIn = $("input[name=andere_antragstellerIn]"),
+                $beschlussdatum = $("#Organisation_Beschlussdatum_holder");
+
             $chooser.find("input").change(function () {
-                if ($chooser.find("input:checked").val() == "mitglied") {
+                var val = $chooser.find("input:checked").val();
+                if (val == "mitglied") {
                     $unter.show();
                     $unter.find("input[type=text]").prop("required", true);
-                } else {
+                    $beschlussdatum.hide();
+                    $beschlussdatum.find("input").removeAttr("required");
+                }
+                if (val == "organisation") {
                     $unter.hide();
                     $unter.find("input[type=text]").prop("required", false);
+                    $beschlussdatum.show();
+                    $beschlussdatum.find("input").attr("required", "required");
                 }
             }).change();
+
             if ($andereAntragstellerIn.length > 0) $andereAntragstellerIn.change(function () {
                 if ($(this).prop("checked")) {
                     $(".antragstellerIn_daten input").each(function () {
@@ -140,7 +157,19 @@ if ($mode == "neu") {
                 $unter.find(".fulltext_closer").hide();
                 $unter.find(".fulltext_opener").show();
             });
-        })
+
+            $("#antrag_stellen_form").submit(function(ev) {
+                var person_typ = $chooser.find("input:checked").val();
+                if (person_typ == "organisation") {
+                    var datum = $beschlussdatum.find("input").val();
+                    if (!datum.match(/^[0-9]{2}\. *[0-9]{2}\. *[0-9]{4}$/)) {
+                        ev.preventDefault();
+                        alert("Bitte gib das Datum der Beschlussfassung im Format TT.MM.JJJJ (z.B. 24.12.2013).");
+                        $beschlussdatum.find("input").focus();
+                    }
+                }
+            });
+        });
     </script>
 
 <?php

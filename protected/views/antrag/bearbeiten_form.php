@@ -39,7 +39,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 		/** @var TbActiveForm $form */
 		$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-			'id'   => 'horizontalForm',
+			'id'   => 'antrag_stellen_form',
 			'type' => 'horizontal',
 		));
 

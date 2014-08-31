@@ -332,10 +332,10 @@ class VeranstaltungController extends AntragsgruenController
 		$antraege = Antrag::holeNeueste($veranstaltung_id, 20);
 
 		$data = array();
-		foreach ($antraege as $ant) $data[AntraegeUtils::date_iso2timestamp($ant->datum_einreichung) . "_antrag_" . $ant->id] = array(
+		foreach ($antraege as $ant) $data[AntraegeUtils::date_sql2timestamp($ant->datum_einreichung) . "_antrag_" . $ant->id] = array(
 			"title"       => "Neuer Antrag: " . $ant->nameMitRev(),
 			"link"        => Yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $ant->id)),
-			"dateCreated" => AntraegeUtils::date_iso2timestamp($ant->datum_einreichung),
+			"dateCreated" => AntraegeUtils::date_sql2timestamp($ant->datum_einreichung),
 			"content"     => "<h2>Antrag</h2>" . HtmlBBcodeUtils::bbcode2html($ant->text) . "<br>\n<br>\n<br>\n<h2>Begründung</h2>" . HtmlBBcodeUtils::bbcode2html($ant->begruendung),
 		);
 		return $data;
@@ -352,10 +352,10 @@ class VeranstaltungController extends AntragsgruenController
 		$antraege = Aenderungsantrag::holeNeueste($veranstaltung_id, 20);
 
 		$data = array();
-		foreach ($antraege as $ant) $data[AntraegeUtils::date_iso2timestamp($ant->datum_einreichung) . "_aenderungsantrag_" . $ant->id] = array(
+		foreach ($antraege as $ant) $data[AntraegeUtils::date_sql2timestamp($ant->datum_einreichung) . "_aenderungsantrag_" . $ant->id] = array(
 			"title"       => "Neuer Änderungsantrag: " . $ant->revision_name . " zu " . $ant->antrag->nameMitRev(),
 			"link"        => Yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id)),
-			"dateCreated" => AntraegeUtils::date_iso2timestamp($ant->datum_einreichung),
+			"dateCreated" => AntraegeUtils::date_sql2timestamp($ant->datum_einreichung),
 			"content"     => "<h2>Antrag</h2>" . HtmlBBcodeUtils::bbcode2html($ant->aenderung_text) . "<br>\n<br>\n<br>\n<h2>Begründung</h2>" . HtmlBBcodeUtils::bbcode2html($ant->aenderung_begruendung),
 		);
 		return $data;
@@ -372,10 +372,10 @@ class VeranstaltungController extends AntragsgruenController
 		$antraege = AntragKommentar::holeNeueste($veranstaltung_id, 20);
 
 		$data = array();
-		foreach ($antraege as $ant) $data[AntraegeUtils::date_iso2timestamp($ant->datum) . "_kommentar_" . $ant->id] = array(
+		foreach ($antraege as $ant) $data[AntraegeUtils::date_sql2timestamp($ant->datum) . "_kommentar_" . $ant->id] = array(
 			"title"       => "Kommentar von " . $ant->verfasserIn->name . " zu: " . $ant->antrag->nameMitRev(),
 			"link"        => Yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $ant->antrag->id, "kommentar_id" => $ant->id, "#" => "komm" . $ant->id)),
-			"dateCreated" => AntraegeUtils::date_iso2timestamp($ant->datum),
+			"dateCreated" => AntraegeUtils::date_sql2timestamp($ant->datum),
 			"content"     => HtmlBBcodeUtils::bbcode2html($ant->text),
 		);
 		return $data;

@@ -158,10 +158,10 @@ class Person extends GxActiveRecord
 	public function rules()
 	{
 		$rules = array(
-			array('typ, angelegt_datum, admin, status', 'required'),
+			array('typ, angelegt_datum, admin, status, name', 'required'),
 			array('admin, status, veranstaltungsreihe_namespace', 'numerical', 'integerOnly' => true),
 			array('typ', 'length', 'max' => 12),
-			array('name, telefon, organisation', 'length', 'max' => 100),
+			array('telefon, organisation', 'length', 'max' => 100),
 			array('email, auth', 'length', 'max' => 200),
 			array('email, telefon, auth, pwd_enc', 'default', 'setOnEmpty' => true, 'value' => null),
 			array('id, typ, name, email, telefon, auth, pwd_enc, angelegt_datum, admin, status', 'safe', 'on' => 'search'),
