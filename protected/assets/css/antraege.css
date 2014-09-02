@@ -7,7 +7,6 @@
   src: url("../font/OpenSans/fonts/Light/OpenSans-Light.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Light/OpenSans-Light.woff") format("woff"), url("../font/OpenSans/fonts/Light/OpenSans-Light.ttf") format("truetype"), url("../font/OpenSans/fonts/Light/OpenSans-Light.svg#OpenSansLight") format("svg");
   font-weight: 300;
   font-style: normal; }
-
 /* END Light */
 /* BEGIN Light Italic */
 @font-face {
@@ -16,7 +15,6 @@
   src: url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.woff") format("woff"), url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.ttf") format("truetype"), url("../font/OpenSans/fonts/LightItalic/OpenSans-LightItalic.svg#OpenSansLightItalic") format("svg");
   font-weight: 300;
   font-style: italic; }
-
 /* END Light Italic */
 /* BEGIN Regular */
 @font-face {
@@ -25,7 +23,6 @@
   src: url("../font/OpenSans/fonts/Regular/OpenSans-Regular.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Regular/OpenSans-Regular.woff") format("woff"), url("../font/OpenSans/fonts/Regular/OpenSans-Regular.ttf") format("truetype"), url("../font/OpenSans/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular") format("svg");
   font-weight: normal;
   font-style: normal; }
-
 /* END Regular */
 /* BEGIN Italic */
 @font-face {
@@ -34,7 +31,6 @@
   src: url("../font/OpenSans/fonts/Italic/OpenSans-Italic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Italic/OpenSans-Italic.woff") format("woff"), url("../font/OpenSans/fonts/Italic/OpenSans-Italic.ttf") format("truetype"), url("../font/OpenSans/fonts/Italic/OpenSans-Italic.svg#OpenSansItalic") format("svg");
   font-weight: normal;
   font-style: italic; }
-
 /* END Italic */
 /* BEGIN Semibold */
 @font-face {
@@ -43,7 +39,6 @@
   src: url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.woff") format("woff"), url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.ttf") format("truetype"), url("../font/OpenSans/fonts/Semibold/OpenSans-Semibold.svg#OpenSansSemibold") format("svg");
   font-weight: 600;
   font-style: normal; }
-
 /* END Semibold */
 /* BEGIN Semibold Italic */
 @font-face {
@@ -52,7 +47,6 @@
   src: url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.woff") format("woff"), url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.ttf") format("truetype"), url("../font/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.svg#OpenSansSemiboldItalic") format("svg");
   font-weight: 600;
   font-style: italic; }
-
 /* END Semibold Italic */
 /* BEGIN Bold */
 @font-face {
@@ -61,7 +55,6 @@
   src: url("../font/OpenSans/fonts/Bold/OpenSans-Bold.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/Bold/OpenSans-Bold.woff") format("woff"), url("../font/OpenSans/fonts/Bold/OpenSans-Bold.ttf") format("truetype"), url("../font/OpenSans/fonts/Bold/OpenSans-Bold.svg#OpenSansBold") format("svg");
   font-weight: bold;
   font-style: normal; }
-
 /* END Bold */
 /* BEGIN Bold Italic */
 @font-face {
@@ -70,7 +63,6 @@
   src: url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.woff") format("woff"), url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.ttf") format("truetype"), url("../font/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.svg#OpenSansBoldItalic") format("svg");
   font-weight: bold;
   font-style: italic; }
-
 /* END Bold Italic */
 /* BEGIN Extrabold */
 @font-face {
@@ -79,7 +71,6 @@
   src: url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.woff") format("woff"), url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.ttf") format("truetype"), url("../font/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.svg#OpenSansExtrabold") format("svg");
   font-weight: 800;
   font-style: normal; }
-
 /* END Extrabold */
 /* BEGIN Extrabold Italic */
 @font-face {
@@ -88,7 +79,6 @@
   src: url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.eot?#iefix") format("embedded-opentype"), url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.woff") format("woff"), url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.ttf") format("truetype"), url("../font/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.svg#OpenSansExtraboldItalic") format("svg");
   font-weight: 800;
   font-style: italic; }
-
 /* END Extrabold Italic */
 .icon-comment, .lesezeichen > li.kommentare > a:before, #sidebar .neue-kommentare .komm:before {
   content: '\e718'; }
@@ -103,9 +93,9 @@
   content: '📎'; }
 
 .icon-edit, .lesezeichen > li.aenderungsantrag > a:before, .icon-aender-stellen:before,
+.icon-pdf:before,
 .antragsliste .antrag .titel .pdfLink:before,
 #sidebar .neue-kommentare .pdf:before,
-.icon-pdf:before,
 ul.funktionen .download a:before {
   content: '\270d'; }
 
@@ -159,7 +149,6 @@ blockquote {
   src: url("../font/fontello.eot?#iefix") format("embedded-opentype"), url("../font/fontello.woff") format("woff"), url("../font/fontello.ttf") format("truetype"), url("../font/fontello.svg#icons_antragsgruen") format("svg");
   font-weight: normal;
   font-style: normal; }
-
 p, ul {
   margin-bottom: 10px; }
 
@@ -807,7 +796,10 @@ h3 label {
       text-shadow: none;
       display: inline; }
     #sidebar .nav-list > li.nav-header {
-      padding: 5px 20px 5px; }
+      padding-left: 15px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-right: 0; }
   #sidebar .nav-list .nav-header {
     margin-bottom: 12px; }
 #sidebar .neue-antraege .antrag:before {
@@ -892,9 +884,9 @@ h3 label {
   width: 140px; }
 
 .icon-aender-stellen:before,
+.icon-pdf:before,
 .antragsliste .antrag .titel .pdfLink:before,
 #sidebar .neue-kommentare .pdf:before,
-.icon-pdf:before,
 ul.funktionen .download a:before {
   color: #A2BC04;
   display: inline-block;
@@ -908,7 +900,7 @@ ul.funktionen .download a:before {
   margin-left: 0;
   */ }
 
-.btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before, .btn .icon-pdf:before, .btn ul.funktionen .download a:before, ul.funktionen .download .btn a:before {
+.btn .icon-pdf:before, .btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before, .btn ul.funktionen .download a:before, ul.funktionen .download .btn a:before {
   color: #000000; }
 
 ul.funktionen {
@@ -1303,3 +1295,5 @@ ins {
 
   .span9 .antrag .datum {
     display: none; } }
+
+/*# sourceMappingURL=antraege.css.map */

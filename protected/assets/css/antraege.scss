@@ -887,7 +887,10 @@ h3 label {
         display: inline;
       }
       &.nav-header {
-        padding: 5px 20px 5px;
+        padding-left: 15px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-right: 0;
       }
     }
 

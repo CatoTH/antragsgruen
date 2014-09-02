@@ -55,7 +55,7 @@ class IndexController extends AntragsgruenController
 
 					$person                                = new Person();
 					$person->auth                          = "ns_admin:" . $email;
-					$person->name                          = "";
+					$person->name                          = $email;
 					$person->email                         = $email;
 					$person->email_bestaetigt              = 0;
 					$person->angelegt_datum                = date("Y-m-d H:i:s");
@@ -64,17 +64,21 @@ class IndexController extends AntragsgruenController
 					$person->typ                           = Person::$TYP_PERSON;
 					$person->veranstaltungsreihe_namespace = $this->veranstaltungsreihe->id;
 					$person->admin                         = 0;
-					$person->save();
+					if ($person->save()) {
+						$link      = yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/index");
+						$mail_text = str_replace(array("%EMAIL%", "%LINK%"), array($email, $link), $text);
+						$person_id = null;
 
-					$link      = yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/index");
-					$mail_text = str_replace(array("%EMAIL%", "%LINK%"), array($email, $link), $text);
-					$person_id = null;
+						AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_NAMESPACED_ACCOUNT_ANGELEGT, $email, $person_id, "Antragsgrün-Zugang", $mail_text, null, array(
+							"%PASSWORT%" => $password
+						));
 
-					AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_NAMESPACED_ACCOUNT_ANGELEGT, $email, $person_id, "Antragsgrün-Zugang", $mail_text, null, array(
-						"%PASSWORT%" => $password
-					));
-
-					$emails_verschickt[] = $email;
+						$emails_verschickt[] = $email;
+					} else {
+						$msg .= "<div class='alert alert-danger'>Bei der E-Mail-Adresse " . CHtml::encode($email) . " ist ein Fehler aufgetreten:<br>\n";
+						$msg .= CHtml::encode(print_r($person->getErrors(), true));
+						$msg .= "</div>";
+					}
 				}
 			}
 
@@ -93,7 +97,6 @@ class IndexController extends AntragsgruenController
 				foreach ($email_invalid as $inv) $msg .= "- " . CHtml::encode($inv) . "<br>\n";
 				$msg .= '</div>';
 			}
-
 		}
 
 		$accounts = Person::model()->findAllByAttributes(array("veranstaltungsreihe_namespace" => $this->veranstaltungsreihe->id));
@@ -104,8 +107,7 @@ class IndexController extends AntragsgruenController
 		));
 	}
 
-	public
-	function actionAePDFList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public function actionAePDFList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -121,8 +123,7 @@ class IndexController extends AntragsgruenController
 		$this->render("ae_pdf_list", array("aes" => $aenderungsantraege));
 	}
 
-	public
-	function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -167,8 +168,7 @@ class IndexController extends AntragsgruenController
 		$this->renderPartial("ae_excel_list", array("antraege" => $antrs));
 	}
 
-	public
-	function actionReiheAdmins($veranstaltungsreihe_id = "")
+	public function actionReiheAdmins($veranstaltungsreihe_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -205,8 +205,7 @@ class IndexController extends AntragsgruenController
 		));
 	}
 
-	public
-	function actionReiheVeranstaltungen($veranstaltungsreihe_id = "")
+	public function actionReiheVeranstaltungen($veranstaltungsreihe_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -267,8 +266,7 @@ class IndexController extends AntragsgruenController
 		));
 	}
 
-	public
-	function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));

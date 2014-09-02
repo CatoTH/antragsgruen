@@ -27,10 +27,13 @@ Liebe Grüße,
 
 <div class="content">
 
-	Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll, kannst du hier die BenutzerInnen anlegen, die Zugriff haben
-	sollen.<br>
+	Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
+	kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
+	Sobald hier mindestens eine BenutzerIn angelegt ist, erscheint in den Veranstaltungs-Einstellungen im Punkt "Anträge stellen dürfen:"
+	die neue Option "Nur Veranstaltungsreihen-BenutzerInnen".<br>
 	<br>
-	Trage dazu unten die E-Mail-Adressen der Mitglieder. Diese Mitglieder bekommen daraufhin eine E-Mail mit ihrem Passwort zugesandt.<br>
+	Um BenutzerInnen anzulegen, gib weiter unten die E-Mail-Adressen der Mitglieder ein.
+	Diese Mitglieder bekommen daraufhin eine E-Mail mit ihrem Passwort zugesandt.<br>
 	<br>
 	Den Inhalt dieser Mail kannst du hier ebenfalls angeben. Achte nur darauf, dass in der E-Mail die Codes
 	<strong>%EMAIL%</strong>, <strong>%PASSWORT%</strong> und <strong>%LINK%</strong> vorkommt, denn an diesen Stellen werden dann die Zugangsdaten

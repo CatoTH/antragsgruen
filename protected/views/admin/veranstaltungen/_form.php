@@ -3,7 +3,7 @@
  * @var $this VeranstaltungenController
  * @var CActiveForm $form
  * @var $model Veranstaltung
- * @var bool $superadmin
+ * @var bool $namespaced_accounts
  */
 
 $form = $this->beginWidget('CActiveForm', array(
@@ -239,8 +239,11 @@ $einstellungen = $model->getEinstellungen();
 			Anträge stellen dürfen:
 			<span class="required"></span>
 		</label>
-		<?php echo $form->dropDownList($model, 'policy_antraege', IPolicyAntraege::getAllInstances()); ?>
-		<?php echo $form->error($model, 'policy_antraege'); ?>
+
+		<?php
+		echo $form->dropDownList($model, 'policy_antraege', IPolicyAntraege::getAllInstances());
+		echo $form->error($model, 'policy_antraege');
+		?>
 	</div>
 
 	<div>
@@ -268,39 +271,52 @@ $einstellungen = $model->getEinstellungen();
 	</fieldset>
 	<br>
 
-    <fieldset style="margin-top: 10px;">
-        <label style="display: inline;"><input type="checkbox"
-                                               name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
-                                               value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
-            Angabe der <strong>E-Mail-Adresse</strong> erzwingen
-            <small>(Bei Anträgen und Änderungsanträgen)</small>
-        </label>
-    </fieldset>
-    <br>
+	<fieldset style="margin-top: 10px;">
+		<label style="display: inline;"><input type="checkbox"
+											   name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
+											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
+			Angabe der <strong>E-Mail-Adresse</strong> erzwingen
+			<small>(Bei Anträgen und Änderungsanträgen)</small>
+		</label>
+	</fieldset>
+	<br>
 
-    <fieldset style="margin-top: 10px;">
-        <label style="display: inline;"><input type="checkbox" id="antrag_neu_kann_telefon"
-                                               name="VeranstaltungsEinstellungen[antrag_neu_kann_telefon]"
-                                               value="1" <?php if ($model->getEinstellungen()->antrag_neu_kann_telefon) echo "checked"; ?>>
-            Angabe der <strong>Telefonnummer</strong> ermöglichen
-            <small>(Bei Anträgen und Änderungsanträgen)</small>
-        </label>
-        <br>
+	<fieldset style="margin-top: 10px;">
+		<label style="display: inline;"><input type="checkbox" id="antrag_neu_kann_telefon"
+											   name="VeranstaltungsEinstellungen[antrag_neu_kann_telefon]"
+											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_kann_telefon) echo "checked"; ?>>
+			Angabe der <strong>Telefonnummer</strong> ermöglichen
+			<small>(Bei Anträgen und Änderungsanträgen)</small>
+		</label>
+		<br>
 
-        <label style="display: inline-block; margin-left: 30px;" id="antrag_neu_braucht_telefon_holder"><input type="checkbox"
-                                               name="VeranstaltungsEinstellungen[antrag_neu_braucht_telefon]"
-                                               value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_telefon) echo "checked"; ?>>
-            Erzwingen</label>
-    </fieldset>
-    <script>
-        $(function() {
-            $("#antrag_neu_kann_telefon").change(function() {
-                if ($(this).prop("checked")) $("#antrag_neu_braucht_telefon_holder").show();
-                else $("#antrag_neu_braucht_telefon_holder").hide();
-            }).trigger("change");
-        })
-    </script>
-    <br>
+		<label style="display: inline-block; margin-left: 30px;" id="antrag_neu_braucht_telefon_holder"><input type="checkbox"
+																											   name="VeranstaltungsEinstellungen[antrag_neu_braucht_telefon]"
+																											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_telefon) echo "checked"; ?>>
+			Erzwingen</label>
+	</fieldset>
+	<br>
+
+	<?php if ($namespaced_accounts) { ?>
+	<fieldset style="margin-top: 10px;">
+		<label style="display: inline;"><input type="checkbox" name="antrag_neu_nur_namespaced_accounts"
+											   value="1" <?php if ($model->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) echo "checked"; ?>>
+			Login nur von <?php echo CHtml::link("Veranstaltungsreihen-BenutzerInnen", array("/admin/index/namespacedAccounts")); ?> zulassen<br>
+			<small>(gilt für Anträge und Änderungsanträge der gesamten Veranstaltungs<span style="text-decoration: underline;">reihe</span>)</small>
+		</label>
+	</fieldset>
+	<?php } ?>
+
+
+	<script>
+		$(function () {
+			$("#antrag_neu_kann_telefon").change(function () {
+				if ($(this).prop("checked")) $("#antrag_neu_braucht_telefon_holder").show();
+				else $("#antrag_neu_braucht_telefon_holder").hide();
+			}).trigger("change");
+		})
+	</script>
+	<br>
 </div>
 
 
@@ -312,8 +328,11 @@ $einstellungen = $model->getEinstellungen();
 			Änderungsanträge stellen dürfen:
 			<span class="required"></span>
 		</label>
-		<?php echo $form->dropDownList($model, 'policy_aenderungsantraege', IPolicyAntraege::getAllInstances()); ?>
-		<?php echo $form->error($model, 'policy_aenderungsantraege'); ?>
+
+		<?php
+		echo $form->dropDownList($model, 'policy_aenderungsantraege', IPolicyAntraege::getAllInstances());
+		echo $form->error($model, 'policy_aenderungsantraege');
+		?>
 	</div>
 
 	<fieldset style="margin-top: 10px;">
@@ -355,8 +374,11 @@ $einstellungen = $model->getEinstellungen();
 			Kommentieren dürfen:
 			<span class="required"></span>
 		</label>
-		<?php echo $form->dropDownList($model, 'policy_kommentare', Veranstaltung::$POLICIES); ?>
-		<?php echo $form->error($model, 'policy_kommentare'); ?>
+
+		<div style="display: inline-block; width: 440px;">
+			<?php echo $form->dropDownList($model, 'policy_kommentare', Veranstaltung::$POLICIES); ?>
+			<?php echo $form->error($model, 'policy_kommentare'); ?>
+		</div>
 	</div>
 	<br>
 
@@ -395,7 +417,7 @@ $einstellungen = $model->getEinstellungen();
 	<div class="content">
 		<div>
 			<label style="display: inline;">
-				<input type="radio" name="zugang" value="<?=Veranstaltungsreihe::$ZUGANG_ALLE?>" <?
+				<input type="radio" name="zugang" value="<?= Veranstaltungsreihe::$ZUGANG_ALLE ?>" <?
 				if ($model->veranstaltungsreihe->zugang == Veranstaltungsreihe::$ZUGANG_ALLE) echo "checked";
 				?>> Öffentlich
 			</label>
@@ -403,11 +425,11 @@ $einstellungen = $model->getEinstellungen();
 
 		<div>
 			<label style="display: inline;">
-				<input type="radio" name="zugang" value="<?=Veranstaltungsreihe::$ZUGANG_NAMESPACE_LOGIN?>" <?
+				<input type="radio" name="zugang" value="<?= Veranstaltungsreihe::$ZUGANG_NAMESPACE_LOGIN ?>" <?
 				if ($model->veranstaltungsreihe->zugang == Veranstaltungsreihe::$ZUGANG_NAMESPACE_LOGIN) echo "checked";
 				?>> Nur eingetragene NutzerInnen
 			</label>
-			<a href="<?=Yii::app()->createUrl("admin/veranstaltungen/benutzerInnen")?>">NutzerInnen verwalten</a>
+			<a href="<?= Yii::app()->createUrl("admin/veranstaltungen/benutzerInnen") ?>">NutzerInnen verwalten</a>
 		</div>
 
 	</div>

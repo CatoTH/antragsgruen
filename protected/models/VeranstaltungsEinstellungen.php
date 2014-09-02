@@ -43,7 +43,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 		$data = (array)json_decode($data);
 
 		if (!is_array($data)) return;
-		foreach ($data as $key => $val) $this->$key = $val;
+		foreach ($data as $key => $val) if (property_exists($this, $key)) $this->$key = $val;
 	}
 
 	/**

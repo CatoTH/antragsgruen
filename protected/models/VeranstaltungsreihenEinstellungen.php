@@ -6,6 +6,7 @@ class VeranstaltungsreihenEinstellungen {
 	public $wartungs_modus_aktiv = false;
 	public $rechnung_gestellt = false;
 	public $rechnung_bezahlt = false;
+	public $antrag_neu_nur_namespaced_accounts = false;
 
 	/** @var int */
 	public $bereit_zu_zahlen = 0;
@@ -27,7 +28,7 @@ class VeranstaltungsreihenEinstellungen {
 		$data = (array)json_decode($data);
 
 		if (!is_array($data)) return;
-		foreach ($data as $key => $val) $this->$key = $val;
+		foreach ($data as $key => $val) if (property_exists($this, $key)) $this->$key = $val;
 	}
 
 	/**

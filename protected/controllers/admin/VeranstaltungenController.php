@@ -18,9 +18,9 @@ class VeranstaltungenController extends GxController
 				'actions'    => array('minicreate', 'create', 'update', 'admin', 'delete', 'index', 'view'),
 				//'roles'=>array('admin'),
 				'expression' => function ($user, $rule) {
-					/* @var $user CWebUser */
-					return ($user->getState("role") === "admin");
-				}
+						/* @var $user CWebUser */
+						return ($user->getState("role") === "admin");
+					}
 			),
 			array('allow',
 				'actions' => array('update'),
@@ -82,30 +82,39 @@ class VeranstaltungenController extends GxController
 			if (isset($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"])) switch ($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"]) {
 				case 0:
 					$einstellungen->ae_nummerierung_nach_zeile = false;
-					$einstellungen->ae_nummerierung_global = false;
+					$einstellungen->ae_nummerierung_global     = false;
 					break;
 				case 1:
 					$einstellungen->ae_nummerierung_nach_zeile = false;
-					$einstellungen->ae_nummerierung_global = true;
+					$einstellungen->ae_nummerierung_global     = true;
 					break;
 				case 2:
 					$einstellungen->ae_nummerierung_nach_zeile = true;
-					$einstellungen->ae_nummerierung_global = false;
+					$einstellungen->ae_nummerierung_global     = false;
 					break;
 			}
 			$model->setEinstellungen($einstellungen);
 
-			$relatedData           = array();
+			$relatedData = array();
 
 			if ($model->saveWithRelated($relatedData)) {
+
+				$reihen_einstellungen = $model->veranstaltungsreihe->getEinstellungen();
+				$reihen_einstellungen->antrag_neu_nur_namespaced_accounts = (isset($_REQUEST["antrag_neu_nur_namespaced_accounts"]));
+				$model->veranstaltungsreihe->setEinstellungen($reihen_einstellungen);
+				$model->veranstaltungsreihe->save();
+
 				$model->resetLineCache();
 				$this->redirect(array('update'));
 			}
 		}
 
+		$accounts = Person::model()->findAllByAttributes(array("veranstaltungsreihe_namespace" => $this->veranstaltungsreihe->id));
+
 		$this->render('update', array(
-			'model'      => $model,
-			"superadmin" => (yii::app()->user->getState("role") === "admin"),
+			'model'               => $model,
+			'superadmin'          => (yii::app()->user->getState("role") === 'admin'),
+			'namespaced_accounts' => (count($accounts) > 0),
 		));
 	}
 

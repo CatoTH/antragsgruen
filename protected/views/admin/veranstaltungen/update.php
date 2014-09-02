@@ -3,6 +3,7 @@
  * @var VeranstaltungenController $this
  * @var bool $superadmin
  * @var Veranstaltung $model
+ * @var bool $namespaced_accounts
  */
 
 if ($superadmin) {
@@ -33,5 +34,7 @@ if ($superadmin) {
 
 <?php
 $this->renderPartial('_form', array(
-	'model' => $model));
+	'model'               => $model,
+	'namespaced_accounts' => $namespaced_accounts
+));
 ?>

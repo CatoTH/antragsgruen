@@ -139,14 +139,12 @@ class AntragsgruenController extends CController
 		return $this->_assetsBase;
 	}
 
+
 	/**
-	 * @param string $success_redirect
 	 * @param string $username
-	 * @param string $password
-	 * @throws Exception
+	 * @return Person[]
 	 */
-	protected function performLogin_username_password($success_redirect, $username, $password)
-	{
+	private function performLogin_username_password_std($username) {
 		/** @var Person[] $users */
 		if (strpos($username, "@")) {
 			$sql_where1 = "auth = 'email:" . addslashes($username) . "'";
@@ -159,7 +157,39 @@ class AntragsgruenController extends CController
 
 		} else {
 			$auth  = "openid:https://service.gruene.de/openid/" . $username;
-			$users = Person::model()->findBySql("SELECT * FROM person WHERE auth = '" . addslashes($auth) . "' OR (auth LIKE 'openid:https://service.gruene.de%' AND email = '" . addslashes($username) . "')");
+			$users = Person::model()->findAllBySql("SELECT * FROM person WHERE auth = '" . addslashes($auth) . "' OR (auth LIKE 'openid:https://service.gruene.de%' AND email = '" . addslashes($username) . "')");
+		}
+		return $users;
+	}
+
+	/**
+	 * @param string $username
+	 * @return Person[]
+	 */
+	private function performLogin_username_password_only_namespaced_users($username) {
+		/** @var Person[] $users */
+		if (strpos($username, "@")) {
+			$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
+			$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where2");
+		} else {
+			// @TODO Login über Wurzelwerk-Authentifizierten Account per BenutzerInnenname+Passwort beim Admin der Reihe ermöglichen
+			return array();
+		}
+		return $users;
+	}
+
+	/**
+	 * @param string $success_redirect
+	 * @param string $username
+	 * @param string $password
+	 * @throws Exception
+	 */
+	private function performLogin_username_password($success_redirect, $username, $password)
+	{
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+			$users = $this->performLogin_username_password_only_namespaced_users($username);
+		} else {
+			$users = $this->performLogin_username_password_std($username);
 		}
 
 		if (count($users) == 0) {
@@ -289,7 +319,7 @@ class AntragsgruenController extends CController
 	 * @param string $openid_mode
 	 * @throws Exception
 	 */
-	protected function performLogin_OAuth_callback($success_redirect, $openid_mode)
+	private function performLogin_OAuth_callback($success_redirect, $openid_mode)
 	{
 		/** @var LightOpenID $loid */
 		$loid = Yii::app()->loid->load();
@@ -298,7 +328,15 @@ class AntragsgruenController extends CController
 				$us = new AntragUserIdentityOAuth($loid);
 				if ($us->authenticate()) {
 					Yii::app()->user->login($us);
+					/** @var Person $user */
 					$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
+					if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+						$ist_admin = false;
+						foreach ($this->veranstaltungsreihe->admins as $admin) if ($user->id == $admin->id) $ist_admin = true;
+						if (Yii::app()->params['admin_user_id'] > 0 && Yii::app()->params['admin_user_id'] == $user->id) $ist_admin = true;
+
+						if (!$ist_admin) throw new Exception("Das Einloggen über OpenID ist bei dieser Veranstaltung nur für Admins möglich.");
+					}
 					if (!$user) {
 						$this->performLogin_OAuth_create_user($us);
 					} else {
@@ -329,6 +367,10 @@ class AntragsgruenController extends CController
 	 */
 	protected function performLogin_from_email_params($success_redirect, $login)
 	{
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+			throw new Exception("Diese Form des Logins ist bei dieser Veranstaltung nicht möglich.");
+		}
+
 		/** @var Person $user */
 		$user = Person::model()->findByAttributes(array("id" => $login));
 		if ($user === null) {
