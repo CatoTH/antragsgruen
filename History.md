@@ -1,3 +1,8 @@
+2.3.0 - 2014-??-??
+==================
+
+* Einfügungen im kompakten PDF werden nun fett (und weiterhin unterstrichen und grün) dargestellt, um sie im Schwarz-Weiß-Druck leichter als solche erkennbar zu machen.
+*
 
 2.2.0 - 2014-09-03
 ==================

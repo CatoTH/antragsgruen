@@ -27,8 +27,8 @@ if (file_exists($logo)) {
 	$pdf->Image($logo, 22, 32, 47, 26);
 }
 
-$width= 37;
-$x = 155;
+$width = 37;
+$x     = 155;
 if ($aenderungsantrag->revision_name == "") {
 	$name = "Entwurf";
 	$pdf->SetFont("helvetica", "I", "25");
@@ -38,9 +38,9 @@ if ($aenderungsantrag->revision_name == "") {
 	} else {
 		$arev = $aenderungsantrag->antrag->revision_name;
 		if (stripos($aenderungsantrag->revision_name, $arev) === false) {
-			$name = $aenderungsantrag->revision_name . " zu " . $arev;
-			$width= 45;
-			$x = 147;
+			$name  = $aenderungsantrag->revision_name . " zu " . $arev;
+			$width = 45;
+			$x     = 147;
 		} else {
 			$name = $aenderungsantrag->revision_name;
 		}
@@ -128,13 +128,16 @@ if ($diff_ansicht) {
 
 			if (function_exists("normalizer_normalize")) $str = normalizer_normalize($str);
 
-			$str = str_replace(
-				array("<ins>", "</ins>", "<del>", "</del>"),
-				array("<span style=\"color: green; text-decoration: underline;\">", "</span>", "<span style=\"color: red; text-decoration: line-through;\">", "</span>"),
-				$str
+			$replaces = array(
+				"<ins> " => " <span style=\"color: green; text-decoration: underline; font-weight: bold;\">",
+				"<ins>"  => "<span style=\"color: green; text-decoration: underline; font-weight: bold;\">",
+				"</ins>" => "</span>",
+				" </ins>" => "</span> ",
+				"<del>"  => "<span style=\"color: red; text-decoration: line-through;\">",
+				"</del>" => "</span>",
 			);
+			$html .= str_replace(array_keys($replaces), array_values($replaces), $str);
 
-			$html .= $str;
 			$html .= "</div>\n";
 		}
 	}
