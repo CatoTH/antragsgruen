@@ -37,7 +37,7 @@ if ($mode == "neu") {
 				<?php for ($i = 0; $i < 4; $i++) { ?>
 					<div>
 						<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">
-						<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">
+						<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Kreisverband" title="Kreisverband">
 					</div>
 				<?php } ?>
 			</div>
@@ -78,7 +78,7 @@ if ($mode == "neu") {
 			$(".unterstuetzerInnen_adder a").click(function (ev) {
 				ev.preventDefault();
 				$(".unterstuetzerInnen_list").append('<div><input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">\
-					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">\
+					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Kreisverband" title="Kreisverband">\
 					</div>');
 			});
 		})
