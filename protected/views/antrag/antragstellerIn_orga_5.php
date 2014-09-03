@@ -18,8 +18,8 @@ if ($mode == "neu") {
 		<h3><?= $sprache->get("AntragstellerIn") ?></h3>
 		<br>
 		<?php
-        echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
-        ?>
+		echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
+		?>
 
 		<div class="control-group" id="Person_typ_chooser">
 			<label class="control-label">Ich bin...</label>
@@ -31,13 +31,14 @@ if ($mode == "neu") {
 		</div>
 
 		<div class="control-group" id="UnterstuetzerInnen">
-			<label class="control-label">UnterstützerInnen<br>(min. 4)</label>
+			<label class="control-label">UnterstützerInnen2<br>(min. 4)</label>
 
 			<div class="controls unterstuetzerInnen_list">
 				<?php for ($i = 0; $i < 4; $i++) { ?>
-					<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">
-					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">
-					<br>
+					<div>
+						<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">
+						<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">
+					</div>
 				<?php } ?>
 			</div>
 			<div class="unterstuetzerInnen_adder">
@@ -74,11 +75,11 @@ if ($mode == "neu") {
 					});
 				}
 			});
-			$(".unterstuetzerInnen_adder a").click(function(ev) {
+			$(".unterstuetzerInnen_adder a").click(function (ev) {
 				ev.preventDefault();
-				$(".unterstuetzerInnen_list").append('<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">\
+				$(".unterstuetzerInnen_list").append('<div><input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen">\
 					<input type="text" name="UnterstuetzerInnen_organisation[]" value="" placeholder="Gremium, LAG..." title="Gremium, LAG...">\
-					<br>');
+					</div>');
 			})
 		})
 	</script>

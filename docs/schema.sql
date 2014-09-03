@@ -6,14 +6,6 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema antragsgruen2
--- -----------------------------------------------------
--- 
--- 
-CREATE SCHEMA IF NOT EXISTS `antragsgruen2` DEFAULT CHARACTER SET utf8mb4 ;
-USE `antragsgruen2` ;
-
--- -----------------------------------------------------
 -- Table `veranstaltungsreihe`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `veranstaltungsreihe` (

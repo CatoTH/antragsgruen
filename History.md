@@ -1,5 +1,5 @@
 
-2.2.0 - 2014-?????
+2.2.0 - 2014-09-03
 ==================
 
 * Accounts, die nur für eine Veranstaltungsreihe gültig sind (LV Hessen)
