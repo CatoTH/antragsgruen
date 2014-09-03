@@ -20,8 +20,8 @@ abstract class IPolicyAntraege
 		"Eingeloggte" => "PolicyAntraegeEingeloggte",
 	);
 
-	/** @var null|Veranstaltung */
-	protected $veranstaltung = null;
+	/** @var Veranstaltung */
+	protected $veranstaltung;
 
 	/**
 	 * @param Veranstaltung $veranstaltung
