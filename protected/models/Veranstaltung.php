@@ -98,12 +98,11 @@ class Veranstaltung extends GxActiveRecord
 	}
 
 	/**
-	 * @param int $policy
 	 * @return bool
 	 */
-	private function darfEroeffnen_intern($policy)
+	public function darfEroeffnenKommentar()
 	{
-		switch ($policy) {
+		switch ($this->policy_kommentare) {
 			case Veranstaltung::$POLICY_ALLE:
 				return true;
 			case Veranstaltung::$POLICY_ALLE_FREISCHALTUNG:
@@ -120,14 +119,6 @@ class Veranstaltung extends GxActiveRecord
 				return false;
 		}
 		return false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function darfEroeffnenKommentar()
-	{
-		return $this->darfEroeffnen_intern($this->policy_kommentare);
 	}
 
 
