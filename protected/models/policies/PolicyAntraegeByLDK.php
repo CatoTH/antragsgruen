@@ -63,7 +63,7 @@ class PolicyAntraegeByLDK extends IPolicyAntraege
 	private function checkSubmit_internal()
 	{
 		if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
-		if ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && !Yii::app()->user->isGuest) return false;
+		if ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && Yii::app()->user->isGuest) return false;
 
 		if (!isset($_REQUEST["Person"]) || !isset($_REQUEST["Person"]["typ"])) return false;
 		if (!$this->isValidName($_REQUEST["Person"]["name"])) return false;
