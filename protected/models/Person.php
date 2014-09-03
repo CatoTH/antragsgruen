@@ -10,7 +10,6 @@
  * @property string $telefon
  * @property string $auth
  * @property string $angelegt_datum
- * @property integer $admin
  * @property integer $status
  * @property string $pwd_enc
  * @property string $benachrichtigungs_typ
@@ -104,7 +103,6 @@ class Person extends GxActiveRecord
 			'auth'                               => Yii::t('app', 'Auth'),
 			'pwd_enc'                            => Yii::t('app', 'Passwort-Hash'),
 			'angelegt_datum'                     => Yii::t('app', 'Angelegt Datum'),
-			'admin'                              => Yii::t('app', 'Admin'),
 			'status'                             => Yii::t('app', 'Status'),
 			'benachrichtigung_typ'               => Yii::t('app', 'Benachrichtigungszeitpunkt'),
 			'veranstaltungsreihe_namespace'      => Yii::t('app', 'Nur gültig in dieser Veranstaltungsreihe'),
@@ -117,30 +115,6 @@ class Person extends GxActiveRecord
 			'veranstaltungsreihenAbos'           => null,
 			'antrag_abos'                        => null,
 		);
-	}
-
-	/**
-	 * @return CActiveDataProvider
-	 */
-	public function search()
-	{
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('typ', $this->typ, true);
-		$criteria->compare('organisation', $this->organisation, true);
-		$criteria->compare('name', $this->name, true);
-		$criteria->compare('email', $this->email, true);
-		$criteria->compare('telefon', $this->telefon, true);
-		$criteria->compare('auth', $this->auth, true);
-		$criteria->compare('angelegt_datum', $this->angelegt_datum, true);
-		$criteria->compare('admin', $this->admin);
-		$criteria->compare('status', $this->status);
-		$criteria->compare('veranstaltungsreihe_namespace', $this->veranstaltungsreihe_namespace);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
 	}
 
 	/**
@@ -158,13 +132,12 @@ class Person extends GxActiveRecord
 	public function rules()
 	{
 		$rules = array(
-			array('typ, angelegt_datum, admin, status, name', 'required'),
-			array('admin, status, veranstaltungsreihe_namespace', 'numerical', 'integerOnly' => true),
+			array('typ, angelegt_datum, status, name', 'required'),
+			array('status, veranstaltungsreihe_namespace', 'numerical', 'integerOnly' => true),
 			array('typ', 'length', 'max' => 12),
 			array('telefon, organisation', 'length', 'max' => 100),
 			array('email, auth', 'length', 'max' => 200),
 			array('email, telefon, auth, pwd_enc', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, typ, name, email, telefon, auth, pwd_enc, angelegt_datum, admin, status', 'safe', 'on' => 'search'),
 		);
 		if ($this->email_required) $rules[] = array('email', 'required');
 		return $rules;

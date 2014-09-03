@@ -46,7 +46,6 @@ class AenderungsantragKommentar extends IKommentar
 			array('text, datum', 'required'),
 			array('id, verfasserIn_id, aenderungsantrag_id, absatz, status, antwort_benachrichtigung', 'numerical', 'integerOnly' => true),
 			array('verfasserIn_id, aenderungsantrag_id, absatz, text, status', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, verfasserIn_id, aenderungsantrag_id, absatz, text, datum, status', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -77,23 +76,6 @@ class AenderungsantragKommentar extends IKommentar
 			'aenderungsantrag'         => null,
 			'verfasserIn'              => null,
 		);
-	}
-
-	public function search()
-	{
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('verfasserIn_id', $this->verfasserIn_id);
-		$criteria->compare('aenderungsantrag_id', $this->aenderungsantrag_id);
-		$criteria->compare('absatz', $this->absatz);
-		$criteria->compare('text', $this->text, true);
-		$criteria->compare('datum', $this->datum, true);
-		$criteria->compare('status', $this->status);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
 	}
 
 	/**

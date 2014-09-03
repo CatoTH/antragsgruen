@@ -24,18 +24,6 @@ $this->breadcrumbs = array(
 	?>
 	<h4>Administration</h4>
 	<ul>
-		<?php if (yii::app()->user->getState("role") === "admin") { ?>
-			<li>
-				<a href="<?php echo $this->createUrl("admin/veranstaltungen") ?>"><?php echo Veranstaltung::label(2) ?></a>
-			</li>
-			<li><a href="<?php echo $this->createUrl("admin/personen") ?>"><?php echo Person::label(2) ?></a></li>
-			<li>
-				<a href="<?php echo $this->createUrl("admin/antraegeKommentare") ?>"><?php echo AntragKommentar::label(2) ?></a>
-			</li>
-			<li>
-				<a href="<?php echo $this->createUrl("admin/aenderungsantraegeKommentare") ?>"><?php echo AenderungsantragKommentar::label(2) ?></a>
-			</li>
-		<?php } ?>
 		<li style="font-weight: bold;">
 			<a href="<?php echo $this->createUrl("admin/veranstaltungen/update") ?>"><?php echo $sprache->get("Diese Veranstaltung / Programmdiskussion"); ?></a>
 		</li>

@@ -113,7 +113,6 @@ class VeranstaltungenController extends GxController
 
 		$this->render('update', array(
 			'model'               => $model,
-			'superadmin'          => (yii::app()->user->getState("role") === 'admin'),
 			'namespaced_accounts' => (count($accounts) > 0),
 		));
 	}

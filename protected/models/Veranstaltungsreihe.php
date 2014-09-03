@@ -123,7 +123,6 @@ class Veranstaltungsreihe extends CActiveRecord
 			array('subdomain', 'length', 'max' => 45),
 			array('name', 'length', 'max' => 100),
 			array('name, name_kurz', 'safe'),
-			array('id, name, subdomain, name_kurz, offiziell, oeffentlich', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -154,20 +153,6 @@ class Veranstaltungsreihe extends CActiveRecord
 			'veranstaltungsreihenAbos' => null,
 		);
 	}
-
-	public function search()
-	{
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('name', $this->name, true);
-		$criteria->compare('name_kurz', $this->name_kurz, true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
-	}
-
 
 	public function save($runValidation = true, $attributes = null)
 	{

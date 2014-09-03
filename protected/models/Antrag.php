@@ -103,7 +103,6 @@ class Antrag extends IAntrag
 			array('status_string', 'length', 'max'=>55),
 			array('text, begruendung', 'safe'),
 			array('abgeleitet_von, typ, datum_beschluss, text, begruendung, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, veranstaltung_id, abgeleitet_von, typ, name, revision_name, datum_einreichung, datum_beschluss, text, begruendung, status, cache_anzahl_zeilen, cache_anzahl_, status_string', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -151,31 +150,6 @@ class Antrag extends IAntrag
 			'abonnenten' => null,
 		);
 	}
-
-	/**
-	 * @return CActiveDataProvider
-	 */
-	public function search() {
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('veranstaltung_id', $this->veranstaltung_id);
-		$criteria->compare('abgeleitet_von', $this->abgeleitet_von);
-		$criteria->compare('typ', $this->typ);
-		$criteria->compare('name', $this->name, true);
-		$criteria->compare('revision_name', $this->revision_name, true);
-		$criteria->compare('datum_einreichung', $this->datum_einreichung, true);
-		$criteria->compare('datum_beschluss', $this->datum_beschluss, true);
-		$criteria->compare('text', $this->text, true);
-		$criteria->compare('begruendung', $this->begruendung, true);
-		$criteria->compare('status', $this->status);
-		$criteria->compare('status_string', $this->status_string, true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
-	}
-
 
 	/**
 	 * @return int

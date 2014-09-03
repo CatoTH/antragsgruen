@@ -220,7 +220,7 @@ class AenderungsantragController extends AntragsgruenController
 		$anzeige_opts = array(
 			"aenderungsantrag" => $aenderungsantrag,
 			"edit_link"        => $aenderungsantrag->binInitiatorIn(),
-			"admin_edit"       => (Yii::app()->user->getState("role") == "admin" ? "/admin/aenderungsantraege/update/id/" . $aenderungsantrag_id : null),
+			"admin_edit"       => ($this->veranstaltung->isAdminCurUser() ? $this->createUrl("/admin/aenderungsantraege/update", array("id" => $aenderungsantrag_id)) : null),
 			"kommentare_offen" => $kommentare_offen,
 			"kommentar_person" => $kommentar_person,
 			"komm_del_link"    => $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id, AntiXSS::createToken("komm_del") => "#komm_id#")),

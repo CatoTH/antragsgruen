@@ -47,7 +47,6 @@ class AntragUnterstuetzerInnen extends IUnterstuetzerInnen
             array('kommentar', 'safe'),
             array('beschlussdatum', 'length', 'max' => 10),
             array('kommentar', 'default', 'setOnEmpty' => true, 'value' => null),
-            array('antrag_id, unterstuetzerIn_id, rolle, kommentar, position', 'safe', 'on' => 'search'),
         );
     }
 
@@ -75,19 +74,5 @@ class AntragUnterstuetzerInnen extends IUnterstuetzerInnen
             'antrag'             => null,
             'person'             => null,
         );
-    }
-
-    public function search()
-    {
-        $criteria = new CDbCriteria;
-
-        $criteria->compare('antrag_id', $this->antrag_id);
-        $criteria->compare('unterstuetzerIn_id', $this->unterstuetzerIn_id);
-        $criteria->compare('rolle', $this->rolle, true);
-        $criteria->compare('kommentar', $this->kommentar, true);
-
-        return new CActiveDataProvider($this, array(
-            'criteria' => $criteria,
-        ));
     }
 }

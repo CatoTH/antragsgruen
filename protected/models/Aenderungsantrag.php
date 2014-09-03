@@ -71,7 +71,6 @@ class Aenderungsantrag extends IAntrag
 			array('status_string', 'length', 'max' => 55),
 			array('name_neu, datum_beschluss, aenderung_metatext', 'safe'),
 			array('antrag_id, revision_name, name_neu, datum_beschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, antrag_id, revision_name, name_neu, text_neu, begruendung_neu, aenderung_metatext, aenderung_text, aenderung_begruendung, aenderung_first_line_cache, datum_einreichung, datum_beschluss, status, status_string', 'safe', 'on' => 'search'),
 		);
 
 	}
@@ -125,44 +124,6 @@ class Aenderungsantrag extends IAntrag
 			'aenderungsantragUnterstuetzerInnen' => null,
 		);
 	}
-
-	/**
-	 * @param $veranstaltung_id
-	 * @return CActiveDataProvider
-	 */
-	public function search($veranstaltung_id)
-	{
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-
-		if (is_null($this->antrag)) {
-			$ids = array();
-			/** @var Antrag[]|array $antraege */
-			$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung_id" => $veranstaltung_id));
-			foreach ($antraege as $ant) $ids[] = $ant->id;
-			$criteria->addInCondition("antrag_id", $ids);
-		} else {
-			$criteria->compare('antrag_id', $this->antrag_id);
-		}
-		$criteria->compare('revision_name', $this->revision_name, true);
-		$criteria->compare('name_neu', $this->name_neu, true);
-		$criteria->compare('text_neu', $this->text_neu, true);
-		$criteria->compare('begruendung_neu', $this->begruendung_neu, true);
-		$criteria->compare('aenderung_text', $this->aenderung_text, true);
-		$criteria->compare('aenderung_begruendung', $this->aenderung_begruendung, true);
-		$criteria->compare('aenderung_first_line_cache', $this->aenderung_first_line_cache, true);
-		$criteria->compare('datum_einreichung', $this->datum_einreichung, true);
-		$criteria->compare('datum_beschluss', $this->datum_beschluss, true);
-		$criteria->compare('status', $this->status);
-		$criteria->compare('status_string', $this->status_string, true);
-		$criteria->compare('kommentar_legacy', $this->kommentar_legacy, true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
-	}
-
 
 	/**
 	 * @param bool $runValidation

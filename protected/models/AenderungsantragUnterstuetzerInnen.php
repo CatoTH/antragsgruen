@@ -48,7 +48,6 @@ class AenderungsantragUnterstuetzerInnen extends IUnterstuetzerInnen
             array('beschlussdatum', 'length', 'max' => 10),
             array('kommentar, beschlussdatum', 'safe'),
             array('kommentar', 'default', 'setOnEmpty' => true, 'value' => null),
-            array('aenderungsantrag_id, unterstuetzerIn_id, rolle, kommentar, position', 'safe', 'on' => 'search'),
         );
     }
 
@@ -76,19 +75,5 @@ class AenderungsantragUnterstuetzerInnen extends IUnterstuetzerInnen
             'person'              => null,
             'aenderungsantrag'    => null,
         );
-    }
-
-    public function search()
-    {
-        $criteria = new CDbCriteria;
-
-        $criteria->compare('aenderungsantrag_id', $this->aenderungsantrag_id);
-        $criteria->compare('unterstuetzerIn_id', $this->unterstuetzerIn_id);
-        $criteria->compare('rolle', $this->rolle, true);
-        $criteria->compare('kommentar', $this->kommentar, true);
-
-        return new CActiveDataProvider($this, array(
-            'criteria' => $criteria,
-        ));
     }
 }

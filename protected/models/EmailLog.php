@@ -82,19 +82,4 @@ class EmailLog extends GxActiveRecord
 			'text'          => 'Text',
 		);
 	}
-
-	public function search()
-	{
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('an_email', $this->an_email, true);
-		$criteria->compare('an_person', $this->an_person);
-		$criteria->compare('typ', $this->typ, true);
-		$criteria->compare('datum', $this->datum, true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
-	}
 }

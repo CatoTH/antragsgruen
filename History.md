@@ -2,7 +2,7 @@
 ==================
 
 * Einfügungen im kompakten PDF werden nun fett (und weiterhin unterstrichen und grün) dargestellt, um sie im Schwarz-Weiß-Druck leichter als solche erkennbar zu machen.
-*
+* Refactoring: der Code wurde etwas aufgeräumt (alte/ungenutzte Controller/Views entfernt, das ungenutzte admin-Feld in der Datenbank und die zugehörigen Abfragen) entfernt.
 
 2.2.0 - 2014-09-03
 ==================

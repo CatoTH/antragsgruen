@@ -360,7 +360,6 @@ class Veranstaltung extends GxActiveRecord
 			array('name_kurz, url_verzeichnis', 'length', 'max' => 45),
 			array('antragsschluss, admin_email', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, name, url_verzeichnis, name_kurz, datum_von, datum_bis, antragsschluss, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, einstellungen', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -396,28 +395,6 @@ class Veranstaltung extends GxActiveRecord
 			'veranstaltungsreihe'              => Yii::t('app', 'Veranstaltungsreihe'),
 		);
 	}
-
-	public function search()
-	{
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('name', $this->name, true);
-		$criteria->compare('name_kurz', $this->name_kurz, true);
-		$criteria->compare('datum_von', $this->datum_von, true);
-		$criteria->compare('datum_bis', $this->datum_bis, true);
-		$criteria->compare('antragsschluss', $this->antragsschluss, true);
-		$criteria->compare('policy_antraege', $this->policy_antraege);
-		$criteria->compare('policy_aenderungsantraege', $this->policy_aenderungsantraege);
-		$criteria->compare('policy_kommentare', $this->policy_kommentare);
-		$criteria->compare('policy_unterstuetzen', $this->policy_unterstuetzen);
-		$criteria->compare('typ', $this->typ);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
-	}
-
 
 	public function save($runValidation = true, $attributes = null)
 	{
