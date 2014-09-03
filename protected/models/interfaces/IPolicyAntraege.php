@@ -246,7 +246,6 @@ abstract class IPolicyAntraege
     /**
      * @param Veranstaltung $veranstaltung
      * @param Person $antragstellerIn
-     * @param bool $telefon
      * @return string
      */
     public function getAntragsstellerInStdForm($veranstaltung, $antragstellerIn) {
