@@ -176,11 +176,12 @@ class Aenderungsantrag extends IAntrag
 		return parent::save($runValidation, $attributes);
 	}
 
-    /**
-     * @param Antrag $neuer_antrag
-     * @param array $absatz_mapping
-     * @return Aenderungsantrag
-     */
+	/**
+	 * @param Antrag $antrag
+	 * @param int $anz_absaetze_neu
+	 * @param array $absatz_mapping
+	 * @return Aenderungsantrag
+	 */
     public function aufrechterhaltenBeiNeuemAntrag($antrag, $anz_absaetze_neu, $absatz_mapping) {
         $neuer_ae                             = new Aenderungsantrag();
         $neuer_ae->antrag_id                  = $antrag->id;
