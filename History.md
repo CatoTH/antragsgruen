@@ -1,3 +1,7 @@
+2.2.1 - 2014-09-04
+==================
+
+* Man kann sich nun auch im Login-Formular selbst einen neuen E-Mail-basierten Zugang einrichten.
 
 2.2.0 - 2014-09-03
 ==================

@@ -215,7 +215,36 @@ class VeranstaltungController extends AntragsgruenController
 				"person" => $person
 			));
 		}
+	}
 
+	public function actionAnmeldungBestaetigen($veranstaltungsreihe_id = "", $email = "", $code = "") {
+		$this->loadVeranstaltung($veranstaltungsreihe_id);
+		$this->testeWartungsmodus();
+
+		$msg_error = "";
+
+		if (isset($_REQUEST["code"])) $code = $_REQUEST["code"];
+		if ($email != "" && $code != "") {
+			/** @var Person $p */
+			$p = Person::model()->findByAttributes(array("auth" => "email:" . $email));
+			if (!$p) $msg_error = "Es existiert kein Zugang mit der angegebenen E-Mail-Adresse...?";
+			else {
+				if ($p->checkEmailBestaetigungsCode($code)) {
+					$p->email_bestaetigt = 1;
+					if ($p->save()) {
+						$identity = new AntragUserIdentityPasswd($p->email, $p->auth);
+						Yii::app()->user->login($identity);
+						$this->render("anmeldungBestaetigt");
+						Yii::app()->end();
+					}
+				} else $msg_error = "Der angegebene Code stimmt leider nicht.";
+			}
+		}
+
+		$this->render("anmeldungBestaetigen", array(
+			"email" => $email,
+			"errors" => $msg_error,
+		));
 	}
 
 	/**

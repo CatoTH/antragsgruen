@@ -54,7 +54,7 @@ class AntragsgruenController extends CController
 			if (MULTISITE_MODE && !isset($params["veranstaltungsreihe_id"]) && $this->veranstaltungsreihe != null) $params["veranstaltungsreihe_id"] = $this->veranstaltungsreihe->subdomain;
 			if ($route == "veranstaltung/index" && !is_null($this->veranstaltungsreihe) && strtolower($params["veranstaltung_id"]) == strtolower($this->veranstaltungsreihe->aktuelle_veranstaltung->url_verzeichnis)) unset($params["veranstaltung_id"]);
 			if (in_array($route, array(
-				"veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "veranstaltung/login", "veranstaltung/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
+				"veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/anmeldungBestaetigen", "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "veranstaltung/login", "veranstaltung/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
 			))
 			) unset($params["veranstaltung_id"]);
 		}
@@ -235,6 +235,59 @@ class AntragsgruenController extends CController
 		die();
 	}
 
+	private function performCreateUser_username_password($success_redirect, $username, $password, $password_confirm, $name) {
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+			throw new Exception("Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.");
+		}
+		if (!preg_match("/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/siu", $username)) {
+			throw new Exception("Bitte gib eine gültige E-Mail-Adresse als BenutzerInnenname ein.");
+		}
+		if (strlen($password) < 6) {
+			throw new Exception("Das Passwort muss mindestens sechs Buchstaben lang sein.");
+		}
+		if ($password != $password_confirm) {
+			throw new Exception("Die beiden angegebenen Passwörter stimmen nicht überein.");
+		}
+		if ($name == "") {
+			throw new Exception("Bitte gib deinen Namen ein.");
+		}
+		$auth = "email:" . $username;
+		$p = Person::model()->findAllByAttributes(array("auth" => $auth));
+		if (count($p) > 0) {
+			throw new Exception("Es existiert bereits ein Zugang mit dieser E-Mail-Adresse.");
+		}
+
+		$person                   = new Person;
+		$person->auth             = "email:" . $username;
+		$person->name             = $name;
+		$person->email            = $username;
+		$person->email_bestaetigt = 0;
+		$person->angelegt_datum   = date("Y-m-d H:i:s");
+		$person->status           = Person::$STATUS_UNCONFIRMED;
+		$person->typ              = Person::$TYP_PERSON;
+		$person->pwd_enc          = Person::create_hash($password);
+		$person->admin            = 0;
+
+		if ($person->save()) {
+			$person->refresh();
+			$best_code = $person->createEmailBestaetigungsCode();
+			$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/anmeldungBestaetigen", array("email" => $username, "code" => $best_code, "veranstaltung_id" => null));
+			$send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n%best_link%\n\n"
+				. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
+				. "Liebe Grüße,\n\tDas Antragsgrün-Team.";
+			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $username, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, array(
+				"%code%"      => $best_code,
+				"%best_link%" => $link,
+			));
+			$this->redirect($this->createUrl("veranstaltung/anmeldungBestaetigen", array("email" => $username, "veranstaltung_id" => null)));
+		} else {
+			$msg_err = "Leider ist ein (ungewöhnlicher) Fehler aufgetreten.";
+			$errs    = $person->getErrors();
+			foreach ($errs as $err) foreach ($err as $e) $msg_err .= $e;
+			throw new Exception($msg_err);
+		}
+	}
+
 	/**
 	 * @param OAuthLoginForm $model
 	 * @param array $form_params
@@ -403,7 +456,11 @@ class AntragsgruenController extends CController
 		$model = new OAuthLoginForm();
 
 		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["username"])) {
-			$this->performLogin_username_password($success_redirect, $_REQUEST["username"], $_REQUEST["password"]);
+			if (isset($_REQUEST["neuer_account"])) {
+				$this->performCreateUser_username_password($success_redirect, $_REQUEST["username"], $_REQUEST["password"], $_REQUEST["password_confirm"], $_REQUEST["name"]);
+			} else {
+				$this->performLogin_username_password($success_redirect, $_REQUEST["username"], $_REQUEST["password"]);
+			}
 		} elseif (isset($_REQUEST["openid_mode"])) {
 			$this->performLogin_OAuth_callback($success_redirect, $_REQUEST['openid_mode']);
 		} elseif (isset($_REQUEST["OAuthLoginForm"])) {

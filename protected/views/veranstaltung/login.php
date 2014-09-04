@@ -36,13 +36,52 @@ if ($msg_err != "") {
 			echo '<div class="alert alert-info">';
 			echo "<strong>Hinweis:</strong> wenn du berechtigt bist, (Änderungs-)Anträge einzustellen, solltest du die Zugangsdaten per E-Mail erhalten haben.<br>
 		Falls du keine bekommen haben solltest, melde dich bitte bei den Organisatoren dieses Parteitags / dieser Programmdiskussion.</div>";
-		}
-		?>
+		} else {
+			?>
+			<label>
+				<input type="checkbox" name="neuer_account" id="neuer_account_check" <?php if (isset($_REQUEST["neuer_account"])) echo "checked"; ?>>
+				Neuen Zugang anlegen
+			</label>
+			<br>
+		<?php } ?>
 
-		<label for="username">E-Mail-Adresse / BenutzerInnenname</label>
-		<input class="span3" name="username" id="username" type="text" autofocus>
+		<label>
+			E-Mail-Adresse / BenutzerInnenname:<br>
+			<input class="span3" name="username" id="username" type="text" autofocus required placeholder="E-Mail-Adresse" value="<?php
+			if (isset($_REQUEST["username"])) echo CHtml::encode($_REQUEST["username"]);
+			?>">
+		</label>
 
-		<label>Passwort:<br><input type="password" value="" autocomplete="false" name="password"></label>
+		<label>
+			Passwort:<br>
+			<input type="password" value="" autocomplete="false" name="password" id="password_input" required>
+		</label>
+
+		<label id="pwd_confirm" style="display: none;">
+			Passwort (Bestätigung):<br>
+			<input type="password" value="" autocomplete="false" name="password_confirm">
+		</label>
+
+		<label id="reg_name" style="display: none;">
+			Dein Name:<br>
+			<input type="text" value="<?php if (isset($_REQUEST["name"])) echo CHtml::encode($_REQUEST["name"]); ?>" name="name">
+		</label>
+
+		<script>
+			$(function () {
+				$("#neuer_account_check").change(function () {
+					if ($(this).prop("checked")) {
+						$("#pwd_confirm").show();
+						$("#reg_name").show().find("input").attr("required", "required");
+						$("#password_input").attr("placeholder", "Min. 6 Zeichen");
+					} else {
+						$("#pwd_confirm").hide();
+						$("#reg_name").hide().find("input").removeAttr("required");
+						$("#password_input").attr("placeholder", "");
+					}
+				}).trigger("change");
+			})
+		</script>
 
 		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'ok', 'label' => 'Einloggen')); ?>
 
@@ -62,8 +101,8 @@ if ($msg_err != "") {
 		?>
 		<label for="OAuthLoginForm_wurzelwerk">WurzelWerk-Account</label>
 		<input class="span3" name="OAuthLoginForm[wurzelwerk]" id="OAuthLoginForm_wurzelwerk" type="text"
-			   style="margin-bottom: 0; "/><br><a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank"
-												  style="font-size: 0.8em; margin-top: -7px; display: inline-block; margin-bottom: 10px;">Wurzelwerk-Zugangsdaten
+		       style="margin-bottom: 0; "/><br><a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank"
+		                                          style="font-size: 0.8em; margin-top: -7px; display: inline-block; margin-bottom: 10px;">Wurzelwerk-Zugangsdaten
 			vergessen?</a>
 		<span class="help-block error" id="OAuthLoginForm_wurzelwerk_em_" style="display: none"></span>
 
@@ -92,7 +131,7 @@ if (!$this->veranstaltungsreihe || !$this->veranstaltungsreihe->getEinstellungen
 
 		<label for="OAuthLoginForm_openid_identifier">OpenID-URL</label>
 		<input class="span3" name="OAuthLoginForm[openid_identifier]" id="OAuthLoginForm_openid_identifier"
-			   type="text"/>
+		       type="text"/>
 		<span class="help-block error" id="OAuthLoginForm_openid_identifier_em_" style="display: none"></span>
 
 		<br>

@@ -103,6 +103,6 @@ return array(
 		'kontakt_email'               => 'EMAILADRESSE',
 		'mail_from'                   => 'Antragsgrün <EMAILADRESSE>',
 		'admin_user_id'               => null,
-		'antragsgruen_version'        => '2.2.0',
+		'antragsgruen_version'        => '2.2.1',
 	),
 );
