@@ -1,7 +1,7 @@
 SET foreign_key_checks = 0;
 
-INSERT INTO `person` (`id`, `typ`, `name`, `email`, `email_bestaetigt`, `telefon`, `auth`, `angelegt_datum`, `admin`, `status`, `pwd_enc`, `benachrichtigungs_typ`) VALUES
-(1, 'person', 'Admin', 'admin@test.de', 1, NULL, 'email:admin@test.de', '2013-04-14 20:33:49', 0, 0, 'sha256:1000:N9YHmSiI2PWORbyzrNAxmglojAPU0Nm6:6IzbgeTbSSjS7xONciqdEc5RxLv+gJRn', 'sofort');
+INSERT INTO `person` (`id`, `typ`, `name`, `email`, `email_bestaetigt`, `telefon`, `auth`, `angelegt_datum`, `status`, `pwd_enc`, `benachrichtigungs_typ`) VALUES
+(1, 'person', 'Admin', 'admin@test.de', 1, NULL, 'email:admin@test.de', '2013-04-14 20:33:49', 0, 'sha256:1000:N9YHmSiI2PWORbyzrNAxmglojAPU0Nm6:6IzbgeTbSSjS7xONciqdEc5RxLv+gJRn', 'sofort');
 
 INSERT INTO `veranstaltung` (`id`, `veranstaltungsreihe_id`, `name`, `name_kurz`, `datum_von`, `datum_bis`, `antragsschluss`, `policy_antraege`, `policy_aenderungsantraege`, `policy_kommentare`, `policy_unterstuetzen`, `typ`, `url_verzeichnis`, `admin_email`, `einstellungen`) VALUES
 (1, 1, 'Test-Veranstaltung', '', NULL, NULL, '2017-04-14 20:37:02', 'Alle', 'Alle', '0', 'Niemand', 1, 'programm', NULL, NULL);
