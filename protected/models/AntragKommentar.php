@@ -55,7 +55,6 @@ class AntragKommentar extends IKommentar
 			array('text, datum', 'required'),
 			array('id, verfasserIn_id, antrag_id, absatz, status, antwort_benachrichtigung', 'numerical', 'integerOnly'=>true),
 			array('verfasserIn_id, antrag_id, absatz, status', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, verfasserIn_id, antrag_id, absatz, text, datum, status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -95,25 +94,6 @@ class AntragKommentar extends IKommentar
 			'antrag' => null,
 			'unterstuetzerInnen' => null,
 		);
-	}
-
-	/**
-	 * @return CActiveDataProvider
-	 */
-	public function search() {
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('verfasserIn_id', $this->verfasserIn_id);
-		$criteria->compare('antrag_id', $this->antrag_id);
-		$criteria->compare('absatz', $this->absatz);
-		$criteria->compare('text', $this->text, true);
-		$criteria->compare('datum', $this->datum, true);
-		$criteria->compare('status', $this->status);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
 	}
 
 	/**

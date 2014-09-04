@@ -35,7 +35,6 @@ class Texte extends GxActiveRecord
 			array('text_id', 'length', 'max'=>20),
 			array('text, edit_datum', 'safe'),
 			array('veranstaltung_id, text, edit_datum', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('id, text_id, veranstaltung_id, text, edit_datum', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -59,19 +58,5 @@ class Texte extends GxActiveRecord
 			'edit_datum' => Yii::t('app', 'Edit Datum'),
 			'veranstaltung' => null,
 		);
-	}
-
-	public function search() {
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('text_id', $this->text_id, true);
-		$criteria->compare('veranstaltung_id', $this->veranstaltung_id);
-		$criteria->compare('text', $this->text, true);
-		$criteria->compare('edit_datum', $this->edit_datum, true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
 	}
 }

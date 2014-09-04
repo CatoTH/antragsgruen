@@ -15,7 +15,7 @@ class Cache extends CActiveRecord
 	 * @param string $className active record class name.
 	 * @return Cache the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
@@ -24,7 +24,8 @@ class Cache extends CActiveRecord
 	 * @param string $key
 	 * @return null|mixed
 	 */
-	public static function getObject($key) {
+	public static function getObject($key)
+	{
 		$entry = self::model()->findByPk($key);
 		if (is_null($entry)) return null;
 
@@ -37,9 +38,10 @@ class Cache extends CActiveRecord
 	 * @param mixed $val
 	 * @return Cache
 	 */
-	public static function setObject($key, $val) {
-		$cache = new Cache();
-		$cache->id = $key;
+	public static function setObject($key, $val)
+	{
+		$cache        = new Cache();
+		$cache->id    = $key;
 		$cache->daten = serialize($val);
 		$cache->datum = new CDbExpression('NOW()');
 		$cache->save();
@@ -63,11 +65,8 @@ class Cache extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id', 'required'),
-			array('id', 'length', 'max'=>32),
+			array('id', 'length', 'max' => 32),
 			array('datum, daten', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, datum, daten', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -78,8 +77,7 @@ class Cache extends CActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return array(
-		);
+		return array();
 	}
 
 	/**
@@ -88,29 +86,9 @@ class Cache extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
+			'id'    => 'ID',
 			'datum' => 'Datum',
 			'daten' => 'Daten',
 		);
-	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('datum',$this->datum,true);
-		$criteria->compare('daten',$this->daten,true);
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
 	}
 }

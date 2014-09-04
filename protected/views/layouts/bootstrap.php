@@ -93,7 +93,7 @@ $cs->scriptMap=array(
 								<li><a href="<?= CHtml::encode($this->createUrl("veranstaltung/logout", array("back" => yii::app()->getRequest()->requestUri))) ?>">Logout</a></li>
 							<?php
 							}
-							if (Yii::app()->user->getState("role") == "admin" || ($this->veranstaltung != null && $this->veranstaltung->isAdminCurUser())) {
+							if ($this->veranstaltung != null && $this->veranstaltung->isAdminCurUser()) {
 								?>
 								<li><a href="<?= CHtml::encode($this->createUrl("admin/index")) ?>">Admin</a></li>
 							<?php } ?>

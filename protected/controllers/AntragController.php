@@ -236,7 +236,7 @@ class AntragController extends AntragsgruenController
             "edit_link"          => $antrag->kannUeberarbeiten(),
             "kommentare_offen"   => $kommentare_offen,
             "kommentar_person"   => $kommentar_person,
-            "admin_edit"         => (Yii::app()->user->getState("role") == "admin" ? "/admin/antraege/update/id/" . $antrag_id : null),
+            "admin_edit"         => ($this->veranstaltung->isAdminCurUser() ? $this->createUrl("/admin/antraege/update", array("id" => $antrag_id)) : null),
             "komm_del_link"      => $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id, AntiXSS::createToken("komm_del") => "#komm_id#")),
             "hiddens"            => $hiddens,
             "js_protection"      => $js_protection,
