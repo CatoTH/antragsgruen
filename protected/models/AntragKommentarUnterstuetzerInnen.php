@@ -58,7 +58,6 @@ class AntragKommentarUnterstuetzerInnen extends GxActiveRecord {
 			array('antrag_kommentar_id, ip_hash, cookie_id, dafuer', 'required'),
 			array('antrag_kommentar_id, cookie_id, dafuer', 'numerical', 'integerOnly'=>true),
 			array('ip_hash', 'length', 'max'=>32),
-			array('id, antrag_kommentar_id, ip_hash, cookie_id, dafuer', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,19 +81,5 @@ class AntragKommentarUnterstuetzerInnen extends GxActiveRecord {
 			'cookie_id' => Yii::t('app', 'Cookie-Wert'),
 			'dafuer' => Yii::t('app', 'Dafür'),
 		);
-	}
-
-	public function search() {
-		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id);
-		$criteria->compare('antrag_kommentar_id', $this->antrag_kommentar_id);
-		$criteria->compare('ip_hash', $this->ip_hash);
-		$criteria->compare('cookie_id', $this->cookie_id);
-		$criteria->compare('dafuer', $this->dafuer);
-
-		return new CActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
 	}
 }

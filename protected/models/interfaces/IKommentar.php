@@ -53,12 +53,10 @@ abstract class IKommentar extends GxActiveRecord {
 	public function istSichtbarCurrUser() {
 		if ($this->status == static::$STATUS_GELOESCHT) return false;
 		if ($this->status == static::$STATUS_FREI) return true;
-		if (Yii::app()->user->getState("role") == "admin") return true;
 		if ($this->getVeranstaltung()->isAdminCurUser()) return true;
 
 		$user = Yii::app()->user;
 		if ($user->isGuest) return false;
-		if ($user->getState("role") === "admin") return true;
 		/** @var Person $ich  */
 		$ich = Person::model()->findByAttributes(array("auth" => $user->id));
 		return ($ich->id == $this->verfasserIn_id);

@@ -217,11 +217,6 @@ class AntragsgruenController extends CController
 			}
 			Yii::app()->user->login($identity);
 
-			if ($correct_user->admin) {
-				//$openid->setState("role", "admin");
-				Yii::app()->user->setState("role", "admin");
-			}
-
 			Yii::app()->user->setState("person_id", $correct_user->id);
 			Yii::app()->user->setFlash('success', 'Willkommen!');
 			if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
@@ -342,13 +337,6 @@ class AntragsgruenController extends CController
 		$password      = substr(md5(uniqid()), 0, 8);
 		$user->pwd_enc = Person::create_hash($password);
 
-		if (Person::model()->count() == 0) {
-			$user->admin = 1;
-			Yii::app()->user->setState("role", "admin");
-		} else {
-			$user->admin = 0;
-		}
-
 		$user->save();
 
 		if (trim($email) != "") {
@@ -392,11 +380,6 @@ class AntragsgruenController extends CController
 					}
 					if (!$user) {
 						$this->performLogin_OAuth_create_user($us);
-					} else {
-						if ($user->admin) {
-							//$openid->setState("role", "admin");
-							Yii::app()->user->setState("role", "admin");
-						}
 					}
 					Yii::app()->user->setState("person_id", $user->id);
 					Yii::app()->user->setFlash('success', 'Willkommen!');
@@ -431,11 +414,6 @@ class AntragsgruenController extends CController
 		}
 		$identity = new AntragUserIdentityPasswd($user->getWurzelwerkName(), $user->auth);
 		Yii::app()->user->login($identity);
-
-		if ($user->admin) {
-			//$openid->setState("role", "admin");
-			Yii::app()->user->setState("role", "admin");
-		}
 
 		Yii::app()->user->setState("person_id", $user->id);
 		Yii::app()->user->setFlash('success', 'Willkommen!');
