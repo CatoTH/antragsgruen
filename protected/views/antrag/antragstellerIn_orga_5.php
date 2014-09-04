@@ -18,7 +18,7 @@ if ($mode == "neu") {
 		<h3><?= $sprache->get("AntragstellerIn") ?></h3>
 		<br>
 		<?php
-		echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
+		echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn, "Name<br>(oder Gremium, LAG...)", "Kreisverband");
 		?>
 
 		<div class="control-group" id="Person_typ_chooser">
@@ -31,7 +31,7 @@ if ($mode == "neu") {
 		</div>
 
 		<div class="control-group" id="UnterstuetzerInnen">
-			<label class="control-label">UnterstützerInnen2<br>(min. 4)</label>
+			<label class="control-label">UnterstützerInnen<br>(min. 4)</label>
 
 			<div class="controls unterstuetzerInnen_list">
 				<?php for ($i = 0; $i < 4; $i++) { ?>

@@ -243,12 +243,14 @@ abstract class IPolicyAntraege
 		}
 	}
 
-    /**
-     * @param Veranstaltung $veranstaltung
-     * @param Person $antragstellerIn
-     * @return string
-     */
-    public function getAntragsstellerInStdForm($veranstaltung, $antragstellerIn) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @param Person $antragstellerIn
+	 * @param string $label_name
+	 * @param string $label_organisation
+	 * @return string
+	 */
+    public function getAntragsstellerInStdForm($veranstaltung, $antragstellerIn, $label_name = "Name", $label_organisation = "Gremium, LAG...") {
         $str = '';
         $einstellungen = $veranstaltung->getEinstellungen();
 
@@ -259,13 +261,13 @@ abstract class IPolicyAntraege
         }
 
         $str .= '<div class="antragstellerIn_daten">
-			<div class="control-group "><label class="control-label" for="Person_name">Name(n)</label>
+			<div class="control-group "><label class="control-label" for="Person_name">' . $label_name . '</label>
 				<div class="controls"><input name="Person[name]" id="Person_name" type="text" maxlength="100" value="';
         if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->name);
         $str .= '"></div>
 			</div>
 
-			<div class="control-group "><label class="control-label" for="Person_organisation">Gremium, LAG...</label>
+			<div class="control-group "><label class="control-label" for="Person_organisation">' . $label_organisation . '</label>
 				<div class="controls"><input name="Person[organisation]" id="Person_organisation" type="text" maxlength="100" value="';
 		if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->organisation);
 		$str .= '"></div>

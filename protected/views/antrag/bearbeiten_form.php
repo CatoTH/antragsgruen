@@ -67,17 +67,25 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 		</fieldset>
 
-		<fieldset>
-			<label class="legend">Antragstyp</label>
-			<?php
-			foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) {
-				echo '<label class="radio"><input name="Antrag[typ]" value="' . $id . '" type="radio" ';
-				if ($model->typ == $id) echo ' checked';
-				echo ' required> ' . CHtml::encode($name) . '</label>';
-			}
+		<?php
+		$typen = array();
+		foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) $typen[$id] = $name;
+		if (count($typen) == 1) {
+			$keys = array_keys($typen);
+			echo '<input type="hidden" name="Antrag[typ]" value="' . $keys[0] . '">';
+		} else {
 			?>
-		</fieldset>
-
+			<fieldset>
+				<label class="legend">Antragstyp</label>
+				<?php
+				foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) {
+					echo '<label class="radio"><input name="Antrag[typ]" value="' . $id . '" type="radio" ';
+					if ($model->typ == $id) echo ' checked';
+					echo ' required> ' . CHtml::encode($name) . '</label>';
+				}
+				?>
+			</fieldset>
+		<?php } ?>
 
 		<fieldset class="control-group">
 
@@ -128,9 +136,6 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		));
 		?>
 
-		<div style="float: left;">
-			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'reset', 'icon' => 'remove', 'label' => 'Reset')); ?>
-		</div>
 		<div style="float: right;">
 			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Weiter')); ?>
 		</div>
