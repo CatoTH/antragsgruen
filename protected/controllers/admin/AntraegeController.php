@@ -26,7 +26,7 @@ class AntraegeController extends GxController
 		$messages = array();
 
 		if (AntiXSS::isTokenSet("antrag_freischalten")) {
-			$newvar = AntiXSS::getTokenVal("antrag_freischalten");
+			$newvar               = AntiXSS::getTokenVal("antrag_freischalten");
 			$model->revision_name = $newvar;
 			if ($model->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $model->status = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
 			$model->save();
@@ -41,15 +41,21 @@ class AntraegeController extends GxController
 		}
 
 		if (isset($_POST['Antrag'])) {
+			$fixed_fields = $fixed_fields_pre = array();
+			if ($model->text_unveraenderlich) $fixed_fields = array(
+				"text_unveraenderlich", "text", "begruendung",
+			);
+			foreach ($fixed_fields as $field) $fixed_fields_pre[$field] = $model->$field;
+
 			$model->setAttributes($_POST['Antrag'], false);
-			$model->text = HtmlBBcodeUtils::bbcode_normalize($model->text);
-			$model->begruendung = HtmlBBcodeUtils::bbcode_normalize($model->begruendung);
+
+			foreach ($fixed_fields_pre as $field => $val) $model->$field = $val;
+
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Antrag"], "datum_einreichung");
-			$model->datum_beschluss = EDateTimePicker::parseInput($_POST["Antrag"], "datum_beschluss");
+			$model->datum_beschluss   = EDateTimePicker::parseInput($_POST["Antrag"], "datum_beschluss");
 
-			$relatedData = array(
-			);
+			$relatedData = array();
 
 			if ($model->saveWithRelated($relatedData)) {
 				$model->veranstaltung->resetLineCache();
@@ -100,10 +106,10 @@ class AntraegeController extends GxController
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
-		$dataProvider = new CActiveDataProvider('Antrag');
-		$dataProvider->sort->defaultOrder = "datum_einreichung DESC";
+		$dataProvider                            = new CActiveDataProvider('Antrag');
+		$dataProvider->sort->defaultOrder        = "datum_einreichung DESC";
 		$dataProvider->getPagination()->pageSize = 50;
-		$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
+		$dataProvider->criteria->condition       = "status != " . IAntrag::$STATUS_GELOESCHT . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
 
 		$this->render('index', array(
 			'dataProvider' => $dataProvider,
@@ -126,7 +132,7 @@ class AntraegeController extends GxController
 			$model->setAttributes($_GET['Antrag']);
 
 		$model->veranstaltung_id = $this->veranstaltung->id;
-		$model->veranstaltung = $this->veranstaltung;
+		$model->veranstaltung    = $this->veranstaltung;
 
 		$this->render('admin', array(
 			'model' => $model,

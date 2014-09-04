@@ -8,6 +8,9 @@ class VeranstaltungsEinstellungen extends CFormModel
     public $antrag_neu_kann_telefon = false;
 	public $kommentar_neu_braucht_email = false;
 
+	public $initiatorInnen_duerfen_aendern = false;
+	public $admins_duerfen_aendern = true;
+
 	public $wartungs_modus_aktiv = false;
 	public $bestaetigungs_emails = false;
 	public $zeilen_nummerierung_global = false;
@@ -19,7 +22,6 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $freischaltung_antraege = false;
 	public $freischaltung_aenderungsantraege = false;
 	public $freischaltung_kommentare = false;
-	public $initiatorInnen_duerfen_aendern = false;
 	public $initiatorInnen_duerfen_aes_ablehnen = false;
 	public $titel_eigene_zeile = true;
 	public $kann_pdf = true;

@@ -104,6 +104,17 @@ class VeranstaltungenController extends GxController
 				$model->veranstaltungsreihe->setEinstellungen($reihen_einstellungen);
 				$model->veranstaltungsreihe->save();
 
+				if (!$model->getEinstellungen()->admins_duerfen_aendern) {
+					foreach ($model->antraege as $ant) {
+						$ant->text_unveraenderlich = 1;
+						$ant->save(false);
+						foreach ($ant->aenderungsantraege as $ae) {
+							$ae->text_unveraenderlich = 1;
+							$ae->save(false);
+						}
+					}
+				}
+
 				$model->resetLineCache();
 				$this->redirect(array('update'));
 			}

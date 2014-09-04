@@ -16,6 +16,7 @@
  * @property integer $status
  * @property string $status_string
  * @property int $kommentar_legacy
+ * @property integer $text_unveraenderlich
  *
  * @property Antrag $antrag
  * @property AenderungsantragKommentar[] $aenderungsantragKommentare
@@ -26,8 +27,8 @@ class Aenderungsantrag extends IAntrag
 	private $absaetze = null;
 
 	/**
-	 * @var string $clasName
-	 * @return GxActiveRecord
+	 * @var string $className
+	 * @return Aenderungsantrag
 	 */
 	public static function model($className = __CLASS__)
 	{
@@ -66,7 +67,7 @@ class Aenderungsantrag extends IAntrag
 	{
 		return array(
 			array('text_neu, aenderung_text, datum_einreichung, status, status', 'required'),
-			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy', 'numerical', 'integerOnly' => true),
+			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy, text_unveraenderlich', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
 			array('name_neu, datum_beschluss, aenderung_metatext', 'safe'),
@@ -110,7 +111,7 @@ class Aenderungsantrag extends IAntrag
 			'name_neu'                           => Yii::t('app', 'Name Neu'),
 			'text_neu'                           => Yii::t('app', 'Text Neu'),
 			'begruendung_neu'                    => Yii::t('app', 'Begruendung Neu'),
-            'aenderung_metatext'                 => Yii::t('app', 'Metabeschreibung der Änderung'),
+			'aenderung_metatext'                 => Yii::t('app', 'Metabeschreibung der Änderung'),
 			'aenderung_text'                     => Yii::t('app', 'Aenderung Text'),
 			'aenderung_begruendung'              => Yii::t('app', 'Aenderung Begruendung'),
 			'aenderung_first_line_cache'         => "Cache: erste Zeilennummer",
@@ -119,6 +120,7 @@ class Aenderungsantrag extends IAntrag
 			'status'                             => Yii::t('app', 'Status'),
 			'status_string'                      => Yii::t('app', 'Status String'),
 			'kommentar_legacy'                   => Yii::t('app', 'Altes Kommentarsystem'),
+			'text_unveraenderlich'               => Yii::t('app', 'Text Unveränderlich'),
 			'antrag'                             => null,
 			'aenderungsantragKommentare'         => null,
 			'aenderungsantragUnterstuetzerInnen' => null,
@@ -143,39 +145,40 @@ class Aenderungsantrag extends IAntrag
 	 * @param array $absatz_mapping
 	 * @return Aenderungsantrag
 	 */
-    public function aufrechterhaltenBeiNeuemAntrag($antrag, $anz_absaetze_neu, $absatz_mapping) {
-        $neuer_ae                             = new Aenderungsantrag();
-        $neuer_ae->antrag_id                  = $antrag->id;
-        $neuer_ae->revision_name              = $this->revision_name;
-        $neuer_ae->name_neu                   = $this->name_neu;
-        $neuer_ae->begruendung_neu            = $this->begruendung_neu;
-        $neuer_ae->aenderung_begruendung      = $this->aenderung_begruendung;
-        $neuer_ae->datum_einreichung          = $this->datum_einreichung;
-        $neuer_ae->aenderung_first_line_cache = -1;
-        $neuer_ae->status_string              = "";
-        $neuer_ae->status                     = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
+	public function aufrechterhaltenBeiNeuemAntrag($antrag, $anz_absaetze_neu, $absatz_mapping)
+	{
+		$neuer_ae                             = new Aenderungsantrag();
+		$neuer_ae->antrag_id                  = $antrag->id;
+		$neuer_ae->revision_name              = $this->revision_name;
+		$neuer_ae->name_neu                   = $this->name_neu;
+		$neuer_ae->begruendung_neu            = $this->begruendung_neu;
+		$neuer_ae->aenderung_begruendung      = $this->aenderung_begruendung;
+		$neuer_ae->datum_einreichung          = $this->datum_einreichung;
+		$neuer_ae->aenderung_first_line_cache = -1;
+		$neuer_ae->status_string              = "";
+		$neuer_ae->status                     = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
 
-        $text_neu = array();
-        for ($i = 0; $i < $anz_absaetze_neu; $i++) $text_neu[$i] = "";
-        $old_abs = json_decode($this->text_neu);
-        foreach ($old_abs as $abs => $str) $text_neu[$absatz_mapping[$abs]] = $str;
-        $neuer_ae->setDiffParagraphs($text_neu);
+		$text_neu = array();
+		for ($i = 0; $i < $anz_absaetze_neu; $i++) $text_neu[$i] = "";
+		$old_abs = json_decode($this->text_neu);
+		foreach ($old_abs as $abs => $str) $text_neu[$absatz_mapping[$abs]] = $str;
+		$neuer_ae->setDiffParagraphs($text_neu);
 
-        $neuer_ae->calcDiffText();
+		$neuer_ae->calcDiffText();
 
 
-        if (!$neuer_ae->save()) var_dump($neuer_ae->attributes);
+		if (!$neuer_ae->save()) var_dump($neuer_ae->attributes);
 
-        foreach ($this->aenderungsantragUnterstuetzerInnen as $init) if ($init->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
-            $in                      = new AenderungsantragUnterstuetzerInnen();
-            $in->rolle               = IUnterstuetzerInnen::$ROLLE_INITIATORIN;
-            $in->position            = $init->position;
-            $in->aenderungsantrag_id = $neuer_ae->id;
-            $in->unterstuetzerIn_id  = $init->unterstuetzerIn_id;
-            $in->kommentar           = "";
-            $in->save();
-        }
-    }
+		foreach ($this->aenderungsantragUnterstuetzerInnen as $init) if ($init->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+			$in                      = new AenderungsantragUnterstuetzerInnen();
+			$in->rolle               = IUnterstuetzerInnen::$ROLLE_INITIATORIN;
+			$in->position            = $init->position;
+			$in->aenderungsantrag_id = $neuer_ae->id;
+			$in->unterstuetzerIn_id  = $init->unterstuetzerIn_id;
+			$in->kommentar           = "";
+			$in->save();
+		}
+	}
 
 
 	/**
@@ -308,7 +311,8 @@ class Aenderungsantrag extends IAntrag
 	/**
 	 * @return AenderungsantragAbsatz[]
 	 */
-	public function getAntragstextParagraphs_diff() {
+	public function getAntragstextParagraphs_diff()
+	{
 
 		$abs_alt = $this->antrag->getParagraphs();
 		$abs_neu = json_decode($this->text_neu);

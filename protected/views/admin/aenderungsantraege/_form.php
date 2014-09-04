@@ -40,30 +40,6 @@ $form = $this->beginWidget('GxActiveForm', array(
 </div>
 <!-- row -->
 <div>
-	<?php echo $form->labelEx($model, 'text_neu'); ?>
-	<?php echo $form->textArea($model, 'text_neu'); ?>
-	<?php echo $form->error($model, 'text_neu'); ?>
-</div>
-<!-- row -->
-<div>
-	<?php echo $form->labelEx($model, 'begruendung_neu'); ?>
-	<?php echo $form->textArea($model, 'begruendung_neu'); ?>
-	<?php echo $form->error($model, 'begruendung_neu'); ?>
-</div>
-<!-- row -->
-<div>
-	<?php echo $form->labelEx($model, 'aenderung_text'); ?>
-	<?php echo $form->textArea($model, 'aenderung_text'); ?>
-	<?php echo $form->error($model, 'aenderung_text'); ?>
-</div>
-<!-- row -->
-<div>
-	<?php echo $form->labelEx($model, 'aenderung_begruendung'); ?>
-	<?php echo $form->textArea($model, 'aenderung_begruendung'); ?>
-	<?php echo $form->error($model, 'aenderung_begruendung'); ?>
-</div>
-<!-- row -->
-<div>
 	<?php echo $form->labelEx($model, 'datum_einreichung'); ?>
 	<?php $form->widget('ext.datetimepicker.EDateTimePicker', array(
 	'model'     => $model,

@@ -15,6 +15,7 @@
  * @property string $status_string
  * @property integer $cache_anzahl_zeilen
  * @property integer $cache_anzahl_absaetze
+ * @property integer $text_unveraenderlich
  *
  * @property Aenderungsantrag[] $aenderungsantraege
  * @property Veranstaltung $veranstaltung
@@ -24,7 +25,6 @@
  * @property AntragUnterstuetzerInnen[] $antragUnterstuetzerInnen
  * @property Person[] $abonnentent
  */
-
 class Antrag extends IAntrag
 {
 	public static $TYP_ANTRAG = 0;
@@ -34,7 +34,7 @@ class Antrag extends IAntrag
 	public static $TYP_GO = 4;
 	public static $TYP_FINANZANTRAG = 5;
 	public static $TYP_WAHLPROGRAMM = 6;
-    public static $TYP_DRINGLICHKEITSANTRAG = 7;
+	public static $TYP_DRINGLICHKEITSANTRAG = 7;
 	public static $TYPEN = array(
 		0 => "Antrag",
 		1 => "Satzung",
@@ -72,7 +72,8 @@ class Antrag extends IAntrag
 	/**
 	 * @return string
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'antrag';
 	}
 
@@ -80,27 +81,30 @@ class Antrag extends IAntrag
 	 * @param int $n
 	 * @return string
 	 */
-	public static function label($n = 1) {
+	public static function label($n = 1)
+	{
 		return Yii::t('app', 'Antrag|Antraege', $n);
 	}
 
 	/**
 	 * @return string
 	 */
-	public static function representingColumn() {
+	public static function representingColumn()
+	{
 		return 'name';
 	}
 
 	/**
 	 * @return array
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return array(
 			array('veranstaltung_id, name, datum_einreichung, status', 'required'),
-			array('veranstaltung_id, abgeleitet_von, typ, status', 'numerical', 'integerOnly'=>true),
-			array('revision_name', 'length', 'max'=>50),
-			array('datum_beschluss', 'length', 'max'=>45),
-			array('status_string', 'length', 'max'=>55),
+			array('veranstaltung_id, abgeleitet_von, typ, status, text_unveraenderlich', 'numerical', 'integerOnly' => true),
+			array('revision_name', 'length', 'max' => 50),
+			array('datum_beschluss', 'length', 'max' => 45),
+			array('status_string', 'length', 'max' => 55),
 			array('text, begruendung', 'safe'),
 			array('abgeleitet_von, typ, datum_beschluss, text, begruendung, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
@@ -109,14 +113,15 @@ class Antrag extends IAntrag
 	/**
 	 * @return array
 	 */
-	public function relations() {
+	public function relations()
+	{
 		return array(
-			'aenderungsantraege' => array(self::HAS_MANY, 'Aenderungsantrag', 'antrag_id'),
-			'veranstaltung' => array(self::BELONGS_TO, 'Veranstaltung', 'veranstaltung_id'),
-			'abgeleitetVon' => array(self::BELONGS_TO, 'Antrag', 'abgeleitet_von'),
-			'antraege' => array(self::HAS_MANY, 'Antrag', 'abgeleitet_von'),
-			'antragKommentare' => array(self::HAS_MANY, 'AntragKommentar', 'antrag_id'),
-			'abonnenten'  => array(self::MANY_MANY, 'Person', 'antrag_abos(antrag_id, person_id)'),
+			'aenderungsantraege'       => array(self::HAS_MANY, 'Aenderungsantrag', 'antrag_id'),
+			'veranstaltung'            => array(self::BELONGS_TO, 'Veranstaltung', 'veranstaltung_id'),
+			'abgeleitetVon'            => array(self::BELONGS_TO, 'Antrag', 'abgeleitet_von'),
+			'antraege'                 => array(self::HAS_MANY, 'Antrag', 'abgeleitet_von'),
+			'antragKommentare'         => array(self::HAS_MANY, 'AntragKommentar', 'antrag_id'),
+			'abonnenten'               => array(self::MANY_MANY, 'Person', 'antrag_abos(antrag_id, person_id)'),
 			'antragUnterstuetzerInnen' => array(
 				self::HAS_MANY, 'AntragUnterstuetzerInnen', 'antrag_id',
 				'order' => "antragUnterstuetzerInnen.position ASC"
@@ -127,38 +132,41 @@ class Antrag extends IAntrag
 	/**
 	 * @return array
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return array(
-			'id' => Yii::t('app', 'ID'),
-			'veranstaltung_id' => null,
-			'abgeleitet_von' => "Abgeleitet von",
-			'typ' => Yii::t('app', 'Typ'),
-			'name' => Yii::t('app', 'Name'),
-			'revision_name' => Yii::t('app', 'Revision Name'),
-			'datum_einreichung' => Yii::t('app', 'Datum Einreichung'),
-			'datum_beschluss' => Yii::t('app', 'Datum Beschluss'),
-			'text' => Yii::t('app', 'Text'),
-			'begruendung' => Yii::t('app', 'Begruendung'),
-			'status' => Yii::t('app', 'Status'),
-			'status_string' => Yii::t('app', 'Status String'),
-			'aenderungsantraege' => null,
-			'veranstaltung' => null,
-			'abgeleitetVon' => null,
-			'antraege' => "Löst ab",
-			'antragKommentare' => null,
+			'id'                       => Yii::t('app', 'ID'),
+			'veranstaltung_id'         => null,
+			'abgeleitet_von'           => "Abgeleitet von",
+			'typ'                      => Yii::t('app', 'Typ'),
+			'name'                     => Yii::t('app', 'Name'),
+			'revision_name'            => Yii::t('app', 'Revision Name'),
+			'datum_einreichung'        => Yii::t('app', 'Datum Einreichung'),
+			'datum_beschluss'          => Yii::t('app', 'Datum Beschluss'),
+			'text'                     => Yii::t('app', 'Text'),
+			'begruendung'              => Yii::t('app', 'Begruendung'),
+			'status'                   => Yii::t('app', 'Status'),
+			'status_string'            => Yii::t('app', 'Status String'),
+			'text_unveraenderlich'     => Yii::t('app', 'Text Unveränderlich'),
+			'aenderungsantraege'       => null,
+			'veranstaltung'            => null,
+			'abgeleitetVon'            => null,
+			'antraege'                 => "Löst ab",
+			'antragKommentare'         => null,
 			'antragUnterstuetzerInnen' => null,
-			'abonnenten' => null,
+			'abonnenten'               => null,
 		);
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getFirstLineNo() {
+	public function getFirstLineNo()
+	{
 		$erste_zeile = 1;
 		if ($this->veranstaltung->getEinstellungen()->zeilen_nummerierung_global) {
 			$antraege = $this->veranstaltung->antraegeSortiert();
-			$found = false;
+			$found    = false;
 			foreach ($antraege as $antraege2) foreach ($antraege2 as $antrag) if (!$found) {
 				/** @var Antrag $antrag */
 				if ($antrag->id == $this->id) {
@@ -220,13 +228,20 @@ class Antrag extends IAntrag
 	/**
 	 * @return bool
 	 */
-	public function kannUeberarbeiten() {
-		if ($this->veranstaltung->isAdminCurUser()) return true;
-		if ($this->veranstaltung->veranstaltungsreihe->isAdminCurUser()) return true;
+	public function kannUeberarbeiten()
+	{
+		if ($this->text_unveraenderlich) return false;
+
+		if ($this->veranstaltung->getEinstellungen()->admins_duerfen_aendern) {
+			if ($this->veranstaltung->isAdminCurUser()) return true;
+			if ($this->veranstaltung->veranstaltungsreihe->isAdminCurUser()) return true;
+		}
+
 		if ($this->veranstaltung->getEinstellungen()->initiatorInnen_duerfen_aendern && $this->binInitiatorIn()) {
 			if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
 			else return true;
 		}
+
 		return false;
 	}
 
@@ -241,7 +256,7 @@ class Antrag extends IAntrag
 		$oCriteria        = new CDbCriteria();
 		$oCriteria->alias = "antrag";
 		if ($veranstaltung_id > 0) $oCriteria->addCondition("antrag.veranstaltung_id = " . IntVal($veranstaltung_id));
-		$unsichtbar = IAntrag::$STATI_UNSICHTBAR;
+		$unsichtbar   = IAntrag::$STATI_UNSICHTBAR;
 		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
 		$oCriteria->addNotInCondition("antrag.status", $unsichtbar);
 		$oCriteria->order = 'antrag.datum_einreichung DESC';
@@ -257,8 +272,9 @@ class Antrag extends IAntrag
 	/**
 	 * @return int
 	 */
-	public function getMaxAenderungsRevNr() {
-		$max_rev = 0;
+	public function getMaxAenderungsRevNr()
+	{
+		$max_rev     = 0;
 		$andereantrs = $this->aenderungsantraege;
 		foreach ($andereantrs as $antr) {
 			// Etwas messy, wg. "Ä" und UTF-8. Alternative Implementierung: auf mbstring.func_overload testen und entsprechend vorgehen
@@ -277,7 +293,8 @@ class Antrag extends IAntrag
 	 * @param int $ae_id
 	 * @return Aenderungsantrag
 	 */
-	public function getAenderungsAntragById($ae_id) {
+	public function getAenderungsAntragById($ae_id)
+	{
 		$ae = Aenderungsantrag::model()->findAll("id = " . InTVal($ae_id) . " AND antrag_id = " . IntVal($this->id));
 		return (count($ae) > 0 ? $ae[0] : null);
 	}
@@ -310,7 +327,8 @@ class Antrag extends IAntrag
 	/**
 	 * @return Person[]
 	 */
-	public function getAntragstellerInnen() {
+	public function getAntragstellerInnen()
+	{
 		$antragstellerInnen = array();
 		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
 			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
@@ -321,7 +339,8 @@ class Antrag extends IAntrag
 	/**
 	 * @return Person[]
 	 */
-	public function getUnterstuetzerInnen() {
+	public function getUnterstuetzerInnen()
+	{
 		$unterstuetzerInnen = array();
 		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
 			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
@@ -332,8 +351,9 @@ class Antrag extends IAntrag
 	/**
 	 * @return Person[]
 	 */
-	public function getZustimmungen() {
-		$zustimmung_von     = array();
+	public function getZustimmungen()
+	{
+		$zustimmung_von = array();
 		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
 			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG) $zustimmung_von[] = $relatedModel->person;
 		}
@@ -343,8 +363,9 @@ class Antrag extends IAntrag
 	/**
 	 * @return Person[]
 	 */
-	public function getAblehnungen() {
-		$ablehnung_von      = array();
+	public function getAblehnungen()
+	{
+		$ablehnung_von = array();
 		if (count($this->antragUnterstuetzerInnen) > 0) foreach ($this->antragUnterstuetzerInnen as $relatedModel) {
 			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
 		}
@@ -357,11 +378,12 @@ class Antrag extends IAntrag
 	 * @param null $attributes
 	 * @return bool
 	 */
-	public function save($runValidation = true, $attributes = null) {
+	public function save($runValidation = true, $attributes = null)
+	{
 		HtmlBBcodeUtils::initZeilenCounter();
 		list($anzahl_absaetze, $anzahl_zeilen) = HtmlBBcodeUtils::getBBCodeStats(trim($this->text), $this->veranstaltung->getEinstellungen()->zeilenlaenge);
 		$this->cache_anzahl_absaetze = $anzahl_absaetze;
-		$this->cache_anzahl_zeilen = $anzahl_zeilen + 1; // + Überschrift
+		$this->cache_anzahl_zeilen   = $anzahl_zeilen + 1; // + Überschrift
 
 		Yii::app()->cache->delete("pdf_" . $this->veranstaltung->id);
 		Yii::app()->cache->delete("pdf_" . $this->veranstaltung->id . "_" . $this->id);
@@ -373,11 +395,12 @@ class Antrag extends IAntrag
 	 * @param bool $absolute
 	 * @return string
 	 */
-	public function getLink($absolute = false) {
+	public function getLink($absolute = false)
+	{
 		return yii::app()->getBaseUrl($absolute) . yii::app()->createUrl("antrag/anzeige", array(
 			"veranstaltungsreihe_id" => $this->veranstaltung->veranstaltungsreihe->subdomain,
-			"veranstaltung_id" => $this->veranstaltung->url_verzeichnis,
-			"antrag_id" => $this->id));
+			"veranstaltung_id"       => $this->veranstaltung->url_verzeichnis,
+			"antrag_id"              => $this->id));
 	}
 
 }

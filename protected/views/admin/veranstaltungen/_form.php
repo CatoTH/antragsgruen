@@ -255,56 +255,86 @@ $einstellungen = $model->getEinstellungen();
 		<?php echo $form->error($model, 'policy_unterstuetzen'); ?>
 	</div>
 	<br>
-	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox"
-											   name="VeranstaltungsEinstellungen[freischaltung_antraege]"
-											   value="1" <?php if ($einstellungen->freischaltung_antraege) echo "checked"; ?>>
-			<strong>Freischaltung</strong> von Anträgen</label> &nbsp; &nbsp;
-	</fieldset>
-	<br>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox"
-											   name="VeranstaltungsEinstellungen[initiatorInnen_duerfen_aendern]"
-											   value="1" <?php if ($einstellungen->initiatorInnen_duerfen_aendern) echo "checked"; ?>>
-			AntragstellerInnen dürfen Anträge <strong>nachträglich ändern</strong>.</label> &nbsp; &nbsp;
+		<label style="display: inline;">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_antraege]" value="1" <?php if ($einstellungen->freischaltung_antraege) echo "checked"; ?>>
+			<strong>Freischaltung</strong> von Anträgen
+		</label>
+		<br>
 	</fieldset>
-	<br>
+
+	<fieldset style="margin-top: 10px;" id="admins_duerfen_aendern">
+		<label style="display: inline;">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[admins_duerfen_aendern]" value="1" <?php if ($einstellungen->admins_duerfen_aendern) echo "checked"; ?>>
+			Admins dürfen Antrags-Texte <strong>nachträglich ändern</strong>.
+		</label>
+		<br>
+	</fieldset>
+
+	<fieldset style="margin-top: 10px;" id="initiatorInnen_duerfen_aendern">
+		<label style="display: inline;">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[initiatorInnen_duerfen_aendern]"
+				   value="1" <?php if ($einstellungen->initiatorInnen_duerfen_aendern) echo "checked"; ?>>
+			AntragstellerInnen dürfen Anträge <strong>nachträglich ändern</strong>.
+		</label>
+		<br>
+	</fieldset>
+
+	<script>
+		$(function () {
+			var $admins_duerfen = $("#admins_duerfen_aendern").find("input"),
+				$initiatorInnen = $("#initiatorInnen_duerfen_aendern");
+			$admins_duerfen.change(function () {
+				if ($(this).prop("checked")) {
+					$initiatorInnen.show();
+				} else {
+					if (!confirm("Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?")) {
+						$(this).prop("checked", true);
+					} else {
+						$initiatorInnen.hide();
+						$initiatorInnen.find("input").prop("checked", false);
+					}
+				}
+			});
+			if (!$admins_duerfen.prop("checked")) $initiatorInnen.hide();
+		})
+	</script>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox"
-											   name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
-											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
+		<label style="display: inline;">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
+				   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
 			Angabe der <strong>E-Mail-Adresse</strong> erzwingen
 			<small>(Bei Anträgen und Änderungsanträgen)</small>
 		</label>
+		<br>
 	</fieldset>
-	<br>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox" id="antrag_neu_kann_telefon"
-											   name="VeranstaltungsEinstellungen[antrag_neu_kann_telefon]"
+		<label style="display: inline;"><input type="checkbox" id="antrag_neu_kann_telefon" name="VeranstaltungsEinstellungen[antrag_neu_kann_telefon]"
 											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_kann_telefon) echo "checked"; ?>>
 			Angabe der <strong>Telefonnummer</strong> ermöglichen
 			<small>(Bei Anträgen und Änderungsanträgen)</small>
 		</label>
 		<br>
 
-		<label style="display: inline-block; margin-left: 30px;" id="antrag_neu_braucht_telefon_holder"><input type="checkbox"
-																											   name="VeranstaltungsEinstellungen[antrag_neu_braucht_telefon]"
-																											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_telefon) echo "checked"; ?>>
-			Erzwingen</label>
+		<label style="display: inline-block; margin-left: 30px;" id="antrag_neu_braucht_telefon_holder">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[antrag_neu_braucht_telefon]"
+				   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_telefon) echo "checked"; ?>>
+			Erzwingen
+		</label>
 	</fieldset>
 	<br>
 
 	<?php if ($namespaced_accounts) { ?>
-	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox" name="antrag_neu_nur_namespaced_accounts"
-											   value="1" <?php if ($model->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) echo "checked"; ?>>
-			Login nur von <?php echo CHtml::link("Veranstaltungsreihen-BenutzerInnen", array("/admin/index/namespacedAccounts")); ?> zulassen<br>
-			<small>(gilt für Anträge und Änderungsanträge der gesamten Veranstaltungs<span style="text-decoration: underline;">reihe</span>)</small>
-		</label>
-	</fieldset>
+		<fieldset style="margin-top: 10px;">
+			<label style="display: inline;"><input type="checkbox" name="antrag_neu_nur_namespaced_accounts"
+												   value="1" <?php if ($model->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) echo "checked"; ?>>
+				Login nur von <?php echo CHtml::link("Veranstaltungsreihen-BenutzerInnen", array("/admin/index/namespacedAccounts")); ?> zulassen<br>
+				<small>(gilt für Anträge und Änderungsanträge der gesamten Veranstaltungs<span style="text-decoration: underline;">reihe</span>)</small>
+			</label>
+		</fieldset>
 	<?php } ?>
 
 
