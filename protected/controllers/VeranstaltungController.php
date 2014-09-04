@@ -217,9 +217,9 @@ class VeranstaltungController extends AntragsgruenController
 		}
 	}
 
-	public function actionAnmeldungBestaetigen($veranstaltungsreihe_id = "", $email = "", $code = "") {
+	public function actionAnmeldungBestaetigen($veranstaltungsreihe_id = "", $email = "", $code = "")
+	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id);
-		$this->testeWartungsmodus();
 
 		$msg_error = "";
 
