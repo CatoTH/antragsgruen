@@ -89,9 +89,13 @@ Konfigurationsdatei erstellen:
 -- 'db' (Mitte): Die Datenbank-Konfiguration
 -- 'params' (Ende): Diverse Parameter der Installation
 
-Berechtigungen setzen:
+Berechtigungen setzen (Linux):
 - chown www-data:www-data protected/runtime
 - chown www-data:www-data html/assets
+
+Berechtigungen setzen (MacOS):
+- chown _www:_www protected/runtime
+- chown _www:_www html/assets
 
 Abhängigkeiten installieren:
 - Zuerst [Composer](https://getcomposer.org/doc/00-intro.md) installieren
