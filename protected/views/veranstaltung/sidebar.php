@@ -116,7 +116,7 @@ if ($veranstaltung->getEinstellungen()->kann_pdf) {
 if (!isset($GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"]) || !in_array($veranstaltung->id, $GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"])) {
 	$html = "</div><div class='antragsgruen_werbung well'><div class='nav-list'>";
 	$html .= "<div class='nav-header'>Dein Antragsgrün</div>";
-	$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
+	$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?";
 	$html .= "<div style='text-align: center;'><a href='" . CHtml::encode($this->createUrl("infos/selbstEinsetzen")) . "' class='btn btn-primary' style='margin-top: 15px;'><span class='icon-chevron-right'></span> Infos</a></div>";
 	$html .= "</div>";
 	$html .= "</div>";
