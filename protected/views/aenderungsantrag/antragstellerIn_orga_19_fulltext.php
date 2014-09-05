@@ -3,11 +3,12 @@
 /**
  * @var AenderungsantraegeController $this
  * @var string $mode
- * @var Antrag $antrag
+ * @var Aenderungsantrag $antrag
  * @var array $hiddens
  * @var bool $js_protection
  * @var Sprache $sprache
  * @var Person $antragstellerIn
+ * @var Veranstaltung $veranstaltung
  */
 
 
