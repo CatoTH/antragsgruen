@@ -65,12 +65,12 @@ Hier läuft die Produktivversion von Antragsgrün: https://www.antragsgruen.de/
 Installation
 ------------
 
-Empfohlene PHP-Module:
-- Intl
-
 Benötigte PHP-Module:
 - mcrypt
 - curl
+- zip (für OpenOffice-Export)
+- Intl
+- dom (für OpenOffice-Export)
 
 Benötigte PHP-Einstellungen:
 - short_open_tag = On

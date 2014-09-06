@@ -103,6 +103,7 @@ return array(
 		'kontakt_email'               => 'EMAILADRESSE',
 		'mail_from'                   => 'Antragsgrün <EMAILADRESSE>',
 		'admin_user_id'               => null,
-		'antragsgruen_version'        => '2.2.1',
+		'odt_default_template'        => __DIR__ . '/../../docs/OpenOffice-Template.odt',
+		'antragsgruen_version'        => '2.3.0',
 	),
 );

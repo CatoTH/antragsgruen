@@ -313,6 +313,18 @@ class Antrag extends IAntrag
 		return $name;
 	}
 
+	/**
+	 * @return OdtTemplate
+	 */
+	public function getOdtTemplate() {
+		// @TODO
+		$template = new OdtTemplate();
+		$template->typ = OdtTemplate::$ODT_TEMPLATE_TYP_ANTRAG;
+		$template->veranstaltung_id = $this->veranstaltung_id;
+		$template->data = file_get_contents(yii::app()->params["odt_default_template"]);
+		return $template;
+	}
+
 
 	/**
 	 * @param int $veranstaltung_id

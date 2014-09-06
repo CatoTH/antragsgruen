@@ -45,7 +45,6 @@
         "mjohnson/decoda": "dev-master",
         "yiisoft/yii": "1.1.15",
         "chris83/yii-bootstrap": "2.1.0",
-        "CodePlex/PHPExcel": "dev-master",
-        "phpoffice/phpword": "dev-master"
+        "CodePlex/PHPExcel": "dev-master"
     }
 }

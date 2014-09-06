@@ -21,6 +21,7 @@
  * @property Person[] $admins
  * @property Texte[] $texte
  * @property Veranstaltungsreihe $veranstaltungsreihe
+ * @property OdtTemplate[] $odt_templates
  */
 class Veranstaltung extends GxActiveRecord
 {
@@ -205,7 +206,7 @@ class Veranstaltung extends GxActiveRecord
 		$antraege_sorted = array();
 		// $warnung         = false;
 
-		$unsichtbar = IAntrag::$STATI_UNSICHTBAR;
+		$unsichtbar   = IAntrag::$STATI_UNSICHTBAR;
 		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
 		foreach ($antraege as $ant) if (!in_array($ant->status, $unsichtbar)) {
 			if (!isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]])) $antraege_sorted[Antrag::$TYPEN[$ant->typ]] = array();
@@ -217,34 +218,35 @@ class Veranstaltung extends GxActiveRecord
 			}
 			*/
 
-            if ($this->getEinstellungen()->ae_nummerierung_nach_zeile) {
-                $aes = array();
-                foreach ($ant->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
+			if ($this->getEinstellungen()->ae_nummerierung_nach_zeile) {
+				$aes = array();
+				foreach ($ant->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
 
-                usort($aes, function($ae1, $ae2) {
-                    $x1 = explode("-", $ae1->revision_name);
-                    $x2 = explode("-", $ae2->revision_name);
-                    if (count($x1) == 3 && count($x2) == 3) {
-                        if ($x1[2] < $x2[2]) return -1;
-                        if ($x1[2] > $x2[2]) return 1;
-                        return 0;
-                    } else {
-                        return strcasecmp($ae1->revision_name, $ae2->revision_name);
-                    }
-                });
-                $ant->aenderungsantraege = $aes;
-            }
+				usort($aes, function ($ae1, $ae2) {
+					$x1 = explode("-", $ae1->revision_name);
+					$x2 = explode("-", $ae2->revision_name);
+					if (count($x1) == 3 && count($x2) == 3) {
+						if ($x1[2] < $x2[2]) return -1;
+						if ($x1[2] > $x2[2]) return 1;
+						return 0;
+					} else {
+						return strcasecmp($ae1->revision_name, $ae2->revision_name);
+					}
+				});
+				$ant->aenderungsantraege = $aes;
+			}
 
 			$antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key] = $ant;
 		}
 
-		/*if (!in_array($this->url_verzeichnis, array("ltwby13-programm", "btw13-programm"))) */foreach ($antraege_sorted as $key => $val) {
-			uksort($antraege_sorted[$key], function($k1, $k2) {
+		/*if (!in_array($this->url_verzeichnis, array("ltwby13-programm", "btw13-programm"))) */
+		foreach ($antraege_sorted as $key => $val) {
+			uksort($antraege_sorted[$key], function ($k1, $k2) {
 				if ($k1 == "" && $k2 == "") return 0;
 				if ($k1 == "") return -1;
 				if ($k2 == "") return 1;
 
-				$cmp = function($str1, $str2, $num1, $num2) {
+				$cmp = function ($str1, $str2, $num1, $num2) {
 					if ($str1 == $str2) {
 						if ($num1 < $num2) return -1;
 						if ($num1 > $num2) return 1;
@@ -255,8 +257,8 @@ class Veranstaltung extends GxActiveRecord
 						return 0;
 					}
 				};
-				$k1 = preg_replace("/neu$/siu", "neu1", $k1);
-				$k2 = preg_replace("/neu$/siu", "neu1", $k2);
+				$k1  = preg_replace("/neu$/siu", "neu1", $k1);
+				$k2  = preg_replace("/neu$/siu", "neu1", $k2);
 
 				$pat1 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]*)/siu";
 				$pat2 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]+)(?<str2>[^0-9]+)(?<num2>[0-9]+)$/siu";
@@ -322,7 +324,8 @@ class Veranstaltung extends GxActiveRecord
 
 	/**
 	 */
-	public function resetLineCache() {
+	public function resetLineCache()
+	{
 		$command = Yii::app()->db->createCommand("UPDATE aenderungsantrag a JOIN antrag b ON a.antrag_id = b.id SET a.aenderung_first_line_cache = -1 WHERE b.veranstaltung_id = " . IntVal($this->id));
 		$command->execute();
 	}
@@ -366,33 +369,34 @@ class Veranstaltung extends GxActiveRecord
 	public function relations()
 	{
 		return array(
-			'antraege' => array(self::HAS_MANY, 'Antrag', 'veranstaltung_id'),
-			'admins'   => array(self::MANY_MANY, 'Person', 'veranstaltungs_admins(veranstaltung_id, person_id)'),
-			'texte'    => array(self::HAS_MANY, 'Texte', 'veranstaltung_id'),
+			'antraege'            => array(self::HAS_MANY, 'Antrag', 'veranstaltung_id'),
+			'admins'              => array(self::MANY_MANY, 'Person', 'veranstaltungs_admins(veranstaltung_id, person_id)'),
+			'texte'               => array(self::HAS_MANY, 'Texte', 'veranstaltung_id'),
 			'veranstaltungsreihe' => array(self::BELONGS_TO, 'Veranstaltungsreihe', 'veranstaltungsreihe_id'),
+			'odt_templates'       => array(self::HAS_MANY, 'OdtTemplate', 'veranstaltung_id'),
 		);
 	}
 
 	public function attributeLabels()
 	{
 		return array(
-			'id'                               => Yii::t('app', 'ID'),
-			'name'                             => Yii::t('app', 'Name'),
-			'name_kurz'                        => Yii::t('app', 'Name Kurz'),
-			'datum_von'                        => Yii::t('app', 'Datum Von'),
-			'datum_bis'                        => Yii::t('app', 'Datum Bis'),
-			'antragsschluss'                   => Yii::t('app', 'Antragsschluss'),
-			'policy_antraege'                  => Yii::t('app', 'Policy Antraege'),
-			'policy_aenderungsantraege'        => Yii::t('app', 'Policy Aenderungsantraege'),
-			'policy_kommentare'                => Yii::t('app', 'Policy Kommentare'),
-			'policy_unterstuetzen'             => Yii::t('app', 'Policy Unterstützen'),
-			'typ'                              => Yii::t('app', 'Typ'),
-			'admin_email'                      => Yii::t('app', 'E-Mail des Admins'),
-			'url_verzeichnis'                  => Yii::t('app', 'Unterverzeichnis'),
-			'antraege'                         => null,
-			'admins'                           => null,
-			'texte'                            => null,
-			'veranstaltungsreihe'              => Yii::t('app', 'Veranstaltungsreihe'),
+			'id'                        => Yii::t('app', 'ID'),
+			'name'                      => Yii::t('app', 'Name'),
+			'name_kurz'                 => Yii::t('app', 'Name Kurz'),
+			'datum_von'                 => Yii::t('app', 'Datum Von'),
+			'datum_bis'                 => Yii::t('app', 'Datum Bis'),
+			'antragsschluss'            => Yii::t('app', 'Antragsschluss'),
+			'policy_antraege'           => Yii::t('app', 'Policy Antraege'),
+			'policy_aenderungsantraege' => Yii::t('app', 'Policy Aenderungsantraege'),
+			'policy_kommentare'         => Yii::t('app', 'Policy Kommentare'),
+			'policy_unterstuetzen'      => Yii::t('app', 'Policy Unterstützen'),
+			'typ'                       => Yii::t('app', 'Typ'),
+			'admin_email'               => Yii::t('app', 'E-Mail des Admins'),
+			'url_verzeichnis'           => Yii::t('app', 'Unterverzeichnis'),
+			'antraege'                  => null,
+			'admins'                    => null,
+			'texte'                     => null,
+			'veranstaltungsreihe'       => Yii::t('app', 'Veranstaltungsreihe'),
 		);
 	}
 
