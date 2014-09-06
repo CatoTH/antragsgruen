@@ -32,7 +32,7 @@ class EmailLog extends GxActiveRecord
 
 	public static function label($n = 1)
 	{
-		return Yii::t('app', 'Text|Texte', $n);
+		return Yii::t('app', 'E-Mail-Log|E-Mail-Logs', $n);
 	}
 
 
