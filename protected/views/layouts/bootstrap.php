@@ -24,14 +24,6 @@ $cs->registerCssFile($assets_base . '/css/antraege-print.css', 'print');
 $cs->registerScriptFile($assets_base . '/js/modernizr.js');
 $cs->registerScriptFile($assets_base . '/js/antraege.js', CClientScript::POS_END);
 
-/*
-$cs->scriptMap=array(
-'jquery.min.js'=>'/js/all.min.js',
-'modernizr.js'=>'/js/all.min.js',
-'antraege.js'=>'/js/all.min.js',
-);
-*/
-
 ?><!DOCTYPE HTML>
 <html lang="de">
 <head>
@@ -117,7 +109,6 @@ $cs->scriptMap=array(
 		}
 		?></a>
 
-	<!-- mainmenu -->
 	<?php if (isset($this->breadcrumbs)): ?>
 		<?php
 		$breadcrumbs = array();
@@ -128,11 +119,10 @@ $cs->scriptMap=array(
 			'links'    => $breadcrumbs,
 		));
 		if (count($breadcrumbs) == 0) echo "<br><br>";
-		?><!-- breadcrumbs -->
+		?>
 	<?php endif ?>
 
 	<?php
-	// $this->widget('bootstrap.widgets.TbAlert');
 	/** @var string $content */
 	echo $content;
 
@@ -152,15 +142,10 @@ $cs->scriptMap=array(
 		'collapse'    => false,
 		'items'       => array(
 			'<a href="' . CHtml::encode($impressums_link) . '">Impressum</a>',
-			' &nbsp; <small>Antragsgrün-Version: <a href="https://github.com/CatoTH/antragsgruen/blob/master/History.md">' . $version . '</a></small>',
+			' &nbsp; <small>Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>, Version <a href="https://github.com/CatoTH/antragsgruen/blob/master/History.md">' . $version . '</a></small>',
 		),
 	));
 	?>
-
-	<!-- footer -->
-
 </div>
-<!-- page -->
-
 </body>
 </html>
