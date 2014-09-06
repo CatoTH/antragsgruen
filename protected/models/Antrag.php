@@ -58,6 +58,7 @@ class Antrag extends IAntrag
 	);
 
 	private $absaetze = null;
+	private $absaetze_nurtext = null;
 
 	/**
 	 * @var string $className
@@ -180,6 +181,20 @@ class Antrag extends IAntrag
 		return $erste_zeile;
 	}
 
+	/**
+	 * @param bool $praesentations_hacks
+	 * @return array
+	 */
+	public function getParagraphsText($praesentations_hacks = false) {
+		if (is_null($this->absaetze_nurtext)) {
+			$erste_zeile = $this->getFirstLineNo();
+			HtmlBBcodeUtils::initZeilenCounter($erste_zeile);
+			$this->absaetze_nurtext = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text), $praesentations_hacks, $this->veranstaltung->getEinstellungen()->zeilenlaenge);
+
+		}
+		return $this->absaetze_nurtext;
+	}
+
 
 	/**
 	 * @param bool $nurfreigeschaltete_aes
@@ -198,10 +213,7 @@ class Antrag extends IAntrag
 		}
 		$komms = $this->antragKommentare;
 
-		$erste_zeile = $this->getFirstLineNo();
-
-		HtmlBBcodeUtils::initZeilenCounter($erste_zeile);
-		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text), $praesentations_hacks, $this->veranstaltung->getEinstellungen()->zeilenlaenge);
+		$arr = $this->getParagraphsText($praesentations_hacks);
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain       = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
 			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, $aenders);

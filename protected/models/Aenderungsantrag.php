@@ -202,8 +202,7 @@ class Aenderungsantrag extends IAntrag
 	public function getFirstAffectedLineOfParagraph_relative($paragraph_nr)
 	{
 		if (!isset($this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr])) {
-			$antrag_text       = $this->antrag->text;
-			$antrag_paragraphs = explode("\n\n", $antrag_text);
+			$antrag_paragraphs = $this->antrag->getParagraphsText()["bbcode"];
 			$ae_diff           = $this->getDiffParagraphs();
 			$diff              = DiffUtils::getTextDiffMitZeilennummern(trim($antrag_paragraphs[$paragraph_nr]), trim($ae_diff[$paragraph_nr]), $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 			$diff              = $diff->getDiff();
@@ -227,8 +226,7 @@ class Aenderungsantrag extends IAntrag
 	public function getFirstAffectedLineOfParagraph_absolute($paragraph_nr, $antrag_absaetze)
 	{
 		if (!isset($this->_firstAffectedLineOfParagraphs_absolute[$paragraph_nr])) {
-			$antrag_text       = $this->antrag->text;
-			$antrag_paragraphs = explode("\n\n", $antrag_text);
+			$antrag_paragraphs = $this->antrag->getParagraphsText()["bbcode"];
 			$ae_diff           = $this->getDiffParagraphs();
 			$diff              = DiffUtils::getTextDiffMitZeilennummern(trim($antrag_paragraphs[$paragraph_nr]), trim($ae_diff[$paragraph_nr]), $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 			$diff              = $diff->getDiff();
