@@ -19,7 +19,7 @@ if (MULTISITE_MODE) {
 	$domv      = $dom . "<veranstaltung_id:[\w_-]+>/";
 }
 
-require(dirname(__FILE__) . "/urls.php");
+require(dirname(__FILE__) . "/common.php");
 
 return array(
 	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
@@ -104,6 +104,5 @@ return array(
 		'mail_from'                   => 'Antragsgrün <EMAILADRESSE>',
 		'admin_user_id'               => null,
 		'odt_default_template'        => __DIR__ . '/../../docs/OpenOffice-Template.odt',
-		'antragsgruen_version'        => '2.3.0',
 	),
 );

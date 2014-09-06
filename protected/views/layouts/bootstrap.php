@@ -132,7 +132,7 @@ $cs->registerScriptFile($assets_base . '/js/antraege.js', CClientScript::POS_END
 
 	<?php
 	$impressums_link = $this->veranstaltung ? $this->createUrl("veranstaltung/impressum") : $this->createUrl("infos/impressum");
-	$version = CHtml::encode(Yii::app()->params["antragsgruen_version"]);
+	$version = CHtml::encode(ANTRAGSGRUEN_VERSION);
 	$this->widget('bootstrap.widgets.TbNavbar', array(
 		'htmlOptions' => array(
 			'class' => 'footer_bar',

@@ -1,11 +1,12 @@
 2.3.0 - 2014-??-??
 ==================
 
-* OpenOffice-Export mit Unterstützung von Templates
+* OpenOffice-Export mit Unterstützung von Templates (Alpha)
 * Einfügungen im kompakten PDF werden nun fett (und weiterhin unterstrichen und grün) dargestellt, um sie im Schwarz-Weiß-Druck leichter als solche erkennbar zu machen.
 * Refactoring: der Code wurde etwas aufgeräumt (alte/ungenutzte Controller/Views entfernt, das ungenutzte admin-Feld in der Datenbank und die zugehörigen Abfragen) entfernt.
 * Neue Antragsstati: Übernahme, Erledigt, Überweisung, Abstimmung (BDK)
 * Es gibt eine spezielle Einstellung, mit der man den Antragstext auch für Admins als nachträglich unveränderlich setzen kann (BDK).
+* Bugfix: manche Änderungsanträge konnten nicht angezeigt werden und führten zu einer "Undefined offset"-Fehlermeldung
 
 2.2.1 - 2014-09-04
 ==================
