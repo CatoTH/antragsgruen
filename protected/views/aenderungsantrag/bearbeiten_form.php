@@ -52,12 +52,12 @@ if ($js_protection) {
 <h3><label for="Aenderungsantrag_name_neu">Neuer Titel</label></h3>
 <br>
 <input id="Aenderungsantrag_name_neu" type="text" value="<?php echo CHtml::encode($aenderungsantrag->name_neu); ?>"
-       name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
+	   name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
 <br>
 <br>
 
-	<h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
-	<br>
+<h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
+<br>
 <div
 	class="antrags_text_holder ae_absatzwahl_modus aenderungen_moeglich<?php if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 80) echo " kleine_schrift"; ?>"
 	style="overflow: auto;">
@@ -102,17 +102,20 @@ if ($js_protection) {
 
 <div id="begruendungs_holder">
 	<h3><label for="ae_begruendung"><?php echo $sprache->get("Begründung für den Änderungsantrag"); ?></label></h3>
-	<div class="content">
-	<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php
-		echo CHtml::encode($aenderungsantrag->aenderung_begruendung);
-		?></textarea>
 
-	<?php if ($mode == "bearbeiten") { ?>
-		<div class="ae_select_confirm" style="margin-top: 20px;">
-			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Speichern')); ?>
-		</div>
-	<?php } ?>
-	<br><br>
+	<div class="content">
+		<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php
+			echo CHtml::encode($aenderungsantrag->aenderung_begruendung);
+			?></textarea>
+		<input type="hidden" id="ae_begruendung_html" name="ae_begruendung_html"
+			   value="<?php echo $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->begruendung_in_html; ?>">
+
+		<?php if ($mode == "bearbeiten") { ?>
+			<div class="ae_select_confirm" style="margin-top: 20px;">
+				<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Speichern')); ?>
+			</div>
+		<?php } ?>
+		<br><br>
 	</div>
 
 </div>
@@ -127,7 +130,7 @@ $this->renderPartial($antrag->veranstaltung->getPolicyAenderungsantraege()->getA
 	"hiddens"          => $hiddens,
 	"js_protection"    => $js_protection,
 	"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
-    "veranstaltung"    => $antrag->veranstaltung,
+	"veranstaltung"    => $antrag->veranstaltung,
 ));
 
 $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
@@ -144,7 +147,11 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 			ckeditor_bbcode($(this).attr("id"));
 		});
 
-		ckeditor_bbcode("ae_begruendung");
+		if ($("#ae_begruendung_html").val() == "1") {
+			ckeditor_simplehtml("ae_begruendung");
+		} else {
+			ckeditor_bbcode("ae_begruendung");
+		}
 
 		var aenderungen_moeglich_recals = function () {
 			var moeglich = true;

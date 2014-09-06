@@ -346,6 +346,15 @@ $einstellungen = $model->getEinstellungen();
 			}).trigger("change");
 		})
 	</script>
+
+	<fieldset style="margin-top: 10px;">
+		<label style="display: inline;">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[begruendung_in_html]"
+				   value="1" <?php if ($model->getEinstellungen()->begruendung_in_html) echo "checked"; ?>>
+			Erweiterte Formatierungen (HTML) in Anträgen und Änderungsanträgen zulassen
+		</label>
+		<br>
+	</fieldset>
 	<br>
 </div>
 

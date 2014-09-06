@@ -53,7 +53,10 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
     <h3>Begründung</h3>
 
     <div class="textholder consolidated content">
-		<?php echo HtmlBBcodeUtils::bbcode2html($antrag->begruendung) ?>
+		<?php
+		if ($antrag->begruendung_html) echo $antrag->begruendung;
+		else echo HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
+		?>
     </div>
 </div>
 

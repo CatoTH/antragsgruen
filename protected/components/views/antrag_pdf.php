@@ -166,7 +166,8 @@ foreach ($absae as $i => $abs) {
 }
 
 if (trim($antrag->begruendung) != "") {
-	$begruendung = HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
+	if ($antrag->begruendung_html) $begruendung = $antrag->begruendung;
+	else $begruendung = HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
 	if (function_exists("normalizer_normalize")) $begruendung = normalizer_normalize($begruendung);
 	$html = '
 	</div>

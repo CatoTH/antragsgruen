@@ -18,10 +18,27 @@ class HtmlBBcodeUtils
 	}
 
 	/**
+	 * @param string $html
+	 * @return string
+	 */
+	public static function html_normalize($html) {
+		$config = HTMLPurifier_Config::createDefault();
+
+		$config->set('Cache.SerializerPath', "/tmp/");
+		// Ermöglicht Prozentangaben
+        $config->set('CSS.MaxImgLength', null);
+        $config->set('HTML.MaxImgLength', null);
+
+		$purifier = new HTMLPurifier($config);
+		$clean_html = $purifier->purify($html);
+		return $clean_html;
+	}
+
+	/**
 	 * @param string $text
 	 * @return string
 	 */
-	static function bbcode_normalize($text)
+	public static function bbcode_normalize($text)
 	{
 		$text = preg_replace("/\[(\/?)list([^\]]*)\]/siu", "[\\1LIST\\2]", $text);
 		$text = preg_replace("/\[(\/?)quote\]/siu", "[\\1QUOTE]", $text);
@@ -40,6 +57,7 @@ class HtmlBBcodeUtils
 		}
 		return implode("\n", $x);
 	}
+
 
 	/**
 	 * @static
@@ -354,9 +372,10 @@ class HtmlBBcodeUtils
 	/**
 	 * @static
 	 * @param string $text
+	 * @param bool $allow_html
 	 * @return string
 	 */
-	static function bbcode2html($text)
+	static function bbcode2html($text, $allow_html = false)
 	{
 		$text = preg_replace_callback("/(\[o?list[^\]]*\])(.*)(\[\/o?list\])/siuU", function($matches) {
 			$parts = explode("[*]", trim($matches[2]));
@@ -377,7 +396,7 @@ class HtmlBBcodeUtils
 		//echo "<br>IN========<br>";
 		//echo CHtml::encode($text);
 		$code = new \Decoda\Decoda();
-		$code->setEscaping(false);
+		$code->setEscaping(!$allow_html);
 		$code->addFilter(new AntraegeBBCodeFilter());
 		$code->addFilter(new \Decoda\Filter\UrlFilter());
 		$code->reset($text);

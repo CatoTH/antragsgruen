@@ -4,8 +4,8 @@ class VeranstaltungsEinstellungen extends CFormModel
 {
 	/** @var bool */
 	public $antrag_neu_braucht_email = false;
-    public $antrag_neu_braucht_telefon = false;
-    public $antrag_neu_kann_telefon = false;
+	public $antrag_neu_braucht_telefon = false;
+	public $antrag_neu_kann_telefon = false;
 	public $kommentar_neu_braucht_email = false;
 
 	public $initiatorInnen_duerfen_aendern = false;
@@ -26,6 +26,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $titel_eigene_zeile = true;
 	public $kann_pdf = true;
 	public $zeilenlaenge = 80;
+	public $begruendung_in_html = false;
 
 	/** @var array */
 	public $antrags_typen_deaktiviert = array();

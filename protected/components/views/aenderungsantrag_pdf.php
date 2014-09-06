@@ -186,7 +186,9 @@ if ($diff_ansicht) {
 
 }
 
-$begruendung = HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung);
+if ($aenderungsantrag->aenderung_begruendung_html) $begruendung = $aenderungsantrag->aenderung_begruendung;
+else $begruendung = HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung);
+
 if (function_exists("normalizer_normalize")) $begruendung = normalizer_normalize($begruendung);
 $html = '
 	</div>';

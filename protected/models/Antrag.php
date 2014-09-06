@@ -11,6 +11,7 @@
  * @property string $datum_beschluss
  * @property string $text
  * @property string $begruendung
+ * @property integer $begruendung_html
  * @property integer $status
  * @property string $status_string
  * @property integer $cache_anzahl_zeilen
@@ -102,12 +103,12 @@ class Antrag extends IAntrag
 	{
 		return array(
 			array('veranstaltung_id, name, datum_einreichung, status', 'required'),
-			array('veranstaltung_id, abgeleitet_von, typ, status, text_unveraenderlich', 'numerical', 'integerOnly' => true),
+			array('veranstaltung_id, abgeleitet_von, typ, status, text_unveraenderlich, begruendung_html', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 50),
 			array('datum_beschluss', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
-			array('text, begruendung', 'safe'),
-			array('abgeleitet_von, typ, datum_beschluss, text, begruendung, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('text', 'safe'),
+			array('abgeleitet_von, typ, datum_beschluss, text, begruendung, begruendung_html, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 	}
 
@@ -145,7 +146,8 @@ class Antrag extends IAntrag
 			'datum_einreichung'        => Yii::t('app', 'Datum Einreichung'),
 			'datum_beschluss'          => Yii::t('app', 'Datum Beschluss'),
 			'text'                     => Yii::t('app', 'Text'),
-			'begruendung'              => Yii::t('app', 'Begruendung'),
+			'begruendung'              => Yii::t('app', 'Begründung'),
+			'begruendung_html'         => Yii::t('app', 'Begründung in HTML'),
 			'status'                   => Yii::t('app', 'Status'),
 			'status_string'            => Yii::t('app', 'Status String'),
 			'text_unveraenderlich'     => Yii::t('app', 'Text Unveränderlich'),
@@ -185,7 +187,8 @@ class Antrag extends IAntrag
 	 * @param bool $praesentations_hacks
 	 * @return array
 	 */
-	public function getParagraphsText($praesentations_hacks = false) {
+	public function getParagraphsText($praesentations_hacks = false)
+	{
 		if (is_null($this->absaetze_nurtext)) {
 			$erste_zeile = $this->getFirstLineNo();
 			HtmlBBcodeUtils::initZeilenCounter($erste_zeile);
@@ -328,12 +331,13 @@ class Antrag extends IAntrag
 	/**
 	 * @return OdtTemplate
 	 */
-	public function getOdtTemplate() {
+	public function getOdtTemplate()
+	{
 		// @TODO
-		$template = new OdtTemplate();
-		$template->typ = OdtTemplate::$ODT_TEMPLATE_TYP_ANTRAG;
+		$template                   = new OdtTemplate();
+		$template->typ              = OdtTemplate::$ODT_TEMPLATE_TYP_ANTRAG;
 		$template->veranstaltung_id = $this->veranstaltung_id;
-		$template->data = file_get_contents(yii::app()->params["odt_default_template"]);
+		$template->data             = file_get_contents(yii::app()->params["odt_default_template"]);
 		return $template;
 	}
 

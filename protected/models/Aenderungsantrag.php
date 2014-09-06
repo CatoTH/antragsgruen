@@ -10,6 +10,7 @@
  * @property string $aenderung_metatext
  * @property string $aenderung_text
  * @property string $aenderung_begruendung
+ * @property integer $aenderung_begruendung_html
  * @property integer $aenderung_first_line_cache
  * @property string $datum_einreichung
  * @property string $datum_beschluss
@@ -67,11 +68,11 @@ class Aenderungsantrag extends IAntrag
 	{
 		return array(
 			array('text_neu, aenderung_text, datum_einreichung, status, status', 'required'),
-			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy, text_unveraenderlich', 'numerical', 'integerOnly' => true),
+			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy, text_unveraenderlich, aenderung_begruendung_html', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
 			array('name_neu, datum_beschluss, aenderung_metatext', 'safe'),
-			array('antrag_id, revision_name, name_neu, datum_beschluss', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('antrag_id, revision_name, name_neu, datum_beschluss, aenderung_begruendung, aenderung_begruendung_html', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 
 	}
@@ -112,8 +113,9 @@ class Aenderungsantrag extends IAntrag
 			'text_neu'                           => Yii::t('app', 'Text Neu'),
 			'begruendung_neu'                    => Yii::t('app', 'Begruendung Neu'),
 			'aenderung_metatext'                 => Yii::t('app', 'Metabeschreibung der Änderung'),
-			'aenderung_text'                     => Yii::t('app', 'Aenderung Text'),
-			'aenderung_begruendung'              => Yii::t('app', 'Aenderung Begruendung'),
+			'aenderung_text'                     => Yii::t('app', 'Änderung: Text'),
+			'aenderung_begruendung'              => Yii::t('app', 'Änderung: Begründung'),
+			'aenderung_begruendung_html'         => Yii::t('app', 'Änderung: Begründung in HTML'),
 			'aenderung_first_line_cache'         => "Cache: erste Zeilennummer",
 			'datum_einreichung'                  => Yii::t('app', 'Datum Einreichung'),
 			'datum_beschluss'                    => Yii::t('app', 'Datum Beschluss'),

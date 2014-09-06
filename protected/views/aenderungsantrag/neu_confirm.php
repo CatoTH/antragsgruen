@@ -44,7 +44,10 @@ $this->pageTitle = $sprache->get("Änderungseintrag bestätigen");
     <h3>Begründung</h3>
 
     <div class="textholder consolidated content">
-		<?php echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung) ?>
+		<?php
+		if ($aenderungsantrag->aenderung_begruendung_html) echo $aenderungsantrag->aenderung_begruendung;
+		else echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung);
+		?>
     </div>
 </div>
 <?php

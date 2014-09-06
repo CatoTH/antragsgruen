@@ -116,6 +116,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 				<div class="controls">
 					<textarea id="Antrag_begruendung" class="span8" name="Antrag[begruendung]" rows="5" cols="80"><?= CHtml::encode($model->begruendung) ?></textarea>
+					<input type="hidden" id="Antrag_begruendung_html" name="Antrag[begruendung_html]" value="<?php echo $model->veranstaltung->getEinstellungen()->begruendung_in_html; ?>">
 				</div>
 
 			</div>
@@ -146,7 +147,11 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	<script>
 		$(function () {
 			ckeditor_bbcode("Antrag_text");
-			ckeditor_bbcode("Antrag_begruendung");
+			if ($("#Antrag_begruendung_html").val() == "1") {
+				ckeditor_simplehtml("Antrag_begruendung");
+			} else {
+				ckeditor_bbcode("Antrag_begruendung");
+			}
 		})
 	</script>
 

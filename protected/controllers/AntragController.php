@@ -712,9 +712,15 @@ class AntragController extends AntragsgruenController
 		$model_unterstuetzerInnen = array();
 
 		if (AntiXSS::isTokenSet("antragneu")) {
-			$model->attributes        = $_REQUEST["Antrag"];
+			$model->attributes = $_REQUEST["Antrag"];
+			if ($this->veranstaltung->getEinstellungen()->begruendung_in_html && isset($_REQUEST["Antrag"]["begruendung_html"])) {
+				$model->begruendung_html = 1;
+				$model->begruendung      = HtmlBBcodeUtils::html_normalize($_REQUEST["Antrag"]["begruendung"]);
+			} else {
+				$model->begruendung_html = 0;
+				$model->begruendung      = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["Antrag"]["begruendung"]);
+			}
 			$model->text              = HtmlBBcodeUtils::bbcode_normalize($model->text);
-			$model->begruendung       = HtmlBBcodeUtils::bbcode_normalize($model->begruendung);
 			$model->datum_einreichung = new CDbExpression('NOW()');
 			$model->status            = Antrag::$STATUS_UNBESTAETIGT;
 			$model->revision_name     = "";

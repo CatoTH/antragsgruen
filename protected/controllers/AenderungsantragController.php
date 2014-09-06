@@ -385,7 +385,7 @@ class AenderungsantragController extends AntragsgruenController
 			$aenderungsantrag->save();
 
 			if ($aenderungsantrag->antrag->veranstaltung->admin_email != "") {
-				$mails = explode(",", $aenderungsantrag->antrag->veranstaltung->admin_email);
+				$mails     = explode(",", $aenderungsantrag->antrag->veranstaltung->admin_email);
 				$mail_text = "Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
 					"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id));
 
@@ -466,15 +466,22 @@ class AenderungsantragController extends AntragsgruenController
 		$aenderungsantrag->antrag                     = $antrag;
 		$aenderungsantrag->antrag_id                  = $antrag->id;
 		$aenderungsantrag->status                     = Aenderungsantrag::$STATUS_UNBESTAETIGT;
-        $aenderungsantrag->status_string              = "";
+		$aenderungsantrag->status_string              = "";
 
 		$changed = false;
 
 		if (AntiXSS::isTokenSet("antragneu")) {
 
-			$aenderungsantrag->name_neu              = $_REQUEST["Aenderungsantrag"]["name_neu"];
-			$aenderungsantrag->aenderung_begruendung = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["ae_begruendung"]);
-            $aenderungsantrag->begruendung_neu       = "";
+			$aenderungsantrag->name_neu        = $_REQUEST["Aenderungsantrag"]["name_neu"];
+			$aenderungsantrag->begruendung_neu = "";
+
+			if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->begruendung_in_html && isset($_REQUEST["ae_begruendung_html"])) {
+				$aenderungsantrag->aenderung_begruendung_html = 1;
+				$aenderungsantrag->aenderung_begruendung      = HtmlBBcodeUtils::html_normalize($_REQUEST["ae_begruendung"]);
+			} else {
+				$aenderungsantrag->aenderung_begruendung_html = 0;
+				$aenderungsantrag->aenderung_begruendung      = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["ae_begruendung"]);
+			}
 
 			if ($aenderungsantrag->name_neu != $antrag->name) $changed = true;
 

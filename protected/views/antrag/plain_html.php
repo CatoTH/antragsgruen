@@ -81,7 +81,8 @@ if (trim($antrag->begruendung) != "") {
 	?>
 <h3>Begründung</h3>
 <?php
-	echo HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
+	if ($antrag->begruendung_html) echo $antrag->begruendung;
+	else echo HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
 }
 ?>
 

@@ -254,7 +254,10 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 		<h3>Begründung</h3>
 
 		<div class="textholder consolidated content">
-			<?php echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung) ?>
+			<?php
+			if ($aenderungsantrag->aenderung_begruendung_html) echo $aenderungsantrag->aenderung_begruendung;
+			else echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung);
+			?>
 		</div>
 
 		<br><br>
