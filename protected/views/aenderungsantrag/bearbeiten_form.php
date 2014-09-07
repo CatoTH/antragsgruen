@@ -57,7 +57,7 @@ if ($js_protection) {
 <br>
 
 <h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
-<br>
+<div id="ae_metatext_opener" style="text-align: right; padding-right: 10px; padding-top: 5px; font-style: italic;"><a href="#ae_metatext_holder"><?php echo $sprache->get("Redaktioneller Antrag"); ?></a></div>
 <div
 	class="antrags_text_holder ae_absatzwahl_modus aenderungen_moeglich<?php if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 80) echo " kleine_schrift"; ?>"
 	style="overflow: auto;">
@@ -98,6 +98,17 @@ if ($js_protection) {
 		echo "</div>";
 	}
 	?>
+</div>
+
+<div id="ae_metatext_holder" style="display: none;">
+	<h3><label for="ae_metatext"><?php echo $sprache->get("Redaktioneller Antrag"); ?></label></h3>
+
+	<div class="content">
+		<textarea name='ae_metatext' id="ae_metatext" style='width: 550px; height: 50px;'><?php
+			echo CHtml::encode($aenderungsantrag->aenderung_metatext);
+			?></textarea>
+		<br><br>
+	</div>
 </div>
 
 <div id="begruendungs_holder">
@@ -185,6 +196,14 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 				$abs.find(".antragstext_diff").hide();
 				aenderungen_moeglich_recals();
 			}
+		});
+
+		$("#ae_metatext_opener").find("a").click(function(ev) {
+			ev.preventDefault();
+			$("#ae_metatext_opener").hide();
+			$("#ae_metatext_holder").show();
+			ckeditor_bbcode("ae_metatext", 100);
+			$("#ae_metatext").scrollintoview({ top_offset: -80 });
 		});
 
 		window.setTimeout(antragstext_show_diff, 3000);

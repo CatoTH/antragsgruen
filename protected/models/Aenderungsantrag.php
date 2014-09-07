@@ -319,13 +319,23 @@ class Aenderungsantrag extends IAntrag
 
 		$this->absaetze = array();
 
+		if (trim($this->aenderung_metatext) != "") {
+			$a = HtmlBBcodeUtils::bbcode2html_absaetze($this->aenderung_metatext, true, $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
+			foreach ($a["bbcode"] as $b) {
+				$kommentare = array();
+				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == count($this->absaetze)) $kommentare[] = $komm;
+				$this->absaetze[] = new AenderungsantragAbsatz($b, $b, $this->id, count($this->absaetze), $kommentare);
+			}
+		}
+
 		for ($i = 0; $i < count($abs_alt); $i++) {
+			$ae_absatz_nr = count($this->absaetze) + $i;
 			if ($abs_neu[$i] == "") {
-				$this->absaetze[$i] = null;
+				$this->absaetze[] = null;
 			} else {
 				$kommentare = array();
-				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == $i) $kommentare[] = $komm;
-				$this->absaetze[] = new AenderungsantragAbsatz($abs_alt[$i]->str_bbcode, $abs_neu[$i], $this->id, $i, $kommentare);
+				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == $ae_absatz_nr) $kommentare[] = $komm;
+				$this->absaetze[] = new AenderungsantragAbsatz($abs_alt[$i]->str_bbcode, $abs_neu[$i], $this->id, $ae_absatz_nr, $kommentare);
 			}
 		}
 		return $this->absaetze;

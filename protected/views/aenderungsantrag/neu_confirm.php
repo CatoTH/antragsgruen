@@ -38,6 +38,7 @@ $this->pageTitle = $sprache->get("Änderungseintrag bestätigen");
 		echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_text);
 		?>
     </div>
+	<br>
 </div>
 
 <div class="begruendungs_text_holder">

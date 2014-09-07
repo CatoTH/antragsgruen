@@ -192,10 +192,23 @@ class AenderungsantragController extends AntragsgruenController
 			}
 		}
 		if ($kommentar_id > 0) {
-			$abs = $aenderungsantrag->getAntragstextParagraphs_flat();
-			foreach ($abs as $ab) {
-				/** @var AntragAbsatz $ab */
-				foreach ($ab->kommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $ab->absatz_nr;
+			if ($aenderungsantrag->kommentar_legacy) {
+				$abs = $aenderungsantrag->getAntragstextParagraphs_flat();
+				foreach ($abs as $ab) {
+					/** @var AntragAbsatz $ab */
+					foreach ($ab->kommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $ab->absatz_nr;
+				}
+			} else {
+				$abs2 = $aenderungsantrag->getAntragstextParagraphs_diff();
+				foreach ($abs2 as $i => $ab2) {
+					if ($ab2 === null) continue;
+					/** @var AenderungsantragAbsatz $ab2 */
+					foreach ($ab2->kommentare as $komm) {
+						if ($komm->id == $kommentar_id) {
+							$kommentare_offen[] = $i;
+						}
+					}
+				}
 			}
 		}
 
@@ -472,8 +485,9 @@ class AenderungsantragController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("antragneu")) {
 
-			$aenderungsantrag->name_neu        = $_REQUEST["Aenderungsantrag"]["name_neu"];
-			$aenderungsantrag->begruendung_neu = "";
+			$aenderungsantrag->name_neu           = $_REQUEST["Aenderungsantrag"]["name_neu"];
+			$aenderungsantrag->begruendung_neu    = "";
+			$aenderungsantrag->aenderung_metatext = HtmlBBcodeUtils::html_normalize($_REQUEST["ae_metatext"]);
 
 			if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->begruendung_in_html && isset($_REQUEST["ae_begruendung_html"])) {
 				$aenderungsantrag->aenderung_begruendung_html = 1;
@@ -484,6 +498,7 @@ class AenderungsantragController extends AntragsgruenController
 			}
 
 			if ($aenderungsantrag->name_neu != $antrag->name) $changed = true;
+			if (trim($aenderungsantrag->aenderung_metatext) != "") $changed = true;
 
 			$orig_absaetze = $antrag->getParagraphs();
 			$neue_absaetze = array();
@@ -509,6 +524,7 @@ class AenderungsantragController extends AntragsgruenController
 				$diff_text = "";
 
 				if ($aenderungsantrag->name_neu != $antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $aenderungsantrag->name_neu . "[/QUOTE]\n\n";
+				if (trim($aenderungsantrag->aenderung_metatext) != "") $diff_text = $aenderungsantrag->aenderung_metatext . "\n\n";
 				$diff_text .= DiffUtils::diff2text($diff, $antrag->getFirstLineNo());
 
 				$aenderungsantrag->aenderung_text    = $diff_text;
