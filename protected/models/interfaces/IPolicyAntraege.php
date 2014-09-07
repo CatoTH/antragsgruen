@@ -6,13 +6,13 @@ abstract class IPolicyAntraege
 {
 	public static $POLICY_HESSEN_LMV = "HeLMV";
 	public static $POLICY_BAYERN_LDK = "ByLDK";
-    public static $POLICY_BDK = "BDK";
+	public static $POLICY_BDK = "BDK";
 	public static $POLICY_ADMINS = "Admins";
 	public static $POLICY_ALLE = "Alle";
 	public static $POLICY_EINGELOGGTE = "Eingeloggte";
 
 	public static $POLICIES = array(
-        "BDK"         => "PolicyAntraegeBDK",
+		"BDK"         => "PolicyAntraegeBDK",
 		"ByLDK"       => "PolicyAntraegeByLDK",
 		"HeLMB"       => "PolicyAntraegeHeLMV",
 		"Admins"      => "PolicyAntraegeAdmins",
@@ -109,7 +109,6 @@ abstract class IPolicyAntraege
 				$antragstellerIn                 = new Person();
 				$antragstellerIn->attributes     = $_REQUEST["Person"];
 				$antragstellerIn->typ            = (isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] == "organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
-				$antragstellerIn->admin          = 0;
 				$antragstellerIn->angelegt_datum = new CDbExpression('NOW()');
 				$antragstellerIn->status         = Person::$STATUS_UNCONFIRMED;
 				$antragstellerIn->save();
@@ -139,35 +138,37 @@ abstract class IPolicyAntraege
 			throw new Exception("Keine AntragstellerIn gefunden");
 		}
 
-		$init                     = new AntragUnterstuetzerInnen();
+		$initiatorIn_pre = AntragUnterstuetzerInnen::model()->findAllByAttributes(array("antrag_id" => $antrag->id, "rolle" => AntragUnterstuetzerInnen::$ROLLE_INITIATORIN, "unterstuetzerIn_id" => $antragstellerIn->id));
+		if (count($initiatorIn_pre) == 0) $init = new AntragUnterstuetzerInnen();
+		else $init = $initiatorIn_pre[0];
+		
 		$init->antrag_id          = $antrag->id;
 		$init->rolle              = AntragUnterstuetzerInnen::$ROLLE_INITIATORIN;
 		$init->unterstuetzerIn_id = $antragstellerIn->id;
 		$init->position           = 0;
-        if (isset($_REQUEST["Organisation_Beschlussdatum"]) && $_REQUEST["Organisation_Beschlussdatum"] != "") {
-            if (preg_match("/^(?<tag>[0-9]{2})\. *(?<monat>[0-9]{2})\. *(?<jahr>[0-9]{4})$/", $_REQUEST["Organisation_Beschlussdatum"], $matches)) {
-                $init->beschlussdatum = $matches["jahr"] . "-" . $matches["monat"] . "-" . $matches["tag"];
-            }
-        }
+		if (isset($_REQUEST["Organisation_Beschlussdatum"]) && $_REQUEST["Organisation_Beschlussdatum"] != "") {
+			if (preg_match("/^(?<tag>[0-9]{2})\. *(?<monat>[0-9]{2})\. *(?<jahr>[0-9]{4})$/", $_REQUEST["Organisation_Beschlussdatum"], $matches)) {
+				$init->beschlussdatum = $matches["jahr"] . "-" . $matches["monat"] . "-" . $matches["tag"];
+			}
+		}
 		$init->save();
 
-        if (isset($_REQUEST["UnterstuetzerInnen_fulltext"]) && trim($_REQUEST["UnterstuetzerInnen_fulltext"]) != "") {
-            $person                 = new Person;
-            $person->name           = trim($_REQUEST["UnterstuetzerInnen_fulltext"]);
-            $person->typ            = Person::$TYP_PERSON;
-            $person->status         = Person::$STATUS_UNCONFIRMED;
-            $person->angelegt_datum = new CDbExpression('NOW()');
-            $person->admin          = 0;
-            $person->organisation = "";
-            if ($person->save()) {
-                $unt                     = new AntragUnterstuetzerInnen();
-                $unt->antrag_id          = $antrag->id;
-                $unt->unterstuetzerIn_id = $person->id;
-                $unt->rolle              = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-                $unt->position           = 0;
-                $unt->save();
-            }
-        } elseif (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
+		if (isset($_REQUEST["UnterstuetzerInnen_fulltext"]) && trim($_REQUEST["UnterstuetzerInnen_fulltext"]) != "") {
+			$person                 = new Person;
+			$person->name           = trim($_REQUEST["UnterstuetzerInnen_fulltext"]);
+			$person->typ            = Person::$TYP_PERSON;
+			$person->status         = Person::$STATUS_UNCONFIRMED;
+			$person->angelegt_datum = new CDbExpression('NOW()');
+			$person->organisation   = "";
+			if ($person->save()) {
+				$unt                     = new AntragUnterstuetzerInnen();
+				$unt->antrag_id          = $antrag->id;
+				$unt->unterstuetzerIn_id = $person->id;
+				$unt->rolle              = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
+				$unt->position           = 0;
+				$unt->save();
+			}
+		} elseif (isset($_REQUEST["UnterstuetzerInnen_name"]) && is_array($_REQUEST["UnterstuetzerInnen_name"])) foreach ($_REQUEST["UnterstuetzerInnen_name"] as $i => $name) {
 			if (!$this->isValidName($name)) continue;
 
 			$name                   = trim($name);
@@ -176,7 +177,6 @@ abstract class IPolicyAntraege
 			$person->typ            = Person::$TYP_PERSON;
 			$person->status         = Person::$STATUS_UNCONFIRMED;
 			$person->angelegt_datum = new CDbExpression('NOW()');
-			$person->admin          = 0;
 			if (isset($_REQUEST["UnterstuetzerInnen_organisation"]) && isset($_REQUEST["UnterstuetzerInnen_organisation"][$i])) {
 				$person->organisation = $_REQUEST["UnterstuetzerInnen_organisation"][$i];
 			}
@@ -228,7 +228,6 @@ abstract class IPolicyAntraege
 			$person->typ            = Person::$TYP_PERSON;
 			$person->status         = Person::$STATUS_UNCONFIRMED;
 			$person->angelegt_datum = new CDbExpression('NOW()');
-			$person->admin          = 0;
 			if (isset($_REQUEST["UnterstuetzerInnen_orga"]) && isset($_REQUEST["UnterstuetzerInnen_orga"][$i])) {
 				$person->organisation = $_REQUEST["UnterstuetzerInnen_orga"][$i];
 			}
@@ -250,21 +249,22 @@ abstract class IPolicyAntraege
 	 * @param string $label_organisation
 	 * @return string
 	 */
-    public function getAntragsstellerInStdForm($veranstaltung, $antragstellerIn, $label_name = "Name", $label_organisation = "Gremium, LAG...") {
-        $str = '';
-        $einstellungen = $veranstaltung->getEinstellungen();
+	public function getAntragsstellerInStdForm($veranstaltung, $antragstellerIn, $label_name = "Name", $label_organisation = "Gremium, LAG...")
+	{
+		$str           = '';
+		$einstellungen = $veranstaltung->getEinstellungen();
 
-        if ($veranstaltung->isAdminCurUser()) {
-            $str .= '<label><input type="checkbox" name="andere_antragstellerIn"> Ich lege diesen Antrag für eine andere AntragstellerIn an
+		if ($veranstaltung->isAdminCurUser()) {
+			$str .= '<label><input type="checkbox" name="andere_antragstellerIn"> Ich lege diesen Antrag für eine andere AntragstellerIn an
                 <small>(Admin-Funktion)</small>
             </label>';
-        }
+		}
 
-        $str .= '<div class="antragstellerIn_daten">
+		$str .= '<div class="antragstellerIn_daten">
 			<div class="control-group "><label class="control-label" for="Person_name">' . $label_name . '</label>
 				<div class="controls"><input name="Person[name]" id="Person_name" type="text" maxlength="100" value="';
-        if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->name);
-        $str .= '"></div>
+		if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->name);
+		$str .= '"></div>
 			</div>
 
 			<div class="control-group "><label class="control-label" for="Person_organisation">' . $label_organisation . '</label>
@@ -275,25 +275,25 @@ abstract class IPolicyAntraege
 
 			<div class="control-group "><label class="control-label" for="Person_email">E-Mail</label>
 				<div class="controls"><input';
-        if ($einstellungen->antrag_neu_braucht_email) $str .= ' required';
-        $str .= ' name="Person[email]" id="Person_email" type="text" maxlength="200" value="';
-        if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->email);
+		if ($einstellungen->antrag_neu_braucht_email) $str .= ' required';
+		$str .= ' name="Person[email]" id="Person_email" type="text" maxlength="200" value="';
+		if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->email);
 		$str .= '"></div>
 			</div>';
 
-        if ($einstellungen->antrag_neu_kann_telefon) {
+		if ($einstellungen->antrag_neu_kann_telefon) {
 			$str .= '<div class="control-group "><label class="control-label" for="Person_telefon">Telefon</label>
 				<div class="controls"><input';
-            if ($einstellungen->antrag_neu_braucht_telefon) $str .= ' required';
-            $str .= ' name="Person[telefon]" id="Person_telefon" type="text" maxlength="100" value="';
-            if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->telefon);
+			if ($einstellungen->antrag_neu_braucht_telefon) $str .= ' required';
+			$str .= ' name="Person[telefon]" id="Person_telefon" type="text" maxlength="100" value="';
+			if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->telefon);
 			$str .= '"></div>
 			</div>';
-        }
-        $str .= '</div>';
+		}
+		$str .= '</div>';
 
-        return $str;
-    }
+		return $str;
+	}
 
 
 	/**

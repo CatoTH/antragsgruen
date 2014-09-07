@@ -539,34 +539,6 @@ class AntragController extends AntragsgruenController
 
 			$goon = true;
 
-			$model_unterstuetzerInnen_int = array();
-			/** @var array|AntragUnterstuetzerInnen[] $model_unterstuetzerInnen_obj */
-			$model_unterstuetzerInnen_obj = array();
-			if (isset($_REQUEST["UnterstuetzerInnenTyp"])) foreach ($_REQUEST["UnterstuetzerInnenTyp"] as $key => $typ) if ($typ != "" && $_REQUEST["UnterstuetzerInnenName"][$key] != "") {
-				$name = trim($_REQUEST["UnterstuetzerInnenName"][$key]);
-				// Man soll keinen bestätigten Nutzer eintragen können, das kann der dann selbvst machen
-				$p = Person::model()->findByAttributes(array("typ" => $typ, "name" => $name, "status" => Person::$STATUS_UNCONFIRMED));
-				if (!$p) {
-					$p                 = new Person();
-					$p->name           = $name;
-					$p->typ            = $typ;
-					$p->angelegt_datum = new CDbExpression('NOW()');
-					$p->admin          = 0;
-					$p->status         = Person::$STATUS_UNCONFIRMED;
-					$p->save();
-
-				}
-				$model_unterstuetzerInnen_int[] = $p;
-				$model_unterstuetzerInnen[]     = array("typ" => $typ, "name" => $name);
-
-				$init                           = new AntragUnterstuetzerInnen();
-				$init->rolle                    = AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN;
-				$init->unterstuetzerIn_id       = $p->id;
-				$init->person                   = $p;
-				$init->antrag_id                = $antrag->id;
-				$model_unterstuetzerInnen_obj[] = $init;
-			}
-
 			if (!$antrag->veranstaltung->getPolicyAntraege()->checkAntragSubmit()) {
 				Yii::app()->user->setFlash("error", "Nicht genügend UnterstützerInnen");
 				$goon = false;
@@ -576,7 +548,8 @@ class AntragController extends AntragsgruenController
 
 				foreach ($antrag->antragUnterstuetzerInnen as $unt)
 					if ($unt->rolle == AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN && $unt->person->status == Person::$STATUS_UNCONFIRMED) $unt->delete();
-				foreach ($model_unterstuetzerInnen_obj as $unt) $unt->save();
+
+				$this->veranstaltung->getPolicyAntraege()->submitAntragsstellerInView_Antrag($antrag);
 
 				$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $antrag_id, "next_status" => $antrag->status, "from_mode" => "aendern")));
 			} else {
@@ -594,25 +567,25 @@ class AntragController extends AntragsgruenController
 			$hiddens[AntiXSS::createToken("antragbearbeiten")] = "1";
 		}
 
-		$antragstellerIn          = null;
-		$model_unterstuetzerInnen = array();
+		$antragstellerIn    = null;
+		$unterstuetzerInnen = array();
 
 		foreach ($antrag->antragUnterstuetzerInnen as $unt) {
 			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerIn = $unt->person;
-			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $model_unterstuetzerInnen[] = $unt->person;
+			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $unt->person;
 		}
 
 		$this->render('bearbeiten_form', array(
-			"mode"                     => "bearbeiten",
-			"model"                    => $antrag,
-			"hiddens"                  => $hiddens,
-			"antragstellerIn"          => $antragstellerIn,
-			"model_unterstuetzerInnen" => $model_unterstuetzerInnen,
-			"veranstaltung"            => $antrag->veranstaltung,
-			"js_protection"            => $js_protection,
+			"mode"               => "bearbeiten",
+			"model"              => $antrag,
+			"hiddens"            => $hiddens,
+			"antragstellerIn"    => $antragstellerIn,
+			"unterstuetzerInnen" => $unterstuetzerInnen,
+			"veranstaltung"      => $antrag->veranstaltung,
+			"js_protection"      => $js_protection,
 			//"login_warnung"            => Yii::app()->user->isGuest,
-			"login_warnung"            => false,
-			"sprache"                  => $antrag->veranstaltung->getSprache(),
+			"login_warnung"      => false,
+			"sprache"            => $antrag->veranstaltung->getSprache(),
 		));
 
 
@@ -673,13 +646,13 @@ class AntragController extends AntragsgruenController
 
 		} else {
 
-			$model_unterstuetzerInnen = array();
-			for ($i = 0; $i < 15; $i++) $model_unterstuetzerInnen[] = array("typ" => Person::$TYP_PERSON, "name" => "");
+			$unterstuetzerInnen = array();
+			for ($i = 0; $i < 15; $i++) $unterstuetzerInnen[] = array("typ" => Person::$TYP_PERSON, "name" => "");
 
 			$this->render('neu_confirm', array(
-				"antrag"                   => $antrag,
-				"model_unterstuetzerInnen" => $model_unterstuetzerInnen,
-				"sprache"                  => $antrag->veranstaltung->getSprache(),
+				"antrag"             => $antrag,
+				"unterstuetzerInnen" => $unterstuetzerInnen,
+				"sprache"            => $antrag->veranstaltung->getSprache(),
 			));
 
 		}
@@ -709,7 +682,7 @@ class AntragController extends AntragsgruenController
 			$this->redirect($this->createUrl("veranstaltung/index"));
 		}
 
-		$model_unterstuetzerInnen = array();
+		$unterstuetzerInnen = array();
 
 		if (AntiXSS::isTokenSet("antragneu")) {
 			$model->attributes = $_REQUEST["Antrag"];
@@ -759,16 +732,16 @@ class AntragController extends AntragsgruenController
 		}
 
 		$this->render('bearbeiten_form', array(
-			"mode"                     => "neu",
-			"model"                    => $model,
-			"antragstellerIn"          => $antragstellerIn,
-			"model_unterstuetzerInnen" => $model_unterstuetzerInnen,
-			"veranstaltung"            => $veranstaltung,
-			"hiddens"                  => $hiddens,
-			"js_protection"            => $js_protection,
+			"mode"               => "neu",
+			"model"              => $model,
+			"antragstellerIn"    => $antragstellerIn,
+			"unterstuetzerInnen" => $unterstuetzerInnen,
+			"veranstaltung"      => $veranstaltung,
+			"hiddens"            => $hiddens,
+			"js_protection"      => $js_protection,
 			//"login_warnung"            => Yii::app()->user->isGuest,
-			"login_warnung"            => false,
-			"sprache"                  => $model->veranstaltung->getSprache(),
+			"login_warnung"      => false,
+			"sprache"            => $model->veranstaltung->getSprache(),
 		));
 	}
 

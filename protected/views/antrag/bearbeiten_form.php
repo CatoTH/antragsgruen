@@ -6,7 +6,7 @@
  * @var string $mode
  * @var Person $antragstellerIn
  * @var Veranstaltung $veranstaltung
- * @var array $model_unterstuetzerInnen
+ * @var array $unterstuetzerInnen
  * @var array $hiddens
  * @var bool $js_protection
  * @var bool $login_warnung
@@ -116,7 +116,8 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 				<div class="controls">
 					<textarea id="Antrag_begruendung" class="span8" name="Antrag[begruendung]" rows="5" cols="80"><?= CHtml::encode($model->begruendung) ?></textarea>
-					<input type="hidden" id="Antrag_begruendung_html" name="Antrag[begruendung_html]" value="<?php echo $model->veranstaltung->getEinstellungen()->begruendung_in_html; ?>">
+					<input type="hidden" id="Antrag_begruendung_html" name="Antrag[begruendung_html]"
+						   value="<?php echo $model->veranstaltung->getEinstellungen()->begruendung_in_html; ?>">
 				</div>
 
 			</div>
@@ -124,16 +125,16 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 		<?php
 		$this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
-			"form"                      => $form,
-			"mode"                      => $mode,
-			"antrag"                    => $model,
-			"antragstellerIn"           => $antragstellerIn,
-			"antrag_unterstuetzerInnen" => $model_unterstuetzerInnen,
-			"veranstaltung"             => $veranstaltung,
-			"hiddens"                   => $hiddens,
-			"js_protection"             => $js_protection,
-			"login_warnung"             => Yii::app()->user->isGuest,
-			"sprache"                   => $model->veranstaltung->getSprache(),
+			"form"               => $form,
+			"mode"               => $mode,
+			"antrag"             => $model,
+			"antragstellerIn"    => $antragstellerIn,
+			"unterstuetzerInnen" => $unterstuetzerInnen,
+			"veranstaltung"      => $veranstaltung,
+			"hiddens"            => $hiddens,
+			"js_protection"      => $js_protection,
+			"login_warnung"      => Yii::app()->user->isGuest,
+			"sprache"            => $model->veranstaltung->getSprache(),
 		));
 		?>
 
