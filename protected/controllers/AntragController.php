@@ -526,6 +526,8 @@ class AntragController extends AntragsgruenController
 		$this->testeWartungsmodus();
 
 		if (!$antrag->kannUeberarbeiten()) {
+			var_dump($antrag);
+			die();
 			Yii::app()->user->setFlash("error", "Kein Zugriff auf den Antrag");
 			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
 		}

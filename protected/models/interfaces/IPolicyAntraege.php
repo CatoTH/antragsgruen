@@ -141,7 +141,7 @@ abstract class IPolicyAntraege
 		$initiatorIn_pre = AntragUnterstuetzerInnen::model()->findAllByAttributes(array("antrag_id" => $antrag->id, "rolle" => AntragUnterstuetzerInnen::$ROLLE_INITIATORIN, "unterstuetzerIn_id" => $antragstellerIn->id));
 		if (count($initiatorIn_pre) == 0) $init = new AntragUnterstuetzerInnen();
 		else $init = $initiatorIn_pre[0];
-		
+
 		$init->antrag_id          = $antrag->id;
 		$init->rolle              = AntragUnterstuetzerInnen::$ROLLE_INITIATORIN;
 		$init->unterstuetzerIn_id = $antragstellerIn->id;

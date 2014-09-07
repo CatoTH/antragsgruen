@@ -690,7 +690,7 @@ fieldset.antragstellerIn label.radio {
 #UnterstuetzerInnen .unterstuetzerInnen_adder {
   text-align: center; }
 
-.policy_antragstellerIn_orga_5 #UnterstuetzerInnen input[type=text] {
+.policy_antragstellerIn_orga_5 #UnterstuetzerInnen input[type=text], .policy_antragstellerIn_orga_19_fulltext #UnterstuetzerInnen input[type=text] {
   display: inline-block; }
 
 /*

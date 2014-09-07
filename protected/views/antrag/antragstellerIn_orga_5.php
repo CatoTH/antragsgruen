@@ -19,6 +19,7 @@ while (count($unterstuetzerInnen) < 4) {
 	$p->id                = 0;
 	$unterstuetzerInnen[] = $p;
 }
+$bin_organisation = ($antragstellerIn->typ == Person::$TYP_ORGANISATION);
 
 ?>
 <div class="policy_antragstellerIn_orga_5">
@@ -32,8 +33,8 @@ while (count($unterstuetzerInnen) < 4) {
 		<label class="control-label">Ich bin...</label>
 
 		<div class="controls">
-			<label><input type="radio" name="Person[typ]" value="mitglied" required checked> Parteimitglied</label><br>
-			<label><input type="radio" name="Person[typ]" value="organisation" required> Gremium, LAG...</label><br>
+			<label><input type="radio" name="Person[typ]" value="mitglied" required <?php if (!$bin_organisation) echo "checked"; ?>> Parteimitglied</label><br>
+			<label><input type="radio" name="Person[typ]" value="organisation" required <?php if ($bin_organisation) echo "checked"; ?>> Gremium, LAG...</label><br>
 		</div>
 	</div>
 

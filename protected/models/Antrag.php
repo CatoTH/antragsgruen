@@ -245,6 +245,8 @@ class Antrag extends IAntrag
 	 */
 	public function kannUeberarbeiten()
 	{
+		if ($this->status == IAntrag::$STATUS_UNBESTAETIGT && $this->binInitiatorIn()) return true;
+
 		if ($this->text_unveraenderlich) return false;
 
 		if ($this->veranstaltung->getEinstellungen()->admins_duerfen_aendern) {
