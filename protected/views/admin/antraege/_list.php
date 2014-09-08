@@ -36,7 +36,7 @@
 		<td>
 			<?php echo CHtml::link("PDF", $this->createUrl("antrag/pdf", array("antrag_id" => $data->id))); ?>,
 			<a href="<?php echo CHtml::encode($this->createUrl("antrag/plainHtml", array("antrag_id" => $data->id))) ?>" download="<?php echo $data->revision_name ?>.html">HTML</a>,
-			<!--<a href="<?php echo CHtml::encode($this->createUrl("antrag/odt", array("antrag_id" => $data->id))) ?>" download="<?php echo $data->revision_name ?>.odt">ODT</a>-->
+			<a href="<?php echo CHtml::encode($this->createUrl("antrag/odt", array("antrag_id" => $data->id))) ?>" download="<?php echo $data->revision_name ?>.odt">ODT</a>
 		</td>
 	</tr>
 </table>

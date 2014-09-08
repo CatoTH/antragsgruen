@@ -347,7 +347,6 @@ $einstellungen = $model->getEinstellungen();
 		})
 	</script>
 
-	<!--
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;">
 			<input type="checkbox" name="VeranstaltungsEinstellungen[begruendung_in_html]"
@@ -356,7 +355,6 @@ $einstellungen = $model->getEinstellungen();
 		</label>
 		<br>
 	</fieldset>
-	-->
 	<br>
 </div>
 
