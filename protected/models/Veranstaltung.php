@@ -189,7 +189,7 @@ class Veranstaltung extends GxActiveRecord
 	{
 		$max_rev     = 0;
 		$andereantrs = $this->antraege;
-		foreach ($andereantrs as $antr) if ($antr->typ == $antrag_typ) {
+		foreach ($andereantrs as $antr) if ($antr->status != IAntrag::$STATUS_GELOESCHT && $antr->typ == $antrag_typ) {
 			$revs  = substr($antr->revision_name, strlen(Antrag::$TYP_PREFIX[$antr->typ]));
 			$revnr = IntVal($revs);
 			if ($revnr > $max_rev) $max_rev = $revnr;
