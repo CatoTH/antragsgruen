@@ -156,7 +156,9 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 				</ul>
 
 				<div class="absatz_text orig antragabsatz_holder antrags_text_holder_nummern">
-					<?php echo $abs->getDiffHTML(); ?>
+					<?php
+					echo $abs->getDiffHTML();
+					?>
 				</div>
 				<?php
 

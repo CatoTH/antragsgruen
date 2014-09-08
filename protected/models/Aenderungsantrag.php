@@ -323,9 +323,13 @@ class Aenderungsantrag extends IAntrag
 		if (trim($this->aenderung_metatext) != "") {
 			$a = HtmlBBcodeUtils::bbcode2html_absaetze($this->aenderung_metatext, true, $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 			foreach ($a["bbcode"] as $b) {
+				preg_match_all("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $a["html"], $matches);
+				$zeile_von = (isset($matches[1][0]) ? IntVal($matches[1][0]) : "????");
+				$zeile_bis = (isset($matches[1]) ? $matches[1][count($matches[1]) - 1] : "???");
+
 				$kommentare = array();
 				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == count($this->absaetze)) $kommentare[] = $komm;
-				$this->absaetze[] = new AenderungsantragAbsatz($b, $b, $this->id, count($this->absaetze), $kommentare);
+				$this->absaetze[] = new AenderungsantragAbsatz($b, $b, $this->id, count($this->absaetze), $zeile_von, $zeile_bis, $kommentare);
 			}
 		}
 
@@ -334,9 +338,13 @@ class Aenderungsantrag extends IAntrag
 			if ($abs_neu[$i] == "") {
 				$this->absaetze[] = null;
 			} else {
+				preg_match_all("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $abs_alt[$i]->str_html, $matches);
+				$zeile_von = (isset($matches[1][0]) ? IntVal($matches[1][0]) : "????");
+				$zeile_bis = (isset($matches[1]) ? $matches[1][count($matches[1]) - 1] : "???");
+
 				$kommentare = array();
 				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == $ae_absatz_nr) $kommentare[] = $komm;
-				$this->absaetze[] = new AenderungsantragAbsatz($abs_alt[$i]->str_bbcode, $abs_neu[$i], $this->id, $ae_absatz_nr, $kommentare);
+				$this->absaetze[] = new AenderungsantragAbsatz($abs_alt[$i]->str_bbcode, $abs_neu[$i], $this->id, $ae_absatz_nr, $zeile_von, $zeile_bis, $kommentare);
 			}
 		}
 		return $this->absaetze;
