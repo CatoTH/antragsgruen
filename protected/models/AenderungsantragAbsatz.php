@@ -25,7 +25,7 @@ class AenderungsantragAbsatz
 	public $str_bbcode_nachher;
 
 	/**
-	 * @var int
+	 * @var int|null
 	 */
 	public $zeile_von;
 	public $zeile_bis;
@@ -35,8 +35,8 @@ class AenderungsantragAbsatz
 	 * @param string $str_bbcode_nachher
 	 * @param int $aenderungsantrag_id
 	 * @param int $absatz_nr
-	 * @param int $zeile_von
-	 * @param int $zeile_bis
+	 * @param int|null $zeile_von
+	 * @param int|null $zeile_bis
 	 * @param array|AenderungsantragKommentar[] $kommentare
 	 */
 	function __construct($str_bbcode_vorher, $str_bbcode_nachher, $aenderungsantrag_id, $absatz_nr, $zeile_von, $zeile_bis, $kommentare)
@@ -56,7 +56,11 @@ class AenderungsantragAbsatz
 	 */
 	public function getDiffHTML()
 	{
-		$str_pre = "<div class='ae_absatz_header'>Im Absatz von Zeile " . $this->zeile_von ." bis " . $this->zeile_bis . "</div>\n";
+		if ($this->zeile_von !== null && $this->zeile_bis !== null) {
+			$str_pre = "<div class='ae_absatz_header'>Im Absatz von Zeile " . $this->zeile_von ." bis " . $this->zeile_bis . "</div>\n";
+		} else {
+			$str_pre = "";
+		}
 		$str = DiffUtils::renderBBCodeDiff2HTML($this->str_bbcode_vorher, $this->str_bbcode_nachher, false, 0, $str_pre);
 		return $str;
 	}
