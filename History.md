@@ -12,6 +12,7 @@
 * Refactoring: der Code wurde etwas aufgeräumt (viele alte/ungenutzte Controller/Views entfernt, das ungenutzte admin-Feld in der Datenbank und die zugehörigen Abfragen) entfernt.
 * Neue Antragsstati: Übernahme, Erledigt, Überweisung, Abstimmung (BDK)
 * Es gibt eine spezielle Einstellung, mit der man den Antragstext auch für Admins als nachträglich unveränderlich setzen kann (BDK).
+* Die angegebene E-Mail-Adresse und Telefonnummer der AntragstellerIn wird nun auf der Antragsseite angezeigt, wenn man als Admin einer Veranstaltung eingeloggt ist.
 * Bugfix: manche Änderungsanträge konnten nicht angezeigt werden und führten zu einer "Undefined offset"-Fehlermeldung
 * Bugfix: Eine mögliche XSS-Attacke in Antragsbegründungen wurde geschlossen
 * Bugfix: Das "korrigieren" von Anträgen vor der offiziellen Einreichung funktionierte nicht, wenn eine UnterstützerInnenliste nötig ist.

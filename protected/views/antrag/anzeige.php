@@ -90,6 +90,13 @@ $this->menus_html[] = $html;
                         foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
                             $name = CHtml::encode($unt->person->getNameMitOrga());
                             if ($unt->beschlussdatum != "") $name .= " <small>(beschlossen am " . AntraegeUtils::date_sql2de($unt->beschlussdatum). ")</small>";
+	                        if ($antrag->veranstaltung->isAdminCurUser() && ($unt->person->email != "" || $unt->person->telefon != "")) {
+		                        $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
+		                        if ($unt->person->email != "") $name .=  "E-Mail: " . CHtml::encode($unt->person->email);
+		                        if ($unt->person->email != "" && $unt->person->telefon != "") $name .=  ", ";
+		                        if ($unt->person->telefon != "") $name .=  "Telefon: " . CHtml::encode($unt->person->telefon);
+		                        $name .=  ")</small>";
+	                        }
                             $x[] = $name;
                         }
 						echo implode(", ", $x);
