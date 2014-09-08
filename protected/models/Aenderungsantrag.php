@@ -303,8 +303,9 @@ class Aenderungsantrag extends IAntrag
 
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain       = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
-			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, array());
+			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, count($this->absaetze), $komms, array());
 		}
+
 		return $this->absaetze;
 	}
 

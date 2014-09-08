@@ -110,6 +110,15 @@ if ($diff_ansicht) {
 
 	$html = "";
 
+	if (trim($aenderungsantrag->aenderung_metatext) != "") {
+		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($aenderungsantrag->aenderung_metatext), false, $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
+		foreach ($arr["html_plain"] as $abs) {
+			$html .= "<div class='row-fluid' style=\"line-height: 18px;\">";
+			$html .= $abs;
+			$html .= "</div>";
+		}
+	}
+
 	$letztes_leer = true;
 	foreach ($abs_alt as $i => $abs) {
 		if (isset($abs_neu[$i]) && $abs_neu[$i] != "") {
