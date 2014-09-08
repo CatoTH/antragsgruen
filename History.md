@@ -1,9 +1,13 @@
-2.3.0 - 2014-??-??
-==================
+2.4.0 - 2014-??-??
 
 * OpenOffice-Export mit Unterstützung von Templates (noch Alpha, BDK)
-* Redaktionelle Änderungsanträge
 * Bei (Änderungs-)Antragsbegründungen lassen sich nun einige erweiterte Formatierungen aktivieren, wie beispielsweise Tabellen oder Zitate. (noch Alpha, BDK)
+
+
+2.3.0 - 2014-09-08
+==================
+
+* Redaktionelle Änderungsanträge
 * Einfügungen im kompakten PDF werden nun fett (und weiterhin unterstrichen und grün) dargestellt, um sie im Schwarz-Weiß-Druck leichter als solche erkennbar zu machen. (BDK)
 * Refactoring: der Code wurde etwas aufgeräumt (viele alte/ungenutzte Controller/Views entfernt, das ungenutzte admin-Feld in der Datenbank und die zugehörigen Abfragen) entfernt.
 * Neue Antragsstati: Übernahme, Erledigt, Überweisung, Abstimmung (BDK)
