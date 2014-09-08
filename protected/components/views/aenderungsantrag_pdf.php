@@ -117,6 +117,7 @@ if ($diff_ansicht) {
 			$html .= $abs;
 			$html .= "</div>";
 		}
+		$html .= "<br><br>";
 	}
 
 	$letztes_leer = true;
