@@ -35,6 +35,9 @@ $cs->registerScriptFile($assets_base . '/js/antraege.js', CClientScript::POS_END
 	if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->getEinstellungen()->fb_logo_url != "") {
 		echo '<link rel="image_src" href="' . CHtml::encode($this->veranstaltung->getEinstellungen()->fb_logo_url) . '">';
 	}
+	if ($this->robots_noindex) {
+		echo '<meta name="robots" content="noindex, nofollow">' . "\n";
+	}
 	?>
 	<!--[if lt IE 9]>
 	<script src="<?php echo $assets_base; ?>/js/html5.js"></script><![endif]-->

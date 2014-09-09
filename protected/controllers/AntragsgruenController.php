@@ -19,6 +19,7 @@ class AntragsgruenController extends CController
 
 
 	private $_assetsBase;
+	protected $robots_noindex = false;
 
 	/**
 	 *
@@ -79,6 +80,7 @@ class AntragsgruenController extends CController
 			if ($reihe) {
 				$veranstaltung_id = $reihe->aktuelle_veranstaltung->url_verzeichnis;
 			} else {
+				$this->robots_noindex = true;
 				$this->render('error', array(
 					"code"    => 404,
 					"html"    => true,
@@ -100,6 +102,14 @@ class AntragsgruenController extends CController
 
 		if (is_null($this->veranstaltung)) {
 			$this->veranstaltung = Veranstaltung::model()->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
+		}
+		if (is_null($this->veranstaltung)) {
+			$this->robots_noindex = true;
+			$this->render("../veranstaltung/error", array(
+				"code"    => 500,
+				"message" => "Leider existiert die aufgerufene Seite nicht. Falls du der Meinung bist, dass das ein Fehler ist, melde dich bitte per E-Mail (info@antragsgruen.de) bei uns.",
+			));
+			Yii::app()->end(500);
 		}
 
 		if (strtolower($this->veranstaltung->veranstaltungsreihe->subdomain) != strtolower($veranstaltungsreihe_id)) {
@@ -144,7 +154,8 @@ class AntragsgruenController extends CController
 	 * @param string $username
 	 * @return Person[]
 	 */
-	private function performLogin_username_password_std($username) {
+	private function performLogin_username_password_std($username)
+	{
 		/** @var Person[] $users */
 		if (strpos($username, "@")) {
 			$sql_where1 = "auth = 'email:" . addslashes($username) . "'";
@@ -166,7 +177,8 @@ class AntragsgruenController extends CController
 	 * @param string $username
 	 * @return Person[]
 	 */
-	private function performLogin_username_password_only_namespaced_users($username) {
+	private function performLogin_username_password_only_namespaced_users($username)
+	{
 		/** @var Person[] $users */
 		if (strpos($username, "@")) {
 			$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
@@ -197,11 +209,11 @@ class AntragsgruenController extends CController
 		}
 		$correct_user = null;
 		foreach ($users as $try_user) {
-            if ((defined("IGNORE_PASSWORD_MODE") && IGNORE_PASSWORD_MODE === true) || $try_user->validate_password($password)) {
-                $correct_user = $try_user;
-            }
-        }
-        if ($correct_user) {
+			if ((defined("IGNORE_PASSWORD_MODE") && IGNORE_PASSWORD_MODE === true) || $try_user->validate_password($password)) {
+				$correct_user = $try_user;
+			}
+		}
+		if ($correct_user) {
 			$x = explode(":", $correct_user->auth);
 			switch ($x[0]) {
 				case "email":
@@ -230,7 +242,8 @@ class AntragsgruenController extends CController
 		die();
 	}
 
-	private function performCreateUser_username_password($success_redirect, $username, $password, $password_confirm, $name) {
+	private function performCreateUser_username_password($success_redirect, $username, $password, $password_confirm, $name)
+	{
 		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
 			throw new Exception("Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.");
 		}
@@ -247,7 +260,7 @@ class AntragsgruenController extends CController
 			throw new Exception("Bitte gib deinen Namen ein.");
 		}
 		$auth = "email:" . $username;
-		$p = Person::model()->findAllByAttributes(array("auth" => $auth));
+		$p    = Person::model()->findAllByAttributes(array("auth" => $auth));
 		if (count($p) > 0) {
 			throw new Exception("Es existiert bereits ein Zugang mit dieser E-Mail-Adresse.");
 		}

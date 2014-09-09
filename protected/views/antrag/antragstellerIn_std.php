@@ -4,7 +4,7 @@
  * @var Antrag $antrag
  * @var Person $antragstellerIn
  * @var Veranstaltung $veranstaltung
- * @var array $antrag_unterstuetzerInnen
+ * @var array $unterstuetzerInnen
  * @var array $hiddens
  * @var bool $js_protection
  * @var bool $login_warnung
@@ -21,7 +21,7 @@
     echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
     ?>
 
-<?php if (count($antrag_unterstuetzerInnen) > 0) { ?>
+<?php if (count($unterstuetzerInnen) > 0) { ?>
 	<fieldset>
 
 		<legend>UnterstützerInnen</legend>
