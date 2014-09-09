@@ -1001,6 +1001,14 @@ ul.funktionen {
     font-family: "Open Sans", verdana, sans-serif;
     vertical-align: top;
     padding: 0.75em 0em 0.75em 0em; }
+  .bdk_antrags_liste tr.antrag {
+    border-top: solid 1px #afcb08; }
+    .bdk_antrags_liste tr.antrag:first-child {
+      border-top: none; }
+  .bdk_antrags_liste tr.aenderungsantrag .titel .pdflink {
+    font-weight: 400; }
+  .bdk_antrags_liste tr.aenderungsantrag .titel .titellink {
+    font-weight: 400; }
   .bdk_antrags_liste .nummer {
     width: 20%; }
   .bdk_antrags_liste .titel {

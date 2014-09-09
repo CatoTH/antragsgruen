@@ -1102,6 +1102,22 @@ ul.funktionen {
     vertical-align: top;
     padding: 0.75em 0em 0.75em 0em;
   }
+  tr.antrag {
+    border-top: solid 1px $farbe_hellgruen;
+    &:first-child {
+      border-top: none;
+    }
+  }
+  tr.aenderungsantrag {
+    .titel {
+      .pdflink {
+        font-weight: 400;
+      }
+      .titellink {
+        font-weight: 400;
+      }
+    }
+  }
   .nummer {
     width: 20%;
   }
