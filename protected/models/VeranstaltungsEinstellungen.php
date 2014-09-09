@@ -27,6 +27,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $kann_pdf = true;
 	public $zeilenlaenge = 80;
 	public $begruendung_in_html = false;
+	public $bdk_startseiten_layout = false;
 
 	/** @var array */
 	public $antrags_typen_deaktiviert = array();

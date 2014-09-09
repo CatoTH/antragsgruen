@@ -73,8 +73,8 @@ $einstellungen = $model->getEinstellungen();
 				'dateFormat'      => 'yy-mm-dd',
 			),
 		));
+		echo $form->error($model, 'datum_von');
 		?>
-		<?php echo $form->error($model, 'datum_von'); ?>
 	</div>
 	<!-- row -->
 	<div>
@@ -223,6 +223,15 @@ $einstellungen = $model->getEinstellungen();
 											   value="1" <?php if ($einstellungen->ansicht_minimalistisch == 1) echo "checked"; ?>>
 			<strong>Minimalistische Ansicht</strong>
 			<small>Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>
+		</label>
+	</div>
+	<br>
+
+	<div>
+		<label style="display: inline;"><input type="checkbox"
+											   name="VeranstaltungsEinstellungen[bdk_startseiten_layout]"
+											   value="1" <?php if ($einstellungen->bdk_startseiten_layout == 1) echo "checked"; ?>>
+			<strong>Antragsübersicht der Startseite im BDK-Stil</strong>
 		</label>
 	</div>
 </div>
@@ -449,7 +458,7 @@ $einstellungen = $model->getEinstellungen();
 <br>
 
 
-<? if (!$this->veranstaltungsreihe->oeffentlich) { ?>
+<?php if (!$this->veranstaltungsreihe->oeffentlich) { ?>
 
 	<h3>Zugang</h3>
 
@@ -473,7 +482,7 @@ $einstellungen = $model->getEinstellungen();
 
 	</div>
 
-<? } ?>
+<?php } ?>
 
 <h3>Benachrichtigungen</h3>
 
