@@ -24,62 +24,64 @@ class AntraegeBBCodeFilter extends AbstractFilter
 	 * @var array
 	 */
 	protected $_tags = array(
-		'B'     => array(
+		'b'     => array(
 			'htmlTag'      => array('b', 'strong'),
 			'displayType'  => Decoda::TYPE_INLINE,
 			'allowedTypes' => Decoda::TYPE_INLINE
 		),
-		'I'     => array(
+		'i'     => array(
 			'htmlTag'      => array('i', 'em'),
 			'displayType'  => Decoda::TYPE_INLINE,
 			'allowedTypes' => Decoda::TYPE_INLINE
 		),
-		'U'     => array(
+		'u'     => array(
 			'htmlTag'      => 'u',
 			'displayType'  => Decoda::TYPE_INLINE,
 			'allowedTypes' => Decoda::TYPE_INLINE
 		),
-		'S'     => array(
+		's'     => array(
 			'htmlTag'      => 'del',
 			'displayType'  => Decoda::TYPE_INLINE,
 			'allowedTypes' => Decoda::TYPE_INLINE
 		),
-		'OLIST' => array(
+		'quote' => array(
+			'htmlTag'        => 'blockquote',
+			'displayType'    => Decoda::TYPE_BLOCK,
+			'allowedTypes'   => Decoda::TYPE_BOTH,
+			'persistContent' => false,
+		),
+
+
+		'olist' => array(
 			'htmlTag'           => 'ol',
 			'displayType'       => Decoda::TYPE_BLOCK,
 			'allowedTypes'      => Decoda::TYPE_BOTH,
 			'lineBreaks'        => Decoda::NL_REMOVE,
-			'childrenWhitelist' => array('LI'),
-			/*
-			'htmlAttributes'    => array(
-				'class' => 'decoda-olist'
-			)
-			*/
+			'childrenWhitelist' => array('li', '*'),
+			'onlyTags'          => true,
 		),
-		'LIST'  => array(
+		'list'  => array(
 			'htmlTag'           => 'ul',
 			'displayType'       => Decoda::TYPE_BLOCK,
 			'allowedTypes'      => Decoda::TYPE_BOTH,
 			'lineBreaks'        => Decoda::NL_REMOVE,
-			'childrenWhitelist' => array('LI'),
-			/*
-			'htmlAttributes'    => array(
-				'class' => 'decoda-list'
-			)
-			*/
+			'childrenWhitelist' => array('li', '*'),
+			'onlyTags'          => true,
 		),
-		'LI'    => array(
+		'li'    => array(
 			'htmlTag'      => 'li',
 			'displayType'  => Decoda::TYPE_BLOCK,
 			'allowedTypes' => Decoda::TYPE_BOTH,
-			'parent'       => array('OLIST', 'LIST')
+			'parent'       => array('olist', 'list')
 		),
-		'QUOTE' => array(
-			'htmlTag' => 'blockquote',
-			'displayType' => Decoda::TYPE_BLOCK,
-			'allowedTypes' => Decoda::TYPE_BOTH,
-			'persistContent' => false,
-		),
+		'*'     => array(
+			'htmlTag'           => 'li',
+			'displayType'       => Decoda::TYPE_BLOCK,
+			'allowedTypes'      => Decoda::TYPE_BOTH,
+			'childrenBlacklist' => array('olist', 'list', 'li'),
+			'parent'            => array('olist', 'list')
+		)
+
 	);
 
 }

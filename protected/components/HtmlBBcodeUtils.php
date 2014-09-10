@@ -238,69 +238,6 @@ class HtmlBBcodeUtils
 		return $text;
 	}
 
-
-	static function bbcode2html_absaetze2_block($text, $maxlen)
-	{
-		echo $text . "\n\n";
-		preg_match("/(<ul[^>]*>)(.*)<\/ul>/siu", $text, $matches, PREG_OFFSET_CAPTURE);
-		var_dump($matches);
-		preg_match("/(<ol[^>]*>)(.*)<\/ol>/siu", $text, $matches, PREG_OFFSET_CAPTURE);
-		return $text;
-	}
-
-	/**
-	 * @static
-	 * @param string $text
-	 * @param int $zeilenlaenge
-	 * @return array|string[]
-	 */
-	static function bbcode2html_absaetze2($text, $zeilenlaenge)
-	{
-		$text = str_replace("\r", "", $text);
-		$text = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
-		//$text                      = preg_replace("/[ \\n]*(\[\/?(BLOCKQUOTE|LIST)[^\]]*\][ \\n]*/siu", "\\1", $text);
-		$text = preg_replace("/[\\n ]+\[\*\]/siU", "\n[*]", $text);
-		$text = trim($text, " \n");
-		echo $text . "\n----------------\n";
-		$x                   = explode("\n\n", $text);
-		$absaetze_html       = array();
-		$absaetze_bbcode     = array();
-		$absaetze_html_plain = array();
-
-		foreach ($x as $y) {
-			$absaetze_bbcode[] = $y;
-			echo $y . "\n=================\n";
-			$abs                   = HtmlBBcodeUtils::bbcode2html($y);
-			$absaetze_html_plain[] = $abs;
-			echo $abs . "\n=================\n";
-
-			$str_neu = self::bbcode2html_absaetze2_block($abs, $zeilenlaenge);
-
-			$zeils     = explode("<br>", $abs);
-			$zeils_neu = array();
-			foreach ($zeils as $zeile) {
-				$zeile = preg_replace("/<ul([^>]*)>/siu", "<ul\\1 class='text'>", $zeile);
-				$zeile = preg_replace("/<ol([^>]*)>/siu", "<ol\\1 class='text'>", $zeile);
-				$zeile = preg_replace("/<blockquote([^>]*)>/siu", "<blockquote\\1 class='text'>", $zeile);
-
-				//$zeile = preg_replace("/(<ul([^>]*)>|<ol([^>]*)>|<blockquote([^>]*)>| )*(.*)/siu", "\\1###ZEILENNUMMER###"$zeile);
-				/*
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, $zeilenlaenge);
-				$zeils_neu[] = "###ZEILENNUMMER###" . implode("<br>###ZEILENNUMMER###", $x);
-				*/
-			}
-
-			$str_neu = preg_replace_callback("/###ZEILENNUMMER###/", function () {
-				return "<span class='zeilennummer'>" . HtmlBBcodeUtils::$zeilen_counter++ . "</span>";
-			}, $str_neu);
-
-
-			$absaetze_html[] = $str_neu;
-		}
-
-		return array("html" => $absaetze_html, "html_plain" => $absaetze_html_plain, "bbcode" => $absaetze_bbcode);
-	}
-
 	/**
 	 * @static
 	 * @param string $text
@@ -321,8 +258,6 @@ class HtmlBBcodeUtils
 		$in_escaped_modus           = false;
 		$aktuelle_zeile             = "";
 		$aktuelle_zeile_count       = 0;
-
-		// Testfall: http://ltwby13-programm.antraege-v2.hoessl.eu/ltwby13-programm/antrag/85 Ä234
 
 		if (!$nocache) {
 			$cache_key = md5("text2zeilen11" . $max_len . $text);
@@ -427,16 +362,24 @@ class HtmlBBcodeUtils
 			return $matches[1] . $matches[2] . $matches[3];
 		}, $text);
 
-		//echo "<br>IN========<br>";
-		//echo CHtml::encode($text);
+		$debug = false;
 		$code = new \Decoda\Decoda();
 		$code->setEscaping(!$allow_html);
 		$code->addFilter(new AntraegeBBCodeFilter());
 		$code->addFilter(new \Decoda\Filter\UrlFilter());
+
+		if ($debug) {
+			//require_once("/var/www/antragsgruen-v2/vendor/mjohnson/decoda/examples/list.php");
+			echo "<br>IN========<br>";
+			echo CHtml::encode($text);
+		}
+
 		$code->reset($text);
 		$text = $code->parse();
-		//echo "<br>OUT========<br>";
-		//echo CHtml::encode($text);
+		if ($debug) {
+			echo "<br>OUT========<br>";
+			echo CHtml::encode($text);
+		}
 
 		$text = str_replace("<br>\n", "<br>", $text);
 		$text = str_replace("\n", "<br>", $text);
