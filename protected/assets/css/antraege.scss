@@ -1081,6 +1081,69 @@ ul.funktionen {
 
 }
 
+
+.bdk_antrags_liste {
+  padding: 25px;
+  font-family: "Open Sans", verdana, sans-serif;
+  font-size: 14px;
+
+  table {
+    width: 100%;
+  }
+  th {
+    border-bottom: solid 1px $farbe_hellgruen;
+    font-size: 0.80em;
+    line-height: 2.5em;
+    font-weight: 600;
+    font-family: "Open Sans", verdana, sans-serif;
+  }
+  td {
+    font-family: "Open Sans", verdana, sans-serif;
+    vertical-align: top;
+    padding: 0.75em 0em 0.75em 0em;
+  }
+  tr.antrag {
+    border-top: solid 1px $farbe_hellgruen;
+    &:first-child {
+      border-top: none;
+    }
+  }
+  tr.aenderungsantrag {
+    .titel {
+      .pdflink {
+        font-weight: 400;
+      }
+      .titellink {
+        font-weight: 400;
+      }
+    }
+  }
+  .nummer {
+    width: 20%;
+  }
+  .titel {
+    width: 45%;
+
+    .pdflink {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .titellink {
+      font-weight: 600;
+      a:link, a:visited {
+        color: black;
+      }
+    }
+  }
+  .antragstellerIn {
+    width: 35%;
+  }
+}
+
+.bdk_antrags_liste {
+  
+}
+
 .clear {
   clear: both;
 }

@@ -481,7 +481,10 @@
 					if ( this.getRule( tag, 'breakAfterOpen' ) )
 						this.lineBreak( 1 );
 				}
-			},
+                else if ( tag == 'block' ) {
+                    this.lineBreak();
+                }
+            },
 
 			attribute : function( name, val ) {
 				if ( name == 'option' ) {
@@ -503,6 +506,9 @@
 					if ( this.getRule( tag, 'breakAfterClose' ) )
 						this.lineBreak( 1 );
 				}
+                else if ( tag == 'block' ) {
+                    this.lineBreak();
+                }
 			},
 
 			text: function( text ) {
@@ -717,6 +723,11 @@
 							else
 								element.children = [ new CKEDITOR.htmlParser.text( src ) ];
 						}
+                        // "block" is just a formatting element lives outside of bbcode map,
+                        // whose tag name will not be outputted, just wraps content with line-breaks. (#7870)
+                        else if ( tagName in CKEDITOR.dtd.$block ) {
+                            tagName = 'block';
+                        }
 
 						element.name = tagName;
 						value && ( element.attributes.option = value );
