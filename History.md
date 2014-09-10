@@ -1,4 +1,5 @@
 2.4.0 - 2014-??-??
+==================
 
 * OpenOffice-Export mit Unterstützung von Templates (noch Alpha, BDK)
 * Bei (Änderungs-)Antragsbegründungen lassen sich nun einige erweiterte Formatierungen aktivieren, wie beispielsweise Tabellen oder Zitate. (noch Alpha, BDK)
