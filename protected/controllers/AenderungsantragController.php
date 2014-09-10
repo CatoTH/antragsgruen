@@ -520,7 +520,7 @@ class AenderungsantragController extends AntragsgruenController
 			if ($changed) {
 				$aenderungsantrag->setDiffParagraphs($neue_absaetze);
 
-				$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($antrag->text), trim($neuer_text), $antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
+				$diff      = DiffUtils::getTextDiffMitZeilennummern($antrag->text, $neuer_text, $antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 				$diff_text = "";
 
 				if ($aenderungsantrag->name_neu != $antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $aenderungsantrag->name_neu . "[/QUOTE]\n\n";

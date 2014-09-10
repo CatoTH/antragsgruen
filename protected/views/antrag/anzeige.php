@@ -312,8 +312,7 @@ $this->menus_html[] = $html;
 					if ($js_protection) {
 						?>
 						<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder
-							JavaScript
-							aktiviert sein, oder du musst eingeloggt sein.
+							JavaScript aktiviert sein, oder du musst eingeloggt sein.
 						</div>
 					<?php
 					}

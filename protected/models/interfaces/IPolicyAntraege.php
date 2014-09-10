@@ -60,6 +60,15 @@ abstract class IPolicyAntraege
 	 */
 	abstract public function checkCurUserHeuristically();
 
+
+	/**
+	 * @return bool
+	 */
+	public function checkHeuristicallyAssumeLoggedIn() {
+		return $this->checkCurUserHeuristically();
+	}
+
+
 	/**
 	 * @abstract
 	 * @return string

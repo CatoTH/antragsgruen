@@ -69,6 +69,8 @@ class HtmlBBcodeUtils
 	static function bbcode2zeilen_absaetze($text, $zeilenlaenge)
 	{
 		HtmlBBcodeUtils::$zeilenlaenge = $zeilenlaenge;
+		$text = static::bbNormalizeForAbsaetze($text);
+		/*
 		$text                          = str_replace("\r", "", $text);
 		$text                          = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
 		$text                          = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
@@ -76,6 +78,7 @@ class HtmlBBcodeUtils
 
 		$text   = preg_replace("/[\\n ]+\[\*\]/siU", "\n[*]", $text);
 		$text   = trim($text, " \n");
+		*/
 		$x      = explode("\n\n", $text);
 		$return = array();
 
@@ -118,7 +121,7 @@ class HtmlBBcodeUtils
 				$zeils     = explode("\n", $y);
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge, $i == 7);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge);
 					$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $x);
 				}
 
@@ -154,6 +157,22 @@ class HtmlBBcodeUtils
 	}
 
 	/**
+	 * @param string $text
+	 * @return string
+	 */
+	static function bbNormalizeForAbsaetze($text)
+	{
+		$text = str_replace("\r", "", $text);
+		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
+		$text = preg_replace("/[ \\n\\r]*\[\/LIST\]/si", "[/LIST]", $text);
+		$text = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
+		$text = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
+		$text = preg_replace("/[\\n ]+\[\*\]/siU", "\n[*]", $text);
+		$text = trim($text, " \n");
+		return $text;
+	}
+
+	/**
 	 * @static
 	 * @param string $text
 	 * @param bool $praesentations_hacks
@@ -162,13 +181,7 @@ class HtmlBBcodeUtils
 	 */
 	static function bbcode2html_absaetze($text, $praesentations_hacks = false, $zeilenlaenge)
 	{
-		$text = str_replace("\r", "", $text);
-		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
-		$text = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
-		$text = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
-
-		$text                = preg_replace("/[\\n ]+\[\*\]/siU", "\n[*]", $text);
-		$text                = trim($text, " \n");
+		$text = static::bbNormalizeForAbsaetze($text);
 		$x                   = explode("\n\n", $text);
 		$absaetze_html       = array();
 		$absaetze_bbcode     = array();
@@ -179,8 +192,9 @@ class HtmlBBcodeUtils
 		HtmlBBcodeUtils::$zeilenlaenge = $zeilenlaenge;
 
 		foreach ($x as $i => $y) {
-			$absaetze_bbcode[]     = $y;
-			$abs                   = HtmlBBcodeUtils::bbcode2html($y);
+			$absaetze_bbcode[] = $y;
+			$abs               = HtmlBBcodeUtils::bbcode2html($y);
+
 			$absaetze_html_plain[] = $abs;
 
 			if (mb_stripos($abs, "<ul") === 0 || mb_stripos($abs, "<ol") === 0 || mb_stripos($abs, "<blockquote") === 0) {
@@ -303,7 +317,7 @@ class HtmlBBcodeUtils
 						if (mb_substr($text, $i, 1) == " ") {
 							$zeilen[] = mb_substr($aktuelle_zeile, 0, mb_strlen($aktuelle_zeile) - 1);
 
-							$aktuelle_zeile = "";
+							$aktuelle_zeile       = "";
 							$aktuelle_zeile_count = 0;
 						} else {
 							$ueberhang = mb_substr($aktuelle_zeile, $letztes_trennzeichen + 1);
@@ -312,8 +326,8 @@ class HtmlBBcodeUtils
 							if ($debug) echo "Letztes ist Leerzeichen: " . $letztes_ist_leerzeichen . "\n";
 							$zeilen[] = mb_substr($aktuelle_zeile, 0, $letztes_trennzeichen + ($letztes_ist_leerzeichen ? 0 : 1));
 
-							$aktuelle_zeile             = $ueberhang;
-							$aktuelle_zeile_count       = $max_len - $letztes_trennzeichen_count + 1;
+							$aktuelle_zeile       = $ueberhang;
+							$aktuelle_zeile_count = $max_len - $letztes_trennzeichen_count + 1;
 						}
 
 						$letztes_trennzeichen       = -1;
@@ -363,7 +377,7 @@ class HtmlBBcodeUtils
 		}, $text);
 
 		$debug = false;
-		$code = new \Decoda\Decoda();
+		$code  = new \Decoda\Decoda();
 		$code->setEscaping(!$allow_html);
 		$code->addFilter(new AntraegeBBCodeFilter());
 		$code->addFilter(new \Decoda\Filter\UrlFilter());

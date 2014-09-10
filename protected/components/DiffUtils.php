@@ -235,11 +235,13 @@ class DiffUtils
 	public static function getTextDiffMitZeilennummern($string1 = "", $string2 = "", $zeilenlaenge)
 	{
 		HtmlBBcodeUtils::initZeilenCounter();
-		$arr1  = HtmlBBcodeUtils::bbcode2zeilen_absaetze(trim($string1), $zeilenlaenge);
+		$string1 = trim(static::bbNormalizeForDiff($string1));
+		$arr1  = HtmlBBcodeUtils::bbcode2zeilen_absaetze($string1, $zeilenlaenge);
 		$text1 = implode("\n#ABSATZ#\n", $arr1);
 
 		HtmlBBcodeUtils::initZeilenCounter();
-		$arr2  = HtmlBBcodeUtils::bbcode2zeilen_absaetze(trim($string2), $zeilenlaenge);
+		$string2 = trim(static::bbNormalizeForDiff($string2));
+		$arr2  = HtmlBBcodeUtils::bbcode2zeilen_absaetze($string2, $zeilenlaenge);
 		$text2 = implode("\n#ABSATZ#\n", $arr2);
 
 		$diff = new Horde_Text_Diff('native', array(explode("\n", $text1), explode("\n", $text2)));
@@ -294,6 +296,7 @@ class DiffUtils
 	private static function bbNormalizeForDiff($text)
 	{
 		$text = str_replace("\r", "", $text);
+		$text = str_replace(chr(194) . chr(160), " ", $text);
 		$text = str_replace(chr(13), "", $text);
 		$text = preg_replace("/ {2,}/siu", " ", $text);
 		$text = trim($text);
@@ -301,6 +304,7 @@ class DiffUtils
 			return mb_strtoupper($matches[1]) . $matches[2];
 		}, $text);
 		$text = preg_replace("/(\[list[^\]]*\])\\n*\[/siu", "\\1\n[", $text);
+		$text = preg_replace("/([^\\n])\[\/list\]/siu", "\\1\n[/LIST]", $text);
 		$text = preg_replace("/\n*\[\*/siu", "\n[*", $text);
 		$text = str_replace("\r", "", $text);
 		$text = str_replace(chr(13), "", $text);
@@ -332,7 +336,7 @@ class DiffUtils
 	 * @param string $text_neu
 	 * @param bool $compact
 	 * @param int $css_width_hack
-	 * @param string $pre_str_bbcode
+	 * @param string $pre_str_html
 	 * @return string
 	 */
 	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false, $css_width_hack = 0, $pre_str_html = "")
