@@ -26,8 +26,8 @@ if ($mode == "neu") {
 			<label class="control-label">Ich bin...</label>
 
 			<div class="controls">
-				<label><input type="radio" name="Person[typ]" value="mitglied" required checked> Delegiert</label><br>
-				<label><input type="radio" name="Person[typ]" value="organisation" required> Gremium, LAG...</label><br>
+				<label><input type="radio" name="Person[typ]" value="mitglied" required checked> Parteimitglied</label><br>
+				<label><input type="radio" name="Person[typ]" value="organisation" required> Gremium (BAG, LDK)</label><br>
 			</div>
 		</div>
 
@@ -41,8 +41,7 @@ if ($mode == "neu") {
 
 		<div class="control-group" id="UnterstuetzerInnen">
 			<label class="control-label">
-				UnterstützerInnen<br>
-				(min. 19)<br>
+				Min. 19 Weitere<br>AntragstellerInnen<br>
 				<br>
 				<a href="#" class="fulltext_opener"><span class="icon icon-arrow-right"></span> Volltextfeld</a>
 				<a href="#" class="fulltext_closer" style="display: none;"><span class="icon icon-arrow-right"></span> Volltextfeld ausblenden</a>
