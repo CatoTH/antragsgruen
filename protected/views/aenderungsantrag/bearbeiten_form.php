@@ -75,7 +75,7 @@ if ($js_protection) {
 		if ($text_pre && $text_pre[$i] != "") echo " style='display: none;'";
 		echo ">" . $abs->str_html . "</div>";
 
-		echo "<div class='ae_text_holder'>
+		echo "<div class='ae_text_holder' data-ck_init='0'>
 			<label><input type='checkbox' name='change_text[$i]' data-absatz='$i' class='change_checkbox' ";
 		if ($text_pre && $text_pre[$i] != "") echo "checked";
 		echo "> Ändern<br></label>
@@ -154,9 +154,6 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 		"use strict";
 		$(".ae_text_holder input.change_checkbox").not(':checked').parents(".ae_text_holder").hide();
 		$(".change_checkbox").parents("label").hide();
-		$(".ae_text_holder textarea").each(function () {
-			ckeditor_bbcode($(this).attr("id"));
-		});
 
 		if ($("#ae_begruendung_html").val() == "1") {
 			ckeditor_simplehtml("ae_begruendung");
@@ -179,14 +176,15 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 		$(".ae_absatzwahl_modus .antragabsatz_holder .text").click(function (ev) {
 			ev.preventDefault();
 			if (!$(".ae_absatzwahl_modus").hasClass("aenderungen_moeglich")) return;
-			var $abs = $(this).parents(".row-absatz");
+			var $abs = $(this).parents(".row-absatz"),
+				$holder = $abs.find(".ae_text_holder");
 			$abs.find(".change_checkbox").prop("checked", true);
-			$abs.find(".ae_text_holder").show().css("display", "block");
-			/*
-			window.setTimeout(function() {
-				$abs.find(".ae_text_holder").scrollintoview({top_offset: -50})
-			}, 1);
-			*/
+			$holder.show().css("display", "block");
+			if ($holder.data("ck_init") == "0") {
+				console.log("Init: " + $holder.find("textarea").attr("id"));
+				ckeditor_bbcode($holder.find("textarea").attr("id"));
+				$holder.data("ck_init", "1");
+			}
 			$abs.find(".orig").hide();
 			$abs.find(".antragstext_diff").show();
 			aenderungen_moeglich_recals();
@@ -219,17 +217,22 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 			str;
 		$(".change_checkbox:checked").each(function () {
 			var absatznr = $(this).data("absatz");
+			if (typeof("neu_text_" + absatznr) == "undefined") {
+				alert("Texteditor nicht initialisiert?");
+				return;
+			}
 			str = CKEDITOR.instances["neu_text_" + absatznr].getData();
 			abss[absatznr] = str;
 		});
 		$.ajax({ "url":<?php echo json_encode($ajax_link); ?>, "dataType": "json", "type": "POST", "data": { "antrag_id": antrag_id, "absaetze": abss }, "error": function (xht, status) {
+			console.log("Fehler beim Laden");
 			window.setTimeout(antragstext_show_diff, 10000);
 		}, "success": function (dat) {
 			for (var i in dat) if (dat.hasOwnProperty(i)) {
 				$("#absatz_" + i + " .antragstext_diff").html(dat[i]);
 			}
+			window.setTimeout(antragstext_show_diff, 3000);
 		}});
-		window.setTimeout(antragstext_show_diff, 3000);
 	}
 
 	$(antragstext_init_aes);
