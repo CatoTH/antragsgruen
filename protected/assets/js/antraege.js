@@ -205,6 +205,12 @@ function instanz_neu_anlegen_init() {
         $steps.eq(1).removeClass("active");
         $steps.eq(2).addClass("active");
     });
+    $("#CInstanzAnlegenForm_subdomain").on("blur", function() {
+        if ($(this).val().match(/[^a-zA-Z0-9_-]/)) {
+            alert("Bei der Subdomain sind nur Zahlen, Buchstaben, Unter- und Mittelstrich möglich.");
+            $(this).focus();
+        }
+    });
     $step3.find("button[type=submit]").click(function (ev) {
 
     });
