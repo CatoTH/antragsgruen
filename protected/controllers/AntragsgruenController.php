@@ -161,7 +161,8 @@ class AntragsgruenController extends CController
 			$sql_where1 = "auth = 'email:" . addslashes($username) . "'";
 			if ($this->veranstaltungsreihe) {
 				$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
-				$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1 OR $sql_where2");
+				$sql_where3 = "(email = '" . addslashes($username). "' AND auth LIKE 'openid:https://service.gruene.de/%')";
+				$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1 OR $sql_where2 OR $sql_where3");
 			} else {
 				$users = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1");
 			}
