@@ -29,12 +29,14 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	public function checkCurUserHeuristically()
 	{
 		if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
+		return (!Yii::app()->user->isGuest && !$this->veranstaltung->checkAntragsschlussVorbei());
+	}
 
-		if ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
-			return !Yii::app()->user->isGuest;
-		} else {
-			return true;
-		}
+	/**
+	 * @return bool
+	 */
+	public function checkHeuristicallyAssumeLoggedIn() {
+		return true;
 	}
 
 	/**
@@ -44,7 +46,7 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	public function getPermissionDeniedMsg()
 	{
 		if ($this->veranstaltung->checkAntragsschlussVorbei()) return "Antragsschluss vorbei.";
-		if ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && Yii::app()->user->isGuest) return "Bitte logge dich dafür ein";
+		if (Yii::app()->user->isGuest) return "Bitte logge dich dafür ein";
 		return "";
 	}
 
@@ -63,7 +65,7 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	private function checkSubmit_internal()
 	{
 		if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
-		if ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && Yii::app()->user->isGuest) return false;
+		if (Yii::app()->user->isGuest) return false;
 
 		if (!isset($_REQUEST["Person"]) || !isset($_REQUEST["Person"]["typ"])) return false;
 		if (!$this->isValidName($_REQUEST["Person"]["name"])) return false;
