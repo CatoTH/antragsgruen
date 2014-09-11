@@ -73,8 +73,8 @@ $einstellungen = $model->getEinstellungen();
 				'dateFormat'      => 'yy-mm-dd',
 			),
 		));
+		echo $form->error($model, 'datum_von');
 		?>
-		<?php echo $form->error($model, 'datum_von'); ?>
 	</div>
 	<!-- row -->
 	<div>
@@ -225,6 +225,15 @@ $einstellungen = $model->getEinstellungen();
 			<small>Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>
 		</label>
 	</div>
+	<br>
+
+	<div>
+		<label style="display: inline;"><input type="checkbox"
+											   name="VeranstaltungsEinstellungen[bdk_startseiten_layout]"
+											   value="1" <?php if ($einstellungen->bdk_startseiten_layout == 1) echo "checked"; ?>>
+			<strong>Antragsübersicht der Startseite im BDK-Stil</strong>
+		</label>
+	</div>
 </div>
 
 
@@ -347,16 +356,14 @@ $einstellungen = $model->getEinstellungen();
 		})
 	</script>
 
-	<!--
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;">
 			<input type="checkbox" name="VeranstaltungsEinstellungen[begruendung_in_html]"
 				   value="1" <?php if ($model->getEinstellungen()->begruendung_in_html) echo "checked"; ?>>
-			Erweiterte Formatierungen (HTML) in Anträgen und Änderungsanträgen zulassen
+			Erweiterte Formatierungen (HTML) in Anträgen und Änderungsanträgen zulassen <span style="color: red; font-size: 10px;">(Beta, noch fehleranfällig)</span>
 		</label>
 		<br>
 	</fieldset>
-	-->
 	<br>
 </div>
 
@@ -451,7 +458,7 @@ $einstellungen = $model->getEinstellungen();
 <br>
 
 
-<? if (!$this->veranstaltungsreihe->oeffentlich) { ?>
+<?php if (!$this->veranstaltungsreihe->oeffentlich) { ?>
 
 	<h3>Zugang</h3>
 
@@ -475,7 +482,7 @@ $einstellungen = $model->getEinstellungen();
 
 	</div>
 
-<? } ?>
+<?php } ?>
 
 <h3>Benachrichtigungen</h3>
 

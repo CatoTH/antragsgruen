@@ -108,6 +108,6 @@ class PolicyAntraegeBDK extends IPolicyAntraege
 	 */
 	public function getOnCreateDescription()
 	{
-		return "Mindestens 20 Delegierte (oder min. eine Gremium, LAG...)";
+		return "Mindestens 20 Parteimitglieder oder ein Gremium (BAG, LDK)";
 	}
 }

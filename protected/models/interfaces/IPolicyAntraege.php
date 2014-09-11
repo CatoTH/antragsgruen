@@ -113,7 +113,7 @@ abstract class IPolicyAntraege
 		}
 
 		if ($antragstellerIn === null && isset($_REQUEST["Person"])) {
-			$antragstellerIn = Person::model()->findByAttributes(array("typ" => Person::$TYP_PERSON, "name" => trim($_REQUEST["Person"]["name"]), "status" => Person::$STATUS_UNCONFIRMED));
+			$antragstellerIn = Person::model()->findByAttributes(array("typ" => Person::$TYP_PERSON, "name" => trim($_REQUEST["Person"]["name"]), "organisation" => trim($_REQUEST["Person"]["organisation"]), "status" => Person::$STATUS_UNCONFIRMED));
 			if (!$antragstellerIn) {
 				$antragstellerIn                 = new Person();
 				$antragstellerIn->attributes     = $_REQUEST["Person"];
