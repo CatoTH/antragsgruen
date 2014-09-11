@@ -16,7 +16,7 @@ if (MULTISITE_MODE) {
 } else {
 	$dom_plain = "";
 	$dom       = "";
-	$domv      = $dom . "<veranstaltung_id:[\w_-]+>/";
+	$domv      = $dom . "<veranstaltung_id:[\w\._-]+>/";
 }
 
 require(dirname(__FILE__) . "/common.php");
@@ -34,7 +34,7 @@ return array(
 		'application.models.forms.*',
 		'application.models.interfaces.*',
 		'application.components.*',
-        'application.controllers.*',
+		'application.controllers.*',
 		'ext.giix-components.*',
 	),
 
