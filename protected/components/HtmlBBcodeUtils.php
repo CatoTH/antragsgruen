@@ -360,14 +360,9 @@ class HtmlBBcodeUtils
 	 */
 	static function bbcode2html($text, $allow_html = false)
 	{
-		$text = preg_replace_callback("/(\[o?list[^\]]*\])(.*)(\[\/o?list\])/siuU", function ($matches) {
-			$parts = explode("[*]", trim($matches[2]));
-			$str   = $matches[1];
-			foreach ($parts as $part) if ($part != "") $str .= "[LI]" . trim($part) . "[/LI]";
-			$str .= $matches[3];
-			return $str;
-		}, $text);
+		$debug = false;
 
+		/*
 		$text = preg_replace_callback("/(\[quote[^\]]*\])(.*)(\[\/o?quote\])/siuU", function ($matches) {
 			$first_open  = mb_stripos($matches[2], "[LIST");
 			$first_close = mb_stripos($matches[2], "[/LIST]");
@@ -375,8 +370,30 @@ class HtmlBBcodeUtils
 			if ($first_close !== false && ($first_open === false || $first_close < $first_open)) $matches[2] = trim(mb_substr($matches[2], 0, $first_close) . "\n" . mb_substr($matches[2], $first_close + 7));
 			return $matches[1] . $matches[2] . $matches[3];
 		}, $text);
+		*/
 
-		$debug = false;
+		if ($debug) {
+			//require_once("/var/www/antragsgruen-v2/vendor/mjohnson/decoda/examples/list.php");
+			echo "<br>IN========<br>";
+			echo CHtml::encode($text);
+		}
+
+		$text = preg_replace_callback("/(\[quote[^\]]*\])(.*)(\[\/o?quote\])/siuU", function ($matches) {
+			if (mb_stripos($matches[2], "[li]") === false && mb_stripos($matches[2], "[*]") === false) return $matches[1] . $matches[2] . $matches[3];
+			if (mb_stripos($matches[2], "[list]") === false) {
+				return "[list]\n[*]" . $matches[2] . "\n[/list]";
+			} else {
+				return $matches[2];
+			}
+		}, $text);
+		$text = preg_replace_callback("/(\[o?list[^\]]*\])(.*)(\[\/o?list\])/siuU", function ($matches) use ($debug) {
+			$parts = explode("[*]", trim($matches[2]));
+			$str   = $matches[1];
+			foreach ($parts as $part) if ($part != "") $str .= "[LI]" . trim($part) . "[/LI]";
+			$str .= $matches[3];
+			return $str;
+		}, $text);
+
 		$code  = new \Decoda\Decoda();
 		$code->setEscaping(!$allow_html);
 		$code->addFilter(new AntraegeBBCodeFilter());

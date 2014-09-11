@@ -337,9 +337,10 @@ class DiffUtils
 	 * @param bool $compact
 	 * @param int $css_width_hack
 	 * @param string $pre_str_html
+	 * @param bool $debug
 	 * @return string
 	 */
-	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false, $css_width_hack = 0, $pre_str_html = "")
+	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false, $css_width_hack = 0, $pre_str_html = "", $debug = false)
 	{
 		$text_alt = static::bbNormalizeForDiff($text_alt);
 		$text_neu = static::bbNormalizeForDiff($text_neu);
@@ -352,12 +353,52 @@ class DiffUtils
 			$absatz = DiffUtils::renderAbsatzDiff($diff);
 		}
 
+		if ($debug) {
+			echo "\n\n============== Nach DIFF ===============\n\n";
+			var_dump($absatz);
+		}
+
+		$split_lists = function($matches) use ($debug) {
+			$lis = explode("[*]", $matches["inhalt"]);
+			if (count($lis) == 1) return $matches[0];
+
+			$output = "";
+			for ($i = 0; $i < count($lis); $i++) {
+				if ($i == 0) {
+					if (trim($lis[$i]) == "") $output .= $lis[$i];
+					else $output .= $matches["anfang"] . $lis[$i] . $matches["ende"];
+				} elseif ($i == (count($lis) - 1)) {
+					if (trim($lis[$i]) == "") $output .= "[*]" . $lis[$i];
+					else $output .= "[*]" . $matches["anfang"] . $lis[$i] . $matches["ende"];
+				} else {
+					$output .= "[*]" . $matches["anfang"] . $lis[$i] . $matches["ende"];
+				}
+			}
+
+			if ($debug) {
+				echo "-----------------\n";
+				var_dump($matches);
+				var_dump($lis);
+				var_dump($output);
+			}
+
+			return $output;
+		};
+
+		$absatz = preg_replace_callback("/(?<anfang><del>)(?<inhalt>.*)(?<ende><\/del>)/siU", $split_lists, $absatz);
+		$absatz = preg_replace_callback("/(?<anfang><ins>)(?<inhalt>.*)(?<ende><\/ins>)/siU", $split_lists, $absatz);
+
 		$diffstr = HtmlBBcodeUtils::bbcode2html($absatz);
 
 		$diffstr = str_ireplace(
 			array("&lt;ins&gt;", "&lt;/ins&gt;", "&lt;del&gt;", "&lt;/del&gt;"),
 			array("<ins>", "</ins>", "<del>", "</del>"),
 			$diffstr);
+
+		if ($debug) {
+			echo "\n\n============== In HTML ===============\n\n";
+			var_dump($diffstr);
+		}
 
 		static::$ins_mode_active = false;
 		static::$del_mode_active = false;
