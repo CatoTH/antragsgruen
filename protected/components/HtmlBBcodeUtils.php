@@ -163,6 +163,8 @@ class HtmlBBcodeUtils
 	static function bbNormalizeForAbsaetze($text)
 	{
 		$text = str_replace("\r", "", $text);
+		$text = str_replace(chr(194) . chr(160), " ", $text);
+		$text = str_replace("\n \n", "\n\n", $text);
 		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
 		$text = preg_replace("/[ \\n\\r]*\[\/LIST\]/si", "[/LIST]", $text);
 		$text = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
