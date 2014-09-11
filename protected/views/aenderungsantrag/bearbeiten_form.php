@@ -182,6 +182,11 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 			var $abs = $(this).parents(".row-absatz");
 			$abs.find(".change_checkbox").prop("checked", true);
 			$abs.find(".ae_text_holder").show().css("display", "block");
+			/*
+			window.setTimeout(function() {
+				$abs.find(".ae_text_holder").scrollintoview({top_offset: -50})
+			}, 1);
+			*/
 			$abs.find(".orig").hide();
 			$abs.find(".antragstext_diff").show();
 			aenderungen_moeglich_recals();
