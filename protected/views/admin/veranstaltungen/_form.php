@@ -360,7 +360,7 @@ $einstellungen = $model->getEinstellungen();
 		<label style="display: inline;">
 			<input type="checkbox" name="VeranstaltungsEinstellungen[begruendung_in_html]"
 				   value="1" <?php if ($model->getEinstellungen()->begruendung_in_html) echo "checked"; ?>>
-			Erweiterte Formatierungen (HTML) in Anträgen und Änderungsanträgen zulassen
+			Erweiterte Formatierungen (HTML) in Anträgen und Änderungsanträgen zulassen <span style="color: red; font-size: 10px;">(Beta, noch fehleranfällig)</span>
 		</label>
 		<br>
 	</fieldset>
