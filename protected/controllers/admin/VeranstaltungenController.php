@@ -101,6 +101,7 @@ class VeranstaltungenController extends GxController
 
 				$reihen_einstellungen = $model->veranstaltungsreihe->getEinstellungen();
 				$reihen_einstellungen->antrag_neu_nur_namespaced_accounts = (isset($_REQUEST["antrag_neu_nur_namespaced_accounts"]));
+				$reihen_einstellungen->antrag_neu_nur_wurzelwerk = (isset($_REQUEST["antrag_neu_nur_wurzelwerk"]));
 				$model->veranstaltungsreihe->setEinstellungen($reihen_einstellungen);
 				$model->veranstaltungsreihe->save();
 

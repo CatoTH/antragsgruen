@@ -199,6 +199,9 @@ class AntragsgruenController extends CController
 	 */
 	private function performLogin_username_password($success_redirect, $username, $password)
 	{
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
+			throw new Exception("Das Login mit BenutzerInnenname und Passwort ist bei dieser Veranstaltung nicht möglich.");
+		}
 		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
 			$users = $this->performLogin_username_password_only_namespaced_users($username);
 		} else {
@@ -246,6 +249,9 @@ class AntragsgruenController extends CController
 	private function performCreateUser_username_password($success_redirect, $username, $password, $password_confirm, $name)
 	{
 		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+			throw new Exception("Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.");
+		}
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
 			throw new Exception("Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.");
 		}
 		if (!preg_match("/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/siu", $username)) {
@@ -306,6 +312,9 @@ class AntragsgruenController extends CController
 	{
 		$model->attributes = $form_params;
 
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk && $model->wurzelwerk == "") {
+			throw new Exception("Bei dieser Veranstaltung ist kein Login per OpenID möglich.");
+		}
 
 		if (stripos($model->openid_identifier, "yahoo") !== false) {
 			throw new Exception("Leider ist wegen technischen Problemen ein Login mit Yahoo momentan nicht möglich.");
@@ -382,6 +391,9 @@ class AntragsgruenController extends CController
 			try {
 				$us = new AntragUserIdentityOAuth($loid);
 				if ($us->authenticate()) {
+					if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
+						if (strpos($us->getId(), "openid:https://service.gruene.de/openid/") !== 0) throw new Exception("Bei dieser Veranstaltung ist nur ein Login über das Wurzelwerk zulässig.");
+					}
 					Yii::app()->user->login($us);
 					/** @var Person $user */
 					$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
@@ -418,6 +430,9 @@ class AntragsgruenController extends CController
 	protected function performLogin_from_email_params($success_redirect, $login)
 	{
 		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+			throw new Exception("Diese Form des Logins ist bei dieser Veranstaltung nicht möglich.");
+		}
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
 			throw new Exception("Diese Form des Logins ist bei dieser Veranstaltung nicht möglich.");
 		}
 

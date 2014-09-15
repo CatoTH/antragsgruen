@@ -346,6 +346,13 @@ $einstellungen = $model->getEinstellungen();
 		</fieldset>
 	<?php } ?>
 
+	<fieldset style="margin-top: 10px;">
+		<label style="display: inline;"><input type="checkbox" name="antrag_neu_nur_wurzelwerk"
+											   value="1" <?php if ($model->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) echo "checked"; ?>>
+			Login nur von Wurzelwerk-NutzerInnen zulassen<br>
+			<small>(gilt für Anträge und Änderungsanträge der gesamten Veranstaltungs<span style="text-decoration: underline;">reihe</span>)</small>
+		</label>
+	</fieldset>
 
 	<script>
 		$(function () {

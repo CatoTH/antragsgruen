@@ -24,7 +24,7 @@ if ($msg_err != "") {
 
 	<h1>Login</h1>
 
-
+<?php if (!$this->veranstaltungsreihe || !$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) { ?>
 
 	<h2>Login per BenutzerInnenname / Passwort</h2>
 	<div class="content">
@@ -89,6 +89,7 @@ if ($msg_err != "") {
 
 	</div>
 
+<?php } ?>
 
 	<h2>Wurzelwerk-Login <?php
 		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
@@ -101,8 +102,8 @@ if ($msg_err != "") {
 		?>
 		<label for="OAuthLoginForm_wurzelwerk">WurzelWerk-Account</label>
 		<input class="span3" name="OAuthLoginForm[wurzelwerk]" id="OAuthLoginForm_wurzelwerk" type="text"
-		       style="margin-bottom: 0; "/><br><a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank"
-		                                          style="font-size: 0.8em; margin-top: -7px; display: inline-block; margin-bottom: 10px;">Wurzelwerk-Zugangsdaten
+			   style="margin-bottom: 0; "/><br><a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank"
+												  style="font-size: 0.8em; margin-top: -7px; display: inline-block; margin-bottom: 10px;">Wurzelwerk-Zugangsdaten
 			vergessen?</a>
 		<span class="help-block error" id="OAuthLoginForm_wurzelwerk_em_" style="display: none"></span>
 
@@ -122,7 +123,7 @@ if ($msg_err != "") {
 
 	</div>
 <?php
-if (!$this->veranstaltungsreihe || !$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+if (!$this->veranstaltungsreihe || (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && !$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk)) {
 	?>
 	<h2>OpenID-Login</h2>
 	<div class="content">
@@ -131,7 +132,7 @@ if (!$this->veranstaltungsreihe || !$this->veranstaltungsreihe->getEinstellungen
 
 		<label for="OAuthLoginForm_openid_identifier">OpenID-URL</label>
 		<input class="span3" name="OAuthLoginForm[openid_identifier]" id="OAuthLoginForm_openid_identifier"
-		       type="text"/>
+			   type="text"/>
 		<span class="help-block error" id="OAuthLoginForm_openid_identifier_em_" style="display: none"></span>
 
 		<br>
