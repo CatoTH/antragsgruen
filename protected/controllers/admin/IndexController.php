@@ -168,6 +168,25 @@ class IndexController extends AntragsgruenController
 		$this->renderPartial("ae_excel_list", array("antraege" => $antrs));
 	}
 
+	public function actionAntragExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+
+		ini_set('memory_limit', '256M');
+
+		$antraege_sorted = $this->veranstaltung->antraegeSortiert();
+		$antrs           = array();
+		foreach ($antraege_sorted as $gruppe) foreach ($gruppe as $antr) {
+			/** @var Antrag $antr */
+			$antrs[] = array(
+				"antrag" => $antr,
+			);
+		}
+
+		$this->renderPartial("antrag_excel_list", array("antraege" => $antrs));
+	}
+
 	public function actionReiheAdmins($veranstaltungsreihe_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id);

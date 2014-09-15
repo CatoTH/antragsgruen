@@ -40,6 +40,7 @@ $this->breadcrumbs = array(
 				href="<?php echo $this->createUrl("admin/aenderungsantraege") ?>"><?php echo Aenderungsantrag::label(2) ?></a>
 		</li>
 		<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/aePDFList") ?>">Liste aller PDFs</a></li>
+		<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/antragExcelList") ?>">Export: Anträge als Excel-Datei</a></li>
 		<li style="margin-left: 20px;"><a href="<?php echo $this->createUrl("admin/index/aeExcelList") ?>">Export: Änderungsanträge als Excel-Datei</a></li>
 		<li style="margin-top: 10px;"><?php echo CHtml::link("Export: Kommentare als Excel-Datei", $this->createUrl("admin/index/kommentareexcel")); ?></li>
 		<li style="margin-top: 10px;"><a href="<?php echo $this->createUrl("admin/texte") ?>">Redaktionelle Texte</a></li>
