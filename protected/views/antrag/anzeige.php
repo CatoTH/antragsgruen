@@ -88,8 +88,7 @@ $this->menus_html[] = $html;
 					<td><?php
 						$x = array();
                         foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
-                            $name = CHtml::encode($unt->person->getNameMitOrga());
-                            if ($unt->beschlussdatum != "") $name .= " <small>(beschlossen am " . AntraegeUtils::date_sql2de($unt->beschlussdatum). ")</small>";
+	                        $name= $unt->getNameMitBeschlussdatum(true);
 	                        if ($antrag->veranstaltung->isAdminCurUser() && ($unt->person->email != "" || $unt->person->telefon != "")) {
 		                        $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
 		                        if ($unt->person->email != "") $name .=  "E-Mail: " . CHtml::encode($unt->person->email);
@@ -106,6 +105,7 @@ $this->menus_html[] = $html;
 					<th>Status:</th>
 					<td><?php
 						echo CHtml::encode(IAntrag::$STATI[$antrag->status]);
+						if (trim($antrag->status_string) != "") echo " <small>(" . CHtml::encode($antrag->status_string) . ")</string>";
 						?></td>
 				</tr>
 				<?php if ($antrag->datum_beschluss != "") { ?>

@@ -62,7 +62,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 		<fieldset>
 
-			<label class="legend" for="Antrag_name">Antragstitel</label>
+			<label class="legend" for="Antrag_name">Überschrift</label>
 			<input name="Antrag[name]" id="Antrag_name" type="text" value="<?php echo CHtml::encode($model->name); ?>">
 
 		</fieldset>

@@ -76,4 +76,19 @@ class AenderungsantragUnterstuetzerInnen extends IUnterstuetzerInnen
             'aenderungsantrag'    => null,
         );
     }
+
+	/**
+	 * @param bool $html
+	 * @return string
+	 */
+	public function getNameMitBeschlussdatum($html = true) {
+		if ($html) {
+			$name = CHtml::encode($this->person->getNameMitOrga());
+			if ($this->beschlussdatum != "") $name .= " <small style='font-weight: normal;'>(beschlossen am " . AntraegeUtils::date_sql2de($this->beschlussdatum). ")</small>";
+		} else {
+			$name = $this->person->getNameMitOrga();
+			$name .= " (beschlossen am " . AntraegeUtils::date_sql2de($this->beschlussdatum) . ")";
+		}
+		return $name;
+	}
 }

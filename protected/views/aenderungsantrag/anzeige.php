@@ -41,7 +41,11 @@ $html .= '<li class="zurueck">' . CHtml::link("Zurück zum Antrag", $this->creat
 $this->menus_html[] = $html;
 
 $rows = 10;
-$antragstellerInnen = $aenderungsantrag->getAntragstellerInnen();
+$antragstellerInnen = array();
+foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+	$antragstellerInnen[] = $unt->getNameMitBeschlussdatum(true);
+}
+
 
 if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
 	$ae_kuerzel = $aenderungsantrag->revision_name;
@@ -83,18 +87,13 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 				<tr>
 					<th><?php echo(count($antragstellerInnen) > 1 ? "AntragsstellerInnen" : "AntragsstellerIn"); ?>:
 					</th>
-					<td><?php
-						$x = array();
-						foreach ($antragstellerInnen as $a) {
-							$x[] = CHtml::encode($a->getNameMitOrga());
-						}
-						echo implode(", ", $x);
-						?></td>
+					<td><?php echo implode(", ", $antragstellerInnen); ?></td>
 				</tr>
 				<tr>
 					<th>Status:</th>
 					<td><?php
 						echo CHtml::encode(IAntrag::$STATI[$aenderungsantrag->status]);
+						if (trim($aenderungsantrag->status_string) != "") echo " <small>(" . CHtml::encode($aenderungsantrag->status_string) . ")</string>";
 						?></td>
 				</tr>
 				<?php if ($aenderungsantrag->datum_beschluss != "") { ?>

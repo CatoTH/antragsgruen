@@ -361,7 +361,7 @@ class Veranstaltung extends GxActiveRecord
 			array('name, url_verzeichnis, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, einstellungen', 'required'),
 			array('name', 'length', 'max' => 200),
 			array('name_kurz, url_verzeichnis', 'length', 'max' => 45),
-			array('antragsschluss, admin_email', 'safe'),
+			array('antragsschluss, admin_email, datum_von, datum_bis', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 	}

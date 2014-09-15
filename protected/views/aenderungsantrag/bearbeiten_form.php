@@ -49,7 +49,7 @@ if ($js_protection) {
 	</div>
 <?php } ?>
 
-<h3><label for="Aenderungsantrag_name_neu">Neuer Titel</label></h3>
+<h3><label for="Aenderungsantrag_name_neu">Neue Überschrift</label></h3>
 <br>
 <input id="Aenderungsantrag_name_neu" type="text" value="<?php echo CHtml::encode($aenderungsantrag->name_neu); ?>"
 	   name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">

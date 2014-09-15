@@ -6,16 +6,6 @@
  * @var Sprache $sprache
  */
 
-/** @var array|Person[] $antragstellerInnen */
-$antragstellerInnen = array();
-/** @var array|Person[] $unterstuetzerInnen */
-$unterstuetzerInnen = array();
-
-if (count($antrag->antragUnterstuetzerInnen) > 0) foreach ($antrag->antragUnterstuetzerInnen as $relatedModel) {
-	if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerInnen[] = $relatedModel->person;
-	if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $relatedModel->person;
-}
-
 $this->breadcrumbs = array(
 	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	$sprache->get('Neuer Antrag'),
@@ -66,15 +56,11 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		<div class="content">
 			<ul>
 				<?php
-				foreach ($antragstellerInnen as $p) {
-					echo '<li style="font-weight: bold;">';
-					echo CHtml::encode($p->getNameMitOrga());
-					echo '</li>';
+				foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+					echo '<li style="font-weight: bold;">' . $unt->getNameMitBeschlussdatum(true) . '</li>';
 				}
-				foreach ($unterstuetzerInnen as $p) {
-					echo '<li>';
-					echo CHtml::encode($p->getNameMitOrga());
-					echo '</li>';
+				foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) {
+					echo '<li>' . $unt->getNameMitBeschlussdatum(true) . '</li>';
 				}
 				?>
 			</ul>
