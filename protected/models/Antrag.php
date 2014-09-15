@@ -14,6 +14,7 @@
  * @property integer $begruendung_html
  * @property integer $status
  * @property string $status_string
+ * @property string $notiz_intern
  * @property integer $cache_anzahl_zeilen
  * @property integer $cache_anzahl_absaetze
  * @property integer $text_unveraenderlich
@@ -107,7 +108,7 @@ class Antrag extends IAntrag
 			array('revision_name', 'length', 'max' => 50),
 			array('datum_beschluss', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
-			array('text', 'safe'),
+			array('text, notiz_intern', 'safe'),
 			array('abgeleitet_von, typ, datum_beschluss, text, begruendung, begruendung_html, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 	}
@@ -150,6 +151,7 @@ class Antrag extends IAntrag
 			'begruendung_html'         => Yii::t('app', 'Begründung in HTML'),
 			'status'                   => Yii::t('app', 'Status'),
 			'status_string'            => Yii::t('app', 'Status String'),
+			'notiz_intern'             => Yii::t('app', 'Interne Notiz'),
 			'text_unveraenderlich'     => Yii::t('app', 'Text Unveränderlich'),
 			'aenderungsantraege'       => null,
 			'veranstaltung'            => null,

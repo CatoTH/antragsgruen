@@ -73,7 +73,6 @@
 		<?php echo $form->error($model, 'datum_einreichung'); ?>
 	</div>
 
-	<!-- row -->
 	<div>
 		<?php echo $form->labelEx($model, 'datum_beschluss'); ?>
 		<?php $form->widget('ext.datetimepicker.EDateTimePicker', array(
@@ -87,7 +86,11 @@
 		<?php echo $form->error($model, 'datum_beschluss'); ?>
 	</div>
 
-	<!-- row -->
+	<div>
+		<?php echo $form->labelEx($model, 'notiz_intern'); ?>
+		<?php echo $form->textField($model, 'notiz_intern'); ?>
+		<?php echo $form->error($model, 'notiz_intern'); ?>
+	</div>
 
 	<?php if ($model->text_unveraenderlich == 0) { ?>
 

@@ -16,6 +16,7 @@
  * @property string $datum_beschluss
  * @property integer $status
  * @property string $status_string
+ * @property string $notiz_intern
  * @property int $kommentar_legacy
  * @property integer $text_unveraenderlich
  *
@@ -71,7 +72,7 @@ class Aenderungsantrag extends IAntrag
 			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy, text_unveraenderlich, aenderung_begruendung_html', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
-			array('name_neu, datum_beschluss, aenderung_metatext', 'safe'),
+			array('name_neu, datum_beschluss, aenderung_metatext, notiz_intern', 'safe'),
 			array('antrag_id, revision_name, name_neu, datum_beschluss, aenderung_begruendung, aenderung_begruendung_html', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 
@@ -123,6 +124,7 @@ class Aenderungsantrag extends IAntrag
 			'status_string'                      => Yii::t('app', 'Status String'),
 			'kommentar_legacy'                   => Yii::t('app', 'Altes Kommentarsystem'),
 			'text_unveraenderlich'               => Yii::t('app', 'Text Unveränderlich'),
+			'notiz_intern'                       => Yii::t('app', 'Interne Notiz'),
 			'antrag'                             => null,
 			'aenderungsantragKommentare'         => null,
 			'aenderungsantragUnterstuetzerInnen' => null,
