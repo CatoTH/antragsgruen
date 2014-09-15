@@ -29,7 +29,14 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	public function checkCurUserHeuristically()
 	{
 		if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
-		return (!Yii::app()->user->isGuest && !$this->veranstaltung->checkAntragsschlussVorbei());
+
+		if ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
+			return !Yii::app()->user->isGuest;
+		} elseif ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+			return !Yii::app()->user->isGuest;
+		} else {
+			return true;
+		}
 	}
 
 	/**

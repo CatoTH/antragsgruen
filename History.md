@@ -9,6 +9,7 @@
 * Der Status-Erweiterungstext aus dem Backend wird immer mit angezeigt, sofern vorhanden.
 * Bei Anträgen und Änderungsanträgen gibt es nun im Admin-Backend ein internes Feld "Interne Notiz", die nur Admins sehen können.
 * Das Beschlussdatum bei Gremien, die einen (Änderungs-)Antrag einreichen, wurde an vielen Stellen noch nicht angezeigt.
+* Eine Einstellungemöglichkeit, um das Login nur auf das Wurzelwerk zu beschränken (BDK)
 
 2.3.0 - 2014-09-08
 ==================
