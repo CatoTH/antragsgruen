@@ -25,10 +25,6 @@ $bin_organisation = ($antragstellerIn->typ == Person::$TYP_ORGANISATION);
 <div class="policy_antragstellerIn_orga_19_fulltext">
 	<h3><?= $sprache->get("AntragstellerIn") ?></h3>
 	<br>
-	<?php
-	echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
-	?>
-
 	<div class="control-group" id="Person_typ_chooser">
 		<label class="control-label">Ich bin...</label>
 
@@ -37,6 +33,10 @@ $bin_organisation = ($antragstellerIn->typ == Person::$TYP_ORGANISATION);
 			<label><input type="radio" name="Person[typ]" value="organisation" required> Gremium (BAG, LDK)</label><br>
 		</div>
 	</div>
+
+	<?php
+	echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
+	?>
 
 	<div class="control-group" id="Organisation_Beschlussdatum_holder">
 		<label class="control-label">Beschlussdatum:</label>
@@ -87,12 +87,14 @@ $bin_organisation = ($antragstellerIn->typ == Person::$TYP_ORGANISATION);
 				$unter.find("input[type=text]").prop("required", true);
 				$beschlussdatum.hide();
 				$beschlussdatum.find("input").removeAttr("required");
+				$(".organisation_row").show();
 			}
 			if (val == "organisation") {
 				$unter.hide();
 				$unter.find("input[type=text]").prop("required", false);
 				$beschlussdatum.show();
 				$beschlussdatum.find("input").attr("required", "required");
+				$(".organisation_row").hide().find("input").val("");
 			}
 		}).change();
 

@@ -275,20 +275,20 @@ abstract class IPolicyAntraege
 		}
 
 		$str .= '<div class="antragstellerIn_daten">
-			<div class="control-group "><label class="control-label" for="Person_name">' . $label_name . '</label>
-				<div class="controls"><input name="Person[name]" id="Person_name" type="text" maxlength="100" value="';
+			<div class="control-group name_row"><label class="control-label" for="Person_name">' . $label_name . '</label>
+				<div class="controls name_row"><input name="Person[name]" id="Person_name" type="text" maxlength="100" value="';
 		if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->name);
 		$str .= '"></div>
 			</div>
 
-			<div class="control-group "><label class="control-label" for="Person_organisation">' . $label_organisation . '</label>
-				<div class="controls"><input name="Person[organisation]" id="Person_organisation" type="text" maxlength="100" value="';
+			<div class="control-group organisation_row"><label class="control-label" for="Person_organisation">' . $label_organisation . '</label>
+				<div class="controls organisation_row"><input name="Person[organisation]" id="Person_organisation" type="text" maxlength="100" value="';
 		if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->organisation);
 		$str .= '"></div>
 			</div>
 
-			<div class="control-group "><label class="control-label" for="Person_email">E-Mail</label>
-				<div class="controls"><input';
+			<div class="control-group email_row"><label class="control-label" for="Person_email">E-Mail</label>
+				<div class="controls email_row"><input';
 		if ($einstellungen->antrag_neu_braucht_email) $str .= ' required';
 		$str .= ' name="Person[email]" id="Person_email" type="text" maxlength="200" value="';
 		if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->email);
@@ -296,8 +296,8 @@ abstract class IPolicyAntraege
 			</div>';
 
 		if ($einstellungen->antrag_neu_kann_telefon) {
-			$str .= '<div class="control-group "><label class="control-label" for="Person_telefon">Telefon</label>
-				<div class="controls"><input';
+			$str .= '<div class="control-group telefon_row"><label class="control-label" for="Person_telefon">Telefon</label>
+				<div class="controls telefon_row"><input';
 			if ($einstellungen->antrag_neu_braucht_telefon) $str .= ' required';
 			$str .= ' name="Person[telefon]" id="Person_telefon" type="text" maxlength="100" value="';
 			if ($antragstellerIn) $str .= CHtml::encode($antragstellerIn->telefon);

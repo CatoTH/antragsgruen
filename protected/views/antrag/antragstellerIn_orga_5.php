@@ -25,10 +25,6 @@ $bin_organisation = ($antragstellerIn->typ == Person::$TYP_ORGANISATION);
 <div class="policy_antragstellerIn_orga_5">
 	<h3><?= $sprache->get("AntragstellerIn") ?></h3>
 	<br>
-	<?php
-	echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn, "Name<br>(oder Gremium, LAG...)", "Kreisverband");
-	?>
-
 	<div class="control-group" id="Person_typ_chooser">
 		<label class="control-label">Ich bin...</label>
 
@@ -37,6 +33,10 @@ $bin_organisation = ($antragstellerIn->typ == Person::$TYP_ORGANISATION);
 			<label><input type="radio" name="Person[typ]" value="organisation" required <?php if ($bin_organisation) echo "checked"; ?>> Gremium, LAG...</label><br>
 		</div>
 	</div>
+
+	<?php
+	echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn, "Name<br>(oder Gremium, LAG...)", "Kreisverband");
+	?>
 
 	<div class="control-group" id="UnterstuetzerInnen">
 		<label class="control-label">UnterstützerInnen<br>(min. 4)</label>
@@ -66,9 +66,11 @@ $bin_organisation = ($antragstellerIn->typ == Person::$TYP_ORGANISATION);
 			if ($chooser.find("input:checked").val() == "mitglied") {
 				$unter.show();
 				$unter.find("input[type=text]").prop("required", true);
+				$(".organisation_row").show();
 			} else {
 				$unter.hide();
 				$unter.find("input[type=text]").prop("required", false);
+				$(".organisation_row").hide().find("input").val("");
 			}
 		}).change();
 		if ($andereAntragstellerIn.length > 0) $andereAntragstellerIn.change(function () {
