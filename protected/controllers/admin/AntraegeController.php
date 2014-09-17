@@ -100,19 +100,36 @@ class AntraegeController extends GxController
 	/**
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
+	 * @param int|null $status
 	 */
-	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id)
+	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id, $status = null)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
+		$stati      = array();
+		$gesamtzahl = 0;
+		foreach ($this->veranstaltung->antraege as $antrag) {
+			if ($antrag->status == IAntrag::$STATUS_GELOESCHT) continue;
+			if (!isset($stati[$antrag->status])) $stati[$antrag->status] = 0;
+			$stati[$antrag->status]++;
+			$gesamtzahl++;
+		}
+
 		$dataProvider                            = new CActiveDataProvider('Antrag');
 		$dataProvider->sort->defaultOrder        = "datum_einreichung DESC";
 		$dataProvider->getPagination()->pageSize = 50;
-		$dataProvider->criteria->condition       = "status != " . IAntrag::$STATUS_GELOESCHT . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
+		if ($status === null) {
+			$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
+		} else {
+			$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT . " AND status = " . IntVal($status) . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
+		}
 
 		$this->render('index', array(
-			'dataProvider' => $dataProvider,
+			'dataProvider'  => $dataProvider,
+			'anzahl_stati'  => $stati,
+			'anzahl_gesamt' => $gesamtzahl,
+			'status_curr'   => $status,
 		));
 	}
 
