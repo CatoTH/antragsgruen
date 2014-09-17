@@ -45,10 +45,10 @@ class UnterstuetzerInnenAdminWidget
         $unterstuetzerInnen = $antrag->$unterstuetzerIn_rel;
         foreach ($unterstuetzerInnen as $unt) {
 			/** @var AntragUnterstuetzerInnen $unt */
-            $str .= '<div>';
-            $str .= '<span style="display: inline-block; width: 250px; overflow: hidden;" class="sort_handle">' . CHtml::encode($unt->person->getNameMitOrga()) . '</span>';
+            $str .= '<div style="vertical-align: top;">';
+            $str .= '<span style="display: inline-block; width: 250px; overflow: hidden; vertical-align: top;" class="sort_handle">' . CHtml::encode($unt->getNameMitBeschlussdatum()) . '</span>';
             $str .= '<input type="hidden" name="' . get_class($antrag) . '[unterstuetzerInnen][person_id][]" value="' . $unt->person->id . '">';
-            $str .= '<select name="' . get_class($antrag) . '[unterstuetzerInnen][rolle][]">';
+            $str .= '<select name="' . get_class($antrag) . '[unterstuetzerInnen][rolle][]" style="vertical-align: top;">';
             $str .= '<option value="del"> - ' . Yii::t('app', 'löschen') . ' - </option>';
             foreach (IUnterstuetzerInnen::$ROLLEN as $key => $val) {
                 $str .= '<option value="' . $key . '" ';
@@ -59,7 +59,7 @@ class UnterstuetzerInnenAdminWidget
             $str .= '</div>';
         }
 
-        $str .= '<div class="unterstuetzerInnenwidget_add_caller"><a href="#">Neue hinzufügen</a></div>';
+        $str .= '<div class="unterstuetzerInnenwidget_add_caller" style="margin-top: 20px;"><a href="#">Neue hinzufügen</a></div>';
 
         $str .= "</div>";
         return $str;
