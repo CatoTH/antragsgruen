@@ -10,10 +10,8 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => $model->label(2) . ': ' . Yii::t('app', 'List'), 'url' => array('index'), "icon" => "home"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'View'), 'url' => $this->createUrl("antrag/anzeige", array("veranstaltung_id" => $model->veranstaltung->url_verzeichnis, "antrag_id" => $model->id)), "icon" => "eye-open"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'Delete'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'confirm' => 'Are you sure you want to delete this item?'), "icon" => "remove"),
-	array('label' => "Durchsuchen", 'url' => array('admin'), "icon" => "th-list"),
 );
 ?>
 

@@ -9,11 +9,9 @@ $this->breadcrumbs = array(
 );
 
 $this->menu = array(
-	array('label' => $model->label(2) . ': ' . Yii::t('app', 'List'), 'url' => array('index'), "icon" => "home"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'Create'), 'url' => array('create'), "icon" => "plus-sign"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'View'), 'url' => array('view', 'id' => GxActiveRecord::extractPkValue($model, true)), "icon" => "eye-open"),
 	array('label' => $model->label() . ' ' . Yii::t('app', 'Delete'), 'url' => '#', 'linkOptions' => array('submit' => array('delete', 'id' => $model->id), 'confirm' => 'Are you sure you want to delete this item?'), "icon" => "remove"),
-	array('label' => $model->label(2) . ' ' . Yii::t('app', 'Manage'), 'url' => array('admin'), "icon" => "th-list"),
 );
 ?>
 
