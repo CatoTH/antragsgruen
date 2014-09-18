@@ -7,6 +7,8 @@ class AntraegeController extends GxController
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 * @param int $id
+	 * @throws CException
+	 * @throws Exception
 	 */
 	public function actionUpdate($veranstaltungsreihe_id = "", $veranstaltung_id, $id)
 	{

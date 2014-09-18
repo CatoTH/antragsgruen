@@ -1,4 +1,4 @@
-2.4.0 - 2014-??-??
+2.4.0 - 2014-09-18
 ==================
 
 * OpenOffice-Export mit Unterstützung von Templates (noch Alpha, BDK)
@@ -11,6 +11,7 @@
 * Das Beschlussdatum bei Gremien, die einen (Änderungs-)Antrag einreichen, wurde an vielen Stellen noch nicht angezeigt.
 * Eine Einstellungemöglichkeit, um das Login nur auf das Wurzelwerk zu beschränken (BDK)
 * Im Backend lässt sich die Liste der (Änderungs-)Anträge nun nach Status filtern (BDK)
+* Wenn eingestellt ist, dass Anträge nachträglich unveränderlich sind, gilt das nun erst ab dem Zeitpunkt, wenn diese auch freigeschaltet werden.
 * Excel-Export der Anträge (BDK)
 
 2.3.0 - 2014-09-08
