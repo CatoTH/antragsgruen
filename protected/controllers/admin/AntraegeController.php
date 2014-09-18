@@ -42,11 +42,12 @@ class AntraegeController extends GxController
 
 		if (isset($_POST['Antrag'])) {
 			$fixed_fields = $fixed_fields_pre = array();
-			if ($model->text_unveraenderlich) $fixed_fields = array(
+			if (!$model->kannTextUeberarbeitenAdmin()) $fixed_fields = array(
 				"text_unveraenderlich", "text", "begruendung",
 			);
 			foreach ($fixed_fields as $field) $fixed_fields_pre[$field] = $model->$field;
 
+			if (!in_array($_POST['Antrag']['status'], $model->getMoeglicheStati())) throw new Exception("Status-Übergang ungültig");
 			$model->setAttributes($_POST['Antrag'], false);
 
 			foreach ($fixed_fields_pre as $field => $val) $model->$field = $val;

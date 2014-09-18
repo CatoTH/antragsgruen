@@ -264,6 +264,14 @@ class Antrag extends IAntrag
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function kannTextUeberarbeitenAdmin() {
+		if (in_array($this->status, array(IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT, IAntrag::$STATUS_ENTWURF))) return true;
+		return ($this->text_unveraenderlich == 0);
+	}
+
 
 	/**
 	 * @param int $veranstaltung_id
@@ -402,6 +410,30 @@ class Antrag extends IAntrag
 			if ($relatedModel->rolle == IUnterstuetzerInnen::$ROLLE_MAG_NICHT) $ablehnung_von[] = $relatedModel->person;
 		}
 		return $ablehnung_von;
+	}
+
+
+	/**
+	 * @return int[]
+	 */
+	public function getMoeglicheStati()
+	{
+		if ($this->veranstaltung->isAdminCurUser()) {
+			$stati = array();
+			foreach (IAntrag::$STATI as $stat => $stat_name) {
+				if ($this->status == $stat || !in_array($stat, array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT, IAntrag::$STATUS_GELOESCHT))) $stati[] = $stat;
+			}
+			return $stati;
+		} else {
+			$meiner = false;
+			foreach ($this->antragUnterstuetzerInnen as $ant) if ($ant->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN && $ant->person->id == $curr_person->id) $meiner = true;
+			if ($meiner) {
+				if ($this->status == IAntrag::$STATUS_ENTWURF) return array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT);
+				else return array($this->status);
+			} else {
+				return array($this->status);
+			}
+		}
 	}
 
 

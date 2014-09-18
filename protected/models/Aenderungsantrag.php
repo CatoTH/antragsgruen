@@ -324,7 +324,7 @@ class Aenderungsantrag extends IAntrag
 
 		if (trim($this->aenderung_metatext) != "") {
 			$a = HtmlBBcodeUtils::bbcode2html_absaetze($this->aenderung_metatext, true, $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
-			foreach ($a["bbcode"] as $i =>$b) {
+			foreach ($a["bbcode"] as $i => $b) {
 				$kommentare = array();
 				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == count($this->absaetze)) $kommentare[] = $komm;
 				$this->absaetze[] = new AenderungsantragAbsatz($b, $b, $this->id, count($this->absaetze), null, null, $kommentare);
@@ -492,6 +492,29 @@ class Aenderungsantrag extends IAntrag
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @return int[]
+	 */
+	public function getMoeglicheStati()
+	{
+		if ($this->antrag->veranstaltung->isAdminCurUser()) {
+			$stati = array();
+			foreach (IAntrag::$STATI as $stat => $stat_name) {
+				if ($this->status == $stat || !in_array($stat, array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT))) $stati[] = $stat;
+			}
+			return $stati;
+		} else {
+			$meiner = false;
+			foreach ($this->aenderungsantragUnterstuetzerInnen as $ant) if ($ant->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN && $ant->person->id == $curr_person->id) $meiner = true;
+			if ($meiner) {
+				if ($this->status == IAntrag::$STATUS_ENTWURF) return array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT);
+				else return array($this->status);
+			} else {
+				return array($this->status);
+			}
+		}
 	}
 
 	/**

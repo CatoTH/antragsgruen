@@ -46,6 +46,8 @@ class AenderungsantraegeController extends GxController
 		}
 
 		if (isset($_POST['Aenderungsantrag'])) {
+			if (!in_array($_POST['Aenderungsantrag']['status'], $model->getMoeglicheStati())) throw new Exception("Status-Übergang ungültig");
+
 			$model->setAttributes($_POST['Aenderungsantrag'], false);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_einreichung");

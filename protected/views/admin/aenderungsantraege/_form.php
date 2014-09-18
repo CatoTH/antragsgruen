@@ -66,10 +66,16 @@
 	</div>
 
 	<div>
-		<?php echo $form->labelEx($model, 'status'); ?>
-		<?php echo $form->dropDownList($model, 'status', Aenderungsantrag::$STATI); ?>
-		<?php echo $form->textField($model, 'status_string', array('maxlength' => 55)); ?>
-		<?php echo $form->error($model, 'status'); ?>
+		<?php
+		$stati = array();
+		foreach ($model->getMoeglicheStati() as $stat) {
+			$stati[$stat] = IAntrag::$STATI[$stat];
+		}
+		echo $form->labelEx($model, 'status');
+		echo $form->dropDownList($model, 'status', $stati);
+		echo $form->textField($model, 'status_string', array('maxlength' => 55));
+		echo $form->error($model, 'status');
+		?>
 	</div>
 
 	<div>
