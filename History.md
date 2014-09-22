@@ -1,3 +1,8 @@
+2.4.1 - 2014-09-22
+==================
+
+* Die AntragunterstützerInnen werden jetzt auch im PDF des (Änderungs-)Antrags angezeigt. (LV Bayern)
+
 2.4.0 - 2014-09-18
 ==================
 

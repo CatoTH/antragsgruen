@@ -212,3 +212,15 @@ $html .= '</div>';
 
 $pdf->SetFont("helvetica", "", 10);
 $pdf->writeHTML($html, true, false, true, false, '');
+
+$unterstuetzerInnen = $aenderungsantrag->getUnterstuetzerInnen();
+if (count($unterstuetzerInnen) > 0) {
+	$html = '<br><h3>UnterstützerInnen</h3><ul>';
+	foreach ($unterstuetzerInnen as $unt) {
+		$html .= '<li>' . CHtml::encode($unt->name) . '</li>';
+	}
+	$html .= '</ul>';
+
+	//$pdf->SetFont("helvetica", "", 12);
+	$pdf->writeHTML($html, true, false, true, false, '');
+}

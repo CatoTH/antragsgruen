@@ -84,10 +84,10 @@ class AenderungsantragUnterstuetzerInnen extends IUnterstuetzerInnen
 	public function getNameMitBeschlussdatum($html = true) {
 		if ($html) {
 			$name = CHtml::encode($this->person->getNameMitOrga());
-			if ($this->beschlussdatum != "") $name .= " <small style='font-weight: normal;'>(beschlossen am " . AntraegeUtils::date_sql2de($this->beschlussdatum). ")</small>";
+			if ($this->beschlussdatum > 0) $name .= " <small style='font-weight: normal;'>(beschlossen am " . AntraegeUtils::date_sql2de($this->beschlussdatum). ")</small>";
 		} else {
 			$name = $this->person->getNameMitOrga();
-			$name .= " (beschlossen am " . AntraegeUtils::date_sql2de($this->beschlussdatum) . ")";
+			if ($this->beschlussdatum > 0) $name .= " (beschlossen am " . AntraegeUtils::date_sql2de($this->beschlussdatum) . ")";
 		}
 		return $name;
 	}

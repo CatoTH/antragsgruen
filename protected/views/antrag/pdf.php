@@ -19,11 +19,11 @@ $unterstuetzerInnen = array();
 foreach ($model->antragUnterstuetzerInnen as $unt) {
 	if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
 		$name = $unt->person->name;
-		if ($unt->person->organisation != "" || $unt->beschlussdatum != "") {
+		if ($unt->person->organisation != "" || $unt->beschlussdatum > 0) {
 			$name .= " (";
 			if ($unt->person->organisation != "") $name .= $unt->person->organisation;
 			if ($unt->person->organisation != "" && $unt->beschlussdatum != "") $name .= ", ";
-			if ($unt->beschlussdatum != "") $name .= "Beschlossen am " . AntraegeUtils::date_sql2de($unt->beschlussdatum);
+			if ($unt->beschlussdatum > 0) $name .= "Beschlossen am " . AntraegeUtils::date_sql2de($unt->beschlussdatum);
 			$name .= ")";
 		}
 		$initiatorinnen[] = $name;
