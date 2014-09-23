@@ -81,7 +81,7 @@ if ($this->veranstaltung->getEinstellungen()->bdk_startseiten_layout) {
 					if ($veranstaltung->getEinstellungen()->kann_pdf) echo CHtml::link("als PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class" => "pdfLink"));
 					echo "</div></td><td class='antragstellerIn'>";
 					$vons = array();
-					foreach ($antrag->getAntragstellerInnen() as $p) $vons[] = $p->name;
+					foreach ($antrag->getAntragstellerInnen() as $p) $vons[] = $p->getNameMitOrga();
 					echo implode(", ", $vons);
 					if ($antrag->status != IAntrag::$STATUS_EINGEREICHT_GEPRUEFT) echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
 					echo "</td>";
@@ -96,7 +96,7 @@ if ($this->veranstaltung->getEinstellungen()->bdk_startseiten_layout) {
 						echo "</div>";
 						echo "</td><td class='antragstellerIn'>";
 						$vons = array();
-						foreach ($ae->getAntragstellerInnen() as $p) $vons[] = $p->name;
+						foreach ($ae->getAntragstellerInnen() as $p) $vons[] = $p->getNameMitOrga();
 						echo implode(", ", $vons);
 						if ($ae->status != IAntrag::$STATUS_EINGEREICHT_GEPRUEFT) echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
 						echo "</td>";
@@ -130,7 +130,7 @@ if ($this->veranstaltung->getEinstellungen()->bdk_startseiten_layout) {
 			echo "</p>\n";
 			echo "<p class='info'>von ";
 			$vons = array();
-			foreach ($antrag->getAntragstellerInnen() as $p) $vons[] = $p->name;
+			foreach ($antrag->getAntragstellerInnen() as $p) $vons[] = $p->getNameMitOrga();
 			echo implode(", ", $vons);
 			echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
 			echo "</p>";
@@ -143,7 +143,7 @@ if ($this->veranstaltung->getEinstellungen()->bdk_startseiten_layout) {
 					$name = (trim($ae->revision_name) == "" ? "-" : $ae->revision_name);
 					echo CHtml::link($name, $this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $ae->antrag->id, "aenderungsantrag_id" => $ae->id)));
 					$vons = array();
-					foreach ($ae->getAntragstellerInnen() as $p) $vons[] = $p->name;
+					foreach ($ae->getAntragstellerInnen() as $p) $vons[] = $p->getNameMitOrga();
 					echo "<span class='info'>" . implode(", ", $vons) . "</span>\n";
 					echo "</li>\n";
 				}

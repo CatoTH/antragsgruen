@@ -239,7 +239,7 @@ class Person extends GxActiveRecord
 	 */
 	public function getNameMitOrga() {
 		$name = $this->name;
-		if ($this->organisation != "") $name .= " (" . $this->organisation . ")";
+		if ($this->organisation != "") $name .= " (" . trim($this->organisation, " \t\n\r\0\x0B()") . ")";
 		return $name;
 	}
 
