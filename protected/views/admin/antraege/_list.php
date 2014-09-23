@@ -19,7 +19,9 @@
 		<th>AntragstellerIn:</th>
 		<td><?php
 			$x = array();
-			foreach ($data->antragUnterstuetzerInnen as $unt) if (in_array($unt->rolle, array(AntragUnterstuetzerInnen::$ROLLE_INITIATORIN, AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN))) $x[] = CHtml::encode($unt->person->name);
+			foreach ($data->antragUnterstuetzerInnen as $unt) if (in_array($unt->rolle, array(AntragUnterstuetzerInnen::$ROLLE_INITIATORIN, AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN))) {
+				$x[] = $unt->getNameMitBeschlussdatum(true);
+			}
 			echo implode(", ", $x);
 			?></td>
 	</tr>

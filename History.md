@@ -1,3 +1,9 @@
+2.4.2 - 2014-09-??
+==================
+
+* Auf der Liste der (Änderungs-)Anträge im Admin-Backend werden jetzt auch Organisation u. Beschlussdatum bei der AntragstellerIn angezeigt.
+ 
+
 2.4.1 - 2014-09-22
 ==================
 
