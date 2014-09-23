@@ -79,7 +79,14 @@ foreach ($antraege as $ant) {
 	$initiatorInnen_namen     = array();
 	foreach ($antrag->antragUnterstuetzerInnen as $unt) {
 		if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
-			$initiatorInnen_namen[] = $unt->person->name;
+			$name = $unt->getNameMitBeschlussdatum(false);
+			if ($unt->person->email != "") {
+				$name .= "\n" . $unt->person->email;
+			}
+			if ($unt->person->telefon != "") {
+				$name .= "\n" . $unt->person->telefon;
+			}
+			$initiatorInnen_namen[] = $name;
 		}
 	}
 
