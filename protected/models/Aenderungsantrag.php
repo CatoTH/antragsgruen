@@ -127,7 +127,7 @@ class Aenderungsantrag extends IAntrag
 			'notiz_intern'                       => Yii::t('app', 'Interne Notiz'),
 			'antrag'                             => null,
 			'aenderungsantragKommentare'         => null,
-			'aenderungsantragUnterstuetzerInnen' => null,
+			'aenderungsantragUnterstuetzerInnen' => Yii::t('app', 'AntragstellerInnen'),
 		);
 	}
 

@@ -158,7 +158,7 @@ class Antrag extends IAntrag
 			'abgeleitetVon'            => null,
 			'antraege'                 => "Löst ab",
 			'antragKommentare'         => null,
-			'antragUnterstuetzerInnen' => null,
+			'antragUnterstuetzerInnen' => Yii::t('app', 'AntragstellerInnen'),
 			'abonnenten'               => null,
 		);
 	}
