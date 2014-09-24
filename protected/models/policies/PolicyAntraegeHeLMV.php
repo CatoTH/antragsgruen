@@ -19,7 +19,7 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	 */
 	static public function getPolicyName()
 	{
-		return "Gremium/LAG, oder 5 Mitglieder";
+		return "LMV Hessen: Gremium/LAG, oder 5 Mitglieder";
 	}
 
 
@@ -29,14 +29,7 @@ class PolicyAntraegeHeLMV extends IPolicyAntraege
 	public function checkCurUserHeuristically()
 	{
 		if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
-
-		if ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
-			return !Yii::app()->user->isGuest;
-		} elseif ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
-			return !Yii::app()->user->isGuest;
-		} else {
-			return true;
-		}
+		return !Yii::app()->user->isGuest;
 	}
 
 	/**
