@@ -64,7 +64,8 @@ abstract class IPolicyAntraege
 	/**
 	 * @return bool
 	 */
-	public function checkHeuristicallyAssumeLoggedIn() {
+	public function checkHeuristicallyAssumeLoggedIn()
+	{
 		return $this->checkCurUserHeuristically();
 	}
 
@@ -113,15 +114,12 @@ abstract class IPolicyAntraege
 		}
 
 		if ($antragstellerIn === null && isset($_REQUEST["Person"])) {
-			$antragstellerIn = Person::model()->findByAttributes(array("typ" => Person::$TYP_PERSON, "name" => trim($_REQUEST["Person"]["name"]), "organisation" => trim($_REQUEST["Person"]["organisation"]), "status" => Person::$STATUS_UNCONFIRMED));
-			if (!$antragstellerIn) {
-				$antragstellerIn                 = new Person();
-				$antragstellerIn->attributes     = $_REQUEST["Person"];
-				$antragstellerIn->typ            = (isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] == "organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
-				$antragstellerIn->angelegt_datum = new CDbExpression('NOW()');
-				$antragstellerIn->status         = Person::$STATUS_UNCONFIRMED;
-				$antragstellerIn->save();
-			}
+			$antragstellerIn                 = new Person();
+			$antragstellerIn->attributes     = $_REQUEST["Person"];
+			$antragstellerIn->typ            = (isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] == "organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
+			$antragstellerIn->angelegt_datum = new CDbExpression('NOW()');
+			$antragstellerIn->status         = Person::$STATUS_UNCONFIRMED;
+			$antragstellerIn->save();
 		}
 		return $antragstellerIn;
 	}

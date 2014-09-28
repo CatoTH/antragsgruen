@@ -1,8 +1,9 @@
-2.4.2 - 2014-09-??
+2.4.2 - 2014-09-28
 ==================
 
 * Auf der Liste der (Änderungs-)Anträge im Admin-Backend werden jetzt auch Organisation u. Beschlussdatum bei der AntragstellerIn angezeigt.
 * Beim Excel-Export der (Änderungs-)Anträge für Admins weren nun auch die Kontaktdaten der AntragstellerInnen mitgeliefert. (BDK)
+* Bugfix: Beim Einreichen von Anträgen im Namen anderer (Admin-Funktion) wurde die Telefonnummer / E-Mail-Adresse manchmal vom Admin übernommen statt von den eingegebenen Daten. (BDK)
 
 2.4.1 - 2014-09-22
 ==================
