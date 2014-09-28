@@ -79,7 +79,8 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 				<label class="legend">Antragstyp</label>
 				<?php
 				foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) {
-					echo '<label class="radio"><input name="Antrag[typ]" value="' . $id . '" type="radio" ';
+					if (strtolower($this->veranstaltungsreihe->subdomain) == "bdk-hh-2014" && $id == Antrag::$TYP_ANTRAG) $name = "Grüne Werte: Freiheit und Selbstbestimmung";
+					echo '<label class="radio" style="margin-right: 10px;"><input name="Antrag[typ]" value="' . $id . '" type="radio" ';
 					if ($model->typ == $id) echo ' checked';
 					echo ' required> ' . CHtml::encode($name) . '</label>';
 				}

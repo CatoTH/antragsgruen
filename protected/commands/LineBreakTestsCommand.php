@@ -10,14 +10,14 @@ $GLOBALS["TESTS"] = array(
 		),
 	),
 	array(
-		"src" => "gut und richtig, wenn Eltern selbst eine Initiative für Kinderbetreuung gründen – besser ist",
+		"src"      => "gut und richtig, wenn Eltern selbst eine Initiative für Kinderbetreuung gründen – besser ist",
 		"expected" => array(
 			"gut und richtig, wenn Eltern selbst eine Initiative für Kinderbetreuung gründen",
 			"– besser ist"
 		),
 	),
 	array(
-		"src" => "angehen, ist von großem Wert für unser Land. Veränderung kann nur gelingen, wenn sie von Vielen getragen wird. Aber Veränderung braucht auch die Politik. Es ist gut und richtig,",
+		"src"      => "angehen, ist von großem Wert für unser Land. Veränderung kann nur gelingen, wenn sie von Vielen getragen wird. Aber Veränderung braucht auch die Politik. Es ist gut und richtig,",
 		"expected" => array(
 			"angehen, ist von großem Wert für unser Land. Veränderung kann nur gelingen, wenn",
 			"sie von Vielen getragen wird. Aber Veränderung braucht auch die Politik. Es ist",
@@ -25,7 +25,7 @@ $GLOBALS["TESTS"] = array(
 		)
 	),
 	array(
-		"src" => "angehen, ist von gro&szlig;em Wert f&uuml;r unser Land. Ver&auml;nderung kann nur gelingen, wenn sie von Vielen ",
+		"src"      => "angehen, ist von gro&szlig;em Wert f&uuml;r unser Land. Ver&auml;nderung kann nur gelingen, wenn sie von Vielen ",
 		"expected" => array(
 			"angehen, ist von gro&szlig;em Wert f&uuml;r unser Land. Ver&auml;nderung kann nur gelingen, wenn",
 			"sie von Vielen "
@@ -33,12 +33,13 @@ $GLOBALS["TESTS"] = array(
 	),
 );
 
+
 class LineBreakTestsCommand extends CConsoleCommand
 {
 	public function run($args)
 	{
 		foreach ($GLOBALS["TESTS"] as $test) {
-			$x = HtmlBBcodeUtils::text2zeilen($test["src"], 80, false, true);
+			$x       = HtmlBBcodeUtils::text2zeilen($test["src"], 80, false, true);
 			$correct = true;
 			if (count($x) != count($test["expected"])) $correct = false;
 			else for ($i = 0; $i < count($test["expected"]); $i++) if ($test["expected"][$i] != $x[$i]) $correct = false;

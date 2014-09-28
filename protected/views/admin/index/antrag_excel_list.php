@@ -38,11 +38,12 @@ $objPHPExcel->getActiveSheet()->getStyle("B2")->applyFromArray(array(
 ));
 
 $objPHPExcel->getActiveSheet()->SetCellValue('B3', 'Antragsnr.');
-$objPHPExcel->getActiveSheet()->SetCellValue('C3', 'Antragsteller');
+$objPHPExcel->getActiveSheet()->SetCellValue('C3', 'AntragstellerIn');
 $objPHPExcel->getActiveSheet()->SetCellValue('D3', 'Antragstext');
 $objPHPExcel->getActiveSheet()->SetCellValue('E3', 'Begründung');
-$objPHPExcel->getActiveSheet()->SetCellValue('F3', 'Verfahren');
-$objPHPExcel->getActiveSheet()->getStyle("B3:F3")->applyFromArray(array(
+$objPHPExcel->getActiveSheet()->SetCellValue('F3', 'Kontakt');
+$objPHPExcel->getActiveSheet()->SetCellValue('G3', 'Verfahren');
+$objPHPExcel->getActiveSheet()->getStyle("B3:G3")->applyFromArray(array(
 	"font" => array(
 		"bold" => true
 	)
@@ -56,7 +57,7 @@ $styleThinBlackBorderOutline = array(
 		),
 	),
 );
-$objPHPExcel->getActiveSheet()->getStyle('B2:F3')->applyFromArray($styleThinBlackBorderOutline);
+$objPHPExcel->getActiveSheet()->getStyle('B2:G3')->applyFromArray($styleThinBlackBorderOutline);
 
 
 PHPExcel_Cell::setValueBinder(new PHPExcel_Cell_AdvancedValueBinder());
@@ -73,21 +74,18 @@ foreach ($antraege as $ant) {
 	$row++;
 
 	$initiatorInnen_namen = array();
+	$initiatorInnen_kontakt = array();
 	foreach ($antrag->antragUnterstuetzerInnen as $unt) {
 		if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
-			$name = $unt->getNameMitBeschlussdatum(false);
-			if ($unt->person->email != "") {
-				$name .= "\n" . $unt->person->email;
-			}
-			if ($unt->person->telefon != "") {
-				$name .= "\n" . $unt->person->telefon;
-			}
-			$initiatorInnen_namen[] = $name;
+			$initiatorInnen_namen[] = $unt->getNameMitBeschlussdatum(false);
+			if ($unt->person->email != "") $initiatorInnen_kontakt[] = $unt->person->email;
+			if ($unt->person->telefon != "") $initiatorInnen_kontakt[] = $unt->person->telefon;
 		}
 	}
 
 	$objPHPExcel->getActiveSheet()->SetCellValue('B' . $row, $antrag->revision_name);
 	$objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, implode(", ", $initiatorInnen_namen));
+	$objPHPExcel->getActiveSheet()->SetCellValue('F' . $row, implode("\n", $initiatorInnen_kontakt));
 
 	$text   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $antrag->text);
 	$text   = HtmlBBcodeUtils::text2zeilen(trim($text), 120);
@@ -118,7 +116,8 @@ $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(12);
 $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(24);
 $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
 $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(13);
+$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(24);
+$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(13);
 
 
 $objPHPExcel->getActiveSheet()->setTitle('Anträge');

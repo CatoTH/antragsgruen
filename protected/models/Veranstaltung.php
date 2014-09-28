@@ -209,7 +209,10 @@ class Veranstaltung extends GxActiveRecord
 		$unsichtbar   = IAntrag::$STATI_UNSICHTBAR;
 		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
 		foreach ($antraege as $ant) if (!in_array($ant->status, $unsichtbar)) {
-			if (!isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]])) $antraege_sorted[Antrag::$TYPEN[$ant->typ]] = array();
+			$typ_name = Antrag::$TYPEN[$ant->typ];
+			if (strtolower($this->veranstaltungsreihe->subdomain) == "bdk-hh-2014" && $ant->typ == Antrag::$TYP_ANTRAG) $typ_name = "Grüne Werte: Freiheit und Selbstbestimmung";
+
+			if (!isset($antraege_sorted[$typ_name])) $antraege_sorted[$typ_name] = array();
 			$key = $ant->revision_name;
 			/*
 			if (isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key]) && !$warnung) {
@@ -236,10 +239,9 @@ class Veranstaltung extends GxActiveRecord
 				$ant->aenderungsantraege = $aes;
 			}
 
-			$antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key] = $ant;
+			$antraege_sorted[$typ_name][$key] = $ant;
 		}
 
-		/*if (!in_array($this->url_verzeichnis, array("ltwby13-programm", "btw13-programm"))) */
 		foreach ($antraege_sorted as $key => $val) {
 			uksort($antraege_sorted[$key], function ($k1, $k2) {
 				if ($k1 == "" && $k2 == "") return 0;
@@ -286,6 +288,7 @@ class Veranstaltung extends GxActiveRecord
 				}
 			});
 		}
+
 		return $antraege_sorted;
 	}
 

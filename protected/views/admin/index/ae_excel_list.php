@@ -38,12 +38,13 @@ $objPHPExcel->getActiveSheet()->getStyle("B2")->applyFromArray(array(
 ));
 
 $objPHPExcel->getActiveSheet()->SetCellValue('B3', 'Antragsnr.');
-$objPHPExcel->getActiveSheet()->SetCellValue('C3', 'Antragsteller');
+$objPHPExcel->getActiveSheet()->SetCellValue('C3', 'AntragstellerIn');
 $objPHPExcel->getActiveSheet()->SetCellValue('D3', 'Zeile');
 $objPHPExcel->getActiveSheet()->SetCellValue('E3', 'Titel/Änderung');
 $objPHPExcel->getActiveSheet()->SetCellValue('F3', 'Begründung');
-$objPHPExcel->getActiveSheet()->SetCellValue('G3', 'Verfahren');
-$objPHPExcel->getActiveSheet()->getStyle("B3:G3")->applyFromArray(array(
+$objPHPExcel->getActiveSheet()->SetCellValue('G3', 'Kontakt');
+$objPHPExcel->getActiveSheet()->SetCellValue('H3', 'Verfahren');
+$objPHPExcel->getActiveSheet()->getStyle("B3:H3")->applyFromArray(array(
 	"font" => array(
 		"bold" => true
 	)
@@ -57,7 +58,7 @@ $styleThinBlackBorderOutline = array(
 		),
 	),
 );
-$objPHPExcel->getActiveSheet()->getStyle('B2:G3')->applyFromArray($styleThinBlackBorderOutline);
+$objPHPExcel->getActiveSheet()->getStyle('B2:H3')->applyFromArray($styleThinBlackBorderOutline);
 
 
 PHPExcel_Cell::setValueBinder(new PHPExcel_Cell_AdvancedValueBinder());
@@ -70,44 +71,45 @@ foreach ($antraege as $ant) {
 	 * @var Aenderungsantrag[] $aes
 	 */
 	$antrag = $ant["antrag"];
-	$aes = $ant["aes"];
+	$aes    = $ant["aes"];
 	$row++;
 	$row++;
 
 	$antrag_row_from = $row;
 
-	$initiatorInnen_namen     = array();
+	$initiatorInnen_namen   = array();
+	$initiatorInnen_kontakt = array();
 	foreach ($antrag->antragUnterstuetzerInnen as $unt) {
 		if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
-			$name = $unt->getNameMitBeschlussdatum(false);
-			if ($unt->person->email != "") {
-				$name .= "\n" . $unt->person->email;
-			}
-			if ($unt->person->telefon != "") {
-				$name .= "\n" . $unt->person->telefon;
-			}
-			$initiatorInnen_namen[] = $name;
+			$initiatorInnen_namen[] = $unt->getNameMitBeschlussdatum(false);
+			if ($unt->person->email != "") $initiatorInnen_kontakt[] = $unt->person->email;
+			if ($unt->person->telefon != "") $initiatorInnen_kontakt[] = $unt->person->telefon;
 		}
 	}
 
 	$objPHPExcel->getActiveSheet()->SetCellValue('B' . $row, $antrag->revision_name);
 	$objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, implode(", ", $initiatorInnen_namen));
+	$objPHPExcel->getActiveSheet()->SetCellValue('G' . $row, implode("\n", $initiatorInnen_kontakt));
 
 	foreach ($aes as $ae) {
 		$row++;
 
-		$initiatorInnen_namen     = array();
+		$initiatorInnen_namen = array();
+		$initiatorInnen_kontakt = array();
 		foreach ($ae->aenderungsantragUnterstuetzerInnen as $unt) {
 			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
-				$initiatorInnen_namen[] = $unt->person->name;
+				$initiatorInnen_namen[] = $unt->person->getNameMitOrga();
+				if ($unt->person->email != "") $initiatorInnen_kontakt[] = $unt->person->email;
+				if ($unt->person->telefon != "") $initiatorInnen_kontakt[] = $unt->person->telefon;
 			}
 		}
 
 		$objPHPExcel->getActiveSheet()->SetCellValue('B' . $row, $ae->revision_name);
 		$objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, implode(", ", $initiatorInnen_namen));
+		$objPHPExcel->getActiveSheet()->SetCellValue('G' . $row, implode("\n", $initiatorInnen_kontakt));
 		$objPHPExcel->getActiveSheet()->SetCellValue('D' . $row, $ae->getFirstDiffLine());
 
-		$text = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $ae->aenderung_text);
+		$text   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $ae->aenderung_text);
 		$text   = HtmlBBcodeUtils::text2zeilen(trim($text), 120);
 		$zeilen = array();
 		foreach ($text as $t) {
@@ -119,7 +121,7 @@ foreach ($antraege as $ant) {
 
 		$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(14 * count($zeilen));
 
-		$text = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $ae->aenderung_begruendung);
+		$text   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $ae->aenderung_begruendung);
 		$text   = HtmlBBcodeUtils::text2zeilen(trim($text), 120);
 		$zeilen = array();
 		foreach ($text as $t) {
@@ -131,7 +133,7 @@ foreach ($antraege as $ant) {
 
 	}
 
-	$objPHPExcel->getActiveSheet()->getStyle('B' . $antrag_row_from . ':G' . $row)->applyFromArray($styleThinBlackBorderOutline);
+	$objPHPExcel->getActiveSheet()->getStyle('B' . $antrag_row_from . ':H' . $row)->applyFromArray($styleThinBlackBorderOutline);
 
 }
 
@@ -141,7 +143,8 @@ $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(24);
 $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(10);
 $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
 $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(13);
+$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(24);
+$objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(13);
 
 
 $objPHPExcel->getActiveSheet()->setTitle('Änderungsanträge');
