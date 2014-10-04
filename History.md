@@ -2,6 +2,7 @@
 ==================
 
 * Die Änderungsanträge auf der Startseite unter einem Antrag werden nun sortiert angezeigt. (LV Berlin)
+* Bugfixes u. Refactoring beim OpenOffice-Export (Formatierung bei Listen und Umlaute)
 
 2.4.2 - 2014-09-28
 ==================
