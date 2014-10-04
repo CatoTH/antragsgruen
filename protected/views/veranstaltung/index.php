@@ -87,7 +87,8 @@ if ($this->veranstaltung->getEinstellungen()->bdk_startseiten_layout) {
 					echo "</td>";
 					echo "</tr>";
 
-					foreach ($antrag->aenderungsantraege as $ae) {
+					$aes = $antrag->sortierteAenderungsantraege();
+					foreach ($aes as $ae) {
 						echo "<tr class='aenderungsantrag " . ($ae->status == IAntrag::$STATUS_ZURUECKGEZOGEN ? " class='zurueckgezogen'" : "") . "'>";
 						echo "<td class='nummer'>" . CHtml::encode($ae->revision_name) . "</td>\n";
 						echo "<td class='titel'>";
@@ -137,7 +138,8 @@ if ($this->veranstaltung->getEinstellungen()->bdk_startseiten_layout) {
 
 			if (count($antrag->aenderungsantraege) > 0) {
 				echo "<ul class='aenderungsantraege'>";
-				foreach ($antrag->aenderungsantraege as $ae) {
+				$aes = $antrag->sortierteAenderungsantraege();
+				foreach ($aes as $ae) {
 					echo "<li" . ($ae->status == IAntrag::$STATUS_ZURUECKGEZOGEN ? " class='zurueckgezogen'" : "") . ">";
 					echo "<span class='datum'>" . HtmlBBcodeUtils::formatMysqlDate($ae->datum_einreichung) . "</span>\n";
 					$name = (trim($ae->revision_name) == "" ? "-" : $ae->revision_name);

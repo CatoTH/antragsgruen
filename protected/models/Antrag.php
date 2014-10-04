@@ -467,4 +467,17 @@ class Antrag extends IAntrag
 			"antrag_id"              => $this->id));
 	}
 
+	/**
+	 * @return Aenderungsantrag[]
+	 */
+	public function sortierteAenderungsantraege() {
+		$aes = $this->aenderungsantraege;
+		usort($aes, function($ae1, $ae2) {
+			/** @var Aenderungsantrag $ae1 */
+			/** @var Aenderungsantrag $ae2 */
+			return strnatcasecmp(strtolower($ae1->revision_name), strtolower($ae2->revision_name));
+		});
+		return $aes;
+	}
+
 }

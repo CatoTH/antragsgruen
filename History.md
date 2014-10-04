@@ -1,3 +1,8 @@
+2.4.3 - 2014-10-04
+==================
+
+* Die Änderungsanträge auf der Startseite unter einem Antrag werden nun sortiert angezeigt. (LV Berlin)
+
 2.4.2 - 2014-09-28
 ==================
 
