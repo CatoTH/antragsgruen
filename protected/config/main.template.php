@@ -38,6 +38,9 @@ return array(
 		'ext.giix-components.*',
 	),
 
+	'onBeginRequest'=>create_function('$event', 'return ob_start("ob_gzhandler");'),
+	'onEndRequest'=>create_function('$event', 'return ob_end_flush();'),
+
 	'modules'    => array(),
 
 	// application components
