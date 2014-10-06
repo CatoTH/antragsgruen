@@ -36,7 +36,7 @@ class UnterstuetzerInnenAdminWidget
         }
 		$neustr .= "</select>";
 
-        $neustr .= "<br>Name: <input name='" . get_class($antrag) . "[unterstuetzerIn_neu][person_name][]' value=''>";
+        $neustr .= " <input name='" . get_class($antrag) . "[unterstuetzerIn_neu][person_name][]' value='' placeholder='Name'>";
 
         $neustr .= '</div></div>';
 

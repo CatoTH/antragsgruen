@@ -10,6 +10,7 @@
  * @var bool $login_warnung
  * @var Sprache $sprache
  * @var Veranstaltung $veranstaltung
+ * @var AntragUnterstuetzerInnen $antrag_unterstuetzerInnen
  */
 ?>
 
@@ -38,7 +39,7 @@
 																			   value="<?php echo Person::$TYP_ORGANISATION; ?>" <?php
                         if ($u["typ"] == Person::$TYP_ORGANISATION) echo "checked"; ?>>
 						Organisation</label>
-					<label style="display: inline;">Name: <input type="text" name="UnterstuetzerInnenName[<?php echo $nr; ?>]"
+					<label style="display: inline;">Name: <input type="text" name="955[<?php echo $nr; ?>]"
 																 value="<?php echo CHtml::encode($u["name"]); ?>"></label>
 				</div>
 			<?php } ?>
