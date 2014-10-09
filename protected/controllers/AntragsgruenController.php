@@ -524,7 +524,7 @@ class AntragsgruenController extends CController
 			$passwort                 = Person::createPassword();
 			$person                   = new Person;
 			$person->auth             = "email:" . $email;
-			$person->name             = "";
+			$person->name             = $email;
 			$person->email            = $email;
 			$person->email_bestaetigt = 0;
 			$person->angelegt_datum   = date("Y-m-d H:i:s");

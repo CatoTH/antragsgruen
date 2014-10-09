@@ -1,3 +1,8 @@
+2.4.5 - 2014-10-09
+==================
+
+* Bugfix: Das Registrieren über die Benachrichtigen-Seite funktionierte nicht.
+
 2.4.4 - 2014-10-05
 ==================
 
