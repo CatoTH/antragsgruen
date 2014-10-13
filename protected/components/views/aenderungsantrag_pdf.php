@@ -215,11 +215,16 @@ $pdf->writeHTML($html, true, false, true, false, '');
 
 $unterstuetzerInnen = $aenderungsantrag->getUnterstuetzerInnen();
 if (count($unterstuetzerInnen) > 0) {
-	$html = '<br><h3>UnterstützerInnen</h3><ul>';
-	foreach ($unterstuetzerInnen as $unt) {
-		$html .= '<li>' . CHtml::encode($unt->name) . '</li>';
+	$html = '<br><h3>UnterstützerInnen</h3>';
+	if (count($unterstuetzerInnen) > 1) {
+		$html .= '<ul>';
+		foreach ($unterstuetzerInnen as $unt) {
+			$html .= '<li>' . CHtml::encode($unt->getNameMitOrga()) . '</li>';
+		}
+		$html .= '</ul>';
+	} elseif (count($unterstuetzerInnen) == 1) {
+		$html .= CHtml::encode($unterstuetzerInnen[0]->getNameMitOrga());
 	}
-	$html .= '</ul>';
 
 	//$pdf->SetFont("helvetica", "", 12);
 	$pdf->writeHTML($html, true, false, true, false, '');

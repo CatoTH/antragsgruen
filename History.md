@@ -1,3 +1,10 @@
+2.4.6 - 2014-10-13
+==================
+
+* Bugfix: Fehlerhafte Steuerzeichen ([COLOR] u. =10.0pt) werden jetzt ausgefiltert.
+* Eine Fehlerhafte Behandlung der BDK-Zugriffsregelung wurde behoben.
+* Die Volltext-UnterstützerInnen-Eingabe beim Stellen von Änderungsanträgen funktionierte nicht.
+
 2.4.5 - 2014-10-09
 ==================
 

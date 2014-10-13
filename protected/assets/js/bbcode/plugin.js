@@ -26,10 +26,10 @@
 		}
 	} );
 
-	var bbcodeMap = { b: 'strong', u: 'u', i: 'em', color: 'span', size: 'span', quote: 'blockquote', code: 'code', url: 'a', email: 'span', img: 'span', '*': 'li', list: 'ol' },
+	var bbcodeMap = { b: 'strong', u: 'u', i: 'em', /* color: 'span', size: 'span', */ quote: 'blockquote', code: 'code', url: 'a', email: 'span', img: 'span', '*': 'li', list: 'ol' },
 		convertMap = { strong: 'b', b: 'b', u: 'u', em: 'i', i: 'i', code: 'code', li: '*' },
 		tagnameMap = { strong: 'b', em: 'i', u: 'u', li: '*', ul: 'list', ol: 'list', code: 'code', a: 'link', img: 'img', blockquote: 'quote' },
-		stylesMap = { color: 'color', size: 'font-size' },
+		stylesMap = { /* color: 'color', size: 'font-size' */ },
 		attributesMap = { url: 'href', email: 'mailhref', quote: 'cite', list: 'listType' };
 
 	// List of block-like tags.
@@ -658,6 +658,7 @@
 						if ( tagName in convertMap )
 							tagName = convertMap[ tagName ];
 						else if ( tagName == 'span' ) {
+                            /*
 							if ( ( value = style.color ) ) {
 								tagName = 'color';
 								value = CKEDITOR.tools.convertRgbToHex( value );
@@ -668,6 +669,7 @@
 									tagName = 'size';
 								}
 							}
+							*/
 						} else if ( tagName == 'ol' || tagName == 'ul' ) {
 							if ( ( value = style[ 'list-style-type' ] ) ) {
 								switch ( value ) {
@@ -777,10 +779,12 @@
 							name = 'email';
 						// Styled span could be either size or color.
 						else if ( htmlName == 'span' ) {
+                            /*
 							if ( element.getStyle( 'font-size' ) )
 								name = 'size';
 							else if ( element.getStyle( 'color' ) )
 								name = 'color';
+								*/
 						} else if ( name == 'img' ) {
 							var src = element.data( 'cke-saved-src' ) || element.getAttribute( 'src' );
 							if ( src && src.indexOf( editor.config.smiley_path ) === 0 )

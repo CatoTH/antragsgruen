@@ -281,7 +281,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 		$curr_user_id = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
 
 		echo "<strong>UnterstützerInnen:</strong><br>";
-		if (count($unterstuetzerInnen) > 0) {
+		if (count($unterstuetzerInnen) > 1) {
 			echo CHtml::openTag('ul');
 			foreach ($unterstuetzerInnen as $p) {
 				echo CHtml::openTag('li');
@@ -290,7 +290,13 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');
-		} else echo '<em>keine</em><br>';
+		} elseif (count($unterstuetzerInnen) > 0) {
+			$p = $unterstuetzerInnen[0];
+			if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
+			echo CHtml::encode($p->getNameMitOrga()) . "<br>";
+		} else {
+			echo '<em>keine</em><br>';
+		}
 		echo "<br>";
 
 		if (count($zustimmung_von) > 0) {

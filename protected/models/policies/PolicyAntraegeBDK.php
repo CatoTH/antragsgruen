@@ -29,14 +29,7 @@ class PolicyAntraegeBDK extends IPolicyAntraege
 	public function checkCurUserHeuristically()
 	{
 		if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
-
-		if ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
-			return !Yii::app()->user->isGuest;
-		} elseif ($this->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
-			return !Yii::app()->user->isGuest;
-		} else {
-			return true;
-		}
+		return !Yii::app()->user->isGuest;
 	}
 
 	/**

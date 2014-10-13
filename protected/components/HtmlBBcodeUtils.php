@@ -41,6 +41,7 @@ class HtmlBBcodeUtils
 	 */
 	public static function bbcode_normalize($text)
 	{
+		$text = preg_replace("/=[0-9]+\.[0-9]+pt/su", "", $text);
 		$text = preg_replace("/\[(\/?)list([^\]]*)\]/siu", "[\\1LIST\\2]", $text);
 		$text = preg_replace("/\[(\/?)quote\]/siu", "[\\1QUOTE]", $text);
 		$text = preg_replace("/\[(\/?)b\]/siu", "[\\1B]", $text);
