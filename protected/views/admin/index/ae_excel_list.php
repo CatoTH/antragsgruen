@@ -116,7 +116,7 @@ foreach ($antraege as $ant) {
 			$x      = explode("\n", $t);
 			$zeilen = array_merge($zeilen, $x);
 		}
-		$objPHPExcel->getActiveSheet()->SetCellValue('E' . $row, "\"" . str_replace("\"", "\"\"", trim(implode("\n", $zeilen))) . "\"");
+		$objPHPExcel->getActiveSheet()->SetCellValue('E' . $row, trim(implode("\n", $zeilen)));
 		$objPHPExcel->getActiveSheet()->getStyle('E' . $row)->getAlignment()->setWrapText(true);
 
 		$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(14 * count($zeilen));
@@ -128,7 +128,7 @@ foreach ($antraege as $ant) {
 			$x      = explode("\n", $t);
 			$zeilen = array_merge($zeilen, $x);
 		}
-		$objPHPExcel->getActiveSheet()->SetCellValue('F' . $row, "\"" . str_replace("\"", "\"\"", trim(implode("\n", $zeilen))) . "\"");
+		$objPHPExcel->getActiveSheet()->SetCellValue('F' . $row, trim(implode("\n", $zeilen)));
 		$objPHPExcel->getActiveSheet()->getStyle('F' . $row)->getAlignment()->setWrapText(true);
 
 	}

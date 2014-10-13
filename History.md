@@ -2,8 +2,9 @@
 ==================
 
 * Bugfix: Fehlerhafte Steuerzeichen ([COLOR] u. =10.0pt) werden jetzt ausgefiltert.
-* Eine Fehlerhafte Behandlung der BDK-Zugriffsregelung wurde behoben.
-* Die Volltext-UnterstützerInnen-Eingabe beim Stellen von Änderungsanträgen funktionierte nicht.
+* Bugfix: Eine Fehlerhafte Behandlung der BDK-Zugriffsregelung wurde behoben.
+* Bugfix: Die Volltext-UnterstützerInnen-Eingabe beim Stellen von Änderungsanträgen funktionierte nicht.
+* Bugfix: (Inzwischen) Unnötiges Escaping beim Excel-Export von (Änderungs-)Anträgen wurde entfernt.
 
 2.4.5 - 2014-10-09
 ==================
