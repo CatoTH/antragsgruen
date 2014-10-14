@@ -75,6 +75,10 @@ Benötigte PHP-Module:
 Benötigte PHP-Einstellungen:
 - short_open_tag = On
 
+Webserver-Konfiguration:
+- Apache: mod_rewrite muss aktiv sein
+- nginx: [Beispiel-Konfigurationsdatei](docs/nginx.sample.conf)
+
 Datenbank anlegen:
 - Eine Datenbank u. Benutzer für Antragsgrün anlegen; Antragsgrün braucht mindestens Rechte für SELECT/INSERT/UPDATE/DELETE
 - cat docs/schema.sql | mysql -u [benutzername] -p [datenbankname] -h localhost
