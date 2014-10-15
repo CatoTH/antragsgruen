@@ -1,3 +1,9 @@
+2.4.7 - 2014-10-15
+==================
+
+* Bugfix: Beim PDF-Export wurden beim Änderungsantragstext häufiger Leerzeichen "verschluckt".
+* Bugfix: Die Gzip-Kompressions-Routine verzögerte die Ausgabe bei den Kommandozeilenaufrufen.
+
 2.4.6 - 2014-10-13
 ==================
 

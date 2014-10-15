@@ -277,6 +277,9 @@ class Aenderungsantrag extends IAntrag
 		$paragraphs  = $this->antrag->getParagraphs(false, false);
 		$text_neu    = array();
 		$diff        = $this->getDiffParagraphs();
+
+		if (count($paragraphs) != count($diff)) throw new Exception("Inkonsistenz: Der Änderungsantrag bezieht sich womöglich auf eine frühere Version des Antrags (" . count($diff) . " Absätze vs. " . count($paragraphs) . ")");
+
 		foreach ($paragraphs as $i => $para) {
 			if ($diff[$i] != "") $text_neu[] = $diff[$i];
 			else $text_neu[] = $para->str_bbcode;

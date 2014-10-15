@@ -190,7 +190,7 @@ class DiffUtils
 			}
 		}
 
-		$diff_text2 = str_replace("\n#ZEILE#", "", $diff_text2);
+		$diff_text2 = str_replace("\n#ZEILE#", " ", $diff_text2);
 		$diff_text2 = str_replace("#ZEILE#", "", $diff_text2);
 		$diff_text2 = str_replace("#ABSATZ#", "", $diff_text2);
 
