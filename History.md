@@ -1,3 +1,8 @@
+2.4.8 - 2014-10-15
+==================
+
+* Bugfix: Die Einleitung unter der Überschrift wurde bei Änderungsantrags-PDFs nicht richtig formatiert.
+
 2.4.7 - 2014-10-15
 ==================
 

@@ -72,7 +72,8 @@ $pdf->SetY(90);
 if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->antrag_einleitung != "") {
 	$pdf->SetX(25);
 	$pdf->SetFont("helvetica", "B", 12);
-	$pdf->MultiCell(160, 13, $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->antrag_einleitung);
+	$pdf->MultiCell(160, 13, $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->antrag_einleitung, 0, "C");
+	$pdf->Ln(7);
 }
 
 $pdf->SetX(25);
