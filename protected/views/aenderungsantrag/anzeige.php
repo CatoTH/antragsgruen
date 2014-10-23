@@ -136,7 +136,12 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 		<?php
 		$dummy_komm = new AenderungsantragKommentar();
 
+		$zeit_von = time();
 		$absae = $aenderungsantrag->getAntragstextParagraphs_diff();
+		$diff = time() - $zeit_von;
+		$fp= fopen("/tmp/ae-render.log", "a");
+		fwrite($fp, $diff . ": " . $_SERVER["REQUEST_URI"] . "\n");
+		fclose($fp);
 
 		foreach ($absae as $i => $abs) if ($abs !== null) {
 			/** @var AenderungsantragAbsatz $abs */
