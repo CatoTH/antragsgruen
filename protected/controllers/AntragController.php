@@ -702,12 +702,9 @@ class AntragController extends AntragsgruenController
 			$goon                     = true;
 
 			if (!$this->veranstaltung->getPolicyAntraege()->checkAntragSubmit()) {
-				if ($_SERVER["REMOTE_ADDR"] == "85.183.80.155") die("1");
-
 				Yii::app()->user->setFlash("error", "Keine Berechtigung zum Anlegen von Anträgen.");
 				$goon = false;
 			}
-			if ($_SERVER["REMOTE_ADDR"] == "85.183.80.155") die("2");
 
 			if ($goon) {
 				if ($model->save()) {
