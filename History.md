@@ -1,3 +1,9 @@
+2.4.9 - 2014-10-23
+==================
+
+* Feature: Beim Excel-Export der (Änderungs-)Anträge lassen sich nun auf Wunsch Antragstext u. Begründung in einer Spalte zusammenfassen.
+* Bugfix: Formatierungszeichen im Excel-Export werden nun entfernt.
+
 2.4.8 - 2014-10-15
 ==================
 
