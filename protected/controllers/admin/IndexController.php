@@ -123,7 +123,7 @@ class IndexController extends AntragsgruenController
 		$this->render("ae_pdf_list", array("aes" => $aenderungsantraege));
 	}
 
-	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -165,10 +165,13 @@ class IndexController extends AntragsgruenController
 			);
 		}
 
-		$this->renderPartial("ae_excel_list", array("antraege" => $antrs));
+		$this->renderPartial("ae_excel_list", array(
+			"antraege" => $antrs,
+			"text_begruendung_zusammen" => $text_begruendung_zusammen
+		));
 	}
 
-	public function actionAntragExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public function actionAntragExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -184,7 +187,10 @@ class IndexController extends AntragsgruenController
 			);
 		}
 
-		$this->renderPartial("antrag_excel_list", array("antraege" => $antrs));
+		$this->renderPartial("antrag_excel_list", array(
+			"antraege"                  => $antrs,
+			"text_begruendung_zusammen" => $text_begruendung_zusammen
+		));
 	}
 
 	public function actionReiheAdmins($veranstaltungsreihe_id = "")

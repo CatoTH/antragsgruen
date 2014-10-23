@@ -2,6 +2,7 @@
 /**
  * @var IndexController $this
  * @var array $antraege
+ * @var bool $text_begruendung_zusammen
  */
 
 /*
@@ -19,6 +20,18 @@ header('Cache-Control: max-age=0');
 define('PCLZIP_TEMPORARY_DIR', '/tmp/');
 PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 
+$COL_ANTRAGSNR       = "B";
+$COL_ANTRAGSTELLERIN = "C";
+$COL_ANTRAGSTEXT     = "D";
+if ($text_begruendung_zusammen) {
+	$COL_KONTAKT   = "E";
+	$COL_VERFAHREN = "F";
+} else {
+	$COL_BEGRUENDUNG = "E";
+	$COL_KONTAKT     = "F";
+	$COL_VERFAHREN   = "G";
+}
+
 $objPHPExcel = new PHPExcel();
 
 $objPHPExcel->getProperties()->setCreator("Antragsgruen.de");
@@ -30,20 +43,24 @@ $objPHPExcel->getProperties()->setDescription($this->veranstaltung->name . " - A
 
 $objPHPExcel->setActiveSheetIndex(0);
 
-$objPHPExcel->getActiveSheet()->SetCellValue('B2', "Antragsübersicht");
-$objPHPExcel->getActiveSheet()->getStyle("B2")->applyFromArray(array(
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSNR . '2', "Antragsübersicht");
+$objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSNR . "2")->applyFromArray(array(
 	"font" => array(
 		"bold" => true
 	)
 ));
 
-$objPHPExcel->getActiveSheet()->SetCellValue('B3', 'Antragsnr.');
-$objPHPExcel->getActiveSheet()->SetCellValue('C3', 'AntragstellerIn');
-$objPHPExcel->getActiveSheet()->SetCellValue('D3', 'Antragstext');
-$objPHPExcel->getActiveSheet()->SetCellValue('E3', 'Begründung');
-$objPHPExcel->getActiveSheet()->SetCellValue('F3', 'Kontakt');
-$objPHPExcel->getActiveSheet()->SetCellValue('G3', 'Verfahren');
-$objPHPExcel->getActiveSheet()->getStyle("B3:G3")->applyFromArray(array(
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSNR . '3', 'Antragsnr.');
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTELLERIN . '3', 'AntragstellerIn');
+if ($text_begruendung_zusammen) {
+	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . '3', 'Antragstext u. Begründung');
+}  else {
+	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . '3', 'Antragstext');
+	$objPHPExcel->getActiveSheet()->SetCellValue($COL_BEGRUENDUNG . '3', 'Begründung');
+}
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_KONTAKT . '3', 'Kontakt');
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_VERFAHREN . '3', 'Verfahren');
+$objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSNR . "3:" . $COL_VERFAHREN . "3")->applyFromArray(array(
 	"font" => array(
 		"bold" => true
 	)
@@ -57,7 +74,7 @@ $styleThinBlackBorderOutline = array(
 		),
 	),
 );
-$objPHPExcel->getActiveSheet()->getStyle('B2:G3')->applyFromArray($styleThinBlackBorderOutline);
+$objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSNR . '2:' . $COL_VERFAHREN . '3')->applyFromArray($styleThinBlackBorderOutline);
 
 
 PHPExcel_Cell::setValueBinder(new PHPExcel_Cell_AdvancedValueBinder());
@@ -73,7 +90,7 @@ foreach ($antraege as $ant) {
 
 	$row++;
 
-	$initiatorInnen_namen = array();
+	$initiatorInnen_namen   = array();
 	$initiatorInnen_kontakt = array();
 	foreach ($antrag->antragUnterstuetzerInnen as $unt) {
 		if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
@@ -83,41 +100,50 @@ foreach ($antraege as $ant) {
 		}
 	}
 
-	$objPHPExcel->getActiveSheet()->SetCellValue('B' . $row, $antrag->revision_name);
-	$objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, implode(", ", $initiatorInnen_namen));
-	$objPHPExcel->getActiveSheet()->SetCellValue('F' . $row, implode("\n", $initiatorInnen_kontakt));
+	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSNR . $row, $antrag->revision_name);
+	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTELLERIN . $row, implode(", ", $initiatorInnen_namen));
+	$objPHPExcel->getActiveSheet()->SetCellValue($COL_KONTAKT . $row, implode("\n", $initiatorInnen_kontakt));
 
-	$text   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $antrag->text);
-	$text   = HtmlBBcodeUtils::text2zeilen(trim($text), 120);
-	$zeilen = array();
-	foreach ($text as $t) {
-		$x      = explode("\n", $t);
-		$zeilen = array_merge($zeilen, $x);
+	$text_antrag   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $antrag->text);
+	$text_antrag   = HtmlBBcodeUtils::removeBBCode($text_antrag);
+	$text_antrag   = HtmlBBcodeUtils::text2zeilen(trim($text_antrag), 120);
+	$zeilen_antrag = array();
+	foreach ($text_antrag as $t) {
+		$x             = explode("\n", $t);
+		$zeilen_antrag = array_merge($zeilen_antrag, $x);
 	}
-	$objPHPExcel->getActiveSheet()->SetCellValue('D' . $row, trim(implode("\n", $zeilen)));
-	$objPHPExcel->getActiveSheet()->getStyle('D' . $row)->getAlignment()->setWrapText(true);
 
-	$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(14 * count($zeilen));
-
-	$text   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $antrag->begruendung);
-	$text   = HtmlBBcodeUtils::text2zeilen(trim($text), 120);
-	$zeilen = array();
-	foreach ($text as $t) {
-		$x      = explode("\n", $t);
-		$zeilen = array_merge($zeilen, $x);
+	$text_begruendung   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $antrag->begruendung);
+	$text_begruendung   = HtmlBBcodeUtils::removeBBCode($text_begruendung);
+	$text_begruendung   = HtmlBBcodeUtils::text2zeilen(trim($text_begruendung), 120);
+	$zeilen_begruendung = array();
+	foreach ($text_begruendung as $t) {
+		$x                  = explode("\n", $t);
+		$zeilen_begruendung = array_merge($zeilen_begruendung, $x);
 	}
-	$objPHPExcel->getActiveSheet()->SetCellValue('E' . $row, trim(implode("\n", $zeilen)));
-	$objPHPExcel->getActiveSheet()->getStyle('E' . $row)->getAlignment()->setWrapText(true);
 
+	if ($text_begruendung_zusammen) {
+		$zeilen = array_merge(array("Antrag:"), $zeilen_antrag, array("", "", "Begründung:"), $zeilen_begruendung);
+		$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . $row, trim(implode("\n", $zeilen)));
+		$objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSTEXT . $row)->getAlignment()->setWrapText(true);
+		$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(14 * count($zeilen));
+	} else {
+		$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . $row, trim(implode("\n", $zeilen_antrag)));
+		$objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSTEXT . $row)->getAlignment()->setWrapText(true);
+		$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(14 * count($zeilen_antrag));
+
+		$objPHPExcel->getActiveSheet()->SetCellValue($COL_BEGRUENDUNG . $row, trim(implode("\n", $zeilen_begruendung)));
+		$objPHPExcel->getActiveSheet()->getStyle($COL_BEGRUENDUNG . $row)->getAlignment()->setWrapText(true);
+	}
 }
 
 $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(3);
-$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(12);
-$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(24);
-$objPHPExcel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
-$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(24);
-$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(13);
+$objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSNR)->setWidth(12);
+$objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSTELLERIN)->setWidth(24);
+$objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSTEXT)->setAutoSize(true);
+if (!$text_begruendung_zusammen) $objPHPExcel->getActiveSheet()->getColumnDimension($COL_BEGRUENDUNG)->setAutoSize(true);
+$objPHPExcel->getActiveSheet()->getColumnDimension($COL_KONTAKT)->setWidth(24);
+$objPHPExcel->getActiveSheet()->getColumnDimension($COL_VERFAHREN)->setWidth(13);
 
 
 $objPHPExcel->getActiveSheet()->setTitle('Anträge');
