@@ -285,6 +285,25 @@ class IndexController extends AntragsgruenController
 		));
 	}
 
+	public function actionFullTextExport($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
+
+		$antraege_sorted = $this->veranstaltung->antraegeSortiert();
+		$antraege        = array();
+		$aes             = array();
+		foreach ($antraege_sorted as $gruppe) foreach ($gruppe as $antr) {
+			$antraege[] = $antr;
+			foreach ($antr->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
+		}
+
+		$this->renderPartial('full_text_export', array(
+			"antraege"           => $antraege,
+			"aenderungsantraege" => $aes,
+		));
+	}
+
 	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id = "")
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);

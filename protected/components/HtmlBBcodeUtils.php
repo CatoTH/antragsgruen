@@ -722,7 +722,10 @@ class HtmlBBcodeUtils
 
 	static function removeBBCode($text)
 	{
-		return str_ireplace(array("[b]", "[/b]", "[quote]", "[/quote]", "[*]", "[i]", "[/i]", "[list]", "[/list]", "[u]", "[/u]", "[s]", "[/s]"), "", $text);
+		$text = str_ireplace(array("[b]", "[/b]", "[quote]", "[/quote]", "[*]", "[i]", "[/i]", "[list]", "[/list]", "[u]", "[/u]", "[s]", "[/s]", "[list=1]", "[/color]"), "", $text);
+		$text = preg_replace("/\[color=[0-9a-z]+\]/siu", "", $text);
+		$text = preg_replace("/\[url=[0-9a-z_\-\.\"\/\:\=\?]+\]/siu", "", $text);
+		return $text;
 	}
 
 
