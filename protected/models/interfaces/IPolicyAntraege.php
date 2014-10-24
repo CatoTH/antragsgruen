@@ -4,11 +4,11 @@ Yii::import("application.models.policies.*");
 
 abstract class IPolicyAntraege
 {
-	public static $POLICY_HESSEN_LMV = "HeLMV";
-	public static $POLICY_BAYERN_LDK = "ByLDK";
-	public static $POLICY_BDK = "BDK";
-	public static $POLICY_ADMINS = "Admins";
-	public static $POLICY_ALLE = "Alle";
+	public static $POLICY_HESSEN_LMV  = "HeLMV";
+	public static $POLICY_BAYERN_LDK  = "ByLDK";
+	public static $POLICY_BDK         = "BDK";
+	public static $POLICY_ADMINS      = "Admins";
+	public static $POLICY_ALLE        = "Alle";
 	public static $POLICY_EINGELOGGTE = "Eingeloggte";
 
 	public static $POLICIES = array(
@@ -113,14 +113,23 @@ abstract class IPolicyAntraege
 			}
 		}
 
-		if ($antragstellerIn === null && isset($_REQUEST["Person"])) {
-			$antragstellerIn                 = new Person();
-			$antragstellerIn->attributes     = $_REQUEST["Person"];
-			$antragstellerIn->typ            = (isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] == "organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
-			$antragstellerIn->angelegt_datum = new CDbExpression('NOW()');
-			$antragstellerIn->status         = Person::$STATUS_UNCONFIRMED;
-			$antragstellerIn->save();
+		if (isset($_REQUEST["Person"])) {
+			if ($antragstellerIn === null) {
+				$antragstellerIn                 = new Person();
+				$antragstellerIn->attributes     = $_REQUEST["Person"];
+				$antragstellerIn->telefon        = (isset($_REQUEST["Person"]["telefon"]) ? $_REQUEST["Person"]["telefon"] : "");
+				$antragstellerIn->typ            = (isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] == "organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
+				$antragstellerIn->angelegt_datum = new CDbExpression('NOW()');
+				$antragstellerIn->status         = Person::$STATUS_UNCONFIRMED;
+				$antragstellerIn->save();
+			} else {
+				if (!$antragstellerIn->telefon && isset($_REQUEST["Person"]["telefon"]) && $_REQUEST["Person"]["telefon"] != "") {
+					$antragstellerIn->telefon = $_REQUEST["Person"]["telefon"];
+					$antragstellerIn->save();
+				}
+			}
 		}
+
 		return $antragstellerIn;
 	}
 

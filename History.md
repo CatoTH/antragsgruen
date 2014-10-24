@@ -1,3 +1,8 @@
+2.4.10 - 2014-10-24
+==================
+
+* Bugfix: Speichern von Telefonnummern, Anzeige der Kontaktdaten bei Änderungsanträgen.
+
 2.4.9 - 2014-10-23
 ==================
 

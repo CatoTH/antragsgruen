@@ -85,9 +85,22 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 						?></td>
 				</tr>
 				<tr>
-					<th><?php echo(count($antragstellerInnen) > 1 ? "AntragsstellerInnen" : "AntragsstellerIn"); ?>:
-					</th>
-					<td><?php echo implode(", ", $antragstellerInnen); ?></td>
+					<th><?php echo(count($antragstellerInnen) > 1 ? "AntragsstellerInnen" : "AntragsstellerIn"); ?>:</th>
+					<td><?php
+						$x = array();
+						foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+							$name= $unt->getNameMitBeschlussdatum(true);
+							if ($aenderungsantrag->antrag->veranstaltung->isAdminCurUser() && ($unt->person->email != "" || $unt->person->telefon != "")) {
+								$name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
+								if ($unt->person->email != "") $name .=  "E-Mail: " . CHtml::encode($unt->person->email);
+								if ($unt->person->email != "" && $unt->person->telefon != "") $name .=  ", ";
+								if ($unt->person->telefon != "") $name .=  "Telefon: " . CHtml::encode($unt->person->telefon);
+								$name .=  ")</small>";
+							}
+							$x[] = $name;
+						}
+						echo implode(", ", $x);
+						?></td>
 				</tr>
 				<tr>
 					<th>Status:</th>
