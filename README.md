@@ -55,7 +55,7 @@ Es gibt je einen RSS-Feed über neue Anträge zu einer Veranstaltung, neue Ände
 
 [TODO] Es wird einen Feed pro Antrag geben, in dem neue Änderungsanträge und Kommentare zu dem betreffenden Antrag gelistet werden.
 
-Demo
+Produktivversion
 ----
 Hier läuft die Produktivversion von Antragsgrün: https://www.antragsgruen.de/
 
@@ -111,6 +111,12 @@ Es ist eine sehr simpel gehaltene Veranstaltung voreingestellt und ein Admin-Nut
 - Passwort: "admin" (ohne Anführungszeichen)
 
 
+Tipps für den Betrieb:
+----------------------
+
+Ändern des Passworts eines Accounts von der Kommandozeile aus:
+``cd protected/
+./yiic setze_passwort "email@account.de" "neues_passwort"``
 
 
 Kontakt:
