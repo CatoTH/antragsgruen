@@ -115,8 +115,10 @@ Tipps für den Betrieb:
 ----------------------
 
 Ändern des Passworts eines Accounts von der Kommandozeile aus:
-``cd protected/
-./yiic setze_passwort "email@account.de" "neues_passwort"``
+``
+cd protected/
+./yiic setze_passwort "email@account.de" "neues_passwort"
+``
 
 
 Kontakt:
