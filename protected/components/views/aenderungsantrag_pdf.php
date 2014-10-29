@@ -27,7 +27,7 @@ if (file_exists($logo)) {
 	$pdf->Image($logo, 22, 32, 47, 26);
 }
 
-$width = 37;
+$width = 39;
 $x     = 155;
 if ($aenderungsantrag->revision_name == "") {
 	$name = "Entwurf";

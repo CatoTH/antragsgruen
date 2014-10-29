@@ -285,7 +285,10 @@ class HtmlBBcodeUtils
 
 		for ($i = 0; $i < mb_strlen($text); $i++) {
 			$curr_char = mb_substr($text, $i, 1);
-			while ($is_bbcode && $curr_char == '[') {
+			$bbcode_break = false;
+			while ($is_bbcode && $curr_char == '[' && !$bbcode_break) {
+				$bbcode_break = true;
+
 				$three = mb_strtolower(mb_substr($text, $i, 3));
 				if (in_array($three, array("[b]", "[u]", "[i]", "[s]"))) {
 					if ($debug) echo "Skipping: $three\n";
@@ -293,6 +296,7 @@ class HtmlBBcodeUtils
 
 					$i += 3;
 					$curr_char = mb_substr($text, $i, 1);
+					$bbcode_break = false;
 				}
 
 				$four = mb_strtolower(mb_substr($text, $i, 4));
@@ -302,6 +306,7 @@ class HtmlBBcodeUtils
 
 					$i += 4;
 					$curr_char = mb_substr($text, $i, 1);
+					$bbcode_break = false;
 				}
 			}
 			if ($in_html_modus) {
