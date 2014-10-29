@@ -91,7 +91,7 @@ class HtmlBBcodeUtils
 					$zeils     = explode("\n", $matches[2]);
 					$zeils_neu = array();
 					foreach ($zeils as $zeile) {
-						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
+						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10, true);
 						$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $x);
 					}
 					$out .= implode("\n", $zeils_neu);
@@ -108,7 +108,7 @@ class HtmlBBcodeUtils
 						$zeils     = explode("\n", trim($x[$i]));
 						$zeils_neu = array();
 						foreach ($zeils as $zeile) {
-							$z           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
+							$z           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10, true);
 							$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $z);
 						}
 						$out .= "[*]" . implode("[*]", $zeils_neu);
@@ -122,7 +122,7 @@ class HtmlBBcodeUtils
 				$zeils     = explode("\n", $y);
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge, true);
 					$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $x);
 				}
 
@@ -211,7 +211,7 @@ class HtmlBBcodeUtils
 					$zeils     = explode("<br>", $matches[3]);
 					$zeils_neu = array();
 					foreach ($zeils as $zeile) {
-						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
+						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10, false);
 						$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 					}
 					$out .= implode("<br>", $zeils_neu);
@@ -223,7 +223,7 @@ class HtmlBBcodeUtils
 				$zeils     = explode("<br>", $abs);
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge, false);
 					$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 				}
 
@@ -259,11 +259,12 @@ class HtmlBBcodeUtils
 	 * @static
 	 * @param string $text
 	 * @param int $max_len
+	 * @param bool $is_bbcode
 	 * @param bool $debug
 	 * @param bool $nocache
 	 * @return array|string[]
 	 */
-	static function text2zeilen($text, $max_len, $debug = false, $nocache = false)
+	static function text2zeilen($text, $max_len, $is_bbcode, $debug = false, $nocache = false)
 	{
 
 		//echo "<br><br>===<br>" . nl2br(htmlentities($text));
@@ -277,13 +278,32 @@ class HtmlBBcodeUtils
 		$aktuelle_zeile_count       = 0;
 
 		if (!$nocache) {
-			$cache_key = md5("text2zeilen11" . $max_len . $text);
+			$cache_key = md5("text2zeilen11" . $max_len . ($is_bbcode ? 1 : 0) . $text);
 			$cached    = Cache::getObject($cache_key);
 			if (is_array($cached)) return $cached;
 		}
 
 		for ($i = 0; $i < mb_strlen($text); $i++) {
 			$curr_char = mb_substr($text, $i, 1);
+			while ($is_bbcode && $curr_char == '[') {
+				$three = mb_strtolower(mb_substr($text, $i, 3));
+				if (in_array($three, array("[b]", "[u]", "[i]", "[s]"))) {
+					if ($debug) echo "Skipping: $three\n";
+					$aktuelle_zeile .= mb_substr($text, $i, 3);
+
+					$i += 3;
+					$curr_char = mb_substr($text, $i, 1);
+				}
+
+				$four = mb_strtolower(mb_substr($text, $i, 4));
+				if (in_array($four, array("[/b]", "[/u]", "[/i]", "[/s]"))) {
+					if ($debug) echo "Skipping: $four\n";
+					$aktuelle_zeile .= mb_substr($text, $i, 4);
+
+					$i += 4;
+					$curr_char = mb_substr($text, $i, 1);
+				}
+			}
 			if ($in_html_modus) {
 				if ($curr_char == ">") $in_html_modus = false;
 				$aktuelle_zeile .= $curr_char;

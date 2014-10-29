@@ -125,7 +125,7 @@ foreach ($antraege as $ant) {
 
 		$text_antrag   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $ae->aenderung_text);
 		$text_antrag   = HtmlBBcodeUtils::removeBBCode($text_antrag);
-		$text_antrag   = HtmlBBcodeUtils::text2zeilen(trim($text_antrag), 120);
+		$text_antrag   = HtmlBBcodeUtils::text2zeilen(trim($text_antrag), 120, true);
 		$zeilen_antrag = array();
 		foreach ($text_antrag as $t) {
 			$x             = explode("\n", $t);
@@ -134,7 +134,7 @@ foreach ($antraege as $ant) {
 
 		$text_begruendung   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $ae->aenderung_begruendung);
 		$text_begruendung   = HtmlBBcodeUtils::removeBBCode($text_begruendung);
-		$text_begruendung   = HtmlBBcodeUtils::text2zeilen(trim($text_begruendung), 120);
+		$text_begruendung   = HtmlBBcodeUtils::text2zeilen(trim($text_begruendung), 120, true);
 		$zeilen_begruendung = array();
 		foreach ($text_begruendung as $t) {
 			$x                  = explode("\n", $t);

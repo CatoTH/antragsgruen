@@ -88,7 +88,7 @@ foreach ($kommentare as $kommentar) {
 	$objPHPExcel->getActiveSheet()->SetCellValue('D' . $row, $absatz_zeilen);
 	$objPHPExcel->getActiveSheet()->getStyle('D' . $row)->getAlignment()->setWrapText(true);
 
-	$text   = HtmlBBcodeUtils::text2zeilen($kommentar->text, 120);
+	$text   = HtmlBBcodeUtils::text2zeilen($kommentar->text, 120, true);
 	$zeilen = array();
 	foreach ($text as $t) {
 		$x      = explode("\n", $t);

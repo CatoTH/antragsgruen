@@ -1,3 +1,8 @@
+2.4.11 - 2014-10-29
+==================
+
+* Bugfix: Fehlerhafte Berechnung der Zeilennummern beim Änderungsantrags-PDF, wenn Textformatierungen im Fließtext vorkamen.
+
 2.4.10 - 2014-10-24
 ==================
 
