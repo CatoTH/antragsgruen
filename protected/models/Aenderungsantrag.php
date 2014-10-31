@@ -12,6 +12,7 @@
  * @property string $aenderung_begruendung
  * @property integer $aenderung_begruendung_html
  * @property integer $aenderung_first_line_cache
+ * @property string $first_line_of_paragraph_cache
  * @property string $datum_einreichung
  * @property string $datum_beschluss
  * @property integer $status
@@ -197,7 +198,8 @@ class Aenderungsantrag extends IAntrag
 		return $paras;
 	}
 
-	private $_firstAffectedLineOfParagraphs_relative = array();
+
+	private $_firstAffectedLineOfParagraphs_relative = null;
 
 	/**
 	 * @param int $paragraph_nr
@@ -205,6 +207,10 @@ class Aenderungsantrag extends IAntrag
 	 */
 	public function getFirstAffectedLineOfParagraph_relative($paragraph_nr)
 	{
+		if ($this->_firstAffectedLineOfParagraphs_relative === null) {
+			if ($this->first_line_of_paragraph_cache != "") $this->_firstAffectedLineOfParagraphs_relative = json_decode($this->first_line_of_paragraph_cache, true);
+			else $this->_firstAffectedLineOfParagraphs_relative = array();
+		}
 		if (!isset($this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr])) {
 			$antrag_paragraphs = $this->antrag->getParagraphsText()["bbcode"];
 			$ae_diff           = $this->getDiffParagraphs();
@@ -216,8 +222,16 @@ class Aenderungsantrag extends IAntrag
 				$first_line = count($diff_part->orig);
 			}
 			$this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr] = $first_line;
+			$this->first_line_of_paragraph_cache = json_encode($this->_firstAffectedLineOfParagraphs_relative);
+			$this->save(false);
 		}
 		return $this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr];
+	}
+
+	public function flushFirstAffectedLineOfParagraphCache() {
+		$this->_firstAffectedLineOfParagraphs_relative = null;
+		$this->first_line_of_paragraph_cache = "";
+		$this->save(false);
 	}
 
 	private $_firstAffectedLineOfParagraphs_absolute = array();
@@ -379,6 +393,7 @@ class Aenderungsantrag extends IAntrag
 	public function resetLineCache($save = true)
 	{
 		$this->aenderung_first_line_cache = -1;
+		$this->flushFirstAffectedLineOfParagraphCache();
 		if ($save) $this->save();
 	}
 

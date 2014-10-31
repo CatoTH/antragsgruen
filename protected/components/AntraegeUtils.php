@@ -27,6 +27,16 @@ class AntraegeUtils
         return $x[2] . "." . $x[1] . "." . $x[0];
     }
 
+	private static $last_time = 0;
+	public static function debug_time($name) {
+		list($usec, $sec) = explode(" ", microtime());
+		$time = sprintf("%14.0f", $sec * 10000 + $usec * 10000);
+		if (static::$last_time) {
+			echo "Zeit ($name): " . ($time - static::$last_time) . "<br>";
+		}
+		static::$last_time = $time;
+	}
+
 
 	/**
 	 * @param int $mail_typ

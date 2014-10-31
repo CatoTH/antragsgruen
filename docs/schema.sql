@@ -115,6 +115,7 @@ CREATE TABLE IF NOT EXISTS `aenderungsantrag` (
   `aenderung_begruendung` LONGTEXT NOT NULL,
   `aenderung_begruendung_html` TINYINT NOT NULL DEFAULT 0,
   `aenderung_first_line_cache` MEDIUMINT(9) NOT NULL,
+  `first_line_of_paragraph_cache` TEXT NOT NULL,
   `datum_einreichung` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `datum_beschluss` TIMESTAMP NULL,
   `status` TINYINT NOT NULL,

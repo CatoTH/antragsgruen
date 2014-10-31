@@ -1,3 +1,8 @@
+2.4.12 - 2014-10-29
+==================
+
+* Performance: Eine zusätzliche Caching-Funktion, um die Antragsanzeige bei vielen Änderungsanträgen zu beschleunigen.
+
 2.4.11 - 2014-10-29
 ==================
 
