@@ -32,7 +32,7 @@ class AntraegeUtils
 		list($usec, $sec) = explode(" ", microtime());
 		$time = sprintf("%14.0f", $sec * 10000 + $usec * 10000);
 		if (static::$last_time) {
-			echo "Zeit ($name): " . ($time - static::$last_time) . "<br>";
+			echo "Zeit ($name): " . ($time - static::$last_time) . " (" . date("Y-m-d H:i:s") . ")<br>";
 		}
 		static::$last_time = $time;
 	}

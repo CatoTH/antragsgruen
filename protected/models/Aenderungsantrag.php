@@ -12,7 +12,8 @@
  * @property string $aenderung_begruendung
  * @property integer $aenderung_begruendung_html
  * @property integer $aenderung_first_line_cache
- * @property string $first_line_of_paragraph_cache
+ * @property string $flp_rel_cache
+ * @property string $flp_abs_cache
  * @property string $datum_einreichung
  * @property string $datum_beschluss
  * @property integer $status
@@ -74,7 +75,7 @@ class Aenderungsantrag extends IAntrag
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
 			array('name_neu, datum_beschluss, aenderung_metatext, notiz_intern', 'safe'),
-			array('antrag_id, revision_name, name_neu, datum_beschluss, aenderung_begruendung, aenderung_begruendung_html', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('antrag_id, revision_name, name_neu, datum_beschluss, aenderung_begruendung, aenderung_begruendung_html, flp_abs_cache, flp_rel_cache', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 
 	}
@@ -129,6 +130,8 @@ class Aenderungsantrag extends IAntrag
 			'antrag'                             => null,
 			'aenderungsantragKommentare'         => null,
 			'aenderungsantragUnterstuetzerInnen' => Yii::t('app', 'AntragstellerInnen'),
+			'flp_abs_cache'                      => '',
+			'flp_rel_cache'                      => '',
 		);
 	}
 
@@ -208,7 +211,7 @@ class Aenderungsantrag extends IAntrag
 	public function getFirstAffectedLineOfParagraph_relative($paragraph_nr)
 	{
 		if ($this->_firstAffectedLineOfParagraphs_relative === null) {
-			if ($this->first_line_of_paragraph_cache != "") $this->_firstAffectedLineOfParagraphs_relative = json_decode($this->first_line_of_paragraph_cache, true);
+			if ($this->flp_rel_cache != "") $this->_firstAffectedLineOfParagraphs_relative = json_decode($this->flp_rel_cache, true);
 			else $this->_firstAffectedLineOfParagraphs_relative = array();
 		}
 		if (!isset($this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr])) {
@@ -222,19 +225,21 @@ class Aenderungsantrag extends IAntrag
 				$first_line = count($diff_part->orig);
 			}
 			$this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr] = $first_line;
-			$this->first_line_of_paragraph_cache = json_encode($this->_firstAffectedLineOfParagraphs_relative);
+			$this->flp_rel_cache                                          = json_encode($this->_firstAffectedLineOfParagraphs_relative);
 			$this->save(false);
 		}
 		return $this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr];
 	}
 
-	public function flushFirstAffectedLineOfParagraphCache() {
+	public function flushFirstAffectedLineOfParagraphCache()
+	{
 		$this->_firstAffectedLineOfParagraphs_relative = null;
-		$this->first_line_of_paragraph_cache = "";
+		$this->flp_rel_cache                           = "";
+		$this->flp_abs_cache                           = "";
 		$this->save(false);
 	}
 
-	private $_firstAffectedLineOfParagraphs_absolute = array();
+	private $_firstAffectedLineOfParagraphs_absolute = null;
 
 	/**
 	 * @param int $paragraph_nr
@@ -243,6 +248,11 @@ class Aenderungsantrag extends IAntrag
 	 */
 	public function getFirstAffectedLineOfParagraph_absolute($paragraph_nr, $antrag_absaetze)
 	{
+		if ($this->_firstAffectedLineOfParagraphs_absolute === null) {
+			if ($this->flp_abs_cache != "") $this->_firstAffectedLineOfParagraphs_absolute = json_decode($this->flp_abs_cache, true);
+			else $this->_firstAffectedLineOfParagraphs_absolute = array();
+		}
+
 		if (!isset($this->_firstAffectedLineOfParagraphs_absolute[$paragraph_nr])) {
 			$antrag_paragraphs = $this->antrag->getParagraphsText()["bbcode"];
 			$ae_diff           = $this->getDiffParagraphs();
@@ -259,6 +269,8 @@ class Aenderungsantrag extends IAntrag
 			}
 			$absolute_line_no += $first_line;
 			$this->_firstAffectedLineOfParagraphs_absolute[$paragraph_nr] = $absolute_line_no;
+			$this->flp_abs_cache                                          = json_encode($this->_firstAffectedLineOfParagraphs_absolute);
+			$this->save(false);
 		}
 		return $this->_firstAffectedLineOfParagraphs_absolute[$paragraph_nr];
 	}
@@ -272,6 +284,8 @@ class Aenderungsantrag extends IAntrag
 		$this->text_neu                                = json_encode($paragraphs);
 		$this->_firstAffectedLineOfParagraphs_relative = array();
 		$this->_firstAffectedLineOfParagraphs_absolute = array();
+		$this->flp_rel_cache = "";
+		$this->flp_abs_cache = "";
 	}
 
 	/**
