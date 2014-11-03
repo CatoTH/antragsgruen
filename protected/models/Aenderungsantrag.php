@@ -550,6 +550,37 @@ class Aenderungsantrag extends IAntrag
 	}
 
 	/**
+	 * @param Aenderungsantrag[] $aenderungsantraege
+	 * @return Aenderungsantrag[]
+	 */
+	public static function sortiereSichtbareNachZeilennummer($aenderungsantraege) {
+		$aes = array();
+		foreach ($aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
+
+		usort($aes, function ($ae1, $ae2) {
+			/** @var Aenderungsantrag $ae1 */
+			/** @var Aenderungsantrag $ae2 */
+			$first1 = $ae1->getFirstDiffLine();
+			$first2 = $ae2->getFirstDiffLine();
+
+			if ($first1 < $first2) return -1;
+			if ($first1 > $first2) return 1;
+
+			$x1 = explode("-", $ae1->revision_name);
+			$x2 = explode("-", $ae2->revision_name);
+			if (count($x1) == 3 && count($x2) == 3) {
+				if ($x1[2] < $x2[2]) return -1;
+				if ($x1[2] > $x2[2]) return 1;
+				return 0;
+			} else {
+				return strcasecmp($ae1->revision_name, $ae2->revision_name);
+			}
+		});
+
+		return $aes;
+	}
+
+	/**
 	 * @param int $veranstaltung_id
 	 * @param string $suchbegriff
 	 * @return array|Aenderungsantrag[]

@@ -54,6 +54,7 @@ $this->breadcrumbs = array(
 			<ul id="ae_excel_export" style="display: none;">
 				<li><a href="<?php echo $this->createUrl("admin/index/aeExcelList") ?>">Änderungsantragstext und Begründung getrennt</a></li>
 				<li><a href="<?php echo $this->createUrl("admin/index/aeExcelList", array("text_begruendung_zusammen" => 1)) ?>">Änderungsantragstext und Begründung in einer Spalte</a></li>
+				<li><a href="<?php echo $this->createUrl("admin/index/aeExcelList", array("antraege_separat" => 1)) ?>">Texte getrennt, Antragsnummer als separate Spalte</a></li>
 			</ul>
 		</li>
 		<li style="margin-top: 10px;"><?php echo CHtml::link("Export: Kommentare als Excel-Datei", $this->createUrl("admin/index/kommentareexcel")); ?></li>

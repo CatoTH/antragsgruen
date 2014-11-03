@@ -1,3 +1,9 @@
+2.4.13 - 2014-11-03
+==================
+
+* Änderung: Wenn Änderungsanträge nach der betroffenen Zeilennummer sortiert werden, wirkt sich diese Sortierung nun auch auf das Sammel-PDF aus. (LV Bremen)
+* Feature: Beim Excel-Export der Änderungsanträge gibt es nun auch die Möglichkeit, Antragsnummer, ÄA-Nummer und Bezugszeilennummer in separate Spalten zu exportieren. (LV Bremen)
+
 2.4.12 - 2014-10-29
 ==================
 

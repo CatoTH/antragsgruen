@@ -123,7 +123,7 @@ class IndexController extends AntragsgruenController
 		$this->render("ae_pdf_list", array("aes" => $aenderungsantraege));
 	}
 
-	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false)
+	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false, $antraege_separat = false, $zeilennummer_separat = false)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -134,40 +134,18 @@ class IndexController extends AntragsgruenController
 		$antrs           = array();
 		foreach ($antraege_sorted as $gruppe) foreach ($gruppe as $antr) {
 			/** @var Antrag $antr */
-			/** @var Aenderungsantrag[] $aes */
 
-			//if (!in_array($antr->id, array(258, 86))) continue; // @TODO
-			$aes = array();
-			foreach ($antr->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
-
-			usort($aes, function ($ae1, $ae2) {
-				/** @var Aenderungsantrag $ae1 */
-				/** @var Aenderungsantrag $ae2 */
-				$first1 = $ae1->getFirstDiffLine();
-				$first2 = $ae2->getFirstDiffLine();
-
-				if ($first1 < $first2) return -1;
-				if ($first1 > $first2) return 1;
-
-				$x1 = explode("-", $ae1->revision_name);
-				$x2 = explode("-", $ae2->revision_name);
-				if (count($x1) == 3 && count($x2) == 3) {
-					if ($x1[2] < $x2[2]) return -1;
-					if ($x1[2] > $x2[2]) return 1;
-					return 0;
-				} else {
-					return strcasecmp($ae1->revision_name, $ae2->revision_name);
-				}
-			});
 			$antrs[] = array(
 				"antrag" => $antr,
-				"aes"    => $aes
+				"aes"    => $antr->aenderungsantraege
 			);
 		}
 
 		$this->renderPartial("ae_excel_list", array(
-			"antraege" => $antrs,
-			"text_begruendung_zusammen" => $text_begruendung_zusammen
+			"antraege"                  => $antrs,
+			"text_begruendung_zusammen" => $text_begruendung_zusammen,
+			"antraege_separat"          => $antraege_separat,
+			"zeilennummer_separat"      => $zeilennummer_separat
 		));
 	}
 
