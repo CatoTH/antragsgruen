@@ -121,6 +121,17 @@ class AntragController extends AntragsgruenController
 			Yii::app()->user->setFlash("success", "Du stehst diesem Antrag wieder neutral gegenüber.");
 			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
 		}
+
+		if (AntiXSS::isTokenSet("add_tag") && $this->veranstaltung->isAdminCurUser()) {
+			foreach ($this->veranstaltung->tags as $tag) if ($tag->id == $_REQUEST["tag_id"]) {
+				Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $antrag->id, "tag_id" => $_REQUEST["tag_id"]));
+				$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
+			}
+		}
+		if (AntiXSS::isTokenSet("del_tag") && $this->veranstaltung->isAdminCurUser()) {
+			Yii::app()->db->createCommand()->delete("antrag_tags", 'antrag_id=:antrag_id AND tag_id=:tag_id', array("antrag_id" => $antrag->id, "tag_id" => AntiXSS::getTokenVal("del_tag")));
+			$this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
+		}
 	}
 
 

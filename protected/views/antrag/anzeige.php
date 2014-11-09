@@ -122,7 +122,59 @@ $this->menus_html[] = $html;
 						echo HtmlBBcodeUtils::formatMysqlDateTime($antrag->datum_einreichung);
 						?></td>
 				</tr>
-				<?php if ($antrag->abgeleitetVon) { ?>
+				<?php
+				if ($antrag->veranstaltung->isAdminCurUser()) {
+					?>
+					<tr>
+						<th>Themenbereiche:</th>
+						<td>
+							<?php
+							$tags = array();
+							$used_tag_ids = array();
+							foreach ($antrag->tags as $tag) {
+								$used_tag_ids[] = $tag->id;
+								$dellink = $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, AntiXSS::createToken("del_tag") => $tag->id));
+								$str = CHtml::encode($tag->name) . ' <a href="' . CHtml::encode($dellink) . '" style="color: red; text-style: italic; font-size: 0.7em;">del</a>';
+								$tags[] = $str;
+							}
+							echo implode(", ", $tags);
+							?>&nbsp; &nbsp; <a href="#" class="tag_adder_holder" style="color: green;">Neu</a>
+							<form method="POST" style="display: none;" id="tag_adder_form">
+								<select name="tag_id" size="1" title="Schlagwort aussuchen">
+									<option></option>
+									<?php
+									foreach ($antrag->veranstaltung->tags as $tag) if (!in_array($tag->id, $used_tag_ids)) echo '<option value="' . IntVal($tag->id) . '">' . CHtml::encode($tag->name) . '</option>';
+									?>
+								</select>
+								<button class="btn btn-primary" type="submit" name="<?php echo CHtml::encode(AntiXSS::createToken("add_tag"))?>" style="margin: 0; margin-top: -10px;">Hinzufügen</button>
+							</form>
+							<script>
+								$(function() {
+									$(".tag_adder_holder").click(function(ev) {
+										ev.preventDefault();
+										$(this).hide();
+										$("#tag_adder_form").show();
+									})
+								})
+							</script>
+						</td>
+					</tr>
+					<?php
+				} elseif (count($antrag->tags) > 0) {
+					?>
+					<tr>
+						<th><?php echo (count($antrag->tags) > 1 ? "Themenbereiche" : "Themenbereich")?></th>
+						<td>
+							<?php
+							$tags = array();
+							foreach ($antrag->tags as $tag) $tags[] = $tag->name;
+							echo CHtml::encode(implode(", ", $tags));
+							?>
+						</td>
+					</tr>
+				<?php
+				}
+				if ($antrag->abgeleitetVon) { ?>
 					<tr>
 						<th>Ersetzt diesen Antrag:</th>
 						<td><?php echo CHtml::link($antrag->abgeleitetVon->revision_name . " - " . $antrag->abgeleitetVon->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->abgeleitetVon->id))); ?> </td>
