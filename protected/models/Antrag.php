@@ -26,6 +26,7 @@
  * @property AntragKommentar[] $antragKommentare
  * @property AntragUnterstuetzerInnen[] $antragUnterstuetzerInnen
  * @property Person[] $abonnentent
+ * @property Tag[] $tags
  */
 class Antrag extends IAntrag
 {
@@ -129,6 +130,7 @@ class Antrag extends IAntrag
 				self::HAS_MANY, 'AntragUnterstuetzerInnen', 'antrag_id',
 				'order' => "antragUnterstuetzerInnen.position ASC"
 			),
+			'tags' => array(self::MANY_MANY, 'Tag', 'antrag_tags(antrag_id, tag_id)'),
 		);
 	}
 

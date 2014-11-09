@@ -22,6 +22,7 @@
  * @property Texte[] $texte
  * @property Veranstaltungsreihe $veranstaltungsreihe
  * @property OdtTemplate[] $odt_templates
+ * @property Tag[] $tags
  */
 class Veranstaltung extends GxActiveRecord
 {
@@ -357,6 +358,7 @@ class Veranstaltung extends GxActiveRecord
 			'texte'               => array(self::HAS_MANY, 'Texte', 'veranstaltung_id'),
 			'veranstaltungsreihe' => array(self::BELONGS_TO, 'Veranstaltungsreihe', 'veranstaltungsreihe_id'),
 			'odt_templates'       => array(self::HAS_MANY, 'OdtTemplate', 'veranstaltung_id'),
+			'tags'                => array(self::HAS_MANY, 'Tag', 'veranstaltung_id'),
 		);
 	}
 

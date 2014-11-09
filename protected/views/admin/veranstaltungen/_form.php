@@ -6,7 +6,7 @@
  * @var bool $namespaced_accounts
  */
 
-$form = $this->beginWidget('CActiveForm', array(
+$form          = $this->beginWidget('CActiveForm', array(
 	'id'                   => 'veranstaltung-form',
 	'enableAjaxValidation' => true,
 ));
@@ -262,6 +262,37 @@ $einstellungen = $model->getEinstellungen();
 		</label>
 		<?php echo $form->dropDownList($model, 'policy_unterstuetzen', IPolicyUnterstuetzen::getAllInstances()); ?>
 		<?php echo $form->error($model, 'policy_unterstuetzen'); ?>
+	</div>
+
+	<div>
+		<label style="padding-top: 10px;">Mögliche Schlagworte:</label>
+
+		<div style="display: inline-block;">
+			<?
+			if (count($model->tags) > 0) {
+				echo '<ul>';
+				foreach ($model->tags as $tag) {
+					echo '<li>' . CHtml::encode($tag->name) . ' (' . count($tag->antraege) . ')';
+					if (count($tag->antraege) == 0) echo ' <a href="' . CHtml::encode($this->createUrl("admin/veranstaltungen/update",
+							array(AntiXSS::createToken("del_tag") => $tag->id))) .
+						'" onClick="return confirm(\'Wirklich löschen?\');" style="color: red; font-size: 0.8em;">löschen</a>';
+					echo '</li>';
+				}
+				echo '</ul>';
+			} else {
+				echo '<em>Keine</em> &nbsp; &nbsp;';
+			}
+			?>
+			<a href="#" class="tag_neu_opener">+ Neues hinzufügen</a>
+			<input class="tag_neu_input" name="tag_neu" placeholder="Neues Schlagwort" value="" style="display: none;">
+		</div>
+		<script>
+			$(".tag_neu_opener").click(function(ev) {
+				ev.preventDefault();
+				$(".tag_neu_input").show().focus();
+				$(this).hide();
+			});
+		</script>
 	</div>
 	<br>
 

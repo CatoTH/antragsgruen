@@ -72,6 +72,13 @@ class VeranstaltungenController extends GxController
 
 		$this->performAjaxValidation($model, 'veranstaltung-form');
 
+		if (AntiXSS::isTokenSet("del_tag")) {
+			foreach ($model->tags as $tag) if ($tag->id == AntiXSS::getTokenVal("del_tag")) {
+				$tag->delete();
+				$model->refresh();
+			}
+		}
+
 		if (isset($_POST['Veranstaltung'])) {
 			$model->setAttributes($_POST['Veranstaltung']);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
@@ -113,6 +120,18 @@ class VeranstaltungenController extends GxController
 							$ae->text_unveraenderlich = 1;
 							$ae->save(false);
 						}
+					}
+				}
+
+				if (isset($_REQUEST["tag_neu"]) && trim($_REQUEST["tag_neu"]) != "") {
+					$max_id = 0;
+					$duplicate = false;
+					foreach ($model->tags as $tag) {
+						if ($tag->position > $max_id) $max_id = $tag->position;
+						if (mb_strtolower($tag->name) == mb_strtolower($_REQUEST["tag_neu"])) $duplicate = true;
+					}
+					if (!$duplicate) {
+						Yii::app()->db->createCommand()->insert("tags", array("veranstaltung_id" => $model->id, "name" => $_REQUEST["tag_neu"], "position" => ($max_id + 1)));
 					}
 				}
 
