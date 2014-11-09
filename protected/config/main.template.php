@@ -21,6 +21,15 @@ if (MULTISITE_MODE) {
 
 require(dirname(__FILE__) . "/common.php");
 
+/**
+ * @param Veranstaltung $veranstaltung
+ * @return bool
+ */
+function veranstaltungsspezifisch_ae_sortierung_zeilennummer($veranstaltung) {
+	return false;
+}
+
+
 return array(
 	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
 	'name'       => 'Grüne Anträge',
