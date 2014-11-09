@@ -160,7 +160,7 @@ class AntragsgruenController extends CController
 		if (strpos($username, "@")) {
 			$sql_where1 = "auth = 'email:" . addslashes($username) . "'";
 			if ($this->veranstaltungsreihe) {
-				$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
+				$sql_where2 = "(auth = 'ns_admin:" . IntVal($this->veranstaltungsreihe->id) . ":" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
 				$sql_where3 = "(email = '" . addslashes($username). "' AND auth LIKE 'openid:https://service.gruene.de/%')";
 				$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1 OR $sql_where2 OR $sql_where3");
 			} else {
@@ -182,7 +182,7 @@ class AntragsgruenController extends CController
 	{
 		/** @var Person[] $users */
 		if (strpos($username, "@")) {
-			$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
+			$sql_where2 = "(auth = 'ns_admin:" . IntVal($this->veranstaltungsreihe->id) . ":" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
 			$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where2");
 		} else {
 			// @TODO Login über Wurzelwerk-Authentifizierten Account per BenutzerInnenname+Passwort beim Admin der Reihe ermöglichen
@@ -222,7 +222,7 @@ class AntragsgruenController extends CController
 			switch ($x[0]) {
 				case "email":
 				case "ns_admin":
-					$identity = new AntragUserIdentityPasswd($x[1], $correct_user->auth);
+					$identity = new AntragUserIdentityPasswd($x[2], $correct_user->auth);
 					break;
 				case "openid":
 					if ($correct_user->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($correct_user->getWurzelwerkName(), $correct_user->auth);

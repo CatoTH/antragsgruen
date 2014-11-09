@@ -8,6 +8,7 @@
  * @var Veranstaltung $veranstaltung
  * @var array $unterstuetzerInnen
  * @var array $hiddens
+ * @var int[] $tags_pre
  * @var bool $js_protection
  * @var bool $login_warnung
  * @var Sprache $sprache
@@ -86,7 +87,24 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 				}
 				?>
 			</fieldset>
-		<?php } ?>
+		<?php }
+
+		if (count($veranstaltung->tags) > 0) {
+			?>
+			<fieldset>
+				<label class="legend">Themengebiet(e)</label>
+				<?php
+				foreach ($veranstaltung->tags as $tag) {
+					echo '<label class="radio" style="margin-right: 10px;"><input name="tags[]" value="' . $tag->id . '" type="checkbox" ';
+					if (in_array($tag->id, $tags_pre)) echo ' checked';
+					echo '> ' . CHtml::encode($tag->name) . '</label>';
+				}
+				?>
+			</fieldset>
+			<?php
+
+		}
+		?>
 
 		<fieldset class="control-group">
 

@@ -54,7 +54,7 @@ class IndexController extends AntragsgruenController
 					$password = Person::createPassword();
 
 					$person                                = new Person();
-					$person->auth                          = "ns_admin:" . $email;
+					$person->auth                          = "ns_admin:" . $this->veranstaltungsreihe->id . ":" . $email;
 					$person->name                          = $email;
 					$person->email                         = $email;
 					$person->email_bestaetigt              = 0;
@@ -63,7 +63,6 @@ class IndexController extends AntragsgruenController
 					$person->status                        = Person::$STATUS_CONFIRMED;
 					$person->typ                           = Person::$TYP_PERSON;
 					$person->veranstaltungsreihe_namespace = $this->veranstaltungsreihe->id;
-					$person->admin                         = 0;
 					if ($person->save()) {
 						$link      = yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/index");
 						$mail_text = str_replace(array("%EMAIL%", "%LINK%"), array($email, $link), $text);

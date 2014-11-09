@@ -564,6 +564,14 @@ class AntragController extends AntragsgruenController
 
 				$this->veranstaltung->getPolicyAntraege()->submitAntragsstellerInView_Antrag($antrag);
 
+				Yii::app()->db->createCommand()->delete("antrag_tags", "antrag_id=:antrag_id", array("antrag_id" => $antrag->id));
+				if (isset($_REQUEST["tags"])) foreach ($_REQUEST["tags"] as $tag_id) {
+					foreach ($this->veranstaltung->tags as $tag) if ($tag->id == $tag_id) {
+						Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $antrag->id, "tag_id" => $tag_id));
+					}
+				}
+
+
 				$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $antrag_id, "next_status" => $antrag->status, "from_mode" => "aendern")));
 			} else {
 				foreach ($antrag->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht geändert werden: $key: " . $val2);
@@ -582,11 +590,13 @@ class AntragController extends AntragsgruenController
 
 		$antragstellerIn    = null;
 		$unterstuetzerInnen = array();
+		$tags_pre           = array();
 
 		foreach ($antrag->antragUnterstuetzerInnen as $unt) {
 			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) $antragstellerIn = $unt->person;
 			if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $unt->person;
 		}
+		foreach ($antrag->tags as $tag) $tags_pre[] = $tag->id;
 
 		$this->render('bearbeiten_form', array(
 			"mode"               => "bearbeiten",
@@ -595,6 +605,7 @@ class AntragController extends AntragsgruenController
 			"antragstellerIn"    => $antragstellerIn,
 			"unterstuetzerInnen" => $unterstuetzerInnen,
 			"veranstaltung"      => $antrag->veranstaltung,
+			"tags_pre"           => $tags_pre,
 			"js_protection"      => $js_protection,
 			//"login_warnung"            => Yii::app()->user->isGuest,
 			"login_warnung"      => false,
@@ -696,6 +707,7 @@ class AntragController extends AntragsgruenController
 		}
 
 		$unterstuetzerInnen = array();
+		$tags_pre           = array();
 
 		if (AntiXSS::isTokenSet("antragneu")) {
 			$model->attributes = $_REQUEST["Antrag"];
@@ -721,6 +733,13 @@ class AntragController extends AntragsgruenController
 				if ($model->save()) {
 					$this->veranstaltung->getPolicyAntraege()->submitAntragsstellerInView_Antrag($model);
 					/* $next_status = $_REQUEST["Antrag"]["status"] */
+
+					if (isset($_REQUEST["tags"])) foreach ($_REQUEST["tags"] as $tag_id) {
+						foreach ($this->veranstaltung->tags as $tag) if ($tag->id == $tag_id) {
+							Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $model->id, "tag_id" => $tag_id));
+						}
+					}
+
 					$next_status = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 					$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $model->id, "next_status" => $next_status, "from_mode" => "neu")));
 				} else {
@@ -751,6 +770,7 @@ class AntragController extends AntragsgruenController
 			"unterstuetzerInnen" => $unterstuetzerInnen,
 			"veranstaltung"      => $veranstaltung,
 			"hiddens"            => $hiddens,
+			"tags_pre"           => $tags_pre,
 			"js_protection"      => $js_protection,
 			//"login_warnung"            => Yii::app()->user->isGuest,
 			"login_warnung"      => false,
