@@ -215,7 +215,7 @@ class Veranstaltung extends GxActiveRecord
 			if (!isset($antraege_sorted[$typ_name])) $antraege_sorted[$typ_name] = array();
 			$key = $ant->revision_name;
 
-			if ($this->getEinstellungen()->ae_nummerierung_nach_zeile) {
+			if ($this->getEinstellungen()->ae_nummerierung_nach_zeile || veranstaltungsspezifisch_ae_sortierung_zeilennummer($this)) {
 				$ant->aenderungsantraege = Aenderungsantrag::sortiereSichtbareNachZeilennummer($ant->aenderungsantraege);
 			}
 

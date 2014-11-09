@@ -65,6 +65,7 @@ if ($cached !== false) {
 			"aenderungsantrag" => $ae,
 			"pdf"              => $pdf,
 			"initiatorinnen"   => implode(", ", $initiatorInnen),
+			"diff_ansicht"     => true
 		));
 		$first = false;
 	}
