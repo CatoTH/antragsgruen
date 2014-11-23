@@ -783,6 +783,12 @@ fieldset.antragstellerIn {
   display: inline-block;
   width: 220px;
   vertical-align: top;
+
+  &.block {
+    display: block;
+    width: auto;
+  }
+
 }
 
 .search-form label {

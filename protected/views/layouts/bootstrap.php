@@ -59,6 +59,11 @@ $cs->registerScriptFile($assets_base . '/js/antraege.js', CClientScript::POS_END
 	<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
 	<meta name="msapplication-TileColor" content="#e6e6e6">
 	<meta name="msapplication-TileImage" content="/mstile-144x144.png">
+	<?php
+	if ($this->veranstaltung) foreach (veranstaltungsspezifisch_css_files($this->veranstaltung) as $css_file) {
+		echo '<link rel="stylesheet" href="' . CHtml::encode($css_file) . '">' . "\n";
+	}
+	?>
 </head>
 
 <body <?php if (count($row_classes) > 0) echo "class='" . implode(" ", $row_classes) . "'"; ?>>

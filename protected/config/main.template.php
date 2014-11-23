@@ -29,6 +29,13 @@ function veranstaltungsspezifisch_ae_sortierung_zeilennummer($veranstaltung) {
 	return false;
 }
 
+/**
+ * @param Veranstaltung $veranstaltung
+ * @return array
+ */
+function veranstaltungsspezifisch_css_files($veranstaltung) {
+	return array();
+}
 
 return array(
 	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',

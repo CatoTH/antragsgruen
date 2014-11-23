@@ -51,9 +51,11 @@ class Veranstaltung extends GxActiveRecord
 
 	public static $TYP_PARTEITAG = 0;
 	public static $TYP_PROGRAMM = 1;
+	public static $TYP_THEMEN_VORSCHLAEGE = 2;
 	public static $TYPEN = array(
 		0 => "Parteitag",
 		1 => "(Wahl-)Programm",
+		2 => "Themen-Vorschläge",
 	);
 
 
@@ -132,6 +134,8 @@ class Veranstaltung extends GxActiveRecord
 		switch ($this->typ) {
 			case Veranstaltung::$TYP_PROGRAMM:
 				return new SpracheProgramm();
+			case Veranstaltung::$TYP_THEMEN_VORSCHLAEGE:
+				return new SpracheThemenbox();
 			default:
 				return new SpracheAntraege();
 		}

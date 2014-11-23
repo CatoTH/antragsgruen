@@ -704,6 +704,9 @@ fieldset.antragstellerIn label.radio {
   display: inline-block;
   width: 220px;
   vertical-align: top; }
+  #veranstaltung-form label.block, #person-form label.block, #antrag-kommentar-form label.block, #aenderungsantrag-kommentar-form label.block, #texte-form label.block {
+    display: block;
+    width: auto; }
 
 .search-form label {
   display: inline-block;

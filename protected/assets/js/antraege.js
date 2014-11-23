@@ -20,7 +20,7 @@
         });
     });
 
-    $(document).on("change", ".person_selector",function () {
+    $(document).on("change", ".person_selector", function () {
         var $t = $(this);
         if ($t.val() === "neu") {
             $t.parents(".unterstuetzerInnenwidget_adder").find(".unterstuetzerIn_neu_holder").show();
@@ -98,6 +98,29 @@
 }());
 
 
+// Von ckeditor/plugins/wordcount/plugin.js
+function ckeditor_strip(html) {
+    var tmp = document.createElement("div");
+    tmp.innerHTML = html;
+
+    if (tmp.textContent == '' && typeof tmp.innerText == 'undefined') {
+        return '';
+    }
+
+    return tmp.textContent || tmp.innerText
+}
+
+function ckeditor_charcount(text) {
+    var normalizedText = text.
+        replace(/(\r\n|\n|\r)/gm, "").
+        replace(/^\s+|\s+$/g, "").
+        replace("&nbsp;", "");
+    normalizedText = ckeditor_strip(normalizedText).replace(/^([\s\t\r\n]*)$/, "");
+
+    return normalizedText.length;
+}
+
+
 function ckeditor_bbcode(id, height) {
 
     var $el = $("#" + id),
@@ -112,23 +135,45 @@ function ckeditor_bbcode(id, height) {
         autoGrow_bottomSpace: 20,
         // Width and height are not supported in the BBCode format, so object resizing is disabled.
         disableObjectResizing: true,
-        // Whether or not you want to show the Word Count
-        showWordCount: true,
-        // Whether or not you want to show the Char Count
-        showCharCount: true,
+        wordcount: {
+            showWordCount: true,
+            showCharCount: true,
+            countHTML: false,
+            countSpacesAsChars: true
+        },
         toolbar: [
-            { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', '-', 'RemoveFormat' ] },
-            { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Blockquote' ] },
-            { name: 'links', items: [ 'Link', 'Unlink' ] },
-            { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-            { name: 'editing', items: [ 'Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt' ] },
-            { name: 'tools', items: [ 'Maximize' ] }
+            {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']},
+            {name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Blockquote']},
+            {name: 'links', items: ['Link', 'Unlink']},
+            {name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+            {name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt']},
+            {name: 'tools', items: ['Maximize']}
         ]
 
     };
     if (typeof(height) != "undefined" && height > 0) opts["height"] = height;
-    CKEDITOR.replace(id, opts);
+    var editor = CKEDITOR.replace(id, opts);
+    console.log(editor);
 
+    var $fieldset = $el.parents("fieldset.textarea").first();
+    if ($fieldset.data("max_len") > 0) {
+        var onChange = function() {
+            console.log(ckeditor_charcount(editor.getData()));
+            if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
+                $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
+                $fieldset.find(".max_len_hint .calm").hide();
+                $fieldset.find(".max_len_hint .alert").show();
+            } else {
+                $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
+                $fieldset.find(".max_len_hint .calm").show();
+                $fieldset.find(".max_len_hint .alert").hide();
+            }
+        };
+        console.log("Event listener");
+        editor.on('change', onChange);
+        onChange();
+
+    }
 }
 
 
@@ -141,35 +186,38 @@ function ckeditor_simplehtml(id) {
 
     CKEDITOR.replace(id, {
         allowedContent: 'b s i u;' +
-            'ul ol li {list-style-type};' +
-            'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-            'p blockquote {border,margin,padding,text-align};' +
-            'a[href];',
+        'ul ol li {list-style-type};' +
+        'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+        'p blockquote {border,margin,padding,text-align};' +
+        'a[href];',
         toolbarGroups: [
-            { name: 'tools' },
-            { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-            { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-            { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
-            { name: 'forms' },
+            {name: 'tools'},
+            {name: 'document', groups: ['mode', 'document', 'doctools']},
+            {name: 'clipboard', groups: ['clipboard', 'undo']},
+            {name: 'editing', groups: ['find', 'selection', 'spellchecker']},
+            {name: 'forms'},
             '/',
-            { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-            { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-            { name: 'links' },
-            { name: 'insert' },
+            {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+            {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
+            {name: 'links'},
+            {name: 'insert'},
             '/',
-            { name: 'styles' },
-            { name: 'colors' },
-            { name: 'others' },
-            { name: 'about' }
+            {name: 'styles'},
+            {name: 'colors'},
+            {name: 'others'},
+            {name: 'about'}
         ],
         removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,bbcode',
         extraPlugins: 'autogrow,wordcount,tabletools',
         scayt_sLang: 'de_DE',
         autoGrow_bottomSpace: 20,
         // Whether or not you want to show the Word Count
-        showWordCount: true,
-        // Whether or not you want to show the Char Count
-        showCharCount: true
+        wordcount: {
+            showWordCount: true,
+            showCharCount: true,
+            countHTML: false,
+            countSpacesAsChars: true
+        }
     });
 
 }
@@ -205,7 +253,7 @@ function instanz_neu_anlegen_init() {
         $steps.eq(1).removeClass("active");
         $steps.eq(2).addClass("active");
     });
-    $("#CInstanzAnlegenForm_subdomain").on("blur", function() {
+    $("#CInstanzAnlegenForm_subdomain").on("blur", function () {
         if ($(this).val().match(/[^a-zA-Z0-9_-]/)) {
             alert("Bei der Subdomain sind nur Zahlen, Buchstaben, Unter- und Mittelstrich möglich.");
             $(this).focus();
@@ -215,7 +263,6 @@ function instanz_neu_anlegen_init() {
 
     });
 }
-
 
 
 /*!
@@ -231,11 +278,11 @@ function instanz_neu_anlegen_init() {
 
 (function ($) {
     var converter = {
-        vertical: { x: false, y: true },
-        horizontal: { x: true, y: false },
-        both: { x: true, y: true },
-        x: { x: true, y: false },
-        y: { x: false, y: true }
+        vertical: {x: false, y: true},
+        horizontal: {x: true, y: false},
+        both: {x: true, y: true},
+        x: {x: true, y: false},
+        y: {x: false, y: true}
     };
 
     var settings = {
@@ -269,7 +316,7 @@ function instanz_neu_anlegen_init() {
         var win = $(window);
         var isRoot = rootrx.test($element[0].nodeName);
         return {
-            border: isRoot ? { top: 0, left: 0, bottom: 0, right: 0} : borders($element[0]),
+            border: isRoot ? {top: 0, left: 0, bottom: 0, right: 0} : borders($element[0]),
             scroll: {
                 top: (isRoot ? win : $element).scrollTop(),
                 left: (isRoot ? win : $element).scrollLeft()

@@ -39,10 +39,10 @@ if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 	$this->menus_html[] = $html;
 }
 if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
-	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '" title="Neuen Antrag stellen"></a>';
+	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '" title="' . CHtml::encode($sprache->get("Neuen Antrag stellen")) . '"></a>';
 } elseif ($veranstaltung->getPolicyAntraege()->checkHeuristicallyAssumeLoggedIn()) {
 	$link_url = $this->createUrl("veranstaltung/login", array("back" => $this->createUrl("antrag/neu")));
-	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($link_url) . '" title="Neuen Antrag stellen (Login)"></a>';
+	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($link_url) . '" title="' . CHtml::encode($sprache->get("Neuen Antrag stellen")) . ' (Login)"></a>';
 }
 
 

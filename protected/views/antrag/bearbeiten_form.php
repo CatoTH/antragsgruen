@@ -27,16 +27,19 @@ $this->breadcrumbs = array(
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 ?>
-	<h1><?php echo $sprache->get($model->id > 0 ? 'Antrag bearbeiten' : 'Antrag stellen') ?></h1>
+	<h1><?php echo $sprache->get($model->id > 0 ? $sprache->get('Antrag bearbeiten') : $sprache->get('Antrag stellen')) ?></h1>
 
 	<div class="form content">
-		<fieldset>
-			<legend><?php echo $sprache->get("Voraussetzungen für einen Antrag") ?></legend>
-		</fieldset>
-
 		<?php
-		echo $veranstaltung->getPolicyAntraege()->getOnCreateDescription();
+		if ($veranstaltung->policy_antraege != "Alle") {
+			?>
+			<fieldset>
+				<legend><?php echo $sprache->get("Voraussetzungen für einen Antrag") ?></legend>
+			</fieldset>
 
+			<?php
+			echo $veranstaltung->getPolicyAntraege()->getOnCreateDescription();
+		}
 
 		/** @var TbActiveForm $form */
 		$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
@@ -106,9 +109,20 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		}
 		?>
 
-		<fieldset class="control-group">
+		<fieldset class="control-group textarea" <?php
+		$max_len = $this->veranstaltung->getEinstellungen()->antragstext_max_len;
+		if ($max_len > 0) echo " data-max_len=\"" . $max_len . "\"";
+		?>>
 
-			<legend>Antragstext</legend>
+			<legend><?php echo $sprache->get("Antragstext"); ?></legend>
+
+			<?php if ($this->veranstaltung->getEinstellungen()->antragstext_max_len > 0) {
+				echo '<div class="max_len_hint">';
+				$max_len = $this->veranstaltung->getEinstellungen()->antragstext_max_len;
+				echo '<div class="calm">Maximale Länge: ' . $max_len . ' Zeichen</div>';
+				echo '<div class="alert">Text zu lang - maximale Länge: ' . $max_len . ' Zeichen</div>';
+				echo '</div>';
+			} ?>
 
 			<div class="text_full_width">
 				<label style="display: none;" class="control-label required" for="Antrag_text">
@@ -118,7 +132,9 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 				<div class="controls">
 					<!--<a href="#" onClick="alert('TODO'); return false;">&gt; Text aus einem Pad kopieren</a><br>-->
-					<textarea id="Antrag_text" class="span8" name="Antrag[text]" rows="5" cols="80"><?= CHtml::encode($model->text) ?></textarea>
+					<textarea id="Antrag_text" class="span8" name="Antrag[text]" rows="5" cols="80"><?php
+						echo CHtml::encode($model->text);
+						?></textarea>
 				</div>
 
 			</div>

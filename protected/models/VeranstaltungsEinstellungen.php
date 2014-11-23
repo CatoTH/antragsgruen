@@ -28,6 +28,8 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $zeilenlaenge = 80;
 	public $begruendung_in_html = false;
 	public $bdk_startseiten_layout = false;
+	public $antragstext_max_len = 0;
+	public $antrag_neu_button_label = "";
 
 	/** @var array */
 	public $antrags_typen_deaktiviert = array();

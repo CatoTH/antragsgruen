@@ -1,3 +1,13 @@
+2.5.0 - ????-??-??
+==================
+
+* Die Veranstaltungseinstellungen wurden in zwei Seiten aufgeteilt, eine "Standard"-Seite und eine "ExpertInnen-Einstellungsseite"
+* Bei Anträgen kann man eine maximale Länge in Zeichen einstellen (KV Wiesbaden)
+* Als drittes "Wording" lässt sich nun "Themenvorschlag einwerfen" auswählen (KV Wiesbaden)
+* Einiger unbenutzer Code wurde entfernt.
+* Es gibt die Möglichkeit, Schlagworte zu definieren, denen AntragstellerInnen ihre Anträge zuordnen.
+* Vorbereitung: Refactoring der AntragstellerInnen-Tabellen
+
 2.4.13 - 2014-11-03
 ==================
 
