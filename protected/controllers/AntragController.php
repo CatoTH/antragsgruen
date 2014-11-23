@@ -690,9 +690,9 @@ class AntragController extends AntragsgruenController
 	public function actionNeu($veranstaltungsreihe_id = "", $veranstaltung_id)
 	{
 		$this->layout = '//layouts/column2';
-		$this->testeWartungsmodus();
 		/** @var Veranstaltung $veranstaltung */
 		$this->veranstaltung = $veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		$this->testeWartungsmodus();
 
 		$model                       = new Antrag();
 		$model->status               = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;

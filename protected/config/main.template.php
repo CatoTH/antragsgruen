@@ -37,6 +37,18 @@ function veranstaltungsspezifisch_css_files($veranstaltung) {
 	return array();
 }
 
+
+/**
+ * @param Veranstaltung $veranstaltung
+ * @return bool
+ */
+function veranstaltungsspezifisch_erzwinge_login($veranstaltung) {
+	return false;
+}
+
+
+
+
 return array(
 	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
 	'name'       => 'Grüne Anträge',

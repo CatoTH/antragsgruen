@@ -439,6 +439,8 @@ class AenderungsantragController extends AntragsgruenController
 	{
 		if (!isset($_REQUEST["absaetze"])) return;
 
+		$this->testeWartungsmodus();
+
 		$antrag_id = IntVal($_REQUEST["antrag_id"]);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
@@ -461,6 +463,8 @@ class AenderungsantragController extends AntragsgruenController
 	public function actionNeu($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
 	{
 		$this->layout = '//layouts/column2';
+
+		$this->testeWartungsmodus();
 
 		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */

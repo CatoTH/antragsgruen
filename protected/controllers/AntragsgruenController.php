@@ -29,7 +29,13 @@ class AntragsgruenController extends CController
 		if ($this->veranstaltung == null) return;
 		/** @var VeranstaltungsEinstellungen $einstellungen */
 		$einstellungen = $this->veranstaltung->getEinstellungen();
-		if ($einstellungen->wartungs_modus_aktiv && !$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("veranstaltung/wartungsmodus"));
+		if ($einstellungen->wartungs_modus_aktiv && !$this->veranstaltung->isAdminCurUser()) {
+			$this->redirect($this->createUrl("veranstaltung/wartungsmodus"));
+		}
+
+		if (veranstaltungsspezifisch_erzwinge_login($this->veranstaltung) && Yii::app()->user->isGuest) {
+			$this->redirect($this->createUrl("veranstaltung/login"));
+		}
 	}
 
 	/**
