@@ -5,8 +5,10 @@
 * Bei Anträgen kann man eine maximale Länge in Zeichen einstellen (KV Wiesbaden)
 * Als drittes "Wording" lässt sich nun "Themenvorschlag einwerfen" auswählen (KV Wiesbaden)
 * Einiger unbenutzer Code wurde entfernt.
-* Es gibt die Möglichkeit, Schlagworte zu definieren, denen AntragstellerInnen ihre Anträge zuordnen.
+* Es gibt die Möglichkeit, Schlagworte zu definieren, denen AntragstellerInnen ihre Anträge zuordnen. (KV Wiesbaden)
 * Vorbereitung: Refactoring der AntragstellerInnen-Tabellen
+* Das "Feeds"-Kästchen in der Sidebar lässt sich optional ausblenden. (KV Wiesbaden)
+* Auf Wunsch lässt sich das "Begründungs"-Eingabefeld bei neuen Aträgen deaktivieren. (KV Wiesbaden)
 
 2.4.13 - 2014-11-03
 ==================

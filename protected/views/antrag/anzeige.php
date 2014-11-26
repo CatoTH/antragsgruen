@@ -422,6 +422,7 @@ $this->menus_html[] = $html;
 
 
 
+$curr_user_id = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
 $unterstuetzerInnen = $antrag->getUnterstuetzerInnen();
 $zustimmung_von = $antrag->getZustimmungen();
 $ablehnung_von = $antrag->getAblehnungen();
@@ -429,6 +430,9 @@ $eintraege = (count($unterstuetzerInnen) > 0 || count($zustimmung_von) > 0 || co
 $unterstuetzen_policy = $antrag->veranstaltung->getPolicyUnterstuetzen();
 $kann_unterstuetzen = $unterstuetzen_policy->checkCurUserHeuristically();
 $kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
+foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN && $unt->person->id == $curr_user_id) {
+	$kann_unterstuetzen = false;
+}
 
 if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 	?>
@@ -437,8 +441,6 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 
 	<div class="content">
 		<?php
-		$curr_user_id = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
-
 		echo "<strong>UnterstützerInnen:</strong><br>";
 		if (count($unterstuetzerInnen) > 0) {
 			echo CHtml::openTag('ul');

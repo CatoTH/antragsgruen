@@ -711,12 +711,14 @@ class AntragController extends AntragsgruenController
 
 		if (AntiXSS::isTokenSet("antragneu")) {
 			$model->attributes = $_REQUEST["Antrag"];
-			if ($this->veranstaltung->getEinstellungen()->begruendung_in_html && isset($_REQUEST["Antrag"]["begruendung_html"])) {
-				$model->begruendung_html = 1;
-				$model->begruendung      = HtmlBBcodeUtils::html_normalize($_REQUEST["Antrag"]["begruendung"]);
-			} else {
-				$model->begruendung_html = 0;
-				$model->begruendung      = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["Antrag"]["begruendung"]);
+			if ($veranstaltung->getEinstellungen()->antrag_begruendungen) {
+				if ($this->veranstaltung->getEinstellungen()->begruendung_in_html && isset($_REQUEST["Antrag"]["begruendung_html"])) {
+					$model->begruendung_html = 1;
+					$model->begruendung      = HtmlBBcodeUtils::html_normalize($_REQUEST["Antrag"]["begruendung"]);
+				} else {
+					$model->begruendung_html = 0;
+					$model->begruendung      = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["Antrag"]["begruendung"]);
+				}
 			}
 			$model->text              = HtmlBBcodeUtils::bbcode_normalize($model->text);
 			$model->datum_einreichung = new CDbExpression('NOW()');

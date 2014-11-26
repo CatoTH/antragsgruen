@@ -14,5 +14,6 @@ class SpracheThemenbox extends Sprache
 		"Meine Anträge"     => "Meine Vorschläge",
 		"Neue Anträge"      => "Neue Vorschläge",
 		"Antragstext"       => "Vorschlagstext",
+		"Antrag einreichen" => "Vorschlag einreichen",
 	);
 }

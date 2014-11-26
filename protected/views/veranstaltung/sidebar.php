@@ -86,26 +86,27 @@ $this->menus_html[] = $html;
 
 $html = "";
 
-$feeds = 0;
-if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("veranstaltung/feedAntraege")) . "</li>";
-	$feeds++;
-}
-if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("veranstaltung/feedAenderungsantraege")) . "</li>";
-	$feeds++;
-}
-if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("veranstaltung/feedKommentare")) . "</li>";
-	$feeds++;
-}
-if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
+if ($veranstaltung->getEinstellungen()->feeds_anzeigen) {
+	$feeds = 0;
+	if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
+		$html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("veranstaltung/feedAntraege")) . "</li>";
+		$feeds++;
+	}
+	if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
+		$html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("veranstaltung/feedAenderungsantraege")) . "</li>";
+		$feeds++;
+	}
+	if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
+		$html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("veranstaltung/feedKommentare")) . "</li>";
+		$feeds++;
+	}
+	if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
 
-$feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
-$html      = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
+	$feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
+	$html      = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
 
-$this->menus_html[] = $html;
-
+	$this->menus_html[] = $html;
+}
 
 if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$name = ($veranstaltung->url_verzeichnis == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
@@ -116,7 +117,7 @@ if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$this->menus_html[] = $html;
 }
 
-if (!isset($GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"]) || !in_array($veranstaltung->id, $GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"])) {
+if (veranstaltungsspezifisch_antragsgruen_in_sidebar($veranstaltung)) {
 	$html = "</div><div class='antragsgruen_werbung well'><div class='nav-list'>";
 	$html .= "<div class='nav-header'>Dein Antragsgrün</div>";
 	$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?";

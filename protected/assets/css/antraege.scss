@@ -773,6 +773,13 @@ fieldset.antragstellerIn {
 }
 
 
+#antrag_stellen_form {
+  .form .radio {
+    min-width: 150px;
+  }
+}
+
+
 /*
 .controls {
     margin-left: 118px;

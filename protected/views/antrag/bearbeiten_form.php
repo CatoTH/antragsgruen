@@ -126,7 +126,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 			<div class="text_full_width">
 				<label style="display: none;" class="control-label required" for="Antrag_text">
-					Antragstext
+					<?php echo $sprache->get("Antragstext"); ?>
 					<span class="required">*</span>
 				</label>
 
@@ -140,25 +140,30 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 			</div>
 		</fieldset>
 
-		<fieldset class="control-group">
-			<legend>Begründung</legend>
-
-			<div class="text_full_width">
-				<label style="display: none;" class="control-label required" for="Antrag_begruendung">
-					Begründung
-					<span class="required">*</span>
-				</label>
-
-				<div class="controls">
-					<textarea id="Antrag_begruendung" class="span8" name="Antrag[begruendung]" rows="5" cols="80"><?= CHtml::encode($model->begruendung) ?></textarea>
-					<input type="hidden" id="Antrag_begruendung_html" name="Antrag[begruendung_html]"
-						   value="<?php echo $model->veranstaltung->getEinstellungen()->begruendung_in_html; ?>">
-				</div>
-
-			</div>
-		</fieldset>
-
 		<?php
+		if ($model->veranstaltung->getEinstellungen()->antrag_begruendungen) {
+			?>
+
+			<fieldset class="control-group">
+				<legend>Begründung</legend>
+
+				<div class="text_full_width">
+					<label style="display: none;" class="control-label required" for="Antrag_begruendung">
+						Begründung
+						<span class="required">*</span>
+					</label>
+
+					<div class="controls">
+						<textarea id="Antrag_begruendung" class="span8" name="Antrag[begruendung]" rows="5" cols="80"><?= CHtml::encode($model->begruendung) ?></textarea>
+						<input type="hidden" id="Antrag_begruendung_html" name="Antrag[begruendung_html]"
+							   value="<?php echo $model->veranstaltung->getEinstellungen()->begruendung_in_html; ?>">
+					</div>
+
+				</div>
+			</fieldset>
+		<?php
+		}
+
 		$this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
 			"form"               => $form,
 			"mode"               => $mode,
@@ -183,12 +188,14 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	<script>
 		$(function () {
 			ckeditor_bbcode("Antrag_text");
+			<?php if ($model->veranstaltung->getEinstellungen()->antrag_begruendungen) { ?>
 			if ($("#Antrag_begruendung_html").val() == "1") {
 				ckeditor_simplehtml("Antrag_begruendung");
 			} else {
 				ckeditor_bbcode("Antrag_begruendung");
 			}
-		})
+			<?php } ?>
+		});
 	</script>
 
 <?php $this->endWidget(); ?>

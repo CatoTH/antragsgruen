@@ -36,6 +36,7 @@ if ($hat_na) $tag_ids[] = 0;
 			padding: 0;
 			text-align: center;
 		}
+
 		#tag_list > li {
 			display: inline-block;
 			padding: 10px;
@@ -44,6 +45,7 @@ if ($hat_na) $tag_ids[] = 0;
 			font-size: 16px;
 			margin: 10px;
 		}
+
 		#tag_list > li > a:link, #tag_list > li > a:visited {
 			color: white;
 		}
@@ -55,7 +57,7 @@ if ($hat_na) $tag_ids[] = 0;
 		?>
 	</ul>
 	<script>
-		$("#tag_list").find("a").click(function(ev) {
+		$("#tag_list").find("a").click(function (ev) {
 			ev.preventDefault();
 			$($(this).attr("href")).scrollintoview({top_offset: -100});
 		})
@@ -74,7 +76,9 @@ foreach ($tag_ids as $tag_id) {
 		<table>
 			<thead>
 			<tr>
-				<th class="nummer">Antragsnummer</th>
+				<?php if (!$this->veranstaltung->getEinstellungen()->revision_name_verstecken) { ?>
+					<th class="nummer">Antragsnummer</th>
+				<?php } ?>
 				<th class="titel">Titel</th>
 				<th class="antragstellerIn">AntragstellerIn</th>
 			</tr>
@@ -86,7 +90,9 @@ foreach ($tag_ids as $tag_id) {
 				if ($antrag->typ != Antrag::$TYP_ANTRAG) $classes[] = "resolution";
 				if ($antrag->status == IAntrag::$STATUS_ZURUECKGEZOGEN) $classes[] = "zurueckgezogen";
 				echo "<tr class='" . implode(" ", $classes) . "'>\n";
-				echo "<td class='nummer'>" . CHtml::encode($antrag->revision_name) . "</td>\n";
+				if (!$this->veranstaltung->getEinstellungen()->revision_name_verstecken) {
+					echo "<td class='nummer'>" . CHtml::encode($antrag->revision_name) . "</td>\n";
+				}
 				echo "<td class='titel'>";
 				echo "<div class='titellink'>";
 				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
@@ -103,7 +109,9 @@ foreach ($tag_ids as $tag_id) {
 				$aes = $antrag->sortierteAenderungsantraege();
 				foreach ($aes as $ae) {
 					echo "<tr class='aenderungsantrag " . ($ae->status == IAntrag::$STATUS_ZURUECKGEZOGEN ? " class='zurueckgezogen'" : "") . "'>";
-					echo "<td class='nummer'>" . CHtml::encode($ae->revision_name) . "</td>\n";
+					if (!$this->veranstaltung->getEinstellungen()->revision_name_verstecken) {
+						echo "<td class='nummer'>" . CHtml::encode($ae->revision_name) . "</td>\n";
+					}
 					echo "<td class='titel'>";
 					echo "<div class='titellink'>";
 					echo CHtml::link("Änderungsantrag zu " . $antrag->revision_name, $this->createUrl('aenderungsantrag/anzeige', array("antrag_id" => $ae->antrag->id, "aenderungsantrag_id" => $ae->id)));

@@ -18,6 +18,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $ae_nummerierung_nach_zeile = false;
 	public $revision_name_verstecken = false;
 	public $ansicht_minimalistisch = false;
+	public $feeds_anzeigen = true;
 	public $kommentare_unterstuetzbar = false;
 	public $freischaltung_antraege = false;
 	public $freischaltung_aenderungsantraege = false;
@@ -30,6 +31,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $bdk_startseiten_layout = false;
 	public $antragstext_max_len = 0;
 	public $antrag_neu_button_label = "";
+	public $antrag_begruendungen = true;
 
 	/** @var array */
 	public $antrags_typen_deaktiviert = array();
@@ -72,8 +74,8 @@ class VeranstaltungsEinstellungen extends CFormModel
 			else $this->$key = $formdata[$key];
 		} elseif (is_bool($val)) $this->$key = false; // Checkbox nicht gesetzt
 
-		$this->antrags_typen_deaktiviert = array();
 		if (isset($_REQUEST["antrags_typen_aktiviert"])) {
+			$this->antrags_typen_deaktiviert = array();
 			foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $_REQUEST["antrags_typen_aktiviert"])) $this->antrags_typen_deaktiviert[] = IntVal($id);
 		}
 

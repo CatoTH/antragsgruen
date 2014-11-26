@@ -83,10 +83,19 @@ $einstellungen = $model->getEinstellungen();
 				danach sortiert werden kann. Es wird aber nicht mehr angezeigt. Das ist dann praktisch, wenn man eine
 				eigene Nummerierung im Titel der Anträge vornimmt.
 			</small>
-		</label> &nbsp; &nbsp;
+		</label>
 	</div>
 	<br>
 
+
+	<div>
+		<label style="display: inline;"><input type="checkbox"
+											   name="VeranstaltungsEinstellungen[feeds_anzeigen]"
+											   value="1" <?php if ($einstellungen->feeds_anzeigen) echo "checked"; ?>>
+			Feeds in der Sidebar anzeigen
+		</label>
+	</div>
+	<br>
 	<div>
 		<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[titel_eigene_zeile]"
 											   value="1" <?php if ($einstellungen->titel_eigene_zeile == 1) echo "checked"; ?>>
@@ -231,6 +240,14 @@ $einstellungen = $model->getEinstellungen();
 		</script>
 	</fieldset>
 
+
+	<fieldset style="margin-top: 10px;">
+		<label class="block">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[antrag_begruendungen]"
+				   value="1" <?php if ($model->getEinstellungen()->antrag_begruendungen) echo "checked"; ?>>
+			Ein extra Feld für Antragsbegründungen anzeigen
+		</label>
+	</fieldset>
 
 	<fieldset style="margin-top: 10px;">
 		<label class="block">

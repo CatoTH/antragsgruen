@@ -6,7 +6,7 @@
  * @var Sprache $sprache
  */
 
-$this->breadcrumbs = array(
+$this->breadcrumbs         = array(
 	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	$sprache->get('Neuer Antrag'),
 	' / Bestätigen'
@@ -17,7 +17,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	<h1><?php echo CHtml::encode($antrag->name); ?></h1>
 
 	<div class="antrags_text_holder">
-		<h3>Antragstext</h3>
+		<h3><?php echo $sprache->get("Antragstext"); ?></h3>
 
 		<?php
 
@@ -39,6 +39,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		</div>
 	</div>
 
+<?php if ($antrag->begruendung != "" || $antrag->veranstaltung->getEinstellungen()->antrag_begruendungen) { ?>
 	<div class="begruendungs_text_holder">
 		<h3>Begründung</h3>
 
@@ -49,6 +50,7 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 			?>
 		</div>
 	</div>
+<? } ?>
 
 	<div class="antrags_text_holder">
 		<h3>AntragstellerInnen</h3>
@@ -77,7 +79,7 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
 
 	<div class="form-actions">
 		<div style="float: right;">
-			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Antrag einreichen')); ?>
+			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => $sprache->get('Antrag einreichen'))); ?>
 		</div>
 		<div style="float: left;">
 			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submitlink', 'url' => $this->createUrl("antrag/aendern", array("antrag_id" => $antrag->id)), 'icon' => 'remove', 'label' => 'Korrigieren')); ?>
