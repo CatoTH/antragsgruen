@@ -15,7 +15,7 @@
  * @var Sprache $sprache
  */
 
-$this->breadcrumbs = array(
+$this->breadcrumbs         = array(
 	CHtml::encode($antrag->veranstaltung->name_kurz) => $this->createUrl("veranstaltung/index"),
 	$sprache->get("Antrag"),
 );
@@ -63,16 +63,16 @@ $this->menus_html[] = $html;
 		<div class="content">
 			<?php if (count($antrag->antraege) > 0) { ?>
 				<div class="alert alert-error" style="margin-top: 10px; margin-bottom: 25px;">
-                    <?php if (count($antrag->antraege) == 1) {
-                        echo 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:<br>';
-                        $a = $antrag->antraege[0];
-                        echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
+					<?php if (count($antrag->antraege) == 1) {
+						echo 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:<br>';
+						$a = $antrag->antraege[0];
+						echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id)));
 					} else {
-                        echo 'Achtung: dies ist eine alte Fassung. Aktuellere Fassungen gibt es hier:<br>';
-                        foreach ($antrag->antraege as $a) {
-                            echo "- " . CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id))) . "<br>";
-                        }
-                    } ?>
+						echo 'Achtung: dies ist eine alte Fassung. Aktuellere Fassungen gibt es hier:<br>';
+						foreach ($antrag->antraege as $a) {
+							echo "- " . CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $a->id))) . "<br>";
+						}
+					} ?>
 				</div>
 			<?php } ?>
 
@@ -87,17 +87,17 @@ $this->menus_html[] = $html;
 					<th><?= $sprache->get("AntragsstellerIn") ?>:</th>
 					<td><?php
 						$x = array();
-                        foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
-	                        $name= $unt->getNameMitBeschlussdatum(true);
-	                        if ($antrag->veranstaltung->isAdminCurUser() && ($unt->person->email != "" || $unt->person->telefon != "")) {
-		                        $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
-		                        if ($unt->person->email != "") $name .=  "E-Mail: " . CHtml::encode($unt->person->email);
-		                        if ($unt->person->email != "" && $unt->person->telefon != "") $name .=  ", ";
-		                        if ($unt->person->telefon != "") $name .=  "Telefon: " . CHtml::encode($unt->person->telefon);
-		                        $name .=  ")</small>";
-	                        }
-                            $x[] = $name;
-                        }
+						foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+							$name = $unt->getNameMitBeschlussdatum(true);
+							if ($antrag->veranstaltung->isAdminCurUser() && ($unt->person->email != "" || $unt->person->telefon != "")) {
+								$name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
+								if ($unt->person->email != "") $name .= "E-Mail: " . CHtml::encode($unt->person->email);
+								if ($unt->person->email != "" && $unt->person->telefon != "") $name .= ", ";
+								if ($unt->person->telefon != "") $name .= "Telefon: " . CHtml::encode($unt->person->telefon);
+								$name .= ")</small>";
+							}
+							$x[] = $name;
+						}
 						echo implode(", ", $x);
 						?></td>
 				</tr>
@@ -129,16 +129,17 @@ $this->menus_html[] = $html;
 						<th>Themenbereiche:</th>
 						<td>
 							<?php
-							$tags = array();
+							$tags         = array();
 							$used_tag_ids = array();
 							foreach ($antrag->tags as $tag) {
 								$used_tag_ids[] = $tag->id;
-								$dellink = $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, AntiXSS::createToken("del_tag") => $tag->id));
-								$str = CHtml::encode($tag->name) . ' <a href="' . CHtml::encode($dellink) . '" style="color: red; text-style: italic; font-size: 0.7em;">del</a>';
-								$tags[] = $str;
+								$dellink        = $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, AntiXSS::createToken("del_tag") => $tag->id));
+								$str            = CHtml::encode($tag->name) . ' <a href="' . CHtml::encode($dellink) . '" style="color: red; text-style: italic; font-size: 0.7em;">del</a>';
+								$tags[]         = $str;
 							}
 							echo implode(", ", $tags);
 							?>&nbsp; &nbsp; <a href="#" class="tag_adder_holder" style="color: green;">Neu</a>
+
 							<form method="POST" style="display: none;" id="tag_adder_form">
 								<select name="tag_id" size="1" title="Schlagwort aussuchen">
 									<option></option>
@@ -146,11 +147,13 @@ $this->menus_html[] = $html;
 									foreach ($antrag->veranstaltung->tags as $tag) if (!in_array($tag->id, $used_tag_ids)) echo '<option value="' . IntVal($tag->id) . '">' . CHtml::encode($tag->name) . '</option>';
 									?>
 								</select>
-								<button class="btn btn-primary" type="submit" name="<?php echo CHtml::encode(AntiXSS::createToken("add_tag"))?>" style="margin: 0; margin-top: -10px;">Hinzufügen</button>
+								<button class="btn btn-primary" type="submit" name="<?php echo CHtml::encode(AntiXSS::createToken("add_tag")) ?>"
+										style="margin: 0; margin-top: -10px;">Hinzufügen
+								</button>
 							</form>
 							<script>
-								$(function() {
-									$(".tag_adder_holder").click(function(ev) {
+								$(function () {
+									$(".tag_adder_holder").click(function (ev) {
 										ev.preventDefault();
 										$(this).hide();
 										$("#tag_adder_form").show();
@@ -159,11 +162,11 @@ $this->menus_html[] = $html;
 							</script>
 						</td>
 					</tr>
-					<?php
+				<?php
 				} elseif (count($antrag->tags) > 0) {
 					?>
 					<tr>
-						<th><?php echo (count($antrag->tags) > 1 ? "Themenbereiche" : "Themenbereich")?></th>
+						<th><?php echo(count($antrag->tags) > 1 ? "Themenbereiche" : "Themenbereich") ?></th>
 						<td>
 							<?php
 							$tags = array();
@@ -174,7 +177,8 @@ $this->menus_html[] = $html;
 					</tr>
 				<?php
 				}
-				if ($antrag->abgeleitetVon) { ?>
+				if ($antrag->abgeleitetVon) {
+					?>
 					<tr>
 						<th>Ersetzt diesen Antrag:</th>
 						<td><?php echo CHtml::link($antrag->abgeleitetVon->revision_name . " - " . $antrag->abgeleitetVon->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->abgeleitetVon->id))); ?> </td>
@@ -269,132 +273,15 @@ $this->menus_html[] = $html;
 				}
 			}
 
-			/** @var AntragKommentar $komm */
-			foreach ($abs->kommentare as $komm) {
-				$komm_link = $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id));
-				?>
-				<div class="kommentarform" id="komm<?php echo $komm->id; ?>">
-					<div class="datum"><?php echo HtmlBBcodeUtils::formatMysqlDateTime($komm->datum) ?></div>
-					<h3>Kommentar von
-						<?php echo CHtml::encode($komm->verfasserIn->getNameMitOrga());
-						if ($komm->status == IKommentar::$STATUS_NICHT_FREI) echo " <em>(noch nicht freigeschaltet)</em>";
-						?></h3>
-					<?php
-					echo nl2br(CHtml::encode($komm->text));
-					if (!is_null($komm_del_link) && $komm->kannLoeschen(Yii::app()->user)) echo "<div class='del_link'><a href='" . CHtml::encode(str_replace(rawurlencode("#komm_id#"), $komm->id, $komm_del_link)) . "'>x</a></div>";
-
-					if ($komm->status == IKommentar::$STATUS_NICHT_FREI && $antrag->veranstaltung->isAdminCurUser()) {
-						$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-							'type'        => 'inline',
-							'htmlOptions' => array('class' => '', "style" => "clear: both;"),
-							'action'      => $komm_link
-						));
-						echo '<div style="display: inline-block; width: 49%; text-align: center;">';
-						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'success', 'label' => 'Freischalten', 'icon' => 'icon-thumbs-up', 'htmlOptions' => array('name' => AntiXSS::createToken('komm_freischalten'))));
-						echo '</div><div style="display: inline-block; width: 49%; text-align: center;">';
-						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'danger', 'label' => 'Löschen', 'icon' => 'icon-thumbs-down', 'htmlOptions' => array('name' => AntiXSS::createToken('komm_nicht_freischalten'))));
-						echo '</div>';
-						$this->endWidget();
-					}
-
-					?>
-					<div class="kommentar_bottom">
-						<div
-							class="kommentarlink"><?php echo CHtml::link("Kommentar verlinken", $komm_link); ?></div>
-						<?php
-						if ($this->veranstaltung->getEinstellungen()->kommentare_unterstuetzbar) {
-							$form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
-								'type'        => 'inline',
-								'htmlOptions' => array('class' => 'kommentar_unterstuetzerInnen_holder'),
-								'action'      => $komm_link,
-							));
-
-							$meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($komm->id);
-
-							$anzahl_dafuer = $anzahl_dagegen = 0;
-							foreach ($komm->unterstuetzerInnen as $unt) {
-								if ($unt->dafuer) $anzahl_dafuer++;
-								else $anzahl_dagegen++;
-							}
-							if ($meine_unterstuetzung !== null) {
-								?>
-								<span class="dafuer"><span
-										class="icon-thumbs-up"></span> <?php echo $anzahl_dafuer; ?></span>
-								<span class="dagegen"><span
-										class="icon-thumbs-down"></span> <?php echo $anzahl_dagegen; ?></span>
-								<span class="meine">
-						<span class="momentan"><?php
-							if ($meine_unterstuetzung->dafuer) echo '<span class="icon-thumbs-up"></span> Du hast diesen Kommentar positiv bewertet';
-							else echo '<span class="icon-thumbs-down"></span> Du hast diesen Kommentar negativ bewertet';
-							?></span>
-					<button class="dochnicht" type="submit"
-							name="<?php echo AntiXSS::createToken('komm_dochnicht'); ?>">Bewertung zurücknehmen
-					</button>
-					</span>
-							<?php } else { ?>
-								<button class="dafuer" type="submit"
-										name="<?php echo AntiXSS::createToken('komm_dafuer'); ?>"><span
-										class="icon-thumbs-up"></span> <?php echo $anzahl_dafuer; ?></button>
-								<button class="dagegen" type="submit"
-										name="<?php echo AntiXSS::createToken('komm_dagegen'); ?>"><span
-										class="icon-thumbs-down"></span> <?php echo $anzahl_dagegen; ?></button>
-							<?php
-							}
-							$this->endWidget();
-						}
-						?>
-					</div>
-				</div>
-			<?php
-			}
-
-			if ($antrag->veranstaltung->darfEroeffnenKommentar()) {
-				/** @var CActiveForm $form */
-				$form = $this->beginWidget('CActiveForm', array(
-					"htmlOptions" => array(
-						"class" => "kommentarform",
-					),
-				));
-				?>
-				<fieldset>
-					<legend>Kommentar schreiben</legend>
-
-					<?php
-
-					if ($js_protection) {
-						?>
-						<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder
-							JavaScript aktiviert sein, oder du musst eingeloggt sein.
-						</div>
-					<?php
-					}
-					foreach ($hiddens as $name => $value) {
-						echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
-					}
-					echo '<input type="hidden" name="absatz_nr" value="' . $abs->absatz_nr . '">';
-					?>
-					<div class="row">
-						<?php echo $form->labelEx($kommentar_person, 'name'); ?>
-						<?php echo $form->textField($kommentar_person, 'name') ?>
-					</div>
-					<div class="row">
-						<?php echo $form->labelEx($kommentar_person, 'email'); ?>
-						<?php echo $form->emailField($kommentar_person, 'email') ?>
-					</div>
-					<div class="row">
-						<?php echo $form->labelEx($dummy_komm, 'text'); ?>
-						<?php echo $form->textArea($dummy_komm, 'text') ?>
-					</div>
-				</fieldset>
-
-				<div class="submitrow">
-					<?php
-					$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Kommentar abschicken'));
-					?>
-				</div>
-				<?php
-				$this->endWidget();
-			}
+			$this->renderPartial("anzeige_kommentare", array(
+				"antrag"           => $antrag,
+				"absatz_nr"        => $abs->absatz_nr,
+				"komm_del_link"    => $komm_del_link,
+				"js_protection"    => $js_protection,
+				"hiddens"          => $hiddens,
+				"kommentar_person" => $kommentar_person,
+				"kommentare"       => $abs->kommentare,
+			));
 			?>
 
 		</div>
@@ -422,13 +309,13 @@ $this->menus_html[] = $html;
 
 
 
-$curr_user_id = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
-$unterstuetzerInnen = $antrag->getUnterstuetzerInnen();
-$zustimmung_von = $antrag->getZustimmungen();
-$ablehnung_von = $antrag->getAblehnungen();
-$eintraege = (count($unterstuetzerInnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
-$unterstuetzen_policy = $antrag->veranstaltung->getPolicyUnterstuetzen();
-$kann_unterstuetzen = $unterstuetzen_policy->checkCurUserHeuristically();
+$curr_user_id                 = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
+$unterstuetzerInnen           = $antrag->getUnterstuetzerInnen();
+$zustimmung_von               = $antrag->getZustimmungen();
+$ablehnung_von                = $antrag->getAblehnungen();
+$eintraege                    = (count($unterstuetzerInnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
+$unterstuetzen_policy         = $antrag->veranstaltung->getPolicyUnterstuetzen();
+$kann_unterstuetzen           = $unterstuetzen_policy->checkCurUserHeuristically();
 $kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
 foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN && $unt->person->id == $curr_user_id) {
 	$kann_unterstuetzen = false;
@@ -499,19 +386,19 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 				break;
 			default:
 				?>
-					<div style="display: inline-block; width: 49%; text-align: center;">
-						<?php
-						$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'success', 'label' => 'Zustimmen', 'icon' => 'icon-thumbs-up', 'htmlOptions' => array('name' => AntiXSS::createToken('mag'))));
-						?>
-					</div>
-					<!--
-					<div style="display: inline-block; width: 49%; text-align: center;">
-						<?php
-					$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'danger', 'label' => 'Ablehnen', 'icon' => 'icon-thumbs-down', 'htmlOptions' => array('name' => AntiXSS::createToken('magnicht'))));
+				<div style="display: inline-block; width: 49%; text-align: center;">
+					<?php
+					$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'success', 'label' => 'Zustimmen', 'icon' => 'icon-thumbs-up', 'htmlOptions' => array('name' => AntiXSS::createToken('mag'))));
 					?>
+				</div>
+				<!--
+					<div style="display: inline-block; width: 49%; text-align: center;">
+						<?php
+				$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'danger', 'label' => 'Ablehnen', 'icon' => 'icon-thumbs-down', 'htmlOptions' => array('name' => AntiXSS::createToken('magnicht'))));
+				?>
 					</div>
 					-->
-				<?php
+			<?php
 		}
 		echo "</div>";
 		$this->endWidget();
@@ -555,6 +442,28 @@ if (count($aenderungsantraege) > 0 || $antrag->veranstaltung->policy_aenderungsa
 
 		?></div>
 <?php
+}
+
+
+if ($antrag->veranstaltung->getEinstellungen()->antrag_kommentare_ohne_absatz) {
+	?>
+	<h2>Kommentare</h2>
+
+
+	<?php
+	$kommentare = array();
+	foreach ($antrag->antragKommentare as $komm) if ($komm->absatz == -1 && $komm->status != IKommentar::$STATUS_GELOESCHT) $kommentare[] = $komm;
+
+	$this->renderPartial("anzeige_kommentare", array(
+		"antrag"           => $antrag,
+		"absatz_nr"        => -1,
+		"komm_del_link"    => $komm_del_link,
+		"js_protection"    => $js_protection,
+		"hiddens"          => $hiddens,
+		"kommentar_person" => $kommentar_person,
+		"kommentare"       => $kommentare,
+	));
+
 }
 
 ?>

@@ -9,6 +9,7 @@
 * Vorbereitung: Refactoring der AntragstellerInnen-Tabellen
 * Das "Feeds"-Kästchen in der Sidebar lässt sich optional ausblenden. (KV Wiesbaden)
 * Auf Wunsch lässt sich das "Begründungs"-Eingabefeld bei neuen Aträgen deaktivieren. (KV Wiesbaden)
+* Anträge können allgemein kommentiert werden, ohne expliziten Zeilenbezug. (ExpertInnenfunktion; KV München)
 
 2.4.13 - 2014-11-03
 ==================
