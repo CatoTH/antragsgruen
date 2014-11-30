@@ -32,6 +32,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $antragstext_max_len = 0;
 	public $antrag_neu_button_label = "";
 	public $antrag_begruendungen = true;
+	public $antrag_kommentare_ohne_absatz = false;
 
 	/** @var array */
 	public $antrags_typen_deaktiviert = array();
@@ -67,12 +68,17 @@ class VeranstaltungsEinstellungen extends CFormModel
 	 */
 	public function saveForm($formdata)
 	{
+		if (!isset($formdata["einstellungsfelder"])) return;
+
 		$fields = get_object_vars($this);
-		foreach ($fields as $key => $val) if (isset($formdata[$key])) {
-			if (is_bool($val)) $this->$key = (bool)$formdata[$key];
+		var_dump($fields);
+		foreach ($formdata["einstellungsfelder"] as $key) {
+			if (!array_key_exists($key, $fields)) die("Ungültiges Feld: " . $key);
+			$val = $fields[$key];
+			if (is_bool($val)) $this->$key = (isset($formdata[$key]) && (bool)$formdata[$key]);
 			elseif (is_int($val)) $this->$key = (int)$formdata[$key];
 			else $this->$key = $formdata[$key];
-		} elseif (is_bool($val)) $this->$key = false; // Checkbox nicht gesetzt
+		}
 
 		if (isset($_REQUEST["antrags_typen_aktiviert"])) {
 			$this->antrags_typen_deaktiviert = array();

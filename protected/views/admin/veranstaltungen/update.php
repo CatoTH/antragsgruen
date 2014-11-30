@@ -34,7 +34,9 @@ $einstellungen = $model->getEinstellungen();
 <div class="content ">
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]"
+		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="wartungs_modus_aktiv">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[wartungs_modus_aktiv]"
 											   value="1" <?php if ($model->getEinstellungen()->wartungs_modus_aktiv) echo "checked"; ?>>
 			<strong>Wartungsmodus aktiv</strong>
 			<small>(Nur Admins können den Seiteninhalt sehen)</small>
@@ -127,6 +129,7 @@ $einstellungen = $model->getEinstellungen();
 	</div>
 
 	<div>
+		<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="wartungs_modus_aktiv">
 		<?php echo $form->labelEx($einstellungen, 'antrag_einleitung', array("label" => "PDF-Antrags-Einleitung")); ?>
 		<div class="std_content_col">
 			<?php echo $form->textArea($einstellungen, 'antrag_einleitung'); ?>
@@ -174,8 +177,9 @@ $einstellungen = $model->getEinstellungen();
 
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox"
-											   name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]"
+		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="zeilen_nummerierung_global">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[zeilen_nummerierung_global]"
 											   value="1" <?php if ($einstellungen->zeilen_nummerierung_global == 1) echo "checked"; ?>>
 			<strong>Zeilennummerierung</strong> durchgehend für die ganze Veranstaltung
 		</label>
@@ -183,6 +187,7 @@ $einstellungen = $model->getEinstellungen();
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="freischaltung_antraege">
 			<input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_antraege]" value="1" <?php if ($einstellungen->freischaltung_antraege) echo "checked"; ?>>
 			<strong>Freischaltung</strong> von Anträgen
 		</label>
@@ -191,6 +196,7 @@ $einstellungen = $model->getEinstellungen();
 
 	<fieldset style="margin-top: 10px;">
 		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="antrag_neu_braucht_email">
 			<input type="checkbox" name="VeranstaltungsEinstellungen[antrag_neu_braucht_email]"
 				   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_email) echo "checked"; ?>>
 			Angabe der <strong>E-Mail-Adresse</strong> erzwingen
@@ -200,7 +206,9 @@ $einstellungen = $model->getEinstellungen();
 	</fieldset>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox" id="antrag_neu_kann_telefon" name="VeranstaltungsEinstellungen[antrag_neu_kann_telefon]"
+		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="antrag_neu_kann_telefon">
+			<input type="checkbox" id="antrag_neu_kann_telefon" name="VeranstaltungsEinstellungen[antrag_neu_kann_telefon]"
 											   value="1" <?php if ($model->getEinstellungen()->antrag_neu_kann_telefon) echo "checked"; ?>>
 			Angabe der <strong>Telefonnummer</strong> ermöglichen
 			<small>(Bei Anträgen und Änderungsanträgen)</small>
@@ -208,6 +216,7 @@ $einstellungen = $model->getEinstellungen();
 		<br>
 
 		<label style="display: inline-block; margin-left: 30px;" id="antrag_neu_braucht_telefon_holder">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="antrag_neu_braucht_telefon">
 			<input type="checkbox" name="VeranstaltungsEinstellungen[antrag_neu_braucht_telefon]"
 				   value="1" <?php if ($model->getEinstellungen()->antrag_neu_braucht_telefon) echo "checked"; ?>>
 			Erzwingen
@@ -243,8 +252,9 @@ $einstellungen = $model->getEinstellungen();
 	</div>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox"
-											   name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]"
+		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="freischaltung_aenderungsantraege">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_aenderungsantraege]"
 											   value="1" <?php if ($einstellungen->freischaltung_aenderungsantraege) echo "checked"; ?>>
 			<strong>Freischaltung</strong> von Änderungsanträgen</label> &nbsp; &nbsp;
 	</fieldset>
@@ -290,16 +300,18 @@ $einstellungen = $model->getEinstellungen();
 	<br>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox"
-											   name="VeranstaltungsEinstellungen[freischaltung_kommentare]"
+		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="freischaltung_kommentare">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_kommentare]"
 											   value="1" <?php if ($einstellungen->freischaltung_kommentare) echo "checked"; ?>>
 			Kommentare müssen durch den Admin <strong>freigeschaltet</strong> werden</label>
 	</fieldset>
 	<br>
 
 	<fieldset style="margin-top: 10px;">
-		<label style="display: inline;"><input type="checkbox"
-											   name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]"
+		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="kommentar_neu_braucht_email">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[kommentar_neu_braucht_email]"
 											   value="1" <?php if ($einstellungen->kommentar_neu_braucht_email) echo "checked"; ?>>
 			Angabe der <strong>E-Mail-Adresse</strong> erzwingen</label>
 	</fieldset>
@@ -320,7 +332,9 @@ $einstellungen = $model->getEinstellungen();
 	<br>
 
 	<div>
-		<label style="display: inline;"><input type="checkbox" name="VeranstaltungsEinstellungen[bestaetigungs_emails]"
+		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="bestaetigungs_emails">
+			<input type="checkbox" name="VeranstaltungsEinstellungen[bestaetigungs_emails]"
 											   value="1" <?php if ($einstellungen->bestaetigungs_emails) echo "checked"; ?>>
 			Bestätigungs-E-Mails an die NutzerInnen schicken</label>
 	</div>
