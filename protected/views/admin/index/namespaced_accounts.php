@@ -10,6 +10,7 @@ $this->breadcrumbs = array(
 );
 
 $pre_emails = "";
+$pre_namen = "";
 
 $pre_text = "Hallo,
 
@@ -48,7 +49,7 @@ Liebe Grüße,
 	else {
 		echo '<ul>';
 		foreach ($accounts as $account) {
-			echo '<li>' . CHtml::encode($account->email) . '</li>';
+			echo '<li>' . CHtml::encode($account->name) . ' (' . CHtml::encode($account->email) . ')</li>';
 		}
 		echo '</ul>';
 	}
@@ -57,19 +58,28 @@ Liebe Grüße,
 
 <h2>BenutzerInnen eintragen</h2>
 <form method="POST" action="<?php echo CHtml::encode($this->createUrl("admin/index/namespacedAccounts")); ?>" class="content" id="nutzerInnen_anlegen_form">
-	<label style="font-weight: bold; display: block;" for="email_adressen">E-Mail-Adressen:</label>
-	(bitte gib genau eine E-Mail-Adresse pro Zeile an!)<br>
-	<textarea id="email_adressen" name="email_adressen" rows="15" cols="80" style="width: 500px;"><?php echo CHtml::encode($pre_emails); ?></textarea>
+	<label style="font-weight: bold; display: block; float: left; width: 300px;">
+		E-Mail-Adressen:<br>
+		<small style="font-weight: normal; display: block;">(genau eine E-Mail-Adresse pro Zeile!)</small>
+		<textarea id="email_adressen" name="email_adressen" rows="15" style="width: 100%;"><?php echo CHtml::encode($pre_emails); ?></textarea>
+	</label>
+
+	<label style="font-weight: bold; display: block; float: left; width: 300px; margin-left: 25px;">
+		Namen der BenutzerInnen:<br>
+		<small style="font-weight: normal; display: block;">(Wichtig: Exakte Zuordnung zu den Zeilen links)</small>
+		<textarea id="namen" name="namen" rows="15" style="width: 100%;"><?php echo CHtml::encode($pre_namen); ?></textarea>
+	</label>
 
 
+	<br style="clear: both;">
 	<br>
 	<label style="font-weight: bold; display: block;" for="email_text">Text der E-Mail:</label>
 	<textarea id="email_text" name="email_text" rows="15" cols="80" style="width: 500px;"><?php echo CHtml::encode($pre_text); ?></textarea>
 	<br><br>
 
 	<script>
-		$(function() {
-			$("#nutzerInnen_anlegen_form").submit(function(ev) {
+		$(function () {
+			$("#nutzerInnen_anlegen_form").submit(function (ev) {
 				var text = $("#email_text").val();
 				if (text.indexOf("%EMAIL%") == -1) {
 					alert("Im E-Mail-Text muss der Code %EMAIL% vorkommen.");
@@ -83,17 +93,28 @@ Liebe Grüße,
 					alert("Im E-Mail-Text muss der Code %LINK% vorkommen.");
 					ev.preventDefault();
 				}
+
+				var emails = $("#email_adressen").val().split("\n"),
+					namen = $("#namen").val().split("\n");
+				if (emails.length == 1 && emails[0] == "") {
+					alert("Es wurden keine E-Mail-Adressen angegeben.");
+					ev.preventDefault();
+				}
+				if (emails.length != namen.length) {
+					alert("Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!");
+					ev.preventDefault();
+				}
 			});
 		})
 	</script>
 
 	<?php
 	$this->widget('bootstrap.widgets.TbButton', array(
-		'buttonType' => 'submit',
-		'type' => 'primary',
-		'icon' => 'ok white',
-		'label' => 'Anlegen',
-		'htmlOptions' => array('name' => AntiXSS::createToken('eintragen')))
+			'buttonType'  => 'submit',
+			'type'        => 'primary',
+			'icon'        => 'ok white',
+			'label'       => 'Anlegen',
+			'htmlOptions' => array('name' => AntiXSS::createToken('eintragen')))
 	);
 	?>
 </form>

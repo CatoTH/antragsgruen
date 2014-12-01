@@ -34,14 +34,17 @@ class IndexController extends AntragsgruenController
 		if (AntiXSS::isTokenSet("eintragen")) {
 			$text = $_REQUEST["email_text"];
 
-			$zeilen            = explode("\n", $_REQUEST["email_adressen"]);
+			$zeilen_email      = explode("\n", $_REQUEST["email_adressen"]);
+			$zeilen_namen      = explode("\n", $_REQUEST["namen"]);
 			$email_invalid     = array();
 			$emails_verschickt = array();
 			$emails_schonda    = array();
 
-			foreach ($zeilen as $zeile) {
-				if (trim($zeile) == "") continue;
-				$email = trim($zeile);
+			if (count($zeilen_email) == count($zeilen_namen)) for ($zeile = 0; $zeile < count($zeilen_email); $zeile++) {
+				if (trim($zeilen_email[$zeile]) == "") continue;
+				$email = trim($zeilen_email[$zeile]);
+				$name = trim($zeilen_namen[$zeile]);
+
 				$valid = preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/siu", $email);
 				if (!$valid) $email_invalid[] = $email;
 				else {
@@ -55,7 +58,7 @@ class IndexController extends AntragsgruenController
 
 					$person                                = new Person();
 					$person->auth                          = "ns_admin:" . $this->veranstaltungsreihe->id . ":" . $email;
-					$person->name                          = $email;
+					$person->name                          = $name;
 					$person->email                         = $email;
 					$person->email_bestaetigt              = 0;
 					$person->angelegt_datum                = date("Y-m-d H:i:s");
