@@ -6,6 +6,7 @@ class AntragsgruenController extends CController
 	public $menu = array();
 	public $breadcrumbs = array();
 	public $multimenu = null;
+	public $menus_html_presidebar = null;
 	public $menus_html = null;
 	public $breadcrumbs_topname = null;
 	public $text_comments = true;

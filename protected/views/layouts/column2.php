@@ -1,6 +1,6 @@
 <?php
 /**
- * @var CController $this
+ * @var AntragsgruenController $this
  * @var string $content
  */
 $this->beginContent('//layouts/bootstrap');
@@ -15,9 +15,10 @@ if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_
 	<div class="span9 well">
 		<?php echo $content; ?>
 	</div>
-	<?php if ($this->menu || isset($this->multimenu) || isset($this->menus_html)) { ?>
+	<?php if ($this->menu || isset($this->multimenu) || isset($this->menus_html) || isset($this->menus_html_presidebar)) { ?>
 		<div class="span3" id="sidebar">
-			<div class="well<? if (isset($this->text_comments) && $this->text_comments) echo " visible-desktop"; ?>">
+			<?php if (isset($this->menus_html_presidebar)) echo $this->menus_html_presidebar; ?>
+			<div class="well<?php if (isset($this->text_comments) && $this->text_comments) echo " visible-desktop"; ?>">
 				<?php
 				$menus = array();
 				if ($this->menu) $menus[] = array("name" => "Aktionen", "items" => $this->menu);

@@ -20,40 +20,12 @@ if (MULTISITE_MODE) {
 }
 
 require(dirname(__FILE__) . "/common.php");
-
-/**
- * @param Veranstaltung $veranstaltung
- * @return bool
- */
-function veranstaltungsspezifisch_ae_sortierung_zeilennummer($veranstaltung) {
-	return false;
+if (file_exists(dirname(__FILE__) . "/veranstaltungsspezifisch.local.php")) {
+	require(dirname(__FILE__) . "/veranstaltungsspezifisch.local.php");
+} else {
+	require(dirname(__FILE__) . "/veranstaltungsspezifisch.std.php");
 }
 
-/**
- * @param Veranstaltung $veranstaltung
- * @return array
- */
-function veranstaltungsspezifisch_css_files($veranstaltung) {
-	return array();
-}
-
-
-/**
- * @param Veranstaltung $veranstaltung
- * @return bool
- */
-function veranstaltungsspezifisch_erzwinge_login($veranstaltung) {
-	return false;
-}
-
-
-/**
- * @param Veranstaltung $veranstaltung
- * @return bool
- */
-function veranstaltungsspezifisch_antragsgruen_in_sidebar($veranstaltung) {
-	return true;
-}
 
 /**
  * @param Veranstaltung $veranstaltung
@@ -61,7 +33,8 @@ function veranstaltungsspezifisch_antragsgruen_in_sidebar($veranstaltung) {
  * @return string
  */
 function veranstaltungsspezifisch_hinweis_namespaced_accounts($veranstaltung, $text) {
-	return $text;
+        if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden") return 'Hinweis: Als Mitglied der Grünen Wiesbaden solltest du deine persönlichen Zugangsdaten per E-Mail erhalten haben. Falls du keine bekommen haben solltest, melde dich bitte bei uns: <a href="mailto:programmwerkstatt@gruene-wiesbaden.de">programmwerkstatt@gruene-wiesbaden.de</a>';
+        return $text;
 }
 
 

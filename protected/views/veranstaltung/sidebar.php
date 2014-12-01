@@ -18,6 +18,19 @@ $html .= "<div style='text-align: center;'>  <div class='input-append'><input cl
 $html .= "</div></form>";
 $this->menus_html[] = $html;
 
+$antrag_stellen_link = "";
+if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
+	$antrag_stellen_link = $this->createUrl("antrag/neu");
+} elseif ($veranstaltung->getPolicyAntraege()->checkHeuristicallyAssumeLoggedIn()) {
+	$antrag_stellen_link = $this->createUrl("veranstaltung/login", array("back" => $this->createUrl("antrag/neu")));
+}
+$antrag_link = veranstaltungsspezifisch_antrag_einreichen_str($this->veranstaltung, $antrag_stellen_link);
+if ($antrag_link) {
+	$this->menus_html_presidebar = $antrag_link;
+} else {
+	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($antrag_stellen_link) . '" title="' . CHtml::encode($sprache->get("Neuen Antrag stellen")) . '"></a>';
+}
+
 if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 	$html = "<div><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Neue Anträge") . "</li>";
 	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
@@ -38,13 +51,6 @@ if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 	$html .= "</ul></div>";
 	$this->menus_html[] = $html;
 }
-if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
-	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '" title="' . CHtml::encode($sprache->get("Neuen Antrag stellen")) . '"></a>';
-} elseif ($veranstaltung->getPolicyAntraege()->checkHeuristicallyAssumeLoggedIn()) {
-	$link_url = $this->createUrl("veranstaltung/login", array("back" => $this->createUrl("antrag/neu")));
-	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($link_url) . '" title="' . CHtml::encode($sprache->get("Neuen Antrag stellen")) . ' (Login)"></a>';
-}
-
 
 if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
 	$html = "<div><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
