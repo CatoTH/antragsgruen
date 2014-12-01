@@ -89,13 +89,20 @@ if ($msg_err != "") {
 
 	</div>
 
-<?php } ?>
+<?php
+}
 
-	<h2>Wurzelwerk-Login <?php
-		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
-			echo "(Nur Admins)";
-		}
-		?></h2>
+$hide_ww_login = ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts);
+if ($hide_ww_login) {
+	?>
+	<div class="content">
+		<a href="#" onClick="$('#admin_login_www').toggle(); return false;">Admin-Login</a>
+	</div>
+	<div id="admin_login_www" style="display: none;">
+<?
+}
+?>
+	<h2>Wurzelwerk-Login</h2>
 	<div class="content">
 		<?php /** @var CActiveForm $form */
 		$form = $this->beginWidget('CActiveForm');
@@ -123,12 +130,14 @@ if ($msg_err != "") {
 
 	</div>
 <?php
+if ($hide_ww_login) echo '</div>';
+
 if (!$this->veranstaltungsreihe || (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && !$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk)) {
 	?>
 	<h2>OpenID-Login</h2>
 	<div class="content">
 		<?php /** @var CActiveForm $form */
-		$form = $this->beginWidget('CActiveForm'); ?>
+	$form = $this->beginWidget('CActiveForm'); ?>
 
 		<label for="OAuthLoginForm_openid_identifier">OpenID-URL</label>
 		<input class="span3" name="OAuthLoginForm[openid_identifier]" id="OAuthLoginForm_openid_identifier"
@@ -139,7 +148,7 @@ if (!$this->veranstaltungsreihe || (!$this->veranstaltungsreihe->getEinstellunge
 
 		<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'icon' => 'ok', 'label' => 'Einloggen')); ?>
 
-		<?php $this->endWidget(); ?>
+	<?php $this->endWidget(); ?>
 	</div>
 <?
 }
