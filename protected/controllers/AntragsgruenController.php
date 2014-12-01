@@ -228,6 +228,8 @@ class AntragsgruenController extends CController
 			$x = explode(":", $correct_user->auth);
 			switch ($x[0]) {
 				case "email":
+					$identity = new AntragUserIdentityPasswd($x[1], $correct_user->auth);
+					break;
 				case "ns_admin":
 					$identity = new AntragUserIdentityPasswd($x[2], $correct_user->auth);
 					break;
@@ -288,7 +290,6 @@ class AntragsgruenController extends CController
 		$person->status           = Person::$STATUS_UNCONFIRMED;
 		$person->typ              = Person::$TYP_PERSON;
 		$person->pwd_enc          = Person::create_hash($password);
-		$person->admin            = 0;
 
 		if ($person->save()) {
 			$person->refresh();
