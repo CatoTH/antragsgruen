@@ -10,6 +10,9 @@
 * Das "Feeds"-Kästchen in der Sidebar lässt sich optional ausblenden. (KV Wiesbaden)
 * Auf Wunsch lässt sich das "Begründungs"-Eingabefeld bei neuen Aträgen deaktivieren. (KV Wiesbaden)
 * Anträge können allgemein kommentiert werden, ohne expliziten Zeilenbezug. (ExpertInnenfunktion; KV München)
+* Ein Bugfix beim Login per E-Mail-Adresse
+* Bei Accounts, die nur für eine Veranstaltung gültig sind, kann man als Admin nun auch den Namen in der Admin-Maske eingeben, nicht nur die E-Mail-Adresse (KV Wiesbaden)
+* Es werden an diversen Stellen nun nach und nach Hooks eingeführt, um den Code für spezielle Veranstaltungen anzupassen, ohne die Änderungen ins Repository committen zu müssen. Die Standards werden in protected/config/veranstaltungsspezifisch.std.php festgelegt, man kann sie mit protected/config/veranstaltungsspezifisch.local.php überschreiben.  
 
 2.4.13 - 2014-11-03
 ==================
