@@ -53,8 +53,17 @@ function veranstaltungsspezifisch_erzwinge_login($veranstaltung) {
  */
 function veranstaltungsspezifisch_antragsgruen_in_sidebar($veranstaltung) {
 	return true;
-	if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden") return false;
 }
+
+/**
+ * @param Veranstaltung $veranstaltung
+ * @param string $text
+ * @return string
+ */
+function veranstaltungsspezifisch_hinweis_namespaced_accounts($veranstaltung, $text) {
+	return $text;
+}
+
 
 return array(
 	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',

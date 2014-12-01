@@ -34,8 +34,9 @@ if ($msg_err != "") {
 
 		if ($this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
 			echo '<div class="alert alert-info">';
-			echo "<strong>Hinweis:</strong> wenn du berechtigt bist, (Änderungs-)Anträge einzustellen, solltest du die Zugangsdaten per E-Mail erhalten haben.<br>
-		Falls du keine bekommen haben solltest, melde dich bitte bei den Organisatoren dieses Parteitags / dieser Programmdiskussion.</div>";
+			echo veranstaltungsspezifisch_hinweis_namespaced_accounts($this->veranstaltung, '<strong>Hinweis:</strong> wenn du berechtigt bist, (Änderungs-)Anträge einzustellen, solltest du die Zugangsdaten per E-Mail erhalten haben.<br>
+		Falls du keine bekommen haben solltest, melde dich bitte bei den Organisatoren dieses Parteitags / dieser Programmdiskussion.');
+			echo "</div>";
 		} else {
 			?>
 			<label>
