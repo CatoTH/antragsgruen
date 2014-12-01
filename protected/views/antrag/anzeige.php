@@ -313,7 +313,7 @@ $curr_user_id                 = (Yii::app()->user->isGuest ? 0 : Yii::app()->use
 $unterstuetzerInnen           = $antrag->getUnterstuetzerInnen();
 $zustimmung_von               = $antrag->getZustimmungen();
 $ablehnung_von                = $antrag->getAblehnungen();
-$eintraege                    = (count($unterstuetzerInnen) > 0 || count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
+$eintraege                    = (count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
 $unterstuetzen_policy         = $antrag->veranstaltung->getPolicyUnterstuetzen();
 $kann_unterstuetzen           = $unterstuetzen_policy->checkCurUserHeuristically();
 $kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
@@ -321,11 +321,9 @@ foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstu
 	$kann_unterstuetzen = false;
 }
 
-if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
+if (count($unterstuetzerInnen) > 0) {
 	?>
-
 	<h2>UnterstützerInnen</h2>
-
 	<div class="content">
 		<?php
 		echo "<strong>UnterstützerInnen:</strong><br>";
@@ -340,6 +338,18 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 			echo CHtml::closeTag('ul');
 		} else echo '<em>keine</em><br>';
 		echo "<br>";
+		?>
+	</div>
+<?php
+}
+
+if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
+	?>
+	<h2>Zustimmung</h2>
+
+	<div class="content">
+		<?php
+
 
 		if (count($zustimmung_von) > 0) {
 			echo "<strong>Zustimmung von:</strong><br>";
