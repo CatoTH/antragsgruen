@@ -107,7 +107,7 @@ return array(
 		'standardVeranstaltungsreihe' => "default",
 		'pdf_logo'                    => 'LOGO_PFAD',
 		'kontakt_email'               => 'EMAILADRESSE',
-		'mail_from'                   => 'Antragsgrün <EMAILADRESSE>',
+		'mail_from'                   => mb_encode_mimeheader('Antragsgrün') . ' <EMAILADRESSE>',
 		'admin_user_id'               => null,
 		'odt_default_template'        => __DIR__ . '/../../docs/OpenOffice-Template.odt',
 	),
