@@ -60,7 +60,7 @@ class IndexController extends AntragsgruenController
 					$person->auth                          = "ns_admin:" . $this->veranstaltungsreihe->id . ":" . $email;
 					$person->name                          = $name;
 					$person->email                         = $email;
-					$person->email_bestaetigt              = 0;
+					$person->email_bestaetigt              = 1;
 					$person->angelegt_datum                = date("Y-m-d H:i:s");
 					$person->pwd_enc                       = Person::create_hash($password);
 					$person->status                        = Person::$STATUS_CONFIRMED;
