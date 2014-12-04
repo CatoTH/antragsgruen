@@ -164,18 +164,20 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		<?php
 		}
 
-		$this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
-			"form"               => $form,
-			"mode"               => $mode,
-			"antrag"             => $model,
-			"antragstellerIn"    => $antragstellerIn,
-			"unterstuetzerInnen" => $unterstuetzerInnen,
-			"veranstaltung"      => $veranstaltung,
-			"hiddens"            => $hiddens,
-			"js_protection"      => $js_protection,
-			"login_warnung"      => Yii::app()->user->isGuest,
-			"sprache"            => $model->veranstaltung->getSprache(),
-		));
+		if (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && veranstaltungsspezifisch_erzwinge_login($this->veranstaltung)) {
+			$this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
+				"form"               => $form,
+				"mode"               => $mode,
+				"antrag"             => $model,
+				"antragstellerIn"    => $antragstellerIn,
+				"unterstuetzerInnen" => $unterstuetzerInnen,
+				"veranstaltung"      => $veranstaltung,
+				"hiddens"            => $hiddens,
+				"js_protection"      => $js_protection,
+				"login_warnung"      => Yii::app()->user->isGuest,
+				"sprache"            => $model->veranstaltung->getSprache(),
+			));
+		}
 		?>
 
 		<div style="float: right;">

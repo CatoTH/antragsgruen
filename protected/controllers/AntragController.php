@@ -164,8 +164,12 @@ class AntragController extends AntragsgruenController
 		if (AntiXSS::isTokenSet("kommentar_schreiben") && $antrag->veranstaltung->darfEroeffnenKommentar()) {
 			$zeile = IntVal($_REQUEST["absatz_nr"]);
 
-			$person        = $_REQUEST["Person"];
-			$person["typ"] = Person::$TYP_PERSON;
+			if ($this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && veranstaltungsspezifisch_erzwinge_login($this->veranstaltung)) {
+				$person = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			} else {
+				$person        = $_REQUEST["Person"];
+				$person["typ"] = Person::$TYP_PERSON;
+			}
 
 			if ($antrag->veranstaltung->getEinstellungen()->kommentar_neu_braucht_email && trim($person["email"]) == "") {
 				Yii::app()->user->setFlash("error", "Bitte gib deine E-Mail-Adresse an.");

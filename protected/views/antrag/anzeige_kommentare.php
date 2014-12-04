@@ -1,6 +1,7 @@
 <?
 
 /**
+ * @var AntragController $this
  * @var string $komm_del_link
  * @var int $absatz_nr
  * @var bool $js_protection
@@ -113,15 +114,17 @@ if ($antrag->veranstaltung->darfEroeffnenKommentar()) {
 			echo '<input type="hidden" name="' . CHtml::encode($name) . '" value="' . CHtml::encode($value) . '">';
 		}
 		echo '<input type="hidden" name="absatz_nr" value="' . $absatz_nr . '">';
-		?>
-		<div class="row">
-			<?php echo $form->labelEx($kommentar_person, 'name'); ?>
-			<?php echo $form->textField($kommentar_person, 'name') ?>
-		</div>
-		<div class="row">
-			<?php echo $form->labelEx($kommentar_person, 'email'); ?>
-			<?php echo $form->emailField($kommentar_person, 'email') ?>
-		</div>
+		if (!($this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && veranstaltungsspezifisch_erzwinge_login($this->veranstaltung))) {
+			?>
+			<div class="row">
+				<?php echo $form->labelEx($kommentar_person, 'name'); ?>
+				<?php echo $form->textField($kommentar_person, 'name') ?>
+			</div>
+			<div class="row">
+				<?php echo $form->labelEx($kommentar_person, 'email'); ?>
+				<?php echo $form->emailField($kommentar_person, 'email') ?>
+			</div>
+		<?php } ?>
 		<div class="row">
 			<?php echo $form->labelEx($dummy_komm, 'text'); ?>
 			<?php echo $form->textArea($dummy_komm, 'text') ?>
