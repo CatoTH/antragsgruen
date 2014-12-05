@@ -157,7 +157,7 @@ $einstellungen = $model->getEinstellungen();
 				echo '<ul>';
 				foreach ($model->tags as $tag) {
 					echo '<li>' . CHtml::encode($tag->name) . ' (' . count($tag->antraege) . ')';
-					if (count($tag->antraege) == 0) echo ' <a href="' . CHtml::encode($this->createUrl("admin/veranstaltungen/update",
+					if (count($tag->antraege) == 0) echo ' <a href="' . CHtml::encode($this->createUrl("admin/veranstaltungen/update_extended",
 							array(AntiXSS::createToken("del_tag") => $tag->id))) .
 						'" onClick="return confirm(\'Wirklich löschen?\');" style="color: red; font-size: 0.8em;">löschen</a>';
 					echo '</li>';

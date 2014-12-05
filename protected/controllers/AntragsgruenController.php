@@ -402,7 +402,6 @@ class AntragsgruenController extends CController
 					if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
 						if (strpos($us->getId(), "openid:https://service.gruene.de/openid/") !== 0) throw new Exception("Bei dieser Veranstaltung ist nur ein Login über das Wurzelwerk zulässig.");
 					}
-					Yii::app()->user->login($us);
 					/** @var Person $user */
 					$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
 					if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
@@ -415,6 +414,7 @@ class AntragsgruenController extends CController
 					if (!$user) {
 						$this->performLogin_OAuth_create_user($us);
 					}
+					Yii::app()->user->login($us);
 					Yii::app()->user->setState("person_id", $user->id);
 					Yii::app()->user->setFlash('success', 'Willkommen!');
 					if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
