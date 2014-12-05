@@ -478,9 +478,11 @@ if ($antrag->veranstaltung->getEinstellungen()->antrag_kommentare_ohne_absatz) {
 
 ?>
 <script>
+	<?php if (!veranstaltungsspezifisch_erzwinge_login($this->veranstaltung)) { ?>
 	$('#socialshareprivacy').socialSharePrivacy({
 		css_path: "/socialshareprivacy/socialshareprivacy.css"
 	});
+	<? } ?>
 
 	$(".absatz_text.orig .text .zeilennummer").each(function () {
 		$(this).attr("data-zeilennummer", $(this).text());
