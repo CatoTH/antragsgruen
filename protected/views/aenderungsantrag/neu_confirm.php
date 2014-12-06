@@ -23,7 +23,8 @@ $this->pageTitle = $sprache->get("Änderungseintrag bestätigen");
 		<h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
 
 		<?php
-		$mail = "<a href='mailto:" . Yii::app()->params['kontakt_email'] . "'>" . Yii::app()->params['kontakt_email'] . "</a>";
+		$email = CHtml::encode(Yii::app()->params['kontakt_email']);
+		$mail = "<a href='mailto:" . $email . "'>" . $email . "</a>";
 		Yii::app()->user->setFlash("info", str_replace(array("#1#", "#2#"), array($sprache->get("Änderungsantrag"), $mail), $antrag->veranstaltung->getStandardtext("ae_confirm")->getText()));
 		$this->widget('bootstrap.widgets.TbAlert');
 		?>
