@@ -37,6 +37,37 @@ class AntraegeUtils
 		static::$last_time = $time;
 	}
 
+	public static function send_email_mandrill($mail_typ, $mail_to_email, $mail_to_person_id = null, $betreff, $text, $mail_from_email = null)
+	{
+		$mandrill = new Mandrill(MANDRILL_API_KEY);
+
+		$tags     = array(EmailLog::$EMAIL_TYP_TAGS[$mail_typ]);
+
+		$headers = array();
+		$headers['Auto-Submitted'] = 'auto-generated';
+
+		$message = array(
+			'html'              => null,
+			'text'              => $text,
+			'subject'           => $betreff,
+			'from_email'        => Yii::app()->params["mail_from_email"],
+			'from_name'         => Yii::app()->params["mail_from_name"],
+			'to'                => array(
+				array(
+					"name"  => null,
+					"email" => $mail_to_email,
+					"type"  => "to",
+				)
+			),
+			'important'         => false,
+			'tags'              => $tags,
+			'track_clicks'      => false,
+			'track_opens'       => false,
+			'inline_css'        => true,
+			'headers'           => $headers,
+		);
+		$mandrill->messages->send($message, false);
+	}
 
 	/**
 	 * @param int $mail_typ
@@ -51,7 +82,12 @@ class AntraegeUtils
 	{
 		$send_text      = ($no_log_replaces ? str_replace(array_keys($no_log_replaces), array_values($no_log_replaces), $text) : $text);
 		$send_mail_from = ($mail_from_email ? $mail_from_email : Yii::app()->params['mail_from']);
-		mb_send_mail($mail_to_email, $betreff, $send_text, "From: " . $send_mail_from);
+
+		if (defined("MANDRILL_API_KEY") && MANDRILL_API_KEY != "") {
+			static::send_email_mandrill($mail_typ, $mail_to_email, $mail_to_person_id, $betreff, $send_text, $mail_from_email);
+		} else {
+			mb_send_mail($mail_to_email, $betreff, $send_text, "From: " . $send_mail_from);
+		}
 
 		$obj = new EmailLog();
 		if ($mail_to_person_id) $obj->an_person = $mail_to_person_id;
