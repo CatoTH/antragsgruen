@@ -421,6 +421,9 @@ class HtmlBBcodeUtils
 			$str .= $matches[3];
 			return $str;
 		}, $text);
+		$text = preg_replace_callback("/(?<pre>\[url=)(?<url>[^\"\]]+)(?<post>\])/siu", function($matches) {
+			return $matches["pre"] . "\"" . $matches["url"] . "\"" . $matches["post"];
+		}, $text);
 
 		$code  = new \Decoda\Decoda();
 		$code->setEscaping(!$allow_html);
