@@ -1,4 +1,4 @@
-2.5.0 - ????-??-??
+2.5.0 - 2014-01-04
 ==================
 
 * Die Veranstaltungseinstellungen wurden in zwei Seiten aufgeteilt, eine "Standard"-Seite und eine "ExpertInnen-Einstellungsseite"
