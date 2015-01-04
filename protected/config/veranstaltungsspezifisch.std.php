@@ -1,69 +1,81 @@
 <?php
 
-/**
- * @param Veranstaltung $veranstaltung
- * @return bool
- */
 if (!function_exists("veranstaltungsspezifisch_ae_sortierung_zeilennummer")) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @return bool
+	 */
 	function veranstaltungsspezifisch_ae_sortierung_zeilennummer($veranstaltung)
 	{
 		return false;
 	}
 }
 
-/**
- * @param Veranstaltung $veranstaltung
- * @return array
- */
 if (!function_exists("veranstaltungsspezifisch_css_files")) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @return array
+	 */
 	function veranstaltungsspezifisch_css_files($veranstaltung)
 	{
 		return array();
 	}
 }
 
-/**
- * @param Veranstaltung $veranstaltung
- * @return bool
- */
 if (!function_exists("veranstaltungsspezifisch_erzwinge_login")) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @return bool
+	 */
 	function veranstaltungsspezifisch_erzwinge_login($veranstaltung)
 	{
 		return false;
 	}
 }
 
-/**
- * @param Veranstaltung $veranstaltung
- * @return bool
- */
 if (!function_exists("veranstaltungsspezifisch_antragsgruen_in_sidebar")) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @return bool
+	 */
 	function veranstaltungsspezifisch_antragsgruen_in_sidebar($veranstaltung)
 	{
 		return true;
 	}
 }
 
-/**
- * @param Veranstaltung $veranstaltung
- * @param string $text
- * @return string
- */
 if (!function_exists("veranstaltungsspezifisch_hinweis_namespaced_accounts")) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @param string $text
+	 * @return string
+	 */
 	function veranstaltungsspezifisch_hinweis_namespaced_accounts($veranstaltung, $text)
 	{
 		return $text;
 	}
 }
 
-/**
- * @param Veranstaltung $veranstaltung
- * @param string $link
- * @return string
- */
 if (!function_exists("veranstaltungsspezifisch_antrag_einreichen_str")) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @param string $link
+	 * @return string
+	 */
 	function veranstaltungsspezifisch_antrag_einreichen_str($veranstaltung, $link)
 	{
 		return "";
+	}
+}
+
+if (!function_exists("veranstaltungsspezifisch_antrag_typ_str")) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @param int $typ
+	 * @return string
+	 */
+	function veranstaltungsspezifisch_antrag_typ_str($veranstaltung, $typ)
+	{
+		return Antrag::$TYPEN[$typ];
 	}
 }

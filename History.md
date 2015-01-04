@@ -1,4 +1,10 @@
-2.5.0 - 2014-01-04
+2.5.1 - ????-??-??
+==================
+
+* Die Funktion "Thema hinzufügen" bei der normalen Antragsansicht erscheint Admins nur noch, wenn auch Themen vorhanden sind.
+* Es gibt einen neuen Hook, mit dem man die Typen von Anträge auf der Startseite umbenennen kann (veranstaltungsspezifisch_antrag_typ_str)
+
+2.5.0 - 2015-01-04
 ==================
 
 * Die Veranstaltungseinstellungen wurden in zwei Seiten aufgeteilt, eine "Standard"-Seite und eine "ExpertInnen-Einstellungsseite"

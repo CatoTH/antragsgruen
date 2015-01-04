@@ -209,13 +209,11 @@ class Veranstaltung extends GxActiveRecord
 	{
 		$antraege        = $this->antraege;
 		$antraege_sorted = array();
-		// $warnung         = false;
 
 		$unsichtbar   = IAntrag::$STATI_UNSICHTBAR;
 		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
 		foreach ($antraege as $ant) if (!in_array($ant->status, $unsichtbar)) {
-			$typ_name = Antrag::$TYPEN[$ant->typ];
-			if (strtolower($this->veranstaltungsreihe->subdomain) == "bdk-hh-2014" && $ant->typ == Antrag::$TYP_ANTRAG) $typ_name = "Grüne Werte: Freiheit und Selbstbestimmung";
+			$typ_name = veranstaltungsspezifisch_antrag_typ_str($ant->veranstaltung, $ant->typ);
 
 			if (!isset($antraege_sorted[$typ_name])) $antraege_sorted[$typ_name] = array();
 			$key = $ant->revision_name;
