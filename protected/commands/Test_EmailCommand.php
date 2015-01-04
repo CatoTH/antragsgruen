@@ -2,12 +2,9 @@
 
 class Test_EmailCommand extends CConsoleCommand {
 	public function run($args) {
-		if (count($args) != 1) {
-			echo "Aufruf: ./yiic testemail test@email.de\n";
-			return;
-		}
+		AntraegeUtils::send_email_mandrill("tobias@hoessl.eu", "Test", "Test", null, "test");
 
-		AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_SONSTIGES, $args[0], null, "Test", "Test");
+		//AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_SONSTIGES, $args[0], null, "Test", "Test");
 
 	}
 }
