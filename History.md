@@ -14,6 +14,7 @@
 * Bei Accounts, die nur für eine Veranstaltung gültig sind, kann man als Admin nun auch den Namen in der Admin-Maske eingeben, nicht nur die E-Mail-Adresse (KV Wiesbaden)
 * Es werden an diversen Stellen nun nach und nach Hooks eingeführt, um den Code für spezielle Veranstaltungen anzupassen, ohne die Änderungen ins Repository committen zu müssen. Die Standards werden in protected/config/veranstaltungsspezifisch.std.php festgelegt, man kann sie mit protected/config/veranstaltungsspezifisch.local.php überschreiben.  
 * Der Absender der E-Mail-Benachrichtigungen wurde bei einigen Mailprogrammen nicht richtig angeziegt (Probleme mit dem Umlaut)
+* Bugfix: Links im Antragstext wurden nicht als solche angezeigt
 
 2.4.13 - 2014-11-03
 ==================
