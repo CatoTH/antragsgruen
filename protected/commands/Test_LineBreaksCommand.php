@@ -46,7 +46,7 @@ $GLOBALS["TESTS"] = array(
 );
 
 
-class LineBreakTestsCommand extends CConsoleCommand
+class Test_LineBreaksCommand extends CConsoleCommand
 {
 	public function run($args)
 	{

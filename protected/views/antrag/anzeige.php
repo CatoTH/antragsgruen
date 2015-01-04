@@ -48,8 +48,8 @@ if ($edit_link) {
 }
 
 if ($admin_edit) $html .= '<li class="admin_edit">' . CHtml::link("Admin: bearbeiten", $admin_edit) . '</li>';
-else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $this->createUrl("veranstaltung/index")) . '</li>
-					</ul>';
+else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $this->createUrl("veranstaltung/index")) . '</li>';
+$html .= '</ul>';
 $this->menus_html[] = $html;
 
 ?>
@@ -142,7 +142,7 @@ $this->menus_html[] = $html;
 
 							<form method="POST" style="display: none;" id="tag_adder_form">
 								<select name="tag_id" size="1" title="Schlagwort aussuchen">
-									<option></option>
+									<option>-</option>
 									<?php
 									foreach ($antrag->veranstaltung->tags as $tag) if (!in_array($tag->id, $used_tag_ids)) echo '<option value="' . IntVal($tag->id) . '">' . CHtml::encode($tag->name) . '</option>';
 									?>

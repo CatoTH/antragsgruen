@@ -11,8 +11,6 @@
  * @var AntragKommentar $kommentare
  */
 
-$dummy_komm = new AntragKommentar();
-
 foreach ($kommentare as $komm) {
 	$komm_link = $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id));
 	?>
@@ -126,8 +124,8 @@ if ($antrag->veranstaltung->darfEroeffnenKommentar()) {
 			</div>
 		<?php } ?>
 		<div class="row">
-			<?php echo $form->labelEx($dummy_komm, 'text'); ?>
-			<?php echo $form->textArea($dummy_komm, 'text') ?>
+			<label class="required">Text</label>
+			<textarea name="AntragKommentar[text]" title="Text"></textarea>
 		</div>
 	</fieldset>
 
