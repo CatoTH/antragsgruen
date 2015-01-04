@@ -123,7 +123,7 @@ $this->menus_html[] = $html;
 						?></td>
 				</tr>
 				<?php
-				if ($antrag->veranstaltung->isAdminCurUser()) {
+				if ($antrag->veranstaltung->isAdminCurUser() && count($antrag->tags) > 0) {
 					?>
 					<tr>
 						<th>Themenbereiche:</th>
