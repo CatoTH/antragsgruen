@@ -4,12 +4,12 @@
  * @var array|Veranstaltungsreihe[] $reihen
  */
 
-$this->pageTitle = "Antragsgrün selbst einsetzen";
+$this->pageTitle = "Antragsgrün - die grüne Online-Antragsverwaltung";
 
 include(__DIR__ . "/sidebar.php");
 
 ?>
-<h1>Antragsgrün selbst einsetzen</h1>
+<h1>Antragsgrün - das Antragstool selbst einsetzen</h1>
 
 <div class="content">
 	<p>Antragsgrün ist <strong>Open Source</strong>, jede und jeder kann die Software herunterladen, für die eigenen
