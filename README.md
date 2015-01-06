@@ -81,8 +81,8 @@ Webserver-Konfiguration:
 
 Datenbank anlegen:
 - Eine Datenbank u. Benutzer für Antragsgrün anlegen; Antragsgrün braucht mindestens Rechte für SELECT/INSERT/UPDATE/DELETE
-- cat docs/schema.sql | mysql -u [benutzername] -p [datenbankname] -h localhost
-- cat docs/init-data.sql | mysql -u [benutzername] -p [datenbankname] -h localhost
+- cat docs/schema.sql | mysql -u [benutzername] -p -h localhost [datenbankname]
+- cat docs/init-data.sql | mysql -u [benutzername] -p -h localhost [datenbankname]
 
 Konfigurationsdatei erstellen:
 - cp protected/config/main.template.php protected/config/main.php
