@@ -79,3 +79,16 @@ if (!function_exists("veranstaltungsspezifisch_antrag_typ_str")) {
 		return Antrag::$TYPEN[$typ];
 	}
 }
+
+
+if (!function_exists("veranstaltungsspezifisch_antrag_max_len")) {
+	/**
+	 * @param Veranstaltung $veranstaltung
+	 * @param null|int $antrag_typ
+	 * @return int
+	 */
+	function veranstaltungsspezifisch_antrag_max_len($veranstaltung, $antrag_typ)
+	{
+		return $veranstaltung->getEinstellungen()->antragstext_max_len;
+	}
+}

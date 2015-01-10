@@ -602,9 +602,15 @@ class AntragController extends AntragsgruenController
 		}
 		foreach ($antrag->tags as $tag) $tags_pre[] = $tag->id;
 
+		$force_type = null;
+		if (isset($_REQUEST["typ"])) {
+			if (isset(Antrag::$TYPEN[$_REQUEST["typ"]]) && !in_array($_REQUEST["typ"], $this->veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) $force_type = IntVal($_REQUEST["typ"]);
+		}
+
 		$this->render('bearbeiten_form', array(
 			"mode"               => "bearbeiten",
 			"model"              => $antrag,
+			"force_type"         => $force_type,
 			"hiddens"            => $hiddens,
 			"antragstellerIn"    => $antragstellerIn,
 			"unterstuetzerInnen" => $unterstuetzerInnen,
@@ -769,9 +775,15 @@ class AntragController extends AntragsgruenController
 			$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 		}
 
+		$force_type = null;
+		if (isset($_REQUEST["typ"])) {
+			if (isset(Antrag::$TYPEN[$_REQUEST["typ"]]) && !in_array($_REQUEST["typ"], $this->veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) $force_type = IntVal($_REQUEST["typ"]);
+		}
+
 		$this->render('bearbeiten_form', array(
 			"mode"               => "neu",
 			"model"              => $model,
+			"force_type"         => $force_type,
 			"antragstellerIn"    => $antragstellerIn,
 			"unterstuetzerInnen" => $unterstuetzerInnen,
 			"veranstaltung"      => $veranstaltung,

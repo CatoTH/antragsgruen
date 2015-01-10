@@ -4,6 +4,7 @@
  * @var AntragController $this
  * @var Antrag $model
  * @var string $mode
+ * @var int $force_type
  * @var Person $antragstellerIn
  * @var Veranstaltung $veranstaltung
  * @var array $unterstuetzerInnen
@@ -25,6 +26,8 @@ $this->breadcrumbs = array(
 	$sprache->get($model->id > 0 ? 'Antrag bearbeiten' : 'Neuer Antrag'),
 );
 $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
+
+$antrag_max_len = $this->veranstaltung->getAntragMaxLen($force_type);
 
 ?>
 	<h1><?php echo $sprache->get($model->id > 0 ? $sprache->get('Antrag bearbeiten') : $sprache->get('Antrag stellen')) ?></h1>
@@ -73,7 +76,12 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 		<?php
 		$typen = array();
-		foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) $typen[$id] = $name;
+		if ($force_type !== null) {
+			$typen[$force_type] = Antrag::$TYPEN[$force_type];
+		}
+		else {
+			foreach (Antrag::$TYPEN as $id => $name) if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) $typen[$id] = $name;
+		}
 		if (count($typen) == 1) {
 			$keys = array_keys($typen);
 			echo '<input type="hidden" name="Antrag[typ]" value="' . $keys[0] . '">';
@@ -110,17 +118,15 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		?>
 
 		<fieldset class="control-group textarea" <?php
-		$max_len = $this->veranstaltung->getEinstellungen()->antragstext_max_len;
-		if ($max_len > 0) echo " data-max_len=\"" . $max_len . "\"";
+		if ($antrag_max_len > 0) echo " data-max_len=\"" . $antrag_max_len . "\"";
 		?>>
 
 			<legend><?php echo $sprache->get("Antragstext"); ?></legend>
 
-			<?php if ($this->veranstaltung->getEinstellungen()->antragstext_max_len > 0) {
+			<?php if ($antrag_max_len > 0) {
 				echo '<div class="max_len_hint">';
-				$max_len = $this->veranstaltung->getEinstellungen()->antragstext_max_len;
-				echo '<div class="calm">Maximale Länge: ' . $max_len . ' Zeichen</div>';
-				echo '<div class="alert">Text zu lang - maximale Länge: ' . $max_len . ' Zeichen</div>';
+				echo '<div class="calm">Maximale Länge: ' . $antrag_max_len . ' Zeichen</div>';
+				echo '<div class="alert">Text zu lang - maximale Länge: ' . $antrag_max_len . ' Zeichen</div>';
 				echo '</div>';
 			} ?>
 
