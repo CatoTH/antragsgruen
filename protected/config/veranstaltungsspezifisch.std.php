@@ -106,3 +106,15 @@ if (!function_exists("veranstaltungsspezifisch_antrag_pdf_header")) {
 		return array(Yii::app()->params['pdf_logo'], $initiatorInnen, $antrag->name, $sprache->get("Antragstext"), $antrag->revision_name, "Courier", 10);
 	}
 }
+
+if (!function_exists("veranstaltungsspezifisch_email_from_name")) {
+	/**
+	 * @param Veranstaltung|null $veranstaltung
+	 * @return string
+	 */
+	function veranstaltungsspezifisch_email_from_name($veranstaltung = null)
+	{
+		if ($veranstaltung === null) return Yii::app()->params['mail_from_name'];
+		return Yii::app()->params['mail_from_name'];
+	}
+}

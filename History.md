@@ -1,4 +1,4 @@
-2.5.1 - ????-??-??
+2.5.1 - 2015-01-10
 ==================
 
 * Die Funktion "Thema hinzufügen" bei der normalen Antragsansicht erscheint Admins nur noch, wenn auch Themen vorhanden sind.
@@ -7,6 +7,7 @@
   * veranstaltungsspezifisch_antrag_typ_str: Die Typen von Anträge auf der Startseite umbenennen
   * veranstaltungsspezifisch_antrag_max_len: Verschiedene maximale Textlängen in einer Veranstaltung abhängig vom Antragstyp festlegen
   * veranstaltungsspezifisch_antrag_pdf_header: Aspekte des Antrags-PDF einstellen
+  * veranstaltungsspezifisch_email_from_name: Den Absendername bei E-Mails einstellen
 
 
 
