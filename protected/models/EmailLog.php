@@ -20,12 +20,14 @@ class EmailLog extends GxActiveRecord
 	public static $EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_USER = 2;
 	public static $EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN = 3;
 	public static $EMAIL_TYP_NAMESPACED_ACCOUNT_ANGELEGT = 4;
+	public static $EMAIL_TYP_DEBUG = 5;
 	public static $EMAIL_TYP_TAGS = array(
 		0 => "Sonstiges",
 		1 => "Registrierung",
 		2 => "Benachrichtigung User",
 		3 => "Benachrichtigung Admin",
 		4 => "Namespaced_Angelegt",
+		5 => "Debug",
 	);
 
 	/**
