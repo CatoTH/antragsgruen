@@ -29,17 +29,19 @@ if ($header) {
 		$pdf->Image($logo, 22, 32, 47, 26);
 	}
 
-	$pdf->SetXY(155, 37, true);
-
 	if (!$antrag->veranstaltung->getEinstellungen()->revision_name_verstecken) {
+
 		if ($revision_name == "") {
-			$name = "Entwurf";
+			$revision_name = "Entwurf";
 			$pdf->SetFont("helvetica", "I", "25");
 		} else {
-			$name = $antrag->revision_name;
 			$pdf->SetFont("helvetica", "B", "25");
 		}
-		$pdf->MultiCell(37, 21, $name,
+		$width = strlen($revision_name) * 5.5;
+		if ($width < 35) $width = 35;
+
+		$pdf->SetXY(192 - $width, 37, true);
+		$pdf->MultiCell($width, 21, $revision_name,
 			array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
 			false, 1, "", "", true, 0, false, true, 21, // defaults
 			"M"
