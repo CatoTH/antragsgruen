@@ -92,3 +92,17 @@ if (!function_exists("veranstaltungsspezifisch_antrag_max_len")) {
 		return $veranstaltung->getEinstellungen()->antragstext_max_len;
 	}
 }
+
+
+if (!function_exists("veranstaltungsspezifisch_antrag_pdf_header")) {
+	/**
+	 * @param Antrag $antrag
+	 * @param Sprache $sprache
+	 * @param string $initiatorInnen
+	 * @return array
+	 */
+	function veranstaltungsspezifisch_antrag_pdf_header($antrag, $sprache, $initiatorInnen)
+	{
+		return array(Yii::app()->params['pdf_logo'], $initiatorInnen, $antrag->name, $sprache->get("Antragstext"), $antrag->revision_name, "Courier", 10);
+	}
+}

@@ -3,8 +3,11 @@
 
 * Die Funktion "Thema hinzufügen" bei der normalen Antragsansicht erscheint Admins nur noch, wenn auch Themen vorhanden sind.
 * Bugfix: Das Anlegen von BenutzerInnenaccounts nach einem Wurzelwerk-Login führte zu einer Fehlermeldung (der Account wurde aber trotzdem angelegt).
-* Es gibt einen neuen Hook, mit dem man die Typen von Anträge auf der Startseite umbenennen kann (veranstaltungsspezifisch_antrag_typ_str)
-* Es gibt einen neuen Hook, mit dem man verschiedene maximale Textlängen in einer Veranstaltung abhängig vom Antragstyp festlegen kann (veranstaltungsspezifisch_antrag_max_len)
+* Neue Hooks für veranstaltungsspezifische Einstellungen:
+  * veranstaltungsspezifisch_antrag_typ_str: Die Typen von Anträge auf der Startseite umbenennen
+  * veranstaltungsspezifisch_antrag_max_len: Verschiedene maximale Textlängen in einer Veranstaltung abhängig vom Antragstyp festlegen
+  * veranstaltungsspezifisch_antrag_pdf_header: Aspekte des Antrags-PDF einstellen
+
 
 
 2.5.0 - 2015-01-04
