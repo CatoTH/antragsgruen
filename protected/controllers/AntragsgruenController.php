@@ -413,6 +413,10 @@ class AntragsgruenController extends CController
 					}
 					if (!$user) {
 						$this->performLogin_OAuth_create_user($us);
+						$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
+						if (!$user) {
+							throw new Exception("Leider ist beim Einloggen ein interner Fehler aufgetreten.");
+						}
 					}
 					Yii::app()->user->login($us);
 					Yii::app()->user->setState("person_id", $user->id);
