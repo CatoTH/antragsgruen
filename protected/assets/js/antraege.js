@@ -153,12 +153,10 @@ function ckeditor_bbcode(id, height) {
     };
     if (typeof(height) != "undefined" && height > 0) opts["height"] = height;
     var editor = CKEDITOR.replace(id, opts);
-    console.log(editor);
 
     var $fieldset = $el.parents("fieldset.textarea").first();
     if ($fieldset.data("max_len") > 0) {
         var onChange = function() {
-            console.log(ckeditor_charcount(editor.getData()));
             if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
                 $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
                 $fieldset.find(".max_len_hint .calm").hide();
@@ -169,7 +167,6 @@ function ckeditor_bbcode(id, height) {
                 $fieldset.find(".max_len_hint .alert").hide();
             }
         };
-        console.log("Event listener");
         editor.on('change', onChange);
         onChange();
 
