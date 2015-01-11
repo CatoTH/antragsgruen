@@ -169,11 +169,12 @@ class AenderungsantragController extends AntragsgruenController
 				if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
 					$kommentar_link = $kommentar->getLink(true);
 					$mails          = explode(",", $this->veranstaltung->admin_email);
+					$from_name      = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
 					$mail_text      = "Es wurde ein neuer Kommentar zum Änderungsantrag \"" . $aenderungsantrag->revision_name . " zu " . $aenderungsantrag->antrag->revision_name . " - " . $aenderungsantrag->antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
 						"Link: " . $kommentar_link;
 
 					foreach ($mails as $mail) if (trim($mail) != "") {
-						AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Kommentar - bitte freischalten.", $mail_text);
+						AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Kommentar - bitte freischalten.", $mail_text, $from_name);
 					}
 				}
 
@@ -399,11 +400,12 @@ class AenderungsantragController extends AntragsgruenController
 
 			if ($aenderungsantrag->antrag->veranstaltung->admin_email != "") {
 				$mails     = explode(",", $aenderungsantrag->antrag->veranstaltung->admin_email);
+				$from_name = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
 				$mail_text = "Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
 					"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id));
 
 				foreach ($mails as $mail) if (trim($mail) != "") {
-					AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Änderungsantrag", $mail_text);
+					AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Änderungsantrag", $mail_text, $from_name);
 				}
 			}
 
