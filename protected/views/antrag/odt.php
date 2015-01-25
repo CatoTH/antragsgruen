@@ -17,11 +17,6 @@ if ($zip->open($tmpZipFile) !== TRUE) {
 
 $content = $zip->getFromName('content.xml');
 
-define("ODT_NS_OFFICE", 'urn:oasis:names:tc:opendocument:xmlns:office:1.0');
-define("ODT_NS_TEXT", 'urn:oasis:names:tc:opendocument:xmlns:text:1.0');
-define("ODT_NS_FO", 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0');
-define("ODT_NS_STYLE", 'urn:oasis:names:tc:opendocument:xmlns:style:1.0');
-
 $DEBUG = false;
 
 if ($DEBUG) echo "<pre>";
