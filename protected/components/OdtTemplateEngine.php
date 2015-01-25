@@ -5,9 +5,6 @@ class OdtTemplateEngine extends OOfficeTemplateEngine{
 	public static $TEMPLATE_TYPE_ANTRAG = 0;
 	public static $TEMPLATE_TYPE_BEGRUENDUNG = 1;
 
-	/** @var DOMDocument */
-	protected $doc = null;
-
 	/** @var null|DOMElement */
 	private $node_template_1 = null;
 	/** @var null|DOMElement */

@@ -5,13 +5,13 @@ class OOfficeTemplateEngine
 {
 
     public static $ODT_NS_OFFICE = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
-    public static $ODT_NS_TEXT = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
-    public static $ODT_NS_FO = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
-    public static $ODT_NS_STYLE = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
+    public static $ODT_NS_TEXT   = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
+    public static $ODT_NS_FO     = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
+    public static $ODT_NS_STYLE  = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
 
 
     /** @var DOMDocument */
-    private $doc = null;
+    protected $doc = null;
 
     /** @var bool */
     protected $DEBUG = false;
@@ -68,10 +68,12 @@ class OOfficeTemplateEngine
                 $append_el = null;
                 switch ($src_node->nodeName) {
                     case "b":
+                    case "strong":
                         $dst_el = $this->doc->createElementNS(static::$ODT_NS_TEXT, "span");
                         $dst_el->setAttribute("text:style-name", "Antragsgruen_fett");
                         break;
                     case "i":
+                    case "em";
                         $dst_el = $this->doc->createElementNS(static::$ODT_NS_TEXT, "span");
                         $dst_el->setAttribute("text:style-name", "Antragsgruen_kursiv");
                         break;
