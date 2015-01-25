@@ -17,12 +17,6 @@ class OdtTemplateEngine extends OOfficeTemplateEngine{
 
 	private $replaces = array();
 
-	public function __construct($content)
-	{
-		$this->doc = new DOMDocument();
-		$this->doc->loadXML($content);
-	}
-
 
 	/**
 	 * @param string $search
@@ -62,8 +56,8 @@ class OdtTemplateEngine extends OOfficeTemplateEngine{
 
 		/** @var DOMNode[] $nodes */
 		$nodes = array();
-		foreach ($this->doc->getElementsByTagNameNS(static::$ODT_NS_TEXT, 'span') as $element) $nodes[] = $element;
-		foreach ($this->doc->getElementsByTagNameNS(static::$ODT_NS_TEXT, 'p') as $element) $nodes[] = $element;
+		foreach ($this->doc->getElementsByTagNameNS(static::$NS_TEXT, 'span') as $element) $nodes[] = $element;
+		foreach ($this->doc->getElementsByTagNameNS(static::$NS_TEXT, 'p') as $element) $nodes[] = $element;
 
 
 		foreach ($nodes as $node) {

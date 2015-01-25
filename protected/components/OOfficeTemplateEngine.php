@@ -4,10 +4,11 @@
 class OOfficeTemplateEngine
 {
 
-    public static $ODT_NS_OFFICE = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
-    public static $ODT_NS_TEXT   = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
-    public static $ODT_NS_FO     = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
-    public static $ODT_NS_STYLE  = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
+    public static $NS_OFFICE = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
+    public static $NS_TEXT   = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
+    public static $NS_FO     = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
+    public static $NS_STYLE  = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
+    public static $NS_TABLE  = 'urn:oasis:names:tc:opendocument:xmlns:table:1.0';
 
 
     /** @var DOMDocument */
@@ -15,6 +16,15 @@ class OOfficeTemplateEngine
 
     /** @var bool */
     protected $DEBUG = false;
+
+    /**
+     * @param string $content
+     */
+    public function __construct($content)
+    {
+        $this->doc = new DOMDocument();
+        $this->doc->loadXML($content);
+    }
 
     /***
      * @param bool $debug
@@ -38,17 +48,17 @@ class OOfficeTemplateEngine
      */
     protected function appendStyleNode($style_name, $attributes)
     {
-        $node = $this->doc->createElementNS(static::$ODT_NS_STYLE, "style");
+        $node = $this->doc->createElementNS(static::$NS_STYLE, "style");
         $node->setAttribute("style:name", $style_name);
         $node->setAttribute("style:family", "text");
 
-        $style = $this->doc->createElementNS(static::$ODT_NS_STYLE, "text-properties");
+        $style = $this->doc->createElementNS(static::$NS_STYLE, "text-properties");
         foreach ($attributes as $att_name => $att_val) {
             $style->setAttribute($att_name, $att_val);
         }
         $node->appendChild($style);
 
-        foreach ($this->doc->getElementsByTagNameNS(static::$ODT_NS_OFFICE, 'automatic-styles') as $element) {
+        foreach ($this->doc->getElementsByTagNameNS(static::$NS_OFFICE, 'automatic-styles') as $element) {
             /** @var DOMElement $element */
             $element->appendChild($node);
         }
@@ -69,26 +79,26 @@ class OOfficeTemplateEngine
                 switch ($src_node->nodeName) {
                     case "b":
                     case "strong":
-                        $dst_el = $this->doc->createElementNS(static::$ODT_NS_TEXT, "span");
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "span");
                         $dst_el->setAttribute("text:style-name", "Antragsgruen_fett");
                         break;
                     case "i":
                     case "em";
-                        $dst_el = $this->doc->createElementNS(static::$ODT_NS_TEXT, "span");
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "span");
                         $dst_el->setAttribute("text:style-name", "Antragsgruen_kursiv");
                         break;
                     case "u":
-                        $dst_el = $this->doc->createElementNS(static::$ODT_NS_TEXT, "span");
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "span");
                         $dst_el->setAttribute("text:style-name", "Antragsgruen_unterstrichen");
                         break;
                     case "br":
-                        $dst_el = $this->doc->createElementNS(static::$ODT_NS_TEXT, "line-break");
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "line-break");
                         break;
                     case "ul":
-                        $dst_el = $this->doc->createElementNS(static::$ODT_NS_TEXT, "list");
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "list");
                         break;
                     case "li":
-                        $dst_el    = $this->doc->createElementNS(static::$ODT_NS_TEXT, "list-item");
+                        $dst_el    = $this->doc->createElementNS(static::$NS_TEXT, "list-item");
                         $append_el = $this->getNextNodeTemplate($template_type);
                         $dst_el->appendChild($append_el);
                         break;
