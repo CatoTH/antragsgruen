@@ -35,25 +35,25 @@ class OdtTemplateEngine extends OOfficeTemplateEngine
      */
     public function convert($antrag_absaetze, $begruendung)
     {
-        $this->appendStyleNode("Antragsgruen_fett", array(
+        $this->appendTextStyleNode("Antragsgruen_fett", array(
             "fo:font-weight"            => "bold",
             "style:font-weight-asian"   => "bold",
             "style:font-weight-complex" => "bold",
         ));
-        $this->appendStyleNode("Antragsgruen_kursiv", array(
+        $this->appendTextStyleNode("Antragsgruen_kursiv", array(
             "fo:font-style"            => "italic",
             "style:font-style-asian"   => "italic",
             "style:font-style-complex" => "italic",
         ));
-        $this->appendStyleNode("Antragsgruen_unterstrichen", array(
+        $this->appendTextStyleNode("Antragsgruen_unterstrichen", array(
             "style:text-underline-width" => "auto",
             "style:text-underline-color" => "font-color",
             "style:text-underline-style" => "solid",
         ));
-        $this->appendStyleNode("Antragsgruen_gruen", array(
+        $this->appendTextStyleNode("Antragsgruen_gruen", array(
             "fo:color" => "#00ff00",
         ));
-        $this->appendStyleNode("Antragsgruen_rot", array(
+        $this->appendTextStyleNode("Antragsgruen_rot", array(
             "fo:color" => "#ff0000",
         ));
 

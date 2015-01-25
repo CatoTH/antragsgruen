@@ -43,17 +43,12 @@ abstract class OOfficeTemplateEngine
         die();
     }
 
-    /**
-     * @param string $style_name
-     * @param array $attributes
-     */
-    protected function appendStyleNode($style_name, $attributes)
-    {
+    protected function appendStyleNode($style_name, $family, $element, $attributes) {
         $node = $this->doc->createElementNS(static::$NS_STYLE, "style");
         $node->setAttribute("style:name", $style_name);
-        $node->setAttribute("style:family", "text");
+        $node->setAttribute("style:family", $family);
 
-        $style = $this->doc->createElementNS(static::$NS_STYLE, "text-properties");
+        $style = $this->doc->createElementNS(static::$NS_STYLE, $element);
         foreach ($attributes as $att_name => $att_val) {
             $style->setAttribute($att_name, $att_val);
         }
@@ -63,6 +58,33 @@ abstract class OOfficeTemplateEngine
             /** @var DOMElement $element */
             $element->appendChild($node);
         }
+    }
+
+    /**
+     * @param string $style_name
+     * @param array $attributes
+     */
+    protected function appendTextStyleNode($style_name, $attributes)
+    {
+        $this->appendStyleNode($style_name, 'text', 'text-properties', $attributes);
+    }
+
+    /**
+     * @param string $style_name
+     * @param array $attributes
+     */
+    protected function appendRowStyleNode($style_name, $attributes)
+    {
+        $this->appendStyleNode($style_name, 'table-row', 'table-row-properties', $attributes);
+    }
+
+    /**
+     * @param string $style_name
+     * @param array $attributes
+     */
+    protected function appendColStyleNode($style_name, $attributes)
+    {
+        $this->appendStyleNode($style_name, 'table-column', 'table-column-properties', $attributes);
     }
 
     /**
@@ -152,15 +174,6 @@ abstract class OOfficeTemplateEngine
 </head><body>' . $html . "</body></html>");
         $bodies = $src_doc->getElementsByTagName("body");
         $body   = $bodies->item(0);
-
-        /*
-        $p = null;
-        if (count($body->childNodes) == 1) {
-            foreach ($body->childNodes as $child) {
-                if ($child->nodeName == "p") $body = $child;
-            }
-        }
-        */
 
         $new_nodes = array();
         for ($i = 0; $i < $body->childNodes->length; $i++)  {

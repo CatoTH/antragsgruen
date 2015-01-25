@@ -43,7 +43,8 @@ if ($DEBUG) {
 
 $doc->setCell(1, 1, OdsTemplateEngine::$TYPE_TEXT, "Test", null, null);
 $doc->setCell(1, 2, OdsTemplateEngine::$TYPE_NUMBER, 2, null, null);
-$doc->setCell(2, 2, OdsTemplateEngine::$TYPE_HTML, "<p><b>Fett</b></p><p><u>Unterstrichen</u></p><p>Bla</p>", null, null);
+$doc->setCell(2, 2, OdsTemplateEngine::$TYPE_HTML, "<p><b>Fett</b> - <u>Unterstrichen</u></p><p>Bla</p>", null, null);
+$doc->setColumnWidth(2, 10);
 
 $content = $doc->create();
 
