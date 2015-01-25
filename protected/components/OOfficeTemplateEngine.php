@@ -1,14 +1,15 @@
 <?php
 
 
-class OOfficeTemplateEngine
+abstract class OOfficeTemplateEngine
 {
 
-    public static $NS_OFFICE = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
-    public static $NS_TEXT   = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
-    public static $NS_FO     = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
-    public static $NS_STYLE  = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
-    public static $NS_TABLE  = 'urn:oasis:names:tc:opendocument:xmlns:table:1.0';
+    public static $NS_OFFICE   = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
+    public static $NS_TEXT     = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
+    public static $NS_FO       = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
+    public static $NS_STYLE    = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
+    public static $NS_TABLE    = 'urn:oasis:names:tc:opendocument:xmlns:table:1.0';
+    public static $NS_CALCTEXT = 'urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0';
 
 
     /** @var DOMDocument */
@@ -67,9 +68,9 @@ class OOfficeTemplateEngine
     /**
      * @param DOMNode $src_node
      * @param int $template_type
-     * @return \DOMText|null
+     * @return DOMNode
      */
-    protected function html2odtNode_int($src_node, $template_type)
+    protected function html2ooNode_int($src_node, $template_type)
     {
         switch ($src_node->nodeType) {
             case XML_ELEMENT_NODE:
@@ -94,6 +95,9 @@ class OOfficeTemplateEngine
                     case "br":
                         $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "line-break");
                         break;
+                    case "p":
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "p");
+                        break;
                     case "ul":
                         $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "list");
                         break;
@@ -107,9 +111,9 @@ class OOfficeTemplateEngine
                 }
                 foreach ($src_node->childNodes as $child) {
                     /** @var DOMNode $child */
-                    if ($this->DEBUG) echo $child->nodeType . "<br>";
-                    $dst_node = $this->html2odtNode_int($child, $template_type);
-                    if ($this->DEBUG) var_dump($dst_node);
+                    if ($this->DEBUG) echo "CHILD<br>" . $child->nodeType . "<br>";
+                    $dst_node = $this->html2ooNode_int($child, $template_type);
+                    if ($this->DEBUG) { echo "CHILD"; var_dump($dst_node); }
                     if ($dst_node) {
                         if ($append_el) $append_el->appendChild($dst_node);
                         else $dst_el->appendChild($dst_node);
@@ -137,9 +141,9 @@ class OOfficeTemplateEngine
     /**
      * @param string $html
      * @param int $template_type
-     * @return DOMNode
+     * @return DOMNode[]
      */
-    protected function html2odtNode($html, $template_type)
+    protected function html2ooNodes($html, $template_type)
     {
 
         $src_doc = new DOMDocument();
@@ -149,28 +153,40 @@ class OOfficeTemplateEngine
         $bodies = $src_doc->getElementsByTagName("body");
         $body   = $bodies->item(0);
 
+        /*
         $p = null;
         if (count($body->childNodes) == 1) {
             foreach ($body->childNodes as $child) {
                 if ($child->nodeName == "p") $body = $child;
             }
         }
+        */
 
-        $new_node = $this->getNextNodeTemplate($template_type);
-        foreach ($body->childNodes as $child) {
+        $new_nodes = array();
+        for ($i = 0; $i < $body->childNodes->length; $i++)  {
+            $child = $body->childNodes->item($i);
+
             /** @var DOMNode $child */
             if ($child->nodeName == "ul") {
                 // Alle anderen Nocdes dieses Aufrufs werden ignoriert
                 if ($this->DEBUG) echo "LIST<br>";
-                $dst_node = $this->html2odtNode_int($child, $template_type);
-                return $dst_node;
+                $new_node = $this->html2ooNode_int($child, $template_type);
             } else {
-                if ($this->DEBUG) echo $child->nodeName . "!!!!!!!!!!!!<br>";
-                $dst_node = $this->html2odtNode_int($child, $template_type);
-                if ($dst_node) $new_node->appendChild($dst_node);
+                if ($child->nodeType == XML_TEXT_NODE) {
+                    $new_node = $this->getNextNodeTemplate($template_type);
+                    /** @var DOMText $child */
+                    if ($this->DEBUG) echo $child->nodeName . " - " . CHtml::encode($child->data) . "!!!!!!!!!!!!<br>";
+                    $text = new DOMText();;
+                    $text->data = $child->data;
+                    $new_node->appendChild($text);
+                } else {
+                    if ($this->DEBUG) echo $child->nodeName . "!!!!!!!!!!!!<br>";
+                    $new_node = $this->html2ooNode_int($child, $template_type);
+                }
             }
+            if ($new_node) $new_nodes[] = $new_node;
         }
-        return $new_node;
+        return $new_nodes;
     }
 
     /**
@@ -178,11 +194,7 @@ class OOfficeTemplateEngine
      * @throws \Exception
      * @return DOMNode
      */
-    protected function getNextNodeTemplate($template_type)
-    {
-        $dom = new DOMNode();
-        return $dom;
-    }
+    abstract  protected function getNextNodeTemplate($template_type);
 
 }
 

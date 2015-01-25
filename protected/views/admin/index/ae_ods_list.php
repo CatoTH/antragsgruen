@@ -28,20 +28,22 @@ if ($zip->open($tmpZipFile) !== TRUE) {
 }
 
 $content = $zip->getFromName('content.xml');
+$doc = new OdsTemplateEngine($content);
 
 $DEBUG = false;
 
 if ($DEBUG) {
     echo "<pre>";
+    $doc->setDebug(true);
 } else {
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment;filename=aenderungsantraege.xlsx');
     header('Cache-Control: max-age=0');
 }
 
-$doc = new OdsTemplateEngine($content);
 $doc->setCell(1, 1, OdsTemplateEngine::$TYPE_TEXT, "Test", null, null);
 $doc->setCell(1, 2, OdsTemplateEngine::$TYPE_NUMBER, 2, null, null);
+$doc->setCell(2, 2, OdsTemplateEngine::$TYPE_HTML, "<p><b>Fett</b></p><p><u>Unterstrichen</u></p><p>Bla</p>", null, null);
 
 $content = $doc->create();
 

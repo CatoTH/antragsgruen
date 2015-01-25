@@ -69,10 +69,24 @@ class OdsTemplateEngine extends OOfficeTemplateEngine
             $current_row = $this->doc->createElementNS(static::$NS_TABLE, 'table-row');
             for ($col = 0; $col <= $this->matrix_cols; $col++) {
                 $current_cell = $this->doc->createElementNS(static::$NS_TABLE, 'table-cell');
-                if (isset($this->matrix[$row][$col])) {
-                    $p = $this->doc->createElementNS(static::$NS_TEXT, 'p');
-                    $p->textContent = $this->matrix[$row][$col]["content"];
-                    $current_cell->appendChild($p);
+                if (isset($this->matrix[$row][$col])) switch ($this->matrix[$row][$col]["type"]) {
+                    case static::$TYPE_TEXT:
+                        $p              = $this->doc->createElementNS(static::$NS_TEXT, 'p');
+                        $p->textContent = $this->matrix[$row][$col]["content"];
+                        $current_cell->appendChild($p);
+                        break;
+                    case static::$TYPE_NUMBER:
+                        $p              = $this->doc->createElementNS(static::$NS_TEXT, 'p');
+                        $p->textContent = $this->matrix[$row][$col]["content"];
+                        $current_cell->appendChild($p);
+                        $current_cell->setAttribute('calctext:value-type', 'float');
+                        $current_cell->setAttribute('office:value-type', 'float');
+                        $current_cell->setAttribute('office:value', (string)$this->matrix[$row][$col]["content"]);
+                        break;
+                    case static::$TYPE_HTML:
+                        $ps = $this->html2ooNodes($this->matrix[$row][$col]["content"], null);
+                        foreach ($ps as $p) $current_cell->appendChild($p);
+                        break;
                 }
                 $current_row->appendChild($current_cell);
             }
@@ -80,5 +94,15 @@ class OdsTemplateEngine extends OOfficeTemplateEngine
         }
 
         return $this->doc->saveXML();
+    }
+
+    /**
+     * @param int
+     * @throws \Exception
+     * @return DOMNode
+     */
+    protected function getNextNodeTemplate($template_type)
+    {
+        return $this->doc->createElement('text:span');
     }
 }
