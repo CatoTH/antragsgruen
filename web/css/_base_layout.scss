@@ -1,0 +1,152 @@
+$text-color: rgb(72, 70, 73);
+$screen-lg: 10000; // deaktivieren
+
+@import "bootstrap-3.3.2-sass/bootstrap";
+
+
+
+html {
+  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
+}
+
+body {
+  background: url("../img/verlauf-back.png") repeat-x scroll 0 0 transparent;
+  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+blockquote {
+  margin: 3px 3px 3px 15px;
+  border-left: dotted 2px gray;
+  padding: 5px;
+}
+
+
+p, ul {
+  margin-bottom: 10px;
+}
+
+a {
+  color: $farbe_hellgruen_text;
+  &:hover {
+    text-decoration: none;
+    color: rgb(198, 214, 78);
+  }
+}
+
+
+
+
+.well {
+  padding: 0;
+  position: relative;
+
+  -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  background-color: #fff;
+
+  @include border-radius(10px);
+  > :first-child {
+    @include border-radius-top();
+    .nav-header {
+      @include border-radius-top();
+    }
+  }
+  > :last-child {
+    @include border-radius-bottom();
+  }
+
+  h1 {
+    @include gruene_ueberschrift(rgb(11, 47, 8), $farbe_dunkelgruen);
+    margin: -1px;
+  }
+  h2, h3, .nav-header {
+    @include gruene_ueberschrift($farbe_hellgruen, rgb(185, 209, 38));
+    margin: -1px;
+  }
+
+  .content {
+    padding: 15px 20px 30px;
+  }
+}
+
+.navbar {
+  margin-bottom: 0;
+
+  .navbar-inner {
+    background: none 0 0 transparent;
+    filter: none;
+    border: none;
+    box-shadow: none;
+    min-height: 0;
+    padding: 0;
+    text-align: right;
+    margin-top: 10px;
+    @include border-radius(0);
+  }
+
+  .nav {
+    margin: 0;
+    float: right;
+
+    li a {
+      display: inline;
+      padding: 0;
+      margin-left: 40px;
+      color: $farbe_hellgruen;
+      font-family: "Open Sans";
+      font-style: normal;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 18px;
+      text-shadow: none;
+    }
+
+    li.active a,
+    li a:hover,
+    li a:focus,
+    li.active a:hover,
+    li.active a:focus {
+      background: none;
+      filter: none;
+      box-shadow: none;
+      color: $farbe_dunkelgruen !important;
+    }
+  }
+
+}
+
+.logo {
+  margin-top: 14px;
+  display: block;
+}
+
+.breadcrumb {
+  background: none;
+  filter: none;
+  @include border-radius(0);
+  margin: 0;
+  margin-top: 30px;
+  padding: 0;
+
+  &, .active {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 15px;
+    color: rgb(115, 115, 115);
+  }
+
+  li {
+    text-shadow: none;
+  }
+
+  a {
+    color: $farbe_hellgruen;
+  }
+
+}
+
+

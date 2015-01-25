@@ -1,0 +1,930 @@
+@charset "UTF-8";
+
+$OpenSansPath: "../fonts/OpenSans/fonts";
+$farbe_dunkelgruen: rgb(40, 95, 25);
+$farbe_hellgruen: rgb(175, 203, 8);
+$farbe_hellgruen_text: rgb(162, 188, 4);
+$farbe_magenta: rgb(226, 0, 122);
+
+@import "../fonts/OpenSans/open-sans";
+
+@import "mixins";
+@import "base_layout";
+
+
+
+.antragsschluss_kreis {
+  float: right;
+  width: 105px;
+  height: 85px;
+  padding-top: 20px;
+  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  font-family: "Open Sans";
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 17px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-left: 40px;
+  @include border-radius(90px);
+}
+
+.antragsliste {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  .antrag {
+    padding: 12px 20px 17px 50px;
+
+    .datum {
+      color: rgb(179, 180, 180);
+      display: block;
+      float: right;
+      margin-left: 20px;
+    }
+
+    .titel {
+      margin-bottom: 3px;
+
+      &:before {
+        @extend .icon-document;
+        @include icons-antragsgruen('20px');
+        width: 30px;
+        margin-left: -30px;
+        color: $farbe_hellgruen;
+      }
+
+      a {
+        color: $farbe_dunkelgruen;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 18px;
+        text-indent: 0;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+
+        &:hover, &:focus {
+          color: rgb(73, 127, 55);
+        }
+      }
+
+      .pdfLink {
+        font-size: 13px;
+        color: $farbe_hellgruen_text;
+        margin-left: 10px;
+        display: inline-block;
+        font-weight: normal;
+        &:before {
+          @extend .icon-pdf;
+          @include icons-antragsgruen('14px');
+          color: $farbe_hellgruen;
+          width: 16px;
+        }
+        a:hover {
+          text-decoration: none;
+          color: rgb(198, 214, 78);
+        }
+      }
+    }
+
+    .info {
+      font-style: italic;
+      color: rgb(115, 115, 115);
+    }
+  }
+
+  .span9 .resolution .titel:before {
+    @extend .icon-feed;
+  }
+
+  .aenderungsantraege {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin-bottom: 3px;
+      &.zurueckgezogen {
+        text-decoration: line-through;
+      }
+      &:before {
+        @extend .icon-attachment;
+        @include icons-antragsgruen('15px');
+        color: #A2BC04;
+        width: 14px;
+      }
+      a {
+        font-weight: bold;
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+.antrags_text_holder {
+  font-size: 13px;
+  &.kleine_schrift {
+    font-size: 12px;
+  }
+
+  .ae_absatz_header {
+    text-decoration: underline;
+  }
+
+  .text li {
+    margin: 10px;
+  }
+
+  .absatz_ueberspringen {
+    margin: 10px;
+    text-align: center;
+  }
+  .antragstext_diff, {
+    font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
+  }
+
+  .absatz_text {
+    font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
+    position: relative;
+    margin-left: 0;
+    padding: 15px 23px 25px 0;
+
+    > .text {
+      padding-left: 50px;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+    > blockquote.text {
+      padding-left: 30px;
+    }
+
+    ul, ol {
+      margin-left: 40px;
+    }
+  }
+}
+
+.antrags_text_holder_nummern {
+  .text {
+    padding-left: 30px;
+  }
+  .zeilennummer {
+    color: #C3C3C3;
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    left: -40px;
+    position: relative;
+    text-decoration: none;
+    width: 0;
+  }
+
+  ul.text li .zeilennummer,
+  ol.text li .zeilennummer {
+    left: -90px;
+  }
+
+  blockquote.text {
+    margin: 3px 3px 3px 60px;
+    border-left: dotted 2px gray;
+    padding: 5px;
+
+    .zeilennummer {
+      left: -80px;
+    }
+  }
+}
+
+.antrags_text_holder_keinenummern {
+  blockquote.text {
+    margin: 3px 3px 3px 80px;
+    border-left: dotted 2px gray;
+    padding: 5px;
+  }
+  .text {
+    padding-left: 60px;
+  }
+}
+
+.ae_text_holder {
+  padding-left: 30px;
+  padding-right: 20px;
+}
+
+.lesezeichen {
+  float: right;
+  width: 1px;
+  list-style-type: none;
+
+  > li {
+    width: 1px;
+    height: 38px;
+    position: relative;
+    margin-bottom: 2px;
+
+    > a {
+      display: block;
+      position: absolute;
+      white-space: nowrap;
+      padding: 10px;
+      top: 0;
+      left: 2px;
+      color: #fff;
+      min-width: 40px;
+      -moz-border-radius-topright: 10px;
+      -webkit-border-top-right-radius: 10px;
+      border-top-right-radius: 10px;
+      -moz-border-radius-bottomright: 10px;
+      -webkit-border-bottom-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+      font-weight: bold;
+      &:before {
+        @include icons-antragsgruen(15px);
+        font-weight: bold;
+        color: #fff;
+      }
+    }
+    &.kommentare > a {
+      @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+      &:before {
+        @extend .icon-comment;
+      }
+    }
+    &.aenderungsantrag > a {
+      @include linear-gradient(90deg, $farbe_hellgruen, rgb(185, 209, 38));
+      &:before {
+        @extend .icon-edit;
+      }
+    }
+    .hider {
+      @include linear-gradient(90deg, rgb(180, 180, 180), rgb(220, 220, 220));
+    }
+
+    .shower {
+      display: none;
+    }
+  }
+}
+
+.kommentarform {
+  .kommentar_bottom {
+    overflow: auto;
+    margin-top: 15px;
+  }
+  &:hover .kommentar_bottom .kommentarlink {
+    visibility: visible;
+  }
+  .kommentarlink {
+    visibility: hidden;
+    float: right;
+    margin-top: 5px;
+  }
+  .row {
+    overflow: auto;
+    margin-top: 10px;
+    > * {
+      float: left;
+    }
+    > label {
+      width: 160px;
+      text-align: right;
+      padding-right: 20px;
+    }
+    .row textarea {
+      width: 300px;
+    }
+    textarea {
+      height: 100px;
+    }
+  }
+  .submitrow {
+    margin-left: 160px;
+    width: 320px;
+    text-align: center;
+  }
+  .submitrow .btn-primary {
+    margin: 0;
+  }
+}
+
+.kommentar_unterstuetzerInnen_holder {
+  float: left;
+  .dafuer, .dagegen {
+    display: inline-block;
+    border: solid 1px lightgray;
+    margin: 1px;
+    padding: 2px;
+    @include border-radius(3px);
+  }
+  .dafuer span, .dagegen span {
+    color: lightgray;
+  }
+  button.dafuer:hover {
+    background-color: #A2BC04;
+  }
+  button.dagegen:hover {
+    background-color: red;
+  }
+  button {
+    background-color: transparent;
+  }
+  .momentan {
+    display: inline-block;
+  }
+  .dochnicht {
+    text-align: center;
+    display: none;
+  }
+  .meine {
+    display: inline-block;
+    height: 20px;
+    width: 240px;
+    position: relative;
+  }
+  .meine:hover .dochnicht {
+    display: inline-block;
+  }
+  .meine:hover .momentan {
+    display: none;
+  }
+  .momentan, .dochnicht {
+    position: absolute;
+    top: 5px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-left: 20px;
+    font-size: 10px;
+    height: 20px;
+    width: 240px;
+    border: solid 1px gray;
+    @include border-radius(3px);
+    background-color: #eee;
+  }
+}
+
+.kommentarform {
+  padding: 12px 20px 25px;
+
+  h3 {
+    background: none;
+    color: $farbe_hellgruen_text;
+    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 18px;
+    margin: 0 0 5px 0;
+    text-transform: none;
+    padding: 0;
+  }
+
+  .datum {
+    color: #B3B4B4;
+    float: right;
+    margin-left: 20px;
+  }
+
+  .del_link {
+    float: right;
+    margin-left: 20px;
+
+    a {
+      color: #ccc;
+      display: block;
+      font-family: 'icons_antragsgruen';
+      font-size: 12px;
+      vertical-align: bottom;
+
+      &:hover,
+      &:focus {
+        color: #bbb;
+      }
+
+    }
+  }
+}
+
+.saveholder {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
+fieldset.antragstellerIn {
+  label.radio {
+    display: inline-block;
+  }
+}
+
+#UnterstuetzerInnen {
+  .unterstuetzerInnen_adder {
+    text-align: center;
+  }
+}
+.policy_antragstellerIn_orga_5, .policy_antragstellerIn_orga_19_fulltext {
+  #UnterstuetzerInnen {
+    input[type=text] {
+      display: inline-block;
+    }
+  }
+}
+
+
+#antrag_stellen_form {
+  .form .radio {
+    min-width: 150px;
+  }
+}
+
+
+
+#veranstaltung-form label, #person-form label, #antrag-kommentar-form label, #aenderungsantrag-kommentar-form label, #texte-form label {
+  display: inline-block;
+  width: 220px;
+  vertical-align: top;
+
+  &.block {
+    display: block;
+    width: auto;
+  }
+
+}
+
+.search-form label {
+  display: inline-block;
+  width: 220px;
+  vertical-align: top;
+}
+
+#veranstaltung-form {
+  input[type=text], select, textarea {
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+  .std_content_col {
+    display: inline-block;
+    width: 440px;
+  }
+  .antragstypen_row {
+
+  }
+}
+
+#antrag-form, #aenderungsantrag-form {
+  label {
+    display: inline-block;;
+    width: 180px;
+    vertical-align: top;
+
+  }
+  input {
+    display: inline-block;
+  }
+  input[type=text], select, textarea {
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+  #Antrag_notiz_intern, #Aenderungsantrag_notiz_intern {
+    width: 427px;
+  }
+}
+
+.form-actions {
+  background: rgb(246, 246, 246);
+  background: -moz-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  background: -webkit-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  background: -o-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  background: -ms-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  background: linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
+  margin: 0;
+  border: 0;
+  @include border-radius(0);
+  @include border-radius-bottom();
+  position: relative;
+  padding: 15px 20px 50px;
+}
+
+.btn-primary {
+  border: none;
+  text-shadow: none;
+  color: #fff;
+  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  padding: 6px 30px 4px;
+  font-family: "Open Sans";
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 18px;
+  text-transform: uppercase;
+  .span9 & {
+    margin: 10px 0 0 200px;
+  }
+}
+
+.ae_select_confirm {
+  text-align: center;
+}
+
+h3 label {
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 18px;
+  color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.ae_absatzwahl_modus.aenderungen_moeglich .antragabsatz_holder .text:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.cke_skin_kama {
+  border: none !important;
+}
+
+#sidebar {
+  .nav-list {
+    padding: 0;
+    margin-bottom: 20px;
+
+    > li {
+      padding: 0 20px 10px 38px;
+      a, a:hover, a:focus {
+        padding: 0px;
+        background: none;
+        filter: none;
+        margin: 0;
+        text-shadow: none;
+        display: inline;
+      }
+      &.nav-header {
+        padding-left: 15px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-right: 0;
+      }
+    }
+
+    .nav-header {
+      margin-bottom: 12px;
+    }
+  }
+  .neue-antraege .antrag:before {
+    @extend .icon-document;
+    @include icons-antragsgruen(15px);
+    color: #A2BC04;
+    margin-left: -20px;
+  }
+
+  .neue-antraege .resolution:before {
+    @extend .icon-feed;
+    @include icons-antragsgruen(15px);
+    color: #A2BC04;
+    margin-left: -20px;
+  }
+
+  .neue-aenderungsantraege .aeantrag:before {
+    @extend .icon-attachment;
+    @include icons-antragsgruen(15px);
+    color: #A2BC04;
+    margin-left: -20px;
+  }
+
+  .neue-kommentare {
+    .komm:before {
+      @extend .icon-comment;
+      @include icons-antragsgruen(15px);
+      color: #A2BC04;
+      margin-left: -20px;
+    }
+
+    .komm strong {
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    .feed:before {
+      @extend .icon-feed;
+      @include icons-antragsgruen(15px);
+      color: #A2BC04;
+      margin-left: -20px;
+    }
+
+    .benachrichtigung:before {
+      @extend .icon-bell;
+      @include icons-antragsgruen(15px);
+      color: #A2BC04;
+      margin-left: -20px;
+    }
+
+    .pdf:before {
+      @extend .icon-pdf;
+      @include icons-antragsgruen(15px);
+      color: #A2BC04;
+      margin-left: -20px;
+    }
+
+  }
+
+  .neuer-antrag {
+    position: absolute;
+    top: -4px;
+    right: -58px;
+    display: block;
+    width: 58px;
+    height: 276px;
+    background-image: url(../img/neuer-antrag.png);
+  }
+
+  .antragsgruen_werbung {
+    margin-top: 30px;
+  }
+
+  .nav-list.einsatzorte-list li {
+    padding-left: 15px;
+  }
+
+  .search-query {
+    width: 140px;
+  }
+}
+
+
+ul.funktionen {
+  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  padding: 20px 0 21px 41px;
+  list-style-type: none;
+  margin: -1px; // verhindert weißen Mini-Rahmen
+  position: relative;
+  @include border-radius(10px);
+  -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+
+  li a, li > span {
+    display: block;
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 18px;
+    color: #fff;
+    padding-bottom: 10px;
+  }
+
+  li a:hover {
+    color: rgb(246, 224, 235);
+  }
+  .unterstuetzen a:before {
+    @extend .icon-document;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
+  }
+
+  .zurueck a:before {
+    @extend .icon-back;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
+  }
+
+  .download a:before {
+    @extend .icon-pdf;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
+  }
+
+  .aender-stellen a:before {
+    @extend .icon-plus;
+    @include icons-antragsgruen(15px);
+    width: 24px;
+    margin-left: -24px;
+    color: #fff;
+  }
+
+}
+
+.footer_bar {
+  clear: both;
+  width: 970px;
+  margin-bottom: 70px;
+  margin-top: 20px;
+
+  .brand {
+    display: none;
+  }
+
+  .navbar-inner {
+    text-align: left;
+  }
+
+}
+
+
+.bdk_antrags_liste {
+  padding: 25px;
+  font-family: "Open Sans", verdana, sans-serif;
+  font-size: 14px;
+
+  table {
+    width: 100%;
+  }
+  th {
+    border-bottom: solid 1px $farbe_hellgruen;
+    font-size: 0.80em;
+    line-height: 2.5em;
+    font-weight: 600;
+    font-family: "Open Sans", verdana, sans-serif;
+  }
+  td {
+    font-family: "Open Sans", verdana, sans-serif;
+    vertical-align: top;
+    padding: 0.75em 0em 0.75em 0em;
+  }
+  tr.antrag {
+    border-top: solid 1px $farbe_hellgruen;
+    &:first-child {
+      border-top: none;
+    }
+  }
+  tr.aenderungsantrag {
+    .titel {
+      .pdflink {
+        font-weight: 400;
+      }
+      .titellink {
+        font-weight: 400;
+      }
+    }
+  }
+  .nummer {
+    width: 20%;
+  }
+  .titel {
+    width: 45%;
+
+    .pdflink {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .titellink {
+      font-weight: 600;
+      a:link, a:visited {
+        color: black;
+      }
+    }
+  }
+  .antragstellerIn {
+    width: 35%;
+  }
+}
+
+.bdk_antrags_liste {
+
+}
+
+.unterstuetzerInnenwidget_adder {
+  border: dotted 1px gray;
+
+  .person_selector {
+    width: 240px;
+    margin-right: 10px;
+  }
+
+  .unterstuetzerIn_neu_holder input {
+    border: solid 1px gray;
+  }
+}
+.unterstuetzerInnenwidget .sort_handle {
+  cursor: move;
+}
+
+.antragsdaten th {
+  text-align: left;
+  padding-right: 10px;
+}
+
+
+del {
+  color: #880000;
+}
+
+ins {
+  color: #008800;
+}
+
+.antragstext_diff {
+  padding: 15px 20px 25px 0;
+  ul {
+    margin-left: 45px;
+    li {
+      width: 480px;
+    }
+  }
+}
+
+.unterstuetzerIn label input {
+  display: inline-block;
+}
+
+
+#aenderungsantrag-form textarea, #texte-form textarea {
+  width: 400px;
+}
+
+#aenderungsantrag-form textarea {
+  height: 150px;
+}
+
+#texte-form textarea {
+  height: 400px;
+}
+
+#aenderungsantrag-form select, #antrag-form select, #texte-form input, #texte-form select {
+  width: 405px;
+}
+
+#Antrag_status_string, #antrag-form select#Antrag_status {
+  width: 200px;
+}
+
+#aenderungsantrag-form #Aenderungsantrag_status, #aenderungsantrag-form #Aenderungsantrag_status_string {
+  width: 200px;
+}
+
+#aenderungsantrag-form .unterstuetzerInnenwidget select, #antrag-form .unterstuetzerInnenwidget select {
+  width: 200px;
+}
+
+
+.js_protection_hint {
+  width: 90%;
+  background-color: #f08080;
+  border: solid 1px red;
+  margin: 15px;
+  padding: 5px;
+}
+
+#instanz-anlegen-form {
+  .weiter {
+    text-align: right;
+  }
+  .einsatzzweck {
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    margin-top: 30px;
+
+    div {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    input {
+      vertical-align: middle;
+    }
+  }
+  .einsatzzweck_erkl {
+    padding-left: 10px;
+    margin-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-left: solid 3px lightgray;
+  }
+  .url .domain {
+    font-size: 16px;
+  }
+  .url .domain input {
+    width: 130px;
+    padding: 0;
+    margin-left: 2px;
+    margin-top: 0;
+  }
+  label.name, label.url {
+    font-weight: bold;
+  }
+  .zahlung label {
+    display: inline;
+  }
+  .kontakt textarea {
+    width: 300px;
+    height: 80px;
+  }
+}
+
+#ae_status_setter .ae {
+  display: inline-block;
+  width: 40px;
+}

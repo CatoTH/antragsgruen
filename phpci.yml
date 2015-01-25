@@ -1,0 +1,16 @@
+build_settings:
+  verbose: false
+  ignore:
+    - "vendor"
+
+setup:
+
+test:
+  php_mess_detector:
+    allowed_warnings: 0
+  php_code_sniffer:
+    standard: "PSR2"
+    allowed_warnings: 0
+    allowed_errors: 0
+
+failure:

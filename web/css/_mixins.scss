@@ -1,0 +1,55 @@
+
+@mixin border-radius-top {
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;
+  border-top-left-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+@mixin border-radius-bottom {
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+@mixin border-radius($radius) {
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin linear-gradient($deg, $color1, $color2) {
+  background: $color1;
+  background: -moz-linear-gradient($deg, $color1 0%, $color2 100%);
+  background: -webkit-linear-gradient($deg, $color1 0%, $color2 100%);
+  background: -o-linear-gradient($deg, $color1 0%, $color2 100%);
+  background: -ms-linear-gradient($deg, $color1 0%, $color2 100%);
+  background: linear-gradient($deg, $color1 0%, $color2 100%);
+}
+
+@mixin icons-antragsgruen($font-size) {
+  color: #A2BC04;
+  display: inline-block;
+  font-family: 'icons_antragsgruen';
+  font-size: $font-size;
+  vertical-align: bottom;
+  width: 20px;
+}
+
+@mixin gruene_ueberschrift($verlauf_von, $verlauf_zu) {
+  margin: 0;
+  color: #fff;
+  @include linear-gradient(90deg, $verlauf_von, $verlauf_zu);
+  padding: 5px 20px 5px;
+  font-family: "Open Sans";
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 18px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}

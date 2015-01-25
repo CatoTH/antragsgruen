@@ -1,0 +1,42 @@
+legend, label.legend {
+  display: block;
+  border: none;
+  color: $farbe_dunkelgruen;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 18px;
+  margin: 0 0 5px 0;
+}
+
+label.legend {
+  margin-top: 15px;
+}
+
+.form-horizontal .text_full_width .controls {
+  margin: 0;
+}
+
+.control-group {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.control-label {
+  width: 100px;
+  font-size: 13px;
+  float: left;
+  text-align: right;
+  padding-top: 5px;
+}
+
+
+.admin_todo {
+  float: right;
+  width: 300px;
+  ul {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+}
+
+
