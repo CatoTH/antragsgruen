@@ -126,6 +126,32 @@ class IndexController extends AntragsgruenController
 		$this->render("ae_pdf_list", array("aes" => $aenderungsantraege));
 	}
 
+	public function actionAeOdsList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false, $antraege_separat = false, $zeilennummer_separat = false)
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+
+		ini_set('memory_limit', '256M');
+
+		$antraege_sorted = $this->veranstaltung->antraegeSortiert();
+		$antrs           = array();
+		foreach ($antraege_sorted as $gruppe) foreach ($gruppe as $antr) {
+			/** @var Antrag $antr */
+
+			$antrs[] = array(
+				"antrag" => $antr,
+				"aes"    => $antr->aenderungsantraege
+			);
+		}
+
+		$this->renderPartial("ae_ods_list", array(
+			"antraege"                  => $antrs,
+			"text_begruendung_zusammen" => $text_begruendung_zusammen,
+			"antraege_separat"          => $antraege_separat,
+			"zeilennummer_separat"      => $zeilennummer_separat
+		));
+	}
+
 	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false, $antraege_separat = false, $zeilennummer_separat = false)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);

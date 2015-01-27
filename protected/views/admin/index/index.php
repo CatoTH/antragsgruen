@@ -41,6 +41,14 @@ $this->breadcrumbs = array(
 			<?php } ?>
 		</li>
 		<li style="margin-left: 20px;">
+			<a href="#ae_ods_export" onClick="$('#ae_ods_export').toggle(); return false;">Export: Anträge als Tabelle (OpenOffice)</a>
+			<ul id="ae_ods_export" style="display: none;">
+				<li><a href="<?php echo $this->createUrl("admin/index/aeOdsList") ?>">Antragstext und Begründung getrennt</a></li>
+				<li><a href="<?php echo $this->createUrl("admin/index/aeOdsList", array("text_begruendung_zusammen" => 1)) ?>">Antragstext und Begründung in einer Spalte</a></li>
+			</ul>
+		</li>
+
+		<li style="margin-left: 20px;">
 			<a href="#antrag_excel_export" onClick="$('#antrag_excel_export').toggle(); return false;">Export: Anträge als Excel-Datei</a>
 			<ul id="antrag_excel_export" style="display: none;">
 				<li><a href="<?php echo $this->createUrl("admin/index/antragExcelList") ?>">Antragstext und Begründung getrennt</a></li>

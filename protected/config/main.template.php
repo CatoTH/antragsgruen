@@ -112,5 +112,6 @@ return array(
 		'mail_from_email'             => 'EMAILADRESSE',
 		'admin_user_id'               => null,
 		'odt_default_template'        => __DIR__ . '/../../docs/OpenOffice-Template.odt',
+		'ods_default_template'        => __DIR__ . '/../../docs/OpenOffice-Template.ods',
 	),
 );
