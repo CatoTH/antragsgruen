@@ -1,3 +1,10 @@
+2.5.2 - 2015-01-27
+==================
+
+* Das Löschen von Anträgen im Admin-Backend funktionierte nicht
+* Update auf CKEditor 4.4.7
+
+
 2.5.1 - 2015-01-10
 ==================
 
