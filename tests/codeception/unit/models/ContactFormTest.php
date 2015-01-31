@@ -10,14 +10,22 @@ class ContactFormTest extends TestCase
 {
     use Specify;
 
+    /**
+     *
+     */
     protected function setUp()
     {
         parent::setUp();
+        /*
         Yii::$app->mailer->fileTransportCallback = function ($mailer, $message) {
             return 'testing_message.eml';
         };
+        */
     }
 
+    /**
+     *
+     */
     protected function tearDown()
     {
         unlink($this->getMessageFile());
@@ -58,5 +66,4 @@ class ContactFormTest extends TestCase
         return Yii::getAlias(Yii::$app->mailer->fileTransportPath) . '/testing_message.eml';
     }
     */
-
 }

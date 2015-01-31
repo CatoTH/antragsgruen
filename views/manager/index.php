@@ -1,11 +1,15 @@
 <?php
-use app\models\Site;
+use app\models\db\Site;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$controller = $this->context;
 
 /**
  * @var $this yii\web\View
  * @var Site[] $site
+ * @var \app\controllers\Base $controller
  */
-
 
 $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
 
@@ -18,8 +22,8 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
                                                 onclick="$('#opensource').next().scrollintoview(); return false;">weiter
             unten</a>).</p>
 
-    <p><strong>Für Mitglieder der Grünen ist es noch einfacher</strong>: einfach weiter unten <a href="#selbst_nutzen"
-                                                                                                 onclick="$('#selbst_nutzen').next().scrollintoview(); return false;">mit
+    <p><strong>Für Mitglieder der Grünen ist es noch einfacher</strong>: einfach weiter unten
+        <a href="#selbst_nutzen" onclick="$('#selbst_nutzen').next().scrollintoview(); return false;">mit
             dem Wurzelwerk-BenutzerInnennamen einloggen</a>, ein paar Angaben zum Einsatzzweck machen, bei Bedarf noch
         einige Feineinstellungen vornehmen, und los!</p>
 
@@ -94,42 +98,37 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
 
 <h2 id="selbst_nutzen">Antragsgrün selbst nutzen</h2>
 
-<div class="content">
+<?= Html::beginForm($controller->createLoginUrl('manager/createsite'), 'post', ['class' => 'content']) ?>
+Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
+Wurzelwerk-Account ein.<br>
+<br>
+<strong>Erklärung / Datenschutz:</strong><br>
+Du wirst, nachdem du hier deinen BenutzerInnenname eingegeben hast, auf eine "OpenID"-Seite umgeleitet, die vom
+grünen Bundesverband betrieben wird (Adresse im Browser: https://service.gruene.de). Dort wirst du (ggf. auf
+englisch) aufgefordert, deinen Wurzelwerk-BenutzerInnenname und -Passwort einzugeben. Diese Seite bestätigt
+gegenüber Antragsgrün, dass du Parteimitglied bist und leitet deinen Namen und E-Mail-Adresse weiter - nicht
+aber das Wurzelwerk-Passwort.<br>
+<br>
+Falls du die Zugangsdaten zurzeit nicht hast,
+<a href="#wer" onclick="$('#wer').next().scrollintoview(); return false;">schreib uns einfach an</a>.
+<br>
 
-    <form method="POST" action="./">
-        Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
-        Wurzelwerk-Account ein.<br>
-        <br>
-        <strong>Erklärung / Datenschutz:</strong><br>
-        Du wirst, nachdem du hier deinen BenutzerInnenname eingegeben hast, auf eine "OpenID"-Seite umgeleitet, die vom
-        grünen Bundesverband betrieben wird (Adresse im Browser: https://service.gruene.de). Dort wirst du (ggf. auf
-        englisch) aufgefordert, deinen Wurzelwerk-BenutzerInnenname und -Passwort einzugeben. Diese Seite bestätigt
-        gegenüber Antragsgrün, dass du Parteimitglied bist und leitet deinen Namen und E-Mail-Adresse weiter - nicht
-        aber das Wurzelwerk-Passwort.<br>
-        <br>
-        Falls du die Zugangsdaten zurzeit nicht hast, <a href="#wer"
-                                                         onclick="$('#wer').next().scrollintoview(); return false;">schreib
-            uns einfach an</a>.
-        <br>
+<div style="overflow: auto; margin-top: 25px;">
 
-        <div style="overflow: auto; margin-top: 25px;">
-            <div style="float: left;">
-                <label for="OAuthLoginForm_wurzelwerk">Wurzelwerk-BenutzerInnenname</label>
-                <input class="span3" name="OAuthLoginForm[wurzelwerk]" id="OAuthLoginForm_wurzelwerk" type="text"
-                       style="margin-bottom: 0; "/><br>
-                <a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank"
-                   style="font-size: 0.8em; margin-top: -7px; display: inline-block; margin-bottom: 10px;">Wurzelwerk-Zugangsdaten
-                    vergessen?</a>
-                <span class="help-block error" id="OAuthLoginForm_wurzelwerk_em_" style="display: none"></span>
-            </div>
-            <div style="float: left; margin-left: 20px;">
-                <label>&nbsp;</label>
-                <button type="submit" class="btn">Einloggen</button>
-            </div>
-        </div>
-
-    </form>
+    <div style="float: left;">
+        <label for="OAuthLoginForm_wurzelwerk">Wurzelwerk-BenutzerInnenname</label>
+        <input class="span3" name="username" id="OAuthLoginForm_wurzelwerk" type="text"
+               style="margin-bottom: 0; "/><br>
+        <a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank"
+           style="font-size: 0.8em; margin-top: -7px; display: inline-block; margin-bottom: 10px;">
+            Wurzelwerk-Zugangsdaten vergessen?</a>
+    </div>
+    <div style="float: left; margin-left: 20px;">
+        <label>&nbsp;</label>
+        <button type="submit" class="btn btn-primary" name="login_do">Einloggen</button>
+    </div>
 </div>
+<?= Html::endForm(); ?>
 
 
 <h2 id="wer">Von wem stammt Antragsgrün?</h2>
@@ -147,7 +146,8 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
         Funktionen, für die sich <strong>Sponsoren</strong> finden, werden dabei besonders priorisiert.
     </p>
 
-    <p>Ihr könnt uns bevorzugt per <strong>E-Mail</strong> unter <a href="mailto:antragsgruen@netzbegruenung.de">antragsgruen@netzbegruenung.de</a>
+    <p>Ihr könnt uns bevorzugt per <strong>E-Mail</strong> unter
+        <a href="mailto:antragsgruen@netzbegruenung.de">antragsgruen@netzbegruenung.de</a>
         erreichen, in dringenden Fällen auch telefonisch unter 0151-56024223, auf <a
             href="https://twitter.com/Antragsgruen">Twitter</a>
         und auf <a href="http://www.facebook.com/Antragsgruen">Facebook</a>.</p>
@@ -160,7 +160,8 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
     <p>Wir Grüne bekennen uns schon lange zu freier Software, insofern ist es für uns selbstverständlich, dass wir
         Antragsgrün unter einer Open-Source-Lizenz zur Verfügung stellen.</p>
 
-    <p>Der komplette Quellcode von Antragsgrün ist unter <a href="https://github.com/CatoTH/antragsgruen">https://github.com/CatoTH/antragsgruen</a>
+    <p>Der komplette Quellcode von Antragsgrün ist unter
+        <a href="https://github.com/CatoTH/antragsgruen">https://github.com/CatoTH/antragsgruen</a>
         abrufbar.</p>
 
     <p>Antragsgrün steht unter der "GNU Affero General Public License". Das heißt, jede und jeder Interessierte kann das

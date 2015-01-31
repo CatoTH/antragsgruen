@@ -1,63 +1,65 @@
 {
-  "name": "catoth/antragsgruen",
-  "description": "Antragsgrün",
-  "type": "library",
-  "license": "AGPL-3.0",
-  "support": {
-    "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-    "forum": "http://www.yiiframework.com/forum/",
-    "wiki": "http://www.yiiframework.com/wiki/",
-    "irc": "irc://irc.freenode.net/yii",
-    "source": "https://github.com/yiisoft/yii2"
-  },
-  "keywords": [
-    "gruen",
-    "antrag",
-    "netzbegruenung"
-  ],
-  "minimum-stability": "dev",
-  "homepage": "https://www.antragsgruen.de/",
-  "autoload": {
-    "psr-0": {
-      "mjohnson\\decoda": "vendor/"
-    }
-  },
-  "repositories": [
-  ],
-  "require": {
-    "php": ">=5.4.0",
-    "fxp/composer-asset-plugin": "~1.0",
-    "yiisoft/yii2": "2.0.2",
-    "yiisoft/yii2-authclient": "2.0.2",
-    "tecnick.com/tcpdf": "dev-master",
-    "mjohnson/decoda": "dev-master",
-    "ezyang/htmlpurifier": "4.6.0",
-    "mandrill/mandrill": "dev-master",
-    "phpoffice/phpexcel": "dev-master"
-  },
-  "require-dev": {
-    "yiisoft/yii2-codeception": "2.0.2",
-    "yiisoft/yii2-debug": "2.0.2",
-    "yiisoft/yii2-gii": "2.0.2",
-    "yiisoft/yii2-faker": "2.0.2",
-    "yiisoft/yii2-apidoc": "2.0.2"
-  },
-  "extra": {
-    "yii\\composer\\Installer::postCreateProject": {
-      "setPermission": [
-        {
-          "runtime": "0777",
-          "web/assets": "0777",
-          "yii": "0755"
-        }
-      ],
-      "generateCookieValidationKey": [
-        "config/web.php"
-      ]
+    "name": "catoth/antragsgruen",
+    "description": "Antragsgrün",
+    "type": "project",
+    "license": "AGPL-3.0",
+    "support": {
+        "issues": "https://github.com/CatoTH/antragsgruen/issues",
+        "source": "https://github.com/CatoTH/antragsgruen"
     },
-    "asset-installer-paths": {
-      "npm-asset-library": "vendor/npm",
-      "bower-asset-library": "vendor/bower"
+    "keywords": [
+        "gruen",
+        "antrag",
+        "netzbegruenung"
+    ],
+    "minimum-stability": "dev",
+    "homepage": "https://www.antragsgruen.de/",
+    "autoload": {
+        "psr-0": {
+            "mjohnson\\decoda": "vendor/"
+        }
+    },
+    "repositories": [
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "fxp/composer-asset-plugin": "~1.0",
+        "yiisoft/yii2": "2.0.2",
+        "yiisoft/yii2-authclient": "2.0.2",
+        "tecnick.com/tcpdf": "dev-master",
+        "mjohnson/decoda": "dev-master",
+        "ezyang/htmlpurifier": "4.6.0",
+        "mandrill/mandrill": "dev-master",
+        "phpoffice/phpexcel": "dev-master"
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "2.0.2",
+        "yiisoft/yii2-debug": "2.0.2",
+        "yiisoft/yii2-gii": "2.0.2",
+        "yiisoft/yii2-faker": "2.0.2",
+        "yiisoft/yii2-apidoc": "2.0.2",
+        "phpmd/phpmd": "@stable",
+        "instaclick/php-code-sniffer": "dev-master",
+        "codeception/codeception": "2.0.*",
+        "codeception/specify": "*",
+        "codeception/verify": "*"
+    },
+    "extra": {
+        "yii\\composer\\Installer::postCreateProject": {
+            "setPermission": [
+                {
+                    "runtime": "0755",
+                    "web/assets": "0755",
+                    "yii": "0755"
+                }
+            ],
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        },
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
-  }
 }

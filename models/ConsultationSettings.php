@@ -1,58 +1,61 @@
 <?php
 
+namespace app\models;
+
 class ConsultationSettings
 {
     /** @var bool */
-    public $antrag_neu_braucht_email = false;
-    public $antrag_neu_braucht_telefon = false;
-    public $antrag_neu_kann_telefon = false;
-    public $kommentar_neu_braucht_email = false;
+    public $motionNeedsEmail  = false;
+    public $motionNeedsPhone  = false;
+    public $motionHasPhone    = false;
+    public $commentNeedsEmail = false;
 
-    public $initiatorInnen_duerfen_aendern = false;
-    public $admins_duerfen_aendern = true;
+    public $iniatorsMayEdit = false;
+    public $adminsMayEdit   = true;
 
-    public $wartungs_modus_aktiv = false;
-    public $bestaetigungs_emails = false;
-    public $zeilen_nummerierung_global = false;
-    public $ae_nummerierung_global = false;
-    public $ae_nummerierung_nach_zeile = false;
-    public $revision_name_verstecken = false;
-    public $minimalistic_interface = false;
-    public $feeds_anzeigen = true;
-    public $kommentare_unterstuetzbar = false;
-    public $freischaltung_antraege = false;
-    public $freischaltung_aenderungsantraege = false;
-    public $freischaltung_kommentare = false;
-    public $initiatorInnen_duerfen_aes_ablehnen = false;
-    public $titel_eigene_zeile = true;
-    public $kann_pdf = true;
-    public $zeilenlaenge = 80;
-    public $begruendung_in_html = false;
-    public $bdk_startseiten_layout = false;
-    public $antragstext_max_len = 0;
-    public $antrag_neu_button_label = "";
-    public $antrag_begruendungen = true;
-    public $antrag_kommentare_ohne_absatz = false;
-
-    /** @var array */
-    public $antrags_typen_deaktiviert = array();
-
+    public $maintainanceMode     = false;
+    public $confirmEmails        = false;
+    public $lineNumberingGlobal  = false;
+    public $amendNumberingGlobal = false;
+    public $amendNumberingByLine = false;
+    public $hideRevision         = false;
+    public $minimalisticUI       = false;
+    public $showFeeds            = true;
+    public $commentsSupportable  = false;
+    public $screeningMotions     = false;
+    public $screeningAmendments  = false;
+    public $screeningComments    = false;
+    public $initiatorsMayReject  = false;
+    public $titleHasLineNumber   = true;
+    public $hasPDF               = true;
+    public $lineLength           = 80;
+    public $startLayoutType      = 0;
+    public $labelButtonNew       = "";
+    public $commentWholeMotions  = false;
 
     /** @var null|string */
-    public $logo_url = null;
-    public $fb_logo_url = null;
-    public $antrag_einleitung = null;
+    public $logoUrl     = null;
+    public $logoUrlFB   = null;
+    public $motionIntro = null;
 
     /**
      * @param string|null $data
      */
     public function __construct($data)
     {
-        if ($data == "") return;
+        if ($data == "") {
+            return;
+        }
         $data = (array)json_decode($data);
 
-        if (!is_array($data)) return;
-        foreach ($data as $key => $val) if (property_exists($this, $key)) $this->$key = $val;
+        if (!is_array($data)) {
+            return;
+        }
+        foreach ($data as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
     }
 
     /**
@@ -68,28 +71,39 @@ class ConsultationSettings
      */
     public function saveForm($formdata)
     {
-        if (!isset($formdata["einstellungsfelder"])) return;
+        if (!isset($formdata["einstellungsfelder"])) {
+            return;
+        }
 
         $fields = get_object_vars($this);
         var_dump($fields);
         foreach ($formdata["einstellungsfelder"] as $key) {
-            if (!array_key_exists($key, $fields)) die("Ungültiges Feld: " . $key);
+            if (!array_key_exists($key, $fields)) {
+                die("Ungültiges Feld: " . $key);
+            }
             $val = $fields[$key];
-            if (is_bool($val)) $this->$key = (isset($formdata[$key]) && (bool)$formdata[$key]);
-            elseif (is_int($val)) $this->$key = (int)$formdata[$key];
-            else $this->$key = $formdata[$key];
+            if (is_bool($val)) {
+                $this->$key = (isset($formdata[$key]) && (bool)$formdata[$key]);
+            } elseif (is_int($val)) {
+                $this->$key = (int)$formdata[$key];
+            } else {
+                $this->$key = $formdata[$key];
+            }
         }
 
         /*
         if (isset($_REQUEST["antrags_typen_aktiviert"])) {
             $this->antrags_typen_deaktiviert = array();
-            foreach (Motion::$TYPEN as $id => $name) if (!in_array($id, $_REQUEST["antrags_typen_aktiviert"])) $this->antrags_typen_deaktiviert[] = IntVal($id);
+            foreach (Motion::$TYPEN as $id => $name) if (!in_array($id, $_REQUEST["antrags_typen_aktiviert"]))
+        $this->antrags_typen_deaktiviert[] = IntVal($id);
         }
         */
 
     }
 
-
+    /**
+     * @return array
+     */
     public function attributeLabels()
     {
         return array(

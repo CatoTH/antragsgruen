@@ -8,40 +8,47 @@ $this->beginContent('@app/views/layouts/main.php');
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
+$params     = $controller->layoutParams;
 
-$row_classes = array("row");
-if (isset($controller->shrink_cols) && $controller->shrink_cols) $row_classes[] = "shrink_cols";
-if (isset($controller->text_comments) && $controller->text_comments) $row_classes[] = "text_comments";
+$row_classes = array("row", "antragsgruen-content");
+
+/*
+if (isset($controller->text_comments) && $controller->text_comments) {
+    $row_classes[] = "text_comments";
+}
+*/
+
+$menus = array();
+if ($params->menu) {
+    $menus[] = array("name" => "Aktionen", "items" => $controller->menu);
+}
+foreach ($params->multimenu as $m) {
+    $menus[] = $m;
+}
+/*
+foreach ($menus as $menu) {
+$this->widget('bootstrap.widgets.TbMenu', array(
+    'type'  => 'list',
+    'items' => array_merge(array(
+        array('label' => $menu["name"]),
+    ), $menu["items"]),
+));
+}
+*/
+
 ?>
 
 
-<div class="<?= implode(" ", $row_classes) ?>">
-    <div class="col-md-9 well">
-        <?php echo $content; ?>
-    </div>
-    <?php if ($controller->menu || isset($controller->multimenu) || isset($controller->menus_html) || isset($controller->menus_html_presidebar)) { ?>
+    <div class="<?= implode(" ", $row_classes) ?>">
+        <div class="col-md-9 well">
+            <?php echo $content; ?>
+        </div>
         <div class="col-md-3" id="sidebar">
-            <?php if (isset($controller->menus_html_presidebar)) echo $controller->menus_html_presidebar; ?>
-            <div class="well<?php if (isset($controller->text_comments) && $controller->text_comments) echo " visible-desktop"; ?>">
-                <?php
-                $menus = array();
-                if ($controller->menu) $menus[] = array("name" => "Aktionen", "items" => $controller->menu);
-                if (isset($controller->multimenu)) foreach ($controller->multimenu as $m) $menus[] = $m;
-                foreach ($menus as $menu) {
-                    /*
-                    $this->widget('bootstrap.widgets.TbMenu', array(
-                        'type'  => 'list',
-                        'items' => array_merge(array(
-                            array('label' => $menu["name"]),
-                        ), $menu["items"]),
-                    ));
-                    */
-                }
-                if (isset($controller->menus_html)) foreach ($controller->menus_html as $html) echo $html;
-                ?>
+            <?= $params->presidebar_html ?>
+            <div class="well visible-desktop">
+                <?= implode("", $params->menus_html) ?>
             </div>
         </div>
-    <?php } ?>
-</div>
+    </div>
 
-<?php $this->endContent(); ?>
+<?php $this->endContent();

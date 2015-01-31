@@ -2,49 +2,50 @@
 
 namespace tests\codeception\unit\models;
 
-use app\models\Motion;
-use app\models\Site;
+use app\models\db\Motion;
+use app\models\db\Site;
 use Yii;
 use yii\codeception\TestCase;
-use app\models\LoginForm;
 use Codeception\Specify;
 
 class DBTest extends TestCase
 {
     use Specify;
+    use \app\tests\AntragsgruenSetupDB;
 
-    /** @var \yii\db\Connection */
-    protected $db;
-    /** @var  string */
-    protected $db_delete;
-
-    protected function _before()
+    /**
+     *
+     */
+    protected function setUp()
     {
-        $init            = file_get_contents(Yii::$app->params['sql_test_schema_create']);
-        $this->db        = Yii::$app->db;
-        $this->db_delete = file_get_contents(Yii::$app->params['sql_test_schema_delete']);
-        $command         = $this->db->createCommand($init);
-        $command->execute();
-
-        $testdata = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '../fixtures/data/testdata.sql');
-        $command         = $this->db->createCommand($testdata);
-        $command->execute();
+        parent::setUp();
+        $this->createDB();
+        $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '../fixtures/data/testdata.sql');
     }
 
-    protected function _after()
+    /**
+     *
+     */
+    protected function tearDown()
     {
-        $command = $this->db->createCommand($this->db_delete);
-        $command->execute();
+        $this->deleteDB();
+        parent::tearDown();
     }
 
+    /**
+     *
+     */
     public function testFindSite()
     {
         $model = null;
-        $this->specify('should find test site', function () use ($model) {
-            /** @var Site $model */
-            $model = Site::findOne(1);
-            expect('Expecting ID 1: ', ($model && $model->id == 2))->true();
-        });
+        $this->specify(
+            'should find test site',
+            function () use ($model) {
+                /** @var Site $model */
+                $model = Site::findOne(1);
+                expect('Expecting ID 1: ', ($model && $model->id == 1))->true();
+            }
+        );
     }
     /*
 
@@ -89,5 +90,4 @@ class DBTest extends TestCase
         });
     }
     */
-
 }

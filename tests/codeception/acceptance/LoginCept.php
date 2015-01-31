@@ -1,4 +1,11 @@
 <?php
+
+use tests\codeception\_pages\ManagerStartPage;
+
+/**
+ * @var \Codeception\Scenario $scenario
+ */
+
 /*
 use tests\codeception\_pages\LoginPage;
 
@@ -33,3 +40,4 @@ if (method_exists($I, 'wait')) {
 }
 $I->expectTo('see user info');
 $I->see('Logout (admin)');
+*/

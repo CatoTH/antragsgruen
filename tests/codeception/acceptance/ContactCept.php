@@ -1,4 +1,11 @@
 <?php
+
+use tests\codeception\_pages\ManagerStartPage;
+
+/**
+ * @var \Codeception\Scenario $scenario
+ */
+
 /*
 use tests\codeception\_pages\ContactPage;
 
@@ -53,3 +60,4 @@ if (method_exists($I, 'wait')) {
 }
 $I->dontSeeElement('#contact-form');
 $I->see('Thank you for contacting us. We will respond to you as soon as possible.');
+*/

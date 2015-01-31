@@ -120,6 +120,17 @@ a {
 .logo {
   margin-top: 14px;
   display: block;
+  margin-bottom: 40px;
+
+  > a {
+    display: inline-block;
+  }
+  .logo_img {
+    display: block;
+    width: 377px;
+    height: 55px;
+    background-image: url(/img/logo.png);
+  }
 }
 
 .breadcrumb {

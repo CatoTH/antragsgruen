@@ -2,20 +2,26 @@
 /**
  * Application configuration shared by all test types
  */
-$base_dir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+$base_dir    = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' .
+    DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+$base_config = $base_dir . 'config' . DIRECTORY_SEPARATOR;
+
+require_once($base_dir . 'models' . DIRECTORY_SEPARATOR . 'AntragsgruenAppParams.php');
+require_once(__DIR__ . DIRECTORY_SEPARATOR . 'AntragsgruenSetupDB.php');
+
+$params    = require($base_config . 'local' . DIRECTORY_SEPARATOR . 'params_tests.php');
+$db_params = require($base_config . 'local' . DIRECTORY_SEPARATOR . 'db_tests.php');
+
 
 return [
     'components' => [
-        'db'         => require(__DIR__ . DIRECTORY_SEPARATOR . 'db.php'),
+        'db'         => $db_params,
         'mailer'     => [
             'useFileTransport' => true,
         ],
         'urlManager' => [
-            'showScriptName' => true,
+            'showScriptName' => true
         ],
     ],
-    'params'     => [
-        'sql_test_schema_create' => $base_dir . 'docs/schema_create.sql',
-        'sql_test_schema_delete' => $base_dir . 'docs/schema_delete.sql'
-    ]
+    'params'     => $params
 ];

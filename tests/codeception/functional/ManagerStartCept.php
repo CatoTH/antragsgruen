@@ -2,7 +2,11 @@
 
 use tests\codeception\_pages\ManagerStartPage;
 
-$I = new FunctionalTester($scenario);
+/**
+ * @var \Codeception\Scenario $scenario
+ */
+
+$I = new AntragsgruenFunctionalTester($scenario);
 $I->wantTo('ensure that ManagerStartPage works');
 ManagerStartPage::openBy($I);
-$I->see('Congratulations!', 'h1');
+$I->see('das Antragstool', 'h1');

@@ -2,9 +2,7 @@
 
 namespace app\commands;
 
-use app\models\Consultation;
-use app\models\Site;
-use app\models\User;
+use app\models\db\Site;
 use yii\console\Controller;
 use yii\helpers\Console;
 
@@ -72,6 +70,8 @@ class HelloController extends Controller
 
         /** @var Site $site */
         $site = Site::findOne(7);
-        foreach ($site->admins as $admin) echo $admin->name;
+        foreach ($site->admins as $admin) {
+            echo $admin->name;
+        }
     }
 }

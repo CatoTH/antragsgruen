@@ -1,4 +1,11 @@
 <?php
+
+use tests\codeception\_pages\ManagerStartPage;
+
+/**
+ * @var \Codeception\Scenario $scenario
+ */
+
 /*
 $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that home page works');
@@ -7,3 +14,4 @@ $I->see('My Company');
 $I->seeLink('About');
 $I->click('About');
 $I->see('This is the About page.');
+*/
