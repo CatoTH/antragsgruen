@@ -1140,8 +1140,10 @@ ul.funktionen {
     width: 45%;
 
     .pdflink {
-      font-size: 12px;
       font-weight: 600;
+      font-size: 0.8em;
+      float: right;
+      margin-right: 20px;
     }
     .titellink {
       font-weight: 600;

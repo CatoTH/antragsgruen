@@ -28,11 +28,11 @@ foreach ($antraege as $name => $antrs) {
 				if (!$this->veranstaltung->getEinstellungen()->revision_name_verstecken) {
 					echo "<td class='nummer'>" . CHtml::encode($antrag->revision_name) . "</td>\n";
 				}
-				echo "<td class='titel'>";
+				echo "<td class='titel'><div class='pdflink'>";
+				if ($veranstaltung->getEinstellungen()->kann_pdf) echo CHtml::link("als PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class" => "pdfLink"));
+				echo "</div>";
 				echo "<div class='titellink'>";
 				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
-				echo "</div><div class='pdflink'>";
-				if ($veranstaltung->getEinstellungen()->kann_pdf) echo CHtml::link("als PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class" => "pdfLink"));
 				echo "</div></td><td class='antragstellerIn'>";
 				$vons = array();
 				foreach ($antrag->getAntragstellerInnen() as $p) $vons[] = $p->getNameMitOrga();
