@@ -1,3 +1,8 @@
+2.5.3 - 2015-02-07
+==================
+
+* Bugfix: Das AntragsstellerInnen-Formular wurde beim Stellen eines Antrags oft nicht angezeigt.
+
 2.5.2 - 2015-01-27
 ==================
 

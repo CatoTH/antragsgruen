@@ -170,7 +170,7 @@ $antrag_max_len = $this->veranstaltung->getAntragMaxLen($force_type);
 		<?php
 		}
 
-		if (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && veranstaltungsspezifisch_erzwinge_login($this->veranstaltung)) {
+		if (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && !veranstaltungsspezifisch_erzwinge_login($this->veranstaltung)) {
 			$this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
 				"form"               => $form,
 				"mode"               => $mode,
