@@ -20,7 +20,7 @@ if (isset($controller->text_comments) && $controller->text_comments) {
 
 $menus = array();
 if ($params->menu) {
-    $menus[] = array("name" => "Aktionen", "items" => $controller->menu);
+    $menus[] = array("name" => "Aktionen", "items" => $controller->layoutParams->menu);
 }
 foreach ($params->multimenu as $m) {
     $menus[] = $m;
@@ -44,9 +44,9 @@ $this->widget('bootstrap.widgets.TbMenu', array(
             <?php echo $content; ?>
         </div>
         <div class="col-md-3" id="sidebar">
-            <?= $params->presidebar_html ?>
+            <?= $params->presidebarHtml ?>
             <div class="well visible-desktop">
-                <?= implode("", $params->menus_html) ?>
+                <?= implode("", $params->menusHtml) ?>
             </div>
         </div>
     </div>

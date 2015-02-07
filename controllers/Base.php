@@ -71,7 +71,7 @@ class Base extends Controller
         }
         /** @var ConsultationSettings $settings */
         $settings = $this->consultation->getSettings();
-        if ($settings->wartungs_modus_aktiv && !$this->consultation->isAdminCurUser()) {
+        if ($settings->maintainanceMode && !$this->consultation->isAdminCurUser()) {
             $this->redirect($this->createUrl("consultation/maintainance"));
         }
 
@@ -139,11 +139,25 @@ class Base extends Controller
     }
 
     /**
+     * @param string $route
+     * @return string
+     */
+    public function createWurzelwerkLoginUrl($route)
+    {
+        $target_url = Url::toRoute($route);
+        if (Yii::$app->user->isGuest) {
+            return Url::toRoute(['user/loginwurzelwerk', 'login_goto' => $target_url]);
+        } else {
+            return $target_url;
+        }
+    }
+
+    /**
      * @throws \yii\base\ExitException
      */
     protected function consultationNotFound()
     {
-        $this->layoutParams->robots_noindex = true;
+        $this->layoutParams->robotsNoindex = true;
         $this->render(
             'error',
             [
@@ -164,7 +178,7 @@ class Base extends Controller
      */
     protected function consultationError()
     {
-        $this->layoutParams->robots_noindex = true;
+        $this->layoutParams->robotsNoindex = true;
         $this->render(
             "../veranstaltung/error",
             [

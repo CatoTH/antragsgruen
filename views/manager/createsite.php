@@ -15,6 +15,8 @@ $controller = $this->context;
 
 $this->title = "Antragsgrün-Instanz anlegen";
 $controller->layoutParams->addCSS('/css/formwizard.css');
+$controller->layoutParams->addJS("/js/manager.js");
+$controller->layoutParams->addOnLoadJS('$.SiteManager.createInstance();');
 
 if ($error_string != "") {
     $error_string = '<div class="alert alert-error">' . $error_string . '</div>';
@@ -143,11 +145,6 @@ echo '</div>
 
             </div>
         </div>
-        <script>
-            $(function () {
-                instanz_neu_anlegen_init();
-            });
-        </script>
 ';
 
 echo Html::endForm();

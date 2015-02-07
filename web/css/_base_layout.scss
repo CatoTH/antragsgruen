@@ -1,26 +1,25 @@
 $text-color: rgb(72, 70, 73);
-$screen-lg: 10000; // deaktivieren
+$screen-lg: 10000;
+// deaktivieren
 
 @import "bootstrap-3.3.2-sass/bootstrap";
 
-
-
 html {
   background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
+  height: 100%;
 }
 
 body {
   background: url("../img/verlauf-back.png") repeat-x scroll 0 0 transparent;
   font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  height: 100%;
 }
-
 
 blockquote {
   margin: 3px 3px 3px 15px;
   border-left: dotted 2px gray;
   padding: 5px;
 }
-
 
 p, ul {
   margin-bottom: 10px;
@@ -33,9 +32,6 @@ a {
     color: rgb(198, 214, 78);
   }
 }
-
-
-
 
 .well {
   padding: 0;
@@ -160,4 +156,36 @@ a {
 
 }
 
+/* keep the footer at the bottom of the page */
+$footer_height: 1.6em;
+$footer_line_height: 1.5em;
 
+.over_footer_wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto (-1 * $footer_height);
+}
+
+body > footer {
+  height: $footer_height;
+  p {
+    height: $footer_height;
+    line-height: $footer_line_height;
+    margin-bottom: 0;
+    margin-top: 0;
+    white-space: nowrap;
+  }
+  .version {
+    display: inline-block;
+    margin-left: 30px;
+    font-size: 0.8em;
+  }
+  @media print {
+    display: none;
+  }
+}
+
+.footer_spacer {
+  height: $footer_height;
+}

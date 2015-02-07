@@ -18,7 +18,7 @@ if (isset($controller->text_comments) && $controller->text_comments) {
 }
 */
 
-$minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalistic_interface);
+$minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 
 $this->beginPage();
 
@@ -30,10 +30,10 @@ echo '<!DOCTYPE HTML>
 echo '<title>' . Html::encode(isset($this->title) ? $this->title : '') . '</title>' . "\n";
 echo Html::csrfMetaTags();
 
-if ($controller->consultation && $controller->consultation->getSettings()->fb_logo_url != "") {
-    echo '<link rel="image_src" href="' . Html::encode($controller->consultation->getSettings()->fb_logo_url) . '">';
+if ($controller->consultation && $controller->consultation->getSettings()->logoUrlFB != "") {
+    echo '<link rel="image_src" href="' . Html::encode($controller->consultation->getSettings()->logoUrlFB) . '">';
 }
-if ($params->robots_noindex) {
+if ($params->robotsNoindex) {
     echo '<meta name="robots" content="noindex, nofollow">' . "\n";
 }
 
@@ -48,7 +48,7 @@ if ($params->robots_noindex) {
 
     <link rel="stylesheet" href="/css/antragsgruen.css">
 <?php
-foreach ($params->extra_css as $file) {
+foreach ($params->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . Html::encode($file) . '">' . "\n";
 }
 ?>
@@ -91,6 +91,8 @@ echo '<body ' . (count($body_classes) > 0 ? 'class="' . implode(" ", $body_class
 echo '<script src="/js/modernizr.js"></script>';
 
 $this->beginBody();
+
+echo '<div class="over_footer_wrapper">';
 echo '<div class="container" id="page">';
 if ($controller->consultation) {
     echo '<div id="mainmenu">';
@@ -159,8 +161,8 @@ if (isset($controller->breadcrumbs)): ?>
 
 $home_url = ($controller->consultation ? Url::toRoute("consultation/index") : Url::toRoute("manager/index"));
 echo '<div class="row logo"><a href="' . Html::encode($home_url) . '" title="Startseite">';
-if ($controller->consultation && $controller->consultation->getSettings()->logo_url != "") {
-    $path     = parse_url($controller->consultation->getSettings()->logo_url);
+if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != "") {
+    $path     = parse_url($controller->consultation->getSettings()->logoUrl);
     $filename = basename($path["path"]);
     $filename = substr($filename, 0, strrpos($filename, "."));
     $filename = str_replace(
@@ -168,7 +170,7 @@ if ($controller->consultation && $controller->consultation->getSettings()->logo_
         array(" ", "ü", "ä", "ö", "Ü" . "Ö", "Ä"),
         $filename
     );
-    $logo_url = $controller->consultation->getSettings()->logo_url;
+    $logo_url = $controller->consultation->getSettings()->logoUrl;
     echo '<img src="' . Html::encode($logo_url) . '" alt="' . Html::encode($filename) . '">';
 } else {
     echo '<span class="logo_img"></span>';
@@ -180,27 +182,35 @@ echo '</a></div>';
 echo $content;
 
 $legal_link = ($controller->consultation ? Url::toRoute("consultation/legal") : Url::toRoute("manager/legal"));
+
+echo '<div style="clear: both; padding-top: 15px;"></div>
+<div class="footer_spacer"></div>
+</div></div></div>';
 ?>
 
-    <div style="clear: both; padding-top: 15px;"></div>
 
-
-    <footer class="navbar" id="footer_navbar">
+    <footer class="footer">
         <div class="container">
-            <ul class="nav navbar-nav">
-                <li><a href="<?= Html::encode($legal_link) ?>" class="legal">Impressum</a></li>
-                <li class="version">
-                    Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-                    Version <?= Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL) ?>
-                </li>
-            </ul>
+            <a href="<?= Html::encode($legal_link) ?>" class="legal">Impressum</a>
+
+            <span class="version">
+                Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
+                Version <?= Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL) ?>
+            </span>
         </div>
     </footer>
-<?= '</div>' ?>
 
     <script src="/js/bootstrap.js"></script>
     <script src="/js/antragsgruen.js"></script>
 <?php
+foreach ($params->extraJs as $file) {
+    echo '<script src="' . Html::encode($file) . '"></script>' . "\n";
+}
+foreach ($params->onloadJs as $js) {
+    echo '<script>' . $js . '</script>' . "\n";
+}
+
+
 $this->endBody();
 echo '</body></html>';
 

@@ -19,6 +19,29 @@ use yii\db\ActiveRecord;
  */
 class EMailLog extends ActiveRecord
 {
+    const TYP_SONSTIGES                     = 0;
+    const TYP_REGISTRIERUNG                 = 1;
+    const TYP_ANTRAG_BENACHRICHTIGUNG_USER  = 2;
+    const TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN = 3;
+    const TYP_NAMESPACED_ACCOUNT_ANGELEGT   = 4;
+    const TYP_DEBUG                         = 5;
+
+    /**
+     * @return string[]
+     */
+    public static function getTypes()
+    {
+        return array(
+            0 => "Sonstiges",
+            1 => "Registrierung",
+            2 => "Benachrichtigung User",
+            3 => "Benachrichtigung Admin",
+            4 => "Namespaced_Angelegt",
+            5 => "Debug",
+        );
+    }
+
+
     /**
      * @return string
      */

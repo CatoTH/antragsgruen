@@ -25,7 +25,7 @@ method entry.  The decision points are 'if', 'while', 'for', and 'case labels'. 
         </description>
         <priority>3</priority>
         <properties>
-            <property name="reportLevel" description="The Cyclomatic Complexity reporting threshold"  value="10"/>
+            <property name="reportLevel" description="The Cyclomatic Complexity reporting threshold"  value="20"/>
             <property name="showClassesComplexity"
                       description="Indicate if class average violation should be added to the report"
                       value="true"/>
@@ -88,7 +88,7 @@ A threshold of 200 is generally considered the point where measures should be ta
         </description>
         <priority>3</priority>
         <properties>
-            <property name="minimum" description="The npath reporting threshold" value="200"/>
+            <property name="minimum" description="The npath reporting threshold" value="1000"/>
         </properties>
         <example>
             <![CDATA[

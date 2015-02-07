@@ -5701,11 +5701,13 @@ button.close {
   .hidden-print {
     display: none !important; } }
 html {
-  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent; }
+  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
+  height: 100%; }
 
 body {
   background: url("../img/verlauf-back.png") repeat-x scroll 0 0 transparent;
-  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  height: 100%; }
 
 blockquote {
   margin: 3px 3px 3px 15px;
@@ -5859,6 +5861,32 @@ a {
     text-shadow: none; }
   .breadcrumb a {
     color: #afcb08; }
+
+/* keep the footer at the bottom of the page */
+.over_footer_wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -1.6em; }
+
+body > footer {
+  height: 1.6em; }
+  body > footer p {
+    height: 1.6em;
+    line-height: 1.5em;
+    margin-bottom: 0;
+    margin-top: 0;
+    white-space: nowrap; }
+  body > footer .version {
+    display: inline-block;
+    margin-left: 30px;
+    font-size: 0.8em; }
+  @media print {
+    body > footer {
+      display: none; } }
+
+.footer_spacer {
+  height: 1.6em; }
 
 @font-face {
   font-family: 'icons_antragsgruen';
