@@ -15,6 +15,10 @@ class SiteSettings
     const PAYS_NOT   = 0;
     const PAYS_MAYBE = 1;
     const PAYS_YES   = 2;
+
+    /**
+     * @return string[]
+     */
     public static function getPaysValues()
     {
         return array(

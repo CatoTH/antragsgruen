@@ -35,6 +35,9 @@ class Tools
 
     private static $last_time = 0;
 
+    /**
+     * @param string $name
+     */
     public static function debugTime($name)
     {
         list($usec, $sec) = explode(" ", microtime());
