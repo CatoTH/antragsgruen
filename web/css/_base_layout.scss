@@ -91,7 +91,7 @@ a {
       padding: 0;
       margin-left: 40px;
       color: $farbe_hellgruen;
-      font-family: "Open Sans";
+      font-family: "Open Sans", sans-serif;
       font-style: normal;
       font-weight: bold;
       text-transform: uppercase;
@@ -111,6 +111,35 @@ a {
     }
   }
 
+}
+
+.btn {
+  .span9 & {
+    margin: 10px 0 0 200px;
+  }
+  font-family: "Open Sans", sans-serif;
+  font-weight: bold;
+}
+
+.btn-primary {
+  /*
+  border: none;
+  text-shadow: none;
+  padding: 6px 30px 4px;
+  font-size: 15px;
+  line-height: 18px;
+  */
+  text-transform: uppercase;
+  color: #fff;
+  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+}
+
+
+
+label {
+  input {
+    font-weight: normal;
+  }
 }
 
 .logo {
@@ -188,4 +217,11 @@ body > footer {
 
 .footer_spacer {
   height: $footer_height;
+}
+
+
+
+.labelSubInfo {
+  font-weight: normal;
+  font-size: 0.8em;
 }

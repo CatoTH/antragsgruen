@@ -46,7 +46,7 @@
   color: #fff;
   @include linear-gradient(90deg, $verlauf_von, $verlauf_zu);
   padding: 5px 20px 5px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   font-weight: bold;
   font-size: 15px;
   line-height: 18px;

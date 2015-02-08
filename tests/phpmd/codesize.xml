@@ -346,7 +346,7 @@ order to reduce its complexity and find a way to have more fine grained objects.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="maxmethods" description="The method count reporting threshold " value="10"/>
+            <property name="maxmethods" description="The method count reporting threshold " value="30"/>
         </properties>
     </rule>
 

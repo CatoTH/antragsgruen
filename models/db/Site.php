@@ -1,6 +1,8 @@
 <?php
 namespace app\models\db;
 
+use app\models\exceptions\DB;
+use app\models\forms\SiteCreateForm;
 use app\models\SiteSettings;
 use yii\db\ActiveRecord;
 
@@ -84,7 +86,7 @@ class Site extends ActiveRecord
     public function setSettings($settings)
     {
         $this->settingsObject = $settings;
-        $this->settings        = $settings->toJSON();
+        $this->settings       = $settings->toJSON();
     }
 
 
@@ -97,7 +99,7 @@ class Site extends ActiveRecord
         //$fp = fopen("/tmp/db.log", "a"); fwrite($fp, "Query\n"); fclose($fp);
 
         /** @var Site[] $sites */
-        $sites  = Site::find()->orderBy('id DESC')->all();
+        $sites = Site::find()->orderBy('id DESC')->all();
         /*
         $reihen2 = array();
         foreach ($reihen as $reihe) {
@@ -107,5 +109,30 @@ class Site extends ActiveRecord
         }
         */
         return $sites;
+    }
+
+    /**
+     * @param SiteCreateForm $form
+     * @return Site
+     * @throws DB
+     */
+    public static function createFromForm(SiteCreateForm $form)
+    {
+        $site             = new Site();
+        $site->title      = $form->title;
+        $site->titleShort = $form->title;
+        $site->contact    = $form->title;
+        $site->subdomain  = $form->subdomain;
+        $site->public     = 1;
+
+        $siteSettings               = $site->getSettings();
+        $siteSettings->willingToPay = $form->isWillingToPay;
+        $site->setSettings($siteSettings);
+
+        if (!$site->save()) {
+            throw new DB($site->getErrors());
+        }
+
+        return $site;
     }
 }

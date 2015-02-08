@@ -10,14 +10,14 @@
             $step3 = $("#step3");
         $step2.hide();
         $step3.hide();
-        $("#weiter-1").click(function (ev) {
+        $("#next-1").click(function (ev) {
             ev.preventDefault();
             $("#step1").hide();
             $step2.show();
             $steps.eq(0).removeClass("active");
             $steps.eq(1).addClass("active");
         });
-        $("#weiter-2").click(function (ev) {
+        $("#next-2").click(function (ev) {
             ev.preventDefault();
             if ($step2.find(".name input").val() === "") {
                 $step2.find(".name .alert").show();
@@ -34,7 +34,7 @@
             $steps.eq(1).removeClass("active");
             $steps.eq(2).addClass("active");
         });
-        $("#CInstanzAnlegenForm_subdomain").on("blur", function () {
+        $("#subdomain").on("blur", function () {
             if ($(this).val().match(/[^a-zA-Z0-9_\-]/)) {
                 alert("Bei der Subdomain sind nur Zahlen, Buchstaben, Unter- und Mittelstrich möglich.");
                 $(this).focus();

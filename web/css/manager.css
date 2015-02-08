@@ -1,0 +1,38 @@
+.siteCreate .next {
+  text-align: right; }
+.siteCreate .sitePreset {
+  font-size: 16px;
+  font-weight: bold;
+  vertical-align: middle;
+  margin-top: 30px; }
+  .siteCreate .sitePreset div {
+    display: inline-block;
+    vertical-align: middle; }
+  .siteCreate .sitePreset input {
+    vertical-align: middle;
+    margin-top: 0;
+    margin-right: 6px; }
+.siteCreate .sitePresetInfo {
+  padding-left: 10px;
+  margin-left: 20px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-left: solid 3px lightgray; }
+.siteCreate .url .domain {
+  font-size: 16px; }
+.siteCreate .url .domain input {
+  width: 130px;
+  padding: 0;
+  margin-left: 2px;
+  margin-top: 0; }
+.siteCreate label.name, .siteCreate label.url {
+  font-weight: bold; }
+.siteCreate .payment label {
+  display: inline; }
+.siteCreate .policy {
+  margin-bottom: 20px; }
+.siteCreate .contact textarea {
+  width: 300px;
+  height: 80px; }
+
+/*# sourceMappingURL=manager.css.map */

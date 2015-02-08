@@ -4,7 +4,9 @@ namespace app\controllers;
 
 use app\models\db\Site;
 use app\models\db\User;
+use app\models\exceptions\AntragsgruenException;
 use Yii;
+use yii\db\Exception;
 use yii\helpers\Html;
 
 class ManagerController extends Base
@@ -23,7 +25,7 @@ class ManagerController extends Base
             $html .= "<li>" . Html::a($site->title, $url) . "</li>\n";
         }
         $html .= '</ul>';
-        $this->layoutParams->menus_html[] = $html;
+        $this->layoutParams->menusHtml[] = $html;
 
     }
 
@@ -37,34 +39,64 @@ class ManagerController extends Base
         //$this->performLogin($this->createUrl("manager/index"));
         $this->addSidebar();
         return $this->render('index');
-
     }
 
     /**
-     * @return string
+     * @return null|User
      */
-    public function actionCreatesite()
+    protected function eligibleToCreateUser()
     {
-
-        $this->layout = 'column2';
-
-        //$this->performLogin($this->createUrl("manager/index"));
-        $this->addSidebar();
-
-
         if (Yii::$app->user->isGuest) {
-            $this->redirect($this->createUrl("manager/index"));
+            return null;
         }
 
         /** @var User $user */
         $user = yii::$app->user->identity;
 
         if (!$user->isWurzelwerkUser()) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
+     * @return User
+     */
+    protected function requireEligibleToCreateUser()
+    {
+        $user = $this->eligibleToCreateUser();
+        if (!$user) {
             $this->redirect($this->createUrl("manager/index"));
         }
+        return $user;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function actionCreatesite()
+    {
+        $this->requireEligibleToCreateUser();
+
+        $this->layout = 'column2';
+        $this->addSidebar();
 
         $model     = new \app\models\forms\SiteCreateForm();
         $error_str = "";
+
+        if (isset($_POST['create'])) {
+            echo '<pre>';
+            try {
+                $model->setAttributes($_POST['SiteCreateForm']);
+                $site = Site::createFromForm($model);
+                var_dump($site->getAttributes());
+            } catch (Exception $e) {
+                var_dump($e);
+            }
+            die();
+        }
 
         return $this->render(
             'createsite',

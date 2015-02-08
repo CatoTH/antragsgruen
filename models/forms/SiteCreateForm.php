@@ -2,6 +2,8 @@
 
 namespace app\models\forms;
 
+use app\models\db\Site;
+
 class SiteCreateForm extends \yii\base\Model
 {
 
@@ -11,13 +13,13 @@ class SiteCreateForm extends \yii\base\Model
     public $subdomain;
 
     /** @var int */
-    public $is_willing_to_pay = 0;
-    public $preset            = 0;
+    public $isWillingToPay = null;
+    public $preset         = 0;
 
     /** @var bool */
-    public $has_amendmends = true;
-    public $has_comments   = true;
-    public $open_now       = true;
+    public $hasAmendmends = true;
+    public $hasComments   = true;
+    public $openNow       = true;
 
     /**
      * @return array
@@ -25,11 +27,14 @@ class SiteCreateForm extends \yii\base\Model
     public function rules()
     {
         return [
-            ['contact, title, subdomain, is_willing_to_pay, preset, has_amendments, has_comments', 'required'],
-            ['is_willing_to_pay, preset', 'numerical'],
-            ['has_amendments, has_comments, open_now', 'boolean'],
-            ['subdomain', 'unique', 'className' => 'Site'],
-            ['contact, title, preset', 'safe'],
+            [
+                ['contact', 'title', 'subdomain', 'isWillingToPay', 'preset', 'hasAmendments', 'hasComments'],
+                'required'
+            ],
+            [['isWillingToPay', 'preset'], 'number'],
+            [['hasAmendments', 'hasComments', 'openNow'], 'boolean'],
+            ['subdomain', 'unique', 'targetClass' => Site::class],
+            [['contact', 'title', 'preset'], 'safe'],
         ];
     }
 }

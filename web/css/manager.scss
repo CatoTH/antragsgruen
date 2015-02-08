@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+@import "common";
+
+
+.siteCreate {
+  .next {
+    text-align: right;
+  }
+  .sitePreset {
+    font-size: 16px;
+    font-weight: bold;
+    vertical-align: middle;
+    margin-top: 30px;
+
+    div {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    input {
+      vertical-align: middle;
+      margin-top: 0;
+      margin-right: 6px;
+    }
+  }
+  .sitePresetInfo {
+    padding-left: 10px;
+    margin-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-left: solid 3px lightgray;
+  }
+  .url .domain {
+    font-size: 16px;
+  }
+  .url .domain input {
+    width: 130px;
+    padding: 0;
+    margin-left: 2px;
+    margin-top: 0;
+  }
+  label.name, label.url {
+    font-weight: bold;
+  }
+  .payment label {
+    display: inline;
+  }
+
+  .policy {
+    margin-bottom: 20px;
+  }
+
+  .contact textarea {
+    width: 300px;
+    height: 80px;
+  }
+}
