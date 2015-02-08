@@ -8,6 +8,10 @@ class Wording
         'Motion Text' => 'Antragstext',
     ];
 
+    /**
+     * @param string $strTitle
+     * @return string
+     */
     public function get($strTitle)
     {
         if (isset($this->translations[$strTitle])) {

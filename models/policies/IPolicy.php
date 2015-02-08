@@ -21,6 +21,9 @@ abstract class IPolicy
     const POLICY_ALLE        = "All";
     const POLICY_EINGELOGGTE = "LoggedIn";
 
+    /**
+     * @return string[]
+     */
     public static function getPolicies()
     {
         // @TODO
@@ -97,6 +100,10 @@ abstract class IPolicy
         return "initiatorStd";
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function isValidName($name)
     {
         return (trim($name) != "");
