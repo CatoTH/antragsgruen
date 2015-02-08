@@ -3,6 +3,9 @@
 namespace app\models\sitePresets;
 
 
+use app\models\db\Consultation;
+use app\models\db\Site;
+
 class Parteitag implements ISitePreset
 {
 
@@ -23,27 +26,25 @@ class Parteitag implements ISitePreset
     }
 
     /**
-     * @param $siteCreateData
-     * @return \app\models\db\Site
+     * @param Consultation $consultation
      */
-    public function createSiteAndConsultation($siteCreateData)
+    public function setConsultationSettings(Consultation $consultation)
     {
-        $site = new \app\models\db\Site();
-        // @todo Subdomain etc.
-        $site->save();
+        $settings                       = $consultation->getSettings();
+        $settings->lineNumberingGlobal  = false;
+        $settings->amendNumberingGlobal = false;
+        $settings->screeningMotions     = true;
+        $settings->screeningAmendments  = true;
 
-        $consultation         = new \app\models\db\Consultation();
-        $consultation->siteId = $site->id;
-        // @todo
-        $consultation->save();
+        $consultation->policyMotions    = IPolicyAntraege::$POLICY_ALLE;
+        $consultation->policyAmendments = IPolicyAntraege::$POLICY_ALLE;
+    }
 
-        $site->currentConsultationId = $consultation->id;
-        $site->save();
+    /**
+     * @param Site $site
+     */
+    public function setSiteSettings(Site $site)
+    {
 
-
-        $consultation->refresh();
-        $site->refresh();
-
-        return $consultation;
     }
 }

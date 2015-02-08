@@ -17,7 +17,7 @@ class SiteCreateForm extends \yii\base\Model
     public $preset         = 0;
 
     /** @var bool */
-    public $hasAmendmends = true;
+    public $hasAmendments = true;
     public $hasComments   = true;
     public $openNow       = true;
 
@@ -28,12 +28,20 @@ class SiteCreateForm extends \yii\base\Model
     {
         return [
             [
-                ['contact', 'title', 'subdomain', 'isWillingToPay', 'preset', 'hasAmendments', 'hasComments'],
+                ['title', 'subdomain', 'isWillingToPay', 'preset', 'hasAmendments', 'hasComments'],
                 'required'
+            ],
+            [
+                'contact', 'required', 'message' => 'Du musst eine Kontaktadresse angeben.'
             ],
             [['isWillingToPay', 'preset'], 'number'],
             [['hasAmendments', 'hasComments', 'openNow'], 'boolean'],
-            ['subdomain', 'unique', 'targetClass' => Site::class],
+            [
+                'subdomain',
+                'unique',
+                'targetClass' => Site::class,
+                'message' => 'Diese Subdomain wird bereits verwendet.'
+            ],
             [['contact', 'title', 'preset'], 'safe'],
         ];
     }

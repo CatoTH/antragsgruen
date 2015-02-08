@@ -4,6 +4,9 @@
 namespace app\models\sitePresets;
 
 
+use app\models\db\Consultation;
+use app\models\db\Site;
+
 interface ISitePreset
 {
 
@@ -18,8 +21,12 @@ interface ISitePreset
     public static function getDescription();
 
     /**
-     * @param $siteCreateData
-     * @return \app\models\db\Consultation
+     * @param Consultation $consultation
      */
-    public function createSiteAndConsultation($siteCreateData);
+    public function setConsultationSettings(Consultation $consultation);
+
+    /**
+     * @param Site $site
+     */
+    public function setSiteSettings(Site $site);
 }

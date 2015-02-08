@@ -6,10 +6,10 @@ use app\models\AntragsgruenAppParams;
  */
 
 
-$dom_plain = $params->domainPlain;
-$dom       = $params->domainSubdomain;
-$domv      = $dom . '<consultation_id:[\w_-]+>/';
-$domadmin  = $domv . 'admin/';
+$domPlain = $params->domainPlain;
+$dom      = $params->domainSubdomain;
+$domv     = $dom . '<consultationId:[\w_-]+>/';
+$domadmin = $domv . 'admin/';
 
 $url_rules = [
     $domadmin . ''                                                         => 'admin/index',
@@ -68,13 +68,13 @@ $url_rules = [
 if ($params->multisiteMode) {
     $url_rules = array_merge(
         [
-            $dom_plain                => 'manager/index',
-            $dom_plain . 'createsite' => 'manager/createsite',
-            $dom_plain . 'legal'      => 'manager/legal',
-            $dom_plain . 'password'   => 'manager/password',
-            $dom_plain . 'billing'    => 'manager/billing',
-            $dom_plain . 'login'      => 'manager/login',
-            $dom_plain . 'logout'     => 'manager/logout',
+            $domPlain                => 'manager/index',
+            $domPlain . 'createsite' => 'manager/createsite',
+            $domPlain . 'legal'      => 'manager/legal',
+            $domPlain . 'password'   => 'manager/password',
+            $domPlain . 'billing'    => 'manager/billing',
+            $domPlain . 'login'      => 'manager/login',
+            $domPlain . 'logout'     => 'manager/logout',
         ],
         $url_rules
     );

@@ -8,7 +8,7 @@ $controller = $this->context;
 /**
  * @var $this yii\web\View
  * @var SiteCreateForm $model
- * @var string|null $error_string
+ * @var array $errors
  * @var \app\controllers\Base $controller
  */
 
@@ -19,10 +19,6 @@ $controller->layoutParams->addCSS('/css/manager.css');
 $controller->layoutParams->addJS("/js/manager.js");
 $controller->layoutParams->addOnLoadJS('$.SiteManager.createInstance();');
 
-
-if ($error_string != "") {
-    $error_string = '<div class="alert alert-error">' . $error_string . '</div>';
-}
 
 echo '<h1>Antragsgrün-Instanz anlegen</h1>
 <div class="fuelux">';
@@ -45,8 +41,12 @@ echo '<div id="SiteCreateWizard" class="wizard">
         </div>
         <div class="content step-content">
             <div class="step-pane active" id="step1">';
-
-echo $error_string;
+if (count($errors) > 0) {
+    echo '<div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>' . nl2br(Html::encode(implode("\n", $errors))) .
+        '</div>';
+}
 
 foreach (\app\models\sitePresets\SitePresets::$PRESETS as $preset_id => $preset) {
     echo '<label class="sitePreset">';
@@ -89,7 +89,7 @@ echo 'BenutzerInnen können (Änderungs-)Anträge kommentieren
 </label>';
 
 echo '<label class="policy">';
-echo Html::checkbox('SiteCreateForm[hasAmendmends]', $model->hasAmendmends);
+echo Html::checkbox('SiteCreateForm[hasAmendments]', $model->hasAmendments);
 echo 'BenutzerInnen können Änderungsanträge stellen
 </label>';
 

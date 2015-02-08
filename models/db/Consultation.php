@@ -3,6 +3,8 @@
 namespace app\models\db;
 
 use app\models\ConsultationSettings;
+use app\models\exceptions\DB;
+use app\models\forms\SiteCreateForm;
 use yii\db\ActiveRecord;
 
 /**
@@ -123,6 +125,63 @@ class Consultation extends ActiveRecord
     public function setSettings($settings)
     {
         $this->settingsObject = $settings;
-        $this->settings        = $settings->toJSON();
+        $this->settings       = $settings->toJSON();
+    }
+
+
+    /**
+     * @param SiteCreateForm $form
+     * @param Site $site
+     * @param User $currentUser
+     * @return Site
+     * @throws DB
+     */
+    public static function createFromForm(SiteCreateForm $form, Site $site, User $currentUser)
+    {
+        $con             = new Consultation();
+        $con->siteId     = $site->id;
+        $con->title      = $form->title;
+        $con->type       = $form->preset;
+        $con->urlPath    = $form->subdomain;
+        $con->adminEmail = $currentUser->email;
+
+        $settings = $con->getSettings();
+        $settings->maintainanceMode = !$form->openNow;
+        $con->setSettings($settings);
+
+        if (!$con->save()) {
+            throw new DB($con->getErrors());
+        }
+    }
+
+    /**
+     * @param User $person
+     * @return bool
+     */
+    public function isAdmin($person)
+    {
+        foreach ($this->admins as $e) {
+            if ($e->id == $person->id) {
+                return true;
+            }
+        }
+        return $this->site->isAdmin($person);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdminCurUser()
+    {
+        $user = \Yii::$app->user;
+        if ($user->isGuest) {
+            return false;
+        }
+        $myself = User::findOne(["auth" => $user->id]);
+        /** @var User $myself */
+        if ($myself == null) {
+            return false;
+        }
+        return $this->isAdmin($myself);
     }
 }

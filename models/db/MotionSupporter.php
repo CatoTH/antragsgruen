@@ -2,8 +2,6 @@
 
 namespace app\models\db;
 
-use yii\db\ActiveRecord;
-
 /**
  * @package app\models\db
  *
@@ -23,7 +21,7 @@ use yii\db\ActiveRecord;
  * @property User $user
  * @property Motion $motion
  */
-class MotionSupporter extends ActiveRecord
+class MotionSupporter extends ISupporter
 {
 
     /**

@@ -1,9 +1,11 @@
 <?php
 namespace app\models\db;
 
+use app\models\AntragsgruenAppParams;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
 use app\models\SiteSettings;
+use app\models\SiteSpecificBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -134,5 +136,54 @@ class Site extends ActiveRecord
         }
 
         return $site;
+    }
+
+
+    /**
+     * @param User $person
+     * @return bool
+     */
+    public function isAdmin($person)
+    {
+        foreach ($this->admins as $e) {
+            if ($e->id == $person->id) {
+                return true;
+            }
+        }
+        // // @TODO
+        //if (Yii::app()->params['admin_user_id'] !== null &&
+        //$person->id == Yii::app()->params['admin_user_id']) return true;
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdminCurUser()
+    {
+        $user = \Yii::$app->user;
+        if ($user->isGuest) {
+            return false;
+        }
+        $ich = User::findOne(["auth" => $user->id]);
+        /** @var User $ich */
+        if ($ich == null) {
+            return false;
+        }
+        return $this->isAdmin($ich);
+    }
+
+    /**
+     * @return SiteSpecificBehavior
+     */
+    public function getBehaviorClass()
+    {
+        /** @var AntragsgruenAppParams $params */
+        $params = \Yii::$app->params;
+
+        if (isset($params->siteBehaviorClasses[$this->id])) {
+            return $params->siteBehaviorClasses[$this->id];
+        }
+        return new SiteSpecificBehavior();
     }
 }
