@@ -2,576 +2,719 @@ SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;
 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `site`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `site` (
-  `id`                    INT          NOT NULL AUTO_INCREMENT,
-  `subdomain`             VARCHAR(45)  NOT NULL,
-  `title`                 VARCHAR(200) NOT NULL,
-  `titleShort`            VARCHAR(100) NULL,
-  `settings`              BLOB(45)     NULL,
-  `currentConsultationId` INT          NULL,
-  `public`                TINYINT      NULL     DEFAULT 1,
-  `contact`               MEDIUMTEXT   NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `subdomain_UNIQUE` (`subdomain` ASC),
-  INDEX `fk_veranstaltungsreihe_veranstaltung1_idx` (`currentConsultationId` ASC),
-  CONSTRAINT `fk_site_consultation`
-  FOREIGN KEY (`currentConsultationId`)
-  REFERENCES `consultation` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+--
+-- Table structure for table `amendment`
+--
 
+CREATE TABLE `amendment` (
+  `id` int(11) NOT NULL,
+  `motionId` int(11) DEFAULT NULL,
+  `titlePrefix` varchar(45) DEFAULT NULL,
+  `changedTitle` text,
+  `changedParagraphs` longtext NOT NULL,
+  `changedExplanation` longtext NOT NULL,
+  `changeMetatext` longtext NOT NULL,
+  `changeText` longtext NOT NULL,
+  `changeExplanation` longtext NOT NULL,
+  `changeExplanationHtml` tinyint(4) NOT NULL DEFAULT '0',
+  `cacheFirstLineChanged` mediumint(9) NOT NULL,
+  `cacheFirstLineRel` text,
+  `cacheFirstLineAbs` text,
+  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateResolution` timestamp NULL DEFAULT NULL,
+  `status` tinyint(4) NOT NULL,
+  `statusString` varchar(55) NOT NULL,
+  `noteInternal` text,
+  `textFixed` tinyint(4) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- -----------------------------------------------------
--- Table `consultation`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `consultation` (
-  `id`                 INT          NOT NULL AUTO_INCREMENT,
-  `siteId`             INT          NOT NULL,
-  `urlPath`            VARCHAR(45)  NULL,
-  `type`               TINYINT      NULL,
-  `title`              VARCHAR(200) NOT NULL,
-  `titleShort`         VARCHAR(45)  NOT NULL,
-  `eventDateFrom`      DATE         NULL,
-  `eventDateUntil`     DATE         NULL,
-  `deadlineMotions`    TIMESTAMP    NULL     DEFAULT NULL,
-  `deadlineAmendments` TIMESTAMP    NULL     DEFAULT NULL,
-  `policyMotions`      VARCHAR(20)  NULL,
-  `policyAmendments`   VARCHAR(20)  NULL,
-  `policyComments`     VARCHAR(20)  NULL,
-  `policySupport`      VARCHAR(20)  NULL,
-  `adminEmail`         VARCHAR(150) NULL,
-  `settings`           BLOB         NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `yii_url_UNIQUE` (`urlPath` ASC, `siteId` ASC),
-  INDEX `fk_consultation_siteIdx` (`siteId` ASC),
-  CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1`
-  FOREIGN KEY (`siteId`)
-  REFERENCES `site` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `amendmentComment`
+--
 
--- -----------------------------------------------------
--- Table `motion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `motion` (
-  `id`                   INT                NOT NULL AUTO_INCREMENT,
-  `consultationId`       INT                NOT NULL,
-  `parentMotionId`       INT                NULL,
-  `title`                TEXT               NOT NULL,
-  `titlePrefix`          VARCHAR(50)        NOT NULL,
-  `dateCreation`         TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `dateResolution`       VARCHAR(45)        NULL,
-  `text`                 LONGTEXT           NULL,
-  `explanation`          LONGTEXT           NULL,
-  `explanationHtml`      TINYINT            NOT NULL DEFAULT 0,
-  `status`               TINYINT            NOT NULL,
-  `statusString`         VARCHAR(55)        NULL,
-  `noteInternal`         TEXT               NULL,
-  `cacheLineNumber`      MEDIUMINT UNSIGNED NOT NULL,
-  `cacheParagraphNumber` MEDIUMINT UNSIGNED NOT NULL,
-  `textFixed`            TINYINT(4)         NULL     DEFAULT '0',
-  PRIMARY KEY (`id`),
-  INDEX `consultation` (`consultationId` ASC),
-  INDEX `parent_motion` (`parentMotionId` ASC),
-  CONSTRAINT `fk_site_parent`
-  FOREIGN KEY (`parentMotionId`)
-  REFERENCES `motion` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_motion_consultation`
-  FOREIGN KEY (`consultationId`)
-  REFERENCES `consultation` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+CREATE TABLE `amendmentComment` (
+  `id` int(11) NOT NULL,
+  `userId` int(11) DEFAULT NULL,
+  `amendmentId` int(11) DEFAULT NULL,
+  `paragraph` smallint(6) DEFAULT NULL,
+  `text` mediumtext,
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` tinyint(4) DEFAULT NULL,
+  `replyNotification` tinyint(4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Table `amendment`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `amendment` (
-  `id`                    INT          NOT NULL AUTO_INCREMENT,
-  `motionId`              INT          NULL,
-  `titlePrefix`           VARCHAR(45)  NULL,
-  `changedTitle`          TEXT         NULL,
-  `changedParagraphs`     LONGTEXT     NOT NULL,
-  `changedExplanation`    LONGTEXT     NOT NULL,
-  `changeMetatext`        LONGTEXT     NOT NULL,
-  `changeText`            LONGTEXT     NOT NULL,
-  `changeExplanation`     LONGTEXT     NOT NULL,
-  `changeExplanationHtml` TINYINT      NOT NULL DEFAULT 0,
-  `cacheFirstLineChanged` MEDIUMINT(9) NOT NULL,
-  `cacheFirstLineRel`     TEXT         NULL,
-  `cacheFirstLineAbs`     TEXT         NULL,
-  `dateCreation`          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `dateResolution`        TIMESTAMP    NULL,
-  `status`                TINYINT      NOT NULL,
-  `statusString`          VARCHAR(55)  NOT NULL,
-  `noteInternal`          TEXT         NULL,
-  `textFixed`             TINYINT(4)   NULL     DEFAULT 0,
-  PRIMARY KEY (`id`),
-  INDEX `fk_motionIdx` (`motionId` ASC),
-  CONSTRAINT `fk_ammendment_motion`
-  FOREIGN KEY (`motionId`)
-  REFERENCES `amendment` (`id`)
-    ON DELETE SET NULL
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+--
+-- Table structure for table `amendmentSupporter`
+--
 
+CREATE TABLE `amendmentSupporter` (
+  `id` int(11) NOT NULL,
+  `amendmentId` int(11) NOT NULL,
+  `position` smallint(6) NOT NULL DEFAULT '0',
+  `userId` int(11) NOT NULL,
+  `role` enum('initiates','supports','likes','dislikes') NOT NULL,
+  `comment` mediumtext,
+  `personType` tinyint(4) DEFAULT NULL,
+  `name` text,
+  `organization` text,
+  `resolutionDate` date DEFAULT NULL,
+  `contactEmail` varchar(100) DEFAULT NULL,
+  `contactPhone` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- -----------------------------------------------------
--- Table `user`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `user` (
-  `id`              INT          NOT NULL AUTO_INCREMENT,
-  `name`            TEXT         NOT NULL,
-  `email`           VARCHAR(200) NULL,
-  `emailConfirmed`  TINYINT      NULL     DEFAULT 0,
-  `auth`            VARCHAR(190) NULL,
-  `dateCreation`    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `status`          TINYINT      NOT NULL,
-  `pwdEnc`          VARCHAR(100) NULL,
-  `authKey`         BINARY(100)  NULL,
-  `siteNamespaceId` INT          NULL     DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `auth_UNIQUE` (`auth` ASC),
-  INDEX `fk_user_namespaceIdx` (`siteNamespaceId` ASC),
-  CONSTRAINT `fk_user_namespace`
-  FOREIGN KEY (`siteNamespaceId`)
-  REFERENCES `site` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `cache`
+--
 
--- -----------------------------------------------------
--- Table `amendmentComment`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `amendmentComment` (
-  `id`                INT        NOT NULL AUTO_INCREMENT,
-  `userId`            INT        NULL,
-  `amendmentId`       INT        NULL,
-  `paragraph`         SMALLINT   NULL,
-  `text`              MEDIUMTEXT NULL,
-  `dateCreated`       TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `status`            TINYINT    NULL,
-  `replyNotification` TINYINT    NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_amendment_comment_userIdx` (`userId` ASC),
-  INDEX `fk_amendment_comment_amendmentIdx` (`amendmentId` ASC),
-  CONSTRAINT `fk_amendment_comment_amendment`
-  FOREIGN KEY (`amendmentId`)
-  REFERENCES `amendment` (`id`)
-    ON DELETE SET NULL
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_amendment_comment_user`
-  FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE SET NULL
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+CREATE TABLE `cache` (
+  `id` char(32) NOT NULL,
+  `dateCreation` timestamp NULL DEFAULT NULL,
+  `data` longblob
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Table `amendmentSupporter`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `amendmentSupporter` (
-  `id`             INT                                                NOT NULL AUTO_INCREMENT,
-  `amendmentId`    INT                                                NOT NULL,
-  `position`       SMALLINT                                           NOT NULL DEFAULT 0,
-  `userId`         INT                                                NOT NULL,
-  `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
-  `comment`        MEDIUMTEXT                                         NULL,
-  `personType`     TINYINT                                            NULL,
-  `name`           TEXT                                               NULL,
-  `organization`   TEXT                                               NULL,
-  `resolutionDate` DATE                                               NULL     DEFAULT NULL,
-  `contactEmail`   VARCHAR(100)                                       NULL,
-  `contactPhone`   VARCHAR(100)                                       NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_amendmentIdx` (`amendmentId` ASC),
-  INDEX `fk_supporter_idx` (`userId` ASC),
-  CONSTRAINT `fk_support_amendment`
-  FOREIGN KEY (`amendmentId`)
-  REFERENCES `amendment` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_support_user`
-  FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+--
+-- Table structure for table `consultation`
+--
 
+CREATE TABLE `consultation` (
+  `id` int(11) NOT NULL,
+  `siteId` int(11) NOT NULL,
+  `urlPath` varchar(45) DEFAULT NULL,
+  `type` tinyint(4) DEFAULT NULL,
+  `title` varchar(200) NOT NULL,
+  `titleShort` varchar(45) NOT NULL,
+  `eventDateFrom` date DEFAULT NULL,
+  `eventDateUntil` date DEFAULT NULL,
+  `deadlineMotions` timestamp NULL DEFAULT NULL,
+  `deadlineAmendments` timestamp NULL DEFAULT NULL,
+  `policyMotions` varchar(20) DEFAULT NULL,
+  `policyAmendments` varchar(20) DEFAULT NULL,
+  `policyComments` varchar(20) DEFAULT NULL,
+  `policySupport` varchar(20) DEFAULT NULL,
+  `adminEmail` varchar(150) DEFAULT NULL,
+  `settings` blob
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- -----------------------------------------------------
--- Table `motionSubscription`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `motionSubscription` (
-  `motionId` INT NOT NULL,
-  `userId`   INT NOT NULL,
-  PRIMARY KEY (`motionId`, `userId`),
-  INDEX `fk_motionId` (`motionId` ASC),
-  INDEX `fk_userId` (`userId` ASC),
-  CONSTRAINT `fk_subscription_motion`
-  FOREIGN KEY (`motionId`)
-  REFERENCES `motion` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_subscription_user`
-  FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `consultationAdmin`
+--
 
--- -----------------------------------------------------
--- Table `motionComment`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `motionComment` (
-  `id`                INT        NOT NULL AUTO_INCREMENT,
-  `userId`            INT        NULL,
-  `motionId`          INT        NULL,
-  `paragraph`         SMALLINT   NULL,
-  `text`              MEDIUMTEXT NOT NULL,
-  `dateCreated`       TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `status`            TINYINT    NULL,
-  `replyNotification` TINYINT    NULL     DEFAULT 0,
-  PRIMARY KEY (`id`),
-  INDEX `fk_comment_userIdx` (`userId` ASC),
-  INDEX `fk_comment_notion_idx` (`motionId` ASC),
-  CONSTRAINT `fk_motion_comment_motion`
-  FOREIGN KEY (`motionId`)
-  REFERENCES `motion` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_motion_comment_user`
-  FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+CREATE TABLE `consultationAdmin` (
+  `consultationId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Table `motionCommentSupporter`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `motionCommentSupporter` (
-  `id`              INT      NOT NULL AUTO_INCREMENT,
-  `ipHash`          CHAR(32) NULL,
-  `cookieId`        INT      NULL,
-  `motionCommentId` INT      NOT NULL,
-  `likes`           TINYINT  NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `ip_hash_motion` (`ipHash` ASC, `motionCommentId` ASC),
-  UNIQUE INDEX `cookie_motion` (`cookieId` ASC, `motionCommentId` ASC),
-  INDEX `fk_motion_comment_supporter_commentIdx` (`motionCommentId` ASC),
-  CONSTRAINT `fk_motion_comment_supporter_comment`
-  FOREIGN KEY (`motionCommentId`)
-  REFERENCES `motionComment` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+--
+-- Table structure for table `consultationOdtTemplate`
+--
 
+CREATE TABLE `consultationOdtTemplate` (
+  `id` int(11) NOT NULL,
+  `consultationId` int(11) NOT NULL,
+  `type` tinyint(4) NOT NULL,
+  `data` blob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- -----------------------------------------------------
--- Table `motionSupporter`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `motionSupporter` (
-  `id`             INT                                                NOT NULL AUTO_INCREMENT,
-  `motionId`       INT                                                NOT NULL,
-  `position`       SMALLINT                                           NOT NULL DEFAULT 0,
-  `userId`         INT                                                NOT NULL,
-  `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
-  `comment`        MEDIUMTEXT                                         NULL,
-  `personType`     TINYINT                                            NULL,
-  `name`           TEXT                                               NULL,
-  `organization`   TEXT                                               NULL,
-  `resolutionDate` DATE                                               NULL     DEFAULT NULL,
-  `contactEmail`   VARCHAR(100)                                       NULL,
-  `contactPhone`   VARCHAR(100)                                       NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_supporter_idx` (`userId` ASC),
-  INDEX `fk_motionIdx` (`motionId` ASC),
-  CONSTRAINT `fk_motion`
-  FOREIGN KEY (`motionId`)
-  REFERENCES `motion` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_supporter`
-  FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `consultationSettingsMotionSection`
+--
 
--- -----------------------------------------------------
--- Table `cache`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `cache` (
-  `id`           CHAR(32)  NOT NULL,
-  `dateCreation` TIMESTAMP NULL,
-  `data`         LONGBLOB  NULL,
-  PRIMARY KEY (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+CREATE TABLE `consultationSettingsMotionSection` (
+  `id` int(11) NOT NULL,
+  `consultationId` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL,
+  `position` smallint(6) DEFAULT NULL,
+  `title` varchar(100) NOT NULL,
+  `fixedWidth` tinyint(4) NOT NULL,
+  `maxLen` int(11) DEFAULT NULL,
+  `lineNumbers` tinyint(4) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Table `consultationText`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `consultationText` (
-  `id`             INT         NOT NULL AUTO_INCREMENT,
-  `consultationId` INT         NULL,
-  `textId`         VARCHAR(20) NOT NULL,
-  `text`           LONGTEXT    NULL,
-  `editDate`       TIMESTAMP   NULL     DEFAULT NOW(),
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `consultation_text_unique` (`textId` ASC, `consultationId` ASC),
-  INDEX `fk_texts_consultationIdx` (`consultationId` ASC),
-  CONSTRAINT `fk_texts_consultation`
-  FOREIGN KEY (`consultationId`)
-  REFERENCES `consultation` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+--
+-- Table structure for table `consultationSettingsTag`
+--
 
+CREATE TABLE `consultationSettingsTag` (
+  `id` int(11) NOT NULL,
+  `consultationId` int(11) DEFAULT NULL,
+  `position` smallint(6) DEFAULT NULL,
+  `title` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- -----------------------------------------------------
--- Table `consultationAdmin`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `consultationAdmin` (
-  `consultationId` INT NOT NULL,
-  `userId`         INT NOT NULL,
-  PRIMARY KEY (`consultationId`, `userId`),
-  INDEX `fk_consultation_userIdx` (`userId` ASC),
-  INDEX `fk_consultationIdx` (`consultationId` ASC),
-  CONSTRAINT `fk_consultation_user`
-  FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_user_consultation`
-  FOREIGN KEY (`consultationId`)
-  REFERENCES `consultation` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `consultationSubscription`
+--
 
--- -----------------------------------------------------
--- Table `consultationSubscription`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `consultationSubscription` (
-  `consultationId` INT     NOT NULL,
-  `userId`         INT     NOT NULL,
-  `motions`        TINYINT NULL,
-  `amendments`     TINYINT NULL,
-  `comments`       TINYINT NULL,
-  PRIMARY KEY (`consultationId`, `userId`),
-  INDEX `fk_consultationIdx` (`consultationId` ASC),
-  INDEX `fk_userIdx` (`userId` ASC),
-  CONSTRAINT `fk_user`
-  FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_consultation`
-  FOREIGN KEY (`consultationId`)
-  REFERENCES `consultation` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+CREATE TABLE `consultationSubscription` (
+  `consultationId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `motions` tinyint(4) DEFAULT NULL,
+  `amendments` tinyint(4) DEFAULT NULL,
+  `comments` tinyint(4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Table `siteAdmin`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `siteAdmin` (
-  `siteId` INT NOT NULL,
-  `userId` INT NOT NULL,
-  PRIMARY KEY (`siteId`, `userId`),
-  INDEX `site_admin_fk_userIdx` (`userId` ASC),
-  INDEX `site_admin_fk_siteIdx` (`siteId` ASC),
-  CONSTRAINT `site_admin_fk_user`
-  FOREIGN KEY (`userId`)
-  REFERENCES `user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `site_admin_fk_site`
-  FOREIGN KEY (`siteId`)
-  REFERENCES `site` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+--
+-- Table structure for table `consultationText`
+--
 
+CREATE TABLE `consultationText` (
+  `id` int(11) NOT NULL,
+  `consultationId` int(11) DEFAULT NULL,
+  `textId` varchar(20) NOT NULL,
+  `text` longtext,
+  `editDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- -----------------------------------------------------
--- Table `emailLog`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `emailLog` (
-  `id`        INT          NOT NULL AUTO_INCREMENT,
-  `toEmail`   VARCHAR(200) NULL,
-  `toUserId`  INT          NULL     DEFAULT NULL,
-  `type`      SMALLINT     NULL,
-  `fromEmail` VARCHAR(200) NULL,
-  `dateSent`  TIMESTAMP    NULL,
-  `subject`   VARCHAR(200) NULL,
-  `text`      MEDIUMTEXT   NULL,
-  INDEX `fk_mail_log_userIdx` (`toUserId` ASC),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_mail_log_user`
-  FOREIGN KEY (`toUserId`)
-  REFERENCES `user` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `emailLog`
+--
 
--- -----------------------------------------------------
--- Table `consultationOdtTemplate`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `consultationOdtTemplate` (
-  `id`             INT     NOT NULL AUTO_INCREMENT,
-  `consultationId` INT     NOT NULL,
-  `type`           TINYINT NOT NULL,
-  `data`           BLOB    NOT NULL,
-  INDEX `fk_consultationIdx` (`consultationId` ASC),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_odt_templates`
-  FOREIGN KEY (`consultationId`)
-  REFERENCES `consultation` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB
-  DEFAULT CHARACTER SET = utf8mb4;
+CREATE TABLE `emailLog` (
+  `id` int(11) NOT NULL,
+  `toEmail` varchar(200) DEFAULT NULL,
+  `toUserId` int(11) DEFAULT NULL,
+  `type` smallint(6) DEFAULT NULL,
+  `fromEmail` varchar(200) DEFAULT NULL,
+  `dateSent` timestamp NULL DEFAULT NULL,
+  `subject` varchar(200) DEFAULT NULL,
+  `text` mediumtext
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Table `consultationSettingsTag`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `consultationSettingsTag` (
-  `id`             INT          NOT NULL AUTO_INCREMENT,
-  `consultationId` INT          NULL     DEFAULT NULL,
-  `position`       SMALLINT     NULL,
-  `title`          VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `consultation_tag_fk_consultation`
-  FOREIGN KEY (`id`)
-  REFERENCES `consultation` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB;
+--
+-- Table structure for table `motion`
+--
 
+CREATE TABLE `motion` (
+  `id` int(11) NOT NULL,
+  `consultationId` int(11) NOT NULL,
+  `parentMotionId` int(11) DEFAULT NULL,
+  `title` text NOT NULL,
+  `titlePrefix` varchar(50) NOT NULL,
+  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateResolution` varchar(45) DEFAULT NULL,
+  `text` longtext,
+  `explanation` longtext,
+  `explanationHtml` tinyint(4) NOT NULL DEFAULT '0',
+  `status` tinyint(4) NOT NULL,
+  `statusString` varchar(55) DEFAULT NULL,
+  `noteInternal` text,
+  `cacheLineNumber` mediumint(8) unsigned NOT NULL,
+  `cacheParagraphNumber` mediumint(8) unsigned NOT NULL,
+  `textFixed` tinyint(4) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- -----------------------------------------------------
--- Table `motionTag`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `motionTag` (
-  `motionId` INT NOT NULL,
-  `tagId`    INT NOT NULL,
-  PRIMARY KEY (`motionId`, `tagId`),
-  INDEX `motion_tag_fk_tagIdx` (`tagId` ASC),
-  CONSTRAINT `motion_tag_fk_motion`
-  FOREIGN KEY (`motionId`)
-  REFERENCES `motion` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `motion_tag_fk_tag`
-  FOREIGN KEY (`tagId`)
-  REFERENCES `consultationSettingsTag` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB;
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `motionComment`
+--
 
--- -----------------------------------------------------
--- Table `consultationSettingsMotionSection`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `consultationSettingsMotionSection` (
-  `id`             INT          NOT NULL AUTO_INCREMENT,
-  `consultationId` INT          NULL     DEFAULT NULL,
-  `type`           INT          NOT NULL,
-  `position`       SMALLINT     NULL,
-  `title`          VARCHAR(100) NOT NULL,
-  `fixedWidth`     TINYINT      NOT NULL,
-  `maxLen`         INT          NULL     DEFAULT NULL,
-  `lineNumbers`    TINYINT      NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `consultation_settings_motion_section_fk_consultation`
-  FOREIGN KEY (`id`)
-  REFERENCES `consultation` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB;
+CREATE TABLE `motionComment` (
+  `id` int(11) NOT NULL,
+  `userId` int(11) DEFAULT NULL,
+  `motionId` int(11) DEFAULT NULL,
+  `paragraph` smallint(6) DEFAULT NULL,
+  `text` mediumtext NOT NULL,
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` tinyint(4) DEFAULT NULL,
+  `replyNotification` tinyint(4) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
 
--- -----------------------------------------------------
--- Table `motionSection`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `motionSection` (
-  `motionId`  INT      NOT NULL,
-  `sectionId` INT      NOT NULL,
-  `data`      LONGTEXT NOT NULL,
-  PRIMARY KEY (`motionId`, `sectionId`),
-  INDEX `motion_section_fk_sectionIdx` (`sectionId` ASC),
-  CONSTRAINT `motion_section_fk_motion`
-  FOREIGN KEY (`motionId`)
-  REFERENCES `motion` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `motion_section_fk_section`
-  FOREIGN KEY (`sectionId`)
-  REFERENCES `consultationSettingsMotionSection` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-)
-  ENGINE = InnoDB;
+--
+-- Table structure for table `motionCommentSupporter`
+--
+
+CREATE TABLE `motionCommentSupporter` (
+  `id` int(11) NOT NULL,
+  `ipHash` char(32) DEFAULT NULL,
+  `cookieId` int(11) DEFAULT NULL,
+  `motionCommentId` int(11) NOT NULL,
+  `likes` tinyint(4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `motionSection`
+--
+
+CREATE TABLE `motionSection` (
+  `motionId` int(11) NOT NULL,
+  `sectionId` int(11) NOT NULL,
+  `data` longtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `motionSubscription`
+--
+
+CREATE TABLE `motionSubscription` (
+  `motionId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `motionSupporter`
+--
+
+CREATE TABLE `motionSupporter` (
+  `id` int(11) NOT NULL,
+  `motionId` int(11) NOT NULL,
+  `position` smallint(6) NOT NULL DEFAULT '0',
+  `userId` int(11) NOT NULL,
+  `role` enum('initiates','supports','likes','dislikes') NOT NULL,
+  `comment` mediumtext,
+  `personType` tinyint(4) DEFAULT NULL,
+  `name` text,
+  `organization` text,
+  `resolutionDate` date DEFAULT NULL,
+  `contactEmail` varchar(100) DEFAULT NULL,
+  `contactPhone` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `motionTag`
+--
+
+CREATE TABLE `motionTag` (
+  `motionId` int(11) NOT NULL,
+  `tagId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `site`
+--
+
+CREATE TABLE `site` (
+  `id` int(11) NOT NULL,
+  `subdomain` varchar(45) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `titleShort` varchar(100) DEFAULT NULL,
+  `settings` tinyblob,
+  `currentConsultationId` int(11) DEFAULT NULL,
+  `public` tinyint(4) DEFAULT '1',
+  `contact` mediumtext
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `siteAdmin`
+--
+
+CREATE TABLE `siteAdmin` (
+  `siteId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `name` text NOT NULL,
+  `email` varchar(200) DEFAULT NULL,
+  `emailConfirmed` tinyint(4) DEFAULT '0',
+  `auth` varchar(190) DEFAULT NULL,
+  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` tinyint(4) NOT NULL,
+  `pwdEnc` varchar(100) DEFAULT NULL,
+  `authKey` binary(100) DEFAULT NULL,
+  `siteNamespaceId` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `amendment`
+--
+ALTER TABLE `amendment`
+ADD PRIMARY KEY (`id`), ADD KEY `fk_motionIdx` (`motionId`);
+
+--
+-- Indexes for table `amendmentComment`
+--
+ALTER TABLE `amendmentComment`
+ADD PRIMARY KEY (`id`), ADD KEY `fk_amendment_comment_userIdx` (`userId`), ADD KEY `fk_amendment_comment_amendmentIdx` (`amendmentId`);
+
+--
+-- Indexes for table `amendmentSupporter`
+--
+ALTER TABLE `amendmentSupporter`
+ADD PRIMARY KEY (`id`), ADD KEY `fk_amendmentIdx` (`amendmentId`), ADD KEY `fk_supporter_idx` (`userId`);
+
+--
+-- Indexes for table `cache`
+--
+ALTER TABLE `cache`
+ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `consultation`
+--
+ALTER TABLE `consultation`
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `yii_url_UNIQUE` (`urlPath`,`siteId`), ADD KEY `fk_consultation_siteIdx` (`siteId`);
+
+--
+-- Indexes for table `consultationAdmin`
+--
+ALTER TABLE `consultationAdmin`
+ADD PRIMARY KEY (`consultationId`,`userId`), ADD KEY `fk_consultation_userIdx` (`userId`), ADD KEY `fk_consultationIdx` (`consultationId`);
+
+--
+-- Indexes for table `consultationOdtTemplate`
+--
+ALTER TABLE `consultationOdtTemplate`
+ADD PRIMARY KEY (`id`), ADD KEY `fk_consultationIdx` (`consultationId`);
+
+--
+-- Indexes for table `consultationSettingsMotionSection`
+--
+ALTER TABLE `consultationSettingsMotionSection`
+ADD PRIMARY KEY (`id`), ADD KEY `consultationId` (`consultationId`);
+
+--
+-- Indexes for table `consultationSettingsTag`
+--
+ALTER TABLE `consultationSettingsTag`
+ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `consultationSubscription`
+--
+ALTER TABLE `consultationSubscription`
+ADD PRIMARY KEY (`consultationId`,`userId`), ADD KEY `fk_consultationIdx` (`consultationId`), ADD KEY `fk_userIdx` (`userId`);
+
+--
+-- Indexes for table `consultationText`
+--
+ALTER TABLE `consultationText`
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultation_text_unique` (`textId`,`consultationId`), ADD KEY `fk_texts_consultationIdx` (`consultationId`);
+
+--
+-- Indexes for table `emailLog`
+--
+ALTER TABLE `emailLog`
+ADD PRIMARY KEY (`id`), ADD KEY `fk_mail_log_userIdx` (`toUserId`);
+
+--
+-- Indexes for table `motion`
+--
+ALTER TABLE `motion`
+ADD PRIMARY KEY (`id`), ADD KEY `consultation` (`consultationId`), ADD KEY `parent_motion` (`parentMotionId`);
+
+--
+-- Indexes for table `motionComment`
+--
+ALTER TABLE `motionComment`
+ADD PRIMARY KEY (`id`), ADD KEY `fk_comment_userIdx` (`userId`), ADD KEY `fk_comment_notion_idx` (`motionId`);
+
+--
+-- Indexes for table `motionCommentSupporter`
+--
+ALTER TABLE `motionCommentSupporter`
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `ip_hash_motion` (`ipHash`,`motionCommentId`), ADD UNIQUE KEY `cookie_motion` (`cookieId`,`motionCommentId`), ADD KEY `fk_motion_comment_supporter_commentIdx` (`motionCommentId`);
+
+--
+-- Indexes for table `motionSection`
+--
+ALTER TABLE `motionSection`
+ADD PRIMARY KEY (`motionId`,`sectionId`), ADD KEY `motion_section_fk_sectionIdx` (`sectionId`);
+
+--
+-- Indexes for table `motionSubscription`
+--
+ALTER TABLE `motionSubscription`
+ADD PRIMARY KEY (`motionId`,`userId`), ADD KEY `fk_motionId` (`motionId`), ADD KEY `fk_userId` (`userId`);
+
+--
+-- Indexes for table `motionSupporter`
+--
+ALTER TABLE `motionSupporter`
+ADD PRIMARY KEY (`id`), ADD KEY `fk_supporter_idx` (`userId`), ADD KEY `fk_motionIdx` (`motionId`);
+
+--
+-- Indexes for table `motionTag`
+--
+ALTER TABLE `motionTag`
+ADD PRIMARY KEY (`motionId`,`tagId`), ADD KEY `motion_tag_fk_tagIdx` (`tagId`);
+
+--
+-- Indexes for table `site`
+--
+ALTER TABLE `site`
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `subdomain_UNIQUE` (`subdomain`), ADD KEY `fk_veranstaltungsreihe_veranstaltung1_idx` (`currentConsultationId`);
+
+--
+-- Indexes for table `siteAdmin`
+--
+ALTER TABLE `siteAdmin`
+ADD PRIMARY KEY (`siteId`,`userId`), ADD KEY `site_admin_fk_userIdx` (`userId`), ADD KEY `site_admin_fk_siteIdx` (`siteId`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `auth_UNIQUE` (`auth`), ADD KEY `fk_user_namespaceIdx` (`siteNamespaceId`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `amendment`
+--
+ALTER TABLE `amendment`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `amendmentComment`
+--
+ALTER TABLE `amendmentComment`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `amendmentSupporter`
+--
+ALTER TABLE `amendmentSupporter`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `consultation`
+--
+ALTER TABLE `consultation`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `consultationOdtTemplate`
+--
+ALTER TABLE `consultationOdtTemplate`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `consultationSettingsMotionSection`
+--
+ALTER TABLE `consultationSettingsMotionSection`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `consultationSettingsTag`
+--
+ALTER TABLE `consultationSettingsTag`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `consultationText`
+--
+ALTER TABLE `consultationText`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `emailLog`
+--
+ALTER TABLE `emailLog`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `motion`
+--
+ALTER TABLE `motion`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `motionComment`
+--
+ALTER TABLE `motionComment`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `motionCommentSupporter`
+--
+ALTER TABLE `motionCommentSupporter`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `motionSupporter`
+--
+ALTER TABLE `motionSupporter`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `site`
+--
+ALTER TABLE `site`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `amendment`
+--
+ALTER TABLE `amendment`
+ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `amendment` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `amendmentComment`
+--
+ALTER TABLE `amendmentComment`
+ADD CONSTRAINT `fk_amendment_comment_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `amendmentSupporter`
+--
+ALTER TABLE `amendmentSupporter`
+ADD CONSTRAINT `fk_support_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_support_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultation`
+--
+ALTER TABLE `consultation`
+ADD CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationAdmin`
+--
+ALTER TABLE `consultationAdmin`
+ADD CONSTRAINT `fk_consultation_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_user_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationOdtTemplate`
+--
+ALTER TABLE `consultationOdtTemplate`
+ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationSettingsMotionSection`
+--
+ALTER TABLE `consultationSettingsMotionSection`
+ADD CONSTRAINT `consultation_settings_motion_section_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationSettingsTag`
+--
+ALTER TABLE `consultationSettingsTag`
+ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`id`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationSubscription`
+--
+ALTER TABLE `consultationSubscription`
+ADD CONSTRAINT `fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationText`
+--
+ALTER TABLE `consultationText`
+ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `emailLog`
+--
+ALTER TABLE `emailLog`
+ADD CONSTRAINT `fk_mail_log_user` FOREIGN KEY (`toUserId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `motion`
+--
+ALTER TABLE `motion`
+ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `motionComment`
+--
+ALTER TABLE `motionComment`
+ADD CONSTRAINT `fk_motion_comment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_motion_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `motionCommentSupporter`
+--
+ALTER TABLE `motionCommentSupporter`
+ADD CONSTRAINT `fk_motion_comment_supporter_comment` FOREIGN KEY (`motionCommentId`) REFERENCES `motionComment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `motionSection`
+--
+ALTER TABLE `motionSection`
+ADD CONSTRAINT `motion_section_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `motion_section_fk_section` FOREIGN KEY (`sectionId`) REFERENCES `consultationSettingsMotionSection` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `motionSubscription`
+--
+ALTER TABLE `motionSubscription`
+ADD CONSTRAINT `fk_subscription_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_subscription_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `motionSupporter`
+--
+ALTER TABLE `motionSupporter`
+ADD CONSTRAINT `fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_supporter` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `motionTag`
+--
+ALTER TABLE `motionTag`
+ADD CONSTRAINT `motion_tag_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `motion_tag_fk_tag` FOREIGN KEY (`tagId`) REFERENCES `consultationSettingsTag` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `site`
+--
+ALTER TABLE `site`
+ADD CONSTRAINT `fk_site_consultation` FOREIGN KEY (`currentConsultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `siteAdmin`
+--
+ALTER TABLE `siteAdmin`
+ADD CONSTRAINT `site_admin_fk_site` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `user`
+--
+ALTER TABLE `user`
+ADD CONSTRAINT `fk_user_namespace` FOREIGN KEY (`siteNamespaceId`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

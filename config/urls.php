@@ -8,20 +8,20 @@ use app\models\AntragsgruenAppParams;
 
 $domPlain = $params->domainPlain;
 $dom      = $params->domainSubdomain;
-$domv     = $dom . '<consultationId:[\w_-]+>/';
+$domv     = $dom . '<consultationPath:[\w_-]+>/';
 $domadmin = $domv . 'admin/';
 
 $url_rules = [
     $domadmin . ''                                                         => 'admin/index',
     $domadmin . 'consultation/'                                            => 'admin/veranstaltungen/update',
     $domadmin . 'motions'                                                  => 'admin/antraege',
-    $domadmin . 'motions/<_a:(index|update|delete|view)>'                  => 'admin/antraege/<_a>',
+    $domadmin . 'motions/<_a:(index|update|view)>'                         => 'admin/antraege/<_a>',
     $domadmin . 'amendments'                                               => 'admin/aenderungsantraege',
-    $domadmin . 'amendments/<_a:(index|update|delete|view)>'               => 'admin/aenderungsantraege/<_a>',
+    $domadmin . 'amendments/<_a:(index|update|view)>'                      => 'admin/aenderungsantraege/<_a>',
     $domadmin . 'antraegeKommentare'                                       => 'admin/antraegeKommentare',
-    $domadmin . 'antraegeKommentare/<_a:(index|update|delete|view)>'       => 'admin/antraegeKommentare/<_a>',
+    $domadmin . 'antraegeKommentare/<_a:(index|delete|view)>'              => 'admin/antraegeKommentare/<_a>',
     $domadmin . 'amendmentComments'                                        => 'admin/amendmentComments',
-    $domadmin . 'amendmentComments/<_a:(index|update|delete)>'             => 'admin/amendmentComments/<_a>',
+    $domadmin . 'amendmentComments/<_a:(index|delete)>'                    => 'admin/amendmentComments/<_a>',
     $domadmin . 'texte'                                                    => 'admin/texte',
     $domadmin . 'texte/<_a:(index|update|delete|view)>'                    => 'admin/texte/<_a>',
     $domadmin . 'kommentare_excel'                                         => 'admin/index/kommentareexcel',
@@ -39,12 +39,13 @@ $url_rules = [
     $domv . 'feedAenderungsantraege'                                       => 'consultation/feedAenderungsantraege',
     $domv . 'feedKommentare'                                               => 'consultation/feedKommentare',
     $domv . 'wartungsmodus'                                                => 'consultation/wartungsmodus',
-    $dom . 'login'                                                         => 'consultation/login',
-    $dom . 'logout'                                                        => 'consultation/logout',
-    $dom . 'anmelden_bestaetigen'                                          => 'consultation/anmeldungBestaetigen',
+    $dom . 'login'                                                         => 'user/login',
+    $dom . 'logout'                                                        => 'user/logout',
+    $dom . 'anmelden_bestaetigen'                                          => 'user/anmeldungBestaetigen',
     $dom . 'user'                                                          => 'user/index',
-    $dom . 'user/checkemail'                                               => 'user/ajaxIsEmailRegistered',
-    $domv . 'user/unsubscribe'                                             => 'user/unsubscribe',
+    $dom . 'checkemail'                                                    => 'user/ajaxIsEmailRegistered',
+    $dom . 'loginbyredirecttoken'                                          => 'user/loginbyredirecttoken',
+    $domv . 'unsubscribe'                                                  => 'user/unsubscribe',
     $domv . 'motion/neu'                                                   => 'motion/neu',
     $domv . 'motion/<motionId:\d+>?kommentar_id=<kommentar_id:\d+>'        => 'motion/anzeige',
     $domv . 'motion/<motionId:\d+>'                                        => 'motion/anzeige',

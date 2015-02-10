@@ -2,14 +2,15 @@
 
 namespace app\controllers;
 
+use app\components\AntiXSS;
 use app\components\WurzelwerkAuthClient;
-use app\models\db\Site;
 use app\models\db\User;
 use Yii;
-use yii\helpers\Html;
 
 class UserController extends Base
 {
+    public $enableCsrfValidation = false;
+
     /**
      * @return array
      */
@@ -30,6 +31,25 @@ class UserController extends Base
     {
         Yii::$app->user->login($user);
         echo "Hallo!";
+    }
+
+    /**
+     * @param int $login
+     * @param string $login_sec
+     * @param string $redirect
+     */
+    public function actionLoginbyredirecttoken($login, $login_sec, $redirect)
+    {
+        if ($login_sec == AntiXSS::createToken($login)) {
+            $user = User::findOne($login);
+            if (!$user) {
+                die("User not found");
+            }
+            Yii::$app->user->login($user);
+            $this->redirect($redirect);
+        } else {
+            die("Invalid Code");
+        }
     }
 
     /**

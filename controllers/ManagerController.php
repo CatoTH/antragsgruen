@@ -2,10 +2,12 @@
 
 namespace app\controllers;
 
+use app\components\AntiXSS;
+use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\db\User;
-use app\models\exceptions\AntragsgruenException;
 use app\models\forms\SiteCreateForm;
+use app\models\sitePresets\SitePresets;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Html;
@@ -80,8 +82,16 @@ class ManagerController extends Base
      */
     private function createSiteFromForm(SiteCreateForm $model)
     {
-        $site = Site::createFromForm($model);
-        //$consultation =
+        $site         = Site::createFromForm($model);
+        $consultation = Consultation::createFromForm($model, $site, $this->getCurrentUser());
+
+        $site->link('currentConsultation', $consultation);
+
+        $preset = SitePresets::getPreset($model->preset);
+        $preset::createMotionSections($consultation);
+
+        $site->link('admins', $this->getCurrentUser());
+
         return $site;
     }
 
@@ -104,9 +114,18 @@ class ManagerController extends Base
                 $model->setAttributes($_POST['SiteCreateForm']);
                 if ($model->validate()) {
                     $site = $this->createSiteFromForm($model);
-                    echo "SUCCESS";
-                    var_dump($site);
-                    die();
+
+                    $login_id   = $this->getCurrentUser()->id;
+                    $login_code = AntiXSS::createToken($login_id);
+
+                    return $this->render(
+                        'created',
+                        [
+                            "site"       => $site,
+                            "login_id"   => $login_id,
+                            "login_code" => $login_code,
+                        ]
+                    );
                 } else {
                     foreach ($model->getErrors() as $message) {
                         foreach ($message as $message2) {

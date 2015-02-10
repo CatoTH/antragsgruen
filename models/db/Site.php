@@ -138,15 +138,14 @@ class Site extends ActiveRecord
         return $site;
     }
 
-
     /**
-     * @param User $person
+     * @param User $user
      * @return bool
      */
-    public function isAdmin($person)
+    public function isAdmin($user)
     {
         foreach ($this->admins as $e) {
-            if ($e->id == $person->id) {
+            if ($e->id == $user->id) {
                 return true;
             }
         }

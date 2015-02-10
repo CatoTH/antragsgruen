@@ -26,7 +26,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
  */
-class Motion extends ActiveRecord
+class Motion extends IMotion
 {
     /**
      * @return string
@@ -83,5 +83,29 @@ class Motion extends ActiveRecord
     public function getSections()
     {
         return $this->hasMany(MotionSection::className(), ['motionId' => 'id']);
+    }
+
+    /**
+     * @return User[]
+     */
+    public function getInitiators()
+    {
+        // TODO: Implement getInitiators() method.
+    }
+
+    /**
+     * @return User[]
+     */
+    public function getLikes()
+    {
+        // TODO: Implement getLikes() method.
+    }
+
+    /**
+     * @return User[]
+     */
+    public function getDislikes()
+    {
+        // TODO: Implement getDislikes() method.
     }
 }

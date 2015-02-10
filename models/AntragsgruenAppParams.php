@@ -4,6 +4,7 @@ namespace app\models;
 
 class AntragsgruenAppParams
 {
+    public $randomSeed          = "";
     public $multisiteMode       = true;
     public $domainPlain         = "http://antragsgruen-v3.localhost/";
     public $domainSubdomain     = "http://<siteId:[\w_-]+>.antragsgruen-v3.localhost/";

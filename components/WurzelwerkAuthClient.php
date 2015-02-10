@@ -155,7 +155,7 @@ class WurzelwerkAuthClient extends OpenId
         $user->emailConfirmed  = 1;
         $user->auth            = $auth;
         $user->dateCreation    = new Expression("NOW()");
-        $user->status          = User::$STATUS_CONFIRMED;
+        $user->status          = User::STATUS_CONFIRMED;
         $user->authKey         = (new Security())->generateRandomKey();
         $user->siteNamespaceId = null;
         // @TODO E-Mail

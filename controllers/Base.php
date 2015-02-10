@@ -8,6 +8,7 @@ use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\db\Site;
+use app\models\db\User;
 use app\models\LayoutParams;
 use Yii;
 use yii\base\Module;
@@ -64,7 +65,7 @@ class Base extends Controller
     /**
      *
      */
-    public function testeWartungsmodus()
+    public function testMaintainanceMode()
     {
         if ($this->consultation == null) {
             return;
@@ -75,8 +76,8 @@ class Base extends Controller
             $this->redirect($this->createUrl("consultation/maintainance"));
         }
 
-        if (veranstaltungsspezifisch_erzwinge_login($this->veranstaltung) && Yii::$app->user->isGuest) {
-            $this->redirect($this->createUrl("veranstaltung/login"));
+        if ($this->site->getBehaviorClass()->isLoginForced() && Yii::$app->user->isGuest) {
+            $this->redirect($this->createUrl("user/login"));
         }
     }
 
@@ -87,25 +88,25 @@ class Base extends Controller
     protected function createSiteUrl($route)
     {
         if ($this->consultation !== null) {
-            $params["consultationId"] = $this->consultation->urlPath;
+            $params["consultationPath"] = $this->consultation->urlPath;
         }
         if ($this->getParams()->multisiteMode && $this->site != null) {
-            $params["siteId"] = $this->site->subdomain;
+            $params["subdomain"] = $this->site->subdomain;
         }
         if ($route == "consultation/index" && !is_null($this->site) &&
-            strtolower($route["consultationId"]) === strtolower($this->site->currentConsultation->urlPath)
+            strtolower($route["consultationPath"]) === strtolower($this->site->currentConsultation->urlPath)
         ) {
-            unset($route["consultationId"]);
+            unset($route["consultationPath"]);
         }
         if (in_array(
             $route,
             [
                 "veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/anmeldungBestaetigen",
-                "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "veranstaltung/login",
-                "veranstaltung/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
+                "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "user/login",
+                "user/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
             ]
         )) {
-            unset($route["consultationId"]);
+            unset($route["consultationPath"]);
         }
         return Url::toRoute($route);
     }
@@ -137,6 +138,19 @@ class Base extends Controller
             return $target_url;
         }
     }
+
+    /**
+     * @return null|User
+     */
+    public function getCurrentUser()
+    {
+        if (Yii::$app->user->isGuest) {
+            return null;
+        } else {
+            return Yii::$app->user->identity;
+        }
+    }
+
 
     /**
      * @param string $route
@@ -238,7 +252,7 @@ class Base extends Controller
         }
 
         if (is_null($this->consultation)) {
-            $this->consultation = Consultation::findOne(["url_path" => $consultationId]);
+            $this->consultation = Consultation::findOne(["urlPath" => $consultationId]);
         }
 
         $this->checkConsistency($checkMotion, $checkAmendment);

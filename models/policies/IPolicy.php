@@ -14,12 +14,12 @@ use yii\helpers\Html;
 
 abstract class IPolicy
 {
-    const POLICY_HESSEN_LMV  = "HeLMV";
-    const POLICY_BAYERN_LDK  = "ByLDK";
-    const POLICY_BDK         = "BDK";
-    const POLICY_ADMINS      = "Admins";
-    const POLICY_ALLE        = "All";
-    const POLICY_EINGELOGGTE = "LoggedIn";
+    const POLICY_HESSEN_LMV = "HeLMV";
+    const POLICY_BAYERN_LDK = "ByLDK";
+    const POLICY_BDK        = "BDK";
+    const POLICY_ADMINS     = "Admins";
+    const POLICY_ALL        = "All";
+    const POLICY_LOGGED_IN  = "LoggedIn";
 
     /**
      * @return string[]
@@ -343,7 +343,8 @@ abstract class IPolicy
         User $initiator,
         $label_name = "Name",
         $label_organisation = "Gremium, LAG..."
-    ) {
+    )
+    {
         $str      = '';
         $settings = $consultation->getSettings();
 

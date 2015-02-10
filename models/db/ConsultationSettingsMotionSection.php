@@ -20,10 +20,10 @@ use yii\db\ActiveRecord;
  */
 class ConsultationSettingsMotionSection extends ActiveRecord
 {
-    public static $TYPE_TITLE = 0;
-    public static $TYPE_TEXT_PLAIN = 1;
-    public static $TYPE_TEXT_HTML = 2;
-    public static $TYPE_IMAGE = 3;
+    const TYPE_TITLE = 0;
+    const TYPE_TEXT_PLAIN = 1;
+    const TYPE_TEXT_HTML = 2;
+    const TYPE_IMAGE = 3;
 
     /**
      * @return string
