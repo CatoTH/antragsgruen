@@ -82,24 +82,24 @@ class Base extends Controller
     }
 
     /**
-     * @param string $route
+     * @param array $route
      * @return string
      */
     protected function createSiteUrl($route)
     {
         if ($this->consultation !== null) {
-            $params["consultationPath"] = $this->consultation->urlPath;
+            $route["consultationPath"] = $this->consultation->urlPath;
         }
         if ($this->getParams()->multisiteMode && $this->site != null) {
-            $params["subdomain"] = $this->site->subdomain;
+            $route["subdomain"] = $this->site->subdomain;
         }
-        if ($route == "consultation/index" && !is_null($this->site) &&
+        if ($route[0] == "consultation/index" && !is_null($this->site) &&
             strtolower($route["consultationPath"]) === strtolower($this->site->currentConsultation->urlPath)
         ) {
             unset($route["consultationPath"]);
         }
         if (in_array(
-            $route,
+            $route[0],
             [
                 "veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/anmeldungBestaetigen",
                 "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "user/login",
@@ -112,11 +112,14 @@ class Base extends Controller
     }
 
     /**
-     * @param string $route
+     * @param string|string $route
      * @return string
      */
     public function createUrl($route)
     {
+        if (!is_array($route)) {
+            $route = array($route);
+        }
         $route_parts = explode('/', $route[0]);
         if ($route_parts[0] != "manager") {
             return $this->createSiteUrl($route);

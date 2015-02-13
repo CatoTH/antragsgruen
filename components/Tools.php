@@ -142,4 +142,38 @@ class Tools
         $obj->dateSent  = date("Y-m-d H:i:s");
         $obj->save();
     }
+
+
+    /**
+     * @static
+     * @param string $mysqldate
+     * @return string
+     */
+    public static function formatMysqlDate($mysqldate)
+    {
+        if (strlen($mysqldate) == 0) {
+            return "-";
+        }
+        if (substr($mysqldate, 0, 10) == date("Y-m-d")) {
+            return "Heute";
+        }
+        if (substr($mysqldate, 0, 10) == date("Y-m-d" - 3600 * 24)) {
+            return "Gestern";
+        }
+        $date = explode("-", substr($mysqldate, 0, 10));
+        return sprintf("%02d.%02d.%04d", $date[2], $date[1], $date[0]);
+    }
+
+    /**
+     * @static
+     * @param string $mysqlDate
+     * @return string
+     */
+    public static function formatMysqlDateTime($mysqlDate)
+    {
+        if (strlen($mysqlDate) == 0) {
+            return "-";
+        }
+        return self::formatMysqlDate($mysqlDate) . ", " . substr($mysqlDate, 11, 5) . " Uhr";
+    }
 }

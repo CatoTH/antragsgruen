@@ -40,7 +40,7 @@ CREATE TABLE `amendmentComment` (
   `amendmentId` int(11) DEFAULT NULL,
   `paragraph` smallint(6) DEFAULT NULL,
   `text` mediumtext,
-  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` tinyint(4) DEFAULT NULL,
   `replyNotification` tinyint(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -239,7 +239,7 @@ CREATE TABLE `motionComment` (
   `motionId` int(11) DEFAULT NULL,
   `paragraph` smallint(6) DEFAULT NULL,
   `text` mediumtext NOT NULL,
-  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` tinyint(4) DEFAULT NULL,
   `replyNotification` tinyint(4) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

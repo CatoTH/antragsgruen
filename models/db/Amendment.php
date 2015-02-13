@@ -2,7 +2,6 @@
 
 namespace app\models\db;
 
-use yii\db\ActiveRecord;
 use yii\db\Query;
 
 /**
@@ -155,7 +154,7 @@ class Amendment extends IMotion
         $query->innerJoin('motion', 'motion.id = amendment.motionId');
         $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
         $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-        $query->where('motion.consultationId = ' . $consultation->id);
+        $query->where('motion.consultationId = ' . IntVal($consultation->id));
         $query->orderBy("dateCreation DESC");
         $query->offset(0)->limit($limit);
 

@@ -1,7 +1,7 @@
 <?php
 namespace app\models\db;
 
-use yii\db\ActiveRecord;
+use yii\db\Query;
 
 /**
  * @package app\models\db
@@ -84,6 +84,26 @@ class Motion extends IMotion
     {
         return $this->hasMany(MotionSection::className(), ['motionId' => 'id']);
     }
+
+
+    /**
+     * @param Consultation $consultation
+     * @param int $limit
+     * @return Motion[]
+     */
+    public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
+    {
+        $invisibleStati = array_map('IntVal', static::getInvisibleStati());
+
+        $query = (new Query())->select('motion.*')->from('motion');
+        $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+        $query->where('motion.consultationId = ' . $consultation->id);
+        $query->orderBy("dateCreation DESC");
+        $query->offset(0)->limit($limit);
+
+        return $query->all();
+    }
+
 
     /**
      * @return User[]

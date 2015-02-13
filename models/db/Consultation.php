@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\models\ConsultationSettings;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
+use app\models\wording\Wording;
 use yii\db\ActiveRecord;
 
 /**
@@ -293,5 +294,14 @@ class Consultation extends ActiveRecord
         }
 
         return $motionsSorted;
+    }
+
+    /**
+     * @return Wording
+     */
+    public function getWording()
+    {
+        // @TODO
+        return new Wording();
     }
 }

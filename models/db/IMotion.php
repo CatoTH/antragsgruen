@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 abstract class IMotion extends ActiveRecord
 {
     const STATUS_DELETED              = -2;
-    const STATUS_WITHDRAWS            = -1;
+    const STATUS_WITHDRAWN            = -1;
     const STATUS_UNCONFIRMED          = 0;
     const STATUS_DRAFT                = 1;
     const STATUS_SUBMITTED_UNSCREENED = 2;

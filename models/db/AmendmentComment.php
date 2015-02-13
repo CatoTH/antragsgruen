@@ -11,7 +11,7 @@ use yii\db\ActiveRecord;
  * @property int $userId
  * @property int $amendmentId
  * @property string $text
- * @property string $dateCreated
+ * @property string $dateCreation
  * @property int $status
  * @property int $replyNotification
  *

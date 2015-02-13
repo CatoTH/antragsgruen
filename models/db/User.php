@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use yii\db\ActiveRecord;
+use yii\db\Query;
 use yii\web\IdentityInterface;
 
 /**
@@ -218,5 +219,46 @@ class User extends ActiveRecord implements IdentityInterface
     public static function wurzelwerkId2Auth($username)
     {
         return 'openid:https://service.gruene.de/openid/' . $username;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return MotionSupporter[]
+     */
+    public function getMySupportedMotionsByConsultation(Consultation $consultation)
+    {
+        $query = (new Query())->select('motionSupporter.*')->from('motionSupporter');
+        $query->innerJoin(
+            'motion',
+            'motionSupporter.motionId = motion.id AND motionSupporter.role = ' . IntVal(MotionSupporter::ROLE_INITIATOR)
+        );
+        $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->where('motion.consultationId = ' . IntVal($consultation->id));
+        $query->where('motionSupporter.userId = ' . IntVal($this->id));
+        $query->orderBy("motion.dateCreation DESC");
+
+        return $query->all();
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return AmendmentSupporter[]
+     */
+    public function getMySupportedAmendmentsByConsultation(Consultation $consultation)
+    {
+        $query = (new Query())->select('amendmentSupporter.*')->from('amendmentSupporter');
+        $query->innerJoin(
+            'amendment',
+            'amendmentSupporter.amendmentId = amendment.id AND ' .
+            'amendmentSupporter.role = ' . IntVal(AmendmentSupporter::ROLE_INITIATOR)
+        );
+        $query->innerJoin('motion', 'motion.id = amendment.motionId');
+        $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->where('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->where('motion.consultationId = ' . IntVal($consultation->id));
+        $query->where('amendmentSupporter.userId = ' . IntVal($this->id));
+        $query->orderBy("amendment.dateCreation DESC");
+
+        return $query->all();
     }
 }
