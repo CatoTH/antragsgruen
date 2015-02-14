@@ -589,7 +589,6 @@ class AntragsgruenController extends CController
 			} else {
 				$model_person                 = new Person();
 				$model_person->attributes     = $submit_data;
-				$model_person->admin          = 0;
 				$model_person->angelegt_datum = new CDbExpression('NOW()');
 				$model_person->status         = $submit_status;
 
@@ -603,7 +602,6 @@ class AntragsgruenController extends CController
 		} elseif ($andereAntragstellerInErlaubt && isset($_REQUEST["andere_antragstellerIn"])) {
 			$model_person                 = new Person();
 			$model_person->attributes     = $submit_data;
-			$model_person->admin          = 0;
 			$model_person->angelegt_datum = new CDbExpression('NOW()');
 			$model_person->status         = $submit_status;
 
