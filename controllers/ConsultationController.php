@@ -38,23 +38,77 @@ class ConsultationController extends Base
     }
 
 
+    public function actionSearch()
+    {
+        // @TODO
+    }
+
+
+    public function actionFeedmotions()
+    {
+        // @TODO
+    }
+
+    public function actionFeedamendments()
+    {
+        // @TODO
+    }
+
+    public function actionFeedcomments()
+    {
+        // @TODO
+    }
+
+
+    public function actionFeedall()
+    {
+        // @TODO
+    }
+
+    public function actionPdfs()
+    {
+        // @TODO
+    }
+
+    public function actionAmendmentpdfs()
+    {
+        // @TODO
+    }
+
+
+    private function consultationSidebar(Consultation $consultation)
+    {
+        $newestAmendments     = Amendment::getNewestByConsultation($consultation, 5);
+        $newestMotions        = Motion::getNewestByConsultation($consultation, 3);
+        $newestMotionComments = MotionComment::getNewestByConsultation($consultation, 3);
+
+        $this->renderPartial(
+            'sidebar',
+            [
+                'newestMotions'        => $newestMotions,
+                'newestAmendments'     => $newestAmendments,
+                'newestMotionComments' => $newestMotionComments,
+            ]
+        );
+    }
+
+
     /**
      * @param string $subdomain
      * @param string $consultationPath
+     * @return string
      */
     public function actionIndex($subdomain = "", $consultationPath = "")
     {
         $this->layoutParams->twocols = true;
+        $this->layout                = 'column2';
 
         $this->loadConsultation($subdomain, $consultationPath);
         $this->testMaintainanceMode();
+        $this->consultationSidebar($this->consultation);
 
         $consultation  = $this->actionConsultationLoadData();
         $motionsSorted = $consultation->getSortedMotions();
-
-        $newestAmendments     = Amendment::getNewestByConsultation($this->consultation, 5);
-        $newestMotions        = Motion::getNewestByConsultation($this->consultation, 3);
-        $newestMotionComments = MotionComment::getNewestByConsultation($this->consultation, 3);
 
         $myself = $this->getCurrentUser();
         if ($myself) {
@@ -71,15 +125,12 @@ class ConsultationController extends Base
         return $this->render(
             'index',
             array(
-                'consultation'         => $consultation,
-                'introText'            => $introText,
-                'motions'              => $motionsSorted,
-                'myself'               => $myself,
-                'newestMotions'        => $newestMotions,
-                'newestAmendments'     => $newestAmendments,
-                'newestMotionComments' => $newestMotionComments,
-                'myMotions'            => $myMotions,
-                'myAmendments'         => $myAmendments,
+                'consultation' => $consultation,
+                'introText'    => $introText,
+                'motions'      => $motionsSorted,
+                'myself'       => $myself,
+                'myMotions'    => $myMotions,
+                'myAmendments' => $myAmendments,
             )
         );
     }

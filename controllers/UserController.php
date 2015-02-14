@@ -78,4 +78,38 @@ class UserController extends Base
         $url = $client->buildAuthUrl();
         return Yii::$app->getResponse()->redirect($url);
     }
+
+
+    /**
+     * @param string $subdomain
+     * @param string $consultationPath
+     * @return string
+     */
+    public function actionLogin($subdomain = '', $consultationPath = '', $backUrl = '')
+    {
+        $this->layoutParams->twocols = true;
+        $this->layout                = 'column2';
+
+        $this->loadConsultation($subdomain, $consultationPath);
+
+        $err_str = "";
+
+        
+
+        return $this->render(
+            'login',
+            [
+                //"model"   => $model,
+                "msg_err" => $err_str,
+            ]
+        );
+    }
+
+    /**
+     *
+     */
+    public function actionLogout()
+    {
+        // @TODO
+    }
 }

@@ -2,7 +2,6 @@
 
 @import "common";
 @import "../fonts/OpenSans/open-sans";
-
 @import "base_layout";
 @import "icons";
 
@@ -409,7 +408,6 @@
   margin-bottom: 20px;
 }
 
-
 fieldset.antragstellerIn {
   label.radio {
     display: inline-block;
@@ -421,6 +419,7 @@ fieldset.antragstellerIn {
     text-align: center;
   }
 }
+
 .policy_antragstellerIn_orga_5, .policy_antragstellerIn_orga_19_fulltext {
   #UnterstuetzerInnen {
     input[type=text] {
@@ -429,14 +428,11 @@ fieldset.antragstellerIn {
   }
 }
 
-
 #antrag_stellen_form {
   .form .radio {
     min-width: 150px;
   }
 }
-
-
 
 #veranstaltung-form label, #person-form label, #antrag-kommentar-form label, #aenderungsantrag-kommentar-form label, #texte-form label {
   display: inline-block;
@@ -633,7 +629,6 @@ h3 label {
   }
 }
 
-
 ul.funktionen {
   @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
   padding: 20px 0 21px 41px;
@@ -710,7 +705,6 @@ ul.funktionen {
 
 }
 
-
 .bdk_antrags_liste {
   padding: 25px;
   font-family: "Open Sans", verdana, sans-serif;
@@ -785,6 +779,7 @@ ul.funktionen {
     border: solid 1px gray;
   }
 }
+
 .unterstuetzerInnenwidget .sort_handle {
   cursor: move;
 }
@@ -793,7 +788,6 @@ ul.funktionen {
   text-align: left;
   padding-right: 10px;
 }
-
 
 del {
   color: #880000;
@@ -816,7 +810,6 @@ ins {
 .unterstuetzerIn label input {
   display: inline-block;
 }
-
 
 #aenderungsantrag-form textarea, #texte-form textarea {
   width: 400px;
@@ -846,7 +839,6 @@ ins {
   width: 200px;
 }
 
-
 .js_protection_hint {
   width: 90%;
   background-color: #f08080;
@@ -855,8 +847,16 @@ ins {
   padding: 5px;
 }
 
-
 #ae_status_setter .ae {
   display: inline-block;
   width: 40px;
+}
+
+#loginWurzelwerkHint {
+  border-left: solid 1px #808080;
+  padding-left: 10px;
+  margin-left: 20px;
+  margin-top: 10px;
+  font-size: 0.8em;
+  overflow: auto;
 }

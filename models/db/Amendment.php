@@ -93,10 +93,13 @@ class Amendment extends IMotion
         */
     }
 
-    private static function sortVisibleByLineNumbersSort($ae1, $ae2)
+    /**
+     * @param Amendment $ae1
+     * @param Amendment $ae2
+     * @return int
+     */
+    public static function sortVisibleByLineNumbersSort($ae1, $ae2)
     {
-        /** @var Amendment $ae1 */
-        /** @var Amendment $ae2 */
         $first1 = $ae1->getFirstDiffLine();
         $first2 = $ae2->getFirstDiffLine();
 

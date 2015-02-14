@@ -13,10 +13,7 @@ use yii\helpers\Url;
  * @var \app\models\db\Consultation $consultation
  * @var string $introText
  * @var Motion[] $motions
- * @var Motion[] $newestMotions
  * @var \app\models\db\User|null $myself
- * @var Amendment[] $newestAmendments
- * @var \app\models\db\MotionComment[] $newestMotionComments
  * @var \app\models\db\MotionSupporter[] $myMotions
  * @var \app\models\db\AmendmentSupporter[] $myAmendments
  */
@@ -24,12 +21,11 @@ use yii\helpers\Url;
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 $wording    = $consultation->getWording();
+$layout     = $controller->layoutParams;
 
-$this->title                                  = $consultation->title . ' (Antragsgrün)';
-$controller->layoutParams->breadcrumbs        = [
-    Html::encode($consultation->titleShort),
-];
-$controller->layoutParams->breadcrumbsTopname = 'Breadcrumb'; //$sprache->get("breadcrumb_top");
+$this->title                = $consultation->title . ' (Antragsgrün)';
+$layout->breadcrumbsTopname = ($consultation->titleShort ? $consultation->titleShort : $consultation->title);
+$layout->breadcrumbs        = array();
 
 
 //include(__DIR__ . "/sidebar.php");
@@ -112,7 +108,7 @@ if ($myself) {
             $amendmentUrl = Url::toRoute(
                 [
                     'amendment/show',
-                    'motionId' => $amendment->motionId,
+                    'motionId'    => $amendment->motionId,
                     'amendmentId' => $amendment->id
                 ]
             );

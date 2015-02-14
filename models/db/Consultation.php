@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\models\ConsultationSettings;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
+use app\models\policies\IPolicy;
 use app\models\wording\Wording;
 use yii\db\ActiveRecord;
 
@@ -188,23 +189,23 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param string $k1
-     * @param string $k2
+     * @param string $prefix1
+     * @param string $prefix2
      * @return int
      */
-    private function getSortedMotionsSort($k1, $k2)
+    public function getSortedMotionsSort($prefix1, $prefix2)
     {
-        if ($k1 == "" && $k2 == "") {
+        if ($prefix1 == "" && $prefix2 == "") {
             return 0;
         }
-        if ($k1 == "") {
+        if ($prefix1 == "") {
             return -1;
         }
-        if ($k2 == "") {
+        if ($prefix2 == "") {
             return 1;
         }
 
-        $cmp = function ($str1, $str2, $num1, $num2) {
+        $cmp     = function ($str1, $str2, $num1, $num2) {
             if ($str1 == $str2) {
                 if ($num1 < $num2) {
                     return -1;
@@ -223,33 +224,33 @@ class Consultation extends ActiveRecord
                 return 0;
             }
         };
-        $k1  = preg_replace("/neu$/siu", "neu1", $k1);
-        $k2  = preg_replace("/neu$/siu", "neu1", $k2);
+        $prefix1 = preg_replace("/neu$/siu", "neu1", $prefix1);
+        $prefix2 = preg_replace("/neu$/siu", "neu1", $prefix2);
 
         $pat1 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]*)/siu";
         $pat2 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]+)(?<str2>[^0-9]+)(?<num2>[0-9]+)$/siu";
 
-        if (preg_match($pat2, $k1, $matches1) && preg_match($pat2, $k2, $matches2)) {
+        if (preg_match($pat2, $prefix1, $matches1) && preg_match($pat2, $prefix2, $matches2)) {
             if ($matches1["str1"] == $matches2["str1"] && $matches1["num1"] == $matches2["num1"]) {
                 return $cmp($matches1["str2"], $matches2["str2"], $matches1["num2"], $matches2["num2"]);
             } else {
                 return $cmp($matches1["str1"], $matches2["str1"], $matches1["num1"], $matches2["num1"]);
             }
-        } elseif (preg_match($pat2, $k1, $matches1) && preg_match($pat1, $k2, $matches2)) {
+        } elseif (preg_match($pat2, $prefix1, $matches1) && preg_match($pat1, $prefix2, $matches2)) {
             if ($matches1["str1"] == $matches2["str1"] && $matches1["num1"] == $matches2["num1"]) {
                 return 1;
             } else {
                 return $cmp($matches1["str1"], $matches2["str1"], $matches1["num1"], $matches2["num1"]);
             }
-        } elseif (preg_match($pat1, $k1, $matches1) && preg_match($pat2, $k2, $matches2)) {
+        } elseif (preg_match($pat1, $prefix1, $matches1) && preg_match($pat2, $prefix2, $matches2)) {
             if ($matches1["str1"] == $matches2["str1"] && $matches1["num1"] == $matches2["num1"]) {
                 return -1;
             } else {
                 return $cmp($matches1["str1"], $matches2["str1"], $matches1["num1"], $matches2["num1"]);
             }
         } else {
-            preg_match($pat1, $k1, $matches1);
-            preg_match($pat1, $k2, $matches2);
+            preg_match($pat1, $prefix1, $matches1);
+            preg_match($pat1, $prefix2, $matches2);
             $str1 = (isset($matches1["str1"]) ? $matches1["str1"] : "");
             $str2 = (isset($matches2["str1"]) ? $matches2["str1"] : "");
             $num1 = (isset($matches1["num1"]) ? $matches1["num1"] : "");
@@ -303,5 +304,21 @@ class Consultation extends ActiveRecord
     {
         // @TODO
         return new Wording();
+    }
+
+    /**
+     * @return IPolicy
+     */
+    public function getMotionPolicy()
+    {
+        return IPolicy::getInstanceByID($this->policyMotions, $this);
+    }
+
+    /**
+     * @return IPolicy
+     */
+    public function getAmendmentPolicy()
+    {
+        return IPolicy::getInstanceByID($this->policyAmendments, $this);
     }
 }

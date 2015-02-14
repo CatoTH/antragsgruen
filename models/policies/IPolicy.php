@@ -343,8 +343,7 @@ abstract class IPolicy
         User $initiator,
         $label_name = "Name",
         $label_organisation = "Gremium, LAG..."
-    )
-    {
+    ) {
         $str      = '';
         $settings = $consultation->getSettings();
 

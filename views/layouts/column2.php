@@ -44,7 +44,7 @@ $this->widget('bootstrap.widgets.TbMenu', array(
             <?php echo $content; ?>
         </div>
         <div class="col-md-3" id="sidebar">
-            <?= $params->presidebarHtml ?>
+            <?= $params->preSidebarHtml?>
             <div class="well visible-desktop">
                 <?= implode("", $params->menusHtml) ?>
             </div>

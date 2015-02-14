@@ -7,11 +7,11 @@ class LayoutParams
 {
     public $twocols            = false;
     public $menu               = array();
-    public $breadcrumbs        = array();
+    public $breadcrumbs        = null;
     public $multimenu          = array();
-    public $presidebarHtml     = "";
+    public $preSidebarHtml     = '';
     public $menusHtml          = array();
-    public $breadcrumbsTopname = null;
+    public $breadcrumbsTopname = 'Start';
     public $robotsNoindex      = false;
     public $extraCss           = array();
     public $extraJs            = array();

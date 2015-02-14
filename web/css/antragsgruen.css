@@ -5789,7 +5789,8 @@ a {
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     margin: -1px; }
   .well .content {
-    padding: 15px 20px 30px; }
+    padding: 15px 20px 30px;
+    overflow: auto; }
 
 .navbar {
   margin-bottom: 0; }
@@ -6679,5 +6680,13 @@ ins {
 #ae_status_setter .ae {
   display: inline-block;
   width: 40px; }
+
+#loginWurzelwerkHint {
+  border-left: solid 1px #808080;
+  padding-left: 10px;
+  margin-left: 20px;
+  margin-top: 10px;
+  font-size: 0.8em;
+  overflow: auto; }
 
 /*# sourceMappingURL=antragsgruen.css.map */

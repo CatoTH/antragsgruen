@@ -100,36 +100,30 @@ if ($controller->consultation) {
         <div class="navbar-inner">
             <div class="container">';
 
-    Html::beginForm($controller->createUrl('consultation/search'), 'get', ['class' => 'form-search visible-phone']);
+    $searchUrl = $controller->createUrl('consultation/search');
+    echo Html::beginForm($searchUrl, 'get', ['class' => 'form-search visible-xs-inline-block']);
     echo '<input type="hidden" name="id" value="">';
     echo '<div class="input-append">' .
         '<input class="search-query" type="search" name="suchbegriff" value="" autofocus placeholder="Suche">' .
         '<button type="submit" class="btn"><i style="height: 18px;" class="icon-search"></i></button></div>';
-    Html::endForm();
+    echo Html::endForm();
 
-    echo '<ul class="nav">
-        <li class="active"><a href="' . Html::encode($controller->createUrl("consultation/index")) . '">Start</a></li>
-        <li><a href="' . Html::encode($controller->createUrl("consultation/help")) . '">Hilfe</a></li>
-        ';
+    echo '<ul class="nav navbar-nav">';
+    echo '<li class="active">' . Html::a('Start', $controller->createUrl("consultation/index")) . '</li>';
+    echo '<li>' . Html::a('Hilfe', $controller->createUrl("consultation/help")) . '</li>';
 
-    /* @TODO
-    if (Yii::app()->user->isGuest && !$minimalistic) { ?>
-     * <li><a href="<?= Html::encode($controller->createUrl("veranstaltung/login",
-     * array("back" => yii::app()->getRequest()->requestUri))) ?>">Login</a></li>
-     * <?php
-     * }
-     * if (!Yii::app()->user->isGuest) {
-     * ?>
-     * <li><a href="<?= Html::encode($controller->createUrl("veranstaltung/logout",
-     * array("back" => yii::app()->getRequest()->requestUri))) ?>">Logout</a></li>
-     * <?php
-     * }
-     * if ($controller->veranstaltung != null && $controller->veranstaltung->isAdminCurUser()) {
-     * ?>
-     * <li><a href="<?= Html::encode($controller->createUrl("admin/index")) ?>">Admin</a></li>
-     * <?php }
-     */
-
+    if (!$controller->getCurrentUser() && !$minimalistic) {
+        $loginUrl = $controller->createUrl(['user/login', 'back' => \yii::$app->request->url]);
+        echo '<li>' . Html::a('Login', $loginUrl) . '</li>';
+    }
+    if ($controller->getCurrentUser()) {
+        $logoutUrl = $controller->createUrl(['user/logout', 'back' => \yii::$app->request->url]);
+        echo '<li>' . Html::a('Logout', $logoutUrl) . '</li>';
+    }
+    if ($controller->consultation && $controller->consultation->isAdminCurUser()) {
+        $adminUrl = $controller->createUrl("admin/index");
+        echo '<li><a href="' . Html::encode($adminUrl) . '">Admin</a></li>';
+    }
     echo '</ul>
             </div>
         </div>
@@ -138,29 +132,8 @@ if ($controller->consultation) {
     echo '</div>';
 }
 
-
-/*
-if (isset($controller->breadcrumbs)): ?>
-    <?php
-    $breadcrumbs = array();
-    foreach ($controller->breadcrumbs as $key => $val) {
-        if ($key !== "" && !($key === 0 && $val === "")) $breadcrumbs[$key] = $val;
-    }
-    $top_name = (isset($controller->breadcrumbs_topname) && $controller->breadcrumbs_topname !== null ?
-        $controller->breadcrumbs_topname : "Start");
-    $controller->widget('bootstrap.widgets.TbBreadcrumbs', array(
-        'homeLink' => Html::link($top_name, "/"),
-        'links'    => $breadcrumbs,
-    ));
-    if (count($breadcrumbs) == 0) echo "<br><br>";
-    ?>
-<?php endif ?>
-
-<?php
-*/
-
-$home_url = ($controller->consultation ? Url::toRoute("consultation/index") : Url::toRoute("manager/index"));
-echo '<div class="row logo"><a href="' . Html::encode($home_url) . '" title="Startseite">';
+$homeUrl = ($controller->consultation ? Url::toRoute("consultation/index") : Url::toRoute("manager/index"));
+echo '<div class="row logo"><a href="' . Html::encode($homeUrl) . '" title="Startseite">';
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != "") {
     $path     = parse_url($controller->consultation->getSettings()->logoUrl);
     $filename = basename($path["path"]);
@@ -170,12 +143,22 @@ if ($controller->consultation && $controller->consultation->getSettings()->logoU
         array(" ", "ü", "ä", "ö", "Ü" . "Ö", "Ä"),
         $filename
     );
-    $logo_url = $controller->consultation->getSettings()->logoUrl;
-    echo '<img src="' . Html::encode($logo_url) . '" alt="' . Html::encode($filename) . '">';
+    $logoUrl = $controller->consultation->getSettings()->logoUrl;
+    echo '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
 } else {
     echo '<span class="logo_img"></span>';
 }
 echo '</a></div>';
+
+
+if (is_array($params->breadcrumbs)) {
+    echo '<ol class="breadcrumb">';
+    echo '<li>' . Html::a($params->breadcrumbsTopname, '/') . '</li>';
+    foreach ($params->breadcrumbs as $link => $name) {
+        echo '<li>' . Html::a($name, $link) . '</li>';
+    }
+    echo '</ol>';
+}
 
 
 /** @var string $content */
