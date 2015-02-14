@@ -136,7 +136,7 @@ class Base extends Controller
     {
         $target_url = Url::toRoute($route);
         if (Yii::$app->user->isGuest) {
-            return Url::toRoute(['user/login', 'login_goto' => $target_url]);
+            return Url::toRoute(['user/login', 'backUrl' => $target_url]);
         } else {
             return $target_url;
         }
@@ -163,7 +163,7 @@ class Base extends Controller
     {
         $target_url = Url::toRoute($route);
         if (Yii::$app->user->isGuest) {
-            return Url::toRoute(['user/loginwurzelwerk', 'login_goto' => $target_url]);
+            return Url::toRoute(['user/loginwurzelwerk', 'backUrl' => $target_url]);
         } else {
             return $target_url;
         }

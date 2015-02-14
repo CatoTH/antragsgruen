@@ -100,7 +100,6 @@ class ConsultationController extends Base
      */
     public function actionIndex($subdomain = "", $consultationPath = "")
     {
-        $this->layoutParams->twocols = true;
         $this->layout                = 'column2';
 
         $this->loadConsultation($subdomain, $consultationPath);

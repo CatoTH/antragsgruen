@@ -5,6 +5,8 @@ namespace app\controllers;
 use app\components\AntiXSS;
 use app\components\WurzelwerkAuthClient;
 use app\models\db\User;
+use app\models\exceptions\Login;
+use app\models\forms\LoginUsernamePasswordForm;
 use Yii;
 
 class UserController extends Base
@@ -30,7 +32,6 @@ class UserController extends Base
     protected function loginUser(User $user)
     {
         Yii::$app->user->login($user);
-        echo "Hallo!";
     }
 
     /**
@@ -53,10 +54,10 @@ class UserController extends Base
     }
 
     /**
-     * @param string $login_goto
+     * @param string $backUrl
      * @return int|string
      */
-    public function actionLoginwurzelwerk($login_goto = "")
+    public function actionLoginwurzelwerk($backUrl = "")
     {
         $client = new WurzelwerkAuthClient();
         if (isset($_REQUEST['openid_claimed_id'])) {
@@ -68,7 +69,7 @@ class UserController extends Base
         if (isset($_REQUEST["openid_mode"])) {
             if ($client->validate()) {
                 $this->loginUser($client->getOrCreateUser());
-                $this->redirect($login_goto);
+                $this->redirect($backUrl);
             } else {
                 echo "Error";
             }
@@ -87,14 +88,23 @@ class UserController extends Base
      */
     public function actionLogin($subdomain = '', $consultationPath = '', $backUrl = '')
     {
-        $this->layoutParams->twocols = true;
-        $this->layout                = 'column2';
-
+        $this->layout = 'column2';
         $this->loadConsultation($subdomain, $consultationPath);
 
         $err_str = "";
 
-        
+        if (isset($_POST["loginusernamepassword"])) {
+            $form = new LoginUsernamePasswordForm();
+            $form->setAttributes($_POST);
+            try {
+                $user = $form->getOrCreateUser($this->site);
+                $this->loginUser($user);
+                $this->redirect($backUrl, 307);
+            } catch (Login $e) {
+                $err_str = $e->getMessage();
+            }
+        }
+
 
         return $this->render(
             'login',
@@ -103,6 +113,14 @@ class UserController extends Base
                 "msg_err" => $err_str,
             ]
         );
+    }
+
+    /**
+     *
+     */
+    public function actionConfirmregistration()
+    {
+        // @TODO
     }
 
     /**

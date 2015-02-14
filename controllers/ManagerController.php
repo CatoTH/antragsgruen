@@ -24,7 +24,7 @@ class ManagerController extends Base
         $html = "<ul class='nav nav-list einsatzorte-list'>";
         $html .= "<li class='nav-header'>Aktuelle Einsatzorte</li>";
         foreach ($sites as $site) {
-            $url = $this->createUrl(['consultation/index', "siteId" => $site->subdomain]);
+            $url = $this->createUrl(['consultation/index', "subdomain" => $site->subdomain]);
             $html .= "<li>" . Html::a($site->title, $url) . "</li>\n";
         }
         $html .= '</ul>';

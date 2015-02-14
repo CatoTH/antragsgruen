@@ -19,12 +19,12 @@ use yii\db\ActiveRecord;
  */
 class EMailLog extends ActiveRecord
 {
-    const TYP_SONSTIGES                     = 0;
-    const TYP_REGISTRIERUNG                 = 1;
-    const TYP_ANTRAG_BENACHRICHTIGUNG_USER  = 2;
-    const TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN = 3;
-    const TYP_NAMESPACED_ACCOUNT_ANGELEGT   = 4;
-    const TYP_DEBUG                         = 5;
+    const TYPE_OTHER                      = 0;
+    const TYPE_REGISTRATION               = 1;
+    const TYPE_MOTION_NOTIFICATION_USER   = 2;
+    const TYPE_MOTION_NOTIFICATION_ADMIN  = 3;
+    const TYPE_NAMESPACED_ACCOUNT_CREATED = 4;
+    const TYPE_DEBUG                      = 5;
 
     /**
      * @return string[]

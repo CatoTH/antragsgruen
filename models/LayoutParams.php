@@ -5,7 +5,6 @@ namespace app\models;
 
 class LayoutParams
 {
-    public $twocols            = false;
     public $menu               = array();
     public $breadcrumbs        = null;
     public $multimenu          = array();

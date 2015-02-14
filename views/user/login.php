@@ -29,7 +29,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     echo '<h2>Login per BenutzerInnenname / Passwort</h2>
     <div class="content">';
 
-    echo Html::beginForm('', 'post', ['class' => 'col-sm-5']);
+    echo Html::beginForm('', 'post', ['class' => 'col-sm-5', 'id' => 'usernamePasswordForm']);
 
     $pre_username = (isset($_REQUEST["username"]) ? $_REQUEST["username"] : '');
     $pre_name     = (isset($_REQUEST["name"]) ? $_REQUEST["name"] : '');
@@ -44,9 +44,9 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
         //Organisatoren dieses Parteitags / dieser Programmdiskussion.');
         echo "</div>";
     } else {
-        $pre_checked = (isset($_REQUEST["neuer_account"]) ? 'checked' : '');
+        $pre_checked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
         echo '<div class="checkbox"><label>
-            <input type="checkbox" name="neuer_account" id="neuer_account_check" ' . $pre_checked . '>
+            <input type="checkbox" name="createAccount" ' . $pre_checked . '>
             Neuen Zugang anlegen
             </label></div>';
     }
@@ -63,32 +63,52 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
         </div>
 
         <div class="form-group"  id="pwd_confirm" style="display: none;">
-            <label for="password_confirm">Passwort (Bestätigung):</label>>
-            <input type="password" name="password_confirm" id="password_confirm" class="form-control">
+            <label for="passwordConfirm">Passwort (Bestätigung):</label>
+            <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control">
         </div>
 
         <div class="form-group" id="reg_name" style="display: none;">
             <label for="name">Dein Name:</label>
-            <input type="text" value="' . Html::encode($pre_name) . '" name="name" id="name">
+            <input type="text" value="' . Html::encode($pre_name) . '" name="name" id="name" class="form-control">
         </div>
 
         <script>
             $(function () {
-                $("#neuer_account_check").change(function () {
+                var $form = $("#usernamePasswordForm");
+                $form.find("input[name=createAccount]").change(function () {
                     if ($(this).prop("checked")) {
                         $("#pwd_confirm").show();
                         $("#reg_name").show().find("input").attr("required", "required");
                         $("#password_input").attr("placeholder", "Min. 6 Zeichen");
+                        $("#create_str").show();
+                        $("#login_str").hide();
                     } else {
                         $("#pwd_confirm").hide();
                         $("#reg_name").hide().find("input").removeAttr("required");
                         $("#password_input").attr("placeholder", "");
+                        $("#create_str").hide();
+                        $("#login_str").show();
                     }
                 }).trigger("change");
+                $form.submit(function(ev) {
+                    var pwd = $("#password_input").val();
+                    if (pwd.length < 4) {
+                        ev.preventDefault();
+                        alert("Das Passwort muss mindestens 4 Buchstaben haben.");
+                    }
+                    if ($form.find("input[name=createAccount]").prop("checked")) {
+                        if (pwd != $("#passwordConfirm").val()) {
+                            ev.preventDefault();
+                            alert("Die beiden Passwörter stimmen nicht überein.");
+                        }
+                    }
+                });
             })
         </script>
-        <button type="submit" class="btn btn-primary">
-            <span class="glyphicon glyphicon-log-in"></span> Einloggen
+        <button type="submit" class="btn btn-primary" name="loginusernamepassword">
+
+            <span id="login_str"><span class="glyphicon glyphicon-log-in"></span> Einloggen</span>
+            <span id="create_str"><span class="glyphicon glyphicon-plus"></span> Anlegen</span>
         </button>
         ';
     echo Html::endForm();

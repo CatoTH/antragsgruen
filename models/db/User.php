@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\components\PasswordFunctions;
+use app\models\AntragsgruenAppParams;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\web\IdentityInterface;
@@ -199,6 +201,55 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
+     * @return string
+     */
+    public static function createPassword()
+    {
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        $max   = strlen($chars) - 1;
+        $pass  = "";
+        for ($i = 0; $i < 8; $i++) {
+            $pass .= $chars[rand(0, $max)];
+        }
+        return $pass;
+    }
+
+    /**
+     * @param string $date
+     * @return string
+     */
+    public function createEmailConfirmationCode($date = "")
+    {
+        /** @var AntragsgruenAppParams $params */
+        $params = \Yii::$app->params;
+
+        if ($date == "") {
+            $date = date("Ymd");
+        }
+        $code = $this->id . "-" . substr(md5($this->id . $date . $params->randomSeed), 0, 8);
+        return $code;
+    }
+
+    /**
+     * @param string $code
+     * @return bool
+     */
+    public function checkEmailConfirmationCode($code)
+    {
+        if ($code == $this->createEmailConfirmationCode()) {
+            return true;
+        }
+        if ($code == $this->createEmailConfirmationCode(date("Ymd", time() - 24 * 3600))) {
+            return true;
+        }
+        if ($code == $this->createEmailConfirmationCode(date("Ymd", time() - 2 * 24 * 3600))) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * @return bool
      */
     public function isWurzelwerkUser()
@@ -219,6 +270,15 @@ class User extends ActiveRecord implements IdentityInterface
     public static function wurzelwerkId2Auth($username)
     {
         return 'openid:https://service.gruene.de/openid/' . $username;
+    }
+
+    /**
+     * @param string $password
+     * @return bool
+     */
+    public function validatePassword($password)
+    {
+        return PasswordFunctions::validatePassword($password, $this->pwdEnc);
     }
 
     /**
