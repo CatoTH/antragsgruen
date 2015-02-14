@@ -87,7 +87,9 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
                 }).trigger("change");
             })
         </script>
-        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-log-in"></span> Einloggen</button>
+        <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-log-in"></span> Einloggen
+        </button>
         ';
     echo Html::endForm();
 

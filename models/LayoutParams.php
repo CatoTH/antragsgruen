@@ -10,6 +10,7 @@ class LayoutParams
     public $breadcrumbs        = null;
     public $multimenu          = array();
     public $preSidebarHtml     = '';
+    public $postSidebarHtml    = '';
     public $menusHtml          = array();
     public $breadcrumbsTopname = 'Start';
     public $robotsNoindex      = false;

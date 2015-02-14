@@ -141,35 +141,34 @@ $html .= "</ul></div>";
 $layout->menusHtml[] = $html;
 
 
-$html = "";
-
 if ($consultation->getSettings()->showFeeds) {
-    $feeds = 0;
+    $feeds     = 0;
+    $feedsHtml = "";
     if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
-        $html .= "<li class='feed'>";
-        $html .= Html::a($wording->get("Anträge"), $controller->createUrl("consultation/feedmotions")) . "</li>";
+        $feedsHtml .= "<li class='feed'>";
+        $feedsHtml .= Html::a($wording->get("Anträge"), $controller->createUrl("consultation/feedmotions")) . "</li>";
         $feeds++;
     }
     if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
-        $html .= "<li class='feed'>";
-        $html .= Html::a($wording->get("Änderungsanträge"), $controller->createUrl("consultation/feedamendments"));
-        $html .= "</li>";
+        $feedsHtml .= "<li class='feed'>";
+        $feedsHtml .= Html::a($wording->get("Änderungsanträge"), $controller->createUrl("consultation/feedamendments"));
+        $feedsHtml .= "</li>";
         $feeds++;
     }
     if (!in_array($consultation->policyComments, array(0, 4))) {
-        $html .= "<li class='feed'>";
-        $html .= Html::a($wording->get("Kommentare"), $controller->createUrl("consultation/feedcomments")) . "</li>";
+        $feedUrl = $controller->createUrl("consultation/feedcomments");
+        $feedsHtml .= "<li class='feed'>" . Html::a($wording->get("Kommentare"), $feedUrl) . "</li>";
         $feeds++;
     }
     if ($feeds > 1) {
         $feedAllUrl = $controller->createUrl("consultation/feedall");
-        $html .= "<li class='feed'>" . Html::a($wording->get("Alles"), $feedAllUrl) . "</li>";
+        $feedsHtml .= "<li class='feed'>" . Html::a($wording->get("Alles"), $feedAllUrl) . "</li>";
     }
 
     $feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
     $html      = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>";
     $html .= $feeds_str;
-    $html .= "</li>" . $html . "</ul></div>";
+    $html .= "</li>" . $feedsHtml . "</ul></div>";
 
     $layout->menusHtml[] = $html;
 }
@@ -188,7 +187,7 @@ if ($consultation->getSettings()->hasPDF) {
 }
 
 if ($consultation->site->getBehaviorClass()->showAntragsgruenInSidebar()) {
-    $html = "</div><div class='antragsgruen_werbung well'><div class='nav-list'>
+    $layout->postSidebarHtml = "<div class='antragsgruen_werbung well'><div class='nav-list'>
         <div class='nav-header'>Dein Antragsgrün</div>
         <div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
         <div class='myAntragsgruenAd'>
@@ -196,5 +195,5 @@ if ($consultation->site->getBehaviorClass()->showAntragsgruenInSidebar()) {
         <span class='icon-chevron-right'></span> Infos</a></div>
         </div>
         </div>";
-    $layout->menusHtml[] = $html;
+    $layout->menusHtml[]     = $html;
 }

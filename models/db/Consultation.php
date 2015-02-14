@@ -2,9 +2,11 @@
 
 namespace app\models\db;
 
+use app\components\MotionSorter;
 use app\models\ConsultationSettings;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
+use app\models\initiatorViews\DefaultForm;
 use app\models\policies\IPolicy;
 use app\models\wording\Wording;
 use yii\db\ActiveRecord;
@@ -189,112 +191,11 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param string $prefix1
-     * @param string $prefix2
-     * @return int
-     */
-    public function getSortedMotionsSort($prefix1, $prefix2)
-    {
-        if ($prefix1 == "" && $prefix2 == "") {
-            return 0;
-        }
-        if ($prefix1 == "") {
-            return -1;
-        }
-        if ($prefix2 == "") {
-            return 1;
-        }
-
-        $cmp     = function ($str1, $str2, $num1, $num2) {
-            if ($str1 == $str2) {
-                if ($num1 < $num2) {
-                    return -1;
-                }
-                if ($num1 > $num2) {
-                    return 1;
-                }
-                return 0;
-            } else {
-                if ($str1 < $str2) {
-                    return -1;
-                }
-                if ($str1 > $str2) {
-                    return 1;
-                }
-                return 0;
-            }
-        };
-        $prefix1 = preg_replace("/neu$/siu", "neu1", $prefix1);
-        $prefix2 = preg_replace("/neu$/siu", "neu1", $prefix2);
-
-        $pat1 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]*)/siu";
-        $pat2 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]+)(?<str2>[^0-9]+)(?<num2>[0-9]+)$/siu";
-
-        if (preg_match($pat2, $prefix1, $matches1) && preg_match($pat2, $prefix2, $matches2)) {
-            if ($matches1["str1"] == $matches2["str1"] && $matches1["num1"] == $matches2["num1"]) {
-                return $cmp($matches1["str2"], $matches2["str2"], $matches1["num2"], $matches2["num2"]);
-            } else {
-                return $cmp($matches1["str1"], $matches2["str1"], $matches1["num1"], $matches2["num1"]);
-            }
-        } elseif (preg_match($pat2, $prefix1, $matches1) && preg_match($pat1, $prefix2, $matches2)) {
-            if ($matches1["str1"] == $matches2["str1"] && $matches1["num1"] == $matches2["num1"]) {
-                return 1;
-            } else {
-                return $cmp($matches1["str1"], $matches2["str1"], $matches1["num1"], $matches2["num1"]);
-            }
-        } elseif (preg_match($pat1, $prefix1, $matches1) && preg_match($pat2, $prefix2, $matches2)) {
-            if ($matches1["str1"] == $matches2["str1"] && $matches1["num1"] == $matches2["num1"]) {
-                return -1;
-            } else {
-                return $cmp($matches1["str1"], $matches2["str1"], $matches1["num1"], $matches2["num1"]);
-            }
-        } else {
-            preg_match($pat1, $prefix1, $matches1);
-            preg_match($pat1, $prefix2, $matches2);
-            $str1 = (isset($matches1["str1"]) ? $matches1["str1"] : "");
-            $str2 = (isset($matches2["str1"]) ? $matches2["str1"] : "");
-            $num1 = (isset($matches1["num1"]) ? $matches1["num1"] : "");
-            $num2 = (isset($matches2["num1"]) ? $matches2["num1"] : "");
-            return $cmp($str1, $str2, $num1, $num2);
-        }
-    }
-
-
-    /**
      * @return array|array[]
      */
     public function getSortedMotions()
     {
-        $motions       = $this->motions;
-        $motionsSorted = array();
-
-        $inivisible   = IMotion::getInvisibleStati();
-        $inivisible[] = IMotion::STATUS_MODIFIED;
-
-        foreach ($motions as $motion) {
-            if (!in_array($motion->status, $inivisible)) {
-                //$motion->tags // @TODO
-                $typeName = "";
-
-                if (!isset($motionsSorted[$typeName])) {
-                    $motionsSorted[$typeName] = array();
-                }
-                $key = $motion->titlePrefix;
-
-                // @TODO veranstaltungsspezifisch_ae_sortierung_zeilennummer noch nötig ?
-                if ($this->getSettings()->amendNumberingByLine) {
-                    $motion->amendments = Amendment::sortVisibleByLineNumbers($motion->amendments);
-                }
-
-                $motionsSorted[$typeName][$key] = $motion;
-            }
-        }
-
-        foreach (array_keys($motionsSorted) as $key) {
-            uksort($motionsSorted[$key], array($this, "getSortedMotionsSort"));
-        }
-
-        return $motionsSorted;
+        return MotionSorter::getSortedMotions($this->motions, $this->getSettings()->amendNumberingByLine);
     }
 
     /**
@@ -320,5 +221,21 @@ class Consultation extends ActiveRecord
     public function getAmendmentPolicy()
     {
         return IPolicy::getInstanceByID($this->policyAmendments, $this);
+    }
+
+    /**
+     * @return DefaultForm
+     */
+    public function getMotionInitiatorFormClass()
+    {
+        return new DefaultForm($this);
+    }
+
+    /**
+     * @return DefaultForm
+     */
+    public function getAmendmentInitiatorFormClass()
+    {
+        return new DefaultForm($this);
     }
 }

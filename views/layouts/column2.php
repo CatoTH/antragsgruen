@@ -48,6 +48,7 @@ $this->widget('bootstrap.widgets.TbMenu', array(
             <div class="well visible-desktop">
                 <?= implode("", $params->menusHtml) ?>
             </div>
+            <?= $params->postSidebarHtml?>
         </div>
     </div>
 
