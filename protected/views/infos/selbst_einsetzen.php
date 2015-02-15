@@ -111,7 +111,7 @@ include(__DIR__ . "/sidebar.php");
 			<label for="OAuthLoginForm_wurzelwerk">Wurzelwerk-BenutzerInnenname</label>
 			<input class="span3" name="OAuthLoginForm[wurzelwerk]" id="OAuthLoginForm_wurzelwerk" type="text"
 			       style="margin-bottom: 0; "/><br>
-			<a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank"
+			<a href="https://netz.gruene.de/passwordForgotten.form" target="_blank"
 			   style="font-size: 0.8em; margin-top: -7px; display: inline-block; margin-bottom: 10px;">Wurzelwerk-Zugangsdaten
 				vergessen?</a>
 			<span class="help-block error" id="OAuthLoginForm_wurzelwerk_em_" style="display: none"></span>
