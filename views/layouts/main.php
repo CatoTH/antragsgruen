@@ -18,17 +18,20 @@ if (isset($controller->text_comments) && $controller->text_comments) {
     $row_classes[] = "text_comments";
 }
 */
+$title = (isset($this->title) ? $this->title : '');
+if (mb_strpos($title, 'Antragsgrün') === false) $title .= ' (Antragsgrün)';
 
 $minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 
 $this->beginPage();
+
 
 echo '<!DOCTYPE HTML>
 <html lang="de">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">' . "\n";
-echo '<title>' . Html::encode(isset($this->title) ? $this->title : '') . '</title>' . "\n";
+echo '<title>' . Html::encode($title) . '</title>' . "\n";
 echo Html::csrfMetaTags();
 
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrlFB != "") {
@@ -96,7 +99,7 @@ $this->beginBody();
 echo '<div class="over_footer_wrapper">';
 echo '<div class="container" id="page">';
 if ($controller->consultation) {
-    echo '<div id="mainmenu">';
+    echo '<header id="mainmenu">';
     echo '<div class="navbar">
         <div class="navbar-inner">
             <div class="container">';
@@ -130,7 +133,7 @@ if ($controller->consultation) {
         </div>
     </div>';
 
-    echo '</div>';
+    echo '</header>';
 }
 
 if ($controller->consultation) {
@@ -173,7 +176,7 @@ $legal_link = ($controller->consultation ? Url::toRoute("consultation/legal") : 
 
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
-</div></div></div>';
+</div></div>';
 ?>
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use app\models\forms\LoginUsernamePasswordForm;
 use yii\helpers\Html;
 
@@ -14,7 +15,7 @@ $controller = $this->context;
 $wording    = $controller->consultation->getWording();
 $layout     = $controller->layoutParams;
 
-
+$this->title = 'Login';
 $layout->breadcrumbs = ['Login'];
 
 
@@ -133,16 +134,11 @@ if ($hide_ww_login) {
 
 echo '<h2>Wurzelwerk-Login</h2>
     <div class="content">';
-echo Html::beginForm('', 'post', ['class' => 'col-sm-5']);
+echo Html::beginForm(UrlHelper::createUrl('user/loginwurzelwerk'), 'post', ['class' => 'col-sm-5']);
 
 echo '<div class="form-group">
     <label for="wurzelwerkAccount">WurzelWerk-Account:</label>
-  <input name="OAuthLoginForm[wurzelwerk]" id="wurzelwerkAccount" type="text" class="form-control">
-
-    <a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank"
-      style="font-size: 0.8em; margin-top: -7px; display: inline-block; margin-bottom: 10px;">
-        Wurzelwerk-Zugangsdaten vergessen?
-    </a>
+  <input name="username" id="wurzelwerkAccount" type="text" class="form-control">
     </div>
 
     <button type="submit" class="btn btn-primary">
@@ -151,10 +147,14 @@ echo '<div class="form-group">
 ';
 echo Html::endForm();
 echo '<div id="loginWurzelwerkHint">
-            <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://service.gruene.de/" umgeleitet,
-            die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-BenutzerInnenname/Passwort
-            eingeben und bestätigen, dass deine E-Mail-Adresse an Antragsgrün übermittelt wird.
-            Dein Wurzelwerk-Passwort bleibt geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
+    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://service.gruene.de/" umgeleitet,
+    die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-BenutzerInnenname/Passwort
+    eingeben und bestätigen, dass deine E-Mail-Adresse an Antragsgrün übermittelt wird.
+    Dein Wurzelwerk-Passwort bleibt geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
+    <br><br>
+    <a href="https://netz.gruene.de/passwordForgotten.form" class="loginWurzelwerkForgot" target="_blank">
+        Wurzelwerk-Zugangsdaten vergessen?
+    </a>
         </div>
 </div>';
 

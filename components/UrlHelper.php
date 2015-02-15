@@ -16,11 +16,17 @@ class UrlHelper
     /** @var null|Consultation */
     private static $currentConsultation = null;
 
+    /**
+     * @param Site $site
+     */
     public static function setCurrentSite(Site $site)
     {
         static::$currentSite = $site;
     }
 
+    /**
+     * @param Consultation $consultation
+     */
     public static function setCurrentConsultation(Consultation $consultation)
     {
         static::$currentConsultation = $consultation;

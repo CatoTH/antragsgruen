@@ -40,16 +40,16 @@ $this->widget('bootstrap.widgets.TbMenu', array(
 
 
     <div class="<?= implode(" ", $row_classes) ?>">
-        <div class="col-md-9 well">
+        <main class="col-md-9 well">
             <?php echo $content; ?>
-        </div>
-        <div class="col-md-3" id="sidebar">
+        </main>
+        <aside class="col-md-3" id="sidebar">
             <?= $params->preSidebarHtml?>
             <div class="well visible-desktop">
                 <?= implode("", $params->menusHtml) ?>
             </div>
             <?= $params->postSidebarHtml?>
-        </div>
+        </aside>
     </div>
 
 <?php $this->endContent();

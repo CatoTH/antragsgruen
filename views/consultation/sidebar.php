@@ -23,11 +23,16 @@ $wording      = $consultation->getWording();
 
 $html = Html::beginForm(UrlHelper::createUrl("consultation/search"), 'post', ['class' => 'hidden-xs form-search']);
 $html .= '<div class="nav-list"><div class="nav-header">Suche</div>
-    <div style="text-align: center;">
-    <div class="input-append">
-        <input class="search-query" type="search" name="suchbegriff" value="" autofocus placeholder="Suchbegriff...">
-        <button type="submit" class="btn"><i style="height: 17px;" class="icon-search"></i></button>
-    </div></div>
+    <div style="text-align: center; padding-left: 7px; padding-right: 7px;">
+    <div class="input-group">
+      <input type="text" class="form-control" name="query" placeholder="Suchbegriff...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">
+            <span class="glyphicon glyphicon-search"></span> Suche
+        </button>
+      </span>
+    </div>
+    </div>
 </div>';
 $html .= Html::endForm();
 $layout->menusHtml[] = $html;
@@ -188,13 +193,16 @@ if ($consultation->getSettings()->hasPDF) {
 }
 
 if ($consultation->site->getBehaviorClass()->showAntragsgruenInSidebar()) {
-    $layout->postSidebarHtml = "<div class='antragsgruen_werbung well'><div class='nav-list'>
+    $layout->postSidebarHtml = "<div class='antragsgruen_werbung well'>
         <div class='nav-header'>Dein Antragsgrün</div>
-        <div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
-        <div class='myAntragsgruenAd'>
-        <a href='" . Html::encode(UrlHelper::createUrl("manager/index")) . "' class='btn btn-primary'>
-        <span class='icon-chevron-right'></span> Infos</a></div>
+        <div class='content'>
+            Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
+            <div class='myAntragsgruenAd' style='text-align: center; margin-top: 15px;'>
+                <a href='" . Html::encode(UrlHelper::createUrl("manager/index")) . "' class='btn btn-primary'>
+                <span class='icon-chevron-right'></span> Infos
+                </a>
+            </div>
         </div>
-        </div>";
+    </div>";
     $layout->menusHtml[]     = $html;
 }

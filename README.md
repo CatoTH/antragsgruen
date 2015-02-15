@@ -18,3 +18,8 @@ php composer.phar install
 composer global require "fxp/composer-asset-plugin:1.0.0"
 composer install --dev
 ```
+
+
+```bash
+scss --precision 9
+```
