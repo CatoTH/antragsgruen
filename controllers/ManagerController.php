@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\AntiXSS;
+use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\db\User;
@@ -24,7 +25,7 @@ class ManagerController extends Base
         $html = "<ul class='nav nav-list einsatzorte-list'>";
         $html .= "<li class='nav-header'>Aktuelle Einsatzorte</li>";
         foreach ($sites as $site) {
-            $url = $this->createUrl(['consultation/index', "subdomain" => $site->subdomain]);
+            $url = UrlHelper::createUrl(['consultation/index', "subdomain" => $site->subdomain]);
             $html .= "<li>" . Html::a($site->title, $url) . "</li>\n";
         }
         $html .= '</ul>';
@@ -70,7 +71,7 @@ class ManagerController extends Base
     {
         $user = $this->eligibleToCreateUser();
         if (!$user) {
-            $this->redirect($this->createUrl("manager/index"));
+            $this->redirect(UrlHelper::createUrl("manager/index"));
         }
         return $user;
     }

@@ -1,6 +1,7 @@
 <?php
 
 use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use yii\helpers\Html;
@@ -20,7 +21,7 @@ $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
 $wording      = $consultation->getWording();
 
-$html = Html::beginForm($controller->createUrl("consultation/search"), 'post', ['class' => 'hidden-xs form-search']);
+$html = Html::beginForm(UrlHelper::createUrl("consultation/search"), 'post', ['class' => 'hidden-xs form-search']);
 $html .= '<div class="nav-list"><div class="nav-header">Suche</div>
     <div style="text-align: center;">
     <div class="input-append">
@@ -33,9 +34,9 @@ $layout->menusHtml[] = $html;
 
 $motionCreateLink = "";
 if ($consultation->getMotionPolicy()->checkCurUserHeuristically()) {
-    $motionCreateLink = $controller->createUrl("motion/create");
+    $motionCreateLink = UrlHelper::createUrl("motion/create");
 } elseif ($consultation->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
-    $motionCreateLink = $controller->createUrl(['user/login', 'back' => $controller->createUrl('motion/create')]);
+    $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => UrlHelper::createUrl('motion/create')]);
 }
 
 $motionLink = $consultation->site->getBehaviorClass()->getSubmitMotionStr();
@@ -67,7 +68,7 @@ if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
                     $html .= " class='resolution'";
             }
             */
-            $motionLink = $controller->createUrl(['motion/show', 'motionId' => $motion->id]);
+            $motionLink = UrlHelper::createUrl(['motion/show', 'motionId' => $motion->id]);
             $html .= '>' . Html::a($motion->title, $motionLink) . "</li>\n";
         }
     }
@@ -86,7 +87,7 @@ if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
             $zu_str        = Html::encode(
                 $hideRev ? $amendment->motion->title : $amendment->motion->titlePrefix
             );
-            $amendmentLink = $controller->createUrl(
+            $amendmentLink = UrlHelper::createUrl(
                 [
                     "amendment/show",
                     "amendmentId" => $amendment->id,
@@ -102,7 +103,7 @@ if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
 }
 
 if ($consultation->getMotionPolicy()->checkCurUserHeuristically()) {
-    $newUrl              = $controller->createUrl("motion/create");
+    $newUrl              = UrlHelper::createUrl("motion/create");
     $layout->menusHtml[] = '<a class="neuer-antrag" href="' . Html::encode($newUrl) . '"></a>';
 }
 
@@ -112,7 +113,7 @@ if (!in_array($consultation->policyComments, array(0, 4))) {
         $html .= "<li><i>keine</i></li>";
     } else {
         foreach ($newestMotionComments as $comment) {
-            $commentLink = $controller->createUrl(
+            $commentLink = UrlHelper::createUrl(
                 [
                     "motion/show",
                     "motionId"  => $comment->motionId,
@@ -133,7 +134,7 @@ if (!in_array($consultation->policyComments, array(0, 4))) {
 
 
 $title = $wording->get("E-Mail-Benachrichtigung bei neuen Anträgen");
-$link  = $controller->createUrl('consultation/notifications');
+$link  = UrlHelper::createUrl('consultation/notifications');
 $html  = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Benachrichtigungen</li>";
 $html .= "<li class='benachrichtigung'>" . Html::a($title, $link) . "</li>";
 $html .= "</ul></div>";
@@ -146,22 +147,22 @@ if ($consultation->getSettings()->showFeeds) {
     $feedsHtml = "";
     if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
         $feedsHtml .= "<li class='feed'>";
-        $feedsHtml .= Html::a($wording->get("Anträge"), $controller->createUrl("consultation/feedmotions")) . "</li>";
+        $feedsHtml .= Html::a($wording->get("Anträge"), UrlHelper::createUrl("consultation/feedmotions")) . "</li>";
         $feeds++;
     }
     if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
         $feedsHtml .= "<li class='feed'>";
-        $feedsHtml .= Html::a($wording->get("Änderungsanträge"), $controller->createUrl("consultation/feedamendments"));
+        $feedsHtml .= Html::a($wording->get("Änderungsanträge"), UrlHelper::createUrl("consultation/feedamendments"));
         $feedsHtml .= "</li>";
         $feeds++;
     }
     if (!in_array($consultation->policyComments, array(0, 4))) {
-        $feedUrl = $controller->createUrl("consultation/feedcomments");
+        $feedUrl = UrlHelper::createUrl("consultation/feedcomments");
         $feedsHtml .= "<li class='feed'>" . Html::a($wording->get("Kommentare"), $feedUrl) . "</li>";
         $feeds++;
     }
     if ($feeds > 1) {
-        $feedAllUrl = $controller->createUrl("consultation/feedall");
+        $feedAllUrl = UrlHelper::createUrl("consultation/feedall");
         $feedsHtml .= "<li class='feed'>" . Html::a($wording->get("Alles"), $feedAllUrl) . "</li>";
     }
 
@@ -176,9 +177,9 @@ if ($consultation->getSettings()->showFeeds) {
 if ($consultation->getSettings()->hasPDF) {
     $name = $wording->get("Alle PDFs zusammen");
     $html = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
-    $html .= "<li class='pdf'>" . Html::a($name, $controller->createUrl("consultation/pdfs")) . "</li>";
+    $html .= "<li class='pdf'>" . Html::a($name, UrlHelper::createUrl("consultation/pdfs")) . "</li>";
     if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
-        $amendmentPdfLink = $controller->createUrl("consultation/amendmentpdfs");
+        $amendmentPdfLink = UrlHelper::createUrl("consultation/amendmentpdfs");
         $linkTitle        = "Alle " . $wording->get("Änderungsanträge") . " gesammelt";
         $html .= "<li class='pdf'>" . Html::a($linkTitle, $amendmentPdfLink) . "</li>";
     }
@@ -191,7 +192,7 @@ if ($consultation->site->getBehaviorClass()->showAntragsgruenInSidebar()) {
         <div class='nav-header'>Dein Antragsgrün</div>
         <div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
         <div class='myAntragsgruenAd'>
-        <a href='" . Html::encode($controller->createUrl("manager/index")) . "' class='btn btn-primary'>
+        <a href='" . Html::encode(UrlHelper::createUrl("manager/index")) . "' class='btn btn-primary'>
         <span class='icon-chevron-right'></span> Infos</a></div>
         </div>
         </div>";

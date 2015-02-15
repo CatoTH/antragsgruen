@@ -84,6 +84,7 @@ class UserController extends Base
     /**
      * @param string $subdomain
      * @param string $consultationPath
+     * @param string $backUrl
      * @return string
      */
     public function actionLogin($subdomain = '', $consultationPath = '', $backUrl = '')
@@ -91,17 +92,15 @@ class UserController extends Base
         $this->layout = 'column2';
         $this->loadConsultation($subdomain, $consultationPath);
 
-        $err_str = "";
+        $usernamePasswordForm = new LoginUsernamePasswordForm();
 
         if (isset($_POST["loginusernamepassword"])) {
-            $form = new LoginUsernamePasswordForm();
-            $form->setAttributes($_POST);
+            $usernamePasswordForm->setAttributes($_POST);
             try {
-                $user = $form->getOrCreateUser($this->site);
+                $user = $usernamePasswordForm->getOrCreateUser($this->site);
                 $this->loginUser($user);
                 $this->redirect($backUrl, 307);
             } catch (Login $e) {
-                $err_str = $e->getMessage();
             }
         }
 
@@ -109,8 +108,7 @@ class UserController extends Base
         return $this->render(
             'login',
             [
-                //"model"   => $model,
-                "msg_err" => $err_str,
+                "usernamePasswordForm" => $usernamePasswordForm,
             ]
         );
     }
@@ -124,10 +122,11 @@ class UserController extends Base
     }
 
     /**
-     *
+     * @param string $backUrl
      */
-    public function actionLogout()
+    public function actionLogout($backUrl)
     {
-        // @TODO
+        Yii::$app->user->logout();
+        $this->redirect($backUrl, 307);
     }
 }

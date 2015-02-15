@@ -1,10 +1,13 @@
 <?php
 
+use app\models\forms\LoginUsernamePasswordForm;
+use yii\helpers\Html;
+
 /**
  * @var $this yii\web\View
+ * @var LoginUsernamePasswordForm $usernamePasswordForm
  * @var string $msg_err
  */
-use yii\helpers\Html;
 
 /** @var \app\controllers\UserController $controller */
 $controller = $this->context;
@@ -15,24 +18,27 @@ $layout     = $controller->layoutParams;
 $layout->breadcrumbs = ['Login'];
 
 
-if ($msg_err != "") {
-    echo '<h1>Fehler</h1>
-    <div class="content"><div class="alert alert-error">';
-    echo $msg_err;
-    echo '</div></div>';
-}
-
 echo '<h1>Login</h1>';
 
 
 if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
+    $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+
     echo '<h2>Login per BenutzerInnenname / Passwort</h2>
     <div class="content">';
 
+    if ($usernamePasswordForm->error != "") {
+        echo '<div class="alert alert-danger" role="alert">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <span class="sr-only">Error:</span>';
+        echo Html::encode($usernamePasswordForm->error);
+        echo '</div>';
+    }
+
     echo Html::beginForm('', 'post', ['class' => 'col-sm-5', 'id' => 'usernamePasswordForm']);
 
-    $pre_username = (isset($_REQUEST["username"]) ? $_REQUEST["username"] : '');
-    $pre_name     = (isset($_REQUEST["name"]) ? $_REQUEST["name"] : '');
+    $preUsername = $usernamePasswordForm->username;
+    $preName     = $usernamePasswordForm->name;
 
     if ($controller->site->getSettings()->onlyNamespacedAccounts) {
         echo '<div class="alert alert-info">!';
@@ -54,7 +60,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     echo '<div class="form-group">
         <label for="username">E-Mail-Adresse / BenutzerInnenname:</label>
             <input class="form-control" name="username" id="username" type="text" autofocus required
-            placeholder="E-Mail-Adresse" value="' . Html::encode($pre_username) . '">
+            placeholder="E-Mail-Adresse" value="' . Html::encode($preUsername) . '">
         </div>
 
         <div class="form-group">
@@ -69,7 +75,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
 
         <div class="form-group" id="reg_name" style="display: none;">
             <label for="name">Dein Name:</label>
-            <input type="text" value="' . Html::encode($pre_name) . '" name="name" id="name" class="form-control">
+            <input type="text" value="' . Html::encode($preName) . '" name="name" id="name" class="form-control">
         </div>
 
         <script>
@@ -79,7 +85,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
                     if ($(this).prop("checked")) {
                         $("#pwd_confirm").show();
                         $("#reg_name").show().find("input").attr("required", "required");
-                        $("#password_input").attr("placeholder", "Min. 6 Zeichen");
+                        $("#password_input").attr("placeholder", "Min. ' . $pwMinLen . ' Zeichen");
                         $("#create_str").show();
                         $("#login_str").hide();
                     } else {

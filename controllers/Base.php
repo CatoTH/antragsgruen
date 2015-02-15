@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 
+use app\components\UrlHelper;
 use app\models\ConsultationSettings;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
@@ -12,7 +13,6 @@ use app\models\db\User;
 use app\models\LayoutParams;
 use Yii;
 use yii\base\Module;
-use yii\helpers\Url;
 use yii\web\Controller;
 
 class Base extends Controller
@@ -63,86 +63,6 @@ class Base extends Controller
     }
 
     /**
-     *
-     */
-    public function testMaintainanceMode()
-    {
-        if ($this->consultation == null) {
-            return;
-        }
-        /** @var ConsultationSettings $settings */
-        $settings = $this->consultation->getSettings();
-        if ($settings->maintainanceMode && !$this->consultation->isAdminCurUser()) {
-            $this->redirect($this->createUrl("consultation/maintainance"));
-        }
-
-        if ($this->site->getBehaviorClass()->isLoginForced() && Yii::$app->user->isGuest) {
-            $this->redirect($this->createUrl("user/login"));
-        }
-    }
-
-    /**
-     * @param array $route
-     * @return string
-     */
-    protected function createSiteUrl($route)
-    {
-        if ($this->consultation !== null) {
-            $route["consultationPath"] = $this->consultation->urlPath;
-        }
-        if ($this->getParams()->multisiteMode && $this->site != null) {
-            $route["subdomain"] = $this->site->subdomain;
-        }
-        if ($route[0] == "consultation/index" && !is_null($this->site) &&
-            strtolower($route["consultationPath"]) === strtolower($this->site->currentConsultation->urlPath)
-        ) {
-            unset($route["consultationPath"]);
-        }
-        if (in_array(
-            $route[0],
-            [
-                "veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/anmeldungBestaetigen",
-                "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "user/login",
-                "user/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
-            ]
-        )) {
-            unset($route["consultationPath"]);
-        }
-        return Url::toRoute($route);
-    }
-
-    /**
-     * @param string|string $route
-     * @return string
-     */
-    public function createUrl($route)
-    {
-        if (!is_array($route)) {
-            $route = array($route);
-        }
-        $route_parts = explode('/', $route[0]);
-        if ($route_parts[0] != "manager") {
-            return $this->createSiteUrl($route);
-        } else {
-            return Url::toRoute($route);
-        }
-    }
-
-    /**
-     * @param string $route
-     * @return string
-     */
-    public function createLoginUrl($route)
-    {
-        $target_url = Url::toRoute($route);
-        if (Yii::$app->user->isGuest) {
-            return Url::toRoute(['user/login', 'backUrl' => $target_url]);
-        } else {
-            return $target_url;
-        }
-    }
-
-    /**
      * @return null|User
      */
     public function getCurrentUser()
@@ -155,17 +75,23 @@ class Base extends Controller
     }
 
 
+
     /**
-     * @param string $route
-     * @return string
+     *
      */
-    public function createWurzelwerkLoginUrl($route)
+    public function testMaintainanceMode()
     {
-        $target_url = Url::toRoute($route);
-        if (Yii::$app->user->isGuest) {
-            return Url::toRoute(['user/loginwurzelwerk', 'backUrl' => $target_url]);
-        } else {
-            return $target_url;
+        if ($this->consultation == null) {
+            return;
+        }
+        /** @var ConsultationSettings $settings */
+        $settings = $this->consultation->getSettings();
+        if ($settings->maintainanceMode && !$this->consultation->isAdminCurUser()) {
+            $this->redirect(UrlHelper::createUrl("consultation/maintainance"));
+        }
+
+        if ($this->site->getBehaviorClass()->isLoginForced() && Yii::$app->user->isGuest) {
+            $this->redirect(UrlHelper::createUrl("user/login"));
         }
     }
 
@@ -223,17 +149,17 @@ class Base extends Controller
                 "Fehlerhafte Parameter - " .
                 "die Veranstaltung gehört nicht zur Veranstaltungsreihe."
             );
-            $this->redirect($this->createUrl(['consultation/index', "consultation_id" => $consultationId]));
+            $this->redirect(UrlHelper::createUrl(['consultation/index', "consultation_id" => $consultationId]));
         }
 
         if (is_object($checkMotion) && strtolower($checkMotion->consultation->urlPath) != $consultationId) {
             Yii::$app->user->setFlash("error", "Fehlerhafte Parameter - der Antrag gehört nicht zur Veranstaltung.");
-            $this->redirect($this->createUrl(['consultation/index', "consultation_id" => $consultationId]));
+            $this->redirect(UrlHelper::createUrl(['consultation/index', "consultation_id" => $consultationId]));
         }
 
         if ($checkAmendment != null && ($checkMotion == null || $checkAmendment->motionId != $checkAmendment->id)) {
             Yii::$app->user->setFlash("error", "Fehlerhafte Parameter - der Änderungsantrag gehört nicht zum Antrag.");
-            $this->redirect($this->createUrl(['consultation/index', "consultation_id" => $consultationId]));
+            $this->redirect(UrlHelper::createUrl(['consultation/index', "consultation_id" => $consultationId]));
         }
     }
 
@@ -257,6 +183,9 @@ class Base extends Controller
         if (is_null($this->consultation)) {
             $this->consultation = Consultation::findOne(["urlPath" => $consultationId]);
         }
+
+        UrlHelper::setCurrentConsultation($this->consultation);
+        UrlHelper::setCurrentSite($this->site);
 
         $this->checkConsistency($checkMotion, $checkAmendment);
 

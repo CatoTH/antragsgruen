@@ -1,4 +1,5 @@
 <?php
+use app\components\UrlHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -100,7 +101,7 @@ if ($controller->consultation) {
         <div class="navbar-inner">
             <div class="container">';
 
-    $searchUrl = $controller->createUrl('consultation/search');
+    $searchUrl = UrlHelper::createUrl('consultation/search');
     echo Html::beginForm($searchUrl, 'get', ['class' => 'form-search visible-xs-inline-block']);
     echo '<input type="hidden" name="id" value="">';
     echo '<div class="input-append">' .
@@ -109,19 +110,19 @@ if ($controller->consultation) {
     echo Html::endForm();
 
     echo '<ul class="nav navbar-nav">';
-    echo '<li class="active">' . Html::a('Start', $controller->createUrl("consultation/index")) . '</li>';
-    echo '<li>' . Html::a('Hilfe', $controller->createUrl("consultation/help")) . '</li>';
+    echo '<li class="active">' . Html::a('Start', UrlHelper::createUrl("consultation/index")) . '</li>';
+    echo '<li>' . Html::a('Hilfe', UrlHelper::createUrl("consultation/help")) . '</li>';
 
     if (!$controller->getCurrentUser() && !$minimalistic) {
-        $loginUrl = $controller->createUrl(['user/login', 'back' => \yii::$app->request->url]);
+        $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
         echo '<li>' . Html::a('Login', $loginUrl) . '</li>';
     }
     if ($controller->getCurrentUser()) {
-        $logoutUrl = $controller->createUrl(['user/logout', 'back' => \yii::$app->request->url]);
+        $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
         echo '<li>' . Html::a('Logout', $logoutUrl) . '</li>';
     }
     if ($controller->consultation && $controller->consultation->isAdminCurUser()) {
-        $adminUrl = $controller->createUrl("admin/index");
+        $adminUrl = UrlHelper::createUrl("admin/index");
         echo '<li><a href="' . Html::encode($adminUrl) . '">Admin</a></li>';
     }
     echo '</ul>
@@ -132,7 +133,11 @@ if ($controller->consultation) {
     echo '</div>';
 }
 
-$homeUrl = ($controller->consultation ? Url::toRoute("consultation/index") : Url::toRoute("manager/index"));
+if ($controller->consultation) {
+    $homeUrl = UrlHelper::createUrl("consultation/index");
+} else {
+    $homeUrl = Url::toRoute("manager/index");
+}
 echo '<div class="row logo"><a href="' . Html::encode($homeUrl) . '" title="Startseite">';
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != "") {
     $path     = parse_url($controller->consultation->getSettings()->logoUrl);

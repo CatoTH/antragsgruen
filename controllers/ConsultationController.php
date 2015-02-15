@@ -6,7 +6,6 @@ use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\Consultation;
 use app\models\db\MotionComment;
-use app\models\db\User;
 
 class ConsultationController extends Base
 {

@@ -1,4 +1,5 @@
 <?php
+use app\components\UrlHelper;
 use app\models\db\Site;
 use yii\helpers\Html;
 
@@ -97,7 +98,7 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
 
 <h2 id="selbst_nutzen">Antragsgrün selbst nutzen</h2>
 
-<?= Html::beginForm($controller->createWurzelwerkLoginUrl('manager/createsite'), 'post', ['class' => 'content']) ?>
+<?= Html::beginForm(UrlHelper::createWurzelwerkLoginUrl('manager/createsite'), 'post', ['class' => 'content']) ?>
 Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
 Wurzelwerk-Account ein.<br>
 <br>

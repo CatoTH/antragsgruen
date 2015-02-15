@@ -114,7 +114,7 @@ class Tools
         /** @var \app\models\AntragsgruenAppParams $params */
         $params = \Yii::$app->params;
 
-        $send_text = ($noLogReplaces ? str_replace(
+        $sendText = ($noLogReplaces ? str_replace(
             array_keys($noLogReplaces),
             array_values($noLogReplaces),
             $text
@@ -125,9 +125,9 @@ class Tools
         $sendMailFrom = mb_encode_mimeheader($fromName) . ' <' . $fromEmail . '>';
 
         if ($params->mandrillApiKey) {
-            static::sendEmailMandrill($mailType, $toEmail, $subject, $text, $fromEmail, $fromName);
+            static::sendEmailMandrill($mailType, $toEmail, $subject, $sendText, $fromEmail, $fromName);
         } else {
-            mb_send_mail($toEmail, $subject, $send_text, "From: " . $sendMailFrom);
+            mb_send_mail($toEmail, $subject, $sendText, "From: " . $sendMailFrom);
         }
 
         $obj = new \app\models\db\EmailLog();
