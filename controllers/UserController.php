@@ -3,11 +3,13 @@
 namespace app\controllers;
 
 use app\components\AntiXSS;
+use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
 use app\models\db\User;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
 use Yii;
+use yii\helpers\Url;
 
 class UserController extends Base
 {
@@ -57,8 +59,12 @@ class UserController extends Base
      * @param string $backUrl
      * @return int|string
      */
-    public function actionLoginwurzelwerk($backUrl = "")
+    public function actionLoginwurzelwerk($backUrl = '')
     {
+        if ($backUrl == '') {
+            $backUrl = (isset($_POST['backUrl']) ? $_POST['backUrl'] : UrlHelper::homeUrl());
+        }
+
         $client = new WurzelwerkAuthClient();
         if (isset($_REQUEST['openid_claimed_id'])) {
             $client->setClaimedId($_REQUEST['openid_claimed_id']);

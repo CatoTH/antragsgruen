@@ -11,6 +11,9 @@ abstract class ISupporter extends ActiveRecord
     const ROLE_LIKE      = 'likes';
     const ROLE_DISLIKE   = 'dislikes';
 
+    const PERSON_NATURAL      = 0;
+    const PERSON_ORGANIZATION = 1;
+
     /**
      * @return string[]
      */

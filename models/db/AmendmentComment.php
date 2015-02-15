@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use yii\db\ActiveRecord;
+use yii\helpers\Url;
 
 /**
  * @package app\models\db
@@ -18,7 +18,7 @@ use yii\db\ActiveRecord;
  * @property User $user
  * @property Amendment $amendment
  */
-class AmendmentComment extends ActiveRecord
+class AmendmentComment extends IComment
 {
 
     /**
@@ -43,5 +43,45 @@ class AmendmentComment extends ActiveRecord
     public function getAmendment()
     {
         return $this->hasOne(Amendment::className(), ['id' => 'amendmentId']);
+    }
+
+    /**
+     * @return Consultation
+     */
+    public function getConsultation()
+    {
+        return $this->amendment->motion->consultation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionName()
+    {
+        return $this->amendment->titlePrefix . " zu " . $this->amendment->motion->getNameWithPrefix();
+    }
+
+    /**
+     * @param bool $absolute
+     * @return string
+     */
+    public function getLink($absolute = false)
+    {
+        $url = Url::toRoute(
+            [
+                'amendment/view',
+                'subdomain'        => $this->amendment->motion->consultation->site->subdomain,
+                'consultationPath' => $this->amendment->motion->consultation->urlPath,
+                'motionId'         => $this->amendment->motion->id,
+                'amendmentId'      => $this->amendment->id,
+                'commentId'        => $this->id,
+                '#'                => 'comment' . $this->id
+            ]
+        );
+        if ($absolute) {
+            // @TODO Testen
+            $url = \Yii::$app->basePath . $url;
+        }
+        return $url;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace app\components;
 
-use app\models\AntragsgruenAppParams;
+use app\models\settings\AntragsgruenApp;
 
 class AntiXSS
 {
@@ -12,7 +12,7 @@ class AntiXSS
      */
     private static function getSeed()
     {
-        /** @var AntragsgruenAppParams $params */
+        /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if (in_array($params->randomSeed, array("", "RANDOMSEED"))) {
             die("Please specify a randomSeed in config/local/params.php\n");

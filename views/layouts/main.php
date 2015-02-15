@@ -136,12 +136,7 @@ if ($controller->consultation) {
     echo '</header>';
 }
 
-if ($controller->consultation) {
-    $homeUrl = UrlHelper::createUrl("consultation/index");
-} else {
-    $homeUrl = Url::toRoute("manager/index");
-}
-echo '<div class="row logo"><a href="' . Html::encode($homeUrl) . '" title="Startseite">';
+echo '<div class="row logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Startseite">';
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != "") {
     $path     = parse_url($controller->consultation->getSettings()->logoUrl);
     $filename = basename($path["path"]);

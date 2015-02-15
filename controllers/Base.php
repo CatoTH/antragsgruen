@@ -4,20 +4,19 @@ namespace app\controllers;
 
 
 use app\components\UrlHelper;
-use app\models\ConsultationSettings;
+use app\models\settings\Layout;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
-use app\models\LayoutParams;
 use Yii;
 use yii\base\Module;
 use yii\web\Controller;
 
 class Base extends Controller
 {
-    /** @var LayoutParams */
+    /** @var Layout */
     public $layoutParams = null;
 
     /** @var null|Consultation */
@@ -34,7 +33,7 @@ class Base extends Controller
     public function __construct($cid, $module, $config = [])
     {
         parent::__construct($cid, $module, $config);
-        $this->layoutParams = new LayoutParams();
+        $this->layoutParams = new Layout();
     }
 
     /**
@@ -55,7 +54,7 @@ class Base extends Controller
     }
 
     /**
-     * @return \app\models\AntragsgruenAppParams
+     * @return \app\models\settings\AntragsgruenApp
      */
     public function getParams()
     {
@@ -84,7 +83,7 @@ class Base extends Controller
         if ($this->consultation == null) {
             return;
         }
-        /** @var ConsultationSettings $settings */
+        /** @var \app\models\settings\Consultation $settings */
         $settings = $this->consultation->getSettings();
         if ($settings->maintainanceMode && !$this->consultation->isAdminCurUser()) {
             $this->redirect(UrlHelper::createUrl("consultation/maintainance"));

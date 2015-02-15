@@ -1,9 +1,9 @@
 <?php
 
-use app\models\AntragsgruenAppParams;
+use app\models\settings\AntragsgruenApp;
 
 /**
- * @var AntragsgruenAppParams $params
+ * @var AntragsgruenApp $params
  * @var array $db_params
  */
 

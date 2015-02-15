@@ -87,6 +87,13 @@ class DefaultForm implements IInitiatorView
         return $initiator;
     }
 
+    /**
+     * @throws FormError
+     */
+    public function validateInitiatorViewMotion()
+    {
+        // @TODO
+    }
 
     /**
      * @param Motion $motion

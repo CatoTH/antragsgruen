@@ -124,7 +124,7 @@ echo '
     <strong>Wärest du bereit, einen freiwilligen Beitrag über 20€ an die Netzbegrünung zu leisten?</strong><br>
     (Wenn ja, schicken wir dir eine Rechnung an die oben eingegebene Adresse)<br>
 ';
-foreach (\app\models\SiteSettings::getPaysValues() as $payId => $payName) {
+foreach (\app\models\settings\Site::getPaysValues() as $payId => $payName) {
     echo '<div class="radio"><label>';
     $checked = $model->isWillingToPay === $payId;
     echo Html::radio('SiteCreateForm[isWillingToPay]', $checked, ['value' => $payId, 'required' => 'required']);

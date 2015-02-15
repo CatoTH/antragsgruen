@@ -11,7 +11,7 @@ namespace app\models\db;
  * @property int $userId
  * @property string $role
  * @property string $comment
- * @property string $personType
+ * @property int $personType
  * @property string $name
  * @property string $organization
  * @property string $resolutionDate

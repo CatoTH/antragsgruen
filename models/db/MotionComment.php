@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use yii\db\ActiveRecord;
 use yii\db\Query;
+use yii\helpers\Url;
 
 /**
  * @package app\models\db
@@ -20,7 +21,7 @@ use yii\db\Query;
  * @property Motion $motion
  * @property MotionCommentSupporter[] $supporters
  */
-class MotionComment extends ActiveRecord
+class MotionComment extends IComment
 {
     const STATUS_VISIBLE = 0;
     const STATUS_DELETED = -1;
@@ -75,5 +76,44 @@ class MotionComment extends ActiveRecord
         $query->offset(0)->limit($limit);
 
         return $query->all();
+    }
+
+    /**
+     * @return Consultation
+     */
+    public function getConsultation()
+    {
+        return $this->motion->consultation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionName()
+    {
+        return $this->motion->getNameWithPrefix();
+    }
+
+    /**
+     * @param bool $absolute
+     * @return string
+     */
+    public function getLink($absolute = false)
+    {
+        $url = Url::toRoute(
+            [
+                'motion/view',
+                'subdomain'        => $this->motion->consultation->site->subdomain,
+                'consultationPath' => $this->motion->consultation->urlPath,
+                'motionId'         => $this->motion->id,
+                'commentId'        => $this->id,
+                '#'                => 'comment' . $this->id
+            ]
+        );
+        if ($absolute) {
+            // @TODO Testen
+            $url = \Yii::$app->basePath . $url;
+        }
+        return $url;
     }
 }

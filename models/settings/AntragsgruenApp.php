@@ -1,8 +1,8 @@
 <?php
 
-namespace app\models;
+namespace app\models\settings;
 
-class AntragsgruenAppParams
+class AntragsgruenApp
 {
     public $randomSeed          = "";
     public $multisiteMode       = true;

@@ -34,7 +34,7 @@ class UrlHelper
 
 
     /**
-     * @return \app\models\AntragsgruenAppParams
+     * @return \app\models\settings\AntragsgruenApp
      */
     private static function getParams()
     {
@@ -48,7 +48,7 @@ class UrlHelper
      */
     protected static function createSiteUrl($route)
     {
-        $site = static::$currentSite;
+        $site         = static::$currentSite;
         $consultation = static::$currentConsultation;
         if ($consultation !== null) {
             $route["consultationPath"] = $consultation->urlPath;
@@ -102,6 +102,18 @@ class UrlHelper
             return Url::toRoute(['user/login', 'backUrl' => $target_url]);
         } else {
             return $target_url;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public static function homeUrl()
+    {
+        if (static::$currentConsultation) {
+            return static::createUrl('consultation/index');
+        } else {
+            return static::createUrl('manager/index');
         }
     }
 

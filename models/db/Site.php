@@ -1,10 +1,9 @@
 <?php
 namespace app\models\db;
 
-use app\models\AntragsgruenAppParams;
+use app\models\settings\AntragsgruenApp;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
-use app\models\SiteSettings;
 use app\models\SiteSpecificBehavior;
 use yii\db\ActiveRecord;
 
@@ -68,22 +67,22 @@ class Site extends ActiveRecord
     }
 
 
-    /** @var null|SiteSettings */
+    /** @var null|\app\models\settings\Site */
     private $settingsObject = null;
 
     /**
-     * @return SiteSettings
+     * @return \app\models\settings\Site
      */
     public function getSettings()
     {
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new SiteSettings($this->settings);
+            $this->settingsObject = new \app\models\settings\Site($this->settings);
         }
         return $this->settingsObject;
     }
 
     /**
-     * @param SiteSettings $settings
+     * @param \app\models\settings\Site $settings
      */
     public function setSettings($settings)
     {
@@ -177,7 +176,7 @@ class Site extends ActiveRecord
      */
     public function getBehaviorClass()
     {
-        /** @var AntragsgruenAppParams $params */
+        /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
         if (isset($params->siteBehaviorClasses[$this->id])) {

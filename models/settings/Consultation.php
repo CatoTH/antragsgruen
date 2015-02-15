@@ -1,8 +1,8 @@
 <?php
 
-namespace app\models;
+namespace app\models\settings;
 
-class ConsultationSettings
+class Consultation
 {
     /** @var bool */
     public $motionNeedsEmail  = false;
@@ -32,6 +32,7 @@ class ConsultationSettings
     public $startLayoutType      = 0;
     public $labelButtonNew       = "";
     public $commentWholeMotions  = false;
+    public $allowMultipleTags    = false;
 
     /** @var null|string */
     public $logoUrl     = null;

@@ -3,6 +3,8 @@
 namespace app\models\db;
 
 use app\components\PasswordFunctions;
+use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\AntragsgruenAppParams;
 use yii\db\ActiveRecord;
 use yii\db\Query;
@@ -320,5 +322,79 @@ class User extends ActiveRecord implements IdentityInterface
         $query->orderBy("amendment.dateCreation DESC");
 
         return $query->all();
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getNotificationUnsubscribeCode()
+    {
+        /** @var AntragsgruenAppParams $params */
+        $params = \Yii::$app->params;
+
+        $code = $this->id . "-" . substr(md5($this->id . "abmelden" . $params->randomSeed), 0, 8);
+        return $code;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param string $subject
+     * @param string $text
+     */
+    public function notificationEmail(Consultation $consultation, $subject, $text)
+    {
+        if ($this->email == "" || !$this->emailConfirmed) {
+            return;
+        }
+        $code           = $this->getNotificationUnsubscribeCode();
+        $unsubscribeUrl = UrlHelper::createUrl(['user/unsubscribe', 'code' => $code]);
+        $unsubscribeUrl = \Yii::$app->request->absoluteUrl . $unsubscribeUrl;
+        $gruss          = "Hallo " . $this->name . ",\n\n";
+        $from_name      = $consultation->site->getBehaviorClass()->getMailFromName();
+        $sig            = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
+            "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $unsubscribeUrl;
+        $text           = $gruss . $text . $sig;
+        $type           = EmailLog::TYPE_MOTION_NOTIFICATION_USER;
+        Tools::sendMailLog($type, $this->email, $this->id, $subject, $text, $from_name);
+    }
+
+    /**
+     * @param Motion $motion
+     */
+    public function benachrichtigenAntrag(Motion $motion)
+    {
+        $subject = "[Antragsgrün] Neuer Antrag: " . $motion->getNameWithPrefix();
+        $link = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
+        $link = \Yii::$app->request->baseUrl . $link;
+        $text    = "Es wurde ein neuer Antrag eingereicht:\nAnlass: " . $motion->consultation->title .
+            "\nName: " . $motion->getNameWithPrefix() . "\nLink: " . $link;
+        $this->notificationEmail($motion->consultation, $subject, $text);
+    }
+
+    /**
+     * @param Amendment $amendment
+     */
+    public function benachrichtigenAenderungsantrag(Amendment $amendment)
+    {
+        $subject = "[Antragsgrün] Neuer Änderungsantrag zu " . $amendment->motion->getNameWithPrefix();
+        $motionId = $amendment->motion->id;
+        $link = UrlHelper::createUrl(['amendment/view', 'amendmentId' => $amendment->id, 'motionId' => $motionId]);
+        $link = \Yii::$app->request->baseUrl . $link;
+        $text    = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: " .
+            $amendment->motion->consultation->title . "\nAntrag: " . $amendment->motion->getNameWithPrefix() .
+            "\nLink: " . $link;
+        $this->notificationEmail($amendment->motion->consultation, $subject, $text);
+    }
+
+    /**
+     * @param IComment $comment
+     */
+    public function notifyComment(IComment $comment)
+    {
+        $subject = "[Antragsgrün] Neuer Kommentar zu: " . $comment->getMotionName();
+        $text    = "Es wurde ein neuer Kommentar zu " . $comment->getMotionName() . " geschrieben:\n" .
+            $comment->getLink(true);
+        $this->notificationEmail($comment->getConsultation(), $subject, $text);
     }
 }

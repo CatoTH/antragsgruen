@@ -6670,13 +6670,6 @@ ins {
 #aenderungsantrag-form .unterstuetzerInnenwidget select, #antrag-form .unterstuetzerInnenwidget select {
   width: 200px; }
 
-.js_protection_hint {
-  width: 90%;
-  background-color: #f08080;
-  border: solid 1px red;
-  margin: 15px;
-  padding: 5px; }
-
 #ae_status_setter .ae {
   display: inline-block;
   width: 40px; }

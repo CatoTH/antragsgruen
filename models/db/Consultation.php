@@ -3,7 +3,6 @@
 namespace app\models\db;
 
 use app\components\MotionSorter;
-use app\models\ConsultationSettings;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
 use app\models\initiatorViews\DefaultForm;
@@ -39,6 +38,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationOdtTemplate[] $odtTemplates
  * @property ConsultationSubscription[] $subscriptions
  * @property ConsultationSettingsTag[] $tags
+ * @property ConsultationSettingsMotionSection[] $motionSections
  */
 class Consultation extends ActiveRecord
 {
@@ -108,23 +108,31 @@ class Consultation extends ActiveRecord
         return $this->hasMany(ConsultationSettingsTag::className(), ['id' => 'consultationId']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMotionSections()
+    {
+        return $this->hasMany(ConsultationSettingsMotionSection::className(), ['id' => 'consultationId']);
+    }
 
-    /** @var null|ConsultationSettings */
+
+    /** @var null|\app\models\settings\Consultation */
     private $settingsObject = null;
 
     /**
-     * @return ConsultationSettings
+     * @return \app\models\settings\Consultation
      */
     public function getSettings()
     {
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new ConsultationSettings($this->settings);
+            $this->settingsObject = new \app\models\settings\Consultation($this->settings);
         }
         return $this->settingsObject;
     }
 
     /**
-     * @param ConsultationSettings $settings
+     * @param \app\models\settings\Consultation $settings
      */
     public function setSettings($settings)
     {
@@ -237,5 +245,31 @@ class Consultation extends ActiveRecord
     public function getAmendmentInitiatorFormClass()
     {
         return new DefaultForm($this);
+    }
+
+    /**
+     * @return bool
+     */
+    public function motionDeadlineIsOver()
+    {
+        $normalized = str_replace(array(" ", ":", "-"), array("", "", ""), $this->deadlineMotions);
+        if ($this->deadlineMotions != "" && date("YmdHis") > $normalized) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function amendmentDeadlineIsOver()
+    {
+        $normalized = str_replace(array(" ", ":", "-"), array("", "", ""), $this->deadlineAmendments);
+        if ($this->deadlineAmendments != "" && date("YmdHis") > $normalized) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace app\models;
+namespace app\models\settings;
 
 
-class LayoutParams
+class Layout
 {
     public $menu               = array();
     public $breadcrumbs        = null;

@@ -74,6 +74,16 @@ class ConsultationController extends Base
         // @TODO
     }
 
+    public function actionLegal()
+    {
+        // @TODO
+    }
+
+    public function actionHelp()
+    {
+        // @TODO
+    }
+
 
     private function consultationSidebar(Consultation $consultation)
     {

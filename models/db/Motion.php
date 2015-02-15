@@ -25,6 +25,7 @@ use yii\db\Query;
  * @property MotionComment[] $comments
  * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
+ * @property MotionSupporter[] $supporters
  */
 class Motion extends IMotion
 {
@@ -102,6 +103,90 @@ class Motion extends IMotion
         $query->offset(0)->limit($limit);
 
         return $query->all();
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getNameWithPrefix()
+    {
+        if ($this->consultation->getSettings()->hideRevision) {
+            return $this->title;
+        }
+
+        $name = $this->titlePrefix;
+        if (strlen($name) > 1 && !in_array($name[strlen($name) - 1], array(":", "."))) {
+            $name .= ":";
+        }
+        $name .= " " . $this->title;
+        return $name;
+    }
+
+    /**
+     * @return Amendment[]
+     */
+    public function getVisibleAmendments()
+    {
+        $amendments = [];
+        foreach ($this->amendments as $amend) {
+            if (!in_array($amend->status, Amendment::getInvisibleStati())) {
+                $amendments[] = $amend;
+            }
+        }
+        return $amendments;
+    }
+
+    /**
+     * @return bool
+     */
+    public function iAmInitiator()
+    {
+        $user = \Yii::$app->user;
+        if ($user->isGuest) {
+            return false;
+        }
+
+        foreach ($this->supporters as $supp) {
+            if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId == $user->id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function canEdit()
+    {
+        if ($this->status == static::STATUS_DRAFT) {
+            return true;
+        }
+
+        if ($this->textFixed) {
+            return false;
+        }
+
+        if ($this->consultation->getSettings()->adminsMayEdit) {
+            if ($this->consultation->isAdminCurUser()) {
+                return true;
+            }
+            if ($this->consultation->site->isAdminCurUser()) {
+                return true;
+            }
+        }
+
+        if ($this->consultation->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
+            if ($this->consultation->motionDeadlineIsOver()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

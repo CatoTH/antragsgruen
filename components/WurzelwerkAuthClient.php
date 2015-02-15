@@ -136,6 +136,29 @@ class WurzelwerkAuthClient extends OpenId
     }
 
     /**
+     * Generates default [[returnUrl]] value.
+     * @return string default authentication return URL.
+     */
+    protected function defaultReturnUrl()
+    {
+        $params = $_GET;
+        $keys = array_keys($params);
+        foreach ($keys as $name) {
+            if (strncmp('openid', $name, 6) === 0) {
+                unset($params[$name]);
+            }
+        }
+        $params[0] = Yii::$app->requestedRoute;
+        $url = Yii::$app->getUrlManager()->createUrl($params);
+
+        if (strpos($url, $this->getTrustRoot()) !== 0) {
+            $url = $this->getTrustRoot() . $url;
+        }
+
+        return $url;
+    }
+
+    /**
      * @return User
      * @throws \Exception
      */

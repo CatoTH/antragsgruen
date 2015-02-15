@@ -1,8 +1,8 @@
 <?php
-namespace app\models;
+namespace app\models\settings;
 
 
-class PDFSettings
+class PDF
 {
     /** @var string */
     public $logo;

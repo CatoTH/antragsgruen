@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  * @property int $comments
  *
  * @property Consultation $consultation
+ * @property User $user
  */
 class ConsultationSubscription extends ActiveRecord
 {

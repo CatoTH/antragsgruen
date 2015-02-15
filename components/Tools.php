@@ -58,7 +58,7 @@ class Tools
      */
     public static function sendEmailMandrill($mailType, $toEmail, $subject, $text, $fromEmail, $fromName)
     {
-        /** @var \app\models\AntragsgruenAppParams $params */
+        /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
         $mandrill = new \Mandrill($params->mandrillApiKey);
@@ -111,7 +111,7 @@ class Tools
         $fromEmail = null,
         $noLogReplaces = null
     ) {
-        /** @var \app\models\AntragsgruenAppParams $params */
+        /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
         $sendText = ($noLogReplaces ? str_replace(

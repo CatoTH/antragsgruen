@@ -134,7 +134,10 @@ if ($hide_ww_login) {
 
 echo '<h2>Wurzelwerk-Login</h2>
     <div class="content">';
-echo Html::beginForm(UrlHelper::createUrl('user/loginwurzelwerk'), 'post', ['class' => 'col-sm-5']);
+
+$backUrl = UrlHelper::createUrl('consultation/index');
+$action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
+echo Html::beginForm($action, 'post', ['class' => 'col-sm-5']);
 
 echo '<div class="form-group">
     <label for="wurzelwerkAccount">WurzelWerk-Account:</label>
