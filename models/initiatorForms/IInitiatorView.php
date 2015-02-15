@@ -1,12 +1,13 @@
 <?php
 
-namespace app\models\initiatorViews;
+namespace app\models\initiatorForms;
 
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\forms\MotionEditForm;
 
 interface IInitiatorView
 {
@@ -40,8 +41,8 @@ interface IInitiatorView
 
     /**
      * @param Consultation $consultation
-     * @param User $initiator
+     * @param MotionEditForm $editForm
      * @return string
      */
-    public function getInitiatorForm(Consultation $consultation, User $initiator);
+    public function getMotionInitiatorForm(Consultation $consultation, MotionEditForm $editForm);
 }

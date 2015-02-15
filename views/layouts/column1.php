@@ -1,15 +1,24 @@
 <?php
-
 /**
  * @var \yii\web\View $this
  * @var string $content
  */
 
 $this->beginContent('@app/views/layouts/main.php');
+
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$params     = $controller->layoutParams;
+
+$row_classes = array("row", "antragsgruen-content");
+
 ?>
-    <div class="row-fluid">
-        <div class="span9 well">
+
+
+    <div class="<?= implode(" ", $row_classes) ?>">
+        <main class="col-md-9 well">
             <?php echo $content; ?>
-        </div>
+        </main>
     </div>
+
 <?php $this->endContent();

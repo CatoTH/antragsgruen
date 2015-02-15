@@ -25,6 +25,9 @@ class Base extends Controller
     /** @var null|Site */
     public $site = null;
 
+    /** @var string */
+    public $layout = 'column1';
+
     /**
      * @param string $cid the ID of this controller.
      * @param Module $module the module that this controller belongs to.

@@ -19,7 +19,9 @@ if (isset($controller->text_comments) && $controller->text_comments) {
 }
 */
 $title = (isset($this->title) ? $this->title : '');
-if (mb_strpos($title, 'Antragsgrün') === false) $title .= ' (Antragsgrün)';
+if (mb_strpos($title, 'Antragsgrün') === false) {
+    $title .= ' (Antragsgrün)';
+}
 
 $minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 
@@ -188,6 +190,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 
     <script src="/js/bootstrap.js"></script>
     <script src="/js/antragsgruen.js"></script>
+    <script src="/js/scrollintoview.js"></script>
 <?php
 foreach ($params->extraJs as $file) {
     echo '<script src="' . Html::encode($file) . '"></script>' . "\n";

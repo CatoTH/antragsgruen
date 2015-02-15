@@ -5,7 +5,7 @@ namespace app\models\db;
 use app\components\MotionSorter;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
-use app\models\initiatorViews\DefaultForm;
+use app\models\initiatorForms\DefaultForm;
 use app\models\policies\IPolicy;
 use app\models\wording\Wording;
 use yii\db\ActiveRecord;
@@ -89,7 +89,7 @@ class Consultation extends ActiveRecord
      */
     public function getOdtTemplates()
     {
-        return $this->hasMany(ConsultationOdtTemplate::className(), ['id' => 'consultationId']);
+        return $this->hasMany(ConsultationOdtTemplate::className(), ['consultationId' => 'id']);
     }
 
     /**
@@ -97,7 +97,7 @@ class Consultation extends ActiveRecord
      */
     public function getSubscriptions()
     {
-        return $this->hasMany(ConsultationSubscription::className(), ['id' => 'consultationId']);
+        return $this->hasMany(ConsultationSubscription::className(), ['consultationId' => 'id']);
     }
 
     /**
@@ -105,7 +105,7 @@ class Consultation extends ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(ConsultationSettingsTag::className(), ['id' => 'consultationId']);
+        return $this->hasMany(ConsultationSettingsTag::className(), ['consultationId' => 'id']);
     }
 
     /**
@@ -113,7 +113,7 @@ class Consultation extends ActiveRecord
      */
     public function getMotionSections()
     {
-        return $this->hasMany(ConsultationSettingsMotionSection::className(), ['id' => 'consultationId']);
+        return $this->hasMany(ConsultationSettingsMotionSection::className(), ['consultationId' => 'id']);
     }
 
 

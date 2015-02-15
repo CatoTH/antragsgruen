@@ -6,6 +6,7 @@ use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
+use app\models\db\MotionSupporter;
 use app\models\exceptions\FormError;
 
 class MotionEditForm extends \yii\base\Model
@@ -15,8 +16,10 @@ class MotionEditForm extends \yii\base\Model
     /** @var Consultation */
     private $consultation;
 
-    /** @var array */
+    /** @var MotionSupporter[] */
     public $supporters = array();
+
+    /** @var array */
     public $tags       = array();
     public $texts      = array();
 

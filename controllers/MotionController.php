@@ -479,8 +479,6 @@ class MotionController extends Base
      */
     public function actionCreate($subdomain = "", $consultationPath = "")
     {
-        $this->layout = 'column2';
-
         $this->loadConsultation($subdomain, $consultationPath);
         $this->testMaintainanceMode();
 
@@ -489,7 +487,7 @@ class MotionController extends Base
         if (!$this->consultation->getMotionPolicy()->checkCurUserHeuristically()) {
             \Yii::$app->session->setFlash('error', 'Es kann kein Antrag angelegt werden.');
             $this->redirect(UrlHelper::createUrl("consultation/index"));
-            return;
+            return "";
         }
 
         if (isset($_POST["create"])) {
@@ -527,7 +525,7 @@ class MotionController extends Base
             $form->supporters[]      = $supporter;
         }
 
-        $this->render(
+        return $this->render(
             'editform',
             [
                 'mode'         => 'create',

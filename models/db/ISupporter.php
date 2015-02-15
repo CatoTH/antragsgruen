@@ -4,6 +4,18 @@ namespace app\models\db;
 
 use yii\db\ActiveRecord;
 
+/**
+ * @property int $position
+ * @property int $userId
+ * @property string $role
+ * @property string $comment
+ * @property int $personType
+ * @property string $name
+ * @property string $organization
+ * @property string $resolutionDate
+ * @property string $contactEmail
+ * @property string $contextPhone
+ */
 abstract class ISupporter extends ActiveRecord
 {
     const ROLE_INITIATOR = 'initiates';

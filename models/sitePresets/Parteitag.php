@@ -58,16 +58,6 @@ class Parteitag implements ISitePreset
     {
         $section                 = new ConsultationSettingsMotionSection();
         $section->consultationId = $consultation->id;
-        $section->type           = ConsultationSettingsMotionSection::TYPE_TITLE;
-        $section->position       = 0;
-        $section->title          = "Titel";
-        $section->maxLen         = 0;
-        $section->fixedWidth     = 0;
-        $section->lineNumbers    = 1;
-        $section->save();
-
-        $section                 = new ConsultationSettingsMotionSection();
-        $section->consultationId = $consultation->id;
         $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_PLAIN;
         $section->position       = 1;
         $section->title          = "Antragstext";

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\initiatorViews;
+namespace app\models\initiatorForms;
 
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
@@ -9,6 +9,7 @@ use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\forms\MotionEditForm;
 use yii\web\View;
 
 class DefaultForm implements IInitiatorView
@@ -242,16 +243,22 @@ class DefaultForm implements IInitiatorView
 
     /**
      * @param Consultation $consultation
-     * @param User $initiator
+     * @param MotionEditForm $editForm
      * @return string
      */
-    public function getInitiatorForm(Consultation $consultation, User $initiator)
+    public function getMotionInitiatorForm(Consultation $consultation, MotionEditForm $editForm)
     {
         $labelOrganization = 'Gremium, LAG...';
         $labelName         = 'Name';
         $view              = new View();
+        $initiator         = null;
+        foreach ($editForm->supporters as $supporter) {
+            if ($supporter->role == MotionSupporter::ROLE_INITIATOR) {
+                $initiator = $supporter;
+            }
+        }
         return $view->render(
-            '@app/views/main',
+            '@app/views/initiatorForms/std',
             [
                 'consultation'      => $consultation,
                 'initiator'         => $initiator,

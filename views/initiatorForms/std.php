@@ -1,64 +1,73 @@
 <?php
 
-$str      = '';
+use app\models\db\Consultation;
+use yii\helpers\Html;
+
+/**
+ * @var \yii\web\View $this
+ * @var Consultation $consultation
+ * @var \app\models\db\ISupporter $initiator
+ * @var string $labelName
+ * @var string $labelOrganization
+ */
+
+
 $settings = $consultation->getSettings();
 
 if ($consultation->isAdminCurUser()) {
-    $str .= '<label><input type="checkbox" name="andere_antragstellerIn"> ' .
+    echo '<label><input type="checkbox" name="andere_antragstellerIn"> ' .
         'Ich lege diesen Antrag für eine andere AntragstellerIn an
                 <small>(Admin-Funktion)</small>
             </label>';
 }
 
-$str .= '<div class="antragstellerIn_daten">
-			<div class="control-group name_row"><label class="control-label" for="Person_name">' . $label_name . '</label>
+echo '<div class="antragstellerIn_daten">
+			<div class="control-group name_row"><label class="control-label" for="Person_name">' . $labelName . '</label>
 				<div class="controls name_row"><input name="User[name]" id="Person_name" type="text" maxlength="100" value="';
 if ($initiator) {
-    $str .= Html::encode($initiator->name);
+    echo Html::encode($initiator->name);
 }
-$str .= '"></div>
+echo '"></div>
 			</div>
 
 			<div class="control-group organisation_row">
-			<label class="control-label" for="Person_organisation">' . $label_organisation . '</label>
+			<label class="control-label" for="Person_organisation">' . $labelOrganization . '</label>
 			<div class="controls organisation_row">
 			<input name="User[organisation]" id="Person_organisation" type="text" maxlength="100" value="';
 /*
 if ($initiator) {
-    $str .= Html::encode($initiator->organisation);
+    echo Html::encode($initiator->organisation);
 }
 */
-$str .= '"></div>
+echo '"></div>
 			</div>
 
 			<div class="control-group email_row"><label class="control-label" for="Person_email">E-Mail</label>
 				<div class="controls email_row"><input';
 if ($settings->motionNeedsEmail) {
-    $str .= ' required';
+    echo ' required';
 }
-$str .= ' name="User[email]" id="Person_email" type="text" maxlength="200" value="';
+echo ' name="User[email]" id="Person_email" type="text" maxlength="200" value="';
 if ($initiator) {
-    $str .= Html::encode($initiator->email);
+    echo Html::encode($initiator->cont);
 }
-$str .= '"></div>
+echo '"></div>
 			</div>';
 
 if ($settings->motionHasPhone) {
-    $str .= '<div class="control-group telefon_row">
+    echo '<div class="control-group telefon_row">
                 <label class="control-label" for="Person_telefon">Telefon</label>
 				<div class="controls telefon_row"><input';
     if ($settings->motionNeedsPhone) {
-        $str .= ' required';
+        echo ' required';
     }
-    $str .= ' name="User[telefon]" id="Person_telefon" type="text" maxlength="100" value="';
+    echo ' name="User[telefon]" id="Person_telefon" type="text" maxlength="100" value="';
     /*
     if ($initiator) {
-        $str .= Html::encode(Us->telefon);
+        echo Html::encode(Us->telefon);
     }
     */
-    $str .= '"></div>
+    echo '"></div>
 			</div>';
 }
-$str .= '</div>';
-
-return $str;
+echo '</div>';

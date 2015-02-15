@@ -10,6 +10,7 @@
  * @var bool $forceTag
  */
 use app\components\UrlHelper;
+use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationSettingsTag;
 use yii\helpers\Html;
 
@@ -49,15 +50,15 @@ foreach ($hiddens as $name => $value) {
 }
 
 if ($jsProtection) {
-    echo '<div class="alert alert-warning" role="alert">';
+    echo '<div class="alert alert-warning jsProtectionHint" role="alert">';
     echo 'Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.';
     echo '</div>';
 }
 
-echo '<div class="form-group">
+echo '<fieldset class="form-group">
     <label for="motionTitle">Überschrift</label>
     <input type="text" class="form-control" id="motionTitle" value="' . Html::encode($form->title) . '">
-  </div>';
+  </fieldset>';
 
 /** @var ConsultationSettingsTag][] $tags */
 $tags = array();
@@ -72,8 +73,8 @@ if ($forceTag !== null) {
 if (count($tags) == 1) {
     $keys = array_keys($tags);
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '">';
-} else {
-    echo '<fieldset><label class="legend">Antragstyp</label>';
+} elseif (count($tags) > 0) {
+    echo '<fieldset class="form-group"><label class="legend">Antragstyp</label>';
     foreach ($tags as $id => $tag) {
         echo '<label class="radio-inline"><input name="tags[]" value="' . $id . '" type="radio" ';
         if (in_array($id, $form->tags)) {
@@ -85,64 +86,35 @@ if (count($tags) == 1) {
 }
 
 
-?>
+foreach ($consultation->motionSections as $section) {
+    $sid = $section->id;
 
-        <fieldset class="control-group textarea" <?php
-if ($antrag_max_len > 0) {
-    echo " data-max_len=\"" . $antrag_max_len . "\"";
-}
-?>>
+    echo '<fieldset class="form-group wysiwyg-textarea"';
+    echo ' data-maxLen="' . $section->maxLen . '"';
+    echo ' data-fullHtml="' . ($section->type == ConsultationSettingsMotionSection::TYPE_TEXT_HTML ? 1 : 0) . '"';
+    echo '><label for="texts_' . $sid . '">' . Html::encode($section->title) . '</label>';
 
-            <legend><?php echo $sprache->get("Antragstext"); ?></legend>
+    if ($section->maxLen > 0) {
+        echo '<div class="max_len_hint">';
+        echo '<div class="calm">Maximale Länge: ' . $section->maxLen . ' Zeichen</div>';
+        echo '<div class="alert">Text zu lang - maximale Länge: ' . $section->maxLen . ' Zeichen</div>';
+        echo '</div>';
+    }
 
-            <?php if ($antrag_max_len > 0) {
-    echo '<div class="max_len_hint">';
-    echo '<div class="calm">Maximale Länge: ' . $antrag_max_len . ' Zeichen</div>';
-    echo '<div class="alert">Text zu lang - maximale Länge: ' . $antrag_max_len . ' Zeichen</div>';
-    echo '</div>';
-} ?>
-
-            <div class="text_full_width">
-                <label style="display: none;" class="control-label required" for="Antrag_text">
-                    <?php echo $sprache->get("Antragstext"); ?>
-                    <span class="required">*</span>
-                </label>
-
-                <div class="controls">
-                    <!--<a href="#" onClick="alert('TODO'); return false;">&gt; Text aus einem Pad kopieren</a><br>-->
-					<textarea id="Antrag_text" class="span8" name="Antrag[text]" rows="5" cols="80"><?php
-echo CHtml::encode($model->text);
-?></textarea>
-                </div>
-
-            </div>
-        </fieldset>
-
-        <?php
-if ($model->veranstaltung->getEinstellungen()->antrag_begruendungen) {
-    ?>
-
-    <fieldset class="control-group">
-        <legend>Begründung</legend>
-
-        <div class="text_full_width">
-            <label style="display: none;" class="control-label required" for="Antrag_begruendung">
-                Begründung
-                <span class="required">*</span>
-            </label>
-
-            <div class="controls">
-                <textarea id="Antrag_begruendung" class="span8" name="Antrag[begruendung]" rows="5" cols="80"><?= CHtml::encode($model->begruendung) ?></textarea>
-                <input type="hidden" id="Antrag_begruendung_html" name="Antrag[begruendung_html]"
-                       value="<?php echo $model->veranstaltung->getEinstellungen()->begruendung_in_html; ?>">
-            </div>
-
-        </div>
-    </fieldset>
-<?php
+    echo '<div class="textFullWidth">';
+    echo '<div><textarea id="texts_' . $sid . '" name="texts[' . $sid . ']" rows="5" cols="80">';
+    echo Html::encode(isset($form->texts[$sid]) ? $form->texts[$sid] : '');
+    echo '</textarea></div></div>';
+    echo '</fieldset>';
 }
 
-if (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts && veranstaltungsspezifisch_erzwinge_login($this->veranstaltung)) {
+$initiatorClass = $consultation->getMotionInitiatorFormClass();
+echo $initiatorClass->getMotionInitiatorForm($consultation, $form);
+/*
+
+
+if (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts
+&& veranstaltungsspezifisch_erzwinge_login($this->veranstaltung)) {
     $this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
         "form"               => $form,
         "mode"               => $mode,
@@ -156,26 +128,14 @@ if (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_a
         "sprache"            => $model->veranstaltung->getSprache(),
     ));
 }
-?>
+*/
 
-        <div style="float: right;">
-            <?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Weiter')); ?>
-        </div>
-        <br>
-    </div>
+echo '<div class="submitHolder"><button type="submit" name="create" class="btn btn-primary">';
+echo '<span class="glyphicon glyphicon-ok"> Weiter';
+echo '</button></div>';
 
+echo '</div>';
 
-    <script>
-        $(function () {
-            ckeditor_bbcode("Antrag_text");
-            <?php if ($model->veranstaltung->getEinstellungen()->antrag_begruendungen) { ?>
-    if ($("#Antrag_begruendung_html").val() == "1") {
-        ckeditor_simplehtml("Antrag_begruendung");
-    } else {
-        ckeditor_bbcode("Antrag_begruendung");
-    }
-<?php } ?>
-        });
-    </script>
+$params->addOnLoadJS('$.Antragsgruen.motionEditForm();');
 
-<?php $this->endWidget(); ?>
+echo Html::endForm();

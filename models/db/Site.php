@@ -4,7 +4,7 @@ namespace app\models\db;
 use app\models\settings\AntragsgruenApp;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
-use app\models\SiteSpecificBehavior;
+use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -172,7 +172,7 @@ class Site extends ActiveRecord
     }
 
     /**
-     * @return SiteSpecificBehavior
+     * @return DefaultBehavior
      */
     public function getBehaviorClass()
     {
@@ -182,6 +182,6 @@ class Site extends ActiveRecord
         if (isset($params->siteBehaviorClasses[$this->id])) {
             return $params->siteBehaviorClasses[$this->id];
         }
-        return new SiteSpecificBehavior();
+        return new DefaultBehavior();
     }
 }
