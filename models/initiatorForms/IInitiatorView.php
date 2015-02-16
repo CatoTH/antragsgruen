@@ -19,13 +19,6 @@ interface IInitiatorView
 
 
     /**
-     * @param bool $allowOtherInitiators
-     * @return User|null
-     */
-    public function getSubmitPerson($allowOtherInitiators);
-
-
-    /**
      * @param Motion $motion
      * @throws FormError
      */

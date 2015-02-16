@@ -29,7 +29,7 @@ class MotionSupporter extends ISupporter
      */
     public static function tableName()
     {
-        return 'amendmentSupporter';
+        return 'motionSupporter';
     }
 
     /**
@@ -46,5 +46,18 @@ class MotionSupporter extends ISupporter
     public function getMotion()
     {
         return $this->hasOne(Motion::className(), ['id' => 'motionId']);
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['motionId', 'position', 'role'], 'required'],
+            [['id', 'motionId', 'position', 'userId', 'personType'], 'number'],
+            [['resolutionDate', 'contactEmail', 'contactPhone'], 'safe'],
+            [['position', 'comment', 'personType', 'name', 'organization'], 'safe'],
+        ];
     }
 }

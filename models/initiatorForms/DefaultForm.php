@@ -36,59 +36,6 @@ class DefaultForm implements IInitiatorView
 
 
     /**
-     * @param bool $allowOtherInitiators
-     * @return User|null
-     */
-    public function getSubmitPerson($allowOtherInitiators)
-    {
-        if (\Yii::$app->user->isGuest) {
-            $initiator = null;
-        } elseif ($allowOtherInitiators && isset($_REQUEST["otherInitiator"])) {
-            $initiator = null;
-        } else {
-            /** @var User $initiator */
-            $initiator = User::findOne(["auth" => \Yii::$app->user->id]);
-            if ($initiator) {
-                $nameChanged = (isset($_REQUEST["User"]["name"]) && $initiator->name !== $_REQUEST["User"]["name"]);
-                if ($nameChanged) {
-                    $initiator->name = $_REQUEST["User"]["name"];
-                    if (isset($_REQUEST["User"]["organisation"])) {
-                        // $antragstellerIn->organisation = $_REQUEST["Person"]["organisation"];
-                        // @TODO
-                    }
-                    $initiator->save();
-                }
-            }
-        }
-
-        if (isset($_REQUEST["User"])) {
-            if ($initiator === null) {
-                $initiator = new User();
-                $initiator->setAttributes($_REQUEST["User"]);
-                //$initiator->telefon        =
-                //(isset($_REQUEST["Person"]["telefon"]) ? $_REQUEST["Person"]["telefon"] : "");
-                //$initiator->typ            =
-                //(isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] ==
-                //"organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
-                $initiator->dateCreation = date("Y-m-d H:i:s");
-                $initiator->status       = User::STATUS_UNCONFIRMED;
-                $initiator->save();
-            } else {
-                /*
-                if (!$antragstellerIn->telefon && isset($_REQUEST["Person"]["telefon"])
-                && $_REQUEST["Person"]["telefon"] != "") {
-                    $antragstellerIn->telefon = $_REQUEST["Person"]["telefon"];
-                    $antragstellerIn->save();
-                }
-                @TODO
-                */
-            }
-        }
-
-        return $initiator;
-    }
-
-    /**
      * @throws FormError
      */
     public function validateInitiatorViewMotion()
@@ -102,34 +49,41 @@ class DefaultForm implements IInitiatorView
      */
     public function submitInitiatorViewMotion(Motion $motion)
     {
-        $initiator = $this->getSubmitPerson($motion->consultation->isAdminCurUser());
-        if ($initiator === null) {
-            throw new FormError("Keine AntragstellerIn gefunden");
-        }
-
-        $initiatorIn_pre = MotionSupporter::findAll(
-            [
-                "antrag_id"          => $motion->id,
-                "rolle"              => MotionSupporter::ROLE_INITIATOR,
-                "unterstuetzerIn_id" => $initiator->id
-            ]
-        );
-        if (count($initiatorIn_pre) == 0) {
+        if (\Yii::$app->user->isGuest) {
             $init = new MotionSupporter();
         } else {
-            $init = $initiatorIn_pre[0];
+            // @TODO
+
+            /** @var \app\models\db\User $user */
+            $user = \Yii::$app->user->identity;
+
+            $init = MotionSupporter::findOne(
+                [
+                    "motionId" => $motion->id,
+                    "role"     => MotionSupporter::ROLE_INITIATOR,
+                    "userId"   => $user->id,
+                ]
+            );
+            if (!$init) {
+                $init = new MotionSupporter();
+                $init->userId = $user->id;
+            }
         }
 
+        $init->setAttributes($_POST['Initiator']);
         $init->motionId = $motion->id;
         $init->role     = MotionSupporter::ROLE_INITIATOR;
-        $init->userId   = $initiator->id;
         $init->position = 0;
+        /*
         if (isset($_REQUEST["OrganizationResolutionDate"]) && $_REQUEST["OrganizationResolutionDate"] != "") {
             $regexp = "/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/";
             if (preg_match($regexp, $_REQUEST["OrganizationResolutionDate"], $matches)) {
                 $init->resolutionDate = $matches["year"] . "-" . $matches["month"] . "-" . $matches["day"];
             }
         }
+        */
+        var_dump($init->getAttributes());
+        die();
         $init->save();
 
         if (isset($_REQUEST["SupporterFulltext"]) && trim($_REQUEST["SupporterFulltext"]) != "") {
@@ -264,6 +218,7 @@ class DefaultForm implements IInitiatorView
                 'initiator'         => $initiator,
                 'labelName'         => $labelName,
                 'labelOrganization' => $labelOrganization,
+                'allowOther'        => $consultation->isAdminCurUser(),
             ]
         );
 

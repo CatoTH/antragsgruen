@@ -20,6 +20,9 @@ abstract class IComment extends ActiveRecord
     const STATUS_VISIBLE   = 0;
     const STATUS_DELETED   = -1;
 
+    /**
+     * @return string[]
+     */
     public static function getStati()
     {
         return [

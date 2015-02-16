@@ -52,4 +52,20 @@ class LoggedIn extends IPolicy
     {
         return "Du musst dich einloggen.";
     }
+
+    /**
+     * @return bool
+     */
+    public function checkMotionSubmit()
+    {
+        return (!\Yii::$app->user->isGuest);
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkAmendmentSubmit()
+    {
+        return (!\Yii::$app->user->isGuest);
+    }
 }

@@ -43,7 +43,7 @@ if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo $motionPolicy->getOnCreateDescription();
 }
 
-echo Html::beginForm('', '', ['id' => 'motionCreateForm']);
+echo Html::beginForm('', '', ['id' => 'motionCreateForm', 'class' => 'motionEditForm']);
 
 foreach ($hiddens as $name => $value) {
     echo '<input type="hidden" name="' . Html::encode($name) . '" value="' . Html::encode($value) . '">';
@@ -57,7 +57,7 @@ if ($jsProtection) {
 
 echo '<fieldset class="form-group">
     <label for="motionTitle">Überschrift</label>
-    <input type="text" class="form-control" id="motionTitle" value="' . Html::encode($form->title) . '">
+    <input type="text" class="form-control" id="motionTitle" name="title" value="' . Html::encode($form->title) . '">
   </fieldset>';
 
 /** @var ConsultationSettingsTag][] $tags */
@@ -131,11 +131,11 @@ if (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_a
 */
 
 echo '<div class="submitHolder"><button type="submit" name="create" class="btn btn-primary">';
-echo '<span class="glyphicon glyphicon-ok"> Weiter';
+echo '<span class="glyphicon glyphicon-ok"></span> Weiter';
 echo '</button></div>';
-
-echo '</div>';
 
 $params->addOnLoadJS('$.Antragsgruen.motionEditForm();');
 
 echo Html::endForm();
+
+echo '</div>';

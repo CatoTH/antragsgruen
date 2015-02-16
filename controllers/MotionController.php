@@ -497,8 +497,9 @@ class MotionController extends Base
                 $nextUrl = ["motion/createConfirm", "motionId" => $motion->id, "fromMode" => "create"];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
             } catch (FormError $e) {
-
+                var_dump($e);
             }
+            die();
         }
 
         $hiddens      = array();
@@ -515,13 +516,16 @@ class MotionController extends Base
             $forceTag = null;
         }
 
-        if ($this->getCurrentUser() && count($form->supporters) == 0) {
-            $user                    = $this->getCurrentUser();
+        if (count($form->supporters) == 0) {
             $supporter               = new MotionSupporter();
-            $supporter->userId       = $user->id;
-            $supporter->name         = $user->name;
-            $supporter->contactEmail = $user->email;
-            $supporter->personType   = MotionSupporter::PERSON_NATURAL;
+            $supporter->role         = MotionSupporter::ROLE_INITIATOR;
+            if ($this->getCurrentUser()) {
+                $user                    = $this->getCurrentUser();
+                $supporter->userId       = $user->id;
+                $supporter->name         = $user->name;
+                $supporter->contactEmail = $user->email;
+                $supporter->personType   = MotionSupporter::PERSON_NATURAL;
+            }
             $form->supporters[]      = $supporter;
         }
 

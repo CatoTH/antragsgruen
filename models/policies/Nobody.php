@@ -52,4 +52,20 @@ class Nobody extends IPolicy
     {
         return "Das Anlegen ist nicht erlaubt.";
     }
+
+    /**
+     * @return bool
+     */
+    public function checkMotionSubmit()
+    {
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkAmendmentSubmit()
+    {
+        return false;
+    }
 }

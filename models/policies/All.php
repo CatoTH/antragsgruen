@@ -52,4 +52,20 @@ class All extends IPolicy
     {
         return "[kommt nicht vor]";
     }
+
+    /**
+     * @return bool
+     */
+    public function checkMotionSubmit()
+    {
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkAmendmentSubmit()
+    {
+        return true;
+    }
 }

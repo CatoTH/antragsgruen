@@ -14,7 +14,7 @@ use yii\db\ActiveRecord;
  * @property string $organization
  * @property string $resolutionDate
  * @property string $contactEmail
- * @property string $contextPhone
+ * @property string $contactPhone
  */
 abstract class ISupporter extends ActiveRecord
 {

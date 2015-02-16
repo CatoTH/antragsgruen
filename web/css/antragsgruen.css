@@ -6361,27 +6361,6 @@ fieldset.antragstellerIn label.radio {
 #antrag-form #Antrag_notiz_intern, #antrag-form #Aenderungsantrag_notiz_intern, #aenderungsantrag-form #Antrag_notiz_intern, #aenderungsantrag-form #Aenderungsantrag_notiz_intern {
   width: 427px; }
 
-.form-actions {
-  background: #f6f6f6;
-  background: -moz-linear-gradient(90deg, #f6f6f6 25%, white 100%);
-  background: -webkit-linear-gradient(90deg, #f6f6f6 25%, white 100%);
-  background: -o-linear-gradient(90deg, #f6f6f6 25%, white 100%);
-  background: -ms-linear-gradient(90deg, #f6f6f6 25%, white 100%);
-  background: linear-gradient(90deg, #f6f6f6 25%, white 100%);
-  margin: 0;
-  border: 0;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
-  border-radius: 0;
-  -moz-border-radius-bottomright: 10px;
-  -webkit-border-bottom-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  -moz-border-radius-bottomleft: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  position: relative;
-  padding: 15px 20px 50px; }
-
 .ae_select_confirm {
   text-align: center; }
 
@@ -6570,68 +6549,43 @@ ul.funktionen {
     margin-left: -24px;
     color: #fff; }
 
-.footer_bar {
-  clear: both;
-  width: 970px;
-  margin-bottom: 70px;
-  margin-top: 20px; }
-  .footer_bar .brand {
-    display: none; }
-  .footer_bar .navbar-inner {
-    text-align: left; }
-
-.bdk_antrags_liste {
+.bdkMotionLististe {
   padding: 25px;
   font-family: "Open Sans", verdana, sans-serif;
   font-size: 14px; }
-  .bdk_antrags_liste table {
+  .bdkMotionLististe table {
     width: 100%; }
-  .bdk_antrags_liste th {
+  .bdkMotionLististe th {
     border-bottom: solid 1px #afcb08;
     font-size: 0.80em;
     line-height: 2.5em;
     font-weight: 600;
     font-family: "Open Sans", verdana, sans-serif; }
-  .bdk_antrags_liste td {
+  .bdkMotionLististe td {
     font-family: "Open Sans", verdana, sans-serif;
     vertical-align: top;
     padding: 0.75em 0em 0.75em 0em; }
-  .bdk_antrags_liste tr.antrag {
+  .bdkMotionLististe tr.antrag {
     border-top: solid 1px #afcb08; }
-    .bdk_antrags_liste tr.antrag:first-child {
+    .bdkMotionLististe tr.antrag:first-child {
       border-top: none; }
-  .bdk_antrags_liste tr.aenderungsantrag .titel .pdflink {
+  .bdkMotionLististe tr.aenderungsantrag .titel .pdflink {
     font-weight: 400; }
-  .bdk_antrags_liste tr.aenderungsantrag .titel .titellink {
+  .bdkMotionLististe tr.aenderungsantrag .titel .titellink {
     font-weight: 400; }
-  .bdk_antrags_liste .nummer {
+  .bdkMotionLististe .nummer {
     width: 20%; }
-  .bdk_antrags_liste .titel {
+  .bdkMotionLististe .titel {
     width: 45%; }
-    .bdk_antrags_liste .titel .pdflink {
+    .bdkMotionLististe .titel .pdflink {
       font-size: 12px;
       font-weight: 600; }
-    .bdk_antrags_liste .titel .titellink {
+    .bdkMotionLististe .titel .titellink {
       font-weight: 600; }
-      .bdk_antrags_liste .titel .titellink a:link, .bdk_antrags_liste .titel .titellink a:visited {
+      .bdkMotionLististe .titel .titellink a:link, .bdkMotionLististe .titel .titellink a:visited {
         color: black; }
-  .bdk_antrags_liste .antragstellerIn {
+  .bdkMotionLististe .antragstellerIn {
     width: 35%; }
-
-.unterstuetzerInnenwidget_adder {
-  border: dotted 1px gray; }
-  .unterstuetzerInnenwidget_adder .person_selector {
-    width: 240px;
-    margin-right: 10px; }
-  .unterstuetzerInnenwidget_adder .unterstuetzerIn_neu_holder input {
-    border: solid 1px gray; }
-
-.unterstuetzerInnenwidget .sort_handle {
-  cursor: move; }
-
-.antragsdaten th {
-  text-align: left;
-  padding-right: 10px; }
 
 del {
   color: #880000; }
@@ -6646,34 +6600,6 @@ ins {
     .antragstext_diff ul li {
       width: 480px; }
 
-.unterstuetzerIn label input {
-  display: inline-block; }
-
-#aenderungsantrag-form textarea, #texte-form textarea {
-  width: 400px; }
-
-#aenderungsantrag-form textarea {
-  height: 150px; }
-
-#texte-form textarea {
-  height: 400px; }
-
-#aenderungsantrag-form select, #antrag-form select, #texte-form input, #texte-form select {
-  width: 405px; }
-
-#Antrag_status_string, #antrag-form select#Antrag_status {
-  width: 200px; }
-
-#aenderungsantrag-form #Aenderungsantrag_status, #aenderungsantrag-form #Aenderungsantrag_status_string {
-  width: 200px; }
-
-#aenderungsantrag-form .unterstuetzerInnenwidget select, #antrag-form .unterstuetzerInnenwidget select {
-  width: 200px; }
-
-#ae_status_setter .ae {
-  display: inline-block;
-  width: 40px; }
-
 #loginWurzelwerkHint {
   border-left: solid 1px #808080;
   padding-left: 10px;
@@ -6687,5 +6613,8 @@ ins {
   margin-top: -7px;
   display: inline-block;
   margin-bottom: 10px; }
+
+.motionEditForm .submitHolder {
+  text-align: right; }
 
 /*# sourceMappingURL=antragsgruen.css.map */

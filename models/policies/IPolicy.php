@@ -87,26 +87,12 @@ abstract class IPolicy
     /**
      * @return bool
      */
-    public function checkMotionSubmit()
-    {
-        if (isset($_REQUEST["Person"])) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    abstract public function checkMotionSubmit();
 
     /**
      * @return bool
      */
-    public function checkAmendmentSubmit()
-    {
-        if (isset($_REQUEST["Person"])) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    abstract public function checkAmendmentSubmit();
 
     /**
      * @abstract

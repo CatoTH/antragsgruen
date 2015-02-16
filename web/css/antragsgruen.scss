@@ -484,22 +484,6 @@ fieldset.antragstellerIn {
     width: 427px;
   }
 }
-
-.form-actions {
-  background: rgb(246, 246, 246);
-  background: -moz-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
-  background: -webkit-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
-  background: -o-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
-  background: -ms-linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
-  background: linear-gradient(90deg, rgb(246, 246, 246) 25%, rgb(255, 255, 255) 100%);
-  margin: 0;
-  border: 0;
-  @include border-radius(0);
-  @include border-radius-bottom();
-  position: relative;
-  padding: 15px 20px 50px;
-}
-
 .ae_select_confirm {
   text-align: center;
 }
@@ -689,23 +673,8 @@ ul.funktionen {
 
 }
 
-.footer_bar {
-  clear: both;
-  width: 970px;
-  margin-bottom: 70px;
-  margin-top: 20px;
 
-  .brand {
-    display: none;
-  }
-
-  .navbar-inner {
-    text-align: left;
-  }
-
-}
-
-.bdk_antrags_liste {
+.bdkMotionLististe {
   padding: 25px;
   font-family: "Open Sans", verdana, sans-serif;
   font-size: 14px;
@@ -763,32 +732,6 @@ ul.funktionen {
   }
 }
 
-.bdk_antrags_liste {
-
-}
-
-.unterstuetzerInnenwidget_adder {
-  border: dotted 1px gray;
-
-  .person_selector {
-    width: 240px;
-    margin-right: 10px;
-  }
-
-  .unterstuetzerIn_neu_holder input {
-    border: solid 1px gray;
-  }
-}
-
-.unterstuetzerInnenwidget .sort_handle {
-  cursor: move;
-}
-
-.antragsdaten th {
-  text-align: left;
-  padding-right: 10px;
-}
-
 del {
   color: #880000;
 }
@@ -807,43 +750,6 @@ ins {
   }
 }
 
-.unterstuetzerIn label input {
-  display: inline-block;
-}
-
-#aenderungsantrag-form textarea, #texte-form textarea {
-  width: 400px;
-}
-
-#aenderungsantrag-form textarea {
-  height: 150px;
-}
-
-#texte-form textarea {
-  height: 400px;
-}
-
-#aenderungsantrag-form select, #antrag-form select, #texte-form input, #texte-form select {
-  width: 405px;
-}
-
-#Antrag_status_string, #antrag-form select#Antrag_status {
-  width: 200px;
-}
-
-#aenderungsantrag-form #Aenderungsantrag_status, #aenderungsantrag-form #Aenderungsantrag_status_string {
-  width: 200px;
-}
-
-#aenderungsantrag-form .unterstuetzerInnenwidget select, #antrag-form .unterstuetzerInnenwidget select {
-  width: 200px;
-}
-
-#ae_status_setter .ae {
-  display: inline-block;
-  width: 40px;
-}
-
 #loginWurzelwerkHint {
   border-left: solid 1px #808080;
   padding-left: 10px;
@@ -858,4 +764,12 @@ ins {
   margin-top: -7px;
   display: inline-block;
   margin-bottom: 10px;
+}
+
+
+.motionEditForm {
+
+  .submitHolder {
+    text-align: right;
+  }
 }

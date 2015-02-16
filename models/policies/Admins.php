@@ -52,4 +52,20 @@ class Admins extends IPolicy
     {
         return "Nur Admins dürfen.";
     }
+
+    /**
+     * @return bool
+     */
+    public function checkMotionSubmit()
+    {
+        return ($this->consultation->isAdminCurUser());
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkAmendmentSubmit()
+    {
+        return ($this->consultation->isAdminCurUser());
+    }
 }
