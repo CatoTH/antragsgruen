@@ -154,7 +154,8 @@ CREATE TABLE `consultationSettingsTag` (
   `id` int(11) NOT NULL,
   `consultationId` int(11) DEFAULT NULL,
   `position` smallint(6) DEFAULT NULL,
-  `title` varchar(100) NOT NULL
+  `title` varchar(100) NOT NULL,
+  `cssicon`  smallint(6) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------

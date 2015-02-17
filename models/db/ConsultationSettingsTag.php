@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
  * @property int $consultationId
  * @property int $position
  * @property string $title
+ * @property int $cssicon
  *
  * @property Consultation $consultation
  * @property Motion[] $motions
@@ -38,5 +39,16 @@ class ConsultationSettingsTag extends ActiveRecord
     public function getMotions()
     {
         return $this->hasMany(Motion::className(), ['id' => 'motionId'])->viaTable('motionTag', ['tagId' => 'id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCSSIconClass()
+    {
+        switch ($this->cssicon) {
+            default:
+                return 'glyphicon glyphicon-file';
+        }
     }
 }

@@ -121,7 +121,7 @@ class UrlHelper
      * @param string $route
      * @return string
      */
-    public function createWurzelwerkLoginUrl($route)
+    public static function createWurzelwerkLoginUrl($route)
     {
         $target_url = Url::toRoute($route);
         if (Yii::$app->user->isGuest) {

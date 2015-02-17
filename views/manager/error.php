@@ -2,26 +2,56 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $name string */
-/* @var $message string */
-/* @var $exception Exception */
+/**
+ * @var yii\web\View $this
+ * @var string $name
+ * @var string $message
+ * @var int $httpStatus
+ */
+
+if (!isset($httpStatus)) {
+    $httpStatus = 500;
+}
+if (!isset($name)) {
+    $name = "Fehler";
+}
+
+switch ($httpStatus) {
+    case 404:
+        if ($message == "") {
+            $message = "Die gesuchte Seite gibt es nicht.";
+        }
+        header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+        break;
+    case 403:
+        if ($message == "") {
+            $message = "Kein Zugriff auf diese Seite.";
+        }
+        header($_SERVER["SERVER_PROTOCOL"] . ' 403 Forbidden');
+        break;
+    case 410:
+        if ($message == "") {
+            $message = "Dieser Inhalt wurde gelöscht.";
+        }
+        header($_SERVER["SERVER_PROTOCOL"] . ' 410 Gone');
+        break;
+    case 500:
+        if ($message == "") {
+            $message = "Ein interner Fehler ist aufgetreten.";
+        }
+        header($_SERVER["SERVER_PROTOCOL"] . ' 500 Internal Server Error');
+        break;
+}
 
 $this->title = $name;
 ?>
-<div class="site-error">
-
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <div class="alert alert-danger">
-        <?= nl2br(Html::encode($message)) ?>
+    <br><br>
+
+<div class="row">
+    <div class="alert alert-danger col-md-10 col-md-offset-1">
+        <?= $message ?>
     </div>
-
-    <p>
-        The above error occurred while the Web server was processing your request.
-    </p>
-    <p>
-        Please contact us if you think this is a server error. Thank you.
-    </p>
-
 </div>
+<br><br>

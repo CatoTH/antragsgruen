@@ -96,7 +96,7 @@ class Motion extends IMotion
     {
         $invisibleStati = array_map('IntVal', static::getInvisibleStati());
 
-        $query = (new Query())->select('motion.*')->from('motion');
+        $query = Motion::find();
         $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
         $query->where('motion.consultationId = ' . $consultation->id);
         $query->orderBy("dateCreation DESC");
@@ -187,6 +187,17 @@ class Motion extends IMotion
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIconCSSClass()
+    {
+        foreach ($this->tags as $tag) {
+            return $tag->getCSSIconClass();
+        }
+        return "glyphicon glyphicon-file";
     }
 
 

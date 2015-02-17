@@ -56,25 +56,13 @@ if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
     $html = '<div><ul class="nav nav-list neue-antraege">';
     $html .= '<li class="nav-header">' . $wording->get("Neue Anträge") . '</li>';
     if (count($newestMotions) == 0) {
-        $html .= "<li><i>keine</i></li>";
+        $html .= '<li><i>keine</i></li>';
     } else {
         foreach ($newestMotions as $motion) {
-            $html .= "<li";
-            /*
-             * @TODO
-            switch ($ant->typ) {
-                case Motion::$TYP_ANTRAG:
-                    $html .= " class='antrag'";
-                    break;
-                case Antrag::$TYP_RESOLUTION:
-                    $html .= " class='resolution'";
-                    break;
-                default:
-                    $html .= " class='resolution'";
-            }
-            */
+            $html .= '<li>';
+            $html .= '<span class="' . $motion->getIconCSSClass() . '"></span>';
             $motionLink = UrlHelper::createUrl(['motion/show', 'motionId' => $motion->id]);
-            $html .= '>' . Html::a($motion->title, $motionLink) . "</li>\n";
+            $html .= Html::a($motion->title, $motionLink) . "</li>\n";
         }
     }
     $html .= "</ul></div>";

@@ -77,7 +77,6 @@ class Base extends Controller
     }
 
 
-
     /**
      *
      */
@@ -98,42 +97,45 @@ class Base extends Controller
     }
 
     /**
+     * @param $status
+     * @param $message
+     * @throws \yii\base\ExitException
+     */
+    protected function showErrorpage($status, $message)
+    {
+        $this->layoutParams->robotsNoindex = true;
+        echo $this->render(
+            '@app/views/manager/error',
+            [
+                "message" => $message
+            ]
+        );
+        Yii::$app->end($status);
+    }
+
+    /**
      * @throws \yii\base\ExitException
      */
     protected function consultationNotFound()
     {
-        $this->layoutParams->robotsNoindex = true;
-        $this->render(
-            'error',
-            [
-                "code"    => 404,
-                "html"    => true,
-                "message" => "Die angegebene Veranstaltung wurde nicht gefunden. " .
-                    "Höchstwahrscheinlich liegt da an einem Tippfehler in der Adresse im Browser.<br>
+        $message = "Die angegebene Veranstaltung wurde nicht gefunden. " .
+            "Höchstwahrscheinlich liegt da an einem Tippfehler in der Adresse im Browser.<br>
 					<br>
-					Auf der <a href='http://www.antragsgruen.de/'>Antragsgrün-Startseite</a> " .
-                    "siehst du rechts eine Liste der aktiven Veranstaltungen."
-            ]
-        );
-        Yii::$app->end();
+					Auf der <a href='https://www.antragsgruen.de/'>Antragsgrün-Startseite</a> " .
+            "siehst du rechts eine Liste der aktiven Veranstaltungen.";
+        $this->showErrorpage(404, $message);
     }
 
     /**
-     *
+     * @throws \yii\base\ExitException
      */
     protected function consultationError()
     {
-        $this->layoutParams->robotsNoindex = true;
-        $this->render(
-            "../veranstaltung/error",
-            [
-                "code"    => 500,
-                "message" => "Leider existiert die aufgerufene Seite nicht. " .
-                    "Falls du der Meinung bist, dass das ein Fehler ist, " .
-                    "melde dich bitte per E-Mail (info@antragsgruen.de) bei uns.",
-            ]
-        );
-        Yii::$app->end(500);
+        $message = "Leider existiert die aufgerufene Seite nicht. " .
+            "Falls du der Meinung bist, dass das ein Fehler ist, " .
+            "melde dich bitte per E-Mail (info@antragsgruen.de) bei uns.";
+
+        $this->showErrorpage(500, $message);
     }
 
     /**
@@ -176,6 +178,9 @@ class Base extends Controller
     {
         if (is_null($this->site)) {
             $this->site = Site::findOne(["subdomain" => $siteId]);
+        }
+        if (is_null($this->site)) {
+            $this->consultationNotFound();
         }
 
         if ($consultationId == "") {
