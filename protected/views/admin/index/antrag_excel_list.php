@@ -20,17 +20,22 @@ header('Cache-Control: max-age=0');
 define('PCLZIP_TEMPORARY_DIR', '/tmp/');
 PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 
-$COL_ANTRAGSNR       = "B";
-$COL_ANTRAGSTELLERIN = "C";
-$COL_ANTRAGSTEXT     = "D";
-if ($text_begruendung_zusammen) {
-	$COL_KONTAKT   = "E";
-	$COL_VERFAHREN = "F";
-} else {
-	$COL_BEGRUENDUNG = "E";
-	$COL_KONTAKT     = "F";
-	$COL_VERFAHREN   = "G";
-}
+
+$hat_tags = ($this->veranstaltung->tags > 0);
+
+$curr_col = ord("B");
+$first_col = chr($curr_col);
+
+$COL_ANTRAGSNR       = chr($curr_col++);
+$COL_ANTRAGSTELLERIN = chr($curr_col++);
+$COL_TITEL           = chr($curr_col++);
+$COL_ANTRAGSTEXT     = chr($curr_col++);
+if (!$text_begruendung_zusammen) $COL_BEGRUENDUNG = chr($curr_col++);
+if ($hat_tags) $COL_TAGS = chr($curr_col++);
+$COL_KONTAKT   = chr($curr_col++);
+$COL_VERFAHREN = chr($curr_col++);
+
+
 
 $objPHPExcel = new PHPExcel();
 
@@ -52,12 +57,14 @@ $objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSNR . "2")->applyFromArray(a
 
 $objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSNR . '3', 'Antragsnr.');
 $objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTELLERIN . '3', 'AntragstellerIn');
+$objPHPExcel->getActiveSheet()->SetCellValue($COL_TITEL . '3', 'Titel');
 if ($text_begruendung_zusammen) {
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . '3', 'Antragstext u. Begründung');
 }  else {
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . '3', 'Antragstext');
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_BEGRUENDUNG . '3', 'Begründung');
 }
+if (isset($COL_TAGS)) $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS . '3', 'Schlagworte');
 $objPHPExcel->getActiveSheet()->SetCellValue($COL_KONTAKT . '3', 'Kontakt');
 $objPHPExcel->getActiveSheet()->SetCellValue($COL_VERFAHREN . '3', 'Verfahren');
 $objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSNR . "3:" . $COL_VERFAHREN . "3")->applyFromArray(array(
@@ -102,6 +109,7 @@ foreach ($antraege as $ant) {
 
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSNR . $row, $antrag->revision_name);
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTELLERIN . $row, implode(", ", $initiatorInnen_namen));
+    $objPHPExcel->getActiveSheet()->SetCellValue($COL_TITEL . $row, $antrag->name);
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_KONTAKT . $row, implode("\n", $initiatorInnen_kontakt));
 
 	$text_antrag   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $antrag->text);
@@ -135,13 +143,21 @@ foreach ($antraege as $ant) {
 		$objPHPExcel->getActiveSheet()->SetCellValue($COL_BEGRUENDUNG . $row, trim(implode("\n", $zeilen_begruendung)));
 		$objPHPExcel->getActiveSheet()->getStyle($COL_BEGRUENDUNG . $row)->getAlignment()->setWrapText(true);
 	}
+
+    if (isset($COL_TAGS)) {
+        $tags = array();
+        foreach ($antrag->tags as $tag) $tags[] = $tag->name;
+        $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS. $row, implode("\n", $tags));
+    }
 }
 
 $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(3);
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSNR)->setWidth(12);
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSTELLERIN)->setWidth(24);
-$objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSTEXT)->setAutoSize(true);
-if (!$text_begruendung_zusammen) $objPHPExcel->getActiveSheet()->getColumnDimension($COL_BEGRUENDUNG)->setAutoSize(true);
+$objPHPExcel->getActiveSheet()->getColumnDimension($COL_TITEL)->setWidth(40);
+$objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSTEXT)->setAutoSize(80);
+if (!$text_begruendung_zusammen) $objPHPExcel->getActiveSheet()->getColumnDimension($COL_BEGRUENDUNG)->setAutoSize(80);
+if (isset($COL_TAGS)) $objPHPExcel->getActiveSheet()->getColumnDimension($COL_TAGS)->setAutoSize(18);
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_KONTAKT)->setWidth(24);
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_VERFAHREN)->setWidth(13);
 

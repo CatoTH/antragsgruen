@@ -1,3 +1,10 @@
+2.5.4 - 2015-02-17
+==================
+
+* Schlagworte eines Antrags werden nun beim Excel-Export in einer eigenen Spalte angezeigt.
+* Der Titel eines Antrags wird beim Excel-Export nun in einer eigenen Spalte angezeigt.
+
+
 2.5.3 - 2015-02-07
 ==================
 
