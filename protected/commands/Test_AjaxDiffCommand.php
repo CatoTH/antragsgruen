@@ -35,7 +35,7 @@ class Test_AjaxDiffCommand extends CConsoleCommand
 			$diffs  = array();
 			/** @var array|AntragAbsatz[] $pars */
 			$pars                      = $antrag->getParagraphs();
-			$diffs[$test["absatz_nr"]] = DiffUtils::renderBBCodeDiff2HTML($pars[$test["absatz_nr"]]->str_bbcode, $test["text_neu"], false, 0, "", true);
+			$diffs[$test["absatz_nr"]] = DiffUtils::renderBBCodeDiff2HTML($pars[$test["absatz_nr"]]->str_bbcode, $test["text_neu"], false, 0, "", true, true);
 
 			var_dump($diffs);
 		}

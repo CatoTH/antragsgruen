@@ -337,10 +337,11 @@ class DiffUtils
 	 * @param bool $compact
 	 * @param int $css_width_hack
 	 * @param string $pre_str_html
+     * @param bool $wrapWithCssClass
 	 * @param bool $debug
 	 * @return string
 	 */
-	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false, $css_width_hack = 0, $pre_str_html = "", $debug = false)
+	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false, $css_width_hack = 0, $pre_str_html = "", $wrapWithCssClass = true, $debug = false)
 	{
 		$text_alt = static::bbNormalizeForDiff($text_alt);
 		$text_neu = static::bbNormalizeForDiff($text_neu);
@@ -436,7 +437,7 @@ class DiffUtils
 
 		if ($diffstr == "") $diffstr = HtmlBBcodeUtils::bbcode2html($text_alt);
 
-		$diffstr = HtmlBBcodeUtils::wrapWithTextClass($pre_str_html . $diffstr, $css_width_hack);
+		if ($wrapWithCssClass) $diffstr = HtmlBBcodeUtils::wrapWithTextClass($pre_str_html . $diffstr, $css_width_hack);
 		return $diffstr;
 	}
 

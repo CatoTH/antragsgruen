@@ -64,4 +64,18 @@ class AenderungsantragAbsatz
 		$str = DiffUtils::renderBBCodeDiff2HTML($this->str_bbcode_vorher, $this->str_bbcode_nachher, false, 0, $str_pre);
 		return $str;
 	}
+
+    /**
+     * @return string
+     */
+    public function getDiffHTMLForODS()
+    {
+        if ($this->zeile_von !== null && $this->zeile_bis !== null) {
+            $str_pre = "<div class='ae_absatz_header'>Im Absatz von Zeile " . $this->zeile_von ." bis " . $this->zeile_bis . "</div>";
+        } else {
+            $str_pre = "";
+        }
+        $str = DiffUtils::renderBBCodeDiff2HTML($this->str_bbcode_vorher, $this->str_bbcode_nachher, false, 0, "", false);
+        return $str_pre . "<div>" . $str . "</div>";
+    }
 }

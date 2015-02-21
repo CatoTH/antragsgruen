@@ -40,13 +40,6 @@ $this->breadcrumbs = array(
 				Neuen Antrag anlegen: <em><?php echo CHtml::encode($this->veranstaltung->getPolicyAntraege()->getPermissionDeniedMsg()) ?></em>
 			<?php } ?>
 		</li>
-		<li style="margin-left: 20px;">
-			<a href="#ae_ods_export" onClick="$('#ae_ods_export').toggle(); return false;">Export: Anträge als Tabelle (OpenOffice)</a>
-			<ul id="ae_ods_export" style="display: none;">
-				<li><a href="<?php echo $this->createUrl("admin/index/aeOdsList") ?>">Antragstext und Begründung getrennt</a></li>
-				<li><a href="<?php echo $this->createUrl("admin/index/aeOdsList", array("text_begruendung_zusammen" => 1)) ?>">Antragstext und Begründung in einer Spalte</a></li>
-			</ul>
-		</li>
 
 		<li style="margin-left: 20px;">
 			<a href="#antrag_excel_export" onClick="$('#antrag_excel_export').toggle(); return false;">Export: Anträge als Excel-Datei</a>
@@ -68,6 +61,15 @@ $this->breadcrumbs = array(
 				<li><a href="<?php echo $this->createUrl("admin/index/aeExcelList", array("antraege_separat" => 1)) ?>">Texte getrennt, Antragsnummer als separate Spalte</a></li>
 			</ul>
 		</li>
+
+        <li style="margin-left: 20px;">
+            <a href="#ae_ods_export" onClick="$('#ae_ods_export').toggle(); return false;">Export: Anträge als Tabelle (OpenOffice)</a>
+            <ul id="ae_ods_export" style="display: none;">
+                <li><a href="<?php echo $this->createUrl("admin/index/aeOdsList") ?>">Antragstext und Begründung getrennt</a></li>
+                <li><a href="<?php echo $this->createUrl("admin/index/aeOdsList", array("text_begruendung_zusammen" => 1)) ?>">Antragstext und Begründung in einer Spalte</a></li>
+            </ul>
+        </li>
+
 		<li style="margin-top: 10px;"><?php echo CHtml::link("Export: Kommentare als Excel-Datei", $this->createUrl("admin/index/kommentareexcel")); ?></li>
 		<li style="margin-top: 10px;"><a href="<?php echo $this->createUrl("admin/texte") ?>">Redaktionelle Texte</a></li>
 	</ul>

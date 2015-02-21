@@ -88,11 +88,52 @@ abstract class OOfficeTemplateEngine
     }
 
     /**
+     * @param string $style_name
+     * @param array $cellAttributes
+     * @param array $textAttributes
+     */
+    protected function appendCellStyleNode($style_name, $cellAttributes, $textAttributes)
+    {
+        $node = $this->doc->createElementNS(static::$NS_STYLE, "style");
+        $node->setAttribute("style:name", $style_name);
+        $node->setAttribute("style:family", 'table-cell');
+        $node->setAttribute("style:parent-style-name", "Default");
+
+        if (count($cellAttributes) > 0) {
+            $style = $this->doc->createElementNS(static::$NS_STYLE, 'table-cell-properties');
+            foreach ($cellAttributes as $att_name => $att_val) {
+                $style->setAttribute($att_name, $att_val);
+            }
+            $node->appendChild($style);
+        }
+        if (count($textAttributes) > 0) {
+            $style = $this->doc->createElementNS(static::$NS_STYLE, 'text-properties');
+            foreach ($textAttributes as $att_name => $att_val) {
+                $style->setAttribute($att_name, $att_val);
+            }
+            $node->appendChild($style);
+        }
+
+        foreach ($this->doc->getElementsByTagNameNS(static::$NS_OFFICE, 'automatic-styles') as $element) {
+            /** @var DOMElement $element */
+            $element->appendChild($node);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function noNestedPs() {
+        return false;
+    }
+
+    /**
      * @param DOMNode $src_node
      * @param int $template_type
+     * @param bool $blockFurtherPs
      * @return DOMNode
      */
-    protected function html2ooNode_int($src_node, $template_type)
+    protected function html2ooNode_int($src_node, $template_type, $blockFurtherPs = false)
     {
         switch ($src_node->nodeType) {
             case XML_ELEMENT_NODE:
@@ -118,7 +159,12 @@ abstract class OOfficeTemplateEngine
                         $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "line-break");
                         break;
                     case "p":
-                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "p");
+                    case "div":
+                        if ($blockFurtherPs) {
+                            $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "span");
+                        } else {
+                            $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "p");
+                        }
                         break;
                     case "ul":
                         $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "list");
@@ -128,13 +174,23 @@ abstract class OOfficeTemplateEngine
                         $append_el = $this->getNextNodeTemplate($template_type);
                         $dst_el->appendChild($append_el);
                         break;
+                    case "del":
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "span");
+                        $dst_el->setAttribute("text:style-name", "Antragsgruen_rot");
+                        break;
+                    case "ins":
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "span");
+                        $dst_el->setAttribute("text:style-name", "Antragsgruen_gruen");
+                        break;
                     default:
                         die("Unbekanntes Tag: " . $src_node->nodeName);
                 }
+                if ($this->noNestedPs()) $blockFurtherPs = true;
                 foreach ($src_node->childNodes as $child) {
                     /** @var DOMNode $child */
                     if ($this->DEBUG) echo "CHILD<br>" . $child->nodeType . "<br>";
-                    $dst_node = $this->html2ooNode_int($child, $template_type);
+
+                    $dst_node = $this->html2ooNode_int($child, $template_type, $blockFurtherPs);
                     if ($this->DEBUG) { echo "CHILD"; var_dump($dst_node); }
                     if ($dst_node) {
                         if ($append_el) $append_el->appendChild($dst_node);
