@@ -101,11 +101,15 @@ class OdsTemplateEngine extends OOfficeTemplateEngine
             "style:text-underline-color" => "font-color",
             "style:text-underline-style" => "solid",
         ));
-        $this->appendTextStyleNode("Antragsgruen_gruen", array(
-            "fo:color" => "#00ff00",
+        $this->appendTextStyleNode("Antragsgruen_ins", array(
+            "fo:color"                   => "#00ff00",
+            "style:text-underline-style" => "solid",
+            "style:text-underline-width" => "auto",
+            "style:text-underline-color" => "font-color",
         ));
-        $this->appendTextStyleNode("Antragsgruen_rot", array(
-            "fo:color" => "#ff0000",
+        $this->appendTextStyleNode("Antragsgruen_del", array(
+            "fo:color"                     => "#ff0000",
+            "style:text-line-through-type" => "single",
         ));
     }
 

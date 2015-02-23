@@ -176,11 +176,18 @@ abstract class OOfficeTemplateEngine
                         break;
                     case "del":
                         $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "span");
-                        $dst_el->setAttribute("text:style-name", "Antragsgruen_rot");
+                        $dst_el->setAttribute("text:style-name", "Antragsgruen_del");
                         break;
                     case "ins":
                         $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "span");
-                        $dst_el->setAttribute("text:style-name", "Antragsgruen_gruen");
+                        $dst_el->setAttribute("text:style-name", "Antragsgruen_ins");
+                        break;
+                    case "a":
+                        $dst_el = $this->doc->createElementNS(static::$NS_TEXT, "a");
+                        try {
+                            $attr = $src_node->getAttribute("href");
+                            if ($attr) $dst_el->setAttribute("xlink:href", $attr);
+                        } catch (Exception $e) {}
                         break;
                     default:
                         die("Unbekanntes Tag: " . $src_node->nodeName);
