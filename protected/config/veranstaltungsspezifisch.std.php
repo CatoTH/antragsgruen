@@ -85,9 +85,10 @@ if (!function_exists("veranstaltungsspezifisch_antrag_max_len")) {
 	/**
 	 * @param Veranstaltung $veranstaltung
 	 * @param null|int $antrag_typ
+     * @param bool $text2
 	 * @return int
 	 */
-	function veranstaltungsspezifisch_antrag_max_len($veranstaltung, $antrag_typ)
+	function veranstaltungsspezifisch_antrag_max_len($veranstaltung, $antrag_typ, $text2 = false)
 	{
 		return $veranstaltung->getEinstellungen()->antragstext_max_len;
 	}
@@ -108,13 +109,26 @@ if (!function_exists("veranstaltungsspezifisch_antrag_pdf_header")) {
 }
 
 if (!function_exists("veranstaltungsspezifisch_email_from_name")) {
-	/**
-	 * @param Veranstaltung|null $veranstaltung
-	 * @return string
-	 */
-	function veranstaltungsspezifisch_email_from_name($veranstaltung = null)
-	{
-		if ($veranstaltung === null) return Yii::app()->params['mail_from_name'];
-		return Yii::app()->params['mail_from_name'];
-	}
+    /**
+     * @param Veranstaltung|null $veranstaltung
+     * @return string
+     */
+    function veranstaltungsspezifisch_email_from_name($veranstaltung = null)
+    {
+        if ($veranstaltung === null) return Yii::app()->params['mail_from_name'];
+        return Yii::app()->params['mail_from_name'];
+    }
+}
+
+
+
+if (!function_exists("veranstaltungsspezifisch_text2_name")) {
+    /**
+     * @param Veranstaltung|null $veranstaltung
+     * @return string|null
+     */
+    function veranstaltungsspezifisch_text2_name($veranstaltung = null)
+    {
+        return null;
+    }
 }

@@ -39,7 +39,22 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 		</div>
 	</div>
 
-<?php if ($antrag->begruendung != "" || $antrag->veranstaltung->getEinstellungen()->antrag_begruendungen) { ?>
+<?php
+$text2name = veranstaltungsspezifisch_text2_name($antrag->veranstaltung);
+if ($text2name) {
+    ?>
+    <div class="begruendungs_text_holder">
+        <h3><?=CHtml::encode($text2name)?></h3>
+
+        <div class="textholder consolidated content">
+            <?php
+            echo HtmlBBcodeUtils::bbcode2html($antrag->text2);
+            ?>
+        </div>
+    </div>
+    <?
+}
+if ($antrag->begruendung != "" || $antrag->veranstaltung->getEinstellungen()->antrag_begruendungen) { ?>
 	<div class="begruendungs_text_holder">
 		<h3>Begründung</h3>
 

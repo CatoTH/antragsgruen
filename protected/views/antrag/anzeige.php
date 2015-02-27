@@ -290,7 +290,24 @@ $this->menus_html[] = $html;
 	?>
 </div>
 
-<?php if (trim($antrag->begruendung) != "") { ?>
+<?php
+
+$text2name = veranstaltungsspezifisch_text2_name($this->veranstaltung);
+if ($text2name && trim($antrag->text2)) {
+    ?>
+    <div class="begruendungs_text_holder">
+        <h3><?=CHtml::encode($antrag->text2)?></h3>
+
+        <div class="textholder consolidated content">
+            <?php
+            echo HtmlBBcodeUtils::bbcode2html($antrag->text2);
+            ?>
+        </div>
+    </div>
+    <?
+}
+
+if (trim($antrag->begruendung) != "") { ?>
 
 	<div class="begruendungs_text_holder">
 		<h3>Begründung</h3>

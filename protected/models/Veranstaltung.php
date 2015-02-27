@@ -318,10 +318,11 @@ class Veranstaltung extends GxActiveRecord
 
 	/**
 	 * @param null|int $antrag_typ
+     * @param bool $text2
 	 * @return int
 	 */
-	public function getAntragMaxLen($antrag_typ = null) {
-		return veranstaltungsspezifisch_antrag_max_len($this, $antrag_typ);
+	public function getAntragMaxLen($antrag_typ = null, $text2 = false) {
+		return veranstaltungsspezifisch_antrag_max_len($this, $antrag_typ, $text2);
 	}
 
 	/**

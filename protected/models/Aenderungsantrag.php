@@ -9,6 +9,7 @@
  * @property string $begruendung_neu
  * @property string $aenderung_metatext
  * @property string $aenderung_text
+ * @property string $aenderung_text2
  * @property string $aenderung_begruendung
  * @property integer $aenderung_begruendung_html
  * @property integer $aenderung_first_line_cache
@@ -70,7 +71,7 @@ class Aenderungsantrag extends IAntrag
 	public function rules()
 	{
 		return array(
-			array('text_neu, aenderung_text, datum_einreichung, status, status', 'required'),
+			array('text_neu, aenderung_text, aenderung_text2, datum_einreichung, status, status', 'required'),
 			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy, text_unveraenderlich, aenderung_begruendung_html', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
@@ -117,6 +118,7 @@ class Aenderungsantrag extends IAntrag
 			'begruendung_neu'                    => Yii::t('app', 'Begruendung Neu'),
 			'aenderung_metatext'                 => Yii::t('app', 'Metabeschreibung der Änderung'),
 			'aenderung_text'                     => Yii::t('app', 'Änderung: Text'),
+            'aenderung_text2'                    => Yii::t('app', 'Änderung: Text 2'),
 			'aenderung_begruendung'              => Yii::t('app', 'Änderung: Begründung'),
 			'aenderung_begruendung_html'         => Yii::t('app', 'Änderung: Begründung in HTML'),
 			'aenderung_first_line_cache'         => "Cache: erste Zeilennummer",
@@ -594,7 +596,7 @@ class Aenderungsantrag extends IAntrag
 		foreach ($antraege as $ant) $ids[] = $ant->id;
 		if (count($ids) == 0) return array();
 
-		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND antrag_id IN (" . implode(", ", $ids) . ")");
+		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR (`aenderung_text2` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND antrag_id IN (" . implode(", ", $ids) . ")");
 	}
 
 

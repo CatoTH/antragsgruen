@@ -10,6 +10,7 @@
  * @property string $datum_einreichung
  * @property string $datum_beschluss
  * @property string $text
+ * @property string $text2
  * @property string $begruendung
  * @property integer $begruendung_html
  * @property integer $status
@@ -109,8 +110,8 @@ class Antrag extends IAntrag
 			array('revision_name', 'length', 'max' => 50),
 			array('datum_beschluss', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
-			array('text, notiz_intern', 'safe'),
-			array('abgeleitet_von, typ, datum_beschluss, text, begruendung, begruendung_html, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('text, text2, notiz_intern', 'safe'),
+			array('abgeleitet_von, typ, datum_beschluss, text, text2, begruendung, begruendung_html, status, status_string', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 	}
 
@@ -149,6 +150,7 @@ class Antrag extends IAntrag
 			'datum_einreichung'        => Yii::t('app', 'Datum Einreichung'),
 			'datum_beschluss'          => Yii::t('app', 'Datum Beschluss'),
 			'text'                     => Yii::t('app', 'Text'),
+            'text'                     => Yii::t('app', 'Text 2'),
 			'begruendung'              => Yii::t('app', 'Begründung'),
 			'begruendung_html'         => Yii::t('app', 'Begründung in HTML'),
 			'status'                   => Yii::t('app', 'Status'),
@@ -189,14 +191,16 @@ class Antrag extends IAntrag
 
 	/**
 	 * @param bool $praesentations_hacks
+     * @param bool $text2
 	 * @return array
 	 */
-	public function getParagraphsText($praesentations_hacks = false)
+	public function getParagraphsText($praesentations_hacks = false, $text2 = false)
 	{
 		if (is_null($this->absaetze_nurtext)) {
 			$erste_zeile = $this->getFirstLineNo();
 			HtmlBBcodeUtils::initZeilenCounter($erste_zeile);
-			$this->absaetze_nurtext = HtmlBBcodeUtils::bbcode2html_absaetze(trim($this->text), $praesentations_hacks, $this->veranstaltung->getEinstellungen()->zeilenlaenge);
+            $text = trim($text2 ? $this->text2 : $this->text);
+			$this->absaetze_nurtext = HtmlBBcodeUtils::bbcode2html_absaetze($text, $praesentations_hacks, $this->veranstaltung->getEinstellungen()->zeilenlaenge);
 
 		}
 		return $this->absaetze_nurtext;
@@ -206,9 +210,10 @@ class Antrag extends IAntrag
 	/**
 	 * @param bool $nurfreigeschaltete_aes
 	 * @param bool $praesentations_hacks
+     * @param bool $text2
 	 * @return AntragAbsatz[]
 	 */
-	public function getParagraphs($nurfreigeschaltete_aes = true, $praesentations_hacks = false)
+	public function getParagraphs($nurfreigeschaltete_aes = true, $praesentations_hacks = false, $text2 = false)
 	{
 		if (!is_null($this->absaetze)) return $this->absaetze;
 		$this->absaetze = array();
@@ -220,7 +225,7 @@ class Antrag extends IAntrag
 		}
 		$komms = $this->antragKommentare;
 
-		$arr = $this->getParagraphsText($praesentations_hacks);
+		$arr = $this->getParagraphsText($praesentations_hacks, $text2);
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain       = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
 			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, $aenders);
@@ -363,7 +368,7 @@ class Antrag extends IAntrag
 	 */
 	public static function suche($veranstaltung_id, $suchbegriff)
 	{
-		return Antrag::model()->findAll("(`name` LIKE '%" . addslashes($suchbegriff) . "%' OR `text` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND veranstaltung_id = " . IntVal($veranstaltung_id));
+		return Antrag::model()->findAll("(`name` LIKE '%" . addslashes($suchbegriff) . "%' OR `text` LIKE '%" . addslashes($suchbegriff) . "%' OR `text2` LIKE '%" . addslashes($suchbegriff) . "%' OR `begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND veranstaltung_id = " . IntVal($veranstaltung_id));
 	}
 
 	/**

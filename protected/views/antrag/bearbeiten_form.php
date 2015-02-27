@@ -147,6 +147,44 @@ $antrag_max_len = $this->veranstaltung->getAntragMaxLen($force_type);
 		</fieldset>
 
 		<?php
+
+        $text2name = veranstaltungsspezifisch_text2_name($model->veranstaltung);
+        if ($text2name) {
+            $antrag_max_len2 = $this->veranstaltung->getAntragMaxLen($force_type, true);
+            ?>
+
+            <fieldset class="control-group textarea" <?php
+            if ($antrag_max_len2 > 0) echo " data-max_len=\"" . $antrag_max_len2 . "\"";
+            ?>>
+
+                <legend><?php echo CHtml::encode($text2name); ?></legend>
+
+                <?php if ($antrag_max_len > 0) {
+                    echo '<div class="max_len_hint">';
+                    echo '<div class="calm">Maximale Länge: ' . $antrag_max_len2 . ' Zeichen</div>';
+                    echo '<div class="alert">Text zu lang - maximale Länge: ' . $antrag_max_len2 . ' Zeichen</div>';
+                    echo '</div>';
+                } ?>
+
+                <div class="text_full_width">
+                    <label style="display: none;" class="control-label required" for="Antrag_text">
+                        <?php echo CHtml::encode($text2name); ?>
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="controls">
+                        <!--<a href="#" onClick="alert('TODO'); return false;">&gt; Text aus einem Pad kopieren</a><br>-->
+					<textarea id="Antrag_text2" class="span8" name="Antrag[text2]" rows="5" cols="80"><?php
+                        echo CHtml::encode($model->text2);
+                        ?></textarea>
+                    </div>
+
+                </div>
+            </fieldset>
+
+        <?php
+        }
+
 		if ($model->veranstaltung->getEinstellungen()->antrag_begruendungen) {
 			?>
 
@@ -202,7 +240,10 @@ $antrag_max_len = $this->veranstaltung->getAntragMaxLen($force_type);
 			} else {
 				ckeditor_bbcode("Antrag_begruendung");
 			}
-			<?php } ?>
+			<?php }
+			if ($text2name) { ?>
+            ckeditor_bbcode("Antrag_text2");
+            <? } ?>
 		});
 	</script>
 
