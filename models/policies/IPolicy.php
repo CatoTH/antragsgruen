@@ -61,7 +61,6 @@ abstract class IPolicy
         return "";
     }
 
-
     /**
      * @static
      * @abstract
@@ -98,9 +97,9 @@ abstract class IPolicy
      * @abstract
      * @param Wording $wording
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     abstract public function getPermissionDeniedMsg(Wording $wording);
-
 
     /**
      * @static

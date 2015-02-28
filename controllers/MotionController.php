@@ -502,8 +502,10 @@ class MotionController extends Base
             die();
         }
 
+
         $hiddens      = array();
         $jsProtection = \Yii::$app->user->isGuest;
+
         if ($jsProtection) {
             $hiddens["formToken"] = AntiXSS::createToken("createMotion");
         } else {
@@ -515,6 +517,7 @@ class MotionController extends Base
         } else {
             $forceTag = null;
         }
+
 
         if (count($form->supporters) == 0) {
             $supporter               = new MotionSupporter();

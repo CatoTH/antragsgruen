@@ -52,6 +52,17 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['title', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
+            [['title', 'titleShort', 'eventDateFrom', 'eventDateTo', 'adminEmail'], 'safe'],
+        ];
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getSite()

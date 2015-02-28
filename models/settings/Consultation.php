@@ -13,26 +13,27 @@ class Consultation
     public $iniatorsMayEdit = false;
     public $adminsMayEdit   = true;
 
-    public $maintainanceMode     = false;
-    public $confirmEmails        = false;
-    public $lineNumberingGlobal  = false;
-    public $amendNumberingGlobal = false;
-    public $amendNumberingByLine = false;
-    public $hideRevision         = false;
-    public $minimalisticUI       = false;
-    public $showFeeds            = true;
-    public $commentsSupportable  = false;
-    public $screeningMotions     = false;
-    public $screeningAmendments  = false;
-    public $screeningComments    = false;
-    public $initiatorsMayReject  = false;
-    public $titleHasLineNumber   = true;
-    public $hasPDF               = true;
-    public $lineLength           = 80;
-    public $startLayoutType      = 0;
-    public $labelButtonNew       = "";
-    public $commentWholeMotions  = false;
-    public $allowMultipleTags    = false;
+    public $maintainanceMode      = false;
+    public $confirmEmails         = false;
+    public $lineNumberingGlobal   = false;
+    public $amendNumberingGlobal  = false;
+    public $amendNumberingByLine  = false;
+    public $hideRevision          = false;
+    public $minimalisticUI        = false;
+    public $showFeeds             = true;
+    public $commentsSupportable   = false;
+    public $screeningMotions      = false;
+    public $screeningMotionsShown = false;
+    public $screeningAmendments   = false;
+    public $screeningComments     = false;
+    public $initiatorsMayReject   = false;
+    public $titleHasLineNumber    = true;
+    public $hasPDF                = true;
+    public $lineLength            = 80;
+    public $startLayoutType       = 0;
+    public $labelButtonNew        = "";
+    public $commentWholeMotions   = false;
+    public $allowMultipleTags     = false;
 
     /** @var null|string */
     public $logoUrl     = null;

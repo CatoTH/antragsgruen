@@ -90,6 +90,8 @@ class ManagerController extends Base
 
         $preset = SitePresets::getPreset($model->preset);
         $preset::createMotionSections($consultation);
+        $preset::setConsultationSettings($consultation);
+        $consultation->save();
 
         $site->link('admins', $this->getCurrentUser());
 

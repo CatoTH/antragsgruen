@@ -13,6 +13,9 @@ use yii\helpers\Html;
  * @var bool $allowOther
  */
 
+/** @var app\controllers\Base $controller */
+$controller = $this->context;
+
 $settings = $consultation->getSettings();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
@@ -35,15 +38,28 @@ if ($allowOther) {
 echo '<div class="form-group">
 <label class="col-sm-3 control-label">Ich bin eine...</label>
 <div class="col-sm-9">
-<label class="radio-inline">
-  <input type="radio" required name="Initiator[personType]" id="personTypeNatural"
-    value="' . ISupporter::PERSON_NATURAL . '">
-  Natürliche Person
+<label class="radio-inline">';
+echo Html::radio(
+    'Initiator[personType]',
+    $initiator->personType == ISupporter::PERSON_NATURAL,
+    [
+        'value' => ISupporter::PERSON_NATURAL,
+        'id' => 'personTypeNatural',
+    ]
+);
+echo ' Natürliche Person
 </label>
-<label class="radio-inline">
-  <input type="radio" required name="Initiator[personType]" id="personTypeOrga"
-    value="' . ISupporter::PERSON_ORGANIZATION . '">
-  Organisation / Gremium
+<label class="radio-inline">';
+echo Html::radio(
+    'Initiator[personType]',
+    $initiator->personType == ISupporter::PERSON_ORGANIZATION,
+    [
+        'value' => ISupporter::PERSON_ORGANIZATION,
+        'id' => 'personTypeOrga',
+    ]
+);
+
+echo ' Organisation / Gremium
 </label>
 </div>
 </div>
@@ -95,3 +111,13 @@ if ($settings->motionHasPhone) {
 echo '</div>';
 
 echo '</fieldset>';
+
+$controller->layoutParams->addOnLoadJS(
+    '$("#personTypeNatural, #personTypeOrga").on("click change", function() {
+        if ($("#personTypeOrga").prop("checked")) {
+            $(".initiatorData .organizationRow").show();
+        } else {
+            $(".initiatorData .organizationRow").hide();
+        }
+    }).first().trigger("change");'
+);

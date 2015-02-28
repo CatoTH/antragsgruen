@@ -180,6 +180,8 @@ class Base extends Controller
             $this->site = Site::findOne(["subdomain" => $siteId]);
         }
         if (is_null($this->site)) {
+
+            die("<h1>Not Found: " . $siteId . "</h1>");
             $this->consultationNotFound();
         }
 

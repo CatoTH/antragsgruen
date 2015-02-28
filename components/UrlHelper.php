@@ -56,6 +56,7 @@ class UrlHelper
         if (static::getParams()->multisiteMode && $site != null) {
             $route["subdomain"] = $site->subdomain;
         }
+
         if ($route[0] == "consultation/index" && !is_null($site) &&
             strtolower($route["consultationPath"]) === strtolower($site->currentConsultation->urlPath)
         ) {

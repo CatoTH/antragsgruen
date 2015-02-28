@@ -93,25 +93,22 @@
         CKEDITOR.replace(id, {
             allowedContent: 'b s i u;' +
             'ul ol li {list-style-type};' +
-            'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+            //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
             'p blockquote {border,margin,padding,text-align};' +
             'a[href];',
             toolbarGroups: [
                 {name: 'tools'},
                 {name: 'document', groups: ['mode', 'document', 'doctools']},
-                {name: 'clipboard', groups: ['clipboard', 'undo']},
-                {name: 'editing', groups: ['find', 'selection', 'spellchecker']},
-                {name: 'forms'},
-                '/',
+                //{name: 'clipboard', groups: ['clipboard', 'undo']},
+                //{name: 'editing', groups: ['find', 'selection', 'spellchecker']},
+                //{name: 'forms'},
                 {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
                 {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
                 {name: 'links'},
                 {name: 'insert'},
-                '/',
                 {name: 'styles'},
                 {name: 'colors'},
-                {name: 'others'},
-                {name: 'about'}
+                {name: 'others'}
             ],
             removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,bbcode',
             extraPlugins: 'autogrow,wordcount,tabletools',

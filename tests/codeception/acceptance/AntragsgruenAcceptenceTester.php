@@ -26,4 +26,11 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
     {
         $this->deleteDB();
     }
+
+
+    public function populateDBData1()
+    {
+        $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'fixtures' .
+            DIRECTORY_SEPARATOR . 'dbdata1.sql');
+    }
 }

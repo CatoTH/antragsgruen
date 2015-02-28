@@ -14,4 +14,8 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
 $config = require(__DIR__ . '/../tests/codeception/config/acceptance.php');
 
+$fp = fopen("/tmp/config.log", "a");
+fwrite($fp, print_r($config, true));
+fclose($fp);
+
 (new yii\web\Application($config))->run();

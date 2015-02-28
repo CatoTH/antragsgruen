@@ -2,6 +2,7 @@
 
 namespace app\models\initiatorForms;
 
+use app\controllers\Base;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Consultation;
@@ -198,9 +199,10 @@ class DefaultForm implements IInitiatorView
     /**
      * @param Consultation $consultation
      * @param MotionEditForm $editForm
+     * @param Base $controller
      * @return string
      */
-    public function getMotionInitiatorForm(Consultation $consultation, MotionEditForm $editForm)
+    public function getMotionInitiatorForm(Consultation $consultation, MotionEditForm $editForm, Base $controller)
     {
         $labelOrganization = 'Gremium, LAG...';
         $labelName         = 'Name';
@@ -219,7 +221,8 @@ class DefaultForm implements IInitiatorView
                 'labelName'         => $labelName,
                 'labelOrganization' => $labelOrganization,
                 'allowOther'        => $consultation->isAdminCurUser(),
-            ]
+            ],
+            $controller
         );
 
     }

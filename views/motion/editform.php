@@ -109,7 +109,7 @@ foreach ($consultation->motionSections as $section) {
 }
 
 $initiatorClass = $consultation->getMotionInitiatorFormClass();
-echo $initiatorClass->getMotionInitiatorForm($consultation, $form);
+echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $this->context);
 /*
 
 

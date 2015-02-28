@@ -14,14 +14,18 @@ trait AntragsgruenSetupDB
 
     protected function createDB()
     {
+        $this->database = Yii::$app->db;
+
         $init                  = file_get_contents(
             Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_create.sql'
         );
-        $this->database        = Yii::$app->db;
         $this->database_delete = file_get_contents(
             Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_delete.sql'
         );
-        $command               = $this->database->createCommand($init);
+
+        $this->deleteDB();
+
+        $command = $this->database->createCommand($init);
         $command->execute();
     }
 
@@ -38,7 +42,8 @@ trait AntragsgruenSetupDB
     protected function populateDB($file)
     {
         $testdata = file_get_contents($file);
-        $command  = $this->database->createCommand($testdata);
+
+        $command = $this->database->createCommand($testdata);
         $command->execute();
     }
 }

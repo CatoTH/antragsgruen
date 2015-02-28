@@ -40,6 +40,8 @@ class Parteitag implements ISitePreset
 
         $consultation->policyMotions    = IPolicy::POLICY_ALL;
         $consultation->policyAmendments = IPolicy::POLICY_ALL;
+        $consultation->policyComments   = IPolicy::POLICY_ALL;
+        $consultation->policySupport    = IPolicy::POLICY_ALL;
     }
 
     /**

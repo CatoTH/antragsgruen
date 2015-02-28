@@ -82,8 +82,10 @@ if ($params->multisiteMode) {
         $url_rules
     );
 
-    foreach ($url_rules as $key => $val) {
-        $url_rules[str_replace("http://", "http://www.", $key)] = $val;
+    if ($params->prependWWWToSubdomain) {
+        foreach ($url_rules as $key => $val) {
+            $url_rules[str_replace("http://", "http://www.", $key)] = $val;
+        }
     }
 }
 
