@@ -202,7 +202,23 @@ class Veranstaltung extends GxActiveRecord
 		return Antrag::$TYP_PREFIX[$antrag_typ] . ($max_rev + 1);
 	}
 
-	/**
+    /**
+     * @return int[]
+     */
+    public function getAntragUnsichtbarStati() {
+        if ($this->getEinstellungen()->freischaltung_antraege_anzeigen) {
+            $unsichtbar_   = IAntrag::$STATI_UNSICHTBAR;
+            $unsichtbar = array();
+            foreach ($unsichtbar_ as $stat) if ($stat != Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $unsichtbar[] = $stat;
+        } else {
+            $unsichtbar   = IAntrag::$STATI_UNSICHTBAR;
+        }
+        return $unsichtbar;
+    }
+
+
+
+    /**
 	 * @return array|array[]
 	 */
 	public function antraegeSortiert()
@@ -210,7 +226,7 @@ class Veranstaltung extends GxActiveRecord
 		$antraege        = $this->antraege;
 		$antraege_sorted = array();
 
-		$unsichtbar   = IAntrag::$STATI_UNSICHTBAR;
+        $unsichtbar = $this->getAntragUnsichtbarStati();
 		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
 		foreach ($antraege as $ant) if (!in_array($ant->status, $unsichtbar)) {
 			$typ_name = veranstaltungsspezifisch_antrag_typ_str($ant->veranstaltung, $ant->typ);

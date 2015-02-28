@@ -21,6 +21,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $feeds_anzeigen = true;
 	public $kommentare_unterstuetzbar = false;
 	public $freischaltung_antraege = false;
+    public $freischaltung_antraege_anzeigen = false;
 	public $freischaltung_aenderungsantraege = false;
 	public $freischaltung_kommentare = false;
 	public $initiatorInnen_duerfen_aes_ablehnen = false;

@@ -16,15 +16,38 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 	<h1><?php echo CHtml::encode($antrag->name); ?></h1>
 
+<?php
+
+Yii::app()->user->setFlash("info", $antrag->veranstaltung->getStandardtext("antrag_confirm")->getHTMLText());
+$this->widget('bootstrap.widgets.TbAlert');
+
+
+$text2name = veranstaltungsspezifisch_text2_name($antrag->veranstaltung, $antrag->typ);
+if ($text2name) {
+    ?>
+
+    <div class="begruendungs_text_holder">
+        <h3><?=CHtml::encode($text2name)?></h3>
+
+        <div class="textholder consolidated content">
+            <?php
+            echo HtmlBBcodeUtils::bbcode2html($antrag->text2);
+            ?>
+        </div>
+    </div>
+<?
+}
+?>
+
 	<div class="antrags_text_holder">
-		<h3><?php echo $sprache->get("Antragstext"); ?></h3>
-
-		<?php
-
-		Yii::app()->user->setFlash("info", $antrag->veranstaltung->getStandardtext("antrag_confirm")->getHTMLText());
-		$this->widget('bootstrap.widgets.TbAlert');
-
-		?>
+		<h3><?php
+            $text1name = veranstaltungsspezifisch_text1_name($antrag->veranstaltung, $antrag->typ);
+            if ($text1name) {
+                echo CHtml::encode($text1name);
+            } else {
+                echo $sprache->get("Antragstext");
+            }
+            ?></h3>
 
 		<div class="textholder consolidated">
 			<?php
@@ -40,23 +63,16 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 	</div>
 
 <?php
-$text2name = veranstaltungsspezifisch_text2_name($antrag->veranstaltung);
-if ($text2name) {
-    ?>
-    <div class="begruendungs_text_holder">
-        <h3><?=CHtml::encode($text2name)?></h3>
-
-        <div class="textholder consolidated content">
-            <?php
-            echo HtmlBBcodeUtils::bbcode2html($antrag->text2);
-            ?>
-        </div>
-    </div>
-    <?
-}
 if ($antrag->begruendung != "" || $antrag->veranstaltung->getEinstellungen()->antrag_begruendungen) { ?>
 	<div class="begruendungs_text_holder">
-		<h3>Begründung</h3>
+        <h3><?
+            $bname = veranstaltungsspezifisch_begruendung_name($antrag->veranstaltung, $antrag->typ);
+            if ($bname) {
+                echo CHtml::encode($bname);
+            } else {
+                echo "Begründung";
+            }
+            ?></h3>
 
 		<div class="textholder consolidated content">
 			<?php

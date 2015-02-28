@@ -100,12 +100,30 @@ $pdf->SetFont($default_font, "", $default_fontsize);
 if ($antrag->veranstaltung->getEinstellungen()->titel_eigene_zeile) $pdf->MultiCell(12, 0, $linenr - 1, 0, "L", false, 0);
 
 
+$text2name = veranstaltungsspezifisch_text2_name($antrag->veranstaltung, $antrag->typ);
+if ($text2name && trim($antrag->text2)) {
+    $text = HtmlBBcodeUtils::bbcode2html($antrag->text2);
+    if (function_exists("normalizer_normalize")) $text = normalizer_normalize($text);
+    $html = '
+	<h3>' . CHtml::encode($text2name) . '</h3>
+	<div class="textholder consolidated">
+		' . $text . '
+	</div>
+	<div></div>
+    ';
+    $pdf->SetFont("helvetica", "", 12);
+    $pdf->writeHTML($html, true, false, true, false, '');
+}
+
+
+
 $pdf->SetFont("helvetica", "", 12);
 $pdf->writeHTML("<h3>" . $ueberschrift . "</h3>");
 
 $text_size = ($antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 70 ? 10 : 11);
 $pdf->SetFont("Courier", "", $text_size);
 $pdf->Ln(7);
+
 
 
 foreach ($absae as $i => $abs) {
@@ -148,9 +166,13 @@ if (trim($antrag->begruendung) != "") {
 	if ($antrag->begruendung_html) $begruendung = $antrag->begruendung;
 	else $begruendung = HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
 	if (function_exists("normalizer_normalize")) $begruendung = normalizer_normalize($begruendung);
+
+    $bname = veranstaltungsspezifisch_begruendung_name($antrag->veranstaltung, $antrag->typ);
+    if (!$bname) $bname = "Begründung";
+
 	$html = '
 	</div>
-	<h3>Begründung</h3>
+	<h3>' . $bname . '</h3>
 	<div class="textholder consolidated">
 		' . $begruendung . '
 	</div>

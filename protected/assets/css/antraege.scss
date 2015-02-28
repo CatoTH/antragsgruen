@@ -1155,6 +1155,19 @@ ul.funktionen {
   .antragstellerIn {
     width: 35%;
   }
+  .ungeprueft {
+    .titel {
+      .pdflink {
+        display: none;
+      }
+      .titellink {
+        a:link, a:visited {
+          font-weight: 400;
+          color: gray;
+        }
+      }
+    }
+  }
 }
 
 .bdk_antrags_liste {
@@ -1187,9 +1200,17 @@ ul.funktionen {
   cursor: move;
 }
 
-.antragsdaten th {
-  text-align: left;
-  padding-right: 10px;
+.antragsdaten {
+  th {
+    text-align: left;
+    padding-right: 10px;
+  }
+  .ungeprueft {
+    color: red;
+  }
+  .geprueft {
+    color: green;
+  }
 }
 
 table.view {

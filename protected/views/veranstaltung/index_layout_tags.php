@@ -89,6 +89,7 @@ foreach ($tag_ids as $tag_id) {
 				$classes = array("antrag");
 				if ($antrag->typ != Antrag::$TYP_ANTRAG) $classes[] = "resolution";
 				if ($antrag->status == IAntrag::$STATUS_ZURUECKGEZOGEN) $classes[] = "zurueckgezogen";
+                if ($antrag->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $classes[] = "ungeprueft";
 				echo "<tr class='" . implode(" ", $classes) . "'>\n";
 				if (!$this->veranstaltung->getEinstellungen()->revision_name_verstecken) {
 					echo "<td class='nummer'>" . CHtml::encode($antrag->revision_name) . "</td>\n";

@@ -545,16 +545,20 @@ class VeranstaltungController extends AntragsgruenController
 	 */
 	private function actionVeranstaltung_loadData()
 	{
+        $unsichtbar_   = IAntrag::$STATI_UNSICHTBAR;
+        $unsichtbar = array();
+        foreach ($unsichtbar_ as $stat) if ($stat != Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $unsichtbar[] = $stat;
+
 		/** @var Veranstaltung $veranstaltung */
 		$this->veranstaltung = Veranstaltung::model()->
 			with(array(
 				'antraege'                    => array(
 					'joinType' => "LEFT OUTER JOIN",
-					'on'       => "`antraege`.`veranstaltung_id` = `t`.`id` AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
+					'on'       => "`antraege`.`veranstaltung_id` = `t`.`id` AND `antraege`.`status` NOT IN (" . implode(", ", $unsichtbar) . ")",
 				),
 				'antraege.aenderungsantraege' => array(
 					'joinType' => "LEFT OUTER JOIN",
-					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
+					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", $unsichtbar) . ") AND `antraege`.`status` NOT IN (" . implode(", ", $unsichtbar) . ")",
 				),
 			))->findByAttributes(array("id" => $this->veranstaltung->id));
 		return $this->veranstaltung;

@@ -266,15 +266,25 @@ $einstellungen = $model->getEinstellungen();
 	</fieldset>
 
 
-	<fieldset style="margin-top: 10px;">
-		<label class="block">
-			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="antrag_kommentare_ohne_absatz">
-			<input type="checkbox" name="VeranstaltungsEinstellungen[antrag_kommentare_ohne_absatz]"
-				   value="1" <?php if ($model->getEinstellungen()->antrag_kommentare_ohne_absatz) echo "checked"; ?>>
-			Kommentare zum Antrag allgemein zulassen<br>
-			<small style="margin-left: 20px;">(Anträge ohne Absatzbezug, erscheinen unterhalb des Antrags)</small>
-		</label>
-	</fieldset>
+    <fieldset style="margin-top: 10px;">
+        <label class="block">
+            <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="antrag_kommentare_ohne_absatz">
+            <input type="checkbox" name="VeranstaltungsEinstellungen[antrag_kommentare_ohne_absatz]"
+                   value="1" <?php if ($model->getEinstellungen()->antrag_kommentare_ohne_absatz) echo "checked"; ?>>
+            Kommentare zum Antrag allgemein zulassen<br>
+            <small style="margin-left: 20px;">(Anträge ohne Absatzbezug, erscheinen unterhalb des Antrags)</small>
+        </label>
+    </fieldset>
+
+
+    <fieldset style="margin-top: 10px;">
+        <label class="block">
+            <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="freischaltung_antraege_anzeigen">
+            <input type="checkbox" name="VeranstaltungsEinstellungen[freischaltung_antraege_anzeigen]"
+                   value="1" <?php if ($model->getEinstellungen()->freischaltung_antraege_anzeigen) echo "checked"; ?>>
+            Anträge (ausgegraut) anzeigen, auch wenn sie noch nicht freigeschaltet sind
+        </label>
+    </fieldset>
 
 
 	<fieldset style="margin-top: 10px;">

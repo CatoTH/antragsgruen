@@ -125,9 +125,48 @@ if (!function_exists("veranstaltungsspezifisch_email_from_name")) {
 if (!function_exists("veranstaltungsspezifisch_text2_name")) {
     /**
      * @param Veranstaltung|null $veranstaltung
+     * @param int $antrag_typ
      * @return string|null
      */
-    function veranstaltungsspezifisch_text2_name($veranstaltung = null)
+    function veranstaltungsspezifisch_text2_name($veranstaltung = null, $antrag_typ = 0)
+    {
+        return null;
+    }
+}
+
+
+if (!function_exists("veranstaltungsspezifisch_text1_name")) {
+    /**
+     * @param Veranstaltung|null $veranstaltung
+     * @param int $antrag_typ
+     * @return string|null
+     */
+    function veranstaltungsspezifisch_text1_name($veranstaltung = null, $antrag_typ = 0)
+    {
+        return null;
+    }
+}
+
+
+if (!function_exists("veranstaltungsspezifisch_begruendung_name")) {
+    /**
+     * @param Veranstaltung|null $veranstaltung
+     * @param int $antrag_typ
+     * @return string|null
+     */
+    function veranstaltungsspezifisch_begruendung_name($veranstaltung = null, $antrag_typ = 0)
+    {
+        return null;
+    }
+}
+
+if (!function_exists("veranstaltungsspezifisch_begruendung_maxlen")) {
+    /**
+     * @param Veranstaltung|null $veranstaltung
+     * @param int $antrag_typ
+     * @return string|null
+     */
+    function veranstaltungsspezifisch_begruendung_maxlen($veranstaltung = null, $antrag_typ = 0)
     {
         return null;
     }

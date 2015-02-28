@@ -41,7 +41,9 @@ else {
 	if ($msg != "") $html .= '<li class="aender-stellen"><span><span style="font-style: italic;">' . CHtml::encode($sprache->get("Änderungsantrag stellen")) . "</span><br><span style='font-size: 13px; color: #dbdbdb; text-transform: none;'>" . CHtml::encode($policy->getPermissionDeniedMsg()) . '</span></span></li>';
 }
 
-if ($antrag->veranstaltung->getEinstellungen()->kann_pdf) $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';
+$pdf = ($antrag->veranstaltung->getEinstellungen()->kann_pdf && $antrag->status != IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT);
+
+if ($pdf) $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';
 if ($edit_link) {
 	$html .= '<li class="edit">' . CHtml::link($sprache->get("Änderungsanträge einpflegen"), $this->createUrl("antrag/aes_einpflegen", array("antrag_id" => $antrag->id))) . '</li>';
 	$html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/aendern", array("antrag_id" => $antrag->id))) . '</li>';
@@ -104,7 +106,13 @@ $this->menus_html[] = $html;
 				<tr>
 					<th>Status:</th>
 					<td><?php
-						echo CHtml::encode(IAntrag::$STATI[$antrag->status]);
+                        if ($antrag->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) {
+                            echo '<span class="ungeprueft">' . CHtml::encode(IAntrag::$STATI[$antrag->status]) . '</span>';
+                        } elseif ($antrag->status == IAntrag::$STATUS_EINGEREICHT_GEPRUEFT && $antrag->veranstaltung->getEinstellungen()->freischaltung_antraege_anzeigen) {
+                            echo '<span class="geprueft">Von der Programmkommission geprüft</span>';
+                        } else {
+                            echo CHtml::encode(IAntrag::$STATI[$antrag->status]);
+                        }
 						if (trim($antrag->status_string) != "") echo " <small>(" . CHtml::encode($antrag->status_string) . ")</string>";
 						?></td>
 				</tr>
@@ -215,9 +223,34 @@ $this->menus_html[] = $html;
 	?>
 </div>
 
+<?
+$text2name = veranstaltungsspezifisch_text2_name($antrag->veranstaltung, $antrag->typ);
+if ($text2name && trim($antrag->text2)) {
+    ?>
+    <div class="begruendungs_text_holder">
+        <h3><?=CHtml::encode($text2name)?></h3>
+
+        <div class="textholder consolidated content">
+            <?php
+            echo HtmlBBcodeUtils::bbcode2html($antrag->text2);
+            ?>
+        </div>
+    </div>
+<?
+}
+
+?>
+
 <div
 	class="antrags_text_holder<?php if ($antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 80) echo " kleine_schrift"; ?>">
-	<h3><?= $sprache->get("Antragstext") ?></h3>
+	<h3><?php
+        $text1name = veranstaltungsspezifisch_text1_name($antrag->veranstaltung, $antrag->typ);
+        if ($text1name) {
+            echo CHtml::encode($text1name);
+        } else {
+            echo $sprache->get("Antragstext");
+        }
+        ?></h3>
 
 	<?php
 	$dummy_komm = new AntragKommentar();
@@ -292,25 +325,17 @@ $this->menus_html[] = $html;
 
 <?php
 
-$text2name = veranstaltungsspezifisch_text2_name($this->veranstaltung);
-if ($text2name && trim($antrag->text2)) {
-    ?>
-    <div class="begruendungs_text_holder">
-        <h3><?=CHtml::encode($antrag->text2)?></h3>
-
-        <div class="textholder consolidated content">
-            <?php
-            echo HtmlBBcodeUtils::bbcode2html($antrag->text2);
-            ?>
-        </div>
-    </div>
-    <?
-}
-
 if (trim($antrag->begruendung) != "") { ?>
 
 	<div class="begruendungs_text_holder">
-		<h3>Begründung</h3>
+        <h3><?php
+            $bname = veranstaltungsspezifisch_begruendung_name($antrag->veranstaltung, $antrag->typ);
+            if ($bname) {
+                echo CHtml::encode($bname);
+            } else {
+                echo "Begründung";
+            }
+            ?></h3>
 
 		<div class="textholder consolidated content">
 			<?php
