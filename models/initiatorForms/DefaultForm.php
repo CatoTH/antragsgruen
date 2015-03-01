@@ -6,6 +6,7 @@ use app\controllers\Base;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Consultation;
+use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
@@ -35,13 +36,137 @@ class DefaultForm implements IInitiatorView
         return (trim($name) != "");
     }
 
+    /**
+     * @return bool
+     */
+    protected function hasSupporters()
+    {
+        return false;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getMinNumberOfSupporters()
+    {
+        return 0;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasFullTextSupporterField()
+    {
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function supportersHaveOrganizations()
+    {
+        return false;
+    }
+
+    /**
+     * @param ISupporter $model
+     * @return ISupporter[]
+     */
+    protected function parseSupportersFromFulltext(ISupporter $model)
+    {
+        // @TODO
+        return [];
+    }
+
+    /**
+     * @param ISupporter $model
+     * @return ISupporter[]
+     */
+    protected function parseSupportersFromStdField(ISupporter $model)
+    {
+        $ret = [];
+        foreach ($_REQUEST["SupporterName"] as $i => $name) {
+            if (!$this->isValidName($name)) {
+                continue;
+            }
+            $sup             = clone $model;
+            $sup->name       = trim($name);
+            $sup->role       = ISupporter::ROLE_SUPPORTER;
+            $sup->userId     = null;
+            $sup->personType = ISupporter::PERSON_NATURAL;
+            $sup->position   = $i;
+            if (isset($_REQUEST["SupporterOrganization"]) && isset($_REQUEST["SupporterOrganization"][$i])) {
+                $sup->organization = $_REQUEST["SupporterOrganization"][$i];
+            }
+            $ret[] = $sup;
+        }
+        return $ret;
+    }
+
+    /**
+     * @param ISupporter $model
+     * @return ISupporter[]
+     */
+    protected function parseSupporters(ISupporter $model)
+    {
+        if (isset($_POST['SupporterFulltext'])) {
+            return $this->parseSupportersFromFulltext($model);
+        } elseif (isset($_REQUEST["SupporterName"]) && is_array($_REQUEST["SupporterName"])) {
+            return $this->parseSupportersFromStdField($model);
+        } else {
+            return [];
+        }
+    }
+
 
     /**
      * @throws FormError
      */
     public function validateInitiatorViewMotion()
     {
-        // @TODO
+        if (!isset($_POST['Initiator'])) {
+            throw new FormError("No Initiator data given");
+        }
+
+        $initiator = $_POST['Initiator'];
+        $settings  = $this->consultation->getSettings();
+
+        if (!isset($initiator['name'])) {
+            throw new FormError("No Initiator name data given");
+        }
+        if ($settings->motionNeedsEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
+            throw new FormError("No valid e-mail-address given");
+        }
+        if ($settings->motionNeedsPhone && empty($initiator['contactPhone'])) {
+            throw new FormError("No valid phone number given given");
+        }
+        $types = array_keys(ISupporter::getPersonTypes());
+        if (!isset($initiator['personType']) || !in_array($initiator['personType'], $types)) {
+            throw new FormError("Invalid person type");
+        }
+        if ($initiator['personType'] == ISupporter::PERSON_ORGANIZATION) {
+            if (empty($initiator['organization'])) {
+                throw new FormError("No organization entered");
+            }
+            if (empty($initiator['resolutionDate'])) {
+                throw new FormError("No resolution date entered");
+            }
+        }
+
+        if ($this->hasSupporters()) {
+            $supporters = $this->parseSupporters(new MotionSupporter());
+            if ($this->hasSupporters() && count($supporters) < $this->getMinNumberOfSupporters()) {
+                throw new FormError("Not enough supporters");
+            }
+        }
+    }
+
+    /**
+     * @throws FormError
+     */
+    public function validateInitiatorViewAmendment()
+    {
+        $this->validateInitiatorViewMotion();
     }
 
     /**
@@ -66,7 +191,7 @@ class DefaultForm implements IInitiatorView
                 ]
             );
             if (!$init) {
-                $init = new MotionSupporter();
+                $init         = new MotionSupporter();
                 $init->userId = $user->id;
             }
         }
@@ -75,58 +200,21 @@ class DefaultForm implements IInitiatorView
         $init->motionId = $motion->id;
         $init->role     = MotionSupporter::ROLE_INITIATOR;
         $init->position = 0;
-        /*
-        if (isset($_REQUEST["OrganizationResolutionDate"]) && $_REQUEST["OrganizationResolutionDate"] != "") {
-            $regexp = "/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/";
-            if (preg_match($regexp, $_REQUEST["OrganizationResolutionDate"], $matches)) {
-                $init->resolutionDate = $matches["year"] . "-" . $matches["month"] . "-" . $matches["day"];
-            }
+
+        $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
+        if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
+            $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
         }
-        */
-        var_dump($init->getAttributes());
-        die();
+
         $init->save();
 
-        if (isset($_REQUEST["SupporterFulltext"]) && trim($_REQUEST["SupporterFulltext"]) != "") {
-            $user               = new User;
-            $user->name         = trim($_REQUEST["SupporterFulltext"]);
-            $user->status       = User::STATUS_UNCONFIRMED;
-            $user->dateCreation = date("Y-m-d H:i:s");
-            //$person->organisation   = "";
-            if ($user->save()) {
-                $unt           = new MotionSupporter();
-                $unt->motionId = $motion->id;
-                $unt->userId   = $user->id;
-                $unt->role     = MotionSupporter::ROLE_SUPPORTER;
-                $unt->position = 0;
-                $unt->save();
-            }
-        } elseif (isset($_REQUEST["SupporterName"]) && is_array($_REQUEST["SupporterName"])) {
-            foreach ($_REQUEST["SupporterName"] as $i => $name) {
-                if (!$this->isValidName($name)) {
-                    continue;
-                }
-
-                $name               = trim($name);
-                $user               = new User;
-                $user->name         = $name;
-                $user->status       = User::STATUS_UNCONFIRMED;
-                $user->dateCreation = date("Y-m-d H:i:s");
-                /*
-                if (isset($_REQUEST["SupporterOrganization"]) && isset($_REQUEST["SupporterOrganization"][$i])) {
-                    $person->organisation = $_REQUEST["SupporterOrganization"][$i];
-                }
-                */
-                if ($user->save()) {
-                    $unt           = new MotionSupporter();
-                    $unt->motionId = $motion->id;
-                    $unt->userId   = $user->id;
-                    $unt->role     = MotionSupporter::ROLE_SUPPORTER;
-                    $unt->position = $i;
-                    $unt->save();
-                }
-            }
+        $supporters = $this->parseSupporters(new MotionSupporter());
+        foreach ($supporters as $sup) {
+            /** @var MotionSupporter $sup */
+            $sup->motionId = $motion->id;
+            $sup->save();
         }
+
     }
 
 
@@ -136,6 +224,7 @@ class DefaultForm implements IInitiatorView
      */
     public function submitInitiatorViewAmendment(Amendment $amendment)
     {
+        // @TODO
         $initiator = $this->getSubmitPerson($amendment->motion->consultation->isAdminCurUser());
         if ($initiator === null) {
             throw new FormError("Keine AntragstellerIn gefunden");
@@ -154,45 +243,13 @@ class DefaultForm implements IInitiatorView
         }
         $init->save();
 
-        if (isset($_REQUEST["SupporterFulltext"]) && trim($_REQUEST["SupporterFulltext"]) != "") {
-            $user               = new User;
-            $user->name         = trim($_REQUEST["UnterstuetzerInnen_fulltext"]);
-            $user->status       = User::STATUS_UNCONFIRMED;
-            $user->dateCreation = date("Y-m-d H:i:s");
-            if ($user->save()) {
-                $unt              = new AmendmentSupporter();
-                $unt->amendmentId = $amendment->id;
-                $unt->userId      = $user->id;
-                $unt->role        = AmendmentSupporter::ROLE_SUPPORTER;
-                $unt->position    = 0;
-                $unt->save();
-            }
-        } elseif (isset($_REQUEST["SupporterName"]) && is_array($_REQUEST["SupporterName"])) {
-            foreach ($_REQUEST["SupporterName"] as $i => $name) {
-                $name = trim($name);
-                if (!$this->isValidName($name)) {
-                    continue;
-                }
-
-                $user               = new User;
-                $user->name         = $name;
-                $user->status       = User::STATUS_UNCONFIRMED;
-                $user->dateCreation = date("Y-m-d H:i:s");
-                /*
-                if (isset($_REQUEST["UnterstuetzerInnen_orga"]) && isset($_REQUEST["UnterstuetzerInnen_orga"][$i])) {
-                    $person->organisation = $_REQUEST["UnterstuetzerInnen_orga"][$i];
-                }
-                */
-                if ($user->save()) {
-                    $unt              = new AmendmentSupporter();
-                    $unt->amendmentId = $amendment->id;
-                    $unt->userId      = $user->id;
-                    $unt->role        = AmendmentSupporter::ROLE_SUPPORTER;
-                    $unt->position    = $i;
-                    $unt->save();
-                }
-            }
+        $supporters = $this->parseSupporters(new AmendmentSupporter());
+        foreach ($supporters as $sup) {
+            /** @var AmendmentSupporter $sup */
+            $sup->amendmentId = $amendment->id;
+            $sup->save();
         }
+
     }
 
 
@@ -221,6 +278,10 @@ class DefaultForm implements IInitiatorView
                 'labelName'         => $labelName,
                 'labelOrganization' => $labelOrganization,
                 'allowOther'        => $consultation->isAdminCurUser(),
+                'hasSupporters'     => $this->hasSupporters(),
+                'minSupporters'     => $this->getMinNumberOfSupporters(),
+                'supporterFulltext' => $this->hasFullTextSupporterField(),
+                'supporterOrga'     => $this->supportersHaveOrganizations(),
             ],
             $controller
         );

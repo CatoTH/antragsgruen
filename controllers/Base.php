@@ -12,6 +12,7 @@ use app\models\db\Site;
 use app\models\db\User;
 use Yii;
 use yii\base\Module;
+use yii\helpers\Html;
 use yii\web\Controller;
 
 class Base extends Controller
@@ -93,6 +94,23 @@ class Base extends Controller
 
         if ($this->site->getBehaviorClass()->isLoginForced() && Yii::$app->user->isGuest) {
             $this->redirect(UrlHelper::createUrl("user/login"));
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function showErrors()
+    {
+        $error = \Yii::$app->session->getFlash('error', null, true);
+        if ($error) {
+            return '<div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                ' . Html::encode($error) . '
+            </div>';
+        } else {
+            return "";
         }
     }
 

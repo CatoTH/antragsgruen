@@ -19,25 +19,25 @@ $controller = $this->context;
 $params     = $controller->layoutParams;
 $wording    = $consultation->getWording();
 
+$this->title = $wording->get($mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
+
 $params->addJS('/js/ckeditor/ckeditor.js');
 $params->breadcrumbs        = [
     UrlHelper::createUrl('consultation/index') => $consultation->titleShort,
-    $wording->get($form->motionId > 0 ? 'Antrag bearbeiten' : 'Neuer Antrag'),
+    $this->title,
 ];
 $params->breadcrumbsTopname = $wording->get("breadcrumb_top");
 
-if ($mode == 'create') {
-    echo '<h1>' . Html::encode($wording->get('Antrag stellen')) . '</h1>';
-} else {
-    echo '<h1>' . Html::encode($wording->get('Antrag bearbeiten')) . '</h1>';
-}
+echo '<h1>' . Html::encode($this->title) . '</h1>';
+
+echo $controller->showErrors();
 
 echo '<div class="form content">';
 
 $motionPolicy = $consultation->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo '<fieldset>
-                <legend><?php echo $sprache->get("Voraussetzungen für einen Antrag") ?></legend>
+                <legend>' . $wording->get("Voraussetzungen für einen Antrag") , '</legend>
             </fieldset>';
 
     echo $motionPolicy->getOnCreateDescription();
@@ -110,25 +110,6 @@ foreach ($consultation->motionSections as $section) {
 
 $initiatorClass = $consultation->getMotionInitiatorFormClass();
 echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $this->context);
-/*
-
-
-if (!$this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts
-&& veranstaltungsspezifisch_erzwinge_login($this->veranstaltung)) {
-    $this->renderPartial($model->veranstaltung->getPolicyAntraege()->getAntragstellerInView(), array(
-        "form"               => $form,
-        "mode"               => $mode,
-        "antrag"             => $model,
-        "antragstellerIn"    => $antragstellerIn,
-        "unterstuetzerInnen" => $unterstuetzerInnen,
-        "veranstaltung"      => $veranstaltung,
-        "hiddens"            => $hiddens,
-        "js_protection"      => $js_protection,
-        "login_warnung"      => Yii::app()->user->isGuest,
-        "sprache"            => $model->veranstaltung->getSprache(),
-    ));
-}
-*/
 
 echo '<div class="submitHolder"><button type="submit" name="create" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-ok"></span> Weiter';

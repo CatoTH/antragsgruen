@@ -27,5 +27,4 @@ test:
     skip_classes: true
   php_loc:
     directory: .
-  technical_debt:
 failure:

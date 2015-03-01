@@ -32,10 +32,21 @@ abstract class ISupporter extends ActiveRecord
     public static function getRoles()
     {
         return [
-            'initiates' => 'InitiatorIn',
-            'supports'  => 'UnterstützerIn',
-            'like'      => 'Mag',
-            'dislikes'  => 'Mag nicht',
+            static::ROLE_INITIATOR => 'InitiatorIn',
+            static::ROLE_SUPPORTER => 'UnterstützerIn',
+            static::ROLE_LIKE      => 'Mag',
+            static::ROLE_DISLIKE   => 'Mag nicht',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getPersonTypes()
+    {
+        return [
+            static::PERSON_NATURAL      => 'Natürliche Person',
+            static::PERSON_ORGANIZATION => 'Organisation / Gremium',
         ];
     }
 }

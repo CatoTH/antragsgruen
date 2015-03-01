@@ -475,12 +475,85 @@ class MotionController extends Base
     /**
      * @param string $subdomain
      * @param string $consultationPath
+     * @param int $motionId
+     * @param string $fromMode
+     */
+    public function actionCreateconfirm($subdomain, $consultationPath, $motionId, $fromMode)
+    {
+        $this->loadConsultation($subdomain, $consultationPath);
+        $this->testMaintainanceMode();
+
+        $motion = Motion::findOne(
+            [
+                'id'             => $motionId,
+                'status'         => Motion::STATUS_DRAFT,
+                'consultationId' => $this->consultation->id
+            ]
+        );
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+
+        if (isset($_POST['confirm'])) {
+            // @TODO
+            $freischaltung  = $antrag->veranstaltung->getEinstellungen()->freischaltung_antraege;
+            $antrag->status = ($freischaltung ? Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT : Antrag::$STATUS_EINGEREICHT_GEPRUEFT);
+            if (!$freischaltung && $antrag->revision_name == "") {
+                $antrag->revision_name = $antrag->veranstaltung->naechsteAntragRevNr($antrag->typ);
+            }
+            $antrag->save();
+
+            if ($antrag->veranstaltung->admin_email != "") {
+                $mails     = explode(",", $antrag->veranstaltung->admin_email);
+                $from_name = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
+                $mail_text = "Es wurde ein neuer Antrag \"" . $antrag->name . "\" eingereicht.\n" .
+                    "Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id));
+
+                foreach ($mails as $mail) {
+                    if (trim($mail) != "") {
+                        AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Antrag", $mail_text, $from_name);
+                    }
+                }
+            }
+
+            if ($antrag->status == Antrag::$STATUS_EINGEREICHT_GEPRUEFT) {
+                $benachrichtigt = array();
+                foreach ($antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) {
+                    if ($abo->antraege && !in_array($abo->person_id, $benachrichtigt)) {
+                        $abo->person->benachrichtigenAntrag($antrag);
+                        $benachrichtigt[] = $abo->person_id;
+                    }
+                }
+            }
+
+            return $this->render("create_done", array(
+                'motion' => $motion,
+            ));
+
+        } else {
+            return $this->render('create_confirm', array(
+                'motion' => $motion,
+            ));
+        }
+    }
+
+
+    /**
+     * @param string $subdomain
+     * @param string $consultationPath
      * @return string
      */
     public function actionCreate($subdomain = "", $consultationPath = "")
     {
         $this->loadConsultation($subdomain, $consultationPath);
         $this->testMaintainanceMode();
+
+        $fp = fopen("/tmp/create.log", "a");
+        fwrite($fp, print_r($_REQUEST, true) . "\n\n");
+        fclose($fp);
+
+
 
         $form = new MotionEditForm($this->consultation, null);
 
@@ -494,12 +567,11 @@ class MotionController extends Base
             $form->setAttributes($_POST);
             try {
                 $motion  = $form->createMotion();
-                $nextUrl = ["motion/createConfirm", "motionId" => $motion->id, "fromMode" => "create"];
+                $nextUrl = ["motion/createconfirm", "motionId" => $motion->id, "fromMode" => "create"];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
             } catch (FormError $e) {
-                var_dump($e);
+                \Yii::$app->session->setFlash('error', $e->getMessage());
             }
-            die();
         }
 
 
@@ -520,8 +592,8 @@ class MotionController extends Base
 
 
         if (count($form->supporters) == 0) {
-            $supporter               = new MotionSupporter();
-            $supporter->role         = MotionSupporter::ROLE_INITIATOR;
+            $supporter       = new MotionSupporter();
+            $supporter->role = MotionSupporter::ROLE_INITIATOR;
             if ($this->getCurrentUser()) {
                 $user                    = $this->getCurrentUser();
                 $supporter->userId       = $user->id;
@@ -529,7 +601,7 @@ class MotionController extends Base
                 $supporter->contactEmail = $user->email;
                 $supporter->personType   = MotionSupporter::PERSON_NATURAL;
             }
-            $form->supporters[]      = $supporter;
+            $form->supporters[] = $supporter;
         }
 
         return $this->render(

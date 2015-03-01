@@ -11,6 +11,10 @@ use yii\helpers\Html;
  * @var string $labelName
  * @var string $labelOrganization
  * @var bool $allowOther
+ * @var bool $hasSupporters
+ * @var bool $minSupporters
+ * @var bool $supporterFulltext
+ * @var bool $supporterOrga
  */
 
 /** @var app\controllers\Base $controller */

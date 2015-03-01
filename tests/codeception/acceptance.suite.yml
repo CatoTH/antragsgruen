@@ -11,17 +11,32 @@
 class_name: AcceptanceTester
 modules:
     enabled:
-        - PhpBrowser
+      - WebDriver
+    config:
+      WebDriver:
+        url: 'http://localhost:8080/'
+        host: 127.0.0.7
+        port: 4444
+        browser: firefox
+        window_size: 1024x768
+        wait: 0
+        capabilities:
+          unexpectedAlertBehaviour: 'accept'
+
+
 # you can use WebDriver instead of PhpBrowser to test javascript and ajax.
 # This will require you to install selenium. See http://codeception.com/docs/04-AcceptanceTests#Selenium
 # "restart" option is used by the WebDriver to start each time per test-file new session and cookies,
 # it is useful if you want to login in your app in each test.
 #        - WebDriver
-    config:
-        PhpBrowser:
-# PLEASE ADJUST IT TO THE ACTUAL ENTRY POINT WITHOUT PATH INFO
-            url: http://localhost:8080
+#    config:
 #        WebDriver:
 #            url: http://localhost:8080
 #            browser: firefox
 #            restart: true
+
+
+#        - PhpBrowser
+#    config:
+#        PhpBrowser:
+#            url: http://localhost:8080

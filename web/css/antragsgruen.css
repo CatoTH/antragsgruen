@@ -5791,6 +5791,8 @@ a {
   .well .content {
     padding: 15px 20px 30px;
     overflow: auto; }
+  .well .alert {
+    margin-top: 20px; }
 
 .navbar {
   margin-bottom: 0; }

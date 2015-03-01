@@ -88,7 +88,7 @@ A threshold of 200 is generally considered the point where measures should be ta
         </description>
         <priority>3</priority>
         <properties>
-            <property name="minimum" description="The npath reporting threshold" value="1000"/>
+            <property name="minimum" description="The npath reporting threshold" value="5000"/>
         </properties>
         <example>
             <![CDATA[
