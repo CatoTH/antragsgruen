@@ -23,3 +23,14 @@ composer install --dev
 ```bash
 scss --precision 9
 ```
+
+
+Tests
+-----
+
+* [PhantomJS](http://phantomjs.org/download.html) installieren
+* PhantomJS starten: phantomjs --webdriver=4444
+* Debug-Server starten: tests/start_debug_server.sh
+* Alle Tests ausführen: tests/run.sh
+* Einzelnen Acceptence-Test ausführen: cd tests && ../vendor/bin/codecept run acceptance MotionCreateCept
+
