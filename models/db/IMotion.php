@@ -30,32 +30,24 @@ abstract class IMotion extends ActiveRecord
     public static function getStati()
     {
         return [
-            -2 => "Gelöscht",
-            -1 => "Zurückgezogen",
-            0  => "Unbestätigt", // Noch nicht bestätigt
-            1  => "Entwurf",
-            2  => "Eingereicht (ungeprüft)",
-            3  => "Eingereicht",
-            4  => "Angenommen",
-            5  => "Abgelehnt",
-            6  => "Modifizierte Übernahme",
-            7  => "Modifziert",
-            8  => "Übernahme",
-            9  => "Erledigt",
-            10 => "Überweisung",
-            11 => "Abstimmung",
-            12 => "Pausiert",
-            13 => "Informationen fehlen",
-            14 => "Nicht zugelassen",
+            static::STATUS_DELETED              => "Gelöscht",
+            static::STATUS_WITHDRAWN            => "Zurückgezogen",
+            static::STATUS_UNCONFIRMED          => "Unbestätigt",
+            static::STATUS_DRAFT                => "Entwurf",
+            static::STATUS_SUBMITTED_UNSCREENED => "Eingereicht (ungeprüft)",
+            static::STATUS_SUBMITTED_SCREENED   => "Eingereicht",
+            static::STATUS_ACCEPTED             => "Angenommen",
+            static::STATUS_DECLINED             => "Abgelehnt",
+            static::STATUS_MODIFIED_ACCEPTED    => "Modifizierte Übernahme",
+            static::STATUS_MODIFIED             => "Modifziert",
+            static::STATUS_ADPTED               => "Übernahme",
+            static::STATUS_COMPLETED            => "Erledigt",
+            static::STATUS_REFERRED             => "Überweisung",
+            static::STATUS_VOTE                 => "Abstimmung",
+            static::STATUS_PAUSED               => "Pausiert",
+            static::STATUS_MISSING_INFORMATION  => "Informationen fehlen",
+            static::STATUS_DISMISSED            => "Nicht zugelassen",
         ];
-    }
-
-    /**
-     * @return int[]
-     */
-    public static function getInvisibleStati()
-    {
-        return [0, 2, -2];
     }
 
     /**

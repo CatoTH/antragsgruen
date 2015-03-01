@@ -214,7 +214,7 @@ class Consultation extends ActiveRecord
      */
     public function getSortedMotions()
     {
-        return MotionSorter::getSortedMotions($this->motions, $this->getSettings()->amendNumberingByLine);
+        return MotionSorter::getSortedMotions($this, $this->motions, $this->getSettings()->amendNumberingByLine);
     }
 
     /**
@@ -282,5 +282,25 @@ class Consultation extends ActiveRecord
         } else {
             return false;
         }
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getInvisibleMotionStati()
+    {
+        if ($this->getSettings()->screeningMotionsShown) {
+            return [Motion::STATUS_DELETED, Motion::STATUS_UNCONFIRMED];
+        } else {
+            return [Motion::STATUS_DELETED, Motion::STATUS_UNCONFIRMED, Motion::STATUS_SUBMITTED_UNSCREENED];
+        }
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getInvisibleAmendmentStati()
+    {
+        return $this->getInvisibleMotionStati();
     }
 }

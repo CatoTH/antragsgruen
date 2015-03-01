@@ -65,7 +65,7 @@ class MotionComment extends IComment
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
-        $invisibleStati = array_map('IntVal', Motion::getInvisibleStati());
+        $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
 
         $query = (new Query())->select('motionComment.*')->from('motionComment');
         $query->innerJoin('motion', 'motion.id = motionComment.motionId');

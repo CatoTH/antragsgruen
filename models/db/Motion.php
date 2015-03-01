@@ -1,8 +1,6 @@
 <?php
 namespace app\models\db;
 
-use yii\db\Query;
-
 /**
  * @package app\models\db
  *
@@ -66,7 +64,7 @@ class Motion extends IMotion
      */
     public function getAmendments()
     {
-        return $this->hasOne(Amendment::className(), ['motionId' => 'id']);
+        return $this->hasMany(Amendment::className(), ['motionId' => 'id']);
     }
 
     /**
@@ -94,7 +92,7 @@ class Motion extends IMotion
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
-        $invisibleStati = array_map('IntVal', static::getInvisibleStati());
+        $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
 
         $query = Motion::find();
         $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
@@ -130,7 +128,7 @@ class Motion extends IMotion
     {
         $amendments = [];
         foreach ($this->amendments as $amend) {
-            if (!in_array($amend->status, Amendment::getInvisibleStati())) {
+            if (!in_array($amend->status, $this->consultation->getInvisibleAmendmentStati())) {
                 $amendments[] = $amend;
             }
         }
@@ -200,6 +198,23 @@ class Motion extends IMotion
         return "glyphicon glyphicon-file";
     }
 
+    /**
+     * @return string
+     */
+    public function getTypeName()
+    {
+        // @TODO Tags
+        return $this->consultation->getWording()->get('Antrag');
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return !in_array($this->status, $this->consultation->getInvisibleMotionStati());
+    }
 
     /**
      * @return User[]

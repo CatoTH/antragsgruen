@@ -23,7 +23,6 @@ $this->title = $wording->get($mode == 'create' ? 'Antrag stellen' : 'Antrag bear
 
 $params->addJS('/js/ckeditor/ckeditor.js');
 $params->breadcrumbs        = [
-    UrlHelper::createUrl('consultation/index') => $consultation->titleShort,
     $this->title,
 ];
 $params->breadcrumbsTopname = $wording->get("breadcrumb_top");

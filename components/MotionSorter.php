@@ -3,6 +3,7 @@ namespace app\components;
 
 
 use app\models\db\Amendment;
+use app\models\db\Consultation;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 
@@ -91,15 +92,16 @@ class MotionSorter
 
 
     /**
+     * @param Consultation $consultation
      * @param Motion[] $motions
      * @param bool $amendNumberingByLine
      * @return array|array[]
      */
-    public static function getSortedMotions($motions, $amendNumberingByLine)
+    public static function getSortedMotions(Consultation $consultation, $motions, $amendNumberingByLine)
     {
         $motionsSorted = array();
 
-        $inivisible   = IMotion::getInvisibleStati();
+        $inivisible   = $consultation->getInvisibleMotionStati();
         $inivisible[] = IMotion::STATUS_MODIFIED;
 
         foreach ($motions as $motion) {

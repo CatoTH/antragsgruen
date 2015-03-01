@@ -151,7 +151,7 @@ class Amendment extends IMotion
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
-        $invisibleStati = array_map('IntVal', static::getInvisibleStati());
+        $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
 
         $query = (new Query())->select('amendment.*')->from('amendment');
         $query->innerJoin('motion', 'motion.id = amendment.motionId');

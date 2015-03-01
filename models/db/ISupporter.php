@@ -2,7 +2,9 @@
 
 namespace app\models\db;
 
+use app\components\Tools;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 
 /**
  * @property int $position
@@ -48,5 +50,38 @@ abstract class ISupporter extends ActiveRecord
             static::PERSON_NATURAL      => 'Natürliche Person',
             static::PERSON_ORGANIZATION => 'Organisation / Gremium',
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameWithOrga()
+    {
+        $name = $this->name;
+        if ($this->organization != "") {
+            $name .= " (" . trim($this->organization, " \t\n\r\0\x0B()") . ")";
+        }
+        return $name;
+    }
+
+    /**
+     * @param bool $html
+     * @return string
+     */
+    public function getNameWithResolutionDate($html = true)
+    {
+        if ($html) {
+            $name = Html::encode($this->getNameWithOrga());
+            if ($this->resolutionDate > 0) {
+                $name .= " <small style='font-weight: normal;'>(beschlossen am ";
+                $name .= Tools::formatMysqlDate($this->resolutionDate) . ")</small>";
+            }
+        } else {
+            $name = $this->getNameWithOrga();
+            if ($this->resolutionDate > 0) {
+                $name .= " (beschlossen am " . Tools::formatMysqlDate($this->resolutionDate) . ")";
+            }
+        }
+        return $name;
     }
 }

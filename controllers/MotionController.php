@@ -328,7 +328,7 @@ class MotionController extends Base
      * @param Motion $motion
      * @param int $commentId
      */
-    private function performAnzeigeActions(Motion $motion, $commentId)
+    private function performShowActions(Motion $motion, $commentId)
     {
         if (AntiXSS::isTokenSet('deleteComment')) {
             $this->deleteComment($motion, AntiXSS::getTokenVal('deleteComment'));
@@ -404,10 +404,11 @@ class MotionController extends Base
 
         $this->layout = 'column2';
 
-        $this->loadConsultation($subdomain, $consultationPath);
+        $this->loadConsultation($subdomain, $consultationPath, $motion);
         $this->testMaintainanceMode();
 
-        $this->performAnzeigeActions($motion, $commentId);
+
+        $this->performShowActions($motion, $commentId);
 
 
         $openedComments = array();
@@ -425,19 +426,19 @@ class MotionController extends Base
         }
 
         $hiddens      = array();
-        $jsProtection = ($this->getCurrentUser() === null);
+        $jsProtection = \Yii::$app->user->isGuest;
+
         if ($jsProtection) {
-            $hiddens["form_token"] = AntiXSS::createToken("kommentar_schreiben");
+            $hiddens["formToken"] = AntiXSS::createToken("writeComment");
         } else {
-            $hiddens[AntiXSS::createToken("kommentar_schreiben")] = "1";
+            $hiddens[AntiXSS::createToken("writeComment")] = "1";
         }
 
-        if (\Yii::$app->user->isGuest) {
+        if (\Yii::$app->user->isGuest) { // @TODO
             $commentUser = new User();
         } else {
             $commentUser = $this->getCurrentUser();
         }
-        $commentUser->setEmailRequired($motion->consultation->getSettings()->commentNeedsEmail);
 
         $supportStatus = "";
         if (!\Yii::$app->user->isGuest) {
@@ -447,28 +448,30 @@ class MotionController extends Base
                 }
             }
         }
-        $adminEdit = ($this->consultation->isAdminCurUser() ?
-            $this->createUrl("/admin/antraege/update", array("id" => $motionId)) : null);
 
-        $commentDelLink = $this->createUrl("antrag/anzeige",
-            array("motionId" => $motionId, AntiXSS::createToken("komm_del") => "#komm_id#"));
+        if ($this->consultation->isAdminCurUser()) {
+            $adminEdit = UrlHelper::createUrl('admin/motions/update', ['motionId' => $motionId]);
 
-        return $this->render(
-            "show",
-            [
-                "motion"         => $motion,
-                "amendments"     => $motion->getVisibleAmendments(),
-                "edit_link"      => $motion->canEdit(),
-                "openedComments" => $openedComments,
-                "commentUser"    => $commentUser,
-                "adminEdit"      => $adminEdit,
-                "komm_del_link"  => $commentDelLink,
-                "hiddens"        => $hiddens,
-                "jsProtection"   => $jsProtection,
-                "supportStatus"  => $supportStatus,
-                "wording"        => $motion->consultation->getWording(),
-            ]
-        );
+            $delParams      = ['motionId' => $motionId, AntiXSS::createToken("komm_del") => '#komm_id#'];
+            $commentDelLink = UrlHelper::createUrl('motion/show', $delParams);
+        } else {
+            $adminEdit      = null;
+            $commentDelLink = null;
+        }
+
+
+        $motionViewParams = [
+            "motion"         => $motion,
+            "amendments"     => $motion->getVisibleAmendments(),
+            "editLink"       => $motion->canEdit(),
+            "openedComments" => $openedComments,
+            "adminEdit"      => $adminEdit,
+            "commentDelLink" => $commentDelLink,
+            "hiddens"        => $hiddens,
+            "jsProtection"   => $jsProtection,
+            "supportStatus"  => $supportStatus,
+        ];
+        return $this->render('view', $motionViewParams);
     }
 
 
@@ -477,6 +480,7 @@ class MotionController extends Base
      * @param string $consultationPath
      * @param int $motionId
      * @param string $fromMode
+     * @return string
      */
     public function actionCreateconfirm($subdomain, $consultationPath, $motionId, $fromMode)
     {
@@ -548,12 +552,6 @@ class MotionController extends Base
     {
         $this->loadConsultation($subdomain, $consultationPath);
         $this->testMaintainanceMode();
-
-        $fp = fopen("/tmp/create.log", "a");
-        fwrite($fp, print_r($_REQUEST, true) . "\n\n");
-        fclose($fp);
-
-
 
         $form = new MotionEditForm($this->consultation, null);
 

@@ -61,7 +61,7 @@ if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
         foreach ($newestMotions as $motion) {
             $html .= '<li>';
             $html .= '<span class="' . $motion->getIconCSSClass() . '"></span>';
-            $motionLink = UrlHelper::createUrl(['motion/show', 'motionId' => $motion->id]);
+            $motionLink = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
             $html .= Html::a($motion->title, $motionLink) . "</li>\n";
         }
     }
@@ -82,7 +82,7 @@ if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
             );
             $amendmentLink = UrlHelper::createUrl(
                 [
-                    "amendment/show",
+                    "amendment/view",
                     "amendmentId" => $amendment->id,
                     "motionId"    => $amendment->motion->id
                 ]
@@ -108,7 +108,7 @@ if (!in_array($consultation->policyComments, array(0, 4))) {
         foreach ($newestMotionComments as $comment) {
             $commentLink = UrlHelper::createUrl(
                 [
-                    "motion/show",
+                    "motion/view",
                     "motionId"  => $comment->motionId,
                     "commentId" => $comment->id,
                     "#"         => "comment" . $comment->id

@@ -198,8 +198,6 @@ class Base extends Controller
             $this->site = Site::findOne(["subdomain" => $siteId]);
         }
         if (is_null($this->site)) {
-
-            die("<h1>Not Found: " . $siteId . "</h1>");
             $this->consultationNotFound();
         }
 
@@ -213,6 +211,7 @@ class Base extends Controller
 
         UrlHelper::setCurrentConsultation($this->consultation);
         UrlHelper::setCurrentSite($this->site);
+        $this->layoutParams->setConsultation($this->consultation);
 
         $this->checkConsistency($checkMotion, $checkAmendment);
 

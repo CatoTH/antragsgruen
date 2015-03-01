@@ -3,13 +3,13 @@ Antragsgrün v3
 
 [Etwas über Antragsgrün]
 
-***Aktueller Build-Status***
+***Current Build-Status***
 
 [![Build Status](http://phpci.hoessl.eu/build-status/image/1?branch=v3)](http://phpci.hoessl.eu/build-status/view/1?branch=v3)
 
 
-Entwicklungs-Setup
-------------------
+Development Setup
+-----------------
 
 ```bash
 curl -sS https://getcomposer.org/installer | php
@@ -25,8 +25,8 @@ scss --precision 9
 ```
 
 
-Tests
------
+Testing
+-------
 
 * [PhantomJS](http://phantomjs.org/download.html) installieren
 * PhantomJS starten: phantomjs --webdriver=4444

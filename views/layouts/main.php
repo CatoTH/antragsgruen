@@ -158,7 +158,6 @@ echo '</a></div>';
 
 if (is_array($params->breadcrumbs)) {
     echo '<ol class="breadcrumb">';
-    echo '<li>' . Html::a($params->breadcrumbsTopname, '/') . '</li>';
     foreach ($params->breadcrumbs as $link => $name) {
         echo '<li>' . Html::a($name, $link) . '</li>';
     }

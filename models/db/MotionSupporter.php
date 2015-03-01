@@ -16,7 +16,7 @@ namespace app\models\db;
  * @property string $organization
  * @property string $resolutionDate
  * @property string $contactEmail
- * @property string $contextPhone
+ * @property string $contactPhone
  *
  * @property User $user
  * @property Motion $motion
