@@ -1113,7 +1113,7 @@ ins {
 .form input[type=text], .form label.legend {
   display: block; }
 .form .radio {
-  min-width: 140px; }
+  min-width: 185px; }
 .form label {
   display: inline-block; }
 

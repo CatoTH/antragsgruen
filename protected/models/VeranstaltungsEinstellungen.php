@@ -34,6 +34,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $antrag_neu_button_label = "";
 	public $antrag_begruendungen = true;
 	public $antrag_kommentare_ohne_absatz = false;
+    public $antrag_hat_mehrere_tags = true;
 
 	/** @var array */
 	public $antrags_typen_deaktiviert = array();

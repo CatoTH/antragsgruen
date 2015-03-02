@@ -177,6 +177,13 @@ $einstellungen = $model->getEinstellungen();
 			?>
 			<a href="#" class="tag_neu_opener">+ Neues hinzufügen</a>
 			<input class="tag_neu_input" name="tag_neu" placeholder="Neues Schlagwort" value="" style="display: none;">
+
+            <br><br>
+            <label style="width: auto;">
+                <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="antrag_hat_mehrere_tags">
+                <input type="checkbox" name="VeranstaltungsEinstellungen[antrag_hat_mehrere_tags]"
+                       value="1" <?php if ($einstellungen->antrag_hat_mehrere_tags == 1) echo "checked"; ?>> Mehrere Schlagworte pro Antrag möglich
+            </label>
 		</div>
 		<script>
 			$(".tag_neu_opener").click(function (ev) {

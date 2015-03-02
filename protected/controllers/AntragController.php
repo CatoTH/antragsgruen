@@ -751,11 +751,25 @@ class AntragController extends AntragsgruenController
 					$this->veranstaltung->getPolicyAntraege()->submitAntragsstellerInView_Antrag($model);
 					/* $next_status = $_REQUEST["Antrag"]["status"] */
 
-					if (isset($_REQUEST["tags"])) foreach ($_REQUEST["tags"] as $tag_id) {
-						foreach ($this->veranstaltung->tags as $tag) if ($tag->id == $tag_id) {
-							Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $model->id, "tag_id" => $tag_id));
-						}
-					}
+                    if ($this->veranstaltung->getEinstellungen()->antrag_hat_mehrere_tags) {
+                        if (isset($_REQUEST["tags"])) {
+                            foreach ($_REQUEST["tags"] as $tag_id) {
+                                foreach ($this->veranstaltung->tags as $tag) {
+                                    if ($tag->id == $tag_id) {
+                                        Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $model->id, "tag_id" => $tag_id));
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (isset($_REQUEST["tag"])) {
+                            foreach ($this->veranstaltung->tags as $tag) {
+                                if ($tag->id == $_REQUEST["tag"]) {
+                                    Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $model->id, "tag_id" => IntVal($_REQUEST["tag"])));
+                                }
+                            }
+                        }
+                    }
 
 					$next_status = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
 					$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $model->id, "next_status" => $next_status, "from_mode" => "neu")));

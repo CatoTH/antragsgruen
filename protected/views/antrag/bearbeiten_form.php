@@ -122,14 +122,25 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
         if (count($veranstaltung->tags) > 0) {
             ?>
             <fieldset>
-                <label class="legend">Themengebiet(e)</label>
                 <?php
-                foreach ($veranstaltung->tags as $tag) {
-                    echo '<label class="radio" style="margin-right: 10px;"><input name="tags[]" value="' . $tag->id . '" type="checkbox" ';
-                    if (in_array($tag->id, $tags_pre)) {
-                        echo ' checked';
+                if ($veranstaltung->getEinstellungen()->antrag_hat_mehrere_tags) {
+                    echo '<label class="legend">Themengebiet(e)</label>';
+                    foreach ($veranstaltung->tags as $tag) {
+                        echo '<label class="radio" style="margin-right: 10px;"><input name="tags[]" value="' . $tag->id . '" type="checkbox" ';
+                        if (in_array($tag->id, $tags_pre)) {
+                            echo ' checked';
+                        }
+                        echo '> ' . CHtml::encode($tag->name) . '</label>';
                     }
-                    echo '> ' . CHtml::encode($tag->name) . '</label>';
+                } else {
+                    echo '<label class="legend">Themengebiet</label>';
+                    foreach ($veranstaltung->tags as $tag) {
+                        echo '<label class="radio" style="margin-right: 10px;"><input name="tag" value="' . $tag->id . '" type="radio" ';
+                        if (in_array($tag->id, $tags_pre)) {
+                            echo ' checked';
+                        }
+                        echo '> ' . CHtml::encode($tag->name) . '</label>';
+                    }
                 }
                 ?>
             </fieldset>

@@ -136,7 +136,7 @@ $this->menus_html[] = $html;
 				if ($antrag->veranstaltung->isAdminCurUser() && count($antrag->veranstaltung->tags) > 0) {
 					?>
 					<tr>
-						<th>Themenbereiche:</th>
+						<th><?=(count($antrag->tags) == 1 ? "Themenbereich" : "Themenbereiche")?>:</th>
 						<td>
 							<?php
 							$tags         = array();
