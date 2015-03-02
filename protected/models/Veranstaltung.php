@@ -341,6 +341,21 @@ class Veranstaltung extends GxActiveRecord
 		return veranstaltungsspezifisch_antrag_max_len($this, $antrag_typ, $text2);
 	}
 
+    /**
+     * @return Tag[]
+     */
+    public function getSortedTags() {
+        $tags = $this->tags;
+        usort($tags, function($t1, $t2) {
+            /** @var Tag $t1 */
+            /** @var Tag $t2 */
+            if ($t1->position < $t2->position) return -1;
+            if ($t1->position > $t2->position) return 1;
+            return 0;
+        });
+        return $tags;
+    }
+
 	/**
 	 * @var string $className
 	 * @return GxActiveRecord
@@ -417,4 +432,5 @@ class Veranstaltung extends GxActiveRecord
 		Yii::app()->cache->delete("pdf_" . $this->id);
 		return parent::save($runValidation, $attributes);
 	}
+
 }

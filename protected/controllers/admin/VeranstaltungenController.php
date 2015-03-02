@@ -110,6 +110,16 @@ class VeranstaltungenController extends GxController
 					}
 				}
 
+                if (isset($_REQUEST["TagSort"]) && is_array($_REQUEST["TagSort"])) {
+                    foreach ($_REQUEST["TagSort"] as $i => $tagId) {
+                        $tag = Tag::model()->findByPk($tagId);
+                        if ($tag->veranstaltung_id == $this->veranstaltung->id) {
+                            $tag->position = $i;
+                            $tag->save();
+                        }
+                    }
+                }
+
 				$model->resetLineCache();
 				$this->redirect(array('update_extended'));
 			}

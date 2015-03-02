@@ -23,6 +23,8 @@ $this->breadcrumbs_topname = $sprache->get("breadcrumb_top");
 
 $this->pageTitle = $antrag->nameMitRev() . " (" . $antrag->veranstaltung->name . ", Antragsgrün)";
 
+if ($this->veranstaltung->id == 149 && $antrag->typ == Antrag::$TYP_RESOLUTION) $this->magenta_layout = true;
+
 /** @var CWebApplication $app */
 $app = Yii::app();
 $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/socialshareprivacy/jquery.socialshareprivacy.js');
@@ -131,7 +133,7 @@ $this->menus_html[] = $html;
 						?></td>
 				</tr>
 				<?php
-				if ($antrag->veranstaltung->isAdminCurUser() && count($antrag->tags) > 0) {
+				if ($antrag->veranstaltung->isAdminCurUser() && count($antrag->veranstaltung->tags) > 0) {
 					?>
 					<tr>
 						<th>Themenbereiche:</th>

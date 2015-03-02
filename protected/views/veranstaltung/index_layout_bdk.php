@@ -33,7 +33,7 @@ foreach ($antraege as $name => $antrs) {
 				echo "</div>";
 				echo "<div class='titellink'>";
 				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
-				echo "</div></td><td class='antragstellerIn'>";
+                echo "</div></td><td class='antragstellerIn'>";
 				$vons = array();
 				foreach ($antrag->getAntragstellerInnen() as $p) $vons[] = $p->getNameMitOrga();
 				echo implode(", ", $vons);

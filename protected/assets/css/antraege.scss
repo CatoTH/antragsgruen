@@ -212,6 +212,12 @@ a {
     @include gruene_ueberschrift($farbe_hellgruen, rgb(185, 209, 38));
     margin: -1px;
   }
+  .magenta & {
+    h2, h3, .nav-header {
+      @include gruene_ueberschrift($farbe_magenta, rgb(234, 74, 161));
+      margin: -1px;
+    }
+  }
 
   .content {
     padding: 15px 20px 30px;
@@ -1170,9 +1176,6 @@ ul.funktionen {
   }
 }
 
-.bdk_antrags_liste {
-  
-}
 
 .clear {
   clear: both;

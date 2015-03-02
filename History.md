@@ -1,6 +1,6 @@
 2.6.0 - 
 ==================
-
+* Schlagworte in den ExpertInneneinstellungen lassen sich nun umsortieren.
 
 2.5.4 - 2015-02-17
 ==================

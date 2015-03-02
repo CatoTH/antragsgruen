@@ -9,6 +9,12 @@ $this->breadcrumbs = array(
 	Yii::t('app', 'Administration') => $this->createUrl("admin/index"),
 	"Veranstaltung"
 );
+
+/** @var CWebApplication $app */
+$app = Yii::app();
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/jqueryui/jquery-ui.min.js');
+
+
 ?>
 
 <h1><?php echo Yii::t('app', 'Update') . ': ' . GxHtml::encode($model->label()) . ' ' . GxHtml::encode(GxHtml::valueEx($model)); ?></h1>
@@ -153,10 +159,12 @@ $einstellungen = $model->getEinstellungen();
 
 		<div style="display: inline-block;">
 			<?
-			if (count($model->tags) > 0) {
-				echo '<ul>';
-				foreach ($model->tags as $tag) {
-					echo '<li>' . CHtml::encode($tag->name) . ' (' . count($tag->antraege) . ')';
+            $tags = $model->getSortedTags();
+			if (count($tags) > 0) {
+				echo '<ul class="taglist">';
+				foreach ($tags as $tag) {
+					echo '<li><input type="hidden" name="TagSort[]" value="' . $tag->id . '">';
+                    echo '<span class="sortable" style="cursor: move;">' . CHtml::encode($tag->name) . '</span> (' . count($tag->antraege) . ')';
 					if (count($tag->antraege) == 0) echo ' <a href="' . CHtml::encode($this->createUrl("admin/veranstaltungen/update_extended",
 							array(AntiXSS::createToken("del_tag") => $tag->id))) .
 						'" onClick="return confirm(\'Wirklich löschen?\');" style="color: red; font-size: 0.8em;">löschen</a>';
@@ -176,6 +184,10 @@ $einstellungen = $model->getEinstellungen();
 				$(".tag_neu_input").show().focus();
 				$(this).hide();
 			});
+            $(".taglist").sortable({
+                containment: "parent",
+                axis: "y"
+            });
 		</script>
 	</div>
 	<br>

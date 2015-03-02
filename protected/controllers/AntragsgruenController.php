@@ -11,6 +11,7 @@ class AntragsgruenController extends CController
 	public $breadcrumbs_topname = null;
 	public $text_comments = true;
 	public $shrink_cols = false;
+    public $magenta_layout = false;
 
 	/** @var null|Veranstaltung */
 	public $veranstaltung = null;

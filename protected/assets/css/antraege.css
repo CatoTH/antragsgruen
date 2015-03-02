@@ -245,6 +245,23 @@ a {
     text-transform: uppercase;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     margin: -1px; }
+  .magenta .well h2, .magenta .well h3, .magenta .well .nav-header {
+    margin: 0;
+    color: #fff;
+    background: #e2007a;
+    background: -moz-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -webkit-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -o-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -ms-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    padding: 5px 20px 5px;
+    font-family: "Open Sans";
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 18px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    margin: -1px; }
   .well .content {
     padding: 15px 20px 30px; }
 

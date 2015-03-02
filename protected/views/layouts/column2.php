@@ -8,6 +8,7 @@ $this->beginContent('//layouts/bootstrap');
 $row_classes = array("row-fluid");
 if (isset($this->shrink_cols) && $this->shrink_cols) $row_classes[] = "shrink_cols";
 if (isset($this->text_comments) && $this->text_comments) $row_classes[] = "text_comments";
+if (isset($this->magenta_layout) && $this->magenta_layout) $row_classes[] = "magenta";
 ?>
 
 

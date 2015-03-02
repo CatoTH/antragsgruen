@@ -21,7 +21,8 @@ foreach ($antraege as $antraege2) {
 		}
 	}
 }
-foreach ($this->veranstaltung->tags as $tag) if (isset($tags[$tag->id])) $tag_ids[] = $tag->id;
+$sortedTags = $this->veranstaltung->getSortedTags();
+foreach ($sortedTags as $tag) if (isset($tags[$tag->id])) $tag_ids[] = $tag->id;
 if ($hat_na) $tag_ids[] = 0;
 
 
@@ -97,7 +98,11 @@ foreach ($tag_ids as $tag_id) {
 				echo "<td class='titel'>";
 				echo "<div class='titellink'>";
 				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
-				echo "</div><div class='pdflink'>";
+                if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $antrag->veranstaltung->url_verzeichnis == "phase2") {
+                    if ($antrag->typ == Antrag::$TYP_ANTRAG) echo ' <span style="color: #a2bc04; font-size: 0.8em;">(Fließtext)</span>';
+                    if ($antrag->typ == Antrag::$TYP_RESOLUTION) echo ' <span style="color: #e2007a; font-size: 0.8em;">(Projektvorschlag)</span>';
+                }
+                echo "</div><div class='pdflink'>";
 				if ($veranstaltung->getEinstellungen()->kann_pdf) echo CHtml::link("als PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class" => "pdfLink"));
 				echo "</div></td><td class='antragstellerIn'>";
 				$vons = array();

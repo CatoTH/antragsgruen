@@ -708,7 +708,7 @@ class AntragController extends AntragsgruenController
 
 		$model                       = new Antrag();
 		$model->status               = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
-		$model->typ                  = Antrag::$TYP_ANTRAG;
+		$model->typ                  = (isset($_REQUEST["typ"]) ? IntVal($_REQUEST["typ"]) : Antrag::$TYP_ANTRAG);
 		$model->veranstaltung_id     = $veranstaltung->id;
 		$model->veranstaltung        = $veranstaltung;
 		$model->text_unveraenderlich = ($this->veranstaltung->getEinstellungen()->admins_duerfen_aendern ? 0 : 1);
