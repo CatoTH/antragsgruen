@@ -562,6 +562,7 @@ class AntragController extends AntragsgruenController
 				$goon = false;
 			}
 
+
 			if ($goon && $antrag->save()) {
 
 				foreach ($antrag->antragUnterstuetzerInnen as $unt)
@@ -570,16 +571,33 @@ class AntragController extends AntragsgruenController
 				$this->veranstaltung->getPolicyAntraege()->submitAntragsstellerInView_Antrag($antrag);
 
 				Yii::app()->db->createCommand()->delete("antrag_tags", "antrag_id=:antrag_id", array("antrag_id" => $antrag->id));
-				if (isset($_REQUEST["tags"])) foreach ($_REQUEST["tags"] as $tag_id) {
-					foreach ($this->veranstaltung->tags as $tag) if ($tag->id == $tag_id) {
-						Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $antrag->id, "tag_id" => $tag_id));
-					}
-				}
 
+                if ($this->veranstaltung->getEinstellungen()->antrag_hat_mehrere_tags) {
+                    if (isset($_REQUEST["tags"])) {
+                        foreach ($_REQUEST["tags"] as $tag_id) {
+                            foreach ($this->veranstaltung->tags as $tag) {
+                                if ($tag->id == $tag_id) {
+                                    Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $antrag_id, "tag_id" => $tag_id));
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (isset($_REQUEST["tag"])) {
+                        foreach ($this->veranstaltung->tags as $tag) {
+                            if ($tag->id == $_REQUEST["tag"]) {
+                                Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $antrag_id, "tag_id" => IntVal($_REQUEST["tag"])));
+                            }
+                        }
+                    }
+                }
 
-				$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $antrag_id, "next_status" => $antrag->status, "from_mode" => "aendern")));
+                $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag_id)));
+				//$this->redirect($this->createUrl("antrag/neuConfirm", array("antrag_id" => $antrag_id, "next_status" => $antrag->status, "from_mode" => "aendern")));
 			} else {
-				foreach ($antrag->getErrors() as $key => $val) foreach ($val as $val2) Yii::app()->user->setFlash("error", "Antrag konnte nicht geändert werden: $key: " . $val2);
+				foreach ($antrag->getErrors() as $key => $val) foreach ($val as $val2) {
+                    Yii::app()->user->setFlash("error", "Antrag konnte nicht geändert werden: $key: " . $val2);
+                }
 			}
 
 		}
@@ -603,15 +621,10 @@ class AntragController extends AntragsgruenController
 		}
 		foreach ($antrag->tags as $tag) $tags_pre[] = $tag->id;
 
-		$force_type = null;
-		if (isset($_REQUEST["typ"])) {
-			if (isset(Antrag::$TYPEN[$_REQUEST["typ"]]) && !in_array($_REQUEST["typ"], $this->veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) $force_type = IntVal($_REQUEST["typ"]);
-		}
-
 		$this->render('bearbeiten_form', array(
 			"mode"               => "bearbeiten",
 			"model"              => $antrag,
-			"force_type"         => $force_type,
+			"force_type"         => $antrag->typ,
 			"hiddens"            => $hiddens,
 			"antragstellerIn"    => $antragstellerIn,
 			"unterstuetzerInnen" => $unterstuetzerInnen,
@@ -639,19 +652,22 @@ class AntragController extends AntragsgruenController
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByAttributes(array("id" => $antrag_id, "status" => Antrag::$STATUS_UNBESTAETIGT));
 
+        $this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag);
+
 		if (is_null($antrag)) {
 			Yii::app()->user->setFlash("error", "Antrag nicht gefunden oder bereits bestätigt.");
-			$this->redirect($this->createUrl("veranstaltung/index", array("veranstaltung_id" => $veranstaltung_id)));
+			$this->redirect($this->createUrl("veranstaltung/index"));
 		}
 
-		$this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag);
 		$this->testeWartungsmodus();
 
 		if (AntiXSS::isTokenSet("antragbestaetigen")) {
 
 			$freischaltung  = $antrag->veranstaltung->getEinstellungen()->freischaltung_antraege;
 			$antrag->status = ($freischaltung ? Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT : Antrag::$STATUS_EINGEREICHT_GEPRUEFT);
-			if (!$freischaltung && $antrag->revision_name == "") {
+
+            $braucht_revision = (!$freischaltung || $antrag->veranstaltung->getEinstellungen()->freischaltung_antraege_anzeigen);
+			if ($braucht_revision && $antrag->revision_name == "") {
 				$antrag->revision_name = $antrag->veranstaltung->naechsteAntragRevNr($antrag->typ);
 			}
 			$antrag->save();

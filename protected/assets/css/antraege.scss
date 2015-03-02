@@ -213,6 +213,10 @@ a {
     margin: -1px;
   }
   .magenta & {
+    h1 {
+      @include gruene_ueberschrift($farbe_magenta, rgb(234, 74, 161));
+      margin: -1px;
+    }
     h2, h3, .nav-header {
       @include gruene_ueberschrift($farbe_magenta, rgb(234, 74, 161));
       margin: -1px;

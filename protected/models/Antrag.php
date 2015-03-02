@@ -263,10 +263,14 @@ class Antrag extends IAntrag
 			if ($this->veranstaltung->veranstaltungsreihe->isAdminCurUser()) return true;
 		}
 
-		if ($this->veranstaltung->getEinstellungen()->initiatorInnen_duerfen_aendern && $this->binInitiatorIn()) {
-			if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
-			else return true;
-		}
+        if ($this->binInitiatorIn()) {
+            if ($this->veranstaltung->getEinstellungen()->initiatorInnen_duerfen_aendern) {
+                if ($this->veranstaltung->checkAntragsschlussVorbei()) return false;
+                else return true;
+            } else {
+                if ($this->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) return true;
+            }
+        }
 
 		return false;
 	}

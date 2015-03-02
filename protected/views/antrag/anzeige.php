@@ -47,7 +47,9 @@ $pdf = ($antrag->veranstaltung->getEinstellungen()->kann_pdf && $antrag->status 
 
 if ($pdf) $html .= '<li class="download">' . CHtml::link($sprache->get("PDF-Version herunterladen"), $this->createUrl("antrag/pdf", array("antrag_id" => $antrag->id))) . '</li>';
 if ($edit_link) {
-	$html .= '<li class="edit">' . CHtml::link($sprache->get("Änderungsanträge einpflegen"), $this->createUrl("antrag/aes_einpflegen", array("antrag_id" => $antrag->id))) . '</li>';
+    if (count($antrag->aenderungsantraege) > 0) {
+        $html .= '<li class="edit">' . CHtml::link($sprache->get("Änderungsanträge einpflegen"), $this->createUrl("antrag/aes_einpflegen", array("antrag_id" => $antrag->id))) . '</li>';
+    }
 	$html .= '<li class="edit">' . CHtml::link($sprache->get("Antrag bearbeiten"), $this->createUrl("antrag/aendern", array("antrag_id" => $antrag->id))) . '</li>';
 }
 
