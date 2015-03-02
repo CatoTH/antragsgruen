@@ -16,7 +16,11 @@ class UnterstuetzerInnenAdminWidget
         $neustr .= '<select name="' . get_class($antrag) . '[unterstuetzerIn_neu][person][]" class="person_selector">';
         $neustr .= '<option value="neu"> - neue Person anlegen -</option>';
 
-        $pers = Person::model()->findAllAttributes("name", true, array("order" => "name"));
+        if ($antrag->veranstaltung->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+            $pers = Person::model()->findAllByAttributes(array("veranstaltungsreihe_namespace" => $antrag->veranstaltung->veranstaltungsreihe_id), array("order" => "name"));
+        } else {
+            $pers = Person::model()->findAllAttributes("name", true, array("order" => "name"));
+        }
         foreach ($pers as $p) {
             /* @var $p Person */
             $neustr .= '<option value="' . $p->id . '">' . CHtml::encode($p->name) . '</option>';
