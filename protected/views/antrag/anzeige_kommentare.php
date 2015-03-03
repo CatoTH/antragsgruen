@@ -124,7 +124,7 @@ if ($antrag->veranstaltung->darfEroeffnenKommentar()) {
 			</div>
 		<?php } ?>
 		<div class="row">
-			<label class="required">Text</label>
+			<label class="required" style="display: none;">Text</label>
 			<textarea name="AntragKommentar[text]" title="Text"></textarea>
 		</div>
 	</fieldset>

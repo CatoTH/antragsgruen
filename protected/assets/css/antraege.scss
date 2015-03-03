@@ -618,7 +618,10 @@ a {
     }
     textarea {
       height: 100px;
+      margin-left: 20px;
+      min-width: 400px;
     }
+
   }
   .submitrow {
     margin-left: 160px;
@@ -1517,6 +1520,11 @@ ins {
   }
   .kommentarform {
     padding: 12px 0 25px;
+    .row {
+      textarea {
+        width: auto;
+      }
+    }
   }
   .form-horizontal .control-label {
     float: none;
