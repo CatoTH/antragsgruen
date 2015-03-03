@@ -72,25 +72,18 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
             ));
         }
 
+        $veinstellungen = $veranstaltung->getEinstellungen();
         if ($js_protection) {
             ?>
             <div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.</div>
-        <?php } ?>
+        <?php }
 
-        <fieldset>
-
-            <label class="legend" for="Antrag_name">Überschrift</label>
-            <input name="Antrag[name]" id="Antrag_name" type="text" value="<?php echo CHtml::encode($model->name); ?>">
-
-        </fieldset>
-
-        <?php
         $typen = array();
         if ($force_type !== null) {
             $typen[$force_type] = Antrag::$TYPEN[$force_type];
         } else {
             foreach (Antrag::$TYPEN as $id => $name) {
-                if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) {
+                if (!in_array($id, $veinstellungen->antrags_typen_deaktiviert)) {
                     $typen[$id] = $name;
                 }
             }
@@ -104,7 +97,7 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
                 <label class="legend">Antragstyp</label>
                 <?php
                 foreach (Antrag::$TYPEN as $id => $name) {
-                    if (!in_array($id, $veranstaltung->getEinstellungen()->antrags_typen_deaktiviert)) {
+                    if (!in_array($id, $veinstellungen->antrags_typen_deaktiviert)) {
                         if (strtolower($this->veranstaltungsreihe->subdomain) == "bdk-hh-2014" && $id == Antrag::$TYP_ANTRAG) {
                             $name = "Grüne Werte: Freiheit und Selbstbestimmung";
                         }
@@ -148,6 +141,21 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
 
         }
 
+        ?>
+
+        <fieldset>
+
+            <label class="legend" for="Antrag_name">Überschrift</label>
+            <?
+            if ($veinstellungen->titel_maxlength > 0) echo 'Maximale Länge: ' . $veinstellungen->titel_maxlength . ' Zeichen<br>';
+            ?>
+            <input name="Antrag[name]" id="Antrag_name" type="text" value="<?php echo CHtml::encode($model->name); ?>" <?php
+            if ($veinstellungen->titel_maxlength > 0) echo 'maxlength="' . $veinstellungen->titel_maxlength . '"';
+            ?>>
+
+        </fieldset>
+
+        <?
 
         $text2name = veranstaltungsspezifisch_text2_name($model->veranstaltung, $model->typ);
         if ($text2name) {

@@ -2,6 +2,10 @@
 ==================
 * Schlagworte in den ExpertInneneinstellungen lassen sich nun umsortieren.
 * Auf Wunsch kann man auch die Anzahl der Schlagworte pro Antrag auf 1 begrenzen.
+* Anträge lassen sich von der AntragstellerIn nun grundsätzlich bearbeiten, solange sie noch nicht freigeschaltet sind.
+* Nach dem Ändern eines Antrags landete man manchmal auf einer fehlerhaften Seite.
+* Der Link "Änderungsanträge einpflegen" wird nur noch angezeigt, wenn es auch Änderungsanträge gibt.
+* Es kann nun eine maximale Länge des Antragstitels festgelegt werden.
 
 2.5.4 - 2015-02-17
 ==================

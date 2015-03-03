@@ -26,6 +26,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $freischaltung_kommentare = false;
 	public $initiatorInnen_duerfen_aes_ablehnen = false;
 	public $titel_eigene_zeile = true;
+    public $titel_maxlength = 0;
 	public $kann_pdf = true;
 	public $zeilenlaenge = 80;
 	public $begruendung_in_html = false;

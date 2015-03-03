@@ -256,7 +256,29 @@ $einstellungen = $model->getEinstellungen();
 		</label>
 	</fieldset>
 
-	<fieldset style="margin-top: 10px;">
+    <fieldset style="margin-top: 10px;">
+        <label class="block" style="line-height: 30px; vertical-align: middle;">
+            <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="titel_maxlength">
+            <input type="checkbox" id="titel_maxlength_set" <?php if ($model->getEinstellungen()->titel_maxlength > 0) echo "checked"; ?>>
+            Maximale Länge des Antragstitels<span class="titel_maxlength_holder">:
+				<input type="number" name="VeranstaltungsEinstellungen[titel_maxlength]" value="<?php echo $model->getEinstellungen()->titel_maxlength; ?>" size="4"> Zeichen
+			</span>
+        </label>
+        <script>
+            $(function () {
+                $("#titel_maxlength_set").change(function () {
+                    if ($(this).prop("checked")) $(this).parents("fieldset").first().find(".titel_maxlength_holder").show();
+                    else {
+                        $(this).parents("fieldset").first().find(".titel_maxlength_holder").hide();
+                        $(this).parents("fieldset").first().find(".titel_maxlength_holder input").val(0);
+                    }
+                }).change();
+            });
+        </script>
+    </fieldset>
+
+
+    <fieldset style="margin-top: 10px;">
 		<label class="block" style="line-height: 30px; vertical-align: middle;">
 			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="antragstext_max_len">
 			<input type="checkbox" id="max_len_set" <?php if ($model->getEinstellungen()->antragstext_max_len > 0) echo "checked"; ?>>
@@ -268,7 +290,10 @@ $einstellungen = $model->getEinstellungen();
 			$(function () {
 				$("#max_len_set").change(function () {
 					if ($(this).prop("checked")) $(this).parents("fieldset").first().find(".max_len_holder").show();
-					else $(this).parents("fieldset").first().find(".max_len_holder").hide();
+					else {
+                        $(this).parents("fieldset").first().find(".max_len_holder").hide();
+                        $(this).parents("fieldset").first().find(".max_len_holder input").val(0);
+                    }
 				}).change();
 			});
 		</script>
