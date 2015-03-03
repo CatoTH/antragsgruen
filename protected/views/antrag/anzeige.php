@@ -361,7 +361,7 @@ $zustimmung_von               = $antrag->getZustimmungen();
 $ablehnung_von                = $antrag->getAblehnungen();
 $eintraege                    = (count($zustimmung_von) > 0 || count($ablehnung_von) > 0);
 $unterstuetzen_policy         = $antrag->veranstaltung->getPolicyUnterstuetzen();
-$kann_unterstuetzen           = $unterstuetzen_policy->checkCurUserHeuristically();
+$kann_unterstuetzen           = $unterstuetzen_policy->checkCurUserHeuristically() && !in_array($antrag->status, Antrag::$STATI_UNSICHTBAR);
 $kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
 foreach ($antrag->antragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN && $unt->person->id == $curr_user_id) {
 	$kann_unterstuetzen = false;
