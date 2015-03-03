@@ -1,4 +1,4 @@
-2.6.0 - 
+2.6.0 - 2015-03-03
 ==================
 * Schlagworte in den ExpertInneneinstellungen lassen sich nun umsortieren.
 * Auf Wunsch kann man auch die Anzahl der Schlagworte pro Antrag auf 1 begrenzen.
