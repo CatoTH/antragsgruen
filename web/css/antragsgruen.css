@@ -5942,20 +5942,19 @@ body > footer {
 .icon-edit, .icon-aender-stellen:before,
 .icon-pdf:before,
 .antragsliste .antrag .titel .pdfLink:before,
-#sidebar .neue-kommentare .pdf:before,
-ul.funktionen .download a:before, .lesezeichen > li.aenderungsantrag > a:before {
+#sidebar .neue-kommentare .pdf:before, .lesezeichen > li.aenderungsantrag > a:before {
   content: '\270d'; }
 
-.icon-document, .antragsliste .antrag .titel:before, #sidebar .neue-antraege .antrag:before, ul.funktionen .unterstuetzen a:before {
+.icon-document, .antragsliste .antrag .titel:before, #sidebar .neue-antraege .antrag:before {
   content: '\e731'; }
 
-.icon-back, ul.funktionen .zurueck a:before {
+.icon-back {
   content: "←"; }
 
-.icon-pdf, .icon-pdf:before, .antragsliste .antrag .titel .pdfLink:before, #sidebar .neue-kommentare .pdf:before, ul.funktionen .download a:before {
+.icon-pdf, .icon-pdf:before, .antragsliste .antrag .titel .pdfLink:before, #sidebar .neue-kommentare .pdf:before {
   content: '\e4a4'; }
 
-.icon-plus, .icon-aender-stellen:before, ul.funktionen .aender-stellen a:before {
+.icon-plus, .icon-aender-stellen:before {
   content: '\2795'; }
 
 .icon-down-open:before, .icon-up-open:before {
@@ -5973,8 +5972,7 @@ ul.funktionen .download a:before, .lesezeichen > li.aenderungsantrag > a:before 
 .icon-aender-stellen:before,
 .icon-pdf:before,
 .antragsliste .antrag .titel .pdfLink:before,
-#sidebar .neue-kommentare .pdf:before,
-ul.funktionen .download a:before {
+#sidebar .neue-kommentare .pdf:before {
   color: #A2BC04;
   display: inline-block;
   font-family: 'icons_antragsgruen';
@@ -5987,7 +5985,7 @@ ul.funktionen .download a:before {
   margin-left: 0;
   */ }
 
-.btn .icon-pdf:before, .btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before, .btn ul.funktionen .download a:before, ul.funktionen .download .btn a:before {
+.btn .icon-pdf:before, .btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before {
   color: #000000; }
 
 .antragsschluss_kreis {
@@ -6481,75 +6479,40 @@ h3 label {
 #sidebar .search-query {
   width: 140px; }
 
-ul.funktionen {
+ul.sidebarActions {
   background: #e2007a;
   background: -moz-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
   background: -webkit-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
   background: -o-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
   background: -ms-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
   background: linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
-  padding: 20px 0 21px 41px;
+  padding: 7px 0 1px 21px;
   list-style-type: none;
   margin: -1px;
   position: relative;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   border-radius: 10px;
-  -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4); }
-  ul.funktionen li a, ul.funktionen li > span {
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: bold; }
+  ul.sidebarActions li a, ul.sidebarActions li > span {
     display: block;
-    font-family: "Open Sans";
-    font-style: normal;
-    font-weight: bold;
     text-transform: uppercase;
     font-size: 14px;
     line-height: 18px;
     color: #fff;
-    padding-bottom: 10px; }
-  ul.funktionen li a:hover {
+    padding-bottom: 10px;
+    text-indent: -12px;
+    margin: 7px 0 7px 15px; }
+  ul.sidebarActions li a:hover {
     color: #f6e0eb; }
-  ul.funktionen .unterstuetzen a:before {
-    color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
-    width: 24px;
-    margin-left: -24px;
-    color: #fff; }
-  ul.funktionen .zurueck a:before {
-    color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
-    width: 24px;
-    margin-left: -24px;
-    color: #fff; }
-  ul.funktionen .download a:before {
-    color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
-    width: 24px;
-    margin-left: -24px;
-    color: #fff; }
-  ul.funktionen .aender-stellen a:before {
-    color: #A2BC04;
-    display: inline-block;
-    font-family: 'icons_antragsgruen';
-    font-size: 15px;
-    vertical-align: bottom;
-    width: 20px;
-    width: 24px;
-    margin-left: -24px;
-    color: #fff; }
+  ul.sidebarActions .icon {
+    color: #fff;
+    margin-right: 10px; }
 
 .bdkMotionLististe {
   padding: 25px;

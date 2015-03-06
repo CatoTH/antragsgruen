@@ -4,6 +4,7 @@ namespace app\components;
 
 
 use app\models\db\Consultation;
+use app\models\db\Motion;
 use app\models\db\Site;
 use Yii;
 use yii\helpers\Url;
@@ -76,7 +77,7 @@ class UrlHelper
     }
 
     /**
-     * @param string|string $route
+     * @param string|array $route
      * @return string
      */
     public static function createUrl($route)
@@ -130,5 +131,15 @@ class UrlHelper
         } else {
             return $target_url;
         }
+    }
+
+    /**
+     * @param Motion $motion
+     * @param string $mode
+     * @return string
+     */
+    public static function createMotionUrl(Motion $motion, $mode = 'view')
+    {
+        return static::createUrl(['motion/' . $mode, 'motionId' => $motion->id]);
     }
 }

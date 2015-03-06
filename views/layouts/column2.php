@@ -45,7 +45,7 @@ $this->widget('bootstrap.widgets.TbMenu', array(
         </main>
         <aside class="col-md-3" id="sidebar">
             <?= $params->preSidebarHtml?>
-            <div class="well visible-desktop">
+            <div class="well hidden-xs">
                 <?= implode("", $params->menusHtml) ?>
             </div>
             <?= $params->postSidebarHtml?>

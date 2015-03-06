@@ -30,7 +30,7 @@ $layout     = $controller->layoutParams;
 $wording    = $consultation->getWording();
 
 
-$layout->breadcrumbs[] = $motion->getTypeName();
+$layout->breadcrumbs[UrlHelper::createMotionUrl($motion)] = $motion->getTypeName();
 $layout->addJS('/js/socialshareprivacy/jquery.socialshareprivacy.js');
 
 $this->title = $motion->getNameWithPrefix() . " (" . $motion->consultation->title . ", Antragsgrün)";
@@ -41,46 +41,57 @@ if ($motion->dateResolution != "") {
 }
 // if (count($antrag->antraege) > 0) $rows++; // @TODO
 
-$html = '<ul class="motionActions">';
+$html = '<ul class="sidebarActions">';
 
 $policy = $motion->consultation->getAmendmentPolicy();
 if ($policy->checkCurUserHeuristically()) {
     $html .= '<li class="amendmentCreate">';
-    $amendCreateUrl = UrlHelper::createUrl("amendment/create", ['motionId' => $motion->id]);
-    $html .= Html::a($wording->get("Änderungsantrag stellen"), $amendCreateUrl) . '</li>';
+    $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
+    $title = '<span class="icon glyphicon glyphicon-plus-sign"></span>' . $wording->get("Änderungsantrag stellen");
+    $html .= Html::a($title, $amendCreateUrl) . '</li>';
 } else {
     $msg = $policy->getPermissionDeniedMsg($wording);
     if ($msg != "") {
-        $html .= '<li class="amendmentCreate"><span><span style="font-style: italic;">';
+        $html .= '<li class="amendmentCreate">';
+        $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-plus-sign"></span>';
         $html .= Html::encode($wording->get("Änderungsantrag stellen"));
         $html .= '</span><br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
-        $html .= Html::encode($policy->getPermissionDeniedMsg($wording)) . '</span></span></li>';
+        $html .= Html::encode($policy->getPermissionDeniedMsg($wording)) . '</span></li>';
     }
 }
 
 if ($motion->consultation->getSettings()->hasPDF && $motion->isVisible()) {
-    $pdfLink = UrlHelper::createUrl("motion/pdf", ['motionId' => $motion->id]);
-    $html .= '<li class="download">' . Html::a($wording->get("PDF-Version herunterladen"), $pdfLink) . '</li>';
+    $html .= '<li class="download">';
+    $title = '<span class="icon glyphicon glyphicon-download"></span>' . $wording->get("PDF-Version herunterladen");
+    $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
 }
 
 if ($editLink) {
-    $mergeLink = UrlHelper::createUrl('motion/mergeamendments', ['motionId' => $motion->id]);
-    $html .= '<li class="edit">' . Html::a($wording->get("Änderungsanträge einpflegen"), $mergeLink) . '</li>';
-    $amendLink = UrlHelper::createUrl('amendment/create', ['motionId' => $motion->id]);
-    $html .= '<li class="edit">' . Html::a($wording->get("Antrag bearbeiten"), $amendLink) . '</li>';
+    $html .= '<li class="edit">';
+    $title = '<span class="icon glyphicon glyphicon-scissors"></span>' . $wording->get("Änderungsanträge einpflegen");
+    $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
+
+    $amendLink = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
+    $html .= '<li class="edit">';
+    $title = '<span class="icon glyphicon glyphicon-edit"></span>' . $wording->get("Antrag bearbeiten");
+    $html .= Html::a($title, $amendLink) . '</li>';
 }
 
 if ($adminEdit) {
-    $html .= '<li class="adminEdit">' . Html::a("Admin: bearbeiten", $adminEdit) . '</li>';
+    $html .= '<li class="adminEdit">';
+    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . "Admin: bearbeiten";
+    $html .= Html::a($title, $adminEdit) . '</li>';
 } else {
     $backUrl = UrlHelper::createUrl('consultation/index');
-    $html .= '<li class="back">' . Html::a("Zurück zur Übersicht", $backUrl) . '</li>';
+    $html .= '<li class="back">';
+    $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . "Zurück zur Übersicht";
+    $html .= Html::a($title, $backUrl) . '</li>';
 }
 $html .= '</ul>';
 $layout->menusHtml[] = $html;
 
 $minimalisticUi = $motion->consultation->getSettings()->minimalisticUI;
-$minHeight      = ($minimalisticUi && \Yii::$app->user->isGuest ? 60 : 114);
+$minHeight      = ($minimalisticUi && \Yii::$app->user->isGuest ? 110 : 164);
 
 echo '<h1>' . Html::encode($motion->getNameWithPrefix()) . '</h1>';
 
@@ -140,11 +151,8 @@ if (!$minimalisticUi) {
     }
     echo implode(", ", $x);
 
-    echo '</td>
-                </tr>
-                <tr>
-                    <th>Status:</th>
-                    <td>';
+    echo '</td></tr>
+                <tr><th>Status:</th><td>';
 
     $screeningMotionsShown = $motion->consultation->getSettings()->screeningMotionsShown;
     $statiNames            = Motion::getStati();
@@ -162,27 +170,23 @@ if (!$minimalisticUi) {
                 </tr>';
 
     if ($motion->dateResolution != "") {
-        echo '<tr>
-       <th>Entschieden am:</th>
+        echo '<tr><th>Entschieden am:</th>
        <td>' . Tools::formatMysqlDate($motion->dateResolution) . '</td>
      </tr>';
     }
-    echo '<tr>
-       <th>Eingereicht:</th>
+    echo '<tr><th>Eingereicht:</th>
        <td>' . Tools::formatMysqlDateTime($motion->dateCreation) . '</td>
                 </tr>';
 
     if ($motion->consultation->isAdminCurUser() && count($motion->consultation->tags) > 0) {
-        echo '<tr>
-                        <th>Themenbereiche:</th>
-                        <td>';
+        echo '<tr><th>Themenbereiche:</th><td>';
 
         $tags         = array();
         $used_tag_ids = array();
         foreach ($motion->tags as $tag) {
             $used_tag_ids[] = $tag->id;
             $delParams      = ['motionId' => $motion->id, AntiXSS::createToken("del_tag") => $tag->id];
-            $dellink        = UrlHelper::createUrl("motion/view", $delParams);
+            $dellink        = UrlHelper::createUrl(array_merge(["motion/view"], $delParams));
             $str            = Html::encode($tag->title);
             $str .= ' <a href="' . Html::encode($dellink) . '" class="dellink">del</a>';
             $tags[] = $str;
@@ -249,17 +253,17 @@ if (!$minimalisticUi) {
 
     echo '</table>
 
-            <div class="hidden-desktop">
+    <div class="visible-xs-block">
                 <div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-                    <a href="' . Html::a(UrlHelper::createUrl("motion/pdf", ['motionId' => $motion->id])) . '"
-                       class="btn" style="color: black;"><i class="icon-pdf"></i> PDF-Version</a>
+                    <a href="' . Html::encode(UrlHelper::createMotionUrl($motion, 'pdf')) . '"
+                       class="btn" style="color: black;"><span class="icon-pdf"></span> PDF-Version</a>
                 </div>';
 
     $policy = $motion->consultation->getAmendmentPolicy();
     if ($policy->checkCurUserHeuristically()) {
         echo '<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
             <a href="' . Html::encode(UrlHelper::createUrl("amendment/neu", ['motionId' => $motion->id])) . '"
-               class="btn btn-danger" style="color: white;"><i class="icon-aender-stellen"></i> ' .
+               class="btn btn-danger" style="color: white;"><span class="icon-aender-stellen"></span> ' .
             Html::encode($wording->get("Änderungsantrag stellen")) . '</a>
         </div>';
     }
@@ -269,11 +273,24 @@ if (!$minimalisticUi) {
 echo '</div>';
 
 
-echo '<div class="antrags_text_holder';
-if ($motion->consultation->getSettings()->lineLength > 80) {
-    echo " smallFont";
+
+
+foreach ($motion->sections as $section) {
+
+    echo '<div class="motionTextHolder';
+    if ($motion->consultation->getSettings()->lineLength > 80) {
+        echo " smallFont";
+    }
+    echo '"><h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
+
+
+    echo $section->data;
+
+    echo '</div>';
 }
-echo '"><h3>';
+
+
+
 
 
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
@@ -388,7 +405,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
         */
         if ($cantSupportMsg != "") {
             echo '<div class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <span class="sr-only">Error:</span>
                 ' . Html::encode($cantSupportMsg) . '
             </div>';
@@ -409,8 +426,8 @@ if (count($amendments) > 0 || $motion->consultation->getAmendmentPolicy()->getPo
                 $aename = $amend->id;
             }
             $amendLink  = UrlHelper::createUrl(
-                'amendment/view',
                 [
+                    'amendment/view',
                     'motionId'    => $motion->id,
                     'amendmentId' => $amend->id
                 ]

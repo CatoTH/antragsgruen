@@ -22,10 +22,7 @@ $wording    = $consultation->getWording();
 $this->title = $wording->get($mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
 
 $params->addJS('/js/ckeditor/ckeditor.js');
-$params->breadcrumbs        = [
-    $this->title,
-];
-$params->breadcrumbsTopname = $wording->get("breadcrumb_top");
+$params->breadcrumbs[] = $this->title;
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
