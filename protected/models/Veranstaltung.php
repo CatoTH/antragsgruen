@@ -229,35 +229,36 @@ class Veranstaltung extends GxActiveRecord
         $unsichtbar = $this->getAntragUnsichtbarStati();
 		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
 		foreach ($antraege as $ant) if (!in_array($ant->status, $unsichtbar)) {
-			$typ_name = veranstaltungsspezifisch_antrag_typ_str($ant->veranstaltung, $ant->typ);
-
-			if (!isset($antraege_sorted[$typ_name])) $antraege_sorted[$typ_name] = array();
+			if (!isset($antraege_sorted[$ant->typ])) $antraege_sorted[$ant->typ] = array();
 			$key = $ant->revision_name;
 
 			if ($this->getEinstellungen()->ae_nummerierung_nach_zeile || veranstaltungsspezifisch_ae_sortierung_zeilennummer($this)) {
 				$ant->aenderungsantraege = Aenderungsantrag::sortiereSichtbareNachZeilennummer($ant->aenderungsantraege);
 			}
 
-			$antraege_sorted[$typ_name][$key] = $ant;
+			$antraege_sorted[$ant->typ][$key] = $ant;
 		}
 
+        $cmp = veranstaltungsspezifisch_antrag_sort($this);
+        if (!is_callable($cmp)) $cmp = function ($str1, $str2, $num1, $num2) {
+            if ($str1 == $str2) {
+                if ($num1 < $num2) return -1;
+                if ($num1 > $num2) return 1;
+                return 0;
+            } else {
+                if ($str1 < $str2) return -1;
+                if ($str1 > $str2) return 1;
+                return 0;
+            }
+        };
+
 		foreach ($antraege_sorted as $key => $val) {
-			uksort($antraege_sorted[$key], function ($k1, $k2) {
+			uksort($antraege_sorted[$key], function ($k1, $k2) use ($cmp) {
 				if ($k1 == "" && $k2 == "") return 0;
 				if ($k1 == "") return -1;
 				if ($k2 == "") return 1;
 
-				$cmp = function ($str1, $str2, $num1, $num2) {
-					if ($str1 == $str2) {
-						if ($num1 < $num2) return -1;
-						if ($num1 > $num2) return 1;
-						return 0;
-					} else {
-						if ($str1 < $str2) return -1;
-						if ($str1 > $str2) return 1;
-						return 0;
-					}
-				};
+
 				$k1  = preg_replace("/neu$/siu", "neu1", $k1);
 				$k2  = preg_replace("/neu$/siu", "neu1", $k2);
 
@@ -288,7 +289,13 @@ class Veranstaltung extends GxActiveRecord
 			});
 		}
 
-		return $antraege_sorted;
+        $antraege_sorted_by_name = array();
+
+        foreach (Antrag::$TYPEN_SORTED as $typ_id) if (isset($antraege_sorted[$typ_id])) {
+            $antraege_sorted_by_name[Antrag::$TYPEN[$typ_id]] = $antraege_sorted[$typ_id];
+        }
+
+		return $antraege_sorted_by_name;
 	}
 
 	/**

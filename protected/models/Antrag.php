@@ -39,6 +39,7 @@ class Antrag extends IAntrag
 	public static $TYP_FINANZANTRAG = 5;
 	public static $TYP_WAHLPROGRAMM = 6;
 	public static $TYP_DRINGLICHKEITSANTRAG = 7;
+    public static $TYP_TAGESORDNUNG = 8;
 	public static $TYPEN = array(
 		0 => "Antrag",
 		1 => "Satzung",
@@ -47,7 +48,8 @@ class Antrag extends IAntrag
 		4 => "GO-Antrag",
 		5 => "Finanzantrag",
 		6 => "Wahlprogramm",
-		7 => "Dringlichkeitsantrag"
+		7 => "Dringlichkeitsantrag",
+        8 => "Tagesordnung",
 	);
 
 	public static $TYP_PREFIX = array(
@@ -58,8 +60,15 @@ class Antrag extends IAntrag
 		4 => "GO",
 		5 => "F",
 		6 => "Kapitel ",
-		7 => "D"
+		7 => "D",
+        8 => "T",
 	);
+
+    public static $TYPEN_SORTED = array(
+        8, // Tagesordnung
+        2, 7, 4, 3, 0, 5, 6,
+        1, // Satzung
+    );
 
 	private $absaetze = null;
 	private $absaetze_nurtext = null;

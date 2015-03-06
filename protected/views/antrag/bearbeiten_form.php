@@ -244,6 +244,9 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
             if ($begruendung_max_len > 0) {
                 echo " data-max_len=\"" . $begruendung_max_len . "\"";
             }
+            if ($veranstaltung->url_verzeichnis == "phase2" && $veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $model->typ == Antrag::$TYP_ANTRAG) {
+                echo " data-max_len_soft=\"1\"";
+            }
             ?>>
                 <legend><?php
             $bname = veranstaltungsspezifisch_begruendung_name($model->veranstaltung, $model->typ);

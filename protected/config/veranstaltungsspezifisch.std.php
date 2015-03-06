@@ -171,3 +171,16 @@ if (!function_exists("veranstaltungsspezifisch_begruendung_maxlen")) {
         return null;
     }
 }
+
+
+
+if (!function_exists("veranstaltungsspezifisch_antrag_sort")) {
+    /**
+     * @param null|Veranstaltung $veranstaltung
+     * @return callable|null
+     */
+    function veranstaltungsspezifisch_antrag_sort($veranstaltung = null)
+    {
+        return null;
+    }
+}

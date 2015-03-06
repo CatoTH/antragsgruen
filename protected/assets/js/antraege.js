@@ -156,20 +156,24 @@ function ckeditor_bbcode(id, height) {
 
     var $fieldset = $el.parents("fieldset.textarea").first();
     if ($fieldset.data("max_len") > 0) {
-        var onChange = function() {
+        var softlimit = ($fieldset.data("max_len_soft") == 1),
+            onChange = function() {
             if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
-                $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
+                if (!softlimit) {
+                    $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
+                }
                 $fieldset.find(".max_len_hint .calm").hide();
                 $fieldset.find(".max_len_hint .alert").show();
             } else {
-                $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
+                if (!softlimit) {
+                    $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
+                }
                 $fieldset.find(".max_len_hint .calm").show();
                 $fieldset.find(".max_len_hint .alert").hide();
             }
         };
         editor.on('change', onChange);
         onChange();
-
     }
 }
 
