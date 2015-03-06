@@ -2,11 +2,12 @@
 
 namespace tests\codeception\unit\models;
 
-use app\models\db\Motion;
 use app\models\db\Site;
 use Yii;
 use yii\codeception\TestCase;
 use Codeception\Specify;
+
+require_once(__DIR__ . '/../../config/AntragsgruenSetupDB.php');
 
 class DBTest extends TestCase
 {

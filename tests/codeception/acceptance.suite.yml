@@ -15,7 +15,7 @@ modules:
     config:
       WebDriver:
         url: 'http://localhost:8080/'
-        host: 127.0.0.7
+        host: 127.0.0.1
         port: 4444
         browser: firefox
         window_size: 1024x768
