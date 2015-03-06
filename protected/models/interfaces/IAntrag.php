@@ -60,4 +60,16 @@ abstract class IAntrag extends GxActiveRecord
 	 * @return Person[]
 	 */
 	abstract public function getAblehnungen();
+
+    /**
+     * @return Veranstaltung
+     */
+    abstract public function getVeranstaltung();
+
+    /**
+     * @return Veranstaltungsreihe
+     */
+    public function getVeranstaltungsreihe() {
+        return $this->getVeranstaltung()->veranstaltungsreihe;
+    }
 }

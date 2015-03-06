@@ -71,7 +71,7 @@ class Aenderungsantrag extends IAntrag
 	public function rules()
 	{
 		return array(
-			array('text_neu, aenderung_text, aenderung_text2, datum_einreichung, status, status', 'required'),
+			array('text_neu, aenderung_text, datum_einreichung, status, status', 'required'),
 			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy, text_unveraenderlich, aenderung_begruendung_html', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
@@ -614,4 +614,10 @@ class Aenderungsantrag extends IAntrag
 		));
 	}
 
+    /**
+     * @return Veranstaltung
+     */
+    public function getVeranstaltung() {
+        return $this->antrag->veranstaltung;
+    }
 }

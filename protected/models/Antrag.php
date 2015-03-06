@@ -491,4 +491,10 @@ class Antrag extends IAntrag
 		return $aes;
 	}
 
+    /**
+     * @return Veranstaltung
+     */
+    public function getVeranstaltung() {
+        return $this->veranstaltung;
+    }
 }
