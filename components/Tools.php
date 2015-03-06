@@ -2,6 +2,8 @@
 
 namespace app\components;
 
+use yii\helpers\HtmlPurifier;
+
 class Tools
 {
 
@@ -110,7 +112,8 @@ class Tools
         $fromName = null,
         $fromEmail = null,
         $noLogReplaces = null
-    ) {
+    )
+    {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
@@ -175,5 +178,41 @@ class Tools
             return "-";
         }
         return self::formatMysqlDate($mysqlDate) . ", " . substr($mysqlDate, 11, 5) . " Uhr";
+    }
+
+    /**
+     * @param string $html
+     * @return string
+     */
+    public static function cleanSimpleHtml($html)
+    {
+        $html = HtmlPurifier::process(
+            $html,
+            [
+                'HTML.Doctype'                            => 'HTML 4.01 Transitional',
+                'HTML.AllowedElements'                    => 'p,strong,em,ul,ol,li,s,span,a,br',
+                'HTML.AllowedAttributes'                  => 'style,href',
+                'CSS.AllowedProperties'                   => 'text-decoration',
+                'AutoFormat.Linkify'                      => true,
+                'AutoFormat.AutoParagraph'                => false,
+                'AutoFormat.RemoveSpansWithoutAttributes' => true,
+                'AutoFormat.RemoveEmpty'                  => true,
+                'Core.NormalizeNewlines'                  => true,
+                'Core.AllowHostnameUnderscore'            => true,
+                'Core.EnableIDNA'                         => true,
+                'Output.SortAttr'                         => true,
+                'Output.Newline'                          => "\n",
+            ]
+        );
+
+        $html = str_ireplace("</li>", "</li>\n", $html);
+        $html = str_ireplace("<ul>", "<ul>\n", $html);
+        $html = str_ireplace("</ul>", "</ul>\n", $html);
+        $html = str_ireplace("</p>", "</p>\n", $html);
+        $html = str_ireplace("<br>", "<br>\n", $html);
+
+        $html = preg_replace("/\\n+/siu", "\n", $html);
+
+        return $html;
     }
 }
