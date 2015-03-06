@@ -432,12 +432,20 @@ class Antrag extends IAntrag
 		if ($this->veranstaltung->isAdminCurUser()) {
 			$stati = array();
 			foreach (IAntrag::$STATI as $stat => $stat_name) {
-				if ($this->status == $stat || !in_array($stat, array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT, IAntrag::$STATUS_GELOESCHT))) $stati[] = $stat;
+				if ($this->status == $stat || !in_array($stat, array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_GELOESCHT))) $stati[] = $stat;
 			}
 			return $stati;
 		} else {
 			$meiner = false;
-			foreach ($this->antragUnterstuetzerInnen as $ant) if ($ant->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN && $ant->person->id == $curr_person->id) $meiner = true;
+            /** @var Person $user */
+            $user = Person::model()->findByAttributes(array("auth" => yii::app()->user->getId()));
+            if ($user) {
+                foreach ($this->antragUnterstuetzerInnen as $ant) {
+                    if ($ant->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN && $ant->person->id == $user->id) {
+                        $meiner = true;
+                    }
+                }
+            }
 			if ($meiner) {
 				if ($this->status == IAntrag::$STATUS_ENTWURF) return array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT);
 				else return array($this->status);
