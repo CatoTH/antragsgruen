@@ -116,7 +116,7 @@ class MotionSorter
 
                 // @TODO veranstaltungsspezifisch_ae_sortierung_zeilennummer noch nötig ?
                 if ($amendNumberingByLine) {
-                    $motion->amendments = Amendment::sortVisibleByLineNumbers($motion->amendments);
+                    $motion->amendments = Amendment::sortVisibleByLineNumbers($consultation, $motion->amendments);
                 }
 
                 $motionsSorted[$typeName][$key] = $motion;

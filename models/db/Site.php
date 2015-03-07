@@ -4,6 +4,7 @@ namespace app\models\db;
 use app\models\settings\AntragsgruenApp;
 use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
+use app\models\sitePresets\ISitePreset;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\db\ActiveRecord;
 
@@ -114,10 +115,11 @@ class Site extends ActiveRecord
 
     /**
      * @param SiteCreateForm $form
+     * @param ISitePreset $preset
      * @return Site
      * @throws DB
      */
-    public static function createFromForm(SiteCreateForm $form)
+    public static function createFromForm(SiteCreateForm $form, ISitePreset $preset)
     {
         $site             = new Site();
         $site->title      = $form->title;
@@ -129,6 +131,8 @@ class Site extends ActiveRecord
         $siteSettings               = $site->getSettings();
         $siteSettings->willingToPay = $form->isWillingToPay;
         $site->setSettings($siteSettings);
+
+        $preset::setSiteSettings($site);
 
         if (!$site->save()) {
             throw new DB($site->getErrors());

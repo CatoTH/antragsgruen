@@ -2,7 +2,10 @@
 
 namespace app\models\forms;
 
+use app\models\db\Consultation;
 use app\models\db\Site;
+use app\models\db\User;
+use app\models\sitePresets\SitePresets;
 
 class SiteCreateForm extends \yii\base\Model
 {
@@ -44,5 +47,25 @@ class SiteCreateForm extends \yii\base\Model
             ],
             [['contact', 'title', 'preset'], 'safe'],
         ];
+    }
+
+    /**
+     * @param User $currentUser
+     * @return Site
+     * @throws \app\models\exceptions\DB
+     */
+    public function createSiteFromForm(User $currentUser)
+    {
+        $preset = SitePresets::getPreset($this->preset);
+
+        $site         = Site::createFromForm($this, $preset);
+        $consultation = Consultation::createFromForm($this, $site, $currentUser, $preset);
+        $site->link('currentConsultation', $consultation);
+        $site->link('admins', $currentUser);
+
+        $preset->createMotionSections($consultation);
+        $preset->createMotionTypes($consultation);
+
+        return $site;
     }
 }

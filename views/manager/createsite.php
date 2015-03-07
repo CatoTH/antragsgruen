@@ -77,7 +77,9 @@ echo '</label>';
 echo '<br><br>';
 
 echo '<label class="url">Unter folgender Adresse soll es erreichbar sein:';
+echo '<div class="fakeurl">https://';
 echo Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, ['id' => 'subdomain']);
+echo '.antragsgruen.de/</div>';
 echo '<div class="labelSubInfo">Für die Subdomain sind nur Buchstaben, Zahlen, "_" und "-" möglich.</div>
 </label>';
 

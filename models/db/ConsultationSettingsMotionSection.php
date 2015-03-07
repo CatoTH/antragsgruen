@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property int $maxLen
  * @property int $fixedWidth
  * @property int $lineNumbers
+ * @property int $hasComments
  *
  * @property Consultation $consultation
  * @property MotionSection[] $sections
@@ -22,10 +23,14 @@ use yii\db\ActiveRecord;
  */
 class ConsultationSettingsMotionSection extends ActiveRecord
 {
-    const TYPE_TITLE = 0;
-    const TYPE_TEXT_PLAIN = 1;
-    const TYPE_TEXT_HTML = 2;
-    const TYPE_IMAGE = 3;
+    const TYPE_TITLE       = 0;
+    const TYPE_TEXT_SIMPLE = 1;
+    const TYPE_TEXT_HTML   = 2;
+    const TYPE_IMAGE       = 3;
+
+    const COMMENTS_NONE       = 0;
+    const COMMENTS_SECTION    = 1;
+    const COMMENTS_PARAGRAPHS = 2;
 
     /**
      * @return string
@@ -40,12 +45,24 @@ class ConsultationSettingsMotionSection extends ActiveRecord
      */
     public static function getTypes()
     {
-        return array(
-            0 => "Titel",
-            1 => "Text",
-            2 => "Text (erweitert)",
-            3 => "Bild",
-        );
+        return [
+            static::TYPE_TITLE       => 'Titel',
+            static::TYPE_TEXT_SIMPLE => 'Text',
+            static::TYPE_TEXT_HTML   => 'Text (erweitert)',
+            static::TYPE_IMAGE       => 'Bild',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getCommentTypes()
+    {
+        return [
+            static::COMMENTS_NONE       => 'Keine Kommentare',
+            static::COMMENTS_SECTION    => 'Abschnitt als ganzes kommentierbar',
+            static::COMMENTS_PARAGRAPHS => 'Einzelne Absätze sind kommentierbar'
+        ];
     }
 
     /**
@@ -72,4 +89,31 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         return $this->hasOne(ConsultationSettingsMotionType::className(), ['id' => 'motionTypeId']);
     }
 
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['consultationId', 'title', 'type', 'position'], 'required'],
+            [['id', 'consultationId', 'type', 'motionTypeId'], 'number'],
+            [['position', 'fixedWidth', 'maxLen', 'lineNumbers', 'hasComments'], 'number'],
+            [['type', 'motionTypeId', 'title', 'position'], 'safe'],
+            [['maxLen', 'fixedWidth', 'lineNumbers', 'hasComments'], 'safe'],
+        ];
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getAvailableCommentTypes()
+    {
+        if ($this->type == static::TYPE_TEXT_SIMPLE) {
+            return [static::COMMENTS_NONE, static::COMMENTS_SECTION, static::COMMENTS_PARAGRAPHS];
+        }
+        if ($this->type == static::TYPE_TEXT_HTML) {
+            return [static::COMMENTS_NONE, static::COMMENTS_SECTION];
+        }
+        return [static::COMMENTS_NONE];
+    }
 }

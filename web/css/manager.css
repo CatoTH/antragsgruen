@@ -25,6 +25,8 @@
   padding: 0;
   margin-left: 2px;
   margin-top: 0; }
+.siteCreate .url .fakeurl {
+  font-weight: normal; }
 .siteCreate label.name, .siteCreate label.url {
   font-weight: bold; }
 .siteCreate .payment label {

@@ -5855,7 +5855,7 @@ a {
   background: -ms-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
   background: linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%); }
 
-label input {
+label input, label textarea {
   font-weight: normal; }
 
 .logo {

@@ -137,14 +137,15 @@ class Amendment extends IMotion
 
 
     /**
+     * @param Consultation $consultation
      * @param Amendment[] $amendments
      * @return Amendment[]
      */
-    public static function sortVisibleByLineNumbers($amendments)
+    public static function sortVisibleByLineNumbers(Consultation $consultation, $amendments)
     {
         $ams = array();
         foreach ($amendments as $am) {
-            if (!in_array($am->status, IMotion::getInvisibleStati())) {
+            if (!in_array($am->status, $consultation->getInvisibleAmendmentStati())) {
                 $ams[] = $am;
             }
         }

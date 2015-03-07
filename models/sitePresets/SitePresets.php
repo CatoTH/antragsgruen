@@ -20,7 +20,7 @@ class SitePresets
     public static function getPreset($presetId)
     {
         if (isset(static::$PRESETS[$presetId])) {
-            return static::$PRESETS[$presetId];
+            return new static::$PRESETS[$presetId];
         }
         throw new Internal("Unknown Preset: " . $presetId);
     }

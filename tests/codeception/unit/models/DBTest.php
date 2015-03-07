@@ -4,35 +4,11 @@ namespace tests\codeception\unit\models;
 
 use app\models\db\Site;
 use Yii;
-use yii\codeception\TestCase;
 use Codeception\Specify;
 
-require_once(__DIR__ . '/../../config/AntragsgruenSetupDB.php');
 
-class DBTest extends TestCase
+class DBTest extends DBTestBase
 {
-    use Specify;
-    use \app\tests\AntragsgruenSetupDB;
-
-    /**
-     *
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->createDB();
-        $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '../fixtures/data/testdata.sql');
-    }
-
-    /**
-     *
-     */
-    protected function tearDown()
-    {
-        $this->deleteDB();
-        parent::tearDown();
-    }
-
     /**
      *
      */

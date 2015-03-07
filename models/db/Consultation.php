@@ -7,6 +7,7 @@ use app\models\exceptions\DB;
 use app\models\forms\SiteCreateForm;
 use app\models\initiatorForms\DefaultForm;
 use app\models\policies\IPolicy;
+use app\models\sitePresets\ISitePreset;
 use app\models\wording\Wording;
 use yii\db\ActiveRecord;
 
@@ -39,6 +40,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationSubscription[] $subscriptions
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationSettingsMotionSection[] $motionSections
+ * @property ConsultationSettingsMotionType[] $motionTypes
  */
 class Consultation extends ActiveRecord
 {
@@ -127,6 +129,13 @@ class Consultation extends ActiveRecord
         return $this->hasMany(ConsultationSettingsMotionSection::className(), ['consultationId' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMotionTypes()
+    {
+        return $this->hasMany(ConsultationSettingsMotionType::className(), ['consultationId' => 'id']);
+    }
 
     /** @var null|\app\models\settings\Consultation */
     private $settingsObject = null;
@@ -156,10 +165,11 @@ class Consultation extends ActiveRecord
      * @param SiteCreateForm $form
      * @param Site $site
      * @param User $currentUser
+     * @param ISitePreset $preset
      * @return Consultation
      * @throws DB
      */
-    public static function createFromForm(SiteCreateForm $form, Site $site, User $currentUser)
+    public static function createFromForm(SiteCreateForm $form, Site $site, User $currentUser, ISitePreset $preset)
     {
         $con             = new Consultation();
         $con->siteId     = $site->id;
@@ -171,6 +181,8 @@ class Consultation extends ActiveRecord
         $settings                   = $con->getSettings();
         $settings->maintainanceMode = !$form->openNow;
         $con->setSettings($settings);
+
+        $preset::setConsultationSettings($con);
 
         if (!$con->save()) {
             throw new DB($con->getErrors());

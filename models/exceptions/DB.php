@@ -22,6 +22,17 @@ class DB extends Exception
      */
     public function __toString()
     {
-        return implode("\n", $this->errors);
+        $str = '';
+        foreach ($this->errors as $errKey => $err) {
+            if ($str !== '') {
+                $str .= "\n";
+            }
+            if (is_array($err)) {
+                $str .= $errKey . ': ' . implode(', ', $err);
+            } else {
+                $str .= $err;
+            }
+        }
+        return $str;
     }
 }

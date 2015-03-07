@@ -100,7 +100,7 @@ CREATE TABLE `consultation` (
   `title` varchar(200) NOT NULL,
   `titleShort` varchar(45) NOT NULL,
   `eventDateFrom` date DEFAULT NULL,
-  `eventDateUntil` date DEFAULT NULL,
+  `eventDateTo` date DEFAULT NULL,
   `deadlineMotions` timestamp NULL DEFAULT NULL,
   `deadlineAmendments` timestamp NULL DEFAULT NULL,
   `policyMotions` varchar(20) DEFAULT NULL,
@@ -150,7 +150,8 @@ CREATE TABLE `consultationSettingsMotionSection` (
   `title` varchar(100) NOT NULL,
   `fixedWidth` tinyint(4) NOT NULL,
   `maxLen` int(11) DEFAULT NULL,
-  `lineNumbers` tinyint(4) NOT NULL DEFAULT '0'
+  `lineNumbers` tinyint(4) NOT NULL DEFAULT '0',
+  `hasComments` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -163,6 +164,7 @@ CREATE TABLE `consultationSettingsMotionType` (
   `id` int(11) NOT NULL,
   `consultationId` int(11) NOT NULL,
   `title` varchar(100) NOT NULL,
+  `motionPrefix` varchar(10) NULL DEFAULT NULL,
   `position` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

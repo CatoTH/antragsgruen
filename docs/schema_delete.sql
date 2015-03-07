@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS `amendment`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `amendmentComment`;
 DROP TABLE IF EXISTS `amendmentSupporter`;
+DROP TABLE IF EXISTS `amendmentSection`;
 DROP TABLE IF EXISTS `motionSubscription`;
 DROP TABLE IF EXISTS `motionComment`;
 DROP TABLE IF EXISTS `motionCommentSupporter`;

@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $consultationId
  * @property string $title
+ * @property string $motionPrefix
  * @property int $position
  *
  * @property Consultation $consultation
@@ -39,5 +40,17 @@ class ConsultationSettingsMotionType extends ActiveRecord
     public function getMotions()
     {
         return $this->hasMany(Motion::className(), ['motionTypeId' => 'id']);
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['consultationId', 'title'], 'required'],
+            [['id', 'consultationId', 'position'], 'number'],
+            [['title', 'position', 'motionPrefix'], 'safe'],
+        ];
     }
 }

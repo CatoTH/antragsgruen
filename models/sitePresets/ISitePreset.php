@@ -34,4 +34,9 @@ interface ISitePreset
      * @param Consultation $consultation
      */
     public static function createMotionSections(Consultation $consultation);
+
+    /**
+     * @param Consultation $consultation
+     */
+    public static function createMotionTypes(Consultation $consultation);
 }

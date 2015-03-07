@@ -4,11 +4,9 @@ namespace app\controllers;
 
 use app\components\AntiXSS;
 use app\components\UrlHelper;
-use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\forms\SiteCreateForm;
-use app\models\sitePresets\SitePresets;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Html;
@@ -76,28 +74,6 @@ class ManagerController extends Base
         return $user;
     }
 
-    /**
-     * @param SiteCreateForm $model
-     * @return Site
-     * @throws \app\models\exceptions\DB
-     */
-    private function createSiteFromForm(SiteCreateForm $model)
-    {
-        $site         = Site::createFromForm($model);
-        $consultation = Consultation::createFromForm($model, $site, $this->getCurrentUser());
-
-        $site->link('currentConsultation', $consultation);
-
-        $preset = SitePresets::getPreset($model->preset);
-        $preset::createMotionSections($consultation);
-        $preset::setConsultationSettings($consultation);
-        $consultation->save();
-
-        $site->link('admins', $this->getCurrentUser());
-
-        return $site;
-    }
-
 
     /**
      * @return string
@@ -109,14 +85,14 @@ class ManagerController extends Base
         $this->layout = 'column2';
         $this->addSidebar();
 
-        $model  = new \app\models\forms\SiteCreateForm();
+        $model  = new SiteCreateForm();
         $errors = array();
 
         if (isset($_POST['create'])) {
             try {
                 $model->setAttributes($_POST['SiteCreateForm']);
                 if ($model->validate()) {
-                    $site = $this->createSiteFromForm($model);
+                    $site = $model->createSiteFromForm($this->getCurrentUser());
 
                     $login_id   = $this->getCurrentUser()->id;
                     $login_code = AntiXSS::createToken($login_id);

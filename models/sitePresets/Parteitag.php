@@ -5,6 +5,7 @@ namespace app\models\sitePresets;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\db\ConsultationSettingsMotionType;
 use app\models\db\Site;
 use app\models\policies\IPolicy;
 
@@ -60,7 +61,7 @@ class Parteitag implements ISitePreset
     {
         $section                 = new ConsultationSettingsMotionSection();
         $section->consultationId = $consultation->id;
-        $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_PLAIN;
+        $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_SIMPLE;
         $section->position       = 1;
         $section->title          = "Antragstext";
         $section->maxLen         = 0;
@@ -70,12 +71,36 @@ class Parteitag implements ISitePreset
 
         $section                 = new ConsultationSettingsMotionSection();
         $section->consultationId = $consultation->id;
-        $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_PLAIN;
+        $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_SIMPLE;
         $section->position       = 2;
         $section->title          = "Begründung";
         $section->maxLen         = 0;
         $section->fixedWidth     = 0;
         $section->lineNumbers    = 0;
         $section->save();
+    }
+
+    /**
+     * @param Consultation $consultation
+     */
+    public static function createMotionTypes(Consultation $consultation)
+    {
+        $type                 = new ConsultationSettingsMotionType();
+        $type->consultationId = $consultation->id;
+        $type->title          = 'Antrag';
+        $type->position       = 0;
+        $type->save();
+
+        $type                 = new ConsultationSettingsMotionType();
+        $type->consultationId = $consultation->id;
+        $type->title          = 'Resolution';
+        $type->position       = 1;
+        $type->save();
+
+        $type                 = new ConsultationSettingsMotionType();
+        $type->consultationId = $consultation->id;
+        $type->title          = 'Satzungsantrag';
+        $type->position       = 2;
+        $type->save();
     }
 }
