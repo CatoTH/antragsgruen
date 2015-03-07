@@ -8,6 +8,7 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property int $consultationId
+ * @property int $motionTypeId
  * @property int $type
  * @property int $position
  * @property string $title
@@ -17,6 +18,7 @@ use yii\db\ActiveRecord;
  *
  * @property Consultation $consultation
  * @property MotionSection[] $sections
+ * @property ConsultationSettingsMotionType $motionType
  */
 class ConsultationSettingsMotionSection extends ActiveRecord
 {
@@ -61,4 +63,13 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     {
         return $this->hasMany(MotionSection::className(), ['sectionId' => 'id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMotionType()
+    {
+        return $this->hasOne(ConsultationSettingsMotionType::className(), ['id' => 'motionTypeId']);
+    }
+
 }

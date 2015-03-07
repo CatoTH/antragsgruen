@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS `consultationOdtTemplate`;
 DROP TABLE IF EXISTS `consultationTag`;
 DROP TABLE IF EXISTS `motionTag`;
 DROP TABLE IF EXISTS `consultationSettingsMotionSection`;
+DROP TABLE IF EXISTS `consultationSettingsMotionType`;
 DROP TABLE IF EXISTS `consultationSettingsTag`;
 DROP TABLE IF EXISTS `motionSection`;
 

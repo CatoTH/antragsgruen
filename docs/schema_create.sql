@@ -11,15 +11,11 @@ CREATE TABLE `amendment` (
   `motionId` int(11) DEFAULT NULL,
   `titlePrefix` varchar(45) DEFAULT NULL,
   `changedTitle` text,
-  `changedParagraphs` longtext NOT NULL,
-  `changedExplanation` longtext NOT NULL,
   `changeMetatext` longtext NOT NULL,
   `changeText` longtext NOT NULL,
   `changeExplanation` longtext NOT NULL,
   `changeExplanationHtml` tinyint(4) NOT NULL DEFAULT '0',
-  `cacheFirstLineChanged` mediumint(9) NOT NULL,
-  `cacheFirstLineRel` text,
-  `cacheFirstLineAbs` text,
+  `cache` text NOT NULL,
   `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dateResolution` timestamp NULL DEFAULT NULL,
   `status` tinyint(4) NOT NULL,
@@ -43,6 +39,18 @@ CREATE TABLE `amendmentComment` (
   `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` tinyint(4) DEFAULT NULL,
   `replyNotification` tinyint(4) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `amendmentSection`
+--
+
+CREATE TABLE `amendmentSection` (
+  `amendmentId` int(11) NOT NULL,
+  `sectionId` int(11) NOT NULL,
+  `data` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -136,12 +144,26 @@ CREATE TABLE `consultationOdtTemplate` (
 CREATE TABLE `consultationSettingsMotionSection` (
   `id` int(11) NOT NULL,
   `consultationId` int(11) DEFAULT NULL,
+  `motionTypeId` int(11) DEFAULT NULL,
   `type` int(11) NOT NULL,
   `position` smallint(6) DEFAULT NULL,
   `title` varchar(100) NOT NULL,
   `fixedWidth` tinyint(4) NOT NULL,
   `maxLen` int(11) DEFAULT NULL,
   `lineNumbers` tinyint(4) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `consultationSettingsMotionType`
+--
+
+CREATE TABLE `consultationSettingsMotionType` (
+  `id` int(11) NOT NULL,
+  `consultationId` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `position` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -155,7 +177,7 @@ CREATE TABLE `consultationSettingsTag` (
   `consultationId` int(11) DEFAULT NULL,
   `position` smallint(6) DEFAULT NULL,
   `title` varchar(100) NOT NULL,
-  `cssicon`  smallint(6) DEFAULT '0'
+  `cssicon` smallint(6) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -212,19 +234,16 @@ CREATE TABLE `emailLog` (
 CREATE TABLE `motion` (
   `id` int(11) NOT NULL,
   `consultationId` int(11) NOT NULL,
+  `motionTypeId` int(11) NOT NULL,
   `parentMotionId` int(11) DEFAULT NULL,
   `title` text NOT NULL,
   `titlePrefix` varchar(50) NOT NULL,
   `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dateResolution` varchar(45) DEFAULT NULL,
-  `text` longtext,
-  `explanation` longtext,
-  `explanationHtml` tinyint(4) NOT NULL DEFAULT '0',
   `status` tinyint(4) NOT NULL,
   `statusString` varchar(55) DEFAULT NULL,
   `noteInternal` text,
-  `cacheLineNumber` mediumint(8) unsigned NOT NULL,
-  `cacheParagraphNumber` mediumint(8) unsigned NOT NULL,
+  `cache` text NOT NULL,
   `textFixed` tinyint(4) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -378,6 +397,12 @@ ALTER TABLE `amendmentComment`
 ADD PRIMARY KEY (`id`), ADD KEY `fk_amendment_comment_userIdx` (`userId`), ADD KEY `fk_amendment_comment_amendmentIdx` (`amendmentId`);
 
 --
+-- Indexes for table `amendmentSection`
+--
+ALTER TABLE `amendmentSection`
+ADD PRIMARY KEY (`amendmentId`,`sectionId`), ADD KEY `sectionId` (`sectionId`);
+
+--
 -- Indexes for table `amendmentSupporter`
 --
 ALTER TABLE `amendmentSupporter`
@@ -411,7 +436,13 @@ ADD PRIMARY KEY (`id`), ADD KEY `fk_consultationIdx` (`consultationId`);
 -- Indexes for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `consultationSettingsMotionSection`
-ADD PRIMARY KEY (`id`), ADD KEY `consultationId` (`consultationId`);
+ADD PRIMARY KEY (`id`), ADD KEY `consultationId` (`consultationId`), ADD KEY `motionType` (`motionTypeId`);
+
+--
+-- Indexes for table `consultationSettingsMotionType`
+--
+ALTER TABLE `consultationSettingsMotionType`
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultationId` (`consultationId`,`position`);
 
 --
 -- Indexes for table `consultationSettingsTag`
@@ -441,7 +472,7 @@ ADD PRIMARY KEY (`id`), ADD KEY `fk_mail_log_userIdx` (`toUserId`);
 -- Indexes for table `motion`
 --
 ALTER TABLE `motion`
-ADD PRIMARY KEY (`id`), ADD KEY `consultation` (`consultationId`), ADD KEY `parent_motion` (`parentMotionId`);
+ADD PRIMARY KEY (`id`), ADD KEY `consultation` (`consultationId`), ADD KEY `parent_motion` (`parentMotionId`), ADD KEY `type` (`motionTypeId`);
 
 --
 -- Indexes for table `motionComment`
@@ -532,6 +563,11 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `consultationSettingsMotionSection`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `consultationSettingsMotionType`
+--
+ALTER TABLE `consultationSettingsMotionType`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `consultationSettingsTag`
 --
 ALTER TABLE `consultationSettingsTag`
@@ -594,6 +630,13 @@ ADD CONSTRAINT `fk_amendment_comment_amendment` FOREIGN KEY (`amendmentId`) REFE
 ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 --
+-- Constraints for table `amendmentSection`
+--
+ALTER TABLE `amendmentSection`
+ADD CONSTRAINT `amendmentSection_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
+ADD CONSTRAINT `amendmentSection_ibfk_2` FOREIGN KEY (`sectionId`) REFERENCES `consultationSettingsMotionSection` (`id`);
+
+--
 -- Constraints for table `amendmentSupporter`
 --
 ALTER TABLE `amendmentSupporter`
@@ -623,7 +666,14 @@ ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `con
 -- Constraints for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `consultationSettingsMotionSection`
+ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`),
 ADD CONSTRAINT `consultation_settings_motion_section_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationSettingsMotionType`
+--
+ALTER TABLE `consultationSettingsMotionType`
+ADD CONSTRAINT `consultationSettingsMotionType_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 --
 -- Constraints for table `consultationSettingsTag`
@@ -655,7 +705,8 @@ ADD CONSTRAINT `fk_mail_log_user` FOREIGN KEY (`toUserId`) REFERENCES `user` (`i
 --
 ALTER TABLE `motion`
 ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`);
 
 --
 -- Constraints for table `motionComment`

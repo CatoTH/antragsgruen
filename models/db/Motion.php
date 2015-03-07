@@ -6,6 +6,7 @@ namespace app\models\db;
  *
  * @property int $id
  * @property int $consultationId
+ * @property int $motionTypeId
  * @property int $parentMotionId
  * @property string $title
  * @property string $titlePrefix
@@ -14,10 +15,10 @@ namespace app\models\db;
  * @property int $status
  * @property string $statusString
  * @property string $noteInternal
- * @property int $cacheLineNumber
- * @property int $cacheParagraphNumber
+ * @property string $cache
  * @property int $textFixed
  *
+ * @property ConsultationSettingsMotionType $motionType
  * @property Consultation $consultation
  * @property Amendment[] $amendments
  * @property MotionComment[] $comments
@@ -82,6 +83,27 @@ class Motion extends IMotion
     public function getSections()
     {
         return $this->hasMany(MotionSection::className(), ['motionId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMotionType()
+    {
+        return $this->hasOne(ConsultationSettingsMotionType::className(), ['id' => 'motionTypeId']);
+    }
+
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['consultationId', 'motionTypeId'], 'required'],
+            [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed'], 'number'],
+            [['title'], 'safe'],
+        ];
     }
 
 

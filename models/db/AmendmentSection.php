@@ -7,14 +7,14 @@ use yii\db\ActiveRecord;
 /**
  * @package app\models\db
  *
- * @property int $motionId
+ * @property int $amendmentId
  * @property int $sectionId
  * @property string $data
  *
- * @property Motion $motion
+ * @property Amendment $amendment
  * @property ConsultationSettingsMotionSection $consultationSetting
  */
-class MotionSection extends ActiveRecord
+class AmendmentSection extends ActiveRecord
 {
 
     /**
@@ -22,7 +22,7 @@ class MotionSection extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'motionSection';
+        return 'amendmentSection';
     }
 
     /**
@@ -36,9 +36,9 @@ class MotionSection extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMotion()
+    public function getAmendment()
     {
-        return $this->hasOne(Motion::className(), ['id' => 'motionId']);
+        return $this->hasOne(Amendment::className(), ['id' => 'amendmentId']);
     }
 
     /**

@@ -186,6 +186,8 @@ class Tools
      */
     public static function cleanSimpleHtml($html)
     {
+        $html = str_replace(chr(194) . chr(160), " ", $html);
+
         $html = HtmlPurifier::process(
             $html,
             [

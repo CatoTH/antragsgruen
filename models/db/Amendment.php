@@ -11,15 +11,11 @@ use yii\db\Query;
  * @property int $motionId
  * @property string $titlePrefix
  * @property string $changedTitle
- * @property string $changedParagraphs
- * @property string $changedExplanation
  * @property string $changeMetatext
  * @property string $changeText
  * @property string $changeExplanation
  * @property int $changeExplanationHtml
- * @property int $cacheFirstLineChanged
- * @property int $cacheFirstLineRel
- * @property int $cacheFirstLineAbs
+ * @property string $cache
  * @property string $dateCreation
  * @property string $dateResolution
  * @property int $status
@@ -65,6 +61,20 @@ class Amendment extends IMotion
     {
         return $this->hasMany(AmendmentSupporter::className(), ['amendmentId' => 'id']);
     }
+
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['consultationId', 'motionTypeId'], 'required'],
+            [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed'], 'number'],
+            [['title'], 'safe'],
+        ];
+    }
+
 
     /**
      * @return int
