@@ -340,6 +340,16 @@ $einstellungen = $model->getEinstellungen();
 		</label>
 	</fieldset>
 
+    <fieldset style="margin-top: 10px;">
+        <label class="block">
+            <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="begruendung_kommentierbar">
+            <input type="checkbox" name="VeranstaltungsEinstellungen[begruendung_kommentierbar]"
+                   value="1" <?php if ($model->getEinstellungen()->begruendung_kommentierbar) echo "checked"; ?>>
+            Begründungen sind kommentierbar
+        </label>
+    </fieldset>
+
+
 </div>
 
 

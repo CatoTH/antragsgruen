@@ -704,6 +704,20 @@ a {
     padding: 0;
   }
 
+  .magenta & {
+    h3 {
+      background: none;
+      color: $farbe_magenta;
+      font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 18px;
+      margin: 0 0 5px 0;
+      text-transform: none;
+      padding: 0;
+    }
+  }
+
   .datum {
     color: #B3B4B4;
     float: right;

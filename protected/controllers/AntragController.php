@@ -219,11 +219,7 @@ class AntragController extends AntragsgruenController
 			}
 		}
 		if ($kommentar_id > 0) {
-			$abs = $antrag->getParagraphs();
-			foreach ($abs as $ab) {
-				/** @var AntragAbsatz $ab */
-				foreach ($ab->kommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $ab->absatz_nr;
-			}
+            foreach ($antrag->antragKommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $komm->absatz;
 		}
 
 		$aenderungsantraege = array();

@@ -6,7 +6,7 @@ class SpracheThemenbox extends Sprache
 		"Antrag"               => "Themen-Vorschlag",
 		"Anträge"              => "Themen-Vorschläge",
 		"Antrag stellen"       => "Eigenes Thema einwerfen",
-		"Antrag bearbeiten"    => "Eigenes Thema bearbeiten",
+		"Antrag bearbeiten"    => "Thema bearbeiten",
 		"Neuen Antrag stellen" => "Eigenes Thema einwerfen",
 
 		"breadcrumb_top"    => "Programm",

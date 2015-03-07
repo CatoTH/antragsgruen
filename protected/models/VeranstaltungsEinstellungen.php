@@ -30,6 +30,7 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $kann_pdf = true;
 	public $zeilenlaenge = 80;
 	public $begruendung_in_html = false;
+    public $begruendung_kommentierbar = false;
 	public $bdk_startseiten_layout = false;
 	public $antragstext_max_len = 0;
 	public $antrag_neu_button_label = "";

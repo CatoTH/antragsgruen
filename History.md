@@ -1,3 +1,8 @@
+2.6.2 - 2015-03-07
+==================
+
+* Es lässt sich nun auch einstellen, dass auch Begründungen kommentierbar sind.
+
 2.6.1 - 2015-03-06
 ==================
 

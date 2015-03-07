@@ -58,6 +58,15 @@ else $html .= '<li class="zurueck">' . CHtml::link("Zurück zur Übersicht", $th
 $html .= '</ul>';
 $this->menus_html[] = $html;
 
+
+$spezielle_kommentare = array(AntragKommentar::ABSATZ_ANTRAG => array(), AntragKommentar::ABSATZ_BEGRUENDUNG => array(), AntragKommentar::ABSATZ_TEXT2 => array());
+foreach ($antrag->antragKommentare as $komm) if ($komm->absatz < 0 && $komm->status != IKommentar::$STATUS_GELOESCHT) {
+    if (isset($spezielle_kommentare[$komm->absatz])) {
+        $spezielle_kommentare[$komm->absatz][] = $komm;
+    }
+}
+
+
 ?>
 <h1><?php echo CHtml::encode($antrag->nameMitRev()); ?></h1>
 
@@ -230,15 +239,52 @@ $this->menus_html[] = $html;
 <?
 $text2name = veranstaltungsspezifisch_text2_name($antrag->veranstaltung, $antrag->typ);
 if ($text2name && trim($antrag->text2)) {
+    $classes = "";
+    if (!in_array(AntragKommentar::ABSATZ_TEXT2, $kommentare_offen)) $classes .= " kommentare_closed_absatz";
     ?>
-    <div class="begruendungs_text_holder">
+
+    <div class="begruendungs_text_holder row-absatz<?=$classes?>">
         <h3><?=CHtml::encode($text2name)?></h3>
+
+        <?
+        if ($antrag->veranstaltung->getEinstellungen()->begruendung_kommentierbar) {
+            $anzahl = count($spezielle_kommentare[AntragKommentar::ABSATZ_TEXT2]);
+            ?>
+            <ul class="lesezeichen">
+                <?php
+                if ($anzahl > 0 || $antrag->veranstaltung->darfEroeffnenKommentar()) {
+                    ?>
+                    <li class='kommentare'>
+                        <a href='#' class='shower'><?php echo $anzahl; ?></a>
+                        <a href='#' class='hider'><?php echo $anzahl; ?></a>
+                    </li>
+                <?
+                }
+                ?>
+            </ul>
+        <?
+        }
+        ?>
 
         <div class="textholder consolidated content">
             <?php
             echo HtmlBBcodeUtils::bbcode2html($antrag->text2);
             ?>
         </div>
+
+        <?
+        if ($antrag->veranstaltung->getEinstellungen()->begruendung_kommentierbar) {
+            $this->renderPartial("anzeige_kommentare", array(
+                "antrag"           => $antrag,
+                "absatz_nr"        => AntragKommentar::ABSATZ_TEXT2,
+                "komm_del_link"    => $komm_del_link,
+                "js_protection"    => $js_protection,
+                "hiddens"          => $hiddens,
+                "kommentar_person" => $kommentar_person,
+                "kommentare"       => $spezielle_kommentare[AntragKommentar::ABSATZ_TEXT2],
+            ));
+        }
+        ?>
     </div>
 <?
 }
@@ -274,8 +320,7 @@ if ($text2name && trim($antrag->text2)) {
 				<?php
 				if (count($abs->kommentare) > 0 || $antrag->veranstaltung->darfEroeffnenKommentar()) {
 					?>
-					<li class='kommentare'><?
-						?>
+					<li class='kommentare'>
 						<a href='#' class='shower'><?php echo count($abs->kommentare); ?></a>
 						<a href='#' class='hider'><?php echo count($abs->kommentare); ?></a>
 					</li>
@@ -329,9 +374,12 @@ if ($text2name && trim($antrag->text2)) {
 
 <?php
 
-if (trim($antrag->begruendung) != "") { ?>
+if (trim($antrag->begruendung) != "") {
+    $classes = "";
+    if (!in_array(AntragKommentar::ABSATZ_BEGRUENDUNG, $kommentare_offen)) $classes .= " kommentare_closed_absatz";
+    ?>
 
-	<div class="begruendungs_text_holder">
+	<div class="begruendungs_text_holder row-absatz<?=$classes?>">
         <h3><?php
             $bname = veranstaltungsspezifisch_begruendung_name($antrag->veranstaltung, $antrag->typ);
             if ($bname) {
@@ -341,12 +389,45 @@ if (trim($antrag->begruendung) != "") { ?>
             }
             ?></h3>
 
+        <?
+        if ($antrag->veranstaltung->getEinstellungen()->begruendung_kommentierbar) {
+            $anzahl = count($spezielle_kommentare[AntragKommentar::ABSATZ_BEGRUENDUNG]);
+            ?>
+            <ul class="lesezeichen">
+                <?php
+                if ($anzahl > 0 || $antrag->veranstaltung->darfEroeffnenKommentar()) {
+                    ?>
+                    <li class='kommentare'>
+                        <a href='#' class='shower'><?php echo $anzahl; ?></a>
+                        <a href='#' class='hider'><?php echo $anzahl; ?></a>
+                    </li>
+                <?
+                }
+                ?>
+            </ul>
+        <?
+        }
+        ?>
+
 		<div class="textholder consolidated content">
 			<?php
 			if ($antrag->begruendung_html) echo $antrag->begruendung;
 			else echo HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
 			?>
 		</div>
+        <?
+        if ($antrag->veranstaltung->getEinstellungen()->begruendung_kommentierbar) {
+            $this->renderPartial("anzeige_kommentare", array(
+                "antrag"           => $antrag,
+                "absatz_nr"        => AntragKommentar::ABSATZ_BEGRUENDUNG,
+                "komm_del_link"    => $komm_del_link,
+                "js_protection"    => $js_protection,
+                "hiddens"          => $hiddens,
+                "kommentar_person" => $kommentar_person,
+                "kommentare"       => $spezielle_kommentare[AntragKommentar::ABSATZ_BEGRUENDUNG],
+            ));
+        }
+        ?>
 	</div>
 
 <? } ?>
@@ -505,19 +586,15 @@ if ($antrag->veranstaltung->getEinstellungen()->antrag_kommentare_ohne_absatz) {
 	?>
 	<h2>Kommentare</h2>
 
-
 	<?php
-	$kommentare = array();
-	foreach ($antrag->antragKommentare as $komm) if ($komm->absatz == -1 && $komm->status != IKommentar::$STATUS_GELOESCHT) $kommentare[] = $komm;
-
 	$this->renderPartial("anzeige_kommentare", array(
 		"antrag"           => $antrag,
-		"absatz_nr"        => -1,
+		"absatz_nr"        => AntragKommentar::ABSATZ_ANTRAG,
 		"komm_del_link"    => $komm_del_link,
 		"js_protection"    => $js_protection,
 		"hiddens"          => $hiddens,
 		"kommentar_person" => $kommentar_person,
-		"kommentare"       => $kommentare,
+		"kommentare"       => $spezielle_kommentare[AntragKommentar::ABSATZ_ANTRAG],
 	));
 
 }
