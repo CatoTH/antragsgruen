@@ -3,8 +3,5 @@ vendor
 composer.lock
 runtime
 test.php
-config/local/db.php
-config/local/db_test.php
-config/local/params.php
-config/local/params_tests.php
-config/local/db_tests.php
+config/config.php
+config/config_tests.php
