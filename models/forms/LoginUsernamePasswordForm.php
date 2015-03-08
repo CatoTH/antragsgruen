@@ -8,6 +8,7 @@ use app\models\db\EMailLog;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Login;
+use app\models\settings\AntragsgruenApp;
 use yii\helpers\Url;
 
 class LoginUsernamePasswordForm extends \yii\base\Model
@@ -46,9 +47,9 @@ class LoginUsernamePasswordForm extends \yii\base\Model
      */
     private function sendConfirmationEmail(User $user)
     {
-        $bestCode  = $user->createEmailConfirmationCode();
-        $params = ["user/confirmregistration", "email" => $this->username, "code" => $bestCode, "subdomain" => null];
-        $link      = \Yii::$app->request->baseUrl . Url::toRoute($params);
+        $bestCode = $user->createEmailConfirmationCode();
+        $params   = ["user/confirmregistration", "email" => $this->username, "code" => $bestCode, "subdomain" => null];
+        $link     = \Yii::$app->request->baseUrl . Url::toRoute($params);
 
         $send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n";
         $send_text .= "%bestLink%\n\n"
@@ -103,8 +104,10 @@ class LoginUsernamePasswordForm extends \yii\base\Model
         }
 
         $auth = "email:" . $this->username;
-        if (User::findOne(['auth' => $auth])) {
-            $this->error = "Es existiert bereits ein Zugang mit dieser E-Mail-Adresse.";
+        $existing = User::findOne(['auth' => $auth]);
+        if ($existing) {
+            /** @var User $existing */
+            $this->error = "Es existiert bereits ein Zugang mit dieser E-Mail-Adresse ($auth): " . print_r($existing->getAttributes(), true);
             throw new Login($this->error);
         }
     }
@@ -124,8 +127,15 @@ class LoginUsernamePasswordForm extends \yii\base\Model
         $user->email          = $this->username;
         $user->emailConfirmed = 0;
         $user->dateCreation   = date("Y-m-d H:i:s");
-        $user->status         = User::STATUS_UNCONFIRMED;
         $user->pwdEnc         = PasswordFunctions::createHash($this->password);
+
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if ($params->confirmEmailAddresses) {
+            $user->status = User::STATUS_UNCONFIRMED;
+        } else {
+            $user->status = User::STATUS_CONFIRMED;
+        }
 
         if ($user->save()) {
             $user->refresh();

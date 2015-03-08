@@ -12,6 +12,7 @@ class AntragsgruenApp
     public $prependWWWToSubdomain = true;
     public $standardSite          = "default";
     public $pdfLogo               = 'LOGO_PFAD';
+    public $confirmEmailAddresses = true;
     public $contactEmail          = 'EMAILADRESSE';
     public $mailFromName          = 'Antragsgrün';
     public $mailFromEmail         = 'EMAILADRESSE';

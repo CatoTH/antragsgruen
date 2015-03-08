@@ -8,6 +8,7 @@ use app\components\WurzelwerkAuthClient;
 use app\models\db\User;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
+use app\models\wording\Wording;
 use Yii;
 use yii\helpers\Url;
 
@@ -26,6 +27,22 @@ class UserController extends Base
                 'successCallback' => [$this, 'successCallback'],
             ],
         ];
+    }
+
+    /**
+     * @param $subdomain
+     * @param $consultationPath
+     * @return Wording
+     */
+    private function getWording($subdomain, $consultationPath)
+    {
+        if ($subdomain != '') {
+            $this->loadConsultation($subdomain, $consultationPath);
+            $wording = $this->consultation->getWording();
+        } else {
+            $wording = new Wording();
+        }
+        return $wording;
     }
 
     /**
@@ -96,7 +113,11 @@ class UserController extends Base
     public function actionLogin($subdomain = '', $consultationPath = '', $backUrl = '')
     {
         $this->layout = 'column2';
-        $this->loadConsultation($subdomain, $consultationPath);
+
+        $wording = $this->getWording($subdomain, $consultationPath);
+        if ($backUrl == '') {
+            $backUrl = '/';
+        }
 
         $usernamePasswordForm = new LoginUsernamePasswordForm();
 
@@ -105,8 +126,18 @@ class UserController extends Base
             try {
                 $user = $usernamePasswordForm->getOrCreateUser($this->site);
                 $this->loginUser($user);
+
+                $unconfirmed = $user->status == User::STATUS_UNCONFIRMED;
+                if ($unconfirmed && $this->getParams()->confirmEmailAddresses) {
+                    $backUrl = UrlHelper::createUrl(['user/confirmregistration', 'backUrl' => $backUrl]);
+                } else {
+                    \Yii::$app->session->setFlash('success', 'Willkommen!');
+                }
+
                 $this->redirect($backUrl, 307);
+                \Yii::$app->end(307);
             } catch (Login $e) {
+                $usernamePasswordForm->error = $e->getMessage();
             }
         }
 
@@ -114,7 +145,8 @@ class UserController extends Base
         return $this->render(
             'login',
             [
-                "usernamePasswordForm" => $usernamePasswordForm,
+                'usernamePasswordForm' => $usernamePasswordForm,
+                'wording'              => $wording,
             ]
         );
     }

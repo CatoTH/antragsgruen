@@ -104,14 +104,27 @@ class Base extends Controller
     {
         $error = \Yii::$app->session->getFlash('error', null, true);
         if ($error) {
-            return '<div class="alert alert-danger" role="alert">
+            $str = '<div class="alert alert-danger" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <span class="sr-only">Error:</span>
                 ' . Html::encode($error) . '
             </div>';
         } else {
-            return "";
+            $str = "";
         }
+
+        $success = \Yii::$app->session->getFlash('success', null, true);
+        if ($success) {
+            $str .= '<div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                <span class="sr-only">Success:</span>
+                ' . Html::encode($success) . '
+            </div>';
+        } else {
+            $str .= "";
+        }
+
+        return $str;
     }
 
     /**

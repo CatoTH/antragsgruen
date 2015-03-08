@@ -100,43 +100,49 @@ $this->beginBody();
 
 echo '<div class="over_footer_wrapper">';
 echo '<div class="container" id="page">';
-if ($controller->consultation) {
-    echo '<header id="mainmenu">';
-    echo '<div class="navbar">
+echo '<header id="mainmenu">';
+echo '<div class="navbar">
         <div class="navbar-inner">
             <div class="container">';
 
+if ($controller->consultation) {
     $searchUrl = UrlHelper::createUrl('consultation/search');
     echo Html::beginForm($searchUrl, 'get', ['class' => 'form-search visible-xs-inline-block']);
     echo '<input type="hidden" name="id" value="">';
     echo '<div class="input-append">' .
-        '<input class="search-query" type="search" name="suchbegriff" value="" autofocus placeholder="Suche">' .
+        '<input class="search-query" type="search" name="search_term" value="" autofocus placeholder="Suche">' .
         '<button type="submit" class="btn"><i style="height: 18px;" class="icon-search"></i></button></div>';
     echo Html::endForm();
+}
 
-    echo '<ul class="nav navbar-nav">';
+echo '<ul class="nav navbar-nav">';
+
+if ($controller->consultation) {
     echo '<li class="active">' . Html::a('Start', UrlHelper::createUrl("consultation/index")) . '</li>';
     echo '<li>' . Html::a('Hilfe', UrlHelper::createUrl("consultation/help")) . '</li>';
+} else {
+    echo '<li class="active">' . Html::a('Start', UrlHelper::createUrl("manager/index")) . '</li>';
+}
 
-    if (!$controller->getCurrentUser() && !$minimalistic) {
-        $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
-        echo '<li>' . Html::a('Login', $loginUrl) . '</li>';
-    }
-    if ($controller->getCurrentUser()) {
-        $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
-        echo '<li>' . Html::a('Logout', $logoutUrl) . '</li>';
-    }
-    if ($controller->consultation && $controller->consultation->isAdminCurUser()) {
-        $adminUrl = UrlHelper::createUrl("admin/index");
-        echo '<li><a href="' . Html::encode($adminUrl) . '">Admin</a></li>';
-    }
-    echo '</ul>
+
+if (!$controller->getCurrentUser() && !$minimalistic) {
+    $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
+    echo '<li>' . Html::a('Login', $loginUrl) . '</li>';
+}
+if ($controller->getCurrentUser()) {
+    $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
+    echo '<li>' . Html::a('Logout', $logoutUrl) . '</li>';
+}
+if ($controller->consultation && $controller->consultation->isAdminCurUser()) {
+    $adminUrl = UrlHelper::createUrl("admin/index");
+    echo '<li><a href="' . Html::encode($adminUrl) . '">Admin</a></li>';
+}
+echo '</ul>
             </div>
         </div>
     </div>';
 
-    echo '</header>';
-}
+echo '</header>';
 
 echo '<div class="row logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Startseite">';
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != "") {
@@ -148,13 +154,16 @@ if ($controller->consultation && $controller->consultation->getSettings()->logoU
         array(" ", "ü", "ä", "ö", "Ü" . "Ö", "Ä"),
         $filename
     );
-    $logoUrl = $controller->consultation->getSettings()->logoUrl;
+    $logoUrl  = $controller->consultation->getSettings()->logoUrl;
     echo '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
 } else {
     echo '<span class="logo_img"></span>';
 }
 echo '</a></div>';
 
+
+
+echo $controller->showErrors();
 
 if (is_array($params->breadcrumbs)) {
     echo '<ol class="breadcrumb">';

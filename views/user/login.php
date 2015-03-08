@@ -2,17 +2,18 @@
 
 use app\components\UrlHelper;
 use app\models\forms\LoginUsernamePasswordForm;
+use app\models\wording\Wording;
 use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
  * @var LoginUsernamePasswordForm $usernamePasswordForm
  * @var string $msg_err
+ * @var Wording $wording
  */
 
 /** @var \app\controllers\UserController $controller */
 $controller = $this->context;
-$wording    = $controller->consultation->getWording();
 $layout     = $controller->layoutParams;
 
 $this->title = 'Login';
@@ -41,7 +42,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     $preUsername = $usernamePasswordForm->username;
     $preName     = $usernamePasswordForm->name;
 
-    if ($controller->site->getSettings()->onlyNamespacedAccounts) {
+    if ($controller->site && $controller->site->getSettings()->onlyNamespacedAccounts) {
         echo '<div class="alert alert-info">!';
         // @TODO
         //echo veranstaltungsspezifisch_hinweis_namespaced_accounts($this->veranstaltung,
@@ -53,7 +54,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     } else {
         $pre_checked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
         echo '<div class="checkbox"><label>
-            <input type="checkbox" name="createAccount" ' . $pre_checked . '>
+            <input type="checkbox" name="createAccount" id="createAccount" ' . $pre_checked . '>
             Neuen Zugang anlegen
             </label></div>';
     }
