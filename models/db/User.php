@@ -6,6 +6,7 @@ use app\components\PasswordFunctions;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\AntragsgruenAppParams;
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\web\IdentityInterface;
@@ -250,6 +251,20 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
+    /**
+     * @return bool
+     */
+    public function isEntitledToCreateSites()
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if ($params->createNeedsWurzelwerk) {
+            return $this->isWurzelwerkUser();
+        } else {
+            return ($this->status == User::STATUS_CONFIRMED);
+        }
+    }
+
 
     /**
      * @return bool
@@ -365,8 +380,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function benachrichtigenAntrag(Motion $motion)
     {
         $subject = "[Antragsgrün] Neuer Antrag: " . $motion->getNameWithPrefix();
-        $link = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
-        $link = \Yii::$app->request->baseUrl . $link;
+        $link    = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
+        $link    = \Yii::$app->request->baseUrl . $link;
         $text    = "Es wurde ein neuer Antrag eingereicht:\nAnlass: " . $motion->consultation->title .
             "\nName: " . $motion->getNameWithPrefix() . "\nLink: " . $link;
         $this->notificationEmail($motion->consultation, $subject, $text);
@@ -377,11 +392,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function benachrichtigenAenderungsantrag(Amendment $amendment)
     {
-        $subject = "[Antragsgrün] Neuer Änderungsantrag zu " . $amendment->motion->getNameWithPrefix();
+        $subject  = "[Antragsgrün] Neuer Änderungsantrag zu " . $amendment->motion->getNameWithPrefix();
         $motionId = $amendment->motion->id;
-        $link = UrlHelper::createUrl(['amendment/view', 'amendmentId' => $amendment->id, 'motionId' => $motionId]);
-        $link = \Yii::$app->request->baseUrl . $link;
-        $text    = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: " .
+        $link     = UrlHelper::createUrl(['amendment/view', 'amendmentId' => $amendment->id, 'motionId' => $motionId]);
+        $link     = \Yii::$app->request->baseUrl . $link;
+        $text     = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: " .
             $amendment->motion->consultation->title . "\nAntrag: " . $amendment->motion->getNameWithPrefix() .
             "\nLink: " . $link;
         $this->notificationEmail($amendment->motion->consultation, $subject, $text);

@@ -55,7 +55,7 @@ class ManagerController extends Base
         /** @var User $user */
         $user = yii::$app->user->identity;
 
-        if (!$user->isWurzelwerkUser()) {
+        if (!$user->isEntitledToCreateSites()) {
             return null;
         }
 

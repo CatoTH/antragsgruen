@@ -96,7 +96,8 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
 
 </div>
 
-<h2 id="selbst_nutzen">Antragsgrün selbst nutzen</h2>
+<?php
+echo '<h2 id="selbst_nutzen">Antragsgrün selbst nutzen</h2>
 
 <div class="content">
 Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
@@ -110,18 +111,23 @@ gegenüber Antragsgrün, dass du Parteimitglied bist und leitet deinen Namen und
 aber das Wurzelwerk-Passwort.<br>
 <br>
 Falls du die Zugangsdaten zurzeit nicht hast,
-<a href="#wer" onclick="$('#wer').next().scrollintoview(); return false;">schreib uns einfach an</a>.
-<br>
+<a href="#wer" onclick="$(\'#wer\').next().scrollintoview(); return false;">schreib uns einfach an</a>.
+<br>';
 
-<?= Html::beginForm(
-    UrlHelper::createWurzelwerkLoginUrl('manager/createsite'),
-    'post',
-    [
-        'class' => 'form-inline',
-        'style' => 'margin-top: 20px;'
-    ]
-) ?>
-    <div class="form-group">
+if ($controller->getCurrentUser()) {
+    echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl('manager/createsite')) . '">
+        <button type="submit" class="btn btn-success">
+        <span class="glyphicon glyphicon-chevron-right"></span> Seite anlegen</button></form>';
+} else {
+    echo Html::beginForm(
+        UrlHelper::createWurzelwerkLoginUrl('manager/createsite'),
+        'post',
+        [
+            'class' => 'form-inline',
+            'style' => 'margin-top: 20px;'
+        ]
+    );
+    echo '<div class="form-group">
         <label for="wwoauth" style="vertical-align: top; margin-top: 5px;">
             Wurzelwerk-BenutzerInnenname<br>
             <a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank" style="font-size: 0.8em;
@@ -130,12 +136,13 @@ Falls du die Zugangsdaten zurzeit nicht hast,
         </label>
         <input type="text" class="form-control" id="wwoauth" name="username" placeholder="Jane Doe">
     </div>
-    <button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>
-    <?= Html::endForm(); ?>
-    <?= Html::endForm(); ?>
-</div>
+    <button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
 
+    echo Html::endForm();
+}
+echo '</div>';
 
+?>
 <h2 id="wer">Von wem stammt Antragsgrün?</h2>
 
 <div class="content">

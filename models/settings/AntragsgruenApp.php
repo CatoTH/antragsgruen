@@ -9,6 +9,7 @@ class AntragsgruenApp
     public $multisiteMode         = true;
     public $domainPlain           = "http://antragsgruen-v3.localhost/";
     public $domainSubdomain       = "http://<siteId:[\w_-]+>.antragsgruen-v3.localhost/";
+    public $createNeedsWurzelwerk = false;
     public $prependWWWToSubdomain = true;
     public $standardSite          = "default";
     public $pdfLogo               = 'LOGO_PFAD';

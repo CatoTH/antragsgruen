@@ -15,7 +15,7 @@ class AntiXSS
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if (in_array($params->randomSeed, array("", "RANDOMSEED"))) {
-            die("Please specify a randomSeed in config/local/params.php\n");
+            die("Please specify a randomSeed in config/config.php\n");
         }
         return $params->randomSeed;
     }

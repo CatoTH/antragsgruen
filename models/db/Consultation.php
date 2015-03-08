@@ -174,6 +174,7 @@ class Consultation extends ActiveRecord
         $con             = new Consultation();
         $con->siteId     = $site->id;
         $con->title      = $form->title;
+        $con->titleShort = $form->title;
         $con->type       = $form->preset;
         $con->urlPath    = $form->subdomain;
         $con->adminEmail = $currentUser->email;
