@@ -4,6 +4,7 @@ namespace app\models\settings;
 
 class AntragsgruenApp
 {
+    public $dbConnection          = null;
     public $randomSeed            = "";
     public $multisiteMode         = true;
     public $domainPlain           = "http://antragsgruen-v3.localhost/";

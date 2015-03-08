@@ -62,8 +62,9 @@ class WurzelwerkAuthClient extends OpenId
     /**
      * Performs OpenID verification with the OP.
      * @return boolean whether the verification was successful.
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function validate()
+    public function validate($validateRequiredAttributes = true)
     {
         $claimedId = $this->getClaimedId();
         if (empty($claimedId)) {

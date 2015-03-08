@@ -4,7 +4,6 @@ use app\models\settings\AntragsgruenApp;
 
 /**
  * @var AntragsgruenApp $params
- * @var array $db_params
  */
 
 
@@ -29,7 +28,7 @@ return [
                 ],
             ],
         ],
-        'db'         => $db_params,
+        'db'         => $params->dbConnection,
         'urlManager' => array(
             'showScriptName'  => false,
             'enablePrettyUrl' => true,
