@@ -24,7 +24,7 @@ namespace app\models\db;
  * @property MotionComment[] $comments
  * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
- * @property MotionSupporter[] $supporters
+ * @property MotionSupporter[] $motionSupporters
  */
 class Motion extends IMotion
 {
@@ -47,7 +47,7 @@ class Motion extends IMotion
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSupporters()
+    public function getMotionSupporters()
     {
         return $this->hasMany(MotionSupporter::className(), ['motionId' => 'id']);
     }
@@ -239,26 +239,58 @@ class Motion extends IMotion
     }
 
     /**
-     * @return User[]
+     * @return MotionSupporter[]
      */
     public function getInitiators()
     {
-        // TODO: Implement getInitiators() method.
+        $return = [];
+        foreach ($this->motionSupporters as $supp) {
+            if ($supp->role == MotionSupporter::ROLE_INITIATOR) {
+                $return[] = $supp;
+            }
+        };
+        return $return;
     }
 
     /**
-     * @return User[]
+     * @return MotionSupporter[]
+     */
+    public function getSupporters()
+    {
+        $return = [];
+        foreach ($this->motionSupporters as $supp) {
+            if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
+                $return[] = $supp;
+            }
+        };
+        return $return;
+    }
+
+    /**
+     * @return MotionSupporter[]
      */
     public function getLikes()
     {
-        // TODO: Implement getLikes() method.
+        $return = [];
+        foreach ($this->motionSupporters as $supp) {
+            if ($supp->role == MotionSupporter::ROLE_LIKE) {
+                $return[] = $supp;
+            }
+        };
+        return $return;
     }
 
     /**
-     * @return User[]
+     * @return MotionSupporter[]
      */
     public function getDislikes()
     {
-        // TODO: Implement getDislikes() method.
+        $return = [];
+        foreach ($this->motionSupporters as $supp) {
+            if ($supp->role == MotionSupporter::ROLE_DISLIKE) {
+                $return[] = $supp;
+            }
+        };
+        return $return;
     }
 }

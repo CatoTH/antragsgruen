@@ -499,6 +499,12 @@ class MotionController extends Base
             $this->redirect(UrlHelper::createUrl("consultation/index"));
         }
 
+        if (isset($_POST['modify'])) {
+            $nextUrl = ['motion/edit', 'motionId' => $motion->id];
+            $this->redirect(UrlHelper::createUrl($nextUrl));
+            return '';
+        }
+
         if (isset($_POST['confirm'])) {
             // @TODO
             $freischaltung  = $antrag->veranstaltung->getEinstellungen()->freischaltung_antraege;
@@ -531,15 +537,71 @@ class MotionController extends Base
                 }
             }
 
-            return $this->render("create_done", array(
-                'motion' => $motion,
-            ));
+            return $this->render("create_done", ['motion' => $motion, 'mode' => $fromMode]);
 
         } else {
-            return $this->render('create_confirm', array(
-                'motion' => $motion,
-            ));
+            return $this->render('create_confirm', ['motion' => $motion, 'mode' => $fromMode]);
         }
+    }
+
+    public function actionEdit($subdomain, $consultationPath, $motionId)
+    {
+        $this->loadConsultation($subdomain, $consultationPath);
+        $this->testMaintainanceMode();
+
+        $motion = Motion::findOne(
+            [
+                'id'             => $motionId,
+                'consultationId' => $this->consultation->id
+            ]
+        );
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+
+        if (!$motion->canEdit()) {
+            \Yii::$app->session->setFlash('error', 'Not allowed to edit this motion.');
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+
+        $form = new MotionEditForm($this->consultation, $motion);
+
+        if (isset($_POST['create'])) {
+            $form->setAttributes($_POST);
+            try {
+                $form->saveMotion($motion);
+                $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
+                $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
+                $this->redirect(UrlHelper::createUrl($nextUrl));
+                return '';
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+
+        $hiddens      = array();
+        $jsProtection = \Yii::$app->user->isGuest;
+
+        if ($jsProtection) {
+            $hiddens['formToken'] = AntiXSS::createToken('createMotion');
+        } else {
+            $hiddens[AntiXSS::createToken('createMotion')] = '1';
+        }
+
+
+        return $this->render(
+            'editform',
+            [
+                'mode'         => 'create',
+                'form'         => $form,
+                'consultation' => $this->consultation,
+                'hiddens'      => $hiddens,
+                'jsProtection' => $jsProtection,
+                'motionTypes'  => [$motion->motionType],
+            ]
+        );
     }
 
 
@@ -557,16 +619,17 @@ class MotionController extends Base
 
         if (!$this->consultation->getMotionPolicy()->checkCurUserHeuristically()) {
             \Yii::$app->session->setFlash('error', 'Es kann kein Antrag angelegt werden.');
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
-            return "";
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return '';
         }
 
-        if (isset($_POST["create"])) {
+        if (isset($_POST['create'])) {
             $form->setAttributes($_POST);
             try {
                 $motion  = $form->createMotion();
-                $nextUrl = ["motion/createconfirm", "motionId" => $motion->id, "fromMode" => "create"];
+                $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => 'create'];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
+                return '';
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
@@ -577,15 +640,20 @@ class MotionController extends Base
         $jsProtection = \Yii::$app->user->isGuest;
 
         if ($jsProtection) {
-            $hiddens["formToken"] = AntiXSS::createToken("createMotion");
+            $hiddens['formToken'] = AntiXSS::createToken('createMotion');
         } else {
-            $hiddens[AntiXSS::createToken("createMotion")] = "1";
+            $hiddens[AntiXSS::createToken('createMotion')] = '1';
         }
 
-        if (isset($_REQUEST["forceTag"])) {
-            $forceTag = $_REQUEST["forceTag"];
-        } else {
-            $forceTag = null;
+        $types = $this->consultation->motionTypes;
+        if (isset($_REQUEST['forceType'])) {
+            $type = null;
+            foreach ($types as $t) {
+                if ($t->id == $_REQUEST['forceType']) {
+                    $type = $t;
+                }
+            }
+            $types = [$type];
         }
 
 
@@ -610,7 +678,7 @@ class MotionController extends Base
                 'consultation' => $this->consultation,
                 'hiddens'      => $hiddens,
                 'jsProtection' => $jsProtection,
-                'forceTag'     => $forceTag,
+                'motionTypes'  => $types,
             ]
         );
     }

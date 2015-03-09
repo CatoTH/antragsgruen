@@ -5,6 +5,7 @@
  * @var string $mode
  * @var \app\models\forms\MotionEditForm $form
  * @var \app\models\db\Consultation $consultation
+ * @var \app\models\db\ConsultationSettingsMotionType[] $motionTypes
  * @var array $hiddens
  * @var bool $jsProtection
  * @var bool $forceTag
@@ -33,7 +34,7 @@ echo '<div class="form content">';
 $motionPolicy = $consultation->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo '<fieldset>
-                <legend>' . $wording->get("Voraussetzungen für einen Antrag") , '</legend>
+                <legend>' . $wording->get("Voraussetzungen für einen Antrag"), '</legend>
             </fieldset>';
 
     echo $motionPolicy->getOnCreateDescription();
@@ -51,6 +52,20 @@ if ($jsProtection) {
     echo '</div>';
 }
 
+if (count($motionTypes) == 1) {
+    echo '<input type="hidden" name="type" value="' . $motionTypes[0]->id . '">';
+} else {
+    echo '<fieldset class="form-group">
+    <label for="motionTitle">Überschrift</label>';
+    foreach ($motionTypes as $type) {
+        echo '<div class="radio"><label>';
+        echo Html::radio('type', $form->type == $type->id, ['value' => $type->id]);
+        echo Html::encode($type->title);
+        echo '</label></div>';
+    }
+    echo '</fieldset>';
+}
+
 echo '<fieldset class="form-group">
     <label for="motionTitle">Überschrift</label>
     <input type="text" class="form-control" id="motionTitle" name="title" value="' . Html::encode($form->title) . '">
@@ -58,12 +73,8 @@ echo '<fieldset class="form-group">
 
 /** @var ConsultationSettingsTag][] $tags */
 $tags = array();
-if ($forceTag !== null) {
-    $tags[$forceTag] = ConsultationSettingsTag::findOne($forceTag);
-} else {
-    foreach ($consultation->tags as $tag) {
-        $tags[$tag->id] = $tag;
-    }
+foreach ($consultation->tags as $tag) {
+    $tags[$tag->id] = $tag;
 }
 
 if (count($tags) == 1) {

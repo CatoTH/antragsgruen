@@ -119,7 +119,7 @@
   }
 }
 
-.antrags_text_holder {
+.motion_text_holder {
   font-size: 13px;
   &.kleine_schrift {
     font-size: 12px;
@@ -163,7 +163,7 @@
   }
 }
 
-.antrags_text_holder_nummern {
+.motion_test_holder_numbers {
   .text {
     padding-left: 30px;
   }
@@ -194,7 +194,7 @@
   }
 }
 
-.antrags_text_holder_keinenummern {
+.motion_test_holder_nonumbers {
   blockquote.text {
     margin: 3px 3px 3px 80px;
     border-left: dotted 2px gray;

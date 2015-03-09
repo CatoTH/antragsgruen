@@ -51,4 +51,13 @@ class MotionSection extends ActiveRecord
             [['motionId', 'sectionId'], 'number'],
         ];
     }
+
+    /**
+     * @return bool
+     */
+    public function checkLength()
+    {
+        // @TODO
+        return true;
+    }
 }
