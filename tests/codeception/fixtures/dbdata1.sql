@@ -11,9 +11,9 @@ INSERT INTO `consultationSettingsMotionSection` (`id`, `consultationId`, `motion
   (2, 1, NULL, 1, 2, 'Begründung', 0, 0, 0, 0);
 
 INSERT INTO `consultationSettingsMotionType` (`id`, `consultationId`, `title`, `motionPrefix`, `position`) VALUES
-  (1, 1, 'Antrag', NULL, 0),
-  (2, 1, 'Resolution', NULL, 1),
-  (3, 1, 'Satzungsantrag', NULL, 2);
+  (1, 1, 'Antrag', 'A', 0),
+  (2, 1, 'Resolution', 'R', 1),
+  (3, 1, 'Satzungsantrag', 'S', 2);
 
 INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`) VALUES
   (1, 'stdparteitag', 'Test2', 'Test2', 0x7b226f6e6c794e616d657370616365644163636f756e7473223a66616c73652c226f6e6c795775727a656c7765726b223a66616c73652c2277696c6c696e67546f506179223a2232227d, 1, 1, 'Test2');

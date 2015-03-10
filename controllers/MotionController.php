@@ -4,8 +4,10 @@ namespace app\controllers;
 
 
 use app\components\AntiXSS;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\EMailLog;
 use app\models\db\IComment;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
@@ -506,33 +508,41 @@ class MotionController extends Base
         }
 
         if (isset($_POST['confirm'])) {
-            // @TODO
-            $freischaltung  = $antrag->veranstaltung->getEinstellungen()->freischaltung_antraege;
-            $antrag->status = ($freischaltung ? Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT : Antrag::$STATUS_EINGEREICHT_GEPRUEFT);
-            if (!$freischaltung && $antrag->revision_name == "") {
-                $antrag->revision_name = $antrag->veranstaltung->naechsteAntragRevNr($antrag->typ);
-            }
-            $antrag->save();
 
-            if ($antrag->veranstaltung->admin_email != "") {
-                $mails     = explode(",", $antrag->veranstaltung->admin_email);
-                $from_name = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
-                $mail_text = "Es wurde ein neuer Antrag \"" . $antrag->name . "\" eingereicht.\n" .
-                    "Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id));
+            $screening = $this->consultation->getSettings()->screeningMotions;
+            $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
+            if (!$screening && $motion->statusString == "") {
+                $motion->titlePrefix = $motion->consultation->getNextAvailableStatusString($motion->motionTypeId);
+            }
+            $motion->save();
+
+            if ($motion->consultation->adminEmail != "") {
+                $mails     = explode(",", $motion->consultation->adminEmail);
+
+                $motionLink = \Yii::$app->request->baseUrl . UrlHelper::createMotionUrl($motion);
+                $mailText = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
+                $mailText = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
 
                 foreach ($mails as $mail) {
                     if (trim($mail) != "") {
-                        AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Antrag", $mail_text, $from_name);
+                        Tools::sendMailLog(
+                            EmailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
+                            trim($mail),
+                            null,
+                            "Neuer Antrag",
+                            $mailText,
+                            $motion->consultation->site->getBehaviorClass()->getMailFromName()
+                        );
                     }
                 }
             }
 
-            if ($antrag->status == Antrag::$STATUS_EINGEREICHT_GEPRUEFT) {
-                $benachrichtigt = array();
-                foreach ($antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) {
-                    if ($abo->antraege && !in_array($abo->person_id, $benachrichtigt)) {
-                        $abo->person->benachrichtigenAntrag($antrag);
-                        $benachrichtigt[] = $abo->person_id;
+            if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
+                $notified = [];
+                foreach ($motion->consultation->subscriptions as $sub) {
+                    if ($sub->motions && !in_array($sub->userId, $notified)) {
+                        $sub->user->notifyMotion($motion);
+                        $notified[] = $sub->userId;
                     }
                 }
             }
@@ -567,7 +577,7 @@ class MotionController extends Base
 
         $form = new MotionEditForm($this->consultation, $motion);
 
-        if (isset($_POST['create'])) {
+        if (isset($_POST['save'])) {
             $form->setAttributes($_POST);
             try {
                 $form->saveMotion($motion);
@@ -623,7 +633,7 @@ class MotionController extends Base
             return '';
         }
 
-        if (isset($_POST['create'])) {
+        if (isset($_POST['save'])) {
             $form->setAttributes($_POST);
             try {
                 $motion  = $form->createMotion();

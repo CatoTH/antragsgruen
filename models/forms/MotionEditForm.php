@@ -148,8 +148,78 @@ class MotionEditForm extends \yii\base\Model
      * @param Motion $motion
      * @throws FormError
      */
-    function saveMotion(Motion $motion)
+    public function saveMotion(Motion $motion)
     {
-        // @TODO
+        if (!$this->consultation->getMotionPolicy()->checkMotionSubmit()) {
+            throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
+        }
+
+        $errors = [];
+
+        /** @var MotionSection[] $sections */
+        $sections = [];
+        foreach ($this->consultation->motionSections as $sectionType) {
+            if (!isset($this->texts[$sectionType->id])) {
+                $errors[] = "Es fehlt: " . $sectionType->title;
+            } else {
+                $section            = new MotionSection();
+                $section->sectionId = $sectionType->id;
+                $section->data      = $this->texts[$sectionType->id];
+                $sections[]         = $section;
+
+                if (!$section->checkLength()) {
+                    $errors[] = str_replace('%max%', $sectionType->maxLen, 'Maximum length of %max% exceeded');
+                }
+            }
+        }
+
+        $foundType = false;
+        foreach ($this->consultation->motionTypes as $type) {
+            if ($type->id == $this->type) {
+                $foundType = true;
+            }
+        }
+        if (!$foundType) {
+            $errors[] = 'Motion Type not found';
+        }
+
+        $this->consultation->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
+
+        if (count($errors) > 0) {
+            throw new FormError(implode("\n", $errors));
+        }
+
+        $motion->title          = $this->title;
+        if ($motion->save()) {
+
+            // Supporters
+            foreach ($motion->motionSupporters as $supp) {
+                $supp->delete();
+            }
+            $this->consultation->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
+
+            // Tags
+            foreach ($motion->tags as $tag) {
+                $motion->unlink('tags', $tag);
+            }
+            foreach ($this->tags as $tagId) {
+                /** @var ConsultationSettingsTag $tag */
+                $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $this->consultation->id]);
+                if ($tag) {
+                    $motion->link('tags', $tag);
+                }
+            }
+
+            // Sections
+            foreach ($motion->sections as $section) {
+                $section->delete();
+            }
+            foreach ($sections as $section) {
+                $section->motionId = $motion->id;
+                $section->save();
+            }
+        } else {
+            throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
+        }
     }
 }

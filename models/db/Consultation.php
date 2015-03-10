@@ -316,4 +316,34 @@ class Consultation extends ActiveRecord
     {
         return $this->getInvisibleMotionStati();
     }
+
+    /**
+     * @param int $motionTypeId
+     * @return string
+     */
+    public function getNextAvailableStatusString($motionTypeId)
+    {
+        $max_rev    = 0;
+        /** @var ConsultationSettingsMotionType $motionType */
+        $motionType = null;
+        foreach ($this->motionTypes as $t) {
+            if ($t->id == $motionTypeId) {
+                $motionType = $t;
+            }
+        }
+        $prefix = $motionType->motionPrefix;
+        if ($prefix == '') {
+            $prefix = 'A';
+        }
+        foreach ($this->motions as $motion) {
+            if ($motion->status != Motion::STATUS_DELETED) {
+                $revs  = substr($motion->titlePrefix, mb_strlen($prefix));
+                $revnr = IntVal($revs);
+                if ($revnr > $max_rev) {
+                    $max_rev = $revnr;
+                }
+            }
+        }
+        return $prefix . ($max_rev + 1);
+    }
 }

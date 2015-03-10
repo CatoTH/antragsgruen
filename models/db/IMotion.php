@@ -16,7 +16,7 @@ abstract class IMotion extends ActiveRecord
     const STATUS_DECLINED             = 5;
     const STATUS_MODIFIED_ACCEPTED    = 6;
     const STATUS_MODIFIED             = 7;
-    const STATUS_ADPTED               = 8;
+    const STATUS_ADAPTED              = 8;
     const STATUS_COMPLETED            = 9;
     const STATUS_REFERRED             = 10;
     const STATUS_VOTE                 = 11;

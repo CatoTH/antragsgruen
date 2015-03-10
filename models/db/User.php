@@ -377,7 +377,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @param Motion $motion
      */
-    public function benachrichtigenAntrag(Motion $motion)
+    public function notifyMotion(Motion $motion)
     {
         $subject = "[Antragsgrün] Neuer Antrag: " . $motion->getNameWithPrefix();
         $link    = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
@@ -390,7 +390,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @param Amendment $amendment
      */
-    public function benachrichtigenAenderungsantrag(Amendment $amendment)
+    public function notifyAmendment(Amendment $amendment)
     {
         $subject  = "[Antragsgrün] Neuer Änderungsantrag zu " . $amendment->motion->getNameWithPrefix();
         $motionId = $amendment->motion->id;

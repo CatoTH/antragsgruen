@@ -10,7 +10,6 @@
  * @var bool $jsProtection
  * @var bool $forceTag
  */
-use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationSettingsTag;
 use yii\helpers\Html;
@@ -118,7 +117,7 @@ foreach ($consultation->motionSections as $section) {
 $initiatorClass = $consultation->getMotionInitiatorFormClass();
 echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $this->context);
 
-echo '<div class="submitHolder"><button type="submit" name="create" class="btn btn-primary">';
+echo '<div class="submitHolder"><button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-ok"></span> Weiter';
 echo '</button></div>';
 
