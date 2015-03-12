@@ -156,11 +156,12 @@ class Person extends GxActiveRecord
 	/**
 	 * @return string
 	 */
-	public static function createPassword() {
-		$chars =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		$max = strlen($chars) - 1;
-		$pw = "";
-		for ($i=0; $i < 8; $i++) $pw .= $chars[rand(0, $max)];
+	public static function createPassword()
+	{
+		$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$max   = strlen($chars) - 1;
+		$pw    = "";
+		for ($i = 0; $i < 8; $i++) $pw .= $chars[rand(0, $max)];
 		return $pw;
 	}
 
@@ -168,8 +169,9 @@ class Person extends GxActiveRecord
 	 * @param string $date
 	 * @return string
 	 */
-	public function createEmailBestaetigungsCode($date = "") {
-		if ($date == "") $date=date("Ymd");
+	public function createEmailBestaetigungsCode($date = "")
+	{
+		if ($date == "") $date = date("Ymd");
 		$code = $this->id . "-" . substr(md5($this->id . $date . SEED_KEY), 0, 8);
 		return $code;
 	}
@@ -178,51 +180,57 @@ class Person extends GxActiveRecord
 	 * @param string $code
 	 * @return bool
 	 */
-	public function checkEmailBestaetigungsCode($code) {
+	public function checkEmailBestaetigungsCode($code)
+	{
 		if ($code == $this->createEmailBestaetigungsCode()) return true;
-		if ($code == $this->createEmailBestaetigungsCode(date("Ymd", time() - 24*3600))) return true;
-		if ($code == $this->createEmailBestaetigungsCode(date("Ymd", time() - 2*24*3600))) return true;
+		if ($code == $this->createEmailBestaetigungsCode(date("Ymd", time() - 24 * 3600))) return true;
+		if ($code == $this->createEmailBestaetigungsCode(date("Ymd", time() - 2 * 24 * 3600))) return true;
 		return false;
 	}
 
 	/**
-	 * @param Veranstaltungsreihe $veranstaltungsreihe
+	 * @param Veranstaltung $veranstaltung
 	 * @param string $betreff
 	 * @param string $text
 	 */
-	public function benachrichtigen($veranstaltungsreihe, $betreff, $text) {
+	public function benachrichtigen($veranstaltung, $betreff, $text)
+	{
 		if ($this->email == "" || !$this->email_bestaetigt) return;
-		$abbestellen_url = yii::app()->getBaseUrl(true) . yii::app()->createUrl("veranstaltung/benachrichtigungenAbmelden", array("veranstaltungsreihe_id" => $veranstaltungsreihe->subdomain, "code" => $this->getBenachrichtigungAbmeldenCode()));
-		$gruss = "Hallo " . $this->name . ",\n\n";
-		$sig = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\nFalls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $abbestellen_url;
-		AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_USER, $this->email, $this->id, $betreff, $gruss . $text . $sig);
+		$abbestellen_url = yii::app()->getBaseUrl(true) . yii::app()->createUrl("veranstaltung/benachrichtigungenAbmelden", array("veranstaltungsreihe_id" => $veranstaltung->veranstaltungsreihe->subdomain, "code" => $this->getBenachrichtigungAbmeldenCode()));
+		$gruss           = "Hallo " . $this->name . ",\n\n";
+		$from_name       = veranstaltungsspezifisch_email_from_name($veranstaltung);
+		$sig             = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\nFalls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $abbestellen_url;
+		AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_USER, $this->email, $this->id, $betreff, $gruss . $text . $sig, $from_name);
 	}
 
 	/**
 	 * @param Antrag $antrag
 	 */
-	public function benachrichtigenAntrag($antrag) {
+	public function benachrichtigenAntrag($antrag)
+	{
 		$betreff = "[Antragsgrün] Neuer Antrag: " . $antrag->nameMitRev();
-		$text = "Es wurde ein neuer Antrag eingereicht:\nAnlass: ". $antrag->veranstaltung->name . "\nName: " . $antrag->nameMitRev() . "\nLink: " . $antrag->getLink(true);
-		$this->benachrichtigen($antrag->veranstaltung->veranstaltungsreihe, $betreff, $text);
+		$text    = "Es wurde ein neuer Antrag eingereicht:\nAnlass: " . $antrag->veranstaltung->name . "\nName: " . $antrag->nameMitRev() . "\nLink: " . $antrag->getLink(true);
+		$this->benachrichtigen($antrag->veranstaltung, $betreff, $text);
 	}
 
 	/**
 	 * @param Aenderungsantrag $aenderungsantrag
 	 */
-	public function benachrichtigenAenderungsantrag($aenderungsantrag) {
+	public function benachrichtigenAenderungsantrag($aenderungsantrag)
+	{
 		$betreff = "[Antragsgrün] Neuer Änderungsantrag zu " . $aenderungsantrag->antrag->nameMitRev();
-		$text = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: ". $aenderungsantrag->antrag->veranstaltung->name . "\nAntrag: " . $aenderungsantrag->antrag->nameMitRev() . "\nLink: " . $aenderungsantrag->getLink(true);
-		$this->benachrichtigen($aenderungsantrag->antrag->veranstaltung->veranstaltungsreihe, $betreff, $text);
+		$text    = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: " . $aenderungsantrag->antrag->veranstaltung->name . "\nAntrag: " . $aenderungsantrag->antrag->nameMitRev() . "\nLink: " . $aenderungsantrag->getLink(true);
+		$this->benachrichtigen($aenderungsantrag->antrag->veranstaltung, $betreff, $text);
 	}
 
 	/**
 	 * @param IKommentar $kommentar
 	 */
-	public function benachrichtigenKommentar($kommentar) {
+	public function benachrichtigenKommentar($kommentar)
+	{
 		$betreff = "[Antragsgrün] Neuer Kommentar zu: " . $kommentar->getAntragName();
-		$text = "Es wurde ein neuer Kommentar zu " . $kommentar->getAntragName() . " geschrieben:\n" . $kommentar->getLink(true);
-		$this->benachrichtigen($kommentar->getVeranstaltung()->veranstaltungsreihe, $betreff, $text);
+		$text    = "Es wurde ein neuer Kommentar zu " . $kommentar->getAntragName() . " geschrieben:\n" . $kommentar->getLink(true);
+		$this->benachrichtigen($kommentar->getVeranstaltung(), $betreff, $text);
 	}
 
 	/**
@@ -237,21 +245,23 @@ class Person extends GxActiveRecord
 	/**
 	 * @return string
 	 */
-	public function getNameMitOrga() {
+	public function getNameMitOrga()
+	{
 		$name = $this->name;
-		if ($this->organisation != "") $name .= " (" . $this->organisation . ")";
+		if ($this->organisation != "") $name .= " (" . trim($this->organisation, " \t\n\r\0\x0B()") . ")";
 		return $name;
 	}
 
-    /**
-     * @param string $username
-     * @return Person|null
-     */
-    public static function getWurzelwerkler($username) {
-        $user = Person::model()->findByAttributes(array("auth" => "openid:https://service.gruene.de/openid/" . $username));
-        if ($user) return $user;
-        else return null;
-    }
+	/**
+	 * @param string $username
+	 * @return Person|null
+	 */
+	public static function getWurzelwerkler($username)
+	{
+		$user = Person::model()->findByAttributes(array("auth" => "openid:https://service.gruene.de/openid/" . $username));
+		if ($user) return $user;
+		else return null;
+	}
 
 	/**
 	 * @return bool

@@ -245,6 +245,40 @@ a {
     text-transform: uppercase;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     margin: -1px; }
+  .magenta .well h1 {
+    margin: 0;
+    color: #fff;
+    background: #e2007a;
+    background: -moz-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -webkit-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -o-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -ms-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    padding: 5px 20px 5px;
+    font-family: "Open Sans";
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 18px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    margin: -1px; }
+  .magenta .well h2, .magenta .well h3, .magenta .well .nav-header {
+    margin: 0;
+    color: #fff;
+    background: #e2007a;
+    background: -moz-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -webkit-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -o-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: -ms-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    background: linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
+    padding: 5px 20px 5px;
+    font-family: "Open Sans";
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 18px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    margin: -1px; }
   .well .content {
     padding: 15px 20px 30px; }
 
@@ -437,6 +471,8 @@ a {
   font-size: 13px; }
   .antrags_text_holder.kleine_schrift {
     font-size: 12px; }
+  .antrags_text_holder .ae_absatz_header {
+    text-decoration: underline; }
   .antrags_text_holder .text li {
     margin: 10px; }
   .antrags_text_holder .absatz_ueberspringen {
@@ -570,7 +606,9 @@ a {
   .kommentarform .row .row textarea {
     width: 300px; }
   .kommentarform .row textarea {
-    height: 100px; }
+    height: 100px;
+    margin-left: 20px;
+    min-width: 400px; }
 .kommentarform .submitrow {
   margin-left: 160px;
   width: 320px;
@@ -638,6 +676,16 @@ a {
     margin: 0 0 5px 0;
     text-transform: none;
     padding: 0; }
+  .magenta .kommentarform h3 {
+    background: none;
+    color: #e2007a;
+    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 18px;
+    margin: 0 0 5px 0;
+    text-transform: none;
+    padding: 0; }
   .kommentarform .datum {
     color: #B3B4B4;
     float: right;
@@ -690,8 +738,11 @@ fieldset.antragstellerIn label.radio {
 #UnterstuetzerInnen .unterstuetzerInnen_adder {
   text-align: center; }
 
-.policy_antragstellerIn_orga_5 #UnterstuetzerInnen input[type=text] {
+.policy_antragstellerIn_orga_5 #UnterstuetzerInnen input[type=text], .policy_antragstellerIn_orga_19_fulltext #UnterstuetzerInnen input[type=text] {
   display: inline-block; }
+
+#antrag_stellen_form .form .radio {
+  min-width: 150px; }
 
 /*
 .controls {
@@ -702,6 +753,9 @@ fieldset.antragstellerIn label.radio {
   display: inline-block;
   width: 220px;
   vertical-align: top; }
+  #veranstaltung-form label.block, #person-form label.block, #antrag-kommentar-form label.block, #aenderungsantrag-kommentar-form label.block, #texte-form label.block {
+    display: block;
+    width: auto; }
 
 .search-form label {
   display: inline-block;
@@ -724,6 +778,8 @@ fieldset.antragstellerIn label.radio {
 #antrag-form input[type=text], #antrag-form select, #antrag-form textarea, #aenderungsantrag-form input[type=text], #aenderungsantrag-form select, #aenderungsantrag-form textarea {
   margin-bottom: 0;
   margin-top: 10px; }
+#antrag-form #Antrag_notiz_intern, #antrag-form #Aenderungsantrag_notiz_intern, #aenderungsantrag-form #Antrag_notiz_intern, #aenderungsantrag-form #Aenderungsantrag_notiz_intern {
+  width: 427px; }
 
 .form-actions {
   background: #f6f6f6;
@@ -983,6 +1039,51 @@ ul.funktionen {
   .footer_bar .navbar-inner {
     text-align: left; }
 
+.bdk_antrags_liste {
+  padding: 25px;
+  font-family: "Open Sans", verdana, sans-serif;
+  font-size: 14px; }
+  .bdk_antrags_liste table {
+    width: 100%; }
+  .bdk_antrags_liste th {
+    border-bottom: solid 1px #afcb08;
+    font-size: 0.80em;
+    line-height: 2.5em;
+    font-weight: 600;
+    font-family: "Open Sans", verdana, sans-serif; }
+  .bdk_antrags_liste td {
+    font-family: "Open Sans", verdana, sans-serif;
+    vertical-align: top;
+    padding: 0.75em 0em 0.75em 0em; }
+  .bdk_antrags_liste tr.antrag {
+    border-top: solid 1px #afcb08; }
+    .bdk_antrags_liste tr.antrag:first-child {
+      border-top: none; }
+  .bdk_antrags_liste tr.aenderungsantrag .titel .pdflink {
+    font-weight: 400; }
+  .bdk_antrags_liste tr.aenderungsantrag .titel .titellink {
+    font-weight: 400; }
+  .bdk_antrags_liste .nummer {
+    width: 20%; }
+  .bdk_antrags_liste .titel {
+    width: 45%; }
+    .bdk_antrags_liste .titel .pdflink {
+      font-weight: 600;
+      font-size: 0.8em;
+      float: right;
+      margin-right: 20px; }
+    .bdk_antrags_liste .titel .titellink {
+      font-weight: 600; }
+      .bdk_antrags_liste .titel .titellink a:link, .bdk_antrags_liste .titel .titellink a:visited {
+        color: black; }
+  .bdk_antrags_liste .antragstellerIn {
+    width: 35%; }
+  .bdk_antrags_liste .ungeprueft .titel .pdflink {
+    display: none; }
+  .bdk_antrags_liste .ungeprueft .titel .titellink a:link, .bdk_antrags_liste .ungeprueft .titel .titellink a:visited {
+    font-weight: 400;
+    color: gray; }
+
 .clear {
   clear: both; }
 
@@ -1004,6 +1105,10 @@ ul.funktionen {
 .antragsdaten th {
   text-align: left;
   padding-right: 10px; }
+.antragsdaten .ungeprueft {
+  color: red; }
+.antragsdaten .geprueft {
+  color: green; }
 
 table.view {
   border: dotted 1px gray;
@@ -1037,7 +1142,7 @@ ins {
 .form input[type=text], .form label.legend {
   display: block; }
 .form .radio {
-  min-width: 140px; }
+  min-width: 185px; }
 .form label {
   display: inline-block; }
 
@@ -1243,6 +1348,8 @@ ins {
 
   .kommentarform {
     padding: 12px 0 25px; }
+    .kommentarform .row textarea {
+      width: auto; }
 
   .form-horizontal .control-label {
     float: none;

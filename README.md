@@ -55,7 +55,7 @@ Es gibt je einen RSS-Feed über neue Anträge zu einer Veranstaltung, neue Ände
 
 [TODO] Es wird einen Feed pro Antrag geben, in dem neue Änderungsanträge und Kommentare zu dem betreffenden Antrag gelistet werden.
 
-Demo
+Produktivversion
 ----
 Hier läuft die Produktivversion von Antragsgrün: https://www.antragsgruen.de/
 
@@ -65,20 +65,24 @@ Hier läuft die Produktivversion von Antragsgrün: https://www.antragsgruen.de/
 Installation
 ------------
 
-Empfohlene PHP-Module:
-- Intl
-
 Benötigte PHP-Module:
 - mcrypt
 - curl
+- zip (für OpenOffice-Export)
+- Intl
+- dom (für OpenOffice-Export)
 
 Benötigte PHP-Einstellungen:
 - short_open_tag = On
 
+Webserver-Konfiguration:
+- Apache: mod_rewrite muss aktiv sein
+- nginx: [Beispiel-Konfigurationsdatei](docs/nginx.sample.conf)
+
 Datenbank anlegen:
 - Eine Datenbank u. Benutzer für Antragsgrün anlegen; Antragsgrün braucht mindestens Rechte für SELECT/INSERT/UPDATE/DELETE
-- cat docs/schema.sql | mysql -u [benutzername] -p [datenbankname] -h localhost
-- cat docs/init-data.sql | mysql -u [benutzername] -p [datenbankname] -h localhost
+- cat docs/schema.sql | mysql -u [benutzername] -p -h localhost -D [datenbankname]
+- cat docs/init-data.sql | mysql -u [benutzername] -p -h localhost -D [datenbankname]
 
 Konfigurationsdatei erstellen:
 - cp protected/config/main.template.php protected/config/main.php
@@ -89,9 +93,13 @@ Konfigurationsdatei erstellen:
 -- 'db' (Mitte): Die Datenbank-Konfiguration
 -- 'params' (Ende): Diverse Parameter der Installation
 
-Berechtigungen setzen:
+Berechtigungen setzen (Linux):
 - chown www-data:www-data protected/runtime
 - chown www-data:www-data html/assets
+
+Berechtigungen setzen (MacOS):
+- chown _www:_www protected/runtime
+- chown _www:_www html/assets
 
 Abhängigkeiten installieren:
 - Zuerst [Composer](https://getcomposer.org/doc/00-intro.md) installieren
@@ -103,6 +111,14 @@ Es ist eine sehr simpel gehaltene Veranstaltung voreingestellt und ein Admin-Nut
 - Passwort: "admin" (ohne Anführungszeichen)
 
 
+Tipps für den Betrieb:
+----------------------
+
+Ändern des Passworts eines Accounts von der Kommandozeile aus:
+``
+cd protected/
+./yiic setze_passwort "email@account.de" "neues_passwort"
+``
 
 
 Kontakt:

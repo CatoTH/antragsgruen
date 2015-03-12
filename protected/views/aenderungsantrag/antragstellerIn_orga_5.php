@@ -18,7 +18,7 @@ if ($mode == "neu") {
 		<h3><?= $sprache->get("AntragstellerIn") ?></h3>
 		<br>
 		<?php
-		echo $veranstaltung->getPolicyAenderungsantraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
+		echo $veranstaltung->getPolicyAenderungsantraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn, "Name<br>(oder Gremium, LAG...)", "Kreisverband");
 		?>
 
 		<div class="control-group" id="Person_typ_chooser">

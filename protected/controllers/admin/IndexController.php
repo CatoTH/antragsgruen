@@ -34,14 +34,17 @@ class IndexController extends AntragsgruenController
 		if (AntiXSS::isTokenSet("eintragen")) {
 			$text = $_REQUEST["email_text"];
 
-			$zeilen            = explode("\n", $_REQUEST["email_adressen"]);
+			$zeilen_email      = explode("\n", $_REQUEST["email_adressen"]);
+			$zeilen_namen      = explode("\n", $_REQUEST["namen"]);
 			$email_invalid     = array();
 			$emails_verschickt = array();
 			$emails_schonda    = array();
 
-			foreach ($zeilen as $zeile) {
-				if (trim($zeile) == "") continue;
-				$email = trim($zeile);
+			if (count($zeilen_email) == count($zeilen_namen)) for ($zeile = 0; $zeile < count($zeilen_email); $zeile++) {
+				if (trim($zeilen_email[$zeile]) == "") continue;
+				$email = trim($zeilen_email[$zeile]);
+				$name = trim($zeilen_namen[$zeile]);
+
 				$valid = preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/siu", $email);
 				if (!$valid) $email_invalid[] = $email;
 				else {
@@ -54,22 +57,22 @@ class IndexController extends AntragsgruenController
 					$password = Person::createPassword();
 
 					$person                                = new Person();
-					$person->auth                          = "ns_admin:" . $email;
-					$person->name                          = $email;
+					$person->auth                          = "ns_admin:" . $this->veranstaltungsreihe->id . ":" . $email;
+					$person->name                          = $name;
 					$person->email                         = $email;
-					$person->email_bestaetigt              = 0;
+					$person->email_bestaetigt              = 1;
 					$person->angelegt_datum                = date("Y-m-d H:i:s");
 					$person->pwd_enc                       = Person::create_hash($password);
 					$person->status                        = Person::$STATUS_CONFIRMED;
 					$person->typ                           = Person::$TYP_PERSON;
 					$person->veranstaltungsreihe_namespace = $this->veranstaltungsreihe->id;
-					$person->admin                         = 0;
 					if ($person->save()) {
 						$link      = yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/index");
 						$mail_text = str_replace(array("%EMAIL%", "%LINK%"), array($email, $link), $text);
 						$person_id = null;
 
-						AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_NAMESPACED_ACCOUNT_ANGELEGT, $email, $person_id, "Antragsgrün-Zugang", $mail_text, null, array(
+						$from_name = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
+						AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_NAMESPACED_ACCOUNT_ANGELEGT, $email, $person_id, "Antragsgrün-Zugang", $mail_text, $from_name, null, array(
 							"%PASSWORT%" => $password
 						));
 
@@ -123,7 +126,7 @@ class IndexController extends AntragsgruenController
 		$this->render("ae_pdf_list", array("aes" => $aenderungsantraege));
 	}
 
-	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	public function actionAeOdsList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false, $antraege_separat = false, $zeilennummer_separat = false)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
@@ -134,38 +137,67 @@ class IndexController extends AntragsgruenController
 		$antrs           = array();
 		foreach ($antraege_sorted as $gruppe) foreach ($gruppe as $antr) {
 			/** @var Antrag $antr */
-			/** @var Aenderungsantrag[] $aes */
 
-			//if (!in_array($antr->id, array(258, 86))) continue; // @TODO
-			$aes = array();
-			foreach ($antr->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
-
-			usort($aes, function ($ae1, $ae2) {
-				/** @var Aenderungsantrag $ae1 */
-				/** @var Aenderungsantrag $ae2 */
-				$first1 = $ae1->getFirstDiffLine();
-				$first2 = $ae2->getFirstDiffLine();
-
-				if ($first1 < $first2) return -1;
-				if ($first1 > $first2) return 1;
-
-				$x1 = explode("-", $ae1->revision_name);
-				$x2 = explode("-", $ae2->revision_name);
-				if (count($x1) == 3 && count($x2) == 3) {
-					if ($x1[2] < $x2[2]) return -1;
-					if ($x1[2] > $x2[2]) return 1;
-					return 0;
-				} else {
-					return strcasecmp($ae1->revision_name, $ae2->revision_name);
-				}
-			});
 			$antrs[] = array(
 				"antrag" => $antr,
-				"aes"    => $aes
+				"aes"    => $antr->aenderungsantraege
 			);
 		}
 
-		$this->renderPartial("ae_excel_list", array("antraege" => $antrs));
+		$this->renderPartial("ae_ods_list", array(
+			"antraege"                  => $antrs,
+			"text_begruendung_zusammen" => $text_begruendung_zusammen,
+			"antraege_separat"          => $antraege_separat,
+			"zeilennummer_separat"      => $zeilennummer_separat
+		));
+	}
+
+	public function actionAeExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false, $antraege_separat = false, $zeilennummer_separat = false)
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+
+		ini_set('memory_limit', '256M');
+
+		$antraege_sorted = $this->veranstaltung->antraegeSortiert();
+		$antrs           = array();
+		foreach ($antraege_sorted as $gruppe) foreach ($gruppe as $antr) {
+			/** @var Antrag $antr */
+
+			$antrs[] = array(
+				"antrag" => $antr,
+				"aes"    => $antr->aenderungsantraege
+			);
+		}
+
+		$this->renderPartial("ae_excel_list", array(
+			"antraege"                  => $antrs,
+			"text_begruendung_zusammen" => $text_begruendung_zusammen,
+			"antraege_separat"          => $antraege_separat,
+			"zeilennummer_separat"      => $zeilennummer_separat
+		));
+	}
+
+	public function actionAntragExcelList($veranstaltungsreihe_id = "", $veranstaltung_id = "", $text_begruendung_zusammen = false)
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+
+		ini_set('memory_limit', '256M');
+
+		$antraege_sorted = $this->veranstaltung->antraegeSortiert();
+		$antrs           = array();
+		foreach ($antraege_sorted as $gruppe) foreach ($gruppe as $antr) {
+			/** @var Antrag $antr */
+			$antrs[] = array(
+				"antrag" => $antr,
+			);
+		}
+
+		$this->renderPartial("antrag_excel_list", array(
+			"antraege"                  => $antrs,
+			"text_begruendung_zusammen" => $text_begruendung_zusammen
+		));
 	}
 
 	public function actionReiheAdmins($veranstaltungsreihe_id = "")
@@ -263,6 +295,25 @@ class IndexController extends AntragsgruenController
 			"del_url"     => $this->createUrl("/admin/index/reiheVeranstaltungen", array(AntiXSS::createToken("remove") => "REMOVEID")),
 			"add_url"     => $this->createUrl("/admin/index/reiheVeranstaltungen"),
 			"set_std_url" => $this->createUrl("/admin/index/reiheVeranstaltungen", array(AntiXSS::createToken("set_std") => "STDID")),
+		));
+	}
+
+	public function actionFullTextExport($veranstaltungsreihe_id = "", $veranstaltung_id = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
+		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
+
+		$antraege_sorted = $this->veranstaltung->antraegeSortiert();
+		$antraege        = array();
+		$aes             = array();
+		foreach ($antraege_sorted as $gruppe) foreach ($gruppe as $antr) {
+			$antraege[] = $antr;
+			foreach ($antr->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
+		}
+
+		$this->renderPartial('full_text_export', array(
+			"antraege"           => $antraege,
+			"aenderungsantraege" => $aes,
 		));
 	}
 

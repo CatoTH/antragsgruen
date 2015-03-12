@@ -24,14 +24,6 @@ $cs->registerCssFile($assets_base . '/css/antraege-print.css', 'print');
 $cs->registerScriptFile($assets_base . '/js/modernizr.js');
 $cs->registerScriptFile($assets_base . '/js/antraege.js', CClientScript::POS_END);
 
-/*
-$cs->scriptMap=array(
-'jquery.min.js'=>'/js/all.min.js',
-'modernizr.js'=>'/js/all.min.js',
-'antraege.js'=>'/js/all.min.js',
-);
-*/
-
 ?><!DOCTYPE HTML>
 <html lang="de">
 <head>
@@ -42,6 +34,9 @@ $cs->scriptMap=array(
 	<?php
 	if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->getEinstellungen()->fb_logo_url != "") {
 		echo '<link rel="image_src" href="' . CHtml::encode($this->veranstaltung->getEinstellungen()->fb_logo_url) . '">';
+	}
+	if ($this->robots_noindex) {
+		echo '<meta name="robots" content="noindex, nofollow">' . "\n";
 	}
 	?>
 	<!--[if lt IE 9]>
@@ -64,6 +59,11 @@ $cs->scriptMap=array(
 	<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
 	<meta name="msapplication-TileColor" content="#e6e6e6">
 	<meta name="msapplication-TileImage" content="/mstile-144x144.png">
+	<?php
+	if ($this->veranstaltung) foreach (veranstaltungsspezifisch_css_files($this->veranstaltung) as $css_file) {
+		echo '<link rel="stylesheet" href="' . CHtml::encode($css_file) . '">' . "\n";
+	}
+	?>
 </head>
 
 <body <?php if (count($row_classes) > 0) echo "class='" . implode(" ", $row_classes) . "'"; ?>>
@@ -117,7 +117,6 @@ $cs->scriptMap=array(
 		}
 		?></a>
 
-	<!-- mainmenu -->
 	<?php if (isset($this->breadcrumbs)): ?>
 		<?php
 		$breadcrumbs = array();
@@ -128,11 +127,10 @@ $cs->scriptMap=array(
 			'links'    => $breadcrumbs,
 		));
 		if (count($breadcrumbs) == 0) echo "<br><br>";
-		?><!-- breadcrumbs -->
+		?>
 	<?php endif ?>
 
 	<?php
-	// $this->widget('bootstrap.widgets.TbAlert');
 	/** @var string $content */
 	echo $content;
 
@@ -142,7 +140,7 @@ $cs->scriptMap=array(
 
 	<?php
 	$impressums_link = $this->veranstaltung ? $this->createUrl("veranstaltung/impressum") : $this->createUrl("infos/impressum");
-	$version = CHtml::encode(Yii::app()->params["antragsgruen_version"]);
+	$version = CHtml::encode(ANTRAGSGRUEN_VERSION);
 	$this->widget('bootstrap.widgets.TbNavbar', array(
 		'htmlOptions' => array(
 			'class' => 'footer_bar',
@@ -152,15 +150,10 @@ $cs->scriptMap=array(
 		'collapse'    => false,
 		'items'       => array(
 			'<a href="' . CHtml::encode($impressums_link) . '">Impressum</a>',
-			' &nbsp; <small>Antragsgrün-Version: <a href="https://github.com/CatoTH/antragsgruen/blob/master/History.md">' . $version . '</a></small>',
+			' &nbsp; <small>Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>, Version <a href="https://github.com/CatoTH/antragsgruen/blob/master/History.md">' . $version . '</a></small>',
 		),
 	));
 	?>
-
-	<!-- footer -->
-
 </div>
-<!-- page -->
-
 </body>
 </html>

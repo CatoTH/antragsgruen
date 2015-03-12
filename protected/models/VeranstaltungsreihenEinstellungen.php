@@ -7,6 +7,7 @@ class VeranstaltungsreihenEinstellungen {
 	public $rechnung_gestellt = false;
 	public $rechnung_bezahlt = false;
 	public $antrag_neu_nur_namespaced_accounts = false;
+	public $antrag_neu_nur_wurzelwerk = false;
 
 	/** @var int */
 	public $bereit_zu_zahlen = 0;

@@ -7,7 +7,7 @@ Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . '/../../vendor/chris83/yii-
 define("SEED_KEY", "randomkey");
 define("MULTISITE_MODE", false);
 define("IGNORE_PASSWORD_MODE", false);
-
+//define("MANDRILL_API_KEY", "");
 
 if (MULTISITE_MODE) {
 	$dom_plain = "http://antraege-v2.hoessl.eu/";
@@ -16,32 +16,38 @@ if (MULTISITE_MODE) {
 } else {
 	$dom_plain = "";
 	$dom       = "";
-	$domv      = $dom . "<veranstaltung_id:[\w_-]+>/";
+	$domv      = $dom . "<veranstaltung_id:[\w\._-]+>/";
 }
 
-require(dirname(__FILE__) . "/urls.php");
+require(dirname(__FILE__) . "/common.php");
+if (file_exists(dirname(__FILE__) . "/veranstaltungsspezifisch.local.php")) require(dirname(__FILE__) . "/veranstaltungsspezifisch.local.php");
+require(dirname(__FILE__) . "/veranstaltungsspezifisch.std.php");
+
 
 return array(
-	'basePath'   => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
-	'name'       => 'Grüne Anträge',
+	'basePath'       => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
+	'name'           => 'Grüne Anträge',
 
-	'preload'    => array(
+	'preload'        => array(
 		'log',
 	),
 
-	'import'     => array(
+	'import'         => array(
 		'application.models.*',
 		'application.models.forms.*',
 		'application.models.interfaces.*',
 		'application.components.*',
-        'application.controllers.*',
+		'application.controllers.*',
 		'ext.giix-components.*',
 	),
 
-	'modules'    => array(),
+	'onBeginRequest' => create_function('$event', 'return ob_start("ob_gzhandler");'),
+	'onEndRequest'   => create_function('$event', 'return ob_end_flush();'),
+
+	'modules'        => array(),
 
 	// application components
-	'components' => array(
+	'components'     => array(
 		'user'           => array(
 			// enable cookie-based authentication
 			'allowAutoLogin' => true,
@@ -97,12 +103,15 @@ return array(
 		),
 	),
 
-	'params'     => array(
+	'params'         => array(
 		'standardVeranstaltungsreihe' => "default",
 		'pdf_logo'                    => 'LOGO_PFAD',
 		'kontakt_email'               => 'EMAILADRESSE',
-		'mail_from'                   => 'Antragsgrün <EMAILADRESSE>',
+		'mail_from'                   => mb_encode_mimeheader('Antragsgrün') . ' <EMAILADRESSE>',
+		'mail_from_name'              => 'Antragsgrün',
+		'mail_from_email'             => 'EMAILADRESSE',
 		'admin_user_id'               => null,
-		'antragsgruen_version'        => '2.2.0',
+		'odt_default_template'        => __DIR__ . '/../../docs/OpenOffice-Template.odt',
+		'ods_default_template'        => __DIR__ . '/../../docs/OpenOffice-Template.ods',
 	),
 );

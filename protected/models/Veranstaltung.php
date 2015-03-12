@@ -21,6 +21,8 @@
  * @property Person[] $admins
  * @property Texte[] $texte
  * @property Veranstaltungsreihe $veranstaltungsreihe
+ * @property OdtTemplate[] $odt_templates
+ * @property Tag[] $tags
  */
 class Veranstaltung extends GxActiveRecord
 {
@@ -49,9 +51,11 @@ class Veranstaltung extends GxActiveRecord
 
 	public static $TYP_PARTEITAG = 0;
 	public static $TYP_PROGRAMM = 1;
+	public static $TYP_THEMEN_VORSCHLAEGE = 2;
 	public static $TYPEN = array(
 		0 => "Parteitag",
 		1 => "(Wahl-)Programm",
+		2 => "Themen-Vorschläge",
 	);
 
 
@@ -130,6 +134,8 @@ class Veranstaltung extends GxActiveRecord
 		switch ($this->typ) {
 			case Veranstaltung::$TYP_PROGRAMM:
 				return new SpracheProgramm();
+			case Veranstaltung::$TYP_THEMEN_VORSCHLAEGE:
+				return new SpracheThemenbox();
 			default:
 				return new SpracheAntraege();
 		}
@@ -188,7 +194,7 @@ class Veranstaltung extends GxActiveRecord
 	{
 		$max_rev     = 0;
 		$andereantrs = $this->antraege;
-		foreach ($andereantrs as $antr) if ($antr->typ == $antrag_typ) {
+		foreach ($andereantrs as $antr) if ($antr->status != IAntrag::$STATUS_GELOESCHT && $antr->typ == $antrag_typ) {
 			$revs  = substr($antr->revision_name, strlen(Antrag::$TYP_PREFIX[$antr->typ]));
 			$revnr = IntVal($revs);
 			if ($revnr > $max_rev) $max_rev = $revnr;
@@ -196,67 +202,65 @@ class Veranstaltung extends GxActiveRecord
 		return Antrag::$TYP_PREFIX[$antrag_typ] . ($max_rev + 1);
 	}
 
-	/**
+    /**
+     * @return int[]
+     */
+    public function getAntragUnsichtbarStati() {
+        if ($this->getEinstellungen()->freischaltung_antraege_anzeigen) {
+            $unsichtbar_   = IAntrag::$STATI_UNSICHTBAR;
+            $unsichtbar = array();
+            foreach ($unsichtbar_ as $stat) if ($stat != Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $unsichtbar[] = $stat;
+        } else {
+            $unsichtbar   = IAntrag::$STATI_UNSICHTBAR;
+        }
+        return $unsichtbar;
+    }
+
+
+
+    /**
 	 * @return array|array[]
 	 */
 	public function antraegeSortiert()
 	{
 		$antraege        = $this->antraege;
 		$antraege_sorted = array();
-		// $warnung         = false;
 
-		$unsichtbar = IAntrag::$STATI_UNSICHTBAR;
+        $unsichtbar = $this->getAntragUnsichtbarStati();
 		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
 		foreach ($antraege as $ant) if (!in_array($ant->status, $unsichtbar)) {
-			if (!isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]])) $antraege_sorted[Antrag::$TYPEN[$ant->typ]] = array();
+			if (!isset($antraege_sorted[$ant->typ])) $antraege_sorted[$ant->typ] = array();
 			$key = $ant->revision_name;
-			/*
-			if (isset($antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key]) && !$warnung) {
-				$warnung = true;
-				Yii::app()->user->setFlash("error", "Es können nicht alle Anträge angezeigt werden, da mindestens ein Kürzel ($key) mehrfach vergeben ist.");
+
+			if ($this->getEinstellungen()->ae_nummerierung_nach_zeile || veranstaltungsspezifisch_ae_sortierung_zeilennummer($this)) {
+				$ant->aenderungsantraege = Aenderungsantrag::sortiereSichtbareNachZeilennummer($ant->aenderungsantraege);
 			}
-			*/
 
-            if ($this->getEinstellungen()->ae_nummerierung_nach_zeile) {
-                $aes = array();
-                foreach ($ant->aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
-
-                usort($aes, function($ae1, $ae2) {
-                    $x1 = explode("-", $ae1->revision_name);
-                    $x2 = explode("-", $ae2->revision_name);
-                    if (count($x1) == 3 && count($x2) == 3) {
-                        if ($x1[2] < $x2[2]) return -1;
-                        if ($x1[2] > $x2[2]) return 1;
-                        return 0;
-                    } else {
-                        return strcasecmp($ae1->revision_name, $ae2->revision_name);
-                    }
-                });
-                $ant->aenderungsantraege = $aes;
-            }
-
-			$antraege_sorted[Antrag::$TYPEN[$ant->typ]][$key] = $ant;
+			$antraege_sorted[$ant->typ][$key] = $ant;
 		}
 
-		/*if (!in_array($this->url_verzeichnis, array("ltwby13-programm", "btw13-programm"))) */foreach ($antraege_sorted as $key => $val) {
-			uksort($antraege_sorted[$key], function($k1, $k2) {
+        $cmp = veranstaltungsspezifisch_antrag_sort($this);
+        if (!is_callable($cmp)) $cmp = function ($str1, $str2, $num1, $num2) {
+            if ($str1 == $str2) {
+                if ($num1 < $num2) return -1;
+                if ($num1 > $num2) return 1;
+                return 0;
+            } else {
+                if ($str1 < $str2) return -1;
+                if ($str1 > $str2) return 1;
+                return 0;
+            }
+        };
+
+		foreach ($antraege_sorted as $key => $val) {
+			uksort($antraege_sorted[$key], function ($k1, $k2) use ($cmp) {
 				if ($k1 == "" && $k2 == "") return 0;
 				if ($k1 == "") return -1;
 				if ($k2 == "") return 1;
 
-				$cmp = function($str1, $str2, $num1, $num2) {
-					if ($str1 == $str2) {
-						if ($num1 < $num2) return -1;
-						if ($num1 > $num2) return 1;
-						return 0;
-					} else {
-						if ($str1 < $str2) return -1;
-						if ($str1 > $str2) return 1;
-						return 0;
-					}
-				};
-				$k1 = preg_replace("/neu$/siu", "neu1", $k1);
-				$k2 = preg_replace("/neu$/siu", "neu1", $k2);
+
+				$k1  = preg_replace("/neu$/siu", "neu1", $k1);
+				$k2  = preg_replace("/neu$/siu", "neu1", $k2);
 
 				$pat1 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]*)/siu";
 				$pat2 = "/^(?<str1>[^0-9]*)(?<num1>[0-9]+)(?<str2>[^0-9]+)(?<num2>[0-9]+)$/siu";
@@ -284,7 +288,14 @@ class Veranstaltung extends GxActiveRecord
 				}
 			});
 		}
-		return $antraege_sorted;
+
+        $antraege_sorted_by_name = array();
+
+        foreach (Antrag::$TYPEN_SORTED as $typ_id) if (isset($antraege_sorted[$typ_id])) {
+            $antraege_sorted_by_name[Antrag::$TYPEN[$typ_id]] = $antraege_sorted[$typ_id];
+        }
+
+		return $antraege_sorted_by_name;
 	}
 
 	/**
@@ -322,10 +333,35 @@ class Veranstaltung extends GxActiveRecord
 
 	/**
 	 */
-	public function resetLineCache() {
+	public function resetLineCache()
+	{
 		$command = Yii::app()->db->createCommand("UPDATE aenderungsantrag a JOIN antrag b ON a.antrag_id = b.id SET a.aenderung_first_line_cache = -1 WHERE b.veranstaltung_id = " . IntVal($this->id));
 		$command->execute();
 	}
+
+	/**
+	 * @param null|int $antrag_typ
+     * @param bool $text2
+	 * @return int
+	 */
+	public function getAntragMaxLen($antrag_typ = null, $text2 = false) {
+		return veranstaltungsspezifisch_antrag_max_len($this, $antrag_typ, $text2);
+	}
+
+    /**
+     * @return Tag[]
+     */
+    public function getSortedTags() {
+        $tags = $this->tags;
+        usort($tags, function($t1, $t2) {
+            /** @var Tag $t1 */
+            /** @var Tag $t2 */
+            if ($t1->position < $t2->position) return -1;
+            if ($t1->position > $t2->position) return 1;
+            return 0;
+        });
+        return $tags;
+    }
 
 	/**
 	 * @var string $className
@@ -358,7 +394,7 @@ class Veranstaltung extends GxActiveRecord
 			array('name, url_verzeichnis, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, einstellungen', 'required'),
 			array('name', 'length', 'max' => 200),
 			array('name_kurz, url_verzeichnis', 'length', 'max' => 45),
-			array('antragsschluss, admin_email', 'safe'),
+			array('antragsschluss, admin_email, datum_von, datum_bis', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 	}
@@ -366,33 +402,35 @@ class Veranstaltung extends GxActiveRecord
 	public function relations()
 	{
 		return array(
-			'antraege' => array(self::HAS_MANY, 'Antrag', 'veranstaltung_id'),
-			'admins'   => array(self::MANY_MANY, 'Person', 'veranstaltungs_admins(veranstaltung_id, person_id)'),
-			'texte'    => array(self::HAS_MANY, 'Texte', 'veranstaltung_id'),
+			'antraege'            => array(self::HAS_MANY, 'Antrag', 'veranstaltung_id'),
+			'admins'              => array(self::MANY_MANY, 'Person', 'veranstaltungs_admins(veranstaltung_id, person_id)'),
+			'texte'               => array(self::HAS_MANY, 'Texte', 'veranstaltung_id'),
 			'veranstaltungsreihe' => array(self::BELONGS_TO, 'Veranstaltungsreihe', 'veranstaltungsreihe_id'),
+			'odt_templates'       => array(self::HAS_MANY, 'OdtTemplate', 'veranstaltung_id'),
+			'tags'                => array(self::HAS_MANY, 'Tag', 'veranstaltung_id'),
 		);
 	}
 
 	public function attributeLabels()
 	{
 		return array(
-			'id'                               => Yii::t('app', 'ID'),
-			'name'                             => Yii::t('app', 'Name'),
-			'name_kurz'                        => Yii::t('app', 'Name Kurz'),
-			'datum_von'                        => Yii::t('app', 'Datum Von'),
-			'datum_bis'                        => Yii::t('app', 'Datum Bis'),
-			'antragsschluss'                   => Yii::t('app', 'Antragsschluss'),
-			'policy_antraege'                  => Yii::t('app', 'Policy Antraege'),
-			'policy_aenderungsantraege'        => Yii::t('app', 'Policy Aenderungsantraege'),
-			'policy_kommentare'                => Yii::t('app', 'Policy Kommentare'),
-			'policy_unterstuetzen'             => Yii::t('app', 'Policy Unterstützen'),
-			'typ'                              => Yii::t('app', 'Typ'),
-			'admin_email'                      => Yii::t('app', 'E-Mail des Admins'),
-			'url_verzeichnis'                  => Yii::t('app', 'Unterverzeichnis'),
-			'antraege'                         => null,
-			'admins'                           => null,
-			'texte'                            => null,
-			'veranstaltungsreihe'              => Yii::t('app', 'Veranstaltungsreihe'),
+			'id'                        => Yii::t('app', 'ID'),
+			'name'                      => Yii::t('app', 'Name'),
+			'name_kurz'                 => Yii::t('app', 'Name Kurz'),
+			'datum_von'                 => Yii::t('app', 'Datum Von'),
+			'datum_bis'                 => Yii::t('app', 'Datum Bis'),
+			'antragsschluss'            => Yii::t('app', 'Antragsschluss'),
+			'policy_antraege'           => Yii::t('app', 'Policy Antraege'),
+			'policy_aenderungsantraege' => Yii::t('app', 'Policy Aenderungsantraege'),
+			'policy_kommentare'         => Yii::t('app', 'Policy Kommentare'),
+			'policy_unterstuetzen'      => Yii::t('app', 'Policy Unterstützen'),
+			'typ'                       => Yii::t('app', 'Typ'),
+			'admin_email'               => Yii::t('app', 'E-Mail des Admins'),
+			'url_verzeichnis'           => Yii::t('app', 'Unterverzeichnis'),
+			'antraege'                  => null,
+			'admins'                    => null,
+			'texte'                     => null,
+			'veranstaltungsreihe'       => Yii::t('app', 'Veranstaltungsreihe'),
 		);
 	}
 
@@ -401,4 +439,5 @@ class Veranstaltung extends GxActiveRecord
 		Yii::app()->cache->delete("pdf_" . $this->id);
 		return parent::save($runValidation, $attributes);
 	}
+
 }

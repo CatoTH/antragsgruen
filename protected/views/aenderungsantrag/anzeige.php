@@ -41,7 +41,11 @@ $html .= '<li class="zurueck">' . CHtml::link("Zurück zum Antrag", $this->creat
 $this->menus_html[] = $html;
 
 $rows = 10;
-$antragstellerInnen = $aenderungsantrag->getAntragstellerInnen();
+$antragstellerInnen = array();
+foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+	$antragstellerInnen[] = $unt->getNameMitBeschlussdatum(true);
+}
+
 
 if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
 	$ae_kuerzel = $aenderungsantrag->revision_name;
@@ -81,12 +85,19 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 						?></td>
 				</tr>
 				<tr>
-					<th><?php echo(count($antragstellerInnen) > 1 ? "AntragsstellerInnen" : "AntragsstellerIn"); ?>:
-					</th>
+					<th><?php echo(count($antragstellerInnen) > 1 ? "AntragsstellerInnen" : "AntragsstellerIn"); ?>:</th>
 					<td><?php
 						$x = array();
-						foreach ($antragstellerInnen as $a) {
-							$x[] = CHtml::encode($a->getNameMitOrga());
+						foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+							$name= $unt->getNameMitBeschlussdatum(true);
+							if ($aenderungsantrag->antrag->veranstaltung->isAdminCurUser() && ($unt->person->email != "" || $unt->person->telefon != "")) {
+								$name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
+								if ($unt->person->email != "") $name .=  "E-Mail: " . CHtml::encode($unt->person->email);
+								if ($unt->person->email != "" && $unt->person->telefon != "") $name .=  ", ";
+								if ($unt->person->telefon != "") $name .=  "Telefon: " . CHtml::encode($unt->person->telefon);
+								$name .=  ")</small>";
+							}
+							$x[] = $name;
 						}
 						echo implode(", ", $x);
 						?></td>
@@ -95,6 +106,7 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 					<th>Status:</th>
 					<td><?php
 						echo CHtml::encode(IAntrag::$STATI[$aenderungsantrag->status]);
+						if (trim($aenderungsantrag->status_string) != "") echo " <small>(" . CHtml::encode($aenderungsantrag->status_string) . ")</string>";
 						?></td>
 				</tr>
 				<?php if ($aenderungsantrag->datum_beschluss != "") { ?>
@@ -137,7 +149,9 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 		<?php
 		$dummy_komm = new AenderungsantragKommentar();
 
+		$zeit_von = time();
 		$absae = $aenderungsantrag->getAntragstextParagraphs_diff();
+		$diff = time() - $zeit_von;
 
 		foreach ($absae as $i => $abs) if ($abs !== null) {
 			/** @var AenderungsantragAbsatz $abs */
@@ -156,9 +170,9 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 				</ul>
 
 				<div class="absatz_text orig antragabsatz_holder antrags_text_holder_nummern">
-					<div class="text">
-						<?php echo $abs->getDiffHTML(); ?>
-					</div>
+					<?php
+					echo $abs->getDiffHTML();
+					?>
 				</div>
 				<?php
 
@@ -254,7 +268,10 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 		<h3>Begründung</h3>
 
 		<div class="textholder consolidated content">
-			<?php echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung) ?>
+			<?php
+			if ($aenderungsantrag->aenderung_begruendung_html) echo $aenderungsantrag->aenderung_begruendung;
+			else echo HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung);
+			?>
 		</div>
 
 		<br><br>
@@ -279,7 +296,7 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 		$curr_user_id = (Yii::app()->user->isGuest ? 0 : Yii::app()->user->getState("person_id"));
 
 		echo "<strong>UnterstützerInnen:</strong><br>";
-		if (count($unterstuetzerInnen) > 0) {
+		if (count($unterstuetzerInnen) > 1) {
 			echo CHtml::openTag('ul');
 			foreach ($unterstuetzerInnen as $p) {
 				echo CHtml::openTag('li');
@@ -288,7 +305,13 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 				echo CHtml::closeTag('li');
 			}
 			echo CHtml::closeTag('ul');
-		} else echo '<em>keine</em><br>';
+		} elseif (count($unterstuetzerInnen) > 0) {
+			$p = $unterstuetzerInnen[0];
+			if ($p->id == $curr_user_id) echo '<span class="label label-info">Du!</span> ';
+			echo CHtml::encode($p->getNameMitOrga()) . "<br>";
+		} else {
+			echo '<em>keine</em><br>';
+		}
 		echo "<br>";
 
 		if (count($zustimmung_von) > 0) {

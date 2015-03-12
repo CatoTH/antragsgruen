@@ -1,2 +1,5 @@
 composer.lock
 vendor
+.idea
+protected/config/veranstaltungsspezifisch.local.php
+html/veranstaltungsspezifisch

@@ -36,7 +36,7 @@ if ($mode == "neu") {
 		function add_unterstuetzerInnen() {
 			var $u = $("#UnterstuetzerInnen"), str = "";
 			$u.show();
-			for (var i = 0; i < 5; i++) str += '<input type="text" name="UnterstuetzerInnen[]" value="" placeholder="Name" title="Name der UnterstützerInnen"><br>';
+			for (var i = 0; i < 5; i++) str += '<input type="text" name="UnterstuetzerInnen_name[]" value="" placeholder="Name" title="Name der UnterstützerInnen"><br>';
 			$u.find(".controls").append(str);
 			return false;
 		}

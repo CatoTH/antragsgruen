@@ -88,6 +88,7 @@ $app->getClientScript()->registerCssFile($assets_base . '/css/formwizard.css');
 				<?php echo CHtml::activeLabelEx($anlegenformmodel,'subdomain', array('label' => '<strong>Unter folgender Adresse soll es erreichbar sein:</strong>')); ?>
 				<div class="alert alert-error" style="display: none;">Bitte gib eine Subdomain ein.</div>
 				<span class="domain">http://<?php echo CHtml::activeTextField($anlegenformmodel,'subdomain', array('placeholder' => 'Subdomain')) ?>.antragsgruen.de</span>
+				<div style="font-size: 10px;">Für die Subdomain sind nur Buchstaben, Zahlen, "_" und "-" möglich.</div>
 			</div>
 
 			<br><br>

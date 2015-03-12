@@ -6,10 +6,12 @@ class AntragsgruenController extends CController
 	public $menu = array();
 	public $breadcrumbs = array();
 	public $multimenu = null;
+	public $menus_html_presidebar = null;
 	public $menus_html = null;
 	public $breadcrumbs_topname = null;
 	public $text_comments = true;
 	public $shrink_cols = false;
+    public $magenta_layout = false;
 
 	/** @var null|Veranstaltung */
 	public $veranstaltung = null;
@@ -19,6 +21,7 @@ class AntragsgruenController extends CController
 
 
 	private $_assetsBase;
+	protected $robots_noindex = false;
 
 	/**
 	 *
@@ -28,7 +31,13 @@ class AntragsgruenController extends CController
 		if ($this->veranstaltung == null) return;
 		/** @var VeranstaltungsEinstellungen $einstellungen */
 		$einstellungen = $this->veranstaltung->getEinstellungen();
-		if ($einstellungen->wartungs_modus_aktiv && !$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("veranstaltung/wartungsmodus"));
+		if ($einstellungen->wartungs_modus_aktiv && !$this->veranstaltung->isAdminCurUser()) {
+			$this->redirect($this->createUrl("veranstaltung/wartungsmodus"));
+		}
+
+		if (veranstaltungsspezifisch_erzwinge_login($this->veranstaltung) && Yii::app()->user->isGuest) {
+			$this->redirect($this->createUrl("veranstaltung/login"));
+		}
 	}
 
 	/**
@@ -54,7 +63,7 @@ class AntragsgruenController extends CController
 			if (MULTISITE_MODE && !isset($params["veranstaltungsreihe_id"]) && $this->veranstaltungsreihe != null) $params["veranstaltungsreihe_id"] = $this->veranstaltungsreihe->subdomain;
 			if ($route == "veranstaltung/index" && !is_null($this->veranstaltungsreihe) && strtolower($params["veranstaltung_id"]) == strtolower($this->veranstaltungsreihe->aktuelle_veranstaltung->url_verzeichnis)) unset($params["veranstaltung_id"]);
 			if (in_array($route, array(
-				"veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "veranstaltung/login", "veranstaltung/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
+				"veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/anmeldungBestaetigen", "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "veranstaltung/login", "veranstaltung/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
 			))
 			) unset($params["veranstaltung_id"]);
 		}
@@ -79,6 +88,7 @@ class AntragsgruenController extends CController
 			if ($reihe) {
 				$veranstaltung_id = $reihe->aktuelle_veranstaltung->url_verzeichnis;
 			} else {
+				$this->robots_noindex = true;
 				$this->render('error', array(
 					"code"    => 404,
 					"html"    => true,
@@ -100,6 +110,14 @@ class AntragsgruenController extends CController
 
 		if (is_null($this->veranstaltung)) {
 			$this->veranstaltung = Veranstaltung::model()->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
+		}
+		if (is_null($this->veranstaltung)) {
+			$this->robots_noindex = true;
+			$this->render("../veranstaltung/error", array(
+				"code"    => 500,
+				"message" => "Leider existiert die aufgerufene Seite nicht. Falls du der Meinung bist, dass das ein Fehler ist, melde dich bitte per E-Mail (info@antragsgruen.de) bei uns.",
+			));
+			Yii::app()->end(500);
 		}
 
 		if (strtolower($this->veranstaltung->veranstaltungsreihe->subdomain) != strtolower($veranstaltungsreihe_id)) {
@@ -144,13 +162,15 @@ class AntragsgruenController extends CController
 	 * @param string $username
 	 * @return Person[]
 	 */
-	private function performLogin_username_password_std($username) {
+	private function performLogin_username_password_std($username)
+	{
 		/** @var Person[] $users */
 		if (strpos($username, "@")) {
 			$sql_where1 = "auth = 'email:" . addslashes($username) . "'";
 			if ($this->veranstaltungsreihe) {
-				$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
-				$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1 OR $sql_where2");
+				$sql_where2 = "(auth = 'ns_admin:" . IntVal($this->veranstaltungsreihe->id) . ":" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
+				$sql_where3 = "(email = '" . addslashes($username). "' AND auth LIKE 'openid:https://service.gruene.de/%')";
+				$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1 OR $sql_where2 OR $sql_where3");
 			} else {
 				$users = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where1");
 			}
@@ -166,10 +186,11 @@ class AntragsgruenController extends CController
 	 * @param string $username
 	 * @return Person[]
 	 */
-	private function performLogin_username_password_only_namespaced_users($username) {
+	private function performLogin_username_password_only_namespaced_users($username)
+	{
 		/** @var Person[] $users */
 		if (strpos($username, "@")) {
-			$sql_where2 = "(auth = 'ns_admin:" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
+			$sql_where2 = "(auth = 'ns_admin:" . IntVal($this->veranstaltungsreihe->id) . ":" . addslashes($username) . "' AND veranstaltungsreihe_namespace = " . IntVal($this->veranstaltungsreihe->id) . ")";
 			$users      = Person::model()->findAllBySql("SELECT * FROM person WHERE $sql_where2");
 		} else {
 			// @TODO Login über Wurzelwerk-Authentifizierten Account per BenutzerInnenname+Passwort beim Admin der Reihe ermöglichen
@@ -186,6 +207,9 @@ class AntragsgruenController extends CController
 	 */
 	private function performLogin_username_password($success_redirect, $username, $password)
 	{
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
+			throw new Exception("Das Login mit BenutzerInnenname und Passwort ist bei dieser Veranstaltung nicht möglich.");
+		}
 		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
 			$users = $this->performLogin_username_password_only_namespaced_users($username);
 		} else {
@@ -197,16 +221,18 @@ class AntragsgruenController extends CController
 		}
 		$correct_user = null;
 		foreach ($users as $try_user) {
-            if ((defined("IGNORE_PASSWORD_MODE") && IGNORE_PASSWORD_MODE === true) || $try_user->validate_password($password)) {
-                $correct_user = $try_user;
-            }
-        }
-        if ($correct_user) {
+			if ((defined("IGNORE_PASSWORD_MODE") && IGNORE_PASSWORD_MODE === true) || $try_user->validate_password($password)) {
+				$correct_user = $try_user;
+			}
+		}
+		if ($correct_user) {
 			$x = explode(":", $correct_user->auth);
 			switch ($x[0]) {
 				case "email":
-				case "ns_admin":
 					$identity = new AntragUserIdentityPasswd($x[1], $correct_user->auth);
+					break;
+				case "ns_admin":
+					$identity = new AntragUserIdentityPasswd($x[2], $correct_user->auth);
 					break;
 				case "openid":
 					if ($correct_user->istWurzelwerklerIn()) $identity = new AntragUserIdentityPasswd($correct_user->getWurzelwerkName(), $correct_user->auth);
@@ -230,6 +256,62 @@ class AntragsgruenController extends CController
 		die();
 	}
 
+	private function performCreateUser_username_password($success_redirect, $username, $password, $password_confirm, $name)
+	{
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+			throw new Exception("Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.");
+		}
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
+			throw new Exception("Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.");
+		}
+		if (!preg_match("/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/siu", $username)) {
+			throw new Exception("Bitte gib eine gültige E-Mail-Adresse als BenutzerInnenname ein.");
+		}
+		if (strlen($password) < 6) {
+			throw new Exception("Das Passwort muss mindestens sechs Buchstaben lang sein.");
+		}
+		if ($password != $password_confirm) {
+			throw new Exception("Die beiden angegebenen Passwörter stimmen nicht überein.");
+		}
+		if ($name == "") {
+			throw new Exception("Bitte gib deinen Namen ein.");
+		}
+		$auth = "email:" . $username;
+		$p    = Person::model()->findAllByAttributes(array("auth" => $auth));
+		if (count($p) > 0) {
+			throw new Exception("Es existiert bereits ein Zugang mit dieser E-Mail-Adresse.");
+		}
+
+		$person                   = new Person;
+		$person->auth             = "email:" . $username;
+		$person->name             = $name;
+		$person->email            = $username;
+		$person->email_bestaetigt = 0;
+		$person->angelegt_datum   = date("Y-m-d H:i:s");
+		$person->status           = Person::$STATUS_UNCONFIRMED;
+		$person->typ              = Person::$TYP_PERSON;
+		$person->pwd_enc          = Person::create_hash($password);
+
+		if ($person->save()) {
+			$person->refresh();
+			$best_code = $person->createEmailBestaetigungsCode();
+			$link      = Yii::app()->getBaseUrl(true) . $this->createUrl("veranstaltung/anmeldungBestaetigen", array("email" => $username, "code" => $best_code, "veranstaltung_id" => null));
+			$send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n%best_link%\n\n"
+				. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
+				. "Liebe Grüße,\n\tDas Antragsgrün-Team.";
+			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $username, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, null, array(
+				"%code%"      => $best_code,
+				"%best_link%" => $link,
+			));
+			$this->redirect($this->createUrl("veranstaltung/anmeldungBestaetigen", array("email" => $username, "veranstaltung_id" => null)));
+		} else {
+			$msg_err = "Leider ist ein (ungewöhnlicher) Fehler aufgetreten.";
+			$errs    = $person->getErrors();
+			foreach ($errs as $err) foreach ($err as $e) $msg_err .= $e;
+			throw new Exception($msg_err);
+		}
+	}
+
 	/**
 	 * @param OAuthLoginForm $model
 	 * @param array $form_params
@@ -239,6 +321,9 @@ class AntragsgruenController extends CController
 	{
 		$model->attributes = $form_params;
 
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk && $model->wurzelwerk == "") {
+			throw new Exception("Bei dieser Veranstaltung ist kein Login per OpenID möglich.");
+		}
 
 		if (stripos($model->openid_identifier, "yahoo") !== false) {
 			throw new Exception("Leider ist wegen technischen Problemen ein Login mit Yahoo momentan nicht möglich.");
@@ -294,7 +379,7 @@ class AntragsgruenController extends CController
 				yii::app()->getBaseUrl(true) . yii::app()->createUrl("infos/passwort") . "\n\n" .
 				"Außerdem ist auch weiterhin ein Login über deinen Wurzelwerk-Zugang möglich.\n\n" .
 				"Liebe Grüße,\n  Das Antragsgrün-Team";
-			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $user->id, "Dein Antragsgrün-Zugang", $send_text, null, array(
+			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $user->id, "Dein Antragsgrün-Zugang", $send_text, null, null, array(
 				"%passwort%" => $password,
 			));
 		}
@@ -315,7 +400,9 @@ class AntragsgruenController extends CController
 			try {
 				$us = new AntragUserIdentityOAuth($loid);
 				if ($us->authenticate()) {
-					Yii::app()->user->login($us);
+					if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
+						if (strpos($us->getId(), "openid:https://service.gruene.de/openid/") !== 0) throw new Exception("Bei dieser Veranstaltung ist nur ein Login über das Wurzelwerk zulässig.");
+					}
 					/** @var Person $user */
 					$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
 					if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
@@ -327,7 +414,12 @@ class AntragsgruenController extends CController
 					}
 					if (!$user) {
 						$this->performLogin_OAuth_create_user($us);
+						$user = Person::model()->findByAttributes(array("auth" => $us->getId()));
+						if (!$user) {
+							throw new Exception("Leider ist beim Einloggen ein interner Fehler aufgetreten.");
+						}
 					}
+					Yii::app()->user->login($us);
 					Yii::app()->user->setState("person_id", $user->id);
 					Yii::app()->user->setFlash('success', 'Willkommen!');
 					if ($success_redirect == "") $success_redirect = Yii::app()->homeUrl;
@@ -351,6 +443,9 @@ class AntragsgruenController extends CController
 	protected function performLogin_from_email_params($success_redirect, $login)
 	{
 		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+			throw new Exception("Diese Form des Logins ist bei dieser Veranstaltung nicht möglich.");
+		}
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_wurzelwerk) {
 			throw new Exception("Diese Form des Logins ist bei dieser Veranstaltung nicht möglich.");
 		}
 
@@ -381,7 +476,11 @@ class AntragsgruenController extends CController
 		$model = new OAuthLoginForm();
 
 		if (isset($_REQUEST["password"]) && $_REQUEST["password"] != "" && isset($_REQUEST["username"])) {
-			$this->performLogin_username_password($success_redirect, $_REQUEST["username"], $_REQUEST["password"]);
+			if (isset($_REQUEST["neuer_account"])) {
+				$this->performCreateUser_username_password($success_redirect, $_REQUEST["username"], $_REQUEST["password"], $_REQUEST["password_confirm"], $_REQUEST["name"]);
+			} else {
+				$this->performLogin_username_password($success_redirect, $_REQUEST["username"], $_REQUEST["password"]);
+			}
 		} elseif (isset($_REQUEST["openid_mode"])) {
 			$this->performLogin_OAuth_callback($success_redirect, $_REQUEST['openid_mode']);
 		} elseif (isset($_REQUEST["OAuthLoginForm"])) {
@@ -438,7 +537,7 @@ class AntragsgruenController extends CController
 			$passwort                 = Person::createPassword();
 			$person                   = new Person;
 			$person->auth             = "email:" . $email;
-			$person->name             = "";
+			$person->name             = $email;
 			$person->email            = $email;
 			$person->email_bestaetigt = 0;
 			$person->angelegt_datum   = date("Y-m-d H:i:s");
@@ -455,7 +554,7 @@ class AntragsgruenController extends CController
 					. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
 					. "Das Passwort für den Antragsgrün-Zugang lautet: %passwort%\n\n"
 					. "Liebe Grüße,\n\tDas Antragsgrün-Team.";
-				AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, array(
+				AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, null, array(
 					"%code%"      => $best_code,
 					"%best_link%" => $link,
 					"%passwort%"  => $passwort,
@@ -491,7 +590,6 @@ class AntragsgruenController extends CController
 			} else {
 				$model_person                 = new Person();
 				$model_person->attributes     = $submit_data;
-				$model_person->admin          = 0;
 				$model_person->angelegt_datum = new CDbExpression('NOW()');
 				$model_person->status         = $submit_status;
 
@@ -505,7 +603,6 @@ class AntragsgruenController extends CController
 		} elseif ($andereAntragstellerInErlaubt && isset($_REQUEST["andere_antragstellerIn"])) {
 			$model_person                 = new Person();
 			$model_person->attributes     = $submit_data;
-			$model_person->admin          = 0;
 			$model_person->angelegt_datum = new CDbExpression('NOW()');
 			$model_person->status         = $submit_status;
 

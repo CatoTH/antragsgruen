@@ -212,6 +212,16 @@ a {
     @include gruene_ueberschrift($farbe_hellgruen, rgb(185, 209, 38));
     margin: -1px;
   }
+  .magenta & {
+    h1 {
+      @include gruene_ueberschrift($farbe_magenta, rgb(234, 74, 161));
+      margin: -1px;
+    }
+    h2, h3, .nav-header {
+      @include gruene_ueberschrift($farbe_magenta, rgb(234, 74, 161));
+      margin: -1px;
+    }
+  }
 
   .content {
     padding: 15px 20px 30px;
@@ -439,6 +449,10 @@ a {
     font-size: 12px;
   }
 
+  .ae_absatz_header {
+    text-decoration: underline;
+  }
+
   .text li {
     margin: 10px;
   }
@@ -604,7 +618,10 @@ a {
     }
     textarea {
       height: 100px;
+      margin-left: 20px;
+      min-width: 400px;
     }
+
   }
   .submitrow {
     margin-left: 160px;
@@ -687,6 +704,20 @@ a {
     padding: 0;
   }
 
+  .magenta & {
+    h3 {
+      background: none;
+      color: $farbe_magenta;
+      font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 18px;
+      margin: 0 0 5px 0;
+      text-transform: none;
+      padding: 0;
+    }
+  }
+
   .datum {
     color: #B3B4B4;
     float: right;
@@ -760,11 +791,18 @@ fieldset.antragstellerIn {
     text-align: center;
   }
 }
-.policy_antragstellerIn_orga_5 {
+.policy_antragstellerIn_orga_5, .policy_antragstellerIn_orga_19_fulltext {
   #UnterstuetzerInnen {
     input[type=text] {
       display: inline-block;
     }
+  }
+}
+
+
+#antrag_stellen_form {
+  .form .radio {
+    min-width: 150px;
   }
 }
 
@@ -779,6 +817,12 @@ fieldset.antragstellerIn {
   display: inline-block;
   width: 220px;
   vertical-align: top;
+
+  &.block {
+    display: block;
+    width: auto;
+  }
+
 }
 
 .search-form label {
@@ -815,7 +859,9 @@ fieldset.antragstellerIn {
     margin-bottom: 0;
     margin-top: 10px;
   }
-
+  #Antrag_notiz_intern, #Aenderungsantrag_notiz_intern {
+    width: 427px;
+  }
 }
 
 .form-actions {
@@ -1077,6 +1123,81 @@ ul.funktionen {
 
 }
 
+
+.bdk_antrags_liste {
+  padding: 25px;
+  font-family: "Open Sans", verdana, sans-serif;
+  font-size: 14px;
+
+  table {
+    width: 100%;
+  }
+  th {
+    border-bottom: solid 1px $farbe_hellgruen;
+    font-size: 0.80em;
+    line-height: 2.5em;
+    font-weight: 600;
+    font-family: "Open Sans", verdana, sans-serif;
+  }
+  td {
+    font-family: "Open Sans", verdana, sans-serif;
+    vertical-align: top;
+    padding: 0.75em 0em 0.75em 0em;
+  }
+  tr.antrag {
+    border-top: solid 1px $farbe_hellgruen;
+    &:first-child {
+      border-top: none;
+    }
+  }
+  tr.aenderungsantrag {
+    .titel {
+      .pdflink {
+        font-weight: 400;
+      }
+      .titellink {
+        font-weight: 400;
+      }
+    }
+  }
+  .nummer {
+    width: 20%;
+  }
+  .titel {
+    width: 45%;
+
+    .pdflink {
+      font-weight: 600;
+      font-size: 0.8em;
+      float: right;
+      margin-right: 20px;
+    }
+    .titellink {
+      font-weight: 600;
+      a:link, a:visited {
+        color: black;
+      }
+    }
+  }
+  .antragstellerIn {
+    width: 35%;
+  }
+  .ungeprueft {
+    .titel {
+      .pdflink {
+        display: none;
+      }
+      .titellink {
+        a:link, a:visited {
+          font-weight: 400;
+          color: gray;
+        }
+      }
+    }
+  }
+}
+
+
 .clear {
   clear: both;
 }
@@ -1103,9 +1224,17 @@ ul.funktionen {
   cursor: move;
 }
 
-.antragsdaten th {
-  text-align: left;
-  padding-right: 10px;
+.antragsdaten {
+  th {
+    text-align: left;
+    padding-right: 10px;
+  }
+  .ungeprueft {
+    color: red;
+  }
+  .geprueft {
+    color: green;
+  }
 }
 
 table.view {
@@ -1127,6 +1256,7 @@ table.view {
   display: block;
   font-style: italic;
 }
+
 
 del {
   color: #880000;
@@ -1155,7 +1285,7 @@ ins {
     display: block;
   }
   .radio {
-    min-width: 140px;
+    min-width: 185px;
   }
   label {
     display: inline-block;
@@ -1404,6 +1534,11 @@ ins {
   }
   .kommentarform {
     padding: 12px 0 25px;
+    .row {
+      textarea {
+        width: auto;
+      }
+    }
   }
   .form-horizontal .control-label {
     float: none;

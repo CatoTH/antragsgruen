@@ -136,8 +136,6 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 		<h3>Änderungsantragstext</h3>
 
 		<?php
-		$dummy_komm = new AenderungsantragKommentar();
-
 		$absae = $aenderungsantrag->getAntragstextParagraphs_flat();
 
 		foreach ($absae as $i => $abs) {
@@ -228,8 +226,8 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 							<?php echo $form->emailField($kommentar_person, 'email') ?>
 						</div>
 						<div class="row">
-							<?php echo $form->labelEx($dummy_komm, 'text'); ?>
-							<?php echo $form->textArea($dummy_komm, 'text') ?>
+							<label class="required">Text</label>
+							<textarea name="AntragKommentar[text]" title="Text"></textarea>
 						</div>
 					</fieldset>
 

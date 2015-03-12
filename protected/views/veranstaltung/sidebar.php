@@ -18,6 +18,19 @@ $html .= "<div style='text-align: center;'>  <div class='input-append'><input cl
 $html .= "</div></form>";
 $this->menus_html[] = $html;
 
+$antrag_stellen_link = "";
+if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
+	$antrag_stellen_link = $this->createUrl("antrag/neu");
+} elseif ($veranstaltung->getPolicyAntraege()->checkHeuristicallyAssumeLoggedIn()) {
+	$antrag_stellen_link = $this->createUrl("veranstaltung/login", array("back" => $this->createUrl("antrag/neu")));
+}
+$antrag_link = veranstaltungsspezifisch_antrag_einreichen_str($this->veranstaltung, $antrag_stellen_link);
+if ($antrag_link) {
+	$this->menus_html_presidebar = $antrag_link;
+} else {
+	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($antrag_stellen_link) . '" title="' . CHtml::encode($sprache->get("Neuen Antrag stellen")) . '"></a>';
+}
+
 if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 	$html = "<div><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Neue Anträge") . "</li>";
 	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
@@ -38,10 +51,6 @@ if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
 	$html .= "</ul></div>";
 	$this->menus_html[] = $html;
 }
-if ($veranstaltung->getPolicyAntraege()->checkCurUserHeuristically()) {
-	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($this->createUrl("antrag/neu")) . '" title="Neuen Antrag stellen"></a>';
-}
-
 
 if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
 	$html = "<div><ul class='nav nav-list neue-aenderungsantraege'><li class='nav-header'>" . $sprache->get("Neue Änderungsanträge") . "</li>";
@@ -83,26 +92,27 @@ $this->menus_html[] = $html;
 
 $html = "";
 
-$feeds = 0;
-if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("veranstaltung/feedAntraege")) . "</li>";
-	$feeds++;
-}
-if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("veranstaltung/feedAenderungsantraege")) . "</li>";
-	$feeds++;
-}
-if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
-	$html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("veranstaltung/feedKommentare")) . "</li>";
-	$feeds++;
-}
-if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
+if ($veranstaltung->getEinstellungen()->feeds_anzeigen) {
+	$feeds = 0;
+	if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
+		$html .= "<li class='feed'>" . CHtml::link($sprache->get("Anträge"), $this->createUrl("veranstaltung/feedAntraege")) . "</li>";
+		$feeds++;
+	}
+	if (!in_array($veranstaltung->policy_aenderungsantraege, array("Admins"))) {
+		$html .= "<li class='feed'>" . CHtml::link($sprache->get("Änderungsanträge"), $this->createUrl("veranstaltung/feedAenderungsantraege")) . "</li>";
+		$feeds++;
+	}
+	if (!in_array($veranstaltung->policy_kommentare, array(0, 4))) {
+		$html .= "<li class='feed'>" . CHtml::link($sprache->get("Kommentare"), $this->createUrl("veranstaltung/feedKommentare")) . "</li>";
+		$feeds++;
+	}
+	if ($feeds > 1) $html .= "<li class='feed'>" . CHtml::link($sprache->get("Alles"), $this->createUrl("veranstaltung/feedAlles")) . "</li>";
 
-$feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
-$html      = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
+	$feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
+	$html      = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>" . $feeds_str . "</li>" . $html . "</ul></div>";
 
-$this->menus_html[] = $html;
-
+	$this->menus_html[] = $html;
+}
 
 if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$name = ($veranstaltung->url_verzeichnis == "ltwby13-programm" ? "Das gesamte Programm als PDF" : $sprache->get("Alle PDFs zusammen"));
@@ -113,10 +123,10 @@ if ($veranstaltung->getEinstellungen()->kann_pdf) {
 	$this->menus_html[] = $html;
 }
 
-if (!isset($GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"]) || !in_array($veranstaltung->id, $GLOBALS["ANTRAGSGRUEN_NO_SIDEBAR_AD"])) {
+if (veranstaltungsspezifisch_antragsgruen_in_sidebar($veranstaltung)) {
 	$html = "</div><div class='antragsgruen_werbung well'><div class='nav-list'>";
 	$html .= "<div class='nav-header'>Dein Antragsgrün</div>";
-	$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAK einsetzen?";
+	$html .= "<div class='content'>Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?";
 	$html .= "<div style='text-align: center;'><a href='" . CHtml::encode($this->createUrl("infos/selbstEinsetzen")) . "' class='btn btn-primary' style='margin-top: 15px;'><span class='icon-chevron-right'></span> Infos</a></div>";
 	$html .= "</div>";
 	$html .= "</div>";

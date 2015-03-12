@@ -17,6 +17,10 @@
 
 class AntragKommentar extends IKommentar
 {
+    const ABSATZ_ANTRAG = -1;
+    const ABSATZ_BEGRUENDUNG = -2;
+    const ABSATZ_TEXT2 = -3;
+
     /**
      * @var string $className
      * @return GxActiveRecord

@@ -27,7 +27,7 @@ if (file_exists($logo)) {
 	$pdf->Image($logo, 22, 32, 47, 26);
 }
 
-$width = 37;
+$width = 39;
 $x     = 155;
 if ($aenderungsantrag->revision_name == "") {
 	$name = "Entwurf";
@@ -72,7 +72,8 @@ $pdf->SetY(90);
 if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->antrag_einleitung != "") {
 	$pdf->SetX(25);
 	$pdf->SetFont("helvetica", "B", 12);
-	$pdf->MultiCell(160, 13, $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->antrag_einleitung);
+	$pdf->MultiCell(160, 13, $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->antrag_einleitung, 0, "C");
+	$pdf->Ln(7);
 }
 
 $pdf->SetX(25);
@@ -109,6 +110,16 @@ if ($diff_ansicht) {
 	$abs_neu = json_decode($aenderungsantrag->text_neu);
 
 	$html = "";
+
+	if (trim($aenderungsantrag->aenderung_metatext) != "") {
+		$arr = HtmlBBcodeUtils::bbcode2html_absaetze(trim($aenderungsantrag->aenderung_metatext), false, $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
+		foreach ($arr["html_plain"] as $abs) {
+			$html .= "<div class='row-fluid' style=\"line-height: 18px;\">";
+			$html .= $abs;
+			$html .= "</div>";
+		}
+		$html .= "<br><br>";
+	}
 
 	$letztes_leer = true;
 	foreach ($abs_alt as $i => $abs) {
@@ -186,7 +197,9 @@ if ($diff_ansicht) {
 
 }
 
-$begruendung = HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung);
+if ($aenderungsantrag->aenderung_begruendung_html) $begruendung = $aenderungsantrag->aenderung_begruendung;
+else $begruendung = HtmlBBcodeUtils::bbcode2html($aenderungsantrag->aenderung_begruendung);
+
 if (function_exists("normalizer_normalize")) $begruendung = normalizer_normalize($begruendung);
 $html = '
 	</div>';
@@ -200,3 +213,20 @@ $html .= '</div>';
 
 $pdf->SetFont("helvetica", "", 10);
 $pdf->writeHTML($html, true, false, true, false, '');
+
+$unterstuetzerInnen = $aenderungsantrag->getUnterstuetzerInnen();
+if (count($unterstuetzerInnen) > 0) {
+	$html = '<br><h3>UnterstützerInnen</h3>';
+	if (count($unterstuetzerInnen) > 1) {
+		$html .= '<ul>';
+		foreach ($unterstuetzerInnen as $unt) {
+			$html .= '<li>' . CHtml::encode($unt->getNameMitOrga()) . '</li>';
+		}
+		$html .= '</ul>';
+	} elseif (count($unterstuetzerInnen) == 1) {
+		$html .= CHtml::encode($unterstuetzerInnen[0]->getNameMitOrga());
+	}
+
+	//$pdf->SetFont("helvetica", "", 12);
+	$pdf->writeHTML($html, true, false, true, false, '');
+}

@@ -4,12 +4,13 @@
  * @var Antrag $antrag
  * @var Person $antragstellerIn
  * @var Veranstaltung $veranstaltung
- * @var array $antrag_unterstuetzerInnen
+ * @var array $unterstuetzerInnen
  * @var array $hiddens
  * @var bool $js_protection
  * @var bool $login_warnung
  * @var Sprache $sprache
  * @var Veranstaltung $veranstaltung
+ * @var AntragUnterstuetzerInnen $antrag_unterstuetzerInnen
  */
 ?>
 
@@ -21,7 +22,7 @@
     echo $veranstaltung->getPolicyAntraege()->getAntragsstellerInStdForm($veranstaltung, $antragstellerIn);
     ?>
 
-<?php if (count($antrag_unterstuetzerInnen) > 0) { ?>
+<?php if (count($unterstuetzerInnen) > 0) { ?>
 	<fieldset>
 
 		<legend>UnterstützerInnen</legend>
@@ -38,7 +39,7 @@
 																			   value="<?php echo Person::$TYP_ORGANISATION; ?>" <?php
                         if ($u["typ"] == Person::$TYP_ORGANISATION) echo "checked"; ?>>
 						Organisation</label>
-					<label style="display: inline;">Name: <input type="text" name="UnterstuetzerInnenName[<?php echo $nr; ?>]"
+					<label style="display: inline;">Name: <input type="text" name="955[<?php echo $nr; ?>]"
 																 value="<?php echo CHtml::encode($u["name"]); ?>"></label>
 				</div>
 			<?php } ?>

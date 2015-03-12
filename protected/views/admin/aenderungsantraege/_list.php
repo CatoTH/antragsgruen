@@ -26,8 +26,8 @@
 			$x = array();
 			foreach ($data->aenderungsantragUnterstuetzerInnen as $unt) {
 				if (in_array($unt->rolle, array(AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN, AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN))) {
-					if ($unt->person->email != "") $x[] = CHtml::encode($unt->person->name . " (" . $unt->person->email . ")");
-					else $x[] = CHtml::encode($unt->person->name);
+					if ($unt->person->email != "") $x[] = $unt->getNameMitBeschlussdatum() . " (" . CHtml::encode($unt->person->email) . ")";
+					else $x[] = $unt->getNameMitBeschlussdatum(true);
 				}
 			}
 			echo implode(", ", $x);

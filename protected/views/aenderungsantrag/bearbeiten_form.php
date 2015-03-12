@@ -49,15 +49,15 @@ if ($js_protection) {
 	</div>
 <?php } ?>
 
-<h3><label for="Aenderungsantrag_name_neu">Neuer Titel</label></h3>
+<h3><label for="Aenderungsantrag_name_neu">Neue Überschrift</label></h3>
 <br>
 <input id="Aenderungsantrag_name_neu" type="text" value="<?php echo CHtml::encode($aenderungsantrag->name_neu); ?>"
-       name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
+	   name="Aenderungsantrag[name_neu]" style="width: 550px; margin-left: 52px;">
 <br>
 <br>
 
-	<h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
-	<br>
+<h3><?php echo $sprache->get("Neuer Antragstext"); ?></h3>
+<div id="ae_metatext_opener" style="text-align: right; padding-right: 10px; padding-top: 5px; font-style: italic;"><a href="#ae_metatext_holder"><?php echo $sprache->get("Redaktioneller Antrag"); ?></a></div>
 <div
 	class="antrags_text_holder ae_absatzwahl_modus aenderungen_moeglich<?php if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 80) echo " kleine_schrift"; ?>"
 	style="overflow: auto;">
@@ -75,7 +75,7 @@ if ($js_protection) {
 		if ($text_pre && $text_pre[$i] != "") echo " style='display: none;'";
 		echo ">" . $abs->str_html . "</div>";
 
-		echo "<div class='ae_text_holder'>
+		echo "<div class='ae_text_holder' data-ck_init='0'>
 			<label><input type='checkbox' name='change_text[$i]' data-absatz='$i' class='change_checkbox' ";
 		if ($text_pre && $text_pre[$i] != "") echo "checked";
 		echo "> Ändern<br></label>
@@ -100,19 +100,33 @@ if ($js_protection) {
 	?>
 </div>
 
+<div id="ae_metatext_holder" style="display: none;">
+	<h3><label for="ae_metatext"><?php echo $sprache->get("Redaktioneller Antrag"); ?></label></h3>
+
+	<div class="content">
+		<textarea name='ae_metatext' id="ae_metatext" style='width: 550px; height: 50px;'><?php
+			echo CHtml::encode($aenderungsantrag->aenderung_metatext);
+			?></textarea>
+		<br><br>
+	</div>
+</div>
+
 <div id="begruendungs_holder">
 	<h3><label for="ae_begruendung"><?php echo $sprache->get("Begründung für den Änderungsantrag"); ?></label></h3>
-	<div class="content">
-	<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php
-		echo CHtml::encode($aenderungsantrag->aenderung_begruendung);
-		?></textarea>
 
-	<?php if ($mode == "bearbeiten") { ?>
-		<div class="ae_select_confirm" style="margin-top: 20px;">
-			<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Speichern')); ?>
-		</div>
-	<?php } ?>
-	<br><br>
+	<div class="content">
+		<textarea name='ae_begruendung' id="ae_begruendung" style='width: 550px; height: 200px;'><?php
+			echo CHtml::encode($aenderungsantrag->aenderung_begruendung);
+			?></textarea>
+		<input type="hidden" id="ae_begruendung_html" name="ae_begruendung_html"
+			   value="<?php echo $aenderungsantrag->antrag->veranstaltung->getEinstellungen()->begruendung_in_html; ?>">
+
+		<?php if ($mode == "bearbeiten") { ?>
+			<div class="ae_select_confirm" style="margin-top: 20px;">
+				<?php $this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit', 'type' => 'primary', 'icon' => 'ok white', 'label' => 'Speichern')); ?>
+			</div>
+		<?php } ?>
+		<br><br>
 	</div>
 
 </div>
@@ -127,7 +141,7 @@ $this->renderPartial($antrag->veranstaltung->getPolicyAenderungsantraege()->getA
 	"hiddens"          => $hiddens,
 	"js_protection"    => $js_protection,
 	"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
-    "veranstaltung"    => $antrag->veranstaltung,
+	"veranstaltung"    => $antrag->veranstaltung,
 ));
 
 $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
@@ -140,11 +154,12 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 		"use strict";
 		$(".ae_text_holder input.change_checkbox").not(':checked').parents(".ae_text_holder").hide();
 		$(".change_checkbox").parents("label").hide();
-		$(".ae_text_holder textarea").each(function () {
-			ckeditor_bbcode($(this).attr("id"));
-		});
 
-		ckeditor_bbcode("ae_begruendung");
+		if ($("#ae_begruendung_html").val() == "1") {
+			ckeditor_simplehtml("ae_begruendung");
+		} else {
+			ckeditor_bbcode("ae_begruendung");
+		}
 
 		var aenderungen_moeglich_recals = function () {
 			var moeglich = true;
@@ -161,9 +176,15 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 		$(".ae_absatzwahl_modus .antragabsatz_holder .text").click(function (ev) {
 			ev.preventDefault();
 			if (!$(".ae_absatzwahl_modus").hasClass("aenderungen_moeglich")) return;
-			var $abs = $(this).parents(".row-absatz");
+			var $abs = $(this).parents(".row-absatz"),
+				$holder = $abs.find(".ae_text_holder");
 			$abs.find(".change_checkbox").prop("checked", true);
-			$abs.find(".ae_text_holder").show().css("display", "block");
+			$holder.show().css("display", "block");
+			if ($holder.data("ck_init") == "0") {
+				console.log("Init: " + $holder.find("textarea").attr("id"));
+				ckeditor_bbcode($holder.find("textarea").attr("id"));
+				$holder.data("ck_init", "1");
+			}
 			$abs.find(".orig").hide();
 			$abs.find(".antragstext_diff").show();
 			aenderungen_moeglich_recals();
@@ -180,6 +201,14 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 			}
 		});
 
+		$("#ae_metatext_opener").find("a").click(function(ev) {
+			ev.preventDefault();
+			$("#ae_metatext_opener").hide();
+			$("#ae_metatext_holder").show();
+			ckeditor_bbcode("ae_metatext", 100);
+			$("#ae_metatext").scrollintoview({ top_offset: -80 });
+		});
+
 		window.setTimeout(antragstext_show_diff, 3000);
 	}
 
@@ -188,17 +217,22 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 			str;
 		$(".change_checkbox:checked").each(function () {
 			var absatznr = $(this).data("absatz");
+			if (typeof("neu_text_" + absatznr) == "undefined") {
+				alert("Texteditor nicht initialisiert?");
+				return;
+			}
 			str = CKEDITOR.instances["neu_text_" + absatznr].getData();
 			abss[absatznr] = str;
 		});
 		$.ajax({ "url":<?php echo json_encode($ajax_link); ?>, "dataType": "json", "type": "POST", "data": { "antrag_id": antrag_id, "absaetze": abss }, "error": function (xht, status) {
+			console.log("Fehler beim Laden");
 			window.setTimeout(antragstext_show_diff, 10000);
 		}, "success": function (dat) {
 			for (var i in dat) if (dat.hasOwnProperty(i)) {
 				$("#absatz_" + i + " .antragstext_diff").html(dat[i]);
 			}
+			window.setTimeout(antragstext_show_diff, 3000);
 		}});
-		window.setTimeout(antragstext_show_diff, 3000);
 	}
 
 	$(antragstext_init_aes);

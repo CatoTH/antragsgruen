@@ -9,13 +9,19 @@
  * @property string $begruendung_neu
  * @property string $aenderung_metatext
  * @property string $aenderung_text
+ * @property string $aenderung_text2
  * @property string $aenderung_begruendung
+ * @property integer $aenderung_begruendung_html
  * @property integer $aenderung_first_line_cache
+ * @property string $flp_rel_cache
+ * @property string $flp_abs_cache
  * @property string $datum_einreichung
  * @property string $datum_beschluss
  * @property integer $status
  * @property string $status_string
+ * @property string $notiz_intern
  * @property int $kommentar_legacy
+ * @property integer $text_unveraenderlich
  *
  * @property Antrag $antrag
  * @property AenderungsantragKommentar[] $aenderungsantragKommentare
@@ -26,8 +32,8 @@ class Aenderungsantrag extends IAntrag
 	private $absaetze = null;
 
 	/**
-	 * @var string $clasName
-	 * @return GxActiveRecord
+	 * @var string $className
+	 * @return Aenderungsantrag
 	 */
 	public static function model($className = __CLASS__)
 	{
@@ -66,11 +72,11 @@ class Aenderungsantrag extends IAntrag
 	{
 		return array(
 			array('text_neu, aenderung_text, datum_einreichung, status, status', 'required'),
-			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy', 'numerical', 'integerOnly' => true),
+			array('antrag_id, status, aenderung_first_line_cache, kommentar_legacy, text_unveraenderlich, aenderung_begruendung_html', 'numerical', 'integerOnly' => true),
 			array('revision_name', 'length', 'max' => 45),
 			array('status_string', 'length', 'max' => 55),
-			array('name_neu, datum_beschluss, aenderung_metatext', 'safe'),
-			array('antrag_id, revision_name, name_neu, datum_beschluss', 'default', 'setOnEmpty' => true, 'value' => null),
+			array('name_neu, datum_beschluss, aenderung_metatext, notiz_intern', 'safe'),
+			array('antrag_id, revision_name, name_neu, datum_beschluss, aenderung_begruendung, aenderung_begruendung_html, flp_abs_cache, flp_rel_cache', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 
 	}
@@ -110,18 +116,24 @@ class Aenderungsantrag extends IAntrag
 			'name_neu'                           => Yii::t('app', 'Name Neu'),
 			'text_neu'                           => Yii::t('app', 'Text Neu'),
 			'begruendung_neu'                    => Yii::t('app', 'Begruendung Neu'),
-            'aenderung_metatext'                 => Yii::t('app', 'Metabeschreibung der Änderung'),
-			'aenderung_text'                     => Yii::t('app', 'Aenderung Text'),
-			'aenderung_begruendung'              => Yii::t('app', 'Aenderung Begruendung'),
+			'aenderung_metatext'                 => Yii::t('app', 'Metabeschreibung der Änderung'),
+			'aenderung_text'                     => Yii::t('app', 'Änderung: Text'),
+            'aenderung_text2'                    => Yii::t('app', 'Änderung: Text 2'),
+			'aenderung_begruendung'              => Yii::t('app', 'Änderung: Begründung'),
+			'aenderung_begruendung_html'         => Yii::t('app', 'Änderung: Begründung in HTML'),
 			'aenderung_first_line_cache'         => "Cache: erste Zeilennummer",
 			'datum_einreichung'                  => Yii::t('app', 'Datum Einreichung'),
 			'datum_beschluss'                    => Yii::t('app', 'Datum Beschluss'),
 			'status'                             => Yii::t('app', 'Status'),
 			'status_string'                      => Yii::t('app', 'Status String'),
 			'kommentar_legacy'                   => Yii::t('app', 'Altes Kommentarsystem'),
+			'text_unveraenderlich'               => Yii::t('app', 'Text Unveränderlich'),
+			'notiz_intern'                       => Yii::t('app', 'Interne Notiz'),
 			'antrag'                             => null,
 			'aenderungsantragKommentare'         => null,
-			'aenderungsantragUnterstuetzerInnen' => null,
+			'aenderungsantragUnterstuetzerInnen' => Yii::t('app', 'AntragstellerInnen'),
+			'flp_abs_cache'                      => '',
+			'flp_rel_cache'                      => '',
 		);
 	}
 
@@ -143,39 +155,40 @@ class Aenderungsantrag extends IAntrag
 	 * @param array $absatz_mapping
 	 * @return Aenderungsantrag
 	 */
-    public function aufrechterhaltenBeiNeuemAntrag($antrag, $anz_absaetze_neu, $absatz_mapping) {
-        $neuer_ae                             = new Aenderungsantrag();
-        $neuer_ae->antrag_id                  = $antrag->id;
-        $neuer_ae->revision_name              = $this->revision_name;
-        $neuer_ae->name_neu                   = $this->name_neu;
-        $neuer_ae->begruendung_neu            = $this->begruendung_neu;
-        $neuer_ae->aenderung_begruendung      = $this->aenderung_begruendung;
-        $neuer_ae->datum_einreichung          = $this->datum_einreichung;
-        $neuer_ae->aenderung_first_line_cache = -1;
-        $neuer_ae->status_string              = "";
-        $neuer_ae->status                     = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
+	public function aufrechterhaltenBeiNeuemAntrag($antrag, $anz_absaetze_neu, $absatz_mapping)
+	{
+		$neuer_ae                             = new Aenderungsantrag();
+		$neuer_ae->antrag_id                  = $antrag->id;
+		$neuer_ae->revision_name              = $this->revision_name;
+		$neuer_ae->name_neu                   = $this->name_neu;
+		$neuer_ae->begruendung_neu            = $this->begruendung_neu;
+		$neuer_ae->aenderung_begruendung      = $this->aenderung_begruendung;
+		$neuer_ae->datum_einreichung          = $this->datum_einreichung;
+		$neuer_ae->aenderung_first_line_cache = -1;
+		$neuer_ae->status_string              = "";
+		$neuer_ae->status                     = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
 
-        $text_neu = array();
-        for ($i = 0; $i < $anz_absaetze_neu; $i++) $text_neu[$i] = "";
-        $old_abs = json_decode($this->text_neu);
-        foreach ($old_abs as $abs => $str) $text_neu[$absatz_mapping[$abs]] = $str;
-        $neuer_ae->setDiffParagraphs($text_neu);
+		$text_neu = array();
+		for ($i = 0; $i < $anz_absaetze_neu; $i++) $text_neu[$i] = "";
+		$old_abs = json_decode($this->text_neu);
+		foreach ($old_abs as $abs => $str) $text_neu[$absatz_mapping[$abs]] = $str;
+		$neuer_ae->setDiffParagraphs($text_neu);
 
-        $neuer_ae->calcDiffText();
+		$neuer_ae->calcDiffText();
 
 
-        if (!$neuer_ae->save()) var_dump($neuer_ae->attributes);
+		if (!$neuer_ae->save()) var_dump($neuer_ae->attributes);
 
-        foreach ($this->aenderungsantragUnterstuetzerInnen as $init) if ($init->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
-            $in                      = new AenderungsantragUnterstuetzerInnen();
-            $in->rolle               = IUnterstuetzerInnen::$ROLLE_INITIATORIN;
-            $in->position            = $init->position;
-            $in->aenderungsantrag_id = $neuer_ae->id;
-            $in->unterstuetzerIn_id  = $init->unterstuetzerIn_id;
-            $in->kommentar           = "";
-            $in->save();
-        }
-    }
+		foreach ($this->aenderungsantragUnterstuetzerInnen as $init) if ($init->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+			$in                      = new AenderungsantragUnterstuetzerInnen();
+			$in->rolle               = IUnterstuetzerInnen::$ROLLE_INITIATORIN;
+			$in->position            = $init->position;
+			$in->aenderungsantrag_id = $neuer_ae->id;
+			$in->unterstuetzerIn_id  = $init->unterstuetzerIn_id;
+			$in->kommentar           = "";
+			$in->save();
+		}
+	}
 
 
 	/**
@@ -190,7 +203,8 @@ class Aenderungsantrag extends IAntrag
 		return $paras;
 	}
 
-	private $_firstAffectedLineOfParagraphs_relative = array();
+
+	private $_firstAffectedLineOfParagraphs_relative = null;
 
 	/**
 	 * @param int $paragraph_nr
@@ -198,9 +212,12 @@ class Aenderungsantrag extends IAntrag
 	 */
 	public function getFirstAffectedLineOfParagraph_relative($paragraph_nr)
 	{
+		if ($this->_firstAffectedLineOfParagraphs_relative === null) {
+			if ($this->flp_rel_cache != "") $this->_firstAffectedLineOfParagraphs_relative = json_decode($this->flp_rel_cache, true);
+			else $this->_firstAffectedLineOfParagraphs_relative = array();
+		}
 		if (!isset($this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr])) {
-			$antrag_text       = $this->antrag->text;
-			$antrag_paragraphs = explode("\n\n", $antrag_text);
+			$antrag_paragraphs = $this->antrag->getParagraphsText()["bbcode"];
 			$ae_diff           = $this->getDiffParagraphs();
 			$diff              = DiffUtils::getTextDiffMitZeilennummern(trim($antrag_paragraphs[$paragraph_nr]), trim($ae_diff[$paragraph_nr]), $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 			$diff              = $diff->getDiff();
@@ -210,11 +227,21 @@ class Aenderungsantrag extends IAntrag
 				$first_line = count($diff_part->orig);
 			}
 			$this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr] = $first_line;
+			$this->flp_rel_cache                                          = json_encode($this->_firstAffectedLineOfParagraphs_relative);
+			$this->save(false);
 		}
 		return $this->_firstAffectedLineOfParagraphs_relative[$paragraph_nr];
 	}
 
-	private $_firstAffectedLineOfParagraphs_absolute = array();
+	public function flushFirstAffectedLineOfParagraphCache()
+	{
+		$this->_firstAffectedLineOfParagraphs_relative = null;
+		$this->flp_rel_cache                           = "";
+		$this->flp_abs_cache                           = "";
+		$this->save(false);
+	}
+
+	private $_firstAffectedLineOfParagraphs_absolute = null;
 
 	/**
 	 * @param int $paragraph_nr
@@ -223,9 +250,13 @@ class Aenderungsantrag extends IAntrag
 	 */
 	public function getFirstAffectedLineOfParagraph_absolute($paragraph_nr, $antrag_absaetze)
 	{
+		if ($this->_firstAffectedLineOfParagraphs_absolute === null) {
+			if ($this->flp_abs_cache != "") $this->_firstAffectedLineOfParagraphs_absolute = json_decode($this->flp_abs_cache, true);
+			else $this->_firstAffectedLineOfParagraphs_absolute = array();
+		}
+
 		if (!isset($this->_firstAffectedLineOfParagraphs_absolute[$paragraph_nr])) {
-			$antrag_text       = $this->antrag->text;
-			$antrag_paragraphs = explode("\n\n", $antrag_text);
+			$antrag_paragraphs = $this->antrag->getParagraphsText()["bbcode"];
 			$ae_diff           = $this->getDiffParagraphs();
 			$diff              = DiffUtils::getTextDiffMitZeilennummern(trim($antrag_paragraphs[$paragraph_nr]), trim($ae_diff[$paragraph_nr]), $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 			$diff              = $diff->getDiff();
@@ -240,6 +271,8 @@ class Aenderungsantrag extends IAntrag
 			}
 			$absolute_line_no += $first_line;
 			$this->_firstAffectedLineOfParagraphs_absolute[$paragraph_nr] = $absolute_line_no;
+			$this->flp_abs_cache                                          = json_encode($this->_firstAffectedLineOfParagraphs_absolute);
+			$this->save(false);
 		}
 		return $this->_firstAffectedLineOfParagraphs_absolute[$paragraph_nr];
 	}
@@ -253,6 +286,8 @@ class Aenderungsantrag extends IAntrag
 		$this->text_neu                                = json_encode($paragraphs);
 		$this->_firstAffectedLineOfParagraphs_relative = array();
 		$this->_firstAffectedLineOfParagraphs_absolute = array();
+		$this->flp_rel_cache = "";
+		$this->flp_abs_cache = "";
 	}
 
 	/**
@@ -272,6 +307,9 @@ class Aenderungsantrag extends IAntrag
 		$paragraphs  = $this->antrag->getParagraphs(false, false);
 		$text_neu    = array();
 		$diff        = $this->getDiffParagraphs();
+
+		if (count($paragraphs) != count($diff)) throw new Exception("Inkonsistenz: Der Änderungsantrag bezieht sich womöglich auf eine frühere Version des Antrags (" . count($diff) . " Absätze vs. " . count($paragraphs) . ")");
+
 		foreach ($paragraphs as $i => $para) {
 			if ($diff[$i] != "") $text_neu[] = $diff[$i];
 			else $text_neu[] = $para->str_bbcode;
@@ -300,28 +338,44 @@ class Aenderungsantrag extends IAntrag
 
 		for ($i = 0; $i < count($arr["html"]); $i++) {
 			$html_plain       = HtmlBBcodeUtils::wrapWithTextClass($arr["html_plain"][$i]);
-			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, $i, $komms, array());
+			$this->absaetze[] = new AntragAbsatz($arr["html"][$i], $html_plain, $arr["bbcode"][$i], $this->id, count($this->absaetze), $komms, array());
 		}
+
 		return $this->absaetze;
 	}
 
 	/**
 	 * @return AenderungsantragAbsatz[]
 	 */
-	public function getAntragstextParagraphs_diff() {
+	public function getAntragstextParagraphs_diff()
+	{
 
 		$abs_alt = $this->antrag->getParagraphs();
 		$abs_neu = json_decode($this->text_neu);
 
 		$this->absaetze = array();
 
-		for ($i = 0; $i < count($abs_alt); $i++) {
-			if ($abs_neu[$i] == "") {
-				$this->absaetze[$i] = null;
-			} else {
+		if (trim($this->aenderung_metatext) != "") {
+			$a = HtmlBBcodeUtils::bbcode2html_absaetze($this->aenderung_metatext, true, $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
+			foreach ($a["bbcode"] as $i => $b) {
 				$kommentare = array();
-				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == $i) $kommentare[] = $komm;
-				$this->absaetze[] = new AenderungsantragAbsatz($abs_alt[$i]->str_bbcode, $abs_neu[$i], $this->id, $i, $kommentare);
+				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == count($this->absaetze)) $kommentare[] = $komm;
+				$this->absaetze[] = new AenderungsantragAbsatz($b, $b, $this->id, count($this->absaetze), null, null, $kommentare);
+			}
+		}
+
+		for ($i = 0; $i < count($abs_alt); $i++) {
+			$ae_absatz_nr = count($this->absaetze) + $i;
+			if ($abs_neu[$i] == "") {
+				$this->absaetze[] = null;
+			} else {
+				preg_match_all("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $abs_alt[$i]->str_html, $matches);
+				$zeile_von = (isset($matches[1][0]) ? IntVal($matches[1][0]) : "????");
+				$zeile_bis = (isset($matches[1]) ? $matches[1][count($matches[1]) - 1] : "???");
+
+				$kommentare = array();
+				foreach ($this->aenderungsantragKommentare as $komm) if ($komm->absatz == $ae_absatz_nr) $kommentare[] = $komm;
+				$this->absaetze[] = new AenderungsantragAbsatz($abs_alt[$i]->str_bbcode, $abs_neu[$i], $this->id, $ae_absatz_nr, $zeile_von, $zeile_bis, $kommentare);
 			}
 		}
 		return $this->absaetze;
@@ -355,6 +409,7 @@ class Aenderungsantrag extends IAntrag
 	public function resetLineCache($save = true)
 	{
 		$this->aenderung_first_line_cache = -1;
+		$this->flushFirstAffectedLineOfParagraphCache();
 		if ($save) $this->save();
 	}
 
@@ -474,6 +529,60 @@ class Aenderungsantrag extends IAntrag
 	}
 
 	/**
+	 * @return int[]
+	 */
+	public function getMoeglicheStati()
+	{
+		if ($this->antrag->veranstaltung->isAdminCurUser()) {
+			$stati = array();
+			foreach (IAntrag::$STATI as $stat => $stat_name) {
+				if ($this->status == $stat || !in_array($stat, array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT))) $stati[] = $stat;
+			}
+			return $stati;
+		} else {
+			$meiner = false;
+			foreach ($this->aenderungsantragUnterstuetzerInnen as $ant) if ($ant->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN && $ant->person->id == $curr_person->id) $meiner = true;
+			if ($meiner) {
+				if ($this->status == IAntrag::$STATUS_ENTWURF) return array(IAntrag::$STATUS_ENTWURF, IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT);
+				else return array($this->status);
+			} else {
+				return array($this->status);
+			}
+		}
+	}
+
+	/**
+	 * @param Aenderungsantrag[] $aenderungsantraege
+	 * @return Aenderungsantrag[]
+	 */
+	public static function sortiereSichtbareNachZeilennummer($aenderungsantraege) {
+		$aes = array();
+		foreach ($aenderungsantraege as $ae) if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) $aes[] = $ae;
+
+		usort($aes, function ($ae1, $ae2) {
+			/** @var Aenderungsantrag $ae1 */
+			/** @var Aenderungsantrag $ae2 */
+			$first1 = $ae1->getFirstDiffLine();
+			$first2 = $ae2->getFirstDiffLine();
+
+			if ($first1 < $first2) return -1;
+			if ($first1 > $first2) return 1;
+
+			$x1 = explode("-", $ae1->revision_name);
+			$x2 = explode("-", $ae2->revision_name);
+			if (count($x1) == 3 && count($x2) == 3) {
+				if ($x1[2] < $x2[2]) return -1;
+				if ($x1[2] > $x2[2]) return 1;
+				return 0;
+			} else {
+				return strcasecmp($ae1->revision_name, $ae2->revision_name);
+			}
+		});
+
+		return $aes;
+	}
+
+	/**
 	 * @param int $veranstaltung_id
 	 * @param string $suchbegriff
 	 * @return array|Aenderungsantrag[]
@@ -487,7 +596,7 @@ class Aenderungsantrag extends IAntrag
 		foreach ($antraege as $ant) $ids[] = $ant->id;
 		if (count($ids) == 0) return array();
 
-		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND antrag_id IN (" . implode(", ", $ids) . ")");
+		return Aenderungsantrag::model()->findAll("(`aenderung_text` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_text2` LIKE '%" . addslashes($suchbegriff) . "%' OR `aenderung_begruendung` LIKE '%" . addslashes($suchbegriff) . "%') AND status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND antrag_id IN (" . implode(", ", $ids) . ")");
 	}
 
 
@@ -505,4 +614,10 @@ class Aenderungsantrag extends IAntrag
 		));
 	}
 
+    /**
+     * @return Veranstaltung
+     */
+    public function getVeranstaltung() {
+        return $this->antrag->veranstaltung;
+    }
 }

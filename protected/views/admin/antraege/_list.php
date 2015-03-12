@@ -19,7 +19,9 @@
 		<th>AntragstellerIn:</th>
 		<td><?php
 			$x = array();
-			foreach ($data->antragUnterstuetzerInnen as $unt) if (in_array($unt->rolle, array(AntragUnterstuetzerInnen::$ROLLE_INITIATORIN, AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN))) $x[] = CHtml::encode($unt->person->name);
+			foreach ($data->antragUnterstuetzerInnen as $unt) if (in_array($unt->rolle, array(AntragUnterstuetzerInnen::$ROLLE_INITIATORIN, AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN))) {
+				$x[] = $unt->getNameMitBeschlussdatum(true);
+			}
 			echo implode(", ", $x);
 			?></td>
 	</tr>
@@ -35,8 +37,8 @@
 		<th>Formate:</th>
 		<td>
 			<?php echo CHtml::link("PDF", $this->createUrl("antrag/pdf", array("antrag_id" => $data->id))); ?>,
-			<a href="<?php echo CHtml::encode($this->createUrl("antrag/plainHtml", array("antrag_id" => $data->id))) ?>" download="<?php echo $data->revision_name ?>.html">HTML</a> <!--,
-			<a href="<?php echo CHtml::encode($this->createUrl("antrag/odt", array("antrag_id" => $data->id))) ?>" download="<?php echo $data->revision_name ?>.odt">ODT</a> Noch nicht stabil-->
+			<a href="<?php echo CHtml::encode($this->createUrl("antrag/plainHtml", array("antrag_id" => $data->id))) ?>" download="<?php echo $data->revision_name ?>.html">HTML</a>,
+			<a href="<?php echo CHtml::encode($this->createUrl("antrag/odt", array("antrag_id" => $data->id))) ?>" download="<?php echo $data->revision_name ?>.odt">ODT</a> <span style="color: red; font-size: 10px;">(Beta)</span>
 		</td>
 	</tr>
 </table>

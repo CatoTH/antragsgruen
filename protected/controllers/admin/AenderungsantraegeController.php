@@ -46,6 +46,8 @@ class AenderungsantraegeController extends GxController
 		}
 
 		if (isset($_POST['Aenderungsantrag'])) {
+			if (!in_array($_POST['Aenderungsantrag']['status'], $model->getMoeglicheStati())) throw new Exception("Status-Übergang ungültig");
+
 			$model->setAttributes($_POST['Aenderungsantrag'], false);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_einreichung");
@@ -101,23 +103,44 @@ class AenderungsantraegeController extends GxController
 	/**
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
+	 * @param int|null $status
 	 */
-	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id)
+	public function actionIndex($veranstaltungsreihe_id = "", $veranstaltung_id, $status = null)
 	{
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		if (!$this->veranstaltung->isAdminCurUser()) $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
 
-		$aenderungsantraege                      = Aenderungsantrag::model()->findAll(array(
+		/** @var Aenderungsantrag[] $aenderungsantraege */
+		$aenderungsantraege = Aenderungsantrag::model()->findAll(array(
 			"with"      => "antrag",
 			"alias"     => "a",
 			"condition" => 'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id) . " AND a.status != " . IAntrag::$STATUS_GELOESCHT . " AND antrag.status != " . IAntrag::$STATUS_GELOESCHT
 		));
+
+		$stati      = array();
+		$gesamtzahl = 0;
+		foreach ($aenderungsantraege as $ae) {
+			if ($ae->status == IAntrag::$STATUS_GELOESCHT) continue;
+			if (!isset($stati[$ae->status])) $stati[$ae->status] = 0;
+			$stati[$ae->status]++;
+			$gesamtzahl++;
+		}
+
+		if ($status !== null) $aenderungsantraege = Aenderungsantrag::model()->findAll(array(
+			"with"      => "antrag",
+			"alias"     => "a",
+			"condition" => 'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id) . " AND a.status = " . IntVal($status) . " AND a.status != " . IAntrag::$STATUS_GELOESCHT . " AND antrag.status != " . IAntrag::$STATUS_GELOESCHT
+		));
+
 		$dataProvider                            = new CActiveDataProvider('Aenderungsantrag', array(
 			"data" => $aenderungsantraege
 		));
 		$dataProvider->getPagination()->pageSize = 50;
 		$this->render('index', array(
 			'dataProvider' => $dataProvider,
+			'anzahl_stati'  => $stati,
+			'anzahl_gesamt' => $gesamtzahl,
+			'status_curr'   => $status,
 		));
 	}
 

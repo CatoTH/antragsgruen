@@ -16,7 +16,11 @@ class UnterstuetzerInnenAdminWidget
         $neustr .= '<select name="' . get_class($antrag) . '[unterstuetzerIn_neu][person][]" class="person_selector">';
         $neustr .= '<option value="neu"> - neue Person anlegen -</option>';
 
-        $pers = Person::model()->findAllAttributes("name", true, array("order" => "name"));
+        if ($antrag->getVeranstaltungsreihe()->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+            $pers = Person::model()->findAllByAttributes(array("veranstaltungsreihe_namespace" => $antrag->getVeranstaltungsreihe()->id), array("order" => "name"));
+        } else {
+            $pers = Person::model()->findAllAttributes("name", true, array("order" => "name"));
+        }
         foreach ($pers as $p) {
             /* @var $p Person */
             $neustr .= '<option value="' . $p->id . '">' . CHtml::encode($p->name) . '</option>';
@@ -36,7 +40,7 @@ class UnterstuetzerInnenAdminWidget
         }
 		$neustr .= "</select>";
 
-        $neustr .= "<br>Name: <input name='" . get_class($antrag) . "[unterstuetzerIn_neu][person_name][]' value=''>";
+        $neustr .= " <input name='" . get_class($antrag) . "[unterstuetzerIn_neu][person_name][]' value='' placeholder='Name'>";
 
         $neustr .= '</div></div>';
 
@@ -45,10 +49,11 @@ class UnterstuetzerInnenAdminWidget
         $unterstuetzerInnen = $antrag->$unterstuetzerIn_rel;
         foreach ($unterstuetzerInnen as $unt) {
 			/** @var AntragUnterstuetzerInnen $unt */
-            $str .= '<div>';
-            $str .= '<span style="display: inline-block; width: 250px; overflow: hidden;" class="sort_handle">' . CHtml::encode($unt->person->getNameMitOrga()) . '</span>';
+            $str .= '<div style="vertical-align: top;">';
+            $str .= '<span style="display: inline-block; width: 250px; overflow: hidden; vertical-align: top;" class="sort_handle">' . $unt->getNameMitBeschlussdatum(true) . '</span>';
             $str .= '<input type="hidden" name="' . get_class($antrag) . '[unterstuetzerInnen][person_id][]" value="' . $unt->person->id . '">';
-            $str .= '<select name="' . get_class($antrag) . '[unterstuetzerInnen][rolle][]">';
+			$str .= '<input type="hidden" name="' . get_class($antrag) . '[unterstuetzerInnen][beschlussdatum][]" value="' . CHtml::encode($unt->beschlussdatum) . '">';
+            $str .= '<select name="' . get_class($antrag) . '[unterstuetzerInnen][rolle][]" style="vertical-align: top;">';
             $str .= '<option value="del"> - ' . Yii::t('app', 'löschen') . ' - </option>';
             foreach (IUnterstuetzerInnen::$ROLLEN as $key => $val) {
                 $str .= '<option value="' . $key . '" ';
@@ -59,7 +64,7 @@ class UnterstuetzerInnenAdminWidget
             $str .= '</div>';
         }
 
-        $str .= '<div class="unterstuetzerInnenwidget_add_caller"><a href="#">Neue hinzufügen</a></div>';
+        $str .= '<div class="unterstuetzerInnenwidget_add_caller" style="margin-top: 20px;"><a href="#">Neue hinzufügen</a></div>';
 
         $str .= "</div>";
         return $str;
@@ -84,6 +89,7 @@ class UnterstuetzerInnenAdminWidget
                 $unt->unterstuetzerIn_id = IntVal($unterstuetzerIn["person_id"][$i]);
                 $unt->rolle = $unterstuetzerIn["rolle"][$i];
 				$unt->position = $i;
+				$unt->beschlussdatum = $unterstuetzerIn["beschlussdatum"][$i];
                 $unt->save();
             }
         }
@@ -107,7 +113,6 @@ class UnterstuetzerInnenAdminWidget
                     $person->typ = $unterstuetzerIn_neu["person_typ"][$i];
                     $person->status = Person::$STATUS_UNCONFIRMED;
                     $person->angelegt_datum = "NOW()";
-                    $person->admin = 0;
 
                     if ($person->save()) {
                         $unt = new $unterstuetzerInnen_class();

@@ -169,11 +169,12 @@ class AenderungsantragController extends AntragsgruenController
 				if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
 					$kommentar_link = $kommentar->getLink(true);
 					$mails          = explode(",", $this->veranstaltung->admin_email);
+					$from_name      = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
 					$mail_text      = "Es wurde ein neuer Kommentar zum Änderungsantrag \"" . $aenderungsantrag->revision_name . " zu " . $aenderungsantrag->antrag->revision_name . " - " . $aenderungsantrag->antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
 						"Link: " . $kommentar_link;
 
 					foreach ($mails as $mail) if (trim($mail) != "") {
-						AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Kommentar - bitte freischalten.", $mail_text);
+						AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Kommentar - bitte freischalten.", $mail_text, $from_name);
 					}
 				}
 
@@ -192,10 +193,23 @@ class AenderungsantragController extends AntragsgruenController
 			}
 		}
 		if ($kommentar_id > 0) {
-			$abs = $aenderungsantrag->getAntragstextParagraphs_flat();
-			foreach ($abs as $ab) {
-				/** @var AntragAbsatz $ab */
-				foreach ($ab->kommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $ab->absatz_nr;
+			if ($aenderungsantrag->kommentar_legacy) {
+				$abs = $aenderungsantrag->getAntragstextParagraphs_flat();
+				foreach ($abs as $ab) {
+					/** @var AntragAbsatz $ab */
+					foreach ($ab->kommentare as $komm) if ($komm->id == $kommentar_id) $kommentare_offen[] = $ab->absatz_nr;
+				}
+			} else {
+				$abs2 = $aenderungsantrag->getAntragstextParagraphs_diff();
+				foreach ($abs2 as $i => $ab2) {
+					if ($ab2 === null) continue;
+					/** @var AenderungsantragAbsatz $ab2 */
+					foreach ($ab2->kommentare as $komm) {
+						if ($komm->id == $kommentar_id) {
+							$kommentare_offen[] = $i;
+						}
+					}
+				}
 			}
 		}
 
@@ -385,12 +399,13 @@ class AenderungsantragController extends AntragsgruenController
 			$aenderungsantrag->save();
 
 			if ($aenderungsantrag->antrag->veranstaltung->admin_email != "") {
-				$mails = explode(",", $aenderungsantrag->antrag->veranstaltung->admin_email);
+				$mails     = explode(",", $aenderungsantrag->antrag->veranstaltung->admin_email);
+				$from_name = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
 				$mail_text = "Es wurde ein neuer Änderungsantrag zum Antrag \"" . $aenderungsantrag->antrag->name . "\" eingereicht.\n" .
 					"Link: " . yii::app()->getBaseUrl(true) . $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag_id));
 
 				foreach ($mails as $mail) if (trim($mail) != "") {
-					AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Änderungsantrag", $mail_text);
+					AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Änderungsantrag", $mail_text, $from_name);
 				}
 			}
 
@@ -426,6 +441,8 @@ class AenderungsantragController extends AntragsgruenController
 	{
 		if (!isset($_REQUEST["absaetze"])) return;
 
+		$this->testeWartungsmodus();
+
 		$antrag_id = IntVal($_REQUEST["antrag_id"]);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
@@ -449,6 +466,8 @@ class AenderungsantragController extends AntragsgruenController
 	{
 		$this->layout = '//layouts/column2';
 
+		$this->testeWartungsmodus();
+
 		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
@@ -466,17 +485,26 @@ class AenderungsantragController extends AntragsgruenController
 		$aenderungsantrag->antrag                     = $antrag;
 		$aenderungsantrag->antrag_id                  = $antrag->id;
 		$aenderungsantrag->status                     = Aenderungsantrag::$STATUS_UNBESTAETIGT;
-        $aenderungsantrag->status_string              = "";
+		$aenderungsantrag->status_string              = "";
 
 		$changed = false;
 
 		if (AntiXSS::isTokenSet("antragneu")) {
 
-			$aenderungsantrag->name_neu              = $_REQUEST["Aenderungsantrag"]["name_neu"];
-			$aenderungsantrag->aenderung_begruendung = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["ae_begruendung"]);
-            $aenderungsantrag->begruendung_neu       = "";
+			$aenderungsantrag->name_neu           = $_REQUEST["Aenderungsantrag"]["name_neu"];
+			$aenderungsantrag->begruendung_neu    = "";
+			$aenderungsantrag->aenderung_metatext = HtmlBBcodeUtils::html_normalize($_REQUEST["ae_metatext"]);
+
+			if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->begruendung_in_html && isset($_REQUEST["ae_begruendung_html"])) {
+				$aenderungsantrag->aenderung_begruendung_html = 1;
+				$aenderungsantrag->aenderung_begruendung      = HtmlBBcodeUtils::html_normalize($_REQUEST["ae_begruendung"]);
+			} else {
+				$aenderungsantrag->aenderung_begruendung_html = 0;
+				$aenderungsantrag->aenderung_begruendung      = HtmlBBcodeUtils::bbcode_normalize($_REQUEST["ae_begruendung"]);
+			}
 
 			if ($aenderungsantrag->name_neu != $antrag->name) $changed = true;
+			if (trim($aenderungsantrag->aenderung_metatext) != "") $changed = true;
 
 			$orig_absaetze = $antrag->getParagraphs();
 			$neue_absaetze = array();
@@ -498,10 +526,11 @@ class AenderungsantragController extends AntragsgruenController
 			if ($changed) {
 				$aenderungsantrag->setDiffParagraphs($neue_absaetze);
 
-				$diff      = DiffUtils::getTextDiffMitZeilennummern(trim($antrag->text), trim($neuer_text), $antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
+				$diff      = DiffUtils::getTextDiffMitZeilennummern($antrag->text, $neuer_text, $antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 				$diff_text = "";
 
 				if ($aenderungsantrag->name_neu != $antrag->name) $diff_text .= "Neuer Titel des Antrags:\n[QUOTE]" . $aenderungsantrag->name_neu . "[/QUOTE]\n\n";
+				if (trim($aenderungsantrag->aenderung_metatext) != "") $diff_text = $aenderungsantrag->aenderung_metatext . "\n\n";
 				$diff_text .= DiffUtils::diff2text($diff, $antrag->getFirstLineNo());
 
 				$aenderungsantrag->aenderung_text    = $diff_text;

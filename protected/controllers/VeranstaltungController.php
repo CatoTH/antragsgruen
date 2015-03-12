@@ -151,14 +151,25 @@ class VeranstaltungController extends AntragsgruenController
 		$this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
 		$this->testeWartungsmodus();
 
-		$criteria        = new CDbCriteria();
-		$criteria->alias = "aenderungsantrag";
-		$criteria->order = "LPAD(REPLACE(aenderungsantrag.revision_name, 'Ä', ''), 3, '0')";
-		$criteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
-        $criteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
-		$aenderungsantraege = Aenderungsantrag::model()->with(array(
-			"antrag" => array('condition' => 'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id))
-		))->findAll($criteria);
+		if ($this->veranstaltung->getEinstellungen()->ae_nummerierung_nach_zeile) {
+			$antraege = $this->veranstaltung->antraegeSortiert();
+			$aenderungsantraege = array();
+			foreach ($antraege as $antr_typ) {
+				foreach ($antr_typ as $antr)  {
+					/** @var Antrag $antr */
+					foreach ($antr->aenderungsantraege as $ae) $aenderungsantraege[] = $ae;
+				}
+			}
+		} else {
+			$criteria        = new CDbCriteria();
+			$criteria->alias = "aenderungsantrag";
+			$criteria->order = "LPAD(REPLACE(aenderungsantrag.revision_name, 'Ä', ''), 3, '0')";
+			$criteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
+			$criteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
+			$aenderungsantraege = Aenderungsantrag::model()->with(array(
+				"antrag" => array('condition' => 'antrag.veranstaltung_id=' . IntVal($this->veranstaltung->id))
+			))->findAll($criteria);
+		}
 
 		$this->renderPartial('veranstaltung_ae_pdfs', array(
 			"sprache"            => $this->veranstaltung->getSprache(),
@@ -215,7 +226,36 @@ class VeranstaltungController extends AntragsgruenController
 				"person" => $person
 			));
 		}
+	}
 
+	public function actionAnmeldungBestaetigen($veranstaltungsreihe_id = "", $email = "", $code = "")
+	{
+		$this->loadVeranstaltung($veranstaltungsreihe_id);
+
+		$msg_error = "";
+
+		if (isset($_REQUEST["code"])) $code = $_REQUEST["code"];
+		if ($email != "" && $code != "") {
+			/** @var Person $p */
+			$p = Person::model()->findByAttributes(array("auth" => "email:" . $email));
+			if (!$p) $msg_error = "Es existiert kein Zugang mit der angegebenen E-Mail-Adresse...?";
+			else {
+				if ($p->checkEmailBestaetigungsCode($code)) {
+					$p->email_bestaetigt = 1;
+					if ($p->save()) {
+						$identity = new AntragUserIdentityPasswd($p->email, $p->auth);
+						Yii::app()->user->login($identity);
+						$this->render("anmeldungBestaetigt");
+						Yii::app()->end();
+					}
+				} else $msg_error = "Der angegebene Code stimmt leider nicht.";
+			}
+		}
+
+		$this->render("anmeldungBestaetigen", array(
+			"email" => $email,
+			"errors" => $msg_error,
+		));
 	}
 
 	/**
@@ -505,16 +545,20 @@ class VeranstaltungController extends AntragsgruenController
 	 */
 	private function actionVeranstaltung_loadData()
 	{
+        $unsichtbar_   = IAntrag::$STATI_UNSICHTBAR;
+        $unsichtbar = array();
+        foreach ($unsichtbar_ as $stat) if ($stat != Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT) $unsichtbar[] = $stat;
+
 		/** @var Veranstaltung $veranstaltung */
 		$this->veranstaltung = Veranstaltung::model()->
 			with(array(
 				'antraege'                    => array(
 					'joinType' => "LEFT OUTER JOIN",
-					'on'       => "`antraege`.`veranstaltung_id` = `t`.`id` AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
+					'on'       => "`antraege`.`veranstaltung_id` = `t`.`id` AND `antraege`.`status` NOT IN (" . implode(", ", $unsichtbar) . ")",
 				),
 				'antraege.aenderungsantraege' => array(
 					'joinType' => "LEFT OUTER JOIN",
-					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
+					"on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND `aenderungsantraege`.`status` NOT IN (" . implode(", ", $unsichtbar) . ") AND `antraege`.`status` NOT IN (" . implode(", ", $unsichtbar) . ")",
 				),
 			))->findByAttributes(array("id" => $this->veranstaltung->id));
 		return $this->veranstaltung;

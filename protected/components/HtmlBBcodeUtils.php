@@ -18,11 +18,30 @@ class HtmlBBcodeUtils
 	}
 
 	/**
+	 * @param string $html
+	 * @return string
+	 */
+	public static function html_normalize($html)
+	{
+		$config = HTMLPurifier_Config::createDefault();
+
+		$config->set('Cache.SerializerPath', "/tmp/");
+		// Ermöglicht Prozentangaben
+		$config->set('CSS.MaxImgLength', null);
+		$config->set('HTML.MaxImgLength', null);
+
+		$purifier   = new HTMLPurifier($config);
+		$clean_html = $purifier->purify($html);
+		return $clean_html;
+	}
+
+	/**
 	 * @param string $text
 	 * @return string
 	 */
-	static function bbcode_normalize($text)
+	public static function bbcode_normalize($text)
 	{
+		$text = preg_replace("/=[0-9]+\.[0-9]+pt/su", "", $text);
 		$text = preg_replace("/\[(\/?)list([^\]]*)\]/siu", "[\\1LIST\\2]", $text);
 		$text = preg_replace("/\[(\/?)quote\]/siu", "[\\1QUOTE]", $text);
 		$text = preg_replace("/\[(\/?)b\]/siu", "[\\1B]", $text);
@@ -31,15 +50,16 @@ class HtmlBBcodeUtils
 		$text = preg_replace("/\[(\/?)url([^\]]*)\]/siu", "[\\1URL\\2]", $text);
 		$text = preg_replace("/\[p\](.*)\[\/p\]/siuU", "\\1", $text);
 
-		$text = str_replace(chr(194).chr(160), " ", $text);
+		$text = str_replace(chr(194) . chr(160), " ", $text);
 		$text = preg_replace("/ {2,}/", " ", $text);
 
 		$x = explode("\n", $text);
-		foreach ($x as $i=>$zeile) {
+		foreach ($x as $i => $zeile) {
 			$x[$i] = trim($zeile);
 		}
 		return implode("\n", $x);
 	}
+
 
 	/**
 	 * @static
@@ -50,17 +70,20 @@ class HtmlBBcodeUtils
 	static function bbcode2zeilen_absaetze($text, $zeilenlaenge)
 	{
 		HtmlBBcodeUtils::$zeilenlaenge = $zeilenlaenge;
-		$text = str_replace("\r", "", $text);
-		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
-		$text = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
-		$text = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
+		$text = static::bbNormalizeForAbsaetze($text);
+		/*
+		$text                          = str_replace("\r", "", $text);
+		$text                          = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
+		$text                          = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
+		$text                          = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
 
 		$text   = preg_replace("/[\\n ]+\[\*\]/siU", "\n[*]", $text);
 		$text   = trim($text, " \n");
+		*/
 		$x      = explode("\n\n", $text);
 		$return = array();
 
-		foreach ($x as $y) {
+		foreach ($x as $i => $y) {
 			if (mb_stripos($y, "[list") === 0 || mb_stripos($y, "[ulist") === 0 || mb_stripos($y, "[quote") === 0) {
 				$str_neu = preg_replace_callback("/(\[quote[^\]]*\])(.*)(\[\/quote\])/siU", function ($matches) {
 					$out = $matches[1];
@@ -68,7 +91,7 @@ class HtmlBBcodeUtils
 					$zeils     = explode("\n", $matches[2]);
 					$zeils_neu = array();
 					foreach ($zeils as $zeile) {
-						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
+						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10, true);
 						$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $x);
 					}
 					$out .= implode("\n", $zeils_neu);
@@ -79,13 +102,13 @@ class HtmlBBcodeUtils
 
 				$str_neu = preg_replace_callback("/(\[list[^\]]*\])(.*)(\[\/list\])/siuU", function ($matches) {
 					$out = $matches[1];
-					$x = explode("[*]", $matches[2]);
+					$x   = explode("[*]", $matches[2]);
 
 					if (count($x) > 1) for ($i = 1; $i < count($x); $i++) if (trim($x[$i]) != "") {
-						$zeils = explode("\n", trim($x[$i]));
+						$zeils     = explode("\n", trim($x[$i]));
 						$zeils_neu = array();
 						foreach ($zeils as $zeile) {
-							$z           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
+							$z           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10, true);
 							$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $z);
 						}
 						$out .= "[*]" . implode("[*]", $zeils_neu);
@@ -99,7 +122,7 @@ class HtmlBBcodeUtils
 				$zeils     = explode("\n", $y);
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge, true);
 					$zeils_neu[] = "###ZEILENNUMMER###" . implode("\n###ZEILENNUMMER###", $x);
 				}
 
@@ -123,14 +146,33 @@ class HtmlBBcodeUtils
 	 * @param int $zeilenlaenge
 	 * @return array|int[]
 	 */
-	static function getBBCodeStats($text, $zeilenlaenge) {
+	static function getBBCodeStats($text, $zeilenlaenge)
+	{
 		static::initZeilenCounter(1);
 		$absaetze = static::bbcode2html_absaetze($text, false, $zeilenlaenge);
-		$strs = $absaetze["html"];
+		$strs     = $absaetze["html"];
 		preg_match_all("/<span class='zeilennummer'>([0-9]+)<\/span>/siu", $strs[count($strs) - 1], $matches);
 		$anzahl_absaetze = count($strs);
-		$anzahl_zeilen = $matches[1][count($matches[1]) - 1];
+		$anzahl_zeilen   = $matches[1][count($matches[1]) - 1];
 		return array($anzahl_absaetze, $anzahl_zeilen);
+	}
+
+	/**
+	 * @param string $text
+	 * @return string
+	 */
+	static function bbNormalizeForAbsaetze($text)
+	{
+		$text = str_replace("\r", "", $text);
+		$text = str_replace(chr(194) . chr(160), " ", $text);
+		$text = str_replace("\n \n", "\n\n", $text);
+		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
+		$text = preg_replace("/[ \\n\\r]*\[\/LIST\]/si", "[/LIST]", $text);
+		$text = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
+		$text = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
+		$text = preg_replace("/[\\n ]+\[\*\]/siU", "\n[*]", $text);
+		$text = trim($text, " \n");
+		return $text;
 	}
 
 	/**
@@ -142,25 +184,20 @@ class HtmlBBcodeUtils
 	 */
 	static function bbcode2html_absaetze($text, $praesentations_hacks = false, $zeilenlaenge)
 	{
-		$text = str_replace("\r", "", $text);
-		$text = preg_replace("/\[list(.*)\[\/list\]/siU", "\n\n[LIST\\1[/LIST]\n\n", $text);
-		$text = preg_replace("/\[quote(.*)\[\/quote\]/siU", "\n\n[QUOTE\\1[/QUOTE]\n\n", $text);
-		$text = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
-
-		$text                = preg_replace("/[\\n ]+\[\*\]/siU", "\n[*]", $text);
-		$text                = trim($text, " \n");
+		$text = static::bbNormalizeForAbsaetze($text);
 		$x                   = explode("\n\n", $text);
 		$absaetze_html       = array();
 		$absaetze_bbcode     = array();
 		$absaetze_html_plain = array();
 
-		HtmlBBcodeUtils::$br_implicit = ($praesentations_hacks ? " <br class='implicit'>" : "<br>"); // wird bei responsiver Ansicht manchmal ausgeblendet
-		HtmlBBcodeUtils::$br_explicit = "<br>";
+		HtmlBBcodeUtils::$br_implicit  = ($praesentations_hacks ? " <br class='implicit'>" : "<br>"); // wird bei responsiver Ansicht manchmal ausgeblendet
+		HtmlBBcodeUtils::$br_explicit  = "<br>";
 		HtmlBBcodeUtils::$zeilenlaenge = $zeilenlaenge;
 
-		foreach ($x as $y) {
-			$absaetze_bbcode[]     = $y;
-			$abs                   = HtmlBBcodeUtils::bbcode2html($y);
+		foreach ($x as $i => $y) {
+			$absaetze_bbcode[] = $y;
+			$abs               = HtmlBBcodeUtils::bbcode2html($y);
+
 			$absaetze_html_plain[] = $abs;
 
 			if (mb_stripos($abs, "<ul") === 0 || mb_stripos($abs, "<ol") === 0 || mb_stripos($abs, "<blockquote") === 0) {
@@ -174,7 +211,7 @@ class HtmlBBcodeUtils
 					$zeils     = explode("<br>", $matches[3]);
 					$zeils_neu = array();
 					foreach ($zeils as $zeile) {
-						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10);
+						$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge - 10, false);
 						$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 					}
 					$out .= implode("<br>", $zeils_neu);
@@ -186,7 +223,7 @@ class HtmlBBcodeUtils
 				$zeils     = explode("<br>", $abs);
 				$zeils_neu = array();
 				foreach ($zeils as $zeile) {
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge);
+					$x           = HtmlBBcodeUtils::text2zeilen($zeile, HtmlBBcodeUtils::$zeilenlaenge, false);
 					$zeils_neu[] = "###ZEILENNUMMER###" . implode(HtmlBBcodeUtils::$br_implicit . "###ZEILENNUMMER###", $x);
 				}
 
@@ -205,105 +242,78 @@ class HtmlBBcodeUtils
 		return array("html" => $absaetze_html, "html_plain" => $absaetze_html_plain, "bbcode" => $absaetze_bbcode);
 	}
 
-	static function wrapWithTextClass($text, $css_hack_width = 0) {
-        if (mb_stripos($text, "<ul") === 0) $text = str_ireplace("<ul", "<ul class='text'", $text);
+	static function wrapWithTextClass($text, $css_hack_width = 0)
+	{
+		if (mb_stripos($text, "<ul") === 0) $text = str_ireplace("<ul", "<ul class='text'", $text);
 		if (mb_stripos($text, "<ol") === 0) $text = str_ireplace("<ol", "<ol class='text'", $text);
 
 		if (mb_stripos($text, "<ul") !== 0 && mb_stripos($text, "<ol") !== 0 && mb_stripos($text, "<blockquote") !== 0) {
-            $css = ($css_hack_width > 0 ? "style='width: " . Ceil($css_hack_width * 8.4) . "px;'" : "");
+			// Testfälle: https://ltwby13-programm.antragsgruen.de/ltwby13-programm/antrag/85 Ä234: zu schmal bei 8.4
+			$css  = ($css_hack_width > 0 ? "style='width: " . Ceil($css_hack_width * 8.43) . "px;'" : "");
 			$text = "<div class='text' $css>" . $text . "</div>";
 		}
 		return $text;
-	}
-
-
-	static function bbcode2html_absaetze2_block($text, $maxlen)
-	{
-		echo $text . "\n\n";
-		preg_match("/(<ul[^>]*>)(.*)<\/ul>/siu", $text, $matches, PREG_OFFSET_CAPTURE);
-		var_dump($matches);
-		preg_match("/(<ol[^>]*>)(.*)<\/ol>/siu", $text, $matches, PREG_OFFSET_CAPTURE);
-		return $text;
-	}
-
-	/**
-	 * @static
-	 * @param string $text
-	 * @param int $zeilenlaenge
-	 * @return array|string[]
-	 */
-	static function bbcode2html_absaetze2($text, $zeilenlaenge)
-	{
-		$text = str_replace("\r", "", $text);
-		$text = preg_replace("/\\n( *\\n)+/", "\n\n", $text);
-		//$text                      = preg_replace("/[ \\n]*(\[\/?(BLOCKQUOTE|LIST)[^\]]*\][ \\n]*/siu", "\\1", $text);
-		$text = preg_replace("/[\\n ]+\[\*\]/siU", "\n[*]", $text);
-		$text = trim($text, " \n");
-		echo $text . "\n----------------\n";
-		$x                   = explode("\n\n", $text);
-		$absaetze_html       = array();
-		$absaetze_bbcode     = array();
-		$absaetze_html_plain = array();
-
-		foreach ($x as $y) {
-			$absaetze_bbcode[] = $y;
-			echo $y . "\n=================\n";
-			$abs                   = HtmlBBcodeUtils::bbcode2html($y);
-			$absaetze_html_plain[] = $abs;
-			echo $abs . "\n=================\n";
-
-			$str_neu = self::bbcode2html_absaetze2_block($abs, $zeilenlaenge);
-
-			$zeils     = explode("<br>", $abs);
-			$zeils_neu = array();
-			foreach ($zeils as $zeile) {
-				$zeile = preg_replace("/<ul([^>]*)>/siu", "<ul\\1 class='text'>", $zeile);
-				$zeile = preg_replace("/<ol([^>]*)>/siu", "<ol\\1 class='text'>", $zeile);
-				$zeile = preg_replace("/<blockquote([^>]*)>/siu", "<blockquote\\1 class='text'>", $zeile);
-
-				//$zeile = preg_replace("/(<ul([^>]*)>|<ol([^>]*)>|<blockquote([^>]*)>| )*(.*)/siu", "\\1###ZEILENNUMMER###"$zeile);
-				/*
-					$x           = HtmlBBcodeUtils::text2zeilen($zeile, $zeilenlaenge);
-				$zeils_neu[] = "###ZEILENNUMMER###" . implode("<br>###ZEILENNUMMER###", $x);
-				*/
-			}
-
-			$str_neu = preg_replace_callback("/###ZEILENNUMMER###/", function () {
-				return "<span class='zeilennummer'>" . HtmlBBcodeUtils::$zeilen_counter++ . "</span>";
-			}, $str_neu);
-
-
-			$absaetze_html[] = $str_neu;
-		}
-
-		return array("html" => $absaetze_html, "html_plain" => $absaetze_html_plain, "bbcode" => $absaetze_bbcode);
 	}
 
 	/**
 	 * @static
 	 * @param string $text
 	 * @param int $max_len
+	 * @param bool $is_bbcode
 	 * @param bool $debug
+	 * @param bool $nocache
 	 * @return array|string[]
 	 */
-	static function text2zeilen($text, $max_len, $debug = false)
+	static function text2zeilen($text, $max_len, $is_bbcode, $debug = false, $nocache = false)
 	{
 
-		$zeilen                    = array();
-		$letztes_leerzeichen       = -1;
-		$letztes_leerzeichen_count = 0;
-		$in_html_modus             = false;
-		$aktuelle_zeile            = "";
-		$aktuelle_zeile_count      = 0;
+		//echo "<br><br>===<br>" . nl2br(htmlentities($text));
 
-		$cache_key = md5("text2zeilen" . $max_len . $text);
-		$cached = Cache::getObject($cache_key);
-		if (is_array($cached)) return $cached;
+		$zeilen                     = array();
+		$letztes_trennzeichen       = -1;
+		$letztes_trennzeichen_count = 0;
+		$in_html_modus              = false;
+		$in_escaped_modus           = false;
+		$aktuelle_zeile             = "";
+		$aktuelle_zeile_count       = 0;
+
+		if (!$nocache) {
+			$cache_key = md5("text2zeilen11" . $max_len . ($is_bbcode ? 1 : 0) . $text);
+			$cached    = Cache::getObject($cache_key);
+			if (is_array($cached)) return $cached;
+		}
 
 		for ($i = 0; $i < mb_strlen($text); $i++) {
 			$curr_char = mb_substr($text, $i, 1);
+			$bbcode_break = false;
+			while ($is_bbcode && $curr_char == '[' && !$bbcode_break) {
+				$bbcode_break = true;
+
+				$three = mb_strtolower(mb_substr($text, $i, 3));
+				if (in_array($three, array("[b]", "[u]", "[i]", "[s]"))) {
+					if ($debug) echo "Skipping: $three\n";
+					$aktuelle_zeile .= mb_substr($text, $i, 3);
+
+					$i += 3;
+					$curr_char = mb_substr($text, $i, 1);
+					$bbcode_break = false;
+				}
+
+				$four = mb_strtolower(mb_substr($text, $i, 4));
+				if (in_array($four, array("[/b]", "[/u]", "[/i]", "[/s]"))) {
+					if ($debug) echo "Skipping: $four\n";
+					$aktuelle_zeile .= mb_substr($text, $i, 4);
+
+					$i += 4;
+					$curr_char = mb_substr($text, $i, 1);
+					$bbcode_break = false;
+				}
+			}
 			if ($in_html_modus) {
 				if ($curr_char == ">") $in_html_modus = false;
+				$aktuelle_zeile .= $curr_char;
+			} elseif ($in_escaped_modus) {
+				if ($curr_char == ";") $in_escaped_modus = false;
 				$aktuelle_zeile .= $curr_char;
 			} else {
 				$aktuelle_zeile .= $curr_char;
@@ -312,40 +322,59 @@ class HtmlBBcodeUtils
 					$in_html_modus = true;
 					continue;
 				}
+				if ($curr_char == "&") {
+					$in_escaped_modus = true;
+				}
 
 				$aktuelle_zeile_count++;
-				if (in_array($curr_char, array(" ", "-"))) {
-					$letztes_leerzeichen       = mb_strlen($aktuelle_zeile) - 1;
-					$letztes_leerzeichen_count = $aktuelle_zeile_count;
-				}
-				if ($aktuelle_zeile_count == $max_len) {
-					if ($debug) echo "Aktuelle Zeile: \"" . htmlentities($aktuelle_zeile, ENT_COMPAT, "UTF-8") . "\"<br>";
-					if ($debug) echo "Count: \"" . $aktuelle_zeile_count . "\"<br>";
-					if ($debug) echo "Letztes Leerzeichen: \"" . $letztes_leerzeichen . "\"<br>";
 
-					if ($letztes_leerzeichen == -1) {
-						if ($debug) echo "Umbruch forcieren<br>";
+				if ($debug) echo $aktuelle_zeile_count . ": " . $curr_char . "\n";
+
+				if ($aktuelle_zeile_count > $max_len) {
+					if ($debug) echo "Aktuelle Zeile: \"" . $aktuelle_zeile . "\"\n";
+					if ($debug) echo "Count: \"" . $aktuelle_zeile_count . "\"\n";
+					if ($debug) echo "Letztes Leerzeichen: \"" . $letztes_trennzeichen . "\"\n";
+
+					if ($letztes_trennzeichen == -1) {
+						if ($debug) echo "Umbruch forcieren\n";
 						$zeilen[]             = mb_substr($aktuelle_zeile, 0, mb_strlen($aktuelle_zeile) - 1) . "-";
 						$aktuelle_zeile       = $curr_char;
 						$aktuelle_zeile_count = 1;
 					} else {
-						$ueberhang = mb_substr($aktuelle_zeile, $letztes_leerzeichen + 1);
-						if ($debug) echo "Überhang: \"" . htmlentities($ueberhang, ENT_COMPAT, "UTF-8") . "\"<br>";
-						$zeilen[] = mb_substr($aktuelle_zeile, 0, $letztes_leerzeichen + 1); // Leerzeichen bleiben am Ende erhalten; wg. Bindestrichen nötig
+						if ($debug) echo "Aktuelles Zeichen: \"" . mb_substr($text, $i, 1) . "\"\n";
+						if (mb_substr($text, $i, 1) == " ") {
+							$zeilen[] = mb_substr($aktuelle_zeile, 0, mb_strlen($aktuelle_zeile) - 1);
 
-						$aktuelle_zeile            = $ueberhang;
-						$aktuelle_zeile_count      = $max_len - $letztes_leerzeichen_count;
-						$letztes_leerzeichen       = -1;
-						$letztes_leerzeichen_count = 0;
+							$aktuelle_zeile       = "";
+							$aktuelle_zeile_count = 0;
+						} else {
+							$ueberhang = mb_substr($aktuelle_zeile, $letztes_trennzeichen + 1);
+							if ($debug) echo "Überhang: \"" . $ueberhang . "\"\n";
+							$letztes_ist_leerzeichen = (mb_substr($aktuelle_zeile, $letztes_trennzeichen, 1) == " ");
+							if ($debug) echo "Letztes ist Leerzeichen: " . $letztes_ist_leerzeichen . "\n";
+							$zeilen[] = mb_substr($aktuelle_zeile, 0, $letztes_trennzeichen + ($letztes_ist_leerzeichen ? 0 : 1));
+
+							$aktuelle_zeile       = $ueberhang;
+							$aktuelle_zeile_count = $max_len - $letztes_trennzeichen_count + 1;
+						}
+
+						$letztes_trennzeichen       = -1;
+						$letztes_trennzeichen_count = 0;
 					}
-					if ($debug) echo "Neue aktuelle Zeile: \"" . htmlentities($aktuelle_zeile, ENT_COMPAT, "UTF-8") . "\"<br>";
-					if ($debug) echo "Count: \"" . $aktuelle_zeile_count . "\"<br><br>";
+					if ($debug) echo "Neue aktuelle Zeile: \"" . $aktuelle_zeile . "\"\n";
+					if ($debug) echo "Count: \"" . $aktuelle_zeile_count . "\"\n\n";
+				} elseif (in_array($curr_char, array(" ", "-"))) {
+					$letztes_trennzeichen       = mb_strlen($aktuelle_zeile) - 1;
+					$letztes_trennzeichen_count = $aktuelle_zeile_count;
 				}
+
 			}
 		}
 		if (mb_strlen(trim($aktuelle_zeile)) > 0) $zeilen[] = $aktuelle_zeile;
 
-		Cache::setObject($cache_key, $zeilen);
+		if (!$nocache) {
+			Cache::setObject($cache_key, $zeilen);
+		}
 
 		return $zeilen;
 	}
@@ -354,36 +383,65 @@ class HtmlBBcodeUtils
 	/**
 	 * @static
 	 * @param string $text
+	 * @param bool $allow_html
 	 * @return string
 	 */
-	static function bbcode2html($text)
+	static function bbcode2html($text, $allow_html = false)
 	{
-		$text = preg_replace_callback("/(\[o?list[^\]]*\])(.*)(\[\/o?list\])/siuU", function($matches) {
-			$parts = explode("[*]", trim($matches[2]));
-			$str = $matches[1];
-			foreach ($parts as $part) if ($part != "") $str .= "[LI]" . trim($part) . "[/LI]";
-			$str .= $matches[3];
-			return  $str;
-		}, $text);
+		$debug = false;
 
-		$text = preg_replace_callback("/(\[quote[^\]]*\])(.*)(\[\/o?quote\])/siuU", function($matches) {
-			$first_open = mb_stripos($matches[2], "[LIST");
+		/*
+		$text = preg_replace_callback("/(\[quote[^\]]*\])(.*)(\[\/o?quote\])/siuU", function ($matches) {
+			$first_open  = mb_stripos($matches[2], "[LIST");
 			$first_close = mb_stripos($matches[2], "[/LIST]");
 
 			if ($first_close !== false && ($first_open === false || $first_close < $first_open)) $matches[2] = trim(mb_substr($matches[2], 0, $first_close) . "\n" . mb_substr($matches[2], $first_close + 7));
 			return $matches[1] . $matches[2] . $matches[3];
 		}, $text);
+		*/
 
-		//echo "<br>IN========<br>";
-		//echo CHtml::encode($text);
-		$code = new \Decoda\Decoda();
-		$code->setEscaping(false);
+		if ($debug) {
+			//require_once("/var/www/antragsgruen-v2/vendor/mjohnson/decoda/examples/list.php");
+			echo "<br>IN========<br>";
+			echo CHtml::encode($text);
+		}
+
+		$text = preg_replace_callback("/(\[quote[^\]]*\])(.*)(\[\/o?quote\])/siuU", function ($matches) {
+			if (mb_stripos($matches[2], "[li]") === false && mb_stripos($matches[2], "[*]") === false) return $matches[1] . $matches[2] . $matches[3];
+			if (mb_stripos($matches[2], "[list]") === false) {
+				return "[list]\n[*]" . $matches[2] . "\n[/list]";
+			} else {
+				return $matches[2];
+			}
+		}, $text);
+		$text = preg_replace_callback("/(\[o?list[^\]]*\])(.*)(\[\/o?list\])/siuU", function ($matches) use ($debug) {
+			$parts = explode("[*]", trim($matches[2]));
+			$str   = $matches[1];
+			foreach ($parts as $part) if ($part != "") $str .= "[LI]" . trim($part) . "[/LI]";
+			$str .= $matches[3];
+			return $str;
+		}, $text);
+		$text = preg_replace_callback("/(?<pre>\[url=)(?<url>[^\"\]]+)(?<post>\])/siu", function($matches) {
+			return $matches["pre"] . "\"" . $matches["url"] . "\"" . $matches["post"];
+		}, $text);
+
+		$code  = new \Decoda\Decoda();
+		$code->setEscaping(!$allow_html);
 		$code->addFilter(new AntraegeBBCodeFilter());
 		$code->addFilter(new \Decoda\Filter\UrlFilter());
+
+		if ($debug) {
+			//require_once("/var/www/antragsgruen-v2/vendor/mjohnson/decoda/examples/list.php");
+			echo "<br>IN========<br>";
+			echo CHtml::encode($text);
+		}
+
 		$code->reset($text);
 		$text = $code->parse();
-		//echo "<br>OUT========<br>";
-		//echo CHtml::encode($text);
+		if ($debug) {
+			echo "<br>OUT========<br>";
+			echo CHtml::encode($text);
+		}
 
 		$text = str_replace("<br>\n", "<br>", $text);
 		$text = str_replace("\n", "<br>", $text);
@@ -690,9 +748,12 @@ class HtmlBBcodeUtils
 	}
 
 
-
-	static function removeBBCode($text) {
-		return str_ireplace(array("[b]", "[/b]", "[quote]", "[/quote]", "[*]", "[i]", "[/i]", "[list]", "[/list]", "[u]", "[/u]", "[s]", "[/s]"), "", $text);
+	static function removeBBCode($text)
+	{
+		$text = str_ireplace(array("[b]", "[/b]", "[quote]", "[/quote]", "[*]", "[i]", "[/i]", "[list]", "[/list]", "[u]", "[/u]", "[s]", "[/s]", "[list=1]", "[/color]"), "", $text);
+		$text = preg_replace("/\[color=[0-9a-z]+\]/siu", "", $text);
+		$text = preg_replace("/\[url=[0-9a-z_\-\.\"\/\:\=\?]+\]/siu", "", $text);
+		return $text;
 	}
 
 

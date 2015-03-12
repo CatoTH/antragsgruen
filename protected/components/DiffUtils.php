@@ -190,7 +190,7 @@ class DiffUtils
 			}
 		}
 
-		$diff_text2 = str_replace("\n#ZEILE#", "", $diff_text2);
+		$diff_text2 = str_replace("\n#ZEILE#", " ", $diff_text2);
 		$diff_text2 = str_replace("#ZEILE#", "", $diff_text2);
 		$diff_text2 = str_replace("#ABSATZ#", "", $diff_text2);
 
@@ -235,11 +235,13 @@ class DiffUtils
 	public static function getTextDiffMitZeilennummern($string1 = "", $string2 = "", $zeilenlaenge)
 	{
 		HtmlBBcodeUtils::initZeilenCounter();
-		$arr1  = HtmlBBcodeUtils::bbcode2zeilen_absaetze(trim($string1), $zeilenlaenge);
+		$string1 = trim(static::bbNormalizeForDiff($string1));
+		$arr1  = HtmlBBcodeUtils::bbcode2zeilen_absaetze($string1, $zeilenlaenge);
 		$text1 = implode("\n#ABSATZ#\n", $arr1);
 
 		HtmlBBcodeUtils::initZeilenCounter();
-		$arr2  = HtmlBBcodeUtils::bbcode2zeilen_absaetze(trim($string2), $zeilenlaenge);
+		$string2 = trim(static::bbNormalizeForDiff($string2));
+		$arr2  = HtmlBBcodeUtils::bbcode2zeilen_absaetze($string2, $zeilenlaenge);
 		$text2 = implode("\n#ABSATZ#\n", $arr2);
 
 		$diff = new Horde_Text_Diff('native', array(explode("\n", $text1), explode("\n", $text2)));
@@ -294,6 +296,7 @@ class DiffUtils
 	private static function bbNormalizeForDiff($text)
 	{
 		$text = str_replace("\r", "", $text);
+		$text = str_replace(chr(194) . chr(160), " ", $text);
 		$text = str_replace(chr(13), "", $text);
 		$text = preg_replace("/ {2,}/siu", " ", $text);
 		$text = trim($text);
@@ -301,6 +304,7 @@ class DiffUtils
 			return mb_strtoupper($matches[1]) . $matches[2];
 		}, $text);
 		$text = preg_replace("/(\[list[^\]]*\])\\n*\[/siu", "\\1\n[", $text);
+		$text = preg_replace("/([^\\n])\[\/list\]/siu", "\\1\n[/LIST]", $text);
 		$text = preg_replace("/\n*\[\*/siu", "\n[*", $text);
 		$text = str_replace("\r", "", $text);
 		$text = str_replace(chr(13), "", $text);
@@ -326,15 +330,18 @@ class DiffUtils
 	public static $ins_mode_active = false;
 	public static $del_mode_active = false;
 
-    /**
-     * @static
-     * @param string $text_alt
-     * @param string $text_neu
-     * @param bool $compact
-     * @param int $css_width_hack
-     * @return string
-     */
-	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false, $css_width_hack = 0)
+	/**
+	 * @static
+	 * @param string $text_alt
+	 * @param string $text_neu
+	 * @param bool $compact
+	 * @param int $css_width_hack
+	 * @param string $pre_str_html
+     * @param bool $wrapWithCssClass
+	 * @param bool $debug
+	 * @return string
+	 */
+	public static function renderBBCodeDiff2HTML($text_alt, $text_neu, $compact = false, $css_width_hack = 0, $pre_str_html = "", $wrapWithCssClass = true, $debug = false)
 	{
 		$text_alt = static::bbNormalizeForDiff($text_alt);
 		$text_neu = static::bbNormalizeForDiff($text_neu);
@@ -347,12 +354,52 @@ class DiffUtils
 			$absatz = DiffUtils::renderAbsatzDiff($diff);
 		}
 
+		if ($debug) {
+			echo "\n\n============== Nach DIFF ===============\n\n";
+			var_dump($absatz);
+		}
+
+		$split_lists = function($matches) use ($debug) {
+			$lis = explode("[*]", $matches["inhalt"]);
+			if (count($lis) == 1) return $matches[0];
+
+			$output = "";
+			for ($i = 0; $i < count($lis); $i++) {
+				if ($i == 0) {
+					if (trim($lis[$i]) == "") $output .= $lis[$i];
+					else $output .= $matches["anfang"] . $lis[$i] . $matches["ende"];
+				} elseif ($i == (count($lis) - 1)) {
+					if (trim($lis[$i]) == "") $output .= "[*]" . $lis[$i];
+					else $output .= "[*]" . $matches["anfang"] . $lis[$i] . $matches["ende"];
+				} else {
+					$output .= "[*]" . $matches["anfang"] . $lis[$i] . $matches["ende"];
+				}
+			}
+
+			if ($debug) {
+				echo "-----------------\n";
+				var_dump($matches);
+				var_dump($lis);
+				var_dump($output);
+			}
+
+			return $output;
+		};
+
+		$absatz = preg_replace_callback("/(?<anfang><del>)(?<inhalt>.*)(?<ende><\/del>)/siU", $split_lists, $absatz);
+		$absatz = preg_replace_callback("/(?<anfang><ins>)(?<inhalt>.*)(?<ende><\/ins>)/siU", $split_lists, $absatz);
+
 		$diffstr = HtmlBBcodeUtils::bbcode2html($absatz);
 
 		$diffstr = str_ireplace(
 			array("&lt;ins&gt;", "&lt;/ins&gt;", "&lt;del&gt;", "&lt;/del&gt;"),
 			array("<ins>", "</ins>", "<del>", "</del>"),
 			$diffstr);
+
+		if ($debug) {
+			echo "\n\n============== In HTML ===============\n\n";
+			var_dump($diffstr);
+		}
 
 		static::$ins_mode_active = false;
 		static::$del_mode_active = false;
@@ -390,7 +437,7 @@ class DiffUtils
 
 		if ($diffstr == "") $diffstr = HtmlBBcodeUtils::bbcode2html($text_alt);
 
-		$diffstr = HtmlBBcodeUtils::wrapWithTextClass($diffstr, $css_width_hack);
+		if ($wrapWithCssClass) $diffstr = HtmlBBcodeUtils::wrapWithTextClass($pre_str_html . $diffstr, $css_width_hack);
 		return $diffstr;
 	}
 

@@ -18,21 +18,7 @@ $pdf->AddPage();
 
 $linenr = $antrag->getFirstLineNo();
 
-
-if ($antrag->veranstaltung->url_verzeichnis == "ltwby13-programm") {
-	$logo           = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
-	$initiatorinnen = "Parteirat und Landesvorstand";
-	$gegenstand     = "Landtagswahlprogramm";
-	$ueberschrift   = CHtml::encode($antrag->name);
-} elseif ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") {
-	$logo         = Yii::app()->basePath . "/../html/images/gruene-bayern-sw.jpg";
-	$gegenstand   = $antrag->name;
-	$ueberschrift = $sprache->get("Antragstext");
-} else {
-	$logo         = Yii::app()->params['pdf_logo'];
-	$gegenstand   = $antrag->name;
-	$ueberschrift = $sprache->get("Antragstext");
-}
+list($logo, $initiatorinnen, $gegenstand, $ueberschrift, $revision_name, $default_font, $default_fontsize) = veranstaltungsspezifisch_antrag_pdf_header($antrag, $sprache, $initiatorinnen);
 
 if (function_exists("normalizer_normalize")) $ueberschrift = normalizer_normalize($ueberschrift);
 
@@ -43,25 +29,19 @@ if ($header) {
 		$pdf->Image($logo, 22, 32, 47, 26);
 	}
 
-	$pdf->SetXY(155, 37, true);
-
 	if (!$antrag->veranstaltung->getEinstellungen()->revision_name_verstecken) {
-		if ($antrag->revision_name == "") {
-			$name = "Entwurf";
+
+		if ($revision_name == "") {
+			$revision_name = "Entwurf";
 			$pdf->SetFont("helvetica", "I", "25");
 		} else {
-			$name = $antrag->revision_name;
 			$pdf->SetFont("helvetica", "B", "25");
 		}
-		$pdf->MultiCell(37, 21, $name,
-			array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
-			false, 1, "", "", true, 0, false, true, 21, // defaults
-			"M"
-		);
-	} elseif ($antrag->veranstaltung->url_verzeichnis == "ltwby13-programm") {
-		$name = "P1";
-		$pdf->SetFont("helvetica", "B", "25");
-		$pdf->MultiCell(37, 21, $name,
+		$width = strlen($revision_name) * 5.5;
+		if ($width < 35) $width = 35;
+
+		$pdf->SetXY(192 - $width, 37, true);
+		$pdf->MultiCell($width, 21, $revision_name,
 			array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
 			false, 1, "", "", true, 0, false, true, 21, // defaults
 			"M"
@@ -115,10 +95,26 @@ if ($header) {
 
 $pdf->SetX(12);
 
-if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") $pdf->SetFont("helvetica", "", 10);
-else $pdf->SetFont("Courier", "", 10);
+$pdf->SetFont($default_font, "", $default_fontsize);
 
 if ($antrag->veranstaltung->getEinstellungen()->titel_eigene_zeile) $pdf->MultiCell(12, 0, $linenr - 1, 0, "L", false, 0);
+
+
+$text2name = veranstaltungsspezifisch_text2_name($antrag->veranstaltung, $antrag->typ);
+if ($text2name && trim($antrag->text2)) {
+    $text = HtmlBBcodeUtils::bbcode2html($antrag->text2);
+    if (function_exists("normalizer_normalize")) $text = normalizer_normalize($text);
+    $html = '
+	<h3>' . CHtml::encode($text2name) . '</h3>
+	<div class="textholder consolidated">
+		' . $text . '
+	</div>
+	<div></div>
+    ';
+    $pdf->SetFont("helvetica", "", 12);
+    $pdf->writeHTML($html, true, false, true, false, '');
+}
+
 
 
 $pdf->SetFont("helvetica", "", 12);
@@ -127,6 +123,7 @@ $pdf->writeHTML("<h3>" . $ueberschrift . "</h3>");
 $text_size = ($antrag->veranstaltung->getEinstellungen()->zeilenlaenge > 70 ? 10 : 11);
 $pdf->SetFont("Courier", "", $text_size);
 $pdf->Ln(7);
+
 
 
 foreach ($absae as $i => $abs) {
@@ -159,23 +156,39 @@ foreach ($absae as $i => $abs) {
 
 	$y = $pdf->getY();
 	$pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
-	$pdf->writeHTMLCell(170, '', 24, '', $text, 0, 1, 0, true, '', true);
+	$pdf->writeHTMLCell(173, '', 24, '', $text, 0, 1, 0, true, '', true);
 
 	$pdf->Ln(7);
 
 }
 
 if (trim($antrag->begruendung) != "") {
-	$begruendung = HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
+	if ($antrag->begruendung_html) $begruendung = $antrag->begruendung;
+	else $begruendung = HtmlBBcodeUtils::bbcode2html($antrag->begruendung);
 	if (function_exists("normalizer_normalize")) $begruendung = normalizer_normalize($begruendung);
+
+    $bname = veranstaltungsspezifisch_begruendung_name($antrag->veranstaltung, $antrag->typ);
+    if (!$bname) $bname = "Begründung";
+
 	$html = '
 	</div>
-	<h3>Begründung</h3>
+	<h3>' . $bname . '</h3>
 	<div class="textholder consolidated">
 		' . $begruendung . '
 	</div>
 </div>';
-	if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "ldk-bayern") $pdf->SetFont("helvetica", "", 10);
-	else $pdf->SetFont("helvetica", "", 10);
+	$pdf->SetFont($default_font, "", $default_fontsize);
+	$pdf->writeHTML($html, true, false, true, false, '');
+}
+
+$unterstuetzerInnen = $antrag->getUnterstuetzerInnen();
+if (count($unterstuetzerInnen) > 0) {
+	$html = '<br><h3>UnterstützerInnen</h3><ul>';
+	foreach ($unterstuetzerInnen as $unt) {
+		$html .= '<li>' . CHtml::encode($unt->name) . '</li>';
+	}
+	$html .= '</ul>';
+
+	//$pdf->SetFont("helvetica", "", 12);
 	$pdf->writeHTML($html, true, false, true, false, '');
 }

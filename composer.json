@@ -9,24 +9,13 @@
         "netzbegruenung"
     ],
     "minimum-stability": "dev",
-    "homepage": "http://antragsgruen.de/",
+    "homepage": "https://www.antragsgruen.de/",
     "autoload": {
         "psr-0": {
             "mjohnson\\decoda": "vendor/"
         }
     },
     "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "yiisoft/yii",
-                "version": "1.1.15",
-                "dist": {
-                    "url": "https://github.com/yiisoft/yii/releases/download/1.1.15/yii-1.1.15.022a51.zip",
-                    "type": "zip"
-                }
-            }
-        },
         {
             "type": "package",
             "package": {
@@ -43,9 +32,10 @@
         "php": ">=5.3.3",
         "tecnick.com/tcpdf": "dev-master",
         "mjohnson/decoda": "dev-master",
-        "yiisoft/yii": "1.1.15",
+        "yiisoft/yii": "1.1.16",
         "chris83/yii-bootstrap": "2.1.0",
-        "CodePlex/PHPExcel": "dev-master",
-        "phpoffice/phpword": "dev-master"
+        "ezyang/htmlpurifier": "dev-master",
+        "mandrill/mandrill": "dev-master",
+        "phpoffice/phpexcel": "dev-master"
     }
 }

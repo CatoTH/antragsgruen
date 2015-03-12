@@ -58,6 +58,7 @@ foreach ($kommentare as $kommentar) {
 	if ($kommentar->verfasserIn->email != "") $verfasserIn .= " (" . $kommentar->verfasserIn->email . ")";
 	$objPHPExcel->getActiveSheet()->SetCellValue('B' . $row, $verfasserIn);
 
+	$absatz_zeilen = "";
 	$objPHPExcel->getActiveSheet()->getStyle('C' . $row)->getAlignment()->setWrapText(true);
 	if (is_a($kommentar, "AntragKommentar")) {
 		/** @var AntragKommentar $kommentar */
@@ -82,14 +83,12 @@ foreach ($kommentare as $kommentar) {
 		/** @var AenderungsantragKommentar $kommentar */
 		if ($this->veranstaltung->getEinstellungen()->revision_name_verstecken) $objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, $kommentar->aenderungsantrag->revision_name);
 		else $objPHPExcel->getActiveSheet()->SetCellValue('C' . $row, $kommentar->aenderungsantrag->revision_name . " zu " . $kommentar->aenderungsantrag->antrag->revision_name);
-
-		$absatz_zeilen = "";
 	}
 
 	$objPHPExcel->getActiveSheet()->SetCellValue('D' . $row, $absatz_zeilen);
 	$objPHPExcel->getActiveSheet()->getStyle('D' . $row)->getAlignment()->setWrapText(true);
 
-	$text   = HtmlBBcodeUtils::text2zeilen($kommentar->text, 120);
+	$text   = HtmlBBcodeUtils::text2zeilen($kommentar->text, 120, true);
 	$zeilen = array();
 	foreach ($text as $t) {
 		$x      = explode("\n", $t);
