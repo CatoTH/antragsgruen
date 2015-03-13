@@ -107,7 +107,7 @@ Abhängigkeiten installieren:
 
 Antragsgrün sollte nun schon funktionieren.
 Es ist eine sehr simpel gehaltene Veranstaltung voreingestellt und ein Admin-Nutzer angelegt:
-- Benutzername / E-Mail: "admin@test.de"
+- Benutzername / E-Mail: "admin@example.org"
 - Passwort: "admin" (ohne Anführungszeichen)
 
 
