@@ -13,6 +13,7 @@
 2.6.0 - 2015-03-03
 ==================
 
+* Änderungsanträge können neben Excel nun auch als OpenOffice-Spreadsheet exportiert werden (mitsamt den Formatierungen).
 * Schlagworte in den ExpertInneneinstellungen lassen sich nun umsortieren.
 * Auf Wunsch kann man auch die Anzahl der Schlagworte pro Antrag auf 1 begrenzen.
 * Anträge lassen sich von der AntragstellerIn nun grundsätzlich bearbeiten, solange sie noch nicht freigeschaltet sind.
