@@ -53,7 +53,7 @@ if (method_exists($I, 'executeJS')) {
 $I->fillField(['name' => 'Initiator[name]'], 'Mein Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
-$I->submitForm('#motionCreateForm', [], 'create');
+$I->submitForm('#motionCreateForm', [], 'save');
 
 $I->see('No organization entered');
 
