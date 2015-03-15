@@ -19,11 +19,14 @@ class DBTestBase extends TestCase
      */
     protected function setUp()
     {
+
         parent::setUp();
         $this->createDB();
         $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
         $file .= DIRECTORY_SEPARATOR . 'fixtures/dbdata1.sql';
         $this->populateDB($file);
+
+        \yii::$app->db->close();
     }
 
     /**

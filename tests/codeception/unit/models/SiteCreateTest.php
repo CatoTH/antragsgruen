@@ -33,7 +33,10 @@ class SiteCreateTest extends DBTestBase
                 expect('Form to validate', $success)->true();
 
                 $user = new User();
-                $user->name = "Admin";
+                $user->name = 'Admin2';
+                $user->auth = 'email:blabla@example.org';
+                $user->email = 'blabla@example.org';
+                $user->status = User::STATUS_CONFIRMED;
                 $saved = $user->save();
                 expect('Create Dummy User', $saved)->true();
 

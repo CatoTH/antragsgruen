@@ -31,8 +31,10 @@ trait AntragsgruenSetupDB
 
     protected function deleteDB()
     {
-        $command = $this->database->createCommand($this->database_delete);
-        $command->execute();
+        if ($this->database) {
+            $command = $this->database->createCommand($this->database_delete);
+            $command->execute();
+        }
     }
 
     /**
