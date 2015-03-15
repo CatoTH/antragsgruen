@@ -133,8 +133,8 @@ class DefaultForm implements IInitiatorView
 
         $errors = [];
 
-        if (!isset($initiator['name'])) {
-            $errors[] = 'No Initiator name data given.';
+        if (!isset($initiator['name']) || !$this->isValidName($initiator['name'])) {
+            $errors[] = 'No valid name entered.';
         }
         if ($settings->motionNeedsEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'No valid e-mail-address given.';

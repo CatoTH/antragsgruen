@@ -39,7 +39,7 @@ if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo $motionPolicy->getOnCreateDescription();
 }
 
-echo Html::beginForm('', '', ['id' => 'motionCreateForm', 'class' => 'motionEditForm']);
+echo Html::beginForm('', '', ['id' => 'motionEditForm', 'class' => 'motionEditForm']);
 
 foreach ($hiddens as $name => $value) {
     echo '<input type="hidden" name="' . Html::encode($name) . '" value="' . Html::encode($value) . '">';
