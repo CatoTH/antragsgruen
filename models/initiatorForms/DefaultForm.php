@@ -125,39 +125,45 @@ class DefaultForm implements IInitiatorView
     public function validateInitiatorViewMotion()
     {
         if (!isset($_POST['Initiator'])) {
-            throw new FormError("No Initiator data given");
+            throw new FormError('No Initiator data given');
         }
 
         $initiator = $_POST['Initiator'];
         $settings  = $this->consultation->getSettings();
 
+        $errors = [];
+
         if (!isset($initiator['name'])) {
-            throw new FormError("No Initiator name data given");
+            $errors[] = 'No Initiator name data given.';
         }
         if ($settings->motionNeedsEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
-            throw new FormError("No valid e-mail-address given");
+            $errors[] = 'No valid e-mail-address given.';
         }
         if ($settings->motionNeedsPhone && empty($initiator['contactPhone'])) {
-            throw new FormError("No valid phone number given given");
+            $errors[] = 'No valid phone number given given.';
         }
         $types = array_keys(ISupporter::getPersonTypes());
         if (!isset($initiator['personType']) || !in_array($initiator['personType'], $types)) {
-            throw new FormError("Invalid person type");
+            $errors[] = 'Invalid person type.';
         }
         if ($initiator['personType'] == ISupporter::PERSON_ORGANIZATION) {
             if (empty($initiator['organization'])) {
-                throw new FormError("No organization entered");
+                $errors[] = 'No organization entered.';
             }
             if (empty($initiator['resolutionDate'])) {
-                throw new FormError("No resolution date entered");
+                $errors[] = 'No resolution date entered.';
             }
         }
 
         if ($this->hasSupporters()) {
             $supporters = $this->parseSupporters(new MotionSupporter());
             if ($this->hasSupporters() && count($supporters) < $this->getMinNumberOfSupporters()) {
-                throw new FormError("Not enough supporters");
+                $errors[] = 'Not enough supporters.';
             }
+        }
+
+        if (count($errors) > 0) {
+            throw new FormError($errors);
         }
     }
 
@@ -175,46 +181,17 @@ class DefaultForm implements IInitiatorView
      */
     public function submitInitiatorViewMotion(Motion $motion)
     {
-        if (\Yii::$app->user->isGuest) {
-            $init = new MotionSupporter();
-        } else {
-            // @TODO
-
-            /** @var \app\models\db\User $user */
-            $user = \Yii::$app->user->identity;
-
-            $init = MotionSupporter::findOne(
-                [
-                    "motionId" => $motion->id,
-                    "role"     => MotionSupporter::ROLE_INITIATOR,
-                    "userId"   => $user->id,
-                ]
-            );
-            if (!$init) {
-                $init         = new MotionSupporter();
-                $init->userId = $user->id;
-            }
+        // Supporters
+        foreach ($motion->motionSupporters as $supp) {
+            $supp->delete();
         }
 
-        $init->setAttributes($_POST['Initiator']);
-        $init->motionId = $motion->id;
-        $init->role     = MotionSupporter::ROLE_INITIATOR;
-        $init->position = 0;
-
-        $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
-        if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
-            $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
-        }
-
-        $init->save();
-
-        $supporters = $this->parseSupporters(new MotionSupporter());
+        $supporters = $this->getMotionSupporters($motion);
         foreach ($supporters as $sup) {
             /** @var MotionSupporter $sup */
             $sup->motionId = $motion->id;
             $sup->save();
         }
-
     }
 
 
@@ -286,5 +263,65 @@ class DefaultForm implements IInitiatorView
             $controller
         );
 
+    }
+
+    /**
+     * @param Motion $motion
+     * @return MotionSupporter[]
+     */
+    public function getMotionSupporters(Motion $motion)
+    {
+        /** @var MotionSupporter[] $return */
+        $return = [];
+
+        if (\Yii::$app->user->isGuest) {
+            $init         = new MotionSupporter();
+            $init->userId = null;
+        } else {
+            // @TODO
+
+            /** @var \app\models\db\User $user */
+            $user = \Yii::$app->user->identity;
+
+            $init = MotionSupporter::findOne(
+                [
+                    "motionId" => $motion->id,
+                    "role"     => MotionSupporter::ROLE_INITIATOR,
+                    "userId"   => $user->id,
+                ]
+            );
+            if (!$init) {
+                $init         = new MotionSupporter();
+                $init->userId = $user->id;
+            }
+        }
+
+        $init->setAttributes($_POST['Initiator']);
+        $init->motionId = $motion->id;
+        $init->role     = MotionSupporter::ROLE_INITIATOR;
+        $init->position = 0;
+
+        $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
+        if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
+            $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
+        }
+        $return[] = $init;
+
+        $supporters = $this->parseSupporters(new MotionSupporter());
+        foreach ($supporters as $sup) {
+            /** @var MotionSupporter $sup */
+            $sup->motionId = $motion->id;
+            $return[]      = $sup;
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return AmendmentSupporter[]
+     */
+    public function getAmendmentSupporters()
+    {
+        // TODO: Implement getAmendmentSupporters() method.
     }
 }

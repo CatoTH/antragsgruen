@@ -54,11 +54,11 @@ if ($jsProtection) {
 if (count($motionTypes) == 1) {
     echo '<input type="hidden" name="type" value="' . $motionTypes[0]->id . '">';
 } else {
-    echo '<fieldset class="form-group">
-    <label for="motionTitle">Überschrift</label>';
+    echo '<fieldset class="form-group motionType">
+    <label for="motionTitle">' . $wording->get('Typ') . '</label>';
     foreach ($motionTypes as $type) {
         echo '<div class="radio"><label>';
-        echo Html::radio('type', $form->type == $type->id, ['value' => $type->id]);
+        echo Html::radio('type', $form->type == $type->id, ['value' => $type->id, 'id' => 'motionType' . $type->id]);
         echo Html::encode($type->title);
         echo '</label></div>';
     }

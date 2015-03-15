@@ -16,7 +16,7 @@ $this->title = $wording->get($mode == 'create' ? 'Antrag stellen' : 'Antrag bear
 $params->breadcrumbs[] = $this->title;
 $params->breadcrumbs[] = 'Bestätigen';
 
-echo '<h1>' . Html::encode($motion->title) . '</h1>';
+echo '<h1>' . $wording->get('Antrag bestätigen') . ': ' . Html::encode($motion->title) . '</h1>';
 
 // Yii::app()->user->setFlash("info", $antrag->veranstaltung->getStandardtext("antrag_confirm")->getHTMLText());
 // $this->widget('bootstrap.widgets.TbAlert');
@@ -57,7 +57,7 @@ echo '
         </div>
     </div>';
 
-echo Html::beginForm();
+echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
 
 echo '<div class="content">
         <div style="float: right;">

@@ -634,7 +634,6 @@ class MotionController extends Base
         }
 
         if (isset($_POST['save'])) {
-            $form->setAttributes($_POST);
             try {
                 $motion  = $form->createMotion();
                 $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => 'create'];

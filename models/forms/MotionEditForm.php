@@ -77,6 +77,11 @@ class MotionEditForm extends \yii\base\Model
             throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
         }
 
+        $motion = new Motion();
+
+        $this->setAttributes($_POST);
+        $this->supporters = $this->consultation->getMotionInitiatorFormClass()->getMotionSupporters($motion);
+
         $errors = [];
 
         /** @var MotionSection[] $sections */
@@ -106,13 +111,16 @@ class MotionEditForm extends \yii\base\Model
             $errors[] = 'Motion Type not found';
         }
 
-        $this->consultation->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
-
-        if (count($errors) > 0) {
-            throw new FormError(implode("\n", $errors));
+        try {
+            $this->consultation->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
+        } catch (FormError $e) {
+            $errors = array_merge($errors, $e->getMessages());
         }
 
-        $motion                 = new Motion();
+        if (count($errors) > 0) {
+            throw new FormError($errors);
+        }
+
         $motion->status         = Motion::STATUS_DRAFT;
         $motion->consultationId = $this->consultation->id;
         $motion->textFixed      = ($this->consultation->getSettings()->adminsMayEdit ? 0 : 1);
@@ -154,6 +162,7 @@ class MotionEditForm extends \yii\base\Model
             throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
         }
 
+
         $errors = [];
 
         /** @var MotionSection[] $sections */
@@ -189,13 +198,8 @@ class MotionEditForm extends \yii\base\Model
             throw new FormError(implode("\n", $errors));
         }
 
-        $motion->title          = $this->title;
+        $motion->title = $this->title;
         if ($motion->save()) {
-
-            // Supporters
-            foreach ($motion->motionSupporters as $supp) {
-                $supp->delete();
-            }
             $this->consultation->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
 
             // Tags

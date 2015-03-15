@@ -22,6 +22,6 @@ echo '<h1>' . $wording->get("Antrag eingereicht") . '</h1>';
 // @TODO
 //echo $text = $antrag->veranstaltung->getStandardtext("antrag_eingereicht")->getHTMLText();
 
-echo Html::beginForm(\app\components\UrlHelper::createUrl('consultation/index'));
+echo Html::beginForm(\app\components\UrlHelper::createUrl('consultation/index'), ['id' => 'motionConfirmedForm']);
 echo '<p><button type="submit" class="btn btn-success">Zurück zur Startseite</button></p>';
 echo Html::endForm();

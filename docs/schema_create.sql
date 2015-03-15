@@ -15,7 +15,7 @@ CREATE TABLE `amendment` (
   `changeText` longtext NOT NULL,
   `changeExplanation` longtext NOT NULL,
   `changeExplanationHtml` tinyint(4) NOT NULL DEFAULT '0',
-  `cache` text NOT NULL,
+  `cache` text NULL DEFAULT NULL,
   `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dateResolution` timestamp NULL DEFAULT NULL,
   `status` tinyint(4) NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE `amendmentSupporter` (
   `id` int(11) NOT NULL,
   `amendmentId` int(11) NOT NULL,
   `position` smallint(6) NOT NULL DEFAULT '0',
-  `userId` int(11) NOT NULL,
+  `userId` int(11) NULL DEFAULT NULL,
   `role` enum('initiates','supports','likes','dislikes') NOT NULL,
   `comment` mediumtext,
   `personType` tinyint(4) DEFAULT NULL,
@@ -245,7 +245,7 @@ CREATE TABLE `motion` (
   `status` tinyint(4) NOT NULL,
   `statusString` varchar(55) DEFAULT NULL,
   `noteInternal` text,
-  `cache` text NOT NULL,
+  `cache` text NULL DEFAULT NULL,
   `textFixed` tinyint(4) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -313,7 +313,7 @@ CREATE TABLE `motionSupporter` (
   `id` int(11) NOT NULL,
   `motionId` int(11) NOT NULL,
   `position` smallint(6) NOT NULL DEFAULT '0',
-  `userId` int(11) NOT NULL,
+  `userId` int(11) NULL DEFAULT NULL,
   `role` enum('initiates','supports','likes','dislikes') NOT NULL,
   `comment` mediumtext,
   `personType` tinyint(4) DEFAULT NULL,
