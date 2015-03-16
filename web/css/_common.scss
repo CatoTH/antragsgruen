@@ -5,8 +5,7 @@ $farbe_dunkelgruen: rgb(40, 95, 25);
 $farbe_hellgruen: rgb(175, 203, 8);
 $farbe_hellgruen_text: rgb(162, 188, 4);
 $farbe_magenta: rgb(226, 0, 122);
-
 $brand-primary: $farbe_magenta;
 
 @import "mixins";
-@import "bootstrap-3.3.2-sass/bootstrap/variables";
+@import "bootstrap-3.3.4-sass/bootstrap/variables";
