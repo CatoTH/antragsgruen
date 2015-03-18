@@ -1,3 +1,8 @@
+2.6.3 - 2015-03-07
+==================
+
+* Der OpenOffice-Export funktionierte nicht, wenn im zu exportierenden HTML-Text auch nur kleinste HTML-Fehler enthalten waren. Das wird durch einen vorgeschalteten Filter nun behoben, der fehlerhafte Tags bereinigt.
+
 2.6.2 - 2015-03-07
 ==================
 
