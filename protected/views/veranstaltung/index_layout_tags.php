@@ -100,7 +100,7 @@ foreach ($tag_ids as $tag_id) {
 				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
                 if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $antrag->veranstaltung->url_verzeichnis == "phase2") {
                     if ($antrag->typ == Antrag::$TYP_ANTRAG) echo ' <span style="color: #a2bc04; font-size: 0.8em;">(Fließtext)</span>';
-                    if ($antrag->typ == Antrag::$TYP_RESOLUTION) echo ' <span style="color: #e2007a; font-size: 0.8em;">(Projektvorschlag)</span>';
+                    if ($antrag->typ == Antrag::$TYP_RESOLUTION) echo ' <span style="color: #e2007a; font-size: 0.8em;">(Beispielprojekt)</span>';
                 }
                 echo "</div><div class='pdflink'>";
 				if ($veranstaltung->getEinstellungen()->kann_pdf) echo CHtml::link("als PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class" => "pdfLink"));

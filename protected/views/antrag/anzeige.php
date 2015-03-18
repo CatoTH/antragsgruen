@@ -479,7 +479,11 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 
 
 		if (count($zustimmung_von) > 0) {
-			echo "<strong>Zustimmung von:</strong><br>";
+            if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == 'wiesbaden' && $antrag->veranstaltung->url_verzeichnis == 'phase2') {
+                echo "<strong>Unterstützt von:</strong><br>";
+            } else {
+                echo "<strong>Zustimmung von:</strong><br>";
+            }
 			echo CHtml::openTag('ul');
 			foreach ($zustimmung_von as $p) {
 				echo CHtml::openTag('li');

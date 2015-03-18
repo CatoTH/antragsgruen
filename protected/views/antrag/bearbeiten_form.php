@@ -33,7 +33,7 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
     if ($model->typ == Antrag::$TYP_ANTRAG) {
         echo '<h1>Fließtext</h1>';
     } else {
-        echo '<h1>Projektvorschlag</h1>';
+        echo '<h1>Beispielprojekt</h1>';
     }
 } else {
     echo '<h1>' . $sprache->get($model->id > 0 ? $sprache->get('Antrag bearbeiten') : $sprache->get('Antrag stellen')) . '</h1>';
@@ -246,6 +246,9 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
             }
             if ($veranstaltung->url_verzeichnis == "phase2" && $veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $model->typ == Antrag::$TYP_ANTRAG) {
                 echo " data-max_len_soft=\"1\"";
+                $maxlen_hint = "Bitte maximale Länge:";
+            } else {
+                $maxlen_hint = "Maximale Länge:";
             }
             ?>>
                 <legend><?php
@@ -259,7 +262,7 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
 
                     <?php if ($begruendung_max_len > 0) {
                 echo '<div class="max_len_hint">';
-                echo '<div class="calm">Maximale Länge: ' . $begruendung_max_len . ' Zeichen</div>';
+                echo '<div class="calm">' . $maxlen_hint . ' ' . $begruendung_max_len . ' Zeichen</div>';
                 echo '<div class="alert">Text zu lang - maximale Länge: ' . $begruendung_max_len . ' Zeichen</div>';
                 echo '</div>';
             } ?>
