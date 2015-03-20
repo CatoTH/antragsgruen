@@ -126,7 +126,11 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
                         echo '> ' . CHtml::encode($tag->name) . '</label>';
                     }
                 } else {
-                    echo '<label class="legend">Themengebiet</label>';
+                    if ($veranstaltung->tags[0]->istTagesordnungspunkt()) {
+                        echo '<label class="legend">Tagesordnungspunkt</label>';
+                    } else {
+                        echo '<label class="legend">Themengebiet</label>';
+                    }
                     foreach ($veranstaltung->tags as $tag) {
                         echo '<label class="radio" style="margin-right: 10px;"><input name="tag" value="' . $tag->id . '" type="radio" ';
                         if (in_array($tag->id, $tags_pre)) {

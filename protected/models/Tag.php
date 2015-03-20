@@ -66,4 +66,11 @@ class Tag extends CActiveRecord
 			'daten' => 'Daten',
 		);
 	}
+
+    /**
+     * @return bool
+     */
+    public function istTagesordnungspunkt() {
+        return ($this->veranstaltung_id == 145);
+    }
 }
