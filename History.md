@@ -1,3 +1,9 @@
+2.6.4 - 2015-03-20
+==================
+
+* Man kann im Admin-Interface nun keine Antragsnummern mehr geben, die bereits vergeben sind.
+* Ein paar Anpassungen speziell für den Länderrat.
+
 2.6.3 - 2015-03-07
 ==================
 

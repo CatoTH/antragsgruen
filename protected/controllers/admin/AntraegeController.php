@@ -50,7 +50,18 @@ class AntraegeController extends GxController
 			foreach ($fixed_fields as $field) $fixed_fields_pre[$field] = $model->$field;
 
 			if (!in_array($_POST['Antrag']['status'], $model->getMoeglicheStati())) throw new Exception("Status-Übergang ungültig");
+            $revision_name = $model->revision_name;
 			$model->setAttributes($_POST['Antrag'], false);
+
+            if ($model->revision_name != $revision_name && $revision_name != "") {
+                foreach ($this->veranstaltung->antraege as $ant) {
+                    if ($ant->id != $model->id && $ant->revision_name == $model->revision_name && $ant->status != Antrag::$STATUS_GELOESCHT) {
+                        // Zurücksetzen + Warnung
+                        $messages[] = "Das vergebene Antragskürzel \"" . $model->revision_name . "\" wird bereits von einem anderen Antrag verwendet.";
+                        $model->revision_name = $revision_name;
+                    }
+                }
+            }
 
 			foreach ($fixed_fields_pre as $field => $val) $model->$field = $val;
 
