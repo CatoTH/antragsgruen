@@ -189,7 +189,9 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
 
                     <div class="controls">
                         <!--<a href="#" onClick="alert('TODO'); return false;">&gt; Text aus einem Pad kopieren</a><br>-->
-					<textarea id="Antrag_text2" class="span8" name="Antrag[text2]" rows="5" cols="80"><?php
+					<textarea id="Antrag_text2" class="span8" name="Antrag[text2]" rows="5" cols="80" <?php
+                    if ($veranstaltung->getEinstellungen()->durchgestrichen_zugelassen) echo 'data-allow_strike="1"';
+                    ?>><?php
                         echo CHtml::encode($model->text2);
                         ?></textarea>
                     </div>
@@ -231,7 +233,9 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
 
                 <div class="controls">
                     <!--<a href="#" onClick="alert('TODO'); return false;">&gt; Text aus einem Pad kopieren</a><br>-->
-					<textarea id="Antrag_text" class="span8" name="Antrag[text]" rows="5" cols="80"><?php
+					<textarea id="Antrag_text" class="span8" name="Antrag[text]" rows="5" cols="80" <?php
+                    if ($veranstaltung->getEinstellungen()->durchgestrichen_zugelassen) echo 'data-allow_strike="1"';
+                    ?>><?php
                         echo CHtml::encode($model->text);
                         ?></textarea>
                 </div>

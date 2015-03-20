@@ -124,9 +124,15 @@ function ckeditor_charcount(text) {
 function ckeditor_bbcode(id, height) {
 
     var $el = $("#" + id),
-        initialized = $el.data("ckeditor_initialized");
+        initialized = $el.data("ckeditor_initialized"),
+        format_items = ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat'];
     if (typeof(initialized) != "undefined" && initialized) return;
     $el.data("ckeditor_initialized", "1");
+
+    if (typeof($el.data("allow_strike")) != "undefined" && $el.data("allow_strike") == 1) {
+        format_items = ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'];
+    }
+
     var opts = {
         allowedContent: 'b s i u p blockquote ul ol li;',
         removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,magicline' + ',sourcearea',
@@ -142,7 +148,7 @@ function ckeditor_bbcode(id, height) {
             countSpacesAsChars: true
         },
         toolbar: [
-            {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']},
+            {name: 'basicstyles', items: format_items},
             {name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Blockquote']},
             {name: 'links', items: ['Link', 'Unlink']},
             {name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
@@ -152,6 +158,7 @@ function ckeditor_bbcode(id, height) {
 
     };
     if (typeof(height) != "undefined" && height > 0) opts["height"] = height;
+
     var editor = CKEDITOR.replace(id, opts);
 
     var $fieldset = $el.parents("fieldset.textarea").first();

@@ -3,6 +3,7 @@
 
 * Man kann im Admin-Interface nun keine Antragsnummern mehr geben, die bereits vergeben sind.
 * Ein paar Anpassungen speziell für den Länderrat.
+* Man kann über die ExpertInneneinstellungen nun auch Durchgestrichen als Formatierungsoption bei Anträgen zulassen.
 
 2.6.3 - 2015-03-07
 ==================
