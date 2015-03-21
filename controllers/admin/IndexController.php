@@ -14,18 +14,28 @@ use app\models\db\User;
 class IndexController extends Base
 {
 
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (\Yii::$app->user->isGuest) {
+            $currUrl = \yii::$app->request->url;
+            $this->redirect(UrlHelper::createLoginUrl($currUrl));
+            return false;
+        }
+        if (!$this->consultation->isAdminCurUser()) {
+            $this->showErrorpage(403, 'Kein Zugriff auf diese Seite');
+            return false;
+        }
+        return true;
+    }
 
     /**
      * @return string
      */
     public function actionIndex()
     {
-        if (!$this->consultation->isAdminCurUser()) {
-            $currUrl = \yii::$app->request->url;
-            $this->redirect(UrlHelper::createLoginUrl($currUrl));
-            return "";
-        }
-
         $todo = array( //			array("Text anlegen", array("admin/texte/update", array())),
         );
 
@@ -82,12 +92,6 @@ class IndexController extends Base
 
     public function actionAdmins()
     {
-        if (!$this->consultation->isAdminCurUser()) {
-            $currUrl = \yii::$app->request->url;
-            $this->redirect(UrlHelper::createLoginUrl($currUrl));
-            return "";
-        }
-
         /** @var User $myself */
         $myself = \Yii::$app->user->identity;
 
@@ -125,5 +129,121 @@ class IndexController extends Base
                 'delUrl' => $delUrlTemplate,
             ]
         );
+    }
+
+
+    public function actionConsultation()
+    {
+        $model = $this->consultation;
+
+        if (isset($_POST['save'])) {
+            $model->setAttributes($_POST['Veranstaltung']);
+            Yii::import('ext.datetimepicker.EDateTimePicker');
+            $model->antragsschluss = EDateTimePicker::parseInput($_POST["Veranstaltung"], "antragsschluss");
+
+            $einstellungen = $model->getEinstellungen();
+            $einstellungen->saveForm($_REQUEST["VeranstaltungsEinstellungen"]);
+            if (isset($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"])) {
+                switch ($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"]) {
+                    case 0:
+                        $einstellungen->ae_nummerierung_nach_zeile = false;
+                        $einstellungen->ae_nummerierung_global     = false;
+                        break;
+                    case 1:
+                        $einstellungen->ae_nummerierung_nach_zeile = false;
+                        $einstellungen->ae_nummerierung_global     = true;
+                        break;
+                    case 2:
+                        $einstellungen->ae_nummerierung_nach_zeile = true;
+                        $einstellungen->ae_nummerierung_global     = false;
+                        break;
+                }
+            }
+            $model->setEinstellungen($einstellungen);
+
+            $relatedData = array();
+
+            if ($model->saveWithRelated($relatedData)) {
+                $model->resetLineCache();
+                $this->redirect(array('update'));
+            }
+        }
+
+        return $this->render('consultation_settings', ['consultation' => $this->consultation]);
+    }
+
+    public function actionConsultationexperts()
+    {
+        if (AntiXSS::isTokenSet("del_tag")) {
+            foreach ($model->tags as $tag) {
+                if ($tag->id == AntiXSS::getTokenVal("del_tag")) {
+                    $tag->delete();
+                    $model->refresh();
+                }
+            }
+        }
+
+        if (isset($_POST['Veranstaltung'])) {
+            $model->setAttributes($_POST['Veranstaltung']);
+
+            $einstellungen = $model->getEinstellungen();
+            $einstellungen->saveForm($_REQUEST["VeranstaltungsEinstellungen"]);
+            $model->setEinstellungen($einstellungen);
+
+            $relatedData = array();
+
+            if ($model->saveWithRelated($relatedData)) {
+
+                $reihen_einstellungen                                     = $model->veranstaltungsreihe->getEinstellungen();
+                $reihen_einstellungen->antrag_neu_nur_namespaced_accounts = (isset($_REQUEST["antrag_neu_nur_namespaced_accounts"]));
+                $reihen_einstellungen->antrag_neu_nur_wurzelwerk          = (isset($_REQUEST["antrag_neu_nur_wurzelwerk"]));
+                $model->veranstaltungsreihe->setEinstellungen($reihen_einstellungen);
+                $model->veranstaltungsreihe->save();
+
+                if (!$model->getEinstellungen()->admins_duerfen_aendern) {
+                    foreach ($model->antraege as $ant) {
+                        $ant->text_unveraenderlich = 1;
+                        $ant->save(false);
+                        foreach ($ant->aenderungsantraege as $ae) {
+                            $ae->text_unveraenderlich = 1;
+                            $ae->save(false);
+                        }
+                    }
+                }
+
+                if (isset($_REQUEST["tag_neu"]) && trim($_REQUEST["tag_neu"]) != "") {
+                    $max_id    = 0;
+                    $duplicate = false;
+                    foreach ($model->tags as $tag) {
+                        if ($tag->position > $max_id) {
+                            $max_id = $tag->position;
+                        }
+                        if (mb_strtolower($tag->name) == mb_strtolower($_REQUEST["tag_neu"])) {
+                            $duplicate = true;
+                        }
+                    }
+                    if (!$duplicate) {
+                        Yii::app()->db->createCommand()->insert("tags", array("veranstaltung_id" => $model->id, "name" => $_REQUEST["tag_neu"], "position" => ($max_id + 1)));
+                    }
+                }
+
+                if (isset($_REQUEST["TagSort"]) && is_array($_REQUEST["TagSort"])) {
+                    foreach ($_REQUEST["TagSort"] as $i => $tagId) {
+                        $tag = Tag::model()->findByPk($tagId);
+                        if ($tag->veranstaltung_id == $this->veranstaltung->id) {
+                            $tag->position = $i;
+                            $tag->save();
+                        }
+                    }
+                }
+
+                $model->resetLineCache();
+                $this->redirect(array('update_extended'));
+            }
+        }
+
+        $this->render('update_extended', array(
+            'model' => $model,
+        ));
     }
 }

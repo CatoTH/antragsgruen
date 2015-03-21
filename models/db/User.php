@@ -5,7 +5,6 @@ namespace app\models\db;
 use app\components\PasswordFunctions;
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\AntragsgruenAppParams;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 use yii\db\Query;
@@ -223,7 +222,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function createEmailConfirmationCode($date = "")
     {
-
+        if (YII_ENV == 'test') {
+            return 'testCode';
+        }
+        
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
@@ -346,7 +348,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getNotificationUnsubscribeCode()
     {
-        /** @var AntragsgruenAppParams $params */
+        /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
         $code = $this->id . "-" . substr(md5($this->id . "abmelden" . $params->randomSeed), 0, 8);

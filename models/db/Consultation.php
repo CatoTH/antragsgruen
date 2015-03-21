@@ -8,7 +8,7 @@ use app\models\forms\SiteCreateForm;
 use app\models\initiatorForms\DefaultForm;
 use app\models\policies\IPolicy;
 use app\models\sitePresets\ISitePreset;
-use app\models\wording\Wording;
+use app\models\wording\IWording;
 use yii\db\ActiveRecord;
 
 /**
@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $siteId
  * @property int $type
+ * @property int $wording
  *
  * @property string $urlPath
  * @property string $title
@@ -228,12 +229,13 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return Wording
+     * @return IWording
      */
     public function getWording()
     {
-        // @TODO
-        return new Wording();
+        /** @var IWording $wording */
+        $wording = IWording::getWordings()[$this->wording];
+        return new $wording();
     }
 
     /**

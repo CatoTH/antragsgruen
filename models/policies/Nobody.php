@@ -2,7 +2,7 @@
 
 namespace app\models\policies;
 
-use app\models\wording\Wording;
+use app\models\wording\IWording;
 
 class Nobody extends IPolicy
 {
@@ -17,11 +17,11 @@ class Nobody extends IPolicy
 
     /**
      * @static
-     * @param Wording $wording
+     * @param IWording $wording
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getPolicyName(Wording $wording)
+    public static function getPolicyName(IWording $wording)
     {
         return "Niemand";
     }
@@ -44,11 +44,11 @@ class Nobody extends IPolicy
     }
 
     /**
-     * @param Wording $wording
+     * @param IWording $wording
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedMsg(Wording $wording)
+    public function getPermissionDeniedMsg(IWording $wording)
     {
         return "Das Anlegen ist nicht erlaubt.";
     }

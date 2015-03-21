@@ -13,7 +13,7 @@ $domadmin = $domv . 'admin/';
 
 $url_rules = [
     $domadmin . ''                                                         => 'admin/index',
-    $domadmin . 'consultation/'                                            => 'admin/veranstaltungen/update',
+    $domadmin . 'consultation/'                                            => 'admin/index/consultation',
     $domadmin . 'motions'                                                  => 'admin/antraege',
     $domadmin . 'motions/<_a:(index|update|view)>'                         => 'admin/antraege/<_a>',
     $domadmin . 'amendments'                                               => 'admin/aenderungsantraege',

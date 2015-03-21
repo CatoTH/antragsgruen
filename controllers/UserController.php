@@ -8,7 +8,8 @@ use app\components\WurzelwerkAuthClient;
 use app\models\db\User;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
-use app\models\wording\Wording;
+use app\models\wording\IWording;
+use app\models\wording\Parteitag;
 use Yii;
 
 class UserController extends Base
@@ -29,14 +30,14 @@ class UserController extends Base
     }
 
     /**
-     * @return Wording
+     * @return IWording
      */
     private function getWording()
     {
         if ($this->consultation) {
             $wording = $this->consultation->getWording();
         } else {
-            $wording = new Wording();
+            $wording = new Parteitag();
         }
         return $wording;
     }

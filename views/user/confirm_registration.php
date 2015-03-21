@@ -1,12 +1,12 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\wording\Wording;
+use app\models\wording\IWording;
 use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
- * @var Wording $wording
+ * @var IWording $wording
  * @var string $errors
  * @var string $backUrl
  * @var string $email

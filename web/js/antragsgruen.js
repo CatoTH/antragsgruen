@@ -93,7 +93,7 @@
         CKEDITOR.replace(id, {
             allowedContent: 'b s i u;' +
             'ul ol li {list-style-type};' +
-            //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
             'p blockquote {border,margin,padding,text-align};' +
             'a[href];',
             toolbarGroups: [
@@ -137,7 +137,7 @@
 
     var motionEditForm = function () {
         //ckeditor_bbcode("Antrag_text");
-        $(".wysiwyg-textarea").each(function() {
+        $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find("textarea");
             $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
@@ -150,8 +150,26 @@
         });
     };
 
+
+    var consultationEditForm = function () {
+        var lang = $('html').attr('lang');
+
+        $("#antrag_neu_kann_telefon").change(function () {
+            if ($(this).prop("checked")) $("#antrag_neu_braucht_telefon_holder").show();
+            else $("#antrag_neu_braucht_telefon_holder").hide();
+        }).trigger("change");
+
+        $('#deadlineAmendmentsHolder').datetimepicker({
+            locale: lang
+        });
+        $('#deadlineMotionsHolder').datetimepicker({
+            locale: lang
+        });
+    };
+
     $.Antragsgruen = {
-        "motionEditForm": motionEditForm
+        "motionEditForm": motionEditForm,
+        "consultationEditForm": consultationEditForm
     };
 
 }(jQuery));

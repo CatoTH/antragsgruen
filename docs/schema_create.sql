@@ -97,6 +97,7 @@ CREATE TABLE `consultation` (
   `siteId` int(11) NOT NULL,
   `urlPath` varchar(45) DEFAULT NULL,
   `type` tinyint(4) DEFAULT NULL,
+  `wording`  tinyint(4) DEFAULT NULL,
   `title` varchar(200) NOT NULL,
   `titleShort` varchar(45) NOT NULL,
   `eventDateFrom` date DEFAULT NULL,

@@ -1,9 +1,9 @@
 <?php
-use app\models\wording\Wording;
+use app\models\wording\IWording;
 
 /**
  * @var $this yii\web\View
- * @var Wording $wording
+ * @var IWording $wording
  */
 
 $this->title = 'Zugang bestätigt';

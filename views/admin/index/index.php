@@ -33,7 +33,10 @@ if (count($todoList) > 0) {
 echo '<h4>Administration</h4>
     <ul>
         <li style="font-weight: bold;">';
-echo Html::a('Diese Veranstaltung / Programmdiskussion', UrlHelper::createUrl('admin/veranstaltungen/update'));
+
+$link = UrlHelper::createUrl('admin/index/consultation');
+echo Html::a('Diese Veranstaltung / Programmdiskussion', $link, ['id' => 'consultationLink']);
+
 echo '</li><li style="margin-left: 20px;">';
 echo Html::a("ExpertInnen-Einstellungen", UrlHelper::createUrl('admin/veranstaltungen/updateextended'));
 echo '</li><li style="margin-top: 10px; font-weight: bold;">';

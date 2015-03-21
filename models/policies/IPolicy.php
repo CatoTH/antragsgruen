@@ -4,7 +4,7 @@ namespace app\models\policies;
 
 use app\models\db\Consultation;
 use app\models\exceptions\Internal;
-use app\models\wording\Wording;
+use app\models\wording\IWording;
 
 abstract class IPolicy
 {
@@ -18,13 +18,25 @@ abstract class IPolicy
      */
     public static function getPolicies()
     {
-        // @TODO
         return [
-            'admins'   => Admins::class,
-            'all'      => All::class,
-            'loggedin' => LoggedIn::class,
-            'nobody'   => Nobody::class,
+            static::POLICY_ADMINS    => Admins::class,
+            static::POLICY_ALL       => All::class,
+            static::POLICY_LOGGED_IN => LoggedIn::class,
+            static::POLICY_NOBODY    => Nobody::class,
         ];
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string[]
+     */
+    public static function getPolicyNames($wording)
+    {
+        $names = [];
+        foreach (static::getPolicies() as $key => $pol) {
+            $names[$key] = $pol::getPolicyName($wording);
+        }
+        return $names;
     }
 
     /** @var Consultation */
@@ -52,11 +64,11 @@ abstract class IPolicy
     /**
      * @static
      * @abstract
-     * @param Wording $wording
+     * @param IWording $wording
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getPolicyName(Wording $wording)
+    public static function getPolicyName(IWording $wording)
     {
         return "";
     }
@@ -95,11 +107,11 @@ abstract class IPolicy
 
     /**
      * @abstract
-     * @param Wording $wording
+     * @param IWording $wording
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    abstract public function getPermissionDeniedMsg(Wording $wording);
+    abstract public function getPermissionDeniedMsg(IWording $wording);
 
     /**
      * @static

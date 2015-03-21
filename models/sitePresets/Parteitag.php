@@ -43,6 +43,7 @@ class Parteitag implements ISitePreset
         $consultation->policyAmendments = IPolicy::POLICY_ALL;
         $consultation->policyComments   = IPolicy::POLICY_ALL;
         $consultation->policySupport    = IPolicy::POLICY_ALL;
+        $consultation->wording          = \app\models\wording\Parteitag::getWordingID();
     }
 
     /**

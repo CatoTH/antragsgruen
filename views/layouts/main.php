@@ -46,7 +46,7 @@ if ($params->robotsNoindex) {
 
 ?>
     <!--[if lt IE 9]>
-    <script src="/js/html5.js"></script>
+    <script src="/js/html5shiv/dist/html5shiv.min.js"></script>
     <![endif]-->
     <!--[if lt IE 8]>
     <link rel="stylesheet" href="/css/antragsgruen-ie7.css">
@@ -63,10 +63,8 @@ foreach ($params->extraCss as $file) {
     <script src="/js/jquery-1.11.2.min.js"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
-    <script src="/js/jquery-2.1.3.min.js"></script>
+    <script src="/js/jquery/dist/jquery.min.js"></script>
     <!--<![endif]-->
-
-    <script src="/js/jquery-2.1.3.min.js"></script>
 
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">

@@ -2,14 +2,14 @@
 
 use app\components\UrlHelper;
 use app\models\forms\LoginUsernamePasswordForm;
-use app\models\wording\Wording;
+use app\models\wording\IWording;
 use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
  * @var LoginUsernamePasswordForm $usernamePasswordForm
  * @var string $msg_err
- * @var Wording $wording
+ * @var IWording $wording
  */
 
 /** @var \app\controllers\UserController $controller */

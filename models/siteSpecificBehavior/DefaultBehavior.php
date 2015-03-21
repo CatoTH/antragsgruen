@@ -5,7 +5,7 @@ use app\models\db\Motion;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
 use app\models\settings\PDF;
-use app\models\wording\Wording;
+use app\models\wording\IWording;
 
 class DefaultBehavior
 {
@@ -53,12 +53,12 @@ class DefaultBehavior
 
     /**
      * @param Motion $motion
-     * @param Wording $wording
+     * @param IWording $wording
      * @param string $initiators
      * @return PDF
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPDFSettings(Motion $motion, Wording $wording, $initiators)
+    public function getPDFSettings(Motion $motion, IWording $wording, $initiators)
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
