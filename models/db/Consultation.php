@@ -214,7 +214,9 @@ class Consultation extends ActiveRecord
         if ($user->isGuest) {
             return false;
         }
-        return $this->isAdmin($user);
+        /** @var \app\models\db\User $identity */
+        $identity = $user->identity;
+        return $this->isAdmin($identity);
     }
 
     /**

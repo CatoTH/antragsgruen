@@ -118,6 +118,8 @@ class UserController extends Base
 
         $usernamePasswordForm = new LoginUsernamePasswordForm();
 
+        mail('tobias@hoessl.eu', 'form', print_r($_REQUEST, true));
+
         if (isset($_POST["loginusernamepassword"])) {
             $usernamePasswordForm->setAttributes($_POST);
             try {
@@ -173,6 +175,7 @@ class UserController extends Base
                 $msgError = "Es existiert kein Zugang mit der angegebenen E-Mail-Adresse...?";
             } elseif ($user->checkEmailConfirmationCode($_REQUEST['code'])) {
                 $user->emailConfirmed = 1;
+                $user->status         = User::STATUS_CONFIRMED;
                 if ($user->save()) {
                     $this->loginUser($user);
                     return $this->render('registration_confirmed', ['wording' => $wording]);

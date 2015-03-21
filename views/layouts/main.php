@@ -127,15 +127,15 @@ if ($controller->consultation) {
 
 if (!$controller->getCurrentUser() && !$minimalistic) {
     $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
-    echo '<li>' . Html::a('Login', $loginUrl) . '</li>';
+    echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink']) . '</li>';
 }
 if ($controller->getCurrentUser()) {
     $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
-    echo '<li>' . Html::a('Logout', $logoutUrl) . '</li>';
+    echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
 }
 if ($controller->consultation && $controller->consultation->isAdminCurUser()) {
     $adminUrl = UrlHelper::createUrl("admin/index");
-    echo '<li><a href="' . Html::encode($adminUrl) . '">Admin</a></li>';
+    echo '<li><a href="' . Html::encode($adminUrl) . '" id="adminLink">Admin</a></li>';
 }
 echo '</ul>
             </div>

@@ -11,8 +11,8 @@ $params->dbConnection            = [
     "charset"        => "utf8mb4",
 ];
 $params->confirmEmailAddresses   = true;
-$params->domainPlain             = "http://localhost:8080/";
-$params->domainSubdomain         = "http://localhost:8080/";
+$params->domainPlain             = "http://localhost:8080/index-test.php";
+$params->domainSubdomain         = "http://localhost:8080/index-test.php";
 $params->prependWWWToSubdomain   = false;
 $params->randomSeed              = "123456";
 return $params;

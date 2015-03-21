@@ -22,7 +22,8 @@ INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
   (1, 1);
 
 INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`) VALUES
-  (1, 'DummyAdmin', '', 1, '', '2015-03-07 15:21:44', 0, NULL, '', NULL);
+  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 11:04:44', 0, 'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy', NULL, NULL),
+  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 11:08:14', 0, 'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV', NULL, NULL);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;
