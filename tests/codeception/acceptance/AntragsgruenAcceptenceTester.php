@@ -56,7 +56,22 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         $this->fillField('#username', 'testadmin@example.org');
         $this->fillField('#password_input', 'testadmin');
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+    }
 
-        $this->see('ADMIN', '#adminLink');
+    public function loginAsStdUser()
+    {
+        $this->see('LOGIN', '#loginLink');
+        $this->click('#loginLink');
+
+        $this->see('LOGIN', 'h1');
+        $this->fillField('#username', 'testuser@example.org');
+        $this->fillField('#password_input', 'testuser');
+        $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+    }
+
+    public function logout()
+    {
+        $this->see('LOGOUT', '#logoutLink');
+        $this->click('#logoutLink');
     }
 }

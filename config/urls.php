@@ -36,9 +36,9 @@ $url_rules = [
     $dom . 'loginwurzelwerk'                                               => 'user/loginwurzelwerk',
     $domv . 'unsubscribe'                                                  => 'user/unsubscribe',
 
-    $dom . 'admin/reihe_admins'                                            => 'admin/index/reiheAdmins',
-    $dom . 'admin/reihe_veranstaltungen'                                   => 'admin/index/reiheVeranstaltungen',
-    $dom . 'legal'                                                         => 'consultation/legal',
+    $domv . 'admin/admins'                                                 => 'admin/index/admins',
+    $domv . 'admin/consultations'                                          => 'admin/index/consultations',
+    $domv . 'legal'                                                        => 'consultation/legal',
     $domv . 'help'                                                         => 'consultation/help',
     $domv . 'search'                                                       => 'consultation/search',
     $domv . 'pdfs'                                                         => 'consultation/pdfs',

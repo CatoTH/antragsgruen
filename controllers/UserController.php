@@ -118,8 +118,6 @@ class UserController extends Base
 
         $usernamePasswordForm = new LoginUsernamePasswordForm();
 
-        mail('tobias@hoessl.eu', 'form', print_r($_REQUEST, true));
-
         if (isset($_POST["loginusernamepassword"])) {
             $usernamePasswordForm->setAttributes($_POST);
             try {

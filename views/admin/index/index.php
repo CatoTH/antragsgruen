@@ -6,6 +6,13 @@
  * @var \app\models\db\Consultation $consultation
  */
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$params     = $controller->layoutParams;
+
+$this->title = 'Administration';
+$params->breadcrumbs[] = 'Administration';
+
 
 use app\components\UrlHelper;
 use yii\helpers\Html;
@@ -98,7 +105,7 @@ echo '</li></ul>
     <h4>Veranstaltungsreihe / Subdomain</h4>
     <ul>
         <li>';
-echo Html::a('Weitere Admins', UrlHelper::createUrl('admin/index/reiheAdmins'));
+echo Html::a('Weitere Admins', UrlHelper::createUrl('admin/index/admins'), ['id' => 'adminsManageLink']);
 echo '</li><li>';
 echo Html::a('Weitere Veranstaltungen anlegen / verwalten', UrlHelper::createUrl('admin/index/reiheVeranstaltungen'));
 echo '</li><li>';

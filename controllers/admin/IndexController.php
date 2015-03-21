@@ -2,12 +2,14 @@
 
 namespace app\controllers\admin;
 
+use app\components\AntiXSS;
 use app\controllers\Base;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\Consultation;
 use app\models\db\MotionComment;
+use app\models\db\User;
 
 class IndexController extends Base
 {
@@ -37,7 +39,7 @@ class IndexController extends Base
                 ]
             );
             foreach ($motions as $motion) {
-                $url = UrlHelper::createUrl(['admin/motions/update', 'id' => $motion->id]);
+                $url    = UrlHelper::createUrl(['admin/motions/update', 'id' => $motion->id]);
                 $todo[] = ["Antrag prüfen: " . $motion->titlePrefix . " " . $motion->title, $url];
             }
 
@@ -73,6 +75,54 @@ class IndexController extends Base
                 'todoList'     => $todo,
                 'site'         => $this->site,
                 'consultation' => $this->consultation
+            ]
+        );
+    }
+
+
+    public function actionAdmins()
+    {
+        if (!$this->consultation->isAdminCurUser()) {
+            $currUrl = \yii::$app->request->url;
+            $this->redirect(UrlHelper::createLoginUrl($currUrl));
+            return "";
+        }
+
+        /** @var User $myself */
+        $myself = \Yii::$app->user->identity;
+
+        if (isset($_POST['adduser'])) {
+            /** @var User $newUser */
+            if (strpos($_REQUEST['username'], '@') !== false) {
+                $newUser = User::findOne(['auth' => 'email:' . $_REQUEST['username']]);
+            } else {
+                $newUser = User::findOne(['auth' => User::wurzelwerkId2Auth($_REQUEST["username"])]);
+            }
+            if ($newUser) {
+                $this->site->link('admins', $newUser);
+                $str = '%username% hat nun auch Admin-Rechte.';
+                \Yii::$app->session->setFlash('success', str_replace('%username%', $_REQUEST['username'], $str));
+            } else {
+                $str = 'BenutzerIn %username% nicht gefunden. Der/Diejenige muss sich zuvor mindestens ' .
+                    'einmal auf Antragsgrün eingeloggt haben, um als Admin hinzugefügt werden zu können.';
+                \Yii::$app->session->setFlash('error', str_replace('%username%', $_REQUEST['username'], $str));
+            }
+        }
+        if (AntiXSS::isTokenSet('removeuser')) {
+            /** @var User $todel */
+            $todel = User::findOne(AntiXSS::getTokenVal('removeuser'));
+            $this->site->unlink('admins', $todel, true);
+            \Yii::$app->session->setFlash('success', 'Die Admin-Rechte wurden entzogen.');
+        }
+
+        $delform        = AntiXSS::createToken('removeuser');
+        $delUrlTemplate = UrlHelper::createUrl(['admin/index/admins', $delform => 'REMOVEID']);
+        return $this->render(
+            'admins',
+            [
+                'site'   => $this->site,
+                'myself' => $myself,
+                'delUrl' => $delUrlTemplate,
             ]
         );
     }
