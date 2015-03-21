@@ -103,15 +103,12 @@ class ConsultationController extends Base
 
 
     /**
-     * @param string $subdomain
-     * @param string $consultationPath
      * @return string
      */
-    public function actionIndex($subdomain = "", $consultationPath = "")
+    public function actionIndex()
     {
         $this->layout                = 'column2';
 
-        $this->loadConsultation($subdomain, $consultationPath);
         $this->testMaintainanceMode();
         $this->consultationSidebar($this->consultation);
 

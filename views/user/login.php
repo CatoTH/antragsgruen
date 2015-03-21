@@ -37,7 +37,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
         echo '</div>';
     }
 
-    echo Html::beginForm('', 'post', ['class' => 'col-sm-5', 'id' => 'usernamePasswordForm']);
+    echo Html::beginForm('', 'post', ['class' => 'col-sm-6', 'id' => 'usernamePasswordForm']);
 
     $preUsername = $usernamePasswordForm->username;
     $preName     = $usernamePasswordForm->name;
@@ -138,7 +138,7 @@ echo '<h2>Wurzelwerk-Login</h2>
 
 $backUrl = UrlHelper::createUrl('consultation/index');
 $action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
-echo Html::beginForm($action, 'post', ['class' => 'col-sm-5']);
+echo Html::beginForm($action, 'post', ['class' => 'col-sm-4']);
 
 echo '<div class="form-group">
     <label for="wurzelwerkAccount">WurzelWerk-Account:</label>
@@ -171,7 +171,7 @@ if (!$controller->site || (!$controller->site->getSettings()->onlyNamespacedAcco
 ) {
     echo '<h2>OpenID-Login</h2>
 	<div class="content">';
-    echo Html::beginForm('', 'post', ['class' => 'col-sm-5']);
+    echo Html::beginForm('', 'post', ['class' => 'col-sm-6']);
 
     echo '<div class="form-group">
         <label for="openidUrl">OpenID-URL</label>

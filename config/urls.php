@@ -30,7 +30,7 @@ $url_rules = [
 
     $dom . 'login'                                                         => 'user/login',
     $dom . 'logout'                                                        => 'user/logout',
-    $dom . 'anmelden_bestaetigen'                                          => 'user/anmeldungBestaetigen',
+    $dom . 'confirmregistration'                                           => 'user/confirmregistration',
     $dom . 'loginbyredirecttoken'                                          => 'user/loginbyredirecttoken',
     $dom . 'checkemail'                                                    => 'user/ajaxIsEmailRegistered',
     $dom . 'loginwurzelwerk'                                               => 'user/loginwurzelwerk',

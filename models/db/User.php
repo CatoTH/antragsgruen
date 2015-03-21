@@ -223,7 +223,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function createEmailConfirmationCode($date = "")
     {
-        /** @var AntragsgruenAppParams $params */
+        if (YII_ENV == 'test') {
+            return  'testCode';
+        }
+
+        /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
         if ($date == "") {

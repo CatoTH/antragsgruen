@@ -23,6 +23,9 @@ LoginPage::openBy(
 );
 $I->see('Login', 'h1');
 
+
+$I->wantTo('Create an account');
+
 $I->fillField(['id' => 'username'], 'non_existant@example.org');
 $I->fillField(['id' => 'password_input'], 'doesntmatter');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
@@ -37,4 +40,24 @@ $I->fillField(['id' => 'password_input'], 'testpassword');
 $I->fillField(['id' => 'passwordConfirm'], 'testpassword');
 $I->fillField(['id' => 'name'], 'Tester');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->see('Willkommen!');
+$I->see(mb_strtoupper('Bestätige deinen Zugang'), 'h1');
+
+
+
+$I->wantTo('Confirm the account with a wrong code');
+
+$I->fillField(['id' => 'code'], 'somethingcompletelywrong');
+$I->submitForm('#confirmAccountForm', []);
+
+
+$I->see(mb_strtoupper('Bestätige deinen Zugang'), 'h1');
+$I->see('Der angegebene Code stimmt leider nicht.');
+
+
+
+
+$I->wantTo('Confirm the account with the correct code');
+
+$I->fillField(['id' => 'code'], 'testCode');
+$I->submitForm('#confirmAccountForm', []);
+$I->see(mb_strtoupper('Zugang bestätigt'), 'h1');

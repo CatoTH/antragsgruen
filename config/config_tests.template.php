@@ -10,8 +10,7 @@ $params->dbConnection            = [
     "password"       => "###PASSWORD###",
     "charset"        => "utf8mb4",
 ];
-$params->requireEmailForAccounts = false;
-$params->confirmEmailAddresses   = false;
+$params->confirmEmailAddresses   = true;
 $params->domainPlain             = "http://localhost:8080/";
 $params->domainSubdomain         = "http://localhost:8080/";
 $params->prependWWWToSubdomain   = false;

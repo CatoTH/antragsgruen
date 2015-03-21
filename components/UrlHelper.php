@@ -51,27 +51,29 @@ class UrlHelper
     {
         $site         = static::$currentSite;
         $consultation = static::$currentConsultation;
-        if ($consultation !== null) {
-            $route["consultationPath"] = $consultation->urlPath;
+        if ($consultation !== null && !isset($route['consultationPath'])) {
+            $route['consultationPath'] = $consultation->urlPath;
         }
         if (static::getParams()->multisiteMode && $site != null) {
-            $route["subdomain"] = $site->subdomain;
+            $route['subdomain'] = $site->subdomain;
         }
 
-        if ($route[0] == "consultation/index" && !is_null($site) &&
-            strtolower($route["consultationPath"]) === strtolower($site->currentConsultation->urlPath)
+        if ($route[0] == 'consultation/index' && !is_null($site) &&
+            strtolower($route['consultationPath']) === strtolower($site->currentConsultation->urlPath)
         ) {
-            unset($route["consultationPath"]);
+            unset($route['consultationPath']);
+        }
+        $parts = explode('/', $route[0]);
+        if ($parts[0] == 'user') {
+            unset($route['consultationPath']);
         }
         if (in_array(
             $route[0],
             [
-                "veranstaltung/ajaxEmailIstRegistriert", "veranstaltung/anmeldungBestaetigen",
-                "veranstaltung/benachrichtigungen", "veranstaltung/impressum", "user/login",
-                "user/logout", "/admin/index/reiheAdmins", "/admin/index/reiheVeranstaltungen"
+                'veranstaltung/impressum', '/admin/index/reiheAdmins', '/admin/index/reiheVeranstaltungen'
             ]
         )) {
-            unset($route["consultationPath"]);
+            unset($route['consultationPath']);
         }
         return Url::toRoute($route);
     }

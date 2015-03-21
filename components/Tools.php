@@ -127,10 +127,12 @@ class Tools
         $fromEmail    = ($fromEmail ? $fromEmail : $params->mailFromEmail);
         $sendMailFrom = mb_encode_mimeheader($fromName) . ' <' . $fromEmail . '>';
 
-        if ($params->mandrillApiKey) {
-            static::sendEmailMandrill($mailType, $toEmail, $subject, $sendText, $fromEmail, $fromName);
-        } else {
-            mb_send_mail($toEmail, $subject, $sendText, "From: " . $sendMailFrom);
+        if (YII_ENV != 'test') {
+            if ($params->mandrillApiKey) {
+                static::sendEmailMandrill($mailType, $toEmail, $subject, $sendText, $fromEmail, $fromName);
+            } else {
+                mb_send_mail($toEmail, $subject, $sendText, "From: " . $sendMailFrom);
+            }
         }
 
         $obj = new \app\models\db\EmailLog();

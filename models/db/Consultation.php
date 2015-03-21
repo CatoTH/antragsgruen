@@ -214,12 +214,7 @@ class Consultation extends ActiveRecord
         if ($user->isGuest) {
             return false;
         }
-        $myself = User::findOne(["auth" => $user->id]);
-        /** @var User $myself */
-        if ($myself == null) {
-            return false;
-        }
-        return $this->isAdmin($myself);
+        return $this->isAdmin($user);
     }
 
     /**

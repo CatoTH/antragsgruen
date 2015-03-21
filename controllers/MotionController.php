@@ -386,13 +386,11 @@ class MotionController extends Base
     }
 
     /**
-     * @param string $subdomain
-     * @param string $consultationPath
      * @param int $motionId
      * @param int $commentId
      * @return string
      */
-    public function actionView($subdomain, $consultationPath, $motionId, $commentId = 0)
+    public function actionView($motionId, $commentId = 0)
     {
         $motionId = IntVal($motionId);
         //$antrag = Antrag::model()->with("antragKommentare",
@@ -406,7 +404,6 @@ class MotionController extends Base
 
         $this->layout = 'column2';
 
-        $this->loadConsultation($subdomain, $consultationPath, $motion);
         $this->testMaintainanceMode();
 
 
@@ -478,17 +475,15 @@ class MotionController extends Base
 
 
     /**
-     * @param string $subdomain
-     * @param string $consultationPath
      * @param int $motionId
      * @param string $fromMode
      * @return string
      */
-    public function actionCreateconfirm($subdomain, $consultationPath, $motionId, $fromMode)
+    public function actionCreateconfirm($motionId, $fromMode)
     {
-        $this->loadConsultation($subdomain, $consultationPath);
         $this->testMaintainanceMode();
 
+        /** @var Motion $motion */
         $motion = Motion::findOne(
             [
                 'id'             => $motionId,
@@ -554,11 +549,15 @@ class MotionController extends Base
         }
     }
 
-    public function actionEdit($subdomain, $consultationPath, $motionId)
+    /**
+     * @param int $motionId
+     * @return string
+     */
+    public function actionEdit($motionId)
     {
-        $this->loadConsultation($subdomain, $consultationPath);
         $this->testMaintainanceMode();
 
+        /** @var Motion $motion */
         $motion = Motion::findOne(
             [
                 'id'             => $motionId,
@@ -622,7 +621,6 @@ class MotionController extends Base
      */
     public function actionCreate($subdomain = "", $consultationPath = "")
     {
-        $this->loadConsultation($subdomain, $consultationPath);
         $this->testMaintainanceMode();
 
         $form = new MotionEditForm($this->consultation, null);

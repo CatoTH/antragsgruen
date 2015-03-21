@@ -40,6 +40,20 @@ class Base extends Controller
         $this->layoutParams = new Layout();
     }
 
+    public function beforeAction($action)
+    {
+        if (parent::beforeAction($action)) {
+            $params = \Yii::$app->request->resolve();
+            if (isset($params[1]['subdomain'])) {
+                $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
+                $this->loadConsultation($params[1]['subdomain'], $consultation);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @param string $view
      * @param array $options
@@ -176,9 +190,9 @@ class Base extends Controller
     protected function checkConsistency($checkMotion = null, $checkAmendment = null)
     {
         $consultationId = strtolower($this->consultation->urlPath);
-        $siteId         = strtolower($this->site->subdomain);
+        $subdomain      = strtolower($this->site->subdomain);
 
-        if (strtolower($this->consultation->site->subdomain) != $siteId) {
+        if (strtolower($this->consultation->site->subdomain) != $subdomain) {
             Yii::$app->user->setFlash(
                 "error",
                 "Fehlerhafte Parameter - " .
@@ -199,16 +213,16 @@ class Base extends Controller
     }
 
     /**
-     * @param string $siteId
+     * @param string $subdomain
      * @param string $consultationId
      * @param null|Motion $checkMotion
      * @param null|Amendment $checkAmendment
      * @return null|Consultation
      */
-    public function loadConsultation($siteId, $consultationId = "", $checkMotion = null, $checkAmendment = null)
+    public function loadConsultation($subdomain, $consultationId = "", $checkMotion = null, $checkAmendment = null)
     {
         if (is_null($this->site)) {
-            $this->site = Site::findOne(["subdomain" => $siteId]);
+            $this->site = Site::findOne(["subdomain" => $subdomain]);
         }
         if (is_null($this->site)) {
             $this->consultationNotFound();

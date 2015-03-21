@@ -49,7 +49,7 @@ class LoginUsernamePasswordForm extends \yii\base\Model
     {
         $bestCode = $user->createEmailConfirmationCode();
         $params   = ["user/confirmregistration", "email" => $this->username, "code" => $bestCode, "subdomain" => null];
-        $link     = \Yii::$app->request->baseUrl . Url::toRoute($params);
+        $link     = \Yii::$app->urlManager->createAbsoluteUrl($params);
 
         $send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n";
         $send_text .= "%bestLink%\n\n"
@@ -60,7 +60,7 @@ class LoginUsernamePasswordForm extends \yii\base\Model
             EmailLog::TYPE_REGISTRATION,
             $this->username,
             $user->id,
-            "Anmeldung bei Antragsgrün",
+            'Anmeldung bei Antragsgrün',
             $send_text,
             null,
             null,
@@ -103,7 +103,7 @@ class LoginUsernamePasswordForm extends \yii\base\Model
             throw new Login($this->error);
         }
 
-        $auth = "email:" . $this->username;
+        $auth     = "email:" . $this->username;
         $existing = User::findOne(['auth' => $auth]);
         if ($existing) {
             /** @var User $existing */

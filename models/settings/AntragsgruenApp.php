@@ -17,7 +17,7 @@ class AntragsgruenApp
     public $contactEmail          = 'EMAILADRESSE';
     public $mailFromName          = 'Antragsgrün';
     public $mailFromEmail         = 'EMAILADRESSE';
-    public $adminUserId           = null;
+    public $adminUserIds          = [];
     public $odtDefaultTemplate    = null;
     public $mandrillApiKey        = null;
     public $siteBehaviorClasses   = [];

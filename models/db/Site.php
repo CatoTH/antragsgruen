@@ -152,10 +152,9 @@ class Site extends ActiveRecord
                 return true;
             }
         }
-        // // @TODO
-        //if (Yii::app()->params['admin_user_id'] !== null &&
-        //$person->id == Yii::app()->params['admin_user_id']) return true;
-        return false;
+        /** @var AntragsgruenApp $params */
+        $params = \yii::$app->params;
+        return in_array($user->id, $params->adminUserIds);
     }
 
     /**

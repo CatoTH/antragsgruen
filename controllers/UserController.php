@@ -10,7 +10,6 @@ use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\wording\Wording;
 use Yii;
-use yii\helpers\Url;
 
 class UserController extends Base
 {
@@ -30,14 +29,11 @@ class UserController extends Base
     }
 
     /**
-     * @param $subdomain
-     * @param $consultationPath
      * @return Wording
      */
-    private function getWording($subdomain, $consultationPath)
+    private function getWording()
     {
-        if ($subdomain != '') {
-            $this->loadConsultation($subdomain, $consultationPath);
+        if ($this->consultation) {
             $wording = $this->consultation->getWording();
         } else {
             $wording = new Wording();
@@ -61,6 +57,7 @@ class UserController extends Base
     public function actionLoginbyredirecttoken($login, $login_sec, $redirect)
     {
         if ($login_sec == AntiXSS::createToken($login)) {
+            /** @var User $user */
             $user = User::findOne($login);
             if (!$user) {
                 die("User not found");
@@ -129,7 +126,13 @@ class UserController extends Base
 
                 $unconfirmed = $user->status == User::STATUS_UNCONFIRMED;
                 if ($unconfirmed && $this->getParams()->confirmEmailAddresses) {
-                    $backUrl = UrlHelper::createUrl(['user/confirmregistration', 'backUrl' => $backUrl]);
+                    $backUrl = UrlHelper::createUrl(
+                        [
+                            'user/confirmregistration',
+                            'backUrl' => $backUrl,
+                            'email'   => $user->email,
+                        ]
+                    );
                 } else {
                     \Yii::$app->session->setFlash('success', 'Willkommen!');
                 }
@@ -152,11 +155,42 @@ class UserController extends Base
     }
 
     /**
-     *
+     * @param string $subdomain
+     * @param string $backUrl
+     * @param string $email
+     * @return string
      */
-    public function actionConfirmregistration()
+    public function actionConfirmregistration($subdomain = '', $backUrl = '', $email = '')
     {
-        // @TODO
+        $wording = $this->getWording($subdomain);
+
+        $msgError = '';
+
+        if (isset($_REQUEST['email']) && isset($_REQUEST['code'])) {
+            /** @var User $user */
+            $user = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
+            if (!$user) {
+                $msgError = "Es existiert kein Zugang mit der angegebenen E-Mail-Adresse...?";
+            } elseif ($user->checkEmailConfirmationCode($_REQUEST['code'])) {
+                $user->emailConfirmed = 1;
+                if ($user->save()) {
+                    $this->loginUser($user);
+                    return $this->render('registration_confirmed', ['wording' => $wording]);
+                }
+            } else {
+                $msgError = "Der angegebene Code stimmt leider nicht.";
+            }
+        }
+
+        return $this->render(
+            'confirm_registration',
+            [
+                'email'   => $email,
+                'errors'  => $msgError,
+                'backUrl' => $backUrl,
+                'wording' => $wording
+            ]
+        );
     }
 
     /**
