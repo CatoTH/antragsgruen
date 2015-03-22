@@ -38,7 +38,7 @@ $link = UrlHelper::createUrl('admin/index/consultation');
 echo Html::a('Diese Veranstaltung / Programmdiskussion', $link, ['id' => 'consultationLink']);
 
 echo '</li><li style="margin-left: 20px;">';
-echo Html::a("ExpertInnen-Einstellungen", UrlHelper::createUrl('admin/veranstaltungen/updateextended'));
+echo Html::a("ExpertInnen-Einstellungen", UrlHelper::createUrl('admin/index/consultationextended'));
 echo '</li><li style="margin-top: 10px; font-weight: bold;">';
 echo Html::a('Anträge', UrlHelper::createUrl('admin/antraege'));
 echo '</li><li style="margin-left: 20px;">';

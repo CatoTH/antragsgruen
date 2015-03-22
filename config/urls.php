@@ -14,6 +14,7 @@ $domadmin = $domv . 'admin/';
 $url_rules = [
     $domadmin . ''                                                         => 'admin/index',
     $domadmin . 'consultation/'                                            => 'admin/index/consultation',
+    $domadmin . 'consultationExtended/'                                    => 'admin/index/consultationextended',
     $domadmin . 'motions'                                                  => 'admin/antraege',
     $domadmin . 'motions/<_a:(index|update|view)>'                         => 'admin/antraege/<_a>',
     $domadmin . 'amendments'                                               => 'admin/aenderungsantraege',
@@ -27,6 +28,8 @@ $url_rules = [
     $domadmin . 'kommentare_excel'                                         => 'admin/index/kommentareexcel',
     $domadmin . 'namespacedAccounts'                                       => 'admin/index/namespacedAccounts',
     $domadmin . 'ae_pdf_list'                                              => 'admin/index/aePDFList',
+    $domadmin . 'admins'                                                   => 'admin/index/admins',
+    $domadmin . 'consultations'                                            => 'admin/index/consultations',
 
     $dom . 'login'                                                         => 'user/login',
     $dom . 'logout'                                                        => 'user/logout',
@@ -36,8 +39,6 @@ $url_rules = [
     $dom . 'loginwurzelwerk'                                               => 'user/loginwurzelwerk',
     $domv . 'unsubscribe'                                                  => 'user/unsubscribe',
 
-    $domv . 'admin/admins'                                                 => 'admin/index/admins',
-    $domv . 'admin/consultations'                                          => 'admin/index/consultations',
     $domv . 'legal'                                                        => 'consultation/legal',
     $domv . 'help'                                                         => 'consultation/help',
     $domv . 'search'                                                       => 'consultation/search',

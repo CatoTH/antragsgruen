@@ -6,15 +6,19 @@ use app\components\AntiXSS;
 use app\components\Tools;
 use app\controllers\Base;
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\Motion;
 use app\models\db\Consultation;
-use app\models\db\MotionComment;
+use app\models\db\ConsultationSettingsTag;
+use app\models\db\Motion;
+use app\models\db\Site;
 use app\models\db\User;
 
 class IndexController extends Base
 {
 
+    /**
+     * @param \yii\base\Action $action
+     * @return bool
+     */
     public function beforeAction($action)
     {
         if (!parent::beforeAction($action)) {
@@ -90,7 +94,9 @@ class IndexController extends Base
         );
     }
 
-
+    /**
+     * @return string
+     */
     public function actionAdmins()
     {
         /** @var User $myself */
@@ -132,7 +138,10 @@ class IndexController extends Base
         );
     }
 
-
+    /**
+     * @return string
+     * @throws \app\models\exceptions\FormError
+     */
     public function actionConsultation()
     {
         $model = $this->consultation;
@@ -142,34 +151,13 @@ class IndexController extends Base
         if (isset($_POST['save'])) {
             $data = $_POST['consultation'];
             $model->setAttributes($data);
-            $model->deadlineMotions = Tools::dateBootstraptime2sql($data['deadlineMotions'], $locale);
+            $model->deadlineMotions    = Tools::dateBootstraptime2sql($data['deadlineMotions'], $locale);
             $model->deadlineAmendments = Tools::dateBootstraptime2sql($data['deadlineAmendments'], $locale);
 
             $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
-            $settings = $model->getSettings();
+            $settings      = $model->getSettings();
             $settings->saveForm($settingsInput, $_POST['settingsFields']);
             $model->setSettings($settings);
-
-            /*
-
-            if (isset($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"])) {
-                switch ($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"]) {
-                    case 0:
-                        $einstellungen->ae_nummerierung_nach_zeile = false;
-                        $einstellungen->ae_nummerierung_global     = false;
-                        break;
-                    case 1:
-                        $einstellungen->ae_nummerierung_nach_zeile = false;
-                        $einstellungen->ae_nummerierung_global     = true;
-                        break;
-                    case 2:
-                        $einstellungen->ae_nummerierung_nach_zeile = true;
-                        $einstellungen->ae_nummerierung_global     = false;
-                        break;
-                }
-            }
-            $model->setEinstellungen($einstellungen);
-            */
 
             if ($model->save()) {
                 $model->flushCaches();
@@ -182,78 +170,111 @@ class IndexController extends Base
         return $this->render('consultation_settings', ['consultation' => $this->consultation, 'locale' => $locale]);
     }
 
-    public function actionConsultationexperts()
+    /**
+     * @param Consultation $consultation
+     */
+    private function saveTags(Consultation $consultation)
     {
-        if (AntiXSS::isTokenSet("del_tag")) {
-            foreach ($model->tags as $tag) {
-                if ($tag->id == AntiXSS::getTokenVal("del_tag")) {
+        if (AntiXSS::isTokenSet("delTag")) {
+            foreach ($consultation->tags as $tag) {
+                if ($tag->id == AntiXSS::getTokenVal("delTag")) {
                     $tag->delete();
-                    $model->refresh();
+                    $consultation->refresh();
                 }
             }
         }
 
-        if (isset($_POST['Veranstaltung'])) {
-            $model->setAttributes($_POST['Veranstaltung']);
 
-            $einstellungen = $model->getEinstellungen();
-            $einstellungen->saveForm($_REQUEST["VeranstaltungsEinstellungen"]);
-            $model->setEinstellungen($einstellungen);
+        if (isset($_POST["tagCreate"]) && trim($_POST["tagCreate"]) != "") {
+            $maxId     = 0;
+            $duplicate = false;
+            foreach ($consultation->tags as $tag) {
+                if ($tag->position > $maxId) {
+                    $maxId = $tag->position;
+                }
+                if (mb_strtolower($tag->title) == mb_strtolower($_POST["tagCreate"])) {
+                    $duplicate = true;
+                }
+            }
+            if (!$duplicate) {
+                $tag                 = new ConsultationSettingsTag();
+                $tag->consultationId = $consultation->id;
+                $tag->title          = $_POST['tagCreate'];
+                $tag->position       = ($maxId + 1);
+                $tag->save();
+            }
 
-            $relatedData = array();
+            $consultation->refresh();
+        }
 
-            if ($model->saveWithRelated($relatedData)) {
+        if (isset($_POST["tagSort"]) && is_array($_POST["tagSort"])) {
+            foreach ($_POST["tagSort"] as $i => $tagId) {
+                /** @var ConsultationSettingsTag $tag */
+                $tag = ConsultationSettingsTag::findOne($tagId);
+                if ($tag->consultationId == $consultation->id) {
+                    $tag->position = $i;
+                    $tag->save();
+                }
+            }
+            $consultation->refresh();
+        }
+    }
 
-                $reihen_einstellungen                                     = $model->veranstaltungsreihe->getEinstellungen();
-                $reihen_einstellungen->antrag_neu_nur_namespaced_accounts = (isset($_REQUEST["antrag_neu_nur_namespaced_accounts"]));
-                $reihen_einstellungen->antrag_neu_nur_wurzelwerk          = (isset($_REQUEST["antrag_neu_nur_wurzelwerk"]));
-                $model->veranstaltungsreihe->setEinstellungen($reihen_einstellungen);
-                $model->veranstaltungsreihe->save();
+    /**
+     * @param Site $site
+     */
+    private function saveSiteSettings(Site $site)
+    {
+        $ssettings                            = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
+        $siteSettings                         = $site->getSettings();
+        $siteSettings->onlyNamespacedAccounts = (isset($ssettings['onlyNamespacedAccounts']) ? 1 : 0);
+        $siteSettings->onlyWurzelwerk         = (isset($ssettings['onlyWurzelwerk']) ? 1 : 0);
+        $site->setSettings($siteSettings);
+        $site->save();
 
-                if (!$model->getEinstellungen()->admins_duerfen_aendern) {
-                    foreach ($model->antraege as $ant) {
-                        $ant->text_unveraenderlich = 1;
-                        $ant->save(false);
-                        foreach ($ant->aenderungsantraege as $ae) {
-                            $ae->text_unveraenderlich = 1;
-                            $ae->save(false);
+    }
+
+    /**
+     * @throws \Exception
+     * @throws \app\models\exceptions\FormError
+     */
+    public function actionConsultationextended()
+    {
+        $consultation = $this->consultation;
+
+        $this->saveTags($consultation);
+
+        if (isset($_POST['save'])) {
+
+            $consultation->policySupport = $_POST['consultation']['policySupport'];
+
+            $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
+            $settings      = $consultation->getSettings();
+            $settings->saveForm($settingsInput, $_POST['settingsFields']);
+            $consultation->setSettings($settings);
+
+            if ($consultation->save()) {
+
+                $this->saveSiteSettings($consultation->site);
+
+                if (!$consultation->getSettings()->adminsMayEdit) {
+                    foreach ($consultation->motions as $motion) {
+                        $motion->textFixed = 1;
+                        $motion->save(false);
+                        foreach ($motion->amendments as $amend) {
+                            $amend->textFixed = 1;
+                            $amend->save(true);
                         }
                     }
                 }
 
-                if (isset($_REQUEST["tag_neu"]) && trim($_REQUEST["tag_neu"]) != "") {
-                    $max_id    = 0;
-                    $duplicate = false;
-                    foreach ($model->tags as $tag) {
-                        if ($tag->position > $max_id) {
-                            $max_id = $tag->position;
-                        }
-                        if (mb_strtolower($tag->name) == mb_strtolower($_REQUEST["tag_neu"])) {
-                            $duplicate = true;
-                        }
-                    }
-                    if (!$duplicate) {
-                        Yii::app()->db->createCommand()->insert("tags", array("veranstaltung_id" => $model->id, "name" => $_REQUEST["tag_neu"], "position" => ($max_id + 1)));
-                    }
-                }
-
-                if (isset($_REQUEST["TagSort"]) && is_array($_REQUEST["TagSort"])) {
-                    foreach ($_REQUEST["TagSort"] as $i => $tagId) {
-                        $tag = Tag::model()->findByPk($tagId);
-                        if ($tag->veranstaltung_id == $this->veranstaltung->id) {
-                            $tag->position = $i;
-                            $tag->save();
-                        }
-                    }
-                }
-
-                $model->resetLineCache();
-                $this->redirect(array('update_extended'));
+                $consultation->flushCaches();
+                \yii::$app->session->setFlash('success', 'Gespeichert.');
+            } else {
+                \yii::$app->session->setFlash('error', print_r($consultation->getErrors(), true));
             }
         }
 
-        $this->render('update_extended', array(
-            'model' => $model,
-        ));
+        return $this->render('consultation_extended', ['consultation' => $consultation]);
     }
 }

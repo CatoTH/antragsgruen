@@ -27,10 +27,14 @@ class Consultation
     public $initiatorsMayReject   = false;
     public $titleHasLineNumber    = true;
     public $hasPDF                = true;
-    public $lineLength            = 80;
-    public $startLayoutType       = 0;
     public $commentWholeMotions   = false;
     public $allowMultipleTags     = false;
+    public $allowStrikeFormat     = false;
+
+    /** @var int */
+    public $titleMaxLength        = 0;
+    public $lineLength            = 80;
+    public $startLayoutType       = 0;
 
     /** @var null|string */
     public $logoUrl     = null;

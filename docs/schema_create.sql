@@ -15,7 +15,7 @@ CREATE TABLE `amendment` (
   `changeText`            LONGTEXT    NOT NULL,
   `changeExplanation`     LONGTEXT    NOT NULL,
   `changeExplanationHtml` TINYINT(4)  NOT NULL DEFAULT '0',
-  `cache`                 TEXT        NULL     DEFAULT NULL,
+  `cache`                 TEXT        NOT NULL,
   `dateCreation`          TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dateResolution`        TIMESTAMP   NULL     DEFAULT NULL,
   `status`                TINYINT(4)  NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE `amendmentSupporter` (
   `id`             INT(11)                                            NOT NULL,
   `amendmentId`    INT(11)                                            NOT NULL,
   `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
-  `userId`         INT(11)                                            NULL     DEFAULT NULL,
+  `userId`         INT(11)                                            NOT NULL,
   `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
   `comment`        MEDIUMTEXT,
   `personType`     TINYINT(4)                                                  DEFAULT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE `consultation` (
   `siteId`             INT(11)      NOT NULL,
   `urlPath`            VARCHAR(45)       DEFAULT NULL,
   `type`               TINYINT(4)        DEFAULT NULL,
-  `wording`            TINYINT(4)        DEFAULT NULL,
+  `wording`            TINYINT(4)   NOT NULL,
   `title`              VARCHAR(200) NOT NULL,
   `titleShort`         VARCHAR(45)  NOT NULL,
   `eventDateFrom`      DATE              DEFAULT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE `consultation` (
   `policyAmendments`   VARCHAR(20)       DEFAULT NULL,
   `policyComments`     VARCHAR(20)       DEFAULT NULL,
   `policySupport`      VARCHAR(20)       DEFAULT NULL,
-  `amendmentNumbering` TINYINT(4)        DEFAULT NULL,
+  `amendmentNumbering` TINYINT(4)   NOT NULL,
   `adminEmail`         VARCHAR(150)      DEFAULT NULL,
   `settings`           BLOB
 )
@@ -184,7 +184,7 @@ CREATE TABLE `consultationSettingsMotionType` (
   `id`             INT(11)      NOT NULL,
   `consultationId` INT(11)      NOT NULL,
   `title`          VARCHAR(100) NOT NULL,
-  `motionPrefix`   VARCHAR(10)  NULL DEFAULT NULL,
+  `motionPrefix`   VARCHAR(10) DEFAULT NULL,
   `position`       INT(11)      NOT NULL
 )
   ENGINE = InnoDB
@@ -275,7 +275,7 @@ CREATE TABLE `motion` (
   `status`         TINYINT(4)  NOT NULL,
   `statusString`   VARCHAR(55)          DEFAULT NULL,
   `noteInternal`   TEXT,
-  `cache`          TEXT        NULL     DEFAULT NULL,
+  `cache`          TEXT        NOT NULL,
   `textFixed`      TINYINT(4)           DEFAULT '0'
 )
   ENGINE = InnoDB
@@ -353,7 +353,7 @@ CREATE TABLE `motionSupporter` (
   `id`             INT(11)                                            NOT NULL,
   `motionId`       INT(11)                                            NOT NULL,
   `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
-  `userId`         INT(11)                                            NULL     DEFAULT NULL,
+  `userId`         INT(11)                                            NOT NULL,
   `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
   `comment`        MEDIUMTEXT,
   `personType`     TINYINT(4)                                                  DEFAULT NULL,
@@ -500,7 +500,7 @@ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultationId` (`consultationId`, `posi
 -- Indexes for table `consultationSettingsTag`
 --
 ALTER TABLE `consultationSettingsTag`
-ADD PRIMARY KEY (`id`);
+ADD PRIMARY KEY (`id`), ADD KEY `consultationId` (`consultationId`);
 
 --
 -- Indexes for table `consultationSubscription`
@@ -751,7 +751,7 @@ ADD CONSTRAINT `consultationSettingsMotionType_ibfk_1` FOREIGN KEY (`consultatio
 -- Constraints for table `consultationSettingsTag`
 --
 ALTER TABLE `consultationSettingsTag`
-ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`id`) REFERENCES `consultation` (`id`)
+ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 

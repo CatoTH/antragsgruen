@@ -222,6 +222,7 @@ class Consultation extends ActiveRecord
         return $this->isAdmin($identity);
     }
 
+
     /**
      * @return array|array[]
      */
@@ -229,6 +230,31 @@ class Consultation extends ActiveRecord
     {
         return MotionSorter::getSortedMotions($this, $this->motions, $this->amendmentNumbering);
     }
+
+
+    /**
+     * @return ConsultationSettingsTag[]
+     */
+    public function getSortedTags()
+    {
+        $tags = $this->tags;
+        usort(
+            $tags,
+            function ($tag1, $tag2) {
+                /** @var ConsultationSettingsTag $tag1 */
+                /** @var ConsultationSettingsTag $tag2 */
+                if ($tag1->position < $tag2->position) {
+                    return -1;
+                }
+                if ($tag1->position > $tag2->position) {
+                    return 1;
+                }
+                return 0;
+            }
+        );
+        return $tags;
+    }
+
 
     /**
      * @return IWording

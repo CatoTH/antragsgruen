@@ -12,7 +12,7 @@ use app\models\policies\IPolicy;
 use app\models\wording\IWording;
 use yii\helpers\Html;
 
-/** @var \app\controllers\UserController $controller */
+/** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
@@ -26,13 +26,12 @@ $this->title = 'Einstellungen';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Veranstaltung');
 
-$settings = $consultation->getSettings();
-
 echo '<h1>Einstellungen</h1>';
 echo Html::beginForm('', 'post', ['id' => 'consultationSettingsForm', 'class' => 'adminForm form-horizontal']);
 
 echo $controller->showErrors();
 
+$settings = $consultation->getSettings();
 $handledSettings = [];
 
 
