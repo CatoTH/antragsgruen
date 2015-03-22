@@ -147,7 +147,13 @@ foreach ($antrag->antragKommentare as $komm) if ($komm->absatz < 0 && $komm->sta
 				if ($antrag->veranstaltung->isAdminCurUser() && count($antrag->veranstaltung->tags) > 0) {
 					?>
 					<tr>
-						<th><?=(count($antrag->tags) == 1 ? "Themenbereich" : "Themenbereiche")?>:</th>
+						<th><?
+                            if (count($antrag->veranstaltung->tags) > 0 && $antrag->veranstaltung->tags[0]->istTagesordnungspunkt()) {
+                                echo "Tagesordnungspunkt";
+                            } else {
+                                echo (count($antrag->tags) == 1 ? "Themenbereich" : "Themenbereiche");
+                            }
+                            ?>:</th>
 						<td>
 							<?php
 							$tags         = array();
@@ -187,7 +193,13 @@ foreach ($antrag->antragKommentare as $komm) if ($komm->absatz < 0 && $komm->sta
 				} elseif (count($antrag->tags) > 0) {
 					?>
 					<tr>
-						<th><?php echo(count($antrag->tags) > 1 ? "Themenbereiche" : "Themenbereich") ?></th>
+						<th><?php
+                            if (count($antrag->veranstaltung->tags) > 0 && $antrag->veranstaltung->tags[0]->istTagesordnungspunkt()) {
+                                echo "Tagesordnungspunkt";
+                            } else {
+                                echo (count($antrag->tags) == 1 ? "Themenbereich" : "Themenbereiche");
+                            }
+                            ?>:</th>
 						<td>
 							<?php
 							$tags = array();

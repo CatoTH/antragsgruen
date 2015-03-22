@@ -329,13 +329,14 @@ class IndexController extends AntragsgruenController
 			$standardtexte = $this->veranstaltung->getHTMLStandardtextIDs();
 			foreach ($standardtexte as $text) {
 				$st = Texte::model()->findByAttributes(array("veranstaltung_id" => $this->veranstaltung->id, "text_id" => $text));
-				if ($st == null) $todo[] = array("Text anlegen: " . $text, array("admin/texte/create", array("key" => $text)));
+				if ($st == null) $todo[] = array("Text anlegen:", $text, array("admin/texte/create", array("key" => $text)), null);
 			}
 
 			/** @var array|Antrag[] $antraege */
 			$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung_id" => $this->veranstaltung->id, "status" => Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT));
 			foreach ($antraege as $antrag) {
-				$todo[] = array("Antrag prüfen: " . $antrag->revision_name . " " . $antrag->name, array("admin/antraege/update", array("id" => $antrag->id)));
+                $von =  $antrag->getAntragstellerInnenStr();
+				$todo[] = array("Antrag prüfen:", $antrag->revision_name . " " . $antrag->name, array("admin/antraege/update", array("id" => $antrag->id)), $von);
 			}
 
 			/** @var array|Aenderungsantrag[] $aenderungs */
@@ -343,14 +344,17 @@ class IndexController extends AntragsgruenController
 				"antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
 			))->findAllByAttributes(array("status" => Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT));
 			foreach ($aenderungs as $ae) {
-				$todo[] = array("Änderungsanträge prüfen: " . $ae->revision_name . " zu " . $ae->antrag->revision_name . " " . $ae->antrag->name, array("admin/aenderungsantraege/update", array("id" => $ae->id)));
+                $von =  $ae->getAntragstellerInnenStr();
+				$todo[] = array("Änderungsanträge prüfen:", $ae->revision_name . " zu " . $ae->antrag->revision_name . " " . $ae->antrag->name, array("admin/aenderungsantraege/update", array("id" => $ae->id)), $von);
 			}
 
+            /** @var AntragKommentar[] $kommentare */
 			$kommentare = AntragKommentar::model()->with(array(
 				"antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
 			))->findAllByAttributes(array("status" => AntragKommentar::$STATUS_NICHT_FREI));
 			foreach ($kommentare as $komm) {
-				$todo[] = array("Kommentar prüfen: " . $komm->verfasserIn->name . " zu " . $komm->antrag->revision_name, array("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
+                $von = $komm->verfasserIn->name;
+				$todo[] = array("Kommentar prüfen:", $komm->verfasserIn->name . " zu " . $komm->antrag->revision_name, array("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)), $von);
 			}
 
 			/** @var AenderungsantragKommentar[] $kommentare */
@@ -359,7 +363,8 @@ class IndexController extends AntragsgruenController
 				"aenderungsantrag.antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
 			))->findAllByAttributes(array("status" => AntragKommentar::$STATUS_NICHT_FREI));
 			foreach ($kommentare as $komm) {
-				$todo[] = array("Kommentar prüfen: " . $komm->verfasserIn->name . " zu " . $komm->aenderungsantrag->revision_name, array("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $komm->aenderungsantrag->id, "antrag_id" => $komm->aenderungsantrag->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
+                $von = $komm->verfasserIn->name;
+				$todo[] = array("Kommentar prüfen:", $komm->verfasserIn->name . " zu " . $komm->aenderungsantrag->revision_name, array("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $komm->aenderungsantrag->id, "antrag_id" => $komm->aenderungsantrag->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)), $von);
 			}
 
 		}

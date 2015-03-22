@@ -1,9 +1,10 @@
-2.6.4 - 2015-03-20
+2.6.4 - 2015-03-22
 ==================
 
 * Man kann im Admin-Interface nun keine Antragsnummern mehr geben, die bereits vergeben sind.
 * Ein paar Anpassungen speziell für den Länderrat.
 * Man kann über die ExpertInneneinstellungen nun auch Durchgestrichen als Formatierungsoption bei Anträgen zulassen.
+* In der TODO-Liste der Admin-Übersicht wird bei (Änderungs-)Anträgen und Kommentaren nun auch der Verfasser angezeigt.
 
 2.6.3 - 2015-03-07
 ==================

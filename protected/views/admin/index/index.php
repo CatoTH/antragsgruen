@@ -17,7 +17,11 @@ $this->breadcrumbs = array(
 		echo "<div  class='admin_todo'><h4>To Do</h4>";
 		echo "<ul>";
 		foreach ($todo as $do) {
-			echo "<li>" . CHtml::link($do[0], $this->createUrl($do[1][0], $do[1][1])) . "</li>";
+			echo "<li>";
+            echo '<div style="font-size: 0.8em;">' . CHtml::encode($do[0]) . '</div>';
+            echo CHtml::link($do[1], $this->createUrl($do[2][0], $do[2][1]));
+            if ($do[3]) echo '<div style="font-size: 0.8em;">Von: ' . CHtml::encode($do[3]) . '</div>';
+            echo "</li>";
 		}
 		echo "</ul></div>";
 	}
