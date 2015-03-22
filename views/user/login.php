@@ -17,7 +17,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = 'Login';
-$layout->breadcrumbs = ['Login'];
+$layout->addBreadcrumb('Login');
 
 
 echo '<h1>Login</h1>';

@@ -3,7 +3,9 @@
 /**
  * @var $this yii\web\View
  * @var Consultation $consultation
+ * @var string $locale
  */
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\policies\IPolicy;
@@ -20,16 +22,16 @@ $layout->addJS('/js/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetim
 $layout->addCSS('/js/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
 
 
-$this->title                                              = 'Einstellungen';
-$params->breadcrumbs[UrlHelper::createUrl('admin/index')] = 'Administration';
-$layout->breadcrumbs                                      = ['Login'];
+$this->title = 'Einstellungen';
+$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb('Veranstaltung');
 
 $settings = $consultation->getSettings();
 
 echo '<h1>Einstellungen</h1>';
 echo Html::beginForm('', 'post', ['id' => 'consultationSettingsForm', 'class' => 'adminForm form-horizontal']);
 
-$controller->showErrors();
+echo $controller->showErrors();
 
 $handledSettings = [];
 
@@ -79,14 +81,17 @@ echo '<fieldset class="form-group">
     <input type="text" required name="consultation[titleShort]" ' .
     'value="' . Html::encode($consultation->titleShort) . '" class="form-control" id="consultationTitleShort">
     </div>
-</fieldset>
+</fieldset>';
 
-<fieldset class="form-group">
+$deadlineMotions = Tools::dateSql2bootstraptime($consultation->deadlineMotions, $locale);
+$deadlineAmendments = Tools::dateSql2bootstraptime($consultation->deadlineAmendments, $locale);
+
+echo '<fieldset class="form-group">
     <label class="col-sm-4 control-label" for="deadlineMotions">Antragsschluss:</label>
     <div class="col-sm-8">
         <div class="input-group date" id="deadlineMotionsHolder">
             <input type="text" class="form-control" name="consultation[deadlineMotions]"
-                value="' . Html::encode($consultation->deadlineMotions) . '">
+                value="' . Html::encode($deadlineMotions) . '" data-locale="' . Html::encode($locale) . '">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
         </div>
     </div>
@@ -97,7 +102,7 @@ echo '<fieldset class="form-group">
     <div class="col-sm-8">
         <div class="input-group date" id="deadlineAmendmentsHolder">
             <input type="text" class="form-control" name="consultation[deadlineAmendments]"
-                value="' . Html::encode($consultation->deadlineAmendments) . '">
+                value="' . Html::encode($deadlineAmendments) . '" data-locale="' . Html::encode($locale) . '">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
         </div>
     </div>
@@ -130,7 +135,7 @@ echo '</div>
 <div class="content">
 
 <fieldset class="form-group">
-        <label class="col-sm-4 control-label" for="policyMotions">Anträge stellen dürfen:</label>
+        <label class="col-sm-4 control-label" for="policyMotions">Antragsberechtigt:</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
     'consultation[policyMotions]',
@@ -186,10 +191,10 @@ echo 'Angabe der <strong>Telefonnummer</strong> ermöglichen
     </label></fieldset>';
 
 
-$handledSettings[] = 'motionHasPhone';
+$handledSettings[] = 'motionNeedsPhone';
 echo '<fieldset class="motionNeedsPhoneHolder"><label>';
 echo Html::checkbox('settings[motionNeedsPhone]', $settings->motionNeedsPhone, ['id' => 'motionNeedsPhone']);
-echo 'Angabe der <strong>Telefonnummer</strong> ermöglichen
+echo 'Angabe der <strong>Telefonnummer</strong> erzwingen
             <small>(Bei Anträgen und Änderungsanträgen)</small>
     </label></fieldset>';
 
@@ -202,7 +207,7 @@ echo '</div>
 
 
 <fieldset class="form-group">
-        <label class="col-sm-4 control-label" for="policyAmendments">Änderungsanträge stellen dürfen:</label>
+        <label class="col-sm-4 control-label" for="policyAmendments">Antragsberechtigt:</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
     'consultation[policyAmendments]',
@@ -213,15 +218,23 @@ echo Html::dropDownList(
 echo '</div></fieldset>';
 
 
+echo '<fieldset class="form-group">
+        <label class="col-sm-4 control-label" for="amendmentNumbering">Nummerierung:</label>
+        <div class="col-sm-8">';
+echo Html::dropDownList(
+    'consultation[amendmentNumbering]',
+    $consultation->amendmentNumbering,
+    \app\models\amendmentNumbering\IAmendmentNumbering::getNames(),
+    ['id' => 'amendmentNumbering', 'class' => 'form-control']
+);
+echo '</div></fieldset>';
+
+
 $handledSettings[] = 'screeningAmendments';
 echo '<fieldset><label>';
 echo Html::checkbox('settings[screeningAmendments]', $settings->screeningAmendments, ['id' => 'screeningAmendments']);
 echo '<strong>Freischaltung</strong> von Änderungsanträgen
     </label></fieldset>';
-
-// @TODO Amendment Numbering
-echo '<fieldset>';
-echo '</fieldset>';
 
 
 echo '</div>
@@ -286,5 +299,10 @@ echo '</div>
 
 
 </div>';
+
+
+foreach ($handledSettings as $setting) {
+    echo '<input type="hidden" name=settingsFields[]" value="' . Html::encode($setting) . '">';
+}
 
 echo Html::endForm();

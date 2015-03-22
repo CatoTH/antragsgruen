@@ -7,22 +7,24 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 --
 
 CREATE TABLE `amendment` (
-  `id` int(11) NOT NULL,
-  `motionId` int(11) DEFAULT NULL,
-  `titlePrefix` varchar(45) DEFAULT NULL,
-  `changedTitle` text,
-  `changeMetatext` longtext NOT NULL,
-  `changeText` longtext NOT NULL,
-  `changeExplanation` longtext NOT NULL,
-  `changeExplanationHtml` tinyint(4) NOT NULL DEFAULT '0',
-  `cache` text NULL DEFAULT NULL,
-  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `dateResolution` timestamp NULL DEFAULT NULL,
-  `status` tinyint(4) NOT NULL,
-  `statusString` varchar(55) NOT NULL,
-  `noteInternal` text,
-  `textFixed` tinyint(4) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`                    INT(11)     NOT NULL,
+  `motionId`              INT(11)              DEFAULT NULL,
+  `titlePrefix`           VARCHAR(45)          DEFAULT NULL,
+  `changedTitle`          TEXT,
+  `changeMetatext`        LONGTEXT    NOT NULL,
+  `changeText`            LONGTEXT    NOT NULL,
+  `changeExplanation`     LONGTEXT    NOT NULL,
+  `changeExplanationHtml` TINYINT(4)  NOT NULL DEFAULT '0',
+  `cache`                 TEXT        NULL     DEFAULT NULL,
+  `dateCreation`          TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateResolution`        TIMESTAMP   NULL     DEFAULT NULL,
+  `status`                TINYINT(4)  NOT NULL,
+  `statusString`          VARCHAR(55) NOT NULL,
+  `noteInternal`          TEXT,
+  `textFixed`             TINYINT(4)           DEFAULT '0'
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -31,15 +33,17 @@ CREATE TABLE `amendment` (
 --
 
 CREATE TABLE `amendmentComment` (
-  `id` int(11) NOT NULL,
-  `userId` int(11) DEFAULT NULL,
-  `amendmentId` int(11) DEFAULT NULL,
-  `paragraph` smallint(6) DEFAULT NULL,
-  `text` mediumtext,
-  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` tinyint(4) DEFAULT NULL,
-  `replyNotification` tinyint(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`                INT(11)   NOT NULL,
+  `userId`            INT(11)            DEFAULT NULL,
+  `amendmentId`       INT(11)            DEFAULT NULL,
+  `paragraph`         SMALLINT(6)        DEFAULT NULL,
+  `text`              MEDIUMTEXT,
+  `dateCreation`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`            TINYINT(4)         DEFAULT NULL,
+  `replyNotification` TINYINT(4)         DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -48,10 +52,12 @@ CREATE TABLE `amendmentComment` (
 --
 
 CREATE TABLE `amendmentSection` (
-  `amendmentId` int(11) NOT NULL,
-  `sectionId` int(11) NOT NULL,
-  `data` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `amendmentId` INT(11)  NOT NULL,
+  `sectionId`   INT(11)  NOT NULL,
+  `data`        LONGTEXT NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -60,19 +66,21 @@ CREATE TABLE `amendmentSection` (
 --
 
 CREATE TABLE `amendmentSupporter` (
-  `id` int(11) NOT NULL,
-  `amendmentId` int(11) NOT NULL,
-  `position` smallint(6) NOT NULL DEFAULT '0',
-  `userId` int(11) NULL DEFAULT NULL,
-  `role` enum('initiates','supports','likes','dislikes') NOT NULL,
-  `comment` mediumtext,
-  `personType` tinyint(4) DEFAULT NULL,
-  `name` text,
-  `organization` text,
-  `resolutionDate` date DEFAULT NULL,
-  `contactEmail` varchar(100) DEFAULT NULL,
-  `contactPhone` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`             INT(11)                                            NOT NULL,
+  `amendmentId`    INT(11)                                            NOT NULL,
+  `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
+  `userId`         INT(11)                                            NULL     DEFAULT NULL,
+  `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
+  `comment`        MEDIUMTEXT,
+  `personType`     TINYINT(4)                                                  DEFAULT NULL,
+  `name`           TEXT,
+  `organization`   TEXT,
+  `resolutionDate` DATE                                                        DEFAULT NULL,
+  `contactEmail`   VARCHAR(100)                                                DEFAULT NULL,
+  `contactPhone`   VARCHAR(100)                                                DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -81,10 +89,12 @@ CREATE TABLE `amendmentSupporter` (
 --
 
 CREATE TABLE `cache` (
-  `id` char(32) NOT NULL,
-  `dateCreation` timestamp NULL DEFAULT NULL,
-  `data` longblob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`           CHAR(32)  NOT NULL,
+  `dateCreation` TIMESTAMP NULL DEFAULT NULL,
+  `data`         LONGBLOB
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -93,24 +103,27 @@ CREATE TABLE `cache` (
 --
 
 CREATE TABLE `consultation` (
-  `id` int(11) NOT NULL,
-  `siteId` int(11) NOT NULL,
-  `urlPath` varchar(45) DEFAULT NULL,
-  `type` tinyint(4) DEFAULT NULL,
-  `wording`  tinyint(4) DEFAULT NULL,
-  `title` varchar(200) NOT NULL,
-  `titleShort` varchar(45) NOT NULL,
-  `eventDateFrom` date DEFAULT NULL,
-  `eventDateTo` date DEFAULT NULL,
-  `deadlineMotions` timestamp NULL DEFAULT NULL,
-  `deadlineAmendments` timestamp NULL DEFAULT NULL,
-  `policyMotions` varchar(20) DEFAULT NULL,
-  `policyAmendments` varchar(20) DEFAULT NULL,
-  `policyComments` varchar(20) DEFAULT NULL,
-  `policySupport` varchar(20) DEFAULT NULL,
-  `adminEmail` varchar(150) DEFAULT NULL,
-  `settings` blob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`                 INT(11)      NOT NULL,
+  `siteId`             INT(11)      NOT NULL,
+  `urlPath`            VARCHAR(45)       DEFAULT NULL,
+  `type`               TINYINT(4)        DEFAULT NULL,
+  `wording`            TINYINT(4)        DEFAULT NULL,
+  `title`              VARCHAR(200) NOT NULL,
+  `titleShort`         VARCHAR(45)  NOT NULL,
+  `eventDateFrom`      DATE              DEFAULT NULL,
+  `eventDateTo`        DATE              DEFAULT NULL,
+  `deadlineMotions`    TIMESTAMP    NULL DEFAULT NULL,
+  `deadlineAmendments` TIMESTAMP    NULL DEFAULT NULL,
+  `policyMotions`      VARCHAR(20)       DEFAULT NULL,
+  `policyAmendments`   VARCHAR(20)       DEFAULT NULL,
+  `policyComments`     VARCHAR(20)       DEFAULT NULL,
+  `policySupport`      VARCHAR(20)       DEFAULT NULL,
+  `amendmentNumbering` TINYINT(4)        DEFAULT NULL,
+  `adminEmail`         VARCHAR(150)      DEFAULT NULL,
+  `settings`           BLOB
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -119,9 +132,11 @@ CREATE TABLE `consultation` (
 --
 
 CREATE TABLE `consultationAdmin` (
-  `consultationId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `consultationId` INT(11) NOT NULL,
+  `userId`         INT(11) NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -130,11 +145,13 @@ CREATE TABLE `consultationAdmin` (
 --
 
 CREATE TABLE `consultationOdtTemplate` (
-  `id` int(11) NOT NULL,
-  `consultationId` int(11) NOT NULL,
-  `type` tinyint(4) NOT NULL,
-  `data` blob NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`             INT(11)    NOT NULL,
+  `consultationId` INT(11)    NOT NULL,
+  `type`           TINYINT(4) NOT NULL,
+  `data`           BLOB       NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -143,17 +160,19 @@ CREATE TABLE `consultationOdtTemplate` (
 --
 
 CREATE TABLE `consultationSettingsMotionSection` (
-  `id` int(11) NOT NULL,
-  `consultationId` int(11) DEFAULT NULL,
-  `motionTypeId` int(11) DEFAULT NULL,
-  `type` int(11) NOT NULL,
-  `position` smallint(6) DEFAULT NULL,
-  `title` varchar(100) NOT NULL,
-  `fixedWidth` tinyint(4) NOT NULL,
-  `maxLen` int(11) DEFAULT NULL,
-  `lineNumbers` tinyint(4) NOT NULL DEFAULT '0',
-  `hasComments` tinyint(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`             INT(11)      NOT NULL,
+  `consultationId` INT(11)               DEFAULT NULL,
+  `motionTypeId`   INT(11)               DEFAULT NULL,
+  `type`           INT(11)      NOT NULL,
+  `position`       SMALLINT(6)           DEFAULT NULL,
+  `title`          VARCHAR(100) NOT NULL,
+  `fixedWidth`     TINYINT(4)   NOT NULL,
+  `maxLen`         INT(11)               DEFAULT NULL,
+  `lineNumbers`    TINYINT(4)   NOT NULL DEFAULT '0',
+  `hasComments`    TINYINT(4)   NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -162,12 +181,14 @@ CREATE TABLE `consultationSettingsMotionSection` (
 --
 
 CREATE TABLE `consultationSettingsMotionType` (
-  `id` int(11) NOT NULL,
-  `consultationId` int(11) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `motionPrefix` varchar(10) NULL DEFAULT NULL,
-  `position` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`             INT(11)      NOT NULL,
+  `consultationId` INT(11)      NOT NULL,
+  `title`          VARCHAR(100) NOT NULL,
+  `motionPrefix`   VARCHAR(10)  NULL DEFAULT NULL,
+  `position`       INT(11)      NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -176,12 +197,14 @@ CREATE TABLE `consultationSettingsMotionType` (
 --
 
 CREATE TABLE `consultationSettingsTag` (
-  `id` int(11) NOT NULL,
-  `consultationId` int(11) DEFAULT NULL,
-  `position` smallint(6) DEFAULT NULL,
-  `title` varchar(100) NOT NULL,
-  `cssicon` smallint(6) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`             INT(11)      NOT NULL,
+  `consultationId` INT(11)     DEFAULT NULL,
+  `position`       SMALLINT(6) DEFAULT NULL,
+  `title`          VARCHAR(100) NOT NULL,
+  `cssicon`        SMALLINT(6) DEFAULT '0'
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -190,12 +213,14 @@ CREATE TABLE `consultationSettingsTag` (
 --
 
 CREATE TABLE `consultationSubscription` (
-  `consultationId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `motions` tinyint(4) DEFAULT NULL,
-  `amendments` tinyint(4) DEFAULT NULL,
-  `comments` tinyint(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `consultationId` INT(11) NOT NULL,
+  `userId`         INT(11) NOT NULL,
+  `motions`        TINYINT(4) DEFAULT NULL,
+  `amendments`     TINYINT(4) DEFAULT NULL,
+  `comments`       TINYINT(4) DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -204,12 +229,14 @@ CREATE TABLE `consultationSubscription` (
 --
 
 CREATE TABLE `consultationText` (
-  `id` int(11) NOT NULL,
-  `consultationId` int(11) DEFAULT NULL,
-  `textId` varchar(20) NOT NULL,
-  `text` longtext,
-  `editDate` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`             INT(11)     NOT NULL,
+  `consultationId` INT(11)          DEFAULT NULL,
+  `textId`         VARCHAR(20) NOT NULL,
+  `text`           LONGTEXT,
+  `editDate`       TIMESTAMP   NULL DEFAULT CURRENT_TIMESTAMP
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -218,15 +245,17 @@ CREATE TABLE `consultationText` (
 --
 
 CREATE TABLE `emailLog` (
-  `id` int(11) NOT NULL,
-  `toEmail` varchar(200) DEFAULT NULL,
-  `toUserId` int(11) DEFAULT NULL,
-  `type` smallint(6) DEFAULT NULL,
-  `fromEmail` varchar(200) DEFAULT NULL,
-  `dateSent` timestamp NULL DEFAULT NULL,
-  `subject` varchar(200) DEFAULT NULL,
-  `text` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`        INT(11)   NOT NULL,
+  `toEmail`   VARCHAR(200)   DEFAULT NULL,
+  `toUserId`  INT(11)        DEFAULT NULL,
+  `type`      SMALLINT(6)    DEFAULT NULL,
+  `fromEmail` VARCHAR(200)   DEFAULT NULL,
+  `dateSent`  TIMESTAMP NULL DEFAULT NULL,
+  `subject`   VARCHAR(200)   DEFAULT NULL,
+  `text`      MEDIUMTEXT
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -235,20 +264,22 @@ CREATE TABLE `emailLog` (
 --
 
 CREATE TABLE `motion` (
-  `id` int(11) NOT NULL,
-  `consultationId` int(11) NOT NULL,
-  `motionTypeId` int(11) NOT NULL,
-  `parentMotionId` int(11) DEFAULT NULL,
-  `title` text NOT NULL,
-  `titlePrefix` varchar(50) NOT NULL,
-  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `dateResolution` varchar(45) DEFAULT NULL,
-  `status` tinyint(4) NOT NULL,
-  `statusString` varchar(55) DEFAULT NULL,
-  `noteInternal` text,
-  `cache` text NULL DEFAULT NULL,
-  `textFixed` tinyint(4) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`             INT(11)     NOT NULL,
+  `consultationId` INT(11)     NOT NULL,
+  `motionTypeId`   INT(11)     NOT NULL,
+  `parentMotionId` INT(11)              DEFAULT NULL,
+  `title`          TEXT        NOT NULL,
+  `titlePrefix`    VARCHAR(50) NOT NULL,
+  `dateCreation`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dateResolution` VARCHAR(45)          DEFAULT NULL,
+  `status`         TINYINT(4)  NOT NULL,
+  `statusString`   VARCHAR(55)          DEFAULT NULL,
+  `noteInternal`   TEXT,
+  `cache`          TEXT        NULL     DEFAULT NULL,
+  `textFixed`      TINYINT(4)           DEFAULT '0'
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -257,15 +288,17 @@ CREATE TABLE `motion` (
 --
 
 CREATE TABLE `motionComment` (
-  `id` int(11) NOT NULL,
-  `userId` int(11) DEFAULT NULL,
-  `motionId` int(11) DEFAULT NULL,
-  `paragraph` smallint(6) DEFAULT NULL,
-  `text` mediumtext NOT NULL,
-  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` tinyint(4) DEFAULT NULL,
-  `replyNotification` tinyint(4) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`                INT(11)    NOT NULL,
+  `userId`            INT(11)             DEFAULT NULL,
+  `motionId`          INT(11)             DEFAULT NULL,
+  `paragraph`         SMALLINT(6)         DEFAULT NULL,
+  `text`              MEDIUMTEXT NOT NULL,
+  `dateCreation`      TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`            TINYINT(4)          DEFAULT NULL,
+  `replyNotification` TINYINT(4)          DEFAULT '0'
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -274,12 +307,14 @@ CREATE TABLE `motionComment` (
 --
 
 CREATE TABLE `motionCommentSupporter` (
-  `id` int(11) NOT NULL,
-  `ipHash` char(32) DEFAULT NULL,
-  `cookieId` int(11) DEFAULT NULL,
-  `motionCommentId` int(11) NOT NULL,
-  `likes` tinyint(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`              INT(11) NOT NULL,
+  `ipHash`          CHAR(32)   DEFAULT NULL,
+  `cookieId`        INT(11)    DEFAULT NULL,
+  `motionCommentId` INT(11) NOT NULL,
+  `likes`           TINYINT(4) DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -288,10 +323,12 @@ CREATE TABLE `motionCommentSupporter` (
 --
 
 CREATE TABLE `motionSection` (
-  `motionId` int(11) NOT NULL,
-  `sectionId` int(11) NOT NULL,
-  `data` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `motionId`  INT(11)  NOT NULL,
+  `sectionId` INT(11)  NOT NULL,
+  `data`      LONGTEXT NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -300,9 +337,11 @@ CREATE TABLE `motionSection` (
 --
 
 CREATE TABLE `motionSubscription` (
-  `motionId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `motionId` INT(11) NOT NULL,
+  `userId`   INT(11) NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -311,19 +350,21 @@ CREATE TABLE `motionSubscription` (
 --
 
 CREATE TABLE `motionSupporter` (
-  `id` int(11) NOT NULL,
-  `motionId` int(11) NOT NULL,
-  `position` smallint(6) NOT NULL DEFAULT '0',
-  `userId` int(11) NULL DEFAULT NULL,
-  `role` enum('initiates','supports','likes','dislikes') NOT NULL,
-  `comment` mediumtext,
-  `personType` tinyint(4) DEFAULT NULL,
-  `name` text,
-  `organization` text,
-  `resolutionDate` date DEFAULT NULL,
-  `contactEmail` varchar(100) DEFAULT NULL,
-  `contactPhone` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`             INT(11)                                            NOT NULL,
+  `motionId`       INT(11)                                            NOT NULL,
+  `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
+  `userId`         INT(11)                                            NULL     DEFAULT NULL,
+  `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
+  `comment`        MEDIUMTEXT,
+  `personType`     TINYINT(4)                                                  DEFAULT NULL,
+  `name`           TEXT,
+  `organization`   TEXT,
+  `resolutionDate` DATE                                                        DEFAULT NULL,
+  `contactEmail`   VARCHAR(100)                                                DEFAULT NULL,
+  `contactPhone`   VARCHAR(100)                                                DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -332,9 +373,11 @@ CREATE TABLE `motionSupporter` (
 --
 
 CREATE TABLE `motionTag` (
-  `motionId` int(11) NOT NULL,
-  `tagId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `motionId` INT(11) NOT NULL,
+  `tagId`    INT(11) NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -343,15 +386,17 @@ CREATE TABLE `motionTag` (
 --
 
 CREATE TABLE `site` (
-  `id` int(11) NOT NULL,
-  `subdomain` varchar(45) NOT NULL,
-  `title` varchar(200) NOT NULL,
-  `titleShort` varchar(100) DEFAULT NULL,
-  `settings` tinyblob,
-  `currentConsultationId` int(11) DEFAULT NULL,
-  `public` tinyint(4) DEFAULT '1',
-  `contact` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`                    INT(11)      NOT NULL,
+  `subdomain`             VARCHAR(45)  NOT NULL,
+  `title`                 VARCHAR(200) NOT NULL,
+  `titleShort`            VARCHAR(100) DEFAULT NULL,
+  `settings`              TINYBLOB,
+  `currentConsultationId` INT(11)      DEFAULT NULL,
+  `public`                TINYINT(4)   DEFAULT '1',
+  `contact`               MEDIUMTEXT
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -360,9 +405,11 @@ CREATE TABLE `site` (
 --
 
 CREATE TABLE `siteAdmin` (
-  `siteId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `siteId` INT(11) NOT NULL,
+  `userId` INT(11) NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -371,17 +418,19 @@ CREATE TABLE `siteAdmin` (
 --
 
 CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
-  `name` text NOT NULL,
-  `email` varchar(200) DEFAULT NULL,
-  `emailConfirmed` tinyint(4) DEFAULT '0',
-  `auth` varchar(190) DEFAULT NULL,
-  `dateCreation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` tinyint(4) NOT NULL,
-  `pwdEnc` varchar(100) DEFAULT NULL,
-  `authKey` binary(100) DEFAULT NULL,
-  `siteNamespaceId` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id`              INT(11)    NOT NULL,
+  `name`            TEXT       NOT NULL,
+  `email`           VARCHAR(200)        DEFAULT NULL,
+  `emailConfirmed`  TINYINT(4)          DEFAULT '0',
+  `auth`            VARCHAR(190)        DEFAULT NULL,
+  `dateCreation`    TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`          TINYINT(4) NOT NULL,
+  `pwdEnc`          VARCHAR(100)        DEFAULT NULL,
+  `authKey`         BINARY(100)         DEFAULT NULL,
+  `siteNamespaceId` INT(11)             DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Indexes for dumped tables
@@ -403,7 +452,7 @@ ADD PRIMARY KEY (`id`), ADD KEY `fk_amendment_comment_userIdx` (`userId`), ADD K
 -- Indexes for table `amendmentSection`
 --
 ALTER TABLE `amendmentSection`
-ADD PRIMARY KEY (`amendmentId`,`sectionId`), ADD KEY `sectionId` (`sectionId`);
+ADD PRIMARY KEY (`amendmentId`, `sectionId`), ADD KEY `sectionId` (`sectionId`);
 
 --
 -- Indexes for table `amendmentSupporter`
@@ -421,13 +470,13 @@ ADD PRIMARY KEY (`id`);
 -- Indexes for table `consultation`
 --
 ALTER TABLE `consultation`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `yii_url_UNIQUE` (`urlPath`,`siteId`), ADD KEY `fk_consultation_siteIdx` (`siteId`);
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `yii_url_UNIQUE` (`urlPath`, `siteId`), ADD KEY `fk_consultation_siteIdx` (`siteId`);
 
 --
 -- Indexes for table `consultationAdmin`
 --
 ALTER TABLE `consultationAdmin`
-ADD PRIMARY KEY (`consultationId`,`userId`), ADD KEY `fk_consultation_userIdx` (`userId`), ADD KEY `fk_consultationIdx` (`consultationId`);
+ADD PRIMARY KEY (`consultationId`, `userId`), ADD KEY `fk_consultation_userIdx` (`userId`), ADD KEY `fk_consultationIdx` (`consultationId`);
 
 --
 -- Indexes for table `consultationOdtTemplate`
@@ -445,7 +494,7 @@ ADD PRIMARY KEY (`id`), ADD KEY `consultationId` (`consultationId`), ADD KEY `mo
 -- Indexes for table `consultationSettingsMotionType`
 --
 ALTER TABLE `consultationSettingsMotionType`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultationId` (`consultationId`,`position`);
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultationId` (`consultationId`, `position`);
 
 --
 -- Indexes for table `consultationSettingsTag`
@@ -457,13 +506,13 @@ ADD PRIMARY KEY (`id`);
 -- Indexes for table `consultationSubscription`
 --
 ALTER TABLE `consultationSubscription`
-ADD PRIMARY KEY (`consultationId`,`userId`), ADD KEY `fk_consultationIdx` (`consultationId`), ADD KEY `fk_userIdx` (`userId`);
+ADD PRIMARY KEY (`consultationId`, `userId`), ADD KEY `fk_consultationIdx` (`consultationId`), ADD KEY `fk_userIdx` (`userId`);
 
 --
 -- Indexes for table `consultationText`
 --
 ALTER TABLE `consultationText`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultation_text_unique` (`textId`,`consultationId`), ADD KEY `fk_texts_consultationIdx` (`consultationId`);
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultation_text_unique` (`textId`, `consultationId`), ADD KEY `fk_texts_consultationIdx` (`consultationId`);
 
 --
 -- Indexes for table `emailLog`
@@ -487,19 +536,19 @@ ADD PRIMARY KEY (`id`), ADD KEY `fk_comment_userIdx` (`userId`), ADD KEY `fk_com
 -- Indexes for table `motionCommentSupporter`
 --
 ALTER TABLE `motionCommentSupporter`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `ip_hash_motion` (`ipHash`,`motionCommentId`), ADD UNIQUE KEY `cookie_motion` (`cookieId`,`motionCommentId`), ADD KEY `fk_motion_comment_supporter_commentIdx` (`motionCommentId`);
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `ip_hash_motion` (`ipHash`, `motionCommentId`), ADD UNIQUE KEY `cookie_motion` (`cookieId`, `motionCommentId`), ADD KEY `fk_motion_comment_supporter_commentIdx` (`motionCommentId`);
 
 --
 -- Indexes for table `motionSection`
 --
 ALTER TABLE `motionSection`
-ADD PRIMARY KEY (`motionId`,`sectionId`), ADD KEY `motion_section_fk_sectionIdx` (`sectionId`);
+ADD PRIMARY KEY (`motionId`, `sectionId`), ADD KEY `motion_section_fk_sectionIdx` (`sectionId`);
 
 --
 -- Indexes for table `motionSubscription`
 --
 ALTER TABLE `motionSubscription`
-ADD PRIMARY KEY (`motionId`,`userId`), ADD KEY `fk_motionId` (`motionId`), ADD KEY `fk_userId` (`userId`);
+ADD PRIMARY KEY (`motionId`, `userId`), ADD KEY `fk_motionId` (`motionId`), ADD KEY `fk_userId` (`userId`);
 
 --
 -- Indexes for table `motionSupporter`
@@ -511,7 +560,7 @@ ADD PRIMARY KEY (`id`), ADD KEY `fk_supporter_idx` (`userId`), ADD KEY `fk_motio
 -- Indexes for table `motionTag`
 --
 ALTER TABLE `motionTag`
-ADD PRIMARY KEY (`motionId`,`tagId`), ADD KEY `motion_tag_fk_tagIdx` (`tagId`);
+ADD PRIMARY KEY (`motionId`, `tagId`), ADD KEY `motion_tag_fk_tagIdx` (`tagId`);
 
 --
 -- Indexes for table `site`
@@ -523,7 +572,7 @@ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `subdomain_UNIQUE` (`subdomain`), ADD KEY
 -- Indexes for table `siteAdmin`
 --
 ALTER TABLE `siteAdmin`
-ADD PRIMARY KEY (`siteId`,`userId`), ADD KEY `site_admin_fk_userIdx` (`userId`), ADD KEY `site_admin_fk_siteIdx` (`siteId`);
+ADD PRIMARY KEY (`siteId`, `userId`), ADD KEY `site_admin_fk_userIdx` (`userId`), ADD KEY `site_admin_fk_siteIdx` (`siteId`);
 
 --
 -- Indexes for table `user`
@@ -539,82 +588,82 @@ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `auth_UNIQUE` (`auth`), ADD KEY `fk_user_
 -- AUTO_INCREMENT for table `amendment`
 --
 ALTER TABLE `amendment`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `amendmentComment`
 --
 ALTER TABLE `amendmentComment`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `amendmentSupporter`
 --
 ALTER TABLE `amendmentSupporter`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultation`
 --
 ALTER TABLE `consultation`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultationOdtTemplate`
 --
 ALTER TABLE `consultationOdtTemplate`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `consultationSettingsMotionSection`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultationSettingsMotionType`
 --
 ALTER TABLE `consultationSettingsMotionType`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultationSettingsTag`
 --
 ALTER TABLE `consultationSettingsTag`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultationText`
 --
 ALTER TABLE `consultationText`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `emailLog`
 --
 ALTER TABLE `emailLog`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motion`
 --
 ALTER TABLE `motion`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motionComment`
 --
 ALTER TABLE `motionComment`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motionCommentSupporter`
 --
 ALTER TABLE `motionCommentSupporter`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motionSupporter`
 --
 ALTER TABLE `motionSupporter`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `site`
 --
 ALTER TABLE `site`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
@@ -623,14 +672,20 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- Constraints for table `amendment`
 --
 ALTER TABLE `amendment`
-ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `amendment` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `amendment` (`id`)
+  ON DELETE SET NULL
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `amendmentComment`
 --
 ALTER TABLE `amendmentComment`
-ADD CONSTRAINT `fk_amendment_comment_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_amendment_comment_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`)
+  ON DELETE SET NULL
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  ON DELETE SET NULL
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `amendmentSection`
@@ -643,34 +698,48 @@ ADD CONSTRAINT `amendmentSection_ibfk_2` FOREIGN KEY (`sectionId`) REFERENCES `c
 -- Constraints for table `amendmentSupporter`
 --
 ALTER TABLE `amendmentSupporter`
-ADD CONSTRAINT `fk_support_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_support_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_support_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_support_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultation`
 --
 ALTER TABLE `consultation`
-ADD CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationAdmin`
 --
 ALTER TABLE `consultationAdmin`
-ADD CONSTRAINT `fk_consultation_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_user_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_consultation_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_user_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationOdtTemplate`
 --
 ALTER TABLE `consultationOdtTemplate`
-ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `consultationSettingsMotionSection`
 ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`),
-ADD CONSTRAINT `consultation_settings_motion_section_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `consultation_settings_motion_section_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationSettingsMotionType`
@@ -682,94 +751,138 @@ ADD CONSTRAINT `consultationSettingsMotionType_ibfk_1` FOREIGN KEY (`consultatio
 -- Constraints for table `consultationSettingsTag`
 --
 ALTER TABLE `consultationSettingsTag`
-ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`id`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`id`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationSubscription`
 --
 ALTER TABLE `consultationSubscription`
-ADD CONSTRAINT `fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationText`
 --
 ALTER TABLE `consultationText`
-ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `emailLog`
 --
 ALTER TABLE `emailLog`
-ADD CONSTRAINT `fk_mail_log_user` FOREIGN KEY (`toUserId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_mail_log_user` FOREIGN KEY (`toUserId`) REFERENCES `user` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motion`
 --
 ALTER TABLE `motion`
-ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
 ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`);
 
 --
 -- Constraints for table `motionComment`
 --
 ALTER TABLE `motionComment`
-ADD CONSTRAINT `fk_motion_comment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_motion_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_motion_comment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_motion_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionCommentSupporter`
 --
 ALTER TABLE `motionCommentSupporter`
-ADD CONSTRAINT `fk_motion_comment_supporter_comment` FOREIGN KEY (`motionCommentId`) REFERENCES `motionComment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_motion_comment_supporter_comment` FOREIGN KEY (`motionCommentId`) REFERENCES `motionComment` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionSection`
 --
 ALTER TABLE `motionSection`
-ADD CONSTRAINT `motion_section_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `motion_section_fk_section` FOREIGN KEY (`sectionId`) REFERENCES `consultationSettingsMotionSection` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `motion_section_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `motion_section_fk_section` FOREIGN KEY (`sectionId`) REFERENCES `consultationSettingsMotionSection` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionSubscription`
 --
 ALTER TABLE `motionSubscription`
-ADD CONSTRAINT `fk_subscription_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_subscription_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_subscription_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_subscription_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionSupporter`
 --
 ALTER TABLE `motionSupporter`
-ADD CONSTRAINT `fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_supporter` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_supporter` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionTag`
 --
 ALTER TABLE `motionTag`
-ADD CONSTRAINT `motion_tag_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `motion_tag_fk_tag` FOREIGN KEY (`tagId`) REFERENCES `consultationSettingsTag` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `motion_tag_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `motion_tag_fk_tag` FOREIGN KEY (`tagId`) REFERENCES `consultationSettingsTag` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `site`
 --
 ALTER TABLE `site`
-ADD CONSTRAINT `fk_site_consultation` FOREIGN KEY (`currentConsultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_site_consultation` FOREIGN KEY (`currentConsultationId`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `siteAdmin`
 --
 ALTER TABLE `siteAdmin`
-ADD CONSTRAINT `site_admin_fk_site` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `site_admin_fk_site` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `user`
 --
 ALTER TABLE `user`
-ADD CONSTRAINT `fk_user_namespace` FOREIGN KEY (`siteNamespaceId`) REFERENCES `site` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `fk_user_namespace` FOREIGN KEY (`siteNamespaceId`) REFERENCES `site` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

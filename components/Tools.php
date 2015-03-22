@@ -13,11 +13,11 @@ class Tools
      */
     public static function dateSql2timestamp($input)
     {
-        $parts = explode(" ", $input);
-        $date  = array_map("IntVal", explode("-", $parts[0]));
+        $parts = explode(' ', $input);
+        $date  = array_map('IntVal', explode('-', $parts[0]));
 
         if (count($parts) == 2) {
-            $time = array_map("IntVal", explode(":", $parts[1]));
+            $time = array_map('IntVal', explode(':', $parts[1]));
         } else {
             $time = array(0, 0, 0);
         }
@@ -31,8 +31,53 @@ class Tools
      */
     public static function dateSql2de($input)
     {
-        $parts = explode("-", $input);
-        return $parts[2] . "." . $parts[1] . "." . $parts[0];
+        $parts = explode('-', $input);
+        return $parts[2] . '.' . $parts[1] . '.' . $parts[0];
+    }
+
+    /**
+     * @return string
+     */
+    public static function getCurrentDateLocale()
+    {
+        return 'de';
+    }
+
+    /**
+     * @param string $time
+     * @param string $locale
+     * @return string
+     */
+    public static function dateBootstraptime2sql($time, $locale)
+    {
+        if ($locale == 'de') {
+            $pattern = '/^(?<day>\\d{2})\.(?<month>\\d{2})\.(?<year>\\d{4}) (?<hour>\\d{2})\:(?<minute>\\d{2})$/';
+            if (preg_match($pattern, $time, $matches)) {
+                $date = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'] . ' ';
+                $date .= $matches['hour'] . ':' . $matches['minute'] . ':00';
+                return $date;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @param string $time
+     * @param string $locale
+     * @return string
+     */
+    public static function dateSql2bootstraptime($time, $locale)
+    {
+        if ($locale == 'de') {
+            $pattern = '/^(?<year>\\d{4})\-(?<month>\\d{2})\-(?<day>\\d{2}) ' .
+                '(?<hour>\\d{2})\:(?<minute>\\d{2})\:(?<second>\\d{2})$/';
+            if (preg_match($pattern, $time, $matches)) {
+                $date = $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'] . ' ';
+                $date .= $matches['hour'] . ':' . $matches['minute'];
+                return $date;
+            }
+        }
+        return '';
     }
 
     private static $last_time = 0;

@@ -2,22 +2,20 @@
 
 namespace app\models\settings;
 
+use app\models\exceptions\FormError;
+
 class Consultation
 {
     /** @var bool */
-    public $motionNeedsEmail  = false;
-    public $motionNeedsPhone  = false;
-    public $motionHasPhone    = false;
-    public $commentNeedsEmail = false;
-
-    public $iniatorsMayEdit = false;
-    public $adminsMayEdit   = true;
-
+    public $motionNeedsEmail      = false;
+    public $motionNeedsPhone      = false;
+    public $motionHasPhone        = false;
+    public $commentNeedsEmail     = false;
+    public $iniatorsMayEdit       = false;
+    public $adminsMayEdit         = true;
     public $maintainanceMode      = false;
     public $confirmEmails         = false;
     public $lineNumberingGlobal   = false;
-    public $amendNumberingGlobal  = false;
-    public $amendNumberingByLine  = false;
     public $hideRevision          = false;
     public $minimalisticUI        = false;
     public $showFeeds             = true;
@@ -31,7 +29,6 @@ class Consultation
     public $hasPDF                = true;
     public $lineLength            = 80;
     public $startLayoutType       = 0;
-    public $labelButtonNew        = "";
     public $commentWholeMotions   = false;
     public $allowMultipleTags     = false;
 
@@ -70,18 +67,15 @@ class Consultation
 
     /**
      * @param array $formdata
+     * @param array $affectedFields
+     * @throws FormError
      */
-    public function saveForm($formdata)
+    public function saveForm($formdata, $affectedFields)
     {
-        if (!isset($formdata["einstellungsfelder"])) {
-            return;
-        }
-
         $fields = get_object_vars($this);
-        var_dump($fields);
-        foreach ($formdata["einstellungsfelder"] as $key) {
+        foreach ($affectedFields as $key) {
             if (!array_key_exists($key, $fields)) {
-                die("Ungültiges Feld: " . $key);
+                throw new FormError('Unknown field: ' . $key);
             }
             $val = $fields[$key];
             if (is_bool($val)) {
@@ -93,25 +87,5 @@ class Consultation
             }
         }
 
-        /*
-        if (isset($_REQUEST["antrags_typen_aktiviert"])) {
-            $this->antrags_typen_deaktiviert = array();
-            foreach (Motion::$TYPEN as $id => $name) if (!in_array($id, $_REQUEST["antrags_typen_aktiviert"]))
-        $this->antrags_typen_deaktiviert[] = IntVal($id);
-        }
-        */
-
-    }
-
-    /**
-     * @return array
-     */
-    public function attributeLabels()
-    {
-        return array(
-            'ae_nummerierung_global'     => 'ÄA-Nummerierung für die ganze Veranstaltung',
-            'zeilen_nummerierung_global' => 'Zeilennummerierung durchgehend für die ganze Veranstaltung',
-            'bestaetigungs_emails'       => 'Bestätigungs-E-Mails an die NutzerInnen schicken'
-        );
     }
 }

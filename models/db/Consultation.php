@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property int $siteId
  * @property int $type
  * @property int $wording
+ * @property int $amendmentNumbering
  *
  * @property string $urlPath
  * @property string $title
@@ -61,7 +62,8 @@ class Consultation extends ActiveRecord
     {
         return [
             [['title', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
-            [['title', 'titleShort', 'eventDateFrom', 'eventDateTo', 'adminEmail'], 'safe'],
+            [['title', 'titleShort', 'eventDateFrom', 'eventDateTo'], 'safe'],
+            [['adminEmail', 'wording', 'amendmentNumbering'], 'safe'],
         ];
     }
 
@@ -225,7 +227,7 @@ class Consultation extends ActiveRecord
      */
     public function getSortedMotions()
     {
-        return MotionSorter::getSortedMotions($this, $this->motions, $this->getSettings()->amendNumberingByLine);
+        return MotionSorter::getSortedMotions($this, $this->motions, $this->amendmentNumbering);
     }
 
     /**
@@ -322,7 +324,7 @@ class Consultation extends ActiveRecord
      */
     public function getNextAvailableStatusString($motionTypeId)
     {
-        $max_rev    = 0;
+        $max_rev = 0;
         /** @var ConsultationSettingsMotionType $motionType */
         $motionType = null;
         foreach ($this->motionTypes as $t) {
@@ -344,5 +346,11 @@ class Consultation extends ActiveRecord
             }
         }
         return $prefix . ($max_rev + 1);
+    }
+
+
+    public function flushCaches()
+    {
+        // @TODO
     }
 }

@@ -225,7 +225,7 @@ class User extends ActiveRecord implements IdentityInterface
         if (YII_ENV == 'test') {
             return 'testCode';
         }
-        
+
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 

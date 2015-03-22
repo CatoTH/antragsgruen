@@ -36,29 +36,50 @@ class Layout
 
     /**
      * @param string $file
+     * @return $this;
      */
     public function addCSS($file)
     {
         if (!in_array($file, $this->extraCss)) {
             $this->extraCss[] = $file;
         }
+        return $this;
     }
 
     /**
      * @param string $exec_js
+     * @return $this;
      */
     public function addOnLoadJS($exec_js)
     {
         $this->onloadJs[] = $exec_js;
+        return $this;
     }
 
     /**
      * @param string $file
+     * @return $this;
      */
     public function addJS($file)
     {
         if (!in_array($file, $this->extraJs)) {
             $this->extraJs[] = $file;
         }
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param null|string $path
+     * @return $this
+     */
+    public function addBreadcrumb($name, $path = null)
+    {
+        if ($path) {
+            $this->breadcrumbs[$path] = $name;
+        } else {
+            $this->breadcrumbs[] = $name;
+        }
+        return $this;
     }
 }

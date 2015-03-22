@@ -2,6 +2,7 @@
 namespace app\components;
 
 
+use app\models\amendmentNumbering\ByLine;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
@@ -94,10 +95,10 @@ class MotionSorter
     /**
      * @param Consultation $consultation
      * @param Motion[] $motions
-     * @param bool $amendNumberingByLine
+     * @param int $amendmentNumbering
      * @return array|array[]
      */
-    public static function getSortedMotions(Consultation $consultation, $motions, $amendNumberingByLine)
+    public static function getSortedMotions(Consultation $consultation, $motions, $amendmentNumbering)
     {
         $motionsSorted = array();
 
@@ -114,8 +115,7 @@ class MotionSorter
                 }
                 $key = $motion->titlePrefix;
 
-                // @TODO veranstaltungsspezifisch_ae_sortierung_zeilennummer noch nötig ?
-                if ($amendNumberingByLine) {
+                if ($amendmentNumbering == ByLine::getID()) {
                     $motion->amendments = Amendment::sortVisibleByLineNumbers($consultation, $motion->amendments);
                 }
 

@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\AntiXSS;
+use app\components\Tools;
 use app\controllers\Base;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -136,13 +137,21 @@ class IndexController extends Base
     {
         $model = $this->consultation;
 
-        if (isset($_POST['save'])) {
-            $model->setAttributes($_POST['Veranstaltung']);
-            Yii::import('ext.datetimepicker.EDateTimePicker');
-            $model->antragsschluss = EDateTimePicker::parseInput($_POST["Veranstaltung"], "antragsschluss");
+        $locale = Tools::getCurrentDateLocale();
 
-            $einstellungen = $model->getEinstellungen();
-            $einstellungen->saveForm($_REQUEST["VeranstaltungsEinstellungen"]);
+        if (isset($_POST['save'])) {
+            $data = $_POST['consultation'];
+            $model->setAttributes($data);
+            $model->deadlineMotions = Tools::dateBootstraptime2sql($data['deadlineMotions'], $locale);
+            $model->deadlineAmendments = Tools::dateBootstraptime2sql($data['deadlineAmendments'], $locale);
+
+            $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
+            $settings = $model->getSettings();
+            $settings->saveForm($settingsInput, $_POST['settingsFields']);
+            $model->setSettings($settings);
+
+            /*
+
             if (isset($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"])) {
                 switch ($_REQUEST["VeranstaltungsEinstellungen"]["ae_nummerierung"]) {
                     case 0:
@@ -160,16 +169,17 @@ class IndexController extends Base
                 }
             }
             $model->setEinstellungen($einstellungen);
+            */
 
-            $relatedData = array();
-
-            if ($model->saveWithRelated($relatedData)) {
-                $model->resetLineCache();
-                $this->redirect(array('update'));
+            if ($model->save()) {
+                $model->flushCaches();
+                \yii::$app->session->setFlash('success', 'Gespeichert.');
+            } else {
+                \yii::$app->session->setFlash('error', print_r($model->getErrors(), true));
             }
         }
 
-        return $this->render('consultation_settings', ['consultation' => $this->consultation]);
+        return $this->render('consultation_settings', ['consultation' => $this->consultation, 'locale' => $locale]);
     }
 
     public function actionConsultationexperts()
