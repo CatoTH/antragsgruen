@@ -69,6 +69,23 @@ class Motion extends IMotion
     }
 
     /**
+     * @return Amendment[]
+     */
+    public function getSortedAmendments()
+    {
+        $aes = $this->amendments;
+        usort(
+            $aes,
+            function ($ae1, $ae2) {
+                /** @var Amendment $ae1 */
+                /** @var Amendment $ae2 */
+                return strnatcasecmp(strtolower($ae1->titlePrefix), strtolower($ae2->titlePrefix));
+            }
+        );
+        return $aes;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getTags()
@@ -129,7 +146,7 @@ class Motion extends IMotion
     /**
      * @return string
      */
-    public function getNameWithPrefix()
+    public function getTitleWithPrefix()
     {
         if ($this->consultation->getSettings()->hideRevision) {
             return $this->title;

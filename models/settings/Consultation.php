@@ -3,6 +3,7 @@
 namespace app\models\settings;
 
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 
 class Consultation
 {
@@ -32,9 +33,9 @@ class Consultation
     public $allowStrikeFormat     = false;
 
     /** @var int */
-    public $titleMaxLength        = 0;
-    public $lineLength            = 80;
-    public $startLayoutType       = 0;
+    public $titleMaxLength  = 0;
+    public $lineLength      = 80;
+    public $startLayoutType = 0;
 
     /** @var null|string */
     public $logoUrl     = null;
@@ -90,6 +91,35 @@ class Consultation
                 $this->$key = $formdata[$key];
             }
         }
+    }
 
+    /**
+     * @return string[]
+     */
+    public function getStartLayouts()
+    {
+        return [
+            0 => 'Standard',
+            1 => 'Tabellarisch, gegliedert nach Antragstyp',
+            2 => 'Tabellarisch, gegliedert nach Schlagworten',
+        ];
+    }
+
+    /**
+     * @return string
+     * @throws Internal
+     */
+    public function getStartLayoutView()
+    {
+        switch ($this->startLayoutType) {
+            case 0:
+                return 'index_layout_std';
+            case 1:
+                return 'index_layout_bdk';
+            case 2:
+                return 'index_layout_tags';
+            default:
+                throw new Internal('Unknown layout: ' . $this->startLayoutType);
+        }
     }
 }

@@ -33,7 +33,7 @@ $wording    = $consultation->getWording();
 $layout->breadcrumbs[UrlHelper::createMotionUrl($motion)] = $motion->getTypeName();
 $layout->addJS('/js/socialshareprivacy/jquery.socialshareprivacy.js');
 
-$this->title = $motion->getNameWithPrefix() . " (" . $motion->consultation->title . ", Antragsgrün)";
+$this->title = $motion->getTitleWithPrefix() . " (" . $motion->consultation->title . ", Antragsgrün)";
 
 $rows = 4;
 if ($motion->dateResolution != "") {
@@ -93,7 +93,7 @@ $layout->menusHtml[] = $html;
 $minimalisticUi = $motion->consultation->getSettings()->minimalisticUI;
 $minHeight      = ($minimalisticUi && \Yii::$app->user->isGuest ? 110 : 164);
 
-echo '<h1>' . Html::encode($motion->getNameWithPrefix()) . '</h1>';
+echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">
     <div id="socialshareprivacy"></div>';

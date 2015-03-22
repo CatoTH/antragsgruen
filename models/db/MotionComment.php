@@ -2,7 +2,6 @@
 
 namespace app\models\db;
 
-use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\helpers\Url;
 
@@ -89,9 +88,9 @@ class MotionComment extends IComment
     /**
      * @return string
      */
-    public function getMotionName()
+    public function getMotionTitle()
     {
-        return $this->motion->getNameWithPrefix();
+        return $this->motion->getTitleWithPrefix();
     }
 
     /**

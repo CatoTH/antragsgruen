@@ -185,7 +185,8 @@ CREATE TABLE `consultationSettingsMotionType` (
   `consultationId` INT(11)      NOT NULL,
   `title`          VARCHAR(100) NOT NULL,
   `motionPrefix`   VARCHAR(10) DEFAULT NULL,
-  `position`       INT(11)      NOT NULL
+  `position`       INT(11)      NOT NULL,
+  `cssicon`        VARCHAR(100) NOT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

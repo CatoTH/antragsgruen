@@ -382,11 +382,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function notifyMotion(Motion $motion)
     {
-        $subject = "[Antragsgrün] Neuer Antrag: " . $motion->getNameWithPrefix();
+        $subject = "[Antragsgrün] Neuer Antrag: " . $motion->getTitleWithPrefix();
         $link    = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
         $link    = \Yii::$app->request->baseUrl . $link;
         $text    = "Es wurde ein neuer Antrag eingereicht:\nAnlass: " . $motion->consultation->title .
-            "\nName: " . $motion->getNameWithPrefix() . "\nLink: " . $link;
+            "\nName: " . $motion->getTitleWithPrefix() . "\nLink: " . $link;
         $this->notificationEmail($motion->consultation, $subject, $text);
     }
 
@@ -395,12 +395,12 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function notifyAmendment(Amendment $amendment)
     {
-        $subject  = "[Antragsgrün] Neuer Änderungsantrag zu " . $amendment->motion->getNameWithPrefix();
+        $subject  = "[Antragsgrün] Neuer Änderungsantrag zu " . $amendment->motion->getTitleWithPrefix();
         $motionId = $amendment->motion->id;
         $link     = UrlHelper::createUrl(['amendment/view', 'amendmentId' => $amendment->id, 'motionId' => $motionId]);
         $link     = \Yii::$app->request->baseUrl . $link;
         $text     = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: " .
-            $amendment->motion->consultation->title . "\nAntrag: " . $amendment->motion->getNameWithPrefix() .
+            $amendment->motion->consultation->title . "\nAntrag: " . $amendment->motion->getTitleWithPrefix() .
             "\nLink: " . $link;
         $this->notificationEmail($amendment->motion->consultation, $subject, $text);
     }
@@ -410,8 +410,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function notifyComment(IComment $comment)
     {
-        $subject = "[Antragsgrün] Neuer Kommentar zu: " . $comment->getMotionName();
-        $text    = "Es wurde ein neuer Kommentar zu " . $comment->getMotionName() . " geschrieben:\n" .
+        $subject = "[Antragsgrün] Neuer Kommentar zu: " . $comment->getMotionTitle();
+        $text    = "Es wurde ein neuer Kommentar zu " . $comment->getMotionTitle() . " geschrieben:\n" .
             $comment->getLink(true);
         $this->notificationEmail($comment->getConsultation(), $subject, $text);
     }

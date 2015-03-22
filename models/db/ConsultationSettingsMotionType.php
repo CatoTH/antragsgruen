@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  * @property string $title
  * @property string $motionPrefix
  * @property int $position
+ * @property int $cssicon
  *
  * @property Consultation $consultation
  * @property Motion[] $motions

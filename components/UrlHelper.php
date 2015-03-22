@@ -3,6 +3,7 @@
 namespace app\components;
 
 
+use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\db\Site;
@@ -143,5 +144,22 @@ class UrlHelper
     public static function createMotionUrl(Motion $motion, $mode = 'view')
     {
         return static::createUrl(['motion/' . $mode, 'motionId' => $motion->id]);
+    }
+
+
+    /**
+     * @param Amendment $amendment
+     * @param string $mode
+     * @return string
+     */
+    public static function createAmendmentUrl(Amendment $amendment, $mode = 'view')
+    {
+        return static::createUrl(
+            [
+                'amendment/' . $mode,
+                'motionId'    => $amendment->motionId,
+                'amendmentId' => $amendment->id
+            ]
+        );
     }
 }

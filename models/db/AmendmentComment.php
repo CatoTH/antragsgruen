@@ -56,9 +56,9 @@ class AmendmentComment extends IComment
     /**
      * @return string
      */
-    public function getMotionName()
+    public function getMotionTitle()
     {
-        return $this->amendment->titlePrefix . " zu " . $this->amendment->motion->getNameWithPrefix();
+        return $this->amendment->titlePrefix . " zu " . $this->amendment->motion->getTitleWithPrefix();
     }
 
     /**

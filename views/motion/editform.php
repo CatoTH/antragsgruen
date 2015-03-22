@@ -70,7 +70,7 @@ echo '<fieldset class="form-group">
     <input type="text" class="form-control" id="motionTitle" name="title" value="' . Html::encode($form->title) . '">
   </fieldset>';
 
-/** @var ConsultationSettingsTag][] $tags */
+/** @var ConsultationSettingsTag[] $tags */
 $tags = array();
 foreach ($consultation->tags as $tag) {
     $tags[$tag->id] = $tag;
@@ -86,7 +86,7 @@ if (count($tags) == 1) {
         if (in_array($id, $form->tags)) {
             echo ' checked';
         }
-        echo ' required> ' . Html::encode($tag->name) . '</label>';
+        echo ' required> ' . Html::encode($tag->title) . '</label>';
     }
     echo '</fieldset>';
 }
@@ -115,7 +115,7 @@ foreach ($consultation->motionSections as $section) {
 }
 
 $initiatorClass = $consultation->getMotionInitiatorFormClass();
-echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $this->context);
+echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $controller);
 
 echo '<div class="submitHolder"><button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-ok"></span> Weiter';

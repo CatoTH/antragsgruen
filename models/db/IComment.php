@@ -41,7 +41,7 @@ abstract class IComment extends ActiveRecord
     /**
      * @return string
      */
-    abstract public function getMotionName();
+    abstract public function getMotionTitle();
 
     /**
      * @param bool $absolute

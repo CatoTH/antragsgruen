@@ -59,15 +59,7 @@ echo $introText;
 
 echo '</div>';
 
-/*
-if ($this->veranstaltung->id == 134) {
-    require_once(__DIR__ . "/index_layout_tags.php");
-} elseif ($this->veranstaltung->getEinstellungen()->bdk_startseiten_layout) {
-    require_once(__DIR__ . "/index_layout_bdk.php");
-} else {
-    require_once(__DIR__ . "/index_layout_std.php");
-}
-*/
+require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLayoutView() . '.php');
 
 if ($myself) {
     if (count($myMotions)) {

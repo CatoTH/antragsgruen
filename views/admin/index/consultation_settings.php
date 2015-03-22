@@ -58,6 +58,19 @@ echo Html::dropDownList(
 echo '</div></fieldset>';
 
 
+$handledSettings[] = 'startLayoutType';
+echo '<fieldset class="form-group">
+        <label class="col-sm-4 control-label" for="startLayoutType">Startseiten-Design:</label>
+        <div class="col-sm-8">';
+echo Html::dropDownList(
+    'settings[startLayoutType]',
+    $consultation->getSettings()->startLayoutType,
+    $consultation->getSettings()->getStartLayouts(),
+    ['id' => 'startLayoutType', 'class' => 'form-control']
+);
+echo '</div></fieldset>';
+
+
 echo '<fieldset class="form-group">
     <label class="col-sm-4 control-label" for="consultationPath">Verzeichnis:</label>
     <div class="col-sm-8">
