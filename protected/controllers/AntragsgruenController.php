@@ -109,7 +109,7 @@ class AntragsgruenController extends CController
 		}
 
 		if (is_null($this->veranstaltung)) {
-			$this->veranstaltung = Veranstaltung::model()->findByAttributes(array("url_verzeichnis" => $veranstaltung_id));
+			$this->veranstaltung = Veranstaltung::model()->findByAttributes(array("url_verzeichnis" => $veranstaltung_id, "veranstaltungsreihe_id" => $this->veranstaltungsreihe->id));
 		}
 		if (is_null($this->veranstaltung)) {
 			$this->robots_noindex = true;
