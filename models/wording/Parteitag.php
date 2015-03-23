@@ -24,4 +24,13 @@ class Parteitag extends IWording
     {
         return "Parteitag";
     }
+
+    /**
+     * @param string $pageKey
+     * @return null
+     */
+    protected function getPageDataInternal($pageKey)
+    {
+        return null;
+    }
 }

@@ -55,6 +55,24 @@ class Base extends Controller
     }
 
     /**
+     * @param string $pageKey
+     * @return string
+     */
+    protected function renderContentPage($pageKey)
+    {
+        $admin   = $this->consultation->isAdminCurUser();
+        $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => $pageKey]);
+        return $this->render(
+            'contentpage',
+            [
+                'pageKey' => $pageKey,
+                'admin'   => $admin,
+                'saveUrl' => $saveUrl
+            ]
+        );
+    }
+
+    /**
      * @param string $view
      * @param array $options
      * @return string

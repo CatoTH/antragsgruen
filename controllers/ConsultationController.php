@@ -2,41 +2,16 @@
 
 namespace app\controllers;
 
+use app\components\Tools;
 use app\models\db\Amendment;
+use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\Consultation;
 use app\models\db\MotionComment;
+use app\models\exceptions\Access;
 
 class ConsultationController extends Base
 {
-
-    /**
-     * @return Consultation|null
-     */
-    private function actionConsultationLoadData()
-    {
-        /** @var Consultation $consultation */
-        $this->consultation = Consultation::findOne($this->consultation->id);
-        /* @TODO
-        model()->
-         * with(array(
-         * 'antraege'                    => array(
-         * 'joinType' => "LEFT OUTER JOIN",
-         * 'on'       => "`antraege`.`veranstaltung_id` = `t`.`id` AND `antraege`.`status`
-         * NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
-         * ),
-         * 'antraege.aenderungsantraege' => array(
-         * 'joinType' => "LEFT OUTER JOIN",
-         * "on"       => "`aenderungsantraege`.`antrag_id` = `antraege`.`id` AND
-         * `aenderungsantraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND
-         * `antraege`.`status` NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ")",
-         * ),
-         * ))->find(array("id" => $this->veranstaltung->id));
-         */
-        return $this->consultation;
-    }
-
-
     public function actionSearch()
     {
         // @TODO
@@ -74,17 +49,60 @@ class ConsultationController extends Base
         // @TODO
     }
 
+
+    /**
+     * @param string $pageKey
+     * @return string
+     * @throws Access
+     */
+    public function actionSavetextajax($pageKey)
+    {
+        if (!$this->consultation->isAdminCurUser()) {
+            throw new Access('No permissions to edit this page');
+        }
+        /** @var ConsultationText $text */
+        $text = ConsultationText::findOne(['consultationId' => $this->consultation->id, 'textId' => $pageKey]);
+        if (!$text) {
+            $text = new ConsultationText();
+            $text->consultationId = $this->consultation->id;
+            $text->textId = $pageKey;
+        }
+        $text->text = Tools::cleanTrustedHtml($_POST['data']);
+        $text->editDate = date('Y-m-d H:i:s');
+        if ($text->save()) {
+            return '1';
+        } else {
+            return '0';
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function actionMaintainance()
+    {
+        return $this->renderContentPage('maintainance');
+    }
+
+    /**
+     * @return string
+     */
     public function actionLegal()
     {
-        // @TODO
+        return $this->renderContentPage('legal');
     }
 
+    /**
+     * @return string
+     */
     public function actionHelp()
     {
-        // @TODO
+        return $this->renderContentPage('help');
     }
 
-
+    /**
+     * @param Consultation $consultation
+     */
     private function consultationSidebar(Consultation $consultation)
     {
         $newestAmendments     = Amendment::getNewestByConsultation($consultation, 5);
@@ -107,12 +125,12 @@ class ConsultationController extends Base
      */
     public function actionIndex()
     {
-        $this->layout                = 'column2';
+        $this->layout = 'column2';
 
         $this->testMaintainanceMode();
         $this->consultationSidebar($this->consultation);
 
-        $consultation  = $this->actionConsultationLoadData();
+        $consultation  = $this->consultation;
         $motionsSorted = $consultation->getSortedMotions();
 
         $myself = $this->getCurrentUser();

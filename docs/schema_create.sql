@@ -120,7 +120,7 @@ CREATE TABLE `consultation` (
   `policySupport`      VARCHAR(20)       DEFAULT NULL,
   `amendmentNumbering` TINYINT(4)   NOT NULL,
   `adminEmail`         VARCHAR(150)      DEFAULT NULL,
-  `settings`           BLOB
+  `settings`           TEXT
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -391,7 +391,7 @@ CREATE TABLE `site` (
   `subdomain`             VARCHAR(45)  NOT NULL,
   `title`                 VARCHAR(200) NOT NULL,
   `titleShort`            VARCHAR(100) DEFAULT NULL,
-  `settings`              TINYBLOB,
+  `settings`              TEXT,
   `currentConsultationId` INT(11)      DEFAULT NULL,
   `public`                TINYINT(4)   DEFAULT '1',
   `contact`               MEDIUMTEXT

@@ -227,6 +227,18 @@ class Tools
         return self::formatMysqlDate($mysqlDate) . ", " . substr($mysqlDate, 11, 5) . " Uhr";
     }
 
+
+    /**
+     * @param string $html
+     * @return string
+     */
+    public static function cleanTrustedHtml($html)
+    {
+        $html = str_replace(chr(194) . chr(160), " ", $html);
+        // @TODO
+        return $html;
+    }
+
     /**
      * @param string $html
      * @return string

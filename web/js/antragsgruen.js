@@ -29,60 +29,6 @@
         return normalizedText.length;
     }
 
-
-    function ckeditor_bbcode(id, height) {
-
-        var $el = $("#" + id),
-            initialized = $el.data("ckeditor_initialized");
-        if (typeof(initialized) != "undefined" && initialized) return;
-        $el.data("ckeditor_initialized", "1");
-        var opts = {
-            allowedContent: 'b s i u p blockquote ul ol li;',
-            removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,magicline' + ',sourcearea',
-            extraPlugins: 'autogrow,wordcount,bbcode',
-            scayt_sLang: 'de_DE',
-            autoGrow_bottomSpace: 20,
-            // Width and height are not supported in the BBCode format, so object resizing is disabled.
-            disableObjectResizing: true,
-            wordcount: {
-                showWordCount: true,
-                showCharCount: true,
-                countHTML: false,
-                countSpacesAsChars: true
-            },
-            toolbar: [
-                {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', '-', 'RemoveFormat']},
-                {name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Blockquote']},
-                {name: 'links', items: ['Link', 'Unlink']},
-                {name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
-                {name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt']},
-                {name: 'tools', items: ['Maximize']}
-            ]
-
-        };
-        if (typeof(height) != "undefined" && height > 0) opts["height"] = height;
-        var editor = CKEDITOR.replace(id, opts);
-
-        var $fieldset = $el.parents("fieldset.textarea").first();
-        if ($fieldset.data("max_len") > 0) {
-            var onChange = function () {
-                if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
-                    $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
-                    $fieldset.find(".max_len_hint .calm").hide();
-                    $fieldset.find(".max_len_hint .alert").show();
-                } else {
-                    $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
-                    $fieldset.find(".max_len_hint .calm").show();
-                    $fieldset.find(".max_len_hint .alert").hide();
-                }
-            };
-            editor.on('change', onChange);
-            onChange();
-
-        }
-    }
-
-
     function ckeditorInit(id) {
 
         var $el = $("#" + id),
@@ -90,7 +36,7 @@
         if (typeof(initialized) != "undefined" && initialized) return;
         $el.data("ckeditor_initialized", "1");
 
-        CKEDITOR.replace(id, {
+        var editor = CKEDITOR.replace(id, {
             allowedContent: 'b s i u;' +
             'ul ol li {list-style-type};' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
@@ -123,6 +69,23 @@
             }
         });
 
+        var $fieldset = $el.parents("fieldset.textarea").first();
+        if ($fieldset.data("max_len") > 0) {
+            var onChange = function () {
+                if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
+                    $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
+                    $fieldset.find(".max_len_hint .calm").hide();
+                    $fieldset.find(".max_len_hint .alert").show();
+                } else {
+                    $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
+                    $fieldset.find(".max_len_hint .calm").show();
+                    $fieldset.find(".max_len_hint .alert").hide();
+                }
+            };
+            editor.on('change', onChange);
+            onChange();
+
+        }
     }
 
 
@@ -136,7 +99,6 @@
 
 
     var motionEditForm = function () {
-        //ckeditor_bbcode("Antrag_text");
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find("textarea");
@@ -167,9 +129,52 @@
         });
     };
 
+    var contentPageEdit = function () {
+        $('.contentPage').each(function () {
+            var $this = $(this),
+                $form = $this.find('> form'),
+                $editCaller = $this.find('> .editCaller'),
+                $textHolder = $form.find('> .textHolder'),
+                $textSaver = $form.find('> .textSaver'),
+                editor = null;
+
+            $editCaller.click(function (ev) {
+                ev.preventDefault();
+                $editCaller.hide();
+                $textHolder.attr('contenteditable', true);
+
+                editor = CKEDITOR.inline($textHolder.attr('id'), {
+                    scayt_sLang: 'de_DE'
+                });
+
+                $textHolder.focus();
+                $textSaver.show();
+            });
+            $textSaver.hide();
+            $textSaver.find('button').click(function (ev) {
+                ev.preventDefault();
+
+                $.post($form.attr('action'), {
+                    'data': editor.getData(),
+                    '_csrf': $form.find('> input[name=_csrf]').val()
+                }, function (ret) {
+                    if (ret == '1') {
+                        $textSaver.hide();
+                        editor.destroy();
+                        $textHolder.attr('contenteditable', false);
+                        $editCaller.show();
+                    } else {
+                        alert('Something went wrong...');
+                    }
+                })
+            });
+        });
+    };
+
     $.Antragsgruen = {
         "motionEditForm": motionEditForm,
-        "consultationEditForm": consultationEditForm
+        "consultationEditForm": consultationEditForm,
+        "contentPageEdit": contentPageEdit
     };
 
 }(jQuery));

@@ -24,9 +24,6 @@ $wording    = $consultation->getWording();
 $layout     = $controller->layoutParams;
 
 $this->title                = $consultation->title . ' (Antragsgrün)';
-$layout->breadcrumbsTopname = ($consultation->titleShort ? $consultation->titleShort : $consultation->title);
-$layout->breadcrumbs        = array();
-
 
 //include(__DIR__ . "/sidebar.php");
 

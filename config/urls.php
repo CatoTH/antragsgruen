@@ -41,6 +41,7 @@ $url_rules = [
 
     $domv . 'legal'                                                        => 'consultation/legal',
     $domv . 'help'                                                         => 'consultation/help',
+    $domv . 'savetextajax'                                                 => 'consultation/savetextajax',
     $domv . 'search'                                                       => 'consultation/search',
     $domv . 'pdfs'                                                         => 'consultation/pdfs',
     $domv . 'aenderungsantrags_pdfs'                                       => 'consultation/aenderungsantragsPdfs',
@@ -48,7 +49,7 @@ $url_rules = [
     $domv . 'feedAntraege'                                                 => 'consultation/feedAntraege',
     $domv . 'feedAenderungsantraege'                                       => 'consultation/feedAenderungsantraege',
     $domv . 'feedKommentare'                                               => 'consultation/feedKommentare',
-    $domv . 'wartungsmodus'                                                => 'consultation/wartungsmodus',
+    $domv . 'maintainance'                                                 => 'consultation/maintainance',
     $domv . 'motion/create'                                                => 'motion/create',
     $domv . 'motion/<motionId:\d+>?kommentar_id=<kommentar_id:\d+>'        => 'motion/view',
     $domv . 'motion/<motionId:\d+>'                                        => 'motion/view',

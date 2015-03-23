@@ -22,6 +22,9 @@ class FormError extends Exception
         parent::__construct(implode("\n", $this->messages));
     }
 
+    /**
+     * @return string[]
+     */
     public function getMessages()
     {
         return $this->messages;

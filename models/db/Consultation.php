@@ -4,11 +4,13 @@ namespace app\models\db;
 
 use app\components\MotionSorter;
 use app\models\exceptions\DB;
+use app\models\exceptions\Internal;
 use app\models\forms\SiteCreateForm;
 use app\models\initiatorForms\DefaultForm;
 use app\models\policies\IPolicy;
 use app\models\sitePresets\ISitePreset;
 use app\models\wording\IWording;
+use app\models\wording\PageData;
 use yii\db\ActiveRecord;
 
 /**
@@ -264,6 +266,23 @@ class Consultation extends ActiveRecord
         /** @var IWording $wording */
         $wording = IWording::getWordings()[$this->wording];
         return new $wording();
+    }
+
+
+    /**
+     * @param string $pageKey
+     * @return PageData
+     * @throws Internal
+     */
+    public function getPageData($pageKey)
+    {
+        $pageData = $this->getWording()->getPageData($pageKey);
+        foreach ($this->texts as $text) {
+            if ($text->textId == $pageKey) {
+                $pageData->text = $text->text;
+            }
+        }
+        return $pageData;
     }
 
     /**
