@@ -1,3 +1,7 @@
+2.6.5 - 2015-03-24
+
+* Es gibt einen neuen Antragsstatus "Unveränderlich"
+
 2.6.4 - 2015-03-22
 ==================
 
