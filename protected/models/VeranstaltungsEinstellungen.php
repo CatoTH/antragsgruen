@@ -24,6 +24,7 @@ class VeranstaltungsEinstellungen extends CFormModel
     public $freischaltung_antraege_anzeigen = false;
 	public $freischaltung_aenderungsantraege = false;
 	public $freischaltung_kommentare = false;
+	public $ae_praefix = 'ton';
 	public $initiatorInnen_duerfen_aes_ablehnen = false;
 	public $titel_eigene_zeile = true;
     public $titel_maxlength = 0;

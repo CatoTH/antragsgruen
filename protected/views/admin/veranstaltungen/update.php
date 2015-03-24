@@ -129,7 +129,6 @@ $einstellungen = $model->getEinstellungen();
 	</div>
 
 	<div>
-		<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="wartungs_modus_aktiv">
 		<?php echo $form->labelEx($einstellungen, 'antrag_einleitung', array("label" => "PDF-Antrags-Einleitung")); ?>
 		<div class="std_content_col">
 			<?php echo $form->textArea($einstellungen, 'antrag_einleitung'); ?>

@@ -266,6 +266,7 @@ class IndexController extends AntragsgruenController
 				$veranstaltung->typ                       = $referenz->typ;
 				$veranstaltung->url_verzeichnis           = $_REQUEST["url"];
 				$veranstaltung->admin_email               = $referenz->admin_email;
+				$veranstaltung->praefix					  = 'Ä';
 				$veranstaltung->setEinstellungen($referenz->getEinstellungen());
 				if ($veranstaltung->save()) {
 					Yii::app()->user->setFlash("success", "Die neue Veranstaltung wurde angelegt");
