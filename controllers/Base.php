@@ -258,7 +258,7 @@ class Base extends Controller
         }
 
         if (is_null($this->consultation)) {
-            $this->consultation = Consultation::findOne(["urlPath" => $consultationId]);
+            $this->consultation = Consultation::findOne(["urlPath" => $consultationId, "siteId" => $this->site->id]);
         }
 
         UrlHelper::setCurrentConsultation($this->consultation);

@@ -69,7 +69,7 @@ CREATE TABLE `amendmentSupporter` (
   `id`             INT(11)                                            NOT NULL,
   `amendmentId`    INT(11)                                            NOT NULL,
   `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
-  `userId`         INT(11)                                            NOT NULL,
+  `userId`         INT(11)                                            NULL DEFAULT NULL,
   `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
   `comment`        MEDIUMTEXT,
   `personType`     TINYINT(4)                                                  DEFAULT NULL,
@@ -186,7 +186,7 @@ CREATE TABLE `consultationSettingsMotionType` (
   `title`          VARCHAR(100) NOT NULL,
   `motionPrefix`   VARCHAR(10) DEFAULT NULL,
   `position`       INT(11)      NOT NULL,
-  `cssicon`        VARCHAR(100) NOT NULL
+  `cssicon`        VARCHAR(100) NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -354,7 +354,7 @@ CREATE TABLE `motionSupporter` (
   `id`             INT(11)                                            NOT NULL,
   `motionId`       INT(11)                                            NOT NULL,
   `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
-  `userId`         INT(11)                                            NOT NULL,
+  `userId`         INT(11)                                            NULL DEFAULT NULL,
   `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
   `comment`        MEDIUMTEXT,
   `personType`     TINYINT(4)                                                  DEFAULT NULL,
