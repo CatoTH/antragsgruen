@@ -96,8 +96,7 @@ class InfosController extends AntragsgruenController
 				$veranstaltung->typ                    = $anlegenformmodel->typ;
 				$veranstaltung->url_verzeichnis        = $anlegenformmodel->subdomain;
 				$veranstaltung->admin_email            = $anlegenformmodel->admin_email;
-				$veranstaltung->praefix                = "Ä";
-				
+
 				$einstellungen                       = $veranstaltung->getEinstellungen();
 				$einstellungen->wartungs_modus_aktiv = !$anlegenformmodel->sofort_offen;
 

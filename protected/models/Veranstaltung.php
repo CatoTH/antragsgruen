@@ -14,7 +14,6 @@
  * @property string $url_verzeichnis
  * @property integer $typ
  * @property string $admin_email
- * @property string $praefix
  * @property string $einstellungen
  * @property integer $veranstaltungsreihe_id
  *
@@ -395,9 +394,8 @@ class Veranstaltung extends GxActiveRecord
 			array('name, url_verzeichnis, policy_antraege, policy_aenderungsantraege, policy_kommentare, policy_unterstuetzen, typ, einstellungen', 'required'),
 			array('name', 'length', 'max' => 200),
 			array('name_kurz, url_verzeichnis', 'length', 'max' => 45),
-			array('antragsschluss, praefix, admin_email, datum_von, datum_bis', 'safe'),
+			array('antragsschluss, admin_email, datum_von, datum_bis', 'safe'),
 			array('antragsschluss', 'default', 'setOnEmpty' => true, 'value' => null),
-			array('praefix', 'default', 'setOnEmpty' => true, 'value' => 'Z'),
 		);
 	}
 
@@ -427,7 +425,6 @@ class Veranstaltung extends GxActiveRecord
 			'policy_kommentare'         => Yii::t('app', 'Policy Kommentare'),
 			'policy_unterstuetzen'      => Yii::t('app', 'Policy Unterstützen'),
 			'typ'                       => Yii::t('app', 'Typ'),
-			'praefix'                   => Yii::t('app', 'Präfix für Änderungsanträge'),
 			'admin_email'               => Yii::t('app', 'E-Mail des Admins'),
 			'url_verzeichnis'           => Yii::t('app', 'Unterverzeichnis'),
 			'antraege'                  => null,
