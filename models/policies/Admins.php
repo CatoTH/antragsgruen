@@ -2,6 +2,7 @@
 
 namespace app\models\policies;
 
+use app\models\db\User;
 use app\models\wording\IWording;
 
 class Admins extends IPolicy
@@ -58,7 +59,7 @@ class Admins extends IPolicy
      */
     public function checkMotionSubmit()
     {
-        return ($this->consultation->isAdminCurUser());
+        return User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
     }
 
     /**
@@ -66,6 +67,6 @@ class Admins extends IPolicy
      */
     public function checkAmendmentSubmit()
     {
-        return ($this->consultation->isAdminCurUser());
+        return User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
     }
 }

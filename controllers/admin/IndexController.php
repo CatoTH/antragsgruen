@@ -29,7 +29,8 @@ class IndexController extends Base
             $this->redirect(UrlHelper::createLoginUrl($currUrl));
             return false;
         }
-        if (!$this->consultation->isAdminCurUser()) {
+
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_ANY)) {
             $this->showErrorpage(403, 'Kein Zugriff auf diese Seite');
             return false;
         }

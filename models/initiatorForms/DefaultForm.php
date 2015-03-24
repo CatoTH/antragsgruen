@@ -202,7 +202,7 @@ class DefaultForm implements IInitiatorView
     public function submitInitiatorViewAmendment(Amendment $amendment)
     {
         // @TODO
-        $initiator = $this->getSubmitPerson($amendment->motion->consultation->isAdminCurUser());
+        $initiator = $this->getSubmitPerson();
         if ($initiator === null) {
             throw new FormError("Keine AntragstellerIn gefunden");
         }
@@ -254,7 +254,7 @@ class DefaultForm implements IInitiatorView
                 'initiator'         => $initiator,
                 'labelName'         => $labelName,
                 'labelOrganization' => $labelOrganization,
-                'allowOther'        => $consultation->isAdminCurUser(),
+                'allowOther'        => User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING),
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),

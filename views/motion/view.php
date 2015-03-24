@@ -8,6 +8,7 @@ use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
+use app\models\db\User;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
@@ -130,10 +131,11 @@ if (!$minimalisticUi) {
 
 
     $x = array();
-    foreach ($motion->supporters as $supp) {
+    foreach ($motion->getSupporters() as $supp) {
         if ($supp->role == ISupporter::ROLE_INITIATOR) {
             $name = $supp->getNameWithResolutionDate(true);
-            if ($motion->consultation->isAdminCurUser() && ($supp->contactEmail != "" || $supp->contactPhone != "")) {
+            $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
+            if ($admin && ($supp->contactEmail != "" || $supp->contactPhone != "")) {
                 $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
                 if ($supp->contactEmail != "") {
                     $name .= "E-Mail: " . Html::encode($supp->contactEmail);
@@ -178,7 +180,8 @@ if (!$minimalisticUi) {
        <td>' . Tools::formatMysqlDateTime($motion->dateCreation) . '</td>
                 </tr>';
 
-    if ($motion->consultation->isAdminCurUser() && count($motion->consultation->tags) > 0) {
+    $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
+    if ($admin && count($motion->consultation->tags) > 0) {
         echo '<tr><th>Themenbereiche:</th><td>';
 
         $tags         = array();

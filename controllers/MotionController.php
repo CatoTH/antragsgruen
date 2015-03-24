@@ -32,7 +32,7 @@ class MotionController extends Base
             $zeile = IntVal($_REQUEST["absatz_nr"]);
 
             if ($site->getSettings()->onlyNamespacedAccounts && $site->getBehaviorClass()->isLoginForced()) {
-                $user = $this->getCurrentUser();
+                $user = User::getCurrentUser();
             } else {
                 $person        = $_REQUEST["Person"];
                 $person["typ"] = Person::$TYP_PERSON;
@@ -107,7 +107,7 @@ class MotionController extends Base
         if (!$comment || $comment->motionId != $motion->id) {
             throw new Internal('Kommentar nicht gefunden');
         }
-        if (!$comment->canDelete($this->getCurrentUser())) {
+        if (!$comment->canDelete(User::getCurrentUser())) {
             throw new Internal('Keine Berechtigung zum Löschen');
         }
         if ($comment->status != IComment::STATUS_VISIBLE) {
@@ -125,11 +125,12 @@ class MotionController extends Base
      */
     private function screenCommentPositively(Motion $motion, $commentId)
     {
+        /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
             throw new Internal('Kommentar nicht gefunden');
         }
-        if (!$motion->consultation->isAdminCurUser()) {
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal('Keine Freischaltrechte');
         }
         $comment->status = IComment::STATUS_VISIBLE;
@@ -153,11 +154,12 @@ class MotionController extends Base
      */
     private function screenCommentNegatively(Motion $motion, $commentId)
     {
+        /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
             throw new Internal('Kommentar nicht gefunden');
         }
-        if (!$motion->consultation->isAdminCurUser()) {
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal('Keine Freischaltrechte');
         }
         $comment->status = IComment::STATUS_DELETED;
@@ -171,13 +173,14 @@ class MotionController extends Base
      */
     private function commentLike(Motion $motion, $commentId)
     {
+        /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
             throw new Internal('Kommentar nicht gefunden');
         }
 
 
-        $meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($kommentar_id);
+        $meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($commentId);
         if ($meine_unterstuetzung === null) {
             $unterstuetzung = new AntragKommentarUnterstuetzerInnen();
             $unterstuetzung->setIdentityParams();
@@ -436,19 +439,19 @@ class MotionController extends Base
         if (\Yii::$app->user->isGuest) { // @TODO
             $commentUser = new User();
         } else {
-            $commentUser = $this->getCurrentUser();
+            $commentUser = User::getCurrentUser();
         }
 
         $supportStatus = "";
         if (!\Yii::$app->user->isGuest) {
-            foreach ($motion->supporters as $supp) {
-                if ($supp->userId == $this->getCurrentUser()->id) {
+            foreach ($motion->getSupporters() as $supp) {
+                if ($supp->userId == User::getCurrentUser()->id) {
                     $supportStatus = $supp->role;
                 }
             }
         }
 
-        if ($this->consultation->isAdminCurUser()) {
+        if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl('admin/motions/update', ['motionId' => $motionId]);
 
             $delParams      = ['motionId' => $motionId, AntiXSS::createToken("komm_del") => '#komm_id#'];
@@ -667,8 +670,8 @@ class MotionController extends Base
         if (count($form->supporters) == 0) {
             $supporter       = new MotionSupporter();
             $supporter->role = MotionSupporter::ROLE_INITIATOR;
-            if ($this->getCurrentUser()) {
-                $user                    = $this->getCurrentUser();
+            if (User::getCurrentUser()) {
+                $user                    = User::getCurrentUser();
                 $supporter->userId       = $user->id;
                 $supporter->name         = $user->name;
                 $supporter->contactEmail = $user->email;

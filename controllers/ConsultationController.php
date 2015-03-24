@@ -8,6 +8,7 @@ use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\Consultation;
 use app\models\db\MotionComment;
+use app\models\db\User;
 use app\models\exceptions\Access;
 
 class ConsultationController extends Base
@@ -57,7 +58,7 @@ class ConsultationController extends Base
      */
     public function actionSavetextajax($pageKey)
     {
-        if (!$this->consultation->isAdminCurUser()) {
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to edit this page');
         }
         /** @var ConsultationText $text */
@@ -133,7 +134,7 @@ class ConsultationController extends Base
         $consultation  = $this->consultation;
         $motionsSorted = $consultation->getSortedMotions();
 
-        $myself = $this->getCurrentUser();
+        $myself = User::getCurrentUser();
         if ($myself) {
             $myMotions    = $myself->getMySupportedMotionsByConsultation($this->consultation);
             $myAmendments = $myself->getMySupportedAmendmentsByConsultation($this->consultation);

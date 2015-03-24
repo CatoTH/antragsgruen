@@ -1,6 +1,7 @@
 <?php
 use app\components\UrlHelper;
 use app\models\db\Site;
+use app\models\db\User;
 use yii\helpers\Html;
 
 $controller = $this->context;
@@ -114,7 +115,7 @@ Falls du die Zugangsdaten zurzeit nicht hast,
 <a href="#wer" onclick="$(\'#wer\').next().scrollintoview(); return false;">schreib uns einfach an</a>.
 <br>';
 
-if ($controller->getCurrentUser()) {
+if (User::getCurrentUser()) {
     echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl('manager/createsite')) . '">
         <button type="submit" class="btn btn-success">
         <span class="glyphicon glyphicon-chevron-right"></span> Seite anlegen</button></form>';

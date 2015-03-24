@@ -55,7 +55,7 @@ abstract class IComment extends ActiveRecord
      */
     public function canDelete($user)
     {
-        if ($this->getConsultation()->isAdminCurUser()) {
+        if ($user->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
             return true;
         }
         if (!is_null($this->user->auth) && $user->auth == $this->user->auth) {
@@ -75,14 +75,17 @@ abstract class IComment extends ActiveRecord
         if ($this->status == static::STATUS_VISIBLE) {
             return true;
         }
-        if ($this->getConsultation()->isAdminCurUser()) {
-            return true;
-        }
 
         $user = \Yii::$app->user;
         if ($user->isGuest) {
             return false;
         }
-        return ($user->id == $this->userId);
+        /** @var User $identity */
+        $identity = $user->identity;
+        if ($identity->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
+            return true;
+        }
+
+        return ($identity->id == $this->userId);
     }
 }

@@ -207,10 +207,7 @@ class Motion extends IMotion
         }
 
         if ($this->consultation->getSettings()->adminsMayEdit) {
-            if ($this->consultation->isAdminCurUser()) {
-                return true;
-            }
-            if ($this->consultation->site->isAdminCurUser()) {
+            if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
                 return true;
             }
         }

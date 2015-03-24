@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\components\PasswordFunctions;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 use yii\db\Query;
@@ -40,6 +41,12 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_CONFIRMED   = 0;
     const STATUS_DELETED     = -1;
 
+    const PRIVILEGE_ANY                   = 0;
+    const PRIVILEGE_CONSULTATION_SETTINGS = 1;
+    const PRIVILEGE_CONTENT_EDIT          = 2;
+    const PRIVILEGE_SCREENING             = 3;
+
+
     /**
      * @return string[]
      */
@@ -51,6 +58,35 @@ class User extends ActiveRecord implements IdentityInterface
             -1 => "Gelöscht",
         ];
     }
+
+
+    /**
+     * @return null|User
+     */
+    public static function getCurrentUser()
+    {
+        if (\Yii::$app->user->isGuest) {
+            return null;
+        } else {
+            return \Yii::$app->user->identity;
+        }
+    }
+
+    /**
+     * @param Consultation|null $consultation
+     * @param int $privilege
+     * @return bool
+     * @throws Internal
+     */
+    public static function currentUserHasPrivilege($consultation, $privilege)
+    {
+        $user = static::getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+        return $user->hasPrivilege($consultation, $privilege);
+    }
+
 
     /**
      * @return string
@@ -414,5 +450,35 @@ class User extends ActiveRecord implements IdentityInterface
         $text    = "Es wurde ein neuer Kommentar zu " . $comment->getMotionTitle() . " geschrieben:\n" .
             $comment->getLink(true);
         $this->notificationEmail($comment->getConsultation(), $subject, $text);
+    }
+
+    /**
+     * @param Consultation|null $consultation
+     * @param int $privilege [not used yet; forward-compatibility]
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function hasPrivilege($consultation, $privilege)
+    {
+        if (!$consultation) {
+            return false;
+        }
+
+        /** @var AntragsgruenApp $params */
+        $params = \yii::$app->params;
+        if (in_array($this->id, $params->adminUserIds)) {
+            return true;
+        }
+        foreach ($consultation->admins as $admin) {
+            if ($admin->id == $this->id) {
+                return true;
+            }
+        }
+        foreach ($consultation->site->admins as $admin) {
+            if ($admin->id == $this->id) {
+                return true;
+            }
+        }
+        return false;
     }
 }

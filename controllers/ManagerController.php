@@ -92,9 +92,9 @@ class ManagerController extends Base
             try {
                 $model->setAttributes($_POST['SiteCreateForm']);
                 if ($model->validate()) {
-                    $site = $model->createSiteFromForm($this->getCurrentUser());
+                    $site = $model->createSiteFromForm(User::getCurrentUser());
 
-                    $login_id   = $this->getCurrentUser()->id;
+                    $login_id   = User::getCurrentUser()->id;
                     $login_code = AntiXSS::createToken($login_id);
 
                     return $this->render(

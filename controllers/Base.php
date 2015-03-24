@@ -4,6 +4,7 @@ namespace app\controllers;
 
 
 use app\components\UrlHelper;
+use app\models\exceptions\Internal;
 use app\models\settings\Layout;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
@@ -60,7 +61,7 @@ class Base extends Controller
      */
     protected function renderContentPage($pageKey)
     {
-        $admin   = $this->consultation->isAdminCurUser();
+        $admin   = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
         $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => $pageKey]);
         return $this->render(
             'contentpage',
@@ -98,15 +99,20 @@ class Base extends Controller
     }
 
     /**
-     * @return null|User
+     * @param int $privilege
+     * @return bool
+     * @throws Internal
      */
-    public function getCurrentUser()
+    public function currentUserHasPrivilege($privilege)
     {
-        if (Yii::$app->user->isGuest) {
-            return null;
-        } else {
-            return Yii::$app->user->identity;
+        if (!$this->consultation) {
+            throw new Internal("No consultation set");
         }
+        $user = $this->getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+        return $user->hasPrivilege($this->consultation, $privilege);
     }
 
 
@@ -120,7 +126,8 @@ class Base extends Controller
         }
         /** @var \app\models\settings\Consultation $settings */
         $settings = $this->consultation->getSettings();
-        if ($settings->maintainanceMode && !$this->consultation->isAdminCurUser()) {
+        $admin = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
+        if ($settings->maintainanceMode && !$admin) {
             $this->redirect(UrlHelper::createUrl("consultation/maintainance"));
         }
 

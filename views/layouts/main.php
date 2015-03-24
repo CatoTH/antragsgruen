@@ -1,5 +1,6 @@
 <?php
 use app\components\UrlHelper;
+use app\models\db\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -123,15 +124,15 @@ if ($controller->consultation) {
 }
 
 
-if (!$controller->getCurrentUser() && !$minimalistic) {
+if (!User::getCurrentUser() && !$minimalistic) {
     $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
     echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink']) . '</li>';
 }
-if ($controller->getCurrentUser()) {
+if (User::getCurrentUser()) {
     $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
     echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
 }
-if ($controller->consultation && $controller->consultation->isAdminCurUser()) {
+if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_ANY)) {
     $adminUrl = UrlHelper::createUrl("admin/index");
     echo '<li><a href="' . Html::encode($adminUrl) . '" id="adminLink">Admin</a></li>';
 }

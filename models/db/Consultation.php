@@ -197,20 +197,6 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param User $person
-     * @return bool
-     */
-    public function isAdmin($person)
-    {
-        foreach ($this->admins as $e) {
-            if ($e->id == $person->id) {
-                return true;
-            }
-        }
-        return $this->site->isAdmin($person);
-    }
-
-    /**
      * @return bool
      */
     public function isAdminCurUser()
