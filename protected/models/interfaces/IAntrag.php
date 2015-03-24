@@ -29,7 +29,7 @@ abstract class IAntrag extends GxActiveRecord
 		4  => "Angenommen",
 		5  => "Abgelehnt",
 		6  => "Modifizierte Übernahme",
-		7  => "Modifziert",
+		7  => "Modifiziert",
 		8  => "Übernahme",
 		9  => "Erledigt",
 		10 => "Überweisung",
