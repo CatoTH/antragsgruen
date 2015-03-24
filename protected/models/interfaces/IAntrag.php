@@ -19,6 +19,7 @@ abstract class IAntrag extends GxActiveRecord
 	public static $STATUS_PAUSIERT = 12;
 	public static $STATUS_INFORMATIONEN_FEHLEN = 13;
 	public static $STATUS_NICHT_ZUGELASSEN = 14;
+	public static $STATUS_UNVERAENDERLICH = 15;
 	public static $STATI = array(
 		-2 => "Gelöscht",
 		-1 => "Zurückgezogen",
@@ -37,6 +38,7 @@ abstract class IAntrag extends GxActiveRecord
 		12 => "Pausiert",
 		13 => "Informationen fehlen",
 		14 => "Nicht zugelassen",
+		15 => "Unveränderlich",
 	);
 	public static $STATI_UNSICHTBAR = array(0, 2, -2);
 
