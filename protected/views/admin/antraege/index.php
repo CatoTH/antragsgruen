@@ -12,10 +12,6 @@ $this->breadcrumbs = array(
 	Antrag::label(2),
 );
 
-$this->menu = array(
-	array('label' => "Durchsuchen", 'url' => array('admin'), "icon" => "th-list"),
-);
-
 echo '<h1>' . GxHtml::encode(Antrag::label(2)) . '</h1>';
 
 if ($anzahl_gesamt > 0) {

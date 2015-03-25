@@ -93,9 +93,9 @@
   content: '📎'; }
 
 .icon-edit, .lesezeichen > li.aenderungsantrag > a:before, .icon-aender-stellen:before,
-.icon-pdf:before,
 .antragsliste .antrag .titel .pdfLink:before,
 #sidebar .neue-kommentare .pdf:before,
+.icon-pdf:before,
 ul.funktionen .download a:before {
   content: '\270d'; }
 
@@ -490,6 +490,9 @@ a {
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       box-sizing: border-box; }
+      @media screen and (max-width: 767px) {
+        .antrags_text_holder .absatz_text > .text {
+          padding-left: 20px; } }
     .antrags_text_holder .absatz_text > blockquote.text {
       padding-left: 30px; }
     .antrags_text_holder .absatz_text ul, .antrags_text_holder .absatz_text ol {
@@ -940,9 +943,9 @@ h3 label {
   width: 140px; }
 
 .icon-aender-stellen:before,
-.icon-pdf:before,
 .antragsliste .antrag .titel .pdfLink:before,
 #sidebar .neue-kommentare .pdf:before,
+.icon-pdf:before,
 ul.funktionen .download a:before {
   color: #A2BC04;
   display: inline-block;
@@ -956,7 +959,7 @@ ul.funktionen .download a:before {
   margin-left: 0;
   */ }
 
-.btn .icon-pdf:before, .btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before, .btn ul.funktionen .download a:before, ul.funktionen .download .btn a:before {
+.btn .antragsliste .antrag .titel .pdfLink:before, .antragsliste .antrag .titel .btn .pdfLink:before, .btn #sidebar .neue-kommentare .pdf:before, #sidebar .neue-kommentare .btn .pdf:before, .btn .icon-pdf:before, .btn ul.funktionen .download a:before, ul.funktionen .download .btn a:before {
   color: #000000; }
 
 ul.funktionen {
@@ -1263,6 +1266,12 @@ ins {
   .text_comments .span9, .text_comments .row-fluid .span9 {
     width: 695px; } }
 @media screen and (max-width: 767px) {
+  .absatz_text .text > br.implicit {
+    display: none; }
+
+  .antrags_text_holder_nummern .zeilennummer {
+    display: none; } }
+@media screen and (max-width: 767px) {
   .hidden-phone {
     display: none !important; }
 
@@ -1312,12 +1321,6 @@ ins {
     margin-right: 40px;
     width: auto; }
 
-  .absatz_text .text > br.implicit {
-    display: none; }
-
-  .antrags_text_holder_nummern .zeilennummer {
-    margin-right: -20px; }
-
   .kommentare .shower:before, .kommentare .hider:before, .aenders a:before {
     width: 17px; }
 
@@ -1330,8 +1333,7 @@ ins {
     padding-left: 0; }
 
   .aenders, .kommentare {
-    width: 40px;
-    right: -40px; }
+    width: 40px; }
 
   .aenders a {
     padding-left: 2px; }
@@ -1401,6 +1403,13 @@ ins {
     margin-left: 0; }
 
   .span9 .antrag .datum {
-    display: none; } }
+    display: none; }
 
-/*# sourceMappingURL=antraege.css.map */
+  .antragsdaten {
+    display: block; }
+    .antragsdaten > tbody {
+      display: block; }
+      .antragsdaten > tbody > tr {
+        display: block; }
+        .antragsdaten > tbody > tr > th, .antragsdaten > tbody > tr > td {
+          display: block; } }
