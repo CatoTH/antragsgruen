@@ -1,34 +1,62 @@
 <?php
 /**
  * @var AntraegeController $this
- * @var CActiveDataProvider $dataProvider
+ * @var Antrag[] $antraege
  * @var int[] $anzahl_stati
  * @var int $anzahl_gesamt
  * @var int|null $status_curr
+ * @var array $tagsList
+ * @var array $statusList
+ * @var $suche AdminAntragFilterForm $suche
  */
 
 $this->breadcrumbs = array(
-	Yii::t('app', 'Administration') => $this->createUrl('/admin/index'),
-	Antrag::label(2),
+    Yii::t('app', 'Administration') => $this->createUrl('/admin/index'),
+    Antrag::label(2),
 );
 
 echo '<h1>' . GxHtml::encode(Antrag::label(2)) . '</h1>';
 
-if ($anzahl_gesamt > 0) {
-	echo '<div>';
-	if ($status_curr === null) echo '[<strong>Alle (' . $anzahl_gesamt . ')</strong>]';
-	else echo '[' . CHtml::link('Alle (' . $anzahl_gesamt . ')', array('/admin/antraege/index', array())) . ']';
 
-	foreach ($anzahl_stati as $key=>$anz) {
-		$name = CHtml::encode(IAntrag::$STATI[$key] . ' (' . $anz . ')');
-		if ($status_curr !== null && $status_curr == $key) echo ' - [<strong>' . $name . '</strong>]';
-		else echo ' - [' . CHtml::link($name, $this->createUrl("/admin/antraege/index", array("status" => $key))) . ']';
-	}
-	echo '</div>';
+$action = $this->createUrl('/admin/antraege/index');
+echo '<form method="GET" action="' . CHtml::encode($action) . '" style="padding: 20px;">';
+
+echo '<label style="float: left; margin-right: 20px;">Status:<br>';
+echo '<select name="Search[status]" size="1">';
+echo '<option value="">- egal -</option>';
+foreach ($statusList as $status_id => $status_name) {
+    echo '<option value="' . $status_id . '" ';
+    if ($suche->status == $status_id) {
+        echo ' selected';
+    }
+    echo '>' . CHtml::encode($status_name) . '</option>';
 }
+echo '</select></label>';
+
+echo '<label style="float: left; margin-right: 20px;">Schlagwort:<br>';
+echo '<select name="Search[tag]" size="1">';
+echo '<option value="">- egal -</option>';
+foreach ($tagsList as $tag_id => $tag_name) {
+    echo '<option value="' . $tag_id . '" ';
+    if ($suche->tag == $tag_id) {
+        echo ' selected';
+    }
+    echo '>' . CHtml::encode($tag_name) . '</option>';
+}
+echo '</select></label>';
+
+
+echo '<label style="float: left; margin-right: 20px;">Titel:<br>';
+echo '<input type="text" name="Search[titel]" value="' . CHtml::encode($suche->titel) . '">';
+echo '</label>';
+
+
+echo '<div style="float: left;"><br><button type="submit" class="btn btn-success">Suchen</button></div>';
+
+echo '</form><br style="clear: both;">';
 
 
 $this->widget('zii.widgets.CListView', array(
-	'dataProvider' => $dataProvider,
-	'itemView'     => '_list',
+    'dataProvider' => new CArrayDataProvider($antraege),
+    'itemView'     => '_list',
 ));

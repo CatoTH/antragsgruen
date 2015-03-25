@@ -130,20 +130,22 @@ class AntraegeController extends GxController
 			$gesamtzahl++;
 		}
 
-		$dataProvider                            = new CActiveDataProvider('Antrag');
-		$dataProvider->sort->defaultOrder        = "datum_einreichung DESC";
-		$dataProvider->getPagination()->pageSize = 50;
-		if ($status === null) {
-			$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
-		} else {
-			$dataProvider->criteria->condition = "status != " . IAntrag::$STATUS_GELOESCHT . " AND status = " . IntVal($status) . " AND veranstaltung_id = " . IntVal($this->veranstaltung->id);
-		}
+        $suche = new AdminAntragFilterForm();
+        if (isset($_REQUEST["Search"])) $suche->setAttributes($_REQUEST["Search"]);
+        $antraege = $suche->applyFilter($this->veranstaltung->antraege);
+
+
+        $tagsList = AdminAntragFilterForm::getTagList($this->veranstaltung->antraege);
+        $statusList = AdminAntragFilterForm::getStatusList($this->veranstaltung->antraege);
 
 		$this->render('index', array(
-			'dataProvider'  => $dataProvider,
+			'antraege'      => $antraege,
 			'anzahl_stati'  => $stati,
 			'anzahl_gesamt' => $gesamtzahl,
 			'status_curr'   => $status,
+            'statusList'    => $statusList,
+            'tagsList'      => $tagsList,
+            'suche'         => $suche,
 		));
 	}
 
