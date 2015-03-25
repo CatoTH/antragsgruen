@@ -525,14 +525,6 @@ class Aenderungsantrag extends IAntrag
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getKurzform ()
-	{
-		return ($this->revision_name != "" ? $this->revision_name : $this->id) . ": " . $this->getAntragstellerInnen () [0]->getNameMitOrga ();
-	}
-	
-	/**
 	 * @return bool
 	 */
 	public function binInitiatorIn()
