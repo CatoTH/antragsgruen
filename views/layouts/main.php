@@ -118,7 +118,7 @@ echo '<ul class="nav navbar-nav">';
 
 if ($controller->consultation) {
     echo '<li class="active">' . Html::a('Start', UrlHelper::createUrl("consultation/index")) . '</li>';
-    echo '<li>' . Html::a('Hilfe', UrlHelper::createUrl("consultation/help")) . '</li>';
+    echo '<li>' . Html::a('Hilfe', UrlHelper::createUrl("consultation/help"), ['id' => 'helpLink']) . '</li>';
 } else {
     echo '<li class="active">' . Html::a('Start', UrlHelper::createUrl("manager/index")) . '</li>';
 }
@@ -186,7 +186,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 
     <footer class="footer">
         <div class="container">
-            <a href="<?= Html::encode($legal_link) ?>" class="legal">Impressum</a>
+            <a href="<?= Html::encode($legal_link) ?>" class="legal" id="legalLink">Impressum</a>
 
             <span class="version">
                 Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,

@@ -49,7 +49,7 @@ if ($consultation->eventDateFrom != "" && $consultation->eventDateFrom != "0000-
 //CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
 echo '</h1>';
 
-echo '<div class="content contentPage" style="overflow: auto;">';
+echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;">';
 
 if ($consultation->deadlineMotions != "") {
     echo '<p class="antragsschluss_kreis">Antrags&shy;schluss: ';
