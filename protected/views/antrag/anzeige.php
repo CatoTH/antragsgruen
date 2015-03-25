@@ -346,7 +346,7 @@ if ($text2name && trim($antrag->text2)) {
 				/** @var Aenderungsantrag $ant */
 				foreach ($abs->aenderungsantraege as $ant) {
 					$ae_link = $this->createUrl("aenderungsantrag/anzeige", array("veranstaltung_id" => $ant->antrag->veranstaltung->url_verzeichnis, "antrag_id" => $ant->antrag->id, "aenderungsantrag_id" => $ant->id));
-					echo "<li class='aenderungsantrag' data-first-line='" . $ant->getFirstAffectedLineOfParagraph_absolute($i, $absae) . "'><a class='aender_link' data-id='" . $ant->id . "' href='" . CHtml::encode($ae_link) . "'>" . CHtml::encode($ant->getKurzform ()) . "</a></li>\n";
+					echo "<li class='aenderungsantrag' data-first-line='" . $ant->getFirstAffectedLineOfParagraph_absolute($i, $absae) . "'><a class='aender_link' data-id='" . $ant->id . "' href='" . CHtml::encode($ae_link) . "'>" . CHtml::encode($ant->revision_name) . "</a></li>\n";
 				} ?>
 			</ul>
 
@@ -588,7 +588,9 @@ if (count($aenderungsantraege) > 0 || $antrag->veranstaltung->policy_aenderungsa
 			echo CHtml::openTag('ul', array("class" => "aenderungsantraege"));
 			foreach ($aenderungsantraege as $relatedModel) {
 				echo CHtml::openTag('li');
-				echo CHtml::link($relatedModel->getKurzform (), $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag->id, "aenderungsantrag_id" => $relatedModel->id)));
+				$aename = $relatedModel->revision_name;
+				if ($aename == "") $aename = $relatedModel->id;
+				echo CHtml::link($aename, $this->createUrl("aenderungsantrag/anzeige", array("antrag_id" => $antrag->id, "aenderungsantrag_id" => $relatedModel->id)));
 				echo " (" . CHtml::encode(Aenderungsantrag::$STATI[$relatedModel->status]) . ")";
 				echo CHtml::closeTag('li');
 			}
