@@ -25,49 +25,51 @@ $sortedTags = $this->veranstaltung->getSortedTags();
 foreach ($sortedTags as $tag) if (isset($tags[$tag->id])) $tag_ids[] = $tag->id;
 if ($hat_na) $tag_ids[] = 0;
 
+if (count($sortedTags) > 0 && !$sortedTags[0]->istTagesordnungspunkt()) {
 
-?>
-	<h3>Themenbereiche</h3>
-	<br><br>
-	<style>
-		#tag_list {
-			display: block;
-			list-style-type: none;
-			margin: 0;
-			padding: 0;
-			text-align: center;
-		}
+    ?>
+    <h3>Themenbereiche</h3>
+    <br><br>
+    <style>
+        #tag_list {
+            display: block;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
 
-		#tag_list > li {
-			display: inline-block;
-			padding: 10px;
-			background-color: #e2007a;
-			border-radius: 3px;
-			font-size: 16px;
-			margin: 10px;
-		}
+        #tag_list > li {
+            display: inline-block;
+            padding: 10px;
+            background-color: #e2007a;
+            border-radius: 3px;
+            font-size: 16px;
+            margin: 10px;
+        }
 
-		#tag_list > li > a:link, #tag_list > li > a:visited {
-			color: white;
-		}
-	</style>
-	<ul id="tag_list"><?php
-		foreach ($tag_ids as $tag_id) {
-			echo '<li><a href="#tag_' . $tag_id . '">' . CHtml::encode($tags[$tag_id]["name"]) . ' (' . count($tags[$tag_id]["antraege"]) . ')</a></li>';
-		}
-		?>
-	</ul>
-	<script>
-		$("#tag_list").find("a").click(function (ev) {
-			ev.preventDefault();
-			$($(this).attr("href")).scrollintoview({top_offset: -100});
-		})
-	</script>
+        #tag_list > li > a:link, #tag_list > li > a:visited {
+            color: white;
+        }
+    </style>
+    <ul id="tag_list"><?php
+        foreach ($tag_ids as $tag_id) {
+            echo '<li><a href="#tag_' . $tag_id . '">' . CHtml::encode($tags[$tag_id]["name"]) . ' (' . count($tags[$tag_id]["antraege"]) . ')</a></li>';
+        }
+        ?>
+    </ul>
+    <script>
+        $("#tag_list").find("a").click(function (ev) {
+            ev.preventDefault();
+            $($(this).attr("href")).scrollintoview({top_offset: -100});
+        })
+    </script>
 
-	<br><br>
-	<br><br>
+    <br><br>
+    <br><br>
 
 <?php
+}
 
 foreach ($tag_ids as $tag_id) {
 	$tag = $tags[$tag_id];
@@ -100,7 +102,7 @@ foreach ($tag_ids as $tag_id) {
 				echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
                 if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $antrag->veranstaltung->url_verzeichnis == "phase2") {
                     if ($antrag->typ == Antrag::$TYP_ANTRAG) echo ' <span style="color: #a2bc04; font-size: 0.8em;">(Fließtext)</span>';
-                    if ($antrag->typ == Antrag::$TYP_RESOLUTION) echo ' <span style="color: #e2007a; font-size: 0.8em;">(Projektvorschlag)</span>';
+                    if ($antrag->typ == Antrag::$TYP_RESOLUTION) echo ' <span style="color: #e2007a; font-size: 0.8em;">(Beispielprojekt)</span>';
                 }
                 echo "</div><div class='pdflink'>";
 				if ($veranstaltung->getEinstellungen()->kann_pdf) echo CHtml::link("als PDF", $this->createUrl('antrag/pdf', array("antrag_id" => $antrag->id)), array("class" => "pdfLink"));

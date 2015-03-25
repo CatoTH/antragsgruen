@@ -331,7 +331,16 @@ $einstellungen = $model->getEinstellungen();
     </fieldset>
 
 
-	<fieldset style="margin-top: 10px;">
+    <fieldset style="margin-top: 10px;">
+        <label class="block">
+            <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="durchgestrichen_zugelassen">
+            <input type="checkbox" name="VeranstaltungsEinstellungen[durchgestrichen_zugelassen]"
+                   value="1" <?php if ($model->getEinstellungen()->durchgestrichen_zugelassen) echo "checked"; ?>>
+            Durchgestrichen als Formatierungsmöglichkeit in Anträgen zulassen
+        </label>
+    </fieldset>
+
+    <fieldset style="margin-top: 10px;">
 		<label class="block">
 			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="begruendung_in_html">
 			<input type="checkbox" name="VeranstaltungsEinstellungen[begruendung_in_html]"

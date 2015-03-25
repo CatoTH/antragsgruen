@@ -151,7 +151,13 @@ foreach ($antrag->antragKommentare as $komm) if ($komm->absatz < 0 && $komm->sta
 				if ($antrag->veranstaltung->isAdminCurUser() && count($antrag->veranstaltung->tags) > 0) {
 					?>
 					<tr>
-						<th><?=(count($antrag->tags) == 1 ? "Themenbereich" : "Themenbereiche")?>:</th>
+						<th><?
+                            if (count($antrag->veranstaltung->tags) > 0 && $antrag->veranstaltung->tags[0]->istTagesordnungspunkt()) {
+                                echo "Tagesordnungspunkt";
+                            } else {
+                                echo (count($antrag->tags) == 1 ? "Themenbereich" : "Themenbereiche");
+                            }
+                            ?>:</th>
 						<td>
 							<?php
 							$tags         = array();
@@ -191,7 +197,13 @@ foreach ($antrag->antragKommentare as $komm) if ($komm->absatz < 0 && $komm->sta
 				} elseif (count($antrag->tags) > 0) {
 					?>
 					<tr>
-						<th><?php echo(count($antrag->tags) > 1 ? "Themenbereiche" : "Themenbereich") ?></th>
+						<th><?php
+                            if (count($antrag->veranstaltung->tags) > 0 && $antrag->veranstaltung->tags[0]->istTagesordnungspunkt()) {
+                                echo "Tagesordnungspunkt";
+                            } else {
+                                echo (count($antrag->tags) == 1 ? "Themenbereich" : "Themenbereiche");
+                            }
+                            ?>:</th>
 						<td>
 							<?php
 							$tags = array();
@@ -483,7 +495,11 @@ if ($eintraege || $kann_unterstuetzen || $kann_nicht_unterstuetzen_msg != "") {
 
 
 		if (count($zustimmung_von) > 0) {
-			echo "<strong>Zustimmung von:</strong><br>";
+            if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == 'wiesbaden' && $antrag->veranstaltung->url_verzeichnis == 'phase2') {
+                echo "<strong>Unterstützt von:</strong><br>";
+            } else {
+                echo "<strong>Zustimmung von:</strong><br>";
+            }
 			echo CHtml::openTag('ul');
 			foreach ($zustimmung_von as $p) {
 				echo CHtml::openTag('li');

@@ -230,6 +230,14 @@ abstract class OOfficeTemplateEngine
      */
     protected function html2ooNodes($html, $template_type)
     {
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('HTML.Doctype', 'HTML 4.01 Transitional');
+        $config->set('Cache.SerializerPath', '/tmp/');
+        $config->set('HTML.Trusted', true);
+        $config->set('CSS.Trusted', true);
+        $purifier = new HTMLPurifier($config);
+
+        $html = $purifier->purify($html);
 
         $src_doc = new DOMDocument();
         $src_doc->loadHTML('<html><head>

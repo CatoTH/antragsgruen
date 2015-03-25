@@ -1,3 +1,21 @@
+2.6.5 - 2015-03-24
+==================
+
+* Es gibt einen neuen Antragsstatus "Unveränderlich"
+
+2.6.4 - 2015-03-22
+==================
+
+* Man kann im Admin-Interface nun keine Antragsnummern mehr geben, die bereits vergeben sind.
+* Ein paar Anpassungen speziell für den Länderrat.
+* Man kann über die ExpertInneneinstellungen nun auch Durchgestrichen als Formatierungsoption bei Anträgen zulassen.
+* In der TODO-Liste der Admin-Übersicht wird bei (Änderungs-)Anträgen und Kommentaren nun auch der Verfasser angezeigt.
+
+2.6.3 - 2015-03-07
+==================
+
+* Der OpenOffice-Export funktionierte nicht, wenn im zu exportierenden HTML-Text auch nur kleinste HTML-Fehler enthalten waren. Das wird durch einen vorgeschalteten Filter nun behoben, der fehlerhafte Tags bereinigt.
+
 2.6.2 - 2015-03-07
 ==================
 
@@ -13,6 +31,7 @@
 2.6.0 - 2015-03-03
 ==================
 
+* Änderungsanträge können neben Excel nun auch als OpenOffice-Spreadsheet exportiert werden (mitsamt den Formatierungen).
 * Schlagworte in den ExpertInneneinstellungen lassen sich nun umsortieren.
 * Auf Wunsch kann man auch die Anzahl der Schlagworte pro Antrag auf 1 begrenzen.
 * Anträge lassen sich von der AntragstellerIn nun grundsätzlich bearbeiten, solange sie noch nicht freigeschaltet sind.

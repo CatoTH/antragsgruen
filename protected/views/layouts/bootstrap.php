@@ -98,7 +98,7 @@ $cs->registerScriptFile($assets_base . '/js/antraege.js', CClientScript::POS_END
 								<li><a href="<?= CHtml::encode($this->createUrl("admin/index")) ?>">Admin</a></li>
 							<?php } ?>
 						</ul>
-					<? } ?>
+					<?php } ?>
 				</div>
 			</div>
 		</div>

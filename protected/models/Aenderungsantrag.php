@@ -476,7 +476,19 @@ class Aenderungsantrag extends IAntrag
 		return $antragstellerInnen;
 	}
 
-	/**
+    /**
+     * @return string
+     */
+    public function getAntragstellerInnenStr() {
+        $antrag = $this->getAntragstellerInnen();
+        $strs = array();
+        foreach ($antrag as $p) {
+            $strs[] = $p->getNameMitOrga();
+        }
+        return implode(", ", $strs);
+    }
+
+    /**
 	 * @return Person[]
 	 */
 	public function getUnterstuetzerInnen()

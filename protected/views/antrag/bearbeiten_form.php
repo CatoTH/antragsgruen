@@ -33,7 +33,7 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
     if ($model->typ == Antrag::$TYP_ANTRAG) {
         echo '<h1>Fließtext</h1>';
     } else {
-        echo '<h1>Projektvorschlag</h1>';
+        echo '<h1>Beispielprojekt</h1>';
     }
 } else {
     echo '<h1>' . $sprache->get($model->id > 0 ? $sprache->get('Antrag bearbeiten') : $sprache->get('Antrag stellen')) . '</h1>';
@@ -126,7 +126,11 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
                         echo '> ' . CHtml::encode($tag->name) . '</label>';
                     }
                 } else {
-                    echo '<label class="legend">Themengebiet</label>';
+                    if ($veranstaltung->tags[0]->istTagesordnungspunkt()) {
+                        echo '<label class="legend">Tagesordnungspunkt</label>';
+                    } else {
+                        echo '<label class="legend">Themengebiet</label>';
+                    }
                     foreach ($veranstaltung->tags as $tag) {
                         echo '<label class="radio" style="margin-right: 10px;"><input name="tag" value="' . $tag->id . '" type="radio" ';
                         if (in_array($tag->id, $tags_pre)) {
@@ -185,7 +189,9 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
 
                     <div class="controls">
                         <!--<a href="#" onClick="alert('TODO'); return false;">&gt; Text aus einem Pad kopieren</a><br>-->
-					<textarea id="Antrag_text2" class="span8" name="Antrag[text2]" rows="5" cols="80"><?php
+					<textarea id="Antrag_text2" class="span8" name="Antrag[text2]" rows="5" cols="80" <?php
+                    if ($veranstaltung->getEinstellungen()->durchgestrichen_zugelassen) echo 'data-allow_strike="1"';
+                    ?>><?php
                         echo CHtml::encode($model->text2);
                         ?></textarea>
                     </div>
@@ -227,7 +233,9 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
 
                 <div class="controls">
                     <!--<a href="#" onClick="alert('TODO'); return false;">&gt; Text aus einem Pad kopieren</a><br>-->
-					<textarea id="Antrag_text" class="span8" name="Antrag[text]" rows="5" cols="80"><?php
+					<textarea id="Antrag_text" class="span8" name="Antrag[text]" rows="5" cols="80" <?php
+                    if ($veranstaltung->getEinstellungen()->durchgestrichen_zugelassen) echo 'data-allow_strike="1"';
+                    ?>><?php
                         echo CHtml::encode($model->text);
                         ?></textarea>
                 </div>
@@ -246,6 +254,9 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
             }
             if ($veranstaltung->url_verzeichnis == "phase2" && $veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $model->typ == Antrag::$TYP_ANTRAG) {
                 echo " data-max_len_soft=\"1\"";
+                $maxlen_hint = "Bitte maximale Länge:";
+            } else {
+                $maxlen_hint = "Maximale Länge:";
             }
             ?>>
                 <legend><?php
@@ -259,7 +270,7 @@ if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden" && $veranstalt
 
                     <?php if ($begruendung_max_len > 0) {
                 echo '<div class="max_len_hint">';
-                echo '<div class="calm">Maximale Länge: ' . $begruendung_max_len . ' Zeichen</div>';
+                echo '<div class="calm">' . $maxlen_hint . ' ' . $begruendung_max_len . ' Zeichen</div>';
                 echo '<div class="alert">Text zu lang - maximale Länge: ' . $begruendung_max_len . ' Zeichen</div>';
                 echo '</div>';
             } ?>
