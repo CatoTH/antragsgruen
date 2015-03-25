@@ -273,9 +273,7 @@ $einstellungen = $model->getEinstellungen();
 		<label style="display: inline;"><input type="radio" name="VeranstaltungsEinstellungen[ae_nummerierung]"
 											   value="2" <?php if ($einstellungen->ae_nummerierung_nach_zeile == 1) echo "checked"; ?>>
 			<strong>ÄA-Nummerierung anhand der Bezugszeile</strong>
-			<small>"A1-Ä15-1", "A1-Ä15-2", "A2-Ä15-1" usw. Wenn diese Nummerierung gewählt wird, kann sich jeder
-				Änderungsantrag nur auf einen einzigen Absatz beziehen.
-			</small>
+			<small>"A1-Ä15-1", "A1-Ä15-2", "A2-Ä15-1" usw.</small>
 		</label>
 	</div>
 	<div>
