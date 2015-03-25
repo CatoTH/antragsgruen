@@ -9,6 +9,10 @@ use app\models\settings\AntragsgruenApp;
 
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "defines.php");
 
+if (ini_get("date.timezone") == "") {
+        date_default_timezone_set("Europe/Berlin");
+}
+
 return [
     'bootstrap'    => ['log'],
     'basePath'     => dirname(__DIR__),
