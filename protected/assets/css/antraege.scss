@@ -8,6 +8,8 @@ $farbe_hellgruen: rgb(175, 203, 8);
 $farbe_hellgruen_text: rgb(162, 188, 4);
 $farbe_magenta: rgb(226, 0, 122);
 
+$hide_line_numbers_width: 767px;
+
 @mixin border-radius-top {
   -moz-border-radius-topleft: 10px;
   -webkit-border-top-left-radius: 10px;
@@ -473,6 +475,9 @@ a {
 
     > .text {
       padding-left: 50px;
+      @media screen and (max-width: $hide_line_numbers_width) {
+        padding-left: 20px;
+      }
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
@@ -1444,6 +1449,15 @@ ins {
   }
 }
 
+@media screen and (max-width: $hide_line_numbers_width) {
+  .absatz_text .text > br.implicit {
+    display: none;
+  }
+  .antrags_text_holder_nummern .zeilennummer {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 767px) {
   .hidden-phone {
     display: none !important;
@@ -1498,12 +1512,6 @@ ins {
     margin-right: 40px;
     width: auto;
   }
-  .absatz_text .text > br.implicit {
-    display: none;
-  }
-  .antrags_text_holder_nummern .zeilennummer {
-    margin-right: -20px;
-  }
   .kommentare .shower:before, .kommentare .hider:before, .aenders a:before {
     width: 17px;
   }
@@ -1517,7 +1525,7 @@ ins {
   }
   .aenders, .kommentare {
     width: 40px;
-    right: -40px;
+    //right: -40px;
   }
   .aenders a {
     padding-left: 2px;
@@ -1598,5 +1606,17 @@ ins {
   }
   .span9 .antrag .datum {
     display: none;
+  }
+  .antragsdaten {
+    display: block;
+    > tbody {
+      display: block;
+      > tr {
+        display: block;
+        > th, > td {
+          display: block;
+        }
+      }
+    }
   }
 }
