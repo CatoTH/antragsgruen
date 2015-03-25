@@ -278,6 +278,29 @@ $einstellungen = $model->getEinstellungen();
 			</small>
 		</label>
 	</div>
+	<div>
+		<label style="display: inline;" id="ae_ziffern">
+			<br>
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="ae_ziffern">
+			<input type="number" name="VeranstaltungsEinstellungen[ae_ziffern]" min="1" max="9" value="<?php echo isset ($einstellungen->ae_ziffern) ? $einstellungen->ae_ziffern : "1"; ?>">
+			<strong>Ziffernanzahl</strong> für Zeilennummern in Änderungsantragskürzeln
+			</label>
+		</div>
+	<div>
+		<label style="display: inline;">
+			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="ae_praefix">
+			<input type="text" name="VeranstaltungsEinstellungen[ae_praefix]" value="<?php echo isset ($einstellungen->ae_praefix) ? $einstellungen->ae_praefix : "Ä"; ?>">
+			<strong>Präfix</strong> für Änderungsantragskürzel (z.B. "Ä")
+		</label>
+	</div>
+	<script>
+		$(function () {
+			$("input[name='VeranstaltungsEinstellungen[ae_nummerierung]']").change(function () {
+				if (($(this).prop("value") == "2") == $(this).prop ("checked")) $("#ae_ziffern").show();
+				else $("#ae_ziffern").hide();
+			}).trigger("change");
+		})
+	</script>
 	<br>
 
 </div>
