@@ -148,7 +148,7 @@ $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
 ?>
 <script>
 	var antrag_id = <?php echo $antrag->id; ?>,
-		nur_ein_absatz = <?php echo ($antrag->veranstaltung->getEinstellungen()->ae_nummerierung_nach_zeile ? "true" : "false"); ?>;
+		nur_ein_absatz = <?php echo ($antrag->veranstaltung->getEinstellungen()->ae_nur_ein_absatz ? "true" : "false"); ?>;
 
 	function antragstext_init_aes() {
 		"use strict";
