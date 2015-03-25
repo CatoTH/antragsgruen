@@ -11,8 +11,8 @@ use yii\helpers\Url;
 /**
  * @var $this yii\web\View
  * @var \app\models\db\Consultation $consultation
- * @var string $introText
  * @var Motion[] $motions
+ * @var string $saveUrl
  * @var \app\models\db\User|null $myself
  * @var \app\models\db\MotionSupporter[] $myMotions
  * @var \app\models\db\AmendmentSupporter[] $myAmendments
@@ -24,6 +24,11 @@ $wording    = $consultation->getWording();
 $layout     = $controller->layoutParams;
 
 $this->title                = $consultation->title . ' (Antragsgrün)';
+
+
+if ($admin) {
+    $layout->addJS('/js/ckeditor/ckeditor.js');
+}
 
 //include(__DIR__ . "/sidebar.php");
 
@@ -44,15 +49,31 @@ if ($consultation->eventDateFrom != "" && $consultation->eventDateFrom != "0000-
 //CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
 echo '</h1>';
 
-echo '<div class="content" style="overflow: auto;">';
+echo '<div class="content contentPage" style="overflow: auto;">';
 
 if ($consultation->deadlineMotions != "") {
     echo '<p class="antragsschluss_kreis">Antrags&shy;schluss: ';
     echo Tools::formatMysqlDateTime($consultation->deadlineMotions) . "</p>\n";
 }
 
-//echo $einleitungstext->getHTMLText();
-echo $introText;
+if ($admin) {
+    echo '<a href="#" class="editCaller" style="float: right;">Bearbeiten</a><br>';
+    echo Html::beginForm($saveUrl, 'post');
+}
+
+$pageData    = $controller->consultation->getPageData('welcome');
+echo '<article class="textHolder" id="stdTextHolder">';
+echo $pageData->text;
+echo '</article>';
+
+if ($admin) {
+    echo '<div class="textSaver">';
+    echo '<button class="btn btn-primary" type="button" data-save-url="' . Html::encode($saveUrl) . '">';
+    echo 'Speichern</button></div>';
+
+    echo Html::endForm();
+    $layout->addOnLoadJS('$.Antragsgruen.contentPageEdit();');
+}
 
 echo '</div>';
 

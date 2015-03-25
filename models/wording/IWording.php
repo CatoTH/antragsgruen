@@ -70,6 +70,13 @@ abstract class IWording
                     $data->text = '<p>Impressum</p>';
                     return $data;
                     break;
+                case 'welcome':
+                    $data = new PageData();
+                    $data->pageTitle = 'Willkommen';
+                    $data->breadcrumbTitle = 'Willkommen';
+                    $data->text = '<p>Hallo auf Antragsgrün</p>';
+                    return $data;
+                    break;
                 default:
                     throw new Internal('Unknown page Key: ' . $pageKey);
             }

@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\ConsultationText;
 use app\models\db\Motion;
@@ -145,6 +146,8 @@ class ConsultationController extends Base
 
         //$einleitungstext = $consultation->getStandardtext("startseite");
         $introText = 'Hello World';
+        $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'welcome']);
+
 
         return $this->render(
             'index',
@@ -155,6 +158,8 @@ class ConsultationController extends Base
                 'myself'       => $myself,
                 'myMotions'    => $myMotions,
                 'myAmendments' => $myAmendments,
+                'admin'        => User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
+                'saveUrl'      => $saveUrl,
             )
         );
     }
