@@ -79,7 +79,7 @@ $einstellungen = $model->getEinstellungen();
 		<div class="std_content_col">
 			<input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="zeilenlaenge">
 			<input id="VeranstaltungsEinstellungen_zeilenlaenge" name="VeranstaltungsEinstellungen[zeilenlaenge]"
-				   type="number" value="<?= $einstellungen->zeilenlaenge ?>"> <br>
+				   type="number" value="<?= $einstellungen->zeilenlaenge ?>" min="1"> <br>
 			<small>NICHT ändern, nachdem Anträge eingereicht wurden, weil sich dann die Zeilennummern ändern!</small>
 		</div>
 	</div>
