@@ -296,7 +296,7 @@ $einstellungen = $model->getEinstellungen();
 	<script>
 		$(function () {
 			$("input[name='VeranstaltungsEinstellungen[ae_nummerierung]']").change(function () {
-				if ($(this).prop("value") == "2") $("#ae_ziffern").show();
+				if (($(this).prop("value") == "2") == $(this).prop ("checked")) $("#ae_ziffern").show();
 				else $("#ae_ziffern").hide();
 			}).trigger("change");
 		})
