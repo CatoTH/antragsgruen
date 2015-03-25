@@ -16,6 +16,8 @@ class VeranstaltungsEinstellungen extends CFormModel
 	public $zeilen_nummerierung_global = false;
 	public $ae_nummerierung_global = false;
 	public $ae_nummerierung_nach_zeile = false;
+	public $ae_praefix = "Ä";
+	public $ae_ziffern = "1";
 	public $revision_name_verstecken = false;
 	public $ansicht_minimalistisch = false;
 	public $feeds_anzeigen = true;

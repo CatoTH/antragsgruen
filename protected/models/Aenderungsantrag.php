@@ -419,16 +419,17 @@ class Aenderungsantrag extends IAntrag
 	public function naechsteAenderungsRevNr()
 	{
 		$max_rev = 0;
-		if ($this->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_nach_zeile) {
+		$einstellungen = $this->antrag->veranstaltung->getEinstellungen();
+		if ($einstellungen->ae_nummerierung_nach_zeile) {
 			$line        = $this->getFirstDiffLine();
-			$ae_rev_base = $this->antrag->revision_name . "-Ä" . $line . "-";
+			$ae_rev_base = $this->antrag->revision_name . "-" . $einstellungen->ae_praefix . str_pad ($line,$einstellungen->ae_ziffern,'0',STR_PAD_LEFT) . "-";
 			$max_rev     = 0;
 			foreach ($this->antrag->aenderungsantraege as $ae) {
 				$x = explode($ae_rev_base, $ae->revision_name);
 				if (count($x) == 2 && $x[1] > $max_rev) $max_rev = IntVal($x[1]);
 			}
 			return $ae_rev_base . ($max_rev + 1);
-		} elseif ($this->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
+		} elseif ($einstellungen->ae_nummerierung_global) {
 			$antraege = $this->antrag->veranstaltung->antraege;
 			foreach ($antraege as $ant) {
 				$m = $ant->getMaxAenderungsRevNr();
@@ -437,7 +438,7 @@ class Aenderungsantrag extends IAntrag
 		} else {
 			$max_rev = $this->antrag->getMaxAenderungsRevNr();
 		}
-		return "Ä" . ($max_rev + 1);
+		return $einstellungen->ae_praefix . ($max_rev + 1);
 	}
 
 	/**
