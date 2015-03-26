@@ -150,9 +150,9 @@ class Amendment extends IMotion
             }
         }
 
-        usort($aes, array(Amendment::className(), 'sortVisibleByLineNumbersSort'));
+        usort($ams, array(Amendment::className(), 'sortVisibleByLineNumbersSort'));
 
-        return $aes;
+        return $ams;
     }
 
     /**

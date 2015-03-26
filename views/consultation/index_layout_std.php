@@ -1,5 +1,6 @@
 <?php
 
+use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -8,12 +9,12 @@ use app\models\db\Motion;
 use yii\helpers\Html;
 
 /**
- * @var array $motions
  * @var Consultation $consultation
  */
 
 $hasPDF = $consultation->getSettings()->hasPDF;
 
+$motions = MotionSorter::getSortedMotions($consultation, $consultation->motions);
 foreach ($motions as $name => $motns) {
     echo "<ul class='motionList'>";
     foreach ($motns as $motion) {
@@ -36,10 +37,10 @@ foreach ($motions as $name => $motns) {
         echo "</p>\n";
         echo '<p class="info">von ' . Html::encode($motion->getInitiatorsStr()) . '</p>';
 
-        if (count($motion->amendments) > 0) {
+        $amendments = MotionSorter::getSortedAmendments($consultation, $motion->amendments);
+        if (count($amendments) > 0) {
             echo "<ul class='amendments'>";
-            $aes = $motion->getSortedAmendments();
-            foreach ($aes as $ae) {
+            foreach ($amendments as $ae) {
                 echo "<li" . ($ae->status == Amendment::STATUS_WITHDRAWN ? " class='withdrawn'" : "") . ">";
                 echo "<span class='date'>" . Tools::formatMysqlDate($ae->dateCreation) . "</span>\n";
                 $name = (trim($ae->titlePrefix) == "" ? "-" : $ae->titlePrefix);

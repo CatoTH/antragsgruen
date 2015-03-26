@@ -95,22 +95,23 @@ echo ' Organisation / Gremium
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorEmail" name="Initiator[contactEmail]" ';
 if ($settings->motionNeedsEmail) {
-    echo 'required';
+    echo 'required ';
 }
 echo 'value="' . $preEmail . '">
   </div>
 </div>';
 
 if ($settings->motionHasPhone) {
-    echo '<div class="control-group telefon_row">
-                <label class="control-label" for="Person_telefon">Telefon</label>
-				<div class="controls telefon_row"><input';
+    echo '<div class="form-group phone_row">
+        <label class="col-sm-3 control-label" for="initiatorPhone">Telefon</label>
+  <div class="col-sm-4">
+    <input type="text" class="form-control" id="initiatorPhone" name="Initiator[contactPhone]" ';
     if ($settings->motionNeedsPhone) {
-        echo ' required';
+        echo 'required ';
     }
-    echo ' name="Initiator[contactPhone]" id="Person_telefon" type="text" maxlength="100" value="' . $prePhone . '">
-    </div>
-			</div>';
+    echo 'value="' . $prePhone . '">
+  </div>
+</div>';
 }
 echo '</div>';
 

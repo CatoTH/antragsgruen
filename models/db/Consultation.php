@@ -196,29 +196,6 @@ class Consultation extends ActiveRecord
         return $con;
     }
 
-    /**
-     * @return bool
-     */
-    public function isAdminCurUser()
-    {
-        $user = \Yii::$app->user;
-        if ($user->isGuest) {
-            return false;
-        }
-        /** @var \app\models\db\User $identity */
-        $identity = $user->identity;
-        return $this->isAdmin($identity);
-    }
-
-
-    /**
-     * @return array|array[]
-     */
-    public function getSortedMotions()
-    {
-        return MotionSorter::getSortedMotions($this, $this->motions, $this->amendmentNumbering);
-    }
-
 
     /**
      * @return ConsultationSettingsTag[]

@@ -133,7 +133,6 @@ class ConsultationController extends Base
         $this->consultationSidebar($this->consultation);
 
         $consultation  = $this->consultation;
-        $motionsSorted = $consultation->getSortedMotions();
 
         $myself = User::getCurrentUser();
         if ($myself) {
@@ -154,7 +153,6 @@ class ConsultationController extends Base
             array(
                 'consultation' => $consultation,
                 'introText'    => $introText,
-                'motions'      => $motionsSorted,
                 'myself'       => $myself,
                 'myMotions'    => $myMotions,
                 'myAmendments' => $myAmendments,

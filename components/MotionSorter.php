@@ -95,10 +95,9 @@ class MotionSorter
     /**
      * @param Consultation $consultation
      * @param Motion[] $motions
-     * @param int $amendmentNumbering
      * @return array|array[]
      */
-    public static function getSortedMotions(Consultation $consultation, $motions, $amendmentNumbering)
+    public static function getSortedMotions(Consultation $consultation, $motions)
     {
         $motionsSorted = array();
 
@@ -115,10 +114,6 @@ class MotionSorter
                 }
                 $key = $motion->titlePrefix;
 
-                if ($amendmentNumbering == ByLine::getID()) {
-                    $motion->amendments = Amendment::sortVisibleByLineNumbers($consultation, $motion->amendments);
-                }
-
                 $motionsSorted[$typeName][$key] = $motion;
             }
         }
@@ -128,5 +123,18 @@ class MotionSorter
         }
 
         return $motionsSorted;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param Amendment[] $amendments
+     * @return Amendment[]
+     */
+    public static function getSortedAmendments(Consultation $consultation, $amendments)
+    {
+        if ($consultation->amendmentNumbering == ByLine::getID()) {
+            $amendments = Amendment::sortVisibleByLineNumbers($consultation, $amendments);
+        }
+        return $amendments;
     }
 }
