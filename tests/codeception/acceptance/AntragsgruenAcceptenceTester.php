@@ -35,7 +35,7 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
             DIRECTORY_SEPARATOR . 'dbdata1.sql');
     }
 
-    public function gotoStdConsultationHome()
+    public function gotoStdConsultationHome($check = true)
     {
         ConsultationHomePage::openBy(
             $this,
@@ -44,7 +44,9 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
                 'consultationPath' => 'std-parteitag',
             ]
         );
-        $this->see('Test2', 'h1');
+        if ($check) {
+            $this->see('Test2', 'h1');
+        }
     }
 
     public function loginAsStdAdmin()

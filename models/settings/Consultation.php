@@ -7,6 +7,13 @@ use app\models\exceptions\Internal;
 
 class Consultation
 {
+    // TESTS WITH TEST CASES
+
+    /** @var bool */
+    public $maintainanceMode      = false;
+
+    // TESTS WITHOUT TEST CASES
+
     /** @var bool */
     public $motionNeedsEmail      = false;
     public $motionNeedsPhone      = false;
@@ -14,7 +21,6 @@ class Consultation
     public $commentNeedsEmail     = false;
     public $iniatorsMayEdit       = false;
     public $adminsMayEdit         = true;
-    public $maintainanceMode      = false;
     public $confirmEmails         = false;
     public $lineNumberingGlobal   = false;
     public $hideRevision          = false;
