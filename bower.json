@@ -2,6 +2,7 @@
     "name": "Antragsgrün",
     "dependencies": {
         "eonasdan-bootstrap-datetimepicker": "4.7.*",
-        "html5shiv": "*"
+        "html5shiv": "*",
+        "Sortable": "*"
     }
 }

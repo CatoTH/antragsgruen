@@ -16,7 +16,7 @@ $hasPDF = $consultation->getSettings()->hasPDF;
 
 $motions = MotionSorter::getSortedMotions($consultation, $consultation->motions);
 foreach ($motions as $name => $motns) {
-    echo "<ul class='motionList'>";
+    echo "<ul class='motionListStd'>";
     foreach ($motns as $motion) {
         /** @var Motion $motion */
         $classes = array('motion');
@@ -32,7 +32,8 @@ foreach ($motions as $name => $motns) {
         echo "<p class='title'>\n";
         echo Html::a($motion->getTitleWithPrefix(), UrlHelper::createMotionUrl($motion));
         if ($hasPDF) {
-            echo Html::a("PDF", UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
+            $html = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
+            echo Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
         }
         echo "</p>\n";
         echo '<p class="info">von ' . Html::encode($motion->getInitiatorsStr()) . '</p>';

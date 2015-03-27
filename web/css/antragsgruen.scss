@@ -24,22 +24,22 @@
   @include border-radius(90px);
 }
 
-.antragsliste {
+.motionListStd {
   list-style-type: none;
   margin: 0;
   padding: 0;
 
-  .antrag {
+  .motion {
     padding: 12px 20px 17px 50px;
 
-    .datum {
+    .date {
       color: rgb(179, 180, 180);
       display: block;
       float: right;
       margin-left: 20px;
     }
 
-    .titel {
+    .title {
       margin-bottom: 3px;
 
       &:before {
@@ -72,12 +72,6 @@
         margin-left: 10px;
         display: inline-block;
         font-weight: normal;
-        &:before {
-          @extend .icon-pdf;
-          @include icons-antragsgruen('14px');
-          color: $farbe_hellgruen;
-          width: 16px;
-        }
         a:hover {
           text-decoration: none;
           color: rgb(198, 214, 78);
@@ -91,25 +85,15 @@
     }
   }
 
-  .span9 .resolution .titel:before {
-    @extend .icon-feed;
-  }
-
-  .aenderungsantraege {
+  .amendments {
     list-style-type: none;
     margin: 0;
     padding: 0;
 
     li {
       margin-bottom: 3px;
-      &.zurueckgezogen {
+      &.withdrawn {
         text-decoration: line-through;
-      }
-      &:before {
-        @extend .icon-attachment;
-        @include icons-antragsgruen('15px');
-        color: #A2BC04;
-        width: 14px;
       }
       a {
         font-weight: bold;

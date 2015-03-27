@@ -124,23 +124,26 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     echo '</div>';
 }
 
-$hide_ww_login = ($controller->site && $controller->site->getSettings()->onlyNamespacedAccounts);
-if ($hide_ww_login) {
-    echo '<div class="content">
+/** @var \app\models\settings\AntragsgruenApp $params */
+$params = \Yii::$app->params;
+if ($params->hasWurzelwerk) {
+
+    $hide_ww_login = ($controller->site && $controller->site->getSettings()->onlyNamespacedAccounts);
+    if ($hide_ww_login) {
+        echo '<div class="content">
         <a href="#" onClick="$(\'#admin_login_www\').toggle(); return false;">Admin-Login</a>
     </div>
     <div id="admin_login_www" style="display: none;">';
-}
+    }
 
-
-echo '<h2>Wurzelwerk-Login</h2>
+    echo '<h2>Wurzelwerk-Login</h2>
     <div class="content">';
 
-$backUrl = UrlHelper::createUrl('consultation/index');
-$action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
-echo Html::beginForm($action, 'post', ['class' => 'col-sm-4']);
+    $backUrl = UrlHelper::createUrl('consultation/index');
+    $action  = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
+    echo Html::beginForm($action, 'post', ['class' => 'col-sm-4']);
 
-echo '<div class="form-group">
+    echo '<div class="form-group">
     <label for="wurzelwerkAccount">WurzelWerk-Account:</label>
   <input name="username" id="wurzelwerkAccount" type="text" class="form-control">
     </div>
@@ -149,8 +152,8 @@ echo '<div class="form-group">
             <span class="glyphicon glyphicon-log-in"></span> Einloggen
     </button>
 ';
-echo Html::endForm();
-echo '<div id="loginWurzelwerkHint">
+    echo Html::endForm();
+    echo '<div id="loginWurzelwerkHint">
     <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://service.gruene.de/" umgeleitet,
     die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-BenutzerInnenname/Passwort
     eingeben und bestätigen, dass deine E-Mail-Adresse an Antragsgrün übermittelt wird.
@@ -162,9 +165,11 @@ echo '<div id="loginWurzelwerkHint">
         </div>
 </div>';
 
-if ($hide_ww_login) {
-    echo '</div>';
+    if ($hide_ww_login) {
+        echo '</div>';
+    }
 }
+
 
 if (!$controller->site || (!$controller->site->getSettings()->onlyNamespacedAccounts &&
         !$controller->site->getSettings()->onlyNamespacedAccounts)

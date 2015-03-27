@@ -11,6 +11,8 @@ use yii\helpers\Url;
  * @property int $userId
  * @property int $amendmentId
  * @property string $text
+ * @property string $name
+ * @property string $contactEmail
  * @property string $dateCreation
  * @property int $status
  * @property int $replyNotification

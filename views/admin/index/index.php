@@ -21,7 +21,7 @@ echo '<h1>Administration</h1>';
 echo '<div class="content">';
 
 if (count($todoList) > 0) {
-    echo "<div  class='admin_todo'><h4>To Do</h4>";
+    echo "<div  class='adminTodo'><h4>To Do</h4>";
     echo "<ul>";
     foreach ($todoList as $do) {
         echo "<li>" . Html::a($do[0], $do[1]) . "</li>";
@@ -41,6 +41,8 @@ echo '</li><li style="margin-left: 20px;">';
 echo Html::a("ExpertInnen-Einstellungen", UrlHelper::createUrl('admin/index/consultationextended'));
 echo '</li><li style="margin-top: 10px; font-weight: bold;">';
 echo Html::a('Anträge', UrlHelper::createUrl('admin/antraege'));
+echo '</li><li style="margin-left: 20px;">';
+echo Html::a('Abschnitte festlegen', UrlHelper::createUrl('admin/motion/sections'));
 echo '</li><li style="margin-left: 20px;">';
 
 $motionp = $consultation->getMotionPolicy();

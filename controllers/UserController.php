@@ -8,6 +8,7 @@ use app\components\WurzelwerkAuthClient;
 use app\models\db\User;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
+use app\models\settings\AntragsgruenApp;
 use app\models\wording\IWording;
 use app\models\wording\Parteitag;
 use Yii;
@@ -76,6 +77,12 @@ class UserController extends Base
      */
     public function actionLoginwurzelwerk($backUrl = '')
     {
+        /** @var AntragsgruenApp $params */
+        $params = Yii::$app->params;
+        if (!$params->hasWurzelwerk) {
+            return 'Wurzelwerk is not supported';
+        }
+
         if ($backUrl == '') {
             $backUrl = (isset($_POST['backUrl']) ? $_POST['backUrl'] : UrlHelper::homeUrl());
         }

@@ -203,7 +203,7 @@ if (!$minimalisticUi) {
 
         foreach ($motion->consultation->tags as $tag) {
             if (!in_array($tag->id, $used_tag_ids)) {
-                echo '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->name) . '</option>';
+                echo '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->title) . '</option>';
             }
         }
         echo '</select>

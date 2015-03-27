@@ -131,7 +131,8 @@ class Consultation extends ActiveRecord
      */
     public function getMotionSections()
     {
-        return $this->hasMany(ConsultationSettingsMotionSection::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationSettingsMotionSection::className(), ['consultationId' => 'id'])
+            ->orderBy('position');
     }
 
     /**
@@ -262,6 +263,14 @@ class Consultation extends ActiveRecord
     public function getAmendmentPolicy()
     {
         return IPolicy::getInstanceByID($this->policyAmendments, $this);
+    }
+
+    /**
+     * @return IPolicy
+     */
+    public function getCommentPolicy()
+    {
+        return IPolicy::getInstanceByID($this->policyComments, $this);
     }
 
     /**
