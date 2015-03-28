@@ -17,31 +17,34 @@ $params     = $controller->layoutParams;
 $this->title                                              = 'Antrags-Abschnitte';
 $params->breadcrumbs[UrlHelper::createUrl('admin/index')] = 'Administration';
 $params->breadcrumbs[]                                    = 'Abschnitte';
-$params->addCSS('/css/admin.css');
+$params->addCSS('/css/backend.css');
 $params->addJS('/js/Sortable/Sortable.min.js');
-$params->addJS('/js/admin.js');
+$params->addJS('/js/backend.js');
 
 echo '<h1>Antrags-Abschnitte</h1>';
 
+echo Html::beginForm('', 'post', ['class' => 'content adminSectionsForm']);
+
 echo $controller->showErrors();
-
-
-echo '<div class="content">';
-
-echo Html::beginForm();
 
 $renderSection = function (ConsultationSettingsMotionSection $section, Consultation $consultion) {
     $sectionId = IntVal($section->id);
+    if ($sectionId == 0) {
+        $sectionId = '#NEW#';
+    }
     $sectionName = 'sections[' . $sectionId . ']';
 
     echo '<li><span class="drag-handle">&#9776;</span>';
+    echo '<div class="sectionContent">';
     echo '<div class="toprow">';
+
+    echo '<a href="#" class="remover"><span class="glyphicon glyphicon-remove-circle"></span></a>';
 
     echo Html::dropDownList(
         $sectionName . '[type]',
         $section->type,
         ConsultationSettingsMotionSection::getTypes(),
-        ['required' => 'required', 'class' => 'form-control sectionType']
+        ['class' => 'form-control sectionType']
     );
 
     echo '<label class="sectionTitle"><span class="sr-only">Name des Abschnitts</span>';
@@ -49,7 +52,7 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo 'value="' . Html::encode($section->title) . '" required placeholder="Titel" class="form-control">';
     echo '</label>';
 
-    echo '</div><div class="bottomrow">';
+    echo '</div><div class="assignmentRow">';
 
     echo '<label>Nur anzeigen für Typ: ';
     echo '<select name="' . $sectionName . '[motionType]" size="1"><option value="">- alle -</option>';
@@ -63,6 +66,8 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '</select></label><br>';
 
     // @TODO Tags
+
+    echo '</div><div class="optionsRow">';
 
     echo '<label class="fixedWidthLabel">';
     echo Html::checkbox($sectionName . '[fixedWidth]', $section->fixedWidth, ['class' => 'fixedWidth']);
@@ -82,14 +87,14 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '<label class="commentSection">';
     $val = ConsultationSettingsMotionSection::COMMENTS_SECTION;
     echo Html::radio($sectionName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
-    echo ' Für den gesamten Abschnitt</label> ';
+    echo ' Gesamter Abschnitt</label> ';
 
     echo '<label class="commentParagraph">';
     $val = ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS;
     echo Html::radio($sectionName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
     echo ' Pro Absatz</label> ';
 
-    echo '</div></li>';
+    echo '</div></div></li>';
 };
 
 
@@ -99,7 +104,9 @@ foreach ($consultation->motionSections as $section) {
 }
 echo '</ul>';
 
-echo '<button type="submit" name="save" class="btn btn-primary">Speichern</button>';
+echo '<a href="#" class="sectionAdder"><span class="glyphicon glyphicon-plus-sign"></span> Abschnitt hinzufügen</a>';
+
+echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">Speichern</button></div>';
 
 $params->addOnLoadJS('$.AntragsgruenAdmin.sectionsEdit();');
 
@@ -108,6 +115,3 @@ echo Html::endForm();
 echo '<ul style="display: none;" id="sectionTemplate">';
 $renderSection(new ConsultationSettingsMotionSection(), $consultation);
 echo '</ul>';
-
-
-echo '</div>';

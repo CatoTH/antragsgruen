@@ -6,3 +6,128 @@
     overflow: visible;
   }
 }
+
+@import "common";
+
+legend, label.legend {
+  display: block;
+  border: none;
+  color: $farbe_dunkelgruen;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 18px;
+  margin: 0 0 5px 0;
+}
+
+label.legend {
+  margin-top: 15px;
+}
+
+.form-horizontal .text_full_width .controls {
+  margin: 0;
+}
+
+.control-group {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.control-label {
+  width: 100px;
+  font-size: 13px;
+  float: left;
+  text-align: right;
+  padding-top: 5px;
+}
+
+.adminTodo {
+  float: right;
+  width: 300px;
+  ul {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+}
+
+#sectionsList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  > li {
+    margin: 10px 0 30px;
+    padding: 0;
+    overflow: auto;
+    border: solid 1px #afa;
+    border-radius: 4px;
+    background-color: #c0ffc0;
+
+    > .sectionContent {
+      margin-left: 50px;
+      border-left: 1px solid #afa;
+
+      label {
+        font-weight: normal;
+      }
+      background-color: #f4fFf4;
+    }
+  }
+
+  .sectionTitle {
+    width: 250px;
+  }
+
+  .drag-handle {
+    font-size: 30px;
+    float: left;
+    display: block;
+    font-weight: bold;
+    cursor: move;
+    padding: 0 10px 10px;
+    margin-top: 55px;
+  }
+
+  .sectionType {
+    margin-right: 10px;
+    display: inline-block;
+    width: 150px;
+    vertical-align: top;
+  }
+  .toprow {
+    padding: 10px 10px 0;
+
+    .remover {
+      font-size: 20px;
+      float: right;
+      &:link, &:visited {
+        color: red;
+      }
+    }
+  }
+
+  .assignmentRow, .optionsRow, .commentrow {
+    padding: 10px;
+    display: inline-block;
+    vertical-align: top;
+    width: 33%;
+    border-top: 1px solid #afa;
+  }
+  .optionsRow, .commentrow {
+    border-left: 1px solid #afa;
+  }
+  .commentrow {
+    width: 34%;
+    label {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.adminSectionsForm {
+  .submitRow {
+    text-align: center;
+  }
+  .sectionAdder {
+
+  }
+}

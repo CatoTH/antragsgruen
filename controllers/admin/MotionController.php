@@ -40,6 +40,7 @@ class MotionController extends AdminBase
                 $section->save();
                 $position++;
             }
+            \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
 
         return $this->render('sections', ['consultation' => $this->consultation]);
