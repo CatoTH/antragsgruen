@@ -22,20 +22,15 @@ echo '<h1>' . $wording->get('Antrag bestätigen') . ': ' . Html::encode($motion-
 // $this->widget('bootstrap.widgets.TbAlert');
 
 foreach ($motion->getSortedSections(true) as $section) {
+    if ($section->getSectionType()->isEmpty()) {
+        continue;
+    }
     echo '<section class="motion_text_holder">';
     echo '<h2>' . Html::encode($section->consultationSetting->title) . '</h3>';
     echo '<div class="textholder consolidated">';
 
     echo $section->getSectionType()->showSimple();
 
-    /* // @TODO
-    $absae = $antrag->getParagraphs();
-    foreach ($absae as $i => $abs) {
-        echo "<div class='absatz_text orig antragabsatz_holder antrags_text_holder_nummern'>";
-        echo $abs->str_html;
-        echo "</div>";
-    }
-    */
     echo '</div>';
     echo '</section>';
 }

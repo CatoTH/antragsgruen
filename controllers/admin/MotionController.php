@@ -8,6 +8,9 @@ use app\models\exceptions\FormError;
 
 class MotionController extends AdminBase
 {
+    /**
+     * @throws FormError
+     */
     private function sectionsSave()
     {
         $position = 0;
@@ -48,6 +51,9 @@ class MotionController extends AdminBase
         }
     }
 
+    /**
+     * @throws FormError
+     */
     private function sectionsDelete()
     {
         if (!isset($_POST['sectionsTodelete'])) {
@@ -67,6 +73,10 @@ class MotionController extends AdminBase
         }
     }
 
+    /**
+     * @return string
+     * @throws FormError
+     */
     public function actionSections()
     {
         if (isset($_POST['save'])) {

@@ -89,8 +89,8 @@ class MotionEditForm extends \yii\base\Model
             if (isset($values['sections'][$section->consultationSetting->id])) {
                 $section->getSectionType()->setData($values['sections'][$section->consultationSetting->id]);
             }
-            if (isset($files['sections']) && isset($files['sections']['name'])) {
-                if (isset($files['sections']['name'][$section->consultationSetting->id])) {
+            if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
+                if (!empty($files['sections']['tmp_name'][$section->consultationSetting->id])) {
                     $data = array();
                     foreach ($files['sections'] as $key => $vals) {
                         if (isset($vals[$section->consultationSetting->id])) {

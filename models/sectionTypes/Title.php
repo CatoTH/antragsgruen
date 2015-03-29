@@ -38,4 +38,12 @@ class Title extends ISectionType
     {
         return Html::encode($this->section->data);
     }
+
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return ($this->section->data == '');
+    }
 }

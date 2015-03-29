@@ -36,6 +36,11 @@ abstract class ISectionType
     }
 
     /**
+     * @return bool
+     */
+    abstract public function isEmpty();
+
+    /**
      * @return string
      */
     abstract public function getFormField();

@@ -53,4 +53,12 @@ class TextSimple extends ISectionType
     {
         return $this->section->data;
     }
+
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return ($this->section->data == '');
+    }
 }

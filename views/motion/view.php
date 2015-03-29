@@ -279,7 +279,9 @@ echo '</div>';
 
 
 foreach ($motion->getSortedSections(true) as $section) {
-
+    if ($section->getSectionType()->isEmpty()) {
+        continue;
+    }
     echo '<div class="motionTextHolder';
     if ($motion->consultation->getSettings()->lineLength > 80) {
         echo " smallFont";
@@ -297,7 +299,7 @@ foreach ($motion->getSortedSections(true) as $section) {
 
 
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
-$supporters = $motion->supporters;
+$supporters = $motion->getSupporters();
 $likes      = $motion->getLikes();
 $dislikes   = $motion->getDislikes();
 $enries     = (count($likes) > 0 || count($dislikes) > 0);
@@ -307,7 +309,7 @@ $enries     = (count($likes) > 0 || count($dislikes) > 0);
 //$kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
 $canSupport     = false;
 $cantSupportMsg = "";
-foreach ($motion->supporters as $supp) {
+foreach ($motion->getSupporters() as $supp) {
     if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId == $currUserId) {
         $canSupport = false;
     }
@@ -320,9 +322,9 @@ if (count($supporters) > 0) {
     echo "<strong>UnterstützerInnen:</strong><br>";
     if (count($supporters) > 0) {
         echo '<ul>';
-        foreach ($supporters as $p) {
+        foreach ($supporters as $supp) {
             echo '<li>';
-            if ($p->id == $currUserId) {
+            if ($supp->id == $currUserId) {
                 echo '<span class="label label-info">Du!</span> ';
             }
             echo Html::encode($supp->getNameWithOrga());
@@ -345,7 +347,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
         echo '<ul>';
         foreach ($likes as $supp) {
             echo '<li>';
-            if ($p->id == $currUserId) {
+            if ($supp->id == $currUserId) {
                 echo '<span class="label label-info">Du!</span> ';
             }
             echo Html::encode($supp->name);
@@ -358,9 +360,9 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
     if (count($dislikes) > 0) {
         echo "<strong>Abgelehnt von:</strong><br>";
         echo '<ul>';
-        foreach ($dislikes as $p) {
+        foreach ($dislikes as $supp) {
             echo '<li>';
-            if ($p->id == $currUserId) {
+            if ($supp->id == $currUserId) {
                 echo '<span class="label label-info">Du!</span> ';
             }
             echo Html::encode($supp->name);

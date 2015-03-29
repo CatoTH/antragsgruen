@@ -54,6 +54,10 @@ class Image extends ISectionType
      */
     public function showSimple()
     {
+        if ($this->isEmpty()) {
+            return '';
+        }
+
         $type = $this->section->consultationSetting;
         $url = UrlHelper::createUrl(
             [
@@ -65,5 +69,13 @@ class Image extends ISectionType
         $str = '<div style="text-align: center; padding: 10px;"><img src="' . Html::encode($url) . '" ';
         $str .= 'alt="' . Html::encode($type->title) . '" style="max-height: 200px;"></div>';
         return $str;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return ($this->section->data == '');
     }
 }
