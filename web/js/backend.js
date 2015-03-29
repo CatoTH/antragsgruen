@@ -45,12 +45,16 @@
             }
         });
         $list.find('.maxLenSet').trigger('change');
+
         $('.sectionAdder').click(function (ev) {
             ev.preventDefault();
             var newStr = $('#sectionTemplate').html();
             newStr = newStr.replace(/#NEW#/g, 'new' + newCounter);
             $list.append(newStr);
             newCounter = newCounter + 1;
+
+            $list.find('.sectionType').trigger('change');
+            $list.find('.maxLenSet').trigger('change');
         });
     };
 

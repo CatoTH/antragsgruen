@@ -153,7 +153,10 @@ label.legend {
       }
     }
     &.image {
-      .optionsRow, .commentrow {
+      .commentrow {
+        display: none;
+      }
+      .lineNumbersLabel, .fixedWidthLabel, .lineLength {
         display: none;
       }
     }

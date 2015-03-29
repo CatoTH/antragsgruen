@@ -42,11 +42,15 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '<a href="#" class="remover" title="Abschnitt löschen">';
     echo '<span class="glyphicon glyphicon-remove-circle"></span></a>';
 
+    $attribs = ['class' => 'form-control sectionType'];
+    if ($section->id > 0) {
+        $attribs['disabled'] = 'disabled';
+    }
     echo Html::dropDownList(
         $sectionName . '[type]',
         $section->type,
         ISectionType::getTypes(),
-        ['class' => 'form-control sectionType']
+        $attribs
     );
 
     echo '<label class="sectionTitle"><span class="sr-only">Name des Abschnitts</span>';
@@ -72,6 +76,10 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '<label class="fixedWidthLabel">';
     echo Html::checkbox($sectionName . '[fixedWidth]', $section->fixedWidth, ['class' => 'fixedWidth']);
     echo 'Feste Zeichenbreite</label>';
+
+    echo '<label class="requiredLabel">';
+    echo Html::checkbox($sectionName . '[required]', $section->required, ['class' => 'required']);
+    echo 'Notwendig</label>';
 
     echo '<label class="lineNumbersLabel">';
     echo Html::checkbox($sectionName . '[lineNumbers]', $section->lineNumbers, ['class' => 'lineNumbers']);

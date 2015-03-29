@@ -86,7 +86,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
             [['consultationId', 'title', 'type', 'position', 'status', 'required'], 'required'],
             [['id', 'consultationId', 'type', 'motionTypeId', 'status', 'required'], 'number'],
             [['position', 'fixedWidth', 'maxLen', 'lineNumbers', 'hasComments'], 'number'],
-            [['type', 'title', 'maxLen', 'hasComments'], 'safe'],
+            [['title', 'maxLen', 'hasComments'], 'safe'],
         ];
     }
 
