@@ -32,14 +32,12 @@ class Consultation
     public $screeningAmendments   = false;
     public $screeningComments     = false;
     public $initiatorsMayReject   = false;
-    public $titleHasLineNumber    = true;
     public $hasPDF                = true;
     public $commentWholeMotions   = false;
     public $allowMultipleTags     = false;
     public $allowStrikeFormat     = false;
 
     /** @var int */
-    public $titleMaxLength  = 0;
     public $lineLength      = 80;
     public $startLayoutType = 0;
 

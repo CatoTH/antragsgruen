@@ -11,9 +11,11 @@ use yii\db\ActiveRecord;
  * @property int $motionTypeId
  * @property int $type
  * @property int $position
+ * @property int $status
  * @property string $title
- * @property int $maxLen
  * @property int $fixedWidth
+ * @property int $maxLen
+ * @property int $required
  * @property int $lineNumbers
  * @property int $hasComments
  *
@@ -31,6 +33,9 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     const COMMENTS_NONE       = 0;
     const COMMENTS_SECTION    = 1;
     const COMMENTS_PARAGRAPHS = 2;
+
+    const STATUS_VISIBLE = 0;
+    const STATUS_DELETED = -1;
 
     /**
      * @return string
@@ -95,8 +100,8 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'title', 'type', 'position'], 'required'],
-            [['id', 'consultationId', 'type', 'motionTypeId'], 'number'],
+            [['consultationId', 'title', 'type', 'position', 'status', 'required'], 'required'],
+            [['id', 'consultationId', 'type', 'motionTypeId', 'status', 'required'], 'number'],
             [['position', 'fixedWidth', 'maxLen', 'lineNumbers', 'hasComments'], 'number'],
             [['type', 'title', 'maxLen', 'hasComments'], 'safe'],
         ];
@@ -115,4 +120,5 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         }
         return [static::COMMENTS_NONE];
     }
+
 }

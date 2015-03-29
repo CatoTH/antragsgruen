@@ -6,9 +6,10 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 INSERT INTO `consultation` (`id`, `siteId`, `urlPath`, `type`, `wording`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `amendmentNumbering`, `adminEmail`, `settings`) VALUES
   (1, 1, 'std-parteitag', 0, 0, 'Test2', '', NULL, NULL, NULL, NULL, 'all', 'all', 'all', 'all', 0, 'tobias@hoessl.eu', NULL);
 
-INSERT INTO `consultationSettingsMotionSection` (`id`, `consultationId`, `motionTypeId`, `type`, `position`, `title`, `fixedWidth`, `maxLen`, `lineNumbers`, `hasComments`) VALUES
-  (1, 1, NULL, 1, 1, 'Antragstext', 1, 0, 1, 0),
-  (2, 1, NULL, 1, 2, 'Begründung', 0, 0, 0, 0);
+INSERT INTO `consultationSettingsMotionSection` (`id`, `consultationId`, `motionTypeId`, `type`, `position`, `status`, `title`, `required`, `fixedWidth`, `maxLen`, `lineNumbers`, `hasComments`) VALUES
+  (1, 1, NULL, 0, 0, 0, 'Überschrift', 1, 0, 0, 1, 0),
+  (2, 1, NULL, 1, 1, 0, 'Antragstext', 1, 1, 0, 1, 0),
+  (3, 1, NULL, 1, 2, 0, 'Begründung', 0, 0, 0, 0, 0);
 
 INSERT INTO `consultationSettingsMotionType` (`id`, `consultationId`, `title`, `motionPrefix`, `position`) VALUES
   (1, 1, 'Antrag', 'A', 0),

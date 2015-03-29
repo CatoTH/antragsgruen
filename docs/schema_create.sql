@@ -167,8 +167,10 @@ CREATE TABLE `consultationSettingsMotionSection` (
   `motionTypeId`   INT(11)               DEFAULT NULL,
   `type`           INT(11)      NOT NULL,
   `position`       SMALLINT(6)           DEFAULT NULL,
+  `status`         TINYINT      NOT NULL,
   `title`          VARCHAR(100) NOT NULL,
   `fixedWidth`     TINYINT(4)   NOT NULL,
+  `required`       TINYINT(4)   NOT NULL,
   `maxLen`         INT(11)               DEFAULT NULL,
   `lineNumbers`    TINYINT(4)   NOT NULL DEFAULT '0',
   `hasComments`    TINYINT(4)   NOT NULL

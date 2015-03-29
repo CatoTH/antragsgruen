@@ -62,9 +62,24 @@ class Parteitag implements ISitePreset
     {
         $section                 = new ConsultationSettingsMotionSection();
         $section->consultationId = $consultation->id;
+        $section->type           = ConsultationSettingsMotionSection::TYPE_TITLE;
+        $section->position       = 0;
+        $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+        $section->title          = 'Titel';
+        $section->required       = 1;
+        $section->maxLen         = 0;
+        $section->fixedWidth     = 0;
+        $section->lineNumbers    = 0;
+        $section->hasComments    = 0;
+        $section->save();
+
+        $section                 = new ConsultationSettingsMotionSection();
+        $section->consultationId = $consultation->id;
         $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_SIMPLE;
         $section->position       = 1;
-        $section->title          = "Antragstext";
+        $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+        $section->title          = 'Antragstext';
+        $section->required       = 1;
         $section->maxLen         = 0;
         $section->fixedWidth     = 1;
         $section->lineNumbers    = 1;
@@ -75,7 +90,9 @@ class Parteitag implements ISitePreset
         $section->consultationId = $consultation->id;
         $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_SIMPLE;
         $section->position       = 2;
-        $section->title          = "Begründung";
+        $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+        $section->title          = 'Begründung';
+        $section->required       = 0;
         $section->maxLen         = 0;
         $section->fixedWidth     = 0;
         $section->lineNumbers    = 0;

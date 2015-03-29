@@ -34,11 +34,12 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     }
     $sectionName = 'sections[' . $sectionId . ']';
 
-    echo '<li><span class="drag-handle">&#9776;</span>';
+    echo '<li data-id="' . $sectionId . '"><span class="drag-handle">&#9776;</span>';
     echo '<div class="sectionContent">';
     echo '<div class="toprow">';
 
-    echo '<a href="#" class="remover"><span class="glyphicon glyphicon-remove-circle"></span></a>';
+    echo '<a href="#" class="remover" title="Abschnitt löschen">';
+    echo '<span class="glyphicon glyphicon-remove-circle"></span></a>';
 
     echo Html::dropDownList(
         $sectionName . '[type]',
@@ -52,7 +53,7 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo 'value="' . Html::encode($section->title) . '" required placeholder="Titel" class="form-control">';
     echo '</label>';
 
-    echo '</div><div class="assignmentRow">';
+    echo '</div><div class="bottomrow"><div class="assignmentRow">';
 
     echo '<label>Nur anzeigen für Typ: ';
     echo '<select name="' . $sectionName . '[motionType]" size="1"><option value="">- alle -</option>';
@@ -65,8 +66,6 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     }
     echo '</select></label><br>';
 
-    // @TODO Tags
-
     echo '</div><div class="optionsRow">';
 
     echo '<label class="fixedWidthLabel">';
@@ -77,7 +76,25 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo Html::checkbox($sectionName . '[lineNumbers]', $section->lineNumbers, ['class' => 'lineNumbers']);
     echo 'Zeilennummern</label>';
 
+    echo '<label class="lineLength">';
+    echo Html::checkbox($sectionName . '[maxLenSet]', ($section->maxLen != 0), ['class' => 'maxLenSet']);
+    echo 'Längenbegrenzung</label>';
+    echo '<label class="maxLenInput"><input type="number" min="1" name="' . $sectionName . '[maxLenVal]" value="';
+    if ($section->maxLen > 0) {
+        echo $section->maxLen;
+    }
+    if ($section->maxLen < 0) {
+        echo -1 * $section->maxLen;
+    }
+    echo '"> Zeichen</label>';
+    echo '<label class="lineLengthSoft">';
+    echo Html::checkbox($sectionName . '[maxLenSoft]', ($section->maxLen < 0), ['class' => 'maxLenSoft']);
+    echo 'Überschreitung erlauben';
+    echo '</label>';
+
     echo '</div><div class="commentrow">';
+
+    echo '<div>Kommentare:</div>';
 
     echo '<label class="commentNone">';
     $val = ConsultationSettingsMotionSection::COMMENTS_NONE;
@@ -94,7 +111,7 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo Html::radio($sectionName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
     echo ' Pro Absatz</label> ';
 
-    echo '</div></div></li>';
+    echo '</div></div></div></li>';
 };
 
 

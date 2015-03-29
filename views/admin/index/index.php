@@ -40,7 +40,7 @@ echo Html::a('Diese Veranstaltung / Programmdiskussion', $link, ['id' => 'consul
 echo '</li><li style="margin-left: 20px;">';
 echo Html::a("ExpertInnen-Einstellungen", UrlHelper::createUrl('admin/index/consultationextended'));
 echo '</li><li style="margin-top: 10px; font-weight: bold;">';
-echo Html::a('Anträge', UrlHelper::createUrl('admin/antraege'));
+echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'));
 echo '</li><li style="margin-left: 20px;">';
 echo Html::a('Abschnitte festlegen', UrlHelper::createUrl('admin/motion/sections'));
 echo '</li><li style="margin-left: 20px;">';

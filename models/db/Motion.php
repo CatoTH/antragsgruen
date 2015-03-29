@@ -103,6 +103,24 @@ class Motion extends IMotion
     }
 
     /**
+     * @return MotionSection[]
+     */
+    public function getSortedSections()
+    {
+        $sectionsIn = array();
+        foreach ($this->sections as $section) {
+            $sectionsIn[$section->consultationSetting->id] = $section;
+        }
+        $sectionsOut = array();
+        foreach ($this->consultation->motionSections as $section) {
+            if (isset($sectionsIn[$section->id])) {
+                $sectionsOut[] = $sectionsIn[$section->id];
+            }
+        }
+        return $sectionsOut;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getMotionType()
@@ -121,6 +139,19 @@ class Motion extends IMotion
             [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed'], 'number'],
             [['title'], 'safe'],
         ];
+    }
+
+    /**
+     */
+    public function refreshTitle()
+    {
+        $title = '';
+        foreach ($this->sections as $section) {
+            if ($section->consultationSetting->type == ConsultationSettingsMotionSection::TYPE_TITLE && $title == '') {
+                $title = $section->data;
+            }
+        }
+        $this->title = $title;
     }
 
 

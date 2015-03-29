@@ -10,7 +10,6 @@
  * @var bool $jsProtection
  * @var bool $forceTag
  */
-use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationSettingsTag;
 use yii\helpers\Html;
 
@@ -65,11 +64,6 @@ if (count($motionTypes) == 1) {
     echo '</fieldset>';
 }
 
-echo '<fieldset class="form-group">
-    <label for="motionTitle">Überschrift</label>
-    <input type="text" class="form-control" id="motionTitle" name="title" value="' . Html::encode($form->title) . '">
-  </fieldset>';
-
 /** @var ConsultationSettingsTag[] $tags */
 $tags = array();
 foreach ($consultation->tags as $tag) {
@@ -91,27 +85,8 @@ if (count($tags) == 1) {
     echo '</fieldset>';
 }
 
-
-foreach ($consultation->motionSections as $section) {
-    $sid = $section->id;
-
-    echo '<fieldset class="form-group wysiwyg-textarea"';
-    echo ' data-maxLen="' . $section->maxLen . '"';
-    echo ' data-fullHtml="' . ($section->type == ConsultationSettingsMotionSection::TYPE_TEXT_HTML ? 1 : 0) . '"';
-    echo '><label for="texts_' . $sid . '">' . Html::encode($section->title) . '</label>';
-
-    if ($section->maxLen > 0) {
-        echo '<div class="max_len_hint">';
-        echo '<div class="calm">Maximale Länge: ' . $section->maxLen . ' Zeichen</div>';
-        echo '<div class="alert">Text zu lang - maximale Länge: ' . $section->maxLen . ' Zeichen</div>';
-        echo '</div>';
-    }
-
-    echo '<div class="textFullWidth">';
-    echo '<div><textarea id="texts_' . $sid . '" name="texts[' . $sid . ']" rows="5" cols="80">';
-    echo Html::encode(isset($form->texts[$sid]) ? $form->texts[$sid] : '');
-    echo '</textarea></div></div>';
-    echo '</fieldset>';
+foreach ($form->sections as $section) {
+    echo $section->getFormField();
 }
 
 $initiatorClass = $consultation->getMotionInitiatorFormClass();

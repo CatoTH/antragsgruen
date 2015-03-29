@@ -94,9 +94,6 @@ booleanSettingRow($settings, 'hideRevision', $handledSettings, $description);
 
 booleanSettingRow($settings, 'showFeeds', $handledSettings, 'Feeds in der Sidebar anzeigen');
 
-$description = '<strong>Die Überschrift bekommt eine eigene Zeilennummer</strong>';
-booleanSettingRow($settings, 'titleHasLineNumber', $handledSettings, $description);
-
 $description = '<strong>Minimalistische Ansicht</strong><br>
 <small style="margin-left: 20px;">Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>';
 booleanSettingRow($settings, 'minimalisticUI', $handledSettings, $description);
@@ -228,31 +225,6 @@ echo 'Login nur von Wurzelwerk-NutzerInnen zulassen<br>
     <small style="margin-left: 20px;">(gilt für Anträge und Änderungsanträge der gesamten
     Veranstaltungs<span style="text-decoration: underline;">reihe</span>)</small>';
 echo '</label></fieldset>';
-
-
-$handledSettings[] = 'titleMaxLength';
-echo '<fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="titleMaxLength">Maximale Länge des Titels:</label>
-    <div class="col-sm-8" style="position: relative;">
-        <input type="checkbox" id="titelMaxlengthSet" style="position: absolute; left: -5px; top: 5px;" ';
-if ($settings->titleMaxLength > 0) {
-    echo 'checked';
-}
-echo '><input type="text" required name="settings[titleMaxLength]"
-        value="' . Html::encode($settings->titleMaxLength) . '" class="form-control" id="titleMaxLength">
-    </div>
-</fieldset>
-<script>
-    $(function () {
-        $("#titelMaxlengthSet").change(function () {
-            if ($(this).prop("checked")) $("#titleMaxLength").show();
-            else {
-                $("#titleMaxLength").hide().val(0);
-            }
-        }).change();
-    });
-</script>
-';
 
 
 $description = 'Kommentare zum Antrag allgemein zulassen<br>

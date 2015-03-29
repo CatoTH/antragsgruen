@@ -2,7 +2,6 @@
 
 namespace app\models\db;
 
-use app\components\MotionSorter;
 use app\models\exceptions\DB;
 use app\models\exceptions\Internal;
 use app\models\forms\SiteCreateForm;
@@ -132,6 +131,7 @@ class Consultation extends ActiveRecord
     public function getMotionSections()
     {
         return $this->hasMany(ConsultationSettingsMotionSection::className(), ['consultationId' => 'id'])
+            ->where('status = ' . ConsultationSettingsMotionSection::STATUS_VISIBLE)
             ->orderBy('position');
     }
 

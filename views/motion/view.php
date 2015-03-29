@@ -278,7 +278,7 @@ echo '</div>';
 
 
 
-foreach ($motion->sections as $section) {
+foreach ($motion->getSortedSections() as $section) {
 
     echo '<div class="motionTextHolder';
     if ($motion->consultation->getSettings()->lineLength > 80) {

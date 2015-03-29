@@ -18,13 +18,14 @@ class MotionEditForm extends \yii\base\Model
     public $supporters = array();
 
     /** @var array */
-    public $tags  = array();
-    public $texts = array();
+    public $tags = array();
+
+    /** @var MotionSection[] */
+    public $sections = array();
 
     /** @var null|int */
     public $motionId = null;
 
-    public $title;
     public $type;
 
     /**
@@ -34,16 +35,28 @@ class MotionEditForm extends \yii\base\Model
     public function __construct(Consultation $consultation, $motion)
     {
         $this->consultation = $consultation;
+        $motionSections     = [];
         if ($motion) {
             $this->motionId   = $motion->id;
             $this->supporters = $motion->motionSupporters;
-            $this->title      = $motion->title;
             $this->type       = $motion->motionTypeId;
             foreach ($motion->tags as $tag) {
-                $this->tags = $tag->id;
+                $this->tags[] = $tag->id;
             }
-            foreach ($motion->sections as $s) {
-                $this->texts[$s->sectionId] = $s->data;
+            foreach ($motion->sections as $section) {
+                $motionSections[$section->consultationSetting->id] = $section;
+            }
+        }
+        $this->sections = [];
+        foreach ($consultation->motionSections as $sectionType) {
+            if (isset($motionSections[$sectionType->id])) {
+                $this->sections[] = $motionSections[$sectionType->id];
+            } else {
+                $section            = new MotionSection();
+                $section->sectionId = $sectionType->id;
+                $section->data      = '';
+                $section->refresh();
+                $this->sections[] = $section;
             }
         }
     }
@@ -55,49 +68,43 @@ class MotionEditForm extends \yii\base\Model
     public function rules()
     {
         return [
-            [['title', 'texts', 'type'], 'required'],
+            [['type'], 'required'],
             [['id', 'type'], 'number'],
-            [
-                'title', 'required', 'message' => 'Du musst einen Titel angeben.'
-            ],
             [
                 'type', 'required', 'message' => 'Du musst einen Typ angeben.'
             ],
-            [['supporters', 'tags', 'texts', 'title', 'type'], 'safe'],
+            [['supporters', 'tags', 'type'], 'safe'],
         ];
     }
 
     /**
-     * @throws FormError
-     * @return Motion
+     * @param array $values
+     * @param bool $safeOnly
      */
-    public function createMotion()
+    public function setAttributes($values, $safeOnly = true)
     {
-        if (!$this->consultation->getMotionPolicy()->checkMotionSubmit()) {
-            throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
+        parent::setAttributes($values, $safeOnly);
+        foreach ($this->sections as $section) {
+            if (isset($values['sections'][$section->consultationSetting->id])) {
+                $section->setData($values['sections'][$section->consultationSetting->id]);
+            }
         }
+    }
 
-        $motion = new Motion();
-
-        $this->setAttributes($_POST);
-        $this->supporters = $this->consultation->getMotionInitiatorFormClass()->getMotionSupporters($motion);
-
+    /**
+     * @throws FormError
+     */
+    private function createMotionVerify()
+    {
         $errors = [];
 
-        /** @var MotionSection[] $sections */
-        $sections = [];
-        foreach ($this->consultation->motionSections as $sectionType) {
-            if (!isset($this->texts[$sectionType->id])) {
-                $errors[] = "Es fehlt: " . $sectionType->title;
-            } else {
-                $section            = new MotionSection();
-                $section->sectionId = $sectionType->id;
-                $section->data      = $this->texts[$sectionType->id];
-                $sections[]         = $section;
-
-                if (!$section->checkLength()) {
-                    $errors[] = str_replace('%max%', $sectionType->maxLen, 'Maximum length of %max% exceeded');
-                }
+        foreach ($this->sections as $section) {
+            $type = $section->consultationSetting;
+            if ($section->data == '' && $type->required) {
+                $errors[] = 'Keine Daten angegeben (Feld: ' . $type->title . ')';
+            }
+            if (!$section->checkLength()) {
+                $errors[] = str_replace('%max%', $type->maxLen, 'Maximum length of %max% exceeded');
             }
         }
 
@@ -120,11 +127,28 @@ class MotionEditForm extends \yii\base\Model
         if (count($errors) > 0) {
             throw new FormError($errors);
         }
+    }
+
+    /**
+     * @throws FormError
+     * @return Motion
+     */
+    public function createMotion()
+    {
+        if (!$this->consultation->getMotionPolicy()->checkMotionSubmit()) {
+            throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
+        }
+
+        $motion = new Motion();
+
+        $this->setAttributes($_POST);
+        $this->supporters = $this->consultation->getMotionInitiatorFormClass()->getMotionSupporters($motion);
+
+        $this->createMotionVerify();
 
         $motion->status         = Motion::STATUS_DRAFT;
         $motion->consultationId = $this->consultation->id;
         $motion->textFixed      = ($this->consultation->getSettings()->adminsMayEdit ? 0 : 1);
-        $motion->title          = $this->title;
         $motion->titlePrefix    = '';
         $motion->dateCreation   = date("Y-m-d H:i:s");
         $motion->motionTypeId   = $this->type;
@@ -140,10 +164,13 @@ class MotionEditForm extends \yii\base\Model
                 }
             }
 
-            foreach ($sections as $section) {
+            foreach ($this->sections as $section) {
                 $section->motionId = $motion->id;
                 $section->save();
             }
+
+            $motion->refreshTitle();
+            $motion->save();
 
             return $motion;
         } else {
@@ -151,34 +178,20 @@ class MotionEditForm extends \yii\base\Model
         }
     }
 
-
     /**
-     * @param Motion $motion
      * @throws FormError
      */
-    public function saveMotion(Motion $motion)
+    private function saveMotionVerify()
     {
-        if (!$this->consultation->getMotionPolicy()->checkMotionSubmit()) {
-            throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
-        }
-
-
         $errors = [];
 
-        /** @var MotionSection[] $sections */
-        $sections = [];
-        foreach ($this->consultation->motionSections as $sectionType) {
-            if (!isset($this->texts[$sectionType->id])) {
-                $errors[] = "Es fehlt: " . $sectionType->title;
-            } else {
-                $section            = new MotionSection();
-                $section->sectionId = $sectionType->id;
-                $section->data      = $this->texts[$sectionType->id];
-                $sections[]         = $section;
-
-                if (!$section->checkLength()) {
-                    $errors[] = str_replace('%max%', $sectionType->maxLen, 'Maximum length of %max% exceeded');
-                }
+        foreach ($this->sections as $section) {
+            $type = $section->consultationSetting;
+            if ($section->data == '' && $type->required) {
+                $errors[] = 'Keine Daten angegeben (Feld: ' . $type->title . ')';
+            }
+            if (!$section->checkLength()) {
+                $errors[] = str_replace('%max%', $type->maxLen, 'Maximum length of %max% exceeded');
             }
         }
 
@@ -197,14 +210,27 @@ class MotionEditForm extends \yii\base\Model
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
         }
+    }
 
-        $motion->title = $this->title;
+
+    /**
+     * @param Motion $motion
+     * @throws FormError
+     */
+    public function saveMotion(Motion $motion)
+    {
+        if (!$this->consultation->getMotionPolicy()->checkMotionSubmit()) {
+            throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
+        }
+
+        $this->saveMotionVerify();
+
         if ($motion->save()) {
             $this->consultation->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
 
             // Tags
             foreach ($motion->tags as $tag) {
-                $motion->unlink('tags', $tag);
+                $motion->unlink('tags', $tag, true);
             }
             foreach ($this->tags as $tagId) {
                 /** @var ConsultationSettingsTag $tag */
@@ -218,10 +244,13 @@ class MotionEditForm extends \yii\base\Model
             foreach ($motion->sections as $section) {
                 $section->delete();
             }
-            foreach ($sections as $section) {
+            foreach ($this->sections as $section) {
                 $section->motionId = $motion->id;
                 $section->save();
             }
+
+            $motion->refreshTitle();
+            $motion->save();
         } else {
             throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
         }

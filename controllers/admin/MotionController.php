@@ -14,10 +14,15 @@ class MotionController extends AdminBase
         if (isset($_POST['save'])) {
             $position = 0;
             foreach ($_POST['sections'] as $sectionId => $data) {
-                /** @var ConsultationSettingsMotionSection $section */
-                $section = $this->consultation->getMotionSections()->andWhere('id = ' . IntVal($sectionId))->one();
-                if (!$section) {
-                    throw new FormError("Section not found: " . $sectionId);
+                if (preg_match('/^new[0-9]+$/', $sectionId)) {
+                    $section = new ConsultationSettingsMotionSection();
+                    $section->consultationId = $this->consultation->id;
+                } else {
+                    /** @var ConsultationSettingsMotionSection $section */
+                    $section = $this->consultation->getMotionSections()->andWhere('id = ' . IntVal($sectionId))->one();
+                    if (!$section) {
+                        throw new FormError("Section not found: " . $sectionId);
+                    }
                 }
                 $section->setAttributes($data);
                 if ($data['motionType'] > 0) {
@@ -39,6 +44,20 @@ class MotionController extends AdminBase
                 $section->position    = $position;
                 $section->save();
                 $position++;
+            }
+            if (isset($_POST['sectionsTodelete'])) {
+                foreach ($_POST['sectionsTodelete'] as $sectionId) {
+                    if ($sectionId > 0) {
+                        $sectionId = IntVal($sectionId);
+                        /** @var ConsultationSettingsMotionSection $section */
+                        $section = $this->consultation->getMotionSections()->andWhere('id = ' . $sectionId)->one();
+                        if (!$section) {
+                            throw new FormError("Section not found: " . $sectionId);
+                        }
+                        $section->status = ConsultationSettingsMotionSection::STATUS_DELETED;
+                        $section->save();
+                    }
+                }
             }
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }

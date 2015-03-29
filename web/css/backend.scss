@@ -1,3 +1,5 @@
+@import "common";
+
 .adminForm {
   label {
     font-weight: normal;
@@ -6,8 +8,6 @@
     overflow: visible;
   }
 }
-
-@import "common";
 
 legend, label.legend {
   display: block;
@@ -33,7 +33,6 @@ label.legend {
 }
 
 .control-label {
-  width: 100px;
   font-size: 13px;
   float: left;
   text-align: right;
@@ -71,56 +70,112 @@ label.legend {
       }
       background-color: #f4fFf4;
     }
-  }
 
-  .sectionTitle {
-    width: 250px;
-  }
+    .sectionTitle {
+      width: 250px;
+    }
 
-  .drag-handle {
-    font-size: 30px;
-    float: left;
-    display: block;
-    font-weight: bold;
-    cursor: move;
-    padding: 0 10px 10px;
-    margin-top: 55px;
-  }
+    .drag-handle {
+      font-size: 30px;
+      float: left;
+      display: block;
+      font-weight: bold;
+      cursor: move;
+      padding: 0 10px 10px;
+    }
+    &.title, &.image {
+      .drag-handle {
+        margin-top: 33px;
+      }
+    }
+    &.textSimple, &.textHtml {
+      .drag-handle {
+        margin-top: 55px;
+      }
+    }
 
-  .sectionType {
-    margin-right: 10px;
-    display: inline-block;
-    width: 150px;
-    vertical-align: top;
-  }
-  .toprow {
-    padding: 10px 10px 0;
+    .sectionType {
+      margin-right: 10px;
+      display: inline-block;
+      width: 150px;
+      vertical-align: top;
+    }
+    .toprow {
+      padding: 10px 10px 0;
+      border-bottom: 1px solid #afa;
 
-    .remover {
-      font-size: 20px;
-      float: right;
-      &:link, &:visited {
-        color: red;
+      .remover {
+        font-size: 20px;
+        float: right;
+        &:link, &:visited {
+          color: red;
+          opacity: 0.4;
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
+    .bottomrow {
+      display: table;
+      table-layout: fixed;
+      height: 57px;
+    }
+
+    .assignmentRow, .optionsRow, .commentrow {
+      display: table-cell;
+      padding: 10px;
+      vertical-align: top;
+      width: 210px;
+    }
+    .commentrow, .optionsRow {
+      border-left: 1px solid #afa;
+    }
+    .commentrow {
+      label {
+        margin-bottom: 0;
+      }
+    }
+    .maxLenInput {
+      padding-left: 15px;
+      input {
+        width: 60px;
+      }
+    }
+    .lineLengthSoft {
+      padding-left: 15px;
+      font-size: 12px;
+    }
+
+    &.no-maxLenSet {
+      .maxLenInput, .lineLengthSoft {
+        display: none;
+      }
+    }
+    &.image {
+      .optionsRow, .commentrow {
+        display: none;
+      }
+    }
+    &.title {
+      .lineNumbersLabel, .fixedWidthLabel {
+        display: none;
+      }
+      .commentrow {
+        display: none;
+      }
+    }
+    &.textHtml {
+      .lineNumbersLabel, .fixedWidthLabel {
+        display: none;
+      }
+      .commentParagraph {
+        display: none;
       }
     }
   }
 
-  .assignmentRow, .optionsRow, .commentrow {
-    padding: 10px;
-    display: inline-block;
-    vertical-align: top;
-    width: 33%;
-    border-top: 1px solid #afa;
-  }
-  .optionsRow, .commentrow {
-    border-left: 1px solid #afa;
-  }
-  .commentrow {
-    width: 34%;
-    label {
-      margin-bottom: 0;
-    }
-  }
+
 }
 
 .adminSectionsForm {

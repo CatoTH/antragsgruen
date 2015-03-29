@@ -44,13 +44,13 @@ if (method_exists($I, 'executeJS')) {
 
 // Fill & Submit Form
 $I->wantTo('Create a regular motion, but forgot the organization, motion type and resolution date');
-$I->fillField(['name' => 'title'], 'Testantrag 1');
+$I->fillField(['name' => 'sections[1]'], 'Testantrag 1');
 if (method_exists($I, 'executeJS')) {
-    $I->executeJS('CKEDITOR.instances.texts_1.setData("<p><strong>Test</strong></p>");');
-    $I->executeJS('CKEDITOR.instances.texts_2.setData("<p><strong>Test 2</strong></p>");');
+    $I->executeJS('CKEDITOR.instances.sections_2.setData("<p><strong>Test</strong></p>");');
+    $I->executeJS('CKEDITOR.instances.sections_3.setData("<p><strong>Test 2</strong></p>");');
 } else {
-    $I->fillField(['name' => 'texts[1]'], 'Testantrag Text\n2');
-    $I->fillField(['name' => 'texts[2]'], 'Testantrag Text\nBegründung');
+    $I->fillField(['name' => 'sections[2]'], 'Testantrag Text\n2');
+    $I->fillField(['name' => 'sections[3]'], 'Testantrag Text\nBegründung');
 }
 $I->fillField(['name' => 'Initiator[name]'], 'Mein Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
@@ -94,13 +94,13 @@ $I->see(mb_strtoupper('Antrag stellen'), 'h1');
 
 
 $I->wantTo('Make some changes to the motion');
-$I->fillField(['name' => 'title'], 'Testantrag 2');
+$I->fillField(['name' => 'sections[1]'], 'Testantrag 2');
 if (method_exists($I, 'executeJS')) {
-    $I->executeJS('CKEDITOR.instances.texts_1.setData("<p><strong>Another string</strong></p>");');
-    $I->executeJS('CKEDITOR.instances.texts_2.setData("<p><em>Italic is beautiful as well</em></p>");');
+    $I->executeJS('CKEDITOR.instances.sections_2.setData("<p><strong>Another string</strong></p>");');
+    $I->executeJS('CKEDITOR.instances.sections_3.setData("<p><em>Italic is beautiful as well</em></p>");');
 } else {
-    $I->fillField(['name' => 'texts[1]'], 'Another string\n2');
-    $I->fillField(['name' => 'texts[2]'], 'Itallic is beautiful as well');
+    $I->fillField(['name' => 'sections[2]'], 'Another string\n2');
+    $I->fillField(['name' => 'sections[3]'], 'Itallic is beautiful as well');
 }
 $I->fillField(['name' => 'Initiator[name]'], '');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');

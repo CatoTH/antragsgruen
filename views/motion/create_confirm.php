@@ -21,7 +21,7 @@ echo '<h1>' . $wording->get('Antrag bestätigen') . ': ' . Html::encode($motion-
 // Yii::app()->user->setFlash("info", $antrag->veranstaltung->getStandardtext("antrag_confirm")->getHTMLText());
 // $this->widget('bootstrap.widgets.TbAlert');
 
-foreach ($motion->sections as $section) {
+foreach ($motion->getSortedSections() as $section) {
     echo '<section class="motion_text_holder">';
     echo '<h2>' . Html::encode($section->consultationSetting->title) . '</h3>';
     echo '<div class="textholder consolidated">';
