@@ -51,6 +51,8 @@ class TextSimple extends ISectionType
      */
     public function showSimple()
     {
+        $sections = HTMLTools::sectionSimpleHTML($this->section->data);
+
         return $this->section->data;
     }
 
