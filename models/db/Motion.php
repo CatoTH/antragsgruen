@@ -1,5 +1,6 @@
 <?php
 namespace app\models\db;
+use app\models\sectionTypes\ISectionType;
 
 /**
  * @package app\models\db
@@ -103,13 +104,17 @@ class Motion extends IMotion
     }
 
     /**
+     * @param bool $withoutTitle
      * @return MotionSection[]
      */
-    public function getSortedSections()
+    public function getSortedSections($withoutTitle = false)
     {
         $sectionsIn = array();
+        $title = $this->getTitleSection();
         foreach ($this->sections as $section) {
-            $sectionsIn[$section->consultationSetting->id] = $section;
+            if (!$withoutTitle || $section != $title) {
+                $sectionsIn[$section->consultationSetting->id] = $section;
+            }
         }
         $sectionsOut = array();
         foreach ($this->consultation->motionSections as $section) {
@@ -142,16 +147,28 @@ class Motion extends IMotion
     }
 
     /**
+     * @return MotionSection|null
+     */
+    public function getTitleSection()
+    {
+        foreach ($this->sections as $section) {
+            if ($section->consultationSetting->type == ISectionType::TYPE_TITLE) {
+                return $section;
+            }
+        }
+        return null;
+    }
+
+    /**
      */
     public function refreshTitle()
     {
-        $title = '';
-        foreach ($this->sections as $section) {
-            if ($section->consultationSetting->type == ConsultationSettingsMotionSection::TYPE_TITLE && $title == '') {
-                $title = $section->data;
-            }
+        $section = $this->getTitleSection();
+        if ($section) {
+            $this->title = $section->data;
+        } else {
+            $this->title = '';
         }
-        $this->title = $title;
     }
 
 

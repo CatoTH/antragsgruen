@@ -332,7 +332,8 @@ CREATE TABLE `motionCommentSupporter` (
 CREATE TABLE `motionSection` (
   `motionId`  INT(11)  NOT NULL,
   `sectionId` INT(11)  NOT NULL,
-  `data`      LONGTEXT NOT NULL
+  `data`      LONGTEXT NOT NULL,
+  `metadata`  TEXT     NULL DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

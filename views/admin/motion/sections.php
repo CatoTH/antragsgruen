@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
 
 /**
@@ -44,7 +45,7 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo Html::dropDownList(
         $sectionName . '[type]',
         $section->type,
-        ConsultationSettingsMotionSection::getTypes(),
+        ISectionType::getTypes(),
         ['class' => 'form-control sectionType']
     );
 

@@ -390,6 +390,31 @@ class MotionController extends Base
 
     /**
      * @param int $motionId
+     * @param int $sectionId
+     * @return string
+     */
+    public function actionViewimage($motionId, $sectionId)
+    {
+        $motionId = IntVal($motionId);
+
+        /** @var Motion $motion */
+        $motion = Motion::findOne($motionId);
+        if (!$motion) {
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+        foreach ($motion->sections as $section) {
+            if ($section->sectionId == $sectionId) {
+                $metadata = json_decode($section->metadata, true);
+                Header('Content-type: ' . $metadata['mime']);
+                echo base64_decode($section->data);
+                \Yii::$app->end(200);
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @param int $motionId
      * @param int $commentId
      * @return string
      */
@@ -507,7 +532,7 @@ class MotionController extends Base
 
         if (isset($_POST['confirm'])) {
 
-            $screening = $this->consultation->getSettings()->screeningMotions;
+            $screening      = $this->consultation->getSettings()->screeningMotions;
             $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
             if (!$screening && $motion->statusString == "") {
                 $motion->titlePrefix = $motion->consultation->getNextAvailableStatusString($motion->motionTypeId);
@@ -515,11 +540,11 @@ class MotionController extends Base
             $motion->save();
 
             if ($motion->consultation->adminEmail != "") {
-                $mails     = explode(",", $motion->consultation->adminEmail);
+                $mails = explode(",", $motion->consultation->adminEmail);
 
                 $motionLink = \Yii::$app->request->baseUrl . UrlHelper::createMotionUrl($motion);
-                $mailText = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
-                $mailText = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
+                $mailText   = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
+                $mailText   = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
 
                 foreach ($mails as $mail) {
                     if (trim($mail) != "") {
@@ -580,11 +605,11 @@ class MotionController extends Base
         $form = new MotionEditForm($this->consultation, $motion);
 
         if (isset($_POST['save'])) {
-            $form->setAttributes($_POST);
+            $form->setAttributes($_POST, $_FILES);
             try {
                 $form->saveMotion($motion);
                 $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
-                $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
+                $nextUrl  = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';
             } catch (FormError $e) {

@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\Tools;
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\ConsultationText;
@@ -69,7 +69,7 @@ class ConsultationController extends Base
             $text->consultationId = $this->consultation->id;
             $text->textId = $pageKey;
         }
-        $text->text = Tools::cleanTrustedHtml($_POST['data']);
+        $text->text = HTMLTools::cleanTrustedHtml($_POST['data']);
         $text->editDate = date('Y-m-d H:i:s');
         if ($text->save()) {
             return '1';

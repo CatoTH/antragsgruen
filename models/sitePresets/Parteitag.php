@@ -8,6 +8,7 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationSettingsMotionType;
 use app\models\db\Site;
 use app\models\policies\IPolicy;
+use app\models\sectionTypes\ISectionType;
 
 class Parteitag implements ISitePreset
 {
@@ -62,7 +63,7 @@ class Parteitag implements ISitePreset
     {
         $section                 = new ConsultationSettingsMotionSection();
         $section->consultationId = $consultation->id;
-        $section->type           = ConsultationSettingsMotionSection::TYPE_TITLE;
+        $section->type           = ISectionType::TYPE_TITLE;
         $section->position       = 0;
         $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title          = 'Titel';
@@ -75,7 +76,7 @@ class Parteitag implements ISitePreset
 
         $section                 = new ConsultationSettingsMotionSection();
         $section->consultationId = $consultation->id;
-        $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_SIMPLE;
+        $section->type           = ISectionType::TYPE_TEXT_SIMPLE;
         $section->position       = 1;
         $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title          = 'Antragstext';
@@ -88,7 +89,7 @@ class Parteitag implements ISitePreset
 
         $section                 = new ConsultationSettingsMotionSection();
         $section->consultationId = $consultation->id;
-        $section->type           = ConsultationSettingsMotionSection::TYPE_TEXT_SIMPLE;
+        $section->type           = ISectionType::TYPE_TEXT_SIMPLE;
         $section->position       = 2;
         $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title          = 'Begründung';

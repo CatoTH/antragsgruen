@@ -2,7 +2,7 @@
 
 namespace tests\codeception\unit\models;
 
-use app\components\Tools;
+use app\components\HTMLTools;
 use Yii;
 use yii\codeception\TestCase;
 use Codeception\Specify;
@@ -37,7 +37,7 @@ class HTMLNormalizeTest extends TestCase
                 $in .= "<!-- Comment -->";
                 $expect .= "";
 
-                $out = Tools::cleanSimpleHtml($in);
+                $out = HTMLTools::cleanSimpleHtml($in);
                 $this->assertEquals($out, $expect);
             }
         );

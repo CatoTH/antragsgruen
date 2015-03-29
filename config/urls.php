@@ -52,6 +52,7 @@ $url_rules = [
     $domv . 'motion/create'                                                => 'motion/create',
     $domv . 'motion/<motionId:\d+>?kommentar_id=<kommentar_id:\d+>'        => 'motion/view',
     $domv . 'motion/<motionId:\d+>'                                        => 'motion/view',
+    $domv . 'motion/<motionId:\d+>/image'                                  => 'motion/viewimage',
     $domv . 'motion/<motionId:\d+>/pdf'                                    => 'motion/pdf',
     $domv . 'motion/<motionId:\d+>/plain_html'                             => 'motion/plainHtml',
     $domv . 'motion/<motionId:\d+>/odt'                                    => 'motion/odt',

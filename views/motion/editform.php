@@ -38,7 +38,11 @@ if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo $motionPolicy->getOnCreateDescription();
 }
 
-echo Html::beginForm('', '', ['id' => 'motionEditForm', 'class' => 'motionEditForm']);
+echo Html::beginForm(
+    '',
+    'post',
+    ['id' => 'motionEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
+);
 
 foreach ($hiddens as $name => $value) {
     echo '<input type="hidden" name="' . Html::encode($name) . '" value="' . Html::encode($value) . '">';
@@ -86,7 +90,7 @@ if (count($tags) == 1) {
 }
 
 foreach ($form->sections as $section) {
-    echo $section->getFormField();
+    echo $section->getSectionType()->getFormField();
 }
 
 $initiatorClass = $consultation->getMotionInitiatorFormClass();

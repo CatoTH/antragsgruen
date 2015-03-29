@@ -21,12 +21,13 @@ echo '<h1>' . $wording->get('Antrag bestätigen') . ': ' . Html::encode($motion-
 // Yii::app()->user->setFlash("info", $antrag->veranstaltung->getStandardtext("antrag_confirm")->getHTMLText());
 // $this->widget('bootstrap.widgets.TbAlert');
 
-foreach ($motion->getSortedSections() as $section) {
+foreach ($motion->getSortedSections(true) as $section) {
     echo '<section class="motion_text_holder">';
     echo '<h2>' . Html::encode($section->consultationSetting->title) . '</h3>';
     echo '<div class="textholder consolidated">';
 
-    echo $section->data;
+    echo $section->getSectionType()->showSimple();
+
     /* // @TODO
     $absae = $antrag->getParagraphs();
     foreach ($absae as $i => $abs) {

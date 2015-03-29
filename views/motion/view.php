@@ -278,7 +278,7 @@ echo '</div>';
 
 
 
-foreach ($motion->getSortedSections() as $section) {
+foreach ($motion->getSortedSections(true) as $section) {
 
     echo '<div class="motionTextHolder';
     if ($motion->consultation->getSettings()->lineLength > 80) {
@@ -287,7 +287,7 @@ foreach ($motion->getSortedSections() as $section) {
     echo '"><h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
 
 
-    echo $section->data;
+    echo $section->getSectionType()->showMotionView();
 
     echo '</div>';
 }

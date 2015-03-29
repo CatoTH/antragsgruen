@@ -1,6 +1,7 @@
 <?php
 namespace app\models\db;
 
+use app\models\sectionTypes\ISectionType;
 use yii\db\ActiveRecord;
 
 /**
@@ -25,11 +26,6 @@ use yii\db\ActiveRecord;
  */
 class ConsultationSettingsMotionSection extends ActiveRecord
 {
-    const TYPE_TITLE       = 0;
-    const TYPE_TEXT_SIMPLE = 1;
-    const TYPE_TEXT_HTML   = 2;
-    const TYPE_IMAGE       = 3;
-
     const COMMENTS_NONE       = 0;
     const COMMENTS_SECTION    = 1;
     const COMMENTS_PARAGRAPHS = 2;
@@ -43,19 +39,6 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public static function tableName()
     {
         return 'consultationSettingsMotionSection';
-    }
-
-    /**
-     * @return string[]
-     */
-    public static function getTypes()
-    {
-        return [
-            static::TYPE_TITLE       => 'Titel',
-            static::TYPE_TEXT_SIMPLE => 'Text',
-            static::TYPE_TEXT_HTML   => 'Text (erweitert)',
-            static::TYPE_IMAGE       => 'Bild',
-        ];
     }
 
     /**
@@ -112,10 +95,10 @@ class ConsultationSettingsMotionSection extends ActiveRecord
      */
     public function getAvailableCommentTypes()
     {
-        if ($this->type == static::TYPE_TEXT_SIMPLE) {
+        if ($this->type == ISectionType::TYPE_TEXT_SIMPLE) {
             return [static::COMMENTS_NONE, static::COMMENTS_SECTION, static::COMMENTS_PARAGRAPHS];
         }
-        if ($this->type == static::TYPE_TEXT_HTML) {
+        if ($this->type == ISectionType::TYPE_TEXT_HTML) {
             return [static::COMMENTS_NONE, static::COMMENTS_SECTION];
         }
         return [static::COMMENTS_NONE];
