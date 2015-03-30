@@ -282,7 +282,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    echo '<div class="motionTextHolder';
+    echo '<article class="motionTextHolder';
     if ($motion->consultation->getSettings()->lineLength > 80) {
         echo " smallFont";
     }
@@ -291,7 +291,7 @@ foreach ($motion->getSortedSections(true) as $section) {
 
     echo $section->getSectionType()->showMotionView();
 
-    echo '</div>';
+    echo '</article>';
 }
 
 

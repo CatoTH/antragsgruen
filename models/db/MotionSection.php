@@ -90,4 +90,69 @@ class MotionSection extends ActiveRecord
         }
         throw new Internal('Unknown Field Type: ' . $this->consultationSetting->type);
     }
+
+    /**
+     * @return \string[]
+     * @throws Internal
+     */
+    public function getTextParagraphs()
+    {
+        if ($this->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            throw new Internal('Paragraphs are only available for simple text sections.');
+        }
+        return HTMLTools::sectionSimpleHTML($this->data);
+    }
+
+    /**
+     * @param bool $lineNumbers
+     * @return MotionSectionParagraph[]
+     * @throws Internal
+     */
+    public function getTextParagraphObjects($lineNumbers)
+    {
+        /** @var MotionSectionParagraph[] $return */
+        $return = [];
+        $paras  = $this->getTextParagraphs();
+        foreach ($paras as $para) {
+            $lineLength = $this->consultationSetting->consultation->getSettings()->lineLength;
+            if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
+                mb_stripos($para, '<blockquote>') === 0
+            ) {
+                $lineLength -= 20;
+            }
+            $splitter = new \app\components\LineSplitter($para, $lineLength);
+            $linesIn  = $splitter->splitLines(false, true);
+
+            if ($lineNumbers) {
+                $linesOut = [];
+                $pres     = ['<p>', '<ul><li>', '<ol><li>', '<blockquote><p>'];
+                $linePre  = '###LINENUMBER###';
+                foreach ($linesIn as $line) {
+                    $inserted = false;
+                    foreach ($pres as $pre) {
+                        if (mb_stripos($line, $pre) === 0) {
+                            $inserted = true;
+                            $line     = str_ireplace($pre, $pre . $linePre, $line);
+                        }
+                    }
+                    if (!$inserted) {
+                        $line = $linePre . $line;
+                    }
+                    $linesOut[] = $line;
+                }
+            } else {
+                $linesOut = $linesIn;
+            }
+
+            $paragraph        = new MotionSectionParagraph();
+            $paragraph->lines = $linesOut;
+            $return[]         = $paragraph;
+        }
+        return $return;
+    }
+
+    public function getFirstLineNo()
+    {
+        return 1; // @TODO
+    }
 }

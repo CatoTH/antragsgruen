@@ -52,7 +52,7 @@ class TextSimple extends ISectionType
     public function showSimple()
     {
         $sections = HTMLTools::sectionSimpleHTML($this->section->data);
-        $str = '';
+        $str      = '';
         foreach ($sections as $section) {
             $str .= '<div class="content">' . $section . '</div>';
         }
@@ -64,16 +64,32 @@ class TextSimple extends ISectionType
      */
     public function showMotionView()
     {
-        $sections = HTMLTools::sectionSimpleHTML($this->section->data);
+        $hasLineNumbers = $this->section->consultationSetting->lineNumbers;
+        $paragraphs = $this->section->getTextParagraphObjects($hasLineNumbers);
+        $classes  = ['paragraph'];
+        if ($hasLineNumbers) {
+            $classes[] = 'lineNumbers';
+            $lineNo = $this->section->getFirstLineNo();
+        }
         $str = '';
-        foreach ($sections as $section) {
-            $str .= '<div class="content">';
-            $splitter = new \app\components\LineSplitter($section, 40);
-            $lines = $splitter->splitLines(false, true);
-            foreach ($lines as $line) {
-                $str .= $line . '<br>';
+        foreach ($paragraphs as $paragraph) {
+            $str .= '<section class="' . implode(' ', $classes) . '">';
+
+            // @TODO Comments etc.
+
+            $str .= '<div class="text">';
+            $linesArr = [];
+            foreach ($paragraph->lines as $line) {
+                if ($this->section->consultationSetting->lineNumbers) {
+                    /** @var int $lineNo */
+                    $lineNoStr = '<span class="lineNumber">' . $lineNo++ . '</span>';
+                    $line = str_replace('###LINENUMBER###', $lineNoStr, $line);
+                }
+                $linesArr[] = $line;
             }
+            $str .= implode('<br>', $linesArr);
             $str .= '</div>';
+            $str .= '</section>';
         }
         return $str;
     }

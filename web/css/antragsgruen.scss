@@ -103,80 +103,61 @@
   }
 }
 
-.motion_text_holder {
-  font-size: 13px;
-  &.kleine_schrift {
-    font-size: 12px;
-  }
+.motionTextHolder {
 
-  .ae_absatz_header {
-    text-decoration: underline;
-  }
-
-  .text li {
-    margin: 10px;
-  }
-
-  .absatz_ueberspringen {
-    margin: 10px;
-    text-align: center;
-  }
-  .antragstext_diff, {
-    font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
-  }
-
-  .absatz_text {
-    font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
-    position: relative;
-    margin-left: 0;
-    padding: 15px 23px 25px 0;
-
-    > .text {
-      padding-left: 50px;
-      -moz-box-sizing: border-box;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-    }
-    > blockquote.text {
-      padding-left: 30px;
+  .paragraph {
+    font-size: 13px;
+    &.smallFont {
+      font-size: 12px;
     }
 
-    ul, ol {
-      margin-left: 40px;
-    }
-  }
-}
+    .text {
+      font-family: 'Anonymous Pro', Consolas, Courier, sans-serif;
+      position: relative;
+      margin-left: 0;
+      padding: 15px 23px 25px 50px;
+      font-size: 13px;
 
-.motion_test_holder_numbers {
-  .text {
-    padding-left: 30px;
-  }
-  .zeilennummer {
-    color: #C3C3C3;
-    display: inline-block;
-    font-style: normal;
-    font-weight: normal;
-    left: -40px;
-    position: relative;
-    text-decoration: none;
-    width: 0;
-  }
+      .lineNumber {
+        color: #C3C3C3;
+        display: inline-block;
+        font-style: normal;
+        font-weight: normal;
+        left: -40px;
+        position: relative;
+        text-decoration: none;
+        width: 0;
+      }
 
-  ul.text li .zeilennummer,
-  ol.text li .zeilennummer {
-    left: -90px;
-  }
+      > ul, > ol {
+        padding-left: 40px;
 
-  blockquote.text {
-    margin: 3px 3px 3px 60px;
-    border-left: dotted 2px gray;
-    padding: 5px;
+        .lineNumber {
+          left: -80px;
+        }
+      }
 
-    .zeilennummer {
-      left: -80px;
+      > blockquote {
+        font-size: 13px;
+        padding-left: 5px;
+        border-left-width: 2px;
+        margin-left: 18px;
+
+        .lineNumber {
+          left: -65px;
+        }
+      }
+
+      &.smallFont {
+        font-size: 12px;
+        > blockquote {
+          font-size: 12px;
+        }
+      }
     }
   }
 }
+
 
 .motion_test_holder_nonumbers {
   blockquote.text {
