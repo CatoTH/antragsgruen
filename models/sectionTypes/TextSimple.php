@@ -52,8 +52,30 @@ class TextSimple extends ISectionType
     public function showSimple()
     {
         $sections = HTMLTools::sectionSimpleHTML($this->section->data);
+        $str = '';
+        foreach ($sections as $section) {
+            $str .= '<div class="content">' . $section . '</div>';
+        }
+        return $str;
+    }
 
-        return $this->section->data;
+    /**
+     * @return string
+     */
+    public function showMotionView()
+    {
+        $sections = HTMLTools::sectionSimpleHTML($this->section->data);
+        $str = '';
+        foreach ($sections as $section) {
+            $str .= '<div class="content">';
+            $splitter = new \app\components\LineSplitter($section, 40);
+            $lines = $splitter->splitLines(false, true);
+            foreach ($lines as $line) {
+                $str .= $line . '<br>';
+            }
+            $str .= '</div>';
+        }
+        return $str;
     }
 
     /**
