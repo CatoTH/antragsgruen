@@ -1,7 +1,15 @@
 Antragsgrün v3
 ==============
 
-[Etwas über Antragsgrün]
+Antragsgrün 3 is the third generation of the Motion-CMS built for the german green party.
+It's a complete rewrite of the second generation and has some major advantages:
+* It's much more flexible on the structure of motions and wording. Motions event support image uploading now.
+* If follows test-driven design, using both unit and acceptance tests
+* It's based completely on HTML and gets rid of the obsolete BBCode
+* It's based on the more Yii2-framework
+* The design of the motion supporter table is much cleaner and does not depend on the user database anymore
+* Many more small improvements
+
 
 ***Current Build-Status***
 
