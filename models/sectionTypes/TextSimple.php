@@ -73,7 +73,15 @@ class TextSimple extends ISectionType
         }
         $str = '';
         foreach ($paragraphs as $paragraph) {
-            $str .= '<section class="' . implode(' ', $classes) . '">';
+            $parClasses = $classes;
+            if (mb_stripos($paragraph->lines[0], '<ul>') === 0) {
+                $parClasses[] = 'list';
+            } elseif (mb_stripos($paragraph->lines[0], '<ol>') === 0) {
+                $parClasses[] = 'list';
+            } elseif (mb_stripos($paragraph->lines[0], '<blockquote>') === 0) {
+                $parClasses[] = 'blockquote';
+            }
+            $str .= '<section class="' . implode(' ', $parClasses) . '">';
 
             // @TODO Comments etc.
 

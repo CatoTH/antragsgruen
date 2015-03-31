@@ -6111,15 +6111,19 @@ body > footer {
         left: -80px; }
     .motionTextHolder .paragraph .text > blockquote {
       font-size: 13px;
-      padding-left: 5px;
+      padding-left: 15px;
       border-left-width: 2px;
-      margin-left: 18px; }
+      margin-left: 38px; }
       .motionTextHolder .paragraph .text > blockquote .lineNumber {
-        left: -65px; }
+        left: -95px; }
     .motionTextHolder .paragraph .text.smallFont {
       font-size: 12px; }
       .motionTextHolder .paragraph .text.smallFont > blockquote {
         font-size: 12px; }
+
+.list + .list {
+  padding-top: 0;
+  margin-top: -25px; }
 
 .motion_test_holder_nonumbers blockquote.text {
   margin: 3px 3px 3px 80px;
