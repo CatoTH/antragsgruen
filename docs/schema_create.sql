@@ -33,16 +33,16 @@ CREATE TABLE `amendment` (
 --
 
 CREATE TABLE `amendmentComment` (
-  `id`                INT(11)   NOT NULL,
-  `userId`            INT(11)            DEFAULT NULL,
-  `amendmentId`       INT(11)            DEFAULT NULL,
-  `paragraph`         SMALLINT(6)        DEFAULT NULL,
-  `text`              MEDIUMTEXT,
-  `name`              TEXT,
-  `contactEmail`      VARCHAR(100)       DEFAULT NULL,
-  `dateCreation`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status`            TINYINT(4)         DEFAULT NULL,
-  `replyNotification` TINYINT(4)         DEFAULT NULL
+  `id`                INT(11)     NOT NULL,
+  `userId`            INT(11)              DEFAULT NULL,
+  `amendmentId`       INT(11)     NOT NULL,
+  `paragraph`         SMALLINT(6) NOT NULL,
+  `text`              MEDIUMTEXT  NOT NULL,
+  `name`              TEXT        NOT NULL,
+  `contactEmail`      VARCHAR(100)         DEFAULT NULL,
+  `dateCreation`      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`            TINYINT(4)  NOT NULL,
+  `replyNotification` TINYINT(4)  NOT NULL DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -71,7 +71,7 @@ CREATE TABLE `amendmentSupporter` (
   `id`             INT(11)                                            NOT NULL,
   `amendmentId`    INT(11)                                            NOT NULL,
   `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
-  `userId`         INT(11)                                            NULL     DEFAULT NULL,
+  `userId`         INT(11)                                                     DEFAULT NULL,
   `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
   `comment`        MEDIUMTEXT,
   `personType`     TINYINT(4)                                                  DEFAULT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE `consultationSettingsMotionSection` (
   `motionTypeId`   INT(11)               DEFAULT NULL,
   `type`           INT(11)      NOT NULL,
   `position`       SMALLINT(6)           DEFAULT NULL,
-  `status`         TINYINT      NOT NULL,
+  `status`         TINYINT(4)   NOT NULL,
   `title`          VARCHAR(100) NOT NULL,
   `fixedWidth`     TINYINT(4)   NOT NULL,
   `required`       TINYINT(4)   NOT NULL,
@@ -188,9 +188,9 @@ CREATE TABLE `consultationSettingsMotionType` (
   `id`             INT(11)      NOT NULL,
   `consultationId` INT(11)      NOT NULL,
   `title`          VARCHAR(100) NOT NULL,
-  `motionPrefix`   VARCHAR(10) DEFAULT NULL,
+  `motionPrefix`   VARCHAR(10)  DEFAULT NULL,
   `position`       INT(11)      NOT NULL,
-  `cssicon`        VARCHAR(100) NULL
+  `cssicon`        VARCHAR(100) DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -293,16 +293,17 @@ CREATE TABLE `motion` (
 --
 
 CREATE TABLE `motionComment` (
-  `id`                INT(11)    NOT NULL,
-  `userId`            INT(11)             DEFAULT NULL,
-  `motionId`          INT(11)             DEFAULT NULL,
-  `paragraph`         SMALLINT(6)         DEFAULT NULL,
-  `text`              MEDIUMTEXT NOT NULL,
-  `name`              TEXT,
-  `contactEmail`      VARCHAR(100)        DEFAULT NULL,
-  `dateCreation`      TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status`            TINYINT(4)          DEFAULT NULL,
-  `replyNotification` TINYINT(4)          DEFAULT '0'
+  `id`                INT(11)     NOT NULL,
+  `userId`            INT(11)              DEFAULT NULL,
+  `motionId`          INT(11)     NOT NULL,
+  `sectionId`         INT(11)     NOT NULL,
+  `paragraph`         SMALLINT(6) NOT NULL,
+  `text`              MEDIUMTEXT  NOT NULL,
+  `name`              TEXT        NOT NULL,
+  `contactEmail`      VARCHAR(100)         DEFAULT NULL,
+  `dateCreation`      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`            TINYINT(4)  NOT NULL,
+  `replyNotification` TINYINT(4)  NOT NULL DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -333,7 +334,7 @@ CREATE TABLE `motionSection` (
   `motionId`  INT(11)  NOT NULL,
   `sectionId` INT(11)  NOT NULL,
   `data`      LONGTEXT NOT NULL,
-  `metadata`  TEXT     NULL DEFAULT NULL
+  `metadata`  TEXT
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -361,7 +362,7 @@ CREATE TABLE `motionSupporter` (
   `id`             INT(11)                                            NOT NULL,
   `motionId`       INT(11)                                            NOT NULL,
   `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
-  `userId`         INT(11)                                            NULL     DEFAULT NULL,
+  `userId`         INT(11)                                                     DEFAULT NULL,
   `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
   `comment`        MEDIUMTEXT,
   `personType`     TINYINT(4)                                                  DEFAULT NULL,
@@ -538,7 +539,7 @@ ADD PRIMARY KEY (`id`), ADD KEY `consultation` (`consultationId`), ADD KEY `pare
 -- Indexes for table `motionComment`
 --
 ALTER TABLE `motionComment`
-ADD PRIMARY KEY (`id`), ADD KEY `fk_comment_userIdx` (`userId`), ADD KEY `fk_comment_notion_idx` (`motionId`);
+ADD PRIMARY KEY (`id`), ADD KEY `fk_comment_userIdx` (`userId`), ADD KEY `fk_comment_notion_idx` (`motionId`, `sectionId`);
 
 --
 -- Indexes for table `motionCommentSupporter`
@@ -688,9 +689,7 @@ ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `amend
 -- Constraints for table `amendmentComment`
 --
 ALTER TABLE `amendmentComment`
-ADD CONSTRAINT `fk_amendment_comment_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`)
-  ON DELETE SET NULL
-  ON UPDATE NO ACTION,
+ADD CONSTRAINT `amendmentComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
 ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
@@ -806,12 +805,11 @@ ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consulta
 -- Constraints for table `motionComment`
 --
 ALTER TABLE `motionComment`
-ADD CONSTRAINT `fk_motion_comment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
-  ON DELETE CASCADE
-  ON UPDATE NO ACTION,
 ADD CONSTRAINT `fk_motion_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE CASCADE
-  ON UPDATE NO ACTION;
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `motionComment_ibfk_1` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`),
+ADD CONSTRAINT `motionComment_ibfk_2` FOREIGN KEY (`motionId`, `sectionId`) REFERENCES `motionSection` (`motionId`, `sectionId`);
 
 --
 -- Constraints for table `motionCommentSupporter`

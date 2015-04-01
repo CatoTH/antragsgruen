@@ -4,6 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\models\exceptions\FormError;
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
 class TextSimple extends ISectionType
@@ -65,11 +66,11 @@ class TextSimple extends ISectionType
     public function showMotionView()
     {
         $hasLineNumbers = $this->section->consultationSetting->lineNumbers;
-        $paragraphs = $this->section->getTextParagraphObjects($hasLineNumbers);
-        $classes  = ['paragraph'];
+        $paragraphs     = $this->section->getTextParagraphObjects($hasLineNumbers);
+        $classes        = ['paragraph'];
         if ($hasLineNumbers) {
             $classes[] = 'lineNumbers';
-            $lineNo = $this->section->getFirstLineNo();
+            $lineNo    = $this->section->getFirstLineNo();
         }
         $str = '';
         foreach ($paragraphs as $paragraph) {
@@ -83,7 +84,25 @@ class TextSimple extends ISectionType
             }
             $str .= '<section class="' . implode(' ', $parClasses) . '">';
 
-            // @TODO Comments etc.
+
+            $str .= '<ul class="bookmarks">';
+            $mayOpen = $this->section->motion->consultation->getCommentPolicy()->checkCurUserHeuristically();
+            if (count($paragraph->comments) > 0 || $mayOpen) {
+                $str .= '<li class="comment">';
+                $str .= Html::a(count($paragraph->comments), '#', ['class' => 'shower']);
+                $str .= Html::a(count($paragraph->comments), '#', ['class' => 'hide']);
+                $str .= '</li>';
+            }
+
+            foreach ($paragraph->amendments as $amendment) {
+                $amLink    = UrlHelper::createAmendmentUrl($amendment);
+                $firstline = $amendment->getFirstAffectedLineOfParagraph_absolute();
+                $str .= "<li class='amendment' data-first-line='" . $firstline . "'>';
+                $str .= '<a data-id='" . $amendment->id . "' href='" . Html::encode($amLink) . "'>";
+                $str .= Html::encode($amendment->titlePrefix) . "</a></li>\n";
+            }
+
+            $str .= '</ul>';
 
             $str .= '<div class="text">';
             $linesArr = [];
@@ -91,7 +110,7 @@ class TextSimple extends ISectionType
                 if ($this->section->consultationSetting->lineNumbers) {
                     /** @var int $lineNo */
                     $lineNoStr = '<span class="lineNumber">' . $lineNo++ . '</span>';
-                    $line = str_replace('###LINENUMBER###', $lineNoStr, $line);
+                    $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
                 }
                 $linesArr[] = $line;
             }

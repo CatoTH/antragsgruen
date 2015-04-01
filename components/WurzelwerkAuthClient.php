@@ -94,15 +94,6 @@ class WurzelwerkAuthClient extends OpenId
             return false;
         }
 
-        $serverInfo = [
-            "url"               => "https://service.gruene.de/openid/?user=HoesslTo",
-            "version"           => 1,
-            "identity"          => "https://service.gruene.de/openid/hoesslto",
-            "identifier_select" => false,
-            "ax"                => false,
-            "sreg"              => false,
-        ];
-
         foreach (explode(',', $this->data['openid_signed']) as $item) {
             $value                     = $this->data['openid_' . str_replace('.', '_', $item)];
             $params['openid.' . $item] = $value;
@@ -110,7 +101,7 @@ class WurzelwerkAuthClient extends OpenId
 
         $params['openid.mode'] = 'check_authentication';
 
-        $response = $this->sendRequest($serverInfo['url'], 'POST', $params);
+        $response = $this->sendRequest("https://service.gruene.de/openid/?user=" . $claimedId, 'POST', $params);
 
         if (!preg_match('/is_valid\s*:\s*true/i', $response)) {
             return false;

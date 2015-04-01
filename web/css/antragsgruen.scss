@@ -179,10 +179,11 @@
   padding-right: 20px;
 }
 
-.lesezeichen {
+.bookmarks {
   float: right;
   width: 1px;
   list-style-type: none;
+  padding-top: 15px;
 
   > li {
     width: 1px;
@@ -212,13 +213,13 @@
         color: #fff;
       }
     }
-    &.kommentare > a {
+    &.comment > a {
       @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
       &:before {
         @extend .icon-comment;
       }
     }
-    &.aenderungsantrag > a {
+    &.amendment > a {
       @include linear-gradient(90deg, $farbe_hellgruen, rgb(185, 209, 38));
       &:before {
         @extend .icon-edit;
@@ -227,95 +228,105 @@
     .hider {
       @include linear-gradient(90deg, rgb(180, 180, 180), rgb(220, 220, 220));
     }
-
-    .shower {
-      display: none;
-    }
   }
 }
 
-.kommentarform {
-  .kommentar_bottom {
-    overflow: auto;
-    margin-top: 15px;
-  }
-  &:hover .kommentar_bottom .kommentarlink {
-    visibility: visible;
-  }
-  .kommentarlink {
-    visibility: hidden;
-    float: right;
-    margin-top: 5px;
-  }
-  .row {
-    overflow: auto;
-    margin-top: 10px;
-    > * {
-      float: left;
-    }
-    > label {
-      width: 160px;
-      text-align: right;
-      padding-right: 20px;
-    }
-    .row textarea {
-      width: 300px;
-    }
-    textarea {
-      height: 100px;
-    }
-  }
-  .submitrow {
-    margin-left: 160px;
-    width: 320px;
+.commentForm {
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  > label {
+    display: block;
     text-align: center;
   }
-  .submitrow .btn-primary {
-    margin: 0;
+
+  .submitrow {
+    text-align: center;
   }
 }
 
-.kommentar_unterstuetzerInnen_holder {
+
+.motionComment {
+  h3 {
+    background: none;
+    color: $farbe_hellgruen_text;
+    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 18px;
+    margin: 0 0 5px 0;
+    text-transform: none;
+    padding: 0;
+  }
+
+  .date {
+    color: #B3B4B4;
+    float: right;
+    margin-left: 20px;
+  }
+
+  .commentBottom {
+    margin-top: 10px;
+    height: 30px;
+    .commentLink {
+      float: right;
+    }
+  }
+
+  .delLink {
+    float: right;
+    margin-left: 20px;
+
+    a:link, a:visited {
+      color: #ccc;
+      &:hover, &:focus {
+        color: #bbb;
+      }
+    }
+  }
+}
+
+.commentSupporterHolder {
   float: left;
-  .dafuer, .dagegen {
+  .likes, .dislikes {
     display: inline-block;
     border: solid 1px lightgray;
     margin: 1px;
     padding: 2px;
     @include border-radius(3px);
   }
-  .dafuer span, .dagegen span {
+  .likes span, .dislikes span {
     color: lightgray;
   }
-  button.dafuer:hover {
+  button.likes:hover {
     background-color: #A2BC04;
   }
-  button.dagegen:hover {
+  button.dislikes:hover {
     background-color: red;
   }
   button {
     background-color: transparent;
   }
-  .momentan {
+  .currently {
     display: inline-block;
   }
-  .dochnicht {
+  .revoke {
     text-align: center;
     display: none;
   }
-  .meine {
+  .mine {
     display: inline-block;
     height: 20px;
     width: 240px;
     position: relative;
   }
-  .meine:hover .dochnicht {
+  .mine:hover .revoke {
     display: inline-block;
   }
-  .meine:hover .momentan {
+  .mine:hover .momentan {
     display: none;
   }
-  .momentan, .dochnicht {
+  .currently, .revoke {
     position: absolute;
     top: 5px;
     -moz-box-sizing: border-box;
@@ -331,89 +342,7 @@
   }
 }
 
-.kommentarform {
-  padding: 12px 20px 25px;
 
-  h3 {
-    background: none;
-    color: $farbe_hellgruen_text;
-    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    font-weight: bold;
-    line-height: 18px;
-    margin: 0 0 5px 0;
-    text-transform: none;
-    padding: 0;
-  }
-
-  .datum {
-    color: #B3B4B4;
-    float: right;
-    margin-left: 20px;
-  }
-
-  .del_link {
-    float: right;
-    margin-left: 20px;
-
-    a {
-      color: #ccc;
-      display: block;
-      font-family: 'icons_antragsgruen';
-      font-size: 12px;
-      vertical-align: bottom;
-
-      &:hover,
-      &:focus {
-        color: #bbb;
-      }
-
-    }
-  }
-}
-
-.saveholder {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-fieldset.antragstellerIn {
-  label.radio {
-    display: inline-block;
-  }
-}
-
-#UnterstuetzerInnen {
-  .unterstuetzerInnen_adder {
-    text-align: center;
-  }
-}
-
-.policy_antragstellerIn_orga_5, .policy_antragstellerIn_orga_19_fulltext {
-  #UnterstuetzerInnen {
-    input[type=text] {
-      display: inline-block;
-    }
-  }
-}
-
-#antrag_stellen_form {
-  .form .radio {
-    min-width: 150px;
-  }
-}
-
-#veranstaltung-form label, #person-form label, #antrag-kommentar-form label, #aenderungsantrag-kommentar-form label, #texte-form label {
-  display: inline-block;
-  width: 220px;
-  vertical-align: top;
-
-  &.block {
-    display: block;
-    width: auto;
-  }
-
-}
 
 .search-form label {
   display: inline-block;
@@ -453,6 +382,7 @@ fieldset.antragstellerIn {
     width: 427px;
   }
 }
+
 .ae_select_confirm {
   text-align: center;
 }
@@ -618,7 +548,6 @@ ul.sidebarActions {
   }
 }
 
-
 .bdkMotionLististe {
   padding: 25px;
   font-family: "Open Sans", verdana, sans-serif;
@@ -710,7 +639,6 @@ ins {
   display: inline-block;
   margin-bottom: 10px;
 }
-
 
 .motionEditForm {
 

@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * @var \yii\web\View $this
@@ -8,6 +8,7 @@
  * @var bool $jsProtection
  * @var array $hiddens
  * @var MotionComment[] $comments
+ * @var \app\models\forms\CommentForm $form
  */
 
 use app\components\Tools;
@@ -19,11 +20,15 @@ use app\models\db\User;
 use yii\helpers\Html;
 
 $imadmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
+if (!isset($form) || $form->paragraphNo != $paragraphNo) {
+    $form = new \app\models\forms\CommentForm();
+    $form->paragraphNo = $paragraphNo;
+}
 
 foreach ($comments as $comment) {
     $param    = ['motion/view', 'motionId' => $motion->id, 'commentId' => $comment->id, '#' => 'comm' . $comment->id];
     $commLink = UrlHelper::createUrl($param);
-    echo '<article class="comment" id="comment' . $comment->id . '">
+    echo '<article class="motionComment content hoverHolder" id="comment' . $comment->id . '">
         <div class="date">' . Tools::formatMysqlDate($comment->dateCreation) . '</div>
         <h3>Kommentar von ' . Html::encode($comment->name);
 
@@ -34,7 +39,7 @@ foreach ($comments as $comment) {
 
     echo nl2br(Html::encode($comment->text));
     if (!is_null($commDelLink) && $comment->canDelete(User::getCurrentUser())) {
-        echo '<div class="delLink">';
+        echo '<div class="delLink hoverElement">';
         echo Html::a('x', str_replace(rawurlencode('#commId#'), $comment->id, $commDelLink));
         echo '</div>';
     }
@@ -43,13 +48,13 @@ foreach ($comments as $comment) {
         echo Html::beginForm($commLink);
         echo '<div style="display: inline-block; width: 49%; text-align: center;">';
 
-        echo '<button type="button" class="btn btn-success">';
+        echo '<button type="button" class="btn btn-success" name="commentScreeningAccept">';
         echo '<span class="glyphicon glyphicon-thumbs-up"></span> Freischalten';
         echo '</button>';
 
         echo '</div><div style="display: inline-block; width: 49%; text-align: center;">';
 
-        echo '<button type="button" class="btn btn-danger">';
+        echo '<button type="button" class="btn btn-danger" name="commentScreeningReject">';
         echo '<span class="glyphicon glyphicon-thumbs-down"></span> Löschen';
         echo '</button>';
 
@@ -57,8 +62,8 @@ foreach ($comments as $comment) {
         echo Html::endForm();
     }
 
-    echo '<div class="commentBottom"><div class="kommentarlink">';
-    echo Html::a("Kommentar verlinken", $commLink);
+    echo '<div class="commentBottom"><div class="commentLink">';
+    echo Html::a("Kommentar verlinken", $commLink, ['class' => 'hoverElement']);
     echo '</div>';
 
     if ($motion->consultation->getSettings()->commentsSupportable) {
@@ -87,54 +92,68 @@ foreach ($comments as $comment) {
                 echo '<span class="icon-thumbs-down"></span> Du hast diesen Kommentar negativ bewertet';
             }
             echo '</span>
-					<button class="dochnicht" type="submit" name="revoke">Bewertung zurücknehmen</button>
-					</span>';
+					<button class="revoke" type="submit" name="commentUndoLike">Bewertung zurücknehmen</button>
+				</span>';
         } else {
-            echo '<button class="likes" type="submit" <span class="icon-thumbs-up"></span> ';
-            echo $numLikes . '</button>
-                    <button class="dagegen" type="submit" name="komm_dagegen">';
+            echo '<button class="likes" type="submit" name="commentLike">';
+            echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . $numLikes . '</button>
+                    <button class="dislikes" type="submit" name="commentDislike">';
             echo '<span class="glyphicon glyphicon-thumbs-down"></span> ' . $numDislikes . '</button>';
         }
         echo Html::endForm();
     }
-    echo '</div></div>';
+    echo '</div></article>';
 }
 
 if ($motion->consultation->getMotionPolicy()) {
-    echo Html::beginForm('', 'post', ['class' => 'commentForm']);
-    echo '<fieldset><legend>Kommentar schreiben</legend>';
+    echo Html::beginForm('', 'post', ['class' => 'commentForm form-horizontal col-md-8 col-md-offset-2']);
+    echo '<label>Kommentar schreiben</label>';
 
         if ($jsProtection) {
-            echo '<div class="js_protection_hint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder
+            echo '<div class="jsProtectionHint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder
                 JavaScript aktiviert sein, oder du musst eingeloggt sein.
             </div>';
         }
-        foreach ($hiddens as $name => $value) {
-            echo '<input type="hidden" name="' . Html::encode($name) . '" value="' . Html::encode($value) . '">';
-        }
-        echo '<input type="hidden" name="paragraphNo" value="' . $paragraphNo . '">';
-        $onlyNamespaced = $motion->consultation->site->getSettings()->onlyNamespacedAccounts;
     /*
-        if (!($onlyNamespaced && $motion->consultation->site->getBehaviorClass()->isLoginForced())) {
-            ?>
-            <div class="row">
-                <?php echo $form->labelEx($kommentar_person, 'name'); ?>
-                <?php echo $form->textField($kommentar_person, 'name') ?>
-            </div>
-            <div class="row">
-                <?php echo $form->labelEx($kommentar_person, 'email'); ?>
-                <?php echo $form->emailField($kommentar_person, 'email') ?>
-            </div>
-        <?php } ?>
-        <div class="row">
-            <label class="required" style="display: none;">Text</label>
-            <textarea name="AntragKommentar[text]" title="Text"></textarea>
-        </div>
+        foreach ($hiddens as $name => $value) {
+            echo '<input type="hidden" name="name="comment[' . $paragraphNo . '][paragraphno]" " value="' . Html::encode($value) . '">';
+        }
     */
-    echo '</fieldset>
+        echo '<input type="hidden" name="comment[paragraphNo]" value="' . $paragraphNo . '">';
+        $onlyNamespaced = $motion->consultation->site->getSettings()->onlyNamespacedAccounts;
+        if (!($onlyNamespaced && $motion->consultation->site->getBehaviorClass()->isLoginForced())) {
+            echo '
+            <div class="form-group">
+                <label for="comment_' . $paragraphNo . '_name" class="control-label col-sm-3">Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control col-sm-9" id="comment_' . $paragraphNo . '_name"
+                        name="comment[name]" value="' . Html::encode($form->name) . '" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="comment_' . $paragraphNo . '_email" class="control-label col-sm-3">E-Mail:</label>
+                <div class="col-sm-9">
+                    <input type="email" class="form-control" id="comment_' . $paragraphNo . '_email"
+                    name="comment[email]" value="' . Html::encode($form->email) . '"';
+            if ($motion->consultation->getSettings()->commentNeedsEmail) echo ' required';
+            echo '>
+                </div>
+            </div><div class="form-group">
+            <label for="comment_' . $paragraphNo . '_text" class="control-label col-sm-3">Text:</label>
+                <div class="col-sm-9">
+                    <textarea name="comment[text]"  title="Text" class="form-control" rows="5"
+                    id="comment_' . $paragraphNo . '_text">' . Html::encode($form->text) . '</textarea>
+                </div>
+            </div>';
+        } else {
+            echo '<div>
+            <label class="required sr-only">Text</label>
+            <textarea name="comment[text]"  title="Text" class="form-control" rows="5"
+                id="comment_' . $paragraphNo . '_text">' . Html::encode($form->text) . '</textarea>
+            </div>';
+        }
+    echo '
+    <div class="submitrow"><button class="btn btn-success" name="writeComment">Kommentar abschicken</button></div>';
 
-    <div class="submitrow">';
-        echo '<button class="btn btn-success">Kommentar abschicken</button>';
-    echo '</div>';
     echo Html::endForm();
 }

@@ -24,6 +24,7 @@ use yii\helpers\Html;
  *
  * @property Motion $motion
  * @property ConsultationSettingsMotionSection $consultationSetting
+ * @property MotionComment[] $comments
  */
 class MotionSection extends ActiveRecord
 {
@@ -50,6 +51,14 @@ class MotionSection extends ActiveRecord
     public function getMotion()
     {
         return $this->hasOne(Motion::className(), ['id' => 'motionId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Motion::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId' ]);
     }
 
     /**
@@ -113,7 +122,7 @@ class MotionSection extends ActiveRecord
         /** @var MotionSectionParagraph[] $return */
         $return = [];
         $paras  = $this->getTextParagraphs();
-        foreach ($paras as $para) {
+        foreach ($paras as $paraNo => $para) {
             $lineLength = $this->consultationSetting->consultation->getSettings()->lineLength;
             if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
                 mb_stripos($para, '<blockquote>') === 0
@@ -144,9 +153,13 @@ class MotionSection extends ActiveRecord
                 $linesOut = $linesIn;
             }
 
-            $paragraph        = new MotionSectionParagraph();
-            $paragraph->lines = $linesOut;
-            $return[]         = $paragraph;
+            // @TODO Comments
+            $paragraph              = new MotionSectionParagraph();
+            $paragraph->paragraphNo = $paraNo;
+            $paragraph->lines       = $linesOut;
+            $paragraph->comments    = [];
+            $paragraph->amendments  = [];
+            $return[]               = $paragraph;
         }
         return $return;
     }

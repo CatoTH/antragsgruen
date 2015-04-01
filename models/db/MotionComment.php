@@ -11,6 +11,8 @@ use yii\helpers\Url;
  * @property int $id
  * @property int $userId
  * @property int $motionId
+ * @property int $sectionId
+ * @property int $paragraph
  * @property string $text
  * @property string $name
  * @property string $contactEmail
@@ -21,11 +23,13 @@ use yii\helpers\Url;
  * @property User $user
  * @property Motion $motion
  * @property MotionCommentSupporter[] $supporters
+ * @property MotionSection $section
  */
 class MotionComment extends IComment
 {
     const STATUS_VISIBLE = 0;
     const STATUS_DELETED = -1;
+    const STATUS_SCREENING = 1;
 
     /**
      * @return string
@@ -56,7 +60,27 @@ class MotionComment extends IComment
      */
     public function getSupporters()
     {
-        return $this->hasOne(MotionCommentSupporter::className(), ['motionCommentId' => 'id']);
+        return $this->hasMany(MotionCommentSupporter::className(), ['motionCommentId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSection()
+    {
+        return $this->hasOne(MotionSection::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId' ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['motionId', 'sectionId', 'paragraph', 'text', 'status', 'dateCreation'], 'required'],
+            [['id', 'motionId', 'sectionId', 'paragraph', 'status'], 'number'],
+            [['text', 'paragraph'], 'safe'],
+        ];
     }
 
     /**

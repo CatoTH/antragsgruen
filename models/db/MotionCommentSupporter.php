@@ -23,7 +23,7 @@ class MotionCommentSupporter extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'motionCommentSupoorter';
+        return 'motionCommentSupporter';
     }
 
     /**

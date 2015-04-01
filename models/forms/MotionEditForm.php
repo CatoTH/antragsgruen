@@ -34,6 +34,7 @@ class MotionEditForm extends \yii\base\Model
      */
     public function __construct(Consultation $consultation, $motion)
     {
+        parent::__construct();
         $this->consultation = $consultation;
         $motionSections     = [];
         if ($motion) {

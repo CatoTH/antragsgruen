@@ -7,6 +7,7 @@ use app\components\AntiXSS;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\EMailLog;
 use app\models\db\IComment;
 use app\models\db\Motion;
@@ -15,84 +16,55 @@ use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
+use app\models\forms\CommentForm;
 use app\models\forms\MotionEditForm;
+use app\models\sectionTypes\ISectionType;
 
 class MotionController extends Base
 {
 
     /**
      * @param Motion $motion
-     * @return int
+     * @param int $commentId
+     * @param bool $needsScreeningRights
+     * @return MotionComment
+     * @throws Internal
+     */
+    private function getComment(Motion $motion, $commentId, $needsScreeningRights)
+    {
+        /** @var MotionComment $comment */
+        $comment = MotionComment::findOne($commentId);
+        if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
+            throw new Internal('Kommentar nicht gefunden');
+        }
+        if ($needsScreeningRights) {
+            if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+                throw new Internal('Keine Freischaltrechte');
+            }
+        }
+        return $comment;
+    }
+
+    /**
+     * @param Motion $motion
+     * @return MotionComment
      */
     private function writeComment(Motion $motion)
     {
-        $site = $this->site;
-
-        if ($motion->consultation->darfEroeffnenKommentar()) {
-            $zeile = IntVal($_REQUEST["absatz_nr"]);
-
-            if ($site->getSettings()->onlyNamespacedAccounts && $site->getBehaviorClass()->isLoginForced()) {
-                $user = User::getCurrentUser();
-            } else {
-                $person        = $_REQUEST["Person"];
-                $person["typ"] = Person::$TYP_PERSON;
-            }
-
-            if ($motion->consultation->getSettings()->commentNeedsEmail && trim($user["email"]) == "") {
-                Yii::app()->user->setFlash("error", "Bitte gib deine E-Mail-Adresse an.");
-                $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
-            }
-            $model_person = static::getCurrenPersonOrCreateBySubmitData($person, Person::$STATUS_UNCONFIRMED, false);
-
-            $kommentar                 = new AntragKommentar();
-            $kommentar->attributes     = $_REQUEST["AntragKommentar"];
-            $kommentar->absatz         = $zeile;
-            $kommentar->datum          = new CDbExpression('NOW()');
-            $kommentar->verfasserIn    = $model_person;
-            $kommentar->verfasserIn_id = $model_person->id;
-            $kommentar->antrag         = $antrag;
-            $kommentar->antrag_id      = $antrag_id;
-            $kommentar->status         = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare ? IKommentar::$STATUS_NICHT_FREI : IKommentar::$STATUS_FREI);
-
-            $kommentare_offen[] = $zeile;
-
-            if ($kommentar->save()) {
-                $add = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare ? " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
-                Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);
-
-                if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
-                    $kommentar_link = $kommentar->getLink(true);
-                    $mails          = explode(",", $this->veranstaltung->admin_email);
-                    $from_name      = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
-                    $mail_text      = "Es wurde ein neuer Kommentar zum Antrag \"" . $antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
-                        "Link: " . $kommentar_link;
-
-                    foreach ($mails as $mail) {
-                        if (trim($mail) != "") {
-                            AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN, trim($mail), null, "Neuer Kommentar - bitte freischalten.", $mail_text, $from_name);
-                        }
-                    }
-                }
-
-                if ($kommentar->status == IKommentar::$STATUS_FREI) {
-                    $benachrichtigt = array();
-                    foreach ($antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) {
-                        if ($abo->kommentare && !in_array($abo->person_id, $benachrichtigt)) {
-                            $abo->person->benachrichtigenKommentar($kommentar);
-                            $benachrichtigt[] = $abo->person_id;
-                        }
-                    }
-                }
-
-                $this->redirect($kommentar->getLink());
-            } else {
-                foreach ($model_person->getErrors() as $key => $val) {
-                    foreach ($val as $val2) {
-                        Yii::app()->user->setFlash("error", "Kommentar konnte nicht angelegt werden: $key: $val2");
-                    }
-                }
-            }
+        if (!$motion->consultation->getCommentPolicy()->checkMotionSubmit()) {
+            \Yii::$app->session->setFlash('error', 'No rights to write a comment');
         }
+        $commentForm = new CommentForm();
+        $commentForm->setAttributes($_POST['comment']);
+
+        if (User::getCurrentUser()) {
+            $commentForm->userId = User::getCurrentUser()->id;
+        }
+
+        $comment = $commentForm->saveMotionComment($motion);
+
+        return $comment;
+
     }
 
     /**
@@ -123,16 +95,10 @@ class MotionController extends Base
      * @param int $commentId
      * @throws Internal
      */
-    private function screenCommentPositively(Motion $motion, $commentId)
+    private function screenCommentAccept(Motion $motion, $commentId)
     {
-        /** @var MotionComment $comment */
-        $comment = MotionComment::findOne($commentId);
-        if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar nicht gefunden');
-        }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('Keine Freischaltrechte');
-        }
+        $comment = $this->getComment($motion, $commentId, true);
+
         $comment->status = IComment::STATUS_VISIBLE;
         $comment->save();
 
@@ -152,16 +118,9 @@ class MotionController extends Base
      * @param int $commentId
      * @throws Internal
      */
-    private function screenCommentNegatively(Motion $motion, $commentId)
+    private function screenCommentReject(Motion $motion, $commentId)
     {
-        /** @var MotionComment $comment */
-        $comment = MotionComment::findOne($commentId);
-        if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar nicht gefunden');
-        }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('Keine Freischaltrechte');
-        }
+        $comment         = $this->getComment($motion, $commentId, true);
         $comment->status = IComment::STATUS_DELETED;
         $comment->save();
     }
@@ -173,12 +132,7 @@ class MotionController extends Base
      */
     private function commentLike(Motion $motion, $commentId)
     {
-        /** @var MotionComment $comment */
-        $comment = MotionComment::findOne($commentId);
-        if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar nicht gefunden');
-        }
-
+        $comment = $this->getComment($motion, $commentId, false);
 
         $meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($commentId);
         if ($meine_unterstuetzung === null) {
@@ -203,10 +157,7 @@ class MotionController extends Base
      */
     private function commentDislike(Motion $motion, $commentId)
     {
-        $comment = MotionComment::findOne($commentId);
-        if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar nicht gefunden');
-        }
+        $comment = $this->getComment($motion, $commentId, false);
 
         $meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($kommentar_id);
         if ($meine_unterstuetzung === null) {
@@ -230,10 +181,7 @@ class MotionController extends Base
      */
     private function commentUndoLike(Motion $motion, $commentId)
     {
-        $comment = MotionComment::findOne($commentId);
-        if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar nicht gefunden');
-        }
+        $comment = $this->getComment($motion, $commentId, false);
 
         $meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($kommentar_id);
         if ($meine_unterstuetzung !== null) {
@@ -332,60 +280,63 @@ class MotionController extends Base
     /**
      * @param Motion $motion
      * @param int $commentId
+     * @return int[]
      */
     private function performShowActions(Motion $motion, $commentId)
     {
+        $openedComments = [];
         if (AntiXSS::isTokenSet('deleteComment')) {
-            $this->deleteComment($motion, AntiXSS::getTokenVal('deleteComment'));
+            $this->deleteComment($motion, $commentId);
         }
 
-        if (AntiXSS::isTokenSet("screenCommentPositively")) {
-            $this->screenCommentPositively($motion, AntiXSS::getTokenVal('screenCommentPositively'));
+        if (isset($_POST['commentScreeningAccept'])) {
+            $this->screenCommentAccept($motion, $commentId);
         }
 
-        if (AntiXSS::isTokenSet("screenCommentNegatively")) {
-            $this->screenCommentNegatively($motion, AntiXSS::getTokenVal('screenCommentNegatively'));
+        if (isset($_POST['commentScreeningReject'])) {
+            $this->screenCommentReject($motion, $commentId);
         }
 
-        if (AntiXSS::isTokenSet("commentLike")) {
-            $this->commentLike($motion, AntiXSS::getTokenVal('commentLike'));
+        if (isset($_POST['commentLike'])) {
+            $this->commentLike($motion, $commentId);
         }
 
-        if (AntiXSS::isTokenSet("commentDislike")) {
-            $this->commentDislike($motion, AntiXSS::getTokenVal('commentDislike'));
+        if (isset($_POST['commentDislike'])) {
+            $this->commentDislike($motion, $commentId);
         }
 
-        if (AntiXSS::isTokenSet("commentUndoLike")) {
-            $this->commentUndoLike($motion, AntiXSS::getTokenVal('commentUndoLike'));
+        if (isset($_POST['commentUndoLike'])) {
+            $this->commentUndoLike($motion, $commentId);
         }
 
-        if (AntiXSS::isTokenSet("commentUndoLike")) {
-            $this->commentUndoLike($motion, AntiXSS::getTokenVal('commentUndoLike'));
-        }
 
-        if (AntiXSS::isTokenSet("motionLike")) {
+        if (isset($_POST['motionLike'])) {
             $this->motionLike($motion);
         }
 
-        if (AntiXSS::isTokenSet("motionDislike")) {
+        if (isset($_POST['motionDislike'])) {
             $this->motionDislike($motion);
         }
 
-        if (AntiXSS::isTokenSet("motionUndoLike")) {
+        if (isset($_POST['motionUndoLike'])) {
             $this->motionUndoLike($motion);
         }
 
-        if (AntiXSS::isTokenSet("motionAddTag")) {
+        if (isset($_POST['motionAddTag'])) {
             $this->motionAddTag($motion);
         }
 
-        if (AntiXSS::isTokenSet("motionDelTag")) {
+        if (isset($_POST['motionDelTag'])) {
             $this->motionDelTag($motion);
         }
 
+
         if (isset($_POST['writeComment'])) {
-            $this->writeComment($motion);
+            $comment          = $this->writeComment($motion);
+            $openedComments[] = $comment->id;
         }
+
+        return $openedComments;
     }
 
     /**
@@ -435,18 +386,19 @@ class MotionController extends Base
         $this->testMaintainanceMode();
 
 
-        $this->performShowActions($motion, $commentId);
+        $openedComments = $this->performShowActions($motion, $commentId);
 
-
-        $openedComments = array();
 
         if ($commentId > 0) {
-            $abs = $motion->getParagraphs();
-            foreach ($abs as $ab) {
-                /** @var AntragAbsatz $ab */
-                foreach ($ab->kommentare as $komm) {
-                    if ($komm->id == $kommentar_id) {
-                        $openedComments[] = $ab->absatz_nr;
+            foreach ($motion->sections as $section) {
+                if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                    continue;
+                }
+                foreach ($section->getTextParagraphObjects(false) as $paragraph) {
+                    foreach ($paragraph->comments as $comment) {
+                        if ($comment->id == $commentId) {
+                            $openedComments[] = $section->sectionId . '_' . $paragraph->paragraphNo;
+                        }
                     }
                 }
             }
@@ -461,12 +413,6 @@ class MotionController extends Base
             $hiddens[AntiXSS::createToken("writeComment")] = "1";
         }
 
-        if (\Yii::$app->user->isGuest) { // @TODO
-            $commentUser = new User();
-        } else {
-            $commentUser = User::getCurrentUser();
-        }
-
         $supportStatus = "";
         if (!\Yii::$app->user->isGuest) {
             foreach ($motion->getSupporters() as $supp) {
@@ -477,10 +423,11 @@ class MotionController extends Base
         }
 
         if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            $adminEdit = UrlHelper::createUrl('admin/motions/update', ['motionId' => $motionId]);
+            $adminEdit = UrlHelper::createUrl(['admin/motions/update', 'motionId' => $motionId]);
 
-            $delParams      = ['motionId' => $motionId, AntiXSS::createToken("komm_del") => '#komm_id#'];
-            $commentDelLink = UrlHelper::createUrl('motion/show', $delParams);
+            $delParams                                   = ['motion/show', 'motionId' => $motionId];
+            $delParams[AntiXSS::createToken("komm_del")] = '#komm_id#';
+            $commentDelLink                              = UrlHelper::createUrl($delParams);
         } else {
             $adminEdit      = null;
             $commentDelLink = null;

@@ -11,7 +11,7 @@ html {
 }
 
 body {
-  background: url("../img/verlauf-back.png") repeat-x scroll 0 0 transparent;
+  background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
   font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 100%;
 }
@@ -229,4 +229,15 @@ body > footer {
 .labelSubInfo {
   font-weight: normal;
   font-size: 0.8em;
+}
+
+html.no-touch .hoverHolder {
+  .hoverElement {
+    display: none;
+  }
+  &:hover {
+    .hoverElement {
+      display: inherit;
+    }
+  }
 }
