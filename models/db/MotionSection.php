@@ -3,8 +3,7 @@
 namespace app\models\db;
 
 use app\components\HTMLTools;
-use app\components\UrlHelper;
-use app\models\exceptions\FormError;
+use app\components\LineSplitter;
 use app\models\sectionTypes\Image;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextHTML;
@@ -12,7 +11,6 @@ use app\models\sectionTypes\TextSimple;
 use app\models\sectionTypes\Title;
 use yii\db\ActiveRecord;
 use app\models\exceptions\Internal;
-use yii\helpers\Html;
 
 /**
  * @package app\models\db
@@ -127,10 +125,10 @@ class MotionSection extends ActiveRecord
             if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
                 mb_stripos($para, '<blockquote>') === 0
             ) {
-                $lineLength -= 20;
+                $lineLength -= 6;
             }
-            $splitter = new \app\components\LineSplitter($para, $lineLength);
-            $linesIn  = $splitter->splitLines(false, true);
+            $splitter = new LineSplitter($para, $lineLength);
+            $linesIn  = $splitter->splitLines(false);
 
             if ($lineNumbers) {
                 $linesOut = [];

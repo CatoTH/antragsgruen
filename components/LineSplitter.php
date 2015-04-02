@@ -45,6 +45,16 @@ class LineSplitter
             } else {
                 $currLine .= $currChar;
 
+                if (mb_substr($this->text, $i, 4) == '<br>') {
+                    $lines[]       = mb_substr($currLine, 0, mb_strlen($currLine) - 1);
+                    $i += 3;
+                    if (mb_substr($this->text, $i + 1, 1) == "\n") {
+                        $i++;
+                    }
+                    $currLine      = '';
+                    $currLineCount = 1;
+                    continue;
+                }
                 if ($currChar == "<") {
                     $inHtml = true;
                     continue;

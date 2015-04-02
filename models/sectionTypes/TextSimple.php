@@ -3,9 +3,11 @@
 namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
+use app\controllers\Base;
 use app\models\exceptions\FormError;
 use app\components\UrlHelper;
 use yii\helpers\Html;
+use yii\web\View;
 
 class TextSimple extends ISectionType
 {
@@ -61,64 +63,19 @@ class TextSimple extends ISectionType
     }
 
     /**
+     * @param Base $controller
      * @return string
      */
-    public function showMotionView()
+    public function showMotionView(Base $controller)
     {
-        $hasLineNumbers = $this->section->consultationSetting->lineNumbers;
-        $paragraphs     = $this->section->getTextParagraphObjects($hasLineNumbers);
-        $classes        = ['paragraph'];
-        if ($hasLineNumbers) {
-            $classes[] = 'lineNumbers';
-            $lineNo    = $this->section->getFirstLineNo();
-        }
-        $str = '';
-        foreach ($paragraphs as $paragraph) {
-            $parClasses = $classes;
-            if (mb_stripos($paragraph->lines[0], '<ul>') === 0) {
-                $parClasses[] = 'list';
-            } elseif (mb_stripos($paragraph->lines[0], '<ol>') === 0) {
-                $parClasses[] = 'list';
-            } elseif (mb_stripos($paragraph->lines[0], '<blockquote>') === 0) {
-                $parClasses[] = 'blockquote';
-            }
-            $str .= '<section class="' . implode(' ', $parClasses) . '">';
-
-
-            $str .= '<ul class="bookmarks">';
-            $mayOpen = $this->section->motion->consultation->getCommentPolicy()->checkCurUserHeuristically();
-            if (count($paragraph->comments) > 0 || $mayOpen) {
-                $str .= '<li class="comment">';
-                $str .= Html::a(count($paragraph->comments), '#', ['class' => 'shower']);
-                $str .= Html::a(count($paragraph->comments), '#', ['class' => 'hide']);
-                $str .= '</li>';
-            }
-
-            foreach ($paragraph->amendments as $amendment) {
-                $amLink    = UrlHelper::createAmendmentUrl($amendment);
-                $firstline = $amendment->getFirstAffectedLineOfParagraph_absolute();
-                $str .= "<li class='amendment' data-first-line='" . $firstline . "'>';
-                $str .= '<a data-id='" . $amendment->id . "' href='" . Html::encode($amLink) . "'>";
-                $str .= Html::encode($amendment->titlePrefix) . "</a></li>\n";
-            }
-
-            $str .= '</ul>';
-
-            $str .= '<div class="text">';
-            $linesArr = [];
-            foreach ($paragraph->lines as $line) {
-                if ($this->section->consultationSetting->lineNumbers) {
-                    /** @var int $lineNo */
-                    $lineNoStr = '<span class="lineNumber">' . $lineNo++ . '</span>';
-                    $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
-                }
-                $linesArr[] = $line;
-            }
-            $str .= implode('<br>', $linesArr);
-            $str .= '</div>';
-            $str .= '</section>';
-        }
-        return $str;
+        $view              = new View();
+        return $view->render(
+            '@app/views/motion/showSimpleTextSection',
+            [
+                'section' => $this->section
+            ],
+            $controller
+        );
     }
 
     /**

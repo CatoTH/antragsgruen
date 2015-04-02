@@ -1,6 +1,7 @@
 <?php
 namespace app\models\sectionTypes;
 
+use app\controllers\Base;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 
@@ -58,9 +59,11 @@ abstract class ISectionType
 
 
     /**
+     * @param Base $controller
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function showMotionView()
+    public function showMotionView(Base $controller)
     {
         return $this->showSimple();
     }

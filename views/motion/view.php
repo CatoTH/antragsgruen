@@ -19,9 +19,6 @@ use yii\helpers\Html;
  * @var bool $editLink
  * @var int[] $openedComments
  * @var string|null $adminEdit
- * @var string|null $commentDelLink
- * @var array $hiddens
- * @var bool $jsProtection
  * @var null|int $supportStatus
  */
 
@@ -289,7 +286,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     echo '"><h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
 
 
-    echo $section->getSectionType()->showMotionView();
+    echo $section->getSectionType()->showMotionView($controller);
 
     echo '</article>';
 }
@@ -466,9 +463,6 @@ if ($motion->consultation->getSettings()->commentWholeMotions) {
         [
             'motion'       => $motion,
             'paragraphNo'  => -1,
-            'commDelLink'  => $commentDelLink,
-            'jsProtection' => $jsProtection,
-            'hiddens'      => $hiddens,
             'comments'     => $comments,
         ]
     );
@@ -482,25 +476,4 @@ if (!$motion->consultation->site->getBehaviorClass()->isLoginForced()) {
     });'
     );
 }
-$layout->addOnLoadJS(
-    '$(".absatz_text.orig .text .zeilennummer").each(function () {
-        $(this).attr("data-zeilennummer", $(this).text());
-    });
-    $(".row-absatz").each(function () {
-        var $absatz = $(this);
-        $absatz.find("ul.lesezeichen li.aenderungsantrag").each(function () {
-            var $aenderungsantrag = $(this),
-                marker_offset = $aenderungsantrag.offset().top,
-                first_line = $aenderungsantrag.data("first-line"),
-                $lineel = $absatz.find(".zeilennummer[data-zeilennummer=" + first_line + "]");
-            if ($lineel.length == 0) {
-                // Ergänzung am Ende des Absatzes
-                $lineel = $absatz.find(".zeilennummer").last();
-            }
-            var lineel_offset = $lineel.offset().top;
-            if ((marker_offset + 10) < lineel_offset) {
-                $aenderungsantrag.css("margin-top", (lineel_offset - (marker_offset + 10)) + "px");
-            }
-        });
-    });'
-);
+$layout->addOnLoadJS('$.Antragsgruen.motionShow();');

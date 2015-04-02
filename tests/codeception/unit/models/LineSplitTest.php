@@ -30,7 +30,7 @@ class LineSplitTest extends TestCase
                 $splitter = new LineSplitter($in, 80);
                 $out      = $splitter->splitLines(false);
 
-                $this->assertEquals($out, $expect);
+                $this->assertEquals($expect, $out);
             }
         );
 
@@ -47,7 +47,7 @@ class LineSplitTest extends TestCase
                 $splitter = new LineSplitter($in, 80);
                 $out      = $splitter->splitLines(false);
 
-                $this->assertEquals($out, $expect);
+                $this->assertEquals($expect, $out);
             }
         );
 
@@ -66,7 +66,7 @@ class LineSplitTest extends TestCase
                 $splitter = new LineSplitter($in, 80);
                 $out      = $splitter->splitLines(false);
 
-                $this->assertEquals($out, $expect);
+                $this->assertEquals($expect, $out);
             }
         );
 
@@ -83,9 +83,28 @@ class LineSplitTest extends TestCase
                 $splitter = new LineSplitter($in, 80);
                 $out      = $splitter->splitLines(false);
 
-                $this->assertEquals($out, $expect);
+                $this->assertEquals($expect, $out);
             }
         );
 
+
+        $this->specify(
+            'Line Splitting 5',
+            function () {
+                $in     = "1angehen, ist von<br>gro&szlig;em Wert f&uuml;r<br>\nunser Land. Ver&auml;nderung " .
+                    "kann nur gelingen, wenn sie von Vielen sdfsdf sdfsdsdf dfdfs sf d";
+                $expect = [
+                    "1angehen, ist von",
+                    "gro&szlig;em Wert f&uuml;r",
+                    "unser Land. Ver&auml;nderung kann nur gelingen, wenn sie von Vielen sdfsdf sdfsdsdf",
+                    "dfdfs sf d"
+                ];
+
+                $splitter = new LineSplitter($in, 80);
+                $out      = $splitter->splitLines(false);
+
+                $this->assertEquals($expect, $out);
+            }
+        );
     }
 }

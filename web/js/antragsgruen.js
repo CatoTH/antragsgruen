@@ -105,7 +105,6 @@
             $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
         });
 
-        $(".jsProtectionHint").remove();
         $("input[name=formToken]").each(function () {
             $(this).parents("form").append("<input name='" + $(this).val() + "' value='1' type='hidden'>");
             $(this).remove();
@@ -171,10 +170,55 @@
         });
     };
 
+    var motionShow = function () {
+        var $paragraphs = $('.motionTextHolder .paragraph');
+        $paragraphs.find('.comment .shower').click(function (ev) {
+            var $this = $(this);
+            $this.hide();
+            $this.parent().find('.hider').show();
+            $this.parents('.paragraph').first().find('.commentForm, .motionComment').show();
+            ev.preventDefault();
+        });
+
+        $paragraphs.find('.comment .hider').click(function (ev) {
+            var $this = $(this);
+            $this.hide();
+            $this.parent().find('.shower').show();
+
+            $this.parents('.paragraph').first().find('.commentForm, .motionComment').hide();
+            ev.preventDefault();
+        }).trigger('click');
+
+        $(".absatz_text.orig .text .zeilennummer").each(function () {
+            $(this).attr("data-zeilennummer", $(this).text());
+        });
+
+        $paragraphs.each(function () {
+            var $paragraph = $(this);
+            $paragraph.find('ul.bookmarks li.amendment').each(function () {
+                var $amendment = $(this),
+                    marker_offset = $amendment.offset().top,
+                    first_line = $amendment.data("first-line"),
+                    $lineel = $paragraph.find(".lineNumber[data-line-number=" + first_line + "]");
+                if ($lineel.length == 0) {
+                    // Ergänzung am Ende des Absatzes
+                    $lineel = $paragraph.find(".lineNumber").last();
+                }
+                var lineel_offset = $lineel.offset().top;
+                if ((marker_offset + 10) < lineel_offset) {
+                    $amendment.css("margin-top", (lineel_offset - (marker_offset + 10)) + "px");
+                }
+            });
+        });
+    };
+
     $.Antragsgruen = {
+        "motionShow": motionShow,
         "motionEditForm": motionEditForm,
         "consultationEditForm": consultationEditForm,
         "contentPageEdit": contentPageEdit
     };
+
+    $(".jsProtectionHint").remove();
 
 }(jQuery));

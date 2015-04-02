@@ -404,15 +404,6 @@ class MotionController extends Base
             }
         }
 
-        $hiddens      = array();
-        $jsProtection = \Yii::$app->user->isGuest;
-
-        if ($jsProtection) {
-            $hiddens["formToken"] = AntiXSS::createToken("writeComment");
-        } else {
-            $hiddens[AntiXSS::createToken("writeComment")] = "1";
-        }
-
         $supportStatus = "";
         if (!\Yii::$app->user->isGuest) {
             foreach ($motion->getSupporters() as $supp) {
@@ -424,13 +415,8 @@ class MotionController extends Base
 
         if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/motions/update', 'motionId' => $motionId]);
-
-            $delParams                                   = ['motion/show', 'motionId' => $motionId];
-            $delParams[AntiXSS::createToken("komm_del")] = '#komm_id#';
-            $commentDelLink                              = UrlHelper::createUrl($delParams);
         } else {
             $adminEdit      = null;
-            $commentDelLink = null;
         }
 
 
@@ -440,9 +426,6 @@ class MotionController extends Base
             "editLink"       => $motion->canEdit(),
             "openedComments" => $openedComments,
             "adminEdit"      => $adminEdit,
-            "commentDelLink" => $commentDelLink,
-            "hiddens"        => $hiddens,
-            "jsProtection"   => $jsProtection,
             "supportStatus"  => $supportStatus,
         ];
         return $this->render('view', $motionViewParams);
@@ -564,25 +547,12 @@ class MotionController extends Base
             }
         }
 
-
-        $hiddens      = array();
-        $jsProtection = \Yii::$app->user->isGuest;
-
-        if ($jsProtection) {
-            $hiddens['formToken'] = AntiXSS::createToken('createMotion');
-        } else {
-            $hiddens[AntiXSS::createToken('createMotion')] = '1';
-        }
-
-
         return $this->render(
             'editform',
             [
                 'mode'         => 'create',
                 'form'         => $form,
                 'consultation' => $this->consultation,
-                'hiddens'      => $hiddens,
-                'jsProtection' => $jsProtection,
                 'motionTypes'  => [$motion->motionType],
             ]
         );
@@ -618,15 +588,6 @@ class MotionController extends Base
         }
 
 
-        $hiddens      = array();
-        $jsProtection = \Yii::$app->user->isGuest;
-
-        if ($jsProtection) {
-            $hiddens['formToken'] = AntiXSS::createToken('createMotion');
-        } else {
-            $hiddens[AntiXSS::createToken('createMotion')] = '1';
-        }
-
         $types = $this->consultation->motionTypes;
         if (isset($_REQUEST['forceType'])) {
             $type = null;
@@ -658,8 +619,6 @@ class MotionController extends Base
                 'mode'         => 'create',
                 'form'         => $form,
                 'consultation' => $this->consultation,
-                'hiddens'      => $hiddens,
-                'jsProtection' => $jsProtection,
                 'motionTypes'  => $types,
             ]
         );

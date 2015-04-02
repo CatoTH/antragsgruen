@@ -6,8 +6,6 @@
  * @var \app\models\forms\MotionEditForm $form
  * @var \app\models\db\Consultation $consultation
  * @var \app\models\db\ConsultationSettingsMotionType[] $motionTypes
- * @var array $hiddens
- * @var bool $jsProtection
  * @var bool $forceTag
  */
 use app\models\db\ConsultationSettingsTag;
@@ -44,11 +42,7 @@ echo Html::beginForm(
     ['id' => 'motionEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
 );
 
-foreach ($hiddens as $name => $value) {
-    echo '<input type="hidden" name="' . Html::encode($name) . '" value="' . Html::encode($value) . '">';
-}
-
-if ($jsProtection) {
+if (\Yii::$app->user->isGuest) {
     echo '<div class="alert alert-warning jsProtectionHint" role="alert">';
     echo 'Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.';
     echo '</div>';

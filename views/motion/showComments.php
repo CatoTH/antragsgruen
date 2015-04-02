@@ -3,10 +3,9 @@
 /**
  * @var \yii\web\View $this
  * @var Motion $motion
+ * @var int $sectionId
  * @var int $paragraphNo
  * @var string $commDelLink
- * @var bool $jsProtection
- * @var array $hiddens
  * @var MotionComment[] $comments
  * @var \app\models\forms\CommentForm $form
  */
@@ -20,9 +19,10 @@ use app\models\db\User;
 use yii\helpers\Html;
 
 $imadmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
-if (!isset($form) || $form->paragraphNo != $paragraphNo) {
-    $form = new \app\models\forms\CommentForm();
+if (!isset($form) || $form->paragraphNo != $paragraphNo || $form->sectionId != $sectionId) {
+    $form              = new \app\models\forms\CommentForm();
     $form->paragraphNo = $paragraphNo;
+    $form->sectionId   = $sectionId;
 }
 
 foreach ($comments as $comment) {
@@ -106,54 +106,57 @@ foreach ($comments as $comment) {
 }
 
 if ($motion->consultation->getMotionPolicy()) {
-    echo Html::beginForm('', 'post', ['class' => 'commentForm form-horizontal col-md-8 col-md-offset-2']);
+    echo Html::beginForm('', 'post', ['class' => 'commentForm form-horizontal row']);
+    echo '<fieldset class="col-md-8 col-md-offset-2">';
     echo '<label>Kommentar schreiben</label>';
 
-        if ($jsProtection) {
-            echo '<div class="jsProtectionHint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder
+    if (\Yii::$app->user->isGuest) {
+        echo '<div class="jsProtectionHint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder
                 JavaScript aktiviert sein, oder du musst eingeloggt sein.
             </div>';
-        }
-    /*
-        foreach ($hiddens as $name => $value) {
-            echo '<input type="hidden" name="name="comment[' . $paragraphNo . '][paragraphno]" " value="' . Html::encode($value) . '">';
-        }
-    */
-        echo '<input type="hidden" name="comment[paragraphNo]" value="' . $paragraphNo . '">';
-        $onlyNamespaced = $motion->consultation->site->getSettings()->onlyNamespacedAccounts;
-        if (!($onlyNamespaced && $motion->consultation->site->getBehaviorClass()->isLoginForced())) {
-            echo '
+    }
+
+    $formIdPre = 'comment_' . $sectionId . '_' . $paragraphNo;
+
+    echo '<input type="hidden" name="comment[paragraphNo]" value="' . $paragraphNo . '">';
+    echo '<input type="hidden" name="comment[sectionId]" value="' . $sectionId . '">';
+    $onlyNamespaced = $motion->consultation->site->getSettings()->onlyNamespacedAccounts;
+    if (!($onlyNamespaced && $motion->consultation->site->getBehaviorClass()->isLoginForced())) {
+        echo '
             <div class="form-group">
-                <label for="comment_' . $paragraphNo . '_name" class="control-label col-sm-3">Name:</label>
+                <label for="' . $formIdPre . '_name" class="control-label col-sm-3">Name:</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control col-sm-9" id="comment_' . $paragraphNo . '_name"
+                    <input type="text" class="form-control col-sm-9" id="' . $formIdPre . '_name"
                         name="comment[name]" value="' . Html::encode($form->name) . '" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="comment_' . $paragraphNo . '_email" class="control-label col-sm-3">E-Mail:</label>
+                <label for="' . $formIdPre . '_email" class="control-label col-sm-3">E-Mail:</label>
                 <div class="col-sm-9">
-                    <input type="email" class="form-control" id="comment_' . $paragraphNo . '_email"
+                    <input type="email" class="form-control" id="' . $formIdPre . '_email"
                     name="comment[email]" value="' . Html::encode($form->email) . '"';
-            if ($motion->consultation->getSettings()->commentNeedsEmail) echo ' required';
-            echo '>
+        if ($motion->consultation->getSettings()->commentNeedsEmail) {
+            echo ' required';
+        }
+        echo '>
                 </div>
             </div><div class="form-group">
-            <label for="comment_' . $paragraphNo . '_text" class="control-label col-sm-3">Text:</label>
+            <label for="' . $formIdPre . '_text" class="control-label col-sm-3">Text:</label>
                 <div class="col-sm-9">
                     <textarea name="comment[text]"  title="Text" class="form-control" rows="5"
-                    id="comment_' . $paragraphNo . '_text">' . Html::encode($form->text) . '</textarea>
+                    id="' . $formIdPre . '_text">' . Html::encode($form->text) . '</textarea>
                 </div>
             </div>';
-        } else {
-            echo '<div>
+    } else {
+        echo '<div>
             <label class="required sr-only">Text</label>
             <textarea name="comment[text]"  title="Text" class="form-control" rows="5"
-                id="comment_' . $paragraphNo . '_text">' . Html::encode($form->text) . '</textarea>
+                id="' . $formIdPre . '_text">' . Html::encode($form->text) . '</textarea>
             </div>';
-        }
+    }
     echo '
-    <div class="submitrow"><button class="btn btn-success" name="writeComment">Kommentar abschicken</button></div>';
+    <div class="submitrow"><button class="btn btn-success" name="writeComment">Kommentar abschicken</button></div>
+    </fieldset>';
 
     echo Html::endForm();
 }
