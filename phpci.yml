@@ -6,6 +6,9 @@ build_settings:
 setup:
 
 test:
+  codeception:
+    config: "tests/codeception.yml"
+    log_path: "tests/codeception/_output"
   php_mess_detector:
     allowed_warnings: 0
     rules:
@@ -22,6 +25,9 @@ test:
       - "_bootstrap.php"
   php_cpd:
     allow_failures: true
+    ignore:
+      - "tests"
+      - "vendor"
   php_docblock_checker:
     allowed_warnings: 0
     skip_classes: true

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace app\models\sitePresets;
-
 
 use app\models\db\Consultation;
 use app\models\db\Site;

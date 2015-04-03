@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\db;
 
 use app\models\sectionTypes\ISectionType;
@@ -103,5 +104,4 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         }
         return [static::COMMENTS_NONE];
     }
-
 }

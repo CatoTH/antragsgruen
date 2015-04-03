@@ -35,21 +35,20 @@ $handledSettings = [];
  * @param array $handledSettings
  * @param string $description
  */
-function booleanSettingRow($settings, $field, &$handledSettings, $description)
-{
+$booleanSettingRow = function ($settings, $field, &$handledSettings, $description) {
     $handledSettings[] = $field;
     echo '<fieldset><label>';
     echo Html::checkbox('settings[' . $field . ']', $settings->$field, ['id' => $field]);
     echo $description;
     echo '</label></fieldset>';
-}
+};
 
 
 echo '<h3>Allgemeine Einstellungen zur Veranstaltung</h3>';
 echo '<div class="content">';
 
 
-booleanSettingRow($settings, 'hasPDF', $handledSettings, '<strong>Anträge etc. als PDF anbieten</strong>');
+$booleanSettingRow($settings, 'hasPDF', $handledSettings, '<strong>Anträge etc. als PDF anbieten</strong>');
 
 $handledSettings[] = 'logoUrl';
 echo '<fieldset class="form-group">
@@ -89,14 +88,14 @@ $description = '<strong>Antragskürzel verstecken</strong><br>
 müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt.
 Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small>';
 
-booleanSettingRow($settings, 'hideRevision', $handledSettings, $description);
+$booleanSettingRow($settings, 'hideRevision', $handledSettings, $description);
 
 
-booleanSettingRow($settings, 'showFeeds', $handledSettings, 'Feeds in der Sidebar anzeigen');
+$booleanSettingRow($settings, 'showFeeds', $handledSettings, 'Feeds in der Sidebar anzeigen');
 
 $description = '<strong>Minimalistische Ansicht</strong><br>
 <small style="margin-left: 20px;">Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>';
-booleanSettingRow($settings, 'minimalisticUI', $handledSettings, $description);
+$booleanSettingRow($settings, 'minimalisticUI', $handledSettings, $description);
 
 
 /*
@@ -177,10 +176,10 @@ echo '<script>
 
 
 $description = 'Admins dürfen Antrags-Texte <strong>nachträglich ändern</strong>.';
-booleanSettingRow($settings, 'adminsMayEdit', $handledSettings, $description);
+$booleanSettingRow($settings, 'adminsMayEdit', $handledSettings, $description);
 
 $description = 'AntragstellerInnen dürfen Anträge <strong>nachträglich ändern</strong>.';
-booleanSettingRow($settings, 'iniatorsMayEdit', $handledSettings, $description);
+$booleanSettingRow($settings, 'iniatorsMayEdit', $handledSettings, $description);
 
 
 // @TODO
@@ -229,15 +228,15 @@ echo '</label></fieldset>';
 
 $description = 'Kommentare zum Antrag allgemein zulassen<br>
 <small style="margin-left: 20px;">(Anträge ohne Absatzbezug, erscheinen unterhalb des Antrags)</small>';
-booleanSettingRow($settings, 'commentWholeMotions', $handledSettings, $description);
+$booleanSettingRow($settings, 'commentWholeMotions', $handledSettings, $description);
 
 
 $description = 'Anträge (ausgegraut) anzeigen, auch wenn sie noch nicht freigeschaltet sind';
-booleanSettingRow($settings, 'screeningMotionsShown', $handledSettings, $description);
+$booleanSettingRow($settings, 'screeningMotionsShown', $handledSettings, $description);
 
 
 $description = 'Durchgestrichen als Formatierungsmöglichkeit in Anträgen zulassen';
-booleanSettingRow($settings, 'allowStrikeFormat', $handledSettings, $description);
+$booleanSettingRow($settings, 'allowStrikeFormat', $handledSettings, $description);
 
 
 echo '</div>
@@ -246,7 +245,7 @@ echo '</div>
 
 
 $description = 'Besucher können Kommentare <strong>bewerten</strong>';
-booleanSettingRow($settings, 'commentsSupportable', $handledSettings, $description);
+$booleanSettingRow($settings, 'commentsSupportable', $handledSettings, $description);
 
 echo '</div>
 

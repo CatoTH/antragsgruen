@@ -39,7 +39,8 @@ class MotionCommentSupporter extends ActiveRecord
      * @param Motion $motion
      * @return null|MotionCommentSupporter
      */
-    public static function mySupport(Motion $motion) {
+    public static function mySupport(Motion $motion)
+    {
         /* TODO
         if (isset(Yii::app()->request->cookies['kommentar_bewertung'])) {
             $unt = AntragKommentarUnterstuetzerInnen::model()->findByAttributes(array(

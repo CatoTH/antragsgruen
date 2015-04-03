@@ -2,7 +2,6 @@
 
 namespace tests\codeception\unit\models;
 
-use app\models\db\Site;
 use Yii;
 use yii\codeception\TestCase;
 use Codeception\Specify;

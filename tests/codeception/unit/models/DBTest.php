@@ -6,7 +6,6 @@ use app\models\db\Site;
 use Yii;
 use Codeception\Specify;
 
-
 class DBTest extends DBTestBase
 {
     /**

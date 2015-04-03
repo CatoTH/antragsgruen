@@ -365,7 +365,9 @@ class Consultation extends ActiveRecord
         return $prefix . ($max_rev + 1);
     }
 
-
+    /**
+     *
+     */
     public function flushCaches()
     {
         // @TODO

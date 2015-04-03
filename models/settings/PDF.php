@@ -1,7 +1,6 @@
 <?php
 namespace app\models\settings;
 
-
 class PDF
 {
     /** @var string */

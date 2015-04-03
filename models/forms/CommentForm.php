@@ -1,7 +1,6 @@
 <?php
 namespace app\models\forms;
 
-
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\exceptions\FormError;

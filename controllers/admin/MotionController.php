@@ -2,7 +2,6 @@
 
 namespace app\controllers\admin;
 
-
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\exceptions\FormError;
 

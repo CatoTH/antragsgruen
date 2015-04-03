@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-
 use app\components\AntiXSS;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -191,11 +190,12 @@ class MotionController extends Base
         }
     }
 
-
+    /**
+     * @param Motion $motion
+     */
     private function motionLike(Motion $motion)
     {
         if (AntiXSS::isTokenSet("mag") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
-
         }
 
         $userid = Yii::app()->user->getState("person_id");
@@ -217,6 +217,9 @@ class MotionController extends Base
         $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
     }
 
+    /**
+     * @param Motion $motion
+     */
     private function motionDislike(Motion $motion)
     {
         if (AntiXSS::isTokenSet("magnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
@@ -241,6 +244,9 @@ class MotionController extends Base
         }
     }
 
+    /**
+     * @param Motion $motion
+     */
     private function motionUndoLike(Motion $motion)
     {
         if (AntiXSS::isTokenSet("dochnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
@@ -255,7 +261,9 @@ class MotionController extends Base
         }
     }
 
-
+    /**
+     * @param Motion $motion
+     */
     private function motionAddTag(Motion $motion)
     {
         if (AntiXSS::isTokenSet("add_tag") && $this->veranstaltung->isAdminCurUser()) {
@@ -268,6 +276,9 @@ class MotionController extends Base
         }
     }
 
+    /**
+     * @param Motion $motion
+     */
     private function motionDelTag(Motion $motion)
     {
         if (AntiXSS::isTokenSet("del_tag") && $this->veranstaltung->isAdminCurUser()) {
@@ -461,7 +472,6 @@ class MotionController extends Base
         }
 
         if (isset($_POST['confirm'])) {
-
             $screening      = $this->consultation->getSettings()->screeningMotions;
             $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
             if (!$screening && $motion->statusString == "") {

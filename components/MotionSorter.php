@@ -1,7 +1,6 @@
 <?php
 namespace app\components;
 
-
 use app\models\amendmentNumbering\ByLine;
 use app\models\db\Amendment;
 use app\models\db\Consultation;

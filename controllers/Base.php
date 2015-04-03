@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\settings\Layout;
@@ -41,6 +40,11 @@ class Base extends Controller
         $this->layoutParams = new Layout();
     }
 
+    /**
+     * @param \yii\base\Action $action
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {

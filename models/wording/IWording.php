@@ -2,7 +2,6 @@
 
 namespace app\models\wording;
 
-
 use app\models\exceptions\Internal;
 
 abstract class IWording

@@ -37,7 +37,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     foreach ($paragraph->amendments as $amendment) {
         $amLink    = UrlHelper::createAmendmentUrl($amendment);
-        $firstline = $amendment->getFirstAffectedLineOfParagraph_absolute();
+        $firstline = $amendment->getFirstAffectedLineOfParagraphAbsolute();
         echo "<li class='amendment' data-first-line='" . $firstline . "'>';
                 echo '<a data-id='" . $amendment->id . "' href='" . Html::encode($amLink) . "'>";
         echo Html::encode($amendment->titlePrefix) . "</a></li>\n";
@@ -50,7 +50,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     foreach ($paragraph->lines as $line) {
         if ($section->consultationSetting->lineNumbers) {
             /** @var int $lineNo */
-            $lineNoStr = '<span class="lineNumber">' . $lineNo++ . '</span>';
+            $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
             $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
         }
         $linesArr[] = $line;

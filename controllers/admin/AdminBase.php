@@ -2,10 +2,12 @@
 
 namespace app\controllers\admin;
 
+use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\User;
 
-class AdminBase extends Base {
+class AdminBase extends Base
+{
     /**
      * @param \yii\base\Action $action
      * @return bool
@@ -27,5 +29,4 @@ class AdminBase extends Base {
         }
         return true;
     }
-
 }

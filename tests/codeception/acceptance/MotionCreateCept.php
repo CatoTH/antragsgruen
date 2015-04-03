@@ -127,4 +127,3 @@ $I->see('My real name');
 $I->wantTo('Confirm the submitted motion');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
 $I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
-

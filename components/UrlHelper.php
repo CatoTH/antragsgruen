@@ -2,7 +2,6 @@
 
 namespace app\components;
 
-
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;

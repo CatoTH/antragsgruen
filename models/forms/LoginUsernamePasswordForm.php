@@ -107,7 +107,8 @@ class LoginUsernamePasswordForm extends \yii\base\Model
         $existing = User::findOne(['auth' => $auth]);
         if ($existing) {
             /** @var User $existing */
-            $this->error = "Es existiert bereits ein Zugang mit dieser E-Mail-Adresse ($auth): " . print_r($existing->getAttributes(), true);
+            $this->error = "Es existiert bereits ein Zugang mit dieser E-Mail-Adresse ($auth): " .
+                print_r($existing->getAttributes(), true);
             throw new Login($this->error);
         }
     }

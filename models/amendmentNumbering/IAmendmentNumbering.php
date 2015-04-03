@@ -56,7 +56,8 @@ abstract class IAmendmentNumbering
     {
         $max_rev = 0;
         foreach ($motion->amendments as $amend) {
-            // Etwas messy, wg. "Ä" und UTF-8. Alternative Implementierung: auf mbstring.func_overload testen und entsprechend vorgehen
+            // Etwas messy, wg. "Ä" und UTF-8. Alternative Implementierung:
+            // auf mbstring.func_overload testen und entsprechend vorgehen
             $index = -1;
             for ($i = 0; $i < strlen($amend->titlePrefix) && $index == -1; $i++) {
                 if (is_numeric(substr($amend->titlePrefix, $i, 1))) {

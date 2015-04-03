@@ -1,7 +1,6 @@
 <?php
 namespace app\models\amendmentNumbering;
 
-
 use app\models\db\Amendment;
 use app\models\db\Motion;
 

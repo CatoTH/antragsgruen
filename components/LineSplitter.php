@@ -1,13 +1,16 @@
 <?php
 namespace app\components;
 
-
 class LineSplitter
 {
 
     private $lineLength;
     private $text;
 
+    /**
+     * @param string $text
+     * @param int $lineLength
+     */
     public function __construct($text, $lineLength)
     {
         $this->text       = $text;

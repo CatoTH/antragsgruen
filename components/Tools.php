@@ -155,8 +155,7 @@ class Tools
         $fromName = null,
         $fromEmail = null,
         $noLogReplaces = null
-    )
-    {
+    ) {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
 

@@ -10,6 +10,9 @@ use tests\codeception\unit\models\DBTestBase;
 
 class SiteCreateTest extends DBTestBase
 {
+    /**
+     *
+     */
     public function testParteitagCreate()
     {
         $this->specify(

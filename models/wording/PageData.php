@@ -2,7 +2,6 @@
 
 namespace app\models\wording;
 
-
 class PageData
 {
     /** @var string */

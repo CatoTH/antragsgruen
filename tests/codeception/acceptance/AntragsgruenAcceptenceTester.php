@@ -28,13 +28,18 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         $this->deleteDB();
     }
 
-
+    /**
+     *
+     */
     public function populateDBData1()
     {
         $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'fixtures' .
             DIRECTORY_SEPARATOR . 'dbdata1.sql');
     }
 
+    /**
+     * @param bool $check
+     */
     public function gotoStdConsultationHome($check = true)
     {
         ConsultationHomePage::openBy(
@@ -49,6 +54,9 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         }
     }
 
+    /**
+     *
+     */
     public function loginAsStdAdmin()
     {
         $this->see('LOGIN', '#loginLink');
@@ -60,6 +68,9 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
     }
 
+    /**
+     *
+     */
     public function loginAsStdUser()
     {
         $this->see('LOGIN', '#loginLink');
@@ -71,6 +82,9 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
     }
 
+    /**
+     *
+     */
     public function logout()
     {
         $this->see('LOGOUT', '#logoutLink');

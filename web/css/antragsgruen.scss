@@ -133,14 +133,17 @@ $lineNumberOffset4: 3px;
       text-rendering: optimizeLegibility;
 
       .lineNumber {
-        color: #C3C3C3;
+        position: relative;
+        left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
+        width: 0;
         display: inline-block;
+      }
+      .lineNumber:after {
+        content: attr(data-line-number);
+        color: #C3C3C3;
         font-style: normal;
         font-weight: normal;
-        left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
-        position: relative;
         text-decoration: none;
-        width: 0;
       }
 
       > ul, > ol {

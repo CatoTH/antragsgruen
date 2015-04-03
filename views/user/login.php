@@ -127,7 +127,6 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;
 if ($params->hasWurzelwerk) {
-
     $hide_ww_login = ($controller->site && $controller->site->getSettings()->onlyNamespacedAccounts);
     if ($hide_ww_login) {
         echo '<div class="content">

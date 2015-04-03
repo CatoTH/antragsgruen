@@ -23,7 +23,6 @@ class IndexController extends AdminBase
         );
 
         if (!is_null($this->consultation) && false) {
-
             /** @var Motion[] $motions */
             $motions = Motion::findAll(
                 [
@@ -223,7 +222,6 @@ class IndexController extends AdminBase
         $this->saveTags($consultation);
 
         if (isset($_POST['save'])) {
-
             $consultation->policySupport = $_POST['consultation']['policySupport'];
 
             $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
@@ -232,7 +230,6 @@ class IndexController extends AdminBase
             $consultation->setSettings($settings);
 
             if ($consultation->save()) {
-
                 $this->saveSiteSettings($consultation->site);
 
                 if (!$consultation->getSettings()->adminsMayEdit) {

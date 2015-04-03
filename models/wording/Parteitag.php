@@ -2,7 +2,6 @@
 
 namespace app\models\wording;
 
-
 class Parteitag extends IWording
 {
     /**

@@ -14,38 +14,58 @@ use app\models\exceptions\Access;
 
 class ConsultationController extends Base
 {
+    /**
+     *
+     */
     public function actionSearch()
     {
         // @TODO
     }
 
 
+    /**
+     *
+     */
     public function actionFeedmotions()
     {
         // @TODO
     }
 
+    /**
+     *
+     */
     public function actionFeedamendments()
     {
         // @TODO
     }
 
+    /**
+     *
+     */
     public function actionFeedcomments()
     {
         // @TODO
     }
 
-
+    /**
+     *
+     */
     public function actionFeedall()
     {
         // @TODO
     }
 
+    /**
+     *
+     */
     public function actionPdfs()
     {
         // @TODO
     }
 
+    /**
+     *
+     */
     public function actionAmendmentpdfs()
     {
         // @TODO

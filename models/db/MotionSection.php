@@ -162,6 +162,9 @@ class MotionSection extends ActiveRecord
         return $return;
     }
 
+    /**
+     * @return int
+     */
     public function getFirstLineNo()
     {
         return 1; // @TODO

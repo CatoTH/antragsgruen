@@ -106,7 +106,8 @@ class Amendment extends IMotion
     /**
      * @return int
      */
-    public function getFirstAffectedLineOfParagraph_absolute() {
+    public function getFirstAffectedLineOfParagraphAbsolute()
+    {
         return 0; // @TODO
     }
 

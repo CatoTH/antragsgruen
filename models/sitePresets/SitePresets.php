@@ -2,7 +2,6 @@
 
 namespace app\models\sitePresets;
 
-
 use app\models\exceptions\Internal;
 
 class SitePresets

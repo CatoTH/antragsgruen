@@ -2,7 +2,6 @@
 
 namespace app\models\settings;
 
-
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 

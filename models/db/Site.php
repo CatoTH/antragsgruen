@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
@@ -96,7 +97,8 @@ class Site extends ActiveRecord
      * @return Site[]
      */
     public static function getSidebarSites()
-    { // @TODO
+    {
+        // @TODO
 
         //$fp = fopen("/tmp/db.log", "a"); fwrite($fp, "Query\n"); fclose($fp);
 

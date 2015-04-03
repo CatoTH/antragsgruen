@@ -2,7 +2,6 @@
 
 namespace app\models\exceptions;
 
-
 use yii\db\Exception;
 
 class DB extends Exception
@@ -14,6 +13,7 @@ class DB extends Exception
      */
     public function __construct($errors)
     {
+        parent::__construct(implode("\n", $errors));
         $this->errors = $errors;
     }
 

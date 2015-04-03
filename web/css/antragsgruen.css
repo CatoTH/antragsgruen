@@ -6106,14 +6106,16 @@ html.no-touch .hoverHolder:hover .hoverElement {
     color: black;
     text-rendering: optimizeLegibility; }
     .motionTextHolder .paragraph .text .lineNumber {
+      position: relative;
+      left: -42px;
+      width: 0;
+      display: inline-block; }
+    .motionTextHolder .paragraph .text .lineNumber:after {
+      content: attr(data-line-number);
       color: #C3C3C3;
-      display: inline-block;
       font-style: normal;
       font-weight: normal;
-      left: -42px;
-      position: relative;
-      text-decoration: none;
-      width: 0; }
+      text-decoration: none; }
     .motionTextHolder .paragraph .text > ul, .motionTextHolder .paragraph .text > ol {
       padding-left: 40px; }
       .motionTextHolder .paragraph .text > ul .lineNumber, .motionTextHolder .paragraph .text > ol .lineNumber {

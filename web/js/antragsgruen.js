@@ -189,10 +189,6 @@
             ev.preventDefault();
         }).trigger('click');
 
-        $(".absatz_text.orig .text .zeilennummer").each(function () {
-            $(this).attr("data-zeilennummer", $(this).text());
-        });
-
         $paragraphs.each(function () {
             var $paragraph = $(this);
             $paragraph.find('ul.bookmarks li.amendment').each(function () {
