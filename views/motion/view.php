@@ -47,7 +47,7 @@ $policy = $motion->consultation->getAmendmentPolicy();
 if ($policy->checkCurUserHeuristically()) {
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
-    $title = '<span class="icon glyphicon glyphicon-plus-sign"></span>' . $wording->get("Änderungsantrag stellen");
+    $title          = '<span class="icon glyphicon glyphicon-plus-sign"></span>' . $wording->get("Änderungsantrag stellen");
     $html .= Html::a($title, $amendCreateUrl) . '</li>';
 } else {
     $msg = $policy->getPermissionDeniedMsg($wording);
@@ -130,25 +130,23 @@ if (!$minimalisticUi) {
 
 
     $x = array();
-    foreach ($motion->getSupporters() as $supp) {
-        if ($supp->role == ISupporter::ROLE_INITIATOR) {
-            $name = $supp->getNameWithResolutionDate(true);
-            $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
-            if ($admin && ($supp->contactEmail != "" || $supp->contactPhone != "")) {
-                $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
-                if ($supp->contactEmail != "") {
-                    $name .= "E-Mail: " . Html::encode($supp->contactEmail);
-                }
-                if ($supp->contactEmail != "" && $supp->contactPhone != "") {
-                    $name .= ", ";
-                }
-                if ($supp->contactPhone != "") {
-                    $name .= "Telefon: " . Html::encode($supp->contactPhone);
-                }
-                $name .= ")</small>";
+    foreach ($motion->getInitiators() as $supp) {
+        $name  = $supp->getNameWithResolutionDate(true);
+        $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
+        if ($admin && ($supp->contactEmail != "" || $supp->contactPhone != "")) {
+            $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
+            if ($supp->contactEmail != "") {
+                $name .= "E-Mail: " . Html::encode($supp->contactEmail);
             }
-            $x[] = $name;
+            if ($supp->contactEmail != "" && $supp->contactPhone != "") {
+                $name .= ", ";
+            }
+            if ($supp->contactPhone != "") {
+                $name .= "Telefon: " . Html::encode($supp->contactPhone);
+            }
+            $name .= ")</small>";
         }
+        $x[] = $name;
     }
     echo implode(", ", $x);
 
@@ -275,7 +273,6 @@ if (!$minimalisticUi) {
 echo '</div>';
 
 
-
 foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
@@ -292,9 +289,6 @@ foreach ($motion->getSortedSections(true) as $section) {
 
     echo '</article>';
 }
-
-
-
 
 
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
@@ -463,10 +457,10 @@ if ($motion->consultation->getSettings()->commentWholeMotions) {
     echo $this->render(
         'showComments',
         [
-            'motion'       => $motion,
-            'paragraphNo'  => -1,
-            'comments'     => $comments,
-            'form'         => $commentForm,
+            'motion'      => $motion,
+            'paragraphNo' => -1,
+            'comments'    => $comments,
+            'form'        => $commentForm,
         ]
     );
 

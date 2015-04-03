@@ -253,6 +253,7 @@ $lineNumberOffset4: 3px;
       @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
       .count:after {
         content: attr(data-count);
+        padding-left: 2px;
       }
     }
     &.amendment > a {
