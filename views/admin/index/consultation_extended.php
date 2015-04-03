@@ -150,8 +150,8 @@ if (count($tags) > 0) {
 }
 
 $handledSettings[] = 'allowMultipleTags';
-echo '<a href="#" class="tag_neu_opener">+ Neues hinzufügen</a>
-    <input class="tag_neu_input" name="tagCreate" placeholder="Neues Schlagwort" value="" style="display: none;">
+echo '<a href="#" class="tagCreateOpener">+ Neues hinzufügen</a>
+    <input class="tagCreateInput" name="tagCreate" placeholder="Neues Schlagwort" value="" style="display: none;">
     <br><br>
     <label style="width: auto;">';
 
@@ -163,9 +163,9 @@ echo 'Mehrere Schlagworte pro Antrag möglich</label>
 
 
 echo '<script>
-            $(".tag_neu_opener").click(function (ev) {
+            $(".tagCreateOpener").click(function (ev) {
                 ev.preventDefault();
-                $(".tag_neu_input").show().focus();
+                $(".tagCreateInput").show().focus();
                 $(this).hide();
             });
             $(".taglist").sortable({

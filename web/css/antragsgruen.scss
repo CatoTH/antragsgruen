@@ -103,6 +103,16 @@
   }
 }
 
+
+.motionData {
+  .tagAdderHolder:link, .tagAdderHolder:visited {
+    color: green;
+  }
+  #tagAdderForm {
+    display: none;
+  }
+}
+
 $fixedWidthTextStdPadding: 50px;
 $fixedWidthTextListPadding: 40px;
 $fixedWidthTextQuotePadding: 15px;
@@ -118,6 +128,8 @@ $lineNumberOffset4: 3px;
   }
   .paragraph {
     font-size: 14px;
+    clear: both;
+
     &.smallFont {
       font-size: 12px;
     }
@@ -253,7 +265,7 @@ $lineNumberOffset4: 3px;
       @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
       .count:after {
         content: attr(data-count);
-        padding-left: 2px;
+        padding-left: 4px;
       }
     }
     &.amendment > a {

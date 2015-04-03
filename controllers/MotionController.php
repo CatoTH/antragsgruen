@@ -264,15 +264,16 @@ class MotionController extends Base
 
     /**
      * @param Motion $motion
+     * @throws Internal
      */
     private function motionAddTag(Motion $motion)
     {
-        if (AntiXSS::isTokenSet("add_tag") && $this->veranstaltung->isAdminCurUser()) {
-            foreach ($this->veranstaltung->tags as $tag) {
-                if ($tag->id == $_REQUEST["tag_id"]) {
-                    Yii::app()->db->createCommand()->insert("antrag_tags", array("antrag_id" => $antrag->id, "tag_id" => $_REQUEST["tag_id"]));
-                    $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
-                }
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            throw new Internal('Keine Freischaltrechte');
+        }
+        foreach ($motion->consultation->tags as $tag) {
+            if ($tag->id == $_POST['tagId']) {
+                $motion->link('tags', $tag);
             }
         }
     }
@@ -415,7 +416,7 @@ class MotionController extends Base
         if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/motions/update', 'motionId' => $motionId]);
         } else {
-            $adminEdit      = null;
+            $adminEdit = null;
         }
 
         $motionViewParams = [

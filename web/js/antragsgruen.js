@@ -210,6 +210,13 @@
             });
         });
 
+
+        $('.tagAdderHolder').click(function (ev) {
+            ev.preventDefault();
+            $(this).hide();
+            $('#tagAdderForm').show();
+        });
+
         var s = location.hash.split('#comm');
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});

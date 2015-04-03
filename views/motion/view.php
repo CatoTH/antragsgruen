@@ -179,7 +179,7 @@ if (!$minimalisticUi) {
 
     $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
     if ($admin && count($motion->consultation->tags) > 0) {
-        echo '<tr><th>Themenbereiche:</th><td>';
+        echo '<tr><th>Themenbereiche:</th><td class="tags">';
 
         $tags         = array();
         $used_tag_ids = array();
@@ -193,9 +193,9 @@ if (!$minimalisticUi) {
         }
         echo implode(", ", $tags);
 
-        echo '&nbsp; &nbsp; <a href="#" class="tag_adder_holder" style="color: green;">Neu</a>
-    <form method="POST" style="display: none;" id="tag_adder_form">
-      <select name="tag_id" size="1" title="Schlagwort aussuchen">
+        echo '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">Neu</a>';
+        echo Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline']);
+        echo '<select name="tagId" size="1" title="Schlagwort aussuchen" class="form-control">
         <option>-</option>';
 
         foreach ($motion->consultation->tags as $tag) {
@@ -204,25 +204,9 @@ if (!$minimalisticUi) {
             }
         }
         echo '</select>
-    <button class="btn btn-primary" type="submit" name="' . Html::encode(AntiXSS::createToken("add_tag")) . '"
-                                        style="margin: 0; margin-top: -10px;">Hinzufügen
-                                </button>
-                            </form>
-                            <script>
-                                $(function () {
-
-                                })
-                            </script>
-                        </td>
-                    </tr>
-                            ';
-        $layout->addOnLoadJS(
-            '$(".tag_adder_holder").click(function (ev) {
-         ev.preventDefault();
-         $(this).hide();
-         $("#tag_adder_form").show();
-       });'
-        );
+            <button class="btn btn-primary" type="submit" name="motionAddTag">Hinzufügen</button>';
+        echo Html::endForm();
+        echo '</td> </tr>';
 
     } elseif (count($motion->tags) > 0) {
         echo '<tr>
