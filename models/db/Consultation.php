@@ -355,7 +355,10 @@ class Consultation extends ActiveRecord
         }
         foreach ($this->motions as $motion) {
             if ($motion->status != Motion::STATUS_DELETED) {
-                $revs  = substr($motion->titlePrefix, mb_strlen($prefix));
+                if (mb_substr($motion->titlePrefix, 0, mb_strlen($prefix)) !== $prefix) {
+                    continue;
+                }
+                $revs  = mb_substr($motion->titlePrefix, mb_strlen($prefix));
                 $revnr = IntVal($revs);
                 if ($revnr > $max_rev) {
                     $max_rev = $revnr;

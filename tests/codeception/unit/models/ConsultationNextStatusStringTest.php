@@ -16,12 +16,13 @@ class ConsultationNextStatusStringTest extends DBTestBase
      */
     public function testStatusString()
     {
+        /** @var Consultation $consultation */
         $consultation = Consultation::findOne(1);
 
         $this->specify(
             'For first S',
             function () use ($consultation) {
-                $this->assertEquals($consultation->getNextAvailableStatusString(3), 'S1');
+                $this->assertEquals('S1', $consultation->getNextAvailableStatusString(3));
             }
         );
 
@@ -38,7 +39,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $this->specify(
             'For second S',
             function () use ($consultation) {
-                $this->assertEquals($consultation->getNextAvailableStatusString(3), 'S2');
+                $this->assertEquals('S2', $consultation->getNextAvailableStatusString(3));
             }
         );
 
@@ -55,7 +56,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $this->specify(
             'For second S',
             function () use ($consultation) {
-                $this->assertEquals($consultation->getNextAvailableStatusString(3), 'S3');
+                $this->assertEquals('S3', $consultation->getNextAvailableStatusString(3));
             }
         );
 
@@ -70,11 +71,17 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $consultation->refresh();
 
         $this->specify(
-            'For second S',
+            'For third S',
             function () use ($consultation) {
-                $this->assertEquals($consultation->getNextAvailableStatusString(3), 'S5');
+                $this->assertEquals('S5', $consultation->getNextAvailableStatusString(3));
             }
         );
 
+        $this->specify(
+            'For first R',
+            function () use ($consultation) {
+                $this->assertEquals('R1', $consultation->getNextAvailableStatusString(2));
+            }
+        );
     }
 }
