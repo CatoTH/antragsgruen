@@ -3,6 +3,7 @@ namespace app\models\forms;
 
 use app\models\db\Motion;
 use app\models\db\MotionComment;
+use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use yii\base\Model;
 
@@ -23,6 +24,7 @@ class CommentForm extends Model
     /**
      * @param Motion $motion
      * @return MotionComment
+     * @throws DB
      * @throws FormError
      */
     public function saveMotionComment(Motion $motion)
@@ -48,7 +50,7 @@ class CommentForm extends Model
         }
 
         if (!$comment->save()) {
-            throw new FormError($comment->getErrors());
+            throw new DB($comment->getErrors());
         }
 
 

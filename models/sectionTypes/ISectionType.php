@@ -4,6 +4,7 @@ namespace app\models\sectionTypes;
 use app\controllers\Base;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
+use app\models\forms\CommentForm;
 use yii\helpers\Html;
 
 abstract class ISectionType
@@ -89,11 +90,12 @@ abstract class ISectionType
 
     /**
      * @param Base $controller
+     * @param CommentForm $commentForm
      * @param int[] $openedComments
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function showMotionView(Base $controller, $openedComments)
+    public function showMotionView(Base $controller, $commentForm, $openedComments)
     {
         return $this->showSimple();
     }

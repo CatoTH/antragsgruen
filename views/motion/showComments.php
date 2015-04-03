@@ -6,7 +6,7 @@
  * @var int $sectionId
  * @var int $paragraphNo
  * @var MotionComment[] $comments
- * @var \app\models\forms\CommentForm $form
+ * @var null|\app\models\forms\CommentForm $form
  */
 
 use app\components\Tools;
@@ -18,7 +18,7 @@ use app\models\db\User;
 use yii\helpers\Html;
 
 $imadmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
-if (!isset($form) || $form->paragraphNo != $paragraphNo || $form->sectionId != $sectionId) {
+if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $sectionId) {
     $form              = new \app\models\forms\CommentForm();
     $form->paragraphNo = $paragraphNo;
     $form->sectionId   = $sectionId;

@@ -5,6 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\HTMLTools;
 use app\controllers\Base;
 use app\models\exceptions\FormError;
+use app\models\forms\CommentForm;
 use yii\web\View;
 
 class TextSimple extends ISectionType
@@ -42,10 +43,11 @@ class TextSimple extends ISectionType
 
     /**
      * @param Base $controller
+     * @param CommentForm $commentForm
      * @param int[] $openedComments
      * @return string
      */
-    public function showMotionView(Base $controller, $openedComments)
+    public function showMotionView(Base $controller, $commentForm, $openedComments)
     {
         $view = new View();
         return $view->render(
@@ -53,6 +55,7 @@ class TextSimple extends ISectionType
             [
                 'section'        => $this->section,
                 'openedComments' => $openedComments,
+                'commentForm'    => $commentForm,
             ],
             $controller
         );

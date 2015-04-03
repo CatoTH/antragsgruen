@@ -9,9 +9,9 @@ use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Login;
 use app\models\settings\AntragsgruenApp;
-use yii\helpers\Url;
+use yii\base\Model;
 
-class LoginUsernamePasswordForm extends \yii\base\Model
+class LoginUsernamePasswordForm extends Model
 {
     const PASSWORD_MIN_LEN = 4;
 
@@ -31,12 +31,8 @@ class LoginUsernamePasswordForm extends \yii\base\Model
     public function rules()
     {
         return [
-            [
-                ['username', 'password',], 'required'
-            ],
-            [
-                'contact', 'required', 'message' => 'Du musst eine Kontaktadresse angeben.'
-            ],
+            [['username', 'password',], 'required'],
+            ['contact', 'required', 'message' => 'Du musst eine Kontaktadresse angeben.'],
             [['createAccount', 'hasComments', 'openNow'], 'boolean'],
             [['username', 'password', 'passwordConfirm', 'name', 'createAccount'], 'safe'],
         ];

@@ -44,9 +44,10 @@ class MotionController extends Base
 
     /**
      * @param Motion $motion
+     * @param array $viewParameters
      * @return MotionComment
      */
-    private function writeComment(Motion $motion)
+    private function writeComment(Motion $motion, &$viewParameters)
     {
         if (!$motion->consultation->getCommentPolicy()->checkMotionSubmit()) {
             \Yii::$app->session->setFlash('error', 'No rights to write a comment');
@@ -58,9 +59,17 @@ class MotionController extends Base
             $commentForm->userId = User::getCurrentUser()->id;
         }
 
-        $comment = $commentForm->saveMotionComment($motion);
-
-        $this->redirect(UrlHelper::createMotionCommentUrl($comment));
+        try {
+            $comment = $commentForm->saveMotionComment($motion);
+            $this->redirect(UrlHelper::createMotionCommentUrl($comment));
+        } catch (\Exception $e) {
+            $viewParameters['commentForm'] = $commentForm;
+            if (!isset($viewParameters['openedComments'][$commentForm->sectionId])) {
+                $viewParameters['openedComments'][$commentForm->sectionId] = [];
+            }
+            $viewParameters['openedComments'][$commentForm->sectionId][] = $commentForm->paragraphNo;
+            \Yii::$app->session->setFlash('error', $e->getMessage());
+        }
     }
 
     /**
@@ -283,14 +292,13 @@ class MotionController extends Base
     /**
      * @param Motion $motion
      * @param int $commentId
-     * @return int[]
+     * @param array $viewParameters
      */
-    private function performShowActions(Motion $motion, $commentId)
+    private function performShowActions(Motion $motion, $commentId, &$viewParameters)
     {
         if ($commentId == 0 && isset($_POST['commentId'])) {
             $commentId = IntVal($_POST['commentId']);
         }
-        $openedComments = [];
         if (isset($_POST['deleteComment'])) {
             $this->deleteComment($motion, $commentId);
 
@@ -325,10 +333,8 @@ class MotionController extends Base
             $this->motionDelTag($motion);
 
         } elseif (isset($_POST['writeComment'])) {
-            $this->writeComment($motion);
+            $this->writeComment($motion, $viewParameters);
         }
-
-        return $openedComments;
     }
 
     /**
@@ -377,9 +383,6 @@ class MotionController extends Base
 
         $this->testMaintainanceMode();
 
-
-        $this->performShowActions($motion, $commentId);
-
         $openedComments = [];
         if ($commentId > 0) {
             foreach ($motion->sections as $section) {
@@ -399,6 +402,7 @@ class MotionController extends Base
             }
         }
 
+
         $supportStatus = "";
         if (!\Yii::$app->user->isGuest) {
             foreach ($motion->getSupporters() as $supp) {
@@ -414,15 +418,18 @@ class MotionController extends Base
             $adminEdit      = null;
         }
 
-
         $motionViewParams = [
-            "motion"         => $motion,
-            "amendments"     => $motion->getVisibleAmendments(),
-            "editLink"       => $motion->canEdit(),
-            "openedComments" => $openedComments,
-            "adminEdit"      => $adminEdit,
-            "supportStatus"  => $supportStatus,
+            'motion'         => $motion,
+            'amendments'     => $motion->getVisibleAmendments(),
+            'editLink'       => $motion->canEdit(),
+            'openedComments' => $openedComments,
+            'adminEdit'      => $adminEdit,
+            'supportStatus'  => $supportStatus,
+            'commentForm'    => null,
         ];
+
+        $this->performShowActions($motion, $commentId, $motionViewParams);
+
         return $this->render('view', $motionViewParams);
     }
 
@@ -554,11 +561,9 @@ class MotionController extends Base
 
 
     /**
-     * @param string $subdomain
-     * @param string $consultationPath
      * @return string
      */
-    public function actionCreate($subdomain = "", $consultationPath = "")
+    public function actionCreate()
     {
         $this->testMaintainanceMode();
 

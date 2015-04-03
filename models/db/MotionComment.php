@@ -77,7 +77,9 @@ class MotionComment extends IComment
     public function rules()
     {
         return [
-            [['motionId', 'sectionId', 'paragraph', 'text', 'status', 'dateCreation'], 'required'],
+            [['motionId', 'sectionId', 'paragraph', 'status', 'dateCreation'], 'required'],
+            ['name', 'required', 'message' => 'Bitte gib deinen Namen an.'],
+            ['text', 'required', 'message' => 'Bitte gib etwas Text ein.'],
             [['id', 'motionId', 'sectionId', 'paragraph', 'status'], 'number'],
             [['text', 'paragraph'], 'safe'],
         ];

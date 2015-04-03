@@ -251,15 +251,12 @@ $lineNumberOffset4: 3px;
     }
     &.comment > a {
       @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
-      &:before {
-        @extend .icon-comment;
+      .count:after {
+        content: attr(data-count);
       }
     }
     &.amendment > a {
       @include linear-gradient(90deg, $farbe_hellgruen, rgb(185, 209, 38));
-      &:before {
-        @extend .icon-edit;
-      }
     }
     .hider {
       @include linear-gradient(90deg, rgb(180, 180, 180), rgb(220, 220, 220));

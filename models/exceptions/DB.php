@@ -13,8 +13,8 @@ class DB extends Exception
      */
     public function __construct($errors)
     {
-        parent::__construct(implode("\n", $errors));
         $this->errors = $errors;
+        parent::__construct($this->__toString());
     }
 
     /**

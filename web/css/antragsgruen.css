@@ -5948,7 +5948,7 @@ html.no-touch .hoverHolder:hover .hoverElement {
   src: url("../fonts/fontello.eot?#iefix") format("embedded-opentype"), url("../fonts/fontello.woff") format("woff"), url("../fonts/fontello.ttf") format("truetype"), url("../fonts/fontello.svg#icons_antragsgruen") format("svg");
   font-weight: normal;
   font-style: normal; }
-.icon-comment, .bookmarks > li.comment > a:before, #sidebar .neue-kommentare .komm:before {
+.icon-comment, #sidebar .neue-kommentare .komm:before {
   content: '\e718'; }
 
 .icon-bell, #sidebar .neue-kommentare .benachrichtigung:before {
@@ -5962,7 +5962,7 @@ html.no-touch .hoverHolder:hover .hoverElement {
 
 .icon-edit, .icon-aender-stellen:before,
 .icon-pdf:before,
-#sidebar .neue-kommentare .pdf:before, .bookmarks > li.amendment > a:before {
+#sidebar .neue-kommentare .pdf:before {
   content: '\270d'; }
 
 .icon-document, .motionListStd .motion .title:before, #sidebar .neue-antraege .antrag:before {
@@ -6196,6 +6196,8 @@ html.no-touch .hoverHolder:hover .hoverElement {
       background: -o-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
       background: -ms-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
       background: linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%); }
+      .bookmarks > li.comment > a .count:after {
+        content: attr(data-count); }
     .bookmarks > li.amendment > a {
       background: #afcb08;
       background: -moz-linear-gradient(90deg, #afcb08 0%, #b9d126 100%);

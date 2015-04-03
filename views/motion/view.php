@@ -9,6 +9,7 @@ use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
+use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
@@ -20,6 +21,7 @@ use yii\helpers\Html;
  * @var int[] $openedComments
  * @var string|null $adminEdit
  * @var null|int $supportStatus
+ * @var null|CommentForm $commentForm
  */
 
 /** @var \app\controllers\Base $controller */
@@ -286,7 +288,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     echo '<h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
 
     $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-    echo $section->getSectionType()->showMotionView($controller, $commOp);
+    echo $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
 
     echo '</article>';
 }
@@ -464,6 +466,7 @@ if ($motion->consultation->getSettings()->commentWholeMotions) {
             'motion'       => $motion,
             'paragraphNo'  => -1,
             'comments'     => $comments,
+            'form'         => $commentForm,
         ]
     );
 

@@ -2,9 +2,11 @@
 /**
  * @var \app\models\db\MotionSection $section
  * @var int[] $openedComments
+ * @var null|CommentForm $commentForm
  */
 
 use app\components\UrlHelper;
+use app\models\forms\CommentForm;
 use yii\helpers\Html;
 
 $hasLineNumbers = $section->consultationSetting->lineNumbers;
@@ -35,8 +37,10 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     $mayOpen = $section->motion->consultation->getCommentPolicy()->checkCurUserHeuristically();
     if (count($paragraph->comments) > 0 || $mayOpen) {
         echo '<li class="comment">';
-        echo Html::a(count($paragraph->comments), '#', ['class' => 'shower']);
-        echo Html::a(count($paragraph->comments), '#', ['class' => 'hider']);
+        $str = '<span class="glyphicon glyphicon-comment"></span>';
+        $str .= '<span class="count" data-count="' . count($paragraph->comments) . '"></span>';
+        echo Html::a($str, '#', ['class' => 'shower']);
+        echo Html::a($str, '#', ['class' => 'hider']);
         echo '</li>';
     }
 
@@ -73,6 +77,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 'sectionId'    => $section->sectionId,
                 'paragraphNo'  => $paragraphNo,
                 'comments'     => $paragraph->comments,
+                'form'         => $commentForm,
             ]
         );
     }
