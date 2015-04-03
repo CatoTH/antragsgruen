@@ -42,15 +42,17 @@ class TextSimple extends ISectionType
 
     /**
      * @param Base $controller
+     * @param int[] $openedComments
      * @return string
      */
-    public function showMotionView(Base $controller)
+    public function showMotionView(Base $controller, $openedComments)
     {
-        $view              = new View();
+        $view = new View();
         return $view->render(
             '@app/views/motion/showSimpleTextSection',
             [
-                'section' => $this->section
+                'section'        => $this->section,
+                'openedComments' => $openedComments,
             ],
             $controller
         );

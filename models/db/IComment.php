@@ -50,11 +50,14 @@ abstract class IComment extends ActiveRecord
     abstract public function getLink($absolute = false);
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @return bool
      */
     public function canDelete($user)
     {
+        if ($user === null) {
+            return false;
+        }
         if ($user->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
             return true;
         }

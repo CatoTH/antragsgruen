@@ -56,7 +56,8 @@ class MotionSection extends ActiveRecord
      */
     public function getComments()
     {
-        return $this->hasMany(Motion::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId' ]);
+        return $this->hasMany(MotionComment::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId'])
+            ->where('status != ' . IComment::STATUS_DELETED);
     }
 
     /**
@@ -151,13 +152,19 @@ class MotionSection extends ActiveRecord
                 $linesOut = $linesIn;
             }
 
-            // @TODO Comments
             $paragraph              = new MotionSectionParagraph();
             $paragraph->paragraphNo = $paraNo;
             $paragraph->lines       = $linesOut;
-            $paragraph->comments    = [];
             $paragraph->amendments  = [];
-            $return[]               = $paragraph;
+
+            $paragraph->comments = [];
+            foreach ($this->comments as $comment) {
+                if ($comment->paragraph == $paraNo) {
+                    $paragraph->comments[] = $comment;
+                }
+            }
+
+            $return[] = $paragraph;
         }
         return $return;
     }

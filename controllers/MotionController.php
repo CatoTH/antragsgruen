@@ -5,8 +5,6 @@ namespace app\controllers;
 use app\components\AntiXSS;
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\EMailLog;
 use app\models\db\IComment;
 use app\models\db\Motion;
@@ -62,8 +60,7 @@ class MotionController extends Base
 
         $comment = $commentForm->saveMotionComment($motion);
 
-        return $comment;
-
+        $this->redirect(UrlHelper::createMotionCommentUrl($comment));
     }
 
     /**
@@ -73,20 +70,15 @@ class MotionController extends Base
      */
     private function deleteComment(Motion $motion, $commentId)
     {
-        /** @var MotionComment $comment */
-        $comment = MotionComment::findOne($commentId);
-        if (!$comment || $comment->motionId != $motion->id) {
-            throw new Internal('Kommentar nicht gefunden');
-        }
+        $comment = $this->getComment($motion, $commentId, false);
         if (!$comment->canDelete(User::getCurrentUser())) {
             throw new Internal('Keine Berechtigung zum Löschen');
-        }
-        if ($comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar ist nicht freigeschaltet und kann daher nicht gelöscht werden.');
         }
 
         $comment->status = IComment::STATUS_DELETED;
         $comment->save();
+
+        \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
     }
 
     /**
@@ -295,56 +287,45 @@ class MotionController extends Base
      */
     private function performShowActions(Motion $motion, $commentId)
     {
+        if ($commentId == 0 && isset($_POST['commentId'])) {
+            $commentId = IntVal($_POST['commentId']);
+        }
         $openedComments = [];
-        if (AntiXSS::isTokenSet('deleteComment')) {
+        if (isset($_POST['deleteComment'])) {
             $this->deleteComment($motion, $commentId);
-        }
 
-        if (isset($_POST['commentScreeningAccept'])) {
+        } elseif (isset($_POST['commentScreeningAccept'])) {
             $this->screenCommentAccept($motion, $commentId);
-        }
 
-        if (isset($_POST['commentScreeningReject'])) {
+        } elseif (isset($_POST['commentScreeningReject'])) {
             $this->screenCommentReject($motion, $commentId);
-        }
 
-        if (isset($_POST['commentLike'])) {
+        } elseif (isset($_POST['commentLike'])) {
             $this->commentLike($motion, $commentId);
-        }
 
-        if (isset($_POST['commentDislike'])) {
+        } elseif (isset($_POST['commentDislike'])) {
             $this->commentDislike($motion, $commentId);
-        }
 
-        if (isset($_POST['commentUndoLike'])) {
+        } elseif (isset($_POST['commentUndoLike'])) {
             $this->commentUndoLike($motion, $commentId);
-        }
 
-
-        if (isset($_POST['motionLike'])) {
+        } elseif (isset($_POST['motionLike'])) {
             $this->motionLike($motion);
-        }
 
-        if (isset($_POST['motionDislike'])) {
+        } elseif (isset($_POST['motionDislike'])) {
             $this->motionDislike($motion);
-        }
 
-        if (isset($_POST['motionUndoLike'])) {
+        } elseif (isset($_POST['motionUndoLike'])) {
             $this->motionUndoLike($motion);
-        }
 
-        if (isset($_POST['motionAddTag'])) {
+        } elseif (isset($_POST['motionAddTag'])) {
             $this->motionAddTag($motion);
-        }
 
-        if (isset($_POST['motionDelTag'])) {
+        } elseif (isset($_POST['motionDelTag'])) {
             $this->motionDelTag($motion);
-        }
 
-
-        if (isset($_POST['writeComment'])) {
-            $comment          = $this->writeComment($motion);
-            $openedComments[] = $comment->id;
+        } elseif (isset($_POST['writeComment'])) {
+            $this->writeComment($motion);
         }
 
         return $openedComments;
@@ -397,9 +378,9 @@ class MotionController extends Base
         $this->testMaintainanceMode();
 
 
-        $openedComments = $this->performShowActions($motion, $commentId);
+        $this->performShowActions($motion, $commentId);
 
-
+        $openedComments = [];
         if ($commentId > 0) {
             foreach ($motion->sections as $section) {
                 if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
@@ -408,7 +389,10 @@ class MotionController extends Base
                 foreach ($section->getTextParagraphObjects(false) as $paragraph) {
                     foreach ($paragraph->comments as $comment) {
                         if ($comment->id == $commentId) {
-                            $openedComments[] = $section->sectionId . '_' . $paragraph->paragraphNo;
+                            if (!isset($openedComments[$section->sectionId])) {
+                                $openedComments[$section->sectionId] = [];
+                            }
+                            $openedComments[$section->sectionId][] = $paragraph->paragraphNo;
                         }
                     }
                 }

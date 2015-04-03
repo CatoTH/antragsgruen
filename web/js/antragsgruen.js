@@ -1,5 +1,5 @@
 /*global browser: true, regexp: true */
-/*global $, jQuery, alert, console, CKEDITOR */
+/*global $, jQuery, alert, console, CKEDITOR, document */
 /*jslint regexp: true*/
 
 
@@ -187,7 +187,10 @@
 
             $this.parents('.paragraph').first().find('.commentForm, .motionComment').hide();
             ev.preventDefault();
-        }).trigger('click');
+        });
+
+        $paragraphs.filter('.commentsOpened').find('.comment .shower').click();
+        $paragraphs.filter(':not(.commentsOpened)').find('.comment .hider').click();
 
         $paragraphs.each(function () {
             var $paragraph = $(this);
@@ -202,10 +205,15 @@
                 }
                 var lineel_offset = $lineel.offset().top;
                 if ((marker_offset + 10) < lineel_offset) {
-                    $amendment.css("margin-top", (lineel_offset - (marker_offset + 10)) + "px");
+                    $amendment.css('margin-top', (lineel_offset - (marker_offset + 10)) + "px");
                 }
             });
         });
+
+        var s = location.hash.split('#comm');
+        if (s.length == 2) {
+            $('#comment' + s[1]).scrollintoview({top_offset: -100});
+        }
     };
 
     $.Antragsgruen = {

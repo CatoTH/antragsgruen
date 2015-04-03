@@ -47,7 +47,10 @@ class CommentForm extends Model
             $comment->status = MotionComment::STATUS_VISIBLE;
         }
 
-        $comment->save();
+        if (!$comment->save()) {
+            throw new FormError($comment->getErrors());
+        }
+
 
         /**
         $add = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare?

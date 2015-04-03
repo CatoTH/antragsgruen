@@ -274,7 +274,6 @@ echo '</div>';
 
 
 
-
 foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
@@ -283,10 +282,11 @@ foreach ($motion->getSortedSections(true) as $section) {
     if ($motion->consultation->getSettings()->lineLength > 80) {
         echo " smallFont";
     }
-    echo '"><h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
+    echo '" id="section_' . $section->sectionId . '">';
+    echo '<h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
 
-
-    echo $section->getSectionType()->showMotionView($controller);
+    $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
+    echo $section->getSectionType()->showMotionView($controller, $commOp);
 
     echo '</article>';
 }

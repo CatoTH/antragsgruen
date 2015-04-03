@@ -1,6 +1,7 @@
 <?php
 /**
  * @var \app\models\db\MotionSection $section
+ * @var int[] $openedComments
  */
 
 use app\components\UrlHelper;
@@ -23,7 +24,11 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     } elseif (mb_stripos($paragraph->lines[0], '<blockquote>') === 0) {
         $parClasses[] = 'blockquote';
     }
-    echo '<section class="' . implode(' ', $parClasses) . '">';
+    if (in_array($paragraphNo, $openedComments)) {
+        $parClasses[] = 'commentsOpened';
+    }
+    $id = 'section_' . $section->sectionId . '_' . $paragraphNo;
+    echo '<section class="' . implode(' ', $parClasses) . '" id="' . $id . '">';
 
 
     echo '<ul class="bookmarks">';

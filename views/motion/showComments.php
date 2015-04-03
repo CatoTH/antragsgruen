@@ -5,7 +5,6 @@
  * @var Motion $motion
  * @var int $sectionId
  * @var int $paragraphNo
- * @var string $commDelLink
  * @var MotionComment[] $comments
  * @var \app\models\forms\CommentForm $form
  */
@@ -38,10 +37,12 @@ foreach ($comments as $comment) {
     echo '</h3>';
 
     echo nl2br(Html::encode($comment->text));
-    if (!is_null($commDelLink) && $comment->canDelete(User::getCurrentUser())) {
-        echo '<div class="delLink hoverElement">';
-        echo Html::a('x', str_replace(rawurlencode('#commId#'), $comment->id, $commDelLink));
-        echo '</div>';
+    if ($comment->canDelete(User::getCurrentUser())) {
+        echo Html::beginForm('', 'post', ['class' => 'delLink hoverElement']);
+        echo '<input type="hidden" name="commentId" value="' . $comment->id . '">';
+        echo '<button class="link" type="submit" name="deleteComment">';
+        echo '<span class="glyphicon glyphicon-trash"></span></button>';
+        echo Html::endForm();
     }
 
     if ($comment->status == MotionComment::STATUS_SCREENING && $imadmin) {

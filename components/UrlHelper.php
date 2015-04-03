@@ -5,6 +5,7 @@ namespace app\components;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
+use app\models\db\MotionComment;
 use app\models\db\Site;
 use Yii;
 use yii\helpers\Url;
@@ -145,6 +146,21 @@ class UrlHelper
         return static::createUrl(['motion/' . $mode, 'motionId' => $motion->id]);
     }
 
+    /**
+     * @param MotionComment $motionComment
+     * @return string
+     */
+    public static function createMotionCommentUrl(MotionComment $motionComment)
+    {
+        return static::createUrl(
+            [
+                'motion/view',
+                'motionId' => $motionComment->motionId,
+                'commentId' => $motionComment->id,
+                '#' => 'comm' . $motionComment->id
+            ]
+        );
+    }
 
     /**
      * @param Amendment $amendment

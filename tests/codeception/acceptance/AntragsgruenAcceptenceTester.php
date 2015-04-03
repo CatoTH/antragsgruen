@@ -2,6 +2,7 @@
 
 // @codingStandardsIgnoreFile
 use tests\codeception\_pages\ConsultationHomePage;
+use tests\codeception\_pages\MotionPage;
 
 /**
  * Class AntragsgruenAcceptenceTester
@@ -51,6 +52,24 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         );
         if ($check) {
             $this->see('Test2', 'h1');
+        }
+    }
+
+    /**
+     * @param bool $check
+     */
+    public function gotoStdMotion($check = true)
+    {
+        MotionPage::openBy(
+            $this,
+            [
+                'subdomain'        => 'stdparteitag',
+                'consultationPath' => 'std-parteitag',
+                'motionId'         => 2,
+            ]
+        );
+        if ($check) {
+            $this->see('O’zapft is!', 'h1');
         }
     }
 
