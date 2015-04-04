@@ -67,6 +67,7 @@ foreach ($comments as $comment) {
     echo Html::a("Kommentar verlinken", $commLink, ['class' => 'hoverElement']);
     echo '</div>';
 
+    /*
     if ($motion->consultation->getSettings()->commentsSupportable) {
         echo Html::beginForm($commLink, 'post', ['class' => 'commentSupporterHolder']);
 
@@ -103,6 +104,7 @@ foreach ($comments as $comment) {
         }
         echo Html::endForm();
     }
+    */
     echo '</div></article>';
 }
 

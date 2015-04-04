@@ -245,17 +245,20 @@ $description = 'Durchgestrichen als Formatierungsmöglichkeit in Anträgen zulas
 $booleanSettingRow($settings, 'allowStrikeFormat', $handledSettings, $description);
 
 
-echo '</div>
-<h2>Kommentare</h2>
+echo '</div>';
+
+/*
+echo '<h2>Kommentare</h2>
 <div class="content">';
 
 
 $description = 'Besucher können Kommentare <strong>bewerten</strong>';
 $booleanSettingRow($settings, 'commentsSupportable', $handledSettings, $description);
 
-echo '</div>
+echo '</div>';
+*/
 
-<div class="saveholder">
+echo '<div class="saveholder">
 <button type="submit" name="save" class="btn btn-primary">Speichern</button>
 </div>
 
