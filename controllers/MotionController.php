@@ -280,14 +280,18 @@ class MotionController extends Base
 
     /**
      * @param Motion $motion
+     * @throws Internal
      */
     private function motionDelTag(Motion $motion)
     {
-        if (AntiXSS::isTokenSet("del_tag") && $this->veranstaltung->isAdminCurUser()) {
-            Yii::app()->db->createCommand()->delete("antrag_tags", 'antrag_id=:antrag_id AND tag_id=:tag_id', array("antrag_id" => $antrag->id, "tag_id" => AntiXSS::getTokenVal("del_tag")));
-            $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            throw new Internal('Keine Freischaltrechte');
         }
-
+        foreach ($motion->consultation->tags as $tag) {
+            if ($tag->id == $_POST['tagId']) {
+                $motion->unlink('tags', $tag, true);
+            }
+        }
     }
 
     /**

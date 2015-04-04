@@ -18,6 +18,10 @@ INSERT INTO `consultationSettingsMotionType` (`id`, `consultationId`, `title`, `
   (2, 1, 'Resolution', 'R', 1),
   (3, 1, 'Satzungsantrag', 'S', 2);
 
+INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `title`, `cssicon`) VALUES
+  (1, 1, 0, 'Win', 0),
+  (2, 1, 1, 'Fail', 0);
+
 INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`) VALUES
   (1, 'stdparteitag', 'Test2', 'Test2', NULL, 1, 1, 'Test2');
 

@@ -29,7 +29,7 @@ $layout     = $controller->layoutParams;
 $wording    = $consultation->getWording();
 
 
-$layout->breadcrumbs[UrlHelper::createMotionUrl($motion)] = $motion->getTypeName();
+$layout->breadcrumbs[] = $motion->getTypeName();
 $layout->addJS('/js/socialshareprivacy/jquery.socialshareprivacy.js');
 
 $this->title = $motion->getTitleWithPrefix() . " (" . $motion->consultation->title . ", Antragsgrün)";
@@ -118,7 +118,7 @@ if (!$minimalisticUi) {
                 </div>
             <?php } */
 
-    echo '<table style="width: 100%;" class="motionDataTable">
+    echo '<table class="motionDataTable">
                 <tr>
                     <th>' . $wording->get("Veranstaltung") . ':</th>
                     <td>' .
@@ -185,10 +185,11 @@ if (!$minimalisticUi) {
         $used_tag_ids = array();
         foreach ($motion->tags as $tag) {
             $used_tag_ids[] = $tag->id;
-            $delParams      = ['motionId' => $motion->id, AntiXSS::createToken("del_tag") => $tag->id];
-            $dellink        = UrlHelper::createUrl(array_merge(["motion/view"], $delParams));
             $str            = Html::encode($tag->title);
-            $str .= ' <a href="' . Html::encode($dellink) . '" class="dellink">del</a>';
+            $str .= Html::beginForm('', 'post', ['class' => 'form-inline delTagForm delTag' . $tag->id]);
+            $str .= '<input type="hidden" name="tagId" value="' . $tag->id . '">';
+            $str .= '<button type="submit" name="motionDelTag">del</button>';
+            $str .= Html::endForm();
             $tags[] = $str;
         }
         echo implode(", ", $tags);
@@ -240,7 +241,7 @@ if (!$minimalisticUi) {
     <div class="visible-xs-block">
                 <div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
                     <a href="' . Html::encode(UrlHelper::createMotionUrl($motion, 'pdf')) . '"
-                       class="btn" style="color: black;"><span class="icon-pdf"></span> PDF-Version</a>
+                       class="btn" style="color: black;"><span class="glyphicon glyphicon-download-alt"></span> PDF-Version</a>
                 </div>';
 
     $policy = $motion->consultation->getAmendmentPolicy();

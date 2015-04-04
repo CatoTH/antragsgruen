@@ -105,11 +105,24 @@
 
 
 .motionData {
+  .motionDataTable {
+    width: 100%;
+  }
   .tagAdderHolder:link, .tagAdderHolder:visited {
     color: green;
   }
   #tagAdderForm {
     display: none;
+  }
+  .delTagForm {
+    display: inline;
+    button {
+      background: transparent;
+      border: none;
+      color: red;
+      font-style: italic;
+      padding: 0 6px 0 3px;
+    }
   }
 }
 

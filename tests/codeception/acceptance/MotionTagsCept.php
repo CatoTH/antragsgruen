@@ -12,12 +12,8 @@ $I->wantTo('Ensure tags are not visible yet');
 $I->gotoStdMotion(true);
 $I->dontSee('Themenbereiche');
 
-$I->loginAsStdAdmin();
-$I->gotoStdMotion(true);
-$I->dontSee('Themenbereiche');
-
-
 $I->wantTo('Create some tags');
+$I->loginAsStdAdmin();
 $I->click('#adminLink');
 $I->click('#consultationextendedLink');
 
@@ -60,3 +56,18 @@ $I->submitForm('#tagAdderForm', [], 'motionAddTag');
 
 $I->see('Environment', '.motionDataTable .tags');
 $I->dontSeeElement('#tagAdderForm');
+$I->click('.tagAdderHolder');
+$I->seeElement('#tagAdderForm');
+$I->selectOption('#tagAdderForm select', 'Fail');
+$I->submitForm('#tagAdderForm', [], 'motionAddTag');
+
+$I->see('Fail', '.motionDataTable .tags');
+$I->dontSeeElement('#tagAdderForm');
+
+
+$I->wantTo('Delete a tag');
+$I->seeElement('.motionDataTable .tags .delTag2');
+$I->submitForm('.motionDataTable .tags .delTag2', [], 'motionDelTag');
+$I->dontSee('Fail', '.motionDataTable .tags');
+$I->dontSeeElement('.motionDataTable .tags .delTag2');
+$I->see('Environment', '.motionDataTable .tags');
