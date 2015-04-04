@@ -6,9 +6,6 @@ build_settings:
 setup:
 
 test:
-  codeception:
-    config: "tests/codeception.yml"
-    log_path: "tests/codeception/_output"
   php_mess_detector:
     allowed_warnings: 0
     rules:
@@ -33,4 +30,7 @@ test:
     skip_classes: true
   php_loc:
     directory: .
+  codeception:
+    config: "tests/codeception.yml"
+    log_path: "tests/codeception/_output"
 failure:

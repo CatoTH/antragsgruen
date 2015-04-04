@@ -126,72 +126,6 @@ class MotionController extends Base
 
     /**
      * @param Motion $motion
-     * @param int $commentId
-     * @throws Internal
-     */
-    private function commentLike(Motion $motion, $commentId)
-    {
-        $comment = $this->getComment($motion, $commentId, false);
-
-        $meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($commentId);
-        if ($meine_unterstuetzung === null) {
-            $unterstuetzung = new AntragKommentarUnterstuetzerInnen();
-            $unterstuetzung->setIdentityParams();
-            $unterstuetzung->dafuer              = 1;
-            $unterstuetzung->antrag_kommentar_id = $kommentar_id;
-
-            if ($unterstuetzung->save()) {
-                Yii::app()->user->setFlash("success", "Du hast den Kommentar positiv bewertet.");
-            } else {
-                Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-            }
-            $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $kommentar_id, "#" => "komm" . $kommentar_id)));
-        }
-    }
-
-    /**
-     * @param Motion $motion
-     * @param int $commentId
-     * @throws Internal
-     */
-    private function commentDislike(Motion $motion, $commentId)
-    {
-        $comment = $this->getComment($motion, $commentId, false);
-
-        $meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($kommentar_id);
-        if ($meine_unterstuetzung === null) {
-            $unterstuetzung = new AntragKommentarUnterstuetzerInnen();
-            $unterstuetzung->setIdentityParams();
-            $unterstuetzung->dafuer              = 0;
-            $unterstuetzung->antrag_kommentar_id = $kommentar_id;
-            if ($unterstuetzung->save()) {
-                Yii::app()->user->setFlash("success", "Du hast den Kommentar negativ bewertet.");
-            } else {
-                Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-            }
-            $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $kommentar_id, "#" => "komm" . $kommentar_id)));
-        }
-    }
-
-    /**
-     * @param Motion $motion
-     * @param int $commentId
-     * @throws Internal
-     */
-    private function commentUndoLike(Motion $motion, $commentId)
-    {
-        $comment = $this->getComment($motion, $commentId, false);
-
-        $meine_unterstuetzung = AntragKommentarUnterstuetzerInnen::meineUnterstuetzung($kommentar_id);
-        if ($meine_unterstuetzung !== null) {
-            $meine_unterstuetzung->delete();
-            Yii::app()->user->setFlash("success", "Du hast die Bewertung des Kommentars zurückgenommen.");
-            $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id, "kommentar_id" => $kommentar_id, "#" => "komm" . $kommentar_id)));
-        }
-    }
-
-    /**
-     * @param Motion $motion
      * @param string $role
      * @param string $string
      * @throws FormError
@@ -302,15 +236,6 @@ class MotionController extends Base
         } elseif (isset($_POST['commentScreeningReject'])) {
             $this->screenCommentReject($motion, $commentId);
 
-        } elseif (isset($_POST['commentLike'])) {
-            $this->commentLike($motion, $commentId);
-
-        } elseif (isset($_POST['commentDislike'])) {
-            $this->commentDislike($motion, $commentId);
-
-        } elseif (isset($_POST['commentUndoLike'])) {
-            $this->commentUndoLike($motion, $commentId);
-
         } elseif (isset($_POST['motionLike'])) {
             $this->motionLike($motion);
 
@@ -412,7 +337,11 @@ class MotionController extends Base
             'commentForm'    => null,
         ];
 
-        $this->performShowActions($motion, $commentId, $motionViewParams);
+        try {
+            $this->performShowActions($motion, $commentId, $motionViewParams);
+        } catch (\Exception $e) {
+            \yii::$app->session->setFlash('error', $e->getMessage());
+        }
 
         $supportStatus = "";
         if (!\Yii::$app->user->isGuest) {
