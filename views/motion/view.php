@@ -4,7 +4,6 @@ use app\components\AntiXSS;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
-use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
@@ -47,13 +46,14 @@ $policy = $motion->consultation->getAmendmentPolicy();
 if ($policy->checkCurUserHeuristically()) {
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
-    $title          = '<span class="icon glyphicon glyphicon-plus-sign"></span>' . $wording->get("Änderungsantrag stellen");
+    $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
+    $title .= $wording->get("Änderungsantrag stellen");
     $html .= Html::a($title, $amendCreateUrl) . '</li>';
 } else {
     $msg = $policy->getPermissionDeniedMsg($wording);
     if ($msg != "") {
         $html .= '<li class="amendmentCreate">';
-        $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-plus-sign"></span>';
+        $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
         $html .= Html::encode($wording->get("Änderungsantrag stellen"));
         $html .= '</span><br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
         $html .= Html::encode($policy->getPermissionDeniedMsg($wording)) . '</span></li>';
@@ -62,7 +62,7 @@ if ($policy->checkCurUserHeuristically()) {
 
 if ($motion->consultation->getSettings()->hasPDF && $motion->isVisible()) {
     $html .= '<li class="download">';
-    $title = '<span class="icon glyphicon glyphicon-download"></span>' . $wording->get("PDF-Version herunterladen");
+    $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' . $wording->get("PDF-Version herunterladen");
     $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
 }
 
@@ -246,7 +246,7 @@ if (!$minimalisticUi) {
     $policy = $motion->consultation->getAmendmentPolicy();
     if ($policy->checkCurUserHeuristically()) {
         echo '<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-            <a href="' . Html::encode(UrlHelper::createUrl("amendment/neu", ['motionId' => $motion->id])) . '"
+            <a href="' . Html::encode(UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id])) . '"
                class="btn btn-danger" style="color: white;"><span class="icon-aender-stellen"></span> ' .
             Html::encode($wording->get("Änderungsantrag stellen")) . '</a>
         </div>';

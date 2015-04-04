@@ -454,20 +454,32 @@ h3 label {
     margin-bottom: 20px;
 
     > li {
-      padding: 0 20px 10px 38px;
-      a, a:hover, a:focus {
-        padding: 0px;
+      padding: 0 10px 10px 38px;
+      a {
+        color: #A2BC04;
+        padding: 0;
         background: none;
         filter: none;
         margin: 0;
         text-shadow: none;
         display: inline;
+
+        &:link, &:visited {
+          color: #A2BC04;
+        }
+
+        .glyphicon {
+          position: absolute;
+          left: -25px;
+        }
       }
       &.nav-header {
-        padding-left: 15px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        padding-right: 0;
+        padding: 5px 0 5px 15px;
+      }
+      &.notifications {
+        a span {
+          font-size: 18px;
+        }
       }
     }
 
@@ -475,64 +487,8 @@ h3 label {
       margin-bottom: 12px;
     }
   }
-  .neue-antraege .antrag:before {
-    @extend .icon-document;
-    @include icons-antragsgruen(15px);
-    color: #A2BC04;
-    margin-left: -20px;
-  }
 
-  .neue-antraege .resolution:before {
-    @extend .icon-feed;
-    @include icons-antragsgruen(15px);
-    color: #A2BC04;
-    margin-left: -20px;
-  }
-
-  .neue-aenderungsantraege .aeantrag:before {
-    @extend .icon-attachment;
-    @include icons-antragsgruen(15px);
-    color: #A2BC04;
-    margin-left: -20px;
-  }
-
-  .neue-kommentare {
-    .komm:before {
-      @extend .icon-comment;
-      @include icons-antragsgruen(15px);
-      color: #A2BC04;
-      margin-left: -20px;
-    }
-
-    .komm strong {
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    .feed:before {
-      @extend .icon-feed;
-      @include icons-antragsgruen(15px);
-      color: #A2BC04;
-      margin-left: -20px;
-    }
-
-    .benachrichtigung:before {
-      @extend .icon-bell;
-      @include icons-antragsgruen(15px);
-      color: #A2BC04;
-      margin-left: -20px;
-    }
-
-    .pdf:before {
-      @extend .icon-pdf;
-      @include icons-antragsgruen(15px);
-      color: #A2BC04;
-      margin-left: -20px;
-    }
-
-  }
-
-  .neuer-antrag {
+  .createMotion {
     position: absolute;
     top: -4px;
     right: -58px;
@@ -542,8 +498,11 @@ h3 label {
     background-image: url(../img/neuer-antrag.png);
   }
 
-  .antragsgruen_werbung {
+  .antragsgruenAd {
     margin-top: 30px;
+    .content > div {
+      text-align: center; margin-top: 15px;
+    }
   }
 
   .nav-list.einsatzorte-list li {

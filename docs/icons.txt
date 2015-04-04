@@ -1,0 +1,22 @@
+Administration: glyphicon-wrench
+Standard link decoration: glyphicon-chevron-right
+Edit text: glyphicon-edit
+PDF: glyphicon-download-alt
+Search: glyphicon-search
+Submit: glyphicon-ok-sign
+Go on: glyphicon-ok
+Correct: glyphicon-remove-sign
+Delete comment: glyphicon-trash
+Like: glyphicon-thumbs-up
+Dislike: glyphicon-thumbs-down
+Comment: glyphicon-comment
+Create amendment: glyphicon-flash
+Go back: glyphicon-chevron-left
+Log in: glyphicon-log-in
+
+Used Icons:
+- glyphicon-remove-circle
+- glyphicon-plus-sign
+- glyphicon-calendar
+- glyphicon-scissors
+- glyphicon-exclamation-sign

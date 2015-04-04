@@ -53,16 +53,15 @@ if ($motionLink != '') {
 }
 
 if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
-    $html = '<div><ul class="nav nav-list neue-antraege">';
+    $html = '<div><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header">' . $wording->get("Neue Anträge") . '</li>';
     if (count($newestMotions) == 0) {
         $html .= '<li><i>keine</i></li>';
     } else {
         foreach ($newestMotions as $motion) {
-            $html .= '<li>';
-            $html .= '<span class="' . $motion->getIconCSSClass() . '"></span>';
             $motionLink = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
-            $html .= Html::a($motion->title, $motionLink) . "</li>\n";
+            $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' . Html::encode($motion->title);
+            $html .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
         }
     }
     $html .= "</ul></div>";
@@ -70,7 +69,7 @@ if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
 }
 
 if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
-    $html = '<div><ul class="nav nav-list neue-aenderungsantraege">';
+    $html = '<div><ul class="nav nav-list amendments">';
     $html .= '<li class="nav-header">' . $wording->get("Neue Änderungsanträge") . '</li>';
     if (count($newestAmendments) == 0) {
         $html .= "<li><i>keine</i></li>";
@@ -87,8 +86,9 @@ if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
                     "motionId"    => $amendment->motion->id
                 ]
             );
-            $linkTitle     = "<strong>" . Html::encode($amendment->titlePrefix) . "</strong> zu " . $zu_str;
-            $html .= '<li class="aeantrag">' . Html::a($linkTitle, $amendmentLink) . '</li>';
+            $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>';
+            $linkTitle .= "<strong>" . Html::encode($amendment->titlePrefix) . "</strong> zu " . $zu_str;
+            $html .= '<li>' . Html::a($linkTitle, $amendmentLink) . '</li>';
         }
     }
     $html .= "</ul></div>";
@@ -97,11 +97,11 @@ if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
 
 if ($consultation->getMotionPolicy()->checkCurUserHeuristically()) {
     $newUrl              = UrlHelper::createUrl("motion/create");
-    $layout->menusHtml[] = '<a class="neuer-antrag" href="' . Html::encode($newUrl) . '"></a>';
+    $layout->menusHtml[] = '<a class="createMotion" href="' . Html::encode($newUrl) . '"></a>';
 }
 
 if (!in_array($consultation->policyComments, array(0, 4))) {
-    $html = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Neue Kommentare</li>";
+    $html = "<div><ul class='nav nav-list'><li class='nav-header'>Neue Kommentare</li>";
     if (count($newestMotionComments) == 0) {
         $html .= "<li><i>keine</i></li>";
     } else {
@@ -125,11 +125,11 @@ if (!in_array($consultation->policyComments, array(0, 4))) {
     $layout->menusHtml[] = $html;
 }
 
-
-$title = $wording->get("E-Mail-Benachrichtigung bei neuen Anträgen");
-$link  = UrlHelper::createUrl('consultation/notifications');
-$html  = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>Benachrichtigungen</li>";
-$html .= "<li class='benachrichtigung'>" . Html::a($title, $link) . "</li>";
+$title = '<span class="glyphicon glyphicon-bell"></span>';
+$title .= $wording->get("E-Mail-Benachrichtigung bei neuen Anträgen");
+$link = UrlHelper::createUrl('consultation/notifications');
+$html = "<div><ul class='nav nav-list'><li class='nav-header'>Benachrichtigungen</li>";
+$html .= "<li class='notifications'>" . Html::a($title, $link) . "</li>";
 $html .= "</ul></div>";
 
 $layout->menusHtml[] = $html;
@@ -139,28 +139,28 @@ if ($consultation->getSettings()->showFeeds) {
     $feeds     = 0;
     $feedsHtml = "";
     if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
-        $feedsHtml .= "<li class='feed'>";
+        $feedsHtml .= "<li>";
         $feedsHtml .= Html::a($wording->get("Anträge"), UrlHelper::createUrl("consultation/feedmotions")) . "</li>";
         $feeds++;
     }
     if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
-        $feedsHtml .= "<li class='feed'>";
+        $feedsHtml .= "<li>";
         $feedsHtml .= Html::a($wording->get("Änderungsanträge"), UrlHelper::createUrl("consultation/feedamendments"));
         $feedsHtml .= "</li>";
         $feeds++;
     }
     if (!in_array($consultation->policyComments, array(0, 4))) {
         $feedUrl = UrlHelper::createUrl("consultation/feedcomments");
-        $feedsHtml .= "<li class='feed'>" . Html::a($wording->get("Kommentare"), $feedUrl) . "</li>";
+        $feedsHtml .= "<li>" . Html::a($wording->get("Kommentare"), $feedUrl) . "</li>";
         $feeds++;
     }
     if ($feeds > 1) {
         $feedAllUrl = UrlHelper::createUrl("consultation/feedall");
-        $feedsHtml .= "<li class='feed'>" . Html::a($wording->get("Alles"), $feedAllUrl) . "</li>";
+        $feedsHtml .= "<li>" . Html::a($wording->get("Alles"), $feedAllUrl) . "</li>";
     }
 
     $feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
-    $html      = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>";
+    $html      = "<div><ul class='nav nav-list'><li class='nav-header'>";
     $html .= $feeds_str;
     $html .= "</li>" . $feedsHtml . "</ul></div>";
 
@@ -169,28 +169,28 @@ if ($consultation->getSettings()->showFeeds) {
 
 if ($consultation->getSettings()->hasPDF) {
     $name = $wording->get("Alle PDFs zusammen");
-    $html = "<div><ul class='nav nav-list neue-kommentare'><li class='nav-header'>PDFs</li>";
+    $html = "<div><ul class='nav nav-list'><li class='nav-header'>PDFs</li>";
     $html .= "<li class='pdf'>" . Html::a($name, UrlHelper::createUrl("consultation/pdfs")) . "</li>";
     if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
         $amendmentPdfLink = UrlHelper::createUrl("consultation/amendmentpdfs");
-        $linkTitle        = "Alle " . $wording->get("Änderungsanträge") . " gesammelt";
-        $html .= "<li class='pdf'>" . Html::a($linkTitle, $amendmentPdfLink) . "</li>";
+        $linkTitle        = '<span class="glyphicon glyphicon-download-alt"></span>';
+        $linkTitle .= "Alle " . $wording->get("Änderungsanträge") . " gesammelt";
+        $html .= "<li>" . Html::a($linkTitle, $amendmentPdfLink) . "</li>";
     }
     $html .= "</ul></div>";
     $layout->menusHtml[] = $html;
 }
 
 if ($consultation->site->getBehaviorClass()->showAntragsgruenInSidebar()) {
-    $layout->postSidebarHtml = "<div class='antragsgruen_werbung well'>
+    $layout->postSidebarHtml = "<div class='antragsgruenAd well'>
         <div class='nav-header'>Dein Antragsgrün</div>
         <div class='content'>
             Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
-            <div class='myAntragsgruenAd' style='text-align: center; margin-top: 15px;'>
+            <div>
                 <a href='" . Html::encode(UrlHelper::createUrl("manager/index")) . "' class='btn btn-primary'>
-                <span class='icon-chevron-right'></span> Infos
+                <span class='glyphicon glyphicon-chevron-right'></span> Infos
                 </a>
             </div>
         </div>
     </div>";
-    $layout->menusHtml[]     = $html;
 }

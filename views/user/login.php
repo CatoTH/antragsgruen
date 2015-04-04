@@ -116,7 +116,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
         <button type="submit" class="btn btn-primary" name="loginusernamepassword">
 
             <span id="login_str"><span class="glyphicon glyphicon-log-in"></span> Einloggen</span>
-            <span id="create_str"><span class="glyphicon glyphicon-plus"></span> Anlegen</span>
+            <span id="create_str"><span class="glyphicon glyphicon-plus-sign"></span> Anlegen</span>
         </button>
         ';
     echo Html::endForm();
