@@ -40,7 +40,7 @@ class All extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return "Alle";
+        return 'Alle';
     }
 
     /**
@@ -48,9 +48,39 @@ class All extends IPolicy
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedMsg(IWording $wording)
+    public function getPermissionDeniedMotionMsg(IWording $wording)
     {
-        return "[kommt nicht vor]";
+        return '';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedAmendmentMsg(IWording $wording)
+    {
+        return '';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedSupportMsg(IWording $wording)
+    {
+        return '';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedCommentMsg(IWording $wording)
+    {
+        return '';
     }
 
     /**
@@ -64,8 +94,8 @@ class All extends IPolicy
     /**
      * @return bool
      */
-    public function checkAmendmentSubmit()
+    public function checkSupportSubmit()
     {
-        return true;
+        return false; // Only logged in users can support motions
     }
 }

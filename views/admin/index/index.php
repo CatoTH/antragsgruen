@@ -53,7 +53,7 @@ $motionp = $consultation->getMotionPolicy();
 if ($motionp->checkCurUserHeuristically()) {
     echo Html::a('Neuen Antrag anlegen', UrlHelper::createUrl('motion/create'));
 } else {
-    echo 'Neuen Antrag anlegen: <em>' . $motionp->getPermissionDeniedMsg($consultation->getWording()) . '</em>';
+    echo 'Neuen Antrag anlegen: <em>' . $motionp->getPermissionDeniedMotionMsg($consultation->getWording()) . '</em>';
 }
 echo '</li>
 

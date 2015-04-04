@@ -35,14 +35,6 @@ class MotionSupporter extends ISupporter
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'userId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getMotion()
     {
         return $this->hasOne(Motion::className(), ['id' => 'motionId']);

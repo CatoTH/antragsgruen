@@ -17,6 +17,8 @@ use yii\helpers\Html;
  * @property string $resolutionDate
  * @property string $contactEmail
  * @property string $contactPhone
+ *
+ * @propery User|null $user
  */
 abstract class ISupporter extends ActiveRecord
 {
@@ -53,11 +55,22 @@ abstract class ISupporter extends ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['id' => 'userId']);
+    }
+
+    /**
      * @return string
      */
     public function getNameWithOrga()
     {
         $name = $this->name;
+        if ($name == '' && $this->user) {
+            $name = $this->user->name;
+        }
         if ($this->organization != "") {
             $name .= " (" . trim($this->organization, " \t\n\r\0\x0B()") . ")";
         }

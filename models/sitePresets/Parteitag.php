@@ -35,14 +35,13 @@ class Parteitag implements ISitePreset
     {
         $settings                       = $consultation->getSettings();
         $settings->lineNumberingGlobal  = false;
-        $settings->amendNumberingGlobal = false;
         $settings->screeningMotions     = true;
         $settings->screeningAmendments  = true;
 
         $consultation->policyMotions    = IPolicy::POLICY_ALL;
         $consultation->policyAmendments = IPolicy::POLICY_ALL;
         $consultation->policyComments   = IPolicy::POLICY_ALL;
-        $consultation->policySupport    = IPolicy::POLICY_ALL;
+        $consultation->policySupport    = IPolicy::POLICY_LOGGED_IN;
         $consultation->wording          = \app\models\wording\Parteitag::getWordingID();
     }
 

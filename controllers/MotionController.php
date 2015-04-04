@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\AntiXSS;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\EMailLog;
@@ -193,29 +192,41 @@ class MotionController extends Base
 
     /**
      * @param Motion $motion
+     * @param string $role
+     * @param string $string
+     * @throws FormError
+     */
+    private function motionLikeDislike(Motion $motion, $role, $string)
+    {
+        $currentUser = User::getCurrentUser();
+        if (!$this->consultation->getSupportPolicy()->checkSupportSubmit() || $currentUser == null) {
+            throw new FormError('Supporting this motion is not possible');
+        }
+
+        foreach ($motion->motionSupporters as $supp) {
+            if ($supp->userId == $currentUser->id) {
+                $motion->unlink('motionSupporters', $supp, true);
+            }
+        }
+        $support = new MotionSupporter();
+        $support->motionId = $motion->id;
+        $support->userId = $currentUser->id;
+        $support->position = 0;
+        $support->role = $role;
+        $support->save();
+
+        $motion->refresh();
+
+        \Yii::$app->session->setFlash('success', $string);
+    }
+
+    /**
+     * @param Motion $motion
+     * @throws FormError
      */
     private function motionLike(Motion $motion)
     {
-        if (AntiXSS::isTokenSet("mag") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
-        }
-
-        $userid = Yii::app()->user->getState("person_id");
-        foreach ($antrag->antragUnterstuetzerInnen as $unt) {
-            if ($unt->unterstuetzerIn_id == $userid) {
-                $unt->delete();
-            }
-        }
-        $unt                     = new AntragUnterstuetzerInnen();
-        $unt->antrag_id          = $antrag->id;
-        $unt->unterstuetzerIn_id = $userid;
-        $unt->rolle              = "mag";
-        $unt->kommentar          = "";
-        if ($unt->save()) {
-            Yii::app()->user->setFlash("success", "Du unterstützt diesen Antrag nun.");
-        } else {
-            Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-        }
-        $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, 'Du unterstützt diesen Antrag nun.');
     }
 
     /**
@@ -223,43 +234,21 @@ class MotionController extends Base
      */
     private function motionDislike(Motion $motion)
     {
-        if (AntiXSS::isTokenSet("magnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
-            $userid = Yii::app()->user->getState("person_id");
-            foreach ($antrag->antragUnterstuetzerInnen as $unt) {
-                if ($unt->unterstuetzerIn_id == $userid) {
-                    $unt->delete();
-                }
-            }
-            $unt                     = new AntragUnterstuetzerInnen();
-            $unt->antrag_id          = $antrag->id;
-            $unt->unterstuetzerIn_id = $userid;
-            $unt->rolle              = "magnicht";
-            $unt->kommentar          = "";
-            $unt->save();
-            if ($unt->save()) {
-                Yii::app()->user->setFlash("success", "Du lehnst diesen Antrag nun ab.");
-            } else {
-                Yii::app()->user->setFlash("error", "Ein (seltsamer) Fehler ist aufgetreten.");
-            }
-            $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
-        }
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, 'Du widersprichst diesem Antrag nun.');
     }
 
     /**
      * @param Motion $motion
      */
-    private function motionUndoLike(Motion $motion)
+    private function motionSupportRevoke(Motion $motion)
     {
-        if (AntiXSS::isTokenSet("dochnicht") && $this->veranstaltung->getPolicyUnterstuetzen()->checkAntragSubmit()) {
-            $userid = Yii::app()->user->getState("person_id");
-            foreach ($antrag->antragUnterstuetzerInnen as $unt) {
-                if ($unt->unterstuetzerIn_id == $userid) {
-                    $unt->delete();
-                }
+        $currentUser = User::getCurrentUser();
+        foreach ($motion->motionSupporters as $supp) {
+            if ($supp->userId == $currentUser->id) {
+                $motion->unlink('motionSupporters', $supp, true);
             }
-            Yii::app()->user->setFlash("success", "Du stehst diesem Antrag wieder neutral gegenüber.");
-            $this->redirect($this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->id)));
         }
+        \Yii::$app->session->setFlash('success', 'Du stehst diesem Antrag wieder neutral gegenüber.');
     }
 
     /**
@@ -328,8 +317,8 @@ class MotionController extends Base
         } elseif (isset($_POST['motionDislike'])) {
             $this->motionDislike($motion);
 
-        } elseif (isset($_POST['motionUndoLike'])) {
-            $this->motionUndoLike($motion);
+        } elseif (isset($_POST['motionSupportRevoke'])) {
+            $this->motionSupportRevoke($motion);
 
         } elseif (isset($_POST['motionAddTag'])) {
             $this->motionAddTag($motion);
@@ -408,15 +397,6 @@ class MotionController extends Base
         }
 
 
-        $supportStatus = "";
-        if (!\Yii::$app->user->isGuest) {
-            foreach ($motion->getSupporters() as $supp) {
-                if ($supp->userId == User::getCurrentUser()->id) {
-                    $supportStatus = $supp->role;
-                }
-            }
-        }
-
         if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/motions/update', 'motionId' => $motionId]);
         } else {
@@ -429,11 +409,21 @@ class MotionController extends Base
             'editLink'       => $motion->canEdit(),
             'openedComments' => $openedComments,
             'adminEdit'      => $adminEdit,
-            'supportStatus'  => $supportStatus,
             'commentForm'    => null,
         ];
 
         $this->performShowActions($motion, $commentId, $motionViewParams);
+
+        $supportStatus = "";
+        if (!\Yii::$app->user->isGuest) {
+            foreach ($motion->motionSupporters as $supp) {
+                if ($supp->userId == User::getCurrentUser()->id) {
+                    $supportStatus = $supp->role;
+                }
+            }
+        }
+        $motionViewParams['supportStatus'] = $supportStatus;
+
 
         return $this->render('view', $motionViewParams);
     }

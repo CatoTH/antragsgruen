@@ -274,6 +274,14 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @return IPolicy
+     */
+    public function getSupportPolicy()
+    {
+        return IPolicy::getInstanceByID($this->policySupport, $this);
+    }
+
+    /**
      * @return DefaultForm
      */
     public function getMotionInitiatorFormClass()

@@ -12,7 +12,7 @@ class Nobody extends IPolicy
      */
     public static function getPolicyID()
     {
-        return "nobody";
+        return 'nobody';
     }
 
     /**
@@ -23,7 +23,7 @@ class Nobody extends IPolicy
      */
     public static function getPolicyName(IWording $wording)
     {
-        return "Niemand";
+        return 'Niemand';
     }
 
     /**
@@ -40,7 +40,7 @@ class Nobody extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return "Niemand";
+        return 'Niemand';
     }
 
     /**
@@ -48,23 +48,45 @@ class Nobody extends IPolicy
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedMsg(IWording $wording)
+    public function getPermissionDeniedMotionMsg(IWording $wording)
     {
-        return "Das Anlegen ist nicht erlaubt.";
+        return 'Momentan kann niemand Anträge stellen.';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedAmendmentMsg(IWording $wording)
+    {
+        return 'Momentan kann niemand Änderungsanträge stellen.';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedSupportMsg(IWording $wording)
+    {
+        return 'Momentan kann niemand Anträge unterstützen.';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedCommentMsg(IWording $wording)
+    {
+        return 'Momentan kann niemand Kommentare schreiben.';
     }
 
     /**
      * @return bool
      */
     public function checkMotionSubmit()
-    {
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkAmendmentSubmit()
     {
         return false;
     }

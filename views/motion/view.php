@@ -19,7 +19,7 @@ use yii\helpers\Html;
  * @var bool $editLink
  * @var int[] $openedComments
  * @var string|null $adminEdit
- * @var null|int $supportStatus
+ * @var null|string $supportStatus
  * @var null|CommentForm $commentForm
  */
 
@@ -50,13 +50,13 @@ if ($policy->checkCurUserHeuristically()) {
     $title .= $wording->get("Änderungsantrag stellen");
     $html .= Html::a($title, $amendCreateUrl) . '</li>';
 } else {
-    $msg = $policy->getPermissionDeniedMsg($wording);
+    $msg = $policy->getPermissionDeniedAmendmentMsg($wording);
     if ($msg != "") {
         $html .= '<li class="amendmentCreate">';
         $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
         $html .= Html::encode($wording->get("Änderungsantrag stellen"));
         $html .= '</span><br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
-        $html .= Html::encode($policy->getPermissionDeniedMsg($wording)) . '</span></li>';
+        $html .= Html::encode($msg) . '</span></li>';
     }
 }
 
@@ -239,10 +239,10 @@ if (!$minimalisticUi) {
     echo '</table>
 
     <div class="visible-xs-block">
-                <div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-                    <a href="' . Html::encode(UrlHelper::createMotionUrl($motion, 'pdf')) . '"
-                       class="btn" style="color: black;"><span class="glyphicon glyphicon-download-alt"></span> PDF-Version</a>
-                </div>';
+        <div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
+            <a href="' . Html::encode(UrlHelper::createMotionUrl($motion, 'pdf')) . '"
+               class="btn" style="color: black;"><span class="glyphicon glyphicon-download-alt"></span> PDF-Version</a>
+        </div>';
 
     $policy = $motion->consultation->getAmendmentPolicy();
     if ($policy->checkCurUserHeuristically()) {
@@ -254,6 +254,8 @@ if (!$minimalisticUi) {
     }
     echo '</div></div>';
 }
+
+echo $controller->showErrors();
 
 echo '</div>';
 
@@ -282,19 +284,17 @@ $likes      = $motion->getLikes();
 $dislikes   = $motion->getDislikes();
 $enries     = (count($likes) > 0 || count($dislikes) > 0);
 
-//$supportPolicy = $motion->consultation->getSupportPolicy() // @TODO
-//$kann_unterstuetzen           = $unterstuetzen_policy->checkCurUserHeuristically();
-//$kann_nicht_unterstuetzen_msg = $unterstuetzen_policy->getPermissionDeniedMsg();
-$canSupport     = false;
-$cantSupportMsg = "";
-foreach ($motion->getSupporters() as $supp) {
-    if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId == $currUserId) {
+$supportPolicy = $motion->consultation->getSupportPolicy();
+$canSupport = $supportPolicy->checkCurUserHeuristically();
+$cantSupportMsg = $supportPolicy->getPermissionDeniedSupportMsg($wording);
+foreach ($motion->getInitiators() as $supp) {
+    if ($supp->userId == $currUserId) {
         $canSupport = false;
     }
 }
 
 if (count($supporters) > 0) {
-    echo '<h2>UnterstützerInnen</h2>
+    echo '<section class="supporters"><h2>UnterstützerInnen</h2>
     <div class="content">';
 
     echo "<strong>UnterstützerInnen:</strong><br>";
@@ -313,11 +313,11 @@ if (count($supporters) > 0) {
         echo '<em>keine</em><br>';
     }
     echo "<br>";
-    echo '</div>';
+    echo '</div></section>';
 }
 
 if ($enries || $canSupport || $cantSupportMsg != "") {
-    echo '<h2>Zustimmung</h2>
+    echo '<section class="likes"><h2>Zustimmung</h2>
     <div class="content">';
 
     if (count($likes) > 0) {
@@ -328,7 +328,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
             if ($supp->id == $currUserId) {
                 echo '<span class="label label-info">Du!</span> ';
             }
-            echo Html::encode($supp->name);
+            echo Html::encode($supp->getNameWithOrga());
             echo '</li>';
         }
         echo '</ul>';
@@ -343,7 +343,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
             if ($supp->id == $currUserId) {
                 echo '<span class="label label-info">Du!</span> ';
             }
-            echo Html::encode($supp->name);
+            echo Html::encode($supp->getNameWithOrga());
             echo '</li>';
         }
         echo '</ul>';
@@ -351,7 +351,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
     }
     echo '</div>';
 
-    if ($canSupport) {
+    if ($motion->consultation->getSupportPolicy()->checkSupportSubmit()) {
         echo Html::beginForm();
 
         echo "<div style='text-align: center; margin-bottom: 20px;'>";
@@ -359,33 +359,27 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
             case MotionSupporter::ROLE_INITIATOR:
                 break;
             case MotionSupporter::ROLE_LIKE:
-                //$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit',
-                //'label' => 'Zurückziehen', 'icon' => 'icon-remove',
-                //'htmlOptions' => array('name' => AntiXSS::createToken('dochnicht'))));
+                echo '<button type="submit" name="motionSupportRevoke" class="btn">';
+                echo '<span class="glyphicon glyphicon-remove-sign"></span> Doch nicht';
+                echo '</button>';
                 break;
             case MotionSupporter::ROLE_DISLIKE:
-                //$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit',
-                //'label' => 'Zurückziehen', 'icon' => 'icon-remove',
-                //'htmlOptions' => array('name' => AntiXSS::createToken('dochnicht'))));
+                echo '<button type="submit" name="motionSupportRevoke" class="btn">';
+                echo '<span class="glyphicon glyphicon-remove-sign"></span> Doch nicht';
+                echo '</button>';
                 break;
             default:
-                echo '<div style="display: inline-block; width: 49%; text-align: center;">';
-                //$this->widget('bootstrap.widgets.TbButton', array('buttonType' => 'submit',
-                //'type' => 'success', 'label' => 'Zustimmen', 'icon' => 'icon-thumbs-up',
-                //'htmlOptions' => array('name' => AntiXSS::createToken('mag'))));
-                echo '</div>';
+                echo '<button type="submit" name="motionLike" class="btn btn-success">';
+                echo '<span class="glyphicon glyphicon-thumbs-up"></span> Zustimmung';
+                echo '</button>';
+
+                echo '<button type="submit" name="motionDislike" class="btn btn-alert">';
+                echo '<span class="glyphicon glyphicon-thumbs-down"></span> Widerspruch';
+                echo '</button>';
         }
         echo "</div>";
         echo Html::endForm();
     } else {
-        /*
-        Yii::app()->user->setFlash('warning', 'Um diesen Antrag unterstützen zu können, musst du '
-        . CHtml::link("dich einzuloggen", $this->createUrl("veranstaltung/login")) . '.');
-        $this->widget('bootstrap.widgets.TbAlert', array(
-            'block' => true,
-            'fade'  => true,
-        ));
-        */
         if ($cantSupportMsg != "") {
             echo '<div class="alert alert-danger" role="alert">
                 <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -394,10 +388,11 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
             </div>';
         }
     }
+    echo '</section>';
 }
 
 if (count($amendments) > 0 || $motion->consultation->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
-    echo '<h2>' . $wording->get("Änderungsanträge") . '</h2>
+    echo '<section class="amendments"><h2>' . $wording->get("Änderungsanträge") . '</h2>
     <div class="content">';
 
     if (count($amendments) > 0) {
@@ -425,12 +420,12 @@ if (count($amendments) > 0 || $motion->consultation->getAmendmentPolicy()->getPo
         echo '<em>keine</em>';
     }
 
-    echo '</div>';
+    echo '</div></section>';
 }
 
 
 if ($motion->consultation->getSettings()->commentWholeMotions) {
-    echo '<h2>Kommentare</h2>';
+    echo '<section class="comments"><h2>Kommentare</h2>';
 
     $comments = array();
     foreach ($motion->comments as $comm) {
@@ -448,7 +443,7 @@ if ($motion->consultation->getSettings()->commentWholeMotions) {
             'form'        => $commentForm,
         ]
     );
-
+    echo '</section>';
 }
 
 if (!$motion->consultation->site->getBehaviorClass()->isLoginForced()) {

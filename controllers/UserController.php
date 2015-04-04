@@ -110,16 +110,14 @@ class UserController extends Base
 
 
     /**
-     * @param string $subdomain
-     * @param string $consultationPath
      * @param string $backUrl
      * @return string
      */
-    public function actionLogin($subdomain = '', $consultationPath = '', $backUrl = '')
+    public function actionLogin($backUrl = '')
     {
         $this->layout = 'column2';
 
-        $wording = $this->getWording($subdomain, $consultationPath);
+        $wording = $this->getWording();
         if ($backUrl == '') {
             $backUrl = '/';
         }
@@ -163,14 +161,13 @@ class UserController extends Base
     }
 
     /**
-     * @param string $subdomain
      * @param string $backUrl
      * @param string $email
      * @return string
      */
-    public function actionConfirmregistration($subdomain = '', $backUrl = '', $email = '')
+    public function actionConfirmregistration($backUrl = '', $email = '')
     {
-        $wording = $this->getWording($subdomain);
+        $wording = $this->getWording();
 
         $msgError = '';
 

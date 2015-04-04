@@ -103,7 +103,26 @@ abstract class IPolicy
     /**
      * @return bool
      */
-    abstract public function checkAmendmentSubmit();
+    public function checkAmendmentSubmit()
+    {
+        return $this->checkMotionSubmit();
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkCommentSubmit()
+    {
+        return $this->checkMotionSubmit();
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkSupportSubmit()
+    {
+        return $this->checkMotionSubmit();
+    }
 
     /**
      * @abstract
@@ -111,7 +130,32 @@ abstract class IPolicy
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    abstract public function getPermissionDeniedMsg(IWording $wording);
+    abstract public function getPermissionDeniedMotionMsg(IWording $wording);
+
+    /**
+     * @abstract
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    abstract public function getPermissionDeniedAmendmentMsg(IWording $wording);
+
+    /**
+     * @abstract
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    abstract public function getPermissionDeniedCommentMsg(IWording $wording);
+
+    /**
+     * @abstract
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    abstract public function getPermissionDeniedSupportMsg(IWording $wording);
+
 
     /**
      * @static

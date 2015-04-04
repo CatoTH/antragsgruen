@@ -118,10 +118,16 @@ echo '</div>
 <fieldset class="form-group">
         <label class="col-sm-4 control-label" for="policyMotions">(Änderungs-)Anträge unterstützen dürfen:</label>
         <div class="col-sm-8">';
+$policies = [];
+foreach (IPolicy::getPolicyNames($consultation->getWording()) as $pId => $pName) {
+    if ($pId != 'all') {
+        $policies[$pId] = $pName;
+    }
+}
 echo Html::dropDownList(
     'consultation[policySupport]',
     $consultation->policySupport,
-    IPolicy::getPolicyNames($consultation->getWording()),
+    $policies,
     ['id' => 'policySupport', 'class' => 'form-control']
 );
 echo '</div></fieldset>';

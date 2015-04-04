@@ -40,7 +40,7 @@ class LoggedIn extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return "Eingeloggte";
+        return 'Eingeloggte';
     }
 
     /**
@@ -48,23 +48,46 @@ class LoggedIn extends IPolicy
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedMsg(IWording $wording)
+    public function getPermissionDeniedMotionMsg(IWording $wording)
     {
-        return "Du musst dich einloggen.";
+        return 'Du musst dich einloggen, um Anträge stellen zu können.';
     }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedAmendmentMsg(IWording $wording)
+    {
+        return 'Du musst dich einloggen, um Änderungsanträge stellen zu können.';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedSupportMsg(IWording $wording)
+    {
+        return 'Du musst dich einloggen, um Anträge unterstützen zu können.';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedCommentMsg(IWording $wording)
+    {
+        return 'Du musst dich einloggen, um Kommentare schreiben zu können.';
+    }
+
 
     /**
      * @return bool
      */
     public function checkMotionSubmit()
-    {
-        return (!\Yii::$app->user->isGuest);
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkAmendmentSubmit()
     {
         return (!\Yii::$app->user->isGuest);
     }

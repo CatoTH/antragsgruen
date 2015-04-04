@@ -41,7 +41,7 @@ class Admins extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return "Admins";
+        return 'Admins';
     }
 
     /**
@@ -49,23 +49,45 @@ class Admins extends IPolicy
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedMsg(IWording $wording)
+    public function getPermissionDeniedMotionMsg(IWording $wording)
     {
-        return "Nur Admins dürfen.";
+        return 'Nur Admins dürfen Anträge anlegen.';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedAmendmentMsg(IWording $wording)
+    {
+        return 'Nur Admins dürfen Änderungsanträge anlegen.';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedSupportMsg(IWording $wording)
+    {
+        return 'Nur Admins dürfen Anträge unterstützen.';
+    }
+
+    /**
+     * @param IWording $wording
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getPermissionDeniedCommentMsg(IWording $wording)
+    {
+        return 'Nur Admins dürfen kommentieren';
     }
 
     /**
      * @return bool
      */
     public function checkMotionSubmit()
-    {
-        return User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkAmendmentSubmit()
     {
         return User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
     }

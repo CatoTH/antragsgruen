@@ -35,14 +35,6 @@ class AmendmentSupporter extends ISupporter
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'userId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getAmendment()
     {
         return $this->hasOne(Amendment::className(), ['id' => 'amendmentId']);
