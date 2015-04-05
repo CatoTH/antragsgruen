@@ -2,9 +2,7 @@
 
 namespace app\models\exceptions;
 
-use yii\db\Exception;
-
-class DB extends Exception
+class DB extends ExceptionBase
 {
     private $errors;
 

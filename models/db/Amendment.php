@@ -25,7 +25,8 @@ use yii\db\Query;
  *
  * @property Motion $motion
  * @property AmendmentComment[] $comments
- * @property AmendmentSupporter[] $supporters
+ * @property AmendmentSupporter[] $amendmentSupporters
+ * @property AmendmentSection[] $sections
  */
 class Amendment extends IMotion
 {
@@ -57,11 +58,18 @@ class Amendment extends IMotion
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSupporters()
+    public function getAmendmentSupporters()
     {
         return $this->hasMany(AmendmentSupporter::className(), ['amendmentId' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAmendmentSections()
+    {
+        return $this->hasMany(AmendmentSection::className(), ['amendmentId' => 'id']);
+    }
 
     /**
      * @return array
@@ -75,6 +83,12 @@ class Amendment extends IMotion
         ];
     }
 
+    /**
+     * @return Consultation
+     */
+    public function getMyConsultation() {
+        return $this->motion->consultation;
+    }
 
     /**
      * @return int
@@ -189,22 +203,72 @@ class Amendment extends IMotion
      */
     public function getInitiators()
     {
-        // TODO: Implement getInitiators() method.
+        $return = [];
+        foreach ($this->amendmentSupporters as $supp) {
+            if ($supp->role == AmendmentSupporter::ROLE_INITIATOR) {
+                $return[] = $supp;
+            }
+        };
+        return $return;
     }
 
     /**
-     * @return User[]
+     * @return AmendmentSupporter[]
+     */
+    public function getSupporters()
+    {
+        $return = [];
+        foreach ($this->amendmentSupporters as $supp) {
+            if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
+                $return[] = $supp;
+            }
+        };
+        return $return;
+    }
+    /**
+     * @return AmendmentSupporter[]
      */
     public function getLikes()
     {
-        // TODO: Implement getLikes() method.
+        $return = [];
+        foreach ($this->amendmentSupporters as $supp) {
+            if ($supp->role == AmendmentSupporter::ROLE_LIKE) {
+                $return[] = $supp;
+            }
+        };
+        return $return;
     }
 
     /**
-     * @return User[]
+     * @return AmendmentSupporter[]
      */
     public function getDislikes()
     {
-        // TODO: Implement getDislikes() method.
+        $return = [];
+        foreach ($this->amendmentSupporters as $supp) {
+            if ($supp->role == AmendmentSupporter::ROLE_DISLIKE) {
+                $return[] = $supp;
+            }
+        };
+        return $return;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function iAmInitiator()
+    {
+        $user = \Yii::$app->user;
+        if ($user->isGuest) {
+            return false;
+        }
+
+        foreach ($this->amendmentSupporters as $supp) {
+            if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && $supp->userId == $user->id) {
+                return true;
+            }
+        }
+        return false;
     }
 }

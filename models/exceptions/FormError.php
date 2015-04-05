@@ -2,9 +2,7 @@
 
 namespace app\models\exceptions;
 
-use yii\db\Exception;
-
-class FormError extends Exception
+class FormError extends ExceptionBase
 {
     /** @var \string[] */
     protected $messages;

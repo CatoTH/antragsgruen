@@ -2,8 +2,6 @@
 
 namespace app\models\exceptions;
 
-use yii\db\Exception;
-
-class Login extends Exception
+class Login extends ExceptionBase
 {
 }

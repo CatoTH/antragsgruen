@@ -10,11 +10,14 @@ use yii\db\ActiveRecord;
  * @property int $amendmentId
  * @property int $sectionId
  * @property string $data
+ * @property string $dataRaw
+ * @property string $metadata
  *
  * @property Amendment $amendment
  * @property ConsultationSettingsMotionSection $consultationSetting
+ * @property AmendmentSection
  */
-class AmendmentSection extends ActiveRecord
+class AmendmentSection extends IMotionSection
 {
 
     /**
@@ -47,8 +50,9 @@ class AmendmentSection extends ActiveRecord
     public function rules()
     {
         return [
-            [['motionId', 'sectionId'], 'required'],
-            [['motionId', 'sectionId'], 'number'],
+            [['amendmentId', 'sectionId'], 'required'],
+            [['amendmentId', 'sectionId'], 'number'],
+            [['dataRaw'], 'safe'],
         ];
     }
 }

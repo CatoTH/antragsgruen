@@ -16,7 +16,7 @@
             return '';
         }
 
-        return tmp.textContent || tmp.innerText
+        return tmp.textContent || tmp.innerText;
     }
 
     function ckeditor_charcount(text) {
@@ -33,7 +33,7 @@
 
         var $el = $("#" + id),
             initialized = $el.data("ckeditor_initialized");
-        if (typeof(initialized) != "undefined" && initialized) return;
+        if (typeof (initialized) != "undefined" && initialized) return;
         $el.data("ckeditor_initialized", "1");
 
         var editor = CKEDITOR.replace(id, {

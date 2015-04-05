@@ -56,7 +56,9 @@ CREATE TABLE `amendmentComment` (
 CREATE TABLE `amendmentSection` (
   `amendmentId` INT(11)  NOT NULL,
   `sectionId`   INT(11)  NOT NULL,
-  `data`        LONGTEXT NOT NULL
+  `data`        LONGTEXT NOT NULL,
+  `dataRaw`     LONGTEXT NOT NULL,
+  `metadata`    TEXT
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

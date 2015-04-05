@@ -2,6 +2,7 @@
 namespace app\models\sectionTypes;
 
 use app\controllers\Base;
+use app\models\db\IMotionSection;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
@@ -14,13 +15,13 @@ abstract class ISectionType
     const TYPE_TEXT_HTML   = 2;
     const TYPE_IMAGE       = 3;
 
-    /** @var  MotionSection */
+    /** @var IMotionSection */
     protected $section;
 
     /**
-     * @param MotionSection $section
+     * @param IMotionSection $section
      */
-    public function __construct(MotionSection $section)
+    public function __construct(IMotionSection $section)
     {
         $this->section = $section;
     }

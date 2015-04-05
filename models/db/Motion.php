@@ -106,33 +106,18 @@ class Motion extends IMotion
     }
 
     /**
-     * @param bool $withoutTitle
-     * @return MotionSection[]
-     */
-    public function getSortedSections($withoutTitle = false)
-    {
-        $sectionsIn = array();
-        $title = $this->getTitleSection();
-        foreach ($this->sections as $section) {
-            if (!$withoutTitle || $section != $title) {
-                $sectionsIn[$section->consultationSetting->id] = $section;
-            }
-        }
-        $sectionsOut = array();
-        foreach ($this->consultation->motionSections as $section) {
-            if (isset($sectionsIn[$section->id])) {
-                $sectionsOut[] = $sectionsIn[$section->id];
-            }
-        }
-        return $sectionsOut;
-    }
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getMotionType()
     {
         return $this->hasOne(ConsultationSettingsMotionType::className(), ['id' => 'motionTypeId']);
+    }
+
+    /**
+     * @return Consultation
+     */
+    public function getMyConsultation() {
+        return $this->consultation;
     }
 
 
@@ -146,19 +131,6 @@ class Motion extends IMotion
             [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed'], 'number'],
             [['title'], 'safe'],
         ];
-    }
-
-    /**
-     * @return MotionSection|null
-     */
-    public function getTitleSection()
-    {
-        foreach ($this->sections as $section) {
-            if ($section->consultationSetting->type == ISectionType::TYPE_TITLE) {
-                return $section;
-            }
-        }
-        return null;
     }
 
     /**
@@ -234,7 +206,7 @@ class Motion extends IMotion
             return false;
         }
 
-        foreach ($this->supporters as $supp) {
+        foreach ($this->motionSupporters as $supp) {
             if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId == $user->id) {
                 return true;
             }

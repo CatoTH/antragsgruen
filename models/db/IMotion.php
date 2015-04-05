@@ -2,8 +2,15 @@
 
 namespace app\models\db;
 
+use app\models\sectionTypes\ISectionType;
 use yii\db\ActiveRecord;
 
+/**
+ * Class IMotion
+ * @package app\models\db
+ *
+ * @property IMotionSection[] $sections
+ */
 abstract class IMotion extends ActiveRecord
 {
     const STATUS_DELETED              = -2;
@@ -82,4 +89,44 @@ abstract class IMotion extends ActiveRecord
      * @return ISupporter[]
      */
     abstract public function getDislikes();
+
+    /**
+     * @return Consultation
+     */
+    abstract public function getMyConsultation();
+
+    /**
+     * @return IMotionSection|null
+     */
+    public function getTitleSection()
+    {
+        foreach ($this->sections as $section) {
+            if ($section->consultationSetting->type == ISectionType::TYPE_TITLE) {
+                return $section;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param bool $withoutTitle
+     * @return IMotionSection[]
+     */
+    public function getSortedSections($withoutTitle = false)
+    {
+        $sectionsIn = array();
+        $title = $this->getTitleSection();
+        foreach ($this->sections as $section) {
+            if (!$withoutTitle || $section != $title) {
+                $sectionsIn[$section->consultationSetting->id] = $section;
+            }
+        }
+        $sectionsOut = array();
+        foreach ($this->getMyConsultation()->motionSections as $section) {
+            if (isset($sectionsIn[$section->id])) {
+                $sectionsOut[] = $sectionsIn[$section->id];
+            }
+        }
+        return $sectionsOut;
+    }
 }

@@ -24,7 +24,7 @@ use app\models\exceptions\Internal;
  * @property ConsultationSettingsMotionSection $consultationSetting
  * @property MotionComment[] $comments
  */
-class MotionSection extends ActiveRecord
+class MotionSection extends IMotionSection
 {
 
     /**
@@ -78,25 +78,6 @@ class MotionSection extends ActiveRecord
     {
         // @TODO
         return true;
-    }
-
-    /**
-     * @return ISectionType
-     * @throws Internal
-     */
-    public function getSectionType()
-    {
-        switch ($this->consultationSetting->type) {
-            case ISectionType::TYPE_TITLE:
-                return new Title($this);
-            case ISectionType::TYPE_TEXT_HTML:
-                return new TextHTML($this);
-            case ISectionType::TYPE_TEXT_SIMPLE:
-                return new TextSimple($this);
-            case ISectionType::TYPE_IMAGE:
-                return new Image($this);
-        }
-        throw new Internal('Unknown Field Type: ' . $this->consultationSetting->type);
     }
 
     /**
