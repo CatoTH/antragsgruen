@@ -8,8 +8,6 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Consultation $consultation
  * @var \app\models\db\ISupporter $initiator
- * @var string $labelName
- * @var string $labelOrganization
  * @var bool $allowOther
  * @var bool $hasSupporters
  * @var bool $minSupporters
@@ -21,6 +19,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $settings = $consultation->getSettings();
+$wording = $consultation->getWording();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
@@ -69,14 +68,14 @@ echo ' Organisation / Gremium
 </div>
 
 <div class="form-group">
-  <label class="col-sm-3 control-label" for="initiatorName">' . $labelName . '</label>
+  <label class="col-sm-3 control-label" for="initiatorName">' . $wording->get('Name') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorName" name="Initiator[name]" value="' . $preName . '" required>
   </div>
 </div>
 
 <div class="form-group organizationRow">
-  <label class="col-sm-3 control-label" for="initiatorOrga">' . $labelOrganization . '</label>
+  <label class="col-sm-3 control-label" for="initiatorOrga">' . $wording->get('Gremium, LAG...') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]" value="' . $preOrga . '">
   </div>

@@ -84,7 +84,7 @@ if (count($tags) == 1) {
 }
 
 foreach ($form->sections as $section) {
-    echo $section->getSectionType()->getFormField();
+    echo $section->getSectionType()->getMotionFormField();
 }
 
 $initiatorClass = $consultation->getMotionInitiatorFormClass();

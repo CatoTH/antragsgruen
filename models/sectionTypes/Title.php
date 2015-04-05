@@ -11,7 +11,7 @@ class Title extends ISectionType
     /**
      * @return string
      */
-    public function getFormField()
+    public function getMotionFormField()
     {
         // @TODO Max Length
         $type = $this->section->consultationSetting;
@@ -20,6 +20,14 @@ class Title extends ISectionType
             <input type="text" class="form-control" id="sections_' . $type->id . '"' .
         ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->data) . '">
         </fieldset>';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentFormField()
+    {
+        return $this->getMotionFormField();
     }
 
     /**

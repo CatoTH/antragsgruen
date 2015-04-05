@@ -42,7 +42,35 @@ abstract class ISectionType
     /**
      * @return string
      */
-    protected function getTextFormField()
+    protected function getTextMotionFormField()
+    {
+        $type = $this->section->consultationSetting;
+
+        $str = '<fieldset class="form-group wysiwyg-textarea"';
+        $str .= ' data-maxLen="' . $type->maxLen . '"';
+        $str .= ' data-fullHtml="0"';
+        $str .= '><label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
+
+        if ($type->maxLen > 0) {
+            $str .= '<div class="max_len_hint">';
+            $str .= '<div class="calm">Maximale Länge: ' . $type->maxLen . ' Zeichen</div>';
+            $str .= '<div class="alert">Text zu lang - maximale Länge: ' . $type->maxLen . ' Zeichen</div>';
+            $str .= '</div>';
+        }
+
+        $str .= '<textarea name="sections[' . $type->id . ']">' . Html::encode($this->section->data) . '</textarea>';
+        $str .= '<div id="sections_' . $type->id . '" class="texteditor">';
+        $str .= $this->section->data;
+        $str .= '</div>';
+        $str .= '</fieldset>';
+
+        return $str;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTextAmendmentFormField()
     {
         $type = $this->section->consultationSetting;
 
@@ -59,7 +87,8 @@ abstract class ISectionType
         }
 
         $str .= '<div class="textFullWidth">';
-        $str .= '<div><textarea id="sections_' . $type->id . '" name="sections[' . $type->id . ']" rows="5" cols="80">';
+        $str .= '<div><textarea id="sections_' . $type->id . '" name="sections[' . $type->id . ']" rows="5" cols="80"';
+        $str .= 'data-track-changed="1">';
         $str .= Html::encode($this->section->data);
         $str .= '</textarea></div></div>';
         $str .= '</fieldset>';
@@ -75,7 +104,12 @@ abstract class ISectionType
     /**
      * @return string
      */
-    abstract public function getFormField();
+    abstract public function getMotionFormField();
+
+    /**
+     * @return string
+     */
+    abstract public function getAmendmentFormField();
 
     /**
      * @param $data

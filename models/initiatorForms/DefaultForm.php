@@ -11,6 +11,7 @@ use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\forms\AmendmentEditForm;
 use app\models\forms\MotionEditForm;
 use yii\web\View;
 
@@ -238,8 +239,6 @@ class DefaultForm implements IInitiatorView
      */
     public function getMotionInitiatorForm(Consultation $consultation, MotionEditForm $editForm, Base $controller)
     {
-        $labelOrganization = 'Gremium, LAG...';
-        $labelName         = 'Name';
         $view              = new View();
         $initiator         = null;
         foreach ($editForm->supporters as $supporter) {
@@ -252,8 +251,6 @@ class DefaultForm implements IInitiatorView
             [
                 'consultation'      => $consultation,
                 'initiator'         => $initiator,
-                'labelName'         => $labelName,
-                'labelOrganization' => $labelOrganization,
                 'allowOther'        => User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING),
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
@@ -262,7 +259,36 @@ class DefaultForm implements IInitiatorView
             ],
             $controller
         );
+    }
 
+    /**
+     * @param Consultation $consultation
+     * @param AmendmentEditForm $editForm
+     * @param Base $controller
+     * @return string
+     */
+    public function getAmendmentInitiatorForm(Consultation $consultation, AmendmentEditForm $editForm, Base $controller)
+    {
+        $view              = new View();
+        $initiator         = null;
+        foreach ($editForm->supporters as $supporter) {
+            if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR) {
+                $initiator = $supporter;
+            }
+        }
+        return $view->render(
+            '@app/views/initiatorForms/std',
+            [
+                'consultation'      => $consultation,
+                'initiator'         => $initiator,
+                'allowOther'        => User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING),
+                'hasSupporters'     => $this->hasSupporters(),
+                'minSupporters'     => $this->getMinNumberOfSupporters(),
+                'supporterFulltext' => $this->hasFullTextSupporterField(),
+                'supporterOrga'     => $this->supportersHaveOrganizations(),
+            ],
+            $controller
+        );
     }
 
     /**

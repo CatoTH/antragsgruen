@@ -14,9 +14,17 @@ class TextSimple extends ISectionType
     /**
      * @return string
      */
-    public function getFormField()
+    public function getMotionFormField()
     {
-        return $this->getTextFormField();
+        return $this->getTextMotionFormField();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentFormField()
+    {
+        return $this->getTextAmendmentFormField();
     }
 
     /**

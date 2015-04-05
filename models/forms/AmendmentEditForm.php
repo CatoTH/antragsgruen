@@ -30,23 +30,38 @@ class AmendmentEditForm extends \yii\base\Model
     {
         parent::__construct();
         $this->motion      = $motion;
+        /** @var AmendmentSection[] $amendmentSections */
         $amendmentSections = [];
+        $motionSections = [];
+        foreach ($motion->sections as $section) {
+            $motionSections[$section->sectionId] = $section;
+        }
         if ($amendment) {
             $this->amendmentId = $amendment->id;
             $this->supporters  = $amendment->amendmentSupporters;
             foreach ($amendment->sections as $section) {
-                $amendmentSections[$section->consultationSetting->id] = $section;
+                $amendmentSections[$section->sectionId] = $section;
+                if ($section->data == '') {
+                    $data = $motionSections[$section->sectionId]->data;
+                    $amendmentSections[$section->sectionId]->data = $data;
+                    $amendmentSections[$section->sectionId]->dataRaw = $data;
+                }
             }
         }
         $this->sections = [];
         foreach ($motion->consultation->motionSections as $sectionType) {
-            if (isset($motionSections[$sectionType->id])) {
-                $this->sections[] = $motionSections[$sectionType->id];
+            if (isset($amendmentSections[$sectionType->id])) {
+                $this->sections[] = $amendmentSections[$sectionType->id];
             } else {
+                if (isset($motionSections[$sectionType->id])) {
+                    $data = $motionSections[$sectionType->id]->data;
+                } else {
+                    $data = '';
+                }
                 $section            = new AmendmentSection();
                 $section->sectionId = $sectionType->id;
-                $section->data      = '';
-                $section->dataRaw   = '';
+                $section->data      = $data;
+                $section->dataRaw   = $data;
                 $section->refresh();
                 $this->sections[] = $section;
             }

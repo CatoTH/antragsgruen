@@ -35,8 +35,9 @@
             initialized = $el.data("ckeditor_initialized");
         if (typeof (initialized) != "undefined" && initialized) return;
         $el.data("ckeditor_initialized", "1");
+        $el.attr("contenteditable", true);
 
-        var editor = CKEDITOR.replace(id, {
+        var ckeditorConfig = {
             allowedContent: 'b s i u;' +
             'ul ol li {list-style-type};' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
@@ -67,7 +68,22 @@
                 countHTML: false,
                 countSpacesAsChars: true
             }
-        });
+            /*,
+            on: {
+                instanceReady: function(ev) {
+                    // Resize the window
+                    window.setTimeout(function() {
+                        ev.editor.fire('contentDom');
+                    }, 1);
+                }
+            }
+            */
+        };
+
+        if ($el.data('track-changed') == '1') {
+            ckeditorConfig['extraPlugins'] += ',lite';
+        }
+        var editor = CKEDITOR.inline(id, ckeditorConfig);
 
         var $fieldset = $el.parents("fieldset.textarea").first();
         if ($fieldset.data("max_len") > 0) {
@@ -84,8 +100,11 @@
             };
             editor.on('change', onChange);
             onChange();
-
         }
+
+        $el.parents("form").submit(function() {
+            $el.parent().find("textarea").val(editor.getData());
+        });
     }
 
 
@@ -101,7 +120,7 @@
     var motionEditForm = function () {
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
-                $textarea = $holder.find("textarea");
+                $textarea = $holder.find(".texteditor");
             $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
         });
 

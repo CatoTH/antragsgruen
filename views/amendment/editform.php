@@ -26,12 +26,43 @@ echo $controller->showErrors();
 echo '<div class="form content">';
 
 
-echo HTML::beginForm('', '', ['id' => 'amendmentForm']);
+
+$motionPolicy = $consultation->getMotionPolicy();
+if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
+    echo '<fieldset>
+                <legend>' . $wording->get("Voraussetzungen für einen Antrag"), '</legend>
+            </fieldset>';
+
+    echo $motionPolicy->getOnCreateDescription();
+}
+
+echo Html::beginForm(
+    '',
+    'post',
+    ['id' => 'motionEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
+);
 
 
-echo count($form->sections);
+if (\Yii::$app->user->isGuest) {
+    echo '<div class="alert alert-warning jsProtectionHint" role="alert">';
+    echo 'Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.';
+    echo '</div>';
+}
 
-echo '</textarea><button type="submit">Abschicken</button> ';
+
+foreach ($form->sections as $section) {
+    echo $section->getSectionType()->getAmendmentFormField();
+}
+
+$initiatorClass = $consultation->getAmendmentInitiatorFormClass();
+echo $initiatorClass->getAmendmentInitiatorForm($consultation, $form, $controller);
+
+echo '<div class="submitHolder"><button type="submit" name="save" class="btn btn-primary">';
+echo '<span class="glyphicon glyphicon-ok"></span> Weiter';
+echo '</button></div>';
+
+$params->addOnLoadJS('$.Antragsgruen.motionEditForm();');
+
 echo Html::endForm();
 
 ?>
