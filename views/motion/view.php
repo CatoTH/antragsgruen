@@ -42,21 +42,23 @@ if ($motion->dateResolution != "") {
 
 $html = '<ul class="sidebarActions">';
 
-$policy = $motion->consultation->getAmendmentPolicy();
-if ($policy->checkCurUserHeuristically()) {
-    $html .= '<li class="amendmentCreate">';
-    $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
-    $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
-    $title .= $wording->get("Änderungsantrag stellen");
-    $html .= Html::a($title, $amendCreateUrl) . '</li>';
-} else {
-    $msg = $policy->getPermissionDeniedAmendmentMsg($wording);
-    if ($msg != "") {
+if ($motion->motionType->hasAmendments) {
+    $policy = $motion->consultation->getAmendmentPolicy();
+    if ($policy->checkCurUserHeuristically()) {
         $html .= '<li class="amendmentCreate">';
-        $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
-        $html .= Html::encode($wording->get("Änderungsantrag stellen"));
-        $html .= '</span><br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
-        $html .= Html::encode($msg) . '</span></li>';
+        $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
+        $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
+        $title .= $wording->get("Änderungsantrag stellen");
+        $html .= Html::a($title, $amendCreateUrl) . '</li>';
+    } else {
+        $msg = $policy->getPermissionDeniedAmendmentMsg($wording);
+        if ($msg != "") {
+            $html .= '<li class="amendmentCreate">';
+            $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
+            $html .= Html::encode($wording->get("Änderungsantrag stellen"));
+            $html .= '</span><br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
+            $html .= Html::encode($msg) . '</span></li>';
+        }
     }
 }
 
