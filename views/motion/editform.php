@@ -91,7 +91,7 @@ $initiatorClass = $consultation->getMotionInitiatorFormClass();
 echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $controller);
 
 echo '<div class="submitHolder"><button type="submit" name="save" class="btn btn-primary">';
-echo '<span class="glyphicon glyphicon-ok"></span> Weiter';
+echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
 echo '</button></div>';
 
 $params->addOnLoadJS('$.Antragsgruen.motionEditForm();');

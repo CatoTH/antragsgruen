@@ -101,8 +101,9 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo 'Überschreitung erlauben';
     echo '</label>';
 
-    echo '</div><div class="commentrow">';
+    echo '</div><div class="commAmendRow">';
 
+    echo '<div class="commentRow">';
     echo '<div>Kommentare:</div>';
 
     echo '<label class="commentNone">';
@@ -120,7 +121,15 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo Html::radio($sectionName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
     echo ' Pro Absatz</label> ';
 
-    echo '</div></div></div></li>';
+    echo '</div>'; // commentRow
+
+    echo '<label class="amendmentRow">';
+    echo Html::checkbox($sectionName . '[hasAmendments]', ($section->hasAmendments == 1), ['class' => 'hasAmendments']);
+    echo ' In Änderungsanträgen';
+    echo '</label>';
+
+    echo '</div>'; // commAmendRow
+    echo '</div></div></li>';
 };
 
 

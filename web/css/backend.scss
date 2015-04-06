@@ -127,7 +127,7 @@ label.legend {
       height: 57px;
     }
 
-    .assignmentRow, .optionsRow, .commentrow {
+    .assignmentRow, .optionsRow, .commAmendRow {
       display: table-cell;
       padding: 10px;
       vertical-align: top;
@@ -136,7 +136,10 @@ label.legend {
     .commentrow, .optionsRow {
       border-left: 1px solid #afa;
     }
-    .commentrow {
+    .commentRow {
+      margin-bottom: 10px;
+    }
+    .commAmendRow {
       label {
         margin-bottom: 0;
       }

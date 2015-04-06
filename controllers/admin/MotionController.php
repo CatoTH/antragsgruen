@@ -40,10 +40,11 @@ class MotionController extends AdminBase
                 $section->motionTypeId = null;
             }
 
-            $section->required    = (isset($data['required']) ? 1 : 0);
-            $section->fixedWidth  = (isset($data['fixedWidth']) ? 1 : 0);
-            $section->lineNumbers = (isset($data['lineNumbers']) ? 1 : 0);
-            $section->position    = $position;
+            $section->required      = (isset($data['required']) ? 1 : 0);
+            $section->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
+            $section->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
+            $section->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
+            $section->position      = $position;
             $section->save();
 
             $position++;

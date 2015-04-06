@@ -13,7 +13,7 @@ class TextHTML extends ISectionType
      */
     public function getMotionFormField()
     {
-        return $this->getTextMotionFormField();
+        return $this->getTextMotionFormField(true);
     }
 
     /**
@@ -21,7 +21,7 @@ class TextHTML extends ISectionType
      */
     public function getAmendmentFormField()
     {
-        return $this->getTextAmendmentFormField();
+        return $this->getTextAmendmentFormField(true);
     }
 
     /**

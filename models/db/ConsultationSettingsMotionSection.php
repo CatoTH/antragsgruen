@@ -20,6 +20,7 @@ use yii\db\ActiveRecord;
  * @property int $required
  * @property int $lineNumbers
  * @property int $hasComments
+ * @property int $hasAmendments
  *
  * @property Consultation $consultation
  * @property MotionSection[] $sections
@@ -86,8 +87,8 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         return [
             [['consultationId', 'title', 'type', 'position', 'status', 'required'], 'required'],
             [['id', 'consultationId', 'type', 'motionTypeId', 'status', 'required'], 'number'],
-            [['position', 'fixedWidth', 'maxLen', 'lineNumbers', 'hasComments'], 'number'],
-            [['title', 'maxLen', 'hasComments'], 'safe'],
+            [['position', 'fixedWidth', 'maxLen', 'lineNumbers', 'hasComments', 'hasAmendments'], 'number'],
+            [['title', 'maxLen', 'hasComments', 'hasAmendments'], 'safe'],
         ];
     }
 

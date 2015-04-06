@@ -11,7 +11,7 @@ use app\models\exceptions\FormError;
 class AmendmentEditForm extends \yii\base\Model
 {
     /** @var Motion */
-    private $motion;
+    public $motion;
 
     /** @var AmendmentSupporter[] */
     public $supporters = array();
@@ -50,6 +50,9 @@ class AmendmentEditForm extends \yii\base\Model
         }
         $this->sections = [];
         foreach ($motion->consultation->motionSections as $sectionType) {
+            if (!$sectionType->hasAmendments) {
+                continue;
+            }
             if (isset($amendmentSections[$sectionType->id])) {
                 $this->sections[] = $amendmentSections[$sectionType->id];
             } else {

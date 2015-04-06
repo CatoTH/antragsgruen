@@ -6,17 +6,17 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 INSERT INTO `consultation` (`id`, `siteId`, `urlPath`, `type`, `wording`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `amendmentNumbering`, `adminEmail`, `settings`) VALUES
   (1, 1, 'std-parteitag', 0, 0, 'Test2', '', NULL, NULL, NULL, NULL, 'all', 'all', 'all', 'loggedin', 0, 'tobias@hoessl.eu', NULL);
 
-INSERT INTO `consultationSettingsMotionSection` (`id`, `consultationId`, `motionTypeId`, `type`, `position`, `status`, `title`, `required`, `fixedWidth`, `maxLen`, `lineNumbers`, `hasComments`) VALUES
-  (1, 1, NULL, 0, 0, 0, 'Überschrift', 1, 0, 0, 1, 0),
-  (2, 1, NULL, 1, 1, 0, 'Antragstext', 1, 1, 0, 1, 1),
-  (3, 1, NULL, 1, 3, 0, 'Begründung', 0, 0, 0, 0, 0),
-  (4, 1, NULL, 1, 2, 0, 'Antragstext 2', 0, 1, 0, 1, 1),
-  (5, 1, NULL, 3, 4, 0, 'Abbildung', 0, 1, 0, 1, 0);
+INSERT INTO `consultationSettingsMotionSection` (`id`, `consultationId`, `motionTypeId`, `type`, `position`, `status`, `title`, `required`, `fixedWidth`, `maxLen`, `lineNumbers`, `hasComments`, `hasAmendments`) VALUES
+  (1, 1, NULL, 0, 0, 0, 'Überschrift', 1, 0, 0, 1, 0, 1),
+  (2, 1, NULL, 1, 1, 0, 'Antragstext', 1, 1, 0, 1, 1, 1),
+  (3, 1, NULL, 1, 3, 0, 'Begründung', 0, 0, 0, 0, 0, 0),
+  (4, 1, NULL, 1, 2, 0, 'Antragstext 2', 0, 1, 0, 1, 1, 1),
+  (5, 1, NULL, 3, 4, 0, 'Abbildung', 0, 1, 0, 1, 0, 0);
 
-INSERT INTO `consultationSettingsMotionType` (`id`, `consultationId`, `title`, `motionPrefix`, `position`) VALUES
-  (1, 1, 'Antrag', 'A', 0),
-  (2, 1, 'Resolution', 'R', 1),
-  (3, 1, 'Satzungsantrag', 'S', 2);
+INSERT INTO `consultationSettingsMotionType` (`id`, `consultationId`, `title`, `motionPrefix`, `hasAmendments`, `position`) VALUES
+  (1, 1, 'Antrag', 'A', 1, 0),
+  (2, 1, 'Resolution', 'R', 1, 1),
+  (3, 1, 'Satzungsantrag', 'S', 0, 2);
 
 INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `title`, `cssicon`) VALUES
   (1, 1, 0, 'Win', 0),

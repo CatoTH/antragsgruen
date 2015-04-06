@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
  * @property int $consultationId
  * @property string $title
  * @property string $motionPrefix
+ * @property int $hasAmendments
  * @property int $position
  * @property int $cssicon
  *
@@ -50,8 +51,8 @@ class ConsultationSettingsMotionType extends ActiveRecord
     {
         return [
             [['consultationId', 'title'], 'required'],
-            [['id', 'consultationId', 'position'], 'number'],
-            [['title', 'position', 'motionPrefix'], 'safe'],
+            [['id', 'consultationId', 'position', 'hasAmendments'], 'number'],
+            [['title', 'position', 'motionPrefix', 'hasAmendments'], 'safe'],
         ];
     }
 }

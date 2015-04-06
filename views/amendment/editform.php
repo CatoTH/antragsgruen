@@ -14,12 +14,28 @@ $controller = $this->context;
 $params     = $controller->layoutParams;
 $wording    = $consultation->getWording();
 
-$this->title = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+if ($form->motion->titlePrefix != '') {
+    $title = $wording->get(
+        $mode == 'create' ? 'Änderungsantrag zu %prefix% stellen' : 'Änderungsantrag zu %prefix% bearbeiten'
+    );
+    $this->title = str_replace('%prefix%', $form->motion->titlePrefix, $title);
+} else {
+    $this->title = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+}
+
 
 $params->addJS('/js/ckeditor/ckeditor.js');
-$params->breadcrumbs[] = $this->title;
+$params->breadcrumbs[] = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
+
+echo '<br><div class="alert alert-info col-md-10 col-md-offset-1" role="alert">';
+echo 'Ändere hier den Antrag so ab, wie du ihn gern sehen würdest.<br>';
+echo 'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>';
+echo 'Falls dein Änderungsantrag Hinweise an die Pogrammkommission enthält, kannst du diese als ' .
+    '&quot;<strong>Redaktionellen Antrag</strong>&quot; beifügen.';
+echo '</div><br style="clear: both;">';
+
 
 echo $controller->showErrors();
 
@@ -58,7 +74,7 @@ $initiatorClass = $consultation->getAmendmentInitiatorFormClass();
 echo $initiatorClass->getAmendmentInitiatorForm($consultation, $form, $controller);
 
 echo '<div class="submitHolder"><button type="submit" name="save" class="btn btn-primary">';
-echo '<span class="glyphicon glyphicon-ok"></span> Weiter';
+echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
 echo '</button></div>';
 
 $params->addOnLoadJS('$.Antragsgruen.motionEditForm();');

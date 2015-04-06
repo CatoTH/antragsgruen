@@ -175,7 +175,8 @@ CREATE TABLE `consultationSettingsMotionSection` (
   `required`       TINYINT(4)   NOT NULL,
   `maxLen`         INT(11)               DEFAULT NULL,
   `lineNumbers`    TINYINT(4)   NOT NULL DEFAULT '0',
-  `hasComments`    TINYINT(4)   NOT NULL
+  `hasComments`    TINYINT(4)   NOT NULL,
+  `hasAmendments`  TINYINT      NOT NULL DEFAULT '1'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -190,9 +191,10 @@ CREATE TABLE `consultationSettingsMotionType` (
   `id`             INT(11)      NOT NULL,
   `consultationId` INT(11)      NOT NULL,
   `title`          VARCHAR(100) NOT NULL,
-  `motionPrefix`   VARCHAR(10)  DEFAULT NULL,
-  `position`       INT(11)      NOT NULL,
-  `cssicon`        VARCHAR(100) DEFAULT NULL
+  `motionPrefix`   VARCHAR(10)           DEFAULT NULL,
+  `hasAmendments`  TINYINT      NOT NULL DEFAULT '1',
+  `position`       INT(11) NOT NULL,
+  `cssicon`        VARCHAR(100)          DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

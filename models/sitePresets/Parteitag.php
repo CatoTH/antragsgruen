@@ -70,6 +70,7 @@ class Parteitag implements ISitePreset
         $section->fixedWidth     = 0;
         $section->lineNumbers    = 0;
         $section->hasComments    = 0;
+        $section->hasAmendments  = 1;
         $section->save();
 
         $section                 = new ConsultationSettingsMotionSection();
@@ -83,6 +84,7 @@ class Parteitag implements ISitePreset
         $section->fixedWidth     = 1;
         $section->lineNumbers    = 1;
         $section->hasComments    = 1;
+        $section->hasAmendments  = 1;
         $section->save();
 
         $section                 = new ConsultationSettingsMotionSection();
@@ -96,6 +98,7 @@ class Parteitag implements ISitePreset
         $section->fixedWidth     = 0;
         $section->lineNumbers    = 0;
         $section->hasComments    = 0;
+        $section->hasAmendments  = 0;
         $section->save();
     }
 
