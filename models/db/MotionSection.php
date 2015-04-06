@@ -72,15 +72,6 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return bool
-     */
-    public function checkLength()
-    {
-        // @TODO
-        return true;
-    }
-
-    /**
      * @return \string[]
      * @throws Internal
      */

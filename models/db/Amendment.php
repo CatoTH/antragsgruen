@@ -77,9 +77,8 @@ class Amendment extends IMotion
     public function rules()
     {
         return [
-            [['consultationId', 'motionTypeId'], 'required'],
-            [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed'], 'number'],
-            [['title'], 'safe'],
+            [['motionId'], 'required'],
+            [['id', 'motionId', 'status', 'textFixed'], 'number'],
         ];
     }
 

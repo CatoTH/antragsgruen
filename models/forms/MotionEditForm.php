@@ -88,7 +88,7 @@ class MotionEditForm extends \yii\base\Model
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
             if (isset($values['sections'][$section->consultationSetting->id])) {
-                $section->getSectionType()->setData($values['sections'][$section->consultationSetting->id]);
+                $section->getSectionType()->setMotionData($values['sections'][$section->consultationSetting->id]);
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->consultationSetting->id])) {
@@ -98,7 +98,7 @@ class MotionEditForm extends \yii\base\Model
                             $data[$key] = $vals[$section->consultationSetting->id];
                         }
                     }
-                    $section->getSectionType()->setData($data);
+                    $section->getSectionType()->setMotionData($data);
                 }
             }
         }

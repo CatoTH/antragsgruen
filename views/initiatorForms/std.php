@@ -23,14 +23,14 @@ $wording = $consultation->getWording();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
-echo '<h4>AntragstellerIn</h4>';
+echo '<h2>AntragstellerIn</h2>';
 
 $preOrga       = Html::encode($initiator->organization);
 $preName       = Html::encode($initiator->name);
 $preEmail      = Html::encode($initiator->contactEmail);
 $prePhone      = Html::encode($initiator->contactPhone);
 $preResolution = Html::encode($initiator->resolutionDate);
-echo '<div class="initiatorData form-horizontal">';
+echo '<div class="initiatorData form-horizontal content">';
 
 if ($allowOther) {
     echo '<div class="checkbox"><label><input type="checkbox" name="andere_antragstellerIn"> ' .

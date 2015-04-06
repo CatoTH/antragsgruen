@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
+use app\models\db\AmendmentSection;
 use app\models\exceptions\FormError;
 
 class TextHTML extends ISectionType
@@ -25,12 +26,26 @@ class TextHTML extends ISectionType
     }
 
     /**
-     * @param $data
+     * @param string $data
      * @throws FormError
      */
-    public function setData($data)
+    public function setMotionData($data)
     {
         $this->section->data = HTMLTools::cleanUntrustedHtml($data);
+    }
+
+
+
+    /**
+     * @param string $data
+     * @throws FormError
+     */
+    public function setAmendmentData($data)
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        $section->data = HTMLTools::cleanUntrustedHtml($data['consolidated']);
+        $section->dataRaw = $data['raw'];
     }
 
     /**

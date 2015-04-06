@@ -34,9 +34,18 @@ class Title extends ISectionType
      * @param $data
      * @throws FormError
      */
-    public function setData($data)
+    public function setMotionData($data)
     {
         $this->section->data = $data;
+    }
+
+    /**
+     * @param string $data
+     * @throws FormError
+     */
+    public function setAmendmentData($data)
+    {
+        $this->setMotionData($data);
     }
 
     /**

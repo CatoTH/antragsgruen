@@ -23,9 +23,9 @@ $params->breadcrumbs[] = $this->title;
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
-echo $controller->showErrors();
+echo '<div class="form content hideIfEmpty">';
 
-echo '<div class="form content">';
+echo $controller->showErrors();
 
 $motionPolicy = $consultation->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
@@ -36,23 +36,28 @@ if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo $motionPolicy->getOnCreateDescription();
 }
 
-echo Html::beginForm(
-    '',
-    'post',
-    ['id' => 'motionEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
-);
-
 if (\Yii::$app->user->isGuest) {
     echo '<div class="alert alert-warning jsProtectionHint" role="alert">';
     echo 'Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.';
     echo '</div>';
 }
 
+echo '</div>';
+
+
+echo Html::beginForm(
+    '',
+    'post',
+    ['id' => 'motionEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
+);
+
+echo '<div class="content">';
+
 if (count($motionTypes) == 1) {
     echo '<input type="hidden" name="type" value="' . $motionTypes[0]->id . '">';
 } else {
     echo '<fieldset class="form-group motionType">
-    <label for="motionTitle">' . $wording->get('Typ') . '</label>';
+    <label>' . $wording->get('Typ') . '</label>';
     foreach ($motionTypes as $type) {
         echo '<div class="radio"><label>';
         echo Html::radio('type', $form->type == $type->id, ['value' => $type->id, 'id' => 'motionType' . $type->id]);
@@ -83,19 +88,28 @@ if (count($tags) == 1) {
     echo '</fieldset>';
 }
 
+echo '</div>';
+
+
+echo '<h2>Text</h2>';
+echo '<div class="content">';
+
 foreach ($form->sections as $section) {
     echo $section->getSectionType()->getMotionFormField();
 }
 
+echo '</div>';
+
+
+
+
 $initiatorClass = $consultation->getMotionInitiatorFormClass();
 echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $controller);
 
-echo '<div class="submitHolder"><button type="submit" name="save" class="btn btn-primary">';
+echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
 echo '</button></div>';
 
 $params->addOnLoadJS('$.Antragsgruen.motionEditForm();');
 
 echo Html::endForm();
-
-echo '</div>';

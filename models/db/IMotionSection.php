@@ -13,7 +13,8 @@ use yii\db\ActiveRecord;
 /**
  * Class IMotionSection
  * @package app\models\db
- * @property $data
+ * @property string $data
+ * @property string $metadata
  * @property ConsultationSettingsMotionSection $consultationSetting
  */
 class IMotionSection extends ActiveRecord
@@ -35,5 +36,15 @@ class IMotionSection extends ActiveRecord
                 return new Image($this);
         }
         throw new Internal('Unknown Field Type: ' . $this->consultationSetting->type);
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function checkLength()
+    {
+        // @TODO
+        return true;
     }
 }

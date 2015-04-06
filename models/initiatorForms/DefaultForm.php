@@ -344,9 +344,10 @@ class DefaultForm implements IInitiatorView
     }
 
     /**
-     * @return AmendmentSupporter[]
+     * @param Amendment $amendment
+     * @return \app\models\db\AmendmentSupporter[]
      */
-    public function getAmendmentSupporters()
+    public function getAmendmentSupporters(Amendment $amendment)
     {
         // TODO: Implement getAmendmentSupporters() method.
     }

@@ -685,7 +685,7 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 -- Constraints for table `amendment`
 --
 ALTER TABLE `amendment`
-ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `amendment` (`id`)
+ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
 

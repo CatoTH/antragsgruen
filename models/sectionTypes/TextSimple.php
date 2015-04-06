@@ -4,6 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\controllers\Base;
+use app\models\db\AmendmentSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use yii\web\View;
@@ -31,9 +32,21 @@ class TextSimple extends ISectionType
      * @param $data
      * @throws FormError
      */
-    public function setData($data)
+    public function setMotionData($data)
     {
         $this->section->data = HTMLTools::cleanSimpleHtml($data);
+    }
+
+    /**
+     * @param string $data
+     * @throws FormError
+     */
+    public function setAmendmentData($data)
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        $section->data = HTMLTools::cleanSimpleHtml($data['consolidated']);
+        $section->dataRaw = $data['raw'];
     }
 
     /**

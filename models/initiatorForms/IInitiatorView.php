@@ -49,7 +49,8 @@ interface IInitiatorView
     public function getMotionSupporters(Motion $motion);
 
     /**
+     * @param Amendment $amendment
      * @return AmendmentSupporter[]
      */
-    public function getAmendmentSupporters();
+    public function getAmendmentSupporters(Amendment $amendment);
 }

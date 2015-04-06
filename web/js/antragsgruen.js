@@ -102,9 +102,7 @@
             onChange();
         }
 
-        $el.parents("form").submit(function() {
-            $el.parent().find("textarea").val(editor.getData());
-        });
+        return editor;
     }
 
 
@@ -120,13 +118,27 @@
     var motionEditForm = function () {
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
-                $textarea = $holder.find(".texteditor");
-            $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
-        });
+                $textarea = $holder.find(".texteditor"),
+                editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
 
-        $("input[name=formToken]").each(function () {
-            $(this).parents("form").append("<input name='" + $(this).val() + "' value='1' type='hidden'>");
-            $(this).remove();
+            $textarea.parents("form").submit(function() {
+                $textarea.parent().find("textarea").val(editor.getData());
+            });
+        });
+    };
+
+    var amendmentEditForm = function() {
+        $(".wysiwyg-textarea").each(function () {
+            var $holder = $(this),
+                $textarea = $holder.find(".texteditor"),
+                editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+            $textarea.parents("form").submit(function(ev) {
+                $textarea.parent().find("textarea.raw").val(editor.getData());
+                if (typeof(editor.plugins.lite) != 'undefined') {
+                    editor.plugins.lite.findPlugin(editor).acceptAll();
+                    $textarea.parent().find("textarea.consolidated").val(editor.getData());
+                }
+            });
         });
     };
 
@@ -245,6 +257,7 @@
     $.Antragsgruen = {
         "motionShow": motionShow,
         "motionEditForm": motionEditForm,
+        "amendmentEditForm": amendmentEditForm,
         "consultationEditForm": consultationEditForm,
         "contentPageEdit": contentPageEdit
     };

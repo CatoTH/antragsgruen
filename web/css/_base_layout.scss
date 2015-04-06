@@ -247,3 +247,7 @@ button.link {
   background: transparent;
   border: none;
 }
+
+.hideIfEmpty:empty {
+  display: none;
+}

@@ -2,13 +2,15 @@
 
 namespace app\models\forms;
 
+use app\components\HTMLTools;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\AmendmentSection;
 use app\models\db\AmendmentSupporter;
 use app\models\exceptions\FormError;
+use yii\base\Model;
 
-class AmendmentEditForm extends \yii\base\Model
+class AmendmentEditForm extends Model
 {
     /** @var Motion */
     public $motion;
@@ -22,6 +24,9 @@ class AmendmentEditForm extends \yii\base\Model
     /** @var null|int */
     public $amendmentId = null;
 
+    /** @var string */
+    public $reason = '';
+
     /**
      * @param Motion $motion
      * @param null|Amendment $amendment
@@ -29,10 +34,10 @@ class AmendmentEditForm extends \yii\base\Model
     public function __construct(Motion $motion, $amendment)
     {
         parent::__construct();
-        $this->motion      = $motion;
+        $this->motion = $motion;
         /** @var AmendmentSection[] $amendmentSections */
         $amendmentSections = [];
-        $motionSections = [];
+        $motionSections    = [];
         foreach ($motion->sections as $section) {
             $motionSections[$section->sectionId] = $section;
         }
@@ -42,8 +47,8 @@ class AmendmentEditForm extends \yii\base\Model
             foreach ($amendment->sections as $section) {
                 $amendmentSections[$section->sectionId] = $section;
                 if ($section->data == '') {
-                    $data = $motionSections[$section->sectionId]->data;
-                    $amendmentSections[$section->sectionId]->data = $data;
+                    $data                                            = $motionSections[$section->sectionId]->data;
+                    $amendmentSections[$section->sectionId]->data    = $data;
                     $amendmentSections[$section->sectionId]->dataRaw = $data;
                 }
             }
@@ -97,7 +102,7 @@ class AmendmentEditForm extends \yii\base\Model
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
             if (isset($values['sections'][$section->consultationSetting->id])) {
-                $section->getSectionType()->setData($values['sections'][$section->consultationSetting->id]);
+                $section->getSectionType()->setAmendmentData($values['sections'][$section->consultationSetting->id]);
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->consultationSetting->id])) {
@@ -107,9 +112,79 @@ class AmendmentEditForm extends \yii\base\Model
                             $data[$key] = $vals[$section->consultationSetting->id];
                         }
                     }
-                    $section->getSectionType()->setData($data);
+                    $section->getSectionType()->setAmendmentData($data);
                 }
             }
+            $this->reason = HTMLTools::sectionSimpleHTML($values['amendmentReason']);
+        }
+    }
+
+
+    /**
+     * @throws FormError
+     */
+    private function createAmendmentVerify()
+    {
+        $errors = [];
+
+        foreach ($this->sections as $section) {
+            $type = $section->consultationSetting;
+            if ($section->data == '' && $type->required) {
+                $errors[] = 'Keine Daten angegeben (Feld: ' . $type->title . ')';
+            }
+            if (!$section->checkLength()) {
+                $errors[] = str_replace('%max%', $type->maxLen, 'Maximum length of %max% exceeded');
+            }
+        }
+
+        try {
+            $this->motion->consultation->getAmendmentInitiatorFormClass()->validateInitiatorViewAmendment();
+        } catch (FormError $e) {
+            $errors = array_merge($errors, $e->getMessages());
+        }
+
+        if (count($errors) > 0) {
+            throw new FormError($errors);
+        }
+    }
+
+    /**
+     * @throws FormError
+     * @return Amendment
+     */
+    public function createAmendment()
+    {
+        if (!$this->motion->consultation->getMotionPolicy()->checkAmendmentSubmit()) {
+            throw new FormError("Keine Berechtigung zum Anlegen von Änderungsanträgen.");
+        }
+
+        $amendment = new Amendment();
+
+        $this->setAttributes($_POST, $_FILES);
+        $this->supporters = $this->motion->consultation->getAmendmentInitiatorFormClass()
+            ->getAmendmentSupporters($amendment);
+
+        $this->createAmendmentVerify();
+
+        $amendment->status       = Motion::STATUS_DRAFT;
+        $amendment->motionId     = $this->motion->id;
+        $amendment->textFixed    = ($this->motion->consultation->getSettings()->adminsMayEdit ? 0 : 1);
+        $amendment->titlePrefix  = '';
+        $amendment->dateCreation = date("Y-m-d H:i:s");
+
+        if ($amendment->save()) {
+            $this->motion->consultation->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);
+
+            foreach ($this->sections as $section) {
+                $section->amendmentId = $amendment->id;
+                $section->save();
+            }
+
+            $amendment->save();
+
+            return $amendment;
+        } else {
+            throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
         }
     }
 }

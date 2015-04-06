@@ -43,12 +43,15 @@ class AmendmentController extends Base
 
         if (isset($_POST['save'])) {
             try {
-                /*
-                $motion  = $form->createMotion();
-                $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => 'create'];
+                $amendment = $form->createAmendment();
+                $nextUrl = [
+                    'amendment/createconfirm',
+                    'motionId' => $amendment->motionId,
+                    'amemndmentId' => $amendment->id,
+                    'fromMode' => 'create'
+                ];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';
-                */
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }

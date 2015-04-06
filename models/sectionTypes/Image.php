@@ -31,10 +31,10 @@ class Image extends ISectionType
     }
 
     /**
-     * @param $data
+     * @param string $data
      * @throws FormError
      */
-    public function setData($data)
+    public function setMotionData($data)
     {
         if (!isset($data['tmp_name'])) {
             throw new FormError('Invalid Image');
@@ -55,6 +55,15 @@ class Image extends ISectionType
         ];
         $this->section->data     = base64_encode(file_get_contents($data['tmp_name']));
         $this->section->metadata = json_encode($metadata);
+    }
+
+    /**
+     * @param string $data
+     * @throws FormError
+     */
+    public function setAmendmentData($data)
+    {
+        $this->setMotionData($data);
     }
 
     /**

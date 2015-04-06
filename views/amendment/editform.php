@@ -29,7 +29,9 @@ $params->breadcrumbs[] = $wording->get($mode == 'create' ? 'Änderungsantrag ste
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
-echo '<br><div class="alert alert-info col-md-10 col-md-offset-1" role="alert">';
+echo '<div class="form content">';
+
+echo '<br><div class="alert alert-info" role="alert">';
 echo 'Ändere hier den Antrag so ab, wie du ihn gern sehen würdest.<br>';
 echo 'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>';
 echo 'Falls dein Änderungsantrag Hinweise an die Pogrammkommission enthält, kannst du diese als ' .
@@ -38,10 +40,6 @@ echo '</div><br style="clear: both;">';
 
 
 echo $controller->showErrors();
-
-echo '<div class="form content">';
-
-
 
 $motionPolicy = $consultation->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
@@ -52,33 +50,62 @@ if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo $motionPolicy->getOnCreateDescription();
 }
 
-echo Html::beginForm(
-    '',
-    'post',
-    ['id' => 'motionEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
-);
-
-
 if (\Yii::$app->user->isGuest) {
     echo '<div class="alert alert-warning jsProtectionHint" role="alert">';
     echo 'Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.';
     echo '</div>';
 }
 
+echo '</div>';
 
+
+
+
+echo Html::beginForm(
+    '',
+    'post',
+    ['id' => 'motionEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
+);
+
+echo '<h2>Neuer Antragstext</h2>';
+echo '<div class="content">';
 foreach ($form->sections as $section) {
     echo $section->getSectionType()->getAmendmentFormField();
 }
 
+echo '</div>';
+
+
+echo '<h2>Begründung</h2>';
+
+echo '<div class="content">';
+
+
+
+echo '<fieldset class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0">';
+echo '<label for="amendmentReason">' . $wording->get('Begründung') . '</label>';
+
+echo '<textarea name="amendmentReason"  id="amendmentReason">';
+echo Html::encode($form->reason) . '</textarea>';
+echo '<div class="texteditor" id="amendmentReason_wysiwyg">';
+echo $form->reason;
+echo '</div>';
+echo '</fieldset>';
+
+echo '</div>';
+
+
+
 $initiatorClass = $consultation->getAmendmentInitiatorFormClass();
 echo $initiatorClass->getAmendmentInitiatorForm($consultation, $form, $controller);
 
-echo '<div class="submitHolder"><button type="submit" name="save" class="btn btn-primary">';
+
+
+
+echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
 echo '</button></div>';
 
-$params->addOnLoadJS('$.Antragsgruen.motionEditForm();');
+$params->addOnLoadJS('$.Antragsgruen.amendmentEditForm();');
 
 echo Html::endForm();
-
-echo '</div>';
