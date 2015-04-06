@@ -32,6 +32,17 @@ foreach ($amendment->getSortedSections(true) as $section) {
     echo '</section>';
 }
 
+
+if ($amendment->changeExplanation != '') {
+    echo '<div class="motion_text_holder">';
+    echo '<h3>Begründung des Änderungsantrags</h3>';
+    echo '<div class="content">';
+    echo $amendment->changeExplanation;
+    echo '</div>';
+    echo '</div>';
+}
+
+
 echo '<div class="motion_text_holder">
         <h3>AntragstellerInnen</h3>
 

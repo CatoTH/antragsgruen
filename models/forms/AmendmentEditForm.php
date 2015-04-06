@@ -44,6 +44,7 @@ class AmendmentEditForm extends Model
         if ($amendment) {
             $this->amendmentId = $amendment->id;
             $this->supporters  = $amendment->amendmentSupporters;
+            $this->reason      = $amendment->changeExplanation;
             foreach ($amendment->sections as $section) {
                 $amendmentSections[$section->sectionId] = $section;
                 if ($section->data == '') {
@@ -115,7 +116,7 @@ class AmendmentEditForm extends Model
                     $section->getSectionType()->setAmendmentData($data);
                 }
             }
-            $this->reason = HTMLTools::sectionSimpleHTML($values['amendmentReason']);
+            $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
         }
     }
 
@@ -183,6 +184,64 @@ class AmendmentEditForm extends Model
             $amendment->save();
 
             return $amendment;
+        } else {
+            throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
+        }
+    }
+
+
+    /**
+     * @throws FormError
+     */
+    private function saveAmendmentVerify()
+    {
+        $errors = [];
+
+        foreach ($this->sections as $section) {
+            $type = $section->consultationSetting;
+            if ($section->data == '' && $type->required) {
+                $errors[] = 'Keine Daten angegeben (Feld: ' . $type->title . ')';
+            }
+            if (!$section->checkLength()) {
+                $errors[] = str_replace('%max%', $type->maxLen, 'Maximum length of %max% exceeded');
+            }
+        }
+
+        $this->motion->consultation->getAmendmentInitiatorFormClass()->validateInitiatorViewAmendment();
+
+        if (count($errors) > 0) {
+            throw new FormError(implode("\n", $errors));
+        }
+    }
+
+
+    /**
+     * @param Amendment $amendment
+     * @throws FormError
+     */
+    public function saveAmendment(Amendment $amendment)
+    {
+        $consultation = $this->motion->consultation;
+        if (!$consultation->getAmendmentPolicy()->checkAmendmentSubmit()) {
+            throw new FormError("Keine Berechtigung zum Anlegen von Änderungsanträgen.");
+        }
+
+        $this->saveAmendmentVerify();
+        $amendment->changeExplanation = $this->reason;
+
+        if ($amendment->save()) {
+            $consultation->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);
+
+            // Sections
+            foreach ($amendment->sections as $section) {
+                $section->delete();
+            }
+            foreach ($this->sections as $section) {
+                $section->amendmentId = $amendment->id;
+                $section->save();
+            }
+
+            $amendment->save();
         } else {
             throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
         }

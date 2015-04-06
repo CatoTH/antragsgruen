@@ -85,7 +85,7 @@ echo '<div class="content">';
 echo '<fieldset class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0">';
 echo '<label for="amendmentReason">' . $wording->get('Begründung') . '</label>';
 
-echo '<textarea name="amendmentReason"  id="amendmentReason">';
+echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';
 echo Html::encode($form->reason) . '</textarea>';
 echo '<div class="texteditor" id="amendmentReason_wysiwyg">';
 echo $form->reason;

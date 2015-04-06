@@ -168,6 +168,62 @@ class AmendmentController extends Base
 
     /**
      * @param int $motionId
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionEdit($motionId, $amendmentId)
+    {
+        $this->testMaintainanceMode();
+
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(
+            [
+                'id'       => $amendmentId,
+                'motionId' => $motionId,
+            ]
+        );
+        if (!$amendment) {
+            \Yii::$app->session->setFlash('error', 'Amendment not found.');
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+
+        if (!$amendment->canEdit()) {
+            \Yii::$app->session->setFlash('error', 'Not allowed to edit this amendment.');
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+
+        $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
+        $form = new AmendmentEditForm($amendment->motion, $amendment);
+
+        if (isset($_POST['save'])) {
+            $form->setAttributes($_POST, $_FILES);
+            try {
+                $form->saveAmendment($amendment);
+                $nextUrl  = [
+                    'amendment/createconfirm',
+                    'motionId' => $amendment->motionId,
+                    'amendmentId' => $amendment->id,
+                    'fromMode' => $fromMode
+                ];
+                $this->redirect(UrlHelper::createUrl($nextUrl));
+                return '';
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render(
+            'editform',
+            [
+                'mode'         => $fromMode,
+                'form'         => $form,
+                'consultation' => $this->consultation,
+            ]
+        );
+    }
+
+    /**
+     * @param int $motionId
      * @return string
      * @throws NotFound
      */

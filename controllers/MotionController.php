@@ -459,12 +459,12 @@ class MotionController extends Base
         }
 
         $form = new MotionEditForm($this->consultation, $motion);
+        $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if (isset($_POST['save'])) {
             $form->setAttributes($_POST, $_FILES);
             try {
                 $form->saveMotion($motion);
-                $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
                 $nextUrl  = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';
@@ -476,7 +476,7 @@ class MotionController extends Base
         return $this->render(
             'editform',
             [
-                'mode'         => 'create',
+                'mode'         => $fromMode,
                 'form'         => $form,
                 'consultation' => $this->consultation,
                 'motionTypes'  => [$motion->motionType],

@@ -39,4 +39,17 @@ class AmendmentSupporter extends ISupporter
     {
         return $this->hasOne(Amendment::className(), ['id' => 'amendmentId']);
     }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['amendmentId', 'position', 'role'], 'required'],
+            [['id', 'amendmentId', 'position', 'userId', 'personType'], 'number'],
+            [['resolutionDate', 'contactEmail', 'contactPhone'], 'safe'],
+            [['position', 'comment', 'personType', 'name', 'organization'], 'safe'],
+        ];
+    }
 }
