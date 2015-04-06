@@ -2,8 +2,10 @@
 
 namespace app\models\db;
 
-use yii\db\ActiveRecord;
-
+use app\components\diff\Diff;
+use app\models\exceptions\Internal;
+use app\models\sectionTypes\ISectionType;
+use app\components\diff\Engine;
 /**
  * @package app\models\db
  *
@@ -54,5 +56,28 @@ class AmendmentSection extends IMotionSection
             [['amendmentId', 'sectionId'], 'number'],
             [['dataRaw'], 'safe'],
         ];
+    }
+
+    /**
+     * @return string
+     * @throws Internal
+     */
+    public function getInlineDiffHtml()
+    {
+        if ($this->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            throw new Internal('Only supported for simple HTML');
+        }
+        $strPre = null;
+        foreach ($this->amendment->motion->sections as $section) {
+            if ($section->sectionId == $this->sectionId) {
+                $strPre = $section->data;
+            }
+        }
+        if ($strPre === null) {
+            throw new Internal('Original version not found');
+        }
+        //$debug = ($this->sectionId == 4);
+        $debug = false;
+        return Diff::computeDiff($strPre, $this->data, $debug);
     }
 }

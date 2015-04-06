@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\forms\CommentForm;
+use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
 
 /**
@@ -22,13 +23,11 @@ $wording    = $consultation->getWording();
 
 
 $layout->breadcrumbs[UrlHelper::createMotionUrl($amendment->motion)] = $amendment->motion->getTypeName();
-$layout->breadcrumbs[] = $amendment->titlePrefix;
+$layout->breadcrumbs[]                                               = $amendment->titlePrefix;
 
 $layout->addJS('/js/socialshareprivacy/jquery.socialshareprivacy.js');
 
 $this->title = $amendment->getTitle() . " (" . $amendment->motion->consultation->title . ", Antragsgrün)";
-
-
 
 
 $html = '<ul class="sidebarActions">';
@@ -37,10 +36,16 @@ $html .= '</ul>';
 $layout->menusHtml[] = $html;
 
 
-
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
 
 echo '<div class="content">';
+
+
+foreach ($amendment->sections as $section) {
+    if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
+        echo $section->getInlineDiffHtml();
+    }
+}
 
 echo '</div>';
