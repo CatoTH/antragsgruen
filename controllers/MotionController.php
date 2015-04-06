@@ -300,6 +300,7 @@ class MotionController extends Base
 
         $this->layout = 'column2';
 
+        $this->checkConsistency($motion);
         $this->testMaintainanceMode();
 
         $openedComments = [];

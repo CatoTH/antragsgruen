@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use yii\db\ActiveQuery;
 use yii\db\Query;
 
 /**
@@ -192,13 +193,18 @@ class Amendment extends IMotion
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
         $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
-
-        $query = (new Query())->select('amendment.*')->from('amendment');
-        $query->innerJoin('motion', 'motion.id = amendment.motionId');
+        $query          = Amendment::find();
+        $query->joinWith(
+            [
+                'motion' => function ($query) use ($invisibleStati, $consultation) {
+                    /** @var ActiveQuery $query */
+                    $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->where('motion.consultationId = ' . IntVal($consultation->id));
+                }
+            ]
+        );
         $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-        $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-        $query->where('motion.consultationId = ' . IntVal($consultation->id));
-        $query->orderBy("dateCreation DESC");
+        $query->orderBy("amendment.dateCreation DESC");
         $query->offset(0)->limit($limit);
 
         return $query->all();
@@ -277,6 +283,38 @@ class Amendment extends IMotion
                 return true;
             }
         }
+        return false;
+    }
+
+
+
+    /**
+     * @return bool
+     */
+    public function canEdit()
+    {
+        if ($this->status == static::STATUS_DRAFT) {
+            return true;
+        }
+
+        if ($this->textFixed) {
+            return false;
+        }
+
+        if ($this->motion->consultation->getSettings()->adminsMayEdit) {
+            if (User::currentUserHasPrivilege($this->motion->consultation, User::PRIVILEGE_SCREENING)) {
+                return true;
+            }
+        }
+
+        if ($this->motion->consultation->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
+            if ($this->motion->consultation->amendmentDeadlineIsOver()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
         return false;
     }
 }

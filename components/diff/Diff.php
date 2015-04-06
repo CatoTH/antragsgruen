@@ -176,24 +176,20 @@ class Engine
                 && $sequence1[$index1 + $start - 1]
                 == $sequence2[$index2 + $start - 1]
             ) {
-
                 // update the diff and the indices
                 $diff[] = array($sequence1[$index1 + $start - 1], self::UNMODIFIED);
                 $index1--;
                 $index2--;
-
             } elseif ($index2 > 0
                 && $table[$index1][$index2] == $table[$index1][$index2 - 1]
             ) {
                 // update the diff and the indices
                 $diff[] = array($sequence2[$index2 + $start - 1], self::INSERTED);
                 $index2--;
-
             } else {
                 // update the diff and the indices
                 $diff[] = array($sequence1[$index1 + $start - 1], self::DELETED);
                 $index1--;
-
             }
 
         }

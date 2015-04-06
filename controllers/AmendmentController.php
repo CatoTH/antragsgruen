@@ -17,6 +17,76 @@ class AmendmentController extends Base
 {
 
     /**
+     * @param Amendment $amendment
+     * @param int $commentId
+     * @param array $viewParameters
+     */
+    private function performShowActions(Amendment $amendment, $commentId, &$viewParameters)
+    {
+        if ($commentId == 0 && isset($_POST['commentId'])) {
+            $commentId = IntVal($_POST['commentId']);
+        }
+    }
+
+    /**
+     * @param int $amendmentId
+     * @param int $commentId
+     * @return string
+     */
+    public function actionView($amendmentId, $commentId = 0)
+    {
+        $amendmentId = IntVal($amendmentId);
+
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne($amendmentId);
+        if (!$amendment) {
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+
+        $this->layout = 'column2';
+
+        $this->checkConsistency($amendment->motion, $amendment);
+        $this->testMaintainanceMode();
+
+        $openedComments = [];
+
+        if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);
+        } else {
+            $adminEdit = null;
+        }
+
+
+        $amendmentViewParams = [
+            'amendment'      => $amendment,
+            'editLink'       => $amendment->canEdit(),
+            'openedComments' => $openedComments,
+            'adminEdit'      => $adminEdit,
+            'commentForm'    => null,
+        ];
+
+        try {
+            $this->performShowActions($amendment, $commentId, $amendmentViewParams);
+        } catch (\Exception $e) {
+            \yii::$app->session->setFlash('error', $e->getMessage());
+        }
+
+        $supportStatus = "";
+        if (!\Yii::$app->user->isGuest) {
+            foreach ($amendment->amendmentSupporters as $supp) {
+                if ($supp->userId == User::getCurrentUser()->id) {
+                    $supportStatus = $supp->role;
+                }
+            }
+        }
+        $amendmentViewParams['supportStatus'] = $supportStatus;
+
+
+        return $this->render('view', $amendmentViewParams);
+
+    }
+
+    /**
      * @param int $motionId
      * @param int $amendmentId
      * @param string $fromMode
@@ -29,9 +99,9 @@ class AmendmentController extends Base
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne(
             [
-                'id'             => $amendmentId,
-                'motionId'       => $motionId,
-                'status'         => Amendment::STATUS_DRAFT
+                'id'       => $amendmentId,
+                'motionId' => $motionId,
+                'status'   => Amendment::STATUS_DRAFT
             ]
         );
         if (!$amendment) {
@@ -46,14 +116,14 @@ class AmendmentController extends Base
         }
 
         if (isset($_POST['confirm'])) {
-            $screening         = $this->consultation->getSettings()->screeningAmendments;
+            $screening = $this->consultation->getSettings()->screeningAmendments;
             if ($screening) {
                 $amendment->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
             } else {
                 $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
             }
             if (!$screening && $amendment->statusString == "") {
-                $numbering = $amendment->motion->consultation->getAmendmentNumbering();
+                $numbering              = $amendment->motion->consultation->getAmendmentNumbering();
                 $amendment->titlePrefix = $numbering->getAmendmentNumber($amendment, $amendment->motion);
             }
             $amendment->save();
@@ -130,9 +200,9 @@ class AmendmentController extends Base
                 $amendment = $form->createAmendment();
                 $nextUrl   = [
                     'amendment/createconfirm',
-                    'motionId'     => $amendment->motionId,
-                    'amendmentId'  => $amendment->id,
-                    'fromMode'     => 'create'
+                    'motionId'    => $amendment->motionId,
+                    'amendmentId' => $amendment->id,
+                    'fromMode'    => 'create'
                 ];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';

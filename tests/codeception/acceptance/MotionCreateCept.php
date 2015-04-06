@@ -46,8 +46,8 @@ if (method_exists($I, 'executeJS')) {
 $I->wantTo('Create a regular motion, but forgot the organization, motion type and resolution date');
 $I->fillField(['name' => 'sections[1]'], 'Testantrag 1');
 if (method_exists($I, 'executeJS')) {
-    $I->executeJS('CKEDITOR.instances.sections_2.setData("<p><strong>Test</strong></p>");');
-    $I->executeJS('CKEDITOR.instances.sections_3.setData("<p><strong>Test 2</strong></p>");');
+    $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
+    $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><strong>Test 2</strong></p>");');
 } else {
     $I->fillField(['name' => 'sections[2]'], 'Testantrag Text\n2');
     $I->fillField(['name' => 'sections[3]'], 'Testantrag Text\nBegründung');
@@ -96,8 +96,8 @@ $I->see(mb_strtoupper('Antrag stellen'), 'h1');
 $I->wantTo('Make some changes to the motion');
 $I->fillField(['name' => 'sections[1]'], 'Testantrag 2');
 if (method_exists($I, 'executeJS')) {
-    $I->executeJS('CKEDITOR.instances.sections_2.setData("<p><strong>Another string</strong></p>");');
-    $I->executeJS('CKEDITOR.instances.sections_3.setData("<p><em>Italic is beautiful as well</em></p>");');
+    $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Another string</strong></p>");');
+    $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><em>Italic is beautiful as well</em></p>");');
 } else {
     $I->fillField(['name' => 'sections[2]'], 'Another string\n2');
     $I->fillField(['name' => 'sections[3]'], 'Itallic is beautiful as well');

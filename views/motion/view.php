@@ -1,6 +1,5 @@
 <?php
 
-use app\components\AntiXSS;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
