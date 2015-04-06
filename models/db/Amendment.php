@@ -86,7 +86,8 @@ class Amendment extends IMotion
     /**
      * @return Consultation
      */
-    public function getMyConsultation() {
+    public function getMyConsultation()
+    {
         return $this->motion->consultation;
     }
 
@@ -225,6 +226,7 @@ class Amendment extends IMotion
         };
         return $return;
     }
+
     /**
      * @return AmendmentSupporter[]
      */

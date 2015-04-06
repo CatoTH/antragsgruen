@@ -27,7 +27,7 @@ class Engine
     const DELETED    = 1;
     const INSERTED   = 2;
 
-    /* Returns the diff for two strings. The return value is an array, each of
+    /** Returns the diff for two strings. The return value is an array, each of
      * whose values is an array containing two values: a line (or character, if
      * $compareCharacters is true), and one of the constants DIFF::UNMODIFIED (the
      * line or character is in both strings), DIFF::DELETED (the line or character
@@ -41,7 +41,6 @@ class Engine
      */
     public static function compare($string1, $string2, $compareCharacters = false)
     {
-
         // initialise the sequences and comparison start and end positions
         $start = 0;
         if ($compareCharacters) {
@@ -92,10 +91,9 @@ class Engine
 
         // return the diff
         return $diff;
-
     }
 
-    /* Returns the diff for two files. The parameters are:
+    /** Returns the diff for two files. The parameters are:
      *
      * $file1             - the path to the first file
      * $file2             - the path to the second file
@@ -104,17 +102,15 @@ class Engine
      */
     public static function compareFiles($file1, $file2, $compareCharacters = false)
     {
-
         // return the diff of the files
         return self::compare(
             file_get_contents($file1),
             file_get_contents($file2),
             $compareCharacters
         );
-
     }
 
-    /* Returns the table of longest common subsequence lengths for the specified
+    /** Returns the table of longest common subsequence lengths for the specified
      * sequences. The parameters are:
      *
      * $sequence1 - the first sequence
@@ -125,7 +121,6 @@ class Engine
      */
     private static function computeTable($sequence1, $sequence2, $start, $end1, $end2)
     {
-
         // determine the lengths to be compared
         $length1 = $end1 - $start + 1;
         $length2 = $end2 - $start + 1;
@@ -154,13 +149,12 @@ class Engine
 
             }
         }
-
         // return the table
         return $table;
 
     }
 
-    /* Returns the partial diff for the specificed sequences, in reverse order.
+    /** Returns the partial diff for the specificed sequences, in reverse order.
      * The parameters are:
      *
      * $table     - the table returned by the computeTable function
@@ -170,7 +164,6 @@ class Engine
      */
     private static function generatePartialDiff($table, $sequence1, $sequence2, $start)
     {
-
         //  initialise the diff
         $diff = array();
 
@@ -212,10 +205,9 @@ class Engine
 
         // return the diff
         return $diff;
-
     }
 
-    /* Returns a diff as a string, where unmodified lines are prefixed by '  ',
+    /** Returns a diff as a string, where unmodified lines are prefixed by '  ',
      * deletions are prefixed by '- ', and insertions are prefixed by '+ '. The
      * parameters are:
      *
@@ -225,7 +217,6 @@ class Engine
      */
     public static function toString($diff, $separator = "\n")
     {
-
         // initialise the string
         $string = '';
 
@@ -252,10 +243,9 @@ class Engine
 
         // return the string
         return $string;
-
     }
 
-    /* Returns a diff as an HTML string, where unmodified lines are contained
+    /** Returns a diff as an HTML string, where unmodified lines are contained
      * within 'span' elements, deletions are contained within 'del' elements, and
      * insertions are contained within 'ins' elements. The parameters are:
      *
@@ -265,7 +255,6 @@ class Engine
      */
     public static function toHTML($diff, $separator = '<br>')
     {
-
         // initialise the HTML
         $html = '';
 
@@ -297,10 +286,9 @@ class Engine
 
         // return the HTML
         return $html;
-
     }
 
-    /* Returns a diff as an HTML table. The parameters are:
+    /** Returns a diff as an HTML table. The parameters are:
      *
      * $diff        - the diff array
      * $indentation - indentation to add to every line of the generated HTML; this
@@ -310,7 +298,6 @@ class Engine
      */
     public static function toTable($diff, $indentation = '', $separator = '<br>')
     {
-
         // initialise the HTML
         $html = $indentation . "<table class=\"diff\">\n";
 
@@ -323,23 +310,23 @@ class Engine
 
                 // display the content on the left and right
                 case self::UNMODIFIED:
-                    $leftCell  = self::getCellContent($diff, $indentation, $separator, $index, self::UNMODIFIED);
+                    $leftCell  = self::getCellContent($diff, $separator, $index, self::UNMODIFIED);
                     $rightCell = $leftCell;
                     break;
 
                 // display the deleted on the left and inserted content on the right
                 case self::DELETED:
                     $leftCell  =
-                        self::getCellContent($diff, $indentation, $separator, $index, self::DELETED);
+                        self::getCellContent($diff, $separator, $index, self::DELETED);
                     $rightCell =
-                        self::getCellContent($diff, $indentation, $separator, $index, self::INSERTED);
+                        self::getCellContent($diff, $separator, $index, self::INSERTED);
                     break;
 
                 // display the inserted content on the right
                 case self::INSERTED:
                     $leftCell  = '';
                     $rightCell =
-                        self::getCellContent($diff, $indentation, $separator, $index, self::INSERTED);
+                        self::getCellContent($diff, $separator, $index, self::INSERTED);
                     break;
 
             }
@@ -374,21 +361,18 @@ class Engine
 
         // return the HTML
         return $html . $indentation . "</table>\n";
-
     }
 
-    /* Returns the content of the cell, for use in the toTable function. The
+    /** Returns the content of the cell, for use in the toTable function. The
      * parameters are:
      *
      * $diff        - the diff array
-     * $indentation - indentation to add to every line of the generated HTML
      * $separator   - the separator between lines
      * $index       - the current index, passes by reference
      * $type        - the type of line
      */
-    private static function getCellContent($diff, $indentation, $separator, &$index, $type)
+    private static function getCellContent($diff, $separator, &$index, $type)
     {
-
         // initialise the HTML
         $html = '';
 
@@ -404,6 +388,5 @@ class Engine
 
         // return the HTML
         return $html;
-
     }
 }

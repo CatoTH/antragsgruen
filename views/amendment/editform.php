@@ -81,16 +81,4 @@ $params->addOnLoadJS('$.Antragsgruen.motionEditForm();');
 
 echo Html::endForm();
 
-?>
-<script>
-/*
-$("#amendmentForm").submit(function() {
-    CKEDITOR.instances.ckeditor_toedit.plugins.lite.findPlugin(CKEDITOR.instances.ckeditor_toedit).acceptAll();
-})
-*/
-</script>
-
-<?
-
-
 echo '</div>';

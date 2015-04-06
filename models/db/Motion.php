@@ -116,7 +116,8 @@ class Motion extends IMotion
     /**
      * @return Consultation
      */
-    public function getMyConsultation() {
+    public function getMyConsultation()
+    {
         return $this->consultation;
     }
 
