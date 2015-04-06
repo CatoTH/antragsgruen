@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\DB;
 use app\models\exceptions\Internal;
 use app\models\forms\SiteCreateForm;
@@ -164,6 +165,15 @@ class Consultation extends ActiveRecord
     {
         $this->settingsObject = $settings;
         $this->settings       = $settings->toJSON();
+    }
+
+    /**
+     * @return IAmendmentNumbering
+     */
+    public function getAmendmentNumbering()
+    {
+        $numberings = IAmendmentNumbering::getNumberings();
+        return new $numberings[$this->amendmentNumbering]();
     }
 
 

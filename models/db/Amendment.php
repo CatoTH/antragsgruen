@@ -10,7 +10,6 @@ use yii\db\Query;
  * @property int $id
  * @property int $motionId
  * @property string $titlePrefix
- * @property string $changedTitle
  * @property string $changeMetatext
  * @property string $changeText
  * @property string $changeExplanation
@@ -66,7 +65,7 @@ class Amendment extends IMotion
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAmendmentSections()
+    public function getSections()
     {
         return $this->hasMany(AmendmentSection::className(), ['amendmentId' => 'id']);
     }
@@ -80,6 +79,14 @@ class Amendment extends IMotion
             [['motionId'], 'required'],
             [['id', 'motionId', 'status', 'textFixed'], 'number'],
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->titlePrefix . ' zu ' . $this->motion->title;
     }
 
     /**
@@ -199,7 +206,7 @@ class Amendment extends IMotion
 
 
     /**
-     * @return User[]
+     * @return AmendmentSupporter[]
      */
     public function getInitiators()
     {

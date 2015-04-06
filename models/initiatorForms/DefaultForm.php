@@ -184,7 +184,9 @@ class DefaultForm implements IInitiatorView
     {
         // Supporters
         foreach ($motion->motionSupporters as $supp) {
-            $supp->delete();
+            if (in_array($supp->role, [MotionSupporter::ROLE_INITIATOR, MotionSupporter::ROLE_SUPPORTER])) {
+                $supp->delete();
+            }
         }
 
         $supporters = $this->getMotionSupporters($motion);
@@ -202,26 +204,14 @@ class DefaultForm implements IInitiatorView
      */
     public function submitInitiatorViewAmendment(Amendment $amendment)
     {
-        // @TODO
-        $initiator = $this->getSubmitPerson();
-        if ($initiator === null) {
-            throw new FormError("Keine AntragstellerIn gefunden");
-        }
-
-        $init              = new AmendmentSupporter();
-        $init->amendmentId = $amendment->id;
-        $init->role        = AmendmentSupporter::ROLE_INITIATOR;
-        $init->userId      = $initiator->id;
-        $init->position    = 0;
-        if (isset($_REQUEST["OrganizationResolutionDate"]) && $_REQUEST["OrganizationResolutionDate"] != "") {
-            $regexp = "/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/";
-            if (preg_match($regexp, $_REQUEST["OrganizationResolutionDate"], $matches)) {
-                $init->resolutionDate = $matches["year"] . "-" . $matches["month"] . "-" . $matches["day"];
+        // Supporters
+        foreach ($amendment->amendmentSupporters as $supp) {
+            if (in_array($supp->role, [AmendmentSupporter::ROLE_INITIATOR, AmendmentSupporter::ROLE_SUPPORTER])) {
+                $supp->delete();
             }
         }
-        $init->save();
 
-        $supporters = $this->parseSupporters(new AmendmentSupporter());
+        $supporters = $this->getAmendmentSupporters($amendment);
         foreach ($supporters as $sup) {
             /** @var AmendmentSupporter $sup */
             $sup->amendmentId = $amendment->id;
@@ -239,8 +229,8 @@ class DefaultForm implements IInitiatorView
      */
     public function getMotionInitiatorForm(Consultation $consultation, MotionEditForm $editForm, Base $controller)
     {
-        $view              = new View();
-        $initiator         = null;
+        $view      = new View();
+        $initiator = null;
         foreach ($editForm->supporters as $supporter) {
             if ($supporter->role == MotionSupporter::ROLE_INITIATOR) {
                 $initiator = $supporter;
@@ -269,8 +259,8 @@ class DefaultForm implements IInitiatorView
      */
     public function getAmendmentInitiatorForm(Consultation $consultation, AmendmentEditForm $editForm, Base $controller)
     {
-        $view              = new View();
-        $initiator         = null;
+        $view      = new View();
+        $initiator = null;
         foreach ($editForm->supporters as $supporter) {
             if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR) {
                 $initiator = $supporter;
@@ -345,10 +335,53 @@ class DefaultForm implements IInitiatorView
 
     /**
      * @param Amendment $amendment
-     * @return \app\models\db\AmendmentSupporter[]
+     * @return AmendmentSupporter[]
      */
     public function getAmendmentSupporters(Amendment $amendment)
     {
-        // TODO: Implement getAmendmentSupporters() method.
+        /** @var AmendmentSupporter[] $return */
+        $return = [];
+
+        if (\Yii::$app->user->isGuest) {
+            $init         = new AmendmentSupporter();
+            $init->userId = null;
+        } else {
+            // @TODO
+
+            /** @var \app\models\db\User $user */
+            $user = \Yii::$app->user->identity;
+
+            $init = AmendmentSupporter::findOne(
+                [
+                    'amendmentId' => $amendment->id,
+                    'role'        => AmendmentSupporter::ROLE_INITIATOR,
+                    'userId'      => $user->id,
+                ]
+            );
+            if (!$init) {
+                $init         = new AmendmentSupporter();
+                $init->userId = $user->id;
+            }
+        }
+
+        $init->setAttributes($_POST['Initiator']);
+        $init->amendmentId = $amendment->id;
+        $init->role        = AmendmentSupporter::ROLE_INITIATOR;
+        $init->position    = 0;
+
+        $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
+        if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
+            $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
+        }
+        $return[] = $init;
+
+        $supporters = $this->parseSupporters(new MotionSupporter());
+        foreach ($supporters as $sup) {
+            /** @var AmendmentSupporter $sup */
+            $sup->amendmentId = $amendment->id;
+            $return[]      = $sup;
+        }
+
+        return $return;
     }
 }

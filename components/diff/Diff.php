@@ -130,13 +130,11 @@ class Engine
 
         // loop over the rows
         for ($index1 = 1; $index1 <= $length1; $index1++) {
-
             // create the new row
             $table[$index1] = array(0);
 
             // loop over the columns
             for ($index2 = 1; $index2 <= $length2; $index2++) {
-
                 // store the longest common subsequence length
                 if ($sequence1[$index1 + $start - 1]
                     == $sequence2[$index2 + $start - 1]
@@ -173,7 +171,6 @@ class Engine
 
         // loop until there are no items remaining in either sequence
         while ($index1 > 0 || $index2 > 0) {
-
             // check what has happened to the items at these indices
             if ($index1 > 0 && $index2 > 0
                 && $sequence1[$index1 + $start - 1]
@@ -188,13 +185,11 @@ class Engine
             } elseif ($index2 > 0
                 && $table[$index1][$index2] == $table[$index1][$index2 - 1]
             ) {
-
                 // update the diff and the indices
                 $diff[] = array($sequence2[$index2 + $start - 1], self::INSERTED);
                 $index2--;
 
             } else {
-
                 // update the diff and the indices
                 $diff[] = array($sequence1[$index1 + $start - 1], self::DELETED);
                 $index1--;
@@ -222,7 +217,6 @@ class Engine
 
         // loop over the lines in the diff
         foreach ($diff as $line) {
-
             // extend the string with the line
             switch ($line[1]) {
                 case self::UNMODIFIED:
@@ -260,7 +254,6 @@ class Engine
 
         // loop over the lines in the diff
         foreach ($diff as $line) {
-
             // extend the HTML with the line
             switch ($line[1]) {
                 case self::UNMODIFIED:
@@ -304,10 +297,8 @@ class Engine
         // loop over the lines in the diff
         $index = 0;
         while ($index < count($diff)) {
-
             // determine the line type
             switch ($diff[$index][1]) {
-
                 // display the content on the left and right
                 case self::UNMODIFIED:
                     $leftCell  = self::getCellContent($diff, $separator, $index, self::UNMODIFIED);

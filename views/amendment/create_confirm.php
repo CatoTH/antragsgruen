@@ -1,24 +1,24 @@
 <?php
 
-use app\models\db\Motion;
+use app\models\db\Amendment;
 use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
- * @var Motion $motion
+ * @var Amendment $amendment
  * @var string $mode
  */
 
-$wording = $motion->consultation->getWording();
+$wording = $amendment->motion->consultation->getWording();
 
-$this->title = $wording->get($mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
+$this->title = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 
 $params->breadcrumbs[] = $this->title;
 $params->breadcrumbs[] = 'Bestätigen';
 
-echo '<h1>' . $wording->get('Antrag bestätigen') . ': ' . Html::encode($motion->title) . '</h1>';
+echo '<h1>' . $wording->get('Änderungsantrag bestätigen') . '</h1>';
 
-foreach ($motion->getSortedSections(true) as $section) {
+foreach ($amendment->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
@@ -38,11 +38,11 @@ echo '<div class="motion_text_holder">
         <div class="content">
             <ul>';
 
-foreach ($motion->getInitiators() as $unt) {
+foreach ($amendment->getInitiators() as $unt) {
     echo '<li style="font-weight: bold;">' . $unt->getNameWithResolutionDate(true) . '</li>';
 }
 
-foreach ($motion->getSupporters() as $unt) {
+foreach ($amendment->getSupporters() as $unt) {
     echo '<li>' . $unt->getNameWithResolutionDate(true) . '</li>';
 }
 echo '

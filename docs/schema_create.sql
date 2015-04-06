@@ -10,7 +10,6 @@ CREATE TABLE `amendment` (
   `id`                    INT(11)     NOT NULL,
   `motionId`              INT(11)              DEFAULT NULL,
   `titlePrefix`           VARCHAR(45)          DEFAULT NULL,
-  `changedTitle`          TEXT,
   `changeMetatext`        LONGTEXT    NOT NULL,
   `changeText`            LONGTEXT    NOT NULL,
   `changeExplanation`     LONGTEXT    NOT NULL,

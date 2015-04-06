@@ -86,7 +86,7 @@ abstract class ISectionType
         $str .= '><label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
 
         if ($type->maxLen > 0) {
-            $str .= '<div class="maxHenHint">';
+            $str .= '<div class="maxLenHint">';
             $str .= '<div class="calm">Maximale Länge: ' . $type->maxLen . ' Zeichen</div>';
             $str .= '<div class="alert">Text zu lang - maximale Länge: ' . $type->maxLen . ' Zeichen</div>';
             $str .= '</div>';
