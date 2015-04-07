@@ -95,8 +95,7 @@ $minHeight      = ($minimalisticUi && \Yii::$app->user->isGuest ? 110 : 164);
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
-echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">
-    <div id="socialshareprivacy"></div>';
+echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
 
 if (!$minimalisticUi) {
     echo '<div class="content">';
@@ -447,10 +446,6 @@ if ($motion->consultation->getSettings()->commentWholeMotions) {
 }
 
 if (!$motion->consultation->site->getBehaviorClass()->isLoginForced()) {
-    $layout->addOnLoadJS(
-        '$("#socialshareprivacy").socialSharePrivacy({
-        css_path: "/socialshareprivacy/socialshareprivacy.css"
-    });'
-    );
+    // @TODO Social Sharing
 }
 $layout->addOnLoadJS('$.Antragsgruen.motionShow();');
