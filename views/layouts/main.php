@@ -64,7 +64,7 @@ foreach ($params->extraCss as $file) {
     <script src="/js/jquery-1.11.2.min.js"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
-    <script src="/js/jquery/dist/jquery.min.js"></script>
+    <script src="/js/bower/jquery/dist/jquery.min.js"></script>
     <!--<![endif]-->
 
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">

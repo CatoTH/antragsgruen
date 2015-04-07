@@ -25,8 +25,6 @@ $wording    = $consultation->getWording();
 $layout->breadcrumbs[UrlHelper::createMotionUrl($amendment->motion)] = $amendment->motion->getTypeName();
 $layout->breadcrumbs[]                                               = $amendment->titlePrefix;
 
-$layout->addJS('/js/socialshareprivacy/jquery.socialshareprivacy.js');
-
 $this->title = $amendment->getTitle() . " (" . $amendment->motion->consultation->title . ", Antragsgrün)";
 
 

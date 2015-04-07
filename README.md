@@ -24,9 +24,7 @@ curl -sS https://getcomposer.org/installer | php
 php composer.phar install
 
 composer global require "fxp/composer-asset-plugin:1.0.0"
-composer install --dev
-
-bower install
+composer install
 ```
 
 

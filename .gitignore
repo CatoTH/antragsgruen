@@ -5,3 +5,4 @@ runtime
 test.php
 config/config.php
 config/config_tests.php
+web/js/bower

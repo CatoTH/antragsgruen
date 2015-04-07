@@ -17,9 +17,9 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->addCSS('/css/backend.css');
-$layout->addJS('/js/moment/min/moment-with-locales.min.js');
-$layout->addJS('/js/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-$layout->addCSS('/js/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+$layout->addJS('/js/bower/moment/min/moment-with-locales.min.js');
+$layout->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
+$layout->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
 
 
 $this->title = 'Einstellungen';

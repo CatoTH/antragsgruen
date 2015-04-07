@@ -19,7 +19,7 @@ $this->title                                              = 'Antrags-Abschnitte'
 $params->breadcrumbs[UrlHelper::createUrl('admin/index')] = 'Administration';
 $params->breadcrumbs[]                                    = 'Abschnitte';
 $params->addCSS('/css/backend.css');
-$params->addJS('/js/Sortable/Sortable.min.js');
+$params->addJS('/js/bower/Sortable/Sortable.min.js');
 $params->addJS('/js/backend.js');
 
 echo '<h1>Antrags-Abschnitte</h1>';

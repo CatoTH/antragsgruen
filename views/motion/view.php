@@ -29,7 +29,6 @@ $wording    = $consultation->getWording();
 
 
 $layout->breadcrumbs[] = $motion->getTypeName();
-$layout->addJS('/js/socialshareprivacy/jquery.socialshareprivacy.js');
 
 $this->title = $motion->getTitleWithPrefix() . " (" . $motion->consultation->title . ", Antragsgrün)";
 
