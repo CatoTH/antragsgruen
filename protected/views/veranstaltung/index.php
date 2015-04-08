@@ -72,8 +72,12 @@ if (in_array($this->veranstaltung->id, array(134, 149, 145))) {
 				<?php foreach ($meine_antraege as $antragu) {
 					$antrag = $antragu->antrag;
 					echo "<li>";
+					$link = $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id));
+					if ($antrag->status == Antrag::$STATUS_UNBESTAETIGT) {
+						$link = $this->createUrl('antrag/neuConfirm', array("antrag_id" => $antrag->id));
+					}
 					if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "<span style='text-decoration: line-through;'>";
-					echo CHtml::link(CHtml::encode($antrag->name), $this->createUrl('antrag/anzeige', array("antrag_id" => $antrag->id)));
+					echo CHtml::link(CHtml::encode($antrag->name), $link);
 					if ($antragu->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN) echo " (InitiatorIn)";
 					if ($antragu->rolle == AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) echo " (UnterstützerIn)";
 					if ($antrag->status == Antrag::$STATUS_ZURUECKGEZOGEN) echo "</span>";
