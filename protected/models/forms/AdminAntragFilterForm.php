@@ -25,6 +25,10 @@ class AdminAntragFilterForm extends CFormModel
     {
         $out = array();
         foreach ($antraege as $antrag) {
+            if ($antrag->status == Antrag::$STATUS_GELOESCHT) {
+                continue;
+            }
+
             $matches = true;
 
             if ($this->status !== null && $this->status != "" && $antrag->status != $this->status) {
