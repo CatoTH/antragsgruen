@@ -26,7 +26,7 @@ echo '<select name="Search[status]" size="1">';
 echo '<option value="">- egal -</option>';
 foreach ($statusList as $status_id => $status_name) {
     echo '<option value="' . $status_id . '" ';
-    if ($suche->status == $status_id) {
+    if ($suche->status !== null && $suche->status == $status_id) {
         echo ' selected';
     }
     echo '>' . CHtml::encode($status_name) . '</option>';
