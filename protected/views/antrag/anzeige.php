@@ -124,9 +124,13 @@ foreach ($antrag->antragKommentare as $komm) if ($komm->absatz < 0 && $komm->sta
 					<th>Status:</th>
 					<td><?php
                         if ($antrag->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) {
-                            echo '<span class="ungeprueft">' . CHtml::encode(IAntrag::$STATI[$antrag->status]) . '</span>';
+							if ($antrag->veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden") {
+								echo '<span class="ungeprueft">Eingereicht</span>';
+							} else {
+								echo '<span class="ungeprueft">' . CHtml::encode(IAntrag::$STATI[$antrag->status]) . '</span>';
+							}
                         } elseif ($antrag->status == IAntrag::$STATUS_EINGEREICHT_GEPRUEFT && $antrag->veranstaltung->getEinstellungen()->freischaltung_antraege_anzeigen) {
-                            echo '<span class="geprueft">Von der Programmkommission geprüft</span>';
+                            echo '<span class="geprueft">Bestätigt</span>';
                         } else {
                             echo CHtml::encode(IAntrag::$STATI[$antrag->status]);
                         }

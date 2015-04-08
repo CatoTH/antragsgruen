@@ -110,7 +110,13 @@ foreach ($tag_ids as $tag_id) {
 				$vons = array();
 				foreach ($antrag->getAntragstellerInnen() as $p) $vons[] = $p->getNameMitOrga();
 				echo implode(", ", $vons);
-				if ($antrag->status != IAntrag::$STATUS_EINGEREICHT_GEPRUEFT) echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
+				if ($antrag->status != IAntrag::$STATUS_EINGEREICHT_GEPRUEFT) {
+					if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden") {
+						echo ", eingereicht";
+					} else {
+						echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
+					}
+				}
 				echo "</td>";
 				echo "</tr>";
 
@@ -128,7 +134,13 @@ foreach ($tag_ids as $tag_id) {
 					$vons = array();
 					foreach ($ae->getAntragstellerInnen() as $p) $vons[] = $p->getNameMitOrga();
 					echo implode(", ", $vons);
-					if ($ae->status != IAntrag::$STATUS_EINGEREICHT_GEPRUEFT) echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
+					if ($ae->status != IAntrag::$STATUS_EINGEREICHT_GEPRUEFT) {
+						if ($veranstaltung->veranstaltungsreihe->subdomain == "wiesbaden") {
+							echo ", eingereicht";
+						} else {
+							echo ", " . CHtml::encode(IAntrag::$STATI[$antrag->status]);
+						}
+					}
 					echo "</td>";
 					echo "</tr>";
 				}
