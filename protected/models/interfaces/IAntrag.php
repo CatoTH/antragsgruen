@@ -23,7 +23,7 @@ abstract class IAntrag extends GxActiveRecord
 	public static $STATI = array(
 		-2 => "Gelöscht",
 		-1 => "Zurückgezogen",
-		0  => "Unbestätigt", // Noch nicht bestätigt
+		0  => "Noch nicht eingereicht", // Noch nicht bestätigt
 		1  => "Entwurf",
 		2  => "Eingereicht (ungeprüft)",
 		3  => "Eingereicht",
