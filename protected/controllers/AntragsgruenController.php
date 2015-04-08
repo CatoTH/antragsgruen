@@ -544,7 +544,6 @@ class AntragsgruenController extends CController
 			$person->status           = Person::$STATUS_UNCONFIRMED;
 			$person->typ              = Person::$TYP_PERSON;
 			$person->pwd_enc          = Person::create_hash($passwort);
-			$person->admin            = 0;
 
 			if ($person->save()) {
 				$person->refresh();
