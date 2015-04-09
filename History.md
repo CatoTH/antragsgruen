@@ -1,3 +1,10 @@
+2.6.6 - 2015-03-24
+==================
+
+* Bugfix: gelöschte Anträge wurden im Backend noch angezeigt.
+* Wenn ein Antrag von der AntragstellerIn noch unbestätigt ist, zeigt der Link auf der Startseite unter "Meine Anträge" zum Bestätigen-Formular.
+* In der Antragsliste im Admin-Backend gibt es einen zusätzlichen Filter für AntragstellerInnen.
+
 2.6.5 - 2015-03-24
 ==================
 

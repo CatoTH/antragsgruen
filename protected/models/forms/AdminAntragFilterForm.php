@@ -3,8 +3,11 @@
 class AdminAntragFilterForm extends CFormModel
 {
     /** @var int */
-    public $status = null;
-    public $tag    = null;
+    public $status          = null;
+    public $tag             = null;
+
+    /** @var string */
+    public $antragstellerIn = null;
 
     /** @var string */
     public $titel = null;
@@ -13,7 +16,7 @@ class AdminAntragFilterForm extends CFormModel
     {
         return array(
             array('status, tag', 'numerical'),
-            array('status, tag, titel', 'safe'),
+            array('status, tag, titel, antragstellerIn', 'safe'),
         );
     }
 
@@ -39,6 +42,18 @@ class AdminAntragFilterForm extends CFormModel
                 $found = false;
                 foreach ($antrag->tags as $tag) {
                     if ($tag->id == $this->tag) {
+                        $found = true;
+                    }
+                }
+                if (!$found) {
+                    $matches = false;
+                }
+            }
+
+            if ($this->antragstellerIn !== null && $this->antragstellerIn != "") {
+                $found = false;
+                foreach ($antrag->antragUnterstuetzerInnen as $supp) {
+                    if ($supp->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN && $supp->person->name == $this->antragstellerIn) {
                         $found = true;
                     }
                 }
@@ -91,9 +106,12 @@ class AdminAntragFilterForm extends CFormModel
     {
         $tags = $tagsNamen = array();
         foreach ($antraege as $antrag) {
+            if ($antrag->status == Antrag::$STATUS_GELOESCHT) {
+                continue;
+            }
             foreach ($antrag->tags as $tag) {
                 if (!isset($tags[$tag->id])) {
-                    $tags[$tag->id] = 0;
+                    $tags[$tag->id]      = 0;
                     $tagsNamen[$tag->id] = $tag->name;
                 }
                 $tags[$tag->id]++;
@@ -102,6 +120,34 @@ class AdminAntragFilterForm extends CFormModel
         $out = array();
         foreach ($tags as $tag_id => $anzahl) {
             $out[$tag_id] = $tagsNamen[$tag_id] . " (" . $anzahl . ")";
+        }
+        asort($out);
+        return $out;
+    }
+
+    /**
+     * @param Antrag[] $antraege
+     * @return array
+     */
+    public static function getAntragstellerInnenList($antraege) {
+        $antragstellerInnen = array();
+        foreach ($antraege as $antrag) {
+            if ($antrag->status == Antrag::$STATUS_GELOESCHT) {
+                continue;
+            }
+            foreach ($antrag->antragUnterstuetzerInnen as $supp) {
+                if ($supp->rolle != AntragUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+                    continue;
+                }
+                if (!isset($antragstellerInnen[$supp->person->name])) {
+                    $antragstellerInnen[$supp->person->name]      = 0;
+                }
+                $antragstellerInnen[$supp->person->name]++;
+            }
+        }
+        $out = array();
+        foreach ($antragstellerInnen as $antragstellerIn => $anzahl) {
+            $out[$antragstellerIn] = $antragstellerIn . " (" . $anzahl . ")";
         }
         asort($out);
         return $out;
