@@ -4,6 +4,7 @@
 * Bugfix: gelöschte Anträge wurden im Backend noch angezeigt.
 * Wenn ein Antrag von der AntragstellerIn noch unbestätigt ist, zeigt der Link auf der Startseite unter "Meine Anträge" zum Bestätigen-Formular.
 * In der Antragsliste im Admin-Backend gibt es einen zusätzlichen Filter für AntragstellerInnen.
+* Sicherstellen, dass auch im Admin-Backend keine Änderungsantragsnummer doppelt vergeben werden kann (wie bei v2.6.4 bei den Anträgen) 
 
 2.6.5 - 2015-03-24
 ==================

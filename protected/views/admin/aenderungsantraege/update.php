@@ -34,7 +34,7 @@ $this->menu = array(
 		echo "<br>";
 	}
 
-	//if (count($messages) > 0) echo "<strong>" . GxHtml::encode(implode("<br>", $messages)) . "</strong><br><br>";
+	if (count($messages) > 0) echo "<strong>" . GxHtml::encode(implode("<br>", $messages)) . "</strong><br><br>";
 
 
 	$this->renderPartial('_form', array(

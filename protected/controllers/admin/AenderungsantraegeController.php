@@ -7,6 +7,8 @@ class AenderungsantraegeController extends GxController
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 * @param int $id
+	 * @throws CException
+	 * @throws Exception
 	 */
 	public function actionUpdate($veranstaltungsreihe_id = "", $veranstaltung_id, $id)
 	{
@@ -48,10 +50,23 @@ class AenderungsantraegeController extends GxController
 		if (isset($_POST['Aenderungsantrag'])) {
 			if (!in_array($_POST['Aenderungsantrag']['status'], $model->getMoeglicheStati())) throw new Exception("Status-Übergang ungültig");
 
+			$revision_name = $model->revision_name;
 			$model->setAttributes($_POST['Aenderungsantrag'], false);
 			Yii::import('ext.datetimepicker.EDateTimePicker');
 			$model->datum_einreichung = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_einreichung");
 			$model->datum_beschluss   = EDateTimePicker::parseInput($_POST["Aenderungsantrag"], "datum_beschluss");
+
+			if ($model->revision_name != $revision_name && $revision_name != "") {
+				foreach ($this->veranstaltung->antraege as $ant) {
+					foreach ($ant->aenderungsantraege as $aend) {
+						if ($aend->id != $model->id && $aend->revision_name == $model->revision_name && $aend->status != Aenderungsantrag::$STATUS_GELOESCHT) {
+							// Zurücksetzen + Warnung
+							$messages[]           = "Das vergebene Kürzel \"" . $model->revision_name . "\" wird bereits von einem anderen Änderungsantrag verwendet.";
+							$model->revision_name = $revision_name;
+						}
+					}
+				}
+			}
 
 			if ($model->save()) {
 
