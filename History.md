@@ -1,4 +1,9 @@
-2.6.6 - 2015-03-24
+2.6.7 - 2015-??-??
+==================
+
+* Im Backend gibt es nun eine komplette Liste aller Anträge und Änderungsanträge.
+
+2.6.6 - 2015-04-08
 ==================
 
 * Bugfix: gelöschte Anträge wurden im Backend noch angezeigt.

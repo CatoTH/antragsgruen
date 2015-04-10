@@ -1394,6 +1394,16 @@ ins {
   width: 40px;
 }
 
+
+.adminAntragsListe {
+  border: solid 1px gray;
+
+  th, td {
+    padding: 5px;
+    border: solid 1px gray;
+  }
+}
+
 /**************************** RESPONSIVE ***************************** */
 
 .visible-phone {

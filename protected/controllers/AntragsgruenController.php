@@ -12,6 +12,7 @@ class AntragsgruenController extends CController
 	public $text_comments = true;
 	public $shrink_cols = false;
     public $magenta_layout = false;
+	public $full_width = false;
 
 	/** @var null|Veranstaltung */
 	public $veranstaltung = null;

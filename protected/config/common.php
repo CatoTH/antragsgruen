@@ -18,6 +18,7 @@ $url_rules = array(
     $domv . 'admin/texte/<_a:(index|create|update|delete|view|admin)>'                           => 'admin/texte/<_a>',
     $domv . 'admin/kommentare_excel'                                                             => 'admin/index/kommentareexcel',
     $domv . 'admin/namespacedAccounts'                                                           => 'admin/index/namespacedAccounts',
+    $domv . 'admin/antragsliste'                                                                 => 'admin/index/antragsliste',
     $domv . 'admin/ae_pdf_list'                                                                  => 'admin/index/aePDFList',
     $domv . 'admin/ae_excel_list'                                                                => 'admin/index/aeExcelList',
     $domv . 'admin/ae_ods_list'                                                                  => 'admin/index/aeOdsList',

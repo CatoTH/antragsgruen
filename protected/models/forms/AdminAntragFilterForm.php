@@ -3,14 +3,49 @@
 class AdminAntragFilterForm extends CFormModel
 {
     /** @var int */
-    public $status          = null;
-    public $tag             = null;
+    public $status = null;
+    public $tag    = null;
 
     /** @var string */
     public $antragstellerIn = null;
 
+    /** @var Antrag [] */
+    public $alle_antraege;
+
+    /** @var Aenderungsantrag[] */
+    public $alle_aenderungsantraege;
+
+    /** @var Veranstaltung */
+    public $veranstaltung;
+
     /** @var string */
     public $titel = null;
+
+    /**
+     * @param Veranstaltung $veranstaltung
+     * @param Antrag[] $alle_antraege
+     * @param bool $aenderungsantraege
+     */
+    public function __construct($veranstaltung, $alle_antraege, $aenderungsantraege)
+    {
+        parent::__construct();
+        $this->veranstaltung = $veranstaltung;
+        $this->alle_antraege = [];
+        $this->alle_aenderungsantraege = [];
+        foreach ($alle_antraege as $antrag) {
+            if ($antrag->status != Antrag::$STATUS_GELOESCHT) {
+                $this->alle_antraege[] = $antrag;
+                if ($aenderungsantraege) {
+                    foreach ($antrag->aenderungsantraege as $aend) {
+                        if ($aend->status != Aenderungsantrag::$STATUS_GELOESCHT) {
+                            $this->alle_aenderungsantraege[] = $aend;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     public function rules()
     {
@@ -21,17 +56,12 @@ class AdminAntragFilterForm extends CFormModel
     }
 
     /**
-     * @param Antrag[] $antraege
      * @return Antrag[]
      */
-    public function applyFilter($antraege)
+    public function getFilteredMotions()
     {
         $out = array();
-        foreach ($antraege as $antrag) {
-            if ($antrag->status == Antrag::$STATUS_GELOESCHT) {
-                continue;
-            }
-
+        foreach ($this->alle_antraege as $antrag) {
             $matches = true;
 
             if ($this->status !== null && $this->status != "" && $antrag->status != $this->status) {
@@ -73,21 +103,128 @@ class AdminAntragFilterForm extends CFormModel
         return $out;
     }
 
+
+
     /**
-     * @param Antrag[] $antraege
+     * @return Aenderungsantrag[]
+     */
+    public function getFilteredAmendments()
+    {
+        $out = array();
+        foreach ($this->alle_aenderungsantraege as $aend) {
+            $matches = true;
+
+            if ($this->status !== null && $this->status != "" && $aend->status != $this->status) {
+                $matches = false;
+            }
+
+            if ($this->tag !== null && $this->tag > 0) {
+                $found = false;
+                foreach ($aend->antrag->tags as $tag) {
+                    if ($tag->id == $this->tag) {
+                        $found = true;
+                    }
+                }
+                if (!$found) {
+                    $matches = false;
+                }
+            }
+
+            if ($this->antragstellerIn !== null && $this->antragstellerIn != "") {
+                $found = false;
+                foreach ($aend->aenderungsantragUnterstuetzerInnen as $supp) {
+                    if ($supp->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN && $supp->person->name == $this->antragstellerIn) {
+                        $found = true;
+                    }
+                }
+                if (!$found) {
+                    $matches = false;
+                }
+            }
+
+            if ($this->titel !== null && $this->titel != "" && !mb_stripos($aend->antrag->name, $this->titel)) {
+                $matches = false;
+            }
+
+            if ($matches) {
+                $out[] = $aend;
+            }
+        }
+        return $out;
+    }
+    /**
+     * @return string
+     */
+    public function getFilterFormFields()
+    {
+        $str = '';
+
+        $str .= '<label style="float: left; margin-right: 20px;">Status:<br>';
+        $str .= '<select name="Search[status]" size="1">';
+        $str .= '<option value="">- egal -</option>';
+        $statusList = $this->getStatusList();
+        foreach ($statusList as $status_id => $status_name) {
+            $str .= '<option value="' . $status_id . '" ';
+            if ($this->status !== null && $this->status == $status_id) {
+                $str .= ' selected';
+            }
+            $str .= '>' . CHtml::encode($status_name) . '</option>';
+        }
+        $str .= '</select></label>';
+
+        $tagsList = $this->getTagList();
+        if (count($tagsList) > 0) {
+            $name = ($this->veranstaltung->tags[0]->istTagesordnungspunkt() ? "Tagesordnungspunkt:" : "Schlagwort:");
+            $str .= '<label style="float: left; margin-right: 20px;">' . $name . '<br>';
+            $str .= '<select name="Search[tag]" size="1">';
+            $str .= '<option value="">- egal -</option>';
+            foreach ($tagsList as $tag_id => $tag_name) {
+                $str .= '<option value="' . $tag_id . '" ';
+                if ($this->tag == $tag_id) {
+                    $str .= ' selected';
+                }
+                $str .= '>' . CHtml::encode($tag_name) . '</option>';
+            }
+            $str .= '</select></label>';
+        }
+
+        $str .= '<label style="float: left; margin-right: 20px;">AntragstellerInnen:<br>';
+        $str .= '<select name="Search[antragstellerIn]" size="1">';
+        $str .= '<option value="">- egal -</option>';
+        $antragstellerInnenList = $this->getAntragstellerInnenList();
+        foreach ($antragstellerInnenList as $antragstellerInName => $antragstellerIn) {
+            $str .= '<option value="' . CHtml::encode($antragstellerInName) . '" ';
+            if ($this->antragstellerIn == $antragstellerInName) {
+                $str .= ' selected';
+            }
+            $str .= '>' . CHtml::encode($antragstellerIn) . '</option>';
+        }
+        $str .= '</select></label>';
+
+        $str .= '<label style="float: left; margin-right: 20px;">Titel:<br>';
+        $str .= '<input type="text" name="Search[titel]" value="' . CHtml::encode($this->titel) . '">';
+        $str .= '</label>';
+
+        return $str;
+    }
+
+    /**
      * @return array
      */
-    public static function getStatusList($antraege)
+    public function getStatusList()
     {
         $out = $anz = array();
-        foreach ($antraege as $antrag) {
-            if ($antrag->status == Antrag::$STATUS_GELOESCHT) {
-                continue;
-            }
+        foreach ($this->alle_antraege as $antrag) {
             if (!isset($anz[$antrag->status])) {
                 $anz[$antrag->status] = 0;
             }
             $anz[$antrag->status]++;
+        }
+        foreach ($this->alle_aenderungsantraege as $aend) {
+            if (!isset($anz[$aend->status])) {
+                $anz[$aend->status] = 0;
+            }
+            $anz[$aend->status]++;
         }
         foreach (Antrag::$STATI as $status_id => $status_name) {
             if (isset($anz[$status_id])) {
@@ -99,17 +236,22 @@ class AdminAntragFilterForm extends CFormModel
 
 
     /**
-     * @param Antrag[] $antraege
      * @return array
      */
-    public static function getTagList($antraege)
+    public function getTagList()
     {
         $tags = $tagsNamen = array();
-        foreach ($antraege as $antrag) {
-            if ($antrag->status == Antrag::$STATUS_GELOESCHT) {
-                continue;
-            }
+        foreach ($this->alle_antraege as $antrag) {
             foreach ($antrag->tags as $tag) {
+                if (!isset($tags[$tag->id])) {
+                    $tags[$tag->id]      = 0;
+                    $tagsNamen[$tag->id] = $tag->name;
+                }
+                $tags[$tag->id]++;
+            }
+        }
+        foreach ($this->alle_aenderungsantraege as $aend) {
+            foreach ($aend->antrag->tags as $tag) {
                 if (!isset($tags[$tag->id])) {
                     $tags[$tag->id]      = 0;
                     $tagsNamen[$tag->id] = $tag->name;
@@ -126,21 +268,29 @@ class AdminAntragFilterForm extends CFormModel
     }
 
     /**
-     * @param Antrag[] $antraege
      * @return array
      */
-    public static function getAntragstellerInnenList($antraege) {
+    public function getAntragstellerInnenList()
+    {
         $antragstellerInnen = array();
-        foreach ($antraege as $antrag) {
-            if ($antrag->status == Antrag::$STATUS_GELOESCHT) {
-                continue;
-            }
+        foreach ($this->alle_antraege as $antrag) {
             foreach ($antrag->antragUnterstuetzerInnen as $supp) {
                 if ($supp->rolle != AntragUnterstuetzerInnen::$ROLLE_INITIATORIN) {
                     continue;
                 }
                 if (!isset($antragstellerInnen[$supp->person->name])) {
-                    $antragstellerInnen[$supp->person->name]      = 0;
+                    $antragstellerInnen[$supp->person->name] = 0;
+                }
+                $antragstellerInnen[$supp->person->name]++;
+            }
+        }
+        foreach ($this->alle_aenderungsantraege as $aend) {
+            foreach ($aend->aenderungsantragUnterstuetzerInnen as $supp) {
+                if ($supp->rolle != AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+                    continue;
+                }
+                if (!isset($antragstellerInnen[$supp->person->name])) {
+                    $antragstellerInnen[$supp->person->name] = 0;
                 }
                 $antragstellerInnen[$supp->person->name]++;
             }

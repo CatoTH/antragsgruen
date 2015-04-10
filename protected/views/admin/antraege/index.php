@@ -2,12 +2,7 @@
 /**
  * @var AntraegeController $this
  * @var Antrag[] $antraege
- * @var int[] $anzahl_stati
- * @var int $anzahl_gesamt
  * @var int|null $status_curr
- * @var array $tagsList
- * @var array $statusList
- * @var array $antragstellerInnenList
  * @var $suche AdminAntragFilterForm $suche
  */
 
@@ -21,49 +16,7 @@ echo '<h1>' . GxHtml::encode(Antrag::label(2)) . '</h1>';
 $action = $this->createUrl('/admin/antraege/index');
 echo '<form method="GET" action="' . CHtml::encode($action) . '" style="padding: 20px;">';
 
-echo '<label style="float: left; margin-right: 20px;">Status:<br>';
-echo '<select name="Search[status]" size="1">';
-echo '<option value="">- egal -</option>';
-foreach ($statusList as $status_id => $status_name) {
-    echo '<option value="' . $status_id . '" ';
-    if ($suche->status !== null && $suche->status == $status_id) {
-        echo ' selected';
-    }
-    echo '>' . CHtml::encode($status_name) . '</option>';
-}
-echo '</select></label>';
-
-if (count($tagsList) > 0) {
-    $name = ($this->veranstaltung->tags[0]->istTagesordnungspunkt() ? "Tagesordnungspunkt:" : "Schlagwort:");
-    echo '<label style="float: left; margin-right: 20px;">' . $name . '<br>';
-    echo '<select name="Search[tag]" size="1">';
-    echo '<option value="">- egal -</option>';
-    foreach ($tagsList as $tag_id => $tag_name) {
-        echo '<option value="' . $tag_id . '" ';
-        if ($suche->tag == $tag_id) {
-            echo ' selected';
-        }
-        echo '>' . CHtml::encode($tag_name) . '</option>';
-    }
-    echo '</select></label>';
-}
-
-echo '<label style="float: left; margin-right: 20px;">AntragstellerInnen:<br>';
-echo '<select name="Search[antragstellerIn]" size="1">';
-echo '<option value="">- egal -</option>';
-foreach ($antragstellerInnenList as $antragstellerInName => $antragstellerIn) {
-    echo '<option value="' . CHtml::encode($antragstellerInName) . '" ';
-    if ($suche->antragstellerIn == $antragstellerInName) {
-        echo ' selected';
-    }
-    echo '>' . CHtml::encode($antragstellerIn) . '</option>';
-}
-echo '</select></label>';
-
-echo '<label style="float: left; margin-right: 20px;">Titel:<br>';
-echo '<input type="text" name="Search[titel]" value="' . CHtml::encode($suche->titel) . '">';
-echo '</label>';
-
+echo $suche->getFilterFormFields();
 
 echo '<div style="float: left;"><br><button type="submit" class="btn btn-success">Suchen</button></div>';
 

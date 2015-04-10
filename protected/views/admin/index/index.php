@@ -52,6 +52,9 @@ $this->breadcrumbs = array(
 				<li><a href="<?php echo $this->createUrl("admin/index/antragExcelList", array("text_begruendung_zusammen" => 1)) ?>">Antragstext und Begründung in einer Spalte</a></li>
 			</ul>
 		</li>
+		<li style="margin-left: 20px;">
+			<a href="<?php echo $this->createUrl("admin/index/antragsliste") ?>">Liste aller Anträge und Änderungsanträge</a>
+		</li>
 
 		<li style="margin-top: 10px; font-weight: bold;"><a
 				href="<?php echo $this->createUrl("admin/aenderungsantraege") ?>"><?php echo Aenderungsantrag::label(2) ?></a>

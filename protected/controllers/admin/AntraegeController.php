@@ -145,38 +145,15 @@ class AntraegeController extends GxController
             $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
         }
 
-        $stati      = array();
-        $gesamtzahl = 0;
-        foreach ($this->veranstaltung->antraege as $antrag) {
-            if ($antrag->status == IAntrag::$STATUS_GELOESCHT) {
-                continue;
-            }
-            if (!isset($stati[$antrag->status])) {
-                $stati[$antrag->status] = 0;
-            }
-            $stati[$antrag->status]++;
-            $gesamtzahl++;
-        }
-
-        $suche = new AdminAntragFilterForm();
+        $suche = new AdminAntragFilterForm($this->veranstaltung, $this->veranstaltung->antraege, false);
         if (isset($_REQUEST["Search"])) {
             $suche->setAttributes($_REQUEST["Search"]);
         }
-        $antraege = $suche->applyFilter($this->veranstaltung->antraege);
-
-
-        $tagsList               = AdminAntragFilterForm::getTagList($this->veranstaltung->antraege);
-        $statusList             = AdminAntragFilterForm::getStatusList($this->veranstaltung->antraege);
-        $antragstellerInnenList = AdminAntragFilterForm::getAntragstellerInnenList($this->veranstaltung->antraege);
+        $antraege = $suche->getFilteredMotions();
 
         $this->render('index', array(
             'antraege'               => $antraege,
-            'anzahl_stati'           => $stati,
-            'anzahl_gesamt'          => $gesamtzahl,
             'status_curr'            => $status,
-            'statusList'             => $statusList,
-            'tagsList'               => $tagsList,
-            'antragstellerInnenList' => $antragstellerInnenList,
             'suche'                  => $suche,
         ));
     }
