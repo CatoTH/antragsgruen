@@ -54,5 +54,21 @@ class DiffTest extends TestCase
             }
         );
 
+
+
+        $this->specify(
+            'Diff Test 3',
+            function () {
+                $str1 = 'Abcdef abcdef Abcdef AAbcdef Abcdef';
+                $str2 = 'Abcdef abcdefghi Abcdef AAbcdef preAbcdef';
+                $expect = 'Abcdef abcdef<ins>ghi</ins> Abcdef AAbcdef <ins>pre</ins>Abcdef';
+
+                $diff = new Diff();
+                $out = $diff->computeDiff($str1, $str2);
+
+                $this->assertEquals($expect, $out);
+            }
+        );
+
     }
 }

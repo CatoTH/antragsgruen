@@ -140,6 +140,24 @@ class Diff
     }
 
     /**
+     * @param string $wordDel
+     * @param string $wordInsert
+     * @return string
+     */
+    private function computeWordDiff($wordDel, $wordInsert)
+    {
+        $delLen = mb_strlen($wordDel);
+        $insLen = mb_strlen($wordInsert);
+        if ($insLen > $delLen && mb_substr($wordInsert, $insLen - $delLen, $delLen) == $wordDel) {
+            return $this->wrapWithInsert(mb_substr($wordInsert, 0, $insLen - $delLen)) . $wordDel;
+        }
+        if ($insLen > $delLen && mb_substr($wordInsert, 0, $delLen) == $wordDel) {
+            return $wordDel . $this->wrapWithInsert(mb_substr($wordInsert, $delLen));
+        }
+        return $this->wrapWithDelete($wordDel) . $this->wrapWithInsert($wordInsert);
+    }
+
+    /**
      * @param string $lineOld
      * @param string $lineNew
      * @return string
@@ -158,8 +176,7 @@ class Diff
                 $computedStrs[] = $return[$i][0];
             } elseif ($return[$i][1] == Engine::DELETED) {
                 if (isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED) {
-                    $str            = $this->wrapWithDelete($return[$i][0]) . $this->wrapWithInsert($return[$i + 1][0]);
-                    $computedStrs[] = $str;
+                    $computedStrs[] = $this->computeWordDiff($return[$i][0], $return[$i + 1][0]);
                     $i++;
                 } else {
                     $computedStrs[] = $this->wrapWithDelete($return[$i][0]);
