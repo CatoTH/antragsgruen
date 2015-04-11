@@ -33,6 +33,16 @@ scss --precision 9
 ```
 
 
+Running using docker
+--------------------
+
+```bash
+cd docker-vagrant/
+docker build -t antragsgruen1 -f Dockerfile .
+docker run -p 80:80 --name antragsgruen1 -d antragsgruen1
+```
+
+
 Testing
 -------
 

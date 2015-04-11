@@ -18,7 +18,7 @@ RUN echo 'deb http://packages.dotdeb.org wheezy-php56-zts all' >> /etc/apt/sourc
 RUN echo 'deb-src http://packages.dotdeb.org wheezy-php56-zts all'  >> /etc/apt/sources.list
 
 RUN apt-get update
-RUN apt-get upgrade
+RUN apt-get upgrade -y
 
 RUN echo 'mysql-server mysql-server/root_password password pw' | debconf-set-selections
 RUN echo 'mysql-server mysql-server/root_password_again password pw' | debconf-set-selections
@@ -74,3 +74,4 @@ EXPOSE 80
 # volume for mysql database and wordpress install
 VOLUME ["/var/www/antragsgruen"]
 
+CMD ["/bin/bash", "/var/www/antragsgruen/docker-vagrant/start.sh"]
