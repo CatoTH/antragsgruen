@@ -37,13 +37,21 @@ $layout->menusHtml[] = $html;
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
 
-echo '<div class="content">';
+echo '<div class="motionData">@TODO</div>';
+
 
 
 foreach ($amendment->sections as $section) {
-    if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
-        echo $section->getInlineDiffHtml();
+    if ($section->consultationSetting->type == ISectionType::TYPE_TITLE) {
+        continue;
     }
+    echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
+    echo '<h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
+    echo '<section id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+    echo '<div class="text"><p>';
+    if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
+        echo $section->getDiffLinesWithNumbers();
+    }
+    echo '</p></div></section>';
+    echo '</section>';
 }
-
-echo '</div>';

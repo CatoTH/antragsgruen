@@ -8,11 +8,37 @@ class Diff
 {
     const ORIG_LINEBREAK = '###ORIGLINEBREAK###';
 
+    private $debug = false;
+
+    /** @var Engine */
+    private $engine;
+
+    public function __construct()
+    {
+        $this->engine = new Engine();
+    }
+
+    /**
+     * @param bool $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+    }
+
+    /**
+     * @param string $str
+     */
+    public function setIgnoreStr($str)
+    {
+        $this->engine->setIgnoreStr($str);
+    }
+
     /**
      * @param string $str
      * @return string
      */
-    private static function wrapWithInsert($str)
+    private function wrapWithInsert($str)
     {
         if (preg_match('/^<[^>]*>$/siu', $str)) {
             return $str;
@@ -37,7 +63,7 @@ class Diff
      * @param string $str
      * @return string
      */
-    private static function wrapWithDelete($str)
+    private function wrapWithDelete($str)
     {
         if (preg_match('/^<[^>]*>$/siu', $str)) {
             return $str;
@@ -62,7 +88,7 @@ class Diff
      * @param string $line
      * @return string[]
      */
-    private static function tokenizeLine($line)
+    private function tokenizeLine($line)
     {
         $line = preg_replace('/ /siu', "\n", $line);
         $line = preg_replace('/(<[^>]*>)/siu', "\n$1\n", $line);
@@ -73,7 +99,7 @@ class Diff
      * @param string $line
      * @return string
      */
-    private static function untokenizeLine($line)
+    private function untokenizeLine($line)
     {
         $line = str_replace("\n", ' ', $line);
         $line = preg_replace('/ (<[^>]*>) /siu', "$1", $line);
@@ -84,7 +110,7 @@ class Diff
      * @param array $operations
      * @return array
      */
-    private static function groupOperations($operations)
+    private function groupOperations($operations)
     {
         $return = [];
 
@@ -116,48 +142,45 @@ class Diff
     /**
      * @param string $lineOld
      * @param string $lineNew
-     * @param bool $debug
      * @return string
      * @throws Internal
      */
-    public static function computeLineDiff($lineOld, $lineNew, $debug)
+    public function computeLineDiff($lineOld, $lineNew)
     {
         $computedStrs = [];
-        $lineOld     = static::tokenizeLine($lineOld);
-        $lineNew     = static::tokenizeLine($lineNew);
+        $lineOld      = $this->tokenizeLine($lineOld);
+        $lineNew      = $this->tokenizeLine($lineNew);
 
-        $engine = new Engine();
-        $return = $engine->compare($lineOld, $lineNew);
+        $return = $this->engine->compare($lineOld, $lineNew);
 
         for ($i = 0; $i < count($return); $i++) {
             if ($return[$i][1] == Engine::UNMODIFIED) {
                 $computedStrs[] = $return[$i][0];
             } elseif ($return[$i][1] == Engine::DELETED) {
                 if (isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED) {
-                    $str = static::wrapWithDelete($return[$i][0]) . static::wrapWithInsert($return[$i + 1][0]);
+                    $str            = $this->wrapWithDelete($return[$i][0]) . $this->wrapWithInsert($return[$i + 1][0]);
                     $computedStrs[] = $str;
                     $i++;
                 } else {
-                    $computedStrs[] = static::wrapWithDelete($return[$i][0]);
+                    $computedStrs[] = $this->wrapWithDelete($return[$i][0]);
                 }
             } elseif ($return[$i][1] == Engine::INSERTED) {
-                $computedStrs[] = static::wrapWithInsert($return[$i][0]);
+                $computedStrs[] = $this->wrapWithInsert($return[$i][0]);
             } else {
                 throw new Internal('Unknown type: ' . $return[$i][1]);
             }
         }
         $computedStr = implode("\n", $computedStrs);
-        if ($debug) {
+        if ($this->debug) {
             var_dump($computedStr);
         }
 
 
-
-        $combined = static::untokenizeLine($computedStr);
+        $combined = $this->untokenizeLine($computedStr);
         $combined = str_replace('</del> <del>', ' ', $combined);
         $combined = str_replace('</ins> <ins>', ' ', $combined);
 
-        if ($debug) {
+        if ($this->debug) {
             var_dump($combined);
             die();
         }
@@ -167,44 +190,42 @@ class Diff
     /**
      * @param string $strOld
      * @param string $strNew
-     * @param bool $debug
      * @return string
      * @throws Internal
      */
-    public static function computeDiff($strOld, $strNew, $debug = false)
+    public function computeDiff($strOld, $strNew)
     {
-        $diff        = new Engine();
         $computedStr = '';
 
-        $return = $diff->compare($strOld, $strNew);
-        if ($debug) {
+        $return = $this->engine->compare($strOld, $strNew);
+        if ($this->debug) {
             echo "==========\n";
             var_dump($return);
             echo "\n\n\n";
         }
-        $return = static::groupOperations($return);
+        $return = $this->groupOperations($return);
         for ($i = 0; $i < count($return); $i++) {
             if ($return[$i][1] == Engine::UNMODIFIED) {
                 $computedStr .= $return[$i][0] . "\n";
             } elseif ($return[$i][1] == Engine::DELETED) {
                 if (isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED) {
-                    $computedStr .= static::computeLineDiff($return[$i][0], $return[$i + 1][0], $debug);
+                    $computedStr .= $this->computeLineDiff($return[$i][0], $return[$i + 1][0]);
                     $i++;
                 } else {
-                    $computedStr .= static::wrapWithDelete($return[$i][0]) . "\n";
+                    $computedStr .= $this->wrapWithDelete($return[$i][0]) . "\n";
                 }
             } elseif ($return[$i][1] == Engine::INSERTED) {
-                $computedStr .= static::wrapWithInsert($return[$i][0]) . "\n";
+                $computedStr .= $this->wrapWithInsert($return[$i][0]) . "\n";
             } else {
                 throw new Internal('Unknown type: ' . $return[$i][1]);
             }
         }
         $computedStr = str_replace(static::ORIG_LINEBREAK, "\n", $computedStr);
 
-        if ($debug) {
+        if ($this->debug) {
             die();
         }
 
-        return $computedStr;
+        return trim($computedStr);
     }
 }

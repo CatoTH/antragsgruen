@@ -86,6 +86,7 @@ class HTMLTools
             $child = $children->item($i);
             switch (get_class($child)) {
                 case 'DOMElement':
+                    /** @var \DOMElement $child */
                     if ($child->nodeName == 'br') {
                         if ($pendingInline === null) {
                             $pendingInline = '';
@@ -153,6 +154,7 @@ class HTMLTools
         $bodies = $src_doc->getElementsByTagName('body');
         $body   = $bodies->item(0);
 
+        /** @var \DOMElement $body */
         return static::sectionSimpleHTMLInt($body, '', '');
     }
 }

@@ -4,12 +4,7 @@ namespace app\models\db;
 
 use app\components\HTMLTools;
 use app\components\LineSplitter;
-use app\models\sectionTypes\Image;
 use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextHTML;
-use app\models\sectionTypes\TextSimple;
-use app\models\sectionTypes\Title;
-use yii\db\ActiveRecord;
 use app\models\exceptions\Internal;
 
 /**
@@ -84,6 +79,45 @@ class MotionSection extends IMotionSection
     }
 
     /**
+     * @param string $para
+     * @param bool $lineNumbers
+     * @param int $lineLength
+     * @return string[]
+     */
+    private function para2lines($para, $lineNumbers, $lineLength)
+    {
+        if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
+            mb_stripos($para, '<blockquote>') === 0
+        ) {
+            $lineLength -= 6;
+        }
+        $splitter = new LineSplitter($para, $lineLength);
+        $linesIn  = $splitter->splitLines(false);
+
+        if ($lineNumbers) {
+            $linesOut = [];
+            $pres     = ['<p>', '<ul><li>', '<ol><li>', '<blockquote><p>'];
+            $linePre  = '###LINENUMBER###';
+            foreach ($linesIn as $line) {
+                $inserted = false;
+                foreach ($pres as $pre) {
+                    if (mb_stripos($line, $pre) === 0) {
+                        $inserted = true;
+                        $line     = str_ireplace($pre, $pre . $linePre, $line);
+                    }
+                }
+                if (!$inserted) {
+                    $line = $linePre . $line;
+                }
+                $linesOut[] = $line;
+            }
+        } else {
+            $linesOut = $linesIn;
+        }
+        return $linesOut;
+    }
+
+    /**
      * @param bool $lineNumbers
      * @return MotionSectionParagraph[]
      * @throws Internal
@@ -95,34 +129,7 @@ class MotionSection extends IMotionSection
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $paraNo => $para) {
             $lineLength = $this->consultationSetting->consultation->getSettings()->lineLength;
-            if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
-                mb_stripos($para, '<blockquote>') === 0
-            ) {
-                $lineLength -= 6;
-            }
-            $splitter = new LineSplitter($para, $lineLength);
-            $linesIn  = $splitter->splitLines(false);
-
-            if ($lineNumbers) {
-                $linesOut = [];
-                $pres     = ['<p>', '<ul><li>', '<ol><li>', '<blockquote><p>'];
-                $linePre  = '###LINENUMBER###';
-                foreach ($linesIn as $line) {
-                    $inserted = false;
-                    foreach ($pres as $pre) {
-                        if (mb_stripos($line, $pre) === 0) {
-                            $inserted = true;
-                            $line     = str_ireplace($pre, $pre . $linePre, $line);
-                        }
-                    }
-                    if (!$inserted) {
-                        $line = $linePre . $line;
-                    }
-                    $linesOut[] = $line;
-                }
-            } else {
-                $linesOut = $linesIn;
-            }
+            $linesOut   = $this->para2lines($para, $lineNumbers, $lineLength);
 
             $paragraph              = new MotionSectionParagraph();
             $paragraph->paragraphNo = $paraNo;
@@ -137,6 +144,22 @@ class MotionSection extends IMotionSection
             }
 
             $return[] = $paragraph;
+        }
+        return $return;
+    }
+
+    /**
+     * @return string
+     * @throws Internal
+     */
+    public function getTextWithLineNumberPlaceholders()
+    {
+        $return = '';
+        $paras  = $this->getTextParagraphs();
+        foreach ($paras as $para) {
+            $lineLength = $this->consultationSetting->consultation->getSettings()->lineLength;
+            $linesOut   = $this->para2lines($para, true, $lineLength);
+            $return .= implode(' ', $linesOut) . "\n";
         }
         return $return;
     }

@@ -263,7 +263,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    echo '<article class="motionTextHolder';
+    echo '<section class="motionTextHolder';
     if ($motion->consultation->getSettings()->lineLength > 80) {
         echo " smallFont";
     }
@@ -273,7 +273,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
     echo $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
 
-    echo '</article>';
+    echo '</section>';
 }
 
 
