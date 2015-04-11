@@ -35,19 +35,22 @@ WORKDIR /var/www/antragsgruen/
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 
-RUN wget https://www.hoessl.eu/antragsgruen-v3-dependencies.tar.bz2
-RUN tar xfj antragsgruen-v3-dependencies.tar.bz2
-RUN rm antragsgruen-v3-dependencies.tar.bz2
+RUN wget https://www.hoessl.eu/antragsgruen-v3-vendor.tar.bz2
+RUN tar xfj antragsgruen-v3-vendor.tar.bz2
+RUN rm antragsgruen-v3-vendor.tar.bz2
+
+RUN wget https://www.hoessl.eu/antragsgruen-v3-bower.tar.bz2
+RUN tar xfj antragsgruen-v3-bower.tar.bz2
+RUN rm antragsgruen-v3-bower.tar.bz2
+RUN mv bower web/js/
 
 RUN composer global require "fxp/composer-asset-plugin:1.0.0"
-RUN composer install --prefer-source --no-interaction
+#RUN composer install --prefer-source --no-interaction
 
 RUN mkdir /var/www/antragsgruen/runtime
 RUN chown www-data:www-data /var/www/antragsgruen/runtime
 RUN chown -R www-data:www-data /var/www/antragsgruen/web/assets
-RUN echo "CREATE DATABASE antragsgruen;" | mysql -u root -ppw
-RUN echo "CREATE DATABASE antragsgruen_tests;" | mysql -u root -ppw
-RUN ./yii database/create
+
 RUN cp docker-vagrant/config.php config/
 RUN cp docker-vagrant/config_tests.php config/
 
@@ -62,17 +65,9 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN cp docker-vagrant/nginx-antragsgruen /etc/nginx/sites-enabled/antragsgruen
 
 
-
-RUN phantomjs --webdriver 4444 > /var/log/phantomjs.log 2>&1 &
-WORKDIR /var/www/antragsgruen/tests/
-RUN ./start_debug_server.sh > /var/log/php-test-server.log 2>&1  &
-
-
 RUN apt-get install -y supervisor
 
-RUN /etc/init.d/mysql start
-RUN /etc/init.d/nginx start
-RUN /etc/init.d/php5-fpm start
+
 
 EXPOSE 80
 
