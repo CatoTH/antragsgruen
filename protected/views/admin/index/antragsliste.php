@@ -14,6 +14,11 @@ $this->breadcrumbs = array(
 $this->full_width = true;
 
 $action = $this->createUrl('/admin/index/antragsliste');
+
+/** @var CWebApplication $app */
+$app = Yii::app();
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/typeahead/typeahead.bundle.js');
+
 echo '<form method="GET" action="' . CHtml::encode($action) . '" style="padding: 20px;">';
 
 echo $suche->getFilterFormFields();

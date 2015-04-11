@@ -47,12 +47,24 @@ class AdminAntragFilterForm extends CFormModel
     }
 
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return array(
             array('status, tag', 'numerical'),
             array('status, tag, titel, antragstellerIn', 'safe'),
         );
+    }
+
+    /**
+     * @param array $values
+     * @param bool $safeOnly
+     */
+    public function setAttributes($values, $safeOnly = true) {
+        parent::setAttributes($values, $safeOnly);
+        $this->status = (isset($values["status"]) && $values["status"] != "" ? IntVal($values["status"]) : null);
     }
 
     /**
@@ -83,7 +95,7 @@ class AdminAntragFilterForm extends CFormModel
             if ($this->antragstellerIn !== null && $this->antragstellerIn != "") {
                 $found = false;
                 foreach ($antrag->antragUnterstuetzerInnen as $supp) {
-                    if ($supp->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN && $supp->person->name == $this->antragstellerIn) {
+                    if ($supp->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN && mb_stripos($supp->person->name, $this->antragstellerIn) !== false) {
                         $found = true;
                     }
                 }
@@ -133,7 +145,7 @@ class AdminAntragFilterForm extends CFormModel
             if ($this->antragstellerIn !== null && $this->antragstellerIn != "") {
                 $found = false;
                 foreach ($aend->aenderungsantragUnterstuetzerInnen as $supp) {
-                    if ($supp->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN && $supp->person->name == $this->antragstellerIn) {
+                    if ($supp->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN && mb_stripos($supp->person->name, $this->antragstellerIn) !== false) {
                         $found = true;
                     }
                 }
@@ -189,17 +201,49 @@ class AdminAntragFilterForm extends CFormModel
         }
 
         $str .= '<label style="float: left; margin-right: 20px;">AntragstellerInnen:<br>';
-        $str .= '<select name="Search[antragstellerIn]" size="1">';
-        $str .= '<option value="">- egal -</option>';
+
+        $values = [];
         $antragstellerInnenList = $this->getAntragstellerInnenList();
         foreach ($antragstellerInnenList as $antragstellerInName => $antragstellerIn) {
-            $str .= '<option value="' . CHtml::encode($antragstellerInName) . '" ';
-            if ($this->antragstellerIn == $antragstellerInName) {
-                $str .= ' selected';
-            }
-            $str .= '>' . CHtml::encode($antragstellerIn) . '</option>';
+            $values[] = $antragstellerInName;
         }
-        $str .= '</select></label>';
+
+        $str .= '<div style="display: inline-block;"><input id="antragstellerInSelect" class="typeahead" type="text" placeholder="AntragstellerIn"';
+        $str .= 'name="Search[antragstellerIn]" value="' . CHtml::encode($this->antragstellerIn) . '" data-values="' . CHtml::encode(json_encode($values)) . '"></div>';
+        $str .= '<script>$(function() {
+            var antragstellerInValues = $("#antragstellerInSelect").data("values"),
+            matcher = function findMatches(q, cb) {
+                var matches, substrRegex;
+
+                // an array that will be populated with substring matches
+                matches = [];
+
+                // regex used to determine if a string contains the substring `q`
+                substrRegex = new RegExp(q, "i");
+
+                // iterate through the pool of strings and for any string that
+                // contains the substring `q`, add it to the `matches` array
+                $.each(antragstellerInValues, function(i, str) {
+                    if (substrRegex.test(str)) {
+                    // the typeahead jQuery plugin expects suggestions to a
+                    // JavaScript object, refer to typeahead docs for more info
+                    matches.push({ value: str });
+                }
+                });
+                cb(matches);
+            };
+            $("#antragstellerInSelect").typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 1
+            }, {
+                name: "antragstellerIn",
+                displayKey: "value",
+                source: matcher
+            });
+        });
+        </script>';
+        $str .= '</label>';
 
         $str .= '<label style="float: left; margin-right: 20px;">Titel:<br>';
         $str .= '<input type="text" name="Search[titel]" value="' . CHtml::encode($this->titel) . '">';

@@ -11,6 +11,11 @@ $this->breadcrumbs = array(
     Antrag::label(2),
 );
 
+/** @var CWebApplication $app */
+$app = Yii::app();
+$app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/typeahead/typeahead.bundle.js');
+
+
 echo '<h1>' . GxHtml::encode(Antrag::label(2)) . '</h1>';
 
 $action = $this->createUrl('/admin/antraege/index');
