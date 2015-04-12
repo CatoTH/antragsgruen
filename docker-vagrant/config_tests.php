@@ -16,4 +16,3 @@ $params->dbConnection            = [
 ];
 
 return $params;
-

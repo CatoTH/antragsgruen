@@ -19,6 +19,7 @@ test:
     encoding: "utf-8"
     ignore:
       - "vendor"
+      - "tests"
       - "_bootstrap.php"
   php_cpd:
     allow_failures: true

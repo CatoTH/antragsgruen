@@ -14,4 +14,3 @@ $params->domainPlain         = "http://localhost/";
 $params->domainSubdomain     = "http://<siteId:[\w_-]+>.localhost/";
 $params->siteBehaviorClasses = [];
 return $params;
-

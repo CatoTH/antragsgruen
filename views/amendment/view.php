@@ -50,7 +50,16 @@ foreach ($amendment->sections as $section) {
     echo '<section id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
     echo '<div class="text"><p>';
     if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
-        echo $section->getDiffLinesWithNumbers();
+        $formatter = new \app\components\diff\AmendmentSectionFormatter($section);
+        $diffGroups = $formatter->getInlineDiffGroupedLines();
+        foreach ($diffGroups as $diff) {
+            if ($diff['lineFrom'] == $diff['lineTo']) {
+                echo 'In Zeile ' . $diff['lineFrom'] . ':<br>';
+            } else {
+                echo 'Von Zeile ' . $diff['lineFrom'] . ' bis ' . $diff['lineTo'] . ':<br>';
+            }
+            echo $diff['text'];
+        }
     }
     echo '</p></div></section>';
     echo '</section>';
