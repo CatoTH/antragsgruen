@@ -32,4 +32,17 @@ class DatabaseController extends Controller
         $command       = \Yii::$app->db->createCommand($delete_string);
         $command->execute();
     }
+
+    /**
+     * @throws \yii\db\Exception
+     */
+    public function actionInsertTestData()
+    {
+        $testdata = file_get_contents(
+            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'codeception' .
+            DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'dbdata1.sql'
+        );
+        $command       = \Yii::$app->db->createCommand($testdata);
+        $command->execute();
+    }
 }
