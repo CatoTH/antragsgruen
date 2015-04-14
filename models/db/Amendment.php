@@ -87,7 +87,12 @@ class Amendment extends IMotion
      */
     public function getTitle()
     {
-        return $this->titlePrefix . ' zu ' . $this->motion->title;
+        if ($this->motion->titlePrefix != '') {
+            return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix . ': ' . $this->motion->title;
+        } else {
+            return $this->titlePrefix . ' zu ' . $this->motion->title;
+        }
+
     }
 
     /**

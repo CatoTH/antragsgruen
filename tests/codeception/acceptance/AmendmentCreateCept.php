@@ -12,7 +12,7 @@ $I->populateDBData1();
 
 // Load Form
 
-$I->wantTo('Open the amendment creation page');
+$I->wantTo('Ensure the amendment does not exist yet');
 MotionPage::openBy(
     $I,
     [
@@ -22,6 +22,10 @@ MotionPage::openBy(
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');
+$I->dontSee('Ä1', '.amendments');
+
+
+$I->wantTo('Open the amendment creation page');
 $I->see(mb_strtoupper('Änderungsantrag stellen'), '.sidebarActions');
 $I->click('.sidebarActions .amendmentCreate a');
 
@@ -117,3 +121,27 @@ $I->wantTo('See the amendment on the start page');
 $I->gotoStdConsultationHome();
 $I->see('Ä1', '.motionListStd .amendments');
 $I->see('My name', '.motionListStd .amendments');
+
+
+
+$I->wantTo('See the amendment on the motion page');
+MotionPage::openBy(
+    $I,
+    [
+        'subdomain'        => 'stdparteitag',
+        'consultationPath' => 'std-parteitag',
+        'motionId'         => 2,
+    ]
+);
+$I->see('A2: O’ZAPFT IS!', 'h1');
+$I->see('Ä1', '.amendments');
+
+
+$I->wantTo('Open the amenmdent page');
+$I->click('section.amendments ul.amendments a');
+
+$I->see(mb_strtoupper('Ä1 zu A2: O’ZAPFT IS!'), 'h1');
+$I->see('My name', '.motionDataTable');
+$I->see('woschechta Bayer', '#section_2_0 del');
+$I->see('Saupreiß', '#section_2_0 ins');
+$I->see('This is my extended reason', '#amendmentExplanation');

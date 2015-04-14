@@ -167,11 +167,13 @@ class AmendmentSectionFormatter
             $lines .= $str;
             $lastLine = $lineNo;
         }
-        $blocks[] = [
-            'lineFrom' => $blockBegin,
-            'lineTo' => $lastLine,
-            'text' => $lines,
-        ];
+        if ($lines != '') {
+            $blocks[] = [
+                'lineFrom' => $blockBegin,
+                'lineTo'   => $lastLine,
+                'text'     => $lines,
+            ];
+        }
         return $blocks;
     }
 

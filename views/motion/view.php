@@ -398,7 +398,7 @@ if (count($amendments) > 0 || $motion->consultation->getAmendmentPolicy()->getPo
         echo '<ul class="amendments">';
         foreach ($amendments as $amend) {
             echo '<li>';
-            $aename = $amend->statusString;
+            $aename = $amend->titlePrefix;
             if ($aename == "") {
                 $aename = $amend->id;
             }
