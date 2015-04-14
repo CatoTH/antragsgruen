@@ -283,14 +283,11 @@ class MotionController extends Base
 
     /**
      * @param int $motionId
-     * @param int $commentId
      * @return string
      */
-    public function actionView($motionId, $commentId = 0)
+    public function actionPdf($motionId)
     {
         $motionId = IntVal($motionId);
-        //$antrag = Antrag::model()->with("antragKommentare",
-        //"antragKommentare.unterstuetzerInnen")->findByPk($antrag_id);
 
         /** @var Motion $motion */
         $motion = Motion::findOne($motionId);
@@ -298,10 +295,32 @@ class MotionController extends Base
             $this->redirect(UrlHelper::createUrl("consultation/index"));
         }
 
-        $this->layout = 'column2';
+        $this->checkConsistency($motion);
+        $this->testMaintainanceMode();
+
+        return $this->renderPartial('pdf', ['motion' => $motion]);
+    }
+
+
+    /**
+     * @param int $motionId
+     * @param int $commentId
+     * @return string
+     */
+    public function actionView($motionId, $commentId = 0)
+    {
+        $motionId = IntVal($motionId);
+
+        /** @var Motion $motion */
+        $motion = Motion::findOne($motionId);
+        if (!$motion) {
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
 
         $this->checkConsistency($motion);
         $this->testMaintainanceMode();
+
+        $this->layout = 'column2';
 
         $openedComments = [];
         if ($commentId > 0) {

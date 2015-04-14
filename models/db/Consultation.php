@@ -11,6 +11,7 @@ use app\models\policies\IPolicy;
 use app\models\sitePresets\ISitePreset;
 use app\models\wording\IWording;
 use app\models\wording\PageData;
+use app\models\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
 
 /**
@@ -305,6 +306,14 @@ class Consultation extends ActiveRecord
     public function getAmendmentInitiatorFormClass()
     {
         return new DefaultForm($this);
+    }
+
+    /**
+     * @return IPDFLayout
+     */
+    public function getPDFLayoutClass()
+    {
+        return new IPDFLayout($this);
     }
 
     /**
