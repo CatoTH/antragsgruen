@@ -3,8 +3,6 @@ use app\models\forms\SiteCreateForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$controller = $this->context;
-
 /**
  * @var $this yii\web\View
  * @var SiteCreateForm $model
@@ -12,6 +10,7 @@ $controller = $this->context;
  * @var \app\controllers\Base $controller
  */
 
+$controller = $this->context;
 
 $this->title = "Antragsgrün-Instanz anlegen";
 $controller->layoutParams->addCSS('/css/formwizard.css');

@@ -168,11 +168,16 @@ class AmendmentEditForm extends Model
 
         $this->createAmendmentVerify();
 
-        $amendment->status       = Motion::STATUS_DRAFT;
-        $amendment->motionId     = $this->motion->id;
-        $amendment->textFixed    = ($this->motion->consultation->getSettings()->adminsMayEdit ? 0 : 1);
-        $amendment->titlePrefix  = '';
-        $amendment->dateCreation = date("Y-m-d H:i:s");
+        $amendment->status            = Motion::STATUS_DRAFT;
+        $amendment->statusString      = '';
+        $amendment->motionId          = $this->motion->id;
+        $amendment->textFixed         = ($this->motion->consultation->getSettings()->adminsMayEdit ? 0 : 1);
+        $amendment->titlePrefix       = '';
+        $amendment->dateCreation      = date("Y-m-d H:i:s");
+        $amendment->changeMetatext    = ''; // @TODO
+        $amendment->changeText        = ''; // @TODO
+        $amendment->changeExplanation = ''; // @TODO
+        $amendment->cache             = '';
 
         if ($amendment->save()) {
             $this->motion->consultation->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);

@@ -167,7 +167,7 @@ echo $controller->showErrors();
 if (is_array($params->breadcrumbs)) {
     echo '<ol class="breadcrumb">';
     foreach ($params->breadcrumbs as $link => $name) {
-        if ($link == '') {
+        if ($link == '' || is_null($link)) {
             echo '<li>' . Html::encode($name) . '</li>';
         } else {
             echo '<li>' . Html::a($name, $link) . '</li>';

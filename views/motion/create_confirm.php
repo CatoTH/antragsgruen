@@ -7,14 +7,15 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var string $mode
+ * @var \app\controllers\Base $controller
  */
 
+$controller = $this->context;
 $wording = $motion->consultation->getWording();
 
 $this->title = $wording->get($mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
-
-$params->breadcrumbs[] = $this->title;
-$params->breadcrumbs[] = 'Bestätigen';
+$controller->layoutParams->addBreadcrumb($this->title);
+$controller->layoutParams->addBreadcrumb('Bestätigen');
 
 echo '<h1>' . $wording->get('Antrag bestätigen') . ': ' . Html::encode($motion->title) . '</h1>';
 
@@ -22,7 +23,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    echo '<section class="motion_text_holder">';
+    echo '<section class="motionTextHolder">';
     echo '<h2>' . Html::encode($section->consultationSetting->title) . '</h3>';
     echo '<div class="textholder consolidated">';
 
@@ -32,7 +33,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     echo '</section>';
 }
 
-echo '<div class="motion_text_holder">
+echo '<div class="motionTextHolder">
         <h3>AntragstellerInnen</h3>
 
         <div class="content">

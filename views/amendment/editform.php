@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /**
@@ -25,6 +26,7 @@ if ($form->motion->titlePrefix != '') {
 
 
 $params->addJS('/js/ckeditor/ckeditor.js');
+$params->breadcrumbs[UrlHelper::createMotionUrl($form->motion)] = $form->motion->titlePrefix;
 $params->breadcrumbs[] = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
@@ -64,7 +66,7 @@ echo '</div>';
 echo Html::beginForm(
     '',
     'post',
-    ['id' => 'motionEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
+    ['id' => 'amendmentEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
 );
 
 echo '<h2>Neuer Antragstext</h2>';
@@ -82,7 +84,7 @@ echo '<div class="content">';
 
 
 
-echo '<fieldset class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0">';
+echo '<fieldset class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0" id="amendmentReasonHolder">';
 echo '<label for="amendmentReason">' . $wording->get('Begründung') . '</label>';
 
 echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';

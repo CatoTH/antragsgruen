@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use app\models\db\Amendment;
 use yii\helpers\Html;
 
@@ -7,14 +8,18 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Amendment $amendment
  * @var string $mode
+ * @var \app\controllers\Base $controller
  */
 
+$controller = $this->context;
+$params = $controller->layoutParams;
 $wording = $amendment->motion->consultation->getWording();
 
 $this->title = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 
-$params->breadcrumbs[] = $this->title;
-$params->breadcrumbs[] = 'Bestätigen';
+$params->addBreadcrumb($amendment->motion->titlePrefix, UrlHelper::createMotionUrl($amendment->motion));
+$params->addBreadcrumb('Änderungsantrag', UrlHelper::createAmendmentUrl($amendment, 'edit'));
+$params->addBreadcrumb('Bestätigen');
 
 echo '<h1>' . $wording->get('Änderungsantrag bestätigen') . '</h1>';
 
@@ -22,7 +27,7 @@ foreach ($amendment->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    echo '<section class="motion_text_holder">';
+    echo '<section class="motionTextHolder">';
     echo '<h2>' . Html::encode($section->consultationSetting->title) . '</h3>';
     echo '<div class="textholder consolidated">';
 
@@ -34,7 +39,7 @@ foreach ($amendment->getSortedSections(true) as $section) {
 
 
 if ($amendment->changeExplanation != '') {
-    echo '<div class="motion_text_holder">';
+    echo '<div class="motionTextHolder amendmentReasonHolder">';
     echo '<h3>Begründung des Änderungsantrags</h3>';
     echo '<div class="content">';
     echo $amendment->changeExplanation;
@@ -43,7 +48,7 @@ if ($amendment->changeExplanation != '') {
 }
 
 
-echo '<div class="motion_text_holder">
+echo '<div class="motionTextHolder">
         <h3>AntragstellerInnen</h3>
 
         <div class="content">
@@ -61,7 +66,7 @@ echo '
         </div>
     </div>';
 
-echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
+echo Html::beginForm('', 'post', ['id' => 'amendmentConfirmForm']);
 
 echo '<div class="content">
         <div style="float: right;">
