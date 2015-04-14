@@ -22,9 +22,10 @@ $I->see('Hallo auf Antragsgrün');
 
 if (method_exists($I, 'executeJS')) {
     $I->wantTo('Edit the content');
-    $I->executeJS('$(".contentPageWelcome").find(".editCaller").click()');
+    $I->executeJS('$(".contentPageWelcome").find(".editCaller").click();');
+    $I->wait(2);
     $I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<b>Bold test</b>");');
-    $I->executeJS('$(".contentPageWelcome").find(".textSaver button").click()');
+    $I->executeJS('$(".contentPageWelcome").find(".textSaver button").click();');
     $I->see('Bold test');
 
     $I->gotoStdConsultationHome();
@@ -40,9 +41,10 @@ $I->see('HILFE', 'h1');
 
 if (method_exists($I, 'executeJS')) {
     $I->wantTo('Edit the content');
-    $I->executeJS('$(".contentPage").find(".editCaller").click()');
+    $I->executeJS('$(".contentPage").find(".editCaller").click();');
+    $I->wait(2);
     $I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<b>Some arbitrary text</b>");');
-    $I->executeJS('$(".contentPage").find(".textSaver button").click()');
+    $I->executeJS('$(".contentPage").find(".textSaver button").click();');
     $I->see('Some arbitrary text');
 
     $I->reloadPage();
