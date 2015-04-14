@@ -79,12 +79,13 @@ class MotionEditForm extends \yii\base\Model
     }
 
     /**
-     * @param array $values
+     * @param array $data
      * @param array $files
      * @param bool $safeOnly
      */
-    public function setAttributes($values, $files, $safeOnly = true)
+    public function setAttributes($data, $safeOnly = true)
     {
+        list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
             if (isset($values['sections'][$section->consultationSetting->id])) {
@@ -154,7 +155,7 @@ class MotionEditForm extends \yii\base\Model
 
         $motion = new Motion();
 
-        $this->setAttributes($_POST, $_FILES);
+        $this->setAttributes([$_POST, $_FILES]);
         $this->supporters = $this->consultation->getMotionInitiatorFormClass()->getMotionSupporters($motion);
 
         $this->createMotionVerify();

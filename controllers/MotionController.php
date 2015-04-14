@@ -462,7 +462,7 @@ class MotionController extends Base
         $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if (isset($_POST['save'])) {
-            $form->setAttributes($_POST, $_FILES);
+            $form->setAttributes([$_POST, $_FILES]);
             try {
                 $form->saveMotion($motion);
                 $nextUrl  = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
