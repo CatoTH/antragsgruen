@@ -163,9 +163,11 @@ class MotionEditForm extends \yii\base\Model
         $motion->status         = Motion::STATUS_DRAFT;
         $motion->consultationId = $this->consultation->id;
         $motion->textFixed      = ($this->consultation->getSettings()->adminsMayEdit ? 0 : 1);
+        $motion->title          = '';
         $motion->titlePrefix    = '';
         $motion->dateCreation   = date("Y-m-d H:i:s");
         $motion->motionTypeId   = $this->type;
+        $motion->cache          = '';
 
         if ($motion->save()) {
             $this->consultation->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
