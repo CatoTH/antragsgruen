@@ -24,3 +24,6 @@ MotionPage::openBy(
 $I->see('A2: O’ZAPFT IS!', 'h1');
 $I->see('Änderungsantrag stellen', '.sidebarActions');
 $I->click('.sidebarActions .amendmentCreate a');
+
+$I->see('A2', '.breadcrumb');
+$I->see('ÄNDERUNGSANTRAG ZU A2 STELLEN', 'h1');
