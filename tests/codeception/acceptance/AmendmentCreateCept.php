@@ -22,7 +22,7 @@ MotionPage::openBy(
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');
-$I->dontSee('Ä1', '.amendments');
+$I->dontSee('Ä1', 'section.amendments ul.amendments');
 
 
 $I->wantTo('Open the amendment creation page');
@@ -134,7 +134,7 @@ MotionPage::openBy(
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');
-$I->see('Ä1', '.amendments');
+$I->see('Ä1', 'section.amendments ul.amendments');
 
 
 $I->wantTo('Open the amenmdent page');
