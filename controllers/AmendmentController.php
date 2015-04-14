@@ -196,7 +196,7 @@ class AmendmentController extends Base
         $form = new AmendmentEditForm($amendment->motion, $amendment);
 
         if (isset($_POST['save'])) {
-            $form->setAttributes($_POST, $_FILES);
+            $form->setAttributes([$_POST, $_FILES]);
             try {
                 $form->saveAmendment($amendment);
                 $nextUrl  = [

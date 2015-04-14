@@ -98,8 +98,9 @@ class AmendmentEditForm extends Model
      * @param array $files
      * @param bool $safeOnly
      */
-    public function setAttributes($values, $files, $safeOnly = true)
+    public function setAttributes($data, $safeOnly = true)
     {
+        list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
             if (isset($values['sections'][$section->consultationSetting->id])) {
@@ -161,7 +162,7 @@ class AmendmentEditForm extends Model
 
         $amendment = new Amendment();
 
-        $this->setAttributes($_POST, $_FILES);
+        $this->setAttributes([$_POST, $_FILES]);
         $this->supporters = $this->motion->consultation->getAmendmentInitiatorFormClass()
             ->getAmendmentSupporters($amendment);
 
