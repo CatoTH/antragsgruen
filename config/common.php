@@ -41,8 +41,8 @@ return [
         'i18n'       => [
             'translations' => [
                 '*' => [
-                    'class'          => 'app\components\MessageSource',
-                    'basePath'       => '@app/messages',
+                    'class'    => 'app\components\MessageSource',
+                    'basePath' => '@app/messages',
                 ],
             ],
 
@@ -50,5 +50,5 @@ return [
     ],
     'defaultRoute' => 'manager/index',
     'params'       => $params,
-    'language' => 'de-Parteitag-Bla',
+    'language'     => 'de',
 ];

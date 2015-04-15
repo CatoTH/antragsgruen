@@ -8,6 +8,7 @@ use app\controllers\Base;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
+use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
@@ -251,5 +252,52 @@ class IndexController extends AdminBase
         }
 
         return $this->render('consultation_extended', ['consultation' => $consultation]);
+    }
+
+
+    /**
+     * @param string $category
+     * @return string
+     */
+    public function actionTranslation($category = 'base')
+    {
+        $consultation = $this->consultation;
+
+        if (isset($_POST['save']) && isset($_POST['wordingBase'])) {
+            $consultation->wordingBase = $_POST['wordingBase'];
+            $consultation->save();
+            \yii::$app->session->setFlash('success', 'Gespeichert.');
+        }
+
+        if (isset($_POST['save']) && isset($_POST['string'])) {
+            foreach ($_POST['string'] as $key => $val) {
+                $key = urldecode($key);
+                $found = false;
+                foreach ($consultation->texts as $text) {
+                    if ($text->category == $category && $text->textId == $key) {
+                        if ($val == '') {
+                            $text->delete();
+                        } else {
+                            $text->text = $val;
+                            $text->save();
+                        }
+                        $found = true;
+                    }
+                }
+                if (!$found && $val != '') {
+                    $text                 = new ConsultationText();
+                    $text->consultationId = $consultation->id;
+                    $text->category       = $category;
+                    $text->textId         = $key;
+                    $text->text           = $val;
+                    $text->editDate       = date('Y-m-d H:i:s');
+                    $text->save();
+                }
+            }
+            $consultation->refresh();
+            \yii::$app->session->setFlash('success', 'Gespeichert.');
+        }
+
+        return $this->render('translation', ['consultation' => $consultation, 'category' => $category]);
     }
 }

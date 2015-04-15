@@ -43,6 +43,12 @@ echo Html::a(
     UrlHelper::createUrl('admin/index/consultationextended'),
     ['id' => 'consultationextendedLink']
 );
+echo '</li><li style="margin-left: 20px;">';
+echo Html::a(
+    Yii::t('backend', 'Translation / Wording'),
+    UrlHelper::createUrl('admin/index/translation'),
+    ['id' => 'translationLink']
+);
 echo '</li><li style="margin-top: 10px; font-weight: bold;">';
 echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'));
 echo '</li><li style="margin-left: 20px;">';
@@ -105,8 +111,6 @@ echo '</li>
 
         <li style="margin-top: 10px;">';
 echo Html::a('Export: Kommentare als Excel-Datei', UrlHelper::createUrl('admin/index/kommentareexcel'));
-echo '</li><li style="margin-top: 10px;">';
-echo Html::a('Redaktionelle Texte', UrlHelper::createUrl('admin/texte'));
 echo '</li></ul>
 
     <br><br><br>

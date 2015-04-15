@@ -17,6 +17,7 @@ $url_rules = [
     $domadmin . ''                                          => 'admin/index',
     $domadmin . 'consultation/'                             => 'admin/index/consultation',
     $domadmin . 'consultationExtended/'                     => 'admin/index/consultationextended',
+    $domadmin . 'translation/'                              => 'admin/index/translation',
     $domadmin . 'motions/<_a:(index|update|view|sections)>' => 'admin/motion/<_a>',
     $domadmin . 'amendments'                                => 'admin/amendments',
     $domadmin . 'amendments/<_a:(index|update|view)>'       => 'admin/amendments/<_a>',

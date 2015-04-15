@@ -14,6 +14,32 @@ class MessageSource extends \yii\i18n\MessageSource
     public $fileMap;
 
     /**
+     * @return array
+     */
+    public static function getTranslatableCategories()
+    {
+        return [
+            'base'   => 'Basis-Layout',
+            'con'    => 'Consultation',
+            'motion' => 'Motion',
+            'amend'  => 'Amendment',
+            'pdf'    => 'PDF',
+        ];
+    }
+
+    /**
+     * @param string $language
+     * @return array
+     */
+    public static function getLanguageVariants($language)
+    {
+        if ($language == 'de') {
+            return ['de-parteitag' => 'Parteitag'];
+        };
+        return [];
+    }
+
+    /**
      * Returns message file path for the specified language and category.
      *
      * @param string $category the message category
@@ -53,13 +79,24 @@ class MessageSource extends \yii\i18n\MessageSource
         }
     }
 
-
     /**
      * @param string $category
      * @param string $language
      * @return array
      */
-    protected function loadMessages($category, $language)
+    public function getBaseMessages($category, $language)
+    {
+        return $this->loadMessages($category, $language, false);
+    }
+
+
+    /**
+     * @param string $category
+     * @param string $language
+     * @param bool $withConsultationStrings
+     * @return array
+     */
+    protected function loadMessages($category, $language, $withConsultationStrings = true)
     {
         $consultation = UrlHelper::getCurrentConsultation();
         if (!$consultation) {
@@ -81,9 +118,11 @@ class MessageSource extends \yii\i18n\MessageSource
         }
 
         $conSpecific = [];
-        foreach ($consultation->texts as $text) {
-            if ($text->text != '' && $text->category == $category) {
-                $conSpecific[$text->textId] = $text->text;
+        if ($withConsultationStrings) {
+            foreach ($consultation->texts as $text) {
+                if ($text->text != '' && $text->category == $category) {
+                    $conSpecific[$text->textId] = $text->text;
+                }
             }
         }
 
