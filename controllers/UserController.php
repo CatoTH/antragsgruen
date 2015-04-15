@@ -9,8 +9,6 @@ use app\models\db\User;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
-use app\models\wording\IWording;
-use app\models\wording\Parteitag;
 use Yii;
 
 class UserController extends Base
@@ -28,19 +26,6 @@ class UserController extends Base
                 'successCallback' => [$this, 'successCallback'],
             ],
         ];
-    }
-
-    /**
-     * @return IWording
-     */
-    private function getWording()
-    {
-        if ($this->consultation) {
-            $wording = $this->consultation->getWording();
-        } else {
-            $wording = new Parteitag();
-        }
-        return $wording;
     }
 
     /**
@@ -117,7 +102,6 @@ class UserController extends Base
     {
         $this->layout = 'column2';
 
-        $wording = $this->getWording();
         if ($backUrl == '') {
             $backUrl = '/';
         }
@@ -155,7 +139,6 @@ class UserController extends Base
             'login',
             [
                 'usernamePasswordForm' => $usernamePasswordForm,
-                'wording'              => $wording,
             ]
         );
     }
@@ -167,8 +150,6 @@ class UserController extends Base
      */
     public function actionConfirmregistration($backUrl = '', $email = '')
     {
-        $wording = $this->getWording();
-
         $msgError = '';
 
         if (isset($_REQUEST['email']) && isset($_REQUEST['code'])) {
@@ -181,7 +162,7 @@ class UserController extends Base
                 $user->status         = User::STATUS_CONFIRMED;
                 if ($user->save()) {
                     $this->loginUser($user);
-                    return $this->render('registration_confirmed', ['wording' => $wording]);
+                    return $this->render('registration_confirmed');
                 }
             } else {
                 $msgError = "Der angegebene Code stimmt leider nicht.";
@@ -193,8 +174,7 @@ class UserController extends Base
             [
                 'email'   => $email,
                 'errors'  => $msgError,
-                'backUrl' => $backUrl,
-                'wording' => $wording
+                'backUrl' => $backUrl
             ]
         );
     }

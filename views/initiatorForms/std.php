@@ -19,7 +19,6 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $settings = $consultation->getSettings();
-$wording = $consultation->getWording();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
@@ -68,14 +67,14 @@ echo ' Organisation / Gremium
 </div>
 
 <div class="form-group">
-  <label class="col-sm-3 control-label" for="initiatorName">' . $wording->get('Name') . '</label>
+  <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'Name') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorName" name="Initiator[name]" value="' . $preName . '" required>
   </div>
 </div>
 
 <div class="form-group organizationRow">
-  <label class="col-sm-3 control-label" for="initiatorOrga">' . $wording->get('Gremium, LAG...') . '</label>
+  <label class="col-sm-3 control-label" for="initiatorOrga">' . Yii::t('initiator', 'Gremium, LAG...') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]" value="' . $preOrga . '">
   </div>

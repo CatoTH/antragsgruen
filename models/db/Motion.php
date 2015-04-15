@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\sectionTypes\ISectionType;
+use Yii;
 
 /**
  * @package app\models\db
@@ -263,7 +264,7 @@ class Motion extends IMotion
     public function getTypeName()
     {
         // @TODO Tags
-        return $this->consultation->getWording()->get('Antrag');
+        return Yii::t('motion', 'Antrag');
     }
 
 

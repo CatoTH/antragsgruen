@@ -7,8 +7,9 @@ use yii\db\ActiveRecord;
  * @package app\models\db
  *
  * @property int $id
- * @property string $textId
  * @property int $consultationId
+ * @property string $category
+ * @property string $textId
  * @property string $text
  * @property string $editDate
  *
@@ -30,5 +31,16 @@ class ConsultationText extends ActiveRecord
     public function getConsultation()
     {
         return $this->hasOne(Consultation::className(), ['id' => 'consultationId']);
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['consultationId', 'category', 'textId'], 'required'],
+            [['category', 'textId', 'text'], 'safe'],
+        ];
     }
 }

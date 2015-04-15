@@ -10,15 +10,13 @@ use yii\helpers\Html;
  * @var string $mode
  */
 
-$wording = $amendment->motion->consultation->getWording();
-
-$this->title = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+$this->title = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 
 $params->breadcrumbs[] = $this->title;
 $params->breadcrumbs[] = 'Bestätigen';
 
 
-echo '<h1>' . $wording->get("Änderungsantrag eingereicht") . '</h1>';
+echo '<h1>' . Yii::t('amend', 'Änderungsantrag eingereicht') . '</h1>';
 
 // @TODO
 //echo $text = $antrag->veranstaltung->getStandardtext("antrag_eingereicht")->getHTMLText();

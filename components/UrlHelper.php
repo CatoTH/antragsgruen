@@ -34,6 +34,14 @@ class UrlHelper
         static::$currentConsultation = $consultation;
     }
 
+    /**
+     * @return Consultation|null
+     */
+    public static function getCurrentConsultation()
+    {
+        return static::$currentConsultation;
+    }
+
 
     /**
      * @return \app\models\settings\AntragsgruenApp
@@ -155,9 +163,9 @@ class UrlHelper
         return static::createUrl(
             [
                 'motion/view',
-                'motionId' => $motionComment->motionId,
+                'motionId'  => $motionComment->motionId,
                 'commentId' => $motionComment->id,
-                '#' => 'comm' . $motionComment->id
+                '#'         => 'comm' . $motionComment->id
             ]
         );
     }

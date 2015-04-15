@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\wording;
+namespace app\models;
 
 class PageData
 {

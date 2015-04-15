@@ -13,21 +13,21 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $params     = $controller->layoutParams;
-$wording    = $consultation->getWording();
 
 if ($form->motion->titlePrefix != '') {
-    $title = $wording->get(
+    $title = Yii::t(
+        'amend',
         $mode == 'create' ? 'Änderungsantrag zu %prefix% stellen' : 'Änderungsantrag zu %prefix% bearbeiten'
     );
     $this->title = str_replace('%prefix%', $form->motion->titlePrefix, $title);
 } else {
-    $this->title = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+    $this->title = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 }
 
 
 $params->addJS('/js/ckeditor/ckeditor.js');
 $params->breadcrumbs[UrlHelper::createMotionUrl($form->motion)] = $form->motion->titlePrefix;
-$params->breadcrumbs[] = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+$params->breadcrumbs[] = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
@@ -46,7 +46,7 @@ echo $controller->showErrors();
 $motionPolicy = $consultation->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo '<fieldset>
-                <legend>' . $wording->get("Voraussetzungen für einen Antrag"), '</legend>
+                <legend>' . Yii::t('amend', 'Voraussetzungen für einen Antrag'), '</legend>
             </fieldset>';
 
     echo $motionPolicy->getOnCreateDescription();
@@ -85,7 +85,7 @@ echo '<div class="content">';
 
 
 echo '<fieldset class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0" id="amendmentReasonHolder">';
-echo '<label for="amendmentReason">' . $wording->get('Begründung') . '</label>';
+echo '<label for="amendmentReason">' . Yii::t('amend', 'Begründung') . '</label>';
 
 echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';
 echo Html::encode($form->reason) . '</textarea>';

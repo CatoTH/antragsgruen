@@ -13,15 +13,14 @@ use yii\helpers\Html;
 
 $controller = $this->context;
 $params = $controller->layoutParams;
-$wording = $amendment->motion->consultation->getWording();
 
-$this->title = $wording->get($mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+$this->title = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 
 $params->addBreadcrumb($amendment->motion->titlePrefix, UrlHelper::createMotionUrl($amendment->motion));
 $params->addBreadcrumb('Änderungsantrag', UrlHelper::createAmendmentUrl($amendment, 'edit'));
 $params->addBreadcrumb('Bestätigen');
 
-echo '<h1>' . $wording->get('Änderungsantrag bestätigen') . '</h1>';
+echo '<h1>' . Yii::t('amend', 'Änderungsantrag bestätigen') . '</h1>';
 
 foreach ($amendment->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {

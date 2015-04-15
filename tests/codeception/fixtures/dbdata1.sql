@@ -3,8 +3,8 @@ SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 
 
-INSERT INTO `consultation` (`id`, `siteId`, `urlPath`, `type`, `wording`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `amendmentNumbering`, `adminEmail`, `settings`) VALUES
-  (1, 1, 'std-parteitag', 0, 0, 'Test2', 'Test2', NULL, NULL, NULL, NULL, 'all', 'all', 'all', 'loggedin', 0, 'tobias@hoessl.eu', NULL);
+INSERT INTO `consultation` (`id`, `siteId`, `urlPath`, `type`, `wordingBase`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `amendmentNumbering`, `adminEmail`, `settings`) VALUES
+  (1, 1, 'std-parteitag', 0, 'de-parteitag', 'Test2', 'Test2', NULL, NULL, NULL, NULL, 'all', 'all', 'all', 'loggedin', 0, 'tobias@hoessl.eu', NULL);
 
 INSERT INTO `consultationSettingsMotionSection` (`id`, `consultationId`, `motionTypeId`, `type`, `position`, `status`, `title`, `required`, `fixedWidth`, `maxLen`, `lineNumbers`, `hasComments`, `hasAmendments`) VALUES
   (1, 1, NULL, 0, 0, 0, 'Überschrift', 1, 0, 0, 1, 0, 1),

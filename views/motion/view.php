@@ -25,10 +25,8 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$wording    = $consultation->getWording();
 
-
-$layout->breadcrumbs[] = $motion->getTypeName();
+$layout->addBreadcrumb($motion->getTypeName());
 
 $this->title = $motion->getTitleWithPrefix() . " (" . $motion->consultation->title . ", Antragsgrün)";
 
@@ -46,14 +44,14 @@ if ($motion->motionType->hasAmendments) {
         $html .= '<li class="amendmentCreate">';
         $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
         $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
-        $title .= $wording->get("Änderungsantrag stellen");
+        $title .= Yii::t('motion', 'Änderungsantrag stellen');
         $html .= Html::a($title, $amendCreateUrl) . '</li>';
     } else {
-        $msg = $policy->getPermissionDeniedAmendmentMsg($wording);
+        $msg = $policy->getPermissionDeniedAmendmentMsg();
         if ($msg != "") {
             $html .= '<li class="amendmentCreate">';
             $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
-            $html .= Html::encode($wording->get("Änderungsantrag stellen"));
+            $html .= Html::encode(Yii::t('motion', 'Änderungsantrag stellen'));
             $html .= '</span><br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
             $html .= Html::encode($msg) . '</span></li>';
         }
@@ -62,18 +60,21 @@ if ($motion->motionType->hasAmendments) {
 
 if ($motion->consultation->getSettings()->hasPDF && $motion->isVisible()) {
     $html .= '<li class="download">';
-    $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' . $wording->get("PDF-Version herunterladen");
+    $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
+        Yii::t('motion', 'PDF-Version herunterladen');
     $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
 }
 
 if ($editLink) {
     $html .= '<li class="edit">';
-    $title = '<span class="icon glyphicon glyphicon-scissors"></span>' . $wording->get("Änderungsanträge einpflegen");
+    $title = '<span class="icon glyphicon glyphicon-scissors"></span>' .
+        Yii::t('motion', 'Änderungsanträge einpflegen');
     $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
 
     $amendLink = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
     $html .= '<li class="edit">';
-    $title = '<span class="icon glyphicon glyphicon-edit"></span>' . $wording->get("Antrag bearbeiten");
+    $title = '<span class="icon glyphicon glyphicon-edit"></span>' .
+        Yii::t('motion', 'Antrag bearbeiten');
     $html .= Html::a($title, $amendLink) . '</li>';
 }
 
@@ -119,12 +120,12 @@ if (!$minimalisticUi) {
 
     echo '<table class="motionDataTable">
                 <tr>
-                    <th>' . $wording->get("Veranstaltung") . ':</th>
+                    <th>' . Yii::t('motion', 'Veranstaltung') . ':</th>
                     <td>' .
         Html::a($motion->consultation->title, UrlHelper::createUrl('consultation/index')) . '</td>
                 </tr>
                 <tr>
-                    <th>' . $wording->get("AntragsstellerIn"), ':</th>
+                    <th>' . Yii::t('motion', 'AntragsstellerIn'), ':</th>
                     <td>';
 
 
@@ -248,7 +249,7 @@ if (!$minimalisticUi) {
         echo '<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
             <a href="' . Html::encode(UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id])) . '"
                class="btn btn-danger" style="color: white;"><span class="icon-aender-stellen"></span> ' .
-            Html::encode($wording->get("Änderungsantrag stellen")) . '</a>
+            Html::encode(Yii::t('motion', 'Änderungsantrag stellen')) . '</a>
         </div>';
     }
     echo '</div></div>';
@@ -285,7 +286,7 @@ $enries     = (count($likes) > 0 || count($dislikes) > 0);
 
 $supportPolicy = $motion->consultation->getSupportPolicy();
 $canSupport = $supportPolicy->checkCurUserHeuristically();
-$cantSupportMsg = $supportPolicy->getPermissionDeniedSupportMsg($wording);
+$cantSupportMsg = $supportPolicy->getPermissionDeniedSupportMsg();
 foreach ($motion->getInitiators() as $supp) {
     if ($supp->userId == $currUserId) {
         $canSupport = false;
@@ -391,7 +392,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
 }
 
 if (count($amendments) > 0 || $motion->consultation->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
-    echo '<section class="amendments"><h2>' . $wording->get("Änderungsanträge") . '</h2>
+    echo '<section class="amendments"><h2>' . Yii::t('motion', 'Änderungsanträge') . '</h2>
     <div class="content">';
 
     if (count($amendments) > 0) {

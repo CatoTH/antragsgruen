@@ -2,8 +2,6 @@
 
 namespace app\models\policies;
 
-use app\models\wording\IWording;
-
 class LoggedIn extends IPolicy
 {
     /**
@@ -17,11 +15,9 @@ class LoggedIn extends IPolicy
 
     /**
      * @static
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getPolicyName(IWording $wording)
+    public static function getPolicyName()
     {
         return "Eingeloggte";
     }
@@ -44,41 +40,33 @@ class LoggedIn extends IPolicy
     }
 
     /**
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedMotionMsg(IWording $wording)
+    public function getPermissionDeniedMotionMsg()
     {
         return 'Du musst dich einloggen, um Anträge stellen zu können.';
     }
 
     /**
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedAmendmentMsg(IWording $wording)
+    public function getPermissionDeniedAmendmentMsg()
     {
         return 'Du musst dich einloggen, um Änderungsanträge stellen zu können.';
     }
 
     /**
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedSupportMsg(IWording $wording)
+    public function getPermissionDeniedSupportMsg()
     {
         return 'Du musst dich einloggen, um Anträge unterstützen zu können.';
     }
 
     /**
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedCommentMsg(IWording $wording)
+    public function getPermissionDeniedCommentMsg()
     {
         return 'Du musst dich einloggen, um Kommentare schreiben zu können.';
     }

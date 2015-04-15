@@ -11,13 +11,12 @@ use yii\helpers\Html;
  */
 
 $controller = $this->context;
-$wording = $motion->consultation->getWording();
 
-$this->title = $wording->get($mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
+$this->title = Yii::t('motion', $mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
 $controller->layoutParams->addBreadcrumb($this->title);
 $controller->layoutParams->addBreadcrumb('Bestätigen');
 
-echo '<h1>' . $wording->get('Antrag bestätigen') . ': ' . Html::encode($motion->title) . '</h1>';
+echo '<h1>' . Yii::t('motion', 'Antrag bestätigen') . ': ' . Html::encode($motion->title) . '</h1>';
 
 foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {

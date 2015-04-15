@@ -20,7 +20,6 @@ use yii\helpers\Url;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
-$wording    = $consultation->getWording();
 $layout     = $controller->layoutParams;
 
 $this->title                = $consultation->title . ' (Antragsgrün)';
@@ -61,7 +60,7 @@ if ($admin) {
     echo Html::beginForm($saveUrl, 'post');
 }
 
-$pageData    = $controller->consultation->getPageData('welcome');
+$pageData    = \app\components\MessageSource::getPageData($consultation, 'welcome');
 echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';
@@ -81,7 +80,7 @@ require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLa
 
 if ($myself) {
     if (count($myMotions)) {
-        echo '<h3>' . $wording->get("Meine Anträge") . '</h3>';
+        echo '<h3>' . Yii::t('con', 'Meine Anträge') . '</h3>';
         echo '<div class="content"><ul class="antragsliste">';
 
         foreach ($myMotions as $motionSupport) {
@@ -107,7 +106,7 @@ if ($myself) {
     }
 
     if (count($myAmendments) > 0) {
-        echo '<h3>' . $wording->get("Meine Änderungsanträge") . '</h3>';
+        echo '<h3>' . Yii::t('con', 'Meine Änderungsanträge') . '</h3>';
         echo '<div class="content"><ul class="antragsliste">';
         foreach ($myAmendments as $amendmentSupport) {
             $amendment = $amendmentSupport->amendment;

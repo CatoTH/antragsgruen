@@ -4,7 +4,6 @@ namespace app\models\policies;
 
 use app\models\db\Consultation;
 use app\models\exceptions\Internal;
-use app\models\wording\IWording;
 
 abstract class IPolicy
 {
@@ -27,14 +26,13 @@ abstract class IPolicy
     }
 
     /**
-     * @param IWording $wording
      * @return string[]
      */
-    public static function getPolicyNames($wording)
+    public static function getPolicyNames()
     {
         $names = [];
         foreach (static::getPolicies() as $key => $pol) {
-            $names[$key] = $pol::getPolicyName($wording);
+            $names[$key] = $pol::getPolicyName();
         }
         return $names;
     }
@@ -64,11 +62,9 @@ abstract class IPolicy
     /**
      * @static
      * @abstract
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getPolicyName(IWording $wording)
+    public static function getPolicyName()
     {
         return "";
     }
@@ -126,35 +122,27 @@ abstract class IPolicy
 
     /**
      * @abstract
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    abstract public function getPermissionDeniedMotionMsg(IWording $wording);
+    abstract public function getPermissionDeniedMotionMsg();
 
     /**
      * @abstract
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    abstract public function getPermissionDeniedAmendmentMsg(IWording $wording);
+    abstract public function getPermissionDeniedAmendmentMsg();
 
     /**
      * @abstract
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    abstract public function getPermissionDeniedCommentMsg(IWording $wording);
+    abstract public function getPermissionDeniedCommentMsg();
 
     /**
      * @abstract
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    abstract public function getPermissionDeniedSupportMsg(IWording $wording);
+    abstract public function getPermissionDeniedSupportMsg();
 
 
     /**

@@ -10,7 +10,7 @@ use app\models\settings\AntragsgruenApp;
 require_once(__DIR__ . DIRECTORY_SEPARATOR . "defines.php");
 
 if (ini_get("date.timezone") == "") {
-        date_default_timezone_set("Europe/Berlin");
+    date_default_timezone_set("Europe/Berlin");
 }
 
 return [
@@ -33,13 +33,22 @@ return [
             ],
         ],
         'db'         => $params->dbConnection,
-        'urlManager' => array(
+        'urlManager' => [
             'showScriptName'  => false,
             'enablePrettyUrl' => true,
             'rules'           => require(__DIR__ . DIRECTORY_SEPARATOR . "urls.php")
-        ),
+        ],
+        'i18n'       => [
+            'translations' => [
+                '*' => [
+                    'class'          => 'app\components\MessageSource',
+                    'basePath'       => '@app/messages',
+                ],
+            ],
 
+        ],
     ],
     'defaultRoute' => 'manager/index',
     'params'       => $params,
+    'language' => 'de-Parteitag-Bla',
 ];

@@ -119,7 +119,7 @@ echo '</div>
         <label class="col-sm-4 control-label" for="policyMotions">(Änderungs-)Anträge unterstützen dürfen:</label>
         <div class="col-sm-8">';
 $policies = [];
-foreach (IPolicy::getPolicyNames($consultation->getWording()) as $pId => $pName) {
+foreach (IPolicy::getPolicyNames() as $pId => $pName) {
     if ($pId != 'all') {
         $policies[$pId] = $pName;
     }

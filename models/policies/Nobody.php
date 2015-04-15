@@ -2,8 +2,6 @@
 
 namespace app\models\policies;
 
-use app\models\wording\IWording;
-
 class Nobody extends IPolicy
 {
     /**
@@ -17,11 +15,9 @@ class Nobody extends IPolicy
 
     /**
      * @static
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getPolicyName(IWording $wording)
+    public static function getPolicyName()
     {
         return 'Niemand';
     }
@@ -44,41 +40,33 @@ class Nobody extends IPolicy
     }
 
     /**
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedMotionMsg(IWording $wording)
+    public function getPermissionDeniedMotionMsg()
     {
         return 'Momentan kann niemand Anträge stellen.';
     }
 
     /**
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedAmendmentMsg(IWording $wording)
+    public function getPermissionDeniedAmendmentMsg()
     {
         return 'Momentan kann niemand Änderungsanträge stellen.';
     }
 
     /**
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedSupportMsg(IWording $wording)
+    public function getPermissionDeniedSupportMsg()
     {
         return 'Momentan kann niemand Anträge unterstützen.';
     }
 
     /**
-     * @param IWording $wording
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPermissionDeniedCommentMsg(IWording $wording)
+    public function getPermissionDeniedCommentMsg()
     {
         return 'Momentan kann niemand Kommentare schreiben.';
     }

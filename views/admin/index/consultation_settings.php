@@ -9,7 +9,6 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\policies\IPolicy;
-use app\models\wording\IWording;
 use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */
@@ -45,18 +44,6 @@ echo '<strong>Wartungsmodus aktiv</strong>
             <small>(Nur Admins können den Seiteninhalt sehen)</small>
         </label>
     </fieldset>';
-
-echo '<fieldset class="form-group">
-        <label class="col-sm-4 control-label" for="wording">Wording:</label>
-        <div class="col-sm-8">';
-echo Html::dropDownList(
-    'consultation[wording]',
-    $consultation->wording,
-    IWording::getWordingNames(),
-    ['id' => 'wording', 'class' => 'form-control']
-);
-echo '</div></fieldset>';
-
 
 $handledSettings[] = 'startLayoutType';
 echo '<fieldset class="form-group">
@@ -152,7 +139,7 @@ echo '</div>
 echo Html::dropDownList(
     'consultation[policyMotions]',
     $consultation->policyMotions,
-    IPolicy::getPolicyNames($consultation->getWording()),
+    IPolicy::getPolicyNames(),
     ['id' => 'policyMotions', 'class' => 'form-control']
 );
 echo '</div></fieldset>';
@@ -224,7 +211,7 @@ echo '</div>
 echo Html::dropDownList(
     'consultation[policyAmendments]',
     $consultation->policyAmendments,
-    IPolicy::getPolicyNames($consultation->getWording()),
+    IPolicy::getPolicyNames(),
     ['id' => 'policyAmendments', 'class' => 'form-control']
 );
 echo '</div></fieldset>';
@@ -261,7 +248,7 @@ echo '</div>
 echo Html::dropDownList(
     'consultation[policyComments]',
     $consultation->policyComments,
-    IPolicy::getPolicyNames($consultation->getWording()),
+    IPolicy::getPolicyNames(),
     ['id' => 'policyComments', 'class' => 'form-control']
 );
 echo '</div></fieldset>';

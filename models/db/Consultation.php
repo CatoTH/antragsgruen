@@ -9,7 +9,6 @@ use app\models\forms\SiteCreateForm;
 use app\models\initiatorForms\DefaultForm;
 use app\models\policies\IPolicy;
 use app\models\sitePresets\ISitePreset;
-use app\models\wording\IWording;
 use app\models\wording\PageData;
 use app\models\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
@@ -20,12 +19,12 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $siteId
  * @property int $type
- * @property int $wording
  * @property int $amendmentNumbering
  *
  * @property string $urlPath
  * @property string $title
  * @property string $titleShort
+ * @property string $wordingBase
  * @property string $eventDateFrom
  * @property string $eventDateTo
  * @property string $deadlineMotions
@@ -66,7 +65,7 @@ class Consultation extends ActiveRecord
         return [
             [['title', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
             [['title', 'titleShort', 'eventDateFrom', 'eventDateTo'], 'safe'],
-            [['adminEmail', 'wording', 'amendmentNumbering'], 'safe'],
+            [['adminEmail', 'wordingBase', 'amendmentNumbering'], 'safe'],
         ];
     }
 
@@ -188,13 +187,14 @@ class Consultation extends ActiveRecord
      */
     public static function createFromForm(SiteCreateForm $form, Site $site, User $currentUser, ISitePreset $preset)
     {
-        $con             = new Consultation();
-        $con->siteId     = $site->id;
-        $con->title      = $form->title;
-        $con->titleShort = $form->title;
-        $con->type       = $form->preset;
-        $con->urlPath    = $form->subdomain;
-        $con->adminEmail = $currentUser->email;
+        $con                     = new Consultation();
+        $con->siteId             = $site->id;
+        $con->title              = $form->title;
+        $con->titleShort         = $form->title;
+        $con->type               = $form->preset;
+        $con->urlPath            = $form->subdomain;
+        $con->adminEmail         = $currentUser->email;
+        $con->amendmentNumbering = 0;
 
         $settings                   = $con->getSettings();
         $settings->maintainanceMode = !$form->openNow;
@@ -232,33 +232,6 @@ class Consultation extends ActiveRecord
         return $tags;
     }
 
-
-    /**
-     * @return IWording
-     */
-    public function getWording()
-    {
-        /** @var IWording $wording */
-        $wording = IWording::getWordings()[$this->wording];
-        return new $wording();
-    }
-
-
-    /**
-     * @param string $pageKey
-     * @return PageData
-     * @throws Internal
-     */
-    public function getPageData($pageKey)
-    {
-        $pageData = $this->getWording()->getPageData($pageKey);
-        foreach ($this->texts as $text) {
-            if ($text->textId == $pageKey) {
-                $pageData->text = $text->text;
-            }
-        }
-        return $pageData;
-    }
 
     /**
      * @return IPolicy

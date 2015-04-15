@@ -1,66 +1,66 @@
 {
-    "name": "catoth/antragsgruen",
-    "description": "Antragsgrün",
-    "type": "project",
-    "license": "AGPL-3.0",
-    "support": {
-        "issues": "https://github.com/CatoTH/antragsgruen/issues",
-        "source": "https://github.com/CatoTH/antragsgruen"
-    },
-    "keywords": [
-        "gruen",
-        "antrag",
-        "netzbegruenung"
-    ],
-    "minimum-stability": "dev",
-    "homepage": "https://www.antragsgruen.de/",
-    "autoload": {
-        "psr-0": {
-            "mjohnson\\decoda": "vendor/"
-        }
-    },
-    "repositories": [
-    ],
-    "require": {
-        "php": ">=5.4.0",
-        "fxp/composer-asset-plugin": "~1.0",
-        "yiisoft/yii2": "2.0.3",
-        "yiisoft/yii2-authclient": "2.0.3",
-        "tecnick.com/tcpdf": "dev-master",
-        "mandrill/mandrill": "dev-master",
-        "phpoffice/phpexcel": "dev-master",
-        "bower-asset/eonasdan-bootstrap-datetimepicker": "4.7.*",
-        "bower-asset/html5shiv": "*",
-        "bower-asset/Sortable": "*"
-    },
-    "require-dev": {
-        "yiisoft/yii2-codeception": "2.0.3",
-        "yiisoft/yii2-debug": "2.0.3",
-        "yiisoft/yii2-gii": "2.0.3",
-        "yiisoft/yii2-faker": "2.0.3",
-        "yiisoft/yii2-apidoc": "2.0.3",
-        "phpmd/phpmd": "@stable",
-        "squizlabs/php_codesniffer": "2.3.0",
-        "codeception/codeception": "2.0.*",
-        "codeception/specify": "*",
-        "codeception/verify": "*"
-    },
-    "extra": {
-        "yii\\composer\\Installer::postCreateProject": {
-            "setPermission": [
-                {
-                    "runtime": "0755",
-                    "web/assets": "0755",
-                    "yii": "0755"
-                }
-            ],
-            "generateCookieValidationKey": [
-                "config/web.php"
-            ]
-        },
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "web/js/bower"
-        }
+  "name": "catoth/antragsgruen",
+  "description": "Antragsgrün",
+  "type": "project",
+  "license": "AGPL-3.0",
+  "support": {
+    "issues": "https://github.com/CatoTH/antragsgruen/issues",
+    "source": "https://github.com/CatoTH/antragsgruen"
+  },
+  "keywords": [
+    "gruen",
+    "antrag",
+    "netzbegruenung"
+  ],
+  "minimum-stability": "dev",
+  "homepage": "https://www.antragsgruen.de/",
+  "autoload": {
+    "psr-0": {
+      "mjohnson\\decoda": "vendor/"
     }
+  },
+  "repositories": [
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "fxp/composer-asset-plugin": "~1.0",
+    "yiisoft/yii2": "2.0.3",
+    "yiisoft/yii2-authclient": "2.0.3",
+    "tecnick.com/tcpdf": "dev-master",
+    "mandrill/mandrill": "dev-master",
+    "phpoffice/phpexcel": "dev-master",
+    "bower-asset/eonasdan-bootstrap-datetimepicker": "4.7.*",
+    "bower-asset/html5shiv": "*",
+    "bower-asset/Sortable": "*"
+  },
+  "require-dev": {
+    "yiisoft/yii2-codeception": "2.0.3",
+    "yiisoft/yii2-debug": "2.0.3",
+    "yiisoft/yii2-gii": "2.0.3",
+    "yiisoft/yii2-faker": "2.0.3",
+    "yiisoft/yii2-apidoc": "2.0.3",
+    "phpmd/phpmd": "@stable",
+    "squizlabs/php_codesniffer": "2.3.0",
+    "codeception/codeception": "2.0.*",
+    "codeception/specify": "*",
+    "codeception/verify": "*"
+  },
+  "extra": {
+    "yii\\composer\\Installer::postCreateProject": {
+      "setPermission": [
+        {
+          "runtime": "0755",
+          "web/assets": "0755",
+          "yii": "0755"
+        }
+      ],
+      "generateCookieValidationKey": [
+        "config/web.php"
+      ]
+    },
+    "asset-installer-paths": {
+      "npm-asset-library": "vendor/npm",
+      "bower-asset-library": "web/js/bower"
+    }
+  }
 }

@@ -8,7 +8,6 @@ use app\models\db\Motion;
 
 $pdfLayout = $motion->consultation->getPDFLayoutClass();
 $pdf       = $pdfLayout->createPDFClass();
-$wording   = $motion->consultation->getWording();
 
 header('Content-type: application/pdf; charset=UTF-8');
 
@@ -18,8 +17,8 @@ $initiatorinnen = ['Ich'];
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor(implode(", ", $initiatorinnen));
-$pdf->SetTitle($wording->get("Antrag") . " " . $motion->getTitleWithPrefix());
-$pdf->SetSubject($wording->get("Antrag") . " " . $motion->getTitleWithPrefix());
+$pdf->SetTitle(Yii::t('motion', 'Antrag') . " " . $motion->getTitleWithPrefix());
+$pdf->SetSubject(Yii::t('motion', 'Antrag') . " " . $motion->getTitleWithPrefix());
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

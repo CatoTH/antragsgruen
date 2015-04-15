@@ -12,11 +12,12 @@ use yii\helpers\Html;
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 
-$pageData    = $controller->consultation->getPageData($pageKey);
-$this->title = $pageData->pageTitle;
+$consultation = \app\components\UrlHelper::getCurrentConsultation();
+$pageData     = \app\components\MessageSource::getPageData($consultation, $pageKey);
+$this->title  = $pageData->pageTitle;
 
 
-$layout     = $controller->layoutParams;
+$layout = $controller->layoutParams;
 $layout->addBreadcrumb($pageData->breadcrumbTitle);
 
 if ($admin) {

@@ -117,10 +117,13 @@ if ($controller->consultation) {
 echo '<ul class="nav navbar-nav">';
 
 if ($controller->consultation) {
-    echo '<li class="active">' . Html::a('Start', UrlHelper::createUrl("consultation/index")) . '</li>';
-    echo '<li>' . Html::a('Hilfe', UrlHelper::createUrl("consultation/help"), ['id' => 'helpLink']) . '</li>';
+    $homeUrl = UrlHelper::createUrl("consultation/index");
+    echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $homeUrl) . '</li>';
+    $helpLink = UrlHelper::createUrl("consultation/help");
+    echo '<li>' . Html::a(Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
 } else {
-    echo '<li class="active">' . Html::a('Start', UrlHelper::createUrl("manager/index")) . '</li>';
+    $startLink = UrlHelper::createUrl("manager/index");
+    echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $startLink) . '</li>';
 }
 
 

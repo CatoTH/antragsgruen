@@ -270,6 +270,7 @@ class Base extends Controller
 
         UrlHelper::setCurrentConsultation($this->consultation);
         UrlHelper::setCurrentSite($this->site);
+
         $this->layoutParams->setConsultation($this->consultation);
 
         $this->checkConsistency($checkMotion, $checkAmendment);

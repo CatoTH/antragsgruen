@@ -110,7 +110,7 @@ CREATE TABLE `consultation` (
   `siteId`             INT(11)      NOT NULL,
   `urlPath`            VARCHAR(45)       DEFAULT NULL,
   `type`               TINYINT(4)        DEFAULT NULL,
-  `wording`            TINYINT(4)   NOT NULL,
+  `wordingBase`        VARCHAR(20)  NOT NULL,
   `title`              VARCHAR(200) NOT NULL,
   `titleShort`         VARCHAR(45)  NOT NULL,
   `eventDateFrom`      DATE              DEFAULT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE `consultationSettingsMotionType` (
   `title`          VARCHAR(100) NOT NULL,
   `motionPrefix`   VARCHAR(10)           DEFAULT NULL,
   `hasAmendments`  TINYINT      NOT NULL DEFAULT '1',
-  `position`       INT(11) NOT NULL,
+  `position`       INT(11)      NOT NULL,
   `cssicon`        VARCHAR(100)          DEFAULT NULL
 )
   ENGINE = InnoDB
@@ -237,11 +237,12 @@ CREATE TABLE `consultationSubscription` (
 --
 
 CREATE TABLE `consultationText` (
-  `id`             INT(11)     NOT NULL,
-  `consultationId` INT(11)          DEFAULT NULL,
-  `textId`         VARCHAR(20) NOT NULL,
+  `id`             INT(11)      NOT NULL,
+  `consultationId` INT(11)           DEFAULT NULL,
+  `category`       VARCHAR(20)  NOT NULL,
+  `textId`         VARCHAR(100) NOT NULL,
   `text`           LONGTEXT,
-  `editDate`       TIMESTAMP   NULL DEFAULT CURRENT_TIMESTAMP
+  `editDate`       TIMESTAMP    NULL DEFAULT CURRENT_TIMESTAMP
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -524,7 +525,7 @@ ADD PRIMARY KEY (`consultationId`, `userId`), ADD KEY `fk_consultationIdx` (`con
 -- Indexes for table `consultationText`
 --
 ALTER TABLE `consultationText`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultation_text_unique` (`textId`, `consultationId`), ADD KEY `fk_texts_consultationIdx` (`consultationId`);
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultation_text_unique` (`category`,`textId`,`consultationId`), ADD KEY `fk_texts_consultationIdx` (`consultationId`);
 
 --
 -- Indexes for table `emailLog`

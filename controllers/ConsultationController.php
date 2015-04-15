@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\HTMLTools;
+use app\components\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\ConsultationText;
@@ -82,16 +83,7 @@ class ConsultationController extends Base
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to edit this page');
         }
-        /** @var ConsultationText $text */
-        $text = ConsultationText::findOne(['consultationId' => $this->consultation->id, 'textId' => $pageKey]);
-        if (!$text) {
-            $text = new ConsultationText();
-            $text->consultationId = $this->consultation->id;
-            $text->textId = $pageKey;
-        }
-        $text->text = HTMLTools::cleanTrustedHtml($_POST['data']);
-        $text->editDate = date('Y-m-d H:i:s');
-        if ($text->save()) {
+        if (MessageSource::savePageData($this->consultation, $pageKey, $_POST['data'])) {
             return '1';
         } else {
             return '0';
@@ -152,7 +144,7 @@ class ConsultationController extends Base
         $this->testMaintainanceMode();
         $this->consultationSidebar($this->consultation);
 
-        $consultation  = $this->consultation;
+        $consultation = $this->consultation;
 
         $myself = User::getCurrentUser();
         if ($myself) {
@@ -165,7 +157,7 @@ class ConsultationController extends Base
 
         //$einleitungstext = $consultation->getStandardtext("startseite");
         $introText = 'Hello World';
-        $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'welcome']);
+        $saveUrl   = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'welcome']);
 
 
         return $this->render(

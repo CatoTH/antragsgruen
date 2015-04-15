@@ -21,11 +21,10 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$wording    = $consultation->getWording();
 
 
-$layout->breadcrumbs[UrlHelper::createMotionUrl($amendment->motion)] = $amendment->motion->getTypeName();
-$layout->breadcrumbs[]                                               = $amendment->titlePrefix;
+$layout->addBreadcrumb($amendment->motion->getTypeName(), UrlHelper::createMotionUrl($amendment->motion));
+$layout->addBreadcrumb($amendment->titlePrefix);
 
 $this->title = $amendment->getTitle() . " (" . $amendment->motion->consultation->title . ", Antragsgrün)";
 
@@ -42,12 +41,12 @@ echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 echo '<div class="motionData"><div class="content">';
 echo '<table class="motionDataTable">
                 <tr>
-                    <th>' . $wording->get("Antrag") . ':</th>
+                    <th>' . Yii::t('amend', 'Antrag') . ':</th>
                     <td>' .
     Html::a($amendment->motion->title, UrlHelper::createMotionUrl($amendment->motion)) . '</td>
                 </tr>
                 <tr>
-                    <th>' . $wording->get("AntragsstellerIn"), ':</th>
+                    <th>' . Yii::t('amend', 'AntragsstellerIn'), ':</th>
                     <td>';
 
 

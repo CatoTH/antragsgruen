@@ -14,9 +14,8 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $params     = $controller->layoutParams;
-$wording    = $consultation->getWording();
 
-$this->title = $wording->get($mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
+$this->title = Yii::t('motion', $mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
 
 $params->addJS('/js/ckeditor/ckeditor.js');
 $params->breadcrumbs[] = $this->title;
@@ -30,7 +29,7 @@ echo $controller->showErrors();
 $motionPolicy = $consultation->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo '<fieldset>
-                <legend>' . $wording->get("Voraussetzungen für einen Antrag"), '</legend>
+                <legend>' . Yii::t('motion', 'Voraussetzungen für einen Antrag'), '</legend>
             </fieldset>';
 
     echo $motionPolicy->getOnCreateDescription();
@@ -57,7 +56,7 @@ if (count($motionTypes) == 1) {
     echo '<input type="hidden" name="type" value="' . $motionTypes[0]->id . '">';
 } else {
     echo '<fieldset class="form-group motionType">
-    <label>' . $wording->get('Typ') . '</label>';
+    <label>' . Yii::t('motion', 'Typ') . '</label>';
     foreach ($motionTypes as $type) {
         echo '<div class="radio"><label>';
         echo Html::radio('type', $form->type == $type->id, ['value' => $type->id, 'id' => 'motionType' . $type->id]);
