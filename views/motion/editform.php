@@ -15,10 +15,10 @@ use yii\helpers\Html;
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
-$this->title = Yii::t('motion', $mode == 'create' ? 'Antrag stellen' : 'Antrag bearbeiten');
+$this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
 
 $params->addJS('/js/ckeditor/ckeditor.js');
-$params->breadcrumbs[] = $this->title;
+$params->addBreadcrumb($this->title);
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
@@ -29,7 +29,7 @@ echo $controller->showErrors();
 $motionPolicy = $consultation->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo '<fieldset>
-                <legend>' . Yii::t('motion', 'Voraussetzungen für einen Antrag'), '</legend>
+                <legend>' . Yii::t('motion', 'Prerequisites for a motion'), '</legend>
             </fieldset>';
 
     echo $motionPolicy->getOnCreateDescription();
@@ -56,7 +56,7 @@ if (count($motionTypes) == 1) {
     echo '<input type="hidden" name="type" value="' . $motionTypes[0]->id . '">';
 } else {
     echo '<fieldset class="form-group motionType">
-    <label>' . Yii::t('motion', 'Typ') . '</label>';
+    <label>' . Yii::t('motion', 'Type') . '</label>';
     foreach ($motionTypes as $type) {
         echo '<div class="radio"><label>';
         echo Html::radio('type', $form->type == $type->id, ['value' => $type->id, 'id' => 'motionType' . $type->id]);

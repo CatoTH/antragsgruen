@@ -3,12 +3,10 @@
 namespace app\models\pdfLayouts;
 
 use app\models\wording\IWording;
+use Yii;
 
 class TCPDFWithFooter extends \TCPDF
 {
-    /** @var IWording */
-    private $wording;
-
     /** @var IPDFLayout */
     private $layout;
 
@@ -16,9 +14,8 @@ class TCPDFWithFooter extends \TCPDF
      * @param IPDFLayout $layout
      * @param IWording $wording
      */
-    public function __construct(IPDFLayout $layout, IWording $wording)
+    public function __construct(IPDFLayout $layout)
     {
-        $this->wording = $wording;
         $this->layout  = $layout;
         parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     }
@@ -36,7 +33,7 @@ class TCPDFWithFooter extends \TCPDF
         $this->Cell(
             0,
             10,
-            $this->wording->get('Seite') . ' ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(),
+            Yii::t('pdf', 'Page') . ' ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(),
             0,
             false,
             'C',

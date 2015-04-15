@@ -17,8 +17,8 @@ $initiatorinnen = ['Ich'];
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor(implode(", ", $initiatorinnen));
-$pdf->SetTitle(Yii::t('motion', 'Antrag') . " " . $motion->getTitleWithPrefix());
-$pdf->SetSubject(Yii::t('motion', 'Antrag') . " " . $motion->getTitleWithPrefix());
+$pdf->SetTitle(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
+$pdf->SetSubject(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

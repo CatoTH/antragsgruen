@@ -23,7 +23,7 @@ class IPDFLayout
      */
     public function createPDFClass()
     {
-        return new TCPDFWithFooter($this, $this->consultation->getWording());
+        return new TCPDFWithFooter($this);
     }
 
     /**
