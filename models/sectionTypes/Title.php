@@ -57,6 +57,15 @@ class Title extends ISectionType
     }
 
     /**
+     * @param \TCPDF $pdf
+     */
+    public function printToPDF(\TCPDF $pdf)
+    {
+        $pdf->SetFont("helvetica", "", 12);
+        $pdf->writeHTML("<h3>" . $this->section->data . "</h3>");
+    }
+
+    /**
      * @return bool
      */
     public function isEmpty()

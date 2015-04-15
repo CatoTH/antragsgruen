@@ -95,4 +95,12 @@ class Image extends ISectionType
     {
         return ($this->section->data == '');
     }
+
+    /**
+     * @param \TCPDF $pdf
+     */
+    public function printToPDF(\TCPDF $pdf)
+    {
+        // @TODO
+    }
 }

@@ -63,4 +63,19 @@ class TextHTML extends ISectionType
     {
         return ($this->section->data == '');
     }
+
+
+    /**
+     * @param \TCPDF $pdf
+     */
+    public function printToPDF(\TCPDF $pdf)
+    {
+        $html = $this->section->data;
+        // Some umlaut characters with unusual UTF-8-encoding (0x61CC88 for "ü")
+        // are not shown correctly in PDF => convert them to the normal encoding
+        if (function_exists("normalizer_normalize")) {
+            $html = normalizer_normalize($html);
+        }
+        $pdf->writeHTML($html);
+    }
 }

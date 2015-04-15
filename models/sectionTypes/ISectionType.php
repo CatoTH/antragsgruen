@@ -135,6 +135,11 @@ abstract class ISectionType
      */
     abstract public function showSimple();
 
+    /**
+     * @param \TCPDF $pdf
+     */
+    abstract public function printToPDF(\TCPDF $pdf);
+
 
     /**
      * @param Base $controller

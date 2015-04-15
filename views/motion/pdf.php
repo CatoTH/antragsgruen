@@ -12,7 +12,7 @@ $pdf       = $pdfLayout->createPDFClass();
 header('Content-type: application/pdf; charset=UTF-8');
 
 
-$initiators =[];
+$initiators = [];
 foreach ($motion->getInitiators() as $init) {
     $initiators[] = $init->getNameWithResolutionDate(false);
 }
@@ -25,16 +25,15 @@ $pdf->SetTitle(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix())
 $pdf->SetSubject(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
 
 
-
-
-
 // add a page
 $pdf->AddPage();
 
 $pdfLayout->printMotionHeader($motion);
 
-$linenr = $motion->getFirstLineNo();
 
+foreach ($motion->getSortedSections() as $section) {
+    $section->getSectionType()->printToPDF($pdf);
+}
 
 
 $pdf->Output('Antrag_' . $motion->titlePrefix . '.pdf', 'I');
