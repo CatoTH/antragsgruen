@@ -267,6 +267,13 @@ class Motion extends IMotion
         return Yii::t('motion', 'Antrag');
     }
 
+    /**
+     * @return int
+     */
+    public function getFirstLineNo() {
+        return 1; // @TODO
+    }
+
 
     /**
      * @return bool

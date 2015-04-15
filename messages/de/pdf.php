@@ -1,5 +1,7 @@
 <?php
 
 return [
-    'Page' => 'Seite'
+    'Page'         => 'Seite',
+    'Initiators'   => 'InitiatorInnen',
+    'introduction' => 'Antrag an die...'
 ];

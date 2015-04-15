@@ -12,32 +12,31 @@ $pdf       = $pdfLayout->createPDFClass();
 header('Content-type: application/pdf; charset=UTF-8');
 
 
-$initiatorinnen = ['Ich'];
+$initiators =[];
+foreach ($motion->getInitiators() as $init) {
+    $initiators[] = $init->getNameWithResolutionDate(false);
+}
+$initiatorsStr = implode(', ', $initiators);
 
 // set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor(implode(", ", $initiatorinnen));
+$pdf->SetCreator('Antragsgrün');
+$pdf->SetAuthor(implode(", ", $initiators));
 $pdf->SetTitle(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
 $pdf->SetSubject(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
 
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-$pdf->setPrintHeader(false);
-$pdf->setPrintFooter(true);
 
-$pdf->SetMargins(25, 40, 25);
-$pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);
 
-//set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-$pdf->SetFont('dejavusans', '', 10);
 
+// add a page
 $pdf->AddPage();
-$pdf->writeHTML('Test');
+
+$pdfLayout->printMotionHeader($motion);
+
+$linenr = $motion->getFirstLineNo();
+
+
 
 $pdf->Output('Antrag_' . $motion->titlePrefix . '.pdf', 'I');
-
-
 
 die();
