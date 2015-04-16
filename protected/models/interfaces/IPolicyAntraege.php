@@ -310,7 +310,7 @@ abstract class IPolicyAntraege
         $einstellungen = $veranstaltung->getEinstellungen();
 
         if ($veranstaltung->isAdminCurUser()) {
-            $str .= '<label><input type="checkbox" name="andere_antragstellerIn"> Ich lege diesen Antrag für eine andere AntragstellerIn an
+            $str .= '<label><input type="checkbox" name="andere_antragstellerIn" checked> Ich lege diesen Antrag für eine andere AntragstellerIn an
                 <small>(Admin-Funktion)</small>
             </label>';
         }
