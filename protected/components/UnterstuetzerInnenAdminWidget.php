@@ -12,7 +12,9 @@ class UnterstuetzerInnenAdminWidget
      */
     public static function printUnterstuetzerInnenWidget($antrag, $unterstuetzerIn_rel)
     {
-        $neustr = '<div class="unterstuetzerInnenwidget_adder">';
+        $neustr = '<div class="unterstuetzerInnenwidget_adder" style="margin-top: 20px;">';
+
+        /*
         $neustr .= '<select name="' . get_class($antrag) . '[unterstuetzerIn_neu][person][]" class="person_selector">';
         $neustr .= '<option value="neu"> - neue Person anlegen -</option>';
 
@@ -22,30 +24,46 @@ class UnterstuetzerInnenAdminWidget
             $pers = Person::model()->findAllAttributes("name", true, array("order" => "name"));
         }
         foreach ($pers as $p) {
-            /* @var $p Person */
+            /* @var $p Person /
             $neustr .= '<option value="' . $p->id . '">' . CHtml::encode($p->name) . '</option>';
         }
         $neustr .= "</select>";
+             * */
+        $neustr .= '<input type="hidden" name="' . get_class($antrag) . '[unterstuetzerIn_neu][person][]" value="neu">';
 
+        $neustr .= '<label style="display: inline-block; width: 220px;">';
+        $neustr .= 'Rolle:<br>';
         $neustr .= '<select name="' . get_class($antrag) . '[unterstuetzerIn_neu][rolle][]" required>';
         $neustr .= '<option value=""> - </option>';
         foreach (IUnterstuetzerInnen::$ROLLEN as $key => $val) {
             $neustr .= '<option value="' . $key . '">' . CHtml::encode($val) . "</option>\n";
         }
-        $neustr .= '</select><div class="unterstuetzerIn_neu_holder">';
+        $neustr .= '</select></label>';
+
+        $neustr .= '<label style="display: inline-block; width: 220px;" class="unterstuetzerIn_neu_holder">Personen-Typ:<br>';
 
 		$neustr .= "<select name='" . get_class($antrag) . "[unterstuetzerIn_neu][person_typ][]'>";
         foreach (Person::$TYPEN as $key => $val) {
             $neustr .= "<option value='$key'>" . GxHtml::encode($val) . "</option>\n";
         }
-		$neustr .= "</select>";
+		$neustr .= "</select></label>";
 
-        $neustr .= " <input name='" . get_class($antrag) . "[unterstuetzerIn_neu][person_name][]' value='' placeholder='Name'>";
+        $neustr .= "<label style='display: inline-block; width: 220px;'>Name:<br>";
+        $neustr .= "<input type='text' style='width: 187px;' name='" . get_class($antrag) . "[unterstuetzerIn_neu][person_name][]' value='' placeholder='Name'>";
+        $neustr .= '</label>';
 
-        $neustr .= '</div></div>';
+        $neustr .= "<label style='display: inline-block; width: 220px;'>Organisation (bei nat. P.):<br>";
+        $neustr .= "<input type='text' style='width: 187px;' name='" . get_class($antrag) . "[unterstuetzerIn_neu][person_organisation][]' value='' placeholder='KV, LAG, ...'>";
+        $neustr .= '</label>';
+
+        $neustr .= "<label style='display: inline-block; width: 220px;'>Beschlussdatum (bei jur. P.):<br>";
+        $neustr .= "<input type='text' style='width: 187px;' name='" . get_class($antrag) . "[unterstuetzerIn_neu][beschlussdatum][]' value='' placeholder='TT.MM.YYYY'>";
+        $neustr .= '</label>';
+
+        $neustr .= '</div>';
 
 
-        $str = '<div style="display: inline-block; width: 500px;" class="unterstuetzerInnenwidget" data-neutemplate="' . CHtml::encode($neustr) . '">';
+        $str = '<div class="unterstuetzerInnenwidget" data-neutemplate="' . CHtml::encode($neustr) . '">';
         $unterstuetzerInnen = $antrag->$unterstuetzerIn_rel;
         foreach ($unterstuetzerInnen as $unt) {
 			/** @var AntragUnterstuetzerInnen $unt */
@@ -98,6 +116,8 @@ class UnterstuetzerInnenAdminWidget
 
             for ($i = 0; $i < count($unterstuetzerIn_neu["person"]); $i++) if ($unterstuetzerIn_neu["rolle"][$i] != "") {
                 if (is_numeric($unterstuetzerIn_neu["person"][$i])) {
+                    /*
+                     * Kommt nicht mehr vor
                     $unt = new $unterstuetzerInnen_class;
                     $unt->$unterstuetzerIn_pk = $id;
                     $unt->unterstuetzerIn_id = IntVal($unterstuetzerIn_neu["person"][$i]);
@@ -107,10 +127,12 @@ class UnterstuetzerInnenAdminWidget
                     } catch (CDbException $e) {
                         $messages[] = $e->getMessage();
                     }
+                    */
                 } elseif ($unterstuetzerIn_neu["person"][$i] == "neu") {
                     $person = new Person;
                     $person->name = $unterstuetzerIn_neu["person_name"][$i];
                     $person->typ = $unterstuetzerIn_neu["person_typ"][$i];
+                    $person->organisation = $unterstuetzerIn_neu["person_organisation"][$i];
                     $person->status = Person::$STATUS_UNCONFIRMED;
                     $person->angelegt_datum = "NOW()";
 
@@ -118,6 +140,9 @@ class UnterstuetzerInnenAdminWidget
                         $unt = new $unterstuetzerInnen_class();
                         $unt->$unterstuetzerIn_pk = $id;
                         $unt->unterstuetzerIn_id = $person->id;
+                        if (preg_match("/^(?<tag>[0-9]{2})\. *(?<monat>[0-9]{2})\. *(?<jahr>[0-9]{4})$/", $unterstuetzerIn_neu["beschlussdatum"][$i], $matches)) {
+                            $unt->beschlussdatum = $matches["jahr"] . "-" . $matches["monat"] . "-" . $matches["tag"];
+                        }
                         $unt->rolle = $unterstuetzerIn_neu["rolle"][$i];
 						$unt->position = $i;
                         $unt->save();

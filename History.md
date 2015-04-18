@@ -2,6 +2,7 @@
 ==================
 
 * Im Backend gibt es nun eine komplette Liste aller Anträge und Änderungsanträge.
+* Beim Hinzufügen von Personen zu einem Antrag im Backend wurde die Auswahlbox existierender Personen entfernt. Dafür gibt es nun die Möglichkeit, auch die Organisation und das Beschlussdatum anzugeben.
 
 2.6.6 - 2015-04-08
 ==================

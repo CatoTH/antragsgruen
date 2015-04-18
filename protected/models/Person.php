@@ -29,8 +29,8 @@ class Person extends GxActiveRecord
 	public static $TYP_ORGANISATION = 'organisation';
 	public static $TYP_PERSON = 'person';
 	public static $TYPEN = array(
-		'organisation' => "Organisation",
 		'person'       => "Natürliche Person",
+		'organisation' => "Organisation",
 	);
 
 	public static $STATUS_UNCONFIRMED = 1;
