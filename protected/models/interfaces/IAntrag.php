@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class IAntrag
+ * @property integer $id
+ * @property integer $status
+ */
 abstract class IAntrag extends GxActiveRecord
 {
 	public static $STATUS_GELOESCHT = -2;

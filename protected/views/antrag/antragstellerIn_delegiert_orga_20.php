@@ -68,6 +68,7 @@ $bin_mitglied = ($antragstellerIn->typ == Person::$TYP_PERSON && count($unterstu
 				$unter.find("input[type=text]").prop("required", false);
 			}
 		}).change();
+		/*
 		if ($andereAntragstellerIn.length > 0) $andereAntragstellerIn.change(function () {
 			if ($(this).prop("checked")) {
 				$(".antragstellerIn_daten input").each(function () {
@@ -82,5 +83,6 @@ $bin_mitglied = ($antragstellerIn->typ == Person::$TYP_PERSON && count($unterstu
 				});
 			}
 		});
+		*/
 	})
 </script>

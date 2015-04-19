@@ -710,8 +710,9 @@ class AntragController extends AntragsgruenController
 	/**
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
+	 * @param int $adoptInitiators
 	 */
-	public function actionNeu($veranstaltungsreihe_id = "", $veranstaltung_id)
+	public function actionNeu($veranstaltungsreihe_id = "", $veranstaltung_id, $adoptInitiators = 0)
 	{
 		$this->layout = '//layouts/column2';
 		/** @var Veranstaltung $veranstaltung */
@@ -799,12 +800,30 @@ class AntragController extends AntragsgruenController
 			$hiddens[AntiXSS::createToken("antragneu")] = "1";
 		}
 
-		if (Yii::app()->user->isGuest) {
+		if (Yii::app()->user->isGuest || $this->veranstaltung->isAdminCurUser()) {
 			$antragstellerIn      = new Person();
 			$antragstellerIn->typ = Person::$TYP_PERSON;
 		} else {
 			$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
 		}
+
+		if ($adoptInitiators > 0 && $this->veranstaltung->isAdminCurUser()) {
+			$templateMotion = $this->veranstaltung->getMotion($adoptInitiators);
+			if ($templateMotion) {
+				$model->typ = $templateMotion->typ;
+				foreach ($templateMotion->antragUnterstuetzerInnen as $unt) {
+					if ($unt->rolle == AntragUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+						$antragstellerIn = $unt->person;
+					}
+					if ($unt->rolle == AntragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) {
+						$unterstuetzerInnen[] = $unt->person;
+					}
+				}
+			}
+		}
+
+
+
 
 		$force_type = null;
 		if (isset($_REQUEST["typ"])) {

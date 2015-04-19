@@ -376,6 +376,33 @@ class IndexController extends AntragsgruenController
      */
     private function actionAntragslisteMotions()
     {
+        if (AntiXSS::isTokenSet('motion_screen')) {
+            $motion = $this->veranstaltung->getMotion(AntiXSS::getTokenVal('motion_screen'));
+            if (!$motion) {
+                return;
+            }
+            $motion->adminFreischalten();
+            Yii::app()->user->setFlash("success", "Der ausgewählte Antrag wurden freigeschaltet.");
+        }
+        if (AntiXSS::isTokenSet('motion_withdraw')) {
+            $motion = $this->veranstaltung->getMotion(AntiXSS::getTokenVal('motion_withdraw'));
+            if (!$motion) {
+                return;
+            }
+            $motion->status = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
+            $motion->save();
+            Yii::app()->user->setFlash("success", "Der ausgewählte Antrag wurden zurückgezogen.");
+        }
+        if (AntiXSS::isTokenSet('motion_delete')) {
+            $motion = $this->veranstaltung->getMotion(AntiXSS::getTokenVal('motion_delete'));
+            if (!$motion) {
+                return;
+            }
+            $motion->status = Antrag::$STATUS_GELOESCHT;
+            $motion->save();
+            Yii::app()->user->setFlash("success", "Der ausgewählte Antrag wurden gelöscht.");
+        }
+
         if (!isset($_POST['motions']) || !AntiXSS::isTokenSet('save')) {
             return;
         }
@@ -419,6 +446,32 @@ class IndexController extends AntragsgruenController
      */
     private function actionAntragslisteAmendments()
     {
+        if (AntiXSS::isTokenSet('amendment_screen')) {
+            $amendment = $this->veranstaltung->getAmendment(AntiXSS::getTokenVal('amendment_screen'));
+            if (!$amendment) {
+                return;
+            }
+            $amendment->adminFreischalten();
+            Yii::app()->user->setFlash("success", "Der ausgewählte Änderungsantrag wurden freigeschaltet.");
+        }
+        if (AntiXSS::isTokenSet('amendment_withdraw')) {
+            $amendment = $this->veranstaltung->getAmendment(AntiXSS::getTokenVal('amendment_withdraw'));
+            if (!$amendment) {
+                return;
+            }
+            $amendment->status = Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
+            $amendment->save();
+            Yii::app()->user->setFlash("success", "Der ausgewählte Änderungsantrag wurden zurückgezogen.");
+        }
+        if (AntiXSS::isTokenSet('amendment_delete')) {
+            $amendment = $this->veranstaltung->getAmendment(AntiXSS::getTokenVal('amendment_delete'));
+            if (!$amendment) {
+                return;
+            }
+            $amendment->status = Aenderungsantrag::$STATUS_GELOESCHT;
+            $amendment->save();
+            Yii::app()->user->setFlash("success", "Der ausgewählte Änderungsantrag wurden gelöscht.");
+        }
         if (!isset($_POST['amendments']) || !AntiXSS::isTokenSet('save')) {
             return;
         }
@@ -473,13 +526,10 @@ class IndexController extends AntragsgruenController
         if (isset($_REQUEST["Search"])) {
             $suche->setAttributes($_REQUEST["Search"]);
         }
-        $antraege           = $suche->getFilteredMotions();
-        $aenderungsantraege = $suche->getFilteredAmendments();
 
         $this->render('antragsliste', array(
+            'eintraege'          => $suche->getSorted(),
             'suche'              => $suche,
-            'antraege'           => $antraege,
-            'aenderungsantraege' => $aenderungsantraege,
         ));
     }
 

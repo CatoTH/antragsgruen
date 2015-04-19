@@ -2,6 +2,11 @@
 
 class AdminAntragFilterForm extends CFormModel
 {
+    const SORT_TYPE     = 0;
+    const SORT_STATUS   = 1;
+    const SORT_TITLE    = 2;
+    const SORT_REVISION = 3;
+
     /** @var int */
     public $status = null;
     public $tag    = null;
@@ -20,6 +25,9 @@ class AdminAntragFilterForm extends CFormModel
 
     /** @var string */
     public $titel = null;
+
+    /** @var int */
+    public $sort = 0;
 
     /**
      * @param Veranstaltung $veranstaltung
@@ -53,7 +61,7 @@ class AdminAntragFilterForm extends CFormModel
     public function rules()
     {
         return array(
-            array('status, tag', 'numerical'),
+            array('status, tag, sort', 'numerical'),
             array('status, tag, titel, antragstellerIn', 'safe'),
         );
     }
@@ -66,6 +74,90 @@ class AdminAntragFilterForm extends CFormModel
     {
         parent::setAttributes($values, $safeOnly);
         $this->status = (isset($values["status"]) && $values["status"] != "" ? IntVal($values["status"]) : null);
+    }
+
+    /**
+     * @param IAntrag $motion1
+     * @param IAntrag $motion2
+     * @return IAntrag[]
+     */
+    public function sortDefault($motion1, $motion2)
+    {
+        if (is_a($motion1, "Antrag") && is_a($motion2, "Aenderungsantrag")) {
+            return -1;
+        }
+        if (is_a($motion1, "Aenderungsantrag") && is_a($motion2, "Antrag")) {
+            return 1;
+        }
+        if ($motion1->id < $motion2->id) {
+            return -1;
+        }
+        if ($motion1->id > $motion2->id) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * @param IAntrag $motion1
+     * @param IAntrag $motion2
+     * @return IAntrag[]
+     */
+    public function sortStatus($motion1, $motion2)
+    {
+        if ($motion1->status < $motion2->status) {
+            return -1;
+        }
+        if ($motion1->status > $motion2->status) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * @param IAntrag $motion1
+     * @param IAntrag $motion2
+     * @return IAntrag[]
+     */
+    public function sortTitle($motion1, $motion2)
+    {
+        if (is_a($motion1, 'Antrag')) {
+            /** @var Antrag $motion1 */
+            $title1 = $motion1->name;
+        } else {
+            /** @var Aenderungsantrag $motion1 */
+            $title1 = $motion1->antrag->name;
+        }
+        if (is_a($motion2, 'Antrag')) {
+            /** @var Antrag $motion1 */
+            $title2 = $motion2->name;
+        } else {
+            /** @var Aenderungsantrag $motion2 */
+            $title2 = $motion2->antrag->name;
+        }
+        return strnatcasecmp($title1, $title2);
+    }
+
+    /**
+     * @return IAntrag[]
+     */
+    public function getSorted()
+    {
+        $merge = array_merge($this->getFilteredMotions(), $this->getFilteredAmendments());
+        switch ($this->sort) {
+            case static::SORT_TITLE:
+                usort($merge, ["AdminAntragFilterForm", "sortTitle"]);
+                break;
+            case static::SORT_STATUS:
+                usort($merge, ["AdminAntragFilterForm", "sortStatus"]);
+                break;
+            case static::SORT_REVISION:
+                break;
+            case static::SORT_TYPE:
+            default:
+                usort($merge, ["AdminAntragFilterForm", "sortDefault"]);
+        }
+        return $merge;
     }
 
     /**
@@ -175,7 +267,7 @@ class AdminAntragFilterForm extends CFormModel
         $str .= '<label style="float: left; margin-right: 20px;">Status:<br>';
         $str .= '<select name="Search[status]" size="1">';
         $str .= '<option value="">- egal -</option>';
-        $statusList = $this->getStatusList();
+        $statusList  = $this->getStatusList();
         $foundMyself = false;
         foreach ($statusList as $status_id => $status_name) {
             $str .= '<option value="' . $status_id . '" ';
@@ -217,7 +309,8 @@ class AdminAntragFilterForm extends CFormModel
         $str .= '<div style="display: inline-block;"><input id="antragstellerInSelect" class="typeahead" type="text" placeholder="AntragstellerIn"';
         $str .= 'name="Search[antragstellerIn]" value="' . CHtml::encode($this->antragstellerIn) . '" data-values="' . CHtml::encode(json_encode($values)) . '"></div>';
         $str .= '<script>$(function() {
-            var antragstellerInValues = $("#antragstellerInSelect").data("values"),
+            var $select = $("#antragstellerInSelect"),
+                antragstellerInValues = $select.data("values"),
             matcher = function findMatches(q, cb) {
                 var matches, substrRegex;
 
@@ -238,7 +331,7 @@ class AdminAntragFilterForm extends CFormModel
                 });
                 cb(matches);
             };
-            $("#antragstellerInSelect").typeahead({
+            $select.typeahead({
                 hint: true,
                 highlight: true,
                 minLength: 1
@@ -356,15 +449,17 @@ class AdminAntragFilterForm extends CFormModel
     /**
      * @param string $baseUrl
      * @param AntragsgruenController $controller
+     * @param array $add
      * @return string
      */
-    public function getCurrentUrl($baseUrl, $controller)
+    public function getCurrentUrl($baseUrl, $controller, $add = array())
     {
-        return $controller->createUrl($baseUrl, array(
+        return $controller->createUrl($baseUrl, array_merge(array(
             'Search[status]'          => $this->status,
             'Search[tag]'             => $this->tag,
             'Search[antragstellerIn]' => $this->antragstellerIn,
             'Search[titel]'           => $this->titel,
-        ));
+            'Search[sort]'            => $this->sort,
+        ), $add));
     }
 }
