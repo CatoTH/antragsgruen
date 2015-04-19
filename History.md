@@ -1,4 +1,4 @@
-2.6.7 - 2015-??-??
+2.7.0 - 2015-??-??
 ==================
 
 * Im Backend gibt es nun eine komplette Liste aller Anträge und Änderungsanträge.
@@ -59,7 +59,6 @@
 * Schlagworte eines Antrags werden nun beim Excel-Export in einer eigenen Spalte angezeigt.
 * Der Titel eines Antrags wird beim Excel-Export nun in einer eigenen Spalte angezeigt.
 
-
 2.5.3 - 2015-02-07
 ==================
 
@@ -71,7 +70,6 @@
 * Das Löschen von Anträgen im Admin-Backend funktionierte nicht
 * Update auf CKEditor 4.4.7
 
-
 2.5.1 - 2015-01-10
 ==================
 
@@ -82,8 +80,6 @@
   * veranstaltungsspezifisch_antrag_max_len: Verschiedene maximale Textlängen in einer Veranstaltung abhängig vom Antragstyp festlegen
   * veranstaltungsspezifisch_antrag_pdf_header: Aspekte des Antrags-PDF einstellen
   * veranstaltungsspezifisch_email_from_name: Den Absendername bei E-Mails einstellen
-
-
 
 2.5.0 - 2015-01-04
 ==================

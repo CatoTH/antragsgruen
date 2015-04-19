@@ -1,6 +1,6 @@
 <?php
 
-define("ANTRAGSGRUEN_VERSION", "2.6.6");
+define("ANTRAGSGRUEN_VERSION", "2.7.0");
 
 $url_rules = array(
     $domv . 'admin/'                                                                             => 'admin/index',

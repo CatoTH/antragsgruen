@@ -29,8 +29,8 @@ class AdminAntragFilterForm extends CFormModel
     public function __construct($veranstaltung, $alle_antraege, $aenderungsantraege)
     {
         parent::__construct();
-        $this->veranstaltung = $veranstaltung;
-        $this->alle_antraege = [];
+        $this->veranstaltung           = $veranstaltung;
+        $this->alle_antraege           = [];
         $this->alle_aenderungsantraege = [];
         foreach ($alle_antraege as $antrag) {
             if ($antrag->status != Antrag::$STATUS_GELOESCHT) {
@@ -62,7 +62,8 @@ class AdminAntragFilterForm extends CFormModel
      * @param array $values
      * @param bool $safeOnly
      */
-    public function setAttributes($values, $safeOnly = true) {
+    public function setAttributes($values, $safeOnly = true)
+    {
         parent::setAttributes($values, $safeOnly);
         $this->status = (isset($values["status"]) && $values["status"] != "" ? IntVal($values["status"]) : null);
     }
@@ -76,7 +77,7 @@ class AdminAntragFilterForm extends CFormModel
         foreach ($this->alle_antraege as $antrag) {
             $matches = true;
 
-            if ($this->status !== null && $this->status != "" && $antrag->status != $this->status) {
+            if ($this->status !== null && $this->status !== "" && $antrag->status != $this->status) {
                 $matches = false;
             }
 
@@ -116,7 +117,6 @@ class AdminAntragFilterForm extends CFormModel
     }
 
 
-
     /**
      * @return Aenderungsantrag[]
      */
@@ -126,7 +126,7 @@ class AdminAntragFilterForm extends CFormModel
         foreach ($this->alle_aenderungsantraege as $aend) {
             $matches = true;
 
-            if ($this->status !== null && $this->status != "" && $aend->status != $this->status) {
+            if ($this->status !== null && $this->status !== "" && $aend->status != $this->status) {
                 $matches = false;
             }
 
@@ -164,6 +164,7 @@ class AdminAntragFilterForm extends CFormModel
         }
         return $out;
     }
+
     /**
      * @return string
      */
@@ -175,12 +176,17 @@ class AdminAntragFilterForm extends CFormModel
         $str .= '<select name="Search[status]" size="1">';
         $str .= '<option value="">- egal -</option>';
         $statusList = $this->getStatusList();
+        $foundMyself = false;
         foreach ($statusList as $status_id => $status_name) {
             $str .= '<option value="' . $status_id . '" ';
             if ($this->status !== null && $this->status == $status_id) {
                 $str .= ' selected';
+                $foundMyself = true;
             }
             $str .= '>' . CHtml::encode($status_name) . '</option>';
+        }
+        if (!$foundMyself && $this->status !== null) {
+            $str .= '<option value="' . $this->status . '" selected>' . CHtml::encode(IAntrag::$STATI[$this->status]) . ' (0)</option>';
         }
         $str .= '</select></label>';
 
@@ -202,7 +208,7 @@ class AdminAntragFilterForm extends CFormModel
 
         $str .= '<label style="float: left; margin-right: 20px;">AntragstellerInnen:<br>';
 
-        $values = [];
+        $values                 = [];
         $antragstellerInnenList = $this->getAntragstellerInnenList();
         foreach ($antragstellerInnenList as $antragstellerInName => $antragstellerIn) {
             $values[] = $antragstellerInName;
@@ -345,5 +351,20 @@ class AdminAntragFilterForm extends CFormModel
         }
         asort($out);
         return $out;
+    }
+
+    /**
+     * @param string $baseUrl
+     * @param AntragsgruenController $controller
+     * @return string
+     */
+    public function getCurrentUrl($baseUrl, $controller)
+    {
+        return $controller->createUrl($baseUrl, array(
+            'Search[status]'          => $this->status,
+            'Search[tag]'             => $this->tag,
+            'Search[antragstellerIn]' => $this->antragstellerIn,
+            'Search[titel]'           => $this->titel,
+        ));
     }
 }

@@ -382,6 +382,30 @@ class Aenderungsantrag extends IAntrag
 	}
 
 	/**
+	 * @param string $revision
+	 */
+	public function adminFreischalten($revision = '')
+	{
+		if ($revision != '') {
+			$this->revision_name = $revision;
+		} elseif ($this->revision_name == '') {
+			$this->revision_name = $this->naechsteAenderungsRevNr();
+		}
+		if (in_array($this->status, array(IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT, IAntrag::$STATUS_UNBESTAETIGT))) {
+			$this->status = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
+		}
+		$this->save();
+		$this->antrag->veranstaltung->resetLineCache();
+
+		$benachrichtigt = array();
+		foreach ($this->antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) {
+			if ($abo->antraege && !in_array($abo->person_id, $benachrichtigt)) {
+				$abo->person->benachrichtigenAenderungsantrag($this);
+				$benachrichtigt[] = $abo->person_id;
+			}
+		}
+	}
+	/**
 	 * @return int
 	 */
 	public function getFirstDiffLine()

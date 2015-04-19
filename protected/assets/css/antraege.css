@@ -1221,9 +1221,9 @@ ins {
   display: inline-block;
   width: 40px; }
 
-.adminAntragsListe {
+.adminMotionTable {
   border: solid 1px gray; }
-  .adminAntragsListe th, .adminAntragsListe td {
+  .adminMotionTable th, .adminMotionTable td {
     padding: 5px;
     border: solid 1px gray; }
 

@@ -159,7 +159,7 @@ class Antrag extends IAntrag
 			'datum_einreichung'        => Yii::t('app', 'Datum Einreichung'),
 			'datum_beschluss'          => Yii::t('app', 'Datum Beschluss'),
 			'text'                     => Yii::t('app', 'Text'),
-            'text'                     => Yii::t('app', 'Text 2'),
+            'text2'                    => Yii::t('app', 'Text 2'),
 			'begruendung'              => Yii::t('app', 'Begründung'),
 			'begruendung_html'         => Yii::t('app', 'Begründung in HTML'),
 			'status'                   => Yii::t('app', 'Status'),
@@ -358,6 +358,31 @@ class Antrag extends IAntrag
 		if (strlen($this->revision_name) > 1 && !in_array($this->revision_name[strlen($this->revision_name) - 1], array(":", "."))) $name .= ":";
 		$name .= " " . $this->name;
 		return $name;
+	}
+
+	/**
+	 * @param string $revision
+	 */
+	public function adminFreischalten($revision = '')
+	{
+		if ($revision != '') {
+			$this->revision_name = $revision;
+		} elseif ($this->revision_name == '') {
+			$this->revision_name = $this->veranstaltung->naechsteAntragRevNr($this->typ);
+		}
+		if (in_array($this->status, array(IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT, IAntrag::$STATUS_UNBESTAETIGT))) {
+			$this->status = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
+		}
+		$this->save();
+		$this->veranstaltung->resetLineCache();
+
+		$benachrichtigt = array();
+		foreach ($this->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) {
+			if ($abo->antraege && !in_array($abo->person_id, $benachrichtigt)) {
+				$abo->person->benachrichtigenAntrag($this);
+				$benachrichtigt[] = $abo->person_id;
+			}
+		}
 	}
 
 	/**

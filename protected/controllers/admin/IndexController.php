@@ -372,6 +372,93 @@ class IndexController extends AntragsgruenController
     }
 
 
+    /**
+     */
+    private function actionAntragslisteMotions()
+    {
+        if (!isset($_POST['motions']) || !AntiXSS::isTokenSet('save')) {
+            return;
+        }
+        if (isset($_POST['screen'])) {
+            foreach ($_POST['motions'] as $motionId) {
+                $motion = $this->veranstaltung->getMotion($motionId);
+                if (!$motion) {
+                    continue;
+                }
+                $motion->adminFreischalten();
+            }
+            Yii::app()->user->setFlash("success", "Die ausgewählten Anträge wurden freigeschaltet.");
+        }
+
+        if (isset($_POST['withdraw'])) {
+            foreach ($_POST['motions'] as $motionId) {
+                $motion = $this->veranstaltung->getMotion($motionId);
+                if (!$motion) {
+                    continue;
+                }
+                $motion->status = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
+                $motion->save();
+            }
+            Yii::app()->user->setFlash("success", "Die ausgewählten Anträge wurden zurückgezogen.");
+        }
+
+        if (isset($_POST['delete'])) {
+            foreach ($_POST['motions'] as $motionId) {
+                $motion = $this->veranstaltung->getMotion($motionId);
+                if (!$motion) {
+                    continue;
+                }
+                $motion->status = Antrag::$STATUS_GELOESCHT;
+                $motion->save();
+            }
+            Yii::app()->user->setFlash("success", "Die ausgewählten Anträge wurden gelöscht.");
+        }
+    }
+
+    /**
+     */
+    private function actionAntragslisteAmendments()
+    {
+        if (!isset($_POST['amendments']) || !AntiXSS::isTokenSet('save')) {
+            return;
+        }
+        if (isset($_POST['screen'])) {
+            foreach ($_POST['amendments'] as $amendmentId) {
+                $amendment = $this->veranstaltung->getAmendment($amendmentId);
+                if (!$amendment) {
+                    continue;
+                }
+                $amendment->adminFreischalten();
+            }
+            Yii::app()->user->setFlash("success", "Die ausgewählten Anträge wurden freigeschaltet.");
+        }
+
+        if (isset($_POST['withdraw'])) {
+            foreach ($_POST['amendments'] as $amendmentId) {
+                $amendment = $this->veranstaltung->getAmendment($amendmentId);
+                if (!$amendment) {
+                    continue;
+                }
+                $amendment->status = Antrag::$STATUS_EINGEREICHT_UNGEPRUEFT;
+                $amendment->save();
+            }
+            Yii::app()->user->setFlash("success", "Die ausgewählten Anträge wurden zurückgezogen.");
+        }
+
+        if (isset($_POST['delete'])) {
+            foreach ($_POST['amendments'] as $amendmentId) {
+                $amendment = $this->veranstaltung->getAmendment($amendmentId);
+                if (!$amendment) {
+                    continue;
+                }
+                $amendment->status = Antrag::$STATUS_GELOESCHT;
+                $amendment->save();
+            }
+            Yii::app()->user->setFlash("success", "Die ausgewählten Anträge wurden gelöscht.");
+        }
+    }
+
+
     public function actionAntragsliste($veranstaltungsreihe_id = "", $veranstaltung_id = "")
     {
         $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
@@ -379,17 +466,20 @@ class IndexController extends AntragsgruenController
             $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
         }
 
+        $this->actionAntragslisteMotions();
+        $this->actionAntragslisteAmendments();
+
         $suche = new AdminAntragFilterForm($this->veranstaltung, $this->veranstaltung->antraege, true);
         if (isset($_REQUEST["Search"])) {
             $suche->setAttributes($_REQUEST["Search"]);
         }
-        $antraege = $suche->getFilteredMotions();
+        $antraege           = $suche->getFilteredMotions();
         $aenderungsantraege = $suche->getFilteredAmendments();
 
         $this->render('antragsliste', array(
-            'suche'                  => $suche,
-            'antraege'               => $antraege,
-            'aenderungsantraege'     => $aenderungsantraege,
+            'suche'              => $suche,
+            'antraege'           => $antraege,
+            'aenderungsantraege' => $aenderungsantraege,
         ));
     }
 

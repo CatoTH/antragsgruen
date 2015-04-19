@@ -33,21 +33,8 @@ class AntraegeController extends GxController
 
         if (AntiXSS::isTokenSet("antrag_freischalten")) {
             $newvar               = AntiXSS::getTokenVal("antrag_freischalten");
-            $model->revision_name = $newvar;
-            if ($model->status == IAntrag::$STATUS_EINGEREICHT_UNGEPRUEFT) {
-                $model->status = IAntrag::$STATUS_EINGEREICHT_GEPRUEFT;
-            }
-            $model->save();
-            $model->veranstaltung->resetLineCache();
+            $model->adminFreischalten($newvar);
             Yii::app()->user->setFlash("success", "Der Antrag wurde freigeschaltet.");
-
-            $benachrichtigt = array();
-            foreach ($model->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) {
-                if ($abo->antraege && !in_array($abo->person_id, $benachrichtigt)) {
-                    $abo->person->benachrichtigenAntrag($model);
-                    $benachrichtigt[] = $abo->person_id;
-                }
-            }
         }
 
         if (isset($_POST['Antrag'])) {

@@ -364,6 +364,36 @@ class Veranstaltung extends GxActiveRecord
     }
 
 	/**
+	 * @param int $motionId
+	 * @return Antrag|null
+	 */
+	public function getMotion($motionId) {
+		foreach ($this->antraege as $antrag) {
+			if ($antrag->id == $motionId && $antrag->status != Antrag::$STATUS_GELOESCHT) {
+				return $antrag;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param int $amendmentId
+	 * @return Aenderungsantrag|null
+	 */
+	public function getAmendment($amendmentId) {
+		foreach ($this->antraege as $antrag) {
+			if ($antrag->status != Antrag::$STATUS_GELOESCHT) {
+				foreach ($antrag->aenderungsantraege as $aenderungsantrag) {
+					if ($aenderungsantrag->status != Aenderungsantrag::$STATUS_GELOESCHT && $aenderungsantrag->id == $amendmentId) {
+						return $aenderungsantrag;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @var string $className
 	 * @return GxActiveRecord
 	 */
