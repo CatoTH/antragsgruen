@@ -32,6 +32,7 @@ $x     = 155;
 if ($aenderungsantrag->revision_name == "") {
 	$name = "Entwurf";
 	$pdf->SetFont("helvetica", "I", "25");
+	$width = $pdf->GetStringWidth($name, "helvetica", "I", "25") + 3.1;
 } else {
 	if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierung_global) {
 		$name = $aenderungsantrag->revision_name;
@@ -39,13 +40,16 @@ if ($aenderungsantrag->revision_name == "") {
 		$arev = $aenderungsantrag->antrag->revision_name;
 		if (stripos($aenderungsantrag->revision_name, $arev) === false) {
 			$name  = $aenderungsantrag->revision_name . " zu " . $arev;
-			$width = 45;
 			$x     = 147;
 		} else {
 			$name = $aenderungsantrag->revision_name;
 		}
 	}
 	$pdf->SetFont("helvetica", "B", "25");
+	$width = $pdf->GetStringWidth($name, "helvetica", "B", "25") + 3.1;
+}
+if ($width < 45) {
+	$width = 45;
 }
 
 $pdf->SetXY($x, 37, true);

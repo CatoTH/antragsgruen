@@ -43,10 +43,11 @@ if ($header) {
         if ($revision_name == "") {
             $revision_name = "Entwurf";
             $pdf->SetFont("helvetica", "I", "25");
+            $width = $pdf->GetStringWidth($revision_name, "helvetica", "I", "25") + 3.1;
         } else {
             $pdf->SetFont("helvetica", "B", "25");
+            $width = $pdf->GetStringWidth($revision_name, "helvetica", "B", "25") + 3.1;
         }
-        $width = strlen($revision_name) * 5.5;
         if ($width < 35) {
             $width = 35;
         }
