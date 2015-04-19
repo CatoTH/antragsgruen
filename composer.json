@@ -61,6 +61,12 @@
     "asset-installer-paths": {
       "npm-asset-library": "vendor/npm",
       "bower-asset-library": "web/js/bower"
-    }
+    },
+    "asset-repositories": [
+      {
+        "type": "bower-vcs",
+        "url": "https://github.com/RubaXa/Sortable"
+      }
+    ]
   }
 }

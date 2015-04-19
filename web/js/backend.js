@@ -10,10 +10,10 @@
         var $list = $('#sectionsList'),
             newCounter = 0;
 
-        Sortable.create($list[0], {
+        $list.data("sortable", Sortable.create($list[0], {
             handle: '.drag-handle',
             animation: 150
-        });
+        }));
         $list.on('click', 'a.remover', function (ev) {
             ev.preventDefault();
             var $sectionHolder = $(this).parents('li').first(),

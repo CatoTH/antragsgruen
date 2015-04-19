@@ -11,7 +11,7 @@ $controller = $this->context;
 $params     = $controller->layoutParams;
 
 $this->title = 'Administration';
-$params->breadcrumbs[] = 'Administration';
+$params->addBreadcrumb('Administration');
 
 
 use app\components\UrlHelper;
@@ -52,7 +52,7 @@ echo Html::a(
 echo '</li><li style="margin-top: 10px; font-weight: bold;">';
 echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'));
 echo '</li><li style="margin-left: 20px;">';
-echo Html::a('Abschnitte festlegen', UrlHelper::createUrl('admin/motion/sections'));
+echo Html::a('Abschnitte festlegen', UrlHelper::createUrl('admin/motion/sections'), ['class' => 'motionSections']);
 echo '</li><li style="margin-left: 20px;">';
 
 $motionp = $consultation->getMotionPolicy();

@@ -260,11 +260,11 @@ echo $controller->showErrors();
 echo '</div>';
 
 
-foreach ($motion->getSortedSections(true) as $section) {
+foreach ($motion->getSortedSections(true) as $i => $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    echo '<section class="motionTextHolder';
+    echo '<section class="motionTextHolder motionTextHolder' . $i;
     if ($motion->consultation->getSettings()->lineLength > 80) {
         echo " smallFont";
     }

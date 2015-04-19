@@ -8,12 +8,14 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var string $mode
+ * @var \app\controllers\Base $controller
  */
 
 $this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
 
-$params->addBreadcrumb($this->title);
-$params->addBreadcrumb('Bestätigen');
+$controller = $this->context;
+$controller->layoutParams->addBreadcrumb($this->title);
+$controller->layoutParams->addBreadcrumb('Bestätigen');
 
 
 echo '<h1>' . Yii::t('motion', 'Motion submitted') . '</h1>';
