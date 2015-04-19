@@ -129,13 +129,37 @@ class AdminAntragFilterForm extends CFormModel
             $title1 = $motion1->antrag->name;
         }
         if (is_a($motion2, 'Antrag')) {
-            /** @var Antrag $motion1 */
+            /** @var Antrag $motion2 */
             $title2 = $motion2->name;
         } else {
             /** @var Aenderungsantrag $motion2 */
             $title2 = $motion2->antrag->name;
         }
         return strnatcasecmp($title1, $title2);
+    }
+
+    /**
+     * @param IAntrag $motion1
+     * @param IAntrag $motion2
+     * @return IAntrag[]
+     */
+    public function sortRevision($motion1, $motion2)
+    {
+        if (is_a($motion1, 'Antrag')) {
+            /** @var Antrag $motion1 */
+            $rev1 = $motion1->revision_name;
+        } else {
+            /** @var Aenderungsantrag $motion1 */
+            $rev1 = $motion1->revision_name . ' zu ' . $motion1->antrag->revision_name;
+        }
+        if (is_a($motion2, 'Antrag')) {
+            /** @var Antrag $motion2 */
+            $rev2 = $motion1->revision_name;
+        } else {
+            /** @var Aenderungsantrag $motion2 */
+            $rev2 = $motion2->revision_name . ' zu ' . $motion2->antrag->revision_name;
+        }
+        return strnatcasecmp($rev1, $rev2);
     }
 
     /**
@@ -152,6 +176,7 @@ class AdminAntragFilterForm extends CFormModel
                 usort($merge, ["AdminAntragFilterForm", "sortStatus"]);
                 break;
             case static::SORT_REVISION:
+                usort($merge, ["AdminAntragFilterForm", "sortRevision"]);
                 break;
             case static::SORT_TYPE:
             default:
