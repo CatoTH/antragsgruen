@@ -72,10 +72,11 @@ class IPDFLayout
             if ($revName == "") {
                 $revName = 'Entwurf';
                 $pdf->SetFont("helvetica", "I", "25");
+                $width = $pdf->GetStringWidth($revName, "helvetica", "I", "25") + 3.1;
             } else {
                 $pdf->SetFont("helvetica", "B", "25");
+                $width = $pdf->GetStringWidth($revName, "helvetica", "B", "25") + 3.1;
             }
-            $width = strlen($revName) * 5.5;
             if ($width < 35) {
                 $width = 35;
             }
