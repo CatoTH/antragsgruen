@@ -132,6 +132,10 @@ if (!$minimalisticUi) {
     $x = array();
     foreach ($motion->getInitiators() as $supp) {
         $name  = $supp->getNameWithResolutionDate(true);
+        if ($supp->user && $supp->user->isWurzelwerkUser()) {
+            $url = 'https://wurzelwerk.gruene.de/web/' . $supp->user->getWurzelwerkName();
+            $name .= ' (<a href="' . Html::encode($url) . '">Wurzelwerk-Profil</a>)';
+        }
         $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
         if ($admin && ($supp->contactEmail != "" || $supp->contactPhone != "")) {
             $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
