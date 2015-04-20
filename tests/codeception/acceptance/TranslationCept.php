@@ -35,4 +35,3 @@ $I->submitForm('#translationForm', [], 'save');
 $I->see('Hilfe', '#helpLink');
 $I->dontSee('HelpMe', '#helpLink');
 $I->seeInField('input[placeholder=Hilfe]', '');
-

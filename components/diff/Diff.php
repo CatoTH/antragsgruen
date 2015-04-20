@@ -40,10 +40,11 @@ class Diff
      */
     private function wrapWithInsert($str)
     {
-        if (preg_match('/^<[^>]*>$/siu', $str)) {
+        if ($str == '') {
             return $str;
-        }
-        if ($str == static::ORIG_LINEBREAK) {
+        } elseif (preg_match('/^<[^>]*>$/siu', $str)) {
+            return $str;
+        } elseif ($str == static::ORIG_LINEBREAK) {
             return $str;
         }
         if (mb_stripos($str, '<ul>') === 0) {
@@ -65,10 +66,11 @@ class Diff
      */
     private function wrapWithDelete($str)
     {
-        if (preg_match('/^<[^>]*>$/siu', $str)) {
+        if ($str == '') {
+            return '';
+        } elseif (preg_match('/^<[^>]*>$/siu', $str)) {
             return $str;
-        }
-        if ($str == static::ORIG_LINEBREAK) {
+        } elseif ($str == static::ORIG_LINEBREAK) {
             return $str;
         }
         if (mb_stripos($str, '<ul>') === 0) {
@@ -90,8 +92,9 @@ class Diff
      */
     private function tokenizeLine($line)
     {
-        $line = preg_replace('/ /siu', "\n", $line);
-        $line = preg_replace('/(<[^>]*>)/siu', "\n$1\n", $line);
+        $line = str_replace(" ", " \n", $line);
+        $line = str_replace("<", "\n<", $line);
+        $line = str_replace(">", ">\n", $line);
         return $line;
     }
 
@@ -101,42 +104,104 @@ class Diff
      */
     private function untokenizeLine($line)
     {
-        $line = str_replace("\n", ' ', $line);
-        $line = preg_replace('/ (<[^>]*>) /siu', "$1", $line);
+        $line = str_replace("\n", '', $line);
         return $line;
     }
 
     /**
      * @param array $operations
+     * @param string $groupBy
      * @return array
      */
-    private function groupOperations($operations)
+    public function groupOperations($operations, $groupBy)
     {
         $return = [];
 
         $preOp        = null;
         $currentSpool = [];
         foreach ($operations as $operation) {
-            if ($operation[1] !== $preOp) {
+            if ($operation[0] == static::ORIG_LINEBREAK || preg_match('/^<[^>]*>$/siu', $operation[0])) {
                 if (count($currentSpool) > 0) {
                     $return[] = [
-                        implode(static::ORIG_LINEBREAK, $currentSpool),
+                        implode($groupBy, $currentSpool),
                         $preOp
                     ];
                 }
-                $preOp        = $operation[1];
-                $currentSpool = [$operation[0]];
+                $return[]     = [
+                    $operation[0],
+                    $operation[1],
+                ];
+                $preOp        = null;
+                $currentSpool = [];
+            } elseif ($operation[1] !== $preOp) {
+                if (count($currentSpool) > 0) {
+                    $return[] = [
+                        implode($groupBy, $currentSpool),
+                        $preOp
+                    ];
+                }
+                $preOp = $operation[1];
+                if ($operation[0] != '') {
+                    $currentSpool = [$operation[0]];
+                }
             } else {
                 $currentSpool[] = $operation[0];
             }
         }
         if (count($currentSpool) > 0) {
             $return[] = [
-                implode(static::ORIG_LINEBREAK, $currentSpool),
+                implode($groupBy, $currentSpool),
                 $preOp
             ];
         }
+
         return $return;
+    }
+
+    /**
+     * @param string $word1
+     * @param string $word2
+     * @return string
+     */
+    private function getCommonPrefix($word1, $word2)
+    {
+        $len1 = mb_strlen($word1);
+        $len2 = mb_strlen($word2);
+        $min  = min($len1, $len2);
+        $str  = '';
+        for ($i = 0; $i <= $min; $i++) {
+            $char1 = mb_substr($word1, $i, 1);
+            $char2 = mb_substr($word2, $i, 1);
+            if ($char1 != $char2) {
+                return $str;
+            } else {
+                $str .= $char1;
+            }
+        }
+        return $str;
+    }
+
+    /**
+     * @param string $word1
+     * @param string $word2
+     * @return string
+     */
+    private function getCommonSuffix($word1, $word2)
+    {
+        $len1 = mb_strlen($word1);
+        $len2 = mb_strlen($word2);
+        $min  = min($len1, $len2);
+        $str  = '';
+        for ($i = 0; $i <= $min; $i++) {
+            $char1 = mb_substr($word1, $len1 - $i, 1);
+            $char2 = mb_substr($word2, $len2 - $i, 1);
+            if ($char1 != $char2) {
+                return $str;
+            } else {
+                $str = $char1 . $str;
+            }
+        }
+        return $str;
     }
 
     /**
@@ -146,15 +211,15 @@ class Diff
      */
     private function computeWordDiff($wordDel, $wordInsert)
     {
-        $delLen = mb_strlen($wordDel);
-        $insLen = mb_strlen($wordInsert);
-        if ($insLen > $delLen && mb_substr($wordInsert, $insLen - $delLen, $delLen) == $wordDel) {
-            return $this->wrapWithInsert(mb_substr($wordInsert, 0, $insLen - $delLen)) . $wordDel;
-        }
-        if ($insLen > $delLen && mb_substr($wordInsert, 0, $delLen) == $wordDel) {
-            return $wordDel . $this->wrapWithInsert(mb_substr($wordInsert, $delLen));
-        }
-        return $this->wrapWithDelete($wordDel) . $this->wrapWithInsert($wordInsert);
+        $pre     = $this->getCommonPrefix($wordDel, $wordInsert);
+        $restDel = mb_substr($wordDel, mb_strlen($pre));
+        $restIns = mb_substr($wordInsert, mb_strlen($pre));
+
+        $post    = $this->getCommonSuffix($restDel, $restIns);
+        $restDel = mb_substr($restDel, 0, mb_strlen($restDel) - mb_strlen($post));
+        $restIns = mb_substr($restIns, 0, mb_strlen($restIns) - mb_strlen($post));
+
+        return $pre . $this->wrapWithDelete($restDel) . $this->wrapWithInsert($restIns) . $post;
     }
 
     /**
@@ -170,6 +235,7 @@ class Diff
         $lineNew      = $this->tokenizeLine($lineNew);
 
         $return = $this->engine->compare($lineOld, $lineNew);
+        $return = $this->groupOperations($return, '');
 
         for ($i = 0; $i < count($return); $i++) {
             if ($return[$i][1] == Engine::UNMODIFIED) {
@@ -179,10 +245,16 @@ class Diff
                     $computedStrs[] = $this->computeWordDiff($return[$i][0], $return[$i + 1][0]);
                     $i++;
                 } else {
-                    $computedStrs[] = $this->wrapWithDelete($return[$i][0]);
+                    $delParts = explode("\n", str_replace(" ", " \n", $return[$i][0]));
+                    foreach ($delParts as $delPart) {
+                        $computedStrs[] = $this->wrapWithDelete($delPart);
+                    }
                 }
             } elseif ($return[$i][1] == Engine::INSERTED) {
-                $computedStrs[] = $this->wrapWithInsert($return[$i][0]);
+                $insParts = explode("\n", str_replace(" ", " \n", $return[$i][0]));
+                foreach ($insParts as $insPart) {
+                    $computedStrs[] = $this->wrapWithInsert($insPart);
+                }
             } else {
                 throw new Internal('Unknown type: ' . $return[$i][1]);
             }
@@ -192,10 +264,16 @@ class Diff
             var_dump($computedStr);
         }
 
+        echo "\n\n---\n";
+        var_dump($computedStr);
+        echo "\n---\n";
+
 
         $combined = $this->untokenizeLine($computedStr);
         $combined = str_replace('</del> <del>', ' ', $combined);
+        $combined = str_replace('</del><del>', '', $combined);
         $combined = str_replace('</ins> <ins>', ' ', $combined);
+        $combined = str_replace('</ins><ins>', '', $combined);
 
         if ($this->debug) {
             var_dump($combined);
@@ -220,7 +298,7 @@ class Diff
             var_dump($return);
             echo "\n\n\n";
         }
-        $return = $this->groupOperations($return);
+        $return = $this->groupOperations($return, static::ORIG_LINEBREAK);
         for ($i = 0; $i < count($return); $i++) {
             if ($return[$i][1] == Engine::UNMODIFIED) {
                 $computedStr .= $return[$i][0] . "\n";
