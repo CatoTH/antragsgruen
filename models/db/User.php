@@ -304,6 +304,20 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
+    /**
+     * @return null|string
+     */
+    public function getWurzelwerkName()
+    {
+        if (preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches)) {
+            return $matches[1];
+        }
+        if (preg_match("/https:\/\/service\.gruene.de\/openid\/([a-z0-9_-]+)/siu", $this->auth, $matches)) {
+            return $matches[1];
+        }
+        return null;
+    }
+
 
     /**
      * @return bool
