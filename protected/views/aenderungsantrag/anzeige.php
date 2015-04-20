@@ -90,6 +90,9 @@ if ($aenderungsantrag->antrag->veranstaltung->getEinstellungen()->ae_nummerierun
 						$x = array();
 						foreach ($aenderungsantrag->aenderungsantragUnterstuetzerInnen as $unt) if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_INITIATORIN) {
 							$name= $unt->getNameMitBeschlussdatum(true);
+							if ($unt->person->istWurzelwerklerIn()) {
+								$name .= ' (<a href="https://wurzelwerk.gruene.de/web/' . CHtml::encode($unt->person->getWurzelwerkName()) . '">Wurzelwerk-Profil</a>)';
+							}
 							if ($aenderungsantrag->antrag->veranstaltung->isAdminCurUser() && ($unt->person->email != "" || $unt->person->telefon != "")) {
 								$name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
 								if ($unt->person->email != "") $name .=  "E-Mail: " . CHtml::encode($unt->person->email);
