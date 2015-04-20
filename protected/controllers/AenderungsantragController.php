@@ -15,16 +15,16 @@ class AenderungsantragController extends AntragsgruenController
 		/** @var Aenderungsantrag $aenderungsantrag */
 		$aenderungsantrag = Aenderungsantrag::model()->findByPk($aenderungsantrag_id);
 		if (is_null($aenderungsantrag) || $aenderungsantrag->status == IAntrag::$STATUS_GELOESCHT) {
-			Yii::app()->user->setFlash("error", "Der angegebene Änderungsantrag wurde nicht gefunden.");
-			$this->redirect($this->createUrl("veranstaltung/veranstaltung"));
+			$this->render("../veranstaltung/error", array("message" => "Der angegebene Änderungsantrag wurde nicht gefunden."));
+			Yii::app()->end(404);
 		}
 
 		$antrag_id = IntVal($antrag_id);
 		/** @var Antrag $antrag */
 		$antrag = Antrag::model()->findByPk($antrag_id);
 		if (is_null($antrag) || $antrag->status == IAntrag::$STATUS_GELOESCHT) {
-			Yii::app()->user->setFlash("error", "Der angegebene Antrag wurde nicht gefunden.");
-			$this->redirect($this->createUrl("veranstaltung/veranstaltung"));
+			$this->render("../veranstaltung/error", array("message" => "Der angegebene Antrag wurde nicht gefunden."));
+			Yii::app()->end(404);
 		}
 
 		$this->veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id, $antrag, $aenderungsantrag);
