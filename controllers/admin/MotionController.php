@@ -2,7 +2,9 @@
 
 namespace app\controllers\admin;
 
+use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\db\Motion;
 use app\models\exceptions\FormError;
 
 class MotionController extends AdminBase
@@ -87,5 +89,33 @@ class MotionController extends AdminBase
         }
 
         return $this->render('sections', ['consultation' => $this->consultation]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionIndex()
+    {
+        $motions = $this->consultation->motions;
+        return $this->render('index', ['motions' => $motions]);
+    }
+
+    /**
+     * @param int $motionId
+     * @return string
+     */
+    public function actionUpdate($motionId)
+    {
+        $motionId = IntVal($motionId);
+
+        /** @var Motion $motion */
+        $motion = Motion::findOne($motionId);
+        if (!$motion) {
+            $this->redirect(UrlHelper::createUrl("admin/motion/index"));
+        }
+
+        $this->checkConsistency($motion);
+
+        return $this->render('update', ['motion' => $motion]);
     }
 }

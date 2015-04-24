@@ -15,9 +15,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
-$this->title                                              = 'Antrags-Abschnitte';
-$params->breadcrumbs[UrlHelper::createUrl('admin/index')] = 'Administration';
-$params->breadcrumbs[]                                    = 'Abschnitte';
+$this->title = 'Antrags-Abschnitte';
+$params->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
+$params->addBreadcrumb('Abschnitte');
 $params->addCSS('/css/backend.css');
 $params->addJS('/js/bower/Sortable/Sortable.min.js');
 $params->addJS('/js/backend.js');
