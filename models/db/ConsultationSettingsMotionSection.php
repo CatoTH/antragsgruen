@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property int $position
  * @property int $status
  * @property string $title
+ * @property string $data
  * @property int $fixedWidth
  * @property int $maxLen
  * @property int $required

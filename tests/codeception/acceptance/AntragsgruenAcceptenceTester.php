@@ -1,6 +1,7 @@
 <?php
 
 // @codingStandardsIgnoreFile
+use tests\codeception\_pages\AdminIndexPage;
 use tests\codeception\_pages\ConsultationHomePage;
 use tests\codeception\_pages\MotionPage;
 
@@ -71,6 +72,22 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         if ($check) {
             $this->see('O’zapft is!', 'h1');
         }
+    }
+
+    /**
+     * @param bool $check
+     * @return AdminIndexPage
+     */
+    public function gotoStdAdminPage($check = true)
+    {
+        $page = AdminIndexPage::openBy(
+            $this,
+            [
+                'subdomain'        => 'stdparteitag',
+                'consultationPath' => 'std-parteitag',
+            ]
+        );
+        return $page;
     }
 
     /**

@@ -170,6 +170,7 @@ CREATE TABLE `consultationSettingsMotionSection` (
   `position`       SMALLINT(6)           DEFAULT NULL,
   `status`         TINYINT(4)   NOT NULL,
   `title`          VARCHAR(100) NOT NULL,
+  `data`           TEXT         NULL     DEFAULT NULL,
   `fixedWidth`     TINYINT(4)   NOT NULL,
   `required`       TINYINT(4)   NOT NULL,
   `maxLen`         INT(11)               DEFAULT NULL,
@@ -525,7 +526,7 @@ ADD PRIMARY KEY (`consultationId`, `userId`), ADD KEY `fk_consultationIdx` (`con
 -- Indexes for table `consultationText`
 --
 ALTER TABLE `consultationText`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultation_text_unique` (`category`,`textId`,`consultationId`), ADD KEY `fk_texts_consultationIdx` (`consultationId`);
+ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId`), ADD KEY `fk_texts_consultationIdx` (`consultationId`);
 
 --
 -- Indexes for table `emailLog`

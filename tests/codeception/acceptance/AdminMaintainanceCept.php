@@ -7,16 +7,13 @@
 $I = new AntragsgruenAcceptenceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('See the site with default settings');
-$I->gotoStdConsultationHome();
-
 $I->wantTo('Change the site into maintainance mode');
+$I->gotoStdConsultationHome();
 $I->loginAsStdAdmin();
-$I->click('#adminLink');
-$I->click('#consultationLink');
+$consultationPage = $I->gotoStdAdminPage()->gotoConsultation();
 
-$I->cantSeeCheckboxIsChecked('#maintainanceMode');
-$I->checkOption('#maintainanceMode');
+$I->cantSeeCheckboxIsChecked($consultationPage::$maintainanceCheckbox);
+$I->checkOption($consultationPage::$maintainanceCheckbox);
 $I->submitForm('#consultationSettingsForm', [], 'save');
 
 $I->wantTo('See the maintainance message');
@@ -36,12 +33,10 @@ $I->see('Wartungsmodus', 'h1');
 $I->wantTo('Deactivate the maintainance mode');
 $I->logout();
 $I->loginAsStdAdmin();
-$I->gotoStdConsultationHome();
-$I->click('#adminLink');
-$I->click('#consultationLink');
+$consultationPage = $I->gotoStdAdminPage()->gotoConsultation();
 
-$I->seeCheckboxIsChecked('#maintainanceMode');
-$I->uncheckOption('#maintainanceMode');
+$I->seeCheckboxIsChecked($consultationPage::$maintainanceCheckbox);
+$I->uncheckOption($consultationPage::$maintainanceCheckbox);
 $I->submitForm('#consultationSettingsForm', [], 'save');
 
 
