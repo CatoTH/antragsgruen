@@ -12,6 +12,9 @@ class AdminMotionSectionPage extends BasePage
 {
     public $route = 'admin/motion/sections';
 
+    public static $tabularLabel = 'Angaben';
+    public static $commentsLabel = 'Kommentare';
+
     /**
      * @return int[]
      */

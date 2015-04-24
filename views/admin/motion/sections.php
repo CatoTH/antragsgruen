@@ -35,7 +35,8 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     }
     $sectionName = 'sections[' . $sectionId . ']';
 
-    echo '<li data-id="' . $sectionId . '"><span class="drag-handle">&#9776;</span>';
+    echo '<li data-id="' . $sectionId . '" class="section' . $sectionId . '">';
+    echo '<span class="drag-handle">&#9776;</span>';
     echo '<div class="sectionContent">';
     echo '<div class="toprow">';
 
@@ -136,9 +137,10 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '<ul data-new-ids="' . $sectionName . '[tabular][new][]" data-placeholder="Angabe">';
     if ($section->type == ISectionType::TYPE_TABULAR) {
         $rows = \app\models\sectionTypes\TabularData::getTabularDataRowsFromData($section->data);
+        $i = 0;
         foreach ($rows as $rowId => $row) {
-            echo '<li>';
-            echo '<span class="drag-data-handle">☰</span>';
+            echo '<li class="no' . $i++ . '">';
+            echo '<span class="drag-data-handle">&#9776;</span>';
             echo '<input type="text" name="' . $sectionName . '[tabular][' . $rowId . ']" placeholder="Angabe"';
             echo ' value="' . Html::encode($row) . '" class="form-control">';
             echo '<a href="#" class="delRow glyphicon glyphicon-remove-circle"></a>';

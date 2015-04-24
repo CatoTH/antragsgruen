@@ -72,12 +72,15 @@
         $list.on('click', '.tabularDataRow .addRow', function (ev) {
             ev.preventDefault();
             var $this = $(this),
-                row = '<li><span class="drag-data-handle">☰</span><input type="text" value="" class="form-control">';
+                $ul = $this.parent().find("ul"),
+                row = '<li class="no' + $ul.children().length + '"><span class="drag-data-handle">&#9776;</span>';
+
+            row += '<input type="text" value="" class="form-control">';
             row += '<a class="delRow glyphicon glyphicon-remove-circle"></a></li>';
             var $row = $(row);
             $row.find('input[type=text]').attr('name', $this.parent().find('ul').data('new-ids'));
             $row.find('input[type=text]').attr('placeholder', $this.parent().find('ul').data('placeholder'));
-            $this.parent().find("ul").append($row);
+            $ul.append($row);
         });
 
         $list.on('click', '.tabularDataRow .delRow', function (ev) {

@@ -146,7 +146,7 @@ label.legend {
       display: none; }
     #sectionsList > li.textHtml .commentParagraph {
       display: none; }
-    #sectionsList > li.tabularData .commentrow {
+    #sectionsList > li.tabularData .commentRow {
       display: none; }
     #sectionsList > li.tabularData .lineNumbersLabel, #sectionsList > li.tabularData .fixedWidthLabel, #sectionsList > li.tabularData .lineLength {
       display: none; }
