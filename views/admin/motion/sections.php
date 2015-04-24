@@ -129,7 +129,27 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '</label>';
 
     echo '</div>'; // commAmendRow
-    echo '</div></div></li>';
+    echo '</div>'; // bottomRow
+
+    echo '<div class="tabularDataRow">';
+    echo '<legend>Angaben:</legend>';
+    echo '<ul data-new-ids="' . $sectionName . '[tabular][new][]" data-placeholder="Angabe">';
+    if ($section->type == ISectionType::TYPE_TABULAR) {
+        $rows = \app\models\sectionTypes\TabularData::getTabularDataRowsFromData($section->data);
+        foreach ($rows as $rowId => $row) {
+            echo '<li>';
+            echo '<span class="drag-data-handle">☰</span>';
+            echo '<input type="text" name="' . $sectionName . '[tabular][' . $rowId . ']" placeholder="Angabe"';
+            echo ' value="' . Html::encode($row) . '" class="form-control">';
+            echo '<a href="#" class="delRow glyphicon glyphicon-remove-circle"></a>';
+            echo '</li>';
+        }
+    }
+    echo '</ul>';
+    echo '<a href="#" class="addRow"><span class="glyphicon glyphicon-plus-sign"></span> Zeile hinzufügen</a>';
+    echo '</div>'; // tabularDataRow
+
+    echo '</div></li>';
 };
 
 

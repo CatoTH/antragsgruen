@@ -80,7 +80,7 @@ label.legend {
       width: 250px;
     }
 
-    .drag-handle {
+    > .drag-handle {
       font-size: 30px;
       float: left;
       display: block;
@@ -100,10 +100,10 @@ label.legend {
     }
 
     .sectionType {
-      margin-right: 10px;
       display: inline-block;
-      width: 150px;
+      width: 190px;
       vertical-align: top;
+      margin-right: 16px;
     }
     .toprow {
       padding: 10px 10px 0;
@@ -127,6 +127,12 @@ label.legend {
       height: 57px;
     }
 
+    .optionsRow {
+      > label {
+        display: block;
+      }
+    }
+
     .assignmentRow, .optionsRow, .commAmendRow {
       display: table-cell;
       padding: 10px;
@@ -142,6 +148,35 @@ label.legend {
     .commAmendRow {
       label {
         margin-bottom: 0;
+      }
+    }
+    .tabularDataRow {
+      display: none;
+      border-top: solid 1px #afa;
+      padding: 10px;
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        > li {
+          margin: 0;
+          padding: 5px;
+          > .drag-data-handle {
+            font-size: 16px;
+            font-weight: bold;
+            cursor: move;
+            padding: 0 10px 10px;
+          }
+          input.form-control {
+            display: inline-block;
+            width: 200px;
+          }
+        }
+      }
+      .addRow {
+        padding-left: 40px;
+        margin-top: 6px;
+        display: inline-block;
       }
     }
     .maxLenInput {
@@ -182,6 +217,17 @@ label.legend {
       }
       .commentParagraph {
         display: none;
+      }
+    }
+    &.tabularData {
+      .commentrow {
+        display: none;
+      }
+      .lineNumbersLabel, .fixedWidthLabel, .lineLength {
+        display: none;
+      }
+      .tabularDataRow {
+        display: block;
       }
     }
   }

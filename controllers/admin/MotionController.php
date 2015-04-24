@@ -6,6 +6,8 @@ use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\Motion;
 use app\models\exceptions\FormError;
+use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TabularData;
 
 class MotionController extends AdminBase
 {
@@ -28,25 +30,9 @@ class MotionController extends AdminBase
                     throw new FormError("Section not found: " . $sectionId);
                 }
             }
-            $section->setAttributes($data);
+            $section->setAdminAttributes($data);
+            $section->position = $position;
 
-            if ($data['motionType'] > 0) {
-                $motionType = IntVal($data['motionType']);
-                /** @var ConsultationSettingsMotionSection $section */
-                $section = $this->consultation->getMotionTypes()->andWhere('id = ' . $motionType)->one();
-                if (!$section) {
-                    throw new FormError("MotionType not found: " . $sectionId);
-                }
-                $section->motionTypeId = $motionType;
-            } else {
-                $section->motionTypeId = null;
-            }
-
-            $section->required      = (isset($data['required']) ? 1 : 0);
-            $section->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
-            $section->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
-            $section->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
-            $section->position      = $position;
             $section->save();
 
             $position++;

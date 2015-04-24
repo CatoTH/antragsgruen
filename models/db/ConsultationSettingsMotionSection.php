@@ -2,7 +2,9 @@
 
 namespace app\models\db;
 
+use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TabularData;
 use yii\db\ActiveRecord;
 
 /**
@@ -78,6 +80,38 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public function getMotionType()
     {
         return $this->hasOne(ConsultationSettingsMotionType::className(), ['id' => 'motionTypeId']);
+    }
+
+    /**
+     * @param array $data
+     * @throws FormError
+     */
+    public function setAdminAttributes($data)
+    {
+        $this->setAttributes($data);
+
+        if ($data['motionType'] > 0) {
+            $motionType = IntVal($data['motionType']);
+            /** @var ConsultationSettingsMotionSection $motionTypeObj */
+            $motionTypeObj = $this->consultation->getMotionTypes()->andWhere('id = ' . $motionType)->one();
+            if (!$motionTypeObj) {
+                throw new FormError("MotionType not found: " . $motionType);
+            }
+            $this->motionTypeId = $motionType;
+        } else {
+            $this->motionTypeId = null;
+        }
+
+        $this->required      = (isset($data['required']) ? 1 : 0);
+        $this->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
+        $this->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
+        $this->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
+
+        if ($this->type == ISectionType::TYPE_TABULAR) {
+            $this->data = TabularData::saveTabularDataSettingsFromPost($this->data, $data);
+        } else {
+            $this->data = null;
+        }
     }
 
     /**

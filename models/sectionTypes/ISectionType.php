@@ -14,6 +14,7 @@ abstract class ISectionType
     const TYPE_TEXT_SIMPLE = 1;
     const TYPE_TEXT_HTML   = 2;
     const TYPE_IMAGE       = 3;
+    const TYPE_TABULAR     = 4;
 
     /** @var IMotionSection */
     protected $section;
@@ -32,10 +33,11 @@ abstract class ISectionType
     public static function getTypes()
     {
         return [
-            static::TYPE_TITLE       => 'Titel',
-            static::TYPE_TEXT_SIMPLE => 'Text',
-            static::TYPE_TEXT_HTML   => 'Text (erweitert)',
-            static::TYPE_IMAGE       => 'Bild',
+            static::TYPE_TITLE       => \yii::t('structure', 'section_title'),
+            static::TYPE_TEXT_SIMPLE => \yii::t('structure', 'section_text'),
+            static::TYPE_TEXT_HTML   => \yii::t('structure', 'section_html'),
+            static::TYPE_IMAGE       => \yii::t('structure', 'section_image'),
+            static::TYPE_TABULAR     => \yii::t('structure', 'section_tabular'),
         ];
     }
 
