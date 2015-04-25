@@ -2,7 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\UrlHelper;
+use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use yii\helpers\Html;
 
@@ -15,11 +15,22 @@ class TabularData extends ISectionType
     public function getMotionFormField()
     {
         $type = $this->section->consultationSetting;
-        return '<fieldset class="form-group">
-            <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
-            <input type="file" class="form-control" id="sections_' . $type->id . '"' .
-        ' name="sections[' . $type->id . ']">
-        </fieldset>';
+        $str  = '<fieldset class="form-horizontal tabularData">';
+        $str .= '<div class="label">' . Html::encode($type->title) . '</div>';
+        $rows = static::getTabularDataRowsFromData($type->data);
+        foreach ($rows as $rowId => $rowName) {
+            $id = 'sections_' . $type->id . '_' . $rowId;
+            $str .= '<div class="form-group">';
+            $str .= '<label for="' . $id . '" class="col-md-3 control-label">' . Html::encode($rowName) . ':</label>';
+            $str .= '<div class="col-md-9"><input type="text" name="sections[' . $type->id . '][' . $rowId . ']"';
+            $str .= ' value=""';
+            if ($type->required) {
+                $str .= ' required';
+            }
+            $str .= ' id="' . $id . '" class="form-control"></div></div>';
+        }
+        $str .= '</table></fieldset>';
+        return $str;
     }
 
     /**
@@ -31,30 +42,18 @@ class TabularData extends ISectionType
     }
 
     /**
-     * @param string $data
+     * @param array $data
      * @throws FormError
      */
     public function setMotionData($data)
     {
-        if (!isset($data['tmp_name'])) {
-            throw new FormError('Invalid Image');
+        $dataOut = ['rows' => []];
+        if (is_array($data)) {
+            foreach ($data as $rowId => $rowData) {
+                $dataOut['rows'][$rowId] = $rowData;
+            }
         }
-        $mime = mime_content_type($data['tmp_name']);
-        if (!in_array($mime, ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'])) {
-            throw new FormError('Image type not supported. Supported formats are: JPEG, PNG and GIF.');
-        }
-        $imagedata = getimagesize($data['tmp_name']);
-        if (!$imagedata) {
-            throw new FormError('Could not read image.');
-        }
-        $metadata                = [
-            'width'    => $imagedata[0],
-            'height'   => $imagedata[1],
-            'filesize' => filesize($data['tmp_name']),
-            'mime'     => $mime
-        ];
-        $this->section->data     = base64_encode(file_get_contents($data['tmp_name']));
-        $this->section->metadata = json_encode($metadata);
+        $this->section->data = json_encode($dataOut);
     }
 
     /**
@@ -74,17 +73,20 @@ class TabularData extends ISectionType
         if ($this->isEmpty()) {
             return '';
         }
-
-        $type = $this->section->consultationSetting;
-        $url  = UrlHelper::createUrl(
-            [
-                'motion/viewimage',
-                'motionId'  => $this->section->motionId,
-                'sectionId' => $this->section->sectionId
-            ]
-        );
-        $str  = '<div style="text-align: center; padding: 10px;"><img src="' . Html::encode($url) . '" ';
-        $str .= 'alt="' . Html::encode($type->title) . '" style="max-height: 200px;"></div>';
+        $rows = static::getTabularDataRowsFromData($this->section->consultationSetting->data);
+        $data = json_decode($this->section->data, true);
+        $str = '<div class="content"><table class="tabularData table">';
+        foreach ($data['rows'] as $rowId => $rowData) {
+            if (!isset($rows[$rowId])) {
+                continue;
+            }
+            $str .= '<tr><th class="col-md-3">';
+            $str .= Html::encode($rows[$rowId]) . ':';
+            $str .= '</th><td class="col-md-9">';
+            $str .= Html::encode($rowData);
+            $str .= '</td></tr>';
+        }
+        $str .= '</table></div>';
         return $str;
     }
 
@@ -93,7 +95,11 @@ class TabularData extends ISectionType
      */
     public function isEmpty()
     {
-        return ($this->section->data == '');
+        if ($this->section->data == '') {
+            return true;
+        }
+        $data = json_decode($this->section->data, true);
+        return !(isset($data['rows']) && count($data['rows']) > 0);
     }
 
     /**
@@ -101,7 +107,30 @@ class TabularData extends ISectionType
      */
     public function printToPDF(\TCPDF $pdf)
     {
-        // @TODO
+        if ($this->isEmpty()) {
+            return;
+        }
+
+        $pdf->SetFont("helvetica", "", 12);
+        $pdf->writeHTML("<h3>" . $this->section->consultationSetting->title . "</h3>");
+
+        $pdf->SetFont("Courier", "", 11);
+        $pdf->Ln(7);
+
+        $rows = static::getTabularDataRowsFromData($this->section->consultationSetting->data);
+        $data = json_decode($this->section->data, true);
+
+        foreach ($data['rows'] as $rowId => $rowData) {
+            if (!isset($rows[$rowId])) {
+                continue;
+            }
+            $y = $pdf->getY();
+            $text1 = '<strong>' . Html::encode($rows[$rowId]) . ':</strong>';
+            $text2 = Html::encode($rowData);
+            $pdf->writeHTMLCell(45, '', 25, $y, $text1, 0, 0, 0, true, '', true);
+            $pdf->writeHTMLCell(111, '', 75, '', $text2, 0, 1, 0, true, '', true);
+            $pdf->Ln(7);
+        }
     }
 
     /**
@@ -140,7 +169,7 @@ class TabularData extends ISectionType
                     'rows'     => []
                 ];
             } else {
-                $newData = $preData;
+                $newData         = $preData;
                 $newData['rows'] = [];
             }
         }

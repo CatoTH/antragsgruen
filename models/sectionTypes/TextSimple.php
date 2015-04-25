@@ -72,6 +72,9 @@ class TextSimple extends ISectionType
         /** @var MotionSection $section */
         $section = $this->section;
 
+        $pdf->SetFont("helvetica", "", 12);
+        $pdf->writeHTML("<h3>" . $this->section->consultationSetting->title . "</h3>");
+
         $lineLength = $section->consultationSetting->consultation->getSettings()->lineLength;
         $linenr     = $section->getFirstLineNo();
         $textSize   = ($lineLength > 70 ? 10 : 11);

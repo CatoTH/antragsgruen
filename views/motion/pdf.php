@@ -31,7 +31,7 @@ $pdf->AddPage();
 $pdfLayout->printMotionHeader($motion);
 
 
-foreach ($motion->getSortedSections() as $section) {
+foreach ($motion->getSortedSections(true) as $section) {
     $section->getSectionType()->printToPDF($pdf);
 }
 

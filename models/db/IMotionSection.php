@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\Image;
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TabularData;
 use app\models\sectionTypes\TextHTML;
 use app\models\sectionTypes\TextSimple;
 use app\models\sectionTypes\Title;
@@ -35,6 +36,8 @@ class IMotionSection extends ActiveRecord
                 return new TextSimple($this);
             case ISectionType::TYPE_IMAGE:
                 return new Image($this);
+            case ISectionType::TYPE_TABULAR:
+                return new TabularData($this);
         }
         throw new Internal('Unknown Field Type: ' . $this->consultationSetting->type);
     }

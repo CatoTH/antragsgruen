@@ -63,6 +63,7 @@ class Title extends ISectionType
     {
         $pdf->SetFont("helvetica", "", 12);
         $pdf->writeHTML("<h3>" . $this->section->data . "</h3>");
+        $pdf->Ln(5);
     }
 
     /**

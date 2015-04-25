@@ -97,10 +97,39 @@ class Image extends ISectionType
     }
 
     /**
+     * @param float $width
+     * @param float $height
+     * @param float $maxX
+     * @param float $maxY
+     * @return float[]
+     */
+    private function scaleSize($width, $height, $maxX, $maxY)
+    {
+        $scaleX = $maxX / $width;
+        $scaleY = $maxY / $height;
+        $scale  = ($scaleX < $scaleY ? $scaleX : $scaleY);
+        return [$scale * $width, $scale * $height];
+    }
+
+    /**
      * @param \TCPDF $pdf
      */
     public function printToPDF(\TCPDF $pdf)
     {
-        // @TODO
+        if ($this->isEmpty()) {
+            return;
+        }
+
+        $pdf->SetFont("helvetica", "", 12);
+        $pdf->writeHTML("<h3>" . $this->section->consultationSetting->title . "</h3>");
+
+        $pdf->SetFont("Courier", "", 11);
+        $pdf->Ln(7);
+
+        $metadata = json_decode($this->section->metadata, true);
+        $size     = $this->scaleSize($metadata['width'], $metadata['height'], 80, 60);
+        $img      = '@' . base64_decode($this->section->data);
+        $pdf->Image($img, '', '', $size[0], $size[1], 'JPEG', '', '', true, 300, 'C');
+        $pdf->Ln($size[1] + 7);
     }
 }

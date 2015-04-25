@@ -20,9 +20,18 @@ $controller->layoutParams->addBreadcrumb('Bestätigen');
 
 echo '<h1>' . Yii::t('motion', 'Motion submitted') . '</h1>';
 
-// @TODO
-//echo $text = $antrag->veranstaltung->getStandardtext("antrag_eingereicht")->getHTMLText();
+echo '<div class="content">';
+echo '<div class="alert alert-success" role="alert">';
+if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
+    echo \Yii::t('motion', 'motion_confirmed_visible');
+}
+if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+    echo \Yii::t('motion', 'motion_confirmed_screening');
+}
+echo '</div>';
+
 
 echo Html::beginForm(UrlHelper::createUrl('consultation/index'), 'post', ['id' => 'motionConfirmedForm']);
-echo '<p><button type="submit" class="btn btn-success">Zurück zur Startseite</button></p>';
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">Zurück zur Startseite</button></p>';
 echo Html::endForm();
+echo '</div>';

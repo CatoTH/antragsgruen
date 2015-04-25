@@ -70,6 +70,9 @@ class TextHTML extends ISectionType
      */
     public function printToPDF(\TCPDF $pdf)
     {
+        $pdf->SetFont("helvetica", "", 12);
+        $pdf->writeHTML("<h3>" . $this->section->consultationSetting->title . "</h3>");
+
         $html = $this->section->data;
         // Some umlaut characters with unusual UTF-8-encoding (0x61CC88 for "ü")
         // are not shown correctly in PDF => convert them to the normal encoding
