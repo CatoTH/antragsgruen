@@ -8,7 +8,8 @@ class SitePresets
 {
     /** @var ISitePreset[] */
     public static $PRESETS = array(
-        0 => "\\app\\models\\sitePresets\\Parteitag"
+        0 => \app\models\sitePresets\Parteitag::class,
+        1 => \app\models\sitePresets\Bewerbungsverfahren::class,
     );
 
     /**

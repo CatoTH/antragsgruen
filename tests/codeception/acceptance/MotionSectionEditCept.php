@@ -74,19 +74,19 @@ $motionSectionsPage->saveForm();
 
 $I->wantTo('check if the changes to tabular data section were saved');
 
-$I->seeElement('.section6');
-$I->seeInField('.section6 .sectionTitle input', 'Some tabular data');
-$I->seeInField('.section6 .tabularDataRow ul li.no1 input', 'Testrow 3');
+$I->seeElement('.section10');
+$I->seeInField('.section10 .sectionTitle input', 'Some tabular data');
+$I->seeInField('.section10 .tabularDataRow ul li.no1 input', 'Testrow 3');
 
 
 
 $I->wantTo('change the tabular data afterwards');
 
-$I->fillField('.section6 .sectionTitle input', 'My life');
-$I->fillField('.section6 .tabularDataRow ul li.no1 input', 'Birth year');
+$I->fillField('.section10 .sectionTitle input', 'My life');
+$I->fillField('.section10 .tabularDataRow ul li.no1 input', 'Birth year');
 
 $motionSectionsPage->saveForm();
 
-$I->seeElement('.section6');
-$I->seeInField('.section6 .sectionTitle input', 'My life');
-$I->seeInField('.section6 .tabularDataRow ul li.no1 input', 'Birth year');
+$I->seeElement('.section10');
+$I->seeInField('.section10 .sectionTitle input', 'My life');
+$I->seeInField('.section10 .tabularDataRow ul li.no1 input', 'Birth year');

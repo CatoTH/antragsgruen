@@ -19,6 +19,11 @@ interface ISitePreset
     public static function getDescription();
 
     /**
+     * @return array
+     */
+    public static function getDetailDefaults();
+
+    /**
      * @param Consultation $consultation
      */
     public static function setConsultationSettings(Consultation $consultation);

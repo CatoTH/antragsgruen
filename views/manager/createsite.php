@@ -38,7 +38,7 @@ echo '<div id="SiteCreateWizard" class="wizard">
                 </li>
             </ul>
         </div>
-        <div class="content step-content">
+        <div class="content">
             <div class="step-pane active" id="step1">';
 if (count($errors) > 0) {
     echo '<div class="alert alert-danger" role="alert">
@@ -48,7 +48,8 @@ if (count($errors) > 0) {
 }
 
 foreach (\app\models\sitePresets\SitePresets::$PRESETS as $preset_id => $preset) {
-    echo '<label class="sitePreset">';
+    $defaults = json_encode($preset::getDetailDefaults());
+    echo '<label class="sitePreset" data-defaults="' . Html::encode($defaults) . '">';
     echo Html::radio('SiteCreateForm[preset]', ($model->preset == $preset_id), ['value' => $preset_id]);
     echo '<span>' . Html::encode($preset::getTitle()) . '</span>';
     echo '</label><div class="sitePresetInfo">';
@@ -85,17 +86,17 @@ echo '<div class="labelSubInfo">Für die Subdomain sind nur Buchstaben, Zahlen, 
 echo '<br><br>';
 
 echo '<label class="policy">';
-echo Html::checkbox('SiteCreateForm[hasComments]', $model->hasComments);
+echo Html::checkbox('SiteCreateForm[hasComments]', $model->hasComments, ['class' => 'hasComments']);
 echo 'BenutzerInnen können (Änderungs-)Anträge kommentieren
 </label>';
 
 echo '<label class="policy">';
-echo Html::checkbox('SiteCreateForm[hasAmendments]', $model->hasAmendments);
+echo Html::checkbox('SiteCreateForm[hasAmendments]', $model->hasAmendments, ['class' => 'hasAmendments']);
 echo 'BenutzerInnen können Änderungsanträge stellen
 </label>';
 
 echo '<label class="policy">';
-echo Html::checkbox('SiteCreateForm[openNow]', $model->openNow);
+echo Html::checkbox('SiteCreateForm[openNow]', $model->openNow, ['class' => 'openNow']);
 echo 'Die neue Antragsgrün-Instanz soll sofort aufrufbar sein<br>
     <div class="labelSubInfo">(ansonsten: erst, wenn du exlizit den Wartungsmodus abschaltest)</div>
 </label>
@@ -127,7 +128,7 @@ echo '
 ';
 foreach (\app\models\settings\Site::getPaysValues() as $payId => $payName) {
     echo '<div class="radio"><label>';
-    $checked = $model->isWillingToPay === $payId;
+    $checked = ($model->isWillingToPay !== null && $model->isWillingToPay == $payId);
     echo Html::radio('SiteCreateForm[isWillingToPay]', $checked, ['value' => $payId, 'required' => 'required']);
     echo Html::encode($payName);
     echo '</label></div>';

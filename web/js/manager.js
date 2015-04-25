@@ -5,44 +5,55 @@
 (function ($) {
     "use strict";
     var createInstance = function () {
-        var $steps = $("#AnlegenWizard").find("li"),
-            $step2 = $("#step2"),
-            $step3 = $("#step3");
+        var $steps = $('#AnlegenWizard').find('li'),
+            $step1 = $('#step1'),
+            $step2 = $('#step2'),
+            $step3 = $('#step3');
         $step2.hide();
         $step3.hide();
-        $("#next-1").click(function (ev) {
+        $('#next-1').click(function (ev) {
             ev.preventDefault();
-            $("#step1").hide();
+            $step1.hide();
             $step2.show();
-            $steps.eq(0).removeClass("active");
-            $steps.eq(1).addClass("active");
+            $steps.eq(0).removeClass('active');
+            $steps.eq(1).addClass('active');
         });
-        $("#next-2").click(function (ev) {
+        $('#next-2').click(function (ev) {
             ev.preventDefault();
-            if ($step2.find(".name input").val() === "") {
-                $step2.find(".name .alert").show();
-                $step2.find(".name input").focus();
+            if ($step2.find('.name input').val() === '') {
+                $step2.find('.name .alert').show();
+                $step2.find('.name input').focus();
                 return;
             }
-            if ($step2.find(".url input").val() === "") {
-                $step2.find(".url .alert").show();
-                $step2.find(".url input").focus();
+            if ($step2.find('.url input').val() === '') {
+                $step2.find('.url .alert').show();
+                $step2.find('.url input').focus();
                 return;
             }
             $step2.hide();
             $step3.show();
-            $steps.eq(1).removeClass("active");
-            $steps.eq(2).addClass("active");
+            $steps.eq(1).removeClass('active');
+            $steps.eq(2).addClass('active');
         });
-        $("#subdomain").on("blur", function () {
+        $('#subdomain').on('blur', function () {
             if ($(this).val().match(/[^a-zA-Z0-9_\-]/)) {
-                alert("Bei der Subdomain sind nur Zahlen, Buchstaben, Unter- und Mittelstrich möglich.");
+                alert('Bei der Subdomain sind nur Zahlen, Buchstaben, Unter- und Mittelstrich möglich.');
                 $(this).focus();
             }
         });
-        $step3.find("button[type=submit]").click(function (ev) {
+        $step3.find('button[type=submit]').click(function (ev) {
             console.log(ev);
         });
+        $step1.find('.sitePreset input').change(function () {
+            var $this = $(this);
+            if (!$this.prop('checked')) {
+                return;
+            }
+            var defaults = $this.parents('label').first().data("defaults");
+            $step2.find(".hasComments").prop('checked', defaults['comments']);
+            $step2.find(".hasAmendments").prop('checked', defaults['amendments']);
+            $step2.find(".openNow").prop('checked', defaults['openNow']);
+        }).change();
     };
 
     $.SiteManager = {
