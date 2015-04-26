@@ -1,7 +1,6 @@
 <?php
 namespace app\components\diff;
 
-
 use app\models\db\AmendmentSection;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;

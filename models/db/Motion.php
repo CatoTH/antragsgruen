@@ -270,7 +270,8 @@ class Motion extends IMotion
     /**
      * @return int
      */
-    public function getFirstLineNo() {
+    public function getFirstLineNo()
+    {
         return 1; // @TODO
     }
 

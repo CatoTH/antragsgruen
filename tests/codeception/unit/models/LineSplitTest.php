@@ -28,7 +28,7 @@ class LineSplitTest extends TestCase
                 ];
 
                 $splitter = new LineSplitter($in, 80);
-                $out      = $splitter->splitLines(false);
+                $out      = $splitter->splitLines();
 
                 $this->assertEquals($expect, $out);
             }
@@ -45,7 +45,7 @@ class LineSplitTest extends TestCase
                 ];
 
                 $splitter = new LineSplitter($in, 80);
-                $out      = $splitter->splitLines(false);
+                $out      = $splitter->splitLines();
 
                 $this->assertEquals($expect, $out);
             }
@@ -64,7 +64,7 @@ class LineSplitTest extends TestCase
                 ];
 
                 $splitter = new LineSplitter($in, 80);
-                $out      = $splitter->splitLines(false);
+                $out      = $splitter->splitLines();
 
                 $this->assertEquals($expect, $out);
             }
@@ -81,7 +81,7 @@ class LineSplitTest extends TestCase
                 ];
 
                 $splitter = new LineSplitter($in, 80);
-                $out      = $splitter->splitLines(false);
+                $out      = $splitter->splitLines();
 
                 $this->assertEquals($expect, $out);
             }
@@ -101,7 +101,7 @@ class LineSplitTest extends TestCase
                 ];
 
                 $splitter = new LineSplitter($in, 80);
-                $out      = $splitter->splitLines(false);
+                $out      = $splitter->splitLines();
 
                 $this->assertEquals($expect, $out);
             }

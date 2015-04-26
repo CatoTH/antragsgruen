@@ -12,7 +12,6 @@ class TCPDFWithFooter extends \TCPDF
 
     /**
      * @param IPDFLayout $layout
-     * @param IWording $wording
      */
     public function __construct(IPDFLayout $layout)
     {
@@ -20,8 +19,8 @@ class TCPDFWithFooter extends \TCPDF
         parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     }
 
+    // @codingStandardsIgnoreStart
     /**
-     *
      */
     public function Footer()
     {
@@ -45,4 +44,5 @@ class TCPDFWithFooter extends \TCPDF
             'M'
         );
     }
+    // @codingStandardsIgnoreEnd
 }

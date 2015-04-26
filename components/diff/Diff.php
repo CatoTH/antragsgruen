@@ -13,6 +13,8 @@ class Diff
     /** @var Engine */
     private $engine;
 
+    /**
+     */
     public function __construct()
     {
         $this->engine = new Engine();

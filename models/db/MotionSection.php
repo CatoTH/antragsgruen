@@ -92,7 +92,7 @@ class MotionSection extends IMotionSection
             $lineLength -= 6;
         }
         $splitter = new LineSplitter($para, $lineLength);
-        $linesIn  = $splitter->splitLines(false);
+        $linesIn  = $splitter->splitLines();
 
         if ($lineNumbers) {
             $linesOut = [];
