@@ -373,11 +373,15 @@ class AntragsgruenController extends CController
 		$user->save();
 
 		if (trim($email) != "") {
+			$username = $email;
+			if ($user->istWurzelwerklerIn()) {
+				$username = $user->getWurzelwerkName();
+			}
 			$user->refresh();
 			$send_text = "Hallo!\n\nDein Zugang bei Antragsgrün wurde eben eingerichtet.\n\n" .
-				"Du kannst dich mit folgenden Daten einloggen:\nBenutzerInnenname: $email\nPasswort: %passwort%\n\n" .
+				"Du kannst dich mit folgenden Daten einloggen:\nBenutzerInnenname: $username\nPasswort: %passwort%\n\n" .
 				"Das Passwort kannst du hier ändern:\n" .
-				yii::app()->getBaseUrl(true) . yii::app()->createUrl("infos/passwort") . "\n\n" .
+				yii::app()->getBaseUrl(true) . "/passwort" . "\n\n" .
 				"Außerdem ist auch weiterhin ein Login über deinen Wurzelwerk-Zugang möglich.\n\n" .
 				"Liebe Grüße,\n  Das Antragsgrün-Team";
 			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $user->id, "Dein Antragsgrün-Zugang", $send_text, null, null, null, array(

@@ -173,6 +173,10 @@ class InfosController extends AntragsgruenController
 		$this->performLogin($this->createUrl("veranstaltung/passwort"));
 
 		$user = Yii::app()->getUser();
+		if ($user->isGuest) {
+			$this->redirect($this->createUrl("infos/login", array("back" => yii::app()->getRequest()->requestUri)));
+		}
+
 		/** @var PErson $ich */
 		$ich = Person::model()->findByAttributes(array("auth" => $user->id));
 

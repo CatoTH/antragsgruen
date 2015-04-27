@@ -32,7 +32,7 @@ if ($msg_err != "") {
 		<?php /** @var CActiveForm $form */
 		$form = $this->beginWidget('CActiveForm');
 
-		if ($this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
+		if ($this->veranstaltungsreihe && $this->veranstaltungsreihe->getEinstellungen()->antrag_neu_nur_namespaced_accounts) {
 			echo '<div class="alert alert-info">';
 			echo veranstaltungsspezifisch_hinweis_namespaced_accounts($this->veranstaltung, '<strong>Hinweis:</strong> wenn du berechtigt bist, (Änderungs-)Anträge einzustellen, solltest du die Zugangsdaten per E-Mail erhalten haben.<br>
 		Falls du keine bekommen haben solltest, melde dich bitte bei den Organisatoren dieses Parteitags / dieser Programmdiskussion.');
