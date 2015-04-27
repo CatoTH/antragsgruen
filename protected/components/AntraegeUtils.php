@@ -45,8 +45,9 @@ class AntraegeUtils
 	 * @param string $text
 	 * @param string $mail_from_email
 	 * @param string $mail_from_name
+	 * @param string|null $mail_reply_to
 	 */
-	public static function send_email_mandrill($mail_typ, $mail_to_email, $mail_to_person_id = null, $betreff, $text, $mail_from_email, $mail_from_name)
+	public static function send_email_mandrill($mail_typ, $mail_to_email, $mail_to_person_id = null, $betreff, $text, $mail_from_email, $mail_from_name, $mail_reply_to)
 	{
 		$mandrill = new Mandrill(MANDRILL_API_KEY);
 
@@ -54,6 +55,9 @@ class AntraegeUtils
 
 		$headers = array();
 		$headers['Auto-Submitted'] = 'auto-generated';
+		if ($mail_reply_to) {
+			$headers["Reply-To"] = $mail_reply_to;
+		}
 
 		$message = array(
 			'html'              => null,
@@ -78,17 +82,18 @@ class AntraegeUtils
 		$mandrill->messages->send($message, false);
 	}
 
-	/**
-	 * @param int $mail_typ
-	 * @param string $mail_to_email
-	 * @param null|int $mail_to_person_id
-	 * @param string $betreff
-	 * @param string $text
-	 * @param null|string $mail_from_name
-	 * @param null|string $mail_from_email
-	 * @param null|array $no_log_replaces
-	 */
-	public static function send_mail_log($mail_typ, $mail_to_email, $mail_to_person_id = null, $betreff, $text, $mail_from_name = null, $mail_from_email = null, $no_log_replaces = null)
+    /**
+     * @param int $mail_typ
+     * @param string $mail_to_email
+     * @param null|int $mail_to_person_id
+     * @param string $betreff
+     * @param string $text
+     * @param null|string $mail_from_name
+     * @param null|string $mail_from_email
+     * @param null|string $mail_reply_to
+     * @param null|array $no_log_replaces
+     */
+	public static function send_mail_log($mail_typ, $mail_to_email, $mail_to_person_id = null, $betreff, $text, $mail_from_name = null, $mail_from_email = null, $mail_reply_to = null, $no_log_replaces = null)
 	{
 		$send_text      = ($no_log_replaces ? str_replace(array_keys($no_log_replaces), array_values($no_log_replaces), $text) : $text);
 
@@ -97,7 +102,7 @@ class AntraegeUtils
 		$send_mail_from = mb_encode_mimeheader($mail_from_name) . ' <' . $mail_from_email . '>';
 
 		if (defined("MANDRILL_API_KEY") && MANDRILL_API_KEY != "") {
-			static::send_email_mandrill($mail_typ, $mail_to_email, $mail_to_person_id, $betreff, $send_text, $mail_from_email, $mail_from_name);
+			static::send_email_mandrill($mail_typ, $mail_to_email, $mail_to_person_id, $betreff, $send_text, $mail_from_email, $mail_from_name, $mail_reply_to);
 		} else {
 			mb_send_mail($mail_to_email, $betreff, $send_text, "From: " . $send_mail_from);
 		}

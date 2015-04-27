@@ -300,7 +300,7 @@ class AntragsgruenController extends CController
 			$send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n%best_link%\n\n"
 				. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
 				. "Liebe Grüße,\n\tDas Antragsgrün-Team.";
-			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $username, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, null, array(
+			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $username, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, null, null, array(
 				"%code%"      => $best_code,
 				"%best_link%" => $link,
 			));
@@ -380,7 +380,7 @@ class AntragsgruenController extends CController
 				yii::app()->getBaseUrl(true) . yii::app()->createUrl("infos/passwort") . "\n\n" .
 				"Außerdem ist auch weiterhin ein Login über deinen Wurzelwerk-Zugang möglich.\n\n" .
 				"Liebe Grüße,\n  Das Antragsgrün-Team";
-			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $user->id, "Dein Antragsgrün-Zugang", $send_text, null, null, array(
+			AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $user->id, "Dein Antragsgrün-Zugang", $send_text, null, null, null, array(
 				"%passwort%" => $password,
 			));
 		}
@@ -554,7 +554,7 @@ class AntragsgruenController extends CController
 					. "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
 					. "Das Passwort für den Antragsgrün-Zugang lautet: %passwort%\n\n"
 					. "Liebe Grüße,\n\tDas Antragsgrün-Team.";
-				AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, null, array(
+				AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_REGISTRIERUNG, $email, $person->id, "Anmeldung bei Antragsgrün", $send_text, null, null, null, array(
 					"%code%"      => $best_code,
 					"%best_link%" => $link,
 					"%passwort%"  => $passwort,

@@ -84,7 +84,8 @@ class IndexController extends AntragsgruenController
                             $person_id = null;
 
                             $from_name = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
-                            AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_NAMESPACED_ACCOUNT_ANGELEGT, $email, $person_id, "Antragsgrün-Zugang", $mail_text, $from_name, null, array(
+                            $reply_to = veranstaltungsspezifisch_email_reply_to($this->veranstaltung);
+                            AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_NAMESPACED_ACCOUNT_ANGELEGT, $email, $person_id, "Antragsgrün-Zugang", $mail_text, $from_name, null, $reply_to, array(
                                 "%PASSWORT%" => $password
                             ));
 

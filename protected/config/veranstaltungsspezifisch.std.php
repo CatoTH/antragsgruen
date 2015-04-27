@@ -122,6 +122,18 @@ if (!function_exists("veranstaltungsspezifisch_email_from_name")) {
 
 
 
+if (!function_exists("veranstaltungsspezifisch_email_reply_to")) {
+	/**
+	 * @param Veranstaltung|null $veranstaltung
+	 * @return string|null
+	 */
+	function veranstaltungsspezifisch_email_reply_to($veranstaltung = null)
+	{
+		return null;
+	}
+}
+
+
 if (!function_exists("veranstaltungsspezifisch_text2_name")) {
     /**
      * @param Veranstaltung|null $veranstaltung
