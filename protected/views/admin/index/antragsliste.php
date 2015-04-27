@@ -125,6 +125,7 @@ foreach ($eintraege as $eintrag) {
         } else {
             $dropdowns["Freischalten zurücknehmen"] = $suche->getCurrentUrl('/admin/index/antragsliste', $this, [AntiXSS::createToken('amendment_withdraw') => $eintrag->id]);
         }
+        $dropdowns["Neuer Änderungsantrag auf dieser Basis"] = $this->createUrl('/aenderungsantrag/neu', array('antrag_id' => $eintrag->antrag_id, 'adoptInitiators' => $eintrag->id));
         echo '<td><div class="btn-group">
   <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
     Aktion

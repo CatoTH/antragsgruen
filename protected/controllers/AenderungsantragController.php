@@ -461,8 +461,9 @@ class AenderungsantragController extends AntragsgruenController
 	 * @param string $veranstaltungsreihe_id
 	 * @param string $veranstaltung_id
 	 * @param int $antrag_id
+	 * @param int $adoptInitiators
 	 */
-	public function actionNeu($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id)
+	public function actionNeu($veranstaltungsreihe_id = "", $veranstaltung_id, $antrag_id, $adoptInitiators = 0)
 	{
 		$this->layout = '//layouts/column2';
 
@@ -579,8 +580,26 @@ class AenderungsantragController extends AntragsgruenController
 			$this->redirect($this->createUrl("aenderungsantrag/neuConfirm", array("antrag_id" => $antrag_id, "aenderungsantrag_id" => $aenderungsantrag->id)));
 
 		} else {
-			$antragstellerIn = (Yii::app()->user->isGuest ? null : Person::model()->findByAttributes(array("auth" => Yii::app()->user->id)));
-			if ($antragstellerIn === null) $antragstellerIn = new Person();
+			if (Yii::app()->user->isGuest || $this->veranstaltung->isAdminCurUser()) {
+				$antragstellerIn      = new Person();
+				$antragstellerIn->typ = Person::$TYP_PERSON;
+			} else {
+				$antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+			}
+
+			if ($adoptInitiators > 0 && $this->veranstaltung->isAdminCurUser()) {
+				$templateAmendment = $this->veranstaltung->getAmendment($adoptInitiators);
+				if ($templateAmendment) {
+					foreach ($templateAmendment->aenderungsantragUnterstuetzerInnen as $unt) {
+						if ($unt->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_INITIATORIN) {
+							$antragstellerIn = $unt->person;
+						}
+						if ($unt->rolle == AenderungsantragUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) {
+							$unterstuetzerInnen[] = $unt->person;
+						}
+					}
+				}
+			}
 
 			$aenderungsantrag->name_neu = $antrag->name;
 
