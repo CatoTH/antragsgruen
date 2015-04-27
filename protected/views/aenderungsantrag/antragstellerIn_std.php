@@ -9,6 +9,7 @@
  * @var bool $js_protection
  * @var Sprache $sprache
  * @var Person $antragstellerIn
+ * @var Person[] $unterstuetzerInnen
  * @var Veranstaltung $veranstaltung
  */
 
@@ -21,10 +22,15 @@ if ($mode == "neu") {
     ?>
 
 
-	<div class="control-group" id="UnterstuetzerInnen" style="display: none;">
+	<div class="control-group" id="UnterstuetzerInnen" style="display: <?=(count($unterstuetzerInnen) > 0 ? "block" : "none")?>;">
 		<label class="control-label">UnterstützerInnen</label>
 
-		<div class="controls"></div>
+		<div class="controls">
+			<?php foreach ($unterstuetzerInnen as $nr => $u) {
+				?>
+				<input type="text" name="UnterstuetzerInnen_name[]" value="<?=CHtml::encode($u->name)?>" placeholder="Name" title="Name der UnterstützerInnen"><br>
+			<?php } ?>
+		</div>
 	</div>
 
 	<div style="padding-left: 162px; margin-top: -15px; margin-bottom: 20px;">

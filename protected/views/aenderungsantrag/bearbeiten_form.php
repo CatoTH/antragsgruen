@@ -9,6 +9,7 @@
  * @var bool $js_protection
  * @var Sprache $sprache
  * @var Person $antragstellerIn
+ * @var array $unterstuetzerInnen
  */
 
 /** @var CWebApplication $app */
@@ -133,15 +134,16 @@ if ($js_protection) {
 <?php
 
 $this->renderPartial($antrag->veranstaltung->getPolicyAenderungsantraege()->getAntragstellerInView(), array(
-	"form"             => $form,
-	"mode"             => $mode,
-	"antrag"           => $antrag,
-	"aenderungsantrag" => $aenderungsantrag,
-	"antragstellerIn"  => $antragstellerIn,
-	"hiddens"          => $hiddens,
-	"js_protection"    => $js_protection,
-	"sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),
-	"veranstaltung"    => $antrag->veranstaltung,
+	"form"               => $form,
+	"mode"               => $mode,
+	"antrag"             => $antrag,
+	"aenderungsantrag"   => $aenderungsantrag,
+	"antragstellerIn"    => $antragstellerIn,
+	"unterstuetzerInnen" => $unterstuetzerInnen,
+	"hiddens"            => $hiddens,
+	"js_protection"      => $js_protection,
+	"sprache"            => $aenderungsantrag->antrag->veranstaltung->getSprache(),
+	"veranstaltung"      => $antrag->veranstaltung,
 ));
 
 $ajax_link = $this->createUrl("aenderungsantrag/ajaxCalcDiff");
