@@ -60,6 +60,38 @@ class Tools
     }
 
     /**
+     * @param string $date
+     * @param string $locale
+     * @return string
+     */
+    public static function dateSql2bootstrapdate($date, $locale)
+    {
+        if ($locale == 'de') {
+            $pattern = '/^(?<year>\\d{4})\-(?<month>\\d{2})\-(?<day>\\d{2})$/';
+            if (preg_match($pattern, $date, $matches)) {
+                return $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'];
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @param string $date
+     * @param string $locale
+     * @return string
+     */
+    public static function dateBootstrapdate2sql($date, $locale)
+    {
+        if ($locale == 'de') {
+            $pattern = '/^(?<day>\\d{2})\.(?<month>\\d{2})\.(?<year>\\d{4})$/';
+            if (preg_match($pattern, $date, $matches)) {
+                return $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
+            }
+        }
+        return '';
+    }
+
+    /**
      * @param string $time
      * @param string $locale
      * @return string

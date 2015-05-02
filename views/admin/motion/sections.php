@@ -4,6 +4,7 @@ use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TabularDataType;
 use yii\helpers\Html;
 
 /**
@@ -132,23 +133,49 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '</div>'; // commAmendRow
     echo '</div>'; // bottomRow
 
+    /**
+     * @param TabularDataType $row
+     * @param int $i
+     * @param string $sectionName
+     * @return string
+     */
+    $dataRowFormatter = function (TabularDataType $row, $i, $sectionName) {
+        $str = '<li class="no' . $i . '">';
+        $str .= '<span class="drag-data-handle">&#9776;</span>';
+        $str .= '<input type="text" name="' . $sectionName . '[tabular][' . $row->rowId . '][title]"';
+        $str .= ' placeholder="Angabe" value="' . Html::encode($row->title) . '" class="form-control">';
+        $str .= '<select name="' . $sectionName . '[tabular][' . $row->rowId . '][type]" class="form-control">';
+        foreach (TabularDataType::getDataTypes() as $dataId => $dataName) {
+            $str .= '<option value="' . $dataId . '"';
+            if ($row->type == $dataId) {
+                $str .= ' selected';
+            }
+            $str .= '>' . Html::encode($dataName) . '</option>';
+        }
+        $str .= '</select>';
+        $str .= '<a href="#" class="delRow glyphicon glyphicon-remove-circle"></a>';
+        $str .= '</li>';
+        return $str;
+    };
+
+
     echo '<div class="tabularDataRow">';
     echo '<legend>Angaben:</legend>';
-    echo '<ul data-new-ids="' . $sectionName . '[tabular][new][]" data-placeholder="Angabe">';
+    echo '<ul>';
     if ($section->type == ISectionType::TYPE_TABULAR) {
         $rows = \app\models\sectionTypes\TabularData::getTabularDataRowsFromData($section->data);
-        $i = 0;
+        $i    = 0;
+
         foreach ($rows as $rowId => $row) {
-            echo '<li class="no' . $i++ . '">';
-            echo '<span class="drag-data-handle">&#9776;</span>';
-            echo '<input type="text" name="' . $sectionName . '[tabular][' . $rowId . ']" placeholder="Angabe"';
-            echo ' value="' . Html::encode($row) . '" class="form-control">';
-            echo '<a href="#" class="delRow glyphicon glyphicon-remove-circle"></a>';
-            echo '</li>';
+            echo $dataRowFormatter($row, $i++, $sectionName);
         }
     }
     echo '</ul>';
-    echo '<a href="#" class="addRow"><span class="glyphicon glyphicon-plus-sign"></span> Zeile hinzufügen</a>';
+
+    $newRow = new TabularDataType(['rowId' => '#NEW#', 'type' => TabularDataType::TYPE_STRING, 'title' => '']);
+    $template = $dataRowFormatter($newRow, 0, $sectionName);
+    echo '<a href="#" class="addRow" data-template="' . Html::encode($template) . '">';
+    echo '<span class="glyphicon glyphicon-plus-sign"></span> Zeile hinzufügen</a>';
     echo '</div>'; // tabularDataRow
 
     echo '</div></li>';

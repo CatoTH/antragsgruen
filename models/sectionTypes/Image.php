@@ -15,9 +15,10 @@ class Image extends ISectionType
     public function getMotionFormField()
     {
         $type = $this->section->consultationSetting;
+        $required = ($type->required ? ' required' : '');
         return '<fieldset class="form-group">
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
-            <input type="file" class="form-control" id="sections_' . $type->id . '"' .
+            <input type="file" class="form-control" id="sections_' . $type->id . '"' . $required .
         ' name="sections[' . $type->id . ']">
         </fieldset>';
     }

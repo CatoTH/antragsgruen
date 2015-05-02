@@ -2,7 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\models\db\MotionSection;
+use app\components\Tools;
 use app\models\exceptions\FormError;
 use yii\helpers\Html;
 
@@ -15,19 +15,46 @@ class TabularData extends ISectionType
     public function getMotionFormField()
     {
         $type = $this->section->consultationSetting;
+        $locale = Tools::getCurrentDateLocale();
+        $rows = static::getTabularDataRowsFromData($type->data);
+        $data = json_decode($this->section->data, true);
+
         $str  = '<fieldset class="form-horizontal tabularData">';
         $str .= '<div class="label">' . Html::encode($type->title) . '</div>';
-        $rows = static::getTabularDataRowsFromData($type->data);
-        foreach ($rows as $rowId => $rowName) {
-            $id = 'sections_' . $type->id . '_' . $rowId;
+
+        foreach ($rows as $row) {
+            $id = 'sections_' . $type->id . '_' . $row->rowId;
             $str .= '<div class="form-group">';
-            $str .= '<label for="' . $id . '" class="col-md-3 control-label">' . Html::encode($rowName) . ':</label>';
-            $str .= '<div class="col-md-9"><input type="text" name="sections[' . $type->id . '][' . $rowId . ']"';
-            $str .= ' value=""';
-            if ($type->required) {
-                $str .= ' required';
+            $str .= '<label for="' . $id . '" class="col-md-3 control-label">';
+            $str .= Html::encode($row->title) . ':</label>';
+            $str .= '<div class="col-md-9">';
+            $nameId = 'name="sections[' . $type->id . '][' . $row->rowId . ']" id="' . $id . '"';
+            $dat = (isset($data['rows'][$row->rowId]) ? $data['rows'][$row->rowId] : '');
+            switch ($row->type) {
+                case TabularDataType::TYPE_STRING:
+                    $str .= '<input type="text" ' . $nameId . ' value="' . Html::encode($dat) . '"';
+                    if ($type->required) {
+                        $str .= ' required';
+                    }
+                    $str .= ' class="form-control">';
+                    break;
+                case TabularDataType::TYPE_INTEGER:
+                    $str .= '<input type="number" ' . $nameId . ' value="' . Html::encode($dat) . '"';
+                    if ($type->required) {
+                        $str .= ' required';
+                    }
+                    $str .= ' class="form-control">';
+                    break;
+                case TabularDataType::TYPE_DATE:
+                    $date = ($dat ? Tools::dateSql2bootstrapdate($dat, $locale) : '');
+                    $str .= '<div class="input-group date">
+                        <input type="text" class="form-control" ' . $nameId . ' value="' . Html::encode($date) . '" ';
+                    $str .= 'data-locale="' . Html::encode($locale) . '">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                      </div>';
+                    break;
             }
-            $str .= ' id="' . $id . '" class="form-control"></div></div>';
+            $str .= '</div></div>';
         }
         $str .= '</table></fieldset>';
         return $str;
@@ -47,12 +74,29 @@ class TabularData extends ISectionType
      */
     public function setMotionData($data)
     {
+        $type = $this->section->consultationSetting;
+        $rows = static::getTabularDataRowsFromData($type->data);
+        $locale = Tools::getCurrentDateLocale();
         $dataOut = ['rows' => []];
-        if (is_array($data)) {
-            foreach ($data as $rowId => $rowData) {
-                $dataOut['rows'][$rowId] = $rowData;
+
+        foreach ($rows as $row) {
+            if (!isset($data[$row->rowId])) {
+                continue;
+            }
+            $dat = $data[$row->rowId];
+            switch ($row->type) {
+                case TabularDataType::TYPE_STRING:
+                    $dataOut['rows'][$row->rowId] = $dat;
+                    break;
+                case TabularDataType::TYPE_INTEGER:
+                    $dataOut['rows'][$row->rowId] = IntVal($dat);
+                    break;
+                case TabularDataType::TYPE_DATE:
+                    $dataOut['rows'][$row->rowId] = Tools::dateBootstrapdate2sql($dat, $locale);
+                    break;
             }
         }
+
         $this->section->data = json_encode($dataOut);
     }
 
@@ -75,13 +119,13 @@ class TabularData extends ISectionType
         }
         $rows = static::getTabularDataRowsFromData($this->section->consultationSetting->data);
         $data = json_decode($this->section->data, true);
-        $str = '<div class="content"><table class="tabularData table">';
+        $str  = '<div class="content"><table class="tabularData table">';
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
                 continue;
             }
             $str .= '<tr><th class="col-md-3">';
-            $str .= Html::encode($rows[$rowId]) . ':';
+            $str .= Html::encode($rows[$rowId]->title) . ':';
             $str .= '</th><td class="col-md-9">';
             $str .= Html::encode($rowData);
             $str .= '</td></tr>';
@@ -124,7 +168,7 @@ class TabularData extends ISectionType
             if (!isset($rows[$rowId])) {
                 continue;
             }
-            $y = $pdf->getY();
+            $y     = $pdf->getY();
             $text1 = '<strong>' . Html::encode($rows[$rowId]) . ':</strong>';
             $text2 = Html::encode($rowData);
             $pdf->writeHTMLCell(45, '', 25, $y, $text1, 0, 0, 0, true, '', true);
@@ -135,7 +179,7 @@ class TabularData extends ISectionType
 
     /**
      * @param string|null $data
-     * @return string[]
+     * @return TabularDataType[]
      */
     public static function getTabularDataRowsFromData($data)
     {
@@ -146,7 +190,11 @@ class TabularData extends ISectionType
         if (!$data || !isset($data['rows'])) {
             return [];
         }
-        return $data['rows'];
+        $rows = [];
+        foreach ($data['rows'] as $row) {
+            $rows[$row['rowId']] = new TabularDataType($row);
+        }
+        return $rows;
     }
 
     /**
@@ -175,23 +223,17 @@ class TabularData extends ISectionType
         }
         if (isset($post['tabular'])) {
             foreach ($post['tabular'] as $key => $val) {
+                if (mb_substr($key, 0, 3) === 'new') {
+                    $key = ++$newData['maxRowId'];
+                }
                 if (!is_numeric($key)) {
                     continue;
                 }
-                if (trim($val) != '') {
-                    if ($key > $newData['maxRowId']) {
-                        $newData['maxRowId'] = $key;
-                    }
-                    $newData['rows'][$key] = $val;
+                if ($key > $newData['maxRowId']) {
+                    $newData['maxRowId'] = $key;
                 }
-            }
-            if (isset($post['tabular']['new'])) {
-                foreach ($post['tabular']['new'] as $val) {
-                    if (trim($val) != '') {
-                        $newData['maxRowId']++;
-                        $newData['rows'][$newData['maxRowId']] = $val;
-                    }
-                }
+                $val['rowId']          = $key;
+                $newData['rows'][$key] = new TabularDataType($val);
             }
         } else {
             $newData['rows'] = [];

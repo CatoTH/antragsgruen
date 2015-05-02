@@ -25,6 +25,7 @@ $icon-font-path: "/fonts/";
 
 // Components
 @import "bootstrap-3.3.4-sass/bootstrap/input-groups";
+@import "bootstrap-3.3.4-sass/bootstrap/dropdowns";
 @import "bootstrap-3.3.4-sass/bootstrap/navs";
 @import "bootstrap-3.3.4-sass/bootstrap/navbar";
 @import "bootstrap-3.3.4-sass/bootstrap/alerts";
@@ -96,7 +97,7 @@ a {
 
   .content {
     padding: 15px 20px 30px;
-    overflow: auto;
+    overflow: visible; // Wg. Datetimepicker, der über den Rand hinausgeht
   }
   .alert {
     margin-top: 20px;

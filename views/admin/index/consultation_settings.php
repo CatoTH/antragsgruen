@@ -15,6 +15,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
+$layout->addJS('/js/backend.js');
 $layout->addCSS('/css/backend.css');
 $layout->addJS('/js/bower/moment/min/moment-with-locales.min.js');
 $layout->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
@@ -197,7 +198,7 @@ echo 'Angabe der <strong>Telefonnummer</strong> erzwingen
             <small>(Bei Anträgen und Änderungsanträgen)</small>
     </label></fieldset>';
 
-$layout->addOnLoadJS('$.Antragsgruen.consultationEditForm();');
+$layout->addOnLoadJS('$.AntragsgruenAdmin.consultationEditForm();');
 
 
 echo '</div>

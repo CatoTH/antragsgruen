@@ -6,6 +6,23 @@
 (function ($) {
     "use strict";
 
+    var consultationEditForm = function () {
+        var lang = $('html').attr('lang');
+
+        $("#antrag_neu_kann_telefon").change(function () {
+            if ($(this).prop("checked")) $("#antrag_neu_braucht_telefon_holder").show();
+            else $("#antrag_neu_braucht_telefon_holder").hide();
+        }).trigger("change");
+
+        $('#deadlineAmendmentsHolder').datetimepicker({
+            locale: lang
+        });
+        $('#deadlineMotionsHolder').datetimepicker({
+            locale: lang
+        });
+    };
+
+
     var sectionsEdit = function () {
         var $list = $('#sectionsList'),
             newCounter = 0;
@@ -69,18 +86,15 @@
             }));
         });
 
+        var dataNewCounter = 0;
         $list.on('click', '.tabularDataRow .addRow', function (ev) {
             ev.preventDefault();
             var $this = $(this),
                 $ul = $this.parent().find("ul"),
-                row = '<li class="no' + $ul.children().length + '"><span class="drag-data-handle">&#9776;</span>';
-
-            row += '<input type="text" value="" class="form-control">';
-            row += '<a class="delRow glyphicon glyphicon-remove-circle"></a></li>';
-            var $row = $(row);
-            $row.find('input[type=text]').attr('name', $this.parent().find('ul').data('new-ids'));
-            $row.find('input[type=text]').attr('placeholder', $this.parent().find('ul').data('placeholder'));
+                $row = $($this.data('template').replace(/#NEW#/g, 'new' + dataNewCounter++));
+            $row.removeClass('no0').addClass('no' + $ul.children().length);
             $ul.append($row);
+            $row.find('input').focus();
         });
 
         $list.on('click', '.tabularDataRow .delRow', function (ev) {
@@ -91,7 +105,7 @@
             $(this).parents("li").first().remove();
         });
 
-        $list.find('.tabularDataRow ul').each(function() {
+        $list.find('.tabularDataRow ul').each(function () {
             var $this = $(this);
             $this.data("sortable", Sortable.create(this, {
                 handle: '.drag-data-handle',
@@ -102,6 +116,7 @@
     };
 
     $.AntragsgruenAdmin = {
+        "consultationEditForm": consultationEditForm,
         "sectionsEdit": sectionsEdit
     };
 

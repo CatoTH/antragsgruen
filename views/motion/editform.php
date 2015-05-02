@@ -18,6 +18,10 @@ $params     = $controller->layoutParams;
 $this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
 
 $params->addJS('/js/ckeditor/ckeditor.js');
+$params->addJS('/js/bower/moment/min/moment-with-locales.min.js');
+$params->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
+$params->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+
 $params->addBreadcrumb($this->title);
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';

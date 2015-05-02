@@ -20,7 +20,7 @@ VALUES
   (5, 1, NULL, 3, 4, 0, 'Abbildung', NULL, 1, 0, 0, 1, 0, 0),
   (6, 2, NULL, 0, 0, 0, 'Name', NULL, 0, 1, 0, 0, 0, 0),
   (7, 2, NULL, 3, 1, 0, 'Foto', NULL, 0, 1, 0, 0, 0, 0),
-  (8, 2, NULL, 4, 2, 0, 'Angaben', '{"maxRowId":2,"rows":{"1":"Alter","2":"Geschlecht","3":"Geburtsort"}}', 0, 0, 0, 0,
+  (8, 2, NULL, 4, 2, 0, 'Angaben', '{"maxRowId":3,"rows":{"1":{"rowId":1,"title":"Geburtsort","type":"1"},"3":{"rowId":3,"title":"Alter","type":"2"},"2":{"rowId":2,"title":"Geburtstag","type":"3"}}}', 0, 0, 0, 0,
    0, 0),
   (9, 2, NULL, 1, 3, 0, 'Selbstvorstellung', NULL, 0, 1, 0, 0, 0, 0);
 

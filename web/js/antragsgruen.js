@@ -116,6 +116,11 @@
 
 
     var motionEditForm = function () {
+        var lang = $('html').attr('lang');
+        $(".input-group.date").datetimepicker({
+            locale: lang,
+            format: 'L'
+        });
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor"),
@@ -142,22 +147,6 @@
         });
     };
 
-
-    var consultationEditForm = function () {
-        var lang = $('html').attr('lang');
-
-        $("#antrag_neu_kann_telefon").change(function () {
-            if ($(this).prop("checked")) $("#antrag_neu_braucht_telefon_holder").show();
-            else $("#antrag_neu_braucht_telefon_holder").hide();
-        }).trigger("change");
-
-        $('#deadlineAmendmentsHolder').datetimepicker({
-            locale: lang
-        });
-        $('#deadlineMotionsHolder').datetimepicker({
-            locale: lang
-        });
-    };
 
     var contentPageEdit = function () {
         $('.contentPage').each(function () {
@@ -258,7 +247,6 @@
         "motionShow": motionShow,
         "motionEditForm": motionEditForm,
         "amendmentEditForm": amendmentEditForm,
-        "consultationEditForm": consultationEditForm,
         "contentPageEdit": contentPageEdit
     };
 
