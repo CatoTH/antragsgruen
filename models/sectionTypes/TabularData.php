@@ -2,7 +2,6 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\Tools;
 use app\models\exceptions\FormError;
 use yii\helpers\Html;
 
@@ -15,7 +14,7 @@ class TabularData extends ISectionType
     public function getMotionFormField()
     {
         $type = $this->section->consultationSetting;
-        $locale = Tools::getCurrentDateLocale();
+
         $rows = static::getTabularDataRowsFromData($type->data);
         $data = json_decode($this->section->data, true);
 
@@ -30,30 +29,7 @@ class TabularData extends ISectionType
             $str .= '<div class="col-md-9">';
             $nameId = 'name="sections[' . $type->id . '][' . $row->rowId . ']" id="' . $id . '"';
             $dat = (isset($data['rows'][$row->rowId]) ? $data['rows'][$row->rowId] : '');
-            switch ($row->type) {
-                case TabularDataType::TYPE_STRING:
-                    $str .= '<input type="text" ' . $nameId . ' value="' . Html::encode($dat) . '"';
-                    if ($type->required) {
-                        $str .= ' required';
-                    }
-                    $str .= ' class="form-control">';
-                    break;
-                case TabularDataType::TYPE_INTEGER:
-                    $str .= '<input type="number" ' . $nameId . ' value="' . Html::encode($dat) . '"';
-                    if ($type->required) {
-                        $str .= ' required';
-                    }
-                    $str .= ' class="form-control">';
-                    break;
-                case TabularDataType::TYPE_DATE:
-                    $date = ($dat ? Tools::dateSql2bootstrapdate($dat, $locale) : '');
-                    $str .= '<div class="input-group date">
-                        <input type="text" class="form-control" ' . $nameId . ' value="' . Html::encode($date) . '" ';
-                    $str .= 'data-locale="' . Html::encode($locale) . '">
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                      </div>';
-                    break;
-            }
+            $str .= $row->getFormField($nameId, $dat, $type->required);
             $str .= '</div></div>';
         }
         $str .= '</table></fieldset>';
@@ -76,7 +52,7 @@ class TabularData extends ISectionType
     {
         $type = $this->section->consultationSetting;
         $rows = static::getTabularDataRowsFromData($type->data);
-        $locale = Tools::getCurrentDateLocale();
+
         $dataOut = ['rows' => []];
 
         foreach ($rows as $row) {
@@ -84,17 +60,7 @@ class TabularData extends ISectionType
                 continue;
             }
             $dat = $data[$row->rowId];
-            switch ($row->type) {
-                case TabularDataType::TYPE_STRING:
-                    $dataOut['rows'][$row->rowId] = $dat;
-                    break;
-                case TabularDataType::TYPE_INTEGER:
-                    $dataOut['rows'][$row->rowId] = IntVal($dat);
-                    break;
-                case TabularDataType::TYPE_DATE:
-                    $dataOut['rows'][$row->rowId] = Tools::dateBootstrapdate2sql($dat, $locale);
-                    break;
-            }
+            $dataOut['rows'][$row->rowId] = $row->parseFormInput($dat);
         }
 
         $this->section->data = json_encode($dataOut);
@@ -127,7 +93,7 @@ class TabularData extends ISectionType
             $str .= '<tr><th class="col-md-3">';
             $str .= Html::encode($rows[$rowId]->title) . ':';
             $str .= '</th><td class="col-md-9">';
-            $str .= Html::encode($rowData);
+            $str .= Html::encode($rows[$rowId]->formatRow($rowData));
             $str .= '</td></tr>';
         }
         $str .= '</table></div>';
@@ -169,12 +135,14 @@ class TabularData extends ISectionType
                 continue;
             }
             $y     = $pdf->getY();
-            $text1 = '<strong>' . Html::encode($rows[$rowId]) . ':</strong>';
+            $text1 = '<strong>' . Html::encode($rows[$rowId]->title) . ':</strong>';
+
             $text2 = Html::encode($rowData);
             $pdf->writeHTMLCell(45, '', 25, $y, $text1, 0, 0, 0, true, '', true);
             $pdf->writeHTMLCell(111, '', 75, '', $text2, 0, 1, 0, true, '', true);
-            $pdf->Ln(7);
+            $pdf->Ln(3);
         }
+        $pdf->Ln(4);
     }
 
     /**

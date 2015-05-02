@@ -52,8 +52,8 @@ if ($motion->motionType->hasAmendments) {
             $html .= '<li class="amendmentCreate">';
             $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
             $html .= Html::encode(Yii::t('motion', 'Änderungsantrag stellen'));
-            $html .= '</span><br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
-            $html .= Html::encode($msg) . '</span></li>';
+            $html .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
+            $html .= Html::encode($msg) . '</span></span></li>';
         }
     }
 }

@@ -14,7 +14,7 @@ class Image extends ISectionType
      */
     public function getMotionFormField()
     {
-        $type = $this->section->consultationSetting;
+        $type     = $this->section->consultationSetting;
         $required = ($type->required ? ' required' : '');
         return '<fieldset class="form-group">
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
@@ -130,7 +130,18 @@ class Image extends ISectionType
         $metadata = json_decode($this->section->metadata, true);
         $size     = $this->scaleSize($metadata['width'], $metadata['height'], 80, 60);
         $img      = '@' . base64_decode($this->section->data);
-        $pdf->Image($img, '', '', $size[0], $size[1], 'JPEG', '', '', true, 300, 'C');
+        switch ($metadata['mime']) {
+            case 'image/png':
+                $type = 'PNG';
+                break;
+            case 'image/jpg':
+            case 'image/jpeg':
+                $type = 'JPEG';
+                break;
+            default:
+                $type = '';
+        }
+        $pdf->Image($img, '', '', $size[0], $size[1], $type, '', '', true, 300, 'C');
         $pdf->Ln($size[1] + 7);
     }
 }

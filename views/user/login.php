@@ -25,7 +25,7 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
     echo '<h2>Login per BenutzerInnenname / Passwort</h2>
-    <div class="content">';
+    <div class="content row">';
 
     if ($usernamePasswordForm->error != "") {
         echo '<div class="alert alert-danger" role="alert">
@@ -134,7 +134,7 @@ if ($params->hasWurzelwerk) {
     }
 
     echo '<h2>Wurzelwerk-Login</h2>
-    <div class="content">';
+    <div class="content row">';
 
     $backUrl = UrlHelper::createUrl('consultation/index');
     $action  = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
@@ -172,7 +172,7 @@ if (!$controller->site || (!$controller->site->getSettings()->onlyNamespacedAcco
         !$controller->site->getSettings()->onlyNamespacedAccounts)
 ) {
     echo '<h2>OpenID-Login</h2>
-	<div class="content">';
+	<div class="content row">';
     echo Html::beginForm('', 'post', ['class' => 'col-sm-6']);
 
     echo '<div class="form-group">

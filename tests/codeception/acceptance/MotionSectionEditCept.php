@@ -17,19 +17,19 @@ $motionSectionsPage = $I->gotoStdAdminPage()->gotoMotionSections();
 $I->wantTo('rearrange the list');
 $ret = $motionSectionsPage->getCurrentOrder();
 if (json_encode($ret) != '["1","2","4","3","5"]') {
-    $I->see('Valid return from JavaScript (1)');
+    $I->see('Got invalid return from JavaScript (1): ' .  json_encode($ret));
 }
 $motionSectionsPage->setCurrentOrder(array(3, 2, 1, 4, 5));
 $ret = $motionSectionsPage->getCurrentOrder();
 if (json_encode($ret) != '["3","2","1","4","5"]') {
-    $I->see('Valid return from JavaScript (2)');
+    $I->see('Got invalid return from JavaScript (2): ' .  json_encode($ret));
 }
 
 $motionSectionsPage->saveForm();
 
 $ret = $motionSectionsPage->getCurrentOrder();
 if (json_encode($ret) != '["3","2","1","4","5"]') {
-    $I->see('Valid return from JavaScript (2)');
+    $I->see('Got invalid return from JavaScript (3): ' .  json_encode($ret));
 }
 
 $I->wantTo('check if the change is reflected on the motion');
@@ -55,19 +55,18 @@ $I->fillField('.sectionnew0 .tabularDataRow ul li.no0 input', 'Testrow');
 $I->fillField('.sectionnew0 .tabularDataRow ul li.no1 input', 'Testrow 2');
 $I->fillField('.sectionnew0 .tabularDataRow ul li.no2 input', 'Testrow 3');
 
-
 $I->wantTo('rearrange the tabular data section');
 
 $ret = $I->executeJS('return $(".sectionnew0 .tabularDataRow ul").data("sortable").toArray()');
-if (json_encode($ret) != '["9bq","9br","9bs"]') {
-    $I->see('Valid return from JavaScript (3)');
+if (json_encode($ret) != '["acl","acm","acn"]') {
+    $I->see('Got invalid return from JavaScript (4): ' .  json_encode($ret));
 }
-$order = json_encode(['9bq', '9bs', '9br']);
+$order = json_encode(['acl', 'acn', 'acm']);
 $I->executeJS('$(".sectionnew0 .tabularDataRow ul").data("sortable").sort(' . $order . ')');
 
 $ret = $I->executeJS('return $(".sectionnew0 .tabularDataRow ul").data("sortable").toArray()');
-if (json_encode($ret) != '["9bq","9bs","9br"]') {
-    $I->see('Valid return from JavaScript (4)');
+if (json_encode($ret) != '["acl","acn","acm"]') {
+    $I->see('Got invalid return from JavaScript (5): ' .  json_encode($ret));
 }
 $motionSectionsPage->saveForm();
 

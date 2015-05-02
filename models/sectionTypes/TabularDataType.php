@@ -3,6 +3,10 @@
 namespace app\models\sectionTypes;
 
 
+use app\components\Tools;
+use app\models\exceptions\Internal;
+use yii\helpers\Html;
+
 class TabularDataType implements \JsonSerializable
 {
     const TYPE_STRING  = 1;
@@ -45,5 +49,87 @@ class TabularDataType implements \JsonSerializable
             'title' => $this->title,
             'type'  => $this->type
         ];
+    }
+
+    /**
+     * @param string $nameId
+     * @param string $value
+     * @param bool $required
+     * @return string
+     */
+    public function getFormField($nameId, $value, $required)
+    {
+        $str = '';
+        switch ($this->type) {
+            case TabularDataType::TYPE_STRING:
+                $str .= '<input type="text" ' . $nameId . ' value="' . Html::encode($value) . '"';
+                if ($required) {
+                    $str .= ' required';
+                }
+                $str .= ' class="form-control">';
+                break;
+            case TabularDataType::TYPE_INTEGER:
+                $str .= '<input type="number" ' . $nameId . ' value="' . Html::encode($value) . '"';
+                if ($required) {
+                    $str .= ' required';
+                }
+                $str .= ' class="form-control">';
+                break;
+            case TabularDataType::TYPE_DATE:
+                $locale = Tools::getCurrentDateLocale();
+                $date   = ($value ? Tools::dateSql2bootstrapdate($value, $locale) : '');
+                $str .= '<div class="input-group date">
+                        <input type="text" class="form-control" ' . $nameId . ' value="' . Html::encode($date) . '" ';
+                if ($required) {
+                    $str .= ' required';
+                }
+                $str .= 'data-locale="' . Html::encode($locale) . '">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                      </div>';
+                break;
+        }
+        return $str;
+    }
+
+    /**
+     * @param string $value
+     * @return int|string
+     * @throws Internal
+     */
+    public function parseFormInput($value)
+    {
+        switch ($this->type) {
+            case TabularDataType::TYPE_STRING:
+                return $value;
+                break;
+            case TabularDataType::TYPE_INTEGER:
+                return IntVal($value);
+                break;
+            case TabularDataType::TYPE_DATE:
+                return Tools::dateBootstrapdate2sql($value);
+                break;
+        }
+        throw new Internal('Unsupported data type');
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     * @throws Internal
+     */
+    public function formatRow($value)
+    {
+        switch ($this->type) {
+            case TabularDataType::TYPE_STRING:
+                return $value;
+                break;
+            case TabularDataType::TYPE_INTEGER:
+                return $value;
+                break;
+            case TabularDataType::TYPE_DATE:
+                return Tools::formatMysqlDate($value);
+                break;
+        }
+        throw new Internal('Unsupported data type');
     }
 }

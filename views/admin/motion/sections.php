@@ -63,7 +63,7 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '</div><div class="bottomrow"><div class="assignmentRow">';
 
     echo '<label>Nur anzeigen für Typ: ';
-    echo '<select name="' . $sectionName . '[motionType]" size="1"><option value="">- alle -</option>';
+    echo '<select name="' . $sectionName . '[motionType]" size="1" class="form-control"><option value="">- alle -</option>';
     foreach ($consultion->motionTypes as $type) {
         echo '<option value="' . $type->id . '"';
         if ($type->id == $section->motionTypeId) {
@@ -172,7 +172,7 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     }
     echo '</ul>';
 
-    $newRow = new TabularDataType(['rowId' => '#NEW#', 'type' => TabularDataType::TYPE_STRING, 'title' => '']);
+    $newRow = new TabularDataType(['rowId' => '#NEWDATA#', 'type' => TabularDataType::TYPE_STRING, 'title' => '']);
     $template = $dataRowFormatter($newRow, 0, $sectionName);
     echo '<a href="#" class="addRow" data-template="' . Html::encode($template) . '">';
     echo '<span class="glyphicon glyphicon-plus-sign"></span> Zeile hinzufügen</a>';

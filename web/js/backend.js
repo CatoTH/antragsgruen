@@ -88,10 +88,11 @@
 
         var dataNewCounter = 0;
         $list.on('click', '.tabularDataRow .addRow', function (ev) {
+            console.log(dataNewCounter);
             ev.preventDefault();
             var $this = $(this),
                 $ul = $this.parent().find("ul"),
-                $row = $($this.data('template').replace(/#NEW#/g, 'new' + dataNewCounter++));
+                $row = $($this.data('template').replace(/#NEWDATA#/g, 'new' + dataNewCounter++));
             $row.removeClass('no0').addClass('no' + $ul.children().length);
             $ul.append($row);
             $row.find('input').focus();

@@ -1,4 +1,6 @@
 <?php
 return [
-    'Help' => 'Hilfe',
+    'Help'      => 'Hilfe',
+    'Today'     => 'Heute',
+    'Yesterday' => 'Gestern',
 ];
