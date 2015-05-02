@@ -363,8 +363,8 @@ class User extends ActiveRecord implements IdentityInterface
             'motionSupporter.motionId = motion.id AND motionSupporter.role = ' . IntVal(MotionSupporter::ROLE_INITIATOR)
         );
         $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->where('motion.consultationId = ' . IntVal($consultation->id));
-        $query->where('motionSupporter.userId = ' . IntVal($this->id));
+        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+        $query->andWhere('motionSupporter.userId = ' . IntVal($this->id));
         $query->orderBy("motion.dateCreation DESC");
 
         return $query->all();
@@ -384,9 +384,9 @@ class User extends ActiveRecord implements IdentityInterface
         );
         $query->innerJoin('motion', 'motion.id = amendment.motionId');
         $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->where('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->where('motion.consultationId = ' . IntVal($consultation->id));
-        $query->where('amendmentSupporter.userId = ' . IntVal($this->id));
+        $query->andWhere('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+        $query->andWhere('amendmentSupporter.userId = ' . IntVal($this->id));
         $query->orderBy("amendment.dateCreation DESC");
 
         return $query->all();

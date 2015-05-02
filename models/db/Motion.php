@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
 use Yii;
 
@@ -159,9 +161,23 @@ class Motion extends IMotion
 
         $query = Motion::find();
         $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-        $query->where('motion.consultationId = ' . $consultation->id);
+        $query->andWhere('motion.consultationId = ' . $consultation->id);
         $query->orderBy("dateCreation DESC");
         $query->offset(0)->limit($limit);
+
+        return $query->all();
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return Motion[]
+     */
+    public static function getScreeningMotions(Consultation $consultation)
+    {
+        $query = Motion::find();
+        $query->where('motion.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
+        $query->andWhere('motion.consultationId = ' . $consultation->id);
+        $query->orderBy("dateCreation DESC");
 
         return $query->all();
     }
@@ -338,5 +354,28 @@ class Motion extends IMotion
             }
         };
         return $return;
+    }
+
+    /**
+     *
+     */
+    public function onFirstPublish()
+    {
+        $notified = [];
+        foreach ($this->consultation->subscriptions as $sub) {
+            if ($sub->motions && !in_array($sub->userId, $notified)) {
+                $sub->user->notifyMotion($this);
+                $notified[] = $sub->userId;
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    public function flushCaches()
+    {
+        $this->cache = '';
+        $this->consultation->flushCaches();
     }
 }

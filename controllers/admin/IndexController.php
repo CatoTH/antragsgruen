@@ -4,7 +4,6 @@ namespace app\controllers\admin;
 
 use app\components\AntiXSS;
 use app\components\Tools;
-use app\controllers\Base;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
@@ -12,6 +11,7 @@ use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
+use app\models\forms\AdminTodoItem;
 
 class IndexController extends AdminBase
 {
@@ -20,52 +20,28 @@ class IndexController extends AdminBase
      */
     public function actionIndex()
     {
-        $todo = array( //			array("Text anlegen", array("admin/texte/update", array())),
-        );
+        /** @var AdminTodoItem[] $todo */
+        $todo = [];
 
-        if (!is_null($this->consultation) && false) {
-            /** @var Motion[] $motions */
-            $motions = Motion::findAll(
-                [
-                    "consultationId" => $this->consultation->id,
-                    "status"         => Motion::STATUS_SUBMITTED_UNSCREENED
-                ]
-            );
+        if (!is_null($this->consultation)) {
+            $motions = Motion::getScreeningMotions($this->consultation);
             foreach ($motions as $motion) {
-                $url    = UrlHelper::createUrl(['admin/motions/update', 'id' => $motion->id]);
-                $todo[] = ["Antrag prüfen: " . $motion->titlePrefix . " " . $motion->title, $url];
+                $description = 'Von: ' . $motion->getInitiatorsStr();
+                $todo[]      = new AdminTodoItem(
+                    'motionScreen' . $motion->id,
+                    $motion->getTitleWithPrefix(),
+                    'Antrag freischalten',
+                    UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]),
+                    $description
+                );
             }
-
-            /** @var array|Aenderungsantrag[] $aenderungs */
-            $aenderungs = Aenderungsantrag::model()->with(array(
-                "antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
-            ))->findAllByAttributes(array("status" => Aenderungsantrag::$STATUS_EINGEREICHT_UNGEPRUEFT));
-            foreach ($aenderungs as $ae) {
-                $todo[] = array("Änderungsanträge prüfen: " . $ae->revision_name . " zu " . $ae->antrag->revision_name . " " . $ae->antrag->name, array("admin/aenderungsantraege/update", array("id" => $ae->id)));
-            }
-
-            $kommentare = AntragKommentar::model()->with(array(
-                "antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
-            ))->findAllByAttributes(array("status" => AntragKommentar::$STATUS_NICHT_FREI));
-            foreach ($kommentare as $komm) {
-                $todo[] = array("Kommentar prüfen: " . $komm->verfasserIn->name . " zu " . $komm->antrag->revision_name, array("antrag/anzeige", array("antrag_id" => $komm->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
-            }
-
-            /** @var AenderungsantragKommentar[] $kommentare */
-            $kommentare = AenderungsantragKommentar::model()->with(array(
-                "aenderungsantrag"        => array("alias" => "aenderungsantrag"),
-                "aenderungsantrag.antrag" => array("alias" => "antrag", "condition" => "antrag.veranstaltung_id = " . IntVal($this->veranstaltung->id))
-            ))->findAllByAttributes(array("status" => AntragKommentar::$STATUS_NICHT_FREI));
-            foreach ($kommentare as $komm) {
-                $todo[] = array("Kommentar prüfen: " . $komm->verfasserIn->name . " zu " . $komm->aenderungsantrag->revision_name, array("aenderungsantrag/anzeige", array("aenderungsantrag_id" => $komm->aenderungsantrag->id, "antrag_id" => $komm->aenderungsantrag->antrag_id, "kommentar_id" => $komm->id, "#" => "komm" . $komm->id)));
-            }
-
+            // @TODO Amendments & Comments
         }
 
         return $this->render(
             'index',
             [
-                'todoList'     => $todo,
+                'todo'         => $todo,
                 'site'         => $this->site,
                 'consultation' => $this->consultation
             ]
@@ -271,7 +247,7 @@ class IndexController extends AdminBase
 
         if (isset($_POST['save']) && isset($_POST['string'])) {
             foreach ($_POST['string'] as $key => $val) {
-                $key = urldecode($key);
+                $key   = urldecode($key);
                 $found = false;
                 foreach ($consultation->texts as $text) {
                     if ($text->category == $category && $text->textId == $key) {

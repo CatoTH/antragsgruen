@@ -11,6 +11,7 @@ class Consultation
 
     /** @var bool */
     public $maintainanceMode      = false;
+    public $screeningMotions      = false;
 
     // TESTS WITHOUT TEST CASES
 
@@ -27,7 +28,6 @@ class Consultation
     public $minimalisticUI        = false;
     public $showFeeds             = true;
     public $commentsSupportable   = false;
-    public $screeningMotions      = false;
     public $screeningMotionsShown = false;
     public $screeningAmendments   = false;
     public $screeningComments     = false;

@@ -6,8 +6,6 @@ use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\Motion;
 use app\models\exceptions\FormError;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TabularData;
 
 class MotionController extends AdminBase
 {
@@ -101,6 +99,25 @@ class MotionController extends AdminBase
         }
 
         $this->checkConsistency($motion);
+
+        if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+            $found = false;
+            foreach ($this->consultation->motions as $motion) {
+                if ($motion->titlePrefix == $_POST['titlePrefix'] && $motion->status != Motion::STATUS_DELETED) {
+                    $found = true;
+                }
+            }
+            if ($found) {
+                \yii::$app->session->setFlash('error', 'Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
+            } else {
+                $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
+                $motion->titlePrefix = $_POST['titlePrefix'];
+                $motion->flushCaches();
+                $motion->save();
+                $motion->onFirstPublish();
+                \yii::$app->session->setFlash('success', 'Der Antrag wurde freigeschaltet.');
+            }
+        }
 
         return $this->render('update', ['motion' => $motion]);
     }

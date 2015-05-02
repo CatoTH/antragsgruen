@@ -436,13 +436,7 @@ class MotionController extends Base
             }
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
-                $notified = [];
-                foreach ($motion->consultation->subscriptions as $sub) {
-                    if ($sub->motions && !in_array($sub->userId, $notified)) {
-                        $sub->user->notifyMotion($motion);
-                        $notified[] = $sub->userId;
-                    }
-                }
+                $motion->onFirstPublish();
             }
 
             return $this->render("create_done", ['motion' => $motion, 'mode' => $fromMode]);

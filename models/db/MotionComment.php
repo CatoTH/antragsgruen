@@ -97,8 +97,8 @@ class MotionComment extends IComment
         $query = (new Query())->select('motionComment.*')->from('motionComment');
         $query->innerJoin('motion', 'motion.id = motionComment.motionId');
         $query->where('motionComment.status = ' . IntVal(static::STATUS_VISIBLE));
-        $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-        $query->where('motion.consultationId = ' . IntVal($consultation->id));
+        $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->orderBy("dateCreation DESC");
         $query->offset(0)->limit($limit);
 

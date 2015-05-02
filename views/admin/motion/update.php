@@ -28,11 +28,13 @@ echo $controller->showErrors();
 
 
 if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
-    echo Html::beginForm('', 'post', ['class' => 'content']);
+    echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
     if ($newRev== '') {
         $newRev = $motion->consultation->getNextAvailableStatusString($motion->motionTypeId);
     }
+
+    echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';
 
     echo '<div style="text-align: center;"><button type="submit" class="btn btn-primary" name="screen">';
     echo Html::encode('Freischalten als ' . $newRev);

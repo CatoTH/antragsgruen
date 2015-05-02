@@ -14,13 +14,8 @@ $I->populateDBData1();
 // Load Form
 
 $I->wantTo('Motion Create site loads');
-MotionCreatePage::openBy(
-    $I,
-    [
-        'subdomain'        => 'stdparteitag',
-        'consultationPath' => 'std-parteitag',
-    ]
-);
+$I->gotoStdConsultationHome()->gotoMotionCreatePage();
+
 $I->see('Antrag stellen', 'h1');
 $I->seeInTitle('Antrag stellen');
 $I->dontSee('Voraussetzungen für einen Antrag');

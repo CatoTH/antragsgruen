@@ -63,7 +63,8 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '</div><div class="bottomrow"><div class="assignmentRow">';
 
     echo '<label>Nur anzeigen für Typ: ';
-    echo '<select name="' . $sectionName . '[motionType]" size="1" class="form-control"><option value="">- alle -</option>';
+    echo '<select name="' . $sectionName . '[motionType]" size="1" class="form-control">';
+    echo '<option value="">- alle -</option>';
     foreach ($consultion->motionTypes as $type) {
         echo '<option value="' . $type->id . '"';
         if ($type->id == $section->motionTypeId) {

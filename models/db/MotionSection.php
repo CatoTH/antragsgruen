@@ -52,7 +52,7 @@ class MotionSection extends IMotionSection
     public function getComments()
     {
         return $this->hasMany(MotionComment::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId'])
-            ->where('status != ' . IComment::STATUS_DELETED);
+            ->where('status != ' . IntVal(IComment::STATUS_DELETED));
     }
 
     /**

@@ -199,16 +199,16 @@ class Amendment extends IMotion
     {
         $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
         $query          = Amendment::find();
+        $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
         $query->joinWith(
             [
                 'motion' => function ($query) use ($invisibleStati, $consultation) {
                     /** @var ActiveQuery $query */
-                    $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-                    $query->where('motion.consultationId = ' . IntVal($consultation->id));
+                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
                 }
             ]
         );
-        $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
         $query->orderBy("amendment.dateCreation DESC");
         $query->offset(0)->limit($limit);
 

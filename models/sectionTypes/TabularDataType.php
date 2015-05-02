@@ -2,7 +2,6 @@
 
 namespace app\models\sectionTypes;
 
-
 use app\components\Tools;
 use app\models\exceptions\Internal;
 use yii\helpers\Html;

@@ -1,7 +1,11 @@
 <?php
+
+use app\components\UrlHelper;
+use yii\helpers\Html;
+
 /**
  * @var $this yii\web\View
- * @var array $todoList
+ * @var \app\models\forms\AdminTodoItem[] $todo
  * @var \app\models\db\Site $site
  * @var \app\models\db\Consultation $consultation
  */
@@ -11,24 +15,15 @@ $controller = $this->context;
 $params     = $controller->layoutParams;
 
 $this->title = 'Administration';
+$params->addCSS('/css/backend.css');
 $params->addBreadcrumb('Administration');
 
 
-use app\components\UrlHelper;
-use yii\helpers\Html;
-
 echo '<h1>Administration</h1>';
-echo '<div class="content">';
+echo '<div class="content row">';
 
-if (count($todoList) > 0) {
-    echo "<div  class='adminTodo'><h4>To Do</h4>";
-    echo "<ul>";
-    foreach ($todoList as $do) {
-        echo "<li>" . Html::a($do[0], $do[1]) . "</li>";
-    }
-    echo "</ul></div>";
-}
 
+echo '<div class="col-md-7">';
 
 echo '<h4>Administration</h4>
     <ul>
@@ -124,5 +119,27 @@ echo Html::a('Weitere Veranstaltungen anlegen / verwalten', UrlHelper::createUrl
 echo '</li><li>';
 echo Html::a('Veranstaltungsreihen-BenutzerInnen', UrlHelper::createUrl('admin/index/namespacedAccounts'));
 echo '</li>
-    </ul>
-</div>';
+    </ul>';
+
+
+echo '</div><div class="col-md-5">';
+
+
+
+if (count($todo) > 0) {
+    echo '<div  class="adminTodo"><h4>To Do</h4>';
+    echo '<ul>';
+    foreach ($todo as $do) {
+        echo '<li class="' . Html::encode($do->todoId) . '">';
+        echo '<div class="action">' . Html::encode($do->action) . '</div>';
+        echo Html::a($do->title, $do->link);
+        if ($do->description) {
+            echo '<div class="description">' . Html::encode($do->description) . '</div>';
+        }
+        echo '</li>';
+    }
+    echo '</ul></div>';
+}
+
+
+echo '</div></div>';

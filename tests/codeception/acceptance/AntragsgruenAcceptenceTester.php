@@ -41,10 +41,11 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
 
     /**
      * @param bool $check
+     * @return ConsultationHomePage
      */
     public function gotoStdConsultationHome($check = true)
     {
-        ConsultationHomePage::openBy(
+        $page = ConsultationHomePage::openBy(
             $this,
             [
                 'subdomain'        => 'stdparteitag',
@@ -54,14 +55,16 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         if ($check) {
             $this->see('Test2', 'h1');
         }
+        return $page;
     }
 
     /**
      * @param bool $check
+     * @return MotionPage
      */
     public function gotoStdMotion($check = true)
     {
-        MotionPage::openBy(
+        $page = MotionPage::openBy(
             $this,
             [
                 'subdomain'        => 'stdparteitag',
@@ -72,6 +75,7 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
         if ($check) {
             $this->see('O’zapft is!', 'h1');
         }
+        return $page;
     }
 
     /**
