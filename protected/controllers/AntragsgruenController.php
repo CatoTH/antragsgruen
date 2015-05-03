@@ -399,6 +399,9 @@ class AntragsgruenController extends CController
 	 */
 	private function performLogin_OAuth_callback($success_redirect, $openid_mode)
 	{
+		if (isset($_REQUEST['openid_mode']) && $_REQUEST['openid_mode'] == 'error' && isset($_REQUEST['openid_error'])) {
+			throw new Exception("Leider ist beim Einloggen ein Fehler aufgetreten:<br>" . $_REQUEST['openid_error']);
+		}
 		/** @var LightOpenID $loid */
 		$loid = Yii::app()->loid->load();
 		if ($openid_mode != 'cancel') {
