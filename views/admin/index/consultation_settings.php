@@ -83,8 +83,8 @@ echo '<fieldset class="form-group">
     </div>
 </fieldset>';
 
-$deadlineMotions = Tools::dateSql2bootstraptime($consultation->deadlineMotions, $locale);
-$deadlineAmendments = Tools::dateSql2bootstraptime($consultation->deadlineAmendments, $locale);
+$deadlineMotions = Tools::dateSql2bootstraptime($consultation->deadlineMotions);
+$deadlineAmendments = Tools::dateSql2bootstraptime($consultation->deadlineAmendments);
 
 echo '<fieldset class="form-group">
     <label class="col-sm-4 control-label" for="deadlineMotions">Antragsschluss:</label>

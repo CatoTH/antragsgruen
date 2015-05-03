@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\Motion;
@@ -110,13 +111,41 @@ class MotionController extends AdminBase
             if ($found) {
                 \yii::$app->session->setFlash('error', 'Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
             } else {
-                $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
+                $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $_POST['titlePrefix'];
                 $motion->flushCaches();
                 $motion->save();
                 $motion->onFirstPublish();
                 \yii::$app->session->setFlash('success', 'Der Antrag wurde freigeschaltet.');
             }
+        }
+
+        if (isset($_POST['save'])) {
+            $motion->title          = $_POST['motion']['title'];
+            $motion->statusString   = $_POST['motion']['statusString'];
+            $motion->dateCreation   = Tools::dateBootstraptime2sql($_POST['motion']['dateCreation']);
+            $motion->noteInternal   = $_POST['motion']['noteInternal'];
+            $motion->status         = $_POST['motion']['status'];
+            $motion->dateResolution = '';
+            if ($_POST['motion']['dateResolution'] != '') {
+                $motion->dateResolution = Tools::dateBootstraptime2sql($_POST['motion']['dateCreation']);
+            }
+            $foundPrefix = false;
+            foreach ($this->consultation->motions as $mot) {
+                if ($mot->titlePrefix != '' && $mot->id != $motion->id &&
+                    $mot->titlePrefix == $_POST['motion']['titlePrefix'] && $mot->status != Motion::STATUS_DELETED) {
+                    $foundPrefix = true;
+                }
+            }
+            if ($foundPrefix) {
+                $msg = "Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.";
+                \yii::$app->session->setFlash('error', $msg);
+            } else {
+                $motion->titlePrefix = $_POST['motion']['titlePrefix'];
+            }
+            $motion->save();
+            $motion->flushCaches();
+            \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
 
         return $this->render('update', ['motion' => $motion]);

@@ -107,11 +107,15 @@ class Tools
 
     /**
      * @param string $time
-     * @param string $locale
+     * @param string|null $locale
      * @return string
+     * @throws Internal
      */
-    public static function dateSql2bootstraptime($time, $locale)
+    public static function dateSql2bootstraptime($time, $locale = null)
     {
+        if ($locale === null) {
+            $locale = Tools::getCurrentDateLocale();
+        }
         if ($locale == 'de') {
             $pattern = '/^(?<year>\\d{4})\-(?<month>\\d{2})\-(?<day>\\d{2}) ' .
                 '(?<hour>\\d{2})\:(?<minute>\\d{2})\:(?<second>\\d{2})$/';
@@ -120,6 +124,8 @@ class Tools
                 $date .= $matches['hour'] . ':' . $matches['minute'];
                 return $date;
             }
+        } else {
+            throw new Internal('Unsupported Locale: ' . $locale);
         }
         return '';
     }
