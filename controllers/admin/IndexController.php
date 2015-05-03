@@ -11,7 +11,7 @@ use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
-use app\models\forms\AdminTodoItem;
+use app\models\AdminTodoItem;
 
 class IndexController extends AdminBase
 {

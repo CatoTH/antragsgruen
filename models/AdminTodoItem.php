@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\forms;
+namespace app\models;
 
 class AdminTodoItem
 {

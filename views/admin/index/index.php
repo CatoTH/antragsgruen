@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
- * @var \app\models\forms\AdminTodoItem[] $todo
+ * @var \app\models\AdminTodoItem[] $todo
  * @var \app\models\db\Site $site
  * @var \app\models\db\Consultation $consultation
  */
