@@ -79,12 +79,16 @@ class UserController extends Base
             $client->setClaimedId($_REQUEST['username']);
         }
 
-        if (isset($_REQUEST["openid_mode"])) {
-            if ($client->validate()) {
+        if (isset($_REQUEST['openid_mode'])) {
+            if ($_REQUEST['openid_mode'] == 'error') {
+                \yii::$app->session->setFlash('error', 'An error occurred: ' . $_REQUEST['openid_error']);
+                return $this->actionLogin($backUrl);
+            } elseif ($client->validate()) {
                 $this->loginUser($client->getOrCreateUser());
                 $this->redirect($backUrl);
             } else {
-                echo "Error";
+                \yii::$app->session->setFlash('error', 'An unknown error occurred');
+                return $this->actionLogin($backUrl);
             }
             return "";
         }
@@ -108,7 +112,7 @@ class UserController extends Base
 
         $usernamePasswordForm = new LoginUsernamePasswordForm();
 
-        if (isset($_POST["loginusernamepassword"])) {
+        if (isset($_POST['loginusernamepassword'])) {
             $usernamePasswordForm->setAttributes($_POST);
             try {
                 $user = $usernamePasswordForm->getOrCreateUser($this->site);
@@ -132,6 +136,11 @@ class UserController extends Base
             } catch (Login $e) {
                 $usernamePasswordForm->error = $e->getMessage();
             }
+        }
+
+        if (\Yii::$app->session->getFlash('error')) {
+            $usernamePasswordForm->error = \Yii::$app->session->getFlash('error');
+            \Yii::$app->session->removeFlash('error');
         }
 
 
