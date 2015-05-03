@@ -14,7 +14,7 @@ $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers);
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
     $classes[] = 'lineNumbers';
-    $lineNo    = $section->getFirstLineNo();
+    $lineNo    = $section->getFirstLineNumber();
 }
 
 foreach ($paragraphs as $paragraphNo => $paragraph) {

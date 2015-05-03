@@ -76,7 +76,7 @@ class TextSimple extends ISectionType
         $pdf->writeHTML("<h3>" . $this->section->consultationSetting->title . "</h3>");
 
         $lineLength = $section->consultationSetting->consultation->getSettings()->lineLength;
-        $linenr     = $section->getFirstLineNo();
+        $linenr     = $section->getFirstLineNumber();
         $textSize   = ($lineLength > 70 ? 10 : 11);
         $pdf->SetFont("Courier", "", $textSize);
         $pdf->Ln(7);

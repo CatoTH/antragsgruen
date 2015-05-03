@@ -3,7 +3,6 @@
 namespace app\models\db;
 
 use yii\db\ActiveQuery;
-use yii\db\Query;
 
 /**
  * @package app\models\db
@@ -321,5 +320,21 @@ class Amendment extends IMotion
         }
 
         return false;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberOfCountableLines()
+    {
+        return 0; // @TODO
+    }
+
+    /**
+     * @return int
+     */
+    public function getFirstLineNumber()
+    {
+        return 1; // @TODO
     }
 }

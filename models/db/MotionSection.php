@@ -167,8 +167,40 @@ class MotionSection extends IMotionSection
     /**
      * @return int
      */
-    public function getFirstLineNo()
+    public function getNumberOfCountableLines()
     {
-        return 1; // @TODO
+        if ($this->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            return 0;
+        }
+        if (!$this->consultationSetting->lineNumbers) {
+            return 0;
+        }
+
+        $num   = 0;
+        $paras = $this->getTextParagraphs();
+        foreach ($paras as $para) {
+            $lineLength = $this->consultationSetting->consultation->getSettings()->lineLength;
+            $linesOut   = $this->para2lines($para, true, $lineLength);
+            $num += count($linesOut);
+        }
+        return $num;
+    }
+
+    /**
+     * @return int
+     * @throws Internal
+     */
+    public function getFirstLineNumber()
+    {
+        $lineNo   = $this->motion->getFirstLineNumber();
+        $sections = $this->motion->getSortedSections();
+        foreach ($sections as $section) {
+            if ($section->sectionId == $this->sectionId) {
+                return $lineNo;
+            } else {
+                $lineNo += $section->getNumberOfCountableLines();
+            }
+        }
+        throw new Internal('Did not find myself');
     }
 }

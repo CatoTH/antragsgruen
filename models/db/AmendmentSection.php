@@ -2,7 +2,6 @@
 
 namespace app\models\db;
 
-use app\components\diff\Diff;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
@@ -75,8 +74,16 @@ class AmendmentSection extends IMotionSection
     /**
      * @return int
      */
-    public function getFirstLineNo()
+    public function getFirstLineNumber()
     {
         return 1; // @TODO
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberOfCountableLines()
+    {
+        return 0; // @TODO
     }
 }

@@ -1,8 +1,6 @@
 <?php
 namespace app\models\db;
 
-use app\models\db\MotionComment;
-
 class MotionSectionParagraph
 {
     /** @var int */

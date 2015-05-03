@@ -2,9 +2,8 @@
 
 namespace app\models\db;
 
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\sectionTypes\ISectionType;
+use app\components\MotionSorter;
+use app\models\exceptions\Internal;
 use Yii;
 
 /**
@@ -161,7 +160,7 @@ class Motion extends IMotion
 
         $query = Motion::find();
         $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-        $query->andWhere('motion.consultationId = ' . $consultation->id);
+        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->orderBy("dateCreation DESC");
         $query->offset(0)->limit($limit);
 
@@ -176,7 +175,7 @@ class Motion extends IMotion
     {
         $query = Motion::find();
         $query->where('motion.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
-        $query->andWhere('motion.consultationId = ' . $consultation->id);
+        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->orderBy("dateCreation DESC");
 
         return $query->all();
@@ -286,9 +285,38 @@ class Motion extends IMotion
     /**
      * @return int
      */
-    public function getFirstLineNo()
+    public function getNumberOfCountableLines()
     {
-        return 1; // @TODO
+        $num = 0;
+        foreach ($this->getSortedSections() as $section) {
+            $num += $section->getNumberOfCountableLines();
+        }
+        return $num;
+    }
+
+    /**
+     * @return int
+     * @throws Internal
+     */
+    public function getFirstLineNumber()
+    {
+        if ($this->consultation->getSettings()->lineNumberingGlobal) {
+            $motionBlocks = MotionSorter::getSortedMotions($this->consultation, $this->consultation->motions);
+            $lineNo       = 1;
+            foreach ($motionBlocks as $motions) {
+                foreach ($motions as $motion) {
+                    /** @var Motion $motion */
+                    if ($motion->id == $this->id) {
+                        return $lineNo;
+                    } else {
+                        $lineNo += $motion->getNumberOfCountableLines();
+                    }
+                }
+            }
+            throw new Internal('Did not find myself');
+        } else {
+            return 1;
+        }
     }
 
 

@@ -19,7 +19,7 @@ use yii\db\ActiveRecord;
  * @property string $metadata
  * @property ConsultationSettingsMotionSection $consultationSetting
  */
-class IMotionSection extends ActiveRecord
+abstract class IMotionSection extends ActiveRecord
 {
     /**
      * @return ISectionType
@@ -51,4 +51,14 @@ class IMotionSection extends ActiveRecord
         // @TODO
         return true;
     }
+
+    /**
+     * @return int
+     */
+    abstract public function getNumberOfCountableLines();
+
+    /**
+     * @return int
+     */
+    abstract public function getFirstLineNumber();
 }

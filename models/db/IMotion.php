@@ -129,4 +129,14 @@ abstract class IMotion extends ActiveRecord
         }
         return $sectionsOut;
     }
+
+    /**
+     * @return int
+     */
+    abstract public function getNumberOfCountableLines();
+
+    /**
+     * @return int
+     */
+    abstract public function getFirstLineNumber();
 }

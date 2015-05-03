@@ -73,7 +73,7 @@ class AmendmentSectionFormatter
      */
     private function getDiffLinesWithNumbers($prependLineNumber)
     {
-        $lineOffset    = $this->section->getFirstLineNo() - 1;
+        $lineOffset    = $this->section->getFirstLineNumber() - 1;
         $computed      = $this->getHtmlDiffWithLineNumbers();
         $computedLines = explode('###LINENUMBER###', $computed);
 
@@ -124,7 +124,7 @@ class AmendmentSectionFormatter
         if (!$this->returnInlineDiff) {
             throw new Internal('Invalid combination of settings');
         }
-        $lineOffset = $this->section->getFirstLineNo() - 1;
+        $lineOffset = $this->section->getFirstLineNumber() - 1;
         $computed   = $this->getHtmlDiffWithLineNumbers();
 
         $computedLines = explode('###LINENUMBER###', $computed);
