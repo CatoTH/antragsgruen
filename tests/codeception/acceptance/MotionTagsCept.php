@@ -9,7 +9,7 @@ $I->populateDBData1();
 
 
 $I->wantTo('Ensure tags are not visible yet');
-$I->gotoStdMotion(true);
+$I->gotoMotion(true);
 $I->dontSee('Themenbereiche');
 
 $I->wantTo('Create some tags');
@@ -38,7 +38,7 @@ $I->see('Environment');
 
 $I->wantTo('See the motion logged out now');
 $I->logout();
-$I->gotoStdMotion();
+$I->gotoMotion();
 $I->dontSee('Themenbereiche');
 
 

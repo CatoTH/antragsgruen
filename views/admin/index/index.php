@@ -45,7 +45,7 @@ echo Html::a(
     ['id' => 'translationLink']
 );
 echo '</li><li style="margin-top: 10px; font-weight: bold;">';
-echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'));
+echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'), ['class' => 'motionIndex']);
 echo '</li><li style="margin-left: 20px;">';
 echo Html::a('Abschnitte festlegen', UrlHelper::createUrl('admin/motion/sections'), ['class' => 'motionSections']);
 echo '</li><li style="margin-left: 20px;">';

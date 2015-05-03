@@ -5,7 +5,6 @@ namespace tests\codeception\_pages;
 use yii\codeception\BasePage;
 
 /**
- * Represents contact page
  * @property \AntragsgruenAcceptenceTester|\FunctionalTester $actor
  */
 class AdminMotionSectionPage extends BasePage

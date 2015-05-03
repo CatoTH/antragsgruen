@@ -12,6 +12,7 @@ class Consultation
     /** @var bool */
     public $maintainanceMode      = false;
     public $screeningMotions      = false;
+    public $lineNumberingGlobal   = false;
 
     // TESTS WITHOUT TEST CASES
 
@@ -23,7 +24,6 @@ class Consultation
     public $iniatorsMayEdit       = false;
     public $adminsMayEdit         = true;
     public $confirmEmails         = false;
-    public $lineNumberingGlobal   = false;
     public $hideRevision          = false;
     public $minimalisticUI        = false;
     public $showFeeds             = true;

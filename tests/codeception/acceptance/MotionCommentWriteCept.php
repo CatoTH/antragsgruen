@@ -8,7 +8,7 @@ $I = new AntragsgruenAcceptenceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('Write a comment, but forgot my name');
-$I->gotoStdMotion(true);
+$I->gotoMotion(true);
 
 if (method_exists($I, 'executeJS')) {
     $I->cantSee('Kommentar schreiben');
@@ -40,7 +40,7 @@ $I->cantSeeElement('#section_3_1 .motionComment .delLink');
 
 $I->wantTo('Delete the comment');
 $I->loginAsStdAdmin();
-$I->gotoStdMotion();
+$I->gotoMotion();
 
 if (method_exists($I, 'executeJS')) {
     $I->cantSee('Kommentar schreiben');

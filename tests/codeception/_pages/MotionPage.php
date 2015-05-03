@@ -11,4 +11,13 @@ use yii\codeception\BasePage;
 class MotionPage extends BasePage
 {
     public $route = 'motion/view';
+
+    /**
+     * @return int
+     */
+    public function getFirstLineNumber()
+    {
+        $jscomm = 'return $(".motionTextHolder .paragraph .lineNumber").first().data("line-number")';
+        return $this->actor->executeJS($jscomm);
+    }
 }

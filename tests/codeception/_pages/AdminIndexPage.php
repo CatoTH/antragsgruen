@@ -22,6 +22,17 @@ class AdminIndexPage extends BasePage
         return new AdminMotionSectionPage($this->actor);
     }
 
+
+    /**
+     * @return AdminMotionIndexPage
+     */
+    public function gotoMotionIndex()
+    {
+        $this->actor->click('.motionIndex');
+        $this->actor->see(mb_strtoupper('Anträge'), 'h1');
+        return new AdminMotionIndexPage($this->actor);
+    }
+
     /**
      * @return AdminConsultationPage
      */

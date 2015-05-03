@@ -51,7 +51,7 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
 }
 
 
-echo Html::beginForm('', 'post', ['class' => 'content']);
+echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionUpdateForm']);
 
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="parentMotion">';

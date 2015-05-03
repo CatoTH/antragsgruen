@@ -60,20 +60,21 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
 
     /**
      * @param bool $check
+     * @param int $motionId
      * @return MotionPage
      */
-    public function gotoStdMotion($check = true)
+    public function gotoMotion($check = true, $motionId = 2)
     {
         $page = MotionPage::openBy(
             $this,
             [
                 'subdomain'        => 'stdparteitag',
                 'consultationPath' => 'std-parteitag',
-                'motionId'         => 2,
+                'motionId'         => $motionId,
             ]
         );
         if ($check) {
-            $this->see('O’zapft is!', 'h1');
+            $this->seeElement('.motionData');
         }
         return $page;
     }

@@ -25,12 +25,7 @@ $I->gotoStdConsultationHome();
 $I->logout();
 
 $page = $I->gotoStdConsultationHome()->gotoMotionCreatePage();
-$page->fillInValidSampleData($motionTitle);
-$page->saveForm();
-
-$I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
-$I->submitForm('#motionConfirmForm', [], 'confirm');
-$I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
+$page->createMotion($motionTitle);
 
 $I->wantTo('check that the motion is not visible yet');
 $I->gotoStdConsultationHome();

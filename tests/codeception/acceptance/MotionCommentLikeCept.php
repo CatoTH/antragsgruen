@@ -8,7 +8,7 @@ $I = new AntragsgruenAcceptenceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('Write a test comment');
-$I->gotoStdMotion(true);
+$I->gotoMotion(true);
 if (method_exists($I, 'executeJS')) {
     $I->cantSee('Kommentar schreiben');
     $I->click('#section_3_1 .comment .shower');
@@ -34,7 +34,7 @@ $I->submitForm('#consultationSettingsForm', [], 'save');
 
 $I->wantTo('Support this comment');
 $I->logout();
-$I->gotoStdMotion();
+$I->gotoMotion();
 if (method_exists($I, 'executeJS')) {
     $I->cantSee('Kommentar schreiben');
     $I->click('#section_3_1 .comment .shower');

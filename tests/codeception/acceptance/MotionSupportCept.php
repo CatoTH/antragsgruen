@@ -8,7 +8,7 @@ $I = new AntragsgruenAcceptenceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('Check if only logged in users can support motions');
-$I->gotoStdMotion();
+$I->gotoMotion();
 $I->see('Du musst dich einloggen, um Anträge unterstützen zu können.');
 
 
