@@ -11,7 +11,6 @@ use yii\db\ActiveRecord;
  * @package app\models\db
  *
  * @property int $id
- * @property int $consultationId
  * @property int $motionTypeId
  * @property int $type
  * @property int $position
@@ -25,7 +24,6 @@ use yii\db\ActiveRecord;
  * @property int $hasComments
  * @property int $hasAmendments
  *
- * @property Consultation $consultation
  * @property MotionSection[] $sections
  * @property ConsultationSettingsMotionType $motionType
  */
@@ -61,14 +59,6 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getConsultation()
-    {
-        return $this->hasOne(Consultation::className(), ['id' => 'consultationId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getSections()
     {
         return $this->hasMany(MotionSection::className(), ['sectionId' => 'id']);
@@ -90,18 +80,6 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     {
         $this->setAttributes($data);
 
-        if ($data['motionType'] > 0) {
-            $motionType = IntVal($data['motionType']);
-            /** @var ConsultationSettingsMotionSection $motionTypeObj */
-            $motionTypeObj = $this->consultation->getMotionTypes()->andWhere('id = ' . $motionType)->one();
-            if (!$motionTypeObj) {
-                throw new FormError("MotionType not found: " . $motionType);
-            }
-            $this->motionTypeId = $motionType;
-        } else {
-            $this->motionTypeId = null;
-        }
-
         $this->required      = (isset($data['required']) ? 1 : 0);
         $this->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
         $this->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
@@ -120,8 +98,8 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'title', 'type', 'position', 'status', 'required'], 'required'],
-            [['id', 'consultationId', 'type', 'motionTypeId', 'status', 'required'], 'number'],
+            [['motionTypeId', 'title', 'type', 'position', 'status', 'required'], 'required'],
+            [['id', 'type', 'motionTypeId', 'status', 'required'], 'number'],
             [['position', 'fixedWidth', 'maxLen', 'lineNumbers', 'hasComments', 'hasAmendments'], 'number'],
             [['title', 'maxLen', 'hasComments', 'hasAmendments'], 'safe'],
         ];

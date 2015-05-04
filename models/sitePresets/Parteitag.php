@@ -71,46 +71,48 @@ class Parteitag implements ISitePreset
      */
     public static function createMotionSections(Consultation $consultation)
     {
-        $section                 = new ConsultationSettingsMotionSection();
-        $section->consultationId = $consultation->id;
-        $section->type           = ISectionType::TYPE_TITLE;
-        $section->position       = 0;
-        $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title          = 'Titel';
-        $section->required       = 1;
-        $section->maxLen         = 0;
-        $section->fixedWidth     = 0;
-        $section->lineNumbers    = 0;
-        $section->hasComments    = 0;
-        $section->hasAmendments  = 1;
+        $motionType = $consultation->motionTypes[0];
+
+        $section                = new ConsultationSettingsMotionSection();
+        $section->motionTypeId  = $motionType->id;
+        $section->type          = ISectionType::TYPE_TITLE;
+        $section->position      = 0;
+        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+        $section->title         = 'Titel';
+        $section->required      = 1;
+        $section->maxLen        = 0;
+        $section->fixedWidth    = 0;
+        $section->lineNumbers   = 0;
+        $section->hasComments   = 0;
+        $section->hasAmendments = 1;
         $section->save();
 
-        $section                 = new ConsultationSettingsMotionSection();
-        $section->consultationId = $consultation->id;
-        $section->type           = ISectionType::TYPE_TEXT_SIMPLE;
-        $section->position       = 1;
-        $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title          = 'Antragstext';
-        $section->required       = 1;
-        $section->maxLen         = 0;
-        $section->fixedWidth     = 1;
-        $section->lineNumbers    = 1;
-        $section->hasComments    = 1;
-        $section->hasAmendments  = 1;
+        $section                = new ConsultationSettingsMotionSection();
+        $section->motionTypeId  = $motionType->id;
+        $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
+        $section->position      = 1;
+        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+        $section->title         = 'Antragstext';
+        $section->required      = 1;
+        $section->maxLen        = 0;
+        $section->fixedWidth    = 1;
+        $section->lineNumbers   = 1;
+        $section->hasComments   = 1;
+        $section->hasAmendments = 1;
         $section->save();
 
-        $section                 = new ConsultationSettingsMotionSection();
-        $section->consultationId = $consultation->id;
-        $section->type           = ISectionType::TYPE_TEXT_SIMPLE;
-        $section->position       = 2;
-        $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title          = 'Begründung';
-        $section->required       = 0;
-        $section->maxLen         = 0;
-        $section->fixedWidth     = 0;
-        $section->lineNumbers    = 0;
-        $section->hasComments    = 0;
-        $section->hasAmendments  = 0;
+        $section                = new ConsultationSettingsMotionSection();
+        $section->motionTypeId  = $motionType->id;
+        $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
+        $section->position      = 2;
+        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+        $section->title         = 'Begründung';
+        $section->required      = 0;
+        $section->maxLen        = 0;
+        $section->fixedWidth    = 0;
+        $section->lineNumbers   = 0;
+        $section->hasComments   = 0;
+        $section->hasAmendments = 0;
         $section->save();
     }
 
@@ -125,16 +127,6 @@ class Parteitag implements ISitePreset
         $type->position       = 0;
         $type->save();
 
-        $type                 = new ConsultationSettingsMotionType();
-        $type->consultationId = $consultation->id;
-        $type->title          = 'Resolution';
-        $type->position       = 1;
-        $type->save();
-
-        $type                 = new ConsultationSettingsMotionType();
-        $type->consultationId = $consultation->id;
-        $type->title          = 'Satzungsantrag';
-        $type->position       = 2;
-        $type->save();
+        $consultation->refresh();
     }
 }

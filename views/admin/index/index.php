@@ -46,15 +46,28 @@ echo Html::a(
 );
 echo '</li><li style="margin-top: 10px; font-weight: bold;">';
 echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'), ['class' => 'motionIndex']);
-echo '</li><li style="margin-left: 20px;">';
-echo Html::a('Abschnitte festlegen', UrlHelper::createUrl('admin/motion/sections'), ['class' => 'motionSections']);
-echo '</li><li style="margin-left: 20px;">';
+echo '</li>';
+foreach ($consultation->motionTypes as $motionType) {
+    echo '<li style="margin-left: 20px;">';
+    $sectionsUrl   = UrlHelper::createUrl(['admin/motion/sections', 'motionTypeId' => $motionType->id]);
+    $sectionsTitle = $motionType->title . ': Abschnitte festlegen';
+    echo Html::a($sectionsTitle, $sectionsUrl, ['class' => 'motionSections' . $motionType->id]);
+    echo '</li>';
+}
+echo '</li>';
 
 $motionp = $consultation->getMotionPolicy();
 if ($motionp->checkCurUserHeuristically()) {
-    echo Html::a('Neuen Antrag anlegen', UrlHelper::createUrl('motion/create'));
+    foreach ($consultation->motionTypes as $motionType) {
+        $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $consultation->motionTypes[0]->id]);
+        echo '<li style="margin-left: 20px;">';
+        echo Html::a('Neuen Antrag anlegen: ' . $motionType->title, $createUrl);
+        echo '</li>';
+    }
 } else {
+    echo '<li style="margin-left: 20px;">';
     echo 'Neuen Antrag anlegen: <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em>';
+    echo '</li>';
 }
 echo '</li>
 
@@ -123,7 +136,6 @@ echo '</li>
 
 
 echo '</div><div class="col-md-5">';
-
 
 
 if (count($todo) > 0) {

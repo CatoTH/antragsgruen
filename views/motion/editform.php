@@ -5,7 +5,6 @@
  * @var string $mode
  * @var \app\models\forms\MotionEditForm $form
  * @var \app\models\db\Consultation $consultation
- * @var \app\models\db\ConsultationSettingsMotionType[] $motionTypes
  * @var bool $forceTag
  */
 use app\models\db\ConsultationSettingsTag;
@@ -56,20 +55,6 @@ echo Html::beginForm(
 
 echo '<div class="content">';
 
-if (count($motionTypes) == 1) {
-    echo '<input type="hidden" name="type" value="' . $motionTypes[0]->id . '">';
-} else {
-    echo '<fieldset class="form-group motionType">
-    <label>' . Yii::t('motion', 'Type') . '</label>';
-    foreach ($motionTypes as $type) {
-        echo '<div class="radio"><label>';
-        echo Html::radio('type', $form->type == $type->id, ['value' => $type->id, 'id' => 'motionType' . $type->id]);
-        echo Html::encode($type->title);
-        echo '</label></div>';
-    }
-    echo '</fieldset>';
-}
-
 /** @var ConsultationSettingsTag[] $tags */
 $tags = array();
 foreach ($consultation->tags as $tag) {
@@ -80,7 +65,7 @@ if (count($tags) == 1) {
     $keys = array_keys($tags);
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '">';
 } elseif (count($tags) > 0) {
-    echo '<fieldset class="form-group"><label class="legend">Antragstyp</label>';
+    echo '<fieldset class="form-group"><label class="legend">Thema</label>';
     foreach ($tags as $id => $tag) {
         echo '<label class="radio-inline"><input name="tags[]" value="' . $id . '" type="radio" ';
         if (in_array($id, $form->tags)) {

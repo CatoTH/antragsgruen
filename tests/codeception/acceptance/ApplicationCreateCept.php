@@ -19,6 +19,7 @@ MotionCreatePage::openBy(
     [
         'subdomain'        => 'vorstandswahlen',
         'consultationPath' => 'vorstandswahlen',
+        'motionTypeId'     => 4,
     ]
 );
 

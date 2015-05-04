@@ -36,19 +36,41 @@ $html .= '<div class="nav-list"><div class="nav-header">Suche</div>
 $html .= Html::endForm();
 $layout->menusHtml[] = $html;
 
-$motionCreateLink = "";
-if ($consultation->getMotionPolicy()->checkCurUserHeuristically()) {
-    $motionCreateLink = UrlHelper::createUrl("motion/create");
-} elseif ($consultation->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
-    $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => UrlHelper::createUrl('motion/create')]);
-}
-
 $motionLink = $consultation->site->getBehaviorClass()->getSubmitMotionStr();
 if ($motionLink != '') {
     $layout->preSidebarHtml = $motionLink;
-} else {
-    $layout->menusHtml[] = '<a class="neuer-antrag" href="' . Html::encode($motionCreateLink) . '" ' .
-        'title="' . Html::encode(Yii::t('con', 'Start a Motion')) . '"></a>';
+} elseif (count($consultation->motionTypes) > 0 && (
+        $consultation->getMotionPolicy()->checkCurUserHeuristically() ||
+        $consultation->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()
+    )
+) {
+    if (count($consultation->motionTypes) == 1) {
+        $createLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $consultation->motionTypes[0]->id]);
+        if ($consultation->getMotionPolicy()->checkCurUserHeuristically()) {
+            $motionCreateLink = $createLink;
+        } else {
+            $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => $createLink]);
+        }
+        $layout->menusHtml[] = '<a class="createMotion" href="' . Html::encode($motionCreateLink) . '" ' .
+            'title="' . Html::encode(Yii::t('con', 'Start a Motion')) . '"></a>';
+    } else {
+        $html = '<div><ul class="nav nav-list motions">';
+        $html .= '<li class="nav-header">' . Yii::t('con', 'Create new...') . '</li>';
+        foreach ($consultation->motionTypes as $motionType) {
+            $createLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
+            if ($consultation->getMotionPolicy()->checkCurUserHeuristically()) {
+                $motionCreateLink = $createLink;
+            } else {
+                $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => $createLink]);
+            }
+            var_dump($motionCreateLink);
+            $html .= '<li class="createMotion' . $motionType->id . '">';
+            $html .= '<a href="' . Html::encode($motionCreateLink) . '">';
+            $html .= Html::encode($motionType->title) . '</a></li>';
+        }
+        $html .= "</ul></div>";
+        $layout->menusHtml[] = $html;
+    }
 }
 
 if (!in_array($consultation->policyMotions, array("Admins", "Nobody"))) {
@@ -94,8 +116,9 @@ if (!in_array($consultation->policyAmendments, array("Admins", "Nobody"))) {
     $layout->menusHtml[] = $html;
 }
 
-if ($consultation->getMotionPolicy()->checkCurUserHeuristically()) {
-    $newUrl              = UrlHelper::createUrl("motion/create");
+if ($consultation->getMotionPolicy()->checkCurUserHeuristically() && count($consultation->motionTypes) == 1) {
+    $newUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $consultation->motionTypes[0]->id]);
+
     $layout->menusHtml[] = '<a class="createMotion" href="' . Html::encode($newUrl) . '"></a>';
 }
 

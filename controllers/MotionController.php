@@ -471,7 +471,7 @@ class MotionController extends Base
             $this->redirect(UrlHelper::createUrl("consultation/index"));
         }
 
-        $form = new MotionEditForm($this->consultation, $motion);
+        $form = new MotionEditForm($motion->motionType, $motion);
         $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if (isset($_POST['save'])) {
@@ -492,20 +492,21 @@ class MotionController extends Base
                 'mode'         => $fromMode,
                 'form'         => $form,
                 'consultation' => $this->consultation,
-                'motionTypes'  => [$motion->motionType],
             ]
         );
     }
 
 
     /**
+     * @param int $motionTypeId
      * @return string
      */
-    public function actionCreate()
+    public function actionCreate($motionTypeId)
     {
         $this->testMaintainanceMode();
 
-        $form = new MotionEditForm($this->consultation, null);
+        $motionType = $this->consultation->getMotionType($motionTypeId);
+        $form = new MotionEditForm($motionType, null);
 
         if (!$this->consultation->getMotionPolicy()->checkCurUserHeuristically()) {
             \Yii::$app->session->setFlash('error', 'Es kann kein Antrag angelegt werden.');
@@ -522,18 +523,6 @@ class MotionController extends Base
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
-        }
-
-
-        $types = $this->consultation->motionTypes;
-        if (isset($_REQUEST['forceType'])) {
-            $type = null;
-            foreach ($types as $t) {
-                if ($t->id == $_REQUEST['forceType']) {
-                    $type = $t;
-                }
-            }
-            $types = [$type];
         }
 
 
@@ -556,7 +545,6 @@ class MotionController extends Base
                 'mode'         => 'create',
                 'form'         => $form,
                 'consultation' => $this->consultation,
-                'motionTypes'  => $types,
             ]
         );
     }

@@ -16,13 +16,14 @@ class ConsultationHomePage extends BasePage
      * @param bool $check
      * @return MotionCreatePage
      */
-    public function gotoMotionCreatePage($check = true)
+    public function gotoMotionCreatePage($motionTypeId = 1, $check = true)
     {
         $page = MotionCreatePage::openBy(
             $this->actor,
             [
                 'subdomain'        => 'stdparteitag',
                 'consultationPath' => 'std-parteitag',
+                'motionTypeId'     => $motionTypeId,
             ]
         );
         if ($check) {

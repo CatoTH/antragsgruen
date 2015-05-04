@@ -128,7 +128,7 @@ class MotionSection extends IMotionSection
         $return = [];
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $paraNo => $para) {
-            $lineLength = $this->consultationSetting->consultation->getSettings()->lineLength;
+            $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
             $linesOut   = $this->para2lines($para, $lineNumbers, $lineLength);
 
             $paragraph              = new MotionSectionParagraph();
@@ -157,7 +157,7 @@ class MotionSection extends IMotionSection
         $return = '';
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $para) {
-            $lineLength = $this->consultationSetting->consultation->getSettings()->lineLength;
+            $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
             $linesOut   = $this->para2lines($para, true, $lineLength);
             $return .= implode(' ', $linesOut) . "\n";
         }
@@ -179,7 +179,7 @@ class MotionSection extends IMotionSection
         $num   = 0;
         $paras = $this->getTextParagraphs();
         foreach ($paras as $para) {
-            $lineLength = $this->consultationSetting->consultation->getSettings()->lineLength;
+            $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
             $linesOut   = $this->para2lines($para, true, $lineLength);
             $num += count($linesOut);
         }

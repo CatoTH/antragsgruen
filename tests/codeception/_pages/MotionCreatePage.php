@@ -39,7 +39,6 @@ class MotionCreatePage extends BasePage
         }
         $this->actor->fillField(['name' => 'Initiator[name]'], 'Mein Name');
         $this->actor->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
-        $this->actor->selectOption('#motionType2', 1);
     }
 
     /**

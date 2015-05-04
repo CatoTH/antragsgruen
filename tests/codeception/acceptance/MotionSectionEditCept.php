@@ -12,7 +12,7 @@ $I->populateDBData1();
 $I->wantTo('go to the motion section admin page');
 $I->gotoStdConsultationHome();
 $I->loginAsStdAdmin();
-$motionSectionsPage = $I->gotoStdAdminPage()->gotoMotionSections();
+$motionSectionsPage = $I->gotoStdAdminPage()->gotoMotionSections(1);
 
 $I->wantTo('rearrange the list');
 $ret = $motionSectionsPage->getCurrentOrder();
@@ -39,7 +39,7 @@ $I->see(mb_strtoupper('Begründung'), '.motionTextHolder0 h3');
 
 
 $I->wantTo('create a tabular data section');
-$motionSectionsPage = $I->gotoStdAdminPage()->gotoMotionSections();
+$motionSectionsPage = $I->gotoStdAdminPage()->gotoMotionSections(1);
 
 $I->click('.sectionAdder');
 $I->seeElement('.sectionnew0');
@@ -73,19 +73,19 @@ $motionSectionsPage->saveForm();
 
 $I->wantTo('check if the changes to tabular data section were saved');
 
-$I->seeElement('.section10');
-$I->seeInField('.section10 .sectionTitle input', 'Some tabular data');
-$I->seeInField('.section10 .tabularDataRow ul li.no1 input', 'Testrow 3');
+$I->seeElement('.section13');
+$I->seeInField('.section13 .sectionTitle input', 'Some tabular data');
+$I->seeInField('.section13 .tabularDataRow ul li.no1 input', 'Testrow 3');
 
 
 
 $I->wantTo('change the tabular data afterwards');
 
-$I->fillField('.section10 .sectionTitle input', 'My life');
-$I->fillField('.section10 .tabularDataRow ul li.no1 input', 'Birth year');
+$I->fillField('.section13 .sectionTitle input', 'My life');
+$I->fillField('.section13 .tabularDataRow ul li.no1 input', 'Birth year');
 
 $motionSectionsPage->saveForm();
 
-$I->seeElement('.section10');
-$I->seeInField('.section10 .sectionTitle input', 'My life');
-$I->seeInField('.section10 .tabularDataRow ul li.no1 input', 'Birth year');
+$I->seeElement('.section13');
+$I->seeInField('.section13 .sectionTitle input', 'My life');
+$I->seeInField('.section13 .tabularDataRow ul li.no1 input', 'Birth year');

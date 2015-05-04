@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Consultation;
+use app\models\db\ConsultationSettingsMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularDataType;
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
- * @var Consultation $consultation
+ * @var ConsultationSettingsMotionType $motionType
  */
 
 /** @var \app\controllers\Base $controller */
@@ -29,7 +29,7 @@ echo Html::beginForm('', 'post', ['class' => 'content adminSectionsForm']);
 
 echo $controller->showErrors();
 
-$renderSection = function (ConsultationSettingsMotionSection $section, Consultation $consultion) {
+$renderSection = function (ConsultationSettingsMotionSection $section) {
     $sectionId = IntVal($section->id);
     if ($sectionId == 0) {
         $sectionId = '#NEW#';
@@ -61,18 +61,6 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
     echo '</label>';
 
     echo '</div><div class="bottomrow"><div class="assignmentRow">';
-
-    echo '<label>Nur anzeigen für Typ: ';
-    echo '<select name="' . $sectionName . '[motionType]" size="1" class="form-control">';
-    echo '<option value="">- alle -</option>';
-    foreach ($consultion->motionTypes as $type) {
-        echo '<option value="' . $type->id . '"';
-        if ($type->id == $section->motionTypeId) {
-            echo ' selected';
-        }
-        echo '>' . Html::encode($type->title) . '</option>';
-    }
-    echo '</select></label><br>';
 
     echo '</div><div class="optionsRow">';
 
@@ -184,8 +172,8 @@ $renderSection = function (ConsultationSettingsMotionSection $section, Consultat
 
 
 echo '<ul id="sectionsList">';
-foreach ($consultation->motionSections as $section) {
-    $renderSection($section, $consultation);
+foreach ($motionType->motionSections as $section) {
+    $renderSection($section);
 }
 echo '</ul>';
 
@@ -198,5 +186,5 @@ $params->addOnLoadJS('$.AntragsgruenAdmin.sectionsEdit();');
 echo Html::endForm();
 
 echo '<ul style="display: none;" id="sectionTemplate">';
-$renderSection(new ConsultationSettingsMotionSection(), $consultation);
+$renderSection(new ConsultationSettingsMotionSection());
 echo '</ul>';

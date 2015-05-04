@@ -103,6 +103,14 @@ class Amendment extends IMotion
     }
 
     /**
+     * @return ConsultationSettingsMotionSection
+     */
+    public function getMySections()
+    {
+        return $this->motion->motionType->motionSections;
+    }
+
+    /**
      * @return int
      */
     public function getFirstDiffLine()

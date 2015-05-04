@@ -96,6 +96,11 @@ abstract class IMotion extends ActiveRecord
     abstract public function getMyConsultation();
 
     /**
+     * @return ConsultationSettingsMotionSection
+     */
+    abstract public function getMySections();
+
+    /**
      * @return IMotionSection|null
      */
     public function getTitleSection()
@@ -122,7 +127,7 @@ abstract class IMotion extends ActiveRecord
             }
         }
         $sectionsOut = array();
-        foreach ($this->getMyConsultation()->motionSections as $section) {
+        foreach ($this->getMySections() as $section) {
             if (isset($sectionsIn[$section->id])) {
                 $sectionsOut[] = $sectionsIn[$section->id];
             }

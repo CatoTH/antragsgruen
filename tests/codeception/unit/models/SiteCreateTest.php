@@ -58,8 +58,8 @@ class SiteCreateTest extends DBTestBase
                 $consultation = $site->currentConsultation;
                 expect('Check if consultation exists', $consultation)->notNull();
 
-                expect('Has some sections', count($consultation->motionSections))->greaterThan(0);
                 expect('Has some motion types', count($consultation->motionTypes))->greaterThan(0);
+                expect('Has some sections', count($consultation->motionTypes[0]->motionSections))->greaterThan(0);
             }
         );
     }

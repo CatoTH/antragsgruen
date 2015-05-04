@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\DB;
+use app\models\exceptions\NotFound;
 use app\models\forms\SiteCreateForm;
 use app\models\initiatorForms\DefaultForm;
 use app\models\policies\IPolicy;
@@ -41,7 +42,6 @@ use yii\db\ActiveRecord;
  * @property ConsultationOdtTemplate[] $odtTemplates
  * @property ConsultationSubscription[] $subscriptions
  * @property ConsultationSettingsTag[] $tags
- * @property ConsultationSettingsMotionSection[] $motionSections
  * @property ConsultationSettingsMotionType[] $motionTypes
  */
 class Consultation extends ActiveRecord
@@ -127,19 +127,24 @@ class Consultation extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMotionSections()
-    {
-        return $this->hasMany(ConsultationSettingsMotionSection::className(), ['consultationId' => 'id'])
-            ->where('status = ' . ConsultationSettingsMotionSection::STATUS_VISIBLE)
-            ->orderBy('position');
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getMotionTypes()
     {
         return $this->hasMany(ConsultationSettingsMotionType::className(), ['consultationId' => 'id']);
+    }
+
+    /**
+     * @param int $motionTypeId
+     * @return ConsultationSettingsMotionType
+     * @throws NotFound
+     */
+    public function getMotionType($motionTypeId)
+    {
+        foreach ($this->motionTypes as $motionType) {
+            if ($motionType->id == $motionTypeId) {
+                return $motionType;
+            }
+        }
+        throw new NotFound('Motion Type not found');
     }
 
     /** @var null|\app\models\settings\Consultation */

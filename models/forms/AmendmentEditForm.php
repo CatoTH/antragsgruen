@@ -55,7 +55,7 @@ class AmendmentEditForm extends Model
             }
         }
         $this->sections = [];
-        foreach ($motion->consultation->motionSections as $sectionType) {
+        foreach ($motion->motionType->motionSections as $sectionType) {
             if (!$sectionType->hasAmendments) {
                 continue;
             }

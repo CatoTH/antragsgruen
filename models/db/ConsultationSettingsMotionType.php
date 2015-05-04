@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property int $cssicon
  *
  * @property Consultation $consultation
+ * @property ConsultationSettingsMotionSection[] $motionSections
  * @property Motion[] $motions
  */
 class ConsultationSettingsMotionType extends ActiveRecord
@@ -42,6 +43,16 @@ class ConsultationSettingsMotionType extends ActiveRecord
     public function getMotions()
     {
         return $this->hasMany(Motion::className(), ['motionTypeId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMotionSections()
+    {
+        return $this->hasMany(ConsultationSettingsMotionSection::className(), ['motionTypeId' => 'id'])
+            ->where('status = ' . ConsultationSettingsMotionSection::STATUS_VISIBLE)
+            ->orderBy('position');
     }
 
     /**

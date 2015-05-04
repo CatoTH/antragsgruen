@@ -38,7 +38,7 @@ if (method_exists($I, 'executeJS')) {
 }
 
 // Fill & Submit Form
-$I->wantTo('Create a regular motion, but forgot the organization, motion type and resolution date');
+$I->wantTo('Create a regular motion, but forgot the organization and resolution date');
 $I->fillField(['name' => 'sections[1]'], 'Testantrag 1');
 if (method_exists($I, 'executeJS')) {
     $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
@@ -53,7 +53,6 @@ $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATI
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->see('No organization entered');
-$I->see('Motion Type not found');
 $I->see('No resolution date entered');
 $I->seeInField(['name' => 'Initiator[name]'], 'Mein Name');
 $I->seeInField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
@@ -66,12 +65,10 @@ $I->see('Beschlussdatum');
 // Fill & Submit Form
 $I->wantTo('Create a regular motion, still forgot the resolution date');
 $I->fillField(['name' => 'Initiator[organization]'], 'My company');
-$I->selectOption('#motionType2', 2);
 
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->dontSee('No organization entered');
-$I->dontSee('Motion Type not found');
 $I->see('No resolution date entered');
 
 

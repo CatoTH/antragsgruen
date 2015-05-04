@@ -63,8 +63,8 @@ class SiteCreateForm extends \yii\base\Model
         $site->link('currentConsultation', $consultation);
         $site->link('admins', $currentUser);
 
-        $preset->createMotionSections($consultation);
         $preset->createMotionTypes($consultation);
+        $preset->createMotionSections($consultation);
 
         return $site;
     }

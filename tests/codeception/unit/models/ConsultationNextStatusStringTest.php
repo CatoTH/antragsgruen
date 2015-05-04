@@ -17,19 +17,19 @@ class ConsultationNextStatusStringTest extends DBTestBase
     public function testStatusString()
     {
         /** @var Consultation $consultation */
-        $consultation = Consultation::findOne(1);
+        $consultation = Consultation::findOne(2);
 
         $this->specify(
-            'For first S',
+            'For first A',
             function () use ($consultation) {
-                $this->assertEquals('S1', $consultation->getNextAvailableStatusString(3));
+                $this->assertEquals('A1', $consultation->getNextAvailableStatusString(3));
             }
         );
 
         $dummyMotion                 = new Motion();
         $dummyMotion->title          = 'Testmotion';
         $dummyMotion->status         = Motion::STATUS_SUBMITTED_UNSCREENED;
-        $dummyMotion->titlePrefix    = 'S1';
+        $dummyMotion->titlePrefix    = 'A1';
         $dummyMotion->motionTypeId   = 3;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';
@@ -37,33 +37,33 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $consultation->refresh();
 
         $this->specify(
-            'For second S',
+            'For second A',
             function () use ($consultation) {
-                $this->assertEquals('S2', $consultation->getNextAvailableStatusString(3));
+                $this->assertEquals('A2', $consultation->getNextAvailableStatusString(3));
             }
         );
 
         $dummyMotion                 = new Motion();
         $dummyMotion->title          = 'Testmotion';
         $dummyMotion->status         = Motion::STATUS_SUBMITTED_UNSCREENED;
-        $dummyMotion->titlePrefix    = 'S2';
-        $dummyMotion->motionTypeId   = 2;
+        $dummyMotion->titlePrefix    = 'B1';
+        $dummyMotion->motionTypeId   = 4;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';
         $dummyMotion->save();
         $consultation->refresh();
 
         $this->specify(
-            'For second S',
+            'For second B',
             function () use ($consultation) {
-                $this->assertEquals('S3', $consultation->getNextAvailableStatusString(3));
+                $this->assertEquals('B2', $consultation->getNextAvailableStatusString(4));
             }
         );
 
         $dummyMotion                 = new Motion();
         $dummyMotion->title          = 'Testmotion';
         $dummyMotion->status         = Motion::STATUS_SUBMITTED_UNSCREENED;
-        $dummyMotion->titlePrefix    = 'S4';
+        $dummyMotion->titlePrefix    = 'A4';
         $dummyMotion->motionTypeId   = 3;
         $dummyMotion->consultationId = $consultation->id;
         $dummyMotion->cache          = '';
@@ -73,15 +73,17 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $this->specify(
             'For third S',
             function () use ($consultation) {
-                $this->assertEquals('S5', $consultation->getNextAvailableStatusString(3));
+                $this->assertEquals('A5', $consultation->getNextAvailableStatusString(3));
             }
         );
 
+        /*
         $this->specify(
             'For first R',
             function () use ($consultation) {
-                $this->assertEquals('R1', $consultation->getNextAvailableStatusString(2));
+                $this->assertEquals('R1', $consultation->getNextAvailableStatusString(4));
             }
         );
+        */
     }
 }

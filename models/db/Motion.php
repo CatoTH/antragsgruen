@@ -123,6 +123,13 @@ class Motion extends IMotion
         return $this->consultation;
     }
 
+    /**
+     * @return ConsultationSettingsMotionSection
+     */
+    public function getMySections()
+    {
+        return $this->motionType->motionSections;
+    }
 
     /**
      * @return array

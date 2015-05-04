@@ -163,20 +163,19 @@ CREATE TABLE `consultationOdtTemplate` (
 --
 
 CREATE TABLE `consultationSettingsMotionSection` (
-  `id`             INT(11)      NOT NULL,
-  `consultationId` INT(11)               DEFAULT NULL,
-  `motionTypeId`   INT(11)               DEFAULT NULL,
-  `type`           INT(11)      NOT NULL,
-  `position`       SMALLINT(6)           DEFAULT NULL,
-  `status`         TINYINT(4)   NOT NULL,
-  `title`          VARCHAR(100) NOT NULL,
-  `data`           TEXT         NULL     DEFAULT NULL,
-  `fixedWidth`     TINYINT(4)   NOT NULL,
-  `required`       TINYINT(4)   NOT NULL,
-  `maxLen`         INT(11)               DEFAULT NULL,
-  `lineNumbers`    TINYINT(4)   NOT NULL DEFAULT '0',
-  `hasComments`    TINYINT(4)   NOT NULL,
-  `hasAmendments`  TINYINT      NOT NULL DEFAULT '1'
+  `id`            INT(11)      NOT NULL,
+  `motionTypeId`  INT(11)      NOT NULL,
+  `type`          INT(11)      NOT NULL,
+  `position`      SMALLINT(6)           DEFAULT NULL,
+  `status`        TINYINT(4)   NOT NULL,
+  `title`         VARCHAR(100) NOT NULL,
+  `data`          TEXT,
+  `fixedWidth`    TINYINT(4)   NOT NULL,
+  `required`      TINYINT(4)   NOT NULL,
+  `maxLen`        INT(11)               DEFAULT NULL,
+  `lineNumbers`   TINYINT(4)   NOT NULL DEFAULT '0',
+  `hasComments`   TINYINT(4)   NOT NULL,
+  `hasAmendments` TINYINT(4)   NOT NULL DEFAULT '1'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -192,7 +191,7 @@ CREATE TABLE `consultationSettingsMotionType` (
   `consultationId` INT(11)      NOT NULL,
   `title`          VARCHAR(100) NOT NULL,
   `motionPrefix`   VARCHAR(10)           DEFAULT NULL,
-  `hasAmendments`  TINYINT      NOT NULL DEFAULT '1',
+  `hasAmendments`  TINYINT(4)   NOT NULL DEFAULT '1',
   `position`       INT(11)      NOT NULL,
   `cssicon`        VARCHAR(100)          DEFAULT NULL
 )
@@ -454,25 +453,31 @@ CREATE TABLE `user` (
 -- Indexes for table `amendment`
 --
 ALTER TABLE `amendment`
-ADD PRIMARY KEY (`id`), ADD KEY `fk_motionIdx` (`motionId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `fk_motionIdx` (`motionId`);
 
 --
 -- Indexes for table `amendmentComment`
 --
 ALTER TABLE `amendmentComment`
-ADD PRIMARY KEY (`id`), ADD KEY `fk_amendment_comment_userIdx` (`userId`), ADD KEY `fk_amendment_comment_amendmentIdx` (`amendmentId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `fk_amendment_comment_userIdx` (`userId`),
+ADD KEY `fk_amendment_comment_amendmentIdx` (`amendmentId`);
 
 --
 -- Indexes for table `amendmentSection`
 --
 ALTER TABLE `amendmentSection`
-ADD PRIMARY KEY (`amendmentId`, `sectionId`), ADD KEY `sectionId` (`sectionId`);
+ADD PRIMARY KEY (`amendmentId`, `sectionId`),
+ADD KEY `sectionId` (`sectionId`);
 
 --
 -- Indexes for table `amendmentSupporter`
 --
 ALTER TABLE `amendmentSupporter`
-ADD PRIMARY KEY (`id`), ADD KEY `fk_amendmentIdx` (`amendmentId`), ADD KEY `fk_supporter_idx` (`userId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `fk_amendmentIdx` (`amendmentId`),
+ADD KEY `fk_supporter_idx` (`userId`);
 
 --
 -- Indexes for table `cache`
@@ -484,115 +489,148 @@ ADD PRIMARY KEY (`id`);
 -- Indexes for table `consultation`
 --
 ALTER TABLE `consultation`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `yii_url_UNIQUE` (`urlPath`, `siteId`), ADD KEY `fk_consultation_siteIdx` (`siteId`);
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `yii_url_UNIQUE` (`urlPath`, `siteId`),
+ADD KEY `fk_consultation_siteIdx` (`siteId`);
 
 --
 -- Indexes for table `consultationAdmin`
 --
 ALTER TABLE `consultationAdmin`
-ADD PRIMARY KEY (`consultationId`, `userId`), ADD KEY `fk_consultation_userIdx` (`userId`), ADD KEY `fk_consultationIdx` (`consultationId`);
+ADD PRIMARY KEY (`consultationId`, `userId`),
+ADD KEY `fk_consultation_userIdx` (`userId`),
+ADD KEY `fk_consultationIdx` (`consultationId`);
 
 --
 -- Indexes for table `consultationOdtTemplate`
 --
 ALTER TABLE `consultationOdtTemplate`
-ADD PRIMARY KEY (`id`), ADD KEY `fk_consultationIdx` (`consultationId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `fk_consultationIdx` (`consultationId`);
 
 --
 -- Indexes for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `consultationSettingsMotionSection`
-ADD PRIMARY KEY (`id`), ADD KEY `consultationId` (`consultationId`), ADD KEY `motionType` (`motionTypeId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `motionType` (`motionTypeId`);
 
 --
 -- Indexes for table `consultationSettingsMotionType`
 --
 ALTER TABLE `consultationSettingsMotionType`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultationId` (`consultationId`, `position`);
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `consultationId` (`consultationId`, `position`);
 
 --
 -- Indexes for table `consultationSettingsTag`
 --
 ALTER TABLE `consultationSettingsTag`
-ADD PRIMARY KEY (`id`), ADD KEY `consultationId` (`consultationId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `consultationId` (`consultationId`);
 
 --
 -- Indexes for table `consultationSubscription`
 --
 ALTER TABLE `consultationSubscription`
-ADD PRIMARY KEY (`consultationId`, `userId`), ADD KEY `fk_consultationIdx` (`consultationId`), ADD KEY `fk_userIdx` (`userId`);
+ADD PRIMARY KEY (`consultationId`, `userId`),
+ADD KEY `fk_consultationIdx` (`consultationId`),
+ADD KEY `fk_userIdx` (`userId`);
 
 --
 -- Indexes for table `consultationText`
 --
 ALTER TABLE `consultationText`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId`), ADD KEY `fk_texts_consultationIdx` (`consultationId`);
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId`),
+ADD KEY `fk_texts_consultationIdx` (`consultationId`);
 
 --
 -- Indexes for table `emailLog`
 --
 ALTER TABLE `emailLog`
-ADD PRIMARY KEY (`id`), ADD KEY `fk_mail_log_userIdx` (`toUserId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `fk_mail_log_userIdx` (`toUserId`);
 
 --
 -- Indexes for table `motion`
 --
 ALTER TABLE `motion`
-ADD PRIMARY KEY (`id`), ADD KEY `consultation` (`consultationId`), ADD KEY `parent_motion` (`parentMotionId`), ADD KEY `type` (`motionTypeId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `consultation` (`consultationId`),
+ADD KEY `parent_motion` (`parentMotionId`),
+ADD KEY `type` (`motionTypeId`);
 
 --
 -- Indexes for table `motionComment`
 --
 ALTER TABLE `motionComment`
-ADD PRIMARY KEY (`id`), ADD KEY `fk_comment_userIdx` (`userId`), ADD KEY `fk_comment_notion_idx` (`motionId`, `sectionId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `fk_comment_userIdx` (`userId`),
+ADD KEY `fk_comment_notion_idx` (`motionId`, `sectionId`);
 
 --
 -- Indexes for table `motionCommentSupporter`
 --
 ALTER TABLE `motionCommentSupporter`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `ip_hash_motion` (`ipHash`, `motionCommentId`), ADD UNIQUE KEY `cookie_motion` (`cookieId`, `motionCommentId`), ADD KEY `fk_motion_comment_supporter_commentIdx` (`motionCommentId`);
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `ip_hash_motion` (`ipHash`, `motionCommentId`),
+ADD UNIQUE KEY `cookie_motion` (`cookieId`, `motionCommentId`),
+ADD KEY `fk_motion_comment_supporter_commentIdx` (`motionCommentId`);
 
 --
 -- Indexes for table `motionSection`
 --
 ALTER TABLE `motionSection`
-ADD PRIMARY KEY (`motionId`, `sectionId`), ADD KEY `motion_section_fk_sectionIdx` (`sectionId`);
+ADD PRIMARY KEY (`motionId`, `sectionId`),
+ADD KEY `motion_section_fk_sectionIdx` (`sectionId`);
 
 --
 -- Indexes for table `motionSubscription`
 --
 ALTER TABLE `motionSubscription`
-ADD PRIMARY KEY (`motionId`, `userId`), ADD KEY `fk_motionId` (`motionId`), ADD KEY `fk_userId` (`userId`);
+ADD PRIMARY KEY (`motionId`, `userId`),
+ADD KEY `fk_motionId` (`motionId`),
+ADD KEY `fk_userId` (`userId`);
 
 --
 -- Indexes for table `motionSupporter`
 --
 ALTER TABLE `motionSupporter`
-ADD PRIMARY KEY (`id`), ADD KEY `fk_supporter_idx` (`userId`), ADD KEY `fk_motionIdx` (`motionId`);
+ADD PRIMARY KEY (`id`),
+ADD KEY `fk_supporter_idx` (`userId`),
+ADD KEY `fk_motionIdx` (`motionId`);
 
 --
 -- Indexes for table `motionTag`
 --
 ALTER TABLE `motionTag`
-ADD PRIMARY KEY (`motionId`, `tagId`), ADD KEY `motion_tag_fk_tagIdx` (`tagId`);
+ADD PRIMARY KEY (`motionId`, `tagId`),
+ADD KEY `motion_tag_fk_tagIdx` (`tagId`);
 
 --
 -- Indexes for table `site`
 --
 ALTER TABLE `site`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `subdomain_UNIQUE` (`subdomain`), ADD KEY `fk_veranstaltungsreihe_veranstaltung1_idx` (`currentConsultationId`);
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `subdomain_UNIQUE` (`subdomain`),
+ADD KEY `fk_veranstaltungsreihe_veranstaltung1_idx` (`currentConsultationId`);
 
 --
 -- Indexes for table `siteAdmin`
 --
 ALTER TABLE `siteAdmin`
-ADD PRIMARY KEY (`siteId`, `userId`), ADD KEY `site_admin_fk_userIdx` (`userId`), ADD KEY `site_admin_fk_siteIdx` (`siteId`);
+ADD PRIMARY KEY (`siteId`, `userId`),
+ADD KEY `site_admin_fk_userIdx` (`userId`),
+ADD KEY `site_admin_fk_siteIdx` (`siteId`);
 
 --
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `auth_UNIQUE` (`auth`), ADD KEY `fk_user_namespaceIdx` (`siteNamespaceId`);
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `auth_UNIQUE` (`auth`),
+ADD KEY `fk_user_namespaceIdx` (`siteNamespaceId`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -748,8 +786,7 @@ ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `con
 -- Constraints for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `consultationSettingsMotionSection`
-ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`),
-ADD CONSTRAINT `consultation_settings_motion_section_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
+ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 

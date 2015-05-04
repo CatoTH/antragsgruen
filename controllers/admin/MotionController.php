@@ -5,26 +5,28 @@ namespace app\controllers\admin;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\db\ConsultationSettingsMotionType;
 use app\models\db\Motion;
 use app\models\exceptions\FormError;
 
 class MotionController extends AdminBase
 {
     /**
+     * @param ConsultationSettingsMotionType $motionType
      * @throws FormError
      */
-    private function sectionsSave()
+    private function sectionsSave(ConsultationSettingsMotionType $motionType)
     {
         $position = 0;
         foreach ($_POST['sections'] as $sectionId => $data) {
             if (preg_match('/^new[0-9]+$/', $sectionId)) {
-                $section                 = new ConsultationSettingsMotionSection();
-                $section->consultationId = $this->consultation->id;
-                $section->type           = $data['type'];
-                $section->status         = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+                $section               = new ConsultationSettingsMotionSection();
+                $section->motionTypeId = $motionType->id;
+                $section->type         = $data['type'];
+                $section->status       = ConsultationSettingsMotionSection::STATUS_VISIBLE;
             } else {
                 /** @var ConsultationSettingsMotionSection $section */
-                $section = $this->consultation->getMotionSections()->andWhere('id = ' . IntVal($sectionId))->one();
+                $section = $motionType->getMotionSections()->andWhere('id = ' . IntVal($sectionId))->one();
                 if (!$section) {
                     throw new FormError("Section not found: " . $sectionId);
                 }
@@ -39,9 +41,10 @@ class MotionController extends AdminBase
     }
 
     /**
+     * @param ConsultationSettingsMotionType $motionType
      * @throws FormError
      */
-    private function sectionsDelete()
+    private function sectionsDelete(ConsultationSettingsMotionType $motionType)
     {
         if (!isset($_POST['sectionsTodelete'])) {
             return;
@@ -50,7 +53,7 @@ class MotionController extends AdminBase
             if ($sectionId > 0) {
                 $sectionId = IntVal($sectionId);
                 /** @var ConsultationSettingsMotionSection $section */
-                $section = $this->consultation->getMotionSections()->andWhere('id = ' . $sectionId)->one();
+                $section = $motionType->getMotionSections()->andWhere('id = ' . $sectionId)->one();
                 if (!$section) {
                     throw new FormError("Section not found: " . $sectionId);
                 }
@@ -61,19 +64,21 @@ class MotionController extends AdminBase
     }
 
     /**
+     * @param int $motionTypeId
      * @return string
      * @throws FormError
      */
-    public function actionSections()
+    public function actionSections($motionTypeId)
     {
+        $motionType = $this->consultation->getMotionType($motionTypeId);
         if (isset($_POST['save'])) {
-            $this->sectionsSave();
-            $this->sectionsDelete();
+            $this->sectionsSave($motionType);
+            $this->sectionsDelete($motionType);
 
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
 
-        return $this->render('sections', ['consultation' => $this->consultation]);
+        return $this->render('sections', ['motionType' => $motionType]);
     }
 
     /**
@@ -133,7 +138,8 @@ class MotionController extends AdminBase
             $foundPrefix = false;
             foreach ($this->consultation->motions as $mot) {
                 if ($mot->titlePrefix != '' && $mot->id != $motion->id &&
-                    $mot->titlePrefix == $_POST['motion']['titlePrefix'] && $mot->status != Motion::STATUS_DELETED) {
+                    $mot->titlePrefix == $_POST['motion']['titlePrefix'] && $mot->status != Motion::STATUS_DELETED
+                ) {
                     $foundPrefix = true;
                 }
             }
