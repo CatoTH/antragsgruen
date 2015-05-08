@@ -179,7 +179,7 @@ class Base extends Controller
     {
         $this->layoutParams->robotsNoindex = true;
         echo $this->render(
-            '@app/views/manager/error',
+            '@app/views/errors/error',
             [
                 "message" => $message
             ]
