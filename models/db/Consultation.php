@@ -43,6 +43,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationSubscription[] $subscriptions
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationSettingsMotionType[] $motionTypes
+ * @property ConsultationAgendaItem[] $agendaItems
  */
 class Consultation extends ActiveRecord
 {
@@ -106,6 +107,14 @@ class Consultation extends ActiveRecord
     public function getOdtTemplates()
     {
         return $this->hasMany(ConsultationOdtTemplate::className(), ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAgendaItems()
+    {
+        return $this->hasMany(ConsultationAgendaItem::className(), ['consultationId' => 'id']);
     }
 
     /**

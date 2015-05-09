@@ -144,6 +144,26 @@ CREATE TABLE `consultationAdmin` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `consultationAgendaItem`
+--
+
+CREATE TABLE `consultationAgendaItem` (
+  `id`             INT(11)      NOT NULL,
+  `consultationId` INT(11)      NOT NULL,
+  `parentItemId`   INT(11)           DEFAULT NULL,
+  `position`       INT(11)      NOT NULL,
+  `code`           VARCHAR(20)  NOT NULL,
+  `title`          VARCHAR(250) NOT NULL,
+  `description`    TEXT         NOT NULL,
+  `motionTypeId`   INT(11)           DEFAULT NULL,
+  `deadline`       TIMESTAMP    NULL DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `consultationOdtTemplate`
 --
 
@@ -277,6 +297,7 @@ CREATE TABLE `motion` (
   `consultationId` INT(11)     NOT NULL,
   `motionTypeId`   INT(11)     NOT NULL,
   `parentMotionId` INT(11)              DEFAULT NULL,
+  `agendaItemId`   INT(11)              DEFAULT NULL,
   `title`          TEXT        NOT NULL,
   `titlePrefix`    VARCHAR(50) NOT NULL,
   `dateCreation`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -502,6 +523,15 @@ ADD KEY `fk_consultation_userIdx` (`userId`),
 ADD KEY `fk_consultationIdx` (`consultationId`);
 
 --
+-- Indexes for table `consultationAgendaItem`
+--
+ALTER TABLE `consultationAgendaItem`
+ADD PRIMARY KEY (`id`),
+ADD KEY `consultationId` (`consultationId`),
+ADD KEY `parentItemId` (`parentItemId`),
+ADD KEY `motionTypeId` (`motionTypeId`);
+
+--
 -- Indexes for table `consultationOdtTemplate`
 --
 ALTER TABLE `consultationOdtTemplate`
@@ -559,7 +589,8 @@ ALTER TABLE `motion`
 ADD PRIMARY KEY (`id`),
 ADD KEY `consultation` (`consultationId`),
 ADD KEY `parent_motion` (`parentMotionId`),
-ADD KEY `type` (`motionTypeId`);
+ADD KEY `type` (`motionTypeId`),
+ADD KEY `agendaItemId` (`agendaItemId`);
 
 --
 -- Indexes for table `motionComment`
@@ -655,6 +686,11 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `consultation`
 --
 ALTER TABLE `consultation`
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `consultationAgendaItem`
+--
+ALTER TABLE `consultationAgendaItem`
 MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultationOdtTemplate`
@@ -775,6 +811,20 @@ ADD CONSTRAINT `fk_user_consultation` FOREIGN KEY (`consultationId`) REFERENCES 
   ON UPDATE NO ACTION;
 
 --
+-- Constraints for table `consultationAgendaItem`
+--
+ALTER TABLE `consultationAgendaItem`
+ADD CONSTRAINT `consultationAgendaItem_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `consultationAgendaItem_ibfk_2` FOREIGN KEY (`parentItemId`) REFERENCES `consultationAgendaItem` (`id`)
+  ON DELETE SET NULL
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `consultationAgendaItem_ibfk_3` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`)
+  ON DELETE SET NULL
+  ON UPDATE NO ACTION;
+
+--
 -- Constraints for table `consultationOdtTemplate`
 --
 ALTER TABLE `consultationOdtTemplate`
@@ -841,7 +891,10 @@ ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCE
 ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`);
+ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`),
+ADD CONSTRAINT `motion_ibfk_2` FOREIGN KEY (`agendaItemId`) REFERENCES `consultationAgendaItem` (`id`)
+  ON DELETE SET NULL
+  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionComment`

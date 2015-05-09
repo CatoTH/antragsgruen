@@ -13,6 +13,7 @@ use Yii;
  * @property int $consultationId
  * @property int $motionTypeId
  * @property int $parentMotionId
+ * @property int $agendaItemId
  * @property string $title
  * @property string $titlePrefix
  * @property string $dateCreation
@@ -30,6 +31,7 @@ use Yii;
  * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
+ * @property ConsultationAgendaItem $agendaItem
  */
 class Motion extends IMotion
 {
@@ -116,6 +118,14 @@ class Motion extends IMotion
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAgendaItem()
+    {
+        return $this->hasOne(ConsultationAgendaItem::className(), ['id' => 'agendaItemId']);
+    }
+
+    /**
      * @return Consultation
      */
     public function getMyConsultation()
@@ -138,7 +148,7 @@ class Motion extends IMotion
     {
         return [
             [['consultationId', 'motionTypeId'], 'required'],
-            [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed'], 'number'],
+            [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed', 'agendaItemId'], 'number'],
             [['title'], 'safe'],
         ];
     }

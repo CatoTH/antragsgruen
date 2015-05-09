@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property Consultation $consultation
  * @property ConsultationSettingsMotionSection[] $motionSections
  * @property Motion[] $motions
+ * @property ConsultationAgendaItem[] $agendaItems
  */
 class ConsultationSettingsMotionType extends ActiveRecord
 {
@@ -53,6 +54,14 @@ class ConsultationSettingsMotionType extends ActiveRecord
         return $this->hasMany(ConsultationSettingsMotionSection::className(), ['motionTypeId' => 'id'])
             ->where('status = ' . ConsultationSettingsMotionSection::STATUS_VISIBLE)
             ->orderBy('position');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAgendaItems()
+    {
+        return $this->hasMany(ConsultationAgendaItem::className(), ['motionTypeId' => 'id']);
     }
 
     /**
