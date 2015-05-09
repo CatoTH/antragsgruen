@@ -6,11 +6,11 @@ class LoggedIn extends IPolicy
 {
     /**
      * @static
-     * @return string
+     * @return int
      */
     public static function getPolicyID()
     {
-        return "loggedin";
+        return 2;
     }
 
     /**

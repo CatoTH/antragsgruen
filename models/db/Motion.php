@@ -24,7 +24,7 @@ use Yii;
  * @property string $cache
  * @property int $textFixed
  *
- * @property ConsultationSettingsMotionType $motionType
+ * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
  * @property Amendment[] $amendments
  * @property MotionComment[] $comments
@@ -114,7 +114,7 @@ class Motion extends IMotion
      */
     public function getMotionType()
     {
-        return $this->hasOne(ConsultationSettingsMotionType::className(), ['id' => 'motionTypeId']);
+        return $this->hasOne(ConsultationMotionType::className(), ['id' => 'motionTypeId']);
     }
 
     /**
@@ -269,7 +269,7 @@ class Motion extends IMotion
         }
 
         if ($this->consultation->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
-            if ($this->consultation->motionDeadlineIsOver()) {
+            if ($this->motionType->motionDeadlineIsOver()) {
                 return false;
             } else {
                 return true;

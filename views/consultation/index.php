@@ -50,9 +50,9 @@ echo '</h1>';
 
 echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;">';
 
-if ($consultation->deadlineMotions != "") {
+if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->deadlineMotions != "") {
     echo '<p class="antragsschluss_kreis">Antrags&shy;schluss: ';
-    echo Tools::formatMysqlDateTime($consultation->deadlineMotions) . "</p>\n";
+    echo Tools::formatMysqlDateTime($consultation->motionTypes[0]->deadlineMotions) . "</p>\n";
 }
 
 if ($admin) {

@@ -2,25 +2,25 @@
 
 namespace app\models\pdfLayouts;
 
-use app\models\db\Consultation;
+use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use TCPDF;
 use Yii;
 
 class IPDFLayout
 {
-    /** @var Consultation */
-    protected $consultation;
+    /** @var ConsultationMotionType */
+    protected $motionType;
 
     /** @var TCPDF */
     protected $pdf;
 
     /**
-     * @param Consultation $consultation
+     * @param ConsultationMotionType $motionType
      */
-    public function __construct(Consultation $consultation)
+    public function __construct(ConsultationMotionType $motionType)
     {
-        $this->consultation = $consultation;
+        $this->motionType = $motionType;
     }
 
     /**
@@ -39,7 +39,7 @@ class IPDFLayout
         $pdf->SetMargins(25, 40, 25);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);
 
-//set image scale factor
+        //set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->SetFont('dejavusans', '', 10);
 
@@ -60,14 +60,15 @@ class IPDFLayout
      */
     public function printMotionHeader(Motion $motion)
     {
-        $pdf = $this->pdf;
+        $pdf      = $this->pdf;
+        $settings = $this->motionType->consultation->getSettings();
 
-        if (file_exists($this->consultation->getSettings()->logoUrl)) {
+        if (file_exists($settings->logoUrl)) {
             $pdf->setJPEGQuality(100);
-            $pdf->Image($this->consultation->getSettings()->logoUrl, 22, 32, 47, 26);
+            $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
         }
 
-        if (!$this->consultation->getSettings()->hideRevision) {
+        if (!$settings->hideRevision) {
             $revName = $motion->titlePrefix;
             if ($revName == "") {
                 $revName = 'Entwurf';
@@ -108,10 +109,12 @@ class IPDFLayout
 
         $pdf->SetXY((210 - $width) / 2, 60);
         $pdf->Write(20, $str);
-        $pdf->SetLineStyle(array(
-            "width" => 3,
-            'color' => array(150, 150, 150),
-        ));
+        $pdf->SetLineStyle(
+            [
+                "width" => 3,
+                'color' => array(150, 150, 150),
+            ]
+        );
         $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
         $pdf->SetY(90);

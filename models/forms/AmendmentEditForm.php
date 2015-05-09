@@ -140,7 +140,7 @@ class AmendmentEditForm extends Model
         }
 
         try {
-            $this->motion->consultation->getAmendmentInitiatorFormClass()->validateInitiatorViewAmendment();
+            $this->motion->motionType->getAmendmentInitiatorFormClass()->validateInitiatorViewAmendment();
         } catch (FormError $e) {
             $errors = array_merge($errors, $e->getMessages());
         }
@@ -156,14 +156,14 @@ class AmendmentEditForm extends Model
      */
     public function createAmendment()
     {
-        if (!$this->motion->consultation->getMotionPolicy()->checkAmendmentSubmit()) {
+        if (!$this->motion->motionType->getMotionPolicy()->checkAmendmentSubmit()) {
             throw new FormError("Keine Berechtigung zum Anlegen von Änderungsanträgen.");
         }
 
         $amendment = new Amendment();
 
         $this->setAttributes([$_POST, $_FILES]);
-        $this->supporters = $this->motion->consultation->getAmendmentInitiatorFormClass()
+        $this->supporters = $this->motion->motionType->getAmendmentInitiatorFormClass()
             ->getAmendmentSupporters($amendment);
 
         $this->createAmendmentVerify();
@@ -180,7 +180,7 @@ class AmendmentEditForm extends Model
         $amendment->cache             = '';
 
         if ($amendment->save()) {
-            $this->motion->consultation->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);
+            $this->motion->motionType->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);
 
             foreach ($this->sections as $section) {
                 $section->amendmentId = $amendment->id;
@@ -213,7 +213,7 @@ class AmendmentEditForm extends Model
             }
         }
 
-        $this->motion->consultation->getAmendmentInitiatorFormClass()->validateInitiatorViewAmendment();
+        $this->motion->motionType->getAmendmentInitiatorFormClass()->validateInitiatorViewAmendment();
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
@@ -227,8 +227,8 @@ class AmendmentEditForm extends Model
      */
     public function saveAmendment(Amendment $amendment)
     {
-        $consultation = $this->motion->consultation;
-        if (!$consultation->getAmendmentPolicy()->checkAmendmentSubmit()) {
+        $motionType = $this->motion->motionType;
+        if (!$motionType->getAmendmentPolicy()->checkAmendmentSubmit()) {
             throw new FormError("Keine Berechtigung zum Anlegen von Änderungsanträgen.");
         }
 
@@ -236,7 +236,7 @@ class AmendmentEditForm extends Model
         $amendment->changeExplanation = $this->reason;
 
         if ($amendment->save()) {
-            $consultation->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);
+            $motionType->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);
 
             // Sections
             foreach ($amendment->sections as $section) {

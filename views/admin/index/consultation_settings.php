@@ -83,6 +83,8 @@ echo '<fieldset class="form-group">
     </div>
 </fieldset>';
 
+/*
+
 $deadlineMotions = Tools::dateSql2bootstraptime($consultation->deadlineMotions);
 $deadlineAmendments = Tools::dateSql2bootstraptime($consultation->deadlineAmendments);
 
@@ -109,8 +111,6 @@ echo '<fieldset class="form-group">
 </fieldset>
 
 ';
-/*
-
 
     <div>
         <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="wartungs_modus_aktiv">
@@ -132,8 +132,8 @@ echo '<fieldset class="form-group">
 echo '</div>
 
 <h2>Anträge</h2>
-<div class="content">
-
+<div class="content">';
+/*
 <fieldset class="form-group">
         <label class="col-sm-4 control-label" for="policyMotions">Antragsberechtigt:</label>
         <div class="col-sm-8">';
@@ -144,22 +144,7 @@ echo Html::dropDownList(
     ['id' => 'policyMotions', 'class' => 'form-control']
 );
 echo '</div></fieldset>';
-/*
-    <div class="antragstypen_row">
-        <label>Auswählbare Antragstypen</label>
-
-        <div class="std_content_col"><?
-            foreach (Antrag::$TYPEN as $id => $name) {
-                echo '<label><input name="antrags_typen_aktiviert[]" value="' . $id . '" type="checkbox" ';
-                if (!in_array($id, $einstellungen->antrags_typen_deaktiviert)) echo ' checked';
-                echo '> ' . CHtml::encode($name) . '</label>';
-            }
-            ?></div>
-    </div>
-    <br>
-    <br>
 */
-
 
 $handledSettings[] = 'lineNumberingGlobal';
 echo '<fieldset><label>';
@@ -203,9 +188,9 @@ $layout->addOnLoadJS('$.AntragsgruenAdmin.consultationEditForm();');
 
 echo '</div>
 <h2>Änderungsanträge</h2>
-<div class="content">
+<div class="content">';
 
-
+/*
 <fieldset class="form-group">
         <label class="col-sm-4 control-label" for="policyAmendments">Antragsberechtigt:</label>
         <div class="col-sm-8">';
@@ -216,7 +201,7 @@ echo Html::dropDownList(
     ['id' => 'policyAmendments', 'class' => 'form-control']
 );
 echo '</div></fieldset>';
-
+*/
 
 echo '<fieldset class="form-group">
         <label class="col-sm-4 control-label" for="amendmentNumbering">Nummerierung:</label>
@@ -241,8 +226,8 @@ echo '</div>
 
 <h2>Kommentare</h2>
 
-<div class="content">
-
+<div class="content">';
+/*
 <fieldset class="form-group">
         <label class="col-sm-4 control-label" for="policyComments">Kommentieren dürfen:</label>
         <div class="col-sm-8">';
@@ -253,7 +238,7 @@ echo Html::dropDownList(
     ['id' => 'policyComments', 'class' => 'form-control']
 );
 echo '</div></fieldset>';
-
+*/
 
 $handledSettings[] = 'screeningComments';
 echo '<fieldset><label>';

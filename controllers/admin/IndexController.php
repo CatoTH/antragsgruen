@@ -105,8 +105,10 @@ class IndexController extends AdminBase
         if (isset($_POST['save'])) {
             $data = $_POST['consultation'];
             $model->setAttributes($data);
+            /*
             $model->deadlineMotions    = Tools::dateBootstraptime2sql($data['deadlineMotions'], $locale);
             $model->deadlineAmendments = Tools::dateBootstraptime2sql($data['deadlineAmendments'], $locale);
+            */
 
             $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
             $settings      = $model->getSettings();
@@ -199,7 +201,7 @@ class IndexController extends AdminBase
         $this->saveTags($consultation);
 
         if (isset($_POST['save'])) {
-            $consultation->policySupport = $_POST['consultation']['policySupport'];
+            //$consultation->policySupport = $_POST['consultation']['policySupport'];
 
             $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
             $settings      = $consultation->getSettings();

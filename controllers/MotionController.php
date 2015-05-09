@@ -48,7 +48,7 @@ class MotionController extends Base
      */
     private function writeComment(Motion $motion, &$viewParameters)
     {
-        if (!$motion->consultation->getCommentPolicy()->checkMotionSubmit()) {
+        if (!$motion->motionType->getCommentPolicy()->checkMotionSubmit()) {
             \Yii::$app->session->setFlash('error', 'No rights to write a comment');
         }
         $commentForm = new CommentForm();
@@ -133,7 +133,7 @@ class MotionController extends Base
     private function motionLikeDislike(Motion $motion, $role, $string)
     {
         $currentUser = User::getCurrentUser();
-        if (!$this->consultation->getSupportPolicy()->checkSupportSubmit() || $currentUser == null) {
+        if (!$motion->motionType->getSupportPolicy()->checkSupportSubmit() || $currentUser == null) {
             throw new FormError('Supporting this motion is not possible');
         }
 
@@ -508,7 +508,7 @@ class MotionController extends Base
         $motionType = $this->consultation->getMotionType($motionTypeId);
         $form = new MotionEditForm($motionType, null);
 
-        if (!$this->consultation->getMotionPolicy()->checkCurUserHeuristically()) {
+        if (!$motionType->getMotionPolicy()->checkCurUserHeuristically()) {
             \Yii::$app->session->setFlash('error', 'Es kann kein Antrag angelegt werden.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
             return '';

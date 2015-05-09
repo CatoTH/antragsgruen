@@ -6,6 +6,7 @@ use app\controllers\Base;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Consultation;
+use app\models\db\ConsultationMotionType;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
@@ -17,15 +18,15 @@ use yii\web\View;
 
 class DefaultForm implements IInitiatorView
 {
-    /** @var Consultation $consultation */
-    protected $consultation;
+    /** @var Consultation $motionType $motionType */
+    protected $motionType;
 
     /**
-     * @param Consultation $consultation
+     * @param ConsultationMotionType $motionType
      */
-    public function __construct(Consultation $consultation)
+    public function __construct(ConsultationMotionType $motionType)
     {
-        $this->consultation = $consultation;
+        $this->motionType = $motionType;
     }
 
     /**
@@ -130,7 +131,7 @@ class DefaultForm implements IInitiatorView
         }
 
         $initiator = $_POST['Initiator'];
-        $settings  = $this->consultation->getSettings();
+        $settings  = $this->motionType->consultation->getSettings();
 
         $errors = [];
 

@@ -320,7 +320,7 @@ class Amendment extends IMotion
         }
 
         if ($this->motion->consultation->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
-            if ($this->motion->consultation->amendmentDeadlineIsOver()) {
+            if ($this->motion->motionType->amendmentDeadlineIsOver()) {
                 return false;
             } else {
                 return true;

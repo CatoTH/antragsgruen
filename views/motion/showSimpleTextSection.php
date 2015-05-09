@@ -34,7 +34,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
 
     echo '<ul class="bookmarks">';
-    $mayOpen = $section->motion->consultation->getCommentPolicy()->checkCurUserHeuristically();
+    $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurUserHeuristically();
     if (count($paragraph->comments) > 0 || $mayOpen) {
         echo '<li class="comment">';
         $str = '<span class="glyphicon glyphicon-comment"></span>';
@@ -68,7 +68,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     echo '</div>';
 
 
-    $mayOpen = $section->motion->consultation->getCommentPolicy()->checkCurUserHeuristically();
+    $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurUserHeuristically();
     if (count($paragraph->comments) > 0 || $mayOpen) {
         echo $this->render(
             'showComments',

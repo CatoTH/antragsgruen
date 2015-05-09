@@ -21,7 +21,7 @@ use yii\db\ActiveRecord;
  * @property Consultation $consultation
  * @property ConsultationAgendaItem $parentItem
  * @property ConsultationAgendaItem[] $childItems
- * @property ConsultationSettingsMotionType $motionType
+ * @property ConsultationMotionType $motionType
  * @property Motion[] $motions
  */
 class ConsultationAgendaItem extends ActiveRecord
@@ -63,7 +63,7 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public function getMotionType()
     {
-        return $this->hasOne(ConsultationSettingsMotionType::className(), ['id' => 'motionTypeId']);
+        return $this->hasOne(ConsultationMotionType::className(), ['id' => 'motionTypeId']);
     }
 
     /**

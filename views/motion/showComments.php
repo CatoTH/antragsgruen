@@ -13,7 +13,6 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
-use app\models\db\MotionCommentSupporter;
 use app\models\db\User;
 use yii\helpers\Html;
 
@@ -108,7 +107,7 @@ foreach ($comments as $comment) {
     echo '</div></article>';
 }
 
-if ($motion->consultation->getMotionPolicy()) {
+if ($motion->motionType->getMotionPolicy()) {
     echo Html::beginForm('', 'post', ['class' => 'commentForm form-horizontal row']);
     echo '<fieldset class="col-md-8 col-md-offset-2">';
     echo '<label>Kommentar schreiben</label>';

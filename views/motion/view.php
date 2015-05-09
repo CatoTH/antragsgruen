@@ -38,23 +38,21 @@ if ($motion->dateResolution != "") {
 
 $html = '<ul class="sidebarActions">';
 
-if ($motion->motionType->hasAmendments) {
-    $policy = $motion->consultation->getAmendmentPolicy();
-    if ($policy->checkCurUserHeuristically()) {
+$policy = $motion->motionType->getAmendmentPolicy();
+if ($policy->checkCurUserHeuristically()) {
+    $html .= '<li class="amendmentCreate">';
+    $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
+    $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
+    $title .= Yii::t('motion', 'Änderungsantrag stellen');
+    $html .= Html::a($title, $amendCreateUrl) . '</li>';
+} else {
+    $msg = $policy->getPermissionDeniedAmendmentMsg();
+    if ($msg != "") {
         $html .= '<li class="amendmentCreate">';
-        $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
-        $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
-        $title .= Yii::t('motion', 'Änderungsantrag stellen');
-        $html .= Html::a($title, $amendCreateUrl) . '</li>';
-    } else {
-        $msg = $policy->getPermissionDeniedAmendmentMsg();
-        if ($msg != "") {
-            $html .= '<li class="amendmentCreate">';
-            $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
-            $html .= Html::encode(Yii::t('motion', 'Änderungsantrag stellen'));
-            $html .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
-            $html .= Html::encode($msg) . '</span></span></li>';
-        }
+        $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
+        $html .= Html::encode(Yii::t('motion', 'Änderungsantrag stellen'));
+        $html .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
+        $html .= Html::encode($msg) . '</span></span></li>';
     }
 }
 
@@ -131,7 +129,7 @@ if (!$minimalisticUi) {
 
     $x = array();
     foreach ($motion->getInitiators() as $supp) {
-        $name  = $supp->getNameWithResolutionDate(true);
+        $name = $supp->getNameWithResolutionDate(true);
         if ($supp->user && $supp->user->isWurzelwerkUser()) {
             $url = 'https://wurzelwerk.gruene.de/web/' . $supp->user->getWurzelwerkName();
             $name .= ' (<a href="' . Html::encode($url) . '">Wurzelwerk-Profil</a>)';
@@ -248,7 +246,7 @@ if (!$minimalisticUi) {
                class="btn" style="color: black;"><span class="glyphicon glyphicon-download-alt"></span> PDF-Version</a>
         </div>';
 
-    $policy = $motion->consultation->getAmendmentPolicy();
+    $policy = $motion->motionType->getAmendmentPolicy();
     if ($policy->checkCurUserHeuristically()) {
         echo '<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
             <a href="' . Html::encode(UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id])) . '"
@@ -288,8 +286,8 @@ $likes      = $motion->getLikes();
 $dislikes   = $motion->getDislikes();
 $enries     = (count($likes) > 0 || count($dislikes) > 0);
 
-$supportPolicy = $motion->consultation->getSupportPolicy();
-$canSupport = $supportPolicy->checkCurUserHeuristically();
+$supportPolicy  = $motion->motionType->getSupportPolicy();
+$canSupport     = $supportPolicy->checkCurUserHeuristically();
 $cantSupportMsg = $supportPolicy->getPermissionDeniedSupportMsg();
 foreach ($motion->getInitiators() as $supp) {
     if ($supp->userId == $currUserId) {
@@ -355,7 +353,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
     }
     echo '</div>';
 
-    if ($motion->consultation->getSupportPolicy()->checkSupportSubmit()) {
+    if ($motion->motionType->getSupportPolicy()->checkSupportSubmit()) {
         echo Html::beginForm();
 
         echo "<div style='text-align: center; margin-bottom: 20px;'>";
@@ -395,7 +393,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
     echo '</section>';
 }
 
-if (count($amendments) > 0 || $motion->consultation->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
+if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
     echo '<section class="amendments"><h2>' . Yii::t('motion', 'Änderungsanträge') . '</h2>
     <div class="content">';
 

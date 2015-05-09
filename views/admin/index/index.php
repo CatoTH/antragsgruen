@@ -56,19 +56,20 @@ foreach ($consultation->motionTypes as $motionType) {
 }
 echo '</li>';
 
-$motionp = $consultation->getMotionPolicy();
-if ($motionp->checkCurUserHeuristically()) {
-    foreach ($consultation->motionTypes as $motionType) {
-        $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $consultation->motionTypes[0]->id]);
+foreach ($consultation->motionTypes as $motionType) {
+    $motionp = $motionType->getMotionPolicy();
+    if ($motionp->checkCurUserHeuristically()) {
+        $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
         echo '<li style="margin-left: 20px;">';
         echo Html::a('Neuen Antrag anlegen: ' . $motionType->title, $createUrl);
         echo '</li>';
+    } else {
+        echo '<li style="margin-left: 20px;">';
+        echo 'Neuen Antrag anlegen: <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em>';
+        echo '</li>';
     }
-} else {
-    echo '<li style="margin-left: 20px;">';
-    echo 'Neuen Antrag anlegen: <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em>';
-    echo '</li>';
 }
+
 echo '</li>
 
         <li style="margin-left: 20px;">

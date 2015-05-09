@@ -237,13 +237,7 @@ class AmendmentController extends Base
             throw new NotFound('Motion not found');
         }
 
-        if (!$motion->motionType->hasAmendments) {
-            \Yii::$app->session->setFlash('error', 'Für diesen Antrag kann kein Änderungsantrag gestellt werden.');
-            $this->redirect(UrlHelper::createMotionUrl($motion));
-            return '';
-        }
-
-        if (!$this->consultation->getMotionPolicy()->checkCurUserHeuristically()) {
+        if (!$motion->motionType->getMotionPolicy()->checkCurUserHeuristically()) {
             \Yii::$app->session->setFlash('error', 'Es kann kein Änderungsantrag angelegt werden.');
             $this->redirect(UrlHelper::createMotionUrl($motion));
             return '';

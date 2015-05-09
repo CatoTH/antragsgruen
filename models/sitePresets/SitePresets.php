@@ -8,8 +8,9 @@ class SitePresets
 {
     /** @var ISitePreset[] */
     public static $PRESETS = array(
-        0 => \app\models\sitePresets\Parteitag::class,
-        1 => \app\models\sitePresets\Bewerbungsverfahren::class,
+        0 => Motions::class,
+        1 => Elections::class,
+        2 => PartyCongress::class,
     );
 
     /**
@@ -22,6 +23,6 @@ class SitePresets
         if (isset(static::$PRESETS[$presetId])) {
             return new static::$PRESETS[$presetId];
         }
-        throw new Internal("Unknown Preset: " . $presetId);
+        throw new Internal('Unknown Preset: ' . $presetId);
     }
 }

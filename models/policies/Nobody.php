@@ -6,11 +6,11 @@ class Nobody extends IPolicy
 {
     /**
      * @static
-     * @return string
+     * @return int
      */
     public static function getPolicyID()
     {
-        return 'nobody';
+        return 0;
     }
 
     /**

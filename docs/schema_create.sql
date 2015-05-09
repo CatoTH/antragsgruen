@@ -108,21 +108,15 @@ CREATE TABLE `cache` (
 CREATE TABLE `consultation` (
   `id`                 INT(11)      NOT NULL,
   `siteId`             INT(11)      NOT NULL,
-  `urlPath`            VARCHAR(45)       DEFAULT NULL,
-  `type`               TINYINT(4)        DEFAULT NULL,
+  `urlPath`            VARCHAR(45)  DEFAULT NULL,
+  `type`               TINYINT(4)   DEFAULT NULL,
   `wordingBase`        VARCHAR(20)  NOT NULL,
   `title`              VARCHAR(200) NOT NULL,
   `titleShort`         VARCHAR(45)  NOT NULL,
-  `eventDateFrom`      DATE              DEFAULT NULL,
-  `eventDateTo`        DATE              DEFAULT NULL,
-  `deadlineMotions`    TIMESTAMP    NULL DEFAULT NULL,
-  `deadlineAmendments` TIMESTAMP    NULL DEFAULT NULL,
-  `policyMotions`      VARCHAR(20)       DEFAULT NULL,
-  `policyAmendments`   VARCHAR(20)       DEFAULT NULL,
-  `policyComments`     VARCHAR(20)       DEFAULT NULL,
-  `policySupport`      VARCHAR(20)       DEFAULT NULL,
+  `eventDateFrom`      DATE         DEFAULT NULL,
+  `eventDateTo`        DATE         DEFAULT NULL,
   `amendmentNumbering` TINYINT(4)   NOT NULL,
-  `adminEmail`         VARCHAR(150)      DEFAULT NULL,
+  `adminEmail`         VARCHAR(150) DEFAULT NULL,
   `settings`           TEXT
 )
   ENGINE = InnoDB
@@ -164,6 +158,29 @@ CREATE TABLE `consultationAgendaItem` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `consultationMotionType`
+--
+
+CREATE TABLE `consultationMotionType` (
+  `id`                 INT(11)      NOT NULL,
+  `consultationId`     INT(11)      NOT NULL,
+  `title`              VARCHAR(100) NOT NULL,
+  `motionPrefix`       VARCHAR(10)       DEFAULT NULL,
+  `position`           INT(11)      NOT NULL,
+  `cssicon`            VARCHAR(100)      DEFAULT NULL,
+  `deadlineMotions`    TIMESTAMP    NULL DEFAULT NULL,
+  `deadlineAmendments` TIMESTAMP    NULL DEFAULT NULL,
+  `policyMotions`      INT(11)      NOT NULL,
+  `policyAmendments`   INT(11)      NOT NULL,
+  `policyComments`     INT(11)      NOT NULL,
+  `policySupport`      INT(11)      NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `consultationOdtTemplate`
 --
 
@@ -196,24 +213,6 @@ CREATE TABLE `consultationSettingsMotionSection` (
   `lineNumbers`   TINYINT(4)   NOT NULL DEFAULT '0',
   `hasComments`   TINYINT(4)   NOT NULL,
   `hasAmendments` TINYINT(4)   NOT NULL DEFAULT '1'
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `consultationSettingsMotionType`
---
-
-CREATE TABLE `consultationSettingsMotionType` (
-  `id`             INT(11)      NOT NULL,
-  `consultationId` INT(11)      NOT NULL,
-  `title`          VARCHAR(100) NOT NULL,
-  `motionPrefix`   VARCHAR(10)           DEFAULT NULL,
-  `hasAmendments`  TINYINT(4)   NOT NULL DEFAULT '1',
-  `position`       INT(11)      NOT NULL,
-  `cssicon`        VARCHAR(100)          DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -532,6 +531,13 @@ ADD KEY `parentItemId` (`parentItemId`),
 ADD KEY `motionTypeId` (`motionTypeId`);
 
 --
+-- Indexes for table `consultationMotionType`
+--
+ALTER TABLE `consultationMotionType`
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `consultationId` (`consultationId`, `position`);
+
+--
 -- Indexes for table `consultationOdtTemplate`
 --
 ALTER TABLE `consultationOdtTemplate`
@@ -544,13 +550,6 @@ ADD KEY `fk_consultationIdx` (`consultationId`);
 ALTER TABLE `consultationSettingsMotionSection`
 ADD PRIMARY KEY (`id`),
 ADD KEY `motionType` (`motionTypeId`);
-
---
--- Indexes for table `consultationSettingsMotionType`
---
-ALTER TABLE `consultationSettingsMotionType`
-ADD PRIMARY KEY (`id`),
-ADD UNIQUE KEY `consultationId` (`consultationId`, `position`);
 
 --
 -- Indexes for table `consultationSettingsTag`
@@ -693,6 +692,11 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `consultationAgendaItem`
 MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `consultationMotionType`
+--
+ALTER TABLE `consultationMotionType`
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `consultationOdtTemplate`
 --
 ALTER TABLE `consultationOdtTemplate`
@@ -701,11 +705,6 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `consultationSettingsMotionSection`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `consultationSettingsMotionType`
---
-ALTER TABLE `consultationSettingsMotionType`
 MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultationSettingsTag`
@@ -820,9 +819,15 @@ ADD CONSTRAINT `consultationAgendaItem_ibfk_1` FOREIGN KEY (`consultationId`) RE
 ADD CONSTRAINT `consultationAgendaItem_ibfk_2` FOREIGN KEY (`parentItemId`) REFERENCES `consultationAgendaItem` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION,
-ADD CONSTRAINT `consultationAgendaItem_ibfk_3` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`)
+ADD CONSTRAINT `consultationAgendaItem_ibfk_3` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationMotionType`
+--
+ALTER TABLE `consultationMotionType`
+ADD CONSTRAINT `consultationMotionType_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 --
 -- Constraints for table `consultationOdtTemplate`
@@ -836,15 +841,9 @@ ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `con
 -- Constraints for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `consultationSettingsMotionSection`
-ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`)
+ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
-
---
--- Constraints for table `consultationSettingsMotionType`
---
-ALTER TABLE `consultationSettingsMotionType`
-ADD CONSTRAINT `consultationSettingsMotionType_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 --
 -- Constraints for table `consultationSettingsTag`
@@ -891,7 +890,7 @@ ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCE
 ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationSettingsMotionType` (`id`),
+ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`),
 ADD CONSTRAINT `motion_ibfk_2` FOREIGN KEY (`agendaItemId`) REFERENCES `consultationAgendaItem` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;

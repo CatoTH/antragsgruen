@@ -26,8 +26,8 @@ if ($form->motion->titlePrefix != '') {
 
 
 $params->addJS('/js/ckeditor/ckeditor.js');
-$params->breadcrumbs[UrlHelper::createMotionUrl($form->motion)] = $form->motion->titlePrefix;
-$params->breadcrumbs[] = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+$params->addBreadcrumb($form->motion->titlePrefix, UrlHelper::createMotionUrl($form->motion));
+$params->addBreadcrumb(Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
@@ -43,7 +43,7 @@ echo '</div><br style="clear: both;">';
 
 echo $controller->showErrors();
 
-$motionPolicy = $consultation->getMotionPolicy();
+$motionPolicy = $form->motion->motionType->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo '<fieldset>
                 <legend>' . Yii::t('amend', 'Voraussetzungen für einen Antrag'), '</legend>
@@ -98,7 +98,7 @@ echo '</div>';
 
 
 
-$initiatorClass = $consultation->getAmendmentInitiatorFormClass();
+$initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();
 echo $initiatorClass->getAmendmentInitiatorForm($consultation, $form, $controller);
 
 

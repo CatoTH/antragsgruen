@@ -6,7 +6,7 @@
 
 use app\models\db\Motion;
 
-$pdfLayout = $motion->consultation->getPDFLayoutClass();
+$pdfLayout = $motion->motionType->getPDFLayoutClass();
 $pdf       = $pdfLayout->createPDFClass();
 
 header('Content-type: application/pdf; charset=UTF-8');

@@ -2,15 +2,15 @@
 
 namespace app\models\policies;
 
-use app\models\db\Consultation;
+use app\models\db\ConsultationMotionType;
 use app\models\exceptions\Internal;
 
 abstract class IPolicy
 {
-    const POLICY_ADMINS    = "admins";
-    const POLICY_ALL       = "all";
-    const POLICY_LOGGED_IN = "loggedin";
-    const POLICY_NOBODY    = "nobody";
+    const POLICY_NOBODY    = 0;
+    const POLICY_ALL       = 1;
+    const POLICY_LOGGED_IN = 2;
+    const POLICY_ADMINS    = 3;
 
     /**
      * @return IPolicy[]
@@ -37,26 +37,26 @@ abstract class IPolicy
         return $names;
     }
 
-    /** @var Consultation */
-    protected $consultation;
+    /** @var ConsultationMotionType */
+    protected $motionType;
 
     /**
-     * @param Consultation $consultation
+     * @param ConsultationMotionType $motionType
      */
-    public function __construct(Consultation $consultation)
+    public function __construct(ConsultationMotionType $motionType)
     {
-        $this->consultation = $consultation;
+        $this->motionType = $motionType;
     }
 
 
     /**
      * @static
      * @abstract
-     * @return string
+     * @return int
      */
     public static function getPolicyID()
     {
-        return "";
+        return -1;
     }
 
     /**
@@ -66,7 +66,7 @@ abstract class IPolicy
      */
     public static function getPolicyName()
     {
-        return "";
+        return '';
     }
 
     /**
@@ -148,18 +148,18 @@ abstract class IPolicy
     /**
      * @static
      * @param string $policyId
-     * @param Consultation $consultation
+     * @param ConsultationMotionType $motionType
      * @throws Internal
      * @return IPolicy
      */
-    public static function getInstanceByID($policyId, Consultation $consultation)
+    public static function getInstanceByID($policyId, ConsultationMotionType $motionType)
     {
         /** @var IPolicy $polClass */
         foreach (static::getPolicies() as $polId => $polClass) {
             if ($polId == $policyId) {
-                return new $polClass($consultation);
+                return new $polClass($motionType);
             }
         }
-        throw new Internal("Unbekannte Policy: " . $policyId);
+        throw new Internal('Unknown Policy: ' . $policyId);
     }
 }

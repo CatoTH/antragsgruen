@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\ConsultationSettingsMotionType;
+use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularDataType;
@@ -9,7 +9,7 @@ use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
- * @var ConsultationSettingsMotionType $motionType
+ * @var ConsultationMotionType $motionType
  */
 
 /** @var \app\controllers\Base $controller */

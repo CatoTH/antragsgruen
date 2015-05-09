@@ -25,7 +25,7 @@ use yii\db\ActiveRecord;
  * @property int $hasAmendments
  *
  * @property MotionSection[] $sections
- * @property ConsultationSettingsMotionType $motionType
+ * @property ConsultationMotionType $motionType
  */
 class ConsultationSettingsMotionSection extends ActiveRecord
 {
@@ -69,7 +69,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
      */
     public function getMotionType()
     {
-        return $this->hasOne(ConsultationSettingsMotionType::className(), ['id' => 'motionTypeId']);
+        return $this->hasOne(ConsultationMotionType::className(), ['id' => 'motionTypeId']);
     }
 
     /**

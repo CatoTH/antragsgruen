@@ -113,8 +113,8 @@ $booleanSettingRow($settings, 'minimalisticUI', $handledSettings, $description);
 
 echo '</div>
 <h2>Anträge</h2>
-<div class="content">
-
+<div class="content">';
+/*
 <fieldset class="form-group">
         <label class="col-sm-4 control-label" for="policyMotions">(Änderungs-)Anträge unterstützen dürfen:</label>
         <div class="col-sm-8">';
@@ -131,7 +131,7 @@ echo Html::dropDownList(
     ['id' => 'policySupport', 'class' => 'form-control']
 );
 echo '</div></fieldset>';
-
+*/
 
 $tags = $consultation->getSortedTags();
 echo '<fieldset class="form-group">

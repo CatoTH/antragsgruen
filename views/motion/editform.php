@@ -29,7 +29,7 @@ echo '<div class="form content hideIfEmpty">';
 
 echo $controller->showErrors();
 
-$motionPolicy = $consultation->getMotionPolicy();
+$motionPolicy = $form->motionType->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
     echo '<fieldset>
                 <legend>' . Yii::t('motion', 'Prerequisites for a motion'), '</legend>
@@ -91,7 +91,7 @@ echo '</div>';
 
 
 
-$initiatorClass = $consultation->getMotionInitiatorFormClass();
+$initiatorClass = $form->motionType->getMotionInitiatorFormClass();
 echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $controller);
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';

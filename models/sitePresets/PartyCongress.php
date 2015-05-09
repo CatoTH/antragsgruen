@@ -4,20 +4,19 @@ namespace app\models\sitePresets;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\ConsultationSettingsMotionType;
+use app\models\db\ConsultationMotionType;
 use app\models\db\Site;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 
-class Parteitag implements ISitePreset
+class PartyCongress implements ISitePreset
 {
-
     /**
      * @return string
      */
     public static function getTitle()
     {
-        return "Parteitag";
+        return 'Parteitag';
     }
 
     /**
@@ -25,7 +24,7 @@ class Parteitag implements ISitePreset
      */
     public static function getDescription()
     {
-        return "irgendwas zum Parteitag";
+        return 'Parteitag mit Tagesordnung, Anträgen und Wahlen';
     }
 
     /**
@@ -121,7 +120,7 @@ class Parteitag implements ISitePreset
      */
     public static function createMotionTypes(Consultation $consultation)
     {
-        $type                 = new ConsultationSettingsMotionType();
+        $type                 = new ConsultationMotionType();
         $type->consultationId = $consultation->id;
         $type->title          = 'Antrag';
         $type->position       = 0;

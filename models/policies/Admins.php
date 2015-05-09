@@ -8,11 +8,11 @@ class Admins extends IPolicy
 {
     /**
      * @static
-     * @return string
+     * @return int
      */
     public static function getPolicyID()
     {
-        return "admins";
+        return 3;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace app\models\forms;
 
-use app\models\db\ConsultationSettingsMotionType;
+use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
@@ -11,8 +11,8 @@ use app\models\exceptions\FormError;
 
 class MotionEditForm extends \yii\base\Model
 {
-    /** @var ConsultationSettingsMotionType */
-    private $motionType;
+    /** @var ConsultationMotionType */
+    public $motionType;
 
     /** @var MotionSupporter[] */
     public $supporters = array();
@@ -27,10 +27,10 @@ class MotionEditForm extends \yii\base\Model
     public $motionId = null;
 
     /**
-     * @param ConsultationSettingsMotionType $motionType
+     * @param ConsultationMotionType $motionType
      * @param null|Motion $motion
      */
-    public function __construct(ConsultationSettingsMotionType $motionType, $motion)
+    public function __construct(ConsultationMotionType $motionType, $motion)
     {
         parent::__construct();
         $this->motionType = $motionType;
@@ -116,7 +116,7 @@ class MotionEditForm extends \yii\base\Model
         }
 
         try {
-            $this->motionType->consultation->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
+            $this->motionType->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
         } catch (FormError $e) {
             $errors = array_merge($errors, $e->getMessages());
         }
@@ -134,14 +134,14 @@ class MotionEditForm extends \yii\base\Model
     {
         $consultation = $this->motionType->consultation;
 
-        if (!$consultation->getMotionPolicy()->checkMotionSubmit()) {
+        if (!$this->motionType->getMotionPolicy()->checkMotionSubmit()) {
             throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
         }
 
         $motion = new Motion();
 
         $this->setAttributes([$_POST, $_FILES]);
-        $this->supporters = $consultation->getMotionInitiatorFormClass()->getMotionSupporters($motion);
+        $this->supporters = $this->motionType->getMotionInitiatorFormClass()->getMotionSupporters($motion);
 
         $this->createMotionVerify();
 
@@ -155,7 +155,7 @@ class MotionEditForm extends \yii\base\Model
         $motion->cache          = '';
 
         if ($motion->save()) {
-            $consultation->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
+            $this->motionType->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
 
             foreach ($this->tags as $tagId) {
                 /** @var ConsultationSettingsTag $tag */
@@ -196,7 +196,7 @@ class MotionEditForm extends \yii\base\Model
             }
         }
 
-        $this->motionType->consultation->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
+        $this->motionType->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
@@ -211,14 +211,14 @@ class MotionEditForm extends \yii\base\Model
     public function saveMotion(Motion $motion)
     {
         $consultation = $this->motionType->consultation;
-        if (!$consultation->getMotionPolicy()->checkMotionSubmit()) {
+        if (!$this->motionType->getMotionPolicy()->checkMotionSubmit()) {
             throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
         }
 
         $this->saveMotionVerify();
 
         if ($motion->save()) {
-            $consultation->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
+            $this->motionType->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
 
             // Tags
             foreach ($motion->tags as $tag) {

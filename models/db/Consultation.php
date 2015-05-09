@@ -6,10 +6,7 @@ use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\DB;
 use app\models\exceptions\NotFound;
 use app\models\forms\SiteCreateForm;
-use app\models\initiatorForms\DefaultForm;
-use app\models\policies\IPolicy;
 use app\models\sitePresets\ISitePreset;
-use app\models\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
 
 /**
@@ -26,12 +23,6 @@ use yii\db\ActiveRecord;
  * @property string $wordingBase
  * @property string $eventDateFrom
  * @property string $eventDateTo
- * @property string $deadlineMotions
- * @property string $deadlineAmendments
- * @property string $policyMotions
- * @property string $policyAmendments
- * @property string $policyComments
- * @property string $policySupport
  * @property string $adminEmail
  * @property string $settings
  *
@@ -42,7 +33,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationOdtTemplate[] $odtTemplates
  * @property ConsultationSubscription[] $subscriptions
  * @property ConsultationSettingsTag[] $tags
- * @property ConsultationSettingsMotionType[] $motionTypes
+ * @property ConsultationMotionType[] $motionTypes
  * @property ConsultationAgendaItem[] $agendaItems
  */
 class Consultation extends ActiveRecord
@@ -62,7 +53,7 @@ class Consultation extends ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
+            [['title'], 'required'],
             [['title', 'titleShort', 'eventDateFrom', 'eventDateTo'], 'safe'],
             [['adminEmail', 'wordingBase', 'amendmentNumbering'], 'safe'],
         ];
@@ -138,12 +129,12 @@ class Consultation extends ActiveRecord
      */
     public function getMotionTypes()
     {
-        return $this->hasMany(ConsultationSettingsMotionType::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationMotionType::className(), ['consultationId' => 'id']);
     }
 
     /**
      * @param int $motionTypeId
-     * @return ConsultationSettingsMotionType
+     * @return ConsultationMotionType
      * @throws NotFound
      */
     public function getMotionType($motionTypeId)
@@ -244,89 +235,6 @@ class Consultation extends ActiveRecord
         return $tags;
     }
 
-
-    /**
-     * @return IPolicy
-     */
-    public function getMotionPolicy()
-    {
-        return IPolicy::getInstanceByID($this->policyMotions, $this);
-    }
-
-    /**
-     * @return IPolicy
-     */
-    public function getAmendmentPolicy()
-    {
-        return IPolicy::getInstanceByID($this->policyAmendments, $this);
-    }
-
-    /**
-     * @return IPolicy
-     */
-    public function getCommentPolicy()
-    {
-        return IPolicy::getInstanceByID($this->policyComments, $this);
-    }
-
-    /**
-     * @return IPolicy
-     */
-    public function getSupportPolicy()
-    {
-        return IPolicy::getInstanceByID($this->policySupport, $this);
-    }
-
-    /**
-     * @return DefaultForm
-     */
-    public function getMotionInitiatorFormClass()
-    {
-        return new DefaultForm($this);
-    }
-
-    /**
-     * @return DefaultForm
-     */
-    public function getAmendmentInitiatorFormClass()
-    {
-        return new DefaultForm($this);
-    }
-
-    /**
-     * @return IPDFLayout
-     */
-    public function getPDFLayoutClass()
-    {
-        return new IPDFLayout($this);
-    }
-
-    /**
-     * @return bool
-     */
-    public function motionDeadlineIsOver()
-    {
-        $normalized = str_replace(array(" ", ":", "-"), array("", "", ""), $this->deadlineMotions);
-        if ($this->deadlineMotions != "" && date("YmdHis") > $normalized) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function amendmentDeadlineIsOver()
-    {
-        $normalized = str_replace(array(" ", ":", "-"), array("", "", ""), $this->deadlineAmendments);
-        if ($this->deadlineAmendments != "" && date("YmdHis") > $normalized) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * @return int[]
      */
@@ -354,7 +262,7 @@ class Consultation extends ActiveRecord
     public function getNextAvailableStatusString($motionTypeId)
     {
         $max_rev = 0;
-        /** @var ConsultationSettingsMotionType $motionType */
+        /** @var ConsultationMotionType $motionType */
         $motionType = null;
         foreach ($this->motionTypes as $t) {
             if ($t->id == $motionTypeId) {

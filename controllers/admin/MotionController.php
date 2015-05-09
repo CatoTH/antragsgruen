@@ -5,17 +5,17 @@ namespace app\controllers\admin;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\ConsultationSettingsMotionType;
+use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\exceptions\FormError;
 
 class MotionController extends AdminBase
 {
     /**
-     * @param ConsultationSettingsMotionType $motionType
+     * @param ConsultationMotionType $motionType
      * @throws FormError
      */
-    private function sectionsSave(ConsultationSettingsMotionType $motionType)
+    private function sectionsSave(ConsultationMotionType $motionType)
     {
         $position = 0;
         foreach ($_POST['sections'] as $sectionId => $data) {
@@ -41,10 +41,10 @@ class MotionController extends AdminBase
     }
 
     /**
-     * @param ConsultationSettingsMotionType $motionType
+     * @param ConsultationMotionType $motionType
      * @throws FormError
      */
-    private function sectionsDelete(ConsultationSettingsMotionType $motionType)
+    private function sectionsDelete(ConsultationMotionType $motionType)
     {
         if (!isset($_POST['sectionsTodelete'])) {
             return;
