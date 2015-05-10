@@ -94,8 +94,7 @@ class AmendmentEditForm extends Model
     }
 
     /**
-     * @param array $values
-     * @param array $files
+     * @param array $data
      * @param bool $safeOnly
      */
     public function setAttributes($data, $safeOnly = true)

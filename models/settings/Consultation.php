@@ -106,6 +106,7 @@ class Consultation
             0 => 'Standard',
             1 => 'Tabellarisch, gegliedert nach Antragstyp',
             2 => 'Tabellarisch, gegliedert nach Schlagworten',
+            3 => 'Tagesordnung',
         ];
     }
 
@@ -119,9 +120,11 @@ class Consultation
             case 0:
                 return 'index_layout_std';
             case 1:
-                return 'index_layout_bdk';
+                return 'index_layout_bdk'; // @Todo not implemented
             case 2:
-                return 'index_layout_tags';
+                return 'index_layout_tags';  // @Todo not implemented
+            case 3:
+                return 'index_layout_agenda';
             default:
                 throw new Internal('Unknown layout: ' . $this->startLayoutType);
         }

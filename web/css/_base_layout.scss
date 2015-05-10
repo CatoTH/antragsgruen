@@ -59,7 +59,7 @@ p, ul {
 }
 
 a {
-  color: $farbe_hellgruen_text;
+  color: $colorGreenLightText;
   &:hover {
     text-decoration: none;
     color: rgb(198, 214, 78);
@@ -87,11 +87,11 @@ a {
   }
 
   h1 {
-    @include gruene_ueberschrift(rgb(11, 47, 8), $farbe_dunkelgruen);
+    @include gruene_ueberschrift(rgb(11, 47, 8), $colorGreenDark);
     margin: -1px;
   }
-  h2, h3, .nav-header {
-    @include gruene_ueberschrift($farbe_hellgruen, rgb(185, 209, 38));
+  h2.green, h3.green, .nav-header {
+    @include gruene_ueberschrift($colorGreenLight, rgb(185, 209, 38));
     margin: -1px;
   }
 
@@ -127,7 +127,7 @@ a {
       display: inline;
       padding: 0;
       margin-left: 40px;
-      color: $farbe_hellgruen;
+      color: $colorGreenLight;
       font-family: "Open Sans", sans-serif;
       font-style: normal;
       font-weight: bold;
@@ -144,7 +144,7 @@ a {
       background: none;
       filter: none;
       box-shadow: none;
-      color: $farbe_dunkelgruen !important;
+      color: $colorGreenDark !important;
     }
   }
 
@@ -168,7 +168,7 @@ a {
   */
   text-transform: uppercase;
   color: #fff;
-  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
 }
 
 
@@ -217,7 +217,7 @@ label {
   }
 
   a {
-    color: $farbe_hellgruen;
+    color: $colorGreenLight;
   }
 
 }

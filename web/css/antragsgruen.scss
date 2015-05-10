@@ -5,16 +5,16 @@
 @import "base_layout";
 @import "icons";
 
-.antragsschluss_kreis {
+.deadlineCircle {
   float: right;
   width: 105px;
   height: 105px;
   padding-top: 20px;
-  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
   text-align: center;
   vertical-align: middle;
   overflow: hidden;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   font-weight: bold;
   font-size: 15px;
   line-height: 17px;
@@ -24,11 +24,8 @@
   @include border-radius(90px);
 }
 
-.motionListStd {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
 
+@mixin motionListStdMotion($titleFontSize) {
   .motion {
     padding: 12px 20px 17px 50px;
 
@@ -45,16 +42,16 @@
       &:before {
         @extend .icon-document;
         @include icons-antragsgruen('20px');
-        width: 30px;
+        width: 27px;
         margin-left: -30px;
-        color: $farbe_hellgruen;
+        color: $colorGreenLight;
       }
 
       a {
-        color: $farbe_dunkelgruen;
+        color: $colorGreenDark;
         font-weight: bold;
-        font-size: 16px;
-        line-height: 18px;
+        font-size: $titleFontSize;
+        line-height: $titleFontSize + 2;
         text-indent: 0;
         -webkit-hyphens: auto;
         -moz-hyphens: auto;
@@ -68,7 +65,7 @@
 
       .pdfLink {
         font-size: 13px;
-        color: $farbe_hellgruen_text;
+        color: $colorGreenLightText;
         margin-left: 10px;
         display: inline-block;
         font-weight: normal;
@@ -101,6 +98,34 @@
       }
     }
   }
+}
+.motionListStd {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  @include motionListStdMotion(16px);
+}
+
+.motionListAgenda {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  li.agendaItem {
+    margin-bottom: 5px;
+    padding: 10px;
+  }
+  h2, h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+  ul.motions {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @include motionListStdMotion(14px);
 }
 
 .motionData {
@@ -264,27 +289,6 @@ $lineNumberOffset4: 3px;
   }
 }
 
-.list + .list {
-  padding-top: 0;
-  margin-top: -25px;
-}
-
-.motion_test_holder_nonumbers {
-  blockquote.text {
-    margin: 3px 3px 3px 80px;
-    border-left: dotted 2px gray;
-    padding: 5px;
-  }
-  .text {
-    padding-left: 60px;
-  }
-}
-
-.ae_text_holder {
-  padding-left: 30px;
-  padding-right: 20px;
-}
-
 .bookmarks {
   float: right;
   width: 1px;
@@ -321,14 +325,14 @@ $lineNumberOffset4: 3px;
       }
     }
     &.comment > a {
-      @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+      @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
       .count:after {
         content: attr(data-count);
         padding-left: 4px;
       }
     }
     &.amendment > a {
-      @include linear-gradient(90deg, $farbe_hellgruen, rgb(185, 209, 38));
+      @include linear-gradient(90deg, $colorGreenLight, rgb(185, 209, 38));
     }
     .hider {
       @include linear-gradient(90deg, rgb(180, 180, 180), rgb(220, 220, 220));
@@ -353,7 +357,7 @@ $lineNumberOffset4: 3px;
 .motionComment {
   h3 {
     background: none;
-    color: $farbe_hellgruen_text;
+    color: $colorGreenLightText;
     font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
     font-weight: bold;
@@ -452,56 +456,6 @@ $lineNumberOffset4: 3px;
   vertical-align: top;
 }
 
-#veranstaltung-form {
-  input[type=text], select, textarea {
-    margin-bottom: 0;
-    margin-top: 10px;
-  }
-  .std_content_col {
-    display: inline-block;
-    width: 440px;
-  }
-  .antragstypen_row {
-
-  }
-}
-
-#antrag-form, #aenderungsantrag-form {
-  label {
-    display: inline-block;;
-    width: 180px;
-    vertical-align: top;
-
-  }
-  input {
-    display: inline-block;
-  }
-  input[type=text], select, textarea {
-    margin-bottom: 0;
-    margin-top: 10px;
-  }
-  #Antrag_notiz_intern, #Aenderungsantrag_notiz_intern {
-    width: 427px;
-  }
-}
-
-.ae_select_confirm {
-  text-align: center;
-}
-
-h3 label {
-  font-size: 15px;
-  font-weight: bold;
-  line-height: 18px;
-  color: inherit;
-  font-family: inherit;
-  margin: 0;
-}
-
-.ae_absatzwahl_modus.aenderungen_moeglich .antragabsatz_holder .text:hover {
-  background-color: #eee;
-  cursor: pointer;
-}
 
 .cke_skin_kama {
   border: none !important;
@@ -575,7 +529,7 @@ h3 label {
 }
 
 ul.sidebarActions {
-  @include linear-gradient(90deg, $farbe_magenta, rgb(234, 74, 161));
+  @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
   padding: 7px 0 1px 21px;
   list-style-type: none;
   margin: -1px; // verhindert weißen Mini-Rahmen
@@ -585,7 +539,7 @@ ul.sidebarActions {
   -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   font-style: normal;
   font-weight: bold;
 
@@ -610,7 +564,7 @@ ul.sidebarActions {
   }
 }
 
-.bdkMotionLististe {
+.bdkMotionList {
   padding: 25px;
   font-family: "Open Sans", verdana, sans-serif;
   font-size: 14px;
@@ -619,7 +573,7 @@ ul.sidebarActions {
     width: 100%;
   }
   th {
-    border-bottom: solid 1px $farbe_hellgruen;
+    border-bottom: solid 1px $colorGreenLight;
     font-size: 0.80em;
     line-height: 2.5em;
     font-weight: 600;
@@ -628,10 +582,10 @@ ul.sidebarActions {
   td {
     font-family: "Open Sans", verdana, sans-serif;
     vertical-align: top;
-    padding: 0.75em 0em 0.75em 0em;
+    padding: 0.75em 0 0.75em 0;
   }
   tr.antrag {
-    border-top: solid 1px $farbe_hellgruen;
+    border-top: solid 1px $colorGreenLight;
     &:first-child {
       border-top: none;
     }

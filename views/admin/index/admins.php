@@ -24,7 +24,7 @@ echo '<h1>Administratoren der Reihe</h1>';
 
 echo $controller->showErrors();
 
-echo '<h2>Eingetragen</h2>
+echo '<h2 class="green">Eingetragen</h2>
     <div class="content">
     <ul style="margin-top: 10px;">';
 
@@ -39,7 +39,7 @@ foreach ($site->admins as $admin) {
 echo '</ul>
 </div>
 
-<h2>Neu eintragen</h2>';
+<h2 class="green">Neu eintragen</h2>';
 
 $url = UrlHelper::createUrl('admin/index/admins');
 echo Html::beginForm($url, 'post', ['class' => 'content col-sm-6', 'id' => 'adminManageAddForm']);

@@ -78,6 +78,6 @@ class Admins extends IPolicy
      */
     public function checkMotionSubmit()
     {
-        return User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        return User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_SCREENING);
     }
 }

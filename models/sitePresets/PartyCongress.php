@@ -49,11 +49,7 @@ class PartyCongress implements ISitePreset
         $settings->screeningMotions    = true;
         $settings->screeningAmendments = true;
 
-        $consultation->policyMotions    = IPolicy::POLICY_ALL;
-        $consultation->policyAmendments = IPolicy::POLICY_ALL;
-        $consultation->policyComments   = IPolicy::POLICY_ALL;
-        $consultation->policySupport    = IPolicy::POLICY_LOGGED_IN;
-        $consultation->wordingBase      = 'de-parteitag';
+        $consultation->wordingBase = 'de-parteitag';
     }
 
     /**
@@ -120,10 +116,14 @@ class PartyCongress implements ISitePreset
      */
     public static function createMotionTypes(Consultation $consultation)
     {
-        $type                 = new ConsultationMotionType();
-        $type->consultationId = $consultation->id;
-        $type->title          = 'Antrag';
-        $type->position       = 0;
+        $type                   = new ConsultationMotionType();
+        $type->consultationId   = $consultation->id;
+        $type->title            = 'Antrag';
+        $type->position         = 0;
+        $type->policyMotions    = IPolicy::POLICY_ALL;
+        $type->policyAmendments = IPolicy::POLICY_ALL;
+        $type->policyComments   = IPolicy::POLICY_ALL;
+        $type->policySupport    = IPolicy::POLICY_LOGGED_IN;
         $type->save();
 
         $consultation->refresh();

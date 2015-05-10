@@ -35,7 +35,7 @@ $settings = $consultation->getSettings();
 $handledSettings = [];
 
 
-echo '<h2>Allgemeine Einstellungen zur Veranstaltung</h2>';
+echo '<h2 class="green">Allgemeine Einstellungen zur Veranstaltung</h2>';
 echo '<div class="content">';
 $handledSettings[] = 'maintainanceMode';
 echo '<fieldset>
@@ -131,7 +131,7 @@ echo '<fieldset class="form-group">
 
 echo '</div>
 
-<h2>Anträge</h2>
+<h2 class="green">Anträge</h2>
 <div class="content">';
 /*
 <fieldset class="form-group">
@@ -187,7 +187,7 @@ $layout->addOnLoadJS('$.AntragsgruenAdmin.consultationEditForm();');
 
 
 echo '</div>
-<h2>Änderungsanträge</h2>
+<h2 class="green">Änderungsanträge</h2>
 <div class="content">';
 
 /*
@@ -224,7 +224,7 @@ echo '<strong>Freischaltung</strong> von Änderungsanträgen
 
 echo '</div>
 
-<h2>Kommentare</h2>
+<h2 class="green">Kommentare</h2>
 
 <div class="content">';
 /*
@@ -255,7 +255,7 @@ echo 'Angabe der <strong>E-Mail-Adresse</strong> erzwingen
 
 
 echo '</div>
-<h2>Benachrichtigungen</h2>
+<h2 class="green">Benachrichtigungen</h2>
 <div class="content">
 
 

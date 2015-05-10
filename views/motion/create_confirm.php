@@ -23,7 +23,7 @@ foreach ($motion->getSortedSections(true) as $section) {
         continue;
     }
     echo '<section class="motionTextHolder">';
-    echo '<h2>' . Html::encode($section->consultationSetting->title) . '</h3>';
+    echo '<h2 class="green">' . Html::encode($section->consultationSetting->title) . '</h2>';
     echo '<div class="textholder consolidated">';
 
     echo $section->getSectionType()->showSimple();
@@ -33,7 +33,7 @@ foreach ($motion->getSortedSections(true) as $section) {
 }
 
 echo '<div class="motionTextHolder">
-        <h3>AntragstellerInnen</h3>
+        <h3 class="green">AntragstellerInnen</h3>
 
         <div class="content">
             <ul>';

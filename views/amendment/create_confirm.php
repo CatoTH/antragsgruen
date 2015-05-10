@@ -27,7 +27,7 @@ foreach ($amendment->getSortedSections(true) as $section) {
         continue;
     }
     echo '<section class="motionTextHolder">';
-    echo '<h2>' . Html::encode($section->consultationSetting->title) . '</h3>';
+    echo '<h2 class="green">' . Html::encode($section->consultationSetting->title) . '</h2>';
     echo '<div class="textholder consolidated">';
 
     echo $section->getSectionType()->showSimple();
@@ -39,7 +39,7 @@ foreach ($amendment->getSortedSections(true) as $section) {
 
 if ($amendment->changeExplanation != '') {
     echo '<div class="motionTextHolder amendmentReasonHolder">';
-    echo '<h3>Begründung des Änderungsantrags</h3>';
+    echo '<h3 class="green">Begründung des Änderungsantrags</h3>';
     echo '<div class="content">';
     echo $amendment->changeExplanation;
     echo '</div>';
@@ -48,7 +48,7 @@ if ($amendment->changeExplanation != '') {
 
 
 echo '<div class="motionTextHolder">
-        <h3>AntragstellerInnen</h3>
+        <h3 class="green">AntragstellerInnen</h3>
 
         <div class="content">
             <ul>';

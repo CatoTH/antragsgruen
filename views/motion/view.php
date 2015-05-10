@@ -121,13 +121,18 @@ if (!$minimalisticUi) {
                     <th>' . Yii::t('motion', 'Veranstaltung') . ':</th>
                     <td>' .
         Html::a($motion->consultation->title, UrlHelper::createUrl('consultation/index')) . '</td>
-                </tr>
-                <tr>
-                    <th>' . Yii::t('motion', 'AntragsstellerIn'), ':</th>
-                    <td>';
+                </tr>';
+
+    if ($motion->agendaItem) {
+        echo '<tr><th>Tagesordnungspunkt:</th><td>';
+        echo Html::encode($motion->agendaItem->code . ' ' . $motion->agendaItem->title);
+        echo '</td></tr>';
+    }
 
 
-    $x = array();
+    echo '<tr><th>' . Yii::t('motion', 'AntragsstellerIn'), ':</th><td>';
+
+    $x = [];
     foreach ($motion->getInitiators() as $supp) {
         $name = $supp->getNameWithResolutionDate(true);
         if ($supp->user && $supp->user->isWurzelwerkUser()) {
@@ -183,8 +188,8 @@ if (!$minimalisticUi) {
     if ($admin && count($motion->consultation->tags) > 0) {
         echo '<tr><th>Themenbereiche:</th><td class="tags">';
 
-        $tags         = array();
-        $used_tag_ids = array();
+        $tags         = [];
+        $used_tag_ids = [];
         foreach ($motion->tags as $tag) {
             $used_tag_ids[] = $tag->id;
             $str            = Html::encode($tag->title);
@@ -216,7 +221,7 @@ if (!$minimalisticUi) {
        <th>' . (count($motion->tags) > 1 ? "Themenbereiche" : "Themenbereich") . '</th>
        <td>';
 
-        $tags = array();
+        $tags = [];
         foreach ($motion->tags as $tag) {
             $tags[] = $tag->title;
         }
@@ -271,7 +276,7 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
         echo " smallFont";
     }
     echo '" id="section_' . $section->sectionId . '">';
-    echo '<h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
+    echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
 
     $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
     echo $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
@@ -296,7 +301,7 @@ foreach ($motion->getInitiators() as $supp) {
 }
 
 if (count($supporters) > 0) {
-    echo '<section class="supporters"><h2>UnterstützerInnen</h2>
+    echo '<section class="supporters"><h2 class="green">UnterstützerInnen</h2>
     <div class="content">';
 
     echo "<strong>UnterstützerInnen:</strong><br>";
@@ -319,7 +324,7 @@ if (count($supporters) > 0) {
 }
 
 if ($enries || $canSupport || $cantSupportMsg != "") {
-    echo '<section class="likes"><h2>Zustimmung</h2>
+    echo '<section class="likes"><h2 class="green">Zustimmung</h2>
     <div class="content">';
 
     if (count($likes) > 0) {
@@ -394,7 +399,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
 }
 
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
-    echo '<section class="amendments"><h2>' . Yii::t('motion', 'Änderungsanträge') . '</h2>
+    echo '<section class="amendments"><h2 class="green">' . Yii::t('motion', 'Änderungsanträge') . '</h2>
     <div class="content">';
 
     if (count($amendments) > 0) {
@@ -427,9 +432,9 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 
 
 if ($motion->consultation->getSettings()->commentWholeMotions) {
-    echo '<section class="comments"><h2>Kommentare</h2>';
+    echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
-    $comments = array();
+    $comments = [];
     foreach ($motion->comments as $comm) {
         if ($comm->paragraph == -1 && $comm->status != MotionComment::STATUS_DELETED) {
             $comments[] = $comm;

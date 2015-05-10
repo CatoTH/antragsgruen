@@ -28,7 +28,7 @@ foreach ($comments as $comment) {
     $commLink = UrlHelper::createUrl($param);
     echo '<article class="motionComment content hoverHolder" id="comment' . $comment->id . '">
         <div class="date">' . Tools::formatMysqlDate($comment->dateCreation) . '</div>
-        <h3>Kommentar von ' . Html::encode($comment->name);
+        <h3 class="green">Kommentar von ' . Html::encode($comment->name);
 
     if ($comment->status == MotionComment::STATUS_SCREENING) {
         echo ' <em>(noch nicht freigeschaltet)</em>';

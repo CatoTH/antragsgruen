@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\UrlHelper;
+use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use yii\helpers\Html;
 
@@ -15,11 +16,11 @@ class Image extends ISectionType
     public function getMotionFormField()
     {
         $type     = $this->section->consultationSetting;
-        $required = ($type->required ? ' required' : '');
+        $required = ($type->required ? 'required' : '');
         return '<fieldset class="form-group">
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
-            <input type="file" class="form-control" id="sections_' . $type->id . '"' . $required .
-        ' name="sections[' . $type->id . ']">
+            <input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
+            ' name="sections[' . $type->id . ']">
         </fieldset>';
     }
 
@@ -76,12 +77,14 @@ class Image extends ISectionType
             return '';
         }
 
-        $type = $this->section->consultationSetting;
+        /** @var MotionSection $section */
+        $section = $this->section;
+        $type = $section->consultationSetting;
         $url  = UrlHelper::createUrl(
             [
                 'motion/viewimage',
-                'motionId'  => $this->section->motionId,
-                'sectionId' => $this->section->sectionId
+                'motionId'  => $section->motionId,
+                'sectionId' => $section->sectionId
             ]
         );
         $str  = '<div style="text-align: center; padding: 10px;"><img src="' . Html::encode($url) . '" ';

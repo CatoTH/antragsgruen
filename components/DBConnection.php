@@ -8,6 +8,10 @@ class DBConnection extends \yii\db\Connection
 {
     private static $catchedError = false;
 
+    /**
+     * @throws \yii\base\ExitException
+     * @throws \yii\base\InvalidConfigException
+     */
     public function open()
     {
         try {
@@ -19,15 +23,17 @@ class DBConnection extends \yii\db\Connection
                 echo '<a href="https://github.com/CatoTH/antragsgruen">bugreport</a>.';
             } else {
                 $view = new View();
-                echo \yii::$app->controller->renderContent($view->render(
-                    '@app/views/errors/error',
-                    [
-                        'name'    => 'Datenbank-Verbindungsfehler',
-                        'message' => 'Leider ist beim Aufbau der Datenbank-Verbindung ein Fehler aufgetreten.',
-                        'httpStatus' => 500,
-                    ],
-                    \yii::$app->controller
-                ));
+                echo \yii::$app->controller->renderContent(
+                    $view->render(
+                        '@app/views/errors/error',
+                        [
+                            'name'       => 'Datenbank-Verbindungsfehler',
+                            'message'    => 'Leider ist beim Aufbau der Datenbank-Verbindung ein Fehler aufgetreten.',
+                            'httpStatus' => 500,
+                        ],
+                        \yii::$app->controller
+                    )
+                );
 
             }
             \yii::$app->end(500);

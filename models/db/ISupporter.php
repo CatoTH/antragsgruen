@@ -18,7 +18,7 @@ use yii\helpers\Html;
  * @property string $contactEmail
  * @property string $contactPhone
  *
- * @propery User|null $user
+ * @property User|null $user
  */
 abstract class ISupporter extends ActiveRecord
 {

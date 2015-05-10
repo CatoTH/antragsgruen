@@ -5,7 +5,6 @@ use app\models\db\Motion;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
 use app\models\settings\PDF;
-use app\models\wording\IWording;
 
 class DefaultBehavior
 {
@@ -53,12 +52,11 @@ class DefaultBehavior
 
     /**
      * @param Motion $motion
-     * @param IWording $wording
      * @param string $initiators
      * @return PDF
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getPDFSettings(Motion $motion, IWording $wording, $initiators)
+    public function getPDFSettings(Motion $motion, $initiators)
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
@@ -67,7 +65,7 @@ class DefaultBehavior
         $settings->logo              = $params->pdfLogo;
         $settings->initiators        = $initiators;
         $settings->motionTitle       = $motion->title;
-        $settings->motionTextTitle   = $wording->get("Motion Text");
+        $settings->motionTextTitle   = 'Motion Text';
         $settings->motionTitlePrefix = $motion->titlePrefix;
         $settings->fontFamily        = "Courier";
         $settings->fontSize          = 10;

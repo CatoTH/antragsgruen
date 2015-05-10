@@ -51,7 +51,7 @@ echo '</h1>';
 echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;">';
 
 if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->deadlineMotions != "") {
-    echo '<p class="antragsschluss_kreis">Antrags&shy;schluss: ';
+    echo '<p class="deadlineCircle">Antrags&shy;schluss: ';
     echo Tools::formatMysqlDateTime($consultation->motionTypes[0]->deadlineMotions) . "</p>\n";
 }
 
@@ -80,7 +80,7 @@ require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLa
 
 if ($myself) {
     if (count($myMotions)) {
-        echo '<h3>' . Yii::t('con', 'Meine Anträge') . '</h3>';
+        echo '<h3 class="green">' . Yii::t('con', 'Meine Anträge') . '</h3>';
         echo '<div class="content"><ul class="antragsliste">';
 
         foreach ($myMotions as $motionSupport) {
@@ -106,7 +106,7 @@ if ($myself) {
     }
 
     if (count($myAmendments) > 0) {
-        echo '<h3>' . Yii::t('con', 'Meine Änderungsanträge') . '</h3>';
+        echo '<h3 class="green">' . Yii::t('con', 'Meine Änderungsanträge') . '</h3>';
         echo '<div class="content"><ul class="antragsliste">';
         foreach ($myAmendments as $amendmentSupport) {
             $amendment = $amendmentSupport->amendment;

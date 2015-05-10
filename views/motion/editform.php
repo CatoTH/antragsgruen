@@ -79,7 +79,7 @@ if (count($tags) == 1) {
 echo '</div>';
 
 
-echo '<h2>Text</h2>';
+echo '<h2 class="green">Text</h2>';
 echo '<div class="content">';
 
 foreach ($form->sections as $section) {

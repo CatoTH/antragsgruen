@@ -6,8 +6,9 @@ use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\sitePresets\SitePresets;
+use yii\base\Model;
 
-class SiteCreateForm extends \yii\base\Model
+class SiteCreateForm extends Model
 {
 
     /** @var string */

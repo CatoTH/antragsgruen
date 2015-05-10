@@ -115,7 +115,7 @@ foreach ($amendment->sections as $section) {
 
         if (count($diffGroups) > 0) {
             echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
-            echo '<h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
+            echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
             echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
 
             foreach ($diffGroups as $diff) {
@@ -139,7 +139,7 @@ foreach ($amendment->sections as $section) {
 
 if ($amendment->changeExplanation != '') {
     echo '<section id="amendmentExplanation" class="motionTextHolder">';
-    echo '<h3>Begründung</h3>';
+    echo '<h3 class="green">Begründung</h3>';
     echo '<div class="paragraph"><div class="text">';
     echo $amendment->changeExplanation;
     echo '</div></div>';

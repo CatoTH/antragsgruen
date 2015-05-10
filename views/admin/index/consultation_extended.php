@@ -7,7 +7,6 @@
 use app\components\AntiXSS;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
-use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */
@@ -44,7 +43,7 @@ $booleanSettingRow = function ($settings, $field, &$handledSettings, $descriptio
 };
 
 
-echo '<h3>Allgemeine Einstellungen zur Veranstaltung</h3>';
+echo '<h3 class="green">Allgemeine Einstellungen zur Veranstaltung</h3>';
 echo '<div class="content">';
 
 
@@ -112,7 +111,7 @@ $booleanSettingRow($settings, 'minimalisticUI', $handledSettings, $description);
 
 
 echo '</div>
-<h2>Anträge</h2>
+<h2 class="green">Anträge</h2>
 <div class="content">';
 /*
 <fieldset class="form-group">
@@ -248,7 +247,7 @@ $booleanSettingRow($settings, 'allowStrikeFormat', $handledSettings, $descriptio
 echo '</div>';
 
 /*
-echo '<h2>Kommentare</h2>
+echo '<h2 class="green">Kommentare</h2>
 <div class="content">';
 
 

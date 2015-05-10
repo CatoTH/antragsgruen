@@ -51,11 +51,7 @@ class Elections implements ISitePreset
         $settings->screeningMotions    = false;
         $settings->screeningAmendments = false;
 
-        $consultation->policyMotions    = IPolicy::POLICY_ALL;
-        $consultation->policyAmendments = IPolicy::POLICY_NOBODY;
-        $consultation->policyComments   = IPolicy::POLICY_NOBODY;
-        $consultation->policySupport    = IPolicy::POLICY_LOGGED_IN;
-        $consultation->wordingBase      = 'de-bewerbung';
+        $consultation->wordingBase = 'de-bewerbung';
     }
 
     /**
@@ -166,10 +162,14 @@ class Elections implements ISitePreset
      */
     public static function createMotionTypes(Consultation $consultation)
     {
-        $type                 = new ConsultationMotionType();
-        $type->consultationId = $consultation->id;
-        $type->title          = 'Bewerbung';
-        $type->position       = 0;
+        $type                   = new ConsultationMotionType();
+        $type->consultationId   = $consultation->id;
+        $type->title            = 'Bewerbung';
+        $type->position         = 0;
+        $type->policyMotions    = IPolicy::POLICY_ALL;
+        $type->policyAmendments = IPolicy::POLICY_NOBODY;
+        $type->policyComments   = IPolicy::POLICY_NOBODY;
+        $type->policySupport    = IPolicy::POLICY_LOGGED_IN;
         $type->save();
         $consultation->refresh();
     }

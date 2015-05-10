@@ -8,8 +8,9 @@ use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\db\MotionSupporter;
 use app\models\exceptions\FormError;
+use yii\base\Model;
 
-class MotionEditForm extends \yii\base\Model
+class MotionEditForm extends Model
 {
     /** @var ConsultationMotionType */
     public $motionType;
@@ -73,7 +74,6 @@ class MotionEditForm extends \yii\base\Model
 
     /**
      * @param array $data
-     * @param array $files
      * @param bool $safeOnly
      */
     public function setAttributes($data, $safeOnly = true)

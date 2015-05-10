@@ -69,7 +69,7 @@ echo Html::beginForm(
     ['id' => 'amendmentEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
 );
 
-echo '<h2>Neuer Antragstext</h2>';
+echo '<h2 class="green">Neuer Antragstext</h2>';
 echo '<div class="content">';
 foreach ($form->sections as $section) {
     echo $section->getSectionType()->getAmendmentFormField();
@@ -78,7 +78,7 @@ foreach ($form->sections as $section) {
 echo '</div>';
 
 
-echo '<h2>Begründung</h2>';
+echo '<h2 class="green">Begründung</h2>';
 
 echo '<div class="content">';
 

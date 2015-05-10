@@ -2,7 +2,6 @@
 
 namespace app\models\pdfLayouts;
 
-use app\models\wording\IWording;
 use Yii;
 
 class TCPDFWithFooter extends \TCPDF

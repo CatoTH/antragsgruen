@@ -69,9 +69,27 @@ class ConsultationAgendaItem extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMotion()
+    public function getMotions()
     {
         return $this->hasMany(Motion::className(), ['agendaItemId' => 'id']);
+    }
+
+    /**
+     * @return Motion[]
+     */
+    public function getMotionsFromConsultation()
+    {
+        $return = [];
+        foreach ($this->consultation->motions as $motion) {
+            if (in_array($motion->status, $this->consultation->getInvisibleMotionStati())) {
+                continue;
+            }
+            if ($motion->agendaItemId === null || $motion->agendaItemId != $this->id) {
+                continue;
+            }
+            $return[] = $motion;
+        }
+        return $return;
     }
 
     /**
@@ -84,5 +102,21 @@ class ConsultationAgendaItem extends ActiveRecord
             [['title', 'code', 'description', 'deadline', 'position'], 'safe'],
             [['id', 'consultationId', 'parentItemId', 'position', 'motionTypeId'], 'number'],
         ];
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param int|null $parentItemId
+     * @return ConsultationAgendaItem[]
+     */
+    public static function getItemsByParent(Consultation $consultation, $parentItemId)
+    {
+        $return = [];
+        foreach ($consultation->agendaItems as $item) {
+            if ($item->parentItemId == $parentItemId) {
+                $return[] = $item;
+            }
+        }
+        return $return;
     }
 }

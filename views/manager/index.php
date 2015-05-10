@@ -37,7 +37,7 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
             fragen!</a></p>
 </div>
 
-<h2 id="funktionen">Welche Funktionen bietet Antragsgrün?</h2>
+<h2 id="funktionen green">Welche Funktionen bietet Antragsgrün?</h2>
 
 <div class="content">
     <strong>Das kann Antragsgrün:</strong>
@@ -98,7 +98,7 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
 </div>
 
 <?php
-echo '<h2 id="selbst_nutzen">Antragsgrün selbst nutzen</h2>
+echo '<h2 id="selbst_nutzen" class="green">Antragsgrün selbst nutzen</h2>
 
 <div class="content">
 Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
@@ -144,7 +144,7 @@ if (User::getCurrentUser()) {
 echo '</div>';
 
 ?>
-<h2 id="wer">Von wem stammt Antragsgrün?</h2>
+<h2 id="wer green">Von wem stammt Antragsgrün?</h2>
 
 <div class="content">
     <p>Antragsgrün wird von "<strong>Netzbegrünung</strong> - Verein für GRÜNE Netzkultur" betrieben. Programmiert wird
@@ -167,7 +167,7 @@ echo '</div>';
 </div>
 
 
-<h2 id="opensource">Open Source</h2>
+<h2 id="opensource green">Open Source</h2>
 
 <div class="content">
     <p>Wir Grüne bekennen uns schon lange zu freier Software, insofern ist es für uns selbstverständlich, dass wir

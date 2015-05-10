@@ -3,7 +3,6 @@ namespace app\models\sectionTypes;
 
 use app\controllers\Base;
 use app\models\db\IMotionSection;
-use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use yii\helpers\Html;

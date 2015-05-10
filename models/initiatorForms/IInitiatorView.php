@@ -37,6 +37,7 @@ interface IInitiatorView
     /**
      * @param Consultation $consultation
      * @param MotionEditForm $editForm
+     * @param Base $controller
      * @return string
      */
     public function getMotionInitiatorForm(Consultation $consultation, MotionEditForm $editForm, Base $controller);

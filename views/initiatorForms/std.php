@@ -22,7 +22,7 @@ $settings = $consultation->getSettings();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
-echo '<h2>AntragstellerIn</h2>';
+echo '<h2 class="green">AntragstellerIn</h2>';
 
 $preOrga       = Html::encode($initiator->organization);
 $preName       = Html::encode($initiator->name);
