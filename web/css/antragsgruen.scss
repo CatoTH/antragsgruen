@@ -248,6 +248,13 @@
   @include motionListStdMotion(14px);
 }
 
+#agendaEditSavingHolder {
+  display: none;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+
 .motionData {
   .motionDataTable {
     width: 100%;

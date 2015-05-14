@@ -30,8 +30,6 @@ if ($admin) {
     $layout->addJS('/js/ckeditor/ckeditor.js');
 }
 
-//include(__DIR__ . "/sidebar.php");
-
 echo '<h1>';
 
 echo Html::encode($consultation->title);
@@ -44,9 +42,6 @@ if ($consultation->eventDateFrom != "" && $consultation->eventDateFrom != "0000-
     }
 
 }
-//$editlink = $einleitungstext->getEditLink();
-//if ($editlink !== null) echo "<a style='font-size: 10px;' href='" .
-//CHtml::encode($this->createUrl($editlink[0], $editlink[1])) . "'>Bearbeiten</a>";
 echo '</h1>';
 
 echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;">';
@@ -76,6 +71,8 @@ if ($admin) {
 }
 
 echo '</div>';
+
+echo $controller->showErrors();
 
 require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLayoutView() . '.php');
 

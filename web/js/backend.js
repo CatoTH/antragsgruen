@@ -95,7 +95,8 @@
             ev.preventDefault();
             var $this = $(this),
                 $ul = $this.parent().find("ul"),
-                $row = $($this.data('template').replace(/#NEWDATA#/g, 'new' + dataNewCounter++));
+                $row = $($this.data('template').replace(/#NEWDATA#/g, 'new' + dataNewCounter));
+            dataNewCounter = dataNewCounter + 1;
             $row.removeClass('no0').addClass('no' + $ul.children().length);
             $ul.append($row);
             $row.find('input').focus();
@@ -131,6 +132,25 @@
             prepareAgendaList = function ($list) {
                 $list.append(adder);
             },
+            showSaver = function () {
+                $('#agendaEditSavingHolder').show();
+            },
+            buildAgendaStruct = function ($ol) {
+                var items = [];
+                $ol.children('.agendaItem').each(function () {
+                    var $li = $(this),
+                        id = $li.attr('id').split('_'),
+                        item = {
+                            'id': id[1],
+                            'code': $li.find('> div > .agendaItemEditForm input[name=code]').val(),
+                            'title': $li.find('> div > .agendaItemEditForm input[name=title]').val(),
+                            'motionTypeId': $li.find('> div > .agendaItemEditForm select[name=motionType]').val()
+                        };
+                    item.children = buildAgendaStruct($li.find('> ol'));
+                    items.push(item);
+                });
+                return items;
+            },
             $agenda = $('.motionListAgenda');
 
         $agenda.addClass('agendaListEditing');
@@ -142,7 +162,10 @@
             tolerance: 'pointer',
             forcePlaceholderSize: true,
             helper: 'clone',
-            axis: 'y'
+            axis: 'y',
+            update: function () {
+                showSaver();
+            }
         });
         $agenda.find('.agendaItem').each(function () {
             prepareAgendaItem($(this));
@@ -159,6 +182,9 @@
             $adder.before($newElement);
             prepareAgendaItem($newElement);
             prepareAgendaList($newElement.find('ol.agenda'));
+            $newElement.find('.editAgendaItem').trigger('click');
+            $newElement.find('.agendaItemEditForm input.code').focus();
+            showSaver();
         });
 
         $agenda.on('click', '.delAgendaItem', function (ev) {
@@ -166,17 +192,33 @@
             if (!confirm('Do you really want to delete this agenda item, including all sub-items?')) {
                 return;
             }
+            showSaver();
             $(this).parents('li.agendaItem').first().remove();
         });
 
         $agenda.on('click', '.editAgendaItem', function (ev) {
+            showSaver();
             ev.preventDefault();
-            $(this).parents('li.agendaItem').first().addClass('editing');
+            var $li = $(this).parents('li.agendaItem').first();
+            $li.addClass('editing');
+            $li.find('> div > .agendaItemEditForm input[name=code]').focus().select();
         });
 
         $agenda.on('submit', '.agendaItemEditForm', function (ev) {
+            showSaver();
+            var $li = $(this).parents('li.agendaItem').first(),
+                $form = $(this),
+                newTitle = $form.find('input[name=title]').val(),
+                newCode = $form.find('input[name=code]').val();
             ev.preventDefault();
-            $(this).parents('li.agendaItem').first().removeClass('editing');
+            $li.removeClass('editing');
+            $li.find('> div > h3 .code').text(newCode);
+            $li.find('> div > h3 .title').text(newTitle);
+        });
+
+        $('#agendaEditSavingHolder').submit(function (ev) {
+            var data = buildAgendaStruct($('.motionListAgenda'));
+            $(this).find('input[name=data]').val(JSON.stringify(data));
         });
     };
 

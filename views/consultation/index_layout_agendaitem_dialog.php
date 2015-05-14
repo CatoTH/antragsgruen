@@ -1,10 +1,18 @@
 <?php
 
 /**
+ * @obsolete
+ *
  * @var \app\models\db\Consultation $consultation
+ * @var \app\models\settings\Layout $layout
  */
+use app\components\Tools;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
+
+$layout->addJS('/js/bower/moment/min/moment-with-locales.min.js');
+$layout->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
+$layout->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
 
 $types = '<option value=""> - keine -</option>';
 foreach ($consultation->motionTypes as $motionType) {
@@ -16,9 +24,12 @@ foreach (IPolicy::getPolicies() as $policy) {
     $policies .= '<option value="' . $policy::getPolicyID() . '">';
     $policies .= Html::encode($policy::getPolicyName()) . '</option>';
 }
+
+$locale = Tools::getCurrentDateLocale();
+
 ?>
 
-<div class="modal fade" id="msettDialog">
+<div class="modal" id="msettDialog">
     <div class="modal-dialog">
         <form class="modal-content">
             <div class="modal-header">
@@ -29,6 +40,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             </div>
             <div class="modal-body">
                 <div class="form-horizontal">
+
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="motionSettingsType">Anträge:</label>
 
@@ -38,6 +50,7 @@ foreach (IPolicy::getPolicies() as $policy) {
                             </select>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="msettPolicyMotion">Antragsberechtigt:</label>
 
@@ -47,6 +60,19 @@ foreach (IPolicy::getPolicies() as $policy) {
                             </select>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="msettDeadlineMotions">Antragsschluss:</label>
+
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <input id="msettDeadlineMotions" type="text" class="form-control"
+                                       name="deadlineMotions" value="" data-locale="<?= Html::encode($locale) ?>">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="msettPolicyAmendment">ÄA-Berechtigt:</label>
 
@@ -56,6 +82,19 @@ foreach (IPolicy::getPolicies() as $policy) {
                             </select>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="msettDeadlineAmendments">ÄA-Schluss:</label>
+
+                        <div class="col-sm-8">
+                            <div class="input-group date">
+                                <input id="msettDeadlineAmendments" type="text" class="form-control"
+                                       name="deadlineMotions" value="" data-locale="<?= Html::encode($locale) ?>">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="msettPolicyComment">Kommentarberechtigt:</label>
 
@@ -65,6 +104,7 @@ foreach (IPolicy::getPolicies() as $policy) {
                             </select>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="modal-footer">

@@ -71,21 +71,24 @@ function showMotion(Motion $motion, Consultation $consultation)
 function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, $admin)
 {
     echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '">';
-    echo '<div>';
-    echo '<h3>' . Html::encode($agendaItem->code . ' ' . $agendaItem->title) . '</h3>';
+    echo '<div><h3>';
+    echo '<span class="code">' . Html::encode($agendaItem->code) . '</span> ';
+    echo '<span class="title">' . Html::encode($agendaItem->title) . '</span></h3>';
+
     if ($admin) {
+        $motionTypes = [0 => ' - keine Anträge - '];
+        foreach ($consultation->motionTypes as $motionType) {
+            $motionTypes[$motionType->id] = $motionType->title;
+        }
+        $typeId = $agendaItem->motionTypeId;
+
         echo '<form class="agendaItemEditForm form-inline">
-            <div class="agendaTitleRow">
                 <input type="text" name="code" value="' . Html::encode($agendaItem->code) . '"
                 class="form-control code">
                 <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
-                 class="form-control title" placeholder="Titel">
-                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
-            </div>
-            <div class="agendaMotionsRow">
-                Anträge zu diesem TOP möglich:
-                <a href="#" data-toggle="modal" data-target="#msettDialog">Keine</a>
-            </div>
+                 class="form-control title" placeholder="Titel">';
+        echo Html::dropDownList('motionType', $typeId, $motionTypes, ['class' => 'form-control motionType']);
+        echo '<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
             </form>';
     }
 
@@ -102,7 +105,7 @@ function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consul
     echo '</div>';
 
     $children     = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-    $shownMotions = array_merge($shownMotions, showAgendaList($children, $consultation, false));
+    $shownMotions = array_merge($shownMotions, showAgendaList($children, $consultation, $admin, false));
 
     echo '</li>';
     return $shownMotions;
@@ -117,6 +120,20 @@ function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consul
  */
 function showAgendaList(array $items, Consultation $consultation, $admin, $isRoot = false)
 {
+    usort(
+        $items,
+        function ($it1, $it2) {
+            /** @var ConsultationAgendaItem $it1 */
+            /** @var ConsultationAgendaItem $it2 */
+            if ($it1->position < $it2->position) {
+                return -1;
+            }
+            if ($it1->position > $it2->position) {
+                return 1;
+            }
+            return 0;
+        }
+    );
     echo '<ol class="agenda ' . ($isRoot ? 'motionListAgenda' : 'agendaSub') . '">';
     $shownMotions = [];
     foreach ($items as $item) {
@@ -143,8 +160,18 @@ if ($admin) {
     $newElementTemplate = ob_get_clean();
 
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
-    require(__DIR__ . DIRECTORY_SEPARATOR . 'index_layout_agendaitem_dialog.php');
+    echo Html::beginForm('', 'post', ['id' => 'agendaEditSavingHolder']);
+    echo '<input type="hidden" name="data" value="">';
+    echo '<button class="btn btn-success" type="submit" name="saveAgenda">Speichern</button>';
+    echo Html::endForm();
+
+    $layout->addJS('/js/backend.js');
+    $layout->addJS('/js/jquery-ui-1.11.4.custom/jquery-ui.js');
+    $layout->addJS('/js/jquery.ui.touch-punch.js');
+    $layout->addJS('/js/jquery.mjs.nestedSortable.js');
+    $layout->addOnLoadJS('$.AntragsgruenAdmin.agendaEdit();');
 }
+
 
 echo '<h2 class="green">Sonstige Anträge</h2>';
 echo "<ul class='motionListStd'>";
@@ -154,12 +181,3 @@ foreach ($consultation->motions as $motion) {
     }
 }
 echo "</ul>";
-
-
-if ($admin) {
-    $layout->addJS('/js/backend.js');
-    $layout->addJS('/js/jquery-ui-1.11.4.custom/jquery-ui.js');
-    $layout->addJS('/js/jquery.ui.touch-punch.js');
-    $layout->addJS('/js/jquery.mjs.nestedSortable.js');
-    $layout->addOnLoadJS('$.AntragsgruenAdmin.agendaEdit();');
-}
