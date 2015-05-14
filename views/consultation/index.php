@@ -16,6 +16,7 @@ use yii\helpers\Url;
  * @var \app\models\db\User|null $myself
  * @var \app\models\db\MotionSupporter[] $myMotions
  * @var \app\models\db\AmendmentSupporter[] $myAmendments
+ * @var bool $admin
  */
 
 /** @var \app\controllers\ConsultationController $controller */

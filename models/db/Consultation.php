@@ -211,6 +211,20 @@ class Consultation extends ActiveRecord
         return $con;
     }
 
+    /**
+     * @param int $privilege
+     * @return bool
+     *
+     */
+    public function havePrivilege($privilege)
+    {
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+        return $user->hasPrivilege($this, $privilege);
+    }
+
 
     /**
      * @return ConsultationSettingsTag[]

@@ -37,7 +37,7 @@ $this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
             fragen!</a></p>
 </div>
 
-<h2 id="funktionen green">Welche Funktionen bietet Antragsgrün?</h2>
+<h2 id="funktionen" class="green">Welche Funktionen bietet Antragsgrün?</h2>
 
 <div class="content">
     <strong>Das kann Antragsgrün:</strong>
@@ -144,7 +144,7 @@ if (User::getCurrentUser()) {
 echo '</div>';
 
 ?>
-<h2 id="wer green">Von wem stammt Antragsgrün?</h2>
+<h2 id="wer" class="green">Von wem stammt Antragsgrün?</h2>
 
 <div class="content">
     <p>Antragsgrün wird von "<strong>Netzbegrünung</strong> - Verein für GRÜNE Netzkultur" betrieben. Programmiert wird
@@ -167,7 +167,7 @@ echo '</div>';
 </div>
 
 
-<h2 id="opensource green">Open Source</h2>
+<h2 id="opensource" class="green">Open Source</h2>
 
 <div class="content">
     <p>Wir Grüne bekennen uns schon lange zu freier Software, insofern ist es für uns selbstverständlich, dass wir

@@ -47,7 +47,7 @@ if ($params->robotsNoindex) {
 
 ?>
     <!--[if lt IE 9]>
-    <script src="/js/html5shiv/dist/html5shiv.min.js"></script>
+    <script src="/js/bower/html5shiv/dist/html5shiv.min.js"></script>
     <![endif]-->
     <!--[if lt IE 8]>
     <link rel="stylesheet" href="/css/antragsgruen-ie7.css">
@@ -61,7 +61,7 @@ foreach ($params->extraCss as $file) {
 ?>
 
     <!--[if lt IE 9]>
-    <script src="/js/jquery-1.11.2.min.js"></script>
+    <script src="/js/jquery-1.11.3.min.js"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
     <script src="/js/bower/jquery/dist/jquery.min.js"></script>

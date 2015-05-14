@@ -10,8 +10,11 @@
         var lang = $('html').attr('lang');
 
         $("#antrag_neu_kann_telefon").change(function () {
-            if ($(this).prop("checked")) $("#antrag_neu_braucht_telefon_holder").show();
-            else $("#antrag_neu_braucht_telefon_holder").hide();
+            if ($(this).prop("checked")) {
+                $("#antrag_neu_braucht_telefon_holder").show();
+            } else {
+                $("#antrag_neu_braucht_telefon_holder").hide();
+            }
         }).trigger("change");
 
         $('#deadlineAmendmentsHolder').datetimepicker({
@@ -116,9 +119,71 @@
 
     };
 
+
+    var agendaEdit = function () {
+        var adderClasses = 'agendaItemAdder mjs-nestedSortable-no-nesting mjs-nestedSortable-disabled',
+            adder = '<li class="' + adderClasses + '"><a href="#"><span class="glyphicon glyphicon-plus-sign"></span> Eintrag hinzufügen</a></li>',
+            prepareAgendaItem = function ($item) {
+                $item.find('> div').prepend('<span class="glyphicon glyphicon-resize-vertical moveHandle"></span>');
+                $item.find('> div > h3').append('<a href="#" class="editAgendaItem"><span class="glyphicon glyphicon-pencil"></span></a>');
+                $item.find('> div > h3').append('<a href="#" class="delAgendaItem"><span class="glyphicon glyphicon-minus-sign"></span></a>');
+            },
+            prepareAgendaList = function ($list) {
+                $list.append(adder);
+            },
+            $agenda = $('.motionListAgenda');
+
+        $agenda.addClass('agendaListEditing');
+        $agenda.nestedSortable({
+            handle: '.moveHandle',
+            items: 'li.agendaItem',
+            toleranceElement: '> div',
+            placeholder: 'movePlaceholder',
+            tolerance: 'pointer',
+            forcePlaceholderSize: true,
+            helper: 'clone',
+            axis: 'y'
+        });
+        $agenda.find('.agendaItem').each(function () {
+            prepareAgendaItem($(this));
+        });
+        prepareAgendaList($agenda);
+        $agenda.find('ol.agenda').each(function () {
+            prepareAgendaList($(this));
+        });
+
+        $agenda.on('click', '.agendaItemAdder a', function (ev) {
+            ev.preventDefault();
+            var $newElement = $($('#agendaNewElementTemplate').val()),
+                $adder = $(this).parents('.agendaItemAdder').first();
+            $adder.before($newElement);
+            prepareAgendaItem($newElement);
+            prepareAgendaList($newElement.find('ol.agenda'));
+        });
+
+        $agenda.on('click', '.delAgendaItem', function (ev) {
+            ev.preventDefault();
+            if (!confirm('Do you really want to delete this agenda item, including all sub-items?')) {
+                return;
+            }
+            $(this).parents('li.agendaItem').first().remove();
+        });
+
+        $agenda.on('click', '.editAgendaItem', function (ev) {
+            ev.preventDefault();
+            $(this).parents('li.agendaItem').first().addClass('editing');
+        });
+
+        $agenda.on('submit', '.agendaItemEditForm', function (ev) {
+            ev.preventDefault();
+            $(this).parents('li.agendaItem').first().removeClass('editing');
+        });
+    };
+
     $.AntragsgruenAdmin = {
-        "consultationEditForm": consultationEditForm,
-        "sectionsEdit": sectionsEdit
+        'consultationEditForm': consultationEditForm,
+        'sectionsEdit': sectionsEdit,
+        'agendaEdit': agendaEdit
     };
 
 }(jQuery));

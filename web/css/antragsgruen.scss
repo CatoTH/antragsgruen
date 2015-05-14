@@ -24,16 +24,21 @@
   @include border-radius(90px);
 }
 
-
 @mixin motionListStdMotion($titleFontSize) {
   .motion {
     padding: 12px 20px 17px 50px;
+    position: relative;
+    &:last-child {
+      padding-bottom: 0;
+    }
 
     .date {
       color: rgb(179, 180, 180);
       display: block;
-      float: right;
       margin-left: 20px;
+      position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
+      top: 12px;
+      right: 12px;
     }
 
     .title {
@@ -99,6 +104,7 @@
     }
   }
 }
+
 .motionListStd {
   list-style-type: none;
   margin: 0;
@@ -111,18 +117,132 @@
   list-style-type: none;
   margin: 0;
   padding: 0;
-  li.agendaItem {
-    margin-bottom: 5px;
-    padding: 10px;
-  }
-  h2, h3 {
+  position: relative;
+
+  ol {
+    list-style-type: none;
     margin: 0;
-    font-size: 18px;
+    margin-left: 30px;
+    padding: 0;
   }
   ul.motions {
     list-style-type: none;
     margin: 0;
     padding: 0;
+  }
+
+  .agendaItemAdder {
+    padding-left: 35px;
+    margin-bottom: 0;
+    margin-top: -4px;
+  }
+  html.no-touch & .agendaItemAdder {
+    visibility: hidden;
+  }
+  html.no-touch &:hover > .agendaItemAdder, html.no-touch & ol.agenda:hover > .agendaItemAdder {
+    visibility: visible;
+  }
+
+
+  li.agendaItem {
+    border: solid 1px transparent; // Otherwise: strange behavior when moving items
+    > div {
+      margin-bottom: 5px;
+      padding: 10px;
+
+      > h3 {
+        position: relative;
+        .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
+          color: $colorDelLink;
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+        html.no-touch & .delAgendaItem {
+          visibility: hidden;
+        }
+        html.no-touch &:hover .delAgendaItem {
+          visibility: visible;
+        }
+
+        .editAgendaItem {
+          font-size: 0.7em;
+          margin-left: 10px;
+        }
+        html.no-touch & .editAgendaItem {
+          visibility: hidden;
+        }
+        html.no-touch &:hover .editAgendaItem {
+          visibility: visible;
+        }
+      }
+
+      .agendaItemEditForm {
+        display: none;
+
+        input.code {
+          width: 80px;
+          margin-right: 10px;
+        }
+        input.title {
+          width: 250px;
+          margin-right: 10px;
+        }
+        .agendaMotionsRow {
+          padding-top: 5px;
+          font-size: 0.8em;
+          color: gray;
+        }
+      }
+    }
+
+
+    &.editing {
+      > div > h3 {
+        display: none;
+      }
+      > div > .agendaItemEditForm {
+        display: block;
+      }
+      > ol > .agendaItemAdder {
+        visibility: hidden !important;
+      }
+    }
+  }
+
+  &.agendaListEditing {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    li.agendaItem {
+      padding-left: 20px;
+      > div {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        padding-top: 0;
+      }
+    }
+  }
+  h2, h3 {
+    margin: 0;
+    margin-bottom: 5px;
+    font-size: 18px;
+  }
+  .moveHandle {
+    float: left;
+    font-size: 1.5em;
+    color: lightgrey;
+    margin-left: -27px;
+    cursor: move;
+  }
+  html.no-touch & li.agendaItem > div > .moveHandle {
+    display: none;
+  }
+  html.no-touch & li.agendaItem:hover > div > .moveHandle {
+    display: block;
+  }
+
+  .movePlaceholder {
+    border: dotted 1px gray;
   }
 
   @include motionListStdMotion(14px);
@@ -143,7 +263,7 @@
     button {
       background: transparent;
       border: none;
-      color: red;
+      color: $colorDelLink;
       font-style: italic;
       padding: 0 6px 0 3px;
     }
@@ -455,7 +575,6 @@ $lineNumberOffset4: 3px;
   width: 220px;
   vertical-align: top;
 }
-
 
 .cke_skin_kama {
   border: none !important;

@@ -7,10 +7,13 @@ use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\Motion;
+use app\models\settings\Layout;
 use yii\helpers\Html;
 
 /**
  * @var Consultation $consultation
+ * @var Layout $layout
+ * @var bool $admin
  */
 
 
@@ -62,14 +65,31 @@ function showMotion(Motion $motion, Consultation $consultation)
 /**
  * @param ConsultationAgendaItem $agendaItem
  * @param Consultation $consultation
+ * @param bool $admin
  * @return int[]
  */
-function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation)
+function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, $admin)
 {
-    echo '<li class="agendaItem">';
+    echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '">';
+    echo '<div>';
     echo '<h3>' . Html::encode($agendaItem->code . ' ' . $agendaItem->title) . '</h3>';
+    if ($admin) {
+        echo '<form class="agendaItemEditForm form-inline">
+            <div class="agendaTitleRow">
+                <input type="text" name="code" value="' . Html::encode($agendaItem->code) . '"
+                class="form-control code">
+                <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
+                 class="form-control title" placeholder="Titel">
+                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
+            </div>
+            <div class="agendaMotionsRow">
+                Anträge zu diesem TOP möglich:
+                <a href="#" data-toggle="modal" data-target="#msettDialog">Keine</a>
+            </div>
+            </form>';
+    }
 
-    $motions = $agendaItem->getMotionsFromConsultation();
+    $motions      = $agendaItem->getMotionsFromConsultation();
     $shownMotions = [];
     if (count($motions) > 0) {
         echo '<ul class="motions">';
@@ -79,31 +99,52 @@ function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consul
         }
         echo '</ul>';
     }
+    echo '</div>';
 
-    $children = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-    if (count($children) > 0) {
-        echo '<ul class="agenda agendaSub">';
-        foreach ($children as $child) {
-            showAgendaItem($child, $consultation);
-        }
-        echo '</ul>';
-    }
+    $children     = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
+    $shownMotions = array_merge($shownMotions, showAgendaList($children, $consultation, false));
 
     echo '</li>';
     return $shownMotions;
 }
 
+/**
+ * @param ConsultationAgendaItem[] $items
+ * @param Consultation $consultation
+ * @param bool $admin
+ * @param bool $isRoot
+ * @return int[]
+ */
+function showAgendaList(array $items, Consultation $consultation, $admin, $isRoot = false)
+{
+    echo '<ol class="agenda ' . ($isRoot ? 'motionListAgenda' : 'agendaSub') . '">';
+    $shownMotions = [];
+    foreach ($items as $item) {
+        $shownMotions = array_merge($shownMotions, showAgendaItem($item, $consultation, $admin));
+    }
+    echo '</ol>';
+    return $shownMotions;
+}
 
 
 echo '<h2 class="green">Agenda</h2>';
-echo '<ul class="agenda motionListAgenda">';
-$shownMotions = [];
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
-foreach ($items as $item) {
-    $shownMotions = array_merge($shownMotions, showAgendaItem($item, $consultation));
-}
-echo '</ul>';
+$shownMotions = showAgendaList($items, $consultation, $admin, true);
 
+if ($admin) {
+    $templateItem                 = new ConsultationAgendaItem();
+    $templateItem->consultationId = $consultation->id;
+    $templateItem->refresh();
+    $templateItem->id    = -1;
+    $templateItem->title = 'New Item';
+    $templateItem->code  = '#CODE#';
+    ob_start();
+    showAgendaItem($templateItem, $consultation, $admin);
+    $newElementTemplate = ob_get_clean();
+
+    echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
+    require(__DIR__ . DIRECTORY_SEPARATOR . 'index_layout_agendaitem_dialog.php');
+}
 
 echo '<h2 class="green">Sonstige Anträge</h2>';
 echo "<ul class='motionListStd'>";
@@ -113,3 +154,12 @@ foreach ($consultation->motions as $motion) {
     }
 }
 echo "</ul>";
+
+
+if ($admin) {
+    $layout->addJS('/js/backend.js');
+    $layout->addJS('/js/jquery-ui-1.11.4.custom/jquery-ui.js');
+    $layout->addJS('/js/jquery.ui.touch-punch.js');
+    $layout->addJS('/js/jquery.mjs.nestedSortable.js');
+    $layout->addOnLoadJS('$.AntragsgruenAdmin.agendaEdit();');
+}

@@ -31,6 +31,10 @@ $icon-font-path: "/fonts/";
 @import "bootstrap-3.3.4-sass/bootstrap/alerts";
 @import "bootstrap-3.3.4-sass/bootstrap/breadcrumbs";
 @import "bootstrap-3.3.4-sass/bootstrap/wells";
+@import "bootstrap-3.3.4-sass/bootstrap/close";
+
+// Components w/ JavaScript
+@import "bootstrap-3.3.4-sass/bootstrap/modals";
 
 // Utility classes
 @import "bootstrap-3.3.4-sass/bootstrap/utilities";
