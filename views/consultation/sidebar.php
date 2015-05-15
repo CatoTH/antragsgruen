@@ -65,7 +65,7 @@ if ($motionLink != '') {
                 }
                 $html .= '<li class="createMotion' . $motionType->id . '">';
                 $html .= '<a href="' . Html::encode($motionCreateLink) . '">';
-                $html .= Html::encode($motionType->title) . '</a></li>';
+                $html .= Html::encode($motionType->titlePlural) . '</a></li>';
             }
         }
         $html .= "</ul></div>";

@@ -66,6 +66,7 @@ class SiteCreateForm extends Model
 
         $preset->createMotionTypes($consultation);
         $preset->createMotionSections($consultation);
+        $preset->createAgenda($consultation);
 
         return $site;
     }

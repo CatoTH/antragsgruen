@@ -11,7 +11,8 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property int $consultationId
- * @property string $title
+ * @property string $titleSingular
+ * @property string $titlePlural
  * @property string $motionPrefix
  * @property int $position
  * @property int $cssicon
@@ -162,11 +163,11 @@ class ConsultationMotionType extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'title'], 'required'],
+            [['consultationId', 'titleSingular', 'titlePlural'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
             [['id', 'consultationId', 'position'], 'number'],
-            [['title', 'position', 'motionPrefix', 'deadlineMotions', 'deadlineAmendments'], 'safe'],
-            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'safe'],
+            [['titleSingular', 'titlePlural', 'motionPrefix', 'deadlineMotions', 'deadlineAmendments'], 'safe'],
+            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'position'], 'safe'],
         ];
     }
 }

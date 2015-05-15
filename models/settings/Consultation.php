@@ -7,12 +7,18 @@ use app\models\exceptions\Internal;
 
 class Consultation
 {
+    const START_LAYOUT_STD    = 0;
+    const START_LAYOUT_BDK    = 1;
+    const START_LAYOUT_TAGS   = 2;
+    const START_LAYOUT_AGENDA = 3;
+
+
     // TESTS WITH TEST CASES
 
     /** @var bool */
-    public $maintainanceMode      = false;
-    public $screeningMotions      = false;
-    public $lineNumberingGlobal   = false;
+    public $maintainanceMode    = false;
+    public $screeningMotions    = false;
+    public $lineNumberingGlobal = false;
 
     // TESTS WITHOUT TEST CASES
 
@@ -117,13 +123,13 @@ class Consultation
     public function getStartLayoutView()
     {
         switch ($this->startLayoutType) {
-            case 0:
+            case Consultation::START_LAYOUT_STD:
                 return 'index_layout_std';
-            case 1:
+            case Consultation::START_LAYOUT_BDK:
                 return 'index_layout_bdk'; // @Todo not implemented
-            case 2:
+            case Consultation::START_LAYOUT_TAGS:
                 return 'index_layout_tags';  // @Todo not implemented
-            case 3:
+            case Consultation::START_LAYOUT_AGENDA:
                 return 'index_layout_agenda';
             default:
                 throw new Internal('Unknown layout: ' . $this->startLayoutType);

@@ -50,7 +50,7 @@ echo '</li>';
 foreach ($consultation->motionTypes as $motionType) {
     echo '<li style="margin-left: 20px;">';
     $sectionsUrl   = UrlHelper::createUrl(['admin/motion/sections', 'motionTypeId' => $motionType->id]);
-    $sectionsTitle = $motionType->title . ': Abschnitte festlegen';
+    $sectionsTitle = $motionType->titlePlural . ': Abschnitte festlegen';
     echo Html::a($sectionsTitle, $sectionsUrl, ['class' => 'motionSections' . $motionType->id]);
     echo '</li>';
 }
@@ -61,7 +61,7 @@ foreach ($consultation->motionTypes as $motionType) {
     if ($motionp->checkCurUserHeuristically()) {
         $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
         echo '<li style="margin-left: 20px;">';
-        echo Html::a('Neuen Antrag anlegen: ' . $motionType->title, $createUrl);
+        echo Html::a('Neuen Antrag anlegen: ' . $motionType->titleSingular, $createUrl);
         echo '</li>';
     } else {
         echo '<li style="margin-left: 20px;">';

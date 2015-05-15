@@ -16,7 +16,7 @@ $layout->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap
 
 $types = '<option value=""> - keine -</option>';
 foreach ($consultation->motionTypes as $motionType) {
-    $types .= '<option value="' . $motionType->id . '">' . Html::encode($motionType->title) . '</option>';
+    $types .= '<option value="' . $motionType->id . '">' . Html::encode($motionType->titlePlural) . '</option>';
 }
 
 $policies = '';

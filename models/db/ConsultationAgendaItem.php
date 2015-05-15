@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  * @property int $parentItemId
  * @property int $position
  * @property string $code
+ * @property string $codeExplicit
  * @property string $title
  * @property string $description
  * @property int $motionTypeId
@@ -99,7 +100,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         return [
             [['title', 'consultationId'], 'required'],
-            [['title', 'code', 'description', 'deadline', 'position'], 'safe'],
+            [['title', 'code', 'codeExplicit', 'description', 'deadline', 'position'], 'safe'],
             [['id', 'consultationId', 'parentItemId', 'position', 'motionTypeId'], 'number'],
         ];
     }

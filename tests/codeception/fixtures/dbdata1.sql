@@ -27,11 +27,11 @@ VALUES
   (12, 4, 1, 3, 0, 'Selbstvorstellung', NULL, 0, 1, 0, 0, 0, 0);
 
 
-INSERT INTO `consultationMotionType` (`id`, `consultationId`, `title`, `motionPrefix`, `position`, `cssicon`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`)
+INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `motionPrefix`, `position`, `cssicon`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`)
 VALUES
-  (1, 1, 'Antrag', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 2),
-  (3, 2, 'Antrag', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 2),
-  (4, 2, 'Bewerbung', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 2);
+  (1, 1, 'Antrag', 'Anträge', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 2),
+  (3, 2, 'Antrag', 'Anträge', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 2),
+  (4, 2, 'Bewerbung', 'Bewerbungen', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 2);
 
 INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `title`, `cssicon`) VALUES
   (1, 1, 0, 'Win', 0),

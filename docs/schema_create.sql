@@ -2,6 +2,7 @@ SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;
 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 
+
 --
 -- Table structure for table `amendment`
 --
@@ -147,6 +148,7 @@ CREATE TABLE `consultationAgendaItem` (
   `parentItemId`   INT(11)           DEFAULT NULL,
   `position`       INT(11)      NOT NULL,
   `code`           VARCHAR(20)  NOT NULL,
+  `codeExplicit`   VARCHAR(20)  NOT NULL,
   `title`          VARCHAR(250) NOT NULL,
   `description`    TEXT         NOT NULL,
   `motionTypeId`   INT(11)           DEFAULT NULL,
@@ -164,7 +166,8 @@ CREATE TABLE `consultationAgendaItem` (
 CREATE TABLE `consultationMotionType` (
   `id`                 INT(11)      NOT NULL,
   `consultationId`     INT(11)      NOT NULL,
-  `title`              VARCHAR(100) NOT NULL,
+  `titleSingular`      VARCHAR(100) NOT NULL,
+  `titlePlural`        VARCHAR(100) NOT NULL,
   `motionPrefix`       VARCHAR(10)       DEFAULT NULL,
   `position`           INT(11)      NOT NULL,
   `cssicon`            VARCHAR(100)      DEFAULT NULL,
@@ -535,7 +538,7 @@ ADD KEY `motionTypeId` (`motionTypeId`);
 --
 ALTER TABLE `consultationMotionType`
 ADD PRIMARY KEY (`id`),
-ADD UNIQUE KEY `consultationId` (`consultationId`, `position`);
+ADD KEY `consultationId` (`consultationId`, `position`) USING BTREE;
 
 --
 -- Indexes for table `consultationOdtTemplate`

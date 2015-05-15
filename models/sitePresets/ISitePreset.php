@@ -26,20 +26,25 @@ interface ISitePreset
     /**
      * @param Consultation $consultation
      */
-    public static function setConsultationSettings(Consultation $consultation);
+    public function setConsultationSettings(Consultation $consultation);
 
     /**
      * @param Site $site
      */
-    public static function setSiteSettings(Site $site);
+    public function setSiteSettings(Site $site);
 
     /**
      * @param Consultation $consultation
      */
-    public static function createMotionSections(Consultation $consultation);
+    public function createMotionSections(Consultation $consultation);
 
     /**
      * @param Consultation $consultation
      */
-    public static function createMotionTypes(Consultation $consultation);
+    public function createMotionTypes(Consultation $consultation);
+
+    /**
+     * @param Consultation $consultation
+     */
+    public function createAgenda(Consultation $consultation);
 }

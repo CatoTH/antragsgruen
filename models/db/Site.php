@@ -134,7 +134,7 @@ class Site extends ActiveRecord
         $siteSettings->willingToPay = $form->isWillingToPay;
         $site->setSettings($siteSettings);
 
-        $preset::setSiteSettings($site);
+        $preset->setSiteSettings($site);
 
         if (!$site->save()) {
             throw new DB($site->getErrors());

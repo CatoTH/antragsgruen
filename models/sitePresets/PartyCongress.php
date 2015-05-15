@@ -3,14 +3,19 @@
 namespace app\models\sitePresets;
 
 use app\models\db\Consultation;
-use app\models\db\ConsultationSettingsMotionSection;
+use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Site;
-use app\models\policies\IPolicy;
-use app\models\sectionTypes\ISectionType;
 
 class PartyCongress implements ISitePreset
 {
+    use ApplicationTrait;
+    use MotionTrait;
+
+    /** @var ConsultationMotionType */
+    private $typeApplication;
+    private $typeMotion;
+
     /**
      * @return string
      */
@@ -42,12 +47,14 @@ class PartyCongress implements ISitePreset
     /**
      * @param Consultation $consultation
      */
-    public static function setConsultationSettings(Consultation $consultation)
+    public function setConsultationSettings(Consultation $consultation)
     {
         $settings                      = $consultation->getSettings();
         $settings->lineNumberingGlobal = false;
         $settings->screeningMotions    = true;
         $settings->screeningAmendments = true;
+        $settings->startLayoutType     = \app\models\settings\Consultation::START_LAYOUT_AGENDA;
+        $consultation->setSettings($settings);
 
         $consultation->wordingBase = 'de-parteitag';
     }
@@ -56,76 +63,101 @@ class PartyCongress implements ISitePreset
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @param Site $site
      */
-    public static function setSiteSettings(Site $site)
+    public function setSiteSettings(Site $site)
     {
 
     }
 
     /**
      * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function createMotionSections(Consultation $consultation)
+    public function createMotionSections(Consultation $consultation)
     {
-        $motionType = $consultation->motionTypes[0];
-
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TITLE;
-        $section->position      = 0;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Titel';
-        $section->required      = 1;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
-        $section->hasAmendments = 1;
-        $section->save();
-
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
-        $section->position      = 1;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Antragstext';
-        $section->required      = 1;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 1;
-        $section->lineNumbers   = 1;
-        $section->hasComments   = 1;
-        $section->hasAmendments = 1;
-        $section->save();
-
-        $section                = new ConsultationSettingsMotionSection();
-        $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
-        $section->position      = 2;
-        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Begründung';
-        $section->required      = 0;
-        $section->maxLen        = 0;
-        $section->fixedWidth    = 0;
-        $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
-        $section->hasAmendments = 0;
-        $section->save();
+        $this->doCreateApplicationSections($this->typeApplication);
+        $this->doCreateMotionSections($this->typeMotion);
     }
 
     /**
      * @param Consultation $consultation
      */
-    public static function createMotionTypes(Consultation $consultation)
+    public function createMotionTypes(Consultation $consultation)
     {
-        $type                   = new ConsultationMotionType();
-        $type->consultationId   = $consultation->id;
-        $type->title            = 'Antrag';
-        $type->position         = 0;
-        $type->policyMotions    = IPolicy::POLICY_ALL;
-        $type->policyAmendments = IPolicy::POLICY_ALL;
-        $type->policyComments   = IPolicy::POLICY_ALL;
-        $type->policySupport    = IPolicy::POLICY_LOGGED_IN;
-        $type->save();
-
+        $this->typeMotion      = $this->doCreateMotionType($consultation);
+        $this->typeApplication = $this->doCreateApplicationType($consultation);
         $consultation->refresh();
+    }
+
+    /**
+     * @param Consultation $consultation
+     */
+    public function createAgenda(Consultation $consultation)
+    {
+        $item                 = new ConsultationAgendaItem();
+        $item->consultationId = $consultation->id;
+        $item->parentItemId   = null;
+        $item->position       = 0;
+        $item->code           = '';
+        $item->codeExplicit   = '0.';
+        $item->title          = 'Tagesordnung';
+        $item->save();
+
+        $wahlItem                 = new ConsultationAgendaItem();
+        $wahlItem->consultationId = $consultation->id;
+        $wahlItem->parentItemId   = null;
+        $wahlItem->position       = 1;
+        $wahlItem->code           = '';
+        $wahlItem->codeExplicit   = '';
+        $wahlItem->title          = 'Wahlen';
+        $wahlItem->save();
+
+        $item                 = new ConsultationAgendaItem();
+        $item->consultationId = $consultation->id;
+        $item->parentItemId   = $wahlItem->id;
+        $item->position       = 0;
+        $item->code           = '';
+        $item->codeExplicit   = '';
+        $item->title          = '1. Vorsitzende(r)';
+        $item->motionTypeId   = $this->typeApplication->id;
+        $item->save();
+
+        $item                 = new ConsultationAgendaItem();
+        $item->consultationId = $consultation->id;
+        $item->parentItemId   = $wahlItem->id;
+        $item->position       = 1;
+        $item->code           = '';
+        $item->codeExplicit   = '';
+        $item->title          = '2. Vorsitzende(r)';
+        $item->motionTypeId   = $this->typeApplication->id;
+        $item->save();
+
+        $item                 = new ConsultationAgendaItem();
+        $item->consultationId = $consultation->id;
+        $item->parentItemId   = $wahlItem->id;
+        $item->position       = 2;
+        $item->code           = '';
+        $item->codeExplicit   = '';
+        $item->title          = 'Schatzmeister(in)';
+        $item->motionTypeId   = $this->typeApplication->id;
+        $item->save();
+
+        $item                 = new ConsultationAgendaItem();
+        $item->consultationId = $consultation->id;
+        $item->parentItemId   = null;
+        $item->position       = 2;
+        $item->code           = '';
+        $item->codeExplicit   = '0.';
+        $item->title          = 'Anträge';
+        $item->motionTypeId   = $this->typeMotion->id;
+        $item->save();
+
+        $item                 = new ConsultationAgendaItem();
+        $item->consultationId = $consultation->id;
+        $item->parentItemId   = null;
+        $item->position       = 3;
+        $item->code           = '';
+        $item->codeExplicit   = '0.';
+        $item->title          = 'Sonstiges';
+        $item->save();
     }
 }

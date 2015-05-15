@@ -78,7 +78,7 @@ function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consul
     if ($admin) {
         $motionTypes = [0 => ' - keine Anträge - '];
         foreach ($consultation->motionTypes as $motionType) {
-            $motionTypes[$motionType->id] = $motionType->title;
+            $motionTypes[$motionType->id] = $motionType->titlePlural;
         }
         $typeId = $agendaItem->motionTypeId;
 
@@ -172,12 +172,18 @@ if ($admin) {
     $layout->addOnLoadJS('$.AntragsgruenAdmin.agendaEdit();');
 }
 
-
-echo '<h2 class="green">Sonstige Anträge</h2>';
-echo "<ul class='motionListStd'>";
+/** @var Motion $otherMotions */
+$otherMotions = [];
 foreach ($consultation->motions as $motion) {
     if (!in_array($motion->id, $shownMotions)) {
-        showMotion($motion, $consultation);
+        $otherMotions[] = $motion;
     }
 }
-echo "</ul>";
+if (count($otherMotions) > 0) {
+    echo '<h2 class="green">Sonstige Anträge</h2>';
+    echo "<ul class='motionListStd'>";
+    foreach ($otherMotions as $motion) {
+        showMotion($motion, $consultation);
+    }
+    echo "</ul>";
+}

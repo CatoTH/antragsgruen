@@ -115,14 +115,13 @@
 
 .motionListAgenda {
   list-style-type: none;
-  margin: 0;
+  margin: 15px 0 0;
   padding: 0;
   position: relative;
 
   ol {
     list-style-type: none;
-    margin: 0;
-    margin-left: 30px;
+    margin: 0 0 0 30px;
     padding: 0;
   }
   ul.motions {
@@ -146,9 +145,11 @@
 
   li.agendaItem {
     border: solid 1px transparent; // Otherwise: strange behavior when moving items
+    padding-left: 20px;
+
     > div {
       margin-bottom: 5px;
-      padding: 10px;
+      padding: 5px 10px 10px;
 
       > h3 {
         position: relative;
@@ -214,7 +215,6 @@
     padding-top: 20px;
     padding-bottom: 20px;
     li.agendaItem {
-      padding-left: 20px;
       > div {
         margin-bottom: 0;
         padding-bottom: 0;
@@ -223,8 +223,7 @@
     }
   }
   h2, h3 {
-    margin: 0;
-    margin-bottom: 5px;
+    margin: 0 0 5px;
     font-size: 18px;
   }
   .moveHandle {

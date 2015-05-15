@@ -203,7 +203,7 @@ class Consultation extends ActiveRecord
         $settings->maintainanceMode = !$form->openNow;
         $con->setSettings($settings);
 
-        $preset::setConsultationSettings($con);
+        $preset->setConsultationSettings($con);
 
         if (!$con->save()) {
             throw new DB($con->getErrors());
