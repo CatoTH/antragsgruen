@@ -3,12 +3,46 @@ SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 
 
+--
+-- Dumping data for table `consultation`
+--
+
 INSERT INTO `consultation` (`id`, `siteId`, `urlPath`, `type`, `wordingBase`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `amendmentNumbering`, `adminEmail`, `settings`)
 VALUES
-  (1, 1, 'std-parteitag', 0, 'de-parteitag', 'Test2', 'Test2', NULL, NULL,
-   0, 'tobias@hoessl.eu', NULL),
+  (1, 1, 'std-parteitag', 0, 'de-parteitag', 'Test2', 'Test2', NULL, NULL, 0, 'tobias@hoessl.eu', NULL),
   (2, 2, 'vorstandswahlen', 1, 'de-bewerbung', 'Vorstandswahlen', 'Vorstandswahlen', NULL, NULL, 0, 'testadmin@example.org',
-   '{"maintainanceMode":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"lineNumberingGlobal":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotions":false,"screeningMotionsShown":false,"screeningAmendments":false,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":80,"startLayoutType":0,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}');
+   '{"maintainanceMode":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"lineNumberingGlobal":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotions":false,"screeningMotionsShown":false,"screeningAmendments":false,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":80,"startLayoutType":0,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}'),
+  (3, 3, 'parteitag', 2, 'de-parteitag', 'Parteitag', 'Parteitag', NULL, NULL, 0, 'testadmin@example.org',
+   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":80,"startLayoutType":3,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}');
+
+--
+-- Dumping data for table `consultationAgendaItem`
+--
+
+INSERT INTO `consultationAgendaItem` (`id`, `consultationId`, `parentItemId`, `position`, `code`, `codeExplicit`, `title`, `description`, `motionTypeId`, `deadline`) VALUES
+  (1, 3, NULL, 0, '', '0.', 'Tagesordnung', '', NULL, NULL),
+  (2, 3, NULL, 1, '', '', 'Wahlen', '', NULL, NULL),
+  (3, 3, 2, 0, '', '', '1. Vorsitzende(r)', '', 6, NULL),
+  (4, 3, 2, 1, '', '', '2. Vorsitzende(r)', '', 6, NULL),
+  (5, 3, 2, 2, '', '', 'Schatzmeister(in)', '', 6, NULL),
+  (6, 3, NULL, 2, '', '0.', 'Anträge', '', 5, NULL),
+  (7, 3, NULL, 3, '', '0.', 'Sonstiges', '', NULL, NULL);
+
+--
+-- Dumping data for table `consultationMotionType`
+--
+
+INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `motionPrefix`, `position`, `cssicon`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`)
+VALUES
+  (1, 1, 'Antrag', 'Anträge', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 2),
+  (3, 2, 'Antrag', 'Anträge', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 2),
+  (4, 2, 'Bewerbung', 'Bewerbungen', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 2),
+  (5, 3, 'Antrag', 'Anträge', NULL, 0, NULL, NULL, NULL, 1, 1, 1, 2),
+  (6, 3, 'Bewerbung', 'Bewerbungen', NULL, 0, NULL, NULL, NULL, 1, 0, 0, 2);
+
+--
+-- Dumping data for table `consultationSettingsMotionSection`
+--
 
 INSERT INTO `consultationSettingsMotionSection` (`id`, `motionTypeId`, `type`, `position`, `status`, `title`, `data`, `fixedWidth`, `required`, `maxLen`, `lineNumbers`, `hasComments`, `hasAmendments`)
 VALUES
@@ -22,41 +56,37 @@ VALUES
   (8, 3, 1, 3, 0, 'Begründung', NULL, 0, 0, 0, 0, 0, 0),
   (9, 4, 0, 0, 0, 'Name', NULL, 0, 1, 0, 0, 0, 0),
   (10, 4, 3, 1, 0, 'Foto', NULL, 0, 1, 0, 0, 0, 0),
-  (11, 4, 4, 2, 0, 'Angaben', '{"maxRowId":3,"rows":{"1":{"rowId":1,"title":"Geburtsort","type":"1"},"3":{"rowId":3,"title":"Alter","type":"2"},"2":{"rowId":2,"title":"Geburtstag","type":"3"}}}', 0, 0, 0, 0,
-   0, 0),
-  (12, 4, 1, 3, 0, 'Selbstvorstellung', NULL, 0, 1, 0, 0, 0, 0);
+  (11, 4, 4, 2, 0, 'Angaben', '{"maxRowId":3,"rows":{"1":{"rowId":1,"title":"Geburtsort","type":"1"},"3":{"rowId":3,"title":"Alter","type":"2"},"2":{"rowId":2,"title":"Geburtstag","type":"3"}}}', 0, 0, 0, 0, 0, 0),
+  (12, 4, 1, 3, 0, 'Selbstvorstellung', NULL, 0, 1, 0, 0, 0, 0),
+  (13, 6, 0, 0, 0, 'Name', NULL, 0, 1, 0, 0, 0, 0),
+  (14, 6, 3, 1, 0, 'Foto', NULL, 0, 1, 0, 0, 0, 0),
+  (15, 6, 4, 2, 0, 'Angaben',
+   '{"maxRowId":2,"rows":{"1":{"rowId":1,"title":"Alter","type":2},"2":{"rowId":2,"title":"Geschlecht","type":1},"3":{"rowId":3,"title":"Geburtsort","type":1}}}', 0, 0, 0, 0, 0,
+   0),
+  (16, 6, 1, 3, 0, 'Selbstvorstellung', NULL, 0, 1, 0, 0, 0, 0),
+  (17, 5, 0, 0, 0, 'Titel', NULL, 0, 1, 0, 0, 0, 1),
+  (18, 5, 1, 1, 0, 'Antragstext', NULL, 1, 1, 0, 1, 1, 1),
+  (19, 5, 1, 2, 0, 'Begründung', NULL, 0, 0, 0, 0, 0, 0);
 
-
-INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `motionPrefix`, `position`, `cssicon`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`)
-VALUES
-  (1, 1, 'Antrag', 'Anträge', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 2),
-  (3, 2, 'Antrag', 'Anträge', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 2),
-  (4, 2, 'Bewerbung', 'Bewerbungen', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 2);
+--
+-- Dumping data for table `consultationSettingsTag`
+--
 
 INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `title`, `cssicon`) VALUES
   (1, 1, 0, 'Win', 0),
   (2, 1, 1, 'Fail', 0);
 
-INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`)
-VALUES
-  (1, 'stdparteitag', 'Test2', 'Test2', NULL, 1, 1, 'Test2'),
-  (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen',
-   '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 2, 1, 'Vorstandswahlen');
+--
+-- Dumping data for table `motion`
+--
 
-INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
-  (1, 1),
-  (2, 1);
-
-INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`)
+INSERT INTO `motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `agendaItemId`, `title`, `titlePrefix`, `dateCreation`, `dateResolution`, `status`, `statusString`, `noteInternal`, `cache`, `textFixed`)
 VALUES
-  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 11:04:44', 0,
-   'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy', NULL, NULL),
-  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 11:08:14', 0,
-   'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV', NULL, NULL);
+  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-03 09:27:20', NULL, 3, NULL, NULL, '', 0);
 
-INSERT INTO `motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `title`, `titlePrefix`, `dateCreation`, `dateResolution`, `status`, `statusString`, `noteInternal`, `cache`, `textFixed`)
-VALUES
-  (2, 1, 1, NULL, 'O’zapft is!', 'A2', '2015-04-03 11:27:20', NULL, 3, NULL, NULL, '', 0);
+--
+-- Dumping data for table `motionSection`
+--
 
 INSERT INTO `motionSection` (`motionId`, `sectionId`, `data`, `metadata`) VALUES
   (2, 1, 'O’zapft is!', NULL),
@@ -71,9 +101,41 @@ INSERT INTO `motionSection` (`motionId`, `sectionId`, `data`, `metadata`) VALUES
    NULL),
   (2, 5, '', NULL);
 
+--
+-- Dumping data for table `motionSupporter`
+--
+
 INSERT INTO `motionSupporter` (`id`, `motionId`, `position`, `userId`, `role`, `comment`, `personType`, `name`, `organization`, `resolutionDate`, `contactEmail`, `contactPhone`)
 VALUES
   (2, 2, 0, 1, 'initiates', NULL, 0, 'HoesslTo', '', NULL, 'tobias@hoessl.eu', NULL);
+
+--
+-- Dumping data for table `site`
+--
+
+INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`) VALUES
+  (1, 'stdparteitag', 'Test2', 'Test2', NULL, 1, 1, 'Test2'),
+  (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen', '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 2, 1, 'Vorstandswahlen'),
+  (3, 'parteitag', 'Parteitag', 'Parteitag', '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 3, 1, 'Parteitag');
+
+--
+-- Dumping data for table `siteAdmin`
+--
+
+INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
+  (1, 1),
+  (2, 1),
+  (3, 1);
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`) VALUES
+  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 10:04:44', 0,
+   'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy', NULL, NULL),
+  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 10:08:14', 0,
+   'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV', NULL, NULL);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;
