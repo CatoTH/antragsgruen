@@ -118,7 +118,9 @@ class Veranstaltung extends GxActiveRecord
 				return (Yii::app()->user->getState("role") == "admin");
 			case Veranstaltung::$POLICY_PARTEIMITGLIEDER:
 				if (Yii::app()->user->isGuest) return false;
-				return (preg_match("/^openid:https:\/\/[a-z0-9_-]+\.netzbegruener\.in\/$/i", Yii::app()->user->id));
+				/** @var Person $person */
+				$person = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+				return $person->istWurzelwerklerIn();
 			case Veranstaltung::$POLICY_NIEMAND:
 				return false;
 		}

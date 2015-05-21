@@ -1,10 +1,11 @@
-2.7.0 - 2015-??-??
+2.7.0 - 2015-05-21
 ==================
 
 * Im Backend gibt es nun eine komplette Liste aller Anträge und Änderungsanträge. Dort kann man Anträge gesammelt freischalten / löschen und Anträge "kopieren" (bzw. die Liste der AntragstellerInnen).
 * Beim Hinzufügen von Personen zu einem Antrag im Backend wurde die Auswahlbox existierender Personen entfernt. Dafür gibt es nun die Möglichkeit, auch die Organisation und das Beschlussdatum anzugeben.
 * Stellt man einen (Änderungs-)Antrag als Wurzelwerk-NutzerIn, wird jetzt von der Antragsseite aus das Wurzelwerk-Profil verlinkt.
 * Es gibt einen Hook für veranstaltungsspezifische Einstellungen, mit dem sich ein Reply-To-Header in der Registrierungs-Email bei Namespace-Accounts setzen lässt.
+* Bugfix: Die "Nur WurzelwerklerInnen"-Einstellung funktionierte bei Kommentaren nicht.
 
 2.6.6 - 2015-04-08
 ==================
