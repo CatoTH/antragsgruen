@@ -49,4 +49,20 @@ $I->wantTo('check if my chenges are saved');
 $I->dontSeeElement('.agendaItemEditForm');
 $I->dontSeeElement('#agendaEditSavingHolder');
 $I->see('More Motions');
-// @TODO
+
+
+$I->wantTo('further change the agenda a bit');
+$I->executeJS('$(".motionListAgenda").children().eq(2).find("> ol").children().eq(2).insertAfter($(".motionListAgenda").children().eq(0));');
+$I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
+$I->fillField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
+$I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType', 0);
+$I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
+
+$I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
+$I->seeInField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
+$I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType', 0);
+
+
+
+$I->wantTo('delete the two modified items');
+

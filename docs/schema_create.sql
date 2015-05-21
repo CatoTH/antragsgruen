@@ -148,9 +148,9 @@ CREATE TABLE `consultationAgendaItem` (
   `parentItemId`   INT(11)           DEFAULT NULL,
   `position`       INT(11)      NOT NULL,
   `code`           VARCHAR(20)  NOT NULL,
-  `codeExplicit`   VARCHAR(20)  NOT NULL,
+  `codeExplicit`   VARCHAR(20)  NULL,
   `title`          VARCHAR(250) NOT NULL,
-  `description`    TEXT         NOT NULL,
+  `description`    TEXT         NULL,
   `motionTypeId`   INT(11)           DEFAULT NULL,
   `deadline`       TIMESTAMP    NULL DEFAULT NULL
 )
