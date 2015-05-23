@@ -9,7 +9,8 @@ use yii\db\ActiveRecord;
  * @property integer $userId
  * @property integer $paragraph
  * @property string $text
- * @property string $dateCreated
+ * @property string $dateCreation
+ * @property string $name
  * @property integer $status
  * @property User $user
  */

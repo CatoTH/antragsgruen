@@ -243,8 +243,16 @@
         }
     };
 
+    var amendmentShow = function () {
+        var s = location.hash.split('#comm');
+        if (s.length == 2) {
+            $('#comment' + s[1]).scrollintoview({top_offset: -100});
+        }
+    };
+
     $.Antragsgruen = {
         "motionShow": motionShow,
+        "amendmentShow": amendmentShow,
         "motionEditForm": motionEditForm,
         "amendmentEditForm": amendmentEditForm,
         "contentPageEdit": contentPageEdit

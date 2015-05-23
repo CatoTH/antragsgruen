@@ -5117,7 +5117,7 @@ ins {
   padding: 15px;
   text-align: center; }
 
-#motionConfirmForm {
+#motionConfirmForm, #amendmentConfirmForm {
   margin-bottom: 20px; }
 
 /*# sourceMappingURL=antragsgruen.css.map */

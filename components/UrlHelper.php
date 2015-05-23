@@ -3,6 +3,7 @@
 namespace app\components;
 
 use app\models\db\Amendment;
+use app\models\db\AmendmentComment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
@@ -182,6 +183,23 @@ class UrlHelper
                 'amendment/' . $mode,
                 'motionId'    => $amendment->motionId,
                 'amendmentId' => $amendment->id
+            ]
+        );
+    }
+
+    /**
+     * @param AmendmentComment $amendmentComment
+     * @return string
+     */
+    public static function createAmendmentCommentUrl(AmendmentComment $amendmentComment)
+    {
+        return static::createUrl(
+            [
+                'amendment/view',
+                'motionId'    => $amendmentComment->amendment->motionId,
+                'amendmentId' => $amendmentComment->amendmentId,
+                'commentId'   => $amendmentComment->id,
+                '#'           => 'comm' . $amendmentComment->id
             ]
         );
     }

@@ -3,10 +3,12 @@
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentComment;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
+use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -20,14 +22,14 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
-
+$controller   = $this->context;
+$layout       = $controller->layoutParams;
+$consultation = $amendment->motion->consultation;
 
 $layout->addBreadcrumb($amendment->motion->getTypeName(), UrlHelper::createMotionUrl($amendment->motion));
 $layout->addBreadcrumb($amendment->titlePrefix);
 
-$this->title = $amendment->getTitle() . " (" . $amendment->motion->consultation->title . ", Antragsgrün)";
+$this->title = $amendment->getTitle() . " (" . $consultation->title . ", Antragsgrün)";
 
 
 $html = '<ul class="sidebarActions">';
@@ -50,12 +52,12 @@ echo '<table class="motionDataTable">
                     <th>' . Yii::t('amend', 'AntragsstellerIn'), ':</th>
                     <td>';
 
-echo MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $controller->consultation);
+echo MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $consultation);
 
 echo '</td></tr>
                 <tr><th>Status:</th><td>';
 
-$screeningMotionsShown = $amendment->motion->consultation->getSettings()->screeningMotionsShown;
+$screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
 $statiNames            = Amendment::getStati();
 if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
     echo '<span class="unscreened">' . Html::encode($statiNames[$amendment->status]) . '</span>';
@@ -122,3 +124,34 @@ if ($amendment->changeExplanation != '') {
     echo '</div></div>';
     echo '</section>';
 }
+
+
+if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
+    echo '<section class="comments"><h2 class="green">Kommentare</h2>';
+
+    $form = $commentForm;
+    $imadmin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
+
+    if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
+        $form              = new \app\models\forms\CommentForm();
+        $form->paragraphNo = -1;
+        $form->sectionId   = -1;
+    }
+
+    foreach ($amendment->comments as $comment) {
+        if ($comment->paragraph == -1 && $comment->status != AmendmentComment::STATUS_DELETED) {
+            $commLink = UrlHelper::createAmendmentCommentUrl($comment);
+            LayoutHelper::showComment($comment, $imadmin, $commLink);
+        }
+    }
+
+    if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
+        LayoutHelper::showCommentForm($form, $consultation, -1, -1);
+    }
+    echo '</section>';
+}
+
+if (!$consultation->site->getBehaviorClass()->isLoginForced()) {
+    // @TODO Social Sharing
+}
+$layout->addOnLoadJS('$.Antragsgruen.amendmentShow();');

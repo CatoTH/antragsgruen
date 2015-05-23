@@ -10,6 +10,7 @@ use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
+use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -412,22 +413,25 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 if ($motion->consultation->getSettings()->commentWholeMotions) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
-    $comments = [];
-    foreach ($motion->comments as $comm) {
-        if ($comm->paragraph == -1 && $comm->status != MotionComment::STATUS_DELETED) {
-            $comments[] = $comm;
+    $form = $commentForm;
+    $imadmin = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
+
+    if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
+        $form              = new \app\models\forms\CommentForm();
+        $form->paragraphNo = -1;
+        $form->sectionId   = -1;
+    }
+
+    foreach ($motion->comments as $comment) {
+        if ($comment->paragraph == -1 && $comment->status != MotionComment::STATUS_DELETED) {
+            $commLink = UrlHelper::createMotionCommentUrl($comment);
+            LayoutHelper::showComment($comment, $imadmin, $commLink);
         }
     }
 
-    echo $this->render(
-        'showComments',
-        [
-            'motion'      => $motion,
-            'paragraphNo' => -1,
-            'comments'    => $comments,
-            'form'        => $commentForm,
-        ]
-    );
+    if ($motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
+        LayoutHelper::showCommentForm($form, $motion->consultation, -1, -1);
+    }
     echo '</section>';
 }
 

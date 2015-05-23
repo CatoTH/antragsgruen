@@ -116,8 +116,8 @@ class AmendmentEditForm extends Model
                     $section->getSectionType()->setAmendmentData($data);
                 }
             }
-            $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
         }
+        $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
     }
 
 
@@ -175,7 +175,7 @@ class AmendmentEditForm extends Model
         $amendment->dateCreation      = date("Y-m-d H:i:s");
         $amendment->changeMetatext    = ''; // @TODO
         $amendment->changeText        = ''; // @TODO
-        $amendment->changeExplanation = ''; // @TODO
+        $amendment->changeExplanation = $this->reason;
         $amendment->cache             = '';
 
         if ($amendment->save()) {

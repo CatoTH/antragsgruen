@@ -22,5 +22,5 @@ echo '<h1>' . Yii::t('amend', 'Änderungsantrag eingereicht') . '</h1>';
 //echo $text = $antrag->veranstaltung->getStandardtext("antrag_eingereicht")->getHTMLText();
 
 echo Html::beginForm(UrlHelper::createMotionUrl($amendment->motion), 'post', ['id' => 'motionConfirmedForm']);
-echo '<p><button type="submit" class="btn btn-success">Zurück zur Startseite</button></p>';
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">Zurück zum Antrag</button></p>';
 echo Html::endForm();

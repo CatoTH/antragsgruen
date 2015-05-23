@@ -5,16 +5,89 @@ namespace app\controllers;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentComment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\EMailLog;
+use app\models\db\IComment;
 use app\models\db\Motion;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
+use app\models\forms\CommentForm;
 
 class AmendmentController extends Base
 {
+    /**
+     * @param Amendment $amendment
+     * @param int $commentId
+     * @param bool $needsScreeningRights
+     * @return AmendmentComment
+     * @throws Internal
+     */
+    private function getComment(Amendment $amendment, $commentId, $needsScreeningRights)
+    {
+        /** @var AmendmentComment $comment */
+        $comment = AmendmentComment::findOne($commentId);
+        if (!$comment || $comment->amendmentId != $amendment->id || $comment->status != IComment::STATUS_VISIBLE) {
+            throw new Internal('Kommentar nicht gefunden');
+        }
+        if ($needsScreeningRights) {
+            if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+                throw new Internal('Keine Freischaltrechte');
+            }
+        }
+        return $comment;
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param array $viewParameters
+     * @return AmendmentComment
+     */
+    private function writeComment(Amendment $amendment, &$viewParameters)
+    {
+        if (!$amendment->motion->motionType->getCommentPolicy()->checkAmendmentSubmit()) {
+            \Yii::$app->session->setFlash('error', 'No rights to write a comment');
+        }
+        $commentForm = new CommentForm();
+        $commentForm->setAttributes($_POST['comment']);
+
+        if (User::getCurrentUser()) {
+            $commentForm->userId = User::getCurrentUser()->id;
+        }
+
+        try {
+            $comment = $commentForm->saveAmendmentComment($amendment);
+            $this->redirect(UrlHelper::createAmendmentCommentUrl($comment));
+        } catch (\Exception $e) {
+            $viewParameters['commentForm'] = $commentForm;
+            if (!isset($viewParameters['openedComments'][$commentForm->sectionId])) {
+                $viewParameters['openedComments'][$commentForm->sectionId] = [];
+            }
+            $viewParameters['openedComments'][$commentForm->sectionId][] = $commentForm->paragraphNo;
+            \Yii::$app->session->setFlash('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param int $commentId
+     * @throws Internal
+     */
+    private function deleteComment(Amendment $amendment, $commentId)
+    {
+        $comment = $this->getComment($amendment, $commentId, false);
+        if (!$comment->canDelete(User::getCurrentUser())) {
+            throw new Internal('Keine Berechtigung zum Löschen');
+        }
+
+        $comment->status = IComment::STATUS_DELETED;
+        $comment->save();
+
+        \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
+    }
 
     /**
      * @param Amendment $amendment
@@ -25,6 +98,26 @@ class AmendmentController extends Base
     {
         if ($commentId == 0 && isset($_POST['commentId'])) {
             $commentId = IntVal($_POST['commentId']);
+        }
+        if (isset($_POST['deleteComment'])) {
+            $this->deleteComment($amendment, $commentId);
+        } elseif (isset($_POST['commentScreeningAccept'])) {
+            $this->screenCommentAccept($amendment, $commentId);
+
+        } elseif (isset($_POST['commentScreeningReject'])) {
+            $this->screenCommentReject($amendment, $commentId);
+
+        } elseif (isset($_POST['motionLike'])) {
+            $this->amendmentLike($amendment);
+
+        } elseif (isset($_POST['motionDislike'])) {
+            $this->amendmentDislike($amendment);
+
+        } elseif (isset($_POST['motionSupportRevoke'])) {
+            $this->amendmentSupportRevoke($amendment);
+
+        } elseif (isset($_POST['writeComment'])) {
+            $this->writeComment($amendment, $viewParameters);
         }
     }
 
@@ -40,7 +133,7 @@ class AmendmentController extends Base
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne($amendmentId);
         if (!$amendment) {
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         $this->layout = 'column2';
@@ -106,7 +199,7 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             \Yii::$app->session->setFlash('error', 'Amendment not found.');
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (isset($_POST['modify'])) {
@@ -132,7 +225,7 @@ class AmendmentController extends Base
                 $mails = explode(",", $amendment->motion->consultation->adminEmail);
 
                 $motionLink = \Yii::$app->request->baseUrl . UrlHelper::createAmendmentUrl($amendment);
-                $mailText   = "Es wurde ein neuer Änderungsantrag \"%title%\" eingereicht.\nLink: %link%";
+                $mailText   = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
                 $mailText   = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $motionLink], $mailText);
 
                 foreach ($mails as $mail) {
@@ -141,7 +234,7 @@ class AmendmentController extends Base
                             EmailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
                             trim($mail),
                             null,
-                            "Neuer Antrag",
+                            'Neuer Antrag',
                             $mailText,
                             $amendment->motion->consultation->site->getBehaviorClass()->getMailFromName()
                         );
@@ -159,7 +252,7 @@ class AmendmentController extends Base
                 }
             }
 
-            return $this->render("create_done", ['amendment' => $amendment, 'mode' => $fromMode]);
+            return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);
 
         } else {
             return $this->render('create_confirm', ['amendment' => $amendment, 'mode' => $fromMode]);

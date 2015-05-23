@@ -6,7 +6,9 @@
  */
 
 use app\components\UrlHelper;
+use app\models\db\User;
 use app\models\forms\CommentForm;
+use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 $hasLineNumbers = $section->consultationSetting->lineNumbers;
@@ -70,16 +72,24 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurUserHeuristically();
     if (count($paragraph->comments) > 0 || $mayOpen) {
-        echo $this->render(
-            'showComments',
-            [
-                'motion'       => $section->motion,
-                'sectionId'    => $section->sectionId,
-                'paragraphNo'  => $paragraphNo,
-                'comments'     => $paragraph->comments,
-                'form'         => $commentForm,
-            ]
-        );
+        $motion = $section->motion;
+        $form   = $commentForm;
+
+        $imadmin = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
+        if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
+            $form              = new \app\models\forms\CommentForm();
+            $form->paragraphNo = $paragraphNo;
+            $form->sectionId   = $section->sectionId;
+        }
+
+        foreach ($paragraph->comments as $comment) {
+            $commLink = UrlHelper::createMotionCommentUrl($comment);
+            LayoutHelper::showComment($comment, $imadmin, $commLink);
+        }
+
+        if ($motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
+            LayoutHelper::showCommentForm($form, $motion->consultation, $section->sectionId, $paragraphNo);
+        }
     }
 
 
