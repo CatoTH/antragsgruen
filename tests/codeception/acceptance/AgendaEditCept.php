@@ -19,6 +19,8 @@ $page = ConsultationHomePage::openBy(
     ]
 );
 
+// @TODO Test the motion / application creation
+
 $I->see('Parteitag', 'h1');
 $I->dontSeeElement('.moveHandle');
 $I->see('Tagesordnung', '.motionListAgenda');
@@ -55,14 +57,26 @@ $I->wantTo('further change the agenda a bit');
 $I->executeJS('$(".motionListAgenda").children().eq(2).find("> ol").children().eq(2).insertAfter($(".motionListAgenda").children().eq(0));');
 $I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
 $I->fillField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
-$I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType', 0);
+$I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType', '0');
 $I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
 
 $I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
 $I->seeInField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
-$I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType', 0);
-
-
+$I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType', 'keine Anträge');
+$I->submitForm('#agendaitem_5 .agendaItemEditForm', [], '');
 
 $I->wantTo('delete the two modified items');
 
+// $I->acceptPopup() <- apparently doesn't work with phantomjs ;_;
+$I->executeJS('window.confirm = function() { return true; }'); // Dirty Hack
+$I->see('Sonstwas');
+$I->see('More motions');
+$I->click('#agendaitem_5 > div > h3 .delAgendaItem');
+$I->click('#agendaitem_8 > div > h3 .delAgendaItem');
+$I->dontSee('Sonstwas');
+$I->dontSee('More motions');
+
+$I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
+
+$I->dontSee('Sonstwas');
+$I->dontSee('More motions');
