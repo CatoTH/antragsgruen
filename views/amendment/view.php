@@ -6,6 +6,7 @@ use app\models\db\Amendment;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
+use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -49,31 +50,7 @@ echo '<table class="motionDataTable">
                     <th>' . Yii::t('amend', 'AntragsstellerIn'), ':</th>
                     <td>';
 
-
-$x = array();
-foreach ($amendment->getInitiators() as $supp) {
-    $name  = $supp->getNameWithResolutionDate(true);
-    if ($supp->user && $supp->user->isWurzelwerkUser()) {
-        $url = 'https://wurzelwerk.gruene.de/web/' . $supp->user->getWurzelwerkName();
-        $name .= ' (<a href="' . Html::encode($url) . '">Wurzelwerk-Profil</a>)';
-    }
-    $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
-    if ($admin && ($supp->contactEmail != "" || $supp->contactPhone != "")) {
-        $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
-        if ($supp->contactEmail != "") {
-            $name .= "E-Mail: " . Html::encode($supp->contactEmail);
-        }
-        if ($supp->contactEmail != "" && $supp->contactPhone != "") {
-            $name .= ", ";
-        }
-        if ($supp->contactPhone != "") {
-            $name .= "Telefon: " . Html::encode($supp->contactPhone);
-        }
-        $name .= ")</small>";
-    }
-    $x[] = $name;
-}
-echo implode(", ", $x);
+echo MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $controller->consultation);
 
 echo '</td></tr>
                 <tr><th>Status:</th><td>';
