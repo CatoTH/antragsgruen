@@ -3,6 +3,7 @@
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -36,42 +37,46 @@ $html .= '<div class="nav-list"><div class="nav-header">Suche</div>
 $html .= Html::endForm();
 $layout->menusHtml[] = $html;
 
-$motionTypes = $consultation->motionTypes;
-$motionLink  = $consultation->site->getBehaviorClass()->getSubmitMotionStr();
-if ($motionLink != '') {
-    $layout->preSidebarHtml = $motionLink;
-} elseif (count($motionTypes) > 0) {
-    if (count($motionTypes) == 1) {
-        if ($motionTypes[0]->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
-            $createLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
-            if ($motionTypes[0]->getMotionPolicy()->checkCurUserHeuristically()) {
-                $motionCreateLink = $createLink;
-            } else {
-                $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => $createLink]);
-            }
-            $layout->menusHtml[] = '<a class="createMotion" href="' . Html::encode($motionCreateLink) . '" ' .
-                'title="' . Html::encode(Yii::t('con', 'Start a Motion')) . '"></a>';
-        }
-    } else {
-        $html = '<div><ul class="nav nav-list motions">';
-        $html .= '<li class="nav-header">' . Yii::t('con', 'Create new...') . '</li>';
-        foreach ($motionTypes as $motionType) {
-            if ($motionType->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
-                $createLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
-                if ($motionType->getMotionPolicy()->checkCurUserHeuristically()) {
+
+if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda') {
+    $motionTypes = $consultation->motionTypes;
+    $motionLink  = $consultation->site->getBehaviorClass()->getSubmitMotionStr();
+    if ($motionLink != '') {
+        $layout->preSidebarHtml = $motionLink;
+    } elseif (count($motionTypes) > 0) {
+        if (count($motionTypes) == 1) {
+            if ($motionTypes[0]->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
+                $createLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
+                if ($motionTypes[0]->getMotionPolicy()->checkCurUserHeuristically()) {
                     $motionCreateLink = $createLink;
                 } else {
                     $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => $createLink]);
                 }
-                $html .= '<li class="createMotion' . $motionType->id . '">';
-                $html .= '<a href="' . Html::encode($motionCreateLink) . '">';
-                $html .= Html::encode($motionType->titlePlural) . '</a></li>';
+                $layout->menusHtml[] = '<a class="createMotion" href="' . Html::encode($motionCreateLink) . '" ' .
+                    'title="' . Html::encode(Yii::t('con', 'Start a Motion')) . '"></a>';
             }
+        } else {
+            $html = '<div><ul class="nav nav-list motions">';
+            $html .= '<li class="nav-header">' . Yii::t('con', 'Create new...') . '</li>';
+            foreach ($motionTypes as $motionType) {
+                if ($motionType->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
+                    $createLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
+                    if ($motionType->getMotionPolicy()->checkCurUserHeuristically()) {
+                        $motionCreateLink = $createLink;
+                    } else {
+                        $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => $createLink]);
+                    }
+                    $html .= '<li class="createMotion' . $motionType->id . '">';
+                    $html .= '<a href="' . Html::encode($motionCreateLink) . '">';
+                    $html .= Html::encode($motionType->titlePlural) . '</a></li>';
+                }
+            }
+            $html .= "</ul></div>";
+            $layout->menusHtml[] = $html;
         }
-        $html .= "</ul></div>";
-        $layout->menusHtml[] = $html;
     }
 }
+
 
 // @TODO Only show it if motions are enabled
 $html = '<div><ul class="nav nav-list motions">';
@@ -115,10 +120,13 @@ $html .= "</ul></div>";
 $layout->menusHtml[] = $html;
 
 
-if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurUserHeuristically()) {
-    $newUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
+if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda') {
+    /** @var ConsultationMotionType[] $motionTypes */
+    if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurUserHeuristically()) {
+        $newUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
 
-    $layout->menusHtml[] = '<a class="createMotion" href="' . Html::encode($newUrl) . '"></a>';
+        $layout->menusHtml[] = '<a class="createMotion" href="' . Html::encode($newUrl) . '"></a>';
+    }
 }
 
 // @TODO Only show it if comments are enabled
