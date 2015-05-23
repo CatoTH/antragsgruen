@@ -20,6 +20,7 @@ trait MotionTrait
         $type->consultationId   = $consultation->id;
         $type->titleSingular    = 'Antrag';
         $type->titlePlural      = 'Anträge';
+        $type->createTitle      = 'Antrag stellen';
         $type->position         = 0;
         $type->policyMotions    = IPolicy::POLICY_ALL;
         $type->policyAmendments = IPolicy::POLICY_ALL;

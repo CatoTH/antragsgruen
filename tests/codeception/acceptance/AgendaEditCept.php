@@ -19,12 +19,11 @@ $page = ConsultationHomePage::openBy(
     ]
 );
 
-// @TODO Test the motion / application creation
-
 $I->see('Parteitag', 'h1');
 $I->dontSeeElement('.moveHandle');
 $I->see('Tagesordnung', '.motionListAgenda');
-
+$I->see('Bewerben', '#agendaitem_3 > div > h3');
+$I->see('Antrag stellen', '#agendaitem_6 > div > h3');
 
 $I->wantTo('edit the agenda a bit');
 
@@ -50,20 +49,25 @@ $I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
 $I->wantTo('check if my chenges are saved');
 $I->dontSeeElement('.agendaItemEditForm');
 $I->dontSeeElement('#agendaEditSavingHolder');
-$I->see('More Motions');
+$I->see('More Motions', '#agendaitem_8 > div > h3');
+$I->see('Antrag stellen', '#agendaitem_8 > div > h3');
 
 
 $I->wantTo('further change the agenda a bit');
+$I->see('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListAgenda").children().eq(2).find("> ol").children().eq(2).insertAfter($(".motionListAgenda").children().eq(0));');
 $I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
 $I->fillField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
 $I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType', '0');
 $I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
 
+$I->dontSee('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
 $I->seeInField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
 $I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType', 'keine Anträge');
 $I->submitForm('#agendaitem_5 .agendaItemEditForm', [], '');
+
+
 
 $I->wantTo('delete the two modified items');
 

@@ -4,14 +4,19 @@ namespace app\controllers;
 
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\db\Consultation;
+use app\models\db\ConsultationAgendaItem;
+use app\models\db\ConsultationMotionType;
 use app\models\db\EMailLog;
 use app\models\db\IComment;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
+use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
+use app\models\exceptions\NotFound;
 use app\models\forms\CommentForm;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
@@ -142,11 +147,11 @@ class MotionController extends Base
                 $motion->unlink('motionSupporters', $supp, true);
             }
         }
-        $support = new MotionSupporter();
+        $support           = new MotionSupporter();
         $support->motionId = $motion->id;
-        $support->userId = $currentUser->id;
+        $support->userId   = $currentUser->id;
         $support->position = 0;
-        $support->role = $role;
+        $support->role     = $role;
         $support->save();
 
         $motion->refresh();
@@ -471,14 +476,14 @@ class MotionController extends Base
             $this->redirect(UrlHelper::createUrl("consultation/index"));
         }
 
-        $form = new MotionEditForm($motion->motionType, $motion);
+        $form     = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
         $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if (isset($_POST['save'])) {
             $form->setAttributes([$_POST, $_FILES]);
             try {
                 $form->saveMotion($motion);
-                $nextUrl  = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
+                $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';
             } catch (FormError $e) {
@@ -496,23 +501,63 @@ class MotionController extends Base
         );
     }
 
+    /**
+     * @param int $motionTypeId
+     * @param int $agendaItemId
+     * @return array
+     * @throws Internal
+     */
+    private function getMotionTypeForCreate($motionTypeId = 0, $agendaItemId = 0)
+    {
+        if ($agendaItemId > 0) {
+            $where      = ['consultationId' => $this->consultation->id, 'id' => $agendaItemId];
+            $agendaItem = ConsultationAgendaItem::findOne($where);
+            if (!$agendaItem) {
+                throw new Internal('Could not find agenda item');
+            }
+            /** @var ConsultationAgendaItem $agendaItem */
+            if (!$agendaItem->motionType) {
+                throw new Internal('Agenda item does not have motions');
+            }
+            $motionType = $agendaItem->motionType;
+        } elseif ($motionTypeId > 0) {
+            $motionType = $this->consultation->getMotionType($motionTypeId);
+            $agendaItem = null;
+        } else {
+            throw new Internal('Could not resolve motion type');
+        }
+
+        if (!$motionType->getMotionPolicy()->checkCurUserHeuristically()) {
+            throw new Internal('You do not have permissions to create a motion for this agenda item');
+        }
+
+        return [$motionType, $agendaItem];
+    }
+
 
     /**
      * @param int $motionTypeId
+     * @param int $agendaItemId
      * @return string
      */
-    public function actionCreate($motionTypeId)
+    public function actionCreate($motionTypeId = 0, $agendaItemId = 0)
     {
         $this->testMaintainanceMode();
 
-        $motionType = $this->consultation->getMotionType($motionTypeId);
-        $form = new MotionEditForm($motionType, null);
-
-        if (!$motionType->getMotionPolicy()->checkCurUserHeuristically()) {
-            \Yii::$app->session->setFlash('error', 'Es kann kein Antrag angelegt werden.');
+        try {
+            list($motionType, $agendaItem) = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId);
+        } catch (ExceptionBase $e) {
+            \Yii::$app->session->setFlash('error', $e->getMessage());
             $this->redirect(UrlHelper::createUrl('consultation/index'));
             return '';
         }
+
+        /**
+         * @var ConsultationMotionType $motionType
+         * @var ConsultationAgendaItem|null $agendaItem
+         */
+
+        $form = new MotionEditForm($motionType, $agendaItem, null);
 
         if (isset($_POST['save'])) {
             try {

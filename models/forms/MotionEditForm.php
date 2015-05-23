@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\Motion;
@@ -14,6 +15,9 @@ class MotionEditForm extends Model
 {
     /** @var ConsultationMotionType */
     public $motionType;
+
+    /** @var ConsultationAgendaItem */
+    public $agendaItem;
 
     /** @var MotionSupporter[] */
     public $supporters = array();
@@ -29,13 +33,15 @@ class MotionEditForm extends Model
 
     /**
      * @param ConsultationMotionType $motionType
+     * @param null|ConsultationAgendaItem
      * @param null|Motion $motion
      */
-    public function __construct(ConsultationMotionType $motionType, $motion)
+    public function __construct(ConsultationMotionType $motionType, $agendaItem, $motion)
     {
         parent::__construct();
         $this->motionType = $motionType;
-        $motionSections     = [];
+        $this->agendaItem = $agendaItem;
+        $motionSections   = [];
         if ($motion) {
             $this->motionId   = $motion->id;
             $this->supporters = $motion->motionSupporters;
@@ -153,6 +159,7 @@ class MotionEditForm extends Model
         $motion->dateCreation   = date("Y-m-d H:i:s");
         $motion->motionTypeId   = $this->motionType->id;
         $motion->cache          = '';
+        $motion->agendaItemId   = ($this->agendaItem ? $this->agendaItem->id : null);
 
         if ($motion->save()) {
             $this->motionType->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);

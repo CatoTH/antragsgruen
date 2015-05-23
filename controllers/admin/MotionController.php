@@ -126,19 +126,22 @@ class MotionController extends AdminBase
         }
 
         if (isset($_POST['save'])) {
-            $motion->title          = $_POST['motion']['title'];
-            $motion->statusString   = $_POST['motion']['statusString'];
-            $motion->dateCreation   = Tools::dateBootstraptime2sql($_POST['motion']['dateCreation']);
-            $motion->noteInternal   = $_POST['motion']['noteInternal'];
-            $motion->status         = $_POST['motion']['status'];
+            $modat = $_POST['motion'];
+            $motion->title          = $modat['title'];
+            $motion->statusString   = $modat['statusString'];
+            $motion->dateCreation   = Tools::dateBootstraptime2sql($modat['dateCreation']);
+            $motion->noteInternal   = $modat['noteInternal'];
+            $motion->status         = $modat['status'];
+            $motion->agendaItemId   = (isset($modat['agendaItemId']) ? $modat['agendaItemId'] : null);
             $motion->dateResolution = '';
-            if ($_POST['motion']['dateResolution'] != '') {
-                $motion->dateResolution = Tools::dateBootstraptime2sql($_POST['motion']['dateCreation']);
+            if ($modat['dateResolution'] != '') {
+                $motion->dateResolution = Tools::dateBootstraptime2sql($modat['dateCreation']);
             }
+
             $foundPrefix = false;
             foreach ($this->consultation->motions as $mot) {
                 if ($mot->titlePrefix != '' && $mot->id != $motion->id &&
-                    $mot->titlePrefix == $_POST['motion']['titlePrefix'] && $mot->status != Motion::STATUS_DELETED
+                    $mot->titlePrefix == $modat['titlePrefix'] && $mot->status != Motion::STATUS_DELETED
                 ) {
                     $foundPrefix = true;
                 }

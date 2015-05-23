@@ -168,6 +168,7 @@ CREATE TABLE `consultationMotionType` (
   `consultationId`     INT(11)      NOT NULL,
   `titleSingular`      VARCHAR(100) NOT NULL,
   `titlePlural`        VARCHAR(100) NOT NULL,
+  `createTitle`        VARCHAR(200) NOT NULL,
   `motionPrefix`       VARCHAR(10)       DEFAULT NULL,
   `position`           INT(11)      NOT NULL,
   `cssicon`            VARCHAR(100)      DEFAULT NULL,

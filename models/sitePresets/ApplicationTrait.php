@@ -21,6 +21,7 @@ trait ApplicationTrait
         $type->consultationId   = $consultation->id;
         $type->titleSingular    = 'Bewerbung';
         $type->titlePlural      = 'Bewerbungen';
+        $type->createTitle      = 'Bewerben';
         $type->position         = 0;
         $type->policyMotions    = IPolicy::POLICY_ALL;
         $type->policyAmendments = IPolicy::POLICY_NOBODY;

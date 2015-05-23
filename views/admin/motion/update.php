@@ -3,6 +3,7 @@
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
+use app\models\db\ConsultationAgendaItem;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -80,6 +81,21 @@ $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholde
 echo Html::textInput('motion[statusString]', $motion->statusString, $options);
 echo '</div></div>';
 
+if (count($consultation->agendaItems) > 0) {
+    echo '<div class="form-group">';
+    echo '<label class="col-md-4 control-label" for="motionStatus">';
+    echo 'Tagesordnungspunkt';
+    echo ':</label><div class="col-md-8">';
+    $options     = ['class' => 'form-control', 'id' => 'agendaItemId'];
+    $selections = [];
+    foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
+        $selections[$item->id] = $item->title;
+    }
+
+    echo Html::dropDownList('motion[agendaItemId]', $motion->agendaItemId, $selections, $options);
+    echo '</div></div>';
+}
+
 
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="motionTitle">';
@@ -102,7 +118,7 @@ echo '</div></div>';
 
 $locale = Tools::getCurrentDateLocale();
 
-$date   = Tools::dateSql2bootstraptime($motion->dateCreation);
+$date = Tools::dateSql2bootstraptime($motion->dateCreation);
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="motionDateCreation">';
 echo 'Angelegt am';
@@ -112,7 +128,7 @@ echo '<input type="text" class="form-control" name="motion[dateCreation]" id="mo
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
 echo '</div></div></div>';
 
-$date   = Tools::dateSql2bootstraptime($motion->dateResolution);
+$date = Tools::dateSql2bootstraptime($motion->dateResolution);
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="motionDateResolution">';
 echo 'Beschlossen am';

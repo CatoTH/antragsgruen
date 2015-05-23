@@ -32,13 +32,13 @@ INSERT INTO `consultationAgendaItem` (`id`, `consultationId`, `parentItemId`, `p
 -- Dumping data for table `consultationMotionType`
 --
 
-INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `motionPrefix`, `position`, `cssicon`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`)
+INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssicon`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`)
 VALUES
-  (1, 1, 'Antrag', 'Anträge', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 2),
-  (3, 2, 'Antrag', 'Anträge', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 2),
-  (4, 2, 'Bewerbung', 'Bewerbungen', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 2),
-  (5, 3, 'Antrag', 'Anträge', NULL, 0, NULL, NULL, NULL, 1, 1, 1, 2),
-  (6, 3, 'Bewerbung', 'Bewerbungen', NULL, 0, NULL, NULL, NULL, 1, 0, 0, 2);
+  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 2),
+  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 2),
+  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 2),
+  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, NULL, NULL, 1, 1, 1, 2),
+  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, NULL, NULL, 1, 0, 0, 2);
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`

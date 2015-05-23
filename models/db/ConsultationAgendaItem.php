@@ -120,4 +120,26 @@ class ConsultationAgendaItem extends ActiveRecord
         }
         return $return;
     }
+
+    /**
+     * @param Consultation $consultation
+     * @return ConsultationAgendaItem[]
+     */
+    public static function getSortedFromConsultation(Consultation $consultation)
+    {
+        $getSubItems = function (Consultation $consultation, ConsultationAgendaItem $item, $recFunc) {
+            $items    = [];
+            $children = static::getItemsByParent($consultation, $item->id);
+            foreach ($children as $child) {
+                $items = array_merge($items, [$child], $recFunc($consultation, $child, $recFunc));
+            }
+            return $items;
+        };
+
+        $items = [];
+        foreach ($consultation->agendaItems as $item) {
+            $items = array_merge($items, [$item], $getSubItems($consultation, $item, $getSubItems));
+        }
+        return $items;
+    }
 }

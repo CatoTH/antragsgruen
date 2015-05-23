@@ -14,7 +14,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
-$this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
+$this->title = $form->motionType->createTitle;
 
 $params->addJS('/js/ckeditor/ckeditor.js');
 $params->addJS('/js/bower/moment/min/moment-with-locales.min.js');
@@ -23,7 +23,11 @@ $params->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap
 
 $params->addBreadcrumb($this->title);
 
-echo '<h1>' . Html::encode($this->title) . '</h1>';
+if ($form->agendaItem) {
+    echo '<h1>' . Html::encode($form->agendaItem->title . ': ' . $this->title) . '</h1>';
+} else {
+    echo '<h1>' . Html::encode($this->title) . '</h1>';
+}
 
 echo '<div class="form content hideIfEmpty">';
 

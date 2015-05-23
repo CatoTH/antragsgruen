@@ -73,7 +73,22 @@ function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consul
     echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '">';
     echo '<div><h3>';
     echo '<span class="code">' . Html::encode($agendaItem->code) . '</span> ';
-    echo '<span class="title">' . Html::encode($agendaItem->title) . '</span></h3>';
+    echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
+
+    if ($agendaItem->motionType && $agendaItem->motionType->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
+        $createLink = UrlHelper::createUrl(['motion/create', 'agendaItemId' => $agendaItem->id]);
+        if ($agendaItem->motionType->getMotionPolicy()->checkCurUserHeuristically()) {
+            $motionCreateLink = $createLink;
+        } else {
+            $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => $createLink]);
+        }
+        echo '<a href="' . Html::encode($motionCreateLink) . '" class="motionCreateLink btn btn-default btn-xs"';
+        echo ' title="' . Html::encode($agendaItem->title . ': ' . $agendaItem->motionType->createTitle) . '"';
+        echo '><span class="glyphicon glyphicon-plus"></span> ';
+        echo Html::encode($agendaItem->motionType->createTitle) . '</a>';
+    }
+
+    echo '</h3>';
 
     if ($admin) {
         $motionTypes = [0 => ' - keine Anträge - '];
@@ -176,7 +191,7 @@ if ($admin) {
 /** @var Motion $otherMotions */
 $otherMotions = [];
 foreach ($consultation->motions as $motion) {
-    if (!in_array($motion->id, $shownMotions)) {
+    if (!in_array($motion->id, $shownMotions) && !in_array($motion->status, $consultation->getInvisibleMotionStati())) {
         $otherMotions[] = $motion;
     }
 }
