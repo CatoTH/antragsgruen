@@ -16,17 +16,10 @@
                 $("#antrag_neu_braucht_telefon_holder").hide();
             }
         }).trigger("change");
-
-        $('#deadlineAmendmentsHolder').datetimepicker({
-            locale: lang
-        });
-        $('#deadlineMotionsHolder').datetimepicker({
-            locale: lang
-        });
     };
 
 
-    var sectionsEdit = function () {
+    var motionTypeEdit = function () {
         var $list = $('#sectionsList'),
             newCounter = 0;
 
@@ -38,7 +31,7 @@
             ev.preventDefault();
             var $sectionHolder = $(this).parents('li').first(),
                 delId = $sectionHolder.data('id');
-            $('.adminSectionsForm').append('<input type="hidden" name="sectionsTodelete[]" value="' + delId + '">');
+            $('.adminTypeForm').append('<input type="hidden" name="sectionsTodelete[]" value="' + delId + '">');
             $sectionHolder.remove();
         });
         $list.on('change', '.sectionType', function () {
@@ -118,6 +111,13 @@
             }));
         });
 
+
+        $('#typeDeadlineMotionsHolder').datetimepicker({
+            locale: $('#typeDeadlineMotions').data('locale')
+        });
+        $('#typeDeadlineAmendmentsHolder').datetimepicker({
+            locale: $('#typeDeadlineAmendments').data('locale')
+        });
     };
 
 
@@ -224,7 +224,7 @@
 
     $.AntragsgruenAdmin = {
         'consultationEditForm': consultationEditForm,
-        'sectionsEdit': sectionsEdit,
+        'motionTypeEdit': motionTypeEdit,
         'agendaEdit': agendaEdit
     };
 

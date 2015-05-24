@@ -38,24 +38,30 @@ echo Html::a(
     UrlHelper::createUrl('admin/index/consultationextended'),
     ['id' => 'consultationextendedLink']
 );
-echo '</li><li style="margin-left: 20px;">';
+echo '</li>';
+
+echo '<li style="margin-left: 20px;">';
 echo Html::a(
     Yii::t('backend', 'Translation / Wording'),
     UrlHelper::createUrl('admin/index/translation'),
     ['id' => 'translationLink']
 );
-echo '</li><li style="margin-top: 10px; font-weight: bold;">';
-echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'), ['class' => 'motionIndex']);
-echo '</li>';
-foreach ($consultation->motionTypes as $motionType) {
-    echo '<li style="margin-left: 20px;">';
-    $sectionsUrl   = UrlHelper::createUrl(['admin/motion/sections', 'motionTypeId' => $motionType->id]);
-    $sectionsTitle = $motionType->titlePlural . ': Abschnitte festlegen';
-    echo Html::a($sectionsTitle, $sectionsUrl, ['class' => 'motionSections' . $motionType->id]);
-    echo '</li>';
-}
 echo '</li>';
 
+
+echo '<li style="margin-top: 10px; font-weight: bold;">Antragstypen bearbeiten</li>';
+foreach ($consultation->motionTypes as $motionType) {
+    echo '<li style="margin-left: 20px;">';
+    $sectionsUrl   = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
+    echo Html::a($motionType->titlePlural, $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
+    echo '</li>';
+}
+
+
+
+echo '<li style="margin-top: 10px; font-weight: bold;">';
+echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'), ['class' => 'motionIndex']);
+echo '</li>';
 foreach ($consultation->motionTypes as $motionType) {
     $motionp = $motionType->getMotionPolicy();
     if ($motionp->checkCurUserHeuristically()) {

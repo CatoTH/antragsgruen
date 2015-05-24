@@ -14,13 +14,13 @@ class AdminIndexPage extends BasePage
 
     /**
      * @param int $motionTypeId
-     * @return AdminMotionSectionPage
+     * @return AdminMotionTypePage
      */
-    public function gotoMotionSections($motionTypeId)
+    public function gotoMotionTypes($motionTypeId)
     {
-        $this->actor->click('.motionSections' . $motionTypeId);
-        $this->actor->see(mb_strtoupper('Antrags-Abschnitte'), 'h1');
-        return new AdminMotionSectionPage($this->actor);
+        $this->actor->click('.motionType' . $motionTypeId);
+        $this->actor->see(mb_strtoupper('Antragstyp bearbeiten'), 'h1');
+        return new AdminMotionTypePage($this->actor);
     }
 
 

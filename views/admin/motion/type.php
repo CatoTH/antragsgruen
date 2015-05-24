@@ -1,8 +1,10 @@
 <?php
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularDataType;
 use yii\helpers\Html;
@@ -14,20 +16,154 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$params     = $controller->layoutParams;
+$layout     = $controller->layoutParams;
 
-$this->title = 'Antrags-Abschnitte';
-$params->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$params->addBreadcrumb('Abschnitte');
-$params->addCSS('/css/backend.css');
-$params->addJS('/js/bower/Sortable/Sortable.min.js');
-$params->addJS('/js/backend.js');
+$this->title = 'Antragstyp bearbeiten';
+$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb('Abschnitte');
 
-echo '<h1>Antrags-Abschnitte</h1>';
+$layout->addCSS('/css/backend.css');
+$layout->addJS('/js/backend.js');
 
-echo Html::beginForm('', 'post', ['class' => 'content adminSectionsForm']);
+$layout->addJS('/js/bower/Sortable/Sortable.min.js');
+
+$layout->addJS('/js/bower/moment/min/moment-with-locales.min.js');
+$layout->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
+$layout->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+
+
+$policies = [];
+foreach (IPolicy::getPolicies() as $policy) {
+    $policies[$policy::getPolicyID()] = $policy::getPolicyName();
+}
+$locale = Tools::getCurrentDateLocale();
+
+
+echo '<h1>Antragstyp bearbeiten</h1>';
+
+
+echo Html::beginForm('', 'post', ['class' => 'adminTypeForm form-horizontal']);
+
+echo '<div class="content">';
 
 echo $controller->showErrors();
+
+
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typeTitleSingular">';
+echo 'Titel (Einzahl)';
+echo '</label><div class="col-md-7">';
+$options = ['class' => 'form-control', 'id' => 'typeTitleSingular', 'placeholder' => 'Antrag'];
+echo Html::textInput('type[titleSingular]', $motionType->titleSingular, $options);
+echo '</div></div>';
+
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typeTitlePlural">';
+echo 'Titel (Mehrzahl)';
+echo '</label><div class="col-md-7">';
+$options = ['class' => 'form-control', 'id' => 'typeTitlePlural', 'placeholder' => 'Anträge'];
+echo Html::textInput('type[titlePlural]', $motionType->titlePlural, $options);
+echo '</div></div>';
+
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typeCreateTitle">';
+echo 'Aufruf zum Anlegen';
+echo '</label><div class="col-md-7">';
+$options = ['class' => 'form-control', 'id' => 'typeCreateTitle', 'placeholder' => 'Antrag anlegen'];
+echo Html::textInput('type[createTitle]', $motionType->createTitle, $options);
+echo '</div></div>';
+
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typeMotionPrefix">';
+echo 'Antragskürzel-Präfix';
+echo '</label><div class="col-md-2">';
+$options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
+echo Html::textInput('type[motionPrefix]', $motionType->motionPrefix, $options);
+echo '</div></div>';
+
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="types">';
+echo 'Berechtigt: Anträge';
+echo '</label><div class="col-md-7">';
+echo Html::dropDownList(
+    'type[policyMotions]',
+    $motionType->policyMotions,
+    $policies,
+    ['id' => 'typePolicyMotions', 'class' => 'form-control']
+);
+echo '</div></div>';
+
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typePolicyAmendments">';
+echo 'Berechtigt: Änderungsanträge';
+echo '</label><div class="col-md-7">';
+echo Html::dropDownList(
+    'type[policyAmendments]',
+    $motionType->policyAmendments,
+    $policies,
+    ['id' => 'typePolicyAmendments', 'class' => 'form-control']
+);
+echo '</div></div>';
+
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typePolicyComments">';
+echo 'Berechtigt: Kommentieren';
+echo '</label><div class="col-md-7">';
+echo Html::dropDownList(
+    'type[policyComments]',
+    $motionType->policyComments,
+    $policies,
+    ['id' => 'typePolicyComments', 'class' => 'form-control']
+);
+echo '</div></div>';
+
+
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typePolicySupport">';
+echo 'Berechtigt: Unterstützen';
+echo '</label><div class="col-md-7">';
+echo Html::dropDownList(
+    'type[policySupport]',
+    $motionType->policySupport,
+    $policies,
+    ['id' => 'typePolicySupport', 'class' => 'form-control']
+);
+echo '</div></div>';
+
+
+$deadlineMotions = Tools::dateSql2bootstraptime($motionType->deadlineMotions);
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typeDeadlineMotions">';
+echo 'Antragsschluss';
+echo '</label><div class="col-md-7">';
+echo '<div class="input-group date" id="typeDeadlineMotionsHolder">';
+echo '<input id="typeDeadlineMotions" type="text" class="form-control" name="type[deadlineMotions]" ';
+echo 'value="' . Html::encode($deadlineMotions) . '" data-locale="' . Html::encode($locale) . '">';
+echo '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>';
+echo '</div>';
+echo '</div></div>';
+
+$deadlineAmendments = Tools::dateSql2bootstraptime($motionType->deadlineAmendments);
+echo '<div class="form-group">';
+echo '<label class="col-md-5 control-label" for="typeDeadlineAmendments">';
+echo 'ÄA-Antragsschluss';
+echo '</label><div class="col-md-7">';
+echo '<div class="input-group date" id="typeDeadlineAmendmentsHolder">';
+echo '<input id="typeDeadlineAmendments" type="text" class="form-control" name="type[deadlineAmendments]" ';
+echo 'value="' . Html::encode($deadlineAmendments) . '" data-locale="' . Html::encode($locale) . '">';
+echo '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>';
+echo '</div>';
+echo '</div></div>';
+
+
+
+echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">Speichern</button></div>';
+
+echo '</div>';
+
+
+echo '<h2 class="green">Antrags-Abschnitte</h2>';
+echo '<div class="content">';
 
 $renderSection = function (ConsultationSettingsMotionSection $section) {
     $sectionId = IntVal($section->id);
@@ -161,7 +297,7 @@ $renderSection = function (ConsultationSettingsMotionSection $section) {
     }
     echo '</ul>';
 
-    $newRow = new TabularDataType(['rowId' => '#NEWDATA#', 'type' => TabularDataType::TYPE_STRING, 'title' => '']);
+    $newRow   = new TabularDataType(['rowId' => '#NEWDATA#', 'type' => TabularDataType::TYPE_STRING, 'title' => '']);
     $template = $dataRowFormatter($newRow, 0, $sectionName);
     echo '<a href="#" class="addRow" data-template="' . Html::encode($template) . '">';
     echo '<span class="glyphicon glyphicon-plus-sign"></span> Zeile hinzufügen</a>';
@@ -181,10 +317,13 @@ echo '<a href="#" class="sectionAdder"><span class="glyphicon glyphicon-plus-sig
 
 echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">Speichern</button></div>';
 
-$params->addOnLoadJS('$.AntragsgruenAdmin.sectionsEdit();');
+$layout->addOnLoadJS('$.AntragsgruenAdmin.motionTypeEdit();');
+
+echo '</div>';
 
 echo Html::endForm();
 
 echo '<ul style="display: none;" id="sectionTemplate">';
 $renderSection(new ConsultationSettingsMotionSection());
 echo '</ul>';
+

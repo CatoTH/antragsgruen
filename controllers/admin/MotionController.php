@@ -68,17 +68,20 @@ class MotionController extends AdminBase
      * @return string
      * @throws FormError
      */
-    public function actionSections($motionTypeId)
+    public function actionType($motionTypeId)
     {
         $motionType = $this->consultation->getMotionType($motionTypeId);
         if (isset($_POST['save'])) {
+            $motionType->setAttributes($_POST['type']);
+            $motionType->deadlineMotions = Tools::dateBootstraptime2sql($_POST['type']['deadlineMotions']);
+            $motionType->deadlineAmendments = Tools::dateBootstraptime2sql($_POST['type']['deadlineAmendments']);
             $this->sectionsSave($motionType);
             $this->sectionsDelete($motionType);
 
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
 
-        return $this->render('sections', ['motionType' => $motionType]);
+        return $this->render('type', ['motionType' => $motionType]);
     }
 
     /**

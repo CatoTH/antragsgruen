@@ -7,9 +7,9 @@ use yii\codeception\BasePage;
 /**
  * @property \AntragsgruenAcceptenceTester|\FunctionalTester $actor
  */
-class AdminMotionSectionPage extends BasePage
+class AdminMotionTypePage extends BasePage
 {
-    public $route = 'admin/motion/sections';
+    public $route = 'admin/motion/type';
 
     public static $tabularLabel = 'Angaben';
     public static $commentsLabel = 'Kommentare';
@@ -36,6 +36,6 @@ class AdminMotionSectionPage extends BasePage
      */
     public function saveForm()
     {
-        $this->actor->submitForm('.adminSectionsForm', [], 'save');
+        $this->actor->submitForm('.adminTypeForm', [], 'save');
     }
 }

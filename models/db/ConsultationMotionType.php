@@ -170,7 +170,7 @@ class ConsultationMotionType extends ActiveRecord
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
             [['id', 'consultationId', 'position'], 'number'],
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
-            [['motionPrefix', 'position', 'deadlineMotions', 'deadlineAmendments'], 'safe'],
+            [['motionPrefix', 'position'], 'safe'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'safe'],
         ];
     }
