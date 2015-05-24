@@ -397,7 +397,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
                 ]
             );
             $amendStati = Amendment::getStati();
-            echo Html::a($aename, $amendLink);
+            echo Html::a($aename, $amendLink, ['class' => 'amendment' . $amend->id]);
             echo " (" . Html::encode($amendStati[$amend->status]) . ")";
             echo '</li>';
         }
@@ -422,10 +422,11 @@ if ($motion->consultation->getSettings()->commentWholeMotions) {
         $form->sectionId   = -1;
     }
 
+    $baseLink = UrlHelper::createMotionUrl($motion);
     foreach ($motion->comments as $comment) {
         if ($comment->paragraph == -1 && $comment->status != MotionComment::STATUS_DELETED) {
             $commLink = UrlHelper::createMotionCommentUrl($comment);
-            LayoutHelper::showComment($comment, $imadmin, $commLink);
+            LayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
         }
     }
 

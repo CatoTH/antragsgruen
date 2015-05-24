@@ -138,10 +138,11 @@ if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristicall
         $form->sectionId   = -1;
     }
 
+    $baseLink = UrlHelper::createAmendmentUrl($amendment);
     foreach ($amendment->comments as $comment) {
         if ($comment->paragraph == -1 && $comment->status != AmendmentComment::STATUS_DELETED) {
             $commLink = UrlHelper::createAmendmentCommentUrl($comment);
-            LayoutHelper::showComment($comment, $imadmin, $commLink);
+            LayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
         }
     }
 

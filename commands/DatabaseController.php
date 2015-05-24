@@ -14,11 +14,13 @@ class DatabaseController extends Controller
      */
     public function actionDestroy()
     {
-        $delete_string = file_get_contents(
-            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_delete.sql'
-        );
-        $command       = \Yii::$app->db->createCommand($delete_string);
-        $command->execute();
+        if ($this->confirm("Do you really want to DESTROY and reinitialize the database?")) {
+            $delete_string = file_get_contents(
+                \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_delete.sql'
+            );
+            $command       = \Yii::$app->db->createCommand($delete_string);
+            $command->execute();
+        }
     }
 
     /**
@@ -42,7 +44,26 @@ class DatabaseController extends Controller
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'codeception' .
             DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'dbdata1.sql'
         );
-        $command       = \Yii::$app->db->createCommand($testdata);
+        $command  = \Yii::$app->db->createCommand($testdata);
         $command->execute();
+    }
+
+    /**
+     * @throws \yii\db\Exception
+     */
+    public function actionCreateTest()
+    {
+        if ($this->confirm("Do you really want to DESTROY and reinitialize the database?")) {
+            $delete_string = file_get_contents(
+                \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_delete.sql'
+            );
+            $command       = \Yii::$app->db->createCommand($delete_string);
+            $command->execute();
+            \Yii::$app->db->close();
+
+            \Yii::$app->db->open();
+            $this->actionCreate();
+            $this->actionInsertTestData();
+        }
     }
 }

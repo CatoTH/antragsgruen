@@ -50,7 +50,7 @@ $I->see('Kommentar schreiben', '#section_3_1');
 
 $I->seeElement('#section_3_1 .motionComment .delLink');
 
-$I->submitForm('#section_3_1 .motionComment .delLink', [], 'deleteComment');
+$I->submitForm('#section_3_1 .motionComment .delLink', [], '');
 
 if (method_exists($I, 'executeJS')) {
     $I->cantSee('Kommentar schreiben');

@@ -69,15 +69,15 @@
                 countSpacesAsChars: true
             }
             /*,
-            on: {
-                instanceReady: function(ev) {
-                    // Resize the window
-                    window.setTimeout(function() {
-                        ev.editor.fire('contentDom');
-                    }, 1);
-                }
-            }
-            */
+             on: {
+             instanceReady: function(ev) {
+             // Resize the window
+             window.setTimeout(function() {
+             ev.editor.fire('contentDom');
+             }, 1);
+             }
+             }
+             */
         };
 
         if ($el.data('track-changed') == '1') {
@@ -126,18 +126,18 @@
                 $textarea = $holder.find(".texteditor"),
                 editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
 
-            $textarea.parents("form").submit(function() {
+            $textarea.parents("form").submit(function () {
                 $textarea.parent().find("textarea").val(editor.getData());
             });
         });
     };
 
-    var amendmentEditForm = function() {
+    var amendmentEditForm = function () {
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor"),
                 editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
-            $textarea.parents("form").submit(function() {
+            $textarea.parents("form").submit(function () {
                 $textarea.parent().find("textarea.raw").val(editor.getData());
                 if (typeof(editor.plugins.lite) != 'undefined') {
                     editor.plugins.lite.findPlugin(editor).acceptAll();
@@ -248,6 +248,16 @@
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
         }
+
+        $("form.delLink").submit(function (ev) {
+            ev.preventDefault();
+            var form = this;
+            bootbox.confirm("Wirklich löschen?", function (result) {
+                if (result) {
+                    form.submit();
+                }
+            });
+        });
     };
 
     $.Antragsgruen = {

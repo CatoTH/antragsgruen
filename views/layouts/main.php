@@ -203,8 +203,9 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
     </footer>
 
     <script src="/js/bootstrap.js"></script>
-    <script src="/js/antragsgruen.js"></script>
+    <script src="/js/bower/bootbox/bootbox.js"></script>
     <script src="/js/scrollintoview.js"></script>
+    <script src="/js/antragsgruen.js"></script>
 <?php
 foreach ($params->extraJs as $file) {
     echo '<script src="' . Html::encode($file) . '"></script>' . "\n";

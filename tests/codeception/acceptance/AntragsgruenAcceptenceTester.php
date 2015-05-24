@@ -2,6 +2,7 @@
 
 // @codingStandardsIgnoreFile
 use tests\codeception\_pages\AdminIndexPage;
+use tests\codeception\_pages\AmendmentPage;
 use tests\codeception\_pages\ConsultationHomePage;
 use tests\codeception\_pages\MotionPage;
 
@@ -71,6 +72,28 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
                 'subdomain'        => 'stdparteitag',
                 'consultationPath' => 'std-parteitag',
                 'motionId'         => $motionId,
+            ]
+        );
+        if ($check) {
+            $this->seeElement('.motionData');
+        }
+        return $page;
+    }
+
+    /**
+     * @param bool $check
+     * @param int $motionId
+     * @return MotionPage
+     */
+    public function gotoAmendment($check = true, $motionId = 2, $amendmentId = 1)
+    {
+        $page = AmendmentPage::openBy(
+            $this,
+            [
+                'subdomain'        => 'stdparteitag',
+                'consultationPath' => 'std-parteitag',
+                'motionId'         => $motionId,
+                'amendmentId'      => $amendmentId
             ]
         );
         if ($check) {

@@ -46,12 +46,12 @@ class LayoutHelper
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->amendments);
         if (count($amendments) > 0) {
             echo "<ul class='amendments'>";
-            foreach ($amendments as $ae) {
-                echo "<li" . ($ae->status == Amendment::STATUS_WITHDRAWN ? " class='withdrawn'" : "") . ">";
-                echo "<span class='date'>" . Tools::formatMysqlDate($ae->dateCreation) . "</span>\n";
-                $name = (trim($ae->titlePrefix) == "" ? "-" : $ae->titlePrefix);
-                echo Html::a($name, UrlHelper::createAmendmentUrl($ae));
-                echo "<span class='info'>" . Html::encode($ae->getInitiatorsStr()) . "</span>\n";
+            foreach ($amendments as $amend) {
+                echo "<li" . ($amend->status == Amendment::STATUS_WITHDRAWN ? " class='withdrawn'" : "") . ">";
+                echo "<span class='date'>" . Tools::formatMysqlDate($amend->dateCreation) . "</span>\n";
+                $name = (trim($amend->titlePrefix) == "" ? "-" : $amend->titlePrefix);
+                echo Html::a($name, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
+                echo "<span class='info'>" . Html::encode($amend->getInitiatorsStr()) . "</span>\n";
                 echo "</li>\n";
             }
             echo "</ul>";

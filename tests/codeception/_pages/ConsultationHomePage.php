@@ -13,6 +13,7 @@ class ConsultationHomePage extends BasePage
     public $route = 'consultation/index';
 
     /**
+     * @param int $motionTypeId
      * @param bool $check
      * @return MotionCreatePage
      */

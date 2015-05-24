@@ -48,9 +48,10 @@ class LayoutHelper
     /**
      * @param IComment $comment
      * @param bool $imadmin
+     * @param string $baseLink
      * @param string $commLink
      */
-    public static function showComment(IComment $comment, $imadmin, $commLink)
+    public static function showComment(IComment $comment, $imadmin, $baseLink, $commLink)
     {
         echo '<article class="motionComment content hoverHolder" id="comment' . $comment->id . '">
         <div class="date">' . Tools::formatMysqlDate($comment->dateCreation) . '</div>
@@ -63,9 +64,10 @@ class LayoutHelper
 
         echo nl2br(Html::encode($comment->text));
         if ($comment->canDelete(User::getCurrentUser())) {
-            echo Html::beginForm('', 'post', ['class' => 'delLink hoverElement']);
+            echo Html::beginForm($baseLink, 'post', ['class' => 'delLink hoverElement']);
             echo '<input type="hidden" name="commentId" value="' . $comment->id . '">';
-            echo '<button class="link" type="submit" name="deleteComment">';
+            echo '<input type="hidden" name="deleteComment" value="on">';
+            echo '<button class="link" type="submit">';
             echo '<span class="glyphicon glyphicon-trash"></span></button>';
             echo Html::endForm();
         }

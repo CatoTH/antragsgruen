@@ -82,9 +82,10 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             $form->sectionId   = $section->sectionId;
         }
 
+        $baseLink = UrlHelper::createMotionUrl($motion);
         foreach ($paragraph->comments as $comment) {
             $commLink = UrlHelper::createMotionCommentUrl($comment);
-            LayoutHelper::showComment($comment, $imadmin, $commLink);
+            LayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
         }
 
         if ($motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {

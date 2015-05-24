@@ -22,7 +22,7 @@ MotionPage::openBy(
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');
-$I->dontSee('Ä1', 'section.amendments ul.amendments');
+$I->dontSee('Ä2', 'section.amendments ul.amendments');
 
 
 $I->wantTo('Open the amendment creation page');
@@ -119,7 +119,7 @@ $I->see(mb_strtoupper('Änderungsantrag eingereicht'), 'h1');
 
 $I->wantTo('See the amendment on the start page');
 $I->gotoStdConsultationHome();
-$I->see('Ä1', '.motionListStd .amendments');
+$I->see('Ä2', '.motionListStd .amendments');
 $I->see('My name', '.motionListStd .amendments');
 
 
@@ -134,13 +134,13 @@ MotionPage::openBy(
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');
-$I->see('Ä1', 'section.amendments ul.amendments');
+$I->see('Ä2', 'section.amendments ul.amendments');
 
 
 $I->wantTo('Open the amenmdent page');
-$I->click('section.amendments ul.amendments a');
+$I->click('section.amendments ul.amendments a.amendment2');
 
-$I->see(mb_strtoupper('Ä1 zu A2: O’ZAPFT IS!'), 'h1');
+$I->see(mb_strtoupper('Ä2 zu A2: O’ZAPFT IS!'), 'h1');
 $I->see('My name', '.motionDataTable');
 $I->see('woschechta Bayer', '#section_2_0 del');
 $I->see('Saupreiß', '#section_2_0 ins');
