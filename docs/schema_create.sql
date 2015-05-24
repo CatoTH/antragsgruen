@@ -164,20 +164,22 @@ CREATE TABLE `consultationAgendaItem` (
 --
 
 CREATE TABLE `consultationMotionType` (
-  `id`                 INT(11)      NOT NULL,
-  `consultationId`     INT(11)      NOT NULL,
-  `titleSingular`      VARCHAR(100) NOT NULL,
-  `titlePlural`        VARCHAR(100) NOT NULL,
-  `createTitle`        VARCHAR(200) NOT NULL,
-  `motionPrefix`       VARCHAR(10)       DEFAULT NULL,
-  `position`           INT(11)      NOT NULL,
-  `cssicon`            VARCHAR(100)      DEFAULT NULL,
-  `deadlineMotions`    TIMESTAMP    NULL DEFAULT NULL,
-  `deadlineAmendments` TIMESTAMP    NULL DEFAULT NULL,
-  `policyMotions`      INT(11)      NOT NULL,
-  `policyAmendments`   INT(11)      NOT NULL,
-  `policyComments`     INT(11)      NOT NULL,
-  `policySupport`      INT(11)      NOT NULL
+  `id`                    INT(11)      NOT NULL,
+  `consultationId`        INT(11)      NOT NULL,
+  `titleSingular`         VARCHAR(100) NOT NULL,
+  `titlePlural`           VARCHAR(100) NOT NULL,
+  `createTitle`           VARCHAR(200) NOT NULL,
+  `motionPrefix`          VARCHAR(10)       DEFAULT NULL,
+  `position`              INT(11)      NOT NULL,
+  `cssicon`               VARCHAR(100)      DEFAULT NULL,
+  `deadlineMotions`       TIMESTAMP    NULL DEFAULT NULL,
+  `deadlineAmendments`    TIMESTAMP    NULL DEFAULT NULL,
+  `policyMotions`         INT(11)      NOT NULL,
+  `policyAmendments`      INT(11)      NOT NULL,
+  `policyComments`        INT(11)      NOT NULL,
+  `policySupport`         INT(11)      NOT NULL,
+  `initiatorForm`         INT(11)      NOT NULL,
+  `initiatorFormSettings` TEXT         NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

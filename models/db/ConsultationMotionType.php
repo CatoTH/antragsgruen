@@ -1,7 +1,7 @@
 <?php
 namespace app\models\db;
 
-use app\models\initiatorForms\DefaultForm;
+use app\models\initiatorForms\IInitiatorForm;
 use app\models\pdfLayouts\IPDFLayout;
 use app\models\policies\IPolicy;
 use yii\db\ActiveRecord;
@@ -23,6 +23,8 @@ use yii\db\ActiveRecord;
  * @property string $policyAmendments
  * @property string $policyComments
  * @property string $policySupport
+ * @property int $initiatorForm
+ * @property string $initiatorFormSettings
  *
  * @property Consultation $consultation
  * @property ConsultationSettingsMotionSection[] $motionSections
@@ -108,19 +110,19 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return DefaultForm
+     * @return IInitiatorForm
      */
     public function getMotionInitiatorFormClass()
     {
-        return new DefaultForm($this);
+        return IInitiatorForm::getImplementation($this->initiatorForm, $this, $this->initiatorFormSettings);
     }
 
     /**
-     * @return DefaultForm
+     * @return IInitiatorForm
      */
     public function getAmendmentInitiatorFormClass()
     {
-        return new DefaultForm($this);
+        return IInitiatorForm::getImplementation($this->initiatorForm, $this, $this->initiatorFormSettings);
     }
 
     /**

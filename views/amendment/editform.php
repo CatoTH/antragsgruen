@@ -99,7 +99,7 @@ echo '</div>';
 
 
 $initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();
-echo $initiatorClass->getAmendmentInitiatorForm($consultation, $form, $controller);
+echo $initiatorClass->getAmendmentForm($consultation, $form, $controller);
 
 
 

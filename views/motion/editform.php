@@ -96,7 +96,7 @@ echo '</div>';
 
 
 $initiatorClass = $form->motionType->getMotionInitiatorFormClass();
-echo $initiatorClass->getMotionInitiatorForm($consultation, $form, $controller);
+echo $initiatorClass->getMotionForm($consultation, $form, $controller);
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';

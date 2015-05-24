@@ -16,7 +16,7 @@ use app\models\forms\AmendmentEditForm;
 use app\models\forms\MotionEditForm;
 use yii\web\View;
 
-class DefaultForm implements IInitiatorView
+abstract class DefaultFormBase extends IInitiatorForm
 {
     /** @var Consultation $motionType $motionType */
     protected $motionType;
@@ -124,7 +124,7 @@ class DefaultForm implements IInitiatorView
     /**
      * @throws FormError
      */
-    public function validateInitiatorViewMotion()
+    public function validateMotion()
     {
         if (!isset($_POST['Initiator'])) {
             throw new FormError('No Initiator data given');
@@ -172,16 +172,16 @@ class DefaultForm implements IInitiatorView
     /**
      * @throws FormError
      */
-    public function validateInitiatorViewAmendment()
+    public function validateAmendment()
     {
-        $this->validateInitiatorViewMotion();
+        $this->validateMotion();
     }
 
     /**
      * @param Motion $motion
      * @throws FormError
      */
-    public function submitInitiatorViewMotion(Motion $motion)
+    public function submitMotion(Motion $motion)
     {
         // Supporters
         foreach ($motion->motionSupporters as $supp) {
@@ -203,7 +203,7 @@ class DefaultForm implements IInitiatorView
      * @param Amendment $amendment
      * @throws FormError
      */
-    public function submitInitiatorViewAmendment(Amendment $amendment)
+    public function submitAmendment(Amendment $amendment)
     {
         // Supporters
         foreach ($amendment->amendmentSupporters as $supp) {
@@ -228,7 +228,7 @@ class DefaultForm implements IInitiatorView
      * @param Base $controller
      * @return string
      */
-    public function getMotionInitiatorForm(Consultation $consultation, MotionEditForm $editForm, Base $controller)
+    public function getMotionForm(Consultation $consultation, MotionEditForm $editForm, Base $controller)
     {
         $view      = new View();
         $initiator = null;
@@ -258,7 +258,7 @@ class DefaultForm implements IInitiatorView
      * @param Base $controller
      * @return string
      */
-    public function getAmendmentInitiatorForm(Consultation $consultation, AmendmentEditForm $editForm, Base $controller)
+    public function getAmendmentForm(Consultation $consultation, AmendmentEditForm $editForm, Base $controller)
     {
         $view      = new View();
         $initiator = null;
@@ -380,7 +380,7 @@ class DefaultForm implements IInitiatorView
         foreach ($supporters as $sup) {
             /** @var AmendmentSupporter $sup */
             $sup->amendmentId = $amendment->id;
-            $return[]      = $sup;
+            $return[]         = $sup;
         }
 
         return $return;

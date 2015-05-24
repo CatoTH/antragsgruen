@@ -122,7 +122,7 @@ class MotionEditForm extends Model
         }
 
         try {
-            $this->motionType->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
+            $this->motionType->getMotionInitiatorFormClass()->validateMotion();
         } catch (FormError $e) {
             $errors = array_merge($errors, $e->getMessages());
         }
@@ -162,7 +162,7 @@ class MotionEditForm extends Model
         $motion->agendaItemId   = ($this->agendaItem ? $this->agendaItem->id : null);
 
         if ($motion->save()) {
-            $this->motionType->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
+            $this->motionType->getMotionInitiatorFormClass()->submitMotion($motion);
 
             foreach ($this->tags as $tagId) {
                 /** @var ConsultationSettingsTag $tag */
@@ -203,7 +203,7 @@ class MotionEditForm extends Model
             }
         }
 
-        $this->motionType->getMotionInitiatorFormClass()->validateInitiatorViewMotion();
+        $this->motionType->getMotionInitiatorFormClass()->validateMotion();
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
@@ -225,7 +225,7 @@ class MotionEditForm extends Model
         $this->saveMotionVerify();
 
         if ($motion->save()) {
-            $this->motionType->getMotionInitiatorFormClass()->submitInitiatorViewMotion($motion);
+            $this->motionType->getMotionInitiatorFormClass()->submitMotion($motion);
 
             // Tags
             foreach ($motion->tags as $tag) {

@@ -139,7 +139,7 @@ class AmendmentEditForm extends Model
         }
 
         try {
-            $this->motion->motionType->getAmendmentInitiatorFormClass()->validateInitiatorViewAmendment();
+            $this->motion->motionType->getAmendmentInitiatorFormClass()->validateAmendment();
         } catch (FormError $e) {
             $errors = array_merge($errors, $e->getMessages());
         }
@@ -179,7 +179,7 @@ class AmendmentEditForm extends Model
         $amendment->cache             = '';
 
         if ($amendment->save()) {
-            $this->motion->motionType->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);
+            $this->motion->motionType->getAmendmentInitiatorFormClass()->submitAmendment($amendment);
 
             foreach ($this->sections as $section) {
                 $section->amendmentId = $amendment->id;
@@ -212,7 +212,7 @@ class AmendmentEditForm extends Model
             }
         }
 
-        $this->motion->motionType->getAmendmentInitiatorFormClass()->validateInitiatorViewAmendment();
+        $this->motion->motionType->getAmendmentInitiatorFormClass()->validateAmendment();
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
@@ -235,7 +235,7 @@ class AmendmentEditForm extends Model
         $amendment->changeExplanation = $this->reason;
 
         if ($amendment->save()) {
-            $motionType->getAmendmentInitiatorFormClass()->submitInitiatorViewAmendment($amendment);
+            $motionType->getAmendmentInitiatorFormClass()->submitAmendment($amendment);
 
             // Sections
             foreach ($amendment->sections as $section) {

@@ -27,6 +27,7 @@ trait ApplicationTrait
         $type->policyAmendments = IPolicy::POLICY_NOBODY;
         $type->policyComments   = IPolicy::POLICY_NOBODY;
         $type->policySupport    = IPolicy::POLICY_LOGGED_IN;
+
         $type->save();
 
         return $type;
