@@ -5239,10 +5239,10 @@ ul.sidebarActions {
   .bdkMotionList .antragstellerIn {
     width: 35%; }
 
-del {
+del, ul.deleted, blockquote.deleted {
   color: #880000; }
 
-ins {
+ins, ul.inserted, blockquote.inserted {
   color: #008800; }
 
 .antragstext_diff {

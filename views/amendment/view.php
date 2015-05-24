@@ -82,6 +82,7 @@ echo '<tr><th>Eingereicht:</th>
                 </tr>';
 echo '</table>';
 echo '</div>';
+echo '</div>';
 
 
 foreach ($amendment->sections as $section) {
@@ -99,14 +100,18 @@ foreach ($amendment->sections as $section) {
 
             foreach ($diffGroups as $diff) {
                 echo '<section class="paragraph">';
-                echo '<div class="text"><p>';
+                echo '<div class="text">';
                 if ($diff['lineFrom'] == $diff['lineTo']) {
                     echo 'In Zeile ' . $diff['lineFrom'] . ':<br>';
                 } else {
                     echo 'Von Zeile ' . $diff['lineFrom'] . ' bis ' . $diff['lineTo'] . ':<br>';
                 }
-                echo $diff['text'];
-                echo '</p></div></section>';
+                if ($diff['text'][0] != '<') {
+                    echo '<p>' . $diff['text'] . '</p>';
+                } else {
+                    echo $diff['text'];
+                }
+                echo '</div></section>';
             }
 
             echo '</div>';

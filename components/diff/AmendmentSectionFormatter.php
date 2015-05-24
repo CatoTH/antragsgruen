@@ -65,21 +65,18 @@ class AmendmentSectionFormatter
         return $diff->computeDiff($strPre, $strPost);
     }
 
-
     /**
+     * @param array $computedLines
+     * @param int $lineOffset
      * @param bool $prependLineNumber
-     * @return string[]
+     * @return array
      * @throws Internal
      */
-    private function getDiffLinesWithNumbers($prependLineNumber)
+    public static function getDiffLinesWithNumberComputed($computedLines, $lineOffset, $prependLineNumber)
     {
-        $lineOffset    = $this->section->getFirstLineNumber() - 1;
-        $computed      = $this->getHtmlDiffWithLineNumbers();
-        $computedLines = explode('###LINENUMBER###', $computed);
-
         $inIns         = $inDel = false;
         $affectedLines = [];
-        for ($currLine = 1; $currLine < count($computedLines); $currLine++) {
+        for ($currLine = 0; $currLine < count($computedLines); $currLine++) {
             $hadDiff = false;
             if (preg_match_all('/<\/?(ins|del)>/siu', $computedLines[$currLine], $matches, PREG_OFFSET_CAPTURE)) {
                 $hadDiff = true;
@@ -111,8 +108,58 @@ class AmendmentSectionFormatter
                 }
                 $affectedLines[$currLine] = $line;
             }
+
+            if (preg_match('/<ul class="inserted">.*<\/ul>/siu', $computedLines[$currLine])) {
+                $line = $computedLines[$currLine];
+                if ($prependLineNumber) {
+                    $line = '<span class="lineNumber" data-line-number="' .
+                        ($currLine + $lineOffset) . '"></span>' . $line;
+                }
+                $affectedLines[$currLine] = $line;
+            }
         }
         return $affectedLines;
+    }
+
+    /**
+     * @param string $computed
+     * @return array
+     */
+    public static function getDiffSplitToLines($computed)
+    {
+        //$computedLines = explode('###LINENUMBER###', $computed);
+        $lines = explode("\n", $computed);
+        $out = [];
+        for ($i = 0; $i < count($lines); $i++) {
+            $line = $lines[$i];
+            if (preg_match('/^<(ul|blockquote|ol)/siu', $line)) {
+                $out[] = $line;
+            } else {
+                $line = preg_replace('/<\/?p>/siu', '', $line);
+                $parts = explode('###LINENUMBER###', $line);
+                foreach ($parts as $j => $part) {
+                    if ($part != '' || $j > 0) {
+                        $out[] = '###LINENUMBER###' . $part;
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
+
+    /**
+     * @param bool $prependLineNumber
+     * @return string[]
+     * @throws Internal
+     */
+    private function getDiffLinesWithNumbers($prependLineNumber)
+    {
+        $lineOffset    = $this->section->getFirstLineNumber() - 1;
+        $computed      = $this->getHtmlDiffWithLineNumbers();
+        $computedLines = static::getDiffSplitToLines($computed);
+
+        return static::getDiffLinesWithNumberComputed($computedLines, $lineOffset, $prependLineNumber);
     }
 
     /**
@@ -149,17 +196,17 @@ class AmendmentSectionFormatter
 
         $lastLine   = null;
         $blockBegin = null;
-        $lines = "";
+        $lines      = "";
         $blocks     = [];
         foreach ($diff as $lineNo => $str) {
             if ($lastLine === null || $lineNo > $lastLine + 2) {
                 if ($blockBegin !== null) {
                     $blocks[] = [
                         'lineFrom' => $blockBegin,
-                        'lineTo' => $lastLine,
-                        'text' => $lines,
+                        'lineTo'   => $lastLine,
+                        'text'     => $lines,
                     ];
-                    $lines = '';
+                    $lines    = '';
                 }
                 $blockBegin = $lineNo;
             }
