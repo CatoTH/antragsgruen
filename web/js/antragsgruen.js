@@ -241,6 +241,16 @@
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
         }
+
+        $("form.delLink").submit(function (ev) {
+            ev.preventDefault();
+            var form = this;
+            bootbox.confirm("Wirklich löschen?", function (result) {
+                if (result) {
+                    form.submit();
+                }
+            });
+        });
     };
 
     var amendmentShow = function () {

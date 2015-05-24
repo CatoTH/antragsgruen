@@ -51,6 +51,9 @@ $I->see('Kommentar schreiben', '#section_3_1');
 $I->seeElement('#section_3_1 .motionComment .delLink');
 
 $I->submitForm('#section_3_1 .motionComment .delLink', [], '');
+$I->wait(1);
+$I->see('Wirklich löschen', '.bootbox');
+$I->click('.bootbox .btn-primary');
 
 if (method_exists($I, 'executeJS')) {
     $I->cantSee('Kommentar schreiben');

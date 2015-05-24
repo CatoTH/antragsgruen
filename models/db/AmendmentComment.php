@@ -56,6 +56,20 @@ class AmendmentComment extends IComment
     }
 
     /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['amendmentId', 'paragraph', 'status', 'dateCreation'], 'required'],
+            ['name', 'required', 'message' => 'Bitte gib deinen Namen an.'],
+            ['text', 'required', 'message' => 'Bitte gib etwas Text ein.'],
+            [['id', 'amendmentId', 'paragraph', 'status'], 'number'],
+            [['text', 'paragraph'], 'safe'],
+        ];
+    }
+
+    /**
      * @return string
      */
     public function getMotionTitle()

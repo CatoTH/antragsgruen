@@ -11,6 +11,7 @@ use app\models\db\EMailLog;
 use app\models\db\IComment;
 use app\models\db\Motion;
 use app\models\db\User;
+use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
@@ -84,7 +85,9 @@ class AmendmentController extends Base
         }
 
         $comment->status = IComment::STATUS_DELETED;
-        $comment->save();
+        if (!$comment->save(false)) {
+            throw new DB($comment->getErrors());
+        }
 
         \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
     }

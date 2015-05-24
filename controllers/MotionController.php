@@ -13,6 +13,7 @@ use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
+use app\models\exceptions\DB;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
@@ -89,7 +90,9 @@ class MotionController extends Base
         }
 
         $comment->status = IComment::STATUS_DELETED;
-        $comment->save();
+        if (!$comment->save(false)) {
+            throw new DB($comment->getErrors());
+        }
 
         \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
     }

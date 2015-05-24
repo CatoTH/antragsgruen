@@ -41,7 +41,10 @@ $I->gotoAmendment();
 
 $I->see('Kommentar schreiben', 'section.comments');
 $I->seeElement('section.comments .motionComment .delLink');
-$I->submitForm('section.comments .motionComment .delLink', [], 'deleteComment');
+$I->submitForm('section.comments .motionComment .delLink', [], '');
+$I->wait(1);
+$I->see('Wirklich löschen', '.bootbox');
+$I->click('.bootbox .btn-primary');
 
 $I->cantSee('My Name', 'section.comments .motionComment');
 $I->cantSee('Some Text', 'section.comments .motionComment');
