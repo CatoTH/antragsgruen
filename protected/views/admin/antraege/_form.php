@@ -104,7 +104,15 @@
 		<span style="font-size: 14px; font-weight: bold;">Achtung: Falls schon Änderungsanträge / Kommentare eingereicht wurden, hier weiter unten möglichst gar nichts mehr ändern. Auf keinem Fall Absätze einfügen oder löschen!</span>
 		<br>
 
+	<? if ($this->veranstaltungsreihe->subdomain == 'wiesbaden') { ?>
 		<div style="margin-top: 30px;">
+			<?php echo $form->labelEx($model, 'text2'); ?>
+			<div>
+				<?php echo $form->textArea($model, 'text2'); ?>
+			</div>
+			<?php echo $form->error($model, 'text2'); ?>
+		</div>
+	<? } ?>		<div style="margin-top: 30px;">
 			<?php echo $form->labelEx($model, 'text'); ?>
 			<div>
 				<?php echo $form->textArea($model, 'text'); ?>
@@ -123,6 +131,9 @@
 
 		<script>
 			$(function () {
+				if ($("#Antrag_text2").length > 0) {
+					ckeditor_bbcode('Antrag_text2');
+				}
 				ckeditor_bbcode('Antrag_text');
 				ckeditor_bbcode('Antrag_begruendung');
 			})

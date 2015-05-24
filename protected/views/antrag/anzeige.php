@@ -261,7 +261,7 @@ foreach ($antrag->antragKommentare as $komm) if ($komm->absatz < 0 && $komm->sta
 
 <?
 $text2name = veranstaltungsspezifisch_text2_name($antrag->veranstaltung, $antrag->typ);
-if ($text2name && trim($antrag->text2)) {
+if ($text2name) {
     $classes = "";
     if (!in_array(AntragKommentar::ABSATZ_TEXT2, $kommentare_offen)) $classes .= " kommentare_closed_absatz";
     ?>

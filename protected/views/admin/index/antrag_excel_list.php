@@ -29,6 +29,9 @@ $first_col = chr($curr_col);
 $COL_ANTRAGSNR       = chr($curr_col++);
 $COL_ANTRAGSTELLERIN = chr($curr_col++);
 $COL_TITEL           = chr($curr_col++);
+if ($this->veranstaltung->veranstaltungsreihe->subdomain == 'wiesbaden') {
+	$COL_ANTRAGSTEXT2     = chr($curr_col++);
+}
 $COL_ANTRAGSTEXT     = chr($curr_col++);
 if (!$text_begruendung_zusammen) $COL_BEGRUENDUNG = chr($curr_col++);
 if ($hat_tags) $COL_TAGS = chr($curr_col++);
@@ -61,6 +64,9 @@ $objPHPExcel->getActiveSheet()->SetCellValue($COL_TITEL . '3', 'Titel');
 if ($text_begruendung_zusammen) {
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . '3', 'Antragstext u. Begründung');
 }  else {
+	if (isset($COL_ANTRAGSTEXT2)) {
+		$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT2 . '3', 'Grüne Ziele');
+	}
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . '3', 'Antragstext');
 	$objPHPExcel->getActiveSheet()->SetCellValue($COL_BEGRUENDUNG . '3', 'Begründung');
 }
@@ -121,6 +127,15 @@ foreach ($antraege as $ant) {
 		$zeilen_antrag = array_merge($zeilen_antrag, $x);
 	}
 
+	$text2_antrag   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $antrag->text2);
+	$text2_antrag   = HtmlBBcodeUtils::removeBBCode($text2_antrag);
+	$text2_antrag   = HtmlBBcodeUtils::text2zeilen(trim($text2_antrag), 120, true);
+	$zeilen2_antrag = array();
+	foreach ($text2_antrag as $t) {
+		$x             = explode("\n", $t);
+		$zeilen2_antrag = array_merge($zeilen2_antrag, $x);
+	}
+
 	$text_begruendung   = str_replace(array("[QUOTE]", "[/QUOTE]"), array("\n\n", "\n\n"), $antrag->begruendung);
 	$text_begruendung   = HtmlBBcodeUtils::removeBBCode($text_begruendung);
 	$text_begruendung   = HtmlBBcodeUtils::text2zeilen(trim($text_begruendung), 120, true);
@@ -131,17 +146,35 @@ foreach ($antraege as $ant) {
 	}
 
 	if ($text_begruendung_zusammen) {
-		$zeilen = array_merge(array("Antrag:"), $zeilen_antrag, array("", "", "Begründung:"), $zeilen_begruendung);
+		$text1name = veranstaltungsspezifisch_text1_name($this->veranstaltung, $antrag->typ);
+		$text2name = veranstaltungsspezifisch_text2_name($this->veranstaltung, $antrag->typ);
+		$begruendungname = veranstaltungsspezifisch_begruendung_name($this->veranstaltung, $antrag->typ);
+		$zeilen = array();
+		if (count($zeilen2_antrag) > 0) {
+			$zeilen = array_merge($zeilen, array($text2name . ":"), $zeilen2_antrag, array("", ""));
+		}
+		$zeilen = array_merge($zeilen, array($text1name . ":"), $zeilen_antrag, array("", "", $begruendungname . ":"), $zeilen_begruendung);
 		$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . $row, trim(implode("\n", $zeilen)));
 		$objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSTEXT . $row)->getAlignment()->setWrapText(true);
 		$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(14 * count($zeilen));
 	} else {
+		$maxlines = 0;
+
+		if (isset($COL_ANTRAGSTEXT2)) {
+			$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT2 . $row, trim(implode("\n", $zeilen2_antrag)));
+			$objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSTEXT2 . $row)->getAlignment()->setWrapText(true);
+			if (count($zeilen2_antrag) > $maxlines) $maxlines = count($zeilen2_antrag);
+		}
+
 		$objPHPExcel->getActiveSheet()->SetCellValue($COL_ANTRAGSTEXT . $row, trim(implode("\n", $zeilen_antrag)));
 		$objPHPExcel->getActiveSheet()->getStyle($COL_ANTRAGSTEXT . $row)->getAlignment()->setWrapText(true);
-		$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(14 * count($zeilen_antrag));
+		if (count($zeilen_antrag) > $maxlines) $maxlines = count($zeilen_antrag);
 
 		$objPHPExcel->getActiveSheet()->SetCellValue($COL_BEGRUENDUNG . $row, trim(implode("\n", $zeilen_begruendung)));
 		$objPHPExcel->getActiveSheet()->getStyle($COL_BEGRUENDUNG . $row)->getAlignment()->setWrapText(true);
+		if (count($zeilen_begruendung) > $maxlines) $maxlines = count($zeilen_begruendung);
+
+		$objPHPExcel->getActiveSheet()->getRowDimension($row)->setRowHeight(14 * $maxlines);
 	}
 
     if (isset($COL_TAGS)) {
@@ -156,6 +189,9 @@ $objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSNR)->setWidth(12)
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSTELLERIN)->setWidth(24);
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_TITEL)->setWidth(40);
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSTEXT)->setAutoSize(80);
+if (isset($COL_ANTRAGSTEXT2)) {
+	$objPHPExcel->getActiveSheet()->getColumnDimension($COL_ANTRAGSTEXT2)->setAutoSize(80);
+}
 if (!$text_begruendung_zusammen) $objPHPExcel->getActiveSheet()->getColumnDimension($COL_BEGRUENDUNG)->setAutoSize(80);
 if (isset($COL_TAGS)) $objPHPExcel->getActiveSheet()->getColumnDimension($COL_TAGS)->setAutoSize(18);
 $objPHPExcel->getActiveSheet()->getColumnDimension($COL_KONTAKT)->setWidth(24);
