@@ -7,7 +7,8 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var Consultation $consultation
- * @var \app\models\db\ISupporter $initiator
+ * @var ISupporter $initiator
+ * @var ISupporter[] $supporters
  * @var bool $allowOther
  * @var bool $hasSupporters
  * @var bool $minSupporters
@@ -22,7 +23,7 @@ $settings = $consultation->getSettings();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
-echo '<h2 class="green">AntragstellerIn</h2>';
+echo '<h2 class="green">' . 'AntragstellerIn' . '</h2>';
 
 $preOrga       = Html::encode($initiator->organization);
 $preName       = Html::encode($initiator->name);
@@ -46,7 +47,7 @@ echo Html::radio(
     $initiator->personType == ISupporter::PERSON_NATURAL,
     [
         'value' => ISupporter::PERSON_NATURAL,
-        'id' => 'personTypeNatural',
+        'id'    => 'personTypeNatural',
     ]
 );
 echo ' Natürliche Person
@@ -57,7 +58,7 @@ echo Html::radio(
     $initiator->personType == ISupporter::PERSON_ORGANIZATION,
     [
         'value' => ISupporter::PERSON_ORGANIZATION,
-        'id' => 'personTypeOrga',
+        'id'    => 'personTypeOrga',
     ]
 );
 
@@ -113,14 +114,76 @@ if ($settings->motionHasPhone) {
 }
 echo '</div>';
 
+
+if ($hasSupporters) {
+    $getSupporterRow = function (ISupporter $supporter, $supporterOrga) {
+        $str = '<div class="form-group">';
+        $str .= '<div class="col-md-6">';
+        $str .= Html::textInput(
+            'supporters[][name]',
+            $supporter->name,
+            ['class' => 'form-control name', 'placeholder' => 'Name']
+        );
+        $str .= '</div>';
+        if ($supporterOrga) {
+            $str .= '<div class="col-md-6">';
+            $str .= Html::textInput(
+                'supporters[][organization]',
+                $supporter->organization,
+                ['class' => 'form-control organization', 'placeholder' => 'Gremium, LAG, ...']
+            );
+            $str .= '</div>';
+        }
+        $str .= '</div>';
+        return $str;
+    };
+
+    while (count($supporters) < $minSupporters) {
+        $supp         = new \app\models\db\MotionSupporter();
+        $supporters[] = $supp;
+    }
+    echo '<h2 class="green">' . 'UnterstützerInnen' . '</h2>';
+    echo '<div class="supporterData form-horizontal content" ';
+    echo 'data-min-supporters="' . Html::encode($minSupporters) . '">';
+
+    echo '<div class="form-group"><div class="col-md-3">';
+    echo str_replace('%min%', $minSupporters, "Min. %min% UnterstützerInnen");
+    echo '</div>';
+
+    echo '<div class="col-md-9">';
+    foreach ($supporters as $supporter) {
+        echo $getSupporterRow($supporter, $supporterOrga);
+    }
+
+    echo '<div class="adderRow"><a href="#"><span class="glyphicon glyphicon-plus"></span> ';
+    echo 'Zeile hinzufügen';
+    echo '</a></div>';
+
+    if ($supporterFulltext) {
+        echo '<div class="fullTextAdder"><a href="#">Volltextfeld</a></div>';
+        echo '<div class="form-group" id="fullTextHolder">';
+        echo '<div class="col-md-9">';
+        echo '<textarea class="form-control" placeholder="UnterstützerInnen" rows="10"></textarea>';
+        echo '</div><div class="col-md-3">';
+        echo '<button type="button" class="btn btn-success fullTextAdd">';
+        echo '<span class="glyphicon glyphicon-plus"></span> Hinzufügen</button>';
+        echo '</div>';
+        echo '</div>';
+    }
+
+    echo '</div>';
+    echo '</div>';
+
+    $new    = new \app\models\db\MotionSupporter();
+    $newStr = $getSupporterRow($new, $supporterOrga);
+    echo '<div id="newSupporterTemplate" style="display: none;" data-html="' . Html::encode($newStr) . '"></div>';
+
+    echo '</div>';
+}
+
+
 echo '</fieldset>';
 
 $controller->layoutParams->addOnLoadJS(
-    '$("#personTypeNatural, #personTypeOrga").on("click change", function() {
-        if ($("#personTypeOrga").prop("checked")) {
-            $(".initiatorData .organizationRow").show();
-        } else {
-            $(".initiatorData .organizationRow").hide();
-        }
-    }).first().trigger("change");'
+    '$.Antragsgruen.defaultInitiatorForm();'
 );

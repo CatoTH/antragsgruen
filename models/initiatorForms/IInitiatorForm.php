@@ -13,7 +13,6 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionEditForm;
 
-
 abstract class IInitiatorForm
 {
     const ONLY_INITIATOR = 0;

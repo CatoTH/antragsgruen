@@ -270,12 +270,54 @@
         });
     };
 
+    var defaultInitiatorForm = function () {
+        $('#personTypeNatural, #personTypeOrga').on('click change', function () {
+            if ($('#personTypeOrga').prop('checked')) {
+                $('.initiatorData .organizationRow').show();
+            } else {
+                $('.initiatorData .organizationRow').hide();
+            }
+        }).first().trigger('change');
+        $('.supporterData .adderRow a').click(function (ev) {
+            ev.preventDefault();
+            var $newEl = $($('#newSupporterTemplate').data('html'));
+            $(this).parents('.adderRow').before($newEl);
+        });
+        $('.fullTextAdder a').click(function (ev) {
+            ev.preventDefault();
+            $(this).parent().hide();
+            $('#fullTextHolder').show();
+        });
+        $('.fullTextAdd').click(function () {
+            var lines = $('#fullTextHolder').find('textarea').val().split("\n"),
+                template = $('#newSupporterTemplate').data('html');
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i] == '') {
+                    continue;
+                }
+                var $newEl = $(template);
+                if ($newEl.find('input.organization').length > 0) {
+                    var parts = lines[i].split(';');
+                    $newEl.find('input.name').val(parts[0].trim());
+                    if (parts.length > 1) {
+                        $newEl.find('input.organization').val(parts[1].trim());
+                    }
+                } else {
+                    $newEl.find('input.name').val(lines[i]);
+                }
+                $('.supporterData').find('.adderRow').before($newEl);
+                $('#fullTextHolder').find('textarea').select().focus();
+            }
+        });
+    };
+
     $.Antragsgruen = {
-        "motionShow": motionShow,
-        "amendmentShow": amendmentShow,
-        "motionEditForm": motionEditForm,
-        "amendmentEditForm": amendmentEditForm,
-        "contentPageEdit": contentPageEdit
+        'motionShow': motionShow,
+        'amendmentShow': amendmentShow,
+        'motionEditForm': motionEditForm,
+        'amendmentEditForm': amendmentEditForm,
+        'contentPageEdit': contentPageEdit,
+        'defaultInitiatorForm': defaultInitiatorForm
     };
 
     $(".jsProtectionHint").remove();

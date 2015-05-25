@@ -188,6 +188,7 @@ echo '</div></div>';
 
 
 $curForm = $motionType->getMotionInitiatorFormClass();
+
 echo '<div class="form-group" id="typeMinSupportersRow">';
 echo '<label class="col-md-3 control-label" for="typeMinSupporters">';
 echo 'Min. UnterstützerInnen';
@@ -198,6 +199,20 @@ if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class))
     echo ' value="' . Html::encode($curForm->getMinNumberOfSupporters()) . '"';
 }
 echo '></div></div>';
+
+echo '<div class="form-group checkbot" id="typeSupportersOrgaRow">';
+echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
+      <input type="checkbox" name="initiator[supportersHaveOrganizations]"';
+if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
+    /** @var \app\models\initiatorForms\DefaultFormBase $curForm */
+    if ($curForm->supportersHaveOrganizations()) {
+        echo ' checked';
+    }
+}
+echo '> Gremium/Organisation bei UnterstützerInnen abfragen
+    </label></div>';
+echo '</div>';
+
 
 echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">Speichern</button></div>';
 

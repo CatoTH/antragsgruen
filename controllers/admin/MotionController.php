@@ -79,7 +79,7 @@ class MotionController extends AdminBase
             $form->setSettings($_POST['initiator']);
             $motionType->initiatorFormSettings = $form->getSettings();
             $motionType->save();
-            
+
             $this->sectionsSave($motionType);
             $this->sectionsDelete($motionType);
 

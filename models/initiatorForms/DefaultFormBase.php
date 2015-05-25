@@ -74,16 +74,6 @@ abstract class DefaultFormBase extends IInitiatorForm
      * @param ISupporter $model
      * @return ISupporter[]
      */
-    protected function parseSupportersFromFulltext(ISupporter $model)
-    {
-        // @TODO
-        return [];
-    }
-
-    /**
-     * @param ISupporter $model
-     * @return ISupporter[]
-     */
     protected function parseSupportersFromStdField(ISupporter $model)
     {
         $ret = [];
@@ -111,9 +101,8 @@ abstract class DefaultFormBase extends IInitiatorForm
      */
     protected function parseSupporters(ISupporter $model)
     {
-        if (isset($_POST['SupporterFulltext'])) {
-            return $this->parseSupportersFromFulltext($model);
-        } elseif (isset($_REQUEST["SupporterName"]) && is_array($_REQUEST["SupporterName"])) {
+        // @TODO
+        if (isset($_REQUEST["SupporterName"]) && is_array($_REQUEST["SupporterName"])) {
             return $this->parseSupportersFromStdField($model);
         } else {
             return [];
@@ -230,18 +219,23 @@ abstract class DefaultFormBase extends IInitiatorForm
      */
     public function getMotionForm(Consultation $consultation, MotionEditForm $editForm, Base $controller)
     {
-        $view      = new View();
-        $initiator = null;
+        $view       = new View();
+        $initiator  = null;
+        $supporters = [];
         foreach ($editForm->supporters as $supporter) {
             if ($supporter->role == MotionSupporter::ROLE_INITIATOR) {
                 $initiator = $supporter;
             }
+            if ($supporter->role == MotionSupporter::ROLE_SUPPORTER) {
+                $supporters[] = $supporter;
+            }
         }
         return $view->render(
-            '@app/views/initiatorForms/std',
+            '@app/views/initiatorForms/default_form',
             [
                 'consultation'      => $consultation,
                 'initiator'         => $initiator,
+                'supporters'        => $supporters,
                 'allowOther'        => User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING),
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
@@ -260,18 +254,23 @@ abstract class DefaultFormBase extends IInitiatorForm
      */
     public function getAmendmentForm(Consultation $consultation, AmendmentEditForm $editForm, Base $controller)
     {
-        $view      = new View();
-        $initiator = null;
+        $view       = new View();
+        $initiator  = null;
+        $supporters = [];
         foreach ($editForm->supporters as $supporter) {
             if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR) {
                 $initiator = $supporter;
             }
+            if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR) {
+                $supporters[] = $supporter;
+            }
         }
         return $view->render(
-            '@app/views/initiatorForms/std',
+            '@app/views/initiatorForms/default_form',
             [
                 'consultation'      => $consultation,
                 'initiator'         => $initiator,
+                'supporters'        => $supporters,
                 'allowOther'        => User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING),
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),

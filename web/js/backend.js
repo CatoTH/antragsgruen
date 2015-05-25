@@ -122,8 +122,10 @@
             var hasSupporters = $(this).find("option:selected").data("has-supporters");
             if (hasSupporters) {
                 $('#typeMinSupportersRow').show();
+                $('#typeSupportersOrgaRow').show();
             } else {
                 $('#typeMinSupportersRow').hide();
+                $('#typeSupportersOrgaRow').hide();
             }
         }).change();
     };
@@ -233,7 +235,8 @@
     $.AntragsgruenAdmin = {
         'consultationEditForm': consultationEditForm,
         'motionTypeEdit': motionTypeEdit,
-        'agendaEdit': agendaEdit
+        'agendaEdit': agendaEdit,
+        'defaultInitiatorForm': defaultInitiatorForm
     };
 
 }(jQuery));
