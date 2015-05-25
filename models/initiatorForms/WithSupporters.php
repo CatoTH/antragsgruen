@@ -6,6 +6,14 @@ use app\models\db\ConsultationMotionType;
 
 class WithSupporters extends DefaultFormBase
 {
+    /**
+     * @return string
+     */
+    public static function getTitle()
+    {
+        return 'Mit UnterstützerInnen';
+    }
+
     /** @var int */
     protected $minSupporters = 1;
 
@@ -30,9 +38,29 @@ class WithSupporters extends DefaultFormBase
     }
 
     /**
+     * @return string|null
+     */
+    public function getSettings()
+    {
+        return json_encode([
+            'minSupporters' => $this->minSupporters
+        ]);
+    }
+
+    /**
+     * @param array $settings
+     */
+    public function setSettings($settings)
+    {
+        if (isset($settings['minSupporters']) && $settings['minSupporters'] >= 0) {
+            $this->minSupporters = IntVal($settings['minSupporters']);
+        }
+    }
+
+    /**
      * @return bool
      */
-    protected function hasSupporters()
+    public static function hasSupporters()
     {
         return true;
     }
@@ -40,15 +68,23 @@ class WithSupporters extends DefaultFormBase
     /**
      * @return int
      */
-    protected function getMinNumberOfSupporters()
+    public function getMinNumberOfSupporters()
     {
         return $this->minSupporters;
     }
 
     /**
+     * @param int $num
+     */
+    public function setMinNumberOfSupporters($num)
+    {
+        $this->minSupporters = $num;
+    }
+
+    /**
      * @return bool
      */
-    protected function hasFullTextSupporterField()
+    public function hasFullTextSupporterField()
     {
         return true;
     }

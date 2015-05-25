@@ -75,10 +75,16 @@ class MotionController extends AdminBase
             $motionType->setAttributes($_POST['type']);
             $motionType->deadlineMotions = Tools::dateBootstraptime2sql($_POST['type']['deadlineMotions']);
             $motionType->deadlineAmendments = Tools::dateBootstraptime2sql($_POST['type']['deadlineAmendments']);
+            $form = $motionType->getMotionInitiatorFormClass();
+            $form->setSettings($_POST['initiator']);
+            $motionType->initiatorFormSettings = $form->getSettings();
+            $motionType->save();
+            
             $this->sectionsSave($motionType);
             $this->sectionsDelete($motionType);
 
             \yii::$app->session->setFlash('success', 'Gespeichert.');
+            $motionType->refresh();
         }
 
         return $this->render('type', ['motionType' => $motionType]);

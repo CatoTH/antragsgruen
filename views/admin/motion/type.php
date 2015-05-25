@@ -49,42 +49,49 @@ echo '<div class="content">';
 echo $controller->showErrors();
 
 
+
+echo '<h3>' . 'Bezeichnung' . '</h3>';
+
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typeTitleSingular">';
+echo '<label class="col-md-3 control-label" for="typeTitleSingular">';
 echo 'Titel (Einzahl)';
-echo '</label><div class="col-md-7">';
+echo '</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'typeTitleSingular', 'placeholder' => 'Antrag'];
 echo Html::textInput('type[titleSingular]', $motionType->titleSingular, $options);
 echo '</div></div>';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typeTitlePlural">';
+echo '<label class="col-md-3 control-label" for="typeTitlePlural">';
 echo 'Titel (Mehrzahl)';
-echo '</label><div class="col-md-7">';
+echo '</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'typeTitlePlural', 'placeholder' => 'Anträge'];
 echo Html::textInput('type[titlePlural]', $motionType->titlePlural, $options);
 echo '</div></div>';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typeCreateTitle">';
+echo '<label class="col-md-3 control-label" for="typeCreateTitle">';
 echo 'Aufruf zum Anlegen';
-echo '</label><div class="col-md-7">';
+echo '</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'typeCreateTitle', 'placeholder' => 'Antrag anlegen'];
 echo Html::textInput('type[createTitle]', $motionType->createTitle, $options);
 echo '</div></div>';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typeMotionPrefix">';
+echo '<label class="col-md-3 control-label" for="typeMotionPrefix">';
 echo 'Antragskürzel-Präfix';
 echo '</label><div class="col-md-2">';
 $options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
 echo Html::textInput('type[motionPrefix]', $motionType->motionPrefix, $options);
 echo '</div></div>';
 
+
+
+echo '<h3>' . 'Berechtigungen für:' . '</h3>';
+
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="types">';
-echo 'Berechtigt: Anträge';
-echo '</label><div class="col-md-7">';
+echo '<label class="col-md-3 control-label" for="types">';
+echo 'Anträge';
+echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policyMotions]',
     $motionType->policyMotions,
@@ -94,9 +101,9 @@ echo Html::dropDownList(
 echo '</div></div>';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typePolicyAmendments">';
-echo 'Berechtigt: Änderungsanträge';
-echo '</label><div class="col-md-7">';
+echo '<label class="col-md-3 control-label" for="typePolicyAmendments">';
+echo 'Änderungsanträge';
+echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policyAmendments]',
     $motionType->policyAmendments,
@@ -106,9 +113,9 @@ echo Html::dropDownList(
 echo '</div></div>';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typePolicyComments">';
-echo 'Berechtigt: Kommentieren';
-echo '</label><div class="col-md-7">';
+echo '<label class="col-md-3 control-label" for="typePolicyComments">';
+echo 'Kommentieren';
+echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policyComments]',
     $motionType->policyComments,
@@ -119,9 +126,9 @@ echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typePolicySupport">';
-echo 'Berechtigt: Unterstützen';
-echo '</label><div class="col-md-7">';
+echo '<label class="col-md-3 control-label" for="typePolicySupport">';
+echo 'Unterstützen';
+echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policySupport]',
     $motionType->policySupport,
@@ -131,11 +138,14 @@ echo Html::dropDownList(
 echo '</div></div>';
 
 
+
+echo '<h3>' . 'Antragsschluss' . '</h3>';
+
 $deadlineMotions = Tools::dateSql2bootstraptime($motionType->deadlineMotions);
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typeDeadlineMotions">';
-echo 'Antragsschluss';
-echo '</label><div class="col-md-7">';
+echo '<label class="col-md-3 control-label" for="typeDeadlineMotions">';
+echo 'Anträge';
+echo '</label><div class="col-md-9">';
 echo '<div class="input-group date" id="typeDeadlineMotionsHolder">';
 echo '<input id="typeDeadlineMotions" type="text" class="form-control" name="type[deadlineMotions]" ';
 echo 'value="' . Html::encode($deadlineMotions) . '" data-locale="' . Html::encode($locale) . '">';
@@ -145,9 +155,9 @@ echo '</div></div>';
 
 $deadlineAmendments = Tools::dateSql2bootstraptime($motionType->deadlineAmendments);
 echo '<div class="form-group">';
-echo '<label class="col-md-5 control-label" for="typeDeadlineAmendments">';
+echo '<label class="col-md-3 control-label" for="typeDeadlineAmendments">';
 echo 'ÄA-Antragsschluss';
-echo '</label><div class="col-md-7">';
+echo '</label><div class="col-md-9">';
 echo '<div class="input-group date" id="typeDeadlineAmendmentsHolder">';
 echo '<input id="typeDeadlineAmendments" type="text" class="form-control" name="type[deadlineAmendments]" ';
 echo 'value="' . Html::encode($deadlineAmendments) . '" data-locale="' . Html::encode($locale) . '">';
@@ -156,6 +166,38 @@ echo '</div>';
 echo '</div></div>';
 
 
+
+echo '<h3>' . 'AntragstellerIn / UnterstützerInnen:' . '</h3>';
+
+
+echo '<div class="form-group">';
+echo '<label class="col-md-3 control-label" for="typeInitiatorForm">';
+echo 'Formular';
+echo '</label><div class="col-md-9">';
+echo '<select name="type[initiatorForm]" class="form-control" id="typeInitiatorForm">';
+foreach (\app\models\initiatorForms\IInitiatorForm::getImplementations() as $formId => $formClass) {
+    echo '<option value="' . Html::encode($formId) . '" ';
+    echo 'data-has-supporters="' . ($formClass::hasSupporters() ? 1 : 0) . '"';
+    if ($motionType->initiatorForm == $formId) {
+        echo ' selected';
+    }
+    echo '>' . Html::encode($formClass::getTitle()) . '</option>';
+}
+echo '</select>';
+echo '</div></div>';
+
+
+$curForm = $motionType->getMotionInitiatorFormClass();
+echo '<div class="form-group" id="typeMinSupportersRow">';
+echo '<label class="col-md-3 control-label" for="typeMinSupporters">';
+echo 'Min. UnterstützerInnen';
+echo '</label><div class="col-md-9">';
+echo '<input type="number" name="initiator[minSupporters]" class="form-control" id="typeMinSupporters"';
+if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
+    /** @var \app\models\initiatorForms\DefaultFormBase $curForm */
+    echo ' value="' . Html::encode($curForm->getMinNumberOfSupporters()) . '"';
+}
+echo '></div></div>';
 
 echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">Speichern</button></div>';
 
@@ -326,4 +368,3 @@ echo Html::endForm();
 echo '<ul style="display: none;" id="sectionTemplate">';
 $renderSection(new ConsultationSettingsMotionSection());
 echo '</ul>';
-

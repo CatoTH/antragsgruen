@@ -41,7 +41,7 @@ abstract class DefaultFormBase extends IInitiatorForm
     /**
      * @return bool
      */
-    protected function hasSupporters()
+    public static function hasSupporters()
     {
         return false;
     }
@@ -49,7 +49,7 @@ abstract class DefaultFormBase extends IInitiatorForm
     /**
      * @return int
      */
-    protected function getMinNumberOfSupporters()
+    public function getMinNumberOfSupporters()
     {
         return 0;
     }
@@ -57,7 +57,7 @@ abstract class DefaultFormBase extends IInitiatorForm
     /**
      * @return bool
      */
-    protected function hasFullTextSupporterField()
+    public function hasFullTextSupporterField()
     {
         return false;
     }
@@ -65,7 +65,7 @@ abstract class DefaultFormBase extends IInitiatorForm
     /**
      * @return bool
      */
-    protected function supportersHaveOrganizations()
+    public function supportersHaveOrganizations()
     {
         return false;
     }

@@ -118,6 +118,14 @@
         $('#typeDeadlineAmendmentsHolder').datetimepicker({
             locale: $('#typeDeadlineAmendments').data('locale')
         });
+        $('#typeInitiatorForm').change(function () {
+            var hasSupporters = $(this).find("option:selected").data("has-supporters");
+            if (hasSupporters) {
+                $('#typeMinSupportersRow').show();
+            } else {
+                $('#typeMinSupportersRow').hide();
+            }
+        }).change();
     };
 
 

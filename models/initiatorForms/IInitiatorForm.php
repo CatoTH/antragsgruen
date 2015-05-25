@@ -13,19 +13,20 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionEditForm;
 
+
 abstract class IInitiatorForm
 {
     const ONLY_INITIATOR = 0;
     const WITH_SUPPORTER = 1;
 
     /**
-     * @return string[]
+     * @return IInitiatorForm[]
      */
     public static function getImplementations()
     {
         return [
-            0 => 'Nur die AntragstellerIn',
-            1 => 'Mit UnterstützerInnen',
+            static::ONLY_INITIATOR => OnlyInitiator::class,
+            static::WITH_SUPPORTER => WithSupporters::class,
         ];
     }
 
@@ -46,6 +47,33 @@ abstract class IInitiatorForm
             default:
                 throw new Internal('Supporter form type not found');
         }
+    }
+
+
+    /**
+     * @return string
+     */
+    public static function getTitle()
+    {
+        return '';
+    }
+
+    /**
+     * @return string|null
+     */
+    abstract public function getSettings();
+
+    /**
+     * @param array $settings
+     */
+    abstract public function setSettings($settings);
+
+    /**
+     * @return bool
+     */
+    public static function hasSupporters()
+    {
+        return false;
     }
 
     /**
