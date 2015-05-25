@@ -804,13 +804,29 @@ ins, ul.inserted, blockquote.inserted {
     text-align: right;
   }
 
-  .fullTextAdder {
-    float: right;
-  }
+  .supporterData {
+    .fullTextAdder {
+      float: right;
+    }
 
-  #fullTextHolder {
-    display: none;
-    margin-top: 30px;
+    #fullTextHolder {
+      display: none;
+      margin-top: 30px;
+    }
+
+    .supporterRow {
+      .rowDeleter, .rowDeleter:link, .rowDeleter:visited {
+        color: $colorDelLink;
+        display: inline-block;
+        margin-top: 8px;
+      }
+      html.no-touch & .rowDeleter {
+        visibility: hidden;
+      }
+      html.no-touch &:hover .rowDeleter {
+        visibility: visible;
+      }
+    }
   }
 }
 

@@ -7,7 +7,7 @@
     "use strict";
 
 
-// Von ckeditor/plugins/wordcount/plugin.js
+// From ckeditor/plugins/wordcount/plugin.js
     function ckeditor_strip(html) {
         var tmp = document.createElement("div");
         tmp.innerHTML = html;
@@ -271,6 +271,10 @@
     };
 
     var defaultInitiatorForm = function () {
+        var $fullTextHolder = $('#fullTextHolder'),
+            $supporterData = $('.supporterData'),
+            $adderRow = $supporterData.find('.adderRow');
+
         $('#personTypeNatural, #personTypeOrga').on('click change', function () {
             if ($('#personTypeOrga').prop('checked')) {
                 $('.initiatorData .organizationRow').show();
@@ -278,18 +282,19 @@
                 $('.initiatorData .organizationRow').hide();
             }
         }).first().trigger('change');
-        $('.supporterData .adderRow a').click(function (ev) {
+        $adderRow.find('a').click(function (ev) {
             ev.preventDefault();
             var $newEl = $($('#newSupporterTemplate').data('html'));
-            $(this).parents('.adderRow').before($newEl);
+            $adderRow.before($newEl);
         });
+
         $('.fullTextAdder a').click(function (ev) {
             ev.preventDefault();
             $(this).parent().hide();
             $('#fullTextHolder').show();
         });
         $('.fullTextAdd').click(function () {
-            var lines = $('#fullTextHolder').find('textarea').val().split("\n"),
+            var lines = $fullTextHolder.find('textarea').val().split("\n"),
                 template = $('#newSupporterTemplate').data('html');
             for (var i = 0; i < lines.length; i++) {
                 if (lines[i] == '') {
@@ -305,10 +310,43 @@
                 } else {
                     $newEl.find('input.name').val(lines[i]);
                 }
-                $('.supporterData').find('.adderRow').before($newEl);
-                $('#fullTextHolder').find('textarea').select().focus();
+                $adderRow.before($newEl);
+                $fullTextHolder.find('textarea').select().focus();
             }
         });
+        $supporterData.find('.supporterRow .rowDeleter').click(function (ev) {
+            ev.preventDefault();
+            $(this).parents('.supporterRow').remove();
+        });
+        $supporterData.on('keydown', ' .supporterRow input[type=text]', function (ev) {
+            if (ev.keyCode == 13) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                var $row = $(this).parents('.supporterRow');
+                if ($row.next().hasClass('adderRow')) {
+                    var $newEl = $($('#newSupporterTemplate').data('html'));
+                    $adderRow.before($newEl);
+                    $newEl.find('input[type=text]').first().focus();
+                } else {
+                    $row.next().find('input[type=text]').first().focus();
+                }
+            }
+        });
+
+        if ($supporterData.length > 0 && $supporterData.data('min-supporters') > 0) {
+            $('#motionEditForm').submit(function (ev) {
+                var found = 0;
+                $supporterData.find('.supporterRow').each(function () {
+                    if ($(this).find('input.name').val().trim() != '') {
+                        found++;
+                    }
+                });
+                if (found < $supporterData.data('min-supporters')) {
+                    ev.preventDefault();
+                    bootbox.alert('Es müssen mindestens %num% UnterstützerInnen angegeben werden'.replace(/%num%/, $supporterData.data('min-supporters')));
+                }
+            });
+        }
     };
 
     $.Antragsgruen = {

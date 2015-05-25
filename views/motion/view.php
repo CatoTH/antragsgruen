@@ -283,7 +283,6 @@ if (count($supporters) > 0) {
     echo '<section class="supporters"><h2 class="green">UnterstützerInnen</h2>
     <div class="content">';
 
-    echo "<strong>UnterstützerInnen:</strong><br>";
     if (count($supporters) > 0) {
         echo '<ul>';
         foreach ($supporters as $supp) {

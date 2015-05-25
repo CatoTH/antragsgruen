@@ -235,8 +235,7 @@
     $.AntragsgruenAdmin = {
         'consultationEditForm': consultationEditForm,
         'motionTypeEdit': motionTypeEdit,
-        'agendaEdit': agendaEdit,
-        'defaultInitiatorForm': defaultInitiatorForm
+        'agendaEdit': agendaEdit
     };
 
 }(jQuery));

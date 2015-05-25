@@ -117,23 +117,27 @@ echo '</div>';
 
 if ($hasSupporters) {
     $getSupporterRow = function (ISupporter $supporter, $supporterOrga) {
-        $str = '<div class="form-group">';
+        $str = '<div class="form-group supporterRow">';
         $str .= '<div class="col-md-6">';
         $str .= Html::textInput(
-            'supporters[][name]',
+            'supporters[name][]',
             $supporter->name,
             ['class' => 'form-control name', 'placeholder' => 'Name']
         );
         $str .= '</div>';
         if ($supporterOrga) {
-            $str .= '<div class="col-md-6">';
+            $str .= '<div class="col-md-5">';
             $str .= Html::textInput(
-                'supporters[][organization]',
+                'supporters[organization][]',
                 $supporter->organization,
                 ['class' => 'form-control organization', 'placeholder' => 'Gremium, LAG, ...']
             );
             $str .= '</div>';
         }
+        $str .= '<div class="col-md-1"><a href="#" class="rowDeleter">';
+        $str .= '<span class="glyphicon glyphicon-minus-sign"></span>';
+        $str .= '</a></div>';
+
         $str .= '</div>';
         return $str;
     };

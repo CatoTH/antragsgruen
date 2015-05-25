@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\EMailLog;
@@ -17,7 +16,6 @@ use app\models\exceptions\DB;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
-use app\models\exceptions\NotFound;
 use app\models\forms\CommentForm;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
@@ -80,6 +78,7 @@ class MotionController extends Base
     /**
      * @param Motion $motion
      * @param int $commentId
+     * @throws DB
      * @throws Internal
      */
     private function deleteComment(Motion $motion, $commentId)

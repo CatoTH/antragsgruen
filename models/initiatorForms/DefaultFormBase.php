@@ -74,39 +74,27 @@ abstract class DefaultFormBase extends IInitiatorForm
      * @param ISupporter $model
      * @return ISupporter[]
      */
-    protected function parseSupportersFromStdField(ISupporter $model)
-    {
-        $ret = [];
-        foreach ($_REQUEST["SupporterName"] as $i => $name) {
-            if (!$this->isValidName($name)) {
-                continue;
-            }
-            $sup             = clone $model;
-            $sup->name       = trim($name);
-            $sup->role       = ISupporter::ROLE_SUPPORTER;
-            $sup->userId     = null;
-            $sup->personType = ISupporter::PERSON_NATURAL;
-            $sup->position   = $i;
-            if (isset($_REQUEST["SupporterOrganization"]) && isset($_REQUEST["SupporterOrganization"][$i])) {
-                $sup->organization = $_REQUEST["SupporterOrganization"][$i];
-            }
-            $ret[] = $sup;
-        }
-        return $ret;
-    }
-
-    /**
-     * @param ISupporter $model
-     * @return ISupporter[]
-     */
     protected function parseSupporters(ISupporter $model)
     {
-        // @TODO
-        if (isset($_REQUEST["SupporterName"]) && is_array($_REQUEST["SupporterName"])) {
-            return $this->parseSupportersFromStdField($model);
-        } else {
-            return [];
+        $ret = [];
+        if (isset($_POST["supporters"]) && is_array($_POST["supporters"]['name'])) {
+            foreach ($_POST["supporters"]['name'] as $i => $name) {
+                if (!$this->isValidName($name)) {
+                    continue;
+                }
+                $sup             = clone $model;
+                $sup->name       = trim($name);
+                $sup->role       = ISupporter::ROLE_SUPPORTER;
+                $sup->userId     = null;
+                $sup->personType = ISupporter::PERSON_NATURAL;
+                $sup->position   = $i;
+                if (isset($_POST["supporters"]['organization']) && isset($_POST["supporters"]['organization'][$i])) {
+                    $sup->organization = trim($_POST["supporters"]['organization'][$i]);
+                }
+                $ret[] = $sup;
+            }
         }
+        return $ret;
     }
 
 
