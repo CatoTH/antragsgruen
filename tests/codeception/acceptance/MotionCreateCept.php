@@ -1,7 +1,5 @@
 <?php
 
-use tests\codeception\_pages\MotionCreatePage;
-
 /**
  * @var \Codeception\Scenario $scenario
  */
@@ -13,7 +11,7 @@ $I->populateDBData1();
 
 // Load Form
 
-$I->wantTo('Motion Create site loads');
+$I->wantTo('motion Create site loads');
 $I->gotoStdConsultationHome()->gotoMotionCreatePage();
 
 $I->see('Antrag stellen', 'h1');
@@ -38,7 +36,7 @@ if (method_exists($I, 'executeJS')) {
 }
 
 // Fill & Submit Form
-$I->wantTo('Create a regular motion, but forgot the organization and resolution date');
+$I->wantTo('create a regular motion, but forgot the organization and resolution date');
 $I->fillField(['name' => 'sections[1]'], 'Testantrag 1');
 if (method_exists($I, 'executeJS')) {
     $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
@@ -63,7 +61,7 @@ $I->see('Beschlussdatum');
 
 
 // Fill & Submit Form
-$I->wantTo('Create a regular motion, still forgot the resolution date');
+$I->wantTo('create a regular motion, still forgot the resolution date');
 $I->fillField(['name' => 'Initiator[organization]'], 'My company');
 
 $I->submitForm('#motionEditForm', [], 'save');
@@ -73,19 +71,19 @@ $I->see('No resolution date entered');
 
 
 
-$I->wantTo('Finally create the motion for real');
+$I->wantTo('finally create the motion for real');
 $I->fillField(['name' => 'Initiator[resolutionDate]'], '12.01.2015');
 $I->submitForm('#motionEditForm', [], 'save');
 $I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
 
 
-$I->wantTo('Not confirm the motion, instead correcting a mistake');
+$I->wantTo('not confirm the motion, instead correcting a mistake');
 $I->submitForm('#motionConfirmForm', [], 'modify');
 $I->see(mb_strtoupper('Antrag stellen'), 'h1');
 
 
 
-$I->wantTo('Make some changes to the motion');
+$I->wantTo('make some changes to the motion');
 $I->fillField(['name' => 'sections[1]'], 'Testantrag 2');
 if (method_exists($I, 'executeJS')) {
     $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Another string</strong></p>");');
@@ -104,7 +102,7 @@ $I->see('No valid name entered');
 
 
 
-$I->wantTo('Finally submit the motion');
+$I->wantTo('finally submit the motion');
 $I->fillField(['name' => 'Initiator[name]'], 'My real name');
 $I->submitForm('#motionEditForm', [], 'save');
 
@@ -116,6 +114,10 @@ $I->see('My real name');
 
 
 
-$I->wantTo('Confirm the submitted motion');
+$I->wantTo('confirm the submitted motion');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
 $I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
+
+
+
+// @TODO Screening the motion and verifying the data is visible

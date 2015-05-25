@@ -116,6 +116,8 @@
 
 
     var motionEditForm = function () {
+        // @TODO Prevent accidental leaving of page once something is entered
+
         var lang = $('html').attr('lang');
         $(".input-group.date").datetimepicker({
             locale: lang,
@@ -133,6 +135,8 @@
     };
 
     var amendmentEditForm = function () {
+        // @TODO Prevent accidental leaving of page once something is entered
+
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor"),
@@ -319,10 +323,11 @@
             $(this).parents('.supporterRow').remove();
         });
         $supporterData.on('keydown', ' .supporterRow input[type=text]', function (ev) {
-            if (ev.keyCode == 13) {
+            var $row;
+            if (ev.keyCode == 13) { // Enter
                 ev.preventDefault();
                 ev.stopPropagation();
-                var $row = $(this).parents('.supporterRow');
+                $row = $(this).parents('.supporterRow');
                 if ($row.next().hasClass('adderRow')) {
                     var $newEl = $($('#newSupporterTemplate').data('html'));
                     $adderRow.before($newEl);
@@ -330,6 +335,16 @@
                 } else {
                     $row.next().find('input[type=text]').first().focus();
                 }
+            } else if (ev.keyCode == 8) { // Backspace
+                $row = $(this).parents('.supporterRow');
+                if ($row.find('input.name').val() != '') {
+                    return;
+                }
+                if ($row.find('input.organization').val() != '') {
+                    return;
+                }
+                $row.remove();
+                $adderRow.prev().find('input.name, input.organization').last().focus();
             }
         });
 

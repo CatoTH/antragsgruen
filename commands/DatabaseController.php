@@ -59,9 +59,8 @@ class DatabaseController extends Controller
             );
             $command       = \Yii::$app->db->createCommand($delete_string);
             $command->execute();
-            \Yii::$app->db->close();
+            unset($command);
 
-            \Yii::$app->db->open();
             $this->actionCreate();
             $this->actionInsertTestData();
         }

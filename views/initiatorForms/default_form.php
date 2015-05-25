@@ -142,7 +142,7 @@ if ($hasSupporters) {
         return $str;
     };
 
-    while (count($supporters) < $minSupporters) {
+    while (count($supporters) < $minSupporters || count($supporters) < 3) {
         $supp         = new \app\models\db\MotionSupporter();
         $supporters[] = $supp;
     }
@@ -151,7 +151,13 @@ if ($hasSupporters) {
     echo 'data-min-supporters="' . Html::encode($minSupporters) . '">';
 
     echo '<div class="form-group"><div class="col-md-3">';
-    echo str_replace('%min%', $minSupporters, "Min. %min% UnterstützerInnen");
+    if ($minSupporters > 1) {
+        echo str_replace('%min%', $minSupporters, "Min. %min% UnterstützerInnen");
+    } elseif ($minSupporters == 1) {
+        echo str_replace('%min%', $minSupporters, "Min. %min% UnterstützerIn");
+    } else {
+        echo 'UnterstützerInnen';
+    }
     echo '</div>';
 
     echo '<div class="col-md-9">';
