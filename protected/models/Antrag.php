@@ -294,16 +294,16 @@ class Antrag extends IAntrag
 
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param Veranstaltung $veranstaltung
 	 * @param int $limit
 	 * @return array|Antrag[]
 	 */
-	public static function holeNeueste($veranstaltung_id = 0, $limit = 5)
+	public static function holeNeueste($veranstaltung, $limit = 5)
 	{
 		$oCriteria        = new CDbCriteria();
 		$oCriteria->alias = "antrag";
-		if ($veranstaltung_id > 0) $oCriteria->addCondition("antrag.veranstaltung_id = " . IntVal($veranstaltung_id));
-		$unsichtbar   = IAntrag::$STATI_UNSICHTBAR;
+		$oCriteria->addCondition("antrag.veranstaltung_id = " . IntVal($veranstaltung->id));
+		$unsichtbar = $veranstaltung->getAntragUnsichtbarStati();
 		$unsichtbar[] = IAntrag::$STATUS_MODIFIZIERT;
 		$oCriteria->addNotInCondition("antrag.status", $unsichtbar);
 		$oCriteria->order = 'antrag.datum_einreichung DESC';

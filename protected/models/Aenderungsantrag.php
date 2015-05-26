@@ -466,18 +466,19 @@ class Aenderungsantrag extends IAntrag
 	}
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param Veranstaltung $veranstaltung
 	 * @param int $limit
 	 * @return array|Aenderungsantrag[]
 	 */
-	public static function holeNeueste($veranstaltung_id = 0, $limit = 5)
+	public static function holeNeueste($veranstaltung, $limit = 5)
 	{
 		$oCriteria        = new CDbCriteria();
 		$oCriteria->alias = "aenderungsantrag";
 		$oCriteria->addNotInCondition("aenderungsantrag.status", IAntrag::$STATI_UNSICHTBAR);
 		$oCriteria->with = "antrag";
-		if ($veranstaltung_id > 0) $oCriteria->addCondition("antrag.veranstaltung_id = " . IntVal($veranstaltung_id));
-		$oCriteria->addNotInCondition("antrag.status", IAntrag::$STATI_UNSICHTBAR);
+		$oCriteria->addCondition("antrag.veranstaltung_id = " . IntVal($veranstaltung->id));
+		$unsichtbar = $veranstaltung->getAntragUnsichtbarStati();
+		$oCriteria->addNotInCondition("antrag.status", $unsichtbar);
 		$oCriteria->order = 'aenderungsantrag.datum_einreichung DESC';
 		$dataProvider     = new CActiveDataProvider('Aenderungsantrag', array(
 			'criteria'   => $oCriteria,

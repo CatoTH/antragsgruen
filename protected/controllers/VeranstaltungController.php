@@ -33,9 +33,9 @@ class VeranstaltungController extends AntragsgruenController
             $ich = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
         }
 
-        $neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($this->veranstaltung->id, 5);
-        $neueste_antraege           = Antrag::holeNeueste($this->veranstaltung->id, 5);
-        $neueste_kommentare         = AntragKommentar::holeNeueste($this->veranstaltung->id, 3);
+        $neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($this->veranstaltung, 5);
+        $neueste_antraege           = Antrag::holeNeueste($this->veranstaltung, 5);
+        $neueste_kommentare         = AntragKommentar::holeNeueste($this->veranstaltung, 3);
 
         $meine_antraege           = array();
         $meine_aenderungsantraege = array();
@@ -400,7 +400,7 @@ class VeranstaltungController extends AntragsgruenController
     {
         $veranstaltung_id = IntVal($veranstaltung->id);
 
-        $antraege = Antrag::holeNeueste($veranstaltung_id, 20);
+        $antraege = Antrag::holeNeueste($veranstaltung, 20);
 
         $data = array();
         foreach ($antraege as $ant) {
@@ -422,7 +422,7 @@ class VeranstaltungController extends AntragsgruenController
     {
         $veranstaltung_id = IntVal($veranstaltung->id);
 
-        $antraege = Aenderungsantrag::holeNeueste($veranstaltung_id, 20);
+        $antraege = Aenderungsantrag::holeNeueste($veranstaltung, 20);
 
         $data = array();
         foreach ($antraege as $ant) {
@@ -444,7 +444,7 @@ class VeranstaltungController extends AntragsgruenController
     {
         $veranstaltung_id = IntVal($veranstaltung->id);
 
-        $antraege = AntragKommentar::holeNeueste($veranstaltung_id, 20);
+        $antraege = AntragKommentar::holeNeueste($veranstaltung, 20);
 
         $data = array();
         foreach ($antraege as $ant) {
@@ -556,9 +556,9 @@ class VeranstaltungController extends AntragsgruenController
         $veranstaltung = $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
         $this->testeWartungsmodus();
 
-        $neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($veranstaltung->id, 5);
-        $neueste_antraege           = Antrag::holeNeueste($veranstaltung->id, 5);
-        $neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung->id, 3);
+        $neueste_aenderungsantraege = Aenderungsantrag::holeNeueste($veranstaltung, 5);
+        $neueste_antraege           = Antrag::holeNeueste($veranstaltung, 5);
+        $neueste_kommentare         = AntragKommentar::holeNeueste($veranstaltung, 3);
 
         $suchbegriff        = $_REQUEST["suchbegriff"];
         $antraege           = Antrag::suche($veranstaltung->id, $suchbegriff);
