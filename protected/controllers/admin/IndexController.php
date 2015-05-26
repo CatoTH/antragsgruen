@@ -13,12 +13,12 @@ class IndexController extends AntragsgruenController
 
         $kommentare = array();
 
-        $aenderung = AenderungsantragKommentar::holeNeueste($this->veranstaltung->id);
+        $aenderung = AenderungsantragKommentar::holeNeueste($this->veranstaltung);
         foreach ($aenderung as $ant) {
             $kommentare[] = $ant;
         }
 
-        $antraege = AntragKommentar::holeNeueste($this->veranstaltung->id);
+        $antraege = AntragKommentar::holeNeueste($this->veranstaltung);
         foreach ($antraege as $ant) {
             $kommentare[] = $ant;
         }

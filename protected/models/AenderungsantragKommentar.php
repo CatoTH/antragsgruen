@@ -88,15 +88,15 @@ class AenderungsantragKommentar extends IKommentar
 
 
 	/**
-	 * @param int $veranstaltung_id
+	 * @param Veranstaltung $veranstaltung
 	 * @param int $limit
 	 * @return array|AenderungsantragKommentar[]
 	 */
-	public static function holeNeueste($veranstaltung_id = 0, $limit = 0)
+	public static function holeNeueste($veranstaltung, $limit = 0)
 	{
 		$antrag_ids = array();
 		/** @var array|Antrag[] $antraege */
-		$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung_id" => $veranstaltung_id));
+		$antraege = Antrag::model()->findAllByAttributes(array("veranstaltung_id" => $veranstaltung->id));
 		foreach ($antraege as $a) $antrag_ids[] = $a->id;
 
 		if (count($antrag_ids) == 0) return array();
@@ -105,9 +105,10 @@ class AenderungsantragKommentar extends IKommentar
 			"order" => "datum DESC"
 		);
 		if ($limit > 0) $condition["limit"] = $limit;
+		$unsichtbar = $veranstaltung->getAntragUnsichtbarStati();
 		$arr = AenderungsantragKommentar::model()->with(array(
 			"aenderungsantrag" => array(
-				"condition" => "aenderungsantrag.status NOT IN (" . implode(", ", IAntrag::$STATI_UNSICHTBAR) . ") AND aenderungsantrag.antrag_id IN (" . implode(", ", $antrag_ids) . ")"
+				"condition" => "aenderungsantrag.status NOT IN (" . implode(", ", $unsichtbar) . ") AND aenderungsantrag.antrag_id IN (" . implode(", ", $antrag_ids) . ")"
 			),
 		))->findAllByAttributes(array("status" => AenderungsantragKommentar::$STATUS_FREI), $condition);
 		return $arr;
