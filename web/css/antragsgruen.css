@@ -4876,6 +4876,8 @@ button.link {
 
 .motionData .motionDataTable {
   width: 100%; }
+  .motionData .motionDataTable > tbody > tr > th {
+    width: 30%; }
 .motionData .tagAdderHolder:link, .motionData .tagAdderHolder:visited {
   color: green; }
 .motionData #tagAdderForm {

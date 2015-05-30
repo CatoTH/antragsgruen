@@ -120,4 +120,7 @@ $I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
 
 
 
+// @TODO Fulltext area
+
+
 // @TODO Screening the motion and verifying the data is visible

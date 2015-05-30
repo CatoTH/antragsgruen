@@ -49,7 +49,6 @@ echo '<div class="content">';
 echo $controller->showErrors();
 
 
-
 echo '<h3>' . 'Bezeichnung' . '</h3>';
 
 echo '<div class="form-group">';
@@ -83,7 +82,6 @@ echo '</label><div class="col-md-2">';
 $options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
 echo Html::textInput('type[motionPrefix]', $motionType->motionPrefix, $options);
 echo '</div></div>';
-
 
 
 echo '<h3>' . 'Berechtigungen für:' . '</h3>';
@@ -138,7 +136,6 @@ echo Html::dropDownList(
 echo '</div></div>';
 
 
-
 echo '<h3>' . 'Antragsschluss' . '</h3>';
 
 $deadlineMotions = Tools::dateSql2bootstraptime($motionType->deadlineMotions);
@@ -166,7 +163,6 @@ echo '</div>';
 echo '</div></div>';
 
 
-
 echo '<h3>' . 'AntragstellerIn / UnterstützerInnen:' . '</h3>';
 
 
@@ -185,6 +181,32 @@ foreach (\app\models\initiatorForms\IInitiatorForm::getImplementations() as $for
 }
 echo '</select>';
 echo '</div></div>';
+
+
+echo '<div class="form-group">';
+echo '<div class="col-md-3 control-label label">' . 'E-Mail-Angabe';
+echo '</div><div class="col-md-9 contactDetails contactEMail">';
+$options = [
+    ConsultationMotionType::CONTACT_NA       => 'Nicht abfragen',
+    ConsultationMotionType::CONTACT_OPTIONAL => 'Freiwillig',
+    ConsultationMotionType::CONTACT_REQUIRED => 'Benötigt',
+];
+echo Html::radioList('type[contactEmail]', $motionType->contactEmail, $options, ['class' => 'form-control']);
+echo '</div></div>';
+
+
+
+echo '<div class="form-group">';
+echo '<div class="col-md-3 control-label label">' . 'Telefon-Angabe';
+echo '</div><div class="col-md-9 contactDetails contactPhone">';
+$options = [
+    ConsultationMotionType::CONTACT_NA       => 'Nicht abfragen',
+    ConsultationMotionType::CONTACT_OPTIONAL => 'Freiwillig',
+    ConsultationMotionType::CONTACT_REQUIRED => 'Benötigt',
+];
+echo Html::radioList('type[contactPhone]', $motionType->contactPhone, $options, ['class' => 'form-control']);
+echo '</div></div>';
+
 
 
 $curForm = $motionType->getMotionInitiatorFormClass();

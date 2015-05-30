@@ -1,12 +1,12 @@
 <?php
 
-use app\models\db\Consultation;
+use app\models\db\ConsultationMotionType;
 use app\models\db\ISupporter;
 use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
- * @var Consultation $consultation
+ * @var ConsultationMotionType $motionType
  * @var ISupporter $initiator
  * @var ISupporter[] $supporters
  * @var bool $allowOther
@@ -18,8 +18,6 @@ use yii\helpers\Html;
 
 /** @var app\controllers\Base $controller */
 $controller = $this->context;
-
-$settings = $consultation->getSettings();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
@@ -87,28 +85,32 @@ echo ' Organisation / Gremium
     <input type="text" class="form-control" id="ResolutionDate" name="Initiator[resolutionDate]"
         value="' . $preResolution . '">
   </div>
-</div>
+</div>';
 
-<div class="form-group">
+
+if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
+    echo '<div class="form-group">
   <label class="col-sm-3 control-label" for="initiatorEmail">E-Mail</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorEmail" name="Initiator[contactEmail]" ';
-if ($settings->motionNeedsEmail) {
-    echo 'required ';
-}
-echo 'value="' . $preEmail . '">
+    if ($motionType->contactEmail == ConsultationMotionType::CONTACT_REQUIRED) {
+        echo 'required ';
+    }
+    echo 'value="' . Html::encode($preEmail) . '">
   </div>
 </div>';
+}
 
-if ($settings->motionHasPhone) {
+
+if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
     echo '<div class="form-group phone_row">
         <label class="col-sm-3 control-label" for="initiatorPhone">Telefon</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorPhone" name="Initiator[contactPhone]" ';
-    if ($settings->motionNeedsPhone) {
+    if ($motionType->contactPhone == ConsultationMotionType::CONTACT_REQUIRED) {
         echo 'required ';
     }
-    echo 'value="' . $prePhone . '">
+    echo 'value="' . Html::encode($prePhone) . '">
   </div>
 </div>';
 }

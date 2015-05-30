@@ -159,30 +159,6 @@ echo Html::checkbox('settings[screeningMotions]', $settings->screeningMotions, [
 echo '<strong>Freischaltung</strong> von Anträgen
     </label></fieldset>';
 
-
-$handledSettings[] = 'motionNeedsEmail';
-echo '<fieldset><label>';
-echo Html::checkbox('settings[motionNeedsEmail]', $settings->motionNeedsEmail, ['id' => 'motionNeedsEmail']);
-echo 'Angabe der <strong>E-Mail-Adresse</strong> erzwingen
-            <small>(Bei Anträgen und Änderungsanträgen)</small>
-    </label></fieldset>';
-
-
-$handledSettings[] = 'motionHasPhone';
-echo '<fieldset><label>';
-echo Html::checkbox('settings[motionHasPhone]', $settings->motionHasPhone, ['id' => 'motionHasPhone']);
-echo 'Angabe der <strong>Telefonnummer</strong> ermöglichen
-            <small>(Bei Anträgen und Änderungsanträgen)</small>
-    </label></fieldset>';
-
-
-$handledSettings[] = 'motionNeedsPhone';
-echo '<fieldset class="motionNeedsPhoneHolder"><label>';
-echo Html::checkbox('settings[motionNeedsPhone]', $settings->motionNeedsPhone, ['id' => 'motionNeedsPhone']);
-echo 'Angabe der <strong>Telefonnummer</strong> erzwingen
-            <small>(Bei Anträgen und Änderungsanträgen)</small>
-    </label></fieldset>';
-
 $layout->addOnLoadJS('$.AntragsgruenAdmin.consultationEditForm();');
 
 

@@ -270,6 +270,9 @@
 .motionData {
   .motionDataTable {
     width: 100%;
+    > tbody > tr > th {
+      width: 30%;
+    }
   }
   .tagAdderHolder:link, .tagAdderHolder:visited {
     color: green;

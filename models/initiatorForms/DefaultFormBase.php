@@ -108,19 +108,24 @@ abstract class DefaultFormBase extends IInitiatorForm
         }
 
         $initiator = $_POST['Initiator'];
-        $settings  = $this->motionType->consultation->getSettings();
+        $required = ConsultationMotionType::CONTACT_REQUIRED;
 
         $errors = [];
 
         if (!isset($initiator['name']) || !$this->isValidName($initiator['name'])) {
             $errors[] = 'No valid name entered.';
         }
-        if ($settings->motionNeedsEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'No valid e-mail-address given.';
+
+        $checkEmail = ($this->motionType->contactEmail == $required || $initiator['contactEmail'] != '');
+        if ($checkEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
+                $errors[] = 'No valid e-mail-address given.';
         }
-        if ($settings->motionNeedsPhone && empty($initiator['contactPhone'])) {
+
+        $checkPhone = ($this->motionType->contactPhone == $required || $initiator['contactPhone'] != '');
+        if ($checkPhone && empty($initiator['contactPhone'])) {
             $errors[] = 'No valid phone number given given.';
         }
+
         $types = array_keys(ISupporter::getPersonTypes());
         if (!isset($initiator['personType']) || !in_array($initiator['personType'], $types)) {
             $errors[] = 'Invalid person type.';
@@ -200,12 +205,12 @@ abstract class DefaultFormBase extends IInitiatorForm
 
 
     /**
-     * @param Consultation $consultation
+     * @param ConsultationMotionType $motionType
      * @param MotionEditForm $editForm
      * @param Base $controller
      * @return string
      */
-    public function getMotionForm(Consultation $consultation, MotionEditForm $editForm, Base $controller)
+    public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm, Base $controller)
     {
         $view       = new View();
         $initiator  = null;
@@ -218,13 +223,14 @@ abstract class DefaultFormBase extends IInitiatorForm
                 $supporters[] = $supporter;
             }
         }
+        $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
         return $view->render(
             '@app/views/initiatorForms/default_form',
             [
-                'consultation'      => $consultation,
+                'motionType'        => $motionType,
                 'initiator'         => $initiator,
                 'supporters'        => $supporters,
-                'allowOther'        => User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING),
+                'allowOther'        => $screeningPrivilege,
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
@@ -235,12 +241,12 @@ abstract class DefaultFormBase extends IInitiatorForm
     }
 
     /**
-     * @param Consultation $consultation
+     * @param ConsultationMotionType $motionType
      * @param AmendmentEditForm $editForm
      * @param Base $controller
      * @return string
      */
-    public function getAmendmentForm(Consultation $consultation, AmendmentEditForm $editForm, Base $controller)
+    public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller)
     {
         $view       = new View();
         $initiator  = null;
@@ -253,13 +259,14 @@ abstract class DefaultFormBase extends IInitiatorForm
                 $supporters[] = $supporter;
             }
         }
+        $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
         return $view->render(
             '@app/views/initiatorForms/default_form',
             [
-                'consultation'      => $consultation,
+                'motionType'        => $motionType,
                 'initiator'         => $initiator,
                 'supporters'        => $supporters,
-                'allowOther'        => User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING),
+                'allowOther'        => $screeningPrivilege,
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),

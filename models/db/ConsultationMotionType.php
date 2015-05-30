@@ -23,6 +23,8 @@ use yii\db\ActiveRecord;
  * @property string $policyAmendments
  * @property string $policyComments
  * @property string $policySupport
+ * @property int $contactEmail
+ * @property int $contactPhone
  * @property int $initiatorForm
  * @property string $initiatorFormSettings
  *
@@ -33,6 +35,9 @@ use yii\db\ActiveRecord;
  */
 class ConsultationMotionType extends ActiveRecord
 {
+    const CONTACT_NA       = 0;
+    const CONTACT_OPTIONAL = 1;
+    const CONTACT_REQUIRED = 2;
 
     /**
      * @return string
@@ -168,9 +173,12 @@ class ConsultationMotionType extends ActiveRecord
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
-            [['id', 'consultationId', 'position'], 'number'],
+            [['contactEmail', 'contactPhone'], 'required'],
+
+            [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone'], 'number'],
+
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
-            [['motionPrefix', 'position', 'initiatorForm'], 'safe'],
+            [['motionPrefix', 'position', 'initiatorForm', 'contactEmail', 'contactPhone'], 'safe'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'safe'],
         ];
     }

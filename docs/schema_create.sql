@@ -178,6 +178,8 @@ CREATE TABLE `consultationMotionType` (
   `policyAmendments`      INT(11)      NOT NULL,
   `policyComments`        INT(11)      NOT NULL,
   `policySupport`         INT(11)      NOT NULL,
+  `contactEmail`          TINYINT(4)   NOT NULL,
+  `contactPhone`          TINYINT(4)   NOT NULL,
   `initiatorForm`         INT(11)      NOT NULL,
   `initiatorFormSettings` TEXT         NULL
 )

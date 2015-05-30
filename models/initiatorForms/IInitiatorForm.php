@@ -5,12 +5,12 @@ namespace app\models\initiatorForms;
 use app\controllers\Base;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
-use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
+use app\models\forms\AmendmentEditForm;
 use app\models\forms\MotionEditForm;
 
 abstract class IInitiatorForm
@@ -47,7 +47,6 @@ abstract class IInitiatorForm
                 throw new Internal('Supporter form type not found');
         }
     }
-
 
     /**
      * @return string
@@ -104,12 +103,28 @@ abstract class IInitiatorForm
     abstract public function submitAmendment(Amendment $amendment);
 
     /**
-     * @param Consultation $consultation
+     * @param ConsultationMotionType $motionType
      * @param MotionEditForm $editForm
      * @param Base $controller
      * @return string
      */
-    abstract public function getMotionForm(Consultation $consultation, MotionEditForm $editForm, Base $controller);
+    abstract public function getMotionForm(
+        ConsultationMotionType $motionType,
+        MotionEditForm $editForm,
+        Base $controller
+    );
+
+    /**
+     * @param ConsultationMotionType $motionType
+     * @param AmendmentEditForm $editForm
+     * @param Base $controller
+     * @return string
+     */
+    abstract public function getAmendmentForm(
+        ConsultationMotionType $motionType,
+        AmendmentEditForm $editForm,
+        Base $controller
+    );
 
     /**
      * @param Motion $motion

@@ -23,9 +23,6 @@ class Consultation
     // TESTS WITHOUT TEST CASES
 
     /** @var bool */
-    public $motionNeedsEmail      = false;
-    public $motionNeedsPhone      = false;
-    public $motionHasPhone        = false;
     public $commentNeedsEmail     = false;
     public $iniatorsMayEdit       = false;
     public $adminsMayEdit         = true;

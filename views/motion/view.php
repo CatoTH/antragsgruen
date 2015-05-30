@@ -71,7 +71,7 @@ if ($editLink) {
         Yii::t('motion', 'Änderungsanträge einpflegen');
     $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
 
-    $amendLink = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
+    $amendLink = UrlHelper::createUrl(['motion/edit', 'motionId' => $motion->id]);
     $html .= '<li class="edit">';
     $title = '<span class="icon glyphicon glyphicon-edit"></span>' .
         Yii::t('motion', 'Antrag bearbeiten');
