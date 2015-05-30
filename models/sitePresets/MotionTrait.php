@@ -25,7 +25,7 @@ trait MotionTrait
         $type->policyMotions    = IPolicy::POLICY_ALL;
         $type->policyAmendments = IPolicy::POLICY_ALL;
         $type->policyComments   = IPolicy::POLICY_ALL;
-        $type->policySupport    = IPolicy::POLICY_LOGGED_IN;
+        $type->policySupport    = IPolicy::POLICY_NOBODY;
         $type->contactPhone     = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail     = ConsultationMotionType::CONTACT_REQUIRED;
         $type->save();

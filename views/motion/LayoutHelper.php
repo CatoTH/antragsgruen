@@ -28,9 +28,9 @@ class LayoutHelper
             }
             $admin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
             if ($admin && ($supp->contactEmail != "" || $supp->contactPhone != "")) {
-                $name .= " <small>(Kontaktdaten, nur als Admin sichtbar: ";
+                $name .= "<br><small>Kontaktdaten, nur als Admin sichtbar: ";
                 if ($supp->contactEmail != "") {
-                    $name .= "E-Mail: " . Html::encode($supp->contactEmail);
+                    $name .= Html::a($supp->contactEmail, 'mailto:' . $supp->contactEmail);
                 }
                 if ($supp->contactEmail != "" && $supp->contactPhone != "") {
                     $name .= ", ";
@@ -38,7 +38,7 @@ class LayoutHelper
                 if ($supp->contactPhone != "") {
                     $name .= "Telefon: " . Html::encode($supp->contactPhone);
                 }
-                $name .= ")</small>";
+                $name .= "</small>";
             }
             $inits[] = $name;
         }

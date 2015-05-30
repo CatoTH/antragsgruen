@@ -62,7 +62,7 @@ class Admins extends IPolicy
      */
     public function getPermissionDeniedSupportMsg()
     {
-        return 'Nur Admins dürfen Anträge unterstützen.';
+        return '';
     }
 
     /**

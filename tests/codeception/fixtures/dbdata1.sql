@@ -69,11 +69,11 @@ INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `
                                       `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`,
                                       `initiatorForm`, `initiatorFormSettings`, `contactEmail`, `contactPhone`)
 VALUES
-  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 2, 0, NULL, 2, 1),
-  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 2, 0, NULL, 2, 1),
-  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 2, 0, NULL, 2, 1),
-  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, NULL, NULL, 1, 1, 1, 2, 0, NULL, 2, 1),
-  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, NULL, NULL, 1, 0, 0, 2, 0, NULL, 2, 1);
+  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 0, 0, NULL, 2, 1),
+  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 0, 0, NULL, 2, 1),
+  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 0, 0, NULL, 2, 1),
+  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, NULL, NULL, 1, 1, 1, 0, 0, NULL, 2, 1),
+  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, NULL, NULL, 1, 0, 0, 0, 0, NULL, 2, 1);
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`

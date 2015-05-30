@@ -60,7 +60,7 @@ class Nobody extends IPolicy
      */
     public function getPermissionDeniedSupportMsg()
     {
-        return 'Momentan kann niemand Anträge unterstützen.';
+        return '';
     }
 
     /**
