@@ -5,10 +5,8 @@
  * @var Consultation $consultation
  * @var string $locale
  */
-use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
-use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */

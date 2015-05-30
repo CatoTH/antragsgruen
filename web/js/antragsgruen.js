@@ -282,8 +282,10 @@
         $('#personTypeNatural, #personTypeOrga').on('click change', function () {
             if ($('#personTypeOrga').prop('checked')) {
                 $('.initiatorData .organizationRow').show();
+                $('.supporterData, .supporterDataHead').hide();
             } else {
                 $('.initiatorData .organizationRow').hide();
+                $('.supporterData, .supporterDataHead').show();
             }
         }).first().trigger('change');
         $adderRow.find('a').click(function (ev) {

@@ -222,6 +222,8 @@ class MotionEditForm extends Model
             throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
         }
 
+        $this->supporters = $this->motionType->getMotionInitiatorFormClass()->getMotionSupporters($motion);
+
         $this->saveMotionVerify();
 
         if ($motion->save()) {

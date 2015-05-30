@@ -413,7 +413,7 @@ if ($motion->consultation->getSettings()->commentWholeMotions) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
     $form = $commentForm;
-    $imadmin = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
+    $imadmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
         $form              = new \app\models\forms\CommentForm();

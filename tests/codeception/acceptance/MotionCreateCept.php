@@ -47,6 +47,7 @@ if (method_exists($I, 'executeJS')) {
 }
 $I->fillField(['name' => 'Initiator[name]'], 'Mein Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+$I->fillField(['name' => 'Initiator[contactPhone]'], '+49123456789');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#motionEditForm', [], 'save');
 
@@ -54,6 +55,7 @@ $I->see('No organization entered');
 $I->see('No resolution date entered');
 $I->seeInField(['name' => 'Initiator[name]'], 'Mein Name');
 $I->seeInField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+$I->seeInField(['name' => 'Initiator[contactPhone]'], '+49123456789');
 $I->dontSeeCheckboxIsChecked("#personTypeNatural");
 $I->seeCheckboxIsChecked("#personTypeOrga");
 $I->see('Gremium, LAG...');
@@ -94,10 +96,16 @@ if (method_exists($I, 'executeJS')) {
 }
 $I->fillField(['name' => 'Initiator[name]'], '');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
+$I->fillField(['name' => 'Initiator[contactPhone]'], '+49-123-456789');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->see('No valid name entered');
+$I->seeInField(['name' => 'Initiator[name]'], '');
+$I->seeInField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
+$I->seeInField(['name' => 'Initiator[contactPhone]'], '+49-123-456789');
+$I->dontSeeCheckboxIsChecked("#personTypeNatural");
+$I->seeCheckboxIsChecked("#personTypeOrga");
 
 
 
@@ -118,9 +126,29 @@ $I->wantTo('confirm the submitted motion');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
 $I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
 
+$I->submitForm('#motionConfirmedForm', [], '');
 
 
-// @TODO Fulltext area
+
+$I->wantTo('check the visible data');
+$I->see('Hallo auf Antragsgrün');
+$I->see('Testantrag 2');
+$I->click('.motionLink3');
+$I->see(mb_strtoupper('A3: Testantrag 2'), 'h1');
+
+$I->see('My real name');
+$I->dontSee('test2@example.org');
+$I->dontSee('+49-123-456789');
 
 
-// @TODO Screening the motion and verifying the data is visible
+$I->loginAsStdUser();
+$I->see('My real name');
+$I->dontSee('test2@example.org');
+$I->dontSee('+49-123-456789');
+
+
+$I->logout();
+$I->loginAsStdAdmin();
+$I->see('My real name');
+$I->see('test2@example.org');
+$I->see('+49-123-456789');

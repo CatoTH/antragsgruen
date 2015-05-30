@@ -57,6 +57,28 @@ $I->wantTo('create a motion, but without supporters');
 $consHome = $I->gotoStdConsultationHome();
 $I->logout();
 $createPage = $consHome->gotoMotionCreatePage();
+
+
+$I->wantTo('test persons and organizations');
+$I->seeElement('.supporterDataHead');
+$I->seeElement('.supporterData');
+$I->dontSeeElement('#initiatorOrga');
+$I->dontSeeElement('#resolutionDate');
+$I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->dontSeeElement('.supporterDataHead');
+$I->dontSeeElement('.supporterData');
+$I->seeElement('#initiatorOrga');
+$I->seeElement('#resolutionDate');
+$I->selectOption('#personTypeNatural', \app\models\db\ISupporter::PERSON_NATURAL);
+$I->seeElement('.supporterDataHead');
+$I->seeElement('.supporterData');
+$I->dontSeeElement('#initiatorOrga');
+$I->dontSeeElement('#resolutionDate');
+
+
+
+
+$I->wantTo('fill in some data, but no supporters');
 $createPage->fillInValidSampleData('Another sample motion with supporters');
 
 $createPage->saveForm();
@@ -68,6 +90,8 @@ $I->see('Es müssen mindestens 2 UnterstützerInnen angegeben werden');
 $I->click('.bootbox.modal .btn-primary');
 $I->wait(1);
 $I->dontSee('Es müssen mindestens 2 UnterstützerInnen angegeben werden');
+
+
 
 
 
