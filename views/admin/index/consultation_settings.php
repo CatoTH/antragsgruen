@@ -15,10 +15,6 @@ $layout     = $controller->layoutParams;
 
 $layout->addJS('/js/backend.js');
 $layout->addCSS('/css/backend.css');
-$layout->addJS('/js/bower/moment/min/moment-with-locales.min.js');
-$layout->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-$layout->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
-
 
 $this->title = 'Einstellungen';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
@@ -82,33 +78,6 @@ echo '<fieldset class="form-group">
 </fieldset>';
 
 /*
-
-$deadlineMotions = Tools::dateSql2bootstraptime($consultation->deadlineMotions);
-$deadlineAmendments = Tools::dateSql2bootstraptime($consultation->deadlineAmendments);
-
-echo '<fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="deadlineMotions">Antragsschluss:</label>
-    <div class="col-sm-8">
-        <div class="input-group date" id="deadlineMotionsHolder">
-            <input type="text" class="form-control" name="consultation[deadlineMotions]"
-                value="' . Html::encode($deadlineMotions) . '" data-locale="' . Html::encode($locale) . '">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-        </div>
-    </div>
-</fieldset>
-
-<fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="deadlineAmendments">Ä.Antragsschluss:</label>
-    <div class="col-sm-8">
-        <div class="input-group date" id="deadlineAmendmentsHolder">
-            <input type="text" class="form-control" name="consultation[deadlineAmendments]"
-                value="' . Html::encode($deadlineAmendments) . '" data-locale="' . Html::encode($locale) . '">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-        </div>
-    </div>
-</fieldset>
-
-';
 
     <div>
         <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="wartungs_modus_aktiv">

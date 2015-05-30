@@ -1,5 +1,6 @@
 <?php
 
+use app\components\Tools;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ISupporter;
 use yii\helpers\Html;
@@ -18,6 +19,12 @@ use yii\helpers\Html;
 
 /** @var app\controllers\Base $controller */
 $controller = $this->context;
+$layout     = $controller->layoutParams;
+
+$layout->addJS('/js/bower/moment/min/moment-with-locales.min.js');
+$layout->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
+$layout->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+$locale = Tools::getCurrentDateLocale();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
@@ -27,7 +34,8 @@ $preOrga       = Html::encode($initiator->organization);
 $preName       = Html::encode($initiator->name);
 $preEmail      = Html::encode($initiator->contactEmail);
 $prePhone      = Html::encode($initiator->contactPhone);
-$preResolution = Html::encode($initiator->resolutionDate);
+$preResolution = Tools::dateSql2bootstraptime($initiator->resolutionDate);
+
 echo '<div class="initiatorData form-horizontal content">';
 
 if ($allowOther) {
@@ -81,10 +89,11 @@ echo ' Organisation / Gremium
 
 <div class="form-group organizationRow">
   <label class="col-sm-3 control-label" for="resolutionDate">Beschlussdatum</label>
-  <div class="col-sm-5">
+  <div class="col-sm-5"><div class="input-group date" id="resolutionDateHolder">
     <input type="text" class="form-control" id="resolutionDate" name="Initiator[resolutionDate]"
-        value="' . $preResolution . '">
-  </div>
+        value="' . Html::encode($preResolution) . '" data-locale="' . Html::encode($locale) . '">';
+echo '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>';
+echo '</div></div>
 </div>';
 
 
