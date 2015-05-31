@@ -20,13 +20,13 @@ class MotionEditForm extends Model
     public $agendaItem;
 
     /** @var MotionSupporter[] */
-    public $supporters = array();
+    public $supporters = [];
 
     /** @var array */
-    public $tags = array();
+    public $tags = [];
 
     /** @var MotionSection[] */
-    public $sections = array();
+    public $sections = [];
 
     /** @var null|int */
     public $motionId = null;
@@ -79,6 +79,18 @@ class MotionEditForm extends Model
     }
 
     /**
+     * @param Motion $motion
+     */
+    public function cloneSupporters(Motion $motion)
+    {
+        foreach ($motion->motionSupporters as $supp) {
+            $suppNew = new MotionSupporter();
+            $suppNew->setAttributes($supp->getAttributes());
+            $this->supporters[] = $suppNew;
+        }
+    }
+
+    /**
      * @param array $data
      * @param bool $safeOnly
      */
@@ -92,7 +104,7 @@ class MotionEditForm extends Model
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->consultationSetting->id])) {
-                    $data = array();
+                    $data = [];
                     foreach ($files['sections'] as $key => $vals) {
                         if (isset($vals[$section->consultationSetting->id])) {
                             $data[$key] = $vals[$section->consultationSetting->id];

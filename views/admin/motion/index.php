@@ -13,12 +13,12 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$params     = $controller->layoutParams;
+$layout     = $controller->layoutParams;
 
 $this->title = 'Anträge';
-$params->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$params->addBreadcrumb('Anträge');
-$params->addCSS('/css/backend.css');
+$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb('Anträge');
+$layout->addCSS('/css/backend.css');
 
 echo '<h1>Anträge</h1>';
 

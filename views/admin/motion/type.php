@@ -214,7 +214,7 @@ $curForm = $motionType->getMotionInitiatorFormClass();
 echo '<div class="form-group" id="typeMinSupportersRow">';
 echo '<label class="col-md-3 control-label" for="typeMinSupporters">';
 echo 'Min. UnterstützerInnen';
-echo '</label><div class="col-md-9">';
+echo '</label><div class="col-md-2">';
 echo '<input type="number" name="initiator[minSupporters]" class="form-control" id="typeMinSupporters"';
 if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
     /** @var \app\models\initiatorForms\DefaultFormBase $curForm */

@@ -345,4 +345,31 @@ class Amendment extends IMotion
     {
         return 1; // @TODO
     }
+
+    /**
+     *
+     */
+    public function onPublish()
+    {
+        $this->flushCaches();
+        /*
+        // @TODO Prevent duplicate Calls
+        $notified = [];
+        foreach ($this->consultation->subscriptions as $sub) {
+            if ($sub->motions && !in_array($sub->userId, $notified)) {
+                $sub->user->notifyMotion($this);
+                $notified[] = $sub->userId;
+            }
+        }
+        */
+    }
+
+    /**
+     *
+     */
+    public function flushCaches()
+    {
+        $this->cache = '';
+        $this->motion->flushCaches();
+    }
 }

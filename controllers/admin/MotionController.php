@@ -4,10 +4,13 @@ namespace app\controllers\admin;
 
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\db\Amendment;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
+use app\models\db\User;
 use app\models\db\Motion;
 use app\models\exceptions\FormError;
+use app\models\forms\AdminMotionFilterForm;
 
 class MotionController extends AdminBase
 {
@@ -73,9 +76,9 @@ class MotionController extends AdminBase
         $motionType = $this->consultation->getMotionType($motionTypeId);
         if (isset($_POST['save'])) {
             $motionType->setAttributes($_POST['type']);
-            $motionType->deadlineMotions = Tools::dateBootstraptime2sql($_POST['type']['deadlineMotions']);
+            $motionType->deadlineMotions    = Tools::dateBootstraptime2sql($_POST['type']['deadlineMotions']);
             $motionType->deadlineAmendments = Tools::dateBootstraptime2sql($_POST['type']['deadlineAmendments']);
-            $form = $motionType->getMotionInitiatorFormClass();
+            $form                           = $motionType->getMotionInitiatorFormClass();
             $form->setSettings($_POST['initiator']);
             $motionType->initiatorFormSettings = $form->getSettings();
             $motionType->save();
@@ -110,7 +113,7 @@ class MotionController extends AdminBase
         /** @var Motion $motion */
         $motion = Motion::findOne($motionId);
         if (!$motion) {
-            $this->redirect(UrlHelper::createUrl("admin/motion/index"));
+            $this->redirect(UrlHelper::createUrl('admin/motion/index'));
         }
 
         $this->checkConsistency($motion);
@@ -127,15 +130,14 @@ class MotionController extends AdminBase
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $_POST['titlePrefix'];
-                $motion->flushCaches();
                 $motion->save();
-                $motion->onFirstPublish();
+                $motion->onPublish();
                 \yii::$app->session->setFlash('success', 'Der Antrag wurde freigeschaltet.');
             }
         }
 
         if (isset($_POST['save'])) {
-            $modat = $_POST['motion'];
+            $modat                  = $_POST['motion'];
             $motion->title          = $modat['title'];
             $motion->statusString   = $modat['statusString'];
             $motion->dateCreation   = Tools::dateBootstraptime2sql($modat['dateCreation']);
@@ -167,5 +169,175 @@ class MotionController extends AdminBase
         }
 
         return $this->render('update', ['motion' => $motion]);
+    }
+
+
+    /**
+     */
+    private function actionListallMotions()
+    {
+        if (isset($_REQUEST['motionScreen'])) {
+            $motion = $this->consultation->getMotion($_REQUEST['motionScreen']);
+            if (!$motion) {
+                return;
+            }
+            $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
+            $motion->save(false);
+            $motion->onPublish();
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden freigeschaltet.');
+        }
+        if (isset($_REQUEST['motionWithdraw'])) {
+            $motion = $this->consultation->getMotion($_REQUEST['motionWithdraw']);
+            if (!$motion) {
+                return;
+            }
+            $motion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+            $motion->save();
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden zurückgezogen.');
+        }
+        if (isset($_REQUEST['motionDelete'])) {
+            $motion = $this->consultation->getMotion($_REQUEST['motionDelete']);
+            if (!$motion) {
+                return;
+            }
+            $motion->status = Motion::STATUS_DELETED;
+            $motion->save();
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden gelöscht.');
+        }
+
+        if (!isset($_REQUEST['motions']) || !isset($_REQUEST['save'])) {
+            return;
+        }
+        if (isset($_REQUEST['screen'])) {
+            foreach ($_REQUEST['motions'] as $motionId) {
+                $motion = $this->consultation->getMotion($motionId);
+                if (!$motion) {
+                    continue;
+                }
+                $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
+                $motion->save(false);
+                $motion->onPublish();
+            }
+            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden freigeschaltet.');
+        }
+
+        if (isset($_REQUEST['withdraw'])) {
+            foreach ($_REQUEST['motions'] as $motionId) {
+                $motion = $this->consultation->getMotion($motionId);
+                if (!$motion) {
+                    continue;
+                }
+                $motion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+                $motion->save();
+            }
+            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden zurückgezogen.');
+        }
+
+        if (isset($_REQUEST['delete'])) {
+            foreach ($_REQUEST['motions'] as $motionId) {
+                $motion = $this->consultation->getMotion($motionId);
+                if (!$motion) {
+                    continue;
+                }
+                $motion->status = Motion::STATUS_DELETED;
+                $motion->save();
+            }
+            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden gelöscht.');
+        }
+    }
+
+
+    /**
+     */
+    private function actionListallAmendments()
+    {
+        if (isset($_REQUEST['amendmentScreen'])) {
+            $amendment = $this->consultation->getAmendment($_REQUEST['amendmentScreen']);
+            if (!$amendment) {
+                return;
+            }
+            $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
+            $amendment->save(true);
+            $amendment->onPublish();
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden freigeschaltet.');
+        }
+        if (isset($_REQUEST['amendmentWithdraw'])) {
+            $amendment = $this->consultation->getAmendment($_REQUEST['amendmentWithdraw']);
+            if (!$amendment) {
+                return;
+            }
+            $amendment->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+            $amendment->save();
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden zurückgezogen.');
+        }
+        if (isset($_REQUEST['amendmentDelete'])) {
+            $amendment = $this->consultation->getAmendment($_REQUEST['amendmentDelete']);
+            if (!$amendment) {
+                return;
+            }
+            $amendment->status = Amendment::STATUS_DELETED;
+            $amendment->save();
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden gelöscht.');
+        }
+        if (!isset($_REQUEST['amendments']) || !isset($_REQUEST['save'])) {
+            return;
+        }
+        if (isset($_REQUEST['screen'])) {
+            foreach ($_REQUEST['amendments'] as $amendmentId) {
+                $amendment = $this->consultation->getAmendment($amendmentId);
+                if (!$amendment) {
+                    continue;
+                }
+                $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
+                $amendment->save(true);
+                $amendment->onPublish();
+            }
+            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden freigeschaltet.');
+        }
+
+        if (isset($_REQUEST['withdraw'])) {
+            foreach ($_REQUEST['amendments'] as $amendmentId) {
+                $amendment = $this->consultation->getAmendment($amendmentId);
+                if (!$amendment) {
+                    continue;
+                }
+                $amendment->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+                $amendment->save();
+            }
+            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden zurückgezogen.');
+        }
+
+        if (isset($_REQUEST['delete'])) {
+            foreach ($_REQUEST['amendments'] as $amendmentId) {
+                $amendment = $this->consultation->getAmendment($amendmentId);
+                if (!$amendment) {
+                    continue;
+                }
+                $amendment->status = Amendment::STATUS_DELETED;
+                $amendment->save();
+            }
+            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden gelöscht.');
+        }
+    }
+
+    public function actionListall()
+    {
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_MOTION_EDIT)) {
+            $this->showErrorpage(403, 'Kein Zugriff auf diese Seite');
+            return false;
+        }
+
+        $this->actionListallMotions();
+        $this->actionListallAmendments();
+
+        $search = new AdminMotionFilterForm($this->consultation, $this->consultation->motions, true);
+        if (isset($_REQUEST["Search"])) {
+            $search->setAttributes($_REQUEST["Search"]);
+        }
+
+        return $this->render('list_all', [
+            'entries' => $search->getSorted(),
+            'search'  => $search,
+        ]);
     }
 }

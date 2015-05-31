@@ -60,6 +60,11 @@ foreach ($consultation->motionTypes as $motionType) {
 
 
 echo '<li style="margin-top: 10px; font-weight: bold;">';
+echo Html::a('Anträge und Änderungsanträge', UrlHelper::createUrl('admin/motion/listall'), ['class' => 'motionListAll']);
+echo '</li>';
+
+
+echo '<li style="margin-top: 10px; font-weight: bold;">';
 echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'), ['class' => 'motionIndex']);
 echo '</li>';
 foreach ($consultation->motionTypes as $motionType) {

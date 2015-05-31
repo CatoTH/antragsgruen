@@ -112,7 +112,7 @@ class Base extends Controller
         if (!$this->consultation) {
             throw new Internal("No consultation set");
         }
-        $user = $this->getCurrentUser();
+        $user = User::getCurrentUser();
         if (!$user) {
             return false;
         }

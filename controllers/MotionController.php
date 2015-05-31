@@ -443,7 +443,7 @@ class MotionController extends Base
             }
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
-                $motion->onFirstPublish();
+                $motion->onPublish();
             }
 
             return $this->render("create_done", ['motion' => $motion, 'mode' => $fromMode]);
@@ -506,10 +506,11 @@ class MotionController extends Base
     /**
      * @param int $motionTypeId
      * @param int $agendaItemId
+     * @param int $adoptInitiators
      * @return array
      * @throws Internal
      */
-    private function getMotionTypeForCreate($motionTypeId = 0, $agendaItemId = 0)
+    private function getMotionTypeForCreate($motionTypeId = 0, $agendaItemId = 0, $adoptInitiators = 0)
     {
         if ($agendaItemId > 0) {
             $where      = ['consultationId' => $this->consultation->id, 'id' => $agendaItemId];
@@ -525,6 +526,13 @@ class MotionController extends Base
         } elseif ($motionTypeId > 0) {
             $motionType = $this->consultation->getMotionType($motionTypeId);
             $agendaItem = null;
+        } elseif ($adoptInitiators > 0) {
+            $motion = $this->consultation->getMotion($adoptInitiators);
+            if (!$motion) {
+                throw new Internal('Could not find referenced motion');
+            }
+            $motionType = $motion->motionType;
+            $agendaItem = $motion->agendaItem;
         } else {
             throw new Internal('Could not resolve motion type');
         }
@@ -540,14 +548,16 @@ class MotionController extends Base
     /**
      * @param int $motionTypeId
      * @param int $agendaItemId
+     * @param int $adoptInitiators
      * @return string
      */
-    public function actionCreate($motionTypeId = 0, $agendaItemId = 0)
+    public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $adoptInitiators = 0)
     {
         $this->testMaintainanceMode();
 
         try {
-            list($motionType, $agendaItem) = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId);
+            $ret = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId, $adoptInitiators);
+            list($motionType, $agendaItem) = $ret;
         } catch (ExceptionBase $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
             $this->redirect(UrlHelper::createUrl('consultation/index'));
@@ -570,6 +580,9 @@ class MotionController extends Base
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
+        } elseif ($adoptInitiators > 0) {
+            $motion = $this->consultation->getMotion($adoptInitiators);
+            $form->cloneSupporters($motion);
         }
 
 

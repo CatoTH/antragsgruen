@@ -226,16 +226,60 @@
             $li.find('> div > h3 .title').text(newTitle);
         });
 
-        $('#agendaEditSavingHolder').submit(function (ev) {
+        $('#agendaEditSavingHolder').submit(function () {
             var data = buildAgendaStruct($('.motionListAgenda'));
             $(this).find('input[name=data]').val(JSON.stringify(data));
+        });
+    };
+
+    var motionListAll = function () {
+        $(".markAll").click(function (ev) {
+            $(".adminMotionTable").find("input.selectbox").prop("checked", true);
+            ev.preventDefault();
+        });
+        $(".markNone").click(function (ev) {
+            $(".adminMotionTable").find("input.selectbox").prop("checked", false);
+            ev.preventDefault();
+        });
+
+        var $select = $("#antragstellerInSelect"),
+            antragstellerInValues = $select.data("values"),
+            matcher = function findMatches(q, cb) {
+                var matches, substrRegex;
+
+                // an array that will be populated with substring matches
+                matches = [];
+
+                // regex used to determine if a string contains the substring `q`
+                substrRegex = new RegExp(q, "i");
+
+                // iterate through the pool of strings and for any string that
+                // contains the substring `q`, add it to the `matches` array
+                $.each(antragstellerInValues, function (i, str) {
+                    if (substrRegex.test(str)) {
+                        // the typeahead jQuery plugin expects suggestions to a
+                        // JavaScript object, refer to typeahead docs for more info
+                        matches.push({value: str});
+                    }
+                });
+                cb(matches);
+            };
+        $select.typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        }, {
+            name: "antragstellerIn",
+            displayKey: "value",
+            source: matcher
         });
     };
 
     $.AntragsgruenAdmin = {
         'consultationEditForm': consultationEditForm,
         'motionTypeEdit': motionTypeEdit,
-        'agendaEdit': agendaEdit
+        'agendaEdit': agendaEdit,
+        'motionListAll': motionListAll
     };
 
 }(jQuery));

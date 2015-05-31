@@ -7,16 +7,17 @@ use app\models\db\Consultation;
 
 class Layout
 {
-    public $menu            = array();
+    public $menu            = [];
     public $breadcrumbs     = null;
-    public $multimenu       = array();
+    public $multimenu       = [];
     public $preSidebarHtml  = '';
     public $postSidebarHtml = '';
-    public $menusHtml       = array();
+    public $menusHtml       = [];
     public $robotsNoindex   = false;
-    public $extraCss        = array();
-    public $extraJs         = array();
-    public $onloadJs        = array();
+    public $extraCss        = [];
+    public $extraJs         = [];
+    public $onloadJs        = [];
+    public $fullWidth       = false;
 
     /** @var Consultation|null */
     private $consultation;

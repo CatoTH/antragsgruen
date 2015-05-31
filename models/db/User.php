@@ -45,6 +45,7 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_CONSULTATION_SETTINGS = 1;
     const PRIVILEGE_CONTENT_EDIT          = 2;
     const PRIVILEGE_SCREENING             = 3;
+    const PRIVILEGE_MOTION_EDIT           = 4;
 
 
     /**

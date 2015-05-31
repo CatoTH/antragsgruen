@@ -76,6 +76,39 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @param int $motionId
+     * @return Motion|null
+     */
+    public function getMotion($motionId)
+    {
+        foreach ($this->motions as $motion) {
+            if ($motion->id == $motionId && $motion->status != Motion::STATUS_DELETED) {
+                return $motion;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param int $amendmentId
+     * @return Amendment|null
+     */
+    public function getAmendment($amendmentId)
+    {
+        foreach ($this->motions as $motion) {
+            if ($motion->status == Motion::STATUS_DELETED) {
+                continue;
+            }
+            foreach ($motion->amendments as $amendment) {
+                if ($amendment->id == $amendmentId && $amendment->status != Amendment::STATUS_DELETED) {
+                    return $amendment;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getTexts()

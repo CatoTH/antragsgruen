@@ -8,17 +8,14 @@ $this->beginContent('@app/views/layouts/main.php');
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$params     = $controller->layoutParams;
+$layout  = $controller->layoutParams;
 
-$row_classes = array("row", "antragsgruen-content");
+$rowClasses = ['row', 'antragsgruen-content'];
+$widthClass = ($layout->fullWidth ? 'col-md-12' : 'col-md-9');
 
-?>
+echo '<div class="' . implode(' ', $rowClasses) . '">';
+echo '<main class="' . $widthClass . ' well">';
+echo $content;
+echo '</main></div>';
 
-
-    <div class="<?= implode(" ", $row_classes) ?>">
-        <main class="col-md-9 well">
-            <?php echo $content; ?>
-        </main>
-    </div>
-
-<?php $this->endContent();
+$this->endContent();

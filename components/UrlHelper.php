@@ -95,7 +95,7 @@ class UrlHelper
     public static function createUrl($route)
     {
         if (!is_array($route)) {
-            $route = array($route);
+            $route = [$route];
         }
         $route_parts = explode('/', $route[0]);
         if ($route_parts[0] != "manager") {

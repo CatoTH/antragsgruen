@@ -404,8 +404,10 @@ class Motion extends IMotion
     /**
      *
      */
-    public function onFirstPublish()
+    public function onPublish()
     {
+        $this->flushCaches();
+        // @TODO Prevent duplicate Calls
         $notified = [];
         foreach ($this->consultation->subscriptions as $sub) {
             if ($sub->motions && !in_array($sub->userId, $notified)) {
