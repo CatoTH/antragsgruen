@@ -34,7 +34,7 @@ $preOrga       = Html::encode($initiator->organization);
 $preName       = Html::encode($initiator->name);
 $preEmail      = Html::encode($initiator->contactEmail);
 $prePhone      = Html::encode($initiator->contactPhone);
-$preResolution = Tools::dateSql2bootstraptime($initiator->resolutionDate);
+$preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
 
 echo '<div class="initiatorData form-horizontal content">';
 

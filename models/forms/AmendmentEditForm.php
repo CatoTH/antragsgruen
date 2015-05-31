@@ -16,10 +16,10 @@ class AmendmentEditForm extends Model
     public $motion;
 
     /** @var AmendmentSupporter[] */
-    public $supporters = array();
+    public $supporters = [];
 
     /** @var AmendmentSection[] */
-    public $sections = array();
+    public $sections = [];
 
     /** @var null|int */
     public $amendmentId = null;
@@ -107,7 +107,7 @@ class AmendmentEditForm extends Model
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->consultationSetting->id])) {
-                    $data = array();
+                    $data = [];
                     foreach ($files['sections'] as $key => $vals) {
                         if (isset($vals[$section->consultationSetting->id])) {
                             $data[$key] = $vals[$section->consultationSetting->id];

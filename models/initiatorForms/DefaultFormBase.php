@@ -255,7 +255,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR) {
                 $initiator = $supporter;
             }
-            if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR) {
+            if ($supporter->role == AmendmentSupporter::ROLE_SUPPORTER) {
                 $supporters[] = $supporter;
             }
         }
@@ -370,7 +370,7 @@ abstract class DefaultFormBase extends IInitiatorForm
         }
         $return[] = $init;
 
-        $supporters = $this->parseSupporters(new MotionSupporter());
+        $supporters = $this->parseSupporters(new AmendmentSupporter());
         foreach ($supporters as $sup) {
             /** @var AmendmentSupporter $sup */
             $sup->amendmentId = $amendment->id;

@@ -137,6 +137,11 @@
     var amendmentEditForm = function () {
         // @TODO Prevent accidental leaving of page once something is entered
 
+        var lang = $('html').attr('lang');
+        $(".input-group.date").datetimepicker({
+            locale: lang,
+            format: 'L'
+        });
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor"),

@@ -198,6 +198,42 @@ class AdminMotionFilterForm extends Model
     }
 
     /**
+     * @param Motion $motion
+     * @return bool
+     */
+    private function motionMatchesInitiator(Motion $motion)
+    {
+        if ($this->initiator === null || $this->initiator == '') {
+            return true;
+        }
+        foreach ($motion->motionSupporters as $supp) {
+            if ($supp->role == MotionSupporter::ROLE_INITIATOR &&
+                mb_stripos($supp->name, $this->initiator) !== false
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param Motion $motion
+     * @return bool
+     */
+    private function motionMatchesTag(Motion $motion)
+    {
+        if ($this->tag === null || $this->tag == 0) {
+            return true;
+        }
+        foreach ($motion->tags as $tag) {
+            if ($tag->id == $this->tag) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @return Motion[]
      */
     public function getFilteredMotions()
@@ -210,30 +246,12 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
-            if ($this->tag !== null && $this->tag > 0) {
-                $found = false;
-                foreach ($motion->tags as $tag) {
-                    if ($tag->id == $this->tag) {
-                        $found = true;
-                    }
-                }
-                if (!$found) {
-                    $matches = false;
-                }
+            if (!$this->motionMatchesTag($motion)) {
+                $matches = false;
             }
 
-            if ($this->initiator !== null && $this->initiator != "") {
-                $found = false;
-                foreach ($motion->motionSupporters as $supp) {
-                    if ($supp->role == MotionSupporter::ROLE_INITIATOR &&
-                        mb_stripos($supp->name, $this->initiator) !== false
-                    ) {
-                        $found = true;
-                    }
-                }
-                if (!$found) {
-                    $matches = false;
-                }
+            if (!$this->motionMatchesInitiator($motion)) {
+                $matches = false;
             }
 
             if ($this->title !== null && $this->title != "" && !mb_stripos($motion->title, $this->title)) {
@@ -343,9 +361,9 @@ class AdminMotionFilterForm extends Model
         $str .= '<div style="float: left; margin-right: 20px;">';
         $str .= '<label for="initiatorSelect" style="margin-bottom: 0;">AntragstellerInnen:</label><br>';
 
-        $values                 = [];
+        $values        = [];
         $initiatorList = $this->getInitiatorList();
-        foreach ($initiatorList as $initiatorName => $initiator) {
+        foreach (array_keys($initiatorList) as $initiatorName) {
             $values[] = $initiatorName;
         }
 
@@ -376,7 +394,7 @@ class AdminMotionFilterForm extends Model
             $num[$motion->status]++;
         }
         foreach ($this->allAmendments as $amend) {
-            if (!isset($anz[$amend->status])) {
+            if (!isset($num[$amend->status])) {
                 $num[$amend->status] = 0;
             }
             $num[$amend->status]++;

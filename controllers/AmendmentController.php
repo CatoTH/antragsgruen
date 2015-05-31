@@ -327,8 +327,7 @@ class AmendmentController extends Base
     {
         $this->testMaintainanceMode();
 
-        /** @var Motion $motion */
-        $motion = Motion::findOne(['id' => $motionId, 'consultationId' => $this->consultation->id]);
+        $motion = $this->consultation->getMotion($motionId);
         if (!$motion || in_array($motion->status, $this->consultation->getInvisibleMotionStati())) {
             throw new NotFound('Motion not found');
         }

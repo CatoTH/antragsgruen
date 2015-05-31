@@ -320,11 +320,14 @@ class MotionController extends AdminBase
         }
     }
 
+    /**
+     * @return string
+     */
     public function actionListall()
     {
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_MOTION_EDIT)) {
             $this->showErrorpage(403, 'Kein Zugriff auf diese Seite');
-            return false;
+            return '';
         }
 
         $this->actionListallMotions();
