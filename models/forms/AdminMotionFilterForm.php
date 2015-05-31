@@ -267,6 +267,43 @@ class AdminMotionFilterForm extends Model
 
 
     /**
+     * @param Amendment $amendment
+     * @return bool
+     */
+    private function amendmentMatchInitiator(Amendment $amendment)
+    {
+        if ($this->initiator === null || $this->initiator == '') {
+            return true;
+        }
+        foreach ($amendment->amendmentSupporters as $supp) {
+            if ($supp->role == AmendmentSupporter::ROLE_INITIATOR &&
+                mb_stripos($supp->name, $this->initiator) !== false
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @return bool
+     */
+    private function amendmentMatchesTag(Amendment $amendment)
+    {
+        if ($this->tag === null || $this->tag == 0) {
+            return true;
+        }
+        foreach ($amendment->motion->tags as $tag) {
+            if ($tag->id == $this->tag) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
      * @return Amendment[]
      */
     public function getFilteredAmendments()
@@ -279,29 +316,12 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
-            if ($this->tag !== null && $this->tag > 0) {
-                $found = false;
-                foreach ($amend->motion->tags as $tag) {
-                    if ($tag->id == $this->tag) {
-                        $found = true;
-                    }
-                }
-                if (!$found) {
-                    $matches = false;
-                }
+            if (!$this->amendmentMatchesTag($amend)) {
+                $matches = false;
             }
 
-            if ($this->initiator !== null && $this->initiator != "") {
-                $found = false;
-                foreach ($amend->amendmentSupporters as $supp) {
-                    $strMatch = mb_stripos($supp->name, $this->initiator) !== false;
-                    if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && $strMatch) {
-                        $found = true;
-                    }
-                }
-                if (!$found) {
-                    $matches = false;
-                }
+            if (!$this->amendmentMatchInitiator($amend)) {
+                $matches = false;
             }
 
             if ($this->title !== null && $this->title != "" && !mb_stripos($amend->motion->title, $this->title)) {
