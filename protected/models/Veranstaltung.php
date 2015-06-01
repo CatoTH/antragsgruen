@@ -234,8 +234,10 @@ class Veranstaltung extends GxActiveRecord
 			if (!isset($antraege_sorted[$ant->typ])) $antraege_sorted[$ant->typ] = array();
 			$key = $ant->revision_name;
 
-			if ($this->getEinstellungen()->ae_nummerierung_nach_zeile || veranstaltungsspezifisch_ae_sortierung_zeilennummer($this)) {
-				$ant->aenderungsantraege = Aenderungsantrag::sortiereSichtbareNachZeilennummer($ant->aenderungsantraege);
+			if (!$this->getEinstellungen()->zeilen_nummerierung_global) {
+				if ($this->getEinstellungen()->ae_nummerierung_nach_zeile || veranstaltungsspezifisch_ae_sortierung_zeilennummer($this)) {
+					$ant->aenderungsantraege = Aenderungsantrag::sortiereSichtbareNachZeilennummer($ant->aenderungsantraege);
+				}
 			}
 
 			$antraege_sorted[$ant->typ][$key] = $ant;
