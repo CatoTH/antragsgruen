@@ -131,8 +131,10 @@ class MotionSorter
      */
     public static function getSortedAmendments(Consultation $consultation, $amendments)
     {
-        if ($consultation->amendmentNumbering == ByLine::getID()) {
-            $amendments = Amendment::sortVisibleByLineNumbers($consultation, $amendments);
+        if (!$consultation->getSettings()->lineNumberingGlobal) {
+            if ($consultation->amendmentNumbering == ByLine::getID()) {
+                $amendments = Amendment::sortVisibleByLineNumbers($consultation, $amendments);
+            }
         }
         return $amendments;
     }
