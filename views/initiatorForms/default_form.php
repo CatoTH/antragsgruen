@@ -9,6 +9,7 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var ConsultationMotionType $motionType
  * @var ISupporter $initiator
+ * @var ISupporter[] $moreInitiators
  * @var ISupporter[] $supporters
  * @var bool $allowOther
  * @var bool $hasSupporters
@@ -75,21 +76,21 @@ echo ' Organisation / Gremium
 
 <div class="form-group">
   <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'Name') . '</label>
-  <div class="col-sm-5">
+  <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorName" name="Initiator[name]" value="' . $preName . '" required>
   </div>
 </div>
 
 <div class="form-group organizationRow">
   <label class="col-sm-3 control-label" for="initiatorOrga">' . Yii::t('initiator', 'Gremium, LAG...') . '</label>
-  <div class="col-sm-5">
+  <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]" value="' . $preOrga . '">
   </div>
 </div>
 
 <div class="form-group organizationRow">
   <label class="col-sm-3 control-label" for="resolutionDate">Beschlussdatum</label>
-  <div class="col-sm-5"><div class="input-group date" id="resolutionDateHolder">
+  <div class="col-sm-4"><div class="input-group date" id="resolutionDateHolder">
     <input type="text" class="form-control" id="resolutionDate" name="Initiator[resolutionDate]"
         value="' . Html::encode($preResolution) . '" data-locale="' . Html::encode($locale) . '">';
 echo '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>';
@@ -100,7 +101,7 @@ echo '</div></div>
 if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
     echo '<div class="form-group">
   <label class="col-sm-3 control-label" for="initiatorEmail">E-Mail</label>
-  <div class="col-sm-5">
+  <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorEmail" name="Initiator[contactEmail]" ';
     if ($motionType->contactEmail == ConsultationMotionType::CONTACT_REQUIRED) {
         echo 'required ';
@@ -115,7 +116,7 @@ if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
 if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
     echo '<div class="form-group phone_row">
         <label class="col-sm-3 control-label" for="initiatorPhone">Telefon</label>
-  <div class="col-sm-5">
+  <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorPhone" name="Initiator[contactPhone]" ';
     if ($motionType->contactPhone == ConsultationMotionType::CONTACT_REQUIRED) {
         echo 'required ';
@@ -125,6 +126,52 @@ if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
   </div>
 </div>';
 }
+
+
+
+$getInitiatorRow = function (ISupporter $initiator, $initiatorOrga) {
+    $str = '<div class="form-group initiatorRow">';
+    $str .= '<div class="col-sm-3 control-label">'  . 'Weitere AntragsstellerIn' . '</div>';
+    $str .= '<div class="col-md-4">';
+    $str .= Html::textInput(
+        'moreInitiators[name][]',
+        $initiator->name,
+        ['class' => 'form-control name', 'placeholder' => 'Name']
+    );
+    $str .= '</div>';
+    if ($initiatorOrga) {
+        $str .= '<div class="col-md-4">';
+        $str .= Html::textInput(
+            'moreInitiators[organization][]',
+            $initiator->organization,
+            ['class' => 'form-control organization', 'placeholder' => 'Gremium, LAG, ...']
+        );
+        $str .= '</div>';
+    }
+    $str .= '<div class="col-md-1"><a href="#" class="rowDeleter" tabindex="-1">';
+    $str .= '<span class="glyphicon glyphicon-minus-sign"></span>';
+    $str .= '</a></div>';
+
+    $str .= '</div>';
+    return $str;
+};
+
+
+foreach ($moreInitiators as $init) {
+    echo $getInitiatorRow($init, $supporterOrga);
+}
+
+
+echo '<div class="adderRow row"><div class="col-sm-3"></div><div class="col-md-9">';
+echo '<a href="#"><span class="glyphicon glyphicon-plus"></span> ';
+echo 'AntragstellerIn hinzufügen';
+echo '</a></div></div>';
+
+$new    = new \app\models\db\MotionSupporter();
+$newStr = $getInitiatorRow($new, $supporterOrga);
+echo '<div id="newInitiatorTemplate" style="display: none;" data-html="' . Html::encode($newStr) . '"></div>';
+
+
 echo '</div>';
 
 
@@ -179,7 +226,7 @@ if ($hasSupporters) {
     }
 
     echo '<div class="adderRow"><a href="#"><span class="glyphicon glyphicon-plus"></span> ';
-    echo 'Zeile hinzufügen';
+    echo 'UnterstützerIn hinzufügen';
     echo '</a></div>';
 
     if ($supporterFulltext) {

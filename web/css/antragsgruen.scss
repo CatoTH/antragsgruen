@@ -816,25 +816,25 @@ ins, ul.inserted, blockquote.inserted {
       display: none;
       margin-top: 30px;
     }
-
-    .supporterRow {
-      .rowDeleter, .rowDeleter:link, .rowDeleter:visited {
-        color: $colorDelLink;
-        display: inline-block;
-        margin-top: 8px;
-      }
-      html.no-touch & .rowDeleter {
-        visibility: hidden;
-      }
-      html.no-touch &:hover .rowDeleter {
-        visibility: visible;
-      }
-    }
   }
 
   .initiatorData {
     .contactPrivacy {
       font-size: 0.8em;
+    }
+  }
+
+  .supporterRow, .initiatorRow {
+    .rowDeleter, .rowDeleter:link, .rowDeleter:visited {
+      color: $colorDelLink;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    html.no-touch & .rowDeleter {
+      visibility: hidden;
+    }
+    html.no-touch &:hover .rowDeleter {
+      visibility: visible;
     }
   }
 }

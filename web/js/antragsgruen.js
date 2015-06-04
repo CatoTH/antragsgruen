@@ -282,21 +282,38 @@
     var defaultInitiatorForm = function () {
         var $fullTextHolder = $('#fullTextHolder'),
             $supporterData = $('.supporterData'),
-            $adderRow = $supporterData.find('.adderRow');
+            $supporterAdderRow = $supporterData.find('.adderRow'),
+            $initiatorData = $('.initiatorData'),
+            $initiatorAdderRow = $initiatorData.find('.adderRow');
 
-        $('#personTypeNatural, #personTypeOrga').on('click change', function () {
+            $('#personTypeNatural, #personTypeOrga').on('click change', function () {
             if ($('#personTypeOrga').prop('checked')) {
-                $('.initiatorData .organizationRow').show();
+                $initiatorData.find('.organizationRow').show();
+                $initiatorData.find('.adderRow').hide();
                 $('.supporterData, .supporterDataHead').hide();
             } else {
-                $('.initiatorData .organizationRow').hide();
+                $initiatorData.find('.organizationRow').hide();
+                $initiatorData.find('.adderRow').show();
                 $('.supporterData, .supporterDataHead').show();
             }
         }).first().trigger('change');
-        $adderRow.find('a').click(function (ev) {
+
+        $initiatorAdderRow.find('a').click(function (ev) {
+            ev.preventDefault();
+            var $newEl = $($('#newInitiatorTemplate').data('html'));
+            $initiatorAdderRow.before($newEl);
+        });
+        $initiatorData.on('click', '.initiatorRow .rowDeleter', function (ev) {
+            ev.preventDefault();
+            $(this).parents('.initiatorRow').remove();
+        });
+
+
+
+        $supporterAdderRow.find('a').click(function (ev) {
             ev.preventDefault();
             var $newEl = $($('#newSupporterTemplate').data('html'));
-            $adderRow.before($newEl);
+            $supporterAdderRow.before($newEl);
         });
 
         $('.fullTextAdder a').click(function (ev) {
@@ -321,11 +338,11 @@
                 } else {
                     $newEl.find('input.name').val(lines[i]);
                 }
-                $adderRow.before($newEl);
+                $supporterAdderRow.before($newEl);
                 $fullTextHolder.find('textarea').select().focus();
             }
         });
-        $supporterData.find('.supporterRow .rowDeleter').click(function (ev) {
+        $supporterData.on('click', '.supporterRow .rowDeleter', function (ev) {
             ev.preventDefault();
             $(this).parents('.supporterRow').remove();
         });
@@ -337,7 +354,7 @@
                 $row = $(this).parents('.supporterRow');
                 if ($row.next().hasClass('adderRow')) {
                     var $newEl = $($('#newSupporterTemplate').data('html'));
-                    $adderRow.before($newEl);
+                    $supporterAdderRow.before($newEl);
                     $newEl.find('input[type=text]').first().focus();
                 } else {
                     $row.next().find('input[type=text]').first().focus();
@@ -351,7 +368,7 @@
                     return;
                 }
                 $row.remove();
-                $adderRow.prev().find('input.name, input.organization').last().focus();
+                $supporterAdderRow.prev().find('input.name, input.organization').last().focus();
             }
         });
 

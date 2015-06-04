@@ -108,7 +108,7 @@ abstract class DefaultFormBase extends IInitiatorForm
         }
 
         $initiator = $_POST['Initiator'];
-        $required = ConsultationMotionType::CONTACT_REQUIRED;
+        $required  = ConsultationMotionType::CONTACT_REQUIRED;
 
         $errors = [];
 
@@ -118,7 +118,7 @@ abstract class DefaultFormBase extends IInitiatorForm
 
         $checkEmail = ($this->motionType->contactEmail == $required || $initiator['contactEmail'] != '');
         if ($checkEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
-                $errors[] = 'No valid e-mail-address given.';
+            $errors[] = 'No valid e-mail-address given.';
         }
 
         $checkPhone = ($this->motionType->contactPhone == $required || $initiator['contactPhone'] != '');
@@ -212,12 +212,17 @@ abstract class DefaultFormBase extends IInitiatorForm
      */
     public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm, Base $controller)
     {
-        $view       = new View();
-        $initiator  = null;
-        $supporters = [];
+        $view           = new View();
+        $initiator      = null;
+        $moreInitiators = [];
+        $supporters     = [];
         foreach ($editForm->supporters as $supporter) {
             if ($supporter->role == MotionSupporter::ROLE_INITIATOR) {
-                $initiator = $supporter;
+                if ($supporter->position == 0) {
+                    $initiator = $supporter;
+                } else {
+                    $moreInitiators[] = $supporter;
+                }
             }
             if ($supporter->role == MotionSupporter::ROLE_SUPPORTER) {
                 $supporters[] = $supporter;
@@ -229,6 +234,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             [
                 'motionType'        => $motionType,
                 'initiator'         => $initiator,
+                'moreInitiators'    => $moreInitiators,
                 'supporters'        => $supporters,
                 'allowOther'        => $screeningPrivilege,
                 'hasSupporters'     => $this->hasSupporters(),
@@ -248,12 +254,17 @@ abstract class DefaultFormBase extends IInitiatorForm
      */
     public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller)
     {
-        $view       = new View();
-        $initiator  = null;
-        $supporters = [];
+        $view           = new View();
+        $initiator      = null;
+        $supporters     = [];
+        $moreInitiators = [];
         foreach ($editForm->supporters as $supporter) {
             if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR) {
-                $initiator = $supporter;
+                if ($supporter->position == 0) {
+                    $initiator = $supporter;
+                } else {
+                    $moreInitiators[] = $supporter;
+                }
             }
             if ($supporter->role == AmendmentSupporter::ROLE_SUPPORTER) {
                 $supporters[] = $supporter;
@@ -265,6 +276,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             [
                 'motionType'        => $motionType,
                 'initiator'         => $initiator,
+                'moreInitiators'    => $moreInitiators,
                 'supporters'        => $supporters,
                 'allowOther'        => $screeningPrivilege,
                 'hasSupporters'     => $this->hasSupporters(),
@@ -296,9 +308,9 @@ abstract class DefaultFormBase extends IInitiatorForm
 
             $init = MotionSupporter::findOne(
                 [
-                    "motionId" => $motion->id,
-                    "role"     => MotionSupporter::ROLE_INITIATOR,
-                    "userId"   => $user->id,
+                    'motionId' => $motion->id,
+                    'role'     => MotionSupporter::ROLE_INITIATOR,
+                    'userId'   => $user->id,
                 ]
             );
             if (!$init) {
@@ -306,17 +318,34 @@ abstract class DefaultFormBase extends IInitiatorForm
                 $init->userId = $user->id;
             }
         }
+        
+        $posCount = 0;
 
         $init->setAttributes($_POST['Initiator']);
         $init->motionId = $motion->id;
         $init->role     = MotionSupporter::ROLE_INITIATOR;
-        $init->position = 0;
+        $init->position = $posCount++;
 
         $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
         if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
             $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
         }
         $return[] = $init;
+        
+        if (isset($_POST['moreInitiators']) && isset($_POST['moreInitiators']['name'])) {
+            foreach ($_POST['moreInitiators']['name'] as $i => $name) {
+                $init = new MotionSupporter();
+                $init->motionId = $motion->id;
+                $init->role = MotionSupporter::ROLE_INITIATOR;
+                $init->position = $posCount++;
+                $init->personType = MotionSupporter::PERSON_NATURAL;
+                $init->name = $name;
+                if (isset($_POST['moreInitiators']['organization'])) {
+                    $init->organization = $_POST['moreInitiators']['organization'][$i];
+                }
+                $return[] = $init;
+            }
+        }
 
         $supporters = $this->parseSupporters(new MotionSupporter());
         foreach ($supporters as $sup) {
@@ -359,16 +388,33 @@ abstract class DefaultFormBase extends IInitiatorForm
             }
         }
 
+        $posCount = 0;
+
         $init->setAttributes($_POST['Initiator']);
         $init->amendmentId = $amendment->id;
         $init->role        = AmendmentSupporter::ROLE_INITIATOR;
-        $init->position    = 0;
+        $init->position    = $posCount++;
 
         $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
         if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
             $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
         }
         $return[] = $init;
+
+        if (isset($_POST['moreInitiators']) && isset($_POST['moreInitiators']['name'])) {
+            foreach ($_POST['moreInitiators']['name'] as $i => $name) {
+                $init = new AmendmentSupporter();
+                $init->amendmentId = $amendment->id;
+                $init->role = AmendmentSupporter::ROLE_INITIATOR;
+                $init->position = $posCount++;
+                $init->personType = MotionSupporter::PERSON_NATURAL;
+                $init->name = $name;
+                if (isset($_POST['moreInitiators']['organization'])) {
+                    $init->organization = $_POST['moreInitiators']['organization'][$i];
+                }
+                $return[] = $init;
+            }
+        }
 
         $supporters = $this->parseSupporters(new AmendmentSupporter());
         foreach ($supporters as $sup) {

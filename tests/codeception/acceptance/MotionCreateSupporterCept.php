@@ -62,16 +62,19 @@ $createPage = $consHome->gotoMotionCreatePage();
 $I->wantTo('test persons and organizations');
 $I->seeElement('.supporterDataHead');
 $I->seeElement('.supporterData');
+$I->seeElement('.initiatorData .adderRow');
 $I->dontSeeElement('#initiatorOrga');
 $I->dontSeeElement('#resolutionDate');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('.supporterDataHead');
 $I->dontSeeElement('.supporterData');
+$I->dontSeeElement('.initiatorData .adderRow');
 $I->seeElement('#initiatorOrga');
 $I->seeElement('#resolutionDate');
 $I->selectOption('#personTypeNatural', \app\models\db\ISupporter::PERSON_NATURAL);
 $I->seeElement('.supporterDataHead');
 $I->seeElement('.supporterData');
+$I->seeElement('.initiatorData .adderRow');
 $I->dontSeeElement('#initiatorOrga');
 $I->dontSeeElement('#resolutionDate');
 
@@ -95,7 +98,7 @@ $I->dontSee('Es müssen mindestens 2 UnterstützerInnen angegeben werden');
 
 
 
-$I->wantTo('remove and add some rows');
+$I->wantTo('remove and add some supporter rows');
 $lineNumbers = $I->executeJS('
     $(".supporterData .supporterRow").eq(1).remove();
     $(".supporterData .supporterRow").eq(1).remove();
@@ -108,11 +111,26 @@ if ($lineNumbers != 2) {
 
 
 
+$I->wantTo('remove and add some initiator rows');
+$lineNumbers = $I->executeJS('
+    $(".initiatorData .adderRow a").click();
+    $(".initiatorData .adderRow a").click();
+    $(".initiatorData .initiatorRow").eq(1).remove();
+    return $(".initiatorData .initiatorRow").length;
+');
+if ($lineNumbers != 1) {
+    $I->see('an invalid number of initiator rows: ' . $lineNumbers . ' (should be: 1)');
+}
+
+
+
 $I->wantTo('fill in correct data');
 $I->executeJS('
     $(".supporterData .supporterRow").eq(0).find("input.name").val("Name 1");
     $(".supporterData .supporterRow").eq(0).find("input.organization").val("Orga 1");
     $(".supporterData .supporterRow").eq(1).find("input.name").val("Name 2");
+
+    $(".initiatorData .initiatorRow").eq(0).find("input.name").val("Initiator 2");
 ');
 $createPage->saveForm();
 
@@ -120,11 +138,67 @@ $I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
 $I->see('Name 1');
 $I->see('Orga 1');
 $I->see('Name 2');
+$I->see('Initiator 2');
+
+
+
+
+
+$I->wantTo('modify the supporters');
+$I->submitForm('#motionConfirmForm', [], 'modify');
+$I->seeInField(['name' => 'moreInitiators[name][]'], 'Initiator 2');
+$val = $I->executeJS('return $(".supporterData .supporterRow").eq(0).find("input.name").val()');
+if ($val != 'Name 1') {
+    $I->see('an invalid content of field 1: ' . $val . ' (should be: Name 1)');
+}
+$val = $I->executeJS('return $(".supporterData .supporterRow").eq(1).find("input.name").val()');
+if ($val != 'Name 2') {
+    $I->see('an invalid content of field 2: ' . $val . ' (should be: Name 2)');
+}
+$val = $I->executeJS('return $(".supporterData .supporterRow").eq(0).find("input.organization").val()');
+if ($val != 'Orga 1') {
+    $I->see('an invalid content of orga 1: ' . $val . ' (should be: Orga 1)');
+}
+
+$I->executeJS('
+    $(".supporterData .supporterRow").eq(0).find("input.name").val("Person 1");
+    $(".supporterData .supporterRow").eq(0).find("input.organization").val("Organization 1");
+    $(".supporterData .supporterRow").eq(1).find("input.name").val("Person 2");
+
+    $(".initiatorData .initiatorRow").eq(0).find("input.name").val("Another Initiator");
+');
+$createPage->saveForm();
+
+$I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
+$I->dontSee('Name 1');
+$I->dontSee('Orga 1');
+$I->dontSee('Name 2');
+$I->dontSee('Initiator 2');
+$I->see('Person 1');
+$I->see('Organization 1');
+$I->see('Person 2');
+$I->see('Another Initiator');
+
+
+
+
+$I->wantTo('submit the motion');
 
 $I->submitForm('#motionConfirmForm', [], 'confirm');
 $I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
+$I->submitForm('#motionConfirmedForm', [], '');
+
+$I->see('Another sample motion with supporters');
 
 
-// @TODO Editing the motion afterwards
 
-// @TODO Screening the motion and verifying the data is visible
+$I->wantTo('verify the new supporters are visible');
+$I->see('Mein Name');
+$I->see('Another Initiator');
+$I->click('.motionLink4');
+
+$I->see('Another Initiator', '.motionData');
+$I->see('Mein Name', '.motionData');
+$I->see('Person 1', '.supporters');
+$I->see('Organization 1', '.supporters');
+$I->see('Person 2', '.supporters');

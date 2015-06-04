@@ -131,10 +131,13 @@ if (!$minimalisticUi) {
         echo '</td></tr>';
     }
 
-
-    echo '<tr><th>' . Yii::t('motion', 'AntragsstellerIn'), ':</th><td>';
-
-    echo MotionLayoutHelper::formatInitiators($motion->getInitiators(), $controller->consultation);
+    $initiators = $motion->getInitiators();
+    if (count($initiators) == 1) {
+        echo '<tr><th>' . Yii::t('motion', 'AntragsstellerIn') . ':</th><td>';
+    } else {
+        echo '<tr><th>' . Yii::t('motion', 'AntragsstellerInnen') . ':</th><td>';
+    }
+    echo MotionLayoutHelper::formatInitiators($initiators, $controller->consultation);
 
     echo '</td></tr>
                 <tr><th>Status:</th><td>';

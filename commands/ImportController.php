@@ -22,14 +22,14 @@ class ImportController extends Controller
     /**
      * @throws \yii\db\Exception
      */
-    public function actionMigrateFromV2($server = '', $db = '', $username = '', $password = '', $subdomain = '')
+    public function actionMigrateFromV2($server = '', $host = '', $username = '', $password = '', $subdomain = '')
     {
 
         if ($server == '') {
             $server = $this->prompt('DB-Server:');
         }
-        if ($db == '') {
-            $db = $this->prompt('DB Datenbank:');
+        if ($host == '') {
+            $host = $this->prompt('DB Datenbank:');
         }
         if ($username == '') {
             $username = $this->prompt('DB-Username:');
@@ -39,7 +39,7 @@ class ImportController extends Controller
         }
 
         $dbOld = new Connection([
-            'dsn'      => 'mysql:host=' . $server . ';dbname=' . $db,
+            'dsn'      => 'mysql:host=' . $server . ';dbname=' . $host,
             'username' => $username,
             'password' => $password,
         ]);
