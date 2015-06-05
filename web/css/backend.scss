@@ -271,8 +271,25 @@ label.legend {
   margin-bottom: 20px;
   margin-top: 20px;
 
+  .markCol {
+    width: 30px;
+  }
+  .typeCol {
+    width: 5%;
+  }
+  .prefixCol {
+    width: 10%;
+  }
+  .actionCol {
+    width: 120px;
+  }
+
   th, td {
-    padding: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 0; // Necessary because of colResizable
+    padding-right: 0;
+    text-indent: 5px;
     border: solid 1px gray;
     position: relative;
   }

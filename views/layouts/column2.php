@@ -10,7 +10,7 @@ $this->beginContent('@app/views/layouts/main.php');
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
-$row_classes = array("row", "antragsgruen-content");
+$row_classes = ["row", "antragsgruen-content"];
 
 /*
 if (isset($controller->text_comments) && $controller->text_comments) {
@@ -18,21 +18,21 @@ if (isset($controller->text_comments) && $controller->text_comments) {
 }
 */
 
-$menus = array();
+$menus = [];
 if ($params->menu) {
-    $menus[] = array("name" => "Aktionen", "items" => $controller->layoutParams->menu);
+    $menus[] = ["name" => "Aktionen", "items" => $controller->layoutParams->menu];
 }
 foreach ($params->multimenu as $m) {
     $menus[] = $m;
 }
 /*
 foreach ($menus as $menu) {
-$this->widget('bootstrap.widgets.TbMenu', array(
+$this->widget('bootstrap.widgets.TbMenu', [
     'type'  => 'list',
     'items' => array_merge(array(
         array('label' => $menu["name"]),
     ), $menu["items"]),
-));
+]);
 }
 */
 

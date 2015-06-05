@@ -22,14 +22,17 @@ $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Antragsliste');
 $layout->addJS('/js/bower/typeahead.js/dist/typeahead.bundle.min.js');
 $layout->addJS('/js/backend.js');
+$layout->addJS('/js/colResizable-1.5.min.js');
 $layout->addCSS('/css/backend.css');
-$layout->fullWidth = true;
+$layout->fullWidth  = true;
+$layout->fullScreen = true;
 
 $layout->addOnLoadJS('$.AntragsgruenAdmin.motionListAll();');
 
 $route = 'admin/motion/listall';
 
-
+echo '<h1>' . 'Liste: Anträge, Änderungsanträge' . '</h1>';
+echo '<div class="content">';
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';
 
 echo $search->getFilterFormFields();
@@ -45,15 +48,15 @@ echo '<input type="hidden" name="save" value="1">';
 
 echo '<table class="adminMotionTable">';
 echo '<thead><tr>
-    <th></th>
-    <th>';
+    <th class="markCol"></th>
+    <th class="typeCol">';
 if ($search->sort == AdminMotionFilterForm::SORT_TYPE) {
     echo '<span style="text-decoration: underline;">Typ</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TYPE]);
     echo Html::a('Typ', $url);
 }
-echo '</th><th>';
+echo '</th><th class="prefixCol">';
 if ($search->sort == AdminMotionFilterForm::SORT_REVISION) {
     echo '<span style="text-decoration: underline;">Antragsnr.</span>';
 } else {
@@ -75,10 +78,10 @@ if ($search->sort == AdminMotionFilterForm::SORT_STATUS) {
     echo Html::a('Status', $url);
 }
 echo '</th><th>AntragstellerInnen</th>
-    <th>Aktion</th>
+    <th class="actionCol">Aktion</th>
 </tr></thead>';
 
-$motionStati = Motion::getStati();
+$motionStati    = Motion::getStati();
 $amendmentStati = Amendment::getStati();
 
 foreach ($entries as $entry) {
@@ -99,13 +102,13 @@ foreach ($entries as $entry) {
 
         $dropdowns = [];
         if (in_array($entry->status, [Motion::STATUS_DRAFT, Motion::STATUS_SUBMITTED_UNSCREENED])) {
-            $title = 'Freischalten';
+            $title             = 'Freischalten';
             $dropdowns[$title] = $search->getCurrentUrl($route, ['motionScreen' => $entry->id]);
         } else {
-            $title = 'Freischalten zurücknehmen';
+            $title             = 'Freischalten zurücknehmen';
             $dropdowns[$title] = $search->getCurrentUrl($route, ['motionWithdraw' => $entry->id]);
         }
-        $title = 'Neuer Antrag auf dieser Basis';
+        $title             = 'Neuer Antrag auf dieser Basis';
         $dropdowns[$title] = UrlHelper::createUrl(['motion/create', 'adoptInitiators' => $entry->id]);
 
         echo '<td><div class="btn-group">
@@ -130,7 +133,7 @@ foreach ($entries as $entry) {
         echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>ÄA</td>';
         echo '<td><a href="' . Html::encode($url) . '">' . Html::encode($entry->titlePrefix) . '</a></td>';
-        echo '<td>' . Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $url)  . '</td>';
+        echo '<td>' . Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $url) . '</td>';
         echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {
@@ -140,14 +143,14 @@ foreach ($entries as $entry) {
 
         $dropdowns = [];
         if (in_array($entry->status, [Amendment::STATUS_DRAFT, Amendment::STATUS_SUBMITTED_UNSCREENED])) {
-            $title = 'Freischalten';
+            $title             = 'Freischalten';
             $dropdowns[$title] = $search->getCurrentUrl($route, ['amendmentScreen' => $entry->id]);
         } else {
-            $title = 'Freischalten zurücknehmen';
+            $title             = 'Freischalten zurücknehmen';
             $dropdowns[$title] = $search->getCurrentUrl($route, ['amendmentWithdraw' => $entry->id]);
         }
-        $title = 'Neuer Änderungsantrag auf dieser Basis';
-        $params = ['amendment/create', 'motionId' => $entry->motionId, 'adoptInitiators' => $entry->id];
+        $title             = 'Neuer Änderungsantrag auf dieser Basis';
+        $params            = ['amendment/create', 'motionId' => $entry->motionId, 'adoptInitiators' => $entry->id];
         $dropdowns[$title] = UrlHelper::createUrl($params);
         echo '<td><div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -185,3 +188,5 @@ echo '</section>';
 
 
 echo Html::endForm();
+
+echo '</div>';

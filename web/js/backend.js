@@ -273,6 +273,12 @@
             displayKey: "value",
             source: matcher
         });
+
+        $('.adminMotionTable').colResizable({
+            'liveDrag': true,
+            'postbackSafe': true,
+            'minWidth': 30
+        });
     };
 
     $.AntragsgruenAdmin = {

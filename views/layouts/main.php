@@ -11,14 +11,11 @@ use yii\helpers\Url;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$params     = $controller->layoutParams;
+$layout     = $controller->layoutParams;
 
-$body_classes = array();
-/*
-if (isset($controller->text_comments) && $controller->text_comments) {
-    $row_classes[] = "text_comments";
-}
-*/
+$bodyClasses = [];
+if ($layout->fullScreen) $bodyClasses[] = 'fullscreen';
+
 $title = (isset($this->title) ? $this->title : '');
 if (mb_strpos($title, 'Antragsgrün') === false) {
     $title .= ' (Antragsgrün)';
@@ -40,7 +37,7 @@ echo Html::csrfMetaTags();
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrlFB != "") {
     echo '<link rel="image_src" href="' . Html::encode($controller->consultation->getSettings()->logoUrlFB) . '">';
 }
-if ($params->robotsNoindex) {
+if ($layout->robotsNoindex) {
     echo '<meta name="robots" content="noindex, nofollow">' . "\n";
 }
 
@@ -55,7 +52,7 @@ if ($params->robotsNoindex) {
 
     <link rel="stylesheet" href="/css/antragsgruen.css">
 <?php
-foreach ($params->extraCss as $file) {
+foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . Html::encode($file) . '">' . "\n";
 }
 ?>
@@ -91,7 +88,7 @@ if ($controller->veranstaltung) foreach (veranstaltungsspezifisch_css_files($con
 
 echo '</head>';
 
-echo '<body ' . (count($body_classes) > 0 ? 'class="' . implode(" ", $body_classes) . '"' : '') . '>';
+echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(" ", $bodyClasses) . '"' : '') . '>';
 
 echo '<script src="/js/modernizr.js"></script>';
 
@@ -152,8 +149,8 @@ if ($controller->consultation && $controller->consultation->getSettings()->logoU
     $filename = basename($path["path"]);
     $filename = substr($filename, 0, strrpos($filename, "."));
     $filename = str_replace(
-        array("_", "ue", "ae", "oe", "Ue", "Oe", "Ae"),
-        array(" ", "ü", "ä", "ö", "Ü" . "Ö", "Ä"),
+        ["_", "ue", "ae", "oe", "Ue", "Oe", "Ae"],
+        [" ", "ü", "ä", "ö", "Ü" . "Ö", "Ä"],
         $filename
     );
     $logoUrl  = $controller->consultation->getSettings()->logoUrl;
@@ -167,9 +164,9 @@ echo '</a></div>';
 
 echo $controller->showErrors();
 
-if (is_array($params->breadcrumbs)) {
+if (is_array($layout->breadcrumbs)) {
     echo '<ol class="breadcrumb">';
-    foreach ($params->breadcrumbs as $link => $name) {
+    foreach ($layout->breadcrumbs as $link => $name) {
         if ($link == '' || is_null($link)) {
             echo '<li>' . Html::encode($name) . '</li>';
         } else {
@@ -183,7 +180,7 @@ if (is_array($params->breadcrumbs)) {
 /** @var string $content */
 echo $content;
 
-$legal_link = ($controller->consultation ? Url::toRoute("consultation/legal") : Url::toRoute("manager/legal"));
+$legalLink = ($controller->consultation ? Url::toRoute("consultation/legal") : Url::toRoute("manager/legal"));
 
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
@@ -193,7 +190,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 
     <footer class="footer">
         <div class="container">
-            <a href="<?= Html::encode($legal_link) ?>" class="legal" id="legalLink">Impressum</a>
+            <a href="<?= Html::encode($legalLink) ?>" class="legal" id="legalLink">Impressum</a>
 
             <span class="version">
                 Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
@@ -207,10 +204,10 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
     <script src="/js/scrollintoview.js"></script>
     <script src="/js/antragsgruen.js"></script>
 <?php
-foreach ($params->extraJs as $file) {
+foreach ($layout->extraJs as $file) {
     echo '<script src="' . Html::encode($file) . '"></script>' . "\n";
 }
-foreach ($params->onloadJs as $js) {
+foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
 

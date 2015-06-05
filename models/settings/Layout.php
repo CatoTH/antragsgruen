@@ -18,6 +18,7 @@ class Layout
     public $extraJs         = [];
     public $onloadJs        = [];
     public $fullWidth       = false;
+    public $fullScreen      = false;
 
     /** @var Consultation|null */
     private $consultation;
