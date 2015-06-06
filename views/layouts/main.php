@@ -2,7 +2,6 @@
 use app\components\UrlHelper;
 use app\models\db\User;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /**
  * @var \yii\web\View $this
@@ -14,7 +13,9 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $bodyClasses = [];
-if ($layout->fullScreen) $bodyClasses[] = 'fullscreen';
+if ($layout->fullScreen) {
+    $bodyClasses[] = 'fullscreen';
+}
 
 $title = (isset($this->title) ? $this->title : '');
 if (mb_strpos($title, 'Antragsgrün') === false) {
@@ -22,6 +23,7 @@ if (mb_strpos($title, 'Antragsgrün') === false) {
 }
 
 $minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
+$controllerBase = ($controller->consultation ? 'consultation/' : 'manager/');
 
 $this->beginPage();
 
@@ -114,12 +116,12 @@ if ($controller->consultation) {
 echo '<ul class="nav navbar-nav">';
 
 if ($controller->consultation) {
-    $homeUrl = UrlHelper::createUrl("consultation/index");
+    $homeUrl = UrlHelper::createUrl('consultation/index');
     echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $homeUrl) . '</li>';
-    $helpLink = UrlHelper::createUrl("consultation/help");
+    $helpLink = UrlHelper::createUrl('consultation/help');
     echo '<li>' . Html::a(Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
 } else {
-    $startLink = UrlHelper::createUrl("manager/index");
+    $startLink = UrlHelper::createUrl('manager/index');
     echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $startLink) . '</li>';
 }
 
@@ -161,7 +163,6 @@ if ($controller->consultation && $controller->consultation->getSettings()->logoU
 echo '</a></div>';
 
 
-
 echo $controller->showErrors();
 
 if (is_array($layout->breadcrumbs)) {
@@ -180,7 +181,8 @@ if (is_array($layout->breadcrumbs)) {
 /** @var string $content */
 echo $content;
 
-$legalLink = ($controller->consultation ? Url::toRoute("consultation/legal") : Url::toRoute("manager/legal"));
+$legalLink = UrlHelper::createUrl($controllerBase . 'legal');
+$privacyLink = UrlHelper::createUrl($controllerBase . 'privacy');
 
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
@@ -191,6 +193,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
     <footer class="footer">
         <div class="container">
             <a href="<?= Html::encode($legalLink) ?>" class="legal" id="legalLink">Impressum</a>
+            <a href="<?= Html::encode($privacyLink) ?>" class="privacy" id="privacyLink">Datenschutz</a>
 
             <span class="version">
                 Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,

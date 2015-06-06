@@ -87,7 +87,6 @@ class Base extends Controller
         $params = array_merge(
             [
                 'consultation' => $this->consultation,
-                'test'         => 1,
             ],
             $options
         );
@@ -192,11 +191,12 @@ class Base extends Controller
      */
     protected function consultationNotFound()
     {
-        $message = "Die angegebene Veranstaltung wurde nicht gefunden. " .
-            "Höchstwahrscheinlich liegt da an einem Tippfehler in der Adresse im Browser.<br>
+        $url = Html::encode($this->getParams()->domainPlain);
+        $message = 'Die angegebene Veranstaltung wurde nicht gefunden. ' .
+            'Höchstwahrscheinlich liegt da an einem Tippfehler in der Adresse im Browser.<br>
 					<br>
-					Auf der <a href='https://www.antragsgruen.de/'>Antragsgrün-Startseite</a> " .
-            "siehst du rechts eine Liste der aktiven Veranstaltungen.";
+					Auf der <a href="' . $url . '">Antragsgrün-Startseite</a> ' .
+            'siehst du rechts eine Liste der aktiven Veranstaltungen.';
         $this->showErrorpage(404, $message);
     }
 

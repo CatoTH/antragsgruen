@@ -180,6 +180,13 @@ class MessageSource extends \yii\i18n\MessageSource
                 $data->breadcrumbTitle = 'Impressum';
                 $data->text            = '<p>Impressum</p>';
                 break;
+            case 'privacy':
+                // @TODO
+                $data                  = new PageData();
+                $data->pageTitle       = 'Datenschutz';
+                $data->breadcrumbTitle = 'Datenschutz';
+                $data->text            = '<p>Datenschutz</p><h3>Verantwortlich nach § 55 Abs. 2 RStV</h3>';
+                break;
             case 'welcome':
                 $data                  = new PageData();
                 $data->pageTitle       = 'Willkommen';

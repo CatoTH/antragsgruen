@@ -108,7 +108,7 @@
         margin-left: 20px;
         position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
         top: 0;
-        right: 0;
+        right: -8px;
       }
     }
   }

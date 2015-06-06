@@ -1,7 +1,5 @@
 <?php
 
-use tests\codeception\_pages\MotionCreatePage;
-
 /**
  * @var \Codeception\Scenario $scenario
  */

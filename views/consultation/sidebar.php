@@ -25,7 +25,7 @@ $html = Html::beginForm(UrlHelper::createUrl("consultation/search"), 'post', ['c
 $html .= '<div class="nav-list"><div class="nav-header">Suche</div>
     <div style="text-align: center; padding-left: 7px; padding-right: 7px;">
     <div class="input-group">
-      <input type="text" class="form-control" name="query" placeholder="Suchbegriff...">
+      <input type="text" class="form-control query" name="query" placeholder="Suchbegriff...">
       <span class="input-group-btn">
         <button class="btn btn-default" type="submit">
             <span class="glyphicon glyphicon-search"></span> Suche
@@ -158,7 +158,7 @@ $title = '<span class="glyphicon glyphicon-bell"></span>';
 $title .= Yii::t('con', 'E-Mail-Benachrichtigung bei neuen Anträgen');
 $link = UrlHelper::createUrl('consultation/notifications');
 $html = "<div><ul class='nav nav-list'><li class='nav-header'>Benachrichtigungen</li>";
-$html .= "<li class='notifications'>" . Html::a($title, $link) . "</li>";
+$html .= "<li class='notifications'>" . Html::a($title, $link, ['class' => 'notifications']) . "</li>";
 $html .= "</ul></div>";
 
 $layout->menusHtml[] = $html;
@@ -169,24 +169,26 @@ if ($consultation->getSettings()->showFeeds) {
     $feedsHtml = "";
 
     // @todo only show it if motions are enabled
+    $feedUrl = UrlHelper::createUrl('consultation/feedmotions');
     $feedsHtml .= "<li>";
-    $feedsHtml .= Html::a(Yii::t('con', 'Anträge'), UrlHelper::createUrl("consultation/feedmotions")) . "</li>";
+    $feedsHtml .= Html::a(Yii::t('con', 'Anträge'), $feedUrl, ['class' => 'feedMotions']) . "</li>";
     $feeds++;
 
     // @todo only show it if amendments are enabled
+    $feedUrl = UrlHelper::createUrl('consultation/feedamendments');
     $feedsHtml .= "<li>";
-    $feedsHtml .= Html::a(Yii::t('con', 'Änderungsanträge'), UrlHelper::createUrl("consultation/feedamendments"));
+    $feedsHtml .= Html::a(Yii::t('con', 'Änderungsanträge'), $feedUrl, ['class' => 'feedAmendments']);
     $feedsHtml .= "</li>";
     $feeds++;
 
     // @todo only show it if comments are enabled
-    $feedUrl = UrlHelper::createUrl("consultation/feedcomments");
-    $feedsHtml .= "<li>" . Html::a(Yii::t('con', 'Kommentare'), $feedUrl) . "</li>";
+    $feedUrl = UrlHelper::createUrl('consultation/feedcomments');
+    $feedsHtml .= "<li>" . Html::a(Yii::t('con', 'Kommentare'), $feedUrl, ['class' => 'feedComments']) . "</li>";
     $feeds++;
 
     if ($feeds > 1) {
-        $feedAllUrl = UrlHelper::createUrl("consultation/feedall");
-        $feedsHtml .= "<li>" . Html::a(Yii::t('con', 'Alles'), $feedAllUrl) . "</li>";
+        $feedUrl = UrlHelper::createUrl('consultation/feedall');
+        $feedsHtml .= "<li>" . Html::a(Yii::t('con', 'Alles'), $feedUrl, ['class' => 'feedAll']) . "</li>";
     }
 
     $feeds_str = ($feeds == 1 ? "Feed" : "Feeds");
@@ -198,17 +200,18 @@ if ($consultation->getSettings()->showFeeds) {
 }
 
 if ($consultation->getSettings()->hasPDF) {
-    $name = Yii::t('con', 'Alle PDFs zusammen');
-    $html = "<div><ul class='nav nav-list'><li class='nav-header'>PDFs</li>";
-    $html .= "<li class='pdf'>" . Html::a($name, UrlHelper::createUrl("consultation/pdfs")) . "</li>";
+    $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'Alle PDFs zusammen');
+    $pdfLink = UrlHelper::createUrl('consultation/pdfs');
+    $html    = '<div><ul class="nav nav-list"><li class="nav-header">PDFs</li>';
+    $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'pdfs']) . '</li>';
 
     // @todo only show it if amendments are enabled
-    $amendmentPdfLink = UrlHelper::createUrl("consultation/amendmentpdfs");
+    $amendmentPdfLink = UrlHelper::createUrl('consultation/amendmentpdfs');
     $linkTitle        = '<span class="glyphicon glyphicon-download-alt"></span>';
     $linkTitle .= Yii::t('con', 'Alle Änderungsanträge gesammelt');
-    $html .= "<li>" . Html::a($linkTitle, $amendmentPdfLink) . "</li>";
+    $html .= '<li>' . Html::a($linkTitle, $amendmentPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
 
-    $html .= "</ul></div>";
+    $html .= '</ul></div>';
     $layout->menusHtml[] = $html;
 }
 
@@ -218,7 +221,7 @@ if ($consultation->site->getBehaviorClass()->showAntragsgruenInSidebar()) {
         <div class='content'>
             Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
             <div>
-                <a href='" . Html::encode(UrlHelper::createUrl("manager/index")) . "' class='btn btn-primary'>
+                <a href='" . Html::encode(UrlHelper::createUrl('manager/index')) . "' class='btn btn-primary'>
                 <span class='glyphicon glyphicon-chevron-right'></span> Infos
                 </a>
             </div>

@@ -76,6 +76,13 @@ class ConsultationController extends Base
         // @TODO
     }
 
+    /**
+     *
+     */
+    public function actionNotifications()
+    {
+        // @TODO
+    }
 
     /**
      * @param string $pageKey
@@ -108,6 +115,14 @@ class ConsultationController extends Base
     public function actionLegal()
     {
         return $this->renderContentPage('legal');
+    }
+
+    /**
+     * @return string
+     */
+    public function actionPrivacy()
+    {
+        return $this->renderContentPage('privacy');
     }
 
     /**

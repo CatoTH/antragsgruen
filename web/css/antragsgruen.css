@@ -4716,7 +4716,7 @@ button.link {
         margin-left: 20px;
         position: absolute;
         top: 0;
-        right: 0; }
+        right: -8px; }
 
 .motionListAgenda {
   list-style-type: none;
@@ -4871,7 +4871,7 @@ button.link {
         margin-left: 20px;
         position: absolute;
         top: 0;
-        right: 0; }
+        right: -8px; }
 
 #agendaEditSavingHolder {
   display: none;
