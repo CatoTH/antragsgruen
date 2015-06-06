@@ -8,6 +8,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use Yii;
+use yii\helpers\Html;
 
 /**
  * @package app\models\db
@@ -434,11 +435,17 @@ class Motion extends IMotion implements IRSSItem
      */
     public function addToFeed(RSSExporter $feed)
     {
+        // @TODO Inline styling
+        $content = '';
+        foreach ($this->getSortedSections(true) as $section) {
+            $content .= '<h2>' . Html::encode($section->consultationSetting->title) . '</h2>';
+            $content .= $section->getSectionType()->showSimple();
+        }
         $feed->addEntry(
             UrlHelper::createMotionUrl($this),
             $this->getTitleWithPrefix(),
             $this->getInitiatorsStr(),
-            'Test', // @TODO
+            $content,
             Tools::dateSql2timestamp($this->dateCreation)
         );
     }

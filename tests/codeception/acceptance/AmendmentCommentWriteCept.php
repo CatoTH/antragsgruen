@@ -31,7 +31,9 @@ $I->submitForm('section.comments .commentForm', [], 'writeComment');
 $I->see('My Name', 'section.comments .motionComment');
 $I->see('Some Text', 'section.comments .motionComment');
 $I->cantSeeElement('section.comments .motionComment .delLink');
-
+$I->gotoStdConsultationHome();
+$I->click('.feedAll');
+$I->seeInPageSource('My Name');
 
 
 

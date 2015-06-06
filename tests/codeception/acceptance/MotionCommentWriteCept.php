@@ -40,6 +40,9 @@ $I->gotoStdConsultationHome();
 $I->see('My Name', '#sidebar .comments');
 $I->click('.feedComments');
 $I->seeInPageSource('My Name');
+$I->gotoStdConsultationHome();
+$I->click('.feedAll');
+$I->seeInPageSource('My Name');
 
 
 

@@ -14,8 +14,8 @@ class ValidatorHelper extends \Codeception\Module
      */
     private function postToHTMLValidator($html)
     {
-        $ch = curl_init('http://validator.w3.org/check');
-        curl_setopt_array($ch, [
+        $curl = curl_init('http://validator.w3.org/check');
+        curl_setopt_array($curl, [
             CURLOPT_POST           => 1,
             CURLOPT_POSTFIELDS     => [
                 'fragment' => $html,
@@ -25,14 +25,14 @@ class ValidatorHelper extends \Codeception\Module
             CURLOPT_HTTPHEADER     => ['Content-Type: multipart/form-data'],
             CURLOPT_RETURNTRANSFER => 1,
         ]);
-        $return = curl_exec($ch);
+        $return = curl_exec($curl);
 
         sleep(1); // As requested on https://validator.w3.org/docs/api.html
 
-        if (curl_errno($ch) > 0) {
-            throw new \Exception(curl_error($ch));
+        if (curl_errno($curl) > 0) {
+            throw new \Exception(curl_error($curl));
         }
-        $info = curl_getinfo($ch);
+        $info = curl_getinfo($curl);
         if ($info['http_code'] != 200) {
             throw new \Exception('Error retrieving validator data: HTTP: ' . $info['http_code']);
         }
@@ -43,43 +43,7 @@ class ValidatorHelper extends \Codeception\Module
         return $data['messages'];
     }
 
-    /**
-     * @param string $html
-     * @throws \Exception
-     * @return array
-     */
-    private function postToFeedValidator($feed)
-    {
-        // @TODO Call does not work yet
-        $ch = curl_init('http://validator.w3.org/feed/check.cgi');
-        curl_setopt_array($ch, [
-            CURLOPT_POST           => 1,
-            CURLOPT_POSTFIELDS     => [
-                'rawdata' => $feed,
-                'manual' => '1',
-                'output' => 'soap12',
-            ],
-            CURLOPT_FOLLOWLOCATION => 1,
-            CURLOPT_HTTPHEADER     => ['Content-Type: application/x-www-form-urlencoded'],
-            CURLOPT_RETURNTRANSFER => 1,
-        ]);
-        $return = curl_exec($ch);
 
-        sleep(1); // As requested on https://validator.w3.org/docs/api.html
-
-        if (curl_errno($ch) > 0) {
-            throw new \Exception(curl_error($ch));
-        }
-        $info = curl_getinfo($ch);
-        if ($info['http_code'] != 200) {
-            throw new \Exception('Error retrieving validator data: HTTP: ' . $info['http_code']);
-        }
-        $data = json_decode($return, true);
-        if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
-            throw new \Exception('Invalid data returned from validation service: ' . $return);
-        }
-        return $data['messages'];
-    }
 
 
     /**
@@ -116,7 +80,41 @@ class ValidatorHelper extends \Codeception\Module
         }
     }
 
-    /**
+    /*
+
+    private function postToFeedValidator($feed)
+    {
+        // @TODO Call does not work yet
+        $ch = curl_init('http://validator.w3.org/feed/check.cgi');
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => 1,
+            CURLOPT_POSTFIELDS     => [
+                'rawdata' => $feed,
+                'manual' => '1',
+                'output' => 'soap12',
+            ],
+            CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_HTTPHEADER     => ['Content-Type: application/x-www-form-urlencoded'],
+            CURLOPT_RETURNTRANSFER => 1,
+        ]);
+        $return = curl_exec($ch);
+
+        sleep(1); // As requested on https://validator.w3.org/docs/api.html
+
+        if (curl_errno($ch) > 0) {
+            throw new \Exception(curl_error($ch));
+        }
+        $info = curl_getinfo($ch);
+        if ($info['http_code'] != 200) {
+            throw new \Exception('Error retrieving validator data: HTTP: ' . $info['http_code']);
+        }
+        $data = json_decode($return, true);
+        if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
+            throw new \Exception('Invalid data returned from validation service: ' . $return);
+        }
+        return $data['messages'];
+    }
+
     public function validateRSS()
     {
         $source = $this->getPageSource();

@@ -5,7 +5,9 @@ namespace app\models\db;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\sectionTypes\ISectionType;
 use yii\db\ActiveQuery;
+use yii\helpers\Html;
 
 /**
  * @package app\models\db
@@ -380,11 +382,36 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function addToFeed(RSSExporter $feed)
     {
+        // @TODO Inline styling
+        $content = '';
+        foreach ($this->sections as $section) {
+            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                continue;
+            }
+            $formatter  = new \app\components\diff\AmendmentSectionFormatter($section);
+            $diffGroups = $formatter->getInlineDiffGroupedLines();
+
+            if (count($diffGroups) > 0) {
+                $content .= '<h2>' . Html::encode($section->consultationSetting->title) . '</h2>';
+                $content .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+                $content .= \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
+                $content .= '</div>';
+                $content .= '</section>';
+            }
+        }
+
+        if ($this->changeExplanation) {
+            $content .= '<h2>Begründung</h2>';
+            $content .= '<div class="paragraph"><div class="text">';
+            $content .= $this->changeExplanation;
+            $content .= '</div></div>';
+        }
+
         $feed->addEntry(
             UrlHelper::createAmendmentUrl($this),
             $this->getTitle(),
             $this->getInitiatorsStr(),
-            'Test', // @TODO
+            $content,
             Tools::dateSql2timestamp($this->dateCreation)
         );
     }

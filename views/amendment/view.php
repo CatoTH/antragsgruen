@@ -8,7 +8,6 @@ use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
-use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -97,23 +96,7 @@ foreach ($amendment->sections as $section) {
             echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
             echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
             echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
-
-            foreach ($diffGroups as $diff) {
-                echo '<section class="paragraph">';
-                echo '<div class="text">';
-                if ($diff['lineFrom'] == $diff['lineTo']) {
-                    echo 'In Zeile ' . $diff['lineFrom'] . ':<br>';
-                } else {
-                    echo 'Von Zeile ' . $diff['lineFrom'] . ' bis ' . $diff['lineTo'] . ':<br>';
-                }
-                if ($diff['text'][0] != '<') {
-                    echo '<p>' . $diff['text'] . '</p>';
-                } else {
-                    echo $diff['text'];
-                }
-                echo '</div></section>';
-            }
-
+            echo \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
             echo '</div>';
             echo '</section>';
         }
@@ -147,12 +130,12 @@ if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristicall
     foreach ($amendment->comments as $comment) {
         if ($comment->paragraph == -1 && $comment->status != AmendmentComment::STATUS_DELETED) {
             $commLink = UrlHelper::createAmendmentCommentUrl($comment);
-            LayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
+            MotionLayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
         }
     }
 
     if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
-        LayoutHelper::showCommentForm($form, $consultation, -1, -1);
+        MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
     }
     echo '</section>';
 }

@@ -4,10 +4,13 @@ namespace app\controllers;
 
 use app\components\MessageSource;
 use app\components\RSSExporter;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentComment;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\IComment;
+use app\models\db\IRSSItem;
 use app\models\db\Motion;
 use app\models\db\Consultation;
 use app\models\db\MotionComment;
@@ -112,7 +115,49 @@ class ConsultationController extends Base
      */
     public function actionFeedall()
     {
-        // @TODO
+        $this->testMaintainanceMode();
+
+        /** @var IRSSItem[] $comments */
+        $items = array_merge(
+            Motion::getNewestByConsultation($this->consultation, 20),
+            Amendment::getNewestByConsultation($this->consultation, 20),
+            MotionComment::getNewestByConsultation($this->consultation, 20),
+            AmendmentComment::getNewestByConsultation($this->consultation, 20)
+        );
+        usort($items, function ($item1, $item2) {
+            /** @var IRSSItem $item1 */
+            /** @var IRSSItem $item2 */
+            $ts1 = Tools::dateSql2timestamp($item1->getDate());
+            $ts2 = Tools::dateSql2timestamp($item2->getDate());
+            if ($ts1 < $ts2) {
+                return 1;
+            }
+            if ($ts1 > $ts2) {
+                return -1;
+            }
+            return 0;
+        });
+        $items = array_slice($items, 0, 20);
+
+        $feed = new RSSExporter();
+        if ($this->consultation->getSettings()->logoUrl != '') {
+            $feed->setImage($this->consultation->getSettings()->logoUrl);
+        } else {
+            $feed->setImage('/img/logo.png');
+        }
+        $feed->setTitle($this->consultation->title . ': ' . 'Neues');
+        $feed->setLanguage(\yii::$app->language);
+        $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
+        $feed->setFeedLink(UrlHelper::createUrl('consultation/feedall'));
+
+        foreach ($items as $item) {
+            /** @var IRSSItem $item */
+            $item->addToFeed($feed);
+        }
+
+        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        return $feed->getFeed();
     }
 
     /**

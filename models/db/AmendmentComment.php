@@ -104,7 +104,7 @@ class AmendmentComment extends IComment
     {
         $feed->addEntry(
             UrlHelper::createAmendmentCommentUrl($this),
-            $this->getMotionTitle(),
+            'Kommentar zu: ' . $this->getMotionTitle(),
             $this->name,
             $this->text,
             Tools::dateSql2timestamp($this->dateCreation)

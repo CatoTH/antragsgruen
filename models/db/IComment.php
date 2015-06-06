@@ -118,6 +118,6 @@ abstract class IComment extends ActiveRecord implements IRSSItem
             }
             return 0;
         });
-        return $comments;
+        return array_slice($comments, 0, $limit);
     }
 }

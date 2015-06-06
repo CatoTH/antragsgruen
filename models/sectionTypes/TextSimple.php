@@ -130,4 +130,29 @@ class TextSimple extends ISectionType
     {
         return ($this->section->data == '');
     }
+
+    /**
+     * @param array $diffGroups
+     * @return string
+     */
+    public static function formatDiffGroup($diffGroups)
+    {
+        $out = '';
+        foreach ($diffGroups as $diff) {
+            $out .= '<section class="paragraph">';
+            $out .= '<div class="text">';
+            if ($diff['lineFrom'] == $diff['lineTo']) {
+                $out .= 'In Zeile ' . $diff['lineFrom'] . ':<br>';
+            } else {
+                $out .= 'Von Zeile ' . $diff['lineFrom'] . ' bis ' . $diff['lineTo'] . ':<br>';
+            }
+            if ($diff['text'][0] != '<') {
+                $out .= '<p>' . $diff['text'] . '</p>';
+            } else {
+                $out .= $diff['text'];
+            }
+            $out .= '</div></section>';
+        }
+        return $out;
+    }
 }

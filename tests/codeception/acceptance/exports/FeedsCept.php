@@ -32,7 +32,9 @@ $I->wantTo('test the overall feed');
 $I->gotoStdConsultationHome();
 $I->click('#sidebar .feedAll');
 
-$I->seeInPageSource('O’zapft is! PDF');
+$I->seeInPageSource('O’zapft is!');
 $I->seeInPageSource('Test');
 $I->seeInPageSource('Tester');
 $I->seeInPageSource('Ä1');
+$I->seeInPageSource('Oamoi a Maß');
+$I->seeInPageSource('Auf gehds beim Schichtl pfiad');
