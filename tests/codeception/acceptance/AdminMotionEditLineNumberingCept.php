@@ -17,7 +17,7 @@ $I->see(mb_strtoupper('random new motion'), 'h1');
 
 $firstLineNo = $motionPage->getFirstLineNumber();
 if ($firstLineNo != 1) {
-    $I->see('first line number is 1 - got: ' . $firstLineNo);
+    $I->fail('first line number is 1 - got: ' . $firstLineNo);
 }
 
 
@@ -41,7 +41,7 @@ $I->see(mb_strtoupper('random new motion'), 'h1');
 
 $firstLineNo = $motionPage->getFirstLineNumber();
 if ($firstLineNo != 54) {
-    $I->see('first line number is 54 - got: ' . $firstLineNo);
+    $I->fail('first line number is 54 - got: ' . $firstLineNo);
 }
 
 
@@ -72,13 +72,13 @@ $motionPage = $I->gotoMotion(true, 3);
 $I->see(mb_strtoupper('Another Title'), 'h1');
 $firstLineNo = $motionPage->getFirstLineNumber();
 if ($firstLineNo != 1) {
-    $I->see('first line number is 1 - got: ' . $firstLineNo);
+    $I->fail('first line number is 1 - got: ' . $firstLineNo);
 }
 
 $motionPage = $I->gotoMotion(true, 2);
 $firstLineNo = $motionPage->getFirstLineNumber();
 if ($firstLineNo != 2) {
-    $I->see('first line number is 2 - got: ' . $firstLineNo);
+    $I->fail('first line number is 2 - got: ' . $firstLineNo);
 }
 
 
@@ -102,11 +102,11 @@ $I->wantTo('check if the changes are reflected');
 $motionPage = $I->gotoMotion(true, 3);
 $firstLineNo = $motionPage->getFirstLineNumber();
 if ($firstLineNo != 1) {
-    $I->see('first line number is 1 - got: ' . $firstLineNo);
+    $I->fail('first line number is 1 - got: ' . $firstLineNo);
 }
 
 $motionPage = $I->gotoMotion(true, 2);
 $firstLineNo = $motionPage->getFirstLineNumber();
 if ($firstLineNo != 1) {
-    $I->see('first line number is 1 - got: ' . $firstLineNo);
+    $I->fail('first line number is 1 - got: ' . $firstLineNo);
 }

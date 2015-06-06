@@ -20,4 +20,4 @@ $I->click('#sidebar .amendmentPdfs');
 
 // @TODO
 
-$I->see('Fail: Test case not implemented yet');
+$I->fail('Test case not implemented yet');

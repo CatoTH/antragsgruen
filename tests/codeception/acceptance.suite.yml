@@ -12,6 +12,8 @@ class_name: AcceptanceTester
 modules:
     enabled:
       - WebDriver
+      - Asserts
+      - ValidatorHelper
     config:
       WebDriver:
         url: 'http://localhost:8080/'

@@ -17,7 +17,6 @@ $consultationSettingPage->saveForm();
 $I->canSeeCheckboxIsChecked('#screeningMotions');
 
 
-
 $motionTitle = 'My new, screened motion';
 
 $I->wantTo('create a motion as a logged out user');
@@ -40,14 +39,12 @@ $I->gotoStdAdminPage();
 $I->see($motionTitle, '.adminTodo');
 
 
-if (method_exists($I, 'executeJS')) {
-    $I->wantTo('Screen the motion with an invalid title String (race condition)');
-    $I->click('.adminTodo .motionScreen3 a');
-    $I->seeElement('#motionScreenForm');
-    $I->executeJS('$("#motionScreenForm input[name=titlePrefix]").attr("value", "A2");');
-    $I->submitForm('#motionScreenForm', [], ['screen']);
-    $I->see('Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
-}
+$I->wantTo('Screen the motion with an invalid title String (race condition)');
+$I->click('.adminTodo .motionScreen3 a');
+$I->seeElement('#motionScreenForm');
+$I->executeJS('$("#motionScreenForm input[name=titlePrefix]").attr("value", "A2");');
+$I->submitForm('#motionScreenForm', [], ['screen']);
+$I->see('Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
 
 
 $I->wantTo('screen the motion normally');

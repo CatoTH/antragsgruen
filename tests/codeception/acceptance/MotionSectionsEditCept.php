@@ -17,19 +17,19 @@ $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->wantTo('rearrange the list');
 $ret = $motionTypePage->getCurrentOrder();
 if (json_encode($ret) != '["1","2","4","3","5"]') {
-    $I->see('Got invalid return from JavaScript (1): ' .  json_encode($ret));
+    $I->fail('Got invalid return from JavaScript (1): ' .  json_encode($ret));
 }
 $motionTypePage->setCurrentOrder(array(3, 2, 1, 4, 5));
 $ret = $motionTypePage->getCurrentOrder();
 if (json_encode($ret) != '["3","2","1","4","5"]') {
-    $I->see('Got invalid return from JavaScript (2): ' .  json_encode($ret));
+    $I->fail('Got invalid return from JavaScript (2): ' .  json_encode($ret));
 }
 
 $motionTypePage->saveForm();
 
 $ret = $motionTypePage->getCurrentOrder();
 if (json_encode($ret) != '["3","2","1","4","5"]') {
-    $I->see('Got invalid return from JavaScript (3): ' .  json_encode($ret));
+    $I->fail('Got invalid return from JavaScript (3): ' .  json_encode($ret));
 }
 
 $I->wantTo('check if the change is reflected on the motion');
@@ -59,14 +59,14 @@ $I->wantTo('rearrange the tabular data section');
 
 $ret = $I->executeJS('return $(".sectionnew0 .tabularDataRow ul").data("sortable").toArray()');
 if (json_encode($ret) != '["acl","acm","acn"]') {
-    $I->see('Got invalid return from JavaScript (4): ' .  json_encode($ret));
+    $I->fail('Got invalid return from JavaScript (4): ' .  json_encode($ret));
 }
 $order = json_encode(['acl', 'acn', 'acm']);
 $I->executeJS('$(".sectionnew0 .tabularDataRow ul").data("sortable").sort(' . $order . ')');
 
 $ret = $I->executeJS('return $(".sectionnew0 .tabularDataRow ul").data("sortable").toArray()');
 if (json_encode($ret) != '["acl","acn","acm"]') {
-    $I->see('Got invalid return from JavaScript (5): ' .  json_encode($ret));
+    $I->fail('Got invalid return from JavaScript (5): ' .  json_encode($ret));
 }
 $motionTypePage->saveForm();
 

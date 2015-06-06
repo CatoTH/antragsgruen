@@ -2,20 +2,18 @@
 
 namespace app\controllers;
 
-use app\components\HTMLTools;
 use app\components\MessageSource;
+use app\components\RSSExporter;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\ConsultationAgendaItem;
-use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\Consultation;
 use app\models\db\MotionComment;
 use app\models\db\User;
 use app\models\exceptions\Access;
-use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
 
 class ConsultationController extends Base
 {
@@ -33,7 +31,26 @@ class ConsultationController extends Base
      */
     public function actionFeedmotions()
     {
-        // @TODO
+        $this->testMaintainanceMode();
+        $newest = Motion::getNewestByConsultation($this->consultation, 20);
+
+        $feed   = new RSSExporter();
+        $feed->setTitle('Anträge');
+        $feed->setLanguage(\yii::$app->language);
+        $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
+        $feed->setFeedLink(UrlHelper::createUrl('consultation/feedmotions'));
+        foreach ($newest as $motion) {
+            $feed->addEntry(
+                UrlHelper::createMotionUrl($motion),
+                $motion->getTitleWithPrefix(),
+                'Test', // @TODO
+                Tools::dateSql2timestamp($motion->dateCreation)
+            );
+        }
+
+        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        return $feed->getFeed();
     }
 
     /**
@@ -41,7 +58,26 @@ class ConsultationController extends Base
      */
     public function actionFeedamendments()
     {
-        // @TODO
+        $this->testMaintainanceMode();
+        $newest = Amendment::getNewestByConsultation($this->consultation, 20);
+
+        $feed   = new RSSExporter();
+        $feed->setTitle('Änderungsanträge');
+        $feed->setLanguage(\yii::$app->language);
+        $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
+        $feed->setFeedLink(UrlHelper::createUrl('consultation/feedamendments'));
+        foreach ($newest as $amend) {
+            $feed->addEntry(
+                UrlHelper::createAmendmentUrl($amend),
+                $amend->getTitle(),
+                'Test', // @TODO
+                Tools::dateSql2timestamp($amend->dateCreation)
+            );
+        }
+
+        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        return $feed->getFeed();
     }
 
     /**

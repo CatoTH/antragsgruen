@@ -11,3 +11,5 @@ $I->gotoStdConsultationHome();
 $I->click('#sidebar .notifications');
 
 $I->see(mb_strtoupper('Benachrichtigungen'), 'h1');
+
+// @TODO Not implemented yet

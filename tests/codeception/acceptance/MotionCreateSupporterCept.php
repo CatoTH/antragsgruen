@@ -106,7 +106,7 @@ $lineNumbers = $I->executeJS('
     return $(".supporterData .supporterRow").length;
 ');
 if ($lineNumbers != 2) {
-    $I->see('an invalid number of supporter rows: ' . $lineNumbers . ' (should be: 2)');
+    $I->fail('an invalid number of supporter rows: ' . $lineNumbers . ' (should be: 2)');
 }
 
 
@@ -119,7 +119,7 @@ $lineNumbers = $I->executeJS('
     return $(".initiatorData .initiatorRow").length;
 ');
 if ($lineNumbers != 1) {
-    $I->see('an invalid number of initiator rows: ' . $lineNumbers . ' (should be: 1)');
+    $I->fail('an invalid number of initiator rows: ' . $lineNumbers . ' (should be: 1)');
 }
 
 
@@ -149,15 +149,15 @@ $I->submitForm('#motionConfirmForm', [], 'modify');
 $I->seeInField(['name' => 'moreInitiators[name][]'], 'Initiator 2');
 $val = $I->executeJS('return $(".supporterData .supporterRow").eq(0).find("input.name").val()');
 if ($val != 'Name 1') {
-    $I->see('an invalid content of field 1: ' . $val . ' (should be: Name 1)');
+    $I->fail('an invalid content of field 1: ' . $val . ' (should be: Name 1)');
 }
 $val = $I->executeJS('return $(".supporterData .supporterRow").eq(1).find("input.name").val()');
 if ($val != 'Name 2') {
-    $I->see('an invalid content of field 2: ' . $val . ' (should be: Name 2)');
+    $I->fail('an invalid content of field 2: ' . $val . ' (should be: Name 2)');
 }
 $val = $I->executeJS('return $(".supporterData .supporterRow").eq(0).find("input.organization").val()');
 if ($val != 'Orga 1') {
-    $I->see('an invalid content of orga 1: ' . $val . ' (should be: Orga 1)');
+    $I->fail('an invalid content of orga 1: ' . $val . ' (should be: Orga 1)');
 }
 
 $I->executeJS('

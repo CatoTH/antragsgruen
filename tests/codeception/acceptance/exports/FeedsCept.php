@@ -9,10 +9,12 @@ $I->populateDBData1();
 
 $I->wantTo('test the motion feed');
 $I->gotoStdConsultationHome();
+
 $I->click('#sidebar .feedMotions');
 
-$I->see('O’zapft is! PDF');
-$I->see('Test');
+$I->seeInPageSource('O’zapft is!');
+$I->seeInPageSource('Test');
+
 // @TODO
 
 
@@ -20,8 +22,8 @@ $I->wantTo('test the amendment feed');
 $I->gotoStdConsultationHome();
 $I->click('#sidebar .feedAmendments');
 
-$I->see('Tester');
-$I->see('Ä1');
+$I->seeInPageSource('Tester');
+$I->seeInPageSource('Ä1');
 // @TODO
 
 
@@ -38,8 +40,8 @@ $I->wantTo('test the overall feed');
 $I->gotoStdConsultationHome();
 $I->click('#sidebar .feedAll');
 
-$I->see('O’zapft is! PDF');
-$I->see('Test');
-$I->see('Tester');
-$I->see('Ä1');
+$I->seeInPageSource('O’zapft is! PDF');
+$I->seeInPageSource('Test');
+$I->seeInPageSource('Tester');
+$I->seeInPageSource('Ä1');
 // @TODO
