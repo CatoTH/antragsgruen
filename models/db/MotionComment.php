@@ -2,8 +2,9 @@
 
 namespace app\models\db;
 
-use yii\db\Query;
-use yii\helpers\Url;
+use app\components\RSSExporter;
+use app\components\Tools;
+use app\components\UrlHelper;
 
 /**
  * @package app\models\db
@@ -27,8 +28,8 @@ use yii\helpers\Url;
  */
 class MotionComment extends IComment
 {
-    const STATUS_VISIBLE = 0;
-    const STATUS_DELETED = -1;
+    const STATUS_VISIBLE   = 0;
+    const STATUS_DELETED   = -1;
     const STATUS_SCREENING = 1;
 
     /**
@@ -68,7 +69,7 @@ class MotionComment extends IComment
      */
     public function getSection()
     {
-        return $this->hasOne(MotionSection::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId' ]);
+        return $this->hasOne(MotionSection::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId']);
     }
 
     /**
@@ -88,21 +89,18 @@ class MotionComment extends IComment
     /**
      * @param Consultation $consultation
      * @param int $limit
-     * @return Amendment[]
+     * @return MotionComment[]
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
         $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
 
-        $query = (new Query())->select('motionComment.*')->from('motionComment');
-        $query->innerJoin('motion', 'motion.id = motionComment.motionId');
-        $query->where('motionComment.status = ' . IntVal(static::STATUS_VISIBLE));
-        $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
-        $query->orderBy("dateCreation DESC");
-        $query->offset(0)->limit($limit);
-
-        return $query->all();
+        return static::find()->joinWith('motion', true)
+            ->where('motionComment.status = ' . IntVal(static::STATUS_VISIBLE))
+            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')')
+            ->andWhere('motion.consultationId = ' . IntVal($consultation->id))
+            ->orderBy('motionComment.dateCreation DESC')
+            ->offset(0)->limit($limit)->all();
     }
 
     /**
@@ -122,25 +120,32 @@ class MotionComment extends IComment
     }
 
     /**
-     * @param bool $absolute
+     * @param RSSExporter $feed
+     */
+    public function addToFeed(RSSExporter $feed)
+    {
+        $feed->addEntry(
+            UrlHelper::createMotionCommentUrl($this),
+            $this->getMotionTitle(),
+            $this->name,
+            $this->text,
+            Tools::dateSql2timestamp($this->dateCreation)
+        );
+    }
+
+    /**
      * @return string
      */
-    public function getLink($absolute = false)
+    public function getDate()
     {
-        $url = Url::toRoute(
-            [
-                'motion/view',
-                'subdomain'        => $this->motion->consultation->site->subdomain,
-                'consultationPath' => $this->motion->consultation->urlPath,
-                'motionId'         => $this->motion->id,
-                'commentId'        => $this->id,
-                '#'                => 'comment' . $this->id
-            ]
-        );
-        if ($absolute) {
-            // @TODO Testen
-            $url = \Yii::$app->basePath . $url;
-        }
-        return $url;
+        return $this->dateCreation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLink()
+    {
+        return UrlHelper::createMotionCommentUrl($this);
     }
 }

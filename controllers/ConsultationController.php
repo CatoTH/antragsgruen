@@ -4,10 +4,10 @@ namespace app\controllers;
 
 use app\components\MessageSource;
 use app\components\RSSExporter;
-use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\ConsultationAgendaItem;
+use app\models\db\IComment;
 use app\models\db\Motion;
 use app\models\db\Consultation;
 use app\models\db\MotionComment;
@@ -34,18 +34,18 @@ class ConsultationController extends Base
         $this->testMaintainanceMode();
         $newest = Motion::getNewestByConsultation($this->consultation, 20);
 
-        $feed   = new RSSExporter();
-        $feed->setTitle('Anträge');
+        $feed = new RSSExporter();
+        if ($this->consultation->getSettings()->logoUrl != '') {
+            $feed->setImage($this->consultation->getSettings()->logoUrl);
+        } else {
+            $feed->setImage('/img/logo.png');
+        }
+        $feed->setTitle($this->consultation->title . ': ' . 'Anträge');
         $feed->setLanguage(\yii::$app->language);
         $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
         $feed->setFeedLink(UrlHelper::createUrl('consultation/feedmotions'));
         foreach ($newest as $motion) {
-            $feed->addEntry(
-                UrlHelper::createMotionUrl($motion),
-                $motion->getTitleWithPrefix(),
-                'Test', // @TODO
-                Tools::dateSql2timestamp($motion->dateCreation)
-            );
+            $motion->addToFeed($feed);
         }
 
         \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
@@ -61,18 +61,18 @@ class ConsultationController extends Base
         $this->testMaintainanceMode();
         $newest = Amendment::getNewestByConsultation($this->consultation, 20);
 
-        $feed   = new RSSExporter();
-        $feed->setTitle('Änderungsanträge');
+        $feed = new RSSExporter();
+        if ($this->consultation->getSettings()->logoUrl != '') {
+            $feed->setImage($this->consultation->getSettings()->logoUrl);
+        } else {
+            $feed->setImage('/img/logo.png');
+        }
+        $feed->setTitle($this->consultation->title . ': ' . 'Änderungsanträge');
         $feed->setLanguage(\yii::$app->language);
         $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
         $feed->setFeedLink(UrlHelper::createUrl('consultation/feedamendments'));
         foreach ($newest as $amend) {
-            $feed->addEntry(
-                UrlHelper::createAmendmentUrl($amend),
-                $amend->getTitle(),
-                'Test', // @TODO
-                Tools::dateSql2timestamp($amend->dateCreation)
-            );
+            $amend->addToFeed($feed);
         }
 
         \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
@@ -85,7 +85,26 @@ class ConsultationController extends Base
      */
     public function actionFeedcomments()
     {
-        // @TODO
+        $this->testMaintainanceMode();
+        $newest = IComment::getNewestByConsultation($this->consultation, 20);
+
+        $feed = new RSSExporter();
+        if ($this->consultation->getSettings()->logoUrl != '') {
+            $feed->setImage($this->consultation->getSettings()->logoUrl);
+        } else {
+            $feed->setImage('/img/logo.png');
+        }
+        $feed->setTitle($this->consultation->title . ': ' . 'Kommentare');
+        $feed->setLanguage(\yii::$app->language);
+        $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
+        $feed->setFeedLink(UrlHelper::createUrl('consultation/feedcomments'));
+        foreach ($newest as $comm) {
+            $comm->addToFeed($feed);
+        }
+
+        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        return $feed->getFeed();
     }
 
     /**
@@ -174,16 +193,16 @@ class ConsultationController extends Base
      */
     private function consultationSidebar(Consultation $consultation)
     {
-        $newestAmendments     = Amendment::getNewestByConsultation($consultation, 5);
-        $newestMotions        = Motion::getNewestByConsultation($consultation, 3);
-        $newestMotionComments = MotionComment::getNewestByConsultation($consultation, 3);
+        $newestAmendments = Amendment::getNewestByConsultation($consultation, 5);
+        $newestMotions    = Motion::getNewestByConsultation($consultation, 3);
+        $newestComments   = IComment::getNewestByConsultation($consultation, 3);
 
         $this->renderPartial(
             'sidebar',
             [
-                'newestMotions'        => $newestMotions,
-                'newestAmendments'     => $newestAmendments,
-                'newestMotionComments' => $newestMotionComments,
+                'newestMotions'    => $newestMotions,
+                'newestAmendments' => $newestAmendments,
+                'newestComments'   => $newestComments,
             ]
         );
     }

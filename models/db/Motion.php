@@ -3,6 +3,9 @@
 namespace app\models\db;
 
 use app\components\MotionSorter;
+use app\components\RSSExporter;
+use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use Yii;
 
@@ -33,7 +36,7 @@ use Yii;
  * @property MotionSupporter[] $motionSupporters
  * @property ConsultationAgendaItem $agendaItem
  */
-class Motion extends IMotion
+class Motion extends IMotion implements IRSSItem
 {
     /**
      * @return string
@@ -424,5 +427,27 @@ class Motion extends IMotion
     {
         $this->cache = '';
         $this->consultation->flushCaches();
+    }
+
+    /**
+     * @param RSSExporter $feed
+     */
+    public function addToFeed(RSSExporter $feed)
+    {
+        $feed->addEntry(
+            UrlHelper::createMotionUrl($this),
+            $this->getTitleWithPrefix(),
+            $this->getInitiatorsStr(),
+            'Test', // @TODO
+            Tools::dateSql2timestamp($this->dateCreation)
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getDate()
+    {
+        return $this->dateCreation;
     }
 }

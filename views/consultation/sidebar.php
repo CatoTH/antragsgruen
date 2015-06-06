@@ -12,14 +12,29 @@ use yii\helpers\Html;
  * @var Motion[] $newestMotions
  * @var \app\models\db\User|null $myself
  * @var Amendment[] $newestAmendments
- * @var \app\models\db\MotionComment[] $newestMotionComments
- *
+ * @var \app\models\db\IComment[] $newestComments
  */
 
 /** @var \app\controllers\UserController $controller */
 $controller   = $this->context;
 $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
+
+
+$hasComments   = false;
+$hasMotions    = false;
+$hasAmendments = false;
+foreach ($consultation->motionTypes as $type) {
+    if ($type->policyComments != \app\models\policies\IPolicy::POLICY_NOBODY) {
+        $hasComments = true;
+    }
+    if ($type->policyMotions != \app\models\policies\IPolicy::POLICY_NOBODY) {
+        $hasMotions = true;
+    }
+    if ($type->policyAmendments != \app\models\policies\IPolicy::POLICY_NOBODY) {
+        $hasAmendments = true;
+    }
+}
 
 $html = Html::beginForm(UrlHelper::createUrl("consultation/search"), 'post', ['class' => 'hidden-xs form-search']);
 $html .= '<div class="nav-list"><div class="nav-header">Suche</div>
@@ -77,47 +92,48 @@ if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda')
     }
 }
 
-
-// @TODO Only show it if motions are enabled
-$html = '<div><ul class="nav nav-list motions">';
-$html .= '<li class="nav-header">' . Yii::t('con', 'New Motions') . '</li>';
-if (count($newestMotions) == 0) {
-    $html .= '<li><i>keine</i></li>';
-} else {
-    foreach ($newestMotions as $motion) {
-        $motionLink = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
-        $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' . Html::encode($motion->title);
-        $html .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
+if ($hasMotions) {
+    $html = '<div><ul class="nav nav-list motions">';
+    $html .= '<li class="nav-header">' . Yii::t('con', 'New Motions') . '</li>';
+    if (count($newestMotions) == 0) {
+        $html .= '<li><i>keine</i></li>';
+    } else {
+        foreach ($newestMotions as $motion) {
+            $motionLink = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
+            $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' . Html::encode($motion->title);
+            $html .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
+        }
     }
+    $html .= "</ul></div>";
+    $layout->menusHtml[] = $html;
 }
-$html .= "</ul></div>";
-$layout->menusHtml[] = $html;
 
-// @TODO Only show it if amendments are enabled
-$html = '<div><ul class="nav nav-list amendments">';
-$html .= '<li class="nav-header">' . Yii::t('con', 'New Amendments') . '</li>';
-if (count($newestAmendments) == 0) {
-    $html .= "<li><i>keine</i></li>";
-} else {
-    foreach ($newestAmendments as $amendment) {
-        $hideRev       = $consultation->getSettings()->hideRevision;
-        $zu_str        = Html::encode(
-            $hideRev ? $amendment->motion->title : $amendment->motion->titlePrefix
-        );
-        $amendmentLink = UrlHelper::createUrl(
-            [
-                "amendment/view",
-                "amendmentId" => $amendment->id,
-                "motionId"    => $amendment->motion->id
-            ]
-        );
-        $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>';
-        $linkTitle .= "<strong>" . Html::encode($amendment->titlePrefix) . "</strong> zu " . $zu_str;
-        $html .= '<li>' . Html::a($linkTitle, $amendmentLink) . '</li>';
+if ($hasAmendments) {
+    $html = '<div><ul class="nav nav-list amendments">';
+    $html .= '<li class="nav-header">' . Yii::t('con', 'New Amendments') . '</li>';
+    if (count($newestAmendments) == 0) {
+        $html .= "<li><i>keine</i></li>";
+    } else {
+        foreach ($newestAmendments as $amendment) {
+            $hideRev       = $consultation->getSettings()->hideRevision;
+            $zu_str        = Html::encode(
+                $hideRev ? $amendment->motion->title : $amendment->motion->titlePrefix
+            );
+            $amendmentLink = UrlHelper::createUrl(
+                [
+                    "amendment/view",
+                    "amendmentId" => $amendment->id,
+                    "motionId"    => $amendment->motion->id
+                ]
+            );
+            $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>';
+            $linkTitle .= "<strong>" . Html::encode($amendment->titlePrefix) . "</strong> zu " . $zu_str;
+            $html .= '<li>' . Html::a($linkTitle, $amendmentLink) . '</li>';
+        }
     }
+    $html .= "</ul></div>";
+    $layout->menusHtml[] = $html;
 }
-$html .= "</ul></div>";
-$layout->menusHtml[] = $html;
 
 
 if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda') {
@@ -129,30 +145,30 @@ if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda')
     }
 }
 
-// @TODO Only show it if comments are enabled
-$html = "<div><ul class='nav nav-list'><li class='nav-header'>Neue Kommentare</li>";
-if (count($newestMotionComments) == 0) {
-    $html .= "<li><i>keine</i></li>";
-} else {
-    foreach ($newestMotionComments as $comment) {
-        $commentLink = UrlHelper::createUrl(
-            [
-                "motion/view",
-                "motionId"  => $comment->motionId,
-                "commentId" => $comment->id,
-                "#"         => "comment" . $comment->id
-            ]
-        );
-        $html .= "<li class='komm'>";
-        $html .= "<strong>" . Html::encode($comment->user->name) . "</strong>, ";
-        $html .= Tools::formatMysqlDateTime($comment->dateCreation);
-        $html .= "<div>Zu " . Html::a($comment->motion->titlePrefix, $commentLink) . "</div>";
-        $html .= "</li>\n";
-    }
-}
-$html .= "</ul></div>";
-$layout->menusHtml[] = $html;
 
+if ($hasComments) {
+    $html = '<div><ul class="nav nav-list comments"><li class="nav-header">Neue Kommentare</li>';
+    if (count($newestComments) == 0) {
+        $html .= "<li><i>keine</i></li>";
+    } else {
+        foreach ($newestComments as $comment) {
+            $html .= '<li><a href="' . Html::encode($comment->getLink()) . '">';
+            $html .= '<span class="glyphicon glyphicon-comment"></span>';
+            $html .= '<strong>' . Html::encode($comment->name) . '</strong>, ';
+            $html .= Tools::formatMysqlDateTime($comment->dateCreation);
+            if (is_a($comment, \app\models\db\MotionComment::class)) {
+                /** @var \app\models\db\MotionComment $comment */
+                $html .= '<div>Zu ' . Html::encode($comment->motion->titlePrefix) . '</div>';
+            } elseif (is_a($comment, \app\models\db\AmendmentComment::class)) {
+                /** @var \app\models\db\AmendmentComment $comment */
+                $html .= '<div>Zu ' . Html::encode($comment->amendment->titlePrefix) . '</div>';
+            }
+            $html .= '</a></li>';
+        }
+    }
+    $html .= '</ul></div>';
+    $layout->menusHtml[] = $html;
+}
 
 $title = '<span class="glyphicon glyphicon-bell"></span>';
 $title .= Yii::t('con', 'E-Mail-Benachrichtigung bei neuen Anträgen');
@@ -160,7 +176,6 @@ $link = UrlHelper::createUrl('consultation/notifications');
 $html = "<div><ul class='nav nav-list'><li class='nav-header'>Benachrichtigungen</li>";
 $html .= "<li class='notifications'>" . Html::a($title, $link, ['class' => 'notifications']) . "</li>";
 $html .= "</ul></div>";
-
 $layout->menusHtml[] = $html;
 
 
@@ -168,23 +183,26 @@ if ($consultation->getSettings()->showFeeds) {
     $feeds     = 0;
     $feedsHtml = "";
 
-    // @todo only show it if motions are enabled
-    $feedUrl = UrlHelper::createUrl('consultation/feedmotions');
-    $feedsHtml .= "<li>";
-    $feedsHtml .= Html::a(Yii::t('con', 'Anträge'), $feedUrl, ['class' => 'feedMotions']) . "</li>";
-    $feeds++;
+    if ($hasMotions) {
+        $feedUrl = UrlHelper::createUrl('consultation/feedmotions');
+        $feedsHtml .= "<li>";
+        $feedsHtml .= Html::a(Yii::t('con', 'Anträge'), $feedUrl, ['class' => 'feedMotions']) . "</li>";
+        $feeds++;
+    }
 
-    // @todo only show it if amendments are enabled
-    $feedUrl = UrlHelper::createUrl('consultation/feedamendments');
-    $feedsHtml .= "<li>";
-    $feedsHtml .= Html::a(Yii::t('con', 'Änderungsanträge'), $feedUrl, ['class' => 'feedAmendments']);
-    $feedsHtml .= "</li>";
-    $feeds++;
+    if ($hasAmendments) {
+        $feedUrl = UrlHelper::createUrl('consultation/feedamendments');
+        $feedsHtml .= "<li>";
+        $feedsHtml .= Html::a(Yii::t('con', 'Änderungsanträge'), $feedUrl, ['class' => 'feedAmendments']);
+        $feedsHtml .= "</li>";
+        $feeds++;
+    }
 
-    // @todo only show it if comments are enabled
-    $feedUrl = UrlHelper::createUrl('consultation/feedcomments');
-    $feedsHtml .= "<li>" . Html::a(Yii::t('con', 'Kommentare'), $feedUrl, ['class' => 'feedComments']) . "</li>";
-    $feeds++;
+    if ($hasComments) {
+        $feedUrl = UrlHelper::createUrl('consultation/feedcomments');
+        $feedsHtml .= "<li>" . Html::a(Yii::t('con', 'Kommentare'), $feedUrl, ['class' => 'feedComments']) . "</li>";
+        $feeds++;
+    }
 
     if ($feeds > 1) {
         $feedUrl = UrlHelper::createUrl('consultation/feedall');
@@ -205,11 +223,12 @@ if ($consultation->getSettings()->hasPDF) {
     $html    = '<div><ul class="nav nav-list"><li class="nav-header">PDFs</li>';
     $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'pdfs']) . '</li>';
 
-    // @todo only show it if amendments are enabled
-    $amendmentPdfLink = UrlHelper::createUrl('consultation/amendmentpdfs');
-    $linkTitle        = '<span class="glyphicon glyphicon-download-alt"></span>';
-    $linkTitle .= Yii::t('con', 'Alle Änderungsanträge gesammelt');
-    $html .= '<li>' . Html::a($linkTitle, $amendmentPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
+    if ($hasAmendments) {
+        $amendmentPdfLink = UrlHelper::createUrl('consultation/amendmentpdfs');
+        $linkTitle        = '<span class="glyphicon glyphicon-download-alt"></span>';
+        $linkTitle .= Yii::t('con', 'Alle Änderungsanträge gesammelt');
+        $html .= '<li>' . Html::a($linkTitle, $amendmentPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
+    }
 
     $html .= '</ul></div>';
     $layout->menusHtml[] = $html;

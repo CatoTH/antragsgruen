@@ -67,14 +67,16 @@ class RSSExporter
     /**
      * @param string $link
      * @param string $title
+     * @param string $author
      * @param string $description
      * @param string $date
      */
-    public function addEntry($link, $title, $description, $date)
+    public function addEntry($link, $title, $author, $description, $date)
     {
         $this->entries[] = [
             'link'        => $link,
             'title'       => $title,
+            'author'      => $author,
             'description' => $description,
             'date'        => $date,
         ];
@@ -96,7 +98,7 @@ class RSSExporter
             <link>' . Html::encode($this->feedLink) . '</link>
             <description>' . Html::encode($this->description) . '</description>
             <image>
-                <url>' . Html::encode($rootUri) . '/css/img/logo.png</url>
+                <url>' . Html::encode($rootUri . $this->image) . '</url>
                 <title>' . Html::encode($this->title) . '</title>
                 <link>' . Html::encode($this->feedLink) . '</link>
             </image>';
@@ -104,6 +106,7 @@ class RSSExporter
             $return .= '<item>
                         <title>' . Html::encode($dat['title']) . '</title>
                         <link>' . Html::encode($dat['link']) . '</link>
+                        <author>' . Html::encode($dat['author']) . '</author>
                         <guid>' . Html::encode($dat['link']) . '</guid>
                         <description><![CDATA[';
             $return .= $dat['description'];

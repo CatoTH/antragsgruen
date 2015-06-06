@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\Tools;
 use yii\db\ActiveRecord;
 
 /**
@@ -14,7 +15,7 @@ use yii\db\ActiveRecord;
  * @property integer $status
  * @property User $user
  */
-abstract class IComment extends ActiveRecord
+abstract class IComment extends ActiveRecord implements IRSSItem
 {
 
     const STATUS_SCREENING = 1;
@@ -28,8 +29,8 @@ abstract class IComment extends ActiveRecord
     {
         return [
             static::STATUS_SCREENING => 'Nicht freigeschaltet',
-            static::STATUS_VISIBLE => 'Sichtbar',
-            static::STATUS_DELETED => 'Gelöscht',
+            static::STATUS_VISIBLE   => 'Sichtbar',
+            static::STATUS_DELETED   => 'Gelöscht',
         ];
     }
 
@@ -45,10 +46,9 @@ abstract class IComment extends ActiveRecord
     abstract public function getMotionTitle();
 
     /**
-     * @param bool $absolute
      * @return string
      */
-    abstract public function getLink($absolute = false);
+    abstract public function getLink();
 
     /**
      * @param User|null $user
@@ -91,5 +91,33 @@ abstract class IComment extends ActiveRecord
         }
 
         return ($identity->id == $this->userId);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param int $limit
+     * @return IComment[]
+     */
+    public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
+    {
+        /** @var IComment[] $comments */
+        $comments = array_merge(
+            MotionComment::getNewestByConsultation($consultation, $limit),
+            AmendmentComment::getNewestByConsultation($consultation, $limit)
+        );
+        usort($comments, function ($comm1, $comm2) {
+            /** @var IComment $comm1 */
+            /** @var IComment $comm2 */
+            $ts1 = Tools::dateSql2timestamp($comm1->getDate());
+            $ts2 = Tools::dateSql2timestamp($comm2->getDate());
+            if ($ts1 < $ts2) {
+                return 1;
+            }
+            if ($ts1 > $ts2) {
+                return -1;
+            }
+            return 0;
+        });
+        return $comments;
     }
 }

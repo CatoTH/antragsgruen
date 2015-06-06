@@ -2,7 +2,9 @@
 
 namespace app\models\db;
 
-use yii\helpers\Url;
+use app\components\RSSExporter;
+use app\components\Tools;
+use app\components\UrlHelper;
 
 /**
  * @package app\models\db
@@ -70,34 +72,58 @@ class AmendmentComment extends IComment
     }
 
     /**
+     * @param Consultation $consultation
+     * @param int $limit
+     * @return AmendmentComment[]
+     */
+    public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
+    {
+        $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
+
+        return static::find()->joinWith('amendment', true)->joinWith('amendment.motion', true)
+            ->where('amendmentComment.status = ' . IntVal(static::STATUS_VISIBLE))
+            ->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')')
+            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')')
+            ->andWhere('motion.consultationId = ' . IntVal($consultation->id))
+            ->orderBy('amendmentComment.dateCreation DESC')
+            ->offset(0)->limit($limit)->all();
+    }
+
+    /**
      * @return string
      */
     public function getMotionTitle()
     {
-        return $this->amendment->titlePrefix . " zu " . $this->amendment->motion->getTitleWithPrefix();
+        return $this->amendment->titlePrefix . ' zu ' . $this->amendment->motion->getTitleWithPrefix();
     }
 
     /**
-     * @param bool $absolute
+     * @param RSSExporter $feed
+     */
+    public function addToFeed(RSSExporter $feed)
+    {
+        $feed->addEntry(
+            UrlHelper::createAmendmentCommentUrl($this),
+            $this->getMotionTitle(),
+            $this->name,
+            $this->text,
+            Tools::dateSql2timestamp($this->dateCreation)
+        );
+    }
+
+    /**
      * @return string
      */
-    public function getLink($absolute = false)
+    public function getDate()
     {
-        $url = Url::toRoute(
-            [
-                'amendment/view',
-                'subdomain'        => $this->amendment->motion->consultation->site->subdomain,
-                'consultationPath' => $this->amendment->motion->consultation->urlPath,
-                'motionId'         => $this->amendment->motion->id,
-                'amendmentId'      => $this->amendment->id,
-                'commentId'        => $this->id,
-                '#'                => 'comment' . $this->id
-            ]
-        );
-        if ($absolute) {
-            // @TODO Testen
-            $url = \Yii::$app->basePath . $url;
-        }
-        return $url;
+        return $this->dateCreation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLink()
+    {
+        return UrlHelper::createAmendmentCommentUrl($this);
     }
 }

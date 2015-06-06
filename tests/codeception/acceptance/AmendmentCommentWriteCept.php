@@ -7,7 +7,7 @@
 $I = new AntragsgruenAcceptenceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('Write a comment, but forgot my name');
+$I->wantTo('write a comment, but forgot my name');
 $I->gotoAmendment(true);
 
 $I->see('Kommentar schreiben', 'section.comments');
@@ -24,7 +24,7 @@ $I->canSeeInField('#comment_-1_-1_text', 'Some Text');
 
 
 
-$I->wantTo('Enter the missing data');
+$I->wantTo('enter the missing data');
 $I->fillField('#comment_-1_-1_name', 'My Name');
 $I->submitForm('section.comments .commentForm', [], 'writeComment');
 
@@ -34,7 +34,18 @@ $I->cantSeeElement('section.comments .motionComment .delLink');
 
 
 
-$I->wantTo('Delete the comment');
+
+$I->wantTo('see the comment on the sidebar and the feed');
+$I->gotoStdConsultationHome();
+$I->see('My Name', '#sidebar .comments');
+$I->click('.feedComments');
+$I->seeInPageSource('My Name');
+
+
+
+
+$I->wantTo('delete the comment');
+$I->gotoStdConsultationHome();
 $I->loginAsStdAdmin();
 $I->gotoAmendment();
 

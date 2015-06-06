@@ -2,6 +2,9 @@
 
 namespace app\models\db;
 
+use app\components\RSSExporter;
+use app\components\Tools;
+use app\components\UrlHelper;
 use yii\db\ActiveQuery;
 
 /**
@@ -27,7 +30,7 @@ use yii\db\ActiveQuery;
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
  */
-class Amendment extends IMotion
+class Amendment extends IMotion implements IRSSItem
 {
 
     /**
@@ -299,7 +302,6 @@ class Amendment extends IMotion
     }
 
 
-
     /**
      * @return bool
      */
@@ -371,5 +373,27 @@ class Amendment extends IMotion
     {
         $this->cache = '';
         $this->motion->flushCaches();
+    }
+
+    /**
+     * @param RSSExporter $feed
+     */
+    public function addToFeed(RSSExporter $feed)
+    {
+        $feed->addEntry(
+            UrlHelper::createAmendmentUrl($this),
+            $this->getTitle(),
+            $this->getInitiatorsStr(),
+            'Test', // @TODO
+            Tools::dateSql2timestamp($this->dateCreation)
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getDate()
+    {
+        return $this->dateCreation;
     }
 }

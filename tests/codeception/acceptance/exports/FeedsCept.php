@@ -15,8 +15,6 @@ $I->click('#sidebar .feedMotions');
 $I->seeInPageSource('O’zapft is!');
 $I->seeInPageSource('Test');
 
-// @TODO
-
 
 $I->wantTo('test the amendment feed');
 $I->gotoStdConsultationHome();
@@ -24,15 +22,9 @@ $I->click('#sidebar .feedAmendments');
 
 $I->seeInPageSource('Tester');
 $I->seeInPageSource('Ä1');
-// @TODO
 
 
-
-$I->wantTo('test the comment feed');
-$I->gotoStdConsultationHome();
-$I->click('#sidebar .feedComments');
-
-// @TODO
+// The comment feed is tested in MotionCommentWriteCept and AmendmentCommentWriteCept
 
 
 
@@ -44,4 +36,3 @@ $I->seeInPageSource('O’zapft is! PDF');
 $I->seeInPageSource('Test');
 $I->seeInPageSource('Tester');
 $I->seeInPageSource('Ä1');
-// @TODO
