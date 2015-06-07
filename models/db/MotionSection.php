@@ -78,44 +78,6 @@ class MotionSection extends IMotionSection
         return HTMLTools::sectionSimpleHTML($this->data);
     }
 
-    /**
-     * @param string $para
-     * @param bool $lineNumbers
-     * @param int $lineLength
-     * @return string[]
-     */
-    private function para2lines($para, $lineNumbers, $lineLength)
-    {
-        if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
-            mb_stripos($para, '<blockquote>') === 0
-        ) {
-            $lineLength -= 6;
-        }
-        $splitter = new LineSplitter($para, $lineLength);
-        $linesIn  = $splitter->splitLines();
-
-        if ($lineNumbers) {
-            $linesOut = [];
-            $pres     = ['<p>', '<ul><li>', '<ol><li>', '<blockquote><p>'];
-            $linePre  = '###LINENUMBER###';
-            foreach ($linesIn as $line) {
-                $inserted = false;
-                foreach ($pres as $pre) {
-                    if (mb_stripos($line, $pre) === 0) {
-                        $inserted = true;
-                        $line     = str_ireplace($pre, $pre . $linePre, $line);
-                    }
-                }
-                if (!$inserted) {
-                    $line = $linePre . $line;
-                }
-                $linesOut[] = $line;
-            }
-        } else {
-            $linesOut = $linesIn;
-        }
-        return $linesOut;
-    }
 
     /**
      * @param bool $lineNumbers
@@ -129,7 +91,7 @@ class MotionSection extends IMotionSection
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $paraNo => $para) {
             $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
-            $linesOut   = $this->para2lines($para, $lineNumbers, $lineLength);
+            $linesOut   = LineSplitter::motionPara2lines($para, $lineNumbers, $lineLength);
 
             $paragraph              = new MotionSectionParagraph();
             $paragraph->paragraphNo = $paraNo;
@@ -158,7 +120,7 @@ class MotionSection extends IMotionSection
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $para) {
             $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
-            $linesOut   = $this->para2lines($para, true, $lineLength);
+            $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
             $return .= implode(' ', $linesOut) . "\n";
         }
         return $return;
@@ -180,7 +142,7 @@ class MotionSection extends IMotionSection
         $paras = $this->getTextParagraphs();
         foreach ($paras as $para) {
             $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
-            $linesOut   = $this->para2lines($para, true, $lineLength);
+            $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
             $num += count($linesOut);
         }
         return $num;

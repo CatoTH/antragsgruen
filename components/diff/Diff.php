@@ -263,13 +263,10 @@ class Diff
         }
         $computedStr = implode("\n", $computedStrs);
         if ($this->debug) {
+            echo "\n\n---\n";
             var_dump($computedStr);
+            echo "\n---\n";
         }
-
-        echo "\n\n---\n";
-        var_dump($computedStr);
-        echo "\n---\n";
-
 
         $combined = $this->untokenizeLine($computedStr);
         $combined = str_replace('</del> <del>', ' ', $combined);

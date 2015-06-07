@@ -26,6 +26,7 @@ class HTMLTools
     public static function cleanUntrustedHtml($html)
     {
         $html = str_replace(chr(194) . chr(160), " ", $html);
+        $html = str_replace("\r", "", $html);
         // @TODO
         return $html;
     }
@@ -38,6 +39,7 @@ class HTMLTools
     public static function cleanSimpleHtml($html)
     {
         $html = str_replace(chr(194) . chr(160), " ", $html);
+        $html = str_replace("\r", "", $html);
 
         $html = HtmlPurifier::process(
             $html,

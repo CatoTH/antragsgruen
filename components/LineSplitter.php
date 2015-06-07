@@ -122,4 +122,44 @@ class LineSplitter
         }
         return $lines;
     }
+
+
+    /**
+     * @param string $para
+     * @param bool $lineNumbers
+     * @param int $lineLength
+     * @return string[]
+     */
+    public static function motionPara2lines($para, $lineNumbers, $lineLength)
+    {
+        if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
+            mb_stripos($para, '<blockquote>') === 0
+        ) {
+            $lineLength -= 6;
+        }
+        $splitter = new LineSplitter($para, $lineLength);
+        $linesIn  = $splitter->splitLines();
+
+        if ($lineNumbers) {
+            $linesOut = [];
+            $pres     = ['<p>', '<ul><li>', '<ol><li>', '<blockquote><p>'];
+            $linePre  = '###LINENUMBER###';
+            foreach ($linesIn as $line) {
+                $inserted = false;
+                foreach ($pres as $pre) {
+                    if (mb_stripos($line, $pre) === 0) {
+                        $inserted = true;
+                        $line     = str_ireplace($pre, $pre . $linePre, $line);
+                    }
+                }
+                if (!$inserted) {
+                    $line = $linePre . $line;
+                }
+                $linesOut[] = $line;
+            }
+        } else {
+            $linesOut = $linesIn;
+        }
+        return $linesOut;
+    }
 }

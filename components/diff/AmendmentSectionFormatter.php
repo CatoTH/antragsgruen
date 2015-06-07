@@ -1,6 +1,8 @@
 <?php
 namespace app\components\diff;
 
+use app\components\HTMLTools;
+use app\components\LineSplitter;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
@@ -57,12 +59,19 @@ class AmendmentSectionFormatter
         if ($strPre === null) {
             throw new Internal('Original version not found');
         }
+
+        $lineLength = $this->section->consultationSetting->motionType->consultation->getSettings()->lineLength;
+        $strPost    = '';
+        foreach ($this->section->getTextParagraphs() as $para) {
+            $linesOut = LineSplitter::motionPara2lines($para, false, $lineLength);
+            $strPost .= implode(' ', $linesOut) . "\n";
+        }
+
         $diff = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
 
-        $strPost = implode("\n", $this->section->getTextParagraphs()) . "\n";
-
         return $diff->computeDiff($strPre, $strPost);
+
     }
 
     /**
@@ -127,15 +136,14 @@ class AmendmentSectionFormatter
      */
     public static function getDiffSplitToLines($computed)
     {
-        //$computedLines = explode('###LINENUMBER###', $computed);
         $lines = explode("\n", $computed);
-        $out = [];
+        $out   = [];
         for ($i = 0; $i < count($lines); $i++) {
             $line = $lines[$i];
             if (preg_match('/^<(ul|blockquote|ol)/siu', $line)) {
                 $out[] = $line;
             } else {
-                $line = preg_replace('/<\/?p>/siu', '', $line);
+                $line  = preg_replace('/<\/?p>/siu', '', $line);
                 $parts = explode('###LINENUMBER###', $line);
                 foreach ($parts as $j => $part) {
                     if ($part != '' || $j > 0) {
@@ -158,8 +166,46 @@ class AmendmentSectionFormatter
         $lineOffset    = $this->section->getFirstLineNumber() - 1;
         $computed      = $this->getHtmlDiffWithLineNumbers();
         $computedLines = static::getDiffSplitToLines($computed);
+        foreach ($computedLines as $i => $line) {
+            $computedLines[$i] = str_replace('###LINENUMBER###', '', $line);
+        }
 
         return static::getDiffLinesWithNumberComputed($computedLines, $lineOffset, $prependLineNumber);
+    }
+
+    /**
+     * Used by unit tests; should resemble the process above as closely as possible
+     * @param string $textPre
+     * @param string $textPost
+     * @return array
+     */
+    public static function getDiffLinesWithNumbersDebug($textPre, $textPost)
+    {
+        $origLines = HTMLTools::sectionSimpleHTML($textPre);
+        $strPre = '';
+        foreach ($origLines as $para) {
+            $linesOut   = LineSplitter::motionPara2lines($para, true, 80);
+            $strPre .= implode(' ', $linesOut) . "\n";
+        }
+
+        $newLines = HTMLTools::sectionSimpleHTML($textPost);
+        $strPost = '';
+        foreach ($newLines as $para) {
+            $linesOut   = LineSplitter::motionPara2lines($para, false, 80);
+            $strPost .= implode(' ', $linesOut) . "\n";
+        }
+
+        $diff = new Diff();
+        $diff->setIgnoreStr('###LINENUMBER###');
+        $computed = $diff->computeDiff($strPre, $strPost);
+
+        $computedLines = AmendmentSectionFormatter::getDiffSplitToLines($computed);
+        foreach ($computedLines as $i => $line) {
+            $computedLines[$i] = str_replace('###LINENUMBER###', '', $line);
+        }
+        $return = AmendmentSectionFormatter::getDiffLinesWithNumberComputed($computedLines, 1, true);
+
+        return $return;
     }
 
     /**
