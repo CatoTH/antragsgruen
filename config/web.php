@@ -3,6 +3,7 @@
 require_once(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'models' .
     DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR . 'AntragsgruenApp.php');
 
+/** @var \app\models\settings\AntragsgruenApp $params */
 $params = require(__DIR__ . DIRECTORY_SEPARATOR . 'config.php');
 $common = require(__DIR__ . DIRECTORY_SEPARATOR . 'common.php');
 
@@ -20,23 +21,11 @@ $config = yii\helpers\ArrayHelper::merge(
             ],
             'authClientCollection' => [
                 'class' => 'yii\authclient\Collection',
-                'clients' => [
-                    'google' => [
-                        'class' => 'yii\authclient\clients\GoogleOpenId'
-                    ],
-                    'facebook' => [
-                        'class' => 'yii\authclient\clients\Facebook',
-                        'clientId' => '726808767433260',
-                        'clientSecret' => '61de8359c02e0f6ce07709500e095a8b',
-                    ],
-                    'wurzelwerk' => [
-                        'class' => 'app\components\WurzelwerkAuthClient',
-                    ]
-                ],
+                'clients' => $params->authClientCollection,
             ],
             'request'      => [
                 // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-                'cookieValidationKey' => 'eMsWkKlOwN7qLaGI8R04JsN4eQInTqx3',
+                'cookieValidationKey' => $params->cookieValidationKey,
             ],
         ],
     ]
