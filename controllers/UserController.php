@@ -33,7 +33,7 @@ class UserController extends Base
      */
     protected function loginUser(User $user)
     {
-        Yii::$app->user->login($user);
+        Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
     }
 
     /**
@@ -47,12 +47,12 @@ class UserController extends Base
             /** @var User $user */
             $user = User::findOne($login);
             if (!$user) {
-                die("User not found");
+                die('User not found');
             }
-            Yii::$app->user->login($user);
+            Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
             $this->redirect($redirect);
         } else {
-            die("Invalid Code");
+            die('Invalid Code');
         }
     }
 

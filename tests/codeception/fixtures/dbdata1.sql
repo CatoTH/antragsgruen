@@ -176,9 +176,9 @@ INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
 
 INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`) VALUES
   (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 09:04:44', 0,
-   'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy', NULL, NULL),
+   'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy', 'f5227358c12d6cd48900d07f846f1cc758b5b9d8', NULL),
   (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 09:08:14', 0,
-   'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV', NULL, NULL);
+   'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV', '3f0b4863f2989d8f89a9ab8e2ba33b264e70ef3a', NULL);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

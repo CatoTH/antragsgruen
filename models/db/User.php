@@ -463,7 +463,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $subject = "[Antragsgrün] Neuer Kommentar zu: " . $comment->getMotionTitle();
         $text    = "Es wurde ein neuer Kommentar zu " . $comment->getMotionTitle() . " geschrieben:\n" .
-            $comment->getLink(true);
+            $comment->getLink();
         $this->notificationEmail($comment->getConsultation(), $subject, $text);
     }
 

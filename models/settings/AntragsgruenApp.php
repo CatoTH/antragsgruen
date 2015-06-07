@@ -24,4 +24,5 @@ class AntragsgruenApp
     public $mandrillApiKey        = null;
     public $siteBehaviorClasses   = [];
     public $authClientCollection  = [];
+    public $autoLoginDuration     = 0;
 }

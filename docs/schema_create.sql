@@ -460,16 +460,16 @@ CREATE TABLE `siteAdmin` (
 --
 
 CREATE TABLE `user` (
-  `id`              INT(11)    NOT NULL,
-  `name`            TEXT       NOT NULL,
-  `email`           VARCHAR(200)        DEFAULT NULL,
-  `emailConfirmed`  TINYINT(4)          DEFAULT '0',
-  `auth`            VARCHAR(190)        DEFAULT NULL,
-  `dateCreation`    TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status`          TINYINT(4) NOT NULL,
-  `pwdEnc`          VARCHAR(100)        DEFAULT NULL,
-  `authKey`         BINARY(100)         DEFAULT NULL,
-  `siteNamespaceId` INT(11)             DEFAULT NULL
+  `id`              INT(11)     NOT NULL,
+  `name`            TEXT        NOT NULL,
+  `email`           VARCHAR(200)         DEFAULT NULL,
+  `emailConfirmed`  TINYINT(4)           DEFAULT '0',
+  `auth`            VARCHAR(190)         DEFAULT NULL,
+  `dateCreation`    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`          TINYINT(4)  NOT NULL,
+  `pwdEnc`          VARCHAR(100)         DEFAULT NULL,
+  `authKey`         BINARY(100) NOT NULL,
+  `siteNamespaceId` INT(11)              DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
