@@ -76,6 +76,18 @@ echo Html::textInput('type[createTitle]', $motionType->createTitle, $options);
 echo '</div></div>';
 
 echo '<div class="form-group">';
+echo '<label class="col-md-3 control-label" for="pdfLayout">';
+echo 'PDF-Layout';
+echo '</label><div class="col-md-9">';
+echo Html::dropDownList(
+    'type[pdfLayout]',
+    $motionType->pdfLayout,
+    \app\models\pdfLayouts\IPDFLayout::getClasses(),
+    ['id' => 'pdfLayout', 'class' => 'form-control']
+);
+echo '</div></div>';
+
+echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typeMotionPrefix">';
 echo 'Antragskürzel-Präfix';
 echo '</label><div class="col-md-2">';
@@ -87,7 +99,7 @@ echo '</div></div>';
 echo '<h3>' . 'Berechtigungen für:' . '</h3>';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="types">';
+echo '<label class="col-md-3 control-label" for="typePolicyMotions">';
 echo 'Anträge';
 echo '</label><div class="col-md-9">';
 echo Html::dropDownList(

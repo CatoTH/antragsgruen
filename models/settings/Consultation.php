@@ -35,7 +35,6 @@ class Consultation
     public $screeningAmendments   = false;
     public $screeningComments     = false;
     public $initiatorsMayReject   = false;
-    public $hasPDF                = true;
     public $commentWholeMotions   = false;
     public $allowMultipleTags     = false;
     public $allowStrikeFormat     = false;

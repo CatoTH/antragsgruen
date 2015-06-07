@@ -4,11 +4,43 @@ namespace app\models\pdfLayouts;
 
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
+use app\models\exceptions\Internal;
 use TCPDF;
 use Yii;
 
-class IPDFLayout
+abstract class IPDFLayout
 {
+    /**
+     * @return string[]
+     */
+    public static function getClasses()
+    {
+        return [
+            -1 => '- kein PDF -',
+            0  => 'LDK Bayern',
+            1  => 'BDK',
+        ];
+    }
+
+    /**
+     * @param int $classId
+     * @return IPDFLayout|null
+     * @throws Internal
+     */
+    public static function getClassById($classId)
+    {
+        switch ($classId) {
+            case -1:
+                return null;
+            case 0:
+                return ByLDK::class;
+            case 1:
+                return BDK::class;
+            default:
+                throw new Internal('Unknown PDF Layout');
+        }
+    }
+
     /** @var ConsultationMotionType */
     protected $motionType;
 
@@ -58,101 +90,5 @@ class IPDFLayout
     /**
      * @param Motion $motion
      */
-    public function printMotionHeader(Motion $motion)
-    {
-        $pdf      = $this->pdf;
-        $settings = $this->motionType->consultation->getSettings();
-
-        if (file_exists($settings->logoUrl)) {
-            $pdf->setJPEGQuality(100);
-            $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
-        }
-
-        if (!$settings->hideRevision) {
-            $revName = $motion->titlePrefix;
-            if ($revName == "") {
-                $revName = 'Entwurf';
-                $pdf->SetFont("helvetica", "I", "25");
-                $width = $pdf->GetStringWidth($revName, "helvetica", "I", "25") + 3.1;
-            } else {
-                $pdf->SetFont("helvetica", "B", "25");
-                $width = $pdf->GetStringWidth($revName, "helvetica", "B", "25") + 3.1;
-            }
-            if ($width < 35) {
-                $width = 35;
-            }
-
-            $pdf->SetXY(192 - $width, 37, true);
-            $borderStyle = ['width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => [150, 150, 150]];
-            $this->pdf->MultiCell(
-                $width,
-                21,
-                $revName,
-                ['LTRB' => $borderStyle],
-                "C",
-                false,
-                1,
-                "",
-                "",
-                true,
-                0,
-                false,
-                true,
-                21, // defaults
-                "M"
-            );
-        }
-
-        $str = $motion->motionType->title;
-        $pdf->SetFont("helvetica", "B", "25");
-        $width = $pdf->GetStringWidth($str);
-
-        $pdf->SetXY((210 - $width) / 2, 60);
-        $pdf->Write(20, $str);
-        $pdf->SetLineStyle(
-            [
-                "width" => 3,
-                'color' => array(150, 150, 150),
-            ]
-        );
-        $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
-
-        $pdf->SetY(90);
-        $intro = \Yii::t('pdf', 'introduction');
-        if ($intro) {
-            $pdf->SetX(24);
-            $pdf->SetFont("helvetica", "B", 12);
-            $pdf->MultiCell(160, 13, $intro, 0, "C");
-            $pdf->Ln(7);
-        }
-
-
-        $pdf->SetX(12);
-
-        $pdf->SetFont("helvetica", "B", 12);
-        $pdf->MultiCell(12, 0, "", 0, "L", false, 0);
-        $pdf->MultiCell(50, 0, Yii::t('pdf', 'Initiators') . ":", 0, "L", false, 0);
-        $pdf->SetFont("helvetica", "", 12);
-        $pdf->MultiCell(120, 0, $motion->getInitiatorsStr(), 0, "L");
-
-        $pdf->Ln(5);
-        $pdf->SetX(12);
-
-
-        $pdf->SetFont("helvetica", "B", 12);
-        $pdf->MultiCell(12, 0, "", 0, "L", false, 0);
-
-        $pdf->MultiCell(50, 0, "Gegenstand:", 0, "L", false, 0);
-        $pdf->SetFont("helvetica", "B", 12);
-        $borderStyle = ['width' => 0.3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => [150, 150, 150]];
-        $pdf->MultiCell(
-            100,
-            0,
-            $motion->title,
-            ['B' => $borderStyle],
-            "L"
-        );
-
-        $pdf->Ln(9);
-    }
+    abstract public function printMotionHeader(Motion $motion);
 }

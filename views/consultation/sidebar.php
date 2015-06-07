@@ -24,6 +24,7 @@ $consultation = $controller->consultation;
 $hasComments   = false;
 $hasMotions    = false;
 $hasAmendments = false;
+$hasPDF        = false;
 foreach ($consultation->motionTypes as $type) {
     if ($type->policyComments != \app\models\policies\IPolicy::POLICY_NOBODY) {
         $hasComments = true;
@@ -33,6 +34,9 @@ foreach ($consultation->motionTypes as $type) {
     }
     if ($type->policyAmendments != \app\models\policies\IPolicy::POLICY_NOBODY) {
         $hasAmendments = true;
+    }
+    if ($type->getPDFLayoutClass() !== null) {
+        $hasPDF = true;
     }
 }
 
@@ -217,7 +221,7 @@ if ($consultation->getSettings()->showFeeds) {
     $layout->menusHtml[] = $html;
 }
 
-if ($consultation->getSettings()->hasPDF) {
+if ($hasPDF) {
     $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'Alle PDFs zusammen');
     $pdfLink = UrlHelper::createUrl('consultation/pdfs');
     $html    = '<div><ul class="nav nav-list"><li class="nav-header">PDFs</li>';

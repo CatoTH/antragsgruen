@@ -8,8 +8,6 @@ use app\views\consultation\LayoutHelper;
  * @var Consultation $consultation
  */
 
-$hasPDF = $consultation->getSettings()->hasPDF;
-
 $motions = MotionSorter::getSortedMotions($consultation, $consultation->motions);
 foreach ($motions as $name => $motns) {
     echo "<ul class='motionListStd'>";

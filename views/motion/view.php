@@ -58,7 +58,7 @@ if ($policy->checkCurUserHeuristically()) {
     }
 }
 
-if ($motion->consultation->getSettings()->hasPDF && $motion->isVisible()) {
+if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
     $html .= '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
         Yii::t('motion', 'PDF-Version herunterladen');

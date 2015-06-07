@@ -16,7 +16,8 @@ use yii\db\ActiveRecord;
  * @property string $createTitle
  * @property string $motionPrefix
  * @property int $position
- * @property int $cssicon
+ * @property int $cssIcon
+ * @property int $pdfLayout
  * @property string $deadlineMotions
  * @property string $deadlineAmendments
  * @property string $policyMotions
@@ -131,11 +132,15 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return IPDFLayout
+     * @return IPDFLayout|null
      */
     public function getPDFLayoutClass()
     {
-        return new IPDFLayout($this);
+        $class = IPDFLayout::getClassById($this->pdfLayout);
+        if ($class === null) {
+            return null;
+        }
+        return new $class($this);
     }
 
 
@@ -175,10 +180,10 @@ class ConsultationMotionType extends ActiveRecord
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
             [['contactEmail', 'contactPhone'], 'required'],
 
-            [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone'], 'number'],
+            [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
-            [['motionPrefix', 'position', 'initiatorForm', 'contactEmail', 'contactPhone'], 'safe'],
+            [['motionPrefix', 'position', 'initiatorForm', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'safe'],
         ];
     }
