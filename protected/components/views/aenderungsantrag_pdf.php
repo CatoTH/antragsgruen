@@ -28,7 +28,6 @@ if (file_exists($logo)) {
 }
 
 $width = 39;
-$x     = 155;
 if ($aenderungsantrag->revision_name == "") {
 	$name = "Entwurf";
 	$pdf->SetFont("helvetica", "I", "25");
@@ -40,7 +39,6 @@ if ($aenderungsantrag->revision_name == "") {
 		$arev = $aenderungsantrag->antrag->revision_name;
 		if (stripos($aenderungsantrag->revision_name, $arev) === false) {
 			$name  = $aenderungsantrag->revision_name . " zu " . $arev;
-			$x     = 147;
 		} else {
 			$name = $aenderungsantrag->revision_name;
 		}
@@ -52,7 +50,7 @@ if ($width < 45) {
 	$width = 45;
 }
 
-$pdf->SetXY($x, 37, true);
+$pdf->SetXY((200 - $width), 37, true);
 $pdf->MultiCell($width, 21, $name,
 	array('LTRB' => array('width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(150, 150, 150))), "C",
 	false, 1, "", "", true, 0, false, true, 21, // defaults

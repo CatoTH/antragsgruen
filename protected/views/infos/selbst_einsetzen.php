@@ -5,6 +5,7 @@
  */
 
 $this->pageTitle = "Antragsgrün - die grüne Online-Antragsverwaltung";
+$this->pageDescription = 'Das Open-Source-Antragstool von Bündnis 90 / die GRÜNEN';
 
 include(__DIR__ . "/sidebar.php");
 

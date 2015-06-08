@@ -32,6 +32,9 @@ $cs->registerScriptFile($assets_base . '/js/antraege.js', CClientScript::POS_END
 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<?php
+	if ($this->pageDescription != '') {
+		echo '<meta name="description" content="' . CHtml::encode($this->pageDescription) . '">' . "\n";
+	}
 	if (is_a($this->veranstaltung, "Veranstaltung") && $this->veranstaltung->getEinstellungen()->fb_logo_url != "") {
 		echo '<link rel="image_src" href="' . CHtml::encode($this->veranstaltung->getEinstellungen()->fb_logo_url) . '">';
 	}
