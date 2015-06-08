@@ -238,6 +238,21 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->authKey == $authKey;
     }
 
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->authKey = \Yii::$app->getSecurity()->generateRandomString();
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * @return string

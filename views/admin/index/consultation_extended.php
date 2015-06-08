@@ -47,8 +47,6 @@ echo '<h3 class="green">Allgemeine Einstellungen zur Veranstaltung</h3>';
 echo '<div class="content">';
 
 
-$booleanSettingRow($settings, 'hasPDF', $handledSettings, '<strong>Anträge etc. als PDF anbieten</strong>');
-
 $handledSettings[] = 'logoUrl';
 echo '<fieldset class="form-group">
     <label class="col-sm-4 control-label" for="consultationPath">Logo-URL:</label>
