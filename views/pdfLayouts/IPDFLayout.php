@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\pdfLayouts;
+namespace app\views\pdfLayouts;
 
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
@@ -56,36 +56,16 @@ abstract class IPDFLayout
     }
 
     /**
-     * @return TCPDF
-     */
-    public function createPDFClass()
-    {
-        $pdf = new TCPDFWithFooter($this);
-
-        // set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(true);
-
-        $pdf->SetMargins(25, 40, 25);
-        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);
-
-        //set image scale factor
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->SetFont('dejavusans', '', 10);
-
-        $this->pdf = $pdf;
-
-        return $pdf;
-    }
-
-    /**
      */
     public function getFonts()
     {
 
     }
+
+    /**
+     * @return TCPDF
+     */
+    abstract public function createPDFClass();
 
     /**
      * @param Motion $motion

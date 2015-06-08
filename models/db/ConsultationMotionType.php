@@ -2,8 +2,8 @@
 namespace app\models\db;
 
 use app\models\initiatorForms\IInitiatorForm;
-use app\models\pdfLayouts\IPDFLayout;
 use app\models\policies\IPolicy;
+use app\views\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
 
 /**

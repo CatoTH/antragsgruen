@@ -82,7 +82,7 @@ echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[pdfLayout]',
     $motionType->pdfLayout,
-    \app\models\pdfLayouts\IPDFLayout::getClasses(),
+    \app\views\pdfLayouts\IPDFLayout::getClasses(),
     ['id' => 'pdfLayout', 'class' => 'form-control']
 );
 echo '</div></div>';

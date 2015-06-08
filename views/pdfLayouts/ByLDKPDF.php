@@ -1,10 +1,10 @@
 <?php
 
-namespace app\models\pdfLayouts;
+namespace app\views\pdfLayouts;
 
 use Yii;
 
-class TCPDFWithFooter extends \TCPDF
+class ByLDKPDF extends \TCPDF
 {
     /** @var IPDFLayout */
     private $layout;
