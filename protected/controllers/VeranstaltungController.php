@@ -161,7 +161,8 @@ class VeranstaltungController extends AntragsgruenController
             foreach ($antraege as $antr_typ) {
                 foreach ($antr_typ as $antr) {
                     /** @var Antrag $antr */
-                    foreach ($antr->aenderungsantraege as $ae) {
+                    $aes = $antr->sortierteAenderungsantraege();
+                    foreach ($aes as $ae) {
                         if (!in_array($ae->status, IAntrag::$STATI_UNSICHTBAR)) {
                             $aenderungsantraege[] = $ae;
                         }
