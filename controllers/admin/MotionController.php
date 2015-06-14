@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -108,14 +109,11 @@ class MotionController extends AdminBase
      */
     public function actionUpdate($motionId)
     {
-        $motionId = IntVal($motionId);
-
         /** @var Motion $motion */
-        $motion = Motion::findOne($motionId);
+        $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
             $this->redirect(UrlHelper::createUrl('admin/motion/index'));
         }
-
         $this->checkConsistency($motion);
 
         if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
@@ -341,6 +339,33 @@ class MotionController extends AdminBase
         return $this->render('list_all', [
             'entries' => $search->getSorted(),
             'search'  => $search,
+        ]);
+    }
+
+
+    /**
+     * @param int $motionTypeId
+     * @param bool $textCombined
+     * @return string
+     */
+    public function actionExcellist($motionTypeId, $textCombined = false)
+    {
+        $motionType = $this->consultation->getMotionType($motionTypeId);
+
+        @ini_set('memory_limit', '256M');
+
+        $excelMime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', $excelMime);
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $motionType->motions);
+
+        return $this->renderPartial('excel_list', [
+            'motions'      => $motions,
+            'textCombined' => $textCombined,
+            'motionType'   => $motionType,
         ]);
     }
 }

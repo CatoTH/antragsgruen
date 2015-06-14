@@ -57,6 +57,14 @@ foreach ($consultation->motionTypes as $motionType) {
     echo '</li>';
 }
 
+echo '<li style="margin-top: 10px; font-weight: bold;">Excel-Export</li>';
+foreach ($consultation->motionTypes as $motionType) {
+    echo '<li style="margin-left: 20px;">';
+    $sectionsUrl   = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
+    echo Html::a('Alle' . ' ' . $motionType->titlePlural, $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
+    echo '</li>';
+}
+
 
 
 echo '<li style="margin-top: 10px; font-weight: bold;">';
@@ -86,7 +94,7 @@ foreach ($consultation->motionTypes as $motionType) {
 }
 
 echo '</li>
-
+<!--
         <li style="margin-left: 20px;">
             <a href="#antrag_excel_export" onClick="$(\'#antrag_excel_export\').toggle(); return false;">
             Export: Anträge als Excel-Datei</a>
@@ -99,7 +107,7 @@ echo Html::a('Antragstext und Begründung in einer Spalte', $url);
 echo '</li>
             </ul>
         </li>
-
+-->
         <li style="margin-top: 10px; font-weight: bold;">';
 echo Html::a('Änderungsanträge', UrlHelper::createUrl('admin/aenderungsantraege'));
 echo '</li><li style="margin-left: 20px;">';

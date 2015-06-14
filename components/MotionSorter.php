@@ -98,7 +98,7 @@ class MotionSorter
      */
     public static function getSortedMotions(Consultation $consultation, $motions)
     {
-        $motionsSorted = array();
+        $motionsSorted = [];
 
         $inivisible   = $consultation->getInvisibleMotionStati();
         $inivisible[] = IMotion::STATUS_MODIFIED;
@@ -109,7 +109,7 @@ class MotionSorter
                 $typeName = "";
 
                 if (!isset($motionsSorted[$typeName])) {
-                    $motionsSorted[$typeName] = array();
+                    $motionsSorted[$typeName] = [];
                 }
                 $key = $motion->titlePrefix;
 
@@ -118,10 +118,27 @@ class MotionSorter
         }
 
         foreach (array_keys($motionsSorted) as $key) {
-            uksort($motionsSorted[$key], array(static::class, "getSortedMotionsSort"));
+            uksort($motionsSorted[$key], [static::class, 'getSortedMotionsSort']);
         }
 
         return $motionsSorted;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param Motion[] $motions
+     * @return Motion[]
+     */
+    public static function getSortedMotionsFlat(Consultation $consultation, $motions)
+    {
+        $motions2 = static::getSortedMotions($consultation, $motions);
+        $motionsOut = [];
+        foreach ($motions2 as $vals) {
+            foreach ($vals as $mot) {
+                $motionsOut[] = $mot;
+            }
+        }
+        return $motionsOut;
     }
 
     /**

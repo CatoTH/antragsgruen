@@ -321,7 +321,7 @@ class MotionController extends Base
         /** @var Motion $motion */
         $motion = Motion::findOne($motionId);
         if (!$motion) {
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         $this->checkConsistency($motion);
@@ -446,7 +446,7 @@ class MotionController extends Base
                 $motion->onPublish();
             }
 
-            return $this->render("create_done", ['motion' => $motion, 'mode' => $fromMode]);
+            return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
 
         } else {
             return $this->render('create_confirm', ['motion' => $motion, 'mode' => $fromMode]);

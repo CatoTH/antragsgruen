@@ -25,4 +25,5 @@ class AntragsgruenApp
     public $siteBehaviorClasses   = [];
     public $authClientCollection  = [];
     public $autoLoginDuration     = 0;
+    public $tmpDir                = '/tmp/';
 }
