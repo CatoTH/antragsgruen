@@ -239,15 +239,16 @@ if ($hasPDF) {
 }
 
 if ($consultation->site->getBehaviorClass()->showAntragsgruenInSidebar()) {
-    $layout->postSidebarHtml = "<div class='antragsgruenAd well'>
-        <div class='nav-header'>Dein Antragsgrün</div>
-        <div class='content'>
+    $layout->postSidebarHtml = '<div class="antragsgruenAd well">
+        <div class="nav-header">Dein Antragsgrün</div>
+        <div class="content">
             Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
             <div>
-                <a href='" . Html::encode(UrlHelper::createUrl('manager/index')) . "' class='btn btn-primary'>
-                <span class='glyphicon glyphicon-chevron-right'></span> Infos
+                <a href="' . Html::encode(UrlHelper::createUrl('manager/index')) . '" ' .
+        'title="Das Antragstool selbst einsetzen" class="btn btn-primary">
+                <span class="glyphicon glyphicon-chevron-right"></span> Infos
                 </a>
             </div>
         </div>
-    </div>";
+    </div>';
 }

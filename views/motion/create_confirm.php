@@ -33,7 +33,7 @@ foreach ($motion->getSortedSections(true) as $section) {
 }
 
 echo '<div class="motionTextHolder">
-        <h3 class="green">AntragstellerInnen</h3>
+        <h3 class="green">Antragsteller_Innen</h3>
 
         <div class="content">
             <ul>';

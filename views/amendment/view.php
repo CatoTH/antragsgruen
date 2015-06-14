@@ -4,6 +4,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
+use app\models\db\AmendmentSection;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
@@ -83,11 +84,9 @@ echo '</table>';
 echo '</div>';
 echo '</div>';
 
-
-foreach ($amendment->sections as $section) {
-    if ($section->consultationSetting->type == ISectionType::TYPE_TITLE) {
-        continue;
-    }
+/** @var AmendmentSection[] $sections */
+$sections = $amendment->getSortedSections(true);
+foreach ($sections as $section) {
     if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
         $formatter  = new \app\components\diff\AmendmentSectionFormatter($section);
         $diffGroups = $formatter->getInlineDiffGroupedLines();

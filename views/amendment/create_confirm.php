@@ -2,6 +2,8 @@
 
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentSection;
+use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
 
 /**
@@ -22,18 +24,23 @@ $params->addBreadcrumb('Bestätigen');
 
 echo '<h1>' . Yii::t('amend', 'Änderungsantrag bestätigen') . '</h1>';
 
-foreach ($amendment->getSortedSections(true) as $section) {
-    if ($section->getSectionType()->isEmpty()) {
-        continue;
+
+/** @var AmendmentSection[] $sections */
+$sections = $amendment->getSortedSections(true);
+foreach ($sections as $section) {
+    if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
+        $formatter  = new \app\components\diff\AmendmentSectionFormatter($section);
+        $diffGroups = $formatter->getInlineDiffGroupedLines();
+
+        if (count($diffGroups) > 0) {
+            echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
+            echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+            echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+            echo \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
+            echo '</div>';
+            echo '</section>';
+        }
     }
-    echo '<section class="motionTextHolder">';
-    echo '<h2 class="green">' . Html::encode($section->consultationSetting->title) . '</h2>';
-    echo '<div class="textholder consolidated">';
-
-    echo $section->getSectionType()->showSimple();
-
-    echo '</div>';
-    echo '</section>';
 }
 
 
@@ -48,7 +55,7 @@ if ($amendment->changeExplanation != '') {
 
 
 echo '<div class="motionTextHolder">
-        <h3 class="green">AntragstellerInnen</h3>
+        <h3 class="green">Antragsteller_Innen</h3>
 
         <div class="content">
             <ul>';
