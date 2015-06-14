@@ -125,24 +125,43 @@ class AmendmentController extends Base
     }
 
     /**
+     * @param int $motionId
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionPdf($motionId, $amendmentId)
+    {
+        $this->testMaintainanceMode();
+
+        $motion = $this->consultation->getMotion($motionId);
+        $amendment = $this->consultation->getAmendment($amendmentId);
+        if (!$amendment || !$motion) {
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+        $this->checkConsistency($motion, $amendment);
+
+        return $this->renderPartial('pdf', ['amendment' => $amendment]);
+    }
+
+
+    /**
+     * @param int $motionId
      * @param int $amendmentId
      * @param int $commentId
      * @return string
      */
-    public function actionView($amendmentId, $commentId = 0)
+    public function actionView($motionId, $amendmentId, $commentId = 0)
     {
-        $amendmentId = IntVal($amendmentId);
+        $this->testMaintainanceMode();
 
-        /** @var Amendment $amendment */
-        $amendment = Amendment::findOne($amendmentId);
-        if (!$amendment) {
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        $motion = $this->consultation->getMotion($motionId);
+        $amendment = $this->consultation->getAmendment($amendmentId);
+        if (!$amendment || !$motion) {
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
         }
+        $this->checkConsistency($motion, $amendment);
 
         $this->layout = 'column2';
-
-        $this->checkConsistency($amendment->motion, $amendment);
-        $this->testMaintainanceMode();
 
         $openedComments = [];
 

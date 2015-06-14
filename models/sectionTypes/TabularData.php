@@ -115,7 +115,7 @@ class TabularData extends ISectionType
     /**
      * @param \TCPDF $pdf
      */
-    public function printToPDF(\TCPDF $pdf)
+    public function printMotionToPDF(\TCPDF $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -143,6 +143,14 @@ class TabularData extends ISectionType
             $pdf->Ln(3);
         }
         $pdf->Ln(4);
+    }
+
+    /**
+     * @param \TCPDF $pdf
+     */
+    public function printAmendmentToPDF(\TCPDF $pdf)
+    {
+        $this->printAmendmentToPDF($pdf);
     }
 
     /**

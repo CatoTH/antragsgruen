@@ -16,13 +16,18 @@ class AmendmentSectionFormatter
     private $returnFullText   = true;
     private $returnInlineDiff = true;
 
+    /** @var int */
+    private $diffFormatting = 0;
+
 
     /**
      * @param AmendmentSection $amendmentSection
+     * @param int $diffFormatting
      */
-    public function __construct(AmendmentSection $amendmentSection)
+    public function __construct(AmendmentSection $amendmentSection, $diffFormatting)
     {
-        $this->section = $amendmentSection;
+        $this->section        = $amendmentSection;
+        $this->diffFormatting = $diffFormatting;
     }
 
     /**
@@ -69,6 +74,7 @@ class AmendmentSectionFormatter
 
         $diff = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
+        $diff->setFormatting($this->diffFormatting);
 
         return $diff->computeDiff($strPre, $strPost);
 
@@ -182,21 +188,22 @@ class AmendmentSectionFormatter
     public static function getDiffLinesWithNumbersDebug($textPre, $textPost)
     {
         $origLines = HTMLTools::sectionSimpleHTML($textPre);
-        $strPre = '';
+        $strPre    = '';
         foreach ($origLines as $para) {
-            $linesOut   = LineSplitter::motionPara2lines($para, true, 80);
+            $linesOut = LineSplitter::motionPara2lines($para, true, 80);
             $strPre .= implode(' ', $linesOut) . "\n";
         }
 
         $newLines = HTMLTools::sectionSimpleHTML($textPost);
-        $strPost = '';
+        $strPost  = '';
         foreach ($newLines as $para) {
-            $linesOut   = LineSplitter::motionPara2lines($para, false, 80);
+            $linesOut = LineSplitter::motionPara2lines($para, false, 80);
             $strPost .= implode(' ', $linesOut) . "\n";
         }
 
         $diff = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
+        $diff->setFormatting(Diff::FORMATTING_CLASSES);
         $computed = $diff->computeDiff($strPre, $strPost);
 
         $computedLines = AmendmentSectionFormatter::getDiffSplitToLines($computed);

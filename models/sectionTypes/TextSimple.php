@@ -2,6 +2,8 @@
 
 namespace app\models\sectionTypes;
 
+use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\Diff;
 use app\components\HTMLTools;
 use app\controllers\Base;
 use app\models\db\AmendmentSection;
@@ -67,7 +69,7 @@ class TextSimple extends ISectionType
     /**
      * @param \TCPDF $pdf
      */
-    public function printToPDF(\TCPDF $pdf)
+    public function printMotionToPDF(\TCPDF $pdf)
     {
         /** @var MotionSection $section */
         $section = $this->section;
@@ -99,6 +101,22 @@ class TextSimple extends ISectionType
             $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
             $pdf->writeHTMLCell(173, '', 24, '', implode('<br>', $linesArr), 0, 1, 0, true, '', true);
 
+            $pdf->Ln(7);
+        }
+    }
+
+    /**
+     * @param \TCPDF $pdf
+     */
+    public function printAmendmentToPDF(\TCPDF $pdf)
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
+        $diffGroups = $formatter->getInlineDiffGroupedLines();
+        if (count($diffGroups) > 0) {
+            $html = static::formatDiffGroup($diffGroups);
+            $pdf->writeHTMLCell(170, '', 27, '', $html, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
     }

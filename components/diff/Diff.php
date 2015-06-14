@@ -8,6 +8,10 @@ class Diff
 {
     const ORIG_LINEBREAK = '###ORIGLINEBREAK###';
 
+    const FORMATTING_CLASSES = 0;
+    const FORMATTING_INLINE  = 1;
+    private $formatting = 0;
+
     private $debug = false;
 
     /** @var Engine */
@@ -26,6 +30,14 @@ class Diff
     public function setDebug($debug)
     {
         $this->debug = $debug;
+    }
+
+    /**
+     * @param int $formatting
+     */
+    public function setFormatting($formatting)
+    {
+        $this->formatting = $formatting;
     }
 
     /**
@@ -49,16 +61,34 @@ class Diff
         } elseif ($str == static::ORIG_LINEBREAK) {
             return $str;
         }
-        if (mb_stripos($str, '<ul>') === 0) {
-            return '<ul class="inserted">' . mb_substr($str, 4);
-        } elseif (mb_stripos($str, '<ol>') === 9) {
-            return '<ol class="inserted">' . mb_substr($str, 4);
-        } elseif (mb_stripos($str, '<ul>')) {
-            return '<li class="inserted">' . mb_substr($str, 12);
-        } elseif (mb_stripos($str, '<blockquote>')) {
-            return '<blockquote class="inserted">' . $str;
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            if (mb_stripos($str, '<ul>') === 0) {
+                return '<div style="color: green; margin: 0; padding: 0;"><ul class="inserted">' .
+                mb_substr($str, 4) . '</div>';
+            } elseif (mb_stripos($str, '<ol>') === 9) {
+                return '<div style="color: green; margin: 0; padding: 0;"><ol class="inserted">' .
+                mb_substr($str, 4) . '</div>';
+            } elseif (mb_stripos($str, '<ul>')) {
+                return '<div style="color: green; margin: 0; padding: 0;"><li class="inserted">' .
+                mb_substr($str, 12) . '</div>';
+            } elseif (mb_stripos($str, '<blockquote>')) {
+                return '<div style="color: green; margin: 0; padding: 0;"><blockquote class="inserted">' .
+                $str . '</div>';
+            } else {
+                return '<div style="color: green;">' . $str . '</div>';
+            }
         } else {
-            return '<ins>' . $str . '</ins>';
+            if (mb_stripos($str, '<ul>') === 0) {
+                return '<ul class="inserted">' . mb_substr($str, 4);
+            } elseif (mb_stripos($str, '<ol>') === 9) {
+                return '<ol class="inserted">' . mb_substr($str, 4);
+            } elseif (mb_stripos($str, '<ul>')) {
+                return '<li class="inserted">' . mb_substr($str, 12);
+            } elseif (mb_stripos($str, '<blockquote>')) {
+                return '<blockquote class="inserted">' . $str;
+            } else {
+                return '<ins>' . $str . '</ins>';
+            }
         }
     }
 
@@ -75,16 +105,34 @@ class Diff
         } elseif ($str == static::ORIG_LINEBREAK) {
             return $str;
         }
-        if (mb_stripos($str, '<ul>') === 0) {
-            return '<ul class="deleted">' . mb_substr($str, 4);
-        } elseif (mb_stripos($str, '<ol>') === 9) {
-            return '<ol class="deleted">' . mb_substr($str, 4);
-        } elseif (mb_stripos($str, '<ul>')) {
-            return '<li class="deleted">' . mb_substr($str, 12);
-        } elseif (mb_stripos($str, '<blockquote>')) {
-            return '<blockquote class="deleted">' . $str;
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            if (mb_stripos($str, '<ul>') === 0) {
+                return '<div style="color: red; margin: 0; padding: 0;"><ul class="inserted">' .
+                mb_substr($str, 4) . '</div>';
+            } elseif (mb_stripos($str, '<ol>') === 9) {
+                return '<div style="color: red; margin: 0; padding: 0;"><ol class="inserted">' .
+                mb_substr($str, 4) . '</div>';
+            } elseif (mb_stripos($str, '<ul>')) {
+                return '<div style="color: red; margin: 0; padding: 0;"><li class="inserted">' .
+                mb_substr($str, 12) . '</div>';
+            } elseif (mb_stripos($str, '<blockquote>')) {
+                return '<div style="color: red; margin: 0; padding: 0;"><blockquote class="inserted">' .
+                $str . '</div>';
+            } else {
+                return '<div style="color: red;">' . $str . '</div>';
+            }
         } else {
-            return '<del>' . $str . '</del>';
+            if (mb_stripos($str, '<ul>') === 0) {
+                return '<ul class="deleted">' . mb_substr($str, 4);
+            } elseif (mb_stripos($str, '<ol>') === 9) {
+                return '<ol class="deleted">' . mb_substr($str, 4);
+            } elseif (mb_stripos($str, '<ul>')) {
+                return '<li class="deleted">' . mb_substr($str, 12);
+            } elseif (mb_stripos($str, '<blockquote>')) {
+                return '<blockquote class="deleted">' . $str;
+            } else {
+                return '<del>' . $str . '</del>';
+            }
         }
     }
 

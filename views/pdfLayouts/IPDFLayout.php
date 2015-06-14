@@ -2,6 +2,7 @@
 
 namespace app\views\pdfLayouts;
 
+use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\exceptions\Internal;
@@ -71,4 +72,9 @@ abstract class IPDFLayout
      * @param Motion $motion
      */
     abstract public function printMotionHeader(Motion $motion);
+
+    /**
+     * @param Amendment $amendment
+     */
+    abstract public function printAmendmentHeader(Amendment $amendment);
 }

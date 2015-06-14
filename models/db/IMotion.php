@@ -60,6 +60,15 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return !in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati());
+    }
+
+
+    /**
      * @return ISupporter[]
      */
     abstract public function getInitiators();

@@ -1,5 +1,6 @@
 <?php
 
+use app\components\diff\AmendmentSectionFormatter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -33,6 +34,13 @@ $this->title = $amendment->getTitle() . " (" . $consultation->title . ", Antrags
 
 
 $html = '<ul class="sidebarActions">';
+
+if ($amendment->motion->motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
+    $html .= '<li class="download">';
+    $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
+        Yii::t('motion', 'PDF-Version herunterladen');
+    $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'pdf')) . '</li>';
+}
 
 $html .= '</ul>';
 $layout->menusHtml[] = $html;
@@ -88,7 +96,7 @@ echo '</div>';
 $sections = $amendment->getSortedSections(true);
 foreach ($sections as $section) {
     if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
-        $formatter  = new \app\components\diff\AmendmentSectionFormatter($section);
+        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getInlineDiffGroupedLines();
 
         if (count($diffGroups) > 0) {

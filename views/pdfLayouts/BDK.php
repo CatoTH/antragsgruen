@@ -2,6 +2,7 @@
 
 namespace app\views\pdfLayouts;
 
+use app\models\db\Amendment;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -68,6 +69,40 @@ class BDK extends IPDFLayout
         $motionData .= '</table>';
 
         $pdf->writeHTMLCell(170, 0, 25, 35, $motionData, 1, 1, 0, true, 'L');
+
+        $pdf->Ln(11);
+    }
+
+    /**
+     * @param Amendment $amendment
+     */
+    public function printAmendmentHeader(Amendment $amendment)
+    {
+        $pdf = $this->pdf;
+
+        $pdf->setPrintHeader(true);
+        $pdf->setPrintFooter(true);
+
+
+        $title = '26. Ordentliche Bundesdelegiertenkonferenz von BÜNDNIS 90/DIE GRÜNEN,<br>
+            01.-03. Dezember 2006. Kölnmesse, Köln-Deutz';
+        $pdf->SetY(40);
+        $pdf->SetFont("helvetica", "B", 13);
+        $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
+
+
+        $pdf->SetFont("helvetica", "", 12);
+        $amendmentData = '<span style="font-size: 16px; font-weight: bold;">';
+        $amendmentData .= Html::encode($amendment->getTitle()) . '</span>';
+        $amendmentData .= '<br><br>';
+
+        $amendmentData .= '<table>';
+        $amendmentData .= '<tr><th style="width: 28%;">Antragsteller/innen:</th>';
+        $amendmentData .= '<td>' . Html::encode($amendment->getInitiatorsStr()) . '</td></tr>';
+
+        $amendmentData .= '</table>';
+
+        $pdf->writeHTMLCell(170, 0, 25, 35, $amendmentData, 1, 1, 0, true, 'L');
 
         $pdf->Ln(11);
     }

@@ -68,7 +68,7 @@ class TextHTML extends ISectionType
     /**
      * @param \TCPDF $pdf
      */
-    public function printToPDF(\TCPDF $pdf)
+    public function printMotionToPDF(\TCPDF $pdf)
     {
         $pdf->SetFont("helvetica", "", 12);
         $pdf->writeHTML("<h3>" . $this->section->consultationSetting->title . "</h3>");
@@ -80,5 +80,13 @@ class TextHTML extends ISectionType
             $html = normalizer_normalize($html);
         }
         $pdf->writeHTML($html);
+    }
+
+    /**
+     * @param \TCPDF $pdf
+     */
+    public function printAmendmentToPDF(\TCPDF $pdf)
+    {
+        $this->printMotionToPDF($pdf);
     }
 }

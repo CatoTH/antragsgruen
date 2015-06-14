@@ -118,7 +118,7 @@ class Image extends ISectionType
     /**
      * @param \TCPDF $pdf
      */
-    public function printToPDF(\TCPDF $pdf)
+    public function printMotionToPDF(\TCPDF $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -146,5 +146,12 @@ class Image extends ISectionType
         }
         $pdf->Image($img, '', '', $size[0], $size[1], $type, '', '', true, 300, 'C');
         $pdf->Ln($size[1] + 7);
+    }
+    /**
+     * @param \TCPDF $pdf
+     */
+    public function printAmendmentToPDF(\TCPDF $pdf)
+    {
+        $this->printMotionToPDF($pdf);
     }
 }

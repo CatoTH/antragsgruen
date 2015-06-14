@@ -139,8 +139,12 @@ abstract class ISectionType
     /**
      * @param \TCPDF $pdf
      */
-    abstract public function printToPDF(\TCPDF $pdf);
+    abstract public function printMotionToPDF(\TCPDF $pdf);
 
+    /**
+     * @param \TCPDF $pdf
+     */
+    abstract public function printAmendmentToPDF(\TCPDF $pdf);
 
     /**
      * @param Base $controller

@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\Diff;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -388,7 +390,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
-            $formatter  = new \app\components\diff\AmendmentSectionFormatter($section);
+            $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
             $diffGroups = $formatter->getInlineDiffGroupedLines();
 
             if (count($diffGroups) > 0) {

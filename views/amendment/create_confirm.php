@@ -1,5 +1,6 @@
 <?php
 
+use app\components\diff\AmendmentSectionFormatter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
@@ -29,7 +30,7 @@ echo '<h1>' . Yii::t('amend', 'Änderungsantrag bestätigen') . '</h1>';
 $sections = $amendment->getSortedSections(true);
 foreach ($sections as $section) {
     if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
-        $formatter  = new \app\components\diff\AmendmentSectionFormatter($section);
+        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getInlineDiffGroupedLines();
 
         if (count($diffGroups) > 0) {

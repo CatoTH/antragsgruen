@@ -340,15 +340,6 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-
-    /**
-     * @return bool
-     */
-    public function isVisible()
-    {
-        return !in_array($this->status, $this->consultation->getInvisibleMotionStati());
-    }
-
     /**
      * @return MotionSupporter[]
      */

@@ -2,6 +2,7 @@
 
 namespace app\views\pdfLayouts;
 
+use app\models\db\Amendment;
 use app\models\db\Motion;
 use TCPDF;
 
@@ -108,6 +109,106 @@ class ByLDK extends IPDFLayout
         $pdf->Ln(9);
     }
 
+    /**
+     * @param Amendment $amendment
+     */
+    public function printAmendmentHeader(Amendment $amendment)
+    {
+        $pdf      = $this->pdf;
+        $settings = $this->motionType->consultation->getSettings();
+
+        if (file_exists($settings->logoUrl)) {
+            $pdf->setJPEGQuality(100);
+            $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
+        }
+
+        if (!$settings->hideRevision) {
+            $revName = $amendment->titlePrefix;
+            if ($revName == "") {
+                $revName = 'Entwurf';
+                $pdf->SetFont("helvetica", "I", "25");
+                $width = $pdf->GetStringWidth($revName, "helvetica", "I", "25") + 3.1;
+            } else {
+                $pdf->SetFont("helvetica", "B", "25");
+                $width = $pdf->GetStringWidth($revName, "helvetica", "B", "25") + 3.1;
+            }
+            if ($width < 35) {
+                $width = 35;
+            }
+
+            $pdf->SetXY(192 - $width, 37, true);
+            $borderStyle = ['width' => 3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => [150, 150, 150]];
+            $this->pdf->MultiCell(
+                $width,
+                21,
+                $revName,
+                ['LTRB' => $borderStyle],
+                "C",
+                false,
+                1,
+                "",
+                "",
+                true,
+                0,
+                false,
+                true,
+                21, // defaults
+                "M"
+            );
+        }
+
+        $str = $amendment->motion->motionType->titleSingular;
+        $pdf->SetFont("helvetica", "B", "25");
+        $width = $pdf->GetStringWidth($str);
+
+        $pdf->SetXY((210 - $width) / 2, 60);
+        $pdf->Write(20, $str);
+        $pdf->SetLineStyle(
+            [
+                "width" => 3,
+                'color' => array(150, 150, 150),
+            ]
+        );
+        $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
+
+        $pdf->SetY(90);
+        $intro = \Yii::t('pdf', 'introduction');
+        if ($intro) {
+            $pdf->SetX(24);
+            $pdf->SetFont("helvetica", "B", 12);
+            $pdf->MultiCell(160, 13, $intro, 0, "C");
+            $pdf->Ln(7);
+        }
+
+
+        $pdf->SetX(12);
+
+        $pdf->SetFont("helvetica", "B", 12);
+        $pdf->MultiCell(12, 0, "", 0, "L", false, 0);
+        $pdf->MultiCell(50, 0, \Yii::t('pdf', 'Initiators') . ":", 0, "L", false, 0);
+        $pdf->SetFont("helvetica", "", 12);
+        $pdf->MultiCell(120, 0, $amendment->getInitiatorsStr(), 0, "L");
+
+        $pdf->Ln(5);
+        $pdf->SetX(12);
+
+
+        $pdf->SetFont("helvetica", "B", 12);
+        $pdf->MultiCell(12, 0, "", 0, "L", false, 0);
+
+        $pdf->MultiCell(50, 0, "Gegenstand:", 0, "L", false, 0);
+        $pdf->SetFont("helvetica", "B", 12);
+        $borderStyle = ['width' => 0.3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => [150, 150, 150]];
+        $pdf->MultiCell(
+            100,
+            0,
+            $amendment->getTitle(),
+            ['B' => $borderStyle],
+            "L"
+        );
+
+        $pdf->Ln(9);
+    }
 
     /**
      * @return TCPDF

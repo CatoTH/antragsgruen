@@ -32,10 +32,10 @@ $pdfLayout->printMotionHeader($motion);
 
 
 foreach ($motion->getSortedSections(true) as $section) {
-    $section->getSectionType()->printToPDF($pdf);
+    $section->getSectionType()->printMotionToPDF($pdf);
 }
 
 
-$pdf->Output('Antrag_' . $motion->titlePrefix . '.pdf', 'I');
+$pdf->Output('Motion_' . $motion->titlePrefix . '.pdf', 'I');
 
 die();
