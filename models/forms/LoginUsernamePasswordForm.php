@@ -123,7 +123,6 @@ class LoginUsernamePasswordForm extends Model
         $user->name           = $this->name;
         $user->email          = $this->username;
         $user->emailConfirmed = 0;
-        $user->dateCreation   = date("Y-m-d H:i:s");
         $user->pwdEnc         = PasswordFunctions::createHash($this->password);
 
         /** @var AntragsgruenApp $params */

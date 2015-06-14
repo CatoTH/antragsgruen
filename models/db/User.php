@@ -8,6 +8,7 @@ use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\web\IdentityInterface;
 
@@ -170,6 +171,16 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(ConsultationSubscription::className(), ['id' => 'userId']);
     }
 
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['auth', 'status'], 'required'],
+            [['id', 'emailConfirmed'], 'number'],
+        ];
+    }
 
     /**
      * Finds an identity by the given ID.
@@ -247,6 +258,7 @@ class User extends ActiveRecord implements IdentityInterface
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $this->authKey = \Yii::$app->getSecurity()->generateRandomString();
+                $this->dateCreation    = new Expression("NOW()");
             }
             return true;
         }

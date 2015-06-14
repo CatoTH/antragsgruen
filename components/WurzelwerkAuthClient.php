@@ -134,14 +134,14 @@ class WurzelwerkAuthClient extends OpenId
     protected function defaultReturnUrl()
     {
         $params = $_GET;
-        $keys = array_keys($params);
+        $keys   = array_keys($params);
         foreach ($keys as $name) {
             if (strncmp('openid', $name, 6) === 0) {
                 unset($params[$name]);
             }
         }
         $params[0] = Yii::$app->requestedRoute;
-        $url = Yii::$app->getUrlManager()->createUrl($params);
+        $url       = Yii::$app->getUrlManager()->createUrl($params);
 
         if (strpos($url, $this->getTrustRoot()) !== 0) {
             $url = $this->getTrustRoot() . $url;
@@ -164,12 +164,12 @@ class WurzelwerkAuthClient extends OpenId
             return $user;
         }
 
-        $user                  = new User();
-        $user->name            = $attributes['namePerson/friendly'];
+        $user = new User();
+        //$user->name            = $attributes['namePerson/friendly'];
+        $user->name            = ''; // https://github.com/CatoTH/antragsgruen/issues/77
         $user->email           = $attributes['contact/email'];
         $user->emailConfirmed  = 1;
         $user->auth            = $auth;
-        $user->dateCreation    = new Expression("NOW()");
         $user->status          = User::STATUS_CONFIRMED;
         $user->siteNamespaceId = null;
         // @TODO E-Mail
