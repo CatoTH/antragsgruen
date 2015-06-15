@@ -173,4 +173,21 @@ class TextSimple extends ISectionType
         }
         return $out;
     }
+
+    /**
+     * @return string
+     */
+    public function getMotionPlainText()
+    {
+        return HTMLTools::toPlainText($this->section->data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentPlainText()
+    {
+        return HTMLTools::toPlainText($this->section->data);
+    }
+
 }

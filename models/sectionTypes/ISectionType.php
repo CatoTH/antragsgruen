@@ -147,6 +147,16 @@ abstract class ISectionType
     abstract public function printAmendmentToPDF(\TCPDF $pdf);
 
     /**
+     * @return string
+     */
+    abstract public function getMotionPlainText();
+
+    /**
+     * @return string
+     */
+    abstract public function getAmendmentPlainText();
+
+    /**
      * @param Base $controller
      * @param CommentForm $commentForm
      * @param int[] $openedComments

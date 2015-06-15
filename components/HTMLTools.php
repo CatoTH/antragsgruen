@@ -113,7 +113,7 @@ class HTMLTools
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
-                            $return = array_merge($return, $newArrs);
+                            $return  = array_merge($return, $newArrs);
                         } else {
                             throw new Internal('Unknown Tag: ' . $child->nodeName);
                         }
@@ -158,5 +158,98 @@ class HTMLTools
 
         /** @var \DOMElement $body */
         return static::sectionSimpleHTMLInt($body, '', '');
+    }
+
+
+    private static $LINKS;
+    private static $LINK_CACHE;
+
+    /**
+     * @param string $html
+     * @param bool $linksAtEnd
+     * @return string
+     */
+    public static function toPlainText($html, $linksAtEnd = false)
+    {
+        $html = str_replace("\n", "", $html);
+        $html = str_replace("\r", "", $html);
+        $html = str_replace(" />", ">", $html);
+
+        static::$LINKS      = $linksAtEnd;
+        static::$LINK_CACHE = [];
+
+        $text = str_ireplace("<br>", "\n", $html);
+        $text = preg_replace("/<img.*>/siU", "", $text);
+
+
+        $text = preg_replace_callback("/<ul.*>(.*)<\/ul>/siU", function ($matches) {
+            $text = "\n" . preg_replace_callback("/<li.*>(.*)<\/li>/siU", function ($matches2) {
+                $text = "* " . $matches2[1] . "\n";
+                return $text;
+            }, $matches[1]);
+            return $text;
+        }, $text);
+
+        $text = preg_replace_callback("/<ol.*>(.*)<\/ol>/siU", function ($matches) {
+            $text = "\n" . preg_replace_callback("/<li.*>(.*)<\/li>/siU", function ($matches2) {
+                $text = "* " . $matches2[1] . "\n";
+                return $text;
+            }, $matches[1]);
+            return $text;
+        }, $text);
+
+        $text = preg_replace_callback("/<a.*href=[\"'](.*)[\"'].*>(.*)<\/a>/siU", function ($matches) {
+            $begr = trim($matches[2]);
+            if ($begr == "") {
+                return "";
+            }
+
+            if (static::$LINKS) {
+                $newnr                      = count(static::$LINK_CACHE) + 1;
+                static::$LINK_CACHE[$newnr] = $matches[1];
+                return $begr . " [$newnr]";
+            } else {
+                return $begr . " ($matches[1])";
+            }
+        }, $text);
+
+
+        $text = preg_replace_callback("/<i>(.*)<\/i>/siU", function ($matches) {
+            $text = "/" . $matches[1] . "/";
+            return $text;
+        }, $text);
+        $text = str_ireplace("</tr>", "\n", $text);
+
+
+        $text_old = "";
+        while ($text != $text_old) {
+            $text_old = $text;
+            $text     = preg_replace_callback("/(.)?<div.*>(.*)<\/div>(.)?/siU", function ($matches) {
+                $text = $matches[1];
+                if ($matches[1] != "\n" && $matches[1] != ">" && $matches[1] != "") {
+                    $text .= "\n";
+                }
+                $text .= $matches[2];
+                if (isset($matches[3]) && $matches[3] != "\n" && $matches[3] != "<" && $matches[3] != "") {
+                    $text .= "\n";
+                }
+                if (isset($matches[3])) {
+                    $text .= $matches[3];
+                }
+                return $text;
+            }, $text);
+        }
+
+        $text = strip_tags($text);
+
+        $text = html_entity_decode($text, ENT_COMPAT, "UTF-8");
+
+        if ($linksAtEnd && count(static::$LINK_CACHE) > 0) {
+            $text .= "\n\n\nLinks:\n";
+            foreach (static::$LINK_CACHE as $nr => $link) {
+                $text .= "[$nr] $link\n";
+            }
+        }
+        return trim($text);
     }
 }

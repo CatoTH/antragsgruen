@@ -105,10 +105,6 @@ class IndexController extends AdminBase
         if (isset($_POST['save'])) {
             $data = $_POST['consultation'];
             $model->setAttributes($data);
-            /*
-            $model->deadlineMotions    = Tools::dateBootstraptime2sql($data['deadlineMotions'], $locale);
-            $model->deadlineAmendments = Tools::dateBootstraptime2sql($data['deadlineAmendments'], $locale);
-            */
 
             $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
             $settings      = $model->getSettings();

@@ -73,4 +73,36 @@ class Title extends ISectionType
     {
         return ($this->section->data == '');
     }
+
+    /**
+     * @param \TCPDF $pdf
+     */
+    public function printMotionToPDF(\TCPDF $pdf)
+    {
+        // TODO: Implement printMotionToPDF() method.
+    }
+
+    /**
+     * @param \TCPDF $pdf
+     */
+    public function printAmendmentToPDF(\TCPDF $pdf)
+    {
+        // TODO: Implement printAmendmentToPDF() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionPlainText()
+    {
+        return $this->section->data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentPlainText()
+    {
+        return $this->section->data;
+    }
 }

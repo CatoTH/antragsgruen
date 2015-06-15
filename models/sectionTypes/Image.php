@@ -154,4 +154,20 @@ class Image extends ISectionType
     {
         $this->printMotionToPDF($pdf);
     }
+
+    /**
+     * @return string
+     */
+    public function getMotionPlainText()
+    {
+        return '[BILD]';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentPlainText()
+    {
+        return '[BILD]';
+    }
 }

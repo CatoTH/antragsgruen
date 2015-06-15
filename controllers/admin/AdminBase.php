@@ -17,8 +17,6 @@ class AdminBase extends Base
         if (!parent::beforeAction($action)) {
             return false;
         }
-        return true;
-
         if (\Yii::$app->user->isGuest) {
             $currUrl = \yii::$app->request->url;
             $this->redirect(UrlHelper::createLoginUrl($currUrl));

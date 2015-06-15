@@ -89,4 +89,20 @@ class TextHTML extends ISectionType
     {
         $this->printMotionToPDF($pdf);
     }
+
+    /**
+     * @return string
+     */
+    public function getMotionPlainText()
+    {
+        return HTMLTools::toPlainText($this->section->data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentPlainText()
+    {
+        return HTMLTools::toPlainText($this->section->data);
+    }
 }
