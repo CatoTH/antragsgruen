@@ -34,7 +34,7 @@ class IndexController extends AntragsgruenController
     {
         $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
         if (!$this->veranstaltung->isAdminCurUser()) {
-            $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+            $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
         }
 
         $msg = "";
@@ -132,7 +132,7 @@ class IndexController extends AntragsgruenController
     {
         $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
         if (!$this->veranstaltung->isAdminCurUser()) {
-            $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+            $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
         }
 
         $criteria        = new CDbCriteria();
@@ -150,7 +150,7 @@ class IndexController extends AntragsgruenController
     {
         $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
         if (!$this->veranstaltung->isAdminCurUser()) {
-            $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+            $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
         }
 
         ini_set('memory_limit', '256M');
@@ -180,7 +180,7 @@ class IndexController extends AntragsgruenController
     {
         $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
         if (!$this->veranstaltung->isAdminCurUser()) {
-            $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+            $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
         }
 
         ini_set('memory_limit', '256M');
@@ -210,7 +210,7 @@ class IndexController extends AntragsgruenController
     {
         $this->loadVeranstaltung($veranstaltungsreihe_id, $veranstaltung_id);
         if (!$this->veranstaltung->isAdminCurUser()) {
-            $this->redirect($this->createUrl("/site/login", array("back" => yii::app()->getRequest()->requestUri)));
+            $this->redirect($this->createUrl("/veranstaltung/login", array("back" => yii::app()->getRequest()->requestUri)));
         }
 
         ini_set('memory_limit', '256M');
