@@ -6,39 +6,39 @@ $container-desktop: 1024px;
 $icon-font-path: "/fonts/";
 
 // Core variables and mixins
-@import "bootstrap-3.3.4-sass/bootstrap/variables";
-@import "bootstrap-3.3.4-sass/bootstrap/mixins";
+@import "bootstrap-3.3.5-sass/bootstrap/variables";
+@import "bootstrap-3.3.5-sass/bootstrap/mixins";
 
 // Reset and dependencies
-@import "bootstrap-3.3.4-sass/bootstrap/normalize";
-@import "bootstrap-3.3.4-sass/bootstrap/print";
-@import "bootstrap-3.3.4-sass/bootstrap/glyphicons";
+@import "bootstrap-3.3.5-sass/bootstrap/normalize";
+@import "bootstrap-3.3.5-sass/bootstrap/print";
+@import "bootstrap-3.3.5-sass/bootstrap/glyphicons";
 
 // Core CSS
-@import "bootstrap-3.3.4-sass/bootstrap/scaffolding";
-@import "bootstrap-3.3.4-sass/bootstrap/type";
-@import "bootstrap-3.3.4-sass/bootstrap/code";
-@import "bootstrap-3.3.4-sass/bootstrap/grid";
-@import "bootstrap-3.3.4-sass/bootstrap/tables";
-@import "bootstrap-3.3.4-sass/bootstrap/forms";
-@import "bootstrap-3.3.4-sass/bootstrap/buttons";
+@import "bootstrap-3.3.5-sass/bootstrap/scaffolding";
+@import "bootstrap-3.3.5-sass/bootstrap/type";
+@import "bootstrap-3.3.5-sass/bootstrap/code";
+@import "bootstrap-3.3.5-sass/bootstrap/grid";
+@import "bootstrap-3.3.5-sass/bootstrap/tables";
+@import "bootstrap-3.3.5-sass/bootstrap/forms";
+@import "bootstrap-3.3.5-sass/bootstrap/buttons";
 
 // Components
-@import "bootstrap-3.3.4-sass/bootstrap/input-groups";
-@import "bootstrap-3.3.4-sass/bootstrap/dropdowns";
-@import "bootstrap-3.3.4-sass/bootstrap/navs";
-@import "bootstrap-3.3.4-sass/bootstrap/navbar";
-@import "bootstrap-3.3.4-sass/bootstrap/alerts";
-@import "bootstrap-3.3.4-sass/bootstrap/breadcrumbs";
-@import "bootstrap-3.3.4-sass/bootstrap/wells";
-@import "bootstrap-3.3.4-sass/bootstrap/close";
+@import "bootstrap-3.3.5-sass/bootstrap/input-groups";
+@import "bootstrap-3.3.5-sass/bootstrap/dropdowns";
+@import "bootstrap-3.3.5-sass/bootstrap/navs";
+@import "bootstrap-3.3.5-sass/bootstrap/navbar";
+@import "bootstrap-3.3.5-sass/bootstrap/alerts";
+@import "bootstrap-3.3.5-sass/bootstrap/breadcrumbs";
+@import "bootstrap-3.3.5-sass/bootstrap/wells";
+@import "bootstrap-3.3.5-sass/bootstrap/close";
 
 // Components w/ JavaScript
-@import "bootstrap-3.3.4-sass/bootstrap/modals";
+@import "bootstrap-3.3.5-sass/bootstrap/modals";
 
 // Utility classes
-@import "bootstrap-3.3.4-sass/bootstrap/utilities";
-@import "bootstrap-3.3.4-sass/bootstrap/responsive-utilities";
+@import "bootstrap-3.3.5-sass/bootstrap/utilities";
+@import "bootstrap-3.3.5-sass/bootstrap/responsive-utilities";
 
 
 html {
