@@ -237,8 +237,9 @@ if (!$minimalisticUi) {
     if ($policy->checkCurUserHeuristically()) {
         echo '<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
             <a href="' . Html::encode(UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id])) . '"
-               class="btn btn-danger" style="color: white;"><span class="icon-aender-stellen"></span> ' .
-            Html::encode(Yii::t('motion', 'Änderungsantrag stellen')) . '</a>
+               class="btn btn-danger" style="color: white;">';
+        echo '<span class="icon glyphicon glyphicon-flash"></span>';
+        echo Html::encode(Yii::t('motion', 'Änderungsantrag stellen')) . '</a>
         </div>';
     }
     echo '</div></div>';

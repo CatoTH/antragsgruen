@@ -3,7 +3,6 @@
 @import "common";
 @import "../fonts/OpenSans/open-sans";
 @import "base_layout";
-@import "icons";
 
 .deadlineCircle {
   float: right;
@@ -44,9 +43,7 @@
     .title {
       margin-bottom: 3px;
 
-      &:before {
-        @extend .icon-document;
-        @include icons-antragsgruen('20px');
+      .motionIcon {
         width: 27px;
         margin-left: -30px;
         color: $colorGreenLight;

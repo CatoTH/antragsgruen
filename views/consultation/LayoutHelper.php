@@ -35,6 +35,7 @@ class LayoutHelper
         echo '<li class="' . implode(' ', $classes) . '">';
         echo "<p class='date'>" . Tools::formatMysqlDate($motion->dateCreation) . "</p>\n";
         echo "<p class='title'>\n";
+        echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
         $linkOpts = ['class' => 'motionLink' . $motion->id];
         echo Html::a($motion->getTitleWithPrefix(), UrlHelper::createMotionUrl($motion), $linkOpts);
         if ($hasPDF) {
