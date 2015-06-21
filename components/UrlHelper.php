@@ -80,7 +80,7 @@ class UrlHelper
         if (in_array(
             $route[0],
             [
-                'veranstaltung/impressum', '/admin/index/reiheAdmins', '/admin/index/reiheVeranstaltungen'
+                'consultation/legal', 'admin/index/admins', 'admin/index/consultations'
             ]
         )) {
             unset($route['consultationPath']);

@@ -10,7 +10,7 @@ $domadmin  = $domv . 'admin/';
 $dommotion = $domv . 'motion/<motionId:\d+>';
 $domamend  = $domv . 'motion/<motionId:\d+>/amendment/<amendmentId:\d+>';
 
-$consultationPaths = 'legal|privacy|help|search|savetextajax|pdfs|maintainance|notifications';
+$consultationPaths = 'help|search|savetextajax|pdfs|maintainance|notifications';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
 $motionPaths         = 'create|createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image';
 $userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|unsubscribe';
@@ -40,6 +40,7 @@ $url_rules = [
 
     $dom . '<_a:(' . $userPaths . ')>'                           => 'user/<_a>',
     $dom . 'checkemail'                                          => 'user/ajaxIsEmailRegistered',
+    $dom . '<_a:(legal|privacy)>'                                => 'consultation/<_a>',
 
     $domv . '<_a:(' . $consultationPaths . ')>'                  => 'consultation/<_a>',
     $dommotion                                                   => 'motion/view',
