@@ -307,6 +307,19 @@ $lineNumberOffset4: 3px;
   //letter-spacing: -0.5px;
   color: black;
   text-rendering: optimizeLegibility;
+
+  span.underline {
+    border-bottom: solid 1px black;
+  }
+  span.strike {
+    text-decoration: line-through;
+  }
+  span.subscript {
+    // @TODO
+  }
+  span.superscript {
+    // @TODO
+  }
 }
 
 @mixin motionParagraphBlockquote() {
@@ -425,6 +438,18 @@ $lineNumberOffset4: 3px;
   > blockquote {
     @include motionParagraphBlockquote;
     margin-left: $fixedWidthTextQuoteMargin + $fixedWidthTextStdPadding - 40;
+  }
+  span.underline {
+    border-bottom: solid 1px black;
+  }
+  span.strike {
+    text-decoration: line-through;
+  }
+  span.subscript {
+    // @TODO
+  }
+  span.superscript {
+    // @TODO
   }
 }
 

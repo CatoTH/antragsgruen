@@ -20,7 +20,7 @@ $initiatorsStr = implode(', ', $initiators);
 
 // set document information
 $pdf->SetCreator('Antragsgrün');
-$pdf->SetAuthor(implode(", ", $initiators));
+$pdf->SetAuthor(implode(', ', $initiators));
 $pdf->SetTitle(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
 $pdf->SetSubject(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
 

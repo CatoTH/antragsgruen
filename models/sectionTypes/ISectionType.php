@@ -149,6 +149,16 @@ abstract class ISectionType
     /**
      * @return string
      */
+    abstract public function getMotionTeX();
+
+    /**
+     * @return string
+     */
+    abstract public function getAmendmentTeX();
+
+    /**
+     * @return string
+     */
     abstract public function getMotionPlainText();
 
     /**

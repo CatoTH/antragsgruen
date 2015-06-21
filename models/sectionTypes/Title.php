@@ -105,4 +105,20 @@ class Title extends ISectionType
     {
         return $this->section->data;
     }
+
+    /**
+     * @return string
+     */
+    public function getMotionTeX()
+    {
+        return 'Test'; //  @TODO
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentTeX()
+    {
+        return 'Test'; //  @TODO
+    }
 }

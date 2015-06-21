@@ -52,3 +52,9 @@ Testing
 * Alle Tests ausführen: tests/run.sh
 * Einzelnen Acceptence-Test ausführen: cd tests && ../vendor/bin/codecept run acceptance MotionCreateCept
 
+
+Using LaTeX
+-----------
+
+```apt-get install texlive-lang-german pdflatex latex texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-humanities texlive-fonts-recommended texlive-xetex
+```

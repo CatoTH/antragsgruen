@@ -1,0 +1,69 @@
+\documentclass[paper=a4, 12pt, pagesize, parskip=half, DIV=calc]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[%LANGUAGE%]{babel}
+\usepackage{fixltx2e}
+\usepackage{lineno}
+\usepackage{tabularx}
+\usepackage{ulem}
+\usepackage{scrpage2}
+\usepackage[normalem]{ulem}
+\usepackage[right]{eurosym}
+\usepackage{fontspec}
+\usepackage{geometry}
+\usepackage{lastpage}
+
+\newfontfamily\ArvoGruen[
+  Path=%ASSETROOT%Arvo/
+]{Arvo_Gruen_1004.otf}
+\newfontfamily\ArvoRegular[
+  Path=%ASSETROOT%Arvo/
+]{Arvo-Regular_v104.ttf}
+\setmainfont[
+  Path=%ASSETROOT%PT-Sans/,
+  BoldFont=PTS75F.ttf,
+  ItalicFont=PTS56F.ttf,
+  BoldItalicFont=PTS76F.ttf
+]{PTS55F.ttf}
+
+\title{%TITLEPREFIX% %TITLE%}
+\author{%AUTHOR%}
+\geometry{a4paper, portrait, top=10mm, left=20mm, right=15mm, bottom=15mm, includehead=true}
+
+\pagestyle{scrheadings}
+\ohead{%TITLEPREFIX% %TITLE%}
+\cfoot{}
+\ihead{Seite \thepage\ / \pageref{LastPage}}
+\setheadsepline{0.4pt}
+
+\begin{document}
+
+\shorthandoff{"}
+\sloppy
+
+\thispagestyle{empty}
+
+\vspace*{-25mm}
+\begin{flushright}
+ \ArvoGruen
+ \small
+ \textbf{\normalsize %INTRODUCTION_BIG%}\\
+ %INTRODUCTION_SMALL%
+\end{flushright}
+
+\begin{tabularx}{\textwidth}{|lX|}
+    \cline{1-2}
+    \ArvoGruen
+                                                            &                               \\
+    \textbf{\LARGE %TITLEPREFIX%} %TITLE%           &                               \\
+                                                            &                               \\
+    %MOTION_DATA_TABLE%
+                                                            &                               \\
+    \cline{1-2}
+\end{tabularx}
+
+\section*{\ArvoRegular %TITLE_LONG%}
+
+%TEXT%
+
+\end{document}

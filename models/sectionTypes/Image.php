@@ -170,4 +170,20 @@ class Image extends ISectionType
     {
         return '[BILD]';
     }
+
+    /**
+     * @return string
+     */
+    public function getMotionTeX()
+    {
+        return 'BILD'; //  @TODO
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentTeX()
+    {
+        return 'BILD'; //  @TODO
+    }
 }

@@ -43,21 +43,28 @@ class HTMLTools
 
         $html = HtmlPurifier::process(
             $html,
-            [
-                'HTML.Doctype'                            => 'HTML 4.01 Transitional',
-                'HTML.AllowedElements'                    => 'p,strong,em,ul,ol,li,s,span,a,br,blockquote',
-                'HTML.AllowedAttributes'                  => 'style,href',
-                'CSS.AllowedProperties'                   => 'text-decoration',
-                'AutoFormat.Linkify'                      => true,
-                'AutoFormat.AutoParagraph'                => false,
-                'AutoFormat.RemoveSpansWithoutAttributes' => true,
-                'AutoFormat.RemoveEmpty'                  => true,
-                'Core.NormalizeNewlines'                  => true,
-                'Core.AllowHostnameUnderscore'            => true,
-                'Core.EnableIDNA'                         => true,
-                'Output.SortAttr'                         => true,
-                'Output.Newline'                          => "\n",
-            ]
+            function ($config) {
+                /** @var \HTMLPurifier_Config $config */
+                $conf = [
+                    'HTML.Doctype'                            => 'HTML 4.01 Transitional',
+                    'HTML.AllowedElements'                    => 'p,strong,em,ul,ol,li,span,a,br,blockquote',
+                    'HTML.AllowedAttributes'                  => 'style,href,class',
+                    'Attr.AllowedClasses'                     => 'underline,strike,subscript,superscript',
+                    'CSS.AllowedProperties'                   => '',
+                    'AutoFormat.Linkify'                      => true,
+                    'AutoFormat.AutoParagraph'                => false,
+                    'AutoFormat.RemoveSpansWithoutAttributes' => true,
+                    'AutoFormat.RemoveEmpty'                  => true,
+                    'Core.NormalizeNewlines'                  => true,
+                    'Core.AllowHostnameUnderscore'            => true,
+                    'Core.EnableIDNA'                         => true,
+                    'Output.SortAttr'                         => true,
+                    'Output.Newline'                          => "\n"
+                ];
+                foreach ($conf as $key => $val) {
+                    $config->set($key, $val);
+                }
+            }
         );
 
         $html = str_ireplace("</li>", "</li>\n", $html);
@@ -80,7 +87,6 @@ class HTMLTools
      */
     private static function sectionSimpleHTMLInt(\DOMElement $element, $pre, $post)
     {
-        // @TODO A HREF, Underline
         $return        = [];
         $children      = $element->childNodes;
         $pendingInline = null;
@@ -94,8 +100,19 @@ class HTMLTools
                             $pendingInline = '';
                         }
                         $pendingInline .= '<br>';
-                    } elseif (in_array($child->nodeName, ['strong', 'em', 's'])) {
-                        $newPre  = '<' . $child->nodeName . '>';
+                    } elseif (in_array($child->nodeName, ['strong', 'em', 'span', 'a'])) {
+                        if ($child->nodeName == 'a') {
+                            $href = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
+                            if ($child->hasAttribute('class')) {
+                                $newPre = '<a href="' . $href . '" class="' . $child->getAttribute('class') . '">';
+                            } else {
+                                $newPre = '<a href="' . $href . '">';
+                            }
+                        } elseif ($child->nodeName == 'span' && $child->hasAttribute('class')) {
+                            $newPre  = '<' . $child->nodeName . ' class="' . $child->getAttribute('class') . '">';
+                        } else {
+                            $newPre  = '<' . $child->nodeName . '>';
+                        }
                         $newPost = '</' . $child->nodeName . '>';
                         $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
                         if ($pendingInline === null) {
@@ -184,17 +201,17 @@ class HTMLTools
 
         $text = preg_replace_callback("/<ul.*>(.*)<\/ul>/siU", function ($matches) {
             $text = "\n" . preg_replace_callback("/<li.*>(.*)<\/li>/siU", function ($matches2) {
-                $text = "* " . $matches2[1] . "\n";
-                return $text;
-            }, $matches[1]);
+                    $text = "* " . $matches2[1] . "\n";
+                    return $text;
+                }, $matches[1]);
             return $text;
         }, $text);
 
         $text = preg_replace_callback("/<ol.*>(.*)<\/ol>/siU", function ($matches) {
             $text = "\n" . preg_replace_callback("/<li.*>(.*)<\/li>/siU", function ($matches2) {
-                $text = "* " . $matches2[1] . "\n";
-                return $text;
-            }, $matches[1]);
+                    $text = "* " . $matches2[1] . "\n";
+                    return $text;
+                }, $matches[1]);
             return $text;
         }, $text);
 

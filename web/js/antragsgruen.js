@@ -38,10 +38,20 @@
         $el.attr("contenteditable", true);
 
         var ckeditorConfig = {
-            allowedContent: 'b s i u;' +
+            coreStyles_strike: {
+                element: 'span',
+                attributes: {'class': 'strike'},
+                overrides: 'strike'
+            },
+            coreStyles_underline: {
+                element: 'span',
+                attributes: {'class': 'underline'}
+            },
+            allowedContent: 'strong s em u;' +
             'ul ol li {list-style-type};' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
             'p blockquote {border,margin,padding,text-align};' +
+            'span(underline,strike,subscript,superscript);' +
             'a[href];',
             toolbarGroups: [
                 {name: 'tools'},
@@ -286,7 +296,7 @@
             $initiatorData = $('.initiatorData'),
             $initiatorAdderRow = $initiatorData.find('.adderRow');
 
-            $('#personTypeNatural, #personTypeOrga').on('click change', function () {
+        $('#personTypeNatural, #personTypeOrga').on('click change', function () {
             if ($('#personTypeOrga').prop('checked')) {
                 $initiatorData.find('.organizationRow').show();
                 $initiatorData.find('.adderRow').hide();
@@ -307,7 +317,6 @@
             ev.preventDefault();
             $(this).parents('.initiatorRow').remove();
         });
-
 
 
         $supporterAdderRow.find('a').click(function (ev) {

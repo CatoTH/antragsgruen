@@ -305,7 +305,14 @@ class MotionController extends Base
         $this->checkConsistency($motion);
         $this->testMaintainanceMode();
 
-        return $this->renderPartial('pdf', ['motion' => $motion]);
+        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+
+        if ($this->getParams()->xelatexPath) {
+            return $this->renderPartial('pdf_tex', ['motion' => $motion]);
+        } else {
+            return $this->renderPartial('pdf_tcpdf', ['motion' => $motion]);
+        }
     }
 
 

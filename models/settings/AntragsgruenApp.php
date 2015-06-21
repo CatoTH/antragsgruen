@@ -26,4 +26,5 @@ class AntragsgruenApp
     public $authClientCollection  = [];
     public $autoLoginDuration     = 0;
     public $tmpDir                = '/tmp/';
+    public $xelatexPath           = null;
 }

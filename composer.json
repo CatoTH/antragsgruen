@@ -32,7 +32,8 @@
     "bower-asset/eonasdan-bootstrap-datetimepicker": "4.7.*",
     "bower-asset/html5shiv": "*",
     "bower-asset/Sortable": "*",
-    "bower-asset/bootbox": "*"
+    "bower-asset/bootbox": "*",
+    "bower-asset/es5-shim": "*"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "2.0.4",
