@@ -13,7 +13,7 @@ $params->dbConnection         = [
 $params->randomSeed           = 'RANDOMSEED';
 $params->cookieValidationKey  = 'RANDOMSEED';
 $params->domainPlain          = 'https://www.example.org/';
-$params->domainSubdomain      = 'https://<siteId:[\w_-]+>.example.org/';
+$params->domainSubdomain      = 'https://<subdomain:[\w_-]+>.example.org/';
 $params->siteBehaviorClasses  = [
     // 1 => '\app\models\siteSpecificBehavior\MyClass'
 ];

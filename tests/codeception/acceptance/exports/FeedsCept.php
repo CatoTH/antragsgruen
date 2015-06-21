@@ -10,31 +10,44 @@ $I->populateDBData1();
 $I->wantTo('test the motion feed');
 $I->gotoStdConsultationHome();
 
-$I->click('#sidebar .feedMotions');
-
-$I->seeInPageSource('O’zapft is!');
-$I->seeInPageSource('Test');
+$content = $I->downloadLink('#sidebar .feedMotions');
+if (mb_strpos($content, 'O’zapft is!') === false) {
+    $I->fail('I don\'t see "O’zapft is!" in Source');
+}
+if (mb_strpos($content, 'Test') === false) {
+    $I->fail('I don\'t see "Test" in Source');
+}
 
 
 $I->wantTo('test the amendment feed');
 $I->gotoStdConsultationHome();
-$I->click('#sidebar .feedAmendments');
 
-$I->seeInPageSource('Tester');
-$I->seeInPageSource('Ä1');
+$content = $I->downloadLink('#sidebar .feedAmendments');
+if (mb_strpos($content, 'Tester') === false) {
+    $I->fail('I don\'t see "Tester" in Source');
+}
+if (mb_strpos($content, 'Ä1') === false) {
+    $I->fail('I don\'t see "Ä1" in Source');
+}
 
 
 // The comment feed is tested in MotionCommentWriteCept and AmendmentCommentWriteCept
 
 
-
 $I->wantTo('test the overall feed');
 $I->gotoStdConsultationHome();
-$I->click('#sidebar .feedAll');
 
-$I->seeInPageSource('O’zapft is!');
-$I->seeInPageSource('Test');
-$I->seeInPageSource('Tester');
-$I->seeInPageSource('Ä1');
-$I->seeInPageSource('Oamoi a Maß');
-$I->seeInPageSource('Auf gehds beim Schichtl pfiad');
+$content = $I->downloadLink('#sidebar .feedAll');
+$lookFor = [
+    'O’zapft is!',
+    'Test',
+    'Tester',
+    'Ä1',
+    'Oamoi a Maß',
+    'Auf gehds beim Schichtl pfiad',
+];
+foreach ($lookFor as $look) {
+    if (mb_strpos($content, $look) === false) {
+        $I->fail('I don\'t see "' . $look . '" in Source');
+    }
+}

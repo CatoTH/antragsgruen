@@ -98,7 +98,7 @@ class UrlHelper
             $route = [$route];
         }
         $route_parts = explode('/', $route[0]);
-        if ($route_parts[0] != "manager") {
+        if ($route_parts[0] != 'manager') {
             return static::createSiteUrl($route);
         } else {
             return Url::toRoute($route);
@@ -128,6 +128,30 @@ class UrlHelper
             return static::createUrl('consultation/index');
         } else {
             return static::createUrl('manager/index');
+        }
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    public static function absolutizeLink($url)
+    {
+        if ($url[0] == '/') {
+            $url = substr($url, 1);
+        }
+        if (strpos($url, 'http') === 0) {
+            return $url;
+        }
+
+        if (static::$currentSite) {
+            return str_replace(
+                '<subdomain:[\w_-]+>',
+                static::$currentSite->subdomain,
+                static::getParams()->domainSubdomain
+            ) . $url;
+        } else {
+            return static::getParams()->domainPlain . $url;
         }
     }
 

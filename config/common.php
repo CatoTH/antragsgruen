@@ -34,6 +34,7 @@ return [
         ],
         'db'         => $params->dbConnection,
         'urlManager' => [
+            'class'           => 'app\components\UrlManager',
             'showScriptName'  => false,
             'enablePrettyUrl' => true,
             'rules'           => require(__DIR__ . DIRECTORY_SEPARATOR . "urls.php")

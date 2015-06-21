@@ -51,8 +51,11 @@ $url_rules = [
     $domamend . 'pdfdiff'                                        => 'amendment/pdfDiff',
     $dommotion . '/amendment/create'                             => 'amendment/create',
     $domv                                                        => 'consultation/index',
-    $dom                                                         => 'consultation/index',
 ];
+
+if ($params->domainPlain != $params->domainSubdomain) {
+    $url_rules[$dom] = 'consultation/index';
+}
 
 if ($params->multisiteMode) {
     $url_rules = array_merge(

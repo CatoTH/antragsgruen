@@ -45,8 +45,8 @@ class ConsultationController extends Base
         }
         $feed->setTitle($this->consultation->title . ': ' . 'Anträge');
         $feed->setLanguage(\yii::$app->language);
-        $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
-        $feed->setFeedLink(UrlHelper::createUrl('consultation/feedmotions'));
+        $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
+        $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedmotions')));
         foreach ($newest as $motion) {
             $motion->addToFeed($feed);
         }
@@ -72,8 +72,8 @@ class ConsultationController extends Base
         }
         $feed->setTitle($this->consultation->title . ': ' . 'Änderungsanträge');
         $feed->setLanguage(\yii::$app->language);
-        $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
-        $feed->setFeedLink(UrlHelper::createUrl('consultation/feedamendments'));
+        $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
+        $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedamendments')));
         foreach ($newest as $amend) {
             $amend->addToFeed($feed);
         }
@@ -99,8 +99,8 @@ class ConsultationController extends Base
         }
         $feed->setTitle($this->consultation->title . ': ' . 'Kommentare');
         $feed->setLanguage(\yii::$app->language);
-        $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
-        $feed->setFeedLink(UrlHelper::createUrl('consultation/feedcomments'));
+        $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
+        $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedcomments')));
         foreach ($newest as $comm) {
             $comm->addToFeed($feed);
         }
@@ -147,8 +147,8 @@ class ConsultationController extends Base
         }
         $feed->setTitle($this->consultation->title . ': ' . 'Neues');
         $feed->setLanguage(\yii::$app->language);
-        $feed->setBaseLink(UrlHelper::createUrl('consultation/index'));
-        $feed->setFeedLink(UrlHelper::createUrl('consultation/feedall'));
+        $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
+        $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedall')));
 
         foreach ($items as $item) {
             /** @var IRSSItem $item */

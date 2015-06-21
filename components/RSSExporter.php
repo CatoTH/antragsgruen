@@ -105,9 +105,9 @@ class RSSExporter
         foreach ($this->entries as $dat) {
             $return .= '<item>
                         <title>' . Html::encode($dat['title']) . '</title>
-                        <link>' . Html::encode($dat['link']) . '</link>
+                        <link>' . Html::encode(UrlHelper::absolutizeLink($dat['link'])) . '</link>
                         <author>' . Html::encode($dat['author']) . '</author>
-                        <guid>' . Html::encode($dat['link']) . '</guid>
+                        <guid>' . Html::encode(UrlHelper::absolutizeLink($dat['link'])) . '</guid>
                         <description><![CDATA[';
             $return .= $dat['description'];
             $return .= ']]></description>

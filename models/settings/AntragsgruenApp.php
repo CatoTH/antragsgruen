@@ -9,7 +9,7 @@ class AntragsgruenApp
     public $cookieValidationKey   = '';
     public $multisiteMode         = true;
     public $domainPlain           = 'http://antragsgruen-v3.localhost/';
-    public $domainSubdomain       = 'http://<siteId:[\w_-]+>.antragsgruen-v3.localhost/';
+    public $domainSubdomain       = 'http://<subdomain:[\w_-]+>.antragsgruen-v3.localhost/';
     public $hasWurzelwerk         = true;
     public $createNeedsWurzelwerk = false;
     public $prependWWWToSubdomain = true;

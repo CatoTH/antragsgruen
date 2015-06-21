@@ -8,7 +8,6 @@ $I = new AntragsgruenAcceptenceTester($scenario);
 $I->populateDBData1();
 
 
-
 $I->wantTo('disable PDFs');
 $I->gotoStdConsultationHome();
 $I->loginAsStdAdmin();
@@ -38,6 +37,8 @@ $I->see('PDF');
 
 $I->wantTo('test the pdf-compilation');
 $I->gotoStdConsultationHome();
+
+
 $I->click('#sidebar .pdfs');
 // @TODO
 

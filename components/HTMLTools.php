@@ -100,7 +100,7 @@ class HTMLTools
                             $pendingInline = '';
                         }
                         $pendingInline .= '<br>';
-                    } elseif (in_array($child->nodeName, ['strong', 'em', 'span', 'a'])) {
+                    } elseif (in_array($child->nodeName, ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b'])) {
                         if ($child->nodeName == 'a') {
                             $href = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
                             if ($child->hasAttribute('class')) {
