@@ -27,4 +27,5 @@ class AntragsgruenApp
     public $autoLoginDuration     = 0;
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
+    public $dvipdfmx              = null;
 }

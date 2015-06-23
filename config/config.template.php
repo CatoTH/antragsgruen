@@ -22,4 +22,11 @@ $params->authClientCollection = [
         'class' => 'app\components\WurzelwerkAuthClient',
     ]
 ];
+
+// Standard path on Debian/Linux
+// $params->xelatexPath = '/usr/bin/xelatex';
+// $params->dvipdfmx = '/usr/bin/dvipdfmx';
+
+// Standard path on OSX
+// $params->xelatexPath = '/Library/TeX/texbin/xelatex';
 return $params;

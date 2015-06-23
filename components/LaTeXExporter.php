@@ -146,7 +146,9 @@ class LaTeXExporter
         $cmd = $app->xelatexPath;
         $cmd .= ' -interaction=batchmode';
         $cmd .= ' -output-directory="' . $app->tmpDir . '"';
-        $cmd .= ' -output-driver="/usr/bin/xdvipdfmx"';
+        if ($app->dvipdfmx) {
+            $cmd .= ' -output-driver="' . $app->dvipdfmx . '"';
+        }
         $cmd .= ' "' . $filenameBase . '.tex"';
 
         shell_exec($cmd);
