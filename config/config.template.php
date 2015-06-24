@@ -25,7 +25,7 @@ $params->authClientCollection = [
 
 // Standard path on Debian/Linux
 // $params->xelatexPath = '/usr/bin/xelatex';
-// $params->dvipdfmx = '/usr/bin/dvipdfmx';
+// $params->xdvipdfmx = '/usr/bin/xdvipdfmx';
 
 // Standard path on OSX
 // $params->xelatexPath = '/Library/TeX/texbin/xelatex';
