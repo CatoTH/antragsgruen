@@ -10,6 +10,8 @@ $I->populateDBData1();
 
 $I->wantTo('disable PDFs');
 $I->gotoStdConsultationHome();
+
+
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->selectOption('#pdfLayout', -1);
@@ -34,6 +36,13 @@ $I->seeElement('#sidebar .pdfs');
 $I->click('.motionLink2');
 $I->see('PDF');
 
+
+$I->wantTo('test the single-motion-PDF');
+$pdf = $I->downloadLink('#sidebar .download a');
+if (strlen($pdf) == 0) {
+    $I->fail('PDF has no content');
+}
+// @TODO Try to open the file
 
 $I->wantTo('test the pdf-compilation');
 $I->gotoStdConsultationHome();

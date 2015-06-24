@@ -17,6 +17,9 @@ class UrlManager extends \yii\web\UrlManager
                 $url = substr($url, strlen($currHost));
             }
         }
+        if ($url == '') {
+            $url = '/';
+        }
         return $url;
     }
 }
