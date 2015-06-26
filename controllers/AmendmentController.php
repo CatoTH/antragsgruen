@@ -246,7 +246,7 @@ class AmendmentController extends Base
             if ($amendment->motion->consultation->adminEmail != "") {
                 $mails = explode(",", $amendment->motion->consultation->adminEmail);
 
-                $motionLink = \Yii::$app->request->baseUrl . UrlHelper::createAmendmentUrl($amendment);
+                $motionLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
                 $mailText   = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
                 $mailText   = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $motionLink], $mailText);
 

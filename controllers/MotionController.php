@@ -431,7 +431,7 @@ class MotionController extends Base
             if ($motion->consultation->adminEmail != "") {
                 $mails = explode(",", $motion->consultation->adminEmail);
 
-                $motionLink = \Yii::$app->request->baseUrl . UrlHelper::createMotionUrl($motion);
+                $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
                 $mailText   = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
                 $mailText   = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
 

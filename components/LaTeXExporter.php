@@ -52,7 +52,6 @@ class LaTeXExporter
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
                     /** @var \DOMElement $node */
-                    //  \setcounter{enumi}{4}
                     $firstLine = '';
                     if ($node->hasAttribute('start')) {
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";

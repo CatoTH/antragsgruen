@@ -257,8 +257,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
-                $this->authKey = \Yii::$app->getSecurity()->generateRandomString();
-                $this->dateCreation    = new Expression("NOW()");
+                $this->authKey      = \Yii::$app->getSecurity()->generateRandomString();
+                $this->dateCreation = new Expression("NOW()");
             }
             return true;
         }
@@ -445,7 +445,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
         $code           = $this->getNotificationUnsubscribeCode();
         $unsubscribeUrl = UrlHelper::createUrl(['user/unsubscribe', 'code' => $code]);
-        $unsubscribeUrl = \Yii::$app->request->absoluteUrl . $unsubscribeUrl;
+        $unsubscribeUrl = UrlHelper::absolutizeLink($unsubscribeUrl);
         $gruss          = "Hallo " . $this->name . ",\n\n";
         $from_name      = $consultation->site->getBehaviorClass()->getMailFromName();
         $sig            = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
@@ -462,7 +462,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $subject = "[Antragsgrün] Neuer Antrag: " . $motion->getTitleWithPrefix();
         $link    = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
-        $link    = \Yii::$app->request->baseUrl . $link;
+        $link    = UrlHelper::absolutizeLink($link);
         $text    = "Es wurde ein neuer Antrag eingereicht:\nAnlass: " . $motion->consultation->title .
             "\nName: " . $motion->getTitleWithPrefix() . "\nLink: " . $link;
         $this->notificationEmail($motion->consultation, $subject, $text);
@@ -476,6 +476,7 @@ class User extends ActiveRecord implements IdentityInterface
         $subject  = "[Antragsgrün] Neuer Änderungsantrag zu " . $amendment->motion->getTitleWithPrefix();
         $motionId = $amendment->motion->id;
         $link     = UrlHelper::createUrl(['amendment/view', 'amendmentId' => $amendment->id, 'motionId' => $motionId]);
+        $link     = UrlHelper::absolutizeLink($link);
         $link     = \Yii::$app->request->baseUrl . $link;
         $text     = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: " .
             $amendment->motion->consultation->title . "\nAntrag: " . $amendment->motion->getTitleWithPrefix() .
@@ -490,7 +491,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $subject = "[Antragsgrün] Neuer Kommentar zu: " . $comment->getMotionTitle();
         $text    = "Es wurde ein neuer Kommentar zu " . $comment->getMotionTitle() . " geschrieben:\n" .
-            $comment->getLink();
+            UrlHelper::absolutizeLink($comment->getLink());
         $this->notificationEmail($comment->getConsultation(), $subject, $text);
     }
 

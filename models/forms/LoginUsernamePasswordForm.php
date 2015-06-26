@@ -4,6 +4,7 @@ namespace app\models\forms;
 
 use app\components\PasswordFunctions;
 use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\db\EMailLog;
 use app\models\db\Site;
 use app\models\db\User;
@@ -45,7 +46,7 @@ class LoginUsernamePasswordForm extends Model
     {
         $bestCode = $user->createEmailConfirmationCode();
         $params   = ["user/confirmregistration", "email" => $this->username, "code" => $bestCode, "subdomain" => null];
-        $link     = \Yii::$app->urlManager->createAbsoluteUrl($params);
+        $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params))
 
         $send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n";
         $send_text .= "%bestLink%\n\n"
