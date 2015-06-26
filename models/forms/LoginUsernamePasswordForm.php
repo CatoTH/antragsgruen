@@ -46,7 +46,7 @@ class LoginUsernamePasswordForm extends Model
     {
         $bestCode = $user->createEmailConfirmationCode();
         $params   = ["user/confirmregistration", "email" => $this->username, "code" => $bestCode, "subdomain" => null];
-        $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params))
+        $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
 
         $send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n";
         $send_text .= "%bestLink%\n\n"
