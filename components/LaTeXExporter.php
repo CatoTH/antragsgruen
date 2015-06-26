@@ -51,7 +51,13 @@ class LaTeXExporter
                 case 'ul':
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
-                    return '\begin{enumerate}' . "\n" . $content . '\end{enumerate}' . "\n";
+                    /** @var \DOMElement $node */
+                    //  \setcounter{enumi}{4}
+                    $firstLine = '';
+                    if ($node->hasAttribute('start')) {
+                        $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
+                    }
+                    return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
                     return '\item ' . $content . "\n";
                 case 'a':
