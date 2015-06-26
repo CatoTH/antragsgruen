@@ -90,6 +90,7 @@ class HTMLTools
         $return        = [];
         $children      = $element->childNodes;
         $pendingInline = null;
+        $lino          = 0;
         for ($i = 0; $i < $children->length; $i++) {
             $child = $children->item($i);
             switch (get_class($child)) {
@@ -126,7 +127,18 @@ class HTMLTools
                             $return[]      = $pre . $pendingInline . $post;
                             $pendingInline = null;
                         }
-                        if (in_array($child->nodeName, ['p', 'ul', 'ol', 'li', 'blockquote'])) {
+                        if ($child->nodeName == 'ol') {
+                            $newPre  = $pre . '<' . $child->nodeName . ' start="#LINO#">';
+                            $newPost = '</' . $child->nodeName . '>' . $post;
+                            $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
+                            $return  = array_merge($return, $newArrs);
+                        } elseif ($child->nodeName == 'li') {
+                            $lino++;
+                            $newPre  = str_replace('#LINO#', $lino, $pre) . '<' . $child->nodeName . '>';
+                            $newPost = '</' . $child->nodeName . '>' . $post;
+                            $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
+                            $return  = array_merge($return, $newArrs);
+                        } elseif (in_array($child->nodeName, ['p', 'ul', 'blockquote'])) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
