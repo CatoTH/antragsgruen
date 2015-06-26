@@ -138,6 +138,13 @@ class LaTeXExporter
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
         }
         $str          = static::createLaTeXString($laTeX);
+
+        if (YII_ENV_DEV && isset($_REQUEST["latex_src"])) {
+            Header('Content-Type: text/plain');
+            echo $str;
+            die();
+        }
+
         $filenameBase = $app->tmpDir . uniqid('motion-pdf');
         //echo nl2br(htmlentities($str));
         //die();

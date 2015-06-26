@@ -21,12 +21,14 @@ DROP TABLE IF EXISTS `consultationSubscription`;
 DROP TABLE IF EXISTS `siteAdmin`;
 DROP TABLE IF EXISTS `emailLog`;
 DROP TABLE IF EXISTS `consultationOdtTemplate`;
+DROP TABLE IF EXISTS `consultationLatexTemplate`;
+DROP TABLE IF EXISTS `consultationAgendaItem`;
 DROP TABLE IF EXISTS `consultationTag`;
 DROP TABLE IF EXISTS `motionTag`;
 DROP TABLE IF EXISTS `consultationSettingsMotionSection`;
 DROP TABLE IF EXISTS `consultationMotionType`;
 DROP TABLE IF EXISTS `consultationSettingsTag`;
-DROP TABLE IF EXISTS `consultationAgendaItem`;
+
 DROP TABLE IF EXISTS `motionSection`;
 
 SET SQL_MODE=@OLD_SQL_MODE;

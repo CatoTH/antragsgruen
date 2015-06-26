@@ -11,7 +11,7 @@ INSERT INTO `amendment` (`id`, `motionId`, `titlePrefix`, `changeMetatext`, `cha
 VALUES
   (1, 2, 'Ä1', '', '',
    '<p>Auf gehds beim Schichtl pfiad de Charivari Wurschtsolod Gamsbart, Kneedl gwiss. Wos dringma aweng unbandig gfreit mi imma Habedehre, sei Sauwedda dringma aweng Maßkruag Schuabladdla! Do legst di nieda hob i an Suri wia Haferl Graudwiggal Klampfn Biakriagal i bin a woschechta Bayer ebba.</p>\n',
-   0, '', '2015-05-23 19:46:34', NULL, 3, '', NULL, 0);
+   0, '', '2015-05-23 17:46:34', NULL, 3, '', NULL, 0);
 
 --
 -- Dumping data for table `amendmentSection`
@@ -65,15 +65,13 @@ INSERT INTO `consultationAgendaItem` (`id`, `consultationId`, `parentItemId`, `p
 -- Dumping data for table `consultationMotionType`
 --
 
-INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssicon`,
-                                      `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`,
-                                      `initiatorForm`, `initiatorFormSettings`, `contactEmail`, `contactPhone`)
+INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `contactEmail`, `contactPhone`, `initiatorForm`, `initiatorFormSettings`)
 VALUES
-  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, NULL, NULL, 1, 1, 1, 0, 0, NULL, 2, 1),
-  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, NULL, NULL, 1, 1, 1, 0, 0, NULL, 2, 1),
-  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, NULL, NULL, 1, 1, 1, 0, 0, NULL, 2, 1),
-  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, NULL, NULL, 1, 1, 1, 0, 0, NULL, 2, 1),
-  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, NULL, NULL, 1, 0, 0, 0, 0, NULL, 2, 1);
+  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
+  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
+  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
+  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
+  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, NULL, NULL, 1, 0, 0, 0, 2, 1, 0, NULL);
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`
@@ -116,8 +114,10 @@ INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `titl
 --
 
 INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateSent`, `subject`, `text`) VALUES
-  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-23 19:46:38', 'Neuer Antrag',
-   'Es wurde ein neuer Änderungsantrag "Ä1 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/2/amendment/1');
+  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-23 17:46:38', 'Neuer Antrag',
+   'Es wurde ein neuer Änderungsantrag "Ä1 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/2/amendment/1'),
+  (2, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-06-26 17:03:55', 'Neuer Antrag',
+   'Es wurde ein neuer Antrag "Textformatierungen" eingereicht.\nLink: /std-parteitag/motion/3');
 
 --
 -- Dumping data for table `motion`
@@ -125,7 +125,8 @@ INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateS
 
 INSERT INTO `motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `agendaItemId`, `title`, `titlePrefix`, `dateCreation`, `dateResolution`, `status`, `statusString`, `noteInternal`, `cache`, `textFixed`)
 VALUES
-  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-03 07:27:20', NULL, 3, NULL, NULL, '', 0);
+  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-03 05:27:20', NULL, 3, NULL, NULL, '', 0),
+  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-26 17:03:49', NULL, 3, NULL, NULL, '', 0);
 
 --
 -- Dumping data for table `motionSection`
@@ -142,7 +143,14 @@ INSERT INTO `motionSection` (`motionId`, `sectionId`, `data`, `metadata`) VALUES
   (2, 4,
    '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>\n<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn. Foidweg Spuiratz kimmt, um Godds wujn. Am acht’n Tag schuf Gott des Bia i sog ja nix, i red ja bloß jedza, Biakriagal a bissal wos gehd ollaweil. Ledahosn om auf’n Gipfe Servas des wiad a Mordsgaudi, griasd eich midnand Bladl Fünferl Gams.</p>\n<p>Leonhardifahrt ma da middn. Greichats an naa do. Af Schuabladdla Leonhardifahrt Marei, des um Godds wujn Biakriagal! Hallelujah sog i, luja schüds nei koa des is schee jedza hogg di hera dringma aweng Spezi nia Musi. Wurschtsolod jo mei is des schee gor Ramasuri ozapfa no gfreit mi i hob di liab auffi, Schbozal. Hogg di hera nia need Biakriagal so schee, Schdarmbeaga See.</p>\n',
    NULL),
-  (2, 5, '', NULL);
+  (2, 5, '', NULL),
+  (3, 1, 'Textformatierungen', NULL),
+  (3, 2,
+   '<p>Normaler Text <strong>fett und <em>kursiv</em></strong><br>\nZeilenumbruch <span class="underline">unterstrichen</span></p>\n<p><span class="strike">Durchgestrichen und <em>kursiv</em></span></p>\n<ol><li>Listenpunkt</li>\n	<li>Listenpunkt (<em>kursiv</em>)<br>\n	Zeilenumbruch</li>\n	<li>Nummer 3</li>\n</ol><p>Normaler Text wieder.</p>\n<p>Absatz 2</p>\n<ul>\n<li>Einfache Punkte</li>\n	<li>Nummer 2</li>\n</ul>\n<p>Link Bla</p>\n<blockquote>\n<p>Zitat 223<br>\nZeilenumbruch</p>\n<p>Neuer Paragraph</p>\n</blockquote>\n<p>Ende</p>\n',
+   NULL),
+  (3, 3, '<p>Textformatierungs-Test</p>\n', NULL),
+  (3, 4, '<p>Textformatierungs-Test</p>\n', NULL),
+  (3, 5, '', NULL);
 
 --
 -- Dumping data for table `motionSupporter`
@@ -150,7 +158,15 @@ INSERT INTO `motionSection` (`motionId`, `sectionId`, `data`, `metadata`) VALUES
 
 INSERT INTO `motionSupporter` (`id`, `motionId`, `position`, `userId`, `role`, `comment`, `personType`, `name`, `organization`, `resolutionDate`, `contactEmail`, `contactPhone`)
 VALUES
-  (2, 2, 0, 1, 'initiates', NULL, 0, 'HoesslTo', '', NULL, 'tobias@hoessl.eu', NULL);
+  (2, 2, 0, 1, 'initiates', NULL, 0, 'HoesslTo', '', NULL, 'tobias@hoessl.eu', NULL),
+  (3, 3, 0, 1, 'initiates', NULL, 0, 'Testadmin', '', NULL, 'testadmin@example.org', '');
+
+--
+-- Dumping data for table `motionTag`
+--
+
+INSERT INTO `motionTag` (`motionId`, `tagId`) VALUES
+  (3, 1);
 
 --
 -- Dumping data for table `site`
@@ -175,10 +191,14 @@ INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
 --
 
 INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`) VALUES
-  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 09:04:44', 0,
-   'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy', 'f5227358c12d6cd48900d07f846f1cc758b5b9d8', NULL),
-  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 09:08:14', 0,
-   'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV', '3f0b4863f2989d8f89a9ab8e2ba33b264e70ef3a', NULL);
+  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 08:04:44', 0,
+   'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy',
+   0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+   NULL),
+  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 08:08:14', 0,
+   'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV',
+   0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+   NULL);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

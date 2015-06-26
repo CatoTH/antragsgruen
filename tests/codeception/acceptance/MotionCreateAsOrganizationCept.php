@@ -39,7 +39,7 @@ $I->wantTo('see if the data is visible');
 $I->see('My party');
 $I->see('Beschlossen: 09.09.1999');
 
-$I->click('.motionLink3');
+$I->click('.motionLink' . AntragsgruenAcceptenceTester::FIRST_FREE_MOTION_ID);
 
 $I->see('My party');
 $I->see('Beschlossen: 09.09.1999');

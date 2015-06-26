@@ -14,6 +14,9 @@ class AntragsgruenAcceptenceTester extends AcceptanceTester
 {
     use \app\tests\AntragsgruenSetupDB;
 
+    const FIRST_FREE_MOTION_ID = 4;
+    const FIRST_FREE_MOTION_TITLE_PREFIX = 'A4';
+
     /**
      * @param \Codeception\Scenario $scenario
      */

@@ -4,6 +4,8 @@
  * @var \Codeception\Scenario $scenario
  */
 
+$motionId = AntragsgruenAcceptenceTester::FIRST_FREE_MOTION_ID;
+
 $I = new AntragsgruenAcceptenceTester($scenario);
 $I->populateDBData1();
 
@@ -12,7 +14,7 @@ $I->wantTo('create a new motion');
 $page = $I->gotoStdConsultationHome()->gotoMotionCreatePage();
 $page->createMotion('random new motion');
 
-$motionPage = $I->gotoMotion(true, 3);
+$motionPage = $I->gotoMotion(true, $motionId);
 $I->see(mb_strtoupper('random new motion'), 'h1');
 
 $firstLineNo = $motionPage->getFirstLineNumber();
@@ -36,12 +38,12 @@ $I->seeCheckboxIsChecked('#lineNumberingGlobal');
 
 $I->wantTo('check if the numbering has changed');
 
-$motionPage = $I->gotoMotion(true, 3);
+$motionPage = $I->gotoMotion(true, $motionId);
 $I->see(mb_strtoupper('random new motion'), 'h1');
 
 $firstLineNo = $motionPage->getFirstLineNumber();
-if ($firstLineNo != 54) {
-    $I->fail('first line number is 54 - got: ' . $firstLineNo);
+if ($firstLineNo != 71) {
+    $I->fail('first line number is 71 - got: ' . $firstLineNo);
 }
 
 
@@ -49,12 +51,12 @@ if ($firstLineNo != 54) {
 
 $I->wantTo('set an invalid title prefix');
 
-$motionAdminPage = $I->gotoStdAdminPage()->gotoMotionIndex()->gotoMotionPage(3);
+$motionAdminPage = $I->gotoStdAdminPage()->gotoMotionIndex()->gotoMotionPage($motionId);
 $I->fillField('#motionTitlePrefix', 'A2');
 $I->fillField('#motionTitle', 'Another Title');
 $motionAdminPage->saveForm();
 $I->see('Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet');
-$I->seeInField('#motionTitlePrefix', 'A3');
+$I->seeInField('#motionTitlePrefix', AntragsgruenAcceptenceTester::FIRST_FREE_MOTION_TITLE_PREFIX);
 $I->seeInField('#motionTitle', 'Another Title');
 
 
@@ -68,7 +70,7 @@ $I->seeInField('#motionTitlePrefix', 'A1');
 
 
 $I->wantTo('check if the changes are reflected');
-$motionPage = $I->gotoMotion(true, 3);
+$motionPage = $I->gotoMotion(true, $motionId);
 $I->see(mb_strtoupper('Another Title'), 'h1');
 $firstLineNo = $motionPage->getFirstLineNumber();
 if ($firstLineNo != 1) {
@@ -99,7 +101,7 @@ $I->dontSeeCheckboxIsChecked('#lineNumberingGlobal');
 
 
 $I->wantTo('check if the changes are reflected');
-$motionPage = $I->gotoMotion(true, 3);
+$motionPage = $I->gotoMotion(true, $motionId);
 $firstLineNo = $motionPage->getFirstLineNumber();
 if ($firstLineNo != 1) {
     $I->fail('first line number is 1 - got: ' . $firstLineNo);

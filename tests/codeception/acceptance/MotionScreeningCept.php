@@ -40,9 +40,10 @@ $I->see($motionTitle, '.adminTodo');
 
 
 $I->wantTo('Screen the motion with an invalid title String (race condition)');
-$I->click('.adminTodo .motionScreen3 a');
+$I->click('.adminTodo .motionScreen' . AntragsgruenAcceptenceTester::FIRST_FREE_MOTION_ID . ' a');
 $I->seeElement('#motionScreenForm');
-$I->executeJS('$("#motionScreenForm input[name=titlePrefix]").attr("value", "A2");');
+$prefix = AntragsgruenAcceptenceTester::FIRST_FREE_MOTION_TITLE_PREFIX;
+$I->executeJS('$("#motionScreenForm input[name=titlePrefix]").attr("value", "A3");');
 $I->submitForm('#motionScreenForm', [], ['screen']);
 $I->see('Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
 

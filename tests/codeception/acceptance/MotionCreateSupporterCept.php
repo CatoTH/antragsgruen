@@ -195,7 +195,7 @@ $I->see('Another sample motion with supporters');
 $I->wantTo('verify the new supporters are visible');
 $I->see('Mein Name');
 $I->see('Another Initiator');
-$I->click('.motionLink4');
+$I->click('.motionLink' . (AntragsgruenAcceptenceTester::FIRST_FREE_MOTION_ID + 1));
 
 $I->see('Another Initiator', '.motionData');
 $I->see('Mein Name', '.motionData');

@@ -129,12 +129,14 @@ $I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
 $I->submitForm('#motionConfirmedForm', [], '');
 
 
+$motionId = AntragsgruenAcceptenceTester::FIRST_FREE_MOTION_ID;
+$motionPrefix = AntragsgruenAcceptenceTester::FIRST_FREE_MOTION_TITLE_PREFIX;
 
 $I->wantTo('check the visible data');
 $I->see('Hallo auf Antragsgrün');
 $I->see('Testantrag 2');
-$I->click('.motionLink3');
-$I->see(mb_strtoupper('A3: Testantrag 2'), 'h1');
+$I->click('.motionLink' . $motionId);
+$I->see(mb_strtoupper($motionPrefix . ': Testantrag 2'), 'h1');
 
 $I->see('My real name');
 $I->dontSee('test2@example.org');
