@@ -51,8 +51,8 @@ RUN mkdir /var/www/antragsgruen/runtime
 RUN chown www-data:www-data /var/www/antragsgruen/runtime
 RUN chown -R www-data:www-data /var/www/antragsgruen/web/assets
 
-RUN cp docker-vagrant/config.php config/
-RUN cp docker-vagrant/config_tests.php config/
+RUN cp assets/docker-vagrant/config.php config/
+RUN cp assets/docker-vagrant/config_tests.php config/
 
 
 RUN apt-get install -y libgmp10 libgomp1 libicu-dev libicu48 libitm1 libmpc2 libmpfr4 libquadmath0 fontconfig-config zlib1g-dev libfontconfig
@@ -62,7 +62,7 @@ RUN chmod a+x /usr/local/bin/phantomjs
 
 RUN rm /etc/nginx/sites-enabled/default
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-RUN cp docker-vagrant/nginx-antragsgruen /etc/nginx/sites-enabled/antragsgruen
+RUN cp assets/docker-vagrant/nginx-antragsgruen /etc/nginx/sites-enabled/antragsgruen
 
 
 RUN apt-get install -y supervisor
@@ -74,4 +74,4 @@ EXPOSE 80
 # volume for mysql database and wordpress install
 VOLUME ["/var/www/antragsgruen"]
 
-CMD ["/bin/bash", "/var/www/antragsgruen/docker-vagrant/start.sh"]
+CMD ["/bin/bash", "/var/www/antragsgruen/assets/docker-vagrant/start.sh"]
