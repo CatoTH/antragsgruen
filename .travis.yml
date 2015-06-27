@@ -43,8 +43,8 @@ script:
   - touch tests/codeception/_output/test
   - openssl aes-256-cbc -K $encrypted_f3a6d9a4845e_key -iv $encrypted_f3a6d9a4845e_iv -in assets/travis/travis.key.enc -out assets/travis/travis.key -d
   - chmod 600 assets/travis/travis.key
-  - scp -r -i ../assets/travis/travis.key tests/codeception/_output/* travis@hoessl.eu:~/output/
-  - scp -r -i ../assets/travis/travis.key /etc/apache2/sites-available/default travis@hoessl.eu:~/runtime/
-  - scp -r -i ../assets/travis/travis.key phantomjs.log travis@hoessl.eu:~/logs/
-  - scp -r -i ../assets/travis/travis.key runtime/* travis@hoessl.eu:~/runtime/
-  - scp -r -i ../assets/travis/travis.key /var/log/apache2/* travis@hoessl.eu:~/logs/
+  - scp -r -i ./assets/travis/travis.key tests/codeception/_output/* travis@hoessl.eu:~/output/
+  - scp -r -i ./assets/travis/travis.key /etc/apache2/sites-available/default travis@hoessl.eu:~/runtime/
+  - scp -r -i ./assets/travis/travis.key phantomjs.log travis@hoessl.eu:~/logs/
+  - scp -r -i ./assets/travis/travis.key runtime/* travis@hoessl.eu:~/runtime/
+  - scp -r -i ./assets/travis/travis.key /var/log/apache2/* travis@hoessl.eu:~/logs/

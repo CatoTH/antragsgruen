@@ -3,7 +3,6 @@
 namespace app\models\settings;
 
 use app\components\UrlHelper;
-use app\models\db\Consultation;
 
 class Layout
 {
@@ -20,14 +19,14 @@ class Layout
     public $fullWidth       = false;
     public $fullScreen      = false;
 
-    /** @var Consultation|null */
+    /** @var \app\models\db\Consultation|null */
     private $consultation;
 
 
     /**
-     * @param Consultation $consultation
+     * @param \app\models\db\Consultation $consultation
      */
-    public function setConsultation(Consultation $consultation)
+    public function setConsultation(\app\models\db\Consultation $consultation)
     {
         $this->consultation = $consultation;
         if ($consultation && count($this->breadcrumbs) == 0) {
