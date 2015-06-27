@@ -9,10 +9,6 @@ php:
 addons:
   ssh_known_hosts: hoessl.eu
 
-before_install:
-  - openssl aes-256-cbc -K $encrypted_f3a6d9a4845e_key -iv $encrypted_f3a6d9a4845e_iv -in assets/travis/travis.key.enc -out assets/travis/travis.key -d
-  - chmod 600 assets/travis/travis.key
-
 install:
   - composer global require "fxp/composer-asset-plugin:1.0.0"
   - composer install --dev --prefer-dist
@@ -31,7 +27,6 @@ before_script:
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   - sudo a2enmod rewrite actions fastcgi alias
-  - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
   # configure apache virtual hosts
   - sudo cp -f assets/travis/apache.conf /etc/apache2/sites-available/default
@@ -46,6 +41,8 @@ script:
   - ./run.sh
   - cd ..
   - touch tests/codeception/_output/test
+  - openssl aes-256-cbc -K $encrypted_f3a6d9a4845e_key -iv $encrypted_f3a6d9a4845e_iv -in assets/travis/travis.key.enc -out assets/travis/travis.key -d
+  - chmod 600 assets/travis/travis.key
   - scp -r -i ../assets/travis/travis.key tests/codeception/_output/* travis@hoessl.eu:~/output/
   - scp -r -i ../assets/travis/travis.key /etc/apache2/sites-available/default travis@hoessl.eu:~/runtime/
   - scp -r -i ../assets/travis/travis.key phantomjs.log travis@hoessl.eu:~/logs/
