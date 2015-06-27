@@ -8,6 +8,7 @@ class Site
     /** @var bool */
     public $onlyNamespacedAccounts = false;
     public $onlyWurzelwerk         = false;
+    public $siteLayout             = 'layout-classic';
 
     /** @var int */
     public $willingToPay = 0;
@@ -21,11 +22,11 @@ class Site
      */
     public static function getPaysValues()
     {
-        return array(
-            2 => "Ja",
-            0 => "Nein",
-            1 => "Will mich später entscheiden"
-        );
+        return [
+            2 => 'Ja',
+            0 => 'Nein',
+            1 => 'Will mich später entscheiden'
+        ];
     }
 
     /**
@@ -33,7 +34,7 @@ class Site
      */
     public function __construct($data)
     {
-        if ($data == "") {
+        if ($data == '') {
             return;
         }
         $data = (array)json_decode($data);

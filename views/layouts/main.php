@@ -43,17 +43,16 @@ if ($layout->robotsNoindex) {
     echo '<meta name="robots" content="noindex, nofollow">' . "\n";
 }
 
-
-?>
-    <!--[if lt IE 9]>
+echo '<!--[if lt IE 9]>
     <script src="/js/bower/html5shiv/dist/html5shiv.min.js"></script>
     <![endif]-->
     <!--[if lt IE 8]>
     <link rel="stylesheet" href="/css/antragsgruen-ie7.css">
     <![endif]-->
+';
 
-    <link rel="stylesheet" href="/css/antragsgruen.css">
-<?php
+echo '<link rel="stylesheet" href="/css/' . $layout->mainCssFile . '.css">' . "\n";
+
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . Html::encode($file) . '">' . "\n";
 }

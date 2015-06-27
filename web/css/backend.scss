@@ -1,4 +1,4 @@
-@import "common";
+@charset "UTF-8";
 
 .adminForm {
   label {
@@ -18,7 +18,7 @@
 legend, label.legend {
   display: block;
   border: none;
-  color: $colorGreenDark;
+  color: rgb(40, 95, 25);
   font-size: 13px;
   font-weight: bold;
   line-height: 18px;

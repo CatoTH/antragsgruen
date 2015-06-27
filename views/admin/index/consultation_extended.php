@@ -47,6 +47,19 @@ echo '<h3 class="green">Allgemeine Einstellungen zur Veranstaltung</h3>';
 echo '<div class="content">';
 
 
+$layout = $consultation->site->getSettings()->siteLayout;
+echo '<fieldset class="form-group">
+    <label class="col-sm-4 control-label" for="consultationPath">Layout:</label>
+    <div class="col-sm-8">';
+echo Html::dropDownList(
+    'siteSettings[siteLayout]',
+    $layout,
+    \app\models\settings\Layout::getCssLayouts(),
+    ['id' => 'siteLayout', 'class' => 'form-control']
+);
+echo '</div></fieldset>';
+
+
 $handledSettings[] = 'logoUrl';
 echo '<fieldset class="form-group">
     <label class="col-sm-4 control-label" for="consultationPath">Logo-URL:</label>

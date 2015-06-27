@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+$arvoFontPath: "../fonts/gruenes-ci/";
+@import "../fonts/gruenes-ci/arvo";
+$ptSansFontPath: "../fonts/gruenes-ci/";
+@import "../fonts/gruenes-ci/ptsans";
+
+$colorGreenDark: rgb(40, 95, 25);
+$colorGreenLight: rgb(175, 203, 8);
+$colorGreenLightText: rgb(162, 188, 4);
+$colorDelLink: #FF7777;
+$colorMagenta: rgb(226, 0, 122);
+$brand-primary: $colorMagenta;
+
+$deadlineCircleFont: "Arvo", sans-serif;
+$sidebarActionFont: "Arvo", sans-serif;
+$topNavbarFont: "Arvo", sans-serif;
+$buttonFont: "Arvo", sans-serif;
+$breadcrumbFont: "Arvo", sans-serif;
+$stdHeadingFont: "Arvo", sans-serif;
+$motionFixedFont: 'PT Sans', Courier, sans-serif;
+$motionStdFontSize: 16px;
+
+@import "base_layout";
+@import "motions";
+@import "styles";

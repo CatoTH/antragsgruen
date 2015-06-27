@@ -127,9 +127,9 @@ class IndexController extends AdminBase
      */
     private function saveTags(Consultation $consultation)
     {
-        if (AntiXSS::isTokenSet("delTag")) {
+        if (AntiXSS::isTokenSet('delTag')) {
             foreach ($consultation->tags as $tag) {
-                if ($tag->id == AntiXSS::getTokenVal("delTag")) {
+                if ($tag->id == AntiXSS::getTokenVal('delTag')) {
                     $tag->delete();
                     $consultation->refresh();
                 }
@@ -137,14 +137,14 @@ class IndexController extends AdminBase
         }
 
 
-        if (isset($_POST["tagCreate"]) && trim($_POST["tagCreate"]) != "") {
+        if (isset($_POST['tagCreate']) && trim($_POST['tagCreate']) != '') {
             $maxId     = 0;
             $duplicate = false;
             foreach ($consultation->tags as $tag) {
                 if ($tag->position > $maxId) {
                     $maxId = $tag->position;
                 }
-                if (mb_strtolower($tag->title) == mb_strtolower($_POST["tagCreate"])) {
+                if (mb_strtolower($tag->title) == mb_strtolower($_POST['tagCreate'])) {
                     $duplicate = true;
                 }
             }
@@ -159,8 +159,8 @@ class IndexController extends AdminBase
             $consultation->refresh();
         }
 
-        if (isset($_POST["tagSort"]) && is_array($_POST["tagSort"])) {
-            foreach ($_POST["tagSort"] as $i => $tagId) {
+        if (isset($_POST['tagSort']) && is_array($_POST['tagSort'])) {
+            foreach ($_POST['tagSort'] as $i => $tagId) {
                 /** @var ConsultationSettingsTag $tag */
                 $tag = ConsultationSettingsTag::findOne($tagId);
                 if ($tag->consultationId == $consultation->id) {
@@ -181,6 +181,7 @@ class IndexController extends AdminBase
         $siteSettings                         = $site->getSettings();
         $siteSettings->onlyNamespacedAccounts = (isset($ssettings['onlyNamespacedAccounts']) ? 1 : 0);
         $siteSettings->onlyWurzelwerk         = (isset($ssettings['onlyWurzelwerk']) ? 1 : 0);
+        $siteSettings->siteLayout             = $ssettings['siteLayout'];
         $site->setSettings($siteSettings);
         $site->save();
 

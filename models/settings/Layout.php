@@ -18,10 +18,21 @@ class Layout
     public $onloadJs        = [];
     public $fullWidth       = false;
     public $fullScreen      = false;
+    public $mainCssFile     = 'layout-classic';
 
     /** @var \app\models\db\Consultation|null */
     private $consultation;
 
+    /**
+     * @return string[]
+     */
+    public static function getCssLayouts()
+    {
+        return [
+            'layout-classic'    => 'Antragsgrün-Standard',
+            'layout-gruenes-ci' => 'Grünes CI',
+        ];
+    }
 
     /**
      * @param \app\models\db\Consultation $consultation

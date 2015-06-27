@@ -1,0 +1,310 @@
+@charset "UTF-8";
+
+@import "base_layout";
+
+.deadlineCircle {
+  float: right;
+  width: 105px;
+  height: 105px;
+  padding-top: 20px;
+  @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  font-family: $deadlineCircleFont;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 17px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-left: 40px;
+  @include border-radius(90px);
+}
+
+#agendaEditSavingHolder {
+  display: none;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.motionData {
+  .motionDataTable {
+    width: 100%;
+    > tbody > tr > th {
+      width: 30%;
+    }
+  }
+  .tagAdderHolder:link, .tagAdderHolder:visited {
+    color: green;
+  }
+  #tagAdderForm {
+    display: none;
+  }
+  .delTagForm {
+    display: inline;
+    button {
+      background: transparent;
+      border: none;
+      color: $colorDelLink;
+      font-style: italic;
+      padding: 0 6px 0 3px;
+    }
+  }
+}
+
+
+.wysiwyg-textarea {
+  textarea {
+    display: none;
+  }
+}
+
+
+.search-form label {
+  display: inline-block;
+  width: 220px;
+  vertical-align: top;
+}
+
+.cke_skin_kama {
+  border: none !important;
+}
+
+#sidebar {
+  .nav-list {
+    padding: 0;
+    margin-bottom: 20px;
+
+    > li {
+      padding: 0 10px 10px 38px;
+      a {
+        color: #A2BC04;
+        padding: 0;
+        background: none;
+        filter: none;
+        margin: 0;
+        text-shadow: none;
+        display: inline;
+
+        &:link, &:visited {
+          color: #A2BC04;
+        }
+
+        .glyphicon {
+          position: absolute;
+          left: -25px;
+        }
+      }
+      &.nav-header {
+        padding: 5px 0 5px 15px;
+      }
+      &.notifications {
+        a span {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .nav-header {
+      margin-bottom: 12px;
+    }
+  }
+
+  .createMotion {
+    position: absolute;
+    top: -4px;
+    right: -58px;
+    display: block;
+    width: 58px;
+    height: 276px;
+    background-image: url(../img/neuer-antrag.png);
+  }
+
+  .antragsgruenAd {
+    margin-top: 30px;
+    .content > div {
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+
+  .nav-list.einsatzorte-list li {
+    padding-left: 15px;
+  }
+
+  .search-query {
+    width: 140px;
+  }
+}
+
+ul.sidebarActions {
+  @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
+  padding: 7px 0 1px 21px;
+  list-style-type: none;
+  margin: -1px; // verhindert weißen Mini-Rahmen
+  position: relative;
+  @include border-radius(10px);
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+
+  font-family: $sidebarActionFont;
+  font-style: normal;
+  font-weight: bold;
+
+  li a, li > span {
+    display: block;
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 18px;
+    color: #fff;
+    padding-bottom: 10px;
+    text-indent: -12px;
+    margin: 7px 0 7px 15px;
+  }
+
+  li a:hover {
+    color: rgb(246, 224, 235);
+  }
+
+  .icon {
+    color: #fff;
+    margin-right: 10px;
+  }
+}
+
+
+/*
+
+.bdkMotionList {
+  padding: 25px;
+  font-family: "Open Sans", verdana, sans-serif;
+  font-size: 14px;
+
+  table {
+    width: 100%;
+  }
+  th {
+    border-bottom: solid 1px $colorGreenLight;
+    font-size: 0.80em;
+    line-height: 2.5em;
+    font-weight: 600;
+    font-family: "Open Sans", verdana, sans-serif;
+  }
+  td {
+    font-family: "Open Sans", verdana, sans-serif;
+    vertical-align: top;
+    padding: 0.75em 0 0.75em 0;
+  }
+  tr.antrag {
+    border-top: solid 1px $colorGreenLight;
+    &:first-child {
+      border-top: none;
+    }
+  }
+  tr.aenderungsantrag {
+    .titel {
+      .pdflink {
+        font-weight: 400;
+      }
+      .titellink {
+        font-weight: 400;
+      }
+    }
+  }
+  .nummer {
+    width: 20%;
+  }
+  .titel {
+    width: 45%;
+
+    .pdflink {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .titellink {
+      font-weight: 600;
+      a:link, a:visited {
+        color: black;
+      }
+    }
+  }
+  .antragstellerIn {
+    width: 35%;
+  }
+}
+
+.antragstext_diff {
+  padding: 15px 20px 25px 0;
+  ul {
+    margin-left: 45px;
+    li {
+      width: 480px;
+    }
+  }
+}
+*/
+#loginWurzelwerkHint {
+  border-left: solid 1px #808080;
+  padding-left: 10px;
+  margin-left: 20px;
+  margin-top: 10px;
+  font-size: 0.8em;
+  overflow: auto;
+}
+
+#loginWurzelwerkForgot {
+  font-size: 0.8em;
+  margin-top: -7px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.motionEditForm {
+
+  .submitHolder {
+    text-align: right;
+  }
+
+  .supporterData {
+    .fullTextAdder {
+      float: right;
+    }
+
+    #fullTextHolder {
+      display: none;
+      margin-top: 30px;
+    }
+  }
+
+  .initiatorData {
+    .contactPrivacy {
+      font-size: 0.8em;
+    }
+  }
+
+  .supporterRow, .initiatorRow {
+    .rowDeleter, .rowDeleter:link, .rowDeleter:visited {
+      color: $colorDelLink;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    html.no-touch & .rowDeleter {
+      visibility: hidden;
+    }
+    html.no-touch &:hover .rowDeleter {
+      visibility: visible;
+    }
+  }
+}
+
+#motionConfirmedForm {
+  .btnRow {
+    padding: 15px;
+    text-align: center;
+  }
+}
+#motionConfirmForm, #amendmentConfirmForm {
+  margin-bottom: 20px;
+}
+

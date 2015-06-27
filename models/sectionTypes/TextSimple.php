@@ -203,7 +203,8 @@ class TextSimple extends ISectionType
 
         $hasLineNumbers = $section->consultationSetting->lineNumbers;
 
-        $tex .= '\subsection*{\AntragsgruenSection ' . LaTeXExporter::encodePlainString($section->consultationSetting->title) . '}' . "\n";
+        $title = LaTeXExporter::encodePlainString($section->consultationSetting->title);
+        $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
         if ($hasLineNumbers) {
             $tex .= "\\linenumbers\n";
             $tex .= "\\resetlinenumber[" . $section->getFirstLineNumber() . "]\n";

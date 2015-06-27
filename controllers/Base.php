@@ -52,6 +52,9 @@ class Base extends Controller
             if (isset($params[1]['subdomain'])) {
                 $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
                 $this->loadConsultation($params[1]['subdomain'], $consultation);
+                if ($this->site) {
+                    $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
+                }
             }
             return true;
         } else {
