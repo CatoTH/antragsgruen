@@ -47,12 +47,12 @@ class Layout
     }
 
     /**
-     * @param string $exec_js
+     * @param string $execJs
      * @return $this;
      */
-    public function addOnLoadJS($exec_js)
+    public function addOnLoadJS($execJs)
     {
-        $this->onloadJs[] = $exec_js;
+        $this->onloadJs[] = $execJs;
         return $this;
     }
 

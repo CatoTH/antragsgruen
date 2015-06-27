@@ -5,7 +5,6 @@
 \usepackage{fixltx2e}
 \usepackage{lineno}
 \usepackage{tabularx}
-\usepackage{ulem}
 \usepackage{scrpage2}
 \usepackage[normalem]{ulem}
 \usepackage[right]{eurosym}
@@ -19,6 +18,9 @@
 \newfontfamily\ArvoRegular[
   Path=%ASSETROOT%Arvo/
 ]{Arvo-Regular_v104.ttf}
+\newfontfamily\AntragsgruenSection[
+  Path=%ASSETROOT%Arvo/
+]{Arvo-Regular_v104.ttf}
 \setmainfont[
   Path=%ASSETROOT%PT-Sans/,
   BoldFont=PTS75F.ttf,
@@ -28,13 +30,14 @@
 
 \title{%TITLEPREFIX% %TITLE%}
 \author{%AUTHOR%}
-\geometry{a4paper, portrait, top=10mm, left=20mm, right=15mm, bottom=15mm, includehead=true}
+\geometry{a4paper, portrait, top=10mm, left=20mm, right=15mm, bottom=25mm, includehead=true}
 
 \pagestyle{scrheadings}
-\ohead{%TITLEPREFIX% %TITLE%}
-\cfoot{}
-\ihead{Seite \thepage\ / \pageref{LastPage}}
+\clearscrheadfoot
+\ohead{\ArvoRegular %TITLEPREFIX% %TITLE%}
+\ifoot{\ArvoRegular \small Seite \thepage\ / \pageref{LastPage}}
 \setheadsepline{0.4pt}
+\setfootsepline{0.4pt}
 
 \begin{document}
 
@@ -45,7 +48,7 @@
 
 \vspace*{-25mm}
 \begin{flushright}
- \ArvoGruen
+ \ArvoRegular
  \small
  \textbf{\normalsize %INTRODUCTION_BIG%}\\
  %INTRODUCTION_SMALL%
@@ -63,6 +66,7 @@
 \end{tabularx}
 
 \section*{\ArvoRegular %TITLE_LONG%}
+\raggedright
 
 %TEXT%
 
