@@ -6,7 +6,7 @@ $params->dbConnection        = [
     "dsn"            => "mysql:host=localhost;dbname=antragsgruen",
     "emulatePrepare" => true,
     "username"       => "root",
-    "password"       => "pw",
+    "password"       => "",
     "charset"        => "utf8mb4",
 ];
 $params->randomSeed          = "fgfdgdfgdfg";
