@@ -6,6 +6,13 @@ php:
 #  - hhvm
 #  - nightly
 
+addons:
+  ssh_known_hosts: hoessl.eu
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_f3a6d9a4845e_key -iv $encrypted_f3a6d9a4845e_iv -in assets/travis/travis.key.enc -out assets/travis/travis.key -d
+  - chmod 600 assets/travis/travis.key
+
 install:
   - composer global require "fxp/composer-asset-plugin:1.0.0"
   - composer install --dev --prefer-dist
@@ -28,3 +35,5 @@ before_script:
 script:
   - cd tests
   - ./run.sh
+  - touch codeception/_output/test
+  - scp -r -i ../assets/travis/travis.key codeception/_output/* travis@hoessl.eu:~/output/
