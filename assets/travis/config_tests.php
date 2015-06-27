@@ -1,8 +1,8 @@
 <?php
 
 $params                        = new \app\models\settings\AntragsgruenApp();
-$params->domainPlain           = 'http://localhost:8080/index-test.php';
-$params->domainSubdomain       = 'http://localhost:8080/index-test.php';
+$params->domainPlain           = 'http://localhost:8080/index-test.php/';
+$params->domainSubdomain       = 'http://localhost:8080/index-test.php/';
 $params->prependWWWToSubdomain = false;
 $params->randomSeed            = '123456';
 $params->cookieValidationKey   = 'ljelkkjlj';
