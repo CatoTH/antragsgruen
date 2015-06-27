@@ -49,7 +49,7 @@ html {
 
 body {
   background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
-  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: $bodyFont;
   height: 100%;
 
   &.fullscreen {

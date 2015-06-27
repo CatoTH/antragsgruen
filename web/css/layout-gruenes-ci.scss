@@ -12,6 +12,7 @@ $colorDelLink: #FF7777;
 $colorMagenta: rgb(226, 0, 122);
 $brand-primary: $colorMagenta;
 
+$bodyFont: "PT Sans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $deadlineCircleFont: "Arvo", sans-serif;
 $sidebarActionFont: "Arvo", sans-serif;
 $topNavbarFont: "Arvo", sans-serif;
@@ -24,3 +25,13 @@ $motionStdFontSize: 16px;
 @import "base_layout";
 @import "motions";
 @import "styles";
+
+
+
+.well h1 {
+  font-family: "Arvo Gruen", sans-serif;
+  font-weight: normal;
+}
+.motionListStd .motion .title a  {
+  font-family: "Arvo", sans-serif;
+}
