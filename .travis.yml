@@ -22,6 +22,7 @@ before_script:
   - "export DISPLAY=:99.0"
   - "Xvfb :99.0 -extension RANDR > /dev/null &"
   - "phantomjs --webdriver=4444 > /dev/null 2>/dev/null &"
+  - nohup php -S localhost:8080 -t web/ > /dev/null 2>&1 &
   - sleep 5
 
 script:
