@@ -27,9 +27,9 @@ install:
 
 before_script:
   - "export DISPLAY=:99.0"
-  - "Xvfb :99.0 -extension RANDR > /dev/null &"
-  - "phantomjs --webdriver=4444 > /dev/null 2>/dev/null &"
-  - nohup php -S localhost:8080 -t web/ > /dev/null 2>&1 &
+  - "Xvfb :99.0 -extension RANDR > xvfb.log &"
+  - "phantomjs --webdriver=4444 > phantomjs.log 2>&1 &"
+  - nohup php -S localhost:8080 -t web/ > php.log 2>&1 &
   - sleep 5
 
 script:
@@ -37,3 +37,4 @@ script:
   - ./run.sh
   - touch codeception/_output/test
   - scp -r -i ../assets/travis/travis.key codeception/_output/* travis@hoessl.eu:~/output/
+  - scp -r -i ../assets/travis/travis.key ../xvfb.log ../phantomjs.log ../php.log travis@hoessl.eu:~/output/
