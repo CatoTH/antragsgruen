@@ -25,7 +25,7 @@ class LineSplitter
      */
     public function splitLines()
     {
-        $lines              = array();
+        $lines              = [];
         $lastSeparator      = -1;
         $lastSeparatorCount = 0;
         $inHtml             = false;
@@ -41,12 +41,12 @@ class LineSplitter
                     $inHtml = false;
                 }
             } elseif ($inEscaped) {
-                if ($currChar == ";") {
+                if ($currChar == ';') {
                     $inEscaped = false;
                 }
             } else {
                 if (mb_substr($this->text, $i, 4) == '<br>') {
-                    $lines[] = mb_substr($currLine, 0, mb_strlen($currLine) - 1);
+                    $lines[] = mb_substr($currLine, 0, mb_strlen($currLine) - 1) . '###FORCELINEBREAK###';
                     $i += 3;
                     if (mb_substr($this->text, $i + 1, 1) == "\n") {
                         $i++;
@@ -55,11 +55,11 @@ class LineSplitter
                     $currLineCount = 1;
                     continue;
                 }
-                if ($currChar == "<") {
+                if ($currChar == '<') {
                     $inHtml = true;
                     continue;
                 }
-                if ($currChar == "&") {
+                if ($currChar == '&') {
                     $inEscaped = true;
                 }
 
@@ -73,7 +73,7 @@ class LineSplitter
                     }
                     */
                     if ($lastSeparator == -1) {
-                        $lines[]       = mb_substr($currLine, 0, mb_strlen($currLine) - 1) . "-";
+                        $lines[]       = mb_substr($currLine, 0, mb_strlen($currLine) - 1) . '-';
                         $currLine      = $currChar;
                         $currLineCount = 1;
                     } else {
@@ -82,10 +82,10 @@ class LineSplitter
                             echo "Aktuelles Zeichen: \"" . mb_substr($this->text, $i, 1) . "\"\n";
                         }
                         */
-                        if (mb_substr($this->text, $i, 1) == " ") {
+                        if (mb_substr($this->text, $i, 1) == ' ') {
                             $lines[] = mb_substr($currLine, 0, mb_strlen($currLine) - 1);
 
-                            $currLine      = "";
+                            $currLine      = '';
                             $currLineCount = 0;
                         } else {
                             $ueberhang   = mb_substr($currLine, $lastSeparator + 1);
@@ -111,7 +111,7 @@ class LineSplitter
                         echo "Count: \"" . $currLineCount . "\"\n\n";
                     }
                     */
-                } elseif (in_array($currChar, array(" ", "-"))) {
+                } elseif (in_array($currChar, [' ', '-'])) {
                     $lastSeparator      = mb_strlen($currLine) - 1;
                     $lastSeparatorCount = $currLineCount;
                 }

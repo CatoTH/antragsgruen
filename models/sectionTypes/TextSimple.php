@@ -192,6 +192,20 @@ class TextSimple extends ISectionType
     }
 
     /**
+     * @param string[] $lines
+     * @return string
+     */
+    public static function getMotionLinesToTeX($lines)
+    {
+        $str = implode('###LINEBREAK###', $lines);
+        $str = LaTeXExporter::encodeHTMLString($str);
+        $str = str_replace('###LINENUMBER###', '', $str);
+        $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
+        $str = str_replace('###FORCELINEBREAK###\linebreak', '\newline', $str);
+        return $str;
+    }
+
+    /**
      * @return string
      */
     public function getMotionTeX()
@@ -210,12 +224,9 @@ class TextSimple extends ISectionType
             $tex .= "\\resetlinenumber[" . $section->getFirstLineNumber() . "]\n";
         }
 
-        $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers);
+        $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
         foreach ($paragraphs as $paragraph) {
-            $str = implode('###LINEBREAK####', $paragraph->lines);
-            $str = LaTeXExporter::encodeHTMLString($str);
-            $str = str_replace('###LINENUMBER###', '', $str);
-            $tex .= str_replace('###LINEBREAK####', "\\linebreak\n", $str) . "\n";
+            $tex .= static::getMotionLinesToTeX($paragraph->lines) . "\n";
         }
 
         if ($hasLineNumbers) {

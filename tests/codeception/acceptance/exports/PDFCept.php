@@ -33,11 +33,12 @@ $motionTypePage->saveForm();
 $I->gotoStdConsultationHome();
 $I->see('PDF');
 $I->seeElement('#sidebar .pdfs');
-$I->click('.motionLink2');
-$I->see('PDF');
-
 
 $I->wantTo('test the single-motion-PDF');
+$I->click('.motionLink3');
+$I->see('PDF');
+$I->see('Seltsame Zeichen: & % $ # _ { } ~ ^ \\ \\today');
+//$I->see('Seltsame Zeichen: % $ # _ { } ~ ^ \\ \\today');
 $pdf = $I->downloadLink('#sidebar .download a');
 if (strlen($pdf) == 0) {
     $I->fail('PDF has no content');

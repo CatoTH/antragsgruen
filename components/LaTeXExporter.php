@@ -14,12 +14,29 @@ class LaTeXExporter
      */
     public static function encodePlainString($str)
     {
-        return $str; // @TODO
+        $replaces = [
+            '\\'                         => '\textbackslash{}',
+            '&'                          => '\&',
+            '%'                          => '\%',
+            '$'                          => '\$',
+            '#'                          => '\#',
+            '_'                          => '\_',
+            '{'                          => '\{',
+            '}'                          => '\}',
+            '\textbackslash\{\}'         => '\textbackslash{}',
+            '~'                          => '\texttt{\~{}}',
+            '^'                          => '\^{}',
+            '\#\#\#LINENUMBER\#\#\#'     => '###LINENUMBER###',
+            '\#\#\#LINEBREAK\#\#\#'      => '###LINEBREAK###',
+            '\#\#\#FORCELINEBREAK\#\#\#' => '###FORCELINEBREAK###',
+        ];
+        return str_replace(array_keys($replaces), array_values($replaces), $str);
     }
 
     /**
      * @param \DOMNode $node
      * @return string
+     * @throws Internal
      */
     private static function encodeHTMLNode(\DOMNode $node)
     {
@@ -93,6 +110,7 @@ class LaTeXExporter
     {
         $str     = HTMLTools::cleanTrustedHtml($str);
         $src_doc = new \DOMDocument();
+
         $src_doc->loadHTML('<html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head><body>' . $str . "</body></html>");
@@ -142,7 +160,7 @@ class LaTeXExporter
         if (!$app->xelatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
         }
-        $str          = static::createLaTeXString($laTeX);
+        $str = static::createLaTeXString($laTeX);
 
         if (YII_ENV_DEV && isset($_REQUEST["latex_src"])) {
             Header('Content-Type: text/plain');
@@ -151,8 +169,6 @@ class LaTeXExporter
         }
 
         $filenameBase = $app->tmpDir . uniqid('motion-pdf');
-        //echo nl2br(htmlentities($str));
-        //die();
         file_put_contents($filenameBase . '.tex', $str);
 
         $cmd = $app->xelatexPath;

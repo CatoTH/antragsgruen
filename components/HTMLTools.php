@@ -3,6 +3,7 @@
 namespace app\components;
 
 use app\models\exceptions\Internal;
+use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
 
 class HTMLTools
@@ -13,7 +14,7 @@ class HTMLTools
      */
     public static function cleanTrustedHtml($html)
     {
-        $html = str_replace(chr(194) . chr(160), " ", $html);
+        $html = str_replace(chr(194) . chr(160), ' ', $html);
         // @TODO
         return $html;
     }
@@ -25,8 +26,8 @@ class HTMLTools
      */
     public static function cleanUntrustedHtml($html)
     {
-        $html = str_replace(chr(194) . chr(160), " ", $html);
-        $html = str_replace("\r", "", $html);
+        $html = str_replace(chr(194) . chr(160), ' ', $html);
+        $html = str_replace("\r", '', $html);
         // @TODO
         return $html;
     }
@@ -153,7 +154,7 @@ class HTMLTools
                         if ($pendingInline === null) {
                             $pendingInline = '';
                         }
-                        $pendingInline .= $child->nodeValue;
+                        $pendingInline .= Html::encode($child->nodeValue);
                     }
                     break;
                 default:
@@ -165,7 +166,6 @@ class HTMLTools
             $return[]      = $pre . $pendingInline . $post;
             $pendingInline = null;
         }
-
         return $return;
     }
 
