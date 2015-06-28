@@ -40,7 +40,6 @@ class LaTeXExporter
      */
     private static function encodeHTMLNode(\DOMNode $node)
     {
-        // @TODO
         if ($node->nodeType == XML_TEXT_NODE) {
             /** @var \DOMText $node */
             return static::encodePlainString($node->data);
@@ -180,7 +179,7 @@ class LaTeXExporter
         $cmd .= ' "' . $filenameBase . '.tex"';
 
         shell_exec($cmd);
-        shell_exec($cmd); // Do it twitce, to get the LastPage-reference right
+        shell_exec($cmd); // Do it twice, to get the LastPage-reference right
 
         if (!file_exists($filenameBase . '.pdf')) {
             throw new Internal('An error occurred while creating the PDF: ' . $filenameBase);

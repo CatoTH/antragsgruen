@@ -78,6 +78,7 @@ if ($search->sort == AdminMotionFilterForm::SORT_STATUS) {
     echo Html::a('Status', $url);
 }
 echo '</th><th>AntragstellerInnen</th>
+    <th>Export</th>
     <th class="actionCol">Aktion</th>
 </tr></thead>';
 
@@ -88,7 +89,7 @@ foreach ($entries as $entry) {
     if (is_a($entry, Motion::class)) {
         /** @var Motion $entry */
         $url = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
-        echo '<tr>';
+        echo '<tr class="motion' . $entry->id . '">';
         echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>A</td>';
         echo '<td><a href="' . Html::encode($url) . '">' . Html::encode($entry->titlePrefix) . '</a></td>';
@@ -99,6 +100,13 @@ foreach ($entries as $entry) {
             $initiators[] = $initiator->name;
         }
         echo '<td>' . Html::encode(implode(", ", $initiators)) . '</td>';
+
+        echo '<td>';
+        echo Html::a('PDF', UrlHelper::createMotionUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
+        echo Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']) . ' / ';
+        echo Html::a('TXT', UrlHelper::createMotionUrl($entry, 'txt'), ['class' => 'txt']) . ' / ';
+        echo Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainHtml'), ['class' => 'plainHtml']);
+        echo '</td>';
 
         $dropdowns = [];
         if (in_array($entry->status, [Motion::STATUS_DRAFT, Motion::STATUS_SUBMITTED_UNSCREENED])) {
@@ -129,7 +137,7 @@ foreach ($entries as $entry) {
     if (is_a($entry, Amendment::class)) {
         /** @var Amendment $entry */
         $url = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
-        echo '<tr>';
+        echo '<tr class="amendment' . $entry->id . '">';
         echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>ÄA</td>';
         echo '<td><a href="' . Html::encode($url) . '">' . Html::encode($entry->titlePrefix) . '</a></td>';
@@ -140,6 +148,10 @@ foreach ($entries as $entry) {
             $initiators[] = $initiator->name;
         }
         echo '<td>' . Html::encode(implode(", ", $initiators)) . '</td>';
+
+        echo '<td>';
+        echo Html::a('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']);
+        echo '</td>';
 
         $dropdowns = [];
         if (in_array($entry->status, [Amendment::STATUS_DRAFT, Amendment::STATUS_SUBMITTED_UNSCREENED])) {

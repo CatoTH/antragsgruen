@@ -33,17 +33,33 @@ $motionTypePage->saveForm();
 $I->gotoStdConsultationHome();
 $I->see('PDF');
 $I->seeElement('#sidebar .pdfs');
+$I->logout();
 
-$I->wantTo('test the single-motion-PDF');
+
+
+$I->wantTo('test the single-motion-PDF as a normal user');
 $I->click('.motionLink3');
 $I->see('PDF');
 $I->see('Seltsame Zeichen: & % $ # _ { } ~ ^ \\ \\today');
-//$I->see('Seltsame Zeichen: % $ # _ { } ~ ^ \\ \\today');
 $pdf = $I->downloadLink('#sidebar .download a');
 if (strlen($pdf) == 0) {
     $I->fail('PDF has no content');
 }
 // @TODO Try to open the file
+
+
+
+$I->wantTo('test the single-motion-PDF from the admin interface');
+$I->gotoStdConsultationHome();
+$I->loginAsStdAdmin();
+$I->click('#adminLink');
+$I->click('.motionListAll');
+$pdf = $I->downloadLink('.adminMotionTable .motion3 a.pdf');
+if (strlen($pdf) == 0) {
+    $I->fail('PDF has no content');
+}
+
+
 
 $I->wantTo('test the pdf-compilation');
 $I->gotoStdConsultationHome();
@@ -52,12 +68,5 @@ $I->gotoStdConsultationHome();
 $I->click('#sidebar .pdfs');
 // @TODO
 
-
-
-$I->wantTo('test the amendment pdf-compilation');
-$I->gotoStdConsultationHome();
-$I->click('#sidebar .amendmentPdfs');
-
-// @TODO
 
 $I->fail('Test case not implemented yet');
