@@ -31,7 +31,7 @@ include(__DIR__ . "/sidebar.php");
 	<h4>Programmierung &amp; Design</h4>
 
 	<p>
-		Programmierung: <a href="http://www.hoessl.eu/" target="_blank">Tobias H&ouml;&szlig;l</a> (tobias (at)
+		Programmierung: <a href="https://www.hoessl.eu/" target="_blank">Tobias H&ouml;&szlig;l</a> (tobias (at)
 		hoessl.eu / <a href="https://twitter.com/TobiasHoessl" target="_blank">@TobiasHoessl</a>)</p>
 
 	<p>

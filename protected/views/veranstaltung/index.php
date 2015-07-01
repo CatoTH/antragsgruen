@@ -53,7 +53,7 @@ include(__DIR__ . "/sidebar.php");
 	</div>
 <?php
 
-if (in_array($this->veranstaltung->id, array(134, 149, 145))) {
+if (veranstaltungsspezifisch_hat_tags_startseite($this->veranstaltung)) {
 	require_once(__DIR__ . "/index_layout_tags.php");
 } elseif ($this->veranstaltung->getEinstellungen()->bdk_startseiten_layout) {
 	require_once(__DIR__ . "/index_layout_bdk.php");

@@ -196,3 +196,14 @@ if (!function_exists("veranstaltungsspezifisch_antrag_sort")) {
         return null;
     }
 }
+
+if (!function_exists("veranstaltungsspezifisch_hat_tags_startseite")) {
+	/**
+	 * @param null|Veranstaltung $veranstaltung
+	 * @return bool
+	 */
+	function veranstaltungsspezifisch_hat_tags_startseite($veranstaltung = null)
+	{
+		return false;
+	}
+}
