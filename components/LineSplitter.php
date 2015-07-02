@@ -20,6 +20,8 @@ class LineSplitter
 
 
     /**
+     * Forced line breaks are marked by a trailing ###FORCELINEBREAK###
+     *
      * @static
      * @return string[]
      */
@@ -30,7 +32,7 @@ class LineSplitter
         $lastSeparatorCount = 0;
         $inHtml             = false;
         $inEscaped          = false;
-        $currLine           = "";
+        $currLine           = '';
         $currLineCount      = 0;
 
         for ($i = 0; $i < mb_strlen($this->text); $i++) {
