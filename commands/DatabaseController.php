@@ -41,8 +41,8 @@ class DatabaseController extends Controller
     public function actionInsertTestData()
     {
         $testdata = file_get_contents(
-            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'codeception' .
-            DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'dbdata1.sql'
+            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'tests' .
+            DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata1.sql'
         );
         $command  = \Yii::$app->db->createCommand($testdata);
         $command->execute();

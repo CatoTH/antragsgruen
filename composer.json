@@ -43,7 +43,7 @@
     "yiisoft/yii2-apidoc": "2.0.4",
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.3.*",
-    "codeception/codeception": "2.0.*",
+    "codeception/codeception": "*",
     "codeception/specify": "*",
     "codeception/verify": "*"
   },
@@ -51,7 +51,7 @@
     "yii\\composer\\Installer::postCreateProject": {
       "setPermission": [
         {
-          "runtime": "0755",
+          "runtime": "0775",
           "web/assets": "0755",
           "yii": "0755"
         }

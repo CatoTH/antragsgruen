@@ -6,3 +6,5 @@ test.php
 config/config.php
 config/config_tests.php
 web/js/bower
+tests/_output/*
+tests/_output/*
