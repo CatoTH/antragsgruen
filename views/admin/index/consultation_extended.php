@@ -49,8 +49,8 @@ echo '<div class="content">';
 
 $layout = $consultation->site->getSettings()->siteLayout;
 echo '<fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="consultationPath">Layout:</label>
-    <div class="col-sm-8">';
+    <label class="col-sm-3 control-label" for="consultationPath">Layout:</label>
+    <div class="col-sm-9">';
 echo Html::dropDownList(
     'siteSettings[siteLayout]',
     $layout,
@@ -62,8 +62,8 @@ echo '</div></fieldset>';
 
 $handledSettings[] = 'logoUrl';
 echo '<fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="consultationPath">Logo-URL:</label>
-    <div class="col-sm-8">
+    <label class="col-sm-3 control-label" for="consultationPath">Logo-URL:</label>
+    <div class="col-sm-9">
         <input type="text" name="settings[logoUrl]"
         value="' . Html::encode($settings->logoUrl) . '" class="form-control" id="logoUrl">
     </div>
@@ -73,8 +73,8 @@ echo '<fieldset class="form-group">
 
 $handledSettings[] = 'logoUrlFB';
 echo '<fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="consultationPath">Facebook-Bild:</label>
-    <div class="col-sm-8">
+    <label class="col-sm-3 control-label" for="consultationPath">Facebook-Bild:</label>
+    <div class="col-sm-9">
         <input type="text" name="settings[logoUrlFB]"
         value="' . Html::encode($settings->logoUrlFB) . '" class="form-control" id="logoUrlFB">
     </div>
@@ -83,10 +83,24 @@ echo '<fieldset class="form-group">
 // ändern ist oft heikel, da FB viel zwischenspeichert.
 
 
+$handledSettings[] = 'pdfIntroduction';
+$placeholder = '26. Ordentliche Bundesdelegiertenkonferenz von BÜNDNIS 90/DIE GRÜNEN,' . "\n" .
+    '01.-03. Dezember 2006. Kölnmesse, Köln-Deutz';
+echo '<fieldset class="form-group">
+    <label class="col-sm-3 control-label" for="pdfIntroduction">PDF-Einleitung:</label>
+    <div class="col-sm-9">
+        <textarea name="settings[pdfIntroduction]" class="form-control" id="pdfIntroduction"
+        placeholder="' . Html::encode($placeholder) . '">' . $settings->pdfIntroduction . '</textarea>
+    </div>
+</fieldset>';
+// <small>Im Regelfall einfach leer lassen. Falls eine URL angegeben wird, wird das angegebene Bild statt dem
+// großen "Antragsgrün"-Logo angezeigt.
+
+
 $handledSettings[] = 'lineLength';
 echo '<fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="consultationPath">Maximale Zeilenlänge:</label>
-    <div class="col-sm-8">
+    <label class="col-sm-3 control-label" for="consultationPath">Maximale Zeilenlänge:</label>
+    <div class="col-sm-3">
         <input type="text" required name="settings[lineLength]"
         value="' . Html::encode($settings->lineLength) . '" class="form-control" id="lineLength">
     </div>

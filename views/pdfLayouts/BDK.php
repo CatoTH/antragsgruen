@@ -48,8 +48,7 @@ class BDK extends IPDFLayout
         $pdf->setPrintFooter(true);
 
 
-        $title = '26. Ordentliche Bundesdelegiertenkonferenz von BÜNDNIS 90/DIE GRÜNEN,<br>
-            01.-03. Dezember 2006. Kölnmesse, Köln-Deutz';
+        $title = $motion->consultation->getSettings()->pdfIntroduction;
         $pdf->SetY(40);
         $pdf->SetFont("helvetica", "B", 13);
         $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
@@ -84,8 +83,7 @@ class BDK extends IPDFLayout
         $pdf->setPrintFooter(true);
 
 
-        $title = '26. Ordentliche Bundesdelegiertenkonferenz von BÜNDNIS 90/DIE GRÜNEN,<br>
-            01.-03. Dezember 2006. Kölnmesse, Köln-Deutz';
+        $title = $amendment->motion->consultation->getSettings()->pdfIntroduction;
         $pdf->SetY(40);
         $pdf->SetFont("helvetica", "B", 13);
         $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');

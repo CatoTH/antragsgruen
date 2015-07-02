@@ -16,18 +16,25 @@ foreach ($motion->getInitiators() as $init) {
 }
 $initiatorsStr = implode(', ', $initiators);
 
-$latex                    = new LaTeX();
-$latex->assetRoot         = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-$latex->templateFile      = \yii::$app->basePath . DIRECTORY_SEPARATOR .
+$latex               = new LaTeX();
+$latex->assetRoot    = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+$latex->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
     'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
-$latex->author            = implode(', ', $initiators);
-$latex->title             = $motion->title;
-$latex->titlePrefix       = $motion->titlePrefix;
-$latex->titleLong         = $motion->title;
-$latex->introductionBig   = $motion->consultation->title;
-$latex->introductionSmall = '';
+$latex->author       = implode(', ', $initiators);
+$latex->title        = $motion->title;
+$latex->titlePrefix  = $motion->titlePrefix;
+$latex->titleLong    = $motion->title;
 
-$latex->motionDataTable   = 'Antragsteller/innen:   &   ';
+$intro                  = explode("\n", $motion->consultation->getSettings()->pdfIntroduction);
+$latex->introductionBig = $intro[0];
+if (count($intro) > 1) {
+    array_shift($intro);
+    $latex->introductionSmall = implode("\n", $intro);
+} else {
+    $latex->introductionSmall = '';
+}
+
+$latex->motionDataTable = 'Antragsteller/innen:   &   ';
 $latex->motionDataTable .= LaTeXExporter::encodePlainString(implode(', ', $initiators)) . '   \\\\';
 
 

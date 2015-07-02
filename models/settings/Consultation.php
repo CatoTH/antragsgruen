@@ -44,9 +44,10 @@ class Consultation
     public $startLayoutType = 0;
 
     /** @var null|string */
-    public $logoUrl     = null;
-    public $logoUrlFB   = null;
-    public $motionIntro = null;
+    public $logoUrl         = null;
+    public $logoUrlFB       = null;
+    public $motionIntro     = null;
+    public $pdfIntroduction = '';
 
     /**
      * @param string|null $data
