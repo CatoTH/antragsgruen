@@ -63,7 +63,7 @@ class LaTeXExporter
                 case 's':
                     return '\sout{' . $content . '}';
                 case 'blockquote':
-                    return '\begin{quotation}' . $content . '\end{quotation}' . "\n";
+                    return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
@@ -161,7 +161,7 @@ class LaTeXExporter
         }
         $str = static::createLaTeXString($laTeX);
 
-        if (YII_ENV_DEV && isset($_REQUEST["latex_src"])) {
+        if (YII_ENV_DEV && isset($_REQUEST['latex_src'])) {
             Header('Content-Type: text/plain');
             echo $str;
             die();

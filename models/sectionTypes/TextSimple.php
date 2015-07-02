@@ -6,6 +6,7 @@ use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\Diff;
 use app\components\HTMLTools;
 use app\components\LaTeXExporter;
+use app\components\LineSplitter;
 use app\controllers\Base;
 use app\models\db\AmendmentSection;
 use app\models\db\MotionSection;
@@ -219,18 +220,27 @@ class TextSimple extends ISectionType
 
         $title = LaTeXExporter::encodePlainString($section->consultationSetting->title);
         $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-        if ($hasLineNumbers) {
-            $tex .= "\\linenumbers\n";
-            $tex .= "\\resetlinenumber[" . $section->getFirstLineNumber() . "]\n";
-        }
 
-        $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
-        foreach ($paragraphs as $paragraph) {
-            $tex .= static::getMotionLinesToTeX($paragraph->lines) . "\n";
-        }
+        if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {
+            if ($hasLineNumbers) {
+                $tex .= "\\linenumbers\n";
+                $tex .= "\\resetlinenumber[" . $section->getFirstLineNumber() . "]\n";
+            }
 
-        if ($hasLineNumbers) {
-            $tex .= "\n\\nolinenumbers\n";
+            $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
+            foreach ($paragraphs as $paragraph) {
+                $tex .= static::getMotionLinesToTeX($paragraph->lines) . "\n";
+            }
+
+            if ($hasLineNumbers) {
+                $tex .= "\n\\nolinenumbers\n";
+            }
+        } else {
+            $paras = $section->getTextParagraphs();
+            foreach ($paras as $para) {
+                $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
+                $tex .= static::getMotionLinesToTeX($lines) . "\n";
+            }
         }
 
         return $tex;
