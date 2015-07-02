@@ -6,7 +6,7 @@ $I->populateDBData1();
 
 $I->wantTo('search a motion');
 
-$scenario->skip('Not implemented yet');
+$scenario->incomplete('Not implemented yet');
 
 $I->fillField('#sidebar .query', 'O’zapft');
 $I->submitForm('#sidebar .form-search', [], '');

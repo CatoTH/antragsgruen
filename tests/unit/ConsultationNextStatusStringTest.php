@@ -8,9 +8,6 @@ use app\models\db\Motion;
 use Yii;
 use Codeception\Specify;
 
-Autoload::addNamespace('unit', __DIR__);
-
-
 class ConsultationNextStatusStringTest extends DBTestBase
 {
     use Specify;
@@ -23,13 +20,11 @@ class ConsultationNextStatusStringTest extends DBTestBase
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(2);
 
-        $this->specify(
-            'For first A',
-            function () use ($consultation) {
-                $this->assertEquals('A1', $consultation->getNextAvailableStatusString(3));
-            }
-        );
+        // 'For first A',
+        $this->assertEquals('A1', $consultation->getNextAvailableStatusString(3));
 
+
+        // 'For second A
         $dummyMotion                 = new Motion();
         $dummyMotion->title          = 'Testmotion';
         $dummyMotion->status         = Motion::STATUS_SUBMITTED_UNSCREENED;
@@ -40,12 +35,10 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->save();
         $consultation->refresh();
 
-        $this->specify(
-            'For second A',
-            function () use ($consultation) {
-                $this->assertEquals('A2', $consultation->getNextAvailableStatusString(3));
-            }
-        );
+        $this->assertEquals('A2', $consultation->getNextAvailableStatusString(3));
+
+
+        // 'For second B'
 
         $dummyMotion                 = new Motion();
         $dummyMotion->title          = 'Testmotion';
@@ -57,12 +50,10 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->save();
         $consultation->refresh();
 
-        $this->specify(
-            'For second B',
-            function () use ($consultation) {
-                $this->assertEquals('B2', $consultation->getNextAvailableStatusString(4));
-            }
-        );
+        $this->assertEquals('B2', $consultation->getNextAvailableStatusString(4));
+
+
+        // 'For third S'
 
         $dummyMotion                 = new Motion();
         $dummyMotion->title          = 'Testmotion';
@@ -74,12 +65,8 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->save();
         $consultation->refresh();
 
-        $this->specify(
-            'For third S',
-            function () use ($consultation) {
-                $this->assertEquals('A5', $consultation->getNextAvailableStatusString(3));
-            }
-        );
+        $this->assertEquals('A5', $consultation->getNextAvailableStatusString(3));
+
 
         /*
         $this->specify(

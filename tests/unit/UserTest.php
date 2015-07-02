@@ -2,10 +2,6 @@
 
 namespace unit;
 
-use Codeception\Util\Autoload;
-
-Autoload::addNamespace('unit', __DIR__);
-
 class UserTest extends TestBase
 {
     /**

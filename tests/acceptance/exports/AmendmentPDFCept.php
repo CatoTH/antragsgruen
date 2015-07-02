@@ -27,7 +27,7 @@ if (strlen($pdf) == 0) {
 
 $I->wantTo('test amendment PDF compilation');
 $I->gotoStdConsultationHome();
-$scenario->skip('Not implemented yet');
+$scenario->incomplete('Not implemented yet');
 
 $pdf = $I->downloadLink('#sidebar .amendmentPdfs');
 if (strlen($pdf) == 0) {

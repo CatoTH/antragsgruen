@@ -66,4 +66,4 @@ $I->click('#sidebar .pdfs');
 // @TODO
 
 
-$scenario->skip('Not implemented yet');
+$scenario->incomplete('Not implemented yet');

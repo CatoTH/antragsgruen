@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$scenario->skip('Not implemented yet');
+$scenario->incomplete('Not implemented yet');
 
 $I->gotoStdConsultationHome();
 $I->click('#sidebar .notifications');

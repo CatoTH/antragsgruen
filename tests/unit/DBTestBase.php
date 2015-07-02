@@ -4,9 +4,7 @@ namespace unit;
 
 use Yii;
 use Codeception\Specify;
-use Codeception\Util\Autoload;
 
-Autoload::addNamespace('unit', __DIR__);
 require_once(__DIR__ . '/../config/AntragsgruenSetupDB.php');
 
 class DBTestBase extends TestBase

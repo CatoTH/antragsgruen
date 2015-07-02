@@ -9,8 +9,10 @@ if (!class_exists("Yii")) {
     require(__DIR__ . '/../../vendor/autoload.php');
     require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
 
-    $config = require(__DIR__ . '/../config/acceptance.php');
-
-    new yii\web\Application($config);
 }
 */
+
+use Codeception\Util\Autoload;
+
+Autoload::addNamespace('app', __DIR__ . DIRECTORY_SEPARATOR . '..' .
+    DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);

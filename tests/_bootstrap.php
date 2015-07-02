@@ -13,3 +13,7 @@ $_SERVER['SERVER_NAME'] = parse_url(\Codeception\Configuration::config()['config
 $_SERVER['SERVER_PORT'] =  parse_url(\Codeception\Configuration::config()['config']['test_entry_url'], PHP_URL_PORT) ?: '80';
 
 Yii::setAlias('@tests', dirname(__DIR__));
+
+use Codeception\Util\Autoload;
+
+Autoload::addNamespace('unit', __DIR__ . DIRECTORY_SEPARATOR . 'unit');
