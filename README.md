@@ -49,8 +49,10 @@ Testing
 * [PhantomJS](http://phantomjs.org/download.html) installieren
 * PhantomJS starten: phantomjs --webdriver=4444
 * Debug-Server starten: tests/start_debug_server.sh
-* Alle Tests ausführen: tests/run.sh
-* Einzelnen Acceptence-Test ausführen: cd tests && ../vendor/bin/codecept run acceptance MotionCreateCept
+* Alle Tests ausführen: ```bash
+vendor/bin/codecept run```
+* Einzelnen Acceptence-Test ausführen: ```bash
+vendor/bin/codecept run acceptance MotionCreateCept```
 
 
 Using LaTeX
