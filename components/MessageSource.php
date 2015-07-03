@@ -154,12 +154,12 @@ class MessageSource extends \yii\i18n\MessageSource
     }
 
     /**
-     * @param Consultation $consultation
+     * @param Consultation|null $consultation
      * @param string $pageKey
      * @return PageData
      * @throws Internal
      */
-    public static function getPageData(Consultation $consultation, $pageKey)
+    public static function getPageData($consultation, $pageKey)
     {
         switch ($pageKey) {
             case 'maintainance':
@@ -196,9 +196,11 @@ class MessageSource extends \yii\i18n\MessageSource
             default:
                 throw new Internal('Unknown page Key: ' . $pageKey);
         }
-        foreach ($consultation->texts as $text) {
-            if ($text->category == 'pagedata' && $text->textId == $pageKey) {
-                $data->text = $text->text;
+        if ($consultation) {
+            foreach ($consultation->texts as $text) {
+                if ($text->category == 'pagedata' && $text->textId == $pageKey) {
+                    $data->text = $text->text;
+                }
             }
         }
         return $data;

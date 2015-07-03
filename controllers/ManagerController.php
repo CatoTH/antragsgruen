@@ -128,6 +128,23 @@ class ManagerController extends Base
     }
 
     /**
+     * @return string
+     */
+    public function actionLegal()
+    {
+        return $this->renderContentPage('legal');
+    }
+
+    /**
+     * @return string
+     */
+    public function actionPrivacy()
+    {
+        return $this->renderContentPage('privacy');
+    }
+
+
+    /**
      * @param int $error_code
      * @return string
      */

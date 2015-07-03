@@ -7,3 +7,11 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that ManagerStartPage works');
 ManagerStartPage::openBy($I);
 $I->see('das Antragstool', 'h1');
+
+
+$I->wantTo('go to the legal page');
+$I->click('#legalLink');
+$I->see('Impressum');
+
+$scenario->incomplete('not finished yet');
+$I->see('Bearbeiten');

@@ -14,7 +14,7 @@ $consultationPaths = 'help|search|savetextajax|pdfs|maintainance|notifications';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
 $motionPaths         = 'create|createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image';
 $userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|unsubscribe';
-$domPlainPaths       = 'legal|privacy|help|login|logout|password|billing|createsite';
+$domPlainPaths       = 'legal|privacy|help|password|billing|createsite';
 $adminMotionPaths    = 'index|update|type|listall|excellist';
 $adminAmendmentPaths = 'index|update';
 
@@ -58,10 +58,11 @@ if ($params->domainPlain != $params->domainSubdomain) {
 }
 
 if ($params->multisiteMode) {
+    $domp = trim($params->domainPlain, '/');
     $url_rules = array_merge(
         [
-            $params->domainPlain                                    => 'manager/index',
-            $params->domainPlain . '/<_a:(' . $domPlainPaths . ')>' => 'manager/<_a>',
+            $domp                                    => 'manager/index',
+            $domp . '/<_a:(' . $domPlainPaths . ')>' => 'manager/<_a>',
         ],
         $url_rules
     );

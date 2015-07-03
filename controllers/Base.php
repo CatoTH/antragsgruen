@@ -71,7 +71,7 @@ class Base extends Controller
         $admin   = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
         $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => $pageKey]);
         return $this->render(
-            'contentpage',
+            '@app/views/consultation/contentpage',
             [
                 'pageKey' => $pageKey,
                 'admin'   => $admin,
