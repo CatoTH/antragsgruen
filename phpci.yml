@@ -32,6 +32,6 @@ test:
   php_loc:
     directory: .
   codeception:
-    config: "tests/codeception.yml"
-    log_path: "tests/codeception/_output"
+    config: "codeception.yml"
+    log_path: "tests/_output"
 failure:
