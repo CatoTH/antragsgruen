@@ -86,7 +86,7 @@ class ManagerController extends Base
         $this->addSidebar();
 
         $model  = new SiteCreateForm();
-        $errors = array();
+        $errors = [];
 
         if (isset($_POST['create'])) {
             try {

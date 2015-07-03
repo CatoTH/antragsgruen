@@ -7,7 +7,6 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 
-
 // Load Form
 
 $I->wantTo('Load the login page');

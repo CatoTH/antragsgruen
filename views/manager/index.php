@@ -116,7 +116,8 @@ Falls du die Zugangsdaten zurzeit nicht hast,
 <br>';
 
 if (User::getCurrentUser()) {
-    echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl('manager/createsite')) . '">
+    $url = Html::encode(UrlHelper::createUrl('manager/createsite'));
+    echo '<form method="GET" action="' . $url . '" class="siteCreateForm">
         <button type="submit" class="btn btn-success">
         <span class="glyphicon glyphicon-chevron-right"></span> Seite anlegen</button></form>';
 } else {

@@ -21,9 +21,9 @@ class SiteCreateForm extends Model
     public $preset         = 0;
 
     /** @var bool */
-    public $hasAmendments = true;
-    public $hasComments   = true;
-    public $openNow       = true;
+    public $hasAmendments = false;
+    public $hasComments   = false;
+    public $openNow       = false;
 
     /**
      * @return array
@@ -44,7 +44,7 @@ class SiteCreateForm extends Model
                 'subdomain',
                 'unique',
                 'targetClass' => Site::class,
-                'message' => 'Diese Subdomain wird bereits verwendet.'
+                'message'     => 'Diese Subdomain wird bereits verwendet.'
             ],
             [['contact', 'title', 'preset'], 'safe'],
         ];

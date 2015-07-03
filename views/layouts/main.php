@@ -144,7 +144,8 @@ echo '</ul>
 
 echo '</header>';
 
-echo '<div class="row logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Startseite">';
+echo '<div class="row logo">
+<a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Startseite" class="homeLinkLogo">';
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != "") {
     $path     = parse_url($controller->consultation->getSettings()->logoUrl);
     $filename = basename($path["path"]);

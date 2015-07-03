@@ -24,7 +24,7 @@ echo '<h1>Login</h1>';
 if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
-    echo '<h2 class="green">Login per BenutzerInnenname / Passwort</h2>
+    echo '<h2 class="green">Login per Benutzer_Innenname / Passwort</h2>
     <div class="content row">';
 
     if ($usernamePasswordForm->error != "") {

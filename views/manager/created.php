@@ -24,7 +24,9 @@ $redirectUrl = Url::toRoute(['consultation/index', 'subdomain' => $site->subdoma
         [
             'user/loginbyredirecttoken', 'subdomain' => $site->subdomain, 'login' => $login_id,
                                          'login_sec' => $login_code, 'redirect' => $redirectUrl
-        ]
+        ],
+        'post',
+        ['class' => 'createdForm']
     );
     ?>
     <br><br>

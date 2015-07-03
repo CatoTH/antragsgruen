@@ -90,9 +90,6 @@
 .fuelux .wizard ul li .badge {
     margin-right: 8px;
 }
-.fuelux .wizard ul li.active .badge-info {
-    background-color: rgb(175, 203, 8);
-}
 
 .fuelux .wizard ul li:nth-child(1) {
     z-index: 10;

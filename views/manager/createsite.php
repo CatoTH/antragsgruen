@@ -76,10 +76,17 @@ echo '</label>';
 
 echo '<br><br>';
 
+/** @var \app\models\settings\AntragsgruenApp $params */
+$params = \yii::$app->params;
+$input = Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, ['id' => 'subdomain']);
 echo '<label class="url">Unter folgender Adresse soll es erreichbar sein:';
-echo '<div class="fakeurl">https://';
-echo Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, ['id' => 'subdomain']);
-echo '.antragsgruen.de/</div>';
+echo '<div class="fakeurl">';
+if (strpos($params->domainSubdomain, '<subdomain:[\w_-]+>') !== false) {
+    echo str_replace('&lt;subdomain:[\w_-]+&gt;', $input, Html::encode($params->domainSubdomain));
+} else {
+    echo $input;
+}
+echo '</div>';
 echo '<div class="labelSubInfo">Für die Subdomain sind nur Buchstaben, Zahlen, "_" und "-" möglich.</div>
 </label>';
 

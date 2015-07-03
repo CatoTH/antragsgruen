@@ -11,6 +11,7 @@ class SitePresets
         0 => Motions::class,
         1 => Elections::class,
         2 => PartyCongress::class,
+        3 => BDK::class,
     );
 
     /**
