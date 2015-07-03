@@ -45,6 +45,19 @@ label.legend {
   padding-top: 5px;
 }
 
+.adminIndex {
+  h3 {
+    font-size: 18px;
+  }
+  > ul > li {
+    font-weight: bold;
+    margin-top: 20px;
+    &.secondary {
+      font-weight: normal;
+    }
+  }
+}
+
 .adminTodo {
   ul {
     font-size: 14px;
