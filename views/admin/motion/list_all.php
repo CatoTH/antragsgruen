@@ -105,7 +105,6 @@ foreach ($entries as $entry) {
         echo '<td>';
         echo Html::a('PDF', UrlHelper::createMotionUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
         echo Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']) . ' / ';
-        echo Html::a('TXT', UrlHelper::createMotionUrl($entry, 'txt'), ['class' => 'txt']) . ' / ';
         echo Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainhtml'), ['class' => 'plainHtml']);
         echo '</td>';
 
