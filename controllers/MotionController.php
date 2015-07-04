@@ -315,6 +315,31 @@ class MotionController extends Base
         }
     }
 
+    /**
+     * @param int $motionId
+     * @return string
+     */
+    public function actionOdt($motionId)
+    {
+        $motionId = IntVal($motionId);
+
+        /** @var Motion $motion */
+        $motion = Motion::findOne($motionId);
+        if (!$motion) {
+            $this->redirect(UrlHelper::createUrl("consultation/index"));
+        }
+
+        $this->checkConsistency($motion);
+        $this->testMaintainanceMode();
+
+        $filename                    = 'Motion_' . $motion->titlePrefix . '.odt';
+        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+
+        return $this->renderPartial('odt', ['motion' => $motion]);
+    }
+
 
     /**
      * @param int $motionId

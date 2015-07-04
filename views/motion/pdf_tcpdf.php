@@ -9,8 +9,6 @@ use app\models\db\Motion;
 $pdfLayout = $motion->motionType->getPDFLayoutClass();
 $pdf       = $pdfLayout->createPDFClass();
 
-header('Content-type: application/pdf; charset=UTF-8');
-
 
 $initiators = [];
 foreach ($motion->getInitiators() as $init) {

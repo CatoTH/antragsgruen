@@ -5,7 +5,7 @@ namespace app\tests\_pages;
 use yii\codeception\BasePage;
 
 /**
- * @property \AntragsgruenAcceptenceTester|\FunctionalTester $actor
+ * @property \AcceptanceTester|\FunctionalTester $actor
  */
 class AdminMotionTypePage extends BasePage
 {

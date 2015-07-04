@@ -143,6 +143,15 @@ class ConsultationMotionType extends ActiveRecord
         return new $class($this);
     }
 
+    /**
+     * @return string
+     */
+    public function getOdtTemplate()
+    {
+        $dir = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+        return file_get_contents($dir . 'OpenOffice-Template.odt');
+    }
+
 
     /**
      * @return bool

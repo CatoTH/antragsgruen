@@ -1,12 +1,14 @@
 <?php
 
+// @TODO Delete this page?
+
 namespace app\tests\_pages;
 
 use yii\codeception\BasePage;
 
 /**
  * Represents contact page
- * @property \AntragsgruenAcceptenceTester|\FunctionalTester $actor
+ * @property \AcceptanceTester|\FunctionalTester $actor
  */
 class AdminIndexPage extends BasePage
 {
@@ -25,6 +27,7 @@ class AdminIndexPage extends BasePage
 
 
     /**
+     * @TODO Delete MotionIndex page?
      * @return AdminMotionIndexPage
      */
     public function gotoMotionIndex()
@@ -41,5 +44,15 @@ class AdminIndexPage extends BasePage
     {
         $this->actor->click('#consultationLink');
         return new AdminConsultationPage($this->actor);
+    }
+
+    /**
+     * @return AdminMotionListPage
+     */
+    public function gotoMotionList()
+    {
+        $this->actor->click('.motionListAll');
+        $this->actor->see(mb_strtoupper('Liste: Anträge, Änderungsanträge'), 'h1');
+        return new AdminMotionListPage($this->actor);
     }
 }

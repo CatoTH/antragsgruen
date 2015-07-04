@@ -54,7 +54,7 @@ foreach ($consultation->motionTypes as $motionType) {
 
     $excelUrl   = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
     echo '<li class="secondary">';
-    echo Html::a('Export: Excel', $excelUrl, ['class' => 'motionType' . $motionType->id]) . '</li>';
+    echo Html::a('Export: Excel', $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . '</li>';
 
     echo '</ul>';
 }

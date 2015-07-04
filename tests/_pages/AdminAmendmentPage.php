@@ -7,15 +7,15 @@ use yii\codeception\BasePage;
 /**
  * @property \AcceptanceTester|\FunctionalTester $actor
  */
-class AdminMotionPage extends BasePage
+class AdminAmendmentPage extends BasePage
 {
-    public $route = 'admin/motion/update';
+    public $route = 'admin/amendment/update';
 
     /**
      *
      */
     public function saveForm()
     {
-        $this->actor->submitForm('#motionUpdateForm', [], 'save');
+        $this->actor->submitForm('#amendmentUpdateForm', [], 'save');
     }
 }

@@ -70,19 +70,20 @@ $motionTypePage->saveForm();
 
 $I->wantTo('check if the changes to tabular data section were saved');
 
-$I->seeElement('.section20');
-$I->seeInField('.section20 .sectionTitle input', 'Some tabular data');
-$I->seeInField('.section20 .tabularDataRow ul li.no1 input', 'Testrow 3');
+$newCss = '.section' . AcceptanceTester::FIRST_FREE_MOTION_SECTION;
+$I->seeElement($newCss);
+$I->seeInField($newCss . ' .sectionTitle input', 'Some tabular data');
+$I->seeInField($newCss . ' .tabularDataRow ul li.no1 input', 'Testrow 3');
 
 
 
 $I->wantTo('change the tabular data afterwards');
 
-$I->fillField('.section20 .sectionTitle input', 'My life');
-$I->fillField('.section20 .tabularDataRow ul li.no1 input', 'Birth year');
+$I->fillField($newCss . ' .sectionTitle input', 'My life');
+$I->fillField($newCss . ' .tabularDataRow ul li.no1 input', 'Birth year');
 
 $motionTypePage->saveForm();
 
-$I->seeElement('.section20');
-$I->seeInField('.section20 .sectionTitle input', 'My life');
-$I->seeInField('.section20 .tabularDataRow ul li.no1 input', 'Birth year');
+$I->seeElement($newCss);
+$I->seeInField($newCss . ' .sectionTitle input', 'My life');
+$I->seeInField($newCss . ' .tabularDataRow ul li.no1 input', 'Birth year');

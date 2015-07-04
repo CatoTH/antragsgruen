@@ -58,7 +58,7 @@ class HTML2TexTest extends TestBase
     {
         $orig     = '<p>Normaler Text</p><blockquote>Zitat</blockquote><p>Weiter</p>';
         $expect = 'Normaler Text' . "\n";
-        $expect .= '\begin{quotation}Zitat\end{quotation}' . "\n";
+        $expect .= '\begin{quotation}\noindent' . "\n" . 'Zitat\end{quotation}' . "\n";
         $expect .= 'Weiter' . "\n";
         $out = LaTeXExporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
