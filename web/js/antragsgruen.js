@@ -78,7 +78,8 @@
                 showParagraphs: false,
                 countHTML: false,
                 countSpacesAsChars: true
-            }
+            },
+            title: $el.attr("title")
             /*,
              on: {
              instanceReady: function(ev) {
@@ -90,6 +91,7 @@
              }
              */
         };
+        console.log($el, ckeditorConfig);
 
         if ($el.data('track-changed') == '1') {
             ckeditorConfig['extraPlugins'] += ',lite';
