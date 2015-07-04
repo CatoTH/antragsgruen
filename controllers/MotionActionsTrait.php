@@ -8,11 +8,11 @@ use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
+use app\models\db\Consultation;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
-use app\models\settings\Consultation;
 
 /**
  * @property Consultation $consultation
