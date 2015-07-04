@@ -39,6 +39,8 @@ abstract class Base
         $this->DEBUG = $debug;
     }
 
+    /**
+     */
     public function debugOutput()
     {
         $this->doc->preserveWhiteSpace = false;
@@ -47,11 +49,17 @@ abstract class Base
         die();
     }
 
-    protected function appendStyleNode($style_name, $family, $element, $attributes)
+    /**
+     * @param string $styleName
+     * @param string $family
+     * @param string $element
+     * @param string[] $attributes
+     */
+    protected function appendStyleNode($styleName, $family, $element, $attributes)
     {
-        $node = $this->doc->createElementNS(static::NS_STYLE, "style");
-        $node->setAttribute("style:name", $style_name);
-        $node->setAttribute("style:family", $family);
+        $node = $this->doc->createElementNS(static::NS_STYLE, 'style');
+        $node->setAttribute('style:name', $styleName);
+        $node->setAttribute('style:family', $family);
 
         $style = $this->doc->createElementNS(static::NS_STYLE, $element);
         foreach ($attributes as $att_name => $att_val) {
@@ -66,41 +74,41 @@ abstract class Base
     }
 
     /**
-     * @param string $style_name
+     * @param string $styleName
      * @param array $attributes
      */
-    protected function appendTextStyleNode($style_name, $attributes)
+    protected function appendTextStyleNode($styleName, $attributes)
     {
-        $this->appendStyleNode($style_name, 'text', 'text-properties', $attributes);
+        $this->appendStyleNode($styleName, 'text', 'text-properties', $attributes);
     }
 
     /**
-     * @param string $style_name
+     * @param string $styleName
      * @param array $attributes
      */
-    protected function appendRowStyleNode($style_name, $attributes)
+    protected function appendRowStyleNode($styleName, $attributes)
     {
-        $this->appendStyleNode($style_name, 'table-row', 'table-row-properties', $attributes);
+        $this->appendStyleNode($styleName, 'table-row', 'table-row-properties', $attributes);
     }
 
     /**
-     * @param string $style_name
+     * @param string $styleName
      * @param array $attributes
      */
-    protected function appendColStyleNode($style_name, $attributes)
+    protected function appendColStyleNode($styleName, $attributes)
     {
-        $this->appendStyleNode($style_name, 'table-column', 'table-column-properties', $attributes);
+        $this->appendStyleNode($styleName, 'table-column', 'table-column-properties', $attributes);
     }
 
     /**
-     * @param string $style_name
+     * @param string $styleName
      * @param array $cellAttributes
      * @param array $textAttributes
      */
-    protected function appendCellStyleNode($style_name, $cellAttributes, $textAttributes)
+    protected function appendCellStyleNode($styleName, $cellAttributes, $textAttributes)
     {
         $node = $this->doc->createElementNS(static::NS_STYLE, "style");
-        $node->setAttribute("style:name", $style_name);
+        $node->setAttribute("style:name", $styleName);
         $node->setAttribute("style:family", 'table-cell');
         $node->setAttribute("style:parent-style-name", "Default");
 
@@ -134,21 +142,21 @@ abstract class Base
     }
 
     /**
-     * @param \DOMNode $src_node
-     * @param int $template_type
+     * @param \DOMNode $srcNode
+     * @param int $templateType
      * @param bool $blockFurtherPs
      * @return \DOMNode
      */
-    protected function html2ooNode_int($src_node, $template_type, $blockFurtherPs = false)
+    protected function html2ooNodeInt($srcNode, $templateType, $blockFurtherPs = false)
     {
-        switch ($src_node->nodeType) {
+        switch ($srcNode->nodeType) {
             case XML_ELEMENT_NODE:
-                /** @var \DOMElement $src_node */
+                /** @var \DOMElement $srcNode */
                 if ($this->DEBUG) {
-                    echo "Element - " . $src_node->nodeName . " / Children: " . count($src_node->childNodes) . "<br>";
+                    echo "Element - " . $srcNode->nodeName . " / Children: " . count($srcNode->childNodes) . "<br>";
                 }
                 $append_el = null;
-                switch ($src_node->nodeName) {
+                switch ($srcNode->nodeName) {
                     case 'b':
                     case 'strong':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
@@ -179,7 +187,7 @@ abstract class Base
                         break;
                     case 'li':
                         $dst_el    = $this->doc->createElementNS(static::NS_TEXT, 'list-item');
-                        $append_el = $this->getNextNodeTemplate($template_type);
+                        $append_el = $this->getNextNodeTemplate($templateType);
                         $dst_el->appendChild($append_el);
                         break;
                     case 'del':
@@ -193,7 +201,7 @@ abstract class Base
                     case 'a':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'a');
                         try {
-                            $attr = $src_node->getAttribute('href');
+                            $attr = $srcNode->getAttribute('href');
                             if ($attr) {
                                 $dst_el->setAttribute('xlink:href', $attr);
                             }
@@ -201,18 +209,18 @@ abstract class Base
                         }
                         break;
                     default:
-                        die('Unknown Tag: ' . $src_node->nodeName);
+                        die('Unknown Tag: ' . $srcNode->nodeName);
                 }
                 if ($this->noNestedPs()) {
                     $blockFurtherPs = true;
                 }
-                foreach ($src_node->childNodes as $child) {
+                foreach ($srcNode->childNodes as $child) {
                     /** @var \DOMNode $child */
                     if ($this->DEBUG) {
                         echo "CHILD<br>" . $child->nodeType . "<br>";
                     }
 
-                    $dst_node = $this->html2ooNode_int($child, $template_type, $blockFurtherPs);
+                    $dst_node = $this->html2ooNodeInt($child, $templateType, $blockFurtherPs);
                     if ($this->DEBUG) {
                         echo "CHILD";
                         var_dump($dst_node);
@@ -228,9 +236,9 @@ abstract class Base
                 return $dst_el;
                 break;
             case XML_TEXT_NODE:
-                /** @var \DOMText $src_node */
+                /** @var \DOMText $srcNode */
                 $textnode       = new \DOMText();
-                $textnode->data = $src_node->data;
+                $textnode->data = $srcNode->data;
                 if ($this->DEBUG) {
                     echo 'Text<br>';
                 }
@@ -244,7 +252,7 @@ abstract class Base
                 break;
             default:
                 if ($this->DEBUG) {
-                    echo 'Unknown Node: ' . $src_node->nodeType . '<br>';
+                    echo 'Unknown Node: ' . $srcNode->nodeType . '<br>';
                 }
                 return null;
         }
@@ -252,10 +260,10 @@ abstract class Base
 
     /**
      * @param string $html
-     * @param int $template_type
+     * @param int $templateType
      * @return \DOMNode[]
      */
-    protected function html2ooNodes($html, $template_type)
+    protected function html2ooNodes($html, $templateType)
     {
 
         $html = HtmlPurifier::process(
@@ -284,10 +292,10 @@ abstract class Base
                 if ($this->DEBUG) {
                     echo 'LIST<br>';
                 }
-                $new_node = $this->html2ooNode_int($child, $template_type);
+                $new_node = $this->html2ooNodeInt($child, $templateType);
             } else {
                 if ($child->nodeType == XML_TEXT_NODE) {
-                    $new_node = $this->getNextNodeTemplate($template_type);
+                    $new_node = $this->getNextNodeTemplate($templateType);
                     /** @var \DOMText $child */
                     if ($this->DEBUG) {
                         echo $child->nodeName . ' - ' . Html::encode($child->data) . '!!!!!!!!!!!!<br>';
@@ -299,7 +307,7 @@ abstract class Base
                     if ($this->DEBUG) {
                         echo $child->nodeName . '!!!!!!!!!!!!<br>';
                     }
-                    $new_node = $this->html2ooNode_int($child, $template_type);
+                    $new_node = $this->html2ooNodeInt($child, $templateType);
                 }
             }
             if ($new_node) {
@@ -314,5 +322,5 @@ abstract class Base
      * @throws \Exception
      * @return \DOMNode
      */
-    abstract protected function getNextNodeTemplate($template_type);
+    abstract protected function getNextNodeTemplate($templateType);
 }
