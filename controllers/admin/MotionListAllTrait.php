@@ -5,6 +5,8 @@ namespace app\controllers\admin;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
+use app\models\db\User;
+use app\models\forms\AdminMotionFilterForm;
 
 /**
  * @property Consultation $consultation
@@ -157,5 +159,30 @@ trait MotionListAllTrait
             }
             \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden gelöscht.');
         }
+    }
+
+
+    /**
+     * @return string
+     */
+    public function actionListall()
+    {
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_MOTION_EDIT)) {
+            $this->showErrorpage(403, 'Kein Zugriff auf diese Seite');
+            return '';
+        }
+
+        $this->actionListallMotions();
+        $this->actionListallAmendments();
+
+        $search = new AdminMotionFilterForm($this->consultation, $this->consultation->motions, true);
+        if (isset($_REQUEST["Search"])) {
+            $search->setAttributes($_REQUEST["Search"]);
+        }
+
+        return $this->render('list_all', [
+            'entries' => $search->getSorted(),
+            'search'  => $search,
+        ]);
     }
 }

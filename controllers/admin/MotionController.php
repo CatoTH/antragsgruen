@@ -7,10 +7,8 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
-use app\models\db\User;
 use app\models\db\Motion;
 use app\models\exceptions\FormError;
-use app\models\forms\AdminMotionFilterForm;
 use yii\web\Response;
 
 class MotionController extends AdminBase
@@ -171,32 +169,7 @@ class MotionController extends AdminBase
         return $this->render('update', ['motion' => $motion]);
     }
 
-    /**
-     * @return string
-     */
-    public function actionListall()
-    {
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_MOTION_EDIT)) {
-            $this->showErrorpage(403, 'Kein Zugriff auf diese Seite');
-            return '';
-        }
-
-        $this->actionListallMotions();
-        $this->actionListallAmendments();
-
-        $search = new AdminMotionFilterForm($this->consultation, $this->consultation->motions, true);
-        if (isset($_REQUEST["Search"])) {
-            $search->setAttributes($_REQUEST["Search"]);
-        }
-
-        return $this->render('list_all', [
-            'entries' => $search->getSorted(),
-            'search'  => $search,
-        ]);
-    }
-
-
-    /**
+     /**
      * @param int $motionTypeId
      * @param bool $textCombined
      * @return string
