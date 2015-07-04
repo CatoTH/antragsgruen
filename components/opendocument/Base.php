@@ -2,12 +2,11 @@
 
 namespace app\components\opendocument;
 
+use app\components\HTMLTools;
 use yii\helpers\Html;
-use yii\helpers\HtmlPurifier;
 
 abstract class Base
 {
-
     const NS_OFFICE   = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
     const NS_TEXT     = 'urn:oasis:names:tc:opendocument:xmlns:text:1.0';
     const NS_FO       = 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0';
@@ -223,22 +222,7 @@ abstract class Base
      */
     protected function html2ooNodes($html, $templateType)
     {
-
-        $html = HtmlPurifier::process(
-            $html,
-            [
-                'HTML.Doctype' => 'HTML 4.01 Transitional',
-                'HTML.Trusted' => true,
-                'CSS.Trusted'  => true,
-            ]
-        );
-
-        $src_doc = new \DOMDocument();
-        $src_doc->loadHTML('<html><head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-</head><body>' . $html . "</body></html>");
-        $bodies = $src_doc->getElementsByTagName('body');
-        $body   = $bodies->item(0);
+        $body = HTMLTools::html2DOM($html);
 
         $new_nodes = [];
         for ($i = 0; $i < $body->childNodes->length; $i++) {

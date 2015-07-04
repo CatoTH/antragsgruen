@@ -111,9 +111,9 @@ class HTMLTools
                                 $newPre = '<a href="' . $href . '">';
                             }
                         } elseif ($child->nodeName == 'span' && $child->hasAttribute('class')) {
-                            $newPre  = '<' . $child->nodeName . ' class="' . $child->getAttribute('class') . '">';
+                            $newPre = '<' . $child->nodeName . ' class="' . $child->getAttribute('class') . '">';
                         } else {
-                            $newPre  = '<' . $child->nodeName . '>';
+                            $newPre = '<' . $child->nodeName . '>';
                         }
                         $newPost = '</' . $child->nodeName . '>';
                         $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
@@ -167,6 +167,30 @@ class HTMLTools
             $pendingInline = null;
         }
         return $return;
+    }
+
+    /**
+     * @param string $html
+     * @return \DOMNode
+     */
+    public static function html2DOM($html)
+    {
+        $html = HtmlPurifier::process(
+            $html,
+            [
+                'HTML.Doctype' => 'HTML 4.01 Transitional',
+                'HTML.Trusted' => true,
+                'CSS.Trusted'  => true,
+            ]
+        );
+
+        $src_doc = new \DOMDocument();
+        $src_doc->loadHTML('<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head><body>' . $html . "</body></html>");
+        $bodies = $src_doc->getElementsByTagName('body');
+
+        return $bodies->item(0);
     }
 
 

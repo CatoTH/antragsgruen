@@ -2,11 +2,23 @@
 
 namespace app\components\opendocument;
 
+use app\components\HTMLTools;
+
 class Spreadsheet extends Base
 {
     const TYPE_TEXT   = 0;
     const TYPE_NUMBER = 1;
     const TYPE_HTML   = 2;
+
+    const FORMAT_LINEBREAK  = 0;
+    const FORMAT_BOLD       = 1;
+    const FORMAT_ITALIC     = 2;
+    const FORMAT_UNDERLINED = 3;
+    const FORMAT_STRIKE     = 4;
+    const FORMAT_INS        = 5;
+    const FORMAT_DEL        = 6;
+    const FORMAT_LINK       = 7;
+    const FORMAT_INDENTED   = 8;
 
     /** @var \DOMDocument */
     protected $doc = null;
@@ -210,35 +222,36 @@ class Spreadsheet extends Base
     {
         for ($row = 0; $row <= $this->matrixRows; $row++) {
             $this->cellNodeMatrix[$row] = [];
-            $currentRow                = $this->doc->createElementNS(static::NS_TABLE, 'table-row');
+            $currentRow                 = $this->doc->createElementNS(static::NS_TABLE, 'table-row');
             for ($col = 0; $col <= $this->matrixCols; $col++) {
                 $this->cellNodeMatrix[$row][$col] = [];
-                $currentCell                     = $this->doc->createElementNS(static::NS_TABLE, 'table-cell');
+                $currentCell                      = $this->doc->createElementNS(static::NS_TABLE, 'table-cell');
                 if (isset($this->matrix[$row][$col])) {
                     switch ($this->matrix[$row][$col]["type"]) {
                         case static::TYPE_TEXT:
                             $p              = $this->doc->createElementNS(static::NS_TEXT, 'p');
-                            $p->textContent = $this->matrix[$row][$col]["content"];
+                            $p->textContent = $this->matrix[$row][$col]['content'];
                             $currentCell->appendChild($p);
                             break;
                         case static::TYPE_NUMBER:
                             $p              = $this->doc->createElementNS(static::NS_TEXT, 'p');
-                            $p->textContent = $this->matrix[$row][$col]["content"];
+                            $p->textContent = $this->matrix[$row][$col]['content'];
                             $currentCell->appendChild($p);
                             $currentCell->setAttribute('calctext:value-type', 'float');
                             $currentCell->setAttribute('office:value-type', 'float');
-                            $currentCell->setAttribute('office:value', (string)$this->matrix[$row][$col]["content"]);
+                            $currentCell->setAttribute('office:value', (string)$this->matrix[$row][$col]['content']);
                             break;
                         case static::TYPE_HTML:
-                            $ps = $this->html2ooNodes($this->matrix[$row][$col]["content"], null);
-                            foreach ($ps as $p) {
-                                $currentCell->appendChild($p);
+                            $nodes = $this->html2OdsNodes($this->matrix[$row][$col]['content']);
+                            foreach ($nodes as $node) {
+                                $currentCell->appendChild($node);
                             }
-                            $this->setMinRowHeight($row, count($ps));
+
+                            //$this->setMinRowHeight($row, count($ps));
                             $this->setCellStyle($row, $col, [
-                                "fo:wrap-option" => "wrap",
+                                'fo:wrap-option' => 'wrap',
                             ], [
-                                "fo:hyphenate" => "true",
+                                'fo:hyphenate' => 'true',
                             ]);
 
                             $width  = (isset($this->matrixColWidths[$col]) ? $this->matrixColWidths[$col] : 2);
@@ -354,6 +367,123 @@ class Spreadsheet extends Base
         }
     }
 
+    /**
+     * @param \DOMElement $node
+     * @param array $currentFormats
+     * @return array
+     */
+    private function node2Formatting(\DOMElement $node, $currentFormats)
+    {
+        switch ($node->nodeName) {
+            case 'span':
+                // @TODO Formattings
+                break;
+            case 'b':
+            case 'strong':
+                $currentFormats[] = static::FORMAT_BOLD;
+                break;
+            case 'i':
+            case 'em':
+                $currentFormats[] = static::FORMAT_ITALIC;
+                break;
+            case 'u':
+                $currentFormats[] = static::FORMAT_UNDERLINED;
+                break;
+            case 'br':
+                break;
+            case 'p':
+            case 'div':
+            case 'blockquote':
+                break;
+            case 'ul':
+            case 'ol':
+                $currentFormats[] = static::FORMAT_INDENTED;
+                break;
+            case 'li':
+                break;
+            case 'del':
+                $currentFormats[] = static::FORMAT_DEL;
+                break;
+            case 'ins':
+                $currentFormats[] = static::FORMAT_INS;
+                break;
+            case 'a':
+                $currentFormats[] = static::FORMAT_LINK;
+                try {
+                    $attr = $node->getAttribute('href');
+                    if ($attr) {
+                        $currentFormats['href'] = $attr;
+                    }
+                } catch (\Exception $e) {
+                }
+                break;
+            default:
+                die('Unknown Tag: ' . $node->nodeName);
+        }
+        return $currentFormats;
+    }
+
+    /**
+     * @param \DOMNode $node
+     * @param array $currentFormats
+     * @return array
+     */
+    private function tokenizeFlattenHtml(\DOMNode $node, $currentFormats)
+    {
+        $return = [];
+        foreach ($node->childNodes as $child) {
+            switch ($child->nodeType) {
+                case XML_ELEMENT_NODE:
+                    /** @var \DOMElement $child */
+                    $formattings = $this->node2Formatting($child, $currentFormats);
+                    $children    = $this->tokenizeFlattenHtml($child, $formattings);
+                    $return      = array_merge($return, $children);
+                    if (in_array($child->nodeName, ['br', 'div', 'p', 'li', 'blockquote'])) {
+                        $return[] = [
+                            'text'        => '',
+                            'formattings' => [static::FORMAT_LINEBREAK],
+                        ];
+                    }
+                    break;
+                case XML_TEXT_NODE:
+                    /** @var \DOMText $child */
+                    $return[] = [
+                        'text'        => $child->data,
+                        'formattings' => $currentFormats,
+                    ];
+                    break;
+                default:
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * @param string $html
+     * @return array
+     */
+    public function html2OdsNodes($html)
+    {
+        $body   = HTMLTools::html2DOM($html);
+        $tokens = $this->tokenizeFlattenHtml($body, []);
+        $nodes  = [];
+        $currentP = $this->doc->createElementNS(static::NS_TEXT, 'p');
+        foreach ($tokens as $token) {
+            $node     = $this->doc->createElement('text:span');
+            $textNode = $this->doc->createTextNode($token['text']);
+            $node->appendChild($textNode);
+            $currentP->appendChild($node);
+
+            if (in_array(static::FORMAT_LINEBREAK, $token['formattings'])) {
+                $nodes[] = $currentP;
+                $currentP = $this->doc->createElementNS(static::NS_TEXT, 'p');
+            }
+        }
+        $nodes[] = $currentP;
+        return $nodes;
+    }
+
 
     /**
      * @return string
@@ -371,8 +501,8 @@ class Spreadsheet extends Base
         $xml = $this->doc->saveXML();
 
         $rows = explode("\n", $xml);
-        $rows[0] .= "\n"; // <?xml version="1.0" encoding="UTF-8"
-        return implode("", $rows) . "\n";
+        $rows[0] .= "\n";
+        return implode('', $rows) . "\n";
     }
 
     /**
