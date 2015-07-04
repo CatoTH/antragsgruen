@@ -34,10 +34,10 @@ echo '<h2 class="green">' . 'Anträge / Dokumente' . '</h2>
     <div class="content adminIndex">';
 
 echo '<h3>' . Html::a(
-    'Alle Anträge und Änderungsanträge',
-    UrlHelper::createUrl('admin/motion/listall'),
-    ['class' => 'motionListAll']
-) . '</h3>';
+        'Alle Anträge und Änderungsanträge',
+        UrlHelper::createUrl('admin/motion/listall'),
+        ['class' => 'motionListAll']
+    ) . '</h3>';
 
 // echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'), ['class' => 'motionIndex']);
 
@@ -52,9 +52,13 @@ foreach ($consultation->motionTypes as $motionType) {
         echo '<li>Neu anlegen: <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em></li>';
     }
 
-    $excelUrl   = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
+    $odsUrl = UrlHelper::createUrl(['admin/motion/odslist', 'motionTypeId' => $motionType->id]);
     echo '<li class="secondary">';
-    echo Html::a('Export: Excel', $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . '</li>';
+    echo Html::a('Export: Spreadsheet', $odsUrl, ['class' => 'motionODS' . $motionType->id]) . '</li>';
+
+    $excelUrl = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
+    echo '<li class="secondary">';
+    echo Html::a('Export: Excel', $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . ' (fehleranfälliger)</li>';
 
     echo '</ul>';
 }
@@ -148,13 +152,13 @@ echo '</li>';
 echo '<li>Antragstypen bearbeiten<ul>';
 foreach ($consultation->motionTypes as $motionType) {
     echo '<li>';
-    $sectionsUrl   = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
+    $sectionsUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
     echo Html::a($motionType->titlePlural, $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
     echo '</li>';
 }
 echo '</ul></li>';
 
- echo '<li>';
+echo '<li>';
 echo Html::a('Weitere Admins', UrlHelper::createUrl('admin/index/admins'), ['id' => 'adminsManageLink']);
 echo '</li><li>';
 echo Html::a('Weitere Veranstaltungen anlegen / verwalten', UrlHelper::createUrl('admin/index/reiheVeranstaltungen'));

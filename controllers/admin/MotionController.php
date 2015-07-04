@@ -169,6 +169,32 @@ class MotionController extends AdminBase
         return $this->render('update', ['motion' => $motion]);
     }
 
+    /**
+     * @param int $motionTypeId
+     * @param bool $textCombined
+     * @return string
+     * @throws \app\models\exceptions\NotFound
+     */
+    public function actionOdslist($motionTypeId, $textCombined = false)
+    {
+        $motionType = $this->consultation->getMotionType($motionTypeId);
+
+        @ini_set('memory_limit', '256M');
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $motionType->motions);
+
+        return $this->renderPartial('ods_list', [
+            'motions'      => $motions,
+            'textCombined' => $textCombined,
+            'motionType'   => $motionType,
+        ]);
+    }
+
      /**
      * @param int $motionTypeId
      * @param bool $textCombined

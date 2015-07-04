@@ -15,7 +15,7 @@ $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcom
 $motionPaths         = 'create|createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image';
 $userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|unsubscribe';
 $domPlainPaths       = 'legal|privacy|help|password|billing|createsite';
-$adminMotionPaths    = 'index|update|type|listall|excellist';
+$adminMotionPaths    = 'index|update|type|listall|excellist|odslist';
 $adminAmendmentPaths = 'index|update';
 
 $url_rules = [

@@ -22,7 +22,6 @@ $hasTags = ($consultation->tags > 0);
 
 
 $currCol   = ord('B');
-$first_col = chr($currCol);
 
 $COL_PREFIX    = chr($currCol++);
 $COL_INITIATOR = chr($currCol++);
