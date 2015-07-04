@@ -448,4 +448,24 @@ class Motion extends IMotion implements IRSSItem
     {
         return $this->dateCreation;
     }
+
+    /**
+     * @return array
+     */
+    public function getDataTable()
+    {
+        $return = [];
+
+        $initiators = [];
+        foreach ($this->getInitiators() as $init) {
+            $initiators[] = $init->getNameWithResolutionDate(false);
+        }
+        if (count($initiators) == 1) {
+            $return['Antragsteller/in'] = implode("\n", $initiators);
+        } else {
+            $return['Antragsteller/innen'] = implode("\n", $initiators);
+        }
+
+        return $return;
+    }
 }

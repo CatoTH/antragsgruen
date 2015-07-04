@@ -91,7 +91,6 @@
              }
              */
         };
-        console.log($el, ckeditorConfig);
 
         if ($el.data('track-changed') == '1') {
             ckeditorConfig['extraPlugins'] += ',lite';

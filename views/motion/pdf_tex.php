@@ -20,7 +20,7 @@ $latex               = new LaTeX();
 $latex->assetRoot    = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
 $latex->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
     'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
-$latex->author       = implode(', ', $initiators);
+$latex->author       = $motion->getInitiatorsStr();
 $latex->title        = $motion->title;
 $latex->titlePrefix  = $motion->titlePrefix;
 $latex->titleLong    = $motion->title;
@@ -34,9 +34,10 @@ if (count($intro) > 1) {
     $latex->introductionSmall = '';
 }
 
-$latex->motionDataTable = 'Antragsteller/innen:   &   ';
-$latex->motionDataTable .= LaTeXExporter::encodePlainString(implode(', ', $initiators)) . '   \\\\';
-
+foreach ($motion->getDataTable() as $key => $val) {
+    $latex->motionDataTable = LaTeXExporter::encodePlainString($key) . ':   &   ';
+    $latex->motionDataTable .= LaTeXExporter::encodePlainString($val) . '   \\\\';
+}
 
 $latex->text = '';
 foreach ($motion->getSortedSections(true) as $section) {

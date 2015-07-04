@@ -4,12 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$scenario->incomplete('Not implemented yet');
-
 $I->wantTo('test the single-motion-HTML from the admin interface');
-$I->gotoStdConsultationHome();
-$I->loginAsStdAdmin();
-$I->click('#adminLink');
-$I->click('.motionListAll');
+$I->loginAndGotoStdAdminPage()->gotoMotionList();
 $I->click('.adminMotionTable .motion3 a.plainHtml');
 $I->see('Seltsame Zeichen: & % $ # _ { } ~ ^ \\ \\today');

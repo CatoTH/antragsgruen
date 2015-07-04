@@ -158,8 +158,8 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function motionDeadlineIsOver()
     {
-        $normalized = str_replace(array(" ", ":", "-"), array("", "", ""), $this->deadlineMotions);
-        if ($this->deadlineMotions != "" && date("YmdHis") > $normalized) {
+        $normalized = str_replace(array(' ', ':', '-'), array('', '', ''), $this->deadlineMotions);
+        if ($this->deadlineMotions != '' && date('YmdHis') > $normalized) {
             return true;
         } else {
             return false;
@@ -171,8 +171,8 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function amendmentDeadlineIsOver()
     {
-        $normalized = str_replace(array(" ", ":", "-"), array("", "", ""), $this->deadlineAmendments);
-        if ($this->deadlineAmendments != "" && date("YmdHis") > $normalized) {
+        $normalized = str_replace(array(' ', ':', '-'), array('', '', ''), $this->deadlineAmendments);
+        if ($this->deadlineAmendments != '' && date('YmdHis') > $normalized) {
             return true;
         } else {
             return false;

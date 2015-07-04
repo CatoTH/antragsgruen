@@ -62,8 +62,10 @@ class BDK extends IPDFLayout
         $motionData .= '<br><br>';
 
         $motionData .= '<table>';
-        $motionData .= '<tr><th style="width: 28%;">Antragsteller/innen:</th>';
-        $motionData .= '<td>' . Html::encode($motion->getInitiatorsStr()) . '</td></tr>';
+        foreach ($motion->getDataTable() as $key => $val) {
+            $motionData .= '<tr><th style="width: 28%;">' . Html::encode($key) . ':</th>';
+            $motionData .= '<td>' . Html::encode($val) . '</td></tr>';
+        }
 
         $motionData .= '</table>';
 

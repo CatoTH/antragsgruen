@@ -18,7 +18,7 @@ use app\tests\_pages\MotionPage;
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = null)
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
@@ -88,6 +88,16 @@ class AcceptanceTester extends \Codeception\Actor
             $this->seeElement('.motionData');
         }
         return $page;
+    }
+
+    /**
+     * @return AdminIndexPage
+     */
+    public function loginAndGotoStdAdminPage()
+    {
+        $this->gotoStdConsultationHome();
+        $this->loginAsStdAdmin();
+        return $this->gotoStdAdminPage();
     }
 
     /**
