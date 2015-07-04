@@ -17,6 +17,13 @@ class AdminBase extends Base
         if (!parent::beforeAction($action)) {
             return false;
         }
+
+        if (YII_ENV === 'test' && in_array($action->id, ['excellist'])) {
+            // Donwloading files is done by curl, not by phantomjs.
+            // Therefore the session is lost when downloading in the test environment
+            return true;
+        }
+
         if (\Yii::$app->user->isGuest) {
             $currUrl = \yii::$app->request->url;
             $this->redirect(UrlHelper::createLoginUrl($currUrl));
