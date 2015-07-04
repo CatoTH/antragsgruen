@@ -138,7 +138,7 @@ abstract class ISectionType
     /**
      * @return string
      */
-    abstract public function showSimple();
+    abstract public function getSimple();
 
     /**
      * @param \TCPDF $pdf
@@ -163,6 +163,16 @@ abstract class ISectionType
     /**
      * @return string
      */
+    abstract public function getMotionODS();
+
+    /**
+     * @return string
+     */
+    abstract public function getAmendmentODS();
+
+    /**
+     * @return string
+     */
     abstract public function getMotionPlainText();
 
     /**
@@ -179,6 +189,6 @@ abstract class ISectionType
      */
     public function showMotionView(Base $controller, $commentForm, $openedComments)
     {
-        return $this->showSimple();
+        return $this->getSimple();
     }
 }

@@ -78,7 +78,7 @@ class TabularData extends ISectionType
     /**
      * @return string
      */
-    public function showSimple()
+    public function getSimple()
     {
         if ($this->isEmpty()) {
             return '';

@@ -51,7 +51,7 @@ class TextHTML extends ISectionType
     /**
      * @return string
      */
-    public function showSimple()
+    public function getSimple()
     {
         return $this->section->data;
     }
@@ -120,5 +120,21 @@ class TextHTML extends ISectionType
     public function getAmendmentTeX()
     {
         return 'Test'; //  @TODO
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionODS()
+    {
+        return '<p>Kann nicht angezeigt werden</p>';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentODS()
+    {
+        return '<p>Kann nicht angezeigt werden</p>';
     }
 }

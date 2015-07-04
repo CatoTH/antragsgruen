@@ -82,56 +82,6 @@ abstract class Base
         $this->appendStyleNode($styleName, 'text', 'text-properties', $attributes);
     }
 
-    /**
-     * @param string $styleName
-     * @param array $attributes
-     */
-    protected function appendRowStyleNode($styleName, $attributes)
-    {
-        $this->appendStyleNode($styleName, 'table-row', 'table-row-properties', $attributes);
-    }
-
-    /**
-     * @param string $styleName
-     * @param array $attributes
-     */
-    protected function appendColStyleNode($styleName, $attributes)
-    {
-        $this->appendStyleNode($styleName, 'table-column', 'table-column-properties', $attributes);
-    }
-
-    /**
-     * @param string $styleName
-     * @param array $cellAttributes
-     * @param array $textAttributes
-     */
-    protected function appendCellStyleNode($styleName, $cellAttributes, $textAttributes)
-    {
-        $node = $this->doc->createElementNS(static::NS_STYLE, "style");
-        $node->setAttribute("style:name", $styleName);
-        $node->setAttribute("style:family", 'table-cell');
-        $node->setAttribute("style:parent-style-name", "Default");
-
-        if (count($cellAttributes) > 0) {
-            $style = $this->doc->createElementNS(static::NS_STYLE, 'table-cell-properties');
-            foreach ($cellAttributes as $att_name => $att_val) {
-                $style->setAttribute($att_name, $att_val);
-            }
-            $node->appendChild($style);
-        }
-        if (count($textAttributes) > 0) {
-            $style = $this->doc->createElementNS(static::NS_STYLE, 'text-properties');
-            foreach ($textAttributes as $att_name => $att_val) {
-                $style->setAttribute($att_name, $att_val);
-            }
-            $node->appendChild($style);
-        }
-
-        foreach ($this->doc->getElementsByTagNameNS(static::NS_OFFICE, 'automatic-styles') as $element) {
-            /** @var \DOMElement $element */
-            $element->appendChild($node);
-        }
-    }
 
     /**
      * @return bool
@@ -157,6 +107,10 @@ abstract class Base
                 }
                 $append_el = null;
                 switch ($srcNode->nodeName) {
+                    case 'span':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        // @TODO Formattings
+                        break;
                     case 'b':
                     case 'strong':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
@@ -176,6 +130,7 @@ abstract class Base
                         break;
                     case 'p':
                     case 'div':
+                    case 'blockquote':
                         if ($blockFurtherPs) {
                             $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
                         } else {
@@ -183,6 +138,9 @@ abstract class Base
                         }
                         break;
                     case 'ul':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
+                        break;
+                    case 'ol':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
                         break;
                     case 'li':
@@ -288,7 +246,7 @@ abstract class Base
 
             /** @var \DOMNode $child */
             if ($child->nodeName == 'ul') {
-                // Alle anderen Nocdes dieses Aufrufs werden ignoriert
+                // Alle anderen Nodes dieses Aufrufs werden ignoriert
                 if ($this->DEBUG) {
                     echo 'LIST<br>';
                 }

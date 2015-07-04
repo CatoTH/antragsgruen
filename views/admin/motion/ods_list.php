@@ -95,11 +95,63 @@ $doc->setColumnWidth($COL_PROCEDURE, 6);
 
 $doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
 
+
 // Motions
 
+$row = 2;
 
-// @TODO
+foreach ($motions as $motion) {
+    $row++;
+    $maxRows = 1;
 
+    $initiatorNames   = [];
+    $initiatorContacs = [];
+    foreach ($motion->getInitiators() as $supp) {
+        $initiatorNames[] = $supp->getNameWithResolutionDate(false);
+        if ($supp->contactEmail != '') {
+            $initiatorContacs[] = $supp->contactEmail;
+        }
+        if ($supp->contactPhone != '') {
+            $initiatorContacs[] = $supp->contactPhone;
+        }
+    }
+
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
+    $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
+    $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacs));
+
+    if ($textCombined) {
+        $text = '';
+        foreach ($motion->getSortedSections(true) as $section) {
+            $text .= $section->consultationSetting->title . "\n\n";
+            $text .= $section->getSectionType()->getMotionODS();
+            $text .= "\n\n";
+        }
+        $splitter = new LineSplitter($text, 80);
+        $lines    = $splitter->splitLines();
+        if (count($lines) > $maxRows) {
+            $maxRows = count($lines);
+        }
+        $doc->setCell($row, $COL_TEXTS[0], Spreadsheet::TYPE_HTML, implode('<br>', $lines));
+    } else {
+        foreach ($motionType->motionSections as $section) {
+            $text = '';
+            foreach ($motion->sections as $sect) {
+                if ($sect->sectionId == $section->id) {
+                    $text = $sect->getSectionType()->getMotionODS();
+                }
+            }
+            $doc->setCell($row, $COL_TEXTS[$section->id], Spreadsheet::TYPE_HTML, $text);
+        }
+    }
+    if (isset($COL_TAGS)) {
+        $tags = [];
+        foreach ($motion->tags as $tag) {
+            $tags[] = $tag->title;
+        }
+        $doc->setCell($row, $COL_TAGS, Spreadsheet::TYPE_TEXT, implode("\n", $tags));
+    }
+}
 
 $content = $doc->create();
 
@@ -107,10 +159,9 @@ if ($DEBUG) {
     $doc->debugOutput();
 }
 
-$zip->deleteName("content.xml");
-$zip->addFromString("content.xml", $content);
+$zip->deleteName('content.xml');
+$zip->addFromString('content.xml', $content);
 $zip->close();
-
 
 readfile($tmpZipFile);
 unlink($tmpZipFile);

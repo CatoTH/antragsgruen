@@ -20,7 +20,7 @@ class Image extends ISectionType
         return '<fieldset class="form-group">
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
             <input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
-            ' name="sections[' . $type->id . ']">
+        ' name="sections[' . $type->id . ']">
         </fieldset>';
     }
 
@@ -71,7 +71,7 @@ class Image extends ISectionType
     /**
      * @return string
      */
-    public function showSimple()
+    public function getSimple()
     {
         if ($this->isEmpty()) {
             return '';
@@ -79,15 +79,15 @@ class Image extends ISectionType
 
         /** @var MotionSection $section */
         $section = $this->section;
-        $type = $section->consultationSetting;
-        $url  = UrlHelper::createUrl(
+        $type    = $section->consultationSetting;
+        $url     = UrlHelper::createUrl(
             [
                 'motion/viewimage',
                 'motionId'  => $section->motionId,
                 'sectionId' => $section->sectionId
             ]
         );
-        $str  = '<div style="text-align: center; padding: 10px;"><img src="' . Html::encode($url) . '" ';
+        $str     = '<div style="text-align: center; padding: 10px;"><img src="' . Html::encode($url) . '" ';
         $str .= 'alt="' . Html::encode($type->title) . '" style="max-height: 200px;"></div>';
         return $str;
     }
@@ -147,6 +147,7 @@ class Image extends ISectionType
         $pdf->Image($img, '', '', $size[0], $size[1], $type, '', '', true, 300, 'C');
         $pdf->Ln($size[1] + 7);
     }
+
     /**
      * @param \TCPDF $pdf
      */
@@ -185,5 +186,21 @@ class Image extends ISectionType
     public function getAmendmentTeX()
     {
         return 'BILD'; //  @TODO
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionODS()
+    {
+        return '<p>[BILD]</p>';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentODS()
+    {
+        return '<p>[BILD]</p>';
     }
 }

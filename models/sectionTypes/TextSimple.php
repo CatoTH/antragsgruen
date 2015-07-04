@@ -57,7 +57,7 @@ class TextSimple extends ISectionType
     /**
      * @return string
      */
-    public function showSimple()
+    public function getSimple()
     {
         $sections = HTMLTools::sectionSimpleHTML($this->section->data);
         $str      = '';
@@ -252,5 +252,21 @@ class TextSimple extends ISectionType
     public function getAmendmentTeX()
     {
         return 'Test'; //  @TODO
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionODS()
+    {
+        return $this->section->data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentODS()
+    {
+        return $this->section->data;
     }
 }

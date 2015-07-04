@@ -24,6 +24,59 @@ class Spreadsheet extends Base
     private $cellNodeMatrix   = [];
     private $cellStylesMatrix = [];
 
+
+    /**
+     * @param string $styleName
+     * @param array $cellAttributes
+     * @param array $textAttributes
+     */
+    protected function appendCellStyleNode($styleName, $cellAttributes, $textAttributes)
+    {
+        $node = $this->doc->createElementNS(static::NS_STYLE, "style");
+        $node->setAttribute("style:name", $styleName);
+        $node->setAttribute("style:family", 'table-cell');
+        $node->setAttribute("style:parent-style-name", "Default");
+
+        if (count($cellAttributes) > 0) {
+            $style = $this->doc->createElementNS(static::NS_STYLE, 'table-cell-properties');
+            foreach ($cellAttributes as $att_name => $att_val) {
+                $style->setAttribute($att_name, $att_val);
+            }
+            $node->appendChild($style);
+        }
+        if (count($textAttributes) > 0) {
+            $style = $this->doc->createElementNS(static::NS_STYLE, 'text-properties');
+            foreach ($textAttributes as $att_name => $att_val) {
+                $style->setAttribute($att_name, $att_val);
+            }
+            $node->appendChild($style);
+        }
+
+        foreach ($this->doc->getElementsByTagNameNS(static::NS_OFFICE, 'automatic-styles') as $element) {
+            /** @var \DOMElement $element */
+            $element->appendChild($node);
+        }
+    }
+
+
+    /**
+     * @param string $styleName
+     * @param array $attributes
+     */
+    protected function appendColStyleNode($styleName, $attributes)
+    {
+        $this->appendStyleNode($styleName, 'table-column', 'table-column-properties', $attributes);
+    }
+
+    /**
+     * @param string $styleName
+     * @param array $attributes
+     */
+    protected function appendRowStyleNode($styleName, $attributes)
+    {
+        $this->appendStyleNode($styleName, 'table-row', 'table-row-properties', $attributes);
+    }
+
     /**
      * @param int $row
      * @param string $col

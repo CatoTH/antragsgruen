@@ -119,7 +119,7 @@ foreach ($motions as $motion) {
         $text = '';
         foreach ($motion->getSortedSections(true) as $section) {
             $text .= $section->consultationSetting->title . "\n\n";
-            $text .= $section->getSectionType()->getAmendmentPlainText();
+            $text .= $section->getSectionType()->getMotionPlainText();
             $text .= "\n\n";
         }
         $splitter = new LineSplitter($text, 80);
@@ -133,7 +133,7 @@ foreach ($motions as $motion) {
             $text = '';
             foreach ($motion->sections as $sect) {
                 if ($sect->sectionId == $section->id) {
-                    $text .= $sect->getSectionType()->getAmendmentPlainText();
+                    $text .= $sect->getSectionType()->getMotionPlainText();
                 }
             }
             $splitter = new LineSplitter($text, 80);
@@ -144,10 +144,6 @@ foreach ($motions as $motion) {
             $objPHPExcel->getActiveSheet()->SetCellValue($COL_TEXTS[$section->id] . $row, implode("\n", $lines));
         }
     }
-    if (isset($COL_TAGS)) {
-        $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS . '3', 'Schlagworte');
-    }
-
     if (isset($COL_TAGS)) {
         $tags = [];
         foreach ($motion->tags as $tag) {
