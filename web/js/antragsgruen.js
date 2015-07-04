@@ -73,8 +73,9 @@
             autoGrow_bottomSpace: 20,
             // Whether or not you want to show the Word Count
             wordcount: {
-                showWordCount: true,
-                showCharCount: true,
+                showWordCount: false,
+                showCharCount: false,
+                showParagraphs: false,
                 countHTML: false,
                 countSpacesAsChars: true
             }
