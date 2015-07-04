@@ -139,15 +139,6 @@ class Spreadsheet extends Base
     }
 
     /**
-     * @return bool
-     */
-    protected function noNestedPs()
-    {
-        return true;
-    }
-
-
-    /**
      */
     private function appendBaseStyles()
     {
@@ -465,18 +456,20 @@ class Spreadsheet extends Base
      */
     public function html2OdsNodes($html)
     {
-        $body   = HTMLTools::html2DOM($html);
-        $tokens = $this->tokenizeFlattenHtml($body, []);
-        $nodes  = [];
+        $body     = HTMLTools::html2DOM($html);
+        $tokens   = $this->tokenizeFlattenHtml($body, []);
+        $nodes    = [];
         $currentP = $this->doc->createElementNS(static::NS_TEXT, 'p');
         foreach ($tokens as $token) {
-            $node     = $this->doc->createElement('text:span');
-            $textNode = $this->doc->createTextNode($token['text']);
-            $node->appendChild($textNode);
-            $currentP->appendChild($node);
+            if (trim($token['text']) != '') {
+                $node     = $this->doc->createElement('text:span');
+                $textNode = $this->doc->createTextNode($token['text']);
+                $node->appendChild($textNode);
+                $currentP->appendChild($node);
+            }
 
             if (in_array(static::FORMAT_LINEBREAK, $token['formattings'])) {
-                $nodes[] = $currentP;
+                $nodes[]  = $currentP;
                 $currentP = $this->doc->createElementNS(static::NS_TEXT, 'p');
             }
         }
@@ -503,15 +496,5 @@ class Spreadsheet extends Base
         $rows = explode("\n", $xml);
         $rows[0] .= "\n";
         return implode('', $rows) . "\n";
-    }
-
-    /**
-     * @param int $templateType
-     * @throws \Exception
-     * @return \DOMNode
-     */
-    protected function getNextNodeTemplate($templateType)
-    {
-        return $this->doc->createElement('text:span');
     }
 }

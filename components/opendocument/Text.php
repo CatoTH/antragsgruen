@@ -2,6 +2,7 @@
 
 namespace app\components\opendocument;
 
+use app\components\HTMLTools;
 use yii\helpers\Html;
 
 class Text extends Base
@@ -29,6 +30,167 @@ class Text extends Base
     public function addReplace($search, $replace)
     {
         $this->replaces[$search] = $replace;
+    }
+
+    /**
+     * @param \DOMNode $srcNode
+     * @param int $templateType
+     * @return \DOMNode
+     */
+    protected function html2ooNodeInt($srcNode, $templateType)
+    {
+        switch ($srcNode->nodeType) {
+            case XML_ELEMENT_NODE:
+                /** @var \DOMElement $srcNode */
+                if ($this->DEBUG) {
+                    echo "Element - " . $srcNode->nodeName . " / Children: " . count($srcNode->childNodes) . "<br>";
+                }
+                $append_el = null;
+                switch ($srcNode->nodeName) {
+                    case 'span':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        // @TODO Formattings
+                        break;
+                    case 'b':
+                    case 'strong':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenBold');
+                        break;
+                    case 'i':
+                    case 'em':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenItalic');
+                        break;
+                    case 'u':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenUnderlined');
+                        break;
+                    case 'br':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'line-break');
+                        break;
+                    case 'p':
+                    case 'div':
+                    case 'blockquote':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'p');
+                        break;
+                    case 'ul':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
+                        break;
+                    case 'ol':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
+                        break;
+                    case 'li':
+                        $dst_el    = $this->doc->createElementNS(static::NS_TEXT, 'list-item');
+                        $append_el = $this->getNextNodeTemplate($templateType);
+                        $dst_el->appendChild($append_el);
+                        break;
+                    case 'del':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenDel');
+                        break;
+                    case 'ins':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenIns');
+                        break;
+                    case 'a':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'a');
+                        try {
+                            $attr = $srcNode->getAttribute('href');
+                            if ($attr) {
+                                $dst_el->setAttribute('xlink:href', $attr);
+                            }
+                        } catch (\Exception $e) {
+                        }
+                        break;
+                    default:
+                        die('Unknown Tag: ' . $srcNode->nodeName);
+                }
+                foreach ($srcNode->childNodes as $child) {
+                    /** @var \DOMNode $child */
+                    if ($this->DEBUG) {
+                        echo "CHILD<br>" . $child->nodeType . "<br>";
+                    }
+
+                    $dst_node = $this->html2ooNodeInt($child, $templateType);
+                    if ($this->DEBUG) {
+                        echo "CHILD";
+                        var_dump($dst_node);
+                    }
+                    if ($dst_node) {
+                        if ($append_el) {
+                            $append_el->appendChild($dst_node);
+                        } else {
+                            $dst_el->appendChild($dst_node);
+                        }
+                    }
+                }
+                return $dst_el;
+                break;
+            case XML_TEXT_NODE:
+                /** @var \DOMText $srcNode */
+                $textnode       = new \DOMText();
+                $textnode->data = $srcNode->data;
+                if ($this->DEBUG) {
+                    echo 'Text<br>';
+                }
+                return $textnode;
+                break;
+            case XML_DOCUMENT_TYPE_NODE:
+                if ($this->DEBUG) {
+                    echo 'Type Node<br>';
+                }
+                return null;
+                break;
+            default:
+                if ($this->DEBUG) {
+                    echo 'Unknown Node: ' . $srcNode->nodeType . '<br>';
+                }
+                return null;
+        }
+    }
+
+    /**
+     * @param string $html
+     * @param int $templateType
+     * @return \DOMNode[]
+     */
+    protected function html2ooNodes($html, $templateType)
+    {
+        $body = HTMLTools::html2DOM($html);
+
+        $new_nodes = [];
+        for ($i = 0; $i < $body->childNodes->length; $i++) {
+            $child = $body->childNodes->item($i);
+
+            /** @var \DOMNode $child */
+            if ($child->nodeName == 'ul') {
+                // Alle anderen Nodes dieses Aufrufs werden ignoriert
+                if ($this->DEBUG) {
+                    echo 'LIST<br>';
+                }
+                $new_node = $this->html2ooNodeInt($child, $templateType);
+            } else {
+                if ($child->nodeType == XML_TEXT_NODE) {
+                    $new_node = $this->getNextNodeTemplate($templateType);
+                    /** @var \DOMText $child */
+                    if ($this->DEBUG) {
+                        echo $child->nodeName . ' - ' . Html::encode($child->data) . '!!!!!!!!!!!!<br>';
+                    }
+                    $text       = new \DOMText();
+                    $text->data = $child->data;
+                    $new_node->appendChild($text);
+                } else {
+                    if ($this->DEBUG) {
+                        echo $child->nodeName . '!!!!!!!!!!!!<br>';
+                    }
+                    $new_node = $this->html2ooNodeInt($child, $templateType);
+                }
+            }
+            if ($new_node) {
+                $new_nodes[] = $new_node;
+            }
+        }
+        return $new_nodes;
     }
 
     /**
