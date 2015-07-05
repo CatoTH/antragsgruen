@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\components\latex\Content;
+use app\components\latex\Exporter;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
@@ -467,5 +469,43 @@ class Motion extends IMotion implements IRSSItem
         }
 
         return $return;
+    }
+
+    /**
+     * @return Content
+     */
+    public function getTexContent()
+    {
+        $content                  = new Content();
+        $content->template        = $this->motionType->texTemplate->texContent;
+        $intro                    = explode("\n", $this->consultation->getSettings()->pdfIntroduction);
+        $content->introductionBig = $intro[0];
+        $content->title           = $this->title;
+        $content->titlePrefix     = $this->titlePrefix;
+        $content->titleLong       = $this->title;
+        if (count($intro) > 1) {
+            array_shift($intro);
+            $content->introductionSmall = implode("\n", $intro);
+        } else {
+            $content->introductionSmall = '';
+        }
+        $initiators = [];
+        foreach ($this->getInitiators() as $init) {
+            $initiators[] = $init->getNameWithResolutionDate(false);
+        }
+        $initiatorsStr   = implode(', ', $initiators);
+        $content->author = $initiatorsStr;
+
+        foreach ($this->getDataTable() as $key => $val) {
+            $content->motionDataTable = Exporter::encodePlainString($key) . ':   &   ';
+            $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
+        }
+
+        $content->text = '';
+        foreach ($this->getSortedSections(true) as $section) {
+            $content->text .= $section->getSectionType()->getMotionTeX();
+        }
+
+        return $content;
     }
 }

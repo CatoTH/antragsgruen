@@ -16,7 +16,7 @@ $motionTypePage->saveForm();
 
 $I->gotoStdConsultationHome();
 $I->dontSee('PDF');
-$I->dontSeeElement('#sidebar .pdfs');
+$I->dontSeeElement('#sidebar .motionPdfCompilation');
 $I->click('.motionLink2');
 $I->dontSee('PDF');
 
@@ -29,7 +29,7 @@ $motionTypePage->saveForm();
 
 $I->gotoStdConsultationHome();
 $I->see('PDF');
-$I->seeElement('#sidebar .pdfs');
+$I->seeElement('#sidebar .motionPdfCompilation');
 $I->logout();
 
 
@@ -58,9 +58,7 @@ if (strlen($pdf) == 0) {
 $I->wantTo('test the pdf-compilation');
 $I->gotoStdConsultationHome();
 
-
-$I->click('#sidebar .pdfs');
-// @TODO
-
-
-$scenario->incomplete('Not implemented yet');
+$pdf = $I->downloadLink('.motionPdfCompilation');
+if (strlen($pdf) == 0) {
+    $I->fail('PDF has no content');
+}

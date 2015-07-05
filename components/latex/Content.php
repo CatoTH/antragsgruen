@@ -1,18 +1,14 @@
 <?php
 
-namespace app\models\settings;
+namespace app\components\latex;
 
-class LaTeX
+class Content
 {
-    /** @var string */
-    public $templateFile;
-    public $assetRoot;
-    public $language = 'ngerman'; // english
-
+    public $template;
+    public $author;
     public $title;
     public $titlePrefix;
     public $titleLong;
-    public $author;
     public $introductionBig;
     public $introductionSmall;
     public $motionDataTable;

@@ -223,9 +223,9 @@ if ($consultation->getSettings()->showFeeds) {
 
 if ($hasPDF) {
     $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'Alle PDFs zusammen');
-    $pdfLink = UrlHelper::createUrl('consultation/pdfs');
+    $pdfLink = UrlHelper::createUrl('motion/pdfcollection');
     $html    = '<div><ul class="nav nav-list"><li class="nav-header">PDFs</li>';
-    $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'pdfs']) . '</li>';
+    $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
     if ($hasAmendments) {
         $amendmentPdfLink = UrlHelper::createUrl('consultation/amendmentpdfs');

@@ -1,12 +1,12 @@
 <?php
 
-namespace app\components;
+namespace app\components\latex;
 
+use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
-use app\models\settings\LaTeX;
 
-class LaTeXExporter
+class Exporter
 {
     /**
      * @param string $str
@@ -127,39 +127,66 @@ class LaTeXExporter
     }
 
     /**
-     * @param LaTeX $laTeX
+     * @param Layout $layout
      * @return string
      */
-    public static function createLaTeXString(LaTeX $laTeX)
+    public static function createLayoutString(Layout $layout)
     {
-        $template                         = file_get_contents($laTeX->templateFile);
+        $template                = $layout->template;
+        $template                = str_replace("\r", "", $template);
+        $replaces                = [];
+        $replaces['%LANGUAGE%']  = $layout->language;
+        $replaces['%ASSETROOT%'] = $layout->assetRoot;
+        $replaces['%TITLE%']     = $layout->title;
+        $replaces['%AUTHOR%']    = $layout->author;
+        $template                = str_replace(array_keys($replaces), array_values($replaces), $template);
+        return $template;
+    }
+
+    /**
+     * @param Content $content
+     * @return string
+     */
+    public static function createContentString(Content $content)
+    {
+        $template                         = $content->template;
+        $template                         = str_replace("\r", "", $template);
         $replaces                         = [];
-        $replaces['%LANGUAGE%']           = $laTeX->language;
-        $replaces['%ASSETROOT%']          = $laTeX->assetRoot;
-        $replaces['%TITLEPREFIX%']        = $laTeX->titlePrefix;
-        $replaces['%TITLE%']              = $laTeX->title;
-        $replaces['%TITLE_LONG%']         = $laTeX->titleLong;
-        $replaces['%AUTHOR%']             = $laTeX->author;
-        $replaces['%MOTION_DATA_TABLE%']  = $laTeX->motionDataTable;
-        $replaces['%TEXT%']               = $laTeX->text;
-        $replaces['%INTRODUCTION_BIG%']   = $laTeX->introductionBig;
-        $replaces['%INTRODUCTION_SMALL%'] = $laTeX->introductionSmall;
+        $replaces['%TITLE%']              = $content->title;
+        $replaces['%TITLEPREFIX%']        = $content->titlePrefix;
+        $replaces['%TITLE_LONG%']         = $content->titleLong;
+        $replaces['%AUTHOR%']             = $content->author;
+        $replaces['%MOTION_DATA_TABLE%']  = $content->motionDataTable;
+        $replaces['%TEXT%']               = $content->text;
+        $replaces['%INTRODUCTION_BIG%']   = $content->introductionBig;
+        $replaces['%INTRODUCTION_SMALL%'] = $content->introductionSmall;
         $template                         = str_replace(array_keys($replaces), array_values($replaces), $template);
         return $template;
     }
 
     /**
-     * @param LaTeX $laTeX
+     * @param Layout $layout
+     * @param Content[] $contents
      * @param AntragsgruenApp $app
      * @return string
      * @throws Internal
      */
-    public static function createPDF(LaTeX $laTeX, AntragsgruenApp $app)
+    public static function createPDF(Layout $layout, $contents, AntragsgruenApp $app)
     {
         if (!$app->xelatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
         }
-        $str = static::createLaTeXString($laTeX);
+        $layoutStr  = static::createLayoutString($layout);
+        $contentStr = '';
+        $i          = 0;
+        foreach ($contents as $content) {
+            if ($i > 0) {
+                $contentStr .= "\n\\newpage\n";
+            }
+            $contentStr .= static::createContentString($content);
+            $i++;
+        }
+        $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
 
         if (YII_ENV_DEV && isset($_REQUEST['latex_src'])) {
             Header('Content-Type: text/plain');
@@ -182,7 +209,7 @@ class LaTeXExporter
         shell_exec($cmd); // Do it twice, to get the LastPage-reference right
 
         if (!file_exists($filenameBase . '.pdf')) {
-            throw new Internal('An error occurred while creating the PDF: ' . $filenameBase);
+            throw new Internal('An error occurred while creating the PDF: ' . $cmd);
         }
         $pdf = file_get_contents($filenameBase . '.pdf');
 
@@ -190,6 +217,7 @@ class LaTeXExporter
         unlink($filenameBase . '.log');
         unlink($filenameBase . '.tex');
         unlink($filenameBase . '.pdf');
+
         return $pdf;
     }
 }

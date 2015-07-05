@@ -7,7 +7,7 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 -- Table structure for table `amendment`
 --
 
-CREATE TABLE `amendment` (
+CREATE TABLE IF NOT EXISTS `amendment` (
   `id`                    INT(11)     NOT NULL,
   `motionId`              INT(11)              DEFAULT NULL,
   `titlePrefix`           VARCHAR(45)          DEFAULT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE `amendment` (
 -- Table structure for table `amendmentComment`
 --
 
-CREATE TABLE `amendmentComment` (
+CREATE TABLE IF NOT EXISTS `amendmentComment` (
   `id`                INT(11)     NOT NULL,
   `userId`            INT(11)              DEFAULT NULL,
   `amendmentId`       INT(11)     NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE `amendmentComment` (
 -- Table structure for table `amendmentSection`
 --
 
-CREATE TABLE `amendmentSection` (
+CREATE TABLE IF NOT EXISTS `amendmentSection` (
   `amendmentId` INT(11)  NOT NULL,
   `sectionId`   INT(11)  NOT NULL,
   `data`        LONGTEXT NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE `amendmentSection` (
 -- Table structure for table `amendmentSupporter`
 --
 
-CREATE TABLE `amendmentSupporter` (
+CREATE TABLE IF NOT EXISTS `amendmentSupporter` (
   `id`             INT(11)                                            NOT NULL,
   `amendmentId`    INT(11)                                            NOT NULL,
   `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
@@ -92,7 +92,7 @@ CREATE TABLE `amendmentSupporter` (
 -- Table structure for table `cache`
 --
 
-CREATE TABLE `cache` (
+CREATE TABLE IF NOT EXISTS `cache` (
   `id`           CHAR(32)  NOT NULL,
   `dateCreation` TIMESTAMP NULL DEFAULT NULL,
   `data`         LONGBLOB
@@ -106,7 +106,7 @@ CREATE TABLE `cache` (
 -- Table structure for table `consultation`
 --
 
-CREATE TABLE `consultation` (
+CREATE TABLE IF NOT EXISTS `consultation` (
   `id`                 INT(11)      NOT NULL,
   `siteId`             INT(11)      NOT NULL,
   `urlPath`            VARCHAR(45)  DEFAULT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE `consultation` (
 -- Table structure for table `consultationAdmin`
 --
 
-CREATE TABLE `consultationAdmin` (
+CREATE TABLE IF NOT EXISTS `consultationAdmin` (
   `consultationId` INT(11) NOT NULL,
   `userId`         INT(11) NOT NULL
 )
@@ -142,15 +142,15 @@ CREATE TABLE `consultationAdmin` (
 -- Table structure for table `consultationAgendaItem`
 --
 
-CREATE TABLE `consultationAgendaItem` (
+CREATE TABLE IF NOT EXISTS `consultationAgendaItem` (
   `id`             INT(11)      NOT NULL,
   `consultationId` INT(11)      NOT NULL,
   `parentItemId`   INT(11)           DEFAULT NULL,
   `position`       INT(11)      NOT NULL,
   `code`           VARCHAR(20)  NOT NULL,
-  `codeExplicit`   VARCHAR(20)  NULL,
+  `codeExplicit`   VARCHAR(20)       DEFAULT NULL,
   `title`          VARCHAR(250) NOT NULL,
-  `description`    TEXT         NULL,
+  `description`    TEXT,
   `motionTypeId`   INT(11)           DEFAULT NULL,
   `deadline`       TIMESTAMP    NULL DEFAULT NULL
 )
@@ -163,7 +163,7 @@ CREATE TABLE `consultationAgendaItem` (
 -- Table structure for table `consultationMotionType`
 --
 
-CREATE TABLE `consultationMotionType` (
+CREATE TABLE IF NOT EXISTS `consultationMotionType` (
   `id`                    INT(11)      NOT NULL,
   `consultationId`        INT(11)      NOT NULL,
   `titleSingular`         VARCHAR(100) NOT NULL,
@@ -172,7 +172,8 @@ CREATE TABLE `consultationMotionType` (
   `motionPrefix`          VARCHAR(10)           DEFAULT NULL,
   `position`              INT(11)      NOT NULL,
   `cssIcon`               VARCHAR(100)          DEFAULT NULL,
-  `pdfLayout`             INT          NOT NULL DEFAULT '0',
+  `pdfLayout`             INT(11)      NOT NULL DEFAULT '0',
+  `texTemplateId`         INT(11)               DEFAULT NULL,
   `deadlineMotions`       TIMESTAMP    NULL     DEFAULT NULL,
   `deadlineAmendments`    TIMESTAMP    NULL     DEFAULT NULL,
   `policyMotions`         INT(11)      NOT NULL,
@@ -182,7 +183,7 @@ CREATE TABLE `consultationMotionType` (
   `contactEmail`          TINYINT(4)   NOT NULL,
   `contactPhone`          TINYINT(4)   NOT NULL,
   `initiatorForm`         INT(11)      NOT NULL,
-  `initiatorFormSettings` TEXT         NULL
+  `initiatorFormSettings` TEXT
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -193,7 +194,7 @@ CREATE TABLE `consultationMotionType` (
 -- Table structure for table `consultationOdtTemplate`
 --
 
-CREATE TABLE `consultationOdtTemplate` (
+CREATE TABLE IF NOT EXISTS `consultationOdtTemplate` (
   `id`             INT(11)    NOT NULL,
   `consultationId` INT(11)    NOT NULL,
   `type`           TINYINT(4) NOT NULL,
@@ -208,7 +209,7 @@ CREATE TABLE `consultationOdtTemplate` (
 -- Table structure for table `consultationSettingsMotionSection`
 --
 
-CREATE TABLE `consultationSettingsMotionSection` (
+CREATE TABLE IF NOT EXISTS `consultationSettingsMotionSection` (
   `id`            INT(11)      NOT NULL,
   `motionTypeId`  INT(11)      NOT NULL,
   `type`          INT(11)      NOT NULL,
@@ -232,7 +233,7 @@ CREATE TABLE `consultationSettingsMotionSection` (
 -- Table structure for table `consultationSettingsTag`
 --
 
-CREATE TABLE `consultationSettingsTag` (
+CREATE TABLE IF NOT EXISTS `consultationSettingsTag` (
   `id`             INT(11)      NOT NULL,
   `consultationId` INT(11)     DEFAULT NULL,
   `position`       SMALLINT(6) DEFAULT NULL,
@@ -248,7 +249,7 @@ CREATE TABLE `consultationSettingsTag` (
 -- Table structure for table `consultationSubscription`
 --
 
-CREATE TABLE `consultationSubscription` (
+CREATE TABLE IF NOT EXISTS `consultationSubscription` (
   `consultationId` INT(11) NOT NULL,
   `userId`         INT(11) NOT NULL,
   `motions`        TINYINT(4) DEFAULT NULL,
@@ -264,7 +265,7 @@ CREATE TABLE `consultationSubscription` (
 -- Table structure for table `consultationText`
 --
 
-CREATE TABLE `consultationText` (
+CREATE TABLE IF NOT EXISTS `consultationText` (
   `id`             INT(11)      NOT NULL,
   `consultationId` INT(11)           DEFAULT NULL,
   `category`       VARCHAR(20)  NOT NULL,
@@ -281,7 +282,7 @@ CREATE TABLE `consultationText` (
 -- Table structure for table `emailLog`
 --
 
-CREATE TABLE `emailLog` (
+CREATE TABLE IF NOT EXISTS `emailLog` (
   `id`        INT(11)   NOT NULL,
   `toEmail`   VARCHAR(200)   DEFAULT NULL,
   `toUserId`  INT(11)        DEFAULT NULL,
@@ -300,7 +301,7 @@ CREATE TABLE `emailLog` (
 -- Table structure for table `motion`
 --
 
-CREATE TABLE `motion` (
+CREATE TABLE IF NOT EXISTS `motion` (
   `id`             INT(11)     NOT NULL,
   `consultationId` INT(11)     NOT NULL,
   `motionTypeId`   INT(11)     NOT NULL,
@@ -325,7 +326,7 @@ CREATE TABLE `motion` (
 -- Table structure for table `motionComment`
 --
 
-CREATE TABLE `motionComment` (
+CREATE TABLE IF NOT EXISTS `motionComment` (
   `id`                INT(11)     NOT NULL,
   `userId`            INT(11)              DEFAULT NULL,
   `motionId`          INT(11)     NOT NULL,
@@ -347,7 +348,7 @@ CREATE TABLE `motionComment` (
 -- Table structure for table `motionCommentSupporter`
 --
 
-CREATE TABLE `motionCommentSupporter` (
+CREATE TABLE IF NOT EXISTS `motionCommentSupporter` (
   `id`              INT(11) NOT NULL,
   `ipHash`          CHAR(32)   DEFAULT NULL,
   `cookieId`        INT(11)    DEFAULT NULL,
@@ -363,7 +364,7 @@ CREATE TABLE `motionCommentSupporter` (
 -- Table structure for table `motionSection`
 --
 
-CREATE TABLE `motionSection` (
+CREATE TABLE IF NOT EXISTS `motionSection` (
   `motionId`  INT(11)  NOT NULL,
   `sectionId` INT(11)  NOT NULL,
   `data`      LONGTEXT NOT NULL,
@@ -378,7 +379,7 @@ CREATE TABLE `motionSection` (
 -- Table structure for table `motionSubscription`
 --
 
-CREATE TABLE `motionSubscription` (
+CREATE TABLE IF NOT EXISTS `motionSubscription` (
   `motionId` INT(11) NOT NULL,
   `userId`   INT(11) NOT NULL
 )
@@ -391,7 +392,7 @@ CREATE TABLE `motionSubscription` (
 -- Table structure for table `motionSupporter`
 --
 
-CREATE TABLE `motionSupporter` (
+CREATE TABLE IF NOT EXISTS `motionSupporter` (
   `id`             INT(11)                                            NOT NULL,
   `motionId`       INT(11)                                            NOT NULL,
   `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
@@ -414,7 +415,7 @@ CREATE TABLE `motionSupporter` (
 -- Table structure for table `motionTag`
 --
 
-CREATE TABLE `motionTag` (
+CREATE TABLE IF NOT EXISTS `motionTag` (
   `motionId` INT(11) NOT NULL,
   `tagId`    INT(11) NOT NULL
 )
@@ -427,7 +428,7 @@ CREATE TABLE `motionTag` (
 -- Table structure for table `site`
 --
 
-CREATE TABLE `site` (
+CREATE TABLE IF NOT EXISTS `site` (
   `id`                    INT(11)      NOT NULL,
   `subdomain`             VARCHAR(45)  NOT NULL,
   `title`                 VARCHAR(200) NOT NULL,
@@ -446,9 +447,25 @@ CREATE TABLE `site` (
 -- Table structure for table `siteAdmin`
 --
 
-CREATE TABLE `siteAdmin` (
+CREATE TABLE IF NOT EXISTS `siteAdmin` (
   `siteId` INT(11) NOT NULL,
   `userId` INT(11) NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `texTemplate`
+--
+
+CREATE TABLE IF NOT EXISTS `texTemplate` (
+  `id`         INT(11)      NOT NULL,
+  `siteId`     INT(11) DEFAULT NULL,
+  `title`      VARCHAR(100) NOT NULL,
+  `texLayout`  TEXT         NOT NULL,
+  `texContent` TEXT         NOT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -459,7 +476,7 @@ CREATE TABLE `siteAdmin` (
 -- Table structure for table `user`
 --
 
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `id`              INT(11)     NOT NULL,
   `name`            TEXT        NOT NULL,
   `email`           VARCHAR(200)         DEFAULT NULL,
@@ -544,7 +561,8 @@ ADD KEY `motionTypeId` (`motionTypeId`);
 --
 ALTER TABLE `consultationMotionType`
 ADD PRIMARY KEY (`id`),
-ADD KEY `consultationId` (`consultationId`, `position`) USING BTREE;
+ADD KEY `consultationId` (`consultationId`, `position`) USING BTREE,
+ADD KEY `texLayout` (`texTemplateId`);
 
 --
 -- Indexes for table `consultationOdtTemplate`
@@ -664,6 +682,13 @@ ADD KEY `site_admin_fk_userIdx` (`userId`),
 ADD KEY `site_admin_fk_siteIdx` (`siteId`);
 
 --
+-- Indexes for table `texTemplate`
+--
+ALTER TABLE `texTemplate`
+ADD PRIMARY KEY (`id`),
+ADD KEY `siteId` (`siteId`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -756,6 +781,11 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `site`
 MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `texTemplate`
+--
+ALTER TABLE `texTemplate`
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
@@ -836,7 +866,8 @@ ADD CONSTRAINT `consultationAgendaItem_ibfk_3` FOREIGN KEY (`motionTypeId`) REFE
 -- Constraints for table `consultationMotionType`
 --
 ALTER TABLE `consultationMotionType`
-ADD CONSTRAINT `consultationMotionType_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
+ADD CONSTRAINT `consultationMotionType_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`),
+ADD CONSTRAINT `consultationMotionType_ibfk_2` FOREIGN KEY (`texTemplateId`) REFERENCES `texTemplate` (`id`);
 
 --
 -- Constraints for table `consultationOdtTemplate`
@@ -984,6 +1015,12 @@ ADD CONSTRAINT `site_admin_fk_site` FOREIGN KEY (`siteId`) REFERENCES `site` (`i
 ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `texTemplate`
+--
+ALTER TABLE `texTemplate`
+ADD CONSTRAINT `texTemplate_ibfk_1` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`);
 
 --
 -- Constraints for table `user`

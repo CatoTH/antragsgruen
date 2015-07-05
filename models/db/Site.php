@@ -25,6 +25,7 @@ use yii\db\ActiveRecord;
  * @property Consultation[] $consultations
  * @property User[] $namespaceUsers
  * @property User[] $admins
+ * @property TexTemplate
  */
 class Site extends ActiveRecord
 {
@@ -50,6 +51,14 @@ class Site extends ActiveRecord
     public function getConsultations()
     {
         return $this->hasMany(Consultation::className(), ['siteId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTexTemplates()
+    {
+        return $this->hasMany(TexTemplate::className(), ['siteId' => 'id']);
     }
 
     /**

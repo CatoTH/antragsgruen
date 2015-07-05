@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
@@ -76,6 +77,26 @@ class MotionController extends Base
             return $this->renderPartial('pdf_tex', ['motion' => $motion]);
         } else {
             return $this->renderPartial('pdf_tcpdf', ['motion' => $motion]);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function actionPdfcollection()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+
+        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
+        if (count($motions) == 0) {
+            $this->showErrorpage(404, 'Es gibt noch keine Anträge');
+        }
+
+        if ($this->getParams()->xelatexPath) {
+            return $this->renderPartial('pdf_collection_tex', ['motions' => $motions]);
+        } else {
+            return $this->renderPartial('pdf_collection_tcpdf', ['motions' => $motions]);
         }
     }
 

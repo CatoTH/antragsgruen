@@ -2,7 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\LaTeXExporter;
+use app\components\latex\Exporter;
 use app\models\exceptions\FormError;
 use yii\helpers\Html;
 
@@ -112,7 +112,7 @@ class Title extends ISectionType
      */
     public function getMotionTeX()
     {
-        return LaTeXExporter::encodePlainString($this->section->data);
+        return Exporter::encodePlainString($this->section->data);
     }
 
     /**
@@ -120,7 +120,7 @@ class Title extends ISectionType
      */
     public function getAmendmentTeX()
     {
-        return LaTeXExporter::encodePlainString($this->section->data);
+        return Exporter::encodePlainString($this->section->data);
     }
 
 

@@ -28,6 +28,7 @@ DROP TABLE IF EXISTS `motionTag`;
 DROP TABLE IF EXISTS `consultationSettingsMotionSection`;
 DROP TABLE IF EXISTS `consultationMotionType`;
 DROP TABLE IF EXISTS `consultationSettingsTag`;
+DROP TABLE IF EXISTS `texTemplate`;
 
 DROP TABLE IF EXISTS `motionSection`;
 

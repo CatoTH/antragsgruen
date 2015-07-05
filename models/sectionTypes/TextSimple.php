@@ -5,7 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\Diff;
 use app\components\HTMLTools;
-use app\components\LaTeXExporter;
+use app\components\latex\Exporter;
 use app\components\LineSplitter;
 use app\controllers\Base;
 use app\models\db\AmendmentSection;
@@ -199,7 +199,7 @@ class TextSimple extends ISectionType
     public static function getMotionLinesToTeX($lines)
     {
         $str = implode('###LINEBREAK###', $lines);
-        $str = LaTeXExporter::encodeHTMLString($str);
+        $str = Exporter::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
         $str = str_replace('###FORCELINEBREAK###\linebreak', '\newline', $str);
@@ -218,7 +218,7 @@ class TextSimple extends ISectionType
 
         $hasLineNumbers = $section->consultationSetting->lineNumbers;
 
-        $title = LaTeXExporter::encodePlainString($section->consultationSetting->title);
+        $title = Exporter::encodePlainString($section->consultationSetting->title);
         $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
 
         if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {

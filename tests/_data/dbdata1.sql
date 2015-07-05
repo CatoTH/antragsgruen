@@ -11,7 +11,7 @@ INSERT INTO `amendment` (`id`, `motionId`, `titlePrefix`, `changeMetatext`, `cha
 VALUES
   (1, 2, 'Ä1', '', '',
    '<p>Auf gehds beim Schichtl pfiad de Charivari Wurschtsolod Gamsbart, Kneedl gwiss. Wos dringma aweng unbandig gfreit mi imma Habedehre, sei Sauwedda dringma aweng Maßkruag Schuabladdla! Do legst di nieda hob i an Suri wia Haferl Graudwiggal Klampfn Biakriagal i bin a woschechta Bayer ebba.</p>\n',
-   0, '', '2015-05-23 13:46:34', NULL, 3, '', NULL, 0);
+   0, '', '2015-05-23 11:46:34', NULL, 3, '', NULL, 0);
 
 --
 -- Dumping data for table `amendmentSection`
@@ -67,14 +67,14 @@ INSERT INTO `consultationAgendaItem` (`id`, `consultationId`, `parentItemId`, `p
 -- Dumping data for table `consultationMotionType`
 --
 
-INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `contactEmail`, `contactPhone`, `initiatorForm`, `initiatorFormSettings`)
+INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `texTemplateId`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `contactEmail`, `contactPhone`, `initiatorForm`, `initiatorFormSettings`)
 VALUES
-  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
-  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
-  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
-  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
-  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, NULL, NULL, 1, 0, 0, 0, 2, 1, 0, NULL),
-  (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, NULL, NULL, 2, 2, 2, 0, 2, 1, 1, '{"minSupporters":19,"supportersHaveOrganizations":true}');
+  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
+  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
+  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
+  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
+  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 2, 1, 0, NULL),
+  (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1, '{"minSupporters":19,"supportersHaveOrganizations":true}');
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`
@@ -118,9 +118,9 @@ INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `titl
 --
 
 INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateSent`, `subject`, `text`) VALUES
-  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-23 13:46:38', 'Neuer Antrag',
+  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-23 11:46:38', 'Neuer Antrag',
    'Es wurde ein neuer Änderungsantrag "Ä1 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/2/amendment/1'),
-  (2, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-06-26 13:03:55', 'Neuer Antrag',
+  (2, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-06-26 11:03:55', 'Neuer Antrag',
    'Es wurde ein neuer Antrag "Textformatierungen" eingereicht.\nLink: /std-parteitag/motion/3');
 
 --
@@ -129,8 +129,8 @@ INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateS
 
 INSERT INTO `motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `agendaItemId`, `title`, `titlePrefix`, `dateCreation`, `dateResolution`, `status`, `statusString`, `noteInternal`, `cache`, `textFixed`)
 VALUES
-  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-03 01:27:20', NULL, 3, NULL, NULL, '', 0),
-  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-26 13:03:49', NULL, 3, NULL, NULL, '', 0);
+  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-02 23:27:20', NULL, 3, NULL, NULL, '', 0),
+  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-26 11:03:49', NULL, 3, NULL, NULL, '', 0);
 
 --
 -- Dumping data for table `motionSection`
@@ -193,15 +193,24 @@ INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
   (4, 1);
 
 --
+-- Dumping data for table `texTemplate`
+--
+
+INSERT INTO `texTemplate` (`id`, `siteId`, `title`, `texLayout`, `texContent`) VALUES
+  (1, NULL, 'Standard (Grünes CI)',
+   '\\documentclass[paper=a4, 12pt, pagesize, parskip=half, DIV=calc]{scrartcl}\r\n\\usepackage[T1]{fontenc}\r\n\\usepackage{lmodern}\r\n\\usepackage[%LANGUAGE%]{babel}\r\n\\usepackage{fixltx2e}\r\n\\usepackage{lineno}\r\n\\usepackage{tabularx}\r\n\\usepackage{scrpage2}\r\n\\usepackage[normalem]{ulem}\r\n\\usepackage[right]{eurosym}\r\n\\usepackage{fontspec}\r\n\\usepackage{geometry}\r\n\\usepackage{lastpage}\r\n\r\n\\newfontfamily\\ArvoGruen[\r\n  Path=%ASSETROOT%Arvo/\r\n]{Arvo_Gruen_1004.otf}\r\n\\newfontfamily\\ArvoRegular[\r\n  Path=%ASSETROOT%Arvo/\r\n]{Arvo-Regular_v104.ttf}\r\n\\newfontfamily\\AntragsgruenSection[\r\n  Path=%ASSETROOT%Arvo/\r\n]{Arvo-Regular_v104.ttf}\r\n\\setmainfont[\r\n  Path=%ASSETROOT%PT-Sans/,\r\n  BoldFont=PTS75F.ttf,\r\n  ItalicFont=PTS56F.ttf,\r\n  BoldItalicFont=PTS76F.ttf\r\n]{PTS55F.ttf}\r\n\r\n\\title{%TITLEPREFIX% %TITLE%}\r\n\\author{%AUTHOR%}\r\n\\geometry{a4paper, portrait, top=10mm, left=20mm, right=15mm, bottom=25mm, includehead=true}\r\n\r\n\\pagestyle{scrheadings}\r\n\\clearscrheadfoot\r\n\\ohead{\\ArvoRegular \\footnotesize %TITLEPREFIX% %TITLE%}\r\n\\ifoot{\\ArvoRegular \\footnotesize Seite \\thepage\\ / \\pageref{LastPage}}\r\n\\setheadsepline{0.4pt}\r\n\\setfootsepline{0.4pt}\r\n\r\n\\begin{document}\r\n\r\n\\shorthandoff{"}\r\n\\sloppy\r\n\\hyphenpenalty=10000\r\n\\hbadness=10000\r\n\r\n%CONTENT%\r\n\r\n\\end{document}',
+   '\\thispagestyle{empty}\r\n\r\n\\vspace*{-25mm}\r\n\\begin{flushright}\r\n \\ArvoRegular\r\n \\small\r\n \\textbf{\\normalsize %INTRODUCTION_BIG%}\\\\\r\n %INTRODUCTION_SMALL%\r\n\\end{flushright}\r\n\r\n\\begin{tabularx}{\\textwidth}{|lX|}\r\n    \\cline{1-2}\r\n    \\ArvoGruen\r\n                                                            &                               \\\\\r\n    \\textbf{\\LARGE %TITLEPREFIX%} %TITLE%           &                               \\\\\r\n                                                            &                               \\\\\r\n    %MOTION_DATA_TABLE%\r\n                                                            &                               \\\\\r\n    \\cline{1-2}\r\n\\end{tabularx}\r\n\r\n\\section*{\\ArvoRegular %TITLE_LONG%}\r\n% \\raggedright\r\n\r\n%TEXT%\r\n');
+
+--
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`) VALUES
-  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 06:04:44', 0,
+  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 05:04:44', 0,
    'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy',
    0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
    NULL),
-  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 06:08:14', 0,
+  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 05:08:14', 0,
    'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV',
    0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
    NULL);

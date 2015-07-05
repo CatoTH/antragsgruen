@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property int $position
  * @property int $cssIcon
  * @property int $pdfLayout
+ * @property int $texTemplateId
  * @property string $deadlineMotions
  * @property string $deadlineAmendments
  * @property string $policyMotions
@@ -33,6 +34,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationSettingsMotionSection[] $motionSections
  * @property Motion[] $motions
  * @property ConsultationAgendaItem[] $agendaItems
+ * @property TexTemplate $texTemplate
  */
 class ConsultationMotionType extends ActiveRecord
 {
@@ -62,6 +64,14 @@ class ConsultationMotionType extends ActiveRecord
     public function getMotions()
     {
         return $this->hasMany(Motion::className(), ['motionTypeId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTexTemplate()
+    {
+        return $this->hasOne(TexTemplate::className(), ['id' => 'texTemplateId']);
     }
 
     /**

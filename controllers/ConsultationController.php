@@ -163,14 +163,6 @@ class ConsultationController extends Base
     /**
      *
      */
-    public function actionPdfs()
-    {
-        // @TODO
-    }
-
-    /**
-     *
-     */
     public function actionAmendmentpdfs()
     {
         // @TODO

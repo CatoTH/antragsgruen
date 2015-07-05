@@ -2,7 +2,7 @@
 
 namespace unit;
 
-use app\components\LaTeXExporter;
+use app\components\Exporter;
 use app\components\LineSplitter;
 use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
@@ -16,7 +16,7 @@ class HTML2TexTest extends TestBase
     {
         $orig     = '<p>Normaler Text <strong>fett</strong></p>';
         $expect = 'Normaler Text \textbf{fett}' . "\n";
-        $out    = LaTeXExporter::encodeHTMLString($orig);
+        $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
@@ -24,7 +24,7 @@ class HTML2TexTest extends TestBase
     {
         $orig     = '<p>Normaler Text <em>kursiv</em></p>';
         $expect = 'Normaler Text \emph{kursiv}' . "\n";
-        $out    = LaTeXExporter::encodeHTMLString($orig);
+        $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
@@ -32,12 +32,12 @@ class HTML2TexTest extends TestBase
     {
         $orig     = '<p>Normaler Text <span class="underline">unterstrichen</span></p>';
         $expect = 'Normaler Text \underline{unterstrichen}' . "\n";
-        $out    = LaTeXExporter::encodeHTMLString($orig);
+        $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
 
         $orig     = '<p>Normaler Text <u>unterstrichen</u></p>';
         $expect = 'Normaler Text \underline{unterstrichen}' . "\n";
-        $out    = LaTeXExporter::encodeHTMLString($orig);
+        $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
@@ -45,12 +45,12 @@ class HTML2TexTest extends TestBase
     {
         $orig     = '<p>Normaler Text <span class="strike">durchgestrichen</span></p>';
         $expect = 'Normaler Text \sout{durchgestrichen}' . "\n";
-        $out    = LaTeXExporter::encodeHTMLString($orig);
+        $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
 
         $orig     = '<p>Normaler Text <s>durchgestrichen</s></p>';
         $expect = 'Normaler Text \sout{durchgestrichen}' . "\n";
-        $out    = LaTeXExporter::encodeHTMLString($orig);
+        $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
@@ -60,7 +60,7 @@ class HTML2TexTest extends TestBase
         $expect = 'Normaler Text' . "\n";
         $expect .= '\begin{quotation}\noindent' . "\n" . 'Zitat\end{quotation}' . "\n";
         $expect .= 'Weiter' . "\n";
-        $out = LaTeXExporter::encodeHTMLString($orig);
+        $out = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
@@ -72,7 +72,7 @@ class HTML2TexTest extends TestBase
         $expect .= '\item Punkt 2' . "\n";
         $expect .= '\end{itemize}' . "\n";
 
-        $out = LaTeXExporter::encodeHTMLString($orig);
+        $out = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
@@ -82,7 +82,7 @@ class HTML2TexTest extends TestBase
         $orig     = 'Test <a href="https://www.antragsgruen.de/">Antragsgrün</a> Ende';
         $expect = 'Test \href{https://www.antragsgruen.de/}{Antragsgrün} Ende';
 
-        $out = LaTeXExporter::encodeHTMLString($orig);
+        $out = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
