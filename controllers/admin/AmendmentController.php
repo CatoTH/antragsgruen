@@ -37,4 +37,13 @@ class AmendmentController extends AdminBase
             'textCombined' => $textCombined,
         ]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionPdflist()
+    {
+        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
+        return $this->render('pdf_list', ['motions' => $motions]);
+    }
 }

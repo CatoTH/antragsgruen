@@ -4,7 +4,7 @@ use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var \app\models\AdminTodoItem[] $todo
  * @var \app\models\db\Site $site
  * @var \app\models\db\Consultation $consultation
