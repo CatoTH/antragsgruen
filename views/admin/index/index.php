@@ -81,30 +81,30 @@ echo '</li>
 //echo Html::a('Änderungsanträge', UrlHelper::createUrl('admin/aenderungsantraege'));
 echo '<h3>Änderungsanträge</h3>
 <ul>
-    <li>' . Html::a('Liste aller PDFs', UrlHelper::createUrl('admin/index/aePDFList')) . '</li>
+    <li>' . Html::a('Liste aller PDFs', UrlHelper::createUrl('admin/amendment/excellist')) . '</li>
     <li class="secondary"><a href="#ae_excel_export" onClick="$(\'#ae_excel_export\').toggle(); return false;">
     Export: Änderungsanträge als Excel-Datei</a>
             <ul id="ae_excel_export" style="display: none;">
                 <li>';
-echo Html::a('Änderungsantragstext und Begründung getrennt', UrlHelper::createUrl('admin/index/aeExcelList'));
+echo Html::a('Änderungsantragstext und Begründung getrennt', UrlHelper::createUrl('admin/amendment/excellist'));
 echo '</li><li>';
-$url = UrlHelper::createUrl(['admin/index/aeExcelList', 'text_begruendung_zusammen' => 1]);
+$url = UrlHelper::createUrl(['admin/amendment/excellist', 'textCombined' => 1]);
 echo Html::a('Änderungsantragstext und Begründung in einer Spalte', $url);
 echo '</li><li>';
-$url = UrlHelper::createUrl(['admin/index/aeExcelList', 'antraege_separat' => 1]);
+$url = UrlHelper::createUrl(['admin/amendment/excellist', 'textCombined' => 0]);
 echo Html::a('Texte getrennt, Antragsnummer als separate Spalte', $url);
 echo '</li>
             </ul>
         </li>
 
         <li class="secondary">
-            <a href="#ae_ods_export" onClick="$(\'#ae_ods_export\').toggle(); return false;">
+            <a href="#amendmentOdsExport" onClick="$(\'#amendmentOdsExport\').toggle(); return false;">
             Export: Anträge als Tabelle (OpenOffice)</a>
-            <ul id="ae_ods_export" style="display: none;">
+            <ul id="amendmentOdsExport" style="display: none;">
                 <li>';
-echo Html::a('Antragstext und Begründung getrennt', UrlHelper::createUrl('admin/index/aeOdsList'));
+echo Html::a('Antragstext und Begründung getrennt', UrlHelper::createUrl('admin/amendment/odslist'));
 echo '</li><li>';
-$url = UrlHelper::createUrl(['admin/index/aeOdsList', 'text_begruendung_zusammen' => 1]);
+$url = UrlHelper::createUrl(['admin/amendment/odslist', 'textCombined' => 1]);
 echo Html::a('Antragstext und Begründung in einer Spalte', $url);
 echo '</li>
      </ul>
