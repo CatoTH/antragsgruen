@@ -20,21 +20,35 @@ class Spreadsheet extends Base
     const FORMAT_LINK       = 7;
     const FORMAT_INDENTED   = 8;
 
+    public static $FORMAT_NAMES = [
+        0 => 'linebreak',
+        1 => 'bold',
+        2 => 'italic',
+        3 => 'underlined',
+        4 => 'strike',
+        5 => 'ins',
+        6 => 'del',
+        7 => 'link',
+        8 => 'indented',
+    ];
+
     /** @var \DOMDocument */
     protected $doc = null;
 
     /** @var \DOMElement */
-    private $domTable;
+    protected $domTable;
 
-    private $matrix           = [];
-    private $matrixRows       = 0;
-    private $matrixCols       = 0;
-    private $matrixColWidths  = [];
-    private $matrixRowHeights = [];
+    protected $matrix           = [];
+    protected $matrixRows       = 0;
+    protected $matrixCols       = 0;
+    protected $matrixColWidths  = [];
+    protected $matrixRowHeights = [];
 
-    private $rowNodes         = [];
-    private $cellNodeMatrix   = [];
-    private $cellStylesMatrix = [];
+    protected $rowNodes         = [];
+    protected $cellNodeMatrix   = [];
+    protected $cellStylesMatrix = [];
+
+    protected $classCache = [];
 
 
     /**
@@ -139,41 +153,10 @@ class Spreadsheet extends Base
     }
 
     /**
-     */
-    private function appendBaseStyles()
-    {
-        $this->appendTextStyleNode('AntragsgruenBold', [
-            'fo:font-weight'            => 'bold',
-            'style:font-weight-asian'   => 'bold',
-            'style:font-weight-complex' => 'bold',
-        ]);
-        $this->appendTextStyleNode('AntragsgruenItalic', [
-            'fo:font-style'            => 'italic',
-            'style:font-style-asian'   => 'italic',
-            'style:font-style-complex' => 'italic',
-        ]);
-        $this->appendTextStyleNode('AntragsgruenUnderlined', [
-            'style:text-underline-width' => 'auto',
-            'style:text-underline-color' => 'font-color',
-            'style:text-underline-style' => 'solid',
-        ]);
-        $this->appendTextStyleNode('AntragsgruenIns', [
-            'fo:color'                   => '#00ff00',
-            'style:text-underline-style' => 'solid',
-            'style:text-underline-width' => 'auto',
-            'style:text-underline-color' => 'font-color',
-        ]);
-        $this->appendTextStyleNode('AntragsgruenDel', [
-            'fo:color'                     => '#ff0000',
-            'style:text-line-through-type' => 'single',
-        ]);
-    }
-
-    /**
      * @return \DOMElement
      * @throws \Exception
      */
-    private function getCleanDomTable()
+    protected function getCleanDomTable()
     {
         $domTables = $this->doc->getElementsByTagNameNS(static::NS_TABLE, 'table');
         if ($domTables->length != 1) {
@@ -192,7 +175,7 @@ class Spreadsheet extends Base
 
     /**
      */
-    private function setColStyles()
+    protected function setColStyles()
     {
         for ($col = 0; $col <= $this->matrixCols; $col++) {
             $el = $this->doc->createElementNS(static::NS_TABLE, 'table-column');
@@ -209,7 +192,7 @@ class Spreadsheet extends Base
 
     /**
      */
-    private function setCellContent()
+    protected function setCellContent()
     {
         for ($row = 0; $row <= $this->matrixRows; $row++) {
             $this->cellNodeMatrix[$row] = [];
@@ -363,11 +346,19 @@ class Spreadsheet extends Base
      * @param array $currentFormats
      * @return array
      */
-    private function node2Formatting(\DOMElement $node, $currentFormats)
+    protected function node2Formatting(\DOMElement $node, $currentFormats)
     {
         switch ($node->nodeName) {
             case 'span':
-                // @TODO Formattings
+                if ($node->hasAttribute('class')) {
+                    $classes = explode(' ', $node->getAttribute('class'));
+                    if (in_array('underline', $classes)) {
+                        $currentFormats[] = static::FORMAT_UNDERLINED;
+                    }
+                    if (in_array('strike', $classes)) {
+                        $currentFormats[] = static::FORMAT_STRIKE;
+                    }
+                }
                 break;
             case 'b':
             case 'strong':
@@ -419,7 +410,7 @@ class Spreadsheet extends Base
      * @param array $currentFormats
      * @return array
      */
-    private function tokenizeFlattenHtml(\DOMNode $node, $currentFormats)
+    protected function tokenizeFlattenHtml(\DOMNode $node, $currentFormats)
     {
         $return = [];
         foreach ($node->childNodes as $child) {
@@ -451,6 +442,56 @@ class Spreadsheet extends Base
     }
 
     /**
+     * @param array $formats
+     * @return string
+     */
+    protected function getClassByFormats($formats)
+    {
+        sort($formats);
+        $key = implode('_', $formats);
+        if (!isset($this->classCache[$key])) {
+            $name   = 'Antragsgruen';
+            $styles = [];
+            foreach ($formats as $format) {
+                $name .= '_' . static::$FORMAT_NAMES[$format];
+                switch ($format) {
+                    case static::FORMAT_INS:
+                        $styles['fo:color']                   = '#00ff00';
+                        $styles['style:text-underline-style'] = 'solid';
+                        $styles['style:text-underline-width'] = 'auto';
+                        $styles['style:text-underline-color'] = 'font-color';
+                        break;
+                    case static::FORMAT_DEL:
+                        $styles['fo:color']                     = '#ff0000';
+                        $styles['style:text-line-through-type'] = 'single';
+                        break;
+                    case static::FORMAT_BOLD:
+                        $styles['fo:font-weight']            = 'bold';
+                        $styles['style:font-weight-asian']   = 'bold';
+                        $styles['style:font-weight-complex'] = 'bold';
+                        break;
+                    case static::FORMAT_UNDERLINED:
+                        $styles['style:text-underline-width'] = 'auto';
+                        $styles['style:text-underline-color'] = 'font-color';
+                        $styles['style:text-underline-style'] = 'solid';
+                        break;
+                    case static::FORMAT_STRIKE:
+                        $styles['style:text-line-through-type'] = 'single';
+                        break;
+                    case static::FORMAT_ITALIC:
+                        $styles['fo:font-style']            = 'italic';
+                        $styles['style:font-style-asian']   = 'italic';
+                        $styles['style:font-style-complex'] = 'italic';
+                        break;
+                }
+            }
+            $this->appendTextStyleNode($name, $styles);
+            $this->classCache[$key] = $name;
+        }
+        return $this->classCache[$key];
+    }
+
+    /**
      * @param string $html
      * @return array
      */
@@ -462,7 +503,11 @@ class Spreadsheet extends Base
         $currentP = $this->doc->createElementNS(static::NS_TEXT, 'p');
         foreach ($tokens as $token) {
             if (trim($token['text']) != '') {
-                $node     = $this->doc->createElement('text:span');
+                $node = $this->doc->createElement('text:span');
+                if (count($token['formattings']) > 0) {
+                    $className = $this->getClassByFormats($token['formattings']);
+                    $node->setAttribute('text:style-name', $className);
+                }
                 $textNode = $this->doc->createTextNode($token['text']);
                 $node->appendChild($textNode);
                 $currentP->appendChild($node);
@@ -484,7 +529,6 @@ class Spreadsheet extends Base
      */
     public function create()
     {
-        $this->appendBaseStyles();
         $this->getCleanDomTable();
         $this->setColStyles();
         $this->setCellContent();

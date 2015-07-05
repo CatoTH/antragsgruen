@@ -127,12 +127,7 @@ foreach ($motions as $motion) {
             $text .= $section->getSectionType()->getMotionODS();
             $text .= "\n\n";
         }
-        $splitter = new LineSplitter($text, 80);
-        $lines    = $splitter->splitLines();
-        if (count($lines) > $maxRows) {
-            $maxRows = count($lines);
-        }
-        $doc->setCell($row, $COL_TEXTS[0], Spreadsheet::TYPE_HTML, implode('<br>', $lines));
+        $doc->setCell($row, $COL_TEXTS[0], Spreadsheet::TYPE_HTML, $text);
     } else {
         foreach ($motionType->motionSections as $section) {
             $text = '';
@@ -152,6 +147,7 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_TAGS, Spreadsheet::TYPE_TEXT, implode("\n", $tags));
     }
 }
+
 
 $content = $doc->create();
 
