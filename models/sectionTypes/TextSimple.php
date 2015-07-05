@@ -267,6 +267,23 @@ class TextSimple extends ISectionType
      */
     public function getAmendmentODS()
     {
-        return $this->section->data;
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+        $diffGroups = $formatter->getInlineDiffGroupedLines();
+        $out = '';
+        foreach ($diffGroups as $diff) {
+            if ($diff['lineFrom'] == $diff['lineTo']) {
+                $out .= 'In Zeile ' . $diff['lineFrom'] . ':<br>';
+            } else {
+                $out .= 'Von Zeile ' . $diff['lineFrom'] . ' bis ' . $diff['lineTo'] . ':<br>';
+            }
+            if ($diff['text'][0] != '<') {
+                $out .= '<p>' . $diff['text'] . '</p>';
+            } else {
+                $out .= $diff['text'];
+            }
+        }
+        return static::formatDiffGroup($diffGroups);
     }
 }

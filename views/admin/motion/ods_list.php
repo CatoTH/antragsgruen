@@ -101,7 +101,6 @@ $row = 2;
 
 foreach ($motions as $motion) {
     $row++;
-    $maxRows = 1;
 
     $initiatorNames   = [];
     $initiatorContacs = [];

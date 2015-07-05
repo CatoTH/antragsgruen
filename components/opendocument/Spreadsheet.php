@@ -105,6 +105,19 @@ class Spreadsheet extends Base
 
     /**
      * @param int $row
+     */
+    protected function initRow($row)
+    {
+        if (!isset($this->matrix[$row])) {
+            $this->matrix[$row] = [];
+        }
+        if ($row > $this->matrixRows) {
+            $this->matrixRows = $row;
+        }
+    }
+
+    /**
+     * @param int $row
      * @param string $col
      * @param int $contentType
      * @param string $content
@@ -113,12 +126,7 @@ class Spreadsheet extends Base
      */
     public function setCell($row, $col, $contentType, $content, $cssClass = null, $styles = null)
     {
-        if (!isset($this->matrix[$row])) {
-            $this->matrix[$row] = [];
-        }
-        if ($row > $this->matrixRows) {
-            $this->matrixRows = $row;
-        }
+        $this->initRow($row);
         if ($col > $this->matrixCols) {
             $this->matrixCols = $col;
         }
@@ -145,6 +153,7 @@ class Spreadsheet extends Base
      */
     public function setMinRowHeight($row, $cm)
     {
+        $this->initRow($row);
         $rowHeight = (isset($this->matrixRowHeights[$row]) ? $this->matrixRowHeights[$row] : 1);
         if ($cm > $rowHeight) {
             $rowHeight = $cm;
@@ -201,35 +210,42 @@ class Spreadsheet extends Base
                 $this->cellNodeMatrix[$row][$col] = [];
                 $currentCell                      = $this->doc->createElementNS(static::NS_TABLE, 'table-cell');
                 if (isset($this->matrix[$row][$col])) {
-                    switch ($this->matrix[$row][$col]["type"]) {
+                    $cell = $this->matrix[$row][$col];
+                    switch ($cell["type"]) {
                         case static::TYPE_TEXT:
                             $p              = $this->doc->createElementNS(static::NS_TEXT, 'p');
-                            $p->textContent = $this->matrix[$row][$col]['content'];
+                            $p->textContent = $cell['content'];
                             $currentCell->appendChild($p);
                             break;
                         case static::TYPE_NUMBER:
                             $p              = $this->doc->createElementNS(static::NS_TEXT, 'p');
-                            $p->textContent = $this->matrix[$row][$col]['content'];
+                            $p->textContent = $cell['content'];
                             $currentCell->appendChild($p);
                             $currentCell->setAttribute('calctext:value-type', 'float');
                             $currentCell->setAttribute('office:value-type', 'float');
-                            $currentCell->setAttribute('office:value', (string)$this->matrix[$row][$col]['content']);
+                            $currentCell->setAttribute('office:value', (string)$cell['content']);
                             break;
                         case static::TYPE_HTML:
-                            $nodes = $this->html2OdsNodes($this->matrix[$row][$col]['content']);
+                            $nodes = $this->html2OdsNodes($cell['content']);
                             foreach ($nodes as $node) {
                                 $currentCell->appendChild($node);
                             }
 
                             //$this->setMinRowHeight($row, count($ps));
+                            $styles = $cell['styles'];
+                            if (isset($styles['fo:wrap-option']) && $styles['fo:wrap-option'] == 'no-wrap') {
+                                $wrap   = 'no-wrap';
+                                $height = 1;
+                            } else {
+                                $wrap   = 'wrap';
+                                $width  = (isset($this->matrixColWidths[$col]) ? $this->matrixColWidths[$col] : 2);
+                                $height = (mb_strlen(strip_tags($this->matrix[$row][$col]['content'])) / ($width * 6));
+                            }
                             $this->setCellStyle($row, $col, [
-                                'fo:wrap-option' => 'wrap',
+                                'fo:wrap-option' => $wrap,
                             ], [
                                 'fo:hyphenate' => 'true',
                             ]);
-
-                            $width  = (isset($this->matrixColWidths[$col]) ? $this->matrixColWidths[$col] : 2);
-                            $height = (mb_strlen(strip_tags($this->matrix[$row][$col]['content'])) / ($width * 6));
                             $this->setMinRowHeight($row, $height);
                             break;
                     }
@@ -358,6 +374,18 @@ class Spreadsheet extends Base
                     if (in_array('strike', $classes)) {
                         $currentFormats[] = static::FORMAT_STRIKE;
                     }
+                    if (in_array('ins', $classes)) {
+                        $currentFormats[] = static::FORMAT_INS;
+                    }
+                    if (in_array('inserted', $classes)) {
+                        $currentFormats[] = static::FORMAT_INS;
+                    }
+                    if (in_array('del', $classes)) {
+                        $currentFormats[] = static::FORMAT_DEL;
+                    }
+                    if (in_array('deleted', $classes)) {
+                        $currentFormats[] = static::FORMAT_DEL;
+                    }
                 }
                 break;
             case 'b':
@@ -379,7 +407,22 @@ class Spreadsheet extends Base
                 break;
             case 'ul':
             case 'ol':
-                $currentFormats[] = static::FORMAT_INDENTED;
+                if ($node->hasAttribute('class')) {
+                    $classes          = explode(' ', $node->getAttribute('class'));
+                    $currentFormats[] = static::FORMAT_INDENTED;
+                    if (in_array('ins', $classes)) {
+                        $currentFormats[] = static::FORMAT_INS;
+                    }
+                    if (in_array('inserted', $classes)) {
+                        $currentFormats[] = static::FORMAT_INS;
+                    }
+                    if (in_array('del', $classes)) {
+                        $currentFormats[] = static::FORMAT_DEL;
+                    }
+                    if (in_array('deleted', $classes)) {
+                        $currentFormats[] = static::FORMAT_DEL;
+                    }
+                }
                 break;
             case 'li':
                 break;

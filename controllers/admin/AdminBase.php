@@ -18,7 +18,7 @@ class AdminBase extends Base
             return false;
         }
 
-        if (YII_ENV === 'test' && in_array($action->id, ['excellist'])) {
+        if (YII_ENV === 'test' && in_array($action->id, ['excellist', 'odslist'])) {
             // Donwloading files is done by curl, not by phantomjs.
             // Therefore the session is lost when downloading in the test environment
             return true;

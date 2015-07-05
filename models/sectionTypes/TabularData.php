@@ -257,4 +257,20 @@ class TabularData extends ISectionType
     {
         return 'Test'; //  @TODO
     }
+
+    /**
+     * @return string
+     */
+    public function getMotionODS()
+    {
+        return 'Test'; //  @TODO
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentODS()
+    {
+        return 'Test'; //  @TODO
+    }
 }

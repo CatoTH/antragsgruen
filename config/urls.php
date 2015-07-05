@@ -16,7 +16,7 @@ $motionPaths         = 'create|createconfirm|edit|pdf|odt|plainhtml|mergeamendme
 $userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|unsubscribe';
 $domPlainPaths       = 'legal|privacy|help|password|billing|createsite';
 $adminMotionPaths    = 'index|update|type|listall|excellist|odslist';
-$adminAmendmentPaths = 'index|update|excellist|odslist';
+$adminAmendmentPaths = 'index|update|excellist|odslist|pdflist';
 
 $url_rules = [
     $domadmin . ''                                              => 'admin/index',

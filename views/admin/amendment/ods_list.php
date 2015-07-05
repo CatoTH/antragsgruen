@@ -2,6 +2,7 @@
 
 use app\models\db\Motion;
 use \app\components\opendocument\Spreadsheet;
+use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
@@ -36,7 +37,6 @@ $currCol = $firstCol = 1;
 $COL_PREFIX     = $currCol++;
 $COL_INITIATOR  = $currCol++;
 $COL_FIRST_LINE = $currCol++;
-$COL_TITLE      = $currCol++;
 $COL_CHANGE     = $currCol++;
 $COL_REASON     = $currCol++;
 $COL_CONTACT    = $currCol++;
@@ -64,9 +64,6 @@ $doc->setColumnWidth($COL_INITIATOR, 6);
 $doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, 'Zeile');
 $doc->setColumnWidth($COL_FIRST_LINE, 3);
 
-$doc->setCell(2, $COL_TITLE, Spreadsheet::TYPE_TEXT, 'Titel');
-$doc->setColumnWidth($COL_TITLE, 6);
-
 $doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, 'Änderung');
 $doc->setColumnWidth($COL_CHANGE, 10);
 
@@ -82,59 +79,62 @@ $doc->setColumnWidth($COL_PROCEDURE, 6);
 $doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
 
 
-/*
-// Motions
+// Amendments
 
-$row = 2;
+$row = 3;
 
 foreach ($motions as $motion) {
-    $row++;
-    $maxRows = 1;
+    $doc->setMinRowHeight($row, 2);
 
-    $initiatorNames   = [];
-    $initiatorContacs = [];
+    $row++;
+    $maxRows        = 1;
+    $firstMotionRow = $row;
+
+    $initiatorNames = [];
     foreach ($motion->getInitiators() as $supp) {
         $initiatorNames[] = $supp->getNameWithResolutionDate(false);
-        if ($supp->contactEmail != '') {
-            $initiatorContacs[] = $supp->contactEmail;
-        }
-        if ($supp->contactPhone != '') {
-            $initiatorContacs[] = $supp->contactPhone;
-        }
     }
 
-    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
-    $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
-    $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacs));
+    $title = '<strong>' . $motion->getTitleWithPrefix() . '</strong>';
+    $title .= ' (von: ' . Html::encode(implode(', ', $initiatorNames)) . ')';
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
 
-    if ($textCombined) {
-        $text = '';
-        foreach ($motion->getSortedSections(true) as $section) {
-            $text .= $section->consultationSetting->title . "\n\n";
-            $text .= $section->getSectionType()->getMotionODS();
-            $text .= "\n\n";
+    foreach ($motion->amendments as $amendment) {
+        if (in_array($amendment->status, $consultation->getInvisibleAmendmentStati())) {
+            continue;
         }
-        $doc->setCell($row, $COL_TEXTS[0], Spreadsheet::TYPE_HTML, $text);
-    } else {
-        foreach ($motionType->motionSections as $section) {
-            $text = '';
-            foreach ($motion->sections as $sect) {
-                if ($sect->sectionId == $section->id) {
-                    $text = $sect->getSectionType()->getMotionODS();
-                }
+        $row++;
+
+        $initiatorNames   = [];
+        $initiatorContacs = [];
+        foreach ($amendment->getInitiators() as $supp) {
+            $initiatorNames[] = $supp->getNameWithResolutionDate(false);
+            if ($supp->contactEmail != '') {
+                $initiatorContacs[] = $supp->contactEmail;
             }
-            $doc->setCell($row, $COL_TEXTS[$section->id], Spreadsheet::TYPE_HTML, $text);
+            if ($supp->contactPhone != '') {
+                $initiatorContacs[] = $supp->contactPhone;
+            }
         }
-    }
-    if (isset($COL_TAGS)) {
-        $tags = [];
-        foreach ($motion->tags as $tag) {
-            $tags[] = $tag->title;
+        $firstLine = $amendment->getFirstAffectedLineOfParagraphAbsolute();
+
+        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
+        $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
+        $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorContacs));
+        $doc->setCell($row, $COL_FIRST_LINE, Spreadsheet::TYPE_NUMBER, $firstLine);
+        $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $amendment->changeExplanation);
+
+        $change = '';
+        foreach ($amendment->getSortedSections(true) as $section) {
+            $change .= $section->getSectionType()->getAmendmentODS();
         }
-        $doc->setCell($row, $COL_TAGS, Spreadsheet::TYPE_TEXT, implode("\n", $tags));
+        $doc->setCell($row, $COL_CHANGE, Spreadsheet::TYPE_HTML, $change);
     }
+
+    $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
+    $row++;
 }
-*/
+
 
 $content = $doc->create();
 
