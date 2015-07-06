@@ -2,7 +2,7 @@
 
 namespace unit;
 
-use app\components\Exporter;
+use app\components\Latex\Exporter;
 use app\components\LineSplitter;
 use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;

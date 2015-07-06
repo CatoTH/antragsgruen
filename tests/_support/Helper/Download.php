@@ -37,7 +37,7 @@ class Download extends \Codeception\Module
         $info = curl_getinfo($handle);
         curl_close($handle);
         if ($info['http_code'] != 200) {
-            throw new \Exception('File not found: ' . $info['http_code']);
+            throw new \Exception('File not found: ' . $info['http_code'] . ' / ' . $url);
         }
         return $data;
     }
