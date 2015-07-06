@@ -234,12 +234,6 @@ class Exporter
         }
         $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
 
-        if (YII_ENV_DEV && isset($_REQUEST['latex_src'])) {
-            Header('Content-Type: text/plain');
-            echo $str;
-            die();
-        }
-
         $filenameBase = $app->tmpDir . uniqid('motion-pdf');
         file_put_contents($filenameBase . '.tex', $str);
 
@@ -250,6 +244,13 @@ class Exporter
             $cmd .= ' -output-driver="' . $app->xdvipdfmx . '"';
         }
         $cmd .= ' "' . $filenameBase . '.tex"';
+
+        if (YII_ENV_DEV && isset($_REQUEST['latex_src'])) {
+            Header('Content-Type: text/plain');
+            echo $str;
+            echo "\n\n%" . $cmd;
+            die();
+        }
 
         shell_exec($cmd);
         shell_exec($cmd); // Do it twice, to get the LastPage-reference right

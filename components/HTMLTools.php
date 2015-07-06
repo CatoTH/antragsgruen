@@ -14,8 +14,8 @@ class HTMLTools
      */
     public static function cleanTrustedHtml($html)
     {
-        $html = str_replace(chr(194) . chr(160), ' ', $html);
-        // @TODO
+        $html = str_replace(chr(194) . chr(160), ' ', $html); // Long space
+        $html = str_replace(chr(0xef) . chr(0xbb) . chr(0xbf), '', $html); // Byte order Mark
         return $html;
     }
 
@@ -26,7 +26,7 @@ class HTMLTools
      */
     public static function cleanUntrustedHtml($html)
     {
-        $html = str_replace(chr(194) . chr(160), ' ', $html);
+        $html = static::cleanTrustedHtml($html);
         $html = str_replace("\r", '', $html);
         // @TODO
         return $html;
@@ -39,8 +39,8 @@ class HTMLTools
      */
     public static function cleanSimpleHtml($html)
     {
-        $html = str_replace(chr(194) . chr(160), " ", $html);
-        $html = str_replace("\r", "", $html);
+        $html = static::cleanTrustedHtml($html);
+        $html = str_replace("\r", '', $html);
 
         $html = HtmlPurifier::process(
             $html,
