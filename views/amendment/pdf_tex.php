@@ -21,11 +21,12 @@ $layout->template = $texTemplate->texLayout;
 $layout->author   = $amendment->getInitiatorsStr();
 $layout->title    = $amendment->getTitle();
 
-$content = $amendment->getTexContent();
 /** @var AntragsgruenApp $params */
 $params = \yii::$app->params;
 try {
+    $content = $amendment->getTexContent();
     echo Exporter::createPDF($layout, [$content], $params);
 } catch (\Exception $e) {
     echo 'Ein Fehler trat auf: ' . Html::encode($e);
+    die();
 }

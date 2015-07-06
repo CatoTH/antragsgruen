@@ -49,7 +49,17 @@ class Exporter
                 /** @var \DOMNode $child */
                 $content .= static::encodeHTMLNode($child);
             }
+
+            /** @var \DOMElement $node */
+            if ($node->hasAttribute('class')) {
+                $classes = explode(' ', $node->getAttribute('class'));
+            } else {
+                $classes = [];
+            }
+
             switch ($node->nodeName) {
+                case 'br':
+                    return '\newline' . "\n";
                 case 'p':
                     return $content . "\n";
                 case 'strong':
@@ -65,35 +75,71 @@ class Exporter
                 case 'blockquote':
                     return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
+                    if (in_array('ins', $classes)) {
+                        $content = '\color{Insert}{' . $content . '}';
+                    }
+                    if (in_array('inserted', $classes)) {
+                        $content = '\color{Insert}{' . $content . '}';
+                    }
+                    if (in_array('del', $classes)) {
+                        $content = '\color{Delete}{' . $content . '}';
+                    }
+                    if (in_array('deleted', $classes)) {
+                        $content = '\color{Delete}{' . $content . '}';
+                    }
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
-                    /** @var \DOMElement $node */
                     $firstLine = '';
                     if ($node->hasAttribute('start')) {
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
+                    }
+                    if (in_array('ins', $classes)) {
+                        $content = '\color{Insert}{' . $content . '}';
+                    }
+                    if (in_array('inserted', $classes)) {
+                        $content = '\color{Insert}{' . $content . '}';
+                    }
+                    if (in_array('del', $classes)) {
+                        $content = '\color{Delete}{' . $content . '}';
+                    }
+                    if (in_array('deleted', $classes)) {
+                        $content = '\color{Delete}{' . $content . '}';
                     }
                     return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
                     return '\item ' . $content . "\n";
                 case 'a':
-                    /** @var \DOMElement $node */
                     if ($node->hasAttribute('href')) {
                         $content = '\href{' . $node->getAttribute('href') . '}{' . $content . '}';
                     }
                     return $content;
                 case 'span':
-                    /** @var \DOMElement $node */
-                    if (!$node->hasAttribute('class')) {
+                    if (count($classes) == 0) {
                         return $content;
                     }
-                    $classes = explode(' ', $node->getAttribute('class'));
                     if (in_array('underline', $classes)) {
                         $content = '\underline{' . $content . '}';
                     }
                     if (in_array('strike', $classes)) {
                         $content = '\sout{' . $content . '}';
                     }
+                    if (in_array('ins', $classes)) {
+                        $content = '\color{Insert}{' . $content . '}';
+                    }
+                    if (in_array('inserted', $classes)) {
+                        $content = '\color{Insert}{' . $content . '}';
+                    }
+                    if (in_array('del', $classes)) {
+                        $content = '\color{Delete}{' . $content . '}';
+                    }
+                    if (in_array('deleted', $classes)) {
+                        $content = '\color{Delete}{' . $content . '}';
+                    }
                     return $content;
+                case 'del':
+                    return '\color{Delete}{' . $content . '}';
+                case 'ins':
+                    return '\color{Insert}{' . $content . '}';
                 default:
                     //return $content;
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
@@ -178,13 +224,13 @@ class Exporter
         }
         $layoutStr  = static::createLayoutString($layout);
         $contentStr = '';
-        $i          = 0;
+        $count      = 0;
         foreach ($contents as $content) {
-            if ($i > 0) {
+            if ($count > 0) {
                 $contentStr .= "\n\\newpage\n";
             }
             $contentStr .= static::createContentString($content);
-            $i++;
+            $count++;
         }
         $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
 

@@ -153,14 +153,15 @@ class TextSimple extends ISectionType
 
     /**
      * @param array $diffGroups
+     * @param string $wrapStart
+     * @param string $wrapEnd
      * @return string
      */
-    public static function formatDiffGroup($diffGroups)
+    public static function formatDiffGroup($diffGroups, $wrapStart = '', $wrapEnd = '')
     {
         $out = '';
         foreach ($diffGroups as $diff) {
-            $out .= '<section class="paragraph">';
-            $out .= '<div class="text">';
+            $out .= $wrapStart;
             if ($diff['lineFrom'] == $diff['lineTo']) {
                 $out .= 'In Zeile ' . $diff['lineFrom'] . ':<br>';
             } else {
@@ -171,7 +172,7 @@ class TextSimple extends ISectionType
             } else {
                 $out .= $diff['text'];
             }
-            $out .= '</div></section>';
+            $out .= $wrapEnd;
         }
         return $out;
     }
@@ -262,9 +263,8 @@ class TextSimple extends ISectionType
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->consultationSetting->title);
             $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-
-            //echo \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
-
+            $html = \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
+            $tex .= Exporter::encodeHTMLString($html);
         }
 
         return $tex;
@@ -287,19 +287,6 @@ class TextSimple extends ISectionType
         $section    = $this->section;
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getInlineDiffGroupedLines();
-        $out        = '';
-        foreach ($diffGroups as $diff) {
-            if ($diff['lineFrom'] == $diff['lineTo']) {
-                $out .= 'In Zeile ' . $diff['lineFrom'] . ':<br>';
-            } else {
-                $out .= 'Von Zeile ' . $diff['lineFrom'] . ' bis ' . $diff['lineTo'] . ':<br>';
-            }
-            if ($diff['text'][0] != '<') {
-                $out .= '<p>' . $diff['text'] . '</p>';
-            } else {
-                $out .= $diff['text'];
-            }
-        }
         return static::formatDiffGroup($diffGroups);
     }
 }

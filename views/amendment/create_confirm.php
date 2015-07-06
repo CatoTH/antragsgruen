@@ -15,7 +15,7 @@ use yii\helpers\Html;
  */
 
 $controller = $this->context;
-$params = $controller->layoutParams;
+$params     = $controller->layoutParams;
 
 $this->title = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
 
@@ -37,7 +37,10 @@ foreach ($sections as $section) {
             echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
             echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
             echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
-            echo \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
+            $wrapStart = '<section class="paragraph"><div class="text">';
+            $wrapEnd   = '</section>';
+            $html      = \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd);
+            echo str_replace('###FORCELINEBREAK###', '<br>', $html);
             echo '</div>';
             echo '</section>';
         }

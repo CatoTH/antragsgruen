@@ -103,7 +103,10 @@ foreach ($sections as $section) {
             echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
             echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
             echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
-            echo \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
+            $wrapStart = '<section class="paragraph"><div class="text">';
+            $wrapEnd   = '</section>';
+            $html      = \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd);
+            echo str_replace('###FORCELINEBREAK###', '<br>', $html);
             echo '</div>';
             echo '</section>';
         }
@@ -124,7 +127,7 @@ if ($amendment->changeExplanation != '') {
 if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
-    $form = $commentForm;
+    $form    = $commentForm;
     $imadmin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {

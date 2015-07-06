@@ -69,9 +69,7 @@ class AmendmentSectionFormatter
         $strPost    = '';
         foreach ($this->section->getTextParagraphs() as $para) {
             $linesOut = LineSplitter::motionPara2lines($para, false, $lineLength);
-            $lines = implode(' ', $linesOut) . "\n";
-            $lines = str_replace('###FORCELINEBREAK### ', '<br>', $lines);
-            $strPost .= $lines;
+            $strPost .= implode(' ', $linesOut) . "\n";
         }
 
         $diff = new Diff();
