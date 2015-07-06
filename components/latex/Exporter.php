@@ -69,23 +69,23 @@ class Exporter
                 case 'i':
                     return '\emph{' . $content . '}';
                 case 'u':
-                    return '\underline{' . $content . '}';
+                    return '\uline{' . $content . '}';
                 case 's':
                     return '\sout{' . $content . '}';
                 case 'blockquote':
                     return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
                     if (in_array('ins', $classes)) {
-                        $content = '\color{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('inserted', $classes)) {
-                        $content = '\color{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('del', $classes)) {
-                        $content = '\color{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{' . $content . '}';
                     }
                     if (in_array('deleted', $classes)) {
-                        $content = '\color{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{' . $content . '}';
                     }
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
@@ -94,16 +94,16 @@ class Exporter
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
                     }
                     if (in_array('ins', $classes)) {
-                        $content = '\color{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('inserted', $classes)) {
-                        $content = '\color{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('del', $classes)) {
-                        $content = '\color{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{' . $content . '}';
                     }
                     if (in_array('deleted', $classes)) {
-                        $content = '\color{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{' . $content . '}';
                     }
                     return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
@@ -118,28 +118,28 @@ class Exporter
                         return $content;
                     }
                     if (in_array('underline', $classes)) {
-                        $content = '\underline{' . $content . '}';
+                        $content = '\uline{' . $content . '}';
                     }
                     if (in_array('strike', $classes)) {
                         $content = '\sout{' . $content . '}';
                     }
                     if (in_array('ins', $classes)) {
-                        $content = '\color{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('inserted', $classes)) {
-                        $content = '\color{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('del', $classes)) {
-                        $content = '\color{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{' . $content . '}';
                     }
                     if (in_array('deleted', $classes)) {
-                        $content = '\color{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{' . $content . '}';
                     }
                     return $content;
                 case 'del':
-                    return '\color{Delete}{' . $content . '}';
+                    return '\textcolor{Delete}{' . $content . '}';
                 case 'ins':
-                    return '\color{Insert}{' . $content . '}';
+                    return '\textcolor{Insert}{' . $content . '}';
                 default:
                     //return $content;
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
@@ -168,6 +168,8 @@ class Exporter
             $child = $body->childNodes->item($i);
             $out .= static::encodeHTMLNode($child);
         }
+
+        $out = str_replace('###FORCELINEBREAK###', "\n\\\\\n", $out);
 
         return $out;
     }
