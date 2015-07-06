@@ -127,7 +127,7 @@ $I->see('Ä2', 'section.amendments ul.amendments');
 
 
 $I->wantTo('open the amenmdent page');
-$I->click('section.amendments ul.amendments a.amendment2');
+$I->click('section.amendments ul.amendments a.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 $I->see(mb_strtoupper('Ä2 zu A2: O’ZAPFT IS!'), 'h1');
 $I->see('My name', '.motionDataTable');

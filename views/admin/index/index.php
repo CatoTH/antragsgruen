@@ -84,7 +84,7 @@ $amendmentPDFLink = UrlHelper::createUrl('admin/amendment/pdflist');
 echo '<h3>Änderungsanträge</h3>
 <ul>
     <li>' .
-    Html::a('Sammel-PDF', UrlHelper::createUrl('consultation/amendmentpdfs'), ['class' => 'amendmentsPdf']) .
+    Html::a('Sammel-PDF', UrlHelper::createUrl('amendment/pdfcollection'), ['class' => 'amendmentsPdf']) .
     '</li>
     <li class="secondary">' . Html::a('Liste aller PDFs', $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '</li>
         <li>' .

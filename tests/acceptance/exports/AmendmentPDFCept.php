@@ -25,11 +25,17 @@ if (strlen($pdf) == 0) {
 }
 
 
-$I->wantTo('test amendment PDF compilation');
+$I->wantTo('test amendment PDF compilation from home page');
 $I->gotoStdConsultationHome();
-$scenario->incomplete('Not implemented yet');
-
 $pdf = $I->downloadLink('#sidebar .amendmentPdfs');
+if (strlen($pdf) == 0) {
+    $I->fail('PDF has no content');
+}
+
+
+$I->wantTo('test amendment PDF compilation from the admin interface');
+$I->gotoStdAdminPage();
+$pdf = $I->downloadLink('.amendmentsPdf');
 if (strlen($pdf) == 0) {
     $I->fail('PDF has no content');
 }

@@ -228,7 +228,7 @@ if ($hasPDF) {
     $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
     if ($hasAmendments) {
-        $amendmentPdfLink = UrlHelper::createUrl('consultation/amendmentpdfs');
+        $amendmentPdfLink = UrlHelper::createUrl('amendment/pdfcollection');
         $linkTitle        = '<span class="glyphicon glyphicon-download-alt"></span>';
         $linkTitle .= Yii::t('con', 'Alle Änderungsanträge gesammelt');
         $html .= '<li>' . Html::a($linkTitle, $amendmentPdfLink, ['class' => 'amendmentPdfs']) . '</li>';

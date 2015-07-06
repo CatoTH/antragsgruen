@@ -44,6 +44,7 @@ $url_rules = [
 
     $domv . '<_a:(' . $consultationPaths . ')>'                 => 'consultation/<_a>',
     $domv . 'motion/pdfcollection'                              => 'motion/pdfcollection',
+    $domv . 'amendment/pdfcollection'                           => 'amendment/pdfcollection',
     $dommotion                                                  => 'motion/view',
     $dommotion . '/<_a:(' . $motionPaths . ')>'                 => 'motion/<_a>',
     $domamend                                                   => 'amendment/view',

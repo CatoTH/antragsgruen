@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -26,7 +27,7 @@ class AmendmentController extends Base
     {
         $this->testMaintainanceMode();
 
-        $motion = $this->consultation->getMotion($motionId);
+        $motion    = $this->consultation->getMotion($motionId);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
             $this->redirect(UrlHelper::createUrl("consultation/index"));
@@ -43,6 +44,35 @@ class AmendmentController extends Base
         }
     }
 
+    /**
+     * @return string
+     */
+    public function actionPdfcollection()
+    {
+        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
+        if (count($motions) == 0) {
+            $this->showErrorpage(404, 'Es gibt noch keine Anträge');
+        }
+        $amendments = [];
+        foreach ($motions as $motion) {
+            foreach ($motion->amendments as $amendment) {
+                if (!in_array($amendment->status, $this->consultation->getInvisibleAmendmentStati())) {
+                    $amendments[] = $amendment;
+                }
+            }
+        }
+        if (count($amendments) == 0) {
+            $this->showErrorpage(404, 'Es gibt noch keine Änderungsanträge');
+        }
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        if ($this->getParams()->xelatexPath) {
+            return $this->renderPartial('pdf_collection_tex', ['amendments' => $amendments]);
+        } else {
+            return $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]); // @TODO
+        }
+    }
 
     /**
      * @param int $motionId
@@ -54,7 +84,7 @@ class AmendmentController extends Base
     {
         $this->testMaintainanceMode();
 
-        $motion = $this->consultation->getMotion($motionId);
+        $motion    = $this->consultation->getMotion($motionId);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
             $this->redirect(UrlHelper::createUrl("consultation/index"));
@@ -208,17 +238,17 @@ class AmendmentController extends Base
         }
 
         $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
-        $form = new AmendmentEditForm($amendment->motion, $amendment);
+        $form     = new AmendmentEditForm($amendment->motion, $amendment);
 
         if (isset($_POST['save'])) {
             $form->setAttributes([$_POST, $_FILES]);
             try {
                 $form->saveAmendment($amendment);
-                $nextUrl  = [
+                $nextUrl = [
                     'amendment/createconfirm',
-                    'motionId' => $amendment->motionId,
+                    'motionId'    => $amendment->motionId,
                     'amendmentId' => $amendment->id,
-                    'fromMode' => $fromMode
+                    'fromMode'    => $fromMode
                 ];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';

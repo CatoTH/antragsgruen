@@ -85,18 +85,17 @@ class MotionController extends Base
      */
     public function actionPdfcollection()
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
-
         $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
         if (count($motions) == 0) {
             $this->showErrorpage(404, 'Es gibt noch keine Anträge');
         }
 
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
         if ($this->getParams()->xelatexPath) {
             return $this->renderPartial('pdf_collection_tex', ['motions' => $motions]);
         } else {
-            return $this->renderPartial('pdf_collection_tcpdf', ['motions' => $motions]);
+            return $this->renderPartial('pdf_collection_tcpdf', ['motions' => $motions]); // @TODO
         }
     }
 
