@@ -251,7 +251,23 @@ class TextSimple extends ISectionType
      */
     public function getAmendmentTeX()
     {
-        return 'Test'; //  @TODO
+        $tex = '';
+
+        /** var AmendmentSection $section */
+        $section = $this->section;
+
+        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+        $diffGroups = $formatter->getInlineDiffGroupedLines();
+
+        if (count($diffGroups) > 0) {
+            $title = Exporter::encodePlainString($section->consultationSetting->title);
+            $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+
+            //echo \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
+
+        }
+
+        return $tex;
     }
 
     /**
@@ -268,10 +284,10 @@ class TextSimple extends ISectionType
     public function getAmendmentODS()
     {
         /** @var AmendmentSection $section */
-        $section = $this->section;
+        $section    = $this->section;
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getInlineDiffGroupedLines();
-        $out = '';
+        $out        = '';
         foreach ($diffGroups as $diff) {
             if ($diff['lineFrom'] == $diff['lineTo']) {
                 $out .= 'In Zeile ' . $diff['lineFrom'] . ':<br>';

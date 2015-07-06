@@ -1,10 +1,10 @@
 <?php
 
+use app\models\db\Amendment;
+
 /**
  * @var Amendment $amendment
  */
-
-use app\models\db\Amendment;
 
 $pdfLayout = $amendment->motion->motionType->getPDFLayoutClass();
 $pdf       = $pdfLayout->createPDFClass();

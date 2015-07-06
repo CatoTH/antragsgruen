@@ -11,6 +11,7 @@ use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
+use yii\web\Response;
 
 class AmendmentController extends Base
 {
@@ -32,7 +33,14 @@ class AmendmentController extends Base
         }
         $this->checkConsistency($motion, $amendment);
 
-        return $this->renderPartial('pdf', ['amendment' => $amendment]);
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+
+        if ($this->getParams()->xelatexPath) {
+            return $this->renderPartial('pdf_tex', ['amendment' => $amendment]);
+        } else {
+            return $this->renderPartial('pdf_tcpdf', ['amendment' => $amendment]);
+        }
     }
 
 
