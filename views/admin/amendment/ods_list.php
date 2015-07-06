@@ -135,9 +135,16 @@ foreach ($motions as $motion) {
     $row++;
 }
 
-
-$content = $doc->create();
-
+try {
+    $content = $doc->create();
+} catch (\Exception $e) {
+    if (in_array(YII_ENV, ['dev', 'test'])) {
+        var_dump($e);
+    } else {
+        echo 'Leider ist ein interner Fehler aufgetreten.';
+    }
+    die();
+}
 if ($DEBUG) {
     $doc->debugOutput();
 }

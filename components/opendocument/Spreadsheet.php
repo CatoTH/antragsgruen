@@ -496,6 +496,9 @@ class Spreadsheet extends Base
             $name   = 'Antragsgruen';
             $styles = [];
             foreach ($formats as $format) {
+                if (!isset(static::$FORMAT_NAMES[$format])) {
+                    continue;
+                }
                 $name .= '_' . static::$FORMAT_NAMES[$format];
                 switch ($format) {
                     case static::FORMAT_INS:
