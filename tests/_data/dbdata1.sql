@@ -11,7 +11,10 @@ INSERT INTO `amendment` (`id`, `motionId`, `titlePrefix`, `changeMetatext`, `cha
 VALUES
   (1, 2, 'Ä1', '', '',
    '<p>Auf gehds beim Schichtl pfiad de Charivari Wurschtsolod Gamsbart, Kneedl gwiss. Wos dringma aweng unbandig gfreit mi imma Habedehre, sei Sauwedda dringma aweng Maßkruag Schuabladdla! Do legst di nieda hob i an Suri wia Haferl Graudwiggal Klampfn Biakriagal i bin a woschechta Bayer ebba.</p>\n',
-   0, '', '2015-05-23 11:46:34', NULL, 3, '', NULL, 0);
+   0, '', '2015-05-23 09:46:34', NULL, 3, '', NULL, 0),
+  (2, 3, 'Ä1', '', '',
+   '<p>﻿Um das ganze mal zu testen.</p>\n<p>Links<a href="https://www.antragsgruen.de">https://www.antragsgruen.de</a></p>\n',
+   0, '', '2015-07-06 12:14:41', NULL, 3, '', NULL, 0);
 
 --
 -- Dumping data for table `amendmentSection`
@@ -26,7 +29,13 @@ INSERT INTO `amendmentSection` (`amendmentId`, `sectionId`, `data`, `dataRaw`, `
   (1, 4,
    '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>\n<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn. Foidweg Spuiratz kimmt, um Godds wujn. Am acht’n Tag schuf Gott des Bia i sog ja nix, i red ja bloß jedza, Biakriagal a bissal wos gehd ollaweil. Ledahosn om auf’n Gipfe Servas des wiad a Mordsgaudi, griasd eich midnand Bladl Fünferl Gams.</p>\n<p>Leonhardifahrt ma da middn. Greichats an naa do. Af Schuabladdla Leonhardifahrt Marei, des um Godds wujn Biakriagal! Hallelujah sog i, luja schüds nei koa des is schee jedza hogg di hera dringma aweng Spezi nia Musi. Wurschtsolod jo mei is des schee gor Ramasuri ozapfa no gfreit mi i hob di liab auffi, Schbozal. Hogg di hera nia need Biakriagal so schee, Schdarmbeaga See.</p>\n',
    '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Ma&szlig;kruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl F&uuml;nferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>\r\n\r\n<p>Oamoi gro&szlig;herzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn. Foidweg Spuiratz kimmt, um Godds wujn. Am acht&rsquo;n Tag schuf Gott des Bia i sog ja nix, i red ja blo&szlig; jedza, Biakriagal a bissal wos gehd ollaweil. Ledahosn om auf&rsquo;n Gipfe Servas des wiad a Mordsgaudi, griasd eich midnand Bladl F&uuml;nferl Gams.</p>\r\n\r\n<p>Leonhardifahrt ma da middn. Greichats an naa do. Af Schuabladdla Leonhardifahrt Marei, des um Godds wujn Biakriagal! Hallelujah sog i, luja sch&uuml;ds nei koa des is schee jedza hogg di hera dringma aweng Spezi nia Musi. Wurschtsolod jo mei is des schee gor Ramasuri ozapfa no gfreit mi i hob di liab auffi, Schbozal. Hogg di hera nia need Biakriagal so schee, Schdarmbeaga See.</p>\r\n',
-   NULL);
+   NULL),
+  (2, 1, 'Textformatierungen', 'Textformatierungen', NULL),
+  (2, 2,
+   '<p>Normaler Text, nicht mehr﻿ fett und kursiv<br>\nZeilenumbruch <span class="underline">unterstrich﻿en<br>\nUnd noch eine neue Zeile.﻿</span></p>\n<p><span class="strike">Durchgestrichen und <em>kursiv</em></span></p>\n<ol><li>Listenpunkt</li>\n	<li>Listenpunkt (<em>kursiv</em>)<br>\n	Zeilenumbruch</li>\n	<li>Nummer 3</li>\n	<li>Seltsame Zeichen: &amp; % $ # _ { } ~ ^ \\ \\today</li>\n</ol><p>Normaler Text wieder.</p>\n<p>Absatz 2</p>\n<ul>\n<li>Einfache Punkte</li>\n	<li>Nummer 2</li>\n</ul>\n<p>Link Bla</p>\n<blockquote>\n<p>Zitat 223<br>\nZeilenumbruch</p>\n<p>Neuer Paragraph</p>\n</blockquote>\n<p>Ende</p>\n',
+   '<p>Normaler Text<ins class="ice-ins ice-cts" data-changedata="" data-cid="2" data-last-change-time="1436184812653" data-time="1436184809398" data-userid="" data-username="">, nicht mehr﻿</ins> fett und kursiv<br />\r\nZeilenumbruch <span class="underline">unterstrich<ins class="ice-ins ice-cts" data-changedata="" data-cid="17" data-last-change-time="1436184821900" data-time="1436184821900" data-userid="" data-username="">﻿</ins>en<br />\r\n<ins class="ice-ins ice-cts" data-changedata="" data-cid="19" data-last-change-time="1436184827341" data-time="1436184823592" data-userid="" data-username="">Und noch eine neue Zeile.﻿</ins></span></p>\r\n\r\n<p><span class="strike">Durchgestrichen und <em>kursiv</em></span></p>\r\n\r\n<ol>\r\n	<li>Listenpunkt</li>\r\n	<li>Listenpunkt (<em>kursiv</em>)<br />\r\n	Zeilenumbruch</li>\r\n	<li>Nummer 3</li>\r\n	<li>Seltsame Zeichen: &amp; % $ # _ { } ~ ^ \\ \\today</li>\r\n</ol>\r\n\r\n<p>Normaler Text wieder.</p>\r\n\r\n<p>Absatz 2</p>\r\n\r\n<ul>\r\n	<li>Einfache Punkte</li>\r\n	<li>Nummer 2</li>\r\n</ul>\r\n\r\n<p>Link Bla</p>\r\n\r\n<blockquote>\r\n<p>Zitat 223<br />\r\nZeilenumbruch</p>\r\n\r\n<p>Neuer Paragraph</p>\r\n</blockquote>\r\n\r\n<p>Ende</p>\r\n',
+   NULL),
+  (2, 4, '<p>Textformatierungs-Test</p>\n', '<p>Textformatierungs-Test</p>\r\n', NULL);
 
 --
 -- Dumping data for table `amendmentSupporter`
@@ -34,7 +43,8 @@ INSERT INTO `amendmentSection` (`amendmentId`, `sectionId`, `data`, `dataRaw`, `
 
 INSERT INTO `amendmentSupporter` (`id`, `amendmentId`, `position`, `userId`, `role`, `comment`, `personType`, `name`, `organization`, `resolutionDate`, `contactEmail`, `contactPhone`)
 VALUES
-  (1, 1, 0, NULL, 'initiates', NULL, 0, 'Tester', '', NULL, 'tester@example.org', NULL);
+  (1, 1, 0, NULL, 'initiates', NULL, 0, 'Tester', '', NULL, 'tester@example.org', NULL),
+  (2, 2, 0, 1, 'initiates', NULL, 1, 'Testadmin', 'Antragsgrün', '2015-07-17', 'testadmin@example.org', '');
 
 --
 -- Dumping data for table `consultation`
@@ -43,7 +53,8 @@ VALUES
 INSERT INTO `consultation` (`id`, `siteId`, `urlPath`, `type`, `wordingBase`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `amendmentNumbering`, `adminEmail`, `settings`)
 VALUES
   (1, 1, 'std-parteitag', 0, 'de-parteitag', 'Test2', 'Test2', NULL, NULL, 0, 'tobias@hoessl.eu', NULL),
-  (2, 2, 'vorstandswahlen', 1, 'de-bewerbung', 'Vorstandswahlen', 'Vorstandswahlen', NULL, NULL, 0, 'testadmin@example.org',
+  (2, 2, 'vorstandswahlen', 1, 'de-bewerbung', 'Vorstandswahlen', 'Vorstandswahlen', NULL, NULL, 0,
+   'testadmin@example.org',
    '{"maintainanceMode":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"lineNumberingGlobal":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotions":false,"screeningMotionsShown":false,"screeningAmendments":false,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":80,"startLayoutType":0,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}'),
   (3, 3, 'parteitag', 2, 'de-parteitag', 'Parteitag', 'Parteitag', NULL, NULL, 0, 'testadmin@example.org',
    '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":80,"startLayoutType":3,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}'),
@@ -54,7 +65,8 @@ VALUES
 -- Dumping data for table `consultationAgendaItem`
 --
 
-INSERT INTO `consultationAgendaItem` (`id`, `consultationId`, `parentItemId`, `position`, `code`, `codeExplicit`, `title`, `description`, `motionTypeId`, `deadline`) VALUES
+INSERT INTO `consultationAgendaItem` (`id`, `consultationId`, `parentItemId`, `position`, `code`, `codeExplicit`, `title`, `description`, `motionTypeId`, `deadline`)
+VALUES
   (1, 3, NULL, 0, '', '0.', 'Tagesordnung', '', NULL, NULL),
   (2, 3, NULL, 1, '', '', 'Wahlen', '', NULL, NULL),
   (3, 3, 2, 0, '', '', '1. Vorsitzende(r)', '', 6, NULL),
@@ -74,7 +86,8 @@ VALUES
   (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
   (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
   (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 2, 1, 0, NULL),
-  (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1, '{"minSupporters":19,"supportersHaveOrganizations":true}');
+  (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1,
+   '{"minSupporters":19,"supportersHaveOrganizations":true}');
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`
@@ -118,10 +131,13 @@ INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `titl
 --
 
 INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateSent`, `subject`, `text`) VALUES
-  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-23 11:46:38', 'Neuer Antrag',
+  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-23 09:46:38',
+   'Neuer Antrag',
    'Es wurde ein neuer Änderungsantrag "Ä1 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/2/amendment/1'),
-  (2, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-06-26 11:03:55', 'Neuer Antrag',
-   'Es wurde ein neuer Antrag "Textformatierungen" eingereicht.\nLink: /std-parteitag/motion/3');
+  (2, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-06-26 09:03:55',
+   'Neuer Antrag', 'Es wurde ein neuer Antrag "Textformatierungen" eingereicht.\nLink: /std-parteitag/motion/3'),
+  (3, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-06 12:21:55', 'Neuer Antrag',
+   'Es wurde ein neuer Änderungsantrag "Ä1 zu A3: Textformatierungen" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/3/amendment/2');
 
 --
 -- Dumping data for table `motion`
@@ -129,8 +145,8 @@ INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateS
 
 INSERT INTO `motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `agendaItemId`, `title`, `titlePrefix`, `dateCreation`, `dateResolution`, `status`, `statusString`, `noteInternal`, `cache`, `textFixed`)
 VALUES
-  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-02 23:27:20', NULL, 3, NULL, NULL, '', 0),
-  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-26 11:03:49', NULL, 3, NULL, NULL, '', 0);
+  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-02 21:27:20', NULL, 3, NULL, NULL, '', 0),
+  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-26 09:03:49', NULL, 3, NULL, NULL, '', 0);
 
 --
 -- Dumping data for table `motionSection`
@@ -176,11 +192,16 @@ INSERT INTO `motionTag` (`motionId`, `tagId`) VALUES
 -- Dumping data for table `site`
 --
 
-INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`) VALUES
+INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`)
+VALUES
   (1, 'stdparteitag', 'Test2', 'Test2', NULL, 1, 1, 'Test2'),
-  (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen', '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 2, 1, 'Vorstandswahlen'),
-  (3, 'parteitag', 'Parteitag', 'Parteitag', '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 3, 1, 'Parteitag'),
-  (4, 'bdk', 'BDK', 'BDK', '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK');
+  (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen',
+   '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 2, 1, 'Vorstandswahlen'),
+  (3, 'parteitag', 'Parteitag', 'Parteitag',
+   '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 3, 1, 'Parteitag'),
+  (4, 'bdk', 'BDK', 'BDK',
+   '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1,
+   'BDK');
 
 --
 -- Dumping data for table `siteAdmin`
@@ -205,12 +226,13 @@ INSERT INTO `texTemplate` (`id`, `siteId`, `title`, `texLayout`, `texContent`) V
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`) VALUES
-  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 05:04:44', 0,
+INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`)
+VALUES
+  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 04:04:44', 0,
    'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy',
    0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
    NULL),
-  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 05:08:14', 0,
+  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 04:08:14', 0,
    'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV',
    0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
    NULL);

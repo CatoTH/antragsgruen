@@ -69,7 +69,9 @@ class AmendmentSectionFormatter
         $strPost    = '';
         foreach ($this->section->getTextParagraphs() as $para) {
             $linesOut = LineSplitter::motionPara2lines($para, false, $lineLength);
-            $strPost .= implode(' ', $linesOut) . "\n";
+            $lines = implode(' ', $linesOut) . "\n";
+            $lines = str_replace('###FORCELINEBREAK### ', '<br>', $lines);
+            $strPost .= $lines;
         }
 
         $diff = new Diff();
@@ -249,7 +251,7 @@ class AmendmentSectionFormatter
 
         $lastLine   = null;
         $blockBegin = null;
-        $lines      = "";
+        $lines      = '';
         $blocks     = [];
         foreach ($diff as $lineNo => $str) {
             if ($lastLine === null || $lineNo > $lastLine + 2) {

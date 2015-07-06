@@ -127,6 +127,8 @@ class LineSplitter
 
 
     /**
+     * Return value contains ###FORCELINEBREAK###
+     *
      * @param string $para
      * @param bool $lineNumbers
      * @param int $lineLength

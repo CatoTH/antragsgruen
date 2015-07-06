@@ -16,3 +16,17 @@ $page = AmendmentPage::openBy(
     ]
 );
 $I->see('Oamoi a Maß');
+
+
+
+$page = AmendmentPage::openBy(
+    $I,
+    [
+        'subdomain'        => 'stdparteitag',
+        'consultationPath' => 'std-parteitag',
+        'motionId'         => 3,
+        'amendmentId'      => 2,
+    ]
+);
+$I->see('Um das ganze mal zu testen');
+$I->dontSee('###FORCELINEBREAK###');
