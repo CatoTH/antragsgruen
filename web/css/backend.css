@@ -189,7 +189,13 @@ label.legend {
   .adminMotionTable .prefixCol {
     width: 10%; }
   .adminMotionTable .actionCol {
-    width: 120px; }
+    width: 120px;
+    overflow: visible; }
+  .adminMotionTable.JColResizer .actionCol {
+    overflow: visible; }
+  .adminMotionTable .dropdown-menu {
+    left: auto;
+    right: 0; }
   .adminMotionTable th, .adminMotionTable td {
     padding-top: 5px;
     padding-bottom: 5px;

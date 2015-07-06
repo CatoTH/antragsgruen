@@ -102,7 +102,7 @@ foreach ($entries as $entry) {
         }
         echo '<td>' . Html::encode(implode(", ", $initiators)) . '</td>';
 
-        echo '<td>';
+        echo '<td class="exportCol">';
         echo Html::a('PDF', UrlHelper::createMotionUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
         echo Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']) . ' / ';
         echo Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainhtml'), ['class' => 'plainHtml']);
@@ -119,7 +119,7 @@ foreach ($entries as $entry) {
         $title             = 'Neuer Antrag auf dieser Basis';
         $dropdowns[$title] = UrlHelper::createUrl(['motion/create', 'adoptInitiators' => $entry->id]);
 
-        echo '<td><div class="btn-group">
+        echo '<td class="actionCol"><div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     Aktion
     <span class="caret"></span>
@@ -150,7 +150,7 @@ foreach ($entries as $entry) {
         }
         echo '<td>' . Html::encode(implode(", ", $initiators)) . '</td>';
 
-        echo '<td>';
+        echo '<td class="exportCol">';
         echo Html::a('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']);
         echo '</td>';
 
@@ -165,7 +165,7 @@ foreach ($entries as $entry) {
         $title             = 'Neuer Änderungsantrag auf dieser Basis';
         $params            = ['amendment/create', 'motionId' => $entry->motionId, 'adoptInitiators' => $entry->id];
         $dropdowns[$title] = UrlHelper::createUrl($params);
-        echo '<td><div class="btn-group">
+        echo '<td class="actionCol"><div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     Aktion
     <span class="caret"></span>
