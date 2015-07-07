@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\components\diff\Diff;
+use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\sectionTypes\ISectionType;
@@ -78,14 +80,23 @@ class MotionSection extends IMotionSection
         return HTMLTools::sectionSimpleHTML($this->data);
     }
 
+    /**
+     * @var MotionSectionParagraph[]
+     */
+    private $paragraphObjectCache = null;
 
     /**
      * @param bool $lineNumbers
+     * @param bool $includeComments
+     * @param bool $includeAmendment
      * @return MotionSectionParagraph[]
      * @throws Internal
      */
-    public function getTextParagraphObjects($lineNumbers)
+    public function getTextParagraphObjects($lineNumbers, $includeComments = false, $includeAmendment = false)
     {
+        if ($this->paragraphObjectCache !== null) {
+            return $this->paragraphObjectCache;
+        }
         /** @var MotionSectionParagraph[] $return */
         $return = [];
         $paras  = $this->getTextParagraphs();
@@ -96,16 +107,42 @@ class MotionSection extends IMotionSection
             $paragraph              = new MotionSectionParagraph();
             $paragraph->paragraphNo = $paraNo;
             $paragraph->lines       = $linesOut;
-            $paragraph->amendments  = [];
 
-            $paragraph->comments = [];
-            foreach ($this->comments as $comment) {
-                if ($comment->paragraph == $paraNo) {
-                    $paragraph->comments[] = $comment;
+            if ($includeAmendment) {
+                $paragraph->amendmentSections = [];
+            }
+
+            if ($includeComments) {
+                $paragraph->comments = [];
+                foreach ($this->comments as $comment) {
+                    if ($comment->paragraph == $paraNo) {
+                        $paragraph->comments[] = $comment;
+                    }
                 }
             }
 
-            $return[] = $paragraph;
+            $return[$paraNo] = $paragraph;
+        }
+        if ($includeAmendment) {
+            foreach ($this->motion->amendments as $amendment) {
+                $amSec = null;
+                foreach ($amendment->sections as $section) {
+                    if ($section->sectionId == $this->sectionId) {
+                        $amSec = $section;
+                    }
+                }
+                if (!$amSec) {
+                    continue;
+                }
+                $diff = new Diff();
+                $amParagraphs = $diff->computeAmendmentParagraphDiff($paras, $amSec);
+                foreach ($amParagraphs as $amParagraph) {
+                    $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
+                }
+            }
+        }
+        if ($includeComments && $includeAmendment) {
+            $this->paragraphObjectCache = $return;
         }
         return $return;
     }

@@ -12,7 +12,7 @@ use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 $hasLineNumbers = $section->consultationSetting->lineNumbers;
-$paragraphs     = $section->getTextParagraphObjects($hasLineNumbers);
+$paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
     $classes[] = 'lineNumbers';
@@ -46,11 +46,12 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         echo '</li>';
     }
 
-    foreach ($paragraph->amendments as $amendment) {
+    foreach ($paragraph->amendmentSections as $amendmentSection) {
+        $amendment = $amendmentSection->amendmentSection->amendment;
         $amLink    = UrlHelper::createAmendmentUrl($amendment);
         $firstline = $amendment->getFirstAffectedLineOfParagraphAbsolute();
-        echo "<li class='amendment' data-first-line='" . $firstline . "'>';
-                echo '<a data-id='" . $amendment->id . "' href='" . Html::encode($amLink) . "'>";
+        echo '<li class="amendment" data-first-line="' . $firstline . '">';
+        echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
         echo Html::encode($amendment->titlePrefix) . "</a></li>\n";
     }
 
@@ -64,7 +65,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
             $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
         }
-        $line = str_replace('###FORCELINEBREAK###', '', $line);
+        $line       = str_replace('###FORCELINEBREAK###', '', $line);
         $linesArr[] = $line;
     }
     echo implode('<br>', $linesArr);

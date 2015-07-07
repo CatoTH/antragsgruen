@@ -2,7 +2,10 @@
 
 namespace app\components\diff;
 
+use app\components\HTMLTools;
+use app\models\db\AmendmentSection;
 use app\models\exceptions\Internal;
+use app\models\db\MotionSectionParagraphAmendment;
 
 class Diff
 {
@@ -284,7 +287,7 @@ class Diff
         $lineOld      = $this->tokenizeLine($lineOld);
         $lineNew      = $this->tokenizeLine($lineNew);
 
-        $return = $this->engine->compare($lineOld, $lineNew);
+        $return = $this->engine->compareStrings($lineOld, $lineNew);
         $return = $this->groupOperations($return, '');
 
         for ($i = 0; $i < count($return); $i++) {
@@ -339,7 +342,7 @@ class Diff
     {
         $computedStr = '';
 
-        $return = $this->engine->compare($strOld, $strNew);
+        $return = $this->engine->compareStrings($strOld, $strNew);
         if ($this->debug) {
             echo "==========\n";
             var_dump($return);
@@ -369,5 +372,65 @@ class Diff
         }
 
         return trim($computedStr);
+    }
+
+
+    /**
+     * @param $origParagraphs
+     * @param AmendmentSection $amSec
+     * @return MotionSectionParagraphAmendment[]
+     */
+    public function computeAmendmentParagraphDiff($origParagraphs, AmendmentSection $amSec)
+    {
+        $amParas       = HTMLTools::sectionSimpleHTML($amSec->data);
+        $diffEng       = new Engine();
+        $diff          = $diffEng->compareArrays($origParagraphs, $amParas);
+        $currOrigLine  = 0;
+        $pendingInsert = '';
+        /** @var MotionSectionParagraphAmendment[] $changed */
+        $changed = [];
+        for ($currDiffLine = 0; $currDiffLine < count($diff); $currDiffLine++) {
+            $diffLine = $diff[$currDiffLine];
+            if ($diffLine[1] == Engine::UNMODIFIED) {
+                if ($pendingInsert != '') {
+                    $str                    = $pendingInsert . $diffLine[0];
+                    $changed[$currOrigLine] = new MotionSectionParagraphAmendment($amSec, $currOrigLine, $str);
+                    $pendingInsert          = '';
+                }
+                $currOrigLine++;
+                continue;
+            }
+            if ($diffLine[1] == Engine::INSERTED) {
+                $insertStr = $this->wrapWithInsert($diffLine[0]);
+                if ($currOrigLine > 0) {
+                    $prevLine = $currOrigLine - 1;
+                    if (isset($changed[$prevLine])) {
+                        $changed[$prevLine]->strDiff .= $insertStr;
+                    } else {
+                        $changed[$prevLine] = new MotionSectionParagraphAmendment($amSec, $prevLine, $insertStr);
+                    }
+                } else {
+                    $pendingInsert .= $insertStr;
+                }
+                continue;
+            }
+            if ($diffLine[1] == Engine::DELETED) {
+                if ($pendingInsert) {
+                    throw new Internal('Not implemented yet - does this even happen?');
+                    // @todo check if this can happen
+                }
+                if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
+                    $changeStr              = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
+                    $changed[$currOrigLine] = new MotionSectionParagraphAmendment($amSec, $currOrigLine, $changeStr);
+                    $currDiffLine++;
+                } else {
+                    $deleteStr              = $this->wrapWithDelete($diffLine[0]);
+                    $changed[$currOrigLine] = new MotionSectionParagraphAmendment($amSec, $currOrigLine, $deleteStr);
+                }
+                $currOrigLine++;
+                continue;
+            }
+        }
+        return $changed;
     }
 }

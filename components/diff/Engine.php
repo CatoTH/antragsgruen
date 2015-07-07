@@ -2,19 +2,19 @@
 
 namespace app\components\diff;
 
-    /*
-    http://code.stephenmorley.org/php/diff-implementation/
+/*
+http://code.stephenmorley.org/php/diff-implementation/
 
-    class.Diff.php
+class.Diff.php
 
-    A class containing a diff implementation
+A class containing a diff implementation
 
-    Created by Stephen Morley - http://stephenmorley.org/ - and released under the
-    terms of the CC0 1.0 Universal legal code:
+Created by Stephen Morley - http://stephenmorley.org/ - and released under the
+terms of the CC0 1.0 Universal legal code:
 
-    http://creativecommons.org/publicdomain/zero/1.0/legalcode
+http://creativecommons.org/publicdomain/zero/1.0/legalcode
 
-    */
+*/
 
 class Engine
 {
@@ -50,60 +50,65 @@ class Engine
         return ($str1 === $str2);
     }
 
-
-    /** Returns the diff for two strings. The return value is an array, each of
-     * whose values is an array containing two values: a line,
-     * and one of the constants DIFF::UNMODIFIED (the
-     * line or character is in both strings), DIFF::DELETED (the line or character
-     * is only in the first string), and DIFF::INSERTED (the line or character is
-     * only in the second string). The parameters are:
-     *
-     * $string1           - the first string
-     * $string2           - the second string
+    /**
+     * @param string $strings1
+     * @param string $strings2
+     * @return array
      */
-    public function compare($string1, $string2)
+    public function compareArrays($strings1, $strings2)
     {
         // initialise the sequences and comparison start and end positions
         $start     = 0;
-        $sequence1 = preg_split('/\R/', $string1);
-        $sequence2 = preg_split('/\R/', $string2);
-        $end1      = count($sequence1) - 1;
-        $end2      = count($sequence2) - 1;
+        $end1      = count($strings1) - 1;
+        $end2      = count($strings2) - 1;
 
         // skip any common prefix
-        while ($start <= $end1 && $start <= $end2 && $this->strCmp($sequence1[$start], $sequence2[$start])) {
+        while ($start <= $end1 && $start <= $end2 && $this->strCmp($strings1[$start], $strings2[$start])) {
             $start++;
         }
 
         // skip any common suffix
-        while ($end1 >= $start && $end2 >= $start && $this->strCmp($sequence1[$end1], $sequence2[$end2])) {
+        while ($end1 >= $start && $end2 >= $start && $this->strCmp($strings1[$end1], $strings2[$end2])) {
             $end1--;
             $end2--;
         }
 
         // compute the table of longest common subsequence lengths
-        $table = self::computeTable($sequence1, $sequence2, $start, $end1, $end2);
+        $table = self::computeTable($strings1, $strings2, $start, $end1, $end2);
 
         // generate the partial diff
         $partialDiff =
-            self::generatePartialDiff($table, $sequence1, $sequence2, $start);
+            self::generatePartialDiff($table, $strings1, $strings2, $start);
 
         // generate the full diff
-        $diff = array();
+        $diff = [];
         for ($index = 0; $index < $start; $index++) {
-            $diff[] = array($sequence1[$index], self::UNMODIFIED);
+            $diff[] = [$strings1[$index], self::UNMODIFIED];
         }
         while (count($partialDiff) > 0) {
             $diff[] = array_pop($partialDiff);
         }
         for ($index = $end1 + 1;
-             $index < count($sequence1);
+             $index < count($strings1);
              $index++) {
-            $diff[] = array($sequence1[$index], self::UNMODIFIED);
+            $diff[] = [$strings1[$index], self::UNMODIFIED];
         }
 
         // return the diff
         return $diff;
+    }
+
+
+    /**
+     * @param $string1
+     * @param $string2
+     * @return array
+     */
+    public function compareStrings($string1, $string2)
+    {
+        $sequence1 = preg_split('/\R/', $string1);
+        $sequence2 = preg_split('/\R/', $string2);
+        return $this->compareArrays($sequence1, $sequence2);
     }
 
     /** Returns the table of longest common subsequence lengths for the specified
@@ -122,12 +127,12 @@ class Engine
         $length2 = $end2 - $start + 1;
 
         // initialise the table
-        $table = array(array_fill(0, $length2 + 1, 0));
+        $table = [array_fill(0, $length2 + 1, 0)];
 
         // loop over the rows
         for ($index1 = 1; $index1 <= $length1; $index1++) {
             // create the new row
-            $table[$index1] = array(0);
+            $table[$index1] = [0];
 
             // loop over the columns
             for ($index2 = 1; $index2 <= $length2; $index2++) {
@@ -156,7 +161,7 @@ class Engine
     private function generatePartialDiff($table, $sequence1, $sequence2, $start)
     {
         //  initialise the diff
-        $diff = array();
+        $diff = [];
 
         // initialise the indices
         $index1 = count($table) - 1;
@@ -169,18 +174,18 @@ class Engine
                 && $this->strCmp($sequence1[$index1 + $start - 1], $sequence2[$index2 + $start - 1])
             ) {
                 // update the diff and the indices
-                $diff[] = array($sequence1[$index1 + $start - 1], self::UNMODIFIED);
+                $diff[] = [$sequence1[$index1 + $start - 1], self::UNMODIFIED];
                 $index1--;
                 $index2--;
             } elseif ($index2 > 0
                 && $table[$index1][$index2] == $table[$index1][$index2 - 1]
             ) {
                 // update the diff and the indices
-                $diff[] = array($sequence2[$index2 + $start - 1], self::INSERTED);
+                $diff[] = [$sequence2[$index2 + $start - 1], self::INSERTED];
                 $index2--;
             } else {
                 // update the diff and the indices
-                $diff[] = array($sequence1[$index1 + $start - 1], self::DELETED);
+                $diff[] = [$sequence1[$index1 + $start - 1], self::DELETED];
                 $index1--;
             }
 

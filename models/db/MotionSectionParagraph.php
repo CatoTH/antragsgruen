@@ -12,6 +12,6 @@ class MotionSectionParagraph
     /** MotionComment[] */
     public $comments;
 
-    /** @var Amendment[] */
-    public $amendments;
+    /** @var MotionSectionParagraphAmendment[] */
+    public $amendmentSections;
 }
