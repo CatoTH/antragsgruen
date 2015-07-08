@@ -31,12 +31,12 @@ class HTML2TexTest extends TestBase
     public function testUnderlines()
     {
         $orig     = '<p>Normaler Text <span class="underline">unterstrichen</span></p>';
-        $expect = 'Normaler Text \underline{unterstrichen}' . "\n";
+        $expect = 'Normaler Text \uline{unterstrichen}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
 
         $orig     = '<p>Normaler Text <u>unterstrichen</u></p>';
-        $expect = 'Normaler Text \underline{unterstrichen}' . "\n";
+        $expect = 'Normaler Text \uline{unterstrichen}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
@@ -93,7 +93,8 @@ class HTML2TexTest extends TestBase
             'Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, ' .
             'greißlicha Uhu, oida Daddara!</p>';
         $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla,\\linebreak\n" .
-            "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\newline\n" .
+            "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\n" .
+            "\\\\\n\\linebreak\n" .
             "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada,\\linebreak\n" .
             "Oaschgsicht, greißlicha Uhu, oida Daddara!\n";
 

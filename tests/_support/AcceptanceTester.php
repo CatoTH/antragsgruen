@@ -23,7 +23,7 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-    const FIRST_FREE_MOTION_ID           = 4;
+    const FIRST_FREE_MOTION_ID           = 5;
     const FIRST_FREE_MOTION_TITLE_PREFIX = 'A4';
     const FIRST_FREE_MOTION_SECTION      = 23;
     const FIRST_FREE_AMENDMENT_ID        = 4;
