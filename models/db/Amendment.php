@@ -357,6 +357,29 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $lineNumbers
+     * @return MotionSectionParagraphAmendment[]
+     */
+    public function getChangedParagraphs($lineNumbers)
+    {
+        $paragraphs = [];
+        foreach ($this->motion->sections as $section) {
+            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                continue;
+            }
+            $paras = $section->getTextParagraphObjects($lineNumbers, true, true);
+            foreach ($paras as $para) {
+                foreach ($para->amendmentSections as $amSec) {
+                    if ($amSec->amendmentSection->amendmentId == $this->id) {
+                        $paragraphs[] = $amSec;
+                    }
+                }
+            }
+        }
+        return $paragraphs;
+    }
+
+    /**
      *
      */
     public function onPublish()

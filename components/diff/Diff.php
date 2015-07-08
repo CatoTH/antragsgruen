@@ -5,7 +5,7 @@ namespace app\components\diff;
 use app\components\HTMLTools;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\Internal;
-use app\models\db\MotionSectionParagraphAmendment;
+use app\models\db\MotionSectionParagraphAmendment as ParagraphAmendment;
 
 class Diff
 {
@@ -378,7 +378,8 @@ class Diff
     /**
      * @param $origParagraphs
      * @param AmendmentSection $amSec
-     * @return MotionSectionParagraphAmendment[]
+     * @return ParagraphAmendment[]
+     * @throws Internal
      */
     public function computeAmendmentParagraphDiff($origParagraphs, AmendmentSection $amSec)
     {
@@ -387,14 +388,15 @@ class Diff
         $diff          = $diffEng->compareArrays($origParagraphs, $amParas);
         $currOrigLine  = 0;
         $pendingInsert = '';
-        /** @var MotionSectionParagraphAmendment[] $changed */
+        /** @var ParagraphAmendment[] $changed */
         $changed = [];
         for ($currDiffLine = 0; $currDiffLine < count($diff); $currDiffLine++) {
             $diffLine = $diff[$currDiffLine];
+            $firstAffLine = 0; // @TODO
             if ($diffLine[1] == Engine::UNMODIFIED) {
                 if ($pendingInsert != '') {
                     $str                    = $pendingInsert . $diffLine[0];
-                    $changed[$currOrigLine] = new MotionSectionParagraphAmendment($amSec, $currOrigLine, $str);
+                    $changed[$currOrigLine] = new ParagraphAmendment($amSec, $currOrigLine, $str, $firstAffLine);
                     $pendingInsert          = '';
                 }
                 $currOrigLine++;
@@ -408,7 +410,7 @@ class Diff
                         $changed[$prevLine]->strDiff .= $insertStr;
                     } else {
                         $newStr = $diff[$prevLine][0] . $insertStr;
-                        $changed[$prevLine] = new MotionSectionParagraphAmendment($amSec, $prevLine, $newStr);
+                        $changed[$prevLine] = new ParagraphAmendment($amSec, $prevLine, $newStr, $firstAffLine);
                     }
                 } else {
                     $pendingInsert .= $insertStr;
@@ -422,11 +424,11 @@ class Diff
                 }
                 if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
                     $changeStr              = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $changed[$currOrigLine] = new MotionSectionParagraphAmendment($amSec, $currOrigLine, $changeStr);
+                    $changed[$currOrigLine] = new ParagraphAmendment($amSec, $currOrigLine, $changeStr, $firstAffLine);
                     $currDiffLine++;
                 } else {
                     $deleteStr              = $this->wrapWithDelete($diffLine[0]);
-                    $changed[$currOrigLine] = new MotionSectionParagraphAmendment($amSec, $currOrigLine, $deleteStr);
+                    $changed[$currOrigLine] = new ParagraphAmendment($amSec, $currOrigLine, $deleteStr, $firstAffLine);
                 }
                 $currOrigLine++;
                 continue;

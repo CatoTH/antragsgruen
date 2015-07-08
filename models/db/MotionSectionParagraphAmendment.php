@@ -6,14 +6,16 @@ class MotionSectionParagraphAmendment
 {
     /**
      * @param AmendmentSection $amSec
-     * @param $paragraphNo
-     * @param $diff
+     * @param int $paragraphNo
+     * @param string $diff
+     * @param int $firstLine
      */
-    public function __construct(AmendmentSection $amSec, $paragraphNo, $diff)
+    public function __construct(AmendmentSection $amSec, $paragraphNo, $diff, $firstLine)
     {
-        $this->amendmentSection = $amSec;
-        $this->origParagraphNo  = $paragraphNo;
-        $this->strDiff          = $diff;
+        $this->amendmentSection  = $amSec;
+        $this->origParagraphNo   = $paragraphNo;
+        $this->strDiff           = $diff;
+        $this->firstAccectedLine = $firstLine;
     }
 
     /** @var AmendmentSection */
@@ -24,4 +26,5 @@ class MotionSectionParagraphAmendment
 
     /** @var int */
     public $origParagraphNo;
+    public $firstAccectedLine;
 }

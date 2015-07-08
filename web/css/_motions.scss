@@ -128,7 +128,6 @@
     visibility: visible;
   }
 
-
   li.agendaItem {
     border: solid 1px transparent; // Otherwise: strange behavior when moving items
     padding-left: 20px;
@@ -187,7 +186,6 @@
       }
     }
 
-
     &.editing {
       > div > h3 {
         display: none;
@@ -236,7 +234,6 @@
 
   @include motionListStdMotion(14px);
 }
-
 
 .motionTextHolder {
   h3 {
@@ -296,8 +293,35 @@
     .textAmendment {
       display: none;
       width: 733px;
+      position: relative;
       del, ul.deleted, blockquote.deleted {
         color: #ff0000;
+      }
+      .preamble {
+        position: absolute;
+        top: -20px;
+        height: 30px;
+        color: $colorGreenLight;
+        width: 100%;
+        > div {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          max-height: 30px;
+          padding-right: 50px;
+          h3 {
+            font-size: 14px;
+            display: inline-block;
+            margin: 0;
+            font-weight: bold;
+          }
+          .moreAffected {
+            font-style: italic;
+            font-size: 0.8em;
+            margin-top: -3px;
+            color: #bbccbb;
+          }
+        }
       }
     }
   }
@@ -325,7 +349,6 @@
     }
   }
 }
-
 
 .bookmarks {
   float: right;

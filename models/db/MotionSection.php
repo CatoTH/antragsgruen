@@ -3,7 +3,6 @@
 namespace app\models\db;
 
 use app\components\diff\Diff;
-use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\sectionTypes\ISectionType;
@@ -83,7 +82,8 @@ class MotionSection extends IMotionSection
     /**
      * @var MotionSectionParagraph[]
      */
-    private $paragraphObjectCache = null;
+    private $paragraphObjectCacheWithLines    = null;
+    private $paragraphObjectCacheWithoutLines = null;
 
     /**
      * @param bool $lineNumbers
@@ -94,8 +94,11 @@ class MotionSection extends IMotionSection
      */
     public function getTextParagraphObjects($lineNumbers, $includeComments = false, $includeAmendment = false)
     {
-        if ($this->paragraphObjectCache !== null) {
-            return $this->paragraphObjectCache;
+        if ($lineNumbers && $this->paragraphObjectCacheWithLines !== null) {
+            return $this->paragraphObjectCacheWithLines;
+        }
+        if (!$lineNumbers && $this->paragraphObjectCacheWithoutLines !== null) {
+            return $this->paragraphObjectCacheWithoutLines;
         }
         /** @var MotionSectionParagraph[] $return */
         $return = [];
@@ -134,7 +137,7 @@ class MotionSection extends IMotionSection
                 if (!$amSec) {
                     continue;
                 }
-                $diff = new Diff();
+                $diff         = new Diff();
                 $amParagraphs = $diff->computeAmendmentParagraphDiff($paras, $amSec);
                 foreach ($amParagraphs as $amParagraph) {
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
@@ -142,7 +145,11 @@ class MotionSection extends IMotionSection
             }
         }
         if ($includeComments && $includeAmendment) {
-            $this->paragraphObjectCache = $return;
+            if ($lineNumbers) {
+                $this->paragraphObjectCacheWithLines = $return;
+            } else {
+                $this->paragraphObjectCacheWithoutLines = $return;
+            }
         }
         return $return;
     }

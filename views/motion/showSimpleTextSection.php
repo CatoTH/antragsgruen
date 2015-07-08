@@ -78,6 +78,16 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     foreach ($paragraph->amendmentSections as $amendmentSection) {
         $amendment = $amendmentSection->amendmentSection->amendment;
         echo '<div class="text textAmendment amendment' . $amendment->id . '">';
+        echo '<div class="preamble"><div>';
+        echo '<h3>Änderungsantrag ' . Html::encode($amendment->titlePrefix) . '</h3>';
+        echo ', gestellt von: ' . Html::encode($amendment->getInitiatorsStr());
+        $amParas = $amendment->getChangedParagraphs(true);
+        if (count($amParas) > 1) {
+            echo '<div class="moreAffected">';
+            echo str_replace('%num%', count($amParas), 'Bezieht sich auf insgesamt %num% Absätze');
+            echo '</div>';
+        }
+        echo '</div></div>';
         echo $amendmentSection->strDiff;
         echo '</div>';
     }
