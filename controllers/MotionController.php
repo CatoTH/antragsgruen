@@ -147,7 +147,7 @@ class MotionController extends Base
                 if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
-                foreach ($section->getTextParagraphObjects(false) as $paragraph) {
+                foreach ($section->getTextParagraphObjects(false, true, true) as $paragraph) {
                     foreach ($paragraph->comments as $comment) {
                         if ($comment->id == $commentId) {
                             if (!isset($openedComments[$section->sectionId])) {

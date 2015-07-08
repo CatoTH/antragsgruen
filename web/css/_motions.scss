@@ -297,7 +297,7 @@
       display: none;
       width: 733px;
       del, ul.deleted, blockquote.deleted {
-        color: #aa0000;
+        color: #ff0000;
       }
     }
   }
@@ -338,7 +338,7 @@
     width: 1px;
     height: 38px;
     position: relative;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
 
     > a {
       display: block;
@@ -366,6 +366,9 @@
     }
     &.comment > a {
       @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
+      &.zero {
+        opacity: 0.5;
+      }
       .count:after {
         content: attr(data-count);
         padding-left: 4px;

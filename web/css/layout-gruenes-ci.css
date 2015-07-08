@@ -4905,7 +4905,7 @@ ins, ul.inserted, blockquote.inserted {
     display: none;
     width: 733px; }
     .motionTextHolder .paragraph .textAmendment del, .motionTextHolder .paragraph .textAmendment ul.deleted, .motionTextHolder .paragraph .textAmendment blockquote.deleted {
-      color: #aa0000; }
+      color: #ff0000; }
 .motionTextHolder .tabularData > tbody > tr:first-child > td, .motionTextHolder .tabularData > tbody > tr:first-child > th {
   border-top: none; }
 .motionTextHolder.fourdigitsLineNumbers .paragraph .text .lineNumber {
@@ -4925,7 +4925,7 @@ ins, ul.inserted, blockquote.inserted {
     width: 1px;
     height: 38px;
     position: relative;
-    margin-bottom: 2px; }
+    margin-bottom: 4px; }
     .bookmarks > li > a {
       display: block;
       position: absolute;
@@ -4956,6 +4956,8 @@ ins, ul.inserted, blockquote.inserted {
       background: -o-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
       background: -ms-linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%);
       background: linear-gradient(90deg, #e2007a 0%, #ea4aa1 100%); }
+      .bookmarks > li.comment > a.zero {
+        opacity: 0.5; }
       .bookmarks > li.comment > a .count:after {
         content: attr(data-count);
         padding-left: 4px; }

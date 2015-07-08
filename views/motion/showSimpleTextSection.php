@@ -41,8 +41,12 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         echo '<li class="comment">';
         $str = '<span class="glyphicon glyphicon-comment"></span>';
         $str .= '<span class="count" data-count="' . count($paragraph->comments) . '"></span>';
-        echo Html::a($str, '#', ['class' => 'shower']);
-        echo Html::a($str, '#', ['class' => 'hider']);
+        $zero = '';
+        if (count($paragraph->comments) == 0) {
+            $zero .= ' zero';
+        }
+        echo Html::a($str, '#', ['class' => 'shower' . $zero]);
+        echo Html::a($str, '#', ['class' => 'hider' . $zero]);
         echo '</li>';
     }
 
