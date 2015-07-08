@@ -32,4 +32,14 @@ class ConsultationHomePage extends BasePage
         }
         return $page;
     }
+
+    /**
+     * @param int $motionId
+     * @return MotionPage
+     */
+    public function gotoMotionView($motionId)
+    {
+        $this->actor->click('.motionLink' . $motionId);
+        return new MotionPage($this->actor);
+    }
 }

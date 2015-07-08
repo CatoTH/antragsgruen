@@ -4901,6 +4901,11 @@ ins, ul.inserted, blockquote.inserted {
       font-size: 12px; }
       .motionTextHolder .paragraph .text.smallFont > blockquote {
         font-size: 12px; }
+  .motionTextHolder .paragraph .textAmendment {
+    display: none;
+    width: 733px; }
+    .motionTextHolder .paragraph .textAmendment del, .motionTextHolder .paragraph .textAmendment ul.deleted, .motionTextHolder .paragraph .textAmendment blockquote.deleted {
+      color: #aa0000; }
 .motionTextHolder .tabularData > tbody > tr:first-child > td, .motionTextHolder .tabularData > tbody > tr:first-child > th {
   border-top: none; }
 .motionTextHolder.fourdigitsLineNumbers .paragraph .text .lineNumber {

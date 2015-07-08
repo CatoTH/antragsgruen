@@ -407,7 +407,8 @@ class Diff
                     if (isset($changed[$prevLine])) {
                         $changed[$prevLine]->strDiff .= $insertStr;
                     } else {
-                        $changed[$prevLine] = new MotionSectionParagraphAmendment($amSec, $prevLine, $insertStr);
+                        $newStr = $diff[$prevLine][0] . $insertStr;
+                        $changed[$prevLine] = new MotionSectionParagraphAmendment($amSec, $prevLine, $newStr);
                     }
                 } else {
                     $pendingInsert .= $insertStr;

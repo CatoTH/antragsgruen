@@ -292,6 +292,14 @@
         }
       }
     }
+
+    .textAmendment {
+      display: none;
+      width: 733px;
+      del, ul.deleted, blockquote.deleted {
+        color: #aa0000;
+      }
+    }
   }
   .tabularData {
     > tbody > tr:first-child {

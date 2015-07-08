@@ -50,14 +50,14 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         $amendment = $amendmentSection->amendmentSection->amendment;
         $amLink    = UrlHelper::createAmendmentUrl($amendment);
         $firstline = $amendment->getFirstAffectedLineOfParagraphAbsolute();
-        echo '<li class="amendment" data-first-line="' . $firstline . '">';
+        echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $firstline . '">';
         echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
         echo Html::encode($amendment->titlePrefix) . "</a></li>\n";
     }
 
     echo '</ul>';
 
-    echo '<div class="text">';
+    echo '<div class="text textOrig">';
     $linesArr = [];
     foreach ($paragraph->lines as $line) {
         if ($section->consultationSetting->lineNumbers) {
@@ -70,6 +70,13 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     }
     echo implode('<br>', $linesArr);
     echo '</div>';
+
+    foreach ($paragraph->amendmentSections as $amendmentSection) {
+        $amendment = $amendmentSection->amendmentSection->amendment;
+        echo '<div class="text textAmendment amendment' . $amendment->id . '">';
+        echo $amendmentSection->strDiff;
+        echo '</div>';
+    }
 
 
     $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurUserHeuristically();

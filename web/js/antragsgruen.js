@@ -248,6 +248,15 @@
                 if ((marker_offset + 10) < lineel_offset) {
                     $amendment.css('margin-top', (lineel_offset - (marker_offset + 10)) + "px");
                 }
+
+                $amendment.mouseover(function () {
+                    $paragraph.find("> .textOrig").hide();
+                    $paragraph.find("> .textAmendment").hide();
+                    $paragraph.find("> .textAmendment.amendment" + $amendment.find("a").data("id")).show();
+                }).mouseout(function () {
+                    $paragraph.find("> .textOrig").show();
+                    $paragraph.find("> .textAmendment").hide();
+                });
             });
         });
 
