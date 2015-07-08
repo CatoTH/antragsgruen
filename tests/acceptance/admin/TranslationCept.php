@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('Go to admin administration');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->click('#adminLink');
 $I->click('#translationLink');

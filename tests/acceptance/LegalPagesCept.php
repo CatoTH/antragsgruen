@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->click('#legalLink');
 $I->see('Impressum', 'h1');
 

@@ -83,6 +83,8 @@ class BDK implements ISitePreset
         $type->titlePlural           = 'Anträge';
         $type->createTitle           = 'Antrag stellen';
         $type->position              = 0;
+        $type->pdfLayout             = 1;
+        $type->texTemplateId         = 1;
         $type->policyMotions         = IPolicy::POLICY_LOGGED_IN;
         $type->policyAmendments      = IPolicy::POLICY_LOGGED_IN;
         $type->policyComments        = IPolicy::POLICY_LOGGED_IN;

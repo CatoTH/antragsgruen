@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->selectOption('#typeInitiatorForm', \app\models\initiatorForms\WithSupporters::getTitle());
@@ -13,7 +13,7 @@ $motionTypePage->saveForm();
 $I->seeOptionIsSelected('#typeInitiatorForm', \app\models\initiatorForms\WithSupporters::getTitle());
 
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->gotoMotion();
 $I->click('.amendmentCreate a');
 
@@ -22,7 +22,7 @@ $I->dontSeeInField(['name' => 'supporters[name][]'], 'Testadmin');
 
 
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->click('.createMotion');
 
 $I->seeInField('#initiatorName', 'Testadmin');

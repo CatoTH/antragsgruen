@@ -9,7 +9,7 @@ $I->populateDBData1();
 // Load Form
 
 $I->wantTo('motion Create site loads');
-$I->gotoStdConsultationHome()->gotoMotionCreatePage();
+$I->gotoConsultationHome()->gotoMotionCreatePage();
 
 $I->see('Antrag stellen', 'h1');
 $I->seeInTitle('Antrag stellen');

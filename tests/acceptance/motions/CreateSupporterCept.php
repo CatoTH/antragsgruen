@@ -6,13 +6,13 @@ $I->populateDBData1();
 
 
 $I->wantTo('check that supporters are disabled by deafult');
-$I->gotoStdConsultationHome()->gotoMotionCreatePage();
+$I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->dontSeeElement('.supporterData');
 
 
 
 $I->wantTo('enable supporters');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
@@ -27,7 +27,7 @@ $I->seeOptionIsSelected('#typeInitiatorForm', \app\models\initiatorForms\WithSup
 
 
 $I->wantTo('create a simple motion with standard settings');
-$createPage = $I->gotoStdConsultationHome()->gotoMotionCreatePage();
+$createPage = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->seeElement('.supporterData');
 $I->seeElement('.supporterData input.name');
 $I->dontSeeElement('.supporterData input.organization');
@@ -40,7 +40,7 @@ $I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
 
 
 $I->wantTo('set more restrictive settings');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
 $I->fillField('#typeMinSupporters', 2);
@@ -51,7 +51,7 @@ $I->seeInField('#typeMinSupporters', 2);
 
 
 $I->wantTo('create a motion, but without supporters');
-$consHome = $I->gotoStdConsultationHome();
+$consHome = $I->gotoConsultationHome();
 $I->logout();
 $createPage = $consHome->gotoMotionCreatePage();
 

@@ -4,25 +4,33 @@ namespace app\models\policies;
 
 use app\models\db\ConsultationMotionType;
 use app\models\exceptions\Internal;
+use app\models\settings\AntragsgruenApp;
 
 abstract class IPolicy
 {
-    const POLICY_NOBODY    = 0;
-    const POLICY_ALL       = 1;
-    const POLICY_LOGGED_IN = 2;
-    const POLICY_ADMINS    = 3;
+    const POLICY_NOBODY     = 0;
+    const POLICY_ALL        = 1;
+    const POLICY_LOGGED_IN  = 2;
+    const POLICY_ADMINS     = 3;
+    const POLICY_WURZELWERK = 4;
 
     /**
      * @return IPolicy[]
      */
     public static function getPolicies()
     {
-        return [
+        $policies = [
             static::POLICY_ADMINS    => Admins::class,
             static::POLICY_ALL       => All::class,
             static::POLICY_LOGGED_IN => LoggedIn::class,
             static::POLICY_NOBODY    => Nobody::class,
         ];
+        /** @var AntragsgruenApp $params */
+        $params = \yii::$app->params;
+        if ($params->hasWurzelwerk) {
+            $policies[static::POLICY_WURZELWERK] = Wurzelwerk::class;
+        }
+        return $policies;
     }
 
     /**

@@ -6,7 +6,7 @@ $I->populateDBData1();
 
 
 $I->wantTo('disable PDFs');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 
 
 $I->loginAsStdAdmin();
@@ -14,7 +14,7 @@ $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->selectOption('#pdfLayout', -1);
 $motionTypePage->saveForm();
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->dontSee('PDF');
 $I->dontSeeElement('#sidebar .motionPdfCompilation');
 $I->click('.motionLink2');
@@ -27,7 +27,7 @@ $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->selectOption('#pdfLayout', 0);
 $motionTypePage->saveForm();
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->see('PDF');
 $I->seeElement('#sidebar .motionPdfCompilation');
 $I->logout();
@@ -56,7 +56,7 @@ if (strlen($pdf) == 0) {
 
 
 $I->wantTo('test the pdf-compilation');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 
 $pdf = $I->downloadLink('.motionPdfCompilation');
 if (strlen($pdf) == 0) {

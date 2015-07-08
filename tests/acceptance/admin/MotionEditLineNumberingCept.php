@@ -8,7 +8,7 @@ $I->populateDBData1();
 
 $I->wantTo('create a new motion');
 
-$page = $I->gotoStdConsultationHome()->gotoMotionCreatePage();
+$page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $page->createMotion('random new motion');
 
 $motionPage = $I->gotoMotion(true, $motionId);
@@ -22,7 +22,7 @@ if ($firstLineNo != 1) {
 
 $I->wantTo('enable global line numbering');
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $consultationPage = $I->gotoStdAdminPage()->gotoConsultation();
 
@@ -85,7 +85,7 @@ if ($firstLineNo != 2) {
 
 $I->wantTo('disable global line numbering');
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $consultationPage = $I->gotoStdAdminPage()->gotoConsultation();
 
 $I->seeCheckboxIsChecked('#lineNumberingGlobal');

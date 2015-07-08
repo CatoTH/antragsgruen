@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('test the motion feed');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 
 $content = $I->downloadLink('#sidebar .feedMotions');
 if (mb_strpos($content, 'O’zapft is!') === false) {
@@ -17,7 +17,7 @@ if (mb_strpos($content, 'Test') === false) {
 
 
 $I->wantTo('test the amendment feed');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 
 $content = $I->downloadLink('#sidebar .feedAmendments');
 if (mb_strpos($content, 'Tester') === false) {
@@ -32,7 +32,7 @@ if (mb_strpos($content, 'Ä1') === false) {
 
 
 $I->wantTo('test the overall feed');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 
 $content = $I->downloadLink('#sidebar .feedAll');
 $lookFor = [

@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('Test the breadcrumb menu');
-$consultationHome = $I->gotoStdConsultationHome();
+$consultationHome = $I->gotoConsultationHome();
 $I->validateHTML();
 
 $consultationHome->gotoMotionCreatePage();

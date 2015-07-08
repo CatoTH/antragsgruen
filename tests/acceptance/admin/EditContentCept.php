@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('Login as regular user');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdUser();
 $I->dontSee('ADMIN', '#adminLink');
 $I->dontSee('Bearbeiten', '.editCaller');
@@ -24,7 +24,7 @@ $I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<b>Bold test</b>");');
 $I->executeJS('$(".contentPageWelcome").find(".textSaver button").click();');
 $I->see('Bold test');
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->dontSee('Hallo auf Antragsgrün');
 $I->see('Bold test');
 

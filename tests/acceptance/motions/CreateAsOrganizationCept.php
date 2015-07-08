@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$createPage = $I->gotoStdConsultationHome()->gotoMotionCreatePage();
+$createPage = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $createPage->fillInValidSampleData('Sample motion from an organization');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('.supporterDataHead');

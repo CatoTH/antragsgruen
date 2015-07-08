@@ -108,7 +108,7 @@ $I->see(mb_strtoupper('Änderungsantrag eingereicht'), 'h1');
 
 
 $I->wantTo('see the amendment on the start page');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->see('Ä3', '.motionListStd .amendments');
 $I->see('My name', '.motionListStd .amendments');
 

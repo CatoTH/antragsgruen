@@ -25,23 +25,25 @@ class AcceptanceTester extends \Codeception\Actor
 
     const FIRST_FREE_MOTION_ID           = 5;
     const FIRST_FREE_MOTION_TITLE_PREFIX = 'A4';
-    const FIRST_FREE_MOTION_SECTION      = 23;
+    const FIRST_FREE_MOTION_SECTION      = 26;
     const FIRST_FREE_AMENDMENT_ID        = 4;
 
     /**
      * @param bool $check
+     * @param string $subdomain
+     * @param string $path
      * @return ConsultationHomePage
      */
-    public function gotoStdConsultationHome($check = true)
+    public function gotoConsultationHome($check = true, $subdomain = 'stdparteitag', $path = 'std-parteitag')
     {
         $page = ConsultationHomePage::openBy(
             $this,
             [
-                'subdomain'        => 'stdparteitag',
-                'consultationPath' => 'std-parteitag',
+                'subdomain'        => $subdomain,
+                'consultationPath' => $path,
             ]
         );
-        if ($check) {
+        if ($check && $subdomain == 'stdparteitag' && $path == 'std-parteitag') {
             $this->see('Test2', 'h1');
         }
         return $page;
@@ -96,7 +98,7 @@ class AcceptanceTester extends \Codeception\Actor
      */
     public function loginAndGotoStdAdminPage()
     {
-        $this->gotoStdConsultationHome();
+        $this->gotoConsultationHome();
         $this->loginAsStdAdmin();
         return $this->gotoStdAdminPage();
     }

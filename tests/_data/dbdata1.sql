@@ -11,11 +11,11 @@ INSERT INTO `amendment` (`id`, `motionId`, `titlePrefix`, `changeMetatext`, `cha
 VALUES
   (1, 2, 'Ä1', '', '',
    '<p>Auf gehds beim Schichtl pfiad de Charivari Wurschtsolod Gamsbart, Kneedl gwiss. Wos dringma aweng unbandig gfreit mi imma Habedehre, sei Sauwedda dringma aweng Maßkruag Schuabladdla! Do legst di nieda hob i an Suri wia Haferl Graudwiggal Klampfn Biakriagal i bin a woschechta Bayer ebba.</p>\n',
-   0, '', '2015-05-23 01:46:34', NULL, 3, '', NULL, 0),
+   0, '', '2015-05-22 23:46:34', NULL, 3, '', NULL, 0),
   (2, 3, 'Ä1', '', '',
    '<p>Um das ganze mal zu testen.</p>\n<p>Links<a href="https://www.antragsgruen.de">https://www.antragsgruen.de</a></p>\n',
-   0, '', '2015-07-06 04:14:41', NULL, 3, '', NULL, 0),
-  (3, 2, 'Ä2', '', '', '<p>Diff-Test</p>\n', 0, '', '2015-07-07 07:49:25', NULL, 3, '', NULL, 0);
+   0, '', '2015-07-06 02:14:41', NULL, 3, '', NULL, 0),
+  (3, 2, 'Ä2', '', '', '<p>Diff-Test</p>\n', 0, '', '2015-07-07 05:49:25', NULL, 3, '', NULL, 0);
 
 --
 -- Dumping data for table `amendmentSection`
@@ -70,7 +70,9 @@ VALUES
   (3, 3, 'parteitag', 2, 'de-parteitag', 'Parteitag', 'Parteitag', NULL, NULL, 0, 'testadmin@example.org',
    '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":80,"startLayoutType":3,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}'),
   (4, 4, 'bdk', 3, 'de-parteitag', 'BDK', 'BDK', NULL, NULL, 0, 'testadmin@example.org',
-   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":95,"startLayoutType":0,"logoUrl":"","logoUrlFB":"","motionIntro":null,"pdfIntroduction":""}');
+   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":95,"startLayoutType":0,"logoUrl":"","logoUrlFB":"","motionIntro":null,"pdfIntroduction":""}'),
+  (5, 5, '1laenderrat2015', 3, 'de-parteitag', 'Länderrat', 'Länderrat', NULL, NULL, 0, 'testadmin@example.org',
+   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"confirmEmails":false,"hideRevision":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"allowStrikeFormat":false,"lineLength":95,"startLayoutType":0,"logoUrl":null,"logoUrlFB":null,"motionIntro":null,"pdfIntroduction":""}');
 
 --
 -- Dumping data for table `consultationAgendaItem`
@@ -98,6 +100,8 @@ VALUES
   (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
   (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 2, 1, 0, NULL),
   (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1,
+   '{"minSupporters":19,"supportersHaveOrganizations":true}'),
+  (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 2, 1, 1,
    '{"minSupporters":19,"supportersHaveOrganizations":true}');
 
 --
@@ -126,8 +130,11 @@ VALUES
   (18, 5, 1, 1, 0, 'Antragstext', NULL, 1, 1, 0, 1, 1, 1),
   (19, 5, 1, 2, 0, 'Begründung', NULL, 0, 0, 0, 0, 0, 0),
   (20, 7, 0, 0, 0, 'Titel', NULL, 0, 1, 0, 0, 0, 1),
-  (21, 7, 1, 1, 0, 'Antragstext', NULL, 1, 1, 0, 1, 1, 1),
-  (22, 7, 1, 2, 0, 'Begründung', NULL, 0, 0, 0, 0, 0, 0);
+  (21, 7, 1, 1, 0, 'Antragstext', NULL, 1, 1, 0, 1, 2, 1),
+  (22, 7, 1, 2, 0, 'Begründung', NULL, 0, 0, 0, 0, 0, 0),
+  (23, 8, 0, 0, 0, 'Titel', NULL, 0, 1, 0, 0, 0, 1),
+  (24, 8, 1, 1, 0, 'Antragstext', NULL, 1, 1, 0, 1, 2, 1),
+  (25, 8, 1, 2, 0, 'Begründung', NULL, 0, 0, 0, 0, 0, 0);
 
 --
 -- Dumping data for table `consultationSettingsTag`
@@ -142,16 +149,16 @@ INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `titl
 --
 
 INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateSent`, `subject`, `text`) VALUES
-  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-23 01:46:38',
+  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-22 23:46:38',
    'Neuer Antrag',
    'Es wurde ein neuer Änderungsantrag "Ä1 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/2/amendment/1'),
-  (2, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-06-26 01:03:55',
+  (2, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-06-25 23:03:55',
    'Neuer Antrag', 'Es wurde ein neuer Antrag "Textformatierungen" eingereicht.\nLink: /std-parteitag/motion/3'),
-  (3, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-06 04:21:55', 'Neuer Antrag',
+  (3, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-06 02:21:55', 'Neuer Antrag',
    'Es wurde ein neuer Änderungsantrag "Ä1 zu A3: Textformatierungen" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/3/amendment/2'),
-  (4, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-07 07:49:33', 'Neuer Antrag',
+  (4, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-07 05:49:33', 'Neuer Antrag',
    'Es wurde ein neuer Änderungsantrag "Ä2 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/2/amendment/3'),
-  (5, 'testadmin@example.org', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-08 08:05:49',
+  (5, 'testadmin@example.org', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-08 06:05:49',
    'Neuer Antrag',
    'Es wurde ein neuer Antrag "Lorem ipsum dolor sit amet" eingereicht.\nLink: http://bdk.antragsgruen-v3.localhost/bdk/motion/4');
 
@@ -161,9 +168,9 @@ INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateS
 
 INSERT INTO `motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `agendaItemId`, `title`, `titlePrefix`, `dateCreation`, `dateResolution`, `status`, `statusString`, `noteInternal`, `cache`, `textFixed`)
 VALUES
-  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-02 13:27:20', NULL, 3, NULL, NULL, '', 0),
-  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-26 01:03:49', NULL, 3, NULL, NULL, '', 0),
-  (4, 4, 7, NULL, NULL, 'Lorem ipsum dolor sit amet', 'A1', '2015-07-08 08:05:23', NULL, 3, NULL, NULL, '', 0);
+  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-04-02 11:27:20', NULL, 3, NULL, NULL, '', 0),
+  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-25 23:03:49', NULL, 3, NULL, NULL, '', 0),
+  (4, 4, 7, NULL, NULL, 'Lorem ipsum dolor sit amet', 'A1', '2015-07-08 06:05:23', NULL, 3, NULL, NULL, '', 0);
 
 --
 -- Dumping data for table `motionSection`
@@ -236,7 +243,10 @@ VALUES
   (3, 'parteitag', 'Parteitag', 'Parteitag',
    '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 3, 1, 'Parteitag'),
   (4, 'bdk', 'BDK', 'BDK',
-   '{"onlyNamespacedAccounts":0,"onlyWurzelwerk":0,"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK');
+   '{"onlyNamespacedAccounts":0,"onlyWurzelwerk":0,"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK'),
+  (5, '1laenderrat2015', 'Länderrat', 'Länderrat',
+   '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"willingToPay":"2"}',
+   5, 1, 'Länderrat');
 
 --
 -- Dumping data for table `siteAdmin`
@@ -246,7 +256,8 @@ INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
   (1, 1),
   (2, 1),
   (3, 1),
-  (4, 1);
+  (4, 1),
+  (5, 1);
 
 --
 -- Dumping data for table `texTemplate`
@@ -263,11 +274,11 @@ INSERT INTO `texTemplate` (`id`, `siteId`, `title`, `texLayout`, `texContent`) V
 
 INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `siteNamespaceId`)
 VALUES
-  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-21 00:04:44', 0,
+  (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-20 23:04:44', 0,
    'sha256:1000:gpdjLHGKeqKXDjjjVI6JsXF5xl+cAYm1:jT6RRYV6luIdDaomW56BMf50zQi0tiFy',
    0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
    NULL),
-  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-21 00:08:14', 0,
+  (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-20 23:08:14', 0,
    'sha256:1000:BwEqXMsdBXDi71XpQud1yRene4zeNRTt:atF5X6vaHJ93nyDIU/gobIpehez+0KBV',
    0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
    NULL);

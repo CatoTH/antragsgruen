@@ -7,7 +7,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('see the ad');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->see(mb_strtoupper('Dein Antragsgrün'), '#sidebar');
 
 
@@ -19,7 +19,7 @@ $settings->showAntragsgruenAd = false;
 $site->setSettings($settings);
 $site->save();
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->dontSee(mb_strtoupper('Dein Antragsgrün'), '#sidebar');
 
 
@@ -31,5 +31,5 @@ $settings->showAntragsgruenAd = true;
 $site->setSettings($settings);
 $site->save();
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->see(mb_strtoupper('Dein Antragsgrün'), '#sidebar');

@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('change the site into maintainance mode');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $consultationPage = $I->gotoStdAdminPage()->gotoConsultation();
 
@@ -17,13 +17,13 @@ $I->wantTo('see the maintainance message');
 $I->logout();
 
 
-$I->gotoStdConsultationHome(false);
+$I->gotoConsultationHome(false);
 $I->dontSee('TEST2', 'h1');
 $I->see('Wartungsmodus', 'h1');
 
 $I->wantTo('try to see the site as a regular user');
 $I->loginAsStdUser();
-$I->gotoStdConsultationHome(false);
+$I->gotoConsultationHome(false);
 $I->dontSee('TEST2', 'h1');
 $I->see('Wartungsmodus', 'h1');
 
@@ -39,6 +39,6 @@ $I->submitForm('#consultationSettingsForm', [], 'save');
 
 $I->wantTo('verify that the maintainance mode is deactivated');
 $I->logout();
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->see('TEST2', 'h1');
 $I->dontSee('Wartungsmodus', 'h1');

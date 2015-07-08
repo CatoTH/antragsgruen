@@ -6,7 +6,7 @@ $I->populateDBData1();
 
 $I->wantTo('test numbered lists');
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->gotoMotion(true, 3);
 $I->see('Zeilenumbruch unterstrichen');
 

@@ -6,7 +6,7 @@ $I->populateDBData1();
 
 $scenario->incomplete('Not implemented yet');
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->click('#sidebar .notifications');
 
 $I->see(mb_strtoupper('Benachrichtigungen'), 'h1');

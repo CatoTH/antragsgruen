@@ -6,6 +6,7 @@
  */
 
 use app\components\UrlHelper;
+use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\views\motion\LayoutHelper;
@@ -36,18 +37,20 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
 
     echo '<ul class="bookmarks">';
-    $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurUserHeuristically();
-    if (count($paragraph->comments) > 0 || $mayOpen) {
-        echo '<li class="comment">';
-        $str = '<span class="glyphicon glyphicon-comment"></span>';
-        $str .= '<span class="count" data-count="' . count($paragraph->comments) . '"></span>';
-        $zero = '';
-        if (count($paragraph->comments) == 0) {
-            $zero .= ' zero';
+    if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+        $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurUserHeuristically();
+        if (count($paragraph->comments) > 0 || $mayOpen) {
+            echo '<li class="comment">';
+            $str = '<span class="glyphicon glyphicon-comment"></span>';
+            $str .= '<span class="count" data-count="' . count($paragraph->comments) . '"></span>';
+            $zero = '';
+            if (count($paragraph->comments) == 0) {
+                $zero .= ' zero';
+            }
+            echo Html::a($str, '#', ['class' => 'shower' . $zero]);
+            echo Html::a($str, '#', ['class' => 'hider' . $zero]);
+            echo '</li>';
         }
-        echo Html::a($str, '#', ['class' => 'shower' . $zero]);
-        echo Html::a($str, '#', ['class' => 'hider' . $zero]);
-        echo '</li>';
     }
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
@@ -92,27 +95,27 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         echo '</div>';
     }
 
+    if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+        if (count($paragraph->comments) > 0 || $section->motion->motionType->getCommentPolicy()) {
+            $motion = $section->motion;
+            $form   = $commentForm;
 
-    $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurUserHeuristically();
-    if (count($paragraph->comments) > 0 || $mayOpen) {
-        $motion = $section->motion;
-        $form   = $commentForm;
+            $imadmin = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
+            if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
+                $form              = new \app\models\forms\CommentForm();
+                $form->paragraphNo = $paragraphNo;
+                $form->sectionId   = $section->sectionId;
+            }
 
-        $imadmin = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
-        if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
-            $form              = new \app\models\forms\CommentForm();
-            $form->paragraphNo = $paragraphNo;
-            $form->sectionId   = $section->sectionId;
-        }
+            $baseLink = UrlHelper::createMotionUrl($motion);
+            foreach ($paragraph->comments as $comment) {
+                $commLink = UrlHelper::createMotionCommentUrl($comment);
+                LayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
+            }
 
-        $baseLink = UrlHelper::createMotionUrl($motion);
-        foreach ($paragraph->comments as $comment) {
-            $commLink = UrlHelper::createMotionCommentUrl($comment);
-            LayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
-        }
-
-        if ($motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
-            LayoutHelper::showCommentForm($form, $motion->consultation, $section->sectionId, $paragraphNo);
+            if ($section->motion->motionType->getCommentPolicy()) {
+                LayoutHelper::showCommentForm($form, $motion->consultation, $section->sectionId, $paragraphNo);
+            }
         }
     }
 

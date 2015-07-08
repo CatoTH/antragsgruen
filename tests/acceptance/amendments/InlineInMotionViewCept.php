@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->gotoStdConsultationHome()->gotoMotionView(2);
+$I->gotoConsultationHome()->gotoMotionView(2);
 
 $I->wantTo('check that Ä2 is working correctly');
 $I->dontSee('Neuer Punkt');

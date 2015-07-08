@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('switch to motion screening mode');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $consultationSettingPage = $I->gotoStdAdminPage()->gotoConsultation();
 $I->cantSeeCheckboxIsChecked('#screeningMotions');
@@ -17,19 +17,19 @@ $I->canSeeCheckboxIsChecked('#screeningMotions');
 $motionTitle = 'My new, screened motion';
 
 $I->wantTo('create a motion as a logged out user');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->logout();
 
-$page = $I->gotoStdConsultationHome()->gotoMotionCreatePage();
+$page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $page->createMotion($motionTitle);
 
 $I->wantTo('check that the motion is not visible yet');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->dontSee($motionTitle);
 
 
 $I->wantTo('go to the admin page');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->gotoStdAdminPage();
 
@@ -52,6 +52,6 @@ $I->see('Der Antrag wurde freigeschaltet.');
 
 
 $I->wantTo('check if the motion is visible now');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->see($motionTitle, '.motionListStd');
 $I->see($motionTitle, '#sidebar ul.motions');

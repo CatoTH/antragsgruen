@@ -17,7 +17,7 @@ $mtPage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->selectOption(['name' => 'type[policySupport]'], \app\models\policies\IPolicy::POLICY_LOGGED_IN);
 $mtPage->saveForm();
 
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->logout();
 
 

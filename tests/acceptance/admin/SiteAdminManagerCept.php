@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('Login as regular user');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdUser();
 $I->dontSee('ADMIN', '#adminLink');
 
@@ -14,7 +14,7 @@ $I->logout();
 
 
 $I->wantTo('Login in as an admin');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 
 $I->loginAsStdAdmin();
 $I->see('ADMIN', '#adminLink');
@@ -32,7 +32,7 @@ $I->see('testuser@example.org');
 
 $I->wantTo('Login in as testuser');
 $I->logout();
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdUser();
 $I->see('ADMIN', '#adminLink');
 
@@ -52,6 +52,6 @@ $I->dontSee('testadmin@example.org');
 
 $I->wantTo('Login in as testadmin');
 $I->logout();
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->dontsee('ADMIN', '#adminLink');

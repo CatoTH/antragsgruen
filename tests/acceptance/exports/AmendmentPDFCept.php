@@ -6,7 +6,7 @@ $I->populateDBData1();
 
 
 $I->wantTo('test a single amendment PDF as a user');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->click('.amendment1');
 $pdf = $I->downloadLink('#sidebar .download a');
 if (strlen($pdf) == 0) {
@@ -15,7 +15,7 @@ if (strlen($pdf) == 0) {
 
 
 $I->wantTo('test a single amendment PDF from the admin interface');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->click('#adminLink');
 $I->click('.motionListAll');
@@ -26,7 +26,7 @@ if (strlen($pdf) == 0) {
 
 
 $I->wantTo('test amendment PDF compilation from home page');
-$I->gotoStdConsultationHome();
+$I->gotoConsultationHome();
 $pdf = $I->downloadLink('#sidebar .amendmentPdfs');
 if (strlen($pdf) == 0) {
     $I->fail('PDF has no content');
