@@ -37,19 +37,21 @@ $this->widget('bootstrap.widgets.TbMenu', [
 */
 
 ?>
-
-
     <div class="<?= implode(" ", $row_classes) ?>">
         <main class="col-md-9 well">
             <?php echo $content; ?>
         </main>
         <aside class="col-md-3" id="sidebar">
-            <?= $params->preSidebarHtml?>
-            <div class="well hidden-xs">
-                <?= implode("", $params->menusHtml) ?>
-            </div>
-            <?= $params->postSidebarHtml?>
+            <?php
+            echo $params->preSidebarHtml;
+            if (count($params->menusHtml) > 0) {
+                echo '<div class="well hidden-xs">';
+                echo implode("", $params->menusHtml);
+                echo '</div>';
+            }
+            echo $params->postSidebarHtml;
+            ?>
         </aside>
     </div>
-
-<?php $this->endContent();
+<?php
+$this->endContent();
