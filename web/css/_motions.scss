@@ -236,8 +236,8 @@
 }
 
 .motionTextHolder {
-  h3 {
-    margin-bottom: 10px;
+  .well & > h3.green {
+    margin-bottom: 22px;
   }
   .paragraph {
     font-size: 14px;
@@ -296,6 +296,10 @@
       position: relative;
       del, ul.deleted, blockquote.deleted {
         color: #ff0000;
+        text-decoration: line-through;
+      }
+      ins, ul.inserted, blockquote.inserted {
+        text-decoration: underline;
       }
       .preamble {
         position: absolute;

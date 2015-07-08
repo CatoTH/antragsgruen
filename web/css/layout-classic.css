@@ -4913,8 +4913,8 @@ ins, ul.inserted, blockquote.inserted {
         top: 0;
         right: -8px; }
 
-.motionTextHolder h3 {
-  margin-bottom: 10px; }
+.well .motionTextHolder > h3.green {
+  margin-bottom: 22px; }
 .motionTextHolder .paragraph {
   font-size: 14px;
   clear: both; }
@@ -4963,7 +4963,10 @@ ins, ul.inserted, blockquote.inserted {
     width: 733px;
     position: relative; }
     .motionTextHolder .paragraph .textAmendment del, .motionTextHolder .paragraph .textAmendment ul.deleted, .motionTextHolder .paragraph .textAmendment blockquote.deleted {
-      color: #ff0000; }
+      color: #ff0000;
+      text-decoration: line-through; }
+    .motionTextHolder .paragraph .textAmendment ins, .motionTextHolder .paragraph .textAmendment ul.inserted, .motionTextHolder .paragraph .textAmendment blockquote.inserted {
+      text-decoration: underline; }
     .motionTextHolder .paragraph .textAmendment .preamble {
       position: absolute;
       top: -20px;
