@@ -58,7 +58,7 @@ echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="parentMotion">';
 echo 'Überarbeitete Fassung von';
 echo ':</label><div class="col-md-8">';
-echo '<select class="form-control" name="motion[parentMotionId]" size="1" id="parentMotion"><option>-</option>';
+echo '<select class="form-control" name="motion[parentMotionId]" id="parentMotion"><option>-</option>';
 foreach ($consultation->motions as $mot) {
     if ($mot->id != $motion->id) {
         echo '<option value="' . $mot->id . '"';

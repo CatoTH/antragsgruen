@@ -61,7 +61,7 @@ if ($policy->checkCurUserHeuristically()) {
 if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
     $html .= '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
-        Yii::t('motion', 'PDF-Version herunterladen');
+        Yii::t('motion', 'PDF-Version');
     $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
 }
 
@@ -92,7 +92,7 @@ $html .= '</ul>';
 $layout->menusHtml[] = $html;
 
 $minimalisticUi = $motion->consultation->getSettings()->minimalisticUI;
-$minHeight      = ($minimalisticUi && \Yii::$app->user->isGuest ? 110 : 164);
+$minHeight      = ($minimalisticUi && \Yii::$app->user->isGuest ? 110 : 173);
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 

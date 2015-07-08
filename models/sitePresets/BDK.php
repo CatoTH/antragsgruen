@@ -30,7 +30,7 @@ class BDK implements ISitePreset
     public static function getDescription()
     {
         return 'Nur Anträge, min. 20 AntragstallerInnen oder eine Organisation, ' .
-            'Grünes CI, nur Wurzelwerk-Accounts';
+        'Grünes CI, nur Wurzelwerk-Accounts';
     }
 
     /**
@@ -54,6 +54,7 @@ class BDK implements ISitePreset
 
         $settings                      = $consultation->getSettings();
         $settings->lineNumberingGlobal = false;
+        $settings->lineLength          = 95;
         $settings->screeningMotions    = true;
         $settings->screeningAmendments = true;
         $consultation->setSettings($settings);
