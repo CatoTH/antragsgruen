@@ -12,7 +12,7 @@ $domamend  = $domv . 'motion/<motionId:\d+>/amendment/<amendmentId:\d+>';
 
 $consultationPaths = 'help|search|savetextajax|maintainance|notifications';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
-$motionPaths         = 'create|createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image';
+$motionPaths         = 'createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image';
 $userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|unsubscribe';
 $domPlainPaths       = 'legal|privacy|help|password|billing|createsite';
 $adminMotionPaths    = 'index|update|type|listall|excellist|odslist';
@@ -44,6 +44,7 @@ $url_rules = [
 
     $domv . '<_a:(' . $consultationPaths . ')>'                 => 'consultation/<_a>',
     $domv . 'motion/pdfcollection'                              => 'motion/pdfcollection',
+    $domv . 'motion/create'                                     => 'motion/create',
     $domv . 'amendment/pdfcollection'                           => 'amendment/pdfcollection',
     $dommotion                                                  => 'motion/view',
     $dommotion . '/<_a:(' . $motionPaths . ')>'                 => 'motion/<_a>',

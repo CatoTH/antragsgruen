@@ -30,7 +30,7 @@ class MotionController extends Base
     public function actionViewimage($motionId, $sectionId)
     {
         $motionId = IntVal($motionId);
-        $motion = $this->getMotionWithCheck($motionId);
+        $motion   = $this->getMotionWithCheck($motionId);
 
         foreach ($motion->sections as $section) {
             if ($section->sectionId == $sectionId) {
@@ -106,7 +106,7 @@ class MotionController extends Base
     public function actionOdt($motionId)
     {
         $motionId = IntVal($motionId);
-        $motion = $this->getMotionWithCheck($motionId);
+        $motion   = $this->getMotionWithCheck($motionId);
 
         $filename                    = 'Motion_' . $motion->titlePrefix . '.odt';
         \yii::$app->response->format = Response::FORMAT_RAW;
@@ -124,7 +124,7 @@ class MotionController extends Base
     public function actionPlainhtml($motionId)
     {
         $motionId = IntVal($motionId);
-        $motion = $this->getMotionWithCheck($motionId);
+        $motion   = $this->getMotionWithCheck($motionId);
 
         return $this->renderPartial('plain_html', ['motion' => $motion]);
     }
@@ -137,7 +137,7 @@ class MotionController extends Base
     public function actionView($motionId, $commentId = 0)
     {
         $motionId = IntVal($motionId);
-        $motion = $this->getMotionWithCheck($motionId);
+        $motion   = $this->getMotionWithCheck($motionId);
 
         $this->layout = 'column2';
 
@@ -380,6 +380,18 @@ class MotionController extends Base
          * @var ConsultationMotionType $motionType
          * @var ConsultationAgendaItem|null $agendaItem
          */
+
+        $policy = $motionType->getMotionPolicy();
+        if (!$policy->checkMotionSubmit()) {
+            if (\yii::$app->user->isGuest && $policy->checkHeuristicallyAssumeLoggedIn()) {
+                $loginUrl = UrlHelper::createLoginUrl(['motion/create', 'motionTypeId' => $motionTypeId]);
+                $this->redirect($loginUrl);
+                return '';
+            } else {
+                \Yii::$app->session->setFlash('error', 'Keine Berechtigung zum Anlegen von Anträgen');
+                $this->redirect(UrlHelper::createUrl('consultation/index'));
+            }
+        }
 
         $form = new MotionEditForm($motionType, $agendaItem, null);
 
