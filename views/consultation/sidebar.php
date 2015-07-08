@@ -238,7 +238,7 @@ if ($hasPDF) {
     $layout->menusHtml[] = $html;
 }
 
-if ($consultation->site->getBehaviorClass()->showAntragsgruenInSidebar()) {
+if ($consultation->site->getSettings()->showAntragsgruenAd) {
     $layout->postSidebarHtml = '<div class="antragsgruenAd well">
         <div class="nav-header">Dein Antragsgrün</div>
         <div class="content">

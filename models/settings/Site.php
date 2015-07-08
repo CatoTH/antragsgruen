@@ -9,6 +9,7 @@ class Site
     public $onlyNamespacedAccounts = false;
     public $onlyWurzelwerk         = false;
     public $siteLayout             = 'layout-classic';
+    public $showAntragsgruenAd     = true;
 
     /** @var int */
     public $willingToPay = 0;
