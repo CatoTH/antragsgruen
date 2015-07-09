@@ -150,6 +150,20 @@ class AcceptanceTester extends \Codeception\Actor
     /**
      *
      */
+    public function loginAsWurzelwerkUser()
+    {
+        $this->see('LOGIN', '#loginLink');
+        $this->click('#loginLink');
+
+        $this->see('LOGIN', 'h1');
+        $this->fillField('#wurzelwerkAccount', 'DoeJane');
+        $this->submitForm('#wurzelwerkLoginForm', [], 'wurzelwerkLogin');
+        $this->seeElement('#logoutLink');
+    }
+
+    /**
+     *
+     */
     public function logout()
     {
         $this->see('LOGOUT', '#logoutLink');

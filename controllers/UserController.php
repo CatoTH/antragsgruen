@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\AntiXSS;
 use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
+use app\components\WurzelwerkAuthClientTest;
 use app\models\db\User;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
@@ -72,7 +73,17 @@ class UserController extends Base
             $backUrl = (isset($_POST['backUrl']) ? $_POST['backUrl'] : UrlHelper::homeUrl());
         }
 
-        $client = new WurzelwerkAuthClient();
+        if (YII_ENV == 'test') {
+            $client = new WurzelwerkAuthClientTest();
+            if (isset($_REQUEST['username'])) {
+                $client->setClaimedId($_REQUEST['username']);
+                $this->redirect($client->getFakeRedirectUrl($backUrl));
+                return '';
+            }
+        } else {
+            $client = new WurzelwerkAuthClient();
+        }
+
         if (isset($_REQUEST['openid_claimed_id'])) {
             $client->setClaimedId($_REQUEST['openid_claimed_id']);
         } elseif (isset($_REQUEST['username'])) {
@@ -83,6 +94,9 @@ class UserController extends Base
             if ($_REQUEST['openid_mode'] == 'error') {
                 \yii::$app->session->setFlash('error', 'An error occurred: ' . $_REQUEST['openid_error']);
                 return $this->actionLogin($backUrl);
+            } elseif ($_REQUEST['openid_mode'] == 'cancel') {
+                \yii::$app->session->setFlash('error', 'Login abgebrochen');
+                return $this->actionLogin($backUrl);
             } elseif ($client->validate()) {
                 $this->loginUser($client->getOrCreateUser());
                 $this->redirect($backUrl);
@@ -90,7 +104,7 @@ class UserController extends Base
                 \yii::$app->session->setFlash('error', 'An unknown error occurred');
                 return $this->actionLogin($backUrl);
             }
-            return "";
+            return '';
         }
 
         $url = $client->buildAuthUrl();

@@ -67,7 +67,7 @@ class WurzelwerkAuthClient extends OpenId
     public function validate($validateRequiredAttributes = true)
     {
         $claimedId = $this->getClaimedId();
-        if (empty($claimedId)) {
+        if (empty($claimedId) || !isset($this->data['openid_assoc_handle'])) {
             return false;
         }
         $params = [
@@ -120,6 +120,8 @@ class WurzelwerkAuthClient extends OpenId
         }
 
         $attributes = $this->getUserAttributes();
+        var_dump($attributes);
+        die();
         if (!isset($attributes['id'])) {
             throw new \Exception('Incomplete Login data');
         }
@@ -159,7 +161,7 @@ class WurzelwerkAuthClient extends OpenId
         $attributes = $this->getAuthenticatedAttributes();
         $auth       = User::wurzelwerkId2Auth($attributes['id']);
 
-        $user = User::findOne(array('auth' => $auth));
+        $user = User::findOne(['auth' => $auth]);
         if ($user) {
             return $user;
         }

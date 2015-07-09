@@ -138,14 +138,14 @@ if ($params->hasWurzelwerk) {
 
     $backUrl = UrlHelper::createUrl('consultation/index');
     $action  = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
-    echo Html::beginForm($action, 'post', ['class' => 'col-sm-4']);
+    echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'wurzelwerkLoginForm']);
 
     echo '<div class="form-group">
     <label for="wurzelwerkAccount">WurzelWerk-Account:</label>
   <input name="username" id="wurzelwerkAccount" type="text" class="form-control">
     </div>
 
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="btn btn-primary" name="wurzelwerkLogin">
             <span class="glyphicon glyphicon-log-in"></span> Einloggen
     </button>
 ';
