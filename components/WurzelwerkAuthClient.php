@@ -120,8 +120,6 @@ class WurzelwerkAuthClient extends OpenId
         }
 
         $attributes = $this->getUserAttributes();
-        var_dump($attributes);
-        die();
         if (!isset($attributes['id'])) {
             throw new \Exception('Incomplete Login data');
         }
