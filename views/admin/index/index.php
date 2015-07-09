@@ -12,11 +12,11 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$params     = $controller->layoutParams;
+$layout     = $controller->layoutParams;
 
 $this->title = 'Administration';
-$params->addCSS('/css/backend.css');
-$params->addBreadcrumb('Administration');
+$layout->addCSS('/css/backend.css');
+$layout->addBreadcrumb('Administration');
 
 
 echo '<h1>Administration</h1>';
@@ -153,11 +153,11 @@ foreach ($consultation->motionTypes as $motionType) {
 echo '</ul></li>';
 
 echo '<li>';
+echo Html::a('Zugang zur Seite / Login', UrlHelper::createUrl('admin/index/siteaccess'));
+echo '</li><li>';
 echo Html::a('Weitere Admins', UrlHelper::createUrl('admin/index/admins'), ['id' => 'adminsManageLink']);
 echo '</li><li>';
 echo Html::a('Weitere Veranstaltungen anlegen / verwalten', UrlHelper::createUrl('admin/index/reiheVeranstaltungen'));
-echo '</li><li>';
-echo Html::a('Veranstaltungsreihen-BenutzerInnen', UrlHelper::createUrl('admin/index/namespacedAccounts'));
 echo '</li>
     </ul></div>';
 

@@ -6,12 +6,10 @@ class Site
 {
 
     /** @var bool */
-    public $onlyNamespacedAccounts = false;
-    public $onlyWurzelwerk         = false;
-    public $siteLayout             = 'layout-classic';
-    public $showAntragsgruenAd     = true;
-    public $loginMethods           = [0, 1, 2, 3];
-    public $forceLogin             = false;
+    public $siteLayout         = 'layout-classic';
+    public $showAntragsgruenAd = true;
+    public $loginMethods       = [0, 1, 3];
+    public $forceLogin         = false; // @TODO Doesn't do anything yet
 
     /** @var int */
     public $willingToPay = 0;
@@ -24,6 +22,8 @@ class Site
     const LOGIN_WURZELWERK = 1;
     const LOGIN_NAMESPACED = 2;
     const LOGIN_EXTERNAL   = 3;
+
+    public static $SITE_MANAGER_LOGIN_METHODS = [0, 1, 3];
 
     /**
      * @return string[]

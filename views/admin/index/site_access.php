@@ -1,0 +1,83 @@
+<?php
+
+use app\components\UrlHelper;
+use yii\helpers\Html;
+use app\models\settings\Site as SiteSettings;
+
+/**
+ * @var yii\web\View $this
+ * @var \app\models\db\Site $site
+ */
+
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$layout     = $controller->layoutParams;
+
+$this->title = 'Zugang zur Seite';
+$layout->addCSS('/css/backend.css');
+$layout->addJS('/js/backend.js');
+$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb('Zugang');
+
+$settings = $site->getSettings();
+
+echo '<h1>Zugang zur Seite</h1>';
+echo Html::beginForm('', 'post', ['id' => 'siteSettingsForm', 'class' => 'content adminForm form-horizontal']);
+
+echo '<div class="checkbox">
+  <label>' . Html::checkbox('forceLogin', $settings->forceLogin) . '
+  Nur eingeloggte BenutzerInnen dürfen zugreifen (inkl. <em>lesen</em>)
+</label>
+</div>';
+
+
+echo '<fieldset class="loginMethods"><legend>Folgende Login-Varianten sind möglich:</legend>';
+
+$method = SiteSettings::LOGIN_STD;
+echo '<div class="checkbox std">
+  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) . '
+  Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>
+</label>
+</div>';
+
+if ($controller->getParams()->hasWurzelwerk) {
+    $method = SiteSettings::LOGIN_WURZELWERK;
+    echo '<div class="checkbox wurzelwerk">
+  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) . '
+  Wurzelwerk <small>(alle mit Wurzelwerk-Zugang)</small>
+</label>
+</div>';
+}
+
+$method = SiteSettings::LOGIN_EXTERNAL;
+echo '<div class="checkbox external">
+  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) . '
+  Sonstige Methoden <small>(OpenID, evtl. zufünftig auch Login per Facebook / Twitter)</small>
+</label>
+</div>';
+
+$method = SiteSettings::LOGIN_NAMESPACED;
+echo '<div class="checkbox namespaced">
+  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) . '
+  BenutzerInnen-Verwaltung speziell für diese Seite <small>(durch die Seiten-AdministratorInnen)</small>
+</label>
+</div>';
+
+echo '<div class="saveholder">
+<button type="submit" name="save" class="btn btn-primary">Speichern</button>
+</div>';
+
+echo '</fieldset>';
+
+
+echo Html::endForm();
+
+
+echo Html::beginForm('', 'post', ['id' => 'accountsForm', 'class' => 'adminForm form-horizontal']);
+echo '<h2 class="green">' . 'Benutzer_Innen-Accounts <small>(nur für diese Seite)</small>' . '</h2>';
+echo '<div class="content">';
+echo 'Test';
+echo '</div>';
+echo Html::endForm();
+
+$layout->addOnLoadJS('$.AntragsgruenAdmin.siteAccessInit();');

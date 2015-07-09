@@ -281,11 +281,23 @@
         });
     };
 
+    var siteAccessInit = function () {
+        var $siteForm = $("#siteSettingsForm");
+        $siteForm.find(".loginMethods .namespaced input").change(function () {
+            if ($(this).prop("checked")) {
+                $("#accountsForm").show();
+            } else {
+                $("#accountsForm").hide();
+            }
+        }).trigger("change");
+    };
+
     $.AntragsgruenAdmin = {
         'consultationEditForm': consultationEditForm,
         'motionTypeEdit': motionTypeEdit,
         'agendaEdit': agendaEdit,
-        'motionListAll': motionListAll
+        'motionListAll': motionListAll,
+        'siteAccessInit': siteAccessInit
     };
 
 }(jQuery));

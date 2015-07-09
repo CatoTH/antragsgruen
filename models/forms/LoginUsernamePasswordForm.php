@@ -180,7 +180,12 @@ class LoginUsernamePasswordForm extends Model
      */
     private function getCandidates($site)
     {
-        $methods = $site->getSettings()->loginMethods;
+        if ($site) {
+            $methods = $site->getSettings()->loginMethods;
+        } else {
+            $methods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
+        }
+
         /** @var AntragsgruenApp $app */
         $app        = \yii::$app->params;
         $candidates = [];
@@ -203,7 +208,12 @@ class LoginUsernamePasswordForm extends Model
      */
     private function checkLogin($site)
     {
-        $methods = $site->getSettings()->loginMethods;
+        if ($site) {
+            $methods = $site->getSettings()->loginMethods;
+        } else {
+            $methods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
+        }
+
         if (!in_array(SiteSettings::LOGIN_STD, $methods) && !in_array(SiteSettings::LOGIN_NAMESPACED, $methods)) {
             $this->error = 'Das Login mit BenutzerInnenname und Passwort ist bei dieser Veranstaltung nicht möglich.';
             throw new Login($this->error);
@@ -219,7 +229,7 @@ class LoginUsernamePasswordForm extends Model
                 return $tryUser;
             }
         }
-        $this->error = "Falsches Passwort.";
+        $this->error = 'Falsches Passwort.';
         throw new Login($this->error);
     }
 

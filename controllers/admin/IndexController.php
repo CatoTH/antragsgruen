@@ -179,8 +179,6 @@ class IndexController extends AdminBase
     {
         $ssettings                            = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
         $siteSettings                         = $site->getSettings();
-        $siteSettings->onlyNamespacedAccounts = (isset($ssettings['onlyNamespacedAccounts']) ? 1 : 0);
-        $siteSettings->onlyWurzelwerk         = (isset($ssettings['onlyWurzelwerk']) ? 1 : 0);
         $siteSettings->siteLayout             = $ssettings['siteLayout'];
         $site->setSettings($siteSettings);
         $site->save();
@@ -190,6 +188,7 @@ class IndexController extends AdminBase
     /**
      * @throws \Exception
      * @throws \app\models\exceptions\FormError
+     * @return string
      */
     public function actionConsultationextended()
     {
@@ -227,6 +226,31 @@ class IndexController extends AdminBase
         }
 
         return $this->render('consultation_extended', ['consultation' => $consultation]);
+    }
+
+    /**
+     * @throws \Exception
+     * @return string
+     */
+    public function actionSiteaccess()
+    {
+        $site = $this->site;
+
+        if (isset($_POST['save'])) {
+            $settings = $site->getSettings();
+            $settings->forceLogin = isset($_POST['forceLogin']);
+            if (isset($_POST['login'])) {
+                $settings->loginMethods = $_POST['login'];
+            } else {
+                $settings->loginMethods = [];
+            }
+            $site->setSettings($settings);
+            $site->save();
+
+            \yii::$app->session->setFlash('success', 'Gespeichert.');
+        }
+
+        return $this->render('site_access', ['site' => $site]);
     }
 
 

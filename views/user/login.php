@@ -21,7 +21,7 @@ $layout->addBreadcrumb('Login');
 if ($controller->site) {
     $loginMethods = $controller->site->getSettings()->loginMethods;
 } else {
-    $loginMethods = [SiteSettings::LOGIN_STD, SiteSettings::LOGIN_WURZELWERK, SiteSettings::LOGIN_EXTERNAL];
+    $loginMethods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
 }
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;

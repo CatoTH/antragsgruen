@@ -122,40 +122,9 @@ $description = '<strong>Minimalistische Ansicht</strong><br>
 $booleanSettingRow($settings, 'minimalisticUI', $handledSettings, $description);
 
 
-/*
-    <div>
-        <label style="display: inline;">
-            <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]"
-        value="bdk_startseiten_layout">
-            <input type="checkbox" name="VeranstaltungsEinstellungen[bdk_startseiten_layout]"
-                   value="1" <?php if ($einstellungen->bdk_startseiten_layout == 1) echo "checked"; ?>>
-            <strong>Antragsübersicht der Startseite im BDK-Stil</strong>
-        </label>
-    </div>
- */
-
-
 echo '</div>
 <h2 class="green">Anträge</h2>
 <div class="content">';
-/*
-<fieldset class="form-group">
-        <label class="col-sm-4 control-label" for="policyMotions">(Änderungs-)Anträge unterstützen dürfen:</label>
-        <div class="col-sm-8">';
-$policies = [];
-foreach (IPolicy::getPolicyNames() as $pId => $pName) {
-    if ($pId != 'all') {
-        $policies[$pId] = $pName;
-    }
-}
-echo Html::dropDownList(
-    'consultation[policySupport]',
-    $consultation->policySupport,
-    $policies,
-    ['id' => 'policySupport', 'class' => 'form-control']
-);
-echo '</div></fieldset>';
-*/
 
 $tags = $consultation->getSortedTags();
 echo '<fieldset class="form-group">
@@ -235,26 +204,6 @@ echo '
         })
     </script>
 ';
-
-$namespaceAdminLink = UrlHelper::createUrl('admin/index/namespacedAccounts');
-$description        = 'Login nur von <a href="%link%">Veranstaltungsreihen-BenutzerInnen</a> zulassen<br>
-    <small style="margin-left: 20px;">(gilt für Anträge und Änderungsanträge der gesamten
-    Veranstaltungs<span style="text-decoration: underline;">reihe</span>)</small>';
-
-$active = $consultation->site->getSettings()->onlyNamespacedAccounts;
-echo '<fieldset><label>';
-echo Html::checkbox('siteSettings[onlyNamespacedAccounts]', $active, ['id' => 'onlyNamespacedAccounts']);
-echo str_replace('%link%', Html::encode($namespaceAdminLink), $description);
-echo '</label></fieldset>';
-
-$active = $consultation->site->getSettings()->onlyWurzelwerk;
-echo '<fieldset><label>';
-echo Html::checkbox('siteSettings[onlyWurzelwerk]', $active, ['id' => 'onlyWurzelwerk']);
-echo 'Login nur von Wurzelwerk-NutzerInnen zulassen<br>
-    <small style="margin-left: 20px;">(gilt für Anträge und Änderungsanträge der gesamten
-    Veranstaltungs<span style="text-decoration: underline;">reihe</span>)</small>';
-echo '</label></fieldset>';
-
 
 $description = 'Kommentare zum Antrag allgemein zulassen<br>
 <small style="margin-left: 20px;">(Anträge ohne Absatzbezug, erscheinen unterhalb des Antrags)</small>';
