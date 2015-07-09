@@ -111,7 +111,7 @@ class UrlHelper
      */
     public static function createLoginUrl($route)
     {
-        $target_url = Url::toRoute($route);
+        $target_url = static::createUrl($route);
         if (Yii::$app->user->isGuest) {
             return static::createUrl(['user/login', 'backUrl' => $target_url]);
         } else {

@@ -157,8 +157,8 @@ class LayoutHelper
 
         echo '<input type="hidden" name="comment[paragraphNo]" value="' . $paragraphNo . '">';
         echo '<input type="hidden" name="comment[sectionId]" value="' . $sectionId . '">';
-        $onlyNamespaced = $consultation->site->getSettings()->onlyNamespacedAccounts;
-        if (!($onlyNamespaced && $consultation->site->getBehaviorClass()->isLoginForced())) {
+
+        if (!(User::getCurrentUser() && User::getCurrentUser()->isNamespacedAccount())) {
             echo '
             <div class="form-group">
                 <label for="' . $formIdPre . '_name" class="control-label col-sm-3">Name:</label>

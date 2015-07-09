@@ -48,7 +48,6 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_SCREENING             = 3;
     const PRIVILEGE_MOTION_EDIT           = 4;
 
-
     /**
      * @return string[]
      */
@@ -368,6 +367,14 @@ class User extends ActiveRecord implements IdentityInterface
     public static function wurzelwerkId2Auth($username)
     {
         return 'openid:https://service.gruene.de/openid/' . $username;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNamespacedAccount()
+    {
+        return ($this->siteNamespaceId > 0);
     }
 
     /**

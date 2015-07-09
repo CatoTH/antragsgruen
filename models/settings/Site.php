@@ -10,6 +10,8 @@ class Site
     public $onlyWurzelwerk         = false;
     public $siteLayout             = 'layout-classic';
     public $showAntragsgruenAd     = true;
+    public $loginMethods           = [0, 1, 2, 3];
+    public $forceLogin             = false;
 
     /** @var int */
     public $willingToPay = 0;
@@ -17,6 +19,11 @@ class Site
     const PAYS_NOT   = 0;
     const PAYS_MAYBE = 1;
     const PAYS_YES   = 2;
+
+    const LOGIN_STD        = 0;
+    const LOGIN_WURZELWERK = 1;
+    const LOGIN_NAMESPACED = 2;
+    const LOGIN_EXTERNAL   = 3;
 
     /**
      * @return string[]

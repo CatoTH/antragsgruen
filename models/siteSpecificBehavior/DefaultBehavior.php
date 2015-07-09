@@ -18,6 +18,8 @@ class DefaultBehavior
     }
 
     /**
+     * @TODO Obsolete
+     *
      * @return bool
      */
     public function isLoginForced()

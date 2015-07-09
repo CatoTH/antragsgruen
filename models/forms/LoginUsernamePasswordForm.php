@@ -10,6 +10,7 @@ use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Login;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Site as SiteSettings;
 use yii\base\Model;
 
 class LoginUsernamePasswordForm extends Model
@@ -75,36 +76,32 @@ class LoginUsernamePasswordForm extends Model
      */
     private function doCreateAccountValidate($site)
     {
-        if ($site && $site->getSettings()->onlyNamespacedAccounts) {
-            $this->error = "Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.";
-            throw new Login($this->error);
-        }
-        if ($site && $site->getSettings()->onlyWurzelwerk) {
-            $this->error = "Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.";
+        if (!in_array(SiteSettings::LOGIN_STD, $site->getSettings()->loginMethods)) {
+            $this->error = 'Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.';
             throw new Login($this->error);
         }
         if (!preg_match("/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/siu", $this->username)) {
-            $this->error = "Bitte gib eine gültige E-Mail-Adresse als BenutzerInnenname ein.";
+            $this->error = 'Bitte gib eine gültige E-Mail-Adresse als BenutzerInnenname ein.';
             throw new Login($this->error);
         }
         if (strlen($this->password) < static::PASSWORD_MIN_LEN) {
-            $this->error = "Das Passwort muss mindestens sechs Buchstaben lang sein.";
+            $this->error = 'Das Passwort muss mindestens sechs Buchstaben lang sein.';
             throw new Login($this->error);
         }
         if ($this->password != $this->passwordConfirm) {
-            $this->error = "Die beiden angegebenen Passwörter stimmen nicht überein.";
+            $this->error = 'Die beiden angegebenen Passwörter stimmen nicht überein.';
             throw new Login($this->error);
         }
-        if ($this->name == "") {
-            $this->error = "Bitte gib deinen Namen ein.";
+        if ($this->name == '') {
+            $this->error = 'Bitte gib deinen Namen ein.';
             throw new Login($this->error);
         }
 
-        $auth     = "email:" . $this->username;
+        $auth     = 'email:' . $this->username;
         $existing = User::findOne(['auth' => $auth]);
         if ($existing) {
             /** @var User $existing */
-            $this->error = "Es existiert bereits ein Zugang mit dieser E-Mail-Adresse ($auth): " .
+            $this->error = 'Es existiert bereits ein Zugang mit dieser E-Mail-Adresse ($auth): ' .
                 print_r($existing->getAttributes(), true);
             throw new Login($this->error);
         }
@@ -120,7 +117,7 @@ class LoginUsernamePasswordForm extends Model
         $this->doCreateAccountValidate($site);
 
         $user                 = new User();
-        $user->auth           = "email:" . $this->username;
+        $user->auth           = 'email:' . $this->username;
         $user->name           = $this->name;
         $user->email          = $this->username;
         $user->emailConfirmed = 0;
@@ -139,54 +136,64 @@ class LoginUsernamePasswordForm extends Model
             $this->sendConfirmationEmail($user);
             return $user;
         } else {
-            $this->error = "Leider ist ein (ungewöhnlicher) Fehler aufgetreten.";
+            $this->error = 'Leider ist ein (ungewöhnlicher) Fehler aufgetreten.';
             throw new Login($this->error);
         }
     }
 
     /**
-     * @param Site|null $site
      * @return User[]
      */
-    private function checkLoginOnlyNamespaced($site)
+    private function getCandidatesWurzelwerk()
     {
-        /** @var User[] $users */
-        if (strpos($this->username, "@")) {
-            $sql_where2 = "(auth = 'ns_admin:" . IntVal($site->id) . ":" . addslashes($this->username) . "'";
-            $sql_where2 .= " AND siteNamespaceId = " . IntVal($site->id) . ")";
-            return User::findBySql("SELECT * FROM user WHERE $sql_where2")->all();
-        } else {
-            // @TODO Login über Wurzelwerk-Authentifizierten Account per
-            // BenutzerInnenname+Passwort beim Admin der Reihe ermöglichen
-            return array();
-        }
+        $wwlike = "openid:https://service.gruene.de/%";
+        $auth   = "openid:https://service.gruene.de/openid/" . $this->username;
+        $sql    = "SELECT * FROM user WHERE auth = '" . addslashes($auth) . "'";
+        $sql .= " OR (auth LIKE '$wwlike' AND email = '" . addslashes($this->username) . "')";
+        return User::findBySql($sql)->all();
     }
+
+    /**
+     * @return User[]
+     */
+    private function getCandidatesStdLogin()
+    {
+        $sql_where1 = "auth = 'email:" . addslashes($this->username) . "'";
+        return User::findBySql("SELECT * FROM user WHERE $sql_where1 AND siteNamespaceId IS NULL")->all();
+    }
+
+    /**
+     * @param Site $site
+     * @return User[]
+     */
+    private function getCandidatesNamespaced(Site $site)
+    {
+        $auth   = addslashes("ns_admin:" . IntVal($site->id) . ":" . addslashes($this->username) . "'");
+        $siteId = IntVal($site->id);
+        return User::findBySql("SELECT * FROM user WHERE auth = '$auth' AND siteNamespaceId = $siteId")->all();
+    }
+
 
     /**
      * @param Site|null $site
      * @return User[]
      */
-    private function checkLoginStd($site)
+    private function getCandidates($site)
     {
-        $wwlike = "openid:https://service.gruene.de/%";
-        /** @var User[] $users */
-        if (strpos($this->username, "@")) {
-            $sql_where1 = "auth = 'email:" . addslashes($this->username) . "'";
-            if ($site) {
-                $sql_where2 = "(auth = 'ns_admin:" . IntVal($site->id) . ":" . addslashes($this->username) . "'";
-                $sql_where2 .= " AND siteNamespaceId = " . IntVal($site->id) . ")";
-                $sql_where3 = "(email = '" . addslashes($this->username) . "' AND auth LIKE '$wwlike')";
-                return User::findBySql("SELECT * FROM user WHERE $sql_where1 OR $sql_where2 OR $sql_where3")->all();
-            } else {
-                return User::findBySql("SELECT * FROM user WHERE $sql_where1")->all();
-            }
-
-        } else {
-            $auth = "openid:https://service.gruene.de/openid/" . $this->username;
-            $sql  = "SELECT * FROM user WHERE auth = '" . addslashes($auth) . "'";
-            $sql .= " OR (auth LIKE '$wwlike' AND email = '" . addslashes($this->username) . "')";
-            return User::findBySql($sql)->all();
+        $methods = $site->getSettings()->loginMethods;
+        /** @var AntragsgruenApp $app */
+        $app        = \yii::$app->params;
+        $candidates = [];
+        if (in_array(SiteSettings::LOGIN_STD, $methods)) {
+            $candidates = array_merge($candidates, $this->getCandidatesStdLogin());
         }
+        if (in_array(SiteSettings::LOGIN_NAMESPACED, $methods) && $site) {
+            $candidates = array_merge($candidates, $this->getCandidatesNamespaced($site));
+        }
+        if (in_array(SiteSettings::LOGIN_WURZELWERK, $methods) && $app->hasWurzelwerk) {
+            $candidates = array_merge($candidates, $this->getCandidatesWurzelwerk());
+        }
+        return $candidates;
     }
 
     /**
@@ -196,18 +203,15 @@ class LoginUsernamePasswordForm extends Model
      */
     private function checkLogin($site)
     {
-        if ($site && $site->getSettings()->onlyWurzelwerk) {
-            $this->error = "Das Login mit BenutzerInnenname und Passwort ist bei dieser Veranstaltung nicht möglich.";
+        $methods = $site->getSettings()->loginMethods;
+        if (!in_array(SiteSettings::LOGIN_STD, $methods) && !in_array(SiteSettings::LOGIN_NAMESPACED, $methods)) {
+            $this->error = 'Das Login mit BenutzerInnenname und Passwort ist bei dieser Veranstaltung nicht möglich.';
             throw new Login($this->error);
         }
-        if ($site && $site->getSettings()->onlyNamespacedAccounts) {
-            $candidates = $this->checkLoginOnlyNamespaced($site);
-        } else {
-            $candidates = $this->checkLoginStd($site);
-        }
+        $candidates = $this->getCandidates($site);
 
         if (count($candidates) == 0) {
-            $this->error = "BenutzerInnenname nicht gefunden.";
+            $this->error = 'BenutzerInnenname nicht gefunden.';
             throw new Login($this->error);
         }
         foreach ($candidates as $tryUser) {

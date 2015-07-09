@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\forms\LoginUsernamePasswordForm;
 use yii\helpers\Html;
+use app\models\settings\Site as SiteSettings;
 
 /**
  * @var $this yii\web\View
@@ -17,11 +18,18 @@ $layout     = $controller->layoutParams;
 $this->title = 'Login';
 $layout->addBreadcrumb('Login');
 
+if ($controller->site) {
+    $loginMethods = $controller->site->getSettings()->loginMethods;
+} else {
+    $loginMethods = [SiteSettings::LOGIN_STD, SiteSettings::LOGIN_WURZELWERK, SiteSettings::LOGIN_EXTERNAL];
+}
+/** @var \app\models\settings\AntragsgruenApp $params */
+$params = \Yii::$app->params;
 
 echo '<h1>Login</h1>';
 
 
-if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
+if (in_array(SiteSettings::LOGIN_STD, $loginMethods) || in_array(SiteSettings::LOGIN_NAMESPACED, $loginMethods)) {
     $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
     echo '<h2 class="green">Login per Benutzer_Innenname / Passwort</h2>
@@ -40,7 +48,13 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     $preUsername = $usernamePasswordForm->username;
     $preName     = $usernamePasswordForm->name;
 
-    if ($controller->site && $controller->site->getSettings()->onlyNamespacedAccounts) {
+    if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
+        $pre_checked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
+        echo '<div class="checkbox"><label>
+            <input type="checkbox" name="createAccount" id="createAccount" ' . $pre_checked . '>
+            Neuen Zugang anlegen
+            </label></div>';
+    } else {
         echo '<div class="alert alert-info">!';
         // @TODO
         //echo veranstaltungsspezifisch_hinweis_namespaced_accounts($this->veranstaltung,
@@ -49,12 +63,6 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
         //Falls du keine bekommen haben solltest, melde dich bitte bei den
         //Organisatoren dieses Parteitags / dieser Programmdiskussion.');
         echo "</div>";
-    } else {
-        $pre_checked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
-        echo '<div class="checkbox"><label>
-            <input type="checkbox" name="createAccount" id="createAccount" ' . $pre_checked . '>
-            Neuen Zugang anlegen
-            </label></div>';
     }
 
     echo '<div class="form-group">
@@ -122,10 +130,8 @@ if (!$controller->site || !$controller->site->getSettings()->onlyWurzelwerk) {
     echo '</div>';
 }
 
-/** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
 if ($params->hasWurzelwerk) {
-    $hide_ww_login = ($controller->site && $controller->site->getSettings()->onlyNamespacedAccounts);
+    $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
     if ($hide_ww_login) {
         echo '<div class="content">
         <a href="#" onClick="$(\'#admin_login_www\').toggle(); return false;">Admin-Login</a>
@@ -168,9 +174,7 @@ if ($params->hasWurzelwerk) {
 }
 
 
-if (!$controller->site || (!$controller->site->getSettings()->onlyNamespacedAccounts &&
-        !$controller->site->getSettings()->onlyNamespacedAccounts)
-) {
+if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
     echo '<h2 class="green">OpenID-Login</h2>
 	<div class="content row">';
     echo Html::beginForm('', 'post', ['class' => 'col-sm-6']);
