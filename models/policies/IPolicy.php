@@ -80,9 +80,10 @@ abstract class IPolicy
     /**
      * @static
      * @abstract
+     * @param bool $allowAdmins
      * @return bool
      */
-    abstract public function checkCurUserHeuristically();
+    abstract public function checkCurUserHeuristically($allowAdmins = true);
 
     /**
      * @abstract
@@ -91,41 +92,46 @@ abstract class IPolicy
     abstract public function getOnCreateDescription();
 
     /**
+     * @param bool $allowAdmins
      * @return bool
      */
-    public function checkHeuristicallyAssumeLoggedIn()
+    public function checkHeuristicallyAssumeLoggedIn($allowAdmins = true)
     {
-        return $this->checkCurUserHeuristically();
+        return $this->checkCurUserHeuristically($allowAdmins);
     }
 
 
     /**
+     * @param bool $allowAdmins
      * @return bool
      */
-    abstract public function checkMotionSubmit();
+    abstract public function checkMotionSubmit($allowAdmins = true);
 
     /**
+     * @param bool $allowAdmins
      * @return bool
      */
-    public function checkAmendmentSubmit()
+    public function checkAmendmentSubmit($allowAdmins = true)
     {
-        return $this->checkMotionSubmit();
+        return $this->checkMotionSubmit($allowAdmins);
     }
 
     /**
+     * @param bool $allowAdmins
      * @return bool
      */
-    public function checkCommentSubmit()
+    public function checkCommentSubmit($allowAdmins = true)
     {
-        return $this->checkMotionSubmit();
+        return $this->checkMotionSubmit($allowAdmins);
     }
 
     /**
+     * @param bool $allowAdmins
      * @return bool
      */
-    public function checkSupportSubmit()
+    public function checkSupportSubmit($allowAdmins = true)
     {
-        return $this->checkMotionSubmit();
+        return $this->checkMotionSubmit($allowAdmins);
     }
 
     /**

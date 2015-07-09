@@ -26,11 +26,13 @@ class Admins extends IPolicy
 
     /**
      * @static
+     * @param bool $allowAdmins
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkCurUserHeuristically()
+    public function checkCurUserHeuristically($allowAdmins = true)
     {
-        return false;
+        return (User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY));
     }
 
     /**
@@ -74,9 +76,11 @@ class Admins extends IPolicy
     }
 
     /**
+     * @param bool $allowAdmins
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkMotionSubmit()
+    public function checkMotionSubmit($allowAdmins = true)
     {
         return User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_SCREENING);
     }

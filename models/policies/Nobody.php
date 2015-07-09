@@ -24,9 +24,11 @@ class Nobody extends IPolicy
 
     /**
      * @static
+     * @param bool $allowAdmins
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkCurUserHeuristically()
+    public function checkCurUserHeuristically($allowAdmins = true)
     {
         return false;
     }
@@ -72,9 +74,11 @@ class Nobody extends IPolicy
     }
 
     /**
+     * @param bool $allowAdmin
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkMotionSubmit()
+    public function checkMotionSubmit($allowAdmin = true)
     {
         return false;
     }

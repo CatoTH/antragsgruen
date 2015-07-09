@@ -24,9 +24,11 @@ class LoggedIn extends IPolicy
 
     /**
      * @static
+     * @param bool $allowAdmins
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkCurUserHeuristically()
+    public function checkCurUserHeuristically($allowAdmins = true)
     {
         return true;
     }
@@ -73,9 +75,11 @@ class LoggedIn extends IPolicy
 
 
     /**
+     * @param bool $allowAdmins
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkMotionSubmit()
+    public function checkMotionSubmit($allowAdmins = true)
     {
         return (!\Yii::$app->user->isGuest);
     }

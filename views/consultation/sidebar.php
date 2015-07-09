@@ -5,6 +5,7 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
+use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
 /**
@@ -26,13 +27,13 @@ $hasMotions    = false;
 $hasAmendments = false;
 $hasPDF        = false;
 foreach ($consultation->motionTypes as $type) {
-    if ($type->policyComments != \app\models\policies\IPolicy::POLICY_NOBODY) {
+    if ($type->policyComments != IPolicy::POLICY_NOBODY) {
         $hasComments = true;
     }
-    if ($type->policyMotions != \app\models\policies\IPolicy::POLICY_NOBODY) {
+    if ($type->policyMotions != IPolicy::POLICY_NOBODY) {
         $hasMotions = true;
     }
-    if ($type->policyAmendments != \app\models\policies\IPolicy::POLICY_NOBODY) {
+    if ($type->policyAmendments != IPolicy::POLICY_NOBODY) {
         $hasAmendments = true;
     }
     if ($type->getPDFLayoutClass() !== null) {
@@ -64,7 +65,7 @@ if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda')
         $layout->preSidebarHtml = $motionLink;
     } elseif (count($motionTypes) > 0) {
         if (count($motionTypes) == 1) {
-            if ($motionTypes[0]->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
+            if ($motionTypes[0]->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn(false)) {
                 $createLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
                 if ($motionTypes[0]->getMotionPolicy()->checkCurUserHeuristically()) {
                     $motionCreateLink = $createLink;
@@ -78,7 +79,7 @@ if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda')
             $html = '<div><ul class="nav nav-list motions">';
             $html .= '<li class="nav-header">' . Yii::t('con', 'Create new...') . '</li>';
             foreach ($motionTypes as $motionType) {
-                if ($motionType->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
+                if ($motionType->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn(false)) {
                     $createLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
                     if ($motionType->getMotionPolicy()->checkCurUserHeuristically()) {
                         $motionCreateLink = $createLink;
@@ -142,7 +143,7 @@ if ($hasAmendments) {
 
 if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda') {
     /** @var ConsultationMotionType[] $motionTypes */
-    if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurUserHeuristically()) {
+    if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurUserHeuristically(false)) {
         $newUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
 
         $layout->menusHtml[] = '<a class="createMotion" href="' . Html::encode($newUrl) . '"></a>';

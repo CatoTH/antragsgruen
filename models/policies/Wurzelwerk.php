@@ -26,11 +26,23 @@ class Wurzelwerk extends IPolicy
 
     /**
      * @static
+     * @param bool $allowAdmins
      * @return bool
      */
-    public function checkCurUserHeuristically()
+    public function checkCurUserHeuristically($allowAdmins = true)
     {
-        return true;
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return true;
+        }
+        if ($user->isWurzelwerkUser()) {
+            return true;
+        }
+        if ($user->hasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY)) {
+            return $allowAdmins;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -74,13 +86,17 @@ class Wurzelwerk extends IPolicy
     }
 
     /**
+     * @param bool $allowAdmins
      * @return bool
      */
-    public function checkMotionSubmit()
+    public function checkMotionSubmit($allowAdmins = true)
     {
         $user = User::getCurrentUser();
         if (!$user) {
             return false;
+        }
+        if ($allowAdmins && $user->hasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY)) {
+            return true;
         }
         return $user->isWurzelwerkUser();
     }

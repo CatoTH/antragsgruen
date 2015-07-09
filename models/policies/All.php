@@ -24,9 +24,11 @@ class All extends IPolicy
 
     /**
      * @static
+     * @param bool $allowAdmins
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkCurUserHeuristically()
+    public function checkCurUserHeuristically($allowAdmins = true)
     {
         return true;
     }
@@ -72,17 +74,21 @@ class All extends IPolicy
     }
 
     /**
+     * @param bool $allowAdmins
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkMotionSubmit()
+    public function checkMotionSubmit($allowAdmins = true)
     {
         return true;
     }
 
     /**
+     * @param bool $allowAdmins
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkSupportSubmit()
+    public function checkSupportSubmit($allowAdmins = true)
     {
         return false; // Only logged in users can support motions
     }
