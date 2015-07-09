@@ -55,4 +55,11 @@ class AdminIndexPage extends BasePage
         $this->actor->see(mb_strtoupper('Liste: Anträge, Änderungsanträge'), 'h1');
         return new AdminMotionListPage($this->actor);
     }
+
+    /**
+     */
+    public function gotoSiteAccessPage()
+    {
+        $this->actor->click('.siteAccessLink');
+    }
 }

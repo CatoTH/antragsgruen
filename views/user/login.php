@@ -32,7 +32,8 @@ echo '<h1>Login</h1>';
 if (in_array(SiteSettings::LOGIN_STD, $loginMethods) || in_array(SiteSettings::LOGIN_NAMESPACED, $loginMethods)) {
     $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
-    echo '<h2 class="green">Login per Benutzer_Innenname / Passwort</h2>
+    echo '<section class="loginUsername">
+    <h2 class="green">Login per Benutzer_Innenname / Passwort</h2>
     <div class="content row">';
 
     if ($usernamePasswordForm->error != "") {
@@ -127,11 +128,14 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods) || in_array(SiteSettings::L
         ';
     echo Html::endForm();
 
-    echo '</div>';
+    echo '</div>
+    </section>';
+
 }
 
 if ($params->hasWurzelwerk) {
     $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
+    echo '<section class="loginWurzelwerk">';
     if ($hide_ww_login) {
         echo '<div class="content">
         <a href="#" onClick="$(\'#admin_login_www\').toggle(); return false;">Admin-Login</a>
@@ -171,11 +175,13 @@ if ($params->hasWurzelwerk) {
     if ($hide_ww_login) {
         echo '</div>';
     }
+    echo '</section>';
 }
 
 
 if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
-    echo '<h2 class="green">OpenID-Login</h2>
+    echo '<section class="loginOpenID">
+    <h2 class="green">OpenID-Login</h2>
 	<div class="content row">';
     echo Html::beginForm('', 'post', ['class' => 'col-sm-6']);
 
@@ -191,5 +197,5 @@ if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
     ';
 
     echo Html::endForm();
-    echo '</div>';
+    echo '</div></section>';
 }

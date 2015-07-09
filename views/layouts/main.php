@@ -107,7 +107,7 @@ if ($controller->consultation) {
     echo Html::beginForm($searchUrl, 'get', ['class' => 'form-search visible-xs-inline-block']);
     echo '<input type="hidden" name="id" value="">';
     echo '<div class="input-append">' .
-        '<input class="search-query" type="search" name="search_term" value="" autofocus placeholder="Suche">' .
+        '<input class="search-query" type="search" name="search_term" value="" placeholder="Suche">' .
         '<button type="submit" class="btn"><i style="height: 18px;" class="icon-search"></i></button></div>';
     echo Html::endForm();
 }

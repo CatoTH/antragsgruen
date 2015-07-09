@@ -153,7 +153,7 @@ foreach ($consultation->motionTypes as $motionType) {
 echo '</ul></li>';
 
 echo '<li>';
-echo Html::a('Zugang zur Seite / Login', UrlHelper::createUrl('admin/index/siteaccess'));
+echo Html::a('Zugang zur Seite / Login', UrlHelper::createUrl('admin/index/siteaccess'), ['class' => 'siteAccessLink']);
 echo '</li><li>';
 echo Html::a('Weitere Admins', UrlHelper::createUrl('admin/index/admins'), ['id' => 'adminsManageLink']);
 echo '</li><li>';
