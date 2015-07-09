@@ -42,10 +42,11 @@ class Base extends Controller
 
     /**
      * @param \yii\base\Action $action
+     * @param bool $skipUserCheck
      * @return bool
      * @throws \yii\web\BadRequestHttpException
      */
-    public function beforeAction($action)
+    public function beforeAction($action, $skipAccessCheck = false)
     {
         if (parent::beforeAction($action)) {
             $params = \Yii::$app->request->resolve();
@@ -54,6 +55,11 @@ class Base extends Controller
                 $this->loadConsultation($params[1]['subdomain'], $consultation);
                 if ($this->site) {
                     $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
+                }
+            }
+            if (!$skipAccessCheck) {
+                if ($this->testMaintainanceMode() || $this->testSiteForcedLogin()) {
+                    return false;
                 }
             }
             return true;
@@ -123,23 +129,40 @@ class Base extends Controller
 
 
     /**
-     *
+     * @return bool
      */
     public function testMaintainanceMode()
     {
         if ($this->consultation == null) {
-            return;
+            return false;
         }
         /** @var \app\models\settings\Consultation $settings */
         $settings = $this->consultation->getSettings();
-        $admin = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
+        $admin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
         if ($settings->maintainanceMode && !$admin) {
-            $this->redirect(UrlHelper::createUrl("consultation/maintainance"));
+            $this->redirect(UrlHelper::createUrl('consultation/maintainance'));
+            return true;
         }
+        return false;
+    }
 
-        if ($this->site->getBehaviorClass()->isLoginForced() && Yii::$app->user->isGuest) {
-            $this->redirect(UrlHelper::createUrl("user/login"));
+    /**
+     * @return bool
+     */
+    public function testSiteForcedLogin()
+    {
+        if ($this->site == null) {
+            return false;
         }
+        if (!$this->site->getSettings()->forceLogin) {
+            return false;
+        }
+        if (\Yii::$app->user->isGuest) {
+            $backUrl = $_SERVER['REQUEST_URI'];
+            $this->redirect(UrlHelper::createLoginUrl($backUrl));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -194,7 +217,7 @@ class Base extends Controller
      */
     protected function consultationNotFound()
     {
-        $url = Html::encode($this->getParams()->domainPlain);
+        $url     = Html::encode($this->getParams()->domainPlain);
         $message = 'Die angegebene Veranstaltung wurde nicht gefunden. ' .
             'Höchstwahrscheinlich liegt da an einem Tippfehler in der Adresse im Browser.<br>
 					<br>

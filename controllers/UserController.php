@@ -17,6 +17,18 @@ class UserController extends Base
     public $enableCsrfValidation = false;
 
     /**
+     * @param \yii\base\Action $action
+     * @param bool $skipAccessCheck
+     * @return bool
+     * @internal param bool $skipUserCheck
+     */
+    public function beforeAction($action, $skipAccessCheck = false)
+    {
+        return parent::beforeAction($action, true);
+    }
+
+
+    /**
      * @return array
      */
     public function actions()

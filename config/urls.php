@@ -17,12 +17,11 @@ $userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|lo
 $domPlainPaths       = 'legal|privacy|help|password|billing|createsite';
 $adminMotionPaths    = 'index|update|type|listall|excellist|odslist';
 $adminAmendmentPaths = 'index|update|excellist|odslist|pdflist';
+$adminPaths          = 'consultation|consultationExtended|translation|siteaccess';
 
 $url_rules = [
     $domadmin . ''                                              => 'admin/index',
-    $domadmin . 'consultation/'                                 => 'admin/index/consultation',
-    $domadmin . 'consultationExtended/'                         => 'admin/index/consultationextended',
-    $domadmin . 'translation/'                                  => 'admin/index/translation',
+    $domadmin . '<_a:(' . $adminPaths . ')>'                    => 'admin/index/<_a>',
     $domadmin . 'motion/update/<motionId:\d+>'                  => 'admin/motion/update',
     $domadmin . 'motion/<_a:(' . $adminMotionPaths . ')>'       => 'admin/motion/<_a>',
     $domadmin . 'amendment'                                     => 'admin/amendment',

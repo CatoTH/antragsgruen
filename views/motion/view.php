@@ -439,7 +439,7 @@ if ($motion->consultation->getSettings()->commentWholeMotions) {
     echo '</section>';
 }
 
-if (!$motion->consultation->site->getBehaviorClass()->isLoginForced()) {
+if (!$motion->consultation->site->getSettings()->forceLogin) {
     // @TODO Social Sharing
 }
 $layout->addOnLoadJS('$.Antragsgruen.motionShow();');

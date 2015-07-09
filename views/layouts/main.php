@@ -22,7 +22,7 @@ if (mb_strpos($title, 'Antragsgrün') === false) {
     $title .= ' (Antragsgrün)';
 }
 
-$minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
+$minimalistic   = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 $controllerBase = ($controller->consultation ? 'consultation/' : 'manager/');
 
 $this->beginPage();
@@ -126,7 +126,12 @@ if ($controller->consultation) {
 
 
 if (!User::getCurrentUser() && !$minimalistic) {
-    $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
+    if (get_class($controller) == \app\controllers\UserController::class) {
+        $backUrl = UrlHelper::createUrl('consultation/index');
+    } else {
+        $backUrl = \yii::$app->request->url;
+    }
+    $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => $backUrl]);
     echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink']) . '</li>';
 }
 if (User::getCurrentUser()) {
@@ -181,7 +186,7 @@ if (is_array($layout->breadcrumbs)) {
 /** @var string $content */
 echo $content;
 
-$legalLink = UrlHelper::createUrl($controllerBase . 'legal');
+$legalLink   = UrlHelper::createUrl($controllerBase . 'legal');
 $privacyLink = UrlHelper::createUrl($controllerBase . 'privacy');
 
 echo '<div style="clear: both; padding-top: 15px;"></div>

@@ -18,33 +18,6 @@ class DefaultBehavior
     }
 
     /**
-     * @TODO Obsolete
-     *
-     * @return bool
-     */
-    public function isLoginForced()
-    {
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function showAntragsgruenInSidebar()
-    {
-        return true;
-    }
-
-    /**
-     * @param string $text
-     * @return string
-     */
-    public function getNamespacedAccountHint($text)
-    {
-        return $text;
-    }
-
-    /**
      * @return string
      */
     public function getSubmitMotionStr()

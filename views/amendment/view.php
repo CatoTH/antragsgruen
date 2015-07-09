@@ -150,7 +150,7 @@ if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristicall
     echo '</section>';
 }
 
-if (!$consultation->site->getBehaviorClass()->isLoginForced()) {
+if (!$consultation->site->getSettings()->forceLogin) {
     // @TODO Social Sharing
 }
 $layout->addOnLoadJS('$.Antragsgruen.amendmentShow();');
