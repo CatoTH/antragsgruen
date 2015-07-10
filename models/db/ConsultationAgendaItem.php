@@ -73,7 +73,7 @@ class ConsultationAgendaItem extends ActiveRecord
     public function getMotions()
     {
         return $this->hasMany(Motion::className(), ['agendaItemId' => 'id'])
-            ->andWhere('status != ' . Motion::STATUS_DELETED); // @TODO Table alias?
+            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
     /**
