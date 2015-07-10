@@ -48,7 +48,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         $query->andWhere('status != ' . static::STATUS_DELETED);
         return $query;
     }
-    
+
     /**
      * @return Consultation
      */

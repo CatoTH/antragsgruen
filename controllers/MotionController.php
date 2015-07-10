@@ -56,7 +56,6 @@ class MotionController extends Base
         }
 
         $this->checkConsistency($motion);
-        $this->testMaintainanceMode();
 
         return $motion;
     }
@@ -204,8 +203,6 @@ class MotionController extends Base
      */
     public function actionCreateconfirm($motionId, $fromMode)
     {
-        $this->testMaintainanceMode();
-
         /** @var Motion $motion */
         $motion = Motion::findOne(
             [
@@ -271,8 +268,6 @@ class MotionController extends Base
      */
     public function actionEdit($motionId)
     {
-        $this->testMaintainanceMode();
-
         /** @var Motion $motion */
         $motion = Motion::findOne(
             [
@@ -365,8 +360,6 @@ class MotionController extends Base
      */
     public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $adoptInitiators = 0)
     {
-        $this->testMaintainanceMode();
-
         try {
             $ret = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId, $adoptInitiators);
             list($motionType, $agendaItem) = $ret;

@@ -25,8 +25,6 @@ class AmendmentController extends Base
      */
     public function actionPdf($motionId, $amendmentId)
     {
-        $this->testMaintainanceMode();
-
         $motion    = $this->consultation->getMotion($motionId);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
@@ -82,8 +80,6 @@ class AmendmentController extends Base
      */
     public function actionView($motionId, $amendmentId, $commentId = 0)
     {
-        $this->testMaintainanceMode();
-
         $motion    = $this->consultation->getMotion($motionId);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
@@ -139,8 +135,6 @@ class AmendmentController extends Base
      */
     public function actionCreateconfirm($motionId, $amendmentId, $fromMode)
     {
-        $this->testMaintainanceMode();
-
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne(
             [
@@ -218,8 +212,6 @@ class AmendmentController extends Base
      */
     public function actionEdit($motionId, $amendmentId)
     {
-        $this->testMaintainanceMode();
-
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne(
             [
@@ -274,8 +266,6 @@ class AmendmentController extends Base
      */
     public function actionCreate($motionId)
     {
-        $this->testMaintainanceMode();
-
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion || in_array($motion->status, $this->consultation->getInvisibleMotionStati())) {
             throw new NotFound('Motion not found');

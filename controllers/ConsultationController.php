@@ -34,7 +34,6 @@ class ConsultationController extends Base
      */
     public function actionFeedmotions()
     {
-        $this->testMaintainanceMode();
         $newest = Motion::getNewestByConsultation($this->consultation, 20);
 
         $feed = new RSSExporter();
@@ -61,7 +60,6 @@ class ConsultationController extends Base
      */
     public function actionFeedamendments()
     {
-        $this->testMaintainanceMode();
         $newest = Amendment::getNewestByConsultation($this->consultation, 20);
 
         $feed = new RSSExporter();
@@ -88,7 +86,6 @@ class ConsultationController extends Base
      */
     public function actionFeedcomments()
     {
-        $this->testMaintainanceMode();
         $newest = IComment::getNewestByConsultation($this->consultation, 20);
 
         $feed = new RSSExporter();
@@ -115,8 +112,6 @@ class ConsultationController extends Base
      */
     public function actionFeedall()
     {
-        $this->testMaintainanceMode();
-
         /** @var IRSSItem[] $comments */
         $items = array_merge(
             Motion::getNewestByConsultation($this->consultation, 20),
@@ -315,8 +310,6 @@ class ConsultationController extends Base
     public function actionIndex()
     {
         $this->layout = 'column2';
-
-        $this->testMaintainanceMode();
         $this->consultationSidebar($this->consultation);
 
         if (isset($_POST['saveAgenda'])) {
