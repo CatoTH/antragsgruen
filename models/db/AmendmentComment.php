@@ -46,7 +46,8 @@ class AmendmentComment extends IComment
      */
     public function getAmendment()
     {
-        return $this->hasOne(Amendment::className(), ['id' => 'amendmentId']);
+        return $this->hasOne(Amendment::className(), ['id' => 'amendmentId'])
+            ->andWhere('status != ' . Amendment::STATUS_DELETED); // @TODO Table alias?
     }
 
     /**

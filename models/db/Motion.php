@@ -54,7 +54,8 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getComments()
     {
-        return $this->hasMany(MotionComment::className(), ['motionId' => 'id']);
+        return $this->hasMany(MotionComment::className(), ['motionId' => 'id'])
+            ->andWhere('status != ' . MotionComment::STATUS_DELETED); // @TODO Table alias?
     }
 
     /**
@@ -78,7 +79,8 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getAmendments()
     {
-        return $this->hasMany(Amendment::className(), ['motionId' => 'id']);
+        return $this->hasMany(Amendment::className(), ['motionId' => 'id'])
+            ->andWhere('status != ' . Amendment::STATUS_DELETED); // @TODO Table alias?
     }
 
     /**

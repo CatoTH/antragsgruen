@@ -3,6 +3,8 @@
 namespace app\models\db;
 
 use app\components\Tools;
+use yii\base\InvalidConfigException;
+use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
 
 /**
@@ -34,7 +36,19 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         ];
     }
 
-
+    /**
+     * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @throws InvalidConfigException if there is no primary key defined
+     * @internal
+     */
+    protected static function findByCondition($condition)
+    {
+        $query = parent::findByCondition($condition);
+        $query->andWhere('status != ' . static::STATUS_DELETED);
+        return $query;
+    }
+    
     /**
      * @return Consultation
      */

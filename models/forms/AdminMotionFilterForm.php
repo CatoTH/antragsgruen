@@ -342,8 +342,13 @@ class AdminMotionFilterForm extends Model
     {
         $str = '';
 
+        $str .= '<label style="float: left; margin-right: 20px;">Titel:<br>';
+        $title = Html::encode($this->title);
+        $str .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
+        $str .= '</label>';
+
         $str .= '<label style="float: left; margin-right: 20px;">Status:<br>';
-        $str .= '<select name="Search[status]" size="1" class="form-control">';
+        $str .= '<select name="Search[status]" class="form-control">';
         $str .= '<option value="">- egal -</option>';
         $statusList  = $this->getStatusList();
         $foundMyself = false;
@@ -392,11 +397,6 @@ class AdminMotionFilterForm extends Model
                 name="Search[initiator]" value="' . Html::encode($this->initiator) . '"
                 data-values="' . Html::encode(json_encode($values)) . '"></div>';
         $str .= '</div>';
-
-        $str .= '<label style="float: left; margin-right: 20px;">Titel:<br>';
-        $title = Html::encode($this->title);
-        $str .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
-        $str .= '</label>';
 
         return $str;
     }
