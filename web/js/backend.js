@@ -308,7 +308,7 @@
     var consultationExtendedForm = function () {
         var $form = $("#consultationSettingsForm");
 
-        $form.submit(function (ev) {
+        $form.submit(function () {
             var items = $("#tagsList").pillbox('items'),
                 tags = [],
                 $node = $('<input type="hidden" name="tags">');
@@ -319,12 +319,32 @@
                     tags.push({"id": items[i].id, "name": items[i].text});
                 }
             }
-            console.log(tags);
             $node.attr("value", JSON.stringify(tags));
             $form.append($node);
         });
 
         Sortable.create(document.getElementById("tagsListUl"), { draggable: '.pill' });
+
+        var $adminsMayEdit = $("#adminsMayEdit"),
+            $iniatorsMayEdit = $("#iniatorsMayEdit").parents("fieldset").first();
+        $adminsMayEdit.change(function () {
+            if ($(this).prop("checked")) {
+                $iniatorsMayEdit.show();
+            } else {
+                var confirmMessage ="Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
+                    "und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?";
+                bootbox.confirm(confirmMessage, function(result) {
+                    console.log(result);
+                    if (result) {
+                        $iniatorsMayEdit.hide();
+                        $iniatorsMayEdit.find("input").prop("checked", false);
+                    } else {
+                        $adminsMayEdit.prop("checked", true);
+                    }
+                });
+            }
+        });
+        if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.hide();
     };
 
     $.AntragsgruenAdmin = {

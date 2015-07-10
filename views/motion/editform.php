@@ -12,14 +12,14 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$params     = $controller->layoutParams;
+$layout     = $controller->layoutParams;
 
 $this->title = $form->motionType->createTitle;
 
 $layout->loadCKEditor();
 $layout->loadDatepicker();
 
-$params->addBreadcrumb($this->title);
+$layout->addBreadcrumb($this->title);
 
 if ($form->agendaItem) {
     echo '<h1>' . Html::encode($form->agendaItem->title . ': ' . $this->title) . '</h1>';
@@ -100,6 +100,6 @@ echo '<div class="submitHolder content"><button type="submit" name="save" class=
 echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
 echo '</button></div>';
 
-$params->addOnLoadJS('$.Antragsgruen.motionEditForm();');
+$layout->addOnLoadJS('$.Antragsgruen.motionEditForm();');
 
 echo Html::endForm();

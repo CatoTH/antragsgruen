@@ -155,29 +155,6 @@ echo '<li class="pillbox-input-wrap btn-group">
             </li>
         </ul>
     </div>';
-/*
-if (count($tags) > 0) {
-    echo '<ul class="taglist">';
-    $delUrl = UrlHelper::createUrl(['admin/index/consultationextended', AntiXSS::createToken('delTag') => '#ID#']);
-    foreach ($tags as $tag) {
-        echo '<li><input type="hidden" name="tagSort[]" value="' . $tag->id . '">';
-        echo '<span class="sortable" style="cursor: move;">' . Html::encode($tag->title) . '</span>';
-        echo '(' . count($tag->motions) . ')';
-        if (count($tag->motions) == 0) {
-            echo ' <a href="' . Html::encode(str_replace(urlencode('#ID#'), $tag->id, $delUrl)) .
-                '" onClick="return confirm(\'Wirklich löschen?\');" style="color: red; font-size: 0.8em;">löschen</a>';
-        }
-        echo '</li>';
-    }
-    echo '</ul>';
-} else {
-    echo '<em>Keine</em> &nbsp; &nbsp;';
-}
-echo '<a href="#" class="tagCreateOpener">+ Neues hinzufügen</a>
-    <input class="tagCreateInput" name="tagCreate" placeholder="Neues Schlagwort" value="" style="display: none;">
-    <br><br>
-    <label style="width: auto;">';
-*/
 
 $handledSettings[] = 'allowMultipleTags';
 echo Html::checkbox('settings[allowMultipleTags]', $settings->allowMultipleTags, ['id' => 'allowMultipleTags']);
@@ -193,30 +170,6 @@ $booleanSettingRow($settings, 'adminsMayEdit', $handledSettings, $description);
 $description = 'AntragstellerInnen dürfen Anträge <strong>nachträglich ändern</strong>.';
 $booleanSettingRow($settings, 'iniatorsMayEdit', $handledSettings, $description);
 
-
-// @TODO
-echo '
-    <script>
-        $(function () {
-            var $admins_duerfen = $("#admins_duerfen_aendern").find("input"),
-                $initiatorInnen = $("#initiatorInnen_duerfen_aendern");
-            $admins_duerfen.change(function () {
-                if ($(this).prop("checked")) {
-                    $initiatorInnen.show();
-                } else {
-                    if (!confirm("Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
-                     "und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?")) {
-                        $(this).prop("checked", true);
-                    } else {
-                        $initiatorInnen.hide();
-                        $initiatorInnen.find("input").prop("checked", false);
-                    }
-                }
-            });
-            if (!$admins_duerfen.prop("checked")) $initiatorInnen.hide();
-        })
-    </script>
-';
 
 $description = 'Kommentare zum Antrag allgemein zulassen<br>
 <small style="margin-left: 20px;">(Anträge ohne Absatzbezug, erscheinen unterhalb des Antrags)</small>';

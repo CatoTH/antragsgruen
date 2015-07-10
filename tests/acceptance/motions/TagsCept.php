@@ -14,19 +14,15 @@ $I->loginAsStdAdmin();
 $I->click('#adminLink');
 $I->click('#consultationextendedLink');
 
-$I->dontSee('Economy');
-$I->dontSee('Environment');
-$I->dontSeeElement('.tagCreateInput');
-$I->click('.tagCreateOpener');
-$I->seeElement('.tagCreateInput');
+if ($I->executeJS('return $("#tagsList").pillbox("items").length') != 2) {
+    $I->fail('Invalid return from tag-List');
+}
+$I->executeJS('$("#tagsList").pillbox("addItems", -1, [{ "text": "Economy" }]);');
 
-$I->fillField('.tagCreateInput', 'Economy');
 $I->submitForm('#consultationSettingsForm', [], 'save');
 $I->see('Economy');
 
-$I->dontSeeElement('.tagCreateInput');
-$I->click('.tagCreateOpener');
-$I->fillField('.tagCreateInput', 'Environment');
+$I->executeJS('$("#tagsList").pillbox("addItems", -1, [{ "text": "Environment" }]);');
 $I->submitForm('#consultationSettingsForm', [], 'save');
 $I->see('Economy');
 $I->see('Environment');

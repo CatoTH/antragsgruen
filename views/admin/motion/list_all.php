@@ -63,7 +63,7 @@ if ($search->sort == AdminMotionFilterForm::SORT_REVISION) {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_REVISION]);
     echo Html::a('Antragsnr.', $url);
 }
-echo '</th><th>';
+echo '</th><th class="titleCol">';
 if ($search->sort == AdminMotionFilterForm::SORT_TITLE) {
     echo '<span style="text-decoration: underline;">Titel</span>';
 } else {
@@ -95,7 +95,7 @@ foreach ($entries as $entry) {
         echo '<td>A</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
         echo Html::encode($entry->titlePrefix) . '</a></td>';
-        echo '<td>' . Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl) . '</td>';
+        echo '<td class="titleCol">' . Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl) . '</td>';
         echo '<td>' . Html::encode($motionStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {
@@ -143,7 +143,8 @@ foreach ($entries as $entry) {
         echo '<td>ÄA</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
         echo Html::encode($entry->titlePrefix) . '</a></td>';
-        echo '<td>' . Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $editUrl) . '</td>';
+        echo '<td class="titleCol">' .
+            Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $editUrl) . '</td>';
         echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {

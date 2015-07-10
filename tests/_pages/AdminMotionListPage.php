@@ -15,9 +15,9 @@ class AdminMotionListPage extends BasePage
      * @param int $motionId
      * @return AdminMotionPage
      */
-    public function gotoMotion($motionId)
+    public function gotoMotionEdit($motionId)
     {
-        $this->actor->click('.adminMotionTable .motion' . $motionId . ' .prefixCol a');
+        $this->actor->click('.adminMotionTable .motion' . $motionId . ' .titleCol a');
         return new AdminMotionPage($this->actor);
     }
 
