@@ -2,7 +2,6 @@
 
 namespace app\controllers\admin;
 
-use app\components\AntiXSS;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
@@ -87,34 +86,58 @@ class IndexController extends AdminBase
             return;
         }
 
-        $preTags = [];
-        foreach ($consultation->tags as $tag) {
-            $preTags[] = mb_strtolower($tag->title);
-        }
-
-        if (isset($_POST['tags']['new'])) {
-            foreach ($_POST['tags']['new'] as $newTag) {
-                $maxId = 0;
-                foreach ($consultation->tags as $tag) {
-                    if ($tag->position > $maxId) {
-                        $maxId = $tag->position;
-                    }
-                }
-                if (!in_array(mb_strtolower($newTag), $preTags)) {
-                    $tag                 = new ConsultationSettingsTag();
-                    $tag->consultationId = $consultation->id;
-                    $tag->title          = $newTag;
-                    $tag->position       = ($maxId + 1);
-                    $tag->save();
+        /**
+         * @param int $tagId
+         * @return ConsultationSettingsTag|null
+         */
+        $getById = function ($tagId) use ($consultation) {
+            foreach ($consultation->tags as $tag) {
+                if ($tag->id == $tagId) {
+                    return $tag;
                 }
             }
+            return null;
+        };
+        /**
+         * @param string $tagName
+         * @return ConsultationSettingsTag|null
+         */
+        $getByName = function ($tagName) use ($consultation) {
+            $tagName = mb_strtolower($tagName);
+            foreach ($consultation->tags as $tag) {
+                if (mb_strtolower($tag->title) == $tagName) {
+                    return $tag;
+                }
+            }
+            return null;
+        };
+
+        $foundTags = [];
+        $newTags   = json_decode($_POST['tags'], true);
+        foreach ($newTags as $pos => $newTag) {
+            if ($newTag['id'] == 0) {
+                if ($getByName($newTag['name'])) {
+                    continue;
+                }
+                $tag                 = new ConsultationSettingsTag();
+                $tag->consultationId = $consultation->id;
+                $tag->title          = $newTag['name'];
+                $tag->position       = $pos;
+                $tag->save();
+            } else {
+                $tag = $getById($newTag['id']);
+                if (!$tag) {
+                    continue;
+                }
+                /** @var ConsultationSettingsTag $tag */
+                $tag->position = $pos;
+                $tag->save();
+            }
+            $foundTags[] = $tag->id;
         }
 
         foreach ($consultation->tags as $tag) {
-            if (isset($_POST['tags'][$tag->id])) {
-                $tag->title = $_POST['tags'][$tag->id];
-                $tag->save();
-            } else {
+            if (!in_array($tag->id, $foundTags)) {
                 foreach ($tag->motions as $motion) {
                     $motion->unlink('tags', $tag, false);
                 }

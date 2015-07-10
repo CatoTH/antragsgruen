@@ -1,13 +1,13 @@
 <?php
 
+use app\components\UrlHelper;
+use app\models\db\Consultation;
+use yii\helpers\Html;
+
 /**
  * @var $this yii\web\View
  * @var Consultation $consultation
  */
-use app\components\AntiXSS;
-use app\components\UrlHelper;
-use app\models\db\Consultation;
-use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
@@ -15,6 +15,7 @@ $layout     = $controller->layoutParams;
 
 $layout->addJS('/js/backend.js');
 $layout->addCSS('/css/backend.css');
+$layout->addJS('/js/bower/Sortable/Sortable.min.js');
 $layout->loadFuelux();
 
 $this->title = 'Einstellungen';
@@ -135,7 +136,7 @@ echo '<fieldset class="form-group">
 <div class="col-sm-9">
 
 <div class="pillbox" data-initialize="pillbox" id="tagsList">
-    <ul class="clearfix pill-group">';
+    <ul class="clearfix pill-group" id="tagsListUl">';
 
 foreach ($tags as $tag) {
     echo '<li class="btn btn-default pill" data-id="' . $tag->id . '">
@@ -145,7 +146,7 @@ foreach ($tags as $tag) {
 }
 echo '<li class="pillbox-input-wrap btn-group">
                 <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
-                <input type="text" class="form-control dropdown-toggle pillbox-add-item" placeholder="Schlagwort hinzufügen">
+                <input type="text" class="form-control dropdown-toggle pillbox-add-item" placeholder="Neues Schlagwort">
                 <button type="button" class="dropdown-toggle sr-only">
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
@@ -185,19 +186,6 @@ echo 'Mehrere Schlagworte pro Antrag möglich</label>
 </div>
 </fieldset>';
 
-/*
-echo '<script>
-            $(".tagCreateOpener").click(function (ev) {
-                ev.preventDefault();
-                $(".tagCreateInput").show().focus();
-                $(this).hide();
-            });
-            $(".taglist").sortable({
-                containment: "parent",
-                axis: "y"
-            });
-        </script>';
-*/
 
 $description = 'Admins dürfen Antrags-Texte <strong>nachträglich ändern</strong>.';
 $booleanSettingRow($settings, 'adminsMayEdit', $handledSettings, $description);
@@ -269,5 +257,3 @@ foreach ($handledSettings as $setting) {
 }
 
 echo Html::endForm();
-
-

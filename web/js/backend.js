@@ -309,20 +309,22 @@
         var $form = $("#consultationSettingsForm");
 
         $form.submit(function (ev) {
-            var items = $("#tagsList").pillbox('items');
+            var items = $("#tagsList").pillbox('items'),
+                tags = [],
+                $node = $('<input type="hidden" name="tags">');
             for (var i = 0; i < items.length; i++) {
-                var $node = $("<input type='hidden'>");
-                $node.attr("value", items[i].text);
                 if (typeof(items[i].id) == 'undefined') {
-                    $node.attr("name", "tags[new][]");
-                    console.log("New: " + items[i].text);
+                    tags.push({"id": 0, "name": items[i].text});
                 } else {
-                    $node.attr("name", "tags[" + items[i].id + "]");
-                    console.log("Edit: " + items[i].id + " / " + items[i].text);
+                    tags.push({"id": items[i].id, "name": items[i].text});
                 }
-                $form.append($node);
             }
+            console.log(tags);
+            $node.attr("value", JSON.stringify(tags));
+            $form.append($node);
         });
+
+        Sortable.create(document.getElementById("tagsListUl"), { draggable: '.pill' });
     };
 
     $.AntragsgruenAdmin = {
