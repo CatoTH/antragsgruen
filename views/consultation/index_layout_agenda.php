@@ -42,7 +42,7 @@ if ($admin) {
     $layout->addOnLoadJS('$.AntragsgruenAdmin.agendaEdit();');
 }
 
-/** @var Motion $otherMotions */
+/** @var Motion[] $otherMotions */
 $otherMotions = [];
 foreach ($consultation->motions as $motion) {
     if (!in_array($motion->id, $shownMotions) && !in_array($motion->status, $consultation->getInvisibleMotionStati())) {
