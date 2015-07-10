@@ -18,13 +18,11 @@ class UserController extends Base
 
     /**
      * @param \yii\base\Action $action
-     * @param bool $skipAccessCheck
      * @return bool
-     * @internal param bool $skipUserCheck
      */
-    public function beforeAction($action, $skipAccessCheck = false)
+    public function beforeAction($action)
     {
-        return parent::beforeAction($action, true);
+        return parent::beforeAction($action);
     }
 
 

@@ -42,11 +42,10 @@ class Base extends Controller
 
     /**
      * @param \yii\base\Action $action
-     * @param bool $skipUserCheck
      * @return bool
      * @throws \yii\web\BadRequestHttpException
      */
-    public function beforeAction($action, $skipAccessCheck = false)
+    public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
             $params = \Yii::$app->request->resolve();
@@ -57,10 +56,18 @@ class Base extends Controller
                     $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
                 }
             }
-            if (!$skipAccessCheck) {
-                if ($this->testMaintainanceMode() || $this->testSiteForcedLogin()) {
-                    return false;
-                }
+
+            // Login and Mainainance mode is always allowed
+            if (get_class($this) == UserController::class) {
+                return true;
+            }
+            $allowedActions = ['maintainance', 'help', 'legal', 'privacy'];
+            if (get_class($this) == ConsultationController::class && in_array($action->id, $allowedActions)) {
+                return true;
+            }
+
+            if ($this->testMaintainanceMode() || $this->testSiteForcedLogin()) {
+                return false;
             }
             return true;
         } else {
