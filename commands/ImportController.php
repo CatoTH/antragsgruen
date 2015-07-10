@@ -96,7 +96,7 @@ class ImportController extends Controller
         }
 
         $sql                = 'SELECT * FROM antrag_unterstuetzerInnen a ' .
-            'LEFT JOIN person b ON a.unterstuetzerIn_id = b.id WHERE a.antrag_id = ' . $motion->id;
+            'LEFT JOIN person b ON a.unterstuetzerIn_id = b.id WHERE a.antrag_id = ' . $antrag['id'];
         $unterstuetzerInnen = $dbOld->createCommand($sql)->queryAll();
         foreach ($unterstuetzerInnen as $unterstuetzerIn) {
             $supporter                 = new MotionSupporter();
@@ -154,7 +154,8 @@ class ImportController extends Controller
         }
 
         $sql                = 'SELECT * FROM aenderungsantrag_unterstuetzerInnen a ' .
-            'LEFT JOIN person b ON a.unterstuetzerIn_id = b.id WHERE a.aenderungsantrag_id = ' . $amend->id;
+            'LEFT JOIN person b ON a.unterstuetzerIn_id = b.id ' .
+            'WHERE a.aenderungsantrag_id = ' . $aenderungsantrag['id'];
         $unterstuetzerInnen = $dbOld->createCommand($sql)->queryAll();
         foreach ($unterstuetzerInnen as $unterstuetzerIn) {
             $supporter                 = new AmendmentSupporter();
