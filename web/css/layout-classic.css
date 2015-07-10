@@ -10006,4 +10006,14 @@ html.no-touch .motionEditForm .supporterRow:hover .rowDeleter, html.no-touch .mo
 #motionConfirmForm, #amendmentConfirmForm {
   margin-bottom: 20px; }
 
+/*
+.fuelux {
+  .pillbox-input-wrap {
+    .sr-only {
+      display: none;
+    }
+  }
+}
+*/
+
 /*# sourceMappingURL=layout-classic.css.map */

@@ -27,7 +27,7 @@ $this->title                = $consultation->title . ' (Antragsgrün)';
 
 
 if ($admin) {
-    $layout->addJS('/js/ckeditor/ckeditor.js');
+    $layout->loadCKEditor();
 }
 
 echo '<h1>';

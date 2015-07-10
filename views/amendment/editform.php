@@ -12,7 +12,7 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
-$params     = $controller->layoutParams;
+$layout     = $controller->layoutParams;
 
 if ($form->motion->titlePrefix != '') {
     $title = Yii::t(
@@ -25,9 +25,9 @@ if ($form->motion->titlePrefix != '') {
 }
 
 
-$params->addJS('/js/ckeditor/ckeditor.js');
-$params->addBreadcrumb($form->motion->titlePrefix, UrlHelper::createMotionUrl($form->motion));
-$params->addBreadcrumb(Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten'));
+$layout->loadCKEditor();
+$layout->addBreadcrumb($form->motion->titlePrefix, UrlHelper::createMotionUrl($form->motion));
+$layout->addBreadcrumb(Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
@@ -108,6 +108,6 @@ echo '<div class="submitHolder content"><button type="submit" name="save" class=
 echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
 echo '</button></div>';
 
-$params->addOnLoadJS('$.Antragsgruen.amendmentEditForm();');
+$layout->addOnLoadJS('$.Antragsgruen.amendmentEditForm();');
 
 echo Html::endForm();

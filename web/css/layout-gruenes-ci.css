@@ -9949,6 +9949,15 @@ html.no-touch .motionEditForm .supporterRow:hover .rowDeleter, html.no-touch .mo
 #motionConfirmForm, #amendmentConfirmForm {
   margin-bottom: 20px; }
 
+/*
+.fuelux {
+  .pillbox-input-wrap {
+    .sr-only {
+      display: none;
+    }
+  }
+}
+*/
 .well h1 {
   font-family: "Arvo Gruen", sans-serif;
   font-weight: normal; }

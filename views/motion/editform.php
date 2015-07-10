@@ -16,10 +16,8 @@ $params     = $controller->layoutParams;
 
 $this->title = $form->motionType->createTitle;
 
-$params->addJS('/js/ckeditor/ckeditor.js');
-$params->addJS('/js/bower/moment/min/moment-with-locales.min.js');
-$params->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-$params->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+$layout->loadCKEditor();
+$layout->loadDatepicker();
 
 $params->addBreadcrumb($this->title);
 

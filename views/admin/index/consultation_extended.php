@@ -13,15 +13,18 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
+$layout->addJS('/js/backend.js');
 $layout->addCSS('/css/backend.css');
+$layout->loadFuelux();
 
 $this->title = 'Einstellungen';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Erweitert');
+$layout->addOnLoadJS('$.AntragsgruenAdmin.consultationExtendedForm();');
 
 echo '<h1>Erweiterte Einstellungen</h1>';
 
-echo Html::beginForm('', 'post', ['id' => 'consultationSettingsForm', 'class' => 'adminForm form-horizontal']);
+echo Html::beginForm('', 'post', ['id' => 'consultationSettingsForm', 'class' => 'adminForm form-horizontal fuelux']);
 
 echo $controller->showErrors();
 
@@ -84,7 +87,7 @@ echo '<fieldset class="form-group">
 
 
 $handledSettings[] = 'pdfIntroduction';
-$placeholder = '26. Ordentliche Bundesdelegiertenkonferenz von BÜNDNIS 90/DIE GRÜNEN,' . "\n" .
+$placeholder       = '26. Ordentliche Bundesdelegiertenkonferenz von BÜNDNIS 90/DIE GRÜNEN,' . "\n" .
     '01.-03. Dezember 2006. Kölnmesse, Köln-Deutz';
 echo '<fieldset class="form-group">
     <label class="col-sm-3 control-label" for="pdfIntroduction">PDF-Einleitung:</label>
@@ -128,8 +131,30 @@ echo '</div>
 
 $tags = $consultation->getSortedTags();
 echo '<fieldset class="form-group">
-<div class="col-sm-4 control-label">Schlagworte:</div>
-<div class="col-sm-8">';
+<div class="col-sm-3 control-label">Schlagworte:</div>
+<div class="col-sm-9">
+
+<div class="pillbox" data-initialize="pillbox" id="tagsList">
+    <ul class="clearfix pill-group">';
+
+foreach ($tags as $tag) {
+    echo '<li class="btn btn-default pill" data-id="' . $tag->id . '">
+        <span>' . Html::encode($tag->title) . '</span>
+        <span class="glyphicon glyphicon-close"><span class="sr-only">Remove</span></span>
+    </li>';
+}
+echo '<li class="pillbox-input-wrap btn-group">
+                <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
+                <input type="text" class="form-control dropdown-toggle pillbox-add-item" placeholder="Schlagwort hinzufügen">
+                <button type="button" class="dropdown-toggle sr-only">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <!--<ul class="suggest dropdown-menu" role="menu" data-toggle="dropdown" data-flip="auto"></ul>-->
+            </li>
+        </ul>
+    </div>';
+/*
 if (count($tags) > 0) {
     echo '<ul class="taglist">';
     $delUrl = UrlHelper::createUrl(['admin/index/consultationextended', AntiXSS::createToken('delTag') => '#ID#']);
@@ -147,20 +172,20 @@ if (count($tags) > 0) {
 } else {
     echo '<em>Keine</em> &nbsp; &nbsp;';
 }
-
-$handledSettings[] = 'allowMultipleTags';
 echo '<a href="#" class="tagCreateOpener">+ Neues hinzufügen</a>
     <input class="tagCreateInput" name="tagCreate" placeholder="Neues Schlagwort" value="" style="display: none;">
     <br><br>
     <label style="width: auto;">';
+*/
 
+$handledSettings[] = 'allowMultipleTags';
 echo Html::checkbox('settings[allowMultipleTags]', $settings->allowMultipleTags, ['id' => 'allowMultipleTags']);
 echo 'Mehrere Schlagworte pro Antrag möglich</label>
 
 </div>
 </fieldset>';
 
-
+/*
 echo '<script>
             $(".tagCreateOpener").click(function (ev) {
                 ev.preventDefault();
@@ -172,7 +197,7 @@ echo '<script>
                 axis: "y"
             });
         </script>';
-
+*/
 
 $description = 'Admins dürfen Antrags-Texte <strong>nachträglich ändern</strong>.';
 $booleanSettingRow($settings, 'adminsMayEdit', $handledSettings, $description);
@@ -244,3 +269,5 @@ foreach ($handledSettings as $setting) {
 }
 
 echo Html::endForm();
+
+

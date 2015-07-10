@@ -93,4 +93,28 @@ class Layout
         }
         return $this;
     }
+
+    /**
+     */
+    public function loadDatepicker()
+    {
+        $this->addJS('/js/bower/moment/min/moment-with-locales.min.js');
+        $this->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
+        $this->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+    }
+
+    /**
+     */
+    public function loadCKEditor()
+    {
+        $this->addJS('/js/ckeditor/ckeditor.js');
+    }
+
+    /**
+     */
+    public function loadFuelux()
+    {
+        $this->addJS('/js/fuelux/js/fuelux.min.js');
+        $this->addCSS('/js/fuelux/css/fuelux.min.css');
+    }
 }

@@ -292,7 +292,7 @@
         }).trigger("change");
 
 
-        $(".removeAdmin").click(function() {
+        $(".removeAdmin").click(function () {
             var $button = $(this),
                 $form = $(this).parents("form").first();
             bootbox.confirm("Diesem Zugang wirklich die Admin-Rechte entziehen?", function (result) {
@@ -305,8 +305,29 @@
         });
     };
 
+    var consultationExtendedForm = function () {
+        var $form = $("#consultationSettingsForm");
+
+        $form.submit(function (ev) {
+            var items = $("#tagsList").pillbox('items');
+            for (var i = 0; i < items.length; i++) {
+                var $node = $("<input type='hidden'>");
+                $node.attr("value", items[i].text);
+                if (typeof(items[i].id) == 'undefined') {
+                    $node.attr("name", "tags[new][]");
+                    console.log("New: " + items[i].text);
+                } else {
+                    $node.attr("name", "tags[" + items[i].id + "]");
+                    console.log("Edit: " + items[i].id + " / " + items[i].text);
+                }
+                $form.append($node);
+            }
+        });
+    };
+
     $.AntragsgruenAdmin = {
         'consultationEditForm': consultationEditForm,
+        'consultationExtendedForm': consultationExtendedForm,
         'motionTypeEdit': motionTypeEdit,
         'agendaEdit': agendaEdit,
         'motionListAll': motionListAll,

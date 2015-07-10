@@ -83,49 +83,46 @@ class IndexController extends AdminBase
      */
     private function saveTags(Consultation $consultation)
     {
-        if (AntiXSS::isTokenSet('delTag')) {
-            foreach ($consultation->tags as $tag) {
-                if ($tag->id == AntiXSS::getTokenVal('delTag')) {
-                    $tag->delete();
-                    $consultation->refresh();
-                }
-            }
+        if (!isset($_POST['tags'])) {
+            return;
         }
 
-
-        if (isset($_POST['tagCreate']) && trim($_POST['tagCreate']) != '') {
-            $maxId     = 0;
-            $duplicate = false;
-            foreach ($consultation->tags as $tag) {
-                if ($tag->position > $maxId) {
-                    $maxId = $tag->position;
-                }
-                if (mb_strtolower($tag->title) == mb_strtolower($_POST['tagCreate'])) {
-                    $duplicate = true;
-                }
-            }
-            if (!$duplicate) {
-                $tag                 = new ConsultationSettingsTag();
-                $tag->consultationId = $consultation->id;
-                $tag->title          = $_POST['tagCreate'];
-                $tag->position       = ($maxId + 1);
-                $tag->save();
-            }
-
-            $consultation->refresh();
+        $preTags = [];
+        foreach ($consultation->tags as $tag) {
+            $preTags[] = mb_strtolower($tag->title);
         }
 
-        if (isset($_POST['tagSort']) && is_array($_POST['tagSort'])) {
-            foreach ($_POST['tagSort'] as $i => $tagId) {
-                /** @var ConsultationSettingsTag $tag */
-                $tag = ConsultationSettingsTag::findOne($tagId);
-                if ($tag->consultationId == $consultation->id) {
-                    $tag->position = $i;
+        if (isset($_POST['tags']['new'])) {
+            foreach ($_POST['tags']['new'] as $newTag) {
+                $maxId = 0;
+                foreach ($consultation->tags as $tag) {
+                    if ($tag->position > $maxId) {
+                        $maxId = $tag->position;
+                    }
+                }
+                if (!in_array(mb_strtolower($newTag), $preTags)) {
+                    $tag                 = new ConsultationSettingsTag();
+                    $tag->consultationId = $consultation->id;
+                    $tag->title          = $newTag;
+                    $tag->position       = ($maxId + 1);
                     $tag->save();
                 }
             }
-            $consultation->refresh();
         }
+
+        foreach ($consultation->tags as $tag) {
+            if (isset($_POST['tags'][$tag->id])) {
+                $tag->title = $_POST['tags'][$tag->id];
+                $tag->save();
+            } else {
+                foreach ($tag->motions as $motion) {
+                    $motion->unlink('tags', $tag, false);
+                }
+                $tag->delete();
+            }
+        }
+
+        $consultation->refresh();
     }
 
     /**

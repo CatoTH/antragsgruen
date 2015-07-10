@@ -17,7 +17,7 @@ $userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|lo
 $domPlainPaths       = 'legal|privacy|help|password|billing|createsite';
 $adminMotionPaths    = 'index|update|type|listall|excellist|odslist';
 $adminAmendmentPaths = 'index|update|excellist|odslist|pdflist';
-$adminPaths          = 'consultation|consultationExtended|translation|siteaccess';
+$adminPaths          = 'consultation|consultationextended|translation|siteaccess';
 
 $url_rules = [
     $domadmin . ''                                              => 'admin/index',

@@ -21,7 +21,7 @@ $layout = $controller->layoutParams;
 $layout->addBreadcrumb($pageData->breadcrumbTitle);
 
 if ($admin) {
-    $layout->addJS('/js/ckeditor/ckeditor.js');
+    $layout->loadCKEditor();
 }
 
 echo '<h1>' . Html::encode($pageData->pageTitle) . '</h1>';

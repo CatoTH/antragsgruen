@@ -23,9 +23,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$layout->addJS('/js/bower/moment/min/moment-with-locales.min.js');
-$layout->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-$layout->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+$layout->loadDatepicker();
 $locale = Tools::getCurrentDateLocale();
 
 echo '<fieldset class="supporterForm supporterFormStd">';

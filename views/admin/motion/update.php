@@ -24,9 +24,7 @@ $layout->addBreadcrumb('Antrag');
 
 $layout->addJS('/js/backend.js');
 $layout->addCSS('/css/backend.css');
-$layout->addJS('/js/bower/moment/min/moment-with-locales.min.js');
-$layout->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-$layout->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+$layout->loadDatepicker();
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
