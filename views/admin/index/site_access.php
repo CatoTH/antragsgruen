@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\User;
 use yii\helpers\Html;
 use app\models\settings\Site as SiteSettings;
 
@@ -79,5 +80,41 @@ echo '<div class="content">';
 echo 'Test';
 echo '</div>';
 echo Html::endForm();
+
+
+echo Html::beginForm('', 'post', ['id' => 'adminForm', 'class' => 'adminForm form-horizontal']);
+echo '<h2 class="green">Administrator_Innen der Reihe</h2>
+    <section class="content">
+    <ul style="margin-top: 10px;">';
+
+$myself = User::getCurrentUser();
+foreach ($site->admins as $admin) {
+    echo '<li class="admin' . $admin->id . '">' .
+        Html::encode($admin->name) . ' (' . Html::encode($admin->auth) . ')';
+    if ($admin->id != $myself->id) {
+        echo '<button class="link removeAdmin" type="button" data-id="' . $admin->id . '">';
+        echo '<span class="glyphicon glyphicon-trash"></span>';
+        echo '</button>';
+    }
+    echo "</li>";
+}
+echo '</ul>
+</section>
+
+<section class="content">
+<h4>Neu eintragen</h4>
+<div class="row">
+    <label for="add_username" class="col-md-6">Wurzelwerk-BenutzerInnenname / E-Mail-Adresse:</label>
+    </div>
+    <div  class="row">
+    <div class="col-md-6">
+        <input type="text" name="username" value="" id="add_username" class="form-control">
+    </div>
+    </div>
+<br>
+<button type="submit" name="addAdmin" class="btn btn-primary">Hinzufügen</button>
+</section>';
+echo Html::endForm();
+
 
 $layout->addOnLoadJS('$.AntragsgruenAdmin.siteAccessInit();');

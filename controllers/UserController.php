@@ -189,7 +189,7 @@ class UserController extends Base
             /** @var User $user */
             $user = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
             if (!$user) {
-                $msgError = "Es existiert kein Zugang mit der angegebenen E-Mail-Adresse...?";
+                $msgError = 'Es existiert kein Zugang mit der angegebenen E-Mail-Adresse...?';
             } elseif ($user->checkEmailConfirmationCode($_REQUEST['code'])) {
                 $user->emailConfirmed = 1;
                 $user->status         = User::STATUS_CONFIRMED;
@@ -198,7 +198,7 @@ class UserController extends Base
                     return $this->render('registration_confirmed');
                 }
             } else {
-                $msgError = "Der angegebene Code stimmt leider nicht.";
+                $msgError = 'Der angegebene Code stimmt leider nicht.';
             }
         }
 

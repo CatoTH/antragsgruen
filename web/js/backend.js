@@ -290,6 +290,19 @@
                 $("#accountsForm").hide();
             }
         }).trigger("change");
+
+
+        $(".removeAdmin").click(function() {
+            var $button = $(this),
+                $form = $(this).parents("form").first();
+            bootbox.confirm("Diesem Zugang wirklich die Admin-Rechte entziehen?", function (result) {
+                if (result) {
+                    var id = $button.data("id");
+                    $form.append('<input type="hidden" name="removeAdmin" value="' + id + '">');
+                    $form.submit();
+                }
+            });
+        });
     };
 
     $.AntragsgruenAdmin = {

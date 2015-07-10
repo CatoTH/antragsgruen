@@ -14,20 +14,13 @@ $I->logout();
 
 
 $I->wantTo('Login in as an admin');
-$I->gotoConsultationHome();
-
-$I->loginAsStdAdmin();
-$I->see('ADMIN', '#adminLink');
-
-$I->wantTo('Go to admin administration');
-$I->click('#adminLink');
-$I->click('#adminsManageLink');
-$I->see(mb_strtoupper('Administratoren der Reihe'), 'h1');
+$I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
+$I->see(mb_strtoupper('Administrator_Innen der Reihe'), 'h2');
 
 
 $I->wantTo('Add testuser as admin');
 $I->fillField('#add_username', 'testuser@example.org');
-$I->submitForm('#adminManageAddForm', [], 'adduser');
+$I->submitForm('#adminForm', [], 'addAdmin');
 $I->see('testuser@example.org');
 
 $I->wantTo('Login in as testuser');
@@ -38,15 +31,15 @@ $I->see('ADMIN', '#adminLink');
 
 
 $I->wantTo('Go to admin administration');
-$I->click('#adminLink');
-$I->click('#adminsManageLink');
-$I->see(mb_strtoupper('Administratoren der Reihe'), 'h1');
-
+$I->gotoStdAdminPage()->gotoSiteAccessPage();
 
 
 $I->wantTo('Remove testadmin as admin');
 $I->see('testadmin@example.org');
-$I->click('#removeAdmin1');
+$I->click('.admin1 .removeAdmin');
+$I->wait(1);
+$I->see('Admin-Rechte entziehen');
+$I->click('.bootbox .btn-primary');
 $I->dontSee('testadmin@example.org');
 
 

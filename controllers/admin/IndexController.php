@@ -50,50 +50,6 @@ class IndexController extends AdminBase
 
     /**
      * @return string
-     */
-    public function actionAdmins()
-    {
-        /** @var User $myself */
-        $myself = \Yii::$app->user->identity;
-
-        if (isset($_POST['adduser'])) {
-            /** @var User $newUser */
-            if (strpos($_REQUEST['username'], '@') !== false) {
-                $newUser = User::findOne(['auth' => 'email:' . $_REQUEST['username']]);
-            } else {
-                $newUser = User::findOne(['auth' => User::wurzelwerkId2Auth($_REQUEST["username"])]);
-            }
-            if ($newUser) {
-                $this->site->link('admins', $newUser);
-                $str = '%username% hat nun auch Admin-Rechte.';
-                \Yii::$app->session->setFlash('success', str_replace('%username%', $_REQUEST['username'], $str));
-            } else {
-                $str = 'BenutzerIn %username% nicht gefunden. Der/Diejenige muss sich zuvor mindestens ' .
-                    'einmal auf Antragsgrün eingeloggt haben, um als Admin hinzugefügt werden zu können.';
-                \Yii::$app->session->setFlash('error', str_replace('%username%', $_REQUEST['username'], $str));
-            }
-        }
-        if (AntiXSS::isTokenSet('removeuser')) {
-            /** @var User $todel */
-            $todel = User::findOne(AntiXSS::getTokenVal('removeuser'));
-            $this->site->unlink('admins', $todel, true);
-            \Yii::$app->session->setFlash('success', 'Die Admin-Rechte wurden entzogen.');
-        }
-
-        $delform        = AntiXSS::createToken('removeuser');
-        $delUrlTemplate = UrlHelper::createUrl(['admin/index/admins', $delform => 'REMOVEID']);
-        return $this->render(
-            'admins',
-            [
-                'site'   => $this->site,
-                'myself' => $myself,
-                'delUrl' => $delUrlTemplate,
-            ]
-        );
-    }
-
-    /**
-     * @return string
      * @throws \app\models\exceptions\FormError
      */
     public function actionConsultation()
@@ -177,9 +133,9 @@ class IndexController extends AdminBase
      */
     private function saveSiteSettings(Site $site)
     {
-        $ssettings                            = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
-        $siteSettings                         = $site->getSettings();
-        $siteSettings->siteLayout             = $ssettings['siteLayout'];
+        $ssettings                = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
+        $siteSettings             = $site->getSettings();
+        $siteSettings->siteLayout = $ssettings['siteLayout'];
         $site->setSettings($siteSettings);
         $site->save();
 
@@ -237,7 +193,7 @@ class IndexController extends AdminBase
         $site = $this->site;
 
         if (isset($_POST['save'])) {
-            $settings = $site->getSettings();
+            $settings             = $site->getSettings();
             $settings->forceLogin = isset($_POST['forceLogin']);
             if (isset($_POST['login'])) {
                 $settings->loginMethods = $_POST['login'];
@@ -248,6 +204,45 @@ class IndexController extends AdminBase
             $site->save();
 
             \yii::$app->session->setFlash('success', 'Gespeichert.');
+        }
+
+        if (isset($_POST['addAdmin'])) {
+            /** @var User $newUser */
+            $username = $_POST['username'];
+            if (strpos($username, '@') !== false) {
+                $newUser = User::findOne(['auth' => 'email:' . $username]);
+            } else {
+                $newUser = User::findOne(['auth' => User::wurzelwerkId2Auth($username)]);
+            }
+            if ($newUser) {
+                try {
+                    $this->site->link('admins', $newUser);
+                    $str = '%username% hat nun auch Admin-Rechte.';
+                    \Yii::$app->session->setFlash('success', str_replace('%username%', $username, $str));
+                } catch (\yii\db\IntegrityException $e) {
+                    if (mb_strpos($e->getMessage(), 1062) !== false) {
+                        $str = str_replace('%username%', $username, '%username% hatte bereits Admin-Rechte.');
+                        \Yii::$app->session->setFlash('success', $str);
+                    } else {
+                        \Yii::$app->session->setFlash('error', 'Ein unbekannter Fehler ist aufgetreten');
+                    }
+                }
+            } else {
+                $str = 'BenutzerIn %username% nicht gefunden. Der/Diejenige muss sich zuvor mindestens ' .
+                    'einmal auf Antragsgrün eingeloggt haben, um als Admin hinzugefügt werden zu können.';
+                \Yii::$app->session->setFlash('error', str_replace('%username%', $username, $str));
+            }
+        }
+
+        if (isset($_POST['removeAdmin'])) {
+            /** @var User $todel */
+            $todel = User::findOne($_POST['removeAdmin']);
+            if ($todel) {
+                $this->site->unlink('admins', $todel, true);
+                \Yii::$app->session->setFlash('success', 'Die Admin-Rechte wurden entzogen.');
+            } else {
+                \Yii::$app->session->setFlash('error', 'Es gibt keinen Zugang mit diesem Namen');
+            }
         }
 
         return $this->render('site_access', ['site' => $site]);
