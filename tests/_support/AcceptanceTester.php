@@ -105,15 +105,17 @@ class AcceptanceTester extends \Codeception\Actor
 
     /**
      * @param bool $check
+     * @param string $subdomain
+     * @param string $path
      * @return AdminIndexPage
      */
-    public function gotoStdAdminPage($check = true)
+    public function gotoStdAdminPage($check = true, $subdomain = 'stdparteitag', $path = 'std-parteitag')
     {
         $page = AdminIndexPage::openBy(
             $this,
             [
-                'subdomain'        => 'stdparteitag',
-                'consultationPath' => 'std-parteitag',
+                'subdomain'        => $subdomain,
+                'consultationPath' => $path,
             ]
         );
         return $page;

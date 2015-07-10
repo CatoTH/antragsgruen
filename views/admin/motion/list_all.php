@@ -88,13 +88,14 @@ $amendmentStati = Amendment::getStati();
 foreach ($entries as $entry) {
     if (is_a($entry, Motion::class)) {
         /** @var Motion $entry */
-        $url = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
+        $viewUrl = UrlHelper::createMotionUrl($entry);
+        $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
         echo '<tr class="motion' . $entry->id . '">';
         echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>A</td>';
-        echo '<td class="prefixCol"><a href="' . Html::encode($url) . '">';
+        echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
         echo Html::encode($entry->titlePrefix) . '</a></td>';
-        echo '<td>' . Html::a((trim($entry->title) != '' ? $entry->title : '-'), $url) . '</td>';
+        echo '<td>' . Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl) . '</td>';
         echo '<td>' . Html::encode($motionStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {
@@ -108,41 +109,41 @@ foreach ($entries as $entry) {
         echo Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainhtml'), ['class' => 'plainHtml']);
         echo '</td>';
 
-        $dropdowns = [];
-        if (in_array($entry->status, [Motion::STATUS_DRAFT, Motion::STATUS_SUBMITTED_UNSCREENED])) {
-            $title             = 'Freischalten';
-            $dropdowns[$title] = $search->getCurrentUrl($route, ['motionScreen' => $entry->id]);
-        } else {
-            $title             = 'Freischalten zurücknehmen';
-            $dropdowns[$title] = $search->getCurrentUrl($route, ['motionWithdraw' => $entry->id]);
-        }
-        $title             = 'Neuer Antrag auf dieser Basis';
-        $dropdowns[$title] = UrlHelper::createUrl(['motion/create', 'adoptInitiators' => $entry->id]);
-
         echo '<td class="actionCol"><div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     Aktion
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
-        foreach ($dropdowns as $name => $link) {
-            echo '<li><a tabindex="-1" href="' . Html::encode($link) . '">' . Html::encode($name) . '</a>';
+        if (in_array($entry->status, [Motion::STATUS_DRAFT, Motion::STATUS_SUBMITTED_UNSCREENED])) {
+            $link = Html::encode($search->getCurrentUrl($route, ['motionScreen' => $entry->id]));
+            $name = Html::encode('Freischalten');
+            echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
+        } else {
+            $link = Html::encode($search->getCurrentUrl($route, ['motionWithdraw' => $entry->id]));
+            $name = Html::encode('Freischalten zurücknehmen');
+            echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
         }
+        $link = Html::encode(UrlHelper::createUrl(['motion/create', 'adoptInitiators' => $entry->id]));
+        $name = Html::encode('Neuer Antrag auf dieser Basis');
+        echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
+
         $delLink = Html::encode($search->getCurrentUrl($route, ['motionDelete' => $entry->id]));
-        echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
+        echo '<li><a tabindex="-1" href="' . $delLink . '" class="delete" ' .
             'onClick="return confirm(\'Diesen Antrag wirklich löschen?\');">Löschen</a></li>';
         echo '</ul></div></td>';
         echo '</tr>';
     }
     if (is_a($entry, Amendment::class)) {
         /** @var Amendment $entry */
-        $url = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
+        $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
+        $viewUrl = UrlHelper::createAmendmentUrl($entry);
         echo '<tr class="amendment' . $entry->id . '">';
         echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>ÄA</td>';
-        echo '<td class="prefixCol"><a href="' . Html::encode($url) . '">';
+        echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
         echo Html::encode($entry->titlePrefix) . '</a></td>';
-        echo '<td>' . Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $url) . '</td>';
+        echo '<td>' . Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $editUrl) . '</td>';
         echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {
@@ -154,26 +155,26 @@ foreach ($entries as $entry) {
         echo Html::a('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']);
         echo '</td>';
 
-        $dropdowns = [];
-        if (in_array($entry->status, [Amendment::STATUS_DRAFT, Amendment::STATUS_SUBMITTED_UNSCREENED])) {
-            $title             = 'Freischalten';
-            $dropdowns[$title] = $search->getCurrentUrl($route, ['amendmentScreen' => $entry->id]);
-        } else {
-            $title             = 'Freischalten zurücknehmen';
-            $dropdowns[$title] = $search->getCurrentUrl($route, ['amendmentWithdraw' => $entry->id]);
-        }
-        $title             = 'Neuer Änderungsantrag auf dieser Basis';
-        $params            = ['amendment/create', 'motionId' => $entry->motionId, 'adoptInitiators' => $entry->id];
-        $dropdowns[$title] = UrlHelper::createUrl($params);
         echo '<td class="actionCol"><div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     Aktion
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
-        foreach ($dropdowns as $name => $link) {
-            echo '<li><a tabindex="-1" href="' . Html::encode($link) . '">' . Html::encode($name) . '</a>';
+        if (in_array($entry->status, [Amendment::STATUS_DRAFT, Amendment::STATUS_SUBMITTED_UNSCREENED])) {
+            $name = Html::encode('Freischalten');
+            $link = Html::encode($search->getCurrentUrl($route, ['amendmentScreen' => $entry->id]));
+            echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
+        } else {
+            $name = Html::encode('Freischalten zurücknehmen');
+            $link = Html::encode($search->getCurrentUrl($route, ['amendmentWithdraw' => $entry->id]));
+            echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
         }
+        $name   = Html::encode('Neuer Änderungsantrag auf dieser Basis');
+        $params = ['amendment/create', 'motionId' => $entry->motionId, 'adoptInitiators' => $entry->id];
+        $link   = Html::encode(UrlHelper::createUrl($params));
+        echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
+
         $delLink = Html::encode($search->getCurrentUrl($route, ['amendment_delete' => $entry->id]));
         echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
             'onClick="return confirm(\'Diesen Änderungsantrag wirklich löschen?\');">Löschen</a></li>';

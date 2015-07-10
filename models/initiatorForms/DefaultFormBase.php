@@ -229,6 +229,10 @@ abstract class DefaultFormBase extends IInitiatorForm
             }
         }
         $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
+        $isForOther         = false;
+        if ($screeningPrivilege) {
+            $isForOther = true; // @TODO
+        }
         return $view->render(
             '@app/views/initiatorForms/default_form',
             [
@@ -237,6 +241,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 'moreInitiators'    => $moreInitiators,
                 'supporters'        => $supporters,
                 'allowOther'        => $screeningPrivilege,
+                'isForOther'        => $isForOther,
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
@@ -271,6 +276,10 @@ abstract class DefaultFormBase extends IInitiatorForm
             }
         }
         $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
+        $isForOther         = false;
+        if ($screeningPrivilege) {
+            $isForOther = true; // @TODO
+        }
         return $view->render(
             '@app/views/initiatorForms/default_form',
             [
@@ -279,6 +288,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 'moreInitiators'    => $moreInitiators,
                 'supporters'        => $supporters,
                 'allowOther'        => $screeningPrivilege,
+                'isForOther'        => $isForOther,
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
@@ -318,7 +328,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 $init->userId = $user->id;
             }
         }
-        
+
         $posCount = 0;
 
         $init->setAttributes($_POST['Initiator']);
@@ -331,15 +341,15 @@ abstract class DefaultFormBase extends IInitiatorForm
             $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
         }
         $return[] = $init;
-        
+
         if (isset($_POST['moreInitiators']) && isset($_POST['moreInitiators']['name'])) {
             foreach ($_POST['moreInitiators']['name'] as $i => $name) {
-                $init = new MotionSupporter();
-                $init->motionId = $motion->id;
-                $init->role = MotionSupporter::ROLE_INITIATOR;
-                $init->position = $posCount++;
+                $init             = new MotionSupporter();
+                $init->motionId   = $motion->id;
+                $init->role       = MotionSupporter::ROLE_INITIATOR;
+                $init->position   = $posCount++;
                 $init->personType = MotionSupporter::PERSON_NATURAL;
-                $init->name = $name;
+                $init->name       = $name;
                 if (isset($_POST['moreInitiators']['organization'])) {
                     $init->organization = $_POST['moreInitiators']['organization'][$i];
                 }
@@ -403,12 +413,12 @@ abstract class DefaultFormBase extends IInitiatorForm
 
         if (isset($_POST['moreInitiators']) && isset($_POST['moreInitiators']['name'])) {
             foreach ($_POST['moreInitiators']['name'] as $i => $name) {
-                $init = new AmendmentSupporter();
+                $init              = new AmendmentSupporter();
                 $init->amendmentId = $amendment->id;
-                $init->role = AmendmentSupporter::ROLE_INITIATOR;
-                $init->position = $posCount++;
-                $init->personType = MotionSupporter::PERSON_NATURAL;
-                $init->name = $name;
+                $init->role        = AmendmentSupporter::ROLE_INITIATOR;
+                $init->position    = $posCount++;
+                $init->personType  = MotionSupporter::PERSON_NATURAL;
+                $init->name        = $name;
                 if (isset($_POST['moreInitiators']['organization'])) {
                     $init->organization = $_POST['moreInitiators']['organization'][$i];
                 }

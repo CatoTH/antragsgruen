@@ -94,6 +94,18 @@ class AmendmentEditForm extends Model
     }
 
     /**
+     * @param Amendment $amendment
+     */
+    public function cloneSupporters(Amendment $amendment)
+    {
+        foreach ($amendment->amendmentSupporters as $supp) {
+            $suppNew = new AmendmentSupporter();
+            $suppNew->setAttributes($supp->getAttributes());
+            $this->supporters[] = $suppNew;
+        }
+    }
+
+    /**
      * @param array $data
      * @param bool $safeOnly
      */

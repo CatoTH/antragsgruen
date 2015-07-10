@@ -261,10 +261,11 @@ class AmendmentController extends Base
 
     /**
      * @param int $motionId
+     * @param int $adoptInitiators
      * @return string
      * @throws NotFound
      */
-    public function actionCreate($motionId)
+    public function actionCreate($motionId, $adoptInitiators = 0)
     {
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion || in_array($motion->status, $this->consultation->getInvisibleMotionStati())) {
@@ -293,6 +294,9 @@ class AmendmentController extends Base
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
+        } elseif ($adoptInitiators > 0) {
+            $adoptAmend = $this->consultation->getAmendment($adoptInitiators);
+            $form->cloneSupporters($adoptAmend);
         }
 
         if (count($form->supporters) == 0) {

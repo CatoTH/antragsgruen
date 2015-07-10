@@ -12,6 +12,7 @@ use yii\helpers\Html;
  * @var ISupporter[] $moreInitiators
  * @var ISupporter[] $supporters
  * @var bool $allowOther
+ * @var bool $isForOther
  * @var bool $hasSupporters
  * @var bool $minSupporters
  * @var bool $supporterFulltext
@@ -40,8 +41,9 @@ $preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
 echo '<div class="initiatorData form-horizontal content">';
 
 if ($allowOther) {
-    echo '<div class="checkbox"><label><input type="checkbox" name="andere_antragstellerIn"> ' .
-        'Ich lege diesen Antrag für eine andere AntragstellerIn an <small>(Admin-Funktion)</small>
+    echo '<div class="checkbox"><label><input type="checkbox" name="otherInitiator" ' .
+        ($isForOther ? 'checked' : '') .
+        '> Ich lege diesen Antrag für eine andere AntragstellerIn an <small>(Admin-Funktion)</small>
     </label></div>';
 }
 
@@ -128,10 +130,9 @@ if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
 }
 
 
-
 $getInitiatorRow = function (ISupporter $initiator, $initiatorOrga) {
     $str = '<div class="form-group initiatorRow">';
-    $str .= '<div class="col-sm-3 control-label">'  . 'Weitere AntragsstellerIn' . '</div>';
+    $str .= '<div class="col-sm-3 control-label">' . 'Weitere AntragsstellerIn' . '</div>';
     $str .= '<div class="col-md-4">';
     $str .= Html::textInput(
         'moreInitiators[name][]',

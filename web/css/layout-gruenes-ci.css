@@ -4658,7 +4658,8 @@ ins, ul.inserted, blockquote.inserted {
       top: 12px;
       right: 12px; }
     .motionListStd .motion .title {
-      margin-bottom: 3px; }
+      margin-bottom: 3px;
+      padding-right: 65px; }
       .motionListStd .motion .title .motionIcon {
         width: 27px;
         margin-left: -30px;
@@ -4807,7 +4808,8 @@ ins, ul.inserted, blockquote.inserted {
       top: 12px;
       right: 12px; }
     .motionListAgenda .motion .title {
-      margin-bottom: 3px; }
+      margin-bottom: 3px;
+      padding-right: 65px; }
       .motionListAgenda .motion .title .motionIcon {
         width: 27px;
         margin-left: -30px;
