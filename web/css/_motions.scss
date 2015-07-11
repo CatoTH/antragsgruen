@@ -236,6 +236,97 @@
   @include motionListStdMotion(14px);
 }
 
+.motionListTags {
+  #tagList {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: center;
+
+    > li {
+      display: inline-block;
+      padding: 10px;
+      background-color: #e2007a;
+      border-radius: 3px;
+      font-size: 16px;
+      margin: 10px;
+
+      > a:link, #tag_list > li > a:visited {
+        color: white;
+      }
+    }
+  }
+
+  .motionTable {
+    width: 100%;
+
+
+    th {
+      border-bottom: solid 1px $colorGreenLight;
+      font-size: 0.80em;
+      line-height: 2.5em;
+      font-weight: 600;
+    }
+    td {
+      vertical-align: top;
+      padding: 0.75em 0em 0.75em 0em;
+    }
+    tr.motion {
+      border-top: solid 1px $colorGreenLight;
+      &:first-child {
+        border-top: none;
+      }
+    }
+    tr.amendment {
+      .titleCol {
+        .pdfLink {
+          font-weight: 400;
+        }
+        .titleLink {
+          font-weight: 400;
+        }
+      }
+    }
+    .prefixCol {
+      width: 15%;
+    }
+    .titleCol {
+      width: 45%;
+
+      .pdfLink {
+        font-weight: 600;
+        font-size: 0.8em;
+        float: right;
+        margin-right: 20px;
+      }
+      .titleLink {
+        font-weight: 600;
+        a:link, a:visited {
+          color: black;
+        }
+      }
+    }
+    .initiatorCol {
+      width: 35%;
+    }
+    .unscreened {
+      .titleCol {
+        .pdfLink {
+          display: none;
+        }
+        .titleLink {
+          a:link, a:visited {
+            font-weight: 400;
+            color: gray;
+          }
+        }
+      }
+    }
+  }
+}
+
 .motionTextHolder {
   .well & > h3.green {
     margin-bottom: 22px;
