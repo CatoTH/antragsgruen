@@ -4,9 +4,11 @@ namespace app\commands;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Consultation;
+use app\models\db\ConsultationSettingsTag;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
+use app\models\db\User;
 use yii\console\Controller;
 use yii\db\Connection;
 
@@ -45,6 +47,21 @@ class ImportController extends Controller
     ];
 
     /**
+     * @param string $name
+     * @return string
+     */
+    private function istOrganisation($name)
+    {
+        if (mb_stripos($name, 'vorstand')) {
+            return true;
+        }
+        if (mb_stripos($name, 'grüne jugend')) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @param Connection $dbOld
      * @param array $siteRow
      * @param int $newSite
@@ -65,11 +82,25 @@ class ImportController extends Controller
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne($consultationNew);
 
+        $command = $dbOld->createCommand('SELECT * FROM tags WHERE veranstaltung_id = ' . IntVal($veranstaltungAlt));
+        $tags    = $command->queryAll();
+        $tagMap  = [];
+        foreach ($tags as $tag) {
+            $newTag                 = new ConsultationSettingsTag();
+            $newTag->consultationId = $consultation->id;
+            $newTag->title          = $tag['name'];
+            $newTag->position       = $tag['position'];
+            if (!$newTag->save()) {
+                var_dump($newTag->getErrors());
+            }
+            $tagMap[$tag['id']] = $newTag;
+        }
+
         $command  = $dbOld->createCommand('SELECT * FROM antrag WHERE veranstaltung_id = ' . IntVal($veranstaltungAlt));
         $antraege = $command->queryAll();
         foreach ($antraege as $antrag) {
             echo 'Migrating Motion: ' . $antrag['id'] . "\n";
-            $this->migrateMotion($dbOld, $antrag, $consultation);
+            $this->migrateMotion($dbOld, $antrag, $consultation, $tagMap);
         }
     }
 
@@ -77,17 +108,20 @@ class ImportController extends Controller
      * @param Connection $dbOld
      * @param array $antrag
      * @param Consultation $consultation
+     * @param ConsultationSettingsTag[] $tagMap
      */
-    private function migrateMotion(Connection $dbOld, $antrag, Consultation $consultation)
+    private function migrateMotion(Connection $dbOld, $antrag, Consultation $consultation, $tagMap)
     {
+        $dateCreation           = ($antrag['datum_einreichung'] > 0 ? $antrag['datum_einreichung'] : null);
+        $dateResolution         = ($antrag['datum_beschluss'] > 0 ? $antrag['datum_beschluss'] : null);
         $motion                 = new Motion();
         $motion->consultationId = $consultation->id;
         $motion->motionTypeId   = $consultation->motionTypes[0]->id;
         $motion->status         = static::$MOTION_STATUS_MAP[$antrag['status']];
         $motion->title          = $antrag['name'];
         $motion->titlePrefix    = $antrag['revision_name'];
-        $motion->dateCreation   = $antrag['datum_einreichung'];
-        $motion->dateResolution = $antrag['datum_beschluss'];
+        $motion->dateCreation   = $dateCreation;
+        $motion->dateResolution = $dateResolution;
         $motion->statusString   = $antrag['status_string'];
         $motion->textFixed      = $antrag['text_unveraenderlich'];
         $motion->cache          = '';
@@ -95,19 +129,33 @@ class ImportController extends Controller
             var_dump($motion->getErrors());
         }
 
+        $tags = $dbOld->createCommand('SELECT * FROM antrag_tags WHERE antrag_id = ' . $antrag['id'])->queryAll();
+        foreach ($tags as $tag) {
+            $newTag = $tagMap[$tag['tag_id']];
+            $motion->link('tags', $newTag);
+        }
+
         $sql                = 'SELECT * FROM antrag_unterstuetzerInnen a ' .
             'LEFT JOIN person b ON a.unterstuetzerIn_id = b.id WHERE a.antrag_id = ' . $antrag['id'];
         $unterstuetzerInnen = $dbOld->createCommand($sql)->queryAll();
         foreach ($unterstuetzerInnen as $unterstuetzerIn) {
+            $dateResolution = ($unterstuetzerIn['beschlussdatum'] > 0 ? $unterstuetzerIn['beschlussdatum'] : null);
+            $organisation   = $this->istOrganisation($unterstuetzerIn['name']);
+            if ($unterstuetzerIn['beschlussdatum'] > 0) {
+                $organisation = true;
+            }
+            $personType = ($organisation ? MotionSupporter::PERSON_ORGANIZATION : MotionSupporter::PERSON_NATURAL);
+
             $supporter                 = new MotionSupporter();
             $supporter->motionId       = $motion->id;
             $supporter->position       = $unterstuetzerIn['position'];
             $supporter->role           = static::$PERSON_ROLE_MAP[$unterstuetzerIn['rolle']];
             $supporter->name           = $unterstuetzerIn['name'];
             $supporter->organization   = $unterstuetzerIn['organisation'];
-            $supporter->resolutionDate = $unterstuetzerIn['beschlussdatum'];
+            $supporter->resolutionDate = $dateResolution;
             $supporter->contactEmail   = $unterstuetzerIn['kontakt_email'];
             $supporter->contactPhone   = $unterstuetzerIn['kontakt_telefon'];
+            $supporter->personType     = $personType;
             if (!$supporter->save()) {
                 var_dump($supporter->getErrors());
             }
@@ -129,6 +177,9 @@ class ImportController extends Controller
      */
     private function migrateAmendment(Connection $dbOld, $aenderungsantrag, Motion $motion)
     {
+        $dateCreation   = ($aenderungsantrag['datum_einreichung'] > 0 ? $aenderungsantrag['datum_einreichung'] : null);
+        $dateResolution = ($aenderungsantrag['datum_beschluss'] > 0 ? $aenderungsantrag['datum_beschluss'] : null);
+
         $amend              = new Amendment();
         $amend->motionId    = $motion->id;
         $amend->titlePrefix = $aenderungsantrag['revision_name'];
@@ -143,8 +194,8 @@ class ImportController extends Controller
         $amend->changeExplanation     = '';
         $amend->changeExplanationHtml = 0;
         $amend->cache                 = '';
-        $amend->dateCreation          = $aenderungsantrag['datum_einreichung'];
-        $amend->dateResolution        = $aenderungsantrag['datum_beschluss'];
+        $amend->dateCreation          = $dateCreation;
+        $amend->dateResolution        = $dateResolution;
         $amend->status                = static::$MOTION_STATUS_MAP[$aenderungsantrag['status']];
         $amend->statusString          = $aenderungsantrag['status_string'];
         $amend->noteInternal          = $aenderungsantrag['notiz_intern'];
@@ -158,15 +209,23 @@ class ImportController extends Controller
             'WHERE a.aenderungsantrag_id = ' . $aenderungsantrag['id'];
         $unterstuetzerInnen = $dbOld->createCommand($sql)->queryAll();
         foreach ($unterstuetzerInnen as $unterstuetzerIn) {
+            $dateResolution = ($unterstuetzerIn['beschlussdatum'] > 0 ? $unterstuetzerIn['beschlussdatum'] : null);
+            $organisation   = $this->istOrganisation($unterstuetzerIn['name']);
+            if ($unterstuetzerIn['beschlussdatum'] > 0) {
+                $organisation = true;
+            }
+            $personType = ($organisation ? MotionSupporter::PERSON_ORGANIZATION : MotionSupporter::PERSON_NATURAL);
+
             $supporter                 = new AmendmentSupporter();
             $supporter->amendmentId    = $amend->id;
             $supporter->position       = $unterstuetzerIn['position'];
             $supporter->role           = static::$PERSON_ROLE_MAP[$unterstuetzerIn['rolle']];
             $supporter->name           = $unterstuetzerIn['name'];
             $supporter->organization   = $unterstuetzerIn['organisation'];
-            $supporter->resolutionDate = $unterstuetzerIn['beschlussdatum'];
+            $supporter->resolutionDate = $dateResolution;
             $supporter->contactEmail   = $unterstuetzerIn['kontakt_email'];
             $supporter->contactPhone   = $unterstuetzerIn['kontakt_telefon'];
+            $supporter->personType     = $personType;
             if (!$supporter->save()) {
                 var_dump($supporter->getErrors());
             }
