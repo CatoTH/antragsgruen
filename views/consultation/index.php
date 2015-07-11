@@ -23,7 +23,7 @@ use yii\helpers\Url;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title                = $consultation->title . ' (Antragsgrün)';
+$this->title = $consultation->title . ' (Antragsgrün)';
 
 
 if ($admin) {
@@ -56,7 +56,7 @@ if ($admin) {
     echo Html::beginForm($saveUrl, 'post');
 }
 
-$pageData    = \app\components\MessageSource::getPageData($consultation, 'welcome');
+$pageData = \app\components\MessageSource::getPageData($consultation, 'welcome');
 echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';

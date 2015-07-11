@@ -14,6 +14,9 @@ $tags            = $tagIds = [];
 $hasNoTagMotions = false;
 
 foreach ($consultation->motions as $motion) {
+    if (in_array($motion->status, $consultation->getInvisibleMotionStati())) {
+        continue;
+    }
     if (count($motion->tags) == 0) {
         $hasNoTagMotions = true;
         if (!isset($tags[0])) {
@@ -41,7 +44,7 @@ if ($hasNoTagMotions) {
 
 echo '<section class="motionListTags">';
 
-if (count($sortedTags) > 0) {
+if (count($sortedTags) > 0 && !mb_stripos($sortedTags[0]->title, 'Tagesordnung') === false) {
     echo '<h3 class="green">' . 'Themenbereiche' . '</h3>';
     echo '<ul id="tagList" class="content">';
 
