@@ -29,7 +29,7 @@ $layout->loadDatepicker();
 $layout->loadCKEditor();
 
 $html = '<ul class="sidebarActions">';
-$html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '">';
+$html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
 $html .= '<span class="glyphicon glyphicon-file"></span> Antrag anzeigen' . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
@@ -125,10 +125,10 @@ echo '</div></div>';
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionTitlePrefix">';
 echo 'Antragskürzel';
-echo ':</label><div class="col-md-9">';
-$options = ['class' => 'form-control', 'id' => 'motionTitlePrefix', 'placeholder' => 'z.B. "A1"'];
+echo ':</label><div class="col-md-4">';
+$options = ['class' => 'form-control', 'id' => 'motionTitlePrefix', 'placeholder' => 'z.B. "A1", "A1neu", "S1"'];
 echo Html::textInput('motion[titlePrefix]', $motion->titlePrefix, $options);
-echo '<small>z.B. "A1", "A1neu", "S1" etc. Muss unbedingt gesetzt und eindeutig sein.</small>';
+echo '<small>Muss eindeutig sein.</small>';
 echo '</div></div>';
 
 
@@ -179,6 +179,9 @@ if (!$motion->textFixed) {
 <div class="content" id="motionTextEditHolder" style="display: none;">';
 
     foreach ($form->sections as $section) {
+        if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+            continue;
+        }
         echo $section->getSectionType()->getMotionFormField();
     }
 
