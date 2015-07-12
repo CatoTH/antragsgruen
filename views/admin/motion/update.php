@@ -19,7 +19,7 @@ $layout     = $controller->layoutParams;
 
 $this->title = 'Antrag bearbeiten: ' . $motion->getTitleWithPrefix();
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb('Anträge', UrlHelper::createUrl('admin/motion/index'));
+$layout->addBreadcrumb('Anträge', UrlHelper::createUrl('admin/motion/listall'));
 $layout->addBreadcrumb('Antrag');
 
 $layout->addJS('/js/backend.js');
@@ -35,7 +35,7 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
     if ($newRev == '') {
-        $newRev = $motion->consultation->getNextAvailableStatusString($motion->motionTypeId);
+        $newRev = $motion->consultation->getNextMotionPrefix($motion->motionTypeId);
     }
 
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';

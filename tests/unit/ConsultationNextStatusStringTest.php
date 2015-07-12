@@ -21,7 +21,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $consultation = Consultation::findOne(2);
 
         // 'For first A',
-        $this->assertEquals('A1', $consultation->getNextAvailableStatusString(3));
+        $this->assertEquals('A1', $consultation->getNextMotionPrefix(3));
 
 
         // 'For second A
@@ -35,7 +35,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->save();
         $consultation->refresh();
 
-        $this->assertEquals('A2', $consultation->getNextAvailableStatusString(3));
+        $this->assertEquals('A2', $consultation->getNextMotionPrefix(3));
 
 
         // 'For second B'
@@ -50,7 +50,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->save();
         $consultation->refresh();
 
-        $this->assertEquals('B2', $consultation->getNextAvailableStatusString(4));
+        $this->assertEquals('B2', $consultation->getNextMotionPrefix(4));
 
 
         // 'For third S'
@@ -65,7 +65,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
         $dummyMotion->save();
         $consultation->refresh();
 
-        $this->assertEquals('A5', $consultation->getNextAvailableStatusString(3));
+        $this->assertEquals('A5', $consultation->getNextMotionPrefix(3));
 
 
         /*

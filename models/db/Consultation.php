@@ -307,7 +307,7 @@ class Consultation extends ActiveRecord
      * @param int $motionTypeId
      * @return string
      */
-    public function getNextAvailableStatusString($motionTypeId)
+    public function getNextMotionPrefix($motionTypeId)
     {
         $max_rev = 0;
         /** @var ConsultationMotionType $motionType */
@@ -334,6 +334,15 @@ class Consultation extends ActiveRecord
             }
         }
         return $prefix . ($max_rev + 1);
+    }
+
+    /**
+     * @param int $motionId
+     * @return string
+     */
+    public function getNextAmendmentPrefix($motionId)
+    {
+        return 'TODO'; // @TODO
     }
 
     /**

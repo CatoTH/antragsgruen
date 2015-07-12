@@ -112,14 +112,14 @@ class MotionController extends AdminBase
         /** @var Motion $motion */
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            $this->redirect(UrlHelper::createUrl('admin/motion/index'));
+            $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
         }
         $this->checkConsistency($motion);
 
         if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
             $found = false;
-            foreach ($this->consultation->motions as $motion) {
-                if ($motion->titlePrefix == $_POST['titlePrefix'] && $motion->status != Motion::STATUS_DELETED) {
+            foreach ($this->consultation->motions as $mot) {
+                if ($mot->titlePrefix == $_POST['titlePrefix'] && $mot->status != Motion::STATUS_DELETED) {
                     $found = true;
                 }
             }
@@ -144,7 +144,7 @@ class MotionController extends AdminBase
             $motion->agendaItemId   = (isset($modat['agendaItemId']) ? $modat['agendaItemId'] : null);
             $motion->dateResolution = '';
             if ($modat['dateResolution'] != '') {
-                $motion->dateResolution = Tools::dateBootstraptime2sql($modat['dateCreation']);
+                $motion->dateResolution = Tools::dateBootstraptime2sql($modat['dateResolution']);
             }
 
             $foundPrefix = false;
@@ -156,7 +156,7 @@ class MotionController extends AdminBase
                 }
             }
             if ($foundPrefix) {
-                $msg = "Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.";
+                $msg = 'Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.';
                 \yii::$app->session->setFlash('error', $msg);
             } else {
                 $motion->titlePrefix = $_POST['motion']['titlePrefix'];

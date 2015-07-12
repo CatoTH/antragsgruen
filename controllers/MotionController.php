@@ -226,7 +226,7 @@ class MotionController extends Base
             $screening      = $this->consultation->getSettings()->screeningMotions;
             $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
             if (!$screening && $motion->statusString == "") {
-                $motion->titlePrefix = $motion->consultation->getNextAvailableStatusString($motion->motionTypeId);
+                $motion->titlePrefix = $motion->consultation->getNextMotionPrefix($motion->motionTypeId);
             }
             $motion->save();
 
