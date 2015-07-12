@@ -10,6 +10,7 @@ use yii\helpers\Html;
  * @var $this yii\web\View
  * @var Consultation $consultation
  * @var Amendment $amendment
+ * @var \app\models\forms\AmendmentEditForm $form
  */
 
 /** @var \app\controllers\Base $controller */
@@ -67,16 +68,17 @@ if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
 }
 
 
-echo Html::beginForm('', 'post', ['class' => 'content form-horizontal', 'id' => 'amendmentUpdateForm']);
+echo Html::beginForm('', 'post', ['id' => 'amendmentUpdateForm']);
 
+echo '<div class="content form-horizontal">';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="amendmentStatus">';
+echo '<label class="col-md-3 control-label" for="amendmentStatus">';
 echo 'Status';
 echo ':</label><div class="col-md-4">';
 $options = ['class' => 'form-control', 'id' => 'amendmentStatus'];
 echo Html::dropDownList('amendment[status]', $amendment->status, Amendment::getStati(), $options);
-echo '</div><div class="col-md-4">';
+echo '</div><div class="col-md-5">';
 $options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
 echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);
 echo '</div></div>';
@@ -85,9 +87,9 @@ echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="amendmentTitlePrefix">';
+echo '<label class="col-md-3 control-label" for="amendmentTitlePrefix">';
 echo 'Antragskürzel';
-echo ':</label><div class="col-md-8">';
+echo ':</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'amendmentTitlePrefix', 'placeholder' => 'z.B. "A1"'];
 echo Html::textInput('amendment[titlePrefix]', $amendment->titlePrefix, $options);
 echo '<small>z.B. "Ä1", "Ä1neu", "A23-0042" etc. Muss unbedingt gesetzt und eindeutig sein.</small>';
@@ -98,9 +100,9 @@ $locale = Tools::getCurrentDateLocale();
 
 $date = Tools::dateSql2bootstraptime($amendment->dateCreation);
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="amendmentDateCreation">';
+echo '<label class="col-md-3 control-label" for="amendmentDateCreation">';
 echo 'Angelegt am';
-echo ':</label><div class="col-md-8"><div class="input-group date" id="amendmentDateCreationHolder">';
+echo ':</label><div class="col-md-4"><div class="input-group date" id="amendmentDateCreationHolder">';
 echo '<input type="text" class="form-control" name="amendment[dateCreation]" id="amendmentDateCreation"
                 value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
@@ -108,9 +110,9 @@ echo '</div></div></div>';
 
 $date = Tools::dateSql2bootstraptime($amendment->dateResolution);
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="amendmentDateResolution">';
+echo '<label class="col-md-3 control-label" for="amendmentDateResolution">';
 echo 'Beschlossen am';
-echo ':</label><div class="col-md-8"><div class="input-group date" id="amendmentDateResolutionHolder">';
+echo ':</label><div class="col-md-4"><div class="input-group date" id="amendmentDateResolutionHolder">';
 echo '<input type="text" class="form-control" name="amendment[dateResolution]" id="amendmentDateResolution"
                 value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
@@ -118,13 +120,19 @@ echo '</div></div></div>';
 
 
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="amendmentNoteInternal">';
+echo '<label class="col-md-3 control-label" for="amendmentNoteInternal">';
 echo 'Interne Notiz';
-echo ':</label><div class="col-md-8">';
+echo ':</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'amendmentNoteInternal'];
 echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal, $options);
 echo '</div></div>';
 
+echo '</div>';
+
+
+$initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();
+$initiatorClass->setAdminMode(true);
+echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 
 
 

@@ -77,8 +77,8 @@ abstract class DefaultFormBase extends IInitiatorForm
     protected function parseSupporters(ISupporter $model)
     {
         $ret = [];
-        if (isset($_POST["supporters"]) && is_array($_POST["supporters"]['name'])) {
-            foreach ($_POST["supporters"]['name'] as $i => $name) {
+        if (isset($_POST['supporters']) && is_array($_POST['supporters']['name'])) {
+            foreach ($_POST['supporters']['name'] as $i => $name) {
                 if (!$this->isValidName($name)) {
                     continue;
                 }
@@ -88,8 +88,8 @@ abstract class DefaultFormBase extends IInitiatorForm
                 $sup->userId     = null;
                 $sup->personType = ISupporter::PERSON_NATURAL;
                 $sup->position   = $i;
-                if (isset($_POST["supporters"]['organization']) && isset($_POST["supporters"]['organization'][$i])) {
-                    $sup->organization = trim($_POST["supporters"]['organization'][$i]);
+                if (isset($_POST['supporters']['organization']) && isset($_POST['supporters']['organization'][$i])) {
+                    $sup->organization = trim($_POST['supporters']['organization'][$i]);
                 }
                 $ret[] = $sup;
             }
@@ -313,21 +313,27 @@ abstract class DefaultFormBase extends IInitiatorForm
             $init         = new MotionSupporter();
             $init->userId = null;
         } else {
-            // @TODO
-
-            /** @var \app\models\db\User $user */
-            $user = \Yii::$app->user->identity;
+            if (isset($_POST['otherInitiator'])) {
+                $userId = 0;
+                foreach ($motion->motionSupporters as $supporter) {
+                    if ($supporter->userId > 0) {
+                        $userId = $supporter->userId;
+                    }
+                }
+            } else {
+                $userId = User::getCurrentUser()->id;
+            }
 
             $init = MotionSupporter::findOne(
                 [
                     'motionId' => $motion->id,
                     'role'     => MotionSupporter::ROLE_INITIATOR,
-                    'userId'   => $user->id,
+                    'userId'   => $userId,
                 ]
             );
             if (!$init) {
                 $init         = new MotionSupporter();
-                $init->userId = $user->id;
+                $init->userId = $userId;
             }
         }
 
@@ -382,21 +388,27 @@ abstract class DefaultFormBase extends IInitiatorForm
             $init         = new AmendmentSupporter();
             $init->userId = null;
         } else {
-            // @TODO
-
-            /** @var \app\models\db\User $user */
-            $user = \Yii::$app->user->identity;
+            if (isset($_POST['otherInitiator'])) {
+                $userId = 0;
+                foreach ($amendment->amendmentSupporters as $supporter) {
+                    if ($supporter->userId > 0) {
+                        $userId = $supporter->userId;
+                    }
+                }
+            } else {
+                $userId = User::getCurrentUser()->id;
+            }
 
             $init = AmendmentSupporter::findOne(
                 [
                     'amendmentId' => $amendment->id,
                     'role'        => AmendmentSupporter::ROLE_INITIATOR,
-                    'userId'      => $user->id,
+                    'userId'      => $userId,
                 ]
             );
             if (!$init) {
                 $init         = new AmendmentSupporter();
-                $init->userId = $user->id;
+                $init->userId = $userId;
             }
         }
 

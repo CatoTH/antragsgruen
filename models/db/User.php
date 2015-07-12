@@ -531,4 +531,18 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public function getAuthName()
+    {
+        $x = explode(':', $this->auth);
+        switch ($x[0]) {
+            case 'email':
+                return 'E-Mail: ' . $x[1];
+            default:
+                return $this->auth;
+        }
+    }
 }

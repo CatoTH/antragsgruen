@@ -17,6 +17,7 @@ use yii\helpers\Html;
  * @var bool $minSupporters
  * @var bool $supporterFulltext
  * @var bool $supporterOrga
+ * @var bool $adminMode
  */
 
 /** @var app\controllers\Base $controller */
@@ -28,7 +29,7 @@ $locale = Tools::getCurrentDateLocale();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
-echo '<h2 class="green">' . 'AntragstellerIn' . '</h2>';
+echo '<h2 class="green">' . 'Antragsteller_In' . '</h2>';
 
 $preOrga       = Html::encode($initiator->organization);
 $preName       = Html::encode($initiator->name);
@@ -39,10 +40,14 @@ $preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
 echo '<div class="initiatorData form-horizontal content">';
 
 if ($allowOther) {
-    echo '<div class="checkbox"><label><input type="checkbox" name="otherInitiator" ' .
-        ($isForOther ? 'checked' : '') .
-        '> Ich lege diesen Antrag für eine andere AntragstellerIn an <small>(Admin-Funktion)</small>
+    if ($adminMode) {
+        echo '<input type="hidden" name="otherInitiator" value="1">';
+    } else {
+        echo '<div class="checkbox"><label><input type="checkbox" name="otherInitiator" ' .
+            ($isForOther ? 'checked' : '') .
+            '> Ich lege diesen Antrag für eine andere AntragstellerIn an <small>(Admin-Funktion)</small>
     </label></div>';
+    }
 }
 
 echo '<div class="form-group">
@@ -72,9 +77,20 @@ echo Html::radio(
 echo ' Organisation / Gremium
 </label>
 </div>
-</div>
+</div>';
 
-<div class="form-group">
+if ($adminMode) {
+    echo '<div class="form-group">
+  <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'BenutzerIn') . '</label>
+  <div class="col-sm-4">';
+    if ($initiator->user) {
+        echo Html::encode($initiator->user->getAuthName());
+    }
+    echo '</div>
+</div>';
+}
+
+echo '<div class="form-group">
   <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'Name') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorName" name="Initiator[name]" value="' . $preName . '" required>
@@ -103,7 +119,7 @@ if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
   <label class="col-sm-3 control-label" for="initiatorEmail">E-Mail</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorEmail" name="Initiator[contactEmail]" ';
-    if ($motionType->contactEmail == ConsultationMotionType::CONTACT_REQUIRED) {
+    if ($motionType->contactEmail == ConsultationMotionType::CONTACT_REQUIRED && !$adminMode) {
         echo 'required ';
     }
     echo 'value="' . Html::encode($preEmail) . '">
@@ -118,7 +134,7 @@ if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
         <label class="col-sm-3 control-label" for="initiatorPhone">Telefon</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorPhone" name="Initiator[contactPhone]" ';
-    if ($motionType->contactPhone == ConsultationMotionType::CONTACT_REQUIRED) {
+    if ($motionType->contactPhone == ConsultationMotionType::CONTACT_REQUIRED && !$adminMode) {
         echo 'required ';
     }
     echo 'value="' . Html::encode($prePhone) . '">
@@ -205,7 +221,7 @@ if ($hasSupporters) {
         $supp         = new \app\models\db\MotionSupporter();
         $supporters[] = $supp;
     }
-    echo '<h2 class="green supporterDataHead">' . 'UnterstützerInnen' . '</h2>';
+    echo '<h2 class="green supporterDataHead">' . 'Unterstützer_Innen' . '</h2>';
     echo '<div class="supporterData form-horizontal content" ';
     echo 'data-min-supporters="' . Html::encode($minSupporters) . '">';
 

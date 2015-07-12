@@ -71,9 +71,9 @@ echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm']);
 echo '<div class="content form-horizontal">';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="parentMotion">';
+echo '<label class="col-md-3 control-label" for="parentMotion">';
 echo 'Überarbeitete Fassung von';
-echo ':</label><div class="col-md-8">';
+echo ':</label><div class="col-md-9">';
 echo '<select class="form-control" name="motion[parentMotionId]" id="parentMotion"><option>-</option>';
 foreach ($consultation->motions as $mot) {
     if ($mot->id != $motion->id) {
@@ -87,21 +87,21 @@ foreach ($consultation->motions as $mot) {
 echo '</select></div></div>';
 
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="motionStatus">';
+echo '<label class="col-md-3 control-label" for="motionStatus">';
 echo 'Status';
 echo ':</label><div class="col-md-4">';
 $options = ['class' => 'form-control', 'id' => 'motionStatus'];
 echo Html::dropDownList('motion[status]', $motion->status, Motion::getStati(), $options);
-echo '</div><div class="col-md-4">';
+echo '</div><div class="col-md-5">';
 $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
 echo Html::textInput('motion[statusString]', $motion->statusString, $options);
 echo '</div></div>';
 
 if (count($consultation->agendaItems) > 0) {
     echo '<div class="form-group">';
-    echo '<label class="col-md-4 control-label" for="motionStatus">';
+    echo '<label class="col-md-3 control-label" for="motionStatus">';
     echo 'Tagesordnungspunkt';
-    echo ':</label><div class="col-md-8">';
+    echo ':</label><div class="col-md-9">';
     $options    = ['class' => 'form-control', 'id' => 'agendaItemId'];
     $selections = [];
     foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
@@ -114,18 +114,18 @@ if (count($consultation->agendaItems) > 0) {
 
 
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="motionTitle">';
+echo '<label class="col-md-3 control-label" for="motionTitle">';
 echo 'Titel';
-echo ':</label><div class="col-md-8">';
+echo ':</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => 'Titel'];
 echo Html::textInput('motion[title]', $motion->title, $options);
 echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="motionTitlePrefix">';
+echo '<label class="col-md-3 control-label" for="motionTitlePrefix">';
 echo 'Antragskürzel';
-echo ':</label><div class="col-md-8">';
+echo ':</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'motionTitlePrefix', 'placeholder' => 'z.B. "A1"'];
 echo Html::textInput('motion[titlePrefix]', $motion->titlePrefix, $options);
 echo '<small>z.B. "A1", "A1neu", "S1" etc. Muss unbedingt gesetzt und eindeutig sein.</small>';
@@ -136,9 +136,9 @@ $locale = Tools::getCurrentDateLocale();
 
 $date = Tools::dateSql2bootstraptime($motion->dateCreation);
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="motionDateCreation">';
+echo '<label class="col-md-3 control-label" for="motionDateCreation">';
 echo 'Angelegt am';
-echo ':</label><div class="col-md-8"><div class="input-group date" id="motionDateCreationHolder">';
+echo ':</label><div class="col-md-4"><div class="input-group date" id="motionDateCreationHolder">';
 echo '<input type="text" class="form-control" name="motion[dateCreation]" id="motionDateCreation"
                 value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
@@ -146,9 +146,9 @@ echo '</div></div></div>';
 
 $date = Tools::dateSql2bootstraptime($motion->dateResolution);
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="motionDateResolution">';
+echo '<label class="col-md-3 control-label" for="motionDateResolution">';
 echo 'Beschlossen am';
-echo ':</label><div class="col-md-8"><div class="input-group date" id="motionDateResolutionHolder">';
+echo ':</label><div class="col-md-4"><div class="input-group date" id="motionDateResolutionHolder">';
 echo '<input type="text" class="form-control" name="motion[dateResolution]" id="motionDateResolution"
                 value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
@@ -156,9 +156,9 @@ echo '</div></div></div>';
 
 
 echo '<div class="form-group">';
-echo '<label class="col-md-4 control-label" for="motionNoteInternal">';
+echo '<label class="col-md-3 control-label" for="motionNoteInternal">';
 echo 'Interne Notiz';
-echo ':</label><div class="col-md-8">';
+echo ':</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'motionNoteInternal'];
 echo Html::textarea('motion[noteInternal]', $motion->noteInternal, $options);
 echo '</div></div>';
@@ -186,6 +186,7 @@ if (!$motion->textFixed) {
 }
 
 $initiatorClass = $form->motionType->getMotionInitiatorFormClass();
+$initiatorClass->setAdminMode(true);
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
 

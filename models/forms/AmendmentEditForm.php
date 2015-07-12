@@ -27,6 +27,8 @@ class AmendmentEditForm extends Model
     /** @var string */
     public $reason = '';
 
+    private $adminMode = false;
+
     /**
      * @param Motion $motion
      * @param null|Amendment $amendment
@@ -94,6 +96,14 @@ class AmendmentEditForm extends Model
     }
 
     /**
+     * @param bool $set
+     */
+    public function setAdminMode($set)
+    {
+        $this->adminMode = $set;
+    }
+
+    /**
      * @param Amendment $amendment
      */
     public function cloneSupporters(Amendment $amendment)
@@ -129,7 +139,9 @@ class AmendmentEditForm extends Model
                 }
             }
         }
-        $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
+        if (isset($values['amendmentReason'])) {
+            $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
+        }
     }
 
 
@@ -168,7 +180,7 @@ class AmendmentEditForm extends Model
     public function createAmendment()
     {
         if (!$this->motion->motionType->getMotionPolicy()->checkAmendmentSubmit()) {
-            throw new FormError("Keine Berechtigung zum Anlegen von Änderungsanträgen.");
+            throw new FormError('Keine Berechtigung zum Anlegen von Änderungsanträgen.');
         }
 
         $amendment = new Amendment();
@@ -184,7 +196,7 @@ class AmendmentEditForm extends Model
         $amendment->motionId          = $this->motion->id;
         $amendment->textFixed         = ($this->motion->consultation->getSettings()->adminsMayEdit ? 0 : 1);
         $amendment->titlePrefix       = '';
-        $amendment->dateCreation      = date("Y-m-d H:i:s");
+        $amendment->dateCreation      = date('Y-m-d H:i:s');
         $amendment->changeMetatext    = ''; // @TODO
         $amendment->changeText        = ''; // @TODO
         $amendment->changeExplanation = $this->reason;
@@ -202,7 +214,7 @@ class AmendmentEditForm extends Model
 
             return $amendment;
         } else {
-            throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
+            throw new FormError('Ein Fehler beim Anlegen ist aufgetreten');
         }
     }
 
@@ -240,10 +252,15 @@ class AmendmentEditForm extends Model
     {
         $motionType = $this->motion->motionType;
         if (!$motionType->getAmendmentPolicy()->checkAmendmentSubmit()) {
-            throw new FormError("Keine Berechtigung zum Anlegen von Änderungsanträgen.");
+            throw new FormError('Keine Berechtigung zum Anlegen von Änderungsanträgen.');
         }
 
-        $this->saveAmendmentVerify();
+        $this->supporters = $this->motion->motionType
+            ->getAmendmentInitiatorFormClass()->getAmendmentSupporters($amendment);
+
+        if (!$this->adminMode) {
+            $this->saveAmendmentVerify();
+        }
         $amendment->changeExplanation = $this->reason;
 
         if ($amendment->save()) {
@@ -260,7 +277,7 @@ class AmendmentEditForm extends Model
 
             $amendment->save();
         } else {
-            throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
+            throw new FormError('Ein Fehler beim Anlegen ist aufgetreten');
         }
     }
 }

@@ -6,6 +6,8 @@ use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\exceptions\FormError;
+use app\models\forms\AmendmentEditForm;
 use yii\web\Response;
 
 class AmendmentController extends AdminBase
@@ -56,6 +58,9 @@ class AmendmentController extends AdminBase
 
         $this->layout = 'column2';
 
+        $form = new AmendmentEditForm($amendment->motion, $amendment);
+        $form->setAdminMode(true);
+
         if (isset($_POST['screen']) && $amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
             $found = false;
             foreach ($this->consultation->motions as $motion) {
@@ -86,6 +91,13 @@ class AmendmentController extends AdminBase
         }
 
         if (isset($_POST['save'])) {
+            $form->setAttributes([$_POST, $_FILES]);
+            try {
+                $form->saveAmendment($amendment);
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+
             $amdat                     = $_POST['amendment'];
             $amendment->statusString   = $amdat['statusString'];
             $amendment->dateCreation   = Tools::dateBootstraptime2sql($amdat['dateCreation']);
@@ -97,13 +109,11 @@ class AmendmentController extends AdminBase
             }
 
             $foundPrefix = false;
-            foreach ($this->consultation->motions as $mot) {
-                foreach ($mot->amendments as $amend) {
-                    if ($amend->titlePrefix != '' && $amend->id != $amendment->id &&
-                        $amend->titlePrefix == $amdat['titlePrefix'] && $amend->status != Amendment::STATUS_DELETED
-                    ) {
-                        $foundPrefix = true;
-                    }
+            foreach ($amendment->motion->amendments as $amend) {
+                if ($amend->titlePrefix != '' && $amend->id != $amendment->id &&
+                    $amend->titlePrefix == $amdat['titlePrefix'] && $amend->status != Amendment::STATUS_DELETED
+                ) {
+                    $foundPrefix = true;
                 }
             }
             if ($foundPrefix) {
@@ -117,6 +127,6 @@ class AmendmentController extends AdminBase
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
 
-        return $this->render('update', ['amendment' => $amendment]);
+        return $this->render('update', ['amendment' => $amendment, 'form' => $form]);
     }
 }

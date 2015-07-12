@@ -150,13 +150,11 @@ class MotionController extends AdminBase
         }
 
         if (isset($_POST['save'])) {
-            if (isset($_POST['edittext'])) {
-                $form->setAttributes([$_POST, $_FILES]);
-                try {
-                    $form->saveMotion($motion);
-                } catch (FormError $e) {
-                    \Yii::$app->session->setFlash('error', $e->getMessage());
-                }
+            $form->setAttributes([$_POST, $_FILES]);
+            try {
+                $form->saveMotion($motion);
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
             }
 
             $modat                  = $_POST['motion'];
