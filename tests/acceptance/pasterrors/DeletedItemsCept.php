@@ -10,3 +10,4 @@ $I->dontSeeElement('.amendment136');
 $I->dontSeeElement('.motionLink50');
 $I->seeElement('.motionLink47');
 $I->dontSeeElement('.motionLink52'); // Draft
+$I->dontSeeElement('.amendment58');

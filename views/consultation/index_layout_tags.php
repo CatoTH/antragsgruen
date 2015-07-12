@@ -92,7 +92,7 @@ foreach ($tagIds as $tagId) {
         }
         echo '<td class="titleCol">';
         echo '<div class="titleLink">';
-        echo Html::a($motion->title, UrlHelper::createMotionUrl($motion));
+        echo Html::a($motion->title, UrlHelper::createMotionUrl($motion), ['class' => 'motionLink' . $motion->id]);
         echo '</div><div class="pdflink">';
         if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
             echo Html::a('als PDF', UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
@@ -110,6 +110,9 @@ foreach ($tagIds as $tagId) {
 
         $amends = $motion->getSortedAmendments();
         foreach ($amends as $amend) {
+            if (in_array($amend->status, $consultation->getInvisibleAmendmentStati())) {
+                continue;
+            }
             $classes = ['amendment'];
             if ($amend->status == Amendment::STATUS_WITHDRAWN) {
                 $classes[] = 'withdrawn';
@@ -119,7 +122,8 @@ foreach ($tagIds as $tagId) {
                 echo '<td class="prefixCol">' . Html::encode($amend->titlePrefix) . '</td>';
             }
             echo '<td class="titleCol"><div class="titleLink">';
-            echo Html::a('Änderungsantrag zu ' . $motion->titlePrefix, UrlHelper::createAmendmentUrl($amend));
+            $title = 'Änderungsantrag zu ' . $motion->titlePrefix;
+            echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
             echo '</div></td>';
             echo '<td class="initiatorRow">';
             $initiators = [];

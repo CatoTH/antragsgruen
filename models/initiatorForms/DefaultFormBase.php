@@ -314,7 +314,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             $init->userId = null;
         } else {
             if (isset($_POST['otherInitiator'])) {
-                $userId = 0;
+                $userId = null;
                 foreach ($motion->motionSupporters as $supporter) {
                     if ($supporter->userId > 0) {
                         $userId = $supporter->userId;
@@ -389,7 +389,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             $init->userId = null;
         } else {
             if (isset($_POST['otherInitiator'])) {
-                $userId = 0;
+                $userId = null;
                 foreach ($amendment->amendmentSupporters as $supporter) {
                     if ($supporter->userId > 0) {
                         $userId = $supporter->userId;
