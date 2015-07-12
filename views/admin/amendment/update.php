@@ -100,18 +100,6 @@ echo '<input type="text" class="form-control" name="amendment[dateResolution]" i
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
 echo '</div></div></div>';
 
-$layout->addOnLoadJS(
-    '
-    var lang = $("html").attr("lang");
-    $("#amendmentDateCreationHolder").datetimepicker({
-            locale: lang,
-    });
-    $("#amendmentDateResolutionHolder").datetimepicker({
-            locale: lang,
-    });
-    '
-);
-
 
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="amendmentNoteInternal">';
@@ -129,3 +117,5 @@ echo '<div class="saveholder">
 </div>';
 
 echo Html::endForm();
+
+$layout->addOnLoadJS('$.AntragsgruenAdmin.amendmentEditInit();');

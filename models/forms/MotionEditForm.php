@@ -31,6 +31,8 @@ class MotionEditForm extends Model
     /** @var null|int */
     public $motionId = null;
 
+    private $adminMode = false;
+
     /**
      * @param ConsultationMotionType $motionType
      * @param null|ConsultationAgendaItem
@@ -76,6 +78,14 @@ class MotionEditForm extends Model
             [['id', 'type'], 'number'],
             [['supporters', 'tags'], 'safe'],
         ];
+    }
+
+    /**
+     * @param bool $set
+     */
+    public function setAdminMode($set)
+    {
+        $this->adminMode = $set;
     }
 
     /**
@@ -153,7 +163,7 @@ class MotionEditForm extends Model
         $consultation = $this->motionType->consultation;
 
         if (!$this->motionType->getMotionPolicy()->checkMotionSubmit()) {
-            throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
+            throw new FormError('Keine Berechtigung zum Anlegen von Anträgen.');
         }
 
         $motion = new Motion();
@@ -168,7 +178,7 @@ class MotionEditForm extends Model
         $motion->textFixed      = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
         $motion->title          = '';
         $motion->titlePrefix    = '';
-        $motion->dateCreation   = date("Y-m-d H:i:s");
+        $motion->dateCreation   = date('Y-m-d H:i:s');
         $motion->motionTypeId   = $this->motionType->id;
         $motion->cache          = '';
         $motion->agendaItemId   = ($this->agendaItem ? $this->agendaItem->id : null);
@@ -194,7 +204,7 @@ class MotionEditForm extends Model
 
             return $motion;
         } else {
-            throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
+            throw new FormError('Ein Fehler beim Anlegen ist aufgetreten');
         }
     }
 
@@ -231,12 +241,14 @@ class MotionEditForm extends Model
     {
         $consultation = $this->motionType->consultation;
         if (!$this->motionType->getMotionPolicy()->checkMotionSubmit()) {
-            throw new FormError("Keine Berechtigung zum Anlegen von Anträgen.");
+            throw new FormError('Keine Berechtigung zum Anlegen von Anträgen.');
         }
 
         $this->supporters = $this->motionType->getMotionInitiatorFormClass()->getMotionSupporters($motion);
 
-        $this->saveMotionVerify();
+        if (!$this->adminMode) {
+            $this->saveMotionVerify();
+        }
 
         if ($motion->save()) {
             $this->motionType->getMotionInitiatorFormClass()->submitMotion($motion);
@@ -265,7 +277,7 @@ class MotionEditForm extends Model
             $motion->refreshTitle();
             $motion->save();
         } else {
-            throw new FormError("Ein Fehler beim Anlegen ist aufgetreten");
+            throw new FormError('Ein Fehler beim Anlegen ist aufgetreten');
         }
     }
 }

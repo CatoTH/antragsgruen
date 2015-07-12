@@ -9,6 +9,7 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\exceptions\FormError;
+use app\models\forms\MotionEditForm;
 use yii\web\Response;
 
 class MotionController extends AdminBase
@@ -116,6 +117,11 @@ class MotionController extends AdminBase
         }
         $this->checkConsistency($motion);
 
+        $this->layout = 'column2';
+
+        $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
+        $form->setAdminMode(true);
+
         if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
             $found = false;
             foreach ($this->consultation->motions as $mot) {
@@ -135,6 +141,15 @@ class MotionController extends AdminBase
         }
 
         if (isset($_POST['save'])) {
+            if (isset($_POST['edittext'])) {
+                $form->setAttributes([$_POST, $_FILES]);
+                try {
+                    $form->saveMotion($motion);
+                } catch (FormError $e) {
+                    \Yii::$app->session->setFlash('error', $e->getMessage());
+                }
+            }
+
             $modat                  = $_POST['motion'];
             $motion->title          = $modat['title'];
             $motion->statusString   = $modat['statusString'];
@@ -166,7 +181,7 @@ class MotionController extends AdminBase
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
 
-        return $this->render('update', ['motion' => $motion]);
+        return $this->render('update', ['motion' => $motion, 'form' => $form]);
     }
 
     /**
@@ -195,7 +210,7 @@ class MotionController extends AdminBase
         ]);
     }
 
-     /**
+    /**
      * @param int $motionTypeId
      * @param bool $textCombined
      * @return string
@@ -206,7 +221,7 @@ class MotionController extends AdminBase
 
         @ini_set('memory_limit', '256M');
 
-        $excelMime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        $excelMime                   = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', $excelMime);
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');

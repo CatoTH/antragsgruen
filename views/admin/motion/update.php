@@ -11,6 +11,7 @@ use yii\helpers\Html;
  * @var $this yii\web\View
  * @var Consultation $consultation
  * @var Motion $motion
+ * @var \app\models\forms\MotionEditForm $form
  */
 
 /** @var \app\controllers\Base $controller */
@@ -25,6 +26,20 @@ $layout->addBreadcrumb('Antrag');
 $layout->addJS('/js/backend.js');
 $layout->addCSS('/css/backend.css');
 $layout->loadDatepicker();
+$layout->loadCKEditor();
+
+$html = '<ul class="sidebarActions">';
+$html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '">';
+$html .= '<span class="glyphicon glyphicon-file"></span> Antrag anzeigen' . '</a></li>';
+
+$html .= '<li>' . Html::beginForm('', 'post', []);
+$html .= '<button type="submit" name="delete" class="link"><span class="glyphicon glyphicon-trash"></span> '
+    . 'Antrag löschen' . '</button>';
+$html .= Html::endForm() . '</li>';
+
+$html .= '</ul>';
+$layout->menusHtml[] = $html;
+
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
@@ -50,7 +65,9 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
 }
 
 
-echo Html::beginForm('', 'post', ['class' => 'content form-horizontal', 'id' => 'motionUpdateForm']);
+echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm']);
+
+echo '<div class="content form-horizontal">';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="parentMotion">';
@@ -84,7 +101,7 @@ if (count($consultation->agendaItems) > 0) {
     echo '<label class="col-md-4 control-label" for="motionStatus">';
     echo 'Tagesordnungspunkt';
     echo ':</label><div class="col-md-8">';
-    $options     = ['class' => 'form-control', 'id' => 'agendaItemId'];
+    $options    = ['class' => 'form-control', 'id' => 'agendaItemId'];
     $selections = [];
     foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
         $selections[$item->id] = $item->title;
@@ -136,18 +153,6 @@ echo '<input type="text" class="form-control" name="motion[dateResolution]" id="
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
 echo '</div></div></div>';
 
-$layout->addOnLoadJS(
-    '
-    var lang = $("html").attr("lang");
-    $("#motionDateCreationHolder").datetimepicker({
-            locale: lang,
-    });
-    $("#motionDateResolutionHolder").datetimepicker({
-            locale: lang,
-    });
-    '
-);
-
 
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="motionNoteInternal">';
@@ -158,7 +163,29 @@ echo Html::textarea('motion[noteInternal]', $motion->noteInternal, $options);
 echo '</div></div>';
 
 
-// @TODO UnterstützerInnen
+echo '</div>';
+
+
+if (!$motion->textFixed) {
+    echo '<h2 class="green">' . 'Text bearbeiten' . '</h2>
+<div class="content" id="motionTextEditCaller">
+    <strong>Vorsicht:</strong> Wenn es bereits Änderungsanträge und Kommentare zu einem Antrag gibt,
+    ist es gefährlich, den Text zu ändern, da sich die Absatzzuordnung ändern und sich zusätzliche Änderungen
+    einschleichen könnten.
+    <br><br>
+    <button type="button" class="btn btn-default">Bearbeiten</button>
+</div>
+<div class="content" id="motionTextEditHolder" style="display: none;">';
+
+    foreach ($form->sections as $section) {
+        echo $section->getSectionType()->getMotionFormField();
+    }
+
+    echo '</div>';
+}
+
+$initiatorClass = $form->motionType->getMotionInitiatorFormClass();
+echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
 
 echo '<div class="saveholder">
@@ -166,3 +193,5 @@ echo '<div class="saveholder">
 </div>';
 
 echo Html::endForm();
+
+$layout->addOnLoadJS('$.AntragsgruenAdmin.motionEditInit();');

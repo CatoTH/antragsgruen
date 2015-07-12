@@ -323,7 +323,7 @@
             $form.append($node);
         });
 
-        Sortable.create(document.getElementById("tagsListUl"), { draggable: '.pill' });
+        Sortable.create(document.getElementById("tagsListUl"), {draggable: '.pill'});
 
         var $adminsMayEdit = $("#adminsMayEdit"),
             $iniatorsMayEdit = $("#iniatorsMayEdit").parents("fieldset").first();
@@ -331,9 +331,9 @@
             if ($(this).prop("checked")) {
                 $iniatorsMayEdit.show();
             } else {
-                var confirmMessage ="Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
+                var confirmMessage = "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
                     "und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?";
-                bootbox.confirm(confirmMessage, function(result) {
+                bootbox.confirm(confirmMessage, function (result) {
                     console.log(result);
                     if (result) {
                         $iniatorsMayEdit.hide();
@@ -347,13 +347,49 @@
         if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.hide();
     };
 
+    var motionEditInit = function () {
+        var lang = $("html").attr("lang");
+        $("#motionDateCreationHolder").datetimepicker({
+            locale: lang
+        });
+        $("#motionDateResolutionHolder").datetimepicker({
+            locale: lang
+        });
+        $("#motionTextEditCaller").find("button").click(function () {
+            $("#motionTextEditCaller").hide();
+            $("#motionTextEditHolder").show();
+            $(".wysiwyg-textarea").each(function () {
+                var $holder = $(this),
+                    $textarea = $holder.find(".texteditor"),
+                    editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+
+                $textarea.parents("form").submit(function () {
+                    $textarea.parent().find("textarea").val(editor.getData());
+                });
+            });
+            $("#motionUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
+        });
+    };
+
+    var amendmentEditInit = function () {
+        var lang = $("html").attr("lang");
+        $("#amendmentDateCreationHolder").datetimepicker({
+            locale: lang
+        });
+        $("#amendmentDateResolutionHolder").datetimepicker({
+            locale: lang
+        });
+    };
+
     $.AntragsgruenAdmin = {
         'consultationEditForm': consultationEditForm,
         'consultationExtendedForm': consultationExtendedForm,
         'motionTypeEdit': motionTypeEdit,
         'agendaEdit': agendaEdit,
         'motionListAll': motionListAll,
-        'siteAccessInit': siteAccessInit
+        'siteAccessInit': siteAccessInit,
+        'motionEditInit': motionEditInit,
+        'amendmentEditInit': amendmentEditInit
     };
 
 }(jQuery));

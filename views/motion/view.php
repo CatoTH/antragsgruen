@@ -30,7 +30,7 @@ $layout     = $controller->layoutParams;
 
 $layout->addBreadcrumb($motion->getTypeName());
 
-$this->title = $motion->getTitleWithPrefix() . " (" . $motion->consultation->title . ", Antragsgrün)";
+$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->consultation->title . ', Antragsgrün)';
 
 $rows = 4;
 if ($motion->dateResolution != "") {
@@ -43,7 +43,7 @@ $html = '<ul class="sidebarActions">';
 $policy = $motion->motionType->getAmendmentPolicy();
 if ($policy->checkCurUserHeuristically()) {
     $html .= '<li class="amendmentCreate">';
-    $amendCreateUrl = UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id]);
+    $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
     $title .= Yii::t('motion', 'Änderungsantrag stellen');
     $html .= Html::a($title, $amendCreateUrl) . '</li>';
@@ -80,12 +80,12 @@ if ($editLink) {
 
 if ($adminEdit) {
     $html .= '<li class="adminEdit">';
-    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . "Admin: bearbeiten";
+    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . 'Admin: bearbeiten';
     $html .= Html::a($title, $adminEdit) . '</li>';
 } else {
     $backUrl = UrlHelper::createUrl('consultation/index');
     $html .= '<li class="back">';
-    $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . "Zurück zur Übersicht";
+    $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . 'Zurück zur Übersicht';
     $html .= Html::a($title, $backUrl) . '</li>';
 }
 $html .= '</ul>';

@@ -277,12 +277,12 @@ class MotionController extends Base
         );
         if (!$motion) {
             \Yii::$app->session->setFlash('error', 'Motion not found.');
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canEdit()) {
             \Yii::$app->session->setFlash('error', 'Not allowed to edit this motion.');
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         $form     = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);

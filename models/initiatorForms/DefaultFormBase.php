@@ -246,6 +246,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
                 'supporterOrga'     => $this->supportersHaveOrganizations(),
+                'adminMode'         => $this->adminMode,
             ],
             $controller
         );
@@ -293,6 +294,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
                 'supporterOrga'     => $this->supportersHaveOrganizations(),
+                'adminMode'         => $this->adminMode,
             ],
             $controller
         );

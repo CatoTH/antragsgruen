@@ -54,6 +54,8 @@ class AmendmentController extends AdminBase
         }
         $this->checkConsistency($amendment->motion, $amendment);
 
+        $this->layout = 'column2';
+
         if (isset($_POST['screen']) && $amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
             $found = false;
             foreach ($this->consultation->motions as $motion) {

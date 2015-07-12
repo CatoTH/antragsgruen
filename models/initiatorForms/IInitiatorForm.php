@@ -18,6 +18,8 @@ abstract class IInitiatorForm
     const ONLY_INITIATOR = 0;
     const WITH_SUPPORTER = 1;
 
+    protected $adminMode = false;
+
     /**
      * @return IInitiatorForm[]
      */
@@ -54,6 +56,14 @@ abstract class IInitiatorForm
     public static function getTitle()
     {
         return '';
+    }
+
+    /**
+     * @param bool $set
+     */
+    public function setAdminMode($set)
+    {
+        $this->adminMode = $set;
     }
 
     /**

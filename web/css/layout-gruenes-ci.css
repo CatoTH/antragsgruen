@@ -9911,20 +9911,21 @@ ul.sidebarActions {
 
 .motionEditForm .submitHolder {
   text-align: right; }
-.motionEditForm .supporterData .fullTextAdder {
+
+.supporterFormStd .supporterData .fullTextAdder {
   float: right; }
-.motionEditForm .supporterData #fullTextHolder {
+.supporterFormStd .supporterData #fullTextHolder {
   display: none;
   margin-top: 30px; }
-.motionEditForm .initiatorData .contactPrivacy {
+.supporterFormStd .initiatorData .contactPrivacy {
   font-size: 0.8em; }
-.motionEditForm .supporterRow .rowDeleter, .motionEditForm .supporterRow .rowDeleter:link, .motionEditForm .supporterRow .rowDeleter:visited, .motionEditForm .initiatorRow .rowDeleter, .motionEditForm .initiatorRow .rowDeleter:link, .motionEditForm .initiatorRow .rowDeleter:visited {
+.supporterFormStd .supporterRow .rowDeleter, .supporterFormStd .supporterRow .rowDeleter:link, .supporterFormStd .supporterRow .rowDeleter:visited, .supporterFormStd .initiatorRow .rowDeleter, .supporterFormStd .initiatorRow .rowDeleter:link, .supporterFormStd .initiatorRow .rowDeleter:visited {
   color: #FF7777;
   display: inline-block;
   margin-top: 8px; }
-html.no-touch .motionEditForm .supporterRow .rowDeleter, html.no-touch .motionEditForm .initiatorRow .rowDeleter {
+html.no-touch .supporterFormStd .supporterRow .rowDeleter, html.no-touch .supporterFormStd .initiatorRow .rowDeleter {
   visibility: hidden; }
-html.no-touch .motionEditForm .supporterRow:hover .rowDeleter, html.no-touch .motionEditForm .initiatorRow:hover .rowDeleter {
+html.no-touch .supporterFormStd .supporterRow:hover .rowDeleter, html.no-touch .supporterFormStd .initiatorRow:hover .rowDeleter {
   visibility: visible; }
 
 #motionConfirmedForm .btnRow {
