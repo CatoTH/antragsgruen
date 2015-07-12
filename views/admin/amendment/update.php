@@ -25,6 +25,22 @@ $layout->addJS('/js/backend.js');
 $layout->addCSS('/css/backend.css');
 $layout->loadDatepicker();
 
+
+$html = '<ul class="sidebarActions">';
+$html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '">';
+$html .= '<span class="glyphicon glyphicon-file"></span> Änderungsantrag anzeigen' . '</a></li>';
+
+$html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
+$html .= '<input type="hidden" name="delete" value="1">';
+$html .= '<button type="submit" class="link"><span class="glyphicon glyphicon-trash"></span> '
+    . 'Änderungsantrag löschen' . '</button>';
+$html .= Html::endForm() . '</li>';
+
+$html .= '</ul>';
+$layout->menusHtml[] = $html;
+
+
+
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
 echo $controller->showErrors();

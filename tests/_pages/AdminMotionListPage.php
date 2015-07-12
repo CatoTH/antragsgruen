@@ -25,9 +25,9 @@ class AdminMotionListPage extends BasePage
      * @param int $amendmentId
      * @return AdminAmendmentPage
      */
-    public function gotoAmendment($amendmentId)
+    public function gotoAmendmentEdit($amendmentId)
     {
-        $this->actor->click('.adminMotionTable .amendment' . $amendmentId . ' .prefixCol a');
+        $this->actor->click('.adminMotionTable .amendment' . $amendmentId . ' .titleCol a');
         return new AdminAmendmentPage($this->actor);
     }
 }

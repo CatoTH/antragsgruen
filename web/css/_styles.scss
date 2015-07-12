@@ -152,7 +152,7 @@ ul.sidebarActions {
   font-style: normal;
   font-weight: bold;
 
-  li a, li > span {
+  li a, li > span, form {
     display: block;
     text-transform: uppercase;
     font-size: 14px;
@@ -170,6 +170,14 @@ ul.sidebarActions {
   .icon {
     color: #fff;
     margin-right: 10px;
+  }
+  button {
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 18px;
+    color: #fff;
+    text-indent: -9px;
+    text-align: left;
   }
 }
 

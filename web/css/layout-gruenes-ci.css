@@ -9880,7 +9880,7 @@ ul.sidebarActions {
   font-family: "Arvo", sans-serif;
   font-style: normal;
   font-weight: bold; }
-  ul.sidebarActions li a, ul.sidebarActions li > span {
+  ul.sidebarActions li a, ul.sidebarActions li > span, ul.sidebarActions form {
     display: block;
     text-transform: uppercase;
     font-size: 14px;
@@ -9894,6 +9894,13 @@ ul.sidebarActions {
   ul.sidebarActions .icon {
     color: #fff;
     margin-right: 10px; }
+  ul.sidebarActions button {
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 18px;
+    color: #fff;
+    text-indent: -9px;
+    text-align: left; }
 
 #loginWurzelwerkHint {
   border-left: solid 1px #808080;

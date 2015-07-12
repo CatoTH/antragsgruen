@@ -140,6 +140,15 @@ class MotionController extends AdminBase
             }
         }
 
+        if (isset($_POST['delete'])) {
+            $motion->status = Motion::STATUS_DELETED;
+            $motion->save();
+            $motion->motionType->consultation->flushCaches();
+            \yii::$app->session->setFlash('success', 'Der Antrag wurde gelöscht.');
+            $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
+            return '';
+        }
+
         if (isset($_POST['save'])) {
             if (isset($_POST['edittext'])) {
                 $form->setAttributes([$_POST, $_FILES]);

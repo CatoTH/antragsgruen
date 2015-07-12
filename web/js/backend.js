@@ -334,7 +334,6 @@
                 var confirmMessage = "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
                     "und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?";
                 bootbox.confirm(confirmMessage, function (result) {
-                    console.log(result);
                     if (result) {
                         $iniatorsMayEdit.hide();
                         $iniatorsMayEdit.find("input").prop("checked", false);
@@ -369,6 +368,19 @@
             });
             $("#motionUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
         });
+
+        $(".motionDeleteForm").submit(function(ev, data) {
+            if (data && typeof(data.confirmed) && data.confirmed === true) {
+                return;
+            }
+            var $form = $(this);
+            ev.preventDefault();
+            bootbox.confirm('Diesen Antrag wirklich löschen?', function (result) {
+                if (result) {
+                    $form.trigger("submit", {'confirmed': true});
+                }
+            });
+        });
     };
 
     var amendmentEditInit = function () {
@@ -378,6 +390,19 @@
         });
         $("#amendmentDateResolutionHolder").datetimepicker({
             locale: lang
+        });
+
+        $(".amendmentDeleteForm").submit(function(ev, data) {
+            if (data && typeof(data.confirmed) && data.confirmed === true) {
+                return;
+            }
+            var $form = $(this);
+            ev.preventDefault();
+            bootbox.confirm('Diesen Änderungsantrag wirklich löschen?', function (result) {
+                if (result) {
+                    $form.trigger("submit", {'confirmed': true});
+                }
+            });
         });
     };
 

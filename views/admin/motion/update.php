@@ -32,8 +32,9 @@ $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '">';
 $html .= '<span class="glyphicon glyphicon-file"></span> Antrag anzeigen' . '</a></li>';
 
-$html .= '<li>' . Html::beginForm('', 'post', []);
-$html .= '<button type="submit" name="delete" class="link"><span class="glyphicon glyphicon-trash"></span> '
+$html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
+$html .= '<input type="hidden" name="delete" value="1">';
+$html .= '<button type="submit" class="link"><span class="glyphicon glyphicon-trash"></span> '
     . 'Antrag löschen' . '</button>';
 $html .= Html::endForm() . '</li>';
 
