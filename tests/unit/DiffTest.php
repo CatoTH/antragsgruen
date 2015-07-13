@@ -8,7 +8,7 @@ use Codeception\Specify;
 class DiffTest extends TestBase
 {
     use Specify;
-
+    
     /**
      *
      */
@@ -77,6 +77,28 @@ class DiffTest extends TestBase
         $out  = $diff->computeDiff($str1, $str2);
 
         $this->assertEquals($expect, $out);
+    }
 
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
+    public function testTwoInserts()
+    {
+        $str1 = '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
+<p>###LINENUMBER###I waar soweid Blosmusi es nomoi.</p>';
+        $str2 = '<ul><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
+<ul><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>
+<ul><li>Blabla</li></ul>
+<p>I waar soweid Blosmusi es nomoi.</p>';
+        $expect = '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
+<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>
+<ul class="inserted"><li>Blabla</li></ul>
+<p>###LINENUMBER###I waar soweid Blosmusi es nomoi.</p>';
+
+        $diff = new Diff();
+        $diff->setIgnoreStr('###LINENUMBER###');
+        $diff->setFormatting(0);
+        $out  = $diff->computeDiff($str1, $str2);
+        $this->assertEquals($expect, $out);
     }
 }

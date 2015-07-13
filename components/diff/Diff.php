@@ -173,6 +173,7 @@ class Diff
         $preOp        = null;
         $currentSpool = [];
         foreach ($operations as $operation) {
+            $firstfour = mb_substr($operation[0], 0, 4);
             if ($operation[0] == static::ORIG_LINEBREAK || preg_match('/^<[^>]*>$/siu', $operation[0])) {
                 if (count($currentSpool) > 0) {
                     $return[] = [
@@ -186,7 +187,7 @@ class Diff
                 ];
                 $preOp        = null;
                 $currentSpool = [];
-            } elseif ($operation[1] !== $preOp) {
+            } elseif ($operation[1] !== $preOp || $firstfour == '<ul>' || $firstfour == '<ol>') {
                 if (count($currentSpool) > 0) {
                     $return[] = [
                         implode($groupBy, $currentSpool),
@@ -343,6 +344,7 @@ class Diff
         $computedStr = '';
 
         $return = $this->engine->compareStrings($strOld, $strNew);
+
         if ($this->debug) {
             echo "==========\n";
             var_dump($return);
