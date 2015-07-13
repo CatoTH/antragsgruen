@@ -312,7 +312,7 @@ class Motion extends IMotion implements IRSSItem
         foreach ($this->tags as $tag) {
             return $tag->getCSSIconClass();
         }
-        return "glyphicon glyphicon-file";
+        return 'glyphicon glyphicon-file';
     }
 
     /**

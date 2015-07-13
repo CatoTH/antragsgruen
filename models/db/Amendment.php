@@ -326,12 +326,6 @@ class Amendment extends IMotion implements IRSSItem
             return false;
         }
 
-        if ($this->motion->consultation->getSettings()->adminsMayEdit) {
-            if (User::currentUserHasPrivilege($this->motion->consultation, User::PRIVILEGE_SCREENING)) {
-                return true;
-            }
-        }
-
         if ($this->motion->consultation->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
             if ($this->motion->motionType->amendmentDeadlineIsOver()) {
                 return false;
@@ -341,6 +335,15 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canWithdraw()
+    {
+        // @TODO This is probably too simple...
+        return $this->iAmInitiator();
     }
 
     /**

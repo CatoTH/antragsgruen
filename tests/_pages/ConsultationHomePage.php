@@ -42,4 +42,14 @@ class ConsultationHomePage extends BasePage
         $this->actor->click('.motionLink' . $motionId);
         return new MotionPage($this->actor);
     }
+
+    /**
+     * @param int $amendmentId
+     * @return AmendmentPage
+     */
+    public function gotoAmendmentView($amendmentId)
+    {
+        $this->actor->click('.amendment' . $amendmentId);
+        return new AmendmentPage($this->actor);
+    }
 }

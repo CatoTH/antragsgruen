@@ -34,13 +34,44 @@ $this->title = $amendment->getTitle() . " (" . $consultation->title . ", Antrags
 
 
 $html = '<ul class="sidebarActions">';
+$sidebarRows = 0;
 
 if ($amendment->motion->motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
     $html .= '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
         Yii::t('motion', 'PDF-Version herunterladen');
     $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'pdf')) . '</li>';
+    $sidebarRows++;
 }
+
+
+if ($amendment->canEdit()) {
+    $html .= '<li class="edit">';
+    $title = '<span class="icon glyphicon glyphicon-edit"></span>' .
+        Yii::t('motion', 'Änderungsantrag bearbeiten');
+    $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'edit')) . '</li>';
+    $sidebarRows++;
+}
+
+if ($amendment->canWithdraw()) {
+    $html .= '<li class="withdraw">';
+    $title = '<span class="icon glyphicon glyphicon-remove"></span>' .
+        Yii::t('motion', 'Änderungsantrag zurückziehen');
+    $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'withdraw')) . '</li>';
+    $sidebarRows++;
+}
+
+if ($adminEdit) {
+    $html .= '<li class="adminEdit">';
+    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . 'Admin: bearbeiten';
+    $html .= Html::a($title, $adminEdit) . '</li>';
+    $sidebarRows++;
+}
+
+$html .= '<li class="back">';
+$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . 'Zurück zum Antrag';
+$html .= Html::a($title, UrlHelper::createMotionUrl($amendment->motion)) . '</li>';
+$sidebarRows++;
 
 $html .= '</ul>';
 $layout->menusHtml[] = $html;
@@ -48,8 +79,9 @@ $layout->menusHtml[] = $html;
 
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
+$minHeight      = $sidebarRows * 30 - 50;
 
-echo '<div class="motionData"><div class="content">';
+echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
 echo '<table class="motionDataTable">
                 <tr>
                     <th>' . Yii::t('amend', 'Antrag') . ':</th>
