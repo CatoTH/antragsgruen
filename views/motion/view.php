@@ -196,7 +196,7 @@ if (!$minimalisticUi) {
 
         echo '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">Neu</a>';
         echo Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline']);
-        echo '<select name="tagId" size="1" title="Schlagwort aussuchen" class="form-control">
+        echo '<select name="tagId" title="Schlagwort aussuchen" class="form-control">
         <option>-</option>';
 
         foreach ($motion->consultation->tags as $tag) {
@@ -221,7 +221,6 @@ if (!$minimalisticUi) {
         echo Html::encode(implode(", ", $tags));
 
         echo '</td></tr>';
-
     }
     /*
     if ($motion->abgeleitetVon) {

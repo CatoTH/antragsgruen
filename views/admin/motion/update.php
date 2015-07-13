@@ -32,6 +32,10 @@ $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
 $html .= '<span class="glyphicon glyphicon-file"></span> Antrag anzeigen' . '</a></li>';
 
+$cloneUrl = UrlHelper::createUrl(['motion/create', 'adoptInitiators' => $motion->id]);
+$html .= '<li><a href="' . Html::encode($cloneUrl) . '" class="clone">';
+$html .= '<span class="glyphicon glyphicon-duplicate"></span> Neuer Antrag auf dieser Basis</a></li>';
+
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
 $html .= '<input type="hidden" name="delete" value="1">';
 $html .= '<button type="submit" class="link"><span class="glyphicon glyphicon-trash"></span> '
@@ -153,6 +157,24 @@ echo '<input type="text" class="form-control" name="motion[dateResolution]" id="
                 value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
 echo '</div></div></div>';
+
+
+if (count($consultation->tags) > 0) {
+    echo '<div class="form-group">';
+    echo '<div class="col-md-3 control-label label">';
+    echo 'Schlagworte';
+    echo ':</div><div class="col-md-9 tagList">';
+    foreach ($consultation->tags as $tag) {
+        echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
+        foreach ($motion->tags as $mtag) {
+            if ($mtag->id == $tag->id) {
+                echo ' checked';
+            }
+        }
+        echo '> ' . Html::encode($tag->title) . '</label>';
+    }
+    echo '</div></div>';
+}
 
 
 echo '<div class="form-group">';

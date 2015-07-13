@@ -508,15 +508,16 @@ VALUES
 --
 
 INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `title`, `cssicon`) VALUES
-  (1, 1, 0, 'Win', 0),
-  (2, 1, 1, 'Fail', 0),
+  (1, 1, 0, 'Umwelt', 0),
+  (2, 1, 1, 'Verkehr', 0),
   (3, 5, 0, 'Tagesordnung - Formalia', 0),
   (4, 5, 1, 'Zeitpolitik', 0),
   (5, 5, 3, 'Wirtschaftspolitik', 0),
   (6, 5, 4, 'Urabstimmungsordnung', 0),
   (7, 5, 5, 'Verschiedenes', 0),
   (8, 5, 6, 'Sterbehilfe', 0),
-  (9, 5, 2, 'Votum Vorstandswahlen EGP und Nachwahl EGP-Delegierte', 0);
+  (9, 5, 2, 'Votum Vorstandswahlen EGP und Nachwahl EGP-Delegierte', 0),
+  (10, 1, 2, 'Soziales', 0);
 
 --
 -- Dumping data for table `emailLog`

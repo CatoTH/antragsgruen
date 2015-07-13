@@ -184,6 +184,18 @@ class MotionController extends AdminBase
                 $motion->titlePrefix = $_POST['motion']['titlePrefix'];
             }
             $motion->save();
+
+            foreach ($this->consultation->tags as $tag) {
+                if (!isset($_POST['tags']) || !in_array($tag->id, $_POST['tags'])) {
+                    $motion->unlink('tags', $tag);
+                } else {
+                    try {
+                        $motion->link('tags', $tag);
+                    } catch (\Exception $e) {
+                    }
+                }
+            }
+
             $motion->flushCaches();
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }

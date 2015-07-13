@@ -18,6 +18,7 @@ $I->fillField('#motionDateCreation', '01.01.2015 01:02');
 $I->fillField('#motionDateResolution', '02.03.2015 04:05');
 $I->fillField('#motionNoteInternal', 'Test 123');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData() + "<p>Test 123</p>");');
+// @TODO Change tags
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 $I->wantTo('verify the changes are visible');

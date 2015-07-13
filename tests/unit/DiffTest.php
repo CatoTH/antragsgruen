@@ -8,7 +8,7 @@ use Codeception\Specify;
 class DiffTest extends TestBase
 {
     use Specify;
-    
+
     /**
      *
      */

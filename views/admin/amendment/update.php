@@ -32,6 +32,11 @@ $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';
 $html .= '<span class="glyphicon glyphicon-file"></span> Änderungsantrag anzeigen' . '</a></li>';
 
+$params = ['amendment/create', 'motionId' => $amendment->motionId, 'adoptInitiators' => $amendment->id];
+$cloneUrl = Html::encode(UrlHelper::createUrl($params));
+$html .= '<li><a href="' . $cloneUrl . '" class="clone">';
+$html .= '<span class="glyphicon glyphicon-duplicate"></span> Neuer Ä.-Antrag auf dieser Basis</a></li>';
+
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
 $html .= '<input type="hidden" name="delete" value="1">';
 $html .= '<button type="submit" class="link"><span class="glyphicon glyphicon-trash"></span> '
