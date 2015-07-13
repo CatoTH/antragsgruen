@@ -25,10 +25,11 @@ $layout->addBreadcrumb('Änderungsantrag');
 $layout->addJS('/js/backend.js');
 $layout->addCSS('/css/backend.css');
 $layout->loadDatepicker();
+$layout->loadCKEditor();
 
 
 $html = '<ul class="sidebarActions">';
-$html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '">';
+$html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';
 $html .= '<span class="glyphicon glyphicon-file"></span> Änderungsantrag anzeigen' . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
@@ -89,10 +90,14 @@ echo '</div></div>';
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="amendmentTitlePrefix">';
 echo 'Antragskürzel';
-echo ':</label><div class="col-md-9">';
-$options = ['class' => 'form-control', 'id' => 'amendmentTitlePrefix', 'placeholder' => 'z.B. "A1"'];
+echo ':</label><div class="col-md-4">';
+$options = [
+    'class' => 'form-control',
+    'id' => 'amendmentTitlePrefix',
+    'placeholder' => 'z.B. "Ä1", "Ä1neu", "A23-0042"'
+];
 echo Html::textInput('amendment[titlePrefix]', $amendment->titlePrefix, $options);
-echo '<small>z.B. "Ä1", "Ä1neu", "A23-0042" etc. Muss unbedingt gesetzt und eindeutig sein.</small>';
+echo '<small>Muss eindeutig sein.</small>';
 echo '</div></div>';
 
 
@@ -128,6 +133,27 @@ echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal, $option
 echo '</div></div>';
 
 echo '</div>';
+
+
+
+
+if (!$amendment->textFixed) {
+    echo '<h2 class="green">' . 'Text bearbeiten' . '</h2>
+<div class="content" id="amendmentTextEditCaller">
+    <button type="button" class="btn btn-default">Bearbeiten</button>
+</div>
+<div class="content" id="amendmentTextEditHolder" style="display: none;">';
+
+    foreach ($form->sections as $section) {
+        if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+            continue;
+        }
+        echo $section->getSectionType()->getAmendmentFormField();
+    }
+
+    echo '</div>';
+}
+
 
 
 $initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();

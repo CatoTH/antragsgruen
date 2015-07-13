@@ -33,7 +33,7 @@ $layout->addBreadcrumb($amendment->titlePrefix);
 $this->title = $amendment->getTitle() . " (" . $consultation->title . ", Antragsgrün)";
 
 
-$html = '<ul class="sidebarActions">';
+$html        = '<ul class="sidebarActions">';
 $sidebarRows = 0;
 
 if ($amendment->motion->motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
@@ -79,7 +79,7 @@ $layout->menusHtml[] = $html;
 
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
-$minHeight      = $sidebarRows * 30 - 50;
+$minHeight = $sidebarRows * 40 - 60;
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
 echo '<table class="motionDataTable">

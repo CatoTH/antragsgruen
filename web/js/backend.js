@@ -392,6 +392,25 @@
             locale: lang
         });
 
+
+        $("#amendmentTextEditCaller").find("button").click(function () {
+            $("#amendmentTextEditCaller").hide();
+            $("#amendmentTextEditHolder").show();
+            $(".wysiwyg-textarea").each(function () {
+                var $holder = $(this),
+                    $textarea = $holder.find(".texteditor"),
+                    editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+                $textarea.parents("form").submit(function () {
+                    $textarea.parent().find("textarea.raw").val(editor.getData());
+                    if (typeof(editor.plugins.lite) != 'undefined') {
+                        editor.plugins.lite.findPlugin(editor).acceptAll();
+                        $textarea.parent().find("textarea.consolidated").val(editor.getData());
+                    }
+                });
+            });
+            $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
+        });
+
         $(".amendmentDeleteForm").submit(function(ev, data) {
             if (data && typeof(data.confirmed) && data.confirmed === true) {
                 return;

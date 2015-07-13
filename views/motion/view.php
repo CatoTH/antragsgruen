@@ -103,7 +103,7 @@ $html .= '</ul>';
 $layout->menusHtml[] = $html;
 
 $minimalisticUi = $motion->consultation->getSettings()->minimalisticUI;
-$minHeight      = $sidebarRows * 30 - 50;
+$minHeight      = $sidebarRows * 40 - 60;
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 

@@ -170,6 +170,9 @@ label.legend {
 #motionUpdateForm #motionTextEditCaller {
   text-align: center; }
 
+#amendmentUpdateForm #amendmentTextEditCaller {
+  text-align: center; }
+
 .adminTypeForm .submitRow {
   text-align: center; }
 .adminTypeForm .contactDetails label {
