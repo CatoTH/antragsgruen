@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('verify that supporting motion is disabled by default');
-$I->gotoMotion();
+$I->gotoMotion(true, 3);
 $I->dontSeeElement('section.likes');
 
 
@@ -23,7 +23,7 @@ $I->logout();
 
 
 $I->wantTo('check if only logged in users can support motions');
-$I->gotoMotion();
+$I->gotoMotion(true, 3);
 $I->see('Du musst dich einloggen, um Anträge unterstützen zu können.');
 
 
