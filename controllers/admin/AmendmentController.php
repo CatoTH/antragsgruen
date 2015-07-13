@@ -91,7 +91,11 @@ class AmendmentController extends AdminBase
         }
 
         if (isset($_POST['save'])) {
-            $form->setAttributes([$_POST, $_FILES]);
+            $post = $_POST;
+            if (!isset($_POST['edittext'])) {
+                unset($post['sections']);
+            }
+            $form->setAttributes([$post, $_FILES]);
             try {
                 $form->saveAmendment($amendment);
             } catch (FormError $e) {

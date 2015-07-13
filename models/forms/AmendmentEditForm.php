@@ -123,6 +123,7 @@ class AmendmentEditForm extends Model
     {
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
+
         foreach ($this->sections as $section) {
             if (isset($values['sections'][$section->consultationSetting->id])) {
                 $section->getSectionType()->setAmendmentData($values['sections'][$section->consultationSetting->id]);
@@ -277,7 +278,7 @@ class AmendmentEditForm extends Model
 
             $amendment->save();
         } else {
-            throw new FormError('Ein Fehler beim Anlegen ist aufgetreten');
+            throw new FormError('Ein Fehler beim Speichern ist aufgetreten');
         }
     }
 }
