@@ -20,7 +20,7 @@ $layout     = $controller->layoutParams;
 $this->title = 'Antragsliste';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Antragsliste');
-$layout->addJS('/js/bower/typeahead.js/dist/typeahead.bundle.min.js');
+$layout->loadTypeahead();
 $layout->addJS('/js/backend.js');
 $layout->addJS('/js/colResizable-1.5.min.js');
 $layout->addCSS('/css/backend.css');

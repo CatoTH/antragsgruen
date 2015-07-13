@@ -24,7 +24,7 @@
   "require": {
     "php": ">=5.4.0",
     "fxp/composer-asset-plugin": "~1.0",
-    "yiisoft/yii2": "2.0.4",
+    "yiisoft/yii2": "2.0.5",
     "yiisoft/yii2-authclient": "2.0.4",
     "tecnick.com/tcpdf": "dev-master",
     "mandrill/mandrill": "dev-master",
@@ -33,12 +33,12 @@
     "bower-asset/html5shiv": "*",
     "bower-asset/Sortable": "*",
     "bower-asset/bootbox": "*",
-    "bower-asset/es5-shim": "*"
+    "bower-asset/es5-shim": "*",
+    "bower-asset/typeahead.js": "*"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "2.0.4",
     "yiisoft/yii2-debug": "2.0.4",
-    "yiisoft/yii2-gii": "2.0.4",
     "yiisoft/yii2-faker": "2.0.3",
     "yiisoft/yii2-apidoc": "2.0.4",
     "phpmd/phpmd": "@stable",

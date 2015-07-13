@@ -342,12 +342,12 @@ class AdminMotionFilterForm extends Model
     {
         $str = '';
 
-        $str .= '<label style="float: left; margin-right: 20px;">Titel:<br>';
+        $str .= '<label>Titel:<br>';
         $title = Html::encode($this->title);
         $str .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
         $str .= '</label>';
 
-        $str .= '<label style="float: left; margin-right: 20px;">Status:<br>';
+        $str .= '<label>Status:<br>';
         $str .= '<select name="Search[status]" class="form-control">';
         $str .= '<option value="">- egal -</option>';
         $statusList  = $this->getStatusList();
@@ -370,8 +370,8 @@ class AdminMotionFilterForm extends Model
         $tagsList = $this->getTagList();
         if (count($tagsList) > 0) {
             $name = "Schlagwort:";
-            $str .= '<label style="float: left; margin-right: 20px;">' . $name . '<br>';
-            $str .= '<select name="Search[tag]" size="1" class="form-control">';
+            $str .= '<label>' . $name . '<br>';
+            $str .= '<select name="Search[tag]" class="form-control">';
             $str .= '<option value="">- egal -</option>';
             foreach ($tagsList as $tagId => $tag_name) {
                 $str .= '<option value="' . $tagId . '" ';
@@ -383,7 +383,7 @@ class AdminMotionFilterForm extends Model
             $str .= '</select></label>';
         }
 
-        $str .= '<div style="float: left; margin-right: 20px;">';
+        $str .= '<div>';
         $str .= '<label for="initiatorSelect" style="margin-bottom: 0;">AntragstellerInnen:</label><br>';
 
         $values        = [];
@@ -392,7 +392,7 @@ class AdminMotionFilterForm extends Model
             $values[] = $initiatorName;
         }
 
-        $str .= '<div style="display: inline-block;">
+        $str .= '<div>
             <input id="initiatorSelect" class="typeahead form-control" type="text" placeholder="AntragstellerIn"
                 name="Search[initiator]" value="' . Html::encode($this->initiator) . '"
                 data-values="' . Html::encode(json_encode($values)) . '"></div>';

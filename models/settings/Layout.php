@@ -117,4 +117,11 @@ class Layout
         $this->addJS('/js/fuelux/js/fuelux.min.js');
         $this->addCSS('/js/fuelux/css/fuelux.min.css');
     }
+
+    /**
+     */
+    public function loadTypeahead()
+    {
+        $this->addJs('/js/bower/typeahead.js/dist/typeahead.bundle.min.js');
+    }
 }

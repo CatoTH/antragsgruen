@@ -256,7 +256,6 @@ label.legend {
   }
 }
 
-
 #motionUpdateForm {
 
   #motionTextEditCaller {
@@ -282,6 +281,12 @@ label.legend {
 .motionListSearchForm {
   margin-bottom: 20px;
   margin-top: 20px;
+
+  > * {
+    float: left;
+    margin-right: 20px;
+    max-width: 200px;
+  }
 }
 
 .adminMotionTable {

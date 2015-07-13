@@ -343,12 +343,25 @@
         });
         $('.fullTextAdd').click(function () {
             var lines = $fullTextHolder.find('textarea').val().split("\n"),
-                template = $('#newSupporterTemplate').data('html');
+                template = $('#newSupporterTemplate').data('html'),
+                getNewElement = function() {
+                    var $rows = $supporterData.find(".supporterRow");
+                    for (var i = 0; i < $rows.length; i++) {
+                        var $row = $rows.eq(i);
+                        if ($row.find(".name").val() == '' && $row.find(".organization").val() == '') return $row;
+                    }
+                    // No empty row found
+                    var $newEl = $(template);
+                    $supporterAdderRow.before($newEl);
+                    return $newEl;
+                };
+            var $firstAffectedRow = null;
             for (var i = 0; i < lines.length; i++) {
                 if (lines[i] == '') {
                     continue;
                 }
-                var $newEl = $(template);
+                var $newEl = getNewElement();
+                if ($firstAffectedRow == null) $firstAffectedRow = $newEl;
                 if ($newEl.find('input.organization').length > 0) {
                     var parts = lines[i].split(';');
                     $newEl.find('input.name').val(parts[0].trim());
@@ -358,9 +371,9 @@
                 } else {
                     $newEl.find('input.name').val(lines[i]);
                 }
-                $supporterAdderRow.before($newEl);
-                $fullTextHolder.find('textarea').select().focus();
             }
+            $fullTextHolder.find('textarea').select().focus();
+            $firstAffectedRow.scrollintoview();
         });
         $supporterData.on('click', '.supporterRow .rowDeleter', function (ev) {
             ev.preventDefault();

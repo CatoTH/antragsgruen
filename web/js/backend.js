@@ -242,8 +242,8 @@
             ev.preventDefault();
         });
 
-        var $select = $("#antragstellerInSelect"),
-            antragstellerInValues = $select.data("values"),
+        var $select = $("#initiatorSelect"),
+            initiatorValues = $select.data("values"),
             matcher = function findMatches(q, cb) {
                 var matches, substrRegex;
 
@@ -255,7 +255,7 @@
 
                 // iterate through the pool of strings and for any string that
                 // contains the substring `q`, add it to the `matches` array
-                $.each(antragstellerInValues, function (i, str) {
+                $.each(initiatorValues, function (i, str) {
                     if (substrRegex.test(str)) {
                         // the typeahead jQuery plugin expects suggestions to a
                         // JavaScript object, refer to typeahead docs for more info
@@ -269,7 +269,7 @@
             highlight: true,
             minLength: 1
         }, {
-            name: "antragstellerIn",
+            name: "supporter",
             displayKey: "value",
             source: matcher
         });
