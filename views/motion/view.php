@@ -17,7 +17,6 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var Amendment[] $amendments
- * @var bool $editLink
  * @var int[] $openedComments
  * @var string|null $adminEdit
  * @var null|string $supportStatus
@@ -32,13 +31,9 @@ $layout->addBreadcrumb($motion->getTypeName());
 
 $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->consultation->title . ', Antragsgrün)';
 
-$rows = 4;
-if ($motion->dateResolution != "") {
-    $rows++;
-}
-// if (count($antrag->antraege) > 0) $rows++; // @TODO
 
-$html = '<ul class="sidebarActions">';
+$html        = '<ul class="sidebarActions">';
+$sidebarRows = 0;
 
 $policy = $motion->motionType->getAmendmentPolicy();
 if ($policy->checkCurUserHeuristically()) {
@@ -47,14 +42,16 @@ if ($policy->checkCurUserHeuristically()) {
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
     $title .= Yii::t('motion', 'Änderungsantrag stellen');
     $html .= Html::a($title, $amendCreateUrl) . '</li>';
+    $sidebarRows++;
 } else {
     $msg = $policy->getPermissionDeniedAmendmentMsg();
-    if ($msg != "") {
+    if ($msg != '') {
         $html .= '<li class="amendmentCreate">';
         $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
         $html .= Html::encode(Yii::t('motion', 'Änderungsantrag stellen'));
         $html .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
         $html .= Html::encode($msg) . '</span></span></li>';
+        $sidebarRows++;
     }
 }
 
@@ -63,36 +60,50 @@ if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
         Yii::t('motion', 'PDF-Version');
     $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
+    $sidebarRows++;
 }
 
-if ($editLink) {
-    $html .= '<li class="edit">';
+if ($motion->canMergeAmendments() && count($motion->amendments) > 0) {
+    $html .= '<li class="mergeamendments">';
     $title = '<span class="icon glyphicon glyphicon-scissors"></span>' .
         Yii::t('motion', 'Änderungsanträge einpflegen');
     $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
+    $sidebarRows++;
+}
 
-    $amendLink = UrlHelper::createUrl(['motion/edit', 'motionId' => $motion->id]);
+if ($motion->canEdit()) {
     $html .= '<li class="edit">';
     $title = '<span class="icon glyphicon glyphicon-edit"></span>' .
         Yii::t('motion', 'Antrag bearbeiten');
-    $html .= Html::a($title, $amendLink) . '</li>';
+    $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'edit')) . '</li>';
+    $sidebarRows++;
+}
+
+if ($motion->canWithdraw()) {
+    $html .= '<li class="withdraw">';
+    $title = '<span class="icon glyphicon glyphicon-remove"></span>' .
+        Yii::t('motion', 'Antrag zurückziehen');
+    $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'withdraw')) . '</li>';
+    $sidebarRows++;
 }
 
 if ($adminEdit) {
     $html .= '<li class="adminEdit">';
     $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . 'Admin: bearbeiten';
     $html .= Html::a($title, $adminEdit) . '</li>';
-} else {
-    $backUrl = UrlHelper::createUrl('consultation/index');
-    $html .= '<li class="back">';
-    $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . 'Zurück zur Übersicht';
-    $html .= Html::a($title, $backUrl) . '</li>';
+    $sidebarRows++;
 }
+
+$html .= '<li class="back">';
+$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . 'Zurück zur Übersicht';
+$html .= Html::a($title, UrlHelper::createUrl('consultation/index')) . '</li>';
+$sidebarRows++;
+
 $html .= '</ul>';
 $layout->menusHtml[] = $html;
 
 $minimalisticUi = $motion->consultation->getSettings()->minimalisticUI;
-$minHeight      = ($minimalisticUi && \Yii::$app->user->isGuest ? 110 : 173);
+$minHeight      = $sidebarRows * 30 - 50;
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
@@ -416,7 +427,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 if ($motion->consultation->getSettings()->commentWholeMotions) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
-    $form = $commentForm;
+    $form    = $commentForm;
     $imadmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {

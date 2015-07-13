@@ -635,7 +635,7 @@ INSERT INTO `motionSection` (`motionId`, `sectionId`, `data`, `metadata`) VALUES
 
 INSERT INTO `motionSupporter` (`id`, `motionId`, `position`, `userId`, `role`, `comment`, `personType`, `name`, `organization`, `resolutionDate`, `contactEmail`, `contactPhone`)
 VALUES
-  (2, 2, 0, 1, 'initiates', NULL, 0, 'HoesslTo', '', NULL, 'tobias@hoessl.eu', NULL),
+  (2, 2, 0, 2, 'initiates', NULL, 0, 'Testuser', '', NULL, 'tobias@hoessl.eu', NULL),
   (3, 3, 0, 1, 'initiates', NULL, 0, 'Testadmin', '', NULL, 'testadmin@example.org', ''),
   (4, 4, 0, 2, 'initiates', NULL, 0, 'Tobias Hößl', '', NULL, 'tobias@hoessl.eu', '015156024223'),
   (5, 5, 0, NULL, 'initiates', NULL, 1, 'Bundesvorstand', NULL, NULL, NULL, NULL),

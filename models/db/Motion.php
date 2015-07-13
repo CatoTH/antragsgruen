@@ -270,12 +270,6 @@ class Motion extends IMotion implements IRSSItem
             return false;
         }
 
-        if ($this->consultation->getSettings()->adminsMayEdit) {
-            if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-                return true;
-            }
-        }
-
         if ($this->consultation->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
             if ($this->motionType->motionDeadlineIsOver()) {
                 return false;
@@ -284,6 +278,29 @@ class Motion extends IMotion implements IRSSItem
             }
         }
 
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canWithdraw()
+    {
+        // @TODO This is probably too simple...
+        return $this->iAmInitiator();
+    }
+
+    /**
+     * @return bool
+     */
+    public function canMergeAmendments()
+    {
+        if ($this->iAmInitiator()) {
+            return true;
+        }
+        if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            return true;
+        }
         return false;
     }
 

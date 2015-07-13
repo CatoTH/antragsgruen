@@ -161,7 +161,7 @@ class MotionController extends Base
 
 
         if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            $adminEdit = UrlHelper::createUrl(['admin/motions/update', 'motionId' => $motionId]);
+            $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motionId]);
         } else {
             $adminEdit = null;
         }
@@ -169,7 +169,6 @@ class MotionController extends Base
         $motionViewParams = [
             'motion'         => $motion,
             'amendments'     => $motion->getVisibleAmendments(),
-            'editLink'       => $motion->canEdit(),
             'openedComments' => $openedComments,
             'adminEdit'      => $adminEdit,
             'commentForm'    => null,

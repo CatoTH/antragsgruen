@@ -19,12 +19,12 @@ class Consultation
     public $maintainanceMode    = false;
     public $screeningMotions    = false;
     public $lineNumberingGlobal = false;
+    public $iniatorsMayEdit     = false;
 
     // TESTS WITHOUT TEST CASES
 
     /** @var bool */
     public $commentNeedsEmail     = false;
-    public $iniatorsMayEdit       = false;
     public $adminsMayEdit         = true;
     public $confirmEmails         = false;
     public $hideRevision          = false;
