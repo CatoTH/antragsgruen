@@ -182,7 +182,7 @@ label.legend {
   .motionListSearchForm > * {
     float: left;
     margin-right: 20px;
-    max-width: 200px; }
+    position: relative; }
 
 .adminMotionTable {
   border: solid 1px gray;

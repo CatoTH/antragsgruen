@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
@@ -348,39 +349,32 @@ class AdminMotionFilterForm extends Model
         $str .= '</label>';
 
         $str .= '<label>Status:<br>';
-        $str .= '<select name="Search[status]" class="form-control">';
-        $str .= '<option value="">- egal -</option>';
-        $statusList  = $this->getStatusList();
+        $stati       = ['' => '- egal -'];
         $foundMyself = false;
-        foreach ($statusList as $status_id => $status_name) {
-            $str .= '<option value="' . $status_id . '" ';
-            if ($this->status !== null && $this->status == $status_id) {
-                $str .= ' selected';
+        foreach ($this->getStatusList() as $statusId => $statusName) {
+            $stati[$statusId] = $statusName;
+            if ($this->status !== null && $this->status == $statusId) {
                 $foundMyself = true;
             }
-            $str .= '>' . Html::encode($status_name) . '</option>';
         }
         if (!$foundMyself && $this->status !== null) {
-            $stati = Motion::getStati();
-            $title = Html::encode($stati[$this->status] . ' (0)');
-            $str .= '<option value="' . $this->status . '" selected>' . $title . '</option>';
+            $stati                = Motion::getStati();
+            $stati[$this->status] = Html::encode($stati[$this->status] . ' (0)');
+
         }
-        $str .= '</select></label>';
+        $str .= HTMLTools::fueluxSelectbox('Search[status]', $stati, $this->status);
+        $str .= '</label>';
 
         $tagsList = $this->getTagList();
         if (count($tagsList) > 0) {
-            $name = "Schlagwort:";
+            $name = 'Schlagwort:';
             $str .= '<label>' . $name . '<br>';
-            $str .= '<select name="Search[tag]" class="form-control">';
-            $str .= '<option value="">- egal -</option>';
-            foreach ($tagsList as $tagId => $tag_name) {
-                $str .= '<option value="' . $tagId . '" ';
-                if ($this->tag == $tagId) {
-                    $str .= ' selected';
-                }
-                $str .= '>' . Html::encode($tag_name) . '</option>';
+            $tags = ['' => '- egal -'];
+            foreach ($tagsList as $tagId => $tagName) {
+                $tags[$tagId] = $tagName;
             }
-            $str .= '</select></label>';
+            $str .= HTMLTools::fueluxSelectbox('Search[Tag]', $tags, $this->tag);
+            $str .= '</label>';
         }
 
         $str .= '<div>';

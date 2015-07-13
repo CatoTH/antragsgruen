@@ -305,4 +305,37 @@ class HTMLTools
         }
         return trim($text);
     }
+
+    /**
+     * @param string $formName
+     * @param array $options
+     * @param string $selected
+     * @param array $attributes
+     * @return string
+     */
+    public static function fueluxSelectbox($formName, $options, $selected = '', $attributes = [])
+    {
+        $str = '<div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist"';
+        foreach ($attributes as $attrName => $attrVal) {
+            $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
+        }
+        $str .= '>
+  <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+    <span class="selected-label"></span>
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu" role="menu">';
+        foreach ($options as $value => $name) {
+            $str .= '<li data-value="' . Html::encode($value) . '" ';
+            if ($value == $selected) {
+                $str .= ' data-selected="true"';
+            }
+            $str .= '><a href="#">' . Html::encode($name) . '</a></li>';
+        }
+        $str .= '</ul>
+  <input class="hidden hidden-field" name="' . $formName . '" readonly="readonly" aria-hidden="true" type="text">
+</div>';
+        return $str;
+    }
 }
