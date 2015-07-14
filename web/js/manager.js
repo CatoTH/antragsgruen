@@ -9,29 +9,29 @@
             $step1 = $('#step1'),
             $step2 = $('#step2'),
             $step3 = $('#step3');
-        $step2.hide();
-        $step3.hide();
+        $step2.addClass("hidden");
+        $step3.addClass("hidden");
         $('#next-1').click(function (ev) {
             ev.preventDefault();
-            $step1.hide();
-            $step2.show();
+            $step1.addClass("hidden");
+            $step2.removeClass("hidden");
             $steps.eq(0).removeClass('active');
             $steps.eq(1).addClass('active');
         });
         $('#next-2').click(function (ev) {
             ev.preventDefault();
             if ($step2.find('.name input').val() === '') {
-                $step2.find('.name .alert').show();
+                $step2.find('.name .alert').removeClass("hidden");
                 $step2.find('.name input').focus();
                 return;
             }
             if ($step2.find('.url input').val() === '') {
-                $step2.find('.url .alert').show();
+                $step2.find('.url .alert').removeClass("hidden");
                 $step2.find('.url input').focus();
                 return;
             }
-            $step2.hide();
-            $step3.show();
+            $step2.addClass("hidden");
+            $step3.removeClass("hidden");
             $steps.eq(1).removeClass('active');
             $steps.eq(2).addClass('active');
         });

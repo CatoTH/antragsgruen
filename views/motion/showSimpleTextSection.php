@@ -80,7 +80,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
         $amendment = $amendmentSection->amendmentSection->amendment;
-        echo '<div class="text textAmendment amendment' . $amendment->id . '">';
+        echo '<div class="text textAmendment hidden amendment' . $amendment->id . '">';
         echo '<div class="preamble"><div>';
         echo '<h3>Änderungsantrag ' . Html::encode($amendment->titlePrefix) . '</h3>';
         echo ', gestellt von: ' . Html::encode($amendment->getInitiatorsStr());

@@ -11,9 +11,9 @@
 
         $("#antrag_neu_kann_telefon").change(function () {
             if ($(this).prop("checked")) {
-                $("#antrag_neu_braucht_telefon_holder").show();
+                $("#antrag_neu_braucht_telefon_holder").removeClass("hidden");
             } else {
-                $("#antrag_neu_braucht_telefon_holder").hide();
+                $("#antrag_neu_braucht_telefon_holder").addClass("hidden");
             }
         }).trigger("change");
     };
@@ -121,11 +121,11 @@
         $('#typeInitiatorForm').change(function () {
             var hasSupporters = $(this).find("option:selected").data("has-supporters");
             if (hasSupporters) {
-                $('#typeMinSupportersRow').show();
-                $('#typeSupportersOrgaRow').show();
+                $('#typeMinSupportersRow').removeClass("hidden");
+                $('#typeSupportersOrgaRow').removeClass("hidden");
             } else {
-                $('#typeMinSupportersRow').hide();
-                $('#typeSupportersOrgaRow').hide();
+                $('#typeMinSupportersRow').addClass("hidden");
+                $('#typeSupportersOrgaRow').addClass("hidden");
             }
         }).change();
     };
@@ -143,7 +143,7 @@
                 $list.append(adder);
             },
             showSaver = function () {
-                $('#agendaEditSavingHolder').show();
+                $('#agendaEditSavingHolder').removeClass("hidden");
             },
             buildAgendaStruct = function ($ol) {
                 var items = [];
@@ -285,9 +285,9 @@
         var $siteForm = $("#siteSettingsForm");
         $siteForm.find(".loginMethods .namespaced input").change(function () {
             if ($(this).prop("checked")) {
-                $("#accountsForm").show();
+                $("#accountsForm").removeClass("hidden");
             } else {
-                $("#accountsForm").hide();
+                $("#accountsForm").addClass("hidden");
             }
         }).trigger("change");
 
@@ -329,13 +329,13 @@
             $iniatorsMayEdit = $("#iniatorsMayEdit").parents("fieldset").first();
         $adminsMayEdit.change(function () {
             if ($(this).prop("checked")) {
-                $iniatorsMayEdit.show();
+                $iniatorsMayEdit.removeClass("hidden");
             } else {
                 var confirmMessage = "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
                     "und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?";
                 bootbox.confirm(confirmMessage, function (result) {
                     if (result) {
-                        $iniatorsMayEdit.hide();
+                        $iniatorsMayEdit.addClass("hidden");
                         $iniatorsMayEdit.find("input").prop("checked", false);
                     } else {
                         $adminsMayEdit.prop("checked", true);
@@ -343,7 +343,7 @@
                 });
             }
         });
-        if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.hide();
+        if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.addClass("hidden");
     };
 
     var motionEditInit = function () {
@@ -355,8 +355,8 @@
             locale: lang
         });
         $("#motionTextEditCaller").find("button").click(function () {
-            $("#motionTextEditCaller").hide();
-            $("#motionTextEditHolder").show();
+            $("#motionTextEditCaller").addClass("hidden");
+            $("#motionTextEditHolder").removeClass("hidden");
             $(".wysiwyg-textarea").each(function () {
                 var $holder = $(this),
                     $textarea = $holder.find(".texteditor"),
@@ -394,8 +394,8 @@
 
 
         $("#amendmentTextEditCaller").find("button").click(function () {
-            $("#amendmentTextEditCaller").hide();
-            $("#amendmentTextEditHolder").show();
+            $("#amendmentTextEditCaller").addClass("hidden");
+            $("#amendmentTextEditHolder").removeClass("hidden");
             $(".wysiwyg-textarea").each(function () {
                 var $holder = $(this),
                     $textarea = $holder.find(".texteditor"),

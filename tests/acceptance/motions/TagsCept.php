@@ -14,7 +14,7 @@ $I->loginAsStdAdmin();
 $I->click('#adminLink');
 $I->click('#consultationextendedLink');
 
-if ($I->executeJS('return $("#tagsList").pillbox("items").length') != 2) {
+if ($I->executeJS('return $("#tagsList").pillbox("items").length') != 3) {
     $I->fail('Invalid return from tag-List');
 }
 $I->executeJS('$("#tagsList").pillbox("addItems", -1, [{ "text": "Economy" }]);');
@@ -51,16 +51,16 @@ $I->see('Environment', '.motionDataTable .tags');
 $I->dontSeeElement('#tagAdderForm');
 $I->click('.tagAdderHolder');
 $I->seeElement('#tagAdderForm');
-$I->selectOption('#tagAdderForm select', 'Fail');
+$I->selectOption('#tagAdderForm select', 'Verkehr');
 $I->submitForm('#tagAdderForm', [], 'motionAddTag');
 
-$I->see('Fail', '.motionDataTable .tags');
+$I->see('Verkehr', '.motionDataTable .tags');
 $I->dontSeeElement('#tagAdderForm');
 
 
 $I->wantTo('Delete a tag');
 $I->seeElement('.motionDataTable .tags .delTag2');
 $I->submitForm('.motionDataTable .tags .delTag2', [], 'motionDelTag');
-$I->dontSee('Fail', '.motionDataTable .tags');
+$I->dontSee('Verkehr', '.motionDataTable .tags');
 $I->dontSeeElement('.motionDataTable .tags .delTag2');
 $I->see('Environment', '.motionDataTable .tags');

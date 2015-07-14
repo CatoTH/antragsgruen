@@ -5016,7 +5016,6 @@ ins, ul.inserted, blockquote.inserted {
       .motionTextHolder .paragraph .text.smallFont > blockquote {
         font-size: 12px; }
   .motionTextHolder .paragraph .textAmendment {
-    display: none;
     width: 733px;
     position: relative; }
     .motionTextHolder .paragraph .textAmendment del, .motionTextHolder .paragraph .textAmendment ul.deleted, .motionTextHolder .paragraph .textAmendment blockquote.deleted {
@@ -9843,7 +9842,6 @@ ins, ul.inserted, blockquote.inserted {
   border-radius: 90px; }
 
 #agendaEditSavingHolder {
-  display: none;
   text-align: center;
   margin-bottom: 15px; }
 
@@ -9853,8 +9851,6 @@ ins, ul.inserted, blockquote.inserted {
     width: 30%; }
 .motionData .tagAdderHolder:link, .motionData .tagAdderHolder:visited {
   color: green; }
-.motionData #tagAdderForm {
-  display: none; }
 .motionData .delTagForm {
   display: inline; }
   .motionData .delTagForm button {

@@ -198,7 +198,7 @@ if (!$motion->textFixed) {
     <br><br>
     <button type="button" class="btn btn-default">Bearbeiten</button>
 </div>
-<div class="content" id="motionTextEditHolder" style="display: none;">';
+<div class="content hidden" id="motionTextEditHolder">';
 
     foreach ($form->sections as $section) {
         if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {

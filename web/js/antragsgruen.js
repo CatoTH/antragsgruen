@@ -97,22 +97,24 @@
         }
         var editor = CKEDITOR.inline(id, ckeditorConfig);
 
-        var $fieldset = $el.parents("fieldset.textarea").first();
+        /* @TODO
+         var $fieldset = $el.parents("fieldset.textarea").first();
         if ($fieldset.data("max_len") > 0) {
             var onChange = function () {
                 if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
                     $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
-                    $fieldset.find(".max_len_hint .calm").hide();
-                    $fieldset.find(".max_len_hint .alert").show();
+                    $fieldset.find(".max_len_hint .calm").addClass("hidden");
+                    $fieldset.find(".max_len_hint .alert").removeClass("hidden");
                 } else {
                     $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
-                    $fieldset.find(".max_len_hint .calm").show();
-                    $fieldset.find(".max_len_hint .alert").hide();
+                    $fieldset.find(".max_len_hint .calm").removeClass("hidden");
+                    $fieldset.find(".max_len_hint .alert").addClass("hidden");
                 }
             };
             editor.on('change', onChange);
             onChange();
         }
+        */
 
         return editor;
     }
@@ -180,7 +182,7 @@
 
             $editCaller.click(function (ev) {
                 ev.preventDefault();
-                $editCaller.hide();
+                $editCaller.addClass("hidden");
                 $textHolder.attr('contenteditable', true);
 
                 editor = CKEDITOR.inline($textHolder.attr('id'), {
@@ -188,9 +190,9 @@
                 });
 
                 $textHolder.focus();
-                $textSaver.show();
+                $textSaver.removeClass("hidden");
             });
-            $textSaver.hide();
+            $textSaver.addClass("hidden");
             $textSaver.find('button').click(function (ev) {
                 ev.preventDefault();
 
@@ -199,10 +201,10 @@
                     '_csrf': $form.find('> input[name=_csrf]').val()
                 }, function (ret) {
                     if (ret == '1') {
-                        $textSaver.hide();
+                        $textSaver.addClass("hidden");
                         editor.destroy();
                         $textHolder.attr('contenteditable', false);
-                        $editCaller.show();
+                        $editCaller.removeClass("hidden");
                     } else {
                         alert('Something went wrong...');
                     }
@@ -215,18 +217,18 @@
         var $paragraphs = $('.motionTextHolder .paragraph');
         $paragraphs.find('.comment .shower').click(function (ev) {
             var $this = $(this);
-            $this.hide();
-            $this.parent().find('.hider').show();
-            $this.parents('.paragraph').first().find('.commentForm, .motionComment').show();
+            $this.addClass("hidden");
+            $this.parent().find('.hider').removeClass("hidden");
+            $this.parents('.paragraph').first().find('.commentForm, .motionComment').removeClass("hidden");
             ev.preventDefault();
         });
 
         $paragraphs.find('.comment .hider').click(function (ev) {
             var $this = $(this);
-            $this.hide();
-            $this.parent().find('.shower').show();
+            $this.addClass("hidden");
+            $this.parent().find('.shower').removeClass("hidden");
 
-            $this.parents('.paragraph').first().find('.commentForm, .motionComment').hide();
+            $this.parents('.paragraph').first().find('.commentForm, .motionComment').addClass("hidden")
             ev.preventDefault();
         });
 
@@ -250,12 +252,12 @@
                 }
 
                 $amendment.mouseover(function () {
-                    $paragraph.find("> .textOrig").hide();
-                    $paragraph.find("> .textAmendment").hide();
-                    $paragraph.find("> .textAmendment.amendment" + $amendment.find("a").data("id")).show();
+                    $paragraph.find("> .textOrig").addClass("hidden");
+                    $paragraph.find("> .textAmendment").addClass("hidden");
+                    $paragraph.find("> .textAmendment.amendment" + $amendment.find("a").data("id")).removeClass("hidden");
                 }).mouseout(function () {
-                    $paragraph.find("> .textOrig").show();
-                    $paragraph.find("> .textAmendment").hide();
+                    $paragraph.find("> .textOrig").removeClass("hidden");
+                    $paragraph.find("> .textAmendment").addClass("hidden");
                 });
             });
         });
@@ -263,8 +265,8 @@
 
         $('.tagAdderHolder').click(function (ev) {
             ev.preventDefault();
-            $(this).hide();
-            $('#tagAdderForm').show();
+            $(this).addClass("hidden");
+            $('#tagAdderForm').removeClass("hidden");
         });
 
         var s = location.hash.split('#comm');
@@ -309,13 +311,13 @@
 
         $('#personTypeNatural, #personTypeOrga').on('click change', function () {
             if ($('#personTypeOrga').prop('checked')) {
-                $initiatorData.find('.organizationRow').show();
-                $initiatorData.find('.adderRow').hide();
-                $('.supporterData, .supporterDataHead').hide();
+                $initiatorData.find('.organizationRow').removeClass("hidden");
+                $initiatorData.find('.adderRow').addClass("hidden")
+                $('.supporterData, .supporterDataHead').addClass("hidden");
             } else {
-                $initiatorData.find('.organizationRow').hide();
-                $initiatorData.find('.adderRow').show();
-                $('.supporterData, .supporterDataHead').show();
+                $initiatorData.find('.organizationRow').addClass("hidden");
+                $initiatorData.find('.adderRow').removeClass("hidden");
+                $('.supporterData, .supporterDataHead').removeClass("hidden");
             }
         }).first().trigger('change');
 
@@ -338,8 +340,8 @@
 
         $('.fullTextAdder a').click(function (ev) {
             ev.preventDefault();
-            $(this).parent().hide();
-            $('#fullTextHolder').show();
+            $(this).parent().addClass("hidden");
+            $('#fullTextHolder').removeClass("hidden");
         });
         $('.fullTextAdd').click(function () {
             var lines = $fullTextHolder.find('textarea').val().split("\n"),

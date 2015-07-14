@@ -30,7 +30,7 @@ if ($admin) {
     $newElementTemplate = ob_get_clean();
 
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
-    echo Html::beginForm('', 'post', ['id' => 'agendaEditSavingHolder']);
+    echo Html::beginForm('', 'post', ['id' => 'agendaEditSavingHolder', 'class' => 'hidden']);
     echo '<input type="hidden" name="data" value="">';
     echo '<button class="btn btn-success" type="submit" name="saveAgenda">Speichern</button>';
     echo Html::endForm();

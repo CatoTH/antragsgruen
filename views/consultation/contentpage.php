@@ -37,7 +37,7 @@ echo $pageData->text;
 echo '</article>';
 
 if ($admin) {
-    echo '<div class="textSaver" style="display: none;">';
+    echo '<div class="textSaver hidden">';
     echo '<button class="btn btn-primary" type="button" data-save-url="' . Html::encode($saveUrl) . '">';
     echo 'Speichern</button></div>';
 

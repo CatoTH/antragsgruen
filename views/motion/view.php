@@ -195,7 +195,7 @@ if (!$minimalisticUi) {
         echo implode(", ", $tags);
 
         echo '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">Neu</a>';
-        echo Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline']);
+        echo Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
         echo '<select name="tagId" title="Schlagwort aussuchen" class="form-control">
         <option>-</option>';
 
