@@ -161,12 +161,36 @@ class TextSimple extends ISectionType
     {
         $out = '';
         foreach ($diffGroups as $diff) {
+            $text = $diff['text'];
+            $hasInsert = (mb_strpos($text, '<ins>') !== false || mb_strpos($text, 'class="inserted"') !== false);
+            $hasDelete = (mb_strpos($text, '<del>') !== false || mb_strpos($text, 'class="deleted"') !== false);
             $out .= $wrapStart;
-            if ($diff['lineFrom'] == $diff['lineTo']) {
-                $out .= 'In Zeile ' . $diff['lineFrom'] . ':<br>';
+            if ($diff['newLine']) {
+                if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
+                    $out .= 'Nach Zeile #LINETO#:';
+                } elseif ($hasDelete) {
+                    $out .= 'Nach Zeile #LINETO# löschen:';
+                } elseif ($hasInsert) {
+                    $out .= 'Nach Zeile #LINETO# einfügen:';
+                }
+            } elseif ($diff['lineFrom'] == $diff['lineTo']) {
+                if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
+                    $out .= 'In Zeile #LINETO#:';
+                } elseif ($hasDelete) {
+                    $out .= 'In Zeile #LINETO# löschen:';
+                } elseif ($hasInsert) {
+                    $out .= 'In Zeile #LINETO# einfügen:';
+                }
             } else {
-                $out .= 'Von Zeile ' . $diff['lineFrom'] . ' bis ' . $diff['lineTo'] . ':<br>';
+                if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
+                    $out .= 'Von Zeile #LINEFROM# bis #LINETO#:';
+                } elseif ($hasDelete) {
+                    $out .= 'Von Zeile #LINEFROM# bis #LINETO# löschen:';
+                } elseif ($hasInsert) {
+                    $out .= 'Von Zeile #LINEFROM# bis #LINETO# einfügen:';
+                }
             }
+            $out = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $diff['lineFrom']], $out) . '<br>';
             if ($diff['text'][0] != '<') {
                 $out .= '<p>' . $diff['text'] . '</p>';
             } else {

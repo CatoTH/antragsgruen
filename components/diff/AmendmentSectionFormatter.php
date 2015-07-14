@@ -124,6 +124,12 @@ class AmendmentSectionFormatter
         $affectedBlocks = [];
         foreach ($blocks as $block) {
             $hadDiff = false;
+            if ($inIns) {
+                $block['text'] = '<ins>' . $block['text'];
+            }
+            if ($inDel) {
+                $block['text'] = '<del>' . $block['text'];
+            }
             if (preg_match_all('/<\/?(ins|del)>/siu', $block['text'], $matches)) {
                 $hadDiff = true;
                 foreach ($matches[0] as $found) {
@@ -145,7 +151,13 @@ class AmendmentSectionFormatter
                     }
                 }
             }
-            if ($inIns || $inDel || $hadDiff) {
+            if ($inIns) {
+                $block['text']    = $block['text'] . '</ins>';
+                $affectedBlocks[] = $block;
+            } elseif ($inDel) {
+                $block['text']    = $block['text'] . '</del>';
+                $affectedBlocks[] = $block;
+            } elseif ($hadDiff) {
                 $affectedBlocks[] = $block;
             }
             if (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
@@ -218,6 +230,18 @@ class AmendmentSectionFormatter
         return $blocks;
     }
 
+    /**
+     * @param string $html
+     * @return string
+     */
+    public static function cleanupDiffProblems($html)
+    {
+        $html = str_replace('<del>###LINENUMBER###', '###LINENUMBER###<del>', $html);
+        $html = str_replace('<ins>###LINENUMBER###', '###LINENUMBER###<ins>', $html);
+        $html = str_replace('<ins> </ins></p>', '</p>', $html);
+        return $html;
+    }
+
 
     /**
      * @return array[]
@@ -227,6 +251,7 @@ class AmendmentSectionFormatter
     {
         $lineOffset = $this->section->getFirstLineNumber();
         $computed   = $this->getHtmlDiffWithLineNumberPlaceholders();
+        $computed   = static::cleanupDiffProblems($computed);
         $blocks     = static::htmlDiff2LineBlocks($computed, $lineOffset);
         return static::filterAffectedBlocks($blocks);
     }
@@ -257,7 +282,7 @@ class AmendmentSectionFormatter
         $diff->setIgnoreStr('###LINENUMBER###');
         $diff->setFormatting(Diff::FORMATTING_CLASSES);
         $computed = $diff->computeDiff($strPre, $strPost);
-        $blocks     = static::htmlDiff2LineBlocks($computed, 1);
+        $blocks   = static::htmlDiff2LineBlocks($computed, 1);
         return static::filterAffectedBlocks($blocks);
     }
 
@@ -286,41 +311,44 @@ class AmendmentSectionFormatter
     }
 
     /**
+     * @param array $blocks
+     * @return array
+     */
+    public static function groupAffectedDiffBlocks($blocks)
+    {
+        $currBlock     = null;
+        $groupedBlocks = [];
+        foreach ($blocks as $block) {
+            if ($currBlock === null || $block['lineFrom'] > $currBlock['lineTo'] + 2) {
+                if ($currBlock !== null) {
+                    $groupedBlocks[] = $currBlock;
+                }
+                $currBlock = [
+                    'text'     => '',
+                    'lineFrom' => $block['lineFrom'],
+                    'lineTo'   => $block['lineTo'],
+                    'newLine'  => $block['newLine'],
+                ];
+            }
+            if ($currBlock['text'] != '') {
+                $currBlock['text'] .= '<br>';
+            }
+            $currBlock['text'] .= $block['text'];
+            $currBlock['lineTo'] = $block['lineTo'];
+        }
+        if ($currBlock) {
+            $groupedBlocks[] = $currBlock;
+        }
+        return $groupedBlocks;
+    }
+
+    /**
      * @return array
      * @throws Internal
      */
     public function getGroupedDiffLinesWithNumbers()
     {
-        $diff = $this->getDiffLinesWithNumbers();
-        return $diff;
-        // @TODO
-
-        $lastLine   = null;
-        $blockBegin = null;
-        $lines      = '';
-        $blocks     = [];
-        foreach ($diff as $lineNo => $str) {
-            if ($lastLine === null || $lineNo > $lastLine + 2) {
-                if ($blockBegin !== null) {
-                    $blocks[] = [
-                        'lineFrom' => $blockBegin,
-                        'lineTo'   => $lastLine,
-                        'text'     => $lines,
-                    ];
-                    $lines    = '';
-                }
-                $blockBegin = $lineNo;
-            }
-            $lines .= $str;
-            $lastLine = $lineNo;
-        }
-        if ($lines != '') {
-            $blocks[] = [
-                'lineFrom' => $blockBegin,
-                'lineTo'   => $lastLine,
-                'text'     => $lines,
-            ];
-        }
-        return $blocks;
+        $blocks = $this->getDiffLinesWithNumbers();
+        return static::groupAffectedDiffBlocks($blocks);
     }
 }

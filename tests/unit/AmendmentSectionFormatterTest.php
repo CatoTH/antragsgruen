@@ -81,6 +81,53 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         // @TODO:
         // - <li>s that are changed
         // - <li>s that are deleted
+    }
 
+
+    public function testFilterAffectedBlocks()
+    {
+        $in       = [
+            [
+                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Marei, des um Godds wujn Biakriagal!',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
+                'lineFrom' => 18,
+                'lineTo'   => 1,
+                'newLine'  => false,
+            ],
+        ];
+        $expect   = [
+            [
+                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.</del>',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => '<del>Marei, des um Godds wujn Biakriagal!</del>',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => '<del>is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
+                'lineFrom' => 18,
+                'lineTo'   => 1,
+                'newLine'  => false,
+            ],
+        ];
+        $filtered = AmendmentSectionFormatter::filterAffectedBlocks($in);
+        $this->assertEquals($expect, $filtered);
     }
 }
