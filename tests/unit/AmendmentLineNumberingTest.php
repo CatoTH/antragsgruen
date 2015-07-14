@@ -136,8 +136,8 @@ class AmendmentLineNumberingTest extends DBTestBase
     public function testSection2Wording()
     {
         $diff = $this->getSectionDiff(3, 4);
-        $this->assertContains('Nach Zeile 35 einfügen', TextSimple::formatDiffGroup([$diff[0]]));
-        $this->assertContains('Nach Zeile 42 einfügen', TextSimple::formatDiffGroup([$diff[1]]));
-        $this->assertContains('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]]));
+        $this->assertContains('Vor Zeile 36 einfügen', TextSimple::formatDiffGroup([$diff[0]], '', '', 35));
+        $this->assertContains('Nach Zeile 42 einfügen', TextSimple::formatDiffGroup([$diff[1]], '', '', 35));
+        $this->assertContains('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]], '', '', 35));
     }
 }

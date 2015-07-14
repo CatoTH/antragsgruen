@@ -155,9 +155,10 @@ class TextSimple extends ISectionType
      * @param array $diffGroups
      * @param string $wrapStart
      * @param string $wrapEnd
+     * @param int $firstLineOfSection
      * @return string
      */
-    public static function formatDiffGroup($diffGroups, $wrapStart = '', $wrapEnd = '')
+    public static function formatDiffGroup($diffGroups, $wrapStart = '', $wrapEnd = '', $firstLineOfSection = -1)
     {
         $out = '';
         foreach ($diffGroups as $diff) {
@@ -165,13 +166,18 @@ class TextSimple extends ISectionType
             $hasInsert = (mb_strpos($text, '<ins>') !== false || mb_strpos($text, 'class="inserted"') !== false);
             $hasDelete = (mb_strpos($text, '<del>') !== false || mb_strpos($text, 'class="deleted"') !== false);
             $out .= $wrapStart;
+            $out .= '<h4 class="lineSummary">';
             if ($diff['newLine']) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
                     $out .= 'Nach Zeile #LINETO#:';
                 } elseif ($hasDelete) {
                     $out .= 'Nach Zeile #LINETO# löschen:';
                 } elseif ($hasInsert) {
-                    $out .= 'Nach Zeile #LINETO# einfügen:';
+                    if ($diff['lineTo'] < $firstLineOfSection) {
+                        $out .= str_replace('#LINE#', ($diff['lineTo'] + 1), 'Vor Zeile #LINE# einfügen:');
+                    } else {
+                        $out .= 'Nach Zeile #LINETO# einfügen:';
+                    }
                 }
             } elseif ($diff['lineFrom'] == $diff['lineTo']) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
@@ -190,7 +196,7 @@ class TextSimple extends ISectionType
                     $out .= 'Von Zeile #LINEFROM# bis #LINETO# einfügen:';
                 }
             }
-            $out = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $diff['lineFrom']], $out) . '<br>';
+            $out = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $diff['lineFrom']], $out) . '</h4>';
             if ($diff['text'][0] != '<') {
                 $out .= '<p>' . $diff['text'] . '</p>';
             } else {

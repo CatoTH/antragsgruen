@@ -5,6 +5,7 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
 /**
@@ -39,7 +40,8 @@ foreach ($sections as $section) {
             echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
             $wrapStart = '<section class="paragraph"><div class="text">';
             $wrapEnd   = '</section>';
-            $html      = \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd);
+            $firstLine = $section->getFirstLineNumber();
+            $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
             echo str_replace('###FORCELINEBREAK###', '<br>', $html);
             echo '</div>';
             echo '</section>';

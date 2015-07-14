@@ -299,10 +299,12 @@ button.link {
 
 del, ul.deleted, blockquote.deleted {
   color: #880000;
+  text-decoration: line-through;
 }
 
 ins, ul.inserted, blockquote.inserted {
   color: #008800;
+  text-decoration: underline;
 }
 
 .label {
