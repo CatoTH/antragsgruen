@@ -16,10 +16,12 @@ class AmendmentSectionFormatterTest extends TestBase
     public function testUlLi()
     {
 
-        // 'Inserted LIs should not be shown'
-        $in     = ['<ul class="inserted"><li>Oamoi a Maß und no a Maß</li></ul>'];
-        $expect = ['<ul class="inserted"><li>Oamoi a Maß und no a Maß</li></ul>'];
-        $out    = AmendmentSectionFormatter::getDiffLinesWithNumberComputed($in, 0, false);
+        // 'Inserted LIs should be shown'
+        $in     = [[
+            'text' => '<ul class="inserted"><li>Oamoi a Maß und no a Maß</li></ul>',
+        ]];
+        $expect = $in;
+        $out    = AmendmentSectionFormatter::filterAffectedBlocks($in);
         $this->assertEquals($expect, $out);
 
         // 'Line breaks within lists'
@@ -52,9 +54,24 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichtiges Ziel erreicht: Der Euro, als entscheidendes Element der europäischen Integration und des europäischen Zusammenhalts, konnte bislang gerettet werden. Dafür hat Europa neue Instrumente und Mechanismen geschaffen, wie den Euro-Rettungsschirm mit dem Europäischen Stabilitätsmechanismus (ESM) oder die Bankenunion. Aber diese Instrumente allein werden die tiefgreifenden Probleme nicht lösen - weder politisch noch wirtschaftlich.</p>';
 
         $expect = [
-            4 => '<span class="lineNumber" data-line-number="5"></span>Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ',
-            6 => '<span class="lineNumber" data-line-number="7"></span>Spaltung unserer Gesellschaften; ein<del>e Politik, die</del><ins> Wirtschaftsmodell, das</ins> auch un<del>populär</del><ins>bequem</ins>e ',
-            7 => '<span class="lineNumber" data-line-number="8"></span>Strukturreformen <del>ang</del><ins>mit einbezi</ins>eht, wenn diese zu nachhaltigem Wachstum und mehr ',
+            [
+                'text'     => 'Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ',
+                'lineFrom' => 5,
+                'lineTo'   => 5,
+                'newLine'  => false,
+            ],
+            [
+                'text'     => 'Spaltung unserer Gesellschaften; ein<del>e Politik, die</del><ins> Wirtschaftsmodell, das</ins> auch un<del>populär</del><ins>bequem</ins>e ',
+                'lineFrom' => 7,
+                'lineTo'   => 7,
+                'newLine'  => false,
+            ],
+            [
+                'text'     => 'Strukturreformen <del>ang</del><ins>mit einbezi</ins>eht, wenn diese zu nachhaltigem Wachstum und mehr ',
+                'lineFrom' => 8,
+                'lineTo'   => 8,
+                'newLine'  => false,
+            ],
         ];
 
         $out = AmendmentSectionFormatter::getDiffLinesWithNumbersDebug($orig, $new);

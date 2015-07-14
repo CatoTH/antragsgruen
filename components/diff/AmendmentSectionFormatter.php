@@ -19,6 +19,9 @@ class AmendmentSectionFormatter
     /** @var int */
     private $diffFormatting = 0;
 
+    /** @var bool */
+    private $debug = false;
+
 
     /**
      * @param AmendmentSection $amendmentSection
@@ -28,6 +31,14 @@ class AmendmentSectionFormatter
     {
         $this->section        = $amendmentSection;
         $this->diffFormatting = $diffFormatting;
+    }
+
+    /**
+     * @param bool $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
     }
 
     /**
@@ -50,7 +61,7 @@ class AmendmentSectionFormatter
      * @return string
      * @throws Internal
      */
-    private function getHtmlDiffWithLineNumbers()
+    private function getHtmlDiffWithLineNumberPlaceholders()
     {
         if ($this->section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Only supported for simple HTML');
@@ -75,28 +86,48 @@ class AmendmentSectionFormatter
         $diff = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
         $diff->setFormatting($this->diffFormatting);
+        $diff->setDebug($this->debug);
 
         return $diff->computeDiff($strPre, $strPost);
-
     }
 
     /**
-     * @param array $computedLines
-     * @param int $lineOffset
-     * @param bool $prependLineNumber
+     * Called from getDiffLinesWithNumbers
+     *
+     * @param array $blocks
+     *     The whole section text. Standard text is split to blocks by line,
+     *     Lists are split to blocks by list point. Format:
+     *     array(28) {
+     * ...
+     * [8]=>
+     * array(4) {
+     * ["text"]=> string(46) "<ul class="inserted"><li>Neuer Punkt</li></ul>"
+     * ["lineFrom"]=> int(8)
+     * ["lineTo"]=> int(8)
+     * ["newLine"]=> bool(true)
+     * }
+     * [9]=>
+     * array(4) {
+     * ["text"]=> string(105) "<ul><li>Do nackata Wurscht i hob di narrisch gean</li></ul>"
+     * ["lineFrom"]=> int(9)
+     * ["lineTo"]=> int(10)
+     * ["newLine"]=> bool(false)
+     * }
+     * ...
+     * }
      * @return array
      * @throws Internal
      */
-    public static function getDiffLinesWithNumberComputed($computedLines, $lineOffset, $prependLineNumber)
+    public static function filterAffectedBlocks($blocks)
     {
-        $inIns         = $inDel = false;
-        $affectedLines = [];
-        for ($currLine = 0; $currLine < count($computedLines); $currLine++) {
+        $inIns          = $inDel = false;
+        $affectedBlocks = [];
+        foreach ($blocks as $block) {
             $hadDiff = false;
-            if (preg_match_all('/<\/?(ins|del)>/siu', $computedLines[$currLine], $matches, PREG_OFFSET_CAPTURE)) {
+            if (preg_match_all('/<\/?(ins|del)>/siu', $block['text'], $matches)) {
                 $hadDiff = true;
                 foreach ($matches[0] as $found) {
-                    switch ($found[0]) {
+                    switch ($found) {
                         case '<ins>':
                             $inIns = true;
                             break;
@@ -115,25 +146,16 @@ class AmendmentSectionFormatter
                 }
             }
             if ($inIns || $inDel || $hadDiff) {
-                $line = $computedLines[$currLine];
-                $line = preg_replace('/<\/?(li|ul|ol|blockquote|p)>/siu', '', $line);
-                if ($prependLineNumber) {
-                    $line = '<span class="lineNumber" data-line-number="' .
-                        ($currLine + $lineOffset) . '"></span>' . $line;
-                }
-                $affectedLines[$currLine] = $line;
+                $affectedBlocks[] = $block;
             }
-
-            if (preg_match('/<ul class="inserted">.*<\/ul>/siu', $computedLines[$currLine])) {
-                $line = $computedLines[$currLine];
-                if ($prependLineNumber) {
-                    $line = '<span class="lineNumber" data-line-number="' .
-                        ($currLine + $lineOffset) . '"></span>' . $line;
-                }
-                $affectedLines[$currLine] = $line;
+            if (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
+                $affectedBlocks[] = $block;
+            }
+            if (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
+                $affectedBlocks[] = $block;
             }
         }
-        return $affectedLines;
+        return $affectedBlocks;
     }
 
     /**
@@ -161,22 +183,52 @@ class AmendmentSectionFormatter
         return $out;
     }
 
+    /**
+     * @param string $htmlDiff
+     * @param int $lineOffset
+     * @return array
+     */
+    public static function htmlDiff2LineBlocks($htmlDiff, $lineOffset)
+    {
+        $computedLines = static::getDiffSplitToLines($htmlDiff);
+        $lineNo        = 0;
+        $blocks        = [];
+        foreach ($computedLines as $line) {
+            $substrcount            = mb_substr_count($line, '###LINENUMBER###');
+            $computedLines[$lineNo] = str_replace('###LINENUMBER###', '', $line);
+            if ($substrcount == 0) {
+                // Inserted list point
+                $blocks[] = [
+                    'text'     => str_replace('###LINENUMBER###', '', $line),
+                    'lineFrom' => $lineOffset + $lineNo - 1,
+                    'lineTo'   => $lineOffset + $lineNo - 1,
+                    'newLine'  => true,
+                ];
+            } else {
+                $blocks[] = [
+                    'text'     => str_replace('###LINENUMBER###', '', $line),
+                    'lineFrom' => $lineOffset + $lineNo,
+                    'lineTo'   => $lineOffset + $lineNo + $substrcount - 1,
+                    'newLine'  => false,
+                ];
+            }
+
+            $lineNo += $substrcount;
+        }
+        return $blocks;
+    }
+
 
     /**
-     * @param bool $prependLineNumber
-     * @return string[]
+     * @return array[]
      * @throws Internal
      */
-    private function getDiffLinesWithNumbers($prependLineNumber)
+    private function getDiffLinesWithNumbers()
     {
-        $lineOffset    = $this->section->getFirstLineNumber() - 1;
-        $computed      = $this->getHtmlDiffWithLineNumbers();
-        $computedLines = static::getDiffSplitToLines($computed);
-        foreach ($computedLines as $i => $line) {
-            $computedLines[$i] = str_replace('###LINENUMBER###', '', $line);
-        }
-
-        return static::getDiffLinesWithNumberComputed($computedLines, $lineOffset, $prependLineNumber);
+        $lineOffset = $this->section->getFirstLineNumber();
+        $computed   = $this->getHtmlDiffWithLineNumberPlaceholders();
+        $blocks     = static::htmlDiff2LineBlocks($computed, $lineOffset);
+        return static::filterAffectedBlocks($blocks);
     }
 
     /**
@@ -205,14 +257,8 @@ class AmendmentSectionFormatter
         $diff->setIgnoreStr('###LINENUMBER###');
         $diff->setFormatting(Diff::FORMATTING_CLASSES);
         $computed = $diff->computeDiff($strPre, $strPost);
-
-        $computedLines = AmendmentSectionFormatter::getDiffSplitToLines($computed);
-        foreach ($computedLines as $i => $line) {
-            $computedLines[$i] = str_replace('###LINENUMBER###', '', $line);
-        }
-        $return = AmendmentSectionFormatter::getDiffLinesWithNumberComputed($computedLines, 1, true);
-
-        return $return;
+        $blocks     = static::htmlDiff2LineBlocks($computed, 1);
+        return static::filterAffectedBlocks($blocks);
     }
 
     /**
@@ -225,7 +271,7 @@ class AmendmentSectionFormatter
             throw new Internal('Invalid combination of settings');
         }
         $lineOffset = $this->section->getFirstLineNumber() - 1;
-        $computed   = $this->getHtmlDiffWithLineNumbers();
+        $computed   = $this->getHtmlDiffWithLineNumberPlaceholders();
 
         $computedLines = explode('###LINENUMBER###', $computed);
         $out           = $computedLines[0];
@@ -243,9 +289,11 @@ class AmendmentSectionFormatter
      * @return array
      * @throws Internal
      */
-    public function getInlineDiffGroupedLines()
+    public function getGroupedDiffLinesWithNumbers()
     {
-        $diff = $this->getDiffLinesWithNumbers(false);
+        $diff = $this->getDiffLinesWithNumbers();
+        return $diff;
+        // @TODO
 
         $lastLine   = null;
         $blockBegin = null;
@@ -274,23 +322,5 @@ class AmendmentSectionFormatter
             ];
         }
         return $blocks;
-    }
-
-
-    /**
-     * @return string
-     * @throws Internal
-     */
-    public function getDiff()
-    {
-        if ($this->returnFullText) {
-            return $this->getDiffFullText();
-        } else {
-            if ($this->returnInlineDiff) {
-                return implode('<br>', $this->getDiffLinesWithNumbers(true));
-            } else {
-                throw new Internal('Not yet supported');
-            }
-        }
     }
 }

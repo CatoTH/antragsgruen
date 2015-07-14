@@ -115,7 +115,7 @@ class TextSimple extends ISectionType
         /** @var AmendmentSection $section */
         $section    = $this->section;
         $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
-        $diffGroups = $formatter->getInlineDiffGroupedLines();
+        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
         if (count($diffGroups) > 0) {
             $html = static::formatDiffGroup($diffGroups);
             $pdf->writeHTMLCell(170, '', 27, '', $html, 0, 1, 0, true, '', true);
@@ -258,7 +258,7 @@ class TextSimple extends ISectionType
         $section = $this->section;
 
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getInlineDiffGroupedLines();
+        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
 
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->consultationSetting->title);
@@ -286,7 +286,7 @@ class TextSimple extends ISectionType
         /** @var AmendmentSection $section */
         $section    = $this->section;
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getInlineDiffGroupedLines();
+        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
         return static::formatDiffGroup($diffGroups);
     }
 }

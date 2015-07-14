@@ -129,7 +129,7 @@ $sections = $amendment->getSortedSections(true);
 foreach ($sections as $section) {
     if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getInlineDiffGroupedLines();
+        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
 
         if (count($diffGroups) > 0) {
             echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';

@@ -3,6 +3,7 @@
 namespace unit;
 
 use app\components\diff\Diff;
+use app\components\diff\Engine;
 use Codeception\Specify;
 
 class DiffTest extends TestBase
@@ -84,9 +85,9 @@ class DiffTest extends TestBase
      */
     public function testTwoInserts()
     {
-        $str1 = '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
+        $str1   = '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
 <p>###LINENUMBER###I waar soweid Blosmusi es nomoi.</p>';
-        $str2 = '<ul><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
+        $str2   = '<ul><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
 <ul><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>
 <ul><li>Blabla</li></ul>
 <p>I waar soweid Blosmusi es nomoi.</p>';
@@ -98,7 +99,29 @@ class DiffTest extends TestBase
         $diff = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
         $diff->setFormatting(0);
-        $out  = $diff->computeDiff($str1, $str2);
+        $out = $diff->computeDiff($str1, $str2);
         $this->assertEquals($expect, $out);
+    }
+
+
+    public function testGroupOperations()
+    {
+        $src = [
+            [
+                '<p>###LINENUMBER###Wui helfgod Wiesn. Sauwedda an Brezn, abfieseln.</p>',
+                Engine::DELETED
+            ],
+            [
+                '<p>###LINENUMBER###Wui helfgod Wiesn.</p>',
+                Engine::INSERTED
+            ],
+            [
+                '',
+                Engine::UNMODIFIED
+            ]
+        ];
+        $diff = new Diff();
+        $grouped = $diff->groupOperations($src, Diff::ORIG_LINEBREAK);
+        $this->assertEquals($src, $grouped); // Should not be changed
     }
 }

@@ -424,7 +424,7 @@ class Amendment extends IMotion implements IRSSItem
                 continue;
             }
             $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
-            $diffGroups = $formatter->getInlineDiffGroupedLines();
+            $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
 
             if (count($diffGroups) > 0) {
                 $content .= '<h2>' . Html::encode($section->consultationSetting->title) . '</h2>';

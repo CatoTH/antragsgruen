@@ -194,10 +194,8 @@ class Diff
                         $preOp
                     ];
                 }
-                $preOp = $operation[1];
-                if ($operation[0] != '') {
-                    $currentSpool = [$operation[0]];
-                }
+                $preOp        = $operation[1];
+                $currentSpool = [$operation[0]];
             } else {
                 $currentSpool[] = $operation[0];
             }
@@ -350,7 +348,9 @@ class Diff
             var_dump($return);
             echo "\n\n\n";
         }
+
         $return = $this->groupOperations($return, static::ORIG_LINEBREAK);
+
         for ($i = 0; $i < count($return); $i++) {
             if ($return[$i][1] == Engine::UNMODIFIED) {
                 $computedStr .= $return[$i][0] . "\n";
@@ -393,7 +393,7 @@ class Diff
         /** @var ParagraphAmendment[] $changed */
         $changed = [];
         for ($currDiffLine = 0; $currDiffLine < count($diff); $currDiffLine++) {
-            $diffLine = $diff[$currDiffLine];
+            $diffLine     = $diff[$currDiffLine];
             $firstAffLine = 0; // @TODO
             if ($diffLine[1] == Engine::UNMODIFIED) {
                 if ($pendingInsert != '') {
@@ -411,7 +411,7 @@ class Diff
                     if (isset($changed[$prevLine])) {
                         $changed[$prevLine]->strDiff .= $insertStr;
                     } else {
-                        $newStr = $diff[$prevLine][0] . $insertStr;
+                        $newStr             = $diff[$prevLine][0] . $insertStr;
                         $changed[$prevLine] = new ParagraphAmendment($amSec, $prevLine, $newStr, $firstAffLine);
                     }
                 } else {
