@@ -55,10 +55,5 @@ abstract class IMotionSection extends ActiveRecord
     /**
      * @return int
      */
-    abstract public function getNumberOfCountableLines();
-
-    /**
-     * @return int
-     */
     abstract public function getFirstLineNumber();
 }

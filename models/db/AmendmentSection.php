@@ -70,20 +70,33 @@ class AmendmentSection extends IMotionSection
         return HTMLTools::sectionSimpleHTML($this->data);
     }
 
-
     /**
-     * @return int
+     * @return MotionSection|null
      */
-    public function getFirstLineNumber()
+    public function getOriginalMotionSection()
     {
-        return 1; // @TODO
+        foreach ($this->amendment->motion->sections as $section) {
+            if ($section->sectionId == $this->sectionId) {
+                return $section;
+            }
+        }
+        return null;
     }
 
     /**
      * @return int
+     * @throws Internal
      */
-    public function getNumberOfCountableLines()
+    public function getFirstLineNumber()
     {
-        return 0; // @TODO
+        $first = $this->amendment->motion->getFirstLineNumber();
+        foreach ($this->amendment->getSortedSections() as $section) {
+            /** @var AmendmentSection $section */
+            if ($section->sectionId == $this->sectionId) {
+                return $first;
+            }
+            $first += $section->getOriginalMotionSection()->getNumberOfCountableLines();
+        }
+        throw new Internal('Did not find myself');
     }
 }

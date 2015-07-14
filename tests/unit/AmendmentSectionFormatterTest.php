@@ -4,7 +4,6 @@ namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
 use Codeception\Specify;
-use Codeception\Util\Autoload;
 
 class AmendmentSectionFormatterTest extends TestBase
 {
@@ -129,5 +128,23 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         ];
         $filtered = AmendmentSectionFormatter::filterAffectedBlocks($in);
         $this->assertEquals($expect, $filtered);
+    }
+
+
+    /**
+     */
+    public function testLinesWithoutNumber()
+    {
+        $in     = '<ins><p>New line at beginning</p></ins>' . "\n" .
+            '<p>###LINENUMBER###Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma ###LINENUMBER###sagrisch guad.</p>' . "\n" .
+            '<ins><p>Neuer Absatz</p></ins>';
+        $expect = [
+            '<ins>New line at beginning</ins>',
+            '###LINENUMBER###Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma ',
+            '###LINENUMBER###sagrisch guad.',
+            '<ins>Neuer Absatz</ins>',
+        ];
+        $out    = AmendmentSectionFormatter::getDiffSplitToLines($in);
+        $this->assertEquals($expect, $out);
     }
 }

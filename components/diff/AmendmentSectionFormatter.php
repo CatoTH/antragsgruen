@@ -184,10 +184,14 @@ class AmendmentSectionFormatter
                 $out[] = $line;
             } else {
                 $line  = preg_replace('/<\/?p>/siu', '', $line);
+                $hasLineNumber = (mb_strpos($line, '###LINENUMBER###') !== false);
                 $parts = explode('###LINENUMBER###', $line);
                 foreach ($parts as $j => $part) {
                     if ($part != '' || $j > 0) {
-                        $out[] = '###LINENUMBER###' . $part;
+                        if ($hasLineNumber) {
+                            $part = '###LINENUMBER###' . $part;
+                        }
+                        $out[] = $part;
                     }
                 }
             }

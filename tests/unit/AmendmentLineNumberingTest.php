@@ -28,15 +28,6 @@ class AmendmentLineNumberingTest extends DBTestBase
         $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
         return $formatter->getGroupedDiffLinesWithNumbers();
     }
-    
-    /**
-     */
-    public function testSection2()
-    {
-        $diff = $this->getSectionDiff(3, 4);
-        $this->assertEquals(9, $diff[0]['lineFrom']);
-        $this->assertEquals(9, $diff[0]['lineTo']);
-    }
 
     /**
      */
@@ -125,5 +116,28 @@ class AmendmentLineNumberingTest extends DBTestBase
         ];
         $filtered = AmendmentSectionFormatter::groupAffectedDiffBlocks($in);
         $this->assertContains('Von Zeile 16 bis 18 löschen', TextSimple::formatDiffGroup($filtered));
+    }
+
+    /**
+     */
+    public function testSection2()
+    {
+        $diff = $this->getSectionDiff(3, 4);
+        $this->assertEquals(35, $diff[0]['lineFrom']);
+        $this->assertEquals(35, $diff[0]['lineTo']);
+        $this->assertEquals(42, $diff[1]['lineFrom']);
+        $this->assertEquals(42, $diff[1]['lineTo']);
+        $this->assertEquals(49, $diff[2]['lineFrom']);
+        $this->assertEquals(53, $diff[2]['lineTo']);
+    }
+
+    /**
+     */
+    public function testSection2Wording()
+    {
+        $diff = $this->getSectionDiff(3, 4);
+        $this->assertContains('Nach Zeile 35 einfügen', TextSimple::formatDiffGroup([$diff[0]]));
+        $this->assertContains('Nach Zeile 42 einfügen', TextSimple::formatDiffGroup([$diff[1]]));
+        $this->assertContains('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]]));
     }
 }
