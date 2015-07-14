@@ -151,7 +151,7 @@ if (!$minimalisticUi) {
     echo MotionLayoutHelper::formatInitiators($initiators, $controller->consultation);
 
     echo '</td></tr>
-                <tr><th>Status:</th><td>';
+                <tr class="statusRow"><th>Status:</th><td>';
 
     $screeningMotionsShown = $motion->consultation->getSettings()->screeningMotionsShown;
     $statiNames            = Motion::getStati();

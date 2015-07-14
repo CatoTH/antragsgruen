@@ -4687,6 +4687,10 @@ ins, ul.inserted, blockquote.inserted {
         .motionListStd .motion .title .pdfLink a:hover {
           text-decoration: none;
           color: #c6d64e; }
+    .motionListStd .motion.withdrawn > .title {
+      text-decoration: line-through; }
+      .motionListStd .motion.withdrawn > .title .status {
+        text-decoration: none; }
     .motionListStd .motion .info {
       font-style: italic;
       color: #737373; }
@@ -4837,6 +4841,10 @@ ins, ul.inserted, blockquote.inserted {
         .motionListAgenda .motion .title .pdfLink a:hover {
           text-decoration: none;
           color: #c6d64e; }
+    .motionListAgenda .motion.withdrawn > .title {
+      text-decoration: line-through; }
+      .motionListAgenda .motion.withdrawn > .title .status {
+        text-decoration: none; }
     .motionListAgenda .motion .info {
       font-style: italic;
       color: #737373; }
@@ -5147,6 +5155,13 @@ ins, ul.inserted, blockquote.inserted {
     -webkit-border-radius: 3px;
     border-radius: 3px;
     background-color: #eee; }
+
+.withdrawForm {
+  text-align: center; }
+  .withdrawForm .ask {
+    font-size: 16px;
+    margin-bottom: 15px;
+    margin-top: 15px; }
 
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {

@@ -58,6 +58,15 @@
       }
     }
 
+    &.withdrawn {
+      > .title {
+        text-decoration: line-through;
+        .status {
+          text-decoration: none;
+        }
+      }
+    }
+
     .info {
       font-style: italic;
       color: rgb(115, 115, 115);
@@ -614,5 +623,14 @@
     border: solid 1px gray;
     @include border-radius(3px);
     background-color: #eee;
+  }
+}
+
+.withdrawForm {
+  text-align: center;
+  .ask {
+    font-size: 16px;
+    margin-bottom: 15px;
+    margin-top: 15px;
   }
 }

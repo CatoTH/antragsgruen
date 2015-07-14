@@ -9,6 +9,11 @@ $I->gotoConsultationHome();
 $I->loginAsStdUser();
 $I->gotoMotion(true, 2);
 
-$scenario->incomplete('feature not yet implemented');
 
 $I->click('.sidebarActions .withdraw a');
+$I->see('Willst du diesen Antrag wirklich zurückziehen?');
+$I->submitForm('.withdrawForm', [], 'withdraw');
+$I->see('Der Antrag wurde zurückgezogen.');
+$I->see('Zurückgezogen', '.motionDataTable .statusRow');
+$I->gotoConsultationHome();
+$I->seeElement('.motionRow2.withdrawn');

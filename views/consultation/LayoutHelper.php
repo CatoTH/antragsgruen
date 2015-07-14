@@ -24,7 +24,7 @@ class LayoutHelper
         $hasPDF = ($motion->motionType->getPDFLayoutClass() !== null);
 
         /** @var Motion $motion */
-        $classes = ['motion'];
+        $classes = ['motion', 'motionRow' . $motion->id];
         if ($motion->motionType->cssIcon != '') {
             $classes[] = $motion->motionType->cssIcon;
         }
@@ -33,11 +33,14 @@ class LayoutHelper
             $classes[] = 'withdrawn';
         }
         echo '<li class="' . implode(' ', $classes) . '">';
-        echo "<p class='date'>" . Tools::formatMysqlDate($motion->dateCreation) . "</p>\n";
-        echo "<p class='title'>\n";
+        echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
+        echo '<p class="title">' . "\n";
         echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
         $linkOpts = ['class' => 'motionLink' . $motion->id];
         echo Html::a($motion->getTitleWithPrefix(), UrlHelper::createMotionUrl($motion), $linkOpts);
+        if ($motion->status == Motion::STATUS_WITHDRAWN) {
+            echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
+        }
         if ($hasPDF) {
             $html = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
             echo Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);

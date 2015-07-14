@@ -27,22 +27,22 @@ class LayoutHelper
                 $name .= ' (<a href="' . Html::encode($url) . '">Wurzelwerk-Profil</a>)';
             }
             $admin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
-            if ($admin && ($supp->contactEmail != "" || $supp->contactPhone != "")) {
-                $name .= "<br><small>Kontaktdaten, nur als Admin sichtbar: ";
+            if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
+                $name .= '<br><small>Kontaktdaten, nur als Admin sichtbar: ';
                 if ($supp->contactEmail != "") {
                     $name .= Html::a($supp->contactEmail, 'mailto:' . $supp->contactEmail);
                 }
-                if ($supp->contactEmail != "" && $supp->contactPhone != "") {
-                    $name .= ", ";
+                if ($supp->contactEmail != '' && $supp->contactPhone != '') {
+                    $name .= ', ';
                 }
-                if ($supp->contactPhone != "") {
-                    $name .= "Telefon: " . Html::encode($supp->contactPhone);
+                if ($supp->contactPhone != '') {
+                    $name .= 'Telefon: ' . Html::encode($supp->contactPhone);
                 }
                 $name .= "</small>";
             }
             $inits[] = $name;
         }
-        return implode(", ", $inits);
+        return implode(', ', $inits);
     }
 
     /**

@@ -418,6 +418,16 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     */
+    public function withdraw()
+    {
+        $this->status = static::STATUS_WITHDRAWN;
+        $this->save();
+        $this->consultation->flushCaches();
+        // @TODO Log changes
+    }
+
+    /**
      *
      */
     public function onPublish()

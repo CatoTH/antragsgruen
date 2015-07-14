@@ -424,4 +424,37 @@ class MotionController extends Base
             ]
         );
     }
+
+
+    /**
+     * @param int $motionId
+     * @return string
+     */
+    public function actionWithdraw($motionId)
+    {
+        $motion = $this->consultation->getMotion($motionId);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (!$motion->canWithdraw()) {
+            \Yii::$app->session->setFlash('error', 'Not allowed to withdraw this motion.');
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (isset($_POST['cancel'])) {
+            $this->redirect(UrlHelper::createMotionUrl($motion));
+            return '';
+        }
+
+        if (isset($_POST['withdraw'])) {
+            $motion->withdraw();
+            \Yii::$app->session->setFlash('success', 'Der Antrag wurde zurückgezogen.');
+            $this->redirect(UrlHelper::createMotionUrl($motion));
+            return '';
+        }
+
+        return $this->render('withdraw', ['motion' => $motion]);
+    }
 }

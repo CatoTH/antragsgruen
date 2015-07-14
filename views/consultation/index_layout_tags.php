@@ -124,6 +124,9 @@ foreach ($tagIds as $tagId) {
             echo '<td class="titleCol"><div class="titleLink">';
             $title = 'Änderungsantrag zu ' . $motion->titlePrefix;
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
+            if ($motion->status == Motion::STATUS_WITHDRAWN) {
+                echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
+            }
             echo '</div></td>';
             echo '<td class="initiatorRow">';
             $initiators = [];
