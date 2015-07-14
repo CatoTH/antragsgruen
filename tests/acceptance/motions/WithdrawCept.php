@@ -15,5 +15,6 @@ $I->see('Willst du diesen Antrag wirklich zurückziehen?');
 $I->submitForm('.withdrawForm', [], 'withdraw');
 $I->see('Der Antrag wurde zurückgezogen.');
 $I->see('Zurückgezogen', '.motionDataTable .statusRow');
+$I->dontSeeElement('.sidebarActions .withdraw a');
 $I->gotoConsultationHome();
 $I->seeElement('.motionRow2.withdrawn');

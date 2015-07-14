@@ -321,4 +321,36 @@ class AmendmentController extends Base
             ]
         );
     }
+
+    /**
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionWithdraw($amendmentId)
+    {
+        $amendment = $this->consultation->getAmendment($amendmentId);
+        if (!$amendment) {
+            \Yii::$app->session->setFlash('error', 'Amendment not found.');
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (!$amendment->canWithdraw()) {
+            \Yii::$app->session->setFlash('error', 'Not allowed to withdraw this motion.');
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (isset($_POST['cancel'])) {
+            $this->redirect(UrlHelper::createAmendmentUrl($amendment));
+            return '';
+        }
+
+        if (isset($_POST['withdraw'])) {
+            $amendment->withdraw();
+            \Yii::$app->session->setFlash('success', 'Der Änderungsantrag wurde zurückgezogen.');
+            $this->redirect(UrlHelper::createAmendmentUrl($amendment));
+            return '';
+        }
+
+        return $this->render('withdraw', ['amendment' => $amendment]);
+    }
 }

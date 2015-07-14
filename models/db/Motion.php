@@ -287,6 +287,9 @@ class Motion extends IMotion implements IRSSItem
     public function canWithdraw()
     {
         // @TODO This is probably too simple...
+        if (!in_array($this->status, [Motion::STATUS_SUBMITTED_SCREENED, Motion::STATUS_SUBMITTED_UNSCREENED])) {
+            return false;
+        }
         return $this->iAmInitiator();
     }
 

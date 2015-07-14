@@ -96,7 +96,7 @@ echo '<table class="motionDataTable">
 echo MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $consultation);
 
 echo '</td></tr>
-                <tr><th>Status:</th><td>';
+                <tr class="statusRow"><th>Status:</th><td>';
 
 $screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
 $statiNames            = Amendment::getStati();

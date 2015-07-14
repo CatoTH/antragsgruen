@@ -343,6 +343,9 @@ class Amendment extends IMotion implements IRSSItem
     public function canWithdraw()
     {
         // @TODO This is probably too simple...
+        if (!in_array($this->status, [Amendment::STATUS_SUBMITTED_SCREENED, Amendment::STATUS_SUBMITTED_UNSCREENED])) {
+            return false;
+        }
         return $this->iAmInitiator();
     }
 
@@ -386,7 +389,16 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     *
+     */
+    public function withdraw()
+    {
+        $this->status = static::STATUS_WITHDRAWN;
+        $this->save();
+        $this->motion->consultation->flushCaches();
+        // @TODO Log changes
+    }
+
+    /**
      */
     public function onPublish()
     {
@@ -404,7 +416,6 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     *
      */
     public function flushCaches()
     {

@@ -52,16 +52,20 @@ class LayoutHelper
         if (count($amendments) > 0) {
             echo "<ul class='amendments'>";
             foreach ($amendments as $amend) {
-                echo "<li" . ($amend->status == Amendment::STATUS_WITHDRAWN ? " class='withdrawn'" : "") . ">";
-                echo "<span class='date'>" . Tools::formatMysqlDate($amend->dateCreation) . "</span>\n";
-                $name = (trim($amend->titlePrefix) == "" ? "-" : $amend->titlePrefix);
+                $classes = ['amendmentRow' . $amend->id];
+                if ($amend->status == Amendment::STATUS_WITHDRAWN) {
+                    $classes[] = 'withdrawn';
+                }
+                echo '<li class="' . implode(' ', $classes) . '">';
+                echo '<span class="date">' . Tools::formatMysqlDate($amend->dateCreation) . '</span>' . "\n";
+                $name = (trim($amend->titlePrefix) == '' ? '-' : $amend->titlePrefix);
                 echo Html::a($name, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
-                echo "<span class='info'>" . Html::encode($amend->getInitiatorsStr()) . "</span>\n";
-                echo "</li>\n";
+                echo '<span class="info">' . Html::encode($amend->getInitiatorsStr()) . '</span>' . "\n";
+                echo '</li>' . "\n";
             }
-            echo "</ul>";
+            echo '</ul>';
         }
-        echo "</li>\n";
+        echo '</li>' . "\n";
     }
 
     /**

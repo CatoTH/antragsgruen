@@ -9,6 +9,11 @@ $I->gotoConsultationHome();
 $I->loginAsStdUser();
 $I->gotoAmendment(true, 3, 2);
 
-$scenario->incomplete('feature not yet implemented');
-
 $I->click('.sidebarActions .withdraw a');
+$I->see('Willst du diesen Änderungsantrag wirklich zurückziehen?');
+$I->submitForm('.withdrawForm', [], 'withdraw');
+$I->see('Der Änderungsantrag wurde zurückgezogen.');
+$I->see('Zurückgezogen', '.motionDataTable .statusRow');
+$I->dontSeeElement('.sidebarActions .withdraw a');
+$I->gotoConsultationHome();
+$I->seeElement('.amendmentRow2.withdrawn');
