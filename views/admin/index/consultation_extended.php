@@ -132,7 +132,7 @@ echo '</div>
 
 $tags = $consultation->getSortedTags();
 echo '<fieldset class="form-group">
-<div class="col-sm-3 control-label">Schlagworte:</div>
+<div class="col-sm-3 control-label">Themen:</div>
 <div class="col-sm-9">
 
 <div class="pillbox" data-initialize="pillbox" id="tagsList">
@@ -146,7 +146,7 @@ foreach ($tags as $tag) {
 }
 echo '<li class="pillbox-input-wrap btn-group">
                 <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
-                <input type="text" class="form-control dropdown-toggle pillbox-add-item" placeholder="Neues Schlagwort">
+                <input type="text" class="form-control dropdown-toggle pillbox-add-item" placeholder="Neues Thema">
                 <button type="button" class="dropdown-toggle sr-only">
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
@@ -158,7 +158,7 @@ echo '<li class="pillbox-input-wrap btn-group">
 
 $handledSettings[] = 'allowMultipleTags';
 echo Html::checkbox('settings[allowMultipleTags]', $settings->allowMultipleTags, ['id' => 'allowMultipleTags']);
-echo 'Mehrere Schlagworte pro Antrag möglich</label>
+echo 'Mehrere Themen pro Antrag möglich</label>
 
 </div>
 </fieldset>';

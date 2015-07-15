@@ -89,10 +89,10 @@ if ($search->sort == AdminMotionFilterForm::SORT_INITIATOR) {
 if ($hasTags) {
     echo '</th><th>';
     if ($search->sort == AdminMotionFilterForm::SORT_TAG) {
-        echo '<span style="text-decoration: underline;">Schlagwort</span>';
+        echo '<span style="text-decoration: underline;">Thema</span>';
     } else {
         $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TAG]);
-        echo Html::a('Schlagwort', $url);
+        echo Html::a('Thema', $url);
     }
 }
 echo '</th>

@@ -527,6 +527,15 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $return['Antragsteller/innen'] = implode("\n", $initiators);
         }
+        if (count($this->tags) > 1) {
+            $tags = [];
+            foreach ($this->tags as $tag) {
+                $tags[] = $tag->title;
+            }
+            $return['Themen'] = implode("\n", $tags);
+        } elseif (count($this->tags) == 1) {
+            $return['Thema'] = $this->tags[0]->title;
+        }
 
         return $return;
     }
@@ -556,8 +565,9 @@ class Motion extends IMotion implements IRSSItem
         $initiatorsStr   = implode(', ', $initiators);
         $content->author = $initiatorsStr;
 
+        $content->motionDataTable = '';
         foreach ($this->getDataTable() as $key => $val) {
-            $content->motionDataTable = Exporter::encodePlainString($key) . ':   &   ';
+            $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 

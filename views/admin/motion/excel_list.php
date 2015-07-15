@@ -68,7 +68,7 @@ if ($textCombined) {
     }
 }
 if (isset($COL_TAGS)) {
-    $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS . '3', 'Schlagworte');
+    $objPHPExcel->getActiveSheet()->SetCellValue($COL_TAGS . '3', 'Themen');
 }
 $objPHPExcel->getActiveSheet()->SetCellValue($COL_CONTACT . '3', 'Kontakt');
 $objPHPExcel->getActiveSheet()->SetCellValue($COL_PROCEDURE . '3', 'Verfahren');

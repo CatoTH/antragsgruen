@@ -196,7 +196,7 @@ if (!$minimalisticUi) {
 
         echo '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">Neu</a>';
         echo Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
-        echo '<select name="tagId" title="Schlagwort aussuchen" class="form-control">
+        echo '<select name="tagId" title="Thema aussuchen" class="form-control">
         <option>-</option>';
 
         foreach ($motion->consultation->tags as $tag) {

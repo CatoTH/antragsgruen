@@ -84,7 +84,7 @@ if ($textCombined) {
     }
 }
 if (isset($COL_TAGS)) {
-    $doc->setCell(2, $COL_TAGS, Spreadsheet::TYPE_TEXT, 'Schlagworte');
+    $doc->setCell(2, $COL_TAGS, Spreadsheet::TYPE_TEXT, 'Themen');
     $doc->setColumnWidth($COL_TAGS, 6);
 }
 $doc->setCell(2, $COL_CONTACT, Spreadsheet::TYPE_TEXT, 'Kontakt');
