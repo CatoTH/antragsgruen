@@ -30,7 +30,8 @@ $layout->fullScreen = true;
 
 $layout->addOnLoadJS('$.AntragsgruenAdmin.motionListAll();');
 
-$route = 'admin/motion/listall';
+$route   = 'admin/motion/listall';
+$hasTags = (count($controller->consultation->tags) > 0);
 
 echo '<h1>' . 'Liste: Anträge, Änderungsanträge' . '</h1>';
 echo '<div class="content">';
@@ -85,6 +86,15 @@ if ($search->sort == AdminMotionFilterForm::SORT_INITIATOR) {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_INITIATOR]);
     echo Html::a('AntragstellerInnen', $url);
 }
+if ($hasTags) {
+    echo '</th><th>';
+    if ($search->sort == AdminMotionFilterForm::SORT_TAG) {
+        echo '<span style="text-decoration: underline;">Schlagwort</span>';
+    } else {
+        $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TAG]);
+        echo Html::a('Schlagwort', $url);
+    }
+}
 echo '</th>
     <th>Export</th>
     <th class="actionCol">Aktion</th>
@@ -110,7 +120,13 @@ foreach ($entries as $entry) {
             $initiators[] = $initiator->name;
         }
         echo '<td>' . Html::encode(implode(", ", $initiators)) . '</td>';
-
+        if ($hasTags) {
+            $tags = [];
+            foreach ($entry->tags as $tag) {
+                $tags[] = $tag->title;
+            }
+            echo '<td>' . Html::encode(implode(', ', $tags)) . '</td>';
+        }
         echo '<td class="exportCol">';
         echo Html::a('PDF', UrlHelper::createMotionUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
         echo Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']) . ' / ';
@@ -158,8 +174,10 @@ foreach ($entries as $entry) {
         foreach ($entry->getInitiators() as $initiator) {
             $initiators[] = $initiator->name;
         }
-        echo '<td>' . Html::encode(implode(", ", $initiators)) . '</td>';
-
+        echo '<td>' . Html::encode(implode(', ', $initiators)) . '</td>';
+        if ($hasTags) {
+            echo '<td></td>';
+        }
         echo '<td class="exportCol">';
         echo Html::a('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']);
         echo '</td>';

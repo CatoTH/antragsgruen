@@ -20,6 +20,7 @@ class AdminMotionFilterForm extends Model
     const SORT_TITLE        = 2;
     const SORT_TITLE_PREFIX = 3;
     const SORT_INITIATOR    = 4;
+    const SORT_TAG          = 5;
 
     /** @var int */
     public $status = null;
@@ -190,6 +191,44 @@ class AdminMotionFilterForm extends Model
     }
 
     /**
+     * @param IMotion $motion1
+     * @param IMotion $motion2
+     * @return IMotion[]
+     */
+    public function sortTag($motion1, $motion2)
+    {
+        if (is_a($motion1, Motion::class)) {
+            /** @var Motion $motion1 */
+            if (count($motion1->tags) > 0) {
+                $tag1 = $motion1->tags[0];
+            } else {
+                $tag1 = null;
+            }
+        } else {
+            $tag1 = null;
+        }
+        if (is_a($motion2, Motion::class)) {
+            /** @var Motion $motion2 */
+            if (count($motion2->tags) > 0) {
+                $tag2 = $motion2->tags[0];
+            } else {
+                $tag2 = null;
+            }
+        } else {
+            $tag2 = null;
+        }
+        if ($tag1 === null && $tag2 === null) {
+            return 0;
+        } elseif ($tag1 === null) {
+            return 1;
+        } elseif ($tag2 === null) {
+            return -1;
+        } else {
+            return strnatcasecmp($tag1->title, $tag2->title);
+        }
+    }
+
+    /**
      * @return IMotion[]
      */
     public function getSorted()
@@ -197,20 +236,23 @@ class AdminMotionFilterForm extends Model
         $merge = array_merge($this->getFilteredMotions(), $this->getFilteredAmendments());
         switch ($this->sort) {
             case static::SORT_TITLE:
-                usort($merge, [static::class, "sortTitle"]);
+                usort($merge, [static::class, 'sortTitle']);
                 break;
             case static::SORT_STATUS:
-                usort($merge, [static::class, "sortStatus"]);
+                usort($merge, [static::class, 'sortStatus']);
                 break;
             case static::SORT_TITLE_PREFIX:
-                usort($merge, [static::class, "sortTitlePrefix"]);
+                usort($merge, [static::class, 'sortTitlePrefix']);
                 break;
             case static::SORT_INITIATOR:
-                usort($merge, [static::class, "sortInitiator"]);
+                usort($merge, [static::class, 'sortInitiator']);
+                break;
+            case static::SORT_TAG:
+                usort($merge, [static::class, 'sortTag']);
                 break;
             case static::SORT_TYPE:
             default:
-                usort($merge, [static::class, "sortDefault"]);
+                usort($merge, [static::class, 'sortDefault']);
         }
         return $merge;
     }
@@ -390,7 +432,7 @@ class AdminMotionFilterForm extends Model
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
             }
-            $str .= HTMLTools::fueluxSelectbox('Search[Tag]', $tags, $this->tag);
+            $str .= HTMLTools::fueluxSelectbox('Search[tag]', $tags, $this->tag);
             $str .= '</label>';
         }
 

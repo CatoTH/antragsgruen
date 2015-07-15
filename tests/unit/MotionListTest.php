@@ -13,6 +13,7 @@ class MotionListTest extends DBTestBase
 
     /**
      * @param IMotion[] $motions
+     * @return array
      */
     private function serializeMotions($motions)
     {
@@ -23,6 +24,8 @@ class MotionListTest extends DBTestBase
         return $out;
     }
 
+    /**
+     */
     public function testFilter()
     {
         /** @var Consultation $consultation */
@@ -32,8 +35,15 @@ class MotionListTest extends DBTestBase
         $form->setAttributes(['title' => 'pal']);
         $entries = $form->getSorted();
         $this->assertEquals(['S-01'], $this->serializeMotions($entries));
+
+        $form         = new AdminMotionFilterForm($consultation, $consultation->motions, true);
+        $form->setAttributes(['tag' => '3']);
+        $entries = $form->getSorted();
+        $this->assertEquals(['F-01', 'T-01', ''], $this->serializeMotions($entries));
     }
 
+    /**
+     */
     public function testSort()
     {
         /** @var Consultation $consultation */
@@ -50,5 +60,11 @@ class MotionListTest extends DBTestBase
         $entries = $this->serializeMotions($form->getSorted());
         $first = array_slice($entries, 0, 5);
         $this->assertEquals(['', 'EGP-01', 'F-01', 'S-01', 'S-ohne Nummer'], $first);
+
+        $form         = new AdminMotionFilterForm($consultation, $consultation->motions, true);
+        $form->setAttributes(['initiator' => 'Bundesvorstand', 'sort' => AdminMotionFilterForm::SORT_TAG]);
+        $entries = $this->serializeMotions($form->getSorted());
+        $first = array_slice($entries, 0, 5);
+        $this->assertEquals(['S-01', 'S-ohne Nummer', 'T-01', 'F-01', 'U-10'], $first);
     }
 }
