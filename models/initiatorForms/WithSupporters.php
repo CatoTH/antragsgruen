@@ -3,6 +3,7 @@
 namespace app\models\initiatorForms;
 
 use app\models\db\ConsultationMotionType;
+use app\models\db\User;
 
 class WithSupporters extends DefaultFormBase
 {
@@ -103,6 +104,6 @@ class WithSupporters extends DefaultFormBase
      */
     public function hasFullTextSupporterField()
     {
-        return true;
+        return User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY);
     }
 }

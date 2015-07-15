@@ -246,7 +246,7 @@ if ($hasSupporters) {
 
     if ($supporterFulltext) {
         echo '<div class="fullTextAdder"><a href="#">Volltextfeld</a></div>';
-        echo '<div class="form-group" id="fullTextHolder">';
+        echo '<div class="form-group hidden" id="fullTextHolder">';
         echo '<div class="col-md-9">';
         echo '<textarea class="form-control" placeholder="UnterstützerInnen" rows="10"></textarea>';
         echo '</div><div class="col-md-3">';
