@@ -400,6 +400,34 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      */
+    public function setScreened()
+    {
+        $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
+        $this->save(true);
+        $this->onPublish();
+        // @TODO Log changes
+    }
+
+    /**
+     */
+    public function setUnscreened()
+    {
+        $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
+        $this->save();
+        // @TODO Log changes
+    }
+
+    /**
+     */
+    public function setDeleted()
+    {
+        $this->status = Amendment::STATUS_DELETED;
+        $this->save();
+        // @TODO Log changes
+    }
+
+    /**
+     */
     public function onPublish()
     {
         $this->flushCaches();

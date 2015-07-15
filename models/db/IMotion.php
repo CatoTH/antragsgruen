@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  * Class IMotion
  * @package app\models\db
  *
+ * @property string $titlePrefix
  * @property int $id
  * @property IMotionSection[] $sections
  * @property int $status

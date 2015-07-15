@@ -2,14 +2,14 @@
 
 namespace app\controllers\admin;
 
-use app\models\db\Amendment;
 use app\models\db\Consultation;
-use app\models\db\Motion;
 use app\models\db\User;
 use app\models\forms\AdminMotionFilterForm;
 
 /**
  * @property Consultation $consultation
+ * @method showErrorpage(int $code, string $message)
+ * @method render(string $view, array $options)
  */
 trait MotionListAllTrait
 {
@@ -22,9 +22,7 @@ trait MotionListAllTrait
             if (!$motion) {
                 return;
             }
-            $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
-            $motion->save(false);
-            $motion->onPublish();
+            $motion->setScreened();
             \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden freigeschaltet.');
         }
         if (isset($_REQUEST['motionWithdraw'])) {
@@ -32,8 +30,7 @@ trait MotionListAllTrait
             if (!$motion) {
                 return;
             }
-            $motion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
-            $motion->save();
+            $motion->setUnscreened();
             \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden zurückgezogen.');
         }
         if (isset($_REQUEST['motionDelete'])) {
@@ -41,8 +38,7 @@ trait MotionListAllTrait
             if (!$motion) {
                 return;
             }
-            $motion->status = Motion::STATUS_DELETED;
-            $motion->save();
+            $motion->setDeleted();
             \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden gelöscht.');
         }
 
@@ -55,9 +51,7 @@ trait MotionListAllTrait
                 if (!$motion) {
                     continue;
                 }
-                $motion->status = Motion::STATUS_SUBMITTED_SCREENED;
-                $motion->save(false);
-                $motion->onPublish();
+                $motion->setScreened();
             }
             \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden freigeschaltet.');
         }
@@ -68,8 +62,7 @@ trait MotionListAllTrait
                 if (!$motion) {
                     continue;
                 }
-                $motion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
-                $motion->save();
+                $motion->setUnscreened();
             }
             \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden zurückgezogen.');
         }
@@ -80,8 +73,7 @@ trait MotionListAllTrait
                 if (!$motion) {
                     continue;
                 }
-                $motion->status = Motion::STATUS_DELETED;
-                $motion->save();
+                $motion->setDeleted();
             }
             \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden gelöscht.');
         }
@@ -97,9 +89,7 @@ trait MotionListAllTrait
             if (!$amendment) {
                 return;
             }
-            $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
-            $amendment->save(true);
-            $amendment->onPublish();
+            $amendment->setScreened();
             \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden freigeschaltet.');
         }
         if (isset($_REQUEST['amendmentWithdraw'])) {
@@ -107,8 +97,7 @@ trait MotionListAllTrait
             if (!$amendment) {
                 return;
             }
-            $amendment->status = Motion::STATUS_SUBMITTED_UNSCREENED;
-            $amendment->save();
+            $amendment->setScreened();
             \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden zurückgezogen.');
         }
         if (isset($_REQUEST['amendmentDelete'])) {
@@ -116,8 +105,7 @@ trait MotionListAllTrait
             if (!$amendment) {
                 return;
             }
-            $amendment->status = Amendment::STATUS_DELETED;
-            $amendment->save();
+            $amendment->setDeleted();
             \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden gelöscht.');
         }
         if (!isset($_REQUEST['amendments']) || !isset($_REQUEST['save'])) {
@@ -129,21 +117,18 @@ trait MotionListAllTrait
                 if (!$amendment) {
                     continue;
                 }
-                $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
-                $amendment->save(true);
-                $amendment->onPublish();
+                $amendment->setScreened();
             }
             \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden freigeschaltet.');
         }
 
-        if (isset($_REQUEST['withdraw'])) {
+        if (isset($_REQUEST['unscreen'])) {
             foreach ($_REQUEST['amendments'] as $amendmentId) {
                 $amendment = $this->consultation->getAmendment($amendmentId);
                 if (!$amendment) {
                     continue;
                 }
-                $amendment->status = Motion::STATUS_SUBMITTED_UNSCREENED;
-                $amendment->save();
+                $amendment->setUnscreened();
             }
             \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden zurückgezogen.');
         }
@@ -154,8 +139,7 @@ trait MotionListAllTrait
                 if (!$amendment) {
                     continue;
                 }
-                $amendment->status = Amendment::STATUS_DELETED;
-                $amendment->save();
+                $amendment->setDeleted();
             }
             \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden gelöscht.');
         }
@@ -176,8 +160,8 @@ trait MotionListAllTrait
         $this->actionListallAmendments();
 
         $search = new AdminMotionFilterForm($this->consultation, $this->consultation->motions, true);
-        if (isset($_REQUEST["Search"])) {
-            $search->setAttributes($_REQUEST["Search"]);
+        if (isset($_REQUEST['Search'])) {
+            $search->setAttributes($_REQUEST['Search']);
         }
 
         return $this->render('list_all', [

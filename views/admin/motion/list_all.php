@@ -58,10 +58,10 @@ if ($search->sort == AdminMotionFilterForm::SORT_TYPE) {
     echo Html::a('Typ', $url);
 }
 echo '</th><th class="prefixCol">';
-if ($search->sort == AdminMotionFilterForm::SORT_REVISION) {
+if ($search->sort == AdminMotionFilterForm::SORT_TITLE_PREFIX) {
     echo '<span style="text-decoration: underline;">Antragsnr.</span>';
 } else {
-    $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_REVISION]);
+    $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
     echo Html::a('Antragsnr.', $url);
 }
 echo '</th><th class="titleCol">';
@@ -128,7 +128,7 @@ foreach ($entries as $entry) {
             $name = Html::encode('Freischalten');
             echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
         } else {
-            $link = Html::encode($search->getCurrentUrl($route, ['motionWithdraw' => $entry->id]));
+            $link = Html::encode($search->getCurrentUrl($route, ['motionUnscreen' => $entry->id]));
             $name = Html::encode('Freischalten zurücknehmen');
             echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
         }
@@ -176,7 +176,7 @@ foreach ($entries as $entry) {
             echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
         } else {
             $name = Html::encode('Freischalten zurücknehmen');
-            $link = Html::encode($search->getCurrentUrl($route, ['amendmentWithdraw' => $entry->id]));
+            $link = Html::encode($search->getCurrentUrl($route, ['amendmentUnscreen' => $entry->id]));
             echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
         }
         $name   = Html::encode('Neuer Änderungsantrag auf dieser Basis');
@@ -204,7 +204,7 @@ echo '</div>';
 
 echo '<div style="float: right;">Markierte: &nbsp; ';
 echo '<button type="submit" class="btn btn-danger" name="delete">Löschen</button> &nbsp; ';
-echo '<button type="submit" class="btn btn-info" name="withdraw">Ent-Freischalten</button> &nbsp; ';
+echo '<button type="submit" class="btn btn-info" name="unscreen">Ent-Freischalten</button> &nbsp; ';
 echo '<button type="submit" class="btn btn-success" name="screen">Freischalten</button>';
 echo '</div>';
 echo '</section>';

@@ -15,11 +15,11 @@ use yii\helpers\Html;
 
 class AdminMotionFilterForm extends Model
 {
-    const SORT_TYPE      = 0;
-    const SORT_STATUS    = 1;
-    const SORT_TITLE     = 2;
-    const SORT_REVISION  = 3;
-    const SORT_INITIATOR = 4;
+    const SORT_TYPE         = 0;
+    const SORT_STATUS       = 1;
+    const SORT_TITLE        = 2;
+    const SORT_TITLE_PREFIX = 3;
+    const SORT_INITIATOR    = 4;
 
     /** @var int */
     public $status = null;
@@ -157,7 +157,7 @@ class AdminMotionFilterForm extends Model
      * @param IMotion $motion2
      * @return IMotion[]
      */
-    public function sortRevision($motion1, $motion2)
+    public function sortTitlePrefix($motion1, $motion2)
     {
         if (is_a($motion1, Motion::class)) {
             /** @var Motion $motion1 */
@@ -168,11 +168,12 @@ class AdminMotionFilterForm extends Model
         }
         if (is_a($motion2, Motion::class)) {
             /** @var Motion $motion2 */
-            $rev2 = $motion1->titlePrefix;
+            $rev2 = $motion2->titlePrefix;
         } else {
             /** @var Amendment $motion2 */
             $rev2 = $motion2->titlePrefix . ' zu ' . $motion2->motion->titlePrefix;
         }
+
         return strnatcasecmp($rev1, $rev2);
     }
 
@@ -201,8 +202,8 @@ class AdminMotionFilterForm extends Model
             case static::SORT_STATUS:
                 usort($merge, [static::class, "sortStatus"]);
                 break;
-            case static::SORT_REVISION:
-                usort($merge, [static::class, "sortRevision"]);
+            case static::SORT_TITLE_PREFIX:
+                usort($merge, [static::class, "sortTitlePrefix"]);
                 break;
             case static::SORT_INITIATOR:
                 usort($merge, [static::class, "sortInitiator"]);
@@ -259,7 +260,7 @@ class AdminMotionFilterForm extends Model
         foreach ($this->allMotions as $motion) {
             $matches = true;
 
-            if ($this->status !== null && $this->status !== "" && $motion->status != $this->status) {
+            if ($this->status !== null && $this->status !== '' && $motion->status != $this->status) {
                 $matches = false;
             }
 
@@ -271,7 +272,7 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
-            if ($this->title !== null && $this->title != "" && !mb_stripos($motion->title, $this->title)) {
+            if ($this->title !== null && $this->title != '' && mb_stripos($motion->title, $this->title) === false) {
                 $matches = false;
             }
 

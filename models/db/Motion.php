@@ -431,6 +431,34 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     */
+    public function setScreened()
+    {
+        $this->status = Motion::STATUS_SUBMITTED_SCREENED;
+        $this->save(true);
+        $this->onPublish();
+        // @TODO Log changes
+    }
+
+    /**
+     */
+    public function setUnscreened()
+    {
+        $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+        $this->save();
+        // @TODO Log changes
+    }
+
+    /**
+     */
+    public function setDeleted()
+    {
+        $this->status = Motion::STATUS_DELETED;
+        $this->save();
+        // @TODO Log changes
+    }
+
+    /**
      *
      */
     public function onPublish()
