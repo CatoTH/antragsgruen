@@ -94,6 +94,8 @@
 
         if ($el.data('track-changed') == '1') {
             ckeditorConfig['extraPlugins'] += ',lite';
+        } else {
+            ckeditorConfig['removePlugins'] += ',lite';
         }
         var editor = CKEDITOR.inline(id, ckeditorConfig);
 
