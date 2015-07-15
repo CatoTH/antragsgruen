@@ -15,10 +15,11 @@ use yii\helpers\Html;
 
 class AdminMotionFilterForm extends Model
 {
-    const SORT_TYPE     = 0;
-    const SORT_STATUS   = 1;
-    const SORT_TITLE    = 2;
-    const SORT_REVISION = 3;
+    const SORT_TYPE      = 0;
+    const SORT_STATUS    = 1;
+    const SORT_TITLE     = 2;
+    const SORT_REVISION  = 3;
+    const SORT_INITIATOR = 4;
 
     /** @var int */
     public $status = null;
@@ -176,6 +177,18 @@ class AdminMotionFilterForm extends Model
     }
 
     /**
+     * @param IMotion $motion1
+     * @param IMotion $motion2
+     * @return IMotion[]
+     */
+    public function sortInitiator($motion1, $motion2)
+    {
+        $init1 = $motion1->getInitiatorsStr();
+        $init2 = $motion2->getInitiatorsStr();
+        return strnatcasecmp($init1, $init2);
+    }
+
+    /**
      * @return IMotion[]
      */
     public function getSorted()
@@ -190,6 +203,9 @@ class AdminMotionFilterForm extends Model
                 break;
             case static::SORT_REVISION:
                 usort($merge, [static::class, "sortRevision"]);
+                break;
+            case static::SORT_INITIATOR:
+                usort($merge, [static::class, "sortInitiator"]);
                 break;
             case static::SORT_TYPE:
             default:
@@ -416,7 +432,7 @@ class AdminMotionFilterForm extends Model
         $stati = Motion::getStati();
         foreach ($stati as $statusId => $statusName) {
             if (isset($num[$statusId])) {
-                $out[$statusId] = $statusName . " (" . $num[$statusId] . ")";
+                $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
             }
         }
         return $out;
@@ -449,7 +465,7 @@ class AdminMotionFilterForm extends Model
         }
         $out = [];
         foreach ($tags as $tagId => $num) {
-            $out[$tagId] = $tagsNames[$tagId] . " (" . $num . ")";
+            $out[$tagId] = $tagsNames[$tagId] . ' (' . $num . ')';
         }
         asort($out);
         return $out;
@@ -485,7 +501,7 @@ class AdminMotionFilterForm extends Model
         }
         $out = [];
         foreach ($initiators as $name => $num) {
-            $out[$name] = $name . " (" . $num . ")";
+            $out[$name] = $name . ' (' . $num . ')';
         }
         asort($out);
         return $out;

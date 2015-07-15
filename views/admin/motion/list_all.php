@@ -78,7 +78,14 @@ if ($search->sort == AdminMotionFilterForm::SORT_STATUS) {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_STATUS]);
     echo Html::a('Status', $url);
 }
-echo '</th><th>AntragstellerInnen</th>
+echo '</th><th>';
+if ($search->sort == AdminMotionFilterForm::SORT_INITIATOR) {
+    echo '<span style="text-decoration: underline;">AntragstellerInnen</span>';
+} else {
+    $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_INITIATOR]);
+    echo Html::a('AntragstellerInnen', $url);
+}
+echo '</th>
     <th>Export</th>
     <th class="actionCol">Aktion</th>
 </tr></thead>';
