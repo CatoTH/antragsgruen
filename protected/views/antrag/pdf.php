@@ -22,7 +22,7 @@ foreach ($model->antragUnterstuetzerInnen as $unt) {
 		if ($unt->person->organisation != "" || $unt->beschlussdatum > 0) {
 			$name .= " (";
 			if ($unt->person->organisation != "") $name .= $unt->person->organisation;
-			if ($unt->person->organisation != "" && $unt->beschlussdatum != "") $name .= ", ";
+			if ($unt->person->organisation != "" && $unt->beschlussdatum > 0) $name .= ", ";
 			if ($unt->beschlussdatum > 0) $name .= "Beschlossen am " . AntraegeUtils::date_sql2de($unt->beschlussdatum);
 			$name .= ")";
 		}
