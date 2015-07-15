@@ -25,8 +25,8 @@ trait MotionListAllTrait
             $motion->setScreened();
             \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden freigeschaltet.');
         }
-        if (isset($_REQUEST['motionWithdraw'])) {
-            $motion = $this->consultation->getMotion($_REQUEST['motionWithdraw']);
+        if (isset($_REQUEST['motionUnscreen'])) {
+            $motion = $this->consultation->getMotion($_REQUEST['motionUnscreen']);
             if (!$motion) {
                 return;
             }
@@ -56,7 +56,7 @@ trait MotionListAllTrait
             \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden freigeschaltet.');
         }
 
-        if (isset($_REQUEST['withdraw'])) {
+        if (isset($_REQUEST['unscreen'])) {
             foreach ($_REQUEST['motions'] as $motionId) {
                 $motion = $this->consultation->getMotion($motionId);
                 if (!$motion) {

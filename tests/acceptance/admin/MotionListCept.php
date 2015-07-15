@@ -22,7 +22,7 @@ $I->wantTo('test screening and undoing it');
 $I->dontSee('ungeprüft');
 $I->checkOption('.motion3 input.selectbox');
 $I->checkOption('.amendment1 input.selectbox');
-$I->submitForm('.motionListForm', [], 'withdraw');
+$I->submitForm('.motionListForm', [], 'unscreen');
 $I->see('ungeprüft', '.motion3');
 $I->see('ungeprüft', '.amendment1');
 $I->checkOption('.motion3 input.selectbox');
