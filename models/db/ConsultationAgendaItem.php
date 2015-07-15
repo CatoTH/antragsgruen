@@ -138,9 +138,41 @@ class ConsultationAgendaItem extends ActiveRecord
         };
 
         $items = [];
+        $root  = [];
         foreach ($consultation->agendaItems as $item) {
+            if ($item->parentItemId > 0) {
+                continue;
+            }
+            $root[] = $item;
+        }
+        $root = static::sortItems($root);
+        foreach ($root as $item) {
             $items = array_merge($items, [$item], $getSubItems($consultation, $item, $getSubItems));
         }
+
+        return $items;
+    }
+
+    /**
+     * @param ConsultationAgendaItem[] $items
+     * @return ConsultationAgendaItem[]
+     */
+    public static function sortItems($items)
+    {
+        usort(
+            $items,
+            function ($it1, $it2) {
+                /** @var ConsultationAgendaItem $it1 */
+                /** @var ConsultationAgendaItem $it2 */
+                if ($it1->position < $it2->position) {
+                    return -1;
+                }
+                if ($it1->position > $it2->position) {
+                    return 1;
+                }
+                return 0;
+            }
+        );
         return $items;
     }
 }

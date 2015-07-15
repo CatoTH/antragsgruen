@@ -6,6 +6,7 @@ use app\models\db\Motion;
 use app\models\settings\Layout;
 use app\views\consultation\LayoutHelper;
 use yii\helpers\Html;
+use \app\models\settings\Consultation as ConsultationSettings;
 
 /**
  * @var Consultation $consultation
@@ -13,10 +14,11 @@ use yii\helpers\Html;
  * @var bool $admin
  */
 
+$longVersion = ($consultation->getSettings()->startLayoutType == ConsultationSettings::START_LAYOUT_AGENDA_LONG);
 
-echo '<h2 class="green">Agenda</h2>';
+echo '<h2 class="green">' . 'Tagesordnung (Vorschlag)' . '</h2>';
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
-$shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
+$shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
 
 if ($admin) {
     $templateItem                 = new ConsultationAgendaItem();
@@ -26,7 +28,7 @@ if ($admin) {
     $templateItem->title = 'New Item';
     $templateItem->code  = '#CODE#';
     ob_start();
-    LayoutHelper::showAgendaItem($templateItem, $consultation, $admin);
+    LayoutHelper::showAgendaItem($templateItem, $consultation, $admin, !$longVersion);
     $newElementTemplate = ob_get_clean();
 
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
@@ -40,6 +42,21 @@ if ($admin) {
     $layout->addJS('/js/jquery.ui.touch-punch.js');
     $layout->addJS('/js/jquery.mjs.nestedSortable.js');
     $layout->addOnLoadJS('$.AntragsgruenAdmin.agendaEdit();');
+}
+
+if ($longVersion) {
+    $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
+    foreach ($items as $agendaItem) {
+        if (count($agendaItem->motions) > 0) {
+            echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
+            echo "<ul class='motionListStd'>";
+            foreach ($agendaItem->motions as $motion) {
+                LayoutHelper::showMotion($motion, $consultation);
+                $shownMotions[] = $motion->id;
+            }
+            echo "</ul>";
+        }
+    }
 }
 
 /** @var Motion[] $otherMotions */

@@ -72,9 +72,10 @@ class LayoutHelper
      * @param ConsultationAgendaItem $agendaItem
      * @param Consultation $consultation
      * @param bool $admin
+     * @param bool $showMotions
      * @return int[]
      */
-    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, $admin)
+    public static function showAgendaItem($agendaItem, $consultation, $admin, $showMotions)
     {
         echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '">';
         echo '<div><h3>';
@@ -114,17 +115,19 @@ class LayoutHelper
             </form>';
         }
 
-        $motions      = $agendaItem->getMotionsFromConsultation();
         $shownMotions = [];
-        if (count($motions) > 0) {
-            echo '<ul class="motions">';
-            foreach ($motions as $motion) {
-                static::showMotion($motion, $consultation);
-                $shownMotions[] = $motion->id;
+        if ($showMotions) {
+            $motions      = $agendaItem->getMotionsFromConsultation();
+            if (count($motions) > 0) {
+                echo '<ul class="motions">';
+                foreach ($motions as $motion) {
+                    static::showMotion($motion, $consultation);
+                    $shownMotions[] = $motion->id;
+                }
+                echo '</ul>';
             }
-            echo '</ul>';
+            echo '</div>';
         }
-        echo '</div>';
 
         $children     = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
         $shownMotions = array_merge($shownMotions, static::showAgendaList($children, $consultation, $admin, false));
@@ -138,28 +141,17 @@ class LayoutHelper
      * @param Consultation $consultation
      * @param bool $admin
      * @param bool $isRoot
+     * @param bool $showMotions
      * @return int[]
      */
-    public static function showAgendaList(array $items, Consultation $consultation, $admin, $isRoot = false)
+    public static function showAgendaList($items, $consultation, $admin, $isRoot = false, $showMotions = true)
     {
-        usort(
-            $items,
-            function ($it1, $it2) {
-                /** @var ConsultationAgendaItem $it1 */
-                /** @var ConsultationAgendaItem $it2 */
-                if ($it1->position < $it2->position) {
-                    return -1;
-                }
-                if ($it1->position > $it2->position) {
-                    return 1;
-                }
-                return 0;
-            }
-        );
+        $items = ConsultationAgendaItem::sortItems($items);
         echo '<ol class="agenda ' . ($isRoot ? 'motionListAgenda' : 'agendaSub') . '">';
         $shownMotions = [];
         foreach ($items as $item) {
-            $shownMotions = array_merge($shownMotions, static::showAgendaItem($item, $consultation, $admin));
+            $newShown = static::showAgendaItem($item, $consultation, $admin, $showMotions);
+            $shownMotions = array_merge($shownMotions, $newShown);
         }
         echo '</ol>';
         return $shownMotions;

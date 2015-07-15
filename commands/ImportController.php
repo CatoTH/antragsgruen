@@ -4,6 +4,7 @@ namespace app\commands;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Consultation;
+use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\IMotion;
 use app\models\db\Motion;
@@ -106,9 +107,44 @@ class ImportController extends Controller
 
     /**
      * @param Connection $dbOld
+     * @param int $veranstaltungAlt
+     * @param int $consultationNew
+     */
+    private function migrateConsultationTO(Connection $dbOld, $veranstaltungAlt, $consultationNew)
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne($consultationNew);
+
+        $command = $dbOld->createCommand('SELECT * FROM tags WHERE veranstaltung_id = ' . IntVal($veranstaltungAlt));
+        $tags    = $command->queryAll();
+        $tagMap  = [];
+        foreach ($tags as $tag) {
+            $newTO                 = new ConsultationAgendaItem();
+            $newTO->consultationId = $consultation->id;
+            $newTO->title          = $tag['name'];
+            $newTO->position       = $tag['position'];
+            $newTO->code           = '';
+            $newTO->codeExplicit   = '';
+            $newTO->motionTypeId   = $consultation->motionTypes[0]->id;
+            if (!$newTO->save()) {
+                var_dump($newTO->getErrors());
+            }
+            $tagMap[$tag['id']] = $newTO;
+        }
+
+        $command  = $dbOld->createCommand('SELECT * FROM antrag WHERE veranstaltung_id = ' . IntVal($veranstaltungAlt));
+        $antraege = $command->queryAll();
+        foreach ($antraege as $antrag) {
+            echo 'Migrating Motion: ' . $antrag['id'] . "\n";
+            $this->migrateMotion($dbOld, $antrag, $consultation, $tagMap);
+        }
+    }
+
+    /**
+     * @param Connection $dbOld
      * @param array $antrag
      * @param Consultation $consultation
-     * @param ConsultationSettingsTag[] $tagMap
+     * @param ConsultationSettingsTag[]|ConsultationAgendaItem[] $tagMap
      */
     private function migrateMotion(Connection $dbOld, $antrag, Consultation $consultation, $tagMap)
     {
@@ -132,7 +168,12 @@ class ImportController extends Controller
         $tags = $dbOld->createCommand('SELECT * FROM antrag_tags WHERE antrag_id = ' . $antrag['id'])->queryAll();
         foreach ($tags as $tag) {
             $newTag = $tagMap[$tag['tag_id']];
-            $motion->link('tags', $newTag);
+            if (get_class($newTag) == ConsultationAgendaItem::class) {
+                $motion->agendaItemId = $newTag->id;
+                $motion->save();
+            } else {
+                $motion->link('tags', $newTag);
+            }
         }
 
         $sql                = 'SELECT * FROM antrag_unterstuetzerInnen a ' .
@@ -234,12 +275,11 @@ class ImportController extends Controller
 
     /**
      * @param string $settingsFile
-     * @param int $veranstaltungAlt
-     * @param int $consultationNew
+     * @return Connection
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function actionVeranstaltung($settingsFile = '', $veranstaltungAlt = 0, $consultationNew = 0)
+    private function getDatabase($settingsFile = '')
     {
         if ($settingsFile != '') {
             $file     = file_get_contents($settingsFile);
@@ -255,11 +295,6 @@ class ImportController extends Controller
             $password = $this->prompt('DB-Passwort:');
         }
 
-        if ($veranstaltungAlt == 0 || $consultationNew == 0) {
-            $veranstaltungAlt = $this->prompt('Alte Veranstaltungs-ID:');
-            $consultationNew  = $this->prompt('Neue Consultation-ID:');
-        }
-
         $dbOld = new Connection([
             'dsn'      => 'mysql:host=' . $server . ';dbname=' . $dbname,
             'username' => $username,
@@ -267,6 +302,42 @@ class ImportController extends Controller
             'charset'  => 'utf8mb4',
         ]);
         $dbOld->open();
+
+        return $dbOld;
+    }
+
+    /**
+     * @param string $settingsFile
+     * @param int $veranstaltungAlt
+     * @param int $consultationNew
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function actionVeranstaltungTo($settingsFile = '', $veranstaltungAlt = 0, $consultationNew = 0)
+    {
+        if ($veranstaltungAlt == 0 || $consultationNew == 0) {
+            $veranstaltungAlt = $this->prompt('Alte Veranstaltungs-ID:');
+            $consultationNew  = $this->prompt('Neue Consultation-ID:');
+        }
+        $dbOld = $this->getDatabase($settingsFile);
+
+        $this->migrateConsultationTO($dbOld, $veranstaltungAlt, $consultationNew);
+    }
+
+    /**
+     * @param string $settingsFile
+     * @param int $veranstaltungAlt
+     * @param int $consultationNew
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function actionVeranstaltung($settingsFile = '', $veranstaltungAlt = 0, $consultationNew = 0)
+    {
+        if ($veranstaltungAlt == 0 || $consultationNew == 0) {
+            $veranstaltungAlt = $this->prompt('Alte Veranstaltungs-ID:');
+            $consultationNew  = $this->prompt('Neue Consultation-ID:');
+        }
+        $dbOld = $this->getDatabase($settingsFile);
 
         $this->migrateConsultation($dbOld, $veranstaltungAlt, $consultationNew);
 

@@ -7,10 +7,10 @@ use app\models\exceptions\Internal;
 
 class Consultation
 {
-    const START_LAYOUT_STD    = 0;
-    const START_LAYOUT_BDK    = 1;
-    const START_LAYOUT_TAGS   = 2;
-    const START_LAYOUT_AGENDA = 3;
+    const START_LAYOUT_STD         = 0;
+    const START_LAYOUT_TAGS        = 2;
+    const START_LAYOUT_AGENDA      = 3;
+    const START_LAYOUT_AGENDA_LONG = 4;
 
 
     // TESTS WITH TEST CASES
@@ -106,10 +106,10 @@ class Consultation
     public function getStartLayouts()
     {
         return [
-            0 => 'Standard',
-            1 => 'Tabellarisch, gegliedert nach Antragstyp',
-            2 => 'Tabellarisch, gegliedert nach Schlagworten',
-            3 => 'Tagesordnung',
+            static::START_LAYOUT_STD         => 'Standard',
+            static::START_LAYOUT_TAGS        => 'Tabellarisch, gegliedert nach Schlagworten',
+            static::START_LAYOUT_AGENDA      => 'Tagesordnung',
+            static::START_LAYOUT_AGENDA_LONG => 'Tagesordnung (viele Anträge)',
         ];
     }
 
@@ -122,11 +122,11 @@ class Consultation
         switch ($this->startLayoutType) {
             case Consultation::START_LAYOUT_STD:
                 return 'index_layout_std';
-            case Consultation::START_LAYOUT_BDK:
-                return 'index_layout_bdk'; // @Todo not implemented
             case Consultation::START_LAYOUT_TAGS:
-                return 'index_layout_tags';  // @Todo not implemented
+                return 'index_layout_tags';
             case Consultation::START_LAYOUT_AGENDA:
+                return 'index_layout_agenda';
+            case Consultation::START_LAYOUT_AGENDA_LONG:
                 return 'index_layout_agenda';
             default:
                 throw new Internal('Unknown layout: ' . $this->startLayoutType);
