@@ -89,20 +89,6 @@ CREATE TABLE IF NOT EXISTS `amendmentSupporter` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cache`
---
-
-CREATE TABLE IF NOT EXISTS `cache` (
-  `id`           CHAR(32)  NOT NULL,
-  `dateCreation` TIMESTAMP NULL DEFAULT NULL,
-  `data`         LONGBLOB
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `consultation`
 --
 
@@ -524,12 +510,6 @@ ALTER TABLE `amendmentSupporter`
 ADD PRIMARY KEY (`id`),
 ADD KEY `fk_amendmentIdx` (`amendmentId`),
 ADD KEY `fk_supporter_idx` (`userId`);
-
---
--- Indexes for table `cache`
---
-ALTER TABLE `cache`
-ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `consultation`
