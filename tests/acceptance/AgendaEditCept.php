@@ -46,8 +46,8 @@ $I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
 $I->wantTo('check if my chenges are saved');
 $I->dontSeeElement('.agendaItemEditForm');
 $I->dontSeeElement('#agendaEditSavingHolder');
-$I->see('More Motions', '#agendaitem_8 > div > h3');
-$I->see('Antrag stellen', '#agendaitem_8 > div > h3');
+$I->see('More Motions', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3');
+$I->see('Antrag stellen', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3');
 
 
 $I->wantTo('further change the agenda a bit');
@@ -73,7 +73,7 @@ $I->executeJS('window.confirm = function() { return true; }'); // Dirty Hack
 $I->see('Sonstwas');
 $I->see('More motions');
 $I->click('#agendaitem_5 > div > h3 .delAgendaItem');
-$I->click('#agendaitem_8 > div > h3 .delAgendaItem');
+$I->click('#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3 .delAgendaItem');
 $I->dontSee('Sonstwas');
 $I->dontSee('More motions');
 

@@ -180,10 +180,6 @@ $description = 'Anträge (ausgegraut) anzeigen, auch wenn sie noch nicht freiges
 $booleanSettingRow($settings, 'screeningMotionsShown', $handledSettings, $description);
 
 
-$description = 'Durchgestrichen als Formatierungsmöglichkeit in Anträgen zulassen';
-$booleanSettingRow($settings, 'allowStrikeFormat', $handledSettings, $description);
-
-
 echo '</div>';
 
 /*

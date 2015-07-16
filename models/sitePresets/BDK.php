@@ -2,9 +2,11 @@
 
 namespace app\models\sitePresets;
 
+use app\models\amendmentNumbering\ByLine;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Site;
+use app\models\settings\Consultation as ConsultationSettings;
 use app\models\initiatorForms\IInitiatorForm;
 use app\models\policies\IPolicy;
 
@@ -50,13 +52,15 @@ class BDK implements ISitePreset
      */
     public function setConsultationSettings(Consultation $consultation)
     {
-        $consultation->wordingBase = 'de-parteitag';
+        $consultation->wordingBase        = 'de-parteitag';
+        $consultation->amendmentNumbering = ByLine::getID();
 
         $settings                      = $consultation->getSettings();
         $settings->lineNumberingGlobal = false;
         $settings->lineLength          = 95;
         $settings->screeningMotions    = true;
         $settings->screeningAmendments = true;
+        $settings->startLayoutType = ConsultationSettings::START_LAYOUT_AGENDA;
         $consultation->setSettings($settings);
     }
 
