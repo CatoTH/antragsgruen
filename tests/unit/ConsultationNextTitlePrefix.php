@@ -15,7 +15,7 @@ class ConsultationNextStatusStringTest extends DBTestBase
     /**
      *
      */
-    public function testStatusString()
+    public function testMotionPrefix()
     {
         /** @var Consultation $consultation */
         $consultation = Consultation::findOne(2);
@@ -76,5 +76,17 @@ class ConsultationNextStatusStringTest extends DBTestBase
             }
         );
         */
+    }
+
+    /**
+     *
+     */
+    public function testAmendmentPrefix()
+    {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(2);
+
+        // @TODO
+        $this->assertEquals('A1', $consultation->getNextAmendmentPrefix(3));
     }
 }
