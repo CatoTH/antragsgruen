@@ -26,7 +26,7 @@ $I->wantTo('open the amendment creation page');
 $I->see(mb_strtoupper('Änderungsantrag stellen'), '.sidebarActions');
 $I->click('.sidebarActions .amendmentCreate a');
 
-$I->see('A2', '.breadcrumb');
+$I->see('Antrag', '.breadcrumb');
 $I->see(mb_strtoupper('Änderungsantrag zu A2 stellen'), 'h1');
 $I->seeInField('#sections_1', 'O’zapft is!');
 $I->see('woschechta Bayer', '#section_holder_2');

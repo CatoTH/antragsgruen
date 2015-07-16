@@ -15,7 +15,7 @@ class MotionSectionParagraphAmendment
         $this->amendmentSection  = $amSec;
         $this->origParagraphNo   = $paragraphNo;
         $this->strDiff           = $diff;
-        $this->firstAccectedLine = $firstLine;
+        $this->firstAffectedLine = $firstLine;
     }
 
     /** @var AmendmentSection */
@@ -26,5 +26,5 @@ class MotionSectionParagraphAmendment
 
     /** @var int */
     public $origParagraphNo;
-    public $firstAccectedLine;
+    public $firstAffectedLine;
 }

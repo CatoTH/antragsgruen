@@ -166,4 +166,15 @@ class LineSplitter
         }
         return $linesOut;
     }
+
+    /**
+     * @param string $para
+     * @param int $lineLength
+     * @return int
+     */
+    public static function countMotionParaLines($para, $lineLength)
+    {
+        $lines = static::motionPara2lines($para, false, $lineLength);
+        return count($lines);
+    }
 }

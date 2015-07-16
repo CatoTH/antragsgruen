@@ -56,7 +56,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     foreach ($paragraph->amendmentSections as $amendmentSection) {
         $amendment = $amendmentSection->amendmentSection->amendment;
         $amLink    = UrlHelper::createAmendmentUrl($amendment);
-        $firstline = $amendment->getFirstAffectedLineOfParagraphAbsolute();
+        $firstline = $amendmentSection->firstAffectedLine;
         echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $firstline . '">';
         echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
         echo Html::encode($amendment->titlePrefix) . "</a></li>\n";

@@ -3,6 +3,7 @@
 namespace app\components\diff;
 
 use app\components\HTMLTools;
+use app\components\LineSplitter;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\Internal;
 use app\models\db\MotionSectionParagraphAmendment as ParagraphAmendment;
@@ -376,6 +377,23 @@ class Diff
         return trim($computedStr);
     }
 
+    /**
+     * @param string $str1
+     * @param string $str2
+     * @return string
+     */
+    public static function getCommonBeginning($str1, $str2)
+    {
+        $common = '';
+        for ($i = 0; $i < mb_strlen($str1) && $i < mb_strlen($str2); $i++) {
+            if (mb_substr($str1, $i, 1) == mb_substr($str2, $i, 1)) {
+                $common .= mb_substr($str1, $i, 1);
+            } else {
+                return $common;
+            }
+        }
+        return $common;
+    }
 
     /**
      * @param $origParagraphs
@@ -388,31 +406,35 @@ class Diff
         $amParas       = HTMLTools::sectionSimpleHTML($amSec->data);
         $diffEng       = new Engine();
         $diff          = $diffEng->compareArrays($origParagraphs, $amParas);
-        $currOrigLine  = 0;
+        $currOrigPara  = 0;
+        $currOrigLine  = $amSec->getFirstLineNumber();
+        $lineLength    = $amSec->amendment->motion->motionType->consultation->getSettings()->lineLength;
         $pendingInsert = '';
         /** @var ParagraphAmendment[] $changed */
         $changed = [];
+
         for ($currDiffLine = 0; $currDiffLine < count($diff); $currDiffLine++) {
             $diffLine     = $diff[$currDiffLine];
-            $firstAffLine = 0; // @TODO
+            $firstAffLine = $currOrigLine; // @TODO
             if ($diffLine[1] == Engine::UNMODIFIED) {
                 if ($pendingInsert != '') {
                     $str                    = $pendingInsert . $diffLine[0];
-                    $changed[$currOrigLine] = new ParagraphAmendment($amSec, $currOrigLine, $str, $firstAffLine);
+                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $str, $firstAffLine);
                     $pendingInsert          = '';
                 }
-                $currOrigLine++;
+                $currOrigPara++;
+                $currOrigLine += LineSplitter::countMotionParaLines($diffLine[0], $lineLength);
                 continue;
             }
             if ($diffLine[1] == Engine::INSERTED) {
                 $insertStr = $this->wrapWithInsert($diffLine[0]);
-                if ($currOrigLine > 0) {
-                    $prevLine = $currOrigLine - 1;
+                if ($currOrigPara > 0) {
+                    $prevLine = $currOrigPara - 1;
                     if (isset($changed[$prevLine])) {
                         $changed[$prevLine]->strDiff .= $insertStr;
                     } else {
                         $newStr             = $diff[$prevLine][0] . $insertStr;
-                        $changed[$prevLine] = new ParagraphAmendment($amSec, $prevLine, $newStr, $firstAffLine);
+                        $changed[$prevLine] = new ParagraphAmendment($amSec, $prevLine, $newStr, $firstAffLine - 1);
                     }
                 } else {
                     $pendingInsert .= $insertStr;
@@ -425,14 +447,17 @@ class Diff
                     // @todo check if this can happen
                 }
                 if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
-                    $changeStr              = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $changed[$currOrigLine] = new ParagraphAmendment($amSec, $currOrigLine, $changeStr, $firstAffLine);
+                    $changeStr = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
+                    $commonStr = static::getCommonBeginning($diffLine[0], $diff[$currDiffLine + 1][0]);
+                    $currLine = $firstAffLine + LineSplitter::countMotionParaLines($commonStr, $lineLength) - 1;
+                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $changeStr, $currLine);
                     $currDiffLine++;
                 } else {
                     $deleteStr              = $this->wrapWithDelete($diffLine[0]);
-                    $changed[$currOrigLine] = new ParagraphAmendment($amSec, $currOrigLine, $deleteStr, $firstAffLine);
+                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);
                 }
-                $currOrigLine++;
+                $currOrigPara++;
+                $currOrigLine += LineSplitter::countMotionParaLines($diffLine[0], $lineLength);
                 continue;
             }
         }
