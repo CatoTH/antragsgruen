@@ -15,10 +15,17 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 if ($form->motion->titlePrefix != '') {
-    $title = Yii::t(
-        'amend',
-        $mode == 'create' ? 'Änderungsantrag zu %prefix% stellen' : 'Änderungsantrag zu %prefix% bearbeiten'
-    );
+    if ($consultation->getSettings()->hideTitlePrefix) {
+        $title = Yii::t(
+            'amend',
+            $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten'
+        );
+    } else {
+        $title = Yii::t(
+            'amend',
+            $mode == 'create' ? 'Änderungsantrag zu %prefix% stellen' : 'Änderungsantrag zu %prefix% bearbeiten'
+        );
+    }
     $this->title = str_replace('%prefix%', $form->motion->titlePrefix, $title);
 } else {
     $this->title = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
@@ -26,7 +33,7 @@ if ($form->motion->titlePrefix != '') {
 
 
 $layout->loadCKEditor();
-$layout->addBreadcrumb($form->motion->titlePrefix, UrlHelper::createMotionUrl($form->motion));
+$layout->addBreadcrumb($form->motion->motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
 $layout->addBreadcrumb(Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';

@@ -20,6 +20,7 @@ class Consultation
     public $screeningMotions    = false;
     public $lineNumberingGlobal = false;
     public $iniatorsMayEdit     = false;
+    public $hideTitlePrefix     = false;
 
     // TESTS WITHOUT TEST CASES
 
@@ -27,7 +28,6 @@ class Consultation
     public $commentNeedsEmail     = false;
     public $adminsMayEdit         = true;
     public $confirmEmails         = false;
-    public $hideTitlePrefix       = false;
     public $minimalisticUI        = false;
     public $showFeeds             = true;
     public $commentsSupportable   = false;

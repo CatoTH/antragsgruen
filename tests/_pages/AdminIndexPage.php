@@ -62,4 +62,11 @@ class AdminIndexPage extends BasePage
     {
         $this->actor->click('.siteAccessLink');
     }
+
+    /**
+     */
+    public function gotoConsultationExtended()
+    {
+        $this->actor->click('#consultationextendedLink');
+    }
 }

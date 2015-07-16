@@ -116,7 +116,7 @@ $description = '<strong>Antragskürzel verstecken</strong><br>
 müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt.
 Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small>';
 
-$booleanSettingRow($settings, 'hideRevision', $handledSettings, $description);
+$booleanSettingRow($settings, 'hideTitlePrefix', $handledSettings, $description);
 
 
 $booleanSettingRow($settings, 'showFeeds', $handledSettings, 'Feeds in der Sidebar anzeigen');

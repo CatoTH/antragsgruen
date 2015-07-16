@@ -100,12 +100,15 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getTitle()
     {
-        if ($this->motion->titlePrefix != '') {
-            return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix . ': ' . $this->motion->title;
-        } else {
+        if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->titlePrefix . ' zu ' . $this->motion->title;
+        } else {
+            if ($this->motion->titlePrefix != '') {
+                return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix . ': ' . $this->motion->title;
+            } else {
+                return $this->titlePrefix . ' zu ' . $this->motion->title;
+            }
         }
-
     }
 
     /**
