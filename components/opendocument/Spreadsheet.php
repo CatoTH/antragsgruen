@@ -19,17 +19,21 @@ class Spreadsheet extends Base
     const FORMAT_DEL        = 6;
     const FORMAT_LINK       = 7;
     const FORMAT_INDENTED   = 8;
+    const FORMAT_SUP        = 9;
+    const FORMAT_SUB        = 10;
 
     public static $FORMAT_NAMES = [
-        0 => 'linebreak',
-        1 => 'bold',
-        2 => 'italic',
-        3 => 'underlined',
-        4 => 'strike',
-        5 => 'ins',
-        6 => 'del',
-        7 => 'link',
-        8 => 'indented',
+        0  => 'linebreak',
+        1  => 'bold',
+        2  => 'italic',
+        3  => 'underlined',
+        4  => 'strike',
+        5  => 'ins',
+        6  => 'del',
+        7  => 'link',
+        8  => 'indented',
+        9  => 'sup',
+        10 => 'sub',
     ];
 
     /** @var \DOMDocument */
@@ -386,6 +390,12 @@ class Spreadsheet extends Base
                     if (in_array('deleted', $classes)) {
                         $currentFormats[] = static::FORMAT_DEL;
                     }
+                    if (in_array('superscript', $classes)) {
+                        $currentFormats[] = static::FORMAT_SUP;
+                    }
+                    if (in_array('subscritp', $classes)) {
+                        $currentFormats[] = static::FORMAT_SUB;
+                    }
                 }
                 break;
             case 'b':
@@ -398,6 +408,12 @@ class Spreadsheet extends Base
                 break;
             case 'u':
                 $currentFormats[] = static::FORMAT_UNDERLINED;
+                break;
+            case 'sub':
+                $currentFormats[] = static::FORMAT_SUB;
+                break;
+            case 'sup':
+                $currentFormats[] = static::FORMAT_SUP;
                 break;
             case 'br':
                 break;
@@ -528,6 +544,14 @@ class Spreadsheet extends Base
                         $styles['fo:font-style']            = 'italic';
                         $styles['style:font-style-asian']   = 'italic';
                         $styles['style:font-style-complex'] = 'italic';
+                        break;
+                    case static::FORMAT_SUP:
+                        $styles['fo:font-size']        = '10pt';
+                        $styles['style:text-position'] = '31%';
+                        break;
+                    case static::FORMAT_SUB:
+                        $styles['fo:font-size']        = '10pt';
+                        $styles['style:text-position'] = '-31%';
                         break;
                 }
             }
