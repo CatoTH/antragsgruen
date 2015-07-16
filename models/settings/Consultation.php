@@ -27,7 +27,7 @@ class Consultation
     public $commentNeedsEmail     = false;
     public $adminsMayEdit         = true;
     public $confirmEmails         = false;
-    public $hideRevision          = false;
+    public $hideTitlePrefix       = false;
     public $minimalisticUI        = false;
     public $showFeeds             = true;
     public $commentsSupportable   = false;

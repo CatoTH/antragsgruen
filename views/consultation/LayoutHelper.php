@@ -36,8 +36,15 @@ class LayoutHelper
         echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
         echo '<p class="title">' . "\n";
         echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
-        $linkOpts = ['class' => 'motionLink' . $motion->id];
-        echo Html::a($motion->getTitleWithPrefix(), UrlHelper::createMotionUrl($motion), $linkOpts);
+        if (!$consultation->getSettings()->hideTitlePrefix) {
+            $linkOpts = ['class' => 'motionPrefix motionLink' . $motion->id];
+            echo Html::a($motion->titlePrefix, UrlHelper::createMotionUrl($motion), $linkOpts);
+        }
+        echo ' ';
+        $linkOpts = ['class' => 'motionTitle motionLink' . $motion->id];
+        $title = ($motion->title == '' ? '-' : $motion->title);
+        echo Html::a($title, UrlHelper::createMotionUrl($motion), $linkOpts);
+
         if ($motion->status == Motion::STATUS_WITHDRAWN) {
             echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
         }
@@ -46,11 +53,12 @@ class LayoutHelper
             echo Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
         }
         echo "</p>\n";
-        echo '<p class="info">von ' . Html::encode($motion->getInitiatorsStr()) . '</p>';
+        echo '<p class="info">' . Html::encode($motion->getInitiatorsStr()) . '</p>';
 
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->amendments);
         if (count($amendments) > 0) {
-            echo "<ul class='amendments'>";
+            echo '<h4 class="amendments">' . 'Änderungsanträge' . '</h4>';
+            echo '<ul class="amendments">';
             foreach ($amendments as $amend) {
                 $classes = ['amendmentRow' . $amend->id];
                 if ($amend->status == Amendment::STATUS_WITHDRAWN) {

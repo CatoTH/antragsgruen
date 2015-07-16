@@ -66,14 +66,9 @@
         }
       }
     }
-
-    .info {
-      font-style: italic;
-      color: rgb(115, 115, 115);
-    }
   }
 
-  .amendments {
+  ul.amendments {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -107,6 +102,69 @@
   padding: 0;
 
   @include motionListStdMotion(16px);
+
+  &.layout2 {
+    .motion {
+      padding-left: 30px;
+      .title {
+        font-family: $stdHeadingFont;
+        .motionIcon {
+          display: none;
+        }
+        .motionPrefix {
+          width: 90px;
+          position: absolute;
+          left: 30px;
+          top: 13px;
+        }
+        .motionTitle {
+          display: inline-block;
+          margin-left: 95px;
+        }
+        .pdfLink {
+          display: none;
+        }
+      }
+      .info {
+        margin-left: 95px;
+      }
+    }
+    .amendments > li > a {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    ul.amendments {
+      margin-bottom: 10px;
+    }
+    h4.amendments {
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-family: $stdHeadingFont;
+      font-size: 14px;
+      font-weight: bold;
+      color: $colorGreenLight;
+    }
+  }
+  &.layout1 {
+    .motion {
+      .title {
+        .motionPrefix {
+          display: inline-block;
+          &:after {
+            content: ':';
+          }
+        }
+      }
+      .info {
+        font-style: italic;
+        color: rgb(115, 115, 115);
+      }
+    }
+    h4.amendments {
+      display: none;
+    }
+  }
 }
 
 .motionListAgenda {
@@ -270,7 +328,6 @@
 
   .motionTable {
     width: 100%;
-
 
     th {
       border-bottom: solid 1px $colorGreenLight;

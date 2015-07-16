@@ -212,15 +212,15 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getTitleWithPrefix()
     {
-        if ($this->consultation->getSettings()->hideRevision) {
+        if ($this->consultation->getSettings()->hideTitlePrefix) {
             return $this->title;
         }
 
         $name = $this->titlePrefix;
-        if (strlen($name) > 1 && !in_array($name[strlen($name) - 1], array(":", "."))) {
-            $name .= ":";
+        if (strlen($name) > 1 && !in_array($name[strlen($name) - 1], array(':', '.'))) {
+            $name .= ':';
         }
-        $name .= " " . $this->title;
+        $name .= ' ' . $this->title;
         return $name;
     }
 

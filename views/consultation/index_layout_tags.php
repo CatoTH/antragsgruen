@@ -67,7 +67,7 @@ foreach ($tagIds as $tagId) {
     <div class="content">
     <table class="motionTable">
         <thead><tr>';
-    if (!$consultation->getSettings()->hideRevision) {
+    if (!$consultation->getSettings()->hideTitlePrefix) {
         echo '<th class="prefixCol">' . 'Antragsnummer' . '</th>';
     }
     echo '
@@ -87,7 +87,7 @@ foreach ($tagIds as $tagId) {
             $classes[] = 'unscreened';
         }
         echo '<tr class="' . implode(' ', $classes) . '">';
-        if (!$consultation->getSettings()->hideRevision) {
+        if (!$consultation->getSettings()->hideTitlePrefix) {
             echo '<td class="prefixCol">' . Html::encode($motion->titlePrefix) . '</td>';
         }
         echo '<td class="titleCol">';
@@ -118,7 +118,7 @@ foreach ($tagIds as $tagId) {
                 $classes[] = 'withdrawn';
             }
             echo '<tr class="' . implode(' ', $classes) . '">';
-            if (!$consultation->getSettings()->hideRevision) {
+            if (!$consultation->getSettings()->hideTitlePrefix) {
                 echo '<td class="prefixCol">' . Html::encode($amend->titlePrefix) . '</td>';
             }
             echo '<td class="titleCol"><div class="titleLink">';

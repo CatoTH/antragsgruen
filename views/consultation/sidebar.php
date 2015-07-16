@@ -120,7 +120,7 @@ if ($hasAmendments) {
         $html .= "<li><i>keine</i></li>";
     } else {
         foreach ($newestAmendments as $amendment) {
-            $hideRev       = $consultation->getSettings()->hideRevision;
+            $hideRev       = $consultation->getSettings()->hideTitlePrefix;
             $zu_str        = Html::encode(
                 $hideRev ? $amendment->motion->title : $amendment->motion->titlePrefix
             );

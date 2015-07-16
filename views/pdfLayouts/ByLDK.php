@@ -21,7 +21,7 @@ class ByLDK extends IPDFLayout
             $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
         }
 
-        if (!$settings->hideRevision) {
+        if (!$settings->hideTitlePrefix) {
             $revName = $motion->titlePrefix;
             if ($revName == '') {
                 $revName = 'Entwurf';
@@ -122,7 +122,7 @@ class ByLDK extends IPDFLayout
             $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
         }
 
-        if (!$settings->hideRevision) {
+        if (!$settings->hideTitlePrefix) {
             $revName = $amendment->titlePrefix;
             if ($revName == '') {
                 $revName = 'Entwurf';

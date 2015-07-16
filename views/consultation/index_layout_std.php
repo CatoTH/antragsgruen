@@ -10,9 +10,9 @@ use app\views\consultation\LayoutHelper;
 
 $motions = MotionSorter::getSortedMotions($consultation, $consultation->motions);
 foreach ($motions as $name => $motns) {
-    echo "<ul class='motionListStd'>";
+    echo '<ul class="motionListStd layout1">';
     foreach ($motns as $motion) {
         LayoutHelper::showMotion($motion, $consultation);
     }
-    echo "</ul>";
+    echo '</ul>';
 }

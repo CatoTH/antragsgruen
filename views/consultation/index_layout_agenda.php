@@ -49,7 +49,7 @@ if ($longVersion) {
     foreach ($items as $agendaItem) {
         if (count($agendaItem->motions) > 0) {
             echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
-            echo "<ul class='motionListStd'>";
+            echo "<ul class='motionListStd layout2'>";
             foreach ($agendaItem->motions as $motion) {
                 LayoutHelper::showMotion($motion, $consultation);
                 $shownMotions[] = $motion->id;
@@ -68,7 +68,7 @@ foreach ($consultation->motions as $motion) {
 }
 if (count($otherMotions) > 0) {
     echo '<h2 class="green">Sonstige Anträge</h2>';
-    echo "<ul class='motionListStd'>";
+    echo "<ul class='motionListStd layout2'>";
     foreach ($otherMotions as $motion) {
         LayoutHelper::showMotion($motion, $consultation);
     }
