@@ -230,6 +230,7 @@ class TextSimple extends ISectionType
     public static function getMotionLinesToTeX($lines)
     {
         $str = implode('###LINEBREAK###', $lines);
+        $str = str_replace('###FORCELINEBREAK######LINEBREAK###', '###FORCELINEBREAK###', $str);
         $str = Exporter::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
