@@ -48,7 +48,7 @@ class HTMLTools
                 /** @var \HTMLPurifier_Config $config */
                 $conf = [
                     'HTML.Doctype'                            => 'HTML 4.01 Transitional',
-                    'HTML.AllowedElements'                    => 'p,strong,em,ul,ol,li,span,a,br,blockquote',
+                    'HTML.AllowedElements'                    => 'p,strong,em,ul,ol,li,span,a,br,blockquote,sub,sup',
                     'HTML.AllowedAttributes'                  => 'style,href,class',
                     'Attr.AllowedClasses'                     => 'underline,strike,subscript,superscript',
                     'CSS.AllowedProperties'                   => '',
@@ -88,10 +88,11 @@ class HTMLTools
      */
     private static function sectionSimpleHTMLInt(\DOMElement $element, $pre, $post)
     {
-        $return        = [];
-        $children      = $element->childNodes;
-        $pendingInline = null;
-        $lino          = 0;
+        $inlineElements = ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b', 'sub', 'sup'];
+        $return         = [];
+        $children       = $element->childNodes;
+        $pendingInline  = null;
+        $lino           = 0;
         for ($i = 0; $i < $children->length; $i++) {
             $child = $children->item($i);
             switch (get_class($child)) {
@@ -102,7 +103,7 @@ class HTMLTools
                             $pendingInline = '';
                         }
                         $pendingInline .= '<br>';
-                    } elseif (in_array($child->nodeName, ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b'])) {
+                    } elseif (in_array($child->nodeName, $inlineElements)) {
                         if ($child->nodeName == 'a') {
                             $href = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
                             if ($child->hasAttribute('class')) {

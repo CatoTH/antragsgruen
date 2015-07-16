@@ -37,7 +37,6 @@ class Consultation
     public $initiatorsMayReject   = false;
     public $commentWholeMotions   = false;
     public $allowMultipleTags     = false;
-    public $allowStrikeFormat     = false;
 
     /** @var int */
     public $lineLength      = 80;

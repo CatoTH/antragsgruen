@@ -71,8 +71,8 @@ abstract class ISupporter extends ActiveRecord
         if ($name == '' && $this->user) {
             $name = $this->user->name;
         }
-        if ($this->organization != "") {
-            $name .= " (" . trim($this->organization, " \t\n\r\0\x0B()") . ")";
+        if ($this->organization != '') {
+            $name .= ' (' . trim($this->organization, " \t\n\r\0\x0B()") . ')';
         }
         return $name;
     }
@@ -84,15 +84,36 @@ abstract class ISupporter extends ActiveRecord
     public function getNameWithResolutionDate($html = true)
     {
         if ($html) {
-            $name = Html::encode($this->getNameWithOrga());
-            if ($this->resolutionDate > 0) {
-                $name .= " <small style='font-weight: normal;'>(Beschlossen: ";
-                $name .= Tools::formatMysqlDate($this->resolutionDate) . ")</small>";
+            $name = $this->name;
+            if ($name == '' && $this->user) {
+                $name = $this->user->name;
+            }
+            if ($this->organization != '' && $this->resolutionDate > 0) {
+                $name .= ' <small style="font-weight: normal;">';
+                $name .= '(' . trim(Html::encode($this->organization, " \t\n\r\0\x0B()")) . ', ';
+                $name .= 'beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate);
+                $name .= ')</small>';
+            } elseif ($this->organization != '') {
+                $name .= ' <small style="font-weight: normal;">';
+                $name .= '(' . trim(Html::encode($this->organization, " \t\n\r\0\x0B()")) . ')';
+                $name .= '</small>';
+            } elseif ($this->resolutionDate > 0) {
+                $name .= ' <small style="font-weight: normal;">(';
+                $name .= 'Beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate);
+                $name .= ')</small>';
             }
         } else {
-            $name = $this->getNameWithOrga();
-            if ($this->resolutionDate > 0) {
-                $name .= " (Beschlossen: " . Tools::formatMysqlDate($this->resolutionDate) . ")";
+            $name = $this->name;
+            if ($name == '' && $this->user) {
+                $name = $this->user->name;
+            }
+            if ($this->organization != '' && $this->resolutionDate > 0) {
+                $name .= ' (' . trim(Html::encode($this->organization, " \t\n\r\0\x0B()")) . ', ';
+                $name .= 'beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
+            } elseif ($this->organization != '') {
+                $name .= ' (' . trim(Html::encode($this->organization, " \t\n\r\0\x0B()")) . ')';
+            } elseif ($this->resolutionDate > 0) {
+                $name .= ' (Beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
             }
         }
         return $name;

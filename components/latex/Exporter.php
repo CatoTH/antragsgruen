@@ -80,6 +80,10 @@ class Exporter
                     return '\uline{' . $content . '}';
                 case 's':
                     return '\sout{' . $content . '}';
+                case 'sub':
+                    return '\textsubscript{' . $content . '}';
+                case 'sup':
+                    return '\textsuperscript{' . $content . '}';
                 case 'blockquote':
                     return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
@@ -142,6 +146,12 @@ class Exporter
                     }
                     if (in_array('deleted', $classes)) {
                         $content = '\textcolor{Delete}{' . $content . '}';
+                    }
+                    if (in_array('subscript', $classes)) {
+                        $content = '\textsubscript{' . $content . '}';
+                    }
+                    if (in_array('superscript', $classes)) {
+                        $content = '\textsuperscript{' . $content . '}';
                     }
                     return $content;
                 case 'del':

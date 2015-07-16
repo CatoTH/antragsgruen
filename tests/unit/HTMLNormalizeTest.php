@@ -59,12 +59,24 @@ class HTMLNormalizeTest extends TestBase
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
+
+        $orig     = "<sub>Subscript</sub> Normal";
+        $expect = '<sub>Subscript</sub> Normal';
+
+        $out = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
     }
 
-    public function testSuberscript()
+    public function testSuperscript()
     {
         $orig     = "<span class='superscript'>Superscript</span> Normal";
         $expect = '<span class="superscript">Superscript</span> Normal';
+
+        $out = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+
+        $orig     = "<sup>Superscript</sup> Normal";
+        $expect = '<sup>Superscript</sup> Normal';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);

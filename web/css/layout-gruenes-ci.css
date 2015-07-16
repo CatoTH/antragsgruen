@@ -5025,7 +5025,11 @@ ins, ul.inserted, blockquote.inserted {
         bottom: 0;
         left: 0;
         max-height: 30px;
-        padding-right: 50px; }
+        padding-right: 50px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%; }
         .motionTextHolder .paragraph .textAmendment .preamble > div h3 {
           font-size: 14px;
           display: inline-block;

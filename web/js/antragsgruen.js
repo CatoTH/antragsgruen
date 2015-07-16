@@ -47,10 +47,10 @@
                 element: 'span',
                 attributes: {'class': 'underline'}
             },
-            allowedContent: 'strong s em u;' +
+            allowedContent: 'strong s em u sub sup;' +
             'ul ol li {list-style-type};' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-            'p blockquote {border,margin,padding,text-align};' +
+            'p blockquote {border,margin,padding};' +
             'span(underline,strike,subscript,superscript);' +
             'a[href];',
             toolbarGroups: [

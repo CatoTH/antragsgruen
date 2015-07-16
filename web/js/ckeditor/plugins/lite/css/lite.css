@@ -25,26 +25,19 @@ ins.ice-no-decoration, del.ice-no-decoration {
 /*	padding: 1px 0 2px; */
 }
 
-.ICE-Tracking span.ice-del {
+.ICE-Tracking span.ice-del, .ICE-Tracking del.ice-del {
 	display: inline;
 	text-decoration: line-through !important;
 	color: #555;
-	background-color: #66ff66 !important;
-}
-
-.ICE-Tracking del.ice-del {
-        display: inline;
-        text-decoration: line-through !important;
-        color: #555;
-        background-color: #ff6666 !important;
+	background-color: #e5ffcd !important;
 }
 
 .ICE-Tracking .ice-ins, .ICE-Tracking .ice-ins>*  {
-	background-color: #66ff66 !important;
+	background-color: #e5ffcd !important;
 }
 
 .ICE-Tracking .ice-ins.ice-cts-1, .ICE-Tracking .ice-ins.ice-cts-1>*  {
-	background-color: #66ff66 !important;
+	background-color: #e5ffcd !important;
 }
 
 .ICE-Tracking .ice-ins.ice-cts-2, .ICE-Tracking .ice-ins.ice-cts-2>*  {
@@ -56,11 +49,11 @@ ins.ice-no-decoration, del.ice-no-decoration {
 }
 
 .ICE-Tracking .ice-del.ice-cts-1 {
-	background-color: #ff6666 !important;
+	background-color: #e5ffcd !important;
 }
 
 .ICE-Tracking .ice-del.ice-cts-2 {
-	background-color: #ff6666 !important;
+	background-color: #e3ffff !important;
 }
 
 .ICE-Tracking .ice-del.ice-cts-3 {
