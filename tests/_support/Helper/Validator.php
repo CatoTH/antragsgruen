@@ -43,6 +43,18 @@ class Validator extends \Codeception\Module
 
 
 
+    private function validateByVNU($html)
+    {
+        $filename = '/tmp/' . uniqid('html-validate') . '.html';
+        file_put_contents($filename, $html);
+        exec("java -Xss512k -jar /usr/local/bin/vnu.jar --format json " . $filename . " 2>&1", $return);
+        $data = json_decode($return[0], true);
+        if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
+            throw new \Exception('Invalid data returned from validation service: ' . $return);
+        }
+        return $data['messages'];
+    }
+
 
     /**
      * @return string
@@ -60,7 +72,8 @@ class Validator extends \Codeception\Module
     {
         $source = $this->getPageSource();
         try {
-            $messages = $this->postToHTMLValidator($source);
+            //$messages = $this->postToHTMLValidator($source);
+            $messages = $this->validateByVNU($source);
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
             return;

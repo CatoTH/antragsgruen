@@ -137,7 +137,7 @@ foreach ($sections as $section) {
             echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
             echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
             $wrapStart = '<section class="paragraph"><div class="text">';
-            $wrapEnd   = '</section>';
+            $wrapEnd   = '</div></section>';
             $firstLine = $section->getFirstLineNumber();
             $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
             echo str_replace('###FORCELINEBREAK###', '<br>', $html);
