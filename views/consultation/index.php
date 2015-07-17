@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var \app\models\db\Consultation $consultation
  * @var Motion[] $motions
  * @var string $saveUrl

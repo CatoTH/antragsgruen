@@ -224,4 +224,14 @@ class Image extends ISectionType
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[BILD]', false); // @TODO
     }
+
+    /**
+     * @param $text
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function matchesFulltextSearch($text)
+    {
+        return false;
+    }
 }

@@ -2,10 +2,12 @@
 
 namespace app\models\db;
 
+use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\DB;
 use app\models\exceptions\NotFound;
 use app\models\forms\SiteCreateForm;
+use app\models\SearchResult;
 use app\models\sitePresets\ISitePreset;
 use yii\db\ActiveRecord;
 
@@ -352,5 +354,37 @@ class Consultation extends ActiveRecord
     public function flushCaches()
     {
         // @TODO
+    }
+
+
+    /**
+     * @param string $text
+     * @param array $backParams
+     * @return \app\models\SearchResult[]
+     * @throws \app\models\exceptions\Internal
+     */
+    public function fulltextSearch($text, $backParams)
+    {
+        $results = [];
+        foreach ($this->motions as $motion) {
+            $found = false;
+            foreach ($motion->sections as $section) {
+                if (!$found && $section->getSectionType()->matchesFulltextSearch($text)) {
+                    $found             = true;
+                    $result            = new SearchResult();
+                    $result->id        = 'motion' . $motion->id;
+                    $result->typeTitle = $motion->motionType->titleSingular;
+                    $result->type      = SearchResult::TYPE_MOTION;
+                    $result->title     = $motion->getTitleWithPrefix();
+                    $result->link      = UrlHelper::createMotionUrl($motion, 'view', $backParams);
+                    $results[]         = $result;
+                }
+            }
+        }
+        /*
+         * @TODO: - Änderungsanträge
+         * @TODO: - Kommentare
+         */
+        return $results;
     }
 }

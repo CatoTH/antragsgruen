@@ -19,7 +19,7 @@ class TabularData extends ISectionType
         $rows = static::getTabularDataRowsFromData($type->data);
         $data = json_decode($this->section->data, true);
 
-        $str  = '<fieldset class="form-horizontal tabularData">';
+        $str = '<fieldset class="form-horizontal tabularData">';
         $str .= '<div class="label">' . Html::encode($type->title) . '</div>';
 
         foreach ($rows as $row) {
@@ -29,7 +29,7 @@ class TabularData extends ISectionType
             $str .= Html::encode($row->title) . ':</label>';
             $str .= '<div class="col-md-9">';
             $nameId = 'name="sections[' . $type->id . '][' . $row->rowId . ']" id="' . $id . '"';
-            $dat = (isset($data['rows'][$row->rowId]) ? $data['rows'][$row->rowId] : '');
+            $dat    = (isset($data['rows'][$row->rowId]) ? $data['rows'][$row->rowId] : '');
             $str .= $row->getFormField($nameId, $dat, $type->required);
             $str .= '</div></div>';
         }
@@ -60,7 +60,7 @@ class TabularData extends ISectionType
             if (!isset($data[$row->rowId])) {
                 continue;
             }
-            $dat = $data[$row->rowId];
+            $dat                          = $data[$row->rowId];
             $dataOut['rows'][$row->rowId] = $row->parseFormInput($dat);
         }
 
@@ -223,7 +223,7 @@ class TabularData extends ISectionType
      */
     public function getMotionPlainText()
     {
-        $data = json_decode($this->section->data, true);
+        $data   = json_decode($this->section->data, true);
         $return = '';
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
@@ -293,5 +293,27 @@ class TabularData extends ISectionType
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
+    }
+
+    /**
+     * @param $text
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function matchesFulltextSearch($text)
+    {
+        $type = $this->section->consultationSetting;
+        $data   = json_decode($this->section->data, true);
+        $rows   = static::getTabularDataRowsFromData($type->data);
+        $return = '';
+        foreach ($data['rows'] as $rowId => $rowData) {
+            if (!isset($rows[$rowId])) {
+                continue;
+            }
+            if (mb_stripos($rowData, $text) !== false) {
+                return false;
+            }
+        }
+        return $return;
     }
 }

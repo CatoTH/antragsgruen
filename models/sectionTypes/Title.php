@@ -158,4 +158,14 @@ class Title extends ISectionType
     {
         $odt->addHtmlTextBlock('<h1>' . Html::encode($this->section->data) . '</h1>', false);
     }
+
+    /**
+     * @param $text
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function matchesFulltextSearch($text)
+    {
+        return (mb_stripos($this->section->data, $text) !== false);
+    }
 }

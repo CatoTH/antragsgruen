@@ -27,6 +27,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
+if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
+    $layout->addBreadcrumb($_REQUEST['backTitle'], $_REQUEST['backUrl']);
+}
 $layout->addBreadcrumb($motion->getTypeName());
 
 $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->consultation->title . ', Antragsgrün)';

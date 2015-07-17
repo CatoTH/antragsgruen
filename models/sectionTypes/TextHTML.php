@@ -159,4 +159,15 @@ class TextHTML extends ISectionType
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
     }
+
+    /**
+     * @param $text
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function matchesFulltextSearch($text)
+    {
+        $data = strip_tags($this->section->data);
+        return (mb_stripos($data, $text) !== false);
+    }
 }

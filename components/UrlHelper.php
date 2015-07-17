@@ -172,11 +172,13 @@ class UrlHelper
     /**
      * @param Motion $motion
      * @param string $mode
+     * @param array $params
      * @return string
      */
-    public static function createMotionUrl(Motion $motion, $mode = 'view')
+    public static function createMotionUrl(Motion $motion, $mode = 'view', $addParams = [])
     {
-        return static::createUrl(['motion/' . $mode, 'motionId' => $motion->id]);
+        $params = array_merge(['motion/' . $mode, 'motionId' => $motion->id], $addParams);
+        return static::createUrl($params);
     }
 
     /**

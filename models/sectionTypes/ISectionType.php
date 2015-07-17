@@ -204,4 +204,10 @@ abstract class ISectionType
     {
         return $this->getSimple();
     }
+
+    /**
+     * @param $text
+     * @return bool
+     */
+    abstract public function matchesFulltextSearch($text);
 }

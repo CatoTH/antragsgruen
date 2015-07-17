@@ -301,6 +301,27 @@ span.twitter-typeahead {
 
 }
 
+ul.searchResults {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  > li {
+    margin: 0;
+    padding: 10px;
+    .type {
+      display: block;
+      float: left;
+      width: 100px;
+      overflow: hidden;
+      -ms-text-overflow: ellipsis;
+      text-overflow: ellipsis;
+    }
+    .title {
+
+    }
+  }
+}
+
 /*
 .fuelux {
   .pillbox-input-wrap {

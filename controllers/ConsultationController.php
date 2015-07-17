@@ -25,7 +25,24 @@ class ConsultationController extends Base
      */
     public function actionSearch()
     {
-        // @TODO
+        if (!isset($_REQUEST['query']) || trim($_REQUEST['query']) == '') {
+            \yii::$app->session->setFlash('error', 'Kein Suchbegriff eingegeben');
+            \yii::$app->response->redirect(UrlHelper::createUrl('consultation/index'));
+            return '';
+        }
+
+        $results = $this->consultation->fulltextSearch($_REQUEST['query'], [
+            'backTitle' => 'Suche',
+            'backUrl'   => UrlHelper::createUrl(['consultation/search', 'query' => $_REQUEST['query']]),
+        ]);
+
+        return $this->render(
+            'search_results',
+            [
+                'query'   => $_REQUEST['query'],
+                'results' => $results
+            ]
+        );
     }
 
 
@@ -330,14 +347,14 @@ class ConsultationController extends Base
 
         return $this->render(
             'index',
-            array(
+            [
                 'consultation' => $this->consultation,
                 'myself'       => $myself,
                 'myMotions'    => $myMotions,
                 'myAmendments' => $myAmendments,
                 'admin'        => User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
                 'saveUrl'      => $saveUrl,
-            )
+            ]
         );
     }
 }

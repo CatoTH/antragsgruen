@@ -45,7 +45,7 @@ $html = Html::beginForm(UrlHelper::createUrl("consultation/search"), 'post', ['c
 $html .= '<div class="nav-list"><div class="nav-header">Suche</div>
     <div style="text-align: center; padding-left: 7px; padding-right: 7px;">
     <div class="input-group">
-      <input type="text" class="form-control query" name="query" placeholder="Suchbegriff...">
+      <input type="text" class="form-control query" name="query" placeholder="Suchbegriff..." required>
       <span class="input-group-btn">
         <button class="btn btn-default" type="submit">
             <span class="glyphicon glyphicon-search"></span> Suche
