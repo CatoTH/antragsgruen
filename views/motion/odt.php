@@ -6,6 +6,7 @@
 
 use app\models\db\ISupporter;
 use app\models\db\Motion;
+use yii\helpers\Html;
 
 /** @var \app\models\settings\AntragsgruenApp $config */
 $config = \yii::$app->params;
@@ -22,7 +23,7 @@ if ($zip->open($tmpZipFile) !== true) {
 
 $content = $zip->getFromName('content.xml');
 
-$DEBUG = false;
+$DEBUG = (isset($_REQUEST['src']) && YII_ENV == 'dev');
 
 if ($DEBUG) {
     echo "<pre>";
@@ -41,19 +42,22 @@ foreach ($motion->motionSupporters as $supp) {
         $supporters[] = $supp->name;
     }
 }
-$doc->addReplace("/\{\{ANTRAGSGRUEN:TITEL\}\}/siu", $motion->title);
-$doc->addReplace("/\{\{ANTRAGSGRUEN:ANTRAGSTELLERINNEN\}\}/siu", implode(', ', $supporters));
+$doc->addReplace("/\{\{ANTRAGSGRUEN:TITLE\}\}/siu", $motion->title);
+$doc->addReplace("/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu", implode(', ', $supporters));
 
+foreach ($motion->sections as $section) {
+    $htmls = $section->getSectionType()->printMotionToODT($doc);
+}
+
+$content = $doc->convert();
 
 if ($DEBUG) {
     $doc->debugOutput();
 }
 
-$absae   = $motion->getParagraphs();
-$content = $doc->convert($absae, $model->begruendung);
 
-$zip->deleteName("content.xml");
-$zip->addFromString("content.xml", $content);
+$zip->deleteName('content.xml');
+$zip->addFromString('content.xml', $content);
 $zip->close();
 
 readfile($tmpZipFile);

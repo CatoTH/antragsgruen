@@ -2,6 +2,7 @@
 
 namespace app\models\sectionTypes;
 
+use app\components\opendocument\Text;
 use app\models\exceptions\FormError;
 use yii\helpers\Html;
 
@@ -272,5 +273,25 @@ class TabularData extends ISectionType
     public function getAmendmentODS()
     {
         return 'Test'; //  @TODO
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printMotionToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printAmendmentToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
     }
 }

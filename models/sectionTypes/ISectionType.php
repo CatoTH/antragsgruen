@@ -1,6 +1,7 @@
 <?php
 namespace app\models\sectionTypes;
 
+use app\components\opendocument\Text;
 use app\controllers\Base;
 use app\models\db\IMotionSection;
 use app\models\exceptions\FormError;
@@ -169,6 +170,18 @@ abstract class ISectionType
      * @return string
      */
     abstract public function getAmendmentODS();
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    abstract public function printMotionToODT(Text $odt);
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    abstract public function printAmendmentToODT(Text $odt);
 
     /**
      * @return string

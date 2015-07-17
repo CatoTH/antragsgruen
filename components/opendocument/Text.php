@@ -7,20 +7,17 @@ use yii\helpers\Html;
 
 class Text extends Base
 {
-    const TEMPLATE_TYPE_ANTRAG      = 0;
-    const TEMPLATE_TYPE_BEGRUENDUNG = 1;
-
     /** @var null|\DOMElement */
-    private $nodeTemplate1 = null;
-    /** @var null|\DOMElement */
-    private $nodeTemplateN = null;
-    /** @var null|\DOMElement */
-    private $nodeReason = null;
+    private $nodeText = null;
 
     /** @var bool */
     private $node_template_1_used = false;
 
+    /** @var string[] */
     private $replaces = [];
+
+    /** @var array */
+    private $textBlocks = [];
 
 
     /**
@@ -33,11 +30,20 @@ class Text extends Base
     }
 
     /**
+     * @param string $html
+     * @param bool $lineNumbered
+     */
+    public function addHtmlTextBlock($html, $lineNumbered)
+    {
+        $this->textBlocks[] = ['text' => $html, 'lineNumbered' => $lineNumbered];
+    }
+
+    /**
      * @param \DOMNode $srcNode
-     * @param int $templateType
+     * @param bool $lineNumbered
      * @return \DOMNode
      */
-    protected function html2ooNodeInt($srcNode, $templateType)
+    protected function html2ooNodeInt($srcNode, $lineNumbered)
     {
         switch ($srcNode->nodeType) {
             case XML_ELEMENT_NODE:
@@ -68,22 +74,6 @@ class Text extends Base
                     case 'br':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'line-break');
                         break;
-                    case 'p':
-                    case 'div':
-                    case 'blockquote':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'p');
-                        break;
-                    case 'ul':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
-                        break;
-                    case 'ol':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
-                        break;
-                    case 'li':
-                        $dst_el    = $this->doc->createElementNS(static::NS_TEXT, 'list-item');
-                        $append_el = $this->getNextNodeTemplate($templateType);
-                        $dst_el->appendChild($append_el);
-                        break;
                     case 'del':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
                         $dst_el->setAttribute('text:style-name', 'AntragsgruenDel');
@@ -102,6 +92,32 @@ class Text extends Base
                         } catch (\Exception $e) {
                         }
                         break;
+                    case 'p':
+                    case 'div':
+                    case 'blockquote':
+                        $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        break;
+                    case 'ul':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
+                        break;
+                    case 'ol':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
+                        break;
+                    case 'li':
+                        $dst_el    = $this->doc->createElementNS(static::NS_TEXT, 'list-item');
+                        $append_el = $this->getNextNodeTemplate($lineNumbered);
+                        $dst_el->appendChild($append_el);
+                        break;
+                    case 'h1':
+                        $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $dst_el->setAttribute('text:style-name', 'Antragsgrün_20_H1');
+                        break;
+                    case 'h2':
+                    case 'h3':
+                    case 'h4':
+                        $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $dst_el->setAttribute('text:style-name', 'Antragsgrün_20_H2');
+                        break;
                     default:
                         die('Unknown Tag: ' . $srcNode->nodeName);
                 }
@@ -111,7 +127,7 @@ class Text extends Base
                         echo "CHILD<br>" . $child->nodeType . "<br>";
                     }
 
-                    $dst_node = $this->html2ooNodeInt($child, $templateType);
+                    $dst_node = $this->html2ooNodeInt($child, $lineNumbered);
                     if ($this->DEBUG) {
                         echo "CHILD";
                         var_dump($dst_node);
@@ -151,10 +167,10 @@ class Text extends Base
 
     /**
      * @param string $html
-     * @param int $templateType
+     * @param bool $lineNumbered
      * @return \DOMNode[]
      */
-    protected function html2ooNodes($html, $templateType)
+    protected function html2ooNodes($html, $lineNumbered)
     {
         $body = HTMLTools::html2DOM($html);
 
@@ -168,10 +184,10 @@ class Text extends Base
                 if ($this->DEBUG) {
                     echo 'LIST<br>';
                 }
-                $new_node = $this->html2ooNodeInt($child, $templateType);
+                $new_node = $this->html2ooNodeInt($child, $lineNumbered);
             } else {
                 if ($child->nodeType == XML_TEXT_NODE) {
-                    $new_node = $this->getNextNodeTemplate($templateType);
+                    $new_node = $this->getNextNodeTemplate($lineNumbered);
                     /** @var \DOMText $child */
                     if ($this->DEBUG) {
                         echo $child->nodeName . ' - ' . Html::encode($child->data) . '!!!!!!!!!!!!<br>';
@@ -183,7 +199,7 @@ class Text extends Base
                     if ($this->DEBUG) {
                         echo $child->nodeName . '!!!!!!!!!!!!<br>';
                     }
-                    $new_node = $this->html2ooNodeInt($child, $templateType);
+                    $new_node = $this->html2ooNodeInt($child, $lineNumbered);
                 }
             }
             if ($new_node) {
@@ -198,7 +214,7 @@ class Text extends Base
      * @param string $reason
      * @return string
      */
-    public function convert($motionParagraphs, $reason)
+    public function convert()
     {
         $this->appendTextStyleNode('AntragsgruenBold', [
             'fo:font-weight'            => 'bold',
@@ -241,76 +257,66 @@ class Text extends Base
                     /** @var \DOMText $child */
                     $child->data = preg_replace($searchFor, $replaceWith, $child->data);
 
-                    if (preg_match("/\{\{ANTRAGSGRUEN:BEGRUENDUNG( [^\}]*)?/siu", $child->data)) {
-                        $this->nodeReason = $node;
+                    if (preg_match("/\{\{ANTRAGSGRUEN:DUMMY\}\}/siu", $child->data)) {
+                        $node->parentNode->removeChild($node);
                     }
-                    if (preg_match("/\{\{ANTRAGSGRUEN:ANTRAGSTEXT_1( [^\}]*)?/siu", $child->data)) {
-                        $this->nodeTemplate1 = $node;
-                    }
-                    if (preg_match("/\{\{ANTRAGSGRUEN:ANTRAGSTEXT_N( [^\}]*)?/siu", $child->data)) {
-                        $this->nodeTemplateN = $node;
+                    if (preg_match("/\{\{ANTRAGSGRUEN:TEXT\}\}/siu", $child->data)) {
+                        $this->nodeText = $node;
                     }
                 }
             }
         }
 
-        if ($this->nodeReason) {
-            if ($reason) {
-                $new_nodes = $this->html2ooNodes($reason, static::TEMPLATE_TYPE_BEGRUENDUNG);
-                foreach ($new_nodes as $new_node) {
-                    $this->nodeReason->parentNode->insertBefore($new_node, $this->nodeReason);
-                }
+        foreach ($this->textBlocks as $textBlock) {
+            $newNodes = $this->html2ooNodes($textBlock['text'], $textBlock['lineNumbered']);
+            foreach ($newNodes as $newNode) {
+                $this->nodeText->parentNode->insertBefore($newNode, $this->nodeText);
             }
-            $this->nodeReason->parentNode->removeChild($this->nodeReason);
         }
-
-        if ($this->nodeTemplate1) {
-            $html = HtmlBBcodeUtils::bbcode2html($motionParagraphs[0]->str_bbcode);
-            if ($this->DEBUG) {
-                echo "======<br>" . nl2br(Html::encode($html)) . "<br>========<br>";
-            }
-            $new_nodes = $this->html2ooNodes($html, static::TEMPLATE_TYPE_ANTRAG);
-            foreach ($new_nodes as $new_node) {
-                $this->nodeTemplate1->parentNode->insertBefore($new_node, $this->nodeTemplate1);
-            }
-            $this->nodeTemplate1->parentNode->removeChild($this->nodeTemplate1);
-        }
-        if ($this->nodeTemplateN) {
-            for ($i = 1; $i < count($motionParagraphs); $i++) {
-                $html = HtmlBBcodeUtils::bbcode2html($motionParagraphs[$i]->str_bbcode);
-                if ($this->DEBUG) {
-                    echo "======<br>" . nl2br(Html::encode($html)) . "<br>========<br>";
-                }
-                $new_nodes = $this->html2ooNodes($html, static::TEMPLATE_TYPE_ANTRAG);
-                foreach ($new_nodes as $new_node) {
-                    $this->nodeTemplateN->parentNode->insertBefore($new_node, $this->nodeTemplateN);
-                }
-            }
-            $this->nodeTemplateN->parentNode->removeChild($this->nodeTemplateN);
-        }
-
 
         return $this->doc->saveXML();
     }
 
     /**
-     * @param int
-     * @throws \Exception
+     * @param bool $lineNumbers
      * @return \DOMNode
      */
-    protected function getNextNodeTemplate($template_type)
+    protected function getNextNodeTemplate($lineNumbers)
     {
-        if ($template_type == static::TEMPLATE_TYPE_BEGRUENDUNG) {
-            return $this->nodeReason->cloneNode();
-        }
-        if ($template_type == static::TEMPLATE_TYPE_ANTRAG) {
-            if ($this->node_template_1_used && $this->nodeTemplateN) {
-                return $this->nodeTemplateN->cloneNode();
+        $node = $this->nodeText->cloneNode();
+        /** @var \DOMElement $node */
+        if ($lineNumbers) {
+            if ($this->node_template_1_used) {
+                $node->setAttribute('text:style-name', 'Antragsgrün_20_LineNumbered_20_Standard');
             } else {
                 $this->node_template_1_used = true;
-                return $this->nodeTemplate1->cloneNode();
+                $node->setAttribute('text:style-name', 'Antragsgrün_20_LineNumbered_20_First');
             }
+        } else {
+            $node->setAttribute('text:style-name', 'Antragsgrün_20_Standard');
+            return $this->nodeText->cloneNode();
         }
-        throw new \Exception("Ungültiges Template");
+        return $node;
+    }
+
+    /**
+     * @param string $nodeType
+     * @param bool $lineNumbers
+     * @return \DOMElement|\DOMNode
+     */
+    protected function createNodeWithBaseStyle($nodeType, $lineNumbers)
+    {
+        $node = $this->doc->createElementNS(static::NS_TEXT, $nodeType);
+        if ($lineNumbers) {
+            if ($this->node_template_1_used) {
+                $node->setAttribute('text:style-name', 'Antragsgrün_20_LineNumbered_20_Standard');
+            } else {
+                $this->node_template_1_used = true;
+                $node->setAttribute('text:style-name', 'Antragsgrün_20_LineNumbered_20_First');
+            }
+        } else {
+            $node->setAttribute('text:style-name', 'Antragsgrün_20_Standard');
+        }
+        return $node;
     }
 }

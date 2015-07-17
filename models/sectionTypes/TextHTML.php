@@ -3,8 +3,10 @@
 namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
+use app\components\opendocument\Text;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\FormError;
+use yii\helpers\Html;
 
 class TextHTML extends ISectionType
 {
@@ -136,5 +138,25 @@ class TextHTML extends ISectionType
     public function getAmendmentODS()
     {
         return '<p>Kann nicht angezeigt werden</p>';
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printMotionToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printAmendmentToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
     }
 }

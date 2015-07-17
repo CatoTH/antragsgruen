@@ -7,11 +7,13 @@ use app\components\diff\Diff;
 use app\components\HTMLTools;
 use app\components\latex\Exporter;
 use app\components\LineSplitter;
+use app\components\opendocument\Text;
 use app\controllers\Base;
 use app\models\db\AmendmentSection;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
+use yii\helpers\Html;
 use yii\web\View;
 
 class TextSimple extends ISectionType
@@ -162,7 +164,7 @@ class TextSimple extends ISectionType
     {
         $out = '';
         foreach ($diffGroups as $diff) {
-            $text = $diff['text'];
+            $text      = $diff['text'];
             $hasInsert = (mb_strpos($text, '<ins>') !== false || mb_strpos($text, 'class="inserted"') !== false);
             $hasDelete = (mb_strpos($text, '<del>') !== false || mb_strpos($text, 'class="deleted"') !== false);
             $out .= $wrapStart;
@@ -319,5 +321,42 @@ class TextSimple extends ISectionType
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
         return static::formatDiffGroup($diffGroups);
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printMotionToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        if ($this->section->consultationSetting->lineNumbers) {
+            $paragraphs = $this->section->getTextParagraphObjects(true, false, false);
+            foreach ($paragraphs as $paragraph) {
+                $html = implode('<br>', $paragraph->lines);
+                $html = str_replace('###LINENUMBER###', '', $html);
+                if (mb_substr($html, 0, 1) != '<') {
+                    $html = '<p>' . $html . '</p>';
+                }
+
+                $odt->addHtmlTextBlock($html, true);
+            }
+        } else {
+            $paras = $this->section->getTextParagraphs();
+            foreach ($paras as $para) {
+                $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
+                $odt->addHtmlTextBlock(implode('<br>', $lines), false);
+            }
+        }
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printAmendmentToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('[ÄNDERUNG]', false); // @TODO
     }
 }

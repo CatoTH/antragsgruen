@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\latex\Exporter;
+use app\components\opendocument\Text;
 use app\models\exceptions\FormError;
 use yii\helpers\Html;
 
@@ -138,5 +139,23 @@ class Title extends ISectionType
     public function getAmendmentODS()
     {
         return '<p>' . Html::encode($this->section->data) . '</p>';
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printMotionToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h1>' . Html::encode($this->section->data) . '</h1>', false);
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printAmendmentToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h1>' . Html::encode($this->section->data) . '</h1>', false);
     }
 }

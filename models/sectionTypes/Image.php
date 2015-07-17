@@ -2,6 +2,7 @@
 
 namespace app\models\sectionTypes;
 
+use app\components\opendocument\Text;
 use app\components\UrlHelper;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
@@ -202,5 +203,25 @@ class Image extends ISectionType
     public function getAmendmentODS()
     {
         return '<p>[BILD]</p>';
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printMotionToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('[BILD]', false); // @TODO
+    }
+
+    /**
+     * @param Text $odt
+     * @return mixed
+     */
+    public function printAmendmentToODT(Text $odt)
+    {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('[BILD]', false); // @TODO
     }
 }
