@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `amendmentSection` (
   `sectionId`   INT(11)  NOT NULL,
   `data`        LONGTEXT NOT NULL,
   `dataRaw`     LONGTEXT NOT NULL,
+  `cache`       TEXT     NOT NULL,
   `metadata`    TEXT
 )
   ENGINE = InnoDB
@@ -354,6 +355,7 @@ CREATE TABLE IF NOT EXISTS `motionSection` (
   `motionId`  INT(11)  NOT NULL,
   `sectionId` INT(11)  NOT NULL,
   `data`      LONGTEXT NOT NULL,
+  `cache`     TEXT     NOT NULL,
   `metadata`  TEXT
 )
   ENGINE = InnoDB

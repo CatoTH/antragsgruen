@@ -342,6 +342,7 @@ class Consultation extends ActiveRecord
      */
     public function getNextAmendmentPrefix($motionId)
     {
+
         return 'TODO'; // @TODO
     }
 

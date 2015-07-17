@@ -14,6 +14,7 @@ use app\models\exceptions\Internal;
  * @property int $motionId
  * @property int $sectionId
  * @property string $data
+ * @property string $cache
  * @property string $metadata
  *
  * @property Motion $motion

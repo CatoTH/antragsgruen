@@ -13,6 +13,7 @@ use app\models\sectionTypes\ISectionType;
  * @property int $sectionId
  * @property string $data
  * @property string $dataRaw
+ * @property string $cache
  * @property string $metadata
  *
  * @property Amendment $amendment
