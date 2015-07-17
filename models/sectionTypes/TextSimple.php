@@ -287,16 +287,16 @@ class TextSimple extends ISectionType
     {
         $tex = '';
 
-        /** var AmendmentSection $section */
+        /** @var AmendmentSection $section */
         $section = $this->section;
 
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
 
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->consultationSetting->title);
             $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-            $html = \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
+            $html = TextSimple::formatDiffGroup($diffGroups);
             $tex .= Exporter::encodeHTMLString($html);
         }
 
@@ -318,7 +318,7 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
         return static::formatDiffGroup($diffGroups);
     }
@@ -329,12 +329,15 @@ class TextSimple extends ISectionType
      */
     public function printMotionToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
-        if ($this->section->consultationSetting->lineNumbers) {
-            $paragraphs = $this->section->getTextParagraphObjects(true, false, false);
+        $section = $this->section;
+        /** @var MotionSection $section */
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($section->consultationSetting->title) . '</h2>', false);
+        if ($section->consultationSetting->lineNumbers) {
+            $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
                 $html = implode('<br>', $paragraph->lines);
                 $html = str_replace('###LINENUMBER###', '', $html);
+                $html = str_replace('###FORCELINEBREAK###', '', $html);
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';
                 }
@@ -342,7 +345,7 @@ class TextSimple extends ISectionType
                 $odt->addHtmlTextBlock($html, true);
             }
         } else {
-            $paras = $this->section->getTextParagraphs();
+            $paras = $section->getTextParagraphs();
             foreach ($paras as $para) {
                 $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
                 $odt->addHtmlTextBlock(implode('<br>', $lines), false);

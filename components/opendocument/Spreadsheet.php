@@ -393,7 +393,7 @@ class Spreadsheet extends Base
                     if (in_array('superscript', $classes)) {
                         $currentFormats[] = static::FORMAT_SUP;
                     }
-                    if (in_array('subscritp', $classes)) {
+                    if (in_array('subscript', $classes)) {
                         $currentFormats[] = static::FORMAT_SUB;
                     }
                 }

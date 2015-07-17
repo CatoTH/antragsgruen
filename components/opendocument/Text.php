@@ -55,7 +55,33 @@ class Text extends Base
                 switch ($srcNode->nodeName) {
                     case 'span':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        // @TODO Formattings
+                        if ($srcNode->hasAttribute('class')) {
+                            $classes = explode(' ', $srcNode->getAttribute('class'));
+                            if (in_array('underline', $classes)) {
+                                $dst_el->setAttribute('text:style-name', 'AntragsgruenUnderlined');
+                            }
+                            if (in_array('strike', $classes)) {
+                                $dst_el->setAttribute('text:style-name', 'AntragsgruenStrike');
+                            }
+                            if (in_array('ins', $classes)) {
+                                $dst_el->setAttribute('text:style-name', 'AntragsgruenIns');
+                            }
+                            if (in_array('inserted', $classes)) {
+                                $dst_el->setAttribute('text:style-name', 'AntragsgruenIns');
+                            }
+                            if (in_array('del', $classes)) {
+                                $dst_el->setAttribute('text:style-name', 'AntragsgruenDel');
+                            }
+                            if (in_array('deleted', $classes)) {
+                                $dst_el->setAttribute('text:style-name', 'AntragsgruenDel');
+                            }
+                            if (in_array('superscript', $classes)) {
+                                $dst_el->setAttribute('text:style-name', 'AntragsgruenSup');
+                            }
+                            if (in_array('subscritp', $classes)) {
+                                $dst_el->setAttribute('text:style-name', 'AntragsgruenSub');
+                            }
+                        }
                         break;
                     case 'b':
                     case 'strong':
@@ -67,9 +93,21 @@ class Text extends Base
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
                         $dst_el->setAttribute('text:style-name', 'AntragsgruenItalic');
                         break;
+                    case 's':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenStrike');
+                        break;
                     case 'u':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
                         $dst_el->setAttribute('text:style-name', 'AntragsgruenUnderlined');
+                        break;
+                    case 'sub':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenSub');
+                        break;
+                    case 'sup':
+                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenSup');
                         break;
                     case 'br':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'line-break');
@@ -231,11 +269,21 @@ class Text extends Base
             'style:text-underline-color' => 'font-color',
             'style:text-underline-style' => 'solid',
         ]);
+        $this->appendTextStyleNode('AntragsgruenStrike', [
+            'style:text-line-through-style' => 'solid',
+            'style:text-line-through-type'  => 'single',
+        ]);
         $this->appendTextStyleNode('AntragsgruenIns', [
             'fo:color' => '#00ff00',
         ]);
         $this->appendTextStyleNode('AntragsgruenDel', [
             'fo:color' => '#ff0000',
+        ]);
+        $this->appendTextStyleNode('AntragsgruenSub', [
+            'style:text-position' => 'sub 58%',
+        ]);
+        $this->appendTextStyleNode('AntragsgruenSup', [
+            'style:text-position' => 'super 58%',
         ]);
 
         /** @var \DOMNode[] $nodes */
@@ -273,6 +321,8 @@ class Text extends Base
                 $this->nodeText->parentNode->insertBefore($newNode, $this->nodeText);
             }
         }
+
+        $this->nodeText->parentNode->removeChild($this->nodeText);
 
         return $this->doc->saveXML();
     }
