@@ -47,7 +47,7 @@ class Validator extends \Codeception\Module
     {
         $filename = '/tmp/' . uniqid('html-validate') . '.html';
         file_put_contents($filename, $html);
-        exec("java -Xss512k -jar /usr/local/bin/vnu.jar --format json " . $filename . " 2>&1", $return);
+        exec("java -Xss1024k -jar /usr/local/bin/vnu.jar --format json " . $filename . " 2>&1", $return);
         $data = json_decode($return[0], true);
         if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
             throw new \Exception('Invalid data returned from validation service: ' . $return);

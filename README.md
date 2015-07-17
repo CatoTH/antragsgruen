@@ -46,13 +46,14 @@ docker run -p 80:80 --name antragsgruen1 -d antragsgruen1
 Testing
 -------
 
-* [PhantomJS](http://phantomjs.org/download.html) installieren
-* PhantomJS starten: phantomjs --webdriver=4444
-* Debug-Server starten: ```bash
+* Install [PhantomJS](http://phantomjs.org/download.html)
+* For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
+* Start PhantomJS: phantomjs --webdriver=4444
+* Start debug server: ```bash
 tests/start_debug_server.sh```
-* Alle Tests ausführen: ```bash
+* Run all tests: ```bash
 vendor/bin/codecept run```
-* Einzelnen Acceptence-Test ausführen: ```bash
+* Run a single acceptence-test: ```bash
 vendor/bin/codecept run acceptance MotionCreateCept```
 
 
