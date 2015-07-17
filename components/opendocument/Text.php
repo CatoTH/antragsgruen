@@ -3,6 +3,7 @@
 namespace app\components\opendocument;
 
 use app\components\HTMLTools;
+use app\models\exceptions\Internal;
 use yii\helpers\Html;
 
 class Text extends Base
@@ -157,7 +158,7 @@ class Text extends Base
                         $dst_el->setAttribute('text:style-name', 'Antragsgrün_20_H2');
                         break;
                     default:
-                        die('Unknown Tag: ' . $srcNode->nodeName);
+                        throw new Internal('Unknown Tag: ' . $srcNode->nodeName);
                 }
                 foreach ($srcNode->childNodes as $child) {
                     /** @var \DOMNode $child */
