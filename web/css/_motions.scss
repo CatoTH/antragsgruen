@@ -4,7 +4,6 @@
 
 @mixin motionListStdMotion($titleFontSize) {
   .motion {
-    padding: 12px 20px 17px 50px;
     position: relative;
     &:last-child {
       padding-bottom: 0;
@@ -12,16 +11,14 @@
 
     > .date {
       color: rgb(179, 180, 180);
-      display: block;
       margin-left: 20px;
       position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
       top: 12px;
       right: 12px;
     }
 
-    .title {
+    > .title {
       margin-bottom: 3px;
-      padding-right: 65px;
 
       .motionIcon {
         width: 27px;
@@ -73,13 +70,13 @@
     margin: 0;
     padding: 0;
 
-    li {
+    > li {
       margin-bottom: 3px;
       position: relative;
       &.withdrawn {
         text-decoration: line-through;
       }
-      a {
+      > a {
         font-weight: bold;
         margin-right: 5px;
       }
@@ -103,10 +100,48 @@
 
   @include motionListStdMotion(16px);
 
+
+  &.layout1 {
+    .motion {
+      padding: 12px 20px 17px 50px;
+
+      > .date {
+        display: block;
+      }
+      > .title {
+        padding-right: 65px;
+        .motionPrefix {
+          display: inline-block;
+          &:after {
+            content: ':';
+          }
+        }
+      }
+      .info {
+        font-style: italic;
+        color: rgb(115, 115, 115);
+      }
+    }
+    h4.amendments {
+      display: none;
+    }
+    ul.amendments {
+      > li {
+        > .date {
+          display: block;
+        }
+      }
+    }
+  }
+
   &.layout2 {
     .motion {
-      padding-left: 30px;
-      .title {
+      padding: 12px 30px 17px 30px;
+
+      > .date {
+        display: none;
+      }
+      > .title {
         font-family: $stdHeadingFont;
         .motionIcon {
           display: none;
@@ -129,13 +164,18 @@
         margin-left: 95px;
       }
     }
-    .amendments > li > a {
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
     ul.amendments {
       margin-bottom: 10px;
+      > li {
+        > a {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        > .date {
+          display: none;
+        }
+      }
     }
     h4.amendments {
       margin-top: 10px;
@@ -144,25 +184,6 @@
       font-size: 14px;
       font-weight: bold;
       color: $colorGreenLight;
-    }
-  }
-  &.layout1 {
-    .motion {
-      .title {
-        .motionPrefix {
-          display: inline-block;
-          &:after {
-            content: ':';
-          }
-        }
-      }
-      .info {
-        font-style: italic;
-        color: rgb(115, 115, 115);
-      }
-    }
-    h4.amendments {
-      display: none;
     }
   }
 }
