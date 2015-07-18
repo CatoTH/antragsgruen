@@ -112,8 +112,9 @@ a {
     padding: 15px 20px 30px;
     overflow: visible; // Wg. Datetimepicker, der über den Rand hinausgeht
   }
-  .alert {
-    margin-top: 20px;
+
+  > .alert {
+    margin: 20px;
   }
 }
 

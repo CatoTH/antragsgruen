@@ -906,24 +906,6 @@ INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `titl
   (10, 1, 2, 'Soziales', 0);
 
 --
--- Dumping data for table `emailLog`
---
-
-INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateSent`, `subject`, `text`) VALUES
-  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-05-22 11:46:38', 'Neuer Antrag',
-   'Es wurde ein neuer Änderungsantrag "Ä1 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/2/amendment/1'),
-  (2, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-06-25 11:03:55', 'Neuer Antrag',
-   'Es wurde ein neuer Antrag "Textformatierungen" eingereicht.\nLink: /std-parteitag/motion/3'),
-  (3, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-05 14:21:55', 'Neuer Antrag',
-   'Es wurde ein neuer Änderungsantrag "Ä1 zu A3: Textformatierungen" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/3/amendment/2'),
-  (4, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-06 17:49:33', 'Neuer Antrag',
-   'Es wurde ein neuer Änderungsantrag "Ä2 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/2/amendment/3'),
-  (5, 'testadmin@example.org', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-07 18:05:49', 'Neuer Antrag',
-   'Es wurde ein neuer Antrag "Lorem ipsum dolor sit amet" eingereicht.\nLink: http://bdk.antragsgruen-v3.localhost/bdk/motion/4'),
-  (6, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-07-12 06:08:47', 'Neuer Antrag',
-   'Es wurde ein neuer Antrag "Testantrag" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/58');
-
---
 -- Dumping data for table `motion`
 --
 

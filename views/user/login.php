@@ -6,7 +6,7 @@ use yii\helpers\Html;
 use app\models\settings\Site as SiteSettings;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var LoginUsernamePasswordForm $usernamePasswordForm
  * @var string $msg_err
  */
@@ -73,59 +73,32 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods) || in_array(SiteSettings::L
         </div>
 
         <div class="form-group">
-            <label for="password_input">Passwort:</label>
-            <input type="password" name="password" id="password_input" required class="form-control">
+            <label for="passwordInput">Passwort:</label>
+            <input type="password" name="password" id="passwordInput" required class="form-control"
+            data-min-len="' . $pwMinLen . '">
         </div>
 
-        <div class="form-group"  id="pwd_confirm" style="display: none;">
+        <div class="form-group hidden"  id="pwdConfirm">
             <label for="passwordConfirm">Passwort (Bestätigung):</label>
             <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control">
         </div>
 
-        <div class="form-group" id="reg_name" style="display: none;">
+        <div class="form-group hidden" id="regName">
             <label for="name">Dein Name:</label>
             <input type="text" value="' . Html::encode($preName) . '" name="name" id="name" class="form-control">
         </div>
 
-        <script>
-            $(function () {
-                var $form = $("#usernamePasswordForm");
-                $form.find("input[name=createAccount]").change(function () {
-                    if ($(this).prop("checked")) {
-                        $("#pwd_confirm").show();
-                        $("#reg_name").show().find("input").attr("required", "required");
-                        $("#password_input").attr("placeholder", "Min. ' . $pwMinLen . ' Zeichen");
-                        $("#create_str").show();
-                        $("#login_str").hide();
-                    } else {
-                        $("#pwd_confirm").hide();
-                        $("#reg_name").hide().find("input").removeAttr("required");
-                        $("#password_input").attr("placeholder", "");
-                        $("#create_str").hide();
-                        $("#login_str").show();
-                    }
-                }).trigger("change");
-                $form.submit(function(ev) {
-                    var pwd = $("#password_input").val();
-                    if (pwd.length < 4) {
-                        ev.preventDefault();
-                        alert("Das Passwort muss mindestens 4 Buchstaben haben.");
-                    }
-                    if ($form.find("input[name=createAccount]").prop("checked")) {
-                        if (pwd != $("#passwordConfirm").val()) {
-                            ev.preventDefault();
-                            alert("Die beiden Passwörter stimmen nicht überein.");
-                        }
-                    }
-                });
-            })
-        </script>
-        <button type="submit" class="btn btn-primary" name="loginusernamepassword">
-
-            <span id="login_str"><span class="glyphicon glyphicon-log-in"></span> Einloggen</span>
-            <span id="create_str"><span class="glyphicon glyphicon-plus-sign"></span> Anlegen</span>
-        </button>
-        ';
+    <div class="row">
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-primary" name="loginusernamepassword">
+                <span id="loginStr"><span class="glyphicon glyphicon-log-in"></span> Einloggen</span>
+                <span id="createStr"><span class="glyphicon glyphicon-plus-sign"></span> Anlegen</span>
+            </button>
+        </div>
+        <div class="col-md-6 passwordRecovery">
+            ' . Html::a('Passwort vergessen?', UrlHelper::createUrl('user/recovery')) . '
+        </div>
+    </div>';
     echo Html::endForm();
 
     echo '</div>
@@ -138,9 +111,9 @@ if ($params->hasWurzelwerk) {
     echo '<section class="loginWurzelwerk">';
     if ($hide_ww_login) {
         echo '<div class="content">
-        <a href="#" onClick="$(\'#admin_login_www\').toggle(); return false;">Admin-Login</a>
+        <a href="#" onClick="$(\'#admin_login_www\').toggleClass(\'hidden\'); return false;">Admin-Login</a>
     </div>
-    <div id="admin_login_www" style="display: none;">';
+    <div id="admin_login_www" class="hidden">';
     }
 
     echo '<h2 class="green">Wurzelwerk-Login</h2>
@@ -199,3 +172,5 @@ if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
     echo Html::endForm();
     echo '</div></section>';
 }
+
+$layout->addOnLoadJS('$.Antragsgruen.loginForm();');

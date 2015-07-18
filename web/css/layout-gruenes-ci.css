@@ -4455,8 +4455,8 @@ a {
   .well .content {
     padding: 15px 20px 30px;
     overflow: visible; }
-  .well .alert {
-    margin-top: 20px; }
+  .well > .alert {
+    margin: 20px; }
 
 .navbar {
   margin-bottom: 0; }
@@ -9639,8 +9639,8 @@ a {
   .well .content {
     padding: 15px 20px 30px;
     overflow: visible; }
-  .well .alert {
-    margin-top: 20px; }
+  .well > .alert {
+    margin: 20px; }
 
 .navbar {
   margin-bottom: 0; }
@@ -9978,6 +9978,10 @@ ul.sidebarActions {
   margin-top: -7px;
   display: inline-block;
   margin-bottom: 10px; }
+
+#loginUsername .passwordRecovery {
+  text-align: right;
+  font-size: 0.8em; }
 
 .motionEditForm .submitHolder {
   text-align: right; }

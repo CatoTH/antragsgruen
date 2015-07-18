@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
@@ -23,6 +24,8 @@ use yii\web\IdentityInterface;
  * @property string $status
  * @property string $pwdEnc
  * @property string $authKey
+ * @property string $recoveryToken
+ * @property string $recoveryAt
  * @property null|int $siteNamespaceId
  *
  * @property null|Site $siteNamespace
@@ -390,7 +393,9 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function changePassword($newPassword)
     {
-        $this->pwdEnc = password_hash($newPassword, PASSWORD_DEFAULT);
+        $this->pwdEnc        = password_hash($newPassword, PASSWORD_DEFAULT);
+        $this->recoveryToken = null;
+        $this->recoveryAt    = null;
         $this->save();
     }
 
@@ -552,5 +557,55 @@ class User extends ActiveRecord implements IdentityInterface
             default:
                 return $this->auth;
         }
+    }
+
+    /**
+     */
+    public function sendRecoveryMail()
+    {
+        if ($this->recoveryAt) {
+            $ts = Tools::dateSql2timestamp($this->recoveryAt);
+            if (time() - $ts < 24 * 3600) {
+                $msg = 'Es wurde bereits eine Wiederherstellungs-E-Mail in den letzten 24 Stunden verschickt.';
+                throw new FormError($msg);
+            }
+        }
+
+        $recoveryToken       = rand(1000000, 9999999);
+        $this->recoveryAt    = date('Y-m-d H:i:s');
+        $this->recoveryToken = password_hash($recoveryToken, PASSWORD_DEFAULT);
+        $this->save();
+
+        $type     = EMailLog::TYPE_PASSWORD_RECOVERY;
+        $subject  = 'Antragsgrün: Passwort-Wiederherstellung';
+        $url      = UrlHelper::createUrl(['user/recovery', 'email' => $this->email, 'code' => $recoveryToken]);
+        $url      = UrlHelper::absolutizeLink($url);
+        $text     = "Hallo!\n\nDu hast eine Passwort-Wiederherstellung angefordert. " .
+            "Um diese durchzuführen, Rufe bitte folgenden Link auf und gib dort das neue Passwort ein:\n\n%URL%\n\n" .
+            "Oder gib in dem Wiederherstellungs-Formular folgenden Code ein: %CODE%";
+        $replaces = ['%URL%' => $url, '%CODE%' => $recoveryToken];
+        Tools::sendMailLog($type, $this->email, $this->id, $subject, $text, null, null, $replaces);
+    }
+
+    /**
+     * @param string $token
+     * @return bool
+     * @throws FormError
+     */
+    public function checkRecoveryToken($token)
+    {
+        if ($this->recoveryAt) {
+            $ts = Tools::dateSql2timestamp($this->recoveryAt);
+        } else {
+            $ts = 0;
+        }
+        if (time() - $ts > 24 * 3600) {
+            $msg = 'Es wurde kein Wiederherstellungs-Antrag innerhalb der letzten 24 Stunden gestellt.';
+            throw new FormError($msg);
+        }
+        if (!password_verify($token, $this->recoveryToken)) {
+            throw new FormError('Der angegebene Wiederherstellungs-Code stimmt leider nicht.');
+        }
+        return true;
     }
 }

@@ -23,7 +23,7 @@ $I->see('Login', 'h1');
 $I->wantTo('Create an account');
 
 $I->fillField(['id' => 'username'], 'non_existant@example.org');
-$I->fillField(['id' => 'password_input'], 'doesntmatter');
+$I->fillField(['id' => 'passwordInput'], 'doesntmatter');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 $I->see('BenutzerInnenname nicht gefunden.');
 
@@ -32,9 +32,27 @@ $I->checkOption(['id' => 'createAccount']);
 $I->see('Passwort (Bestätigung):');
 
 $I->fillField(['id' => 'username'], 'testaccount@example.org');
-$I->fillField(['id' => 'password_input'], 'testpassword');
-$I->fillField(['id' => 'passwordConfirm'], 'testpassword');
 $I->fillField(['id' => 'name'], 'Tester');
+
+$I->fillField('#passwordInput', 'n');
+$I->fillField('#passwordConfirm', 'n');
+$I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+$I->wait(1);
+$I->see('Das Passwort muss mindestens 4 Buchstaben haben.', '.bootbox');
+$I->click('.bootbox button');
+$I->wait(1);
+
+$I->fillField('#passwordInput', 'newuser');
+$I->fillField('#passwordConfirm', 'newuser2');
+$I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+$I->wait(1);
+$I->see('Die beiden Passwörter stimmen nicht überein.', '.bootbox');
+$I->click('.bootbox button');
+$I->wait(1);
+
+
+$I->fillField(['id' => 'passwordInput'], 'testpassword');
+$I->fillField(['id' => 'passwordConfirm'], 'testpassword');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 $I->see(mb_strtoupper('Bestätige deinen Zugang'), 'h1');
 

@@ -25,20 +25,22 @@ class EMailLog extends ActiveRecord
     const TYPE_MOTION_NOTIFICATION_ADMIN  = 3;
     const TYPE_NAMESPACED_ACCOUNT_CREATED = 4;
     const TYPE_DEBUG                      = 5;
+    const TYPE_PASSWORD_RECOVERY          = 6;
 
     /**
      * @return string[]
      */
     public static function getTypes()
     {
-        return array(
-            0 => "Sonstiges",
-            1 => "Registrierung",
-            2 => "Benachrichtigung User",
-            3 => "Benachrichtigung Admin",
-            4 => "Namespaced_Angelegt",
-            5 => "Debug",
-        );
+        return [
+            static::TYPE_OTHER                      => "Sonstiges",
+            static::TYPE_REGISTRATION               => "Registrierung",
+            static::TYPE_MOTION_NOTIFICATION_USER   => "Benachrichtigung User",
+            static::TYPE_MOTION_NOTIFICATION_ADMIN  => "Benachrichtigung Admin",
+            static::TYPE_NAMESPACED_ACCOUNT_CREATED => "Namespaced_Angelegt",
+            static::TYPE_DEBUG                      => "Debug",
+            static::TYPE_PASSWORD_RECOVERY          => 'Password-Wiederherstellung',
+        ];
     }
 
 

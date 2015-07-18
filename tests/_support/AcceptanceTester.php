@@ -132,7 +132,7 @@ class AcceptanceTester extends \Codeception\Actor
 
         $this->see('LOGIN', 'h1');
         $this->fillField('#username', 'testadmin@example.org');
-        $this->fillField('#password_input', 'testadmin');
+        $this->fillField('#passwordInput', 'testadmin');
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
     }
 
@@ -146,7 +146,7 @@ class AcceptanceTester extends \Codeception\Actor
 
         $this->see('LOGIN', 'h1');
         $this->fillField('#username', 'testuser@example.org');
-        $this->fillField('#password_input', 'testuser');
+        $this->fillField('#passwordInput', 'testuser');
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
     }
 

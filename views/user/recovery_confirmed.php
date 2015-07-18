@@ -4,17 +4,16 @@
  * @var yii\web\View $this
  */
 
-$this->title = 'Zugang bestätigt';
+$this->title = 'Passwort geändert';
 ?>
 
-<h1>Zugang bestätigt</h1>
+<h1>Passwort geändert</h1>
 
 <div class="content">
 
-
     <div class="alert alert-success" role="alert">
         <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-        Alles klar! Dein zugang ist freigeschaltet und du kannst loslegen!
+        Alles klar! Dein Passwort wurde geändert.
     </div>
 
 </div>

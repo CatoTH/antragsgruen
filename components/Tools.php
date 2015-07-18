@@ -221,7 +221,7 @@ class Tools
         $fromEmail    = ($fromEmail ? $fromEmail : $params->mailFromEmail);
         $sendMailFrom = mb_encode_mimeheader($fromName) . ' <' . $fromEmail . '>';
 
-        if (YII_ENV != 'test') {
+        if (YII_ENV != 'test' && mb_strpos($toEmail, '@example.org') === false) {
             if ($params->mandrillApiKey) {
                 static::sendEmailMandrill($mailType, $toEmail, $subject, $sendText, $fromEmail, $fromName);
             } else {
@@ -238,7 +238,7 @@ class Tools
         $obj->fromEmail = $sendMailFrom;
         $obj->subject   = $subject;
         $obj->text      = $text;
-        $obj->dateSent  = date("Y-m-d H:i:s");
+        $obj->dateSent  = date('Y-m-d H:i:s');
         $obj->save();
     }
 

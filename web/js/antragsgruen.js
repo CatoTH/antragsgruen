@@ -101,22 +101,22 @@
 
         /* @TODO
          var $fieldset = $el.parents("fieldset.textarea").first();
-        if ($fieldset.data("max_len") > 0) {
-            var onChange = function () {
-                if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
-                    $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
-                    $fieldset.find(".max_len_hint .calm").addClass("hidden");
-                    $fieldset.find(".max_len_hint .alert").removeClass("hidden");
-                } else {
-                    $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
-                    $fieldset.find(".max_len_hint .calm").removeClass("hidden");
-                    $fieldset.find(".max_len_hint .alert").addClass("hidden");
-                }
-            };
-            editor.on('change', onChange);
-            onChange();
-        }
-        */
+         if ($fieldset.data("max_len") > 0) {
+         var onChange = function () {
+         if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
+         $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
+         $fieldset.find(".max_len_hint .calm").addClass("hidden");
+         $fieldset.find(".max_len_hint .alert").removeClass("hidden");
+         } else {
+         $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
+         $fieldset.find(".max_len_hint .calm").removeClass("hidden");
+         $fieldset.find(".max_len_hint .alert").addClass("hidden");
+         }
+         };
+         editor.on('change', onChange);
+         onChange();
+         }
+         */
 
         return editor;
     }
@@ -348,7 +348,7 @@
         $('.fullTextAdd').click(function () {
             var lines = $fullTextHolder.find('textarea').val().split("\n"),
                 template = $('#newSupporterTemplate').data('html'),
-                getNewElement = function() {
+                getNewElement = function () {
                     var $rows = $supporterData.find(".supporterRow");
                     for (var i = 0; i < $rows.length; i++) {
                         var $row = $rows.eq(i);
@@ -425,7 +425,41 @@
         }
     };
 
+    var loginForm = function () {
+        var $form = $("#usernamePasswordForm"),
+            pwMinLen = $("#passwordInput").data("min-len");
+        $form.find("input[name=createAccount]").change(function () {
+            if ($(this).prop("checked")) {
+                $("#pwdConfirm").removeClass('hidden');
+                $("#regName").removeClass('hidden').find("input").attr("required", "required");
+                $("#passwordInput").attr("placeholder", "Min. " + pwMinLen + " Zeichen");
+                $("#create_str").removeClass('hidden');
+                $("#login_str").addClass('hidden');
+            } else {
+                $("#pwdConfirm").addClass('hidden');
+                $("#regName").addClass('hidden').find("input").removeAttr("required");
+                $("#passwordInput").attr("placeholder", "");
+                $("#createStr").addClass('hidden');
+                $("#loginStr").removeClass('hidden');
+            }
+        }).trigger("change");
+        $form.submit(function (ev) {
+            var pwd = $("#passwordInput").val();
+            if (pwd.length < pwMinLen) {
+                ev.preventDefault();
+                bootbox.alert('Das Passwort muss mindestens 4 Buchstaben haben.');
+            }
+            if ($form.find("input[name=createAccount]").prop("checked")) {
+                if (pwd != $("#passwordConfirm").val()) {
+                    ev.preventDefault();
+                    bootbox.alert('Die beiden Passwörter stimmen nicht überein.');
+                }
+            }
+        });
+    };
+
     $.Antragsgruen = {
+        'loginForm': loginForm,
         'motionShow': motionShow,
         'amendmentShow': amendmentShow,
         'motionEditForm': motionEditForm,

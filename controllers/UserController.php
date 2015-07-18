@@ -7,6 +7,7 @@ use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
 use app\components\WurzelwerkAuthClientTest;
 use app\models\db\User;
+use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
@@ -15,16 +16,6 @@ use Yii;
 class UserController extends Base
 {
     public $enableCsrfValidation = false;
-
-    /**
-     * @param \yii\base\Action $action
-     * @return bool
-     */
-    public function beforeAction($action)
-    {
-        return parent::beforeAction($action);
-    }
-
 
     /**
      * @return array
@@ -217,7 +208,58 @@ class UserController extends Base
      */
     public function actionLogout($backUrl)
     {
-        Yii::$app->user->logout();
+        \Yii::$app->user->logout();
         $this->redirect($backUrl, 307);
+    }
+
+    /**
+     * @param string $email
+     * @param string $code
+     * @return string
+     */
+    public function actionRecovery($email = '', $code = '')
+    {
+        if (isset($_POST['send'])) {
+            /** @var User $user */
+            $user = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
+            if (!$user) {
+                $msg = str_replace('%USER%', $_REQUEST['email'], 'Der Account %USER% wurde nicht gefunden.');
+                \yii::$app->session->setFlash('error', $msg);
+            } else {
+                $email = $_REQUEST['email'];
+                try {
+                    $user->sendRecoveryMail();
+                    $msg = 'Dir wurde eine Passwort-Wiederherstellungs-Mail geschickt.';
+                    \yii::$app->session->setFlash('success', $msg);
+                } catch (ExceptionBase $e) {
+                    \yii::$app->session->setFlash('error', $e->getMessage());
+                }
+            }
+        }
+
+        if (isset($_POST['recover'])) {
+            /** @var User $user */
+            $user     = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
+            $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+            if (!$user) {
+                $msg = str_replace('%USER%', $_REQUEST['email'], 'Der Account %USER% wurde nicht gefunden.');
+                \yii::$app->session->setFlash('error', $msg);
+            } elseif (mb_strlen($_POST['newPassword']) < $pwMinLen) {
+                $msg = str_replace('%MINLEN%', $pwMinLen, 'Das Passwort muss mindestens %MINLEN% Zeichen lang sein.');
+                \yii::$app->session->setFlash('error', $msg);
+            } else {
+                $email = $_REQUEST['email'];
+                try {
+                    if ($user->checkRecoveryToken($_REQUEST['recoveryCode'])) {
+                        $user->changePassword($_REQUEST['newPassword']);
+                        return $this->render('recovery_confirmed');
+                    }
+                } catch (ExceptionBase $e) {
+                    \yii::$app->session->setFlash('error', $e->getMessage());
+                }
+            }
+        }
+
+        return $this->render('recovery', ['preEmail' => $email, 'preCode' => $code]);
     }
 }

@@ -75,7 +75,13 @@ class LoginUsernamePasswordForm extends Model
      */
     private function doCreateAccountValidate($site)
     {
-        if (!in_array(SiteSettings::LOGIN_STD, $site->getSettings()->loginMethods)) {
+        if ($site) {
+            $methods = $site->getSettings()->loginMethods;
+        } else {
+            $methods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
+        }
+
+        if (!in_array(SiteSettings::LOGIN_STD, $methods)) {
             $this->error = 'Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.';
             throw new Login($this->error);
         }

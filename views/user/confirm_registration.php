@@ -32,25 +32,25 @@ $params = ['user/confirmregistration', 'backUrl' => $backUrl];
 if ($email) {
     $params['email'] = $email;
 }
-echo Html::beginForm(UrlHelper::createUrl($params), 'post', ['class' => 'col-sm-6', 'id' => 'confirmAccountForm']);
+echo Html::beginForm(UrlHelper::createUrl($params), 'post', ['id' => 'confirmAccountForm']);
 
-echo '<div class="form-group">
+echo '<div class="row"><div class="form-group col-md-6">
     <label for="username">E-Mail-Adresse / BenutzerInnenname:</label>
     <input type="text" value="' . Html::encode($email) . '" id="username" name="email" class="form-control" ';
 if ($email != '') {
     echo "disabled";
 }
 echo '>
-        </div>
+        </div></div>
 
-    <div class="form-group">
+    <div class="row"><div class="form-group col-md-6">
         <label for="code">Bestätigungs-Code:</label>
         <input type="text" name="code" value="" id="code" class="form-control">
-    </div>
+    </div></div>
 
-    <br>
-
-    <input type="submit" value="Bestätigen" class="btn btn-primary">
+    <div class="row"><div class="col-md-6">
+        <input type="submit" value="Bestätigen" class="btn btn-primary">
+    </div></div>
     ';
 
 echo Html::endForm();
