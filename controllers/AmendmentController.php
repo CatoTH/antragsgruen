@@ -302,7 +302,8 @@ class AmendmentController extends Base
         if (count($form->supporters) == 0) {
             $supporter       = new AmendmentSupporter();
             $supporter->role = AmendmentSupporter::ROLE_INITIATOR;
-            if (User::getCurrentUser()) {
+            $iAmAdmin        = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+            if (User::getCurrentUser() && !$iAmAdmin) {
                 $user                    = User::getCurrentUser();
                 $supporter->userId       = $user->id;
                 $supporter->name         = $user->name;

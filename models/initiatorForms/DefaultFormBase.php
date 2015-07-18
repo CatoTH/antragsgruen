@@ -231,7 +231,7 @@ abstract class DefaultFormBase extends IInitiatorForm
         $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
         $isForOther         = false;
         if ($screeningPrivilege) {
-            $isForOther = true; // @TODO
+            $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
             '@app/views/initiatorForms/default_form',
@@ -279,7 +279,7 @@ abstract class DefaultFormBase extends IInitiatorForm
         $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
         $isForOther         = false;
         if ($screeningPrivilege) {
-            $isForOther = true; // @TODO
+            $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
             '@app/views/initiatorForms/default_form',
