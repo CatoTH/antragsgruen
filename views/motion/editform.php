@@ -7,6 +7,7 @@
  * @var \app\models\db\Consultation $consultation
  * @var bool $forceTag
  */
+use app\components\HTMLTools;
 use app\models\db\ConsultationSettingsTag;
 use yii\helpers\Html;
 
@@ -67,15 +68,28 @@ if (count($tags) == 1) {
     $keys = array_keys($tags);
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '">';
 } elseif (count($tags) > 0) {
-    echo '<fieldset class="form-group"><label class="legend">Thema</label>';
-    foreach ($tags as $id => $tag) {
-        echo '<label class="radio-inline"><input name="tags[]" value="' . $id . '" type="radio" ';
-        if (in_array($id, $form->tags)) {
-            echo ' checked';
+    if ($consultation->getSettings()->allowMultipleTags) {
+        echo '<fieldset class="form-group"><label class="legend">Thema</label>';
+        foreach ($tags as $id => $tag) {
+            echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
+            if (in_array($id, $form->tags)) {
+                echo ' checked';
+            }
+            echo ' required> ' . Html::encode($tag->title) . '</label>';
         }
-        echo ' required> ' . Html::encode($tag->title) . '</label>';
+        echo '</fieldset>';
+    } else {
+        $layout->loadFuelux();
+        $selected   = (count($form->tags) > 0 ? $form->tags[0] : 0);
+        $tagOptions = [];
+        foreach ($tags as $tag) {
+            $tagOptions[$tag->id] = $tag->title;
+        }
+        echo '<div class="label">Thema:</div><div style="position: relative;">';
+        echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
+        echo '</div>';
     }
-    echo '</fieldset>';
+
 }
 
 echo '</div>';
@@ -89,8 +103,6 @@ foreach ($form->sections as $section) {
 }
 
 echo '</div>';
-
-
 
 
 $initiatorClass = $form->motionType->getMotionInitiatorFormClass();
