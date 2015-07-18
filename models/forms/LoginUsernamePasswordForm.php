@@ -2,7 +2,6 @@
 
 namespace app\models\forms;
 
-use app\components\PasswordFunctions;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\EMailLog;
@@ -121,7 +120,7 @@ class LoginUsernamePasswordForm extends Model
         $user->name           = $this->name;
         $user->email          = $this->username;
         $user->emailConfirmed = 0;
-        $user->pwdEnc         = PasswordFunctions::createHash($this->password);
+        $user->pwdEnc         = password_hash($this->password, PASSWORD_DEFAULT);
 
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;

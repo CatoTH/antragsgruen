@@ -2,7 +2,6 @@
 
 namespace app\models\db;
 
-use app\components\PasswordFunctions;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
@@ -383,7 +382,16 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return PasswordFunctions::validatePassword($password, $this->pwdEnc);
+        return password_verify($password, $this->pwdEnc);
+    }
+
+    /**
+     * @param string $newPassword
+     */
+    public function changePassword($newPassword)
+    {
+        $this->pwdEnc = password_hash($newPassword, PASSWORD_DEFAULT);
+        $this->save();
     }
 
     /**

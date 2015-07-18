@@ -22,7 +22,7 @@
   "repositories": [
   ],
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=5.5.0",
     "fxp/composer-asset-plugin": "~1.0",
     "yiisoft/yii2": "2.0.5",
     "yiisoft/yii2-authclient": "2.0.4",
