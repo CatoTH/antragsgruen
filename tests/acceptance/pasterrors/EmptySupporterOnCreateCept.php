@@ -14,16 +14,18 @@ $I->seeOptionIsSelected('#typeInitiatorForm', \app\models\initiatorForms\WithSup
 
 
 $I->gotoConsultationHome();
+$I->logout();
+$I->loginAsStdUser();
 $I->gotoMotion();
 $I->click('.amendmentCreate a');
 
-$I->seeInField('#initiatorName', 'Testadmin');
-$I->dontSeeInField(['name' => 'supporters[name][]'], 'Testadmin');
+$I->seeInField('#initiatorName', 'Testuser');
+$I->dontSeeInField(['name' => 'supporters[name][]'], 'Testuser');
 
 
 
 $I->gotoConsultationHome();
 $I->click('.createMotion');
 
-$I->seeInField('#initiatorName', 'Testadmin');
-$I->dontSeeInField(['name' => 'supporters[name][]'], 'Testadmin');
+$I->seeInField('#initiatorName', 'Testuser');
+$I->dontSeeInField(['name' => 'supporters[name][]'], 'Testuser');
