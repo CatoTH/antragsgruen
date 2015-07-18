@@ -35,6 +35,27 @@ class ConsultationHomePage extends BasePage
 
     /**
      * @param int $motionId
+     * @param bool $check
+     * @return MotionCreatePage
+     */
+    public function gotoAmendmentCreatePage($motionId = 2, $check = true)
+    {
+        $page = AmendmentCreatePage::openBy(
+            $this->actor,
+            [
+                'subdomain'        => 'stdparteitag',
+                'consultationPath' => 'std-parteitag',
+                'motionId'         => $motionId,
+            ]
+        );
+        if ($check) {
+            $this->actor->see(mb_strtoupper('stellen'), 'h1');
+        }
+        return $page;
+    }
+
+    /**
+     * @param int $motionId
      * @return MotionPage
      */
     public function gotoMotionView($motionId)
