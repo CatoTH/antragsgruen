@@ -29,8 +29,15 @@ class LayoutHelper
             $admin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
                 $name .= '<br><small>Kontaktdaten, nur als Admin sichtbar: ';
-                if ($supp->contactEmail != "") {
+                if ($supp->contactEmail != '') {
                     $name .= Html::a($supp->contactEmail, 'mailto:' . $supp->contactEmail);
+                    if ($supp->user && $supp->user->email == $supp->contactEmail && $supp->user->emailConfirmed) {
+                        $name .= ' <span class="glyphicon glyphicon-ok-sign" style="color: gray;" ' .
+                            'title="' . 'E-Mail-Adresse bestätigt' . '"></span>';
+                    } else {
+                        $name .= ' <span class="glyphicon glyphicon-question-sign" style="color: gray;" ' .
+                            'title="' . 'E-Mail-Adresse nicht bestätigt' . '"></span>';
+                    }
                 }
                 if ($supp->contactEmail != '' && $supp->contactPhone != '') {
                     $name .= ', ';

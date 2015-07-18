@@ -165,13 +165,13 @@ if (!$minimalisticUi) {
     } else {
         echo Html::encode($statiNames[$motion->status]);
     }
-    if (trim($motion->statusString) != "") {
-        echo " <small>(" . Html::encode($motion->statusString) . ")</string>";
+    if (trim($motion->statusString) != '') {
+        echo ' <small>(' . Html::encode($motion->statusString) . ')</string>';
     }
     echo '</td>
                 </tr>';
 
-    if ($motion->dateResolution != "") {
+    if ($motion->dateResolution != '') {
         echo '<tr><th>Entschieden am:</th>
        <td>' . Tools::formatMysqlDate($motion->dateResolution) . '</td>
      </tr>';
@@ -195,7 +195,7 @@ if (!$minimalisticUi) {
             $str .= Html::endForm();
             $tags[] = $str;
         }
-        echo implode(", ", $tags);
+        echo implode(', ', $tags);
 
         echo '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">Neu</a>';
         echo Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
@@ -214,14 +214,14 @@ if (!$minimalisticUi) {
 
     } elseif (count($motion->tags) > 0) {
         echo '<tr>
-       <th>' . (count($motion->tags) > 1 ? "Themenbereiche" : "Themenbereich") . '</th>
+       <th>' . (count($motion->tags) > 1 ? 'Themenbereiche' : 'Themenbereich') . '</th>
        <td>';
 
         $tags = [];
         foreach ($motion->tags as $tag) {
             $tags[] = $tag->title;
         }
-        echo Html::encode(implode(", ", $tags));
+        echo Html::encode(implode(', ', $tags));
 
         echo '</td></tr>';
     }
@@ -249,7 +249,7 @@ if (!$minimalisticUi) {
     $policy = $motion->motionType->getAmendmentPolicy();
     if ($policy->checkCurUserHeuristically()) {
         echo '<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-            <a href="' . Html::encode(UrlHelper::createUrl(["amendment/create", 'motionId' => $motion->id])) . '"
+            <a href="' . Html::encode(UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id])) . '"
                class="btn btn-danger" style="color: white;">';
         echo '<span class="icon glyphicon glyphicon-flash"></span>';
         echo Html::encode(Yii::t('motion', 'Änderungsantrag stellen')) . '</a>
@@ -323,7 +323,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
     <div class="content">';
 
     if (count($likes) > 0) {
-        echo "<strong>Zustimmung von:</strong><br>";
+        echo '<strong>Zustimmung von:</strong><br>';
         echo '<ul>';
         foreach ($likes as $supp) {
             echo '<li>';
@@ -338,7 +338,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
     }
 
     if (count($dislikes) > 0) {
-        echo "<strong>Abgelehnt von:</strong><br>";
+        echo '<strong>Abgelehnt von:</strong><br>';
         echo '<ul>';
         foreach ($dislikes as $supp) {
             echo '<li>';
@@ -356,7 +356,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
     if ($motion->motionType->getSupportPolicy()->checkSupportSubmit()) {
         echo Html::beginForm();
 
-        echo "<div style='text-align: center; margin-bottom: 20px;'>";
+        echo '<div style="text-align: center; margin-bottom: 20px;">';
         switch ($supportStatus) {
             case MotionSupporter::ROLE_INITIATOR:
                 break;
@@ -379,10 +379,10 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
                 echo '<span class="glyphicon glyphicon-thumbs-down"></span> Widerspruch';
                 echo '</button>';
         }
-        echo "</div>";
+        echo '</div>';
         echo Html::endForm();
     } else {
-        if ($cantSupportMsg != "") {
+        if ($cantSupportMsg != '') {
             echo '<div class="alert alert-danger" role="alert">
                 <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <span class="sr-only">Error:</span>
@@ -414,7 +414,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
             );
             $amendStati = Amendment::getStati();
             echo Html::a($aename, $amendLink, ['class' => 'amendment' . $amend->id]);
-            echo " (" . Html::encode($amendStati[$amend->status]) . ")";
+            echo ' (' . Html::encode($amendStati[$amend->status]) . ')';
             echo '</li>';
         }
         echo '</ul>';
