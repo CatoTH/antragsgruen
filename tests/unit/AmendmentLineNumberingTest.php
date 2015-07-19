@@ -4,11 +4,28 @@ namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\models\db\Amendment;
+use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
 
 class AmendmentLineNumberingTest extends DBTestBase
 {
+    public function testFirstAffectedLine()
+    {
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(1);
+        $this->assertEquals(14, $amendment->getFirstDiffLine());
+
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(2);
+        $this->assertEquals(1, $amendment->getFirstDiffLine());
+
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(3);
+        $this->assertEquals(9, $amendment->getFirstDiffLine());
+
+    }
+
     /**
      * @param int $amendmentId
      * @param int $sectionId

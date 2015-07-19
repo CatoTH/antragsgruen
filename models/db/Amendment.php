@@ -132,34 +132,19 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFirstDiffLine()
     {
-        // @TODO
-        return 0;
-        /*
-        if ($this->cacheFirstLineChanged > -1) return $this->cacheFirstLineChanged;
-
-        $text_vorher = $this->motion->text;
-        $paragraphs  = $this->motion->getParagraphs(false, false);
-        $text_neu    = array();
-        $diff        = $this->getDiffParagraphs();
-        foreach ($paragraphs as $i => $para) {
-            if (isset($diff[$i]) && $diff[$i] != "") $text_neu[] = $diff[$i];
-            else $text_neu[] = $para->str_bbcode;
+        foreach ($this->sections as $section) {
+            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                continue;
+            }
+            $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+            $diff      = $formatter->getGroupedDiffLinesWithNumbers();
+            if (count($diff) > 0) {
+                return $diff[0]['lineFrom'];
+            }
         }
-        $diff = DiffUtils::getTextDiffMitZeilennummern(trim($text_vorher), trim(implode("\n\n", $text_neu)),
-        $this->antrag->veranstaltung->getEinstellungen()->zeilenlaenge);
 
-        $this->aenderung_first_line_cache = DiffUtils::getFistDiffLine($diff, $this->antrag->getFirstLineNo());
-        $this->save();
-        return $this->aenderung_first_line_cache;
-        */
-    }
-
-    /**
-     * @return int
-     */
-    public function getFirstAffectedLineOfParagraphAbsolute()
-    {
-        return 0; // @TODO
+        // Nothing changed in a simple text section
+        return $this->motion->getFirstLineNumber();
     }
 
     /**
@@ -358,14 +343,6 @@ class Amendment extends IMotion implements IRSSItem
     public function getNumberOfCountableLines()
     {
         return 0; // @TODO
-    }
-
-    /**
-     * @return int
-     */
-    public function getFirstLineNumber()
-    {
-        return 1; // @TODO
     }
 
     /**

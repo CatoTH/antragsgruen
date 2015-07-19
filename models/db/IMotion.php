@@ -147,14 +147,14 @@ abstract class IMotion extends ActiveRecord
      */
     public function getSortedSections($withoutTitle = false)
     {
-        $sectionsIn = array();
+        $sectionsIn = [];
         $title = $this->getTitleSection();
         foreach ($this->sections as $section) {
             if (!$withoutTitle || $section != $title) {
                 $sectionsIn[$section->consultationSetting->id] = $section;
             }
         }
-        $sectionsOut = array();
+        $sectionsOut = [];
         foreach ($this->getMySections() as $section) {
             if (isset($sectionsIn[$section->id])) {
                 $sectionsOut[] = $sectionsIn[$section->id];
@@ -162,14 +162,4 @@ abstract class IMotion extends ActiveRecord
         }
         return $sectionsOut;
     }
-
-    /**
-     * @return int
-     */
-    abstract public function getNumberOfCountableLines();
-
-    /**
-     * @return int
-     */
-    abstract public function getFirstLineNumber();
 }

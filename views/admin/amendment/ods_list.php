@@ -116,7 +116,7 @@ foreach ($motions as $motion) {
                 $initiatorContacs[] = $supp->contactPhone;
             }
         }
-        $firstLine = $amendment->getFirstAffectedLineOfParagraphAbsolute();
+        $firstLine = $amendment->getFirstDiffLine();
 
         $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));

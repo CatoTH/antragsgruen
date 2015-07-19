@@ -26,13 +26,17 @@ class ByLine extends IAmendmentNumbering
     /**
      * @param Amendment $amendment
      * @param Motion $motion
+     * @param int $lineStrLen
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getAmendmentNumber(Amendment $amendment, Motion $motion)
+    public function getAmendmentNumber(Amendment $amendment, Motion $motion, $lineStrLen = 3)
     {
         $line    = $amendment->getFirstDiffLine();
-        $revBase = $motion->titlePrefix . "-Ä" . $line . "-";
+        while (mb_strlen($line) < $lineStrLen) {
+            $line = '0' . $line;
+        }
+        $revBase = $motion->titlePrefix . '-' . $line . '-';
         $maxRev  = 0;
         foreach ($motion->amendments as $amend) {
             $x = explode($revBase, $amend->titlePrefix);

@@ -49,28 +49,24 @@ abstract class IAmendmentNumbering
     }
 
     /**
-     * @param Motion $motion
-     * @return int
+     * @param string[] $prefixes
      */
-    protected function getMaxAmendmentRevNr(Motion $motion)
+    public static function getMaxTitlePrefixNumber($prefixes)
     {
-        $max_rev = 0;
-        foreach ($motion->amendments as $amend) {
-            // Etwas messy, wg. "Ä" und UTF-8. Alternative Implementierung:
-            // auf mbstring.func_overload testen und entsprechend vorgehen
-            $index = -1;
-            for ($i = 0; $i < strlen($amend->titlePrefix) && $index == -1; $i++) {
-                if (is_numeric(substr($amend->titlePrefix, $i, 1))) {
-                    $index = $i;
-                }
+        $maxRev = 0;
+        $splitStrs = ['neu'];
+
+        foreach ($prefixes as $prefix) {
+            foreach ($splitStrs as $split) {
+                $spl = explode($split, $prefix);
+                $prefix = $spl[0];
             }
-            $revs  = substr($amend->titlePrefix, $index);
-            $revnr = IntVal($revs);
-            if ($revnr > $max_rev) {
-                $max_rev = $revnr;
+            $number = preg_replace('/^(.*[^0-9])?([0-9]+)([^0-9]*)$/siu', '$2', $prefix);
+            if ($number > $maxRev) {
+                $maxRev = $number;
             }
         }
-        return $max_rev;
+        return $maxRev;
     }
 
     /**

@@ -160,10 +160,10 @@ class AmendmentController extends Base
                 $amendment->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
             } else {
                 $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
-            }
-            if (!$screening && $amendment->statusString == "") {
-                $numbering              = $amendment->motion->consultation->getAmendmentNumbering();
-                $amendment->titlePrefix = $numbering->getAmendmentNumber($amendment, $amendment->motion);
+                if ($amendment->titlePrefix == '') {
+                    $numbering              = $amendment->motion->consultation->getAmendmentNumbering();
+                    $amendment->titlePrefix = $numbering->getAmendmentNumber($amendment, $amendment->motion);
+                }
             }
             $amendment->save();
 

@@ -32,13 +32,13 @@ class GlobalCompact extends IAmendmentNumbering
      */
     public function getAmendmentNumber(Amendment $amendment, Motion $motion)
     {
-        $maxRev = 0;
-        foreach ($motion->consultation->motions as $motion) {
-            $m = $this->getMaxAmendmentRevNr($motion);
-            if ($m > $maxRev) {
-                $maxRev = $m;
+        $prefixes = [];
+        foreach ($motion->consultation->motions as $mot) {
+            foreach ($mot->amendments as $amend) {
+                $prefixes[] = $amend->titlePrefix;
             }
         }
-        return "Ä" . ($maxRev + 1);
+        $maxRev = static::getMaxTitlePrefixNumber($prefixes);
+        return 'Ä' . ($maxRev + 1);
     }
 }

@@ -23,8 +23,6 @@ class PerMotionCompact extends IAmendmentNumbering
         return 0;
     }
 
-
-
     /**
      * @param Amendment $amendment
      * @param Motion $motion
@@ -33,7 +31,11 @@ class PerMotionCompact extends IAmendmentNumbering
      */
     public function getAmendmentNumber(Amendment $amendment, Motion $motion)
     {
-        $maxRev = $this->getMaxAmendmentRevNr($motion);
-        return "Ä" . ($maxRev + 1);
+        $prefixes = [];
+        foreach ($motion->amendments as $amend) {
+            $prefixes[] = $amend->titlePrefix;
+        }
+        $maxRev = static::getMaxTitlePrefixNumber($prefixes);
+        return 'Ä' . ($maxRev + 1);
     }
 }
