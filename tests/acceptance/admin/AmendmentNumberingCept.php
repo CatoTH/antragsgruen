@@ -1,0 +1,25 @@
+<?php
+
+/** @var \Codeception\Scenario $scenario */
+use app\models\amendmentNumbering\ByLine;
+
+$I = new AcceptanceTester($scenario);
+$I->populateDBData1();
+
+$consultation = $I->loginAndGotoStdAdminPage()->gotoConsultation();
+$consultation->selectAmendmentNumbering(ByLine::getName());
+$consultation->saveForm();
+
+$I->seeOptionIsSelected('#amendmentNumbering', ByLine::getName());
+$I->gotoConsultationHome();
+$I->gotoMotion(true, 2);
+$I->click('.sidebarActions .amendmentCreate');
+
+$I->executeJS('window.newText = CKEDITOR.instances.sections_2_wysiwyg.getData();');
+$I->executeJS('window.newText = window.newText.replace(/woschechta Bayer/g, "Sauprei&szlig;");');
+$I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(window.newText);');
+$I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>This is my reason</p>");');
+
+$I->fillField(['name' => 'Initiator[name]'], 'My Name');
+$I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+

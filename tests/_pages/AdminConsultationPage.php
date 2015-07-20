@@ -14,6 +14,11 @@ class AdminConsultationPage extends BasePage
 
     public static $maintainanceCheckbox = '#maintainanceMode';
 
+    public function selectAmendmentNumbering($numbering)
+    {
+        $this->actor->selectOption('#amendmentNumbering', $numbering);
+    }
+
     /**
      *
      */
