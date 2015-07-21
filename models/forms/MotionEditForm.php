@@ -62,6 +62,7 @@ class MotionEditForm extends Model
                 $section            = new MotionSection();
                 $section->sectionId = $sectionType->id;
                 $section->data      = '';
+                $section->cache     = '';
                 $section->refresh();
                 $this->sections[] = $section;
             }

@@ -72,7 +72,7 @@
     > li {
       padding: 0 10px 10px 38px;
       a {
-        color: #A2BC04;
+        color: $colorLinks;
         padding: 0;
         background: none;
         filter: none;
@@ -81,7 +81,7 @@
         display: inline;
 
         &:link, &:visited {
-          color: #A2BC04;
+          color: $colorLinks;
         }
 
         .glyphicon {

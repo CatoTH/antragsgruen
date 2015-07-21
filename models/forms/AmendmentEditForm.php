@@ -73,6 +73,7 @@ class AmendmentEditForm extends Model
                 $section->sectionId = $sectionType->id;
                 $section->data      = $data;
                 $section->dataRaw   = $data;
+                $section->cache     = '';
                 $section->refresh();
                 $this->sections[] = $section;
             }

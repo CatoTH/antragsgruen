@@ -10,7 +10,7 @@
     }
 
     > .date {
-      color: rgb(179, 180, 180);
+      color: #757676;
       margin-left: 20px;
       position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
       top: 12px;
@@ -81,7 +81,7 @@
         margin-right: 5px;
       }
       > .date {
-        color: rgb(179, 180, 180);
+        color: #757676;
         display: block;
         margin-left: 20px;
         position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
@@ -626,7 +626,7 @@
   }
 
   .date {
-    color: #B3B4B4;
+    color: #757676;
     float: right;
     margin-left: 20px;
   }
