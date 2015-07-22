@@ -22,4 +22,8 @@ $I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>This is my
 
 $I->fillField(['name' => 'Initiator[name]'], 'My Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+$I->submitForm('#amendmentEditForm', [], 'save');
+$I->submitForm('#amendmentConfirmForm', [], 'confirm');
 
+$I->gotoConsultationHome();
+$I->see('A2-003-1', '.amendment270');
