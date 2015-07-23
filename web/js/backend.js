@@ -354,6 +354,10 @@
         $("#motionDateResolutionHolder").datetimepicker({
             locale: lang
         });
+        $('#resolutionDateHolder').datetimepicker({
+            locale: $('#resolutionDate').data('locale'),
+            format: 'L'
+        });
         $("#motionTextEditCaller").find("button").click(function () {
             $("#motionTextEditCaller").addClass("hidden");
             $("#motionTextEditHolder").removeClass("hidden");

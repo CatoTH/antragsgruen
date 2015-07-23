@@ -228,6 +228,10 @@ abstract class DefaultFormBase extends IInitiatorForm
                 $supporters[] = $supporter;
             }
         }
+        if (!$initiator) {
+            $initiator = new MotionSupporter();
+            $initiator->role = MotionSupporter::ROLE_INITIATOR;
+        }
         $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
         $isForOther         = false;
         if ($screeningPrivilege) {
