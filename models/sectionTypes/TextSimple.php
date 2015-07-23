@@ -320,7 +320,14 @@ class TextSimple extends ISectionType
         $section    = $this->section;
         $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
-        return static::formatDiffGroup($diffGroups);
+        $diff = static::formatDiffGroup($diffGroups);
+        $diff = str_replace('<h4', '<br><h4', $diff);
+        $diff = str_replace('</h4>', '</h4><br>', $diff);
+        $diff = str_replace('###FORCELINEBREAK###', '<br>', $diff);
+        if (mb_substr($diff, 0, 4) == '<br>') {
+            $diff = mb_substr($diff, 4);
+        }
+        return $diff;
     }
 
     /**

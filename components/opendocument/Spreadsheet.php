@@ -448,6 +448,12 @@ class Spreadsheet extends Base
             case 'ins':
                 $currentFormats[] = static::FORMAT_INS;
                 break;
+            case 'h1':
+            case 'h2':
+            case 'h3':
+            case 'h4':
+                $currentFormats[] = static::FORMAT_BOLD;
+                break;
             case 'a':
                 $currentFormats[] = static::FORMAT_LINK;
                 try {
