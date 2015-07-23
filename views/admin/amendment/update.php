@@ -1,9 +1,13 @@
 <?php
 
+use app\components\diff\AmendmentSectionFormatter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
+use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
 /**
@@ -140,6 +144,27 @@ echo '</div></div>';
 echo '</div>';
 
 
+/** @var AmendmentSection[] $sections */
+$sections = $amendment->getSortedSections(true);
+foreach ($sections as $section) {
+    if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
+        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+
+        if (count($diffGroups) > 0) {
+            echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
+            echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+            echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+            $wrapStart = '<section class="paragraph"><div class="text">';
+            $wrapEnd   = '</div></section>';
+            $firstLine = $section->getFirstLineNumber();
+            $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
+            echo str_replace('###FORCELINEBREAK###', '<br>', $html);
+            echo '</div>';
+            echo '</section>';
+        }
+    }
+}
 
 
 if (!$amendment->textFixed) {
