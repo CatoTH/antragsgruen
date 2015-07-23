@@ -26,4 +26,4 @@ $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 
 $I->gotoConsultationHome();
-$I->see('A2-003-1', '.amendment270');
+$I->see('A2-003-1', '.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);

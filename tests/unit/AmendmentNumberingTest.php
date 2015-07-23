@@ -40,7 +40,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(2);
 
         $sorter = new GlobalCompact();
-        $expect = 'Ä3';
+        $expect = 'Ä4';
         $out    = $sorter->getAmendmentNumber($amend, $motion);
 
         $this->assertEquals($expect, $out);
@@ -50,7 +50,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(3);
 
         $sorter = new GlobalCompact();
-        $expect = 'Ä3';
+        $expect = 'Ä4';
         $out    = $sorter->getAmendmentNumber($amend, $motion);
 
         $this->assertEquals($expect, $out);
@@ -60,7 +60,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(58);
 
         $sorter = new GlobalCompact();
-        $expect = 'Ä3';
+        $expect = 'Ä4';
         $out    = $sorter->getAmendmentNumber($amend, $motion);
 
         $this->assertEquals($expect, $out);
@@ -76,7 +76,7 @@ class AmendmentNumberingTest extends DBTestBase
         $motion = Motion::findOne(2);
 
         $sorter = new PerMotionCompact();
-        $expect = 'Ä3';
+        $expect = 'Ä4';
         $out    = $sorter->getAmendmentNumber($amend, $motion);
 
         $this->assertEquals($expect, $out);
