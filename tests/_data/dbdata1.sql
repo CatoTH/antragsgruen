@@ -1268,13 +1268,13 @@ INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `curre
 VALUES
   (1, 'stdparteitag', 'Test2', 'Test2', NULL, 1, 1, 'Test2'),
   (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen',
-   '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 2, 1, 'Vorstandswahlen'),
+   '{"willingToPay":"1"}', 2, 1, 'Vorstandswahlen'),
   (3, 'parteitag', 'Parteitag', 'Parteitag',
-   '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"willingToPay":"1"}', 3, 1, 'Parteitag'),
+   '{"willingToPay":"1"}', 3, 1, 'Parteitag'),
   (4, 'bdk', 'BDK', 'BDK',
-   '{"onlyNamespacedAccounts":0,"onlyWurzelwerk":0,"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK'),
+   '{"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK'),
   (5, '1laenderrat2015', 'Länderrat', 'Länderrat',
-   '{"onlyNamespacedAccounts":false,"onlyWurzelwerk":false,"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"willingToPay":"2"}',
+   '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"willingToPay":"2"}',
    5, 1, 'Länderrat'),
   (6, 'laenderrat-to', 'Länderrat TO', 'Länderrat TO',
    '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"loginMethods":[0,1,3],"forceLogin":false,"willingToPay":"2"}',
@@ -1305,16 +1305,16 @@ INSERT INTO `texTemplate` (`id`, `siteId`, `title`, `texLayout`, `texContent`) V
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `recoveryToken`, `recoveryAt`, `siteNamespaceId`)
+INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `recoveryToken`, `recoveryAt`)
 VALUES
   (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-20 16:04:44', 0,
    '$2y$10$tDnD91WMHaiWOgVvdZaxOeoxYGXYIvotpKAzbIY26jUNHf6awCKfK',
    0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
-   NULL, NULL, NULL),
+   NULL, NULL),
   (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-20 16:08:14', 0,
    '$2y$10$0AYIGO6ltNMnHbNVzFKEouLDFeUnDwWqEvXp1zvjpFLLupJOMZoHC',
    0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
-   NULL, NULL, NULL);
+   NULL, NULL);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

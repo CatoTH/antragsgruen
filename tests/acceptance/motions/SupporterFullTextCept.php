@@ -24,11 +24,11 @@ $I->click('.fullTextAdder a');
 $I->seeElement('#fullTextHolder');
 
 $I->wantTo('check that the function actually works');
-$I->fillField('#fullTextHolder textarea', 'Tobias Hößl; KV München' . "\n" . 'Test 2');
+$I->fillField('#fullTextHolder textarea', 'Tobias Hößl, KV München; Test 2');
 $I->click('#fullTextHolder .fullTextAdd');
 $name1 = $I->executeJS('return $(".supporterRow").eq(0).find("input.name").val()');
 $orga1 = $I->executeJS('return $(".supporterRow").eq(0).find("input.organization").val()');
 $name2 = $I->executeJS('return $(".supporterRow").eq(1).find("input.name").val()');
-if ($name1 != "Tobias Hößl" || $orga1 != "KV München" || $name2 != "Test 2") {
-    $I->fail('Got invalid supporter Data: ' . $name1 . " (" . $orga1 . ") / " . $name2);
+if ($name1 != 'Tobias Hößl' || $orga1 != 'KV München' || $name2 != 'Test 2') {
+    $I->fail('Got invalid supporter Data: ' . $name1 . ' (' . $orga1 . ') / ' . $name2);
 }

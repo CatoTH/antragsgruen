@@ -26,9 +26,7 @@ use yii\web\IdentityInterface;
  * @property string $authKey
  * @property string $recoveryToken
  * @property string $recoveryAt
- * @property null|int $siteNamespaceId
  *
- * @property null|Site $siteNamespace
  * @property null|AmendmentComment[] $amendmentComments
  * @property null|AmendmentSupporter[] $amendmentSupports
  * @property null|MotionComment[] $motionComments
@@ -97,14 +95,6 @@ class User extends ActiveRecord implements IdentityInterface
     public static function tableName()
     {
         return 'user';
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSiteNamespace()
-    {
-        return $this->hasOne(Site::className(), ['id' => 'siteNamespaceId']);
     }
 
     /**
@@ -372,14 +362,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return bool
-     */
-    public function isNamespacedAccount()
-    {
-        return ($this->siteNamespaceId > 0);
-    }
-
-    /**
      * @param string $password
      * @return bool
      */
@@ -550,10 +532,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthName()
     {
-        $x = explode(':', $this->auth);
-        switch ($x[0]) {
+        $authparts = explode(':', $this->auth);
+        switch ($authparts[0]) {
             case 'email':
-                return 'E-Mail: ' . $x[1];
+                return 'E-Mail: ' . $authparts[1];
             default:
                 return $this->auth;
         }
@@ -564,8 +546,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function sendRecoveryMail()
     {
         if ($this->recoveryAt) {
-            $ts = Tools::dateSql2timestamp($this->recoveryAt);
-            if (time() - $ts < 24 * 3600) {
+            $recTs = Tools::dateSql2timestamp($this->recoveryAt);
+            if (time() - $recTs < 24 * 3600) {
                 $msg = 'Es wurde bereits eine Wiederherstellungs-E-Mail in den letzten 24 Stunden verschickt.';
                 throw new FormError($msg);
             }
@@ -595,11 +577,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function checkRecoveryToken($token)
     {
         if ($this->recoveryAt) {
-            $ts = Tools::dateSql2timestamp($this->recoveryAt);
+            $recTs = Tools::dateSql2timestamp($this->recoveryAt);
         } else {
-            $ts = 0;
+            $recTs = 0;
         }
-        if (time() - $ts > 24 * 3600) {
+        if (time() - $recTs > 24 * 3600) {
             $msg = 'Es wurde kein Wiederherstellungs-Antrag innerhalb der letzten 24 Stunden gestellt.';
             throw new FormError($msg);
         }

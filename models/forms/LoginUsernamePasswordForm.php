@@ -168,18 +168,6 @@ class LoginUsernamePasswordForm extends Model
     }
 
     /**
-     * @param Site $site
-     * @return User[]
-     */
-    private function getCandidatesNamespaced(Site $site)
-    {
-        $auth   = addslashes("ns_admin:" . IntVal($site->id) . ":" . addslashes($this->username) . "'");
-        $siteId = IntVal($site->id);
-        return User::findBySql("SELECT * FROM user WHERE auth = '$auth' AND siteNamespaceId = $siteId")->all();
-    }
-
-
-    /**
      * @param Site|null $site
      * @return User[]
      */
@@ -196,9 +184,6 @@ class LoginUsernamePasswordForm extends Model
         $candidates = [];
         if (in_array(SiteSettings::LOGIN_STD, $methods)) {
             $candidates = array_merge($candidates, $this->getCandidatesStdLogin());
-        }
-        if (in_array(SiteSettings::LOGIN_NAMESPACED, $methods) && $site) {
-            $candidates = array_merge($candidates, $this->getCandidatesNamespaced($site));
         }
         if (in_array(SiteSettings::LOGIN_WURZELWERK, $methods) && $app->hasWurzelwerk) {
             $candidates = array_merge($candidates, $this->getCandidatesWurzelwerk());
@@ -219,7 +204,7 @@ class LoginUsernamePasswordForm extends Model
             $methods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
         }
 
-        if (!in_array(SiteSettings::LOGIN_STD, $methods) && !in_array(SiteSettings::LOGIN_NAMESPACED, $methods)) {
+        if (!in_array(SiteSettings::LOGIN_STD, $methods)) {
             $this->error = 'Das Login mit BenutzerInnenname und Passwort ist bei dieser Veranstaltung nicht möglich.';
             throw new Login($this->error);
         }

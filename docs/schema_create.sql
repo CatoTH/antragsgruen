@@ -475,8 +475,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `pwdEnc`          VARCHAR(100)          DEFAULT NULL,
   `authKey`         BINARY(100)  NOT NULL,
   `recoveryToken`   VARCHAR(100) NULL     DEFAULT NULL,
-  `recoveryAt`      TIMESTAMP    NULL     DEFAULT NULL,
-  `siteNamespaceId` INT(11)               DEFAULT NULL
+  `recoveryAt`      TIMESTAMP    NULL     DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -671,14 +670,6 @@ ADD KEY `site_admin_fk_siteIdx` (`siteId`);
 ALTER TABLE `texTemplate`
 ADD PRIMARY KEY (`id`),
 ADD KEY `siteId` (`siteId`);
-
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
-ADD PRIMARY KEY (`id`),
-ADD UNIQUE KEY `auth_UNIQUE` (`auth`),
-ADD KEY `fk_user_namespaceIdx` (`siteNamespaceId`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -1009,10 +1000,6 @@ ADD CONSTRAINT `texTemplate_ibfk_1` FOREIGN KEY (`siteId`) REFERENCES `site` (`i
 --
 -- Constraints for table `user`
 --
-ALTER TABLE `user`
-ADD CONSTRAINT `fk_user_namespace` FOREIGN KEY (`siteNamespaceId`) REFERENCES `site` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

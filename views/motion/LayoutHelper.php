@@ -165,7 +165,8 @@ class LayoutHelper
         echo '<input type="hidden" name="comment[paragraphNo]" value="' . $paragraphNo . '">';
         echo '<input type="hidden" name="comment[sectionId]" value="' . $sectionId . '">';
 
-        if (!(User::getCurrentUser() && User::getCurrentUser()->isNamespacedAccount())) {
+        $nameIsFixed = false; // @TODO
+        if (!$nameIsFixed) {
             echo '
             <div class="form-group">
                 <label for="' . $formIdPre . '_name" class="control-label col-sm-3">Name:</label>

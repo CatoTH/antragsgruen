@@ -23,7 +23,6 @@ use yii\db\ActiveRecord;
  *
  * @property Consultation $currentConsultation
  * @property Consultation[] $consultations
- * @property User[] $namespaceUsers
  * @property User[] $admins
  * @property TexTemplate
  */
@@ -59,14 +58,6 @@ class Site extends ActiveRecord
     public function getTexTemplates()
     {
         return $this->hasMany(TexTemplate::className(), ['siteId' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNamespaceUsers()
-    {
-        return $this->hasMany(User::className(), ['siteNamespaceId' => 'id']);
     }
 
     /**

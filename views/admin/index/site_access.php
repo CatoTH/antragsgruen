@@ -57,13 +57,6 @@ echo '<div class="checkbox external">
 </label>
 </div>';
 
-$method = SiteSettings::LOGIN_NAMESPACED;
-echo '<div class="checkbox namespaced">
-  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) . '
-  BenutzerInnen-Verwaltung speziell für diese Seite <small>(durch die Seiten-AdministratorInnen)</small>
-</label>
-</div>';
-
 echo '<div class="saveholder">
 <button type="submit" name="save" class="btn btn-primary">Speichern</button>
 </div>';

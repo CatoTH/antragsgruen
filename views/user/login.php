@@ -29,7 +29,7 @@ $params = \Yii::$app->params;
 echo '<h1>Login</h1>';
 
 
-if (in_array(SiteSettings::LOGIN_STD, $loginMethods) || in_array(SiteSettings::LOGIN_NAMESPACED, $loginMethods)) {
+if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
     echo '<section class="loginUsername">

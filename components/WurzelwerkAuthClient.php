@@ -171,7 +171,6 @@ class WurzelwerkAuthClient extends OpenId
         $user->emailConfirmed  = 1;
         $user->auth            = $auth;
         $user->status          = User::STATUS_CONFIRMED;
-        $user->siteNamespaceId = null;
         // @TODO E-Mail
         if (!$user->save()) {
             throw new \Exception('Could not create user: ' . $user->getErrors());
