@@ -49,7 +49,7 @@ class AmendmentEditForm extends Model
             $this->reason      = $amendment->changeExplanation;
             foreach ($amendment->sections as $section) {
                 $amendmentSections[$section->sectionId] = $section;
-                if ($section->data == '') {
+                if ($section->data == '' && isset($motionSections[$section->sectionId])) {
                     $data                                            = $motionSections[$section->sectionId]->data;
                     $amendmentSections[$section->sectionId]->data    = $data;
                     $amendmentSections[$section->sectionId]->dataRaw = $data;
