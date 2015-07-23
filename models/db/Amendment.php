@@ -127,24 +127,30 @@ class Amendment extends IMotion implements IRSSItem
         return $this->motion->motionType->motionSections;
     }
 
+
+    private $firstDiffLine = null;
+
     /**
      * @return int
      */
     public function getFirstDiffLine()
     {
-        foreach ($this->sections as $section) {
-            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                continue;
+        if ($this->firstDiffLine === null) {
+            foreach ($this->sections as $section) {
+                if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                    continue;
+                }
+                $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+                $diff      = $formatter->getGroupedDiffLinesWithNumbers();
+                if (count($diff) > 0) {
+                    return $diff[0]['lineFrom'];
+                }
             }
-            $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-            $diff      = $formatter->getGroupedDiffLinesWithNumbers();
-            if (count($diff) > 0) {
-                return $diff[0]['lineFrom'];
-            }
-        }
 
-        // Nothing changed in a simple text section
-        return $this->motion->getFirstLineNumber();
+            // Nothing changed in a simple text section
+            $this->firstDiffLine = $this->motion->getFirstLineNumber();
+        }
+        return $this->firstDiffLine;
     }
 
     /**
@@ -164,8 +170,8 @@ class Amendment extends IMotion implements IRSSItem
             return 1;
         }
 
-        $tit1 = explode("-", $ae1->titlePrefix);
-        $tit2 = explode("-", $ae2->titlePrefix);
+        $tit1 = explode('-', $ae1->titlePrefix);
+        $tit2 = explode('-', $ae2->titlePrefix);
         if (count($tit1) == 3 && count($tit2) == 3) {
             if ($tit1[2] < $tit2[2]) {
                 return -1;
@@ -190,11 +196,12 @@ class Amendment extends IMotion implements IRSSItem
         $ams = array();
         foreach ($amendments as $am) {
             if (!in_array($am->status, $consultation->getInvisibleAmendmentStati())) {
+                $am->getFirstDiffLine();
                 $ams[] = $am;
             }
         }
 
-        usort($ams, array(Amendment::className(), 'sortVisibleByLineNumbersSort'));
+        usort($ams, [Amendment::className(), 'sortVisibleByLineNumbersSort']);
 
         return $ams;
     }

@@ -253,11 +253,18 @@ class AmendmentSectionFormatter
      */
     private function getDiffLinesWithNumbers()
     {
-        $lineOffset = $this->section->getFirstLineNumber();
-        $computed   = $this->getHtmlDiffWithLineNumberPlaceholders();
-        $computed   = static::cleanupDiffProblems($computed);
-        $blocks     = static::htmlDiff2LineBlocks($computed, $lineOffset);
-        return static::filterAffectedBlocks($blocks);
+        if (!$this->section) {
+            return [];
+        }
+        try {
+            $lineOffset = $this->section->getFirstLineNumber();
+            $computed   = $this->getHtmlDiffWithLineNumberPlaceholders();
+            $computed   = static::cleanupDiffProblems($computed);
+            $blocks     = static::htmlDiff2LineBlocks($computed, $lineOffset);
+            return static::filterAffectedBlocks($blocks);
+        } catch (Internal $e) {
+            return [];
+        }
     }
 
     /**

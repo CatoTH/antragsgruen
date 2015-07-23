@@ -53,7 +53,7 @@ class Consultation
      */
     public function __construct($data)
     {
-        if ($data == "") {
+        if ($data == '') {
             return;
         }
         $data = (array)json_decode($data);

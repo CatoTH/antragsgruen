@@ -23,3 +23,5 @@ $I->fillField('#amendmentTitlePrefix', 'Z-01-009-1');
 $I->submitForm('#amendmentUpdateForm', [], 'save');
 $I->fillField('#amendmentTitlePrefix', 'Z-01-009-2');
 $I->submitForm('#amendmentUpdateForm', [], 'save');
+$I->gotoConsultationHome(true, 'laenderrat-to', 'laenderrat-to');
+$I->see('Länderrat');

@@ -96,6 +96,9 @@ class AmendmentSection extends IMotionSection
             if ($section->sectionId == $this->sectionId) {
                 return $first;
             }
+            if (!$section->getOriginalMotionSection()) {
+                throw new Internal('Did not find myself');
+            }
             $first += $section->getOriginalMotionSection()->getNumberOfCountableLines();
         }
         throw new Internal('Did not find myself');
