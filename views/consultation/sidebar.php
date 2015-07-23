@@ -122,15 +122,12 @@ if ($hasAmendments) {
         $html .= "<li><i>keine</i></li>";
     } else {
         foreach ($newestAmendments as $amendment) {
-            $hideRev       = $consultation->getSettings()->hideTitlePrefix;
-            $zu_str        = Html::encode(
-                $hideRev ? $amendment->motion->title : $amendment->motion->titlePrefix
-            );
+            $zu_str        = Html::encode($amendment->getShortTitle());
             $amendmentLink = UrlHelper::createUrl(
                 [
-                    "amendment/view",
-                    "amendmentId" => $amendment->id,
-                    "motionId"    => $amendment->motion->id
+                    'amendment/view',
+                    'amendmentId' => $amendment->id,
+                    'motionId'    => $amendment->motion->id
                 ]
             );
             $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>';

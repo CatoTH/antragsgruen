@@ -367,6 +367,9 @@ class Consultation extends ActiveRecord
     {
         $results = [];
         foreach ($this->motions as $motion) {
+            if (in_array($motion->status, $this->getInvisibleMotionStati())) {
+                continue;
+            }
             $found = false;
             foreach ($motion->sections as $section) {
                 if (!$found && $section->getSectionType()->matchesFulltextSearch($text)) {
@@ -380,9 +383,27 @@ class Consultation extends ActiveRecord
                     $results[]         = $result;
                 }
             }
+            if (!$found) {
+                foreach ($motion->amendments as $amend) {
+                    if (in_array($amend->status, $this->getInvisibleAmendmentStati())) {
+                        continue;
+                    }
+                    foreach ($amend->sections as $section) {
+                        if (!$found && $section->getSectionType()->matchesFulltextSearch($text)) {
+                            $found             = true;
+                            $result            = new SearchResult();
+                            $result->id        = 'amendment' . $amend->id;
+                            $result->typeTitle = 'Änderungsantrag';
+                            $result->type      = SearchResult::TYPE_AMENDMENT;
+                            $result->title     = $amend->getTitle();
+                            $result->link      = UrlHelper::createAmendmentUrl($amend, 'view', $backParams);
+                            $results[]         = $result;
+                        }
+                    }
+                }
+            }
         }
         /*
-         * @TODO: - Änderungsanträge
          * @TODO: - Kommentare
          */
         return $results;

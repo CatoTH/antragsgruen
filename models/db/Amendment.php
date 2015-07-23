@@ -112,6 +112,22 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @return string
+     */
+    public function getShortTitle()
+    {
+        if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
+            return $this->titlePrefix . ' zu ' . $this->motion->title;
+        } else {
+            if ($this->motion->titlePrefix != '') {
+                return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix;
+            } else {
+                return $this->titlePrefix . ' zu ' . $this->motion->title;
+            }
+        }
+    }
+
+    /**
      * @return Consultation
      */
     public function getMyConsultation()

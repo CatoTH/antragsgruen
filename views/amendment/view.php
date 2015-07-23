@@ -28,8 +28,13 @@ $controller   = $this->context;
 $layout       = $controller->layoutParams;
 $consultation = $amendment->motion->consultation;
 
-$layout->addBreadcrumb($amendment->motion->getTypeName(), UrlHelper::createMotionUrl($amendment->motion));
-$layout->addBreadcrumb($amendment->titlePrefix);
+if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
+    $layout->addBreadcrumb($_REQUEST['backTitle'], $_REQUEST['backUrl']);
+    $layout->addBreadcrumb($amendment->getShortTitle());
+} else {
+    $layout->addBreadcrumb($amendment->motion->getTypeName(), UrlHelper::createMotionUrl($amendment->motion));
+    $layout->addBreadcrumb($amendment->titlePrefix);
+}
 
 $this->title = $amendment->getTitle() . " (" . $consultation->title . ", Antragsgrün)";
 

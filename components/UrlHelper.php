@@ -200,17 +200,17 @@ class UrlHelper
     /**
      * @param Amendment $amendment
      * @param string $mode
+     * @param array $addParams
      * @return string
      */
-    public static function createAmendmentUrl(Amendment $amendment, $mode = 'view')
+    public static function createAmendmentUrl(Amendment $amendment, $mode = 'view', $addParams = [])
     {
-        return static::createUrl(
-            [
-                'amendment/' . $mode,
-                'motionId'    => $amendment->motionId,
-                'amendmentId' => $amendment->id
-            ]
-        );
+        $params = array_merge([
+            'amendment/' . $mode,
+            'motionId'    => $amendment->motionId,
+            'amendmentId' => $amendment->id
+        ], $addParams);
+        return static::createUrl($params);
     }
 
     /**

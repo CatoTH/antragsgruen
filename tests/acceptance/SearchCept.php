@@ -25,3 +25,16 @@ $I->dontSee('A3: Test');
 $I->wantTo('check that the backlinks in the motions work');
 $I->click('.motion2 a');
 $I->see('Suche', '.breadcrumb');
+
+
+
+$I->wantTo('search an amendment');
+$I->gotoConsultationHome();
+$I->fillField('#sidebar .query', 'neuer absatz');
+$I->submitForm('#sidebar .form-search', [], '');
+
+$I->see('Ä2 zu A2');
+
+$I->wantTo('check that the backlinks in the amendments work');
+$I->click('.amendment3 a');
+$I->see('Suche', '.breadcrumb');
