@@ -147,7 +147,7 @@ if (!$amendment->textFixed) {
 <div class="content" id="amendmentTextEditCaller">
     <button type="button" class="btn btn-default">Bearbeiten</button>
 </div>
-<div class="content" id="amendmentTextEditHolder" style="display: none;">';
+<div class="content hidden" id="amendmentTextEditHolder">';
 
     foreach ($form->sections as $section) {
         if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
