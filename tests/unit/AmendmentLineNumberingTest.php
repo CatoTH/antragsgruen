@@ -3,6 +3,7 @@
 namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\Diff;
 use app\models\db\Amendment;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
@@ -10,22 +11,6 @@ use Codeception\Specify;
 
 class AmendmentLineNumberingTest extends DBTestBase
 {
-    public function testFirstAffectedLine()
-    {
-        /** @var Amendment $amendment */
-        $amendment = Amendment::findOne(1);
-        $this->assertEquals(14, $amendment->getFirstDiffLine());
-
-        /** @var Amendment $amendment */
-        $amendment = Amendment::findOne(2);
-        $this->assertEquals(1, $amendment->getFirstDiffLine());
-
-        /** @var Amendment $amendment */
-        $amendment = Amendment::findOne(3);
-        $this->assertEquals(9, $amendment->getFirstDiffLine());
-
-    }
-
     /**
      * @param int $amendmentId
      * @param int $sectionId
@@ -44,6 +29,61 @@ class AmendmentLineNumberingTest extends DBTestBase
         }
         $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
         return $formatter->getGroupedDiffLinesWithNumbers();
+    }
+
+    /**
+     * @param int $amendmentId
+     * @param int $sectionId
+     * @return array
+     */
+    private function getSectionDiffBlocks($amendmentId, $sectionId)
+    {
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne($amendmentId);
+
+        $section = null;
+        foreach ($amendment->sections as $sect) {
+            if ($sect->sectionId == $sectionId) {
+                $section = $sect;
+            }
+        }
+        $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+        return $formatter->getDiffLinesWithNumbers();
+    }
+
+    /**
+     */
+    public function testFirstAffectedLine()
+    {
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(1);
+        $this->assertEquals(14, $amendment->getFirstDiffLine());
+
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(2);
+        $this->assertEquals(1, $amendment->getFirstDiffLine());
+
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(3);
+        $this->assertEquals(9, $amendment->getFirstDiffLine());
+
+    }
+
+    /**
+     */
+    public function testTwoChangesPerLine()
+    {
+        $diff = $this->getSectionDiffBlocks(270, 2);
+        $text = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand ' .
+            'Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul>' .
+            '<ul class="inserted"><li>Neue Zeile</li></ul>';
+        $this->assertEquals([[
+            'text'     => $text,
+            'lineFrom' => 8,
+            'lineTo'   => 9,
+            'newLine'  => false,
+        ]], $diff);
+        $this->assertEquals($text, $diff[0]['text']);
     }
 
     /**

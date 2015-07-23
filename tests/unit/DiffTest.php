@@ -106,7 +106,7 @@ class DiffTest extends TestBase
 
     public function testGroupOperations()
     {
-        $src = [
+        $src     = [
             [
                 '<p>###LINENUMBER###Wui helfgod Wiesn. Sauwedda an Brezn, abfieseln.</p>',
                 Engine::DELETED
@@ -120,7 +120,7 @@ class DiffTest extends TestBase
                 Engine::UNMODIFIED
             ]
         ];
-        $diff = new Diff();
+        $diff    = new Diff();
         $grouped = $diff->groupOperations($src, Diff::ORIG_LINEBREAK);
         $this->assertEquals($src, $grouped); // Should not be changed
     }

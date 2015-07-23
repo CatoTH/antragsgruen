@@ -159,12 +159,13 @@ class AmendmentSectionFormatter
                 $affectedBlocks[] = $block;
             } elseif ($hadDiff) {
                 $affectedBlocks[] = $block;
-            }
-            if (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                $affectedBlocks[] = $block;
-            }
-            if (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                $affectedBlocks[] = $block;
+            } else {
+                if (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
+                    $affectedBlocks[] = $block;
+                }
+                if (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
+                    $affectedBlocks[] = $block;
+                }
             }
         }
         return $affectedBlocks;
@@ -251,7 +252,7 @@ class AmendmentSectionFormatter
      * @return array[]
      * @throws Internal
      */
-    private function getDiffLinesWithNumbers()
+    public function getDiffLinesWithNumbers()
     {
         if (!$this->section) {
             return [];
