@@ -30,7 +30,7 @@ use yii\db\ActiveRecord;
 class ConsultationSettingsMotionSection extends ActiveRecord
 {
     const COMMENTS_NONE       = 0;
-    const COMMENTS_SECTION    = 1;
+    const COMMENTS_MOTION     = 1;
     const COMMENTS_PARAGRAPHS = 2;
 
     const STATUS_VISIBLE = 0;
@@ -51,7 +51,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     {
         return [
             static::COMMENTS_NONE       => 'Keine Kommentare',
-            static::COMMENTS_SECTION    => 'Abschnitt als ganzes kommentierbar',
+            static::COMMENTS_MOTION     => 'Abschnitt als ganzes kommentierbar',
             static::COMMENTS_PARAGRAPHS => 'Einzelne Absätze sind kommentierbar'
         ];
     }
@@ -111,10 +111,10 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public function getAvailableCommentTypes()
     {
         if ($this->type == ISectionType::TYPE_TEXT_SIMPLE) {
-            return [static::COMMENTS_NONE, static::COMMENTS_SECTION, static::COMMENTS_PARAGRAPHS];
+            return [static::COMMENTS_NONE, static::COMMENTS_MOTION, static::COMMENTS_PARAGRAPHS];
         }
         if ($this->type == ISectionType::TYPE_TEXT_HTML) {
-            return [static::COMMENTS_NONE, static::COMMENTS_SECTION];
+            return [static::COMMENTS_NONE, static::COMMENTS_MOTION];
         }
         return [static::COMMENTS_NONE];
     }

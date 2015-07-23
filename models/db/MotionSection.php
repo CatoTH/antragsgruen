@@ -63,7 +63,7 @@ class MotionSection extends IMotionSection
     public function rules()
     {
         return [
-            [['motionId', 'sectionId'], 'required'],
+            [['motionId'], 'required'],
             [['motionId', 'sectionId'], 'number'],
         ];
     }
@@ -202,6 +202,7 @@ class MotionSection extends IMotionSection
         $lineNo   = $this->motion->getFirstLineNumber();
         $sections = $this->motion->getSortedSections();
         foreach ($sections as $section) {
+            /** @var MotionSection $section */
             if ($section->sectionId == $this->sectionId) {
                 return $lineNo;
             } else {

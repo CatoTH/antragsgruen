@@ -21,6 +21,7 @@ use yii\helpers\Html;
  * @var string|null $adminEdit
  * @var null|string $supportStatus
  * @var null|CommentForm $commentForm
+ * @var bool $commentWholeMotions
  */
 
 /** @var \app\controllers\Base $controller */
@@ -426,13 +427,12 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 }
 
 
-if ($motion->consultation->getSettings()->commentWholeMotions) {
+if ($commentWholeMotions) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
-
     $form    = $commentForm;
     $imadmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
 
-    if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
+    if ($form === null || $form->paragraphNo != -1 || $form->sectionId !== null) {
         $form              = new \app\models\forms\CommentForm();
         $form->paragraphNo = -1;
         $form->sectionId   = -1;

@@ -16,6 +16,7 @@ use app\models\forms\CommentForm;
 
 /**
  * @property Consultation $consultation
+ * @method redirect($uri)
  */
 trait MotionActionsTrait
 {
@@ -53,6 +54,14 @@ trait MotionActionsTrait
         }
         $commentForm = new CommentForm();
         $commentForm->setAttributes($_POST['comment']);
+        $commentForm->sectionId = null;
+        if ($_POST['comment']['sectionId'] > 0) {
+            foreach ($motion->sections as $section) {
+                if ($section->sectionId == $_POST['comment']['sectionId']) {
+                    $commentForm->sectionId = $_POST['comment']['sectionId'];
+                }
+            }
+        }
 
         if (User::getCurrentUser()) {
             $commentForm->userId = User::getCurrentUser()->id;

@@ -326,9 +326,9 @@ $renderSection = function (ConsultationSettingsMotionSection $section) {
     echo ' Keine</label> ';
 
     echo '<label class="commentSection">';
-    $val = ConsultationSettingsMotionSection::COMMENTS_SECTION;
+    $val = ConsultationSettingsMotionSection::COMMENTS_MOTION;
     echo Html::radio($sectionName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
-    echo ' Gesamter Abschnitt</label> ';
+    echo ' Gesamter Antrag</label> ';
 
     echo '<label class="commentParagraph">';
     $val = ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS;

@@ -167,7 +167,7 @@ class CommentForm extends Model
         return [
             [['text', 'paragraphNo'], 'required'],
             [['paragraphNo', 'sectionId'], 'number'],
-            [['text', 'name', 'email', 'paragraphNo', 'sectionId'], 'safe'],
+            [['text', 'name', 'email', 'paragraphNo'], 'safe'],
         ];
     }
 }

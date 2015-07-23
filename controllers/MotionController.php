@@ -7,8 +7,10 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
+use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\EMailLog;
 use app\models\db\Motion;
+use app\models\db\MotionSection;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
@@ -166,12 +168,20 @@ class MotionController extends Base
             $adminEdit = null;
         }
 
+        $commentWholeMotions = false;
+        foreach ($motion->sections as $section) {
+            if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_MOTION) {
+                $commentWholeMotions = true;
+            }
+        }
+
         $motionViewParams = [
-            'motion'         => $motion,
-            'amendments'     => $motion->getVisibleAmendments(),
-            'openedComments' => $openedComments,
-            'adminEdit'      => $adminEdit,
-            'commentForm'    => null,
+            'motion'              => $motion,
+            'amendments'          => $motion->getVisibleAmendments(),
+            'openedComments'      => $openedComments,
+            'adminEdit'           => $adminEdit,
+            'commentForm'         => null,
+            'commentWholeMotions' => $commentWholeMotions,
         ];
 
         try {
@@ -180,7 +190,7 @@ class MotionController extends Base
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
-        $supportStatus = "";
+        $supportStatus = '';
         if (!\Yii::$app->user->isGuest) {
             foreach ($motion->motionSupporters as $supp) {
                 if ($supp->userId == User::getCurrentUser()->id) {

@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS `motionComment` (
   `id`                INT(11)     NOT NULL,
   `userId`            INT(11)              DEFAULT NULL,
   `motionId`          INT(11)     NOT NULL,
-  `sectionId`         INT(11)     NOT NULL,
+  `sectionId`         INT(11)     NULL,
   `paragraph`         SMALLINT(6) NOT NULL,
   `text`              MEDIUMTEXT  NOT NULL,
   `name`              TEXT        NOT NULL,
