@@ -21,6 +21,7 @@ class Consultation
     public $lineNumberingGlobal = false;
     public $iniatorsMayEdit     = false;
     public $hideTitlePrefix     = false;
+    public $showFeeds             = true;
 
     // TESTS WITHOUT TEST CASES
 
@@ -29,7 +30,6 @@ class Consultation
     public $adminsMayEdit         = true;
     public $confirmEmails         = false;
     public $minimalisticUI        = false;
-    public $showFeeds             = true;
     public $commentsSupportable   = false;
     public $screeningMotionsShown = false;
     public $screeningAmendments   = false;
