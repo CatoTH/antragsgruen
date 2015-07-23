@@ -171,11 +171,6 @@ $description = 'AntragstellerInnen dürfen Anträge <strong>nachträglich änder
 $booleanSettingRow($settings, 'iniatorsMayEdit', $handledSettings, $description);
 
 
-$description = 'Kommentare zum Antrag allgemein zulassen<br>
-<small style="margin-left: 20px;">(Anträge ohne Absatzbezug, erscheinen unterhalb des Antrags)</small>';
-$booleanSettingRow($settings, 'commentWholeMotions', $handledSettings, $description);
-
-
 $description = 'Anträge (ausgegraut) anzeigen, auch wenn sie noch nicht freigeschaltet sind';
 $booleanSettingRow($settings, 'screeningMotionsShown', $handledSettings, $description);
 
