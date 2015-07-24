@@ -122,10 +122,8 @@
             var hasSupporters = $(this).find("option:selected").data("has-supporters");
             if (hasSupporters) {
                 $('#typeMinSupportersRow').removeClass("hidden");
-                $('#typeSupportersOrgaRow').removeClass("hidden");
             } else {
                 $('#typeMinSupportersRow').addClass("hidden");
-                $('#typeSupportersOrgaRow').addClass("hidden");
             }
         }).change();
     };

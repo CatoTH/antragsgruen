@@ -230,16 +230,16 @@ if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class))
 }
 echo '></div></div>';
 
-echo '<div class="form-group checkbot" id="typeSupportersOrgaRow">';
+echo '<div class="form-group checkbot" id="typeHasOrgaRow">';
 echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
-      <input type="checkbox" name="initiator[supportersHaveOrganizations]"';
+      <input type="checkbox" name="initiator[hasOrganizations]"';
 if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
     /** @var \app\models\initiatorForms\DefaultFormBase $curForm */
-    if ($curForm->supportersHaveOrganizations()) {
+    if ($curForm->hasOrganizations()) {
         echo ' checked';
     }
 }
-echo '> Gremium/Organisation bei UnterstützerInnen abfragen
+echo '> Gremium/Organisation auch bei natürlichen Personen abfragen
     </label></div>';
 echo '</div>';
 

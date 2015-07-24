@@ -21,10 +21,10 @@ $I->seeCheckboxIsChecked("#personTypeNatural");
 $I->cantSeeCheckboxIsChecked("#personTypeOrga");
 
 $I->dontSee('JavaScript aktiviert sein');
-$I->dontSee('Gremium, LAG...');
+$I->see('Gremium, LAG...');
 $I->dontSee('Beschlussdatum');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
-$I->see('Gremium, LAG...');
+$I->dontSee('Gremium, LAG...');
 $I->see('Beschlussdatum');
 
 // Fill & Submit Form
@@ -38,26 +38,7 @@ $I->fillField(['name' => 'Initiator[contactPhone]'], '+49123456789');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#motionEditForm', [], 'save');
 
-$I->see('No organization entered');
 $I->see('No resolution date entered');
-$I->seeInField(['name' => 'Initiator[name]'], 'Mein Name');
-$I->seeInField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
-$I->seeInField(['name' => 'Initiator[contactPhone]'], '+49123456789');
-$I->dontSeeCheckboxIsChecked("#personTypeNatural");
-$I->seeCheckboxIsChecked("#personTypeOrga");
-$I->see('Gremium, LAG...');
-$I->see('Beschlussdatum');
-
-
-// Fill & Submit Form
-$I->wantTo('create a regular motion, still forgot the resolution date');
-$I->fillField(['name' => 'Initiator[organization]'], 'My company');
-
-$I->submitForm('#motionEditForm', [], 'save');
-
-$I->dontSee('No organization entered');
-$I->see('No resolution date entered');
-
 
 $I->wantTo('finally create the motion for real');
 $I->fillField(['name' => 'Initiator[resolutionDate]'], '12.01.2015');

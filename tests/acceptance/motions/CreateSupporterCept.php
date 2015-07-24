@@ -19,7 +19,7 @@ $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->seeOptionIsSelected('#typeInitiatorForm', \app\models\initiatorForms\OnlyInitiator::getTitle());
 $I->selectOption('#typeInitiatorForm', \app\models\initiatorForms\WithSupporters::getTitle());
 $I->fillField('#typeMinSupporters', 0);
-$I->uncheckOption('#typeSupportersOrgaRow input[type=checkbox]');
+$I->uncheckOption('#typeHasOrgaRow input[type=checkbox]');
 
 $motionTypePage->saveForm();
 $I->seeOptionIsSelected('#typeInitiatorForm', \app\models\initiatorForms\WithSupporters::getTitle());
@@ -44,10 +44,10 @@ $I->gotoConsultationHome();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
 $I->fillField('#typeMinSupporters', 2);
-$I->checkOption('#typeSupportersOrgaRow input[type=checkbox]');
+$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
 $motionTypePage->saveForm();
 $I->seeInField('#typeMinSupporters', 2);
-
+$I->seeCheckboxIsChecked('#typeHasOrgaRow input[type=checkbox]');
 
 
 $I->wantTo('create a motion, but without supporters');
@@ -60,19 +60,19 @@ $I->wantTo('test persons and organizations');
 $I->seeElement('.supporterDataHead');
 $I->seeElement('.supporterData');
 $I->seeElement('.initiatorData .adderRow');
-$I->dontSeeElement('#initiatorOrga');
+$I->seeElement('#initiatorOrga');
 $I->dontSeeElement('#resolutionDate');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('.supporterDataHead');
 $I->dontSeeElement('.supporterData');
 $I->dontSeeElement('.initiatorData .adderRow');
-$I->seeElement('#initiatorOrga');
+$I->dontSeeElement('#initiatorOrga');
 $I->seeElement('#resolutionDate');
 $I->selectOption('#personTypeNatural', \app\models\db\ISupporter::PERSON_NATURAL);
 $I->seeElement('.supporterDataHead');
 $I->seeElement('.supporterData');
 $I->seeElement('.initiatorData .adderRow');
-$I->dontSeeElement('#initiatorOrga');
+$I->seeElement('#initiatorOrga');
 $I->dontSeeElement('#resolutionDate');
 
 

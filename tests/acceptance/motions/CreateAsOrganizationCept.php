@@ -9,7 +9,7 @@ $createPage->fillInValidSampleData('Sample motion from an organization');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->dontSeeElement('.supporterDataHead');
 $I->dontSeeElement('.supporterData');
-$I->seeElement('#initiatorOrga');
+$I->dontSeeElement('#initiatorOrga');
 $I->seeElement('#resolutionDate');
 
 $I->dontSeeElement('.bootstrap-datetimepicker-widget');
@@ -18,7 +18,7 @@ $I->seeElement('.bootstrap-datetimepicker-widget');
 $I->executeJS('$("#resolutionDateHolder").find(".input-group-addon").click()');
 $I->dontSeeElement('.bootstrap-datetimepicker-widget');
 
-$I->fillField(['name' => 'Initiator[organization]'], 'My party');
+$I->fillField(['name' => 'Initiator[name]'], 'My party');
 $I->fillField(['name' => 'Initiator[resolutionDate]'], '09.09.1999');
 
 $createPage->saveForm();

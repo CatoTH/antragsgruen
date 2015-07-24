@@ -313,11 +313,13 @@
 
         $('#personTypeNatural, #personTypeOrga').on('click change', function () {
             if ($('#personTypeOrga').prop('checked')) {
-                $initiatorData.find('.organizationRow').removeClass("hidden");
-                $initiatorData.find('.adderRow').addClass("hidden")
+                $initiatorData.find('.organizationRow').addClass("hidden");
+                $initiatorData.find('.resolutionRow').removeClass("hidden");
+                $initiatorData.find('.adderRow').addClass("hidden");
                 $('.supporterData, .supporterDataHead').addClass("hidden");
             } else {
-                $initiatorData.find('.organizationRow').addClass("hidden");
+                $initiatorData.find('.organizationRow').removeClass("hidden");
+                $initiatorData.find('.resolutionRow').addClass("hidden");
                 $initiatorData.find('.adderRow').removeClass("hidden");
                 $('.supporterData, .supporterDataHead').removeClass("hidden");
             }
@@ -346,7 +348,7 @@
             $('#fullTextHolder').removeClass("hidden");
         });
         $('.fullTextAdd').click(function () {
-            var lines = $fullTextHolder.find('textarea').val().split("\n"),
+            var lines = $fullTextHolder.find('textarea').val().split(";"),
                 template = $('#newSupporterTemplate').data('html'),
                 getNewElement = function () {
                     var $rows = $supporterData.find(".supporterRow");
@@ -367,7 +369,7 @@
                 var $newEl = getNewElement();
                 if ($firstAffectedRow == null) $firstAffectedRow = $newEl;
                 if ($newEl.find('input.organization').length > 0) {
-                    var parts = lines[i].split(';');
+                    var parts = lines[i].split(',');
                     $newEl.find('input.name').val(parts[0].trim());
                     if (parts.length > 1) {
                         $newEl.find('input.organization').val(parts[1].trim());

@@ -16,7 +16,7 @@ use yii\helpers\Html;
  * @var bool $hasSupporters
  * @var bool $minSupporters
  * @var bool $supporterFulltext
- * @var bool $supporterOrga
+ * @var bool $hasOrganizations
  * @var bool $adminMode
  */
 
@@ -95,16 +95,18 @@ echo '<div class="form-group">
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorName" name="Initiator[name]" value="' . $preName . '" required>
   </div>
-</div>
+</div>';
 
-<div class="form-group organizationRow">
+if ($hasOrganizations) {
+    echo '<div class="form-group organizationRow">
   <label class="col-sm-3 control-label" for="initiatorOrga">' . Yii::t('initiator', 'Gremium, LAG...') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]" value="' . $preOrga . '">
   </div>
-</div>
+</div>';
+}
 
-<div class="form-group organizationRow">
+echo '<div class="form-group resolutionRow">
   <label class="col-sm-3 control-label" for="resolutionDate">Beschlussdatum</label>
   <div class="col-sm-4"><div class="input-group date" id="resolutionDateHolder">
     <input type="text" class="form-control" id="resolutionDate" name="Initiator[resolutionDate]"
@@ -173,7 +175,7 @@ $getInitiatorRow = function (ISupporter $initiator, $initiatorOrga) {
 
 
 foreach ($moreInitiators as $init) {
-    echo $getInitiatorRow($init, $supporterOrga);
+    echo $getInitiatorRow($init, $hasOrganizations);
 }
 
 
@@ -183,7 +185,7 @@ echo 'AntragstellerIn hinzufügen';
 echo '</a></div></div>';
 
 $new    = new \app\models\db\MotionSupporter();
-$newStr = $getInitiatorRow($new, $supporterOrga);
+$newStr = $getInitiatorRow($new, $hasOrganizations);
 echo '<div id="newInitiatorTemplate" style="display: none;" data-html="' . Html::encode($newStr) . '"></div>';
 
 
@@ -191,7 +193,7 @@ echo '</div>';
 
 
 if ($hasSupporters) {
-    $getSupporterRow = function (ISupporter $supporter, $supporterOrga) {
+    $getSupporterRow = function (ISupporter $supporter, $hasOrganizations) {
         $str = '<div class="form-group supporterRow">';
         $str .= '<div class="col-md-6">';
         $str .= Html::textInput(
@@ -200,7 +202,7 @@ if ($hasSupporters) {
             ['class' => 'form-control name', 'placeholder' => 'Name']
         );
         $str .= '</div>';
-        if ($supporterOrga) {
+        if ($hasOrganizations) {
             $str .= '<div class="col-md-5">';
             $str .= Html::textInput(
                 'supporters[organization][]',
@@ -237,7 +239,7 @@ if ($hasSupporters) {
 
     echo '<div class="col-md-9">';
     foreach ($supporters as $supporter) {
-        echo $getSupporterRow($supporter, $supporterOrga);
+        echo $getSupporterRow($supporter, $hasOrganizations);
     }
 
     echo '<div class="adderRow"><a href="#"><span class="glyphicon glyphicon-plus"></span> ';
@@ -260,7 +262,7 @@ if ($hasSupporters) {
     echo '</div>';
 
     $new    = new \app\models\db\MotionSupporter();
-    $newStr = $getSupporterRow($new, $supporterOrga);
+    $newStr = $getSupporterRow($new, $hasOrganizations);
     echo '<div id="newSupporterTemplate" style="display: none;" data-html="' . Html::encode($newStr) . '"></div>';
 
     echo '</div>';

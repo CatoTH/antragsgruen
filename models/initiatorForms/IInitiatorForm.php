@@ -42,7 +42,7 @@ abstract class IInitiatorForm
     {
         switch ($formId) {
             case 0:
-                return new OnlyInitiator($motionType);
+                return new OnlyInitiator($motionType, $settings);
             case 1:
                 return new WithSupporters($motionType, $settings);
             default:

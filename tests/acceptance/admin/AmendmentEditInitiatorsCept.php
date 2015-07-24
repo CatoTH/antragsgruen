@@ -10,13 +10,11 @@ $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->fillField('#initiatorName', 'Another test user');
 $I->fillField('#initiatorEmail', 'test2@example.org');
 $I->fillField('#resolutionDate', '23.05.1949');
-$I->fillField('#initiatorOrga', 'Tester');
 $I->submitForm('#amendmentUpdateForm', [], 'save');
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->seeInField('#initiatorName', 'Another test user');
 $I->seeInField('#initiatorEmail', 'test2@example.org');
 $I->seeInField('#resolutionDate', '23.05.1949');
-$I->seeInField('#initiatorOrga', 'Tester');
 
 $scenario->incomplete('test cases not implemented yet');
 // General amendment data

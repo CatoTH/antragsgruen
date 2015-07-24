@@ -21,6 +21,9 @@ abstract class DefaultFormBase extends IInitiatorForm
     /** @var Consultation $motionType $motionType */
     protected $motionType;
 
+    /** @var bool */
+    protected $hasOrganizations = false;
+
     /**
      * @param ConsultationMotionType $motionType
      */
@@ -35,7 +38,7 @@ abstract class DefaultFormBase extends IInitiatorForm
      */
     public function isValidName($name)
     {
-        return (trim($name) != "");
+        return (trim($name) != '');
     }
 
     /**
@@ -65,9 +68,9 @@ abstract class DefaultFormBase extends IInitiatorForm
     /**
      * @return bool
      */
-    public function supportersHaveOrganizations()
+    public function hasOrganizations()
     {
-        return false;
+        return $this->hasOrganizations;
     }
 
     /**
@@ -131,9 +134,6 @@ abstract class DefaultFormBase extends IInitiatorForm
             $errors[] = 'Invalid person type.';
         }
         if ($initiator['personType'] == ISupporter::PERSON_ORGANIZATION) {
-            if (empty($initiator['organization'])) {
-                $errors[] = 'No organization entered.';
-            }
             if (empty($initiator['resolutionDate'])) {
                 $errors[] = 'No resolution date entered.';
             }
@@ -229,7 +229,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             }
         }
         if (!$initiator) {
-            $initiator = new MotionSupporter();
+            $initiator       = new MotionSupporter();
             $initiator->role = MotionSupporter::ROLE_INITIATOR;
         }
         $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
@@ -249,7 +249,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
-                'supporterOrga'     => $this->supportersHaveOrganizations(),
+                'hasOrganizations'  => $this->hasOrganizations(),
                 'adminMode'         => $this->adminMode,
             ],
             $controller
@@ -297,7 +297,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 'hasSupporters'     => $this->hasSupporters(),
                 'minSupporters'     => $this->getMinNumberOfSupporters(),
                 'supporterFulltext' => $this->hasFullTextSupporterField(),
-                'supporterOrga'     => $this->supportersHaveOrganizations(),
+                'hasOrganizations'  => $this->hasOrganizations(),
                 'adminMode'         => $this->adminMode,
             ],
             $controller

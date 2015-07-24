@@ -16,16 +16,13 @@ $I->seeElement('.loginOpenID');
 
 $I->wantTo('deactivate Wurzelwerk and standard login');
 $I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->uncheckOption('.loginMethods .std input');
 $I->uncheckOption('.loginMethods .wurzelwerk input');
-$I->checkOption('.loginMethods .namespaced input');
 $I->submitForm('#siteSettingsForm', [], 'save');
 
 $I->gotoConsultationHome();
 $I->logout();
 $I->click('#loginLink');
 $I->seeElement('.loginUsername');
-$I->dontSeeElement('#createAccount');
 $I->seeElement('.loginWurzelwerk');
 $I->see('Admin-Login', '.loginWurzelwerk');
 $I->dontSeeElement('#admin_login_www');
@@ -39,7 +36,6 @@ $scenario->incomplete('situation unresolvable yet');
 
 $I->wantTo('deactivate everything (because I can)');
 $I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->uncheckOption('.loginMethods .namespaced input');
 $I->uncheckOption('.loginMethods .external input');
 $I->submitForm('#siteSettingsForm', [], 'save');
 

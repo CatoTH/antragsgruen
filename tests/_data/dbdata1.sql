@@ -840,17 +840,22 @@ VALUES
 
 INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `texTemplateId`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `contactEmail`, `contactPhone`, `initiatorForm`, `initiatorFormSettings`)
 VALUES
-  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
-  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
-  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
-  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0, NULL),
-  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 2, 1, 0, NULL),
+  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
+   '{"hasOrganizations":true}'),
+  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
+   '{"hasOrganizations":true}'),
+  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
+   '{"hasOrganizations":true}'),
+  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
+   '{"hasOrganizations":true}'),
+  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 2, 1, 0,
+   '{"hasOrganizations":true}'),
   (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1,
-   '{"minSupporters":19,"supportersHaveOrganizations":true}'),
+   '{"minSupporters":19,"hasOrganizations":true}'),
   (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 2, 1, 1,
-   '{"minSupporters":19,"supportersHaveOrganizations":true}'),
+   '{"minSupporters":19,"hasOrganizations":true}'),
   (9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1,
-   '{"minSupporters":19,"supportersHaveOrganizations":true}');
+   '{"minSupporters":19,"hasOrganizations":true}');
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`
