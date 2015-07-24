@@ -71,7 +71,8 @@ class AmendmentController extends AdminBase
                 }
             }
             if ($found) {
-                \yii::$app->session->setFlash('error', 'Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
+                $msg = 'Inzwischen gibt es einen anderen Änderungsantrag mit diesem Kürzel.';
+                \yii::$app->session->setFlash('error', $msg);
             } else {
                 $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
                 $amendment->titlePrefix = $_POST['titlePrefix'];

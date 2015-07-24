@@ -131,8 +131,8 @@ if ($hasAmendments) {
                 ]
             );
             $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>';
-            $linkTitle .= "<strong>" . Html::encode($amendment->titlePrefix) . "</strong> zu " . $zu_str;
-            $html .= '<li>' . Html::a($linkTitle, $amendmentLink) . '</li>';
+            $linkTitle .= '<strong>' . Html::encode($amendment->titlePrefix) . '</strong> zu ' . $zu_str;
+            $html .= '<li>' . Html::a($linkTitle, $amendmentLink, ['class' => 'amendment' . $amendment->id]) . '</li>';
         }
     }
     $html .= "</ul></div>";

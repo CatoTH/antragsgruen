@@ -360,16 +360,6 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $motionId
-     * @return string
-     */
-    public function getNextAmendmentPrefix($motionId)
-    {
-
-        return 'TODO'; // @TODO
-    }
-
-    /**
      *
      */
     public function flushCaches()

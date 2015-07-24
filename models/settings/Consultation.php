@@ -18,10 +18,11 @@ class Consultation
     /** @var bool */
     public $maintainanceMode    = false;
     public $screeningMotions    = false;
+    public $screeningAmendments = false;
     public $lineNumberingGlobal = false;
     public $iniatorsMayEdit     = false;
     public $hideTitlePrefix     = false;
-    public $showFeeds             = true;
+    public $showFeeds           = true;
 
     // TESTS WITHOUT TEST CASES
 
@@ -32,7 +33,6 @@ class Consultation
     public $minimalisticUI        = false;
     public $commentsSupportable   = false;
     public $screeningMotionsShown = false;
-    public $screeningAmendments   = false;
     public $screeningComments     = false;
     public $initiatorsMayReject   = false;
     public $allowMultipleTags     = false;

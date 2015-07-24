@@ -4,6 +4,7 @@ namespace app\controllers\admin;
 
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
@@ -34,7 +35,18 @@ class IndexController extends AdminBase
                     $description
                 );
             }
-            // @TODO Amendments & Comments
+            $amendments = Amendment::getScreeningAmendments($this->consultation);
+            foreach ($amendments as $amend) {
+                $description = 'Von: ' . $amend->getInitiatorsStr();
+                $todo[]      = new AdminTodoItem(
+                    'amendmentsScreen' . $amend->id,
+                    $amend->getTitle(),
+                    'Änderungsantrag freischalten',
+                    UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amend->id]),
+                    $description
+                );
+            }
+            // @TODO Comments
         }
 
         return $this->render(

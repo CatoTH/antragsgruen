@@ -55,7 +55,7 @@ class LayoutHelper
         echo "</p>\n";
         echo '<p class="info">' . Html::encode($motion->getInitiatorsStr()) . '</p>';
 
-        $amendments = MotionSorter::getSortedAmendments($consultation, $motion->amendments);
+        $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
         if (count($amendments) > 0) {
             echo '<h4 class="amendments">' . 'Änderungsanträge' . '</h4>';
             echo '<ul class="amendments">';

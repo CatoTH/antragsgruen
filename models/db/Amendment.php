@@ -249,6 +249,29 @@ class Amendment extends IMotion implements IRSSItem
 
 
     /**
+     * @param Consultation $consultation
+     * @return Amendment[]
+     */
+    public static function getScreeningAmendments(Consultation $consultation)
+    {
+        $query = Amendment::find();
+        $query->where('amendment.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
+        $query->joinWith(
+            [
+                'motion' => function ($query) use ($consultation) {
+                    $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
+                    /** @var ActiveQuery $query */
+                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                }
+            ]
+        );
+        $query->orderBy("dateCreation DESC");
+
+        return $query->all();
+    }
+
+    /**
      * @return AmendmentSupporter[]
      */
     public function getInitiators()

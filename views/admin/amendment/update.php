@@ -63,7 +63,8 @@ if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'amendmentScreenForm']);
     $newRev = $amendment->titlePrefix;
     if ($newRev == '') {
-        $newRev = $amendment->motion->consultation->getNextAmendmentPrefix($amendment->motionId);
+        $numbering              = $amendment->motion->consultation->getAmendmentNumbering();
+        $newRev = $numbering->getAmendmentNumber($amendment, $amendment->motion);
     }
 
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';
@@ -103,7 +104,7 @@ echo ':</label><div class="col-md-4">';
 $options = [
     'class' => 'form-control',
     'id' => 'amendmentTitlePrefix',
-    'placeholder' => 'z.B. "Ä1", "Ä1neu", "A23-0042"'
+    'placeholder' => 'z.B. "Ä1", "A23-0042"'
 ];
 echo Html::textInput('amendment[titlePrefix]', $amendment->titlePrefix, $options);
 echo '<small>Muss eindeutig sein.</small>';

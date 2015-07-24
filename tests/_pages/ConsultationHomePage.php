@@ -36,7 +36,7 @@ class ConsultationHomePage extends BasePage
     /**
      * @param int $motionId
      * @param bool $check
-     * @return MotionCreatePage
+     * @return AmendmentCreatePage
      */
     public function gotoAmendmentCreatePage($motionId = 2, $check = true)
     {

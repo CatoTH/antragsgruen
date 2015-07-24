@@ -1,5 +1,6 @@
 <?php
 
+use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
@@ -108,11 +109,8 @@ foreach ($tagIds as $tagId) {
         }
         echo '</td></tr>';
 
-        $amends = $motion->getSortedAmendments();
+        $amends = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
         foreach ($amends as $amend) {
-            if (in_array($amend->status, $consultation->getInvisibleAmendmentStati())) {
-                continue;
-            }
             $classes = ['amendment'];
             if ($amend->status == Amendment::STATUS_WITHDRAWN) {
                 $classes[] = 'withdrawn';

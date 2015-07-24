@@ -28,7 +28,7 @@ class AmendmentController extends Base
         $motion    = $this->consultation->getMotion($motionId);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
         $this->checkConsistency($motion, $amendment);
 
@@ -83,7 +83,7 @@ class AmendmentController extends Base
         $motion    = $this->consultation->getMotion($motionId);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
         $this->checkConsistency($motion, $amendment);
 
@@ -112,7 +112,7 @@ class AmendmentController extends Base
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
-        $supportStatus = "";
+        $supportStatus = '';
         if (!\Yii::$app->user->isGuest) {
             foreach ($amendment->amendmentSupporters as $supp) {
                 if ($supp->userId == User::getCurrentUser()->id) {
@@ -167,15 +167,15 @@ class AmendmentController extends Base
             }
             $amendment->save();
 
-            if ($amendment->motion->consultation->adminEmail != "") {
-                $mails = explode(",", $amendment->motion->consultation->adminEmail);
+            if ($amendment->motion->consultation->adminEmail != '') {
+                $mails = explode(',', $amendment->motion->consultation->adminEmail);
 
                 $motionLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
                 $mailText   = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
                 $mailText   = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $motionLink], $mailText);
 
                 foreach ($mails as $mail) {
-                    if (trim($mail) != "") {
+                    if (trim($mail) != '') {
                         Tools::sendMailLog(
                             EmailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
                             trim($mail),
@@ -221,12 +221,12 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             \Yii::$app->session->setFlash('error', 'Amendment not found.');
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$amendment->canEdit()) {
             \Yii::$app->session->setFlash('error', 'Not allowed to edit this amendment.');
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
