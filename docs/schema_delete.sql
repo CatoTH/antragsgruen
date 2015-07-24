@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS `consultationAdmin`;
 DROP TABLE IF EXISTS `consultationSubscription`;
 DROP TABLE IF EXISTS `siteAdmin`;
 DROP TABLE IF EXISTS `emailLog`;
+DROP TABLE IF EXISTS `emailBlacklist`;
 DROP TABLE IF EXISTS `consultationOdtTemplate`;
 DROP TABLE IF EXISTS `consultationLatexTemplate`;
 DROP TABLE IF EXISTS `consultationAgendaItem`;

@@ -107,7 +107,7 @@ a {
     @include stdHeading($colorGreenLight, rgb(185, 209, 38));
     margin: -1px;
   }
-  h2.lightgreen, h3.lightgreen, .nav-header {
+  h2.lightgreen, h3.lightgreen {
     margin: -1px;
     @include linear-gradient(90deg, lighten($colorGreenLight, 50%), lighten(rgb(185, 209, 38), 50%));
     padding: 5px 20px 5px;

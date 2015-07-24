@@ -4509,7 +4509,7 @@ a {
     text-transform: uppercase;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     margin: -1px; }
-  .well h2.lightgreen, .well h3.lightgreen, .well .nav-header {
+  .well h2.lightgreen, .well h3.lightgreen {
     margin: -1px;
     background: #f7fdd5;
     background: -moz-linear-gradient(90deg, #f7fdd5 0%, #fdfef8 100%);
@@ -9707,7 +9707,7 @@ a {
     text-transform: uppercase;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     margin: -1px; }
-  .well h2.lightgreen, .well h3.lightgreen, .well .nav-header {
+  .well h2.lightgreen, .well h3.lightgreen {
     margin: -1px;
     background: #f7fdd5;
     background: -moz-linear-gradient(90deg, #f7fdd5 0%, #fdfef8 100%);
