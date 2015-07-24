@@ -518,13 +518,20 @@ class Motion extends IMotion implements IRSSItem
     {
         $return = [];
 
-        $initiators = [];
-        foreach ($this->getInitiators() as $init) {
-            $initiators[] = $init->getNameWithResolutionDate(false);
-        }
-        if (count($initiators) == 1) {
-            $return['Antragsteller/in'] = implode("\n", $initiators);
+        $inits = $this->getInitiators();
+        if (count($inits) == 1) {
+            $first = $inits[0];
+            if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
+                $return['Antragsteller/in'] = $first->name;
+                $return['Beschlussdatum']   = Tools::formatMysqlDate($first->resolutionDate);
+            } else {
+                $return['Antragsteller/in'] = $first->getNameWithResolutionDate(false);
+            }
         } else {
+            $initiators = [];
+            foreach ($this->getInitiators() as $init) {
+                $initiators[] = $init->getNameWithResolutionDate(false);
+            }
             $return['Antragsteller/innen'] = implode("\n", $initiators);
         }
         if (count($this->tags) > 1) {

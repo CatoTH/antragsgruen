@@ -508,13 +508,20 @@ class Amendment extends IMotion implements IRSSItem
     {
         $return = [];
 
-        $initiators = [];
-        foreach ($this->getInitiators() as $init) {
-            $initiators[] = $init->getNameWithResolutionDate(false);
-        }
-        if (count($initiators) == 1) {
-            $return['Antragsteller/in'] = implode("\n", $initiators);
+        $inits = $this->getInitiators();
+        if (count($inits) == 1) {
+            $first = $inits[0];
+            if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
+                $return['Antragsteller/in'] = $first->name;
+                $return['Beschlussdatum']   = Tools::formatMysqlDate($first->resolutionDate);
+            } else {
+                $return['Antragsteller/in'] = $first->getNameWithResolutionDate(false);
+            }
         } else {
+            $initiators = [];
+            foreach ($this->getInitiators() as $init) {
+                $initiators[] = $init->getNameWithResolutionDate(false);
+            }
             $return['Antragsteller/innen'] = implode("\n", $initiators);
         }
 
@@ -548,8 +555,9 @@ class Amendment extends IMotion implements IRSSItem
         $initiatorsStr   = implode(', ', $initiators);
         $content->author = $initiatorsStr;
 
+        $content->motionDataTable = '';
         foreach ($this->getDataTable() as $key => $val) {
-            $content->motionDataTable = Exporter::encodePlainString($key) . ':   &   ';
+            $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 
