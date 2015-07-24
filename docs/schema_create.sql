@@ -284,6 +284,18 @@ CREATE TABLE IF NOT EXISTS `consultationUserPrivilege` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `emailBlacklist`
+--
+
+CREATE TABLE IF NOT EXISTS `emailBlacklist` (
+  `emailHash` VARCHAR(32) NOT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `emailLog`
 --
 
@@ -609,6 +621,12 @@ ADD KEY `fk_texts_consultationIdx` (`consultationId`);
 ALTER TABLE `consultationUserPrivilege`
 ADD PRIMARY KEY (`userId`, `consultationId`),
 ADD KEY `consultationId` (`consultationId`);
+
+--
+-- Indexes for table `emailBlacklist`
+--
+ALTER TABLE `emailBlacklist`
+ADD PRIMARY KEY (`emailHash`);
 
 --
 -- Indexes for table `emailLog`
