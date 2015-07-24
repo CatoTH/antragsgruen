@@ -305,6 +305,35 @@
         });
     };
 
+    var siteAccessUsersInit = function () {
+        $("#accountsCreateForm").submit(function (ev) {
+            var text = $("#emailText").val();
+            if (text.indexOf("%EMAIL%") == -1) {
+                alert("Im E-Mail-Text muss der Code %EMAIL% vorkommen.");
+                ev.preventDefault();
+            }
+            if (text.indexOf("%PASSWORT%") == -1) {
+                alert("Im E-Mail-Text muss der Code %PASSWORT% vorkommen.");
+                ev.preventDefault();
+            }
+            if (text.indexOf("%LINK%") == -1) {
+                alert("Im E-Mail-Text muss der Code %LINK% vorkommen.");
+                ev.preventDefault();
+            }
+
+            var emails = $("#email_adressen").val().split("\n"),
+                namen = $("#namen").val().split("\n");
+            if (emails.length == 1 && emails[0] == "") {
+                alert("Es wurden keine E-Mail-Adressen angegeben.");
+                ev.preventDefault();
+            }
+            if (emails.length != namen.length) {
+                alert("Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!");
+                ev.preventDefault();
+            }
+        });
+    };
+
     var consultationExtendedForm = function () {
         var $form = $("#consultationSettingsForm");
 
@@ -373,7 +402,7 @@
             $("#motionUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
         });
 
-        $(".motionDeleteForm").submit(function(ev, data) {
+        $(".motionDeleteForm").submit(function (ev, data) {
             if (data && typeof(data.confirmed) && data.confirmed === true) {
                 return;
             }
@@ -415,7 +444,7 @@
             $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
         });
 
-        $(".amendmentDeleteForm").submit(function(ev, data) {
+        $(".amendmentDeleteForm").submit(function (ev, data) {
             if (data && typeof(data.confirmed) && data.confirmed === true) {
                 return;
             }
@@ -436,6 +465,7 @@
         'agendaEdit': agendaEdit,
         'motionListAll': motionListAll,
         'siteAccessInit': siteAccessInit,
+        'siteAccessUsersInit': siteAccessUsersInit,
         'motionEditInit': motionEditInit,
         'amendmentEditInit': amendmentEditInit
     };

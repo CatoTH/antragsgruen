@@ -266,6 +266,24 @@ CREATE TABLE IF NOT EXISTS `consultationText` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `consultationUserPrivilege`
+--
+
+CREATE TABLE IF NOT EXISTS `consultationUserPrivilege` (
+  `userId`           INT(11)    NOT NULL,
+  `consultationId`   INT(11)    NOT NULL,
+  `privilegeView`    TINYINT(4) NOT NULL DEFAULT '0',
+  `privilegeCreate`  TINYINT(4) NOT NULL DEFAULT '0',
+  `adminSuper`       TINYINT(4) NOT NULL DEFAULT '0',
+  `adminContentEdit` TINYINT(4) NOT NULL DEFAULT '0',
+  `adminScreen`      TINYINT(4) NOT NULL DEFAULT '0'
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `emailLog`
 --
 
@@ -317,7 +335,7 @@ CREATE TABLE IF NOT EXISTS `motionComment` (
   `id`                INT(11)     NOT NULL,
   `userId`            INT(11)              DEFAULT NULL,
   `motionId`          INT(11)     NOT NULL,
-  `sectionId`         INT(11)     NULL,
+  `sectionId`         INT(11)              DEFAULT NULL,
   `paragraph`         SMALLINT(6) NOT NULL,
   `text`              MEDIUMTEXT  NOT NULL,
   `name`              TEXT        NOT NULL,
@@ -465,17 +483,18 @@ CREATE TABLE IF NOT EXISTS `texTemplate` (
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id`              INT(11)      NOT NULL,
-  `name`            TEXT         NOT NULL,
-  `email`           VARCHAR(200)          DEFAULT NULL,
-  `emailConfirmed`  TINYINT(4)            DEFAULT '0',
-  `auth`            VARCHAR(190)          DEFAULT NULL,
-  `dateCreation`    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status`          TINYINT(4)   NOT NULL,
-  `pwdEnc`          VARCHAR(100)          DEFAULT NULL,
-  `authKey`         BINARY(100)  NOT NULL,
-  `recoveryToken`   VARCHAR(100) NULL     DEFAULT NULL,
-  `recoveryAt`      TIMESTAMP    NULL     DEFAULT NULL
+  `id`              INT(11)     NOT NULL,
+  `name`            TEXT        NOT NULL,
+  `email`           VARCHAR(200)         DEFAULT NULL,
+  `emailConfirmed`  TINYINT(4)           DEFAULT '0',
+  `auth`            VARCHAR(190)         DEFAULT NULL,
+  `dateCreation`    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`          TINYINT(4)  NOT NULL,
+  `pwdEnc`          VARCHAR(100)         DEFAULT NULL,
+  `authKey`         BINARY(100) NOT NULL,
+  `recoveryToken`   VARCHAR(100)         DEFAULT NULL,
+  `recoveryAt`      TIMESTAMP   NULL     DEFAULT NULL,
+  `siteNamespaceId` INT(11)              DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -585,6 +604,13 @@ ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId
 ADD KEY `fk_texts_consultationIdx` (`consultationId`);
 
 --
+-- Indexes for table `consultationUserPrivilege`
+--
+ALTER TABLE `consultationUserPrivilege`
+ADD PRIMARY KEY (`userId`, `consultationId`),
+ADD KEY `consultationId` (`consultationId`);
+
+--
 -- Indexes for table `emailLog`
 --
 ALTER TABLE `emailLog`
@@ -670,6 +696,14 @@ ADD KEY `site_admin_fk_siteIdx` (`siteId`);
 ALTER TABLE `texTemplate`
 ADD PRIMARY KEY (`id`),
 ADD KEY `siteId` (`siteId`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `auth_UNIQUE` (`auth`),
+ADD KEY `fk_user_namespaceIdx` (`siteNamespaceId`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -888,6 +922,13 @@ ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES
   ON UPDATE NO ACTION;
 
 --
+-- Constraints for table `consultationUserPrivilege`
+--
+ALTER TABLE `consultationUserPrivilege`
+ADD CONSTRAINT `consultationUserPrivilege_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+ADD CONSTRAINT `consultationUserPrivilege_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
+
+--
 -- Constraints for table `emailLog`
 --
 ALTER TABLE `emailLog`
@@ -1000,7 +1041,10 @@ ADD CONSTRAINT `texTemplate_ibfk_1` FOREIGN KEY (`siteId`) REFERENCES `site` (`i
 --
 -- Constraints for table `user`
 --
-
+ALTER TABLE `user`
+ADD CONSTRAINT `fk_user_namespace` FOREIGN KEY (`siteNamespaceId`) REFERENCES `site` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;

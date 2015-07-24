@@ -31,12 +31,12 @@ use yii\db\ActiveRecord;
  * @property Site $site
  * @property Motion[] $motions
  * @property ConsultationText[] $texts
- * @property User[] $admins
  * @property ConsultationOdtTemplate[] $odtTemplates
  * @property ConsultationSubscription[] $subscriptions
  * @property ConsultationSettingsTag[] $tags
  * @property ConsultationMotionType[] $motionTypes
  * @property ConsultationAgendaItem[] $agendaItems
+ * @property ConsultationUserPrivilege[] $userPrivileges
  */
 class Consultation extends ActiveRecord
 {
@@ -122,15 +122,6 @@ class Consultation extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdmins()
-    {
-        return $this->hasMany(User::className(), ['id' => 'userId'])
-            ->viaTable('consultationAdmin', ['consultationId' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getOdtTemplates()
     {
         return $this->hasMany(ConsultationOdtTemplate::className(), ['consultationId' => 'id']);
@@ -150,6 +141,36 @@ class Consultation extends ActiveRecord
     public function getSubscriptions()
     {
         return $this->hasMany(ConsultationSubscription::className(), ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserPrivileges()
+    {
+        return $this->hasMany(ConsultationUserPrivilege::className(), ['consultationId' => 'id']);
+    }
+
+    /**
+     * @param User $user
+     * @return ConsultationUserPrivilege
+     */
+    public function getUserPrivilege(User $user)
+    {
+        foreach ($this->consultationPrivileges as $priv) {
+            if ($priv->userId == $user->id) {
+                return $priv;
+            }
+        }
+        $priv                   = new ConsultationUserPrivilege();
+        $priv->consultationId   = $this->id;
+        $priv->userId           = $user->is;
+        $priv->privilegeCreate  = 0;
+        $priv->privilegeView    = 0;
+        $priv->adminContentEdit = 0;
+        $priv->adminScreen      = 0;
+        $priv->adminSuper       = 0;
+        return $priv;
     }
 
     /**

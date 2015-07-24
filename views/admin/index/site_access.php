@@ -66,13 +66,10 @@ echo '</fieldset>';
 
 echo Html::endForm();
 
-
-echo Html::beginForm('', 'post', ['id' => 'accountsForm', 'class' => 'adminForm form-horizontal']);
-echo '<h2 class="green">' . 'Benutzer_Innen-Accounts <small>(nur für diese Seite)</small>' . '</h2>';
-echo '<div class="content">';
-echo 'Test';
-echo '</div>';
-echo Html::endForm();
+if ($controller->consultation) {
+    $consultation = $controller->consultation;
+    include('site_access_accounts.php');
+}
 
 
 echo Html::beginForm('', 'post', ['id' => 'adminForm', 'class' => 'adminForm form-horizontal']);

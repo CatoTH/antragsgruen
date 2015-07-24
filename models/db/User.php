@@ -32,8 +32,8 @@ use yii\web\IdentityInterface;
  * @property null|MotionComment[] $motionComments
  * @property null|MotionSupporter[] $motionSupports
  * @property Site[] $adminSites
- * @property Consultation[] $adminConsultations
  * @property ConsultationSubscription[] $subscribedConsultations
+ * @property ConsultationUserPrivilege[] $consultationPrivileges
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -148,10 +148,31 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdminConsultations()
+    public function getConsultationPrivileges()
     {
-        return $this->hasMany(Consultation::className(), ['id' => 'consultationId'])
-            ->viaTable('consultationAdmin', ['userId' => 'id']);
+        return $this->hasMany(ConsultationUserPrivilege::className(), ['userId' => 'id']);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return ConsultationUserPrivilege
+     */
+    public function getConsultationPrivilege(Consultation $consultation)
+    {
+        foreach ($this->consultationPrivileges as $priv) {
+            if ($priv->consultationId == $consultation->id) {
+                return $priv;
+            }
+        }
+        $priv                   = new ConsultationUserPrivilege();
+        $priv->consultationId   = $consultation->id;
+        $priv->userId           = $this->is;
+        $priv->privilegeCreate  = 0;
+        $priv->privilegeView    = 0;
+        $priv->adminContentEdit = 0;
+        $priv->adminScreen      = 0;
+        $priv->adminSuper       = 0;
+        return $priv;
     }
 
     /**
@@ -514,11 +535,7 @@ class User extends ActiveRecord implements IdentityInterface
         if (in_array($this->id, $params->adminUserIds)) {
             return true;
         }
-        foreach ($consultation->admins as $admin) {
-            if ($admin->id == $this->id) {
-                return true;
-            }
-        }
+        // @Respect privilege table
         foreach ($consultation->site->admins as $admin) {
             if ($admin->id == $this->id) {
                 return true;
