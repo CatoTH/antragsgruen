@@ -15,16 +15,24 @@ It's a complete rewrite of the second generation and has some major advantages:
 
 [![Build Status](http://phpci.hoessl.eu/build-status/image/1?branch=v3)](http://phpci.hoessl.eu/build-status/view/1?branch=v3)
 
+Required Software (Debian Linux)
+--------------------------------
+```bash
+apt-get install php5-cli php5-fpm php5-mysqlnd php5-mcrypt php5-intl php5-curl
+```
+
+Optional, for LaTeX/XeTeX-based PDFs:
+```bash
+apt-get install texlive-lang-german texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-humanities texlive-fonts-recommended texlive-xetex
+```
 
 Development Setup
 -----------------
 
 ```bash
 curl -sS https://getcomposer.org/installer | php
-php composer.phar install
-
-composer global require "fxp/composer-asset-plugin:1.0.0"
-composer install
+./composer.phar global require "fxp/composer-asset-plugin:1.0.0"
+./composer.phar install
 ```
 
 
@@ -56,10 +64,3 @@ vendor/bin/codecept run```
 * Run a single acceptence-test: ```bash
 vendor/bin/codecept run acceptance MotionCreateCept```
 
-
-Using LaTeX
------------
-
-```bash
-apt-get install texlive-lang-german pdflatex latex texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-humanities texlive-fonts-recommended texlive-xetex
-```
