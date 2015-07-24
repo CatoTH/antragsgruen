@@ -224,4 +224,17 @@ label.legend {
   #siteSettingsForm .loginMethods div.checkbox {
     margin-left: 15px; }
 
+#accountsEditForm h3.lightgreen, #accountsCreateForm h3.lightgreen {
+  margin-left: -20px;
+  margin-right: -20px; }
+#accountsEditForm .explanation, #accountsCreateForm .explanation {
+  font-size: 12px; }
+  #accountsEditForm .explanation h3, #accountsCreateForm .explanation h3 {
+    margin: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold; }
+#accountsEditForm textarea, #accountsCreateForm textarea {
+  width: 100%; }
+
 /*# sourceMappingURL=backend.css.map */

@@ -349,3 +349,23 @@ label.legend {
     }
   }
 }
+
+
+#accountsEditForm, #accountsCreateForm {
+  h3.lightgreen {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+  .explanation {
+    font-size: 12px;
+    h3 {
+      margin: 0;
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+  textarea {
+    width: 100%;
+  }
+}
