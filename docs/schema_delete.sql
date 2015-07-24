@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `consultationOdtTemplate`;
 DROP TABLE IF EXISTS `consultationLatexTemplate`;
 DROP TABLE IF EXISTS `consultationAgendaItem`;
 DROP TABLE IF EXISTS `consultationTag`;
+DROP TABLE IF EXISTS `consultationUserPrivilege`;
 DROP TABLE IF EXISTS `motionTag`;
 DROP TABLE IF EXISTS `consultationSettingsMotionSection`;
 DROP TABLE IF EXISTS `consultationMotionType`;
