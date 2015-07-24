@@ -124,4 +124,22 @@ class DiffTest extends TestBase
         $grouped = $diff->groupOperations($src, Diff::ORIG_LINEBREAK);
         $this->assertEquals($src, $grouped); // Should not be changed
     }
+
+
+    public function testTwoChangedLis()
+    {
+        $str1   = '<ul><li>Test123</li></ul>
+<ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li></ul>
+<ul><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
+        $str2   = '<ul><li>Test123</li></ul>
+<ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.asdasd</li></ul>
+<ul><li>aWoibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
+        $expext = '<ul><li>Test123</li></ul>
+<ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.<ins>asdasd</ins></li></ul>' .
+            '<ul><li><ins>a</ins>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
+
+        $diff = new Diff();
+        $out  = $diff->computeDiff($str1, $str2);
+        $this->assertEquals($expext, $out);
+    }
 }

@@ -333,6 +333,30 @@ class Diff
     }
 
     /**
+     * @param array $arr
+     * @param int $idx
+     * @return array|null
+     */
+    private function computeSubsequentInsertsDeletes($arr, $idx)
+    {
+        $numDeletes = 0;
+        $deleteStrs = [];
+        $insertStrs = [];
+        while ($idx < count($arr) && $arr[$idx][1] == Engine::DELETED) {
+            $deleteStrs[] = $arr[$idx][0];
+            $numDeletes++;
+            $idx++;
+        }
+        for ($i = 0; $i < $numDeletes; $i++) {
+            if (!isset($arr[$idx + $i]) || $arr[$idx + $i][1] != Engine::INSERTED) {
+                return null;
+            }
+            $insertStrs[] = $arr[$idx + $i][0];
+        }
+        return [$deleteStrs, $insertStrs, $numDeletes];
+    }
+
+    /**
      * @param string $strOld
      * @param string $strNew
      * @return string
@@ -356,9 +380,13 @@ class Diff
             if ($return[$i][1] == Engine::UNMODIFIED) {
                 $computedStr .= $return[$i][0] . "\n";
             } elseif ($return[$i][1] == Engine::DELETED) {
-                if (isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED) {
-                    $computedStr .= $this->computeLineDiff($return[$i][0], $return[$i + 1][0]);
-                    $i++;
+                $updates = $this->computeSubsequentInsertsDeletes($return, $i);
+                if ($updates) {
+                    list ($deletes, $inserts, $count) = $updates;
+                    for ($j = 0; $j < count($deletes); $j++) {
+                        $computedStr .= $this->computeLineDiff($deletes[$j], $inserts[$j]) . "\n";
+                    }
+                    $i += $count * 2 - 1;
                 } else {
                     $computedStr .= $this->wrapWithDelete($return[$i][0]) . "\n";
                 }
@@ -447,9 +475,9 @@ class Diff
                     // @todo check if this can happen
                 }
                 if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
-                    $changeStr = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $commonStr = static::getCommonBeginning($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $currLine = $firstAffLine + LineSplitter::countMotionParaLines($commonStr, $lineLength) - 1;
+                    $changeStr              = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
+                    $commonStr              = static::getCommonBeginning($diffLine[0], $diff[$currDiffLine + 1][0]);
+                    $currLine               = $firstAffLine + LineSplitter::countMotionParaLines($commonStr, $lineLength) - 1;
                     $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $changeStr, $currLine);
                     $currDiffLine++;
                 } else {

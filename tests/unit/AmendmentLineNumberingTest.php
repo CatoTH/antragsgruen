@@ -3,9 +3,7 @@
 namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\Diff;
 use app\models\db\Amendment;
-use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
 
@@ -75,13 +73,17 @@ class AmendmentLineNumberingTest extends DBTestBase
     {
         $diff = $this->getSectionDiffBlocks(270, 2);
         $text = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand ' .
-            'Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul>' .
-            '<ul class="inserted"><li>Neue Zeile</li></ul>';
+            'Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul>';
         $this->assertEquals([[
             'text'     => $text,
             'lineFrom' => 8,
             'lineTo'   => 9,
             'newLine'  => false,
+        ], [
+            'text'     => '<ul class="inserted"><li>Neue Zeile</li></ul>',
+            'lineFrom' => 9,
+            'lineTo'   => 9,
+            'newLine'  => true,
         ]], $diff);
         $this->assertEquals($text, $diff[0]['text']);
     }
