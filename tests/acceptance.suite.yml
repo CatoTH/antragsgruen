@@ -12,6 +12,7 @@ modules:
         - \Helper\Acceptance
         - \Helper\Validator
         - \Helper\Download
+        - \Helper\AccessibilityValidator
     config:
         WebDriver:
             url: 'http://localhost:8080/'
@@ -22,5 +23,7 @@ modules:
             wait: 0
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
+        AccessibilityValidator:
+            variable1: value1
         Yii2:
             configFile: 'tests/config/functional.php'

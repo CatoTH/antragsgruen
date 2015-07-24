@@ -42,7 +42,11 @@ class Validator extends \Codeception\Module
     }
 
 
-
+    /**
+     * @param string $html
+     * @return array
+     * @throws \Exception
+     */
     private function validateByVNU($html)
     {
         $filename = '/tmp/' . uniqid('html-validate') . '.html';
