@@ -88,7 +88,8 @@ class AmendmentSectionFormatter
         $diff->setFormatting($this->diffFormatting);
         $diff->setDebug($this->debug);
 
-        return $diff->computeDiff($strPre, $strPost);
+        $return = $diff->computeDiff($strPre, $strPost);
+        return $diff->cleanupDiffProblems($return);
     }
 
     /**
@@ -184,9 +185,9 @@ class AmendmentSectionFormatter
             if (preg_match('/^<(ul|blockquote|ol)/siu', $line)) {
                 $out[] = $line;
             } else {
-                $line  = preg_replace('/<\/?p>/siu', '', $line);
+                $line          = preg_replace('/<\/?p>/siu', '', $line);
                 $hasLineNumber = (mb_strpos($line, '###LINENUMBER###') !== false);
-                $parts = explode('###LINENUMBER###', $line);
+                $parts         = explode('###LINENUMBER###', $line);
                 foreach ($parts as $j => $part) {
                     if ($part != '' || $j > 0) {
                         if ($hasLineNumber) {
@@ -236,19 +237,6 @@ class AmendmentSectionFormatter
     }
 
     /**
-     * @param string $html
-     * @return string
-     */
-    public static function cleanupDiffProblems($html)
-    {
-        $html = str_replace('<del>###LINENUMBER###', '###LINENUMBER###<del>', $html);
-        $html = str_replace('<ins>###LINENUMBER###', '###LINENUMBER###<ins>', $html);
-        $html = str_replace('<ins> </ins></p>', '</p>', $html);
-        return $html;
-    }
-
-
-    /**
      * @return array[]
      * @throws Internal
      */
@@ -260,7 +248,6 @@ class AmendmentSectionFormatter
         try {
             $lineOffset = $this->section->getFirstLineNumber();
             $computed   = $this->getHtmlDiffWithLineNumberPlaceholders();
-            $computed   = static::cleanupDiffProblems($computed);
             $blocks     = static::htmlDiff2LineBlocks($computed, $lineOffset);
             return static::filterAffectedBlocks($blocks);
         } catch (Internal $e) {

@@ -11,7 +11,6 @@ class DiffTest extends TestBase
     use Specify;
 
     /**
-     *
      */
     public function testParagraphs()
     {
@@ -103,7 +102,8 @@ class DiffTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-
+    /**
+     */
     public function testGroupOperations()
     {
         $src     = [
@@ -125,7 +125,9 @@ class DiffTest extends TestBase
         $this->assertEquals($src, $grouped); // Should not be changed
     }
 
-
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
     public function testTwoChangedLis()
     {
         $str1   = '<ul><li>Test123</li></ul>
@@ -134,12 +136,41 @@ class DiffTest extends TestBase
         $str2   = '<ul><li>Test123</li></ul>
 <ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.asdasd</li></ul>
 <ul><li>aWoibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
-        $expext = '<ul><li>Test123</li></ul>
-<ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.<ins>asdasd</ins></li></ul>' .
-            '<ul><li><ins>a</ins>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
+        $expect = '<ul><li>Test123</li></ul>
+<ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.<ins>asdasd</ins></li></ul>
+<ul><li><ins>a</ins>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
 
         $diff = new Diff();
         $out  = $diff->computeDiff($str1, $str2);
-        $this->assertEquals($expext, $out);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
+    public function testReplaceParagraph()
+    {
+        $str1   = '<p>Unchanging line</p>
+<p>Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, ' .
+            'entscheidet sich heute oft in ernüchternder Weise: Selbst wenn Paare gleichberechtigt und in ' .
+            'gegenseitigem Einvernehmen die Rollenverteilung miteinander ausmachen wollen, scheitern sie zu oft ' .
+            'an der Realität – und leben plötzlich Rollenbilder, die sie eigentlich so nie wollten. ' .
+            'Verkrustete Strukturen und Fehlanreize regieren in ihr Leben hinein; sie verhindern, dass Frauen und ' .
+            'Männer selbstbestimmt und auf Augenhöhe ihre Entscheidungen treffen können.</p>';
+        $str2   = '<p>Unchanging line</p>
+<p>Diesen Wunsch der Paare in die Realität umzusetzen ist das Ziel unserer Zeitpolitik. Hierfür sind verkrustete ' .
+            'patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf ' .
+            'Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie ' .
+            'festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis ' .
+            'akzeptieren und darf keine Lebensmodelle stigmatisieren.</p>';
+        $expect = '<p>Unchanging line</p>
+<p><del>Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, entscheidet sich heute oft in ernüchternder Weise: Selbst wenn Paare gleichberechtigt und in gegenseitigem Einvernehmen die Rollenverteilung miteinander ausmachen wollen, scheitern sie zu oft an der Realität – und leben plötzlich Rollenbilder, die sie eigentlich so nie wollten. Verkrustete Strukturen und Fehlanreize regieren in ihr Leben hinein; sie verhindern, dass Frauen und Männer selbstbestimmt und auf Augenhöhe ihre Entscheidungen treffen können.</del></p>
+<p><ins>Diesen Wunsch der Paare in die Realität umzusetzen ist das Ziel unserer Zeitpolitik. Hierfür sind verkrustete patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis akzeptieren und darf keine Lebensmodelle stigmatisieren.</ins></p>';
+
+        $diff = new Diff();
+        $out  = $diff->computeDiff($str1, $str2);
+        $out  = $diff->cleanupDiffProblems($out);
+
+        $this->assertEquals($expect, $out);
     }
 }

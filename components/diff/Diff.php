@@ -14,6 +14,9 @@ class Diff
 
     const FORMATTING_CLASSES = 0;
     const FORMATTING_INLINE  = 1;
+
+    const MAX_LINE_CHANGE_RATIO = 0.4;
+
     private $formatting = 0;
 
     private $debug = false;
@@ -357,6 +360,24 @@ class Diff
     }
 
     /**
+     * @param string $orig
+     * @param string $diff
+     * @return float
+     */
+    private function computeLineDiffChangeRatio($orig, $diff)
+    {
+        $origLength = mb_strlen(strip_tags($orig));
+        if ($origLength == 0) {
+            return 0;
+        }
+        $strippedDiff = preg_replace('/<ins>(.*)<\/ins>/siuU', '', $diff);
+        $strippedDiff = preg_replace('/<del>(.*)<\/del>/siuU', '', $strippedDiff);
+        $diffLength   = mb_strlen(strip_tags($strippedDiff));
+
+        return 1.0 - ($diffLength / $origLength);
+    }
+
+    /**
      * @param string $strOld
      * @param string $strNew
      * @return string
@@ -384,7 +405,14 @@ class Diff
                 if ($updates) {
                     list ($deletes, $inserts, $count) = $updates;
                     for ($j = 0; $j < count($deletes); $j++) {
-                        $computedStr .= $this->computeLineDiff($deletes[$j], $inserts[$j]) . "\n";
+                        $lineDiff = $this->computeLineDiff($deletes[$j], $inserts[$j]);
+                        $changaRatio = $this->computeLineDiffChangeRatio($deletes[$j], $lineDiff);
+                        if ($changaRatio <= static::MAX_LINE_CHANGE_RATIO) {
+                            $computedStr .= $lineDiff . "\n";
+                        } else {
+                            $computedStr .= $this->wrapWithDelete($deletes[$j]) . "\n";
+                            $computedStr .= $this->wrapWithInsert($inserts[$j]) . "\n";
+                        }
                     }
                     $i += $count * 2 - 1;
                 } else {
@@ -477,7 +505,8 @@ class Diff
                 if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
                     $changeStr              = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
                     $commonStr              = static::getCommonBeginning($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $currLine               = $firstAffLine + LineSplitter::countMotionParaLines($commonStr, $lineLength) - 1;
+                    $motionParaLines        = LineSplitter::countMotionParaLines($commonStr, $lineLength);
+                    $currLine               = $firstAffLine + $motionParaLines - 1;
                     $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $changeStr, $currLine);
                     $currDiffLine++;
                 } else {
@@ -490,5 +519,24 @@ class Diff
             }
         }
         return $changed;
+    }
+
+    /**
+     * @param string $html
+     * @return string
+     */
+    public function cleanupDiffProblems($html)
+    {
+        $ignore = $this->engine->getIgnoreStr();
+        if ($ignore) {
+            $html = str_replace('<del>' . $ignore, $ignore . '<del>', $html);
+            $html = str_replace('<ins>' . $ignore, $ignore . '<ins>', $html);
+        }
+        $html = str_replace('<ins> </ins></p>', '</p>', $html);
+        $html = str_replace('<ins><p>', '<p><ins>', $html);
+        $html = str_replace('<del><p>', '<p><del>', $html);
+        $html = str_replace('</p></ins>', '</ins></p>', $html);
+        $html = str_replace('</p></del>', '</del></p>', $html);
+        return $html;
     }
 }

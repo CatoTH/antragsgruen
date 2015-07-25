@@ -35,6 +35,14 @@ class Engine
         $this->IGNORE_STR = $str;
     }
 
+    /**
+     * @return string
+     */
+    public function getIgnoreStr()
+    {
+        return $this->IGNORE_STR;
+    }
+
 
     /**
      * @param string $str1
@@ -58,9 +66,9 @@ class Engine
     public function compareArrays($strings1, $strings2)
     {
         // initialise the sequences and comparison start and end positions
-        $start     = 0;
-        $end1      = count($strings1) - 1;
-        $end2      = count($strings2) - 1;
+        $start = 0;
+        $end1  = count($strings1) - 1;
+        $end2  = count($strings2) - 1;
 
         // skip any common prefix
         while ($start <= $end1 && $start <= $end2 && $this->strCmp($strings1[$start], $strings2[$start])) {
