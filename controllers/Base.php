@@ -47,7 +47,7 @@ class Base extends Controller
      */
     public function beforeAction($action)
     {
-        \yii::$app->response->headers->add('X-Xss-Protection', '1; block');
+        \yii::$app->response->headers->add('X-Xss-Protection', '1');
         \yii::$app->response->headers->add('X-Content-Type-Options', 'nosniff');
         \yii::$app->response->headers->add('X-Frame-Options', 'deny');
         if (parent::beforeAction($action)) {
