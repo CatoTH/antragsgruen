@@ -2,6 +2,7 @@ $text-color: rgb(72, 70, 73);
 $screen-lg-min: 10000; // deaktivieren
 $container-md: 1024px;
 $container-desktop: 1024px;
+$btn-success-bg: #2c882c;
 
 $icon-font-path: "/fonts/";
 
@@ -103,7 +104,7 @@ a {
     @include stdHeading(rgb(11, 47, 8), $colorGreenDark);
     margin: -1px;
   }
-  h2.green, h3.green, .nav-header {
+  h2.green, h3.green, .nav-header, legend.green {
     @include stdHeading($colorGreenLight, rgb(185, 209, 38));
     margin: -1px;
   }

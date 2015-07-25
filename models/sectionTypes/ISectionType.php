@@ -50,7 +50,7 @@ abstract class ISectionType
         $type = $this->section->consultationSetting;
         $htmlId   = 'sections_' . $type->id;
 
-        $str = '<fieldset class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
+        $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
         $str .= ' data-maxLen="' . $type->maxLen . '"';
         $str .= ' data-fullHtml="' . ($fullHtml ? '1' : '0') . '"';
         $str .= '><label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
@@ -68,7 +68,7 @@ abstract class ISectionType
         $str .= '<div class="texteditor" id="' . $htmlId . '_wysiwyg" ' . 'title="' . Html::encode($type->title) . '">';
         $str .= $this->section->data;
         $str .= '</div>';
-        $str .= '</fieldset>';
+        $str .= '</div>';
 
         return $str;
     }
@@ -83,7 +83,7 @@ abstract class ISectionType
         $nameBase = 'sections[' . $type->id . ']';
         $htmlId   = 'sections_' . $type->id;
 
-        $str = '<fieldset class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
+        $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
         $str .= ' data-maxLen="' . $type->maxLen . '"';
         $str .= ' data-fullHtml="' . ($fullHtml ? '1' : '0') . '"';
         $str .= '><label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
@@ -104,7 +104,7 @@ abstract class ISectionType
         $str .= $this->section->data;
         $str .= '</div>';
 
-        $str .= '</fieldset>';
+        $str .= '</div>';
 
         return $str;
     }

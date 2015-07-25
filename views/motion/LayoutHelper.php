@@ -152,7 +152,7 @@ class LayoutHelper
     {
         echo Html::beginForm('', 'post', ['class' => 'commentForm form-horizontal row']);
         echo '<fieldset class="col-md-8 col-md-offset-2">';
-        echo '<label>Kommentar schreiben</label>';
+        echo '<legend>Kommentar schreiben</legend>';
 
         if (\Yii::$app->user->isGuest) {
             echo '<div class="jsProtectionHint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder
@@ -200,7 +200,9 @@ class LayoutHelper
             </div>';
         }
         echo '
-    <div class="submitrow"><button class="btn btn-success" name="writeComment">Kommentar abschicken</button></div>
+    <div class="submitrow">
+        <button class="btn btn-success" name="writeComment" type="submit">Kommentar abschicken</button>
+    </div>
     </fieldset>';
 
         echo Html::endForm();

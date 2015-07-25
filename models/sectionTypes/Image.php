@@ -18,11 +18,11 @@ class Image extends ISectionType
     {
         $type     = $this->section->consultationSetting;
         $required = ($type->required ? 'required' : '');
-        return '<fieldset class="form-group">
+        return '<div class="form-group">
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
             <input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
         ' name="sections[' . $type->id . ']">
-        </fieldset>';
+        </div>';
     }
 
     /**

@@ -19,7 +19,7 @@ class TabularData extends ISectionType
         $rows = static::getTabularDataRowsFromData($type->data);
         $data = json_decode($this->section->data, true);
 
-        $str = '<fieldset class="form-horizontal tabularData">';
+        $str = '<div class="form-horizontal tabularData">';
         $str .= '<div class="label">' . Html::encode($type->title) . '</div>';
 
         foreach ($rows as $row) {
@@ -33,7 +33,7 @@ class TabularData extends ISectionType
             $str .= $row->getFormField($nameId, $dat, $type->required);
             $str .= '</div></div>';
         }
-        $str .= '</table></fieldset>';
+        $str .= '</table></div>';
         return $str;
     }
 

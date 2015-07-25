@@ -34,9 +34,9 @@ echo $controller->showErrors();
 
 $motionPolicy = $form->motionType->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
-    echo '<fieldset>
+    echo '<div>
                 <legend>' . Yii::t('motion', 'Prerequisites for a motion'), '</legend>
-            </fieldset>';
+            </div>';
 
     echo $motionPolicy->getOnCreateDescription();
 }
@@ -66,18 +66,18 @@ foreach ($consultation->tags as $tag) {
 
 if (count($tags) == 1) {
     $keys = array_keys($tags);
-    echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '">';
+    echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
 } elseif (count($tags) > 0) {
     if ($consultation->getSettings()->allowMultipleTags) {
-        echo '<fieldset class="form-group"><label class="legend">Thema</label>';
+        echo '<div class="form-group"><label class="legend">Thema</label>';
         foreach ($tags as $id => $tag) {
             echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
             if (in_array($id, $form->tags)) {
                 echo ' checked';
             }
-            echo ' required> ' . Html::encode($tag->title) . '</label>';
+            echo ' required title="Tags"> ' . Html::encode($tag->title) . '</label>';
         }
-        echo '</fieldset>';
+        echo '</div>';
     } else {
         $layout->loadFuelux();
         $selected   = (count($form->tags) > 0 ? $form->tags[0] : 0);

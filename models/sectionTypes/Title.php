@@ -17,11 +17,11 @@ class Title extends ISectionType
     {
         // @TODO Max Length
         $type = $this->section->consultationSetting;
-        return '<fieldset class="form-group">
+        return '<div class="form-group">
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
             <input type="text" class="form-control" id="sections_' . $type->id . '"' .
         ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->data) . '">
-        </fieldset>';
+        </div>';
     }
 
     /**

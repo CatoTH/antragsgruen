@@ -29,7 +29,7 @@ $locale = Tools::getCurrentDateLocale();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
-echo '<h2 class="green">' . 'Antragsteller_In' . '</h2>';
+echo '<legend class="green">' . 'Antragsteller_In' . '</legend>';
 
 $preOrga       = Html::encode($initiator->organization);
 $preName       = Html::encode($initiator->name);

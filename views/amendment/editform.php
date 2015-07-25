@@ -52,9 +52,9 @@ echo $controller->showErrors();
 
 $motionPolicy = $form->motion->motionType->getMotionPolicy();
 if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
-    echo '<fieldset>
+    echo '<div>
                 <legend>' . Yii::t('amend', 'Voraussetzungen für einen Antrag'), '</legend>
-            </fieldset>';
+            </div>';
 
     echo $motionPolicy->getOnCreateDescription();
 }
@@ -91,7 +91,7 @@ echo '<div class="content">';
 
 
 
-echo '<fieldset class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0" id="amendmentReasonHolder">';
+echo '<div class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0" id="amendmentReasonHolder">';
 echo '<label for="amendmentReason">' . Yii::t('amend', 'Begründung') . '</label>';
 
 echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';
@@ -99,7 +99,7 @@ echo Html::encode($form->reason) . '</textarea>';
 echo '<div class="texteditor" id="amendmentReason_wysiwyg">';
 echo $form->reason;
 echo '</div>';
-echo '</fieldset>';
+echo '</div>';
 
 echo '</div>';
 

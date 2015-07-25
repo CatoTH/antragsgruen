@@ -336,7 +336,8 @@ class HTMLTools
             $str .= '><a href="#">' . Html::encode($name) . '</a></li>';
         }
         $str .= '</ul>
-  <input class="hidden hidden-field" name="' . $formName . '" readonly="readonly" aria-hidden="true" type="text">
+  <input class="hidden hidden-field" name="' . $formName . '" readonly="readonly" ' .
+            ' title="[Hidden]" aria-hidden="true" type="text">
 </div>';
         return $str;
     }

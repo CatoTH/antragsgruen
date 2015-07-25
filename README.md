@@ -56,6 +56,7 @@ Testing
 
 * Install [PhantomJS](http://phantomjs.org/download.html)
 * For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
+* For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed.
 * Start PhantomJS: phantomjs --webdriver=4444
 * Start debug server: ```bash
 tests/start_debug_server.sh```
