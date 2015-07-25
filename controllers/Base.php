@@ -180,6 +180,8 @@ class Base extends Controller
      */
     public function showErrors()
     {
+        $str = '';
+
         $error = \Yii::$app->session->getFlash('error', null, true);
         if ($error) {
             $str = '<div class="alert alert-danger" role="alert">
@@ -187,8 +189,6 @@ class Base extends Controller
                 <span class="sr-only">Error:</span>
                 ' . nl2br(Html::encode($error)) . '
             </div>';
-        } else {
-            $str = "";
         }
 
         $success = \Yii::$app->session->getFlash('success', null, true);
@@ -198,8 +198,15 @@ class Base extends Controller
                 <span class="sr-only">Success:</span>
                 ' . Html::encode($success) . '
             </div>';
-        } else {
-            $str .= "";
+        }
+
+        $info = \Yii::$app->session->getFlash('info', null, true);
+        if ($info) {
+            $str .= '<div class="alert alert-info" role="alert">
+                <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                <span class="sr-only">Info:</span>
+                ' . Html::encode($info) . '
+            </div>';
         }
 
         return $str;

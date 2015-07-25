@@ -1,5 +1,5 @@
 /*global browser: true, regexp: true */
-/*global $, jQuery, alert, confirm, console, document, Sortable */
+/*global $, jQuery, alert, confirm, console, document, Sortable, bootbox */
 /*jslint regexp: true*/
 
 
@@ -306,27 +306,23 @@
     var siteAccessUsersInit = function () {
         $("#accountsCreateForm").submit(function (ev) {
             var text = $("#emailText").val();
-            if (text.indexOf("%EMAIL%") == -1) {
-                alert("Im E-Mail-Text muss der Code %EMAIL% vorkommen.");
-                ev.preventDefault();
-            }
-            if (text.indexOf("%PASSWORT%") == -1) {
-                alert("Im E-Mail-Text muss der Code %PASSWORT% vorkommen.");
+            if (text.indexOf("%ACCOUNT%") == -1) {
+                bootbox.alert("Im E-Mail-Text muss der Code %ACCOUNT% vorkommen.");
                 ev.preventDefault();
             }
             if (text.indexOf("%LINK%") == -1) {
-                alert("Im E-Mail-Text muss der Code %LINK% vorkommen.");
+                bootbox.alert("Im E-Mail-Text muss der Code %LINK% vorkommen.");
                 ev.preventDefault();
             }
 
-            var emails = $("#email_adressen").val().split("\n"),
-                namen = $("#namen").val().split("\n");
+            var emails = $("#emailAddresses").val().split("\n"),
+                names = $("#names").val().split("\n");
             if (emails.length == 1 && emails[0] == "") {
-                alert("Es wurden keine E-Mail-Adressen angegeben.");
                 ev.preventDefault();
+                bootbox.alert("Es wurden keine E-Mail-Adressen angegeben.");
             }
-            if (emails.length != namen.length) {
-                alert("Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!");
+            if (emails.length != names.length) {
+                bootbox.alert("Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!");
                 ev.preventDefault();
             }
         });

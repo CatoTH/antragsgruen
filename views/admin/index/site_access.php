@@ -5,6 +5,7 @@ use app\models\db\User;
 use yii\helpers\Html;
 use app\models\settings\Site as SiteSettings;
 
+
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Site $site

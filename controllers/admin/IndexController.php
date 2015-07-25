@@ -8,10 +8,12 @@ use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
+use app\models\db\ConsultationUserPrivilege;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\AdminTodoItem;
+use app\models\exceptions\AlreadyExists;
 
 class IndexController extends AdminBase
 {
@@ -274,6 +276,51 @@ class IndexController extends AdminBase
                 \Yii::$app->session->setFlash('success', 'Die Admin-Rechte wurden entzogen.');
             } else {
                 \Yii::$app->session->setFlash('error', 'Es gibt keinen Zugang mit diesem Namen');
+            }
+        }
+
+        if (isset($_POST['addUsers'])) {
+            $emails = explode("\n", $_POST['emailAddresses']);
+            $names  = explode("\n", $_POST['names']);
+            if (count($emails) != count($names)) {
+                $msg = 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein';
+                \Yii::$app->session->setFlash('error', $msg);
+            } else {
+                $errors         = [];
+                $alreadyExisted = [];
+                $created        = 0;
+                for ($i = 0; $i < count($emails); $i++) {
+                    if ($emails[$i] == '') {
+                        continue;
+                    }
+                    try {
+                        ConsultationUserPrivilege::createWithUser(
+                            $this->consultation,
+                            $emails[$i],
+                            $names[$i],
+                            $_POST['emailText']
+                        );
+                        $created++;
+                    } catch (AlreadyExists $e) {
+                        $alreadyExisted[] = $emails[$i];
+                    } catch (\Exception $e) {
+                        $errors[] = $emails[$i] . ': ' . $e->getMessage();
+                    }
+                }
+                if (count($errors) > 0) {
+                    \Yii::$app->session->setFlash('error', 'Es sind Fehler aufgetreten: ' . implode(', ', $errors));
+                }
+                if (count($alreadyExisted) > 0) {
+                    \Yii::$app->session->setFlash('info', 'Folgende BenutzerInnen hatten bereits Zugriff: ' .
+                        implode(', ', $alreadyExisted));
+
+                }
+                if ($created > 0) {
+                    $msg = str_replace('%NUM%', $created, '%NUM% BenutzerInnen wurden eingetragen.');
+                    \Yii::$app->session->setFlash('success', $msg);
+                } else {
+                    \Yii::$app->session->setFlash('error', 'Es wurde niemand eingetragen.');
+                }
             }
         }
 

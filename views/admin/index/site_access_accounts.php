@@ -4,6 +4,7 @@ use app\models\db\Consultation;
 use yii\helpers\Html;
 
 /**
+ * @var \app\controllers\Base $controller
  * @var Consultation $consultation
  */
 
@@ -26,6 +27,9 @@ Liebe Grüße,
   Das Antragsgrün-Team';
 
 echo Html::beginForm('', 'post', ['id' => 'accountsEditForm', 'class' => 'adminForm form-horizontal']);
+
+echo $controller->showErrors();
+
 
 echo '<div class="explanation alert alert-info" role="alert">
 <h3>Erklärung:</h3>
@@ -61,14 +65,14 @@ echo '<h3 class="lightgreen">' . 'BenutzerInnen eintragen' . '</h3>
     <label class="col-md-6">
                 E-Mail-Adressen:<br>
                 <small>(genau eine E-Mail-Adresse pro Zeile!)</small>
-                <textarea id="email_adressen" name="email_adressen" rows="15">' .
+                <textarea id="emailAddresses" name="emailAddresses" rows="15">' .
     Html::encode($preEmails) .
     '</textarea>
     </label>
     <label class="col-md-6">
                 Namen der BenutzerInnen:<br>
                 <small>(Wichtig: Exakte Zuordnung zu den Zeilen links)</small>
-                <textarea id="namen" name="namen" rows="15">' . Html::encode($preNames) .
+                <textarea id="names" name="names" rows="15">' . Html::encode($preNames) .
     '</textarea>
     </label>
 </div>
@@ -78,7 +82,7 @@ echo '<h3 class="lightgreen">' . 'BenutzerInnen eintragen' . '</h3>
 <br><br>
 
 <div class="saveholder">
-    <button type="submit" name="save" class="btn btn-primary">Speichern</button>
+    <button type="submit" name="addUsers" class="btn btn-primary">Berechtigen + E-Mail schicken</button>
 </div>
 ';
 

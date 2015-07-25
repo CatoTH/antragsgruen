@@ -283,20 +283,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function createPassword()
     {
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        $max   = strlen($chars) - 1;
-        $pass  = "";
-        for ($i = 0; $i < 8; $i++) {
-            $pass .= $chars[rand(0, $max)];
-        }
-        return $pass;
+        return \Yii::$app->getSecurity()->generateRandomString(8);
     }
 
     /**
      * @param string $date
      * @return string
      */
-    public function createEmailConfirmationCode($date = "")
+    public function createEmailConfirmationCode($date = '')
     {
         if (YII_ENV == 'test') {
             return 'testCode';

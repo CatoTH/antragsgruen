@@ -19,13 +19,13 @@ use yii\db\ActiveRecord;
  */
 class EMailLog extends ActiveRecord
 {
-    const TYPE_OTHER                      = 0;
-    const TYPE_REGISTRATION               = 1;
-    const TYPE_MOTION_NOTIFICATION_USER   = 2;
-    const TYPE_MOTION_NOTIFICATION_ADMIN  = 3;
-    const TYPE_NAMESPACED_ACCOUNT_CREATED = 4;
-    const TYPE_DEBUG                      = 5;
-    const TYPE_PASSWORD_RECOVERY          = 6;
+    const TYPE_OTHER                     = 0;
+    const TYPE_REGISTRATION              = 1;
+    const TYPE_MOTION_NOTIFICATION_USER  = 2;
+    const TYPE_MOTION_NOTIFICATION_ADMIN = 3;
+    const TYPE_ACCESS_GRANTED            = 4;
+    const TYPE_DEBUG                     = 5;
+    const TYPE_PASSWORD_RECOVERY         = 6;
 
     /**
      * @return string[]
@@ -33,13 +33,13 @@ class EMailLog extends ActiveRecord
     public static function getTypes()
     {
         return [
-            static::TYPE_OTHER                      => "Sonstiges",
-            static::TYPE_REGISTRATION               => "Registrierung",
-            static::TYPE_MOTION_NOTIFICATION_USER   => "Benachrichtigung User",
-            static::TYPE_MOTION_NOTIFICATION_ADMIN  => "Benachrichtigung Admin",
-            static::TYPE_NAMESPACED_ACCOUNT_CREATED => "Namespaced_Angelegt",
-            static::TYPE_DEBUG                      => "Debug",
-            static::TYPE_PASSWORD_RECOVERY          => 'Password-Wiederherstellung',
+            static::TYPE_OTHER                     => 'Sonstiges',
+            static::TYPE_REGISTRATION              => 'Registrierung',
+            static::TYPE_MOTION_NOTIFICATION_USER  => 'Benachrichtigung User',
+            static::TYPE_MOTION_NOTIFICATION_ADMIN => 'Benachrichtigung Admin',
+            static::TYPE_ACCESS_GRANTED            => 'Veranstaltungs-Zugriff',
+            static::TYPE_DEBUG                     => 'Debug',
+            static::TYPE_PASSWORD_RECOVERY         => 'Password-Wiederherstellung',
         ];
     }
 
