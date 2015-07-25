@@ -197,6 +197,6 @@ class AmendmentLineNumberingTest extends DBTestBase
         $diff = $this->getSectionDiff(3, 4);
         $this->assertContains('Vor Zeile 36 einfügen', TextSimple::formatDiffGroup([$diff[0]], '', '', 36));
         $this->assertContains('Nach Zeile 42 einfügen', TextSimple::formatDiffGroup([$diff[1]], '', '', 36));
-        $this->assertContains('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
+        $this->assertContains('Von Zeile 49 bis 53:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
     }
 }

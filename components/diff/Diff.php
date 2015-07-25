@@ -389,11 +389,14 @@ class Diff
 
         $return = $this->engine->compareStrings($strOld, $strNew);
 
-        if ($this->debug) {
-            echo "==========\n";
-            var_dump($return);
-            echo "\n\n\n";
-        }
+        /*
+        echo "\n\n\n";
+        var_dump($strOld);
+        echo "\n\n";
+        var_dump($strNew);
+        echo "\n\n";
+        var_dump($return);
+        */
 
         $return = $this->groupOperations($return, static::ORIG_LINEBREAK);
 
@@ -425,10 +428,6 @@ class Diff
             }
         }
         $computedStr = str_replace(static::ORIG_LINEBREAK, "\n", $computedStr);
-
-        if ($this->debug) {
-            die();
-        }
 
         return trim($computedStr);
     }
@@ -537,6 +536,9 @@ class Diff
         $html = str_replace('<del><p>', '<p><del>', $html);
         $html = str_replace('</p></ins>', '</ins></p>', $html);
         $html = str_replace('</p></del>', '</del></p>', $html);
+        $html = str_replace('<ins></ins>', '', $html);
+        $html = str_replace('<del></del>', '', $html);
+
         return $html;
     }
 }

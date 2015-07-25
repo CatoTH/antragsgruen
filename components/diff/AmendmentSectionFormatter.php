@@ -82,6 +82,7 @@ class AmendmentSectionFormatter
             $linesOut = LineSplitter::motionPara2lines($para, false, $lineLength);
             $strPost .= implode(' ', $linesOut) . "\n";
         }
+        $strPost = trim($strPost);
 
         $diff = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
@@ -188,12 +189,18 @@ class AmendmentSectionFormatter
                 $line          = preg_replace('/<\/?p>/siu', '', $line);
                 $hasLineNumber = (mb_strpos($line, '###LINENUMBER###') !== false);
                 $parts         = explode('###LINENUMBER###', $line);
+                $dangling      = '';
                 foreach ($parts as $j => $part) {
                     if ($part != '' || $j > 0) {
-                        if ($hasLineNumber) {
-                            $part = '###LINENUMBER###' . $part;
+                        if ($part == '<ins>' || $part == '<del>') {
+                            $dangling = $part;
+                        } else {
+                            if ($hasLineNumber) {
+                                $part = '###LINENUMBER###' . $part;
+                            }
+                            $out[]    = $dangling . $part;
+                            $dangling = '';
                         }
-                        $out[] = $part;
                     }
                 }
             }

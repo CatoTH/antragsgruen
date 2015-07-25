@@ -168,6 +168,7 @@ class MotionSection extends IMotionSection
             $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
             $return .= implode(' ', $linesOut) . "\n";
         }
+        $return = trim($return);
         return $return;
     }
 

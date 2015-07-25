@@ -75,6 +75,7 @@ class HTMLTools
         $html = str_ireplace("<br>", "<br>\n", $html);
 
         $html = preg_replace("/\\n+/siu", "\n", $html);
+        $html = trim($html);
 
         return $html;
     }
