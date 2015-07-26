@@ -40,7 +40,7 @@ $html        = '<ul class="sidebarActions">';
 $sidebarRows = 0;
 
 $policy = $motion->motionType->getAmendmentPolicy();
-if ($policy->checkCurUserHeuristically()) {
+if ($policy->checkCurrUser(true, true)) {
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
@@ -248,7 +248,7 @@ if (!$minimalisticUi) {
         </div>';
 
     $policy = $motion->motionType->getAmendmentPolicy();
-    if ($policy->checkCurUserHeuristically()) {
+    if ($policy->checkCurrUser(true, true)) {
         echo '<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
             <a href="' . Html::encode(UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id])) . '"
                class="btn btn-danger" style="color: white;">';
@@ -289,7 +289,7 @@ $dislikes   = $motion->getDislikes();
 $enries     = (count($likes) > 0 || count($dislikes) > 0);
 
 $supportPolicy  = $motion->motionType->getSupportPolicy();
-$canSupport     = $supportPolicy->checkCurUserHeuristically();
+$canSupport     = $supportPolicy->checkCurrUser();
 $cantSupportMsg = $supportPolicy->getPermissionDeniedSupportMsg();
 foreach ($motion->getInitiators() as $supp) {
     if ($supp->userId == $currUserId) {
@@ -354,7 +354,7 @@ if ($enries || $canSupport || $cantSupportMsg != "") {
     }
     echo '</div>';
 
-    if ($motion->motionType->getSupportPolicy()->checkSupportSubmit()) {
+    if ($motion->motionType->getSupportPolicy()->checkCurrUser()) {
         echo Html::beginForm();
 
         echo '<div style="text-align: center; margin-bottom: 20px;">';
@@ -446,7 +446,7 @@ if ($commentWholeMotions) {
         }
     }
 
-    if ($motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
+    if ($motion->motionType->getCommentPolicy()->checkCurrUser()) {
         LayoutHelper::showCommentForm($form, $motion->consultation, -1, -1);
     }
     echo '</section>';

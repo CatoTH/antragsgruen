@@ -21,7 +21,7 @@ class LoggedIn extends IPolicy
      */
     public static function getPolicyName()
     {
-        return "Eingeloggte";
+        return 'Eingeloggte';
     }
 
     /**
@@ -38,17 +38,6 @@ class LoggedIn extends IPolicy
         }
         $privilege = $this->motionType->consultation->getUserPrivilege($user);
         return ($privilege->privilegeCreate == 0);
-    }
-
-    /**
-     * @static
-     * @param bool $allowAdmins
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function checkCurUserHeuristically($allowAdmins = true)
-    {
-        return !$this->isWriteForbidden();
     }
 
     /**
@@ -106,11 +95,15 @@ class LoggedIn extends IPolicy
 
     /**
      * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkMotionSubmit($allowAdmins = true)
+    public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
     {
+        if (\Yii::$app->user->isGuest && $assumeLoggedIn) {
+            return true;
+        }
         if ($this->isWriteForbidden()) {
             return false;
         }

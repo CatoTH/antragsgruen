@@ -14,6 +14,7 @@ use app\models\forms\CommentForm;
 
 /**
  * @property Consultation $consultation
+ * @method redirect($uri)
  */
 trait AmendmentActionsTrait
 {
@@ -47,7 +48,7 @@ trait AmendmentActionsTrait
      */
     private function writeComment(Amendment $amendment, &$viewParameters)
     {
-        if (!$amendment->motion->motionType->getCommentPolicy()->checkAmendmentSubmit()) {
+        if (!$amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
             \Yii::$app->session->setFlash('error', 'No rights to write a comment');
         }
         $commentForm = new CommentForm();

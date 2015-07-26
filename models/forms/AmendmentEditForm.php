@@ -181,7 +181,7 @@ class AmendmentEditForm extends Model
      */
     public function createAmendment()
     {
-        if (!$this->motion->motionType->getMotionPolicy()->checkAmendmentSubmit()) {
+        if (!$this->motion->motionType->getAmendmentPolicy()->checkCurrUser()) {
             throw new FormError('Keine Berechtigung zum Anlegen von Änderungsanträgen.');
         }
 
@@ -253,7 +253,7 @@ class AmendmentEditForm extends Model
     public function saveAmendment(Amendment $amendment)
     {
         $motionType = $this->motion->motionType;
-        if (!$motionType->getAmendmentPolicy()->checkAmendmentSubmit()) {
+        if (!$motionType->getAmendmentPolicy()->checkCurrUser()) {
             throw new FormError('Keine Berechtigung zum Anlegen von Änderungsanträgen.');
         }
 

@@ -25,27 +25,6 @@ class Wurzelwerk extends IPolicy
     }
 
     /**
-     * @static
-     * @param bool $allowAdmins
-     * @return bool
-     */
-    public function checkCurUserHeuristically($allowAdmins = true)
-    {
-        $user = User::getCurrentUser();
-        if (!$user) {
-            return true;
-        }
-        if ($user->isWurzelwerkUser()) {
-            return true;
-        }
-        if ($user->hasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY)) {
-            return $allowAdmins;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * @return string
      */
     public function getOnCreateDescription()
@@ -87,13 +66,18 @@ class Wurzelwerk extends IPolicy
 
     /**
      * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
      * @return bool
      */
-    public function checkMotionSubmit($allowAdmins = true)
+    public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
     {
         $user = User::getCurrentUser();
         if (!$user) {
-            return false;
+            if ($assumeLoggedIn) {
+                return true;
+            } else {
+                return false;
+            }
         }
         if ($allowAdmins && $user->hasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY)) {
             return true;

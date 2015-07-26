@@ -23,17 +23,6 @@ class Nobody extends IPolicy
     }
 
     /**
-     * @static
-     * @param bool $allowAdmins
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function checkCurUserHeuristically($allowAdmins = true)
-    {
-        return false;
-    }
-
-    /**
      * @return string
      */
     public function getOnCreateDescription()
@@ -74,11 +63,12 @@ class Nobody extends IPolicy
     }
 
     /**
-     * @param bool $allowAdmin
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkMotionSubmit($allowAdmin = true)
+    public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
     {
         return false;
     }

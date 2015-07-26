@@ -273,10 +273,15 @@ class AmendmentController extends Base
             throw new NotFound('Motion not found');
         }
 
-        if (!$motion->motionType->getMotionPolicy()->checkCurUserHeuristically()) {
-            \Yii::$app->session->setFlash('error', 'Es kann kein Änderungsantrag angelegt werden.');
-            $this->redirect(UrlHelper::createMotionUrl($motion));
-            return '';
+        $policy = $motion->motionType->getAmendmentPolicy();
+        if (!$policy->checkCurrUser()) {
+            if ($policy->checkCurrUser(true, true)) {
+                $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionId' => $motionId]);
+                $this->redirect($loginUrl);
+                return '';
+            } else {
+                return $this->showErrorpage(403, 'Keine Berechtigung zum Anlegen von Änderungsanträgen.');
+            }
         }
 
         $form = new AmendmentEditForm($motion, null);

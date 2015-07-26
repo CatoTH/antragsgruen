@@ -90,13 +90,8 @@ class LayoutHelper
         echo '<span class="code">' . Html::encode($agendaItem->code) . '</span> ';
         echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
 
-        if ($agendaItem->motionType && $agendaItem->motionType->getMotionPolicy()->checkHeuristicallyAssumeLoggedIn()) {
-            $createLink = UrlHelper::createUrl(['motion/create', 'agendaItemId' => $agendaItem->id]);
-            if ($agendaItem->motionType->getMotionPolicy()->checkCurUserHeuristically()) {
-                $motionCreateLink = $createLink;
-            } else {
-                $motionCreateLink = UrlHelper::createUrl(['user/login', 'back' => $createLink]);
-            }
+        if ($agendaItem->motionType && $agendaItem->motionType->getMotionPolicy()->checkCurrUser(false, true)) {
+            $motionCreateLink = UrlHelper::createUrl(['motion/create', 'agendaItemId' => $agendaItem->id]);
             echo '<a href="' . Html::encode($motionCreateLink) . '" class="motionCreateLink btn btn-default btn-xs"';
             echo ' title="' . Html::encode($agendaItem->title . ': ' . $agendaItem->motionType->createTitle) . '"';
             echo '><span class="glyphicon glyphicon-plus"></span> ';

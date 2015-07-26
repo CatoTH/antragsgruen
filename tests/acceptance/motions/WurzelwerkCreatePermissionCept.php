@@ -25,7 +25,7 @@ $I->dontSeeElement('#sidebar .createMotion');
     ]
 );
 $I->dontSee(mb_strtoupper('Antrag stellen'), 'h1');
-$I->see('You do not have permission');
+$I->see('Keine Berechtigung zum Anlegen von Anträgen');
 
 
 
@@ -38,7 +38,7 @@ $I->click('#sidebar .createMotion');
 $I->see(mb_strtoupper('Antrag stellen'), 'h1');
 
 
-$I->wantTo('chang that I can create a motion as admin');
+$I->wantTo('change that I can create a motion as admin');
 $I->logout();
 $I->gotoConsultationHome(true, '1laenderrat2015', '1laenderrat2015');
 $I->loginAsStdAdmin();

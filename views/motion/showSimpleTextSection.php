@@ -38,7 +38,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     echo '<ul class="bookmarks">';
     if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
-        $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurUserHeuristically();
+        $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurrUser(true, true);
         if (count($paragraph->comments) > 0 || $mayOpen) {
             echo '<li class="comment">';
             $str = '<span class="glyphicon glyphicon-comment"></span>';

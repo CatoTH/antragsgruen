@@ -163,7 +163,7 @@ class MotionEditForm extends Model
     {
         $consultation = $this->motionType->consultation;
 
-        if (!$this->motionType->getMotionPolicy()->checkMotionSubmit()) {
+        if (!$this->motionType->getMotionPolicy()->checkCurrUser()) {
             throw new FormError('Keine Berechtigung zum Anlegen von Anträgen.');
         }
 
@@ -241,7 +241,7 @@ class MotionEditForm extends Model
     public function saveMotion(Motion $motion)
     {
         $consultation = $this->motionType->consultation;
-        if (!$this->motionType->getMotionPolicy()->checkMotionSubmit()) {
+        if (!$this->motionType->getMotionPolicy()->checkCurrUser()) {
             throw new FormError('Keine Berechtigung zum Anlegen von Anträgen.');
         }
 

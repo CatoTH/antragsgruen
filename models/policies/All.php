@@ -19,18 +19,7 @@ class All extends IPolicy
      */
     public static function getPolicyName()
     {
-        return "Alle";
-    }
-
-    /**
-     * @static
-     * @param bool $allowAdmins
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function checkCurUserHeuristically($allowAdmins = true)
-    {
-        return true;
+        return 'Alle';
     }
 
     /**
@@ -75,21 +64,12 @@ class All extends IPolicy
 
     /**
      * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkMotionSubmit($allowAdmins = true)
+    public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
     {
         return true;
-    }
-
-    /**
-     * @param bool $allowAdmins
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function checkSupportSubmit($allowAdmins = true)
-    {
-        return false; // Only logged in users can support motions
     }
 }

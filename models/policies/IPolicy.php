@@ -79,14 +79,6 @@ abstract class IPolicy
     }
 
     /**
-     * @static
-     * @abstract
-     * @param bool $allowAdmins
-     * @return bool
-     */
-    abstract public function checkCurUserHeuristically($allowAdmins = true);
-
-    /**
      * @abstract
      * @return string
      */
@@ -94,46 +86,10 @@ abstract class IPolicy
 
     /**
      * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
      * @return bool
      */
-    public function checkHeuristicallyAssumeLoggedIn($allowAdmins = true)
-    {
-        return $this->checkCurUserHeuristically($allowAdmins);
-    }
-
-
-    /**
-     * @param bool $allowAdmins
-     * @return bool
-     */
-    abstract public function checkMotionSubmit($allowAdmins = true);
-
-    /**
-     * @param bool $allowAdmins
-     * @return bool
-     */
-    public function checkAmendmentSubmit($allowAdmins = true)
-    {
-        return $this->checkMotionSubmit($allowAdmins);
-    }
-
-    /**
-     * @param bool $allowAdmins
-     * @return bool
-     */
-    public function checkCommentSubmit($allowAdmins = true)
-    {
-        return $this->checkMotionSubmit($allowAdmins);
-    }
-
-    /**
-     * @param bool $allowAdmins
-     * @return bool
-     */
-    public function checkSupportSubmit($allowAdmins = true)
-    {
-        return $this->checkMotionSubmit($allowAdmins);
-    }
+    abstract public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false);
 
     /**
      * @abstract

@@ -45,7 +45,7 @@ foreach ($consultation->motionTypes as $motionType) {
     echo '<h3>' . Html::encode($motionType->titlePlural) . '</h3><ul>';
 
     $motionp = $motionType->getMotionPolicy();
-    if ($motionp->checkCurUserHeuristically()) {
+    if ($motionp->checkCurrUser()) {
         $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
         echo '<li>' . Html::a('Neu anlegen', $createUrl) . '</li>';
     } else {

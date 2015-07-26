@@ -163,7 +163,7 @@ if ($amendment->changeExplanation != '') {
 }
 
 
-if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
+if ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
     $form    = $commentForm;
@@ -183,7 +183,7 @@ if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristicall
         }
     }
 
-    if ($amendment->motion->motionType->getCommentPolicy()->checkCurUserHeuristically()) {
+    if ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
         MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
     }
     echo '</section>';

@@ -353,10 +353,6 @@ class MotionController extends Base
             throw new Internal('Could not resolve motion type');
         }
 
-        if (!$motionType->getMotionPolicy()->checkCurUserHeuristically()) {
-            throw new Internal('You do not have permissions to create a motion for this agenda item');
-        }
-
         return [$motionType, $agendaItem];
     }
 
@@ -384,14 +380,13 @@ class MotionController extends Base
          */
 
         $policy = $motionType->getMotionPolicy();
-        if (!$policy->checkMotionSubmit()) {
-            if (\yii::$app->user->isGuest && $policy->checkHeuristicallyAssumeLoggedIn()) {
+        if (!$policy->checkCurrUser()) {
+            if ($policy->checkCurrUser(true, true)) {
                 $loginUrl = UrlHelper::createLoginUrl(['motion/create', 'motionTypeId' => $motionTypeId]);
                 $this->redirect($loginUrl);
                 return '';
             } else {
-                \Yii::$app->session->setFlash('error', 'Keine Berechtigung zum Anlegen von Anträgen');
-                $this->redirect(UrlHelper::createUrl('consultation/index'));
+                return $this->showErrorpage(403, 'Keine Berechtigung zum Anlegen von Anträgen.');
             }
         }
 

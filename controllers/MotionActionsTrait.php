@@ -49,7 +49,7 @@ trait MotionActionsTrait
      */
     private function writeComment(Motion $motion, &$viewParameters)
     {
-        if (!$motion->motionType->getCommentPolicy()->checkMotionSubmit()) {
+        if (!$motion->motionType->getCommentPolicy()->checkCurrUser()) {
             \Yii::$app->session->setFlash('error', 'No rights to write a comment');
         }
         $commentForm = new CommentForm();
@@ -145,7 +145,7 @@ trait MotionActionsTrait
     private function motionLikeDislike(Motion $motion, $role, $string)
     {
         $currentUser = User::getCurrentUser();
-        if (!$motion->motionType->getSupportPolicy()->checkSupportSubmit() || $currentUser == null) {
+        if (!$motion->motionType->getSupportPolicy()->checkCurrUser() || $currentUser == null) {
             throw new FormError('Supporting this motion is not possible');
         }
 

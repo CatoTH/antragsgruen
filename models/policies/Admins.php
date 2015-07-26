@@ -21,18 +21,7 @@ class Admins extends IPolicy
      */
     public static function getPolicyName()
     {
-        return "Admins";
-    }
-
-    /**
-     * @static
-     * @param bool $allowAdmins
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function checkCurUserHeuristically($allowAdmins = true)
-    {
-        return (User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY));
+        return 'Admins';
     }
 
     /**
@@ -77,11 +66,12 @@ class Admins extends IPolicy
 
     /**
      * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function checkMotionSubmit($allowAdmins = true)
+    public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
     {
-        return User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_SCREENING);
+        return User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY);
     }
 }
