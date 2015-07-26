@@ -279,6 +279,21 @@ class IndexController extends AdminBase
             }
         }
 
+        if (isset($_POST['saveUsers'])) {
+            foreach ($this->consultation->userPrivileges as $privilege) {
+                if (isset($_POST['access'][$privilege->userId])) {
+                    $access                     = $_POST['access'][$privilege->userId];
+                    $privilege->privilegeView   = (in_array('view', $access) ? 1 : 0);
+                    $privilege->privilegeCreate = (in_array('create', $access) ? 1 : 0);
+                } else {
+                    $privilege->privilegeView   = 0;
+                    $privilege->privilegeCreate = 0;
+                }
+                $privilege->save();
+            }
+            \Yii::$app->session->setFlash('success', 'Die Berechtigungen wurden gespeichert.');
+        }
+
         if (isset($_POST['addUsers'])) {
             $emails = explode("\n", $_POST['emailAddresses']);
             $names  = explode("\n", $_POST['names']);

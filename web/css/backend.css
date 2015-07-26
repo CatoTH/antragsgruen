@@ -237,4 +237,12 @@ label.legend {
 #accountsEditForm textarea, #accountsCreateForm textarea {
   width: 100%; }
 
+.accountListTable {
+  margin-top: 10px; }
+  .accountListTable .accessViewCol, .accountListTable .accessCreateCol {
+    text-align: center; }
+    .accountListTable .accessViewCol label, .accountListTable .accessCreateCol label {
+      display: block;
+      margin: 0; }
+
 /*# sourceMappingURL=backend.css.map */

@@ -369,3 +369,13 @@ label.legend {
     width: 100%;
   }
 }
+.accountListTable {
+  margin-top: 10px;
+  .accessViewCol, .accessCreateCol {
+    text-align: center;
+    label {
+      display: block;
+      margin: 0;
+    }
+  }
+}

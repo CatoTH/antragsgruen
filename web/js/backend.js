@@ -326,6 +326,17 @@
                 ev.preventDefault();
             }
         });
+
+        $('.accountListTable .accessViewCol input[type=checkbox]').change(function () {
+            if (!$(this).prop("checked")) {
+                $(this).parents('tr').first().find('.accessCreateCol input[type=checkbox]').prop('checked', false);
+            }
+        });
+        $('.accountListTable .accessCreateCol input[type=checkbox]').change(function () {
+            if ($(this).prop("checked")) {
+                $(this).parents('tr').first().find('.accessViewCol input[type=checkbox]').prop('checked', true);
+            }
+        });
     };
 
     var consultationExtendedForm = function () {
