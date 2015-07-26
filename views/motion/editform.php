@@ -9,6 +9,7 @@
  */
 use app\components\HTMLTools;
 use app\models\db\ConsultationSettingsTag;
+use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
@@ -33,7 +34,7 @@ echo '<div class="form content hideIfEmpty">';
 echo $controller->showErrors();
 
 $motionPolicy = $form->motionType->getMotionPolicy();
-if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
+if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
     echo '<div>
                 <legend>' . Yii::t('motion', 'Prerequisites for a motion'), '</legend>
             </div>';

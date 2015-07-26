@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
 /**
@@ -51,7 +52,7 @@ echo '</div><br style="clear: both;">';
 echo $controller->showErrors();
 
 $motionPolicy = $form->motion->motionType->getMotionPolicy();
-if ($motionPolicy::getPolicyID() != \app\models\policies\All::getPolicyID()) {
+if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
     echo '<div>
                 <legend>' . Yii::t('amend', 'Voraussetzungen für einen Antrag'), '</legend>
             </div>';
