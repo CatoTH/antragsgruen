@@ -912,10 +912,6 @@ INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `titl
 -- Dumping data for table `emailLog`
 --
 
-INSERT INTO `emailLog` (`id`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateSent`, `subject`, `text`) VALUES
-  (1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <EMAILADRESSE>', '2015-07-23 13:08:36', 'Neuer Antrag',
-   'Es wurde ein neuer Änderungsantrag "Ä3 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/2/amendment/270');
-
 --
 -- Dumping data for table `motion`
 --

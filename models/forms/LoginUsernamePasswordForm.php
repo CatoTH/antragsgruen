@@ -2,7 +2,7 @@
 
 namespace app\models\forms;
 
-use app\components\Tools;
+use app\components\Mail;
 use app\components\UrlHelper;
 use app\models\db\EMailLog;
 use app\models\db\Site;
@@ -45,7 +45,7 @@ class LoginUsernamePasswordForm extends Model
     private function sendConfirmationEmail(User $user)
     {
         $bestCode = $user->createEmailConfirmationCode();
-        $params   = ["user/confirmregistration", "email" => $this->username, "code" => $bestCode, "subdomain" => null];
+        $params   = ['user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
         $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
 
         $send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n";
@@ -53,7 +53,7 @@ class LoginUsernamePasswordForm extends Model
             . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
             . "Liebe Grüße,\n\tDas Antragsgrün-Team.";
 
-        Tools::sendMailLog(
+        Mail::sendWithLog(
             EmailLog::TYPE_REGISTRATION,
             $this->username,
             $user->id,
@@ -62,8 +62,8 @@ class LoginUsernamePasswordForm extends Model
             null,
             null,
             [
-                "%code%"     => $bestCode,
-                "%bestLink%" => $link,
+                '%code%'     => $bestCode,
+                '%bestLink%' => $link,
             ]
         );
     }
@@ -106,8 +106,7 @@ class LoginUsernamePasswordForm extends Model
         $existing = User::findOne(['auth' => $auth]);
         if ($existing) {
             /** @var User $existing */
-            $this->error = 'Es existiert bereits ein Zugang mit dieser E-Mail-Adresse ($auth): ' .
-                print_r($existing->getAttributes(), true);
+            $this->error = 'Es existiert bereits ein Zugang mit dieser E-Mail-Adresse (' . $this->username . ')';
             throw new Login($this->error);
         }
     }

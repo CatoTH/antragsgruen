@@ -300,14 +300,17 @@ CREATE TABLE IF NOT EXISTS `emailBlacklist` (
 --
 
 CREATE TABLE IF NOT EXISTS `emailLog` (
-  `id`        INT(11)   NOT NULL,
-  `toEmail`   VARCHAR(200)   DEFAULT NULL,
-  `toUserId`  INT(11)        DEFAULT NULL,
-  `type`      SMALLINT(6)    DEFAULT NULL,
-  `fromEmail` VARCHAR(200)   DEFAULT NULL,
-  `dateSent`  TIMESTAMP NULL DEFAULT NULL,
-  `subject`   VARCHAR(200)   DEFAULT NULL,
-  `text`      MEDIUMTEXT
+  `id`        INT(11)      NOT NULL,
+  `toEmail`   VARCHAR(200)      DEFAULT NULL,
+  `toUserId`  INT(11)           DEFAULT NULL,
+  `type`      SMALLINT(6)       DEFAULT NULL,
+  `fromEmail` VARCHAR(200)      DEFAULT NULL,
+  `dateSent`  TIMESTAMP    NULL DEFAULT NULL,
+  `subject`   VARCHAR(200)      DEFAULT NULL,
+  `text`      MEDIUMTEXT,
+  `messageId` VARCHAR(100) NOT NULL,
+  `status`    SMALLINT(6)  NOT NULL,
+  `error`     TEXT         NULL DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

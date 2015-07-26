@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\Mail;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\FormError;
@@ -469,7 +470,7 @@ class User extends ActiveRecord implements IdentityInterface
             "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $unsubscribeUrl;
         $text           = $gruss . $text . $sig;
         $type           = EmailLog::TYPE_MOTION_NOTIFICATION_USER;
-        Tools::sendMailLog($type, $this->email, $this->id, $subject, $text, $from_name);
+        Mail::sendWithLog($type, $this->email, $this->id, $subject, $text, $from_name);
     }
 
     /**
@@ -577,7 +578,7 @@ class User extends ActiveRecord implements IdentityInterface
             "Um diese durchzuführen, Rufe bitte folgenden Link auf und gib dort das neue Passwort ein:\n\n%URL%\n\n" .
             "Oder gib in dem Wiederherstellungs-Formular folgenden Code ein: %CODE%";
         $replaces = ['%URL%' => $url, '%CODE%' => $recoveryToken];
-        Tools::sendMailLog($type, $this->email, $this->id, $subject, $text, null, null, $replaces);
+        Mail::sendWithLog($type, $this->email, $this->id, $subject, $text, null, null, $replaces);
     }
 
     /**

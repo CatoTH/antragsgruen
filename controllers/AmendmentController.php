@@ -2,8 +2,8 @@
 
 namespace app\controllers;
 
+use app\components\Mail;
 use app\components\MotionSorter;
-use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
@@ -176,7 +176,7 @@ class AmendmentController extends Base
 
                 foreach ($mails as $mail) {
                     if (trim($mail) != '') {
-                        Tools::sendMailLog(
+                        Mail::sendWithLog(
                             EmailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
                             trim($mail),
                             null,

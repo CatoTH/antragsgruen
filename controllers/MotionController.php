@@ -2,15 +2,14 @@
 
 namespace app\controllers;
 
+use app\components\Mail;
 use app\components\MotionSorter;
-use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\EMailLog;
 use app\models\db\Motion;
-use app\models\db\MotionSection;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
@@ -234,12 +233,12 @@ class MotionController extends Base
         if (isset($_POST['confirm'])) {
             $screening      = $this->consultation->getSettings()->screeningMotions;
             $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
-            if (!$screening && $motion->statusString == "") {
+            if (!$screening && $motion->statusString == '') {
                 $motion->titlePrefix = $motion->consultation->getNextMotionPrefix($motion->motionTypeId);
             }
             $motion->save();
 
-            if ($motion->consultation->adminEmail != "") {
+            if ($motion->consultation->adminEmail != '') {
                 $mails = explode(",", $motion->consultation->adminEmail);
 
                 $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
@@ -247,12 +246,12 @@ class MotionController extends Base
                 $mailText   = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
 
                 foreach ($mails as $mail) {
-                    if (trim($mail) != "") {
-                        Tools::sendMailLog(
+                    if (trim($mail) != '') {
+                        Mail::sendWithLog(
                             EmailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
                             trim($mail),
                             null,
-                            "Neuer Antrag",
+                            'Neuer Antrag',
                             $mailText,
                             $motion->consultation->site->getBehaviorClass()->getMailFromName()
                         );

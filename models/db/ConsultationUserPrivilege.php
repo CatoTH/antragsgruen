@@ -1,7 +1,7 @@
 <?php
 namespace app\models\db;
 
-use app\components\Tools;
+use app\components\Mail;
 use app\components\UrlHelper;
 use app\models\exceptions\AlreadyExists;
 use yii\db\ActiveRecord;
@@ -110,7 +110,7 @@ class ConsultationUserPrivilege extends ActiveRecord
         $emailText = str_replace('%LINK%', $consUrl, $emailText);
 
         $fromName = $consultation->site->getBehaviorClass()->getMailFromName();
-        Tools::sendMailLog(
+        Mail::sendWithLog(
             EMailLog::TYPE_ACCESS_GRANTED,
             $email,
             $user->id,

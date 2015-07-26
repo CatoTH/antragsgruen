@@ -9,6 +9,7 @@ use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
 use app\models\db\ConsultationUserPrivilege;
+use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
