@@ -470,7 +470,7 @@ class User extends ActiveRecord implements IdentityInterface
             "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $unsubscribeUrl;
         $text           = $gruss . $text . $sig;
         $type           = EmailLog::TYPE_MOTION_NOTIFICATION_USER;
-        Mail::sendWithLog($type, $consultation->site ,$this->email, $this->id, $subject, $text, $from_name);
+        Mail::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text, $from_name);
     }
 
     /**
@@ -550,6 +550,23 @@ class User extends ActiveRecord implements IdentityInterface
                 return 'E-Mail: ' . $authparts[1];
             default:
                 return $this->auth;
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function getAuthType()
+    {
+        if ($this->isWurzelwerkUser()) {
+            return \app\models\settings\Site::LOGIN_WURZELWERK;
+        }
+        $authparts = explode(':', $this->auth);
+        switch ($authparts[0]) {
+            case 'email':
+                return \app\models\settings\Site::LOGIN_STD;
+            default:
+                return \app\models\settings\Site::LOGIN_EXTERNAL;
         }
     }
 

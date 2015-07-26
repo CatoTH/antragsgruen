@@ -226,13 +226,19 @@ class IndexController extends AdminBase
     {
         $site = $this->site;
 
-        if (isset($_POST['save'])) {
+        if (isset($_POST['saveLogin'])) {
             $settings             = $site->getSettings();
             $settings->forceLogin = isset($_POST['forceLogin']);
             if (isset($_POST['login'])) {
                 $settings->loginMethods = $_POST['login'];
             } else {
                 $settings->loginMethods = [];
+            }
+            if (User::getCurrentUser()->getAuthType() == \app\models\settings\Site::LOGIN_STD) {
+                $settings->loginMethods[] = \app\models\settings\Site::LOGIN_STD;
+            }
+            if (User::getCurrentUser()->getAuthType() == \app\models\settings\Site::LOGIN_EXTERNAL) {
+                $settings->loginMethods[] = \app\models\settings\Site::LOGIN_EXTERNAL;
             }
             $site->setSettings($settings);
             $site->save();

@@ -26,13 +26,10 @@ Hier ist der Zugang:
 Liebe Grüße,
   Das Antragsgrün-Team';
 
-if (count($consultation->userPrivileges) > 0) {
-    echo Html::beginForm('', 'post', ['id' => 'accountsEditForm', 'class' => 'adminForm form-horizontal']);
-
-    echo $controller->showErrors();
+echo $controller->showErrors();
 
 
-    echo '<div class="explanation alert alert-info" role="alert">
+echo '<div class="accountEditExplanation alert alert-info" role="alert">
 <h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
 kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
@@ -44,6 +41,9 @@ und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
 (ansonsten verschwindet das %ACCOUNT% ersatzlos).<br>
 <strong>%LINK%</strong> wird immer durch einen Link auf die Antragsgrün-Seite ersetzt.
 </div>';
+
+if (count($consultation->userPrivileges) > 0) {
+    echo Html::beginForm('', 'post', ['id' => 'accountsEditForm', 'class' => 'adminForm form-horizontal']);
 
     echo '<h3 class="lightgreen">' . 'Bereits eingetragene Benutzer_Innen' . '</h3>';
 

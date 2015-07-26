@@ -36,9 +36,13 @@ echo '<div class="checkbox">
 echo '<fieldset class="loginMethods"><legend>Folgende Login-Varianten sind möglich:</legend>';
 
 $method = SiteSettings::LOGIN_STD;
-echo '<div class="checkbox std">
-  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) . '
-  Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>
+echo '<div class="checkbox std"><label>';
+if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_STD) {
+    echo Html::checkbox('login[]', true, ['value' => $method, 'disabled' => 'disabled']);
+} else {
+    echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
+}
+echo ' Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>
 </label>
 </div>';
 
@@ -53,13 +57,19 @@ if ($controller->getParams()->hasWurzelwerk) {
 
 $method = SiteSettings::LOGIN_EXTERNAL;
 echo '<div class="checkbox external">
-  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) . '
+  <label>';
+if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_EXTERNAL) {
+    echo Html::checkbox('login[]', true, ['value' => $method, 'disabled']);
+} else {
+    echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
+}
+echo '
   Sonstige Methoden <small>(OpenID, evtl. zufünftig auch Login per Facebook / Twitter)</small>
 </label>
 </div>';
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">Speichern</button>
+<button type="submit" name="saveLogin" class="btn btn-primary">Speichern</button>
 </div>';
 
 echo '</fieldset>';
