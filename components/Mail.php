@@ -4,6 +4,7 @@ namespace app\components;
 
 use app\models\db\EMailBlacklist;
 use app\models\db\EMailLog;
+use app\models\db\Site;
 
 class Mail
 {
@@ -135,6 +136,7 @@ class Mail
 
     /**
      * @param int $mailType
+     * @param Site|null $fromSite
      * @param string $toEmail
      * @param null|int $toPersonId
      * @param string $subject
@@ -145,6 +147,7 @@ class Mail
      */
     public static function sendWithLog(
         $mailType,
+        $fromSite,
         $toEmail,
         $toPersonId,
         $subject,
@@ -184,6 +187,9 @@ class Mail
         $obj = new \app\models\db\EmailLog();
         if ($toPersonId) {
             $obj->toUserId = $toPersonId;
+        }
+        if ($fromSite) {
+            $obj->fromSiteId = $fromSite->id;
         }
         $obj->toEmail   = $toEmail;
         $obj->type      = $mailType;

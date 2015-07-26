@@ -55,6 +55,7 @@ class LoginUsernamePasswordForm extends Model
 
         Mail::sendWithLog(
             EmailLog::TYPE_REGISTRATION,
+            null,
             $this->username,
             $user->id,
             'Anmeldung bei Antragsgrün',

@@ -249,6 +249,7 @@ class MotionController extends Base
                     if (trim($mail) != '') {
                         Mail::sendWithLog(
                             EmailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
+                            $this->site,
                             trim($mail),
                             null,
                             'Neuer Antrag',

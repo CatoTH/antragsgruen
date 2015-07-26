@@ -300,17 +300,18 @@ CREATE TABLE IF NOT EXISTS `emailBlacklist` (
 --
 
 CREATE TABLE IF NOT EXISTS `emailLog` (
-  `id`        INT(11)      NOT NULL,
-  `toEmail`   VARCHAR(200)      DEFAULT NULL,
-  `toUserId`  INT(11)           DEFAULT NULL,
-  `type`      SMALLINT(6)       DEFAULT NULL,
-  `fromEmail` VARCHAR(200)      DEFAULT NULL,
-  `dateSent`  TIMESTAMP    NULL DEFAULT NULL,
-  `subject`   VARCHAR(200)      DEFAULT NULL,
-  `text`      MEDIUMTEXT,
-  `messageId` VARCHAR(100) NOT NULL,
-  `status`    SMALLINT(6)  NOT NULL,
-  `error`     TEXT         NULL DEFAULT NULL
+  `id`         INT(11)      NOT NULL,
+  `fromSiteId` INT(11)           DEFAULT NULL,
+  `toEmail`    VARCHAR(200)      DEFAULT NULL,
+  `toUserId`   INT(11)           DEFAULT NULL,
+  `type`       SMALLINT(6)       DEFAULT NULL,
+  `fromEmail`  VARCHAR(200)      DEFAULT NULL,
+  `dateSent`   TIMESTAMP    NULL DEFAULT NULL,
+  `subject`    VARCHAR(200)      DEFAULT NULL,
+  `text`       MEDIUMTEXT,
+  `messageId`  VARCHAR(100) NOT NULL,
+  `status`     SMALLINT(6)  NOT NULL,
+  `error`      TEXT
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -636,7 +637,8 @@ ADD PRIMARY KEY (`emailHash`);
 --
 ALTER TABLE `emailLog`
 ADD PRIMARY KEY (`id`),
-ADD KEY `fk_mail_log_userIdx` (`toUserId`);
+ADD KEY `fk_mail_log_userIdx` (`toUserId`),
+ADD KEY `fromSiteId` (`fromSiteId`);
 
 --
 -- Indexes for table `motion`
@@ -953,6 +955,7 @@ ADD CONSTRAINT `consultationUserPrivilege_ibfk_2` FOREIGN KEY (`consultationId`)
 -- Constraints for table `emailLog`
 --
 ALTER TABLE `emailLog`
+ADD CONSTRAINT `emailLog_ibfk_1` FOREIGN KEY (`fromSiteId`) REFERENCES `site` (`id`),
 ADD CONSTRAINT `fk_mail_log_user` FOREIGN KEY (`toUserId`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;

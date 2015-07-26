@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
  * @package app\models\db
  *
  * @property int $id
+ * @property int $fromSiteId
  * @property string $toEmail
  * @property int $toUserId
  * @property int $type
@@ -18,6 +19,7 @@ use yii\db\ActiveRecord;
  * @property int $status
  * @property string $error
  *
+ * @property Site $fromSite
  * @property User $toUser
  */
 class EMailLog extends ActiveRecord
@@ -88,5 +90,13 @@ class EMailLog extends ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'toUserId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFromSite()
+    {
+        return $this->hasOne(Site::className(), ['id' => 'fromSiteId']);
     }
 }

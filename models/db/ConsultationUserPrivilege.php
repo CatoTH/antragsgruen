@@ -112,6 +112,7 @@ class ConsultationUserPrivilege extends ActiveRecord
         $fromName = $consultation->site->getBehaviorClass()->getMailFromName();
         Mail::sendWithLog(
             EMailLog::TYPE_ACCESS_GRANTED,
+            $consultation->site,
             $email,
             $user->id,
             'Antragsgrün-Zugriff',
