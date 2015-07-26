@@ -17,6 +17,7 @@ $layout     = $controller->layoutParams;
 
 $this->title = 'Login';
 $layout->addBreadcrumb('Login');
+$layout->robotsNoindex = true;
 
 if ($controller->site) {
     $loginMethods = $controller->site->getSettings()->loginMethods;
