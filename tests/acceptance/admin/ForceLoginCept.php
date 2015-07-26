@@ -10,7 +10,7 @@ $I->see('Test2', 'h1');
 $I->wantTo('enforce login');
 $I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
 $I->checkOption('input[name=forceLogin]');
-$I->submitForm('#siteSettingsForm', [], 'save');
+$I->submitForm('#siteSettingsForm', [], 'saveLogin');
 $I->logout();
 
 $I->gotoConsultationHome(false);
@@ -27,7 +27,7 @@ $I->gotoConsultationHome(false);
 $I->loginAsStdAdmin();
 $I->gotoStdAdminPage()->gotoSiteAccessPage();
 $I->uncheckOption('input[name=forceLogin]');
-$I->submitForm('#siteSettingsForm', [], 'save');
+$I->submitForm('#siteSettingsForm', [], 'saveLogin');
 $I->logout();
 
 $I->gotoConsultationHome(false);
