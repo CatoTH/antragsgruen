@@ -131,7 +131,7 @@ echo '</div>';
 echo '</div>';
 
 /** @var AmendmentSection[] $sections */
-$sections = $amendment->getSortedSections(true);
+$sections = $amendment->getSortedSections(false);
 foreach ($sections as $section) {
     if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
@@ -149,6 +149,16 @@ foreach ($sections as $section) {
             echo '</div>';
             echo '</section>';
         }
+    } elseif ($section->consultationSetting->type == ISectionType::TYPE_TITLE) {
+        if ($section->data == $section->getOriginalMotionSection()->data) {
+            continue;
+        }
+        echo '<section id="section_title" class="motionTextHolder">';
+        echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+        echo '<div id="section_title_0" class="paragraph"><div class="text">';
+        echo '<h4 class="lineSummary">' . 'Ändern in' . ':</h4>';
+        echo '<p>' . Html::encode($section->data) . '</p>';
+        echo '</div></div></section>';
     }
 }
 

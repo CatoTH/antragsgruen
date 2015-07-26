@@ -125,7 +125,7 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $amendment->changeExplanation);
 
         $change = '';
-        foreach ($amendment->getSortedSections(true) as $section) {
+        foreach ($amendment->getSortedSections(false) as $section) {
             $change .= $section->getSectionType()->getAmendmentODS();
         }
         $doc->setCell($row, $COL_CHANGE, Spreadsheet::TYPE_HTML, $change);

@@ -4,6 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\latex\Exporter;
 use app\components\opendocument\Text;
+use app\models\db\AmendmentSection;
 use app\models\exceptions\FormError;
 use yii\helpers\Html;
 
@@ -59,16 +60,6 @@ class Title extends ISectionType
     }
 
     /**
-     * @param \TCPDF $pdf
-     */
-    public function printToPDF(\TCPDF $pdf)
-    {
-        $pdf->SetFont("helvetica", "", 12);
-        $pdf->writeHTML("<h3>" . $this->section->data . "</h3>");
-        $pdf->Ln(5);
-    }
-
-    /**
      * @return bool
      */
     public function isEmpty()
@@ -89,7 +80,21 @@ class Title extends ISectionType
      */
     public function printAmendmentToPDF(\TCPDF $pdf)
     {
-        // TODO: Implement printAmendmentToPDF() method.
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        if ($section->data == $section->getOriginalMotionSection()->data) {
+            return;
+        }
+
+        $pdf->SetFont("helvetica", "", 12);
+        $pdf->writeHTML("<h3>" . HTml::encode($this->section->consultationSetting->title) . "</h3>");
+
+        $pdf->SetFont("Courier", "", 11);
+        $pdf->Ln(7);
+
+        $html = '<p><strong>Ändern in:</strong><br>' . Html::encode($section->data) . '</p>';
+        $pdf->writeHTMLCell(170, '', 27, '', $html, 0, 1, 0, true, '', true);
+        $pdf->Ln(7);
     }
 
     /**
@@ -121,7 +126,16 @@ class Title extends ISectionType
      */
     public function getAmendmentTeX()
     {
-        return Exporter::encodePlainString($this->section->data);
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        if ($section->data == $section->getOriginalMotionSection()->data) {
+            return '';
+        }
+        $title = Exporter::encodePlainString($section->consultationSetting->title);
+        $tex   = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+        $html  = '<p><strong>Ändern in:</strong><br>' . Html::encode($this->section->data) . '</p>';
+        $tex .= Exporter::encodeHTMLString($html);
+        return $tex;
     }
 
 
@@ -138,7 +152,12 @@ class Title extends ISectionType
      */
     public function getAmendmentODS()
     {
-        return '<p>' . Html::encode($this->section->data) . '</p>';
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+        if ($section->data == $section->getOriginalMotionSection()->data) {
+            return '';
+        }
+        return '<strong>Neuer Titel:</strong><br>' . Html::encode($section->data) . '<br><br>';
     }
 
     /**

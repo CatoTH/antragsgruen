@@ -123,7 +123,7 @@ class TabularData extends ISectionType
         }
 
         $pdf->SetFont("helvetica", "", 12);
-        $pdf->writeHTML("<h3>" . $this->section->consultationSetting->title . "</h3>");
+        $pdf->writeHTML("<h3>" . HTml::encode($this->section->consultationSetting->title) . "</h3>");
 
         $pdf->SetFont("Courier", "", 11);
         $pdf->Ln(7);

@@ -30,7 +30,7 @@ $pdf->AddPage();
 
 $pdfLayout->printAmendmentHeader($amendment);
 
-foreach ($amendment->getSortedSections(true) as $section) {
+foreach ($amendment->getSortedSections(false) as $section) {
     $section->getSectionType()->printAmendmentToPDF($pdf);
 }
 

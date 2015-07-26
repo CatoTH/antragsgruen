@@ -586,7 +586,7 @@ class Amendment extends IMotion implements IRSSItem
 
         $content->text = '';
 
-        foreach ($this->getSortedSections(true) as $section) {
+        foreach ($this->getSortedSections(false) as $section) {
             $content->text .= $section->getSectionType()->getAmendmentTeX();
         }
 
