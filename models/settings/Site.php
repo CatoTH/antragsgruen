@@ -6,10 +6,11 @@ class Site
 {
 
     /** @var bool */
-    public $siteLayout         = 'layout-classic';
-    public $showAntragsgruenAd = true;
-    public $loginMethods       = [0, 1, 3];
-    public $forceLogin         = false; // @TODO Doesn't do anything yet
+    public $siteLayout          = 'layout-classic';
+    public $showAntragsgruenAd  = true;
+    public $loginMethods        = [0, 1, 3];
+    public $forceLogin          = false;
+    public $managedUserAccounts = false;
 
     /** @var int */
     public $willingToPay = 0;

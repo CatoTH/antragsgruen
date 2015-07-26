@@ -2,6 +2,8 @@
 
 namespace app\models\policies;
 
+use app\models\db\User;
+
 class LoggedIn extends IPolicy
 {
     /**
@@ -23,6 +25,22 @@ class LoggedIn extends IPolicy
     }
 
     /**
+     * @return bool
+     */
+    protected function isWriteForbidden()
+    {
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+        if (!$this->motionType->consultation->site->getSettings()->managedUserAccounts) {
+            return false;
+        }
+        $privilege = $this->motionType->consultation->getUserPrivilege($user);
+        return ($privilege->privilegeCreate == 0);
+    }
+
+    /**
      * @static
      * @param bool $allowAdmins
      * @return bool
@@ -30,7 +48,7 @@ class LoggedIn extends IPolicy
      */
     public function checkCurUserHeuristically($allowAdmins = true)
     {
-        return true;
+        return !$this->isWriteForbidden();
     }
 
     /**
@@ -46,6 +64,9 @@ class LoggedIn extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
+        if ($this->isWriteForbidden()) {
+            return 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Anträge stellen.';
+        }
         return 'Du musst dich einloggen, um Anträge stellen zu können.';
     }
 
@@ -54,6 +75,9 @@ class LoggedIn extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
+        if ($this->isWriteForbidden()) {
+            return 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Änderungsanträge stellen.';
+        }
         return 'Du musst dich einloggen, um Änderungsanträge stellen zu können.';
     }
 
@@ -62,6 +86,9 @@ class LoggedIn extends IPolicy
      */
     public function getPermissionDeniedSupportMsg()
     {
+        if ($this->isWriteForbidden()) {
+            return 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Anträge unterstützen.';
+        }
         return 'Du musst dich einloggen, um Anträge unterstützen zu können.';
     }
 
@@ -70,6 +97,9 @@ class LoggedIn extends IPolicy
      */
     public function getPermissionDeniedCommentMsg()
     {
+        if ($this->isWriteForbidden()) {
+            return 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Kommentare schreiben.';
+        }
         return 'Du musst dich einloggen, um Kommentare schreiben zu können.';
     }
 
@@ -81,6 +111,9 @@ class LoggedIn extends IPolicy
      */
     public function checkMotionSubmit($allowAdmins = true)
     {
+        if ($this->isWriteForbidden()) {
+            return false;
+        }
         return (!\Yii::$app->user->isGuest);
     }
 }

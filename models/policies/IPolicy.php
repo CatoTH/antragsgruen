@@ -3,6 +3,7 @@
 namespace app\models\policies;
 
 use app\models\db\ConsultationMotionType;
+use app\models\db\User;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 

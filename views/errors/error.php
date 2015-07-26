@@ -9,6 +9,11 @@ use yii\helpers\Html;
  * @var int $httpStatus
  */
 
+/** @var \app\controllers\admin\IndexController $controller */
+$controller = $this->context;
+$layout     = $controller->layoutParams;
+$layout->robotsNoindex = true;
+
 if (!isset($httpStatus)) {
     $httpStatus = 500;
 }
@@ -44,14 +49,10 @@ switch ($httpStatus) {
 }
 
 $this->title = $name;
-?>
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <br><br>
-
-<div class="row">
-    <div class="alert alert-danger col-md-10 col-md-offset-1">
-        <?= $message ?>
-    </div>
-</div>
+echo '<h1>' . Html::encode($this->title) . '</h1>
 <br><br>
+<div class="row">
+    <div class="alert alert-danger col-md-10 col-md-offset-1">' . $message . '</div>
+</div>
+<br><br>';

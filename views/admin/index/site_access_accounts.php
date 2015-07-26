@@ -8,6 +8,8 @@ use yii\helpers\Html;
  * @var Consultation $consultation
  */
 
+echo '<section class="showManagedUsers">';
+
 echo '<h2 class="green">' . 'Benutzer_Innen-Accounts' . '</h2>';
 echo '<div class="content">';
 
@@ -123,6 +125,6 @@ echo '<h3 class="lightgreen">' . 'Benutzer_Innen eintragen' . '</h3>
 echo Html::endForm();
 
 
-echo '</div>';
+echo '</div></section>';
 
 $layout->addOnLoadJS('$.AntragsgruenAdmin.siteAccessUsersInit();');

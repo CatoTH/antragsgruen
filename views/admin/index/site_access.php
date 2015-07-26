@@ -5,10 +5,10 @@ use app\models\db\User;
 use yii\helpers\Html;
 use app\models\settings\Site as SiteSettings;
 
-
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Site $site
+ * @var bool $policyWarning
  */
 
 /** @var \app\controllers\Base $controller */
@@ -24,11 +24,47 @@ $layout->addBreadcrumb('Zugang');
 $settings = $site->getSettings();
 
 echo '<h1>Zugang zur Seite</h1>';
+
+if ($policyWarning) {
+    echo '<div class="accountEditExplanation alert alert-info alert-dismissible" role="alert">
+<button type="button" class="close" data-dismiss="alert"
+aria-label="Close"><span aria-hidden="true">&times;</span></button>
+' . Html::beginForm('', 'post', ['id' => 'policyRestrictForm']) . '
+<h3>Hinweis:</h3>
+Die BenutzerInnenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
+ von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte BenutzerInnen" gestellt werden. Aktuell ist
+ das nicht der Fall.<br>
+ <br>
+ Falls die nur für unten eingetragene BenutzerInnen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
+ dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene BenutzerInnen
+ Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:
+ <div class="saveholder">
+    <button type="submit" name="policyRestrictToUsers" class="btn btn-primary">Auf BenutzerInnen einschränken</button>
+</div>' . Html::endForm() . '</div>';
+}
+
+
+
 echo Html::beginForm('', 'post', ['id' => 'siteSettingsForm', 'class' => 'content adminForm form-horizontal']);
 
-echo '<div class="checkbox">
+$success = \Yii::$app->session->getFlash('success_login', null, true);
+if ($success) {
+    echo '<div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                <span class="sr-only">Success:</span>
+                ' . Html::encode($success) . '
+            </div>';
+}
+
+echo '<div class="checkbox forceLogin">
   <label>' . Html::checkbox('forceLogin', $settings->forceLogin) . '
   Nur eingeloggte BenutzerInnen dürfen zugreifen (inkl. <em>lesen</em>)
+</label>
+</div>';
+
+echo '<div class="checkbox managedUserAccounts">
+  <label>' . Html::checkbox('managedUserAccounts', $settings->managedUserAccounts) . '
+  Nur ausgewählten BenutzerInnen das Login erlauben <small class="showManagedUsers">(siehe unten)</small>
 </label>
 </div>';
 
@@ -68,12 +104,11 @@ echo '
 </label>
 </div>';
 
+echo '</fieldset>';
+
 echo '<div class="saveholder">
 <button type="submit" name="saveLogin" class="btn btn-primary">Speichern</button>
 </div>';
-
-echo '</fieldset>';
-
 
 echo Html::endForm();
 

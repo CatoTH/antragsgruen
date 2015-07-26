@@ -167,7 +167,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
         $priv                   = new ConsultationUserPrivilege();
         $priv->consultationId   = $consultation->id;
-        $priv->userId           = $this->is;
+        $priv->userId           = $this->id;
         $priv->privilegeCreate  = 0;
         $priv->privilegeView    = 0;
         $priv->adminContentEdit = 0;

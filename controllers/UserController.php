@@ -262,4 +262,12 @@ class UserController extends Base
 
         return $this->render('recovery', ['preEmail' => $email, 'preCode' => $code]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionConsultationaccesserror()
+    {
+        return $this->render('@app/views/errors/consultation_access');
+    }
 }

@@ -172,6 +172,15 @@ class Base extends Controller
             $this->redirect(UrlHelper::createLoginUrl($backUrl));
             return true;
         }
+        if ($this->site->getSettings()->managedUserAccounts) {
+            if ($this->consultation && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_ANY)) {
+                $privilege = User::getCurrentUser()->getConsultationPrivilege($this->consultation);
+                if (!$privilege || !$privilege->privilegeView) {
+                    $this->redirect(UrlHelper::createUrl('user/consultationaccesserror'));
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

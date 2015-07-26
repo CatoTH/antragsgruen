@@ -157,14 +157,14 @@ class Consultation extends ActiveRecord
      */
     public function getUserPrivilege(User $user)
     {
-        foreach ($this->consultationPrivileges as $priv) {
+        foreach ($this->userPrivileges as $priv) {
             if ($priv->userId == $user->id) {
                 return $priv;
             }
         }
         $priv                   = new ConsultationUserPrivilege();
         $priv->consultationId   = $this->id;
-        $priv->userId           = $user->is;
+        $priv->userId           = $user->id;
         $priv->privilegeCreate  = 0;
         $priv->privilegeView    = 0;
         $priv->adminContentEdit = 0;

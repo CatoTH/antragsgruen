@@ -15,6 +15,7 @@ $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcom
 $motionPaths         = 'createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image|withdraw';
 $amendPaths          = 'pdf|createconfirm|edit|withdraw';
 $userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|unsubscribe|recovery';
+$userPaths           .= '|consultationaccesserror';
 $domPlainPaths       = 'legal|privacy|help|password|billing|createsite';
 $adminMotionPaths    = 'index|type|listall|excellist|odslist';
 $adminAmendmentPaths = 'index|excellist|odslist|pdflist';

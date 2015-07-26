@@ -301,6 +301,14 @@
                 }
             });
         });
+
+        $(".managedUserAccounts input").change(function () {
+            if ($(this).prop("checked")) {
+                $(".showManagedUsers").show();
+            } else {
+                $(".showManagedUsers").hide();
+            }
+        }).trigger("change");
     };
 
     var siteAccessUsersInit = function () {
