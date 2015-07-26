@@ -16,4 +16,6 @@ $params->domainSubdomain       = 'http://localhost:8080/index-test.php';
 $params->prependWWWToSubdomain = false;
 $params->randomSeed            = '123456';
 $params->cookieValidationKey   = '123456';
+$params->mailFromName          = 'Antragsgrün Test';
+$params->mailFromEmail         = 'test@antragsgruen.de';
 return $params;

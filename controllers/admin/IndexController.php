@@ -9,7 +9,6 @@ use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
 use app\models\db\ConsultationUserPrivilege;
-use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
@@ -317,7 +316,11 @@ class IndexController extends AdminBase
 
                 }
                 if ($created > 0) {
-                    $msg = str_replace('%NUM%', $created, '%NUM% BenutzerInnen wurden eingetragen.');
+                    if ($created == 1) {
+                        $msg = str_replace('%NUM%', $created, '%NUM% BenutzerIn wurde eingetragen.');
+                    } else {
+                        $msg = str_replace('%NUM%', $created, '%NUM% BenutzerInnen wurden eingetragen.');
+                    }
                     \Yii::$app->session->setFlash('success', $msg);
                 } else {
                     \Yii::$app->session->setFlash('error', 'Es wurde niemand eingetragen.');
