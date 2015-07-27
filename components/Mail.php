@@ -118,7 +118,7 @@ class Mail
      * @param string $toEmail
      * @return string
      */
-    public function send($message, $toEmail)
+    public static function send($message, $toEmail)
     {
         if (YII_ENV == 'test' || mb_strpos($toEmail, '@example.org') !== false) {
             return EMailLog::STATUS_SKIPPED_OTHER;
