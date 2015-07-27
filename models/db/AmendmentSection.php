@@ -22,6 +22,7 @@ use app\models\sectionTypes\ISectionType;
  */
 class AmendmentSection extends IMotionSection
 {
+    use CacheTrait;
 
     /**
      * @return string

@@ -40,6 +40,7 @@ use yii\helpers\Html;
  */
 class Amendment extends IMotion implements IRSSItem
 {
+    use CacheTrait;
 
     /**
      * @return string
@@ -156,7 +157,7 @@ class Amendment extends IMotion implements IRSSItem
                 if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
-                $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+                $formatter = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
                 $diff      = $formatter->getGroupedDiffLinesWithNumbers();
                 if (count($diff) > 0) {
                     return $diff[0]['lineFrom'];
@@ -420,7 +421,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
-        $this->motion->consultation->flushCaches();
+        $this->motion->consultation->clearCacheWithChildren();
         // @TODO Log changes
     }
 
@@ -456,7 +457,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function onPublish()
     {
-        $this->flushCaches();
+        $this->clearCacheWithChildren();
         /*
         // @TODO Prevent duplicate Calls
         $notified = [];
@@ -470,12 +471,16 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     *
      */
-    public function flushCaches()
+    public function clearCacheWithChildren()
     {
-        $this->cache = '';
-        $this->motion->flushCaches();
+        $this->clearCache();
+        foreach ($this->sections as $section) {
+            $section->clearCache();
+        }
     }
+
 
     /**
      * @param RSSExporter $feed

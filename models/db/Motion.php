@@ -41,6 +41,8 @@ use yii\helpers\Html;
  */
 class Motion extends IMotion implements IRSSItem
 {
+    use CacheTrait;
+
     /**
      * @return string
      */
@@ -319,21 +321,13 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return string
-     */
-    public function getTypeName()
-    {
-        // @TODO Tags
-        return Yii::t('motion', 'Antrag');
-    }
-
-    /**
      * @return int
      */
     public function getNumberOfCountableLines()
     {
         $num = 0;
         foreach ($this->getSortedSections() as $section) {
+            /** @var MotionSection $section */
             $num += $section->getNumberOfCountableLines();
         }
         return $num;
@@ -426,7 +420,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
-        $this->consultation->flushCaches();
+        $this->consultation->clearCacheWithChildren();
         // @TODO Log changes
     }
 
@@ -463,7 +457,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function onPublish()
     {
-        $this->flushCaches();
+        $this->clearCacheWithChildren();
         // @TODO Prevent duplicate Calls
         $notified = [];
         foreach ($this->consultation->subscriptions as $sub) {
@@ -477,10 +471,15 @@ class Motion extends IMotion implements IRSSItem
     /**
      *
      */
-    public function flushCaches()
+    public function clearCacheWithChildren()
     {
-        $this->cache = '';
-        $this->consultation->flushCaches();
+        $this->clearCache();
+        foreach ($this->sections as $section) {
+            $section->clearCache();
+        }
+        foreach ($this->amendments as $amend) {
+            $amend->clearCacheWithChildren();
+        }
     }
 
     /**

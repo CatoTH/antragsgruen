@@ -23,6 +23,7 @@ use app\models\exceptions\Internal;
  */
 class MotionSection extends IMotionSection
 {
+    use CacheTrait;
 
     /**
      * @return string

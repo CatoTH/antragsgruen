@@ -32,7 +32,8 @@ if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
     $layout->addBreadcrumb($_REQUEST['backTitle'], $_REQUEST['backUrl']);
     $layout->addBreadcrumb($amendment->getShortTitle());
 } else {
-    $layout->addBreadcrumb($amendment->motion->getTypeName(), UrlHelper::createMotionUrl($amendment->motion));
+    $motionUrl = UrlHelper::createMotionUrl($amendment->motion);
+    $layout->addBreadcrumb($amendment->motion->motionType->titleSingular, $motionUrl);
     $layout->addBreadcrumb($amendment->titlePrefix);
 }
 
