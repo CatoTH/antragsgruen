@@ -17,7 +17,7 @@ trait CacheTrait
     protected function getCacheObj()
     {
         if ($this->cacheObj === null) {
-            if ($this->cache === null || $this->cache = '') {
+            if ($this->cache === null || $this->cache == '') {
                 $this->cacheObj = [];
             } else {
                 $this->cacheObj = json_decode($this->cache, true);

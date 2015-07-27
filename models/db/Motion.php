@@ -325,11 +325,18 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getNumberOfCountableLines()
     {
+        $cached = $this->getCacheItem('getNumberOfCountableLines');
+        if ($cached !== null) {
+            return $cached;
+        }
+
         $num = 0;
         foreach ($this->getSortedSections() as $section) {
             /** @var MotionSection $section */
             $num += $section->getNumberOfCountableLines();
         }
+
+        $this->setCacheItem('getNumberOfCountableLines', $num);
         return $num;
     }
 
@@ -339,6 +346,11 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getFirstLineNumber()
     {
+        $cached = $this->getCacheItem('getFirstLineNumber');
+        if ($cached !== null) {
+            return $cached;
+        }
+
         if ($this->consultation->getSettings()->lineNumberingGlobal) {
             $motionBlocks = MotionSorter::getSortedMotions($this->consultation, $this->consultation->motions);
             $lineNo       = 1;
@@ -346,6 +358,7 @@ class Motion extends IMotion implements IRSSItem
                 foreach ($motions as $motion) {
                     /** @var Motion $motion */
                     if ($motion->id == $this->id) {
+                        $this->setCacheItem('getFirstLineNumber', $lineNo);
                         return $lineNo;
                     } else {
                         $lineNo += $motion->getNumberOfCountableLines();
@@ -354,6 +367,7 @@ class Motion extends IMotion implements IRSSItem
             }
             throw new Internal('Did not find myself');
         } else {
+            $this->setCacheItem('getFirstLineNumber', 1);
             return 1;
         }
     }

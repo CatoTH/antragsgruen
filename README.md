@@ -26,6 +26,25 @@ Optional, for LaTeX/XeTeX-based PDFs:
 apt-get install texlive-lang-german texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-humanities texlive-fonts-recommended texlive-xetex
 ```
 
+Command Line Commands
+---------------------
+
+Force a new password for an user:
+```bash
+./yii admin/set-user-password user@example.org mynewpassword
+```
+
+Flush all caches of a specific consultation:
+```bash
+./yii admin/flush-consultation-caches subdomain consultationPath
+```
+
+Flush all caches of the whole system:
+```bash
+./yii admin/flush-all-consultation-caches
+```
+
+
 Development Setup
 -----------------
 

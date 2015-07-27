@@ -91,10 +91,16 @@ class AmendmentSection extends IMotionSection
      */
     public function getFirstLineNumber()
     {
+        $cached = $this->getCacheItem('getFirstLineNumber');
+        if ($cached !== null) {
+            return $cached;
+        }
+
         $first = $this->amendment->motion->getFirstLineNumber();
         foreach ($this->amendment->getSortedSections() as $section) {
             /** @var AmendmentSection $section */
             if ($section->sectionId == $this->sectionId) {
+                $this->setCacheItem('getFirstLineNumber', $first);
                 return $first;
             }
             if (!$section || !$section->getOriginalMotionSection()) {
