@@ -41,6 +41,8 @@ use yii\helpers\Html;
  */
 class Motion extends IMotion implements IRSSItem
 {
+    use CacheTrait;
+
     /**
      * @return string
      */
@@ -319,23 +321,22 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return string
-     */
-    public function getTypeName()
-    {
-        // @TODO Tags
-        return Yii::t('motion', 'Antrag');
-    }
-
-    /**
      * @return int
      */
     public function getNumberOfCountableLines()
     {
+        $cached = $this->getCacheItem('getNumberOfCountableLines');
+        if ($cached !== null) {
+            return $cached;
+        }
+
         $num = 0;
         foreach ($this->getSortedSections() as $section) {
+            /** @var MotionSection $section */
             $num += $section->getNumberOfCountableLines();
         }
+
+        $this->setCacheItem('getNumberOfCountableLines', $num);
         return $num;
     }
 
@@ -345,6 +346,11 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getFirstLineNumber()
     {
+        $cached = $this->getCacheItem('getFirstLineNumber');
+        if ($cached !== null) {
+            return $cached;
+        }
+
         if ($this->consultation->getSettings()->lineNumberingGlobal) {
             $motionBlocks = MotionSorter::getSortedMotions($this->consultation, $this->consultation->motions);
             $lineNo       = 1;
@@ -352,6 +358,7 @@ class Motion extends IMotion implements IRSSItem
                 foreach ($motions as $motion) {
                     /** @var Motion $motion */
                     if ($motion->id == $this->id) {
+                        $this->setCacheItem('getFirstLineNumber', $lineNo);
                         return $lineNo;
                     } else {
                         $lineNo += $motion->getNumberOfCountableLines();
@@ -360,6 +367,7 @@ class Motion extends IMotion implements IRSSItem
             }
             throw new Internal('Did not find myself');
         } else {
+            $this->setCacheItem('getFirstLineNumber', 1);
             return 1;
         }
     }
@@ -426,7 +434,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
-        $this->consultation->flushCaches();
+        $this->consultation->flushCacheWithChildren();
         // @TODO Log changes
     }
 
@@ -463,7 +471,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function onPublish()
     {
-        $this->flushCaches();
+        $this->flushCacheWithChildren();
         // @TODO Prevent duplicate Calls
         $notified = [];
         foreach ($this->consultation->subscriptions as $sub) {
@@ -477,10 +485,15 @@ class Motion extends IMotion implements IRSSItem
     /**
      *
      */
-    public function flushCaches()
+    public function flushCacheWithChildren()
     {
-        $this->cache = '';
-        $this->consultation->flushCaches();
+        $this->flushCache();
+        foreach ($this->sections as $section) {
+            $section->flushCache();
+        }
+        foreach ($this->amendments as $amend) {
+            $amend->flushCacheWithChildren();
+        }
     }
 
     /**

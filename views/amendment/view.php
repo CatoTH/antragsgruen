@@ -32,11 +32,12 @@ if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
     $layout->addBreadcrumb($_REQUEST['backTitle'], $_REQUEST['backUrl']);
     $layout->addBreadcrumb($amendment->getShortTitle());
 } else {
-    $layout->addBreadcrumb($amendment->motion->getTypeName(), UrlHelper::createMotionUrl($amendment->motion));
+    $motionUrl = UrlHelper::createMotionUrl($amendment->motion);
+    $layout->addBreadcrumb($amendment->motion->motionType->titleSingular, $motionUrl);
     $layout->addBreadcrumb($amendment->titlePrefix);
 }
 
-$this->title = $amendment->getTitle() . " (" . $consultation->title . ", Antragsgrün)";
+$this->title = $amendment->getTitle() . ' (' . $consultation->title . ', Antragsgrün)';
 
 
 $html        = '<ul class="sidebarActions">';
@@ -112,13 +113,13 @@ if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
 } else {
     echo Html::encode($statiNames[$amendment->status]);
 }
-if (trim($amendment->statusString) != "") {
+if (trim($amendment->statusString) != '') {
     echo " <small>(" . Html::encode($amendment->statusString) . ")</string>";
 }
 echo '</td>
                 </tr>';
 
-if ($amendment->dateResolution != "") {
+if ($amendment->dateResolution != '') {
     echo '<tr><th>Entschieden am:</th>
        <td>' . Tools::formatMysqlDate($amendment->dateResolution) . '</td>
      </tr>';

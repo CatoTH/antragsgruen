@@ -31,7 +31,7 @@ $layout     = $controller->layoutParams;
 if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
     $layout->addBreadcrumb($_REQUEST['backTitle'], $_REQUEST['backUrl']);
 }
-$layout->addBreadcrumb($motion->getTypeName());
+$layout->addBreadcrumb($motion->motionType->titleSingular);
 
 $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->consultation->title . ', Antragsgrün)';
 

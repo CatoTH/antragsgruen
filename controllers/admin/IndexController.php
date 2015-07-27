@@ -80,7 +80,7 @@ class IndexController extends AdminBase
             $model->setSettings($settings);
 
             if ($model->save()) {
-                $model->flushCaches();
+                $model->flushCacheWithChildren();
                 \yii::$app->session->setFlash('success', 'Gespeichert.');
             } else {
                 \yii::$app->session->setFlash('error', print_r($model->getErrors(), true));
@@ -207,7 +207,7 @@ class IndexController extends AdminBase
                     }
                 }
 
-                $consultation->flushCaches();
+                $consultation->flushCacheWithChildren();
                 \yii::$app->session->setFlash('success', 'Gespeichert.');
             } else {
                 \yii::$app->session->setFlash('error', print_r($consultation->getErrors(), true));

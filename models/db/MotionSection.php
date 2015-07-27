@@ -23,6 +23,7 @@ use app\models\exceptions\Internal;
  */
 class MotionSection extends IMotionSection
 {
+    use CacheTrait;
 
     /**
      * @return string
@@ -184,6 +185,11 @@ class MotionSection extends IMotionSection
             return 0;
         }
 
+        $cached = $this->getCacheItem('getNumberOfCountableLines');
+        if ($cached !== null) {
+            return $cached;
+        }
+
         $num   = 0;
         $paras = $this->getTextParagraphs();
         foreach ($paras as $para) {
@@ -191,6 +197,7 @@ class MotionSection extends IMotionSection
             $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
             $num += count($linesOut);
         }
+        $this->setCacheItem('getNumberOfCountableLines', $num);
         return $num;
     }
 

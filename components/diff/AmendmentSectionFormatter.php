@@ -252,14 +252,19 @@ class AmendmentSectionFormatter
         if (!$this->section) {
             return [];
         }
-        try {
-            $lineOffset = $this->section->getFirstLineNumber();
-            $computed   = $this->getHtmlDiffWithLineNumberPlaceholders();
-            $blocks     = static::htmlDiff2LineBlocks($computed, $lineOffset);
-            return static::filterAffectedBlocks($blocks);
-        } catch (Internal $e) {
-            return [];
+        $getDiffLinesWithNumbers = $this->section->getCacheItem('getDiffLinesWithNumbers');
+        if ($getDiffLinesWithNumbers === null) {
+            try {
+                $lineOffset              = $this->section->getFirstLineNumber();
+                $computed                = $this->getHtmlDiffWithLineNumberPlaceholders();
+                $blocks                  = static::htmlDiff2LineBlocks($computed, $lineOffset);
+                $getDiffLinesWithNumbers = static::filterAffectedBlocks($blocks);
+            } catch (Internal $e) {
+                $getDiffLinesWithNumbers = [];
+            }
+            $this->section->setCacheItem('getDiffLinesWithNumbers', $getDiffLinesWithNumbers);
         }
+        return $getDiffLinesWithNumbers;
     }
 
     /**
