@@ -362,10 +362,10 @@ class Consultation extends ActiveRecord
     /**
      *
      */
-    public function clearCacheWithChildren()
+    public function flushCacheWithChildren()
     {
         foreach ($this->motions as $motion) {
-            $motion->clearCacheWithChildren();
+            $motion->flushCacheWithChildren();
         }
     }
 

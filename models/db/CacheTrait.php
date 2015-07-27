@@ -29,7 +29,7 @@ trait CacheTrait
     /**
      * @param bool $save
      */
-    public function clearCache($save = true)
+    public function flushCache($save = true)
     {
         $this->cache    = '';
         $this->cacheObj = null;

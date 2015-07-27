@@ -421,7 +421,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
-        $this->motion->consultation->clearCacheWithChildren();
+        $this->motion->consultation->flushCacheWithChildren();
         // @TODO Log changes
     }
 
@@ -457,7 +457,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function onPublish()
     {
-        $this->clearCacheWithChildren();
+        $this->flushCacheWithChildren();
         /*
         // @TODO Prevent duplicate Calls
         $notified = [];
@@ -473,11 +473,11 @@ class Amendment extends IMotion implements IRSSItem
     /**
      *
      */
-    public function clearCacheWithChildren()
+    public function flushCacheWithChildren()
     {
-        $this->clearCache();
+        $this->flushCache();
         foreach ($this->sections as $section) {
-            $section->clearCache();
+            $section->flushCache();
         }
     }
 

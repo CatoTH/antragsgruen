@@ -63,7 +63,7 @@ class AdminController extends Controller
             return;
         }
         /** @var Consultation $con */
-        $con->clearCacheWithChildren();
+        $con->flushCacheWithChildren();
         $this->stdout('All caches of this consultation have been flushed' . "\n");
     }
 
@@ -75,7 +75,7 @@ class AdminController extends Controller
         /** @var Consultation[] $cons */
         $cons = Consultation::findAll(['1' => '1']);
         foreach ($cons as $con) {
-            $con->clearCacheWithChildren();
+            $con->flushCacheWithChildren();
         }
         $this->stdout('All caches of all consultations have been flushed' . "\n");
     }

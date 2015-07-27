@@ -434,7 +434,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
-        $this->consultation->clearCacheWithChildren();
+        $this->consultation->flushCacheWithChildren();
         // @TODO Log changes
     }
 
@@ -471,7 +471,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function onPublish()
     {
-        $this->clearCacheWithChildren();
+        $this->flushCacheWithChildren();
         // @TODO Prevent duplicate Calls
         $notified = [];
         foreach ($this->consultation->subscriptions as $sub) {
@@ -485,14 +485,14 @@ class Motion extends IMotion implements IRSSItem
     /**
      *
      */
-    public function clearCacheWithChildren()
+    public function flushCacheWithChildren()
     {
-        $this->clearCache();
+        $this->flushCache();
         foreach ($this->sections as $section) {
-            $section->clearCache();
+            $section->flushCache();
         }
         foreach ($this->amendments as $amend) {
-            $amend->clearCacheWithChildren();
+            $amend->flushCacheWithChildren();
         }
     }
 
