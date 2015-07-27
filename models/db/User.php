@@ -56,9 +56,9 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getStati()
     {
         return [
-            1  => "Nicht bestätigt",
-            0  => "Bestätigt",
-            -1 => "Gelöscht",
+            1  => 'Nicht bestätigt',
+            0  => 'Bestätigt',
+            -1 => 'Gelöscht',
         ];
     }
 

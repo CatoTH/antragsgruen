@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\UrlHelper;
+use app\models\db\ConsultationLog;
 use app\models\db\IComment;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
@@ -69,6 +70,7 @@ trait MotionActionsTrait
 
         try {
             $comment = $commentForm->saveMotionComment($motion);
+            ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT, $comment->id);
             $this->redirect(UrlHelper::createMotionCommentUrl($comment));
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
@@ -97,6 +99,7 @@ trait MotionActionsTrait
         if (!$comment->save(false)) {
             throw new DB($comment->getErrors());
         }
+        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
 
         \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
     }
@@ -113,7 +116,9 @@ trait MotionActionsTrait
         $comment->status = IComment::STATUS_VISIBLE;
         $comment->save();
 
-        $notified = array();
+        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
+
+        $notified = [];
         foreach ($motion->consultation->subscriptions as $subscription) {
             if ($subscription->comments && !in_array($subscription->userId, $notified)) {
                 /** @var User $user */
@@ -134,6 +139,8 @@ trait MotionActionsTrait
         $comment         = $this->getComment($motion, $commentId, true);
         $comment->status = IComment::STATUS_DELETED;
         $comment->save();
+
+        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
     }
 
     /**
@@ -173,6 +180,7 @@ trait MotionActionsTrait
     private function motionLike(Motion $motion)
     {
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, 'Du unterstützt diesen Antrag nun.');
+        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_LIKE, $motion->id);
     }
 
     /**
@@ -181,6 +189,7 @@ trait MotionActionsTrait
     private function motionDislike(Motion $motion)
     {
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, 'Du widersprichst diesem Antrag nun.');
+        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_DISLIKE, $motion->id);
     }
 
     /**
@@ -194,6 +203,7 @@ trait MotionActionsTrait
                 $motion->unlink('motionSupporters', $supp, true);
             }
         }
+        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_UNLIKE, $motion->id);
         \Yii::$app->session->setFlash('success', 'Du stehst diesem Antrag wieder neutral gegenüber.');
     }
 

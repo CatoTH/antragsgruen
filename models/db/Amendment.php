@@ -385,14 +385,6 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return int
-     */
-    public function getNumberOfCountableLines()
-    {
-        return 0; // @TODO
-    }
-
-    /**
      * @param bool $lineNumbers
      * @return MotionSectionParagraphAmendment[]
      */
@@ -422,7 +414,8 @@ class Amendment extends IMotion implements IRSSItem
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
         $this->motion->consultation->flushCacheWithChildren();
-        // @TODO Log changes
+
+        ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_WITHDRAW, $this->id);
     }
 
     /**
@@ -432,7 +425,7 @@ class Amendment extends IMotion implements IRSSItem
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
         $this->save(true);
         $this->onPublish();
-        // @TODO Log changes
+        ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_SCREEN, $this->id);
     }
 
     /**
@@ -441,7 +434,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
-        // @TODO Log changes
+        ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
     }
 
     /**
@@ -450,7 +443,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_DELETED;
         $this->save();
-        // @TODO Log changes
+        ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_DELETE, $this->id);
     }
 
     /**
@@ -458,6 +451,10 @@ class Amendment extends IMotion implements IRSSItem
     public function onPublish()
     {
         $this->flushCacheWithChildren();
+
+        $init = $this->getInitiators();
+        $initId = (count($init) > 0 ? $init[0]->userId : null);
+        ConsultationLog::log($this->motion->consultation, $initId, ConsultationLog::AMENDMENT_PUBLISH, $this->id);
         /*
         // @TODO Prevent duplicate Calls
         $notified = [];

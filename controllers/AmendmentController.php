@@ -7,6 +7,7 @@ use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
+use app\models\db\ConsultationLog;
 use app\models\db\EMailLog;
 use app\models\db\User;
 use app\models\exceptions\FormError;
@@ -237,6 +238,9 @@ class AmendmentController extends Base
             $form->setAttributes([$_POST, $_FILES]);
             try {
                 $form->saveAmendment($amendment);
+
+                ConsultationLog::logCurrUser($this->consultation, ConsultationLog::AMENDMENT_CHANGE, $amendment->id);
+
                 $nextUrl = [
                     'amendment/createconfirm',
                     'motionId'    => $amendment->motionId,

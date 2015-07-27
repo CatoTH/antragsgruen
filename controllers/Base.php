@@ -224,6 +224,7 @@ class Base extends Controller
     /**
      * @param $status
      * @param $message
+     * @return string
      * @throws \yii\base\ExitException
      */
     protected function showErrorpage($status, $message)
@@ -236,6 +237,7 @@ class Base extends Controller
             ]
         );
         Yii::$app->end($status);
+        return '';
     }
 
     /**

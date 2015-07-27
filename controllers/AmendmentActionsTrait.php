@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
+use app\models\db\ConsultationLog;
 use app\models\db\IComment;
 use app\models\db\Consultation;
 use app\models\db\User;
@@ -60,6 +61,8 @@ trait AmendmentActionsTrait
 
         try {
             $comment = $commentForm->saveAmendmentComment($amendment);
+            $consultation = $amendment->motion->consultation;
+            ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_COMMENT, $comment->id);
             $this->redirect(UrlHelper::createAmendmentCommentUrl($comment));
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
@@ -88,6 +91,9 @@ trait AmendmentActionsTrait
         if (!$comment->save(false)) {
             throw new DB($comment->getErrors());
         }
+
+        $consultation = $amendment->motion->consultation;
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_COMMENT_DELETE, $comment->id);
 
         \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
     }

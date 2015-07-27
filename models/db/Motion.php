@@ -435,7 +435,7 @@ class Motion extends IMotion implements IRSSItem
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
         $this->consultation->flushCacheWithChildren();
-        // @TODO Log changes
+        ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_WITHDRAW, $this->id);
     }
 
     /**
@@ -445,7 +445,7 @@ class Motion extends IMotion implements IRSSItem
         $this->status = Motion::STATUS_SUBMITTED_SCREENED;
         $this->save(true);
         $this->onPublish();
-        // @TODO Log changes
+        ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_SCREEN, $this->id);
     }
 
     /**
@@ -454,7 +454,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
-        // @TODO Log changes
+        ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_UNSCREEN, $this->id);
     }
 
     /**
@@ -463,7 +463,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = Motion::STATUS_DELETED;
         $this->save();
-        // @TODO Log changes
+        ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_DELETE, $this->id);
     }
 
     /**
@@ -473,6 +473,11 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->flushCacheWithChildren();
         // @TODO Prevent duplicate Calls
+
+        $init = $this->getInitiators();
+        $initId = (count($init) > 0 ? $init[0]->userId : null);
+        ConsultationLog::log($this->consultation, $initId, ConsultationLog::MOTION_PUBLISH, $this->id);
+
         $notified = [];
         foreach ($this->consultation->subscriptions as $sub) {
             if ($sub->motions && !in_array($sub->userId, $notified)) {

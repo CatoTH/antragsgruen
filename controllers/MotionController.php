@@ -6,6 +6,7 @@ use app\components\Mail;
 use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
+use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\EMailLog;
@@ -301,6 +302,9 @@ class MotionController extends Base
             $form->setAttributes([$_POST, $_FILES]);
             try {
                 $form->saveMotion($motion);
+
+                ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
+
                 $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';
@@ -442,11 +446,13 @@ class MotionController extends Base
         if (!$motion) {
             \Yii::$app->session->setFlash('error', 'Motion not found.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return '';
         }
 
         if (!$motion->canWithdraw()) {
             \Yii::$app->session->setFlash('error', 'Not allowed to withdraw this motion.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return '';
         }
 
         if (isset($_POST['cancel'])) {
