@@ -35,6 +35,7 @@ use yii\web\IdentityInterface;
  * @property Site[] $adminSites
  * @property ConsultationSubscription[] $subscribedConsultations
  * @property ConsultationUserPrivilege[] $consultationPrivileges
+ * @property ConsultationLog[] $logEntries
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -136,6 +137,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getEmailLogs()
     {
         return $this->hasMany(EMailLog::className(), ['userId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLogEntries()
+    {
+        return $this->hasMany(ConsultationLog::className(), ['userId' => 'id']);
     }
 
     /**

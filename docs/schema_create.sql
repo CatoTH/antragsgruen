@@ -147,6 +147,23 @@ CREATE TABLE IF NOT EXISTS `consultationAgendaItem` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `consultationLog`
+--
+
+CREATE TABLE IF NOT EXISTS `consultationLog` (
+  `id`                INT(11)     NOT NULL,
+  `userId`            INT(11)     NULL     DEFAULT NULL,
+  `consultationId`    INT(11)     NOT NULL,
+  `actionType`        SMALLINT(6) NOT NULL,
+  `actionReferenceId` INT(11)     NULL     DEFAULT NULL,
+  `actionTime`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `consultationMotionType`
 --
 
@@ -575,6 +592,14 @@ ADD KEY `parentItemId` (`parentItemId`),
 ADD KEY `motionTypeId` (`motionTypeId`);
 
 --
+-- Indexes for table `consultationLog`
+--
+ALTER TABLE `consultationLog`
+ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `consultationId` (`consultationId`, `actionTime`),
+ADD KEY `userId` (`userId`);
+
+--
 -- Indexes for table `consultationMotionType`
 --
 ALTER TABLE `consultationMotionType`
@@ -758,6 +783,11 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `consultationAgendaItem`
 MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `consultationLog`
+--
+ALTER TABLE `consultationLog`
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `consultationMotionType`
 --
 ALTER TABLE `consultationMotionType`
@@ -893,6 +923,13 @@ ADD CONSTRAINT `consultationAgendaItem_ibfk_2` FOREIGN KEY (`parentItemId`) REFE
 ADD CONSTRAINT `consultationAgendaItem_ibfk_3` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationLog`
+--
+ALTER TABLE `consultationLog`
+ADD CONSTRAINT `consultationLog_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+ADD CONSTRAINT `consultationLog_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 --
 -- Constraints for table `consultationMotionType`
