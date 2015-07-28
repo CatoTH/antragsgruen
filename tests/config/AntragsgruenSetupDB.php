@@ -17,10 +17,12 @@ trait AntragsgruenSetupDB
         $this->database = Yii::$app->db;
 
         $init                  = file_get_contents(
-            Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_create.sql'
+            Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'create.sql'
         );
         $this->database_delete = file_get_contents(
-            Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_delete.sql'
+            Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'delete.sql'
         );
 
         $this->deleteDB();

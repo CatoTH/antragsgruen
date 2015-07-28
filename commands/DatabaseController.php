@@ -14,11 +14,12 @@ class DatabaseController extends Controller
      */
     public function actionDestroy()
     {
-        if ($this->confirm("Do you really want to DESTROY and reinitialize the database?")) {
-            $delete_string = file_get_contents(
-                \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_delete.sql'
+        if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
+            $deleteString = file_get_contents(
+                \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+                'db' . DIRECTORY_SEPARATOR . 'delete.sql'
             );
-            $command       = \Yii::$app->db->createCommand($delete_string);
+            $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
         }
     }
@@ -28,10 +29,18 @@ class DatabaseController extends Controller
      */
     public function actionCreate()
     {
-        $delete_string = file_get_contents(
-            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_create.sql'
+        $createString = file_get_contents(
+            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'create.sql'
         );
-        $command       = \Yii::$app->db->createCommand($delete_string);
+        $command      = \Yii::$app->db->createCommand($createString);
+        $command->execute();
+
+        $createString = file_get_contents(
+            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'data.sql'
+        );
+        $command      = \Yii::$app->db->createCommand($createString);
         $command->execute();
     }
 
@@ -53,11 +62,11 @@ class DatabaseController extends Controller
      */
     public function actionCreateTest()
     {
-        if ($this->confirm("Do you really want to DESTROY and reinitialize the database?")) {
-            $delete_string = file_get_contents(
+        if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
+            $deleteString = file_get_contents(
                 \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_delete.sql'
             );
-            $command       = \Yii::$app->db->createCommand($delete_string);
+            $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
             unset($command);
 
