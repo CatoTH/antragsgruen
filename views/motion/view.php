@@ -448,6 +448,11 @@ if ($commentWholeMotions) {
 
     if ($motion->motionType->getCommentPolicy()->checkCurrUser()) {
         LayoutHelper::showCommentForm($form, $motion->consultation, -1, -1);
+    } elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+        echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
+        <span class="glyphicon glyphicon-log-in"></span>
+        Logge dich ein, um kommentieren zu können.
+        </div>';
     }
     echo '</section>';
 }

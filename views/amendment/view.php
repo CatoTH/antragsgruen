@@ -8,6 +8,7 @@ use app\models\db\AmendmentComment;
 use app\models\db\AmendmentSection;
 use app\models\db\User;
 use app\models\forms\CommentForm;
+use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
@@ -173,8 +174,7 @@ if ($amendment->changeExplanation != '') {
     echo '</section>';
 }
 
-
-if ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
+if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
     $form    = $commentForm;
@@ -196,6 +196,11 @@ if ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
 
     if ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
         MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
+    } elseif ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+        echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
+        <span class="glyphicon glyphicon-log-in"></span>
+        Logge dich ein, um kommentieren zu können.
+        </div>';
     }
     echo '</section>';
 }

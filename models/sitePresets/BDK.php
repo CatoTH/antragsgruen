@@ -60,7 +60,7 @@ class BDK implements ISitePreset
         $settings->lineLength          = 95;
         $settings->screeningMotions    = true;
         $settings->screeningAmendments = true;
-        $settings->startLayoutType = ConsultationSettings::START_LAYOUT_AGENDA_LONG;
+        $settings->startLayoutType     = ConsultationSettings::START_LAYOUT_AGENDA_LONG;
         $consultation->setSettings($settings);
     }
 
@@ -70,8 +70,9 @@ class BDK implements ISitePreset
      */
     public function setSiteSettings(Site $site)
     {
-        $settings             = $site->getSettings();
-        $settings->siteLayout = 'layout-gruenes-ci';
+        $settings               = $site->getSettings();
+        $settings->siteLayout   = 'layout-gruenes-ci';
+        $settings->loginMethods = [\app\models\settings\Site::LOGIN_WURZELWERK];
         $site->setSettings($settings);
     }
 
