@@ -32,4 +32,17 @@ $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATI
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->wait(1);
+
+$I->see('Es muss ein Beschlussdatum angegeben werden', '.bootbox');
+$I->click('.bootbox .btn-primary');
+
+$I->wait(1);
+
+
+$I->fillField('#resolutionDate', '01.01.2000');
+$I->submitForm('#motionEditForm', [], 'save');
+
+$I->wait(1);
 $I->dontSee('Es müssen mindestens 19 UnterstützerInnen angegeben werden', '.bootbox');
+$I->dontSee('Not enough supporters.');
+$I->see(mb_strtoupper('Antrag bestätigen'), 'h1');

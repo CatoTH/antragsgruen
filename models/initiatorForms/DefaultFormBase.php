@@ -133,7 +133,8 @@ abstract class DefaultFormBase extends IInitiatorForm
         if (!isset($initiator['personType']) || !in_array($initiator['personType'], $types)) {
             $errors[] = 'Invalid person type.';
         }
-        if ($initiator['personType'] == ISupporter::PERSON_ORGANIZATION) {
+        $personType = $initiator['personType'];
+        if ($personType == ISupporter::PERSON_ORGANIZATION) {
             if (empty($initiator['resolutionDate'])) {
                 $errors[] = 'No resolution date entered.';
             }
@@ -141,7 +142,8 @@ abstract class DefaultFormBase extends IInitiatorForm
 
         if ($this->hasSupporters()) {
             $supporters = $this->parseSupporters(new MotionSupporter());
-            if ($this->hasSupporters() && count($supporters) < $this->getMinNumberOfSupporters()) {
+            $num        = count($supporters);
+            if ($personType != ISupporter::PERSON_ORGANIZATION && $num < $this->getMinNumberOfSupporters()) {
                 $errors[] = 'Not enough supporters.';
             }
         }

@@ -424,10 +424,19 @@
                 });
                 if (found < $supporterData.data('min-supporters')) {
                     ev.preventDefault();
-                    bootbox.alert('Es müssen mindestens %num% UnterstützerInnen angegeben werden'.replace(/%num%/, $supporterData.data('min-supporters')));
+                    bootbox.alert('Es müssen mindestens %num% UnterstützerInnen angegeben werden.'.replace(/%num%/, $supporterData.data('min-supporters')));
                 }
             });
         }
+
+        $('#motionEditForm').submit(function (ev) {
+            if ($('#personTypeOrga').prop('checked')) {
+                if ($('#resolutionDate').val() == '') {
+                    ev.preventDefault();
+                    bootbox.alert('Es muss ein Beschlussdatum angegeben werden.');
+                }
+            }
+        });
     };
 
     var loginForm = function () {
