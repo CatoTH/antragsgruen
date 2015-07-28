@@ -102,7 +102,11 @@ class UserController extends Base
                 $this->loginUser($client->getOrCreateUser());
                 $this->redirect($backUrl);
             } else {
-                \yii::$app->session->setFlash('error', 'An unknown error occurred');
+                $msg = 'Es trat ein unbekannter Fehler auf.' . "\n" .
+                    'Falls du versucht hast, dich mit deinen Wurzelwerk-Zugangsdaten einzuloggen, ' .
+                    'versuch es einfach noch ein zweites Mal - möglicherweise war das nur ' .
+                    'ein temporärer Fehler seitens des Wurzelwerks.';
+                \yii::$app->session->setFlash('error', $msg);
                 return $this->actionLogin($backUrl);
             }
             return '';

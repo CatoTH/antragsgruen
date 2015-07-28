@@ -58,8 +58,15 @@ $html .= '<div class="nav-list"><div class="nav-header">Suche</div>
 $html .= Html::endForm();
 $layout->menusHtml[] = $html;
 
-
-if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda') {
+$showCreate = true;
+if ($consultation->getSettings()->getStartLayoutView() == 'index_layout_agenda') {
+    foreach ($consultation->agendaItems as $item) {
+        if ($item->motionType) {
+            $showCreate = false;
+        }
+    }
+}
+if ($showCreate) {
     $motionTypes = $consultation->motionTypes;
     $motionLink  = $consultation->site->getBehaviorClass()->getSubmitMotionStr();
     if ($motionLink != '') {
