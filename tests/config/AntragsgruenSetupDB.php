@@ -20,6 +20,10 @@ trait AntragsgruenSetupDB
             Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'create.sql'
         );
+        $data                  = file_get_contents(
+            Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'data.sql'
+        );
         $this->database_delete = file_get_contents(
             Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'delete.sql'
@@ -28,6 +32,8 @@ trait AntragsgruenSetupDB
         $this->deleteDB();
 
         $command = $this->database->createCommand($init);
+        $command->execute();
+        $command = $this->database->createCommand($data);
         $command->execute();
     }
 

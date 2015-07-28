@@ -59,7 +59,11 @@ $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#amendmentEditForm', [], 'save');
 
-$I->see('No resolution date entered');
+$I->wait(1);
+$I->see('Es muss ein Beschlussdatum angegeben werden', '.bootbox');
+$I->click('.bootbox .btn-primary');
+$I->wait(1);
+
 
 $I->seeInField('#sections_1', 'New title');
 $I->see('Saupreiß', '#section_holder_2');

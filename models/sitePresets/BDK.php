@@ -82,6 +82,8 @@ class BDK implements ISitePreset
      */
     public function doCreateMotionType(Consultation $consultation)
     {
+        var_dump($consultation);
+
         $type                        = new ConsultationMotionType();
         $type->consultationId        = $consultation->id;
         $type->titleSingular         = 'Antrag';

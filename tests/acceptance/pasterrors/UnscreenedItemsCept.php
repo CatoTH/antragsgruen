@@ -12,10 +12,6 @@ $I->wantTo('create a unscreened motion');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
 
-$I->gotoStdAdminPage(true, 'bdk', 'bdk');
-
-
-
 $I->click('#sidebar .createMotion');
 
 $title = 'Nicht freigeschalteter Testantrag';

@@ -120,7 +120,11 @@ if ($params->hasWurzelwerk) {
     echo '<h2 class="green">Wurzelwerk-Login</h2>
     <div class="content row">';
 
-    $backUrl = UrlHelper::createUrl('consultation/index');
+    if ($controller->consultation) {
+        $backUrl = UrlHelper::createUrl('consultation/index');
+    } else {
+        $backUrl = UrlHelper::createUrl('manager/index');
+    }
     $action  = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
     echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'wurzelwerkLoginForm']);
 

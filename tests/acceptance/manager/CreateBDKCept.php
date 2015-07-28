@@ -47,17 +47,10 @@ $I->dontSee('Hallo auf Antragsgrün');
 $I->dontSee('BDK 2', 'h1');
 $I->see('Wartungsmodus', 'h1');
 
-$I->loginAsStdUser();
+$I->loginAsWurzelwerkUser();
 $I->see('Wartungsmodus', 'h1');
 $I->click('.homeLinkLogo');
 $I->see('Wartungsmodus', 'h1');
 $I->logout();
 
-
-$I->wantTo('check some other settings');
-$I->loginAsStdAdmin();
-$I->click('.homeLinkLogo');
-$I->see('Hallo auf Antragsgrün');
-$I->see('BDK 2', 'h1');
-$I->dontSee('Wartungsmodus', 'h1');
 $I->seeInPageSource('layout-gruenes-ci.css');
