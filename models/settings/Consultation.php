@@ -101,7 +101,7 @@ class Consultation
     /**
      * @return string[]
      */
-    public function getStartLayouts()
+    public static function getStartLayouts()
     {
         return [
             static::START_LAYOUT_STD         => 'Standard',

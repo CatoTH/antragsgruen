@@ -64,7 +64,8 @@ class DatabaseController extends Controller
     {
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
             $deleteString = file_get_contents(
-                \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'docs' . DIRECTORY_SEPARATOR . 'schema_delete.sql'
+                \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+                'db' . DIRECTORY_SEPARATOR . 'delete.sql'
             );
             $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();

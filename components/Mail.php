@@ -181,8 +181,14 @@ class Mail
         }
 
         // @TODO: Reply-To
-        $message    = static::createMessage($mailType, $subject, $sendText, '', $fromName, $fromEmail, '', $messageId);
-        $sendStatus = static::send($message, $toEmail);
+
+        try {
+            $message = static::createMessage($mailType, $subject, $sendText, '', $fromName, $fromEmail, '', $messageId);
+            $status  = static::send($message, $toEmail);
+        } catch (\Exception $e) {
+            $status = EMailLog::STATUS_DELIVERY_ERROR;
+            \yii::$app->session->setFlash('error', 'Eine E-Mail konnte nicht geschickt werden: ' . $e->getMessage());
+        }
 
         $obj = new \app\models\db\EmailLog();
         if ($toPersonId) {
@@ -197,7 +203,7 @@ class Mail
         $obj->subject   = $subject;
         $obj->text      = $text;
         $obj->dateSent  = date('Y-m-d H:i:s');
-        $obj->status    = $sendStatus;
+        $obj->status    = $status;
         $obj->messageId = $messageId;
         $obj->save();
     }

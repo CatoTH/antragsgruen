@@ -175,4 +175,19 @@ class ConsultationAgendaItem extends ActiveRecord
         );
         return $items;
     }
+
+    /**
+     * @return Motion[]
+     */
+    public function getVisibleMotions()
+    {
+        $stati  = $this->consultation->getInvisibleMotionStati();
+        $return = [];
+        foreach ($this->motions as $motion) {
+            if (!in_array($motion->status, $stati)) {
+                $return[] = $motion;
+            }
+        }
+        return $return;
+    }
 }

@@ -412,7 +412,7 @@
         });
 
         if ($supporterData.length > 0 && $supporterData.data('min-supporters') > 0) {
-            $('#motionEditForm').submit(function (ev) {
+            $('#motionEditForm, #amendmentEditForm').submit(function (ev) {
                 if ($('#personTypeOrga').prop('checked')) {
                     return;
                 }
@@ -429,7 +429,7 @@
             });
         }
 
-        $('#motionEditForm').submit(function (ev) {
+        $('#motionEditForm, #amendmentEditForm').submit(function (ev) {
             if ($('#personTypeOrga').prop('checked')) {
                 if ($('#resolutionDate').val() == '') {
                     ev.preventDefault();
