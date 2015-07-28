@@ -273,7 +273,7 @@ class AmendmentController extends Base
     public function actionCreate($motionId, $adoptInitiators = 0)
     {
         $motion = $this->consultation->getMotion($motionId);
-        if (!$motion || in_array($motion->status, $this->consultation->getInvisibleMotionStati())) {
+        if (!$motion) {
             throw new NotFound('Motion not found');
         }
 
