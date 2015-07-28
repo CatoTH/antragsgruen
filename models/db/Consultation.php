@@ -38,10 +38,10 @@ use yii\db\ActiveRecord;
  * @property ConsultationAgendaItem[] $agendaItems
  * @property ConsultationUserPrivilege[] $userPrivileges
  * @property ConsultationLog[] $logEntries
+ * @property UserNotification[] $userNotifications
  */
 class Consultation extends ActiveRecord
 {
-
     /**
      * @return string
      */
@@ -196,6 +196,14 @@ class Consultation extends ActiveRecord
     public function getMotionTypes()
     {
         return $this->hasMany(ConsultationMotionType::className(), ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserNotifications()
+    {
+        return $this->hasMany(UserNotification::className(), ['consultationId' => 'id']);
     }
 
     /**

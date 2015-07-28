@@ -6,7 +6,7 @@ $I->populateDBData1();
 
 $I->gotoConsultationHome()->gotoMotionView(2);
 
-$I->wantTo('check that Ä2 is working correctly');
+$I->wantTo('check that AE2 is working correctly');
 $I->dontSee('Neuer Punkt');
 $I->see('Auffi Gamsbart nimma');
 $I->executeJS('$("#section_2_1").find("ul.bookmarks .amendment3").mouseover()');

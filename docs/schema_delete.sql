@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS `consultation`;
 DROP TABLE IF EXISTS `motion`;
 DROP TABLE IF EXISTS `amendment`;
 DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `userNotification`;
 DROP TABLE IF EXISTS `amendmentComment`;
 DROP TABLE IF EXISTS `amendmentSupporter`;
 DROP TABLE IF EXISTS `amendmentSection`;
@@ -14,7 +15,7 @@ DROP TABLE IF EXISTS `motionSubscription`;
 DROP TABLE IF EXISTS `motionComment`;
 DROP TABLE IF EXISTS `motionCommentSupporter`;
 DROP TABLE IF EXISTS `motionSupporter`;
-DROP TABLE IF EXISTS `cache`;
+DROP TABLE IF EXISTS `motionSection`;
 DROP TABLE IF EXISTS `consultationText`;
 DROP TABLE IF EXISTS `consultationAdmin`;
 DROP TABLE IF EXISTS `consultationSubscription`;
@@ -30,9 +31,8 @@ DROP TABLE IF EXISTS `motionTag`;
 DROP TABLE IF EXISTS `consultationSettingsMotionSection`;
 DROP TABLE IF EXISTS `consultationMotionType`;
 DROP TABLE IF EXISTS `consultationSettingsTag`;
+DROP TABLE IF EXISTS `consultationLog`;
 DROP TABLE IF EXISTS `texTemplate`;
-
-DROP TABLE IF EXISTS `motionSection`;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

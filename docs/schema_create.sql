@@ -152,10 +152,10 @@ CREATE TABLE IF NOT EXISTS `consultationAgendaItem` (
 
 CREATE TABLE IF NOT EXISTS `consultationLog` (
   `id`                INT(11)     NOT NULL,
-  `userId`            INT(11)     NULL     DEFAULT NULL,
+  `userId`            INT(11)     NULL,
   `consultationId`    INT(11)     NOT NULL,
   `actionType`        SMALLINT(6) NOT NULL,
-  `actionReferenceId` INT(11)     NULL     DEFAULT NULL,
+  `actionReferenceId` INT(11)     NOT NULL,
   `actionTime`        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
   ENGINE = InnoDB
@@ -532,6 +532,23 @@ CREATE TABLE IF NOT EXISTS `user` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userNotification`
+--
+
+CREATE TABLE IF NOT EXISTS `userNotification` (
+  `id`                      INT(11)     NOT NULL,
+  `userId`                  INT(11)     NOT NULL,
+  `consultationId`          INT(11) DEFAULT NULL,
+  `notificationType`        SMALLINT(6) NOT NULL,
+  `notificationReferenceId` INT(11) DEFAULT NULL,
+  `lastNotification`        TIMESTAMP NULL DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
 --
 -- Indexes for dumped tables
 --
@@ -596,8 +613,8 @@ ADD KEY `motionTypeId` (`motionTypeId`);
 --
 ALTER TABLE `consultationLog`
 ADD PRIMARY KEY (`id`),
-ADD UNIQUE KEY `consultationId` (`consultationId`, `actionTime`),
-ADD KEY `userId` (`userId`);
+ADD KEY `userId` (`userId`),
+ADD KEY `consultationId` (`consultationId`, `actionTime`) USING BTREE;
 
 --
 -- Indexes for table `consultationMotionType`
@@ -754,6 +771,14 @@ ADD UNIQUE KEY `auth_UNIQUE` (`auth`),
 ADD KEY `fk_user_namespaceIdx` (`siteNamespaceId`);
 
 --
+-- Indexes for table `userNotification`
+--
+ALTER TABLE `userNotification`
+ADD PRIMARY KEY (`id`),
+ADD KEY `userId` (`userId`),
+ADD KEY `consultationId` (`consultationId`, `notificationType`, `notificationReferenceId`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -851,6 +876,11 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `userNotification`
+--
+ALTER TABLE `userNotification`
 MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
@@ -1106,6 +1136,14 @@ ALTER TABLE `user`
 ADD CONSTRAINT `fk_user_namespace` FOREIGN KEY (`siteNamespaceId`) REFERENCES `site` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `userNotification`
+--
+ALTER TABLE `userNotification`
+ADD CONSTRAINT `userNotification_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+ADD CONSTRAINT `userNotification_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
+
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;

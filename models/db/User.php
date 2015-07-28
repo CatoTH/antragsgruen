@@ -36,6 +36,7 @@ use yii\web\IdentityInterface;
  * @property ConsultationSubscription[] $subscribedConsultations
  * @property ConsultationUserPrivilege[] $consultationPrivileges
  * @property ConsultationLog[] $logEntries
+ * @property UserNotification[] $notifications
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -161,6 +162,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getConsultationPrivileges()
     {
         return $this->hasMany(ConsultationUserPrivilege::className(), ['userId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNotifications()
+    {
+        return $this->hasMany(UserNotification::className(), ['userId' => 'id']);
     }
 
     /**
