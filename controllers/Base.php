@@ -128,7 +128,7 @@ class Base extends Controller
     public function currentUserHasPrivilege($privilege)
     {
         if (!$this->consultation) {
-            throw new Internal("No consultation set");
+            throw new Internal('No consultation set');
         }
         $user = User::getCurrentUser();
         if (!$user) {
@@ -305,21 +305,24 @@ class Base extends Controller
      * @param null|Amendment $checkAmendment
      * @return null|Consultation
      */
-    public function loadConsultation($subdomain, $consultationId = "", $checkMotion = null, $checkAmendment = null)
+    public function loadConsultation($subdomain, $consultationId = '', $checkMotion = null, $checkAmendment = null)
     {
         if (is_null($this->site)) {
-            $this->site = Site::findOne(["subdomain" => $subdomain]);
+            $this->site = Site::findOne(['subdomain' => $subdomain]);
         }
         if (is_null($this->site)) {
             $this->consultationNotFound();
         }
 
-        if ($consultationId == "") {
+        if ($consultationId == '') {
             $consultationId = $this->site->currentConsultation->urlPath;
         }
 
         if (is_null($this->consultation)) {
-            $this->consultation = Consultation::findOne(["urlPath" => $consultationId, "siteId" => $this->site->id]);
+            $this->consultation = Consultation::findOne(['urlPath' => $consultationId, 'siteId' => $this->site->id]);
+        }
+        if (is_null($this->consultation)) {
+            $this->consultationNotFound();
         }
 
         UrlHelper::setCurrentConsultation($this->consultation);

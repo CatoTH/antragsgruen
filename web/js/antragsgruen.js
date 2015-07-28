@@ -413,6 +413,9 @@
 
         if ($supporterData.length > 0 && $supporterData.data('min-supporters') > 0) {
             $('#motionEditForm').submit(function (ev) {
+                if ($('#personTypeOrga').prop('checked')) {
+                    return;
+                }
                 var found = 0;
                 $supporterData.find('.supporterRow').each(function () {
                     if ($(this).find('input.name').val().trim() != '') {
