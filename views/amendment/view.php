@@ -174,6 +174,31 @@ if ($amendment->changeExplanation != '') {
     echo '</section>';
 }
 
+$currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
+$supporters = $amendment->getSupporters();
+if (count($supporters) > 0) {
+    echo '<section class="supporters"><h2 class="green">Unterstützer_Innen</h2>
+    <div class="content">';
+
+    if (count($supporters) > 0) {
+        echo '<ul>';
+        foreach ($supporters as $supp) {
+            echo '<li>';
+            if ($supp->id == $currUserId) {
+                echo '<span class="label label-info">Du!</span> ';
+            }
+            echo Html::encode($supp->getNameWithOrga());
+            echo '</li>';
+        }
+        echo '</ul>';
+    } else {
+        echo '<em>keine</em><br>';
+    }
+    echo "<br>";
+    echo '</div></section>';
+}
+
+
 if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 

@@ -197,6 +197,3 @@ $I->see('Mein Name', '.motionData');
 $I->see('Person 1', '.supporters');
 $I->see('Organization 1', '.supporters');
 $I->see('Person 2', '.supporters');
-
-
-// @TODO Test Amendments

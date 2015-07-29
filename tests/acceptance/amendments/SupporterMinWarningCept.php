@@ -11,8 +11,8 @@ $I->loginAsStdAdmin();
 $I->click('.motionLink4');
 $I->click('.sidebarActions .amendmentCreate a');
 
-$I->fillField(['name' => 'Initiator[name]'], 'Mein Name');
-$I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+$I->fillField('#initiatorName', 'Mein Name');
+$I->fillField('#initiatorEmail', 'test@example.org');
 $I->submitForm('#amendmentEditForm', [], 'save');
 
 $I->seeBootboxDialog('Es müssen mindestens 19 UnterstützerInnen angegeben werden');

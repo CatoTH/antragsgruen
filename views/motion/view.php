@@ -298,7 +298,7 @@ foreach ($motion->getInitiators() as $supp) {
 }
 
 if (count($supporters) > 0) {
-    echo '<section class="supporters"><h2 class="green">UnterstützerInnen</h2>
+    echo '<section class="supporters"><h2 class="green">Unterstützer_Innen</h2>
     <div class="content">';
 
     if (count($supporters) > 0) {
@@ -319,7 +319,7 @@ if (count($supporters) > 0) {
     echo '</div></section>';
 }
 
-if ($enries || $canSupport || $cantSupportMsg != "") {
+if ($enries || $canSupport || $cantSupportMsg != '') {
     echo '<section class="likes"><h2 class="green">Zustimmung</h2>
     <div class="content">';
 
