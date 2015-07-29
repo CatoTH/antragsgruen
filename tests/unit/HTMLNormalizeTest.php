@@ -12,7 +12,7 @@ class HTMLNormalizeTest extends TestBase
 
     public function testCreateParagraphs()
     {
-        $orig     = "<p>Test<br><span style='color: red;'>Test2</span><br><span></span>";
+        $orig   = "<p>Test<br><span style='color: red;'>Test2</span><br><span></span>";
         $expect = "<p>Test<br>\nTest2<br>\n";
 
         $orig .= "<strong onClick=\"alert('Alarm!');\">Test3</strong><br><br>\r\r";
@@ -36,7 +36,7 @@ class HTMLNormalizeTest extends TestBase
 
     public function testAllowUnderlines()
     {
-        $orig     = "<span class='underline'>Underlined</span> Normal";
+        $orig   = "<span class='underline'>Underlined</span> Normal";
         $expect = '<span class="underline">Underlined</span> Normal';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
@@ -45,7 +45,7 @@ class HTMLNormalizeTest extends TestBase
 
     public function testAllowStrike()
     {
-        $orig     = "<span class='strike'>Strike</span> Normal";
+        $orig   = "<span class='strike'>Strike</span> Normal";
         $expect = '<span class="strike">Strike</span> Normal';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
@@ -54,13 +54,13 @@ class HTMLNormalizeTest extends TestBase
 
     public function testAllowSubscript()
     {
-        $orig     = "<span class='subscript'>Subscript</span> Normal";
+        $orig   = "<span class='subscript'>Subscript</span> Normal";
         $expect = '<span class="subscript">Subscript</span> Normal';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
 
-        $orig     = "<sub>Subscript</sub> Normal";
+        $orig   = "<sub>Subscript</sub> Normal";
         $expect = '<sub>Subscript</sub> Normal';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
@@ -69,13 +69,13 @@ class HTMLNormalizeTest extends TestBase
 
     public function testSuperscript()
     {
-        $orig     = "<span class='superscript'>Superscript</span> Normal";
+        $orig   = "<span class='superscript'>Superscript</span> Normal";
         $expect = '<span class="superscript">Superscript</span> Normal';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
 
-        $orig     = "<sup>Superscript</sup> Normal";
+        $orig   = "<sup>Superscript</sup> Normal";
         $expect = '<sup>Superscript</sup> Normal';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
@@ -84,16 +84,24 @@ class HTMLNormalizeTest extends TestBase
 
     public function testStripUnknown()
     {
-        $orig     = "<span class='unknown'>Strike</span> Normal";
+        $orig   = "<span class='unknown'>Strike</span> Normal";
         $expect = 'Strike Normal';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
 
 
-        $orig     = "<span class='strike unknown'>Strike</span> Normal";
+        $orig   = "<span class='strike unknown'>Strike</span> Normal";
         $expect = '<span class="strike">Strike</span> Normal';
 
+        $out = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testStripBRsAtBeginningAndEnd()
+    {
+        $orig = "<p>Test1</p>\n<p><br>\nTest2<br></p>";
+        $expect = "<p>Test1</p>\n<p>Test2</p>";
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }
