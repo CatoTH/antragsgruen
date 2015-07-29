@@ -112,7 +112,7 @@ foreach ($entries as $entry) {
         echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>A</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
-        echo Html::encode($entry->titlePrefix) . '</a></td>';
+        echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
         echo '<td class="titleCol">' . Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl) . '</td>';
         echo '<td>' . Html::encode($motionStati[$entry->status]) . '</td>';
         $initiators = [];
@@ -166,7 +166,7 @@ foreach ($entries as $entry) {
         echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>ÄA</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
-        echo Html::encode($entry->titlePrefix) . '</a></td>';
+        echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
         echo '<td class="titleCol">' .
             Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $editUrl) . '</td>';
         echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
