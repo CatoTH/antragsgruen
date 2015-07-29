@@ -20,7 +20,7 @@ class LayoutHelper
         $content->template    = $amendment->motion->motionType->texTemplate->texContent;
         $content->title       = $amendment->motion->title;
         $content->titlePrefix = $amendment->getShortTitle();
-        $content->titleLong   = $amendment->getTitle();
+        $content->titleLong   = str_replace('%PREFIX%', $amendment->motion->titlePrefix, 'Änderungsantrag zu %PREFIX%');
 
         $intro                    = explode("\n", $amendment->motion->consultation->getSettings()->pdfIntroduction);
         $content->introductionBig = $intro[0];
@@ -46,7 +46,7 @@ class LayoutHelper
 
         $content->text = '';
 
-        foreach ($amendment->getSortedSections(false) as $section) {
+        foreach ($amendment->getSortedSections(true) as $section) {
             $content->text .= $section->getSectionType()->getAmendmentTeX();
         }
 
