@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `amendment` (
   `changeText`            LONGTEXT    NOT NULL,
   `changeExplanation`     LONGTEXT    NOT NULL,
   `changeExplanationHtml` TINYINT(4)  NOT NULL DEFAULT '0',
-  `cache`                 TEXT        NOT NULL,
+  `cache`                 LONGTEXT    NOT NULL,
   `dateCreation`          TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dateResolution`        TIMESTAMP   NULL     DEFAULT NULL,
   `status`                TINYINT(4)  NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `amendmentSection` (
   `sectionId`   INT(11)  NOT NULL,
   `data`        LONGTEXT NOT NULL,
   `dataRaw`     LONGTEXT NOT NULL,
-  `cache`       TEXT     NOT NULL,
+  `cache`       LONGTEXT NOT NULL,
   `metadata`    TEXT
 )
   ENGINE = InnoDB
@@ -352,7 +352,7 @@ CREATE TABLE IF NOT EXISTS `motion` (
   `status`         TINYINT(4)  NOT NULL,
   `statusString`   VARCHAR(55)          DEFAULT NULL,
   `noteInternal`   TEXT,
-  `cache`          TEXT        NOT NULL,
+  `cache`          LONGTEXT    NOT NULL,
   `textFixed`      TINYINT(4)           DEFAULT '0'
 )
   ENGINE = InnoDB
@@ -406,7 +406,7 @@ CREATE TABLE IF NOT EXISTS `motionSection` (
   `motionId`  INT(11)  NOT NULL,
   `sectionId` INT(11)  NOT NULL,
   `data`      LONGTEXT NOT NULL,
-  `cache`     TEXT     NOT NULL,
+  `cache`     LONGTEXT NOT NULL,
   `metadata`  TEXT
 )
   ENGINE = InnoDB
@@ -541,10 +541,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 CREATE TABLE IF NOT EXISTS `userNotification` (
   `id`                      INT(11)     NOT NULL,
   `userId`                  INT(11)     NOT NULL,
-  `consultationId`          INT(11) DEFAULT NULL,
+  `consultationId`          INT(11)          DEFAULT NULL,
   `notificationType`        SMALLINT(6) NOT NULL,
-  `notificationReferenceId` INT(11) DEFAULT NULL,
-  `lastNotification`        TIMESTAMP NULL DEFAULT NULL
+  `notificationReferenceId` INT(11)          DEFAULT NULL,
+  `lastNotification`        TIMESTAMP   NULL DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

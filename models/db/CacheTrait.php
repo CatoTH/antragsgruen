@@ -20,7 +20,7 @@ trait CacheTrait
             if ($this->cache === null || $this->cache == '') {
                 $this->cacheObj = [];
             } else {
-                $this->cacheObj = json_decode($this->cache, true);
+                $this->cacheObj = unserialize($this->cache);
             }
         }
         return $this->cacheObj;
@@ -61,7 +61,7 @@ trait CacheTrait
         $data = $this->getCacheObj();
         $data[$key] = $value;
         $this->cacheObj = $data;
-        $this->cache = json_encode($this->cacheObj);
+        $this->cache = serialize($this->cacheObj);
         if ($save) {
             $this->save();
         }

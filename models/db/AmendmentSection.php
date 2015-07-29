@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\diff\Diff;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
@@ -109,5 +110,23 @@ class AmendmentSection extends IMotionSection
             $first += $section->getOriginalMotionSection()->getNumberOfCountableLines();
         }
         throw new Internal('Did not find myself');
+    }
+
+    /**
+     * @param array $origParagraphs
+     * @return MotionSectionParagraphAmendment[]
+     */
+    public function diffToOrigParagraphs($origParagraphs)
+    {
+        $cached = $this->getCacheItem('diffToOrigParagraphs');
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $diff         = new Diff();
+        $amParagraphs = $diff->computeAmendmentParagraphDiff($origParagraphs, $this);
+
+        $this->setCacheItem('diffToOrigParagraphs', $amParagraphs);
+        return $amParagraphs;
     }
 }

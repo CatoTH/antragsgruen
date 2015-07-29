@@ -2,7 +2,6 @@
 
 namespace app\models\db;
 
-use app\components\diff\Diff;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\sectionTypes\ISectionType;
@@ -75,10 +74,17 @@ class MotionSection extends IMotionSection
      */
     public function getTextParagraphs()
     {
+        $cached = $this->getCacheItem('getTextParagraphs');
+        if ($cached !== null) {
+            return $cached;
+        }
+
         if ($this->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
-        return HTMLTools::sectionSimpleHTML($this->data);
+        $obj = HTMLTools::sectionSimpleHTML($this->data);
+        $this->setCacheItem('getTextParagraphs', $obj);
+        return $obj;
     }
 
     /**
@@ -139,8 +145,7 @@ class MotionSection extends IMotionSection
                 if (!$amSec) {
                     continue;
                 }
-                $diff         = new Diff();
-                $amParagraphs = $diff->computeAmendmentParagraphDiff($paras, $amSec);
+                $amParagraphs = $amSec->diffToOrigParagraphs($paras);
                 foreach ($amParagraphs as $amParagraph) {
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
                 }
