@@ -7,6 +7,7 @@ use app\components\latex\Exporter;
 use app\components\LineSplitter;
 use app\models\db\Amendment;
 use app\models\sectionTypes\TextSimple;
+use yii\helpers\Html;
 
 class LayoutHelper
 {
@@ -58,7 +59,14 @@ class LayoutHelper
 
         $supporters = $amendment->getSupporters();
         if (count($supporters) > 0) {
-
+            $title = Exporter::encodePlainString('UnterstützerInnen');
+            $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+            $supps = [];
+            foreach ($supporters as $supp) {
+                $supps[] = $supp->getNameWithOrga();
+            }
+            $suppStr = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
+            $content->text .= Exporter::encodeHTMLString($suppStr);
         }
 
         return $content;

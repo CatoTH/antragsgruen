@@ -248,6 +248,18 @@ class LayoutHelper
             $content->text .= $section->getSectionType()->getMotionTeX();
         }
 
+        $supporters = $motion->getSupporters();
+        if (count($supporters) > 0) {
+            $title = Exporter::encodePlainString('UnterstützerInnen');
+            $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+            $supps = [];
+            foreach ($supporters as $supp) {
+                $supps[] = $supp->getNameWithOrga();
+            }
+            $suppStr = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
+            $content->text .= Exporter::encodeHTMLString($suppStr);
+        }
+
         return $content;
     }
 }
