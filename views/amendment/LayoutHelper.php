@@ -19,7 +19,7 @@ class LayoutHelper
         $content              = new Content();
         $content->template    = $amendment->motion->motionType->texTemplate->texContent;
         $content->title       = $amendment->motion->title;
-        $content->titlePrefix = $amendment->titlePrefix . ' zu ' . $amendment->motion->titlePrefix;
+        $content->titlePrefix = $amendment->getShortTitle();
         $content->titleLong   = $amendment->getTitle();
 
         $intro                    = explode("\n", $amendment->motion->consultation->getSettings()->pdfIntroduction);

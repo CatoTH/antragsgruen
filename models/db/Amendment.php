@@ -97,11 +97,16 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getTitle()
     {
+        $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->motion->titlePrefix) === false);
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->titlePrefix . ' zu ' . $this->motion->title;
         } else {
             if ($this->motion->titlePrefix != '') {
-                return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix . ': ' . $this->motion->title;
+                if ($showMotionPrefix) {
+                    return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix . ': ' . $this->motion->title;
+                } else {
+                    return $this->titlePrefix . ': ' . $this->motion->title;
+                }
             } else {
                 return $this->titlePrefix . ' zu ' . $this->motion->title;
             }
@@ -113,11 +118,16 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getShortTitle()
     {
+        $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->motion->titlePrefix) === false);
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->titlePrefix . ' zu ' . $this->motion->title;
         } else {
             if ($this->motion->titlePrefix != '') {
-                return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix;
+                if ($showMotionPrefix) {
+                    return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix;
+                } else {
+                    return $this->titlePrefix;
+                }
             } else {
                 return $this->titlePrefix . ' zu ' . $this->motion->title;
             }
@@ -448,7 +458,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->flushCacheWithChildren();
 
-        $init = $this->getInitiators();
+        $init   = $this->getInitiators();
         $initId = (count($init) > 0 ? $init[0]->userId : null);
         ConsultationLog::log($this->motion->consultation, $initId, ConsultationLog::AMENDMENT_PUBLISH, $this->id);
         /*
