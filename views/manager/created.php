@@ -3,14 +3,15 @@ use app\models\db\Site;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$controller = $this->context;
-
 /**
  * @var $this yii\web\View
  * @var Site $site
  * @var string $login_id
  * @var string $login_code
  */
+
+$controller = $this->context;
+$this->title = "Antragsgrün-Seite anlegen";
 
 $redirectUrl = Url::toRoute(['consultation/index', 'subdomain' => $site->subdomain]);
 ?>

@@ -12,14 +12,14 @@ use yii\helpers\Url;
 
 $controller = $this->context;
 
-$this->title = "Antragsgrün-Instanz anlegen";
+$this->title = "Antragsgrün-Seite anlegen";
 $controller->layoutParams->addCSS('/css/formwizard.css');
 $controller->layoutParams->addCSS('/css/manager.css');
 $controller->layoutParams->addJS("/js/manager.js");
 $controller->layoutParams->addOnLoadJS('$.SiteManager.createInstance();');
 
 
-echo '<h1>Antragsgrün-Instanz anlegen</h1>
+echo '<h1>Antragsgrün-Seite anlegen</h1>
 <div class="fuelux">';
 
 $form = \yii\widgets\ActiveForm::begin(['options' => ['class' => 'siteCreate']]);
