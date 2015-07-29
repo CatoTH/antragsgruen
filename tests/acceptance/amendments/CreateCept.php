@@ -129,6 +129,8 @@ $I->see('Ä4', 'section.amendments ul.amendments');
 $I->wantTo('open the amenmdent page');
 $I->click('section.amendments ul.amendments a.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
+$scenario->incomplete('redaktionelle Änderungen sind noch nicht möglich');
+
 $I->see(mb_strtoupper('Ä4 zu A2: O’ZAPFT IS!'), 'h1');
 $I->see('My company', '.motionDataTable');
 $I->see('woschechta Bayer', '#section_2_0 del');
