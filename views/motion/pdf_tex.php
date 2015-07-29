@@ -20,7 +20,7 @@ $layout->template = $texTemplate->texLayout;
 $layout->author   = $motion->getInitiatorsStr();
 $layout->title    = $motion->getTitleWithPrefix();
 
-$content = $motion->getTexContent();
+$content = \app\views\motion\LayoutHelper::renderTeX($motion);
 /** @var AntragsgruenApp $params */
 $params = \yii::$app->params;
 try {

@@ -24,7 +24,7 @@ $params = \yii::$app->params;
 try {
     $contents = [];
     foreach ($amendments as $amendment) {
-        $contents[] = $amendment->getTexContent();
+        $contents[] = \app\views\amendment\LayoutHelper::renderTeX($amendment);
     }
     echo Exporter::createPDF($layout, $contents, $params);
 } catch (\Exception $e) {

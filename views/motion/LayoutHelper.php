@@ -2,10 +2,13 @@
 
 namespace app\views\motion;
 
+use app\components\latex\Content;
+use app\components\latex\Exporter;
 use app\components\Tools;
 use app\models\db\Consultation;
 use app\models\db\IComment;
 use app\models\db\ISupporter;
+use app\models\db\Motion;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use yii\helpers\Html;
@@ -206,5 +209,45 @@ class LayoutHelper
     </fieldset>';
 
         echo Html::endForm();
+    }
+
+    /**
+     * @param Motion $motion
+     * @return Content
+     */
+    public static function renderTeX(Motion $motion)
+    {
+        $content                  = new Content();
+        $content->template        = $motion->motionType->texTemplate->texContent;
+        $intro                    = explode("\n", $motion->consultation->getSettings()->pdfIntroduction);
+        $content->introductionBig = $intro[0];
+        $content->title           = $motion->title;
+        $content->titlePrefix     = $motion->titlePrefix;
+        $content->titleLong       = $motion->title;
+        if (count($intro) > 1) {
+            array_shift($intro);
+            $content->introductionSmall = implode("\n", $intro);
+        } else {
+            $content->introductionSmall = '';
+        }
+        $initiators = [];
+        foreach ($motion->getInitiators() as $init) {
+            $initiators[] = $init->getNameWithResolutionDate(false);
+        }
+        $initiatorsStr   = implode(', ', $initiators);
+        $content->author = $initiatorsStr;
+
+        $content->motionDataTable = '';
+        foreach ($motion->getDataTable() as $key => $val) {
+            $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
+            $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
+        }
+
+        $content->text = '';
+        foreach ($motion->getSortedSections(true) as $section) {
+            $content->text .= $section->getSectionType()->getMotionTeX();
+        }
+
+        return $content;
     }
 }

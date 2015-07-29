@@ -4,14 +4,10 @@ namespace app\models\db;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\Diff;
-use app\components\latex\Content;
-use app\components\latex\Exporter;
-use app\components\LineSplitter;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -551,52 +547,5 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $return;
-    }
-
-    /**
-     * @return Content
-     */
-    public function getTexContent()
-    {
-        $content              = new Content();
-        $content->template    = $this->motion->motionType->texTemplate->texContent;
-        $content->title       = $this->motion->title;
-        $content->titlePrefix = $this->titlePrefix . ' zu ' . $this->motion->titlePrefix;
-        $content->titleLong   = $this->getTitle();
-
-        $intro                    = explode("\n", $this->motion->consultation->getSettings()->pdfIntroduction);
-        $content->introductionBig = $intro[0];
-        if (count($intro) > 1) {
-            array_shift($intro);
-            $content->introductionSmall = implode("\n", $intro);
-        } else {
-            $content->introductionSmall = '';
-        }
-
-        $initiators = [];
-        foreach ($this->getInitiators() as $init) {
-            $initiators[] = $init->getNameWithResolutionDate(false);
-        }
-        $initiatorsStr   = implode(', ', $initiators);
-        $content->author = $initiatorsStr;
-
-        $content->motionDataTable = '';
-        foreach ($this->getDataTable() as $key => $val) {
-            $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
-            $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
-        }
-
-        $content->text = '';
-
-        foreach ($this->getSortedSections(false) as $section) {
-            $content->text .= $section->getSectionType()->getAmendmentTeX();
-        }
-
-        $title = Exporter::encodePlainString('Begründung');
-        $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-        $lines = LineSplitter::motionPara2lines($this->changeExplanation, false, PHP_INT_MAX);
-        $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
-
-        return $content;
     }
 }

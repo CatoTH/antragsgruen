@@ -24,7 +24,7 @@ $params = \yii::$app->params;
 try {
     $contents = [];
     foreach ($motions as $motion) {
-        $contents[] = $motion->getTexContent();
+        $contents[] = \app\views\motion\LayoutHelper::renderTeX($motion);
     }
     echo Exporter::createPDF($layout, $contents, $params);
 } catch (\Exception $e) {
