@@ -63,19 +63,14 @@ $I->fillField('#emailAddresses', "testuser@example.org\ntestuser2@example.org");
 $I->fillField('#names', "Test user");
 
 $I->submitForm('#accountsCreateForm', [], 'addUsers');
-$I->wait(1);
-$I->see('exakt ein Name', '.bootbox-alert');
-$I->click('.bootbox-alert button.btn-primary');
-$I->wait(1);
-
+$I->seeBootboxDialog('exakt ein Name');
+$I->acceptBootboxAlert();
 
 $I->fillField('#names', "Test user\nTest User 2");
 $I->fillField('#emailText', 'abc %LINK%');
 $I->submitForm('#accountsCreateForm', [], 'addUsers');
-$I->wait(1);
-$I->see('%ACCOUNT%', '.bootbox-alert');
-$I->click('.bootbox-alert button.btn-primary');
-$I->wait(1);
+$I->seeBootboxDialog('%ACCOUNT%');
+$I->acceptBootboxAlert();
 
 
 

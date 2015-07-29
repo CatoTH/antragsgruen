@@ -68,7 +68,7 @@ $I->submitForm('#agendaitem_5 .agendaItemEditForm', [], '');
 
 $I->wantTo('delete the two modified items');
 
-// $I->acceptPopup() <- apparently doesn't work with phantomjs ;_;
+// $I->acceptPopup() <- apparently doesn't work with phantomjs // @TODO
 $I->executeJS('window.confirm = function() { return true; }'); // Dirty Hack
 $I->see('Sonstwas');
 $I->see('More motions');
@@ -81,3 +81,7 @@ $I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
 
 $I->dontSee('Sonstwas');
 $I->dontSee('More motions');
+
+$scenario->incomplete('Handling of #CODE# needs to be improved');
+
+$I->fail('Fake-Fail');

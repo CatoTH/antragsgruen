@@ -39,7 +39,8 @@ class AccessibilityValidator extends \Codeception\Module
         exec('pa11y -s ' . $standard . ' -r json "' . $url . '"', $return);
         $data = json_decode($return[0], true);
         if (!$data) {
-            throw new \Exception('Invalid data returned from validation service: ' . $return);
+            $msg = 'Invalid data returned from validation service: ';
+            throw new \Exception($msg . $return);
         }
         return $data;
     }
@@ -58,13 +59,15 @@ class AccessibilityValidator extends \Codeception\Module
         $failMessages = [];
         foreach ($messages as $message) {
             if ($message['type'] == 'error') {
-                $string = $message['code'] . "\n" . $message['selector'] . ': ' . $message['context'] . "\n";
+                $string = $message['code'] . "\n" . $message['selector'] . ': ';
+                $string .= $message['context'] . "\n";
                 $string .= $message['message'];
                 $failMessages[] = $string;
             }
         }
         if (count($failMessages) > 0) {
-            $failStr = 'Failed ' . $standard . ' check: ' . "\n" . implode("\n\n", $failMessages);
+            $failStr = 'Failed ' . $standard . ' check: ' . "\n";
+            $failStr .= implode("\n\n", $failMessages);
             \PHPUnit_Framework_Assert::fail($failStr);
         }
     }

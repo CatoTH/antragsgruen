@@ -17,13 +17,8 @@ $I->fillField(['name' => 'Initiator[name]'], 'Mein Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
 $I->submitForm('#motionEditForm', [], 'save');
 
-$I->wait(1);
-
-$I->see('Es müssen mindestens 19 UnterstützerInnen angegeben werden', '.bootbox');
-$I->click('.bootbox .btn-primary');
-
-$I->wait(1);
-
+$I->seeBootboxDialog('Es müssen mindestens 19 UnterstützerInnen angegeben werden');
+$I->acceptBootboxAlert();
 
 
 $I->wantTo('make sure it does not appear for organizations');
@@ -31,18 +26,13 @@ $I->wantTo('make sure it does not appear for organizations');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#motionEditForm', [], 'save');
 
-$I->wait(1);
-
-$I->see('Es muss ein Beschlussdatum angegeben werden', '.bootbox');
-$I->click('.bootbox .btn-primary');
-
-$I->wait(1);
+$I->seeBootboxDialog('Es muss ein Beschlussdatum angegeben werden');
+$I->acceptBootboxAlert();
 
 
 $I->fillField('#resolutionDate', '01.01.2000');
 $I->submitForm('#motionEditForm', [], 'save');
 
-$I->wait(1);
-$I->dontSee('Es müssen mindestens 19 UnterstützerInnen angegeben werden', '.bootbox');
+$I->dontSeeBootboxDialog('Es müssen mindestens 19 UnterstützerInnen angegeben werden');
 $I->dontSee('Not enough supporters.');
 $I->see(mb_strtoupper('Antrag bestätigen'), 'h1');

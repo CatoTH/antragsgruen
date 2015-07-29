@@ -86,9 +86,7 @@ $createPage->saveForm();
 $I->wait(1);
 $I->dontSee(mb_strtoupper('Antrag bestätigen'), 'h1');
 $I->see('Es müssen mindestens 2 UnterstützerInnen angegeben werden');
-
-$I->click('.bootbox.modal .btn-primary');
-$I->wait(1);
+$I->acceptBootboxAlert();
 $I->dontSee('Es müssen mindestens 2 UnterstützerInnen angegeben werden');
 
 

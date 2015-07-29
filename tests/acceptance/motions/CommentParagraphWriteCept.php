@@ -56,9 +56,8 @@ $I->see('Kommentar schreiben', '#section_21_1');
 $I->seeElement('#section_21_1 .motionComment .delLink');
 
 $I->submitForm('#section_21_1 .motionComment .delLink', [], '');
-$I->wait(1);
-$I->see('Wirklich löschen', '.bootbox');
-$I->click('.bootbox .btn-primary');
+$I->seeBootboxDialog('Wirklich löschen');
+$I->acceptBootboxConfirm();
 
 $I->dontSee('Kommentar schreiben');
 $I->click('#section_21_1 .comment .shower');

@@ -38,10 +38,8 @@ $I->fillField(['name' => 'Initiator[contactPhone]'], '+49123456789');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#motionEditForm', [], 'save');
 
-$I->wait(1);
-$I->see('Es muss ein Beschlussdatum angegeben werden', '.bootbox');
-$I->click('.bootbox .btn-primary');
-$I->wait(1);
+$I->seeBootboxDialog('Es muss ein Beschlussdatum angegeben werden');
+$I->acceptBootboxAlert();
 
 $I->wantTo('finally create the motion for real');
 $I->fillField(['name' => 'Initiator[resolutionDate]'], '12.01.2015');

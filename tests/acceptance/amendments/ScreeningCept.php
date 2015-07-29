@@ -33,6 +33,8 @@ $I->wantTo('check that the amendment is not visible yet');
 $I->gotoConsultationHome();
 $I->dontSeeElement('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
+$I->gotoMotion(true, 2);
+$I->dontSeeElement('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 $I->wantTo('go to the admin page');
 $I->gotoConsultationHome();

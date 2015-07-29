@@ -39,7 +39,7 @@ $I->see('testadmin@example.org');
 $I->click('.admin1 .removeAdmin');
 $I->wait(1);
 $I->see('Admin-Rechte entziehen');
-$I->click('.bootbox .btn-primary');
+$I->acceptBootboxConfirm();
 $I->dontSee('testadmin@example.org');
 
 

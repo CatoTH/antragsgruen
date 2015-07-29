@@ -12,6 +12,7 @@ modules:
         - \Helper\Acceptance
         - \Helper\Validator
         - \Helper\Download
+        - \Helper\Bootbox
         - \Helper\AccessibilityValidator
     config:
         WebDriver:

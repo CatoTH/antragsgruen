@@ -37,18 +37,14 @@ $I->fillField(['id' => 'name'], 'Tester');
 $I->fillField('#passwordInput', 'n');
 $I->fillField('#passwordConfirm', 'n');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->wait(1);
-$I->see('Das Passwort muss mindestens 4 Buchstaben haben.', '.bootbox');
-$I->click('.bootbox button');
-$I->wait(1);
+$I->seeBootboxDialog('Das Passwort muss mindestens 4 Buchstaben haben.');
+$I->acceptBootboxAlert();
 
 $I->fillField('#passwordInput', 'newuser');
 $I->fillField('#passwordConfirm', 'newuser2');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->wait(1);
-$I->see('Die beiden Passwörter stimmen nicht überein.', '.bootbox');
-$I->click('.bootbox button');
-$I->wait(1);
+$I->seeBootboxDialog('Die beiden Passwörter stimmen nicht überein.');
+$I->acceptBootboxAlert();
 
 
 $I->fillField(['id' => 'passwordInput'], 'testpassword');
