@@ -15,7 +15,8 @@ class Diff
     const FORMATTING_CLASSES = 0;
     const FORMATTING_INLINE  = 1;
 
-    const MAX_LINE_CHANGE_RATIO = 0.4;
+    const MAX_LINE_CHANGE_RATIO_MIN_LEN = 500;
+    const MAX_LINE_CHANGE_RATIO         = 0.4;
 
     private $formatting = 0;
 
@@ -138,7 +139,12 @@ class Diff
             } elseif (mb_stripos($str, '<blockquote>')) {
                 return '<blockquote class="deleted">' . $str;
             } else {
-                return '<del>' . $str . '</del>';
+                $str = str_replace('<p>', '<del><p>', $str);
+                $str = str_replace('</p>', '</p></del>', $str);
+                $str = '<del>' . $str . '</del>';
+                $str = str_replace('</del></del>', '</del>', $str);
+                $str = str_replace('<del><del>', '<del>', $str);
+                return $str;
             }
         }
     }
@@ -361,6 +367,50 @@ class Diff
 
     /**
      * @param string $orig
+     * @param string $new
+     * @param string $diff
+     * @return string[]
+     */
+    private function getUnchangedPrefixPostfix($orig, $new, $diff)
+    {
+        $parts      = preg_split('/<\/?(ins|del)>/siu', $diff);
+        $prefix     = $parts[0];
+        $postfix    = $parts[count($parts) - 1];
+        $prefixLen  = mb_strlen($prefix);
+        $postfixLen = mb_strlen($postfix);
+
+        if ($prefixLen < 40) {
+            $prefix = '';
+        } else {
+            if ($prefixLen > 40 && mb_strrpos($prefix, '. ') > $prefixLen - 40) {
+                $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '. ') + 2);
+            } elseif ($prefixLen > 40 && mb_strrpos($prefix, '.') > $prefixLen - 40) {
+                $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '.') + 1);
+            } elseif ($prefixLen > 40 && mb_strrpos($prefix, '.') > $prefixLen - 40) {
+                $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, ' ') + 1);
+            }
+        }
+        if ($postfixLen < 40) {
+            $postfix = '';
+        } else {
+            if ($postfixLen > 40 && mb_strpos($postfix, '.') < 40) {
+                $postfix = mb_substr($postfix, mb_strpos($postfix, '.') + 1);
+            } elseif ($prefixLen > 40 && mb_strrpos($prefix, ' ') > $prefixLen - 40) {
+                $postfix = mb_substr($postfix, mb_strpos($postfix, ' ') + 1);
+            }
+        }
+
+        $prefixLen  = mb_strlen($prefix);
+        $postfixLen = mb_strlen($postfix);
+        $middleDiff = mb_substr($diff, $prefixLen, mb_strlen($diff) - $prefixLen - $postfixLen);
+        $middleOrig = mb_substr($orig, $prefixLen, mb_strlen($orig) - $prefixLen - $postfixLen);
+        $middleNew  = mb_substr($new, $prefixLen, mb_strlen($new) - $prefixLen - $postfixLen);
+
+        return [$prefix, $middleOrig, $middleNew, $middleDiff, $postfix];
+    }
+
+    /**
+     * @param string $orig
      * @param string $diff
      * @return float
      */
@@ -409,12 +459,21 @@ class Diff
                     list ($deletes, $inserts, $count) = $updates;
                     for ($j = 0; $j < count($deletes); $j++) {
                         $lineDiff = $this->computeLineDiff($deletes[$j], $inserts[$j]);
-                        $changaRatio = $this->computeLineDiffChangeRatio($deletes[$j], $lineDiff);
-                        if ($changaRatio <= static::MAX_LINE_CHANGE_RATIO) {
-                            $computedStr .= $lineDiff . "\n";
+
+                        $split = $this->getUnchangedPrefixPostfix($deletes[$j], $inserts[$j], $lineDiff);
+                        list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
+                        if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
+                            $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
+                            $computedStr .= $prefix;
+                            if ($changeRatio <= static::MAX_LINE_CHANGE_RATIO) {
+                                $computedStr .= $middleDiff;
+                            } else {
+                                $computedStr .= $this->wrapWithDelete($middleOrig) . "\n";
+                                $computedStr .= $this->wrapWithInsert($middleNew);
+                            }
+                            $computedStr .= $postfix . "\n";
                         } else {
-                            $computedStr .= $this->wrapWithDelete($deletes[$j]) . "\n";
-                            $computedStr .= $this->wrapWithInsert($inserts[$j]) . "\n";
+                            $computedStr .= $lineDiff . "\n";
                         }
                     }
                     $i += $count * 2 - 1;
