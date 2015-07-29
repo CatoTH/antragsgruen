@@ -135,7 +135,7 @@ class MotionSection extends IMotionSection
             $return[$paraNo] = $paragraph;
         }
         if ($includeAmendment) {
-            foreach ($this->motion->amendments as $amendment) {
+            foreach ($this->motion->getVisibleAmendments() as $amendment) {
                 $amSec = null;
                 foreach ($amendment->sections as $section) {
                     if ($section->sectionId == $this->sectionId) {

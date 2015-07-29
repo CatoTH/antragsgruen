@@ -58,7 +58,7 @@ $I->submitForm('#amendmentScreenForm', [], ['screen']);
 $I->see('Der Änderungsantrag wurde freigeschaltet.');
 
 
-$I->wantTo('check if the motion is visible now');
+$I->wantTo('check if the amendment is visible now');
 $I->gotoConsultationHome();
 $I->seeElement('.motionListStd .amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->seeElement('#sidebar ul.amendments .amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
