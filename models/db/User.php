@@ -318,10 +318,10 @@ class User extends ActiveRecord implements IdentityInterface
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
-        if ($date == "") {
-            $date = date("Ymd");
+        if ($date == '') {
+            $date = date('Ymd');
         }
-        $code = $this->id . "-" . substr(md5($this->id . $date . $params->randomSeed), 0, 8);
+        $code = $this->id . '-' . substr(md5($this->id . $date . $params->randomSeed), 0, 8);
         return $code;
     }
 
@@ -334,10 +334,10 @@ class User extends ActiveRecord implements IdentityInterface
         if ($code == $this->createEmailConfirmationCode()) {
             return true;
         }
-        if ($code == $this->createEmailConfirmationCode(date("Ymd", time() - 24 * 3600))) {
+        if ($code == $this->createEmailConfirmationCode(date('Ymd', time() - 24 * 3600))) {
             return true;
         }
-        if ($code == $this->createEmailConfirmationCode(date("Ymd", time() - 2 * 24 * 3600))) {
+        if ($code == $this->createEmailConfirmationCode(date('Ymd', time() - 2 * 24 * 3600))) {
             return true;
         }
         return false;
@@ -566,6 +566,13 @@ class User extends ActiveRecord implements IdentityInterface
         switch ($authparts[0]) {
             case 'email':
                 return 'E-Mail: ' . $authparts[1];
+            case 'openid':
+                if ($this->isWurzelwerkUser()) {
+                    return 'Wurzelwerk: ' . $this->getWurzelwerkName();
+                } else {
+                    return $this->auth;
+                }
+                break;
             default:
                 return $this->auth;
         }

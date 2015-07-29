@@ -20,6 +20,7 @@ $layout->addCSS('/css/backend.css');
 $layout->addJS('/js/backend.js');
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Zugang');
+$layout->loadFuelux();
 
 $settings = $site->getSettings();
 
@@ -42,7 +43,6 @@ Die BenutzerInnenverwaltung unten kommt erst dann voll zur Geltung, wenn die Les
     <button type="submit" name="policyRestrictToUsers" class="btn btn-primary">Auf BenutzerInnen einschränken</button>
 </div>' . Html::endForm() . '</div>';
 }
-
 
 
 echo Html::beginForm('', 'post', ['id' => 'siteSettingsForm', 'class' => 'content adminForm form-horizontal']);
@@ -125,8 +125,11 @@ echo '<h2 class="green">Administrator_Innen der Reihe</h2>
 
 $myself = User::getCurrentUser();
 foreach ($site->admins as $admin) {
-    echo '<li class="admin' . $admin->id . '">' .
-        Html::encode($admin->name) . ' (' . Html::encode($admin->auth) . ')';
+    echo '<li class="admin' . $admin->id . '">';
+    echo Html::encode($admin->getAuthName());
+    if ($admin->name != '') {
+        echo ' (' . Html::encode($admin->name) . ')';
+    }
     if ($admin->id != $myself->id) {
         echo '<button class="link removeAdmin" type="button" data-id="' . $admin->id . '">';
         echo '<span class="glyphicon glyphicon-trash"></span>';
@@ -135,20 +138,28 @@ foreach ($site->admins as $admin) {
     echo "</li>";
 }
 echo '</ul>
-</section>
 
-<section class="content">
+<br>
+
 <h4>Neu eintragen</h4>
 <div class="row">
-    <label for="add_username" class="col-md-6">Wurzelwerk-BenutzerInnenname / E-Mail-Adresse:</label>
-    </div>
-    <div  class="row">
-    <div class="col-md-6">
-        <input type="text" name="username" value="" id="add_username" class="form-control">
-    </div>
-    </div>
-<br>
-<button type="submit" name="addAdmin" class="btn btn-primary">Hinzufügen</button>
+    <div class="col-md-3">';
+
+$options = [
+    'wurzelwerk' => 'Wurzelwerk-Name:',
+    'email'      => 'E-Mail-Adresse:',
+];
+echo \app\components\HTMLTools::fueluxSelectbox('addType', $options);
+echo '</div>
+<div class="col-md-4">
+    <input type="text" name="addUsername" value="" id="addUsername" class="form-control"
+    title="Wurzelwerk-BenutzerInnenname / E-Mail-Adresse" placeholder="Name" required>
+</div>
+<div class="col-md-3">
+    <button type="submit" name="addAdmin" class="btn btn-primary">Hinzufügen</button>
+</div>
+</div>
+<br><br>
 </section>';
 echo Html::endForm();
 

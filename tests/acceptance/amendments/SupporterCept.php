@@ -27,11 +27,14 @@ for ($s = 0; $s < 20; $s++) {
 }
 $I->fillField('#fullTextHolder textarea', implode('; ', $supporters));
 $I->click('#fullTextHolder .fullTextAdd');
+
+$I->fail('fsfsdf');
+
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 
 $I->gotoStdAdminPage(true, 'bdk', 'bdk')->gotoMotionList();
-$I->click('.amendment271 .prefixCol a');
+$I->click('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .prefixCol a');
 
 $I->see('Person 13', '.supporters');
 $I->see('KV 1', '.supporters');

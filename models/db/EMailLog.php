@@ -31,6 +31,7 @@ class EMailLog extends ActiveRecord
     const TYPE_ACCESS_GRANTED            = 4;
     const TYPE_DEBUG                     = 5;
     const TYPE_PASSWORD_RECOVERY         = 6;
+    const TYPE_SITE_ADMIN                = 7;
 
     const STATUS_SENT              = 0;
     const STATUS_SKIPPED_BLACKLIST = 1;
@@ -45,6 +46,7 @@ class EMailLog extends ActiveRecord
         4 => 'access-granted',
         5 => 'debug',
         6 => 'password-recovery',
+        7 => 'site-admin',
     ];
 
     /**
@@ -60,6 +62,7 @@ class EMailLog extends ActiveRecord
             static::TYPE_ACCESS_GRANTED            => 'Veranstaltungs-Zugriff',
             static::TYPE_DEBUG                     => 'Debug',
             static::TYPE_PASSWORD_RECOVERY         => 'Password-Wiederherstellung',
+            static::TYPE_SITE_ADMIN                => 'Als Admin eingetragen',
         ];
     }
 

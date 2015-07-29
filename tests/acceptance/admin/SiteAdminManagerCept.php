@@ -19,7 +19,8 @@ $I->see(mb_strtoupper('Administrator_Innen der Reihe'), 'h2');
 
 
 $I->wantTo('Add testuser as admin');
-$I->fillField('#add_username', 'testuser@example.org');
+$I->executeJS('$("input[name=addType]").val("email");');
+$I->fillField('#addUsername', 'testuser@example.org');
 $I->submitForm('#adminForm', [], 'addAdmin');
 $I->see('testuser@example.org');
 
@@ -34,11 +35,16 @@ $I->wantTo('Go to admin administration');
 $I->gotoStdAdminPage()->gotoSiteAccessPage();
 
 
+$I->executeJS('$("input[name=addType]").val("wurzelwerk");');
+$I->fillField('#addUsername', 'HoesslTo');
+$I->submitForm('#adminForm', [], 'addAdmin');
+$I->see('HoesslTo');
+
+
 $I->wantTo('Remove testadmin as admin');
 $I->see('testadmin@example.org');
 $I->click('.admin1 .removeAdmin');
-$I->wait(1);
-$I->see('Admin-Rechte entziehen');
+$I->seeBootboxDialog('Admin-Rechte entziehen');
 $I->acceptBootboxConfirm();
 $I->dontSee('testadmin@example.org');
 
