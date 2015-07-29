@@ -400,11 +400,15 @@ class Diff
             }
         }
 
-        $prefixLen  = mb_strlen($prefix);
-        $postfixLen = mb_strlen($postfix);
-        $middleDiff = mb_substr($diff, $prefixLen, mb_strlen($diff) - $prefixLen - $postfixLen);
-        $middleOrig = mb_substr($orig, $prefixLen, mb_strlen($orig) - $prefixLen - $postfixLen);
-        $middleNew  = mb_substr($new, $prefixLen, mb_strlen($new) - $prefixLen - $postfixLen);
+        $prefixLen     = mb_strlen($prefix);
+        $prefixNew     = str_replace($this->engine->getIgnoreStr(), '', $prefix);
+        $prefixNewLen  = mb_strlen($prefixNew);
+        $postfixLen    = mb_strlen($postfix);
+        $postfixNew    = str_replace($this->engine->getIgnoreStr(), '', $postfix);
+        $postfixNewLen = mb_strlen($postfixNew);
+        $middleDiff    = mb_substr($diff, $prefixLen, mb_strlen($diff) - $prefixLen - $postfixLen);
+        $middleOrig    = mb_substr($orig, $prefixLen, mb_strlen($orig) - $prefixLen - $postfixLen);
+        $middleNew     = mb_substr($new, $prefixNewLen, mb_strlen($new) - $prefixNewLen - $postfixNewLen);
 
         return [$prefix, $middleOrig, $middleNew, $middleDiff, $postfix];
     }
@@ -486,6 +490,8 @@ class Diff
                 throw new Internal('Unknown type: ' . $return[$i][1]);
             }
         }
+        $force = '###FORCELINEBREAK###';
+        $computedStr = str_replace($force . ' ' . static::ORIG_LINEBREAK, $force, $computedStr);
         $computedStr = str_replace(static::ORIG_LINEBREAK, "\n", $computedStr);
 
         return trim($computedStr);

@@ -2,14 +2,12 @@
 
 namespace unit;
 
-use app\components\diff\AmendmentSectionFormatter;
 use app\models\amendmentNumbering\ByLine;
 use app\models\amendmentNumbering\GlobalCompact;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\amendmentNumbering\PerMotionCompact;
 use app\models\db\Amendment;
 use app\models\db\Motion;
-use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
 
 class AmendmentNumberingTest extends DBTestBase

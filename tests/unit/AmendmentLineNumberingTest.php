@@ -51,6 +51,20 @@ class AmendmentLineNumberingTest extends DBTestBase
 
     /**
      */
+    public function testComplicatedParagraphReplace()
+    {
+        $diff         = $this->getSectionDiff(271, 21);
+        $expectedDiff = 'Entscheidungen treffen. <del>Auch werden wir demokratische Strukturen und Entscheidungsmechanismen </del><br><del>verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die </del><br><del>Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder </del><br><del>gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP </del><br><del>voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, </del><br><del>wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird. </del><br><ins>Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die###FORCELINEBREAK###gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir###FORCELINEBREAK###sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese###FORCELINEBREAK###Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen###FORCELINEBREAK###werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung###FORCELINEBREAK###der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die###FORCELINEBREAK###Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</ins>';
+        $this->assertEquals([[
+            'text'     => $expectedDiff,
+            'lineFrom' => 13,
+            'lineTo'   => 18,
+            'newLine'  => false,
+        ]], $diff);
+    }
+
+    /**
+     */
     public function testFirstAffectedLine()
     {
         /** @var Amendment $amendment */
@@ -197,6 +211,6 @@ class AmendmentLineNumberingTest extends DBTestBase
         $diff = $this->getSectionDiff(3, 4);
         $this->assertContains('Vor Zeile 36 einfügen', TextSimple::formatDiffGroup([$diff[0]], '', '', 36));
         $this->assertContains('Nach Zeile 42 einfügen', TextSimple::formatDiffGroup([$diff[1]], '', '', 36));
-        $this->assertContains('Von Zeile 49 bis 53:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
+        $this->assertContains('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
     }
 }
