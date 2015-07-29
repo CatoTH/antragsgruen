@@ -57,7 +57,7 @@ class BDK implements ISitePreset
 
         $settings                      = $consultation->getSettings();
         $settings->lineNumberingGlobal = false;
-        $settings->lineLength          = 95;
+        $settings->lineLength          = 92;
         $settings->screeningMotions    = true;
         $settings->screeningAmendments = true;
         $settings->startLayoutType     = ConsultationSettings::START_LAYOUT_AGENDA_LONG;
