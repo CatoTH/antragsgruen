@@ -138,17 +138,32 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     foreach ($groupedParaData[$paragraphNo] as $part) {
         $text = $part['text'];
-        $text = str_replace('<del><li></del>', '<li>', $text);
-        $text = str_replace('<del></li></del>', '</li>', $text);
-        $text = str_replace('<ins><li></ins>', '<li>', $text);
-        $text = str_replace('<ins></li></ins>', '</li>', $text);
-        echo $text;
+        $text = preg_replace('/<(del|ins)>(<\/?(li|ul|ol)>)<\/(del|ins)>/siu', '\2', $text);
+        $text = str_replace('</ins><ins>', '', $text);
+        $text = str_replace('</del><del>', '', $text);
 
         if ($part['amendment'] > 0) {
             $amendment = $amendmentsById[$part['amendment']];
             $url = UrlHelper::createAmendmentUrl($amendment);
-            echo ' <span class="amendmentRef">[' . Html::a($amendment->titlePrefix, $url) . ']</span> ';
+            $refStr = ' <span class="amendmentRef">[' . Html::a($amendment->titlePrefix, $url) . ']</span> ';
+            if (mb_strpos($text, '</ul>') !== false) {
+                $x = explode('</ul>', $text);
+                for ($i = 0; $i < count($x); $i++) {
+                    if (trim($x[$i]) != '') {
+                        if (mb_strpos($x[$i], '</li>') !== false) {
+                            $x[$i] = str_replace('</li>', $refStr . '</li>', $x[$i]);
+                        } else {
+                            $x[$i] .= $refStr;
+                        }
+                    }
+                }
+                $text = implode('</ul>', $x);
+            } else {
+                $text .= $refStr;
+            }
         }
+
+        echo $text;
     }
 
     echo '</div>';
