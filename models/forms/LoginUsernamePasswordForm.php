@@ -164,7 +164,7 @@ class LoginUsernamePasswordForm extends Model
     private function getCandidatesStdLogin()
     {
         $sql_where1 = "auth = 'email:" . addslashes($this->username) . "'";
-        return User::findBySql("SELECT * FROM user WHERE $sql_where1 AND siteNamespaceId IS NULL")->all();
+        return User::findBySql("SELECT * FROM user WHERE $sql_where1")->all();
     }
 
     /**

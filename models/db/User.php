@@ -644,4 +644,21 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return true;
     }
+
+
+    /**
+     */
+    public function deleteAccount()
+    {
+        $this->name           = '';
+        $this->email          = '';
+        $this->emailConfirmed = 0;
+        $this->auth           = null;
+        $this->status         = static::STATUS_DELETED;
+        $this->pwdEnc         = null;
+        $this->authKey        = '';
+        $this->recoveryToken  = null;
+        $this->recoveryAt     = null;
+        $this->save();
+    }
 }

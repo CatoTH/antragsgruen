@@ -1317,16 +1317,16 @@ INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `recoveryToken`, `recoveryAt`, `siteNamespaceId`)
+INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `recoveryToken`, `recoveryAt`)
 VALUES
   (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-20 15:04:44', 0,
    '$2y$10$tDnD91WMHaiWOgVvdZaxOeoxYGXYIvotpKAzbIY26jUNHf6awCKfK',
    0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
-   NULL, NULL, NULL),
+   NULL, NULL),
   (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-20 15:08:14', 0,
    '$2y$10$0AYIGO6ltNMnHbNVzFKEouLDFeUnDwWqEvXp1zvjpFLLupJOMZoHC',
    0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
-   NULL, NULL, NULL);
+   NULL, NULL);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

@@ -526,8 +526,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `pwdEnc`          VARCHAR(100)         DEFAULT NULL,
   `authKey`         BINARY(100) NOT NULL,
   `recoveryToken`   VARCHAR(100)         DEFAULT NULL,
-  `recoveryAt`      TIMESTAMP   NULL     DEFAULT NULL,
-  `siteNamespaceId` INT(11)              DEFAULT NULL
+  `recoveryAt`      TIMESTAMP   NULL     DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -767,8 +766,7 @@ ADD KEY `siteId` (`siteId`);
 --
 ALTER TABLE `user`
 ADD PRIMARY KEY (`id`),
-ADD UNIQUE KEY `auth_UNIQUE` (`auth`),
-ADD KEY `fk_user_namespaceIdx` (`siteNamespaceId`);
+ADD UNIQUE KEY `auth_UNIQUE` (`auth`);
 
 --
 -- Indexes for table `userNotification`
@@ -1128,14 +1126,6 @@ ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`i
 --
 ALTER TABLE `texTemplate`
 ADD CONSTRAINT `texTemplate_ibfk_1` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`);
-
---
--- Constraints for table `user`
---
-ALTER TABLE `user`
-ADD CONSTRAINT `fk_user_namespace` FOREIGN KEY (`siteNamespaceId`) REFERENCES `site` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `userNotification`

@@ -1,7 +1,6 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
-use app\models\db\EMailLog;
 use app\models\db\User;
 use app\tests\_pages\LoginPage;
 use app\tests\_pages\PasswordRecoveryPage;
@@ -96,4 +95,3 @@ PasswordRecoveryPage::openBy(
 $I->fillField('#recoveryPassword', 'test2');
 $I->submitForm('.resetPasswortForm', [], 'recover');
 $I->see('Es wurde kein Wiederherstellungs-Antrag innerhalb der letzten 24 Stunden gestellt.');
-

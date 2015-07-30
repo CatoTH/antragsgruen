@@ -28,8 +28,6 @@ for ($s = 0; $s < 20; $s++) {
 $I->fillField('#fullTextHolder textarea', implode('; ', $supporters));
 $I->click('#fullTextHolder .fullTextAdd');
 
-$I->fail('fsfsdf');
-
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 

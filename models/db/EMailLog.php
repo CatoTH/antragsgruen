@@ -92,7 +92,8 @@ class EMailLog extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'toUserId']);
+        return $this->hasOne(User::className(), ['id' => 'toUserId'])
+            ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
     /**

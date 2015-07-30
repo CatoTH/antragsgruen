@@ -43,7 +43,8 @@ class ConsultationUserPrivilege extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'userId']);
+        return $this->hasOne(User::className(), ['id' => 'userId'])
+            ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
     /**
@@ -64,13 +65,15 @@ class ConsultationUserPrivilege extends ActiveRecord
      * @param string $email
      * @param string $name
      * @param string $emailText
+     * @throws AlreadyExists
      */
     public static function createWithUser(Consultation $consultation, $email, $name, $emailText)
     {
         $email = mb_strtolower($email);
+        $auth = 'email:' . $email;
 
         /** @var User $user */
-        $user = User::findOne(['auth' => 'email:' . $email]);
+        $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
         if (!$user) {
             $password = User::createPassword();
 

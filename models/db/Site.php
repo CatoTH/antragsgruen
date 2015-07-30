@@ -65,7 +65,8 @@ class Site extends ActiveRecord
      */
     public function getAdmins()
     {
-        return $this->hasMany(User::className(), ['id' => 'userId'])->viaTable('siteAdmin', ['siteId' => 'id']);
+        return $this->hasMany(User::className(), ['id' => 'userId'])->viaTable('siteAdmin', ['siteId' => 'id'])
+            ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
 
@@ -168,12 +169,12 @@ class Site extends ActiveRecord
         if ($user->isGuest) {
             return false;
         }
-        $ich = User::findOne(["auth" => $user->id]);
-        /** @var User $ich */
-        if ($ich == null) {
+        $myUser = User::find()->where(['auth' => $user->id])->andWhere('status != ' . User::STATUS_DELETED)->one();
+        /** @var User $myUser */
+        if ($myUser == null) {
             return false;
         }
-        return $this->isAdmin($ich);
+        return $this->isAdmin($myUser);
     }
 
     /**
