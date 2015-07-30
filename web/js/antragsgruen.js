@@ -238,20 +238,27 @@
         $paragraphs.filter(':not(.commentsOpened)').find('.comment .hider').click();
 
         $paragraphs.each(function () {
-            var $paragraph = $(this);
+            var $paragraph = $(this),
+                $paraFirstLine = $paragraph.find(".lineNumber").first(),
+                lineHeight = $paraFirstLine.height();
+
+            var amends = $paragraph.find(".bookmarks > .amendment");
+            amends = amends.sort(function (el1, el2) {
+                return $(el1).data("first-line") - $(el2).data("first-line");
+            });
+            $paragraph.find(".bookmarks").append(amends);
+
             $paragraph.find('ul.bookmarks li.amendment').each(function () {
                 var $amendment = $(this),
-                    marker_offset = $amendment.offset().top,
-                    first_line = $amendment.data("first-line"),
-                    $lineel = $paragraph.find(".lineNumber[data-line-number=" + first_line + "]");
-                if ($lineel.length == 0) {
-                    // Ergänzung am Ende des Absatzes
-                    $lineel = $paragraph.find(".lineNumber").last();
+                    firstLine = $amendment.data("first-line"),
+                    targetOffset = (firstLine - $paraFirstLine.data("line-number")) * lineHeight,
+                    $prevBookmark = $amendment.prev(),
+                    delta = 0;
+                if ($prevBookmark.length > 0) {
+                    delta = targetOffset - ($prevBookmark.height() + 7);
+                    if (delta < 0) delta = 0;
                 }
-                var lineel_offset = $lineel.offset().top;
-                if ((marker_offset + 10) < lineel_offset) {
-                    $amendment.css('margin-top', (lineel_offset - (marker_offset + 10)) + "px");
-                }
+                $amendment.css('margin-top', delta + "px");
 
                 $amendment.mouseover(function () {
                     $paragraph.find("> .textOrig").addClass("hidden");
