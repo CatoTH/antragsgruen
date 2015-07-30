@@ -14,7 +14,7 @@ class LineSplitter
      */
     public function __construct($text, $lineLength)
     {
-        $this->text       = $text;
+        $this->text       = str_replace("\r", "", $text);
         $this->lineLength = $lineLength;
     }
 
@@ -39,7 +39,7 @@ class LineSplitter
             $currChar = mb_substr($this->text, $i, 1);
             $currLine .= $currChar;
             if ($inHtml) {
-                if ($currChar == ">") {
+                if ($currChar == '>') {
                     $inHtml = false;
                 }
             } elseif ($inEscaped) {

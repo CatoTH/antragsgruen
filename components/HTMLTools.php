@@ -171,6 +171,7 @@ class HTMLTools
             $return[]      = $pre . $pendingInline . $post;
             $pendingInline = null;
         }
+        $return = str_replace("\r", "", $return);
         return $return;
     }
 

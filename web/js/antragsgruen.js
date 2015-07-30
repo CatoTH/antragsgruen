@@ -244,7 +244,6 @@
                     marker_offset = $amendment.offset().top,
                     first_line = $amendment.data("first-line"),
                     $lineel = $paragraph.find(".lineNumber[data-line-number=" + first_line + "]");
-                console.log(first_line, $lineel, $lineel.offset().top);
                 if ($lineel.length == 0) {
                     // Ergänzung am Ende des Absatzes
                     $lineel = $paragraph.find(".lineNumber").last();
