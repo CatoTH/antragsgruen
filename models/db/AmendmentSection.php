@@ -129,4 +129,15 @@ class AmendmentSection extends IMotionSection
         $this->setCacheItem('diffToOrigParagraphs', $amParagraphs);
         return $amParagraphs;
     }
+
+    /**
+     * @param array $origParagraphs
+     * @return string[]
+     */
+    public function getAffectedParagraphs($origParagraphs)
+    {
+        $diff         = new Diff();
+        $amParagraphs = $diff->computeAmendmentAffectedParagraphs($origParagraphs, $this);
+        return $amParagraphs;
+    }
 }

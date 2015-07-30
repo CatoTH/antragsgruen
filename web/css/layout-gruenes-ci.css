@@ -4644,6 +4644,8 @@ ins, ul.inserted, blockquote.inserted {
       border-bottom: solid 1px black; }
     .texteditor > * span.strike {
       text-decoration: line-through; }
+    .texteditor > * .amendmentRef {
+      font-size: 0.8em; }
   .texteditor > ul, .texteditor ol {
     padding-left: 50px; }
   .texteditor > blockquote {
@@ -4997,6 +4999,8 @@ ins, ul.inserted, blockquote.inserted {
       border-bottom: solid 1px black; }
     .motionTextHolder .paragraph .text span.strike {
       text-decoration: line-through; }
+    .motionTextHolder .paragraph .text .amendmentRef {
+      font-size: 0.8em; }
     .motionTextHolder .paragraph .text .lineNumber {
       position: relative;
       left: -42px;
@@ -9843,6 +9847,8 @@ ins, ul.inserted, blockquote.inserted {
       border-bottom: solid 1px black; }
     .texteditor > * span.strike {
       text-decoration: line-through; }
+    .texteditor > * .amendmentRef {
+      font-size: 0.8em; }
   .texteditor > ul, .texteditor ol {
     padding-left: 50px; }
   .texteditor > blockquote {

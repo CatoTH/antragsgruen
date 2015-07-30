@@ -230,7 +230,7 @@
             $this.addClass("hidden");
             $this.parent().find('.shower').removeClass("hidden");
 
-            $this.parents('.paragraph').first().find('.commentForm, .motionComment').addClass("hidden")
+            $this.parents('.paragraph').first().find('.commentForm, .motionComment').addClass("hidden");
             ev.preventDefault();
         });
 

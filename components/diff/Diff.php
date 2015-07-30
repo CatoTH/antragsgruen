@@ -153,7 +153,7 @@ class Diff
      * @param string $line
      * @return string[]
      */
-    private function tokenizeLine($line)
+    public static function tokenizeLine($line)
     {
         $line = str_replace(" ", " \n", $line);
         $line = str_replace("<", "\n<", $line);
@@ -165,7 +165,7 @@ class Diff
      * @param string $line
      * @return string
      */
-    private function untokenizeLine($line)
+    public static function untokenizeLine($line)
     {
         $line = str_replace("\n", '', $line);
         return $line;
@@ -293,8 +293,8 @@ class Diff
     public function computeLineDiff($lineOld, $lineNew)
     {
         $computedStrs = [];
-        $lineOld      = $this->tokenizeLine($lineOld);
-        $lineNew      = $this->tokenizeLine($lineNew);
+        $lineOld      = static::tokenizeLine($lineOld);
+        $lineNew      = static::tokenizeLine($lineNew);
 
         $return = $this->engine->compareStrings($lineOld, $lineNew);
         $return = $this->groupOperations($return, '');
@@ -328,7 +328,7 @@ class Diff
             echo "\n---\n";
         }
 
-        $combined = $this->untokenizeLine($computedStr);
+        $combined = static::untokenizeLine($computedStr);
         $combined = str_replace('</del> <del>', ' ', $combined);
         $combined = str_replace('</del><del>', '', $combined);
         $combined = str_replace('</ins> <ins>', ' ', $combined);
@@ -516,7 +516,68 @@ class Diff
     }
 
     /**
-     * @param $origParagraphs
+     * @param string[] $origParagraphs
+     * @param AmendmentSection $amSec
+     * @return string[]
+     * @throws Internal
+     */
+    public function computeAmendmentAffectedParagraphs($origParagraphs, AmendmentSection $amSec)
+    {
+        $amParas = HTMLTools::sectionSimpleHTML($amSec->data);
+        $diffEng = new Engine();
+        $diff    = $diffEng->compareArrays($origParagraphs, $amParas);
+
+        $currOrigPara  = 0;
+        $pendingInsert = '';
+        /** @var ParagraphAmendment[] $changed */
+        $changed = [];
+
+        for ($currDiffLine = 0; $currDiffLine < count($diff); $currDiffLine++) {
+            $diffLine = $diff[$currDiffLine];
+            if ($diffLine[1] == Engine::UNMODIFIED) {
+                if ($pendingInsert != '') {
+                    $changed[$currOrigPara] = $pendingInsert . $diffLine[0];
+                    $pendingInsert          = '';
+                }
+                $currOrigPara++;
+                continue;
+            }
+            if ($diffLine[1] == Engine::INSERTED) {
+                $insertStr = $diffLine[0];
+                if ($currOrigPara > 0) {
+                    $prevLine = $currOrigPara - 1;
+                    if (isset($changed[$prevLine])) {
+                        $changed[$prevLine] .= $insertStr;
+                    } else {
+                        $changed[$prevLine] = $diff[$prevLine][0] . $insertStr;
+                    }
+                } else {
+                    $pendingInsert .= $insertStr;
+                }
+                continue;
+            }
+            if ($diffLine[1] == Engine::DELETED) {
+                if ($pendingInsert) {
+                    throw new Internal('Not implemented yet - does this even happen?');
+                }
+
+                if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
+                    $changed[$currOrigPara] = $diff[$currDiffLine + 1][0];
+                    $currDiffLine++;
+                } else {
+                    $changed[$currOrigPara] = '';
+                }
+
+                $currOrigPara++;
+                continue;
+            }
+        }
+
+        return $changed;
+    }
+
+    /**
+     * @param string[] $origParagraphs
      * @param AmendmentSection $amSec
      * @return ParagraphAmendment[]
      * @throws Internal
@@ -564,18 +625,17 @@ class Diff
             if ($diffLine[1] == Engine::DELETED) {
                 if ($pendingInsert) {
                     throw new Internal('Not implemented yet - does this even happen?');
-                    // @todo check if this can happen
                 }
 
                 if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
                     $lineDiff = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $split = $this->getUnchangedPrefixPostfix($diffLine[0], $diff[$currDiffLine + 1][0], $lineDiff);
+                    $split    = $this->getUnchangedPrefixPostfix($diffLine[0], $diff[$currDiffLine + 1][0], $lineDiff);
                     list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
-                    $motionParaLines        = LineSplitter::countMotionParaLines($prefix, $lineLength);
+                    $motionParaLines = LineSplitter::countMotionParaLines($prefix, $lineLength);
 
                     if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
                         $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
-                        $changeStr = $prefix;
+                        $changeStr   = $prefix;
                         if ($changeRatio <= static::MAX_LINE_CHANGE_RATIO) {
                             $changeStr .= $middleDiff;
                         } else {

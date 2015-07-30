@@ -119,7 +119,11 @@ if ($hasAmendments) {
         $html .= "<li><i>keine</i></li>";
     } else {
         foreach ($newestAmendments as $amendment) {
-            $zu_str        = Html::encode($amendment->getShortTitle());
+            $title = explode(' ', Html::encode($amendment->getShortTitle()));
+            if (count($title) > 1) {
+                $title[0] = '<strong>' . Html::encode($title[0]) . '</strong>';
+            }
+            $title = implode(' ', $title);
             $amendmentLink = UrlHelper::createUrl(
                 [
                     'amendment/view',
@@ -127,8 +131,7 @@ if ($hasAmendments) {
                     'motionId'    => $amendment->motion->id
                 ]
             );
-            $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>';
-            $linkTitle .= '<strong>' . Html::encode($amendment->titlePrefix) . '</strong> zu ' . $zu_str;
+            $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>' . $title;
             $html .= '<li>' . Html::a($linkTitle, $amendmentLink, ['class' => 'amendment' . $amendment->id]) . '</li>';
         }
     }

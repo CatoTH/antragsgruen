@@ -2,10 +2,7 @@
 
 namespace unit;
 
-use app\components\diff\AmendmentSectionFormatter;
-use app\models\db\Amendment;
 use app\models\db\MotionSection;
-use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
 
 class AmendmentInlineDiffTest extends DBTestBase

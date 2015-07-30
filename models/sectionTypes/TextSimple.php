@@ -134,8 +134,9 @@ class TextSimple extends ISectionType
     public function showMotionView(Base $controller, $commentForm, $openedComments)
     {
         $view = new View();
+        $script = (isset($_REQUEST['inline']) ? 'showSimpleTextSectionInline' : 'showSimpleTextSection');
         return $view->render(
-            '@app/views/motion/showSimpleTextSection',
+            '@app/views/motion/' . $script,
             [
                 'section'        => $this->section,
                 'openedComments' => $openedComments,

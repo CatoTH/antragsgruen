@@ -19,6 +19,7 @@ use app\models\exceptions\Internal;
  * @property Motion $motion
  * @property ConsultationSettingsMotionSection $consultationSetting
  * @property MotionComment[] $comments
+ * @property AmendmentSection[] $amendingSections
  */
 class MotionSection extends IMotionSection
 {
@@ -55,6 +56,22 @@ class MotionSection extends IMotionSection
     {
         return $this->hasMany(MotionComment::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId'])
             ->where('status != ' . IntVal(IComment::STATUS_DELETED));
+    }
+
+    /**
+     * @return AmendmentSection|null
+     */
+    public function getAmendingSections()
+    {
+        $sections = [];
+        foreach ($this->motion->amendments as $amend) {
+            foreach ($amend->sections as $section) {
+                if ($section->sectionId == $this->sectionId) {
+                    $sections[] = $section;
+                }
+            }
+        }
+        return $sections;
     }
 
     /**
