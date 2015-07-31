@@ -239,6 +239,25 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $screeningAdmin
+     * @return MotionComment[]
+     */
+    public function getVisibleComments($screeningAdmin)
+    {
+        $visibleStati = [MotionComment::STATUS_VISIBLE];
+        if ($screeningAdmin) {
+            $visibleStati[] = MotionComment::STATUS_SCREENING;
+        }
+        $comments = [];
+        foreach ($this->comments as $comment) {
+            if (in_array($comment->status, $visibleStati)) {
+                $comments[] = $comment;
+            }
+        }
+        return $comments;
+    }
+
+    /**
      * @return bool
      */
     public function iAmInitiator()

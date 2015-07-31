@@ -430,19 +430,44 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 if ($commentWholeMotions) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
     $form    = $commentForm;
-    $imadmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
+    $screeningAdmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
 
+    $screening = \Yii::$app->session->getFlash('screening', null, true);
+    if ($screening) {
+        echo '<div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                <span class="sr-only">Success:</span>
+                ' . Html::encode($screening) . '
+            </div>';
+    }
+    
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId !== null) {
         $form              = new \app\models\forms\CommentForm();
         $form->paragraphNo = -1;
         $form->sectionId   = -1;
     }
 
-    $baseLink = UrlHelper::createMotionUrl($motion);
+    $screeningQueue = 0;
     foreach ($motion->comments as $comment) {
-        if ($comment->paragraph == -1 && $comment->status != MotionComment::STATUS_DELETED) {
+        if ($comment->status == MotionComment::STATUS_SCREENING && $comment->paragraph == -1) {
+            $screeningQueue++;
+        }
+    }
+    if ($screeningQueue > 0) {
+        echo '<div class="commentScreeningQueue">';
+        if ($screeningQueue == 1) {
+            echo '1 Kommentar wartet auf Freischaltung';
+        } else {
+            echo str_replace('%NUM%', $screeningQueue, '%NUM% Kommentare warten auf Freischaltung');
+        }
+        echo '</div>';
+    }
+
+    $baseLink = UrlHelper::createMotionUrl($motion);
+    foreach ($motion->getVisibleComments($screeningAdmin) as $comment) {
+        if ($comment->paragraph == -1) {
             $commLink = UrlHelper::createMotionCommentUrl($comment);
-            LayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
+            LayoutHelper::showComment($comment, $screeningAdmin, $baseLink, $commLink);
         }
     }
 
