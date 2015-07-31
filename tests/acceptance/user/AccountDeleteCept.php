@@ -4,7 +4,17 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$scenario->incomplete('feature not implemented yet');
+$I->gotoConsultationHome();
+$I->loginAsStdUser();
+
+$I->click('#myAccountLink');
+$I->see('Einstellungen', '.breadcrumb');
+
+$I->checkOption('input[name=accountDeleteConfirm]');
+$I->submitForm('.accountDeleteForm', [], 'accountDelete');
+$I->dontSee('Einstellungen', '.breadcrumb');
 
 $I->gotoConsultationHome();
 $I->loginAsStdUser();
+
+$I->see('BenutzerInnenname nicht gefunden.');

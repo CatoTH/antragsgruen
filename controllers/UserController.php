@@ -313,6 +313,12 @@ class UserController extends Base
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
 
+        if (isset($_POST['accountDeleteConfirm']) && isset($_POST['accountDelete'])) {
+            $user->deleteAccount();
+            \yii::$app->user->logout(true);
+            return $this->render('account_deleted');
+        }
+
         if ($user->email != '' && $user->emailConfirmed) {
             $emailBlacklisted = EMailBlacklist::isBlacklisted($user->email);
         } else {

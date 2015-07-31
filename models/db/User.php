@@ -659,6 +659,6 @@ class User extends ActiveRecord implements IdentityInterface
         $this->authKey        = '';
         $this->recoveryToken  = null;
         $this->recoveryAt     = null;
-        $this->save();
+        $this->save(false);
     }
 }

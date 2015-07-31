@@ -81,6 +81,13 @@ echo '<div class="saveholder">
 echo '<h2 class="green">' . 'Zugang löschen' . '</h2>' .
     Html::beginForm('', 'post', ['class' => 'accountDeleteForm content']) .
     '
+    <div class="accountEditExplanation alert alert-info" role="alert">
+    Hier kannst du diesen Zugang von Antragsgrün löschen. Du erhältst keine E-Mail-Benachrichtigungen mehr,
+    ein Login ist auch nicht mehr möglich. Deine E-Mail-Adresse, Name, Passwort usw. werden damit aus unserem
+    System gelöscht.<br>
+    Eingebrachte (Änderungs-)Anträge bleiben aber erhalten. Um eingebrachte Anträge zu entfernen,
+    wende dich bitte an die AdministratorInnen der jeweiligen Unterseite.
+    </div>
     <div class="row">
     <div class="col-md-6">
     <div class="checkbox">
