@@ -4,6 +4,15 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
+$I->wantTo('allow comments for everyone');
+$I->gotoConsultationHome(true, 'bdk', 'bdk');
+$I->loginAsStdAdmin();
+$I->gotoStdAdminPage(true, 'bdk', 'bdk')->gotoMotionTypes(7);
+$I->selectOption('#typePolicyComments', \app\models\policies\All::getPolicyName());
+$I->submitForm('.adminTypeForm', [], 'save');
+$I->logout();
+
+
 $I->wantTo('write a comment, but forget my name');
 $I->gotoConsultationHome(true, 'bdk', 'bdk')->gotoMotionView(4);
 
