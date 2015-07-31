@@ -203,7 +203,7 @@ if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
     $form    = $commentForm;
-    $imadmin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
+    $screenAdmin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
         $form              = new \app\models\forms\CommentForm();
@@ -212,10 +212,29 @@ if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     }
 
     $baseLink = UrlHelper::createAmendmentUrl($amendment);
+    $visibleStati = [AmendmentComment::STATUS_VISIBLE];
+    if ($screenAdmin) {
+        $visibleStati[] = AmendmentComment::STATUS_SCREENING;
+    }
+    $screeningQueue = 0;
     foreach ($amendment->comments as $comment) {
-        if ($comment->paragraph == -1 && $comment->status != AmendmentComment::STATUS_DELETED) {
+        if ($comment->status == AmendmentComment::STATUS_SCREENING) {
+            $screeningQueue++;
+        }
+    }
+    if ($screeningQueue > 0) {
+        echo '<div class="commentScreeningQueue">';
+        if ($screeningQueue == 1) {
+            echo '1 Kommentar wartet auf Freischaltung';
+        } else {
+            echo str_replace('%NUM%', $screeningQueue, '%NUM% Kommentare warten auf Freischaltung');
+        }
+        echo '</div>';
+    }
+    foreach ($amendment->comments as $comment) {
+        if ($comment->paragraph == -1 && in_array($comment->status, $visibleStati)) {
             $commLink = UrlHelper::createAmendmentCommentUrl($comment);
-            MotionLayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
+            MotionLayoutHelper::showComment($comment, $screenAdmin, $baseLink, $commLink);
         }
     }
 

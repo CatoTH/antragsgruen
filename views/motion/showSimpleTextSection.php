@@ -7,6 +7,7 @@
 
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\db\MotionComment;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\views\motion\LayoutHelper;
@@ -14,6 +15,7 @@ use yii\helpers\Html;
 
 $hasLineNumbers = $section->consultationSetting->lineNumbers;
 $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
+$screenAdmin    = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
     $classes[] = 'lineNumbers';
@@ -39,12 +41,13 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     echo '<ul class="bookmarks">';
     if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
         $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurrUser(true, true);
-        if (count($paragraph->comments) > 0 || $mayOpen) {
+        $numComments = $paragraph->getVisibleComments($screenAdmin);
+        if (count($numComments) > 0 || $mayOpen) {
             echo '<li class="comment">';
             $str = '<span class="glyphicon glyphicon-comment"></span>';
-            $str .= '<span class="count" data-count="' . count($paragraph->comments) . '"></span>';
+            $str .= '<span class="count" data-count="' . count($numComments) . '"></span>';
             $zero = '';
-            if (count($paragraph->comments) == 0) {
+            if (count($numComments) == 0) {
                 $zero .= ' zero';
             }
             echo Html::a($str, '#', ['class' => 'shower' . $zero]);
@@ -97,25 +100,57 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
         if (count($paragraph->comments) > 0 || $section->motion->motionType->getCommentPolicy()) {
+            echo '<section class="commentHolder">';
             $motion = $section->motion;
             $form   = $commentForm;
 
-            $imadmin = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
+            if (in_array($paragraphNo, $openedComments)) {
+                $screening = \Yii::$app->session->getFlash('screening', null, true);
+                if ($screening) {
+                    echo '<div class="alert alert-success" role="alert">
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                <span class="sr-only">Success:</span>
+                ' . Html::encode($screening) . '
+            </div>';
+                }
+            }
+
             if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
                 $form              = new \app\models\forms\CommentForm();
                 $form->paragraphNo = $paragraphNo;
                 $form->sectionId   = $section->sectionId;
             }
 
-            $baseLink = UrlHelper::createMotionUrl($motion);
+            $screeningQueue = 0;
             foreach ($paragraph->comments as $comment) {
+                if ($comment->status == MotionComment::STATUS_SCREENING) {
+                    $screeningQueue++;
+                }
+            }
+            if ($screeningQueue > 0) {
+                echo '<div class="commentScreeningQueue">';
+                if ($screeningQueue == 1) {
+                    echo '1 Kommentar wartet auf Freischaltung';
+                } else {
+                    echo str_replace('%NUM%', $screeningQueue, '%NUM% Kommentare warten auf Freischaltung');
+                }
+                echo '</div>';
+            }
+            $baseLink = UrlHelper::createMotionUrl($motion);
+            foreach ($paragraph->getVisibleComments($screenAdmin) as $comment) {
                 $commLink = UrlHelper::createMotionCommentUrl($comment);
-                LayoutHelper::showComment($comment, $imadmin, $baseLink, $commLink);
+                LayoutHelper::showComment($comment, $screenAdmin, $baseLink, $commLink);
             }
 
-            if ($section->motion->motionType->getCommentPolicy()) {
+            if ($section->motion->motionType->getCommentPolicy()->checkCurrUser()) {
                 LayoutHelper::showCommentForm($form, $motion->consultation, $section->sectionId, $paragraphNo);
+            } elseif ($section->motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+                echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
+        <span class="glyphicon glyphicon-log-in"></span>
+        Logge dich ein, um kommentieren zu können.
+        </div>';
             }
+            echo '</section>';
         }
     }
 

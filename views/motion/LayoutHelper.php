@@ -63,17 +63,16 @@ class LayoutHelper
      */
     public static function showComment(IComment $comment, $imadmin, $baseLink, $commLink)
     {
+        $screening = ($comment->status == IComment::STATUS_SCREENING);
         echo '<article class="motionComment content hoverHolder" id="comment' . $comment->id . '">
         <div class="date">' . Tools::formatMysqlDate($comment->dateCreation) . '</div>
-        <h3 class="green">Kommentar von ' . Html::encode($comment->name);
+        <h3 class="green">' . Html::encode($comment->name) . ':';
 
-        if ($comment->status == IComment::STATUS_SCREENING) {
-            echo ' <em>(noch nicht freigeschaltet)</em>';
+        if ($screening) {
+            echo ' <span class="screeningHint">(noch nicht freigeschaltet)</span>';
         }
-        echo '</h3>';
 
-        echo nl2br(Html::encode($comment->text));
-        if ($comment->canDelete(User::getCurrentUser())) {
+        if ($comment->status == IComment::STATUS_VISIBLE && $comment->canDelete(User::getCurrentUser())) {
             echo Html::beginForm($baseLink, 'post', ['class' => 'delLink hoverElement']);
             echo '<input type="hidden" name="commentId" value="' . $comment->id . '">';
             echo '<input type="hidden" name="deleteComment" value="on">';
@@ -81,18 +80,21 @@ class LayoutHelper
             echo '<span class="glyphicon glyphicon-trash"></span></button>';
             echo Html::endForm();
         }
+        echo '</h3>';
 
-        if ($comment->status == IComment::STATUS_SCREENING && $imadmin) {
-            echo Html::beginForm($commLink);
+        echo nl2br(Html::encode($comment->text));
+
+        if ($screening && $imadmin) {
+            echo Html::beginForm($commLink, 'post', ['class' => 'screening']);
             echo '<div style="display: inline-block; width: 49%; text-align: center;">';
 
-            echo '<button type="button" class="btn btn-success" name="commentScreeningAccept">';
+            echo '<button type="submit" class="btn btn-success" name="commentScreeningAccept">';
             echo '<span class="glyphicon glyphicon-thumbs-up"></span> Freischalten';
             echo '</button>';
 
             echo '</div><div style="display: inline-block; width: 49%; text-align: center;">';
 
-            echo '<button type="button" class="btn btn-danger" name="commentScreeningReject">';
+            echo '<button type="submit" class="btn btn-danger" name="commentScreeningReject">';
             echo '<span class="glyphicon glyphicon-thumbs-down"></span> Löschen';
             echo '</button>';
 

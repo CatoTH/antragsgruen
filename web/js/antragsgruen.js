@@ -218,11 +218,15 @@
     var motionShow = function () {
         var $paragraphs = $('.motionTextHolder .paragraph');
         $paragraphs.find('.comment .shower').click(function (ev) {
-            var $this = $(this);
+            ev.preventDefault();
+            var $this = $(this),
+                $commentHolder = $this.parents('.paragraph').first().find('.commentHolder');
             $this.addClass("hidden");
             $this.parent().find('.hider').removeClass("hidden");
-            $this.parents('.paragraph').first().find('.commentForm, .motionComment').removeClass("hidden");
-            ev.preventDefault();
+            $commentHolder.removeClass("hidden");
+            if (!$commentHolder.isOnScreen(0.1, 0.1)) {
+                $commentHolder.scrollintoview({top_offset: -100});
+            }
         });
 
         $paragraphs.find('.comment .hider').click(function (ev) {
@@ -230,7 +234,7 @@
             $this.addClass("hidden");
             $this.parent().find('.shower').removeClass("hidden");
 
-            $this.parents('.paragraph').first().find('.commentForm, .motionComment').addClass("hidden");
+            $this.parents('.paragraph').first().find('.commentHolder').addClass("hidden");
             ev.preventDefault();
         });
 

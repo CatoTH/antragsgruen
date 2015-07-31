@@ -76,6 +76,9 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         if ($user->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
             return true;
         }
+        if (!$this->user) {
+            return false;
+        }
         if (!is_null($this->user->auth) && $user->auth == $this->user->auth) {
             return true;
         }

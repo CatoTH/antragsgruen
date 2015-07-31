@@ -23,13 +23,13 @@ class Consultation
     public $iniatorsMayEdit     = false;
     public $hideTitlePrefix     = false;
     public $showFeeds           = true;
+    public $confirmEmails       = false;
+    public $commentNeedsEmail   = false;
 
     // TESTS WITHOUT TEST CASES
 
     /** @var bool */
-    public $commentNeedsEmail     = false;
     public $adminsMayEdit         = true;
-    public $confirmEmails         = false;
     public $minimalisticUI        = false;
     public $commentsSupportable   = false;
     public $screeningMotionsShown = false;

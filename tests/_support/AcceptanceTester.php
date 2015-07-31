@@ -28,6 +28,7 @@ class AcceptanceTester extends \Codeception\Actor
     const FIRST_FREE_MOTION_SECTION      = 29;
     const FIRST_FREE_AMENDMENT_ID        = 274;
     const FIRST_FREE_AGENDA_ITEM_ID      = 15;
+    const FIRST_FREE_COMMENT_ID          = 1;
 
     /**
      * @param bool $check

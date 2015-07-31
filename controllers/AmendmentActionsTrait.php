@@ -9,6 +9,7 @@ use app\models\db\ConsultationLog;
 use app\models\db\IComment;
 use app\models\db\Consultation;
 use app\models\db\User;
+use app\models\exceptions\Access;
 use app\models\exceptions\DB;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
@@ -46,11 +47,12 @@ trait AmendmentActionsTrait
      * @param Amendment $amendment
      * @param array $viewParameters
      * @return AmendmentComment
+     * @throws Access
      */
     private function writeComment(Amendment $amendment, &$viewParameters)
     {
         if (!$amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
-            \Yii::$app->session->setFlash('error', 'No rights to write a comment');
+            throw new Access('No rights to write a comment');
         }
         $commentForm = new CommentForm();
         $commentForm->setAttributes($_POST['comment']);

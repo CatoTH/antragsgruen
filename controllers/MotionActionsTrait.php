@@ -10,6 +10,7 @@ use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\db\Consultation;
+use app\models\exceptions\Access;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
@@ -47,11 +48,12 @@ trait MotionActionsTrait
      * @param Motion $motion
      * @param array $viewParameters
      * @return MotionComment
+     * @throws Access
      */
     private function writeComment(Motion $motion, &$viewParameters)
     {
         if (!$motion->motionType->getCommentPolicy()->checkCurrUser()) {
-            \Yii::$app->session->setFlash('error', 'No rights to write a comment');
+            throw new Access('No rights to write a comment');
         }
         $commentForm = new CommentForm();
         $commentForm->setAttributes($_POST['comment']);
@@ -71,7 +73,10 @@ trait MotionActionsTrait
         try {
             $comment = $commentForm->saveMotionComment($motion);
             ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT, $comment->id);
+            \yii::$app->session->setFlash('screening', 'Der Kommentar wurde erstellt. ' .
+                'Er wird noch vom Admin kontrolliert und wird dann freigeschaltet.');
             $this->redirect(UrlHelper::createMotionCommentUrl($comment));
+            \yii::$app->end();
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
             if (!isset($viewParameters['openedComments'][$commentForm->sectionId])) {
@@ -111,10 +116,19 @@ trait MotionActionsTrait
      */
     private function screenCommentAccept(Motion $motion, $commentId)
     {
-        $comment = $this->getComment($motion, $commentId, true);
+        /** @var MotionComment $comment */
+        $comment = MotionComment::findOne($commentId);
+        if (!$comment || $comment->motionId != $motion->id) {
+            throw new Internal('Kommentar nicht gefunden');
+        }
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            throw new Internal('Keine Freischaltrechte');
+        }
 
         $comment->status = IComment::STATUS_VISIBLE;
         $comment->save();
+
+        $motion->refresh();
 
         ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
 
@@ -136,9 +150,19 @@ trait MotionActionsTrait
      */
     private function screenCommentReject(Motion $motion, $commentId)
     {
-        $comment         = $this->getComment($motion, $commentId, true);
+        /** @var MotionComment $comment */
+        $comment = MotionComment::findOne($commentId);
+        if (!$comment || $comment->motionId != $motion->id) {
+            throw new Internal('Kommentar nicht gefunden');
+        }
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            throw new Internal('Keine Freischaltrechte');
+        }
+
         $comment->status = IComment::STATUS_DELETED;
         $comment->save();
+
+        $motion->refresh();
 
         ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
     }

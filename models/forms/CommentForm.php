@@ -32,8 +32,8 @@ class CommentForm extends Model
     public function saveMotionComment(Motion $motion)
     {
         $settings = $motion->consultation->getSettings();
-        if ($settings->commentNeedsEmail && trim($this->email) == "") {
-            throw new FormError('No E-Mail-Address entered');
+        if ($settings->commentNeedsEmail && trim($this->email) == '') {
+            throw new FormError('Keine E-Mail-Adresse angegeben');
         }
 
         $comment               = new MotionComment();
