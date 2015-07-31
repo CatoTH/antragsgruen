@@ -103,6 +103,66 @@ trait AmendmentActionsTrait
     /**
      * @param Amendment $amendment
      * @param int $commentId
+     * @throws Internal
+     */
+    private function screenCommentAccept(Amendment $amendment, $commentId)
+    {
+        /** @var AmendmentComment $comment */
+        $comment = AmendmentComment::findOne($commentId);
+        if (!$comment || $comment->amendmentId != $amendment->id) {
+            throw new Internal('Kommentar nicht gefunden');
+        }
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            throw new Internal('Keine Freischaltrechte');
+        }
+
+        $comment->status = IComment::STATUS_VISIBLE;
+        $comment->save();
+
+        $amendment->refresh();
+
+        $consultation = $amendment->motion->consultation;
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
+
+        $notified = [];
+        foreach ($consultation->subscriptions as $subscription) {
+            if ($subscription->comments && !in_array($subscription->userId, $notified)) {
+                /** @var User $user */
+                $user = $subscription->user;
+                $user->notifyComment($comment);
+                $notified[] = $subscription->userId;
+            }
+        }
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param int $commentId
+     * @throws Internal
+     */
+    private function screenCommentReject(Amendment $amendment, $commentId)
+    {
+        /** @var AmendmentComment $comment */
+        $comment = AmendmentComment::findOne($commentId);
+        if (!$comment || $comment->amendmentId != $amendment->id) {
+            throw new Internal('Kommentar nicht gefunden');
+        }
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            throw new Internal('Keine Freischaltrechte');
+        }
+
+        $comment->status = IComment::STATUS_DELETED;
+        $comment->save();
+
+        $amendment->refresh();
+
+        $consultation = $amendment->motion->consultation;
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param int $commentId
      * @param array $viewParameters
      */
     private function performShowActions(Amendment $amendment, $commentId, &$viewParameters)

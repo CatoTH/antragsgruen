@@ -440,7 +440,7 @@ if ($commentWholeMotions) {
                 ' . Html::encode($screening) . '
             </div>';
     }
-    
+
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId !== null) {
         $form              = new \app\models\forms\CommentForm();
         $form->paragraphNo = -1;
