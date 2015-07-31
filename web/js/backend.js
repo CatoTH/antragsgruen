@@ -16,6 +16,12 @@
                 $("#antrag_neu_braucht_telefon_holder").addClass("hidden");
             }
         }).trigger("change");
+
+        $('.urlPathHolder .shower a').click(function(ev) {
+            ev.preventDefault();
+            $('.urlPathHolder .shower').addClass('hidden');
+            $('.urlPathHolder .holder').removeClass('hidden');
+        })
     };
 
 

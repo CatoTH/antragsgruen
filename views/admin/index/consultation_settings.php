@@ -55,9 +55,13 @@ echo '</div></fieldset>';
 
 echo '<fieldset class="form-group">
     <label class="col-sm-4 control-label" for="consultationPath">Verzeichnis:</label>
-    <div class="col-sm-8">
+    <div class="col-sm-8 urlPathHolder">
+        <div class="shower">' . Html::encode($consultation->urlPath) . ' [<a href="#">ändern</a>]</div>
+        <div class="holder hidden">
         <input type="text" required name="consultation[urlPath]"
         value="' . Html::encode($consultation->urlPath) . '" class="form-control" id="consultationPath">
+        <small>Hinweis: mit dieser Angabe ändern sich auch alle Links auf Anträge etc.</small>
+        </div>
     </div>
 </fieldset>
 
