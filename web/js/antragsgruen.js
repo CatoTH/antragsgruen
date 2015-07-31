@@ -472,10 +472,34 @@
             var pwd = $("#passwordInput").val();
             if (pwd.length < pwMinLen) {
                 ev.preventDefault();
-                bootbox.alert('Das Passwort muss mindestens 4 Buchstaben haben.');
+                bootbox.alert('Das Passwort muss mindestens ' + pwMinLen + ' Buchstaben haben.');
             }
             if ($form.find("input[name=createAccount]").prop("checked")) {
                 if (pwd != $("#passwordConfirm").val()) {
+                    ev.preventDefault();
+                    bootbox.alert('Die beiden Passwörter stimmen nicht überein.');
+                }
+            }
+        });
+    };
+
+    var accountEdit = function () {
+        var pwMinLen = $("#userPwd").data("min-len");
+
+        $('.accountDeleteForm input[name=accountDeleteConfirm]').change(function () {
+            if ($(this).prop("checked")) {
+                $(".accountDeleteForm button[name=accountDelete]").prop("disabled", false);
+            } else {
+                $(".accountDeleteForm button[name=accountDelete]").prop("disabled", true);
+            }
+        }).trigger('change');
+
+        $('.userAccountForm').submit(function (ev) {
+            if ($("#userPwd").val() != '' || $("#userPwd2").val() != '') {
+                if ($("#userPwd").val().length < pwMinLen) {
+                    ev.preventDefault();
+                    bootbox.alert('Das Passwort muss mindestens ' + pwMinLen + ' Buchstaben haben.');
+                } else if ($("#userPwd").val() != $("#userPwd2").val()) {
                     ev.preventDefault();
                     bootbox.alert('Die beiden Passwörter stimmen nicht überein.');
                 }
@@ -490,7 +514,8 @@
         'motionEditForm': motionEditForm,
         'amendmentEditForm': amendmentEditForm,
         'contentPageEdit': contentPageEdit,
-        'defaultInitiatorForm': defaultInitiatorForm
+        'defaultInitiatorForm': defaultInitiatorForm,
+        'accountEdit': accountEdit
     };
 
     $(".jsProtectionHint").remove();

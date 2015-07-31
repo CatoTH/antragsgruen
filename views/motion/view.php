@@ -339,7 +339,7 @@ if ($enries || $canSupport || $cantSupportMsg != '') {
     }
 
     if (count($dislikes) > 0) {
-        echo '<strong>Abgelehnt von:</strong><br>';
+        echo '<strong>Ablehnung von:</strong><br>';
         echo '<ul>';
         foreach ($dislikes as $supp) {
             echo '<li>';

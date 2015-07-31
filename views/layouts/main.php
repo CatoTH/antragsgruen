@@ -136,6 +136,8 @@ if (!User::getCurrentUser() && !$minimalistic) {
     echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink']) . '</li>';
 }
 if (User::getCurrentUser()) {
+    echo '<li>' . Html::a('Einstellungen', UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']) . '</li>';
+
     $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
     echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
 }

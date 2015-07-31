@@ -6,6 +6,7 @@ use app\components\AntiXSS;
 use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
 use app\components\WurzelwerkAuthClientTest;
+use app\models\db\EMailBlacklist;
 use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\Login;
@@ -265,6 +266,64 @@ class UserController extends Base
         }
 
         return $this->render('recovery', ['preEmail' => $email, 'preCode' => $code]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionMyaccount()
+    {
+        if (\Yii::$app->user->isGuest) {
+            $currUrl = \yii::$app->request->url;
+            $this->redirect(UrlHelper::createLoginUrl($currUrl));
+            return '';
+        }
+
+        $user     = User::getCurrentUser();
+        $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+
+        if (isset($_POST['save'])) {
+            if (trim($_POST['name']) != '') {
+                if ($user->name != $_POST['name']) {
+                }
+                $user->name = $_POST['name'];
+            }
+
+            if ($_POST['pwd'] != '' || $_POST['pwd2'] != '') {
+                if ($_POST['pwd'] != $_POST['pwd2']) {
+                    \yii::$app->session->setFlash('error', 'Die beiden Passwörter stimmen nicht überein.');
+                } elseif (mb_strlen($_POST['pwd']) < $pwMinLen) {
+                    $msg = 'Das Passwort muss mindestens %MINLEN% Zeichen lang sein.';
+                    \yii::$app->session->setFlash('error', str_replace('%MINLEN%', $pwMinLen, $msg));
+                } else {
+                    $user->pwdEnc = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+                }
+            }
+
+            $user->save();
+
+            if ($user->email != '' && $user->emailConfirmed) {
+                if (isset($_POST['emailBlcklist'])) {
+                    EMailBlacklist::addToBlacklist($user->email);
+                } else {
+                    EMailBlacklist::removeFromBlacklist($user->email);
+                }
+            }
+
+            \yii::$app->session->setFlash('success', 'Gespeichert.');
+        }
+
+        if ($user->email != '' && $user->emailConfirmed) {
+            $emailBlacklisted = EMailBlacklist::isBlacklisted($user->email);
+        } else {
+            $emailBlacklisted = false;
+        }
+
+        return $this->render('my_account', [
+            'user'             => $user,
+            'emailBlacklisted' => $emailBlacklisted,
+            'pwMinLen'         => $pwMinLen,
+        ]);
     }
 
     /**
