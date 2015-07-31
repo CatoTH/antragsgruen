@@ -247,6 +247,9 @@ class TextSimple extends ISectionType
     public function getMotionTeX()
     {
         $tex = '';
+	if ($this->isEmpty()) {
+		return $tex;
+	}
 
         /** @var MotionSection $section */
         $section = $this->section;
