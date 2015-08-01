@@ -185,6 +185,17 @@ class Base extends Controller
     }
 
     /**
+     */
+    public function forceLogin()
+    {
+        if (\Yii::$app->user->isGuest) {
+            $currUrl = \yii::$app->request->url;
+            $this->redirect(UrlHelper::createLoginUrl($currUrl));
+            \yii::$app->end();
+        }
+    }
+
+    /**
      * @return string
      */
     public function showErrors()

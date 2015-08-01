@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use yii\db\ActiveQuery;
 
 /**
  * @package app\models\db
@@ -148,5 +149,28 @@ class MotionComment extends IComment
     public function getLink()
     {
         return UrlHelper::createMotionCommentUrl($this);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return MotionComment[]
+     */
+    public static function getScreeningComments(Consultation $consultation)
+    {
+        $query = MotionComment::find();
+        $query->where('motionComment.status = ' . static::STATUS_SCREENING);
+        $query->joinWith(
+            [
+                'motion' => function ($query) use ($consultation) {
+                    $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
+                    /** @var ActiveQuery $query */
+                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                }
+            ]
+        );
+        $query->orderBy("dateCreation DESC");
+
+        return $query->all();
     }
 }

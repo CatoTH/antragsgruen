@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use yii\db\ActiveQuery;
 
 /**
  * @package app\models\db
@@ -127,5 +128,39 @@ class AmendmentComment extends IComment
     public function getLink()
     {
         return UrlHelper::createAmendmentCommentUrl($this);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return AmendmentComment[]
+     */
+    public static function getScreeningComments(Consultation $consultation)
+    {
+        $query = AmendmentComment::find();
+        $query->where('amendmentComment.status = ' . static::STATUS_SCREENING);
+        $query->joinWith(
+            [
+                'amendment' => function ($query) use ($consultation) {
+                    $invisibleStati = array_map('IntVal', $consultation->getInvisibleAmendmentStati());
+                    /** @var ActiveQuery $query */
+                    $query->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere('amendment.motionId = motion.id');
+
+                    $query->joinWith(
+                        [
+                            'motion'    => function ($query) use ($consultation) {
+                                $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
+                                /** @var ActiveQuery $query */
+                                $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                                $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                            }
+                        ]
+                    );
+                }
+            ]
+        );
+        $query->orderBy("dateCreation DESC");
+
+        return $query->all();
     }
 }

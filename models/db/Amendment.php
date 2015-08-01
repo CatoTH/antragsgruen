@@ -23,6 +23,7 @@ use yii\helpers\Html;
  * @property int $changeExplanationHtml
  * @property string $cache
  * @property string $dateCreation
+ * @property string $datePublication
  * @property string $dateResolution
  * @property int $status
  * @property string $statusString
@@ -383,7 +384,6 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function canWithdraw()
     {
-        // @TODO This is probably too simple...
         if (!in_array($this->status, [Amendment::STATUS_SUBMITTED_SCREENED, Amendment::STATUS_SUBMITTED_UNSCREENED])) {
             return false;
         }
@@ -461,16 +461,21 @@ class Amendment extends IMotion implements IRSSItem
         $init   = $this->getInitiators();
         $initId = (count($init) > 0 ? $init[0]->userId : null);
         ConsultationLog::log($this->motion->consultation, $initId, ConsultationLog::AMENDMENT_PUBLISH, $this->id);
-        /*
-        // @TODO Prevent duplicate Calls
-        $notified = [];
-        foreach ($this->consultation->subscriptions as $sub) {
-            if ($sub->motions && !in_array($sub->userId, $notified)) {
-                $sub->user->notifyMotion($this);
-                $notified[] = $sub->userId;
+
+        if ($this->datePublication === null) {
+            $motionType = UserNotification::NOTIFICATION_NEW_AMENDMENT;
+            $notified = [];
+            foreach ($this->motion->consultation->userNotifications as $noti) {
+                if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
+                    $noti->user->notifyAmendment($this);
+                    $notified[] = $noti->userId;
+                    $noti->lastNotification = date('Y-m-d H:i:s');
+                    $noti->save();
+                }
             }
+            $this->datePublication = date('Y-m-d H:i:s');
+            $this->save();
         }
-        */
     }
 
     /**

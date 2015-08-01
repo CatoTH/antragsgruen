@@ -83,9 +83,13 @@ $I->logout();
 
 
 $I->wantTo('screen the comment');
+$I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
-$I->gotoConsultationHome(true, 'bdk', 'bdk')->gotoMotionView(4);
-$I->click('#section_21_1 .comment .shower');
+$I->click('#adminLink');
+$I->seeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1));
+$I->seeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 2));
+$I->click('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 2) . ' a');
+
 $I->see('Mein Name 2', '#section_21_1 .motionComment');
 $I->see('Noch ein zweiter Kommentar', '#section_21_1 .motionComment');
 $I->see('2 Kommentare warten auf Freischaltung', '#section_21_1');
@@ -101,3 +105,9 @@ $I->submitForm('#comment' . $commId . ' form.screening', [], 'commentScreeningRe
 $I->dontSeeElement('.commentScreeningQueue');
 $I->see('Noch ein zweiter Kommentar');
 $I->dontSee('Noch ein dritter Kommentar');
+
+
+$I->gotoConsultationHome(true, 'bdk', 'bdk');
+$I->click('#adminLink');
+$I->dontSeeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1));
+$I->dontSeeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 2));

@@ -55,8 +55,11 @@ class CommentForm extends Model
             throw new DB($comment->getErrors());
         }
 
+        if (!$settings->screeningComments) {
+            $comment->sendPublishNotifications();
+        }
 
-        /**
+        /** @TODO
          * $add = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare?
          * " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
          * Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);
@@ -123,8 +126,11 @@ class CommentForm extends Model
             throw new DB($comment->getErrors());
         }
 
+        if (!$settings->screeningComments) {
+            $comment->sendPublishNotifications();
+        }
 
-        /**
+        /** @TODO
          * $add = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare?
          * " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
          * Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);

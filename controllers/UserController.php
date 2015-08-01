@@ -8,6 +8,7 @@ use app\components\WurzelwerkAuthClient;
 use app\components\WurzelwerkAuthClientTest;
 use app\models\db\EMailBlacklist;
 use app\models\db\User;
+use app\models\db\UserNotification;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
@@ -273,11 +274,7 @@ class UserController extends Base
      */
     public function actionMyaccount()
     {
-        if (\Yii::$app->user->isGuest) {
-            $currUrl = \yii::$app->request->url;
-            $this->redirect(UrlHelper::createLoginUrl($currUrl));
-            return '';
-        }
+        $this->forceLogin();
 
         $user     = User::getCurrentUser();
         $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
@@ -329,6 +326,46 @@ class UserController extends Base
             'user'             => $user,
             'emailBlacklisted' => $emailBlacklisted,
             'pwMinLen'         => $pwMinLen,
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionEmailblacklist($code)
+    {
+        $user = User::getUserByUnsubscribeCode($code);
+        if (!$user) {
+            return $this->showErrorpage(403, 'BenutzerIn nicht gefunden / Ungültiger Code');
+        }
+
+        if (isset($_POST['save'])) {
+            if (isset($_POST['unsubscribeOption']) && $_POST['unsubscribeOption'] == 'consultation') {
+                $notis = UserNotification::getUserConsultationNotis($user, $this->consultation);
+                foreach ($notis as $noti) {
+                    $noti->delete();
+                }
+            }
+
+            if (isset($_POST['unsubscribeOption']) && $_POST['unsubscribeOption'] == 'all') {
+                foreach ($user->notifications as $noti) {
+                    $noti->delete();
+                }
+            }
+
+            if (isset($_POST['emailBlacklist'])) {
+                EMailBlacklist::addToBlacklist($user->email);
+            } else {
+                EMailBlacklist::removeFromBlacklist($user->email);
+            }
+
+            \yii::$app->session->setFlash('success', 'Gespeichert.');
+        }
+
+        return $this->render('email_blacklist', [
+            'user'          => $user,
+            'consultation'  => $this->consultation,
+            'isBlacklisted' => EMailBlacklist::isBlacklisted($user->email),
         ]);
     }
 

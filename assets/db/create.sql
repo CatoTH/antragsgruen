@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `amendment` (
   `changeExplanationHtml` TINYINT(4)  NOT NULL DEFAULT '0',
   `cache`                 LONGTEXT    NOT NULL,
   `dateCreation`          TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `datePublication`       TIMESTAMP   NULL     DEFAULT NULL,
   `dateResolution`        TIMESTAMP   NULL     DEFAULT NULL,
   `status`                TINYINT(4)  NOT NULL,
   `statusString`          VARCHAR(55) NOT NULL,
@@ -152,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `consultationAgendaItem` (
 
 CREATE TABLE IF NOT EXISTS `consultationLog` (
   `id`                INT(11)     NOT NULL,
-  `userId`            INT(11)     NULL,
+  `userId`            INT(11)              DEFAULT NULL,
   `consultationId`    INT(11)     NOT NULL,
   `actionType`        SMALLINT(6) NOT NULL,
   `actionReferenceId` INT(11)     NOT NULL,
@@ -250,22 +251,6 @@ CREATE TABLE IF NOT EXISTS `consultationSettingsTag` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `consultationSubscription`
---
-
-CREATE TABLE IF NOT EXISTS `consultationSubscription` (
-  `consultationId` INT(11) NOT NULL,
-  `userId`         INT(11) NOT NULL,
-  `motions`        TINYINT(4) DEFAULT NULL,
-  `amendments`     TINYINT(4) DEFAULT NULL,
-  `comments`       TINYINT(4) DEFAULT NULL
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `consultationText`
 --
 
@@ -340,20 +325,21 @@ CREATE TABLE IF NOT EXISTS `emailLog` (
 --
 
 CREATE TABLE IF NOT EXISTS `motion` (
-  `id`             INT(11)     NOT NULL,
-  `consultationId` INT(11)     NOT NULL,
-  `motionTypeId`   INT(11)     NOT NULL,
-  `parentMotionId` INT(11)              DEFAULT NULL,
-  `agendaItemId`   INT(11)              DEFAULT NULL,
-  `title`          TEXT        NOT NULL,
-  `titlePrefix`    VARCHAR(50) NOT NULL,
-  `dateCreation`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `dateResolution` VARCHAR(45)          DEFAULT NULL,
-  `status`         TINYINT(4)  NOT NULL,
-  `statusString`   VARCHAR(55)          DEFAULT NULL,
-  `noteInternal`   TEXT,
-  `cache`          LONGTEXT    NOT NULL,
-  `textFixed`      TINYINT(4)           DEFAULT '0'
+  `id`              INT(11)     NOT NULL,
+  `consultationId`  INT(11)     NOT NULL,
+  `motionTypeId`    INT(11)     NOT NULL,
+  `parentMotionId`  INT(11)              DEFAULT NULL,
+  `agendaItemId`    INT(11)              DEFAULT NULL,
+  `title`           TEXT        NOT NULL,
+  `titlePrefix`     VARCHAR(50) NOT NULL,
+  `dateCreation`    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `datePublication` TIMESTAMP   NULL     DEFAULT NULL,
+  `dateResolution`  TIMESTAMP   NULL     DEFAULT NULL,
+  `status`          TINYINT(4)  NOT NULL,
+  `statusString`    VARCHAR(55)          DEFAULT NULL,
+  `noteInternal`    TEXT,
+  `cache`           LONGTEXT    NOT NULL,
+  `textFixed`       TINYINT(4)           DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -516,17 +502,17 @@ CREATE TABLE IF NOT EXISTS `texTemplate` (
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id`              INT(11)     NOT NULL,
-  `name`            TEXT        NOT NULL,
-  `email`           VARCHAR(200)         DEFAULT NULL,
-  `emailConfirmed`  TINYINT(4)           DEFAULT '0',
-  `auth`            VARCHAR(190)         DEFAULT NULL,
-  `dateCreation`    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status`          TINYINT(4)  NOT NULL,
-  `pwdEnc`          VARCHAR(100)         DEFAULT NULL,
-  `authKey`         BINARY(100) NOT NULL,
-  `recoveryToken`   VARCHAR(100)         DEFAULT NULL,
-  `recoveryAt`      TIMESTAMP   NULL     DEFAULT NULL
+  `id`             INT(11)     NOT NULL,
+  `name`           TEXT        NOT NULL,
+  `email`          VARCHAR(200)         DEFAULT NULL,
+  `emailConfirmed` TINYINT(4)           DEFAULT '0',
+  `auth`           VARCHAR(190)         DEFAULT NULL,
+  `dateCreation`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`         TINYINT(4)  NOT NULL,
+  `pwdEnc`         VARCHAR(100)         DEFAULT NULL,
+  `authKey`        BINARY(100) NOT NULL,
+  `recoveryToken`  VARCHAR(100)         DEFAULT NULL,
+  `recoveryAt`     TIMESTAMP   NULL     DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -643,14 +629,6 @@ ADD KEY `motionType` (`motionTypeId`);
 ALTER TABLE `consultationSettingsTag`
 ADD PRIMARY KEY (`id`),
 ADD KEY `consultationId` (`consultationId`);
-
---
--- Indexes for table `consultationSubscription`
---
-ALTER TABLE `consultationSubscription`
-ADD PRIMARY KEY (`consultationId`, `userId`),
-ADD KEY `fk_consultationIdx` (`consultationId`),
-ADD KEY `fk_userIdx` (`userId`);
 
 --
 -- Indexes for table `consultationText`
@@ -987,17 +965,6 @@ ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTy
 --
 ALTER TABLE `consultationSettingsTag`
 ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
---
--- Constraints for table `consultationSubscription`
---
-ALTER TABLE `consultationSubscription`
-ADD CONSTRAINT `fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 

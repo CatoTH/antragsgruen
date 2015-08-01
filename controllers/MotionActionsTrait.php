@@ -73,8 +73,12 @@ trait MotionActionsTrait
         try {
             $comment = $commentForm->saveMotionComment($motion);
             ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT, $comment->id);
-            \yii::$app->session->setFlash('screening', 'Der Kommentar wurde erstellt. ' .
-                'Er wird noch vom Admin kontrolliert und wird dann freigeschaltet.');
+            if ($comment->status == MotionComment::STATUS_SCREENING) {
+                \yii::$app->session->setFlash('screening', 'Der Kommentar wurde erstellt. ' .
+                    'Er wird noch vom Admin kontrolliert und wird dann freigeschaltet.');
+            } else {
+                \yii::$app->session->setFlash('screening', 'Der Kommentar wurde erstellt.');
+            }
             $this->redirect(UrlHelper::createMotionCommentUrl($comment));
             \yii::$app->end();
         } catch (\Exception $e) {
@@ -132,15 +136,7 @@ trait MotionActionsTrait
 
         ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
 
-        $notified = [];
-        foreach ($motion->consultation->subscriptions as $subscription) {
-            if ($subscription->comments && !in_array($subscription->userId, $notified)) {
-                /** @var User $user */
-                $user = $subscription->user;
-                $user->notifyComment($comment);
-                $notified[] = $subscription->userId;
-            }
-        }
+        $comment->sendPublishNotifications();
     }
 
     /**

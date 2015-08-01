@@ -15,6 +15,7 @@ use app\models\db\Motion;
 use app\models\db\Consultation;
 use app\models\db\MotionComment;
 use app\models\db\User;
+use app\models\db\UserNotification;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 
@@ -177,7 +178,34 @@ class ConsultationController extends Base
      */
     public function actionNotifications()
     {
-        // @TODO
+        $this->forceLogin();
+
+        $user = User::getCurrentUser();
+        $con  = $this->consultation;
+
+        if (isset($_POST['save'])) {
+            $newNotis = (isset($_POST['notifications']) ? $_POST['notifications'] : []);
+            if (in_array('motion', $newNotis)) {
+                UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_MOTION);
+            } else {
+                UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_NEW_MOTION);
+            }
+            if (in_array('amendment', $newNotis)) {
+                UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_AMENDMENT);
+            } else {
+                UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_NEW_AMENDMENT);
+            }
+            if (in_array('comment', $newNotis)) {
+                UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_COMMENT);
+            } else {
+                UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_NEW_COMMENT);
+            }
+            \Yii::$app->session->setFlash('success', 'Gespeichert.');
+        }
+
+        $notifications = UserNotification::getUserConsultationNotis($user, $this->consultation);
+
+        return $this->render('user_notifications', ['user' => $user, 'notifications' => $notifications]);
     }
 
     /**

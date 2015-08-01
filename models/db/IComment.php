@@ -137,4 +137,20 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         });
         return array_slice($comments, 0, $limit);
     }
+
+    /**
+     */
+    public function sendPublishNotifications()
+    {
+        $motionType = UserNotification::NOTIFICATION_NEW_COMMENT;
+        $notified = [];
+        foreach ($this->getConsultation()->userNotifications as $noti) {
+            if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
+                $noti->user->notifyComment($this);
+                $notified[] = $noti->userId;
+                $noti->lastNotification = date('Y-m-d H:i:s');
+                $noti->save();
+            }
+        }
+    }
 }

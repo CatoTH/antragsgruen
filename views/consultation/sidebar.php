@@ -179,7 +179,7 @@ $title = '<span class="glyphicon glyphicon-bell"></span>';
 $title .= Yii::t('con', 'E-Mail-Benachrichtigung bei neuen Anträgen');
 $link = UrlHelper::createUrl('consultation/notifications');
 $html = "<div><ul class='nav nav-list'><li class='nav-header'>Benachrichtigungen</li>";
-$html .= "<li class='notifications'>" . Html::a($title, $link, ['class' => 'notifications']) . "</li>";
+$html .= "<li class='notifications'>" . Html::a($title, $link) . "</li>";
 $html .= "</ul></div>";
 $layout->menusHtml[] = $html;
 

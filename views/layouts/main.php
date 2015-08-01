@@ -30,7 +30,7 @@ $this->beginPage();
 
 
 echo '<!DOCTYPE HTML>
-<html lang="' . $lang . '">
+<html lang="' . Html::encode($lang) . '">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">' . "\n";
@@ -143,7 +143,7 @@ if (User::getCurrentUser()) {
     echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
 }
 if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_ANY)) {
-    $adminUrl = UrlHelper::createUrl("admin/index");
+    $adminUrl = UrlHelper::createUrl('admin/index');
     echo '<li><a href="' . Html::encode($adminUrl) . '" id="adminLink">Admin</a></li>';
 }
 echo '</ul>
@@ -157,11 +157,11 @@ echo '<div class="row logo">
 <a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Startseite" class="homeLinkLogo">';
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != "") {
     $path     = parse_url($controller->consultation->getSettings()->logoUrl);
-    $filename = basename($path["path"]);
-    $filename = substr($filename, 0, strrpos($filename, "."));
+    $filename = basename($path['path']);
+    $filename = substr($filename, 0, strrpos($filename, '.'));
     $filename = str_replace(
-        ["_", "ue", "ae", "oe", "Ue", "Oe", "Ae"],
-        [" ", "ü", "ä", "ö", "Ü" . "Ö", "Ä"],
+        ['_', 'ue', 'ae', 'oe', 'Ue', 'Oe', 'Ae'],
+        [' ', 'ü', 'ä', 'ö', 'Ü' . 'Ö', 'Ä'],
         $filename
     );
     $logoUrl  = $controller->consultation->getSettings()->logoUrl;

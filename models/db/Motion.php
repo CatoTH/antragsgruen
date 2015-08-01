@@ -21,6 +21,7 @@ use yii\helpers\Html;
  * @property string $title
  * @property string $titlePrefix
  * @property string $dateCreation
+ * @property string $datePublication
  * @property string $dateResolution
  * @property int $status
  * @property string $statusString
@@ -305,7 +306,6 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canWithdraw()
     {
-        // @TODO This is probably too simple...
         if (!in_array($this->status, [Motion::STATUS_SUBMITTED_SCREENED, Motion::STATUS_SUBMITTED_UNSCREENED])) {
             return false;
         }
@@ -489,18 +489,24 @@ class Motion extends IMotion implements IRSSItem
     public function onPublish()
     {
         $this->flushCacheWithChildren();
-        // @TODO Prevent duplicate Calls
 
-        $init = $this->getInitiators();
+        $init   = $this->getInitiators();
         $initId = (count($init) > 0 ? $init[0]->userId : null);
         ConsultationLog::log($this->consultation, $initId, ConsultationLog::MOTION_PUBLISH, $this->id);
 
-        $notified = [];
-        foreach ($this->consultation->subscriptions as $sub) {
-            if ($sub->motions && !in_array($sub->userId, $notified)) {
-                $sub->user->notifyMotion($this);
-                $notified[] = $sub->userId;
+        if ($this->datePublication === null) {
+            $motionType = UserNotification::NOTIFICATION_NEW_MOTION;
+            $notified   = [];
+            foreach ($this->consultation->userNotifications as $noti) {
+                if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
+                    $noti->user->notifyMotion($this);
+                    $notified[]             = $noti->userId;
+                    $noti->lastNotification = date('Y-m-d H:i:s');
+                    $noti->save();
+                }
             }
+            $this->datePublication = date('Y-m-d H:i:s');
+            $this->save();
         }
     }
 

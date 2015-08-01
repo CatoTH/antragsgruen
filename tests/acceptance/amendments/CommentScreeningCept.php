@@ -46,8 +46,13 @@ $I->see('2 Kommentare warten auf Freischaltung', 'section.comments');
 
 
 $I->wantTo('screen the comment');
+$I->gotoConsultationHome();
 $I->loginAsStdAdmin();
-$I->gotoConsultationHome()->gotoAmendmentView(1);
+$I->click('#adminLink');
+$I->seeElement('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 0));
+$I->seeElement('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1));
+$I->click('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1) . ' a');
+
 $I->see('Mein Name 2', 'section.comments .motionComment');
 $I->see('Noch ein zweiter Kommentar', 'section.comments .motionComment');
 $I->see('2 Kommentare warten auf Freischaltung', 'section.comments');
@@ -63,3 +68,9 @@ $I->submitForm('#comment' . $commId . ' form.screening', [], 'commentScreeningRe
 $I->dontSeeElement('.commentScreeningQueue');
 $I->see('Noch ein zweiter Kommentar');
 $I->dontSee('Noch ein dritter Kommentar');
+
+
+$I->gotoConsultationHome();
+$I->click('#adminLink');
+$I->dontSeeElement('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 0));
+$I->dontSeeElement('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1));

@@ -5,10 +5,12 @@ namespace app\controllers\admin;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentComment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
 use app\models\db\Motion;
+use app\models\db\MotionComment;
 use app\models\db\Site;
 use app\models\AdminTodoItem;
 
@@ -47,7 +49,28 @@ class IndexController extends AdminBase
                     $description
                 );
             }
-            // @TODO Comments
+            $comments = MotionComment::getScreeningComments($this->consultation);
+            foreach ($comments as $comment) {
+                $description = 'Von: ' . $comment->name;
+                $todo[]      = new AdminTodoItem(
+                    'motionCommentScreen' . $comment->id,
+                    'Zu: ' . $comment->motion->getTitleWithPrefix(),
+                    'Kommentar freischalten',
+                    $comment->getLink(),
+                    $description
+                );
+            }
+            $comments = AmendmentComment::getScreeningComments($this->consultation);
+            foreach ($comments as $comment) {
+                $description = 'Von: ' . $comment->name;
+                $todo[]      = new AdminTodoItem(
+                    'amendmentCommentScreen' . $comment->id,
+                    'Zu: ' . $comment->amendment->getTitle(),
+                    'Kommentar freischalten',
+                    $comment->getLink(),
+                    $description
+                );
+            }
         }
 
         return $this->render(

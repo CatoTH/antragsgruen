@@ -33,7 +33,6 @@ use yii\web\IdentityInterface;
  * @property null|MotionComment[] $motionComments
  * @property null|MotionSupporter[] $motionSupports
  * @property Site[] $adminSites
- * @property ConsultationSubscription[] $subscribedConsultations
  * @property ConsultationUserPrivilege[] $consultationPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
@@ -192,14 +191,6 @@ class User extends ActiveRecord implements IdentityInterface
         $priv->adminScreen      = 0;
         $priv->adminSuper       = 0;
         return $priv;
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSubscribedConsultations()
-    {
-        return $this->hasMany(ConsultationSubscription::className(), ['id' => 'userId']);
     }
 
     /**
@@ -465,8 +456,27 @@ class User extends ActiveRecord implements IdentityInterface
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
-        $code = $this->id . "-" . substr(md5($this->id . "abmelden" . $params->randomSeed), 0, 8);
+        $code = $this->id . '-' . substr(md5($this->id . 'unsubscribe' . $params->randomSeed), 0, 8);
         return $code;
+    }
+
+    /**
+     * @param string $code
+     * @return null|User
+     */
+    public static function getUserByUnsubscribeCode($code)
+    {
+        $parts = explode('-', $code);
+        /** @var User $user */
+        $user = User::findOne($parts[0]);
+        if (!$user) {
+            return null;
+        }
+        if ($user->getNotificationUnsubscribeCode() == $code) {
+            return $user;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -479,15 +489,15 @@ class User extends ActiveRecord implements IdentityInterface
         if ($this->email == '' || !$this->emailConfirmed) {
             return;
         }
-        $code           = $this->getNotificationUnsubscribeCode();
-        $unsubscribeUrl = UrlHelper::createUrl(['user/unsubscribe', 'code' => $code]);
-        $unsubscribeUrl = UrlHelper::absolutizeLink($unsubscribeUrl);
-        $gruss          = "Hallo " . $this->name . ",\n\n";
-        $from_name      = $consultation->site->getBehaviorClass()->getMailFromName();
-        $sig            = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
-            "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $unsubscribeUrl;
-        $text           = $gruss . $text . $sig;
-        $type           = EmailLog::TYPE_MOTION_NOTIFICATION_USER;
+        $code         = $this->getNotificationUnsubscribeCode();
+        $blacklistUrl = UrlHelper::createUrl(['user/emailblacklist', 'code' => $code]);
+        $blacklistUrl = UrlHelper::absolutizeLink($blacklistUrl);
+        $gruss        = str_replace('%NAME%', $this->name, "Hallo %NAME%,\n\n");
+        $from_name    = $consultation->site->getBehaviorClass()->getMailFromName();
+        $sig          = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
+            "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $blacklistUrl;
+        $text         = $gruss . $text . $sig;
+        $type         = EMailLog::TYPE_MOTION_NOTIFICATION_USER;
         Mail::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text, $from_name);
     }
 

@@ -124,15 +124,7 @@ trait AmendmentActionsTrait
         $consultation = $amendment->motion->consultation;
         ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
 
-        $notified = [];
-        foreach ($consultation->subscriptions as $subscription) {
-            if ($subscription->comments && !in_array($subscription->userId, $notified)) {
-                /** @var User $user */
-                $user = $subscription->user;
-                $user->notifyComment($comment);
-                $notified[] = $subscription->userId;
-            }
-        }
+        $comment->sendPublishNotifications();
     }
 
     /**
