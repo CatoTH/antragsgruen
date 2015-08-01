@@ -5,12 +5,14 @@ namespace app\controllers;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
+use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
 use app\models\db\IComment;
 use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\exceptions\Access;
 use app\models\exceptions\DB;
+use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
 
@@ -62,7 +64,7 @@ trait AmendmentActionsTrait
         }
 
         try {
-            $comment = $commentForm->saveAmendmentComment($amendment);
+            $comment      = $commentForm->saveAmendmentComment($amendment);
             $consultation = $amendment->motion->consultation;
             ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_COMMENT, $comment->id);
             $this->redirect(UrlHelper::createAmendmentCommentUrl($comment));
@@ -150,6 +152,74 @@ trait AmendmentActionsTrait
 
         $consultation = $amendment->motion->consultation;
         ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param string $role
+     * @param string $string
+     * @throws FormError
+     */
+    private function amendmentLikeDislike(Amendment $amendment, $role, $string)
+    {
+        $currentUser = User::getCurrentUser();
+        if (!$amendment->motion->motionType->getSupportPolicy()->checkCurrUser() || $currentUser == null) {
+            throw new FormError('Supporting this motion is not possible');
+        }
+
+        foreach ($amendment->amendmentSupporters as $supp) {
+            if ($supp->userId == $currentUser->id) {
+                $amendment->unlink('amendmentSupporters', $supp, true);
+            }
+        }
+        $support              = new AmendmentSupporter();
+        $support->amendmentId = $amendment->id;
+        $support->userId      = $currentUser->id;
+        $support->position    = 0;
+        $support->role        = $role;
+        $support->save();
+
+        $amendment->refresh();
+
+        \Yii::$app->session->setFlash('success', $string);
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @throws FormError
+     */
+    private function amendmentLike(Amendment $amendment)
+    {
+        $msg = 'Du stimmst diesem Änderungsantrag nun zu.';
+        $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_LIKE, $msg);
+        ConsultationLog::logCurrUser($amendment->motion->consultation, ConsultationLog::AMENDMENT_LIKE, $amendment->id);
+    }
+
+    /**
+     * @param Amendment $amendment
+     */
+    private function amendmentDislike(Amendment $amendment)
+    {
+        $msg          = 'Du lehnst diesen Änderungsantrag nun ab.';
+        $consultation = $amendment->motion->consultation;
+        $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_DISLIKE, $msg);
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_DISLIKE, $amendment->id);
+    }
+
+    /**
+     * @param Amendment $amendment
+     */
+    private function amendmentSupportRevoke(Amendment $amendment)
+    {
+        $currentUser = User::getCurrentUser();
+        foreach ($amendment->amendmentSupporters as $supp) {
+            if ($supp->userId == $currentUser->id) {
+                $amendment->unlink('amendmentSupporters', $supp, true);
+            }
+        }
+        $consultation = $amendment->motion->consultation;
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_UNLIKE, $amendment->id);
+        \Yii::$app->session->setFlash('success', 'Du stehst diesem Änderungsantrag wieder neutral gegenüber.');
     }
 
     /**

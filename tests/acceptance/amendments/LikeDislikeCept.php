@@ -4,13 +4,12 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('verify that supporting motion is disabled by default');
-$I->gotoMotion(true, 3);
+$I->wantTo('verify that supporting amendments is disabled by default');
+$I->gotoAmendment();
 $I->dontSeeElement('section.likes');
 
 
-
-$I->wantTo('enable supporting motions for logged in users');
+$I->wantTo('enable supporting amendments for logged in users');
 
 $I->loginAsStdAdmin();
 $mtPage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
@@ -22,8 +21,8 @@ $I->logout();
 
 
 
-$I->wantTo('check if only logged in users can support motions');
-$I->gotoMotion(true, 3);
+$I->wantTo('check if only logged in users can support amendments');
+$I->gotoAmendment();
 $I->see('Du musst dich einloggen, um Anträge unterstützen zu können.');
 
 
@@ -31,31 +30,31 @@ $I->wantTo('support this motion');
 $I->loginAsStdUser();
 $I->dontSee('Du musst dich einloggen, um Anträge unterstützen zu können.');
 $I->submitForm('section.likes form', [], 'motionLike');
-$I->see('Du unterstützt diesen Antrag nun.');
+$I->see('Du stimmst diesem Änderungsantrag nun zu.');
 $I->see('Testuser', 'section.likes');
-$I->dontSee('Abgelehnt von:', 'section.likes');
-$I->see('Zustimmung von:', 'section.likes');
+$I->dontSee('Ablehnung:', 'section.likes');
+$I->see('Zustimmung:', 'section.likes');
 
 
 $I->wantTo('withdraw my support');
 $I->submitForm('section.likes form', [], 'motionSupportRevoke');
-$I->see('Du stehst diesem Antrag wieder neutral gegenüber.');
+$I->see('Du stehst diesem Änderungsantrag wieder neutral gegenüber.');
 $I->dontSee('Testuser', 'section.likes');
-$I->dontSee('Abgelehnt von:', 'section.likes');
-$I->dontSee('Zustimmung von:', 'section.likes');
+$I->dontSee('Ablehnung:', 'section.likes');
+$I->dontSee('Zustimmung:', 'section.likes');
 
 
 $I->wantTo('object to this motion');
 $I->submitForm('section.likes form', [], 'motionDislike');
-$I->see('Du widersprichst diesem Antrag nun.');
+$I->see('Du lehnst diesen Änderungsantrag nun ab.');
 $I->see('Testuser', 'section.likes');
-$I->see('Abgelehnt von:', 'section.likes');
-$I->dontSee('Zustimmung von:', 'section.likes');
+$I->see('Ablehnung:', 'section.likes');
+$I->dontSee('Zustimmung:', 'section.likes');
 
 
 $I->wantTo('withdraw my objection');
 $I->submitForm('section.likes form', [], 'motionSupportRevoke');
-$I->see('Du stehst diesem Antrag wieder neutral gegenüber.');
+$I->see('Du stehst diesem Änderungsantrag wieder neutral gegenüber.');
 $I->dontSee('Testuser', 'section.likes');
-$I->dontSee('Abgelehnt von:', 'section.likes');
-$I->dontSee('Zustimmung von:', 'section.likes');
+$I->dontSee('Ablehnung:', 'section.likes');
+$I->dontSee('Zustimmung:', 'section.likes');

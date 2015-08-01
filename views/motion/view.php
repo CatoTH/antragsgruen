@@ -5,7 +5,6 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
-use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
@@ -297,18 +296,6 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
 
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
 $supporters = $motion->getSupporters();
-$likes      = $motion->getLikes();
-$dislikes   = $motion->getDislikes();
-$enries     = (count($likes) > 0 || count($dislikes) > 0);
-
-$supportPolicy  = $motion->motionType->getSupportPolicy();
-$canSupport     = $supportPolicy->checkCurrUser();
-$cantSupportMsg = $supportPolicy->getPermissionDeniedSupportMsg();
-foreach ($motion->getInitiators() as $supp) {
-    if ($supp->userId == $currUserId) {
-        $canSupport = false;
-    }
-}
 
 if (count($supporters) > 0) {
     echo '<section class="supporters"><h2 class="green">Unterstützer_Innen</h2>
@@ -332,80 +319,8 @@ if (count($supporters) > 0) {
     echo '</div></section>';
 }
 
-if ($enries || $canSupport || $cantSupportMsg != '') {
-    echo '<section class="likes"><h2 class="green">Zustimmung</h2>
-    <div class="content">';
+LayoutHelper::printSupportSection($motion, $motion->motionType->getSupportPolicy(), $supportStatus);
 
-    if (count($likes) > 0) {
-        echo '<strong>Zustimmung von:</strong><br>';
-        echo '<ul>';
-        foreach ($likes as $supp) {
-            echo '<li>';
-            if ($supp->id == $currUserId) {
-                echo '<span class="label label-info">Du!</span> ';
-            }
-            echo Html::encode($supp->getNameWithOrga());
-            echo '</li>';
-        }
-        echo '</ul>';
-        echo "<br>";
-    }
-
-    if (count($dislikes) > 0) {
-        echo '<strong>Ablehnung von:</strong><br>';
-        echo '<ul>';
-        foreach ($dislikes as $supp) {
-            echo '<li>';
-            if ($supp->id == $currUserId) {
-                echo '<span class="label label-info">Du!</span> ';
-            }
-            echo Html::encode($supp->getNameWithOrga());
-            echo '</li>';
-        }
-        echo '</ul>';
-        echo "<br>";
-    }
-    echo '</div>';
-
-    if ($motion->motionType->getSupportPolicy()->checkCurrUser()) {
-        echo Html::beginForm();
-
-        echo '<div style="text-align: center; margin-bottom: 20px;">';
-        switch ($supportStatus) {
-            case MotionSupporter::ROLE_INITIATOR:
-                break;
-            case MotionSupporter::ROLE_LIKE:
-                echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                echo '<span class="glyphicon glyphicon-remove-sign"></span> Doch nicht';
-                echo '</button>';
-                break;
-            case MotionSupporter::ROLE_DISLIKE:
-                echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                echo '<span class="glyphicon glyphicon-remove-sign"></span> Doch nicht';
-                echo '</button>';
-                break;
-            default:
-                echo '<button type="submit" name="motionLike" class="btn btn-success">';
-                echo '<span class="glyphicon glyphicon-thumbs-up"></span> Zustimmung';
-                echo '</button>';
-
-                echo '<button type="submit" name="motionDislike" class="btn btn-alert">';
-                echo '<span class="glyphicon glyphicon-thumbs-down"></span> Widerspruch';
-                echo '</button>';
-        }
-        echo '</div>';
-        echo Html::endForm();
-    } else {
-        if ($cantSupportMsg != '') {
-            echo '<div class="alert alert-danger" role="alert">
-                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                ' . Html::encode($cantSupportMsg) . '
-            </div>';
-        }
-    }
-    echo '</section>';
-}
 
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
     echo '<section class="amendments"><h2 class="green">' . Yii::t('motion', 'Änderungsanträge') . '</h2>
@@ -419,16 +334,10 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
             if ($aename == "") {
                 $aename = $amend->id;
             }
-            $amendLink  = UrlHelper::createUrl(
-                [
-                    'amendment/view',
-                    'motionId'    => $motion->id,
-                    'amendmentId' => $amend->id
-                ]
-            );
+            $amendLink  = UrlHelper::createAmendmentUrl($amend);
             $amendStati = Amendment::getStati();
             echo Html::a($aename, $amendLink, ['class' => 'amendment' . $amend->id]);
-            echo ' (' . Html::encode($amendStati[$amend->status]) . ')';
+            echo ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStati[$amend->status]) . ')';
             echo '</li>';
         }
         echo '</ul>';

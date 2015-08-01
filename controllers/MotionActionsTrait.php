@@ -199,7 +199,7 @@ trait MotionActionsTrait
      */
     private function motionLike(Motion $motion)
     {
-        $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, 'Du unterstützt diesen Antrag nun.');
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, 'Du stimmst diesem Antrag nun zu.');
         ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_LIKE, $motion->id);
     }
 
@@ -208,7 +208,7 @@ trait MotionActionsTrait
      */
     private function motionDislike(Motion $motion)
     {
-        $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, 'Du widersprichst diesem Antrag nun.');
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, 'Du lehnst diesen Antrag nun ab.');
         ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_DISLIKE, $motion->id);
     }
 

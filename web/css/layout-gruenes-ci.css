@@ -9921,6 +9921,8 @@ ins, ul.inserted, blockquote.inserted {
     color: #FF7777;
     font-style: italic;
     padding: 0 6px 0 3px; }
+.motionData > .content > .alert {
+  margin-top: 20px; }
 
 .wysiwyg-textarea textarea {
   display: none; }

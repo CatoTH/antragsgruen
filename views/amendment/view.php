@@ -142,6 +142,9 @@ echo '<tr><th>Eingereicht:</th>
        <td>' . Tools::formatMysqlDateTime($amendment->dateCreation) . '</td>
                 </tr>';
 echo '</table>';
+
+echo $controller->showErrors();
+
 echo '</div>';
 echo '</div>';
 
@@ -211,6 +214,7 @@ if (count($supporters) > 0) {
     echo '</div></section>';
 }
 
+MotionLayoutHelper::printSupportSection($amendment, $amendment->motion->motionType->getSupportPolicy(), $supportStatus);
 
 if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';

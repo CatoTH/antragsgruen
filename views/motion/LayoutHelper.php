@@ -7,10 +7,12 @@ use app\components\latex\Exporter;
 use app\components\Tools;
 use app\models\db\Consultation;
 use app\models\db\IComment;
+use app\models\db\IMotion;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\User;
 use app\models\forms\CommentForm;
+use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -263,5 +265,104 @@ class LayoutHelper
         }
 
         return $content;
+    }
+
+    /**
+     * @param IMotion $motion
+     * @param IPolicy $policy
+     * @param int $supportStatus
+     */
+    public static function printSupportSection(IMotion $motion, IPolicy $policy, $supportStatus)
+    {
+        $user = User::getCurrentUser();
+
+        $canSupport     = $policy->checkCurrUser();
+        foreach ($motion->getInitiators() as $supp) {
+            if ($user && $supp->userId == $user->id) {
+                $canSupport = false;
+            }
+        }
+
+        $cantSupportMsg = $policy->getPermissionDeniedSupportMsg();
+
+        $likes      = $motion->getLikes();
+        $dislikes   = $motion->getDislikes();
+
+        if (count($likes) == 0 && count($dislikes) == 0 && $cantSupportMsg == '' && !$canSupport) {
+            return;
+        }
+
+        echo '<section class="likes"><h2 class="green">Zustimmung</h2>
+    <div class="content">';
+
+        if (count($likes) > 0) {
+            echo '<strong>Zustimmung:</strong><br>';
+            echo '<ul>';
+            foreach ($likes as $supp) {
+                echo '<li>';
+                if ($supp->id == $user->id) {
+                    echo '<span class="label label-info">Du!</span> ';
+                }
+                echo Html::encode($supp->getNameWithOrga());
+                echo '</li>';
+            }
+            echo '</ul>';
+            echo "<br>";
+        }
+
+        if (count($dislikes) > 0) {
+            echo '<strong>Ablehnung:</strong><br>';
+            echo '<ul>';
+            foreach ($dislikes as $supp) {
+                echo '<li>';
+                if ($supp->id == $user->id) {
+                    echo '<span class="label label-info">Du!</span> ';
+                }
+                echo Html::encode($supp->getNameWithOrga());
+                echo '</li>';
+            }
+            echo '</ul>';
+            echo "<br>";
+        }
+        echo '</div>';
+
+        if ($canSupport) {
+            echo Html::beginForm();
+
+            echo '<div style="text-align: center; margin-bottom: 20px;">';
+            switch ($supportStatus) {
+                case ISupporter::ROLE_INITIATOR:
+                    break;
+                case ISupporter::ROLE_LIKE:
+                    echo '<button type="submit" name="motionSupportRevoke" class="btn">';
+                    echo '<span class="glyphicon glyphicon-remove-sign"></span> Doch nicht';
+                    echo '</button>';
+                    break;
+                case ISupporter::ROLE_DISLIKE:
+                    echo '<button type="submit" name="motionSupportRevoke" class="btn">';
+                    echo '<span class="glyphicon glyphicon-remove-sign"></span> Doch nicht';
+                    echo '</button>';
+                    break;
+                default:
+                    echo '<button type="submit" name="motionLike" class="btn btn-success">';
+                    echo '<span class="glyphicon glyphicon-thumbs-up"></span> Zustimmung';
+                    echo '</button>';
+
+                    echo '<button type="submit" name="motionDislike" class="btn btn-alert">';
+                    echo '<span class="glyphicon glyphicon-thumbs-down"></span> Ablehnung';
+                    echo '</button>';
+            }
+            echo '</div>';
+            echo Html::endForm();
+        } else {
+            if ($cantSupportMsg != '') {
+                echo '<div class="alert alert-danger" role="alert">
+                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                ' . Html::encode($cantSupportMsg) . '
+            </div>';
+            }
+        }
+        echo '</section>';
     }
 }
