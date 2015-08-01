@@ -24,7 +24,7 @@ class TextHTML extends ISectionType
      */
     public function getAmendmentFormField()
     {
-        return $this->getTextAmendmentFormField(true);
+        return $this->getTextAmendmentFormField(true, $this->section->dataRaw);
     }
 
     /**

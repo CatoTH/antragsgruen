@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * Class IMotionSection
  * @package app\models\db
  * @property string $data
+ * @property string $dataRaw
  * @property int $sectionId
  * @property string $metadata
  * @property ConsultationSettingsMotionSection $consultationSetting

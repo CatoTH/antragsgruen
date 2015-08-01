@@ -75,9 +75,10 @@ abstract class ISectionType
 
     /**
      * @param bool $fullHtml
+     * @param string $data
      * @return string
      */
-    protected function getTextAmendmentFormField($fullHtml)
+    protected function getTextAmendmentFormField($fullHtml, $data)
     {
         $type     = $this->section->consultationSetting;
         $nameBase = 'sections[' . $type->id . ']';
@@ -101,7 +102,7 @@ abstract class ISectionType
             'title="' . Html::encode($type->title) . '"></textarea>';
         $str .= '<div class="texteditor" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
             'title="' . Html::encode($type->title) . '">';
-        $str .= $this->section->data;
+        $str .= $this->section->dataRaw;
         $str .= '</div>';
 
         $str .= '</div>';

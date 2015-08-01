@@ -47,12 +47,6 @@
                 element: 'span',
                 attributes: {'class': 'underline'}
             },
-            allowedContent: 'strong s em u sub sup;' +
-            'ul ol li {list-style-type};' +
-                //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-            'p blockquote {border,margin,padding};' +
-            'span(underline,strike,subscript,superscript);' +
-            'a[href];',
             toolbarGroups: [
                 {name: 'tools'},
                 {name: 'document', groups: ['mode', 'document', 'doctools']},
@@ -94,8 +88,21 @@
 
         if ($el.data('track-changed') == '1') {
             ckeditorConfig['extraPlugins'] += ',lite';
+            ckeditorConfig['allowedContent'] = 'strong s em u sub sup;' +
+                'ul ol li [data-*](ice-ins,ice-del,ice-cts){list-style-type};' +
+                    //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                'p blockquote [data-*](ice-ins,ice-del,ice-cts){border,margin,padding};' +
+                'span[data-*](ice-ins,ice-del,ice-cts,underline,strike,subscript,superscript);' +
+                'a[href,data-*](ice-ins,ice-del,ice-cts);' +
+                'br ins del[data-*](ice-ins,ice-del,ice-cts);';
         } else {
             ckeditorConfig['removePlugins'] += ',lite';
+            ckeditorConfig['allowedContent'] = 'strong s em u sub sup;' +
+                'ul ol li {list-style-type};' +
+                    //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                'p blockquote {border,margin,padding};' +
+                'span(underline,strike,subscript,superscript);' +
+                'a[href];';
         }
         var editor = CKEDITOR.inline(id, ckeditorConfig);
 

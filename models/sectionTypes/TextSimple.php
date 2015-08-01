@@ -32,7 +32,7 @@ class TextSimple extends ISectionType
      */
     public function getAmendmentFormField()
     {
-        return $this->getTextAmendmentFormField(false);
+        return $this->getTextAmendmentFormField(false, $this->section->dataRaw);
     }
 
     /**
