@@ -10127,6 +10127,11 @@ ul.searchResults {
 @media only screen and (min-width: 640px) {
   .shariff .orientation-horizontal.col-2 li {
     max-width: 204px !important; } }
+.shariff .theme-white .twitter a, .shariff .theme-white .twitter a:link, .shariff .theme-white .twitter a:visited {
+  color: #247bbd; }
+.shariff .theme-white .facebook a, .shariff .theme-white .facebook a:link, .shariff .theme-white .facebook a:visited {
+  color: #247bbd; }
+
 /*
 .fuelux {
   .pillbox-input-wrap {

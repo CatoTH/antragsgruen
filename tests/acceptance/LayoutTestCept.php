@@ -13,7 +13,7 @@ $I->validateHTML();
 
 $I->wantTo('test the motion creation form');
 $consultationHome->gotoMotionCreatePage();
-// No validateHTML, as CKEditor modifies the HTML code in a way that makes it invalid
+$I->validateHTML(AcceptanceTester::$ACCEPTED_HTML_ERRORS);
 $I->validatePa11y();
 
 
@@ -25,13 +25,13 @@ $I->dontSee('HoesslTo', '.breadcrumb');
 
 $I->wantTo('test the motion view');
 $I->gotoMotion();
-$I->validateHTML();
+$I->validateHTML(AcceptanceTester::$ACCEPTED_HTML_ERRORS);
 $I->validatePa11y();
 
 
 $I->wantTo('test the amendment view');
 $I->gotoAmendment(true, 3, 2);
-$I->validateHTML();
+$I->validateHTML(AcceptanceTester::$ACCEPTED_HTML_ERRORS);
 $I->validatePa11y();
 
 

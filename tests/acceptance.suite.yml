@@ -10,7 +10,7 @@ modules:
         - WebDriver
         - Asserts
         - \Helper\Acceptance
-        - \Helper\Validator
+        - \Helper\HTMLValidator
         - \Helper\Download
         - \Helper\Bootbox
         - \Helper\AccessibilityValidator

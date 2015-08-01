@@ -30,6 +30,11 @@ class AcceptanceTester extends \Codeception\Actor
     const FIRST_FREE_AGENDA_ITEM_ID      = 15;
     const FIRST_FREE_COMMENT_ID          = 1;
 
+    public static $ACCEPTED_HTML_ERRORS = [
+        'Bad value “popup” for attribute “rel”',
+        'CKEDITOR'
+    ];
+
     /**
      * @param bool $check
      * @param string $subdomain

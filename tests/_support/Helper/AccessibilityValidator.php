@@ -46,8 +46,10 @@ class AccessibilityValidator extends \Codeception\Module
     }
 
     /**
+     * @param string $standard
+     * @param string[] $ignoreMessages
      */
-    public function validatePa11y($standard = 'WCAG2AA')
+    public function validatePa11y($standard = 'WCAG2AA', $ignoreMessages = [])
     {
         try {
             $url      = $this->getPageUrl();
@@ -62,7 +64,15 @@ class AccessibilityValidator extends \Codeception\Module
                 $string = $message['code'] . "\n" . $message['selector'] . ': ';
                 $string .= $message['context'] . "\n";
                 $string .= $message['message'];
-                $failMessages[] = $string;
+                $ignoring = false;
+                foreach ($ignoreMessages as $ignoreMessage) {
+                    if (mb_stripos($string, $ignoreMessage) !== false) {
+                        $ignoring = true;
+                    }
+                }
+                if (!$ignoring) {
+                    $failMessages[] = $string;
+                }
             }
         }
         if (count($failMessages) > 0) {

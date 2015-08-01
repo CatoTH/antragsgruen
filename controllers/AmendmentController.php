@@ -191,13 +191,7 @@ class AmendmentController extends Base
             }
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
-                $notified = [];
-                foreach ($amendment->motion->consultation->subscriptions as $sub) {
-                    if ($sub->motions && !in_array($sub->userId, $notified)) {
-                        $sub->user->notifyAmendment($amendment);
-                        $notified[] = $sub->userId;
-                    }
-                }
+                $amendment->onPublish();
             }
 
             return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);
