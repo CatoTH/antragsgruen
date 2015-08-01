@@ -115,6 +115,19 @@ echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
 
 if (!$minimalisticUi) {
     echo '<div class="content">';
+
+    if (!$motion->consultation->site->getSettings()->forceLogin) {
+        $layout->loadShariff();
+        $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
+        $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
+        $lang           = Yii::$app->language;
+        $dataTitle      = $motion->getTitleWithPrefix();
+        echo '<div class="shariff" data-backend-url="' . Html::encode($shariffBackend) . '" data-theme="white"
+           data-url="' . Html::encode($myUrl) . '"
+           data-services="[&quot;twitter&quot;, &quot;facebook&quot;]"
+           data-lang="' . Html::encode($lang) . '" data-title="' . Html::encode($dataTitle) . '"></div>';
+    }
+
     /*
     if (count($antrag->antraege) > 0) { ?>
                 <div class="alert alert-error" style="margin-top: 10px; margin-bottom: 25px;">
@@ -429,7 +442,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 
 if ($commentWholeMotions) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
-    $form    = $commentForm;
+    $form           = $commentForm;
     $screeningAdmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
 
     $screening = \Yii::$app->session->getFlash('screening', null, true);
@@ -482,7 +495,4 @@ if ($commentWholeMotions) {
     echo '</section>';
 }
 
-if (!$motion->consultation->site->getSettings()->forceLogin) {
-    // @TODO Social Sharing
-}
 $layout->addOnLoadJS('$.Antragsgruen.motionShow();');

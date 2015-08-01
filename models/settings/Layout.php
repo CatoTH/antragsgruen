@@ -124,4 +124,12 @@ class Layout
     {
         $this->addJs('/js/bower/typeahead.js/dist/typeahead.bundle.min.js');
     }
+
+    /**
+     */
+    public function loadShariff()
+    {
+        $this->addJS('/js/bower/shariff/build/shariff.min.js');
+        $this->addCSS('/js/bower/shariff/build/shariff.complete.css');
+    }
 }

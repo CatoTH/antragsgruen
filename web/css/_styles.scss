@@ -329,6 +329,12 @@ ul.searchResults {
   }
 }
 
+
+@media only screen and (min-width: 640px) {
+  .shariff .orientation-horizontal.col-2 li {
+    max-width: 204px !important;
+  }
+}
 /*
 .fuelux {
   .pillbox-input-wrap {

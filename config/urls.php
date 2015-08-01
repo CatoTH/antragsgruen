@@ -10,7 +10,7 @@ $domadmin  = $domv . 'admin/';
 $dommotion = $domv . 'motion/<motionId:\d+>';
 $domamend  = $domv . 'motion/<motionId:\d+>/amendment/<amendmentId:\d+>';
 
-$consultationPaths = 'help|search|savetextajax|maintainance|notifications';
+$consultationPaths = 'help|search|savetextajax|maintainance|notifications|shariffbackend';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
 $motionPaths         = 'createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image|withdraw';
 $amendPaths          = 'pdf|createconfirm|edit|withdraw';

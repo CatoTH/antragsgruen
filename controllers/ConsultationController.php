@@ -320,6 +320,25 @@ class ConsultationController extends Base
         \Yii::$app->session->setFlash('success', 'Saved');
     }
 
+    /**
+     * @param string $url
+     * @return string
+     */
+    public function actionShariffbackend($url)
+    {
+        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        $shariff = new \Heise\Shariff\Backend([
+            'domain'   => $_SERVER['HTTP_HOST'],
+            'services' => ['Facebook', 'Twitter'],
+            'cache'    => [
+                'ttl'      => 60,
+                'cacheDir' => $this->getParams()->tmpDir,
+            ]
+        ]);
+        return json_encode($shariff->get($url));
+    }
+
 
     /**
      * @return string

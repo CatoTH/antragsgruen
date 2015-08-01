@@ -24,12 +24,13 @@ if (mb_strpos($title, 'Antragsgrün') === false) {
 
 $minimalistic   = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 $controllerBase = ($controller->consultation ? 'consultation/' : 'manager/');
+$lang           = Yii::$app->language;
 
 $this->beginPage();
 
 
 echo '<!DOCTYPE HTML>
-<html lang="de">
+<html lang="' . $lang . '">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">' . "\n";

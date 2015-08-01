@@ -90,6 +90,19 @@ echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 $minHeight = $sidebarRows * 40 - 60;
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
+
+if (!$amendment->motion->consultation->site->getSettings()->forceLogin) {
+    $layout->loadShariff();
+    $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
+    $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
+    $lang           = Yii::$app->language;
+    $dataTitle      = $amendment->getTitle();
+    echo '<div class="shariff" data-backend-url="' . Html::encode($shariffBackend) . '" data-theme="white"
+           data-url="' . Html::encode($myUrl) . '"
+           data-services="[&quot;twitter&quot;, &quot;facebook&quot;]"
+           data-lang="' . Html::encode($lang) . '" data-title="' . Html::encode($dataTitle) . '"></div>';
+}
+
 echo '<table class="motionDataTable">
                 <tr>
                     <th>' . Yii::t('amend', 'Antrag') . ':</th>
@@ -249,7 +262,4 @@ if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '</section>';
 }
 
-if (!$consultation->site->getSettings()->forceLogin) {
-    // @TODO Social Sharing
-}
 $layout->addOnLoadJS('$.Antragsgruen.amendmentShow();');
