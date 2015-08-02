@@ -141,7 +141,7 @@
 (function ($) {
     "use strict";
 
-    var formatDateTime = function(date) {
+    var formatDateTime = function (date) {
         return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
     };
 
@@ -151,10 +151,11 @@
         }
 
         var $draftHint = $("#draftHint"),
+            $form = $("form.draftForm"),
             localKey = keyBase + "_" + Math.floor(Math.random() * 1000000),
             key;
 
-        $("form.draftForm").append('<input type="hidden" name="draftId" value="' + localKey + '">');
+        $form.append('<input type="hidden" name="draftId" value="' + localKey + '">');
 
         for (key in localStorage) if (localStorage.hasOwnProperty(key)) {
             if (key.indexOf(keyBase + "_") == 0) {
@@ -185,7 +186,9 @@
                             $input.val(data[$input.attr("id")]);
                         }
                     });
-                    localStorage.removeItem(key);
+                    $form.find("input[name=draftId]").remove();
+                    $form.append('<input type="hidden" name="draftId" value="' + key + '">');
+
                     $(this).parents("li").first().remove();
                     if ($draftHint.find("ul").children().length == 0) {
                         $draftHint.addClass("hidden");
@@ -206,29 +209,42 @@
             }
         }
 
+        window.setTimeout(function () {
+            for (var inst in CKEDITOR.instances) {
+                if (CKEDITOR.instances.hasOwnProperty(inst)) {
+                    $("#" + inst).data("original", CKEDITOR.instances[inst].getData());
+                }
+            }
+            $(".form-group.plain-text").each(function () {
+                var $input = $(this).find("input[type=text]");
+                $input.data("original", $input.val());
+            });
+        }, 2000);
+
         window.setInterval(function () {
             var data = {},
-                foundNonEmpty = false,
+                foundChanged = false,
                 inst;
 
             for (inst in CKEDITOR.instances) {
                 if (CKEDITOR.instances.hasOwnProperty(inst)) {
                     var dat = CKEDITOR.instances[inst].getData();
                     data[inst] = dat;
-                    if (dat != '') {
-                        foundNonEmpty = true;
+                    if (dat != $("#" + inst).data("original")) {
+                        foundChanged = true;
                     }
                 }
             }
             $(".form-group.plain-text").each(function () {
                 var $input = $(this).find("input[type=text]");
                 data[$input.attr("id")] = $input.val();
-                if ($input.val() != "") {
-                    foundNonEmpty = true;
+                if ($input.val() != $input.data("original")) {
+                    console.log("changed title");
+                    foundChanged = true;
                 }
             });
 
-            if (foundNonEmpty) {
+            if (foundChanged) {
                 data['lastEdit'] = new Date().getTime();
                 localStorage.setItem(localKey, JSON.stringify(data));
             } else {
