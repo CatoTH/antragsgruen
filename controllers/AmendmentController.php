@@ -197,7 +197,9 @@ class AmendmentController extends Base
             return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);
 
         } else {
-            return $this->render('create_confirm', ['amendment' => $amendment, 'mode' => $fromMode]);
+            $params                  = ['amendment' => $amendment, 'mode' => $fromMode];
+            $params['deleteDraftId'] = (isset($_REQUEST['draftId']) ? $_REQUEST['draftId'] : null);
+            return $this->render('create_confirm', $params);
         }
     }
 
@@ -241,6 +243,9 @@ class AmendmentController extends Base
                     'amendmentId' => $amendment->id,
                     'fromMode'    => $fromMode
                 ];
+                if (isset($_POST['draftId'])) {
+                    $nextUrl['draftId'] = $_POST['draftId'];
+                }
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';
             } catch (FormError $e) {

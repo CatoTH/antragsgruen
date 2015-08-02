@@ -66,7 +66,13 @@ if (\Yii::$app->user->isGuest) {
     echo '</div>';
 }
 
-echo '</div>';
+echo '<div id="draftHint" class="hidden"
+    data-motion-id="' . $form->motion->id . '" data-amendment-id="' . $form->amendmentId . '">
+Es gibt noch ungespeicherte Entwürfe, die wiederhergestellt werden können:
+<ul></ul>
+</div>
+
+</div>';
 
 
 
@@ -74,7 +80,7 @@ echo '</div>';
 echo Html::beginForm(
     '',
     'post',
-    ['id' => 'amendmentEditForm', 'class' => 'motionEditForm', 'enctype' => 'multipart/form-data']
+    ['id' => 'amendmentEditForm', 'class' => 'motionEditForm draftForm', 'enctype' => 'multipart/form-data']
 );
 
 echo '<h2 class="green">Neuer Antragstext</h2>';

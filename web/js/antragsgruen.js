@@ -1,4 +1,4 @@
-/*global browser: true, regexp: true */
+/*global browser: true, regexp: true, localStorage */
 /*global $, jQuery, alert, console, CKEDITOR, document */
 /*jslint regexp: true*/
 
@@ -141,10 +141,103 @@
 (function ($) {
     "use strict";
 
+    var formatDateTime = function(date) {
+        return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+    };
+
+    var draftSavingEngine = function (keyBase) {
+        if (!$('html').hasClass("localstorage")) {
+            return;
+        }
+
+        var $draftHint = $("#draftHint"),
+            localKey = keyBase + "_" + Math.floor(Math.random() * 1000000),
+            key;
+
+        $("form.draftForm").append('<input type="hidden" name="draftId" value="' + localKey + '">');
+
+        for (key in localStorage) if (localStorage.hasOwnProperty(key)) {
+            if (key.indexOf(keyBase + "_") == 0) {
+                var data = JSON.parse(localStorage.getItem(key)),
+                    lastEdit = new Date(data['lastEdit']),
+                    $link = $("<li><a href='#' class='restore'></a> <a href='#' class='delete glyphicon glyphicon-trash'></a></li>");
+
+
+                $link.data("key", key);
+                $link.find('.restore').text('Entwurf vom: ' + formatDateTime(lastEdit)).click(function (ev) {
+                    ev.preventDefault();
+                    if (!confirm("Diesen Entwurf wiederherstellen?")) {
+                        return;
+                    }
+                    var inst,
+                        key = $(this).parents("li").first().data("key"),
+                        data = JSON.parse(localStorage.getItem(key));
+                    for (inst in CKEDITOR.instances) {
+                        if (CKEDITOR.instances.hasOwnProperty(inst)) {
+                            if (typeof(data[inst]) != "undefined") {
+                                CKEDITOR.instances[inst].setData(data[inst]);
+                            }
+                        }
+                    }
+                    $(".form-group.plain-text").each(function () {
+                        var $input = $(this).find("input[type=text]");
+                        if (typeof(data[$input.attr("id")]) != "undefined") {
+                            $input.val(data[$input.attr("id")]);
+                        }
+                    });
+                    localStorage.removeItem(key);
+                    $(this).parents("li").first().remove();
+                    if ($draftHint.find("ul").children().length == 0) {
+                        $draftHint.addClass("hidden");
+                    }
+                });
+                $link.find('.delete').click(function (ev) {
+                    ev.preventDefault();
+                    if (confirm("Entwurf wirklich löschen?")) {
+                        localStorage.removeItem($(this).parents("li").first().data("key"));
+                        $(this).parents("li").first().remove();
+                        if ($draftHint.find("ul").children().length == 0) {
+                            $draftHint.addClass("hidden");
+                        }
+                    }
+                });
+                $draftHint.find("ul").append($link);
+                $draftHint.removeClass("hidden");
+            }
+        }
+
+        window.setInterval(function () {
+            var data = {},
+                foundNonEmpty = false,
+                inst;
+
+            for (inst in CKEDITOR.instances) {
+                if (CKEDITOR.instances.hasOwnProperty(inst)) {
+                    var dat = CKEDITOR.instances[inst].getData();
+                    data[inst] = dat;
+                    if (dat != '') {
+                        foundNonEmpty = true;
+                    }
+                }
+            }
+            $(".form-group.plain-text").each(function () {
+                var $input = $(this).find("input[type=text]");
+                data[$input.attr("id")] = $input.val();
+                if ($input.val() != "") {
+                    foundNonEmpty = true;
+                }
+            });
+
+            if (foundNonEmpty) {
+                data['lastEdit'] = new Date().getTime();
+                localStorage.setItem(localKey, JSON.stringify(data));
+            } else {
+                localStorage.removeItem(localKey);
+            }
+        }, 3000);
+    };
 
     var motionEditForm = function () {
-        // @TODO Prevent accidental leaving of page once something is entered
-
         var lang = $('html').attr('lang');
         $(".form-group.input-group.date").datetimepicker({
             locale: lang,
@@ -192,11 +285,14 @@
                 onChange();
             }
         });
+
+        var $draftHint = $("#draftHint"),
+            draftMotionType = $draftHint.data("motion-type"),
+            draftMotionId = $draftHint.data("motion-id");
+        draftSavingEngine("motion_" + draftMotionType + "_" + draftMotionId);
     };
 
     var amendmentEditForm = function () {
-        // @TODO Prevent accidental leaving of page once something is entered
-
         var lang = $('html').attr('lang');
         $(".input-group.date").datetimepicker({
             locale: lang,
@@ -214,6 +310,11 @@
                 }
             });
         });
+
+        var $draftHint = $("#draftHint"),
+            draftMotionId = $draftHint.data("motion-id"),
+            draftAmendmentId = $draftHint.data("amendment-id");
+        draftSavingEngine("amendment_" + draftMotionId + "_" + draftAmendmentId);
     };
 
 

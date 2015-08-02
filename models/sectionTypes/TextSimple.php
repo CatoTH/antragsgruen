@@ -32,6 +32,7 @@ class TextSimple extends ISectionType
      */
     public function getAmendmentFormField()
     {
+        $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
         return $this->getTextAmendmentFormField(false, $this->section->dataRaw);
     }
 

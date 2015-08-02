@@ -24,6 +24,7 @@ class TextHTML extends ISectionType
      */
     public function getAmendmentFormField()
     {
+        $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
         return $this->getTextAmendmentFormField(true, $this->section->dataRaw);
     }
 

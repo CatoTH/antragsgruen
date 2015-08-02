@@ -46,6 +46,7 @@ class Title extends ISectionType
      */
     public function getAmendmentFormField()
     {
+        $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
         return $this->getMotionFormField();
     }
 

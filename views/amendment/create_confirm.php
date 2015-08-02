@@ -13,6 +13,7 @@ use yii\helpers\Html;
  * @var Amendment $amendment
  * @var string $mode
  * @var \app\controllers\Base $controller
+ * @var string|null $deleteDraftId
  */
 
 $controller = $this->context;
@@ -104,3 +105,7 @@ echo '<div class="content">
     </div>';
 
 echo Html::endForm();
+
+if ($deleteDraftId) {
+    $controller->layoutParams->addOnLoadJS('localStorage.removeItem(' . json_encode($deleteDraftId) . ');');
+}

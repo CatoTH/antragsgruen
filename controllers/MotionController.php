@@ -268,7 +268,9 @@ class MotionController extends Base
             return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
 
         } else {
-            return $this->render('create_confirm', ['motion' => $motion, 'mode' => $fromMode]);
+            $params                  = ['motion' => $motion, 'mode' => $fromMode];
+            $params['deleteDraftId'] = (isset($_REQUEST['draftId']) ? $_REQUEST['draftId'] : null);
+            return $this->render('create_confirm', $params);
         }
     }
 
@@ -400,6 +402,9 @@ class MotionController extends Base
             try {
                 $motion  = $form->createMotion();
                 $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => 'create'];
+                if (isset($_POST['draftId'])) {
+                    $nextUrl['draftId'] = $_POST['draftId'];
+                }
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';
             } catch (FormError $e) {
