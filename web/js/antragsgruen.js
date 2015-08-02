@@ -33,7 +33,9 @@
 
         var $el = $("#" + id),
             initialized = $el.data("ckeditor_initialized");
-        if (typeof (initialized) != "undefined" && initialized) return;
+        if (typeof (initialized) != "undefined" && initialized) {
+            return;
+        }
         $el.data("ckeditor_initialized", "1");
         $el.attr("contenteditable", true);
 
@@ -74,16 +76,6 @@
                 countSpacesAsChars: true
             },
             title: $el.attr("title")
-            /*,
-             on: {
-             instanceReady: function(ev) {
-             // Resize the window
-             window.setTimeout(function() {
-             ev.editor.fire('contentDom');
-             }, 1);
-             }
-             }
-             */
         };
 
         if ($el.data('track-changed') == '1') {
@@ -106,24 +98,36 @@
         }
         var editor = CKEDITOR.inline(id, ckeditorConfig);
 
-        /* @TODO
-         var $fieldset = $el.parents("fieldset.textarea").first();
-         if ($fieldset.data("max_len") > 0) {
-         var onChange = function () {
-         if (ckeditor_charcount(editor.getData()) > $fieldset.data("max_len")) {
-         $el.parents("form").first().find("button[type=submit]").prop("disabled", true);
-         $fieldset.find(".max_len_hint .calm").addClass("hidden");
-         $fieldset.find(".max_len_hint .alert").removeClass("hidden");
-         } else {
-         $el.parents("form").first().find("button[type=submit]").prop("disabled", false);
-         $fieldset.find(".max_len_hint .calm").removeClass("hidden");
-         $fieldset.find(".max_len_hint .alert").addClass("hidden");
-         }
-         };
-         editor.on('change', onChange);
-         onChange();
-         }
-         */
+        var $fieldset = $el.parents(".wysiwyg-textarea").first();
+        if ($fieldset.data("maxlen") != 0) {
+            var maxLen = $fieldset.data("maxlen"),
+                maxLenSoft = false,
+                $warning = $fieldset.find('.maxLenTooLong'),
+                $submit = $el.parents("form").first().find("button[type=submit]"),
+                $currCounter = $fieldset.find(".maxLenHint .counter");
+            if (maxLen < 0) {
+                maxLenSoft = true;
+                maxLen = -1 * maxLen;
+            }
+
+            var onChange = function () {
+                var currLen = ckeditor_charcount(editor.getData());
+                $currCounter.text(currLen);
+                if (currLen > maxLen) {
+                    $warning.removeClass('hidden');
+                    if (!maxLenSoft) {
+                        $submit.prop("disabled", true);
+                    }
+                } else {
+                    $warning.addClass('hidden');
+                    if (!maxLenSoft) {
+                        $submit.prop("disabled", false);
+                    }
+                }
+            };
+            editor.on('change', onChange);
+            onChange();
+        }
 
         return editor;
     }
@@ -142,7 +146,7 @@
         // @TODO Prevent accidental leaving of page once something is entered
 
         var lang = $('html').attr('lang');
-        $(".input-group.date").datetimepicker({
+        $(".form-group.input-group.date").datetimepicker({
             locale: lang,
             format: 'L'
         });
@@ -154,6 +158,39 @@
             $textarea.parents("form").submit(function () {
                 $textarea.parent().find("textarea").val(editor.getData());
             });
+        });
+        $(".form-group.plain-text").each(function () {
+            var $fieldset = $(this),
+                $input = $fieldset.find("input.form-control");
+            if ($fieldset.data("maxlen") != 0) {
+                var maxLen = $fieldset.data("maxlen"),
+                    maxLenSoft = false,
+                    $warning = $fieldset.find('.maxLenTooLong'),
+                    $submit = $fieldset.parents("form").first().find("button[type=submit]"),
+                    $currCounter = $fieldset.find(".maxLenHint .counter");
+                if (maxLen < 0) {
+                    maxLenSoft = true;
+                    maxLen = -1 * maxLen;
+                }
+
+                var onChange = function () {
+                    var currLen = $input.val().length;
+                    $currCounter.text(currLen);
+                    if (currLen > maxLen) {
+                        $warning.removeClass('hidden');
+                        if (!maxLenSoft) {
+                            $submit.prop("disabled", true);
+                        }
+                    } else {
+                        $warning.addClass('hidden');
+                        if (!maxLenSoft) {
+                            $submit.prop("disabled", false);
+                        }
+                    }
+                };
+                $input.on('keyup change', onChange);
+                onChange();
+            }
         });
     };
 

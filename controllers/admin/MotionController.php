@@ -33,7 +33,7 @@ class MotionController extends AdminBase
                 /** @var ConsultationSettingsMotionSection $section */
                 $section = $motionType->getMotionSections()->andWhere('id = ' . IntVal($sectionId))->one();
                 if (!$section) {
-                    throw new FormError("Section not found: " . $sectionId);
+                    throw new FormError('Section not found: ' . $sectionId);
                 }
             }
             $section->setAdminAttributes($data);
@@ -60,7 +60,7 @@ class MotionController extends AdminBase
                 /** @var ConsultationSettingsMotionSection $section */
                 $section = $motionType->getMotionSections()->andWhere('id = ' . $sectionId)->one();
                 if (!$section) {
-                    throw new FormError("Section not found: " . $sectionId);
+                    throw new FormError('Section not found: ' . $sectionId);
                 }
                 $section->status = ConsultationSettingsMotionSection::STATUS_DELETED;
                 $section->save();

@@ -69,8 +69,9 @@ if (count($tags) == 1) {
     $keys = array_keys($tags);
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
 } elseif (count($tags) > 0) {
+    echo '<div class="form-group">';
     if ($consultation->getSettings()->allowMultipleTags) {
-        echo '<div class="form-group"><label class="legend">Thema</label>';
+        echo '<label class="legend">Thema</label>';
         foreach ($tags as $id => $tag) {
             echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
             if (in_array($id, $form->tags)) {
@@ -78,7 +79,6 @@ if (count($tags) == 1) {
             }
             echo ' required title="Tags"> ' . Html::encode($tag->title) . '</label>';
         }
-        echo '</div>';
     } else {
         $layout->loadFuelux();
         $selected   = (count($form->tags) > 0 ? $form->tags[0] : 0);
@@ -90,14 +90,8 @@ if (count($tags) == 1) {
         echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
         echo '</div>';
     }
-
+    echo '</div>';
 }
-
-echo '</div>';
-
-
-echo '<h2 class="green">Text</h2>';
-echo '<div class="content">';
 
 foreach ($form->sections as $section) {
     echo $section->getSectionType()->getMotionFormField();

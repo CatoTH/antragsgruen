@@ -16,13 +16,29 @@ class Title extends ISectionType
      */
     public function getMotionFormField()
     {
-        // @TODO Max Length
         $type = $this->section->consultationSetting;
-        return '<div class="form-group">
-            <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
-            <input type="text" class="form-control" id="sections_' . $type->id . '"' .
-        ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->data) . '">
-        </div>';
+        $str = '<div class="form-group plain-text" data-maxLen="' . $type->maxLen . '">
+            <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
+
+        if ($type->maxLen != 0) {
+            $len = abs($type->maxLen);
+            $str .= '<div class="maxLenHint"><span class="glyphicon glyphicon-info-sign icon"></span> ';
+            $str .= str_replace('%LEN%', $len, 'Max. %LEN% Zeichen (Aktuell: <span class="counter"></span>)');
+            $str .= '</div>';
+        }
+
+        $str .= '<input type="text" class="form-control" id="sections_' . $type->id . '"' .
+        ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->data) . '">';
+
+        if ($type->maxLen != 0) {
+            $str .= '<div class="alert alert-danger maxLenTooLong hidden" role="alert">';
+            $str .= '<span class="glyphicon glyphicon-alert"></span> ' . 'Der Text ist zu lang!';
+            $str .= '</div>';
+        }
+
+        $str .= '</div>';
+
+        return $str;
     }
 
     /**

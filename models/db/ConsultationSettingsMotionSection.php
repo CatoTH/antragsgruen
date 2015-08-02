@@ -84,6 +84,14 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         $this->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
         $this->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
         $this->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
+        if (isset($data['maxLenSet'])) {
+            $this->maxLen = $data['maxLenVal'];
+            if (isset($data['maxLenSoft'])) {
+                $this->maxLen *= -1;
+            }
+        } else {
+            $this->maxLen = 0;
+        }
 
         if ($this->type == ISectionType::TYPE_TABULAR) {
             $this->data = TabularData::saveTabularDataSettingsFromPost($this->data, $data);

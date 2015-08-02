@@ -47,18 +47,18 @@ abstract class ISectionType
      */
     protected function getTextMotionFormField($fullHtml)
     {
-        $type = $this->section->consultationSetting;
-        $htmlId   = 'sections_' . $type->id;
+        $type   = $this->section->consultationSetting;
+        $htmlId = 'sections_' . $type->id;
 
         $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
         $str .= ' data-maxLen="' . $type->maxLen . '"';
         $str .= ' data-fullHtml="' . ($fullHtml ? '1' : '0') . '"';
         $str .= '><label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
 
-        if ($type->maxLen > 0) {
-            $str .= '<div class="maxLenHint">';
-            $str .= '<div class="calm">Maximale Länge: ' . $type->maxLen . ' Zeichen</div>';
-            $str .= '<div class="alert">Text zu lang - maximale Länge: ' . $type->maxLen . ' Zeichen</div>';
+        if ($type->maxLen != 0) {
+            $len = abs($type->maxLen);
+            $str .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
+            $str .= str_replace('%LEN%', $len, 'Max. %LEN% Zeichen (Aktuell: <span class="counter"></span>)');
             $str .= '</div>';
         }
 
@@ -68,6 +68,13 @@ abstract class ISectionType
         $str .= '<div class="texteditor" id="' . $htmlId . '_wysiwyg" ' . 'title="' . Html::encode($type->title) . '">';
         $str .= $this->section->data;
         $str .= '</div>';
+
+        if ($type->maxLen != 0) {
+            $str .= '<div class="alert alert-danger maxLenTooLong hidden" role="alert">';
+            $str .= '<span class="glyphicon glyphicon-alert"></span> ' . 'Der Text ist zu lang!';
+            $str .= '</div>';
+        }
+
         $str .= '</div>';
 
         return $str;
@@ -88,13 +95,6 @@ abstract class ISectionType
         $str .= ' data-maxLen="' . $type->maxLen . '"';
         $str .= ' data-fullHtml="' . ($fullHtml ? '1' : '0') . '"';
         $str .= '><label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
-
-        if ($type->maxLen > 0) {
-            $str .= '<div class="maxLenHint">';
-            $str .= '<div class="calm">Maximale Länge: ' . $type->maxLen . ' Zeichen</div>';
-            $str .= '<div class="alert">Text zu lang - maximale Länge: ' . $type->maxLen . ' Zeichen</div>';
-            $str .= '</div>';
-        }
 
         $str .= '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
             'title="' . Html::encode($type->title) . '"></textarea>';

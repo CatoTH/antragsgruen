@@ -10037,6 +10037,17 @@ ul.sidebarActions {
   text-align: right;
   font-size: 0.8em; }
 
+.motionEditForm .maxLenHint {
+  float: right;
+  margin-top: 7px;
+  font-size: 0.8em;
+  margin-right: 3px; }
+  .motionEditForm .maxLenHint span.icon {
+    color: gray; }
+  .motionEditForm .maxLenHint span.counter {
+    display: inline-block;
+    width: 23px;
+    text-align: right; }
 .motionEditForm .submitHolder {
   text-align: right; }
 
