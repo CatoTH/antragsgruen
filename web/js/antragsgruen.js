@@ -255,7 +255,7 @@
 
     var motionEditForm = function () {
         var lang = $('html').attr('lang');
-        $(".form-group.input-group.date").datetimepicker({
+        $(".input-group.date").datetimepicker({
             locale: lang,
             format: 'L'
         });
