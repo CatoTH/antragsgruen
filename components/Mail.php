@@ -42,8 +42,10 @@ class Mail
         $params = \Yii::$app->params;
 
         if ($params->mandrillApiKey) {
+            $client = new \Zend\Http\Client();
+            $client->setAdapter(new \Zend\Http\Client\Adapter\Curl());
             $service = new \SlmMail\Service\MandrillService($params->mandrillApiKey);
-            $service->setClient(new \Zend\Http\Client());
+            $service->setClient($client);
             return new \SlmMail\Mail\Transport\HttpTransport($service);
         } else {
             return new \Zend\Mail\Transport\Sendmail();
