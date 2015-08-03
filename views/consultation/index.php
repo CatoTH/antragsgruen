@@ -33,12 +33,12 @@ if ($admin) {
 echo '<h1>';
 
 echo Html::encode($consultation->title);
-if ($consultation->eventDateFrom != "" && $consultation->eventDateFrom != "0000-00-00") {
+if ($consultation->eventDateFrom != '' && $consultation->eventDateFrom != '0000-00-00') {
     if ($consultation->eventDateFrom != $consultation->eventDateTo) {
-        echo ", " . Tools::formatMysqlDate($consultation->eventDateFrom);
-        echo " - " . Tools::formatMysqlDate($consultation->eventDateTo);
+        echo ', ' . Tools::formatMysqlDate($consultation->eventDateFrom);
+        echo ' - ' . Tools::formatMysqlDate($consultation->eventDateTo);
     } else {
-        echo ", " . Tools::formatMysqlDate($consultation->eventDateFrom);
+        echo ', ' . Tools::formatMysqlDate($consultation->eventDateFrom);
     }
 
 }

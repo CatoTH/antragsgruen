@@ -141,10 +141,6 @@
 (function ($) {
     "use strict";
 
-    var formatDateTime = function (date) {
-        return date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-    };
-
     var draftSavingEngine = function (keyBase) {
         if (!$('html').hasClass("localstorage")) {
             return;
@@ -165,14 +161,18 @@
 
 
                 $link.data("key", key);
-                $link.find('.restore').text('Entwurf vom: ' + formatDateTime(lastEdit)).click(function (ev) {
+                var dateStr = new Intl.DateTimeFormat($("html").attr("lang"), {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                    hour: 'numeric', minute: 'numeric'
+                }).format(lastEdit);
+                $link.find('.restore').text('Entwurf vom: ' + dateStr).click(function (ev) {
                     ev.preventDefault();
                     if (!confirm("Diesen Entwurf wiederherstellen?")) {
                         return;
                     }
                     var inst,
-                        key = $(this).parents("li").first().data("key"),
-                        data = JSON.parse(localStorage.getItem(key));
+                        restoreKey = $(this).parents("li").first().data("key"),
+                        data = JSON.parse(localStorage.getItem(restoreKey));
                     for (inst in CKEDITOR.instances) {
                         if (CKEDITOR.instances.hasOwnProperty(inst)) {
                             if (typeof(data[inst]) != "undefined") {
@@ -187,8 +187,9 @@
                         }
                     });
                     $form.find("input[name=draftId]").remove();
-                    $form.append('<input type="hidden" name="draftId" value="' + key + '">');
+                    $form.append('<input type="hidden" name="draftId" value="' + restoreKey + '">');
 
+                    localKey = restoreKey;
                     $(this).parents("li").first().remove();
                     if ($draftHint.find("ul").children().length == 0) {
                         $draftHint.addClass("hidden");
@@ -239,7 +240,6 @@
                 var $input = $(this).find("input[type=text]");
                 data[$input.attr("id")] = $input.val();
                 if ($input.val() != $input.data("original")) {
-                    console.log("changed title");
                     foundChanged = true;
                 }
             });
