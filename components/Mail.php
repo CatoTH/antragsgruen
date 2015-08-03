@@ -209,6 +209,8 @@ class Mail
         $obj->messageId = $messageId;
         $obj->save();
 
-        \yii::$app->session->setFlash('email', 'E-Mail sent to: ' . $toEmail);
+        if (YII_ENV == 'test') {
+            \yii::$app->session->setFlash('email', 'E-Mail sent to: ' . $toEmail);
+        }
     }
 }

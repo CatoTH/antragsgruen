@@ -230,7 +230,7 @@ class Base extends Controller
         }
 
         $email = \Yii::$app->session->getFlash('email', null, true);
-        if ($email) {
+        if ($email && YII_ENV == 'test') {
             $str .= '<div class="alert alert-info" role="alert">
                 <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                 <span class="sr-only">Info:</span>
