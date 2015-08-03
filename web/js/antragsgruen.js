@@ -141,16 +141,53 @@
     "use strict";
 
     var draftSavingEngine = function (keyBase) {
+        $("#motionEditForm").prepend("draftSavingEngine<br>");
         if (!$('html').hasClass("localstorage")) {
             return;
         }
 
+        $("#motionEditForm").prepend("draftSavingEngine2<br>");
         var $draftHint = $("#draftHint"),
             $form = $("form.draftForm"),
             localKey = keyBase + "_" + Math.floor(Math.random() * 1000000),
             key;
 
         $form.append('<input type="hidden" name="draftId" value="' + localKey + '">');
+
+        var doDelete = function($li) {
+            localStorage.removeItem($li.data("key"));
+            $li.remove();
+            if ($draftHint.find("ul").children().length == 0) {
+                $draftHint.addClass("hidden");
+            }
+        };
+        var doRestore = function($li) {
+            var inst,
+                restoreKey = $li.data("key"),
+                data = JSON.parse(localStorage.getItem(restoreKey));
+            console.log($li);
+            for (inst in CKEDITOR.instances) {
+                if (CKEDITOR.instances.hasOwnProperty(inst)) {
+                    if (typeof(data[inst]) != "undefined") {
+                        CKEDITOR.instances[inst].setData(data[inst]);
+                    }
+                }
+            }
+            $(".form-group.plain-text").each(function () {
+                var $input = $(this).find("input[type=text]");
+                if (typeof(data[$input.attr("id")]) != "undefined") {
+                    $input.val(data[$input.attr("id")]);
+                }
+            });
+            $form.find("input[name=draftId]").remove();
+            $form.append('<input type="hidden" name="draftId" value="' + restoreKey + '">');
+
+            localKey = restoreKey;
+            $li.remove();
+            if ($draftHint.find("ul").children().length == 0) {
+                $draftHint.addClass("hidden");
+            }
+        };
 
         for (key in localStorage) if (localStorage.hasOwnProperty(key)) {
             if (key.indexOf(keyBase + "_") == 0) {
@@ -166,43 +203,21 @@
                 }).format(lastEdit);
                 $link.find('.restore').text('Entwurf vom: ' + dateStr).click(function (ev) {
                     ev.preventDefault();
-                    if (!confirm("Diesen Entwurf wiederherstellen?")) {
-                        return;
-                    }
-                    var inst,
-                        restoreKey = $(this).parents("li").first().data("key"),
-                        data = JSON.parse(localStorage.getItem(restoreKey));
-                    for (inst in CKEDITOR.instances) {
-                        if (CKEDITOR.instances.hasOwnProperty(inst)) {
-                            if (typeof(data[inst]) != "undefined") {
-                                CKEDITOR.instances[inst].setData(data[inst]);
-                            }
-                        }
-                    }
-                    $(".form-group.plain-text").each(function () {
-                        var $input = $(this).find("input[type=text]");
-                        if (typeof(data[$input.attr("id")]) != "undefined") {
-                            $input.val(data[$input.attr("id")]);
+                    var $li = $(this).parents("li").first();
+                    bootbox.confirm("Diesen Entwurf wiederherstellen?", function (result) {
+                        if (result) {
+                            doRestore($li);
                         }
                     });
-                    $form.find("input[name=draftId]").remove();
-                    $form.append('<input type="hidden" name="draftId" value="' + restoreKey + '">');
-
-                    localKey = restoreKey;
-                    $(this).parents("li").first().remove();
-                    if ($draftHint.find("ul").children().length == 0) {
-                        $draftHint.addClass("hidden");
-                    }
                 });
                 $link.find('.delete').click(function (ev) {
                     ev.preventDefault();
-                    if (confirm("Entwurf wirklich löschen?")) {
-                        localStorage.removeItem($(this).parents("li").first().data("key"));
-                        $(this).parents("li").first().remove();
-                        if ($draftHint.find("ul").children().length == 0) {
-                            $draftHint.addClass("hidden");
+                    var $li = $(this).parents("li").first();
+                    bootbox.confirm("Entwurf wirklich löschen?", function (result) {
+                        if (result) {
+                            doDelete($li);
                         }
-                    }
+                    });
                 });
                 $draftHint.find("ul").append($link);
                 $draftHint.removeClass("hidden");
@@ -219,6 +234,7 @@
                 var $input = $(this).find("input[type=text]");
                 $input.data("original", $input.val());
             });
+            $("#motionEditForm").prepend("saved defaults<br>");
         }, 2000);
 
         window.setInterval(function () {
@@ -242,6 +258,8 @@
                     foundChanged = true;
                 }
             });
+
+            $("#motionEditForm").prepend("changes: " + foundChanged + "<br>");
 
             if (foundChanged) {
                 data['lastEdit'] = new Date().getTime();
