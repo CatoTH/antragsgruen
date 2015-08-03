@@ -16,15 +16,16 @@ class Consultation
     // TESTS WITH TEST CASES
 
     /** @var bool */
-    public $maintainanceMode    = false;
-    public $screeningMotions    = false;
-    public $screeningAmendments = false;
-    public $lineNumberingGlobal = false;
-    public $iniatorsMayEdit     = false;
-    public $hideTitlePrefix     = false;
-    public $showFeeds           = true;
-    public $confirmEmails       = false;
-    public $commentNeedsEmail   = false;
+    public $maintainanceMode       = false;
+    public $screeningMotions       = false;
+    public $screeningAmendments    = false;
+    public $lineNumberingGlobal    = false;
+    public $iniatorsMayEdit        = false;
+    public $hideTitlePrefix        = false;
+    public $showFeeds              = true;
+    public $commentNeedsEmail      = false;
+    public $screeningComments      = false;
+    public $initiatorConfirmEmails = false;
 
     // TESTS WITHOUT TEST CASES
 
@@ -33,7 +34,6 @@ class Consultation
     public $minimalisticUI        = false;
     public $commentsSupportable   = false;
     public $screeningMotionsShown = false;
-    public $screeningComments     = false;
     public $initiatorsMayReject   = false;
     public $allowMultipleTags     = false;
 

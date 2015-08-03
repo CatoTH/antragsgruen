@@ -192,7 +192,7 @@ class Mail
             \yii::$app->session->setFlash('error', 'Eine E-Mail konnte nicht geschickt werden: ' . $e->getMessage());
         }
 
-        $obj = new \app\models\db\EmailLog();
+        $obj = new \app\models\db\EMailLog();
         if ($toPersonId) {
             $obj->toUserId = $toPersonId;
         }
@@ -208,5 +208,7 @@ class Mail
         $obj->status    = $status;
         $obj->messageId = $messageId;
         $obj->save();
+
+        \yii::$app->session->setFlash('email', 'E-Mail sent to: ' . $toEmail);
     }
 }

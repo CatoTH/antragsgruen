@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\Mail;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
@@ -507,6 +508,26 @@ class Motion extends IMotion implements IRSSItem
             }
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
+
+            if ($this->consultation->getSettings()->initiatorConfirmEmails) {
+                $initiator = $this->getInitiators();
+                if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+                    $text = "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
+                        "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                        "Mit freundlichen Grüßen,\n" .
+                        "  Das Antragsgrün-Team";
+                    $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
+                    Mail::sendWithLog(
+                        EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                        $this->consultation->site,
+                        trim($initiator[0]->contactEmail),
+                        null,
+                        'Antrag veröffentlicht',
+                        str_replace('%LINK%', $motionLink, $text),
+                        $this->consultation->site->getBehaviorClass()->getMailFromName()
+                    );
+                }
+            }
         }
     }
 

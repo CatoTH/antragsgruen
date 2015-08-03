@@ -54,7 +54,7 @@ class LoginUsernamePasswordForm extends Model
             . "Liebe Grüße,\n\tDas Antragsgrün-Team.";
 
         Mail::sendWithLog(
-            EmailLog::TYPE_REGISTRATION,
+            EMailLog::TYPE_REGISTRATION,
             null,
             $this->username,
             $user->id,

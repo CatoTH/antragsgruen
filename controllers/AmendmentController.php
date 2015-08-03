@@ -168,17 +168,18 @@ class AmendmentController extends Base
             }
             $amendment->save();
 
+            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
+
             if ($amendment->motion->consultation->adminEmail != '') {
                 $mails = explode(',', $amendment->motion->consultation->adminEmail);
 
-                $motionLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
                 $mailText   = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
-                $mailText   = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $motionLink], $mailText);
+                $mailText   = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $amendmentLink], $mailText);
 
                 foreach ($mails as $mail) {
                     if (trim($mail) != '') {
                         Mail::sendWithLog(
-                            EmailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
+                            EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
                             $this->site,
                             trim($mail),
                             null,
@@ -192,6 +193,27 @@ class AmendmentController extends Base
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->onPublish();
+            } else {
+                if ($amendment->motion->consultation->getSettings()->initiatorConfirmEmails) {
+                    $initiator = $amendment->getInitiators();
+                    if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+                        $text = "Hallo,\n\ndu hast soeben einen Änderungsantrag eingereicht.\n" .
+                            "Die Programmkommission wird den Antrag auf Zulässigkeit prüfen und freischalten. " .
+                            "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
+                            "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                            "Mit freundlichen Grüßen,\n" .
+                            "  Das Antragsgrün-Team";
+                        Mail::sendWithLog(
+                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                            $this->site,
+                            trim($initiator[0]->contactEmail),
+                            null,
+                            'Änderungsantrag eingereicht',
+                            str_replace('%LINK%', $amendmentLink, $text),
+                            $amendment->motion->consultation->site->getBehaviorClass()->getMailFromName()
+                        );
+                    }
+                }
             }
 
             return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);

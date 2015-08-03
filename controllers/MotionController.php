@@ -239,17 +239,18 @@ class MotionController extends Base
             }
             $motion->save();
 
+            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
+
             if ($motion->consultation->adminEmail != '') {
                 $mails = explode(",", $motion->consultation->adminEmail);
 
-                $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-                $mailText   = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
-                $mailText   = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
+                $mailText = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
+                $mailText = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
 
                 foreach ($mails as $mail) {
                     if (trim($mail) != '') {
                         Mail::sendWithLog(
-                            EmailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
+                            EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
                             $this->site,
                             trim($mail),
                             null,
@@ -263,6 +264,27 @@ class MotionController extends Base
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->onPublish();
+            } else {
+                if ($motion->consultation->getSettings()->initiatorConfirmEmails) {
+                    $initiator = $motion->getInitiators();
+                    if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+                        $text = "Hallo,\n\ndu hast soeben einen Antrag eingereicht.\n" .
+                            "Die Programmkommission wird den Antrag auf Zulässigkeit prüfen und freischalten. " .
+                            "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
+                            "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                            "Mit freundlichen Grüßen,\n" .
+                            "  Das Antragsgrün-Team";
+                        Mail::sendWithLog(
+                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                            $this->site,
+                            trim($initiator[0]->contactEmail),
+                            null,
+                            'Antrag eingereicht',
+                            str_replace('%LINK%', $motionLink, $text),
+                            $motion->consultation->site->getBehaviorClass()->getMailFromName()
+                        );
+                    }
+                }
             }
 
             return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);

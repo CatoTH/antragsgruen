@@ -229,6 +229,15 @@ class Base extends Controller
             </div>';
         }
 
+        $email = \Yii::$app->session->getFlash('email', null, true);
+        if ($email) {
+            $str .= '<div class="alert alert-info" role="alert">
+                <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                <span class="sr-only">Info:</span>
+                ' . Html::encode($email) . '
+            </div>';
+        }
+
         return $str;
     }
 

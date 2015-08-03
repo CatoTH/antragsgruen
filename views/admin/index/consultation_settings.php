@@ -215,10 +215,14 @@ echo '</div>
 ';
 
 
-$handledSettings[] = 'confirmEmails';
+$handledSettings[] = 'initiatorConfirmEmails';
 echo '<fieldset><label>';
-echo Html::checkbox('settings[confirmEmails]', $settings->confirmEmails, ['id' => 'confirmEmails']);
-echo 'Bestätigungs-E-Mails an die NutzerInnen schicken
+echo Html::checkbox(
+    'settings[initiatorConfirmEmails]',
+    $settings->initiatorConfirmEmails,
+    ['id' => 'initiatorConfirmEmails']
+);
+echo 'Beim Anlegen/Freischalten eines Antrags: Bestätigungs-E-Mail an die AntragstellerIn schicken
     </label></fieldset>';
 
 

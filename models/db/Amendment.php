@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\Diff;
+use app\components\Mail;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -475,6 +476,26 @@ class Amendment extends IMotion implements IRSSItem
             }
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
+
+            if ($this->motion->consultation->getSettings()->initiatorConfirmEmails) {
+                $initiator = $this->getInitiators();
+                if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+                    $text = "Hallo,\n\ndein Änderungsantrag wurde soeben auf Antragsgrün veröffentlicht. " .
+                        "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                        "Mit freundlichen Grüßen,\n" .
+                        "  Das Antragsgrün-Team";
+                    $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
+                    Mail::sendWithLog(
+                        EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                        $this->motion->consultation->site,
+                        trim($initiator[0]->contactEmail),
+                        null,
+                        'Änderungsantrag veröffentlicht',
+                        str_replace('%LINK%', $amendmentLink, $text),
+                        $this->motion->consultation->site->getBehaviorClass()->getMailFromName()
+                    );
+                }
+            }
         }
     }
 
