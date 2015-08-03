@@ -141,12 +141,10 @@
     "use strict";
 
     var draftSavingEngine = function (keyBase) {
-        $("#motionEditForm").prepend("draftSavingEngine<br>");
         if (!$('html').hasClass("localstorage")) {
             return;
         }
 
-        $("#motionEditForm").prepend("draftSavingEngine2<br>");
         var $draftHint = $("#draftHint"),
             $form = $("form.draftForm"),
             localKey = keyBase + "_" + Math.floor(Math.random() * 1000000),
@@ -165,7 +163,6 @@
             var inst,
                 restoreKey = $li.data("key"),
                 data = JSON.parse(localStorage.getItem(restoreKey));
-            console.log($li);
             for (inst in CKEDITOR.instances) {
                 if (CKEDITOR.instances.hasOwnProperty(inst)) {
                     if (typeof(data[inst]) != "undefined") {
@@ -234,7 +231,6 @@
                 var $input = $(this).find("input[type=text]");
                 $input.data("original", $input.val());
             });
-            $("#motionEditForm").prepend("saved defaults<br>");
         }, 2000);
 
         window.setInterval(function () {
@@ -258,8 +254,6 @@
                     foundChanged = true;
                 }
             });
-
-            $("#motionEditForm").prepend("changes: " + foundChanged + "<br>");
 
             if (foundChanged) {
                 data['lastEdit'] = new Date().getTime();
