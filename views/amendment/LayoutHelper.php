@@ -46,6 +46,13 @@ class LayoutHelper
 
         $content->text = '';
 
+        if ($amendment->changeEditorial != '') {
+            $title = Exporter::encodePlainString('Redaktionelle Änderung');
+            $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+            $lines = LineSplitter::motionPara2lines($amendment->changeEditorial, false, PHP_INT_MAX);
+            $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
+        }
+
         foreach ($amendment->getSortedSections(true) as $section) {
             $content->text .= $section->getSectionType()->getAmendmentTeX();
         }

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `amendment` (
   `id`                    INT(11)     NOT NULL,
   `motionId`              INT(11)              DEFAULT NULL,
   `titlePrefix`           VARCHAR(45)          DEFAULT NULL,
-  `changeMetatext`        LONGTEXT    NOT NULL,
+  `changeEditorial`       LONGTEXT    NOT NULL,
   `changeText`            LONGTEXT    NOT NULL,
   `changeExplanation`     LONGTEXT    NOT NULL,
   `changeExplanationHtml` TINYINT(4)  NOT NULL DEFAULT '0',

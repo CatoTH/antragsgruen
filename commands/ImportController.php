@@ -225,12 +225,12 @@ class ImportController extends Controller
         $amend->motionId    = $motion->id;
         $amend->titlePrefix = $aenderungsantrag['revision_name'];
         /*
-        $amend->changeMetatext        = $aenderungsantrag['aenderung_metatext'];
+        $amend->changeEditorial        = $aenderungsantrag['aenderung_metatext'];
         $amend->changeText            = $aenderungsantrag['aenderung_text'];
         $amend->changeExplanation     = $aenderungsantrag['aenderung_begruendung'];
         $amend->changeExplanationHtml = $aenderungsantrag['aenderung_begruendung_html'];
         */
-        $amend->changeMetatext        = '';
+        $amend->changeEditorial       = '';
         $amend->changeText            = '';
         $amend->changeExplanation     = '';
         $amend->changeExplanationHtml = 0;

@@ -27,6 +27,13 @@ $params->addBreadcrumb('Bestätigen');
 
 echo '<h1>' . Yii::t('amend', 'Änderungsantrag bestätigen') . '</h1>';
 
+if ($amendment->changeEditorial != '') {
+    echo '<section id="section_editorial" class="motionTextHolder">';
+    echo '<h3 class="green">' . 'Redaktionelle Änderung' . '</h3>';
+    echo '<div class="paragraph"><div class="text">';
+    echo $amendment->changeEditorial;
+    echo '</div></div></section>';
+}
 
 /** @var AmendmentSection[] $sections */
 $sections = $amendment->getSortedSections(false);

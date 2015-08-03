@@ -17,7 +17,7 @@ use yii\helpers\Html;
  * @property int $id
  * @property int $motionId
  * @property string $titlePrefix
- * @property string $changeMetatext
+ * @property string $changeEditorial
  * @property string $changeText
  * @property string $changeExplanation
  * @property int $changeExplanationHtml

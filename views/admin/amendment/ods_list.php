@@ -125,6 +125,10 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $amendment->changeExplanation);
 
         $change = '';
+        if ($amendment->changeEditorial != '') {
+            $change .= '<h4>Redaktionelle Änderung</h4><br>';
+            $change .= $amendment->changeEditorial;
+        }
         foreach ($amendment->getSortedSections(false) as $section) {
             $change .= $section->getSectionType()->getAmendmentODS();
         }

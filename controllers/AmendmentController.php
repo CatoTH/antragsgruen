@@ -298,6 +298,9 @@ class AmendmentController extends Base
                     'amendmentId' => $amendment->id,
                     'fromMode'    => 'create'
                 ];
+                if (isset($_POST['draftId'])) {
+                    $nextUrl['draftId'] = $_POST['draftId'];
+                }
                 $this->redirect(UrlHelper::createUrl($nextUrl));
                 return '';
             } catch (FormError $e) {

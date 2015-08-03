@@ -220,6 +220,12 @@ ul.sidebarActions {
   .submitHolder {
     text-align: right;
   }
+  .editorialChange {
+    overflow: auto;
+    .opener {
+      float: right;
+    }
+  }
 }
 
 .supporterFormStd {

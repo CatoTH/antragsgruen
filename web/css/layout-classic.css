@@ -10107,6 +10107,10 @@ ul.sidebarActions {
     text-align: right; }
 .motionEditForm .submitHolder {
   text-align: right; }
+.motionEditForm .editorialChange {
+  overflow: auto; }
+  .motionEditForm .editorialChange .opener {
+    float: right; }
 
 .supporterFormStd .supporterData .fullTextAdder {
   float: right; }

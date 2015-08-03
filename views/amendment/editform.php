@@ -83,8 +83,23 @@ echo Html::beginForm(
     ['id' => 'amendmentEditForm', 'class' => 'motionEditForm draftForm', 'enctype' => 'multipart/form-data']
 );
 
-echo '<h2 class="green">Neuer Antragstext</h2>';
-echo '<div class="content">';
+echo '<h2 class="green">Neuer Antragstext</h2>
+<div class="content">
+
+<section class="editorialChange">
+    <a href="#" class="opener">' . 'Redaktionelle Änderung' . '</a>
+    <div class="form-group wysiwyg-textarea hidden" id="section_holder_editorial" data-fullHtml="0">
+        <label for="sections_editorial">' . 'Redaktionelle Änderung' . '</label>
+        <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
+        Html::encode($form->editorial) . '</textarea>
+        <div class="texteditor" id="amendmentEditorial_wysiwyg">';
+echo $form->editorial;
+echo '</div>
+</section>
+';
+
+
+
 foreach ($form->sections as $section) {
     echo $section->getSectionType()->getAmendmentFormField();
 }

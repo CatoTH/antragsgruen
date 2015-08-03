@@ -7,7 +7,7 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 -- Dumping data for table `amendment`
 --
 
-INSERT INTO `amendment` (`id`, `motionId`, `titlePrefix`, `changeMetatext`, `changeText`, `changeExplanation`, `changeExplanationHtml`, `cache`, `dateCreation`, `datePublication`, `dateResolution`, `status`, `statusString`, `noteInternal`, `textFixed`)
+INSERT INTO `amendment` (`id`, `motionId`, `titlePrefix`, `changeEditorial`, `changeText`, `changeExplanation`, `changeExplanationHtml`, `cache`, `dateCreation`, `datePublication`, `dateResolution`, `status`, `statusString`, `noteInternal`, `textFixed`)
 VALUES
   (1, 2, 'Ä1', '', '',
    '<p>Auf gehds beim Schichtl pfiad de Charivari Wurschtsolod Gamsbart, Kneedl gwiss. Wos dringma aweng unbandig gfreit mi imma Habedehre, sei Sauwedda dringma aweng Maßkruag Schuabladdla! Do legst di nieda hob i an Suri wia Haferl Graudwiggal Klampfn Biakriagal i bin a woschechta Bayer ebba.</p>\n',

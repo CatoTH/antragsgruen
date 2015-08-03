@@ -27,6 +27,9 @@ class AmendmentEditForm extends Model
     /** @var string */
     public $reason = '';
 
+    /** @var string */
+    public $editorial = '';
+
     private $adminMode = false;
 
     /**
@@ -47,6 +50,7 @@ class AmendmentEditForm extends Model
             $this->amendmentId = $amendment->id;
             $this->supporters  = $amendment->amendmentSupporters;
             $this->reason      = $amendment->changeExplanation;
+            $this->editorial   = $amendment->changeEditorial;
             foreach ($amendment->sections as $section) {
                 $amendmentSections[$section->sectionId] = $section;
                 if ($section->data == '' && isset($motionSections[$section->sectionId])) {
@@ -144,6 +148,9 @@ class AmendmentEditForm extends Model
         if (isset($values['amendmentReason'])) {
             $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
         }
+        if (isset($values['amendmentEditorial'])) {
+            $this->editorial = HTMLTools::cleanSimpleHtml($values['amendmentEditorial']);
+        }
     }
 
 
@@ -199,9 +206,9 @@ class AmendmentEditForm extends Model
         $amendment->textFixed         = ($this->motion->consultation->getSettings()->adminsMayEdit ? 0 : 1);
         $amendment->titlePrefix       = '';
         $amendment->dateCreation      = date('Y-m-d H:i:s');
-        $amendment->changeMetatext    = ''; // @TODO
-        $amendment->changeText        = ''; // @TODO
+        $amendment->changeEditorial   = $this->editorial;
         $amendment->changeExplanation = $this->reason;
+        $amendment->changeText        = '';
         $amendment->cache             = '';
 
         if ($amendment->save()) {
@@ -264,6 +271,7 @@ class AmendmentEditForm extends Model
             $this->saveAmendmentVerify();
         }
         $amendment->changeExplanation = $this->reason;
+        $amendment->changeEditorial = $this->editorial;
 
         if ($amendment->save()) {
             $motionType->getAmendmentInitiatorFormClass()->submitAmendment($amendment);

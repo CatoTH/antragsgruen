@@ -30,9 +30,13 @@ $pdf->AddPage();
 
 $pdfLayout->printAmendmentHeader($amendment);
 
+// @TODO: Editorial change
+
 foreach ($amendment->getSortedSections(false) as $section) {
     $section->getSectionType()->printAmendmentToPDF($pdf);
 }
+
+// @TODO: Editorial Explanation
 
 $pdf->Output('Amendment_' . $amendment->titlePrefix . '.pdf', 'I');
 

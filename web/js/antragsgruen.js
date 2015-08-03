@@ -170,6 +170,15 @@
                     }
                 }
             }
+            if (data.hasOwnProperty("amendmentEditorial_wysiwyg") && data['amendmentEditorial_wysiwyg'] != '') {
+                if (!CKEDITOR.hasOwnProperty('amendmentEditorial_wysiwyg')) {
+                    $(".editorialChange .opener").click();
+                    window.setTimeout(function() {
+                        CKEDITOR.instances.amendmentEditorial_wysiwyg.setData(data['amendmentEditorial_wysiwyg']);
+                    }, 100);
+                }
+            }
+
             $(".form-group.plain-text").each(function () {
                 var $input = $(this).find("input[type=text]");
                 if (typeof(data[$input.attr("id")]) != "undefined") {
@@ -325,10 +334,27 @@
             locale: lang,
             format: 'L'
         });
+        $(".editorialChange .opener").click(function(ev) {
+            ev.preventDefault();
+            var $holder = $(".editorialChange"),
+                $textarea = $holder.find(".texteditor");
+            $(this).addClass("hidden");
+            $("#section_holder_editorial").removeClass("hidden");
+            var editor = $.AntragsgruenCKEDITOR.init("amendmentEditorial_wysiwyg");
+            $textarea.parents("form").submit(function () {
+                $textarea.parent().find("textarea.raw").val(editor.getData());
+            });
+        });
+        if ($("#amendmentEditorial").val() != '') {
+            $(".editorialChange .opener").click();
+        }
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
-                $textarea = $holder.find(".texteditor"),
-                editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+                $textarea = $holder.find(".texteditor");
+            if ($holder.hasClass("hidden")) {
+                return;
+            }
+            var editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
             $textarea.parents("form").submit(function () {
                 $textarea.parent().find("textarea.raw").val(editor.getData());
                 if (typeof(editor.plugins.lite) != 'undefined') {
