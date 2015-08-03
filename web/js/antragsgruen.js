@@ -345,9 +345,6 @@
                 $textarea.parent().find("textarea.raw").val(editor.getData());
             });
         });
-        if ($("#amendmentEditorial").val() != '') {
-            $(".editorialChange .opener").click();
-        }
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor");
@@ -363,6 +360,9 @@
                 }
             });
         });
+        if ($("#amendmentEditorial").val() != '') {
+            $(".editorialChange .opener").click();
+        }
 
         var $draftHint = $("#draftHint"),
             draftMotionId = $draftHint.data("motion-id"),
