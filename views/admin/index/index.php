@@ -89,10 +89,11 @@ echo '<h3>Änderungsanträge</h3>
     Html::a('Sammel-PDF', UrlHelper::createUrl('amendment/pdfcollection'), ['class' => 'amendmentsPdf']) .
     '</li>
     <li class="secondary">' . Html::a('Liste aller PDFs', $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '</li>
-        <li>' .
-    Html::a('Export: OpenOffice-Spreadsheet', $amendmentOdsLink, ['class' => 'amendmentOds']) .
-    '</li>
+    <li class="secondary">' .
+        Html::a('Export: Spreadsheet', $amendmentOdsLink, ['class' => 'amendmentOds']) .
+    '</li>';
 
+/*
     <li class="secondary">
     <a href="#ae_excel_export" onClick="$(\'#ae_excel_export\').toggle(); return false;" class="amendmentExcelOpener">
     Export: Änderungsanträge als Excel-Datei</a>
@@ -105,18 +106,20 @@ echo Html::a('Änderungsantragstext und Begründung in einer Spalte', $url);
 echo '</li>
             </ul>
     </li>
-</ul>
+*/
 
+echo '</ul>';
 
+/*
 <h3>Kommentare</h3>
 <ul>
     <li class="secondary">';
 echo Html::a('Export: Excel', UrlHelper::createUrl('admin/index/kommentareexcel'));
 echo '</li>
 </ul>
+*/
 
-
-</div>
+echo '</div>
 
 
 
