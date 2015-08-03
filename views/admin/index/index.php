@@ -56,9 +56,11 @@ foreach ($consultation->motionTypes as $motionType) {
     echo '<li class="secondary">';
     echo Html::a('Export: Spreadsheet', $odsUrl, ['class' => 'motionODS' . $motionType->id]) . '</li>';
 
+    /*
     $excelUrl = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
     echo '<li class="secondary">';
     echo Html::a('Export: Excel', $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . ' (fehleranfälliger)</li>';
+    */
 
     echo '</ul>';
 }
