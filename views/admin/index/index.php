@@ -56,31 +56,13 @@ foreach ($consultation->motionTypes as $motionType) {
     echo '<li class="secondary">';
     echo Html::a('Export: Spreadsheet', $odsUrl, ['class' => 'motionODS' . $motionType->id]) . '</li>';
 
-    /*
     $excelUrl = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
     echo '<li class="secondary">';
     echo Html::a('Export: Excel', $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . ' (fehleranfälliger)</li>';
-    */
 
     echo '</ul>';
 }
-echo '
-<!--
-        <li>
-            <a href="#antrag_excel_export" onClick="$(\'#antrag_excel_export\').toggle(); return false;">
-            Export: Anträge als Excel-Datei</a>
-            <ul id="antrag_excel_export" style="display: none;">
-                <li>';
-echo Html::a('Antragstext und Begründung getrennt', UrlHelper::createUrl('admin/index/antragExcelList'));
-echo '</li><li>';
-$url = UrlHelper::createUrl(['admin/index/antragExcelList', 'text_begruendung_zusammen' => 1]);
-echo Html::a('Antragstext und Begründung in einer Spalte', $url);
-echo '</li>
-            </ul>
-        </li>
--->';
 
-//echo Html::a('Änderungsanträge', UrlHelper::createUrl('admin/aenderungsantraege'));
 $amendmentOdsLink   = UrlHelper::createUrl('admin/amendment/odslist');
 $amendmentPDFLink = UrlHelper::createUrl('admin/amendment/pdflist');
 echo '<h3>Änderungsanträge</h3>
