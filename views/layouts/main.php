@@ -216,6 +216,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
     <script src="/js/scrollintoview.js"></script>
     <script src="/js/jquery.isonscreen.js"></script>
     <script src="/js/bower/intl/dist/Intl.min.js"></script>
+    <script src="/js/antragsgruen-de.js"></script>
     <script src="/js/antragsgruen.js"></script>
 <?php
 foreach ($layout->extraJs as $file) {

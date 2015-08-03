@@ -1,7 +1,6 @@
 /*global browser: true, regexp: true, localStorage */
-/*global $, jQuery, alert, console, CKEDITOR, document */
+/*global $, jQuery, alert, console, CKEDITOR, document, Intl */
 /*jslint regexp: true*/
-
 
 (function ($) {
     "use strict";
