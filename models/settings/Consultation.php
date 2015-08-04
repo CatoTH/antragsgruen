@@ -26,11 +26,11 @@ class Consultation
     public $commentNeedsEmail      = false;
     public $screeningComments      = false;
     public $initiatorConfirmEmails = false;
+    public $adminsMayEdit          = true;
 
     // TESTS WITHOUT TEST CASES
 
     /** @var bool */
-    public $adminsMayEdit         = true;
     public $minimalisticUI        = false;
     public $commentsSupportable   = false;
     public $screeningMotionsShown = false;
