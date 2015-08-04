@@ -125,8 +125,10 @@ class MotionController extends AdminBase
         if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
             $found = false;
             foreach ($this->consultation->motions as $mot) {
-                if ($mot->titlePrefix == $_POST['titlePrefix'] && $mot->status != Motion::STATUS_DELETED) {
-                    $found = true;
+                if ($mot->titlePrefix == $_POST['titlePrefix']) {
+                    if ($mot->status != Motion::STATUS_DELETED && $mot->id != $motion->id) {
+                        $found = true;
+                    }
                 }
             }
             if ($found) {

@@ -65,8 +65,10 @@ class AmendmentController extends AdminBase
             $found = false;
             foreach ($this->consultation->motions as $motion) {
                 foreach ($motion->amendments as $amend) {
-                    if ($amend->titlePrefix == $_POST['titlePrefix'] && $amend->status != Amendment::STATUS_DELETED) {
-                        $found = true;
+                    if ($amend->titlePrefix == $_POST['titlePrefix']) {
+                        if ($amend->status != Amendment::STATUS_DELETED && $amend->id != $amendment->id) {
+                            $found = true;
+                        }
                     }
                 }
             }
