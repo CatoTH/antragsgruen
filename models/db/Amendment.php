@@ -430,6 +430,10 @@ class Amendment extends IMotion implements IRSSItem
     public function setScreened()
     {
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
+        if ($this->titlePrefix == '') {
+            $numbering              = $this->motion->consultation->getAmendmentNumbering();
+            $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->motion);
+        }
         $this->save(true);
         $this->onPublish();
         ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_SCREEN, $this->id);
@@ -458,6 +462,7 @@ class Amendment extends IMotion implements IRSSItem
     public function onPublish()
     {
         $this->flushCacheWithChildren();
+        $this->setTextFixedIfNecessary();
 
         $init   = $this->getInitiators();
         $initId = (count($init) > 0 ? $init[0]->userId : null);
@@ -496,6 +501,23 @@ class Amendment extends IMotion implements IRSSItem
                     );
                 }
             }
+        }
+    }
+
+    /**
+     * @param bool $save
+     */
+    public function setTextFixedIfNecessary($save = true)
+    {
+        if ($this->motion->consultation->getSettings()->adminsMayEdit) {
+            return;
+        }
+        if (in_array($this->status, $this->motion->consultation->getInvisibleAmendmentStati())) {
+            return;
+        }
+        $this->textFixed = 1;
+        if ($save) {
+            $this->save(true);
         }
     }
 

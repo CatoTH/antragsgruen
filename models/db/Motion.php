@@ -461,6 +461,9 @@ class Motion extends IMotion implements IRSSItem
     public function setScreened()
     {
         $this->status = Motion::STATUS_SUBMITTED_SCREENED;
+        if ($this->titlePrefix == '') {
+            $this->titlePrefix = $this->consultation->getNextMotionPrefix($this->motionTypeId);
+        }
         $this->save(true);
         $this->onPublish();
         ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_SCREEN, $this->id);
@@ -490,6 +493,7 @@ class Motion extends IMotion implements IRSSItem
     public function onPublish()
     {
         $this->flushCacheWithChildren();
+        $this->setTextFixedIfNecessary();
 
         $init   = $this->getInitiators();
         $initId = (count($init) > 0 ? $init[0]->userId : null);
@@ -512,7 +516,7 @@ class Motion extends IMotion implements IRSSItem
             if ($this->consultation->getSettings()->initiatorConfirmEmails) {
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                    $text = "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
+                    $text       = "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
                         "Du kannst ihn hier einsehen: %LINK%\n\n" .
                         "Mit freundlichen Grüßen,\n" .
                         "  Das Antragsgrün-Team";
@@ -528,6 +532,23 @@ class Motion extends IMotion implements IRSSItem
                     );
                 }
             }
+        }
+    }
+
+    /**
+     * @param bool $save
+     */
+    public function setTextFixedIfNecessary($save = true)
+    {
+        if ($this->consultation->getSettings()->adminsMayEdit) {
+            return;
+        }
+        if (in_array($this->status, $this->consultation->getInvisibleMotionStati())) {
+            return;
+        }
+        $this->textFixed = 1;
+        if ($save) {
+            $this->save(true);
         }
     }
 

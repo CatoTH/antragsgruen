@@ -221,11 +221,9 @@ class IndexController extends AdminBase
 
                 if (!$consultation->getSettings()->adminsMayEdit) {
                     foreach ($consultation->motions as $motion) {
-                        $motion->textFixed = 1;
-                        $motion->save(false);
+                        $motion->setTextFixedIfNecessary();
                         foreach ($motion->amendments as $amend) {
-                            $amend->textFixed = 1;
-                            $amend->save(true);
+                            $amend->setTextFixedIfNecessary();
                         }
                     }
                 }
