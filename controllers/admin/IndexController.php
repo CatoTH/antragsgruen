@@ -285,4 +285,31 @@ class IndexController extends AdminBase
 
         return $this->render('translation', ['consultation' => $consultation, 'category' => $category]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionSiteconsultations()
+    {
+        $site = $this->site;
+
+        if (isset($_POST['createConsultation'])) {
+
+        }
+
+        if (isset($_POST['setStandard'])) {
+            if (is_array($_POST['setStandard']) && count($_POST['setStandard']) == 1) {
+                $keys = array_keys($_POST['setStandard']);
+                foreach ($site->consultations as $consultation) {
+                    if ($consultation->id == $keys[0]) {
+                        $site->currentConsultationId = $consultation->id;
+                        $site->save();
+                        \yii::$app->session->setFlash('success', 'Gespeichert.');
+                    }
+                }
+            }
+        }
+
+        return $this->render('site_consultations', ['site' => $site]);
+    }
 }

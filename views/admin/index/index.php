@@ -146,7 +146,7 @@ echo Html::a(
     ['class' => 'siteAccessLink']
 );
 echo '</li><li>';
-echo Html::a('Weitere Veranstaltungen anlegen / verwalten', UrlHelper::createUrl('admin/index/reiheVeranstaltungen'));
+echo Html::a('Weitere Veranstaltungen anlegen / verwalten', UrlHelper::createUrl('admin/index/siteconsultations'));
 echo '</li>
     </ul></div>';
 

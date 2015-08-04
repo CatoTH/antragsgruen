@@ -19,7 +19,7 @@ $userPaths           .= '|consultationaccesserror|myaccount';
 $domPlainPaths       = 'legal|privacy|help|password|billing|createsite';
 $adminMotionPaths    = 'index|type|listall|excellist|odslist';
 $adminAmendmentPaths = 'index|excellist|odslist|pdflist';
-$adminPaths          = 'consultation|consultationextended|translation|siteaccess';
+$adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations';
 
 $url_rules = [
     $domadmin . ''                                              => 'admin/index',

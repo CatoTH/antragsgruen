@@ -48,6 +48,28 @@ label.legend {
     .adminTodo ul li .description {
       font-size: 0.8em; }
 
+#consultationsList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
+  #consultationsList > li {
+    margin: 10px 0 30px;
+    padding: 10px;
+    overflow: auto;
+    border: solid 1px #afa;
+    border-radius: 4px;
+    background-color: #f4fFf4; }
+    #consultationsList > li h3 {
+      margin: 0;
+      margin-bottom: 5px;
+      font-size: 1.2em; }
+    #consultationsList > li .stdbox {
+      float: right; }
+
+.consultationCreateForm .fakeUrl input.form-control {
+  display: inline-block;
+  width: 130px; }
+
 #sectionsList {
   list-style-type: none;
   margin: 0;
