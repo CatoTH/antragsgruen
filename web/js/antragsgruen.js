@@ -1,5 +1,5 @@
 /*global browser: true, regexp: true, localStorage */
-/*global $, jQuery, alert, console, CKEDITOR, document, Intl */
+/*global $, jQuery, alert, console, CKEDITOR, document, Intl, JSON */
 /*jslint regexp: true*/
 
 (function ($) {
@@ -140,8 +140,10 @@
 (function ($) {
     "use strict";
 
+    var $html = $('html');
+
     var draftSavingEngine = function (keyBase) {
-        if (!$('html').hasClass("localstorage")) {
+        if (!$html.hasClass("localstorage")) {
             return;
         }
 
@@ -174,7 +176,7 @@
                 if (!CKEDITOR.hasOwnProperty('amendmentEditorial_wysiwyg')) {
                     $(".editorialChange .opener").click();
                     window.setTimeout(function() {
-                        CKEDITOR.instances.amendmentEditorial_wysiwyg.setData(data['amendmentEditorial_wysiwyg']);
+                        CKEDITOR.instances['amendmentEditorial_wysiwyg'].setData(data['amendmentEditorial_wysiwyg']);
                     }, 100);
                 }
             }
@@ -199,11 +201,12 @@
             if (key.indexOf(keyBase + "_") == 0) {
                 var data = JSON.parse(localStorage.getItem(key)),
                     lastEdit = new Date(data['lastEdit']),
-                    $link = $("<li><a href='#' class='restore'></a> <a href='#' class='delete glyphicon glyphicon-trash'></a></li>");
+                    $link = $("<li><a href='#' class='restore'></a> " +
+                        "<a href='#' class='delete glyphicon glyphicon-trash' title='Entwurf löschen'></a></li>");
 
 
                 $link.data("key", key);
-                var dateStr = new Intl.DateTimeFormat($("html").attr("lang"), {
+                var dateStr = new Intl.DateTimeFormat($html.attr("lang"), {
                     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
                     hour: 'numeric', minute: 'numeric'
                 }).format(lastEdit);
@@ -274,7 +277,7 @@
     };
 
     var motionEditForm = function () {
-        var lang = $('html').attr('lang');
+        var lang = $html.attr('lang');
         $(".input-group.date").datetimepicker({
             locale: lang,
             format: 'L'
@@ -329,12 +332,14 @@
     };
 
     var amendmentEditForm = function () {
-        var lang = $('html').attr('lang');
+        var lang = $html.attr('lang'),
+            $opener = $(".editorialChange .opener");
+
         $(".input-group.date").datetimepicker({
             locale: lang,
             format: 'L'
         });
-        $(".editorialChange .opener").click(function(ev) {
+        $opener.click(function(ev) {
             ev.preventDefault();
             var $holder = $(".editorialChange"),
                 $textarea = $holder.find(".texteditor");
@@ -361,7 +366,7 @@
             });
         });
         if ($("#amendmentEditorial").val() != '') {
-            $(".editorialChange .opener").click();
+            $opener.click();
         }
 
         var $draftHint = $("#draftHint"),
@@ -620,8 +625,10 @@
             }
         });
 
+        var $editforms = $('#motionEditForm, #amendmentEditForm');
+
         if ($supporterData.length > 0 && $supporterData.data('min-supporters') > 0) {
-            $('#motionEditForm, #amendmentEditForm').submit(function (ev) {
+            $editforms.submit(function (ev) {
                 if ($('#personTypeOrga').prop('checked')) {
                     return;
                 }
@@ -638,7 +645,7 @@
             });
         }
 
-        $('#motionEditForm, #amendmentEditForm').submit(function (ev) {
+        $editforms.submit(function (ev) {
             if ($('#personTypeOrga').prop('checked')) {
                 if ($('#resolutionDate').val() == '') {
                     ev.preventDefault();
@@ -693,11 +700,13 @@
         }).trigger('change');
 
         $('.userAccountForm').submit(function (ev) {
-            if ($("#userPwd").val() != '' || $("#userPwd2").val() != '') {
-                if ($("#userPwd").val().length < pwMinLen) {
+            var pwd = $("#userPwd").val(),
+                pwd2 = $("#userPwd2").val();
+            if (pwd != '' || pwd2 != '') {
+                if (pwd.val().length < pwMinLen) {
                     ev.preventDefault();
                     bootbox.alert('Das Passwort muss mindestens ' + pwMinLen + ' Buchstaben haben.');
-                } else if ($("#userPwd").val() != $("#userPwd2").val()) {
+                } else if (pwd != pwd2) {
                     ev.preventDefault();
                     bootbox.alert('Die beiden Passwörter stimmen nicht überein.');
                 }
