@@ -66,7 +66,7 @@ echo '<fieldset class="form-group">
 </fieldset>
 
 <fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="consultationTitle">Name:</label>
+    <label class="col-sm-4 control-label" for="consultationTitle">' . 'Titel der Veranstaltung' . ':</label>
     <div class="col-sm-8">
     <input type="text" required name="consultation[title]" ' .
     'value="' . Html::encode($consultation->title) . '" class="form-control" id="consultationTitle">
@@ -74,48 +74,17 @@ echo '<fieldset class="form-group">
 </fieldset>
 
 <fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="consultationTitleShort">Name (kurz):</label>
+    <label class="col-sm-4 control-label" for="consultationTitleShort">' . 'Kurzversion' . ':</label>
     <div class="col-sm-8">
     <input type="text" required name="consultation[titleShort]" ' .
     'value="' . Html::encode($consultation->titleShort) . '" class="form-control" id="consultationTitleShort">
     </div>
 </fieldset>';
 
-/*
-
-    <div>
-        <input type="hidden" name="VeranstaltungsEinstellungen[einstellungsfelder][]" value="wartungs_modus_aktiv">
-        <?php echo $form->labelEx($einstellungen, 'antrag_einleitung', array("label" => "PDF-Antrags-Einleitung")); ?>
-        <div class="std_content_col">
-            <?php echo $form->textArea($einstellungen, 'antrag_einleitung'); ?>
-            <br>
-            <small>Steht im PDF unter "Antrag", also z.B. "an die LDK in Würzburg"</small>
-        </div>
-        <?php echo $form->error($einstellungen, 'antrag_einleitung'); ?>
-    </div>
-    <br>
-</div>
-
-<br>
-
-*/
-
 echo '</div>
 
 <h2 class="green">Anträge</h2>
 <div class="content">';
-/*
-<fieldset class="form-group">
-        <label class="col-sm-4 control-label" for="policyMotions">Antragsberechtigt:</label>
-        <div class="col-sm-8">';
-echo Html::dropDownList(
-    'consultation[policyMotions]',
-    $consultation->policyMotions,
-    IPolicy::getPolicyNames(),
-    ['id' => 'policyMotions', 'class' => 'form-control']
-);
-echo '</div></fieldset>';
-*/
 
 $handledSettings[] = 'lineNumberingGlobal';
 echo '<fieldset><label>';

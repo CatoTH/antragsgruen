@@ -703,7 +703,7 @@
             var pwd = $("#userPwd").val(),
                 pwd2 = $("#userPwd2").val();
             if (pwd != '' || pwd2 != '') {
-                if (pwd.val().length < pwMinLen) {
+                if (pwd.length < pwMinLen) {
                     ev.preventDefault();
                     bootbox.alert('Das Passwort muss mindestens ' + pwMinLen + ' Buchstaben haben.');
                 } else if (pwd != pwd2) {

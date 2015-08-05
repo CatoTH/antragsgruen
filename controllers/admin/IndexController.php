@@ -13,6 +13,7 @@ use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\Site;
 use app\models\AdminTodoItem;
+use app\models\forms\ConsultationCreateForm;
 
 class IndexController extends AdminBase
 {
@@ -291,10 +292,23 @@ class IndexController extends AdminBase
     {
         $site = $this->site;
 
+        $form = new ConsultationCreateForm();
+        $form->template = $this->consultation;
+
         if (isset($_POST['createConsultation'])) {
-
+            $form->setAttributes($_POST['newConsultation'], true);
+            $form->setAsDefault = isset($_POST['newConsultation']['setStandard']);
+            if (isset($_POST['newConsultation']['template'])) {
+                foreach ($this->site->consultations as $cons) {
+                    if ($cons->id == $_POST['newConsultation']['template']) {
+                        $form->template = $cons;
+                    }
+                }
+            }
+            $form->createConsultation();
+            \yii::$app->session->setFlash('success', 'Die neue Veranstaltung wurde angelegt.');
+            $this->site->refresh();
         }
-
         if (isset($_POST['setStandard'])) {
             if (is_array($_POST['setStandard']) && count($_POST['setStandard']) == 1) {
                 $keys = array_keys($_POST['setStandard']);
@@ -306,8 +320,9 @@ class IndexController extends AdminBase
                     }
                 }
             }
+            $this->site->refresh();
         }
 
-        return $this->render('site_consultations', ['site' => $site]);
+        return $this->render('site_consultations', ['site' => $site, 'createForm' => $form]);
     }
 }

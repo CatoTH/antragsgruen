@@ -32,7 +32,7 @@ class LoginUsernamePasswordForm extends Model
     public function rules()
     {
         return [
-            [['username', 'password',], 'required'],
+            [['username', 'password'], 'required'],
             ['contact', 'required', 'message' => 'Du musst eine Kontaktadresse angeben.'],
             [['createAccount', 'hasComments', 'openNow'], 'boolean'],
             [['username', 'password', 'passwordConfirm', 'name', 'createAccount'], 'safe'],

@@ -7,6 +7,7 @@ use yii\helpers\Url;
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Site $site
+ * @var \app\models\forms\ConsultationCreateForm $createForm
  */
 
 /** @var \app\controllers\Base $controller */
@@ -68,22 +69,30 @@ foreach ($site->consultations as $cons) {
     $templates[$cons->id] = $cons->title;
 }
 
+$textOpts = ['required' => 'required', 'class' => 'form-control'];
 echo '<h2 class="green">' . 'Veranstaltung anlegen' . '</h2>
 
 <div class="content">
 
 <div class="form-group">
-    <label for="newTitle" class="col-md-4 control-label">Titel der Veranstaltung:</label>
-    <div class="col-md-8">
-        <input type="text" class="form-control" value="" name="newConsultation[title]">
-    </div>
+    <label for="newTitle" class="col-md-4 control-label">' . 'Titel der Veranstaltung' . ':</label>
+    <div class="col-md-8">' .
+    Html::input('text', 'newConsultation[title]', $createForm->title, $textOpts) .
+    '</div>
+</div>
+
+<div class="form-group">
+    <label for="newTitle" class="col-md-4 control-label">' . 'Kurzversion' . ':</label>
+    <div class="col-md-4">' .
+    Html::input('text', 'newConsultation[titleShort]', $createForm->titleShort, $textOpts) .
+    '</div>
 </div>
 
 <div class="form-group">
     <label for="newPath" class="col-md-4 control-label">Internet-Adresse:</label>
     <div class="col-md-8 fakeUrl">';
 
-$input = '<input type="text" class="form-control" value="" name="newConsultation[urlPath]">';
+$input = Html::input('text', 'newConsultation[urlPath]', $createForm->urlPath, $textOpts);
 $url = Url::toRoute(['consultation/index', 'subdomain' => $site->subdomain, 'consultationPath' => '--CON--']);
 $url = UrlHelper::absolutizeLink($url);
 echo str_replace('--CON--', $input, $url);
@@ -93,16 +102,16 @@ echo '</div>
 <div class="form-group">
     <label for="newTemplate" class="col-md-4 control-label">Einstellungen übernehmen von:</label>
     <div class="col-md-8">' .
-    \app\components\HTMLTools::fueluxSelectbox('newConsultation[template]', $templates) .
+    \app\components\HTMLTools::fueluxSelectbox('newConsultation[template]', $templates, $createForm->template->id) .
     '</div>
 </div>
 
 <div class="form-group">
     <div class="label col-md-4 control-label">Standard:</div>
     <div class="col-md-8 checkbox">
-        <label>
-            <input type="checkbox" name="newConsultation[setStandard]" id="newSetStandard">
-            Sofort als Standard-Veranstaltung festlegen
+        <label>' .
+    Html::checkbox('newConsultation[setStandard]', $createForm->setAsDefault, ['id' => 'newSetStandard']) .
+    ' Sofort als Standard-Veranstaltung festlegen
         </label>
     </div>
 </div>
