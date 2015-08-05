@@ -83,20 +83,20 @@ if ($myself) {
 
         foreach ($myMotions as $motionSupport) {
             $motion = $motionSupport->motion;
-            echo "<li>";
+            echo '<li>';
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
                 echo "<span style='text-decoration: line-through;'>";
             }
             $motionLink = URL::toRoute(['motion/show', 'motionId' => $motion->id]);
             echo Html::a($motion->title, $motionLink);
             if ($motionSupport->role == MotionSupporter::ROLE_INITIATOR) {
-                echo " (InitiatorIn)";
+                echo ' (InitiatorIn)';
             }
             if ($motionSupport->role == MotionSupporter::ROLE_SUPPORTER) {
-                echo " (UnterstützerIn)";
+                echo ' (UnterstützerIn)';
             }
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
-                echo "</span>";
+                echo '</span>';
             }
             echo "</li>\n";
         }
@@ -108,7 +108,7 @@ if ($myself) {
         echo '<div class="content"><ul class="antragsliste">';
         foreach ($myAmendments as $amendmentSupport) {
             $amendment = $amendmentSupport->amendment;
-            echo "<li>";
+            echo '<li>';
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo "<span style='text-decoration: line-through;'>";
             }
@@ -124,15 +124,15 @@ if ($myself) {
                 $amendmentUrl
             );
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_INITIATOR) {
-                echo " (InitiatorIn)";
+                echo ' (InitiatorIn)';
             }
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_SUPPORTER) {
-                echo " (UnterstützerIn)";
+                echo ' (UnterstützerIn)';
             }
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
-                echo "</span>";
+                echo '</span>';
             }
-            echo "</li>\n";
+            echo '</li>\n';
         }
         echo '</ul></div>';
     }

@@ -24,6 +24,9 @@ $layout->loadFuelux();
 $settings = $site->getSettings();
 
 echo '<h1>Veranstaltungen</h1>';
+
+echo $controller->showErrors();
+
 echo Html::beginForm('', 'post', ['class' => 'consultationEditForm']);
 echo '<h2 class="green">' . 'Angelegte Veranstaltungen' . '</h2>';
 echo '<div class="content"><ul id="consultationsList">';
@@ -77,14 +80,19 @@ echo '<h2 class="green">' . 'Veranstaltung anlegen' . '</h2>
 <div class="form-group">
     <label for="newTitle" class="col-md-4 control-label">' . 'Titel der Veranstaltung' . ':</label>
     <div class="col-md-8">' .
-    Html::input('text', 'newConsultation[title]', $createForm->title, $textOpts) .
+    Html::input('text', 'newConsultation[title]', $createForm->title, array_merge($textOpts, ['id' => 'newTitle'])) .
     '</div>
 </div>
 
 <div class="form-group">
-    <label for="newTitle" class="col-md-4 control-label">' . 'Kurzversion' . ':</label>
+    <label for="newShort" class="col-md-4 control-label">' . 'Kurzversion' . ':</label>
     <div class="col-md-4">' .
-    Html::input('text', 'newConsultation[titleShort]', $createForm->titleShort, $textOpts) .
+    Html::input(
+        'text',
+        'newConsultation[titleShort]',
+        $createForm->titleShort,
+        array_merge($textOpts, ['id' => 'newShort'])
+    ) .
     '</div>
 </div>
 
@@ -92,7 +100,12 @@ echo '<h2 class="green">' . 'Veranstaltung anlegen' . '</h2>
     <label for="newPath" class="col-md-4 control-label">Internet-Adresse:</label>
     <div class="col-md-8 fakeUrl">';
 
-$input = Html::input('text', 'newConsultation[urlPath]', $createForm->urlPath, $textOpts);
+$input = Html::input(
+    'text',
+    'newConsultation[urlPath]',
+    $createForm->urlPath,
+    array_merge($textOpts, ['id' => 'newPath'])
+);
 $url = Url::toRoute(['consultation/index', 'subdomain' => $site->subdomain, 'consultationPath' => '--CON--']);
 $url = UrlHelper::absolutizeLink($url);
 echo str_replace('--CON--', $input, $url);

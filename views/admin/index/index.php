@@ -62,7 +62,7 @@ foreach ($consultation->motionTypes as $motionType) {
     echo '</ul>';
 }
 
-$amendmentOdsLink   = UrlHelper::createUrl('admin/amendment/odslist');
+$amendmentOdsLink = UrlHelper::createUrl('admin/amendment/odslist');
 $amendmentPDFLink = UrlHelper::createUrl('admin/amendment/pdflist');
 echo '<h3>Änderungsanträge</h3>
 <ul>
@@ -71,7 +71,7 @@ echo '<h3>Änderungsanträge</h3>
     '</li>
     <li class="secondary">' . Html::a('Liste aller PDFs', $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '</li>
     <li class="secondary">' .
-        Html::a('Export: Spreadsheet', $amendmentOdsLink, ['class' => 'amendmentOds']) .
+    Html::a('Export: Spreadsheet', $amendmentOdsLink, ['class' => 'amendmentOds']) .
     '</li>';
 
 /*
@@ -145,7 +145,11 @@ echo Html::a(
     ['class' => 'siteAccessLink']
 );
 echo '</li><li>';
-echo Html::a('Weitere Veranstaltungen anlegen / verwalten', UrlHelper::createUrl('admin/index/siteconsultations'));
+echo Html::a(
+    'Weitere Veranstaltungen anlegen / verwalten',
+    UrlHelper::createUrl('admin/index/siteconsultations'),
+    ['class' => 'siteConsultationsLink']
+);
 echo '</li>
     </ul></div>';
 

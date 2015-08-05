@@ -13,6 +13,7 @@ use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\Site;
 use app\models\AdminTodoItem;
+use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
 
 class IndexController extends AdminBase
@@ -305,8 +306,12 @@ class IndexController extends AdminBase
                     }
                 }
             }
-            $form->createConsultation();
-            \yii::$app->session->setFlash('success', 'Die neue Veranstaltung wurde angelegt.');
+            try {
+                $form->createConsultation();
+                \yii::$app->session->setFlash('success', 'Die neue Veranstaltung wurde angelegt.');
+            } catch (FormError $e) {
+                \yii::$app->session->setFlash('error', $e->getMessage());
+            }
             $this->site->refresh();
         }
         if (isset($_POST['setStandard'])) {
@@ -316,7 +321,8 @@ class IndexController extends AdminBase
                     if ($consultation->id == $keys[0]) {
                         $site->currentConsultationId = $consultation->id;
                         $site->save();
-                        \yii::$app->session->setFlash('success', 'Gespeichert.');
+                        $msg = 'Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.';
+                        \yii::$app->session->setFlash('success', $msg);
                     }
                 }
             }
