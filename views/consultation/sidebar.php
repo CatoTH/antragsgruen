@@ -87,7 +87,7 @@ if ($showCreate) {
                     $motionCreateLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
                     $html .= '<li class="createMotion' . $motionType->id . '">';
                     $html .= '<a href="' . Html::encode($motionCreateLink) . '">';
-                    $html .= Html::encode($motionType->titlePlural) . '</a></li>';
+                    $html .= Html::encode($motionType->titleSingular) . '</a></li>';
                 }
             }
             $html .= "</ul></div>";
