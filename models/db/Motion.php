@@ -527,8 +527,7 @@ class Motion extends IMotion implements IRSSItem
                         trim($initiator[0]->contactEmail),
                         null,
                         'Antrag veröffentlicht',
-                        str_replace('%LINK%', $motionLink, $text),
-                        $this->consultation->site->getBehaviorClass()->getMailFromName()
+                        str_replace('%LINK%', $motionLink, $text)
                     );
                 }
             }

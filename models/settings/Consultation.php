@@ -13,7 +13,7 @@ class Consultation
     const START_LAYOUT_AGENDA_LONG = 4;
 
 
-    // TESTS WITH TEST CASES
+    // SETTINGS WITH TEST CASES
 
     /** @var bool */
     public $maintainanceMode       = false;
@@ -28,7 +28,7 @@ class Consultation
     public $initiatorConfirmEmails = false;
     public $adminsMayEdit          = true;
 
-    // TESTS WITHOUT TEST CASES
+    // SETTINGS WITHOUT TEST CASES
 
     /** @var bool */
     public $minimalisticUI        = false;

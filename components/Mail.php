@@ -5,6 +5,7 @@ namespace app\components;
 use app\models\db\EMailBlacklist;
 use app\models\db\EMailLog;
 use app\models\db\Site;
+use Zend\Mail\Header\ContentType;
 
 class Mail
 {
@@ -100,13 +101,15 @@ class Mail
             $mimem->setParts([$textPart, $htmlPart]);
 
             $mail->setBody($mimem);
-            $mail->getHeaders()->get('content-type')->setType('multipart/alternative');
+            /** @var ContentType $contentType */
+            $contentType = $mail->getHeaders()->get('content-type');
+            $contentType->setType('multipart/alternative');
         }
 
         if ($replyTo != '') {
             $reply_to_head = new \Zend\Mail\Header\ReplyTo();
             $reply_to_addr = new \Zend\Mail\AddressList();
-            $reply_to_addr->add('tobias2@hoessl.eu');
+            $reply_to_addr->add($replyTo);
             $reply_to_head->setAddressList($reply_to_addr);
             $mail->getHeaders()->addHeader($reply_to_head);
         }
@@ -143,8 +146,6 @@ class Mail
      * @param null|int $toPersonId
      * @param string $subject
      * @param string $text
-     * @param null|string $fromName
-     * @param null|string $fromEmail
      * @param null|array $noLogReplaces
      */
     public static function sendWithLog(
@@ -154,8 +155,6 @@ class Mail
         $toPersonId,
         $subject,
         $text,
-        $fromName = null,
-        $fromEmail = null,
         $noLogReplaces = null
     )
     {
@@ -168,6 +167,18 @@ class Mail
             $text
         ) : $text);
 
+        $fromEmail = $params->mailFromEmail;
+        $fromName  = $params->mailFromName;
+        $replyTo   = '';
+        if ($fromSite) {
+            if ($fromSite->getSettings()->emailFromName != '') {
+                $fromName = $fromSite->getSettings()->emailFromName;
+            }
+            if ($fromSite->getSettings()->emailReplyTo != '') {
+                $replyTo = $fromSite->getSettings()->emailReplyTo;
+            }
+        }
+
         $messageId = explode('@', $fromEmail);
         if (count($messageId) == 2) {
             $messageId = uniqid() . '@' . $messageId[1];
@@ -175,17 +186,17 @@ class Mail
             $messageId = uniqid() . '@antragsgruen.de';
         }
 
-        if ($fromName === null) {
-            $fromName = $params->mailFromName;
-        }
-        if ($fromEmail === null) {
-            $fromEmail = $params->mailFromEmail;
-        }
-
-        // @TODO: Reply-To
-
         try {
-            $message = static::createMessage($mailType, $subject, $sendText, '', $fromName, $fromEmail, '', $messageId);
+            $message = static::createMessage(
+                $mailType,
+                $subject,
+                $sendText,
+                '',
+                $fromName,
+                $fromEmail,
+                $replyTo,
+                $messageId
+            );
             $status  = static::send($message, $toEmail);
         } catch (\Exception $e) {
             $status = EMailLog::STATUS_DELIVERY_ERROR;

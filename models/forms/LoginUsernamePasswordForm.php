@@ -60,8 +60,6 @@ class LoginUsernamePasswordForm extends Model
             $user->id,
             'Anmeldung bei Antragsgrün',
             $send_text,
-            null,
-            null,
             [
                 '%code%'     => $bestCode,
                 '%bestLink%' => $link,

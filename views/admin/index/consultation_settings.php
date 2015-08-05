@@ -25,8 +25,10 @@ echo Html::beginForm('', 'post', ['id' => 'consultationSettingsForm', 'class' =>
 
 echo $controller->showErrors();
 
-$settings = $consultation->getSettings();
-$handledSettings = [];
+$settings            = $consultation->getSettings();
+$siteSettings        = $consultation->site->getSettings();
+$handledSettings     = [];
+$handledSiteSettings = [];
 
 
 echo '<h2 class="green">Allgemeine Einstellungen zur Veranstaltung</h2>';
@@ -180,8 +182,23 @@ echo '</div>
     <div class="col-sm-8">
     <input type="text" required name="consultation[adminEmail]" ' .
     'value="' . Html::encode($consultation->adminEmail) . '" class="form-control" id="adminEmail">
-</div></div>
-';
+</div></div>';
+
+$handledSiteSettings[] = 'emailFromName';
+echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="emailReplyTo">Absender-Name:</label>
+    <div class="col-sm-8">
+    <input type="text" required name="siteSettings[emailFromName]" placeholder="Standard: &quot;Antragsgrün&quot;" ' .
+    'value="' . Html::encode($siteSettings->emailFromName) . '" class="form-control" id="emailFromName">
+</div></div>';
+
+$handledSiteSettings[] = 'emailReplyTo';
+echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="emailReplyTo">Reply-To:</label>
+    <div class="col-sm-8">
+    <input type="email" name="siteSettings[emailReplyTo]" placeholder="Im Zweifelsfall einfach leer lassen" ' .
+    'value="' . Html::encode($siteSettings->emailReplyTo) . '" class="form-control" id="emailReplyTo">
+</div></div>';
 
 
 $handledSettings[] = 'initiatorConfirmEmails';
@@ -207,5 +224,7 @@ echo '
 foreach ($handledSettings as $setting) {
     echo '<input type="hidden" name="settingsFields[]" value="' . Html::encode($setting) . '">';
 }
-
+foreach ($handledSiteSettings as $setting) {
+    echo '<input type="hidden" name="siteSettingsFields[]" value="' . Html::encode($setting) . '">';
+}
 echo Html::endForm();

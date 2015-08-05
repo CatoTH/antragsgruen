@@ -105,6 +105,12 @@ class IndexController extends AdminBase
             $model->setSettings($settings);
 
             if ($model->save()) {
+                $settingsInput = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
+                $siteSettings = $model->site->getSettings();
+                $siteSettings->saveForm($settingsInput, $_POST['siteSettingsFields']);
+                $model->site->setSettings($siteSettings);
+                $model->site->save();
+
                 $model->flushCacheWithChildren();
                 \yii::$app->session->setFlash('success', 'Gespeichert.');
             } else {
@@ -136,6 +142,7 @@ class IndexController extends AdminBase
             }
             return null;
         };
+
         /**
          * @param string $tagName
          * @return ConsultationSettingsTag|null

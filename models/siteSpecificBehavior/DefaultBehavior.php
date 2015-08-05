@@ -8,15 +8,6 @@ use app\models\settings\PDF;
 
 class DefaultBehavior
 {
-
-    /**
-     * @param Layout $params
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function setLayoutParams(Layout $params)
-    {
-    }
-
     /**
      * @return string
      */
@@ -46,15 +37,5 @@ class DefaultBehavior
         $settings->fontSize          = 10;
 
         return $settings;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMailFromName()
-    {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        return $params->mailFromName;
     }
 }

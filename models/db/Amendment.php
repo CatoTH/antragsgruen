@@ -496,8 +496,7 @@ class Amendment extends IMotion implements IRSSItem
                         trim($initiator[0]->contactEmail),
                         null,
                         'Änderungsantrag veröffentlicht',
-                        str_replace('%LINK%', $amendmentLink, $text),
-                        $this->motion->consultation->site->getBehaviorClass()->getMailFromName()
+                        str_replace('%LINK%', $amendmentLink, $text)
                     );
                 }
             }

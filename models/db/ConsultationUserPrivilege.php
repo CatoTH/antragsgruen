@@ -112,7 +112,6 @@ class ConsultationUserPrivilege extends ActiveRecord
         $consUrl   = UrlHelper::absolutizeLink($consUrl);
         $emailText = str_replace('%LINK%', $consUrl, $emailText);
 
-        $fromName = $consultation->site->getBehaviorClass()->getMailFromName();
         Mail::sendWithLog(
             EMailLog::TYPE_ACCESS_GRANTED,
             $consultation->site,
@@ -120,8 +119,6 @@ class ConsultationUserPrivilege extends ActiveRecord
             $user->id,
             'Antragsgrün-Zugriff',
             $emailText,
-            $fromName,
-            null,
             ['%ACCOUNT%' => $accountText]
         );
     }

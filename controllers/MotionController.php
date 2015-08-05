@@ -255,8 +255,7 @@ class MotionController extends Base
                             trim($mail),
                             null,
                             'Neuer Antrag',
-                            $mailText,
-                            $motion->consultation->site->getBehaviorClass()->getMailFromName()
+                            $mailText
                         );
                     }
                 }
@@ -280,8 +279,7 @@ class MotionController extends Base
                             trim($initiator[0]->contactEmail),
                             null,
                             'Antrag eingereicht',
-                            str_replace('%LINK%', $motionLink, $text),
-                            $motion->consultation->site->getBehaviorClass()->getMailFromName()
+                            str_replace('%LINK%', $motionLink, $text)
                         );
                     }
                 }

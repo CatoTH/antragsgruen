@@ -184,8 +184,7 @@ class AmendmentController extends Base
                             trim($mail),
                             null,
                             'Neuer Antrag',
-                            $mailText,
-                            $amendment->motion->consultation->site->getBehaviorClass()->getMailFromName()
+                            $mailText
                         );
                     }
                 }
@@ -209,8 +208,7 @@ class AmendmentController extends Base
                             trim($initiator[0]->contactEmail),
                             null,
                             'Änderungsantrag eingereicht',
-                            str_replace('%LINK%', $amendmentLink, $text),
-                            $amendment->motion->consultation->site->getBehaviorClass()->getMailFromName()
+                            str_replace('%LINK%', $amendmentLink, $text)
                         );
                     }
                 }

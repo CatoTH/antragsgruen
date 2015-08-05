@@ -493,12 +493,11 @@ class User extends ActiveRecord implements IdentityInterface
         $blacklistUrl = UrlHelper::createUrl(['user/emailblacklist', 'code' => $code]);
         $blacklistUrl = UrlHelper::absolutizeLink($blacklistUrl);
         $gruss        = str_replace('%NAME%', $this->name, "Hallo %NAME%,\n\n");
-        $from_name    = $consultation->site->getBehaviorClass()->getMailFromName();
         $sig          = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
             "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $blacklistUrl;
         $text         = $gruss . $text . $sig;
         $type         = EMailLog::TYPE_MOTION_NOTIFICATION_USER;
-        Mail::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text, $from_name);
+        Mail::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text);
     }
 
     /**
@@ -630,7 +629,7 @@ class User extends ActiveRecord implements IdentityInterface
             "Um diese durchzuführen, Rufe bitte folgenden Link auf und gib dort das neue Passwort ein:\n\n%URL%\n\n" .
             "Oder gib in dem Wiederherstellungs-Formular folgenden Code ein: %CODE%";
         $replaces = ['%URL%' => $url, '%CODE%' => $recoveryToken];
-        Mail::sendWithLog($type, null, $this->email, $this->id, $subject, $text, null, null, $replaces);
+        Mail::sendWithLog($type, null, $this->email, $this->id, $subject, $text, $replaces);
     }
 
     /**
