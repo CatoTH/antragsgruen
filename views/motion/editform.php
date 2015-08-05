@@ -8,6 +8,7 @@
  * @var bool $forceTag
  */
 use app\components\HTMLTools;
+use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsTag;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
@@ -33,11 +34,23 @@ echo '<div class="form content hideIfEmpty">';
 
 echo $controller->showErrors();
 
+if ($form->motionType->getAmendmentPolicy()->checkCurrUser(true, true)) {
+    $msg = 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
+        Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>
+        bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".';
+
+    echo '<div style="font-weight: bold; text-decoration: underline;">' .
+        'Antrag oder Änderungsantrag?' . '</div>' .
+        str_replace('%HOME%', UrlHelper::createUrl('consultation/index'), $msg) .
+        '<br><br>';
+}
+
+
+
 $motionPolicy = $form->motionType->getMotionPolicy();
 if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
-    echo '<div>
-                <legend>' . Yii::t('motion', 'Prerequisites for a motion'), '</legend>
-            </div>';
+    echo '<div style="font-weight: bold; text-decoration: underline;">' .
+        Yii::t('motion', 'Prerequisites for a motion'), '</div>';
 
     echo $motionPolicy->getOnCreateDescription();
 }

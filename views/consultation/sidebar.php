@@ -59,6 +59,7 @@ $html .= Html::endForm();
 $layout->menusHtml[] = $html;
 
 $showCreate = true;
+/*
 if ($consultation->getSettings()->getStartLayoutView() == 'index_layout_agenda') {
     foreach ($consultation->agendaItems as $item) {
         if ($item->motionType) {
@@ -66,6 +67,7 @@ if ($consultation->getSettings()->getStartLayoutView() == 'index_layout_agenda')
         }
     }
 }
+*/
 if ($showCreate) {
     $motionTypes = $consultation->motionTypes;
     $motionLink  = $consultation->site->getBehaviorClass()->getSubmitMotionStr();
