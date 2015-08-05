@@ -69,11 +69,19 @@ if ($consultation->getSettings()->getStartLayoutView() == 'index_layout_agenda')
 if ($showCreate) {
     $motionTypes = $consultation->motionTypes;
     $motionLink  = $consultation->site->getBehaviorClass()->getSubmitMotionStr();
+    $working = [];
+    foreach ($motionTypes as $motionType) {
+        if ($motionType->getMotionPolicy()->checkCurrUser(false, true)) {
+            $working[] = $motionType;
+        }
+    }
+
     if ($motionLink != '') {
         $layout->preSidebarHtml = $motionLink;
-    } elseif (count($motionTypes) > 0) {
-        if (count($motionTypes) == 1) {
-            if ($motionTypes[0]->getMotionPolicy()->checkCurrUser(false, true)) {
+    } elseif (count($working) > 0) {
+        /** @var ConsultationMotionType[] $working */
+        if (count($working) == 1) {
+            if ($working[0]->getMotionPolicy()->checkCurrUser(false, true)) {
                 $link = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
                 $description = Html::encode(Yii::t('con', 'Start a Motion'));
                 $layout->menusHtml[] = '<a class="createMotion text-hide" href="' . Html::encode($link) . '" ' .
@@ -82,7 +90,7 @@ if ($showCreate) {
         } else {
             $html = '<div><ul class="nav nav-list motions">';
             $html .= '<li class="nav-header">' . Yii::t('con', 'Create new...') . '</li>';
-            foreach ($motionTypes as $motionType) {
+            foreach ($working as $motionType) {
                 if ($motionType->getMotionPolicy()->checkCurrUser(false, true)) {
                     $motionCreateLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
                     $html .= '<li class="createMotion' . $motionType->id . '">';
