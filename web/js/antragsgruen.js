@@ -391,7 +391,8 @@
                 $textHolder.attr('contenteditable', true);
 
                 editor = CKEDITOR.inline($textHolder.attr('id'), {
-                    scayt_sLang: 'de_DE'
+                    scayt_sLang: 'de_DE',
+                    removePlugins: 'lite'
                 });
 
                 $textHolder.focus();

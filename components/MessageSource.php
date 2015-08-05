@@ -131,21 +131,22 @@ class MessageSource extends \yii\i18n\MessageSource
 
 
     /**
-     * @param Consultation $consultation
+     * @param Consultation|null $consultation
      * @param string $pageKey
      * @param string $html
      * @return bool
      */
-    public static function savePageData(Consultation $consultation, $pageKey, $html)
+    public static function savePageData($consultation, $pageKey, $html)
     {
+        $consultationId = ($consultation ? $consultation->id : null);
         /** @var ConsultationText $text */
         $text = ConsultationText::findOne(
-            ['consultationId' => $consultation->id, 'textId' => $pageKey, 'category' => 'pagedata']
+            ['consultationId' => $consultationId, 'textId' => $pageKey, 'category' => 'pagedata']
         );
         if (!$text) {
             $text                 = new ConsultationText();
             $text->category       = 'pagedata';
-            $text->consultationId = $consultation->id;
+            $text->consultationId = $consultationId;
             $text->textId         = $pageKey;
         }
         $text->text     = HTMLTools::cleanTrustedHtml($html);
@@ -201,6 +202,12 @@ class MessageSource extends \yii\i18n\MessageSource
                 if ($text->category == 'pagedata' && $text->textId == $pageKey) {
                     $data->text = $text->text;
                 }
+            }
+        } else {
+            /** @var ConsultationText $text */
+            $text = ConsultationText::findOne(['consultationId' => null, 'textId' => $pageKey]);
+            if ($text) {
+                $data->text = $text->text;
             }
         }
         return $data;

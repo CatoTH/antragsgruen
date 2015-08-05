@@ -13,7 +13,35 @@ $I->see('das Antragstool', 'h1');
 
 $I->wantTo('go to the legal page');
 $I->click('#legalLink');
-$I->see('Impressum');
+$I->see('Impressum', 'h1');
 
-$scenario->incomplete('not finished yet');
-$I->see('Bearbeiten');
+$I->dontSeeElement('.editCaller');
+
+
+
+$I->wantTo('edit the page');
+
+$I->loginAsStdAdmin();
+
+$I->seeElement('.editCaller');
+
+$I->wantTo('Edit the content');
+$I->executeJS('$(".contentPage").find(".editCaller").click();');
+$I->wait(2);
+$I->seeElement('.contentPage .textSaver button');
+$I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<b>Bold test</b>");');
+$I->executeJS('$(".contentPage").find(".textSaver button").click();');
+$I->wait(1);
+
+$I->dontSeeElement('.contentPage .textSaver button');
+$I->see('Bold test');
+
+$I->click('#legalLink');
+
+$I->see('Bold test');
+
+
+$I->wantTo('check the privacy statement is visible');
+
+$I->click('#privacyLink');
+$I->see('Datenschutz', 'h1');

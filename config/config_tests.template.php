@@ -18,4 +18,5 @@ $params->randomSeed            = '123456';
 $params->cookieValidationKey   = '123456';
 $params->mailFromName          = 'Antragsgrün Test';
 $params->mailFromEmail         = 'test@antragsgruen.de';
+$params->adminUserIds          = [1];
 return $params;

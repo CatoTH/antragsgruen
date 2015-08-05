@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use app\components\AntiXSS;
+use app\components\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\Site;
 use app\models\db\User;
+use app\models\exceptions\Access;
 use app\models\forms\SiteCreateForm;
 use Yii;
 use yii\db\Exception;
@@ -143,6 +145,23 @@ class ManagerController extends Base
         return $this->renderContentPage('privacy');
     }
 
+    /**
+     * @param string $pageKey
+     * @return string
+     * @throws Access
+     */
+    public function actionSavetextajax($pageKey)
+    {
+        $user = User::getCurrentUser();
+        if (!$user || !in_array($user->id, $this->getParams()->adminUserIds)) {
+            throw new Access('No permissions to edit this page');
+        }
+        if (MessageSource::savePageData(null, $pageKey, $_POST['data'])) {
+            return '1';
+        } else {
+            return '0';
+        }
+    }
 
     /**
      * @param int $error_code

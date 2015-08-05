@@ -39,7 +39,7 @@ class ConsultationText extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'category', 'textId'], 'required'],
+            [['category', 'textId'], 'required'],
             [['category', 'textId', 'text'], 'safe'],
         ];
     }
