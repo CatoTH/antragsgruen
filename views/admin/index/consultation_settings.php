@@ -32,16 +32,16 @@ $handledSettings = [];
 echo '<h2 class="green">Allgemeine Einstellungen zur Veranstaltung</h2>';
 echo '<div class="content">';
 $handledSettings[] = 'maintainanceMode';
-echo '<fieldset>
+echo '<div>
         <label>';
 echo Html::checkbox('settings[maintainanceMode]', $settings->maintainanceMode, ['id' => 'maintainanceMode']);
 echo '<strong>Wartungsmodus aktiv</strong>
             <small>(Nur Admins können den Seiteninhalt sehen)</small>
         </label>
-    </fieldset>';
+    </div>';
 
 $handledSettings[] = 'startLayoutType';
-echo '<fieldset class="form-group">
+echo '<div class="form-group">
         <label class="col-sm-4 control-label" for="startLayoutType">Startseiten-Design:</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
@@ -50,10 +50,10 @@ echo Html::dropDownList(
     $consultation->getSettings()->getStartLayouts(),
     ['id' => 'startLayoutType', 'class' => 'form-control']
 );
-echo '</div></fieldset>';
+echo '</div></div>';
 
 
-echo '<fieldset class="form-group">
+echo '<div class="form-group">
     <label class="col-sm-4 control-label" for="consultationPath">Verzeichnis:</label>
     <div class="col-sm-8 urlPathHolder">
         <div class="shower">' . Html::encode($consultation->urlPath) . ' [<a href="#">ändern</a>]</div>
@@ -63,23 +63,23 @@ echo '<fieldset class="form-group">
         <small>Hinweis: mit dieser Angabe ändern sich auch alle Links auf Anträge etc.</small>
         </div>
     </div>
-</fieldset>
+</div>
 
-<fieldset class="form-group">
+<div class="form-group">
     <label class="col-sm-4 control-label" for="consultationTitle">' . 'Titel der Veranstaltung' . ':</label>
     <div class="col-sm-8">
     <input type="text" required name="consultation[title]" ' .
     'value="' . Html::encode($consultation->title) . '" class="form-control" id="consultationTitle">
     </div>
-</fieldset>
+</div>
 
-<fieldset class="form-group">
+<div class="form-group">
     <label class="col-sm-4 control-label" for="consultationTitleShort">' . 'Kurzversion' . ':</label>
     <div class="col-sm-8">
     <input type="text" required name="consultation[titleShort]" ' .
     'value="' . Html::encode($consultation->titleShort) . '" class="form-control" id="consultationTitleShort">
     </div>
-</fieldset>';
+</div>';
 
 echo '</div>
 
@@ -87,17 +87,17 @@ echo '</div>
 <div class="content">';
 
 $handledSettings[] = 'lineNumberingGlobal';
-echo '<fieldset><label>';
+echo '<div><label>';
 echo Html::checkbox('settings[lineNumberingGlobal]', $settings->lineNumberingGlobal, ['id' => 'lineNumberingGlobal']);
 echo '<strong>Zeilennummerierung</strong> durchgehend für die ganze Veranstaltung
-    </label></fieldset>';
+    </label></div>';
 
 
 $handledSettings[] = 'screeningMotions';
-echo '<fieldset><label>';
+echo '<div><label>';
 echo Html::checkbox('settings[screeningMotions]', $settings->screeningMotions, ['id' => 'screeningMotions']);
 echo '<strong>Freischaltung</strong> von Anträgen
-    </label></fieldset>';
+    </label></div>';
 
 $layout->addOnLoadJS('$.AntragsgruenAdmin.consultationEditForm();');
 
@@ -107,7 +107,7 @@ echo '</div>
 <div class="content">';
 
 /*
-<fieldset class="form-group">
+<div class="form-group">
         <label class="col-sm-4 control-label" for="policyAmendments">Antragsberechtigt:</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
@@ -116,10 +116,10 @@ echo Html::dropDownList(
     IPolicy::getPolicyNames(),
     ['id' => 'policyAmendments', 'class' => 'form-control']
 );
-echo '</div></fieldset>';
+echo '</div></div>';
 */
 
-echo '<fieldset class="form-group">
+echo '<div class="form-group">
         <label class="col-sm-4 control-label" for="amendmentNumbering">Nummerierung:</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
@@ -128,14 +128,14 @@ echo Html::dropDownList(
     \app\models\amendmentNumbering\IAmendmentNumbering::getNames(),
     ['id' => 'amendmentNumbering', 'class' => 'form-control']
 );
-echo '</div></fieldset>';
+echo '</div></div>';
 
 
 $handledSettings[] = 'screeningAmendments';
-echo '<fieldset><label>';
+echo '<div><label>';
 echo Html::checkbox('settings[screeningAmendments]', $settings->screeningAmendments, ['id' => 'screeningAmendments']);
 echo '<strong>Freischaltung</strong> von Änderungsanträgen
-    </label></fieldset>';
+    </label></div>';
 
 
 echo '</div>
@@ -144,7 +144,7 @@ echo '</div>
 
 <div class="content">';
 /*
-<fieldset class="form-group">
+<div class="form-group">
         <label class="col-sm-4 control-label" for="policyComments">Kommentieren dürfen:</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
@@ -153,51 +153,49 @@ echo Html::dropDownList(
     IPolicy::getPolicyNames(),
     ['id' => 'policyComments', 'class' => 'form-control']
 );
-echo '</div></fieldset>';
+echo '</div></div>';
 */
 
 $handledSettings[] = 'screeningComments';
-echo '<fieldset><label>';
+echo '<div><label>';
 echo Html::checkbox('settings[screeningComments]', $settings->screeningComments, ['id' => 'screeningComments']);
 echo '<strong>Freischaltung</strong> von Kommentaren
-    </label></fieldset>';
+    </label></div>';
 
 
 $handledSettings[] = 'commentNeedsEmail';
-echo '<fieldset><label>';
+echo '<div><label>';
 echo Html::checkbox('settings[commentNeedsEmail]', $settings->commentNeedsEmail, ['id' => 'commentNeedsEmail']);
 echo 'Angabe der <strong>E-Mail-Adresse</strong> erzwingen
-    </label></fieldset>';
+    </label></div>';
 
 
 echo '</div>
-<h2 class="green">Benachrichtigungen</h2>
+<h2 class="green">E-Mails</h2>
 <div class="content">
 
 
-<fieldset class="form-group">
-    <label class="col-sm-4 control-label" for="adminEmail">Admin-E-Mails:</label>
+<div class="form-group">
+    <label class="col-sm-4 control-label" for="adminEmail">Admins:</label>
     <div class="col-sm-8">
     <input type="text" required name="consultation[adminEmail]" ' .
     'value="' . Html::encode($consultation->adminEmail) . '" class="form-control" id="adminEmail">
-</div></fieldset>
+</div></div>
 ';
 
 
 $handledSettings[] = 'initiatorConfirmEmails';
-echo '<fieldset><label>';
+echo '<div><label>';
 echo Html::checkbox(
     'settings[initiatorConfirmEmails]',
     $settings->initiatorConfirmEmails,
     ['id' => 'initiatorConfirmEmails']
 );
 echo 'Beim Anlegen/Freischalten eines Antrags: Bestätigungs-E-Mail an die AntragstellerIn schicken
-    </label></fieldset>';
+    </label></div>';
 
 
-echo '</div>
-
-
+echo '
 <div class="saveholder">
 <button type="submit" name="save" class="btn btn-primary">Speichern</button>
 </div>
@@ -207,7 +205,7 @@ echo '</div>
 
 
 foreach ($handledSettings as $setting) {
-    echo '<input type="hidden" name=settingsFields[]" value="' . Html::encode($setting) . '">';
+    echo '<input type="hidden" name="settingsFields[]" value="' . Html::encode($setting) . '">';
 }
 
 echo Html::endForm();
