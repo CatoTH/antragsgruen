@@ -11,7 +11,6 @@ use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
-use app\models\db\Site;
 use app\models\AdminTodoItem;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
@@ -96,6 +95,8 @@ class IndexController extends AdminBase
         $locale = Tools::getCurrentDateLocale();
 
         if (isset($_POST['save'])) {
+            $this->saveTags($model);
+
             $data = $_POST['consultation'];
             $model->setAttributes($data);
 
@@ -110,6 +111,15 @@ class IndexController extends AdminBase
                 $siteSettings->saveForm($settingsInput, $_POST['siteSettingsFields']);
                 $model->site->setSettings($siteSettings);
                 $model->site->save();
+
+                if (!$model->getSettings()->adminsMayEdit) {
+                    foreach ($model->motions as $motion) {
+                        $motion->setTextFixedIfNecessary();
+                        foreach ($motion->amendments as $amend) {
+                            $amend->setTextFixedIfNecessary();
+                        }
+                    }
+                }
 
                 $model->flushCacheWithChildren();
                 \yii::$app->session->setFlash('success', 'Gespeichert.');
@@ -192,61 +202,6 @@ class IndexController extends AdminBase
 
         $consultation->refresh();
     }
-
-    /**
-     * @param Site $site
-     */
-    private function saveSiteSettings(Site $site)
-    {
-        $ssettings                = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
-        $siteSettings             = $site->getSettings();
-        $siteSettings->siteLayout = $ssettings['siteLayout'];
-        $site->setSettings($siteSettings);
-        $site->save();
-
-    }
-
-    /**
-     * @throws \Exception
-     * @throws \app\models\exceptions\FormError
-     * @return string
-     */
-    public function actionConsultationextended()
-    {
-        $consultation = $this->consultation;
-
-        $this->saveTags($consultation);
-
-        if (isset($_POST['save'])) {
-            //$consultation->policySupport = $_POST['consultation']['policySupport'];
-
-            $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
-            $settings      = $consultation->getSettings();
-            $settings->saveForm($settingsInput, $_POST['settingsFields']);
-            $consultation->setSettings($settings);
-
-            if ($consultation->save()) {
-                $this->saveSiteSettings($consultation->site);
-
-                if (!$consultation->getSettings()->adminsMayEdit) {
-                    foreach ($consultation->motions as $motion) {
-                        $motion->setTextFixedIfNecessary();
-                        foreach ($motion->amendments as $amend) {
-                            $amend->setTextFixedIfNecessary();
-                        }
-                    }
-                }
-
-                $consultation->flushCacheWithChildren();
-                \yii::$app->session->setFlash('success', 'Gespeichert.');
-            } else {
-                \yii::$app->session->setFlash('error', print_r($consultation->getErrors(), true));
-            }
-        }
-
-        return $this->render('consultation_extended', ['consultation' => $consultation]);
-    }
-
     /**
      * @param string $category
      * @return string

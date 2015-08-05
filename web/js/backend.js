@@ -6,8 +6,8 @@
 (function ($) {
     "use strict";
 
-    var consultationEditForm = function () {
-        var lang = $('html').attr('lang');
+    var consultationSettingsForm = function () {
+        var $form = $("#consultationSettingsForm");
 
         $("#antrag_neu_kann_telefon").change(function () {
             if ($(this).prop("checked")) {
@@ -17,11 +17,49 @@
             }
         }).trigger("change");
 
-        $('.urlPathHolder .shower a').click(function(ev) {
+        $('.urlPathHolder .shower a').click(function (ev) {
             ev.preventDefault();
             $('.urlPathHolder .shower').addClass('hidden');
             $('.urlPathHolder .holder').removeClass('hidden');
-        })
+        });
+
+        $form.submit(function () {
+            var items = $("#tagsList").pillbox('items'),
+                tags = [],
+                $node = $('<input type="hidden" name="tags">'),
+                i;
+            for (i = 0; i < items.length; i++) {
+                if (typeof(items[i].id) == 'undefined') {
+                    tags.push({"id": 0, "name": items[i].text});
+                } else {
+                    tags.push({"id": items[i].id, "name": items[i].text});
+                }
+            }
+            $node.attr("value", JSON.stringify(tags));
+            $form.append($node);
+        });
+
+        Sortable.create(document.getElementById("tagsListUl"), {draggable: '.pill'});
+
+        var $adminsMayEdit = $("#adminsMayEdit"),
+            $iniatorsMayEdit = $("#iniatorsMayEdit").parents("fieldset").first();
+        $adminsMayEdit.change(function () {
+            if ($(this).prop("checked")) {
+                $iniatorsMayEdit.removeClass("hidden");
+            } else {
+                var confirmMessage = "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
+                    "und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?";
+                bootbox.confirm(confirmMessage, function (result) {
+                    if (result) {
+                        $iniatorsMayEdit.addClass("hidden");
+                        $iniatorsMayEdit.find("input").prop("checked", false);
+                    } else {
+                        $adminsMayEdit.prop("checked", true);
+                    }
+                });
+            }
+        });
+        if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.addClass("hidden");
     };
 
 
@@ -353,47 +391,6 @@
         });
     };
 
-    var consultationExtendedForm = function () {
-        var $form = $("#consultationSettingsForm");
-
-        $form.submit(function () {
-            var items = $("#tagsList").pillbox('items'),
-                tags = [],
-                $node = $('<input type="hidden" name="tags">');
-            for (var i = 0; i < items.length; i++) {
-                if (typeof(items[i].id) == 'undefined') {
-                    tags.push({"id": 0, "name": items[i].text});
-                } else {
-                    tags.push({"id": items[i].id, "name": items[i].text});
-                }
-            }
-            $node.attr("value", JSON.stringify(tags));
-            $form.append($node);
-        });
-
-        Sortable.create(document.getElementById("tagsListUl"), {draggable: '.pill'});
-
-        var $adminsMayEdit = $("#adminsMayEdit"),
-            $iniatorsMayEdit = $("#iniatorsMayEdit").parents("fieldset").first();
-        $adminsMayEdit.change(function () {
-            if ($(this).prop("checked")) {
-                $iniatorsMayEdit.removeClass("hidden");
-            } else {
-                var confirmMessage = "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
-                    "und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?";
-                bootbox.confirm(confirmMessage, function (result) {
-                    if (result) {
-                        $iniatorsMayEdit.addClass("hidden");
-                        $iniatorsMayEdit.find("input").prop("checked", false);
-                    } else {
-                        $adminsMayEdit.prop("checked", true);
-                    }
-                });
-            }
-        });
-        if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.addClass("hidden");
-    };
-
     var motionEditInit = function () {
         var lang = $("html").attr("lang");
         $("#motionDateCreationHolder").datetimepicker({
@@ -478,8 +475,7 @@
     };
 
     $.AntragsgruenAdmin = {
-        'consultationEditForm': consultationEditForm,
-        'consultationExtendedForm': consultationExtendedForm,
+        'consultationSettingsForm': consultationSettingsForm,
         'motionTypeEdit': motionTypeEdit,
         'agendaEdit': agendaEdit,
         'motionListAll': motionListAll,

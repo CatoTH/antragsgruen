@@ -54,7 +54,7 @@ $I->seeElement('#motionTextEditCaller');
 
 $I->wantTo('disabled editing published text');
 
-$I->gotoStdAdminPage()->gotoConsultationExtended();
+$I->gotoStdAdminPage()->gotoConsultation();
 $I->seeElement('#iniatorsMayEdit');
 $I->uncheckOption('#adminsMayEdit');
 $I->seeBootboxDialog('wirkt sich das auch auf alle bisherigen Anträge aus');

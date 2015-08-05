@@ -44,7 +44,7 @@ $I->dontSeeElement('.sidebarActions .edit');
 
 
 $I->wantTo('enable amendment editing for initiators');
-$I->gotoStdAdminPage()->gotoConsultationExtended();
+$I->gotoStdAdminPage()->gotoConsultation();
 $I->checkOption('#iniatorsMayEdit');
 $I->submitForm('#consultationSettingsForm', [], 'save');
 $I->gotoAmendment(true, 2, AcceptanceTester::FIRST_FREE_AMENDMENT_ID);

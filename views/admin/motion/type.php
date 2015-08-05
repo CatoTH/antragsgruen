@@ -133,7 +133,7 @@ echo '</div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typePolicySupport">';
-echo 'Unterstützen';
+echo 'Zustimmen / Widersprechen';
 echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policySupport]',

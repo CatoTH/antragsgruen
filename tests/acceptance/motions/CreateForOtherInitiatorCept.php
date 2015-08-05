@@ -49,7 +49,7 @@ $I->dontSeeElement('.sidebarActions .edit');
 
 
 $I->wantTo('enable motion editing for initiators');
-$I->gotoStdAdminPage()->gotoConsultationExtended();
+$I->gotoStdAdminPage()->gotoConsultation();
 $I->checkOption('#iniatorsMayEdit');
 $I->submitForm('#consultationSettingsForm', [], 'save');
 $I->gotoMotion(true, AcceptanceTester::FIRST_FREE_MOTION_ID);

@@ -33,8 +33,7 @@ $I->seeElement('.sidebarActions .adminEdit');
 $I->seeElement('.sidebarActions .back');
 
 $I->wantTo('allow users to edit their motions');
-$I->gotoStdAdminPage();
-$I->click('#consultationextendedLink');
+$I->gotoStdAdminPage()->gotoConsultation();
 $I->checkOption('#iniatorsMayEdit');
 $I->submitForm('#consultationSettingsForm', [], 'save');
 

@@ -368,12 +368,8 @@ ul.searchResults {
   }
 }
 
-/*
 .fuelux {
-  .pillbox-input-wrap {
-    .sr-only {
-      display: none;
-    }
+  .pillbox>.pill-group {
+    list-style-type: none;
   }
 }
-*/

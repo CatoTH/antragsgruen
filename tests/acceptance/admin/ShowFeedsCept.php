@@ -12,7 +12,7 @@ $I->seeElement('.feedAll');
 
 $I->wantTo('deactivate the feeds');
 
-$I->loginAndGotoStdAdminPage()->gotoConsultationExtended();
+$I->loginAndGotoStdAdminPage()->gotoConsultation();
 $I->seeCheckboxIsChecked('#showFeeds');
 $I->uncheckOption('#showFeeds');
 $I->submitForm('#consultationSettingsForm', [], 'save');
@@ -26,7 +26,7 @@ $I->dontSeeElement('.feedAll');
 
 
 $I->wantTo('activate the feeds again');
-$I->gotoStdAdminPage()->gotoConsultationExtended();
+$I->gotoStdAdminPage()->gotoConsultation();
 $I->dontSeeCheckboxIsChecked('#showFeeds');
 $I->checkOption('#showFeeds');
 $I->submitForm('#consultationSettingsForm', [], 'save');

@@ -114,14 +114,6 @@ echo Html::a('Diese Veranstaltung / Programmdiskussion', $link, ['id' => 'consul
 
 echo '</li><li class="secondary">';
 echo Html::a(
-    "ExpertInnen-Einstellungen",
-    UrlHelper::createUrl('admin/index/consultationextended'),
-    ['id' => 'consultationextendedLink']
-);
-echo '</li>';
-
-echo '<li class="secondary">';
-echo Html::a(
     Yii::t('backend', 'Translation / Wording'),
     UrlHelper::createUrl('admin/index/translation'),
     ['id' => 'translationLink']

@@ -10,7 +10,7 @@ $I->see('Ä1');
 
 $I->wantTo('disable title prefixes');
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage()->gotoConsultationExtended();
+$I->gotoStdAdminPage()->gotoConsultation();
 $I->checkOption('#hideTitlePrefix');
 $I->submitForm('#consultationSettingsForm', [], 'save');
 

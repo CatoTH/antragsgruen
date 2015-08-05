@@ -10,9 +10,7 @@ $I->gotoMotion(true);
 $I->dontSee('Themenbereiche');
 
 $I->wantTo('Create some tags');
-$I->loginAsStdAdmin();
-$I->click('#adminLink');
-$I->click('#consultationextendedLink');
+$I->loginAndGotoStdAdminPage()->gotoConsultation();
 
 if ($I->executeJS('return $("#tagsList").pillbox("items").length') != 3) {
     $I->fail('Invalid return from tag-List');
