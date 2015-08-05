@@ -244,6 +244,19 @@ class Consultation extends ActiveRecord
         return new $numberings[$this->amendmentNumbering]();
     }
 
+    /**
+     * @return Motion[]
+     */
+    public function getVisibleMotions()
+    {
+        $return = [];
+        foreach ($this->motions as $motion) {
+            if (!in_array($motion->status, $this->getInvisibleMotionStati())) {
+                $return[] = $motion;
+            }
+        }
+        return $return;
+    }
 
     /**
      * @param SiteCreateForm $form

@@ -61,8 +61,8 @@ if ($longVersion) {
 
 /** @var Motion[] $otherMotions */
 $otherMotions = [];
-foreach ($consultation->motions as $motion) {
-    if (!in_array($motion->id, $shownMotions) && !in_array($motion->status, $consultation->getInvisibleMotionStati())) {
+foreach ($consultation->getVisibleMotions() as $motion) {
+    if (!in_array($motion->id, $shownMotions)) {
         $otherMotions[] = $motion;
     }
 }

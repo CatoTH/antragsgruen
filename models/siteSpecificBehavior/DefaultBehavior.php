@@ -22,7 +22,7 @@ class DefaultBehavior
      */
     public function getSubmitMotionStr()
     {
-        return "";
+        return '';
     }
 
     /**
@@ -42,7 +42,7 @@ class DefaultBehavior
         $settings->motionTitle       = $motion->title;
         $settings->motionTextTitle   = 'Motion Text';
         $settings->motionTitlePrefix = $motion->titlePrefix;
-        $settings->fontFamily        = "Courier";
+        $settings->fontFamily        = 'Courier';
         $settings->fontSize          = 10;
 
         return $settings;

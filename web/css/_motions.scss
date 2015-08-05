@@ -227,6 +227,7 @@
 
       > h3 {
         position: relative;
+        overflow: auto;
         .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
           color: $colorDelLink;
           position: absolute;
@@ -272,6 +273,11 @@
 
       .motionCreateLink {
         float: right;
+        text-align: left;
+        margin-bottom: 7px;
+        text-indent: -7px;
+        padding-left: 18px;
+        display: block;
       }
     }
 

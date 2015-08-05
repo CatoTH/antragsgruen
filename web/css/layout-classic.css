@@ -4919,7 +4919,8 @@ ins, ul.inserted, blockquote.inserted {
       margin-bottom: 5px;
       padding: 5px 10px 10px; }
       .motionListAgenda li.agendaItem > div > h3 {
-        position: relative; }
+        position: relative;
+        overflow: auto; }
         .motionListAgenda li.agendaItem > div > h3 .delAgendaItem, .motionListAgenda li.agendaItem > div > h3 .delAgendaItem:link, .motionListAgenda li.agendaItem > div > h3 .delAgendaItem:visited {
           color: #FF7777;
           position: absolute;
@@ -4949,7 +4950,12 @@ ins, ul.inserted, blockquote.inserted {
           font-size: 0.8em;
           color: gray; }
       .motionListAgenda li.agendaItem > div .motionCreateLink {
-        float: right; }
+        float: right;
+        text-align: left;
+        margin-bottom: 7px;
+        text-indent: -7px;
+        padding-left: 18px;
+        display: block; }
     .motionListAgenda li.agendaItem.editing > div > h3 {
       display: none; }
     .motionListAgenda li.agendaItem.editing > div > .agendaItemEditForm {

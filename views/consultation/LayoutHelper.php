@@ -95,7 +95,7 @@ class LayoutHelper
             echo '<a href="' . Html::encode($motionCreateLink) . '" class="motionCreateLink btn btn-default btn-xs"';
             echo ' title="' . Html::encode($agendaItem->title . ': ' . $agendaItem->motionType->createTitle) . '"';
             echo '><span class="glyphicon glyphicon-plus"></span> ';
-            echo Html::encode($agendaItem->motionType->createTitle) . '</a>';
+            echo nl2br(Html::encode($agendaItem->motionType->createTitle)) . '</a>';
         }
 
         echo '</h3>';
@@ -107,7 +107,7 @@ class LayoutHelper
             }
             $typeId = $agendaItem->motionTypeId;
 
-            echo '<form class="agendaItemEditForm form-inline">
+            echo '<form class="agendaItemEditForm form-inline hidden">
                 <input type="text" name="code" value="' . Html::encode($agendaItem->code) . '"
                 class="form-control code">
                 <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
