@@ -30,6 +30,7 @@ trait MotionTrait
         $type->contactPhone     = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail     = ConsultationMotionType::CONTACT_REQUIRED;
         $type->initiatorForm    = IInitiatorForm::ONLY_INITIATOR;
+        $type->texTemplateId    = 1;
         $type->save();
 
         return $type;
