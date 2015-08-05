@@ -300,7 +300,7 @@ class LayoutHelper
             echo '<ul>';
             foreach ($likes as $supp) {
                 echo '<li>';
-                if ($supp->id == $user->id) {
+                if ($user && $supp->userId == $user->id) {
                     echo '<span class="label label-info">Du!</span> ';
                 }
                 echo Html::encode($supp->getNameWithOrga());
@@ -315,7 +315,7 @@ class LayoutHelper
             echo '<ul>';
             foreach ($dislikes as $supp) {
                 echo '<li>';
-                if ($supp->id == $user->id) {
+                if ($user && $supp->userId == $user->id) {
                     echo '<span class="label label-info">Du!</span> ';
                 }
                 echo Html::encode($supp->getNameWithOrga());

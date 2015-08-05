@@ -33,11 +33,18 @@ $I->dontSee('Du musst dich einloggen, um Anträge unterstützen zu können.');
 $I->submitForm('section.likes form', [], 'motionLike');
 $I->see('Du stimmst diesem Antrag nun zu.');
 $I->see('Testuser', 'section.likes');
+$I->see('Du!', 'section.likes');
 $I->dontSee('Ablehnung:', 'section.likes');
 $I->see('Zustimmung:', 'section.likes');
 
+$I->wantTo('watch this page logged out');
+$I->logout();
+$I->see('Testuser', 'section.likes');
+$I->dontSee('Du!', 'section.likes');
+
 
 $I->wantTo('withdraw my support');
+$I->loginAsStdUser();
 $I->submitForm('section.likes form', [], 'motionSupportRevoke');
 $I->see('Du stehst diesem Antrag wieder neutral gegenüber.');
 $I->dontSee('Testuser', 'section.likes');
@@ -49,6 +56,7 @@ $I->wantTo('object to this motion');
 $I->submitForm('section.likes form', [], 'motionDislike');
 $I->see('Du lehnst diesen Antrag nun ab.');
 $I->see('Testuser', 'section.likes');
+$I->see('Du!', 'section.likes');
 $I->see('Ablehnung:', 'section.likes');
 $I->dontSee('Zustimmung:', 'section.likes');
 
