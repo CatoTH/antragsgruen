@@ -104,6 +104,14 @@ class LoggedIn extends IPolicy
         if (\Yii::$app->user->isGuest && $assumeLoggedIn) {
             return true;
         }
+
+        if ($allowAdmins && User::getCurrentUser()) {
+            foreach ($this->motionType->consultation->site->admins as $admin) {
+                if ($admin->id == User::getCurrentUser()->id) {
+                    return true;
+                }
+            }
+        }
         if ($this->isWriteForbidden()) {
             return false;
         }

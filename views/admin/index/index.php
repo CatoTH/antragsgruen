@@ -39,10 +39,9 @@ echo '<h3>' . Html::a(
         ['class' => 'motionListAll']
     ) . '</h3>';
 
-// echo Html::a('Anträge', UrlHelper::createUrl('admin/motion/index'), ['class' => 'motionIndex']);
-
 foreach ($consultation->motionTypes as $motionType) {
-    echo '<h3>' . Html::encode($motionType->titlePlural) . '</h3><ul>';
+    echo '<h3>' . Html::encode($motionType->titlePlural) . '</h3>
+    <ul class="motionTypeSection' . $motionType->id . '">';
 
     $motionp = $motionType->getMotionPolicy();
     if ($motionp->checkCurrUser()) {
