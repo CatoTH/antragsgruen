@@ -77,6 +77,8 @@ class HTMLTools
         $html = preg_replace("/\\n+/siu", "\n", $html);
         $html = str_replace("<p><br>\n", "<p>", $html);
         $html = str_replace("<br>\n</p>", "</p>", $html);
+        $html = preg_replace('/ +<\/p>/siu', '</p>', $html);
+        $html = preg_replace('/ +<br>/siu', '<br>', $html);
 
         $html = trim($html);
 
