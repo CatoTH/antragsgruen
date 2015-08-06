@@ -1,5 +1,5 @@
 /*global browser: true, regexp: true */
-/*global $, jQuery, alert, confirm, console, document, Sortable, bootbox */
+/*global $, jQuery, console, document, Sortable, bootbox, JSON */
 /*jslint regexp: true*/
 
 
@@ -140,11 +140,13 @@
         });
 
         $list.on('click', '.tabularDataRow .delRow', function (ev) {
+            var $this = $(this);
             ev.preventDefault();
-            if (!confirm('Diese Angabe wirklich löschen?')) {
-                return;
-            }
-            $(this).parents("li").first().remove();
+            bootbox.confirm('Diese Angabe wirklich löschen?', function (result) {
+                if (result) {
+                    $this.parents("li").first().remove();
+                }
+            });
         });
 
         $list.find('.tabularDataRow ul').each(function () {
@@ -217,6 +219,7 @@
             axis: 'y',
             update: function () {
                 showSaver();
+                $.Antragsgruen.recalcAgendaCodes();
             }
         });
         $agenda.find('.agendaItem').each(function () {
@@ -240,12 +243,15 @@
         });
 
         $agenda.on('click', '.delAgendaItem', function (ev) {
+            var $this = $(this);
             ev.preventDefault();
-            if (!confirm('Do you really want to delete this agenda item, including all sub-items?')) {
-                return;
-            }
-            showSaver();
-            $(this).parents('li.agendaItem').first().remove();
+            bootbox.confirm('Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?', function (result) {
+                if (result) {
+                    showSaver();
+                    $this.parents('li.agendaItem').first().remove();
+                    $.Antragsgruen.recalcAgendaCodes();
+                }
+            });
         });
 
         $agenda.on('click', '.editAgendaItem', function (ev) {
@@ -264,8 +270,10 @@
                 newCode = $form.find('input[name=code]').val();
             ev.preventDefault();
             $li.removeClass('editing');
+            $li.data('code', newCode);
             $li.find('> div > h3 .code').text(newCode);
             $li.find('> div > h3 .title').text(newTitle);
+            $.Antragsgruen.recalcAgendaCodes();
         });
 
         $('#agendaEditSavingHolder').submit(function () {

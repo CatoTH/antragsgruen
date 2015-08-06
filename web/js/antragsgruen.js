@@ -154,14 +154,14 @@
 
         $form.append('<input type="hidden" name="draftId" value="' + localKey + '">');
 
-        var doDelete = function($li) {
+        var doDelete = function ($li) {
             localStorage.removeItem($li.data("key"));
             $li.remove();
             if ($draftHint.find("ul").children().length == 0) {
                 $draftHint.addClass("hidden");
             }
         };
-        var doRestore = function($li) {
+        var doRestore = function ($li) {
             var inst,
                 restoreKey = $li.data("key"),
                 data = JSON.parse(localStorage.getItem(restoreKey));
@@ -175,7 +175,7 @@
             if (data.hasOwnProperty("amendmentEditorial_wysiwyg") && data['amendmentEditorial_wysiwyg'] != '') {
                 if (!CKEDITOR.hasOwnProperty('amendmentEditorial_wysiwyg')) {
                     $(".editorialChange .opener").click();
-                    window.setTimeout(function() {
+                    window.setTimeout(function () {
                         CKEDITOR.instances['amendmentEditorial_wysiwyg'].setData(data['amendmentEditorial_wysiwyg']);
                     }, 100);
                 }
@@ -339,7 +339,7 @@
             locale: lang,
             format: 'L'
         });
-        $opener.click(function(ev) {
+        $opener.click(function (ev) {
             ev.preventDefault();
             var $holder = $(".editorialChange"),
                 $textarea = $holder.find(".texteditor");
@@ -715,6 +715,34 @@
         });
     };
 
+    var recalcAgendaCodes = function () {
+        var recalcAgendaNode = function ($ol) {
+                var currNumber = '0.',
+                    $lis = $ol.find('> li.agendaItem');
+                $lis.each(function () {
+                    var $li = $(this),
+                        code = $li.data('code'),
+                        currStr = '',
+                        $subitems = $li.find('> ol');
+                    if (code[0] == '0' || code > 0) {
+                        currStr = currNumber = code;
+                    } else if (code == '#') {
+                        var x = currNumber.split('.');
+                        x[0]++;
+                        currNumber = currStr = x.join('.');
+                    } else {
+                        currStr = code;
+                    }
+                    $li.find('> div > h3 .code').text(currStr);
+                    if ($subitems.length > 0) {
+                        recalcAgendaNode($subitems);
+                    }
+                });
+            },
+            $root = $('ol.motionListAgenda');
+        recalcAgendaNode($root);
+    };
+
     $.Antragsgruen = {
         'loginForm': loginForm,
         'motionShow': motionShow,
@@ -723,7 +751,8 @@
         'amendmentEditForm': amendmentEditForm,
         'contentPageEdit': contentPageEdit,
         'defaultInitiatorForm': defaultInitiatorForm,
-        'accountEdit': accountEdit
+        'accountEdit': accountEdit,
+        'recalcAgendaCodes': recalcAgendaCodes
     };
 
     $(".jsProtectionHint").remove();

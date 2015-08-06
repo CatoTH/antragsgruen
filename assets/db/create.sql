@@ -136,7 +136,6 @@ CREATE TABLE IF NOT EXISTS `consultationAgendaItem` (
   `parentItemId`   INT(11)           DEFAULT NULL,
   `position`       INT(11)      NOT NULL,
   `code`           VARCHAR(20)  NOT NULL,
-  `codeExplicit`   VARCHAR(20)       DEFAULT NULL,
   `title`          VARCHAR(250) NOT NULL,
   `description`    TEXT,
   `motionTypeId`   INT(11)           DEFAULT NULL,

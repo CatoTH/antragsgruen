@@ -97,8 +97,7 @@ class PartyCongress implements ISitePreset
         $item->consultationId = $consultation->id;
         $item->parentItemId   = null;
         $item->position       = 0;
-        $item->code           = '';
-        $item->codeExplicit   = '0.';
+        $item->code           = '0.';
         $item->title          = 'Tagesordnung';
         $item->save();
 
@@ -106,8 +105,7 @@ class PartyCongress implements ISitePreset
         $wahlItem->consultationId = $consultation->id;
         $wahlItem->parentItemId   = null;
         $wahlItem->position       = 1;
-        $wahlItem->code           = '';
-        $wahlItem->codeExplicit   = '';
+        $wahlItem->code           = '#';
         $wahlItem->title          = 'Wahlen';
         $wahlItem->save();
 
@@ -115,9 +113,8 @@ class PartyCongress implements ISitePreset
         $item->consultationId = $consultation->id;
         $item->parentItemId   = $wahlItem->id;
         $item->position       = 0;
-        $item->code           = '';
-        $item->codeExplicit   = '';
-        $item->title          = '1. Vorsitzende(r)';
+        $item->code           = '#';
+        $item->title          = 'Wahl: 1. Vorsitzende(r)';
         $item->motionTypeId   = $this->typeApplication->id;
         $item->save();
 
@@ -125,9 +122,8 @@ class PartyCongress implements ISitePreset
         $item->consultationId = $consultation->id;
         $item->parentItemId   = $wahlItem->id;
         $item->position       = 1;
-        $item->code           = '';
-        $item->codeExplicit   = '';
-        $item->title          = '2. Vorsitzende(r)';
+        $item->code           = '#';
+        $item->title          = 'Wahl: 2. Vorsitzende(r)';
         $item->motionTypeId   = $this->typeApplication->id;
         $item->save();
 
@@ -135,9 +131,8 @@ class PartyCongress implements ISitePreset
         $item->consultationId = $consultation->id;
         $item->parentItemId   = $wahlItem->id;
         $item->position       = 2;
-        $item->code           = '';
-        $item->codeExplicit   = '';
-        $item->title          = 'Schatzmeister(in)';
+        $item->code           = '#';
+        $item->title          = 'Wahl: Schatzmeister(in)';
         $item->motionTypeId   = $this->typeApplication->id;
         $item->save();
 
@@ -145,8 +140,7 @@ class PartyCongress implements ISitePreset
         $item->consultationId = $consultation->id;
         $item->parentItemId   = null;
         $item->position       = 2;
-        $item->code           = '';
-        $item->codeExplicit   = '0.';
+        $item->code           = '#';
         $item->title          = 'Anträge';
         $item->motionTypeId   = $this->typeMotion->id;
         $item->save();
@@ -155,8 +149,7 @@ class PartyCongress implements ISitePreset
         $item->consultationId = $consultation->id;
         $item->parentItemId   = null;
         $item->position       = 3;
-        $item->code           = '';
-        $item->codeExplicit   = '0.';
+        $item->code           = '#';
         $item->title          = 'Sonstiges';
         $item->save();
     }
