@@ -109,7 +109,7 @@ $I->see('some meta text');
 $I->wantTo('submit the final amendment');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 $I->see(mb_strtoupper('Änderungsantrag eingereicht'), 'h1');
-
+$I->see('Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.');
 
 $I->wantTo('see the amendment on the start page');
 $I->gotoConsultationHome();

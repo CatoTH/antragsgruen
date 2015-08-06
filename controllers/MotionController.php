@@ -222,7 +222,7 @@ class MotionController extends Base
         );
         if (!$motion) {
             \Yii::$app->session->setFlash('error', 'Motion not found.');
-            $this->redirect(UrlHelper::createUrl("consultation/index"));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (isset($_POST['modify'])) {
