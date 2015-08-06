@@ -24,7 +24,7 @@
   "require": {
     "php": ">=5.5.0",
     "fxp/composer-asset-plugin": "~1.0",
-    "yiisoft/yii2": "2.0.5",
+    "yiisoft/yii2": "2.0.6",
     "yiisoft/yii2-authclient": "2.0.4",
     "tecnick.com/tcpdf": "dev-master",
     "slm/mail": "*",
@@ -49,8 +49,7 @@
     "squizlabs/php_codesniffer": "2.3.*",
     "codeception/codeception": "*",
     "codeception/specify": "*",
-    "codeception/verify": "*",
-    "smalot/pdfparser": "*"
+    "codeception/verify": "*"
   },
   "extra": {
     "yii\\composer\\Installer::postCreateProject": {
