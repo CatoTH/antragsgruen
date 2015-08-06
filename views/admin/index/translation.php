@@ -15,7 +15,7 @@ use yii\i18n\I18N;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$layout->addCSS('/css/backend.css');
+$layout->addCSS('css/backend.css');
 
 $this->title = 'Einstellungen';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));

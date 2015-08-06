@@ -7,10 +7,10 @@ use app\models\settings\AntragsgruenApp;
  */
 
 
-require_once(__DIR__ . DIRECTORY_SEPARATOR . "defines.php");
+require_once(__DIR__ . DIRECTORY_SEPARATOR . 'defines.php');
 
-if (ini_get("date.timezone") == "") {
-    date_default_timezone_set("Europe/Berlin");
+if (ini_get('date.timezone') == '') {
+    date_default_timezone_set('Europe/Berlin');
 }
 
 return [
@@ -36,8 +36,8 @@ return [
         'urlManager' => [
             'class'           => 'app\components\UrlManager',
             'showScriptName'  => false,
-            'enablePrettyUrl' => true,
-            'rules'           => require(__DIR__ . DIRECTORY_SEPARATOR . "urls.php")
+            'enablePrettyUrl' => $params->prettyUrl,
+            'rules'           => require(__DIR__ . DIRECTORY_SEPARATOR . 'urls.php')
         ],
         'i18n'       => [
             'translations' => [
@@ -49,7 +49,7 @@ return [
 
         ],
     ],
-    'defaultRoute' => 'manager/index',
+    'defaultRoute' => ($params->multisiteMode ? 'manager/index' : 'consultation/index'),
     'params'       => $params,
-    'language'     => 'de',
+    'language'     => $params->baseLanguage,
 ];

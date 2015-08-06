@@ -12,16 +12,16 @@ $domamend  = $domv . 'motion/<motionId:\d+>/amendment/<amendmentId:\d+>';
 
 $consultationPaths = 'help|search|savetextajax|maintainance|notifications|shariffbackend';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
-$motionPaths         = 'createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image|withdraw';
-$amendPaths          = 'pdf|createconfirm|edit|withdraw';
-$userPaths           = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|emailblacklist|recovery';
-$userPaths           .= '|consultationaccesserror|myaccount';
+$motionPaths = 'createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image|withdraw';
+$amendPaths  = 'pdf|createconfirm|edit|withdraw';
+$userPaths   = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|emailblacklist|recovery';
+$userPaths .= '|consultationaccesserror|myaccount';
 $domPlainPaths       = 'legal|privacy|help|password|billing|createsite|savetextajax';
 $adminMotionPaths    = 'index|type|listall|excellist|odslist';
 $adminAmendmentPaths = 'index|excellist|odslist|pdflist';
 $adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations';
 
-$url_rules = [
+$urlRules = [
     $domadmin . ''                                              => 'admin/index',
     $domadmin . '<_a:(' . $adminPaths . ')>'                    => 'admin/index/<_a>',
     $domadmin . 'motion/update/<motionId:\d+>'                  => 'admin/motion/update',
@@ -57,24 +57,25 @@ $url_rules = [
 ];
 
 if ($params->domainPlain != $params->domainSubdomain) {
-    $url_rules[$dom] = 'consultation/index';
+    $urlRules[$dom] = 'consultation/index';
 }
 
 if ($params->multisiteMode) {
     $domp      = trim($params->domainPlain, '/');
-    $url_rules = array_merge(
+    $urlRules = array_merge(
         [
             $domp                                    => 'manager/index',
             $domp . '/<_a:(' . $domPlainPaths . ')>' => 'manager/<_a>',
         ],
-        $url_rules
+        $urlRules
     );
 
     if ($params->prependWWWToSubdomain) {
-        foreach ($url_rules as $key => $val) {
-            $url_rules[str_replace("http://", "http://www.", $key)] = $val;
+        foreach ($urlRules as $key => $val) {
+            $urlRules[str_replace('http://', 'http://www.', $key)]   = $val;
+            $urlRules[str_replace('https://', 'https://www.', $key)] = $val;
         }
     }
 }
 
-return $url_rules;
+return $urlRules;

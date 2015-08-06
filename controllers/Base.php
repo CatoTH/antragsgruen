@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
+use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
@@ -52,7 +53,16 @@ class Base extends Controller
         \yii::$app->response->headers->add('X-Frame-Options', 'deny');
         if (parent::beforeAction($action)) {
             $params = \Yii::$app->request->resolve();
-            if (isset($params[1]['subdomain'])) {
+            /** @var AntragsgruenApp $appParams */
+            $appParams = \Yii::$app->params;
+
+            if ($appParams->siteSubdomain) {
+                $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
+                $this->loadConsultation($appParams->siteSubdomain, $consultation);
+                if ($this->site) {
+                    $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
+                }
+            } elseif (isset($params[1]['subdomain'])) {
                 $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
                 $this->loadConsultation($params[1]['subdomain'], $consultation);
                 if ($this->site) {

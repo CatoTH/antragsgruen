@@ -15,7 +15,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = 'Administration';
-$layout->addCSS('/css/backend.css');
+$layout->addCSS('css/backend.css');
 $layout->addBreadcrumb('Administration');
 
 

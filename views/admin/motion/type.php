@@ -22,9 +22,9 @@ $this->title = 'Antragstyp bearbeiten';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Abschnitte');
 
-$layout->addCSS('/css/backend.css');
-$layout->addJS('/js/backend.js');
-$layout->addJS('/js/bower/Sortable/Sortable.min.js');
+$layout->addCSS('css/backend.css');
+$layout->addJS('js/backend.js');
+$layout->addJS('js/bower/Sortable/Sortable.min.js');
 $layout->loadDatepicker();
 
 

@@ -13,9 +13,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$layout->addJS('/js/backend.js');
-$layout->addCSS('/css/backend.css');
-$layout->addJS('/js/bower/Sortable/Sortable.min.js');
+$layout->addJS('js/backend.js');
+$layout->addCSS('css/backend.css');
+$layout->addJS('js/bower/Sortable/Sortable.min.js');
 $layout->loadFuelux();
 
 $this->title = 'Einstellungen';
