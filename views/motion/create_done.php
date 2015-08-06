@@ -23,10 +23,10 @@ echo '<h1>' . Yii::t('motion', 'Motion submitted') . '</h1>';
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
 if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
-    echo \Yii::t('motion', 'motion_confirmed_visible');
+    echo \Yii::t('motion', 'confirmed_visible');
 }
 if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
-    echo \Yii::t('motion', 'motion_confirmed_screening');
+    echo \Yii::t('motion', 'confirmed_screening');
 }
 echo '</div>';
 

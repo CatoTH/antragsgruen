@@ -28,7 +28,7 @@ $I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>This is my
 $I->fillField('#sections_1', 'Neuer Testantrag');
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
-
+$I->see('Er wird nun von der Programmkommission auf Zulässigkeit geprüft');
 
 $I->wantTo('check that the amendment is not visible yet');
 $I->gotoConsultationHome();

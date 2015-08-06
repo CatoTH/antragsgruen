@@ -22,6 +22,7 @@ $I->logout();
 
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $page->createMotion($motionTitle);
+$I->see('Er wird nun von der Programmkommission auf Zulässigkeit geprüft');
 
 $I->wantTo('check that the motion is not visible yet');
 $I->gotoConsultationHome();

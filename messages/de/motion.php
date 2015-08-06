@@ -8,7 +8,7 @@ return [
     'Prerequisites for a motion' => 'Voraussetzungen für einen Antrag',
     'Type'                       => 'Typ',
     'Motion'                     => 'Antrag',
-    'motion_confirmed_visible'   => 'Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.',
-    'motion_confirmed_screening' => 'Du hast den Antrag eingereicht. ' .
+    'confirmed_visible'          => 'Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.',
+    'confirmed_screening'        => 'Du hast den Antrag eingereicht. ' .
         'Er wird nun von der Programmkommission auf Zulässigkeit geprüft und dann freigeschaltet.',
 ];
