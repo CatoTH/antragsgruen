@@ -25,6 +25,7 @@ $I->executeJS('window.newText = CKEDITOR.instances.sections_2_wysiwyg.getData();
 $I->executeJS('window.newText = window.newText.replace(/woschechta Bayer/g, "Sauprei&szlig;");');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(window.newText);');
 $I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>This is my reason</p>");');
+$I->fillField('#sections_1', 'Neuer Testantrag');
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 

@@ -21,7 +21,7 @@ $I->dontSeeElement('.editCaller');
 
 $I->wantTo('edit the page');
 
-$I->loginAsStdAdmin();
+$I->loginAsGlobalAdmin();
 
 $I->seeElement('.editCaller');
 
