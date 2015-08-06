@@ -142,6 +142,19 @@ class AcceptanceTester extends \Codeception\Actor
         $this->fillField('#passwordInput', 'testadmin');
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
     }
+    /**
+     *
+     */
+    public function loginAsGlobalAdmin()
+    {
+        $this->see('LOGIN', '#loginLink');
+        $this->click('#loginLink');
+
+        $this->see('LOGIN', 'h1');
+        $this->fillField('#username', 'globaladmin@example.org');
+        $this->fillField('#passwordInput', 'testadmin');
+        $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+    }
 
     /**
      *
