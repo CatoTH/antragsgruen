@@ -18,7 +18,7 @@ $layout     = $controller->layoutParams;
 $this->title = 'Anträge';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Anträge');
-$layout->addCSS('/css/backend.css');
+$layout->addCSS('css/backend.css');
 
 echo '<h1>Anträge</h1>';
 

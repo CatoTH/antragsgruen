@@ -4,7 +4,7 @@ $container-md: 1024px;
 $container-desktop: 1024px;
 $btn-success-bg: #2c882c;
 
-$icon-font-path: "/fonts/";
+$icon-font-path: "../fonts/";
 
 // Core variables and mixins
 @import "bootstrap-3.3.5-sass/bootstrap/variables";
@@ -224,7 +224,7 @@ label {
     display: block;
     width: 377px;
     height: 55px;
-    background-image: url(/img/logo.png);
+    background-image: url(../img/logo.png);
   }
 }
 

@@ -16,8 +16,8 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = 'Zugang zur Seite';
-$layout->addCSS('/css/backend.css');
-$layout->addJS('/js/backend.js');
+$layout->addCSS('css/backend.css');
+$layout->addJS('js/backend.js');
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Zugang');
 $layout->loadFuelux();

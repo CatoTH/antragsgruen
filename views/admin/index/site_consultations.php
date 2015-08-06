@@ -15,8 +15,8 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = 'Veranstaltungen verwalten';
-$layout->addCSS('/css/backend.css');
-$layout->addJS('/js/backend.js');
+$layout->addCSS('css/backend.css');
+$layout->addJS('js/backend.js');
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Veranstaltungen');
 $layout->loadFuelux();

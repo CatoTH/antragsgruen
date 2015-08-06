@@ -13,9 +13,9 @@ use yii\helpers\Url;
 $controller = $this->context;
 
 $this->title = "Antragsgrün-Seite anlegen";
-$controller->layoutParams->addCSS('/css/formwizard.css');
-$controller->layoutParams->addCSS('/css/manager.css');
-$controller->layoutParams->addJS("/js/manager.js");
+$controller->layoutParams->addCSS('css/formwizard.css');
+$controller->layoutParams->addCSS('css/manager.css');
+$controller->layoutParams->addJS("js/manager.js");
 $controller->layoutParams->addOnLoadJS('$.SiteManager.createInstance();');
 
 

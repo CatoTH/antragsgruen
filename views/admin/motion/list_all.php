@@ -22,9 +22,9 @@ $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Antragsliste');
 $layout->loadTypeahead();
 $layout->loadFuelux();
-$layout->addJS('/js/backend.js');
-$layout->addJS('/js/colResizable-1.5.min.js');
-$layout->addCSS('/css/backend.css');
+$layout->addJS('js/backend.js');
+$layout->addJS('js/colResizable-1.5.min.js');
+$layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
 

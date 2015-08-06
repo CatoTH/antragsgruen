@@ -12,6 +12,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
+$resourceBase = $controller->getParams()->resourceBase;
+
 $bodyClasses = [];
 if ($layout->fullScreen) {
     $bodyClasses[] = 'fullscreen';
@@ -45,54 +47,48 @@ if ($layout->robotsNoindex) {
 }
 
 echo '<!--[if lt IE 9]>
-    <script src="/js/bower/html5shiv/dist/html5shiv.min.js"></script>
+    <script src="' . $resourceBase . 'js/bower/html5shiv/dist/html5shiv.min.js"></script>
     <![endif]-->
     <!--[if lt IE 8]>
-    <link rel="stylesheet" href="/css/antragsgruen-ie7.css">
+    <link rel="stylesheet" href="' . $resourceBase . 'css/antragsgruen-ie7.css">
     <![endif]-->
 ';
 
-echo '<link rel="stylesheet" href="/css/' . $layout->mainCssFile . '.css">' . "\n";
+echo '<link rel="stylesheet" href="' . $resourceBase . 'css/' . $layout->mainCssFile . '.css">' . "\n";
 
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . Html::encode($file) . '">' . "\n";
 }
-?>
 
-    <!--[if lt IE 9]>
-    <script src="/js/jquery-1.11.3.min.js"></script>
+echo '<!--[if lt IE 9]>
+    <script src="' . $resourceBase . 'js/jquery-1.11.3.min.js"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
-    <script src="/js/bower/jquery/dist/jquery.min.js"></script>
+    <script src="' . $resourceBase . 'js/bower/jquery/dist/jquery.min.js"></script>
     <!--<![endif]-->
 
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
-    <link rel="icon" type="image/png" href="/favicon-196x196.png" sizes="196x196">
-    <link rel="icon" type="image/png" href="/favicon-160x160.png" sizes="160x160">
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="' . $resourceBase . 'apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="' . $resourceBase . 'apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="' . $resourceBase . 'apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="' . $resourceBase . 'apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="' . $resourceBase . 'apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="' . $resourceBase . 'apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="' . $resourceBase . 'apple-touch-icon-152x152.png">
+    <link rel="icon" type="image/png" href="' . $resourceBase . 'favicon-196x196.png" sizes="196x196">
+    <link rel="icon" type="image/png" href="' . $resourceBase . 'favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="' . $resourceBase . 'favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="' . $resourceBase . 'favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="' . $resourceBase . 'favicon-32x32.png" sizes="32x32">
     <meta name="msapplication-TileColor" content="#e6e6e6">
-    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
-<?php
-/*
-if ($controller->veranstaltung) foreach (veranstaltungsspezifisch_css_files($controller->veranstaltung) as $css_file) {
-    echo '<link rel="stylesheet" href="' . Html::encode($css_file) . '">' . "\n";
-}
-*/
+    <meta name="msapplication-TileImage" content="' . $resourceBase . 'mstile-144x144.png">
+';
 
 echo '</head>';
 
 echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(" ", $bodyClasses) . '"' : '') . '>';
 
-echo '<script src="/js/modernizr.js"></script>';
+echo '<script src="' . $resourceBase . 'js/modernizr.js"></script>';
 
 $this->beginBody();
 
@@ -196,10 +192,8 @@ $privacyLink = UrlHelper::createUrl($controllerBase . 'privacy');
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
 </div></div>';
-?>
 
-
-    <footer class="footer">
+echo '<footer class="footer">
         <div class="container">
             <a href="<?= Html::encode($legalLink) ?>" class="legal" id="legalLink">Impressum</a>
             <a href="<?= Html::encode($privacyLink) ?>" class="privacy" id="privacyLink">Datenschutz</a>
@@ -211,14 +205,15 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
         </div>
     </footer>
 
-    <script src="/js/bootstrap.js"></script>
-    <script src="/js/bower/bootbox/bootbox.js"></script>
-    <script src="/js/scrollintoview.js"></script>
-    <script src="/js/jquery.isonscreen.js"></script>
-    <script src="/js/bower/intl/dist/Intl.min.js"></script>
-    <script src="/js/antragsgruen-de.js"></script>
-    <script src="/js/antragsgruen.js"></script>
-<?php
+    <script src="' . $resourceBase . 'js/bootstrap.js"></script>
+    <script src="' . $resourceBase . 'js/bower/bootbox/bootbox.js"></script>
+    <script src="' . $resourceBase . 'js/scrollintoview.js"></script>
+    <script src="' . $resourceBase . 'js/jquery.isonscreen.js"></script>
+    <script src="' . $resourceBase . 'js/bower/intl/dist/Intl.min.js"></script>
+    <script src="' . $resourceBase . 'js/antragsgruen-de.js"></script>
+    <script src="' . $resourceBase . 'js/antragsgruen.js"></script>
+';
+
 foreach ($layout->extraJs as $file) {
     echo '<script src="' . Html::encode($file) . '"></script>' . "\n";
 }

@@ -5,6 +5,10 @@ namespace app\models\settings;
 class AntragsgruenApp
 {
     public $dbConnection          = null;
+    public $siteSubdomain         = null;
+    public $prettyUrl             = true;
+    public $resourceBase          = '/';
+    public $baseLanguage          = 'de';
     public $randomSeed            = '';
     public $cookieValidationKey   = '';
     public $multisiteMode         = true;
@@ -13,7 +17,6 @@ class AntragsgruenApp
     public $hasWurzelwerk         = true;
     public $createNeedsWurzelwerk = false;
     public $prependWWWToSubdomain = true;
-    public $standardSite          = 'default';
     public $pdfLogo               = 'LOGO_PFAD';
     public $confirmEmailAddresses = true;
     public $contactEmail          = 'EMAILADRESSE';
@@ -27,5 +30,5 @@ class AntragsgruenApp
     public $autoLoginDuration     = 0;
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
-    public $xdvipdfmx              = null;
+    public $xdvipdfmx             = null;
 }

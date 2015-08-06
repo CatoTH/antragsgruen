@@ -26,8 +26,8 @@ $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Anträge', UrlHelper::createUrl('admin/motion/listall'));
 $layout->addBreadcrumb('Änderungsantrag');
 
-$layout->addJS('/js/backend.js');
-$layout->addCSS('/css/backend.css');
+$layout->addJS('js/backend.js');
+$layout->addCSS('css/backend.css');
 $layout->loadDatepicker();
 $layout->loadCKEditor();
 

@@ -51,6 +51,10 @@ class Layout
      */
     public function addCSS($file)
     {
+        /** @var AntragsgruenApp $params */
+        $params = \yii::$app->params;
+        $file = $params->resourceBase . $file;
+
         if (!in_array($file, $this->extraCss)) {
             $this->extraCss[] = $file;
         }
@@ -73,6 +77,10 @@ class Layout
      */
     public function addJS($file)
     {
+        /** @var AntragsgruenApp $params */
+        $params = \yii::$app->params;
+        $file = $params->resourceBase . $file;
+
         if (!in_array($file, $this->extraJs)) {
             $this->extraJs[] = $file;
         }
@@ -98,38 +106,38 @@ class Layout
      */
     public function loadDatepicker()
     {
-        $this->addJS('/js/bower/moment/min/moment-with-locales.min.js');
-        $this->addJS('/js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-        $this->addCSS('/js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+        $this->addJS('js/bower/moment/min/moment-with-locales.min.js');
+        $this->addJS('js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
+        $this->addCSS('js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
     }
 
     /**
      */
     public function loadCKEditor()
     {
-        $this->addJS('/js/ckeditor/ckeditor.js');
+        $this->addJS('js/ckeditor/ckeditor.js');
     }
 
     /**
      */
     public function loadFuelux()
     {
-        $this->addJS('/js/fuelux/js/fuelux.min.js');
-        $this->addCSS('/js/fuelux/css/fuelux.min.css');
+        $this->addJS('js/fuelux/js/fuelux.min.js');
+        $this->addCSS('js/fuelux/css/fuelux.min.css');
     }
 
     /**
      */
     public function loadTypeahead()
     {
-        $this->addJs('/js/bower/typeahead.js/dist/typeahead.bundle.min.js');
+        $this->addJs('js/bower/typeahead.js/dist/typeahead.bundle.min.js');
     }
 
     /**
      */
     public function loadShariff()
     {
-        $this->addJS('/js/bower/shariff/build/shariff.min.js');
-        $this->addCSS('/js/bower/shariff/build/shariff.complete.css');
+        $this->addJS('js/bower/shariff/build/shariff.min.js');
+        $this->addCSS('js/bower/shariff/build/shariff.complete.css');
     }
 }
