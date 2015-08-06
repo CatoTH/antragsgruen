@@ -849,22 +849,22 @@ VALUES
 -- Dumping data for table `consultationAgendaItem`
 --
 
-INSERT INTO `consultationAgendaItem` (`id`, `consultationId`, `parentItemId`, `position`, `code`, `codeExplicit`, `title`, `description`, `motionTypeId`, `deadline`)
+INSERT INTO `consultationAgendaItem` (`id`, `consultationId`, `parentItemId`, `position`, `code`, `title`, `description`, `motionTypeId`, `deadline`)
 VALUES
-  (1, 3, NULL, 0, '', '0.', 'Tagesordnung', '', NULL, NULL),
-  (2, 3, NULL, 1, '', '', 'Wahlen', '', NULL, NULL),
-  (3, 3, 2, 0, '', '', '1. Vorsitzende(r)', '', 6, NULL),
-  (4, 3, 2, 1, '', '', '2. Vorsitzende(r)', '', 6, NULL),
-  (5, 3, 2, 2, '', '', 'Schatzmeister(in)', '', 6, NULL),
-  (6, 3, NULL, 2, '', '0.', 'Anträge', '', 5, NULL),
-  (7, 3, NULL, 3, '', '0.', 'Sonstiges', '', NULL, NULL),
-  (8, 6, NULL, 0, '', '', 'Tagesordnung - Formalia', NULL, 9, NULL),
-  (9, 6, NULL, 1, '', '', 'Zeitpolitik', NULL, 9, NULL),
-  (10, 6, NULL, 3, '', '', 'Wirtschaftspolitik', NULL, 9, NULL),
-  (11, 6, NULL, 4, '', '', 'Urabstimmungsordnung', NULL, 9, NULL),
-  (12, 6, NULL, 5, '', '', 'Verschiedenes', NULL, 9, NULL),
-  (13, 6, NULL, 6, '', '', 'Sterbehilfe', NULL, 9, NULL),
-  (14, 6, NULL, 2, '', '', 'Votum Vorstandswahlen EGP und Nachwahl EGP-Delegierte', NULL, 9, NULL);
+  (1, 3, NULL, 0, '0.', 'Tagesordnung', '', NULL, NULL),
+  (2, 3, NULL, 1, '#', 'Wahlen', '', NULL, NULL),
+  (3, 3, 2, 0, '#', 'Wahl: 1. Vorsitzende(r)', '', 6, NULL),
+  (4, 3, 2, 1, '#', 'Wahl: 2. Vorsitzende(r)', '', 6, NULL),
+  (5, 3, 2, 2, '#', 'Wahl: Schatzmeister(in)', '', 6, NULL),
+  (6, 3, NULL, 2, '#', 'Anträge', '', 5, NULL),
+  (7, 3, NULL, 3, '#', 'Sonstiges', '', NULL, NULL),
+  (8, 6, NULL, 0, '0.', 'Tagesordnung - Formalia', NULL, 9, NULL),
+  (9, 6, NULL, 1, '#', 'Zeitpolitik', NULL, 9, NULL),
+  (10, 6, NULL, 3, '#', 'Wirtschaftspolitik', NULL, 9, NULL),
+  (11, 6, NULL, 4, '#', 'Urabstimmungsordnung', NULL, 9, NULL),
+  (12, 6, NULL, 5, '#', 'Verschiedenes', NULL, 9, NULL),
+  (13, 6, NULL, 6, '#', 'Sterbehilfe', NULL, 9, NULL),
+  (14, 6, NULL, 2, '#', 'Votum Vorstandswahlen EGP und Nachwahl EGP-Delegierte', NULL, 9, NULL);
 
 --
 -- Dumping data for table `consultationLog`

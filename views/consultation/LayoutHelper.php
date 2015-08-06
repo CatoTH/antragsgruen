@@ -85,7 +85,8 @@ class LayoutHelper
      */
     public static function showAgendaItem($agendaItem, $consultation, $admin, $showMotions)
     {
-        echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '">';
+        echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '" ';
+        echo 'data-code="' . Html::encode($agendaItem->code) . '">';
         echo '<div><h3>';
         echo '<span class="code">' . Html::encode($agendaItem->code) . '</span> ';
         echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
@@ -129,11 +130,11 @@ class LayoutHelper
                 }
                 echo '</ul>';
             }
-            echo '</div>';
         }
+        echo '</div>';
 
         $children     = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-        $shownMotions = array_merge($shownMotions, static::showAgendaList($children, $consultation, $admin, false));
+        $shownMotions = array_merge($shownMotions, static::showAgendaList($children, $consultation, $admin, false, $showMotions));
 
         echo '</li>';
         return $shownMotions;
