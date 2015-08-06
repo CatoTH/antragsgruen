@@ -107,7 +107,7 @@ class LayoutHelper
             }
             $typeId = $agendaItem->motionTypeId;
 
-            echo '<form class="agendaItemEditForm form-inline hidden">
+            echo '<form class="agendaItemEditForm form-inline">
                 <input type="text" name="code" value="' . Html::encode($agendaItem->code) . '"
                 class="form-control code">
                 <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
