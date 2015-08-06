@@ -227,7 +227,7 @@ class LayoutHelper
         $content->introductionBig = $intro[0];
         $content->title           = $motion->title;
         $content->titlePrefix     = $motion->titlePrefix;
-        $content->titleLong       = $motion->title;
+        $content->titleLong       = $motion->getTitleWithPrefix();
         if (count($intro) > 1) {
             array_shift($intro);
             $content->introductionSmall = implode("\n", $intro);

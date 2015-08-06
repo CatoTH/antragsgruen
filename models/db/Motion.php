@@ -616,6 +616,9 @@ class Motion extends IMotion implements IRSSItem
             }
             $return['Antragsteller/innen'] = implode("\n", $initiators);
         }
+        if ($this->agendaItem) {
+            $return['Tagesordnungspunkt'] = $this->agendaItem->code . ' ' . $this->agendaItem->title;
+        }
         if (count($this->tags) > 1) {
             $tags = [];
             foreach ($this->tags as $tag) {
