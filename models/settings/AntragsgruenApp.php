@@ -11,7 +11,7 @@ class AntragsgruenApp
     public $baseLanguage          = 'de';
     public $randomSeed            = '';
     public $cookieValidationKey   = '';
-    public $multisiteMode         = true;
+    public $multisiteMode         = false;
     public $domainPlain           = 'http://antragsgruen-v3.localhost/';
     public $domainSubdomain       = 'http://<subdomain:[\w_-]+>.antragsgruen-v3.localhost/';
     public $hasWurzelwerk         = true;
@@ -26,7 +26,11 @@ class AntragsgruenApp
     public $odtDefaultTemplate    = null;
     public $mandrillApiKey        = null;
     public $siteBehaviorClasses   = [];
-    public $authClientCollection  = [];
+    public $authClientCollection  = [
+        'wurzelwerk' => [
+            'class' => 'app\components\WurzelwerkAuthClient',
+        ]
+    ];
     public $autoLoginDuration     = 0;
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
