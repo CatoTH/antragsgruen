@@ -21,10 +21,10 @@ echo '<h1>' . Yii::t('amend', 'Änderungsantrag eingereicht') . '</h1>';
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
 if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
-    echo \Yii::t('amendment', 'confirmed_visible');
+    echo \Yii::t('amend', 'confirmed_visible');
 }
 if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
-    echo \Yii::t('amendment', 'confirmed_screening');
+    echo \Yii::t('amend', 'confirmed_screening');
 }
 echo '</div>';
 

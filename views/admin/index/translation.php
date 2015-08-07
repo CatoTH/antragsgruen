@@ -21,8 +21,18 @@ $this->title = 'Einstellungen';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Erweitert');
 
-echo '<h1>' . Yii::t('backend', 'Translation / Wording') . '</h1>';
-echo '<div class="content">';
+echo '<h1>' . Yii::t('backend', 'Translation / Wording') . '</h1>
+<div class="content">
+
+<div class="alert alert-info" role="alert">
+    <strong>Hinweis:</strong>
+    Diese Seite wird es ermöglichen, beliebige Texte auf der Antragsgrün-Seite anpassen zu können,
+    ist allerdings erst an sehr wenig Stellen umgesetzt. Falls Interesse an dieser Funktion
+    besteht, <a href="https://github.com/CatoTH">melde dich</a> einfach.
+</div>
+';
+
+
 
 
 echo Html::beginForm('', 'post', ['id' => 'wordingBaseForm', 'class' => 'adminForm form-horizontal']);
