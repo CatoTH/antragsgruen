@@ -314,7 +314,7 @@ echo '</div>
 <div class="form-group">
     <label class="col-sm-3 control-label" for="adminEmail">Admins:</label>
     <div class="col-sm-9">
-    <input type="text" required name="consultation[adminEmail]" ' .
+    <input type="text" name="consultation[adminEmail]" ' .
     'value="' . Html::encode($consultation->adminEmail) . '" class="form-control" id="adminEmail">
 </div></div>';
 
@@ -322,7 +322,7 @@ $handledSiteSettings[] = 'emailFromName';
 echo '<div class="form-group">
     <label class="col-sm-3 control-label" for="emailReplyTo">Absender-Name:</label>
     <div class="col-sm-9">
-    <input type="text" required name="siteSettings[emailFromName]" placeholder="Standard: &quot;Antragsgrün&quot;" ' .
+    <input type="text" name="siteSettings[emailFromName]" placeholder="Standard: &quot;Antragsgrün&quot;" ' .
     'value="' . Html::encode($siteSettings->emailFromName) . '" class="form-control" id="emailFromName">
 </div></div>';
 

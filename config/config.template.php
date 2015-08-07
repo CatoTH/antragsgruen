@@ -10,6 +10,7 @@ $params->dbConnection         = [
     'password'       => '###PASSWORD###',
     'charset'        => 'utf8mb4',
 ];
+$params->multisiteMode        = true;
 $params->randomSeed           = 'RANDOMSEED';
 $params->cookieValidationKey  = 'RANDOMSEED';
 $params->domainPlain          = 'https://www.example.org/';
