@@ -19,11 +19,13 @@ class MessageSource extends \yii\i18n\MessageSource
     public static function getTranslatableCategories()
     {
         return [
-            'base'   => 'Basis-Layout',
-            'con'    => 'Consultation',
-            'motion' => 'Motion',
-            'amend'  => 'Amendment',
-            'pdf'    => 'PDF',
+            'base'      => 'Basis-Layout',
+            'con'       => 'Consultation',
+            'motion'    => 'Motion',
+            'amend'     => 'Amendment',
+            'pdf'       => 'PDF',
+            'backend'   => 'Admin-Backend',
+            'initiator' => 'InitiatorInnen',
         ];
     }
 
@@ -34,7 +36,11 @@ class MessageSource extends \yii\i18n\MessageSource
     public static function getLanguageVariants($language)
     {
         if ($language == 'de') {
-            return ['de-parteitag' => 'Parteitag'];
+            return [
+                'de-parteitag' => 'Parteitag',
+                'de-bewerbung' => 'Bewerbungsverfahren',
+                'de-programm'  => 'Programmdiskussion',
+            ];
         };
         return [];
     }
@@ -98,6 +104,11 @@ class MessageSource extends \yii\i18n\MessageSource
      */
     protected function loadMessages($category, $language, $withConsultationStrings = true)
     {
+        $categories = static::getTranslatableCategories();
+        if (!isset($categories[$category])) {
+            throw new Internal('Unknown language category: ' . $category);
+        }
+
         $consultation = UrlHelper::getCurrentConsultation();
         if (!$consultation) {
             $baseFile = $this->getMessageFilePath($category, $language);
