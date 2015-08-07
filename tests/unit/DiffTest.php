@@ -173,9 +173,8 @@ class DiffTest extends TestBase
         $this->assertEquals($expect, $out);
 
 
-
-        $str1 = '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird Und noch etwas am Ende. Und noch etwas am Ende</p>';
-        $str2 = '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen Und noch etwas am Ende. Und noch etwas am Ende</p>';
+        $str1   = '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird Und noch etwas am Ende. Und noch etwas am Ende</p>';
+        $str2   = '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen Und noch etwas am Ende. Und noch etwas am Ende</p>';
         $expect = '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. <del>Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird Und noch etwas am Ende.</del>
 <ins>Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen Und noch etwas am Ende.</ins> Und noch etwas am Ende</p>';
 
@@ -184,5 +183,55 @@ class DiffTest extends TestBase
         $out  = $diff->cleanupDiffProblems($out);
 
         $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testShiftMisplacedTags()
+    {
+        $orig      = [
+            ['', Engine::UNMODIFIED],
+            ['<p>', Engine::UNMODIFIED],
+            ['New ', Engine::INSERTED],
+            ['content', Engine::INSERTED],
+            ['</p>', Engine::INSERTED],
+            ['', Engine::INSERTED],
+            ['<p>', Engine::INSERTED],
+            ['more', Engine::UNMODIFIED],
+        ];
+        $corrected = Engine::shiftMisplacedHTMLTags($orig);
+        $this->assertEquals([
+            ['', Engine::UNMODIFIED],
+            ['<p>', Engine::INSERTED],
+            ['New ', Engine::INSERTED],
+            ['content', Engine::INSERTED],
+            ['</p>', Engine::INSERTED],
+            ['', Engine::INSERTED],
+            ['<p>', Engine::UNMODIFIED],
+            ['more', Engine::UNMODIFIED],
+        ], $corrected);
+
+
+        $orig      = [
+            ['', Engine::UNMODIFIED],
+            ['<p>', Engine::UNMODIFIED],
+            ['Deleted ', Engine::DELETED],
+            ['content', Engine::DELETED],
+            ['</p>', Engine::DELETED],
+            ['', Engine::DELETED],
+            ['<p>', Engine::DELETED],
+            ['more', Engine::UNMODIFIED],
+        ];
+        $corrected = Engine::shiftMisplacedHTMLTags($orig);
+        $this->assertEquals([
+            ['', Engine::UNMODIFIED],
+            ['<p>', Engine::DELETED],
+            ['Deleted ', Engine::DELETED],
+            ['content', Engine::DELETED],
+            ['</p>', Engine::DELETED],
+            ['', Engine::DELETED],
+            ['<p>', Engine::UNMODIFIED],
+            ['more', Engine::UNMODIFIED],
+        ], $corrected);
     }
 }

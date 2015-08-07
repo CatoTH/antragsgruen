@@ -119,6 +119,124 @@ class Engine
         return $this->compareArrays($sequence1, $sequence2);
     }
 
+    /**
+     * returns [
+     *   ["start" => 1, "end" => 4, "type" => Engine::INSERTED],
+     *   ["start" => 8, "end" => 10, "type" => Engine::DELETED], ...
+     * ]
+     *
+     * @param array $diff
+     * @return array
+     */
+    private static function findInsDelGroups($diff)
+    {
+        $groups       = [];
+        $pendingSince = null;
+        $pendingType  = null;
+        for ($i = 0; $i < count($diff); $i++) {
+            if ($diff[$i][1] == static::INSERTED) {
+                if (!$pendingSince) {
+                    $pendingSince = $i;
+                    $pendingType  = static::INSERTED;
+                } elseif ($pendingType != static::INSERTED) {
+                    $groups[]     = [
+                        'start' => $pendingSince,
+                        'end'   => $i - 1,
+                        'type'  => $pendingType,
+                    ];
+                    $pendingSince = $i;
+                    $pendingType  = static::INSERTED;
+                }
+            } elseif ($diff[$i][1] == static::DELETED) {
+                if (!$pendingSince) {
+                    $pendingSince = $i;
+                    $pendingType  = static::DELETED;
+                } elseif ($pendingType != static::DELETED) {
+                    $groups[]     = [
+                        'start' => $pendingSince,
+                        'end'   => $i - 1,
+                        'type'  => $pendingType,
+                    ];
+                    $pendingSince = $i;
+                    $pendingType  = static::DELETED;
+                }
+            } else {
+                if ($pendingSince) {
+                    $groups[]     = [
+                        'start' => $pendingSince,
+                        'end'   => $i - 1,
+                        'type'  => $pendingType,
+                    ];
+                    $pendingSince = null;
+                    $pendingType  = null;
+                }
+            }
+        }
+        if ($pendingSince) {
+            $groups[] = [
+                'start' => $pendingSince,
+                'end'   => $i - 1,
+                'type'  => $pendingType,
+            ];
+        }
+        return $groups;
+    }
+
+
+    /**
+     * Fixes problems like this:
+     * <p><ins>Some text</p><p></ins> (tokenized)
+     * =>
+     * <ins><p>Some text</p></ins><p>
+     *
+     * @param array $diff
+     * @return array
+     */
+    public static function shiftMisplacedHTMLTags($diff)
+    {
+        $groups = static::findInsDelGroups($diff);
+
+        $forwardShiftingTags = ['<p>', '<ul>', '<ol>', '<blockquote>'];
+        foreach ($groups as $group) {
+            $start = $group['start'];
+            $end   = $group['end'];
+            if ($start == 0) {
+                continue;
+            }
+            if ($diff[$start - 1][1] != static::UNMODIFIED) {
+                continue;
+            }
+            $prevTag = in_array($diff[$start - 1][0], $forwardShiftingTags);
+            $lastTag = $diff[$end][0];
+            if (in_array($prevTag, $forwardShiftingTags) && $prevTag == $lastTag) {
+                $diff[$start - 1][1] = $diff[$end][1];
+                $diff[$end][1]       = static::UNMODIFIED;
+            }
+        }
+
+        $groups = static::findInsDelGroups($diff);
+
+        $backwardShiftingTags = ['</p>', '</ul>', '</ol>', '</blockquote>'];
+        foreach ($groups as $group) {
+            $start = $group['start'];
+            $end   = $group['end'];
+            if ($end == count($diff) - 1) {
+                continue;
+            }
+            if ($diff[$end + 1][1] != static::UNMODIFIED) {
+                continue;
+            }
+            $nextTag  = in_array($diff[$end + 1][0], $backwardShiftingTags);
+            $firstTag = $diff[$start][0];
+            if (in_array($nextTag, $backwardShiftingTags) && $nextTag == $firstTag) {
+                $diff[$end + 1][1] = $diff[$start][1];
+                $diff[$start][1]   = static::UNMODIFIED;
+            }
+        }
+
+        return $diff;
+    }
+
     /** Returns the table of longest common subsequence lengths for the specified
      * sequences. The parameters are:
      *
@@ -155,7 +273,6 @@ class Engine
         }
         // return the table
         return $table;
-
     }
 
     /** Returns the partial diff for the specificed sequences, in reverse order.

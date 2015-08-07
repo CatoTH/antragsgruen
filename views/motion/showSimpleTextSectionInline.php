@@ -46,14 +46,11 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     foreach ($groupedParaData[$paragraphNo] as $part) {
         $text = $part['text'];
-        $text = preg_replace('/<(del|ins)>(<\/?(li|ul|ol)>)<\/(del|ins)>/siu', '\2', $text);
-        $text = str_replace('</ins><ins>', '', $text);
-        $text = str_replace('</del><del>', '', $text);
 
         if ($part['amendment'] > 0) {
             $amendment = $amendmentsById[$part['amendment']];
-            $url = UrlHelper::createAmendmentUrl($amendment);
-            $refStr = ' <span class="amendmentRef">[' . Html::a($amendment->titlePrefix, $url) . ']</span> ';
+            $url       = UrlHelper::createAmendmentUrl($amendment);
+            $refStr    = ' <span class="amendmentRef">[' . Html::a($amendment->titlePrefix, $url) . ']</span> ';
             if (mb_strpos($text, '</ul>') !== false) {
                 $x = explode('</ul>', $text);
                 for ($i = 0; $i < count($x); $i++) {
@@ -66,6 +63,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                     }
                 }
                 $text = implode('</ul>', $x);
+            } elseif (mb_strpos($text, '</p>') !== false) {
+                $text = str_replace('</p>', $refStr . '</p>', $text);
             } else {
                 $text .= $refStr;
             }

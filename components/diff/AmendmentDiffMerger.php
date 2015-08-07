@@ -47,9 +47,9 @@ class AmendmentDiffMerger
         foreach ($paras as $paraNo => $paraStr) {
             $origTokenized = \app\components\diff\Diff::tokenizeLine($paraStr);
             $origArr       = preg_split('/\R/', $origTokenized);
-            $modifications = [];
+            $words         = [];
             foreach ($origArr as $x) {
-                $modifications[] = [
+                $words[] = [
                     'orig'          => $x,
                     'modifications' => [],
                 ];
@@ -57,7 +57,7 @@ class AmendmentDiffMerger
             $this->paraData[$paraNo] = [
                 'orig'              => $paraStr,
                 'origTokenized'     => $origTokenized,
-                'modifications'     => $modifications,
+                'words'             => $words,
                 'amendmentSections' => [],
             ];
         }
@@ -82,7 +82,9 @@ class AmendmentDiffMerger
         foreach ($paragraphs as $amendPara => $amendText) {
             $newTokens  = \app\components\diff\Diff::tokenizeLine($amendText);
             $diffTokens = $diffEngine->compareStrings($this->paraData[$amendPara]['origTokenized'], $newTokens);
-            $origNo     = 0;
+            $diffTokens = $diffEngine->shiftMisplacedHTMLTags($diffTokens);
+
+            $origNo = 0;
             foreach ($diffTokens as $token) {
                 if ($token[1] == \app\components\diff\Engine::INSERTED) {
                     if ($token[0] == '') {
@@ -93,21 +95,21 @@ class AmendmentDiffMerger
                         // @TODO
                     } else {
                         $pre = $origNo - 1;
-                        if (!isset($this->paraData[$amendPara]['modifications'][$pre]['modifications'][$amendId])) {
-                            $orig = $this->paraData[$amendPara]['modifications'][$pre]['orig'];
+                        if (!isset($this->paraData[$amendPara]['words'][$pre]['modifications'][$amendId])) {
+                            $orig = $this->paraData[$amendPara]['words'][$pre]['orig'];
                             //
-                            $this->paraData[$amendPara]['modifications'][$pre]['modifications'][$amendId] = $orig;
+                            $this->paraData[$amendPara]['words'][$pre]['modifications'][$amendId] = $orig;
                         }
-                        $this->paraData[$amendPara]['modifications'][$pre]['modifications'][$amendId] .= $insStr;
+                        $this->paraData[$amendPara]['words'][$pre]['modifications'][$amendId] .= $insStr;
                     }
                 }
                 if ($token[1] == \app\components\diff\Engine::DELETED) {
                     if ($token[0] != '') {
                         $delStr = '<del>' . $token[0] . '</del>';
-                        if (!isset($this->paraData[$amendPara]['modifications'][$origNo]['modifications'][$amendId])) {
-                            $this->paraData[$amendPara]['modifications'][$origNo]['modifications'][$amendId] = '';
+                        if (!isset($this->paraData[$amendPara]['words'][$origNo]['modifications'][$amendId])) {
+                            $this->paraData[$amendPara]['words'][$origNo]['modifications'][$amendId] = '';
                         }
-                        $this->paraData[$amendPara]['modifications'][$origNo]['modifications'][$amendId] .= $delStr;
+                        $this->paraData[$amendPara]['words'][$origNo]['modifications'][$amendId] .= $delStr;
                     }
                     $origNo++;
                 }
@@ -128,39 +130,81 @@ class AmendmentDiffMerger
             $paraG            = [];
             $pending          = '';
             $pendingCurrAmend = 0;
-            foreach ($para['modifications'] as $modi) {
-                if (count($modi['modifications']) > 1) {
+
+            $addToParaG = function ($pendingCurrAmend, $text) use (&$paraG) {
+                $paraG[] = [
+                    'amendment' => $pendingCurrAmend,
+                    'text'      => static::cleanupParagraphData($text),
+                ];
+            };
+
+            foreach ($para['words'] as $word) {
+                if (count($word['modifications']) > 1) {
                     echo 'PROBLEM: ';
-                    var_dump($modi);
-                } elseif (count($modi['modifications']) == 1) {
-                    $keys = array_keys($modi['modifications']);
+                    var_dump($word);
+                } elseif (count($word['modifications']) == 1) {
+                    $keys = array_keys($word['modifications']);
+                    if ($pendingCurrAmend == 0 && $word['orig'] != '') {
+                        $modiKey = array_keys($word['modifications'])[0];
+                        if (mb_strpos($word['modifications'][$modiKey], $word['orig']) === 0) {
+                            $shortened = mb_substr($word['modifications'][$modiKey], mb_strlen($word['orig']));
+                            $pending .= $word['orig'];
+                            $word['modifications'][$modiKey] = $shortened;
+                        }
+                    }
                     if ($keys[0] != $pendingCurrAmend) {
-                        $paraG[]          = [
-                            'amendment' => $pendingCurrAmend,
-                            'text'      => $pending,
-                        ];
+                        $addToParaG($pendingCurrAmend, $pending);
                         $pending          = '';
                         $pendingCurrAmend = $keys[0];
                     }
-                    $pending .= $modi['modifications'][$keys[0]];
+                    $pending .= $word['modifications'][$keys[0]];
                 } else {
                     if (0 != $pendingCurrAmend) {
-                        $paraG[]          = [
-                            'amendment' => $pendingCurrAmend,
-                            'text'      => $pending,
-                        ];
+                        $addToParaG($pendingCurrAmend, $pending);
                         $pending          = '';
                         $pendingCurrAmend = 0;
                     }
-                    $pending .= $modi['orig'];
+                    $pending .= $word['orig'];
                 }
             }
-            $paraG[]                  = [
-                'amendment' => $pendingCurrAmend,
-                'text'      => $pending,
-            ];
+            $addToParaG($pendingCurrAmend, $pending);
             $groupedParaData[$paraNo] = $paraG;
         }
         return $groupedParaData;
+    }
+
+    /**
+     * @param string $text
+     * @return string
+     */
+    public static function cleanupParagraphData($text)
+    {
+        $text = preg_replace('/<(del|ins)>(<\/?(li|ul|ol)>)<\/(del|ins)>/siu', '\2', $text);
+        $text = str_replace('</ins><ins>', '', $text);
+        $text = str_replace('</del><del>', '', $text);
+        $text = str_replace('<ins><p>', '<p><ins>', $text);
+        $text = str_replace('<del><p>', '<p><del>', $text);
+        $text = str_replace('</p></ins>', '</ins></p>', $text);
+        $text = str_replace('</p></del>', '</del></p>', $text);
+        return $text;
+    }
+
+    /**
+     * @param array $paras
+     * @return array
+     */
+    public static function filterChangingGroupedParagraphs($paras)
+    {
+        $return = [];
+        foreach ($paras as $para) {
+            $currBlock = [];
+            foreach ($para as $paraBlock) {
+                if ($paraBlock['amendment'] > 0) {
+                    $currBlock[] = $paraBlock;
+                }
+            }
+            $return[] = $currBlock;
+        }
+        return $return;
     }
 }
