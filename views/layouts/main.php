@@ -195,12 +195,12 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 
 echo '<footer class="footer">
         <div class="container">
-            <a href="<?= Html::encode($legalLink) ?>" class="legal" id="legalLink">Impressum</a>
-            <a href="<?= Html::encode($privacyLink) ?>" class="privacy" id="privacyLink">Datenschutz</a>
+            <a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">Impressum</a>
+            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">Datenschutz</a>
 
             <span class="version">
                 Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-                Version <?= Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL) ?>
+                Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL) . '
             </span>
         </div>
     </footer>
