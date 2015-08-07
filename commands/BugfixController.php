@@ -60,10 +60,10 @@ class BugfixController extends Controller
             if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
-            $newText = HTMLTools::cleanSimpleHtml($section->data);
+            $newText = HTMLTools::cleanSimpleHtml($section->dataRaw);
             if ($newText != $section->data) {
                 $changedCount++;
-                $section->data = HTMLTools::cleanSimpleHtml($section->data);
+                $section->data = $newText;
                 $section->save();
             }
         }
