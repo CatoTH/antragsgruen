@@ -24,7 +24,8 @@ class AmendmentDiffMergerTest extends TestBase
 
         $merger = new AmendmentDiffMerger();
         $merger->initByMotionParagraphs($paragraphs);
-        $merger->addAmendmentParagraphs(1, $affectedParagraphs);
+        $merger->addAmendingParagraphs(1, $affectedParagraphs);
+        $merger->mergeParagraphs();
 
         $groupedParaData = $merger->getGroupedParagraphData();
 
@@ -61,7 +62,8 @@ class AmendmentDiffMergerTest extends TestBase
 
         $merger = new AmendmentDiffMerger();
         $merger->initByMotionParagraphs($paragraphs);
-        $merger->addAmendmentParagraphs(2, $affectedParagraphs);
+        $merger->addAmendingParagraphs(2, $affectedParagraphs);
+        $merger->mergeParagraphs();
 
         $groupedParaData = $merger->getGroupedParagraphData();
 
@@ -98,7 +100,8 @@ class AmendmentDiffMergerTest extends TestBase
 
         $merger = new AmendmentDiffMerger();
         $merger->initByMotionParagraphs($paragraphs);
-        $merger->addAmendmentParagraphs(3, $affectedParagraphs);
+        $merger->addAmendingParagraphs(3, $affectedParagraphs);
+        $merger->mergeParagraphs();
 
         $groupedParaData = $merger->getGroupedParagraphData();
 

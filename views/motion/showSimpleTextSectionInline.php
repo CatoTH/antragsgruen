@@ -15,18 +15,16 @@ $classes    = ['paragraph'];
 
 /** @var Amendment[] $amendmentsById */
 $amendmentsById = [];
+foreach ($section->amendingSections as $sect) {
+    $amendmentsById[$sect->amendmentId] = $sect->amendment;
+}
 
 $merger = new \app\components\diff\AmendmentDiffMerger();
 $merger->initByMotionSection($section);
-
-
-$diffEngine = new \app\components\diff\Engine();
-foreach ($section->amendingSections as $sect) {
-    $amendmentsById[$sect->amendmentId] = $sect->amendment;
-    $merger->addAmendmentSection($sect);
-}
-
+$merger->addAmendingSections($section->amendingSections);
+$merger->mergeParagraphs();
 $groupedParaData = $merger->getGroupedParagraphData();
+
 
 foreach ($paragraphs as $paragraphNo => $paragraph) {
     $parClasses = $classes;
