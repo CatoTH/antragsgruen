@@ -179,10 +179,7 @@ class AmendmentDiffMerger
 
         foreach ($changeSet['diff'] as $token) {
             if ($token[1] == Engine::INSERTED) {
-                if ($token[0] == '') {
-                    continue;
-                }
-                $insStr = '<ins>' . $token[0] . '</ins>';
+                $insStr = ($token[0] != '' ? '<ins>' . $token[0] . '</ins>' : '');
                 if ($origNo == 0) {
                     // @TODO
                 } else {
@@ -194,14 +191,12 @@ class AmendmentDiffMerger
                     $words[$pre]['modification'] .= $insStr;
                 }
             } elseif ($token[1] == Engine::DELETED) {
-                if ($token[0] != '') {
-                    $delStr = '<del>' . $token[0] . '</del>';
-                    if ($words[$origNo]['modifiedBy'] === null) {
-                        $words[$origNo]['modifiedBy']   = $amendId;
-                        $words[$origNo]['modification'] = '';
-                    }
-                    $words[$origNo]['modification'] .= $delStr;
+                $delStr = ($token[0] != '' ? '<del>' . $token[0] . '</del>' : '');
+                if ($words[$origNo]['modifiedBy'] === null) {
+                    $words[$origNo]['modifiedBy']   = $amendId;
+                    $words[$origNo]['modification'] = '';
                 }
+                $words[$origNo]['modification'] .= $delStr;
                 $origNo++;
             } elseif ($token[1] == Engine::UNMODIFIED) {
                 $origNo++;
@@ -330,7 +325,7 @@ class AmendmentDiffMerger
             }
 
 
-            $max = 2 * $wrapWords + 2;
+            $max     = 2 * $wrapWords + 2;
             $wrapped = '';
             foreach ($groups as $i => $group) {
                 if ($group[1] == Engine::UNMODIFIED) {
