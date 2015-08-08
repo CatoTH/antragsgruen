@@ -198,10 +198,11 @@ abstract class ISectionType
      * @param Base $controller
      * @param CommentForm $commentForm
      * @param int[] $openedComments
+     * @paran bool $consolidatedAmendments
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function showMotionView(Base $controller, $commentForm, $openedComments)
+    public function showMotionView(Base $controller, $commentForm, $openedComments, $consolidatedAmendments)
     {
         return $this->getSimple();
     }

@@ -192,6 +192,32 @@ class DiffTest extends TestBase
         $orig      = [
             ['', Engine::UNMODIFIED],
             ['<p>', Engine::UNMODIFIED],
+            ['Newly ', Engine::INSERTED],
+            ['inserted ', Engine::INSERTED],
+            ['normal ', Engine::UNMODIFIED],
+            [' text', Engine::UNMODIFIED],
+        ];
+        $corrected = Engine::shiftMisplacedHTMLTags($orig);
+        $this->assertEquals($orig, $corrected);
+
+
+
+        $orig      = [
+            ['', Engine::UNMODIFIED],
+            ['<p>', Engine::UNMODIFIED],
+            ['Old ', Engine::DELETED],
+            ['deleted ', Engine::DELETED],
+            ['normal ', Engine::UNMODIFIED],
+            [' text', Engine::UNMODIFIED],
+        ];
+        $corrected = Engine::shiftMisplacedHTMLTags($orig);
+        $this->assertEquals($orig, $corrected);
+
+
+
+        $orig      = [
+            ['', Engine::UNMODIFIED],
+            ['<p>', Engine::UNMODIFIED],
             ['New ', Engine::INSERTED],
             ['content', Engine::INSERTED],
             ['</p>', Engine::INSERTED],

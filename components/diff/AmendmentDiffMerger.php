@@ -2,6 +2,7 @@
 
 namespace app\components\diff;
 
+use app\components\HTMLTools;
 use app\models\db\AmendmentSection;
 use app\models\db\MotionSection;
 
@@ -300,6 +301,66 @@ class AmendmentDiffMerger
         return $grouped;
     }
 
+
+    /**
+     * @param int $paraNo
+     * @param int $wrapWords
+     * @return array
+     */
+    public function getWrappedGroupedCollidingSections($paraNo, $wrapWords = 4)
+    {
+        $grouped = [];
+
+        foreach ($this->paraData[$paraNo]['collidingParagraphs'] as $section) {
+            $groups        = [];
+            $currOperation = Engine::UNMODIFIED;
+            $currPending   = [];
+            foreach ($section['diff'] as $token) {
+                if ($token[1] != $currOperation) {
+                    $groups[]      = [$currPending, $currOperation];
+                    $currOperation = $token[1];
+                    $currPending   = [];
+                }
+                if ($token[0] != '') {
+                    $currPending[] = $token[0];
+                }
+            }
+            if (count($currPending) > 0) {
+                $groups[] = [$currPending, $currOperation];
+            }
+
+
+            $max = 2 * $wrapWords + 2;
+            $wrapped = '';
+            foreach ($groups as $i => $group) {
+                if ($group[1] == Engine::UNMODIFIED) {
+                    if (count($group[0]) <= $max) {
+                        $wrapped .= strip_tags(implode('', $group[0]));
+                    }
+                } else {
+                    if ($i > 0 && $groups[$i - 1][1] == Engine::UNMODIFIED && count($groups[$i - 1][0]) > $max) {
+                        $lastWords = array_slice($groups[$i - 1][0], -1 * $wrapWords, $wrapWords, true);
+                        $wrapped .= '...' . strip_tags(implode('', $lastWords));
+                    }
+                    if ($group[1] == Engine::INSERTED) {
+                        $wrapped .= '<ins>' . implode('', $group[0]) . '</ins>';
+                    }
+                    if ($group[1] == Engine::DELETED) {
+                        $wrapped .= '<del>' . implode('', $group[0]) . '</del>';
+                    }
+                    $last = ($i == (count($groups) - 1));
+                    if (!$last && $groups[$i + 1][1] == Engine::UNMODIFIED && count($groups[$i + 1][0]) > $max) {
+                        $firstWords = array_slice($groups[$i + 1][0], 0, $wrapWords, true);
+                        $wrapped .= strip_tags(implode('', $firstWords)) . '...<br>';
+                    }
+                }
+            }
+
+            $grouped[$section['amendment']] = HTMLTools::correctHtmlErrors(static::cleanupParagraphData($wrapped));
+        }
+        return $grouped;
+    }
+
     /**
      * @param array $section
      * @return string
@@ -318,6 +379,53 @@ class AmendmentDiffMerger
         }
         $out = static::cleanupParagraphData($out);
         return $out;
+    }
+
+
+    /**
+     * @param array $section
+     * @param int $wrapWords
+     * @return string
+     */
+    public static function formatWrapGroupedCollidingSection($section, $wrapWords = 4)
+    {
+        $intermed  = [];
+        $currGroup = null;
+        foreach ($section as $token) {
+            if (!$currGroup || $token[1] != $currGroup['type']) {
+                if ($currGroup) {
+                    $intermed[] = $currGroup;
+                }
+                $currGroup = [
+                    'type'  => $token[1],
+                    'words' => [],
+                ];
+            }
+            if ($token[1] == Engine::UNMODIFIED) {
+                $currGroup['words'][] = $token[0];
+            } elseif ($token[1] == Engine::INSERTED) {
+                $currGroup['words'][] = '<ins>' . $token[0] . '</ins>';
+            } elseif ($token[1] == Engine::DELETED) {
+                $currGroup['words'][] = '<del>' . $token[0] . '</del>';
+            }
+        }
+        if ($currGroup) {
+            $intermed[] = $currGroup;
+        }
+
+        /*
+        foreach ($section as $token) {
+            if ($token[1] == Engine::UNMODIFIED) {
+                $out .= $token[0];
+            } elseif ($token[1] == Engine::INSERTED) {
+                $out .= '<ins>' . $token[0] . '</ins>';
+            } elseif ($token[1] == Engine::DELETED) {
+                $out .= '<del>' . $token[0] . '</del>';
+            }
+        }
+        $out = static::cleanupParagraphData($out);
+        return $out;
+        */
     }
 
     /**

@@ -133,9 +133,10 @@ class MotionController extends Base
     /**
      * @param int $motionId
      * @param int $commentId
+     * @param bool $consolidatedAmendments
      * @return string
      */
-    public function actionView($motionId, $commentId = 0)
+    public function actionView($motionId, $commentId = 0, $consolidatedAmendments = false)
     {
         $motionId = IntVal($motionId);
         $motion   = $this->getMotionWithCheck($motionId);
@@ -176,12 +177,13 @@ class MotionController extends Base
         }
 
         $motionViewParams = [
-            'motion'              => $motion,
-            'amendments'          => $motion->getVisibleAmendments(),
-            'openedComments'      => $openedComments,
-            'adminEdit'           => $adminEdit,
-            'commentForm'         => null,
-            'commentWholeMotions' => $commentWholeMotions,
+            'motion'                 => $motion,
+            'amendments'             => $motion->getVisibleAmendments(),
+            'openedComments'         => $openedComments,
+            'adminEdit'              => $adminEdit,
+            'commentForm'            => null,
+            'commentWholeMotions'    => $commentWholeMotions,
+            'consolidatedAmendments' => $consolidatedAmendments,
         ];
 
         try {
@@ -202,6 +204,15 @@ class MotionController extends Base
 
 
         return $this->render('view', $motionViewParams);
+    }
+
+    /**
+     * @param int $motionId
+     * @return string
+     */
+    public function actionConsolidated($motionId)
+    {
+        return $this->actionView($motionId, 0, true);
     }
 
 

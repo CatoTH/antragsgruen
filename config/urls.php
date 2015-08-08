@@ -12,7 +12,7 @@ $domamend  = $domv . 'motion/<motionId:\d+>/amendment/<amendmentId:\d+>';
 
 $consultationPaths = 'help|search|savetextajax|maintainance|notifications|shariffbackend';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
-$motionPaths = 'createconfirm|edit|pdf|odt|plainhtml|mergeamendments|image|withdraw';
+$motionPaths = 'createconfirm|edit|pdf|odt|plainhtml|consolidated|mergeamendments|image|withdraw';
 $amendPaths  = 'pdf|createconfirm|edit|withdraw';
 $userPaths   = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|emailblacklist|recovery';
 $userPaths .= '|consultationaccesserror|myaccount';
@@ -61,7 +61,7 @@ if ($params->domainPlain != $params->domainSubdomain) {
 }
 
 if ($params->multisiteMode) {
-    $domp      = trim($params->domainPlain, '/');
+    $domp     = trim($params->domainPlain, '/');
     $urlRules = array_merge(
         [
             $domp                                    => 'manager/index',
