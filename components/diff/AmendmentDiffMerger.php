@@ -227,51 +227,97 @@ class AmendmentDiffMerger
     }
 
     /**
+     * @param int $paraNo
      * @return array
      */
-    public function getGroupedParagraphData()
+    public function getGroupedParagraphData($paraNo)
     {
-        $groupedParaData = [];
-        foreach ($this->paraData as $paraNo => $para) {
-            $paraG            = [];
-            $pending          = '';
-            $pendingCurrAmend = 0;
+        $para             = $this->paraData[$paraNo];
+        $groupedParaData  = [];
+        $pending          = '';
+        $pendingCurrAmend = 0;
 
-            $addToParaG = function ($pendingCurrAmend, $text) use (&$paraG) {
-                $paraG[] = [
-                    'amendment' => $pendingCurrAmend,
-                    'text'      => static::cleanupParagraphData($text),
-                ];
-            };
+        $addToGrouped = function ($pendingCurrAmend, $text) use (&$groupedParaData) {
+            $groupedParaData[] = [
+                'amendment' => $pendingCurrAmend,
+                'text'      => static::cleanupParagraphData($text),
+            ];
+        };
 
-            foreach ($para['words'] as $word) {
-                if ($word['modifiedBy'] !== null) {
-                    if ($pendingCurrAmend == 0 && $word['orig'] != '') {
-                        if (mb_strpos($word['modification'], $word['orig']) === 0) {
-                            $shortened = mb_substr($word['modification'], mb_strlen($word['orig']));
-                            $pending .= $word['orig'];
-                            $word['modification'] = $shortened;
-                        }
+        foreach ($para['words'] as $word) {
+            if ($word['modifiedBy'] !== null) {
+                if ($pendingCurrAmend == 0 && $word['orig'] != '') {
+                    if (mb_strpos($word['modification'], $word['orig']) === 0) {
+                        $shortened = mb_substr($word['modification'], mb_strlen($word['orig']));
+                        $pending .= $word['orig'];
+                        $word['modification'] = $shortened;
                     }
-                    if ($word['modifiedBy'] != $pendingCurrAmend) {
-                        $addToParaG($pendingCurrAmend, $pending);
-                        $pending          = '';
-                        $pendingCurrAmend = $word['modifiedBy'];
-                    }
-                    $pending .= $word['modification'];
-                } else {
-                    if (0 != $pendingCurrAmend) {
-                        $addToParaG($pendingCurrAmend, $pending);
-                        $pending          = '';
-                        $pendingCurrAmend = 0;
-                    }
-                    $pending .= $word['orig'];
                 }
+                if ($word['modifiedBy'] != $pendingCurrAmend) {
+                    $addToGrouped($pendingCurrAmend, $pending);
+                    $pending          = '';
+                    $pendingCurrAmend = $word['modifiedBy'];
+                }
+                $pending .= $word['modification'];
+            } else {
+                if (0 != $pendingCurrAmend) {
+                    $addToGrouped($pendingCurrAmend, $pending);
+                    $pending          = '';
+                    $pendingCurrAmend = 0;
+                }
+                $pending .= $word['orig'];
             }
-            $addToParaG($pendingCurrAmend, $pending);
-            $groupedParaData[$paraNo] = $paraG;
         }
+        $addToGrouped($pendingCurrAmend, $pending);
+
         return $groupedParaData;
+    }
+
+    /**
+     * @param int $paraNo
+     * @return array
+     */
+    public function getGroupedCollidingSections($paraNo)
+    {
+        $grouped = [];
+        foreach ($this->paraData[$paraNo]['collidingParagraphs'] as $section) {
+            $groups        = [];
+            $currOperation = Engine::UNMODIFIED;
+            $currPending   = '';
+            foreach ($section['diff'] as $token) {
+                if ($token[1] != $currOperation) {
+                    $groups[]      = [$currPending, $currOperation];
+                    $currOperation = $token[1];
+                    $currPending   = '';
+                }
+                $currPending .= $token[0];
+            }
+            if ($currPending != '') {
+                $groups[] = [$currPending, $currOperation];
+            }
+            $grouped[$section['amendment']] = $groups;
+        }
+        return $grouped;
+    }
+
+    /**
+     * @param array $section
+     * @return string
+     */
+    public static function formatGroupedCollidingSection($section)
+    {
+        $out = '';
+        foreach ($section as $token) {
+            if ($token[1] == Engine::UNMODIFIED) {
+                $out .= $token[0];
+            } elseif ($token[1] == Engine::INSERTED) {
+                $out .= '<ins>' . $token[0] . '</ins>';
+            } elseif ($token[1] == Engine::DELETED) {
+                $out .= '<del>' . $token[0] . '</del>';
+            }
+        }
+        $out = static::cleanupParagraphData($out);
+        return $out;
     }
 
     /**
