@@ -23,8 +23,6 @@ $merger = new \app\components\diff\AmendmentDiffMerger();
 $merger->initByMotionSection($section);
 $merger->addAmendingSections($section->amendingSections);
 $merger->mergeParagraphs();
-$groupedParaData = $merger->getGroupedParagraphData();
-
 
 foreach ($paragraphs as $paragraphNo => $paragraph) {
     $parClasses = $classes;
@@ -42,7 +40,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     echo '<section class="' . implode(' ', $parClasses) . '" id="' . $id . '">';
     echo '<div class="text">';
 
-    foreach ($groupedParaData[$paragraphNo] as $part) {
+    $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
+    foreach ($groupedParaData as $part) {
         $text = $part['text'];
 
         if ($part['amendment'] > 0) {
