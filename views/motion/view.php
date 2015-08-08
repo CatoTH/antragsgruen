@@ -21,6 +21,7 @@ use yii\helpers\Html;
  * @var null|string $supportStatus
  * @var null|CommentForm $commentForm
  * @var bool $commentWholeMotions
+ * @var bool $consolidatedAmendments
  */
 
 /** @var \app\controllers\Base $controller */
@@ -127,7 +128,7 @@ if (!$minimalisticUi) {
            data-lang="' . Html::encode($lang) . '" data-title="' . Html::encode($dataTitle) . '"></div>';
     }
 
-    /*
+    /* @TODO
     if (count($antrag->antraege) > 0) { ?>
                 <div class="alert alert-error" style="margin-top: 10px; margin-bottom: 25px;">
                     <?php if (count($antrag->antraege) == 1) {
@@ -238,7 +239,7 @@ if (!$minimalisticUi) {
 
         echo '</td></tr>';
     }
-    /*
+    /* @TODO
     if ($motion->abgeleitetVon) {
                     ?>
                     <tr>
@@ -288,7 +289,7 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
     echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
 
     $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-    echo $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
+    echo $section->getSectionType()->showMotionView($controller, $commentForm, $commOp, $consolidatedAmendments);
 
     echo '</section>';
 }

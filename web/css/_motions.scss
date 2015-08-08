@@ -476,6 +476,14 @@
       }
     }
 
+    .text.collidingAmendment {
+      margin-top: -20px;
+      > h3 {
+        font-size: 1.2em;
+        margin-top: 0;
+      }
+    }
+
     h4.lineSummary {
       font-size: inherit;
       font-weight: bold;

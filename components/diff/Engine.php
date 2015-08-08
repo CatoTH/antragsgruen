@@ -206,7 +206,7 @@ class Engine
             if ($diff[$start - 1][1] != static::UNMODIFIED) {
                 continue;
             }
-            $prevTag = in_array($diff[$start - 1][0], $forwardShiftingTags);
+            $prevTag = $diff[$start - 1][0];
             $lastTag = $diff[$end][0];
             if (in_array($prevTag, $forwardShiftingTags) && $prevTag == $lastTag) {
                 $diff[$start - 1][1] = $diff[$end][1];
@@ -226,7 +226,7 @@ class Engine
             if ($diff[$end + 1][1] != static::UNMODIFIED) {
                 continue;
             }
-            $nextTag  = in_array($diff[$end + 1][0], $backwardShiftingTags);
+            $nextTag  = $diff[$end + 1][0];
             $firstTag = $diff[$start][0];
             if (in_array($nextTag, $backwardShiftingTags) && $nextTag == $firstTag) {
                 $diff[$end + 1][1] = $diff[$start][1];

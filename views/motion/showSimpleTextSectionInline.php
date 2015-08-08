@@ -71,5 +71,18 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     }
 
     echo '</div>';
+
+    $colliding = $merger->getWrappedGroupedCollidingSections($paragraphNo, 5);
+    foreach ($colliding as $amendmentId => $text) {
+        $amendment = $amendmentsById[$amendmentId];
+        echo '<div class="text collidingAmendment">';
+        echo '<h3>Kollidierender Änderungsantrag: <strong>';
+        echo Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
+        echo '</strong></h3>';
+
+        echo $text;
+        echo '</div>';
+    }
+
     echo '</section>';
 }

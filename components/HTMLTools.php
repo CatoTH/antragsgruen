@@ -32,6 +32,38 @@ class HTMLTools
         return $html;
     }
 
+    /**
+     * @param string $html
+     * @return string
+     */
+    public static function correctHtmlErrors($html)
+    {
+        return HtmlPurifier::process(
+            $html,
+            function ($config) {
+                /** @var \HTMLPurifier_Config $config */
+                $conf = [
+                    'HTML.Doctype'                            => 'HTML 4.01 Transitional',
+                    'HTML.AllowedElements'                    => null,
+                    'Attr.AllowedClasses'                     => null,
+                    'CSS.AllowedProperties'                   => null,
+                    'AutoFormat.Linkify'                      => true,
+                    'AutoFormat.AutoParagraph'                => false,
+                    'AutoFormat.RemoveSpansWithoutAttributes' => false,
+                    'AutoFormat.RemoveEmpty'                  => false,
+                    'Core.NormalizeNewlines'                  => false,
+                    'Core.AllowHostnameUnderscore'            => true,
+                    'Core.EnableIDNA'                         => true,
+                    'Output.SortAttr'                         => true,
+                    'Output.Newline'                          => "\n"
+                ];
+                foreach ($conf as $key => $val) {
+                    $config->set($key, $val);
+                }
+            }
+        );
+    }
+
 
     /**
      * @param string $html

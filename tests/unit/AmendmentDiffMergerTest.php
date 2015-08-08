@@ -10,6 +10,55 @@ class AmendmentDiffMergerTest extends TestBase
 {
     /**
      */
+    public function testMergeWithComplication1()
+    {
+        $origText = '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>';
+
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new AmendmentDiffMerger();
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>owe gwihss Sauwedda ded Hier was Neues Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim schena Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, und hier was Neues gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
+        $merger->addAmendingParagraphs(3, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
+
+        $merger->mergeParagraphs();
+
+        $this->assertEquals([
+            [
+                'amendment' => 0,
+                'text'      => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi ',
+            ],
+            [
+                'amendment' => 3,
+                'text'      => '<del>mim Radl foahn Landla Leonhardifahrt, Radler. </del><ins>mim. </ins>',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ',
+            ],
+            [
+                'amendment' => 1,
+                'text'      => '<ins>Inserted </ins>',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>',
+            ]
+        ], $merger->getGroupedParagraphData(0));
+
+        $collidingStrs = $merger->getWrappedGroupedCollidingSections(0, 5);
+        $this->assertEquals([2], array_keys($collidingStrs));
+        $this->assertEquals('<del>Woibbadinga damischa </del>owe gwihss Sauwedda ded <ins>Hier was Neues </ins>Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim <ins>schena </ins>Radl foahn Landla Leonhardifahrt, Radler. ...<br>...is. Biaschlegl soi oans, zwoa, <ins>und hier was Neues </ins>gsuffa Oachkatzlschwoaf hod Wiesn.', $collidingStrs[2]);
+
+        $collidingStrs = $merger->getWrappedGroupedCollidingSections(0, 4);
+        $this->assertEquals([2], array_keys($collidingStrs));
+        $this->assertEquals('<del>Woibbadinga damischa </del>owe gwihss Sauwedda ded <ins>Hier was Neues </ins>Charivari dei heid gfoids ...<br>...Maßkruag wo hi mim <ins>schena </ins>Radl foahn Landla Leonhardifahrt, ...<br>...Biaschlegl soi oans, zwoa, <ins>und hier was Neues </ins>gsuffa Oachkatzlschwoaf hod Wiesn.', $collidingStrs[2]);
+    }
+
+    /**
+     */
     public function testMerge1()
     {
         $origText   = '<ul>
@@ -124,52 +173,5 @@ class AmendmentDiffMergerTest extends TestBase
                 'text'      => '<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd!</p>'
             ]
         ], $merger->getGroupedParagraphData(1));
-    }
-
-
-    /**
-     */
-    public function testMergeWithComplication1()
-    {
-        $origText = '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>';
-
-        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
-
-        $merger = new AmendmentDiffMerger();
-        $merger->initByMotionParagraphs($paragraphs);
-
-        $merger->addAmendingParagraphs(1, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
-        $merger->addAmendingParagraphs(2, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Hier was Neues Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim schena Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, und hier was Neues gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
-        $merger->addAmendingParagraphs(3, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
-
-        $merger->mergeParagraphs();
-
-        $this->assertEquals([
-            [
-                'amendment' => 0,
-                'text'      => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi ',
-            ],
-            [
-                'amendment' => 3,
-                'text'      => '<del>mim Radl foahn Landla Leonhardifahrt, Radler. </del><ins>mim. </ins>',
-            ],
-            [
-                'amendment' => 0,
-                'text'      => 'Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ',
-            ],
-            [
-                'amendment' => 1,
-                'text'      => '<ins>Inserted </ins>',
-            ],
-            [
-                'amendment' => 0,
-                'text'      => 'ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>',
-            ]
-        ], $merger->getGroupedParagraphData(0));
-
-        $colliding = $merger->getGroupedCollidingSections(0);
-        $this->assertEquals([2], array_keys($colliding));
-        $collidingStr = AmendmentDiffMerger::formatGroupedCollidingSection($colliding[2]);
-        $this->assertEquals('<p>Woibbadinga damischa owe gwihss Sauwedda ded <ins>Hier was Neues </ins>Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim <ins>schena </ins>Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, <ins>und hier was Neues </ins>gsuffa Oachkatzlschwoaf hod Wiesn.</p>', $collidingStr);
     }
 }

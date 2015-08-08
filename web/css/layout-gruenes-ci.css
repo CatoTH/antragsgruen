@@ -5040,6 +5040,11 @@ ins, ul.inserted, blockquote.inserted {
       font-size: 12px; }
       .motionTextHolder .paragraph .text.smallFont > blockquote {
         font-size: 12px; }
+  .motionTextHolder .paragraph .text.collidingAmendment {
+    margin-top: -20px; }
+    .motionTextHolder .paragraph .text.collidingAmendment > h3 {
+      font-size: 1.2em;
+      margin-top: 0; }
   .motionTextHolder .paragraph h4.lineSummary {
     font-size: inherit;
     font-weight: bold;
