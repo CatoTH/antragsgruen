@@ -17,6 +17,7 @@ use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionEditForm;
+use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\ISectionType;
 use yii\web\Response;
 
@@ -178,7 +179,6 @@ class MotionController extends Base
 
         $motionViewParams = [
             'motion'                 => $motion,
-            'amendments'             => $motion->getVisibleAmendments(),
             'openedComments'         => $openedComments,
             'adminEdit'              => $adminEdit,
             'commentForm'            => null,
@@ -311,13 +311,7 @@ class MotionController extends Base
      */
     public function actionEdit($motionId)
     {
-        /** @var Motion $motion */
-        $motion = Motion::findOne(
-            [
-                'id'             => $motionId,
-                'consultationId' => $this->consultation->id
-            ]
-        );
+        $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', 'Motion not found.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
@@ -504,5 +498,38 @@ class MotionController extends Base
         }
 
         return $this->render('withdraw', ['motion' => $motion]);
+    }
+
+    /**
+     * @param int $motionId
+     * @return string
+     */
+    public function actionMergeamendments($motionId)
+    {
+        $motion = $this->consultation->getMotion($motionId);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (!$motion->canMergeAmendments()) {
+            \Yii::$app->session->setFlash('error', 'Not allowed to edit this motion.');
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        $form = new MotionMergeAmendmentsForm($motion);
+
+        if (isset($_POST['save'])) {
+            $form->setAttributes($_POST);
+            try {
+                $form->saveMotion();
+
+                // @TODO
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('merge_amendments', ['motion' => $motion, 'form' => $form]);
     }
 }

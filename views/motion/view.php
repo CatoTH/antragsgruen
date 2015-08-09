@@ -15,7 +15,6 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var Motion $motion
- * @var Amendment[] $amendments
  * @var int[] $openedComments
  * @var string|null $adminEdit
  * @var null|string $supportStatus
@@ -322,7 +321,7 @@ if (count($supporters) > 0) {
 
 LayoutHelper::printSupportSection($motion, $motion->motionType->getSupportPolicy(), $supportStatus);
 
-
+$amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
     echo '<section class="amendments"><h2 class="green">' . Yii::t('motion', 'Änderungsanträge') . '</h2>
     <div class="content">';

@@ -14,13 +14,6 @@
   ],
   "minimum-stability": "dev",
   "homepage": "https://www.antragsgruen.de/",
-  "autoload": {
-    "psr-0": {
-      "mjohnson\\decoda": "vendor/"
-    }
-  },
-  "repositories": [
-  ],
   "require": {
     "php": ">=5.5.0",
     "fxp/composer-asset-plugin": "~1.0",

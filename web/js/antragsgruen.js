@@ -78,17 +78,17 @@
         };
 
         if ($el.data('track-changed') == '1') {
-            ckeditorConfig['extraPlugins'] += ',lite';
-            ckeditorConfig['allowedContent'] = 'strong s em u sub sup;' +
-                'ul ol li [data-*](ice-ins,ice-del,ice-cts){list-style-type};' +
+            ckeditorConfig.extraPlugins += ',lite';
+            ckeditorConfig.allowedContent = 'strong s em u sub sup;' +
+                'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-                'p blockquote [data-*](ice-ins,ice-del,ice-cts){border,margin,padding};' +
-                'span[data-*](ice-ins,ice-del,ice-cts,underline,strike,subscript,superscript);' +
-                'a[href,data-*](ice-ins,ice-del,ice-cts);' +
-                'br ins del[data-*](ice-ins,ice-del,ice-cts);';
+                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint){border,margin,padding};' +
+                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline,strike,subscript,superscript);' +
+                'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
+                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
         } else {
-            ckeditorConfig['removePlugins'] += ',lite';
-            ckeditorConfig['allowedContent'] = 'strong s em u sub sup;' +
+            ckeditorConfig.removePlugins += ',lite';
+            ckeditorConfig.allowedContent = 'strong s em u sub sup;' +
                 'ul ol li {list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +
@@ -329,6 +329,18 @@
             draftMotionType = $draftHint.data("motion-type"),
             draftMotionId = $draftHint.data("motion-id");
         draftSavingEngine("motion_" + draftMotionType + "_" + draftMotionId);
+    };
+
+    var motionMergeAmendmentsForm = function () {
+        $(".wysiwyg-textarea").each(function () {
+            var $holder = $(this),
+                $textarea = $holder.find(".texteditor"),
+                editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+
+            $textarea.parents("form").submit(function () {
+                $textarea.parent().find("textarea").val(editor.getData());
+            });
+        });
     };
 
     var amendmentEditForm = function () {
@@ -748,6 +760,7 @@
         'motionShow': motionShow,
         'amendmentShow': amendmentShow,
         'motionEditForm': motionEditForm,
+        'motionMergeAmendmentsForm': motionMergeAmendmentsForm,
         'amendmentEditForm': amendmentEditForm,
         'contentPageEdit': contentPageEdit,
         'defaultInitiatorForm': defaultInitiatorForm,
