@@ -19,7 +19,7 @@ MotionPage::openBy(
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');
-$I->dontSee('Ä6', 'section.amendments ul.amendments');
+$I->dontSee(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX, 'section.amendments ul.amendments');
 
 
 $I->wantTo('open the amendment creation page');
@@ -113,7 +113,7 @@ $I->see('Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.
 
 $I->wantTo('see the amendment on the start page');
 $I->gotoConsultationHome();
-$I->see('Ä6', '.motionListStd .amendments');
+$I->see(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX, '.motionListStd .amendments');
 $I->see('My company', '.motionListStd .amendments');
 
 
@@ -127,13 +127,13 @@ MotionPage::openBy(
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');
-$I->see('Ä6', 'section.amendments ul.amendments');
+$I->see(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX, 'section.amendments ul.amendments');
 
 
 $I->wantTo('open the amenmdent page');
 $I->click('section.amendments ul.amendments a.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
-$I->see(mb_strtoupper('Ä6 zu A2: O’ZAPFT IS!'), 'h1');
+$I->see(mb_strtoupper(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX . ' zu A2: O’ZAPFT IS!'), 'h1');
 $I->see('My company', '.motionDataTable');
 $I->see('woschechta Bayer', '#section_2_0 del');
 $I->see('Saupreiß', '#section_2_0 ins');
