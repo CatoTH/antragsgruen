@@ -350,6 +350,18 @@ ins, ul.inserted, blockquote.inserted {
     padding-left: $fixedWidthTextStdPadding - 40;
     margin-bottom: 5px;
   }
+  > span:first-child {
+    // Inserted by magic-line plugin of CKEditor
+    padding: 0;
+  }
+  .appendHint:after {
+    content: attr(data-append-hint);
+    display: inline-block;
+    font-size: 0.75em;
+    bottom: -3px;
+    position: relative;
+  }
+
   > ul, ol {
     padding-left: $fixedWidthTextListPadding + $fixedWidthTextStdPadding - 40;
   }

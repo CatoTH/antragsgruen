@@ -8,7 +8,9 @@ use app\components\HTMLTools;
 use app\components\latex\Exporter;
 use app\components\LineSplitter;
 use app\components\opendocument\Text;
+use app\components\UrlHelper;
 use app\controllers\Base;
+use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
@@ -135,7 +137,7 @@ class TextSimple extends ISectionType
      */
     public function showMotionView(Base $controller, $commentForm, $openedComments, $consolidatedAmendments)
     {
-        $view = new View();
+        $view   = new View();
         $script = ($consolidatedAmendments ? 'showSimpleTextSectionInline' : 'showSimpleTextSection');
         return $view->render(
             '@app/views/motion/' . $script,
@@ -249,9 +251,9 @@ class TextSimple extends ISectionType
     public function getMotionTeX()
     {
         $tex = '';
-	if ($this->isEmpty()) {
-		return $tex;
-	}
+        if ($this->isEmpty()) {
+            return $tex;
+        }
 
         /** @var MotionSection $section */
         $section = $this->section;
@@ -326,10 +328,10 @@ class TextSimple extends ISectionType
         $section    = $this->section;
         $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
-        $diff = static::formatDiffGroup($diffGroups);
-        $diff = str_replace('<h4', '<br><h4', $diff);
-        $diff = str_replace('</h4>', '</h4><br>', $diff);
-        $diff = str_replace('###FORCELINEBREAK###', '<br>', $diff);
+        $diff       = static::formatDiffGroup($diffGroups);
+        $diff       = str_replace('<h4', '<br><h4', $diff);
+        $diff       = str_replace('</h4>', '</h4><br>', $diff);
+        $diff       = str_replace('###FORCELINEBREAK###', '<br>', $diff);
         if (mb_substr($diff, 0, 4) == '<br>') {
             $diff = mb_substr($diff, 4);
         }
@@ -385,5 +387,47 @@ class TextSimple extends ISectionType
     {
         $data = strip_tags($this->section->data);
         return (mb_stripos($data, $text) !== false);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionTextWithInlineAmendments()
+    {
+        /** @var MotionSection $section */
+        $section = $this->section;
+        $merger  = new \app\components\diff\AmendmentDiffMerger();
+        $merger->initByMotionSection($section);
+        $merger->addAmendingSections($section->amendingSections);
+        $merger->mergeParagraphs();
+        $paragraphs = $section->getTextParagraphObjects(false, false, false);
+
+        /** @var Amendment[] $amendmentsById */
+        $amendmentsById = [];
+        foreach ($section->amendingSections as $sect) {
+            $amendmentsById[$sect->amendmentId] = $sect->amendment;
+        }
+
+        $out = '';
+        foreach ($paragraphs as $paragraphNo => $paragraph) {
+            $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
+            foreach ($groupedParaData as $cid => $part) {
+                $text = $part['text'];
+
+                if ($part['amendment'] > 0) {
+                    $amendment = $amendmentsById[$part['amendment']];
+
+                    $changeData = ' data-cid="' . $cid . '" data-userid="" data-username="" data-changedata=""';
+                    $changeData .= 'data-time="1439119954788" data-last-change-time="1439119954883"';
+                    $changeData .= 'data-append-hint="[' . Html::encode($amendment->titlePrefix) . ']"';
+
+                    $text = str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">', $text);
+                    $text = str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '">', $text);
+                }
+
+                $out .= $text;
+            }
+        }
+        return $out;
     }
 }

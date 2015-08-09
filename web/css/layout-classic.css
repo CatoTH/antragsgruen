@@ -4709,6 +4709,14 @@ ins, ul.inserted, blockquote.inserted {
     .texteditor > * .amendmentRef {
       font-size: 0.8em;
       opacity: 0.7; }
+  .texteditor > span:first-child {
+    padding: 0; }
+  .texteditor .appendHint:after {
+    content: attr(data-append-hint);
+    display: inline-block;
+    font-size: 0.75em;
+    bottom: -3px;
+    position: relative; }
   .texteditor > ul, .texteditor ol {
     padding-left: 50px; }
   .texteditor > blockquote {
@@ -9934,6 +9942,14 @@ ins, ul.inserted, blockquote.inserted {
     .texteditor > * .amendmentRef {
       font-size: 0.8em;
       opacity: 0.7; }
+  .texteditor > span:first-child {
+    padding: 0; }
+  .texteditor .appendHint:after {
+    content: attr(data-append-hint);
+    display: inline-block;
+    font-size: 0.75em;
+    bottom: -3px;
+    position: relative; }
   .texteditor > ul, .texteditor ol {
     padding-left: 50px; }
   .texteditor > blockquote {
