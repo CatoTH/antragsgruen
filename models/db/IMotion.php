@@ -25,7 +25,7 @@ abstract class IMotion extends ActiveRecord
     const STATUS_SUBMITTED_UNSCREENED = 2;
     const STATUS_SUBMITTED_SCREENED   = 3;
     const STATUS_ACCEPTED             = 4;
-    const STATUS_DECLINED             = 5;
+    const STATUS_REJECTED             = 5;
     const STATUS_MODIFIED_ACCEPTED    = 6;
     const STATUS_MODIFIED             = 7;
     const STATUS_ADOPTED              = 8;
@@ -49,7 +49,7 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_SUBMITTED_UNSCREENED => 'Eingereicht (ungeprüft)',
             static::STATUS_SUBMITTED_SCREENED   => 'Eingereicht',
             static::STATUS_ACCEPTED             => 'Angenommen',
-            static::STATUS_DECLINED             => 'Abgelehnt',
+            static::STATUS_REJECTED             => 'Abgelehnt',
             static::STATUS_MODIFIED_ACCEPTED    => 'Modifizierte Übernahme',
             static::STATUS_MODIFIED             => 'Modifziert',
             static::STATUS_ADOPTED              => 'Übernahme',

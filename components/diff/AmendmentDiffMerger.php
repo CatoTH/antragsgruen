@@ -299,6 +299,38 @@ class AmendmentDiffMerger
 
     /**
      * @param int $paraNo
+     * @return array
+     */
+    public function getCollidingParagraphGroups($paraNo)
+    {
+        $grouped = [];
+
+        foreach ($this->paraData[$paraNo]['collidingParagraphs'] as $section) {
+            $groups        = [];
+            $currOperation = Engine::UNMODIFIED;
+            $currPending   = [];
+            foreach ($section['diff'] as $token) {
+                if ($token[1] != $currOperation) {
+                    $currPending   = implode('', $currPending);
+                    $groups[]      = [$currPending, $currOperation];
+                    $currOperation = $token[1];
+                    $currPending   = [];
+                }
+                if ($token[0] != '') {
+                    $currPending[] = $token[0];
+                }
+            }
+            if (count($currPending) > 0) {
+                $currPending = implode('', $currPending);
+                $groups[]    = [$currPending, $currOperation];
+            }
+            $grouped[$section['amendment']] = $groups;
+        }
+        return $grouped;
+    }
+
+    /**
+     * @param int $paraNo
      * @param int $wrapWords
      * @return array
      */
@@ -376,52 +408,6 @@ class AmendmentDiffMerger
         return $out;
     }
 
-
-    /**
-     * @param array $section
-     * @param int $wrapWords
-     * @return string
-     */
-    public static function formatWrapGroupedCollidingSection($section, $wrapWords = 4)
-    {
-        $intermed  = [];
-        $currGroup = null;
-        foreach ($section as $token) {
-            if (!$currGroup || $token[1] != $currGroup['type']) {
-                if ($currGroup) {
-                    $intermed[] = $currGroup;
-                }
-                $currGroup = [
-                    'type'  => $token[1],
-                    'words' => [],
-                ];
-            }
-            if ($token[1] == Engine::UNMODIFIED) {
-                $currGroup['words'][] = $token[0];
-            } elseif ($token[1] == Engine::INSERTED) {
-                $currGroup['words'][] = '<ins>' . $token[0] . '</ins>';
-            } elseif ($token[1] == Engine::DELETED) {
-                $currGroup['words'][] = '<del>' . $token[0] . '</del>';
-            }
-        }
-        if ($currGroup) {
-            $intermed[] = $currGroup;
-        }
-
-        /*
-        foreach ($section as $token) {
-            if ($token[1] == Engine::UNMODIFIED) {
-                $out .= $token[0];
-            } elseif ($token[1] == Engine::INSERTED) {
-                $out .= '<ins>' . $token[0] . '</ins>';
-            } elseif ($token[1] == Engine::DELETED) {
-                $out .= '<del>' . $token[0] . '</del>';
-            }
-        }
-        $out = static::cleanupParagraphData($out);
-        return $out;
-        */
-    }
 
     /**
      * @param string $text

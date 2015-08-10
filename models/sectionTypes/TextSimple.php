@@ -2,12 +2,15 @@
 
 namespace app\models\sectionTypes;
 
+use app\components\diff\AmendmentDiffMerger;
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\Diff;
+use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\components\latex\Exporter;
 use app\components\LineSplitter;
 use app\components\opendocument\Text;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\Amendment;
@@ -389,14 +392,18 @@ class TextSimple extends ISectionType
         return (mb_stripos($data, $text) !== false);
     }
 
+
+    private static $CHANGESET_COUNTER = 0;
+
     /**
+     * @param array $changeset
      * @return string
      */
-    public function getMotionTextWithInlineAmendments()
+    public function getMotionTextWithInlineAmendments(&$changeset)
     {
         /** @var MotionSection $section */
         $section = $this->section;
-        $merger  = new \app\components\diff\AmendmentDiffMerger();
+        $merger  = new AmendmentDiffMerger();
         $merger->initByMotionSection($section);
         $merger->addAmendingSections($section->amendingSections);
         $merger->mergeParagraphs();
@@ -409,22 +416,51 @@ class TextSimple extends ISectionType
         }
 
         $out = '';
-        foreach ($paragraphs as $paragraphNo => $paragraph) {
+        foreach (array_keys($paragraphs) as $paragraphNo) {
             $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
-            foreach ($groupedParaData as $cid => $part) {
+            foreach ($groupedParaData as $part) {
                 $text = $part['text'];
 
                 if ($part['amendment'] > 0) {
                     $amendment = $amendmentsById[$part['amendment']];
-
-                    $changeData = ' data-cid="' . $cid . '" data-userid="" data-username="" data-changedata=""';
-                    $changeData .= 'data-time="1439119954788" data-last-change-time="1439119954883"';
-                    $changeData .= 'data-append-hint="[' . Html::encode($amendment->titlePrefix) . ']"';
+                    $cid       = static::$CHANGESET_COUNTER++;
+                    if (!isset($changeset[$amendment->id])) {
+                        $changeset[$amendment->id] = [];
+                    }
+                    $changeset[$amendment->id][] = $cid;
+                    $changeData                  = $amendment->getLiteChangeData($cid);
 
                     $text = str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">', $text);
                     $text = str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '">', $text);
                 }
 
+                $out .= $text;
+            }
+
+            $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
+            foreach ($colliding as $amendmentId => $paraText) {
+                $amendment = $amendmentsById[$amendmentId];
+                $text      = '<p><strong>' . 'Kollidierender Änderungsantrag: ';
+                $text .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
+                $text .= '</strong></p>';
+
+                foreach ($paraText as $group) {
+                    if ($group[1] == Engine::UNMODIFIED) {
+                        $text .= $group[0];
+                    } elseif ($group[1] == Engine::INSERTED) {
+                        $cid                         = static::$CHANGESET_COUNTER++;
+                        $changeset[$amendment->id][] = $cid;
+                        $changeData                  = $amendment->getLiteChangeData($cid);
+                        $text .= '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">';
+                        $text .= $group[0] . '</ins>';
+                    } elseif ($group[1] == Engine::DELETED) {
+                        $cid                         = static::$CHANGESET_COUNTER++;
+                        $changeset[$amendment->id][] = $cid;
+                        $changeData                  = $amendment->getLiteChangeData($cid);
+                        $text .= '<del class="ice-del ice-cts appendHint"' . $changeData . '">';
+                        $text .= $group[0] . '</del>';
+                    }
+                }
                 $out .= $text;
             }
         }

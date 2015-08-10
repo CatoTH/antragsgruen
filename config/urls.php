@@ -12,7 +12,7 @@ $domamend  = $domv . 'motion/<motionId:\d+>/amendment/<amendmentId:\d+>';
 
 $consultationPaths = 'help|search|savetextajax|maintainance|notifications|shariffbackend';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
-$motionPaths = 'createconfirm|edit|pdf|odt|plainhtml|consolidated|mergeamendments|image|withdraw';
+$motionPaths = 'createconfirm|edit|pdf|odt|plainhtml|consolidated|mergeamendments|mergeamendmentconfirm|image|withdraw';
 $amendPaths  = 'pdf|createconfirm|edit|withdraw';
 $userPaths   = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|emailblacklist|recovery';
 $userPaths .= '|consultationaccesserror|myaccount';

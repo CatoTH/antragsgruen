@@ -272,6 +272,24 @@ ul.sidebarActions {
   margin-bottom: 20px;
 }
 
+.motionMergeForm {
+  .submitHolder {
+    text-align: right;
+  }
+  .newAmendments {
+    .amendSubtitle {
+      font-weight: normal;
+      font-size: 0.9em;
+    }
+    .control-label {
+      margin-top: -3px;
+      padding-top: 0;
+    }
+  }
+}
+
+
+
 span.twitter-typeahead {
   .tt-menu {
     position: absolute;
@@ -371,5 +389,11 @@ ul.searchResults {
 .fuelux {
   .pillbox>.pill-group {
     list-style-type: none;
+  }
+  .form-group .dropdown-menu {
+    margin-left: 15px;
+  }
+  .selectlist .btn.dropdown-toggle {
+    position: relative;
   }
 }

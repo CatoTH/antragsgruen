@@ -1,19 +1,15 @@
 Antragsgrün v3
 ==============
 
-Antragsgrün 3 is the third generation of the Motion-CMS built for the german green party.
+Antragsgrün 3 is the third generation of the Content Management System built for the german green party.
 It's a complete rewrite of the second generation and has some major advantages:
 * It's much more flexible on the structure of motions and wording. Motions event support image uploading now.
 * If follows test-driven design, using both unit and acceptance tests
-* It's based completely on HTML and gets rid of the obsolete BBCode
-* It's based on the more Yii2-framework
+* The internal text is based completely on HTML and gets rid of the obsolete BBCode
 * The design of the motion supporter table is much cleaner and does not depend on the user database anymore
+* It's based on the more modern Yii2-framework
 * Many more small improvements
 
-
-***Current Build-Status***
-
-[![Build Status](http://phpci.hoessl.eu/build-status/image/1?branch=v3)](http://phpci.hoessl.eu/build-status/view/1?branch=v3)
 
 Required Software (Debian Linux)
 --------------------------------
@@ -52,11 +48,6 @@ Development Setup
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.0.0"
 ./composer.phar install
-```
-
-
-```bash
-scss --precision 9
 ```
 
 

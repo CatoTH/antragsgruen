@@ -223,15 +223,8 @@ class MotionController extends Base
      */
     public function actionCreateconfirm($motionId, $fromMode)
     {
-        /** @var Motion $motion */
-        $motion = Motion::findOne(
-            [
-                'id'             => $motionId,
-                'status'         => Motion::STATUS_DRAFT,
-                'consultationId' => $this->consultation->id
-            ]
-        );
-        if (!$motion) {
+        $motion = $this->consultation->getMotion($motionId);
+        if (!$motion || $motion->status != Motion::STATUS_DRAFT) {
             \Yii::$app->session->setFlash('error', 'Motion not found.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -504,6 +497,32 @@ class MotionController extends Base
      * @param int $motionId
      * @return string
      */
+    public function actionMergeamendmentconfirm($motionId)
+    {
+        $newMotion = $this->consultation->getMotion($motionId);
+        if (!$newMotion || $newMotion->status != Motion::STATUS_DRAFT) {
+            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (isset($_POST['modify'])) {
+            $nextUrl = ['motion/edit', 'motionId' => $newMotion->id];
+            $this->redirect(UrlHelper::createUrl($nextUrl));
+            return '';
+        }
+
+        if (isset($_POST['confirm'])) {
+            return $this->render('merge_amendments_done', ['newMotion' => $newMotion]);
+        }
+
+        $draftId = null;
+        return $this->render('merge_amendments_confirm', ['newMotion' => $newMotion, 'deleteDraftId' => $draftId]);
+    }
+
+    /**
+     * @param int $motionId
+     * @return string
+     */
     public function actionMergeamendments($motionId)
     {
         $motion = $this->consultation->getMotion($motionId);
@@ -519,15 +538,23 @@ class MotionController extends Base
 
         $form = new MotionMergeAmendmentsForm($motion);
 
-        if (isset($_POST['save'])) {
-            $form->setAttributes($_POST);
-            try {
-                $form->saveMotion();
-
-                // @TODO
-            } catch (FormError $e) {
-                \Yii::$app->session->setFlash('error', $e->getMessage());
+        try {
+            if (isset($_POST['save'])) {
+                $form->setAttributes($_POST);
+                try {
+                    $newMotion = $form->saveMotion();
+                    $nextUrl   = ['motion/mergeamendmentconfirm', 'motionId' => $newMotion->id, 'fromMode' => 'create'];
+                    if (isset($_POST['draftId'])) {
+                        $nextUrl['draftId'] = $_POST['draftId'];
+                    }
+                    $this->redirect(UrlHelper::createUrl($nextUrl));
+                    return '';
+                } catch (FormError $e) {
+                    \Yii::$app->session->setFlash('error', $e->getMessage());
+                }
             }
+        } catch (\Exception $e) {
+            \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
         return $this->render('merge_amendments', ['motion' => $motion, 'form' => $form]);

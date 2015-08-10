@@ -227,6 +227,14 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return string
+     */
+    public function getNewTitlePrefix()
+    {
+        return $this->titlePrefix . 'neu'; // @TODO
+    }
+
+    /**
      * @return Amendment[]
      */
     public function getVisibleAmendments()
