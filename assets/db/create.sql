@@ -30,6 +30,23 @@ CREATE TABLE IF NOT EXISTS `amendment` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `amendmentAdminComment`
+--
+
+CREATE TABLE IF NOT EXISTS `amendmentAdminComment` (
+  `id`           INT(11)    NOT NULL,
+  `amendmentId`  INT(11)    NOT NULL,
+  `userId`       INT(11)    NOT NULL,
+  `text`         MEDIUMTEXT NOT NULL,
+  `status`       TINYINT(4) NOT NULL,
+  `dateCreation` TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `amendmentComment`
 --
 
@@ -346,6 +363,23 @@ CREATE TABLE IF NOT EXISTS `motion` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `motionAdminComment`
+--
+
+CREATE TABLE IF NOT EXISTS `motionAdminComment` (
+  `id`           INT(11)    NOT NULL,
+  `motionId`     INT(11)    NOT NULL,
+  `userId`       INT(11)    NOT NULL,
+  `text`         MEDIUMTEXT NOT NULL,
+  `status`       TINYINT(4) NOT NULL,
+  `dateCreation` TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `motionComment`
 --
 
@@ -545,6 +579,14 @@ ADD PRIMARY KEY (`id`),
 ADD KEY `fk_motionIdx` (`motionId`);
 
 --
+-- Indexes for table `amendmentAdminComment`
+--
+ALTER TABLE `amendmentAdminComment`
+ADD UNIQUE KEY `id` (`id`),
+ADD KEY `amendmentId` (`amendmentId`),
+ADD KEY `userId` (`userId`);
+
+--
 -- Indexes for table `amendmentComment`
 --
 ALTER TABLE `amendmentComment`
@@ -669,6 +711,14 @@ ADD KEY `type` (`motionTypeId`),
 ADD KEY `agendaItemId` (`agendaItemId`);
 
 --
+-- Indexes for table `motionAdminComment`
+--
+ALTER TABLE `motionAdminComment`
+ADD PRIMARY KEY (`id`),
+ADD KEY `userId` (`userId`),
+ADD KEY `motionId` (`motionId`);
+
+--
 -- Indexes for table `motionComment`
 --
 ALTER TABLE `motionComment`
@@ -763,6 +813,11 @@ ADD KEY `consultationId` (`consultationId`, `notificationType`, `notificationRef
 ALTER TABLE `amendment`
 MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `amendmentAdminComment`
+--
+ALTER TABLE `amendmentAdminComment`
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `amendmentComment`
 --
 ALTER TABLE `amendmentComment`
@@ -823,6 +878,11 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `motion`
 MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `motionAdminComment`
+--
+ALTER TABLE `motionAdminComment`
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `motionComment`
 --
 ALTER TABLE `motionComment`
@@ -868,6 +928,13 @@ ALTER TABLE `amendment`
 ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `amendmentAdminComment`
+--
+ALTER TABLE `amendmentAdminComment`
+ADD CONSTRAINT `amendmentAdminComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
+ADD CONSTRAINT `amendmentAdminComment_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`);
 
 --
 -- Constraints for table `amendmentComment`
@@ -1005,6 +1072,13 @@ ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consulta
 ADD CONSTRAINT `motion_ibfk_2` FOREIGN KEY (`agendaItemId`) REFERENCES `consultationAgendaItem` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `motionAdminComment`
+--
+ALTER TABLE `motionAdminComment`
+ADD CONSTRAINT `motionAdminComment_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+ADD CONSTRAINT `motionAdminComment_ibfk_2` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`);
 
 --
 -- Constraints for table `motionComment`
