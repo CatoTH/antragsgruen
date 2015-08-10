@@ -152,6 +152,20 @@ class Amendment extends IMotion implements IRSSItem
         return $this->motion->motionType->motionSections;
     }
 
+    /**
+     * @param string $changeId
+     * @return string
+     */
+    public function getLiteChangeData($changeId)
+    {
+        $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
+        $changeData = ' data-cid="' . Html::encode($changeId) . '" data-userid="" ';
+        $changeData .= 'data-username="' . Html::encode($this->getInitiatorsStr()) . '" ';
+        $changeData .= 'data-changedata="" data-time="' . $time . '" data-last-change-time="' . $time . '"';
+        $changeData .= 'data-append-hint="[' . Html::encode($this->titlePrefix) . ']"';
+        return $changeData;
+    }
+
 
     private $firstDiffLine = null;
 
@@ -431,7 +445,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix == '') {
-            $numbering              = $this->motion->consultation->getAmendmentNumbering();
+            $numbering         = $this->motion->consultation->getAmendmentNumbering();
             $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->motion);
         }
         $this->save(true);
@@ -470,11 +484,11 @@ class Amendment extends IMotion implements IRSSItem
 
         if ($this->datePublication === null) {
             $motionType = UserNotification::NOTIFICATION_NEW_AMENDMENT;
-            $notified = [];
+            $notified   = [];
             foreach ($this->motion->consultation->userNotifications as $noti) {
                 if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
                     $noti->user->notifyAmendment($this);
-                    $notified[] = $noti->userId;
+                    $notified[]             = $noti->userId;
                     $noti->lastNotification = date('Y-m-d H:i:s');
                     $noti->save();
                 }
@@ -485,7 +499,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($this->motion->consultation->getSettings()->initiatorConfirmEmails) {
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                    $text = "Hallo,\n\ndein Änderungsantrag wurde soeben auf Antragsgrün veröffentlicht. " .
+                    $text          = "Hallo,\n\ndein Änderungsantrag wurde soeben auf Antragsgrün veröffentlicht. " .
                         "Du kannst ihn hier einsehen: %LINK%\n\n" .
                         "Mit freundlichen Grüßen,\n" .
                         "  Das Antragsgrün-Team";

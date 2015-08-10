@@ -24,7 +24,7 @@ class MotionPara2LinesTest extends TestBase
 
     /**
      */
-    public function testBockquote()
+    public function testBlockquote()
     {
         $orig   = '<blockquote><p>No. 1</p></blockquote>';
         $expect = [

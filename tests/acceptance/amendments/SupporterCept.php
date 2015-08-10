@@ -11,9 +11,6 @@ $I->loginAsStdAdmin();
 $I->click('.motionLink4');
 $I->click('.sidebarActions .amendmentCreate a');
 
-$I->fillField('#initiatorName', 'Mein Name');
-$I->fillField('#initiatorEmail', 'test@example.org');
-
 $I->seeElement('.supporterData');
 $I->seeElement('.fullTextAdder');
 $I->dontSeeElement('#fullTextHolder');
@@ -27,6 +24,9 @@ for ($s = 0; $s < 20; $s++) {
 }
 $I->fillField('#fullTextHolder textarea', implode('; ', $supporters));
 $I->click('#fullTextHolder .fullTextAdd');
+
+$I->fillField('#initiatorName', 'Mein Name');
+$I->fillField('#initiatorEmail', 'test@example.org');
 
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');

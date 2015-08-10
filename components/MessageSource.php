@@ -20,6 +20,7 @@ class MessageSource extends \yii\i18n\MessageSource
     {
         return [
             'base'      => 'Basis-Layout',
+            'structure' => 'Interne Bezeichnungen',
             'con'       => 'Consultation',
             'motion'    => 'Motion',
             'amend'     => 'Amendment',

@@ -10161,6 +10161,15 @@ html.no-touch .supporterFormStd .supporterRow:hover .rowDeleter, html.no-touch .
 #motionConfirmForm, #amendmentConfirmForm {
   margin-bottom: 20px; }
 
+.motionMergeForm .submitHolder {
+  text-align: right; }
+.motionMergeForm .newAmendments .amendSubtitle {
+  font-weight: normal;
+  font-size: 0.9em; }
+.motionMergeForm .newAmendments .control-label {
+  margin-top: -3px;
+  padding-top: 0; }
+
 span.twitter-typeahead .tt-menu {
   position: absolute;
   top: 100%;
@@ -10233,5 +10242,9 @@ ul.searchResults {
 
 .fuelux .pillbox > .pill-group {
   list-style-type: none; }
+.fuelux .form-group .dropdown-menu {
+  margin-left: 15px; }
+.fuelux .selectlist .btn.dropdown-toggle {
+  position: relative; }
 
 /*# sourceMappingURL=layout-classic.css.map */

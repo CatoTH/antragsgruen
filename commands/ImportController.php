@@ -27,7 +27,7 @@ class ImportController extends Controller
         2  => IMotion::STATUS_SUBMITTED_UNSCREENED,
         3  => IMotion::STATUS_SUBMITTED_SCREENED,
         4  => IMotion::STATUS_ACCEPTED,
-        5  => IMotion::STATUS_DECLINED,
+        5  => IMotion::STATUS_REJECTED,
         6  => IMotion::STATUS_MODIFIED_ACCEPTED,
         7  => IMotion::STATUS_MODIFIED,
         8  => IMotion::STATUS_ADOPTED,
