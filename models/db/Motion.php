@@ -612,29 +612,29 @@ class Motion extends IMotion implements IRSSItem
         if (count($inits) == 1) {
             $first = $inits[0];
             if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
-                $return['Antragsteller/in'] = $first->name;
-                $return['Beschlussdatum']   = Tools::formatMysqlDate($first->resolutionDate);
+                $return[\Yii::t('pdf', 'InitiatorSingle')] = $first->name;
+                $return[\Yii::t('pdf', 'ResolutionDate')]  = Tools::formatMysqlDate($first->resolutionDate);
             } else {
-                $return['Antragsteller/in'] = $first->getNameWithResolutionDate(false);
+                $return[\Yii::t('pdf', 'InitiatorSingle')] = $first->getNameWithResolutionDate(false);
             }
         } else {
             $initiators = [];
             foreach ($this->getInitiators() as $init) {
                 $initiators[] = $init->getNameWithResolutionDate(false);
             }
-            $return['Antragsteller/innen'] = implode("\n", $initiators);
+            $return[\Yii::t('pdf', 'InitiatorMulti')] = implode("\n", $initiators);
         }
         if ($this->agendaItem) {
-            $return['Tagesordnungspunkt'] = $this->agendaItem->code . ' ' . $this->agendaItem->title;
+            $return[\Yii::t('pdf', 'AgendaItem')] = $this->agendaItem->code . ' ' . $this->agendaItem->title;
         }
         if (count($this->tags) > 1) {
             $tags = [];
             foreach ($this->tags as $tag) {
                 $tags[] = $tag->title;
             }
-            $return['Themen'] = implode("\n", $tags);
+            $return[\Yii::t('pdf', 'TopicMulti')] = implode("\n", $tags);
         } elseif (count($this->tags) == 1) {
-            $return['Thema'] = $this->tags[0]->title;
+            $return[\Yii::t('pdf', 'InitiatorSingle')] = $this->tags[0]->title;
         }
 
         return $return;

@@ -228,6 +228,7 @@
       > h3 {
         position: relative;
         overflow: auto;
+        padding: 2px;
         .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
           color: $colorDelLink;
           position: absolute;

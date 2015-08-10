@@ -4876,7 +4876,8 @@ ins, ul.inserted, blockquote.inserted {
       padding: 5px 10px 10px; }
       .motionListAgenda li.agendaItem > div > h3 {
         position: relative;
-        overflow: auto; }
+        overflow: auto;
+        padding: 2px; }
         .motionListAgenda li.agendaItem > div > h3 .delAgendaItem, .motionListAgenda li.agendaItem > div > h3 .delAgendaItem:link, .motionListAgenda li.agendaItem > div > h3 .delAgendaItem:visited {
           color: #FF7777;
           position: absolute;
