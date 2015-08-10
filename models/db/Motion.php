@@ -34,6 +34,7 @@ use yii\helpers\Html;
  * @property Consultation $consultation
  * @property Amendment[] $amendments
  * @property MotionComment[] $comments
+ * @property MotionAdminComment[] $adminComments
  * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
@@ -56,8 +57,17 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getComments()
     {
-        return $this->hasMany(MotionComment::className(), ['motionId' => 'id'])
+        return $this->hasMany(MotionComment::class, ['motionId' => 'id'])
             ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAdminComments()
+    {
+        return $this->hasMany(MotionAdminComment::class, ['motionId' => 'id'])
+            ->andWhere(MotionAdminComment::tableName() . '.status != ' . MotionAdminComment::STATUS_DELETED);
     }
 
     /**
@@ -65,7 +75,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getMotionSupporters()
     {
-        return $this->hasMany(MotionSupporter::className(), ['motionId' => 'id']);
+        return $this->hasMany(MotionSupporter::class, ['motionId' => 'id']);
     }
 
     /**
@@ -73,7 +83,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getConsultation()
     {
-        return $this->hasOne(Consultation::className(), ['id' => 'consultationId']);
+        return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
     /**
@@ -81,7 +91,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getAmendments()
     {
-        return $this->hasMany(Amendment::className(), ['motionId' => 'id'])
+        return $this->hasMany(Amendment::class, ['motionId' => 'id'])
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
@@ -107,7 +117,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getTags()
     {
-        return $this->hasMany(ConsultationSettingsTag::className(), ['id' => 'tagId'])
+        return $this->hasMany(ConsultationSettingsTag::class, ['id' => 'tagId'])
             ->viaTable('motionTag', ['motionId' => 'id']);
     }
 
@@ -116,7 +126,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getSections()
     {
-        return $this->hasMany(MotionSection::className(), ['motionId' => 'id']);
+        return $this->hasMany(MotionSection::class, ['motionId' => 'id']);
     }
 
     /**
@@ -124,7 +134,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getMotionType()
     {
-        return $this->hasOne(ConsultationMotionType::className(), ['id' => 'motionTypeId']);
+        return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
     /**
@@ -132,7 +142,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getAgendaItem()
     {
-        return $this->hasOne(ConsultationAgendaItem::className(), ['id' => 'agendaItemId']);
+        return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
     }
 
     /**

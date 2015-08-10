@@ -33,6 +33,7 @@ use yii\helpers\Html;
  *
  * @property Motion $motion
  * @property AmendmentComment[] $comments
+ * @property AmendmentAdminComment[] $adminComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
  */
@@ -53,7 +54,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getMotion()
     {
-        return $this->hasOne(Motion::className(), ['id' => 'motionId'])
+        return $this->hasOne(Motion::class, ['id' => 'motionId'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
@@ -62,8 +63,17 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getComments()
     {
-        return $this->hasMany(AmendmentComment::className(), ['amendmentId' => 'id'])
+        return $this->hasMany(AmendmentComment::class, ['amendmentId' => 'id'])
             ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAdminComments()
+    {
+        return $this->hasMany(AmendmentAdminComment::class, ['amendmentId' => 'id'])
+            ->andWhere(AmendmentAdminComment::tableName() . '.status != ' . AmendmentAdminComment::STATUS_DELETED);
     }
 
     /**
@@ -71,7 +81,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getAmendmentSupporters()
     {
-        return $this->hasMany(AmendmentSupporter::className(), ['amendmentId' => 'id']);
+        return $this->hasMany(AmendmentSupporter::class, ['amendmentId' => 'id']);
     }
 
     /**
@@ -79,7 +89,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getSections()
     {
-        return $this->hasMany(AmendmentSection::className(), ['amendmentId' => 'id']);
+        return $this->hasMany(AmendmentSection::class, ['amendmentId' => 'id']);
     }
 
     /**
@@ -240,7 +250,7 @@ class Amendment extends IMotion implements IRSSItem
             }
         }
 
-        usort($ams, [Amendment::className(), 'sortVisibleByLineNumbersSort']);
+        usort($ams, [Amendment::class, 'sortVisibleByLineNumbersSort']);
 
         return $ams;
     }
