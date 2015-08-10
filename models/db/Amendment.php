@@ -158,7 +158,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getLiteChangeData($changeId)
     {
-        $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
+        $time       = Tools::dateSql2timestamp($this->dateCreation) * 1000;
         $changeData = ' data-cid="' . Html::encode($changeId) . '" data-userid="" ';
         $changeData .= 'data-username="' . Html::encode($this->getInitiatorsStr()) . '" ';
         $changeData .= 'data-changedata="" data-time="' . $time . '" data-last-change-time="' . $time . '"';
@@ -604,17 +604,17 @@ class Amendment extends IMotion implements IRSSItem
         if (count($inits) == 1) {
             $first = $inits[0];
             if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
-                $return['Antragsteller/in'] = $first->name;
-                $return['Beschlussdatum']   = Tools::formatMysqlDate($first->resolutionDate);
+                $return[\Yii::t('pdf', 'InitiatorSingle')] = $first->name;
+                $return[\Yii::t('pdf', 'ResolutionDate')]  = Tools::formatMysqlDate($first->resolutionDate);
             } else {
-                $return['Antragsteller/in'] = $first->getNameWithResolutionDate(false);
+                $return[\Yii::t('pdf', 'InitiatorSingle')] = $first->getNameWithResolutionDate(false);
             }
         } else {
             $initiators = [];
             foreach ($this->getInitiators() as $init) {
                 $initiators[] = $init->getNameWithResolutionDate(false);
             }
-            $return['Antragsteller/innen'] = implode("\n", $initiators);
+            $return[\Yii::t('pdf', 'InitiatorMulti')] = implode("\n", $initiators);
         }
 
         return $return;
