@@ -88,16 +88,16 @@ class Exporter
                     return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
                     if (in_array('ins', $classes)) {
-                        $content = '\textcolor{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
                     }
                     if (in_array('inserted', $classes)) {
-                        $content = '\textcolor{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
                     }
                     if (in_array('del', $classes)) {
-                        $content = '\textcolor{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
                     }
                     if (in_array('deleted', $classes)) {
-                        $content = '\textcolor{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
                     }
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
@@ -106,16 +106,16 @@ class Exporter
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
                     }
                     if (in_array('ins', $classes)) {
-                        $content = '\textcolor{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
                     }
                     if (in_array('inserted', $classes)) {
-                        $content = '\textcolor{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
                     }
                     if (in_array('del', $classes)) {
-                        $content = '\textcolor{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
                     }
                     if (in_array('deleted', $classes)) {
-                        $content = '\textcolor{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
                     }
                     return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
@@ -136,16 +136,16 @@ class Exporter
                         $content = '\sout{' . $content . '}';
                     }
                     if (in_array('ins', $classes)) {
-                        $content = '\textcolor{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
                     }
                     if (in_array('inserted', $classes)) {
-                        $content = '\textcolor{Insert}{' . $content . '}';
+                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
                     }
                     if (in_array('del', $classes)) {
-                        $content = '\textcolor{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
                     }
                     if (in_array('deleted', $classes)) {
-                        $content = '\textcolor{Delete}{' . $content . '}';
+                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
                     }
                     if (in_array('subscript', $classes)) {
                         $content = '\textsubscript{' . $content . '}';
@@ -155,9 +155,9 @@ class Exporter
                     }
                     return $content;
                 case 'del':
-                    return '\textcolor{Delete}{' . $content . '}';
+                    return '\textcolor{Delete}{\sout{' . $content . '}}';
                 case 'ins':
-                    return '\textcolor{Insert}{' . $content . '}';
+                    return '\textcolor{Insert}{\uline{' . $content . '}}';
                 default:
                     //return $content;
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
