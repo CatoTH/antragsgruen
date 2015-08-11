@@ -45,13 +45,14 @@ if ($allowOther) {
     } else {
         echo '<div class="checkbox"><label><input type="checkbox" name="otherInitiator" ' .
             ($isForOther ? 'checked' : '') .
-            '> Ich lege diesen Antrag für eine andere AntragstellerIn an <small>(Admin-Funktion)</small>
+            '> ' . Yii::t('initiator', 'createForOther') .
+            ' <small>(' . Yii::t('initiator', 'adminFunction') . ')</small>
     </label></div>';
     }
 }
 
 echo '<div class="form-group">
-<label class="col-sm-3 control-label">Ich bin eine...</label>
+<label class="col-sm-3 control-label">' . Yii::t('initiator', 'iAmA') . '</label>
 <div class="col-sm-9">
 <label class="radio-inline">';
 echo Html::radio(
@@ -62,7 +63,7 @@ echo Html::radio(
         'id'    => 'personTypeNatural',
     ]
 );
-echo ' Natürliche Person
+echo ' ' . Yii::t('initiator', 'personNatural') . '
 </label>
 <label class="radio-inline">';
 echo Html::radio(
@@ -74,14 +75,14 @@ echo Html::radio(
     ]
 );
 
-echo ' Organisation / Gremium
+echo ' ' . Yii::t('initiator', 'personOrganization') . '
 </label>
 </div>
 </div>';
 
 if ($adminMode) {
     echo '<div class="form-group">
-  <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'BenutzerIn') . '</label>
+  <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'username') . '</label>
   <div class="col-sm-4">';
     if ($initiator->user) {
         echo Html::encode($initiator->user->getAuthName());
@@ -91,7 +92,7 @@ if ($adminMode) {
 }
 
 echo '<div class="form-group">
-  <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'Name') . '</label>
+  <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'name') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorName" name="Initiator[name]" value="' . $preName . '" required>
   </div>
@@ -99,7 +100,7 @@ echo '<div class="form-group">
 
 if ($hasOrganizations) {
     echo '<div class="form-group organizationRow">
-  <label class="col-sm-3 control-label" for="initiatorOrga">' . Yii::t('initiator', 'Gremium, LAG...') . '</label>
+  <label class="col-sm-3 control-label" for="initiatorOrga">' . Yii::t('initiator', 'orgaName') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]" value="' . $preOrga . '">
   </div>
@@ -107,7 +108,7 @@ if ($hasOrganizations) {
 }
 
 echo '<div class="form-group resolutionRow">
-  <label class="col-sm-3 control-label" for="resolutionDate">Beschlussdatum</label>
+  <label class="col-sm-3 control-label" for="resolutionDate">' . Yii::t('initiator', 'orgaResolution') . '</label>
   <div class="col-sm-4"><div class="input-group date" id="resolutionDateHolder">
     <input type="text" class="form-control" id="resolutionDate" name="Initiator[resolutionDate]"
         value="' . Html::encode($preResolution) . '" data-locale="' . Html::encode($locale) . '">';
@@ -118,14 +119,14 @@ echo '</div></div>
 
 if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
     echo '<div class="form-group">
-  <label class="col-sm-3 control-label" for="initiatorEmail">E-Mail</label>
+  <label class="col-sm-3 control-label" for="initiatorEmail">' . Yii::t('initiator', 'email') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorEmail" name="Initiator[contactEmail]" ';
     if ($motionType->contactEmail == ConsultationMotionType::CONTACT_REQUIRED && !$adminMode) {
         echo 'required ';
     }
     echo 'value="' . Html::encode($preEmail) . '">
-    <div class="contactPrivacy">' . 'Wird nur AdministratorInnen angezeigt' . '</div>
+    <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';
 }
@@ -133,14 +134,14 @@ if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
 
 if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
     echo '<div class="form-group phone_row">
-        <label class="col-sm-3 control-label" for="initiatorPhone">Telefon</label>
+        <label class="col-sm-3 control-label" for="initiatorPhone">' . Yii::t('initiator', 'phone') . '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorPhone" name="Initiator[contactPhone]" ';
     if ($motionType->contactPhone == ConsultationMotionType::CONTACT_REQUIRED && !$adminMode) {
         echo 'required ';
     }
     echo 'value="' . Html::encode($prePhone) . '">
-    <div class="contactPrivacy">' . 'Wird nur AdministratorInnen angezeigt' . '</div>
+    <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';
 }
@@ -148,12 +149,12 @@ if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
 
 $getInitiatorRow = function (ISupporter $initiator, $initiatorOrga) {
     $str = '<div class="form-group initiatorRow">';
-    $str .= '<div class="col-sm-3 control-label">' . 'Weitere AntragsstellerIn' . '</div>';
+    $str .= '<div class="col-sm-3 control-label">' . Yii::t('initiator', 'moreInitiators') . '</div>';
     $str .= '<div class="col-md-4">';
     $str .= Html::textInput(
         'moreInitiators[name][]',
         $initiator->name,
-        ['class' => 'form-control name', 'placeholder' => 'Name']
+        ['class' => 'form-control name', 'placeholder' => Yii::t('initiator', 'name')]
     );
     $str .= '</div>';
     if ($initiatorOrga) {
@@ -161,7 +162,7 @@ $getInitiatorRow = function (ISupporter $initiator, $initiatorOrga) {
         $str .= Html::textInput(
             'moreInitiators[organization][]',
             $initiator->organization,
-            ['class' => 'form-control organization', 'placeholder' => 'Gremium, LAG, ...']
+            ['class' => 'form-control organization', 'placeholder' => Yii::t('initiator', 'orgaName')]
         );
         $str .= '</div>';
     }
@@ -181,7 +182,7 @@ foreach ($moreInitiators as $init) {
 
 echo '<div class="adderRow row"><div class="col-sm-3"></div><div class="col-md-9">';
 echo '<a href="#"><span class="glyphicon glyphicon-plus"></span> ';
-echo 'AntragstellerIn hinzufügen';
+echo Yii::t('initiator', 'addInitiator');
 echo '</a></div></div>';
 
 $new    = new \app\models\db\MotionSupporter();
@@ -199,7 +200,7 @@ if ($hasSupporters) {
         $str .= Html::textInput(
             'supporters[name][]',
             $supporter->name,
-            ['class' => 'form-control name', 'placeholder' => 'Name']
+            ['class' => 'form-control name', 'placeholder' => Yii::t('initiator', 'name')]
         );
         $str .= '</div>';
         if ($hasOrganizations) {
@@ -207,7 +208,7 @@ if ($hasSupporters) {
             $str .= Html::textInput(
                 'supporters[organization][]',
                 $supporter->organization,
-                ['class' => 'form-control organization', 'placeholder' => 'Gremium, LAG, ...']
+                ['class' => 'form-control organization', 'placeholder' => Yii::t('initiator', 'orgaName')]
             );
             $str .= '</div>';
         }
@@ -223,17 +224,17 @@ if ($hasSupporters) {
         $supp         = new \app\models\db\MotionSupporter();
         $supporters[] = $supp;
     }
-    echo '<h2 class="green supporterDataHead">' . 'Unterstützer_Innen' . '</h2>';
+    echo '<h2 class="green supporterDataHead">' . Yii::t('initiator', 'supportersHead') . '</h2>';
     echo '<div class="supporterData form-horizontal content" ';
     echo 'data-min-supporters="' . Html::encode($minSupporters) . '">';
 
     echo '<div class="form-group"><div class="col-md-3">';
     if ($minSupporters > 1) {
-        echo str_replace('%min%', $minSupporters, "Min. %min% UnterstützerInnen");
+        echo str_replace('%min%', $minSupporters, Yii::t('initiator', 'minSupportersX'));
     } elseif ($minSupporters == 1) {
-        echo str_replace('%min%', $minSupporters, "Min. %min% UnterstützerIn");
+        echo str_replace('%min%', $minSupporters, Yii::t('initiator', 'minSupporters1'));
     } else {
-        echo 'UnterstützerInnen';
+        echo Yii::t('initiator', 'supporters');
     }
     echo '</div>';
 
@@ -247,14 +248,14 @@ if ($hasSupporters) {
     echo '</a></div>';
 
     if ($supporterFulltext) {
-        $fullTextSyntax = 'Name 1, KV 1; Name 2, KV 2; Name 3; ...';
-        echo '<div class="fullTextAdder"><a href="#">Volltextfeld</a></div>';
+        $fullTextSyntax = Yii::t('initiator', 'fullTextSyntax');
+        echo '<div class="fullTextAdder"><a href="#">' . Yii::t('initiator', 'fullTextField') . '</a></div>';
         echo '<div class="form-group hidden" id="fullTextHolder">';
         echo '<div class="col-md-9">';
         echo '<textarea class="form-control" placeholder="' . Html::encode($fullTextSyntax) . '" rows="10"></textarea>';
         echo '</div><div class="col-md-3">';
         echo '<button type="button" class="btn btn-success fullTextAdd">';
-        echo '<span class="glyphicon glyphicon-plus"></span> Hinzufügen</button>';
+        echo '<span class="glyphicon glyphicon-plus"></span> ' . Yii::t('initiator', 'fullTextAdd') . '</button>';
         echo '</div>';
         echo '</div>';
     }
