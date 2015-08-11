@@ -87,7 +87,7 @@ class AmendmentController extends AdminBase
         if (isset($_POST['delete'])) {
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
-            $amendment->motion->motionType->consultation->flushCacheWithChildren();
+            $amendment->motion->flushCacheStart();
             \yii::$app->session->setFlash('success', 'Der Änderungsantrag wurde gelöscht.');
             $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
             return '';
@@ -130,7 +130,7 @@ class AmendmentController extends AdminBase
                 $amendment->titlePrefix = $_POST['amendment']['titlePrefix'];
             }
             $amendment->save();
-            $this->consultation->flushCacheWithChildren();
+            $amendment->motion->flushCacheWithChildren();
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
 

@@ -470,7 +470,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
-        $this->consultation->flushCacheWithChildren();
+        $this->flushCacheStart();
         ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_WITHDRAW, $this->id);
     }
 
@@ -570,7 +570,17 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     *
+     */
+    public function flushCacheStart()
+    {
+        if ($this->consultation->cacheOneMotionAffectsOthers()) {
+            $this->consultation->flushCacheWithChildren();
+        } else {
+            $this->flushCacheWithChildren();
+        }
+    }
+
+    /**
      */
     public function flushCacheWithChildren()
     {

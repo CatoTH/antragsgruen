@@ -444,7 +444,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = static::STATUS_WITHDRAWN;
         $this->save();
-        $this->motion->consultation->flushCacheWithChildren();
+        $this->motion->flushCacheStart();
 
         ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_WITHDRAW, $this->id);
     }
