@@ -35,7 +35,11 @@ if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
 } else {
     $motionUrl = UrlHelper::createMotionUrl($amendment->motion);
     $layout->addBreadcrumb($amendment->motion->motionType->titleSingular, $motionUrl);
-    $layout->addBreadcrumb($amendment->titlePrefix);
+    if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
+        $layout->addBreadcrumb($amendment->titlePrefix);
+    } else {
+        $layout->addBreadcrumb('Änderungsantrag');
+    }
 }
 
 $this->title = $amendment->getTitle() . ' (' . $consultation->title . ', Antragsgrün)';
@@ -227,7 +231,7 @@ MotionLayoutHelper::printSupportSection($amendment, $amendment->motion->motionTy
 if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '<section class="comments"><h2 class="green">Kommentare</h2>';
 
-    $form    = $commentForm;
+    $form        = $commentForm;
     $screenAdmin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
@@ -236,7 +240,7 @@ if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
         $form->sectionId   = -1;
     }
 
-    $baseLink = UrlHelper::createAmendmentUrl($amendment);
+    $baseLink     = UrlHelper::createAmendmentUrl($amendment);
     $visibleStati = [AmendmentComment::STATUS_VISIBLE];
     if ($screenAdmin) {
         $visibleStati[] = AmendmentComment::STATUS_SCREENING;
