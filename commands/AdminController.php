@@ -39,6 +39,8 @@ class AdminController extends Controller
 
     /**
      * Flush all caches for a given consultation
+     * @param string $subdomain
+     * @param string $consultation
      */
     public function actionFlushConsultationCaches($subdomain, $consultation)
     {

@@ -442,4 +442,15 @@ class Consultation extends ActiveRecord
          */
         return $results;
     }
+
+    /**
+     * @return bool
+     */
+    public function cacheOneMotionAffectsOthers()
+    {
+        if ($this->getSettings()->lineNumberingGlobal) {
+            return true;
+        }
+        return false;
+    }
 }

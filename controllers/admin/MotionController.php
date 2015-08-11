@@ -145,7 +145,7 @@ class MotionController extends AdminBase
         if (isset($_POST['delete'])) {
             $motion->status = Motion::STATUS_DELETED;
             $motion->save();
-            $motion->motionType->consultation->flushCacheWithChildren();
+            $motion->flushCacheStart();
             \yii::$app->session->setFlash('success', 'Der Antrag wurde gelöscht.');
             $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
             return '';

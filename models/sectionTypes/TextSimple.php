@@ -10,7 +10,6 @@ use app\components\HTMLTools;
 use app\components\latex\Exporter;
 use app\components\LineSplitter;
 use app\components\opendocument\Text;
-use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\Amendment;
