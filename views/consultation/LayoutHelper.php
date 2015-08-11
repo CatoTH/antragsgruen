@@ -36,7 +36,7 @@ class LayoutHelper
         echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
         echo '<p class="title">' . "\n";
         echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
-        if (!$consultation->getSettings()->hideTitlePrefix) {
+        if (!$consultation->getSettings()->hideTitlePrefix && $motion->titlePrefix != '') {
             $linkOpts = ['class' => 'motionPrefix motionLink' . $motion->id];
             echo Html::a($motion->titlePrefix, UrlHelper::createMotionUrl($motion), $linkOpts);
         }
@@ -66,7 +66,7 @@ class LayoutHelper
                 }
                 echo '<li class="' . implode(' ', $classes) . '">';
                 echo '<span class="date">' . Tools::formatMysqlDate($amend->dateCreation) . '</span>' . "\n";
-                $name = (trim($amend->titlePrefix) == '' ? '-' : $amend->titlePrefix);
+                $name = (trim($amend->titlePrefix) == '' ? 'Änderungsantrag' : $amend->titlePrefix);
                 echo Html::a($name, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
                 echo '<span class="info">' . Html::encode($amend->getInitiatorsStr()) . '</span>' . "\n";
                 echo '</li>' . "\n";

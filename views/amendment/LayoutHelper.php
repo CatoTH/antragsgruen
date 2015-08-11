@@ -12,14 +12,20 @@ use yii\helpers\Html;
 class LayoutHelper
 {
     /**
+     * @param Amendment $amendment
      * @return Content
+     * @throws \app\models\exceptions\Internal
      */
     public static function renderTeX(Amendment $amendment)
     {
         $content              = new Content();
         $content->template    = $amendment->motion->motionType->texTemplate->texContent;
         $content->title       = $amendment->motion->title;
-        $content->titlePrefix = $amendment->getShortTitle();
+        if (!$amendment->motion->consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
+            $content->titlePrefix = $amendment->titlePrefix;
+        } else {
+            $content->titlePrefix = '';
+        }
         $content->titleLong   = str_replace('%PREFIX%', $amendment->motion->titlePrefix, 'Änderungsantrag zu %PREFIX%');
 
         $intro                    = explode("\n", $amendment->motion->consultation->getSettings()->pdfIntroduction);

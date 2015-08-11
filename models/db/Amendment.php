@@ -109,7 +109,11 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getTitle()
     {
-        $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->motion->titlePrefix) === false);
+        if ($this->motion->titlePrefix != '') {
+            $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->motion->titlePrefix) === false);
+        } else {
+            $showMotionPrefix = false;
+        }
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->titlePrefix . ' zu ' . $this->motion->title;
         } else {
@@ -130,7 +134,11 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getShortTitle()
     {
-        $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->motion->titlePrefix) === false);
+        if ($this->motion->titlePrefix != '') {
+            $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->motion->titlePrefix) === false);
+        } else {
+            $showMotionPrefix = false;
+        }
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->titlePrefix . ' zu ' . $this->motion->title;
         } else {
