@@ -160,7 +160,11 @@ class ConsultationMotionType extends ActiveRecord
     public function getOdtTemplate()
     {
         $dir = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-        return file_get_contents($dir . 'OpenOffice-Template.odt');
+        if ($this->consultation->site->getSettings()->siteLayout == 'layout-gruenes-ci') {
+            return file_get_contents($dir . 'OpenOffice-Template-Gruen.odt');
+        } else {
+            return file_get_contents($dir . 'OpenOffice-Template-Std.odt');
+        }
     }
 
 

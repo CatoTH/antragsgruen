@@ -317,19 +317,19 @@ class Base extends Controller
                 "Fehlerhafte Parameter - " .
                 "die Veranstaltung gehört nicht zur Veranstaltungsreihe."
             );
-            $this->redirect(UrlHelper::createUrl(['consultation/index', "consultation_id" => $consultationId]));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
             Yii::$app->end();
         }
 
         if (is_object($checkMotion) && strtolower($checkMotion->consultation->urlPath) != $consultationId) {
             Yii::$app->session->setFlash('error', 'Der Antrag gehört nicht zur Veranstaltung.');
-            $this->redirect(UrlHelper::createUrl(['consultation/index', "consultation_id" => $consultationId]));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
             Yii::$app->end();
         }
 
         if ($checkAmendment != null && ($checkMotion == null || $checkAmendment->motionId != $checkMotion->id)) {
             Yii::$app->session->setFlash('error', 'Der Änderungsantrag gehört nicht zum Antrag.');
-            $this->redirect(UrlHelper::createUrl(['consultation/index', "consultation_id" => $consultationId]));
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
             Yii::$app->end();
         }
     }

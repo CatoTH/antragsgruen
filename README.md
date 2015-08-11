@@ -19,8 +19,18 @@ apt-get install php5-cli php5-fpm php5-mysqlnd php5-mcrypt php5-intl php5-curl
 
 Optional, for LaTeX/XeTeX-based PDFs:
 ```bash
-apt-get install texlive-lang-german texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-humanities texlive-fonts-recommended texlive-xetex
+apt-get install texlive-lang-german texlive-latex-base texlive-latex-recommended \
+                texlive-latex-extra texlive-humanities texlive-fonts-recommended \
+                texlive-xetex poppler-utils
 ```
+
+Required Software (Mac OS X)
+----------------------------
+
+LaTeX/XeTeX-based PDFs:
+* [MacTeX](http://www.tug.org/mactex/)
+* Poppler ([Homebrew](http://brew.sh/)-Package)
+
 
 Command Line Commands
 ---------------------
