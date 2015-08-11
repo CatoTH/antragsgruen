@@ -43,6 +43,7 @@ class Text extends Base
      * @param \DOMNode $srcNode
      * @param bool $lineNumbered
      * @return \DOMNode
+     * @throws Internal
      */
     protected function html2ooNodeInt($srcNode, $lineNumbered)
     {
@@ -133,8 +134,18 @@ class Text extends Base
                         break;
                     case 'p':
                     case 'div':
+                        $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        break;
                     case 'blockquote':
                         $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $dst_el->setAttribute('text:style-name', 'AntragsgruenBlockquote');
+                        if (count($srcNode->childNodes) == 1) {
+                            foreach ($srcNode->childNodes as $child) {
+                                if ($child->nodeName == 'p') {
+                                    $srcNode = $child;
+                                }
+                            }
+                        }
                         break;
                     case 'ul':
                         $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
@@ -249,8 +260,6 @@ class Text extends Base
     }
 
     /**
-     * @param string[] $motionParagraphs
-     * @param string $reason
      * @return string
      */
     public function convert()
@@ -285,6 +294,16 @@ class Text extends Base
         ]);
         $this->appendTextStyleNode('AntragsgruenSup', [
             'style:text-position' => 'super 58%',
+        ]);
+        $this->appendParagraphStyleNode('AntragsgruenBlockquote', [
+            'fo:padding'       => '0.499cm',
+            'fo:border-left'   => '1.25pt solid #cccccc',
+            'fo:border-right'  => 'none',
+            'fo:border-top'    => 'none',
+            'fo:border-bottom' => 'none',
+            'style:shadow'     => 'none',
+            'fo:margin-bottom' => '0.7cm',
+            'fo:margin-top'    => '0.7cm',
         ]);
 
         /** @var \DOMNode[] $nodes */

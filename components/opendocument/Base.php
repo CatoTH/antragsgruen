@@ -79,4 +79,13 @@ abstract class Base
     {
         $this->appendStyleNode($styleName, 'text', 'text-properties', $attributes);
     }
+
+    /**
+     * @param string $styleName
+     * @param array $attributes
+     */
+    protected function appendParagraphStyleNode($styleName, $attributes)
+    {
+        $this->appendStyleNode($styleName, 'paragraph', 'paragraph-properties', $attributes);
+    }
 }
