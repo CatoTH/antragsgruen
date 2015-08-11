@@ -136,6 +136,11 @@ class LineSplitter
      */
     public static function motionPara2lines($para, $lineNumbers, $lineLength)
     {
+        $cacheKey = [md5($para), $lineNumbers, $lineLength];
+        if ($cached = \yii::$app->cache->get($cacheKey)) {
+            return $cached;
+        }
+
         if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
             mb_stripos($para, '<blockquote>') === 0
         ) {
@@ -164,6 +169,9 @@ class LineSplitter
         } else {
             $linesOut = $linesIn;
         }
+
+        \yii::$app->cache->set($cacheKey, $linesOut, 7 * 24 * 3600);
+
         return $linesOut;
     }
 
