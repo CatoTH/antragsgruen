@@ -9,9 +9,11 @@ class LineSplitTest extends TestBase
 {
     use Specify;
 
+    /**
+     */
     public function testCase1()
     {
-        $orig     = "Geschäftsordnung der Bundesversammlung geregelt. " .
+        $orig   = "Geschäftsordnung der Bundesversammlung geregelt. " .
             "Antragsberechtigt sind die Orts- und Kreisverbände, die " .
             "Landesversammlungen bzw. Landesdelegiertenkonferenzen,";
         $expect = [
@@ -26,9 +28,11 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testCase2()
     {
-        $orig     = "gut und richtig, wenn Eltern selbst eine Initiative für " .
+        $orig   = "gut und richtig, wenn Eltern selbst eine Initiative für " .
             "Kinderbetreuung gründen – besser ist";
         $expect = [
             "gut und richtig, wenn Eltern selbst eine Initiative für Kinderbetreuung gründen",
@@ -41,9 +45,11 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testCase3()
     {
-        $orig     = "angehen, ist von großem Wert für unser Land. Veränderung kann nur gelingen, " .
+        $orig   = "angehen, ist von großem Wert für unser Land. Veränderung kann nur gelingen, " .
             "wenn sie von Vielen getragen wird. Aber Veränderung braucht auch die Politik. " .
             "Es ist gut und richtig,";
         $expect = [
@@ -58,9 +64,11 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testCase4()
     {
-        $orig     = "angehen, ist von gro&szlig;em Wert f&uuml;r unser Land. Ver&auml;nderung " .
+        $orig   = "angehen, ist von gro&szlig;em Wert f&uuml;r unser Land. Ver&auml;nderung " .
             "kann nur gelingen, wenn sie von Vielen ";
         $expect = [
             "angehen, ist von gro&szlig;em Wert f&uuml;r unser Land. Ver&auml;nderung kann nur gelingen, wenn",
@@ -73,9 +81,11 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testCase5()
     {
-        $orig     = "1angehen, ist von<br>gro&szlig;em Wert f&uuml;r<br>\nunser Land. Ver&auml;nderung " .
+        $orig   = "1angehen, ist von<br>gro&szlig;em Wert f&uuml;r<br>\nunser Land. Ver&auml;nderung " .
             "kann nur gelingen, wenn sie von Vielen sdfsdf sdfsdsdf dfdfs sf d";
         $expect = [
             "1angehen, ist von###FORCELINEBREAK###",

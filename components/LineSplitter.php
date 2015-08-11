@@ -68,11 +68,9 @@ class LineSplitter
                 $currLineCount++;
                 if ($currLineCount > $this->lineLength) {
                     /*
-                    if ($debug) {
-                        echo "Aktuelle Zeile: \"" . $currLine . "\"\n";
-                        echo "Count: \"" . $currLineCount . "\"\n";
-                        echo "Letztes Leerzeichen: \"" . $lastSeparator . "\"\n";
-                    }
+                    echo "Aktuelle Zeile: \"" . $currLine . "\"\n";
+                    echo "Count: \"" . $currLineCount . "\"\n";
+                    echo "Letztes Leerzeichen: \"" . $lastSeparator . "\"\n";
                     */
                     if ($lastSeparator == -1) {
                         $lines[]       = mb_substr($currLine, 0, mb_strlen($currLine) - 1) . '-';
@@ -80,9 +78,7 @@ class LineSplitter
                         $currLineCount = 1;
                     } else {
                         /*
-                        if ($debug) {
-                            echo "Aktuelles Zeichen: \"" . mb_substr($this->text, $i, 1) . "\"\n";
-                        }
+                        echo "Aktuelles Zeichen: \"" . mb_substr($this->text, $i, 1) . "\"\n";
                         */
                         if (mb_substr($this->text, $i, 1) == ' ') {
                             $lines[] = mb_substr($currLine, 0, mb_strlen($currLine) - 1);
@@ -93,10 +89,8 @@ class LineSplitter
                             $ueberhang   = mb_substr($currLine, $lastSeparator + 1);
                             $lastIsSpace = (mb_substr($currLine, $lastSeparator, 1) == " ");
                             /*
-                            if ($debug) {
-                                echo "Überhang: \"" . $ueberhang . "\"\n";
-                                echo "Letztes ist Leerzeichen: " . $lastIsSpace . "\n";
-                            }
+                            echo "Überhang: \"" . $ueberhang . "\"\n";
+                            echo "Letztes ist Leerzeichen: " . $lastIsSpace . "\n";
                             */
                             $lines[] = mb_substr($currLine, 0, $lastSeparator + ($lastIsSpace ? 0 : 1));
 
@@ -108,10 +102,8 @@ class LineSplitter
                         $lastSeparatorCount = 0;
                     }
                     /*
-                    if ($debug) {
-                        echo "Neue aktuelle Zeile: \"" . $currLine . "\"\n";
-                        echo "Count: \"" . $currLineCount . "\"\n\n";
-                    }
+                    echo "Neue aktuelle Zeile: \"" . $currLine . "\"\n";
+                    echo "Count: \"" . $currLineCount . "\"\n\n";
                     */
                 } elseif (in_array($currChar, [' ', '-'])) {
                     $lastSeparator      = mb_strlen($currLine) - 1;

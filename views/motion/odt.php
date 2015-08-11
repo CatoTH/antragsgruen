@@ -44,7 +44,7 @@ foreach ($motion->motionSupporters as $supp) {
 $doc->addReplace("/\{\{ANTRAGSGRUEN:TITLE\}\}/siu", $motion->title);
 $doc->addReplace("/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu", implode(', ', $initiators));
 
-foreach ($motion->sections as $section) {
+foreach ($motion->getSortedSections() as $section) {
     $htmls = $section->getSectionType()->printMotionToODT($doc);
 }
 
