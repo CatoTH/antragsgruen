@@ -10,6 +10,9 @@ $params->dbConnection          = [
     'password'       => '###PASSWORD###',
     'charset'        => 'utf8mb4',
 ];
+$params->mailService           = [
+    'transport' => 'sendmail',
+];
 $params->multisiteMode         = true;
 $params->confirmEmailAddresses = true;
 $params->domainPlain           = 'http://localhost:8080/index-test.php';

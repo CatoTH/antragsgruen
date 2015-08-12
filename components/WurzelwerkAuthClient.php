@@ -5,8 +5,6 @@ namespace app\components;
 use app\models\db\User;
 use Yii;
 use yii\authclient\OpenId;
-use yii\base\Security;
-use yii\db\Expression;
 
 class WurzelwerkAuthClient extends OpenId
 {
@@ -61,7 +59,9 @@ class WurzelwerkAuthClient extends OpenId
 
     /**
      * Performs OpenID verification with the OP.
-     * @return boolean whether the verification was successful.
+     * @param bool $validateRequiredAttributes
+     * @return bool whether the verification was successful.
+     * @throws \yii\base\Exception
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function validate($validateRequiredAttributes = true)

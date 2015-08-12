@@ -102,6 +102,7 @@ class MessageSource extends \yii\i18n\MessageSource
      * @param string $language
      * @param bool $withConsultationStrings
      * @return array
+     * @throws Internal
      */
     protected function loadMessages($category, $language, $withConsultationStrings = true)
     {

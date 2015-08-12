@@ -2,7 +2,6 @@
 
 namespace app\models\db;
 
-use app\components\Mail;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
@@ -539,7 +538,7 @@ class Motion extends IMotion implements IRSSItem
                         "Mit freundlichen Grüßen,\n" .
                         "  Das Antragsgrün-Team";
                     $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-                    Mail::sendWithLog(
+                    \app\components\mail\Tools::sendWithLog(
                         EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                         $this->consultation->site,
                         trim($initiator[0]->contactEmail),

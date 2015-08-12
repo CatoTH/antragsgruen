@@ -24,7 +24,6 @@ class AntragsgruenApp
     public $mailFromEmail         = 'EMAILADRESSE';
     public $adminUserIds          = [];
     public $odtDefaultTemplate    = null;
-    public $mandrillApiKey        = null;
     public $siteBehaviorClasses   = [];
     public $authClientCollection  = [
         'wurzelwerk' => [
@@ -35,4 +34,7 @@ class AntragsgruenApp
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
     public $xdvipdfmx             = null;
+
+    /** @var null|array */
+    public $mailService           = null;
 }
