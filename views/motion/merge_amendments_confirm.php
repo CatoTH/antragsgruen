@@ -2,18 +2,21 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
+use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
  * @var Motion $newMotion
  * @var string $deleteDraftId
+ * @var array $amendmentStati
  */
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
+$layout->loadFuelux();
 $layout->addBreadcrumb($newMotion->motionType->titleSingular, UrlHelper::createMotionUrl($newMotion));
 $layout->addBreadcrumb('Überarbeitung kontrollieren');
 
@@ -36,6 +39,10 @@ foreach ($newMotion->getSortedSections(true) as $section) {
     echo '</div>';
     echo '</section>';
 }
+
+echo '<section class="newAmendments">';
+LayoutHelper::printAmendmentStatusSetter($newMotion->replacedMotion->getVisibleAmendments(), $amendmentStati);
+echo '</section>';
 
 
 echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);

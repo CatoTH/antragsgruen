@@ -38,6 +38,8 @@ use yii\helpers\Html;
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
  * @property ConsultationAgendaItem $agendaItem
+ * @property Motion $replacedMotion
+ * @property Motion[] $replacedByMotions
  */
 class Motion extends IMotion implements IRSSItem
 {
@@ -142,6 +144,22 @@ class Motion extends IMotion implements IRSSItem
     public function getAgendaItem()
     {
         return $this->hasOne(ConsultationAgendaItem::class, ['id' => 'agendaItemId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReplacedMotion()
+    {
+        return $this->hasOne(Motion::class, ['id' => 'parentMotionId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReplacedByMotions()
+    {
+        return $this->hasMany(Motion::class, ['parentMotionId' => 'id']);
     }
 
     /**

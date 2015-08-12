@@ -1,6 +1,5 @@
 <?php
 
-use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
@@ -73,29 +72,10 @@ $jsStati = [
     'modified_accepted' => Amendment::STATUS_MODIFIED_ACCEPTED,
 ];
 
-echo '<section class="newAmendments" data-stati="' . Html::encode(json_encode($jsStati)) . '">
-    <h2 class="green">' . 'Status der Änderungsasnträge' . '</h2>
-    <div class="content form-horizontal">';
+echo '<section class="newAmendments" data-stati="' . Html::encode(json_encode($jsStati)) . '">';
+\app\views\motion\LayoutHelper::printAmendmentStatusSetter($motion->getVisibleAmendments());
+echo '</section>';
 
-foreach ($motion->getVisibleAmendments() as $amendment) {
-    $changeset = (isset($changesets[$amendment->id]) ? $changesets[$amendment->id] : []);
-    $data      = 'data-old-status="' . $amendment->status . '"';
-    $data .= ' data-amendment-id="' . $amendment->id . '"';
-    $data .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
-    echo '<div class="form-group" ' . $data . '>
-    <label for="amendmentStatus' . $amendment->id . '" class="col-sm-3 control-label">';
-    echo Html::encode($amendment->getShortTitle()) . ':<br><span class="amendSubtitle">';
-    echo Html::encode($amendment->getInitiatorsStr());
-    echo '</span></label>
-    <div class="col-md-9">';
-    $stati                     = $amendment->getStati();
-    $stati[$amendment->status] = 'unverändert: ' . $stati[$amendment->status];
-    echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $stati, $amendment->status);
-    echo '</div></div>';
-}
-
-echo '</div>
-</section>';
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">
     <span class="glyphicon glyphicon-chevron-right"></span> Weiter

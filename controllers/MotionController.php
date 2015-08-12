@@ -494,28 +494,46 @@ class MotionController extends Base
 
     /**
      * @param int $motionId
+     * @param string $amendmentStati
      * @return string
      */
-    public function actionMergeamendmentconfirm($motionId)
+    public function actionMergeamendmentconfirm($motionId, $amendmentStati = '')
     {
         $newMotion = $this->consultation->getMotion($motionId);
-        if (!$newMotion || $newMotion->status != Motion::STATUS_DRAFT) {
+        if (!$newMotion || $newMotion->status != Motion::STATUS_DRAFT || !$newMotion->replacedMotion) {
             \Yii::$app->session->setFlash('error', 'Motion not found.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
+        $oldMotion = $newMotion->replacedMotion;
+        $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
 
         if (isset($_POST['modify'])) {
-            $nextUrl = ['motion/edit', 'motionId' => $newMotion->id];
+            $nextUrl = ['motion/mergeamendments', 'newMotionId' => $newMotion->id, 'amendmentStati' => $amendmentStati];
             $this->redirect(UrlHelper::createUrl($nextUrl));
             return '';
         }
 
         if (isset($_POST['confirm'])) {
+            $invisible = $this->consultation->getInvisibleAmendmentStati();
+            foreach ($oldMotion->getVisibleAmendments() as $amendment) {
+                if (isset($amendStati[$amendment->id]) && $amendStati[$amendment->id] != $amendment->status) {
+                    if (!in_array($amendStati[$amendment->id], $invisible)) {
+                        $amendment->status = $amendStati[$amendment->id];
+                        $amendment->save();
+                        // @TODO Notifications?
+                    }
+                }
+            }
+
             return $this->render('merge_amendments_done', ['newMotion' => $newMotion]);
         }
 
         $draftId = null;
-        return $this->render('merge_amendments_confirm', ['newMotion' => $newMotion, 'deleteDraftId' => $draftId]);
+        return $this->render('merge_amendments_confirm', [
+            'newMotion'      => $newMotion,
+            'deleteDraftId'  => $draftId,
+            'amendmentStati' => $amendStati
+        ]);
     }
 
     /**
@@ -542,7 +560,12 @@ class MotionController extends Base
                 $form->setAttributes($_POST);
                 try {
                     $newMotion = $form->saveMotion();
-                    $nextUrl   = ['motion/mergeamendmentconfirm', 'motionId' => $newMotion->id, 'fromMode' => 'create'];
+                    $nextUrl   = [
+                        'motion/mergeamendmentconfirm',
+                        'motionId'       => $newMotion->id,
+                        'fromMode'       => 'create',
+                        'amendmentStati' => json_encode($form->amendStatus),
+                    ];
                     if (isset($_POST['draftId'])) {
                         $nextUrl['draftId'] = $_POST['draftId'];
                     }

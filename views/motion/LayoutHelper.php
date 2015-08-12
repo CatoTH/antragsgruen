@@ -2,9 +2,11 @@
 
 namespace app\views\motion;
 
+use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\Tools;
+use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\IComment;
 use app\models\db\IMotion;
@@ -276,7 +278,7 @@ class LayoutHelper
     {
         $user = User::getCurrentUser();
 
-        $canSupport     = $policy->checkCurrUser();
+        $canSupport = $policy->checkCurrUser();
         foreach ($motion->getInitiators() as $supp) {
             if ($user && $supp->userId == $user->id) {
                 $canSupport = false;
@@ -285,8 +287,8 @@ class LayoutHelper
 
         $cantSupportMsg = $policy->getPermissionDeniedSupportMsg();
 
-        $likes      = $motion->getLikes();
-        $dislikes   = $motion->getDislikes();
+        $likes    = $motion->getLikes();
+        $dislikes = $motion->getDislikes();
 
         if (count($likes) == 0 && count($dislikes) == 0 && $cantSupportMsg == '' && !$canSupport) {
             return;
@@ -364,5 +366,45 @@ class LayoutHelper
             }
         }
         echo '</section>';
+    }
+
+
+    /**
+     * @param Amendment[] $amendments
+     * @param array $statusOverrides
+     */
+    public static function printAmendmentStatusSetter($amendments, $statusOverrides = [])
+    {
+        echo '<h2 class="green">' . 'Status der Änderungsasnträge' . '</h2>
+    <div class="content form-horizontal">';
+
+        foreach ($amendments as $amendment) {
+            $changeset = (isset($changesets[$amendment->id]) ? $changesets[$amendment->id] : []);
+            $data      = 'data-old-status="' . $amendment->status . '"';
+            $data .= ' data-amendment-id="' . $amendment->id . '"';
+            $data .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
+            echo '<div class="form-group" ' . $data . '>
+    <label for="amendmentStatus' . $amendment->id . '" class="col-sm-3 control-label">';
+            echo Html::encode($amendment->getShortTitle()) . ':<br><span class="amendSubtitle">';
+            echo Html::encode($amendment->getInitiatorsStr());
+            echo '</span></label>
+    <div class="col-md-9">';
+            $statiAll                  = $amendment->getStati();
+            $stati                     = [
+                Amendment::STATUS_ACCEPTED          => $statiAll[Amendment::STATUS_ACCEPTED],
+                Amendment::STATUS_REJECTED          => $statiAll[Amendment::STATUS_REJECTED],
+                Amendment::STATUS_MODIFIED_ACCEPTED => $statiAll[Amendment::STATUS_MODIFIED_ACCEPTED],
+            ];
+            $stati[$amendment->status] = 'unverändert: ' . $statiAll[$amendment->status];
+            if (isset($statusOverrides[$amendment->id])) {
+                $statusPre = $statusOverrides[$amendment->id];
+            } else {
+                $statusPre = $amendment->status;
+            }
+            echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $stati, $statusPre);
+            echo '</div></div>';
+        }
+
+        echo '</div>';
     }
 }

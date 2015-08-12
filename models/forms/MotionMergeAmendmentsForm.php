@@ -42,6 +42,7 @@ class MotionMergeAmendmentsForm extends Model
 
     /**
      * @return Motion
+     * @throws Internal
      */
     public function saveMotion()
     {
@@ -67,8 +68,10 @@ class MotionMergeAmendmentsForm extends Model
             $section->refresh();
 
             if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
+                $consolidated = $this->sections[$section->sectionId]['consolidated'];
+                $consolidated = str_replace('<li>&nbsp;</li>', '', $consolidated);
                 /** @var TextSimple data */
-                $section->getSectionType()->setMotionData($this->sections[$section->sectionId]['consolidated']);
+                $section->getSectionType()->setMotionData($consolidated);
             } elseif (isset($this->sections[$section->sectionId])) {
                 $section->getSectionType()->setMotionData($this->sections[$section->sectionId]);
             } else {

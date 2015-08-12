@@ -463,6 +463,28 @@ class TextSimple extends ISectionType
                 $out .= $text;
             }
         }
+
+        $out = str_replace('</ul><ul>', '', $out);
+        /*
+        $out = preg_replace_callback('/<li>(.*)<\/li>/siuU', function ($matches) {
+            $inner  = $matches[1];
+            $last6  = mb_substr($inner, mb_strlen($inner) - 6);
+            $numIns = mb_substr_count($inner, '<ins');
+            $numDel = mb_substr_count($inner, '<del');
+            if (mb_stripos($inner, '<ins') === 0 && $last6 == '</ins>' && $numIns == 1 && $numDel == 0) {
+                $ret = str_replace('</ins>', '', $matches[0]);
+                $ret = str_replace('<li><ins', '<li', $ret);
+                return $ret;
+            } elseif (mb_stripos($inner, '<del') === 0 && $last6 == '</del>' && $numIns == 0 && $numDel == 1) {
+                $ret = str_replace('</del>', '', $matches[0]);
+                $ret = str_replace('<li><del', '<li', $ret);
+                return $ret;
+            } else {
+                return $matches[0];
+            }
+        }, $out);
+        */
+
         return $out;
     }
 }
