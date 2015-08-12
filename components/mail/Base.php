@@ -29,6 +29,9 @@ abstract class Base
             case 'sendmail':
                 return new Sendmail($params);
                 break;
+            case 'smtp':
+                return new SMTP($params);
+                break;
             default:
                 throw new ServerConfiguration('Invalid E-Mail-Transport: ' . $params['transport']);
         }
