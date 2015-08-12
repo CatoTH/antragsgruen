@@ -453,4 +453,21 @@ class Consultation extends ActiveRecord
         }
         return false;
     }
+
+
+    public function sendEmailToAdmins($mailSubject, $mailText) {
+        $mails = explode(',', $this->adminEmail);
+        foreach ($mails as $mail) {
+            if (trim($mail) != '') {
+                \app\components\mail\Tools::sendWithLog(
+                    EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
+                    $this->site,
+                    trim($mail),
+                    null,
+                    $mailSubject,
+                    $mailText
+                );
+            }
+        }
+    }
 }

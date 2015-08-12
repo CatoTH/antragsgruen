@@ -244,25 +244,9 @@ class MotionController extends Base
 
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
 
-            if ($motion->consultation->adminEmail != '') {
-                $mails = explode(",", $motion->consultation->adminEmail);
-
-                $mailText = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
-                $mailText = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
-
-                foreach ($mails as $mail) {
-                    if (trim($mail) != '') {
-                        \app\components\mail\Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
-                            $this->site,
-                            trim($mail),
-                            null,
-                            'Neuer Antrag',
-                            $mailText
-                        );
-                    }
-                }
-            }
+            $mailText = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
+            $mailText = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
+            $motion->consultation->sendEmailToAdmins('Neuer Antrag', $mailText);
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->onPublish();
@@ -504,7 +488,7 @@ class MotionController extends Base
             \Yii::$app->session->setFlash('error', 'Motion not found.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
-        $oldMotion = $newMotion->replacedMotion;
+        $oldMotion  = $newMotion->replacedMotion;
         $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
 
         if (isset($_POST['modify'])) {
@@ -520,10 +504,31 @@ class MotionController extends Base
                     if (!in_array($amendStati[$amendment->id], $invisible)) {
                         $amendment->status = $amendStati[$amendment->id];
                         $amendment->save();
-                        // @TODO Notifications?
                     }
                 }
             }
+
+            $screening         = $this->consultation->getSettings()->screeningMotions;
+            $iAmAdmin          = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+            $newMotion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+            if (!$screening || $iAmAdmin) {
+                $newMotion->status = Motion::STATUS_SUBMITTED_SCREENED;
+            }
+            $newMotion->save();
+
+            $newMotion->status = $newMotion->replacedMotion->status;
+            $newMotion->save();
+
+            if ($newMotion->replacedMotion->status == Motion::STATUS_SUBMITTED_SCREENED) {
+                $newMotion->replacedMotion->status = Motion::STATUS_MODIFIED;
+                $newMotion->replacedMotion->save();
+            }
+
+            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($newMotion));
+
+            $mailText = "Der Antrag \"%title%\" wurde überarbeitet.\nLink: %link%";
+            $mailText = str_replace(['%title%', '%link%'], [$newMotion->title, $motionLink], $mailText);
+            $newMotion->consultation->sendEmailToAdmins('Antrag überarbeitet', $mailText);
 
             return $this->render('merge_amendments_done', ['newMotion' => $newMotion]);
         }

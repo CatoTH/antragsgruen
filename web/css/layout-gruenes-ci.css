@@ -9960,6 +9960,8 @@ ins, ul.inserted, blockquote.inserted {
     padding: 0 6px 0 3px; }
 .motionData > .content > .alert {
   margin-top: 20px; }
+.motionData .motionReplayedBy a {
+  font-weight: bold; }
 
 .wysiwyg-textarea textarea {
   display: none; }

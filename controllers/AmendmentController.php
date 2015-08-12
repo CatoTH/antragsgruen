@@ -169,25 +169,9 @@ class AmendmentController extends Base
 
             $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
 
-            if ($amendment->motion->consultation->adminEmail != '') {
-                $mails = explode(',', $amendment->motion->consultation->adminEmail);
-
-                $mailText   = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
-                $mailText   = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $amendmentLink], $mailText);
-
-                foreach ($mails as $mail) {
-                    if (trim($mail) != '') {
-                        \app\components\mail\Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
-                            $this->site,
-                            trim($mail),
-                            null,
-                            'Neuer Antrag',
-                            $mailText
-                        );
-                    }
-                }
-            }
+            $mailText   = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
+            $mailText   = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $amendmentLink], $mailText);
+            $amendment->motion->consultation->sendEmailToAdmins('Neuer Änderungsantrag', $mailText);
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->onPublish();
