@@ -10,6 +10,9 @@ $params->dbConnection         = [
     'password'       => '###PASSWORD###',
     'charset'        => 'utf8mb4',
 ];
+$params->mailService          = [
+    'transport' => 'sendmail',
+];
 $params->multisiteMode        = true;
 $params->randomSeed           = 'RANDOMSEED';
 $params->cookieValidationKey  = 'RANDOMSEED';

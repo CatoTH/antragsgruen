@@ -2,7 +2,6 @@
 
 namespace app\controllers\admin;
 
-use app\components\Mail;
 use app\components\UrlHelper;
 use app\models\db\ConsultationUserPrivilege;
 use app\models\db\EMailLog;
@@ -88,7 +87,7 @@ trait SiteAccessTrait
         $text    = "Hallo!\n\nDu hast eben Admin-Zugang zu folgender Antragsgrün-Seite bekommen: %LINK%\n\n" .
             "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team";
         $text    = str_replace(['%LINK%', '%ACCOUNT%'], [$link, $authText], $text);
-        Mail::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $this->site, $email, $newUser->id, $subject, $text);
+        \app\components\mail\Tools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $this->site, $email, $newUser->id, $subject, $text);
     }
 
     /**

@@ -32,6 +32,8 @@ if ($admin) {
 
 echo '<h1>';
 
+\app\components\mail\Tools::sendWithLog(\app\models\db\EMailLog::TYPE_SITE_ADMIN, $controller->site, 'tobias2@hoessl.eu', 1, 'Test-Eail', 'Nur ein Test');
+
 echo Html::encode($consultation->title);
 if ($consultation->eventDateFrom != '' && $consultation->eventDateFrom != '0000-00-00') {
     if ($consultation->eventDateFrom != $consultation->eventDateTo) {

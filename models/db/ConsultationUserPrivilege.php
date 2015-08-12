@@ -1,7 +1,6 @@
 <?php
 namespace app\models\db;
 
-use app\components\Mail;
 use app\components\UrlHelper;
 use app\models\exceptions\AlreadyExists;
 use yii\db\ActiveRecord;
@@ -112,7 +111,7 @@ class ConsultationUserPrivilege extends ActiveRecord
         $consUrl   = UrlHelper::absolutizeLink($consUrl);
         $emailText = str_replace('%LINK%', $consUrl, $emailText);
 
-        Mail::sendWithLog(
+        \app\components\mail\Tools::sendWithLog(
             EMailLog::TYPE_ACCESS_GRANTED,
             $consultation->site,
             $email,

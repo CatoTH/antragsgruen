@@ -4,7 +4,6 @@ namespace app\models\db;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\Diff;
-use app\components\Mail;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -522,7 +521,7 @@ class Amendment extends IMotion implements IRSSItem
                         "Mit freundlichen Grüßen,\n" .
                         "  Das Antragsgrün-Team";
                     $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
-                    Mail::sendWithLog(
+                    \app\components\mail\Tools::sendWithLog(
                         EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                         $this->motion->consultation->site,
                         trim($initiator[0]->contactEmail),

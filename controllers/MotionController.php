@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\Mail;
 use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
@@ -253,7 +252,7 @@ class MotionController extends Base
 
                 foreach ($mails as $mail) {
                     if (trim($mail) != '') {
-                        Mail::sendWithLog(
+                        \app\components\mail\Tools::sendWithLog(
                             EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
                             $this->site,
                             trim($mail),
@@ -277,7 +276,7 @@ class MotionController extends Base
                             "Du kannst ihn hier einsehen: %LINK%\n\n" .
                             "Mit freundlichen Grüßen,\n" .
                             "  Das Antragsgrün-Team";
-                        Mail::sendWithLog(
+                        \app\components\mail\Tools::sendWithLog(
                             EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                             $this->site,
                             trim($initiator[0]->contactEmail),

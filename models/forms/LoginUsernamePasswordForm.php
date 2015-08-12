@@ -2,7 +2,6 @@
 
 namespace app\models\forms;
 
-use app\components\Mail;
 use app\components\UrlHelper;
 use app\models\db\EMailLog;
 use app\models\db\Site;
@@ -53,7 +52,7 @@ class LoginUsernamePasswordForm extends Model
             . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
             . "Liebe Grüße,\n\tDas Antragsgrün-Team.";
 
-        Mail::sendWithLog(
+        \app\components\mail\Tools::sendWithLog(
             EMailLog::TYPE_REGISTRATION,
             null,
             $this->username,
