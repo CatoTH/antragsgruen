@@ -100,7 +100,6 @@
 
   @include motionListStdMotion(16px);
 
-
   &.layout1 {
     .motion {
       padding: 12px 20px 17px 50px;
@@ -194,6 +193,8 @@
   padding: 0;
   position: relative;
 
+  @include motionListStdMotion(14px);
+
   ol {
     list-style-type: none;
     margin: 0 0 0 30px;
@@ -201,9 +202,15 @@
   }
   ul.motions {
     list-style-type: none;
-    margin: 0;
+    margin: 0 0 0 50px;
     padding: 0;
   }
+  ul.amendments {
+    > li > .date {
+      right: 3px;
+    }
+  }
+
 
   .agendaItemAdder {
     padding-left: 35px;
@@ -293,6 +300,19 @@
         visibility: hidden !important;
       }
     }
+
+    .motion {
+      > .date {
+        top: 0;
+        right: 3px;
+      }
+      > .title {
+        margin-right: 75px;
+      }
+      h4.amendments {
+        font-size: 16px;
+      }
+    }
   }
 
   &.agendaListEditing {
@@ -327,8 +347,6 @@
   .movePlaceholder {
     border: dotted 1px gray;
   }
-
-  @include motionListStdMotion(14px);
 }
 
 .motionListTags {
@@ -618,6 +636,7 @@
   margin-left: 50px;
   color: darkgray;
 }
+
 .commentForm {
   margin-top: 20px;
   margin-bottom: 20px;
