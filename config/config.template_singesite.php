@@ -48,7 +48,6 @@ $params->cookieValidationKey = 'RANDOMSEED';
 $params->domainPlain         = '/';
 $params->domainSubdomain     = '';
 $params->resourceBase        = '/antragsgruen/web/';
-$params->contactEmail        = 'info@example.org';
 $params->mailFromName        = 'Antragsgrün';
 $params->mailFromEmail       = 'info@example.org';
 $params->autoLoginDuration   = 7 * 24 * 3600;

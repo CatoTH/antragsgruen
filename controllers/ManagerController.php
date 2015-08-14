@@ -12,6 +12,7 @@ use app\models\forms\SiteCreateForm;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class ManagerController extends Base
 {
@@ -161,6 +162,58 @@ class ManagerController extends Base
         } else {
             return '0';
         }
+    }
+
+    /**
+     */
+    public function actionSiteconfig()
+    {
+        $user = User::getCurrentUser();
+        if (!$user || !in_array($user->id, $this->getParams()->adminUserIds)) {
+            throw new Access('No access to this page');
+        }
+
+        $configfile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
+        $config = $this->getParams();
+
+        if (isset($_POST['save'])) {
+            // @TODO
+
+            \yii::$app->session->setFlash('success', 'Gespeichert.');
+        }
+
+        $editable = is_writable($configfile);
+
+        return $this->render('siteconfig', ['config' => $config, 'editable' => $editable]);
+    }
+
+    /**
+     */
+    public function actionDbinit()
+    {
+        $installFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'INSTALLING';
+        if (!file_exists($installFile)) {
+            $msg = 'Die Seite wurde bereits konfiguriert.<br>
+            Um die Datenbank-Installation erneut aufzurufen, lege bitte folgende Datei an:<br>
+            %FILE%<br><br>';
+            $url = Url::toRoute('manager/siteconfig');
+            $msg .= Html::a('Weiter zur allgemeinen Konfiguration', $url, ['class' => 'btn btn-primary']);
+            $msg = str_replace('%FILE%', Html::encode($installFile), $msg);
+            return $this->showErrorpage(403, $msg);
+        }
+
+        if (isset($_POST['save'])) {
+            // @TODO
+        }
+
+        return $this->render('dbinit');
+    }
+
+    /**
+     */
+    public function actionDbinittest()
+    {
+        // @TODO
     }
 
     /**

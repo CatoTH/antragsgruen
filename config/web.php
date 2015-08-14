@@ -9,6 +9,13 @@ if (YII_ENV == 'test') {
 } else {
     $params = require(__DIR__ . DIRECTORY_SEPARATOR . 'config.php');
 }
+
+if (YII_DEBUG === false) {
+    $params->dbConnection['enableSchemaCache']   = true;
+    $params->dbConnection['schemaCacheDuration'] = 3600;
+    $params->dbConnection['schemaCache']         = 'cache';
+}
+
 $common = require(__DIR__ . DIRECTORY_SEPARATOR . 'common.php');
 
 $config = yii\helpers\ArrayHelper::merge(
