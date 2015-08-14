@@ -47,6 +47,16 @@ class MessageSource extends \yii\i18n\MessageSource
     }
 
     /**
+     * @return array
+     */
+    public static function getBaseLanguages()
+    {
+        return [
+            'de' => 'Deutsch',
+        ];
+    }
+
+    /**
      * Returns message file path for the specified language and category.
      *
      * @param string $category the message category

@@ -7,12 +7,12 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var Site[] $site
  * @var \app\controllers\Base $controller
  */
 
-$this->title = "Antragsgrün - die grüne Online-Antragsverwaltung";
+$this->title = 'Antragsgrün - die grüne Online-Antragsverwaltung';
 
 ?>
 <h1>Antragsgrün - das Antragstool selbst einsetzen</h1>

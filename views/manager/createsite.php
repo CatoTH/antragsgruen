@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var SiteCreateForm $model
  * @var array $errors
  * @var \app\controllers\Base $controller
@@ -12,7 +12,7 @@ use yii\helpers\Url;
 
 $controller = $this->context;
 
-$this->title = "Antragsgrün-Seite anlegen";
+$this->title = 'Antragsgrün-Seite anlegen';
 $controller->layoutParams->addCSS('css/formwizard.css');
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->addJS("js/manager.js");
