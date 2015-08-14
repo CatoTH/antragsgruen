@@ -115,7 +115,7 @@ echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
 if (!$minimalisticUi) {
     echo '<div class="content">';
 
-    if (!$motion->consultation->site->getSettings()->forceLogin) {
+    if (!$motion->consultation->site->getSettings()->forceLogin && count($motion->replacedByMotions) == 0) {
         $layout->loadShariff();
         $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
         $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
@@ -127,23 +127,25 @@ if (!$minimalisticUi) {
            data-lang="' . Html::encode($lang) . '" data-title="' . Html::encode($dataTitle) . '"></div>';
     }
 
-    /* @TODO
-    if (count($antrag->antraege) > 0) { ?>
-                <div class="alert alert-error" style="margin-top: 10px; margin-bottom: 25px;">
-                    <?php if (count($antrag->antraege) == 1) {
-                        echo 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:<br>';
-                        $a = $antrag->antraege[0];
-                        echo CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl("antrag/anzeige",
-    array("antrag_id" => $a->id)));
-                    } else {
-                        echo 'Achtung: dies ist eine alte Fassung. Aktuellere Fassungen gibt es hier:<br>';
-                        foreach ($antrag->antraege as $a) {
-                            echo "- " . CHtml::link($a->revision_name . " - " . $a->name, $this->createUrl(
-    "antrag/anzeige", array("antrag_id" => $a->id))) . "<br>";
-                        }
-                    } ?>
-                </div>
-            <?php } */
+    if (count($motion->replacedByMotions) > 0) {
+        echo '<div class="alert alert-danger motionReplayedBy" role="alert">';
+        echo 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:';
+        if (count($motion->replacedByMotions) > 1) {
+            echo '<ul>';
+            foreach ($motion->replacedByMotions as $newMotion) {
+                echo '<li>';
+                $newLink = UrlHelper::createMotionUrl($motion->replacedByMotions[0]);
+                echo Html::a($motion->getTitleWithPrefix(), $newLink);
+                echo '</li>';
+            }
+            echo '</ul>';
+        } else {
+            echo '<br>';
+            $newLink = UrlHelper::createMotionUrl($motion->replacedByMotions[0]);
+            echo Html::a($motion->getTitleWithPrefix(), $newLink);
+        }
+        echo '</div>';
+    }
 
     echo '<table class="motionDataTable">
                 <tr>
@@ -159,15 +161,17 @@ if (!$minimalisticUi) {
     }
 
     $initiators = $motion->getInitiators();
-    if (count($initiators) == 1) {
-        echo '<tr><th>' . Yii::t('motion', 'AntragsstellerIn') . ':</th><td>';
-    } else {
-        echo '<tr><th>' . Yii::t('motion', 'AntragsstellerInnen') . ':</th><td>';
-    }
-    echo MotionLayoutHelper::formatInitiators($initiators, $controller->consultation);
+    if (count($initiators) > 0) {
+        if (count($initiators) == 1) {
+            echo '<tr><th>' . Yii::t('motion', 'initiators_1') . ':</th><td>';
+        } else {
+            echo '<tr><th>' . Yii::t('motion', 'initiators_x') . ':</th><td>';
+        }
+        echo MotionLayoutHelper::formatInitiators($initiators, $controller->consultation);
 
-    echo '</td></tr>
-                <tr class="statusRow"><th>Status:</th><td>';
+        echo '</td></tr>';
+    }
+    echo '<tr class="statusRow"><th>Status:</th><td>';
 
     $screeningMotionsShown = $motion->consultation->getSettings()->screeningMotionsShown;
     $statiNames            = Motion::getStati();
@@ -183,6 +187,13 @@ if (!$minimalisticUi) {
     }
     echo '</td>
                 </tr>';
+
+    if ($motion->replacedMotion) {
+        $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);
+        echo '<tr><th>' . Yii::t('motion', 'replaces_motion') . ':</th><td>';
+        echo Html::a($motion->replacedMotion->getTitleWithPrefix(), $oldLink);
+        echo '</td></tr>';
+    }
 
     if ($motion->dateResolution != '') {
         echo '<tr><th>Entschieden am:</th>
@@ -238,18 +249,6 @@ if (!$minimalisticUi) {
 
         echo '</td></tr>';
     }
-    /* @TODO
-    if ($motion->abgeleitetVon) {
-                    ?>
-                    <tr>
-                        <th>Ersetzt diesen Antrag:</th>
-                        <td><?php echo CHtml::link($antrag->abgeleitetVon->revision_name . " - " .
-    $antrag->abgeleitetVon->name, $this->createUrl("antrag/anzeige", array("antrag_id" => $antrag->abgeleitetVon->id)));
-    ?> </td>
-                    </tr>
-                <?php }
-    */
-
 
     echo '</table>
 
