@@ -26,5 +26,8 @@ modules:
                 unexpectedAlertBehaviour: 'accept'
         \Helper\AccessibilityValidator:
             pa11yPath: /usr/local/bin/pa11y
+        \Helper\HTMLValidator:
+            javaPath: /usr/bin/java
+            vnuPath: /usr/local/bin/vnu.jar
         Yii2:
             configFile: 'tests/config/functional.php'

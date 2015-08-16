@@ -1,4 +1,52 @@
 <?php
+
+/**
+ * A helper class for Codeception (http://codeception.com/) that allows automated HTML5 Validation
+ * using the Nu Html Checker (http://validator.github.io/validator/) during acceptance testing.
+ * It uses local binaries and can therefore be run offline.
+ *
+ *
+ * Requirements:
+ * =============
+ *
+ * - Codeception with WebDriver set up (PhpBrowser doesn't work)
+ * - java is installed locally
+ * - The vnu.jar is installed locally (download the .zip from https://github.com/validator/validator/releases,
+ *   it contains the .jar file)
+ *
+ *
+ * Installation:
+ * =============
+ *
+ * - Copy this file to _support/Helper/ in the codeception directory
+ * - Merge the following configuration to acceptance.suite.yml:
+
+modules:
+  enabled:
+    - \Helper\HTMLValidator
+  config:
+    \Helper\HTMLValidator:
+      javaPath: /usr/bin/java
+      vnuPath: /usr/local/bin/vnu.jar
+
+ *
+ *
+ * Usage:
+ * ======
+ *
+ * Validate the HTML of the current page:
+ * $I->validateHTML();
+ *
+ * Validate the HTML of the current page, but ignore errors containing the string "Ignoreit":
+ * $I->validateHTML(["Ignoreme"]);
+ *
+ *
+ *
+ * @license http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @author Tobias Hößl <tobias@hoessl.eu>
+ */
+
+
 namespace Helper;
 
 use Codeception\TestCase;
@@ -12,9 +60,18 @@ class HTMLValidator extends \Codeception\Module
      */
     private function validateByVNU($html)
     {
-        $filename = '/tmp/' . uniqid('html-validate') . '.html';
+        $javaPath = $this->_getConfig('javaPath');
+        if (!$javaPath) {
+            $javaPath = 'java';
+        }
+        $vnuPath = $this->_getConfig('vnuPath');
+        if (!$vnuPath) {
+            $vnuPath = '/usr/local/bin/vnu.jar';
+        }
+
+        $filename = DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . uniqid('html-validate') . '.html';
         file_put_contents($filename, $html);
-        exec("java -Xss1024k -jar /usr/local/bin/vnu.jar --format json " . $filename . " 2>&1", $return);
+        exec($javaPath . " -Xss1024k -jar " . $vnuPath . " --format json " . $filename . " 2>&1", $return);
         $data = json_decode($return[0], true);
         if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
             throw new \Exception('Invalid data returned from validation service: ' . $return);
@@ -25,9 +82,15 @@ class HTMLValidator extends \Codeception\Module
 
     /**
      * @return string
+     * @throws \Codeception\Exception\ModuleException
+     * @throws \Exception
      */
     private function getPageSource()
     {
+        if (!$this->hasModule('WebDriver')) {
+            throw new \Exception('This validator needs WebDriver to work');
+        }
+
         /** @var \Codeception\Module\WebDriver $webdriver */
         $webdriver = $this->getModule('WebDriver');
         return $webdriver->webDriver->getPageSource();
@@ -51,7 +114,7 @@ class HTMLValidator extends \Codeception\Module
             if ($message['type'] == 'error') {
                 $formattedMsg = '- Line ' . $message['lastLine'] . ', column ' . $message['lastColumn'] . ': ' .
                     $message['message'] . "\n  > " . $lines[$message['lastLine'] - 1];
-                $ignoring = false;
+                $ignoring     = false;
                 foreach ($ignoreMessages as $ignoreMessage) {
                     if (mb_stripos($formattedMsg, $ignoreMessage) !== false) {
                         $ignoring = true;

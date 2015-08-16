@@ -4,6 +4,7 @@
  * A helper class for Codeception (http://codeception.com/) that allows automated accessility checks
  * (WCAG 2.0, Section508) using the pa11y (http://pa11y.org/) command line tool
  * during acceptance testing.
+ * It uses local binaries and can therefore be run offline.
  *
  *
  * Requirements:
@@ -100,7 +101,7 @@ class AccessibilityValidator extends \Codeception\Module
 
         $pa11yPath = $this->_getConfig('pa11yPath');
         if (!$pa11yPath) {
-            $pa11yPath = '/usr/local/bin/pa11y';
+            $pa11yPath = 'pa11y';
         }
         if (!file_exists($pa11yPath)) {
             throw new \Exception('pa11y not found: ' . $pa11yPath);
