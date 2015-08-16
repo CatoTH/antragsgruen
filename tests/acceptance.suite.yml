@@ -24,7 +24,7 @@ modules:
             wait: 0
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
-        AccessibilityValidator:
-            variable1: value1
+        \Helper\AccessibilityValidator:
+            pa11yPath: /usr/local/bin/pa11y
         Yii2:
             configFile: 'tests/config/functional.php'
