@@ -1,16 +1,70 @@
 <?php
+
+/**
+ * A helper class for Codeception (http://codeception.com/) that allows automated accessility checks
+ * (WCAG 2.0, Section508) using the pa11y (http://pa11y.org/) command line tool
+ * during acceptance testing.
+ *
+ *
+ * Requirements:
+ * =============
+ *
+ * - Codeception with WebDriver or PhpBrowser set up
+ * - pa11y is installed locally (e.g. using "npm insgall -g pa11y")
+ *
+ *
+ * Installation:
+ * =============
+ *
+ * - Copy this file to _support/Helper/ in the codeception directory
+ * - Merge the following configuration to acceptance.suite.yml:
+
+modules:
+  enabled:
+    - \Helper\AccessibilityValidator
+  config:
+    \Helper\AccessibilityValidator:
+      pa11yPath: /usr/local/bin/pa11y
+
+ *
+ *
+ * Usage:
+ * ======
+ *
+ * Validate the current site against WCAG 2.0 (AAA):
+ * $I->validatePa11y(\Helper\AccessibilityValidator::STANDARD_WCAG2AAA);
+ *
+ * Validate the current site against WCAG 2.0 (AA):
+ * $I->validatePa11y(); // or:
+ * $I->validatePa11y(\Helper\AccessibilityValidator::STANDARD_WCAG2A);
+ *
+ * Validate the current site against WCAG 2.0 (A):
+ * $I->validatePa11y(\Helper\AccessibilityValidator::STANDARD_WCAG2A);
+ *
+ * Validate the current site against Section 508:
+ * $I->validatePa11y(\Helper\AccessibilityValidator::STANDARD_SECTION508);
+ *
+ * Validate against WCAG 2.0 (AA), but ignore errors containing the string "Ignoreme":
+ * $I->validatePa11y(\Helper\AccessibilityValidator::STANDARD_WCAG2A, ["Ignoreme"]);
+ *
+ *
+ *
+ * @license http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @author Tobias Hößl <tobias@hoessl.eu>
+ */
+
 namespace Helper;
 
 use Codeception\TestCase;
 
 class AccessibilityValidator extends \Codeception\Module
 {
-    public static $SUPPORTED_STANDARDS = [
+    public static $SUPPORTED_STANDARDS = array(
         'WCAG2AAA',
         'WCAG2AA',
         'WCAG2A',
         'Section508',
-    ];
+    );
     const STANDARD_WCAG2AAA   = 'WCAG2AAA';
     const STANDARD_WCAG2AA    = 'WCAG2AA';
     const STANDARD_WCAG2A     = 'WCAG2A';
@@ -21,13 +75,20 @@ class AccessibilityValidator extends \Codeception\Module
      */
     private function getPageUrl()
     {
-        /** @var \Codeception\Module\WebDriver $webdriver */
-        $webdriver = $this->getModule('WebDriver');
-        return $webdriver->webDriver->getCurrentURL();
+        if ($this->hasModule('WebDriver')) {
+            /** @var \Codeception\Module\WebDriver $webdriver */
+            $webdriver = $this->getModule('WebDriver');
+            return $webdriver->webDriver->getCurrentURL();
+        } else {
+            /** @var \Codeception\Module\PhpBrowser $phpBrowser */
+            $phpBrowser = $this->getModule('PhpBrowser');
+            return trim($phpBrowser->_getUrl(), '/') . $phpBrowser->_getCurrentUri();
+        }
     }
 
     /**
      * @param string $url
+     * @param string $standard
      * @return array
      * @throws \Exception
      */
@@ -36,7 +97,16 @@ class AccessibilityValidator extends \Codeception\Module
         if (!in_array($standard, static::$SUPPORTED_STANDARDS)) {
             throw new \Exception('Unknown standard: ' . $standard);
         }
-        exec('pa11y -s ' . $standard . ' -r json "' . $url . '"', $return);
+
+        $pa11yPath = $this->_getConfig('pa11yPath');
+        if (!$pa11yPath) {
+            $pa11yPath = '/usr/local/bin/pa11y';
+        }
+        if (!file_exists($pa11yPath)) {
+            throw new \Exception('pa11y not found: ' . $pa11yPath);
+        }
+
+        exec($pa11yPath . " -s " . $standard . " -r json '" . addslashes($url) . "'", $return);
         $data = json_decode($return[0], true);
         if (!$data) {
             $msg = 'Invalid data returned from validation service: ';
