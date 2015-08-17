@@ -32,10 +32,10 @@ $layout->addOnLoadJS('$.AntragsgruenAdmin.consultationSettingsForm();');
  */
 $booleanSettingRow = function ($settings, $field, &$handledSettings, $description) {
     $handledSettings[] = $field;
-    echo '<fieldset><label>';
+    echo '<div><label>';
     echo Html::checkbox('settings[' . $field . ']', $settings->$field, ['id' => $field]);
     echo $description;
-    echo '</label></fieldset>';
+    echo '</label></div>';
 };
 
 
