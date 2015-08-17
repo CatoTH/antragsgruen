@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\mail\Tools;
 use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
@@ -254,19 +255,13 @@ class MotionController extends Base
                 if ($motion->consultation->getSettings()->initiatorConfirmEmails) {
                     $initiator = $motion->getInitiators();
                     if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                        $text = "Hallo,\n\ndu hast soeben einen Antrag eingereicht.\n" .
-                            "Die Programmkommission wird den Antrag auf Zulässigkeit prüfen und freischalten. " .
-                            "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
-                            "Du kannst ihn hier einsehen: %LINK%\n\n" .
-                            "Mit freundlichen Grüßen,\n" .
-                            "  Das Antragsgrün-Team";
-                        \app\components\mail\Tools::sendWithLog(
+                        Tools::sendWithLog(
                             EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                             $this->site,
                             trim($initiator[0]->contactEmail),
                             null,
                             'Antrag eingereicht',
-                            str_replace('%LINK%', $motionLink, $text)
+                            str_replace('%LINK%', $motionLink, \Yii::t('amend', 'submitted_screening_email'))
                         );
                     }
                 }

@@ -178,7 +178,7 @@ if (!$minimalisticUi) {
     if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
         echo '<span class="unscreened">' . Html::encode($statiNames[$motion->status]) . '</span>';
     } elseif ($motion->status == Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
-        echo '<span class="screened">Von der Programmkommission geprüft</span>';
+        echo '<span class="screened">' . \Yii::t('motion', 'screened_hint') . '</span>';
     } else {
         echo Html::encode($statiNames[$motion->status]);
     }

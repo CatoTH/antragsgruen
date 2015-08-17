@@ -127,7 +127,7 @@ $statiNames            = Amendment::getStati();
 if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
     echo '<span class="unscreened">' . Html::encode($statiNames[$amendment->status]) . '</span>';
 } elseif ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
-    echo '<span class="screened">Von der Programmkommission geprüft</span>';
+    echo '<span class="screened">' . \Yii::t('amend', 'screened_hint') . '</span>';
 } else {
     echo Html::encode($statiNames[$amendment->status]);
 }

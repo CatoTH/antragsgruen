@@ -33,8 +33,6 @@ echo '<h1>' . Yii::t('backend', 'Translation / Wording') . '</h1>
 ';
 
 
-
-
 echo Html::beginForm('', 'post', ['id' => 'wordingBaseForm', 'class' => 'adminForm form-horizontal']);
 echo '<input type="hidden" name="category" value="' . Html::encode($category) . '">';
 echo $controller->showErrors();
@@ -93,23 +91,27 @@ echo '<br><br>';
 
 foreach ($strings as $stringKey => $stringOrig) {
     $encKey = Html::encode(urlencode($stringKey));
-    $value = (isset($consStrings[$stringKey]) ? $consStrings[$stringKey] : '');
-    echo '<fieldset class="form-group">
-    <label class="col-sm-6 control-label" for="consultationPath">';
-    echo Html::encode($stringOrig);
-    echo '</label>
-    <div class="col-sm-6">
-        <input type="text" name="string[' . $encKey . ']" value="' . Html::encode($value) . '"
-        class="form-control" placeholder="' . Html::encode($stringOrig) . '">
-    </div>
-    </fieldset>';
+    $value  = (isset($consStrings[$stringKey]) ? $consStrings[$stringKey] : '');
+    echo '<div class="form-group"><label class="col-sm-6 control-label" for="consultationPath">';
+    echo nl2br(Html::encode($stringOrig));
+    echo '</label><div class="col-sm-6">';
+
+    if (mb_strpos($stringOrig, "\n") !== false) {
+        echo '<textarea name="string[' . $encKey . ']" class="form-control" ';
+        echo 'placeholder="' . Html::encode($stringOrig) . '" rows="5">';
+        echo Html::encode($value);
+        echo '</textarea>';
+    } else {
+        echo '<input type="text" name="string[' . $encKey . ']" value="' . Html::encode($value) . '"
+        class="form-control" placeholder="' . Html::encode($stringOrig) . '">';
+    }
+    echo '</div></div>';
 }
 
 
 echo '<div class="saveholder">
 <button type="submit" name="save" class="btn btn-primary">Speichern</button>
 </div>';
-
 
 
 echo Html::endForm();

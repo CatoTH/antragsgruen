@@ -174,10 +174,37 @@ class ManagerController extends Base
         }
 
         $configfile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
-        $config = $this->getParams();
+        $config     = $this->getParams();
 
         if (isset($_POST['save'])) {
-            // @TODO
+            $config->resourceBase  = $_POST['resourceBase'];
+            $config->baseLanguage  = $_POST['baseLanguage'];
+            $config->tmpDir        = $_POST['tmpDir'];
+            $config->xelatexPath   = $_POST['xelatexPath'];
+            $config->xdvipdfmx     = $_POST['xdvipdfmx'];
+            $config->mailFromEmail = $_POST['mailFromEmail'];
+            $config->mailFromName  = $_POST['mailFromName'];
+
+            $file = '<?php' . "\n" . '$params = new \app\models\settings\AntragsgruenApp();' . "\n";
+            $vars = get_object_vars($config);
+
+            foreach ($vars as $key => $val) {
+                $valStr = null;
+                if (is_string($val)) {
+                     $valStr = "'" . addslashes($val) . "'";
+                } elseif (is_bool($val)) {
+                    $valStr = ($val ? 'true' : 'false');
+                } elseif (is_numeric($val)) {
+                    $valStr = IntVal($val);
+                } elseif (is_null($val)) {
+                    $valStr = 'null';
+                }
+                if ($valStr) {
+                    $file .= '$params->' . $key . ' = ' . $valStr . ";\n";
+                }
+            }
+            $file .= 'return $params;' . "\n";
+            var_dump($file);
 
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }
