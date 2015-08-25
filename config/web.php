@@ -1,14 +1,16 @@
 <?php
 
-require_once(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'models' .
-    DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR . 'AntragsgruenApp.php');
+$configDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'models' .
+    DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR;
+require_once($configDir . 'JsonConfigTrait.php');
+require_once($configDir . 'AntragsgruenApp.php');
 
-/** @var \app\models\settings\AntragsgruenApp $params */
 if (YII_ENV == 'test') {
-    $params = require(__DIR__ . DIRECTORY_SEPARATOR . 'config_tests.php');
+    $config = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json');
 } else {
-    $params = require(__DIR__ . DIRECTORY_SEPARATOR . 'config.php');
+    $config = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'config.json');
 }
+$params = new \app\models\settings\AntragsgruenApp($config);
 
 if (YII_DEBUG === false) {
     $params->dbConnection['enableSchemaCache']   = true;
@@ -40,7 +42,11 @@ $config = yii\helpers\ArrayHelper::merge(
         ],
     ]
 );
-
+if ($params->hasWurzelwerk && !isset($config['components']['authClientCollection']['clients']['wurzelwerk'])) {
+    $config['components']['authClientCollection']['clients']['wurzelwerk'] = [
+        'class' => 'app\components\WurzelwerkAuthClient',
+    ];
+}
 if (YII_ENV_DEV && strpos($_SERVER['HTTP_USER_AGENT'], 'pa11y') === false) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][]      = 'debug';

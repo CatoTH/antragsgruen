@@ -4,8 +4,8 @@ composer.lock
 runtime
 local
 test.php
-config/config.php
-config/config_tests.php
+config/config.json
+config/config_tests.json
 web/js/bower
 tests/_output/*
 tests/_output/*

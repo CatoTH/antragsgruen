@@ -56,8 +56,34 @@
         }).change();
     };
 
+    var siteConfig = function () {
+        var rebuildVisibility = function() {
+            console.log($("[name=\"mailService[transport]\"]"));
+            var transport = $("[name=\"mailService[transport]\"]").val(),
+                auth = $("[name=\"mailService[smtpAuthType]\"]").val();
+
+            $('.emailOption').hide();
+            if (transport == 'sendmail') {
+                // Nothing to do
+            } else if (transport == 'mandrill') {
+                $('.emailOption.mandrillApiKey').show();
+            } else if (transport == 'smtp') {
+                $('.emailOption.smtpHost').show();
+                $('.emailOption.smtpPort').show();
+                $('.emailOption.smtpAuthType').show();
+                if (auth != 'none') {
+                    $('.emailOption.smtpUsername').show();
+                    $('.emailOption.smtpPassword').show();
+                }
+            }
+        };
+        $("#smtpAuthType").on("changed.fu.selectlist", rebuildVisibility);
+        $("#emailTransport").on("changed.fu.selectlist", rebuildVisibility).trigger("changed.fu.selectlist");
+    };
+
     $.SiteManager = {
-        "createInstance": createInstance
+        "createInstance": createInstance,
+        "siteConfig": siteConfig
     };
 
 }(jQuery));

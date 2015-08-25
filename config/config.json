@@ -1,0 +1,27 @@
+{
+  "dbConnection": {
+    "class": "app\\components\\DBConnection",
+    "dsn": "mysql:host=localhost;dbname=antragsgruen",
+    "emulatePrepare": true,
+    "username": "antragsgruen",
+    "password": "antragsgruen",
+    "charset": "utf8mb4"
+  },
+  "multisiteMode": true,
+  "confirmEmailAddresses": false,
+  "mailService": {
+    "transport": "mandrill",
+    "apiKey": "ymqJf8BCxDfaqzAZ44wp1A"
+  },
+  "randomSeed": "l2kekjh3kj",
+  "cookieValidationKey": "RANDOMSEED",
+  "domainPlain": "http://antragsgruen-v3.localhost/",
+  "domainSubdomain": "http://<subdomain:[\\w_-]+>.antragsgruen-v3.localhost/",
+  "siteBehaviorClasses": {},
+  "mailFromName": "Antragsgrün Test",
+  "mailFromEmail": "test@antragsgruen.de",
+  "xelatexPath": "/Library/TeX/texbin/xelatex",
+  "adminUserIds": [
+    1
+  ]
+}

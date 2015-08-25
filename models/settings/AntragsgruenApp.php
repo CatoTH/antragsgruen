@@ -4,6 +4,8 @@ namespace app\models\settings;
 
 class AntragsgruenApp
 {
+    use JsonConfigTrait;
+
     public $dbConnection          = null;
     public $siteSubdomain         = null;
     public $prettyUrl             = true;
@@ -23,16 +25,12 @@ class AntragsgruenApp
     public $mailFromEmail         = 'EMAILADRESSE';
     public $adminUserIds          = [];
     public $siteBehaviorClasses   = [];
-    public $authClientCollection  = [
-        'wurzelwerk' => [
-            'class' => 'app\components\WurzelwerkAuthClient',
-        ]
-    ];
+    public $authClientCollection  = [];
     public $autoLoginDuration     = 0;
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
     public $xdvipdfmx             = null;
 
     /** @var null|array */
-    public $mailService           = null;
+    public $mailService = null;
 }

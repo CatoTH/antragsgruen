@@ -15,10 +15,15 @@ $controller  = $this->context;
 $this->title = 'Antragsgrün einrichten';
 $layout      = $controller->layoutParams;
 $layout->loadFuelux();
+$layout->addJS('js/manager.js');
+$layout->addOnLoadJS('$.SiteManager.siteConfig();');
+
 
 echo '<h1>' . 'Antragsgrün einrichten' . '</h1>';
-echo Html::beginForm('', 'post', ['class' => 'content siteConfigForm form-horizontal']);
+echo Html::beginForm('', 'post', ['class' => 'siteConfigForm form-horizontal']);
 
+
+echo '<div class="content">';
 echo $controller->showErrors();
 
 if (!$editable) {
@@ -72,6 +77,12 @@ echo '<div class="form-group">
     </div>
 </div>';
 
+echo '</div>';
+
+
+echo '<h2 class="green">' . 'E-Mail-Einstellungen' . '</h2>';
+
+echo '<div class="content">';
 echo '<div class="form-group">
     <label class="col-sm-4 control-label" for="mailFromEmail">' . 'E-Mail-Absender - Adresse' . ':</label>
     <div class="col-sm-8">
@@ -88,6 +99,87 @@ echo '<div class="form-group">
     </div>
 </div>';
 
+$currTransport = (isset($config->mailService['transport']) ? $config->mailService['transport'] : '');
+echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="emailTransport">' . 'Versandart' . ':</label>
+    <div class="col-sm-8">';
+echo HTMLTools::fueluxSelectbox(
+    'mailService[transport]',
+    [
+        'sendmail' => 'Sendmail (lokal)',
+        'smtp'     => 'SMTP (externer Mailserver)',
+        'mandrill' => 'Mandrill',
+    ],
+    $currTransport,
+    ['id' => 'emailTransport']
+);
+echo '</div>
+</div>';
+
+echo '<div class="form-group emailOption mandrillApiKey">
+    <label class="col-sm-4 control-label" for="mandrillApiKey">' . 'Mandrill\'s API-Key' . ':</label>
+    <div class="col-sm-8">
+        <input type="text" name="mandrillApiKey" placeholder=""
+        value="' . Html::encode($config->mailService['apiKey']) . '" class="form-control" id="mandrillApiKey">
+    </div>
+</div>';
+
+
+$currHost = (isset($config->mailService['host']) ? $config->mailService['host'] : '');
+echo '<div class="form-group emailOption smtpHost">
+    <label class="col-sm-4 control-label" for="smtpHost">' . 'SMTP Server' . ':</label>
+    <div class="col-sm-8">
+        <input type="text" name="smtpHost" placeholder="smtp.yourserver.de"
+        value="' . Html::encode($currHost) . '" class="form-control" id="smtpHost">
+    </div>
+</div>';
+
+$currPort = (isset($config->mailService['port']) ? $config->mailService['port'] : 25);
+echo '<div class="form-group emailOption smtpPort">
+    <label class="col-sm-4 control-label" for="smtpPort">' . 'SMTP Port' . ':</label>
+    <div class="col-sm-3">
+        <input type="number" name="smtpPort" placeholder="25"
+        value="' . Html::encode($currPort) . '" class="form-control" id="smtpPort">
+    </div>
+</div>';
+
+$currAuthType = (isset($config->mailService['authType']) ? $config->mailService['authType'] : '');
+echo '<div class="form-group emailOption smtpAuthType">
+    <label class="col-sm-4 control-label" for="smtpAuthType">' . 'SMTP Login-Typ' . ':</label>
+    <div class="col-sm-8">';
+echo HTMLTools::fueluxSelectbox(
+    'mailService[smtpAuthType]',
+    [
+        'none'      => 'Kein Login',
+        'plain'     => 'Plain',
+        'login'     => 'LOGIN',
+        'crammd5'   => 'Cram-MD5',
+        'plain_tls' => 'PLAIN / TLS',
+    ],
+    $currAuthType,
+    ['id' => 'smtpAuthType']
+);
+echo '</div>
+</div>';
+
+$currUsername = (isset($config->mailService['username']) ? $config->mailService['username'] : '');
+echo '<div class="form-group emailOption smtpUsername">
+    <label class="col-sm-4 control-label" for="smtpUsername">' . 'SMTP BenutzerInnenname' . ':</label>
+    <div class="col-sm-8">
+        <input type="text" name="smtpUsername" placeholder=""
+        value="' . Html::encode($currUsername) . '" class="form-control" id="smtpUsername">
+    </div>
+</div>';
+
+$currPassword = (isset($config->mailService['password']) ? $config->mailService['password'] : '');
+echo '<div class="form-group emailOption smtpPassword">
+    <label class="col-sm-4 control-label" for="smtpPassword">' . 'SMTP Passwort' . ':</label>
+    <div class="col-sm-8">
+        <input type="password" name="smtpPassword" placeholder=""
+        value="' . Html::encode($currPassword) . '" class="form-control" id="smtpPassword">
+    </div>
+</div>';
+
 
 echo '<div class="saveholder">
 <button type="submit" name="save" class="btn btn-primary" ';
@@ -96,6 +188,8 @@ if (!$editable) {
 }
 echo '>Speichern</button>
 </div>';
+
+echo '</div>';
 
 var_dump($config);
 

@@ -1,0 +1,24 @@
+{
+  "dbConnection": {
+    "class": "app\\components\\DBConnection",
+    "dsn": "mysql:host=localhost;dbname=###DB###",
+    "emulatePrepare": true,
+    "username": "###USERNAME###",
+    "password": "###PASSWORD###",
+    "charset": "utf8mb4"
+  },
+  "mailService": {
+    "transport": "sendmail"
+  },
+  "multisiteMode": false,
+  "siteSubdomain": "stdparteitag",
+  "prettyUrl": false,
+  "randomSeed": "RANDOMSEED",
+  "cookieValidationKey": "RANDOMSEED",
+  "domainPlain": "/",
+  "domainSubdomain": "",
+  "resourceBase": "/antragsgruen/web/",
+  "mailFromName": "Antragsgrün",
+  "mailFromEmail": "info@example.org",
+  "autoLoginDuration": 604800
+}

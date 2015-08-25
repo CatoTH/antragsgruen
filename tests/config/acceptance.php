@@ -2,9 +2,8 @@
 /**
  * Application configuration for acceptance tests
  */
-$base_dir    = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' .
-    DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-$base_config = $base_dir . 'config' . DIRECTORY_SEPARATOR;
+$baseDir    = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+$baseConfig = $baseDir . 'config' . DIRECTORY_SEPARATOR;
 
 $config = yii\helpers\ArrayHelper::merge(
     require(__DIR__ . '/../../config/web.php'),
@@ -13,6 +12,6 @@ $config = yii\helpers\ArrayHelper::merge(
 
     ]
 );
-$config['components']['urlManager']['rules'] = require($base_config . "urls.php");
+$config['components']['urlManager']['rules'] = require($baseConfig . "urls.php");
 
 return $config;

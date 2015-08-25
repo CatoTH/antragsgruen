@@ -2,11 +2,12 @@
 
 namespace app\models\settings;
 
-use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 
 class Consultation
 {
+    use JsonConfigTrait;
+
     const START_LAYOUT_STD         = 0;
     const START_LAYOUT_TAGS        = 2;
     const START_LAYOUT_AGENDA      = 3;
@@ -46,57 +47,6 @@ class Consultation
     public $logoUrlFB       = null;
     public $motionIntro     = null;
     public $pdfIntroduction = '';
-
-    /**
-     * @param string|null $data
-     */
-    public function __construct($data)
-    {
-        if ($data == '') {
-            return;
-        }
-        $data = (array)json_decode($data);
-
-        if (!is_array($data)) {
-            return;
-        }
-        foreach ($data as $key => $val) {
-            if (property_exists($this, $key)) {
-                $this->$key = $val;
-            }
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function toJSON()
-    {
-        return json_encode(get_object_vars($this));
-    }
-
-    /**
-     * @param array $formdata
-     * @param array $affectedFields
-     * @throws FormError
-     */
-    public function saveForm($formdata, $affectedFields)
-    {
-        $fields = get_object_vars($this);
-        foreach ($affectedFields as $key) {
-            if (!array_key_exists($key, $fields)) {
-                throw new FormError('Unknown field: ' . $key);
-            }
-            $val = $fields[$key];
-            if (is_bool($val)) {
-                $this->$key = (isset($formdata[$key]) && (bool)$formdata[$key]);
-            } elseif (is_int($val)) {
-                $this->$key = (int)$formdata[$key];
-            } else {
-                $this->$key = $formdata[$key];
-            }
-        }
-    }
 
     /**
      * @return string[]

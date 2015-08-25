@@ -20,15 +20,15 @@
  *
  * - Copy this file to _support/Helper/ in the codeception directory
  * - Merge the following configuration to acceptance.suite.yml:
-
-modules:
-  enabled:
-    - \Helper\HTMLValidator
-  config:
-    \Helper\HTMLValidator:
-      javaPath: /usr/bin/java
-      vnuPath: /usr/local/bin/vnu.jar
-
+ *
+ * modules:
+ *   enabled:
+ *     - \Helper\HTMLValidator
+ *   config:
+ *     \Helper\HTMLValidator:
+ *       javaPath: /usr/bin/java
+ *       vnuPath: /usr/local/bin/vnu.jar
+ *
  *
  *
  * Usage:

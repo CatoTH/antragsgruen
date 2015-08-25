@@ -19,14 +19,13 @@
  *
  * - Copy this file to _support/Helper/ in the codeception directory
  * - Merge the following configuration to acceptance.suite.yml:
-
-modules:
-  enabled:
-    - \Helper\AccessibilityValidator
-  config:
-    \Helper\AccessibilityValidator:
-      pa11yPath: /usr/local/bin/pa11y
-
+ *
+ * modules:
+ *   enabled:
+ *     - \Helper\AccessibilityValidator
+ *   config:
+ *     \Helper\AccessibilityValidator:
+ *       pa11yPath: /usr/local/bin/pa11y
  *
  *
  * Usage:

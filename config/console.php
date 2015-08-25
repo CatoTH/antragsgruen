@@ -1,9 +1,12 @@
 <?php
 
-require_once(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'models' .
-    DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR . 'AntragsgruenApp.php');
+$configDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'models' .
+    DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR;
+require_once($configDir . 'JsonConfigTrait.php');
+require_once($configDir . 'AntragsgruenApp.php');
 
-$params = require(__DIR__ . DIRECTORY_SEPARATOR . 'config.php');
+$config = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'config.json');
+$params = new \app\models\settings\AntragsgruenApp($config);
 $common = require(__DIR__ . DIRECTORY_SEPARATOR . 'common.php');
 
 return yii\helpers\ArrayHelper::merge(

@@ -375,7 +375,7 @@ class HTMLTools
         }
         $str .= '</ul>
   <input class="hidden hidden-field" name="' . $formName . '" readonly="readonly" ' .
-            ' title="[Hidden]" aria-hidden="true" type="text">
+            ' title="[Hidden]" aria-hidden="true" type="text" value="' . Html::encode($selected) . '">
 </div>';
         return $str;
     }

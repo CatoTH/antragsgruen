@@ -185,25 +185,7 @@ class ManagerController extends Base
             $config->mailFromEmail = $_POST['mailFromEmail'];
             $config->mailFromName  = $_POST['mailFromName'];
 
-            $file = '<?php' . "\n" . '$params = new \app\models\settings\AntragsgruenApp();' . "\n";
-            $vars = get_object_vars($config);
-
-            foreach ($vars as $key => $val) {
-                $valStr = null;
-                if (is_string($val)) {
-                     $valStr = "'" . addslashes($val) . "'";
-                } elseif (is_bool($val)) {
-                    $valStr = ($val ? 'true' : 'false');
-                } elseif (is_numeric($val)) {
-                    $valStr = IntVal($val);
-                } elseif (is_null($val)) {
-                    $valStr = 'null';
-                }
-                if ($valStr) {
-                    $file .= '$params->' . $key . ' = ' . $valStr . ";\n";
-                }
-            }
-            $file .= 'return $params;' . "\n";
+            $file = $config->createConfigFile();
             var_dump($file);
 
             \yii::$app->session->setFlash('success', 'Gespeichert.');
