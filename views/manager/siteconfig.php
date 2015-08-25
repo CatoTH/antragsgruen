@@ -7,6 +7,7 @@ use yii\helpers\Html;
  * @var yii\web\View $this
  * @var \app\models\settings\AntragsgruenApp $config
  * @var bool $editable
+ * @var string $makeEditabeCommand
  */
 
 
@@ -30,8 +31,8 @@ if (!$editable) {
     echo '<div class="alert alert-danger" role="alert">';
     echo 'Die Einstellungen können nicht bearbeitet werden, da die Datei config/config.json nicht bearbeitbar ist.
     <br>Das lässt sich mit folgendem Befehl (oder ähnlich, je nach Betriebssystem) auf der Kommandozeile beheben:
-    <br><pre>';
-    echo 'chmod a+r @TODO'; // @TODO
+    <br><br><pre>';
+    echo Html::encode($makeEditabeCommand);
     echo '</pre>';
     echo '</div>';
 }
@@ -191,7 +192,5 @@ echo '>Speichern</button>
 </div>';
 
 echo '</div>';
-
-var_dump($config);
 
 echo Html::endForm();

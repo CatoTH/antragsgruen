@@ -8,11 +8,13 @@ use app\components\UrlHelper;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Access;
+use app\models\forms\AntragsgruenInitForm;
 use app\models\forms\SiteCreateForm;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\Response;
 
 class ManagerController extends Base
 {
@@ -103,9 +105,9 @@ class ManagerController extends Base
                     return $this->render(
                         'created',
                         [
-                            "site"       => $site,
-                            "login_id"   => $login_id,
-                            "login_code" => $login_code,
+                            'site'       => $site,
+                            'login_id'   => $login_id,
+                            'login_code' => $login_code,
                         ]
                     );
                 } else {
@@ -123,8 +125,8 @@ class ManagerController extends Base
         return $this->render(
             'createsite',
             [
-                "model"  => $model,
-                "errors" => $errors
+                'model'  => $model,
+                'errors' => $errors
             ]
         );
 
@@ -170,11 +172,15 @@ class ManagerController extends Base
     {
         $user = User::getCurrentUser();
         if (!$user || !in_array($user->id, $this->getParams()->adminUserIds)) {
-            throw new Access('No access to this page');
+            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
         }
 
         $configfile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.json';
         $config     = $this->getParams();
+
+        if ($config->multisiteMode) {
+            return $this->showErrorpage(500, 'This configuration tool can only be used for single-site installations.');
+        }
 
         if (isset($_POST['save'])) {
             $config->resourceBase  = $_POST['resourceBase'];
@@ -218,17 +224,24 @@ class ManagerController extends Base
 
         $editable = is_writable($configfile);
 
-        return $this->render('siteconfig', ['config' => $config, 'editable' => $editable]);
+        $myUsername = posix_getpwuid(posix_geteuid());
+        $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configfile;
+
+        return $this->render('siteconfig', [
+            'config'             => $config,
+            'editable'           => $editable,
+            'makeEditabeCommand' => $makeEditabeCommand,
+        ]);
     }
 
     /**
      */
-    public function actionDbinit()
+    public function actionAntragsgrueninit()
     {
         $installFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'INSTALLING';
         if (!file_exists($installFile)) {
             $msg = 'Die Seite wurde bereits konfiguriert.<br>
-            Um die Datenbank-Installation erneut aufzurufen, lege bitte folgende Datei an:<br>
+            Um die Grundinstallation erneut aufzurufen, lege bitte folgende Datei an:<br>
             %FILE%<br><br>';
             $url = Url::toRoute('manager/siteconfig');
             $msg .= Html::a('Weiter zur allgemeinen Konfiguration', $url, ['class' => 'btn btn-primary']);
@@ -236,26 +249,33 @@ class ManagerController extends Base
             return $this->showErrorpage(403, $msg);
         }
 
+        $form = new AntragsgruenInitForm();
+
         if (isset($_POST['save'])) {
+            $form->setAttributes($_POST);
+
             // @TODO
         }
 
-        return $this->render('dbinit');
+        return $this->render('antragsgruen_init', ['form' => $form]);
     }
 
     /**
-     */
-    public function actionDbinittest()
-    {
-        // @TODO
-    }
-
-    /**
-     * @param int $error_code
      * @return string
      */
-    public function actionError($error_code = 0)
+    public function actionAntragsgrueninitdbtest()
     {
-        return $error_code;
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $form = new AntragsgruenInitForm();
+        $form->setAttributes($_POST);
+
+        try {
+            $success = $form->verifyDBConnection();
+            return json_encode(['success' => $success]);
+        } catch (\Exception $e) {
+            return json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
     }
 }

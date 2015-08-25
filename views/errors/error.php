@@ -18,33 +18,33 @@ if (!isset($httpStatus)) {
     $httpStatus = 500;
 }
 if (!isset($name)) {
-    $name = "Fehler";
+    $name = 'Fehler';
 }
 
 switch ($httpStatus) {
     case 404:
-        if ($message == "") {
-            $message = "Die gesuchte Seite gibt es nicht.";
+        if ($message == '') {
+            $message = 'Die gesuchte Seite gibt es nicht.';
         }
-        header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+        header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
         break;
     case 403:
-        if ($message == "") {
-            $message = "Kein Zugriff auf diese Seite.";
+        if ($message == '') {
+            $message = 'Kein Zugriff auf diese Seite.';
         }
-        header($_SERVER["SERVER_PROTOCOL"] . ' 403 Forbidden');
+        header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
         break;
     case 410:
-        if ($message == "") {
-            $message = "Dieser Inhalt wurde gelöscht.";
+        if ($message == '') {
+            $message = 'Dieser Inhalt wurde gelöscht.';
         }
-        header($_SERVER["SERVER_PROTOCOL"] . ' 410 Gone');
+        header($_SERVER['SERVER_PROTOCOL'] . ' 410 Gone');
         break;
     case 500:
-        if ($message == "") {
-            $message = "Ein interner Fehler ist aufgetreten.";
+        if ($message == '') {
+            $message = 'Ein interner Fehler ist aufgetreten.';
         }
-        header($_SERVER["SERVER_PROTOCOL"] . ' 500 Internal Server Error');
+        header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
         break;
 }
 
