@@ -42,7 +42,7 @@
         Sortable.create(document.getElementById("tagsListUl"), {draggable: '.pill'});
 
         var $adminsMayEdit = $("#adminsMayEdit"),
-            $iniatorsMayEdit = $("#iniatorsMayEdit").parents("fieldset").first();
+            $iniatorsMayEdit = $("#iniatorsMayEdit").parents("label").first().parent();
         $adminsMayEdit.change(function () {
             if ($(this).prop("checked")) {
                 $iniatorsMayEdit.removeClass("hidden");
