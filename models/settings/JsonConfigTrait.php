@@ -31,7 +31,7 @@ trait JsonConfigTrait
      */
     public function toJSON()
     {
-        return json_encode(get_object_vars($this));
+        return json_encode(get_object_vars($this), JSON_PRETTY_PRINT);
     }
 
     /**

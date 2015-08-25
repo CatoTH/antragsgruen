@@ -173,7 +173,7 @@ class ManagerController extends Base
             throw new Access('No access to this page');
         }
 
-        $configfile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php';
+        $configfile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.json';
         $config     = $this->getParams();
 
         if (isset($_POST['save'])) {
@@ -185,8 +185,33 @@ class ManagerController extends Base
             $config->mailFromEmail = $_POST['mailFromEmail'];
             $config->mailFromName  = $_POST['mailFromName'];
 
-            $file = $config->createConfigFile();
-            var_dump($file);
+            switch ($_POST['mailService']['transport']) {
+                case 'sendmail':
+                    $config->mailService = ['transport' => 'sendmail'];
+                    break;
+                case 'mandrill':
+                    $config->mailService = [
+                        'transport' => 'mandrill',
+                        'apiKey'    => $_POST['mailService']['mandrillApiKey'],
+                    ];
+                    break;
+                case 'smtp':
+                    $config->mailService = [
+                        'transport' => 'smtp',
+                        'host'      => $_POST['mailService']['smtpHost'],
+                        'port'      => $_POST['mailService']['smtpPort'],
+                        'authType'  => $_POST['mailService']['smtpAuthType'],
+                    ];
+                    if ($_POST['mailService']['smtpAuthType'] != 'none') {
+                        $config->mailService['username'] = $_POST['mailService']['smtpUsername'];
+                        $config->mailService['password'] = $_POST['mailService']['smtpPassword'];
+                    }
+                    break;
+            }
+
+            $file = fopen($configfile, 'w');
+            fwrite($file, $config->toJSON());
+            fclose($file);
 
             \yii::$app->session->setFlash('success', 'Gespeichert.');
         }

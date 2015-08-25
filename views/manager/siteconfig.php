@@ -28,7 +28,7 @@ echo $controller->showErrors();
 
 if (!$editable) {
     echo '<div class="alert alert-danger" role="alert">';
-    echo 'Die Einstellungen können nicht bearbeitet werden, da die Datei config/config.php nicht bearbeitbar ist.
+    echo 'Die Einstellungen können nicht bearbeitet werden, da die Datei config/config.json nicht bearbeitbar ist.
     <br>Das lässt sich mit folgendem Befehl (oder ähnlich, je nach Betriebssystem) auf der Kommandozeile beheben:
     <br><pre>';
     echo 'chmod a+r @TODO'; // @TODO
@@ -116,11 +116,12 @@ echo HTMLTools::fueluxSelectbox(
 echo '</div>
 </div>';
 
+$currApiKey = (isset($config->mailService['apiKey']) ? $config->mailService['apiKey'] : '');
 echo '<div class="form-group emailOption mandrillApiKey">
     <label class="col-sm-4 control-label" for="mandrillApiKey">' . 'Mandrill\'s API-Key' . ':</label>
     <div class="col-sm-8">
-        <input type="text" name="mandrillApiKey" placeholder=""
-        value="' . Html::encode($config->mailService['apiKey']) . '" class="form-control" id="mandrillApiKey">
+        <input type="text" name="mailService[mandrillApiKey]" placeholder=""
+        value="' . Html::encode($currApiKey) . '" class="form-control" id="mandrillApiKey">
     </div>
 </div>';
 
@@ -129,7 +130,7 @@ $currHost = (isset($config->mailService['host']) ? $config->mailService['host'] 
 echo '<div class="form-group emailOption smtpHost">
     <label class="col-sm-4 control-label" for="smtpHost">' . 'SMTP Server' . ':</label>
     <div class="col-sm-8">
-        <input type="text" name="smtpHost" placeholder="smtp.yourserver.de"
+        <input type="text" name="mailService[smtpHost]" placeholder="smtp.yourserver.de"
         value="' . Html::encode($currHost) . '" class="form-control" id="smtpHost">
     </div>
 </div>';
@@ -138,7 +139,7 @@ $currPort = (isset($config->mailService['port']) ? $config->mailService['port'] 
 echo '<div class="form-group emailOption smtpPort">
     <label class="col-sm-4 control-label" for="smtpPort">' . 'SMTP Port' . ':</label>
     <div class="col-sm-3">
-        <input type="number" name="smtpPort" placeholder="25"
+        <input type="number" name="mailService[smtpPort]" placeholder="25"
         value="' . Html::encode($currPort) . '" class="form-control" id="smtpPort">
     </div>
 </div>';
@@ -166,7 +167,7 @@ $currUsername = (isset($config->mailService['username']) ? $config->mailService[
 echo '<div class="form-group emailOption smtpUsername">
     <label class="col-sm-4 control-label" for="smtpUsername">' . 'SMTP BenutzerInnenname' . ':</label>
     <div class="col-sm-8">
-        <input type="text" name="smtpUsername" placeholder=""
+        <input type="text" name="mailService[smtpUsername]" placeholder=""
         value="' . Html::encode($currUsername) . '" class="form-control" id="smtpUsername">
     </div>
 </div>';
@@ -175,7 +176,7 @@ $currPassword = (isset($config->mailService['password']) ? $config->mailService[
 echo '<div class="form-group emailOption smtpPassword">
     <label class="col-sm-4 control-label" for="smtpPassword">' . 'SMTP Passwort' . ':</label>
     <div class="col-sm-8">
-        <input type="password" name="smtpPassword" placeholder=""
+        <input type="password" name="mailService[smtpPassword]" placeholder=""
         value="' . Html::encode($currPassword) . '" class="form-control" id="smtpPassword">
     </div>
 </div>';
