@@ -11,13 +11,13 @@ class WurzelwerkAuthClient extends OpenId
     public $authUrl = 'https://service.gruene.de/openid/';
 
     public $requiredAttributes = [
-        'contact/email',
+        'namePerson/friendly',
     ];
 
     public $optionalAttributes = [
         'namePerson/first',
         'namePerson/last',
-        'namePerson/friendly',
+        'contact/email',
     ];
 
     /**
@@ -167,8 +167,10 @@ class WurzelwerkAuthClient extends OpenId
         $user = new User();
         //$user->name            = $attributes['namePerson/friendly'];
         $user->name            = ''; // https://github.com/CatoTH/antragsgruen/issues/77
-        $user->email           = $attributes['contact/email'];
-        $user->emailConfirmed  = 1;
+        if (isset($attributes['contact/email'])) {
+            $user->email          = $attributes['contact/email'];
+            $user->emailConfirmed = 1;
+        }
         $user->auth            = $auth;
         $user->status          = User::STATUS_CONFIRMED;
         // @TODO E-Mail
