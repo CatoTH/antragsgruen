@@ -627,6 +627,42 @@ class Diff
                     throw new Internal('Not implemented yet - does this even happen?');
                 }
 
+                $updates = $this->computeSubsequentInsertsDeletes($diff, $currDiffLine);
+                if ($updates) {
+                    list ($deletes, $inserts, $count) = $updates;
+                    $motionParaLines = 0;
+                    for ($j = 0; $j < count($deletes); $j++) {
+                        $lineDiff = $this->computeLineDiff($deletes[$j], $inserts[$j]);
+
+                        $split = $this->getUnchangedPrefixPostfix($deletes[$j], $inserts[$j], $lineDiff);
+                        list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
+                        $motionParaLines += LineSplitter::countMotionParaLines($prefix, $lineLength);
+
+                        if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
+                            $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
+                            $changeStr   = $prefix;
+                            if ($changeRatio <= static::MAX_LINE_CHANGE_RATIO) {
+                                $changeStr .= $middleDiff;
+                            } else {
+                                $changeStr .= $this->wrapWithDelete($middleOrig) . "\n";
+                                $changeStr .= $this->wrapWithInsert($middleNew);
+                            }
+                            $changeStr .= $postfix . "\n";
+                        } else {
+                            $changeStr = $lineDiff . "\n";
+                        }
+
+                        $currLine         = $firstAffLine + $motionParaLines - 1 + $j;
+                        $paraNo           = $currOrigPara + $j;
+                        $changed[$paraNo] = new ParagraphAmendment($amSec, $paraNo, $changeStr, $currLine);
+                    }
+                    $currDiffLine += $count * 2 - 1;
+                } else {
+                    $deleteStr              = $this->wrapWithDelete($diffLine[0]);
+                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);
+                }
+
+                /*
                 if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
                     $lineDiff = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
                     $split    = $this->getUnchangedPrefixPostfix($diffLine[0], $diff[$currDiffLine + 1][0], $lineDiff);
@@ -654,6 +690,8 @@ class Diff
                     $deleteStr              = $this->wrapWithDelete($diffLine[0]);
                     $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);
                 }
+                */
+
                 /*
                 if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
                     $changeStr              = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);

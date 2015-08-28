@@ -5077,15 +5077,15 @@ ins, ul.inserted, blockquote.inserted {
       text-decoration: underline; }
     .motionTextHolder .paragraph .textAmendment .preamble {
       position: absolute;
-      top: -20px;
-      height: 30px;
+      top: -25px;
+      height: 35px;
       color: #afcb08;
       width: 100%; }
       .motionTextHolder .paragraph .textAmendment .preamble > div {
         position: absolute;
         bottom: 0;
         left: 0;
-        max-height: 30px;
+        max-height: 35px;
         padding-right: 50px;
         white-space: nowrap;
         overflow: hidden;

@@ -521,15 +521,15 @@
       }
       .preamble {
         position: absolute;
-        top: -20px;
-        height: 30px;
+        top: -($inlineAmendmentPreambleHeight - 10);
+        height: $inlineAmendmentPreambleHeight;
         color: $colorGreenLight;
         width: 100%;
         > div {
           position: absolute;
           bottom: 0;
           left: 0;
-          max-height: 30px;
+          max-height: $inlineAmendmentPreambleHeight;
           padding-right: 50px;
           white-space: nowrap;
           overflow: hidden;
