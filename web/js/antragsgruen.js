@@ -477,10 +477,15 @@
                     firstLine = $amendment.data("first-line"),
                     targetOffset = (firstLine - $paraFirstLine.data("line-number")) * lineHeight,
                     $prevBookmark = $amendment.prev(),
+                    delta = targetOffset;
+                $prevBookmark.each(function() {
+                    var $pre = $(this);
+                    delta -= $pre.height();
+                    delta -= $pre.css("margin-top");
+                    delta -= 7;
+                });
+                if (delta < 0) {
                     delta = 0;
-                if ($prevBookmark.length > 0) {
-                    delta = targetOffset - ($prevBookmark.height() + 7);
-                    if (delta < 0) delta = 0;
                 }
                 $amendment.css('margin-top', delta + "px");
 
