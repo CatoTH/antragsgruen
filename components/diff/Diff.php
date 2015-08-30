@@ -561,14 +561,18 @@ class Diff
                     throw new Internal('Not implemented yet - does this even happen?');
                 }
 
-                if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
-                    $changed[$currOrigPara] = $diff[$currDiffLine + 1][0];
-                    $currDiffLine++;
+                $updates = $this->computeSubsequentInsertsDeletes($diff, $currDiffLine);
+                if ($updates) {
+                    for ($j = 0; $j < count($updates[0]); $j++) {
+                        $changed[$currOrigPara] = $updates[1][$j];
+                        $currOrigPara++;
+                    }
+                    $currDiffLine += count($updates[0]) * 2 - 1;
                 } else {
                     $changed[$currOrigPara] = '';
+                    $currOrigPara++;
                 }
 
-                $currOrigPara++;
                 continue;
             }
         }
@@ -662,49 +666,6 @@ class Diff
                     $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);
                 }
 
-                /*
-                if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
-                    $lineDiff = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $split    = $this->getUnchangedPrefixPostfix($diffLine[0], $diff[$currDiffLine + 1][0], $lineDiff);
-                    list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
-                    $motionParaLines = LineSplitter::countMotionParaLines($prefix, $lineLength);
-
-                    if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
-                        $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
-                        $changeStr   = $prefix;
-                        if ($changeRatio <= static::MAX_LINE_CHANGE_RATIO) {
-                            $changeStr .= $middleDiff;
-                        } else {
-                            $changeStr .= $this->wrapWithDelete($middleOrig) . "\n";
-                            $changeStr .= $this->wrapWithInsert($middleNew);
-                        }
-                        $changeStr .= $postfix;
-                    } else {
-                        $changeStr = $lineDiff;
-                    }
-
-                    $currLine               = $firstAffLine + $motionParaLines - 1;
-                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $changeStr, $currLine);
-                    $currDiffLine++;
-                } else {
-                    $deleteStr              = $this->wrapWithDelete($diffLine[0]);
-                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);
-                }
-                */
-
-                /*
-                if (isset($diff[$currDiffLine + 1]) && $diff[$currDiffLine + 1][1] == Engine::INSERTED) {
-                    $changeStr              = $this->computeLineDiff($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $commonStr              = static::getCommonBeginning($diffLine[0], $diff[$currDiffLine + 1][0]);
-                    $motionParaLines        = LineSplitter::countMotionParaLines($commonStr, $lineLength);
-                    $currLine               = $firstAffLine + $motionParaLines - 1;
-                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $changeStr, $currLine);
-                    $currDiffLine++;
-                } else {
-                    $deleteStr              = $this->wrapWithDelete($diffLine[0]);
-                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);
-                }
-                */
                 $currOrigPara++;
                 $currOrigLine += LineSplitter::countMotionParaLines($diffLine[0], $lineLength);
                 continue;
