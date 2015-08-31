@@ -74,11 +74,13 @@ class AdminController extends Controller
      */
     public function actionFlushAllConsultationCaches()
     {
-        /** @var Consultation[] $cons */
-        $cons = Consultation::findAll(['1' => '1']);
-        foreach ($cons as $con) {
-            $con->flushCacheWithChildren();
+        $tables = ['amendment', 'amendmentSection', 'motion', 'motionSection'];
+        foreach ($tables as $table) {
+            $command = \yii::$app->db->createCommand();
+            $command->setSql('UPDATE `' . $table . '` SET cache = ""');
+            $command->execute();
         }
+
         $this->stdout('All caches of all consultations have been flushed' . "\n");
     }
 }
