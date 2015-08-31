@@ -134,4 +134,12 @@ class HTMLNormalizeTest extends TestBase
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }
+
+    public function testStripMultipleSpaces()
+    {
+        $orig   = '<p>Bla Bla   Bla</p><pre>Bla Bla  Bla</pre>';
+        $expect = '<p>Bla Bla Bla</p>' . "\n" . '<pre>Bla Bla  Bla</pre>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
 }

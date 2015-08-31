@@ -16,6 +16,14 @@ class HTMLTools
     {
         $html = str_replace(chr(194) . chr(160), ' ', $html); // Long space
         $html = str_replace(chr(0xef) . chr(0xbb) . chr(0xbf), '', $html); // Byte order Mark
+
+        // Replace multiple spaces by one, except within <pre>
+        $html = preg_replace_callback('/<pre>.*<\/pre>/siuU', function ($matches) {
+            return str_replace(' ', chr(194) . chr(160), $matches[0]);
+        }, $html);
+        $html = preg_replace('/ {2,}/siu', ' ', $html);
+        $html = str_replace(chr(194) . chr(160), ' ', $html);
+
         return $html;
     }
 
@@ -77,10 +85,11 @@ class HTMLTools
         $html = HtmlPurifier::process(
             $html,
             function ($config) {
+                $allowedTags = 'p,strong,em,ul,ol,li,span,a,br,blockquote,sub,sup,pre';
                 /** @var \HTMLPurifier_Config $config */
                 $conf = [
                     'HTML.Doctype'                            => 'HTML 4.01 Transitional',
-                    'HTML.AllowedElements'                    => 'p,strong,em,ul,ol,li,span,a,br,blockquote,sub,sup',
+                    'HTML.AllowedElements'                    => $allowedTags,
                     'HTML.AllowedAttributes'                  => 'style,href,class',
                     'Attr.AllowedClasses'                     => 'underline,strike,subscript,superscript',
                     'CSS.AllowedProperties'                   => '',
