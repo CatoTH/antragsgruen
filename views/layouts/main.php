@@ -54,11 +54,11 @@ echo '<!--[if lt IE 9]>
     <![endif]-->
 ';
 
-echo '<link rel="stylesheet" href="' . $resourceBase . 'css/' . $layout->mainCssFile . '.css">' . "\n";
-
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . Html::encode($file) . '">' . "\n";
 }
+
+echo '<link rel="stylesheet" href="' . $resourceBase . 'css/' . $layout->mainCssFile . '.css">' . "\n";
 
 echo '<!--[if lt IE 9]>
     <script src="' . $resourceBase . 'js/jquery-1.11.3.min.js"></script>
