@@ -20,6 +20,18 @@ class AntragsgruenInitForm extends Model
     public $adminUsername;
     public $adminPassword;
 
+    public $configFile;
+
+    /**
+     * @param string $configFile
+     */
+    public function __construct($configFile)
+    {
+        parent::__construct();
+        $this->configFile = $configFile;
+    }
+
+
     /**
      * @return array
      */
@@ -39,5 +51,28 @@ class AntragsgruenInitForm extends Model
     public function verifyDBConnection()
     {
         // @TODO
+    }
+
+    /**
+     * @return string[]
+     */
+    public function verifyConfiguration()
+    {
+        $errors = [];
+        try {
+            $this->verifyDBConnection();
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+        // @TODO
+        return $errors;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConfigured()
+    {
+        return file_exists($this->configFile);
     }
 }

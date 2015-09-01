@@ -5,6 +5,8 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var \app\models\forms\AntragsgruenInitForm $form
+ * @var string $delInstallFileCmd
+ * @var bool $installFileDeletable
  */
 
 
@@ -12,8 +14,8 @@ $controller  = $this->context;
 $this->title = 'Antragsgrün installieren';
 
 /** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
+$controller            = $this->context;
+$layout                = $controller->layoutParams;
 $layout->robotsNoindex = true;
 
 
@@ -23,6 +25,46 @@ echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizont
 echo '<div class="content">';
 echo $controller->showErrors();
 
+
+if ($form->isConfigured()) {
+    $errors = $form->verifyConfiguration();
+    if (count($errors) > 0) {
+        echo '<div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                ' . nl2br(Html::encode($error)) . '
+            </div>';
+    } else {
+        echo '<div class="alert alert-success" role="alert">
+        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+        <span class="sr-only">Success:</span>';
+        echo 'Die Grundkonfiguration ist abgeschlossen.<br><br>';
+        if ($installFileDeletable) {
+            echo '<div class="saveholder">';
+            echo '<button class="btn btn-success" name="finishInit">';
+            echo 'Installationsmodus beenden';
+            echo '</button></div>';
+        } else {
+            echo 'Um den Installationsmodus zu beenden, lösche die Datei config/INSTALLING. ';
+            echo 'Je nach Betriebssystem könnte der Befehl dazu z.B. folgendermaßen lauten:<pre>';
+            echo Html::encode($delInstallFileCmd);
+            echo '</pre>';
+        }
+        echo '</div>';
+    }
+} else {
+    echo '<div class="alert alert-info" role="alert">
+        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+        <span class="sr-only">Welcome:</span>
+        ' . 'Willkommen!' . '
+    </div>';
+}
+
+echo '</div>';
+
+
+echo '<h2 class="green">' . 'Adresse' . '</h2>';
+echo '<div class="content">';
 
 
 echo '<div class="form-group">
@@ -34,7 +76,6 @@ echo '<div class="form-group">
 </div>';
 
 echo '</div>';
-
 
 
 echo '<h2 class="green">' . 'Datenbank' . '</h2>';

@@ -224,7 +224,7 @@ class ManagerController extends Base
 
         $editable = is_writable($configfile);
 
-        $myUsername = posix_getpwuid(posix_geteuid());
+        $myUsername         = posix_getpwuid(posix_geteuid());
         $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configfile;
 
         return $this->render('siteconfig', [
@@ -238,7 +238,10 @@ class ManagerController extends Base
      */
     public function actionAntragsgrueninit()
     {
-        $installFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'INSTALLING';
+        $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
+        $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
+        $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+
         if (!file_exists($installFile)) {
             $msg = 'Die Seite wurde bereits konfiguriert.<br>
             Um die Grundinstallation erneut aufzurufen, lege bitte folgende Datei an:<br>
@@ -249,7 +252,12 @@ class ManagerController extends Base
             return $this->showErrorpage(403, $msg);
         }
 
-        $form = new AntragsgruenInitForm();
+        $form = new AntragsgruenInitForm($configFile);
+
+        if (isset($_POST['finishInit'])) {
+            unlink($installFile);
+            return $this->render('antragsgruen_init_done');
+        }
 
         if (isset($_POST['save'])) {
             $form->setAttributes($_POST);
@@ -257,7 +265,13 @@ class ManagerController extends Base
             // @TODO
         }
 
-        return $this->render('antragsgruen_init', ['form' => $form]);
+        $delInstallFileCmd = 'rm ' . $installFile;
+
+        return $this->render('antragsgruen_init', [
+            'form'                 => $form,
+            'installFileDeletable' => is_writable($configDir),
+            'delInstallFileCmd'    => $delInstallFileCmd,
+        ]);
     }
 
     /**

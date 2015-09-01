@@ -13,6 +13,17 @@ if (ini_get('date.timezone') == '') {
     date_default_timezone_set('Europe/Berlin');
 }
 
+if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
+    $domp         = trim($params->domainPlain, '/');
+    $urls         = [
+        $domp . '/<_a:(antragsgrueninit|antragsgrueninitdbtest)>' => 'manager/<_a>',
+    ];
+    $defaultRoute = 'manager/antragsgrueninit';
+} else {
+    $urls         = require(__DIR__ . DIRECTORY_SEPARATOR . 'urls.php');
+    $defaultRoute = ($params->multisiteMode ? 'manager/index' : 'consultation/index');
+}
+
 return [
     'bootstrap'    => ['log'],
     'basePath'     => dirname(__DIR__),
@@ -37,7 +48,7 @@ return [
             'class'           => 'app\components\UrlManager',
             'showScriptName'  => false,
             'enablePrettyUrl' => $params->prettyUrl,
-            'rules'           => require(__DIR__ . DIRECTORY_SEPARATOR . 'urls.php')
+            'rules'           => $urls
         ],
         'i18n'       => [
             'translations' => [
@@ -49,7 +60,7 @@ return [
 
         ],
     ],
-    'defaultRoute' => ($params->multisiteMode ? 'manager/index' : 'consultation/index'),
+    'defaultRoute' => $defaultRoute,
     'params'       => $params,
     'language'     => $params->baseLanguage,
 ];
