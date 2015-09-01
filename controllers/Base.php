@@ -183,7 +183,7 @@ class Base extends Controller
         if (!$this->site->getSettings()->forceLogin) {
             return false;
         }
-        if (\Yii::$app->user->isGuest) {
+        if (\Yii::$app->user->getIsGuest()) {
             $backUrl = $_SERVER['REQUEST_URI'];
             $this->redirect(UrlHelper::createLoginUrl($backUrl));
             return true;
@@ -204,7 +204,7 @@ class Base extends Controller
      */
     public function forceLogin()
     {
-        if (\Yii::$app->user->isGuest) {
+        if (\Yii::$app->user->getIsGuest()) {
             $currUrl = \yii::$app->request->url;
             $this->redirect(UrlHelper::createLoginUrl($currUrl));
             \yii::$app->end();

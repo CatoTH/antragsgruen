@@ -19,9 +19,16 @@ if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
         $domp . '/<_a:(antragsgrueninit|antragsgrueninitdbtest)>' => 'manager/<_a>',
     ];
     $defaultRoute = 'manager/antragsgrueninit';
+    define('INSTALLING_MODE', true);
 } else {
     $urls         = require(__DIR__ . DIRECTORY_SEPARATOR . 'urls.php');
     $defaultRoute = ($params->multisiteMode ? 'manager/index' : 'consultation/index');
+}
+
+if (defined('INSTALLING_MODE') || YII_ENV == 'test') {
+    $params->dbConnection['class'] = 'yii\\db\\Connection';
+} else {
+    $params->dbConnection['class'] = 'app\\components\\DBConnection';
 }
 
 return [

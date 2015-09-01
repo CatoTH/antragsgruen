@@ -1,6 +1,5 @@
 {
   "dbConnection": {
-    "class": "app\\components\\DBConnection",
     "dsn": "mysql:host=localhost;dbname=###DB###",
     "emulatePrepare": true,
     "username": "###USERNAME###",

@@ -32,7 +32,7 @@ if ($form->isConfigured()) {
         echo '<div class="alert alert-danger" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <span class="sr-only">Error:</span>
-                ' . nl2br(Html::encode($error)) . '
+                ' . nl2br(Html::encode(implode("\n", $errors))) . '
             </div>';
     } else {
         echo '<div class="alert alert-success" role="alert">

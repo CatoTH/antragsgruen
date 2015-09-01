@@ -112,35 +112,37 @@ if ($controller->consultation) {
 
 echo '<ul class="nav navbar-nav">';
 
-if ($controller->consultation) {
-    $homeUrl = UrlHelper::createUrl('consultation/index');
-    echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $homeUrl) . '</li>';
-    $helpLink = UrlHelper::createUrl('consultation/help');
-    echo '<li>' . Html::a(Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
-} else {
-    $startLink = UrlHelper::createUrl('manager/index');
-    echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $startLink) . '</li>';
-}
-
-
-if (!User::getCurrentUser() && !$minimalistic) {
-    if (get_class($controller) == \app\controllers\UserController::class) {
-        $backUrl = UrlHelper::createUrl('consultation/index');
+if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
+    if ($controller->consultation) {
+        $homeUrl = UrlHelper::createUrl('consultation/index');
+        echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $homeUrl) . '</li>';
+        $helpLink = UrlHelper::createUrl('consultation/help');
+        echo '<li>' . Html::a(Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
     } else {
-        $backUrl = \yii::$app->request->url;
+        $startLink = UrlHelper::createUrl('manager/index');
+        echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $startLink) . '</li>';
     }
-    $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => $backUrl]);
-    echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink']) . '</li>';
-}
-if (User::getCurrentUser()) {
-    echo '<li>' . Html::a('Einstellungen', UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']) . '</li>';
 
-    $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
-    echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
-}
-if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_ANY)) {
-    $adminUrl = UrlHelper::createUrl('admin/index');
-    echo '<li><a href="' . Html::encode($adminUrl) . '" id="adminLink">Admin</a></li>';
+    if (!User::getCurrentUser() && !$minimalistic) {
+        if (get_class($controller) == \app\controllers\UserController::class) {
+            $backUrl = UrlHelper::createUrl('consultation/index');
+        } else {
+            $backUrl = \yii::$app->request->url;
+        }
+        $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => $backUrl]);
+        echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink']) . '</li>';
+    }
+    if (User::getCurrentUser()) {
+        $myAccountLink = Html::a('Einstellungen', UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']);
+        echo '<li>' . $myAccountLink . '</li>';
+
+        $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
+        echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
+    }
+    if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_ANY)) {
+        $adminUrl = UrlHelper::createUrl('admin/index');
+        echo '<li><a href="' . Html::encode($adminUrl) . '" id="adminLink">Admin</a></li>';
+    }
 }
 echo '</ul>
             </div>

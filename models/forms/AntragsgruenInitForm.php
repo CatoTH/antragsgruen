@@ -50,7 +50,31 @@ class AntragsgruenInitForm extends Model
      */
     public function verifyDBConnection()
     {
-        // @TODO
+        try {
+            $command = \yii::$app->db->createCommand('SELECT 1');
+            $command->execute();
+        } catch (\yii\db\Exception $e) {
+            switch ($e->getCode()) {
+                case 1044:
+                    $message = 'The database login is correct, however I could not connect to the actual database';
+                    break;
+                case 1045:
+                    $message = 'Invalid database username or password';
+                    break;
+                case 2002:
+                    if (mb_strpos($e->getMessage(), 'Connection refused')) {
+                        $message = 'Database: Connection refused';
+                    } elseif (mb_strpos($e->getMessage(), 'getaddrinfo failed')) {
+                        $message = 'Database hostname not found';
+                    } else {
+                        $message = 'Could not connect to database: ' . $e->getMessage();
+                    }
+                    break;
+                default:
+                    $message = 'Unknown error when trying to connect to database: ' . $e->getMessage();
+            }
+            throw new \Exception($message);
+        }
     }
 
     /**
