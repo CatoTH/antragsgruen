@@ -38,7 +38,7 @@ class MotionSection extends IMotionSection
      */
     public function getConsultationSetting()
     {
-        return $this->hasOne(ConsultationSettingsMotionSection::className(), ['id' => 'sectionId']);
+        return $this->hasOne(ConsultationSettingsMotionSection::class, ['id' => 'sectionId']);
     }
 
     /**
@@ -46,7 +46,7 @@ class MotionSection extends IMotionSection
      */
     public function getMotion()
     {
-        return $this->hasOne(Motion::className(), ['id' => 'motionId']);
+        return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
     /**
@@ -54,7 +54,7 @@ class MotionSection extends IMotionSection
      */
     public function getComments()
     {
-        return $this->hasMany(MotionComment::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId'])
+        return $this->hasMany(MotionComment::class, ['motionId' => 'motionId', 'sectionId' => 'sectionId'])
             ->where('status != ' . IntVal(IComment::STATUS_DELETED));
     }
 

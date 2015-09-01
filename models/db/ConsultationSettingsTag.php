@@ -30,7 +30,7 @@ class ConsultationSettingsTag extends ActiveRecord
      */
     public function getConsultation()
     {
-        return $this->hasOne(Consultation::className(), ['id' => 'consultationId']);
+        return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
     /**
@@ -38,7 +38,7 @@ class ConsultationSettingsTag extends ActiveRecord
      */
     public function getMotions()
     {
-        return $this->hasMany(Motion::className(), ['id' => 'motionId'])->viaTable('motionTag', ['tagId' => 'id'])
+        return $this->hasMany(Motion::class, ['id' => 'motionId'])->viaTable('motionTag', ['tagId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 

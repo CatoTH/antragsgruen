@@ -31,6 +31,6 @@ class MotionCommentSupporter extends ActiveRecord
      */
     public function getMotionComment()
     {
-        return $this->hasOne(MotionComment::className(), ['id' => 'motionCommentId']);
+        return $this->hasOne(MotionComment::class, ['id' => 'motionCommentId']);
     }
 }

@@ -34,7 +34,7 @@ class ConsultationUserPrivilege extends ActiveRecord
      */
     public function getConsultation()
     {
-        return $this->hasOne(Consultation::className(), ['id' => 'consultationId']);
+        return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
     /**
@@ -42,7 +42,7 @@ class ConsultationUserPrivilege extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'userId'])
+        return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 

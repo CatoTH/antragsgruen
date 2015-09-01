@@ -35,7 +35,7 @@ class AmendmentAdminComment extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'userId'])
+        return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
@@ -44,7 +44,7 @@ class AmendmentAdminComment extends ActiveRecord
      */
     public function getAmendment()
     {
-        return $this->hasOne(Amendment::className(), ['id' => 'amendmentId']);
+        return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
     }
 
     /**

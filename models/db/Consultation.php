@@ -66,7 +66,7 @@ class Consultation extends ActiveRecord
      */
     public function getSite()
     {
-        return $this->hasOne(Site::className(), ['id' => 'siteId']);
+        return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
     /**
@@ -74,7 +74,7 @@ class Consultation extends ActiveRecord
      */
     public function getMotions()
     {
-        return $this->hasMany(Motion::className(), ['consultationId' => 'id'])
+        return $this->hasMany(Motion::class, ['consultationId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
@@ -116,7 +116,7 @@ class Consultation extends ActiveRecord
      */
     public function getTexts()
     {
-        return $this->hasMany(ConsultationText::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationText::class, ['consultationId' => 'id']);
     }
 
     /**
@@ -124,7 +124,7 @@ class Consultation extends ActiveRecord
      */
     public function getOdtTemplates()
     {
-        return $this->hasMany(ConsultationOdtTemplate::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationOdtTemplate::class, ['consultationId' => 'id']);
     }
 
     /**
@@ -132,7 +132,7 @@ class Consultation extends ActiveRecord
      */
     public function getAgendaItems()
     {
-        return $this->hasMany(ConsultationAgendaItem::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationAgendaItem::class, ['consultationId' => 'id']);
     }
 
     /**
@@ -140,7 +140,7 @@ class Consultation extends ActiveRecord
      */
     public function getUserPrivileges()
     {
-        return $this->hasMany(ConsultationUserPrivilege::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationUserPrivilege::class, ['consultationId' => 'id']);
     }
 
     /**
@@ -170,7 +170,7 @@ class Consultation extends ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(ConsultationSettingsTag::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationSettingsTag::class, ['consultationId' => 'id']);
     }
 
     /**
@@ -178,7 +178,7 @@ class Consultation extends ActiveRecord
      */
     public function getLogEntries()
     {
-        return $this->hasMany(ConsultationLog::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationLog::class, ['consultationId' => 'id']);
     }
 
     /**
@@ -186,7 +186,7 @@ class Consultation extends ActiveRecord
      */
     public function getMotionTypes()
     {
-        return $this->hasMany(ConsultationMotionType::className(), ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationMotionType::class, ['consultationId' => 'id']);
     }
 
     /**
@@ -194,7 +194,7 @@ class Consultation extends ActiveRecord
      */
     public function getUserNotifications()
     {
-        return $this->hasMany(UserNotification::className(), ['consultationId' => 'id']);
+        return $this->hasMany(UserNotification::class, ['consultationId' => 'id']);
     }
 
     /**

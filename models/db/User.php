@@ -103,7 +103,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMotionComments()
     {
-        return $this->hasMany(MotionComment::className(), ['userId' => 'id']);
+        return $this->hasMany(MotionComment::class, ['userId' => 'id']);
     }
 
     /**
@@ -111,7 +111,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMotionSupports()
     {
-        return $this->hasMany(MotionSupporter::className(), ['motionId' => 'id']);
+        return $this->hasMany(MotionSupporter::class, ['motionId' => 'id']);
     }
 
     /**
@@ -119,7 +119,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAmendmentComments()
     {
-        return $this->hasMany(AmendmentComment::className(), ['userId' => 'id']);
+        return $this->hasMany(AmendmentComment::class, ['userId' => 'id']);
     }
 
     /**
@@ -127,7 +127,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAmendmentSupports()
     {
-        return $this->hasMany(AmendmentSupporter::className(), ['userId' => 'id']);
+        return $this->hasMany(AmendmentSupporter::class, ['userId' => 'id']);
     }
 
     /**
@@ -135,7 +135,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getEmailLogs()
     {
-        return $this->hasMany(EMailLog::className(), ['userId' => 'id']);
+        return $this->hasMany(EMailLog::class, ['userId' => 'id']);
     }
 
     /**
@@ -143,7 +143,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getLogEntries()
     {
-        return $this->hasMany(ConsultationLog::className(), ['userId' => 'id']);
+        return $this->hasMany(ConsultationLog::class, ['userId' => 'id']);
     }
 
     /**
@@ -151,7 +151,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAdminSites()
     {
-        return $this->hasMany(Site::className(), ['id' => 'siteId'])->viaTable('siteAdmin', ['userId' => 'id']);
+        return $this->hasMany(Site::class, ['id' => 'siteId'])->viaTable('siteAdmin', ['userId' => 'id']);
     }
 
     /**
@@ -159,7 +159,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getConsultationPrivileges()
     {
-        return $this->hasMany(ConsultationUserPrivilege::className(), ['userId' => 'id']);
+        return $this->hasMany(ConsultationUserPrivilege::class, ['userId' => 'id']);
     }
 
     /**
@@ -167,7 +167,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getNotifications()
     {
-        return $this->hasMany(UserNotification::className(), ['userId' => 'id']);
+        return $this->hasMany(UserNotification::class, ['userId' => 'id']);
     }
 
     /**

@@ -41,7 +41,7 @@ class Site extends ActiveRecord
      */
     public function getCurrentConsultation()
     {
-        return $this->hasOne(Consultation::className(), ['id' => 'currentConsultationId']);
+        return $this->hasOne(Consultation::class, ['id' => 'currentConsultationId']);
     }
 
     /**
@@ -49,7 +49,7 @@ class Site extends ActiveRecord
      */
     public function getConsultations()
     {
-        return $this->hasMany(Consultation::className(), ['siteId' => 'id']);
+        return $this->hasMany(Consultation::class, ['siteId' => 'id']);
     }
 
     /**
@@ -57,7 +57,7 @@ class Site extends ActiveRecord
      */
     public function getTexTemplates()
     {
-        return $this->hasMany(TexTemplate::className(), ['siteId' => 'id']);
+        return $this->hasMany(TexTemplate::class, ['siteId' => 'id']);
     }
 
     /**
@@ -65,7 +65,7 @@ class Site extends ActiveRecord
      */
     public function getAdmins()
     {
-        return $this->hasMany(User::className(), ['id' => 'userId'])->viaTable('siteAdmin', ['siteId' => 'id'])
+        return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('siteAdmin', ['siteId' => 'id'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 

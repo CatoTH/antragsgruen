@@ -30,7 +30,7 @@ class ConsultationText extends ActiveRecord
      */
     public function getConsultation()
     {
-        return $this->hasOne(Consultation::className(), ['id' => 'consultationId']);
+        return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
     /**

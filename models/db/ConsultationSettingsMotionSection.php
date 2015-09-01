@@ -61,7 +61,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
      */
     public function getSections()
     {
-        return $this->hasMany(MotionSection::className(), ['sectionId' => 'id']);
+        return $this->hasMany(MotionSection::class, ['sectionId' => 'id']);
     }
 
     /**
@@ -69,7 +69,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
      */
     public function getMotionType()
     {
-        return $this->hasOne(ConsultationMotionType::className(), ['id' => 'motionTypeId']);
+        return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
     /**

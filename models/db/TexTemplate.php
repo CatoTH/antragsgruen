@@ -31,7 +31,7 @@ class TexTemplate extends ActiveRecord
      */
     public function getSite()
     {
-        return $this->hasOne(Site::className(), ['id' => 'siteId']);
+        return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
     /**
@@ -39,7 +39,7 @@ class TexTemplate extends ActiveRecord
      */
     public function getMotionTypes()
     {
-        return $this->hasMany(ConsultationMotionType::className(), ['texTemplateId' => 'id']);
+        return $this->hasMany(ConsultationMotionType::class, ['texTemplateId' => 'id']);
     }
 
     /**

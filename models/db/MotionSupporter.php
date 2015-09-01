@@ -37,7 +37,7 @@ class MotionSupporter extends ISupporter
      */
     public function getMotion()
     {
-        return $this->hasOne(Motion::className(), ['id' => 'motionId']);
+        return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
     /**

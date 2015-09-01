@@ -46,7 +46,7 @@ class MotionComment extends IComment
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'userId'])
+        return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
@@ -55,7 +55,7 @@ class MotionComment extends IComment
      */
     public function getMotion()
     {
-        return $this->hasOne(Motion::className(), ['id' => 'motionId']);
+        return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
     /**
@@ -63,7 +63,7 @@ class MotionComment extends IComment
      */
     public function getSupporters()
     {
-        return $this->hasMany(MotionCommentSupporter::className(), ['motionCommentId' => 'id']);
+        return $this->hasMany(MotionCommentSupporter::class, ['motionCommentId' => 'id']);
     }
 
     /**
@@ -71,7 +71,7 @@ class MotionComment extends IComment
      */
     public function getSection()
     {
-        return $this->hasOne(MotionSection::className(), ['motionId' => 'motionId', 'sectionId' => 'sectionId']);
+        return $this->hasOne(MotionSection::class, ['motionId' => 'motionId', 'sectionId' => 'sectionId']);
     }
 
     /**

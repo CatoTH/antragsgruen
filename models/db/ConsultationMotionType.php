@@ -55,7 +55,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getConsultation()
     {
-        return $this->hasOne(Consultation::className(), ['id' => 'consultationId']);
+        return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
     /**
@@ -63,7 +63,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getMotions()
     {
-        return $this->hasMany(Motion::className(), ['motionTypeId' => 'id'])
+        return $this->hasMany(Motion::class, ['motionTypeId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
@@ -72,7 +72,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getTexTemplate()
     {
-        return $this->hasOne(TexTemplate::className(), ['id' => 'texTemplateId']);
+        return $this->hasOne(TexTemplate::class, ['id' => 'texTemplateId']);
     }
 
     /**
@@ -80,7 +80,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getMotionSections()
     {
-        return $this->hasMany(ConsultationSettingsMotionSection::className(), ['motionTypeId' => 'id'])
+        return $this->hasMany(ConsultationSettingsMotionSection::class, ['motionTypeId' => 'id'])
             ->where('status = ' . ConsultationSettingsMotionSection::STATUS_VISIBLE)
             ->orderBy('position');
     }
@@ -90,7 +90,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getAgendaItems()
     {
-        return $this->hasMany(ConsultationAgendaItem::className(), ['motionTypeId' => 'id']);
+        return $this->hasMany(ConsultationAgendaItem::class, ['motionTypeId' => 'id']);
     }
 
 

@@ -38,7 +38,7 @@ class AmendmentSection extends IMotionSection
      */
     public function getConsultationSetting()
     {
-        return $this->hasOne(ConsultationSettingsMotionSection::className(), ['id' => 'sectionId']);
+        return $this->hasOne(ConsultationSettingsMotionSection::class, ['id' => 'sectionId']);
     }
 
     /**
@@ -46,7 +46,7 @@ class AmendmentSection extends IMotionSection
      */
     public function getAmendment()
     {
-        return $this->hasOne(Amendment::className(), ['id' => 'amendmentId']);
+        return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
     }
 
     /**
