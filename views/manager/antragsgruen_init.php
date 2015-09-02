@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use yii\helpers\Html;
 
 /**
@@ -16,11 +17,13 @@ $this->title = 'Antragsgrün installieren';
 /** @var \app\controllers\admin\IndexController $controller */
 $controller            = $this->context;
 $layout                = $controller->layoutParams;
+$layout->loadFuelux();
 $layout->robotsNoindex = true;
-
+$layout->addJS('js/manager.js');
+$layout->addOnLoadJS('$.SiteManager.antragsgruenInit();');
 
 echo '<h1>' . 'Antragsgrün installieren' . '</h1>';
-echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal']);
+echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
 
 echo '<div class="content">';
 echo $controller->showErrors();
@@ -80,6 +83,60 @@ echo '</div>';
 
 echo '<h2 class="green">' . 'Datenbank' . '</h2>';
 echo '<div class="content">';
+
+echo '<div class="form-group sqlType">
+    <label class="col-sm-4 control-label" for="sqlType">' . 'Datenbank-Typ' . ':</label>
+    <div class="col-sm-8">';
+echo HTMLTools::fueluxSelectbox(
+    'sqlType',
+    [
+        'mysql'      => 'MySQL / MariaDB',
+    ],
+    $form->sqlType,
+    ['id' => 'sqlType']
+);
+echo '</div>
+</div>';
+
+echo '<div class="form-group sqlOption mysqlOption">
+    <label class="col-sm-4 control-label" for="sqlHost">' . 'Servername' . ':</label>
+    <div class="col-sm-8">
+        <input type="text" required name="sqlHost" placeholder="localhost"
+        value="' . Html::encode($form->sqlHost) . '" class="form-control" id="sqlHost">
+    </div>
+</div>';
+
+echo '<div class="form-group sqlOption mysqlOption">
+    <label class="col-sm-4 control-label" for="sqlUsername">' . 'Benutzername' . ':</label>
+    <div class="col-sm-8">
+        <input type="text" required name="sqlUsername"
+        value="' . Html::encode($form->sqlUsername) . '" class="form-control" id="sqlUsername">
+    </div>
+</div>';
+
+echo '<div class="form-group sqlOption mysqlOption">
+    <label class="col-sm-4 control-label" for="sqlPassword">' . 'Passwort' . ':</label>
+    <div class="col-sm-8">
+        <input type="password" required name="sqlPassword"
+        value="' . Html::encode($form->sqlPassword) . '" class="form-control" id="sqlPassword">
+    </div>
+</div>';
+
+echo '<div class="form-group sqlOption mysqlOption">
+    <label class="col-sm-4 control-label" for="sqlDB">' . 'Datenbank-Name' . ':</label>
+    <div class="col-sm-8">
+        <input type="text" required name="sqlDB"
+        value="' . Html::encode($form->sqlDB) . '" class="form-control" id="sqlDB">
+    </div>
+</div>';
+
+$verifyDBUrl = \app\components\UrlHelper::createUrl('manager/antragsgrueninitdbtest');
+echo '<div class="testDB">
+<button type="button" name="testDB" class="btn btn-default testDBcaller"
+data-url="' . Html::encode($verifyDBUrl) . '">Datenbank testen</button>
+<div class="testDBRpending hidden">Prüfe...</div>
+<div class="testDBresult hidden">Ergebnis: <span class="result"></span></div>
+</div>';
 
 echo '</div>';
 

@@ -57,8 +57,7 @@
     };
 
     var siteConfig = function () {
-        var rebuildVisibility = function() {
-            console.log($("[name=\"mailService[transport]\"]"));
+        var rebuildVisibility = function () {
             var transport = $("[name=\"mailService[transport]\"]").val(),
                 auth = $("[name=\"mailService[smtpAuthType]\"]").val();
 
@@ -81,9 +80,38 @@
         $("#emailTransport").on("changed.fu.selectlist", rebuildVisibility).trigger("changed.fu.selectlist");
     };
 
+    var antragsgruenInit = function () {
+        $('.testDBcaller').click(function () {
+            var $pending = $('.testDBRpending'),
+                $result = $('.testDBresult'),
+                csrf = $('input[name=_csrf]').val(),
+                url = $(this).data('url');
+            $pending.removeClass('hidden');
+            $result.addClass('hidden');
+            $.post(url, {
+                'sqlType': $("input[name=sqlType]").val(),
+                'sqlHost': $("input[name=sqlHost]").val(),
+                'sqlUsername': $("input[name=sqlUsername]").val(),
+                'sqlPassword': $("input[name=sqlPassword]").val(),
+                'sqlDB': $("input[name=sqlDB]").val(),
+                '_csrf': csrf
+            }, function (ret) {
+                if (ret['success']) {
+                    $result.find('span').text('SUCCESS');
+                } else {
+                    $result.find('span').text(ret['error']);
+                }
+                $pending.addClass('hidden');
+                $result.removeClass('hidden');
+                console.log(ret);
+            });
+        });
+    };
+
     $.SiteManager = {
         "createInstance": createInstance,
-        "siteConfig": siteConfig
+        "siteConfig": siteConfig,
+        "antragsgruenInit": antragsgruenInit
     };
 
 }(jQuery));

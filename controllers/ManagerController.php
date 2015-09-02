@@ -282,7 +282,10 @@ class ManagerController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $form = new AntragsgruenInitForm();
+        $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
+        $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+
+        $form = new AntragsgruenInitForm($configFile);
         $form->setAttributes($_POST);
 
         try {

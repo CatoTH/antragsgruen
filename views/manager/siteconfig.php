@@ -21,7 +21,7 @@ $layout->addOnLoadJS('$.SiteManager.siteConfig();');
 
 
 echo '<h1>' . 'Antragsgrün einrichten' . '</h1>';
-echo Html::beginForm('', 'post', ['class' => 'siteConfigForm form-horizontal']);
+echo Html::beginForm('', 'post', ['class' => 'siteConfigForm form-horizontal fuelux']);
 
 
 echo '<div class="content">';
