@@ -83,11 +83,13 @@
     var antragsgruenInit = function () {
         $('.testDBcaller').click(function () {
             var $pending = $('.testDBRpending'),
-                $result = $('.testDBresult'),
+                $success = $('.testDBsuccess'),
+                $error = $('.testDBerror'),
                 csrf = $('input[name=_csrf]').val(),
                 url = $(this).data('url');
             $pending.removeClass('hidden');
-            $result.addClass('hidden');
+            $error.addClass('hidden');
+            $success.addClass('hidden');
             $.post(url, {
                 'sqlType': $("input[name=sqlType]").val(),
                 'sqlHost': $("input[name=sqlHost]").val(),
@@ -97,12 +99,12 @@
                 '_csrf': csrf
             }, function (ret) {
                 if (ret['success']) {
-                    $result.find('span').text('SUCCESS');
+                    $success.removeClass('hidden');
                 } else {
-                    $result.find('span').text(ret['error']);
+                    $error.removeClass('hidden');
+                    $error.find('.result').text(ret['error']);
                 }
                 $pending.addClass('hidden');
-                $result.removeClass('hidden');
                 console.log(ret);
             });
         });

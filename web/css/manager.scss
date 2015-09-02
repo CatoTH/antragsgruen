@@ -62,10 +62,24 @@
 }
 
 .antragsgruenInitForm {
-  .testDBRpending {
-    float: left;
-  }
-  .testDBresult {
-    float: left;
+  .testDB {
+    overflow: auto;
+    margin-bottom: 20px;
+    > * {
+      float: left;
+    }
+    .testDBcaller {
+      margin-right: 20px;
+    }
+    .testDBsuccess {
+      padding-top: 7px;
+      color: green;
+      font-weight: bold;
+    }
+    .testDBerror {
+      padding-top: 7px;
+      color: red;
+      font-weight: bold;
+    }
   }
 }

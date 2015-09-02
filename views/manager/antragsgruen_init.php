@@ -20,6 +20,7 @@ $layout                = $controller->layoutParams;
 $layout->loadFuelux();
 $layout->robotsNoindex = true;
 $layout->addJS('js/manager.js');
+$layout->addCSS('css/manager.css');
 $layout->addOnLoadJS('$.SiteManager.antragsgruenInit();');
 
 echo '<h1>' . 'Antragsgrün installieren' . '</h1>';
@@ -135,8 +136,21 @@ echo '<div class="testDB">
 <button type="button" name="testDB" class="btn btn-default testDBcaller"
 data-url="' . Html::encode($verifyDBUrl) . '">Datenbank testen</button>
 <div class="testDBRpending hidden">Prüfe...</div>
-<div class="testDBresult hidden">Ergebnis: <span class="result"></span></div>
+<div class="testDBerror hidden">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="result"></span>
+</div>
+<div class="testDBsuccess hidden">
+    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+    ' . 'Erfolg' . '
+</div>
 </div>';
+
+
+echo '<div><label>';
+echo Html::checkbox('sqlCreateTables', $form->sqlCreateTables, ['id' => 'sqlCreateTables']);
+echo 'Notwendige Datenbanktabellen automatisch anlegen';
+echo '</label></div>';
 
 echo '</div>';
 

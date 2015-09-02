@@ -39,9 +39,20 @@
 .siteCreate label {
   display: block; }
 
-.antragsgruenInitForm .testDBRpending {
-  float: left; }
-.antragsgruenInitForm .testDBresult {
-  float: left; }
+.antragsgruenInitForm .testDB {
+  overflow: auto;
+  margin-bottom: 20px; }
+  .antragsgruenInitForm .testDB > * {
+    float: left; }
+  .antragsgruenInitForm .testDB .testDBcaller {
+    margin-right: 20px; }
+  .antragsgruenInitForm .testDB .testDBsuccess {
+    padding-top: 7px;
+    color: green;
+    font-weight: bold; }
+  .antragsgruenInitForm .testDB .testDBerror {
+    padding-top: 7px;
+    color: red;
+    font-weight: bold; }
 
 /*# sourceMappingURL=manager.css.map */

@@ -2,18 +2,18 @@
 
 namespace app\models\forms;
 
-use app\models\db\Site;
 use app\models\exceptions\Internal;
+use app\models\settings\AntragsgruenApp;
 use yii\base\Model;
 
 class AntragsgruenInitForm extends Model
 {
-    /**
-     * @var string
-     */
+    /** @var string */
+    public $configFile;
+
     public $siteUrl;
 
-    public $sqlType;
+    public $sqlType = 'mysql';
     public $sqlHost;
     public $sqlUsername;
     public $sqlPassword;
@@ -23,7 +23,11 @@ class AntragsgruenInitForm extends Model
     public $adminUsername;
     public $adminPassword;
 
-    public $configFile;
+    /** @var int[] */
+    public $adminIds;
+
+    /** @var boolean */
+    public $sqlCreateTables = true;
 
     /**
      * @param string $configFile
@@ -32,6 +36,50 @@ class AntragsgruenInitForm extends Model
     {
         parent::__construct();
         $this->configFile = $configFile;
+
+        if (file_exists($configFile)) {
+            $configJson = file_get_contents($configFile);
+            try {
+                $config        = new AntragsgruenApp($configJson);
+                $this->siteUrl = $config->domainPlain;
+                $this->setDatabaseFromParams($config->dbConnection);
+                $this->adminIds = $config->adminUserIds;
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * @param array $params
+     */
+    private function setDatabaseFromParams($params)
+    {
+        if (!is_array($params) || !isset($params['dsn'])) {
+            return;
+        }
+        if (isset($params['username'])) {
+            $this->sqlUsername = $params['username'];
+        }
+        if (isset($params['password'])) {
+            $this->sqlPassword = $params['password'];
+        }
+        $parts = explode(':', $params['dsn']);
+        if (count($parts) != 2) {
+            return;
+        }
+        $this->sqlType = $parts[0];
+        $params        = explode(';', $parts[1]);
+        for ($i = 0; $i < count($params); $i++) {
+            $parts = explode('=', $params[$i]);
+            if (count($parts) == 2) {
+                if ($parts[0] == 'dbname') {
+                    $this->sqlDB = $parts[1];
+                }
+                if ($parts[0] == 'host') {
+                    $this->sqlHost = $parts[1];
+                }
+            }
+        }
     }
 
 
@@ -42,7 +90,7 @@ class AntragsgruenInitForm extends Model
     {
         return [
             [['siteUrl', 'sqlType', 'adminUsername', 'adminPassword'], 'required'],
-            [['sqlType', 'sqlHost', 'sqlFile', 'sqlUsername', 'sqlPassword', 'sqlDB'], 'safe'],
+            [['sqlType', 'sqlHost', 'sqlFile', 'sqlUsername', 'sqlPassword', 'sqlDB', 'sqlCreateTables'], 'safe'],
             [['siteUrl'], 'safe'],
             [['adminUsername', 'adminPassword'], 'safe'],
         ];
@@ -75,9 +123,8 @@ class AntragsgruenInitForm extends Model
         try {
             $connConfig = $this->getDBConfig();
             $connection = new \yii\db\Connection($connConfig);
-            $command    = $connection->createCommand('SELECT COUNT(*) FROM ' . Site::tableName());
-            $command->execute();
-            return true;
+            $tables     = $connection->createCommand('SHOW TABLES')->queryAll();
+            return (count($tables) > 0);
         } catch (\yii\db\Exception $e) {
             switch ($e->getCode()) {
                 case 1044:
@@ -123,6 +170,14 @@ class AntragsgruenInitForm extends Model
         }
         // @TODO
         return $errors;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAdminAccount()
+    {
+        return (count($this->adminIds) > 0);
     }
 
     /**
