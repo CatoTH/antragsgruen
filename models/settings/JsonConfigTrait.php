@@ -3,23 +3,25 @@
 namespace app\models\settings;
 
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 
 trait JsonConfigTrait
 {
     /**
      * @param string|null $data
+     * @throws \Exception
      */
     public function __construct($data)
     {
         if ($data == '') {
             return;
         }
-        $data = (array)json_decode($data, true);
-
-        if (!is_array($data)) {
-            return;
+        $dataArr = json_decode($data, true);
+        if ($dataArr === null) {
+            throw new \Exception('Invalid JSON string: ' . $data);
         }
-        foreach ($data as $key => $val) {
+
+        foreach ($dataArr as $key => $val) {
             if (property_exists($this, $key)) {
                 $this->$key = $val;
             }

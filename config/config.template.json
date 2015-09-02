@@ -13,6 +13,6 @@
   "randomSeed": "RANDOMSEED",
   "cookieValidationKey": "RANDOMSEED",
   "domainPlain": "https://www.example.org/",
-  "domainSubdomain": "https://<subdomain:[\w_-]+>.example.org/",
+  "domainSubdomain": "https://<subdomain:[\\w_-]+>.example.org/",
   "siteBehaviorClasses": []
 }
