@@ -115,16 +115,18 @@ class AntragsgruenInitForm extends Model
     }
 
     /**
+     * @param bool $exceptions
      * @return bool
+     * @throws Internal
      * @throws \Exception
      */
-    public function verifyDBConnection()
+    public function verifyDBConnection($exceptions = true)
     {
         try {
             $connConfig = $this->getDBConfig();
             $connection = new \yii\db\Connection($connConfig);
-            $tables     = $connection->createCommand('SHOW TABLES')->queryAll();
-            return (count($tables) > 0);
+            $connection->createCommand('SHOW TABLES')->queryAll();
+            return true;
         } catch (\yii\db\Exception $e) {
             switch ($e->getCode()) {
                 case 1044:
@@ -153,7 +155,11 @@ class AntragsgruenInitForm extends Model
                         $message = 'Unknown error when trying to connect to database: ' . $e->getMessage();
                     }
             }
-            throw new \Exception($message);
+            if ($exceptions) {
+                throw new \Exception($message);
+            } else {
+                return false;
+            }
         }
     }
 
@@ -164,7 +170,7 @@ class AntragsgruenInitForm extends Model
     {
         $errors = [];
         try {
-            $this->verifyDBConnection();
+            $this->verifyDBConnection(true);
         } catch (\Exception $e) {
             $errors[] = $e->getMessage();
         }
@@ -183,8 +189,68 @@ class AntragsgruenInitForm extends Model
     /**
      * @return bool
      */
+    public function tablesAreCreated()
+    {
+        try {
+            $connConfig = $this->getDBConfig();
+            $connection = new \yii\db\Connection($connConfig);
+            $tables     = $connection->createCommand('SHOW TABLES')->queryAll();
+            return (count($tables) > 0);
+        } catch (\yii\db\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     */
+    public function createTables()
+    {
+        $connConfig = $this->getDBConfig();
+        $connection = new \yii\db\Connection($connConfig);
+
+        $createString = file_get_contents(
+            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'create.sql'
+        );
+        $command      = $connection->createCommand($createString);
+        $command->execute();
+
+        $createString = file_get_contents(
+            \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
+            'db' . DIRECTORY_SEPARATOR . 'data.sql'
+        );
+        $command      = $connection->createCommand($createString);
+        $command->execute();
+    }
+
+    /**
+     * @return bool
+     */
     public function isConfigured()
     {
         return file_exists($this->configFile);
+    }
+
+    /**
+     * @return AntragsgruenApp
+     */
+    public function getConfig()
+    {
+        if (file_exists($this->configFile)) {
+            $configJson = file_get_contents($this->configFile);
+            try {
+                $config = new AntragsgruenApp($configJson);
+            } catch (\Exception $e) {
+                $config = new AntragsgruenApp('');
+            }
+        } else {
+            $config = new AntragsgruenApp('');
+        }
+
+        if ($config->randomSeed === null || $config->randomSeed == '') {
+            $config->randomSeed = \Yii::$app->getSecurity()->generateRandomString();
+        }
+
+        return $config;
     }
 }

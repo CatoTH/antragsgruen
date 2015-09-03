@@ -37,7 +37,7 @@ $config = yii\helpers\ArrayHelper::merge(
                 'clients' => $params->authClientCollection,
             ],
             'request'              => [
-                'cookieValidationKey' => $params->cookieValidationKey,
+                'cookieValidationKey' => $params->randomSeed,
             ],
         ],
     ]

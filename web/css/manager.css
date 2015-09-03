@@ -54,5 +54,12 @@
     padding-top: 7px;
     color: red;
     font-weight: bold; }
+.antragsgruenInitForm .createTables .alreadyCreatedHint {
+  display: none;
+  padding-left: 20px; }
+.antragsgruenInitForm .createTables.alreadyCreated {
+  color: gray; }
+  .antragsgruenInitForm .createTables.alreadyCreated .alreadyCreatedHint {
+    display: block; }
 
 /*# sourceMappingURL=manager.css.map */

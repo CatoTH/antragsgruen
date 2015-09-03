@@ -85,6 +85,7 @@
             var $pending = $('.testDBRpending'),
                 $success = $('.testDBsuccess'),
                 $error = $('.testDBerror'),
+                $createTables = $('.createTables'),
                 csrf = $('input[name=_csrf]').val(),
                 url = $(this).data('url');
             $pending.removeClass('hidden');
@@ -100,12 +101,17 @@
             }, function (ret) {
                 if (ret['success']) {
                     $success.removeClass('hidden');
+                    if (ret['alreadyCreated']) {
+                        $createTables.addClass('alreadyCreated');
+                    } else {
+                        $createTables.removeClass('alreadyCreated');
+                    }
                 } else {
                     $error.removeClass('hidden');
                     $error.find('.result').text(ret['error']);
+                    $createTables.removeClass('alreadyCreated');
                 }
                 $pending.addClass('hidden');
-                console.log(ret);
             });
         });
     };

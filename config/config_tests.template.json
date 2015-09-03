@@ -15,7 +15,6 @@
   "domainSubdomain": "http://localhost:8080/index-test.php",
   "prependWWWToSubdomain": false,
   "randomSeed": "123456",
-  "cookieValidationKey": "123456",
   "mailFromName": "Antragsgrün Test",
   "mailFromEmail": "test@antragsgruen.de",
   "adminUserIds": [

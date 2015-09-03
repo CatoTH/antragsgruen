@@ -82,4 +82,16 @@
       font-weight: bold;
     }
   }
+  .createTables {
+    .alreadyCreatedHint {
+      display: none;
+      padding-left: 20px;
+    }
+    &.alreadyCreated {
+      color: gray;
+      .alreadyCreatedHint {
+        display: block;
+      }
+    }
+  }
 }

@@ -1,6 +1,6 @@
 <?php
 
-$params                      = new \app\models\settings\AntragsgruenApp();
+$params                      = new \app\models\settings\AntragsgruenApp('');
 $params->dbConnection        = [
     'class'          => 'yii\db\Connection',
     'dsn'            => 'mysql:host=localhost;dbname=antragsgruen',
@@ -13,5 +13,4 @@ $params->randomSeed          = 'fgfdgdfgdfg';
 $params->domainPlain         = 'http://localhost/';
 $params->domainSubdomain     = 'http://<siteId:[\w_-]+>.localhost/';
 $params->siteBehaviorClasses = [];
-$params->cookieValidationKey = 'ljelkkjlj';
 return $params;

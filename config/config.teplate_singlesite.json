@@ -13,7 +13,6 @@
   "siteSubdomain": "stdparteitag",
   "prettyUrl": false,
   "randomSeed": "RANDOMSEED",
-  "cookieValidationKey": "RANDOMSEED",
   "domainPlain": "/",
   "domainSubdomain": "",
   "resourceBase": "/antragsgruen/web/",

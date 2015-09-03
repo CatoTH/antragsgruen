@@ -64,6 +64,8 @@ curl -sS https://getcomposer.org/installer | php
 Running using docker
 --------------------
 
+NOT WORKING RIGHT NOW!
+
 ```bash
 cd docker-vagrant/
 docker build -t antragsgruen1 -f Dockerfile .

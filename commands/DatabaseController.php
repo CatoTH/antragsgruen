@@ -10,6 +10,8 @@ use yii\console\Controller;
 class DatabaseController extends Controller
 {
     /**
+     * Deletes the whole database. CAUTION!
+     *
      * @throws \yii\db\Exception
      */
     public function actionDestroy()
@@ -25,6 +27,8 @@ class DatabaseController extends Controller
     }
 
     /**
+     * Creates the tables
+     *
      * @throws \yii\db\Exception
      */
     public function actionCreate()
@@ -45,6 +49,8 @@ class DatabaseController extends Controller
     }
 
     /**
+     * Insertes some test data into the tables. Do not use this on a production environment!
+     *
      * @throws \yii\db\Exception
      */
     public function actionInsertTestData()
@@ -58,6 +64,8 @@ class DatabaseController extends Controller
     }
 
     /**
+     * Create tables and insert test data. For development only.
+     *
      * @throws \yii\db\Exception
      */
     public function actionCreateTest()

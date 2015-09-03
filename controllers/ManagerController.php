@@ -18,6 +18,19 @@ use yii\web\Response;
 
 class ManagerController extends Base
 {
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeAction($action)
+    {
+        if (in_array($action->id, ['antragsgrueninit', 'antragsgrueninitdbtest'])) {
+            // No cookieValidationKey is set in the beginning
+            \Yii::$app->request->enableCookieValidation = false;
+        }
+
+        return parent::beforeAction($action);
+    }
     /**
      *
      */
@@ -252,6 +265,15 @@ class ManagerController extends Base
             return $this->showErrorpage(403, $msg);
         }
 
+        $myUsername = posix_getpwuid(posix_geteuid());
+        if (file_exists($configFile)) {
+            $editable           = is_writable($configFile);
+            $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile;
+        } else {
+            $editable           = is_writable($configDir);
+            $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir;
+        }
+
         $form = new AntragsgruenInitForm($configFile);
 
         if (isset($_POST['finishInit'])) {
@@ -262,7 +284,18 @@ class ManagerController extends Base
         if (isset($_POST['save'])) {
             $form->setAttributes($_POST);
 
-            // @TODO
+            if ($editable) {
+                $file = fopen($configFile, 'w');
+                fwrite($file, $form->getConfig()->toJSON());
+                fclose($file);
+            }
+
+            if ($form->sqlCreateTables && $form->verifyDBConnection(false) && !$form->tablesAreCreated()) {
+                $form->createTables();
+                \yii::$app->session->setFlash('success', 'Die Datenbank wurde angelegt.');
+            } else {
+                \yii::$app->session->setFlash('success', 'Konfiguration gespeichert.');
+            }
         }
 
         $delInstallFileCmd = 'rm ' . $installFile;
@@ -271,6 +304,8 @@ class ManagerController extends Base
             'form'                 => $form,
             'installFileDeletable' => is_writable($configDir),
             'delInstallFileCmd'    => $delInstallFileCmd,
+            'editable'             => $editable,
+            'makeEditabeCommand'   => $makeEditabeCommand,
         ]);
     }
 
@@ -282,17 +317,24 @@ class ManagerController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
-        $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+        $configDir  = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
+        $configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
 
         $form = new AntragsgruenInitForm($configFile);
         $form->setAttributes($_POST);
 
         try {
-            $success = $form->verifyDBConnection();
-            return json_encode(['success' => $success]);
+            $success = $form->verifyDBConnection(true);
+            return json_encode([
+                'success'        => $success,
+                'alreadyCreated' => $form->tablesAreCreated(),
+            ]);
         } catch (\Exception $e) {
-            return json_encode(['success' => false, 'error' => $e->getMessage()]);
+            return json_encode([
+                'success'        => false,
+                'error'          => $e->getMessage(),
+                'alreadyCreated' => null,
+            ]);
         }
     }
 }
