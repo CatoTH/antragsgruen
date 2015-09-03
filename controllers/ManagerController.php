@@ -31,6 +31,7 @@ class ManagerController extends Base
 
         return parent::beforeAction($action);
     }
+
     /**
      *
      */
@@ -283,6 +284,8 @@ class ManagerController extends Base
 
         if (isset($_POST['save'])) {
             $form->setAttributes($_POST);
+            $form->sqlCreateTables = isset($_POST['sqlCreateTables']);
+            $form->prettyUrls      = isset($_POST['prettyUrls']);
 
             if ($editable) {
                 $file = fopen($configFile, 'w');
@@ -296,6 +299,8 @@ class ManagerController extends Base
             } else {
                 \yii::$app->session->setFlash('success', 'Konfiguration gespeichert.');
             }
+
+            return $this->redirect($form->siteUrl);
         }
 
         $delInstallFileCmd = 'rm ' . $installFile;

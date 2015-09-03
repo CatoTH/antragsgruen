@@ -28,6 +28,7 @@ class AntragsgruenInitForm extends Model
 
     /** @var boolean */
     public $sqlCreateTables = true;
+    public $prettyUrls      = true;
 
     /**
      * @param string $configFile
@@ -40,8 +41,9 @@ class AntragsgruenInitForm extends Model
         if (file_exists($configFile)) {
             $configJson = file_get_contents($configFile);
             try {
-                $config        = new AntragsgruenApp($configJson);
-                $this->siteUrl = $config->domainPlain;
+                $config           = new AntragsgruenApp($configJson);
+                $this->siteUrl    = $config->domainPlain;
+                $this->prettyUrls = $config->prettyUrl;
                 $this->setDatabaseFromParams($config->dbConnection);
                 $this->adminIds = $config->adminUserIds;
             } catch (\Exception $e) {
@@ -250,6 +252,10 @@ class AntragsgruenInitForm extends Model
         if ($config->randomSeed === null || $config->randomSeed == '') {
             $config->randomSeed = \Yii::$app->getSecurity()->generateRandomString();
         }
+
+        $config->domainPlain  = $this->siteUrl;
+        $config->prettyUrl    = $this->prettyUrls;
+        $config->dbConnection = $this->getDBConfig();
 
         return $config;
     }

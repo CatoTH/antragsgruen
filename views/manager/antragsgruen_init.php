@@ -110,6 +110,13 @@ echo '<div class="form-group">
     </div>
 </div>';
 
+
+echo '<div><label>';
+echo Html::checkbox('prettyUrls', $form->prettyUrls, ['id' => 'prettyUrls']);
+echo '"Hübsche" URLs (benötigt URL-Rewriting)';
+echo '</label></div>';
+
+
 echo '</div>';
 
 
@@ -184,7 +191,6 @@ echo 'Notwendige Datenbanktabellen automatisch anlegen';
 echo '</label>';
 echo '<div class="alreadyCreatedHint">' . '(nicht nötig, bereits vorhanden; aber auch nicht schädlich)' . '</div>';
 echo '</div>';
-
 echo '</div>';
 
 if ($form->sqlHost != '' || $form->sqlFile != '' || $form->sqlUsername != '') {

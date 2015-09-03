@@ -12,7 +12,6 @@ class AntragsgruenApp
     public $resourceBase          = '/';
     public $baseLanguage          = 'de';
     public $randomSeed            = '';
-    public $cookieValidationKey   = '';
     public $multisiteMode         = false;
     public $domainPlain           = 'http://antragsgruen-v3.localhost/';
     public $domainSubdomain       = 'http://<subdomain:[\w_-]+>.antragsgruen-v3.localhost/';
@@ -26,7 +25,7 @@ class AntragsgruenApp
     public $adminUserIds          = [];
     public $siteBehaviorClasses   = [];
     public $authClientCollection  = [];
-    public $autoLoginDuration     = 0;
+    public $autoLoginDuration     = 31536000; // 1 Year
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
     public $xdvipdfmx             = null;
