@@ -68,8 +68,8 @@ class Base extends Controller
                 if ($this->site) {
                     $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
                 }
-            } else {
-                $this->showErrorpage(500, 'Keine Seite angelegt. Das dürfte ein Fehler bei der Installation sein.');
+            } elseif (get_class($this) != ManagerController::class && !$appParams->multisiteMode) {
+                $this->showErrorpage(500, 'Keine Seite angegeben. Das dürfte ein Fehler bei der Installation sein.');
             }
 
             // Login and Mainainance mode is always allowed

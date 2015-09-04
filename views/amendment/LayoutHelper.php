@@ -59,7 +59,7 @@ class LayoutHelper
             $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
         }
 
-        foreach ($amendment->getSortedSections(true) as $section) {
+        foreach ($amendment->getSortedSections(false) as $section) {
             $content->text .= $section->getSectionType()->getAmendmentTeX();
         }
 
