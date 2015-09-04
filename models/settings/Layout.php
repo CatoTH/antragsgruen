@@ -53,7 +53,9 @@ class Layout
     {
         /** @var AntragsgruenApp $params */
         $params = \yii::$app->params;
-        $file = $params->resourceBase . $file;
+
+        $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');
+        $file = $params->resourceBase . $webAdd . $file;
 
         if (!in_array($file, $this->extraCss)) {
             $this->extraCss[] = $file;
@@ -79,7 +81,9 @@ class Layout
     {
         /** @var AntragsgruenApp $params */
         $params = \yii::$app->params;
-        $file = $params->resourceBase . $file;
+
+        $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');
+        $file = $params->resourceBase . $webAdd . $file;
 
         if (!in_array($file, $this->extraJs)) {
             $this->extraJs[] = $file;

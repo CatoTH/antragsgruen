@@ -32,4 +32,19 @@ class AntragsgruenApp
 
     /** @var null|array */
     public $mailService = null;
+
+    /**
+     * @param string|null $data
+     * @throws \Exception
+     */
+    public function __construct($data)
+    {
+        $this->setPropertiesFromJSON($data);
+
+        if ($data == '') {
+            $this->resourceBase = $_SERVER['SCRIPT_NAME'];
+            $this->resourceBase = str_replace('index.php', '', $this->resourceBase);
+            $this->domainPlain = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/';
+        }
+    }
 }

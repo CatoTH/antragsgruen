@@ -13,6 +13,15 @@ trait JsonConfigTrait
      */
     public function __construct($data)
     {
+        $this->setPropertiesFromJSON($data);
+    }
+
+    /**
+     * @param string $data
+     * @throws \Exception
+     */
+    protected function setPropertiesFromJSON($data)
+    {
         if ($data == '') {
             return;
         }

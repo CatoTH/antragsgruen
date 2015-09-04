@@ -13,6 +13,9 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $resourceBase = $controller->getParams()->resourceBase;
+if (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true) {
+    $resourceBase .= 'web/';
+}
 
 $bodyClasses = [];
 if ($layout->fullScreen) {

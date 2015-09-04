@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\models\db\User;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use yii\base\Model;
@@ -42,12 +43,16 @@ class AntragsgruenInitForm extends Model
             $configJson = file_get_contents($configFile);
             try {
                 $config           = new AntragsgruenApp($configJson);
-                $this->siteUrl    = $config->domainPlain;
+                $this->siteUrl    = trim($config->domainPlain, '/') . $config->resourceBase;
                 $this->prettyUrls = $config->prettyUrl;
                 $this->setDatabaseFromParams($config->dbConnection);
                 $this->adminIds = $config->adminUserIds;
             } catch (\Exception $e) {
             }
+        } else {
+            $config           = new AntragsgruenApp('');
+            $this->siteUrl    = trim($config->domainPlain, '/') . $config->resourceBase;
+            $this->prettyUrls = $config->prettyUrl;
         }
     }
 
@@ -186,6 +191,20 @@ class AntragsgruenInitForm extends Model
     public function hasAdminAccount()
     {
         return (count($this->adminIds) > 0);
+    }
+
+    /**
+     */
+    public function createAdminAccount()
+    {
+        $user                 = new User();
+        $user->auth           = 'email:' . $this->adminUsername;
+        $user->status         = User::STATUS_CONFIRMED;
+        $user->email          = $this->adminUsername;
+        $user->emailConfirmed = 1;
+        $user->pwdEnc         = password_hash($this->adminPassword, PASSWORD_DEFAULT);
+        $user->name           = '';
+        $user->save();
     }
 
     /**

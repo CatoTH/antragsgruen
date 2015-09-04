@@ -17,8 +17,8 @@ $controller  = $this->context;
 $this->title = 'Antragsgrün installieren';
 
 /** @var \app\controllers\admin\IndexController $controller */
-$controller            = $this->context;
-$layout                = $controller->layoutParams;
+$controller = $this->context;
+$layout     = $controller->layoutParams;
 $layout->loadFuelux();
 $layout->robotsNoindex = true;
 $layout->addJS('js/manager.js');
@@ -129,7 +129,7 @@ echo '<div class="form-group sqlType">
 echo HTMLTools::fueluxSelectbox(
     'sqlType',
     [
-        'mysql'      => 'MySQL / MariaDB',
+        'mysql' => 'MySQL / MariaDB',
     ],
     $form->sqlType,
     ['id' => 'sqlType']
@@ -198,8 +198,6 @@ if ($form->sqlHost != '' || $form->sqlFile != '' || $form->sqlUsername != '') {
 }
 
 
-
-
 echo '<h2 class="green">' . 'Admin-Zugang' . '</h2>';
 echo '<div class="content">';
 
@@ -207,7 +205,20 @@ if ($form->hasAdminAccount()) {
     echo '<strong>Bereits angelegt.</strong><br>';
     echo 'Falls das ein Fehler ist: entferne die "adminUserIds"-Einträge in der config/config.json.';
 } else {
+    echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="adminUsername">' . 'Benutzername (E-Mail)' . ':</label>
+    <div class="col-sm-8">
+        <input type="email" required name="adminUsername"
+        value="' . Html::encode($form->adminUsername) . '" class="form-control" id="adminUsername">
+    </div>
+</div>';
 
+    echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="adminPassword">' . 'Passwort' . ':</label>
+    <div class="col-sm-8">
+        <input type="password" required name="adminPassword" value="" class="form-control" id="adminPassword">
+    </div>
+</div>';
 }
 
 echo '</div>';

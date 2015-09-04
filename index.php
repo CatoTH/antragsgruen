@@ -1,6 +1,13 @@
 <?php
-defined('YII_DEBUG') or define('YII_DEBUG', false);
-defined('YII_ENV') or define('YII_ENV', 'production');
 
-chdir("." . DIRECTORY_SEPARATOR . "web");
-require("index.php");
+$suffix = explode('.', $_SERVER['REQUEST_URI']);
+if (count($suffix) > 1) {
+    $suffix = $suffix[count($suffix) - 1];
+    if (in_array($suffix, ['jpg', 'js', 'css', 'png'])) {
+        header('HTTP/1.0 404 Not Found');
+        die();
+    }
+}
+
+$newUrl = str_replace('index.php', 'web/', $_SERVER['SCRIPT_NAME']);
+Header('Location: ' . $newUrl);

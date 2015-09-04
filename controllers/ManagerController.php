@@ -300,6 +300,10 @@ class ManagerController extends Base
                 \yii::$app->session->setFlash('success', 'Konfiguration gespeichert.');
             }
 
+            if ($form->adminUsername != '' && $form->adminPassword != '' && $form->tablesAreCreated()) {
+                $form->createAdminAccount();
+            }
+
             return $this->redirect($form->siteUrl);
         }
 

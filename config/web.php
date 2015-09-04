@@ -6,9 +6,14 @@ require_once($configDir . 'JsonConfigTrait.php');
 require_once($configDir . 'AntragsgruenApp.php');
 
 if (YII_ENV == 'test') {
-    $config = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json');
+    $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json';
 } else {
-    $config = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'config.json');
+    $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.json';
+}
+if (file_exists($configFile)) {
+    $config = file_get_contents($configFile);
+} else {
+    $config = '';
 }
 $params = new \app\models\settings\AntragsgruenApp($config);
 

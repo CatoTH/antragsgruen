@@ -65,9 +65,6 @@ return [
                 ],
             ],
         ],
-        'errorHandler' => [
-            'errorAction' => 'consultation/index',
-        ],
     ],
     'defaultRoute' => $defaultRoute,
     'params'       => $params,

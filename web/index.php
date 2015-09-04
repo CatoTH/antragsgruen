@@ -6,9 +6,11 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 
-$configfile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.json';
-if (!file_exists($configfile)) {
-    die('Antragsgrün is not configured yet. Please create a config/config.php by using the config.template.php.');
+$configDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config';
+$configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+$installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
+if (!file_exists($configFile) && !file_exists($installFile)) {
+    die('Antragsgrün is not configured yet. Please create the config/INSTALLING file and call this site again to open the installation wizard.');
 }
 
 require(__DIR__ . '/../vendor/autoload.php');

@@ -1,0 +1,5 @@
+RewriteEngine on
+# If a directory or a file exists, use it directly
+# Otherwise forward it to index.php
+RewriteRule . index.php
+
