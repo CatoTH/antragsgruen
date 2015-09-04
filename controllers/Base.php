@@ -68,6 +68,8 @@ class Base extends Controller
                 if ($this->site) {
                     $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
                 }
+            } else {
+                $this->showErrorpage(500, 'Keine Seite angelegt. Das dürfte ein Fehler bei der Installation sein.');
             }
 
             // Login and Mainainance mode is always allowed
