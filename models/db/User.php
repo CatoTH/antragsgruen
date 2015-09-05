@@ -89,6 +89,20 @@ class User extends ActiveRecord implements IdentityInterface
         return $user->hasPrivilege($consultation, $privilege);
     }
 
+    /**
+     * @return bool
+     */
+    public static function currentUserIsSuperuser()
+    {
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return false;
+        }
+        /** @var AntragsgruenApp $params */
+        $params = \yii::$app->params;
+        return in_array($user->id, $params->adminUserIds);
+    }
+
 
     /**
      * @return string

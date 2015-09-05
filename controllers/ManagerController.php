@@ -8,10 +8,10 @@ use app\components\UrlHelper;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Access;
+use app\models\exceptions\Internal;
 use app\models\forms\AntragsgruenInitForm;
 use app\models\forms\SiteCreateForm;
 use Yii;
-use yii\db\Connection;
 use yii\db\Exception;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -170,8 +170,7 @@ class ManagerController extends Base
      */
     public function actionSavetextajax($pageKey)
     {
-        $user = User::getCurrentUser();
-        if (!$user || !in_array($user->id, $this->getParams()->adminUserIds)) {
+        if (!User::currentUserIsSuperuser()) {
             throw new Access('No permissions to edit this page');
         }
         if (MessageSource::savePageData(null, $pageKey, $_POST['data'])) {
@@ -185,8 +184,7 @@ class ManagerController extends Base
      */
     public function actionSiteconfig()
     {
-        $user = User::getCurrentUser();
-        if (!$user || !in_array($user->id, $this->getParams()->adminUserIds)) {
+        if (!User::currentUserIsSuperuser()) {
             return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
         }
 
@@ -331,6 +329,7 @@ class ManagerController extends Base
 
     /**
      * @return string
+     * @throws Internal
      */
     public function actionAntragsgrueninitdbtest()
     {
@@ -338,7 +337,12 @@ class ManagerController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $configDir  = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
+        $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
         $configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+
+        if (!file_exists($installFile)) {
+            throw new Internal('Installation mode not activated');
+        }
 
         $form = new AntragsgruenInitForm($configFile);
         $form->setAttributes($_POST);

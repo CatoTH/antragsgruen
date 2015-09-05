@@ -26,7 +26,19 @@ $layout->addOnLoadJS('$.Antragsgruen.motionMergeAmendmentsForm();');
 $title       = str_replace('%NAME%', $motion->motionType->titleSingular, '%NAME% überarbeiten');
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
-echo '<h1>' . Html::encode($this->title) . '</h1>';
+echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
+
+echo '<div class="motionData">';
+
+if (!$motion->consultation->getSettings()->minimalisticUI) {
+    include(__DIR__ . DIRECTORY_SEPARATOR . 'view_motiondata.php');
+}
+
+echo $controller->showErrors();
+
+echo '</div>';
+
+
 echo Html::beginForm('', 'post', ['class' => 'motionMergeForm fuelux']);
 
 

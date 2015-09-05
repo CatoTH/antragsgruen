@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\User;
 use yii\helpers\Html;
 
 /**
@@ -142,8 +143,21 @@ echo Html::a(
     UrlHelper::createUrl('admin/index/siteconsultations'),
     ['class' => 'siteConsultationsLink']
 );
-echo '</li>
-    </ul></div>';
+echo '</li>';
+
+if (User::currentUserIsSuperuser()) {
+    echo '<li>';
+    echo Html::a(
+        'Konfiguration der Antragsgrün-Installation',
+        UrlHelper::createUrl('manager/siteconfig'),
+        ['class' => 'siteConfigLink']
+    );
+    echo '</li>';
+}
+
+
+
+echo '</ul></div>';
 
 if (count($todo) > 0) {
     echo '</div><div class="col-md-5">';
