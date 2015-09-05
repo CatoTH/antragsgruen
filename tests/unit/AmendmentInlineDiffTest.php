@@ -18,7 +18,8 @@ sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese<br>
 Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen<br>
 werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung<br>
 der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die<br>
-Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</p></ins>';
+Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</p></ins>
+';
         /** @var MotionSection $section */
         $section    = MotionSection::findOne(['motionId' => 112, 'sectionId' => 21]);
         $paragraphs = $section->getTextParagraphObjects(true, true, true);

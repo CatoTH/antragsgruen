@@ -13,19 +13,19 @@ class HTMLSectioningTest extends TestBase
     public function testSectioning()
     {
         $orig   = '<p>Test1</p><p>Test <strong>2</strong> Test</p>
-                    <p>Some<br>
-                    Line Break</p>
-                    <blockquote><p>Quote 1</p>
-                    <p>Quote 2</p></blockquote>
-                    <p>Normal Paragraph</p>
-                    <ul><li>Line 1</li>
-                    <li>Line 2<br>Line 2, part 2</li>
-                    <li>Line 3<strong>Strong</strong></li></ul><p>End</p>';
+<p>Some<br>
+Line Break</p>
+<blockquote><p>Quote 1</p>
+<p>Quote 2</p></blockquote>
+<p>Normal Paragraph</p>
+<ul><li>Line 1</li>
+<li>Line 2<br>Line 2, part 2</li>
+<li>Line 3<strong>Strong</strong></li></ul><p>End</p>';
         $expect = [
             '<p>Test1</p>',
             '<p>Test <strong>2</strong> Test</p>',
             '<p>Some<br>
-                    Line Break</p>',
+Line Break</p>',
             '<blockquote><p>Quote 1</p></blockquote>',
             '<blockquote><p>Quote 2</p></blockquote>',
             '<p>Normal Paragraph</p>',
@@ -36,7 +36,7 @@ class HTMLSectioningTest extends TestBase
         ];
 
         $orig = HTMLTools::cleanSimpleHtml($orig);
-        $out  = HTMLTools::sectionSimpleHTML($orig);
-        $this->assertEquals($out, $expect);
+        $out = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
     }
 }
