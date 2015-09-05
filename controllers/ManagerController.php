@@ -11,6 +11,7 @@ use app\models\exceptions\Access;
 use app\models\forms\AntragsgruenInitForm;
 use app\models\forms\SiteCreateForm;
 use Yii;
+use yii\db\Connection;
 use yii\db\Exception;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -288,9 +289,7 @@ class ManagerController extends Base
             $form->prettyUrls      = isset($_POST['prettyUrls']);
 
             if ($editable) {
-                $file = fopen($configFile, 'w');
-                fwrite($file, $form->getConfig()->toJSON());
-                fclose($file);
+                $form->saveConfig();
             }
 
             if ($form->sqlCreateTables && $form->verifyDBConnection(false) && !$form->tablesAreCreated()) {
@@ -300,11 +299,23 @@ class ManagerController extends Base
                 \yii::$app->session->setFlash('success', 'Konfiguration gespeichert.');
             }
 
-            if ($form->adminUsername != '' && $form->adminPassword != '' && $form->tablesAreCreated()) {
-                $form->createAdminAccount();
+            if ($form->tablesAreCreated()) {
+                $connConfig = $form->getDBConfig();
+                $connConfig['class'] = \yii\db\Connection::class;
+                \yii::$app->set('db', $connConfig);
+
+                if ($form->adminUsername != '' && $form->adminPassword != '') {
+                    $form->createAdminAccount();
+                }
+                if ($form->adminUser) {
+                    $form->createSite();
+                }
+                if ($editable) {
+                    $form->saveConfig();
+                }
             }
 
-            return $this->redirect($form->siteUrl);
+            return $this->redirect($form->getConfig()->resourceBase);
         }
 
         $delInstallFileCmd = 'rm ' . $installFile;

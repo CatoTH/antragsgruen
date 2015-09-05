@@ -59,8 +59,21 @@ class SiteCreateForm extends Model
     {
         $preset = SitePresets::getPreset($this->preset);
 
-        $site         = Site::createFromForm($this, $preset);
-        $consultation = Consultation::createFromForm($this, $site, $currentUser, $preset);
+        $site         = Site::createFromForm(
+            $preset,
+            $this->subdomain,
+            $this->title,
+            $this->isWillingToPay
+        );
+        $consultation = Consultation::createFromForm(
+            $site,
+            $currentUser,
+            $preset,
+            $this->preset,
+            $this->title,
+            $this->subdomain,
+            $this->openNow
+        );
         $site->link('currentConsultation', $consultation);
         $site->link('admins', $currentUser);
 

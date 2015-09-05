@@ -6,7 +6,6 @@ use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\DB;
 use app\models\exceptions\NotFound;
-use app\models\forms\SiteCreateForm;
 use app\models\SearchResult;
 use app\models\sitePresets\ISitePreset;
 use yii\db\ActiveRecord;
@@ -259,26 +258,29 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param SiteCreateForm $form
      * @param Site $site
      * @param User $currentUser
      * @param ISitePreset $preset
+     * @param int $type
+     * @param string $title
+     * @param string $subdomain
+     * @param int $openNow
      * @return Consultation
      * @throws DB
      */
-    public static function createFromForm(SiteCreateForm $form, Site $site, User $currentUser, ISitePreset $preset)
+    public static function createFromForm($site, $currentUser, $preset, $type, $title, $subdomain, $openNow)
     {
         $con                     = new Consultation();
         $con->siteId             = $site->id;
-        $con->title              = $form->title;
-        $con->titleShort         = $form->title;
-        $con->type               = $form->preset;
-        $con->urlPath            = $form->subdomain;
+        $con->title              = $title;
+        $con->titleShort         = $title;
+        $con->type               = $type;
+        $con->urlPath            = $subdomain;
         $con->adminEmail         = $currentUser->email;
         $con->amendmentNumbering = 0;
 
         $settings                   = $con->getSettings();
-        $settings->maintainanceMode = !$form->openNow;
+        $settings->maintainanceMode = !$openNow;
         $con->setSettings($settings);
 
         $preset->setConsultationSettings($con);
@@ -454,8 +456,12 @@ class Consultation extends ActiveRecord
         return false;
     }
 
-
-    public function sendEmailToAdmins($mailSubject, $mailText) {
+    /**
+     * @param string $mailSubject
+     * @param string $mailText
+     */
+    public function sendEmailToAdmins($mailSubject, $mailText)
+    {
         $mails = explode(',', $this->adminEmail);
         foreach ($mails as $mail) {
             if (trim($mail) != '') {

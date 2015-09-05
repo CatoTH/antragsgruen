@@ -2,10 +2,15 @@
 
 namespace app\models\forms;
 
+use app\models\db\Consultation;
+use app\models\db\Site;
+use app\models\settings\Site as SiteSettings;
 use app\models\db\User;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
+use app\models\sitePresets\SitePresets;
 use yii\base\Model;
+use yii\db\Connection;
 
 class AntragsgruenInitForm extends Model
 {
@@ -13,6 +18,8 @@ class AntragsgruenInitForm extends Model
     public $configFile;
 
     public $siteUrl;
+    public $siteTitle;
+    public $sitePreset;
 
     public $sqlType = 'mysql';
     public $sqlHost;
@@ -26,6 +33,8 @@ class AntragsgruenInitForm extends Model
 
     /** @var int[] */
     public $adminIds;
+    /** @var User */
+    public $adminUser;
 
     /** @var boolean */
     public $sqlCreateTables = true;
@@ -96,10 +105,10 @@ class AntragsgruenInitForm extends Model
     public function rules()
     {
         return [
-            [['siteUrl', 'sqlType', 'adminUsername', 'adminPassword'], 'required'],
+            [['siteUrl', 'siteTitle', 'sqlType', 'adminUsername', 'adminPassword'], 'required'],
+            [['sitePreset'], 'number'],
             [['sqlType', 'sqlHost', 'sqlFile', 'sqlUsername', 'sqlPassword', 'sqlDB', 'sqlCreateTables'], 'safe'],
-            [['siteUrl'], 'safe'],
-            [['adminUsername', 'adminPassword'], 'safe'],
+            [['siteUrl', 'siteTitle', 'sitePreset', 'adminUsername', 'adminPassword'], 'safe'],
         ];
     }
 
@@ -131,7 +140,7 @@ class AntragsgruenInitForm extends Model
     {
         try {
             $connConfig = $this->getDBConfig();
-            $connection = new \yii\db\Connection($connConfig);
+            $connection = new Connection($connConfig);
             $connection->createCommand('SHOW TABLES')->queryAll();
             return true;
         } catch (\yii\db\Exception $e) {
@@ -186,6 +195,53 @@ class AntragsgruenInitForm extends Model
     }
 
     /**
+     * @return Site|null
+     */
+    public function getDefaultSite()
+    {
+        $sites = Site::findAll(['1=1']);
+        if (count($sites) > 0) {
+            return $sites[0];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return Site
+     * @throws \app\models\exceptions\DB
+     * @throws \app\models\exceptions\Internal
+     */
+    public function createSite()
+    {
+        $preset = SitePresets::getPreset($this->sitePreset);
+        if (!$this->adminUser) {
+            throw new \app\models\exceptions\Internal('Admin user not created');
+        }
+
+        $site         = Site::createFromForm($preset, 'std', $this->siteTitle, SiteSettings::PAYS_NOT);
+        $consultation = Consultation::createFromForm(
+            $site,
+            $this->adminUser,
+            $preset,
+            $this->sitePreset,
+            $this->siteTitle,
+            'std',
+            1
+        );
+        $site->link('currentConsultation', $consultation);
+        $site->link('admins', $this->adminUser);
+
+        $preset->createMotionTypes($consultation);
+        $preset->createMotionSections($consultation);
+        $preset->createAgenda($consultation);
+
+        echo "Created";
+
+        return $site;
+    }
+
+    /**
      * @return bool
      */
     public function hasAdminAccount()
@@ -204,7 +260,12 @@ class AntragsgruenInitForm extends Model
         $user->emailConfirmed = 1;
         $user->pwdEnc         = password_hash($this->adminPassword, PASSWORD_DEFAULT);
         $user->name           = '';
-        $user->save();
+        if (!$user->save()) {
+            var_dump($user->getErrors());
+            die();
+        }
+        $this->adminIds[] = $user->id;
+        $this->adminUser  = $user;
     }
 
     /**
@@ -214,7 +275,7 @@ class AntragsgruenInitForm extends Model
     {
         try {
             $connConfig = $this->getDBConfig();
-            $connection = new \yii\db\Connection($connConfig);
+            $connection = new Connection($connConfig);
             $tables     = $connection->createCommand('SHOW TABLES')->queryAll();
             return (count($tables) > 0);
         } catch (\yii\db\Exception $e) {
@@ -227,7 +288,7 @@ class AntragsgruenInitForm extends Model
     public function createTables()
     {
         $connConfig = $this->getDBConfig();
-        $connection = new \yii\db\Connection($connConfig);
+        $connection = new Connection($connConfig);
 
         $createString = file_get_contents(
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
@@ -276,6 +337,27 @@ class AntragsgruenInitForm extends Model
         $config->prettyUrl    = $this->prettyUrls;
         $config->dbConnection = $this->getDBConfig();
 
+        try {
+            $defaultSite = $this->getDefaultSite();
+            if ($defaultSite) {
+                $config->siteSubdomain = $defaultSite->subdomain;
+            }
+        } catch (\Exception $e) {
+        }
+
+        if ($this->adminUser && !in_array($this->adminUser->id, $config->adminUserIds)) {
+            $config->adminUserIds[] = $this->adminUser->id;
+        }
+
         return $config;
+    }
+
+    /**
+     */
+    public function saveConfig()
+    {
+        $file = fopen($this->configFile, 'w');
+        fwrite($file, $this->getConfig()->toJSON());
+        fclose($file);
     }
 }

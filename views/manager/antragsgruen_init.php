@@ -70,22 +70,20 @@ if ($form->isConfigured()) {
             echo '</div>';
         }
 
-        echo '<div class="alert alert-info" role="alert">
-        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>';
-
         if ($installFileDeletable) {
             echo '<div class="saveholder">';
             echo '<button class="btn btn-success" name="finishInit">';
             echo 'Installationsmodus beenden';
             echo '</button></div>';
         } else {
+            echo '<div class="alert alert-info" role="alert">';
             echo str_replace('%DELCMD%', Html::encode($delInstallFileCmd), 'Um den Installationsmodus zu beenden,
                 lösche die Datei config/INSTALLING.
                 Je nach Betriebssystem könnte der Befehl dazu z.B. folgendermaßen lauten:<pre>%DELCMD%</pre>
                 Rufe danach diese Seite hier neu auf.
                 ');
+            echo '</div>';
         }
-        echo '</div>';
     }
 } else {
     echo '<div class="alert alert-info" role="alert">
@@ -97,24 +95,50 @@ if ($form->isConfigured()) {
 
 echo '</div>';
 
+echo Html::endForm();
 
-echo '<h2 class="green">' . 'Adresse' . '</h2>';
+
+echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
+
+echo '<h2 class="green">' . 'Die Seite' . '</h2>';
 echo '<div class="content">';
+
+echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="siteTitle">' . 'Name' . ':</label>
+    <div class="col-sm-8">
+    <input type="text" required name="siteTitle" placeholder="Vollversammlung d. Verbands XY"
+        value="' . Html::encode($form->siteTitle) . '" class="form-control" id="siteTitle">
+    </div>
+</div>';
 
 
 echo '<div class="form-group">
     <label class="col-sm-4 control-label" for="siteUrl">' . 'URL' . ':</label>
     <div class="col-sm-8">
     <input type="text" required name="siteUrl" placeholder="https://..."
-        value="' . Html::encode($form->siteUrl) . '" class="form-control" id="siteUrl">
+        value="' . Html::encode($form->siteUrl) . '" class="form-control" id="siteUrl"><br>
+
+        <label>';
+echo Html::checkbox('prettyUrls', $form->prettyUrls, ['id' => 'prettyUrls']);
+echo '"Hübsche" URLs (benötigt URL-Rewriting)';
+echo '</label>
     </div>
 </div>';
 
 
-echo '<div><label>';
-echo Html::checkbox('prettyUrls', $form->prettyUrls, ['id' => 'prettyUrls']);
-echo '"Hübsche" URLs (benötigt URL-Rewriting)';
-echo '</label></div>';
+echo '<div class="form-group"><div class="col-sm-4 label control-label">';
+echo 'Voreinstellung:';
+echo '</div><div class="col-sm-8">';
+foreach (\app\models\sitePresets\SitePresets::$PRESETS as $presetId => $preset) {
+    $defaults = json_encode($preset::getDetailDefaults());
+    echo '<label class="sitePreset" data-defaults="' . Html::encode($defaults) . '">';
+    echo Html::radio('sitePreset', ($form->sitePreset == $presetId), ['value' => $presetId]);
+    echo '<span>' . Html::encode($preset::getTitle()) . '</span>';
+    echo '</label><div class="sitePresetInfo">';
+    echo $preset::getDescription();
+    echo '</div>';
+}
+echo '</div></div>';
 
 
 echo '</div>';

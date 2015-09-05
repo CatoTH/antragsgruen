@@ -14,7 +14,7 @@ class AntragsgruenApp
     public $randomSeed            = '';
     public $multisiteMode         = false;
     public $domainPlain           = 'http://antragsgruen-v3.localhost/';
-    public $domainSubdomain       = 'http://<subdomain:[\w_-]+>.antragsgruen-v3.localhost/';
+    public $domainSubdomain       = '';
     public $hasWurzelwerk         = true;
     public $createNeedsWurzelwerk = false;
     public $prependWWWToSubdomain = true;

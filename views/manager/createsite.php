@@ -47,10 +47,10 @@ if (count($errors) > 0) {
         '</div>';
 }
 
-foreach (\app\models\sitePresets\SitePresets::$PRESETS as $preset_id => $preset) {
+foreach (\app\models\sitePresets\SitePresets::$PRESETS as $presetId => $preset) {
     $defaults = json_encode($preset::getDetailDefaults());
     echo '<label class="sitePreset" data-defaults="' . Html::encode($defaults) . '">';
-    echo Html::radio('SiteCreateForm[preset]', ($model->preset == $preset_id), ['value' => $preset_id]);
+    echo Html::radio('SiteCreateForm[preset]', ($model->preset == $presetId), ['value' => $presetId]);
     echo '<span>' . Html::encode($preset::getTitle()) . '</span>';
     echo '</label><div class="sitePresetInfo">';
     echo $preset::getDescription();

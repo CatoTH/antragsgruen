@@ -61,5 +61,21 @@
   color: gray; }
   .antragsgruenInitForm .createTables.alreadyCreated .alreadyCreatedHint {
     display: block; }
+.antragsgruenInitForm .sitePreset {
+  font-size: 14px;
+  font-weight: bold;
+  vertical-align: middle;
+  margin-top: 10px; }
+  .antragsgruenInitForm .sitePreset div {
+    display: inline-block;
+    vertical-align: middle; }
+  .antragsgruenInitForm .sitePreset input {
+    vertical-align: middle;
+    margin-top: 0;
+    margin-right: 6px; }
+.antragsgruenInitForm .sitePresetInfo {
+  padding-left: 10px;
+  margin-left: 20px;
+  border-left: solid 3px lightgray; }
 
 /*# sourceMappingURL=manager.css.map */
