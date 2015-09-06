@@ -47,7 +47,7 @@ class AmendmentDiffMerger
         $this->paras    = $paras;
         $this->paraData = [];
         foreach ($paras as $paraNo => $paraStr) {
-            $origTokenized = \app\components\diff\Diff::tokenizeLine($paraStr);
+            $origTokenized = Diff::tokenizeLine($paraStr);
             $origArr       = preg_split('/\R/', $origTokenized);
             $words         = [];
             foreach ($origArr as $x) {
@@ -72,13 +72,22 @@ class AmendmentDiffMerger
      */
     public function addAmendingParagraphs($amendmentId, $affectedParas)
     {
-        $diffEngine = new \app\components\diff\Engine();
+        $diffEngine = new Engine();
         foreach ($affectedParas as $amendPara => $amendText) {
-            $newTokens  = \app\components\diff\Diff::tokenizeLine($amendText);
+            $newTokens  = Diff::tokenizeLine($amendText);
             $diffTokens = $diffEngine->compareStrings($this->paraData[$amendPara]['origTokenized'], $newTokens);
             $diffTokens = $diffEngine->shiftMisplacedHTMLTags($diffTokens);
-            $firstDiff  = null;
-            foreach ($diffTokens as $i => $token) {
+
+            list($prefix, $middle, $postfix) = Diff::getUnchangedPrefixPostfixArr($diffTokens);
+            if (Diff::computeArrDiffChangeRatio($middle) <= Diff::MAX_LINE_CHANGE_RATIO) {
+                $flattenedDiff = array_merge($prefix, $middle, $postfix);
+            } else {
+                $middle        = static::splitDiffToInsertDelete($middle);
+                $flattenedDiff = array_merge($prefix, $middle, $postfix);
+            }
+
+            $firstDiff = null;
+            foreach ($flattenedDiff as $i => $token) {
                 if ($firstDiff === null && $token[1] != Engine::UNMODIFIED) {
                     $firstDiff = $i;
                 }
@@ -86,7 +95,7 @@ class AmendmentDiffMerger
             $this->diffParagraphs[$amendPara][] = [
                 'amendment' => $amendmentId,
                 'firstDiff' => $firstDiff,
-                'diff'      => $diffTokens,
+                'diff'      => $flattenedDiff,
             ];
         }
     }
@@ -114,6 +123,28 @@ class AmendmentDiffMerger
     public function setAmendingSectionData($data)
     {
         $this->diffParagraphs = $data;
+    }
+
+    /**
+     * @param array $diff
+     * @return array
+     */
+    public static function splitDiffToInsertDelete($diff)
+    {
+        $inserts = $deletes = [];
+        foreach ($diff as $diffPart) {
+            if ($diffPart[1] == Engine::INSERTED) {
+                $inserts[] = $diffPart;
+            } elseif ($diffPart[1] == Engine::DELETED) {
+                $deletes[] = $diffPart;
+            } else {
+                $diffPart[1] = Engine::INSERTED;
+                $inserts[] = $diffPart;
+                $diffPart[1] = Engine::DELETED;
+                $deletes[] = $diffPart;
+            }
+        }
+        return array_merge($deletes, $inserts);
     }
 
     /**

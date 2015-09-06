@@ -366,12 +366,45 @@ class Diff
     }
 
     /**
+     * @param array $diff
+     * @return array
+     */
+    public static function getUnchangedPrefixPostfixArr($diff)
+    {
+        $prefix      = $postfix = $middle = [];
+        $firstChange = $lastChange = null;
+        for ($i = 0; $i < count($diff) && $firstChange === null; $i++) {
+            if ($diff[$i][1] == Engine::UNMODIFIED) {
+                $prefix[] = $diff[$i];
+            } else {
+                $firstChange = $i;
+            }
+        }
+        if ($firstChange === null) {
+            return [$prefix, $middle, $postfix];
+        }
+        for ($i = count($diff) - 1; $i >= 0 && $lastChange === null; $i--) {
+            if ($diff[$i][1] == Engine::UNMODIFIED) {
+                $postfix[] = $diff[$i];
+            } else {
+                $lastChange = $i;
+            }
+        }
+        $postfix = array_reverse($postfix);
+        for ($i = $firstChange; $i <= $lastChange; $i++) {
+            $middle[] = $diff[$i];
+        }
+        return [$prefix, $middle, $postfix];
+    }
+
+    /**
      * @param string $orig
      * @param string $new
      * @param string $diff
+     * @param string $ignoreStr
      * @return string[]
      */
-    private function getUnchangedPrefixPostfix($orig, $new, $diff)
+    public static function getUnchangedPrefixPostfix($orig, $new, $diff, $ignoreStr)
     {
         $parts      = preg_split('/<\/?(ins|del)>/siu', $diff);
         $prefix     = $parts[0];
@@ -401,10 +434,10 @@ class Diff
         }
 
         $prefixLen     = mb_strlen($prefix);
-        $prefixNew     = str_replace($this->engine->getIgnoreStr(), '', $prefix);
+        $prefixNew     = str_replace($ignoreStr, '', $prefix);
         $prefixNewLen  = mb_strlen($prefixNew);
         $postfixLen    = mb_strlen($postfix);
-        $postfixNew    = str_replace($this->engine->getIgnoreStr(), '', $postfix);
+        $postfixNew    = str_replace($ignoreStr, '', $postfix);
         $postfixNewLen = mb_strlen($postfixNew);
         $middleDiff    = mb_substr($diff, $prefixLen, mb_strlen($diff) - $prefixLen - $postfixLen);
         $middleOrig    = mb_substr($orig, $prefixLen, mb_strlen($orig) - $prefixLen - $postfixLen);
@@ -418,7 +451,7 @@ class Diff
      * @param string $diff
      * @return float
      */
-    private function computeLineDiffChangeRatio($orig, $diff)
+    public static function computeLineDiffChangeRatio($orig, $diff)
     {
         $origLength = mb_strlen(strip_tags($orig));
         if ($origLength == 0) {
@@ -426,9 +459,31 @@ class Diff
         }
         $strippedDiff = preg_replace('/<ins>(.*)<\/ins>/siuU', '', $diff);
         $strippedDiff = preg_replace('/<del>(.*)<\/del>/siuU', '', $strippedDiff);
-        $diffLength   = mb_strlen(strip_tags($strippedDiff));
+        $strippedDiffLength   = mb_strlen(strip_tags($strippedDiff));
 
-        return 1.0 - ($diffLength / $origLength);
+        return 1.0 - ($strippedDiffLength / $origLength);
+    }
+
+    /**
+     * @param array $diff
+     * @return float
+     */
+    public static function computeArrDiffChangeRatio($diff)
+    {
+        if (count($diff) == 0) {
+            return 0;
+        }
+        $unchanged = $inserted = $deleted = 0;
+        for ($i = 0; $i < count($diff); $i++) {
+            if ($diff[$i][1] == Engine::UNMODIFIED) {
+                $unchanged++;
+            } elseif ($diff[$i][1] == Engine::INSERTED) {
+                $inserted++;
+            } elseif ($diff[$i][1] == Engine::DELETED) {
+                $deleted++;
+            }
+        }
+        return 1.0 - ($unchanged / count($diff));
     }
 
     /**
@@ -462,9 +517,9 @@ class Diff
                 if ($updates) {
                     list ($deletes, $inserts, $count) = $updates;
                     for ($j = 0; $j < count($deletes); $j++) {
-                        $lineDiff = $this->computeLineDiff($deletes[$j], $inserts[$j]);
-
-                        $split = $this->getUnchangedPrefixPostfix($deletes[$j], $inserts[$j], $lineDiff);
+                        $lineDiff  = $this->computeLineDiff($deletes[$j], $inserts[$j]);
+                        $ignoreStr = $this->engine->getIgnoreStr();
+                        $split     = $this->getUnchangedPrefixPostfix($deletes[$j], $inserts[$j], $lineDiff, $ignoreStr);
                         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
                         if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
                             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
@@ -636,9 +691,9 @@ class Diff
                     list ($deletes, $inserts, $count) = $updates;
                     $motionParaLines = 0;
                     for ($j = 0; $j < count($deletes); $j++) {
-                        $lineDiff = $this->computeLineDiff($deletes[$j], $inserts[$j]);
-
-                        $split = $this->getUnchangedPrefixPostfix($deletes[$j], $inserts[$j], $lineDiff);
+                        $lineDiff  = $this->computeLineDiff($deletes[$j], $inserts[$j]);
+                        $ignoreStr = $this->engine->getIgnoreStr();
+                        $split     = $this->getUnchangedPrefixPostfix($deletes[$j], $inserts[$j], $lineDiff, $ignoreStr);
                         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
                         $motionParaLines += LineSplitter::countMotionParaLines($prefix, $lineLength);
 
