@@ -23,7 +23,7 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 }
 
 .ICE-Tracking .ice-ins, .ICE-Tracking .ice-ins p {
-	background-color: #66ff66 !important;
+	background-color: #66ff66;
 }
 
 .ICE-Tracking .ice-ins.ice-cts-1, .ICE-Tracking .ice-ins.ice-cts-1 > * {
@@ -42,7 +42,7 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 	display: inline;
 	text-decoration: line-through;
 	color: #555;
-	background-color: #ff6666 !important;
+	background-color: #ff6666;
 }
 
 .ICE-Tracking .ice-del.ice-cts-1 {

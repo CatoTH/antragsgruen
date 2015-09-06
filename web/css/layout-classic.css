@@ -10181,6 +10181,14 @@ html.no-touch .supporterFormStd .supporterRow:hover .rowDeleter, html.no-touch .
 .motionMergeForm .newAmendments .control-label {
   margin-top: -3px;
   padding-top: 0; }
+.motionMergeForm .ICE-Tracking .ice-del, .motionMergeForm .ICE-Tracking .ice-del p {
+  text-decoration: line-through;
+  color: #880000;
+  background-color: rgba(255, 100, 100, 0.2); }
+.motionMergeForm .ICE-Tracking .ice-ins, .motionMergeForm .ICE-Tracking .ice-ins p {
+  text-decoration: underline;
+  color: #008800;
+  background-color: rgba(100, 255, 100, 0.2); }
 
 span.twitter-typeahead .tt-menu {
   position: absolute;
