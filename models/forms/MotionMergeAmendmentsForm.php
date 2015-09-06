@@ -72,6 +72,7 @@ class MotionMergeAmendmentsForm extends Model
                 $consolidated = str_replace('<li>&nbsp;</li>', '', $consolidated);
                 /** @var TextSimple data */
                 $section->getSectionType()->setMotionData($consolidated);
+                $section->dataRaw = $this->sections[$section->sectionId]['raw'];
             } elseif (isset($this->sections[$section->sectionId])) {
                 $section->getSectionType()->setMotionData($this->sections[$section->sectionId]);
             } else {

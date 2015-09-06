@@ -46,6 +46,7 @@ class TextSimple extends ISectionType
      */
     public function setMotionData($data)
     {
+        $this->section->dataRaw = $data;
         $this->section->data = HTMLTools::cleanSimpleHtml($data);
     }
 

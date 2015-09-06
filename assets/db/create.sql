@@ -425,6 +425,7 @@ CREATE TABLE IF NOT EXISTS `motionSection` (
   `motionId`  INT(11)  NOT NULL,
   `sectionId` INT(11)  NOT NULL,
   `data`      LONGTEXT NOT NULL,
+  `dataRaw`   LONGTEXT NOT NULL,
   `cache`     LONGTEXT NOT NULL,
   `metadata`  TEXT
 )

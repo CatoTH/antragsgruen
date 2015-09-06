@@ -34,6 +34,7 @@ class TextHTML extends ISectionType
      */
     public function setMotionData($data)
     {
+        $this->section->dataRaw = $data;
         $this->section->data = HTMLTools::cleanUntrustedHtml($data);
     }
 

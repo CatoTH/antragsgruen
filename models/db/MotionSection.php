@@ -13,6 +13,7 @@ use app\models\exceptions\Internal;
  * @property int $motionId
  * @property int $sectionId
  * @property string $data
+ * @property string $dataRaw
  * @property string $cache
  * @property string $metadata
  *
@@ -82,6 +83,7 @@ class MotionSection extends IMotionSection
         return [
             [['motionId'], 'required'],
             [['motionId', 'sectionId'], 'number'],
+            [['dataRaw'], 'safe'],
         ];
     }
 
