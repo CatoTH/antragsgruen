@@ -18,7 +18,15 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 echo '<div class="content">';
 
-if (!$motion->consultation->site->getSettings()->forceLogin && count($motion->replacedByMotions) == 0) {
+/** @var Motion[] $replacedByMotions */
+$replacedByMotions = [];
+foreach ($motion->replacedByMotions as $replMotion) {
+    if (!in_array($replMotion->status, $motion->consultation->getInvisibleMotionStati())) {
+        $replacedByMotions[] = $replMotion;
+    }
+}
+
+if (!$motion->consultation->site->getSettings()->forceLogin && count($replacedByMotions) == 0) {
     $layout->loadShariff();
     $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
     $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
@@ -30,21 +38,21 @@ if (!$motion->consultation->site->getSettings()->forceLogin && count($motion->re
            data-lang="' . Html::encode($lang) . '" data-title="' . Html::encode($dataTitle) . '"></div>';
 }
 
-if (count($motion->replacedByMotions) > 0) {
+if (count($replacedByMotions) > 0) {
     echo '<div class="alert alert-danger motionReplayedBy" role="alert">';
     echo 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:';
-    if (count($motion->replacedByMotions) > 1) {
+    if (count($replacedByMotions) > 1) {
         echo '<ul>';
-        foreach ($motion->replacedByMotions as $newMotion) {
+        foreach ($replacedByMotions as $newMotion) {
             echo '<li>';
-            $newLink = UrlHelper::createMotionUrl($motion->replacedByMotions[0]);
+            $newLink = UrlHelper::createMotionUrl($newMotion);
             echo Html::a($motion->getTitleWithPrefix(), $newLink);
             echo '</li>';
         }
         echo '</ul>';
     } else {
         echo '<br>';
-        $newLink = UrlHelper::createMotionUrl($motion->replacedByMotions[0]);
+        $newLink = UrlHelper::createMotionUrl($replacedByMotions[0]);
         echo Html::a($motion->getTitleWithPrefix(), $newLink);
     }
     echo '</div>';
