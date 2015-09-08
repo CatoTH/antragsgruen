@@ -15,7 +15,11 @@ if (file_exists($configFile)) {
 } else {
     $config = '';
 }
-$params = new \app\models\settings\AntragsgruenApp($config);
+try {
+    $params = new \app\models\settings\AntragsgruenApp($config);
+} catch (\Exception $e) {
+    die('Could not load configuration; probably due to a syntax error in config/config.json?');	
+}
 
 if (YII_DEBUG === false) {
     $params->dbConnection['enableSchemaCache']   = true;
