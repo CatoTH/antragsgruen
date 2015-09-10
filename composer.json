@@ -53,8 +53,7 @@
           "web/assets": "0755",
           "yii": "0755"
         }
-      ],
-
+      ]
     },
     "asset-installer-paths": {
       "npm-asset-library": "vendor/npm",
