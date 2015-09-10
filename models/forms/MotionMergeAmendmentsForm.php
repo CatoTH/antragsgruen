@@ -12,7 +12,8 @@ use yii\base\Model;
 class MotionMergeAmendmentsForm extends Model
 {
     /** @var Motion */
-    public $motion;
+    public $origMotion;
+    public $newMotion;
 
     /** @var array */
     public $sections;
@@ -22,12 +23,14 @@ class MotionMergeAmendmentsForm extends Model
     public $motionSections;
 
     /**
-     * @param Motion $motion
+     * @param Motion $origMotion
+     * @param Motion $newMotion
      */
-    public function __construct(Motion $motion)
+    public function __construct(Motion $origMotion, Motion $newMotion)
     {
         parent::__construct();
-        $this->motion = $motion;
+        $this->origMotion = $origMotion;
+        $this->newMotion  = $newMotion;
     }
 
     /**
@@ -36,6 +39,7 @@ class MotionMergeAmendmentsForm extends Model
     public function rules()
     {
         return [
+            [['origMotion', 'newMotion'], 'required'],
             [['sections', 'amendStatus'], 'safe']
         ];
     }
@@ -44,26 +48,25 @@ class MotionMergeAmendmentsForm extends Model
      * @return Motion
      * @throws Internal
      */
-    public function saveMotion()
+    public function createNewMotion()
     {
-        $newMotion                 = new Motion();
-        $newMotion->titlePrefix    = $this->motion->getNewTitlePrefix();
-        $newMotion->motionTypeId   = $this->motion->motionTypeId;
-        $newMotion->agendaItemId   = $this->motion->agendaItemId;
-        $newMotion->consultationId = $this->motion->consultationId;
-        $newMotion->parentMotionId = $this->motion->id;
-        $newMotion->title          = '';
-        $newMotion->dateCreation   = date('Y-m-d H:i:s');
-        $newMotion->status         = Motion::STATUS_DRAFT;
-        if (!$newMotion->save()) {
-            var_dump($newMotion->getErrors());
+        $this->newMotion->titlePrefix    = $this->origMotion->getNewTitlePrefix();
+        $this->newMotion->motionTypeId   = $this->origMotion->motionTypeId;
+        $this->newMotion->agendaItemId   = $this->origMotion->agendaItemId;
+        $this->newMotion->consultationId = $this->origMotion->consultationId;
+        $this->newMotion->parentMotionId = $this->origMotion->id;
+        $this->newMotion->title          = '';
+        $this->newMotion->dateCreation   = date('Y-m-d H:i:s');
+        $this->newMotion->status         = Motion::STATUS_DRAFT;
+        if (!$this->newMotion->save()) {
+            var_dump($this->newMotion->getErrors());
             throw new Internal();
         }
 
-        foreach ($this->motion->motionType->motionSections as $sectionType) {
+        foreach ($this->origMotion->motionType->motionSections as $sectionType) {
             $section            = new MotionSection();
             $section->sectionId = $sectionType->id;
-            $section->motionId  = $newMotion->id;
+            $section->motionId  = $this->newMotion->id;
             $section->cache     = '';
             $section->refresh();
 
@@ -86,9 +89,9 @@ class MotionMergeAmendmentsForm extends Model
             $this->motionSections[] = $section;
         }
 
-        $newMotion->refreshTitle();
-        $newMotion->save();
+        $this->newMotion->refreshTitle();
+        $this->newMotion->save();
 
-        return $newMotion;
+        return $this->newMotion;
     }
 }

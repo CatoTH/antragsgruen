@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
+use app\models\db\MotionSection;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
@@ -11,6 +12,7 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var MotionMergeAmendmentsForm $form
+ * @var array $amendmentStati
  */
 
 /** @var \app\controllers\Base $controller */
@@ -48,6 +50,12 @@ echo '<section class="newMotion">
 
 $changesets = [];
 
+/** @var MotionSection[] $newSections */
+$newSections = [];
+foreach ($form->newMotion->getSortedSections(false) as $section) {
+    $newSections[$section->sectionId] = $section;
+}
+
 foreach ($motion->getSortedSections(false) as $section) {
     $type = $section->consultationSetting;
     if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
@@ -67,12 +75,20 @@ foreach ($motion->getSortedSections(false) as $section) {
         echo '<div class="texteditor" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
             'title="' . Html::encode($type->title) . '">';
 
-        echo $simpleSection->getMotionTextWithInlineAmendments($changesets);
+        if (isset($newSections[$section->sectionId])) {
+            echo $newSections[$section->sectionId]->dataRaw;
+        } else {
+            echo $simpleSection->getMotionTextWithInlineAmendments($changesets);
+        }
 
         echo '</div>';
         echo '</div>';
     } else {
-        echo $section->getSectionType()->getMotionFormField();
+        if (isset($newSections[$section->sectionId])) {
+            echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();
+        } else {
+            echo $section->getSectionType()->getMotionFormField();
+        }
     }
 }
 
@@ -85,7 +101,7 @@ $jsStati = [
 ];
 
 echo '<section class="newAmendments" data-stati="' . Html::encode(json_encode($jsStati)) . '">';
-\app\views\motion\LayoutHelper::printAmendmentStatusSetter($motion->getVisibleAmendments());
+\app\views\motion\LayoutHelper::printAmendmentStatusSetter($motion->getVisibleAmendments(), $amendmentStati);
 echo '</section>';
 
 
