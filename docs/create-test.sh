@@ -1,4 +1,4 @@
-if [[ ! -d ./local ]]; then
+if [[ ! -d ./controllers ]]; then
     echo "Please run this script from the project's root directory"
     exit
 fi
@@ -7,6 +7,7 @@ if [[ -d ./local/build-dist ]]; then
     rm -R ./local/build-dist
 fi
 
+mkdir ./local
 mkdir ./local/build-dist
 if [[ ! -d ./local/build-dist ]]; then
     echo "Could not create the temporary directory"
@@ -16,8 +17,13 @@ fi
 rsync -av --exclude='./local' --exclude='.git' . ./local/build-dist
 
 cd local/build-dist
+
+curl -sS https://getcomposer.org/installer | php
+./composer.phar global require "fxp/composer-asset-plugin:1.0.0"
+./composer.phar install
+
 rm -R local dist docker-vagrant
-rm composer.json composer.lock codeception.yml phpci.yml 
+rm composer.phar composer.json composer.lock codeception.yml phpci.yml 
 
 cd web/js/bower/intl/locale-data
 find . -type f ! -name "de*" -exec rm {} \;
