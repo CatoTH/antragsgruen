@@ -1,5 +1,6 @@
 <?php
 
+use app\components\MotionSorter;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\Motion;
@@ -52,7 +53,8 @@ if ($longVersion) {
         if (count($agendaItem->getVisibleMotions()) > 0) {
             echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
             echo '<ul class="motionListStd layout2">';
-            foreach ($agendaItem->getVisibleMotions() as $motion) {
+            $motions = MotionSorter::getSortedMotions($consultation, $agendaItem->getVisibleMotions());
+            foreach ($motions as $motion) {
                 LayoutHelper::showMotion($motion, $consultation);
                 $shownMotions[] = $motion->id;
             }
