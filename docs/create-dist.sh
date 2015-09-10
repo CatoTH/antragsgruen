@@ -32,6 +32,7 @@ rm -R web/js/bower/moment/src/
 rm -R vendor/phpoffice/phpexcel/unitTests/
 rm -R vendor/phpoffice/phpexcel/Examples/
 rm -R vendor/fzaninotto/faker/
+find . -name ".git" -exec rm -r {} \;
 rm config/config.json
 rm config/config/config_tests.json
 touch config/INSTALLING
