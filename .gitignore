@@ -3,6 +3,7 @@ vendor
 composer.lock
 runtime
 local
+dist
 test.php
 config/config.json
 config/config_tests.json
