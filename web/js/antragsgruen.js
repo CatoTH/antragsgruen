@@ -187,6 +187,14 @@
                     $input.val(data[$input.attr("id")]);
                 }
             });
+            $(".form-group.amendmentStatus").each(function () {
+                var $input = $(this).find("input[type=text].hidden"),
+                    id = $(this).find(".selectlist").attr("id");
+                if (typeof(data[id]) != "undefined") {
+                    $('#' + id).selectlist('selectByValue', data[id]);
+                }
+            });
+
             $form.find("input[name=draftId]").remove();
             $form.append('<input type="hidden" name="draftId" value="' + restoreKey + '">');
 
@@ -243,6 +251,10 @@
                 var $input = $(this).find("input[type=text]");
                 $input.data("original", $input.val());
             });
+            $(".form-group.amendmentStatus").each(function () {
+                var $input = $(this).find("input[type=text].hidden");
+                $input.data("original", $input.val());
+            });
         }, 2000);
 
         window.setInterval(function () {
@@ -262,6 +274,14 @@
             $(".form-group.plain-text").each(function () {
                 var $input = $(this).find("input[type=text]");
                 data[$input.attr("id")] = $input.val();
+                if ($input.val() != $input.data("original")) {
+                    foundChanged = true;
+                }
+            });
+            $(".form-group.amendmentStatus").each(function () {
+                var $input = $(this).find("input[type=text].hidden"),
+                    id = $(this).find(".selectlist").attr("id");
+                data[id] = $input.val();
                 if ($input.val() != $input.data("original")) {
                     foundChanged = true;
                 }
@@ -345,6 +365,11 @@
                 }
             });
         });
+
+        var $draftHint = $("#draftHint"),
+            origMotionId = $draftHint.data("orig-motion-id"),
+            newMotionId = $draftHint.data("new-motion-id");
+        draftSavingEngine("motionmerge_" + origMotionId + "_" + newMotionId);
     };
 
     var amendmentEditForm = function () {

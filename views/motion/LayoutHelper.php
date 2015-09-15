@@ -383,7 +383,7 @@ class LayoutHelper
             $data      = 'data-old-status="' . $amendment->status . '"';
             $data .= ' data-amendment-id="' . $amendment->id . '"';
             $data .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
-            echo '<div class="form-group" ' . $data . '>
+            echo '<div class="form-group amendmentStatus" ' . $data . '>
     <label for="amendmentStatus' . $amendment->id . '" class="col-sm-3 control-label">';
             echo Html::encode($amendment->getShortTitle()) . ':<br><span class="amendSubtitle">';
             echo Html::encode($amendment->getInitiatorsStr());
@@ -401,7 +401,8 @@ class LayoutHelper
             } else {
                 $statusPre = $amendment->status;
             }
-            echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $stati, $statusPre);
+            $opts = ['id' => 'amendmentSttus' . $amendment->id];
+            echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $stati, $statusPre, $opts);
             echo '</div></div>';
         }
 

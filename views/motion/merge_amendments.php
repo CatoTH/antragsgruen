@@ -38,6 +38,12 @@ if (!$motion->consultation->getSettings()->minimalisticUI) {
 
 echo $controller->showErrors();
 
+echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
+    data-new-motion-id="' . $form->newMotion->id . '" data-orig-motion-id="' . $form->origMotion->id . '">
+Es gibt noch ungespeicherte Entwürfe, die wiederhergestellt werden können:
+<ul></ul>
+</div>';
+
 echo '</div>';
 
 

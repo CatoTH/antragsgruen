@@ -66,7 +66,7 @@ if (\Yii::$app->user->isGuest) {
     echo '</div>';
 }
 
-echo '<div id="draftHint" class="hidden"
+echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
     data-motion-id="' . $form->motion->id . '" data-amendment-id="' . $form->amendmentId . '">
 Es gibt noch ungespeicherte Entwürfe, die wiederhergestellt werden können:
 <ul></ul>
