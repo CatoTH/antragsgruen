@@ -8,5 +8,6 @@ test.php
 config/config.json
 config/config_tests.json
 web/js/bower
+assets/local/
 tests/_output/*
 tests/_output/*
