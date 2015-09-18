@@ -119,12 +119,14 @@ abstract class DefaultFormBase extends IInitiatorForm
             $errors[] = 'No valid name entered.';
         }
 
-        $checkEmail = ($this->motionType->contactEmail == $required || $initiator['contactEmail'] != '');
+        $emailSet = (isset($initiator['contactEmail']) && trim($initiator['contactEmail']) != '');
+        $checkEmail = ($this->motionType->contactEmail == $required || $emailSet);
         if ($checkEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'No valid e-mail-address given.';
         }
 
-        $checkPhone = ($this->motionType->contactPhone == $required || $initiator['contactPhone'] != '');
+        $phoneSet = (isset($initiator['contactPhone']) && trim($initiator['contactPhone']) != '');
+        $checkPhone = ($this->motionType->contactPhone == $required || $phoneSet);
         if ($checkPhone && empty($initiator['contactPhone'])) {
             $errors[] = 'No valid phone number given given.';
         }
