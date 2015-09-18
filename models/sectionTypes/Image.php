@@ -6,6 +6,7 @@ use app\components\opendocument\Text;
 use app\components\UrlHelper;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
+use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 
 class Image extends ISectionType
@@ -117,18 +118,21 @@ class Image extends ISectionType
     }
 
     /**
+     * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
      */
-    public function printMotionToPDF(\TCPDF $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
         if ($this->isEmpty()) {
             return;
         }
 
-        $pdf->SetFont("helvetica", "", 12);
-        $pdf->writeHTML("<h3>" . $this->section->consultationSetting->title . "</h3>");
+        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+            $pdf->SetFont('helvetica', '', 12);
+            $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
+        }
 
-        $pdf->SetFont("Courier", "", 11);
+        $pdf->SetFont('Courier', '', 11);
         $pdf->Ln(7);
 
         $metadata = json_decode($this->section->metadata, true);
@@ -150,11 +154,12 @@ class Image extends ISectionType
     }
 
     /**
+     * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
      */
-    public function printAmendmentToPDF(\TCPDF $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
-        $this->printMotionToPDF($pdf);
+        $this->printMotionToPDF($pdfLayout, $pdf);
     }
 
     /**

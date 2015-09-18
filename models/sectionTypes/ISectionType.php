@@ -6,6 +6,7 @@ use app\controllers\Base;
 use app\models\db\IMotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
+use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 
 abstract class ISectionType
@@ -143,14 +144,16 @@ abstract class ISectionType
     abstract public function getSimple();
 
     /**
+     * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
      */
-    abstract public function printMotionToPDF(\TCPDF $pdf);
+    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf);
 
     /**
+     * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
      */
-    abstract public function printAmendmentToPDF(\TCPDF $pdf);
+    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf);
 
     /**
      * @return string

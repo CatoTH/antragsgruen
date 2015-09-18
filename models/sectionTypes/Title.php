@@ -6,6 +6,7 @@ use app\components\latex\Exporter;
 use app\components\opendocument\Text;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\FormError;
+use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 
 class Title extends ISectionType
@@ -85,17 +86,19 @@ class Title extends ISectionType
     }
 
     /**
+     * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
      */
-    public function printMotionToPDF(\TCPDF $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
         // TODO: Implement printMotionToPDF() method.
     }
 
     /**
+     * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
      */
-    public function printAmendmentToPDF(\TCPDF $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -103,10 +106,12 @@ class Title extends ISectionType
             return;
         }
 
-        $pdf->SetFont("helvetica", "", 12);
-        $pdf->writeHTML("<h3>" . HTml::encode($this->section->consultationSetting->title) . "</h3>");
+        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+            $pdf->SetFont('helvetica', '', 12);
+            $pdf->writeHTML('<h3>' . HTml::encode($this->section->consultationSetting->title) . '</h3>');
+        }
 
-        $pdf->SetFont("Courier", "", 11);
+        $pdf->SetFont('Courier', '', 11);
         $pdf->Ln(7);
 
         $html = '<p><strong>Ändern in:</strong><br>' . Html::encode($section->data) . '</p>';

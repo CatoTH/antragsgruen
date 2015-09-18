@@ -17,6 +17,7 @@ use app\models\db\AmendmentSection;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
+use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 use yii\web\View;
 
@@ -77,15 +78,19 @@ class TextSimple extends ISectionType
 
 
     /**
+     * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
+     * @throws \app\models\exceptions\Internal
      */
-    public function printMotionToPDF(\TCPDF $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
         /** @var MotionSection $section */
         $section = $this->section;
 
-        $pdf->SetFont('helvetica', '', 12);
-        $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
+        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+            $pdf->SetFont('helvetica', '', 12);
+            $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
+        }
 
         $lineLength = $section->consultationSetting->motionType->consultation->getSettings()->lineLength;
         $linenr     = $section->getFirstLineNumber();
@@ -116,12 +121,19 @@ class TextSimple extends ISectionType
     }
 
     /**
+     * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
      */
-    public function printAmendmentToPDF(\TCPDF $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
+
+        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+            $pdf->SetFont('helvetica', '', 12);
+            $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
+        }
+
         $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
         if (count($diffGroups) > 0) {

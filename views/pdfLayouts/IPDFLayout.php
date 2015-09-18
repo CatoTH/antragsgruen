@@ -4,8 +4,10 @@ namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
+use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use app\models\exceptions\Internal;
+use app\models\sectionTypes\ISectionType;
 use TCPDF;
 use Yii;
 
@@ -20,6 +22,7 @@ abstract class IPDFLayout
             -1 => '- kein PDF -',
             0  => 'LDK Bayern',
             1  => 'BDK',
+            2  => 'DBJR',
         ];
     }
 
@@ -37,6 +40,8 @@ abstract class IPDFLayout
                 return ByLDK::class;
             case 1:
                 return BDK::class;
+            case 2:
+                return DBJR::class;
             default:
                 throw new Internal('Unknown PDF Layout');
         }
@@ -77,4 +82,10 @@ abstract class IPDFLayout
      * @param Amendment $amendment
      */
     abstract public function printAmendmentHeader(Amendment $amendment);
+
+    /**
+     * @param IMotionSection $section
+     * @return bool
+     */
+    abstract public function isSkippingSectionTitles(IMotionSection $section);
 }

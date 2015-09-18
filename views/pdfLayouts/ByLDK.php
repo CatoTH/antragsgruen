@@ -3,6 +3,7 @@
 namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
+use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use TCPDF;
 
@@ -233,5 +234,15 @@ class ByLDK extends IPDFLayout
         $this->pdf = $pdf;
 
         return $pdf;
+    }
+
+    /**
+     * @param IMotionSection $section
+     * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function isSkippingSectionTitles(IMotionSection $section)
+    {
+        return false;
     }
 }

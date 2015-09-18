@@ -30,7 +30,7 @@ $pdfLayout->printMotionHeader($motion);
 
 
 foreach ($motion->getSortedSections(true) as $section) {
-    $section->getSectionType()->printMotionToPDF($pdf);
+    $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
 }
 
 

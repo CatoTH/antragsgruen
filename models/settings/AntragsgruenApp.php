@@ -18,10 +18,10 @@ class AntragsgruenApp
     public $hasWurzelwerk         = true;
     public $createNeedsWurzelwerk = false;
     public $prependWWWToSubdomain = true;
-    public $pdfLogo               = 'LOGO_PFAD';
+    public $pdfLogo               = '';
     public $confirmEmailAddresses = true;
     public $mailFromName          = 'Antragsgrün';
-    public $mailFromEmail         = 'EMAILADRESSE';
+    public $mailFromEmail         = '';
     public $adminUserIds          = [];
     public $siteBehaviorClasses   = [];
     public $authClientCollection  = [];
@@ -57,5 +57,19 @@ class AntragsgruenApp
             $this->domainPlain  = ($this->isHttps() ? 'https' : 'http');
             $this->domainPlain .= '://' . $_SERVER['HTTP_HOST'] . '/';
         }
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getAbsolutePdfLogo()
+    {
+        if ($this->pdfLogo === '' || $this->pdfLogo === null) {
+            return null;
+        }
+        if ($this->pdfLogo[0] == '/') {
+            return $this->pdfLogo;
+        }
+        return \yii::$app->basePath . DIRECTORY_SEPARATOR . $this->pdfLogo;
     }
 }

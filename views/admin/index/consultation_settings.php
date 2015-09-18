@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this yii\web\View
+ * @var \yii\web\View $this
  * @var Consultation $consultation
  * @var string $locale
  */
@@ -102,8 +102,6 @@ echo '<fieldset class="form-group">
         placeholder="' . Html::encode($placeholder) . '">' . $settings->pdfIntroduction . '</textarea>
     </div>
 </fieldset>';
-// <small>Im Regelfall einfach leer lassen. Falls eine URL angegeben wird, wird das angegebene Bild statt dem
-// großen "Antragsgrün"-Logo angezeigt.
 
 
 $handledSettings[] = 'lineLength';

@@ -33,7 +33,7 @@ $pdfLayout->printAmendmentHeader($amendment);
 // @TODO: Editorial change
 
 foreach ($amendment->getSortedSections(false) as $section) {
-    $section->getSectionType()->printAmendmentToPDF($pdf);
+    $section->getSectionType()->printAmendmentToPDF($pdfLayout, $pdf);
 }
 
 // @TODO: Editorial Explanation
