@@ -125,11 +125,11 @@ class TabularData extends ISectionType
         }
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdf->SetFont("helvetica", "", 12);
-            $pdf->writeHTML("<h3>" . HTml::encode($this->section->consultationSetting->title) . "</h3>");
+            $pdf->SetFont('helvetica', '', 12);
+            $pdf->writeHTML('<h3>' . HTml::encode($this->section->consultationSetting->title) . '</h3>');
         }
 
-        $pdf->SetFont("Courier", "", 11);
+        $pdf->SetFont('Courier', '', 11);
         $pdf->Ln(7);
 
         $rows = static::getTabularDataRowsFromData($this->section->consultationSetting->data);

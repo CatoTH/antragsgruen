@@ -48,7 +48,7 @@ class TextSimple extends ISectionType
     public function setMotionData($data)
     {
         $this->section->dataRaw = $data;
-        $this->section->data = HTMLTools::cleanSimpleHtml($data);
+        $this->section->data    = HTMLTools::cleanSimpleHtml($data);
     }
 
     /**
@@ -95,28 +95,47 @@ class TextSimple extends ISectionType
         $lineLength = $section->consultationSetting->motionType->consultation->getSettings()->lineLength;
         $linenr     = $section->getFirstLineNumber();
         $textSize   = ($lineLength > 70 ? 10 : 11);
-        $pdf->SetFont('Courier', '', $textSize);
+        if ($section->consultationSetting->fixedWidth) {
+            $pdf->SetFont('Courier', '', $textSize);
+        } else {
+            $pdf->SetFont('helvetica', '', $textSize);
+        }
         $pdf->Ln(7);
 
         $hasLineNumbers = $section->consultationSetting->lineNumbers;
-        $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers);
-        foreach ($paragraphs as $paragraph) {
-            $linesArr = [];
-            foreach ($paragraph->lines as $line) {
-                $linesArr[] = str_replace('###LINENUMBER###', '', $line);
+        if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {
+            $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers);
+            foreach ($paragraphs as $paragraph) {
+                $linesArr = [];
+                foreach ($paragraph->lines as $line) {
+                    $linesArr[] = str_replace('###LINENUMBER###', '', $line);
+                }
+
+                if ($hasLineNumbers) {
+                    $lineNos = [];
+                    for ($i = 0; $i < count($paragraph->lines); $i++) {
+                        $lineNos[] = $linenr++;
+                    }
+                    $text2 = implode('<br>', $lineNos);
+                } else {
+                    $text2 = '';
+                }
+
+                $y = $pdf->getY();
+                $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
+                $pdf->writeHTMLCell(173, '', 24, '', implode('<br>', $linesArr), 0, 1, 0, true, '', true);
+
+                $pdf->Ln(7);
             }
+        } else {
+            $paras = $section->getTextParagraphs();
+            foreach ($paras as $para) {
+                $y = $pdf->getY();
+                $pdf->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
+                $pdf->writeHTMLCell(173, '', 24, '', $para, 0, 1, 0, true, '', true);
 
-            $lineNos = [];
-            for ($i = 0; $i < count($paragraph->lines); $i++) {
-                $lineNos[] = $linenr++;
+                $pdf->Ln(7);
             }
-            $text2 = implode('<br>', $lineNos);
-
-            $y = $pdf->getY();
-            $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
-            $pdf->writeHTMLCell(173, '', 24, '', implode('<br>', $linesArr), 0, 1, 0, true, '', true);
-
-            $pdf->Ln(7);
         }
     }
 
@@ -127,7 +146,7 @@ class TextSimple extends ISectionType
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
         /** @var AmendmentSection $section */
-        $section    = $this->section;
+        $section = $this->section;
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
             $pdf->SetFont('helvetica', '', 12);

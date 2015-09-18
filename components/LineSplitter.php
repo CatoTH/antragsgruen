@@ -148,7 +148,7 @@ class LineSplitter
             foreach ($linesIn as $line) {
                 $inserted = false;
                 foreach ($pres as $pre) {
-                    if (preg_match("/^" . $pre . "/siu", $line, $matches)) {
+                    if (preg_match('/^' . $pre . '/siu', $line, $matches)) {
                         $inserted = true;
                         $line     = str_ireplace($matches[0], $matches[0] . $linePre, $line);
                     }
