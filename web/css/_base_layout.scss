@@ -1,8 +1,6 @@
-$text-color: rgb(72, 70, 73);
 $screen-lg-min: 10000; // deaktivieren
 $container-md: 1024px;
 $container-desktop: 1024px;
-$btn-success-bg: #2c882c;
 
 $icon-font-path: "../fonts/";
 
@@ -45,12 +43,10 @@ $icon-font-path: "../fonts/";
 @import "mixins";
 
 html {
-  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
   height: 100%;
 }
 
 body {
-  background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
   font-family: $bodyFont;
   height: 100%;
 
@@ -74,10 +70,14 @@ p, ul {
 }
 
 a {
-  color: $colorGreenLightText;
+  text-decoration: $linkTextDecoration;
+  color: $colorLinksLight;
   &:hover {
+    text-decoration: $linkTextDecoration;
+    color: lighten($colorLinksLight, 15%);
+  }
+  &.btn {
     text-decoration: none;
-    color: rgb(198, 214, 78);
   }
 }
 
@@ -102,18 +102,18 @@ a {
   }
 
   h1 {
-    @include stdHeading(rgb(11, 47, 8), $colorGreenDark);
+    @include stdHeading($headingPrimaryText, $headingPrimaryBackground);
     margin: -1px;
   }
   h2.green, h3.green, .nav-header, legend.green {
-    @include stdHeading($colorGreenLight, rgb(185, 209, 38));
+    @include stdHeading($headingSecondaryText, $headingSecondaryBackground);
     margin: -1px;
   }
   h2.lightgreen, h3.lightgreen {
     margin: -1px;
-    @include linear-gradient(90deg, lighten($colorGreenLight, 50%), lighten(rgb(185, 209, 38), 50%));
+    @include linear-gradient(90deg, lighten($headingSecondaryBackground, 50%), lighten(lighten($headingSecondaryBackground, 2.3%), 50%));
     padding: 5px 20px 5px;
-    font-family: $stdHeadingFont;
+    font-family: $headingFont;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -154,11 +154,12 @@ a {
       display: inline;
       padding: 0;
       margin-left: 40px;
-      color: $colorGreenLight;
-      font-family: $topNavbarFont;
+      color: $menuLink;
+      font-family: $menuFont;
       font-style: normal;
       font-weight: bold;
       text-transform: uppercase;
+      text-decoration: none;
       font-size: 18px;
       text-shadow: none;
     }
@@ -171,7 +172,8 @@ a {
       background: none;
       filter: none;
       box-shadow: none;
-      color: $colorGreenDark !important;
+      color: $menuActive !important;
+      text-decoration: none;
     }
   }
 
@@ -186,16 +188,9 @@ a {
 }
 
 .btn-primary {
-  /*
-  border: none;
-  text-shadow: none;
-  padding: 6px 30px 4px;
-  font-size: 15px;
-  line-height: 18px;
-  */
   text-transform: uppercase;
   color: #fff;
-  @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
+  @include linear-gradient(90deg, $btn-primary-bg, lighten($btn-primary-bg, 3.5%));
 }
 
 
@@ -232,17 +227,16 @@ label {
   background: none;
   filter: none;
   @include border-radius(0);
-  margin: 0;
-  margin-top: 30px;
+  margin: 30px 0 0;
   padding: 0;
 
   &, .active {
-    font-family: $breadcrumbFont;
+    font-family: $menuFont;
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;
     font-size: 15px;
-    color: rgb(115, 115, 115);
+    color: $menuActive;
   }
 
   li {
@@ -250,7 +244,7 @@ label {
   }
 
   a {
-    color: $colorGreenLight;
+    color: $menuLink;
   }
 
 }

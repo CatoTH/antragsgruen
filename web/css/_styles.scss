@@ -7,7 +7,7 @@
   width: 105px;
   height: 105px;
   padding-top: 20px;
-  @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
+  @include linear-gradient(90deg, $btn-primary-bg, lighten($btn-primary-bg, 3.5%));
   text-align: center;
   vertical-align: middle;
   overflow: hidden;
@@ -140,10 +140,10 @@
 }
 
 ul.sidebarActions {
-  @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
+  @include linear-gradient(90deg, lighten($sidebarBackground, 2.3%), $sidebarBackground);
   padding: 7px 0 1px 21px;
   list-style-type: none;
-  margin: -1px; // verhindert weißen Mini-Rahmen
+  margin: -1px; // prevents white border
   position: relative;
   @include border-radius(10px);
   -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);

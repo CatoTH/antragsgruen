@@ -1,85 +1,28 @@
 @charset "UTF-8";
-/* Open Sans @font-face kit */
-/* BEGIN Light */
 @font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/Light/OpenSans-Light.eot");
-  src: url("../fonts/OpenSans/fonts/Light/OpenSans-Light.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/Light/OpenSans-Light.woff") format("woff"), url("../fonts/OpenSans/fonts/Light/OpenSans-Light.ttf") format("truetype"), url("../fonts/OpenSans/fonts/Light/OpenSans-Light.svg#OpenSansLight") format("svg");
-  font-weight: 300;
-  font-style: normal; }
-/* END Light */
-/* BEGIN Light Italic */
-@font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/LightItalic/OpenSans-LightItalic.eot");
-  src: url("../fonts/OpenSans/fonts/LightItalic/OpenSans-LightItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/LightItalic/OpenSans-LightItalic.woff") format("woff"), url("../fonts/OpenSans/fonts/LightItalic/OpenSans-LightItalic.ttf") format("truetype"), url("../fonts/OpenSans/fonts/LightItalic/OpenSans-LightItalic.svg#OpenSansLightItalic") format("svg");
-  font-weight: 300;
-  font-style: italic; }
-/* END Light Italic */
-/* BEGIN Regular */
-@font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/Regular/OpenSans-Regular.eot");
-  src: url("../fonts/OpenSans/fonts/Regular/OpenSans-Regular.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/Regular/OpenSans-Regular.woff") format("woff"), url("../fonts/OpenSans/fonts/Regular/OpenSans-Regular.ttf") format("truetype"), url("../fonts/OpenSans/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular") format("svg");
+  font-family: 'Arvo';
+  font-style: normal;
   font-weight: normal;
-  font-style: normal; }
-/* END Regular */
-/* BEGIN Italic */
+  src: url("../fonts/gruenes-ci/arvo_regular.eot");
+  src: url("../fonts/gruenes-ci/arvo_regular.eot?#iefix") format("embedded-opentype"), url("../fonts/gruenes-ci/arvo_regular.woff") format("woff"), url("../fonts/gruenes-ci/arvo_regular.ttf") format("truetype"), url("../fonts/gruenes-ci/arvo_regular.svg#OpenSansLight") format("svg"); }
 @font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/Italic/OpenSans-Italic.eot");
-  src: url("../fonts/OpenSans/fonts/Italic/OpenSans-Italic.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/Italic/OpenSans-Italic.woff") format("woff"), url("../fonts/OpenSans/fonts/Italic/OpenSans-Italic.ttf") format("truetype"), url("../fonts/OpenSans/fonts/Italic/OpenSans-Italic.svg#OpenSansItalic") format("svg");
+  font-family: 'Arvo Gruen';
+  font-style: normal;
   font-weight: normal;
-  font-style: italic; }
-/* END Italic */
-/* BEGIN Semibold */
+  src: url("../fonts/gruenes-ci/arvo_gruen.eot");
+  src: url("../fonts/gruenes-ci/arvo_gruen.eot?#iefix") format("embedded-opentype"), url("../fonts/gruenes-ci/arvo_gruen.woff") format("woff"), url("../fonts/gruenes-ci/arvo_gruen.ttf") format("truetype"); }
 @font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/Semibold/OpenSans-Semibold.eot");
-  src: url("../fonts/OpenSans/fonts/Semibold/OpenSans-Semibold.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/Semibold/OpenSans-Semibold.woff") format("woff"), url("../fonts/OpenSans/fonts/Semibold/OpenSans-Semibold.ttf") format("truetype"), url("../fonts/OpenSans/fonts/Semibold/OpenSans-Semibold.svg#OpenSansSemibold") format("svg");
-  font-weight: 600;
-  font-style: normal; }
-/* END Semibold */
-/* BEGIN Semibold Italic */
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: url("../fonts/gruenes-ci/ptsans_regular.eot");
+  src: url("../fonts/gruenes-ci/ptsans_regular.eot?#iefix") format("embedded-opentype"), url("../fonts/gruenes-ci/ptsans_regular.woff") format("woff"), url("../fonts/gruenes-ci/ptsans_regular.ttf") format("truetype"), url("../fonts/gruenes-ci/ptsans_regular.svg#OpenSansLight") format("svg"); }
 @font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.eot");
-  src: url("../fonts/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.woff") format("woff"), url("../fonts/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.ttf") format("truetype"), url("../fonts/OpenSans/fonts/SemiboldItalic/OpenSans-SemiboldItalic.svg#OpenSansSemiboldItalic") format("svg");
-  font-weight: 600;
-  font-style: italic; }
-/* END Semibold Italic */
-/* BEGIN Bold */
-@font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/Bold/OpenSans-Bold.eot");
-  src: url("../fonts/OpenSans/fonts/Bold/OpenSans-Bold.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/Bold/OpenSans-Bold.woff") format("woff"), url("../fonts/OpenSans/fonts/Bold/OpenSans-Bold.ttf") format("truetype"), url("../fonts/OpenSans/fonts/Bold/OpenSans-Bold.svg#OpenSansBold") format("svg");
-  font-weight: bold;
-  font-style: normal; }
-/* END Bold */
-/* BEGIN Bold Italic */
-@font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.eot");
-  src: url("../fonts/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.woff") format("woff"), url("../fonts/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.ttf") format("truetype"), url("../fonts/OpenSans/fonts/BoldItalic/OpenSans-BoldItalic.svg#OpenSansBoldItalic") format("svg");
-  font-weight: bold;
-  font-style: italic; }
-/* END Bold Italic */
-/* BEGIN Extrabold */
-@font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.eot");
-  src: url("../fonts/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.woff") format("woff"), url("../fonts/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.ttf") format("truetype"), url("../fonts/OpenSans/fonts/ExtraBold/OpenSans-ExtraBold.svg#OpenSansExtrabold") format("svg");
-  font-weight: 800;
-  font-style: normal; }
-/* END Extrabold */
-/* BEGIN Extrabold Italic */
-@font-face {
-  font-family: 'Open Sans';
-  src: url("../fonts/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.eot");
-  src: url("../fonts/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.woff") format("woff"), url("../fonts/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.ttf") format("truetype"), url("../fonts/OpenSans/fonts/ExtraBoldItalic/OpenSans-ExtraBoldItalic.svg#OpenSansExtraboldItalic") format("svg");
-  font-weight: 800;
-  font-style: italic; }
-/* END Extrabold Italic */
+  font-family: 'PT Sans Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: url("../fonts/gruenes-ci/ptsans_bold.eot");
+  src: url("../fonts/gruenes-ci/ptsans_bold.eot?#iefix") format("embedded-opentype"), url("../fonts/gruenes-ci/ptsans_bold.woff") format("woff"), url("../fonts/gruenes-ci/ptsans_bold.ttf") format("truetype"), url("../fonts/gruenes-ci/ptsans_bold.svg#OpenSansLight") format("svg"); }
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif;
@@ -1159,10 +1102,10 @@ textarea {
   line-height: inherit; }
 
 a {
-  color: #e2007a;
+  color: #dd0b18;
   text-decoration: none; }
   a:hover, a:focus {
-    color: #960051;
+    color: #940710;
     text-decoration: underline; }
   a:focus {
     outline: thin dotted;
@@ -1349,11 +1292,11 @@ mark,
   color: #777777; }
 
 .text-primary {
-  color: #e2007a; }
+  color: #dd0b18; }
 
 a.text-primary:hover,
 a.text-primary:focus {
-  color: #af005e; }
+  color: #ac0913; }
 
 .text-success {
   color: #3c763d; }
@@ -1387,11 +1330,11 @@ a.text-danger:focus {
   color: #fff; }
 
 .bg-primary {
-  background-color: #e2007a; }
+  background-color: #dd0b18; }
 
 a.bg-primary:hover,
 a.bg-primary:focus {
-  background-color: #af005e; }
+  background-color: #ac0913; }
 
 .bg-success {
   background-color: #dff0d8; }
@@ -3020,60 +2963,60 @@ a.btn.disabled, fieldset[disabled] a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #e2007a;
-  border-color: #c9006c; }
+  background-color: #dd0b18;
+  border-color: #c50a15; }
   .btn-primary:focus, .btn-primary.focus {
     color: #fff;
-    background-color: #af005e;
-    border-color: #490027; }
+    background-color: #ac0913;
+    border-color: #4b0408; }
   .btn-primary:hover {
     color: #fff;
-    background-color: #af005e;
-    border-color: #8b004b; }
+    background-color: #ac0913;
+    border-color: #8a070f; }
   .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
     color: #fff;
-    background-color: #af005e;
-    border-color: #8b004b; }
+    background-color: #ac0913;
+    border-color: #8a070f; }
     .btn-primary:active:hover, .btn-primary:active:focus, .btn-primary:active.focus, .btn-primary.active:hover, .btn-primary.active:focus, .btn-primary.active.focus, .open > .btn-primary.dropdown-toggle:hover, .open > .btn-primary.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle.focus {
       color: #fff;
-      background-color: #8b004b;
-      border-color: #490027; }
+      background-color: #8a070f;
+      border-color: #4b0408; }
   .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
     background-image: none; }
   .btn-primary.disabled, .btn-primary.disabled:hover, .btn-primary.disabled:focus, .btn-primary.disabled.focus, .btn-primary.disabled:active, .btn-primary.disabled.active, .btn-primary[disabled], .btn-primary[disabled]:hover, .btn-primary[disabled]:focus, .btn-primary[disabled].focus, .btn-primary[disabled]:active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary, fieldset[disabled] .btn-primary:hover, fieldset[disabled] .btn-primary:focus, fieldset[disabled] .btn-primary.focus, fieldset[disabled] .btn-primary:active, fieldset[disabled] .btn-primary.active {
-    background-color: #e2007a;
-    border-color: #c9006c; }
+    background-color: #dd0b18;
+    border-color: #c50a15; }
   .btn-primary .badge {
-    color: #e2007a;
+    color: #dd0b18;
     background-color: #fff; }
 
 .btn-success {
   color: #fff;
-  background-color: #2c882c;
-  border-color: #267526; }
+  background-color: #1b4afb;
+  border-color: #0438f8; }
   .btn-success:focus, .btn-success.focus {
     color: #fff;
-    background-color: #206120;
-    border-color: #071407; }
+    background-color: #0432df;
+    border-color: #021b7b; }
   .btn-success:hover {
     color: #fff;
-    background-color: #206120;
-    border-color: #174617; }
+    background-color: #0432df;
+    border-color: #032abc; }
   .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
     color: #fff;
-    background-color: #206120;
-    border-color: #174617; }
+    background-color: #0432df;
+    border-color: #032abc; }
     .btn-success:active:hover, .btn-success:active:focus, .btn-success:active.focus, .btn-success.active:hover, .btn-success.active:focus, .btn-success.active.focus, .open > .btn-success.dropdown-toggle:hover, .open > .btn-success.dropdown-toggle:focus, .open > .btn-success.dropdown-toggle.focus {
       color: #fff;
-      background-color: #174617;
-      border-color: #071407; }
+      background-color: #032abc;
+      border-color: #021b7b; }
   .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
     background-image: none; }
   .btn-success.disabled, .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled.focus, .btn-success.disabled:active, .btn-success.disabled.active, .btn-success[disabled], .btn-success[disabled]:hover, .btn-success[disabled]:focus, .btn-success[disabled].focus, .btn-success[disabled]:active, .btn-success[disabled].active, fieldset[disabled] .btn-success, fieldset[disabled] .btn-success:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .btn-success.focus, fieldset[disabled] .btn-success:active, fieldset[disabled] .btn-success.active {
-    background-color: #2c882c;
-    border-color: #267526; }
+    background-color: #1b4afb;
+    border-color: #0438f8; }
   .btn-success .badge {
-    color: #2c882c;
+    color: #1b4afb;
     background-color: #fff; }
 
 .btn-info {
@@ -3164,7 +3107,7 @@ a.btn.disabled, fieldset[disabled] a.btn {
     background-color: #fff; }
 
 .btn-link {
-  color: #e2007a;
+  color: #dd0b18;
   font-weight: normal;
   border-radius: 0; }
   .btn-link, .btn-link:active, .btn-link.active, .btn-link[disabled], fieldset[disabled] .btn-link {
@@ -3174,7 +3117,7 @@ a.btn.disabled, fieldset[disabled] a.btn {
   .btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active {
     border-color: transparent; }
   .btn-link:hover, .btn-link:focus {
-    color: #960051;
+    color: #940710;
     text-decoration: underline;
     background-color: transparent; }
   .btn-link[disabled]:hover, .btn-link[disabled]:focus, fieldset[disabled] .btn-link:hover, fieldset[disabled] .btn-link:focus {
@@ -3375,7 +3318,7 @@ input[type="button"].btn-block {
   color: #fff;
   text-decoration: none;
   outline: 0;
-  background-color: #e2007a; }
+  background-color: #dd0b18; }
 
 .dropdown-menu > .disabled > a, .dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
   color: #777777; }
@@ -3466,7 +3409,7 @@ input[type="button"].btn-block {
         cursor: not-allowed; }
   .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
     background-color: #eeeeee;
-    border-color: #e2007a; }
+    border-color: #dd0b18; }
   .nav .nav-divider {
     height: 1px;
     margin: 9px 0;
@@ -3502,7 +3445,7 @@ input[type="button"].btn-block {
     margin-left: 2px; }
   .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
     color: #fff;
-    background-color: #e2007a; }
+    background-color: #dd0b18; }
 
 .nav-stacked > li {
   float: none; }
@@ -4411,7 +4354,7 @@ html {
   height: 100%; }
 
 body {
-  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "PT Sans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 100%; }
   body.fullscreen .container {
     width: auto;
@@ -4427,11 +4370,11 @@ p, ul {
   margin-bottom: 10px; }
 
 a {
-  text-decoration: none;
-  color: #6d7e00; }
+  text-decoration: underline;
+  color: #1b4afb; }
   a:hover {
-    text-decoration: none;
-    color: #afcb00; }
+    text-decoration: underline;
+    color: #6686fc; }
   a.btn {
     text-decoration: none; }
 
@@ -4469,14 +4412,14 @@ a {
   .well h1 {
     margin: 0;
     color: white;
-    background: #285f19;
-    background: -moz-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
-    background: -webkit-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
-    background: -o-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
-    background: -ms-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
-    background: linear-gradient(90deg, #285f19 0%, #2c681b 100%);
+    background: #404040;
+    background: -moz-linear-gradient(90deg, #404040 0%, #464646 100%);
+    background: -webkit-linear-gradient(90deg, #404040 0%, #464646 100%);
+    background: -o-linear-gradient(90deg, #404040 0%, #464646 100%);
+    background: -ms-linear-gradient(90deg, #404040 0%, #464646 100%);
+    background: linear-gradient(90deg, #404040 0%, #464646 100%);
     padding: 5px 20px 5px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -4486,14 +4429,14 @@ a {
   .well h2.green, .well h3.green, .well .nav-header, .well legend.green {
     margin: 0;
     color: white;
-    background: #afcb08;
-    background: -moz-linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
-    background: -webkit-linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
-    background: -o-linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
-    background: -ms-linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
-    background: linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
+    background: #a6a6a6;
+    background: -moz-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
+    background: -webkit-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
+    background: -o-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
+    background: -ms-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
+    background: linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
     padding: 5px 20px 5px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -4502,14 +4445,14 @@ a {
     margin: -1px; }
   .well h2.lightgreen, .well h3.lightgreen {
     margin: -1px;
-    background: #f7fdd5;
-    background: -moz-linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
-    background: -webkit-linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
-    background: -o-linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
-    background: -ms-linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
-    background: linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
+    background: white;
+    background: -moz-linear-gradient(90deg, white 0%, white 100%);
+    background: -webkit-linear-gradient(90deg, white 0%, white 100%);
+    background: -o-linear-gradient(90deg, white 0%, white 100%);
+    background: -ms-linear-gradient(90deg, white 0%, white 100%);
+    background: linear-gradient(90deg, white 0%, white 100%);
     padding: 5px 20px 5px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -4541,8 +4484,8 @@ a {
       display: inline;
       padding: 0;
       margin-left: 40px;
-      color: #6d7e00;
-      font-family: "Open Sans", sans-serif;
+      color: #b5b5b5;
+      font-family: "Arvo", sans-serif;
       font-style: normal;
       font-weight: bold;
       text-transform: uppercase;
@@ -4557,11 +4500,11 @@ a {
       background: none;
       filter: none;
       box-shadow: none;
-      color: #737373 !important;
+      color: #515151 !important;
       text-decoration: none; }
 
 .btn {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Arvo", sans-serif;
   font-weight: bold; }
   .span9 .btn {
     margin: 10px 0 0 200px; }
@@ -4569,12 +4512,12 @@ a {
 .btn-primary {
   text-transform: uppercase;
   color: #fff;
-  background: #e2007a;
-  background: -moz-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -webkit-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -o-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -ms-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: linear-gradient(90deg, #e2007a 0%, #f40084 100%); }
+  background: #dd0b18;
+  background: -moz-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -webkit-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -o-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -ms-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%); }
 
 .saveholder {
   clear: both;
@@ -4605,16 +4548,16 @@ label input, .label input, label textarea, .label textarea {
   margin: 30px 0 0;
   padding: 0; }
   .breadcrumb, .breadcrumb .active {
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;
     font-size: 15px;
-    color: #737373; }
+    color: #515151; }
   .breadcrumb li {
     text-shadow: none; }
   .breadcrumb a {
-    color: #6d7e00; }
+    color: #b5b5b5; }
 
 /* keep the footer at the bottom of the page */
 .over_footer_wrapper {
@@ -4733,9 +4676,9 @@ ins, ul.inserted, blockquote.inserted {
       .motionListStd .motion > .title .motionIcon {
         width: 27px;
         margin-left: -30px;
-        color: #6d7e00; }
+        color: #1b4afb; }
       .motionListStd .motion > .title a {
-        color: #6d7e00;
+        color: #1b4afb;
         font-weight: bold;
         font-size: 16px;
         line-height: 18px;
@@ -4745,16 +4688,16 @@ ins, ul.inserted, blockquote.inserted {
         -ms-hyphens: auto;
         hyphens: auto; }
         .motionListStd .motion > .title a:hover, .motionListStd .motion > .title a:focus {
-          color: #151800; }
+          color: #0327ad; }
       .motionListStd .motion > .title .pdfLink {
         font-size: 13px;
-        color: #6d7e00;
+        color: #1b4afb;
         margin-left: 10px;
         display: inline-block;
         font-weight: normal; }
         .motionListStd .motion > .title .pdfLink a:hover {
           text-decoration: none;
-          color: #151800; }
+          color: #0327ad; }
     .motionListStd .motion.withdrawn > .title {
       text-decoration: line-through; }
       .motionListStd .motion.withdrawn > .title .status {
@@ -4800,7 +4743,7 @@ ins, ul.inserted, blockquote.inserted {
     .motionListStd.layout2 .motion > .date {
       display: none; }
     .motionListStd.layout2 .motion > .title {
-      font-family: "Open Sans", sans-serif; }
+      font-family: "Arvo", sans-serif; }
       .motionListStd.layout2 .motion > .title .motionIcon {
         display: none; }
       .motionListStd.layout2 .motion > .title .motionPrefix {
@@ -4826,7 +4769,7 @@ ins, ul.inserted, blockquote.inserted {
   .motionListStd.layout2 h4.amendments {
     margin-top: 10px;
     margin-bottom: 5px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-size: 14px;
     font-weight: bold;
     color: #afcb08; }
@@ -4851,9 +4794,9 @@ ins, ul.inserted, blockquote.inserted {
       .motionListAgenda .motion > .title .motionIcon {
         width: 27px;
         margin-left: -30px;
-        color: #6d7e00; }
+        color: #1b4afb; }
       .motionListAgenda .motion > .title a {
-        color: #6d7e00;
+        color: #1b4afb;
         font-weight: bold;
         font-size: 14px;
         line-height: 16px;
@@ -4863,16 +4806,16 @@ ins, ul.inserted, blockquote.inserted {
         -ms-hyphens: auto;
         hyphens: auto; }
         .motionListAgenda .motion > .title a:hover, .motionListAgenda .motion > .title a:focus {
-          color: #151800; }
+          color: #0327ad; }
       .motionListAgenda .motion > .title .pdfLink {
         font-size: 13px;
-        color: #6d7e00;
+        color: #1b4afb;
         margin-left: 10px;
         display: inline-block;
         font-weight: normal; }
         .motionListAgenda .motion > .title .pdfLink a:hover {
           text-decoration: none;
-          color: #151800; }
+          color: #0327ad; }
     .motionListAgenda .motion.withdrawn > .title {
       text-decoration: line-through; }
       .motionListAgenda .motion.withdrawn > .title .status {
@@ -4925,7 +4868,7 @@ ins, ul.inserted, blockquote.inserted {
         overflow: auto;
         padding: 2px; }
         .motionListAgenda li.agendaItem > div > h3 .delAgendaItem, .motionListAgenda li.agendaItem > div > h3 .delAgendaItem:link, .motionListAgenda li.agendaItem > div > h3 .delAgendaItem:visited {
-          color: #FF7777;
+          color: #dd0b18;
           position: absolute;
           top: 0;
           right: 0; }
@@ -5118,15 +5061,15 @@ ins, ul.inserted, blockquote.inserted {
       text-decoration: underline; }
     .motionTextHolder .paragraph .textAmendment .preamble {
       position: absolute;
-      top: -20px;
-      height: 30px;
-      color: #e2007a;
+      top: -25px;
+      height: 35px;
+      color: #dd0b18;
       width: 100%; }
       .motionTextHolder .paragraph .textAmendment .preamble > div {
         position: absolute;
         bottom: 0;
         left: 0;
-        max-height: 30px;
+        max-height: 35px;
         padding-right: 50px;
         white-space: nowrap;
         overflow: hidden;
@@ -5179,24 +5122,24 @@ ins, ul.inserted, blockquote.inserted {
       border-bottom-right-radius: 10px;
       font-weight: bold; }
     .bookmarks > li.comment > a {
-      background: #e2007a;
-      background: -moz-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-      background: -webkit-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-      background: -o-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-      background: -ms-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-      background: linear-gradient(90deg, #e2007a 0%, #f40084 100%); }
+      background: green;
+      background: -moz-linear-gradient(90deg, green 0%, #009200 100%);
+      background: -webkit-linear-gradient(90deg, green 0%, #009200 100%);
+      background: -o-linear-gradient(90deg, green 0%, #009200 100%);
+      background: -ms-linear-gradient(90deg, green 0%, #009200 100%);
+      background: linear-gradient(90deg, green 0%, #009200 100%); }
       .bookmarks > li.comment > a.zero {
         opacity: 0.5; }
       .bookmarks > li.comment > a .count:after {
         content: attr(data-count);
         padding-left: 4px; }
     .bookmarks > li.amendment > a {
-      background: #afcb08;
-      background: -moz-linear-gradient(90deg, #afcb08 0%, #bedc09 100%);
-      background: -webkit-linear-gradient(90deg, #afcb08 0%, #bedc09 100%);
-      background: -o-linear-gradient(90deg, #afcb08 0%, #bedc09 100%);
-      background: -ms-linear-gradient(90deg, #afcb08 0%, #bedc09 100%);
-      background: linear-gradient(90deg, #afcb08 0%, #bedc09 100%); }
+      background: #dd0b18;
+      background: -moz-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+      background: -webkit-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+      background: -o-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+      background: -ms-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+      background: linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%); }
     .bookmarks > li .hider {
       background: #b4b4b4;
       background: -moz-linear-gradient(90deg, #b4b4b4 0%, gainsboro 100%);
@@ -5220,7 +5163,7 @@ ins, ul.inserted, blockquote.inserted {
 
 .motionComment h3 {
   background: none;
-  color: #6d7e00;
+  color: #1b4afb;
   font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   font-weight: bold;
@@ -6379,10 +6322,10 @@ textarea {
   line-height: inherit; }
 
 a {
-  color: #e2007a;
+  color: #dd0b18;
   text-decoration: none; }
   a:hover, a:focus {
-    color: #960051;
+    color: #940710;
     text-decoration: underline; }
   a:focus {
     outline: thin dotted;
@@ -6569,11 +6512,11 @@ mark,
   color: #777777; }
 
 .text-primary {
-  color: #e2007a; }
+  color: #dd0b18; }
 
 a.text-primary:hover,
 a.text-primary:focus {
-  color: #af005e; }
+  color: #ac0913; }
 
 .text-success {
   color: #3c763d; }
@@ -6607,11 +6550,11 @@ a.text-danger:focus {
   color: #fff; }
 
 .bg-primary {
-  background-color: #e2007a; }
+  background-color: #dd0b18; }
 
 a.bg-primary:hover,
 a.bg-primary:focus {
-  background-color: #af005e; }
+  background-color: #ac0913; }
 
 .bg-success {
   background-color: #dff0d8; }
@@ -8240,60 +8183,60 @@ a.btn.disabled, fieldset[disabled] a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #e2007a;
-  border-color: #c9006c; }
+  background-color: #dd0b18;
+  border-color: #c50a15; }
   .btn-primary:focus, .btn-primary.focus {
     color: #fff;
-    background-color: #af005e;
-    border-color: #490027; }
+    background-color: #ac0913;
+    border-color: #4b0408; }
   .btn-primary:hover {
     color: #fff;
-    background-color: #af005e;
-    border-color: #8b004b; }
+    background-color: #ac0913;
+    border-color: #8a070f; }
   .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
     color: #fff;
-    background-color: #af005e;
-    border-color: #8b004b; }
+    background-color: #ac0913;
+    border-color: #8a070f; }
     .btn-primary:active:hover, .btn-primary:active:focus, .btn-primary:active.focus, .btn-primary.active:hover, .btn-primary.active:focus, .btn-primary.active.focus, .open > .btn-primary.dropdown-toggle:hover, .open > .btn-primary.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle.focus {
       color: #fff;
-      background-color: #8b004b;
-      border-color: #490027; }
+      background-color: #8a070f;
+      border-color: #4b0408; }
   .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
     background-image: none; }
   .btn-primary.disabled, .btn-primary.disabled:hover, .btn-primary.disabled:focus, .btn-primary.disabled.focus, .btn-primary.disabled:active, .btn-primary.disabled.active, .btn-primary[disabled], .btn-primary[disabled]:hover, .btn-primary[disabled]:focus, .btn-primary[disabled].focus, .btn-primary[disabled]:active, .btn-primary[disabled].active, fieldset[disabled] .btn-primary, fieldset[disabled] .btn-primary:hover, fieldset[disabled] .btn-primary:focus, fieldset[disabled] .btn-primary.focus, fieldset[disabled] .btn-primary:active, fieldset[disabled] .btn-primary.active {
-    background-color: #e2007a;
-    border-color: #c9006c; }
+    background-color: #dd0b18;
+    border-color: #c50a15; }
   .btn-primary .badge {
-    color: #e2007a;
+    color: #dd0b18;
     background-color: #fff; }
 
 .btn-success {
   color: #fff;
-  background-color: #2c882c;
-  border-color: #267526; }
+  background-color: #1b4afb;
+  border-color: #0438f8; }
   .btn-success:focus, .btn-success.focus {
     color: #fff;
-    background-color: #206120;
-    border-color: #071407; }
+    background-color: #0432df;
+    border-color: #021b7b; }
   .btn-success:hover {
     color: #fff;
-    background-color: #206120;
-    border-color: #174617; }
+    background-color: #0432df;
+    border-color: #032abc; }
   .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
     color: #fff;
-    background-color: #206120;
-    border-color: #174617; }
+    background-color: #0432df;
+    border-color: #032abc; }
     .btn-success:active:hover, .btn-success:active:focus, .btn-success:active.focus, .btn-success.active:hover, .btn-success.active:focus, .btn-success.active.focus, .open > .btn-success.dropdown-toggle:hover, .open > .btn-success.dropdown-toggle:focus, .open > .btn-success.dropdown-toggle.focus {
       color: #fff;
-      background-color: #174617;
-      border-color: #071407; }
+      background-color: #032abc;
+      border-color: #021b7b; }
   .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
     background-image: none; }
   .btn-success.disabled, .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled.focus, .btn-success.disabled:active, .btn-success.disabled.active, .btn-success[disabled], .btn-success[disabled]:hover, .btn-success[disabled]:focus, .btn-success[disabled].focus, .btn-success[disabled]:active, .btn-success[disabled].active, fieldset[disabled] .btn-success, fieldset[disabled] .btn-success:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .btn-success.focus, fieldset[disabled] .btn-success:active, fieldset[disabled] .btn-success.active {
-    background-color: #2c882c;
-    border-color: #267526; }
+    background-color: #1b4afb;
+    border-color: #0438f8; }
   .btn-success .badge {
-    color: #2c882c;
+    color: #1b4afb;
     background-color: #fff; }
 
 .btn-info {
@@ -8384,7 +8327,7 @@ a.btn.disabled, fieldset[disabled] a.btn {
     background-color: #fff; }
 
 .btn-link {
-  color: #e2007a;
+  color: #dd0b18;
   font-weight: normal;
   border-radius: 0; }
   .btn-link, .btn-link:active, .btn-link.active, .btn-link[disabled], fieldset[disabled] .btn-link {
@@ -8394,7 +8337,7 @@ a.btn.disabled, fieldset[disabled] a.btn {
   .btn-link, .btn-link:hover, .btn-link:focus, .btn-link:active {
     border-color: transparent; }
   .btn-link:hover, .btn-link:focus {
-    color: #960051;
+    color: #940710;
     text-decoration: underline;
     background-color: transparent; }
   .btn-link[disabled]:hover, .btn-link[disabled]:focus, fieldset[disabled] .btn-link:hover, fieldset[disabled] .btn-link:focus {
@@ -8595,7 +8538,7 @@ input[type="button"].btn-block {
   color: #fff;
   text-decoration: none;
   outline: 0;
-  background-color: #e2007a; }
+  background-color: #dd0b18; }
 
 .dropdown-menu > .disabled > a, .dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
   color: #777777; }
@@ -8686,7 +8629,7 @@ input[type="button"].btn-block {
         cursor: not-allowed; }
   .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
     background-color: #eeeeee;
-    border-color: #e2007a; }
+    border-color: #dd0b18; }
   .nav .nav-divider {
     height: 1px;
     margin: 9px 0;
@@ -8722,7 +8665,7 @@ input[type="button"].btn-block {
     margin-left: 2px; }
   .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
     color: #fff;
-    background-color: #e2007a; }
+    background-color: #dd0b18; }
 
 .nav-stacked > li {
   float: none; }
@@ -9631,7 +9574,7 @@ html {
   height: 100%; }
 
 body {
-  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "PT Sans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 100%; }
   body.fullscreen .container {
     width: auto;
@@ -9647,11 +9590,11 @@ p, ul {
   margin-bottom: 10px; }
 
 a {
-  text-decoration: none;
-  color: #6d7e00; }
+  text-decoration: underline;
+  color: #1b4afb; }
   a:hover {
-    text-decoration: none;
-    color: #afcb00; }
+    text-decoration: underline;
+    color: #6686fc; }
   a.btn {
     text-decoration: none; }
 
@@ -9689,14 +9632,14 @@ a {
   .well h1 {
     margin: 0;
     color: white;
-    background: #285f19;
-    background: -moz-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
-    background: -webkit-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
-    background: -o-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
-    background: -ms-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
-    background: linear-gradient(90deg, #285f19 0%, #2c681b 100%);
+    background: #404040;
+    background: -moz-linear-gradient(90deg, #404040 0%, #464646 100%);
+    background: -webkit-linear-gradient(90deg, #404040 0%, #464646 100%);
+    background: -o-linear-gradient(90deg, #404040 0%, #464646 100%);
+    background: -ms-linear-gradient(90deg, #404040 0%, #464646 100%);
+    background: linear-gradient(90deg, #404040 0%, #464646 100%);
     padding: 5px 20px 5px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -9706,14 +9649,14 @@ a {
   .well h2.green, .well h3.green, .well .nav-header, .well legend.green {
     margin: 0;
     color: white;
-    background: #afcb08;
-    background: -moz-linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
-    background: -webkit-linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
-    background: -o-linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
-    background: -ms-linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
-    background: linear-gradient(90deg, #afcb08 0%, #b9d608 100%);
+    background: #a6a6a6;
+    background: -moz-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
+    background: -webkit-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
+    background: -o-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
+    background: -ms-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
+    background: linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
     padding: 5px 20px 5px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -9722,14 +9665,14 @@ a {
     margin: -1px; }
   .well h2.lightgreen, .well h3.lightgreen {
     margin: -1px;
-    background: #f7fdd5;
-    background: -moz-linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
-    background: -webkit-linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
-    background: -o-linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
-    background: -ms-linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
-    background: linear-gradient(90deg, #f7fdd5 0%, #f9fee0 100%);
+    background: white;
+    background: -moz-linear-gradient(90deg, white 0%, white 100%);
+    background: -webkit-linear-gradient(90deg, white 0%, white 100%);
+    background: -o-linear-gradient(90deg, white 0%, white 100%);
+    background: -ms-linear-gradient(90deg, white 0%, white 100%);
+    background: linear-gradient(90deg, white 0%, white 100%);
     padding: 5px 20px 5px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -9761,8 +9704,8 @@ a {
       display: inline;
       padding: 0;
       margin-left: 40px;
-      color: #6d7e00;
-      font-family: "Open Sans", sans-serif;
+      color: #b5b5b5;
+      font-family: "Arvo", sans-serif;
       font-style: normal;
       font-weight: bold;
       text-transform: uppercase;
@@ -9777,11 +9720,11 @@ a {
       background: none;
       filter: none;
       box-shadow: none;
-      color: #737373 !important;
+      color: #515151 !important;
       text-decoration: none; }
 
 .btn {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Arvo", sans-serif;
   font-weight: bold; }
   .span9 .btn {
     margin: 10px 0 0 200px; }
@@ -9789,12 +9732,12 @@ a {
 .btn-primary {
   text-transform: uppercase;
   color: #fff;
-  background: #e2007a;
-  background: -moz-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -webkit-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -o-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -ms-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: linear-gradient(90deg, #e2007a 0%, #f40084 100%); }
+  background: #dd0b18;
+  background: -moz-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -webkit-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -o-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -ms-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%); }
 
 .saveholder {
   clear: both;
@@ -9825,16 +9768,16 @@ label input, .label input, label textarea, .label textarea {
   margin: 30px 0 0;
   padding: 0; }
   .breadcrumb, .breadcrumb .active {
-    font-family: "Open Sans", sans-serif;
+    font-family: "Arvo", sans-serif;
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;
     font-size: 15px;
-    color: #737373; }
+    color: #515151; }
   .breadcrumb li {
     text-shadow: none; }
   .breadcrumb a {
-    color: #6d7e00; }
+    color: #b5b5b5; }
 
 /* keep the footer at the bottom of the page */
 .over_footer_wrapper {
@@ -9939,16 +9882,16 @@ ins, ul.inserted, blockquote.inserted {
   width: 105px;
   height: 105px;
   padding-top: 20px;
-  background: #e2007a;
-  background: -moz-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -webkit-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -o-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: -ms-linear-gradient(90deg, #e2007a 0%, #f40084 100%);
-  background: linear-gradient(90deg, #e2007a 0%, #f40084 100%);
+  background: #dd0b18;
+  background: -moz-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -webkit-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -o-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: -ms-linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
+  background: linear-gradient(90deg, #dd0b18 0%, #ee0c1a 100%);
   text-align: center;
   vertical-align: middle;
   overflow: hidden;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Arvo", sans-serif;
   font-weight: bold;
   font-size: 15px;
   line-height: 17px;
@@ -9974,7 +9917,7 @@ ins, ul.inserted, blockquote.inserted {
   .motionData .delTagForm button {
     background: transparent;
     border: none;
-    color: #FF7777;
+    color: #dd0b18;
     font-style: italic;
     padding: 0 6px 0 3px; }
 .motionData > .content > .alert {
@@ -9999,7 +9942,7 @@ ins, ul.inserted, blockquote.inserted {
   #sidebar .nav-list > li {
     padding: 0 10px 10px 38px; }
     #sidebar .nav-list > li a {
-      color: #6d7e00;
+      color: #1b4afb;
       padding: 0;
       background: none;
       filter: none;
@@ -10007,7 +9950,7 @@ ins, ul.inserted, blockquote.inserted {
       text-shadow: none;
       display: inline; }
       #sidebar .nav-list > li a:link, #sidebar .nav-list > li a:visited {
-        color: #6d7e00; }
+        color: #1b4afb; }
       #sidebar .nav-list > li a .glyphicon {
         position: absolute;
         left: -25px; }
@@ -10036,12 +9979,12 @@ ins, ul.inserted, blockquote.inserted {
   width: 140px; }
 
 ul.sidebarActions {
-  background: #778a00;
-  background: -moz-linear-gradient(90deg, #778a00 0%, #6d7e00 100%);
-  background: -webkit-linear-gradient(90deg, #778a00 0%, #6d7e00 100%);
-  background: -o-linear-gradient(90deg, #778a00 0%, #6d7e00 100%);
-  background: -ms-linear-gradient(90deg, #778a00 0%, #6d7e00 100%);
-  background: linear-gradient(90deg, #778a00 0%, #6d7e00 100%);
+  background: #e80c19;
+  background: -moz-linear-gradient(90deg, #e80c19 0%, #dd0b18 100%);
+  background: -webkit-linear-gradient(90deg, #e80c19 0%, #dd0b18 100%);
+  background: -o-linear-gradient(90deg, #e80c19 0%, #dd0b18 100%);
+  background: -ms-linear-gradient(90deg, #e80c19 0%, #dd0b18 100%);
+  background: linear-gradient(90deg, #e80c19 0%, #dd0b18 100%);
   padding: 7px 0 1px 21px;
   list-style-type: none;
   margin: -1px;
@@ -10052,7 +9995,7 @@ ul.sidebarActions {
   -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-  font-family: "Open Sans", sans-serif;
+  font-family: "Arvo", sans-serif;
   font-style: normal;
   font-weight: bold; }
   ul.sidebarActions li a, ul.sidebarActions li > span, ul.sidebarActions form {
@@ -10120,7 +10063,7 @@ ul.sidebarActions {
 .supporterFormStd .initiatorData .contactPrivacy {
   font-size: 0.8em; }
 .supporterFormStd .supporterRow .rowDeleter, .supporterFormStd .supporterRow .rowDeleter:link, .supporterFormStd .supporterRow .rowDeleter:visited, .supporterFormStd .initiatorRow .rowDeleter, .supporterFormStd .initiatorRow .rowDeleter:link, .supporterFormStd .initiatorRow .rowDeleter:visited {
-  color: #FF7777;
+  color: #dd0b18;
   display: inline-block;
   margin-top: 8px; }
 html.no-touch .supporterFormStd .supporterRow .rowDeleter, html.no-touch .supporterFormStd .initiatorRow .rowDeleter {
@@ -10235,10 +10178,17 @@ ul.searchResults {
 .fuelux .selectlist .btn.dropdown-toggle {
   position: relative; }
 
+.well h1 {
+  font-family: "Arvo Gruen", sans-serif;
+  font-weight: normal; }
+
+.motionListStd .motion .title a {
+  font-family: "Arvo", sans-serif; }
+
 html {
-  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent; }
+  background: #f5f5f5; }
 
 body {
-  background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent; }
+  background: #f5f5f5; }
 
-/*# sourceMappingURL=layout-classic.css.map */
+/*# sourceMappingURL=layout-dbjr.css.map */

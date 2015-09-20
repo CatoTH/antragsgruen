@@ -35,23 +35,12 @@
   background: linear-gradient($deg, $color1 0%, $color2 100%);
 }
 
-/*
-@mixin icons-antragsgruen($font-size) {
-  color: #A2BC04;
-  display: inline-block;
-  font-family: 'icons_antragsgruen';
-  font-size: $font-size;
-  vertical-align: bottom;
-  width: 20px;
-}
-*/
-
-@mixin stdHeading($verlauf_von, $verlauf_zu) {
+@mixin stdHeading($textColor, $gradientFrom) {
   margin: 0;
-  color: #fff;
-  @include linear-gradient(90deg, $verlauf_von, $verlauf_zu);
+  color: $textColor;
+  @include linear-gradient(90deg, $gradientFrom, lighten($gradientFrom, 2.3%));
   padding: 5px 20px 5px;
-  font-family: $stdHeadingFont;
+  font-family: $headingFont;
   font-weight: bold;
   font-size: 15px;
   line-height: 18px;

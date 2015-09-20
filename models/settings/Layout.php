@@ -31,6 +31,7 @@ class Layout
         return [
             'layout-classic'    => 'Antragsgrün-Standard',
             'layout-gruenes-ci' => 'Grünes CI',
+            'layout-dbjr'       => 'DBJR',
         ];
     }
 
@@ -55,7 +56,7 @@ class Layout
         $params = \yii::$app->params;
 
         $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');
-        $file = $params->resourceBase . $webAdd . $file;
+        $file   = $params->resourceBase . $webAdd . $file;
 
         if (!in_array($file, $this->extraCss)) {
             $this->extraCss[] = $file;
@@ -83,7 +84,7 @@ class Layout
         $params = \yii::$app->params;
 
         $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');
-        $file = $params->resourceBase . $webAdd . $file;
+        $file   = $params->resourceBase . $webAdd . $file;
 
         if (!in_array($file, $this->extraJs)) {
             $this->extraJs[] = $file;

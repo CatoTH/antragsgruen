@@ -23,11 +23,11 @@
       .motionIcon {
         width: 27px;
         margin-left: -30px;
-        color: $colorGreenLight;
+        color: $colorLinksLight;
       }
 
       a {
-        color: $colorGreenDark;
+        color: $colorLinks;
         font-weight: bold;
         font-size: $titleFontSize;
         line-height: $titleFontSize + 2;
@@ -38,19 +38,19 @@
         hyphens: auto;
 
         &:hover, &:focus {
-          color: rgb(73, 127, 55);
+          color: darken($colorLinks, 20%);
         }
       }
 
       .pdfLink {
         font-size: 13px;
-        color: $colorGreenLightText;
+        color: $colorLinksLight;
         margin-left: 10px;
         display: inline-block;
         font-weight: normal;
         a:hover {
           text-decoration: none;
-          color: rgb(198, 214, 78);
+          color: darken($colorLinksLight, 20%);
         }
       }
     }
@@ -94,8 +94,7 @@
 
 .motionListStd {
   list-style-type: none;
-  margin: 0;
-  margin-bottom: 40px;
+  margin: 0 0 40px;
   padding: 0;
 
   @include motionListStdMotion(16px);
@@ -141,7 +140,7 @@
         display: none;
       }
       > .title {
-        font-family: $stdHeadingFont;
+        font-family: $headingFont;
         .motionIcon {
           display: none;
         }
@@ -179,7 +178,7 @@
     h4.amendments {
       margin-top: 10px;
       margin-bottom: 5px;
-      font-family: $stdHeadingFont;
+      font-family: $headingFont;
       font-size: 14px;
       font-weight: bold;
       color: $colorGreenLight;
@@ -523,7 +522,7 @@
         position: absolute;
         top: -($inlineAmendmentPreambleHeight - 10);
         height: $inlineAmendmentPreambleHeight;
-        color: $colorGreenLight;
+        color: $inlineAmendmentPreambleColor;
         width: 100%;
         > div {
           position: absolute;
@@ -605,16 +604,9 @@
       -webkit-border-bottom-right-radius: 10px;
       border-bottom-right-radius: 10px;
       font-weight: bold;
-      /*
-      &:before {
-        @include icons-antragsgruen(15px);
-        font-weight: bold;
-        color: #fff;
-      }
-      */
     }
     &.comment > a {
-      @include linear-gradient(90deg, $colorMagenta, rgb(234, 74, 161));
+      @include linear-gradient(90deg, $bookmarkCommentColor, lighten($bookmarkCommentColor, 3.5%));
       &.zero {
         opacity: 0.5;
       }
@@ -624,7 +616,7 @@
       }
     }
     &.amendment > a {
-      @include linear-gradient(90deg, $colorGreenLight, rgb(185, 209, 38));
+      @include linear-gradient(90deg, $bookmarkAmendmentColor, lighten($bookmarkAmendmentColor, 3.5%));
     }
     .hider {
       @include linear-gradient(90deg, rgb(180, 180, 180), rgb(220, 220, 220));
@@ -654,7 +646,7 @@
 .motionComment {
   h3 {
     background: none;
-    color: $colorGreenLightText;
+    color: $colorLinksLight;
     font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
     font-weight: bold;

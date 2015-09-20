@@ -5,55 +5,55 @@ $arvoFontPath: "../fonts/gruenes-ci/";
 $ptSansFontPath: "../fonts/gruenes-ci/";
 @import "../fonts/gruenes-ci/ptsans";
 
+$colorDarkGrey: rgb(64, 64, 64);
+$colorMediumGrey: rgb(120, 120, 120);
+$colorLightGrey: rgb(166, 166, 166);
+$colorBlue: rgb(27, 74, 251);
 $colorGreenDark: rgb(40, 95, 25);
 $colorGreenLight: rgb(175, 203, 8);
-$colorLinksLight: #6d7e00;
-$colorLinks: #6d7e00;
-$linkTextDecoration: none;
-$colorDelLink: #FF7777;
+$colorRed: rgb(221,11,24);
+$colorGreen: green;
+$colorLinksLight: rgb(27, 74, 251);
+$colorLinks: $colorBlue;
+$linkTextDecoration: underline;
+$colorDelLink: $colorRed;
 $colorMagenta: rgb(226, 0, 122);
-$brand-primary: $colorMagenta;
+$brand-primary: $colorRed;
+$brand-success: $colorRed;
 $text-color: rgb(72, 70, 73);
-$btn-success-bg: #2c882c;
+$btn-success-bg: $colorBlue;
 
 $headingFont: "Arvo", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
-$headingPrimaryBackground: rgb(40, 95, 25);
+$headingPrimaryBackground: $colorDarkGrey;
 $headingSecondaryText: rgb(255, 255, 255);
-$headingSecondaryBackground: rgb(175, 203, 8);
+$headingSecondaryBackground: $colorLightGrey;
 $headingTertiaryText: black;
-$headingTertiaryBackground: rgb(27, 74, 251);
+$headingTertiaryBackground: rgb(200, 200, 200);
 
 $menuFont: "Arvo", sans-serif;
-$menuLink: #6d7e00;
-$menuActive: rgb(115, 115, 115);
+$menuLink: rgb(181, 181, 181);
+$menuActive: rgb(81, 81, 81);
 
-$sidebarBackground: $colorMagenta;
+$sidebarBackground: $colorRed;
 $sidebarActionFont: "Arvo", sans-serif;
 
-$bookmarkAmendmentColor: $colorGreenLight;
-$bookmarkCommentColor: $colorMagenta;
+$bookmarkAmendmentColor: $colorRed;
+$bookmarkCommentColor: $colorGreen;
 
 $bodyFont: "PT Sans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $deadlineCircleFont: "Arvo", sans-serif;
-$sidebarActionFont: "Arvo", sans-serif;
 $buttonFont: "Arvo", sans-serif;
-$motionFixedFont: 'PT Sans', Courier, sans-serif;
-$motionStdFontSize: 16px;
+
+$motionFixedFont: 'Anonymous Pro', Consolas, Courier, sans-serif;
+$motionStdFontSize: 14px;
 $inlineAmendmentPreambleHeight: 35px;
-$inlineAmendmentPreambleColor: $colorMagenta;
+$inlineAmendmentPreambleColor: $colorRed;
 
 @import "base_layout";
 @import "motions";
 @import "styles";
 
-
-html {
-  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
-}
-body {
-  background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
-}
 
 .well h1 {
   font-family: "Arvo Gruen", sans-serif;
@@ -61,4 +61,11 @@ body {
 }
 .motionListStd .motion .title a  {
   font-family: "Arvo", sans-serif;
+}
+
+html {
+  background: #f5f5f5;
+}
+body {
+  background: #f5f5f5
 }

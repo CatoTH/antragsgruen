@@ -10,9 +10,24 @@ $lineNumberOffset4: 3px !default;
 $bodyFont: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 $deadlineCircleFont: 'sans-serif' !default;
 $sidebarActionFont: 'sans-serif' !default;
-$topNavbarFont: 'sans-serif' !default;
 $buttonFont: 'sans-serif' !default;
-$breadcrumbFont: 'sans-serif' !default;
 $motionFixedFont: Courier, sans-serif !default;
-$stdHeadingFont: 'sans-serif' !default;
 $motionStdFontSize: 14px !default;
+
+$headingFont: 'sans-serif' !default;
+$headingPrimaryText: black !default;
+$headingPrimaryBackground: white !default;
+$headingSecondaryText: black !default;
+$headingSecondaryBackground: white !default;
+$headingTertiaryText: black !default;
+$headingTertiaryBackground: white !default;
+
+$menuFont: 'sans-serif' !default;
+$menuLink: blue !default;
+$menuActive: black !default;
+
+$sidebarBackground: white !default;
+$sidebarActionFont: 'sans-serif' !default;
+
+$bookmarkAmendmentColor: black !default;
+$bookmarkCommentColor: black !default;
