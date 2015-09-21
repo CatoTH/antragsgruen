@@ -185,7 +185,7 @@ class AmendmentController extends Base
                             $this->site,
                             trim($initiator[0]->contactEmail),
                             null,
-                            'Änderungsantrag eingereicht',
+                            \Yii::t('amend', 'submitted_screening_email_subject'),
                             str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'submitted_screening_email'))
                         );
                     }

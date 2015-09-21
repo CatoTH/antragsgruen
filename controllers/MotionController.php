@@ -260,8 +260,8 @@ class MotionController extends Base
                             $this->site,
                             trim($initiator[0]->contactEmail),
                             null,
-                            'Antrag eingereicht',
-                            str_replace('%LINK%', $motionLink, \Yii::t('amend', 'submitted_screening_email'))
+                            \Yii::t('motion', 'submitted_screening_email_subject'),
+                            str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'))
                         );
                     }
                 }
