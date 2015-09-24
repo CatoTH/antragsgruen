@@ -179,11 +179,12 @@ foreach ($moreInitiators as $init) {
     echo $getInitiatorRow($init, $hasOrganizations);
 }
 
-
+/*
 echo '<div class="adderRow row"><div class="col-sm-3"></div><div class="col-md-9">';
 echo '<a href="#"><span class="glyphicon glyphicon-plus"></span> ';
 echo Yii::t('initiator', 'addInitiator');
 echo '</a></div></div>';
+*/
 
 $new    = new \app\models\db\MotionSupporter();
 $newStr = $getInitiatorRow($new, $hasOrganizations);
