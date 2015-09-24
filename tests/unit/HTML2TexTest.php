@@ -11,6 +11,19 @@ class HTML2TexTest extends TestBase
 {
     use Specify;
 
+    public function testEmptyLine()
+    {
+        $orig   = "<p> </p>";
+        $expect = "{\\color{white}.}\n";
+        $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+
+        $orig   = "<p>###LINENUMBER### </p>";
+        $expect = "###LINENUMBER###{\\color{white}.}\n";
+        $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
     public function testLineBreaks()
     {
         $orig   = [
@@ -36,8 +49,6 @@ class HTML2TexTest extends TestBase
         $lines = LineSplitter::motionPara2lines($orig, true, 80);
         $out   = TextSimple::getMotionLinesToTeX($lines);
         $this->assertEquals($expect, $out);
-
-
     }
 
     public function testBold()
@@ -113,5 +124,4 @@ class HTML2TexTest extends TestBase
         $out = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
-
 }

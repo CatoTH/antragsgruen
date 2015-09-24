@@ -189,6 +189,10 @@ class Exporter
 
         $out = str_replace('###FORCELINEBREAK###', "\n\\\\\n", $out);
 
+        if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
+            $out = str_replace(' ', '{\color{white}.}', $out);
+        }
+
         return $out;
     }
 
