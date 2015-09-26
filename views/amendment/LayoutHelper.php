@@ -18,15 +18,16 @@ class LayoutHelper
      */
     public static function renderTeX(Amendment $amendment)
     {
-        $content              = new Content();
-        $content->template    = $amendment->motion->motionType->texTemplate->texContent;
-        $content->title       = $amendment->motion->title;
+        $content           = new Content();
+        $content->template = $amendment->motion->motionType->texTemplate->texContent;
+        $content->title    = $amendment->motion->title;
         if (!$amendment->motion->consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
             $content->titlePrefix = $amendment->titlePrefix;
         } else {
             $content->titlePrefix = '';
         }
-        $content->titleLong   = str_replace('%PREFIX%', $amendment->motion->titlePrefix, 'Änderungsantrag zu %PREFIX%');
+        $content->titleLong = $amendment->titlePrefix . ' - ';
+        $content->titleLong .= str_replace('%PREFIX%', $amendment->motion->titlePrefix, 'Änderungsantrag zu %PREFIX%');
 
         $intro                    = explode("\n", $amendment->motion->consultation->getSettings()->pdfIntroduction);
         $content->introductionBig = $intro[0];

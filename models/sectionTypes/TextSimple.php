@@ -340,9 +340,16 @@ class TextSimple extends ISectionType
 
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->consultationSetting->title);
+            if ($title == \Yii::t('motion', 'Antragstext')) {
+                $titPattern = 'Änderungsantrag zu #MOTION#';
+                $title = str_replace('#MOTION#', $section->amendment->motion->titlePrefix, $titPattern);
+            }
+
             $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
-            $tex .= Exporter::encodeHTMLString($html);
+            for ($i = 0; $i < 100; $i++) {
+                $tex .= Exporter::encodeHTMLString($html);
+            }
         }
 
         return $tex;
