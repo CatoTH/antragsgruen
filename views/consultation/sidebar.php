@@ -84,8 +84,10 @@ if ($showCreate) {
             if ($working[0]->getMotionPolicy()->checkCurrUser(false, true)) {
                 $link = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
                 $description = Html::encode(Yii::t('con', 'Start a Motion'));
-                $layout->menusHtml[] = '<a class="createMotion text-hide" href="' . Html::encode($link) . '" ' .
-                    'title="' . $description . '">' . $description . '</a>';
+                $layout->menusHtml[] = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
+                    '<a class="createMotion" href="' . Html::encode($link) . '" title="' . $description . '">' .
+                    '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
+                    '</a></div></div>';
             }
         } else {
             $html = '<div><ul class="nav nav-list motions">';
@@ -153,8 +155,10 @@ if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda')
     if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurrUser(false, true)) {
         $newUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
         $description = Html::encode(Yii::t('con', 'Start a Motion'));
-        $layout->menusHtml[] = '<a class="createMotion text-hide" href="' . Html::encode($newUrl) . '"' .
-            ' title="' . $description . '">' . $description . '</a>';
+        $layout->menusHtml[] = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
+            '<a class="createMotion" href="' . Html::encode($newUrl) . '" title="' . $description . '">' .
+            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
+            '</a></div></div>';
     }
 }
 

@@ -15,7 +15,7 @@ $colorRed: rgb(221,11,24);
 $colorGreen: green;
 $colorLinksLight: rgb(27, 74, 251);
 $colorLinks: $colorBlue;
-$linkTextDecoration: underline;
+$linkTextDecoration: none;
 $colorDelLink: $colorRed;
 $colorMagenta: rgb(226, 0, 122);
 $brand-primary: $colorRed;
@@ -32,8 +32,8 @@ $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(200, 200, 200);
 
 $menuFont: "Arvo", sans-serif;
-$menuLink: rgb(181, 181, 181);
-$menuActive: rgb(81, 81, 81);
+$menuLink: rgb(141, 141, 141);
+$menuActive: rgb(51, 51, 51);
 
 $sidebarBackground: $colorRed;
 $sidebarActionFont: "Arvo", sans-serif;
@@ -49,6 +49,7 @@ $motionFixedFont: 'Anonymous Pro', Consolas, Courier, sans-serif;
 $motionStdFontSize: 14px;
 $inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: $colorRed;
+$createMotionBtnColor: $colorBlue;
 
 @import "base_layout";
 @import "motions";

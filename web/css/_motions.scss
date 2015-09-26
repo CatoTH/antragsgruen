@@ -216,10 +216,10 @@
     margin-bottom: 0;
     margin-top: -4px;
   }
-  html.no-touch & .agendaItemAdder {
+  html.no-touchevents & .agendaItemAdder {
     visibility: hidden;
   }
-  html.no-touch &:hover > .agendaItemAdder, html.no-touch & ol.agenda:hover > .agendaItemAdder {
+  html.no-touchevents &:hover > .agendaItemAdder, html.no-touchevents & ol.agenda:hover > .agendaItemAdder {
     visibility: visible;
   }
 
@@ -241,10 +241,10 @@
           top: 0;
           right: 0;
         }
-        html.no-touch & .delAgendaItem {
+        html.no-touchevents & .delAgendaItem {
           visibility: hidden;
         }
-        html.no-touch &:hover .delAgendaItem {
+        html.no-touchevents &:hover .delAgendaItem {
           visibility: visible;
         }
 
@@ -252,10 +252,10 @@
           font-size: 0.7em;
           margin-left: 10px;
         }
-        html.no-touch & .editAgendaItem {
+        html.no-touchevents & .editAgendaItem {
           visibility: hidden;
         }
-        html.no-touch &:hover .editAgendaItem {
+        html.no-touchevents &:hover .editAgendaItem {
           visibility: visible;
         }
       }
@@ -336,10 +336,10 @@
     margin-left: -27px;
     cursor: move;
   }
-  html.no-touch & li.agendaItem > div > .moveHandle {
+  html.no-touchevents & li.agendaItem > div > .moveHandle {
     display: none;
   }
-  html.no-touch & li.agendaItem:hover > div > .moveHandle {
+  html.no-touchevents & li.agendaItem:hover > div > .moveHandle {
     display: block;
   }
 

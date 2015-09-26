@@ -4160,7 +4160,7 @@ button.close {
 .invisible {
   visibility: hidden; }
 
-.text-hide {
+.text-hide, html.no-csstransforms #sidebar .createMotion, html.no-borderradius #sidebar .createMotion {
   font: 0/0 a;
   color: transparent;
   text-shadow: none;
@@ -4589,9 +4589,9 @@ body > footer {
   font-weight: normal;
   font-size: 0.8em; }
 
-html.no-touch .hoverHolder .hoverElement {
+html.no-touchevents .hoverHolder .hoverElement {
   display: none; }
-html.no-touch .hoverHolder:hover .hoverElement {
+html.no-touchevents .hoverHolder:hover .hoverElement {
   display: inherit; }
 
 button.link {
@@ -4853,9 +4853,9 @@ ins, ul.inserted, blockquote.inserted {
     padding-left: 35px;
     margin-bottom: 0;
     margin-top: -4px; }
-  html.no-touch .motionListAgenda .agendaItemAdder {
+  html.no-touchevents .motionListAgenda .agendaItemAdder {
     visibility: hidden; }
-  html.no-touch .motionListAgenda:hover > .agendaItemAdder, html.no-touch .motionListAgenda ol.agenda:hover > .agendaItemAdder {
+  html.no-touchevents .motionListAgenda:hover > .agendaItemAdder, html.no-touchevents .motionListAgenda ol.agenda:hover > .agendaItemAdder {
     visibility: visible; }
   .motionListAgenda li.agendaItem {
     border: solid 1px transparent;
@@ -4872,16 +4872,16 @@ ins, ul.inserted, blockquote.inserted {
           position: absolute;
           top: 0;
           right: 0; }
-        html.no-touch .motionListAgenda li.agendaItem > div > h3 .delAgendaItem {
+        html.no-touchevents .motionListAgenda li.agendaItem > div > h3 .delAgendaItem {
           visibility: hidden; }
-        html.no-touch .motionListAgenda li.agendaItem > div > h3:hover .delAgendaItem {
+        html.no-touchevents .motionListAgenda li.agendaItem > div > h3:hover .delAgendaItem {
           visibility: visible; }
         .motionListAgenda li.agendaItem > div > h3 .editAgendaItem {
           font-size: 0.7em;
           margin-left: 10px; }
-        html.no-touch .motionListAgenda li.agendaItem > div > h3 .editAgendaItem {
+        html.no-touchevents .motionListAgenda li.agendaItem > div > h3 .editAgendaItem {
           visibility: hidden; }
-        html.no-touch .motionListAgenda li.agendaItem > div > h3:hover .editAgendaItem {
+        html.no-touchevents .motionListAgenda li.agendaItem > div > h3:hover .editAgendaItem {
           visibility: visible; }
       .motionListAgenda li.agendaItem > div .agendaItemEditForm {
         display: none; }
@@ -4931,9 +4931,9 @@ ins, ul.inserted, blockquote.inserted {
     color: lightgrey;
     margin-left: -27px;
     cursor: move; }
-  html.no-touch .motionListAgenda li.agendaItem > div > .moveHandle {
+  html.no-touchevents .motionListAgenda li.agendaItem > div > .moveHandle {
     display: none; }
-  html.no-touch .motionListAgenda li.agendaItem:hover > div > .moveHandle {
+  html.no-touchevents .motionListAgenda li.agendaItem:hover > div > .moveHandle {
     display: block; }
   .motionListAgenda .movePlaceholder {
     border: dotted 1px gray; }
@@ -9380,7 +9380,7 @@ button.close {
 .invisible {
   visibility: hidden; }
 
-.text-hide {
+.text-hide, html.no-csstransforms #sidebar .createMotion, html.no-borderradius #sidebar .createMotion {
   font: 0/0 a;
   color: transparent;
   text-shadow: none;
@@ -9809,9 +9809,9 @@ body > footer {
   font-weight: normal;
   font-size: 0.8em; }
 
-html.no-touch .hoverHolder .hoverElement {
+html.no-touchevents .hoverHolder .hoverElement {
   display: none; }
-html.no-touch .hoverHolder:hover .hoverElement {
+html.no-touchevents .hoverHolder:hover .hoverElement {
   display: inherit; }
 
 button.link {
@@ -9960,7 +9960,12 @@ ins, ul.inserted, blockquote.inserted {
       font-size: 18px; }
   #sidebar .nav-list .nav-header {
     margin-bottom: 12px; }
-#sidebar .createMotion {
+#sidebar .antragsgruenAd {
+  margin-top: 30px; }
+  #sidebar .antragsgruenAd .content > div {
+    text-align: center;
+    margin-top: 15px; }
+html.no-csstransforms #sidebar .createMotion, html.no-borderradius #sidebar .createMotion {
   position: absolute;
   top: -4px;
   right: -58px;
@@ -9968,11 +9973,62 @@ ins, ul.inserted, blockquote.inserted {
   width: 58px;
   height: 276px;
   background-image: url(../img/neuer-antrag.png); }
-#sidebar .antragsgruenAd {
-  margin-top: 30px; }
-  #sidebar .antragsgruenAd .content > div {
-    text-align: center;
-    margin-top: 15px; }
+html.csstransforms.borderradius #sidebar .createMotionHolder1 {
+  position: absolute;
+  top: 0px;
+  right: -1px; }
+html.csstransforms.borderradius #sidebar .createMotionHolder2 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  -moz-transform: rotate(270deg) translateX(-100%);
+  -webkit-transform: rotate(270deg) translateX(-100%);
+  -o-transform: rotate(270deg) translateX(-100%);
+  -ms-transform: rotate(270deg) translateX(-100%);
+  transform: rotate(270deg) translateX(-100%);
+  -moz-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  -webkit-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0 10px 10px; }
+html.csstransforms.borderradius #sidebar .createMotion {
+  background: #e2007a;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #e2007a 0%, #ee0080 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e2007a), color-stop(100%, #ee0080));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #e2007a 0%, #ee0080 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #e2007a 0%, #ee0080 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #e2007a 0%, #ee0080 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #e2007a 0%, #ee0080 100%);
+  /* W3C */
+  padding: 10px 30px;
+  color: white;
+  text-decoration: none;
+  font-family: "Arvo", sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  -webkit-border-radius: 0 0 10px 10px;
+  border-radius: 0 0 10px 10px;
+  border: solid 1px #eb007f;
+  text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  display: inline-block;
+  white-space: nowrap; }
+  html.csstransforms.borderradius #sidebar .createMotion > span {
+    padding-right: 10px;
+    font-size: 15px; }
 #sidebar .nav-list.einsatzorte-list li {
   padding-left: 15px; }
 #sidebar .search-query {
@@ -10066,9 +10122,9 @@ ul.sidebarActions {
   color: #FF7777;
   display: inline-block;
   margin-top: 8px; }
-html.no-touch .supporterFormStd .supporterRow .rowDeleter, html.no-touch .supporterFormStd .initiatorRow .rowDeleter {
+html.no-touchevents .supporterFormStd .supporterRow .rowDeleter, html.no-touchevents .supporterFormStd .initiatorRow .rowDeleter {
   visibility: hidden; }
-html.no-touch .supporterFormStd .supporterRow:hover .rowDeleter, html.no-touch .supporterFormStd .initiatorRow:hover .rowDeleter {
+html.no-touchevents .supporterFormStd .supporterRow:hover .rowDeleter, html.no-touchevents .supporterFormStd .initiatorRow:hover .rowDeleter {
   visibility: visible; }
 
 #motionConfirmedForm .btnRow {
