@@ -135,7 +135,7 @@ class DBJR extends IPDFLayout
      */
     public function isSkippingSectionTitles(IMotionSection $section)
     {
-        if ($section->consultationSetting->title == 'Antragstext') {
+        if ($section->consultationSetting->title == \Yii::t('motion', 'Antragstext')) {
             return true;
         }
         return false;

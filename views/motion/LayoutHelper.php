@@ -223,13 +223,18 @@ class LayoutHelper
      */
     public static function renderTeX(Motion $motion)
     {
+        $hasAgenda                = ($motion->agendaItem !== null);
         $content                  = new Content();
         $content->template        = $motion->motionType->texTemplate->texContent;
         $intro                    = explode("\n", $motion->consultation->getSettings()->pdfIntroduction);
         $content->introductionBig = $intro[0];
-        $content->title           = $motion->title;
         $content->titlePrefix     = $motion->titlePrefix;
         $content->titleLong       = $motion->getTitleWithPrefix();
+        if ($hasAgenda) {
+            $content->title = $motion->agendaItem->title;
+        } else {
+            $content->title = $motion->title;
+        }
         if (count($intro) > 1) {
             array_shift($intro);
             $content->introductionSmall = implode("\n", $intro);
@@ -244,7 +249,7 @@ class LayoutHelper
         $content->author = $initiatorsStr;
 
         $content->motionDataTable = '';
-        foreach ($motion->getDataTable() as $key => $val) {
+        foreach ($motion->getDataTable($hasAgenda) as $key => $val) {
             $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }

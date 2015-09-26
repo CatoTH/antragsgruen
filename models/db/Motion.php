@@ -639,9 +639,10 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $skipAgenda
      * @return array
      */
-    public function getDataTable()
+    public function getDataTable($skipAgenda = false)
     {
         $return = [];
 
@@ -661,7 +662,7 @@ class Motion extends IMotion implements IRSSItem
             }
             $return[\Yii::t('pdf', 'InitiatorMulti')] = implode("\n", $initiators);
         }
-        if ($this->agendaItem) {
+        if ($this->agendaItem && !$skipAgenda) {
             $return[\Yii::t('pdf', 'AgendaItem')] = $this->agendaItem->code . ' ' . $this->agendaItem->title;
         }
         if (count($this->tags) > 1) {

@@ -295,6 +295,9 @@ class TextSimple extends ISectionType
         $hasLineNumbers = $section->consultationSetting->lineNumbers;
 
         $title = Exporter::encodePlainString($section->consultationSetting->title);
+        if ($title == \Yii::t('motion', 'Antragstext') && $section->motion->agendaItem) {
+            $title = $section->motion->title;
+        }
         $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
 
         if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {
