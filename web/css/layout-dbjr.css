@@ -1,16 +1,28 @@
 @charset "UTF-8";
 @font-face {
-  font-family: 'Arvo';
+  font-family: 'FiraSans';
   font-style: normal;
   font-weight: normal;
-  src: url("../fonts/gruenes-ci/arvo_regular.eot");
-  src: url("../fonts/gruenes-ci/arvo_regular.eot?#iefix") format("embedded-opentype"), url("../fonts/gruenes-ci/arvo_regular.woff") format("woff"), url("../fonts/gruenes-ci/arvo_regular.ttf") format("truetype"), url("../fonts/gruenes-ci/arvo_regular.svg#OpenSansLight") format("svg"); }
+  src: url("../fonts/firasans/FiraSans-Light.eot");
+  src: url("../fonts/firasans/FiraSans-Light.eot?#iefix") format("embedded-opentype"), url("../fonts/firasans/FiraSans-Light.woff2") format("woff2"), url("../fonts/firasans/FiraSans-Light.woff") format("woff"), url("../fonts/firasans/FiraSans-Light.ttf") format("truetype"); }
 @font-face {
-  font-family: 'Arvo Gruen';
-  font-style: normal;
+  font-family: 'FiraSans';
+  font-style: italic;
   font-weight: normal;
-  src: url("../fonts/gruenes-ci/arvo_gruen.eot");
-  src: url("../fonts/gruenes-ci/arvo_gruen.eot?#iefix") format("embedded-opentype"), url("../fonts/gruenes-ci/arvo_gruen.woff") format("woff"), url("../fonts/gruenes-ci/arvo_gruen.ttf") format("truetype"); }
+  src: url("../fonts/firasans/FiraSans-LightItalic.eot");
+  src: url("../fonts/firasans/FiraSans-LightItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/firasans/FiraSans-LightItalic.woff2") format("woff2"), url("../fonts/firasans/FiraSans-LightItalic.woff") format("woff"), url("../fonts/firasans/FiraSans-LightItalic.ttf") format("truetype"); }
+@font-face {
+  font-family: 'FiraSans';
+  font-style: normal;
+  font-weight: bold;
+  src: url("../fonts/firasans/FiraSans-Medium.eot");
+  src: url("../fonts/firasans/FiraSans-Medium.eot?#iefix") format("embedded-opentype"), url("../fonts/firasans/FiraSans-Medium.woff2") format("woff2"), url("../fonts/firasans/FiraSans-Medium.woff") format("woff"), url("../fonts/firasans/FiraSans-Medium.ttf") format("truetype"); }
+@font-face {
+  font-family: 'FiraSans';
+  font-style: italic;
+  font-weight: bold;
+  src: url("../fonts/firasans/FiraSans-MediumItalic.eot");
+  src: url("../fonts/firasans/FiraSans-MediumItalic.eot?#iefix") format("embedded-opentype"), url("../fonts/firasans/FiraSans-MediumItalic.woff2") format("woff2"), url("../fonts/firasans/FiraSans-MediumItalic.woff") format("woff"), url("../fonts/firasans/FiraSans-MediumItalic.ttf") format("truetype"); }
 @font-face {
   font-family: 'PT Sans';
   font-style: normal;
@@ -4354,7 +4366,7 @@ html {
   height: 100%; }
 
 body {
-  font-family: "PT Sans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "FiraSans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 100%; }
   body.fullscreen .container {
     width: auto;
@@ -4419,7 +4431,7 @@ a {
     background: -ms-linear-gradient(90deg, #404040 0%, #464646 100%);
     background: linear-gradient(90deg, #404040 0%, #464646 100%);
     padding: 5px 20px 5px;
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -4436,7 +4448,7 @@ a {
     background: -ms-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
     background: linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
     padding: 5px 20px 5px;
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -4452,7 +4464,7 @@ a {
     background: -ms-linear-gradient(90deg, white 0%, white 100%);
     background: linear-gradient(90deg, white 0%, white 100%);
     padding: 5px 20px 5px;
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -4485,7 +4497,7 @@ a {
       padding: 0;
       margin-left: 40px;
       color: #8d8d8d;
-      font-family: "Arvo", sans-serif;
+      font-family: "FiraSans", sans-serif;
       font-style: normal;
       font-weight: bold;
       text-transform: uppercase;
@@ -4504,7 +4516,7 @@ a {
       text-decoration: none; }
 
 .btn {
-  font-family: "Arvo", sans-serif;
+  font-family: "FiraSans", sans-serif;
   font-weight: bold; }
   .span9 .btn {
     margin: 10px 0 0 200px; }
@@ -4548,7 +4560,7 @@ label input, .label input, label textarea, .label textarea {
   margin: 30px 0 0;
   padding: 0; }
   .breadcrumb, .breadcrumb .active {
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;
@@ -4743,7 +4755,7 @@ ins, ul.inserted, blockquote.inserted {
     .motionListStd.layout2 .motion > .date {
       display: none; }
     .motionListStd.layout2 .motion > .title {
-      font-family: "Arvo", sans-serif; }
+      font-family: "FiraSans", sans-serif; }
       .motionListStd.layout2 .motion > .title .motionIcon {
         display: none; }
       .motionListStd.layout2 .motion > .title .motionPrefix {
@@ -4769,7 +4781,7 @@ ins, ul.inserted, blockquote.inserted {
   .motionListStd.layout2 h4.amendments {
     margin-top: 10px;
     margin-bottom: 5px;
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-size: 14px;
     font-weight: bold;
     color: #afcb08; }
@@ -9574,7 +9586,7 @@ html {
   height: 100%; }
 
 body {
-  font-family: "PT Sans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "FiraSans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 100%; }
   body.fullscreen .container {
     width: auto;
@@ -9639,7 +9651,7 @@ a {
     background: -ms-linear-gradient(90deg, #404040 0%, #464646 100%);
     background: linear-gradient(90deg, #404040 0%, #464646 100%);
     padding: 5px 20px 5px;
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -9656,7 +9668,7 @@ a {
     background: -ms-linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
     background: linear-gradient(90deg, #a6a6a6 0%, #acacac 100%);
     padding: 5px 20px 5px;
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -9672,7 +9684,7 @@ a {
     background: -ms-linear-gradient(90deg, white 0%, white 100%);
     background: linear-gradient(90deg, white 0%, white 100%);
     padding: 5px 20px 5px;
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-weight: bold;
     font-size: 15px;
     line-height: 18px;
@@ -9705,7 +9717,7 @@ a {
       padding: 0;
       margin-left: 40px;
       color: #8d8d8d;
-      font-family: "Arvo", sans-serif;
+      font-family: "FiraSans", sans-serif;
       font-style: normal;
       font-weight: bold;
       text-transform: uppercase;
@@ -9724,7 +9736,7 @@ a {
       text-decoration: none; }
 
 .btn {
-  font-family: "Arvo", sans-serif;
+  font-family: "FiraSans", sans-serif;
   font-weight: bold; }
   .span9 .btn {
     margin: 10px 0 0 200px; }
@@ -9768,7 +9780,7 @@ label input, .label input, label textarea, .label textarea {
   margin: 30px 0 0;
   padding: 0; }
   .breadcrumb, .breadcrumb .active {
-    font-family: "Arvo", sans-serif;
+    font-family: "FiraSans", sans-serif;
     font-style: normal;
     font-weight: bold;
     text-transform: uppercase;
@@ -9891,7 +9903,7 @@ ins, ul.inserted, blockquote.inserted {
   text-align: center;
   vertical-align: middle;
   overflow: hidden;
-  font-family: "Arvo", sans-serif;
+  font-family: "FiraSans", sans-serif;
   font-weight: bold;
   font-size: 15px;
   line-height: 17px;
@@ -10012,7 +10024,7 @@ html.csstransforms.borderradius #sidebar .createMotion {
   padding: 10px 30px;
   color: white;
   text-decoration: none;
-  font-family: "Arvo", sans-serif;
+  font-family: "FiraSans", sans-serif;
   font-weight: bold;
   font-size: 14px;
   -webkit-border-radius: 0 0 10px 10px;
@@ -10051,7 +10063,7 @@ ul.sidebarActions {
   -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-  font-family: "Arvo", sans-serif;
+  font-family: "FiraSans", sans-serif;
   font-style: normal;
   font-weight: bold; }
   ul.sidebarActions li a, ul.sidebarActions li > span, ul.sidebarActions form {
@@ -10235,11 +10247,11 @@ ul.searchResults {
   position: relative; }
 
 .well h1 {
-  font-family: "Arvo Gruen", sans-serif;
+  font-family: "FiraSans", sans-serif;
   font-weight: normal; }
 
 .motionListStd .motion .title a {
-  font-family: "Arvo", sans-serif; }
+  font-family: "FiraSans", sans-serif; }
 
 html {
   background: #f5f5f5; }

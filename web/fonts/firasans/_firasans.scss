@@ -1,0 +1,42 @@
+$firaSansFontPath: './' !default;
+
+@font-face {
+  font-family: 'FiraSans';
+  font-style: normal;
+  font-weight: normal;
+  src: url($firaSansFontPath + 'FiraSans-Light.eot');
+  src: url($firaSansFontPath + 'FiraSans-Light.eot?#iefix') format('embedded-opentype'),
+  url($firaSansFontPath + 'FiraSans-Light.woff2') format('woff2'),
+  url($firaSansFontPath + 'FiraSans-Light.woff') format('woff'),
+  url($firaSansFontPath + 'FiraSans-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'FiraSans';
+  font-style: italic;
+  font-weight: normal;
+  src: url($firaSansFontPath + 'FiraSans-LightItalic.eot');
+  src: url($firaSansFontPath + 'FiraSans-LightItalic.eot?#iefix') format('embedded-opentype'),
+  url($firaSansFontPath + 'FiraSans-LightItalic.woff2') format('woff2'),
+  url($firaSansFontPath + 'FiraSans-LightItalic.woff') format('woff'),
+  url($firaSansFontPath + 'FiraSans-LightItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'FiraSans';
+  font-style: normal;
+  font-weight: bold;
+  src: url($firaSansFontPath + 'FiraSans-Medium.eot');
+  src: url($firaSansFontPath + 'FiraSans-Medium.eot?#iefix') format('embedded-opentype'),
+  url($firaSansFontPath + 'FiraSans-Medium.woff2') format('woff2'),
+  url($firaSansFontPath + 'FiraSans-Medium.woff') format('woff'),
+  url($firaSansFontPath + 'FiraSans-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'FiraSans';
+  font-style: italic;
+  font-weight: bold;
+  src: url($firaSansFontPath + 'FiraSans-MediumItalic.eot');
+  src: url($firaSansFontPath + 'FiraSans-MediumItalic.eot?#iefix') format('embedded-opentype'),
+  url($firaSansFontPath + 'FiraSans-MediumItalic.woff2') format('woff2'),
+  url($firaSansFontPath + 'FiraSans-MediumItalic.woff') format('woff'),
+  url($firaSansFontPath + 'FiraSans-MediumItalic.ttf') format('truetype');
+}

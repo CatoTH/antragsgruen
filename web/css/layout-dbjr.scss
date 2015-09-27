@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
-$arvoFontPath: "../fonts/gruenes-ci/";
-@import "../fonts/gruenes-ci/arvo";
+$firaSansFontPath: "../fonts/firasans/";
+@import "../fonts/firasans/firasans";
 $ptSansFontPath: "../fonts/gruenes-ci/";
 @import "../fonts/gruenes-ci/ptsans";
 
@@ -23,7 +23,7 @@ $brand-success: $colorRed;
 $text-color: rgb(72, 70, 73);
 $btn-success-bg: $colorBlue;
 
-$headingFont: "Arvo", sans-serif;
+$headingFont: "FiraSans", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
 $headingPrimaryBackground: $colorDarkGrey;
 $headingSecondaryText: rgb(255, 255, 255);
@@ -31,19 +31,19 @@ $headingSecondaryBackground: $colorLightGrey;
 $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(200, 200, 200);
 
-$menuFont: "Arvo", sans-serif;
+$menuFont: "FiraSans", sans-serif;
 $menuLink: rgb(141, 141, 141);
 $menuActive: rgb(51, 51, 51);
 
 $sidebarBackground: $colorRed;
-$sidebarActionFont: "Arvo", sans-serif;
+$sidebarActionFont: "FiraSans", sans-serif;
 
 $bookmarkAmendmentColor: $colorRed;
 $bookmarkCommentColor: $colorGreen;
 
-$bodyFont: "PT Sans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$deadlineCircleFont: "Arvo", sans-serif;
-$buttonFont: "Arvo", sans-serif;
+$bodyFont: "FiraSans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$deadlineCircleFont: "FiraSans", sans-serif;
+$buttonFont: "FiraSans", sans-serif;
 
 $motionFixedFont: 'Anonymous Pro', Consolas, Courier, sans-serif;
 $motionStdFontSize: 14px;
@@ -57,11 +57,11 @@ $createMotionBtnColor: $colorBlue;
 
 
 .well h1 {
-  font-family: "Arvo Gruen", sans-serif;
+  font-family: "FiraSans", sans-serif;
   font-weight: normal;
 }
 .motionListStd .motion .title a  {
-  font-family: "Arvo", sans-serif;
+  font-family: "FiraSans", sans-serif;
 }
 
 html {
