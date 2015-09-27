@@ -10007,19 +10007,19 @@ html.csstransforms.borderradius #sidebar .createMotionHolder2 {
   overflow: hidden;
   padding: 0 10px 10px; }
 html.csstransforms.borderradius #sidebar .createMotion {
-  background: #1b4afb;
+  background: #dd0b18;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #1b4afb 0%, #2753fb 100%);
+  background: -moz-linear-gradient(top, #dd0b18 0%, #e80c19 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1b4afb), color-stop(100%, #2753fb));
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #dd0b18), color-stop(100%, #e80c19));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #1b4afb 0%, #2753fb 100%);
+  background: -webkit-linear-gradient(top, #dd0b18 0%, #e80c19 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #1b4afb 0%, #2753fb 100%);
+  background: -o-linear-gradient(top, #dd0b18 0%, #e80c19 100%);
   /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #1b4afb 0%, #2753fb 100%);
+  background: -ms-linear-gradient(top, #dd0b18 0%, #e80c19 100%);
   /* IE10+ */
-  background: linear-gradient(to bottom, #1b4afb 0%, #2753fb 100%);
+  background: linear-gradient(to bottom, #dd0b18 0%, #e80c19 100%);
   /* W3C */
   padding: 10px 30px;
   color: white;
@@ -10029,7 +10029,7 @@ html.csstransforms.borderradius #sidebar .createMotion {
   font-size: 14px;
   -webkit-border-radius: 0 0 10px 10px;
   border-radius: 0 0 10px 10px;
-  border: solid 1px #2451fb;
+  border: solid 1px #e60b19;
   text-transform: uppercase;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
