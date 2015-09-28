@@ -1602,7 +1602,7 @@ pre {
   @media (min-width: 992px) {
     .container {
       width: 1024px; } }
-  @media (min-width: 10000) {
+  @media (min-width: 10000px) {
     .container {
       width: 1170px; } }
 
@@ -2100,7 +2100,7 @@ pre {
 
   .col-md-offset-12 {
     margin-left: 100%; } }
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
     float: left; }
 
@@ -3211,6 +3211,36 @@ input[type="reset"].btn-block,
 input[type="button"].btn-block {
   width: 100%; }
 
+.fade {
+  opacity: 0;
+  -webkit-transition: opacity 0.15s linear;
+  -o-transition: opacity 0.15s linear;
+  transition: opacity 0.15s linear; }
+  .fade.in {
+    opacity: 1; }
+
+.collapse {
+  display: none; }
+  .collapse.in {
+    display: block; }
+
+tr.collapse.in {
+  display: table-row; }
+
+tbody.collapse.in {
+  display: table-row-group; }
+
+.collapsing {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: ease;
+  transition-timing-function: ease; }
+
 .input-group {
   position: relative;
   display: table;
@@ -4308,7 +4338,7 @@ button.close {
   .visible-sm-inline-block {
     display: inline-block !important; } }
 
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .visible-md {
     display: block !important; }
 
@@ -4321,19 +4351,19 @@ button.close {
   th.visible-md,
   td.visible-md {
     display: table-cell !important; } }
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .visible-md-block {
     display: block !important; } }
 
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .visible-md-inline {
     display: inline !important; } }
 
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .visible-md-inline-block {
     display: inline-block !important; } }
 
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .visible-lg {
     display: block !important; }
 
@@ -4346,15 +4376,15 @@ button.close {
   th.visible-lg,
   td.visible-lg {
     display: table-cell !important; } }
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .visible-lg-block {
     display: block !important; } }
 
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .visible-lg-inline {
     display: inline !important; } }
 
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .visible-lg-inline-block {
     display: inline-block !important; } }
 
@@ -4364,10 +4394,10 @@ button.close {
 @media (min-width: 768px) and (max-width: 991px) {
   .hidden-sm {
     display: none !important; } }
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .hidden-md {
     display: none !important; } }
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .hidden-lg {
     display: none !important; } }
 .visible-print {
@@ -4590,11 +4620,16 @@ label input, .label input, label textarea, .label textarea {
   margin-bottom: 40px; }
   .logo > a {
     display: inline-block; }
-  .logo .logo_img {
+  .logo .logoImg {
     display: block;
     width: 377px;
     height: 55px;
     background-image: url(../img/logo.png); }
+    @media screen and (max-width: 479px) {
+      .logo .logoImg {
+        width: 300px;
+        height: 44px;
+        background-size: 300px 44px; } }
 
 .breadcrumb {
   background: none;
@@ -6822,7 +6857,7 @@ pre {
   @media (min-width: 992px) {
     .container {
       width: 1024px; } }
-  @media (min-width: 10000) {
+  @media (min-width: 10000px) {
     .container {
       width: 1170px; } }
 
@@ -7320,7 +7355,7 @@ pre {
 
   .col-md-offset-12 {
     margin-left: 100%; } }
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
     float: left; }
 
@@ -8431,6 +8466,36 @@ input[type="reset"].btn-block,
 input[type="button"].btn-block {
   width: 100%; }
 
+.fade {
+  opacity: 0;
+  -webkit-transition: opacity 0.15s linear;
+  -o-transition: opacity 0.15s linear;
+  transition: opacity 0.15s linear; }
+  .fade.in {
+    opacity: 1; }
+
+.collapse {
+  display: none; }
+  .collapse.in {
+    display: block; }
+
+tr.collapse.in {
+  display: table-row; }
+
+tbody.collapse.in {
+  display: table-row-group; }
+
+.collapsing {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: ease;
+  transition-timing-function: ease; }
+
 .input-group {
   position: relative;
   display: table;
@@ -9528,7 +9593,7 @@ button.close {
   .visible-sm-inline-block {
     display: inline-block !important; } }
 
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .visible-md {
     display: block !important; }
 
@@ -9541,19 +9606,19 @@ button.close {
   th.visible-md,
   td.visible-md {
     display: table-cell !important; } }
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .visible-md-block {
     display: block !important; } }
 
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .visible-md-inline {
     display: inline !important; } }
 
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .visible-md-inline-block {
     display: inline-block !important; } }
 
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .visible-lg {
     display: block !important; }
 
@@ -9566,15 +9631,15 @@ button.close {
   th.visible-lg,
   td.visible-lg {
     display: table-cell !important; } }
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .visible-lg-block {
     display: block !important; } }
 
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .visible-lg-inline {
     display: inline !important; } }
 
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .visible-lg-inline-block {
     display: inline-block !important; } }
 
@@ -9584,10 +9649,10 @@ button.close {
 @media (min-width: 768px) and (max-width: 991px) {
   .hidden-sm {
     display: none !important; } }
-@media (min-width: 992px) and (max-width: 9999) {
+@media (min-width: 992px) and (max-width: 9999px) {
   .hidden-md {
     display: none !important; } }
-@media (min-width: 10000) {
+@media (min-width: 10000px) {
   .hidden-lg {
     display: none !important; } }
 .visible-print {
@@ -9810,11 +9875,16 @@ label input, .label input, label textarea, .label textarea {
   margin-bottom: 40px; }
   .logo > a {
     display: inline-block; }
-  .logo .logo_img {
+  .logo .logoImg {
     display: block;
     width: 377px;
     height: 55px;
     background-image: url(../img/logo.png); }
+    @media screen and (max-width: 479px) {
+      .logo .logoImg {
+        width: 300px;
+        height: 44px;
+        background-size: 300px 44px; } }
 
 .breadcrumb {
   background: none;
@@ -9933,6 +10003,15 @@ ins, ul.inserted, blockquote.inserted {
     border-bottom: solid 1px black; }
   .texteditor span.strike {
     text-decoration: line-through; }
+
+#mainmenu .nav > li {
+  display: inline-block; }
+@media screen and (max-width: 767px) {
+  #mainmenu .container {
+    padding-left: 0;
+    padding-right: 0; }
+  #mainmenu .navbar .nav li a {
+    margin-left: 20px; } }
 
 .deadlineCircle {
   float: right;

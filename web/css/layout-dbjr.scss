@@ -13,15 +13,15 @@ $colorGreenDark: rgb(40, 95, 25);
 $colorGreenLight: rgb(175, 203, 8);
 $colorRed: rgb(221,11,24);
 $colorGreen: green;
-$colorLinksLight: rgb(27, 74, 251);
-$colorLinks: $colorBlue;
+$colorLinksLight: $colorRed;
+$colorLinks: $colorRed;
 $linkTextDecoration: none;
 $colorDelLink: $colorRed;
 $colorMagenta: rgb(226, 0, 122);
 $brand-primary: $colorRed;
 $brand-success: $colorRed;
 $text-color: rgb(72, 70, 73);
-$btn-success-bg: $colorBlue;
+$btn-success-bg: $colorRed;
 
 $headingFont: "FiraSans", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);

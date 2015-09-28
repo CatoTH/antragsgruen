@@ -6,19 +6,21 @@ use app\components\UrlHelper;
 
 class Layout
 {
-    public $menu            = [];
-    public $breadcrumbs     = null;
-    public $multimenu       = [];
-    public $preSidebarHtml  = '';
-    public $postSidebarHtml = '';
-    public $menusHtml       = [];
-    public $robotsNoindex   = false;
-    public $extraCss        = [];
-    public $extraJs         = [];
-    public $onloadJs        = [];
-    public $fullWidth       = false;
-    public $fullScreen      = false;
-    public $mainCssFile     = 'layout-classic';
+    public $menu                 = [];
+    public $breadcrumbs          = null;
+    public $multimenu            = [];
+    public $preSidebarHtml       = '';
+    public $postSidebarHtml      = '';
+    public $menusHtml            = [];
+    public $menusHtmlSmall       = [];
+    public $menusSmallAttachment = '';
+    public $robotsNoindex        = false;
+    public $extraCss             = [];
+    public $extraJs              = [];
+    public $onloadJs             = [];
+    public $fullWidth            = false;
+    public $fullScreen           = false;
+    public $mainCssFile          = 'layout-classic';
 
     /** @var \app\models\db\Consultation|null */
     private $consultation;
@@ -144,5 +146,39 @@ class Layout
     {
         $this->addJS('js/bower/shariff/build/shariff.min.js');
         $this->addCSS('js/bower/shariff/build/shariff.complete.css');
+    }
+
+    /**
+     * @param string $htmlId
+     * @return string
+     */
+    public function getMiniMenu($htmlId)
+    {
+        $dropdownHtml = '';
+        foreach ($this->menusHtmlSmall as $menu) {
+            $dropdownHtml .= $menu;
+        }
+        $out = '<nav class="navbar navbar-default visible-sm-block visible-xs-block" id="' . $htmlId . '">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#sidebarSmallContent" aria-expanded="false">
+                <span class="sr-only">Menü</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            ' . $this->menusSmallAttachment . '
+        </div>
+
+        <div class="collapse navbar-collapse" id="sidebarSmallContent">
+            <ul class="nav navbar-nav">
+                ' . $dropdownHtml . '
+            </ul>
+        </div>
+    </div>
+</nav>';
+        return $out;
+
     }
 }

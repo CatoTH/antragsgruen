@@ -29,7 +29,7 @@ $I->see('My Name', 'section.comments .motionComment');
 $I->see('Some Text', 'section.comments .motionComment');
 $I->cantSeeElement('section.comments .motionComment .delLink');
 $I->gotoConsultationHome();
-$I->click('.feedAll');
+$I->click('#sidebar .feedAll');
 $I->seeInPageSource('My Name');
 
 
@@ -37,7 +37,7 @@ $I->seeInPageSource('My Name');
 $I->wantTo('see the comment on the sidebar and the feed');
 $I->gotoConsultationHome();
 $I->see('My Name', '#sidebar .comments');
-$I->click('.feedComments');
+$I->click('#sidebar .feedComments');
 $I->seeInPageSource('My Name');
 
 

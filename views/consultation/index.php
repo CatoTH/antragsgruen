@@ -44,6 +44,8 @@ if ($consultation->eventDateFrom != '' && $consultation->eventDateFrom != '0000-
 }
 echo '</h1>';
 
+echo $layout->getMiniMenu('sidebarSmall');
+
 echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;">';
 
 if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->deadlineMotions != "") {

@@ -1,4 +1,4 @@
-$screen-lg-min: 10000; // deaktivieren
+$screen-lg-min: 10000px; // deaktivieren
 $container-md: 1024px;
 $container-desktop: 1024px;
 
@@ -23,6 +23,7 @@ $icon-font-path: "../fonts/";
 @import "bootstrap-3.3.5-sass/bootstrap/buttons";
 
 // Components
+@import "bootstrap-3.3.5-sass/bootstrap/component-animations";
 @import "bootstrap-3.3.5-sass/bootstrap/input-groups";
 @import "bootstrap-3.3.5-sass/bootstrap/dropdowns";
 @import "bootstrap-3.3.5-sass/bootstrap/navs";
@@ -176,7 +177,6 @@ a {
       text-decoration: none;
     }
   }
-
 }
 
 .btn {
@@ -215,11 +215,16 @@ label {
   > a {
     display: inline-block;
   }
-  .logo_img {
+  .logoImg {
     display: block;
     width: 377px;
     height: 55px;
     background-image: url(../img/logo.png);
+    @media screen and (max-width: 479px) {
+      width: 300px;
+      height: 44px;
+      background-size: 300px 44px;
+    }
   }
 }
 

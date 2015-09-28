@@ -2,6 +2,26 @@
 
 @import "base_layout";
 
+#mainmenu {
+  .nav > li {
+    display: inline-block;
+  }
+  @media screen and (max-width: $screen-xs-max) {
+    .container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .navbar .nav li a {
+      margin-left: 20px;
+    }
+  }
+}
+
+#sidebarSmall {
+  .navbar-toggle {
+  }
+}
+
 .deadlineCircle {
   float: right;
   width: 105px;

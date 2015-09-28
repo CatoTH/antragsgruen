@@ -33,10 +33,10 @@ $I->dontSee('section.comments .motionComment .delLink');
 $I->wantTo('see the comment on the sidebar and the feed');
 $I->gotoConsultationHome();
 $I->see('My Name', '#sidebar .comments');
-$I->click('.feedComments');
+$I->click('#sidebar .feedComments');
 $I->seeInPageSource('My Name');
 $I->gotoConsultationHome();
-$I->click('.feedAll');
+$I->click('#sidebar .feedAll');
 $I->seeInPageSource('My Name');
 
 

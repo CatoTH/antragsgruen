@@ -25,7 +25,7 @@ echo '<div class="' . implode(' ', $rowClasses) . '">
 
 echo $content;
 
-echo '</main><aside class="col-md-3" id="sidebar">';
+echo '</main><aside class="col-md-3 visible-md-block visible-lg-block" id="sidebar">';
 echo $params->preSidebarHtml;
 if (count($params->menusHtml) > 0) {
     echo '<div class="well hidden-xs">';

@@ -14,12 +14,13 @@ $I->fillField('#initiatorOrga', 'KV Test');
 $I->fillField('#initiatorEmail', 'test2@example.org');
 $I->fillField('#initiatorPhone', '01234567');
 
+/*
 $I->dontSeeElement('.initiatorData .initiatorRow');
 $I->executeJS('$(".initiatorData .adderRow a").click();');
 $I->seeElement('.initiatorData .initiatorRow');
 $I->fillField('.initiatorData .initiatorRow .name', 'My Friend');
 $I->fillField('.initiatorData .initiatorRow .organization', 'Her KV');
-
+*/
 
 $I->wantTo('add some suporters using full-text');
 
@@ -42,9 +43,11 @@ $I->seeInField('#initiatorOrga', 'KV Test');
 $I->seeInField('#initiatorEmail', 'test2@example.org');
 $I->seeInField('#initiatorPhone', '01234567');
 
+/*
 $I->seeElement('.initiatorData .initiatorRow');
 $I->seeInField('.initiatorData .initiatorRow .name', 'My Friend');
 $I->seeInField('.initiatorData .initiatorRow .organization', 'Her KV');
+*/
 
 $name1 = $I->executeJS('return $(".supporterRow").eq(0).find("input.name").val()');
 $orga1 = $I->executeJS('return $(".supporterRow").eq(0).find("input.organization").val()');
