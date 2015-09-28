@@ -12,7 +12,8 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . 'defines.php');
 if (ini_get('date.timezone') == '') {
     date_default_timezone_set('Europe/Berlin');
 }
-ini_set("tidy.clean_output", false);
+ini_set('tidy.clean_output', false);
+ini_set('default_charset', 'UTF-8');
 
 if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
     $domp         = trim($params->domainPlain, '/');
