@@ -24,6 +24,8 @@ curl -sS https://getcomposer.org/installer | php
 
 rm -R local dist docker-vagrant
 rm composer.phar composer.json composer.lock codeception.yml phpci.yml .gitignore .travis.yml
+rm web/index-test.php
+mv web/index-production.php web/index.php
 
 cd web/js/bower/intl/locale-data
 find . -type f ! -name "de*" -exec rm {} \;
