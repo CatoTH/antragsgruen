@@ -43,55 +43,71 @@ if ($policy->checkCurrUser(true, true)) {
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
     $title .= Yii::t('motion', 'Änderungsantrag stellen');
     $html .= Html::a($title, $amendCreateUrl) . '</li>';
+    $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '">' .
+        $title . '</a>';
     $sidebarRows++;
 } else {
     $msg = $policy->getPermissionDeniedAmendmentMsg();
     if ($msg != '') {
-        $html .= '<li class="amendmentCreate">';
-        $html .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
-        $html .= Html::encode(Yii::t('motion', 'Änderungsantrag stellen'));
-        $html .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
-        $html .= Html::encode($msg) . '</span></span></li>';
+        $createLi = '<li class="amendmentCreate">';
+        $createLi .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
+        $createLi .= Html::encode(Yii::t('motion', 'Änderungsantrag stellen'));
+        $createLi .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
+        $createLi .= Html::encode($msg) . '</span></span></li>';
+
+        $html .= $createLi;
+        $layout->menusHtmlSmall[] = $createLi;
+
         $sidebarRows++;
     }
 }
 
 if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
-    $html .= '<li class="download">';
+    $pdfLi = '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
         Yii::t('motion', 'PDF-Version');
-    $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
+    $pdfLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
+    $html .= $pdfLi;
+    $layout->menusHtmlSmall[] = $pdfLi;
     $sidebarRows++;
 }
 
 if ($motion->canMergeAmendments() && count($motion->amendments) > 0) {
-    $html .= '<li class="mergeamendments">';
+    $mergeLi = '<li class="mergeamendments">';
     $title = '<span class="icon glyphicon glyphicon-scissors"></span>' .
         Yii::t('motion', 'Änderungsanträge einpflegen');
-    $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
+    $mergeLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
+    $html .= $mergeLi;
+    $layout->menusHtmlSmall[] = $mergeLi;
     $sidebarRows++;
 }
 
 if ($motion->canEdit()) {
-    $html .= '<li class="edit">';
+    $editLi = '<li class="edit">';
     $title = '<span class="icon glyphicon glyphicon-edit"></span>' .
         Yii::t('motion', 'Antrag bearbeiten');
-    $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'edit')) . '</li>';
+    $editLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'edit')) . '</li>';
+    $html .= $editLi;
+    $layout->menusHtmlSmall[] = $editLi;
     $sidebarRows++;
 }
 
 if ($motion->canWithdraw()) {
-    $html .= '<li class="withdraw">';
+    $withdrawLi = '<li class="withdraw">';
     $title = '<span class="icon glyphicon glyphicon-remove"></span>' .
         Yii::t('motion', 'Antrag zurückziehen');
-    $html .= Html::a($title, UrlHelper::createMotionUrl($motion, 'withdraw')) . '</li>';
+    $withdrawLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'withdraw')) . '</li>';
+    $html .= $withdrawLi;
+    $layout->menusHtmlSmall[] = $withdrawLi;
     $sidebarRows++;
 }
 
 if ($adminEdit) {
-    $html .= '<li class="adminEdit">';
+    $adminLi = '<li class="adminEdit">';
     $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . 'Admin: bearbeiten';
-    $html .= Html::a($title, $adminEdit) . '</li>';
+    $adminLi .= Html::a($title, $adminEdit) . '</li>';
+    $html .= $adminLi;
+    $layout->menusHtmlSmall[] = $adminLi;
     $sidebarRows++;
 }
 
@@ -107,6 +123,8 @@ $minimalisticUi = $motion->consultation->getSettings()->minimalisticUI;
 $minHeight      = $sidebarRows * 40 - 60;
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
+
+echo $layout->getMiniMenu('motionSidebarSmall');
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
 

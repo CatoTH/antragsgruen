@@ -161,21 +161,4 @@ if ($admin && count($motion->consultation->tags) > 0) {
     echo '</td></tr>';
 }
 
-echo '</table>
-
-    <div class="visible-xs-block">
-        <div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-            <a href="' . Html::encode(UrlHelper::createMotionUrl($motion, 'pdf')) . '"
-               class="btn" style="color: black;"><span class="glyphicon glyphicon-download-alt"></span> PDF-Version</a>
-        </div>';
-
-$policy = $motion->motionType->getAmendmentPolicy();
-if ($policy->checkCurrUser(true, true)) {
-    echo '<div style="width: 49%; display: inline-block; text-align: center; padding-top: 25px;">
-            <a href="' . Html::encode(UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id])) . '"
-               class="btn btn-danger" style="color: white;">';
-    echo '<span class="icon glyphicon glyphicon-flash"></span>';
-    echo Html::encode(Yii::t('motion', 'Änderungsantrag stellen')) . '</a>
-        </div>';
-}
-echo '</div></div>';
+echo '</table></div>';

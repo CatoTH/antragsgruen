@@ -158,7 +158,7 @@ class Layout
         foreach ($this->menusHtmlSmall as $menu) {
             $dropdownHtml .= $menu;
         }
-        $out = '<nav class="navbar navbar-default visible-sm-block visible-xs-block" id="' . $htmlId . '">
+        $out = '<nav class="navbar navbar-default sidebarSmall visible-sm-block visible-xs-block" id="' . $htmlId . '">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"

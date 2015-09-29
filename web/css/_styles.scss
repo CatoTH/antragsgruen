@@ -17,8 +17,12 @@
   }
 }
 
-#sidebarSmall {
-  .navbar-toggle {
+.sidebarSmall.navbar  {
+  .nav li {
+    padding: 4px;
+  }
+  .nav li a {
+    margin-left: 20px;
   }
 }
 

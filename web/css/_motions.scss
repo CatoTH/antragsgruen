@@ -15,6 +15,12 @@
       position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
       top: 12px;
       right: 12px;
+      @media screen and (max-width: $screen-sm-max) {
+        position: relative;
+        top: 0;
+        right: 0;
+        float: right;
+      }
     }
 
     > .title {
@@ -87,6 +93,12 @@
         position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
         top: 0;
         right: -8px;
+        @media screen and (max-width: $screen-sm-max) {
+          position: relative;
+          top: 0;
+          right: 0;
+          float: right;
+        }
       }
     }
   }

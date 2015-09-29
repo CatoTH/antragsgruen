@@ -4718,6 +4718,12 @@ ins, ul.inserted, blockquote.inserted {
       position: absolute;
       top: 12px;
       right: 12px; }
+      @media screen and (max-width: 991px) {
+        .motionListStd .motion > .date {
+          position: relative;
+          top: 0;
+          right: 0;
+          float: right; } }
     .motionListStd .motion > .title {
       margin-bottom: 3px; }
       .motionListStd .motion > .title .motionIcon {
@@ -4768,6 +4774,12 @@ ins, ul.inserted, blockquote.inserted {
         position: absolute;
         top: 0;
         right: -8px; }
+        @media screen and (max-width: 991px) {
+          .motionListStd ul.amendments > li > .date {
+            position: relative;
+            top: 0;
+            right: 0;
+            float: right; } }
   .motionListStd.layout1 .motion {
     padding: 12px 20px 17px 50px; }
     .motionListStd.layout1 .motion > .date {
@@ -4836,6 +4848,12 @@ ins, ul.inserted, blockquote.inserted {
       position: absolute;
       top: 12px;
       right: 12px; }
+      @media screen and (max-width: 991px) {
+        .motionListAgenda .motion > .date {
+          position: relative;
+          top: 0;
+          right: 0;
+          float: right; } }
     .motionListAgenda .motion > .title {
       margin-bottom: 3px; }
       .motionListAgenda .motion > .title .motionIcon {
@@ -4886,6 +4904,12 @@ ins, ul.inserted, blockquote.inserted {
         position: absolute;
         top: 0;
         right: -8px; }
+        @media screen and (max-width: 991px) {
+          .motionListAgenda ul.amendments > li > .date {
+            position: relative;
+            top: 0;
+            right: 0;
+            float: right; } }
   .motionListAgenda ol {
     list-style-type: none;
     margin: 0 0 0 30px;
@@ -9967,6 +9991,11 @@ ins, ul.inserted, blockquote.inserted {
     padding-right: 0; }
   #mainmenu .navbar .nav li a {
     margin-left: 20px; } }
+
+.sidebarSmall.navbar .nav li {
+  padding: 4px; }
+.sidebarSmall.navbar .nav li a {
+  margin-left: 20px; }
 
 .deadlineCircle {
   float: right;
