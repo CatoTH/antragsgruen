@@ -145,7 +145,7 @@ echo '</header>';
 
 echo '<div class="row logo">
 <a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Startseite" class="homeLinkLogo">';
-if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != "") {
+if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != '') {
     $path     = parse_url($controller->consultation->getSettings()->logoUrl);
     $filename = basename($path['path']);
     $filename = substr($filename, 0, strrpos($filename, '.'));
@@ -155,6 +155,9 @@ if ($controller->consultation && $controller->consultation->getSettings()->logoU
         $filename
     );
     $logoUrl  = $controller->consultation->getSettings()->logoUrl;
+    if (!isset($path['host']) && $logoUrl[0] != '/') {
+        $logoUrl = $resourceBase . $logoUrl;
+    }
     echo '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
 } else {
     echo '<span class="logoImg"></span>';
