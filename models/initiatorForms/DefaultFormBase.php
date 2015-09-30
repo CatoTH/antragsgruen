@@ -60,6 +60,14 @@ abstract class DefaultFormBase extends IInitiatorForm
     /**
      * @return bool
      */
+    public function allowMoreSupporters()
+    {
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
     public function hasFullTextSupporterField()
     {
         return false;
@@ -119,13 +127,13 @@ abstract class DefaultFormBase extends IInitiatorForm
             $errors[] = 'No valid name entered.';
         }
 
-        $emailSet = (isset($initiator['contactEmail']) && trim($initiator['contactEmail']) != '');
+        $emailSet   = (isset($initiator['contactEmail']) && trim($initiator['contactEmail']) != '');
         $checkEmail = ($this->motionType->contactEmail == $required || $emailSet);
         if ($checkEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'No valid e-mail-address given.';
         }
 
-        $phoneSet = (isset($initiator['contactPhone']) && trim($initiator['contactPhone']) != '');
+        $phoneSet   = (isset($initiator['contactPhone']) && trim($initiator['contactPhone']) != '');
         $checkPhone = ($this->motionType->contactPhone == $required || $phoneSet);
         if ($checkPhone && empty($initiator['contactPhone'])) {
             $errors[] = 'No valid phone number given given.';
@@ -145,8 +153,13 @@ abstract class DefaultFormBase extends IInitiatorForm
         if ($this->hasSupporters()) {
             $supporters = $this->parseSupporters(new MotionSupporter());
             $num        = count($supporters);
-            if ($personType != ISupporter::PERSON_ORGANIZATION && $num < $this->getMinNumberOfSupporters()) {
-                $errors[] = 'Not enough supporters.';
+            if ($personType != ISupporter::PERSON_ORGANIZATION) {
+                if ($num < $this->getMinNumberOfSupporters()) {
+                    $errors[] = 'Not enough supporters.';
+                }
+                if (!$this->allowMoreSupporters() && $num > $this->getMinNumberOfSupporters()) {
+                    $errors[] = 'Too many supporters.';
+                }
             }
         }
 
@@ -244,17 +257,18 @@ abstract class DefaultFormBase extends IInitiatorForm
         return $view->render(
             '@app/views/initiatorForms/default_form',
             [
-                'motionType'        => $motionType,
-                'initiator'         => $initiator,
-                'moreInitiators'    => $moreInitiators,
-                'supporters'        => $supporters,
-                'allowOther'        => $screeningPrivilege,
-                'isForOther'        => $isForOther,
-                'hasSupporters'     => $this->hasSupporters(),
-                'minSupporters'     => $this->getMinNumberOfSupporters(),
-                'supporterFulltext' => $this->hasFullTextSupporterField(),
-                'hasOrganizations'  => $this->hasOrganizations(),
-                'adminMode'         => $this->adminMode,
+                'motionType'          => $motionType,
+                'initiator'           => $initiator,
+                'moreInitiators'      => $moreInitiators,
+                'supporters'          => $supporters,
+                'allowOther'          => $screeningPrivilege,
+                'isForOther'          => $isForOther,
+                'hasSupporters'       => $this->hasSupporters(),
+                'minSupporters'       => $this->getMinNumberOfSupporters(),
+                'allowMoreSupporters' => $this->allowMoreSupporters(),
+                'supporterFulltext'   => $this->hasFullTextSupporterField(),
+                'hasOrganizations'    => $this->hasOrganizations(),
+                'adminMode'           => $this->adminMode,
             ],
             $controller
         );
@@ -292,17 +306,18 @@ abstract class DefaultFormBase extends IInitiatorForm
         return $view->render(
             '@app/views/initiatorForms/default_form',
             [
-                'motionType'        => $motionType,
-                'initiator'         => $initiator,
-                'moreInitiators'    => $moreInitiators,
-                'supporters'        => $supporters,
-                'allowOther'        => $screeningPrivilege,
-                'isForOther'        => $isForOther,
-                'hasSupporters'     => $this->hasSupporters(),
-                'minSupporters'     => $this->getMinNumberOfSupporters(),
-                'supporterFulltext' => $this->hasFullTextSupporterField(),
-                'hasOrganizations'  => $this->hasOrganizations(),
-                'adminMode'         => $this->adminMode,
+                'motionType'          => $motionType,
+                'initiator'           => $initiator,
+                'moreInitiators'      => $moreInitiators,
+                'supporters'          => $supporters,
+                'allowOther'          => $screeningPrivilege,
+                'isForOther'          => $isForOther,
+                'hasSupporters'       => $this->hasSupporters(),
+                'minSupporters'       => $this->getMinNumberOfSupporters(),
+                'allowMoreSupporters' => $this->allowMoreSupporters(),
+                'supporterFulltext'   => $this->hasFullTextSupporterField(),
+                'hasOrganizations'    => $this->hasOrganizations(),
+                'adminMode'           => $this->adminMode,
             ],
             $controller
         );

@@ -15,6 +15,7 @@ use yii\helpers\Html;
  * @var bool $isForOther
  * @var bool $hasSupporters
  * @var bool $minSupporters
+ * @var bool $allowMoreSupporters
  * @var bool $supporterFulltext
  * @var bool $hasOrganizations
  * @var bool $adminMode
@@ -244,9 +245,11 @@ if ($hasSupporters) {
         echo $getSupporterRow($supporter, $hasOrganizations);
     }
 
-    echo '<div class="adderRow"><a href="#"><span class="glyphicon glyphicon-plus"></span> ';
-    echo 'UnterstützerIn hinzufügen';
-    echo '</a></div>';
+    if ($allowMoreSupporters) {
+        echo '<div class="adderRow"><a href="#"><span class="glyphicon glyphicon-plus"></span> ';
+        echo 'UnterstützerIn hinzufügen';
+        echo '</a></div>';
+    }
 
     if ($supporterFulltext) {
         $fullTextSyntax = Yii::t('initiator', 'fullTextSyntax');

@@ -18,6 +18,9 @@ class WithSupporters extends DefaultFormBase
     /** @var int */
     protected $minSupporters = 1;
 
+    /** @var bool */
+    protected $allowMoreSupporters = true;
+
     /**
      * @param ConsultationMotionType $motionType
      * @param string $settings
@@ -39,6 +42,9 @@ class WithSupporters extends DefaultFormBase
         if (isset($json['hasOrganizations'])) {
             $this->hasOrganizations = ($json['hasOrganizations'] == true);
         }
+        if (isset($json['allowMoreSupporters'])) {
+            $this->allowMoreSupporters = ($json['allowMoreSupporters'] == true);
+        }
     }
 
     /**
@@ -47,8 +53,9 @@ class WithSupporters extends DefaultFormBase
     public function getSettings()
     {
         return json_encode([
-            'minSupporters'    => $this->minSupporters,
-            'hasOrganizations' => $this->hasOrganizations
+            'minSupporters'       => $this->minSupporters,
+            'hasOrganizations'    => $this->hasOrganizations,
+            'allowMoreSupporters' => $this->allowMoreSupporters,
         ]);
     }
 
@@ -60,7 +67,8 @@ class WithSupporters extends DefaultFormBase
         if (isset($settings['minSupporters']) && $settings['minSupporters'] >= 0) {
             $this->minSupporters = IntVal($settings['minSupporters']);
         }
-        $this->hasOrganizations = (isset($settings['hasOrganizations']));
+        $this->hasOrganizations    = (isset($settings['hasOrganizations']));
+        $this->allowMoreSupporters = (isset($settings['allowMoreSupporters']));
     }
 
     /**
@@ -85,6 +93,14 @@ class WithSupporters extends DefaultFormBase
     public function setMinNumberOfSupporters($num)
     {
         $this->minSupporters = $num;
+    }
+
+    /**
+     * @return bool
+     */
+    public function allowMoreSupporters()
+    {
+        return $this->allowMoreSupporters;
     }
 
 

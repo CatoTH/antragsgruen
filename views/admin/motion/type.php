@@ -203,7 +203,6 @@ echo Html::radioList('type[contactEmail]', $motionType->contactEmail, $options, 
 echo '</div></div>';
 
 
-
 echo '<div class="form-group">';
 echo '<div class="col-md-3 control-label label">' . 'Telefon-Angabe';
 echo '</div><div class="col-md-9 contactDetails contactPhone">';
@@ -216,12 +215,11 @@ echo Html::radioList('type[contactPhone]', $motionType->contactPhone, $options, 
 echo '</div></div>';
 
 
-
 $curForm = $motionType->getMotionInitiatorFormClass();
 
 echo '<div class="form-group" id="typeMinSupportersRow">';
 echo '<label class="col-md-3 control-label" for="typeMinSupporters">';
-echo 'Min. UnterstützerInnen';
+echo 'UnterstützerInnen';
 echo '</label><div class="col-md-2">';
 echo '<input type="number" name="initiator[minSupporters]" class="form-control" id="typeMinSupporters"';
 if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
@@ -230,7 +228,17 @@ if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class))
 }
 echo '></div></div>';
 
-echo '<div class="form-group checkbot" id="typeHasOrgaRow">';
+echo '<div class="form-group checkbox" id="typeAllowMoreSupporters">';
+echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
+      <input type="checkbox" name="initiator[allowMoreSupporters]"';
+if ($curForm->allowMoreSupporters()) {
+    echo ' checked';
+}
+echo '> ' . 'Auch mehr UnterstützerInnen zulassen' . '
+    </label></div>';
+echo '</div>';
+
+echo '<div class="form-group checkbox" id="typeHasOrgaRow">';
 echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
       <input type="checkbox" name="initiator[hasOrganizations]"';
 if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
