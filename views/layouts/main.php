@@ -42,7 +42,7 @@ echo '<!DOCTYPE HTML>
 echo '<title>' . Html::encode($title) . '</title>' . "\n";
 echo Html::csrfMetaTags();
 
-if ($controller->consultation && $controller->consultation->getSettings()->logoUrlFB != "") {
+if ($controller->consultation && $controller->consultation->getSettings()->logoUrlFB != '') {
     echo '<link rel="image_src" href="' . Html::encode($controller->consultation->getSettings()->logoUrlFB) . '">';
 }
 if ($layout->robotsNoindex) {

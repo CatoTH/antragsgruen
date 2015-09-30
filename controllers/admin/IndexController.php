@@ -121,6 +121,10 @@ class IndexController extends AdminBase
                     }
                 }
 
+                $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
+                $this->layoutParams->mainCssFile = $siteSettings->siteLayout;
+                var_dump($this->site->getSettings()->siteLayout);
+
                 $model->flushCacheWithChildren();
                 \yii::$app->session->setFlash('success', 'Gespeichert.');
             } else {
