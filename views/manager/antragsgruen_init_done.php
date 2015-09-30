@@ -22,7 +22,7 @@ $layout->robotsNoindex = true;
 
 echo '<h1>' . 'Antragsgrün installieren' . '</h1>';
 $settingsUrl = UrlHelper::createUrl('manager/siteconfig');
-echo Html::beginForm($settingsUrl, 'post', ['class' => 'antragsgruenInitForm form-horizontal']);
+echo Html::beginForm($settingsUrl, 'get', ['class' => 'antragsgruenInitForm form-horizontal']);
 
 echo '<div class="content">';
 echo $controller->showErrors();

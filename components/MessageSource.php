@@ -27,6 +27,7 @@ class MessageSource extends \yii\i18n\MessageSource
             'pdf'       => 'PDF',
             'backend'   => 'Admin-Backend',
             'initiator' => 'InitiatorInnen',
+            'manager'   => 'Seiten-Konfiguration',
         ];
     }
 

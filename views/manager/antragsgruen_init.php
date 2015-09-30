@@ -14,7 +14,7 @@ use yii\helpers\Html;
 
 
 $controller  = $this->context;
-$this->title = 'Antragsgrün installieren';
+$this->title = \yii::t('manager', 'Antragsgrün installieren');
 
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
@@ -25,7 +25,7 @@ $layout->addJS('js/manager.js');
 $layout->addCSS('css/manager.css');
 $layout->addOnLoadJS('$.SiteManager.antragsgruenInit();');
 
-echo '<h1>' . 'Antragsgrün installieren' . '</h1>';
+echo '<h1>' . \yii::t('manager', 'Antragsgrün installieren') . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
 
 echo '<div class="content">';
@@ -54,7 +54,7 @@ if ($form->isConfigured()) {
         echo '<div class="alert alert-success" role="alert">
         <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
         <span class="sr-only">Success:</span>';
-        echo 'Die Grundkonfiguration ist abgeschlossen.';
+        echo \yii::t('manager', 'Die Grundkonfiguration ist abgeschlossen.');
         echo '</div>';
 
         if (!$form->tablesAreCreated()) {
@@ -73,7 +73,7 @@ if ($form->isConfigured()) {
         if ($installFileDeletable) {
             echo '<div class="saveholder">';
             echo '<button class="btn btn-success" name="finishInit">';
-            echo 'Installationsmodus beenden';
+            echo \yii::t('manager', 'Installationsmodus beenden');
             echo '</button></div>';
         } else {
             echo '<div class="alert alert-info" role="alert">';
@@ -89,7 +89,7 @@ if ($form->isConfigured()) {
     echo '<div class="alert alert-info" role="alert">
         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
         <span class="sr-only">Welcome:</span>
-        ' . 'Willkommen!' . '
+        ' . \yii::t('manager', 'Willkommen!') . '
     </div>';
 }
 
@@ -100,7 +100,7 @@ echo Html::endForm();
 
 echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
 
-echo '<h2 class="green">' . 'Die Seite' . '</h2>';
+echo '<h2 class="green">' . \yii::t('manager', 'Die Seite') . '</h2>';
 echo '<div class="content">';
 
 echo '<div class="form-group">

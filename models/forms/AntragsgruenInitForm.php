@@ -56,6 +56,17 @@ class AntragsgruenInitForm extends Model
                 $this->prettyUrls = $config->prettyUrl;
                 $this->setDatabaseFromParams($config->dbConnection);
                 $this->adminIds = $config->adminUserIds;
+
+                if ($this->verifyDBConnection(false)) {
+                    $site = $this->getDefaultSite();
+                    if ($site) {
+                        $this->siteTitle = $site['title'];
+                    }
+                    $adminUser = $this->getAdminUser();
+                    if ($adminUser) {
+                        $this->adminUser = $adminUser;
+                    }
+                }
             } catch (\Exception $e) {
             }
         } else {
@@ -208,6 +219,17 @@ class AntragsgruenInitForm extends Model
     }
 
     /**
+     * @return null|User
+     */
+    public function getAdminUser()
+    {
+        if (count($this->adminIds) == 0) {
+            return null;
+        }
+        return User::findOne($this->adminIds[0]);
+    }
+
+    /**
      * @return Site
      * @throws \app\models\exceptions\DB
      * @throws \app\models\exceptions\Internal
@@ -236,9 +258,23 @@ class AntragsgruenInitForm extends Model
         $preset->createMotionSections($consultation);
         $preset->createAgenda($consultation);
 
-        echo "Created";
-
         return $site;
+    }
+
+    /**
+     */
+    public function updateSite()
+    {
+        $site             = $this->getDefaultSite();
+        $site->title      = $this->siteTitle;
+        $site->titleShort = $this->siteTitle;
+        $site->save();
+
+        foreach ($site->consultations as $consultation) {
+            $consultation->title      = $this->siteTitle;
+            $consultation->titleShort = $this->siteTitle;
+            $consultation->save();
+        }
     }
 
     /**
@@ -345,6 +381,7 @@ class AntragsgruenInitForm extends Model
         } catch (\Exception $e) {
         }
 
+        echo 'Setting Admin user?';
         if ($this->adminUser && !in_array($this->adminUser->id, $config->adminUserIds)) {
             $config->adminUserIds[] = $this->adminUser->id;
         }

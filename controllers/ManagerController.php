@@ -306,7 +306,11 @@ class ManagerController extends Base
                     $form->createAdminAccount();
                 }
                 if ($form->adminUser) {
-                    $form->createSite();
+                    if ($form->getDefaultSite()) {
+                        $form->updateSite();
+                    } else {
+                        $form->createSite();
+                    }
                 }
                 if ($editable) {
                     $form->saveConfig();

@@ -13,14 +13,14 @@ use yii\helpers\Html;
 
 /** @var \app\controllers\ManagerController $controller */
 $controller  = $this->context;
-$this->title = 'Antragsgrün einrichten';
+$this->title = \yii::t('manager', 'Antragsgrün einrichten');
 $layout      = $controller->layoutParams;
 $layout->loadFuelux();
 $layout->addJS('js/manager.js');
 $layout->addOnLoadJS('$.SiteManager.siteConfig();');
 
 
-echo '<h1>' . 'Antragsgrün einrichten' . '</h1>';
+echo '<h1>' . \yii::t('manager', 'Antragsgrün einrichten') . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'siteConfigForm form-horizontal fuelux']);
 
 
@@ -38,7 +38,7 @@ if (!$editable) {
 }
 
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="baseLanguage">' . 'Sprache' . ':</label>
+    <label class="col-sm-4 control-label" for="baseLanguage">' . \yii::t('manager', 'Sprache') . ':</label>
     <div class="col-sm-8">';
 $languages = \app\components\MessageSource::getBaseLanguages();
 echo HTMLTools::fueluxSelectbox('baseLanguage', $languages, $config->baseLanguage, ['id' => 'baseLanguage']);
@@ -47,69 +47,70 @@ echo '</div>
 
 
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="resourceBase">' . 'Standard-Verzeichnis' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" required name="resourceBase" placeholder="/"
-        value="' . Html::encode($config->resourceBase) . '" class="form-control" id="resourceBase">
-    </div>
+  <label class="col-sm-4 control-label" for="resourceBase">' . \yii::t('manager', 'Standard-Verzeichnis') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" required name="resourceBase" placeholder="/"
+      value="' . Html::encode($config->resourceBase) . '" class="form-control" id="resourceBase">
+  </div>
 </div>';
 
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="tmpDir">' . 'Temporäres Verzeichis' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" required name="tmpDir" placeholder="/tmp/"
-        value="' . Html::encode($config->tmpDir) . '" class="form-control" id="tmpDir">
-    </div>
+  <label class="col-sm-4 control-label" for="tmpDir">' . \yii::t('manager', 'Temporäres Verzeichis') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" required name="tmpDir" placeholder="/tmp/"
+      value="' . Html::encode($config->tmpDir) . '" class="form-control" id="tmpDir">
+  </div>
 </div>';
 
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="xelatexPath">' . 'Ort von xelatex' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="xelatexPath" placeholder="/usr/bin/xelatex"
-        value="' . Html::encode($config->xelatexPath) . '" class="form-control" id="xelatexPath">
-    </div>
+  <label class="col-sm-4 control-label" for="xelatexPath">' . \yii::t('manager', 'Ort von xelatex') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" name="xelatexPath" placeholder="/usr/bin/xelatex"
+      value="' . Html::encode($config->xelatexPath) . '" class="form-control" id="xelatexPath">
+  </div>
 </div>';
 
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="xdvipdfmx">' . 'Ort von xdvipdfmx' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="xdvipdfmx" placeholder="/usr/bin/xdvipdfmx"
-        value="' . Html::encode($config->xdvipdfmx) . '" class="form-control" id="xdvipdfmx">
-    </div>
+  <label class="col-sm-4 control-label" for="xdvipdfmx">' . \yii::t('manager', 'Ort von xdvipdfmx') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" name="xdvipdfmx" placeholder="/usr/bin/xdvipdfmx"
+      value="' . Html::encode($config->xdvipdfmx) . '" class="form-control" id="xdvipdfmx">
+  </div>
 </div>';
 
 echo '</div>';
 
 
-echo '<h2 class="green">' . 'E-Mail-Einstellungen' . '</h2>';
+echo '<h2 class="green">' . \yii::t('manager', 'E-Mail-Einstellungen') . '</h2>';
 
 echo '<div class="content">';
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="mailFromEmail">' . 'E-Mail-Absender - Adresse' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="mailFromEmail" placeholder="antragsgruen@example.org"
-        value="' . Html::encode($config->mailFromEmail) . '" class="form-control" id="mailFromEmail">
-    </div>
+  <label class="col-sm-4 control-label" for="mailFromEmail">' .
+    \yii::t('manager', 'E-Mail-Absender - Adresse') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" name="mailFromEmail" placeholder="antragsgruen@example.org"
+      value="' . Html::encode($config->mailFromEmail) . '" class="form-control" id="mailFromEmail">
+  </div>
 </div>';
 
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="mailFromName">' . 'E-Mail-Absender - Name' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="mailFromName" placeholder="Antragsgrün"
-        value="' . Html::encode($config->mailFromName) . '" class="form-control" id="mailFromName">
-    </div>
+  <label class="col-sm-4 control-label" for="mailFromName">' . \yii::t('manager', 'E-Mail-Absender - Name') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" name="mailFromName" placeholder="Antragsgrün"
+      value="' . Html::encode($config->mailFromName) . '" class="form-control" id="mailFromName">
+  </div>
 </div>';
 
 $currTransport = (isset($config->mailService['transport']) ? $config->mailService['transport'] : '');
 echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="emailTransport">' . 'Versandart' . ':</label>
-    <div class="col-sm-8">';
+  <label class="col-sm-4 control-label" for="emailTransport">' . \yii::t('manager', 'Versandart') . ':</label>
+  <div class="col-sm-8">';
 echo HTMLTools::fueluxSelectbox(
     'mailService[transport]',
     [
-        'sendmail' => 'Sendmail (lokal)',
-        'smtp'     => 'SMTP (externer Mailserver)',
-        'mandrill' => 'Mandrill',
+        'sendmail' => \yii::t('manager', 'Sendmail (lokal)'),
+        'smtp'     => \yii::t('manager', 'SMTP (externer Mailserver)'),
+        'mandrill' => \yii::t('manager', 'Mandrill'),
     ],
     $currTransport,
     ['id' => 'emailTransport']
@@ -119,17 +120,17 @@ echo '</div>
 
 $currApiKey = (isset($config->mailService['apiKey']) ? $config->mailService['apiKey'] : '');
 echo '<div class="form-group emailOption mandrillApiKey">
-    <label class="col-sm-4 control-label" for="mandrillApiKey">' . 'Mandrill\'s API-Key' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="mailService[mandrillApiKey]" placeholder=""
-        value="' . Html::encode($currApiKey) . '" class="form-control" id="mandrillApiKey">
-    </div>
+  <label class="col-sm-4 control-label" for="mandrillApiKey">' . \yii::t('manager', 'Mandrill\'s API-Key') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" name="mailService[mandrillApiKey]" placeholder=""
+      value="' . Html::encode($currApiKey) . '" class="form-control" id="mandrillApiKey">
+  </div>
 </div>';
 
 
 $currHost = (isset($config->mailService['host']) ? $config->mailService['host'] : '');
 echo '<div class="form-group emailOption smtpHost">
-    <label class="col-sm-4 control-label" for="smtpHost">' . 'SMTP Server' . ':</label>
+    <label class="col-sm-4 control-label" for="smtpHost">' . \yii::t('manager', 'SMTP Server') . ':</label>
     <div class="col-sm-8">
         <input type="text" name="mailService[smtpHost]" placeholder="smtp.yourserver.de"
         value="' . Html::encode($currHost) . '" class="form-control" id="smtpHost">
@@ -138,7 +139,7 @@ echo '<div class="form-group emailOption smtpHost">
 
 $currPort = (isset($config->mailService['port']) ? $config->mailService['port'] : 25);
 echo '<div class="form-group emailOption smtpPort">
-    <label class="col-sm-4 control-label" for="smtpPort">' . 'SMTP Port' . ':</label>
+    <label class="col-sm-4 control-label" for="smtpPort">' . \yii::t('manager', 'SMTP Port') . ':</label>
     <div class="col-sm-3">
         <input type="number" name="mailService[smtpPort]" placeholder="25"
         value="' . Html::encode($currPort) . '" class="form-control" id="smtpPort">
@@ -147,12 +148,12 @@ echo '<div class="form-group emailOption smtpPort">
 
 $currAuthType = (isset($config->mailService['authType']) ? $config->mailService['authType'] : '');
 echo '<div class="form-group emailOption smtpAuthType">
-    <label class="col-sm-4 control-label" for="smtpAuthType">' . 'SMTP Login-Typ' . ':</label>
+    <label class="col-sm-4 control-label" for="smtpAuthType">' . \yii::t('manager', 'SMTP Login-Typ') . ':</label>
     <div class="col-sm-8">';
 echo HTMLTools::fueluxSelectbox(
     'mailService[smtpAuthType]',
     [
-        'none'      => 'Kein Login',
+        'none'      => \yii::t('manager', 'Kein Login'),
         'plain'     => 'Plain',
         'login'     => 'LOGIN',
         'crammd5'   => 'Cram-MD5',
@@ -166,20 +167,21 @@ echo '</div>
 
 $currUsername = (isset($config->mailService['username']) ? $config->mailService['username'] : '');
 echo '<div class="form-group emailOption smtpUsername">
-    <label class="col-sm-4 control-label" for="smtpUsername">' . 'SMTP BenutzerInnenname' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="mailService[smtpUsername]" placeholder=""
-        value="' . Html::encode($currUsername) . '" class="form-control" id="smtpUsername">
-    </div>
+  <label class="col-sm-4 control-label" for="smtpUsername">' .
+    \yii::t('manager', 'SMTP BenutzerInnenname') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" name="mailService[smtpUsername]" placeholder=""
+      value="' . Html::encode($currUsername) . '" class="form-control" id="smtpUsername">
+  </div>
 </div>';
 
 $currPassword = (isset($config->mailService['password']) ? $config->mailService['password'] : '');
 echo '<div class="form-group emailOption smtpPassword">
-    <label class="col-sm-4 control-label" for="smtpPassword">' . 'SMTP Passwort' . ':</label>
-    <div class="col-sm-8">
-        <input type="password" name="mailService[smtpPassword]" placeholder=""
-        value="' . Html::encode($currPassword) . '" class="form-control" id="smtpPassword">
-    </div>
+  <label class="col-sm-4 control-label" for="smtpPassword">' . \yii::t('manager', 'SMTP Passwort') . ':</label>
+  <div class="col-sm-8">
+    <input type="password" name="mailService[smtpPassword]" placeholder=""
+      value="' . Html::encode($currPassword) . '" class="form-control" id="smtpPassword">
+  </div>
 </div>';
 
 
@@ -188,7 +190,7 @@ echo '<div class="saveholder">
 if (!$editable) {
     echo 'disabled';
 }
-echo '>Speichern</button>
+echo '>' . \yii::t('manager', 'Speichern') . '</button>
 </div>';
 
 echo '</div>';
