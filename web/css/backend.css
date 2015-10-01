@@ -199,6 +199,9 @@ label.legend {
 .adminTypeForm .contactDetails label {
   font-weight: normal;
   margin-right: 20px; }
+.adminTypeForm .form-group.checkbox {
+  margin-top: -13px;
+  margin-bottom: 13px; }
 
 .motionListSearchForm {
   margin-bottom: 20px;

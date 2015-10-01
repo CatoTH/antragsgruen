@@ -17,20 +17,21 @@ trait MotionTrait
      */
     public function doCreateMotionType(Consultation $consultation)
     {
-        $type                   = new ConsultationMotionType();
-        $type->consultationId   = $consultation->id;
-        $type->titleSingular    = 'Antrag';
-        $type->titlePlural      = 'Anträge';
-        $type->createTitle      = 'Antrag stellen';
-        $type->position         = 0;
-        $type->policyMotions    = IPolicy::POLICY_ALL;
-        $type->policyAmendments = IPolicy::POLICY_ALL;
-        $type->policyComments   = IPolicy::POLICY_ALL;
-        $type->policySupport    = IPolicy::POLICY_NOBODY;
-        $type->contactPhone     = ConsultationMotionType::CONTACT_OPTIONAL;
-        $type->contactEmail     = ConsultationMotionType::CONTACT_REQUIRED;
-        $type->initiatorForm    = IInitiatorForm::ONLY_INITIATOR;
-        $type->texTemplateId    = 1;
+        $type                              = new ConsultationMotionType();
+        $type->consultationId              = $consultation->id;
+        $type->titleSingular               = 'Antrag';
+        $type->titlePlural                 = 'Anträge';
+        $type->createTitle                 = 'Antrag stellen';
+        $type->position                    = 0;
+        $type->policyMotions               = IPolicy::POLICY_ALL;
+        $type->policyAmendments            = IPolicy::POLICY_ALL;
+        $type->policyComments              = IPolicy::POLICY_ALL;
+        $type->policySupport               = IPolicy::POLICY_NOBODY;
+        $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
+        $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
+        $type->initiatorForm               = IInitiatorForm::ONLY_INITIATOR;
+        $type->texTemplateId               = 1;
+        $type->amendmentMultipleParagraphs = 1;
         $type->save();
 
         return $type;

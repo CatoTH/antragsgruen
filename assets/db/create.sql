@@ -185,26 +185,27 @@ CREATE TABLE IF NOT EXISTS `consultationLog` (
 --
 
 CREATE TABLE IF NOT EXISTS `consultationMotionType` (
-  `id`                    INT(11)      NOT NULL,
-  `consultationId`        INT(11)      NOT NULL,
-  `titleSingular`         VARCHAR(100) NOT NULL,
-  `titlePlural`           VARCHAR(100) NOT NULL,
-  `createTitle`           VARCHAR(200) NOT NULL,
-  `motionPrefix`          VARCHAR(10)           DEFAULT NULL,
-  `position`              INT(11)      NOT NULL,
-  `cssIcon`               VARCHAR(100)          DEFAULT NULL,
-  `pdfLayout`             INT(11)      NOT NULL DEFAULT '0',
-  `texTemplateId`         INT(11)               DEFAULT NULL,
-  `deadlineMotions`       TIMESTAMP    NULL     DEFAULT NULL,
-  `deadlineAmendments`    TIMESTAMP    NULL     DEFAULT NULL,
-  `policyMotions`         INT(11)      NOT NULL,
-  `policyAmendments`      INT(11)      NOT NULL,
-  `policyComments`        INT(11)      NOT NULL,
-  `policySupport`         INT(11)      NOT NULL,
-  `contactEmail`          TINYINT(4)   NOT NULL,
-  `contactPhone`          TINYINT(4)   NOT NULL,
-  `initiatorForm`         INT(11)      NOT NULL,
-  `initiatorFormSettings` TEXT
+  `id`                          INT(11)      NOT NULL,
+  `consultationId`              INT(11)      NOT NULL,
+  `titleSingular`               VARCHAR(100) NOT NULL,
+  `titlePlural`                 VARCHAR(100) NOT NULL,
+  `createTitle`                 VARCHAR(200) NOT NULL,
+  `motionPrefix`                VARCHAR(10)           DEFAULT NULL,
+  `position`                    INT(11)      NOT NULL,
+  `cssIcon`                     VARCHAR(100)          DEFAULT NULL,
+  `pdfLayout`                   INT(11)      NOT NULL DEFAULT '0',
+  `texTemplateId`               INT(11)               DEFAULT NULL,
+  `deadlineMotions`             TIMESTAMP    NULL     DEFAULT NULL,
+  `deadlineAmendments`          TIMESTAMP    NULL     DEFAULT NULL,
+  `policyMotions`               INT(11)      NOT NULL,
+  `policyAmendments`            INT(11)      NOT NULL,
+  `policyComments`              INT(11)      NOT NULL,
+  `policySupport`               INT(11)      NOT NULL,
+  `contactEmail`                TINYINT(4)   NOT NULL,
+  `contactPhone`                TINYINT(4)   NOT NULL,
+  `initiatorForm`               INT(11)      NOT NULL,
+  `initiatorFormSettings`       TEXT,
+  `amendmentMultipleParagraphs` TINYINT(1)   NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

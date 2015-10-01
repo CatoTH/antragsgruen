@@ -29,6 +29,7 @@ use yii\db\ActiveRecord;
  * @property int $contactPhone
  * @property int $initiatorForm
  * @property string $initiatorFormSettings
+ * @property int $amendmentMultipleParagraphs
  *
  * @property Consultation $consultation
  * @property ConsultationSettingsMotionSection[] $motionSections
@@ -202,9 +203,10 @@ class ConsultationMotionType extends ActiveRecord
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
-            [['contactEmail', 'contactPhone'], 'required'],
+            [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs'], 'required'],
 
             [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout'], 'number'],
+            [['amendmentMultipleParagraphs'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
             [['motionPrefix', 'position', 'initiatorForm', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],

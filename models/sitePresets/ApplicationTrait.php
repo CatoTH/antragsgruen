@@ -17,18 +17,19 @@ trait ApplicationTrait
      */
     public function doCreateApplicationType(Consultation $consultation)
     {
-        $type                   = new ConsultationMotionType();
-        $type->consultationId   = $consultation->id;
-        $type->titleSingular    = 'Bewerbung';
-        $type->titlePlural      = 'Bewerbungen';
-        $type->createTitle      = 'Bewerben';
-        $type->position         = 0;
-        $type->policyMotions    = IPolicy::POLICY_ALL;
-        $type->policyAmendments = IPolicy::POLICY_NOBODY;
-        $type->policyComments   = IPolicy::POLICY_NOBODY;
-        $type->policySupport    = IPolicy::POLICY_NOBODY;
-        $type->contactPhone     = ConsultationMotionType::CONTACT_OPTIONAL;
-        $type->contactEmail     = ConsultationMotionType::CONTACT_REQUIRED;
+        $type                              = new ConsultationMotionType();
+        $type->consultationId              = $consultation->id;
+        $type->titleSingular               = 'Bewerbung';
+        $type->titlePlural                 = 'Bewerbungen';
+        $type->createTitle                 = 'Bewerben';
+        $type->position                    = 0;
+        $type->policyMotions               = IPolicy::POLICY_ALL;
+        $type->policyAmendments            = IPolicy::POLICY_NOBODY;
+        $type->policyComments              = IPolicy::POLICY_NOBODY;
+        $type->policySupport               = IPolicy::POLICY_NOBODY;
+        $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
+        $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
+        $type->amendmentMultipleParagraphs = 0;
         $type->save();
 
         return $type;

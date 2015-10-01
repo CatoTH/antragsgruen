@@ -82,25 +82,26 @@ class BDK implements ISitePreset
      */
     public function doCreateMotionType(Consultation $consultation)
     {
-        $type                        = new ConsultationMotionType();
-        $type->consultationId        = $consultation->id;
-        $type->titleSingular         = 'Antrag';
-        $type->titlePlural           = 'Anträge';
-        $type->createTitle           = 'Antrag stellen';
-        $type->position              = 0;
-        $type->pdfLayout             = 1;
-        $type->texTemplateId         = 1;
-        $type->policyMotions         = IPolicy::POLICY_LOGGED_IN;
-        $type->policyAmendments      = IPolicy::POLICY_LOGGED_IN;
-        $type->policyComments        = IPolicy::POLICY_LOGGED_IN;
-        $type->policySupport         = IPolicy::POLICY_NOBODY;
-        $type->contactPhone          = ConsultationMotionType::CONTACT_OPTIONAL;
-        $type->contactEmail          = ConsultationMotionType::CONTACT_REQUIRED;
-        $type->initiatorForm         = IInitiatorForm::WITH_SUPPORTER;
-        $type->initiatorFormSettings = json_encode([
+        $type                              = new ConsultationMotionType();
+        $type->consultationId              = $consultation->id;
+        $type->titleSingular               = 'Antrag';
+        $type->titlePlural                 = 'Anträge';
+        $type->createTitle                 = 'Antrag stellen';
+        $type->position                    = 0;
+        $type->pdfLayout                   = 1;
+        $type->texTemplateId               = 1;
+        $type->policyMotions               = IPolicy::POLICY_LOGGED_IN;
+        $type->policyAmendments            = IPolicy::POLICY_LOGGED_IN;
+        $type->policyComments              = IPolicy::POLICY_LOGGED_IN;
+        $type->policySupport               = IPolicy::POLICY_NOBODY;
+        $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
+        $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
+        $type->initiatorForm               = IInitiatorForm::WITH_SUPPORTER;
+        $type->initiatorFormSettings       = json_encode([
             'minSupporters'               => 19,
             'supportersHaveOrganizations' => true,
         ]);
+        $type->amendmentMultipleParagraphs = 1;
         $type->save();
 
         return $type;

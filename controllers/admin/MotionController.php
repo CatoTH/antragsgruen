@@ -77,10 +77,12 @@ class MotionController extends AdminBase
     {
         $motionType = $this->consultation->getMotionType($motionTypeId);
         if (isset($_POST['save'])) {
-            $motionType->setAttributes($_POST['type']);
-            $motionType->deadlineMotions    = Tools::dateBootstraptime2sql($_POST['type']['deadlineMotions']);
-            $motionType->deadlineAmendments = Tools::dateBootstraptime2sql($_POST['type']['deadlineAmendments']);
-            $form                           = $motionType->getMotionInitiatorFormClass();
+            $input = $_POST['type'];
+            $motionType->setAttributes($input);
+            $motionType->deadlineMotions             = Tools::dateBootstraptime2sql($input['deadlineMotions']);
+            $motionType->deadlineAmendments          = Tools::dateBootstraptime2sql($input['deadlineAmendments']);
+            $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
+            $form                                    = $motionType->getMotionInitiatorFormClass();
             $form->setSettings($_POST['initiator']);
             $motionType->initiatorFormSettings = $form->getSettings();
             $motionType->save();

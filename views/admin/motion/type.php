@@ -118,6 +118,16 @@ echo Html::dropDownList(
 );
 echo '</div></div>';
 
+echo '<div class="form-group checkbox" id="typeAmendSinglePara">';
+echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
+      <input type="checkbox" name="type[amendSinglePara]"';
+if (!$motionType->amendmentMultipleParagraphs) {
+    echo ' checked';
+}
+echo '> ' . 'Änderungsanträge dürfen sich nur auf einen Absatz beziehen' . '
+    </label></div>';
+echo '</div>';
+
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typePolicyComments">';
 echo 'Kommentieren';
