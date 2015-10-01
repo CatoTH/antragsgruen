@@ -226,6 +226,14 @@ label {
       background-size: 300px 44px;
     }
   }
+    @media screen and (max-width: $screen-xs) {
+      .homeLinkLogo > img {
+        max-width: 90%;
+      }
+      .homeLinkLogo {
+        text-align: center;
+      }
+    }
 }
 
 .breadcrumb {

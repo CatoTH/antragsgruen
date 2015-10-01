@@ -4585,6 +4585,9 @@ label input, .label input, label textarea, .label textarea {
         width: 300px;
         height: 44px;
         background-size: 300px 44px; } }
+  @media screen and (max-width: 480px) {
+    .logo .homeLinkLogo > img {
+      max-width: 90%; } }
 
 .breadcrumb {
   background: none;
@@ -9864,6 +9867,9 @@ label input, .label input, label textarea, .label textarea {
         width: 300px;
         height: 44px;
         background-size: 300px 44px; } }
+  @media screen and (max-width: 480px) {
+    .logo .homeLinkLogo > img {
+      max-width: 90%; } }
 
 .breadcrumb {
   background: none;
