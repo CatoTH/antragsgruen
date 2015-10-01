@@ -476,4 +476,23 @@ class Consultation extends ActiveRecord
             }
         }
     }
+
+    /**
+     * @param string $prefix
+     * @param null|Motion $ignore
+     * @return null|Motion
+     */
+    public function findMotionWithPrefix($prefix, $ignore = null)
+    {
+        $prefixNorm = trim(mb_strtoupper($prefix));
+        foreach ($this->motions as $mot) {
+            $motPrefixNorm = trim(mb_strtoupper($mot->titlePrefix));
+            if ($motPrefixNorm != '' && $motPrefixNorm === $prefixNorm && $mot->status != Motion::STATUS_DELETED) {
+                if ($ignore === null || $ignore->id != $mot->id) {
+                    return $mot;
+                }
+            }
+        }
+        return null;
+    }
 }

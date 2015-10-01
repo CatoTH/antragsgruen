@@ -125,15 +125,7 @@ class MotionController extends AdminBase
         $form->setAdminMode(true);
 
         if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
-            $found = false;
-            foreach ($this->consultation->motions as $mot) {
-                if ($mot->titlePrefix == $_POST['titlePrefix']) {
-                    if ($mot->status != Motion::STATUS_DELETED && $mot->id != $motion->id) {
-                        $found = true;
-                    }
-                }
-            }
-            if ($found) {
+            if ($this->consultation->findMotionWithPrefix($_POST['titlePrefix'])) {
                 \yii::$app->session->setFlash('error', 'Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
@@ -173,15 +165,7 @@ class MotionController extends AdminBase
                 $motion->dateResolution = Tools::dateBootstraptime2sql($modat['dateResolution']);
             }
 
-            $foundPrefix = false;
-            foreach ($this->consultation->motions as $mot) {
-                if ($mot->titlePrefix != '' && $mot->id != $motion->id &&
-                    $mot->titlePrefix == $modat['titlePrefix'] && $mot->status != Motion::STATUS_DELETED
-                ) {
-                    $foundPrefix = true;
-                }
-            }
-            if ($foundPrefix) {
+            if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
                 $msg = 'Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.';
                 \yii::$app->session->setFlash('error', $msg);
             } else {

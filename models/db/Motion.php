@@ -677,4 +677,15 @@ class Motion extends IMotion implements IRSSItem
 
         return $return;
     }
+
+    /**
+     * @param string $prefix
+     * @param null|Amendment $ignore
+     * @return null|Amendment
+     */
+    public function findAmendmentWithPrefix($prefix, $ignore = null)
+    {
+        $numbering = $this->consultation->getAmendmentNumbering();
+        return $numbering->findAmendmentWithPrefix($this, $prefix, $ignore);
+    }
 }

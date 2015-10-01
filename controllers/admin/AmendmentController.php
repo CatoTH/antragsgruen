@@ -62,17 +62,7 @@ class AmendmentController extends AdminBase
         $form->setAdminMode(true);
 
         if (isset($_POST['screen']) && $amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
-            $found = false;
-            foreach ($this->consultation->motions as $motion) {
-                foreach ($motion->amendments as $amend) {
-                    if ($amend->titlePrefix == $_POST['titlePrefix']) {
-                        if ($amend->status != Amendment::STATUS_DELETED && $amend->id != $amendment->id) {
-                            $found = true;
-                        }
-                    }
-                }
-            }
-            if ($found) {
+            if ($amendment->motion->findAmendmentWithPrefix($_POST['titlePrefix'])) {
                 $msg = 'Inzwischen gibt es einen anderen Änderungsantrag mit diesem Kürzel.';
                 \yii::$app->session->setFlash('error', $msg);
             } else {
@@ -115,15 +105,7 @@ class AmendmentController extends AdminBase
                 $amendment->dateResolution = Tools::dateBootstraptime2sql($amdat['dateResolution']);
             }
 
-            $foundPrefix = false;
-            foreach ($amendment->motion->amendments as $amend) {
-                if ($amend->titlePrefix != '' && $amend->id != $amendment->id &&
-                    $amend->titlePrefix == $amdat['titlePrefix'] && $amend->status != Amendment::STATUS_DELETED
-                ) {
-                    $foundPrefix = true;
-                }
-            }
-            if ($foundPrefix) {
+            if ($amendment->motion->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
                 $msg = 'Das angegebene Antragskürzel wird bereits von einem anderen Änderungsantrag verwendet.';
                 \yii::$app->session->setFlash('error', $msg);
             } else {

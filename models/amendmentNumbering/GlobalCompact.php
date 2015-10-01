@@ -41,4 +41,31 @@ class GlobalCompact extends IAmendmentNumbering
         $maxRev = static::getMaxTitlePrefixNumber($prefixes);
         return 'Ä' . ($maxRev + 1);
     }
+
+    /**
+     * @param Motion $motion
+     * @param string $prefix
+     * @param null|Amendment $ignore
+     * @return Amendment|null
+     */
+    public function findAmendmentWithPrefix(Motion $motion, $prefix, $ignore = null)
+    {
+        $prefixNorm = trim(mb_strtoupper($prefix));
+        foreach ($motion->consultation->motions as $mot) {
+            if ($mot->status == Motion::STATUS_DELETED) {
+                continue;
+            }
+            foreach ($mot->amendments as $amend) {
+                $amendPrefixNorm = trim(mb_strtoupper($amend->titlePrefix));
+                if ($amendPrefixNorm != '' && $amendPrefixNorm === $prefixNorm
+                    && $amend->status != Amendment::STATUS_DELETED
+                ) {
+                    if ($ignore === null || $ignore->id != $amend->id) {
+                        return $amend;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

@@ -50,15 +50,16 @@ abstract class IAmendmentNumbering
 
     /**
      * @param string[] $prefixes
+     * @return int
      */
     public static function getMaxTitlePrefixNumber($prefixes)
     {
-        $maxRev = 0;
+        $maxRev    = 0;
         $splitStrs = ['neu'];
 
         foreach ($prefixes as $prefix) {
             foreach ($splitStrs as $split) {
-                $spl = explode($split, $prefix);
+                $spl    = explode($split, $prefix);
                 $prefix = $spl[0];
             }
             $number = preg_replace('/^(.*[^0-9])?([0-9]+)([^0-9]*)$/siu', '$2', $prefix);
@@ -75,4 +76,26 @@ abstract class IAmendmentNumbering
      * @return string
      */
     abstract public function getAmendmentNumber(Amendment $amendment, Motion $motion);
+
+    /**
+     * @param Motion $motion
+     * @param string $prefix
+     * @param null|Amendment $ignore
+     * @return Amendment|null
+     */
+    public function findAmendmentWithPrefix(Motion $motion, $prefix, $ignore = null)
+    {
+        $prefixNorm = trim(mb_strtoupper($prefix));
+        foreach ($motion->amendments as $amend) {
+            $amendPrefixNorm = trim(mb_strtoupper($amend->titlePrefix));
+            if ($amendPrefixNorm != '' && $amendPrefixNorm === $prefixNorm
+                && $amend->status != Amendment::STATUS_DELETED
+            ) {
+                if ($ignore === null || $ignore->id != $amend->id) {
+                    return $amend;
+                }
+            }
+        }
+        return null;
+    }
 }
