@@ -24,6 +24,9 @@ abstract class DefaultFormBase extends IInitiatorForm
     /** @var bool */
     protected $hasOrganizations = false;
 
+    /** @var bool */
+    protected $allowMoreSupporters = true;
+
     /**
      * @param ConsultationMotionType $motionType
      */
@@ -62,7 +65,7 @@ abstract class DefaultFormBase extends IInitiatorForm
      */
     public function allowMoreSupporters()
     {
-        return false;
+        return $this->allowMoreSupporters;
     }
 
     /**

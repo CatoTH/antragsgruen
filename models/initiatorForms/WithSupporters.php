@@ -18,9 +18,6 @@ class WithSupporters extends DefaultFormBase
     /** @var int */
     protected $minSupporters = 1;
 
-    /** @var bool */
-    protected $allowMoreSupporters = true;
-
     /**
      * @param ConsultationMotionType $motionType
      * @param string $settings

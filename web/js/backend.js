@@ -168,8 +168,10 @@
             var hasSupporters = $(this).find("option:selected").data("has-supporters");
             if (hasSupporters) {
                 $('#typeMinSupportersRow').removeClass("hidden");
+                $('#typeAllowMoreSupporters').removeClass("hidden");
             } else {
                 $('#typeMinSupportersRow').addClass("hidden");
+                $('#typeAllowMoreSupporters').addClass("hidden");
             }
         }).change();
     };

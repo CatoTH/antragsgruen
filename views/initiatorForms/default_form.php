@@ -196,7 +196,7 @@ echo '</div>';
 
 
 if ($hasSupporters) {
-    $getSupporterRow = function (ISupporter $supporter, $hasOrganizations) {
+    $getSupporterRow = function (ISupporter $supporter, $hasOrganizations, $allowMoreSupporters) {
         $str = '<div class="form-group supporterRow">';
         $str .= '<div class="col-md-6">';
         $str .= Html::textInput(
@@ -214,9 +214,11 @@ if ($hasSupporters) {
             );
             $str .= '</div>';
         }
-        $str .= '<div class="col-md-1"><a href="#" class="rowDeleter" tabindex="-1">';
-        $str .= '<span class="glyphicon glyphicon-minus-sign"></span>';
-        $str .= '</a></div>';
+        if ($allowMoreSupporters) {
+            $str .= '<div class="col-md-1"><a href="#" class="rowDeleter" tabindex="-1">';
+            $str .= '<span class="glyphicon glyphicon-minus-sign"></span>';
+            $str .= '</a></div>';
+        }
 
         $str .= '</div>';
         return $str;
@@ -231,10 +233,14 @@ if ($hasSupporters) {
     echo 'data-min-supporters="' . Html::encode($minSupporters) . '">';
 
     echo '<div class="form-group"><div class="col-md-3">';
-    if ($minSupporters > 1) {
-        echo str_replace('%min%', $minSupporters, Yii::t('initiator', 'minSupportersX'));
-    } elseif ($minSupporters == 1) {
-        echo str_replace('%min%', $minSupporters, Yii::t('initiator', 'minSupporters1'));
+    if ($allowMoreSupporters) {
+        if ($minSupporters > 1) {
+            echo str_replace('%min%', $minSupporters, Yii::t('initiator', 'minSupportersX'));
+        } elseif ($minSupporters == 1) {
+            echo str_replace('%min%', $minSupporters, Yii::t('initiator', 'minSupporters1'));
+        } else {
+            echo Yii::t('initiator', 'supporters');
+        }
     } else {
         echo Yii::t('initiator', 'supporters');
     }
@@ -242,7 +248,7 @@ if ($hasSupporters) {
 
     echo '<div class="col-md-9">';
     foreach ($supporters as $supporter) {
-        echo $getSupporterRow($supporter, $hasOrganizations);
+        echo $getSupporterRow($supporter, $hasOrganizations, $allowMoreSupporters);
     }
 
     if ($allowMoreSupporters) {
@@ -268,7 +274,7 @@ if ($hasSupporters) {
     echo '</div>';
 
     $new    = new \app\models\db\MotionSupporter();
-    $newStr = $getSupporterRow($new, $hasOrganizations);
+    $newStr = $getSupporterRow($new, $hasOrganizations, $allowMoreSupporters);
     echo '<div id="newSupporterTemplate" style="display: none;" data-html="' . Html::encode($newStr) . '"></div>';
 
     echo '</div>';
