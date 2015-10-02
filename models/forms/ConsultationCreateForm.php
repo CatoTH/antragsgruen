@@ -61,7 +61,7 @@ class ConsultationCreateForm extends Model
         $consultation->adminEmail         = $this->template->adminEmail;
         $consultation->settings           = $this->template->settings;
         if (!$consultation->save()) {
-            throw new FormError($consultation->getErrors());
+            throw new FormError(implode(', ', $consultation->getErrors()));
         }
 
         foreach ($this->template->motionTypes as $motionType) {
@@ -70,7 +70,7 @@ class ConsultationCreateForm extends Model
             $newType->consultationId = $consultation->id;
             $newType->id = null;
             if (!$newType->save()) {
-                throw new FormError($consultation->getErrors());
+                throw new FormError($newType->getErrors());
             }
         }
 
@@ -80,7 +80,7 @@ class ConsultationCreateForm extends Model
             $newText->consultationId = $consultation->id;
             $newText->id = null;
             if (!$newText->save()) {
-                throw new FormError($consultation->getErrors());
+                throw new FormError(implode(', ', $newText->getErrors()));
             }
         }
 
@@ -90,7 +90,7 @@ class ConsultationCreateForm extends Model
             $newTag->consultationId = $consultation->id;
             $newTag->id = null;
             if (!$newTag->save()) {
-                throw new FormError($consultation->getErrors());
+                throw new FormError(implode(', ', $newTag->getErrors()));
             }
         }
 
@@ -99,7 +99,7 @@ class ConsultationCreateForm extends Model
             $newPriv->setAttributes($priv->getAttributes(), false);
             $newPriv->consultationId = $consultation->id;
             if (!$newPriv->save()) {
-                throw new FormError($consultation->getErrors());
+                throw new FormError(implode(', ', $newPriv->getErrors()));
             }
         }
 

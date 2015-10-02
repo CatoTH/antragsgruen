@@ -17,6 +17,11 @@ class FormError extends ExceptionBase
         } else {
             $this->messages = [$messages];
         }
+        foreach ($this->messages as $i => $mess) {
+            if (is_array($mess)) {
+                $this->messages[$i] = implode("\n", $mess);
+            }
+        }
         parent::__construct(implode("\n", $this->messages));
     }
 
