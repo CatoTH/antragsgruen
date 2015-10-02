@@ -39,4 +39,15 @@ Line Break</p>',
         $out = HTMLTools::sectionSimpleHTML($orig);
         $this->assertEquals($expect, $out);
     }
+
+
+    public function testLinkAttributeEncoding()
+    {
+        $orig = '<a href="http://www.example.org?datum=20150724&amp;ausgabe=an-d">Test</a>';
+        $expect = ['<a href="http://www.example.org?datum=20150724&amp;ausgabe=an-d">Test</a>'];
+
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
+    }
 }

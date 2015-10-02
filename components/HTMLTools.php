@@ -154,12 +154,14 @@ class HTMLTools
                         if ($child->nodeName == 'a') {
                             $href = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
                             if ($child->hasAttribute('class')) {
-                                $newPre = '<a href="' . $href . '" class="' . $child->getAttribute('class') . '">';
+                                $newPre = '<a href="' . Html::encode($href) . '" ' .
+                                    'class="' . Html::encode($child->getAttribute('class')) . '">';
                             } else {
-                                $newPre = '<a href="' . $href . '">';
+                                $newPre = '<a href="' . Html::encode($href) . '">';
                             }
                         } elseif ($child->nodeName == 'span' && $child->hasAttribute('class')) {
-                            $newPre = '<' . $child->nodeName . ' class="' . $child->getAttribute('class') . '">';
+                            $newPre = '<' . $child->nodeName . ' ' .
+                                'class="' . Html::encode($child->getAttribute('class')) . '">';
                         } else {
                             $newPre = '<' . $child->nodeName . '>';
                         }
