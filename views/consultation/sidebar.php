@@ -290,8 +290,7 @@ if ($consultation->site->getSettings()->showAntragsgruenAd) {
         <div class="content">
             Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
             <div>
-                <a href="' . Html::encode(UrlHelper::createUrl('manager/index')) . '" ' .
-        'title="Das Antragstool selbst einsetzen" class="btn btn-primary">
+                <a href="https://antragsgruen.de/" title="Das Antragstool selbst einsetzen" class="btn btn-primary">
                 <span class="glyphicon glyphicon-chevron-right"></span> Infos
                 </a>
             </div>
