@@ -81,6 +81,7 @@ class MotionSortTest extends TestBase
 
         $this->assertEquals(['1', '2'], MotionSorter::stripCommonBeginning('1.1', '1.2'));
         $this->assertEquals(['1', '3'], MotionSorter::stripCommonBeginning('1.2.1', '1.2.3'));
+        $this->assertEquals(['1neu', '1neu2'], MotionSorter::stripCommonBeginning('1.1neu', '1.1neu2'));
     }
 
     /**

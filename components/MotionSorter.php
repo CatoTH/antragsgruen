@@ -53,9 +53,13 @@ class MotionSorter
         }
         if (is_numeric($str1[0]) && is_numeric($str2[0])) {
             if (IntVal($str1) == IntVal($str2) && $str1 != $str2) {
-                $str1 = preg_replace('/^[0-9]+[\.\- ]+/', '', $str1);
-                $str2 = preg_replace('/^[0-9]+[\.\- ]+/', '', $str2);
-                return static::stripCommonBeginning($str1, $str2);
+                $str1s = preg_replace('/^[0-9]+[\.\- ]+/', '', $str1);
+                $str2s = preg_replace('/^[0-9]+[\.\- ]+/', '', $str2);
+                if ($str1s == $str1 || $str2s == $str2) {
+                    return [$str1, $str2];
+                } else {
+                    return static::stripCommonBeginning($str1s, $str2s);
+                }
             } else {
                 return [$str1, $str2];
             }
