@@ -67,6 +67,9 @@ if ($longVersion) {
 $otherMotions = [];
 foreach ($consultation->getVisibleMotions() as $motion) {
     if (!in_array($motion->id, $shownMotions)) {
+        if (count($motion->replacedByMotions) > 0) {
+            continue;
+        }
         $otherMotions[] = $motion;
     }
 }

@@ -88,6 +88,9 @@ class ConsultationAgendaItem extends ActiveRecord
             if ($motion->agendaItemId === null || $motion->agendaItemId != $this->id) {
                 continue;
             }
+            if (count($motion->replacedByMotions) > 0) {
+                continue;
+            }
             $return[] = $motion;
         }
         return $return;

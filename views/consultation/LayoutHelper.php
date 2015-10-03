@@ -42,7 +42,7 @@ class LayoutHelper
         }
         echo ' ';
         $linkOpts = ['class' => 'motionTitle motionLink' . $motion->id];
-        $title = ($motion->title == '' ? '-' : $motion->title);
+        $title    = ($motion->title == '' ? '-' : $motion->title);
         echo Html::a($title, UrlHelper::createMotionUrl($motion), $linkOpts);
 
         if ($motion->status == Motion::STATUS_WITHDRAWN) {
@@ -121,7 +121,7 @@ class LayoutHelper
 
         $shownMotions = [];
         if ($showMotions) {
-            $motions      = $agendaItem->getMotionsFromConsultation();
+            $motions = $agendaItem->getMotionsFromConsultation();
             if (count($motions) > 0) {
                 echo '<ul class="motions">';
                 foreach ($motions as $motion) {
@@ -133,8 +133,9 @@ class LayoutHelper
         }
         echo '</div>';
 
-        $children     = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-        $shownMotions = array_merge($shownMotions, static::showAgendaList($children, $consultation, $admin, false, $showMotions));
+        $children               = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
+        $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false, $showMotions);
+        $shownMotions           = array_merge($shownMotions, $agendaListShownMotions);
 
         echo '</li>';
         return $shownMotions;
@@ -154,7 +155,7 @@ class LayoutHelper
         echo '<ol class="agenda ' . ($isRoot ? 'motionListAgenda' : 'agendaSub') . '">';
         $shownMotions = [];
         foreach ($items as $item) {
-            $newShown = static::showAgendaItem($item, $consultation, $admin, $showMotions);
+            $newShown     = static::showAgendaItem($item, $consultation, $admin, $showMotions);
             $shownMotions = array_merge($shownMotions, $newShown);
         }
         echo '</ol>';
