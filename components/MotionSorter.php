@@ -36,8 +36,6 @@ class MotionSorter
             }
         }
 
-        echo "$str1 $str2 / $num1 $num2 -> $return \n";
-
         return $return;
     }
 
