@@ -66,6 +66,9 @@ class MotionSection extends IMotionSection
     {
         $sections = [];
         foreach ($this->motion->amendments as $amend) {
+            if (in_array($amend->status, $this->motion->consultation->getInvisibleAmendmentStati())) {
+                continue;
+            }
             foreach ($amend->sections as $section) {
                 if ($section->sectionId == $this->sectionId) {
                     $sections[] = $section;
