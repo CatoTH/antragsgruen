@@ -20,20 +20,49 @@ class MotionSorter
     {
         if ($str1 == $str2) {
             if ($num1 < $num2) {
-                return -1;
+                $return = -1;
+            } elseif ($num1 > $num2) {
+                $return = 1;
+            } else {
+                $return = 0;
             }
-            if ($num1 > $num2) {
-                return 1;
-            }
-            return 0;
         } else {
             if ($str1 < $str2) {
-                return -1;
+                $return = -1;
+            } elseif ($str1 > $str2) {
+                $return = 1;
+            } else {
+                $return = 0;
             }
-            if ($str1 > $str2) {
-                return 1;
+        }
+
+        echo "$str1 $str2 / $num1 $num2 -> $return \n";
+
+        return $return;
+    }
+
+    /**
+     * @param string $str1
+     * @param string $str2
+     * @return string[]
+     */
+    public static function stripCommonBeginning($str1, $str2)
+    {
+        if ($str1 == '' || $str2 == '') {
+            return [$str1, $str2];
+        }
+        if (is_numeric($str1[0]) && is_numeric($str2[0])) {
+            if (IntVal($str1) == IntVal($str2) && $str1 != $str2) {
+                $str1 = preg_replace('/^[0-9]+[\.\- ]+/', '', $str1);
+                $str2 = preg_replace('/^[0-9]+[\.\- ]+/', '', $str2);
+                return static::stripCommonBeginning($str1, $str2);
+            } else {
+                return [$str1, $str2];
             }
-            return 0;
+        } elseif (!is_numeric($str1[0]) && !is_numeric($str2[0]) && $str1[0] == $str2[0]) {
+            return static::stripCommonBeginning(mb_substr($str1, 1), mb_substr($str2, 1));
+        } else {
+            return [$str1, $str2];
         }
     }
 
@@ -57,6 +86,7 @@ class MotionSorter
 
         $prefix1 = preg_replace('/neu$/siu', 'neu1', $prefix1);
         $prefix2 = preg_replace('/neu$/siu', 'neu1', $prefix2);
+        list($prefix1, $prefix2) = static::stripCommonBeginning($prefix1, $prefix2);
 
         $pat1 = '/^(?<str1>[^0-9]*)(?<num1>[0-9]*)/siu';
         $pat2 = '/^(?<str1>[^0-9]*)(?<num1>[0-9]+)(?<str2>[^0-9]+)(?<num2>[0-9]+)$/siu';
@@ -88,6 +118,16 @@ class MotionSorter
             $num2 = (isset($mat2['num1']) ? $mat2['num1'] : '');
             return static::getSortedMotionsSortCmp($str1, $str2, $num1, $num2);
         }
+    }
+
+    /**
+     * @param string[] $prefixes
+     * @return string[]
+     */
+    public static function getSortedMotionsSortTest($prefixes)
+    {
+        usort($prefixes, [static::class, 'getSortedMotionsSort']);
+        return $prefixes;
     }
 
 
