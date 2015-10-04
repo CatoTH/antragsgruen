@@ -70,8 +70,10 @@ class AmendmentEditForm extends Model
             } else {
                 if (isset($motionSections[$sectionType->id])) {
                     $data = $motionSections[$sectionType->id]->data;
+                    $origSection = $motionSections[$sectionType->id];
                 } else {
                     $data = '';
+                    $origSection = null;
                 }
                 $section            = new AmendmentSection();
                 $section->sectionId = $sectionType->id;
@@ -79,6 +81,7 @@ class AmendmentEditForm extends Model
                 $section->dataRaw   = $data;
                 $section->cache     = '';
                 $section->refresh();
+                $section->setOriginalMotionSection($origSection);
                 $this->sections[] = $section;
             }
         }

@@ -25,6 +25,9 @@ class AmendmentSection extends IMotionSection
 {
     use CacheTrait;
 
+    /** @var null|MotionSection */
+    private $_originalMotionSection = null;
+
     /**
      * @return string
      */
@@ -78,12 +81,22 @@ class AmendmentSection extends IMotionSection
      */
     public function getOriginalMotionSection()
     {
-        foreach ($this->amendment->motion->sections as $section) {
-            if ($section->sectionId == $this->sectionId) {
-                return $section;
+        if ($this->_originalMotionSection === null) {
+            foreach ($this->amendment->motion->sections as $section) {
+                if ($section->sectionId == $this->sectionId) {
+                    $this->_originalMotionSection = $section;
+                }
             }
         }
-        return null;
+        return $this->_originalMotionSection;
+    }
+
+    /**
+     * @param MotionSection $motionSection
+     */
+    public function setOriginalMotionSection(MotionSection $motionSection)
+    {
+        $this->_originalMotionSection = $motionSection;
     }
 
     /**

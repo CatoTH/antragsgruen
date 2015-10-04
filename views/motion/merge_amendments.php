@@ -78,7 +78,7 @@ foreach ($motion->getSortedSections(false) as $section) {
             'title="' . Html::encode($type->title) . '"></textarea>';
         echo '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
             'title="' . Html::encode($type->title) . '"></textarea>';
-        echo '<div class="texteditor" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
+        echo '<div class="texteditor boxed" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
             'title="' . Html::encode($type->title) . '">';
 
         if (isset($newSections[$section->sectionId])) {

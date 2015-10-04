@@ -92,7 +92,7 @@ echo '<h2 class="green">Neuer Antragstext</h2>
         <label for="sections_editorial">' . 'Redaktionelle Änderung' . '</label>
         <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
         Html::encode($form->editorial) . '</textarea>
-        <div class="texteditor" id="amendmentEditorial_wysiwyg">';
+        <div class="texteditor boxed" id="amendmentEditorial_wysiwyg">';
 echo $form->editorial;
 echo '</div>
 </section>
@@ -118,7 +118,7 @@ echo '<label for="amendmentReason">' . Yii::t('amend', 'Begründung') . '</label
 
 echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';
 echo Html::encode($form->reason) . '</textarea>';
-echo '<div class="texteditor" id="amendmentReason_wysiwyg">';
+echo '<div class="texteditor boxed" id="amendmentReason_wysiwyg">';
 echo $form->reason;
 echo '</div>';
 echo '</div>';

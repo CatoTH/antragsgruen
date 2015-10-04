@@ -66,7 +66,8 @@ abstract class ISectionType
         $str .= '<textarea name="sections[' . $type->id . ']"  id="sections_' . $type->id . '" ' .
             'title="' . Html::encode($type->title) . '">';
         $str .= Html::encode($this->section->data) . '</textarea>';
-        $str .= '<div class="texteditor" id="' . $htmlId . '_wysiwyg" ' . 'title="' . Html::encode($type->title) . '">';
+        $str .= '<div class="texteditor boxed" id="' . $htmlId . '_wysiwyg" ' .
+            'title="' . Html::encode($type->title) . '">';
         $str .= $this->section->data;
         $str .= '</div>';
 
@@ -85,6 +86,7 @@ abstract class ISectionType
      * @param bool $fullHtml
      * @param string $data
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function getTextAmendmentFormField($fullHtml, $data)
     {
@@ -101,8 +103,8 @@ abstract class ISectionType
             'title="' . Html::encode($type->title) . '"></textarea>';
         $str .= '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
             'title="' . Html::encode($type->title) . '"></textarea>';
-        $str .= '<div class="texteditor" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
-            'title="' . Html::encode($type->title) . '">';
+        $str .= '<div class="motionTextFormatted texteditor boxed" data-track-changed="1" ' .
+            'id="' . $htmlId . '_wysiwyg" title="' . Html::encode($type->title) . '">';
         $str .= $this->section->dataRaw;
         $str .= '</div>';
 

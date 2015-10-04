@@ -4661,7 +4661,7 @@ ins, ul.inserted, blockquote.inserted {
   color: #008800;
   text-decoration: underline; }
 
-.texteditor {
+.texteditorBox, .texteditor.boxed {
   min-height: 100px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -4670,44 +4670,45 @@ ins, ul.inserted, blockquote.inserted {
   -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s; }
-  .texteditor > * {
-    font-family: "Anonymous Pro", Consolas, Courier, sans-serif;
-    position: relative;
-    margin-left: 0;
-    padding: 15px 10px 15px 50px;
-    font-size: 14px;
-    color: black;
-    text-rendering: optimizeLegibility;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    padding-left: 10px;
-    margin-bottom: 5px; }
-    .texteditor > * span.underline {
-      border-bottom: solid 1px black; }
-    .texteditor > * span.strike {
-      text-decoration: line-through; }
-    .texteditor > * .amendmentRef {
-      font-size: 0.8em;
-      opacity: 0.7; }
-  .texteditor > span:first-child {
-    padding: 0; }
-  .texteditor .appendHint:after {
-    content: attr(data-append-hint);
-    display: inline-block;
-    font-size: 0.75em;
-    bottom: -3px;
-    position: relative; }
-  .texteditor > ul, .texteditor ol {
-    padding-left: 50px; }
-  .texteditor > blockquote {
-    font-size: 14px;
-    padding-left: 15px;
-    border-left-width: 2px;
-    margin-left: 48px; }
-  .texteditor span.underline {
+
+.texteditor > * {
+  font-family: "Anonymous Pro", Consolas, Courier, sans-serif;
+  position: relative;
+  margin-left: 0;
+  padding: 15px 10px 15px 50px;
+  font-size: 14px;
+  color: black;
+  text-rendering: optimizeLegibility;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 10px;
+  margin-bottom: 5px; }
+  .texteditor > * span.underline {
     border-bottom: solid 1px black; }
-  .texteditor span.strike {
+  .texteditor > * span.strike {
     text-decoration: line-through; }
+  .texteditor > * .amendmentRef {
+    font-size: 0.8em;
+    opacity: 0.7; }
+.texteditor > span:first-child {
+  padding: 0; }
+.texteditor .appendHint:after {
+  content: attr(data-append-hint);
+  display: inline-block;
+  font-size: 0.75em;
+  bottom: -3px;
+  position: relative; }
+.texteditor > ul, .texteditor ol {
+  padding-left: 50px; }
+.texteditor > blockquote {
+  font-size: 14px;
+  padding-left: 15px;
+  border-left-width: 2px;
+  margin-left: 48px; }
+.texteditor span.underline {
+  border-bottom: solid 1px black; }
+.texteditor span.strike {
+  text-decoration: line-through; }
 
 .motionListStd {
   list-style-type: none;
@@ -9945,7 +9946,7 @@ ins, ul.inserted, blockquote.inserted {
   color: #008800;
   text-decoration: underline; }
 
-.texteditor {
+.texteditorBox, .texteditor.boxed {
   min-height: 100px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -9954,44 +9955,45 @@ ins, ul.inserted, blockquote.inserted {
   -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s; }
-  .texteditor > * {
-    font-family: "Anonymous Pro", Consolas, Courier, sans-serif;
-    position: relative;
-    margin-left: 0;
-    padding: 15px 10px 15px 50px;
-    font-size: 14px;
-    color: black;
-    text-rendering: optimizeLegibility;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    padding-left: 10px;
-    margin-bottom: 5px; }
-    .texteditor > * span.underline {
-      border-bottom: solid 1px black; }
-    .texteditor > * span.strike {
-      text-decoration: line-through; }
-    .texteditor > * .amendmentRef {
-      font-size: 0.8em;
-      opacity: 0.7; }
-  .texteditor > span:first-child {
-    padding: 0; }
-  .texteditor .appendHint:after {
-    content: attr(data-append-hint);
-    display: inline-block;
-    font-size: 0.75em;
-    bottom: -3px;
-    position: relative; }
-  .texteditor > ul, .texteditor ol {
-    padding-left: 50px; }
-  .texteditor > blockquote {
-    font-size: 14px;
-    padding-left: 15px;
-    border-left-width: 2px;
-    margin-left: 48px; }
-  .texteditor span.underline {
+
+.texteditor > * {
+  font-family: "Anonymous Pro", Consolas, Courier, sans-serif;
+  position: relative;
+  margin-left: 0;
+  padding: 15px 10px 15px 50px;
+  font-size: 14px;
+  color: black;
+  text-rendering: optimizeLegibility;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 10px;
+  margin-bottom: 5px; }
+  .texteditor > * span.underline {
     border-bottom: solid 1px black; }
-  .texteditor span.strike {
+  .texteditor > * span.strike {
     text-decoration: line-through; }
+  .texteditor > * .amendmentRef {
+    font-size: 0.8em;
+    opacity: 0.7; }
+.texteditor > span:first-child {
+  padding: 0; }
+.texteditor .appendHint:after {
+  content: attr(data-append-hint);
+  display: inline-block;
+  font-size: 0.75em;
+  bottom: -3px;
+  position: relative; }
+.texteditor > ul, .texteditor ol {
+  padding-left: 50px; }
+.texteditor > blockquote {
+  font-size: 14px;
+  padding-left: 15px;
+  border-left-width: 2px;
+  margin-left: 48px; }
+.texteditor span.underline {
+  border-bottom: solid 1px black; }
+.texteditor span.strike {
+  text-decoration: line-through; }
 
 #mainmenu .nav > li {
   display: inline-block; }

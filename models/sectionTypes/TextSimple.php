@@ -38,7 +38,55 @@ class TextSimple extends ISectionType
     public function getAmendmentFormField()
     {
         $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
-        return $this->getTextAmendmentFormField(false, $this->section->dataRaw);
+        if ($this->section->consultationSetting->motionType->amendmentMultipleParagraphs) {
+            return $this->getTextAmendmentFormField(false, $this->section->dataRaw);
+        } else {
+            return $this->getTextAmendmentFormFieldSingleParagraph();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTextAmendmentFormFieldSingleParagraph()
+    {
+        /** @var AmendmentSection $amSection */
+        $amSection = $this->section;
+        $moSection = $amSection->getOriginalMotionSection();
+        $moParas = HTMLTools::sectionSimpleHTML($moSection->data, false);
+
+        if ($amSection->isNewRecord) {
+            $amParas = $moParas;
+        } else {
+            $amParas = $amSection->diffToOrigParagraphs($moParas);
+        }
+
+        $type = $this->section->consultationSetting;
+        $str  = '<div class="label">' . Html::encode($type->title) . '</div>';
+        $str .= '<div class="texteditorBox">';
+        foreach ($moParas as $paraNo => $moPara) {
+            $nameBase = 'sections[' . $type->id . '][' . $paraNo . ']';
+            $htmlId   = 'sections_' . $type->id . '_' . $paraNo;
+            $holderId = 'section_holder_' . $type->id . '_' . $paraNo;
+
+            $str .= '<div class="form-group wysiwyg-textarea single-paragraph" id="' . $holderId . '"';
+            $str .= ' data-maxLen="' . $type->maxLen . '" data-fullHtml="0"';
+            $str .= '><label for="' . $htmlId . '" class="hidden">' . Html::encode($type->title) . '</label>';
+
+            $str .= '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
+                'title="' . Html::encode($type->title) . '"></textarea>';
+            $str .= '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
+                'title="' . Html::encode($type->title) . '"></textarea>';
+            $str .= '<div class="texteditor" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
+                'title="' . Html::encode($type->title) . '">';
+            $str .= $moPara;
+            $str .= '</div>';
+
+            $str .= '</div>';
+        }
+        $str .= '</div>';
+
+        return $str;
     }
 
     /**
@@ -104,7 +152,7 @@ class TextSimple extends ISectionType
 
         $hasLineNumbers = $section->consultationSetting->lineNumbers;
         if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {
-            $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers);
+            $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
             foreach ($paragraphs as $paragraph) {
                 $linesArr = [];
                 foreach ($paragraph->lines as $line) {
@@ -342,7 +390,7 @@ class TextSimple extends ISectionType
             $title = Exporter::encodePlainString($section->consultationSetting->title);
             if ($title == \Yii::t('motion', 'Antragstext')) {
                 $titPattern = 'Änderungsantrag zu #MOTION#';
-                $title = str_replace('#MOTION#', $section->amendment->motion->titlePrefix, $titPattern);
+                $title      = str_replace('#MOTION#', $section->amendment->motion->titlePrefix, $titPattern);
             }
 
             $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";

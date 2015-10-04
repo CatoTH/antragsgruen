@@ -130,12 +130,16 @@ class HTMLTools
      * @param \DOMElement $element
      * @param string $pre
      * @param string $post
+     * @param bool $splitListsItems
      * @return \string[]
      * @throws Internal
      */
-    private static function sectionSimpleHTMLInt(\DOMElement $element, $pre, $post)
+    private static function sectionSimpleHTMLInt(\DOMElement $element, $splitListsItems, $pre, $post)
     {
         $inlineElements = ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b', 'sub', 'sup'];
+        if (!$splitListsItems) {
+            $inlineElements[] = 'li';
+        }
         $return         = [];
         $children       = $element->childNodes;
         $pendingInline  = null;
@@ -166,7 +170,7 @@ class HTMLTools
                             $newPre = '<' . $child->nodeName . '>';
                         }
                         $newPost = '</' . $child->nodeName . '>';
-                        $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
+                        $newArrs = static::sectionSimpleHTMLInt($child, $splitListsItems, $newPre, $newPost);
                         if ($pendingInline === null) {
                             $pendingInline = '';
                         }
@@ -181,18 +185,18 @@ class HTMLTools
                         if ($child->nodeName == 'ol') {
                             $newPre  = $pre . '<' . $child->nodeName . ' start="#LINO#">';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
+                            $newArrs = static::sectionSimpleHTMLInt($child, $splitListsItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } elseif ($child->nodeName == 'li') {
                             $lino++;
                             $newPre  = str_replace('#LINO#', $lino, $pre) . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
+                            $newArrs = static::sectionSimpleHTMLInt($child, $splitListsItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } elseif (in_array($child->nodeName, ['p', 'ul', 'blockquote'])) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $newPre, $newPost);
+                            $newArrs = static::sectionSimpleHTMLInt($child, $splitListsItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } else {
                             throw new Internal('Unknown Tag: ' . $child->nodeName);
@@ -247,9 +251,11 @@ class HTMLTools
 
     /**
      * @param string $html
-     * @return string[]
+     * @param bool $sectionSimpleHTMLInt
+     * @return \string[]
+     * @throws Internal
      */
-    public static function sectionSimpleHTML($html)
+    public static function sectionSimpleHTML($html, $sectionSimpleHTMLInt = true)
     {
         $src_doc = new \DOMDocument();
         $src_doc->loadHTML(
@@ -261,7 +267,7 @@ class HTMLTools
         $body   = $bodies->item(0);
 
         /** @var \DOMElement $body */
-        return static::sectionSimpleHTMLInt($body, '', '');
+        return static::sectionSimpleHTMLInt($body, $sectionSimpleHTMLInt, '', '');
     }
 
 

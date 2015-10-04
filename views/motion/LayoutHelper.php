@@ -52,7 +52,7 @@ class LayoutHelper
                 if ($supp->contactPhone != '') {
                     $name .= 'Telefon: ' . Html::encode($supp->contactPhone);
                 }
-                $name .= "</small>";
+                $name .= '</small>';
             }
             $inits[] = $name;
         }
