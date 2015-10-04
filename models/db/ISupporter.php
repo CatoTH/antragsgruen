@@ -90,12 +90,12 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
             }
-            if ($orga && $this->resolutionDate > 0) {
+            if ($orga != '' && $this->resolutionDate > 0) {
                 $name .= ' <small style="font-weight: normal;">';
                 $name .= '(' . Html::encode($orga) . ', ';
                 $name .= 'beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate);
                 $name .= ')</small>';
-            } elseif ($this->organization != '') {
+            } elseif ($orga != '') {
                 $name .= ' <small style="font-weight: normal;">';
                 $name .= '(' . Html::encode($orga) . ')';
                 $name .= '</small>';
@@ -113,7 +113,7 @@ abstract class ISupporter extends ActiveRecord
             if ($orga != '' && $this->resolutionDate > 0) {
                 $name .= ' (' . Html::encode($orga) . ', ';
                 $name .= 'beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
-            } elseif ($this->organization != '') {
+            } elseif ($orga != '') {
                 $name .= ' (' . Html::encode($orga) . ')';
             } elseif ($this->resolutionDate > 0) {
                 $name .= ' (Beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
