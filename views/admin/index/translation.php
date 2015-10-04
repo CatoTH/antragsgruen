@@ -5,6 +5,7 @@
  * @var Consultation $consultation
  * @var string $category
  */
+use app\components\HTMLTools;
 use app\components\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
@@ -96,15 +97,8 @@ foreach ($strings as $stringKey => $stringOrig) {
     echo nl2br(Html::encode($stringOrig));
     echo '</label><div class="col-sm-6">';
 
-    if (mb_strpos($stringOrig, "\n") !== false) {
-        echo '<textarea name="string[' . $encKey . ']" class="form-control" ';
-        echo 'placeholder="' . Html::encode($stringOrig) . '" rows="5">';
-        echo Html::encode($value);
-        echo '</textarea>';
-    } else {
-        echo '<input type="text" name="string[' . $encKey . ']" value="' . Html::encode($value) . '"
-        class="form-control" placeholder="' . Html::encode($stringOrig) . '">';
-    }
+    $options = ['class' => 'form-control', 'placeholder' => $stringOrig];
+    echo HTMLTools::smallTextarea('string[' . $encKey . ']', $options, $value);
     echo '</div></div>';
 }
 

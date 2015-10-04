@@ -390,4 +390,21 @@ class HTMLTools
 </div>';
         return $str;
     }
+
+    /**
+     * @param string $formName
+     * @param array $options
+     * @param string $value
+     * @return string
+     */
+    public static function smallTextarea($formName, $options, $value = '')
+    {
+        $rows = count(explode("\n", $value));
+        $str = '<textarea name="' . Html::encode($formName) . '" rows="' . $rows . '"';
+        foreach ($options as $key => $val) {
+            $str .= ' ' . $key . '="' . Html::encode($val) . '"';
+        }
+        $str .= '>' . $value . '</textarea>';
+        return $str;
+    }
 }

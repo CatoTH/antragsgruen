@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationMotionType;
@@ -67,8 +68,9 @@ echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typeCreateTitle">';
 echo 'Aufruf zum Anlegen';
 echo '</label><div class="col-md-9">';
+
 $options = ['class' => 'form-control', 'id' => 'typeCreateTitle', 'placeholder' => 'Antrag anlegen'];
-echo Html::textInput('type[createTitle]', $motionType->createTitle, $options);
+echo HTMLTools::smallTextarea('type[createTitle]', $options, $motionType->createTitle);
 echo '</div></div>';
 
 echo '<div class="form-group">';
