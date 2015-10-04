@@ -105,14 +105,15 @@ abstract class ISupporter extends ActiveRecord
             }
         } else {
             $name = $this->name;
+            $orga = trim($this->organization, " \t\n\r\0\x0B()");
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
             }
-            if ($this->organization != '' && $this->resolutionDate > 0) {
-                $name .= ' (' . trim(Html::encode($this->organization, " \t\n\r\0\x0B()")) . ', ';
+            if ($orga != '' && $this->resolutionDate > 0) {
+                $name .= ' (' . Html::encode($orga) . ', ';
                 $name .= 'beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
             } elseif ($this->organization != '') {
-                $name .= ' (' . trim(Html::encode($this->organization, " \t\n\r\0\x0B()")) . ')';
+                $name .= ' (' . Html::encode($orga) . ')';
             } elseif ($this->resolutionDate > 0) {
                 $name .= ' (Beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
             }
