@@ -81,7 +81,9 @@ class AmendmentEditForm extends Model
                 $section->dataRaw   = $data;
                 $section->cache     = '';
                 $section->refresh();
-                $section->setOriginalMotionSection($origSection);
+                if ($origSection) {
+                    $section->setOriginalMotionSection($origSection);
+                }
                 $this->sections[] = $section;
             }
         }
