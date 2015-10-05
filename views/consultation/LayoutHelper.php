@@ -41,13 +41,15 @@ class LayoutHelper
             echo Html::a($motion->titlePrefix, UrlHelper::createMotionUrl($motion), $linkOpts);
         }
         echo ' ';
-        $linkOpts = ['class' => 'motionTitle motionLink' . $motion->id];
-        $title    = ($motion->title == '' ? '-' : $motion->title);
-        echo Html::a($title, UrlHelper::createMotionUrl($motion), $linkOpts);
 
+        $title    = ($motion->title == '' ? '-' : $motion->title);
+        echo '<a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" ' .
+            'class="motionTitle motionLink' . $motion->id . '">' . Html::encode($title);
         if ($motion->status == Motion::STATUS_WITHDRAWN) {
             echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
         }
+        echo '</a>';
+
         if ($hasPDF) {
             $html = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
             echo Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);

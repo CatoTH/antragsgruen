@@ -62,11 +62,13 @@
     }
 
     &.withdrawn {
-      > .title {
+      .motionTitle, .motionPrefix {
         text-decoration: line-through;
-        .status {
-          text-decoration: none;
-        }
+      }
+      .status {
+        text-decoration: none;
+        font-size: 13px;
+        color: $text-color;
       }
     }
   }
