@@ -44,33 +44,43 @@ class LayoutHelper
 
         $title    = ($motion->title == '' ? '-' : $motion->title);
         echo '<a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" ' .
-            'class="motionTitle motionLink' . $motion->id . '">' . Html::encode($title);
-        if ($motion->status == Motion::STATUS_WITHDRAWN) {
-            echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
-        }
-        echo '</a>';
+            'class="motionTitle motionLink' . $motion->id . '">' . Html::encode($title) . '</a>';
 
         if ($hasPDF) {
             $html = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
             echo Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
         }
         echo "</p>\n";
-        echo '<p class="info">' . Html::encode($motion->getInitiatorsStr()) . '</p>';
+        echo '<p class="info">';
+        echo Html::encode($motion->getInitiatorsStr());
+        if ($motion->status == Motion::STATUS_WITHDRAWN) {
+            echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
+        }
+        echo '</p>';
 
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
         if (count($amendments) > 0) {
             echo '<h4 class="amendments">' . 'Änderungsanträge' . '</h4>';
             echo '<ul class="amendments">';
             foreach ($amendments as $amend) {
-                $classes = ['amendmentRow' . $amend->id];
+                $classes = ['amendmentRow' . $amend->id, 'amendment'];
                 if ($amend->status == Amendment::STATUS_WITHDRAWN) {
                     $classes[] = 'withdrawn';
                 }
                 echo '<li class="' . implode(' ', $classes) . '">';
                 echo '<span class="date">' . Tools::formatMysqlDate($amend->dateCreation) . '</span>' . "\n";
-                $name = (trim($amend->titlePrefix) == '' ? 'Änderungsantrag' : $amend->titlePrefix);
-                echo Html::a($name, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
-                echo '<span class="info">' . Html::encode($amend->getInitiatorsStr()) . '</span>' . "\n";
+
+                $title = (trim($amend->titlePrefix) == '' ? 'Änderungsantrag' : $amend->titlePrefix);
+                echo '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amend)) . '" ' .
+                    'class="amendmentTitle amendment' . $motion->id . '">' . Html::encode($title) . '</a>';
+
+                echo '<span class="info">';
+                echo Html::encode($amend->getInitiatorsStr());
+                if ($amend->status == Motion::STATUS_WITHDRAWN) {
+                    echo ' <span class="status">(' . Html::encode($amend->getStati()[$amend->status]) . ')</span>';
+                }
+                echo '</span>' . "\n";
+
                 echo '</li>' . "\n";
             }
             echo '</ul>';

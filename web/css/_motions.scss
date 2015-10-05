@@ -60,16 +60,16 @@
         }
       }
     }
+  }
 
-    &.withdrawn {
-      .motionTitle, .motionPrefix {
-        text-decoration: line-through;
-      }
-      .status {
-        text-decoration: none;
-        font-size: 13px;
-        color: $text-color;
-      }
+  .motion.withdrawn {
+    .motionTitle, .motionPrefix {
+      text-decoration: line-through;
+    }
+  }
+  .amendment.withdrawn {
+    .amendmentTitle {
+      text-decoration: line-through;
     }
   }
 
@@ -81,9 +81,6 @@
     > li {
       margin-bottom: 3px;
       position: relative;
-      &.withdrawn {
-        text-decoration: line-through;
-      }
       > a {
         font-weight: bold;
         margin-right: 5px;
@@ -103,6 +100,10 @@
         }
       }
     }
+  }
+  .status {
+    font-style: italic;
+    color: $text-color;
   }
 }
 
