@@ -320,6 +320,24 @@ ul.sidebarActions {
       float: right;
     }
   }
+  .single-paragraph {
+    .modifiedActions {
+      text-align: right;
+      display: none;
+    }
+    &.modified {
+      background-color: #eee;
+      .modifiedActions {
+        display: block;
+      }
+    }
+    &.modifyable {
+      cursor: pointer;
+      &:hover {
+        background-color: #f4f4f4;
+      }
+    }
+  }
 }
 
 .supporterFormStd {

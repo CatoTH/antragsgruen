@@ -98,8 +98,8 @@
         var editor = CKEDITOR.inline(id, ckeditorConfig);
 
         var $fieldset = $el.parents(".wysiwyg-textarea").first();
-        if ($fieldset.data("maxlen") != 0) {
-            var maxLen = $fieldset.data("maxlen"),
+        if ($fieldset.data("max-len") != 0) {
+            var maxLen = $fieldset.data("max-len"),
                 maxLenSoft = false,
                 $warning = $fieldset.find('.maxLenTooLong'),
                 $submit = $el.parents("form").first().find("button[type=submit]"),
@@ -314,8 +314,8 @@
         $(".form-group.plain-text").each(function () {
             var $fieldset = $(this),
                 $input = $fieldset.find("input.form-control");
-            if ($fieldset.data("maxlen") != 0) {
-                var maxLen = $fieldset.data("maxlen"),
+            if ($fieldset.data("max-len") != 0) {
+                var maxLen = $fieldset.data("max-len"),
                     maxLenSoft = false,
                     $warning = $fieldset.find('.maxLenTooLong'),
                     $submit = $fieldset.parents("form").first().find("button[type=submit]"),
@@ -372,7 +372,99 @@
         draftSavingEngine("motionmerge_" + origMotionId + "_" + newMotionId);
     };
 
-    var amendmentEditForm = function () {
+    var amendmentEditFormMultiPara = function () {
+        $(".wysiwyg-textarea").each(function () {
+            var $holder = $(this),
+                $textarea = $holder.find(".texteditor");
+            if ($holder.hasClass("hidden")) {
+                return;
+            }
+            var editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+            $textarea.parents("form").submit(function () {
+                $textarea.parent().find("textarea.raw").val(editor.getData());
+                if (typeof(editor.plugins.lite) != 'undefined') {
+                    editor.plugins.lite.findPlugin(editor).acceptAll();
+                    $textarea.parent().find("textarea.consolidated").val(editor.getData());
+                }
+            });
+        });
+        var $draftHint = $("#draftHint"),
+            draftMotionId = $draftHint.data("motion-id"),
+            draftAmendmentId = $draftHint.data("amendment-id");
+        draftSavingEngine("amendment_" + draftMotionId + "_" + draftAmendmentId);
+    };
+
+    var amendmentEditFormSinglePara = function () {
+        var $paragraphs = $(".wysiwyg-textarea.single-paragraph");
+
+        var setModifyable = function () {
+            var $modified = $paragraphs.filter(".modified");
+            if ($modified.length == 0) {
+                $paragraphs.addClass('modifyable');
+            } else {
+                $paragraphs.removeClass('modifyable');
+                $('input[name=modifiedParagraphNo]').val($modified.data("paragraph-no"));
+                console.log("Set", $('input[name=modifiedSectionId]'), $modified.parents(".texteditorBox").data("section-id"));
+                $('input[name=modifiedSectionId]').val($modified.parents(".texteditorBox").data("section-id"));
+                console.log($modified.data("paragraph-no"));
+            }
+        };
+        $paragraphs.click(function () {
+            var $para = $(this);
+            if ($para.hasClass('modifyable')) {
+                $para.addClass('modified');
+                setModifyable();
+
+                var $textarea = $para.find(".texteditor"),
+                    editor;
+                if (typeof(CKEDITOR.instances[$textarea.attr("id")]) !== "undefined") {
+                    editor = CKEDITOR.instances[$textarea.attr("id")];
+                } else {
+                    editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+                }
+                $textarea.attr("contenteditable", "true");
+                $textarea.parents("form").submit(function () {
+                    $textarea.parent().find("textarea.raw").val(editor.getData());
+                    if (typeof(editor.plugins.lite) != 'undefined') {
+                        editor.plugins.lite.findPlugin(editor).acceptAll();
+                        $textarea.parent().find("textarea.consolidated").val(editor.getData());
+                    }
+                });
+                $textarea.focus();
+            }
+        });
+        $paragraphs.find(".modifiedActions .revert").click(function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            var $para = $(this).parents(".wysiwyg-textarea"),
+                $textarea = $para.find(".texteditor"),
+                id = $textarea.attr("id");
+            $("#" + id).attr("contenteditable", "false");
+            $textarea.html($para.data("original"));
+            $para.removeClass("modified");
+            setModifyable();
+        });
+        setModifyable();
+
+        // Amendment Reason
+        $(".wysiwyg-textarea").filter(":not(.single-paragraph)").each(function () {
+            var $holder = $(this),
+                $textarea = $holder.find(".texteditor");
+            if ($holder.hasClass("hidden")) {
+                return;
+            }
+            var editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+            $textarea.parents("form").submit(function () {
+                $textarea.parent().find("textarea.raw").val(editor.getData());
+                if (typeof(editor.plugins.lite) != 'undefined') {
+                    editor.plugins.lite.findPlugin(editor).acceptAll();
+                    $textarea.parent().find("textarea.consolidated").val(editor.getData());
+                }
+            });
+        });
+    };
+
+    var amendmentEditForm = function (multipleParagraphs) {
         var lang = $html.attr('lang'),
             $opener = $(".editorialChange .opener");
 
@@ -391,29 +483,15 @@
                 $textarea.parent().find("textarea.raw").val(editor.getData());
             });
         });
-        $(".wysiwyg-textarea").each(function () {
-            var $holder = $(this),
-                $textarea = $holder.find(".texteditor");
-            if ($holder.hasClass("hidden")) {
-                return;
-            }
-            var editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
-            $textarea.parents("form").submit(function () {
-                $textarea.parent().find("textarea.raw").val(editor.getData());
-                if (typeof(editor.plugins.lite) != 'undefined') {
-                    editor.plugins.lite.findPlugin(editor).acceptAll();
-                    $textarea.parent().find("textarea.consolidated").val(editor.getData());
-                }
-            });
-        });
+
         if ($("#amendmentEditorial").val() != '') {
             $opener.click();
         }
-
-        var $draftHint = $("#draftHint"),
-            draftMotionId = $draftHint.data("motion-id"),
-            draftAmendmentId = $draftHint.data("amendment-id");
-        draftSavingEngine("amendment_" + draftMotionId + "_" + draftAmendmentId);
+        if (multipleParagraphs) {
+            amendmentEditFormMultiPara();
+        } else {
+            amendmentEditFormSinglePara();
+        }
     };
 
 
@@ -503,7 +581,7 @@
                     targetOffset = (firstLine - $paraFirstLine.data("line-number")) * lineHeight,
                     $prevBookmark = $amendment.prev(),
                     delta = targetOffset;
-                $prevBookmark.each(function() {
+                $prevBookmark.each(function () {
                     var $pre = $(this);
                     delta -= $pre.height();
                     delta -= $pre.css("margin-top");

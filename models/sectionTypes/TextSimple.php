@@ -53,7 +53,7 @@ class TextSimple extends ISectionType
         /** @var AmendmentSection $amSection */
         $amSection = $this->section;
         $moSection = $amSection->getOriginalMotionSection();
-        $moParas = HTMLTools::sectionSimpleHTML($moSection->data, false);
+        $moParas   = HTMLTools::sectionSimpleHTML($moSection->data, false);
 
         if ($amSection->isNewRecord) {
             $amParas = $moParas;
@@ -63,14 +63,16 @@ class TextSimple extends ISectionType
 
         $type = $this->section->consultationSetting;
         $str  = '<div class="label">' . Html::encode($type->title) . '</div>';
-        $str .= '<div class="texteditorBox">';
+        $str .= '<div class="texteditorBox" data-section-id="' . $amSection->sectionId . '">';
         foreach ($moParas as $paraNo => $moPara) {
             $nameBase = 'sections[' . $type->id . '][' . $paraNo . ']';
             $htmlId   = 'sections_' . $type->id . '_' . $paraNo;
             $holderId = 'section_holder_' . $type->id . '_' . $paraNo;
 
             $str .= '<div class="form-group wysiwyg-textarea single-paragraph" id="' . $holderId . '"';
-            $str .= ' data-maxLen="' . $type->maxLen . '" data-fullHtml="0"';
+            $str .= ' data-max-len="' . $type->maxLen . '" data-full-html="0"';
+            $str .= ' data-original="' . Html::encode($moPara) . '"';
+            $str .= ' data-paragraph-no="' . $paraNo . '"';
             $str .= '><label for="' . $htmlId . '" class="hidden">' . Html::encode($type->title) . '</label>';
 
             $str .= '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
@@ -79,8 +81,12 @@ class TextSimple extends ISectionType
                 'title="' . Html::encode($type->title) . '"></textarea>';
             $str .= '<div class="texteditor" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
                 'title="' . Html::encode($type->title) . '">';
-            $str .= $moPara;
+            $str .= $amParas[$paraNo];
             $str .= '</div>';
+
+            $str .= '<div class="modifiedActions"><a href="#" class="revert">';
+            $str .= 'Änderungen rückgängig machen';
+            $str .= '</a></div>';
 
             $str .= '</div>';
         }
@@ -106,9 +112,22 @@ class TextSimple extends ISectionType
     public function setAmendmentData($data)
     {
         /** @var AmendmentSection $section */
-        $section          = $this->section;
-        $section->data    = HTMLTools::cleanSimpleHtml($data['consolidated']);
-        $section->dataRaw = $data['raw'];
+        $section = $this->section;
+        if ($section->consultationSetting->motionType->amendmentMultipleParagraphs) {
+            $section->data    = HTMLTools::cleanSimpleHtml($data['consolidated']);
+            $section->dataRaw = $data['raw'];
+        } else {
+            $moSection = $section->getOriginalMotionSection();
+            $paras     = HTMLTools::sectionSimpleHTML($moSection->data, false);
+            $parasRaw  = $paras;
+            if ($_POST['modifiedParagraphNo'] !== '' && $_POST['modifiedSectionId'] == $section->sectionId) {
+                $paraNo            = IntVal($_POST['modifiedParagraphNo']);
+                $paras[$paraNo]    = $_POST['sections'][$section->sectionId][$paraNo]['consolidated'];
+                $parasRaw[$paraNo] = $_POST['sections'][$section->sectionId][$paraNo]['raw'];
+            }
+            $section->data    = HTMLTools::cleanSimpleHtml(implode('', $paras));
+            $section->dataRaw = implode('', $parasRaw);
+        }
     }
 
     /**

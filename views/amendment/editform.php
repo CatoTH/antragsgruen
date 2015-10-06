@@ -15,6 +15,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
+$multipleParagraphs = $form->motion->motionType->amendmentMultipleParagraphs;
+
 if ($form->motion->titlePrefix != '') {
     if ($consultation->getSettings()->hideTitlePrefix) {
         $title = Yii::t(
@@ -131,12 +133,15 @@ $initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();
 echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 
 
-
+if (!$multipleParagraphs) {
+    echo '<input type="hidden" name="modifiedSectionId" value="">';
+    echo '<input type="hidden" name="modifiedParagraphNo" value="">';
+}
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
 echo '</button></div>';
 
-$layout->addOnLoadJS('$.Antragsgruen.amendmentEditForm();');
+$layout->addOnLoadJS('$.Antragsgruen.amendmentEditForm(' . ($multipleParagraphs ? 1 : 0) . ');');
 
 echo Html::endForm();

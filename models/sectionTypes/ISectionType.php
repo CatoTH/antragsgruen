@@ -52,8 +52,8 @@ abstract class ISectionType
         $htmlId = 'sections_' . $type->id;
 
         $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
-        $str .= ' data-maxLen="' . $type->maxLen . '"';
-        $str .= ' data-fullHtml="' . ($fullHtml ? '1' : '0') . '"';
+        $str .= ' data-max-len="' . $type->maxLen . '"';
+        $str .= ' data-full-html="' . ($fullHtml ? '1' : '0') . '"';
         $str .= '><label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
 
         if ($type->maxLen != 0) {
@@ -95,8 +95,8 @@ abstract class ISectionType
         $htmlId   = 'sections_' . $type->id;
 
         $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
-        $str .= ' data-maxLen="' . $type->maxLen . '"';
-        $str .= ' data-fullHtml="' . ($fullHtml ? '1' : '0') . '"';
+        $str .= ' data-max-len="' . $type->maxLen . '"';
+        $str .= ' data-full-html="' . ($fullHtml ? '1' : '0') . '"';
         $str .= '><label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
 
         $str .= '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
