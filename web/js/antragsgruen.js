@@ -697,7 +697,11 @@
                     }
                     // No empty row found
                     var $newEl = $(template);
-                    $supporterAdderRow.before($newEl);
+                    if ($supporterAdderRow.length > 0) {
+                        $supporterAdderRow.before($newEl);
+                    } else {
+                        $('.fullTextAdder').before($newEl);
+                    }
                     return $newEl;
                 };
             var $firstAffectedRow = null;
