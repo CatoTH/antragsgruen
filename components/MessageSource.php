@@ -39,7 +39,7 @@ class MessageSource extends \yii\i18n\MessageSource
     {
         if ($language == 'de') {
             return [
-                'de-parteitag' => 'Parteitag',
+                'de-parteitag' => 'Konferenz / Parteitag',
                 'de-bewerbung' => 'Bewerbungsverfahren',
                 'de-programm'  => 'Programmdiskussion',
             ];
