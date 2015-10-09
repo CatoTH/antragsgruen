@@ -19,7 +19,7 @@
     "fxp/composer-asset-plugin": "~1.0",
     "yiisoft/yii2": "2.0.6",
     "yiisoft/yii2-authclient": "2.0.4",
-    "tecnick.com/tcpdf": "dev-master",
+    "tecnickcom/tcpdf": "dev-master",
     "slm/mail": "*",
     "tijsverkoyen/css-to-inline-styles": "*",
     "heise/shariff": "dev-master",
