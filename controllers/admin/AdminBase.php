@@ -25,8 +25,7 @@ class AdminBase extends Base
         }
 
         if (\Yii::$app->user->isGuest) {
-            $currUrl = \yii::$app->request->url;
-            $this->redirect(UrlHelper::createLoginUrl($currUrl));
+            $this->redirect(UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return false;
         }
 

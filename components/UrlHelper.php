@@ -137,21 +137,29 @@ class UrlHelper
      */
     public static function absolutizeLink($url)
     {
-        if ($url[0] == '/') {
-            $url = substr($url, 1);
-        }
         if (strpos($url, 'http') === 0) {
             return $url;
         }
 
+        $params = static::getParams();
+        if (mb_strpos($url, $params->resourceBase) === 0) {
+            $url = mb_substr($url, mb_strlen($params->resourceBase));
+        } elseif ($url[0] == '/') {
+            $url = mb_substr($url, 1);
+        }
+
         if (static::$currentSite) {
-            return str_replace(
-                '<subdomain:[\w_-]+>',
-                static::$currentSite->subdomain,
-                static::getParams()->domainSubdomain
-            ) . $url;
+            if ($params->domainSubdomain) {
+                return str_replace(
+                    '<subdomain:[\w_-]+>',
+                    static::$currentSite->subdomain,
+                    $params->domainSubdomain
+                ) . $url;
+            } else {
+                return $params->domainPlain . $url;
+            }
         } else {
-            return static::getParams()->domainPlain . $url;
+            return $params->domainPlain . $url;
         }
     }
 

@@ -186,8 +186,7 @@ class Base extends Controller
             return false;
         }
         if (\Yii::$app->user->getIsGuest()) {
-            $backUrl = $_SERVER['REQUEST_URI'];
-            $this->redirect(UrlHelper::createLoginUrl($backUrl));
+            $this->redirect(UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return true;
         }
         if ($this->site->getSettings()->managedUserAccounts) {
