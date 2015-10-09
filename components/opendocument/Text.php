@@ -138,7 +138,8 @@ class Text extends Base
                         break;
                     case 'blockquote':
                         $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenBlockquote');
+                        $class  = ($lineNumbered ? 'Blockquote_Linenumbered' : 'Blockquote');
+                        $dst_el->setAttribute('text:style-name', 'Antragsgrün_20_' . $class);
                         if (count($srcNode->childNodes) == 1) {
                             foreach ($srcNode->childNodes as $child) {
                                 if ($child->nodeName == 'p') {
@@ -294,16 +295,6 @@ class Text extends Base
         ]);
         $this->appendTextStyleNode('AntragsgruenSup', [
             'style:text-position' => 'super 58%',
-        ]);
-        $this->appendParagraphStyleNode('AntragsgruenBlockquote', [
-            'fo:padding'       => '0.499cm',
-            'fo:border-left'   => '1.25pt solid #cccccc',
-            'fo:border-right'  => 'none',
-            'fo:border-top'    => 'none',
-            'fo:border-bottom' => 'none',
-            'style:shadow'     => 'none',
-            'fo:margin-bottom' => '0.7cm',
-            'fo:margin-top'    => '0.7cm',
         ]);
 
         /** @var \DOMNode[] $nodes */
