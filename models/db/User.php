@@ -425,10 +425,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMySupportedMotionsByConsultation(Consultation $consultation)
     {
-        $query = (new Query())->select('motionSupporter.*')->from('motionSupporter');
+        $initiator = MotionSupporter::ROLE_INITIATOR;
+        $query = MotionSupporter::find();
         $query->innerJoin(
             'motion',
-            'motionSupporter.motionId = motion.id AND motionSupporter.role = ' . IntVal(MotionSupporter::ROLE_INITIATOR)
+            'motionSupporter.motionId = motion.id AND motionSupporter.role = "' . addslashes($initiator) . '"'
         );
         $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
@@ -444,11 +445,12 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMySupportedAmendmentsByConsultation(Consultation $consultation)
     {
-        $query = (new Query())->select('amendmentSupporter.*')->from('amendmentSupporter');
+        $initiator = AmendmentSupporter::ROLE_INITIATOR;
+        $query = AmendmentSupporter::find();
         $query->innerJoin(
             'amendment',
             'amendmentSupporter.amendmentId = amendment.id AND ' .
-            'amendmentSupporter.role = ' . IntVal(AmendmentSupporter::ROLE_INITIATOR)
+            'amendmentSupporter.role = "' . addslashes($initiator) . '"'
         );
         $query->innerJoin('motion', 'motion.id = amendment.motionId');
         $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));

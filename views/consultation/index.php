@@ -89,14 +89,15 @@ if ($myself) {
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
                 echo "<span style='text-decoration: line-through;'>";
             }
-            $motionLink = URL::toRoute(['motion/show', 'motionId' => $motion->id]);
-            echo Html::a($motion->title, $motionLink);
+            $motionLink = \app\components\UrlHelper::createMotionUrl($motion);
+            echo Html::a($motion->getTitleWithPrefix(), $motionLink);
             if ($motionSupport->role == MotionSupporter::ROLE_INITIATOR) {
-                echo ' (InitiatorIn)';
+                echo ' (' . Yii::t('motion', 'InitiatorIn') . ')';
             }
             if ($motionSupport->role == MotionSupporter::ROLE_SUPPORTER) {
-                echo ' (UnterstützerIn)';
+                echo ' (' . Yii::t('motion', 'UnterstützerIn') . ')';
             }
+            echo ': ' . Html::encode($motion->getStati()[$motion->status]);
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
                 echo '</span>';
             }
@@ -114,22 +115,16 @@ if ($myself) {
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo "<span style='text-decoration: line-through;'>";
             }
-            $amendmentUrl = Url::toRoute(
-                [
-                    'amendment/show',
-                    'motionId'    => $amendment->motionId,
-                    'amendmentId' => $amendment->id
-                ]
-            );
+            $amendmentUrl = \app\components\UrlHelper::createAmendmentUrl($amendment);
             echo Html::a(
-                Html::encode($amendment->titlePrefix . " zu " . $amendment->motion->titlePrefix),
+                Html::encode($amendment->getTitle()),
                 $amendmentUrl
             );
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_INITIATOR) {
-                echo ' (InitiatorIn)';
+                echo ' (' . Yii::t('amend', 'InitiatorIn') . ')';
             }
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_SUPPORTER) {
-                echo ' (UnterstützerIn)';
+                echo ' (' . Yii::t('amend', 'UnterstützerIn') . ')';
             }
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo '</span>';
