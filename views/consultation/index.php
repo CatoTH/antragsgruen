@@ -80,8 +80,8 @@ require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLa
 
 if ($myself) {
     if (count($myMotions)) {
-        echo '<h3 class="green">' . Yii::t('con', 'Meine Anträge') . '</h3>';
-        echo '<div class="content"><ul class="antragsliste">';
+        echo '<h3 class="green">' . Yii::t('con', 'My Motions') . '</h3>';
+        echo '<div class="content myMotionList"><ul>';
 
         foreach ($myMotions as $motionSupport) {
             $motion = $motionSupport->motion;
@@ -90,12 +90,12 @@ if ($myself) {
                 echo "<span style='text-decoration: line-through;'>";
             }
             $motionLink = \app\components\UrlHelper::createMotionUrl($motion);
-            echo Html::a($motion->getTitleWithPrefix(), $motionLink);
+            echo Html::a($motion->getTitleWithPrefix(), $motionLink, ['class' => 'motion' . $motion->id]);
             if ($motionSupport->role == MotionSupporter::ROLE_INITIATOR) {
-                echo ' (' . Yii::t('motion', 'InitiatorIn') . ')';
+                echo ' (' . Yii::t('motion', 'Initiator') . ')';
             }
             if ($motionSupport->role == MotionSupporter::ROLE_SUPPORTER) {
-                echo ' (' . Yii::t('motion', 'UnterstützerIn') . ')';
+                echo ' (' . Yii::t('motion', 'Supporter') . ')';
             }
             echo ': ' . Html::encode($motion->getStati()[$motion->status]);
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
@@ -107,8 +107,8 @@ if ($myself) {
     }
 
     if (count($myAmendments) > 0) {
-        echo '<h3 class="green">' . Yii::t('con', 'Meine Änderungsanträge') . '</h3>';
-        echo '<div class="content"><ul class="antragsliste">';
+        echo '<h3 class="green">' . Yii::t('con', 'My Amendments') . '</h3>';
+        echo '<div class="content myAmendmentList"><ul>';
         foreach ($myAmendments as $amendmentSupport) {
             $amendment = $amendmentSupport->amendment;
             echo '<li>';
@@ -118,7 +118,8 @@ if ($myself) {
             $amendmentUrl = \app\components\UrlHelper::createAmendmentUrl($amendment);
             echo Html::a(
                 Html::encode($amendment->getTitle()),
-                $amendmentUrl
+                $amendmentUrl,
+                ['class' => 'amendment' . $amendment->id]
             );
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_INITIATOR) {
                 echo ' (' . Yii::t('amend', 'InitiatorIn') . ')';
@@ -129,7 +130,7 @@ if ($myself) {
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo '</span>';
             }
-            echo '</li>\n';
+            echo '</li>';
         }
         echo '</ul></div>';
     }

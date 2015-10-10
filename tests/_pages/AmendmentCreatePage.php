@@ -19,7 +19,7 @@ class AmendmentCreatePage extends BasePage
         $this->fillInValidSampleData($title);
         $this->saveForm();
         $this->actor->see(mb_strtoupper('Antrag bestätigen'), 'h1');
-        $this->actor->submitForm('#motionConfirmForm', [], 'confirm');
+        $this->actor->submitForm('#amendmentConfirmForm', [], 'confirm');
         $this->actor->see(mb_strtoupper('Antrag eingereicht'), 'h1');
     }
 

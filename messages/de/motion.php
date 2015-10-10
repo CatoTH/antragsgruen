@@ -8,8 +8,10 @@ return [
     'Prerequisites for a motion'        => 'Voraussetzungen für einen Antrag',
     'Type'                              => 'Typ',
     'Motion'                            => 'Antrag',
+    'Initiator'                         => 'AntragstellerIn',
     'initiators_1'                      => 'AntragstellerIn',
     'initiators_x'                      => 'AntragstellerInnen',
+    'Supporter'                         => 'UnterstützerIn',
     'replaces_motion'                   => 'Ersetzt',
     'confirmed_visible'                 => 'Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Antrag eingereicht. ' .
