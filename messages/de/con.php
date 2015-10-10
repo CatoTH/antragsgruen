@@ -6,4 +6,7 @@ return [
     'Create new...'  => 'Anlegen...',
     'My Motions'     => 'Meine Anträge',
     'My Amendments'  => 'Meine Änderungsanträge',
+    'Agenda'         => 'Tagesordnung',
+    'Other Motions'  => 'Sonstige Anträge',
+    'no motions'     => 'Keine Änträge',
 ];

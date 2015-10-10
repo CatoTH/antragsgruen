@@ -19,7 +19,7 @@ $layout->addOnLoadJS('$.Antragsgruen.recalcAgendaCodes();');
 
 $longVersion = ($consultation->getSettings()->startLayoutType == ConsultationSettings::START_LAYOUT_AGENDA_LONG);
 
-echo '<h2 class="green">' . 'Tagesordnung (Vorschlag)' . '</h2>';
+echo '<h2 class="green">' . \Yii::t('con', 'Agenda') . '</h2>';
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
 $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
 
@@ -37,7 +37,7 @@ if ($admin) {
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
     echo Html::beginForm('', 'post', ['id' => 'agendaEditSavingHolder', 'class' => 'hidden']);
     echo '<input type="hidden" name="data" value="">';
-    echo '<button class="btn btn-success" type="submit" name="saveAgenda">Speichern</button>';
+    echo '<button class="btn btn-success" type="submit" name="saveAgenda">' . \Yii::t('base', 'Save') . '</button>';
     echo Html::endForm();
 
     $layout->addJS('js/backend.js');
@@ -74,7 +74,7 @@ foreach ($consultation->getVisibleMotions() as $motion) {
     }
 }
 if (count($otherMotions) > 0) {
-    echo '<h2 class="green">Sonstige Anträge</h2>';
+    echo '<h2 class="green">' . \Yii::t('con', 'Other Motions') . '</h2>';
     echo '<ul class="motionListStd layout2">';
     foreach ($otherMotions as $motion) {
         LayoutHelper::showMotion($motion, $consultation);

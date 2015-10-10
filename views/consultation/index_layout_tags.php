@@ -21,7 +21,7 @@ foreach ($consultation->motions as $motion) {
     if (count($motion->tags) == 0) {
         $hasNoTagMotions = true;
         if (!isset($tags[0])) {
-            $tags[0] = ['name' => 'Keines', 'motions' => []];
+            $tags[0] = ['name' => \Yii::t('motion', 'tag_none'), 'motions' => []];
         }
         $tags[0]['motions'][] = $motion;
     } else {
@@ -45,7 +45,7 @@ if ($hasNoTagMotions) {
 
 echo '<section class="motionListTags">';
 
-if (count($sortedTags) > 0 && !mb_stripos($sortedTags[0]->title, 'Tagesordnung') === false) {
+if (count($sortedTags) > 0 && !mb_stripos($sortedTags[0]->title, \Yii::t('motion', 'agenda_filter')) === false) {
     echo '<h3 class="green">' . 'Themenbereiche' . '</h3>';
     echo '<ul id="tagList" class="content">';
 
@@ -69,11 +69,11 @@ foreach ($tagIds as $tagId) {
     <table class="motionTable">
         <thead><tr>';
     if (!$consultation->getSettings()->hideTitlePrefix) {
-        echo '<th class="prefixCol">' . 'Antragsnummer' . '</th>';
+        echo '<th class="prefixCol">' . \Yii::t('motion', 'Prefix') . '</th>';
     }
     echo '
-            <th class="titleCol">Titel</th>
-            <th class="initiatorCol">AntragstellerIn</th>
+            <th class="titleCol">' . \Yii::t('motion', 'Title') . '</th>
+            <th class="initiatorCol">' . \Yii::t('motion', 'Initiator') . '</th>
         </tr></thead>';
     foreach ($tag['motions'] as $motion) {
         /** @var Motion $motion */
@@ -96,7 +96,11 @@ foreach ($tagIds as $tagId) {
         echo Html::a($motion->title, UrlHelper::createMotionUrl($motion), ['class' => 'motionLink' . $motion->id]);
         echo '</div><div class="pdflink">';
         if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
-            echo Html::a('als PDF', UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
+            echo Html::a(
+                \Yii::t('motion', 'as_pdf'),
+                UrlHelper::createMotionUrl($motion, 'pdf'),
+                ['class' => 'pdfLink']
+            );
         }
         echo '</div></td><td class="initiatorRow">';
         $initiators = [];
@@ -105,7 +109,7 @@ foreach ($tagIds as $tagId) {
         }
         echo Html::encode(implode(', ', $initiators));
         if ($motion->status != Motion::STATUS_SUBMITTED_SCREENED) {
-            echo ", " . Html::encode(Motion::getStati()[$motion->status]);
+            echo ', ' . Html::encode(Motion::getStati()[$motion->status]);
         }
         echo '</td></tr>';
 
@@ -120,7 +124,7 @@ foreach ($tagIds as $tagId) {
                 echo '<td class="prefixCol">' . Html::encode($amend->titlePrefix) . '</td>';
             }
             echo '<td class="titleCol"><div class="titleLink">';
-            $title = 'Änderungsantrag zu ' . $motion->titlePrefix;
+            $title = \Yii::t('amend', 'Amendment for') . ' ' . $motion->titlePrefix;
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
                 echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
@@ -133,7 +137,7 @@ foreach ($tagIds as $tagId) {
             }
             echo Html::encode(implode(', ', $initiators));
             if ($amend->status != Amendment::STATUS_SUBMITTED_SCREENED) {
-                echo ", " . Html::encode(Amendment::getStati()[$amend->status]);
+                echo ', ' . Html::encode(Amendment::getStati()[$amend->status]);
             }
             echo '</td></tr>';
         }

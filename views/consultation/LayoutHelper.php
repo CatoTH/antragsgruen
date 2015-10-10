@@ -60,7 +60,7 @@ class LayoutHelper
 
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
         if (count($amendments) > 0) {
-            echo '<h4 class="amendments">' . 'Änderungsanträge' . '</h4>';
+            echo '<h4 class="amendments">' . \Yii::t('amend', 'amendments') . '</h4>';
             echo '<ul class="amendments">';
             foreach ($amendments as $amend) {
                 $classes = ['amendmentRow' . $amend->id, 'amendment'];
@@ -70,7 +70,7 @@ class LayoutHelper
                 echo '<li class="' . implode(' ', $classes) . '">';
                 echo '<span class="date">' . Tools::formatMysqlDate($amend->dateCreation) . '</span>' . "\n";
 
-                $title = (trim($amend->titlePrefix) == '' ? 'Änderungsantrag' : $amend->titlePrefix);
+                $title = (trim($amend->titlePrefix) == '' ? \Yii::t('amend', 'amendment') : $amend->titlePrefix);
                 echo '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amend)) . '" ' .
                     'class="amendmentTitle amendment' . $amend->id . '">' . Html::encode($title) . '</a>';
 
@@ -114,7 +114,7 @@ class LayoutHelper
         echo '</h3>';
 
         if ($admin) {
-            $motionTypes = [0 => ' - keine Anträge - '];
+            $motionTypes = [0 => ' - ' . \Yii::t('base', 'no motions') . ' - '];
             foreach ($consultation->motionTypes as $motionType) {
                 $motionTypes[$motionType->id] = $motionType->titlePlural;
             }

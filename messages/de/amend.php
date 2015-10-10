@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'Amendment'                         => 'Änderungsantrag',
+    'Amendments'                        => 'Änderungsanträge',
+    'Initiator'                         => 'AntragstellerIn',
+    'Supporter'                         => 'UnterstützerIn',
+    'Prefix'                            => 'Antragsnummer',
+    'Amendment for'                     => 'Änderungsantrag zu',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
         'Er wird nun von der Programmkommission auf Zulässigkeit geprüft und dann freigeschaltet.',
@@ -12,4 +18,5 @@ return [
         "  Das Antragsgrün-Team",
     'submitted_screening_email_subject' => 'Änderungsantrag eingereicht',
     'screened_hint'                     => 'Von der Programmkommission geprüft',
+    'amend_for'                         => ' zu ',
 ];

@@ -93,7 +93,7 @@ abstract class ISupporter extends ActiveRecord
             if ($orga != '' && $this->resolutionDate > 0) {
                 $name .= ' <small style="font-weight: normal;">';
                 $name .= '(' . Html::encode($orga) . ', ';
-                $name .= 'beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate);
+                $name .= \Yii::t('motion', 'resolution') . ': ' . Tools::formatMysqlDate($this->resolutionDate);
                 $name .= ')</small>';
             } elseif ($orga != '') {
                 $name .= ' <small style="font-weight: normal;">';
@@ -101,7 +101,7 @@ abstract class ISupporter extends ActiveRecord
                 $name .= '</small>';
             } elseif ($this->resolutionDate > 0) {
                 $name .= ' <small style="font-weight: normal;">(';
-                $name .= 'Beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate);
+                $name .= \Yii::t('motion', 'Resolution') . ': ' . Tools::formatMysqlDate($this->resolutionDate);
                 $name .= ')</small>';
             }
         } else {
@@ -112,11 +112,12 @@ abstract class ISupporter extends ActiveRecord
             }
             if ($orga != '' && $this->resolutionDate > 0) {
                 $name .= ' (' . Html::encode($orga) . ', ';
-                $name .= 'beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
+                $name .= \Yii::t('motion', 'resolution') . ': ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
             } elseif ($orga != '') {
                 $name .= ' (' . Html::encode($orga) . ')';
             } elseif ($this->resolutionDate > 0) {
-                $name .= ' (Beschlossen: ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
+                $name .= ' (' . \Yii::t('motion', 'Resolution') . ': ';
+                $name .= Tools::formatMysqlDate($this->resolutionDate) . ')';
             }
         }
         return $name;

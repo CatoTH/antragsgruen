@@ -54,7 +54,7 @@ if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->dea
 }
 
 if ($admin) {
-    echo '<a href="#" class="editCaller" style="float: right;">Bearbeiten</a><br>';
+    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'Edit') . '</a><br>';
     echo Html::beginForm($saveUrl, 'post');
 }
 
@@ -66,7 +66,7 @@ echo '</article>';
 if ($admin) {
     echo '<div class="textSaver hidden">';
     echo '<button class="btn btn-primary" type="button" data-save-url="' . Html::encode($saveUrl) . '">';
-    echo 'Speichern</button></div>';
+    echo Yii::t('vase', 'Save') . '</button></div>';
 
     echo Html::endForm();
     $layout->addOnLoadJS('$.Antragsgruen.contentPageEdit();');
@@ -122,10 +122,10 @@ if ($myself) {
                 ['class' => 'amendment' . $amendment->id]
             );
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_INITIATOR) {
-                echo ' (' . Yii::t('amend', 'InitiatorIn') . ')';
+                echo ' (' . Yii::t('amend', 'Initiator') . ')';
             }
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_SUPPORTER) {
-                echo ' (' . Yii::t('amend', 'UnterstützerIn') . ')';
+                echo ' (' . Yii::t('amend', 'Supporter') . ')';
             }
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo '</span>';
