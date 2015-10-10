@@ -373,14 +373,16 @@
     };
 
     var amendmentEditFormMultiPara = function () {
+        console.log("amendmentEditFormMultiPara");
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor");
-            if ($holder.hasClass("hidden")) {
+            if ($holder.hasClass("hidden") || $textarea.attr("id") == "amendmentEditorial_wysiwyg") {
                 return;
             }
             var editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
             $textarea.parents("form").submit(function () {
+                console.log("save", $textarea.parent().find("textarea.raw"), editor.getData());
                 $textarea.parent().find("textarea.raw").val(editor.getData());
                 if (typeof(editor.plugins.lite) != 'undefined') {
                     editor.plugins.lite.findPlugin(editor).acceptAll();

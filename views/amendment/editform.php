@@ -90,7 +90,7 @@ echo '<h2 class="green">Neuer Antragstext</h2>
 
 <section class="editorialChange">
     <a href="#" class="opener">' . 'Redaktionelle Änderung' . '</a>
-    <div class="form-group wysiwyg-textarea hidden" id="section_holder_editorial" data-fullHtml="0">
+    <div class="form-group wysiwyg-textarea hidden" id="section_holder_editorial" data-full-html="0" data-max-len="0">
         <label for="sections_editorial">' . 'Redaktionelle Änderung' . '</label>
         <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
         Html::encode($form->editorial) . '</textarea>

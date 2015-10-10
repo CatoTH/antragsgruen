@@ -72,7 +72,7 @@ class LayoutHelper
 
                 $title = (trim($amend->titlePrefix) == '' ? 'Änderungsantrag' : $amend->titlePrefix);
                 echo '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amend)) . '" ' .
-                    'class="amendmentTitle amendment' . $motion->id . '">' . Html::encode($title) . '</a>';
+                    'class="amendmentTitle amendment' . $amend->id . '">' . Html::encode($title) . '</a>';
 
                 echo '<span class="info">';
                 echo Html::encode($amend->getInitiatorsStr());
