@@ -202,7 +202,7 @@ foreach ($entries as $entry) {
         $link   = Html::encode(UrlHelper::createUrl($params));
         echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
 
-        $delLink = Html::encode($search->getCurrentUrl($route, ['amendment_delete' => $entry->id]));
+        $delLink = Html::encode($search->getCurrentUrl($route, ['amendmentDelete' => $entry->id]));
         echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
             'onClick="return confirm(\'Diesen Änderungsantrag wirklich löschen?\');">Löschen</a></li>';
         echo '</ul></div></td>';
