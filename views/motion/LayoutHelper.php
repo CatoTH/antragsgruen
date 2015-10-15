@@ -380,7 +380,7 @@ class LayoutHelper
      */
     public static function printAmendmentStatusSetter($amendments, $statusOverrides = [])
     {
-        echo '<h2 class="green">' . 'Status der Änderungsasnträge' . '</h2>
+        echo '<h2 class="green">' . \Yii::t('amend', 'merge_amend_stati') . '</h2>
     <div class="content form-horizontal">';
 
         foreach ($amendments as $amendment) {
