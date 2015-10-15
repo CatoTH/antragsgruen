@@ -125,7 +125,7 @@ class MotionController extends AdminBase
         $form->setAdminMode(true);
 
         if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
-            if ($this->consultation->findMotionWithPrefix($_POST['titlePrefix'])) {
+            if ($this->consultation->findMotionWithPrefix($_POST['titlePrefix'], $motion)) {
                 \yii::$app->session->setFlash('error', 'Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;

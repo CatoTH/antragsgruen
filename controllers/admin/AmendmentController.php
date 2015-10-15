@@ -62,7 +62,7 @@ class AmendmentController extends AdminBase
         $form->setAdminMode(true);
 
         if (isset($_POST['screen']) && $amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
-            if ($amendment->motion->findAmendmentWithPrefix($_POST['titlePrefix'])) {
+            if ($amendment->motion->findAmendmentWithPrefix($_POST['titlePrefix'], $amendment)) {
                 $msg = 'Inzwischen gibt es einen anderen Änderungsantrag mit diesem Kürzel.';
                 \yii::$app->session->setFlash('error', $msg);
             } else {
