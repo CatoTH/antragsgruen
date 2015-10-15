@@ -8,5 +8,5 @@ return [
     'My Amendments'  => 'Meine Änderungsanträge',
     'Agenda'         => 'Tagesordnung',
     'Other Motions'  => 'Sonstige Anträge',
-    'no motions'     => 'Keine Änträge',
+    'no motions'     => 'Keine Anträge',
 ];

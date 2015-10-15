@@ -114,7 +114,7 @@ class LayoutHelper
         echo '</h3>';
 
         if ($admin) {
-            $motionTypes = [0 => ' - ' . \Yii::t('base', 'no motions') . ' - '];
+            $motionTypes = [0 => ' - ' . \Yii::t('con', 'no motions') . ' - '];
             foreach ($consultation->motionTypes as $motionType) {
                 $motionTypes[$motionType->id] = $motionType->titlePlural;
             }

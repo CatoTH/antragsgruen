@@ -71,7 +71,7 @@ $I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
 $I->dontSee('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
 $I->seeInField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
-$I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType', 'keine Anträge');
+$I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType', 'Keine Anträge');
 $I->submitForm('#agendaitem_5 .agendaItemEditForm', [], '');
 
 
