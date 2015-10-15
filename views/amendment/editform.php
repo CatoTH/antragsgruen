@@ -44,10 +44,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
 echo '<div class="form content">';
 
 echo '<br><div class="alert alert-info" role="alert">';
-echo 'Ändere hier den Antrag so ab, wie du ihn gern sehen würdest.<br>';
-echo 'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>';
-echo 'Falls dein Änderungsantrag Hinweise an die Pogrammkommission enthält, kannst du diese als ' .
-    '&quot;<strong>Redaktionellen Antrag</strong>&quot; beifügen.';
+echo \Yii::t('amend', 'create_explanation');
 echo '</div><br style="clear: both;">';
 
 

@@ -19,4 +19,8 @@ return [
     'submitted_screening_email_subject' => 'Änderungsantrag eingereicht',
     'screened_hint'                     => 'Von der Programmkommission geprüft',
     'amend_for'                         => ' zu ',
+    'create_explanation'                => 'Ändere hier den Antrag so ab, wie du ihn gern sehen würdest.<br>' . "\n" .
+        'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
+        'Falls dein Änderungsantrag Hinweise an die Pogrammkommission enthält, kannst du diese als ' . "\n" .
+        '&quot;<strong>Redaktionellen Antrag</strong>&quot; beifügen.',
 ];
