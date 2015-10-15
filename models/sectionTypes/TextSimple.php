@@ -175,8 +175,8 @@ class TextSimple extends ISectionType
             foreach ($paragraphs as $paragraph) {
                 $linesArr = [];
                 foreach ($paragraph->lines as $line) {
-                    $line = str_replace('###LINENUMBER###', '', $line);
-                    $line = str_replace('###FORCELINEBREAK###', '', $line);
+                    $line       = str_replace('###LINENUMBER###', '', $line);
+                    $line       = str_replace('###FORCELINEBREAK###', '', $line);
                     $linesArr[] = $line . '';
                 }
 
@@ -416,9 +416,7 @@ class TextSimple extends ISectionType
 
             $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
-            for ($i = 0; $i < 100; $i++) {
-                $tex .= Exporter::encodeHTMLString($html);
-            }
+            $tex .= Exporter::encodeHTMLString($html);
         }
 
         return $tex;
