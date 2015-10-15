@@ -175,7 +175,9 @@ class TextSimple extends ISectionType
             foreach ($paragraphs as $paragraph) {
                 $linesArr = [];
                 foreach ($paragraph->lines as $line) {
-                    $linesArr[] = str_replace('###LINENUMBER###', '', $line);
+                    $line = str_replace('###LINENUMBER###', '', $line);
+                    $line = str_replace('###FORCELINEBREAK###', '', $line);
+                    $linesArr[] = $line . '';
                 }
 
                 if ($hasLineNumbers) {
