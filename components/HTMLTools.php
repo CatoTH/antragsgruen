@@ -127,6 +127,16 @@ class HTMLTools
     }
 
     /**
+     * @param string $html
+     * @return string
+     */
+    public static function prepareHTMLForCkeditor($html)
+    {
+        $html = preg_replace('/(<[^\/][^>]*>) (\w)/siu', '\\1&nbsp;\\2', $html);
+        return $html;
+    }
+
+    /**
      * @param \DOMElement $element
      * @param string $pre
      * @param string $post
@@ -140,10 +150,10 @@ class HTMLTools
         if (!$splitListsItems) {
             $inlineElements[] = 'li';
         }
-        $return         = [];
-        $children       = $element->childNodes;
-        $pendingInline  = null;
-        $lino           = 0;
+        $return        = [];
+        $children      = $element->childNodes;
+        $pendingInline = null;
+        $lino          = 0;
         for ($i = 0; $i < $children->length; $i++) {
             $child = $children->item($i);
             switch (get_class($child)) {
@@ -406,7 +416,13 @@ class HTMLTools
     public static function smallTextarea($formName, $options, $value = '')
     {
         $rows = count(explode("\n", $value));
-        $str = '<textarea name="' . Html::encode($formName) . '" rows="' . $rows . '"';
+        if (isset($options['placeholder'])) {
+            $rows2 = count(explode("\n", $options['placeholder']));
+            if ($rows2 > $rows) {
+                $rows = $rows2;
+            }
+        }
+        $str  = '<textarea name="' . Html::encode($formName) . '" rows="' . $rows . '"';
         foreach ($options as $key => $val) {
             $str .= ' ' . $key . '="' . Html::encode($val) . '"';
         }
