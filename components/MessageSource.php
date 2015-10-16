@@ -24,6 +24,7 @@ class MessageSource extends \yii\i18n\MessageSource
             'con'       => 'Consultation',
             'motion'    => 'Motion',
             'amend'     => 'Amendment',
+            'diff'      => 'Diff',
             'pdf'       => 'PDF',
             'backend'   => 'Admin-Backend',
             'initiator' => 'InitiatorInnen',

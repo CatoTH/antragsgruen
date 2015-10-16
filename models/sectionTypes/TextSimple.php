@@ -279,31 +279,31 @@ class TextSimple extends ISectionType
             $out .= '<h4 class="lineSummary">';
             if ($diff['newLine']) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
-                    $out .= 'Nach Zeile #LINETO#:';
+                    $out .= \Yii::t('diff', 'after_line');
                 } elseif ($hasDelete) {
-                    $out .= 'Nach Zeile #LINETO# löschen:';
+                    $out .= \Yii::t('diff', 'after_line_del');
                 } elseif ($hasInsert) {
                     if ($diff['lineTo'] < $firstLineOfSection) {
-                        $out .= str_replace('#LINE#', ($diff['lineTo'] + 1), 'Vor Zeile #LINE# einfügen:');
+                        $out .= str_replace('#LINE#', ($diff['lineTo'] + 1), \Yii::t('diff', 'pre_line_ins'));
                     } else {
-                        $out .= 'Nach Zeile #LINETO# einfügen:';
+                        $out .= \Yii::t('diff', 'after_line_ins');
                     }
                 }
             } elseif ($diff['lineFrom'] == $diff['lineTo']) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
-                    $out .= 'In Zeile #LINETO#:';
+                    $out .= \Yii::t('diff', 'in_line');
                 } elseif ($hasDelete) {
-                    $out .= 'In Zeile #LINETO# löschen:';
+                    $out .= \Yii::t('diff', 'in_line_del');
                 } elseif ($hasInsert) {
-                    $out .= 'In Zeile #LINETO# einfügen:';
+                    $out .= \Yii::t('diff', 'in_line_ins');
                 }
             } else {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
-                    $out .= 'Von Zeile #LINEFROM# bis #LINETO#:';
+                    $out .= \yii::t('diff', 'line_to');
                 } elseif ($hasDelete) {
-                    $out .= 'Von Zeile #LINEFROM# bis #LINETO# löschen:';
+                    $out .= \yii::t('diff', 'line_to_del');
                 } elseif ($hasInsert) {
-                    $out .= 'Von Zeile #LINEFROM# bis #LINETO# einfügen:';
+                    $out .= \yii::t('diff', 'line_to_ins');
                 }
             }
             $out = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $diff['lineFrom']], $out) . '</h4>';
