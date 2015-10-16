@@ -214,4 +214,24 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertContains('Nach Zeile 42 einfügen', TextSimple::formatDiffGroup([$diff[1]], '', '', 36));
         $this->assertContains('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
     }
+
+    /**
+     */
+    public function testInvisibleSpaces()
+    {
+        $in     = [
+            [
+                'text'     => 'Test<del> </del>Bla<ins> </ins>',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ],
+        ];
+        $expect = '<h4 class="lineSummary">In Zeile 16:</h4><p>' .
+            'Test<del class="space">[Leerzeichen]</del>Bla<ins class="space">[Leerzeichen]</ins>' . '</p>';
+
+        $filtered = TextSimple::formatDiffGroup($in);
+        $this->assertEquals($expect, $filtered);
+    }
+
 }

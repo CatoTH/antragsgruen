@@ -314,6 +314,8 @@ class TextSimple extends ISectionType
             }
             $out .= $wrapEnd;
         }
+        $out = str_replace('<del> </del>', '<del class="space">[' . \Yii::t('diff', 'space') . ']</del>', $out);
+        $out = str_replace('<ins> </ins>', '<ins class="space">[' . \Yii::t('diff', 'space') . ']</ins>', $out);
         return $out;
     }
 

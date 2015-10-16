@@ -334,6 +334,13 @@ ins, ul.inserted, blockquote.inserted {
   color: #008800;
   text-decoration: underline;
 }
+del.space, ins.space {
+  font-style: italic;
+  font-size: 0.8em;
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+}
 
 .label {
   @extend label;
