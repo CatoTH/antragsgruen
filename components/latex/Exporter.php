@@ -91,7 +91,12 @@ class Exporter
                         $content = '\textcolor{Insert}{\uline{' . $content . '}}';
                     }
                     if (in_array('inserted', $classes)) {
-                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
+                        //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
+                        // @TODO Issues:
+                        // - https://github.com/CatoTH/antragsgruen/issues/105
+                        //- https://github.com/CatoTH/antragsgruen/issues/91
+
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('del', $classes)) {
                         $content = '\textcolor{Delete}{\sout{' . $content . '}}';
@@ -187,7 +192,7 @@ class Exporter
             $out .= static::encodeHTMLNode($child);
         }
 
-        $out = str_replace('###FORCELINEBREAK###', "\n\\\\\n", $out);
+        $out = str_replace('###FORCELINEBREAK###', "\n\\newline\n", $out);
 
         if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
             $out = str_replace(' ', '{\color{white}.}', $out);
