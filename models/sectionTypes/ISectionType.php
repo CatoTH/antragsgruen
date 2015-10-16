@@ -1,6 +1,7 @@
 <?php
 namespace app\models\sectionTypes;
 
+use app\components\HTMLTools;
 use app\components\opendocument\Text;
 use app\controllers\Base;
 use app\models\db\IMotionSection;
@@ -105,7 +106,7 @@ abstract class ISectionType
             'title="' . Html::encode($type->title) . '"></textarea>';
         $str .= '<div class="motionTextFormatted texteditor boxed" data-track-changed="1" ' .
             'id="' . $htmlId . '_wysiwyg" title="' . Html::encode($type->title) . '">';
-        $str .= $this->section->dataRaw;
+        $str .= HTMLTools::prepareHTMLForCkeditor($this->section->dataRaw);
         $str .= '</div>';
 
         $str .= '</div>';

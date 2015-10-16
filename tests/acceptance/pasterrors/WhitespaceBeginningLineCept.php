@@ -4,9 +4,18 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('create a motion with a whitespace at the beginning');
-$create = $I->gotoConsultationHome()->gotoMotionCreatePage();
-$create->fillInValidSampleData();
-$I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong> Test</strong></p>");');
-$create->saveForm();
-$I->submitForm('#motionConfirmForm', [], 'confirm');
+$I->wantTo('create an amendment without changes');
+$I->gotoConsultationHome();
+$I->loginAsStdUser();
+
+$I->gotoMotion(true, 114);
+$I->see('Leerzeichen-Test');
+$I->click('#sidebar .amendmentCreate a');
+$I->see('Änderungsantrag stellen', '.breadcrumb');
+$I->fillField('#initiatorName', 'Mein Name');
+$I->fillField('#initiatorEmail', 'test@example.org');
+$I->submitForm('#amendmentEditForm', [], 'save');
+
+$I->see(mb_strtoupper('Änderungsantrag bestätigen'), 'h1');
+$I->see('Antragsteller_Innen');
+$I->dontSee('Von Zeile');

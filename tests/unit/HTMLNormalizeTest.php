@@ -12,6 +12,16 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
+    public function testPrepareForCKEditor()
+    {
+        $orig = '<p><strong> Test</strong></p> Test2';
+        $expect = '<p><strong>&nbsp;Test</strong></p> Test2';
+        $out = HTMLTools::prepareHTMLForCkeditor($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
     public function testCreateParagraphs()
     {
         $orig   = "<p>Test<br><span style='color: red;'>Test2</span><br><span></span>";

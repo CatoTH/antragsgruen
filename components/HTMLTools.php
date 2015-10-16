@@ -79,7 +79,6 @@ class HTMLTools
      */
     public static function cleanSimpleHtml($html)
     {
-        $html = static::cleanTrustedHtml($html);
         $html = str_replace("\r", '', $html);
 
         $html = HtmlPurifier::process(
@@ -120,6 +119,9 @@ class HTMLTools
         $html = str_replace("<br>\n</p>", "</p>", $html);
         $html = preg_replace('/ +<\/p>/siu', '</p>', $html);
         $html = preg_replace('/ +<br>/siu', '<br>', $html);
+        $html = str_replace('&nbsp;', ' ', $html);
+
+        $html = static::cleanTrustedHtml($html);
 
         $html = trim($html);
 
@@ -133,6 +135,7 @@ class HTMLTools
     public static function prepareHTMLForCkeditor($html)
     {
         $html = preg_replace('/(<[^\/][^>]*>) (\w)/siu', '\\1&nbsp;\\2', $html);
+        $html = preg_replace('/(\w) (<\/[^>]*>)/siu', '\\1&nbsp;\\2', $html);
         return $html;
     }
 
