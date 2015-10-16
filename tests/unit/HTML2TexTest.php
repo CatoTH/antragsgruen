@@ -31,7 +31,7 @@ class HTML2TexTest extends TestBase
             '###LINENUMBER###Zeilenumbruch <span class="underline">unterstrichen</span></p>',
         ];
         $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}' . "\n" .
-            '\\\\' . "\n" .
+            '\\newline' . "\n" .
             'Zeilenumbruch \uline{unterstrichen}' . "\n";
         $out    = TextSimple::getMotionLinesToTeX($orig);
         $this->assertEquals($expect, $out);
@@ -42,7 +42,7 @@ class HTML2TexTest extends TestBase
             'greißlicha Uhu, oida Daddara!</p>';
         $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla,\\linebreak\n" .
             "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\n" .
-            "\\\\\n" .
+            "\\newline\n" .
             "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada,\\linebreak\n" .
             "Oaschgsicht, greißlicha Uhu, oida Daddara!\n";
 
