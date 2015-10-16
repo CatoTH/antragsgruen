@@ -76,6 +76,10 @@ class TextHTML extends ISectionType
      */
     public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
+        if ($this->isEmpty()) {
+            return;
+        }
+
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
             $pdf->SetFont('helvetica', '', 12);
             $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');

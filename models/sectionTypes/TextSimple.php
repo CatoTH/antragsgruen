@@ -151,6 +151,10 @@ class TextSimple extends ISectionType
      */
     public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
+        if ($this->isEmpty()) {
+            return;
+        }
+
         /** @var MotionSection $section */
         $section = $this->section;
 
