@@ -163,7 +163,7 @@ class TextSimple extends ISectionType
         $linenr     = $section->getFirstLineNumber();
         $textSize   = ($lineLength > 70 ? 10 : 11);
         if ($section->consultationSetting->fixedWidth) {
-            $pdf->SetFont('Courier', '', $textSize);
+            $pdf->SetFont('dejavusansmono', '', $textSize);
         } else {
             $pdf->SetFont('helvetica', '', $textSize);
         }
@@ -192,7 +192,7 @@ class TextSimple extends ISectionType
 
                 $y = $pdf->getY();
                 $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
-                $pdf->writeHTMLCell(173, '', 24, '', implode('<br>', $linesArr), 0, 1, 0, true, '', true);
+                $pdf->writeHTMLCell(173, '', 24, $y, implode('<br>', $linesArr), 0, 1, 0, true, '', true);
 
                 $pdf->Ln(7);
             }
