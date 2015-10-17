@@ -232,6 +232,20 @@ class AmendmentLineNumberingTest extends DBTestBase
 
         $filtered = TextSimple::formatDiffGroup($in);
         $this->assertEquals($expect, $filtered);
+
+        $in     = [
+            [
+                'text'     => 'Test<del>###FORCELINEBREAK###</del>Bla<ins>###FORCELINEBREAK###</ins>',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ],
+        ];
+        $expect = '<h4 class="lineSummary">In Zeile 16:</h4><p>Test<del class="space">[Zeilenumbruch]</del>' .
+            '<del>###FORCELINEBREAK###</del>Bla<ins class="space">[Zeilenumbruch]</ins><ins>###FORCELINEBREAK###</ins></p>';
+
+        $filtered = TextSimple::formatDiffGroup($in);
+        $this->assertEquals($expect, $filtered);
     }
 
 }
