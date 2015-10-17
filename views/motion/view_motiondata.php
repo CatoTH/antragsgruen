@@ -40,7 +40,7 @@ if (!$motion->consultation->site->getSettings()->forceLogin && count($replacedBy
 
 if (count($replacedByMotions) > 0) {
     echo '<div class="alert alert-danger motionReplayedBy" role="alert">';
-    echo 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:';
+    echo \Yii::t('motion', 'replaced_by_hint');
     if (count($replacedByMotions) > 1) {
         echo '<ul>';
         foreach ($replacedByMotions as $newMotion) {
@@ -60,13 +60,13 @@ if (count($replacedByMotions) > 0) {
 
 echo '<table class="motionDataTable">
                 <tr>
-                    <th>' . Yii::t('motion', 'Veranstaltung') . ':</th>
+                    <th>' . Yii::t('motion', 'consultation') . ':</th>
                     <td>' .
     Html::a($motion->consultation->title, UrlHelper::createUrl('consultation/index')) . '</td>
                 </tr>';
 
 if ($motion->agendaItem) {
-    echo '<tr><th>Tagesordnungspunkt:</th><td>';
+    echo '<tr><th>' . \Yii::t('motion', 'agenda_item') . ':</th><td>';
     echo Html::encode($motion->agendaItem->code . ' ' . $motion->agendaItem->title);
     echo '</td></tr>';
 }
@@ -82,7 +82,7 @@ if (count($initiators) > 0) {
 
     echo '</td></tr>';
 }
-echo '<tr class="statusRow"><th>Status:</th><td>';
+echo '<tr class="statusRow"><th>' . \Yii::t('motion', 'status') . ':</th><td>';
 
 $screeningMotionsShown = $motion->consultation->getSettings()->screeningMotionsShown;
 $statiNames            = Motion::getStati();
@@ -107,17 +107,17 @@ if ($motion->replacedMotion) {
 }
 
 if ($motion->dateResolution != '') {
-    echo '<tr><th>Entschieden am:</th>
+    echo '<tr><th>' . \Yii::t('motion', 'resoluted_on') . ':</th>
        <td>' . Tools::formatMysqlDate($motion->dateResolution) . '</td>
      </tr>';
 }
-echo '<tr><th>Eingereicht:</th>
+echo '<tr><th>' . \Yii::t('motion', 'submitted_on') . ':</th>
        <td>' . Tools::formatMysqlDateTime($motion->dateCreation) . '</td>
                 </tr>';
 
 $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
 if ($admin && count($motion->consultation->tags) > 0) {
-    echo '<tr><th>Themenbereiche:</th><td class="tags">';
+    echo '<tr><th>' . \Yii::t('motion', 'tag_tags') . ':</th><td class="tags">';
 
     $tags         = [];
     $used_tag_ids = [];
@@ -126,15 +126,15 @@ if ($admin && count($motion->consultation->tags) > 0) {
         $str            = Html::encode($tag->title);
         $str .= Html::beginForm('', 'post', ['class' => 'form-inline delTagForm delTag' . $tag->id]);
         $str .= '<input type="hidden" name="tagId" value="' . $tag->id . '">';
-        $str .= '<button type="submit" name="motionDelTag">del</button>';
+        $str .= '<button type="submit" name="motionDelTag">' . \Yii::t('motion', 'tag_del') . '</button>';
         $str .= Html::endForm();
         $tags[] = $str;
     }
     echo implode(', ', $tags);
 
-    echo '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">Neu</a>';
+    echo '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">' . \Yii::t('motion', 'tag_new') . '</a>';
     echo Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
-    echo '<select name="tagId" title="Thema aussuchen" class="form-control">
+    echo '<select name="tagId" title="' . \Yii::t('motion', 'tag_select') . '" class="form-control">
         <option>-</option>';
 
     foreach ($motion->consultation->tags as $tag) {
@@ -143,13 +143,15 @@ if ($admin && count($motion->consultation->tags) > 0) {
         }
     }
     echo '</select>
-            <button class="btn btn-primary" type="submit" name="motionAddTag">Hinzufügen</button>';
+            <button class="btn btn-primary" type="submit" name="motionAddTag">' .
+        \Yii::t('motion', 'tag_add') .
+        '</button>';
     echo Html::endForm();
     echo '</td> </tr>';
 
 } elseif (count($motion->tags) > 0) {
     echo '<tr>
-       <th>' . (count($motion->tags) > 1 ? 'Themenbereiche' : 'Themenbereich') . '</th>
+       <th>' . (count($motion->tags) > 1 ? \Yii::t('motion', 'tags') : \Yii::t('motion', 'tag')) . '</th>
        <td>';
 
     $tags = [];

@@ -184,15 +184,17 @@ LayoutHelper::printSupportSection($motion, $motion->motionType->getSupportPolicy
 
 $amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
-    echo '<section class="amendments"><h2 class="green">' . Yii::t('motion', 'Änderungsanträge') . '</h2>
+    echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'Amendments') . '</h2>
     <div class="content">';
+
+
 
     if (count($amendments) > 0) {
         echo '<ul class="amendments">';
         foreach ($amendments as $amend) {
             echo '<li>';
             $aename = $amend->titlePrefix;
-            if ($aename == "") {
+            if ($aename == '') {
                 $aename = $amend->id;
             }
             $amendLink  = UrlHelper::createAmendmentUrl($amend);
@@ -203,7 +205,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
         }
         echo '</ul>';
     } else {
-        echo '<em>keine</em>';
+        echo '<em>' . \Yii::t('motion', 'amends_none') . '</em>';
     }
 
     echo '</div></section>';
@@ -211,7 +213,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 
 
 if ($commentWholeMotions) {
-    echo '<section class="comments"><h2 class="green">Kommentare</h2>';
+    echo '<section class="comments"><h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
 
@@ -239,9 +241,9 @@ if ($commentWholeMotions) {
     if ($screeningQueue > 0) {
         echo '<div class="commentScreeningQueue">';
         if ($screeningQueue == 1) {
-            echo '1 Kommentar wartet auf Freischaltung';
+            echo \Yii::t('motion', 'comment_screen_queue_1');
         } else {
-            echo str_replace('%NUM%', $screeningQueue, '%NUM% Kommentare warten auf Freischaltung');
+            echo str_replace('%NUM%', $screeningQueue, \Yii::t('motion', 'comment_screen_queue_x'));
         }
         echo '</div>';
     }
@@ -258,9 +260,9 @@ if ($commentWholeMotions) {
         LayoutHelper::showCommentForm($form, $motion->consultation, -1, -1);
     } elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>
-        Logge dich ein, um kommentieren zu können.
-        </div>';
+        <span class="glyphicon glyphicon-log-in"></span>' .
+        \Yii::t('motion', 'comment_login_hint') .
+        '</div>';
     }
     echo '</section>';
 }
