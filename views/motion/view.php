@@ -187,6 +187,15 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'Amendments') . '</h2>
     <div class="content">';
 
+    $policy = $motion->motionType->getAmendmentPolicy();
+    if ($policy->checkCurrUser(true, true)) {
+        echo '<div class="pull-right">';
+        $title = '<span class="icon glyphicon glyphicon-flash"></span>';
+        $title .= \Yii::t('motion', 'amendment_create');
+        $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
+        echo '<a class="btn btn-default btn-sm" href="' . Html::encode($amendCreateUrl) . '">' . $title . '</a>';
+        echo '</div>';
+    }
 
     if (count($amendments) > 0) {
         echo '<ul class="amendments">';
