@@ -50,7 +50,7 @@ $I->click('.adminTodo .amendmentsScreen' . AcceptanceTester::FIRST_FREE_AMENDMEN
 $I->seeElement('#amendmentScreenForm');
 $I->executeJS('$("#amendmentScreenForm input[name=titlePrefix]").attr("value", "Ä2");');
 $I->submitForm('#amendmentScreenForm ', [], ['screen']);
-$I->see('Inzwischen gibt es einen anderen Änderungsantrag mit diesem Kürzel.');
+$I->see('Das angegebene Antragskürzel wird bereits von einem anderen Änderungsantrag verwendet.');
 
 
 $I->wantTo('screen the amendment normally');

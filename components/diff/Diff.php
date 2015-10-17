@@ -66,8 +66,10 @@ class Diff
             return $str;
         } elseif (preg_match('/^<[^>]*>$/siu', $str)) {
             return $str;
+            /*
         } elseif ($str == static::ORIG_LINEBREAK) {
             return $str;
+            */
         }
         if ($this->formatting == static::FORMATTING_INLINE) {
             if (mb_stripos($str, '<ul>') === 0) {
@@ -110,8 +112,10 @@ class Diff
             return '';
         } elseif (preg_match('/^<[^>]*>$/siu', $str)) {
             return $str;
+            /*
         } elseif ($str == static::ORIG_LINEBREAK) {
             return $str;
+            */
         }
         if ($this->formatting == static::FORMATTING_INLINE) {
             if (mb_stripos($str, '<ul>') === 0) {
@@ -546,6 +550,7 @@ class Diff
             }
         }
         $force       = '###FORCELINEBREAK###';
+
         $computedStr = str_replace($force . ' ' . static::ORIG_LINEBREAK, $force, $computedStr);
         $computedStr = str_replace(static::ORIG_LINEBREAK, "\n", $computedStr);
 

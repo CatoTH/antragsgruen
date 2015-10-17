@@ -180,6 +180,20 @@ class AmendmentSectionFormatter
     public static function getDiffSplitToLines($computed)
     {
         $lines = explode("\n", $computed);
+
+        for ($i = 0; $i < count($lines) - 1; $i++) {
+            $last5 = mb_substr($lines[$i], mb_strlen($lines[$i]) - 5);
+            $first6 = mb_substr($lines[$i + 1], 0, 6);
+            if ($last5 == '<ins>' && $first6 == '</ins>') {
+                $lines[$i] .= '###FORCELINEBREAK###</ins>';
+                $lines[$i + 1] = mb_substr($lines[$i + 1], 6);
+            }
+            if ($last5 == '<del>' && $first6 == '</del>') {
+                $lines[$i] .= '###FORCELINEBREAK###</del>';
+                $lines[$i + 1] = mb_substr($lines[$i + 1], 6);
+            }
+        }
+
         $out   = [];
         for ($i = 0; $i < count($lines); $i++) {
             $line = $lines[$i];
