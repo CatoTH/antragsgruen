@@ -62,6 +62,14 @@ class TextHTML extends ISectionType
     }
 
     /**
+     * @return string
+     */
+    public function getAmendmentFormatted()
+    {
+        return ''; // @TODO
+    }
+
+    /**
      * @return bool
      */
     public function isEmpty()

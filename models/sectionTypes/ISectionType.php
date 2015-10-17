@@ -147,6 +147,11 @@ abstract class ISectionType
     abstract public function getSimple();
 
     /**
+     * @return string
+     */
+    abstract public function getAmendmentFormatted();
+
+    /**
      * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
      */

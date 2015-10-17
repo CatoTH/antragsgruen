@@ -18,7 +18,7 @@ class Title extends ISectionType
     public function getMotionFormField()
     {
         $type = $this->section->consultationSetting;
-        $str = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">
+        $str  = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
 
         if ($type->maxLen != 0) {
@@ -29,7 +29,7 @@ class Title extends ISectionType
         }
 
         $str .= '<input type="text" class="form-control" id="sections_' . $type->id . '"' .
-        ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->data) . '">';
+            ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->data) . '">';
 
         if ($type->maxLen != 0) {
             $str .= '<div class="alert alert-danger maxLenTooLong hidden" role="alert">';
@@ -75,6 +75,27 @@ class Title extends ISectionType
     public function getSimple()
     {
         return Html::encode($this->section->data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentFormatted()
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+
+        if ($section->data == $section->getOriginalMotionSection()->data) {
+            return '';
+        }
+        $str = '<section id="section_title" class="motionTextHolder">';
+        $str .= '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+        $str .= '<div id="section_title_0" class="paragraph"><div class="text">';
+        $str .= '<h4 class="lineSummary">' . 'Ändern in' . ':</h4>';
+        $str .= '<p>' . Html::encode($section->data) . '</p>';
+        $str .= '</div></div></section>';
+        
+        return $str;
     }
 
     /**

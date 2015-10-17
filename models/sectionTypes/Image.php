@@ -73,6 +73,14 @@ class Image extends ISectionType
     /**
      * @return string
      */
+    public function getAmendmentFormatted()
+    {
+        return ''; // @TODO
+    }
+
+    /**
+     * @return string
+     */
     public function getSimple()
     {
         if ($this->isEmpty()) {

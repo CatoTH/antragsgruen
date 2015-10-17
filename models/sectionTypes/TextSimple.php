@@ -143,6 +143,32 @@ class TextSimple extends ISectionType
         return $str;
     }
 
+    /**
+     * @return string
+     */
+    public function getAmendmentFormatted()
+    {
+        /** @var AmendmentSection $section */
+        $section    = $this->section;
+        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        if (count($diffGroups) == 0) {
+            return '';
+        }
+
+        $str = '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
+        $str .= '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+        $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+        $wrapStart = '<section class="paragraph"><div class="text">';
+        $wrapEnd   = '</div></section>';
+        $firstLine = $section->getFirstLineNumber();
+        $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
+        $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
+        $str .= '</div>';
+        $str .= '</section>';
+
+        return $str;
+    }
 
     /**
      * @param IPDFLayout $pdfLayout

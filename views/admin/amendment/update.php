@@ -146,27 +146,19 @@ echo '</div>';
 
 
 /** @var AmendmentSection[] $sections */
-$sections = $amendment->getSortedSections(true);
+$sections = $amendment->getSortedSections(false);
 foreach ($sections as $section) {
-    if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
-
-        if (count($diffGroups) > 0) {
-            echo '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
-            echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
-            echo '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
-            $wrapStart = '<section class="paragraph"><div class="text">';
-            $wrapEnd   = '</div></section>';
-            $firstLine = $section->getFirstLineNumber();
-            $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
-            echo str_replace('###FORCELINEBREAK###', '<br>', $html);
-            echo '</div>';
-            echo '</section>';
-        }
-    }
+    echo $section->getSectionType()->getAmendmentFormatted();
 }
 
+if ($amendment->changeExplanation != '') {
+    echo '<section id="amendmentExplanation" class="motionTextHolder">';
+    echo '<h3 class="green">Begründung</h3>';
+    echo '<div class="paragraph"><div class="text">';
+    echo $amendment->changeExplanation;
+    echo '</div></div>';
+    echo '</section>';
+}
 
 if (!$amendment->textFixed) {
     echo '<h2 class="green">' . 'Text bearbeiten' . '</h2>
@@ -176,11 +168,20 @@ if (!$amendment->textFixed) {
 <div class="content hidden" id="amendmentTextEditHolder">';
 
     foreach ($form->sections as $section) {
-        if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
-            continue;
-        }
         echo $section->getSectionType()->getAmendmentFormField();
     }
+
+
+    echo '<div class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0" id="amendmentReasonHolder">';
+    echo '<label for="amendmentReason">' . Yii::t('amend', 'reason') . '</label>';
+
+    echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';
+    echo Html::encode($form->reason) . '</textarea>';
+    echo '<div class="texteditor boxed" id="amendmentReason_wysiwyg">';
+    echo $form->reason;
+    echo '</div>';
+    echo '</div>';
+
 
     echo '</div>';
 }
