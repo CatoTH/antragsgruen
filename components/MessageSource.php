@@ -6,12 +6,31 @@ use app\models\db\ConsultationText;
 use app\models\exceptions\Internal;
 use app\models\PageData;
 use app\models\db\Consultation;
+use app\models\settings\AntragsgruenApp;
 use Yii;
 
 class MessageSource extends \yii\i18n\MessageSource
 {
     public $basePath = '@app/messages';
     public $fileMap;
+
+    /**
+     * Initializes this component.
+     */
+    public function init()
+    {
+        parent::init();
+        if (YII_DEBUG) {
+            $this->on(self::EVENT_MISSING_TRANSLATION, function ($event) {
+                /** \yii\i18n\MissingTranslationEvent $event */
+                /** @var AntragsgruenApp $params */
+                $params = \Yii::$app->params;
+                $fp = fopen($params->tmpDir . 'missing-translations.log', 'a');
+                fwrite($fp, $event->language . ' - ' . $event->category . ' - ' . $event->message . "\n");
+                fclose($fp);
+            });
+        }
+    }
 
     /**
      * @return array

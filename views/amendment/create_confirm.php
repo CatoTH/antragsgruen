@@ -19,13 +19,13 @@ use yii\helpers\Html;
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
-$this->title = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+$this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
 $params->addBreadcrumb($amendment->motion->titlePrefix, UrlHelper::createMotionUrl($amendment->motion));
 $params->addBreadcrumb('Änderungsantrag', UrlHelper::createAmendmentUrl($amendment, 'edit'));
 $params->addBreadcrumb('Bestätigen');
 
-echo '<h1>' . Yii::t('amend', 'Änderungsantrag bestätigen') . '</h1>';
+echo '<h1>' . Yii::t('amend', 'confirm_amendment') . '</h1>';
 
 if ($amendment->changeEditorial != '') {
     echo '<section id="section_editorial" class="motionTextHolder">';

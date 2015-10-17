@@ -122,10 +122,10 @@ if ($myself) {
                 ['class' => 'amendment' . $amendment->id]
             );
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_INITIATOR) {
-                echo ' (' . Yii::t('amend', 'Initiator') . ')';
+                echo ' (' . Yii::t('amend', 'initiator') . ')';
             }
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_SUPPORTER) {
-                echo ' (' . Yii::t('amend', 'Supporter') . ')';
+                echo ' (' . Yii::t('amend', 'supporter') . ')';
             }
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo '</span>';

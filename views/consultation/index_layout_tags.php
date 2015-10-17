@@ -124,7 +124,7 @@ foreach ($tagIds as $tagId) {
                 echo '<td class="prefixCol">' . Html::encode($amend->titlePrefix) . '</td>';
             }
             echo '<td class="titleCol"><div class="titleLink">';
-            $title = \Yii::t('amend', 'Amendment for') . ' ' . $motion->titlePrefix;
+            $title = \Yii::t('amend', 'amendment_for') . ' ' . $motion->titlePrefix;
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
                 echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';

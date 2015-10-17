@@ -107,12 +107,12 @@ echo '<ul class="nav navbar-nav">';
 if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
     if ($controller->consultation) {
         $homeUrl = UrlHelper::createUrl('consultation/index');
-        echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $homeUrl) . '</li>';
+        echo '<li class="active">' . Html::a(Yii::t('base', 'Home'), $homeUrl) . '</li>';
         $helpLink = UrlHelper::createUrl('consultation/help');
         echo '<li>' . Html::a(Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
     } else {
         $startLink = UrlHelper::createUrl('manager/index');
-        echo '<li class="active">' . Html::a(Yii::t('base', 'Start'), $startLink) . '</li>';
+        echo '<li class="active">' . Html::a(Yii::t('base', 'Home'), $startLink) . '</li>';
     }
 
     if (!User::getCurrentUser() && !$minimalistic) {

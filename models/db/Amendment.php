@@ -113,7 +113,7 @@ class Amendment extends IMotion implements IRSSItem
         } else {
             $showMotionPrefix = false;
         }
-        $prefix = ($this->titlePrefix != '' ? $this->titlePrefix : \yii::t('amend', 'Amendment'));
+        $prefix = ($this->titlePrefix != '' ? $this->titlePrefix : \yii::t('amend', 'amendment'));
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $prefix . \yii::t('amend', 'amend_for') . $this->motion->title;
         } else {

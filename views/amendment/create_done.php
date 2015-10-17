@@ -10,13 +10,13 @@ use yii\helpers\Html;
  * @var string $mode
  */
 
-$this->title = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+$this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
 $params->breadcrumbs[] = $this->title;
 $params->breadcrumbs[] = 'Bestätigen';
 
 
-echo '<h1>' . Yii::t('amend', 'Änderungsantrag eingereicht') . '</h1>';
+echo '<h1>' . Yii::t('amend', 'amendment_submitted') . '</h1>';
 
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';

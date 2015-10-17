@@ -1,6 +1,6 @@
 <?php
 return [
-    'Start a Motion' => 'Neuen Antrag stellen',
-    'New Motions'    => 'Neue Anträge',
-    'New Amendments' => 'Neue Änderungsanträge',
+    'start_motion'   => 'Neuen Antrag stellen',
+    'new_motions'    => 'Neue Anträge',
+    'new_amendments' => 'Neue Änderungsanträge',
 ];

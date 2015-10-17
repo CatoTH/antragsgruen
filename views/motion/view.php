@@ -184,7 +184,7 @@ LayoutHelper::printSupportSection($motion, $motion->motionType->getSupportPolicy
 
 $amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
-    echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'Amendments') . '</h2>
+    echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
     $policy = $motion->motionType->getAmendmentPolicy();

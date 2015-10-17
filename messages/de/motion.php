@@ -59,4 +59,6 @@ return [
         "  Das Antragsgrün-Team",
     'submitted_screening_email_subject' => 'Antrag eingereicht',
     'screened_hint'                     => 'Von der Programmkommission geprüft',
+    'download_pdf'                      => 'PDF-Version herunterladen',
+    'motion_text'                       => 'Antragstext',
 ];

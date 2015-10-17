@@ -21,23 +21,23 @@ if ($form->motion->titlePrefix != '') {
     if ($consultation->getSettings()->hideTitlePrefix) {
         $title = Yii::t(
             'amend',
-            $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten'
+            $mode == 'create' ? 'amendment_create' : 'amendment_edit'
         );
     } else {
         $title = Yii::t(
             'amend',
-            $mode == 'create' ? 'Änderungsantrag zu %prefix% stellen' : 'Änderungsantrag zu %prefix% bearbeiten'
+            $mode == 'create' ? 'amendment_create_x' : 'amendment_edit_x'
         );
     }
     $this->title = str_replace('%prefix%', $form->motion->titlePrefix, $title);
 } else {
-    $this->title = Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten');
+    $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 }
 
 
 $layout->loadCKEditor();
 $layout->addBreadcrumb($form->motion->motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
-$layout->addBreadcrumb(Yii::t('amend', $mode == 'create' ? 'Änderungsantrag stellen' : 'Änderungsantrag bearbeiten'));
+$layout->addBreadcrumb(Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
@@ -53,7 +53,7 @@ echo $controller->showErrors();
 $motionPolicy = $form->motion->motionType->getMotionPolicy();
 if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
     echo '<div>
-                <legend>' . Yii::t('amend', 'Voraussetzungen für einen Antrag'), '</legend>
+                <legend>' . Yii::t('amend', 'amendment_requirement'), '</legend>
             </div>';
 
     echo $motionPolicy->getOnCreateDescription();
@@ -113,7 +113,7 @@ echo '<div class="content">';
 
 
 echo '<div class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0" id="amendmentReasonHolder">';
-echo '<label for="amendmentReason">' . Yii::t('amend', 'Begründung') . '</label>';
+echo '<label for="amendmentReason">' . Yii::t('amend', 'reason') . '</label>';
 
 echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';
 echo Html::encode($form->reason) . '</textarea>';

@@ -51,7 +51,7 @@ $sidebarRows = 0;
 if ($amendment->motion->motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
     $html .= '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
-        Yii::t('motion', 'PDF-Version herunterladen');
+        Yii::t('motion', 'download_pdf');
     $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'pdf')) . '</li>';
     $sidebarRows++;
 }
@@ -60,7 +60,7 @@ if ($amendment->motion->motionType->getPDFLayoutClass() !== null && $amendment->
 if ($amendment->canEdit()) {
     $html .= '<li class="edit">';
     $title = '<span class="icon glyphicon glyphicon-edit"></span>' .
-        Yii::t('motion', 'Änderungsantrag bearbeiten');
+        Yii::t('amend', 'amendment_edit');
     $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'edit')) . '</li>';
     $sidebarRows++;
 }
@@ -68,7 +68,7 @@ if ($amendment->canEdit()) {
 if ($amendment->canWithdraw()) {
     $html .= '<li class="withdraw">';
     $title = '<span class="icon glyphicon glyphicon-remove"></span>' .
-        Yii::t('motion', 'Änderungsantrag zurückziehen');
+        Yii::t('amend', 'amendment_withdraw');
     $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'withdraw')) . '</li>';
     $sidebarRows++;
 }
@@ -109,12 +109,12 @@ if (!$amendment->motion->consultation->site->getSettings()->forceLogin) {
 
 echo '<table class="motionDataTable">
                 <tr>
-                    <th>' . Yii::t('amend', 'Antrag') . ':</th>
+                    <th>' . Yii::t('amend', 'motion') . ':</th>
                     <td>' .
     Html::a($amendment->motion->title, UrlHelper::createMotionUrl($amendment->motion)) . '</td>
                 </tr>
                 <tr>
-                    <th>' . Yii::t('amend', 'AntragsstellerIn'), ':</th>
+                    <th>' . Yii::t('amend', 'initiator'), ':</th>
                     <td>';
 
 echo MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $consultation);

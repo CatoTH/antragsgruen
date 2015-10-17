@@ -7,7 +7,7 @@ $I->populateDBData1();
 
 $I->wantTo('Ensure tags are not visible yet');
 $I->gotoMotion(true);
-$I->dontSee('Themenbereiche');
+$I->dontSee('Themenbereich');
 
 $I->wantTo('Create some tags');
 $I->loginAndGotoStdAdminPage()->gotoConsultation();
@@ -30,12 +30,12 @@ $I->see('Environment');
 $I->wantTo('See the motion logged out now');
 $I->logout();
 $I->gotoMotion();
-$I->dontSee('Themenbereiche');
+$I->dontSee('Themenbereich');
 
 
 $I->wantTo('See the motion as a admin user now');
 $I->loginAsStdAdmin();
-$I->see('Themenbereiche');
+$I->see('Themenbereich');
 
 
 $I->wantTo('Add a tag');

@@ -5,4 +5,5 @@ return [
     'Yesterday' => 'Gestern',
     'Save'      => 'Speichern',
     'Edit'      => 'Bearbeiten',
+    'Home'      => 'Start'
 ];

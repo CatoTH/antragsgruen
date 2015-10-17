@@ -1,12 +1,13 @@
 <?php
 
 return [
-    'Amendment'                         => 'Änderungsantrag',
-    'Amendments'                        => 'Änderungsanträge',
-    'Initiator'                         => 'AntragstellerIn',
-    'Supporter'                         => 'UnterstützerIn',
-    'Prefix'                            => 'Antragsnummer',
-    'Amendment for'                     => 'Änderungsantrag zu',
+    'amendment'                         => 'Änderungsantrag',
+    'amendments'                        => 'Änderungsanträge',
+    'motion'                            => 'Antrag',
+    'initiator'                         => 'AntragstellerIn',
+    'supporter'                         => 'UnterstützerIn',
+    'prefix'                            => 'Antragsnummer',
+    'amendment_for'                     => 'Änderungsantrag zu',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
         'Er wird nun von der Programmkommission auf Zulässigkeit geprüft und dann freigeschaltet.',
@@ -24,4 +25,13 @@ return [
         'Falls dein Änderungsantrag Hinweise an die Pogrammkommission enthält, kannst du diese als ' . "\n" .
         '&quot;<strong>Redaktionellen Antrag</strong>&quot; beifügen.',
     'merge_amend_stati'                 => 'Status der Änderungsanträge',
+    'confirm_amendment'                 => 'Änderungsantrag bestätigen',
+    'amendment_submitted'               => 'Änderungsantrag eingereicht',
+    'amendment_create'                  => 'Änderungsantrag stellen',
+    'amendment_edit'                    => 'Änderungsantrag bearbeiten',
+    'amendment_create_x'                => 'Änderungsantrag zu %prefix% stellen',
+    'amendment_edit_x'                  => 'Änderungsantrag zu %prefix% bearbeiten',
+    'amendment_withdraw'                => 'Änderungsantrag zurückziehen',
+    'reason'                            => 'Begründung',
+    'amendment_requirement'             => 'Voraussetzungen für einen Antrag',
 ];
