@@ -284,7 +284,7 @@ class Base extends Controller
     {
         $url     = Html::encode($this->getParams()->domainPlain);
         $message = 'Die angegebene Veranstaltung wurde nicht gefunden. ' .
-            'Höchstwahrscheinlich liegt da an einem Tippfehler in der Adresse im Browser.<br>
+            'Höchstwahrscheinlich liegt das an einem Tippfehler in der Adresse im Browser.<br>
 					<br>
 					Auf der <a href="' . $url . '">Antragsgrün-Startseite</a> ' .
             'siehst du rechts eine Liste der aktiven Veranstaltungen.';

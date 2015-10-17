@@ -103,20 +103,20 @@ foreach ($motions as $motion) {
     $row++;
 
     $initiatorNames   = [];
-    $initiatorContacs = [];
+    $initiatorContacts = [];
     foreach ($motion->getInitiators() as $supp) {
         $initiatorNames[] = $supp->getNameWithResolutionDate(false);
         if ($supp->contactEmail != '') {
-            $initiatorContacs[] = $supp->contactEmail;
+            $initiatorContacts[] = $supp->contactEmail;
         }
         if ($supp->contactPhone != '') {
-            $initiatorContacs[] = $supp->contactPhone;
+            $initiatorContacts[] = $supp->contactPhone;
         }
     }
 
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
-    $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacs));
+    $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacts));
 
     if ($textCombined) {
         $text = '';
