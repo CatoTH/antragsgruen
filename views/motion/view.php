@@ -41,7 +41,7 @@ if ($policy->checkCurrUser(true, true)) {
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
-    $title .= Yii::t('motion', 'Änderungsantrag stellen');
+    $title .= \Yii::t('motion', 'amendment_create');
     $html .= Html::a($title, $amendCreateUrl) . '</li>';
     $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '">' .
         $title . '</a>';
@@ -51,7 +51,7 @@ if ($policy->checkCurrUser(true, true)) {
     if ($msg != '') {
         $createLi = '<li class="amendmentCreate">';
         $createLi .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
-        $createLi .= Html::encode(Yii::t('motion', 'Änderungsantrag stellen'));
+        $createLi .= Html::encode(Yii::t('motion', 'amendment_create'));
         $createLi .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
         $createLi .= Html::encode($msg) . '</span></span></li>';
 
@@ -65,7 +65,7 @@ if ($policy->checkCurrUser(true, true)) {
 if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
     $pdfLi = '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
-        Yii::t('motion', 'PDF-Version');
+        \Yii::t('motion', 'pdf_version');
     $pdfLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
     $html .= $pdfLi;
     $layout->menusHtmlSmall[] = $pdfLi;
@@ -74,8 +74,8 @@ if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
 
 if ($motion->canMergeAmendments() && count($motion->amendments) > 0) {
     $mergeLi = '<li class="mergeamendments">';
-    $title = '<span class="icon glyphicon glyphicon-scissors"></span>' .
-        Yii::t('motion', 'Änderungsanträge einpflegen');
+    $title   = '<span class="icon glyphicon glyphicon-scissors"></span>' .
+        Yii::t('motion', 'amendments_merge');
     $mergeLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
     $html .= $mergeLi;
     $layout->menusHtmlSmall[] = $mergeLi;
@@ -84,8 +84,8 @@ if ($motion->canMergeAmendments() && count($motion->amendments) > 0) {
 
 if ($motion->canEdit()) {
     $editLi = '<li class="edit">';
-    $title = '<span class="icon glyphicon glyphicon-edit"></span>' .
-        Yii::t('motion', 'Antrag bearbeiten');
+    $title  = '<span class="icon glyphicon glyphicon-edit"></span>' .
+        \Yii::t('motion', 'motion_edit');
     $editLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'edit')) . '</li>';
     $html .= $editLi;
     $layout->menusHtmlSmall[] = $editLi;
@@ -94,8 +94,8 @@ if ($motion->canEdit()) {
 
 if ($motion->canWithdraw()) {
     $withdrawLi = '<li class="withdraw">';
-    $title = '<span class="icon glyphicon glyphicon-remove"></span>' .
-        Yii::t('motion', 'Antrag zurückziehen');
+    $title      = '<span class="icon glyphicon glyphicon-remove"></span>' .
+        \Yii::t('motion', 'motion_withdraw');
     $withdrawLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'withdraw')) . '</li>';
     $html .= $withdrawLi;
     $layout->menusHtmlSmall[] = $withdrawLi;
@@ -104,7 +104,7 @@ if ($motion->canWithdraw()) {
 
 if ($adminEdit) {
     $adminLi = '<li class="adminEdit">';
-    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . 'Admin: bearbeiten';
+    $title   = '<span class="icon glyphicon glyphicon-wrench"></span>' . \Yii::t('motion', 'motion_admin_edit');
     $adminLi .= Html::a($title, $adminEdit) . '</li>';
     $html .= $adminLi;
     $layout->menusHtmlSmall[] = $adminLi;
@@ -112,7 +112,7 @@ if ($adminEdit) {
 }
 
 $html .= '<li class="back">';
-$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . 'Zurück zur Übersicht';
+$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('motion', 'back_start');
 $html .= Html::a($title, UrlHelper::createUrl('consultation/index')) . '</li>';
 $sidebarRows++;
 
@@ -159,7 +159,7 @@ $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
 $supporters = $motion->getSupporters();
 
 if (count($supporters) > 0) {
-    echo '<section class="supporters"><h2 class="green">Unterstützer_Innen</h2>
+    echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
     if (count($supporters) > 0) {
@@ -167,14 +167,14 @@ if (count($supporters) > 0) {
         foreach ($supporters as $supp) {
             echo '<li>';
             if ($supp->id == $currUserId) {
-                echo '<span class="label label-info">Du!</span> ';
+                echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
             }
             echo Html::encode($supp->getNameWithOrga());
             echo '</li>';
         }
         echo '</ul>';
     } else {
-        echo '<em>keine</em><br>';
+        echo '<em>' . \Yii::t('motion', 'supporting_none') . '</em><br>';
     }
     echo "<br>";
     echo '</div></section>';
@@ -186,7 +186,6 @@ $amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'Amendments') . '</h2>
     <div class="content">';
-
 
 
     if (count($amendments) > 0) {
@@ -261,8 +260,8 @@ if ($commentWholeMotions) {
     } elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in"></span>' .
-        \Yii::t('motion', 'comment_login_hint') .
-        '</div>';
+            \Yii::t('motion', 'comment_login_hint') .
+            '</div>';
     }
     echo '</section>';
 }
