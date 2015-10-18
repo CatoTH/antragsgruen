@@ -23,7 +23,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden freigeschaltet.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde freigeschaltet.');
         }
         if (isset($_REQUEST['motionUnscreen'])) {
             $motion = $this->consultation->getMotion($_REQUEST['motionUnscreen']);
@@ -31,7 +31,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setUnscreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden zurückgezogen.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde zurückgezogen.');
         }
         if (isset($_REQUEST['motionDelete'])) {
             $motion = $this->consultation->getMotion($_REQUEST['motionDelete']);
@@ -39,7 +39,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setDeleted();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden gelöscht.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde gelöscht.');
         }
 
         if (!isset($_REQUEST['motions']) || !isset($_REQUEST['save'])) {
@@ -90,7 +90,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden freigeschaltet.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde freigeschaltet.');
         }
         if (isset($_REQUEST['amendmentWithdraw'])) {
             $amendment = $this->consultation->getAmendment($_REQUEST['amendmentWithdraw']);
@@ -98,7 +98,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden zurückgezogen.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde zurückgezogen.');
         }
         if (isset($_REQUEST['amendmentDelete'])) {
             $amendment = $this->consultation->getAmendment($_REQUEST['amendmentDelete']);
@@ -106,7 +106,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setDeleted();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden gelöscht.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde gelöscht.');
         }
         if (!isset($_REQUEST['amendments']) || !isset($_REQUEST['save'])) {
             return;
