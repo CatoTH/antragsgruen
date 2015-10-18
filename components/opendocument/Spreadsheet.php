@@ -266,9 +266,9 @@ class Spreadsheet extends Base
      * @param int $row
      * @param int $col
      * @param null|array $cellAttributes
-     * @param null|array $textAttribuges
+     * @param null|array $textAttributes
      */
-    public function setCellStyle($row, $col, $cellAttributes, $textAttribuges)
+    public function setCellStyle($row, $col, $cellAttributes, $textAttributes)
     {
         if (!isset($this->cellStylesMatrix[$row])) {
             $this->cellStylesMatrix[$row] = [];
@@ -281,8 +281,8 @@ class Spreadsheet extends Base
                 $this->cellStylesMatrix[$row][$col]['cell'][$key] = $val;
             }
         }
-        if (is_array($textAttribuges)) {
-            foreach ($textAttribuges as $key => $val) {
+        if (is_array($textAttributes)) {
+            foreach ($textAttributes as $key => $val) {
                 $this->cellStylesMatrix[$row][$col]['text'][$key] = $val;
             }
         }
