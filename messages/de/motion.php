@@ -50,15 +50,15 @@ return [
     'replaced_by_hint'                  => 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:',
     'confirmed_visible'                 => 'Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Antrag eingereicht. ' .
-        'Er wird nun von der Programmkommission auf Zulässigkeit geprüft und dann freigeschaltet.',
+        'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet',
     'submitted_screening_email'         => "Hallo,\n\ndu hast soeben einen Antrag eingereicht.\n" .
-        "Die Programmkommission wird den Antrag auf Zulässigkeit prüfen und freischalten. " .
+        "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
         "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
         "Du kannst ihn hier einsehen: %LINK%\n\n" .
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
     'submitted_screening_email_subject' => 'Antrag eingereicht',
-    'screened_hint'                     => 'Von der Programmkommission geprüft',
+    'screened_hint'                     => 'Geprüft',
     'download_pdf'                      => 'PDF-Version herunterladen',
     'motion_text'                       => 'Antragstext',
 ];
