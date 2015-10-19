@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\DB;
@@ -494,5 +495,39 @@ class Consultation extends ActiveRecord
             }
         }
         return null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAgendaWithMotions ()
+    {
+        $ids = [];
+        $result = [];
+        /**
+         * @param $motion Motion
+         */
+        $addMotion = function ($motion) use (&$result) {
+            $result[] = $motion;
+            $result = array_merge ($result,MotionSorter::getSortedAmendments($this, $motion->getVisibleAmendments()));
+        };
+
+        $items = ConsultationAgendaItem::getSortedFromConsultation($this);
+        foreach ($items as $agendaItem) {
+            $result[] = $agendaItem;
+            $motions = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions());
+            foreach ($motions as $motion) {
+                $ids[]    = $motion->id;
+                $addMotion ($motion);
+            }
+        }
+        $result[] = null;
+
+        foreach ($this->getVisibleMotions() as $motion) {
+            if (!(in_array($motion->id, $ids) || count($motion->replacedByMotions) > 0)) {
+                $addMotion ($motion);
+            }
+        }
+        return $result;
     }
 }

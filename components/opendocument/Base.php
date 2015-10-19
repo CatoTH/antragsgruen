@@ -12,6 +12,7 @@ abstract class Base
     const NS_STYLE    = 'urn:oasis:names:tc:opendocument:xmlns:style:1.0';
     const NS_TABLE    = 'urn:oasis:names:tc:opendocument:xmlns:table:1.0';
     const NS_CALCTEXT = 'urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0';
+    const NS_XLINK    = 'http://www.w3.org/1999/xlink';
 
 
     /** @var \DOMDocument */

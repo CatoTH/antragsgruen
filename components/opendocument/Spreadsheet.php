@@ -9,6 +9,7 @@ class Spreadsheet extends Base
     const TYPE_TEXT   = 0;
     const TYPE_NUMBER = 1;
     const TYPE_HTML   = 2;
+    const TYPE_LINK   = 3;
 
     const FORMAT_LINEBREAK  = 0;
     const FORMAT_BOLD       = 1;
@@ -228,6 +229,15 @@ class Spreadsheet extends Base
                             $currentCell->setAttribute('calctext:value-type', 'float');
                             $currentCell->setAttribute('office:value-type', 'float');
                             $currentCell->setAttribute('office:value', (string)$cell['content']);
+                            break;
+                        case static::TYPE_LINK:
+                            $p = $this->doc->createElementNS(static::NS_TEXT, 'p');
+                            $a = $this->doc->createElementNS(static::NS_TEXT, 'a');
+                            $a->setAttributeNS(static::NS_XLINK, 'xlink:href', $cell['content']['href']);
+                            $textNode = $this->doc->createTextNode($cell['content']['text']);
+                            $a->appendChild($textNode);
+                            $p->appendChild($a);
+                            $currentCell->appendChild($p);
                             break;
                         case static::TYPE_HTML:
                             $nodes = $this->html2OdsNodes($cell['content']);

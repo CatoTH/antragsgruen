@@ -5,11 +5,13 @@ namespace app\controllers\admin;
 use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\forms\AdminMotionFilterForm;
+use yii\web\Response;
 
 /**
  * @property Consultation $consultation
  * @method showErrorpage(int $code, string $message)
  * @method render(string $view, array $options)
+ * @method renderPartial(string $view, array $options)
  */
 trait MotionListAllTrait
 {
@@ -167,6 +169,23 @@ trait MotionListAllTrait
         return $this->render('list_all', [
             'entries' => $search->getSorted(),
             'search'  => $search,
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionOdslistall()
+    {
+        @ini_set('memory_limit', '256M');
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        return $this->renderPartial('ods_list_all', [
+            'items'      => $this->consultation->getAgendaWithMotions(),
         ]);
     }
 }

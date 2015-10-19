@@ -39,6 +39,10 @@ echo '<h3>' . Html::a(
         UrlHelper::createUrl('admin/motion/listall'),
         ['class' => 'motionListAll']
     ) . '</h3>';
+echo '<ul>';
+$odsUrl = UrlHelper::createUrl('admin/motion/odslistall');
+echo '<li>' . Html::a('Export: Spreadsheet', $odsUrl) . '</li>';
+echo '</ul>';
 
 foreach ($consultation->motionTypes as $motionType) {
     echo '<h3>' . Html::encode($motionType->titlePlural) . '</h3>
