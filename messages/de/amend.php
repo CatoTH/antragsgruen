@@ -22,7 +22,7 @@ return [
     'amend_for'                         => ' zu ',
     'create_explanation'                => 'Ändere hier den Antrag so ab, wie du ihn gern sehen würdest.<br>' . "\n" .
         'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
-        'Falls dein Änderungsantrag Hinweise an die Pogrammkommission enthält, kannst du diese als ' . "\n" .
+        'Falls dein Änderungsantrag Hinweise an die Programmkommission enthält, kannst du diese als ' . "\n" .
         '&quot;<strong>Redaktionellen Antrag</strong>&quot; beifügen.',
     'merge_amend_stati'                 => 'Status der Änderungsanträge',
     'confirm_amendment'                 => 'Änderungsantrag bestätigen',
