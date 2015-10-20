@@ -35,26 +35,36 @@ class Exporter
 
     /**
      * @param \DOMNode $node
+     * @param array $extraStyles
      * @return string
      * @throws Internal
      */
-    private static function encodeHTMLNode(\DOMNode $node)
+    private static function encodeHTMLNode(\DOMNode $node, $extraStyles = [])
     {
         if ($node->nodeType == XML_TEXT_NODE) {
             /** @var \DOMText $node */
             return static::encodePlainString($node->data);
         } else {
             $content = '';
-            foreach ($node->childNodes as $child) {
-                /** @var \DOMNode $child */
-                $content .= static::encodeHTMLNode($child);
-            }
-
             /** @var \DOMElement $node */
             if ($node->hasAttribute('class')) {
                 $classes = explode(' ', $node->getAttribute('class'));
             } else {
                 $classes = [];
+            }
+
+            foreach ($node->childNodes as $child) {
+                $childStyles = [];
+                if ($node->nodeName == 'ul' || $node->nodeName == 'old') {
+                    if (in_array('ins', $classes) || in_array('inserted', $classes)) {
+                        $childStyles[] = 'ins';
+                    }
+                    if (in_array('del', $classes) || in_array('deleted', $classes)) {
+                        $childStyles[] = 'del';
+                    }
+                }
+                /** @var \DOMNode $child */
+                $content .= static::encodeHTMLNode($child, $childStyles);
             }
 
             switch ($node->nodeName) {
@@ -87,43 +97,24 @@ class Exporter
                 case 'blockquote':
                     return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
-                    if (in_array('ins', $classes)) {
-                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
-                    }
-                    if (in_array('inserted', $classes)) {
-                        //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
-                        // @TODO Issues:
-                        // - https://github.com/CatoTH/antragsgruen/issues/105
-                        //- https://github.com/CatoTH/antragsgruen/issues/91
-
-                        $content = '\textcolor{Insert}{' . $content . '}';
-                    }
-                    if (in_array('del', $classes)) {
-                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
-                    }
-                    if (in_array('deleted', $classes)) {
-                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
-                    }
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
                     $firstLine = '';
                     if ($node->hasAttribute('start')) {
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
                     }
-                    if (in_array('ins', $classes)) {
-                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
-                    }
-                    if (in_array('inserted', $classes)) {
-                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
-                    }
-                    if (in_array('del', $classes)) {
-                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
-                    }
-                    if (in_array('deleted', $classes)) {
-                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
-                    }
                     return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
+                    // @TODO Issues:
+                    // - https://github.com/CatoTH/antragsgruen/issues/105
+                    //- https://github.com/CatoTH/antragsgruen/issues/91
+
+                    if (in_array('ins', $extraStyles)) {
+                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
+                    }
+                    if (in_array('del', $extraStyles)) {
+                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
+                    }
                     return '\item ' . $content . "\n";
                 case 'a':
                     if ($node->hasAttribute('href')) {
