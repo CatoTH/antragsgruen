@@ -406,7 +406,7 @@ class TextSimple extends ISectionType
         $hasLineNumbers = $section->consultationSetting->lineNumbers;
 
         $title = Exporter::encodePlainString($section->consultationSetting->title);
-        if ($title == \Yii::t('motion', 'Antragstext') && $section->motion->agendaItem) {
+        if ($title == \Yii::t('motion', 'motion_text') && $section->motion->agendaItem) {
             $title = $section->motion->title;
         }
         $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
@@ -451,7 +451,7 @@ class TextSimple extends ISectionType
 
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->consultationSetting->title);
-            if ($title == \Yii::t('motion', 'Antragstext')) {
+            if ($title == \Yii::t('motion', 'motion_text')) {
                 $titPattern = 'Änderungsantrag zu #MOTION#';
                 $title      = str_replace('#MOTION#', $section->amendment->motion->titlePrefix, $titPattern);
             }
