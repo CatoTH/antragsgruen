@@ -85,7 +85,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
     /**
      * @throws \app\models\exceptions\Internal
      */
-    public function testFilterAffectedBlocks()
+    public function testFilterAffectedBlocks1()
     {
         $in       = [
             [
@@ -130,9 +130,13 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         ];
         $filtered = AmendmentSectionFormatter::filterAffectedBlocks($in);
         $this->assertEquals($expect, $filtered);
+    }
 
-
-
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
+    public function testFilterAffectedBlocks2()
+    {
         $in       = [
             [
                 'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
@@ -140,14 +144,19 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
                 'lineTo'   => 15,
                 'newLine'  => false,
             ], [
-                'text'     => 'Leonhardifahrt ma da middn. Greichats an naa do.',
+                'text'     => 'Bla 1.',
                 'lineFrom' => 16,
                 'lineTo'   => 16,
                 'newLine'  => false,
             ], [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'text'     => 'Bla 2.',
                 'lineFrom' => 17,
                 'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
                 'newLine'  => false,
             ],
         ];
@@ -159,8 +168,8 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
                 'newLine'  => false,
             ], [
                 'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 17,
-                'lineTo'   => 17,
+                'lineFrom' => 18,
+                'lineTo'   => 18,
                 'newLine'  => false,
             ],
         ];
