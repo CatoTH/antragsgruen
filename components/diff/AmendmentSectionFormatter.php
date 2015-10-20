@@ -155,30 +155,33 @@ class AmendmentSectionFormatter
                     }
                 }
             }
-            $addBlock = function () use ($block,&$affectedBlocks,$lastBlock,&$interveningCount) {
-                if ($interveningCount == 2)
+            $addBlock = false;
+            if ($inIns) {
+                $block['text']    = $block['text'] . '</ins>';
+                $addBlock = true;
+            } elseif ($inDel) {
+                $block['text']    = $block['text'] . '</del>';
+                $addBlock = true;
+            } elseif ($hadDiff) {
+                $addBlock = true;
+            } else {
+                if (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
+                    $addBlock = true;
+                }
+                if (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
+                    $addBlock = true;
+                }
+            }
+            if ($addBlock) {
+                if ($interveningCount == 1)
                     $affectedBlocks[] = $lastBlock;
                 $affectedBlocks[] = $block;
                 $interveningCount = 0;
-            };
-            if ($inIns) {
-                $block['text']    = $block['text'] . '</ins>';
-                $addBlock ();
-            } elseif ($inDel) {
-                $block['text']    = $block['text'] . '</del>';
-                $addBlock ();
-            } elseif ($hadDiff) {
-                $addBlock ();
-            } else {
-                if (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                    $addBlock ();
-                }
-                if (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                    $addBlock ();
-                }
             }
-            $interveningCount++;
-            $lastBlock = $block;
+            else {
+                $interveningCount++;
+                $lastBlock = $block;
+            }
         }
         return $affectedBlocks;
     }
