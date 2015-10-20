@@ -111,6 +111,9 @@ class MotionEditForm extends Model
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
+            if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE && isset($values['motion']['title']))
+                $section->getSectionType()->setAmendmentData($values['motion']['title']);
+
             if (isset($values['sections'][$section->consultationSetting->id])) {
                 $section->getSectionType()->setMotionData($values['sections'][$section->consultationSetting->id]);
             }

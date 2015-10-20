@@ -50,7 +50,7 @@ return [
     'replaced_by_hint'                  => 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:',
     'confirmed_visible'                 => 'Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Antrag eingereicht. ' .
-        'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet',
+        'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
     'submitted_screening_email'         => "Hallo,\n\ndu hast soeben einen Antrag eingereicht.\n" .
         "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
         "Du wirst dann gesondert darüber benachrichtigt.\n\n" .

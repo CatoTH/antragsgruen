@@ -5,11 +5,13 @@ namespace app\controllers\admin;
 use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\forms\AdminMotionFilterForm;
+use yii\web\Response;
 
 /**
  * @property Consultation $consultation
  * @method showErrorpage(int $code, string $message)
  * @method render(string $view, array $options)
+ * @method renderPartial(string $view, array $options)
  */
 trait MotionListAllTrait
 {
@@ -23,7 +25,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden freigeschaltet.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde freigeschaltet.');
         }
         if (isset($_REQUEST['motionUnscreen'])) {
             $motion = $this->consultation->getMotion($_REQUEST['motionUnscreen']);
@@ -31,7 +33,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setUnscreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden zurückgezogen.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde zurückgezogen.');
         }
         if (isset($_REQUEST['motionDelete'])) {
             $motion = $this->consultation->getMotion($_REQUEST['motionDelete']);
@@ -39,7 +41,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setDeleted();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurden gelöscht.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde gelöscht.');
         }
 
         if (!isset($_REQUEST['motions']) || !isset($_REQUEST['save'])) {
@@ -90,7 +92,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden freigeschaltet.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde freigeschaltet.');
         }
         if (isset($_REQUEST['amendmentWithdraw'])) {
             $amendment = $this->consultation->getAmendment($_REQUEST['amendmentWithdraw']);
@@ -98,7 +100,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden zurückgezogen.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde zurückgezogen.');
         }
         if (isset($_REQUEST['amendmentDelete'])) {
             $amendment = $this->consultation->getAmendment($_REQUEST['amendmentDelete']);
@@ -106,7 +108,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setDeleted();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurden gelöscht.');
+            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde gelöscht.');
         }
         if (!isset($_REQUEST['amendments']) || !isset($_REQUEST['save'])) {
             return;
@@ -167,6 +169,23 @@ trait MotionListAllTrait
         return $this->render('list_all', [
             'entries' => $search->getSorted(),
             'search'  => $search,
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionOdslistall()
+    {
+        @ini_set('memory_limit', '256M');
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        return $this->renderPartial('ods_list_all', [
+            'items'      => $this->consultation->getAgendaWithMotions(),
         ]);
     }
 }

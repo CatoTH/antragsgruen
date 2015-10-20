@@ -26,7 +26,7 @@ class Elections implements ISitePreset
      */
     public static function getDescription()
     {
-        return "irgendwas zum Bewertungsverfahren";
+        return "irgendwas zum Bewerbungsverfahren";
     }
 
     /**
