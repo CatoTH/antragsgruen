@@ -105,12 +105,12 @@ class Exporter
                     }
                     return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
-                    // @TODO Issues:
-                    // - https://github.com/CatoTH/antragsgruen/issues/105
-                    //- https://github.com/CatoTH/antragsgruen/issues/91
-
                     if (in_array('ins', $extraStyles)) {
-                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
+                        // @TODO Issues:
+                        // - https://github.com/CatoTH/antragsgruen/issues/105
+                        //- https://github.com/CatoTH/antragsgruen/issues/91
+                        //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('del', $extraStyles)) {
                         $content = '\textcolor{Delete}{\sout{' . $content . '}}';
