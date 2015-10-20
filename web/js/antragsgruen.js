@@ -74,7 +74,8 @@
                 countHTML: false,
                 countSpacesAsChars: true
             },
-            title: $el.attr("title")
+            title: $el.attr("title"),
+            lite: {tooltips: false}
         };
 
         if ($el.data('track-changed') == '1') {
