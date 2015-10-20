@@ -344,7 +344,7 @@ class AmendmentSectionFormatter
         $currBlock     = null;
         $groupedBlocks = [];
         foreach ($blocks as $block) {
-            if ($currBlock === null || $block['lineFrom'] > $currBlock['lineTo'] + 2) {
+            if ($currBlock === null || $block['lineFrom'] > $currBlock['lineTo'] + 1) {
                 if ($currBlock !== null) {
                     $groupedBlocks[] = $currBlock;
                 }

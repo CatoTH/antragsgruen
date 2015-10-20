@@ -82,7 +82,9 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         // - <li>s that are deleted
     }
 
-
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
     public function testFilterAffectedBlocks()
     {
         $in       = [
@@ -123,6 +125,42 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
                 'text'     => '<del>is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
                 'lineFrom' => 18,
                 'lineTo'   => 1,
+                'newLine'  => false,
+            ],
+        ];
+        $filtered = AmendmentSectionFormatter::filterAffectedBlocks($in);
+        $this->assertEquals($expect, $filtered);
+
+
+
+        $in       = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Leonhardifahrt ma da middn. Greichats an naa do.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ],
+        ];
+        $expect   = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
                 'newLine'  => false,
             ],
         ];

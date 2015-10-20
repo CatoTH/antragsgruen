@@ -186,10 +186,16 @@ class AmendmentLineNumberingTest extends DBTestBase
                 'lineFrom' => 18,
                 'lineTo'   => 18,
                 'newLine'  => false,
+            ], [
+                'text'     => '<del>is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
+                'lineFrom' => 20,
+                'lineTo'   => 20,
+                'newLine'  => false,
             ],
         ];
         $filtered = AmendmentSectionFormatter::groupAffectedDiffBlocks($in);
         $this->assertContains('Von Zeile 16 bis 18 löschen', TextSimple::formatDiffGroup($filtered));
+        $this->assertContains('In Zeile 20 löschen', TextSimple::formatDiffGroup($filtered));
     }
 
     /**
