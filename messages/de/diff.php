@@ -12,4 +12,5 @@ return [
     'line_to_del'    => 'Von Zeile #LINEFROM# bis #LINETO# löschen:',
     'line_to_ins'    => 'Von Zeile #LINEFROM# bis #LINETO# einfügen:',
     'space'          => 'Leerzeichen',
+    'newline'        => 'Zeilenumbruch',
 ];

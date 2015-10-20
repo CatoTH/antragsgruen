@@ -85,6 +85,9 @@ class Title extends ISectionType
         /** @var AmendmentSection $section */
         $section = $this->section;
 
+        if (!$section->getOriginalMotionSection()) {
+            return '';
+        }
         if ($section->data == $section->getOriginalMotionSection()->data) {
             return '';
         }
@@ -94,7 +97,7 @@ class Title extends ISectionType
         $str .= '<h4 class="lineSummary">' . 'Ändern in' . ':</h4>';
         $str .= '<p>' . Html::encode($section->data) . '</p>';
         $str .= '</div></div></section>';
-        
+
         return $str;
     }
 

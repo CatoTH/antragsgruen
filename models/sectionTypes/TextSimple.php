@@ -346,6 +346,16 @@ class TextSimple extends ISectionType
         }
         $out = str_replace('<del> </del>', '<del class="space">[' . \Yii::t('diff', 'space') . ']</del>', $out);
         $out = str_replace('<ins> </ins>', '<ins class="space">[' . \Yii::t('diff', 'space') . ']</ins>', $out);
+        $out = str_replace(
+            '<del>###FORCELINEBREAK###</del>',
+            '<del class="space">[' . \Yii::t('diff', 'newline') . ']</del><del>###FORCELINEBREAK###</del>',
+            $out
+        );
+        $out = str_replace(
+            '<ins>###FORCELINEBREAK###</ins>',
+            '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins><ins>###FORCELINEBREAK###</ins>',
+            $out
+        );
         return $out;
     }
 

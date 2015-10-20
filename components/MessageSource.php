@@ -25,7 +25,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 /** \yii\i18n\MissingTranslationEvent $event */
                 /** @var AntragsgruenApp $params */
                 $params = \Yii::$app->params;
-                $fp = fopen($params->tmpDir . 'missing-translations.log', 'a');
+                $fp     = fopen($params->tmpDir . 'missing-translations.log', 'a');
                 fwrite($fp, $event->language . ' - ' . $event->category . ' - ' . $event->message . "\n");
                 fclose($fp);
             });
@@ -48,6 +48,7 @@ class MessageSource extends \yii\i18n\MessageSource
             'backend'   => 'Admin-Backend',
             'initiator' => 'InitiatorInnen',
             'manager'   => 'Seiten-Konfiguration',
+            'admin'     => 'Administration',
         ];
     }
 
