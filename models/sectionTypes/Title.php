@@ -131,15 +131,14 @@ class Title extends ISectionType
         }
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdf->SetFont('helvetica', '', 12);
-            $pdf->writeHTML('<h3>' . HTml::encode($this->section->consultationSetting->title) . '</h3>');
+            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
         }
 
         $pdf->SetFont('Courier', '', 11);
         $pdf->Ln(7);
 
         $html = '<p><strong>Ändern in:</strong><br>' . Html::encode($section->data) . '</p>';
-        $pdf->writeHTMLCell(170, '', 27, '', $html, 0, 1, 0, true, '', true);
+        $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         $pdf->Ln(7);
     }
 

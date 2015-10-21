@@ -74,7 +74,8 @@ abstract class IPDFLayout
     public function printSectionHeading($text)
     {
         $this->pdf->SetFont('helvetica', '', 12);
-        $this->pdf->writeHTML('<h3>' . $text . '</h3>');
+        $this->pdf->ln(2);
+        $this->pdf->writeHTML('<h4>' . $text . '</h4>');
     }
 
     /**

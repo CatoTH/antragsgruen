@@ -133,8 +133,7 @@ class TabularData extends ISectionType
         }
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdf->SetFont('helvetica', '', 12);
-            $pdf->writeHTML('<h3>' . HTml::encode($this->section->consultationSetting->title) . '</h3>');
+            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
         }
 
         $pdf->SetFont('Courier', '', 11);

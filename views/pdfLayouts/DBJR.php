@@ -55,6 +55,8 @@ class DBJR extends IPDFLayout
 
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->writeHTML('<h3>' . Html::encode($motion->getTitleWithPrefix()) . '</h3>');
+
+        $pdf->SetFont('helvetica', '', 12);
     }
 
     /**
@@ -101,6 +103,9 @@ class DBJR extends IPDFLayout
 
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->writeHTML('<h3>' . 'Änderungsantrag' . '</h3>');
+
+        $pdf->SetFont('helvetica', '', 12);
+        $pdf->ln(7);
 
     }
 

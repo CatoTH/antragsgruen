@@ -89,8 +89,7 @@ class TextHTML extends ISectionType
         }
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdf->SetFont('helvetica', '', 12);
-            $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
+            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
         }
 
         $html = $this->section->data;

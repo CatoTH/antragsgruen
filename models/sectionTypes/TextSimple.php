@@ -185,8 +185,7 @@ class TextSimple extends ISectionType
         $section = $this->section;
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdf->SetFont('helvetica', '', 12);
-            $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
+            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
         }
 
         $lineLength = $section->consultationSetting->motionType->consultation->getSettings()->lineLength;
@@ -253,13 +252,15 @@ class TextSimple extends ISectionType
         if (count($diffGroups) > 0) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
                 $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
+                $pdf->ln(7);
             }
 
             $html = static::formatDiffGroup($diffGroups);
             $html = str_replace('###FORCELINEBREAK###', '<br>', $html);
-            $pdf->writeHTMLCell(170, '', 27, '', $html, 0, 1, 0, true, '', true);
-            $pdf->Ln(7);
+
+            $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         }
+        $pdf->ln(7);
     }
 
     /**
