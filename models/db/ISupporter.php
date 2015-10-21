@@ -68,14 +68,18 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getNameWithOrga()
     {
-        $name = $this->name;
-        if ($name == '' && $this->user) {
-            $name = $this->user->name;
+        if ($this->personType == static::PERSON_NATURAL) {
+            $name = $this->name;
+            if ($name == '' && $this->user) {
+                $name = $this->user->name;
+            }
+            if ($this->organization != '') {
+                $name .= ' (' . trim($this->organization, " \t\n\r\0\x0B()") . ')';
+            }
+            return $name;
+        } else {
+            return trim($this->organization, " \t\n\r\0\x0B()");
         }
-        if ($this->organization != '') {
-            $name .= ' (' . trim($this->organization, " \t\n\r\0\x0B()") . ')';
-        }
-        return $name;
     }
 
     /**
@@ -90,19 +94,20 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
             }
-            if ($orga != '' && $this->resolutionDate > 0) {
-                $name .= ' <small style="font-weight: normal;">';
-                $name .= '(' . Html::encode($orga) . ', ';
-                $name .= \Yii::t('motion', 'resolution') . ': ' . Tools::formatMysqlDate($this->resolutionDate);
-                $name .= ')</small>';
-            } elseif ($orga != '') {
-                $name .= ' <small style="font-weight: normal;">';
-                $name .= '(' . Html::encode($orga) . ')';
-                $name .= '</small>';
-            } elseif ($this->resolutionDate > 0) {
-                $name .= ' <small style="font-weight: normal;">(';
-                $name .= \Yii::t('motion', 'Resolution') . ': ' . Tools::formatMysqlDate($this->resolutionDate);
-                $name .= ')</small>';
+            if ($this->personType == static::PERSON_NATURAL) {
+                if ($orga != '') {
+                    $name .= ' <small style="font-weight: normal;">';
+                    $name .= '(' . Html::encode($orga) . ')';
+                    $name .= '</small>';
+                }
+                return $name;
+            } else {
+                if ($this->resolutionDate > 0) {
+                    $orga .= ' <small style="font-weight: normal;">(';
+                    $orga .= \Yii::t('motion', 'resolution_on') . ': ' . Tools::formatMysqlDate($this->resolutionDate);
+                    $orga .= ')</small>';
+                }
+                return $orga;
             }
         } else {
             $name = $this->name;
@@ -110,16 +115,18 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
             }
-            if ($orga != '' && $this->resolutionDate > 0) {
-                $name .= ' (' . Html::encode($orga) . ', ';
-                $name .= \Yii::t('motion', 'resolution') . ': ' . Tools::formatMysqlDate($this->resolutionDate) . ')';
-            } elseif ($orga != '') {
-                $name .= ' (' . Html::encode($orga) . ')';
-            } elseif ($this->resolutionDate > 0) {
-                $name .= ' (' . \Yii::t('motion', 'Resolution') . ': ';
-                $name .= Tools::formatMysqlDate($this->resolutionDate) . ')';
+            if ($this->personType == static::PERSON_NATURAL) {
+                if ($orga != '') {
+                    $name .= ' (' . Html::encode($orga) . ')';
+                }
+                return $name;
+            } else {
+                if ($this->resolutionDate > 0) {
+                    $orga .= ' (' . \Yii::t('motion', 'resolution_on') . ': ';
+                    $orga .= Tools::formatMysqlDate($this->resolutionDate) . ')';
+                }
+                return $orga;
             }
         }
-        return $name;
     }
 }

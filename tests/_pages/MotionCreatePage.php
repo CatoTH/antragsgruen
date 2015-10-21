@@ -31,8 +31,8 @@ class MotionCreatePage extends BasePage
         $this->actor->fillField(['name' => 'sections[1]'], $title);
         $this->actor->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
         $this->actor->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><strong>Test 2</strong></p>");');
-        $this->actor->fillField(['name' => 'Initiator[name]'], 'Mein Name');
-        $this->actor->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+        $this->actor->fillField('#initiatorPrimaryName', 'Mein Name');
+        $this->actor->fillField('#initiatorEmail', 'test@example.org');
     }
 
     /**

@@ -19,7 +19,7 @@ $I->loginAsStdUser();
 $I->gotoMotion();
 $I->click('.amendmentCreate a');
 
-$I->seeInField('#initiatorName', 'Testuser');
+$I->seeInField('#initiatorPrimaryName', 'Testuser');
 $I->dontSeeInField(['name' => 'supporters[name][]'], 'Testuser');
 
 
@@ -27,5 +27,5 @@ $I->dontSeeInField(['name' => 'supporters[name][]'], 'Testuser');
 $I->gotoConsultationHome();
 $I->click('.createMotion');
 
-$I->seeInField('#initiatorName', 'Testuser');
+$I->seeInField('#initiatorPrimaryName', 'Testuser');
 $I->dontSeeInField(['name' => 'supporters[name][]'], 'Testuser');

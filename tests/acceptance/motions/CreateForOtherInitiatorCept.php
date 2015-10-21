@@ -14,7 +14,7 @@ $I->wantTo('check that it is available as an admin (and preselected)');
 $I->loginAsStdAdmin();
 $I->seeElement('input[name=otherInitiator]');
 $I->seeCheckboxIsChecked('input[name=otherInitiator]');
-$I->seeInField('#initiatorName', '');
+$I->seeInField('#initiatorPrimaryName', '');
 $I->seeInField('#initiatorEmail', '');
 
 

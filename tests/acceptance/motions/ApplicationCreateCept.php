@@ -47,7 +47,7 @@ if (method_exists($I, 'executeJS')) {
 } else {
     $I->see('JavaScript has to be enabled to perform this test');
 }
-$I->fillField('#initiatorName', 'Jane Doe (2)');
+$I->fillField('#initiatorPrimaryName', 'Jane Doe (2)');
 $I->fillField('#initiatorEmail', 'jane@example.org');
 
 $I->submitForm('#motionEditForm', [], 'save');

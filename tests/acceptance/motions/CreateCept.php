@@ -23,16 +23,18 @@ $I->cantSeeCheckboxIsChecked("#personTypeOrga");
 $I->dontSee('JavaScript aktiviert sein');
 $I->see('Gremium, LAG...');
 $I->dontSee('Beschlussdatum');
+$I->dontSee('Kontaktperson');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->dontSee('Gremium, LAG...');
 $I->see('Beschlussdatum');
+$I->see('Kontaktperson');
 
 // Fill & Submit Form
 $I->wantTo('create a regular motion, but forgot the organization and resolution date');
 $I->fillField(['name' => 'sections[1]'], 'Testantrag 1');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Test</strong></p>");');
 $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><strong>Test 2</strong></p>");');
-$I->fillField(['name' => 'Initiator[name]'], 'Mein Name');
+$I->fillField(['name' => 'Initiator[primaryName]'], 'Mein Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
 $I->fillField(['name' => 'Initiator[contactPhone]'], '+49123456789');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
@@ -43,6 +45,7 @@ $I->acceptBootboxAlert();
 
 $I->wantTo('finally create the motion for real');
 $I->fillField(['name' => 'Initiator[resolutionDate]'], '12.01.2015');
+$I->fillField(['name' => 'Initiator[contactName]'], 'MeinKontakt');
 $I->submitForm('#motionEditForm', [], 'save');
 $I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
 
@@ -56,14 +59,14 @@ $I->wantTo('make some changes to the motion');
 $I->fillField(['name' => 'sections[1]'], 'Testantrag 2');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Another string</strong></p>");');
 $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><em>Italic is beautiful as well</em></p>");');
-$I->fillField(['name' => 'Initiator[name]'], '');
+$I->fillField(['name' => 'Initiator[primaryName]'], '');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
 $I->fillField(['name' => 'Initiator[contactPhone]'], '+49-123-456789');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->see('No valid name entered');
-$I->seeInField(['name' => 'Initiator[name]'], '');
+$I->seeInField(['name' => 'Initiator[primaryName]'], '');
 $I->seeInField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
 $I->seeInField(['name' => 'Initiator[contactPhone]'], '+49-123-456789');
 $I->dontSeeCheckboxIsChecked("#personTypeNatural");
@@ -71,7 +74,7 @@ $I->seeCheckboxIsChecked("#personTypeOrga");
 
 
 $I->wantTo('finally submit the motion');
-$I->fillField(['name' => 'Initiator[name]'], 'My real name');
+$I->fillField(['name' => 'Initiator[primaryName]'], 'My real name');
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->see(mb_strtoupper('Testantrag 2'), 'h1');

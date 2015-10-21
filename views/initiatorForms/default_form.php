@@ -32,11 +32,16 @@ echo '<fieldset class="supporterForm supporterFormStd">';
 
 echo '<legend class="green">' . 'Antragsteller_In' . '</legend>';
 
-$preOrga       = Html::encode($initiator->organization);
-$preName       = Html::encode($initiator->name);
-$preEmail      = Html::encode($initiator->contactEmail);
-$prePhone      = Html::encode($initiator->contactPhone);
-$preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
+if ($initiator->personType == ISupporter::PERSON_NATURAL) {
+    $prePrimaryName = Html::encode($initiator->name);
+} else {
+    $prePrimaryName = Html::encode($initiator->organization);
+}
+$preContactName = Html::encode($initiator->name);
+$preOrga        = Html::encode($initiator->organization);
+$preEmail       = Html::encode($initiator->contactEmail);
+$prePhone       = Html::encode($initiator->contactPhone);
+$preResolution  = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
 
 echo '<div class="initiatorData form-horizontal content">';
 
@@ -93,9 +98,9 @@ if ($adminMode) {
 }
 
 echo '<div class="form-group">
-  <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'name') . '</label>
+  <label class="col-sm-3 control-label" for="initiatorPrimaryName">' . Yii::t('initiator', 'name') . '</label>
   <div class="col-sm-4">
-    <input type="text" class="form-control" id="initiatorName" name="Initiator[name]" value="' . $preName . '" required>
+    <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]" value="' . $prePrimaryName . '" required>
   </div>
 </div>';
 
@@ -117,6 +122,12 @@ echo '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"
 echo '</div></div>
 </div>';
 
+echo '<div class="form-group contactNameRow">
+  <label class="col-sm-3 control-label" for="initiatorContactName">' . Yii::t('initiator', 'orga_contact_name') . '</label>
+  <div class="col-sm-4">
+    <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]" value="' . $preContactName . '">
+  </div>
+</div>';
 
 if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
     echo '<div class="form-group">

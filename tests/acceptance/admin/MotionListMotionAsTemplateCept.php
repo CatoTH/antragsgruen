@@ -13,7 +13,7 @@ $I->click('.adminMotionTable .motion8 .actionCol .dropdown-toggle');
 $I->click('.adminMotionTable .motion8 .actionCol .asTemplate');
 $I->see('Antrag stellen', 'h1');
 
-$I->seeInField('#initiatorName', 'Bundesvorstand');
+$I->seeInField('#initiatorPrimaryName', 'Bundesvorstand');
 $I->seeElement('#resolutionDate');
 $I->seeInField('#resolutionDate', '09.03.2015');
 $I->seeCheckboxIsChecked('#personTypeOrga');
@@ -25,7 +25,7 @@ $I->click('.adminMotionTable .motion48 .actionCol .dropdown-toggle');
 $I->click('.adminMotionTable .motion48 .actionCol .asTemplate');
 $I->see('Antrag stellen', 'h1');
 
-$I->seeInField('#initiatorName', 'Omid Nouripour');
+$I->seeInField('#initiatorPrimaryName', 'Omid Nouripour');
 $I->dontSeeElement('#resolutionDate');
 $I->seeCheckboxIsChecked('#personTypeNatural');
 $I->seeCheckboxIsChecked('input[name=otherInitiator]');
@@ -40,7 +40,7 @@ $I->gotoStdAdminPage(true, '1laenderrat2015', '1laenderrat2015')->gotoMotionList
 $I->click('.adminMotionTable .amendment13 .actionCol .dropdown-toggle');
 $I->click('.adminMotionTable .amendment13 .actionCol .asTemplate');
 $I->see('Änderungsantrag', 'h1');
-$I->seeInField('#initiatorName', 'Daniel Gollasch');
+$I->seeInField('#initiatorPrimaryName', 'Daniel Gollasch');
 $I->dontSeeElement('#resolutionDate');
 $I->seeCheckboxIsChecked('#personTypeNatural');
 $I->seeCheckboxIsChecked('input[name=otherInitiator]');

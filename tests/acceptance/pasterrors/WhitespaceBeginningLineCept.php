@@ -12,7 +12,7 @@ $I->gotoMotion(true, 114);
 $I->see('Leerzeichen-Test');
 $I->click('#sidebar .amendmentCreate a');
 $I->see('Änderungsantrag stellen', '.breadcrumb');
-$I->fillField('#initiatorName', 'Mein Name');
+$I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->fillField('#initiatorEmail', 'test@example.org');
 $I->submitForm('#amendmentEditForm', [], 'save');
 

@@ -126,7 +126,7 @@ abstract class DefaultFormBase extends IInitiatorForm
 
         $errors = [];
 
-        if (!isset($initiator['name']) || !$this->isValidName($initiator['name'])) {
+        if (!isset($initiator['primaryName']) || !$this->isValidName($initiator['primaryName'])) {
             $errors[] = 'No valid name entered.';
         }
 
@@ -369,6 +369,17 @@ abstract class DefaultFormBase extends IInitiatorForm
         $init->motionId = $motion->id;
         $init->role     = MotionSupporter::ROLE_INITIATOR;
         $init->position = $posCount++;
+        if ($init->personType == ISupporter::PERSON_NATURAL) {
+            $init->name = $_POST['Initiator']['primaryName'];
+            if (isset($_POST['Initiator']['organization'])) {
+                $init->organization = $_POST['Initiator']['organization'];
+            } else {
+                $init->organization = '';
+            }
+        } else {
+            $init->organization = $_POST['Initiator']['primaryName'];
+            $init->name         = $_POST['Initiator']['contactName'];
+        }
 
         $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
         if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
@@ -444,6 +455,17 @@ abstract class DefaultFormBase extends IInitiatorForm
         $init->amendmentId = $amendment->id;
         $init->role        = AmendmentSupporter::ROLE_INITIATOR;
         $init->position    = $posCount++;
+        if ($init->personType == ISupporter::PERSON_NATURAL) {
+            $init->name = $_POST['Initiator']['primaryName'];
+            if (isset($_POST['Initiator']['organization'])) {
+                $init->organization = $_POST['Initiator']['organization'];
+            } else {
+                $init->organization = '';
+            }
+        } else {
+            $init->organization = $_POST['Initiator']['primaryName'];
+            $init->name         = $_POST['Initiator']['contactName'];
+        }
 
         $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
         if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {

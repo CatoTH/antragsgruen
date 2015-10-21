@@ -31,26 +31,31 @@ class LayoutHelper
             $name = $supp->getNameWithResolutionDate(true);
             if ($supp->user && $supp->user->isWurzelwerkUser()) {
                 $url = 'https://wurzelwerk.gruene.de/web/' . $supp->user->getWurzelwerkName();
-                $name .= ' (<a href="' . Html::encode($url) . '">Wurzelwerk-Profil</a>)';
+                $name .= ' (<a href="' . Html::encode($url) . '">' . \Yii::t('initiator', 'ww_profile') . '</a>)';
             }
             $admin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
-                $name .= '<br><small>Kontaktdaten, nur als Admin sichtbar: ';
+                $name .= '<br><small>' . \Yii::t('initiator', 'contact_only_admion') . ': ';
+                if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
+                    if ($supp->name != '') {
+                        $name .= Html::encode($supp->name) . ', ';
+                    }
+                }
                 if ($supp->contactEmail != '') {
                     $name .= Html::a($supp->contactEmail, 'mailto:' . $supp->contactEmail);
                     if ($supp->user && $supp->user->email == $supp->contactEmail && $supp->user->emailConfirmed) {
                         $name .= ' <span class="glyphicon glyphicon-ok-sign" style="color: gray;" ' .
-                            'title="' . 'E-Mail-Adresse bestätigt' . '"></span>';
+                            'title="' . \Yii::t('initiator', 'email_confirmed') . '"></span>';
                     } else {
                         $name .= ' <span class="glyphicon glyphicon-question-sign" style="color: gray;" ' .
-                            'title="' . 'E-Mail-Adresse nicht bestätigt' . '"></span>';
+                            'title="' . \Yii::t('initiator', 'email_not_confirmed') . '"></span>';
                     }
                 }
                 if ($supp->contactEmail != '' && $supp->contactPhone != '') {
                     $name .= ', ';
                 }
                 if ($supp->contactPhone != '') {
-                    $name .= 'Telefon: ' . Html::encode($supp->contactPhone);
+                    $name .= \Yii::t('initiator', 'phone') . ': ' . Html::encode($supp->contactPhone);
                 }
                 $name .= '</small>';
             }

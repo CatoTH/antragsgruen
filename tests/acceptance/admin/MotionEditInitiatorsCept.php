@@ -9,7 +9,7 @@ $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
 $page = $I->gotoStdAdminPage(true, 'bdk', 'bdk')->gotoMotionList()->gotoMotionEdit(4);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
-$I->fillField('#initiatorName', 'Another test user');
+$I->fillField('#initiatorPrimaryName', 'Another test user');
 $I->fillField('#initiatorOrga', 'KV Test');
 $I->fillField('#initiatorEmail', 'test2@example.org');
 $I->fillField('#initiatorPhone', '01234567');
@@ -38,7 +38,7 @@ $I->wantTo('confirm the changes are saved');
 
 $page = $I->gotoStdAdminPage(true, 'bdk', 'bdk')->gotoMotionList()->gotoMotionEdit(4);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
-$I->seeInField('#initiatorName', 'Another test user');
+$I->seeInField('#initiatorPrimaryName', 'Another test user');
 $I->seeInField('#initiatorOrga', 'KV Test');
 $I->seeInField('#initiatorEmail', 'test2@example.org');
 $I->seeInField('#initiatorPhone', '01234567');

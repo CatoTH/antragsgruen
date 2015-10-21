@@ -37,9 +37,11 @@ $I->wantTo('modify the motion text');
 $I->dontSee('JavaScript aktiviert sein');
 $I->see('Gremium, LAG...');
 $I->dontSee('Beschlussdatum');
+$I->dontSee('Kontaktperson');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->dontSee('Gremium, LAG...');
 $I->see('Beschlussdatum');
+$I->see('Kontaktperson');
 
 $I->executeJS('window.newText = CKEDITOR.instances.sections_2_wysiwyg.getData();');
 $I->executeJS('window.newText = window.newText.replace(/woschechta Bayer/g, "Sauprei&szlig;");');
@@ -58,7 +60,7 @@ $I->executeJS('CKEDITOR.instances.amendmentEditorial_wysiwyg.setData("<p>some me
 
 $I->wantTo('submit the amendment with missing contact information');
 
-$I->fillField(['name' => 'Initiator[name]'], 'My Name');
+$I->fillField(['name' => 'Initiator[primaryName]'], 'My Name');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->submitForm('#amendmentEditForm', [], 'save');
@@ -70,7 +72,7 @@ $I->seeInField('#sections_1', 'New title');
 $I->see('Saupreiß', '#section_holder_2');
 $I->see('This is my reason', '#amendmentReasonHolder');
 
-$I->seeInField(['name' => 'Initiator[name]'], 'My Name');
+$I->seeInField(['name' => 'Initiator[primaryName]'], 'My Name');
 $I->seeInField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
 $I->dontSeeCheckboxIsChecked("#personTypeNatural");
 $I->seeCheckboxIsChecked("#personTypeOrga");
@@ -86,8 +88,9 @@ $I->seeElement('.bootstrap-datetimepicker-widget');
 $I->executeJS('$("#resolutionDateHolder").find(".input-group-addon").click()');
 $I->dontSeeElement('.bootstrap-datetimepicker-widget');
 
-$I->fillField(['name' => 'Initiator[name]'], 'My company');
+$I->fillField(['name' => 'Initiator[primaryName]'], 'My company');
 $I->fillField(['name' => 'Initiator[resolutionDate]'], '12.01.2015');
+$I->fillField(['name' => 'Initiator[contactName]'], 'MeinKontakt');
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->see(mb_strtoupper('Änderungsantrag bestätigen'), 'h1');
 
@@ -95,7 +98,8 @@ $I->wantTo('not confirm the amendment, instead correcting a mistake');
 
 $I->submitForm('#amendmentConfirmForm', [], 'modify');
 $I->see(mb_strtoupper('Änderungsantrag zu A2 stellen'), 'h1');
-$I->seeInField(['name' => 'Initiator[name]'], 'My company');
+$I->seeInField(['name' => 'Initiator[primaryName]'], 'My company');
+$I->seeInField(['name' => 'Initiator[contactName]'], 'MeinKontakt');
 $I->seeInField(['name' => 'Initiator[resolutionDate]'], '12.01.2015');
 $I->see('some meta text', '#section_holder_editorial');
 

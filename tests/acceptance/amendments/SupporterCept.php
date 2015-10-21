@@ -25,7 +25,7 @@ for ($s = 0; $s < 20; $s++) {
 $I->fillField('#fullTextHolder textarea', implode('; ', $supporters));
 $I->click('#fullTextHolder .fullTextAdd');
 
-$I->fillField('#initiatorName', 'Mein Name');
+$I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->fillField('#initiatorEmail', 'test@example.org');
 
 $I->submitForm('#amendmentEditForm', [], 'save');

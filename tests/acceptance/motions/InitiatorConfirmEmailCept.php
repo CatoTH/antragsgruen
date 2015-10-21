@@ -24,8 +24,8 @@ $I->wantTo('create an amendment');
 
 $I->gotoConsultationHome()->gotoAmendmentCreatePage();
 $I->fillField('#sections_1', 'New title');
-$I->fillField(['name' => 'Initiator[name]'], 'My Name');
-$I->fillField(['name' => 'Initiator[contactEmail]'], 'test@example.org');
+$I->fillField('#initiatorPrimaryName', 'My Name');
+$I->fillField('#initiatorEmail', 'test@example.org');
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 $I->see('E-Mail sent to: test@example.org');

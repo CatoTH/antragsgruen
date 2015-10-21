@@ -36,6 +36,7 @@ return [
     'agenda_filter'                     => 'Tagesordnung',
     'agenda_item'                       => 'Tagesordnungspunkt',
     'resolution'                        => 'beschlossen',
+    'resolution_on'                     => 'beschlossen am',
     'Resolution'                        => 'Beschlossen',
     'resoluted_on'                      => 'Entschieden am',
     'submitted_on'                      => 'Eingereicht',

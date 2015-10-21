@@ -11,7 +11,7 @@ $I->loginAsStdAdmin();
 $I->click('.motionLink4');
 $I->click('.sidebarActions .amendmentCreate a');
 
-$I->fillField('#initiatorName', 'Mein Name');
+$I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->fillField('#initiatorEmail', 'test@example.org');
 $I->submitForm('#amendmentEditForm', [], 'save');
 

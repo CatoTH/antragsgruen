@@ -15,7 +15,7 @@ $page = $I->gotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(2);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->dontSeeElement('#initiatorOrga');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_NATURAL);
-$I->fillField('#initiatorName', 'Another test user');
+$I->fillField('#initiatorPrimaryName', 'Another test user');
 $I->fillField('#initiatorOrga', 'KV Test');
 $I->fillField('#initiatorEmail', 'test2@example.org');
 $I->fillField('#initiatorPhone', '01234567');
@@ -44,7 +44,7 @@ $I->wantTo('confirm the changes are saved');
 
 $page = $I->gotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(2);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
-$I->seeInField('#initiatorName', 'Another test user');
+$I->seeInField('#initiatorPrimaryName', 'Another test user');
 $I->seeInField('#initiatorOrga', 'KV Test');
 $I->seeInField('#initiatorEmail', 'test2@example.org');
 $I->seeInField('#initiatorPhone', '01234567');

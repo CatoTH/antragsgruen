@@ -670,11 +670,13 @@
         $('#personTypeNatural, #personTypeOrga').on('click change', function () {
             if ($('#personTypeOrga').prop('checked')) {
                 $initiatorData.find('.organizationRow').addClass("hidden");
+                $initiatorData.find('.contactNameRow').removeClass("hidden");
                 $initiatorData.find('.resolutionRow').removeClass("hidden");
                 $initiatorData.find('.adderRow').addClass("hidden");
                 $('.supporterData, .supporterDataHead').addClass("hidden");
             } else {
                 $initiatorData.find('.organizationRow').removeClass("hidden");
+                $initiatorData.find('.contactNameRow').addClass("hidden");
                 $initiatorData.find('.resolutionRow').addClass("hidden");
                 $initiatorData.find('.adderRow').removeClass("hidden");
                 $('.supporterData, .supporterDataHead').removeClass("hidden");
