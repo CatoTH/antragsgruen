@@ -125,21 +125,21 @@ echo '</label>
     </div>
 </div>';
 
-
-echo '<div class="form-group"><div class="col-sm-4 label control-label">';
-echo 'Voreinstellung:';
-echo '</div><div class="col-sm-8">';
-foreach (\app\models\sitePresets\SitePresets::$PRESETS as $presetId => $preset) {
-    $defaults = json_encode($preset::getDetailDefaults());
-    echo '<label class="sitePreset" data-defaults="' . Html::encode($defaults) . '">';
-    echo Html::radio('sitePreset', ($form->sitePreset == $presetId), ['value' => $presetId]);
-    echo '<span>' . Html::encode($preset::getTitle()) . '</span>';
-    echo '</label><div class="sitePresetInfo">';
-    echo $preset::getDescription();
-    echo '</div>';
+if (!$form->hasDefaultData()) {
+    echo '<div class="form-group"><div class="col-sm-4 label control-label">';
+    echo 'Voreinstellung:';
+    echo '</div><div class="col-sm-8">';
+    foreach (\app\models\sitePresets\SitePresets::$PRESETS as $presetId => $preset) {
+        $defaults = json_encode($preset::getDetailDefaults());
+        echo '<label class="sitePreset" data-defaults="' . Html::encode($defaults) . '">';
+        echo Html::radio('sitePreset', ($form->sitePreset == $presetId), ['value' => $presetId]);
+        echo '<span>' . Html::encode($preset::getTitle()) . '</span>';
+        echo '</label><div class="sitePresetInfo">';
+        echo $preset::getDescription();
+        echo '</div>';
+    }
+    echo '</div></div>';
 }
-echo '</div></div>';
-
 
 echo '</div>';
 

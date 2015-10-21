@@ -40,11 +40,11 @@ class ManagerController extends Base
     {
         $sites = Site::getSidebarSites();
 
-        $html = "<ul class='nav nav-list einsatzorte-list'>";
-        $html .= "<li class='nav-header'>Aktuelle Einsatzorte</li>";
+        $html = '<ul class="nav nav-list einsatzorte-list">';
+        $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
         foreach ($sites as $site) {
-            $url = UrlHelper::createUrl(['consultation/index', "subdomain" => $site->subdomain]);
-            $html .= "<li>" . Html::a($site->title, $url) . "</li>\n";
+            $url = UrlHelper::createUrl(['consultation/index', 'subdomain' => $site->subdomain]);
+            $html .= '<li>' . Html::a($site->title, $url) . '</li>' . "\n";
         }
         $html .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
@@ -58,7 +58,6 @@ class ManagerController extends Base
     {
         $this->layout = 'column2';
 
-        //$this->performLogin($this->createUrl("manager/index"));
         $this->addSidebar();
         return $this->render('index');
     }
@@ -89,7 +88,7 @@ class ManagerController extends Base
     {
         $user = $this->eligibleToCreateUser();
         if (!$user) {
-            $this->redirect(UrlHelper::createUrl("manager/index"));
+            $this->redirect(UrlHelper::createUrl('manager/index'));
         }
         return $user;
     }
@@ -232,7 +231,7 @@ class ManagerController extends Base
             fwrite($file, $config->toJSON());
             fclose($file);
 
-            \yii::$app->session->setFlash('success', 'Gespeichert.');
+            \yii::$app->session->setFlash('success', \Yii::t('manager', 'saved'));
         }
 
         $editable = is_writable($configfile);
@@ -256,11 +255,9 @@ class ManagerController extends Base
         $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
 
         if (!file_exists($installFile)) {
-            $msg = 'Die Seite wurde bereits konfiguriert.<br>
-            Um die Grundinstallation erneut aufzurufen, lege bitte folgende Datei an:<br>
-            %FILE%<br><br>';
+            $msg = \Yii::t('manager', 'already_created_reinit') . '<br><br>';
             $url = Url::toRoute('manager/siteconfig');
-            $msg .= Html::a('Weiter zur allgemeinen Konfiguration', $url, ['class' => 'btn btn-primary']);
+            $msg .= Html::a(\Yii::t('manager', 'created_goon_std_config'), $url, ['class' => 'btn btn-primary']);
             $msg = str_replace('%FILE%', Html::encode($installFile), $msg);
             return $this->showErrorpage(403, $msg);
         }
@@ -292,9 +289,9 @@ class ManagerController extends Base
 
             if ($form->sqlCreateTables && $form->verifyDBConnection(false) && !$form->tablesAreCreated()) {
                 $form->createTables();
-                \yii::$app->session->setFlash('success', 'Die Datenbank wurde angelegt.');
+                \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_site_created'));
             } else {
-                \yii::$app->session->setFlash('success', 'Konfiguration gespeichert.');
+                \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_config_saved'));
             }
 
             if ($form->tablesAreCreated()) {
@@ -303,7 +300,7 @@ class ManagerController extends Base
                 \yii::$app->set('db', $connConfig);
 
                 if ($form->adminUsername != '' && $form->adminPassword != '') {
-                    $form->createAdminAccount();
+                    $form->createOrUpdateAdminAccount();
                 }
                 if ($form->adminUser) {
                     if ($form->getDefaultSite()) {

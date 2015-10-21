@@ -219,6 +219,18 @@ class AntragsgruenInitForm extends Model
     }
 
     /**
+     * @return boolean
+     */
+    public function hasDefaultData()
+    {
+        $site = $this->getDefaultSite();
+        if (!$site || !$site->currentConsultation) {
+            return false;
+        }
+        return (count($site->currentConsultation->motionTypes) > 0);
+    }
+
+    /**
      * @return null|User
      */
     public function getAdminUser()
@@ -283,6 +295,25 @@ class AntragsgruenInitForm extends Model
     public function hasAdminAccount()
     {
         return (count($this->adminIds) > 0);
+    }
+
+    /**
+     */
+    public function createOrUpdateAdminAccount()
+    {
+        /** @var User|null $user */
+        $user = User::findOne(['auth' => 'email:' . $this->adminUsername]);
+        if ($user) {
+            $user->pwdEnc = password_hash($this->adminPassword, PASSWORD_DEFAULT);
+            if (!$user->save()) {
+                var_dump($user->getErrors());
+                die();
+            }
+            $this->adminIds[] = $user->id;
+            $this->adminUser  = $user;
+        } else {
+            $this->createAdminAccount();
+        }
     }
 
     /**
@@ -381,7 +412,6 @@ class AntragsgruenInitForm extends Model
         } catch (\Exception $e) {
         }
 
-        echo 'Setting Admin user?';
         if ($this->adminUser && !in_array($this->adminUser->id, $config->adminUserIds)) {
             $config->adminUserIds[] = $this->adminUser->id;
         }
