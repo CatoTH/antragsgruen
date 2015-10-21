@@ -56,7 +56,7 @@ class LayoutHelper
         $content->text = '';
 
         if ($amendment->changeEditorial != '') {
-            $title = Exporter::encodePlainString('Redaktionelle Änderung');
+            $title = Exporter::encodePlainString(\Yii::t('amemd', 'editorial_hint'));
             $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $lines = LineSplitter::motionPara2lines($amendment->changeEditorial, false, PHP_INT_MAX);
             $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
@@ -67,7 +67,7 @@ class LayoutHelper
         }
 
         if ($amendment->changeExplanation != '') {
-            $title = Exporter::encodePlainString('Begründung');
+            $title = Exporter::encodePlainString(\Yii::t('amemd', 'reason'));
             $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $lines = LineSplitter::motionPara2lines($amendment->changeExplanation, false, PHP_INT_MAX);
             $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
@@ -75,7 +75,7 @@ class LayoutHelper
 
         $supporters = $amendment->getSupporters();
         if (count($supporters) > 0) {
-            $title = Exporter::encodePlainString('UnterstützerInnen');
+            $title = Exporter::encodePlainString(\Yii::t('amend', 'supporters'));
             $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $supps = [];
             foreach ($supporters as $supp) {
@@ -101,7 +101,7 @@ class LayoutHelper
         $pdfLayout->printAmendmentHeader($amendment);
 
         if ($amendment->changeEditorial != '') {
-            $pdfLayout->printSectionHeading('Redaktionelle Änderung');
+            $pdfLayout->printSectionHeading(\Yii::t('amemd', 'editorial_hint'));
             $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeEditorial, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
@@ -111,8 +111,19 @@ class LayoutHelper
         }
 
         if ($amendment->changeExplanation != '') {
-            $pdfLayout->printSectionHeading('Begründung');
+            $pdfLayout->printSectionHeading(\Yii::t('amemd', 'reason'));
             $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeExplanation, 0, 1, 0, true, '', true);
+            $pdf->Ln(7);
+        }
+
+        $supporters = $amendment->getSupporters();
+        if (count($supporters) > 0) {
+            $pdfLayout->printSectionHeading(\Yii::t('amend', 'supporters'));
+            $supportersStr = [];
+            foreach ($supporters as $supp) {
+                $supportersStr[] = Html::encode($supp->getNameWithOrga());
+            }
+            $pdf->writeHTMLCell(170, '', 27, '', implode(', ', $supportersStr), 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
     }

@@ -6,6 +6,7 @@ return [
     'motion'                            => 'Antrag',
     'initiator'                         => 'AntragstellerIn',
     'supporter'                         => 'UnterstützerIn',
+    'supporters'                        => 'UnterstützerInnen',
     'prefix'                            => 'Antragsnummer',
     'amendment_for'                     => 'Änderungsantrag zu',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
@@ -23,7 +24,8 @@ return [
     'create_explanation'                => 'Ändere hier den Antrag so ab, wie du ihn gern sehen würdest.<br>' . "\n" .
         'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
         'Falls dein Änderungsantrag Hinweise an die Programmkommission enthält, kannst du diese als ' . "\n" .
-        '&quot;<strong>Redaktionellen Antrag</strong>&quot; beifügen.',
+        '&quot;<strong>Redaktionelle Änderung</strong>&quot; beifügen.',
+    'editorial_hint'                    => 'Redaktionelle Änderung',
     'merge_amend_stati'                 => 'Status der Änderungsanträge',
     'confirm_amendment'                 => 'Änderungsantrag bestätigen',
     'amendment_submitted'               => 'Änderungsantrag eingereicht',
