@@ -20,9 +20,9 @@ $initiatorsStr = implode(', ', $initiators);
 
 // set document information
 $pdf->SetCreator('Antragsgrün');
-$pdf->SetAuthor(implode(", ", $initiators));
-$pdf->SetTitle(Yii::t('motion', 'Amendment') . " " . $amendment->getTitle());
-$pdf->SetSubject(Yii::t('motion', 'Amendment') . " " . $amendment->getTitle());
+$pdf->SetAuthor(implode(', ', $initiators));
+$pdf->SetTitle(Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());
+$pdf->SetSubject(Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());
 
 
 // add a page
