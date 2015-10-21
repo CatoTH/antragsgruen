@@ -124,7 +124,7 @@ class AmendmentSectionFormatter
     {
         $inIns          = $inDel = false;
         $affectedBlocks = [];
-        $interveningCount = 0;
+        $interveningCount = 2;
         $lastBlock = null;
         foreach ($blocks as $block) {
             $hadDiff = false;
