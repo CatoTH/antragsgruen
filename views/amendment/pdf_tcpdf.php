@@ -24,19 +24,7 @@ $pdf->SetAuthor(implode(', ', $initiators));
 $pdf->SetTitle(Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());
 $pdf->SetSubject(Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());
 
-
-// add a page
-$pdf->AddPage();
-
-$pdfLayout->printAmendmentHeader($amendment);
-
-// @TODO: Editorial change
-
-foreach ($amendment->getSortedSections(false) as $section) {
-    $section->getSectionType()->printAmendmentToPDF($pdfLayout, $pdf);
-}
-
-// @TODO: Editorial Explanation
+\app\views\amendment\LayoutHelper::printToPDF($pdf, $pdfLayout, $amendment);
 
 $pdf->Output('Amendment_' . $amendment->titlePrefix . '.pdf', 'I');
 

@@ -3,11 +3,22 @@
 namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\Diff;
 use Codeception\Specify;
 
 class AmendmentSectionFormatterTest extends TestBase
 {
     use Specify;
+
+    public function testInlineFormatting()
+    {
+        $strPre                  = '<p>Test 123</p>';
+        $strPost                 = '<p>Test</p>';
+        $computed                = AmendmentSectionFormatter::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, Diff::FORMATTING_INLINE, false);
+        $blocks                  = AmendmentSectionFormatter::htmlDiff2LineBlocks($computed, 1);
+        $getDiffLinesWithNumbers = AmendmentSectionFormatter::filterAffectedBlocks($blocks);
+        $this->assertEquals(1, count($getDiffLinesWithNumbers));
+    }
 
     /**
      *

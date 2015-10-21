@@ -69,6 +69,15 @@ abstract class IPDFLayout
     }
 
     /**
+     * @param string $text
+     */
+    public function printSectionHeading($text)
+    {
+        $this->pdf->SetFont('helvetica', '', 12);
+        $this->pdf->writeHTML('<h3>' . $text . '</h3>');
+    }
+
+    /**
      * @return TCPDF
      */
     abstract public function createPDFClass();

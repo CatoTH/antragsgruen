@@ -85,7 +85,7 @@ class Diff
                 return '<div style="color: green; margin: 0; padding: 0;"><blockquote class="inserted">' .
                 $str . '</div>';
             } else {
-                return '<div style="color: green;">' . $str . '</div>';
+                return '<span style="color: green;"><ins>' . $str . '</ins></span>';
             }
         } else {
             if (mb_stripos($str, '<ul>') === 0) {
@@ -131,7 +131,7 @@ class Diff
                 return '<div style="color: red; margin: 0; padding: 0;"><blockquote class="inserted">' .
                 $str . '</div>';
             } else {
-                return '<div style="color: red;">' . $str . '</div>';
+                return '<span style="color: red;"><del>' . $str . '</del></span>';
             }
         } else {
             if (mb_stripos($str, '<ul>') === 0) {

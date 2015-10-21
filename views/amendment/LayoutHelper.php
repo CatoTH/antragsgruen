@@ -7,6 +7,8 @@ use app\components\latex\Exporter;
 use app\components\LineSplitter;
 use app\models\db\Amendment;
 use app\models\sectionTypes\TextSimple;
+use app\views\pdfLayouts\IPDFLayout;
+use TCPDF;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -84,5 +86,34 @@ class LayoutHelper
         }
 
         return $content;
+    }
+
+    /**
+     * @param TCPDF $pdf
+     * @param IPDFLayout $pdfLayout
+     * @param Amendment $amendment
+     * @throws \app\models\exceptions\Internal
+     */
+    public static function printToPDF(TCPDF $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
+    {
+        $pdf->AddPage();
+
+        $pdfLayout->printAmendmentHeader($amendment);
+
+        if ($amendment->changeEditorial != '') {
+            $pdfLayout->printSectionHeading('Redaktionelle Änderung');
+            $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeEditorial, 0, 1, 0, true, '', true);
+            $pdf->Ln(7);
+        }
+
+        foreach ($amendment->getSortedSections(false) as $section) {
+            $section->getSectionType()->printAmendmentToPDF($pdfLayout, $pdf);
+        }
+
+        if ($amendment->changeExplanation != '') {
+            $pdfLayout->printSectionHeading('Begründung');
+            $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeExplanation, 0, 1, 0, true, '', true);
+            $pdf->Ln(7);
+        }
     }
 }

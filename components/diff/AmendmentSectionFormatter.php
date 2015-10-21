@@ -58,6 +58,28 @@ class AmendmentSectionFormatter
     }
 
     /**
+     * @param string $strPre
+     * @param string $strPost
+     * @param int $diffFormatting
+     * @param bool $debug
+     * @return string
+     * @throws Internal
+     */
+    public static function getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, $diffFormatting, $debug)
+    {
+        $strPost = trim($strPost);
+        $strPre = trim($strPre);
+
+        $diff = new Diff();
+        $diff->setIgnoreStr('###LINENUMBER###');
+        $diff->setFormatting($diffFormatting);
+        $diff->setDebug($debug);
+
+        $return = $diff->computeDiff($strPre, $strPost);
+        return $diff->cleanupDiffProblems($return);
+    }
+
+    /**
      * @return string
      * @throws Internal
      */
@@ -82,15 +104,8 @@ class AmendmentSectionFormatter
             $linesOut = LineSplitter::motionPara2lines($para, false, $lineLength);
             $strPost .= implode(' ', $linesOut) . "\n";
         }
-        $strPost = trim($strPost);
 
-        $diff = new Diff();
-        $diff->setIgnoreStr('###LINENUMBER###');
-        $diff->setFormatting($this->diffFormatting);
-        $diff->setDebug($this->debug);
-
-        $return = $diff->computeDiff($strPre, $strPost);
-        return $diff->cleanupDiffProblems($return);
+        return static::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, $this->diffFormatting, $this->debug);
     }
 
     /**
@@ -182,7 +197,7 @@ class AmendmentSectionFormatter
         $lines = explode("\n", $computed);
 
         for ($i = 0; $i < count($lines) - 1; $i++) {
-            $last5 = mb_substr($lines[$i], mb_strlen($lines[$i]) - 5);
+            $last5  = mb_substr($lines[$i], mb_strlen($lines[$i]) - 5);
             $first6 = mb_substr($lines[$i + 1], 0, 6);
             if ($last5 == '<ins>' && $first6 == '</ins>') {
                 $lines[$i] .= '###FORCELINEBREAK###</ins>';
@@ -194,7 +209,7 @@ class AmendmentSectionFormatter
             }
         }
 
-        $out   = [];
+        $out = [];
         for ($i = 0; $i < count($lines); $i++) {
             $line = $lines[$i];
             if (preg_match('/^<(ul|blockquote|ol)/siu', $line)) {

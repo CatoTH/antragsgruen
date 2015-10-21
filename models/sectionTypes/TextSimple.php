@@ -249,13 +249,14 @@ class TextSimple extends ISectionType
 
         $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+
         if (count($diffGroups) > 0) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-                $pdf->SetFont('helvetica', '', 12);
-                $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
+                $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
             }
 
             $html = static::formatDiffGroup($diffGroups);
+            $html = str_replace('###FORCELINEBREAK###', '<br>', $html);
             $pdf->writeHTMLCell(170, '', 27, '', $html, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }

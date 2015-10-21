@@ -1,9 +1,6 @@
 <?php
 
-use app\components\latex\Exporter;
-use app\components\latex\Layout;
 use app\models\db\Amendment;
-use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
 /**
@@ -28,21 +25,8 @@ $pdf->SetSubject(Yii::t('pdf', 'all_amendments_title'));
 
 try {
     foreach ($amendments as $amendment) {
-        // add a page
-        $pdf->AddPage();
-
-        $pdfLayout->printAmendmentHeader($amendment);
-
-        // @TODO: Editorial change
-
-        foreach ($amendment->getSortedSections(false) as $section) {
-            $section->getSectionType()->printAmendmentToPDF($pdfLayout, $pdf);
-        }
-
-        // @TODO: Editorial Explanation
+        \app\views\amendment\LayoutHelper::printToPDF($pdf, $pdfLayout, $amendment);
     }
-
-
 } catch (\Exception $e) {
     echo 'Ein Fehler trat auf: ' . Html::encode($e);
     die();
