@@ -113,7 +113,9 @@ foreach ($entries as $entry) {
         echo '<td>A</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
         echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
-        echo '<td class="titleCol">' . Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl) . '</td>';
+        echo '<td class="titleCol"><span>';
+        echo Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
+        echo '</span></td>';
         echo '<td>' . Html::encode($motionStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {

@@ -351,6 +351,13 @@ label.legend {
     width: 120px;
     overflow: visible;
   }
+  td.titleCol {
+    text-indent: 0;
+    > span {
+      display: inline-block;
+      padding: 5px;
+    }
+  }
   &.JColResizer {
     .actionCol {
       overflow: visible;
