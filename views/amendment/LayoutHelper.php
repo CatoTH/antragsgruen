@@ -56,7 +56,7 @@ class LayoutHelper
         $content->text = '';
 
         if ($amendment->changeEditorial != '') {
-            $title = Exporter::encodePlainString(\Yii::t('amemd', 'editorial_hint'));
+            $title = Exporter::encodePlainString(\Yii::t('amend', 'editorial_hint'));
             $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $lines = LineSplitter::motionPara2lines($amendment->changeEditorial, false, PHP_INT_MAX);
             $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
@@ -67,7 +67,7 @@ class LayoutHelper
         }
 
         if ($amendment->changeExplanation != '') {
-            $title = Exporter::encodePlainString(\Yii::t('amemd', 'reason'));
+            $title = Exporter::encodePlainString(\Yii::t('amend', 'reason'));
             $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $lines = LineSplitter::motionPara2lines($amendment->changeExplanation, false, PHP_INT_MAX);
             $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
@@ -101,7 +101,7 @@ class LayoutHelper
         $pdfLayout->printAmendmentHeader($amendment);
 
         if ($amendment->changeEditorial != '') {
-            $pdfLayout->printSectionHeading(\Yii::t('amemd', 'editorial_hint'));
+            $pdfLayout->printSectionHeading(\Yii::t('amend', 'editorial_hint'));
             $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeEditorial, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
@@ -111,7 +111,7 @@ class LayoutHelper
         }
 
         if ($amendment->changeExplanation != '') {
-            $pdfLayout->printSectionHeading(\Yii::t('amemd', 'reason'));
+            $pdfLayout->printSectionHeading(\Yii::t('amend', 'reason'));
             $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeExplanation, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
