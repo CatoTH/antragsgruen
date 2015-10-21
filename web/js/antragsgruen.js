@@ -31,7 +31,8 @@
     function ckeditorInit(id) {
 
         var $el = $("#" + id),
-            initialized = $el.data("ckeditor_initialized");
+            initialized = $el.data("ckeditor_initialized"),
+            allowedContent;
         if (typeof (initialized) != "undefined" && initialized) {
             return;
         }
@@ -80,7 +81,7 @@
 
         if ($el.data('track-changed') == '1') {
             ckeditorConfig.extraPlugins += ',lite';
-            ckeditorConfig.allowedContent = 'strong s em u sub sup;' +
+            allowedContent = 'strong s em u sub sup;' +
                 'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint){border,margin,padding};' +
@@ -89,14 +90,27 @@
                 'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
         } else {
             ckeditorConfig.removePlugins += ',lite';
-            ckeditorConfig.allowedContent = 'strong s em u sub sup;' +
+            allowedContent = 'strong s em u sub sup;' +
                 'ul ol li {list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +
                 'span(underline,strike,subscript,superscript);' +
                 'a[href];';
         }
+        ckeditorConfig.allowedContent = allowedContent;
+        ckeditorConfig.pasteFilter = allowedContent;
+
         var editor = CKEDITOR.inline(id, ckeditorConfig);
+
+        /*
+        editor.on('paste', function (data) {
+            if (data.data.type != 'html') {
+                return;
+            }
+            var html = data.data.dataValue;
+            console.log(data, CKEDITOR.instances.sections_2_wysiwyg.focusManager.currentActive, CKEDITOR.instances.sections_2_wysiwyg.focusManager);
+        });
+        */
 
         var $fieldset = $el.parents(".wysiwyg-textarea").first();
         if ($fieldset.data("max-len") != 0) {
@@ -436,7 +450,7 @@
                 $textarea.focus();
             }
         });
-        $paragraphs.find(".modifiedActions .revert").click(function(ev) {
+        $paragraphs.find(".modifiedActions .revert").click(function (ev) {
             ev.preventDefault();
             ev.stopPropagation();
             var $para = $(this).parents(".wysiwyg-textarea"),
