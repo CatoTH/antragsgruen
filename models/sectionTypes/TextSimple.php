@@ -247,14 +247,14 @@ class TextSimple extends ISectionType
         /** @var AmendmentSection $section */
         $section = $this->section;
 
-        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdf->SetFont('helvetica', '', 12);
-            $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
-        }
-
         $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
         if (count($diffGroups) > 0) {
+            if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+                $pdf->SetFont('helvetica', '', 12);
+                $pdf->writeHTML('<h3>' . $this->section->consultationSetting->title . '</h3>');
+            }
+
             $html = static::formatDiffGroup($diffGroups);
             $pdf->writeHTMLCell(170, '', 27, '', $html, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
