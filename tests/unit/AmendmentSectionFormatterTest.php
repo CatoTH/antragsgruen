@@ -23,7 +23,7 @@ class AmendmentSectionFormatterTest extends TestBase
     /**
      *
      */
-    public function testUlLi()
+    public function testUlLiInserted()
     {
 
         // 'Inserted LIs should be shown'
@@ -33,7 +33,12 @@ class AmendmentSectionFormatterTest extends TestBase
         $expect = $in;
         $out    = AmendmentSectionFormatter::filterAffectedBlocks($in);
         $this->assertEquals($expect, $out);
+    }
 
+    /**
+     */
+    public function testUlLiWithLineBreaks()
+    {
         // 'Line breaks within lists'
 
         $in = '<p>###LINENUMBER###Do nackata Wurscht i hob di ' .
@@ -53,7 +58,26 @@ class AmendmentSectionFormatterTest extends TestBase
         $out = AmendmentSectionFormatter::getDiffSplitToLines($in);
 
         $this->assertEquals($expect, $out);
+    }
 
+    /**
+     */
+    public function testUlLiInlineFormatted()
+    {
+        $in = '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>';
+        $expect = [
+            '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>',
+        ];
+
+        $out = AmendmentSectionFormatter::getDiffSplitToLines($in);
+
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testLineBreaksWithinParagraphs()
+    {
         // 'Line breaks within paragraphs'
         $orig = '<p>Um die ökonomischen, sozialen und ökologischen Probleme in Angriff zu nehmen, müssen wir umsteuern. Dazu brauchen wir einen Green New Deal für Europa, der eine umfassende Antwort auf die Krisen der Gegenwart gibt. Er enthält mehrere Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische Innovationen setzt statt auf maßlose Deregulierung; eine Politik der sozialen Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen Spaltung unserer Gesellschaften; eine Politik, die auch unpopuläre Strukturreformen angeht, wenn diese zu nachhaltigem Wachstum und mehr Gerechtigkeit beitragen; ein Politik die Probleme wie Korruption und mangelnde Rechtsstaatlichkeit angehen und eine Politik, die die Glaubwürdigkeit in Europa, dass Schulden auch bedient werden, untermauert.</p>
 <p>[b]Die Kaputtsparpolitik ist gescheitert[/b]<br>

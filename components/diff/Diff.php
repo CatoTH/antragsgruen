@@ -119,16 +119,16 @@ class Diff
         }
         if ($this->formatting == static::FORMATTING_INLINE) {
             if (mb_stripos($str, '<ul>') === 0) {
-                return '<div style="color: red; margin: 0; padding: 0;"><ul class="inserted">' .
+                return '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted">' .
                 mb_substr($str, 4) . '</div>';
             } elseif (mb_stripos($str, '<ol>') === 9) {
-                return '<div style="color: red; margin: 0; padding: 0;"><ol class="inserted">' .
+                return '<div style="color: red; margin: 0; padding: 0;"><ol class="deleted">' .
                 mb_substr($str, 4) . '</div>';
             } elseif (mb_stripos($str, '<ul>')) {
-                return '<div style="color: red; margin: 0; padding: 0;"><li class="inserted">' .
+                return '<div style="color: red; margin: 0; padding: 0;"><li class="deleted">' .
                 mb_substr($str, 12) . '</div>';
             } elseif (mb_stripos($str, '<blockquote>')) {
-                return '<div style="color: red; margin: 0; padding: 0;"><blockquote class="inserted">' .
+                return '<div style="color: red; margin: 0; padding: 0;"><blockquote class="deleted">' .
                 $str . '</div>';
             } else {
                 return '<span style="color: red;"><del>' . $str . '</del></span>';

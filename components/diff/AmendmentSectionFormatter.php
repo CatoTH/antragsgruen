@@ -212,7 +212,7 @@ class AmendmentSectionFormatter
         $out = [];
         for ($i = 0; $i < count($lines); $i++) {
             $line = $lines[$i];
-            if (preg_match('/^<(ul|blockquote|ol)/siu', $line)) {
+            if (preg_match('/^(<div[^>]*>)?<(ul|blockquote|ol)/siu', $line)) {
                 $out[] = $line;
             } else {
                 $line          = preg_replace('/<\/?p>/siu', '', $line);
