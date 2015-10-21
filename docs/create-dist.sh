@@ -20,7 +20,7 @@ cd local/build-dist
 
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.0.0"
-./composer.phar install
+./composer.phar install --prefer-dist
 
 rm -R local dist docker-vagrant
 rm composer.phar composer.json composer.lock codeception.yml phpci.yml .gitignore .travis.yml

@@ -57,7 +57,7 @@ Development Setup
 ```bash
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.0.0"
-./composer.phar install
+./composer.phar install --prefer-dist
 ```
 
 
