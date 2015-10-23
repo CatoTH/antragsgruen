@@ -5,6 +5,7 @@ return [
     'amendments'                        => 'Änderungsanträge',
     'motion'                            => 'Antrag',
     'initiator'                         => 'AntragstellerIn',
+    'initiators_title'                  => 'Antragsteller_Innen',
     'supporter'                         => 'UnterstützerIn',
     'supporters'                        => 'UnterstützerInnen',
     'prefix'                            => 'Antragsnummer',
@@ -36,4 +37,7 @@ return [
     'amendment_withdraw'                => 'Änderungsantrag zurückziehen',
     'reason'                            => 'Begründung',
     'amendment_requirement'             => 'Voraussetzungen für einen Antrag',
+    'button_submit'                     => 'Einreichen',
+    'button_correct'                    => 'Korrigieren',
+    'confirm'                           => 'Bestätigen',
 ];
