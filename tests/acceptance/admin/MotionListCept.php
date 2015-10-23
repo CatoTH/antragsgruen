@@ -10,6 +10,10 @@ $I->see('O’zapft is!');
 $I->see('Textformatierungen');
 $I->see('Ä2');
 
+$I->see('Tester', '.amendment1');
+$I->see('Testuser', '.amendment2');
+$I->see('Testuser', '.motion2');
+
 $I->dontSee('Freischalten zurücknehmen');
 $I->executeJS('$(".motion2 .actionCol .dropdown-toggle").click()');
 $I->see('Freischalten zurücknehmen');
