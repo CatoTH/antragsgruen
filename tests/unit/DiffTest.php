@@ -201,7 +201,6 @@ class DiffTest extends TestBase
         $this->assertEquals($orig, $corrected);
 
 
-
         $orig      = [
             ['', Engine::UNMODIFIED],
             ['<p>', Engine::UNMODIFIED],
@@ -214,7 +213,6 @@ class DiffTest extends TestBase
         $this->assertEquals($orig, $corrected);
 
 
-
         $orig      = [
             ['', Engine::UNMODIFIED],
             ['<p>', Engine::UNMODIFIED],
@@ -259,5 +257,17 @@ class DiffTest extends TestBase
             ['<p>', Engine::UNMODIFIED],
             ['more', Engine::UNMODIFIED],
         ], $corrected);
+    }
+
+    /**
+     */
+    public function testLineDiffWithTags()
+    {
+        $strPre = '<ul><li>Listenpunkt</li></ul>';
+        $strPost = '<p>Test</p>';
+        $diff = new Diff();
+        $out = $diff->computeLineDiff($strPre, $strPost);
+        $expected = '<ul><li><del>Listenpunkt</del></li></ul><p><ins>Test</ins></p>';
+        $this->assertEquals($expected, $out);
     }
 }
