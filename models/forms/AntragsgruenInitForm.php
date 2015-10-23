@@ -210,6 +210,9 @@ class AntragsgruenInitForm extends Model
      */
     public function getDefaultSite()
     {
+        if (!$this->verifyDBConnection(false)) {
+            return null;
+        }
         $sites = Site::findAll(['1=1']);
         if (count($sites) > 0) {
             return $sites[0];
