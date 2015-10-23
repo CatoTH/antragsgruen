@@ -1,11 +1,8 @@
 <?php
 
-use app\components\diff\AmendmentSectionFormatter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
 /**

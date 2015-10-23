@@ -421,9 +421,7 @@
             } else {
                 $paragraphs.removeClass('modifyable');
                 $('input[name=modifiedParagraphNo]').val($modified.data("paragraph-no"));
-                console.log("Set", $('input[name=modifiedSectionId]'), $modified.parents(".texteditorBox").data("section-id"));
                 $('input[name=modifiedSectionId]').val($modified.parents(".texteditorBox").data("section-id"));
-                console.log($modified.data("paragraph-no"));
             }
         };
         $paragraphs.click(function () {
@@ -478,6 +476,15 @@
                     $textarea.parent().find("textarea.consolidated").val(editor.getData());
                 }
             });
+        });
+
+        $(".texteditorBox").each(function() {
+            var $this = $(this),
+                sectionId = $this.data("section-id"),
+                paraNo = $this.data("changed-para-no");
+            if (paraNo > -1) {
+                $("#section_holder_" + sectionId + "_" + paraNo).click();
+            }
         });
     };
 
