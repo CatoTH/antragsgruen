@@ -57,6 +57,7 @@ class LayoutHelper
             echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
         }
         echo '</p>';
+        echo "<span class='clearfix'></span>\n";
 
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
         if (count($amendments) > 0) {
@@ -80,7 +81,7 @@ class LayoutHelper
                     echo ' <span class="status">(' . Html::encode($amend->getStati()[$amend->status]) . ')</span>';
                 }
                 echo '</span>' . "\n";
-
+                echo "<span class='clearfix'></span>\n";
                 echo '</li>' . "\n";
             }
             echo '</ul>';

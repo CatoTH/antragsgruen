@@ -134,6 +134,9 @@
         font-style: italic;
         color: rgb(115, 115, 115);
       }
+      .clearfix {
+        display: none;
+      }
     }
     h4.amendments {
       display: none;
@@ -161,12 +164,12 @@
         }
         .motionPrefix {
           width: 90px;
-          position: absolute;
+          float:left;
           left: 30px;
           top: 13px;
         }
         .motionTitle {
-          display: inline-block;
+          display: block;
           margin-left: 95px;
         }
         .pdfLink {
@@ -174,14 +177,18 @@
         }
       }
       .info {
+        display: block;
         margin-left: 95px;
+      }
+      .clearfix {
+        clear: both;
       }
     }
     ul.amendments {
       margin-bottom: 10px;
       > li {
         > a {
-          position: absolute;
+          float: left;
           width: 90px;
           left: 0;
           top: 0;
