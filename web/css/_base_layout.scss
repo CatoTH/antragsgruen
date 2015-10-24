@@ -82,6 +82,12 @@ a {
     text-decoration: none;
   }
 }
+.alert-info a {
+  color: darken($colorLinks, 5%);
+  &:hover {
+    color: lighten(darken($colorLinks, 5%), 15%);
+  }
+}
 
 .well {
   padding: 0;

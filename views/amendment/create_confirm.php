@@ -1,11 +1,8 @@
 <?php
 
-use app\components\diff\AmendmentSectionFormatter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
 /**
@@ -22,14 +19,14 @@ $params     = $controller->layoutParams;
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
 $params->addBreadcrumb($amendment->motion->titlePrefix, UrlHelper::createMotionUrl($amendment->motion));
-$params->addBreadcrumb('Änderungsantrag', UrlHelper::createAmendmentUrl($amendment, 'edit'));
-$params->addBreadcrumb('Bestätigen');
+$params->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
+$params->addBreadcrumb(\Yii::t('amend', 'confirm'));
 
 echo '<h1>' . Yii::t('amend', 'confirm_amendment') . '</h1>';
 
 if ($amendment->changeEditorial != '') {
     echo '<section id="section_editorial" class="motionTextHolder">';
-    echo '<h3 class="green">' . 'Redaktionelle Änderung' . '</h3>';
+    echo '<h3 class="green">' . \Yii::t('amend', 'editorial_hint') . '</h3>';
     echo '<div class="paragraph"><div class="text">';
     echo $amendment->changeEditorial;
     echo '</div></div></section>';
@@ -44,7 +41,7 @@ foreach ($sections as $section) {
 
 if ($amendment->changeExplanation != '') {
     echo '<div class="motionTextHolder amendmentReasonHolder">';
-    echo '<h3 class="green">Begründung des Änderungsantrags</h3>';
+    echo '<h3 class="green">' . \Yii::t('amend', 'reason') . '</h3>';
     echo '<div class="content">';
     echo $amendment->changeExplanation;
     echo '</div>';
@@ -53,7 +50,7 @@ if ($amendment->changeExplanation != '') {
 
 
 echo '<div class="motionTextHolder">
-        <h3 class="green">Antragsteller_Innen</h3>
+        <h3 class="green">' . \Yii::t('amend', 'initiators_title') . '</h3>
 
         <div class="content">
             <ul>';
@@ -75,12 +72,12 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentConfirmForm']);
 echo '<div class="content">
         <div style="float: right;">
             <button type="submit" name="confirm" class="btn btn-success">
-                <span class="glyphicon glyphicon-ok-sign"></span> Einreichen
+                <span class="glyphicon glyphicon-ok-sign"></span> ' . \Yii::t('amend', 'button_submit') . '
             </button>
         </div>
         <div style="float: left;">
             <button type="submit" name="modify" class="btn">
-                <span class="glyphicon glyphicon-remove-sign"></span> Korrigieren
+                <span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('amend', 'button_correct') . '
             </button>
         </div>
     </div>';

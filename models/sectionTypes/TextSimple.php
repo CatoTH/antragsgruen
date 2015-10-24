@@ -55,15 +55,19 @@ class TextSimple extends ISectionType
         $moSection = $amSection->getOriginalMotionSection();
         $moParas   = HTMLTools::sectionSimpleHTML($moSection->data, false);
 
-        if ($amSection->isNewRecord) {
-            $amParas = $moParas;
-        } else {
-            $amParas = $amSection->diffToOrigParagraphs($moParas);
+        $amParas          = $moParas;
+        $changedParagraph = -1;
+        if (!$amSection->isNewRecord) {
+            foreach ($amSection->diffToOrigParagraphs($moParas) as $paraNo => $para) {
+                $amParas[$paraNo] = $para->strDiff;
+                $changedParagraph = $paraNo;
+            }
         }
 
         $type = $this->section->consultationSetting;
         $str  = '<div class="label">' . Html::encode($type->title) . '</div>';
-        $str .= '<div class="texteditorBox" data-section-id="' . $amSection->sectionId . '">';
+        $str .= '<div class="texteditorBox" data-section-id="' . $amSection->sectionId . '" ' .
+            'data-changed-para-no="' . $changedParagraph . '">';
         foreach ($moParas as $paraNo => $moPara) {
             $nameBase = 'sections[' . $type->id . '][' . $paraNo . ']';
             $htmlId   = 'sections_' . $type->id . '_' . $paraNo;

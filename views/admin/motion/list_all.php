@@ -119,7 +119,11 @@ foreach ($entries as $entry) {
         echo '<td>' . Html::encode($motionStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {
-            $initiators[] = $initiator->name;
+            if ($initiator->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+                $initiators[] = $initiator->organization;
+            } else {
+                $initiators[] = $initiator->name;
+            }
         }
         echo '<td>' . Html::encode(implode(", ", $initiators)) . '</td>';
         if ($hasTags) {
@@ -174,7 +178,11 @@ foreach ($entries as $entry) {
         echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {
-            $initiators[] = $initiator->name;
+            if ($initiator->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+                $initiators[] = $initiator->organization;
+            } else {
+                $initiators[] = $initiator->name;
+            }
         }
         echo '<td>' . Html::encode(implode(', ', $initiators)) . '</td>';
         if ($hasTags) {

@@ -301,13 +301,14 @@ class Diff
         $lineNew      = static::tokenizeLine($lineNew);
 
         $return = $this->engine->compareStrings($lineOld, $lineNew);
+
         $return = $this->groupOperations($return, '');
 
         for ($i = 0; $i < count($return); $i++) {
             if ($return[$i][1] == Engine::UNMODIFIED) {
                 $computedStrs[] = $return[$i][0];
             } elseif ($return[$i][1] == Engine::DELETED) {
-                if (isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED) {
+                if (isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED && $return[$i + 1][0][0] != '<') {
                     $computedStrs[] = $this->computeWordDiff($return[$i][0], $return[$i + 1][0]);
                     $i++;
                 } else {
@@ -325,6 +326,7 @@ class Diff
                 throw new Internal('Unknown type: ' . $return[$i][1]);
             }
         }
+
         $computedStr = implode("\n", $computedStrs);
         if ($this->debug) {
             echo "\n\n---\n";
@@ -501,15 +503,6 @@ class Diff
         $computedStr = '';
 
         $return = $this->engine->compareStrings($strOld, $strNew);
-
-        /*
-        echo "\n\n\n";
-        var_dump($strOld);
-        echo "\n\n";
-        var_dump($strNew);
-        echo "\n\n";
-        var_dump($return);
-        */
 
         $return = $this->groupOperations($return, static::ORIG_LINEBREAK);
 

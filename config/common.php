@@ -40,6 +40,9 @@ return [
         'cache'        => [
             'class' => 'yii\caching\FileCache',
         ],
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
         'mailer'       => [
             'class' => 'yii\swiftmailer\Mailer',
         ],
