@@ -624,7 +624,7 @@ class Amendment extends IMotion implements IRSSItem
         if (count($inits) == 1) {
             $first = $inits[0];
             if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
-                $return[\Yii::t('pdf', 'InitiatorSingle')] = $first->name;
+                $return[\Yii::t('pdf', 'InitiatorSingle')] = $first->organization;
                 $return[\Yii::t('pdf', 'ResolutionDate')]  = Tools::formatMysqlDate($first->resolutionDate);
             } else {
                 $return[\Yii::t('pdf', 'InitiatorSingle')] = $first->getNameWithResolutionDate(false);
