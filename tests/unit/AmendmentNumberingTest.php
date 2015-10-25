@@ -104,14 +104,39 @@ class AmendmentNumberingTest extends DBTestBase
      */
     public function testByLineNumbering()
     {
+        $sorter = new ByLine();
+
         /** @var Amendment $amendment */
         $amendment              = Amendment::findOne(3);
         $amendment->titlePrefix = '';
 
-        $sorter = new ByLine();
         $out    = $sorter->getAmendmentNumber($amendment, $amendment->motion);
-        $expect = 'A2-009-1';
+        $expect = 'A2-009';
 
         $this->assertEquals($expect, $out);
+
+
+        $amendment              = Amendment::findOne(272);
+        $amendment->titlePrefix = '';
+
+        $out    = $sorter->getAmendmentNumber($amendment, $amendment->motion);
+        $expect = 'A2-027';
+
+        $this->assertEquals($expect, $out);
+
+
+        $amendment              = Amendment::findOne(274);
+        $amendment->titlePrefix = '';
+        foreach ($amendment->motion->amendments as $amend) {
+            if ($amend->id == 272) {
+                $amend->titlePrefix = 'A2-027';
+            }
+        }
+
+        $out    = $sorter->getAmendmentNumber($amendment, $amendment->motion);
+        $expect = 'A2-027-2';
+
+        $this->assertEquals($expect, $out);
+
     }
 }
