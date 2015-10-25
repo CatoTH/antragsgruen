@@ -8,6 +8,7 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
+use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use yii\base\Model;
@@ -531,10 +532,15 @@ class AdminMotionFilterForm extends Model
                 if ($supp->role != MotionSupporter::ROLE_INITIATOR) {
                     continue;
                 }
-                if (!isset($initiators[$supp->name])) {
-                    $initiators[$supp->name] = 0;
+                if ($supp->personType == ISupporter::PERSON_NATURAL) {
+                    $name = $supp->name;
+                } else {
+                    $name = $supp->organization;
                 }
-                $initiators[$supp->name]++;
+                if (!isset($initiators[$name])) {
+                    $initiators[$name] = 0;
+                }
+                $initiators[$name]++;
             }
         }
         foreach ($this->allAmendments as $amend) {
@@ -542,10 +548,15 @@ class AdminMotionFilterForm extends Model
                 if ($supp->role != AmendmentSupporter::ROLE_INITIATOR) {
                     continue;
                 }
-                if (!isset($initiators[$supp->name])) {
-                    $initiators[$supp->name] = 0;
+                if ($supp->personType == ISupporter::PERSON_NATURAL) {
+                    $name = $supp->name;
+                } else {
+                    $name = $supp->organization;
                 }
-                $initiators[$supp->name]++;
+                if (!isset($initiators[$name])) {
+                    $initiators[$name] = 0;
+                }
+                $initiators[$name]++;
             }
         }
         $out = [];
