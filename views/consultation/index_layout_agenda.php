@@ -37,7 +37,7 @@ if ($admin) {
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
     echo Html::beginForm('', 'post', ['id' => 'agendaEditSavingHolder', 'class' => 'hidden']);
     echo '<input type="hidden" name="data" value="">';
-    echo '<button class="btn btn-success" type="submit" name="saveAgenda">' . \Yii::t('base', 'Save') . '</button>';
+    echo '<button class="btn btn-success" type="submit" name="saveAgenda">' . \Yii::t('base', 'save') . '</button>';
     echo Html::endForm();
 
     $layout->addJS('js/backend.js');

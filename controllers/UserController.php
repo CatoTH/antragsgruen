@@ -10,6 +10,7 @@ use app\models\db\EMailBlacklist;
 use app\models\db\User;
 use app\models\db\UserNotification;
 use app\models\exceptions\ExceptionBase;
+use app\models\exceptions\FormError;
 use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
@@ -105,11 +106,7 @@ class UserController extends Base
                 $this->loginUser($client->getOrCreateUser());
                 $this->redirect($backUrl);
             } else {
-                $msg = 'Es trat ein unbekannter Fehler auf.' . "\n" .
-                    'Falls du versucht hast, dich mit deinen Wurzelwerk-Zugangsdaten einzuloggen, ' .
-                    'versuch es einfach noch ein zweites Mal - möglicherweise war das nur ' .
-                    'ein temporärer Fehler seitens des Wurzelwerks.';
-                \yii::$app->session->setFlash('error', $msg);
+                \yii::$app->session->setFlash('error', \Yii::t('user', 'err_unknown_ww_repeat'));
                 return $this->actionLogin($backUrl);
             }
             return '';
@@ -120,7 +117,7 @@ class UserController extends Base
         } catch (\Exception $e) {
             return $this->showErrorpage(
                 500,
-                'Es trat leider ein unvorhergesehener Fehler auf:<br> "' . Html::encode($e->getMessage()) . '"'
+                \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
             );
         }
         return Yii::$app->getResponse()->redirect($url);
@@ -157,7 +154,7 @@ class UserController extends Base
                         ]
                     );
                 } else {
-                    \Yii::$app->session->setFlash('success', 'Willkommen!');
+                    \Yii::$app->session->setFlash('success', \Yii::t('user', 'welcome'));
                 }
 
                 $this->redirect($backUrl, 307);
@@ -194,7 +191,7 @@ class UserController extends Base
             /** @var User $user */
             $user = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
             if (!$user) {
-                $msgError = 'Es existiert kein Zugang mit der angegebenen E-Mail-Adresse...?';
+                $msgError = \Yii::t('user', 'err_email_acc_notfound');
             } elseif ($user->checkEmailConfirmationCode($_REQUEST['code'])) {
                 $user->emailConfirmed = 1;
                 $user->status         = User::STATUS_CONFIRMED;
@@ -203,7 +200,7 @@ class UserController extends Base
                     return $this->render('registration_confirmed');
                 }
             } else {
-                $msgError = 'Der angegebene Code stimmt leider nicht.';
+                $msgError = \Yii::t('user', 'err_code_wrong');
             }
         }
 
@@ -237,13 +234,13 @@ class UserController extends Base
             /** @var User $user */
             $user = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
             if (!$user) {
-                $msg = str_replace('%USER%', $_REQUEST['email'], 'Der Account %USER% wurde nicht gefunden.');
+                $msg = str_replace('%USER%', $_REQUEST['email'], \Yii::t('user', 'err_user_notfound'));
                 \yii::$app->session->setFlash('error', $msg);
             } else {
                 $email = $_REQUEST['email'];
                 try {
                     $user->sendRecoveryMail();
-                    $msg = 'Dir wurde eine Passwort-Wiederherstellungs-Mail geschickt.';
+                    $msg = \Yii::t('user', 'pwd_recovery_sent');
                     \yii::$app->session->setFlash('success', $msg);
                 } catch (ExceptionBase $e) {
                     \yii::$app->session->setFlash('error', $e->getMessage());
@@ -256,10 +253,10 @@ class UserController extends Base
             $user     = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
             $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
             if (!$user) {
-                $msg = str_replace('%USER%', $_REQUEST['email'], 'Der Account %USER% wurde nicht gefunden.');
+                $msg = str_replace('%USER%', $_REQUEST['email'], \Yii::t('user', 'err_user_notfound'));
                 \yii::$app->session->setFlash('error', $msg);
             } elseif (mb_strlen($_POST['newPassword']) < $pwMinLen) {
-                $msg = str_replace('%MINLEN%', $pwMinLen, 'Das Passwort muss mindestens %MINLEN% Zeichen lang sein.');
+                $msg = str_replace('%MINLEN%', $pwMinLen, \Yii::t('user', 'err_pwd_length'));
                 \yii::$app->session->setFlash('error', $msg);
             } else {
                 $email = $_REQUEST['email'];
@@ -275,6 +272,23 @@ class UserController extends Base
         }
 
         return $this->render('recovery', ['preEmail' => $email, 'preCode' => $code]);
+    }
+
+    /**
+     * @param string $email
+     * @param string $code
+     */
+    public function actionEmailchange($email, $code)
+    {
+        $this->forceLogin();
+        $user = User::getCurrentUser();
+        try {
+            $user->changeEmailAddress($email, $code);
+            \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_done'));
+        } catch (FormError $e) {
+            \yii::$app->session->setFlash('error', $e->getMessage());
+        }
+        return $this->actionMyaccount();
     }
 
     /**
@@ -296,9 +310,9 @@ class UserController extends Base
 
             if ($_POST['pwd'] != '' || $_POST['pwd2'] != '') {
                 if ($_POST['pwd'] != $_POST['pwd2']) {
-                    \yii::$app->session->setFlash('error', 'Die beiden Passwörter stimmen nicht überein.');
+                    \yii::$app->session->setFlash('error', \Yii::t('user', 'err_pwd_different'));
                 } elseif (mb_strlen($_POST['pwd']) < $pwMinLen) {
-                    $msg = 'Das Passwort muss mindestens %MINLEN% Zeichen lang sein.';
+                    $msg = \Yii::t('user', 'err_pwd_length');
                     \yii::$app->session->setFlash('error', str_replace('%MINLEN%', $pwMinLen, $msg));
                 } else {
                     $user->pwdEnc = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
@@ -308,14 +322,27 @@ class UserController extends Base
             $user->save();
 
             if ($user->email != '' && $user->emailConfirmed) {
-                if (isset($_POST['emailBlcklist'])) {
+                if (isset($_POST['emailBlacklist'])) {
                     EMailBlacklist::addToBlacklist($user->email);
                 } else {
                     EMailBlacklist::removeFromBlacklist($user->email);
                 }
             }
 
-            \yii::$app->session->setFlash('success', 'Gespeichert.');
+            if ($_POST['email'] != '' && $_POST['email'] != $user->email) {
+                if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                    try {
+                        $user->sendEmailChangeMail($_POST['email']);
+                        \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
+                    } catch (FormError $e) {
+                        \yii::$app->session->setFlash('error', $e->getMessage());
+                    }
+                } else {
+                    \yii::$app->session->setFlash('error', \Yii::t('user', 'err_invalid_email'));
+                }
+            } else {
+                \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            }
         }
 
         if (isset($_POST['accountDeleteConfirm']) && isset($_POST['accountDelete'])) {
@@ -344,7 +371,7 @@ class UserController extends Base
     {
         $user = User::getUserByUnsubscribeCode($code);
         if (!$user) {
-            return $this->showErrorpage(403, 'BenutzerIn nicht gefunden / Ungültiger Code');
+            return $this->showErrorpage(403, \Yii::t('user', 'err_user_acode_notfound'));
         }
 
         if (isset($_POST['save'])) {

@@ -20,9 +20,9 @@
 
     function ckeditor_charcount(text) {
         var normalizedText = text.
-            replace(/(\r\n|\n|\r)/gm, "").
-            replace(/^\s+|\s+$/g, "").
-            replace("&nbsp;", "");
+        replace(/(\r\n|\n|\r)/gm, "").
+        replace(/^\s+|\s+$/g, "").
+        replace("&nbsp;", "");
         normalizedText = ckeditor_strip(normalizedText).replace(/^([\s\t\r\n]*)$/, "");
 
         return normalizedText.length;
@@ -103,14 +103,14 @@
         var editor = CKEDITOR.inline(id, ckeditorConfig);
 
         /*
-        editor.on('paste', function (data) {
-            if (data.data.type != 'html') {
-                return;
-            }
-            var html = data.data.dataValue;
-            console.log(data, CKEDITOR.instances.sections_2_wysiwyg.focusManager.currentActive, CKEDITOR.instances.sections_2_wysiwyg.focusManager);
-        });
-        */
+         editor.on('paste', function (data) {
+         if (data.data.type != 'html') {
+         return;
+         }
+         var html = data.data.dataValue;
+         console.log(data, CKEDITOR.instances.sections_2_wysiwyg.focusManager.currentActive, CKEDITOR.instances.sections_2_wysiwyg.focusManager);
+         });
+         */
 
         var $fieldset = $el.parents(".wysiwyg-textarea").first();
         if ($fieldset.data("max-len") != 0) {
@@ -478,7 +478,7 @@
             });
         });
 
-        $(".texteditorBox").each(function() {
+        $(".texteditorBox").each(function () {
             var $this = $(this),
                 sectionId = $this.data("section-id"),
                 paraNo = $this.data("changed-para-no");
@@ -853,6 +853,18 @@
                 $(".accountDeleteForm button[name=accountDelete]").prop("disabled", true);
             }
         }).trigger('change');
+
+        var $emailExisting = $('.emailExistingRow');
+        if ($emailExisting.length == 1) {
+            var $changeRow = $('.emailChangeRow');
+            $changeRow.addClass('hidden');
+            $(".requestEmailChange").click(function (ev) {
+                ev.preventDefault();
+                $changeRow.removeClass("hidden");
+                $emailExisting.addClass("hidden");
+                $changeRow.find("input").focus();
+            });
+        }
 
         $('.userAccountForm').submit(function (ev) {
             var pwd = $("#userPwd").val(),

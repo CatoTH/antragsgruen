@@ -3,7 +3,8 @@ return [
     'Help'      => 'Hilfe',
     'Today'     => 'Heute',
     'Yesterday' => 'Gestern',
-    'Save'      => 'Speichern',
+    'save'      => 'Speichern',
+    'saved'     => 'Gespeichert.',
     'Edit'      => 'Bearbeiten',
     'Home'      => 'Start'
 ];

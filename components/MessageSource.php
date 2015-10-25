@@ -49,6 +49,7 @@ class MessageSource extends \yii\i18n\MessageSource
             'initiator' => 'InitiatorInnen',
             'manager'   => 'Seiten-Konfiguration',
             'admin'     => 'Administration',
+            'user'      => 'Account-Einstellungen',
         ];
     }
 

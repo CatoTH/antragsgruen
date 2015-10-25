@@ -9,7 +9,6 @@ use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
-use yii\db\Query;
 use yii\web\IdentityInterface;
 
 /**
@@ -26,6 +25,8 @@ use yii\web\IdentityInterface;
  * @property string $authKey
  * @property string $recoveryToken
  * @property string $recoveryAt
+ * @property string $emailChange
+ * @property string $emailChangeAt
  *
  * @property null|AmendmentComment[] $amendmentComments
  * @property null|AmendmentSupporter[] $amendmentSupports
@@ -426,7 +427,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function getMySupportedMotionsByConsultation(Consultation $consultation)
     {
         $initiator = MotionSupporter::ROLE_INITIATOR;
-        $query = MotionSupporter::find();
+        $query     = MotionSupporter::find();
         $query->innerJoin(
             'motion',
             'motionSupporter.motionId = motion.id AND motionSupporter.role = "' . addslashes($initiator) . '"'
@@ -446,7 +447,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function getMySupportedAmendmentsByConsultation(Consultation $consultation)
     {
         $initiator = AmendmentSupporter::ROLE_INITIATOR;
-        $query = AmendmentSupporter::find();
+        $query     = AmendmentSupporter::find();
         $query->innerJoin(
             'amendment',
             'amendmentSupporter.amendmentId = amendment.id AND ' .
@@ -626,8 +627,7 @@ class User extends ActiveRecord implements IdentityInterface
         if ($this->recoveryAt) {
             $recTs = Tools::dateSql2timestamp($this->recoveryAt);
             if (time() - $recTs < 24 * 3600) {
-                $msg = 'Es wurde bereits eine Wiederherstellungs-E-Mail in den letzten 24 Stunden verschickt.';
-                throw new FormError($msg);
+                throw new FormError(\Yii::t('user', 'err_recover_mail_sent'));
             }
         }
 
@@ -637,12 +637,10 @@ class User extends ActiveRecord implements IdentityInterface
         $this->save();
 
         $type     = EMailLog::TYPE_PASSWORD_RECOVERY;
-        $subject  = 'Antragsgrün: Passwort-Wiederherstellung';
+        $subject  = \Yii::t('user', 'recover_mail_title');
         $url      = UrlHelper::createUrl(['user/recovery', 'email' => $this->email, 'code' => $recoveryToken]);
         $url      = UrlHelper::absolutizeLink($url);
-        $text     = "Hallo!\n\nDu hast eine Passwort-Wiederherstellung angefordert. " .
-            "Um diese durchzuführen, Rufe bitte folgenden Link auf und gib dort das neue Passwort ein:\n\n%URL%\n\n" .
-            "Oder gib in dem Wiederherstellungs-Formular folgenden Code ein: %CODE%";
+        $text     = \Yii::t('user', 'recover_mail_body');
         $replaces = ['%URL%' => $url, '%CODE%' => $recoveryToken];
         \app\components\mail\Tools::sendWithLog($type, null, $this->email, $this->id, $subject, $text, $replaces);
     }
@@ -660,15 +658,107 @@ class User extends ActiveRecord implements IdentityInterface
             $recTs = 0;
         }
         if (time() - $recTs > 24 * 3600) {
-            $msg = 'Es wurde kein Wiederherstellungs-Antrag innerhalb der letzten 24 Stunden gestellt.';
-            throw new FormError($msg);
+            throw new FormError(\Yii::t('user', 'err_no_recovery'));
         }
         if (!password_verify($token, $this->recoveryToken)) {
-            throw new FormError('Der angegebene Wiederherstellungs-Code stimmt leider nicht.');
+            throw new FormError(\Yii::t('user', 'err_code_wrong'));
         }
         return true;
     }
 
+    /**
+     * @param string $newEmail
+     * @param int $timestamp
+     * @return string
+     */
+    public function createEmailChangeToken($newEmail, $timestamp)
+    {
+        if (YII_ENV == 'test' && mb_strpos($newEmail, '@example.org') !== false) {
+            return 'testCode';
+        }
+
+        $key = $newEmail . $timestamp . $this->id . $this->authKey;
+        return substr(sha1($key), 0, 10);
+    }
+
+    /**
+     * @param string $newEmail
+     * @param string $code
+     * @throws FormError
+     */
+    public function checkEmailChangeToken($newEmail, $code)
+    {
+        if ($this->emailChange != $newEmail || $this->emailChange === null) {
+            throw new FormError(\Yii::t('user', 'err_emailchange_notfound'));
+        }
+        $ts = Tools::dateSql2timestamp($this->emailChangeAt);
+        if ($ts < time() - 24 * 3600) {
+            throw new FormError(\Yii::t('user', 'err_change_toolong'));
+        }
+        if ($code != $this->createEmailChangeToken($newEmail, $ts)) {
+            throw new FormError(\Yii::t('user', 'err_code_wrong'));
+        }
+    }
+
+    /**
+     * @param string $newEmail
+     * @throws FormError
+     */
+    public function sendEmailChangeMail($newEmail)
+    {
+        if ($this->emailChangeAt) {
+            $recTs = Tools::dateSql2timestamp($this->emailChangeAt);
+            if (time() - $recTs < 24 * 3600) {
+                throw new FormError(\Yii::t('user', 'err_emailchange_mail_sent'));
+            }
+        }
+
+        $changeTs            = time();
+        $this->emailChange   = $newEmail;
+        $this->emailChangeAt = date('Y-m-d H:i:s', $changeTs);
+        $changeKey           = $this->createEmailChangeToken($newEmail, $changeTs);
+
+        $type     = EMailLog::TYPE_EMAIL_CHANGE;
+        $subject  = \Yii::t('user', 'emailchange_mail_title');
+        $url      = UrlHelper::createUrl(['user/emailchange', 'email' => $newEmail, 'code' => $changeKey]);
+        $url      = UrlHelper::absolutizeLink($url);
+        $text     = \Yii::t('user', 'emailchange_mail_body');
+        $replaces = ['%URL%' => $url];
+        \app\components\mail\Tools::sendWithLog($type, null, $newEmail, $this->id, $subject, $text, $replaces);
+
+        $this->save();
+    }
+
+    /**
+     * @param string $newEmail
+     * @param string $code
+     * @throws FormError
+     */
+    public function changeEmailAddress($newEmail, $code)
+    {
+        $this->checkEmailChangeToken($newEmail, $code);
+
+        $this->email          = $newEmail;
+        $this->emailConfirmed = 1;
+        $this->emailChange    = null;
+        $this->emailChangeAt  = null;
+        $this->save();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getChangeRequestedEmailAddress()
+    {
+        if (!$this->emailChangeAt) {
+            return null;
+        }
+        $recTs = Tools::dateSql2timestamp($this->emailChangeAt);
+        if (time() - 24 * 3600 > $recTs) {
+            return null;
+        }
+        return $this->emailChange;
+    }
 
     /**
      */

@@ -33,6 +33,7 @@ class EMailLog extends ActiveRecord
     const TYPE_PASSWORD_RECOVERY         = 6;
     const TYPE_SITE_ADMIN                = 7;
     const TYPE_MOTION_SUBMIT_CONFIRM     = 8;
+    const TYPE_EMAIL_CHANGE              = 9;
 
     const STATUS_SENT              = 0;
     const STATUS_SKIPPED_BLACKLIST = 1;
@@ -49,6 +50,7 @@ class EMailLog extends ActiveRecord
         6 => 'password-recovery',
         7 => 'site-admin',
         8 => 'motion-submitted',
+        9 => 'email-change',
     ];
 
     /**
@@ -66,6 +68,7 @@ class EMailLog extends ActiveRecord
             static::TYPE_PASSWORD_RECOVERY         => 'Password-Wiederherstellung',
             static::TYPE_SITE_ADMIN                => 'Als Admin eingetragen',
             static::TYPE_MOTION_SUBMIT_CONFIRM     => 'Bestätgung: Antrag eingereicht',
+            static::TYPE_EMAIL_CHANGE              => 'E-Mail-Änderung',
         ];
     }
 

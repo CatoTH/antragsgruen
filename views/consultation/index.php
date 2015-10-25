@@ -66,7 +66,7 @@ echo '</article>';
 if ($admin) {
     echo '<div class="textSaver hidden">';
     echo '<button class="btn btn-primary" type="button" data-save-url="' . Html::encode($saveUrl) . '">';
-    echo Yii::t('base', 'Save') . '</button></div>';
+    echo Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();
     $layout->addOnLoadJS('$.Antragsgruen.contentPageEdit();');

@@ -14,11 +14,11 @@ $I->see('Tester', '.amendment1');
 $I->see('Testuser', '.amendment2');
 $I->see('Testuser', '.motion2');
 
-$I->dontSee('Freischalten zurücknehmen');
+$I->dontSee('Ent-Freischalten', '.adminMotionTable');
 $I->executeJS('$(".motion2 .actionCol .dropdown-toggle").click()');
-$I->see('Freischalten zurücknehmen');
+$I->see('Ent-Freischalten', '.adminMotionTable');
 $I->executeJS('$(".motion2 .actionCol .dropdown-toggle").click()');
-$I->dontSee('Freischalten zurücknehmen');
+$I->dontSee('Ent-Freischalten', '.adminMotionTable');
 
 
 

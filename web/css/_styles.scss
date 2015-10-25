@@ -17,7 +17,7 @@
   }
 }
 
-.sidebarSmall.navbar  {
+.sidebarSmall.navbar {
   .nav li {
     padding: 4px;
   }
@@ -407,6 +407,21 @@ ul.sidebarActions {
     text-decoration: underline;
     color: #008800;
     background-color: rgba(100, 255, 100, 0.2);
+  }
+}
+
+.userAccountForm {
+  .requestEmailChange {
+    display: inline-block;
+    margin-left: 10px;
+    font-style: italic;
+    font-size: 0.8em;
+  }
+  .changeRequested {
+    display: block;
+    font-size: 0.8em;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 }
 

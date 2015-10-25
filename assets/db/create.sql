@@ -547,7 +547,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `pwdEnc`         VARCHAR(100)         DEFAULT NULL,
   `authKey`        BINARY(100) NOT NULL,
   `recoveryToken`  VARCHAR(100)         DEFAULT NULL,
-  `recoveryAt`     TIMESTAMP   NULL     DEFAULT NULL
+  `recoveryAt`     TIMESTAMP   NULL     DEFAULT NULL,
+  `emailChange`    VARCHAR(255)         DEFAULT NULL,
+  `emailChangeAt`  TIMESTAMP   NULL     DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
