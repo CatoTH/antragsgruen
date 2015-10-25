@@ -267,9 +267,12 @@ class AdminMotionFilterForm extends Model
             return true;
         }
         foreach ($motion->motionSupporters as $supp) {
-            if ($supp->role == MotionSupporter::ROLE_INITIATOR &&
-                mb_stripos($supp->name, $this->initiator) !== false
-            ) {
+            if ($supp->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+                $name = $supp->organization;
+            } else {
+                $name = $supp->name;
+            }
+            if ($supp->role == MotionSupporter::ROLE_INITIATOR && mb_stripos($name, $this->initiator) !== false) {
                 return true;
             }
         }
@@ -336,9 +339,12 @@ class AdminMotionFilterForm extends Model
             return true;
         }
         foreach ($amendment->amendmentSupporters as $supp) {
-            if ($supp->role == AmendmentSupporter::ROLE_INITIATOR &&
-                mb_stripos($supp->name, $this->initiator) !== false
-            ) {
+            if ($supp->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+                $name = $supp->organization;
+            } else {
+                $name = $supp->name;
+            }
+            if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && mb_stripos($name, $this->initiator) !== false) {
                 return true;
             }
         }
