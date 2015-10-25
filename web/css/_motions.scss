@@ -482,6 +482,7 @@
         left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
         width: 0;
         display: inline-block;
+        float: left; // otherwise problems appear at li > p constucts
       }
       .lineNumber:after {
         content: attr(data-line-number);
