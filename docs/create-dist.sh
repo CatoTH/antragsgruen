@@ -19,7 +19,7 @@ rsync -av --exclude='./local' --exclude='.git' . ./local/build-dist
 cd local/build-dist
 
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.0.0"
+./composer.phar global require "fxp/composer-asset-plugin:1.0.3"
 ./composer.phar install --prefer-dist
 
 rm -R local dist docker-vagrant
