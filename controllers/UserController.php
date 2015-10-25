@@ -14,6 +14,7 @@ use app\models\exceptions\Login;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;
+use yii\helpers\Html;
 
 class UserController extends Base
 {
@@ -114,7 +115,14 @@ class UserController extends Base
             return '';
         }
 
-        $url = $client->buildAuthUrl();
+        try {
+            $url = $client->buildAuthUrl();
+        } catch (\Exception $e) {
+            return $this->showErrorpage(
+                500,
+                'Es trat leider ein unvorhergesehener Fehler auf:<br> "' . Html::encode($e->getMessage()) . '"'
+            );
+        }
         return Yii::$app->getResponse()->redirect($url);
     }
 
