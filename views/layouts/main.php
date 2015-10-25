@@ -50,24 +50,24 @@ if ($layout->robotsNoindex) {
 }
 
 echo '<!--[if lt IE 9]>
-    <script src="' . $resourceBase . 'js/bower/html5shiv/dist/html5shiv.min.js"></script>
+    <script src="' . $layout->resourceUrl('js/bower/html5shiv/dist/html5shiv.min.js') . '"></script>
     <![endif]-->
     <!--[if lt IE 8]>
-    <link rel="stylesheet" href="' . $resourceBase . 'css/antragsgruen-ie7.css">
+    <link rel="stylesheet" href="' . $layout->resourceUrl('css/antragsgruen-ie7.css') . '">
     <![endif]-->
 ';
 
 foreach ($layout->extraCss as $file) {
-    echo '<link rel="stylesheet" href="' . Html::encode($file) . '">' . "\n";
+    echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
 
-echo '<link rel="stylesheet" href="' . $resourceBase . 'css/' . $layout->mainCssFile . '.css">' . "\n";
+echo '<link rel="stylesheet" href="' . $layout->resourceUrl('css/' . $layout->mainCssFile . '.css') . '">' . "\n";
 
 echo '<!--[if lt IE 9]>
-    <script src="' . $resourceBase . 'js/jquery-1.11.3.min.js"></script>
+    <script src="' . $layout->resourceUrl('js/jquery-1.11.3.min.js') . '"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
-    <script src="' . $resourceBase . 'js/bower/jquery/dist/jquery.min.js"></script>
+    <script src="' . $layout->resourceUrl('js/bower/jquery/dist/jquery.min.js') . '"></script>
     <!--<![endif]-->
 
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">
@@ -91,7 +91,7 @@ echo '</head>';
 
 echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(" ", $bodyClasses) . '"' : '') . '>';
 
-echo '<script src="' . $resourceBase . 'js/modernizr.js"></script>';
+echo '<script src="' . $layout->resourceUrl('js/modernizr.js') . '"></script>';
 
 $this->beginBody();
 
@@ -202,17 +202,17 @@ echo '<footer class="footer">
         </div>
     </footer>
 
-    <script src="' . $resourceBase . 'js/bootstrap.js"></script>
-    <script src="' . $resourceBase . 'js/bower/bootbox/bootbox.js"></script>
-    <script src="' . $resourceBase . 'js/scrollintoview.js"></script>
-    <script src="' . $resourceBase . 'js/jquery.isonscreen.js"></script>
-    <script src="' . $resourceBase . 'js/bower/intl/dist/Intl.min.js"></script>
-    <script src="' . $resourceBase . 'js/antragsgruen-de.js"></script>
-    <script src="' . $resourceBase . 'js/antragsgruen.js"></script>
+    <script src="' . $layout->resourceUrl('js/bootstrap.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/bower/bootbox/bootbox.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/scrollintoview.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/jquery.isonscreen.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/bower/intl/dist/Intl.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/antragsgruen-de.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>
 ';
 
 foreach ($layout->extraJs as $file) {
-    echo '<script src="' . Html::encode($file) . '"></script>' . "\n";
+    echo '<script src="' . $layout->resourceUrl($file) . '"></script>' . "\n";
 }
 foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";

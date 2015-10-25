@@ -12,7 +12,7 @@ $controller = $this->context;
 $params     = $controller->layoutParams;
 
 $this->title = 'Administration';
-$params->addCSS('/css/backend.css');
+$params->addCSS('css/backend.css');
 $params->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $params->addBreadcrumb('Änderungsantrags-PDFs');
 

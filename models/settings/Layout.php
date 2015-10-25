@@ -3,6 +3,7 @@
 namespace app\models\settings;
 
 use app\components\UrlHelper;
+use yii\helpers\Html;
 
 class Layout
 {
@@ -54,11 +55,8 @@ class Layout
      */
     public function addCSS($file)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \yii::$app->params;
-
         $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');
-        $file   = $params->resourceBase . $webAdd . $file;
+        $file   = $webAdd . $file;
 
         if (!in_array($file, $this->extraCss)) {
             $this->extraCss[] = $file;
@@ -82,11 +80,8 @@ class Layout
      */
     public function addJS($file)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \yii::$app->params;
-
         $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');
-        $file   = $params->resourceBase . $webAdd . $file;
+        $file   = $webAdd . $file;
 
         if (!in_array($file, $this->extraJs)) {
             $this->extraJs[] = $file;
@@ -180,5 +175,25 @@ class Layout
 </nav>';
         return $out;
 
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    public static function resourceUrl($url)
+    {
+        /** @var AntragsgruenApp $params */
+        $params   = \yii::$app->params;
+        $absolute = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR .
+            str_replace('/', DIRECTORY_SEPARATOR, $url);
+        $mtime    = filemtime($absolute);
+        $age      = time() - $mtime;
+        if ($age < 604800) { // 1 Week
+            $url .= (mb_strpos($url, '?') !== false ? '&' : '?');
+            $url .= $mtime;
+        }
+        $newUrl = $params->resourceBase . $url;
+        return Html::encode($newUrl);
     }
 }
