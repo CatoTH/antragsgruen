@@ -16,6 +16,7 @@ $I->seeCheckboxIsChecked('#typeAmendSinglePara input[type=checkbox]');
 $I->wantTo('create an amendment');
 $I->gotoConsultationHome()->gotoMotionView(2);
 $I->click('.amendmentCreate a');
+$I->wait(1);
 
 $I->seeElement('#amendmentReasonHolder .cke_editable');
 $I->dontSeeElement('#section_holder_2');
