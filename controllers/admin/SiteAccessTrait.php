@@ -9,6 +9,7 @@ use app\models\db\Site;
 use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\exceptions\AlreadyExists;
+use app\models\exceptions\MailNotSent;
 use app\models\policies\IPolicy;
 use yii\db\IntegrityException;
 
@@ -87,7 +88,12 @@ trait SiteAccessTrait
         $text    = "Hallo!\n\nDu hast eben Admin-Zugang zu folgender Antragsgrün-Seite bekommen: %LINK%\n\n" .
             "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team";
         $text    = str_replace(['%LINK%', '%ACCOUNT%'], [$link, $authText], $text);
-        \app\components\mail\Tools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $this->site, $email, $newUser->id, $subject, $text);
+        try {
+            \app\components\mail\Tools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $this->site, $email, $newUser->id, $subject, $text);
+        } catch (MailNotSent $e) {
+            $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+            \yii::$app->session->setFlash('error', $errMsg);
+        }
     }
 
     /**

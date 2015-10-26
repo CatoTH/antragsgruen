@@ -7,6 +7,7 @@ use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
+use app\models\exceptions\MailNotSent;
 use Yii;
 use yii\helpers\Html;
 
@@ -551,19 +552,24 @@ class Motion extends IMotion implements IRSSItem
             if ($this->consultation->getSettings()->initiatorConfirmEmails) {
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+                    try {
                     $text       = "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
                         "Du kannst ihn hier einsehen: %LINK%\n\n" .
                         "Mit freundlichen Grüßen,\n" .
                         "  Das Antragsgrün-Team";
                     $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-                    \app\components\mail\Tools::sendWithLog(
-                        EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                        $this->consultation->site,
-                        trim($initiator[0]->contactEmail),
-                        null,
-                        'Antrag veröffentlicht',
-                        str_replace('%LINK%', $motionLink, $text)
-                    );
+                        \app\components\mail\Tools::sendWithLog(
+                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                            $this->consultation->site,
+                            trim($initiator[0]->contactEmail),
+                            null,
+                            'Antrag veröffentlicht',
+                            str_replace('%LINK%', $motionLink, $text)
+                        );
+                    } catch (MailNotSent $e) {
+                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                        \yii::$app->session->setFlash('error', $errMsg);
+                    }
                 }
             }
         }

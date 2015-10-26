@@ -4,6 +4,8 @@ namespace app\components\mail;
 
 use app\models\db\EMailLog;
 use app\models\db\Site;
+use app\models\exceptions\MailNotSent;
+use app\models\exceptions\ServerConfiguration;
 
 class Tools
 {
@@ -15,6 +17,7 @@ class Tools
      * @param string $subject
      * @param string $text
      * @param null|array $noLogReplaces
+     * @throws MailNotSent
      */
     public static function sendWithLog(
         $mailType,
@@ -24,12 +27,13 @@ class Tools
         $subject,
         $text,
         $noLogReplaces = null
-    ) {
+    )
+    {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
         $mailer = Base::createMailer($params->mailService);
         if (!$mailer) {
-            return;
+            throw new MailNotSent('E-Mail not configured');
         }
 
         $sendText = ($noLogReplaces ? str_replace(
@@ -57,6 +61,7 @@ class Tools
             $messageId = uniqid() . '@antragsgruen.de';
         }
 
+        $exception = null;
         try {
             $message = $mailer->createMessage(
                 $mailType,
@@ -70,8 +75,8 @@ class Tools
             );
             $status  = $mailer->send($message, $toEmail);
         } catch (\Exception $e) {
-            $status = EMailLog::STATUS_DELIVERY_ERROR;
-            \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+            $status    = EMailLog::STATUS_DELIVERY_ERROR;
+            $exception = $e;
         }
 
         $obj = new EMailLog();
@@ -90,6 +95,11 @@ class Tools
         $obj->status    = $status;
         $obj->messageId = $messageId;
         $obj->save();
+
+        if ($exception) {
+            /** @var \Exception $exception */
+            throw new MailNotSent($exception->getMessage());
+        }
 
         if (YII_ENV == 'test') {
             \yii::$app->session->setFlash('email', 'E-Mail sent to: ' . $toEmail);

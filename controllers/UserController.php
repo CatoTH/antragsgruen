@@ -13,6 +13,7 @@ use app\models\db\UserNotification;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Login;
+use app\models\exceptions\MailNotSent;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;
@@ -243,8 +244,9 @@ class UserController extends Base
                     $user->sendRecoveryMail();
                     $msg = \Yii::t('user', 'pwd_recovery_sent');
                     \yii::$app->session->setFlash('success', $msg);
-                } catch (ExceptionBase $e) {
-                    \yii::$app->session->setFlash('error', $e->getMessage());
+                } catch (MailNotSent $e) {
+                    $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                    \yii::$app->session->setFlash('error', $errMsg);
                 }
             }
         }
@@ -310,8 +312,13 @@ class UserController extends Base
                 if ($lastRequest < 5 * 60) {
                     \yii::$app->session->setFlash('error', \Yii::t('user', 'err_emailchange_flood'));
                 } else {
-                    $user->sendEmailChangeMail($changeRequested);
-                    \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
+                    try {
+                        $user->sendEmailChangeMail($changeRequested);
+                        \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
+                    } catch (MailNotSent $e) {
+                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                        \yii::$app->session->setFlash('error', $errMsg);
+                    }
                 }
             }
         }
@@ -353,6 +360,9 @@ class UserController extends Base
                         \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
                     } catch (FormError $e) {
                         \yii::$app->session->setFlash('error', $e->getMessage());
+                    } catch (MailNotSent $e) {
+                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                        \yii::$app->session->setFlash('error', $errMsg);
                     }
                 } else {
                     \yii::$app->session->setFlash('error', \Yii::t('user', 'err_invalid_email'));

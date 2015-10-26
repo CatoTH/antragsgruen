@@ -7,7 +7,9 @@ use app\components\diff\Diff;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\exceptions\MailNotSent;
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TextSimple;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -519,19 +521,24 @@ class Amendment extends IMotion implements IRSSItem
             if ($this->motion->consultation->getSettings()->initiatorConfirmEmails) {
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                    $text          = "Hallo,\n\ndein Änderungsantrag wurde soeben auf Antragsgrün veröffentlicht. " .
-                        "Du kannst ihn hier einsehen: %LINK%\n\n" .
-                        "Mit freundlichen Grüßen,\n" .
-                        "  Das Antragsgrün-Team";
-                    $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
-                    \app\components\mail\Tools::sendWithLog(
-                        EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                        $this->motion->consultation->site,
-                        trim($initiator[0]->contactEmail),
-                        null,
-                        'Änderungsantrag veröffentlicht',
-                        str_replace('%LINK%', $amendmentLink, $text)
-                    );
+                    try {
+                        $text          = "Hallo,\n\ndein Änderungsantrag wurde soeben auf Antragsgrün veröffentlicht. " .
+                            "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                            "Mit freundlichen Grüßen,\n" .
+                            "  Das Antragsgrün-Team";
+                        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
+                        \app\components\mail\Tools::sendWithLog(
+                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                            $this->motion->consultation->site,
+                            trim($initiator[0]->contactEmail),
+                            null,
+                            'Änderungsantrag veröffentlicht',
+                            str_replace('%LINK%', $amendmentLink, $text)
+                        );
+                    } catch (MailNotSent $e) {
+                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                        \yii::$app->session->setFlash('error', $errMsg);
+                    }
                 }
             }
         }
@@ -583,7 +590,7 @@ class Amendment extends IMotion implements IRSSItem
             if (count($diffGroups) > 0) {
                 $content .= '<h2>' . Html::encode($section->consultationSetting->title) . '</h2>';
                 $content .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
-                $content .= \app\models\sectionTypes\TextSimple::formatDiffGroup($diffGroups);
+                $content .= TextSimple::formatDiffGroup($diffGroups);
                 $content .= '</div>';
                 $content .= '</section>';
             }

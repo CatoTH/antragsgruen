@@ -3,6 +3,7 @@ namespace app\models\db;
 
 use app\components\UrlHelper;
 use app\models\exceptions\AlreadyExists;
+use app\models\exceptions\MailNotSent;
 use yii\db\ActiveRecord;
 
 /**
@@ -69,7 +70,7 @@ class ConsultationUserPrivilege extends ActiveRecord
     public static function createWithUser(Consultation $consultation, $email, $name, $emailText)
     {
         $email = mb_strtolower($email);
-        $auth = 'email:' . $email;
+        $auth  = 'email:' . $email;
 
         /** @var User $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
@@ -111,14 +112,18 @@ class ConsultationUserPrivilege extends ActiveRecord
         $consUrl   = UrlHelper::absolutizeLink($consUrl);
         $emailText = str_replace('%LINK%', $consUrl, $emailText);
 
-        \app\components\mail\Tools::sendWithLog(
-            EMailLog::TYPE_ACCESS_GRANTED,
-            $consultation->site,
-            $email,
-            $user->id,
-            'Antragsgrün-Zugriff',
-            $emailText,
-            ['%ACCOUNT%' => $accountText]
-        );
+        try {
+            \app\components\mail\Tools::sendWithLog(
+                EMailLog::TYPE_ACCESS_GRANTED,
+                $consultation->site,
+                $email,
+                $user->id,
+                'Antragsgrün-Zugriff',
+                $emailText,
+                ['%ACCOUNT%' => $accountText]
+            );
+        } catch (MailNotSent $e) {
+            \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+        }
     }
 }

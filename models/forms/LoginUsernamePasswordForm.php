@@ -7,6 +7,7 @@ use app\models\db\EMailLog;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Login;
+use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site as SiteSettings;
 use yii\base\Model;
@@ -40,6 +41,7 @@ class LoginUsernamePasswordForm extends Model
 
     /**
      * @param User $user
+     * @throws MailNotSent
      */
     private function sendConfirmationEmail(User $user)
     {
@@ -135,10 +137,15 @@ class LoginUsernamePasswordForm extends Model
 
         if ($user->save()) {
             $user->refresh();
-            $this->sendConfirmationEmail($user);
-            return $user;
+            try {
+                $this->sendConfirmationEmail($user);
+                return $user;
+            } catch (MailNotSent $e) {
+                $this->error = $e->getMessage();
+                throw new Login($this->error);
+            }
         } else {
-            $this->error = 'Leider ist ein (ungewöhnlicher) Fehler aufgetreten.';
+            $this->error = \Yii::t('base', 'err_unknown');
             throw new Login($this->error);
         }
     }

@@ -16,6 +16,7 @@ use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
+use app\models\exceptions\MailNotSent;
 use app\models\forms\MotionEditForm;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\ISectionType;
@@ -255,14 +256,17 @@ class MotionController extends Base
                 if ($motion->consultation->getSettings()->initiatorConfirmEmails) {
                     $initiator = $motion->getInitiators();
                     if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                        Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                            $this->site,
-                            trim($initiator[0]->contactEmail),
-                            null,
-                            \Yii::t('motion', 'submitted_screening_email_subject'),
-                            str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'))
-                        );
+                        try {
+                            Tools::sendWithLog(
+                                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                                $this->site,
+                                trim($initiator[0]->contactEmail),
+                                null,
+                                \Yii::t('motion', 'submitted_screening_email_subject'),
+                                str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'))
+                            );
+                        } catch (MailNotSent $e) {
+                        }
                     }
                 }
             }

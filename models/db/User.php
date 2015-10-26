@@ -6,6 +6,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
+use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -514,7 +515,7 @@ class User extends ActiveRecord implements IdentityInterface
         $type         = EMailLog::TYPE_MOTION_NOTIFICATION_USER;
         try {
             \app\components\mail\Tools::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text);
-        } catch (\Exception $e) {
+        } catch (MailNotSent $e) {
             \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
     }
@@ -631,6 +632,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @throws MailNotSent
      */
     public function sendRecoveryMail()
     {
@@ -712,7 +714,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param string $newEmail
-     * @throws FormError
+     * @throws MailNotSent
      */
     public function sendEmailChangeMail($newEmail)
     {

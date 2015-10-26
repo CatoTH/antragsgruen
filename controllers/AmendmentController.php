@@ -11,6 +11,7 @@ use app\models\db\ConsultationLog;
 use app\models\db\EMailLog;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use yii\web\Response;
@@ -170,8 +171,8 @@ class AmendmentController extends Base
 
             $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
 
-            $mailText   = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
-            $mailText   = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $amendmentLink], $mailText);
+            $mailText = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
+            $mailText = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $amendmentLink], $mailText);
             $amendment->motion->consultation->sendEmailToAdmins('Neuer Änderungsantrag', $mailText);
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
@@ -180,14 +181,17 @@ class AmendmentController extends Base
                 if ($amendment->motion->consultation->getSettings()->initiatorConfirmEmails) {
                     $initiator = $amendment->getInitiators();
                     if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                        Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                            $this->site,
-                            trim($initiator[0]->contactEmail),
-                            null,
-                            \Yii::t('amend', 'submitted_screening_email_subject'),
-                            str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'submitted_screening_email'))
-                        );
+                        try {
+                            Tools::sendWithLog(
+                                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                                $this->site,
+                                trim($initiator[0]->contactEmail),
+                                null,
+                                \Yii::t('amend', 'submitted_screening_email_subject'),
+                                str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'submitted_screening_email'))
+                            );
+                        } catch (MailNotSent $e) {
+                        }
                     }
                 }
             }

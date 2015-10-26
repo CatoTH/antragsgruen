@@ -6,6 +6,7 @@ use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\DB;
+use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
 use app\models\SearchResult;
 use app\models\sitePresets\ISitePreset;
@@ -466,14 +467,19 @@ class Consultation extends ActiveRecord
         $mails = explode(',', $this->adminEmail);
         foreach ($mails as $mail) {
             if (trim($mail) != '') {
-                \app\components\mail\Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
-                    $this->site,
-                    trim($mail),
-                    null,
-                    $mailSubject,
-                    $mailText
-                );
+                try {
+                    \app\components\mail\Tools::sendWithLog(
+                        EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
+                        $this->site,
+                        trim($mail),
+                        null,
+                        $mailSubject,
+                        $mailText
+                    );
+                } catch (MailNotSent $e) {
+                    $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                    \yii::$app->session->setFlash('error', $errMsg);
+                }
             }
         }
     }
@@ -500,24 +506,24 @@ class Consultation extends ActiveRecord
     /**
      * @return array
      */
-    public function getAgendaWithMotions ()
+    public function getAgendaWithMotions()
     {
-        $ids = [];
+        $ids    = [];
         $result = [];
         /**
          * @param $motion Motion
          */
         $addMotion = function ($motion) use (&$result) {
             $result[] = $motion;
-            $result = array_merge ($result,MotionSorter::getSortedAmendments($this, $motion->getVisibleAmendments()));
+            $result   = array_merge($result, MotionSorter::getSortedAmendments($this, $motion->getVisibleAmendments()));
         };
 
         $items = ConsultationAgendaItem::getSortedFromConsultation($this);
         foreach ($items as $agendaItem) {
             $result[] = $agendaItem;
-            $motions = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions());
+            $motions  = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions());
             foreach ($motions as $motion) {
-                $ids[]    = $motion->id;
+                $ids[] = $motion->id;
                 $addMotion ($motion);
             }
         }
