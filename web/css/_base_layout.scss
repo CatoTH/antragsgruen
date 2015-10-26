@@ -340,7 +340,7 @@ ins, ul.inserted, blockquote.inserted {
   color: #008800;
   text-decoration: underline;
 }
-del.space, ins.space {
+del.space, ins.space, del.formatting, ins.formatting {
   font-style: italic;
   font-size: 0.8em;
   display: inline-block;

@@ -7,6 +7,7 @@ use app\components\LineSplitter;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\Internal;
 use app\models\db\MotionSectionParagraphAmendment as ParagraphAmendment;
+use yii\helpers\Html;
 
 class Diff
 {
@@ -64,14 +65,18 @@ class Diff
     {
         if ($str == '') {
             return $str;
-        } elseif (preg_match('/^<[^>]*>$/siu', $str)) {
-            return $str;
-            /*
-        } elseif ($str == static::ORIG_LINEBREAK) {
-            return $str;
-            */
         }
         if ($this->formatting == static::FORMATTING_INLINE) {
+            if (preg_match('/^<[^>]*>$/siu', $str)) {
+                if (in_array($str, [
+                    '<em>', '</em>', '<i>', '</i>', '<strong>', '</strong>', '<sup>', '</sup>', '<sub>', '</sub>',
+                    '<b>', '</b>', '<s>', '</s>', '<u>', '</u>', '<sup>', '</sup>',
+                ])) {
+                    // @TODO: something more readable like [italic] ?
+                    return '<span style="color: green;"><ins>' . Html::encode($str) . '</ins></span>';
+                }
+                return $str;
+            }
             if (mb_stripos($str, '<ul>') === 0) {
                 return '<div style="color: green; margin: 0; padding: 0;"><ul class="inserted">' .
                 mb_substr($str, 4) . '</div>';
@@ -88,6 +93,15 @@ class Diff
                 return '<span style="color: green;"><ins>' . $str . '</ins></span>';
             }
         } else {
+            if (preg_match('/^<[^>]*>$/siu', $str)) {
+                if (in_array($str, [
+                    '<em>', '</em>', '<i>', '</i>', '<strong>', '</strong>', '<sup>', '</sup>', '<sub>', '</sub>',
+                    '<b>', '</b>', '<s>', '</s>', '<u>', '</u>', '<sup>', '</sup>',
+                ])) {
+                    return '<ins>' . Html::encode($str) . '</ins>';
+                }
+                return $str;
+            }
             if (mb_stripos($str, '<ul>') === 0) {
                 return '<ul class="inserted">' . mb_substr($str, 4);
             } elseif (mb_stripos($str, '<ol>') === 9) {
@@ -344,6 +358,7 @@ class Diff
             var_dump($combined);
             die();
         }
+
         return $combined;
     }
 
@@ -412,9 +427,9 @@ class Diff
      */
     public static function getUnchangedPrefixPostfix($orig, $new, $diff, $ignoreStr)
     {
-        $parts      = preg_split('/<\/?(ins|del)>/siu', $diff);
-        $prefix     = $parts[0];
-        $postfix    = $parts[count($parts) - 1];
+        $parts = preg_split('/<\/?(ins|del)>/siu', $diff);
+        $prefix  = $parts[0];
+        $postfix = $parts[count($parts) - 1];
         $prefixLen  = mb_strlen($prefix);
         $postfixLen = mb_strlen($postfix);
 
@@ -425,17 +440,15 @@ class Diff
                 $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '. ') + 2);
             } elseif ($prefixLen > 40 && mb_strrpos($prefix, '.') > $prefixLen - 40) {
                 $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '.') + 1);
-            } elseif ($prefixLen > 40 && mb_strrpos($prefix, '.') > $prefixLen - 40) {
-                $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, ' ') + 1);
             }
         }
         if ($postfixLen < 40) {
             $postfix = '';
         } else {
-            if ($postfixLen > 40 && mb_strpos($postfix, '.') < 40) {
+            if ($postfixLen > 40 && mb_strpos($postfix, '. ') < 40) {
+                $postfix = mb_substr($postfix, mb_strpos($postfix, '. ') + 1);
+            } elseif ($postfixLen > 40 && mb_strpos($postfix, '.') < 40) {
                 $postfix = mb_substr($postfix, mb_strpos($postfix, '.') + 1);
-            } elseif ($prefixLen > 40 && mb_strrpos($prefix, ' ') > $prefixLen - 40) {
-                $postfix = mb_substr($postfix, mb_strpos($postfix, ' ') + 1);
             }
         }
 
@@ -463,9 +476,9 @@ class Diff
         if ($origLength == 0) {
             return 0;
         }
-        $strippedDiff = preg_replace('/<ins>(.*)<\/ins>/siuU', '', $diff);
-        $strippedDiff = preg_replace('/<del>(.*)<\/del>/siuU', '', $strippedDiff);
-        $strippedDiffLength   = mb_strlen(strip_tags($strippedDiff));
+        $strippedDiff       = preg_replace('/<ins>(.*)<\/ins>/siuU', '', $diff);
+        $strippedDiff       = preg_replace('/<del>(.*)<\/del>/siuU', '', $strippedDiff);
+        $strippedDiffLength = mb_strlen(strip_tags($strippedDiff));
 
         return 1.0 - ($strippedDiffLength / $origLength);
     }
@@ -503,7 +516,6 @@ class Diff
         $computedStr = '';
 
         $return = $this->engine->compareStrings($strOld, $strNew);
-
         $return = $this->groupOperations($return, static::ORIG_LINEBREAK);
 
         for ($i = 0; $i < count($return); $i++) {
@@ -514,19 +526,22 @@ class Diff
                 if ($updates) {
                     list ($deletes, $inserts, $count) = $updates;
                     for ($j = 0; $j < count($deletes); $j++) {
-                        $lineDiff  = $this->computeLineDiff($deletes[$j], $inserts[$j]);
+                        $del       = $deletes[$j];
+                        $ins       = $inserts[$j];
+                        $lineDiff  = $this->computeLineDiff($del, $ins);
                         $ignoreStr = $this->engine->getIgnoreStr();
-                        $split     = $this->getUnchangedPrefixPostfix($deletes[$j], $inserts[$j], $lineDiff, $ignoreStr);
+                        $split     = $this->getUnchangedPrefixPostfix($del, $ins, $lineDiff, $ignoreStr);
                         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
-                        if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
-                            $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
+
+                        $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
+                        if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
                             $computedStr .= $prefix;
-                            if ($changeRatio <= static::MAX_LINE_CHANGE_RATIO) {
-                                $computedStr .= $middleDiff;
-                            } else {
-                                $computedStr .= $this->wrapWithDelete($middleOrig) . "\n";
-                                $computedStr .= $this->wrapWithInsert($middleNew);
-                            }
+                            $computedStr .= $this->wrapWithDelete($middleOrig) . "\n";
+                            $computedStr .= $this->wrapWithInsert($middleNew);
+                            $computedStr .= $postfix . "\n";
+                        } elseif (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
+                            $computedStr .= $prefix;
+                            $computedStr .= $middleDiff;
                             $computedStr .= $postfix . "\n";
                         } else {
                             $computedStr .= $lineDiff . "\n";
@@ -542,7 +557,7 @@ class Diff
                 throw new Internal('Unknown type: ' . $return[$i][1]);
             }
         }
-        $force       = '###FORCELINEBREAK###';
+        $force = '###FORCELINEBREAK###';
 
         $computedStr = str_replace($force . ' ' . static::ORIG_LINEBREAK, $force, $computedStr);
         $computedStr = str_replace(static::ORIG_LINEBREAK, "\n", $computedStr);

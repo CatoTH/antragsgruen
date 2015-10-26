@@ -4,6 +4,7 @@ namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\Diff;
+use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
 
 class AmendmentSectionFormatterTest extends TestBase
@@ -15,9 +16,14 @@ class AmendmentSectionFormatterTest extends TestBase
         $strPre                  = '<p>Test 123</p>';
         $strPost                 = '<p>Test</p>';
         $computed                = AmendmentSectionFormatter::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, Diff::FORMATTING_INLINE, false);
-        $blocks                  = AmendmentSectionFormatter::htmlDiff2LineBlocks($computed, 1);
+        $blocks                  = AmendmentSectionFormatter::htmlDiff2LineBlocks($computed, 2);
         $getDiffLinesWithNumbers = AmendmentSectionFormatter::filterAffectedBlocks($blocks);
-        $this->assertEquals(1, count($getDiffLinesWithNumbers));
+        $this->assertEquals(2, count($getDiffLinesWithNumbers));
+
+        $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
+        $text = TextSimple::formatDiffGroup($grouped);
+        $expect = '<h4 class="lineSummary">Nach Zeile 1:</h4><span style="color: red;"><del>Test 123</del></span><br><span style="color: green;"><ins>Test</ins></span>';
+        $this->assertEquals($expect, $text);
     }
 
     /**
