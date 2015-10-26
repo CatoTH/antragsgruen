@@ -18,12 +18,12 @@ $layout     = $controller->layoutParams;
 
 $layout->loadFuelux();
 $layout->addBreadcrumb($newMotion->motionType->titleSingular, UrlHelper::createMotionUrl($newMotion));
-$layout->addBreadcrumb('Überarbeitung kontrollieren');
+$layout->addBreadcrumb(\Yii::t('amend', 'merge_confirm_title'));
 
-$title       = str_replace('%NAME%', $newMotion->motionType->titleSingular, '%NAME% überarbeitet');
+$title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
-echo '<h1>' . 'Überarbeitung kontrollieren' . '</h1>';
+echo '<h1>' . \Yii::t('amend', 'merge_confirm_title') . '</h1>';
 
 
 foreach ($newMotion->getSortedSections(true) as $section) {
@@ -50,12 +50,12 @@ echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
 echo '<div class="content">
         <div style="float: right;">
             <button type="submit" name="confirm" class="btn btn-success">
-                <span class="glyphicon glyphicon-ok-sign"></span> Einreichen
+                <span class="glyphicon glyphicon-ok-sign"></span> ' . \Yii::t('amend', 'button_submit') . '
             </button>
         </div>
         <div style="float: left;">
             <button type="submit" name="modify" class="btn">
-                <span class="glyphicon glyphicon-remove-sign"></span> Korrigieren
+                <span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('amend', 'button_correct') . '
             </button>
         </div>
     </div>';

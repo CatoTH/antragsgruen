@@ -20,12 +20,12 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMotionUrl($motion));
-$layout->addBreadcrumb('Überarbeiten');
+$layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 $layout->loadCKEditor();
 $layout->loadFuelux();
 $layout->addOnLoadJS('$.Antragsgruen.motionMergeAmendmentsForm();');
 
-$title       = str_replace('%NAME%', $motion->motionType->titleSingular, '%NAME% überarbeiten');
+$title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
@@ -39,9 +39,8 @@ if (!$motion->consultation->getSettings()->minimalisticUI) {
 echo $controller->showErrors();
 
 echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
-    data-new-motion-id="' . $form->newMotion->id . '" data-orig-motion-id="' . $form->origMotion->id . '">
-Es gibt noch ungespeicherte Entwürfe, die wiederhergestellt werden können:
-<ul></ul>
+    data-new-motion-id="' . $form->newMotion->id . '" data-orig-motion-id="' . $form->origMotion->id . '">' .
+    \Yii::t('amend', 'unsaved_drafts') . '<ul></ul>
 </div>';
 
 echo '</div>';
@@ -51,7 +50,7 @@ echo Html::beginForm('', 'post', ['class' => 'motionMergeForm fuelux']);
 
 
 echo '<section class="newMotion">
-<h2 class="green">' . 'Neuer Antragstext' . '</h2>
+<h2 class="green">' . \Yii::t('amend', 'merge_new_text') . '</h2>
 <div class="content">';
 
 $changesets = [];
@@ -112,7 +111,7 @@ echo '</section>';
 
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">
-    <span class="glyphicon glyphicon-chevron-right"></span> Weiter
+    <span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on') . '
 </button></div>';
 
 echo Html::endForm();

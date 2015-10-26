@@ -46,7 +46,6 @@ if ($form->motionType->getAmendmentPolicy()->checkCurrUser(true, true)) {
 }
 
 
-
 $motionPolicy = $form->motionType->getMotionPolicy();
 if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
@@ -62,9 +61,8 @@ if (\Yii::$app->user->isGuest) {
 }
 
 echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
-    data-motion-type="' . $form->motionType->id . '" data-motion-id="' . $form->motionId . '">
-Es gibt noch ungespeicherte Entwürfe, die wiederhergestellt werden können:
-<ul></ul>
+    data-motion-type="' . $form->motionType->id . '" data-motion-id="' . $form->motionId . '">' .
+    \Yii::t('amend', 'unsaved_drafts') . '<ul></ul>
 </div>';
 
 echo '</div>';

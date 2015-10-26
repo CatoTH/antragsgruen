@@ -14,20 +14,21 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->addBreadcrumb($newMotion->motionType->titleSingular, UrlHelper::createMotionUrl($newMotion));
-$layout->addBreadcrumb('Überarbeitung kontrollieren');
+$layout->addBreadcrumb(\Yii::t('amend', 'merge_submitted'));
 
-$title       = str_replace('%NAME%', $newMotion->motionType->titleSingular, '%NAME% überarbeitet');
+$title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, \Yii::t('amend', 'merge_submitted_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 echo '<h1>' . Html::encode($this->title) . '</h1>
 <div class="content">
 <div class="alert alert-success" role="alert">';
-echo 'Der Antrag wurde überarbeitet';
+echo \Yii::t('amend', 'merge_submitted_str');
 echo '</div>';
 
 
 echo Html::beginForm(UrlHelper::createMotionUrl($newMotion), 'post', ['id' => 'motionConfirmedForm']);
-echo '<p class="btnRow"><button type="submit" class="btn btn-success">Zum neuen Antrag</button></p>';
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">' .
+    \Yii::t('amend', 'merge_submitted_to_motion') . '</button></p>';
 echo Html::endForm();
 
 echo '</div>';
