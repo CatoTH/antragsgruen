@@ -175,8 +175,8 @@ foreach ($entries as $entry) {
         echo '<td>' . \Yii::t('admin', 'list_amend_short') . '</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
         echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
-        echo '<td class="titleCol">' .
-            Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $editUrl) . '</td>';
+        echo '<td class="titleCol"><span>' .
+            Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $editUrl) . '</span></td>';
         echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {
