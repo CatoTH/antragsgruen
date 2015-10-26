@@ -508,12 +508,15 @@ class User extends ActiveRecord implements IdentityInterface
         $code         = $this->getNotificationUnsubscribeCode();
         $blacklistUrl = UrlHelper::createUrl(['user/emailblacklist', 'code' => $code]);
         $blacklistUrl = UrlHelper::absolutizeLink($blacklistUrl);
-        $gruss        = str_replace('%NAME%', $this->name, "Hallo %NAME%,\n\n");
-        $sig          = "\n\nLiebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
-            "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n" . $blacklistUrl;
+        $gruss        = str_replace('%NAME%', $this->name, \Yii::t('user', 'noti_greeting') . "\n\n");
+        $sig          = "\n\n" . \Yii::t('user', 'noti_bye') . $blacklistUrl;
         $text         = $gruss . $text . $sig;
         $type         = EMailLog::TYPE_MOTION_NOTIFICATION_USER;
-        \app\components\mail\Tools::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text);
+        try {
+            \app\components\mail\Tools::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text);
+        } catch (\Exception $e) {
+            \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+        }
     }
 
     /**
@@ -521,11 +524,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function notifyMotion(Motion $motion)
     {
-        $subject = "[Antragsgrün] Neuer Antrag: " . $motion->getTitleWithPrefix();
+        $subject = \Yii::t('user', 'noti_new_motion_title') . ' ' . $motion->getTitleWithPrefix();
         $link    = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
         $link    = UrlHelper::absolutizeLink($link);
-        $text    = "Es wurde ein neuer Antrag eingereicht:\nAnlass: " . $motion->consultation->title .
-            "\nName: " . $motion->getTitleWithPrefix() . "\nLink: " . $link;
+        $text    = str_replace(
+            ['%CONSULTATION%', '%TITLE%', '%LINK%'],
+            [$motion->consultation->title, $motion->getTitleWithPrefix(), $link],
+            \Yii::t('user', 'noti_new_motion_body')
+        );
         $this->notificationEmail($motion->consultation, $subject, $text);
     }
 
@@ -534,14 +540,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function notifyAmendment(Amendment $amendment)
     {
-        $subject  = "[Antragsgrün] Neuer Änderungsantrag zu " . $amendment->motion->getTitleWithPrefix();
-        $motionId = $amendment->motion->id;
-        $link     = UrlHelper::createUrl(['amendment/view', 'amendmentId' => $amendment->id, 'motionId' => $motionId]);
-        $link     = UrlHelper::absolutizeLink($link);
-        $link     = \Yii::$app->request->baseUrl . $link;
-        $text     = "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: " .
-            $amendment->motion->consultation->title . "\nAntrag: " . $amendment->motion->getTitleWithPrefix() .
-            "\nLink: " . $link;
+        $motionTitle = $amendment->motion->getTitleWithPrefix();
+        $subject     = str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_amend_title'));
+        $link        = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
+        $text        = str_replace(
+            ['%CONSULTATION%', '%TITLE%', '%LINK%'],
+            [$amendment->motion->consultation->title, $motionTitle, $link],
+            \Yii::t('user', 'noti_new_motion_body')
+        );
         $this->notificationEmail($amendment->motion->consultation, $subject, $text);
     }
 
@@ -550,9 +556,13 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function notifyComment(IComment $comment)
     {
-        $subject = "[Antragsgrün] Neuer Kommentar zu: " . $comment->getMotionTitle();
-        $text    = "Es wurde ein neuer Kommentar zu " . $comment->getMotionTitle() . " geschrieben:\n" .
-            UrlHelper::absolutizeLink($comment->getLink());
+        $motionTitle = $comment->getMotionTitle();
+        $subject     = str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_comment_title'));
+        $text        = str_replace(
+            ['%TITLE%', '%LINK%'],
+            [$motionTitle, UrlHelper::absolutizeLink($comment->getLink())],
+            \Yii::t('user', 'noti_new_comment_body')
+        );
         $this->notificationEmail($comment->getConsultation(), $subject, $text);
     }
 

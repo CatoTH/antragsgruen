@@ -52,4 +52,15 @@ return [
         wende dich bitte an die AdministratorInnen der jeweiligen Unterseite.',
     'del_confirm'               => 'Löschen bestätigen',
     'del_do'                    => 'Löschen',
+    'noti_greeting'             => 'Hallo %NAME%,',
+    'noti_bye'                  => "Liebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
+        "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n",
+    'noti_new_motion_title'     => '[Antragsgrün] Neuer Antrag:',
+    'noti_new_motion_body'      => "Es wurde ein neuer Antrag eingereicht:\nAnlass: %CONSULTATION%\n" .
+        "Name: %TITLE%\nLink: %LINK%",
+    'noti_new_amend_title'      => '[Antragsgrün] Neuer Änderungsantrag zu %TITLE%',
+    'noti_new_amend_body'       => "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: %CONSULTATION%\n" .
+        "Antrag: %TITLE%\nLink: %LINK%",
+    'noti_new_comment_title'    => '[Antragsgrün] Neuer Kommentar zu %TITLE%',
+    'noti_new_comment_body'     => "Es wurde ein neuer Kommentar zu %TITLE% geschrieben:\n%LINK%",
 ];
