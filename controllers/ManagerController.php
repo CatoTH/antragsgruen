@@ -273,6 +273,14 @@ class ManagerController extends Base
 
         $form = new AntragsgruenInitForm($configFile);
 
+        $baseUrl = parse_url($form->siteUrl);
+        if (
+            isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' &&
+            isset($baseUrl['host']) && $baseUrl['host'] != $_SERVER['HTTP_HOST']
+        ) {
+            return $this->redirect($form->siteUrl);
+        }
+
         if (isset($_POST['finishInit'])) {
             unlink($installFile);
             return $this->render('antragsgruen_init_done');
@@ -295,7 +303,7 @@ class ManagerController extends Base
             }
 
             if ($form->tablesAreCreated()) {
-                $connConfig = $form->getDBConfig();
+                $connConfig          = $form->getDBConfig();
                 $connConfig['class'] = \yii\db\Connection::class;
                 \yii::$app->set('db', $connConfig);
 
@@ -337,9 +345,9 @@ class ManagerController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $configDir  = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
+        $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
-        $configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+        $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
 
         if (!file_exists($installFile)) {
             throw new Internal('Installation mode not activated');

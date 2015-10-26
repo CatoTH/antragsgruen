@@ -110,6 +110,14 @@ echo '<div class="form-group">
     </div>
 </div>';
 
+echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="siteEmail">' . 'System-E-Mail-Adresse' . ':</label>
+    <div class="col-sm-8">
+    <input type="email" required name="siteEmail"
+        value="' . Html::encode($form->siteEmail) . '" class="form-control" id="siteEmail">
+    </div>
+</div>';
+
 
 echo '<div class="form-group">
     <label class="col-sm-4 control-label" for="siteUrl">' . 'URL' . ':</label>

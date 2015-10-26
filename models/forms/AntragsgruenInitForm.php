@@ -19,6 +19,7 @@ class AntragsgruenInitForm extends Model
 
     public $siteUrl;
     public $siteTitle;
+    public $siteEmail;
     public $sitePreset;
 
     public $sqlType = 'mysql';
@@ -54,6 +55,7 @@ class AntragsgruenInitForm extends Model
                 $config           = new AntragsgruenApp($configJson);
                 $this->siteUrl    = trim($config->domainPlain, '/') . $config->resourceBase;
                 $this->prettyUrls = $config->prettyUrl;
+                $this->siteEmail  = $config->mailFromEmail;
                 $this->setDatabaseFromParams($config->dbConnection);
                 $this->adminIds = $config->adminUserIds;
 
@@ -116,7 +118,7 @@ class AntragsgruenInitForm extends Model
     public function rules()
     {
         return [
-            [['siteUrl', 'siteTitle', 'sqlType', 'adminUsername', 'adminPassword'], 'required'],
+            [['siteUrl', 'siteTitle', 'siteEmail', 'sqlType', 'adminUsername', 'adminPassword'], 'required'],
             [['sitePreset'], 'number'],
             [['sqlType', 'sqlHost', 'sqlFile', 'sqlUsername', 'sqlPassword', 'sqlDB', 'sqlCreateTables'], 'safe'],
             [['siteUrl', 'siteTitle', 'sitePreset', 'adminUsername', 'adminPassword'], 'safe'],
@@ -210,7 +212,7 @@ class AntragsgruenInitForm extends Model
      */
     public function getDefaultSite()
     {
-        if (!$this->verifyDBConnection(false)) {
+        if (!$this->verifyDBConnection(false) || !$this->tablesAreCreated()) {
             return null;
         }
         $sites = Site::findAll(['1=1']);
@@ -347,7 +349,13 @@ class AntragsgruenInitForm extends Model
             $connConfig = $this->getDBConfig();
             $connection = new Connection($connConfig);
             $tables     = $connection->createCommand('SHOW TABLES')->queryAll();
-            return (count($tables) > 0);
+            $found      = false;
+            foreach ($tables as $table) {
+                if (in_array('site', $table)) {
+                    $found = true;
+                }
+            }
+            return $found;
         } catch (\yii\db\Exception $e) {
             return false;
         }
@@ -380,7 +388,7 @@ class AntragsgruenInitForm extends Model
      */
     public function isConfigured()
     {
-        return file_exists($this->configFile);
+        return file_exists($this->configFile) && $this->tablesAreCreated();
     }
 
     /**
@@ -403,9 +411,11 @@ class AntragsgruenInitForm extends Model
             $config->randomSeed = \Yii::$app->getSecurity()->generateRandomString();
         }
 
-        $config->domainPlain  = $this->siteUrl;
-        $config->prettyUrl    = $this->prettyUrls;
-        $config->dbConnection = $this->getDBConfig();
+        $config->domainPlain   = $this->siteUrl;
+        $config->prettyUrl     = $this->prettyUrls;
+        $config->mailFromEmail = $this->siteEmail;
+        $config->mailFromName  = $this->siteTitle;
+        $config->dbConnection  = $this->getDBConfig();
 
         try {
             $defaultSite = $this->getDefaultSite();
