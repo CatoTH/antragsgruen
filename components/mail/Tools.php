@@ -71,7 +71,7 @@ class Tools
             $status  = $mailer->send($message, $toEmail);
         } catch (\Exception $e) {
             $status = EMailLog::STATUS_DELIVERY_ERROR;
-            \yii::$app->session->setFlash('error', 'Eine E-Mail konnte nicht geschickt werden: ' . $e->getMessage());
+            \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
 
         $obj = new EMailLog();

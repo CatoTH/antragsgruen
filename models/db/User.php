@@ -706,13 +706,6 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function sendEmailChangeMail($newEmail)
     {
-        if ($this->emailChangeAt) {
-            $recTs = Tools::dateSql2timestamp($this->emailChangeAt);
-            if (time() - $recTs < 24 * 3600) {
-                throw new FormError(\Yii::t('user', 'err_emailchange_mail_sent'));
-            }
-        }
-
         $changeTs            = time();
         $this->emailChange   = $newEmail;
         $this->emailChangeAt = date('Y-m-d H:i:s', $changeTs);

@@ -18,7 +18,6 @@ $I->wantTo('set an email');
 $I->click('#myAccountLink');
 $I->see('Neue E-Mail-Adresse:');
 $I->dontSeeElement('.emailExistingRow');
-$I->dontSeeElement('changeRequested');
 $I->seeElement('.emailChangeRow');
 $I->fillField('#userEmail', 'noemail@example.org');
 $I->submitForm('.userAccountForm', [], 'save');
@@ -42,6 +41,15 @@ $I->see('Diese E-Mail-Änderung wurde nicht beantragt oder bereits durchgeführt
 ]);
 $I->see('Der angegebene Code stimmt leider nicht.');
 
+
+$I->wantTo('resend the code');
+$I->seeElement('.resendButton');
+$I->submitForm('.userAccountForm', [], 'resendEmailChange');
+$I->see('5 Minuten', '.alert-danger');
+
+
+$I->wantTo('confirm the previous mail');
+
 \app\tests\_pages\EmailChangePage::openBy($I, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
@@ -51,7 +59,6 @@ $I->see('Der angegebene Code stimmt leider nicht.');
 $I->see('Die E-Mail-Adresse wurde wie gewünscht geändert.');
 $I->dontSee('Neue E-Mail-Adresse:');
 $I->seeElement('.emailExistingRow');
-$I->dontSeeElement('.changeRequested');
 $I->dontSeeElement('.emailChangeRow');
 
 
@@ -70,7 +77,6 @@ $I->submitForm('.userAccountForm', [], 'save');
 $I->see('an die angegebene Adresse geschickt', '.alert-success');
 $I->see('E-mail sent to: noemail2@example.org');
 $I->see('noemail2@example.org', '.changeRequested');
-$I->dontSeeElement('.requestEmailChange');
 
 \app\tests\_pages\EmailChangePage::openBy($I, [
     'subdomain'        => 'parteitag',

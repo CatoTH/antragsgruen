@@ -56,13 +56,15 @@ if ($user->email) {
         echo '<span style="color: gray;">' . Html::encode($user->email) . '</span> ' .
             '(' . \Yii::t('user', 'email_unconfirmed') . ')';
     }
+    echo '<a href="#" class="requestEmailChange">' . \Yii::t('user', 'emailchange_call') . '</a>';
 
     $changeRequested = $user->getChangeRequestedEmailAddress();
     if ($changeRequested) {
         echo '<div class="changeRequested">' . \Yii::t('user', 'emailchange_requested') . ': ';
-        echo Html::encode($changeRequested) . '</div>';
-    } else {
-        echo '<a href="#" class="requestEmailChange">' . \Yii::t('user', 'emailchange_call') . '</a>';
+        echo Html::encode($changeRequested);
+        echo '<button type="submit" name="resendEmailChange" class="link resendButton">' .
+            \Yii::t('user', 'emailchange_resend') . '</button>';
+        echo '</div>';
     }
 
     echo '<div class="checkbox">
@@ -79,10 +81,13 @@ echo '<div class="form-group emailChangeRow">
 $changeRequested = $user->getChangeRequestedEmailAddress();
 if ($changeRequested) {
     echo '<div class="changeRequested">' . \Yii::t('user', 'emailchange_requested') . ': ';
-    echo Html::encode($changeRequested) . '</div>';
-} else {
-    echo '<input type="email" name="email" value="" class="form-control" id="userEmail">';
+    echo Html::encode($changeRequested);
+    echo '<button type="submit" name="resendEmailChange" class="link resendButton">' .
+            \Yii::t('user', 'emailchange_resend') . '</button>';
+    echo '</div>';
 }
+echo '<input type="email" name="email" value="" class="form-control" id="userEmail">';
+
 echo '</div>
 </div>';
 

@@ -34,6 +34,7 @@ return [
     'err_recover_mail_sent'     => 'Es wurde bereits eine Wiederherstellungs-E-Mail in den letzten 24 Stunden verschickt.',
     'err_emailchange_mail_sent' => 'Es wurde bereits eine E-Mail-Änderung in den letzten 24 Stunden beantragt.',
     'err_emailchange_notfound'  => 'Diese E-Mail-Änderung wurde nicht beantragt oder bereits durchgeführt.',
+    'err_emailchange_flood'     => 'Zwischen zwei E-Mails müssen mindestens 5 Minuten liegen, um versehentliches E-Mail-Flooding zu verhindern',
     'emailchange_mail_title'    => 'Neue E-Mail-Adresse bestätigen',
     'emailchange_mail_body'     => "Hallo!\n\nDu hast eine E-Mail-Änderung beantragt. " .
         "Um diese durchzuführen, rufe bitte folgenden Link auf:\n\n%URL%\n\n",
@@ -42,6 +43,7 @@ return [
     'emailchange_done'          => 'Die E-Mail-Adresse wurde wie gewünscht geändert.',
     'emailchange_requested'     => 'E-Mail-Adresse beantragt (noch nicht bestätigt)',
     'emailchange_call'          => 'ändern',
+    'emailchange_resend'        => 'Neue Bestätigungs-Mail',
     'del_title'                 => 'Zugang löschen',
     'del_explanation'           => 'Hier kannst du diesen Zugang von Antragsgrün löschen. Du erhältst keine E-Mail-Benachrichtigungen mehr,
         ein Login ist auch nicht mehr möglich. Deine E-Mail-Adresse, Name, Passwort usw. werden damit aus unserem

@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\AntiXSS;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
 use app\components\WurzelwerkAuthClientTest;
@@ -277,6 +278,7 @@ class UserController extends Base
     /**
      * @param string $email
      * @param string $code
+     * @return \yii\web\Response
      */
     public function actionEmailchange($email, $code)
     {
@@ -288,7 +290,7 @@ class UserController extends Base
         } catch (FormError $e) {
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
-        return $this->actionMyaccount();
+        return $this->redirect(UrlHelper::createUrl('user/myaccount'));
     }
 
     /**
@@ -301,6 +303,18 @@ class UserController extends Base
         $user     = User::getCurrentUser();
         $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
+        if (isset($_POST['resendEmailChange'])) {
+            $changeRequested = $user->getChangeRequestedEmailAddress();
+            if ($changeRequested) {
+                $lastRequest = time() - Tools::dateSql2timestamp($user->emailChangeAt);
+                if ($lastRequest < 5 * 60) {
+                    \yii::$app->session->setFlash('error', \Yii::t('user', 'err_emailchange_flood'));
+                } else {
+                    $user->sendEmailChangeMail($changeRequested);
+                    \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
+                }
+            }
+        }
         if (isset($_POST['save'])) {
             if (trim($_POST['name']) != '') {
                 if ($user->name != $_POST['name']) {
@@ -330,7 +344,10 @@ class UserController extends Base
             }
 
             if ($_POST['email'] != '' && $_POST['email'] != $user->email) {
-                if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                $changeRequested = $user->getChangeRequestedEmailAddress();
+                if ($changeRequested && $changeRequested == $_POST['email']) {
+                    \yii::$app->session->setFlash('error', \Yii::t('user', 'err_emailchange_mail_sent'));
+                } elseif (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
                     try {
                         $user->sendEmailChangeMail($_POST['email']);
                         \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
