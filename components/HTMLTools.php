@@ -12,7 +12,7 @@ class HTMLTools
      * @param string $html
      * @return string
      */
-    public static function cleanTrustedHtml($html)
+    public static function cleanMessedUpHtmlCharacters($html)
     {
         $html = str_replace(chr(194) . chr(160), ' ', $html); // Long space
         $html = str_replace(chr(0xef) . chr(0xbb) . chr(0xbf), '', $html); // Byte order Mark
@@ -27,14 +27,13 @@ class HTMLTools
         return $html;
     }
 
-
     /**
      * @param string $html
      * @return string
      */
     public static function cleanUntrustedHtml($html)
     {
-        $html = static::cleanTrustedHtml($html);
+        $html = static::cleanMessedUpHtmlCharacters($html);
         $html = str_replace("\r", '', $html);
         // @TODO
         return $html;
@@ -46,7 +45,7 @@ class HTMLTools
      */
     public static function correctHtmlErrors($html)
     {
-        return HtmlPurifier::process(
+        $str = HtmlPurifier::process(
             $html,
             function ($config) {
                 /** @var \HTMLPurifier_Config $config */
@@ -70,6 +69,8 @@ class HTMLTools
                 }
             }
         );
+        $str = static::cleanMessedUpHtmlCharacters($str);
+        return $str;
     }
 
 
@@ -121,7 +122,7 @@ class HTMLTools
         $html = preg_replace('/ +<br>/siu', '<br>', $html);
         $html = str_replace('&nbsp;', ' ', $html);
 
-        $html = static::cleanTrustedHtml($html);
+        $html = static::cleanMessedUpHtmlCharacters($html);
 
         $html = trim($html);
 
@@ -425,7 +426,7 @@ class HTMLTools
                 $rows = $rows2;
             }
         }
-        $str  = '<textarea name="' . Html::encode($formName) . '" rows="' . $rows . '"';
+        $str = '<textarea name="' . Html::encode($formName) . '" rows="' . $rows . '"';
         foreach ($options as $key => $val) {
             $str .= ' ' . $key . '="' . Html::encode($val) . '"';
         }

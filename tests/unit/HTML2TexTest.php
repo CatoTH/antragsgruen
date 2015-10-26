@@ -11,6 +11,8 @@ class HTML2TexTest extends TestBase
 {
     use Specify;
 
+    /**
+     */
     public function testEmptyLine()
     {
         $orig   = "<p> </p>";
@@ -24,6 +26,8 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testLineBreaks()
     {
         $orig   = [
@@ -51,6 +55,8 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testBold()
     {
         $orig   = '<p>Normaler Text <strong>fett</strong></p>';
@@ -59,6 +65,8 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testItalic()
     {
         $orig   = '<p>Normaler Text <em>kursiv</em></p>';
@@ -67,6 +75,8 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testUnderlines()
     {
         $orig   = '<p>Normaler Text <span class="underline">unterstrichen</span></p>';
@@ -80,6 +90,8 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testStrike()
     {
         $orig   = '<p>Normaler Text <span class="strike">durchgestrichen</span></p>';
@@ -93,6 +105,8 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testBlockquote()
     {
         $orig   = '<p>Normaler Text</p><blockquote>Zitat</blockquote><p>Weiter</p>';
@@ -103,6 +117,8 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testUnnumbered()
     {
         $orig   = '<ul><li>Punkt 1</li><li>Punkt 2</li></ul>';
@@ -115,13 +131,24 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-
+    /**
+     */
     public function testLinks()
     {
         $orig   = 'Test <a href="https://www.antragsgruen.de/">Antragsgrün</a> Ende';
         $expect = 'Test \href{https://www.antragsgruen.de/}{Antragsgrün} Ende';
 
         $out = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testBrokenHtml()
+    {
+        $orig   = "<p>Test <em>kursiv</em> <ins>Neu</ins> </strong></p>";
+        $expect = "Test \\emph{kursiv} \\textcolor{Insert}{\\uline{Neu}} \n";
+        $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 }

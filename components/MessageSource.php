@@ -195,7 +195,7 @@ class MessageSource extends \yii\i18n\MessageSource
             $text->consultationId = $consultationId;
             $text->textId         = $pageKey;
         }
-        $text->text     = HTMLTools::cleanTrustedHtml($html);
+        $text->text     = HTMLTools::correctHtmlErrors($html);
         $text->editDate = date('Y-m-d H:i:s');
         return $text->save();
     }

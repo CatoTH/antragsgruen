@@ -167,7 +167,7 @@ class Exporter
      */
     public static function encodeHTMLString($str)
     {
-        $str     = HTMLTools::cleanTrustedHtml($str);
+        $str     = HTMLTools::correctHtmlErrors($str);
         $src_doc = new \DOMDocument();
 
         $src_doc->loadHTML('<html><head>
