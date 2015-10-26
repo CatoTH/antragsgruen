@@ -50,4 +50,10 @@ return [
     'button_correct'                    => 'Korrigieren',
     'confirm'                           => 'Bestätigen',
     'go_on'                             => 'Weiter',
+    'published_email_body'              => "Hallo,\n\ndein Änderungsantrag wurde soeben auf Antragsgrün veröffentlicht. " .
+        "Du kannst ihn hier einsehen: %LINK%\n\n" .
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
+    'published_email_title'             => 'Änderungsantrag veröffentlicht',
+
 ];

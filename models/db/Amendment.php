@@ -144,16 +144,16 @@ class Amendment extends IMotion implements IRSSItem
             $showMotionPrefix = false;
         }
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $this->titlePrefix . ' zu ' . $this->motion->title;
+            return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->motion->title;
         } else {
             if ($this->motion->titlePrefix != '') {
                 if ($showMotionPrefix) {
-                    return $this->titlePrefix . ' zu ' . $this->motion->titlePrefix;
+                    return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->motion->titlePrefix;
                 } else {
                     return $this->titlePrefix;
                 }
             } else {
-                return $this->titlePrefix . ' zu ' . $this->motion->title;
+                return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->motion->title;
             }
         }
     }
@@ -522,17 +522,14 @@ class Amendment extends IMotion implements IRSSItem
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
                     try {
-                        $text          = "Hallo,\n\ndein Änderungsantrag wurde soeben auf Antragsgrün veröffentlicht. " .
-                            "Du kannst ihn hier einsehen: %LINK%\n\n" .
-                            "Mit freundlichen Grüßen,\n" .
-                            "  Das Antragsgrün-Team";
+                        $text          = \Yii::t('amend', 'published_email_body');
                         $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
                         \app\components\mail\Tools::sendWithLog(
                             EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                             $this->motion->consultation->site,
                             trim($initiator[0]->contactEmail),
                             null,
-                            'Änderungsantrag veröffentlicht',
+                            \Yii::t('amend', 'published_email_title'),
                             str_replace('%LINK%', $amendmentLink, $text)
                         );
                     } catch (MailNotSent $e) {
@@ -597,7 +594,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         if ($this->changeExplanation) {
-            $content .= '<h2>Begründung</h2>';
+            $content .= '<h2>' . \Yii::t('amend', 'reason') . '</h2>';
             $content .= '<div class="paragraph"><div class="text">';
             $content .= $this->changeExplanation;
             $content .= '</div></div>';

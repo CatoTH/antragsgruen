@@ -62,4 +62,9 @@ return [
     'screened_hint'                     => 'Geprüft',
     'download_pdf'                      => 'PDF-Version herunterladen',
     'motion_text'                       => 'Antragstext',
+    'published_email_body'              => "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
+        "Du kannst ihn hier einsehen: %LINK%\n\n" .
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
+    'published_email_title'             => 'Antrag veröffentlicht',
 ];

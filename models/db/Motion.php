@@ -553,17 +553,14 @@ class Motion extends IMotion implements IRSSItem
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
                     try {
-                    $text       = "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
-                        "Du kannst ihn hier einsehen: %LINK%\n\n" .
-                        "Mit freundlichen Grüßen,\n" .
-                        "  Das Antragsgrün-Team";
-                    $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
+                        $text       = \Yii::t('motion', 'published_email_body');
+                        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
                         \app\components\mail\Tools::sendWithLog(
                             EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                             $this->consultation->site,
                             trim($initiator[0]->contactEmail),
                             null,
-                            'Antrag veröffentlicht',
+                            \Yii::t('motion', 'published_email_title'),
                             str_replace('%LINK%', $motionLink, $text)
                         );
                     } catch (MailNotSent $e) {
