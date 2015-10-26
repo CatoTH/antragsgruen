@@ -741,7 +741,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function changeEmailAddress($newEmail, $code)
     {
-        $this->checkEmailChangeToken($newEmail, $code);
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if ($params->confirmEmailAddresses) {
+            $this->checkEmailChangeToken($newEmail, $code);
+        }
 
         $this->email          = $newEmail;
         $this->emailConfirmed = 1;

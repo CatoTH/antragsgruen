@@ -63,4 +63,6 @@ return [
         "Antrag: %TITLE%\nLink: %LINK%",
     'noti_new_comment_title'    => '[Antragsgrün] Neuer Kommentar zu %TITLE%',
     'noti_new_comment_body'     => "Es wurde ein neuer Kommentar zu %TITLE% geschrieben:\n%LINK%",
+    'acc_grant_email_title'     => 'Antragsgrün-Zugriff',
+    'acc_grant_email_userdata' => "E-Mail / BenutzerInnenname: %EMAIL%\nPasswort: %PASSWORD%",
 ];

@@ -351,21 +351,28 @@ class UserController extends Base
             }
 
             if ($_POST['email'] != '' && $_POST['email'] != $user->email) {
-                $changeRequested = $user->getChangeRequestedEmailAddress();
-                if ($changeRequested && $changeRequested == $_POST['email']) {
-                    \yii::$app->session->setFlash('error', \Yii::t('user', 'err_emailchange_mail_sent'));
-                } elseif (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                    try {
-                        $user->sendEmailChangeMail($_POST['email']);
-                        \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
-                    } catch (FormError $e) {
-                        \yii::$app->session->setFlash('error', $e->getMessage());
-                    } catch (MailNotSent $e) {
-                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                        \yii::$app->session->setFlash('error', $errMsg);
+                /** @var AntragsgruenApp $params */
+                $params = \Yii::$app->params;
+                if ($params->confirmEmailAddresses) {
+                    $changeRequested = $user->getChangeRequestedEmailAddress();
+                    if ($changeRequested && $changeRequested == $_POST['email']) {
+                        \yii::$app->session->setFlash('error', \Yii::t('user', 'err_emailchange_mail_sent'));
+                    } elseif (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                        try {
+                            $user->sendEmailChangeMail($_POST['email']);
+                            \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
+                        } catch (FormError $e) {
+                            \yii::$app->session->setFlash('error', $e->getMessage());
+                        } catch (MailNotSent $e) {
+                            $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                            \yii::$app->session->setFlash('error', $errMsg);
+                        }
+                    } else {
+                        \yii::$app->session->setFlash('error', \Yii::t('user', 'err_invalid_email'));
                     }
                 } else {
-                    \yii::$app->session->setFlash('error', \Yii::t('user', 'err_invalid_email'));
+                    $user->changeEmailAddress($_POST['email'], '');
+                    \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
                 }
             } else {
                 \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));

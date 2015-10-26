@@ -86,8 +86,11 @@ class ConsultationUserPrivilege extends ActiveRecord
             $user->emailConfirmed = 1;
             $user->save();
 
-            $accountText = 'E-Mail / BenutzerInnenname: ' . $email . "\n";
-            $accountText .= 'Passwort: ' . $password;
+            $accountText = str_replace(
+                ['%EMAIL%', '%PASSWORD%'],
+                [$email, $password],
+                \Yii::t('user', 'acc_grant_email_userdata')
+            );
         } else {
             $accountText = '';
         }
@@ -118,7 +121,7 @@ class ConsultationUserPrivilege extends ActiveRecord
                 $consultation->site,
                 $email,
                 $user->id,
-                'Antragsgrün-Zugriff',
+                \Yii::t('user', 'acc_grant_email_title'),
                 $emailText,
                 ['%ACCOUNT%' => $accountText]
             );
