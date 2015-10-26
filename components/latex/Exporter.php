@@ -43,7 +43,16 @@ class Exporter
     {
         if ($node->nodeType == XML_TEXT_NODE) {
             /** @var \DOMText $node */
-            return static::encodePlainString($node->data);
+            $str = static::encodePlainString($node->data);
+            if (in_array('underlined', $extraStyles)) {
+                $words = explode(' ', $str);
+                $words[0] = '\uline{' . $words[0] . '}';
+                for ($i = 1; $i < count($words); $i++) {
+                    $words[$i] = '\uline{ ' . $words[$i] . '}';
+                }
+                $str = implode('', $words);
+            }
+            return $str;
         } else {
             $content = '';
             /** @var \DOMElement $node */
@@ -55,12 +64,27 @@ class Exporter
 
             foreach ($node->childNodes as $child) {
                 $childStyles = [];
-                if ($node->nodeName == 'ul' || $node->nodeName == 'old') {
+                if (in_array('underlined', $extraStyles)) {
+                    $childStyles[] = 'underlined';
+                }
+                if ($node->nodeName == 'ul' || $node->nodeName == 'ol' || $node->nodeName == 'li') {
                     if (in_array('ins', $classes) || in_array('inserted', $classes)) {
                         $childStyles[] = 'ins';
+                        $childStyles[] = 'underlined';
                     }
                     if (in_array('del', $classes) || in_array('deleted', $classes)) {
                         $childStyles[] = 'del';
+                    }
+                } elseif ($node->nodeName == 'u') {
+                    $childStyles[] = 'underlined';
+                } elseif ($node->nodeName == 'ins') {
+                    $childStyles[] = 'underlined';
+                } elseif ($node->nodeName == 'span') {
+                    if (in_array('underline', $classes)) {
+                        $childStyles[] = 'underlined';
+                    }
+                    if (in_array('ins', $classes) || in_array('inserted', $classes)) {
+                        $childStyles[] = 'underlined';
                     }
                 }
                 /** @var \DOMNode $child */
@@ -87,7 +111,8 @@ class Exporter
                 case 'i':
                     return '\emph{' . $content . '}';
                 case 'u':
-                    return '\uline{' . $content . '}';
+                    // return '\uline{' . $content . '}';
+                    return $content;
                 case 's':
                     return '\sout{' . $content . '}';
                 case 'sub':
@@ -106,9 +131,6 @@ class Exporter
                     return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
                     if (in_array('ins', $extraStyles)) {
-                        // @TODO Issues:
-                        // - https://github.com/CatoTH/antragsgruen/issues/105
-                        //- https://github.com/CatoTH/antragsgruen/issues/91
                         //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
                         $content = '\textcolor{Insert}{' . $content . '}';
                     }
@@ -126,16 +148,17 @@ class Exporter
                         return $content;
                     }
                     if (in_array('underline', $classes)) {
-                        $content = '\uline{' . $content . '}';
+                        // $content = '\uline{' . $content . '}';
                     }
                     if (in_array('strike', $classes)) {
                         $content = '\sout{' . $content . '}';
                     }
                     if (in_array('ins', $classes)) {
-                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
+                        //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('inserted', $classes)) {
-                        $content = '\textcolor{Insert}{\uline{' . $content . '}}';
+                        $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('del', $classes)) {
                         $content = '\textcolor{Delete}{\sout{' . $content . '}}';
@@ -153,7 +176,8 @@ class Exporter
                 case 'del':
                     return '\textcolor{Delete}{\sout{' . $content . '}}';
                 case 'ins':
-                    return '\textcolor{Insert}{\uline{' . $content . '}}';
+                    //return '\textcolor{Insert}{\uline{' . $content . '}}';
+                    return '\textcolor{Insert}{' . $content . '}';
                 default:
                     //return $content;
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
