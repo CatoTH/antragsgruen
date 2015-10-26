@@ -67,16 +67,6 @@ class Diff
             return $str;
         }
         if ($this->formatting == static::FORMATTING_INLINE) {
-            if (preg_match('/^<[^>]*>$/siu', $str)) {
-                if (in_array($str, [
-                    '<em>', '</em>', '<i>', '</i>', '<strong>', '</strong>', '<sup>', '</sup>', '<sub>', '</sub>',
-                    '<b>', '</b>', '<s>', '</s>', '<u>', '</u>', '<sup>', '</sup>',
-                ])) {
-                    // @TODO: something more readable like [italic] ?
-                    return '<span style="color: green;"><ins>' . Html::encode($str) . '</ins></span>';
-                }
-                return $str;
-            }
             if (mb_stripos($str, '<ul>') === 0) {
                 return '<div style="color: green; margin: 0; padding: 0;"><ul class="inserted">' .
                 mb_substr($str, 4) . '</div>';
@@ -93,15 +83,6 @@ class Diff
                 return '<span style="color: green;"><ins>' . $str . '</ins></span>';
             }
         } else {
-            if (preg_match('/^<[^>]*>$/siu', $str)) {
-                if (in_array($str, [
-                    '<em>', '</em>', '<i>', '</i>', '<strong>', '</strong>', '<sup>', '</sup>', '<sub>', '</sub>',
-                    '<b>', '</b>', '<s>', '</s>', '<u>', '</u>', '<sup>', '</sup>',
-                ])) {
-                    return '<ins>' . Html::encode($str) . '</ins>';
-                }
-                return $str;
-            }
             if (mb_stripos($str, '<ul>') === 0) {
                 return '<ul class="inserted">' . mb_substr($str, 4);
             } elseif (mb_stripos($str, '<ol>') === 9) {
@@ -755,8 +736,12 @@ class Diff
         }
         $html = str_replace('<ins> </ins></p>', '</p>', $html);
         $html = str_replace('<ins><p>', '<p><ins>', $html);
+        $html = str_replace('<ins></p>', '</p><ins>', $html);
         $html = str_replace('<del><p>', '<p><del>', $html);
+        $html = str_replace('<del></p>', '</p><del>', $html);
+        $html = str_replace('<p></ins>', '</ins><p>', $html);
         $html = str_replace('</p></ins>', '</ins></p>', $html);
+        $html = str_replace('</p></del>', '</del></p>', $html);
         $html = str_replace('</p></del>', '</del></p>', $html);
         $html = str_replace('<ins></ins>', '', $html);
         $html = str_replace('<del></del>', '', $html);

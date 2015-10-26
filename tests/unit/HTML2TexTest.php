@@ -44,10 +44,10 @@ class HTML2TexTest extends TestBase
             'Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.<br>' .
             'Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, ' .
             'greißlicha Uhu, oida Daddara!</p>';
-        $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla,\\linebreak\n" .
+        $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, \\linebreak\n" .
             "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\n" .
             "\\newline\n" .
-            "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada,\\linebreak\n" .
+            "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, \\linebreak\n" .
             "Oaschgsicht, greißlicha Uhu, oida Daddara!\n";
 
         $lines = LineSplitter::motionPara2lines($orig, true, 80);

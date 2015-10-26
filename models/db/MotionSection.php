@@ -194,7 +194,7 @@ class MotionSection extends IMotionSection
         foreach ($paras as $para) {
             $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
             $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
-            $return .= implode(' ', $linesOut) . "\n";
+            $return .= implode('', $linesOut) . "\n";
         }
         $return = trim($return);
         return $return;

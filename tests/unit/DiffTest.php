@@ -273,6 +273,7 @@ class DiffTest extends TestBase
         $strPost  = '<p>Test</p>';
         $diff     = new Diff();
         $out      = $diff->computeLineDiff($strPre, $strPost);
+        $out      = $diff->cleanupDiffProblems($out);
         $expected = '<ul><li><del>Listenpunkt</del></li></ul><p><ins>Test</ins></p>';
         $this->assertEquals($expected, $out);
     }

@@ -102,7 +102,7 @@ class AmendmentSectionFormatter
         $strPost    = '';
         foreach ($this->section->getTextParagraphs() as $para) {
             $linesOut = LineSplitter::motionPara2lines($para, false, $lineLength);
-            $strPost .= implode(' ', $linesOut) . "\n";
+            $strPost .= implode('', $linesOut) . "\n";
         }
 
         return static::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, $this->diffFormatting, $this->debug);
@@ -308,14 +308,14 @@ class AmendmentSectionFormatter
         $strPre    = '';
         foreach ($origLines as $para) {
             $linesOut = LineSplitter::motionPara2lines($para, true, 80);
-            $strPre .= implode(' ', $linesOut) . "\n";
+            $strPre .= implode('', $linesOut) . "\n";
         }
 
         $newLines = HTMLTools::sectionSimpleHTML($textPost);
         $strPost  = '';
         foreach ($newLines as $para) {
             $linesOut = LineSplitter::motionPara2lines($para, false, 80);
-            $strPost .= implode(' ', $linesOut) . "\n";
+            $strPost .= implode('', $linesOut) . "\n";
         }
 
         $diff = new Diff();

@@ -59,7 +59,22 @@ class MotionPara2LinesTest extends TestBase
             '###LINENUMBER###<strong>Demokratie und Freiheit </strong>###FORCELINEBREAK###',
             '###LINENUMBER###Demokratie und Freiheit gehören untrennbar zusammen.',
         ];
-        $out = LineSplitter::motionPara2lines($orig, true, 80);
+        $out    = LineSplitter::motionPara2lines($orig, true, 80);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testWithDashInWord()
+    {
+        $orig   = '<p>nationalen Parlamente sowie die Rückkehr zur Gemeinschaftsmethode und eine EU-Kommissarin oder einen EU-Kommissar; er oder sie soll der Eurogruppe vorsitzen und mit allen WWU-relevanten Kompetenzen ausgestattet sein.</p>';
+        $expect = [
+            '<p>###LINENUMBER###nationalen Parlamente sowie die Rückkehr zur Gemeinschaftsmethode und eine EU-Kommissarin ',
+            '###LINENUMBER###oder einen EU-Kommissar; er oder sie soll der Eurogruppe vorsitzen und mit allen WWU-',
+            '###LINENUMBER###relevanten Kompetenzen ausgestattet sein.</p>'
+        ];
+        $out    = LineSplitter::motionPara2lines($orig, true, 92);
+
         $this->assertEquals($expect, $out);
     }
 }

@@ -81,20 +81,19 @@ class LineSplitter
                         echo "Aktuelles Zeichen: \"" . mb_substr($this->text, $i, 1) . "\"\n";
                         */
                         if (mb_substr($this->text, $i, 1) == ' ') {
-                            $lines[] = mb_substr($currLine, 0, mb_strlen($currLine) - 1);
+                            $lines[] = $currLine;
 
                             $currLine      = '';
                             $currLineCount = 0;
                         } else {
-                            $ueberhang   = mb_substr($currLine, $lastSeparator + 1);
-                            $lastIsSpace = (mb_substr($currLine, $lastSeparator, 1) == " ");
+                            $remainder   = mb_substr($currLine, $lastSeparator + 1);
                             /*
                             echo "Überhang: \"" . $ueberhang . "\"\n";
                             echo "Letztes ist Leerzeichen: " . $lastIsSpace . "\n";
                             */
-                            $lines[] = mb_substr($currLine, 0, $lastSeparator + ($lastIsSpace ? 0 : 1));
+                            $lines[] = mb_substr($currLine, 0, $lastSeparator + 1);
 
-                            $currLine      = $ueberhang;
+                            $currLine      = $remainder;
                             $currLineCount = $this->lineLength - $lastSeparatorCount + 1;
                         }
 
