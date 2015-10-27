@@ -408,6 +408,12 @@ class Diff
      */
     public static function getUnchangedPrefixPostfix($orig, $new, $diff, $ignoreStr)
     {
+        $firstTagOrig = (preg_match('/^<[^>]+>/siu', $orig, $matchesOrig) ? $matchesOrig[0] : '');
+        $firstTagNew  = (preg_match('/^<[^>]+>/siu', $new, $matchesNew) ? $matchesNew[0] : '');
+        if ($firstTagOrig != $firstTagNew) {
+            return ['', $orig, $new, $diff, ''];
+        }
+
         $parts      = preg_split('/<\/?(ins|del)>/siu', $diff);
         $prefix     = $parts[0];
         $postfix    = $parts[count($parts) - 1];
@@ -755,8 +761,7 @@ class Diff
      */
     public function computeAmendmentParagraphDiff($origParagraphs, AmendmentSection $amSec)
     {
-        $amParas = HTMLTools::sectionSimpleHTML($amSec->data);
-
+        $amParas      = HTMLTools::sectionSimpleHTML($amSec->data);
         $currOrigLine = $amSec->getFirstLineNumber();
         $lineLength   = $amSec->amendment->motion->motionType->consultation->getSettings()->lineLength;
         return $this->computeAmendmentParagraphDiffInt($origParagraphs, $amParas, $currOrigLine, $lineLength, $amSec);

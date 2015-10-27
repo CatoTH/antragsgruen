@@ -10,7 +10,7 @@ class MotionSectionParagraphAmendment
      * @param string $diff
      * @param int $firstLine
      */
-    public function __construct(AmendmentSection $amSec, $paragraphNo, $diff, $firstLine)
+    public function __construct($amSec, $paragraphNo, $diff, $firstLine)
     {
         $this->amendmentSection  = $amSec;
         $this->origParagraphNo   = $paragraphNo;

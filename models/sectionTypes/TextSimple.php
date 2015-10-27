@@ -89,7 +89,7 @@ class TextSimple extends ISectionType
             $str .= '</div>';
 
             $str .= '<div class="modifiedActions"><a href="#" class="revert">';
-            $str .= 'Änderungen rückgängig machen';
+            $str .= \Yii::t('amend', 'singlepara_revert');
             $str .= '</a></div>';
 
             $str .= '</div>';

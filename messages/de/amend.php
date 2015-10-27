@@ -72,4 +72,5 @@ return [
     'sidebar_back'                      => 'Zurück zum Antrag',
     'initiated_by'                      => 'gestellt von',
     'affects_x_paragraphs'              => 'Bezieht sich auf insgesamt %num% Absätze',
+    'singlepara_revert'                 => 'Änderungen rückgängig machen',
 ];

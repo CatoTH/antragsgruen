@@ -10,7 +10,19 @@ class DiffTest extends TestBase
 {
     use Specify;
 
-        /**
+    /**
+     */
+    public function testReplaceListByP()
+    {
+        $orig    = ['<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>'];
+        $amend   = ['<p>Test 456</p>'];
+        $diff    = new Diff();
+        $diffStr = $diff->computeAmendmentParagraphDiffInt($orig, $amend, 1, 80, null);
+        var_dump($diffStr);
+        die();
+    }
+
+    /**
      * @throws \app\models\exceptions\Internal
      */
     public function testReplaceParagraph()
@@ -55,8 +67,8 @@ class DiffTest extends TestBase
      */
     public function testDeletedSentenceAtEnd()
     {
-        $str1 = '<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren. Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</p>';
-        $str2 = '<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.</p>';
+        $str1   = '<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren. Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</p>';
+        $str2   = '<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.</p>';
         $expect = '<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.<del> Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</del></p>';
 
         $diff = new Diff();
@@ -310,9 +322,9 @@ class DiffTest extends TestBase
      */
     public function testShortParagraph()
     {
-        $strPre  = '<p><strong>Balance von Freiheit und Sicherheit für Solo-Selbstständige und Existenzgründer*innen</strong></p>';
-        $strPost = '<p><strong>Balance von Freiheit und Sicherheit für Selbstständige und Existenzgründer*innen</strong></p>';
-        $diff    = new Diff();
+        $strPre   = '<p><strong>Balance von Freiheit und Sicherheit für Solo-Selbstständige und Existenzgründer*innen</strong></p>';
+        $strPost  = '<p><strong>Balance von Freiheit und Sicherheit für Selbstständige und Existenzgründer*innen</strong></p>';
+        $diff     = new Diff();
         $out      = $diff->computeDiff($strPre, $strPost);
         $expected = '<p><strong>Balance von Freiheit und Sicherheit für <del>Solo-</del>Selbstständige und Existenzgründer*innen</strong></p>';
         $this->assertEquals($expected, $out);

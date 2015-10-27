@@ -265,11 +265,11 @@ class HTMLTools
 
     /**
      * @param string $html
-     * @param bool $sectionSimpleHTMLInt
+     * @param bool $splitListsItems
      * @return \string[]
      * @throws Internal
      */
-    public static function sectionSimpleHTML($html, $sectionSimpleHTMLInt = true)
+    public static function sectionSimpleHTML($html, $splitListsItems = true)
     {
         $src_doc = new \DOMDocument();
         $src_doc->loadHTML(
@@ -281,7 +281,7 @@ class HTMLTools
         $body   = $bodies->item(0);
 
         /** @var \DOMElement $body */
-        return static::sectionSimpleHTMLInt($body, $sectionSimpleHTMLInt, '', '');
+        return static::sectionSimpleHTMLInt($body, $splitListsItems, '', '');
     }
 
 

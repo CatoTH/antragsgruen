@@ -56,7 +56,7 @@ if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLIC
 
 if (\Yii::$app->user->isGuest) {
     echo '<div class="alert alert-warning jsProtectionHint" role="alert">';
-    echo 'Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.';
+    echo \Yii::t('base', 'err_js_or_login');
     echo '</div>';
 }
 

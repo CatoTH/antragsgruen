@@ -61,7 +61,7 @@ if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLIC
 
 if (\Yii::$app->user->isGuest) {
     echo '<div class="alert alert-warning jsProtectionHint" role="alert">';
-    echo 'Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.';
+    echo \Yii::t('base', 'err_js_or_login');
     echo '</div>';
 }
 
@@ -79,13 +79,13 @@ echo Html::beginForm(
     ['id' => 'amendmentEditForm', 'class' => 'motionEditForm draftForm', 'enctype' => 'multipart/form-data']
 );
 
-echo '<h2 class="green">Neuer Antragstext</h2>
+echo '<h2 class="green">' . \Yii::t('amend', 'merge_new_text') . '</h2>
 <div class="content">
 
 <section class="editorialChange">
-    <a href="#" class="opener">' . 'Redaktionelle Änderung' . '</a>
+    <a href="#" class="opener">' . \Yii::t('amend', 'editorial_hint') . '</a>
     <div class="form-group wysiwyg-textarea hidden" id="section_holder_editorial" data-full-html="0" data-max-len="0">
-        <label for="sections_editorial">' . 'Redaktionelle Änderung' . '</label>
+        <label for="sections_editorial">' . \Yii::t('amend', 'editorial_hint') . '</label>
         <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
     Html::encode($form->editorial) . '</textarea>
         <div class="texteditor boxed" id="amendmentEditorial_wysiwyg">';
@@ -102,7 +102,7 @@ foreach ($form->sections as $section) {
 echo '</div>';
 
 
-echo '<h2 class="green">Begründung</h2>';
+echo '<h2 class="green">' . \Yii::t('amend', 'reason') . '</h2>';
 
 echo '<div class="content">';
 
@@ -130,7 +130,7 @@ if (!$multipleParagraphs) {
 }
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
-echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
+echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on');
 echo '</button></div>';
 
 $layout->addOnLoadJS('$.Antragsgruen.amendmentEditForm(' . ($multipleParagraphs ? 1 : 0) . ');');
