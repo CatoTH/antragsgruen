@@ -300,20 +300,21 @@ class LayoutHelper
         $likes    = $motion->getLikes();
         $dislikes = $motion->getDislikes();
 
-        if (count($likes) == 0 && count($dislikes) == 0 && $cantSupportMsg == '' && !$canSupport) {
+        $nobody = \Yii::t('structure', 'policy_nobody_supp_denied');
+        if (count($likes) == 0 && count($dislikes) == 0 && $cantSupportMsg == $nobody && !$canSupport) {
             return;
         }
 
-        echo '<section class="likes"><h2 class="green">Zustimmung</h2>
+        echo '<section class="likes"><h2 class="green">' . \Yii::t('motion', 'likes_title') . '</h2>
     <div class="content">';
 
         if (count($likes) > 0) {
-            echo '<strong>Zustimmung:</strong><br>';
+            echo '<strong>' . \Yii::t('motion', 'likes') . ':</strong><br>';
             echo '<ul>';
             foreach ($likes as $supp) {
                 echo '<li>';
                 if ($user && $supp->userId == $user->id) {
-                    echo '<span class="label label-info">Du!</span> ';
+                    echo '<span class="label label-info">' . \Yii::t('motion', 'likes_you') . '</span> ';
                 }
                 echo Html::encode($supp->getNameWithOrga());
                 echo '</li>';
@@ -323,12 +324,12 @@ class LayoutHelper
         }
 
         if (count($dislikes) > 0) {
-            echo '<strong>Ablehnung:</strong><br>';
+            echo '<strong>' . \Yii::t('motion', 'dislikes') . ':</strong><br>';
             echo '<ul>';
             foreach ($dislikes as $supp) {
                 echo '<li>';
                 if ($user && $supp->userId == $user->id) {
-                    echo '<span class="label label-info">Du!</span> ';
+                    echo '<span class="label label-info">' . \Yii::t('motion', 'dislikes_you') . '</span> ';
                 }
                 echo Html::encode($supp->getNameWithOrga());
                 echo '</li>';
@@ -347,21 +348,21 @@ class LayoutHelper
                     break;
                 case ISupporter::ROLE_LIKE:
                     echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                    echo '<span class="glyphicon glyphicon-remove-sign"></span> Doch nicht';
+                    echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
                     echo '</button>';
                     break;
                 case ISupporter::ROLE_DISLIKE:
                     echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                    echo '<span class="glyphicon glyphicon-remove-sign"></span> Doch nicht';
+                    echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
                     echo '</button>';
                     break;
                 default:
                     echo '<button type="submit" name="motionLike" class="btn btn-success">';
-                    echo '<span class="glyphicon glyphicon-thumbs-up"></span> Zustimmung';
+                    echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'like');
                     echo '</button>';
 
                     echo '<button type="submit" name="motionDislike" class="btn btn-alert">';
-                    echo '<span class="glyphicon glyphicon-thumbs-down"></span> Ablehnung';
+                    echo '<span class="glyphicon glyphicon-thumbs-down"></span> ' . \Yii::t('motion', 'dislike');
                     echo '</button>';
             }
             echo '</div>';
