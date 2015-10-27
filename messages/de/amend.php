@@ -70,4 +70,6 @@ return [
     'published_email_title'             => 'Änderungsantrag veröffentlicht',
     'sidebar_adminedit'                 => 'Admin: bearbeiten',
     'sidebar_back'                      => 'Zurück zum Antrag',
+    'initiated_by'                      => 'gestellt von',
+    'affects_x_paragraphs'              => 'Bezieht sich auf insgesamt %num% Absätze',
 ];

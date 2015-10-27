@@ -85,12 +85,12 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         $amendment = $amendmentSection->amendmentSection->amendment;
         echo '<div class="text textAmendment hidden amendment' . $amendment->id . '">';
         echo '<div class="preamble"><div>';
-        echo '<h3>Änderungsantrag ' . Html::encode($amendment->titlePrefix) . '</h3>';
-        echo ', gestellt von: ' . Html::encode($amendment->getInitiatorsStr());
+        echo '<h3>' . \Yii::t('amend', 'amendment') . ' ' . Html::encode($amendment->titlePrefix) . '</h3>';
+        echo ', ' . \Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
         $amParas = $amendment->getChangedParagraphs(true);
         if (count($amParas) > 1) {
             echo '<div class="moreAffected">';
-            echo str_replace('%num%', count($amParas), 'Bezieht sich auf insgesamt %num% Absätze');
+            echo str_replace('%num%', count($amParas), \Yii::t('amend', 'affects_x_paragraphs'));
             echo '</div>';
         }
         echo '</div></div>';
@@ -130,9 +130,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             if ($screeningQueue > 0) {
                 echo '<div class="commentScreeningQueue">';
                 if ($screeningQueue == 1) {
-                    echo '1 Kommentar wartet auf Freischaltung';
+                    echo \Yii::t('amend', 'comments_screening_queue_1');
                 } else {
-                    echo str_replace('%NUM%', $screeningQueue, '%NUM% Kommentare warten auf Freischaltung');
+                    echo str_replace('%NUM%', $screeningQueue, \Yii::t('amend', 'comments_screening_queue_x'));
                 }
                 echo '</div>';
             }
@@ -146,9 +146,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 LayoutHelper::showCommentForm($form, $motion->consultation, $section->sectionId, $paragraphNo);
             } elseif ($section->motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
                 echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>
-        Logge dich ein, um kommentieren zu können.
-        </div>';
+        <span class="glyphicon glyphicon-log-in"></span>' . \Yii::t('amend', 'comments_please_log_in') . '</div>';
             }
             echo '</section>';
         }
