@@ -38,7 +38,7 @@ if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
     if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
         $layout->addBreadcrumb($amendment->titlePrefix);
     } else {
-        $layout->addBreadcrumb('Änderungsantrag');
+        $layout->addBreadcrumb(\Yii::t('amend', 'amendment'));
     }
 }
 
@@ -75,13 +75,13 @@ if ($amendment->canWithdraw()) {
 
 if ($adminEdit) {
     $html .= '<li class="adminEdit">';
-    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . 'Admin: bearbeiten';
+    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . \Yii::t('amend', 'sidebar_adminedit');
     $html .= Html::a($title, $adminEdit) . '</li>';
     $sidebarRows++;
 }
 
 $html .= '<li class="back">';
-$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . 'Zurück zum Antrag';
+$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('amend', 'sidebar_back');
 $html .= Html::a($title, UrlHelper::createMotionUrl($amendment->motion)) . '</li>';
 $sidebarRows++;
 
@@ -120,7 +120,7 @@ echo '<table class="motionDataTable">
 echo MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $consultation);
 
 echo '</td></tr>
-                <tr class="statusRow"><th>Status:</th><td>';
+                <tr class="statusRow"><th>' . \Yii::t('amend', 'status') . ':</th><td>';
 
 $screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
 $statiNames            = Amendment::getStati();
@@ -138,11 +138,11 @@ echo '</td>
                 </tr>';
 
 if ($amendment->dateResolution != '') {
-    echo '<tr><th>Entschieden am:</th>
+    echo '<tr><th>' . \Yii::t('amend', 'resoluted_on') . ':</th>
        <td>' . Tools::formatMysqlDate($amendment->dateResolution) . '</td>
      </tr>';
 }
-echo '<tr><th>Eingereicht:</th>
+echo '<tr><th>' . \Yii::t('amend', 'submitted_on') . ':</th>
        <td>' . Tools::formatMysqlDateTime($amendment->dateCreation) . '</td>
                 </tr>';
 echo '</table>';
@@ -154,7 +154,7 @@ echo '</div>';
 
 if ($amendment->changeEditorial != '') {
     echo '<section id="section_editorial" class="motionTextHolder">';
-    echo '<h3 class="green">' . 'Redaktionelle Änderung' . '</h3>';
+    echo '<h3 class="green">' . \Yii::t('amend', 'editorial_hint') . '</h3>';
     echo '<div class="paragraph"><div class="text">';
     echo $amendment->changeEditorial;
     echo '</div></div></section>';
@@ -169,7 +169,7 @@ foreach ($sections as $section) {
 
 if ($amendment->changeExplanation != '') {
     echo '<section id="amendmentExplanation" class="motionTextHolder">';
-    echo '<h3 class="green">Begründung</h3>';
+    echo '<h3 class="green">' . \Yii::t('amend', 'reason') . '</h3>';
     echo '<div class="paragraph"><div class="text">';
     echo $amendment->changeExplanation;
     echo '</div></div>';
@@ -179,7 +179,7 @@ if ($amendment->changeExplanation != '') {
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
 $supporters = $amendment->getSupporters();
 if (count($supporters) > 0) {
-    echo '<section class="supporters"><h2 class="green">Unterstützer_Innen</h2>
+    echo '<section class="supporters"><h2 class="green">' . \Yii::t('amend', 'supporters_title') . '</h2>
     <div class="content">';
 
     if (count($supporters) > 0) {
@@ -187,14 +187,14 @@ if (count($supporters) > 0) {
         foreach ($supporters as $supp) {
             echo '<li>';
             if ($supp->id == $currUserId) {
-                echo '<span class="label label-info">Du!</span> ';
+                echo '<span class="label label-info">' . \Yii::t('amend', 'supporter_you') . '</span> ';
             }
             echo Html::encode($supp->getNameWithOrga());
             echo '</li>';
         }
         echo '</ul>';
     } else {
-        echo '<em>keine</em><br>';
+        echo '<em>' . \Yii::t('amend', 'supporter_none') . '</em><br>';
     }
     echo "<br>";
     echo '</div></section>';
@@ -203,7 +203,7 @@ if (count($supporters) > 0) {
 MotionLayoutHelper::printSupportSection($amendment, $amendment->motion->motionType->getSupportPolicy(), $supportStatus);
 
 if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
-    echo '<section class="comments"><h2 class="green">Kommentare</h2>';
+    echo '<section class="comments"><h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
 
     $form        = $commentForm;
     $screenAdmin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
@@ -228,9 +228,9 @@ if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     if ($screeningQueue > 0) {
         echo '<div class="commentScreeningQueue">';
         if ($screeningQueue == 1) {
-            echo '1 Kommentar wartet auf Freischaltung';
+            echo \Yii::t('amend', 'comments_screening_queue_1');
         } else {
-            echo str_replace('%NUM%', $screeningQueue, '%NUM% Kommentare warten auf Freischaltung');
+            echo str_replace('%NUM%', $screeningQueue, \Yii::t('amend', 'comments_screening_queue_x'));
         }
         echo '</div>';
     }
@@ -245,9 +245,7 @@ if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
         MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
     } elseif ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>
-        Logge dich ein, um kommentieren zu können.
-        </div>';
+        <span class="glyphicon glyphicon-log-in"></span>' . \Yii::t('amend', 'comments_please_log_in') . '</div>';
     }
     echo '</section>';
 }

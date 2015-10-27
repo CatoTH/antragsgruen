@@ -8,6 +8,16 @@ return [
     'initiators_title'                  => 'Antragsteller_Innen',
     'supporter'                         => 'UnterstützerIn',
     'supporters'                        => 'UnterstützerInnen',
+    'supporters_title'                  => 'Unterstützer_Innen',
+    'supporter_you'                     => 'Du!',
+    'supporter_none'                    => 'keine',
+    'status'                            => 'Status',
+    'resoluted_on'                      => 'Entschieden am',
+    'submitted_on'                      => 'Eingereicht',
+    'comments_title'                    => 'Kommentare',
+    'comments_screening_queue_1'        => '1 Kommentar wartet auf Freischaltung',
+    'comments_screening_queue_x'        => '%NUM% Kommentare warten auf Freischaltung',
+    'comments_please_log_in'            => 'Logge dich ein, um kommentieren zu können.',
     'prefix'                            => 'Antragsnummer',
     'none_yet'                          => 'Es gibt noch keine Änderungsanträge',
     'amendment_for'                     => 'Änderungsantrag zu',
@@ -58,5 +68,6 @@ return [
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
     'published_email_title'             => 'Änderungsantrag veröffentlicht',
-
+    'sidebar_adminedit'                 => 'Admin: bearbeiten',
+    'sidebar_back'                      => 'Zurück zum Antrag',
 ];
