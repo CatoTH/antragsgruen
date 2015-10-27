@@ -49,14 +49,14 @@ echo '
 if ($user->email) {
     echo '<div class="form-group emailExistingRow">
     <div class="col-md-4 control-label label">' . \Yii::t('user', 'email_address') . ':</div>
-    <div class="col-md-8">';
+    <div class="col-md-8"><span class="currentEmail">';
     if ($user->emailConfirmed) {
         echo Html::encode($user->email);
     } else {
         echo '<span style="color: gray;">' . Html::encode($user->email) . '</span> ' .
             '(' . \Yii::t('user', 'email_unconfirmed') . ')';
     }
-    echo '<a href="#" class="requestEmailChange">' . \Yii::t('user', 'emailchange_call') . '</a>';
+    echo '</span><a href="#" class="requestEmailChange">' . \Yii::t('user', 'emailchange_call') . '</a>';
 
     $changeRequested = $user->getChangeRequestedEmailAddress();
     if ($changeRequested) {

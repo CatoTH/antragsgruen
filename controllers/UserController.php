@@ -159,8 +159,12 @@ class UserController extends Base
                     \Yii::$app->session->setFlash('success', \Yii::t('user', 'welcome'));
                 }
 
+                /* 307 breaks user/NoEmailConfirmationCept
                 $this->redirect($backUrl, 307);
                 \Yii::$app->end(307);
+                */
+                $this->redirect($backUrl);
+                \Yii::$app->end(302);
             } catch (Login $e) {
                 $usernamePasswordForm->error = $e->getMessage();
             }
