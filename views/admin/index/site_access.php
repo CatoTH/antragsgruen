@@ -15,33 +15,25 @@ use app\models\settings\Site as SiteSettings;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = 'Zugang zur Seite';
+$this->title = \Yii::t('admin', 'siteacc_title');
 $layout->addCSS('css/backend.css');
 $layout->addJS('js/backend.js');
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb('Zugang');
+$layout->addBreadcrumb(\Yii::t('admin', 'siteacc_bread'));
 $layout->loadFuelux();
 
 $settings = $site->getSettings();
 
-echo '<h1>Zugang zur Seite</h1>';
+echo '<h1>' . \Yii::t('admin', 'siteacc_title') . '</h1>';
 
 if ($policyWarning) {
     echo '<div class="accountEditExplanation alert alert-info alert-dismissible" role="alert">
 <button type="button" class="close" data-dismiss="alert"
-aria-label="Close"><span aria-hidden="true">&times;</span></button>
-' . Html::beginForm('', 'post', ['id' => 'policyRestrictForm']) . '
-<h3>Hinweis:</h3>
-Die BenutzerInnenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
- von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte BenutzerInnen" gestellt werden. Aktuell ist
- das nicht der Fall.<br>
- <br>
- Falls die nur für unten eingetragene BenutzerInnen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
- dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene BenutzerInnen
- Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:
- <div class="saveholder">
-    <button type="submit" name="policyRestrictToUsers" class="btn btn-primary">Auf BenutzerInnen einschränken</button>
-</div>' . Html::endForm() . '</div>';
+aria-label="Close"><span aria-hidden="true">&times;</span></button>' .
+        Html::beginForm('', 'post', ['id' => 'policyRestrictForm']) . \Yii::t('admin', 'siteacc_policywarning') .
+        '<div class="saveholder"><button type="submit" name="policyRestrictToUsers" class="btn btn-primary">' .
+        \Yii::t('admin', 'siteacc_policy_login') . '</button></div>' .
+        Html::endForm() . '</div>';
 }
 
 
@@ -57,19 +49,17 @@ if ($success) {
 }
 
 echo '<div class="checkbox forceLogin">
-  <label>' . Html::checkbox('forceLogin', $settings->forceLogin) . '
-  Nur eingeloggte BenutzerInnen dürfen zugreifen (inkl. <em>lesen</em>)
-</label>
+  <label>' . Html::checkbox('forceLogin', $settings->forceLogin) . \Yii::t('admin', 'siteacc_forcelogin') .
+    '</label>
 </div>';
 
 echo '<div class="checkbox managedUserAccounts">
-  <label>' . Html::checkbox('managedUserAccounts', $settings->managedUserAccounts) . '
-  Nur ausgewählten BenutzerInnen das Login erlauben <small class="showManagedUsers">(siehe unten)</small>
-</label>
+  <label>' . Html::checkbox('managedUserAccounts', $settings->managedUserAccounts) .
+    \Yii::t('admin', 'siteacc_managedusers') . '</label>
 </div>';
 
 
-echo '<fieldset class="loginMethods"><legend>Folgende Login-Varianten sind möglich:</legend>';
+echo '<fieldset class="loginMethods"><legend>' . \Yii::t('admin', 'siteacc_logins') . ':</legend>';
 
 $method = SiteSettings::LOGIN_STD;
 echo '<div class="checkbox std"><label>';
@@ -78,16 +68,14 @@ if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_STD) {
 } else {
     echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
 }
-echo ' Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>
-</label>
+echo ' ' . \Yii::t('admin', 'siteacc_useraccounts') . '</label>
 </div>';
 
 if ($controller->getParams()->hasWurzelwerk) {
     $method = SiteSettings::LOGIN_WURZELWERK;
     echo '<div class="checkbox wurzelwerk">
-  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) . '
-  Wurzelwerk <small>(alle mit Wurzelwerk-Zugang)</small>
-</label>
+  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) .
+        \Yii::t('admin', 'siteacc_ww') . '</label>
 </div>';
 }
 
@@ -99,15 +87,13 @@ if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_EXTERNAL) {
 } else {
     echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
 }
-echo '
-  Sonstige Methoden <small>(OpenID, evtl. zufünftig auch Login per Facebook / Twitter)</small>
-</label>
+echo ' ' . \Yii::t('admin', 'siteacc_otherlogins') . '</label>
 </div>';
 
 echo '</fieldset>';
 
 echo '<div class="saveholder">
-<button type="submit" name="saveLogin" class="btn btn-primary">Speichern</button>
+<button type="submit" name="saveLogin" class="btn btn-primary">' . \Yii::t('base', 'save') . '</button>
 </div>';
 
 echo Html::endForm();
@@ -119,7 +105,7 @@ if ($controller->consultation) {
 
 
 echo Html::beginForm('', 'post', ['id' => 'adminForm', 'class' => 'adminForm form-horizontal']);
-echo '<h2 class="green">Administrator_Innen der Reihe</h2>
+echo '<h2 class="green">' . \Yii::t('admin', 'siteacc_admins_title') . '</h2>
     <section class="content">
     <ul style="margin-top: 10px;">';
 
@@ -141,22 +127,23 @@ echo '</ul>
 
 <br>
 
-<h4>Neu eintragen</h4>
+<h4>' . \Yii::t('admin', 'siteacc_admins_add') . '</h4>
 <div class="row">
     <div class="col-md-3">';
 
 $options = [
-    'wurzelwerk' => 'Wurzelwerk-Name:',
-    'email'      => 'E-Mail-Adresse:',
+    'wurzelwerk' => \Yii::t('admin', 'siteacc_add_ww') . ':',
+    'email'      => \Yii::t('admin', 'siteacc_add_email') . ':',
 ];
 echo \app\components\HTMLTools::fueluxSelectbox('addType', $options);
 echo '</div>
 <div class="col-md-4">
     <input type="text" name="addUsername" value="" id="addUsername" class="form-control"
-    title="Wurzelwerk-BenutzerInnenname / E-Mail-Adresse" placeholder="Name" required>
+    title="' . Html::encode(\Yii::t('admin', 'siteacc_add_name_title')) . '"
+    placeholder="' . Html::encode(\Yii::t('admin', 'siteacc_add_name_place')) . '" required>
 </div>
 <div class="col-md-3">
-    <button type="submit" name="addAdmin" class="btn btn-primary">Hinzufügen</button>
+    <button type="submit" name="addAdmin" class="btn btn-primary">' . \Yii::t('admin', 'siteacc_add_btn') . '</button>
 </div>
 </div>
 <br><br>

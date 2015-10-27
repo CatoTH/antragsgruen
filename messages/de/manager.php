@@ -17,7 +17,7 @@ return [
     'email_none'              => 'E-Mail-Versand deaktivieren',
     'email_smtp'              => 'SMTP (externer Mailserver)',
     'email_mandrill'          => 'Mandrill',
-    'mandrilll_api'           => 'Mandrill\'s API-Key',
+    'mandrill_api'            => 'Mandrill\'s API-Key',
     'smtp_server'             => 'SMTP Server',
     'smtp_port'               => 'SMTP Port',
     'smtp_login'              => 'SMTP Login-Typ',

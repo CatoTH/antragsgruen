@@ -177,7 +177,7 @@ echo '<div class="form-group emailOption smtpUsername">
 
 $currPassword = (isset($config->mailService['password']) ? $config->mailService['password'] : '');
 echo '<div class="form-group emailOption smtpPassword">
-  <label class="col-sm-4 control-label" for="smtpPassword">' . \yii::t('manager', 'smtp_passwort') . ':</label>
+  <label class="col-sm-4 control-label" for="smtpPassword">' . \yii::t('manager', 'smtp_password') . ':</label>
   <div class="col-sm-8">
     <input type="password" name="mailService[smtpPassword]" placeholder=""
       value="' . Html::encode($currPassword) . '" class="form-control" id="smtpPassword">
