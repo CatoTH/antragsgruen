@@ -11,14 +11,14 @@ return [
     'policy_ww_motion_denied' => 'Nur Wurzelwerk-NutzerInnen dürfen Anträge anlegen.',
     'policy_ww_amend_denied'  => 'Nur Wurzelwerk-NutzerInnen dürfen Änderungsanträge anlegen.',
     'policy_ww_comm_denied'   => 'Nur Wurzelwerk-NutzerInnen dürfen kommentieren',
-    'policy_ww_supp_denied'   => '',
+    'policy_ww_supp_denied'   => 'Nur Wurzelwerk-NutzerInnen dürfen unterstützen',
 
     'policy_admin_title'         => 'Admins',
     'policy_admin_desc'          => 'Admins',
     'policy_admin_motion_denied' => 'Nur Admins dürfen Anträge anlegen.',
     'policy_admin_amend_denied'  => 'Nur Admins dürfen Änderungsanträge anlegen.',
     'policy_admin_comm_denied'   => 'Nur Admins dürfen kommentieren',
-    'policy_admin_supp_denied'   => '',
+    'policy_admin_supp_denied'   => 'Nur Admins dürfen unterstützen',
 
     'policy_all_title'            => 'Alle',
     'policy_all_desc'             => 'Alle',
@@ -26,7 +26,7 @@ return [
     'policy_nobody_motion_denied' => 'Momentan kann niemand Anträge stellen.',
     'policy_nobody_amend_denied'  => 'Momentan kann niemand Änderungsanträge stellen.',
     'policy_nobody_comm_denied'   => 'Momentan kann niemand Kommentare schreiben.',
-    'policy_nobody_supp_denied'   => '',
+    'policy_nobody_supp_denied'   => 'Momentan kann niemand unterstützen.',
 
     'policy_logged_title'           => 'Eingeloggte',
     'policy_logged_desc'            => 'Eingeloggte',
