@@ -9,10 +9,13 @@ return [
     'supporter'                         => 'UnterstützerIn',
     'supporters'                        => 'UnterstützerInnen',
     'prefix'                            => 'Antragsnummer',
+    'none_yet'                          => 'Es gibt noch keine Änderungsanträge',
     'amendment_for'                     => 'Änderungsantrag zu',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
         'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
+    'submitted_adminnoti_title'         => 'Neuer Änderungsantrag',
+    'submitted_adminnoti_body'          => "Es wurde ein neuer Änderungsantrag eingereicht.\nAntrag: %TITLE%\nAntragstellerIn: %INITIATOR%\nLink: %LINK%",
     'submitted_screening_email'         => "Hallo,\n\ndu hast soeben einen Änderungsantrag eingereicht.\n" .
         "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
         "Du wirst dann gesondert darüber benachrichtigt.\n\n" .

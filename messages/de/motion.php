@@ -59,6 +59,8 @@ return [
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
     'submitted_screening_email_subject' => 'Antrag eingereicht',
+    'submitted_adminnoti_title'         => 'Neuer Antrag',
+    'submitted_adminnoti_body'          => "Es wurde ein neuer Antrag eingereicht.\nTitel: %TITLE%\nAntragstellerIn: %INITIATOR%\nLink: %LINK%",
     'screened_hint'                     => 'Geprüft',
     'download_pdf'                      => 'PDF-Version herunterladen',
     'motion_text'                       => 'Antragstext',

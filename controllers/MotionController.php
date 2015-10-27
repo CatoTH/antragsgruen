@@ -245,10 +245,12 @@ class MotionController extends Base
             $motion->save();
 
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-
-            $mailText = "Es wurde ein neuer Antrag \"%title%\" eingereicht.\nLink: %link%";
-            $mailText = str_replace(['%title%', '%link%'], [$motion->title, $motionLink], $mailText);
-            $motion->consultation->sendEmailToAdmins('Neuer Antrag', $mailText);
+            $mailText = str_replace(
+                ['%TITLE%', '%LINK%', '%INITIATOR%'],
+                [$motion->title, $motionLink, $motion->getInitiatorsStr()],
+                \Yii::t('motion', 'submitted_adminnoti_body')
+            );
+            $motion->consultation->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->onPublish();

@@ -62,7 +62,7 @@ class AmendmentController extends Base
             }
         }
         if (count($amendments) == 0) {
-            $this->showErrorpage(404, 'Es gibt noch keine Änderungsanträge');
+            $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
         }
 
         \yii::$app->response->format = Response::FORMAT_RAW;
@@ -170,10 +170,13 @@ class AmendmentController extends Base
             $amendment->save();
 
             $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-
-            $mailText = 'Es wurde ein neuer Änderungsantrag "%title%" eingereicht.' . "\n" . 'Link: %link%';
-            $mailText = str_replace(['%title%', '%link%'], [$amendment->getTitle(), $amendmentLink], $mailText);
-            $amendment->motion->consultation->sendEmailToAdmins('Neuer Änderungsantrag', $mailText);
+            $mailText      = str_replace(
+                ['%TITLE%', '%LINK%', '%INITIATOR%'],
+                [$amendment->getTitle(), $amendmentLink, $amendment->getInitiatorsStr()],
+                \Yii::t('amend', 'submitted_adminnoti_body')
+            );
+            $mailTitle     = \Yii::t('amend', 'submitted_adminnoti_title');
+            $amendment->motion->consultation->sendEmailToAdmins($mailTitle, $mailText);
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->onPublish();
