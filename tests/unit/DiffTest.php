@@ -14,12 +14,15 @@ class DiffTest extends TestBase
      */
     public function testReplaceListByP()
     {
-        $orig    = ['<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>'];
-        $amend   = ['<p>Test 456</p>'];
-        $diff    = new Diff();
-        $diffStr = $diff->computeAmendmentParagraphDiffInt($orig, $amend, 1, 80, null);
-        var_dump($diffStr);
-        die();
+        $orig      = ['<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>'];
+        $amend     = ['<p>Test 456</p>'];
+        $diff      = new Diff();
+        $diffParas = $diff->computeAmendmentParagraphDiffInt($orig, $amend, 1, 80, null);
+        $diffStr   = $diff->cleanupDiffProblems($diffParas[0]->strDiff);
+        $expected  = '<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
+<p><ins>Test 456</ins></p>
+';
+        $this->assertEquals($expected, $diffStr);
     }
 
     /**
