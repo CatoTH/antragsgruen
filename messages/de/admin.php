@@ -55,4 +55,41 @@ Die BenutzerInnenverwaltung unten kommt erst dann voll zur Geltung, wenn die Les
     'siteacc_add_name_title'  => 'Wurzelwerk-BenutzerInnenname / E-Mail-Adresse',
     'siteacc_add_name_place'  => 'Name',
     'siteacc_add_btn'         => 'Hinzufügen',
+    'siteacc_accounts_title'  => 'Benutzer_Innen-Accounts',
+    'siteacc_email_text_pre'  => 'Hallo,
+
+wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .
+        'auf der du über unseren Entwurf mitdiskutieren kannst.
+Hier ist der Zugang:
+
+%LINK%
+%ACCOUNT%
+
+Liebe Grüße,
+  Das Antragsgrün-Team',
+    'siteacc_accounts_expl'   => '<h3>Erklärung:</h3>
+Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
+kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
+<br>
+Um BenutzerInnen anzulegen, gib weiter unten die E-Mail-Adressen der Mitglieder ein.
+Diese Mitglieder bekommen daraufhin eine Benachrichtigungs-E-Mail zugesandt.<br>
+Falls sie noch keinen eigenen Zugang auf Antragsgrün hatten, wird automatisch einer eingerichtet
+und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
+(ansonsten verschwindet das %ACCOUNT% ersatzlos).<br>
+<strong>%LINK%</strong> wird immer durch einen Link auf die Antragsgrün-Seite ersetzt.',
+    'siteacc_existing_users'  => 'Bereits eingetragene Benutzer_Innen',
+    'siteacc_user_name'       => 'Name',
+    'siteacc_user_login'      => 'Login',
+    'siteacc_user_read'       => 'Lesen',
+    'siteacc_user_write'      => 'Anlegen',
+    'siteacc_perm_read'       => 'Leserechte',
+    'siteacc_perm_write'      => 'Schreibrechte',
+    'siteacc_new_users'       => 'Benutzer_Innen eintragen',
+    'siteacc_new_emails'      => 'E-Mail-Adressen:<br>
+                <small>(genau eine E-Mail-Adresse pro Zeile!)</small>',
+    'siteacc_new_names'       => 'Namen der BenutzerInnen:<br>
+                <small>(Wichtig: Exakte Zuordnung zu den Zeilen links)</small>',
+    'siteacc_new_text'        => 'Text der E-Mail',
+    'siteacc_new_do'          => 'Berechtigen + E-Mail schicken',
+
 ];

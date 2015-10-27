@@ -10,52 +10,33 @@ use yii\helpers\Html;
 
 echo '<section class="showManagedUsers">';
 
-echo '<h2 class="green">' . 'Benutzer_Innen-Accounts' . '</h2>';
+echo '<h2 class="green">' . \Yii::t('admin', 'siteacc_accounts_title') . '</h2>';
 echo '<div class="content">';
 
 
 $preEmails = '';
 $preNames  = '';
-$preText   = 'Hallo,
-
-wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .
-    'auf der du über unseren Entwurf mitdiskutieren kannst.
-Hier ist der Zugang:
-
-%LINK%
-%ACCOUNT%
-
-Liebe Grüße,
-  Das Antragsgrün-Team';
+$preText   = \Yii::t('admin', 'siteacc_email_text_pre');
 
 echo $controller->showErrors();
 
 
-echo '<div class="accountEditExplanation alert alert-info" role="alert">
-<h3>Erklärung:</h3>
-Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
-kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
-<br>
-Um BenutzerInnen anzulegen, gib weiter unten die E-Mail-Adressen der Mitglieder ein.
-Diese Mitglieder bekommen daraufhin eine Benachrichtigungs-E-Mail zugesandt.<br>
-Falls sie noch keinen eigenen Zugang auf Antragsgrün hatten, wird automatisch einer eingerichtet
-und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
-(ansonsten verschwindet das %ACCOUNT% ersatzlos).<br>
-<strong>%LINK%</strong> wird immer durch einen Link auf die Antragsgrün-Seite ersetzt.
-</div>';
+echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
+    \Yii::t('admin', 'siteacc_accounts_expl') .
+    '</div>';
 
 if (count($consultation->userPrivileges) > 0) {
     echo Html::beginForm('', 'post', ['id' => 'accountsEditForm', 'class' => 'adminForm form-horizontal']);
 
-    echo '<h3 class="lightgreen">' . 'Bereits eingetragene Benutzer_Innen' . '</h3>';
+    echo '<h3 class="lightgreen">' . \Yii::t('admin', 'siteacc_existing_users') . '</h3>';
 
     echo '<table class="accountListTable table table-condensed">
 <thead>
 <tr>
-<th class="nameCol">Name</th>
-<th class="emailCol">Login</th>
-<th class="accessViewCol">Lesen</th>
-<th class="accessCreateCol">Anlegen</th>
+<th class="nameCol">' . \Yii::t('admin', 'siteacc_user_name') . '</th>
+<th class="emailCol">' . \Yii::t('admin', 'siteacc_user_login') . '</th>
+<th class="accessViewCol">' . \Yii::t('admin', 'siteacc_user_read') . 'Lesen</th>
+<th class="accessCreateCol">' . \Yii::t('admin', 'siteacc_user_write') . '</th>
 </tr>
 </thead>
 <tbody>
@@ -68,13 +49,13 @@ if (count($consultation->userPrivileges) > 0) {
     <td class="emailCol">' . Html::encode($privilege->user->getAuthName()) . '</td>
     <td class="accessViewCol">
         <label>
-            <span class="sr-only">Leserechte</span>
+            <span class="sr-only">' . \Yii::t('admin', 'siteacc_perm_read') . '</span>
             <input type="checkbox" name="access[' . $privilege->userId . '][]" value="view" ' . $checkView . '>
         </label>
     </td>
     <td class="accessCreateCol">
         <label>
-            <span class="sr-only">Schreibrechte</span>
+            <span class="sr-only">' . \Yii::t('admin', 'siteacc_perm_write') . '</span>
             <input type="checkbox" name="access[' . $privilege->userId . '][]" value="create" ' . $checkCreate . '>
         </label>
     </td>
@@ -83,7 +64,7 @@ if (count($consultation->userPrivileges) > 0) {
     echo '</tbody></table>
 
 <div class="saveholder">
-    <button type="submit" name="saveUsers" class="btn btn-primary">Speichern</button>
+    <button type="submit" name="saveUsers" class="btn btn-primary">' . \Yii::t('base', 'save') . '</button>
 </div>
 ';
 }
@@ -94,30 +75,26 @@ echo Html::endForm();
 
 echo Html::beginForm('', 'post', ['id' => 'accountsCreateForm', 'class' => 'adminForm form-horizontal']);
 
-echo '<h3 class="lightgreen">' . 'Benutzer_Innen eintragen' . '</h3>
+echo '<h3 class="lightgreen">' . \Yii::t('admin', 'siteacc_new_users') . '</h3>
 
 <div class="row">
-    <label class="col-md-6">
-                E-Mail-Adressen:<br>
-                <small>(genau eine E-Mail-Adresse pro Zeile!)</small>
-                <textarea id="emailAddresses" name="emailAddresses" rows="15">' .
+    <label class="col-md-6">' . \Yii::t('admin', 'siteacc_new_emails') . '
+    <textarea id="emailAddresses" name="emailAddresses" rows="15">' .
     Html::encode($preEmails) .
     '</textarea>
     </label>
-    <label class="col-md-6">
-                Namen der BenutzerInnen:<br>
-                <small>(Wichtig: Exakte Zuordnung zu den Zeilen links)</small>
-                <textarea id="names" name="names" rows="15">' . Html::encode($preNames) .
+    <label class="col-md-6">' . \Yii::t('admin', 'siteacc_new_names') . '
+    <textarea id="names" name="names" rows="15">' . Html::encode($preNames) .
     '</textarea>
     </label>
 </div>
 
-<label for="emailText">Text der E-Mail:</label>
+<label for="emailText">' . \Yii::t('admin', 'siteacc_new_text') . ':</label>
 <textarea id="emailText" name="emailText" rows="15" cols="80">' . Html::encode($preText) . '</textarea>
 <br><br>
 
 <div class="saveholder">
-    <button type="submit" name="addUsers" class="btn btn-primary">Berechtigen + E-Mail schicken</button>
+    <button type="submit" name="addUsers" class="btn btn-primary">' . \Yii::t('admin', 'siteacc_new_do') . '</button>
 </div>
 ';
 

@@ -51,7 +51,7 @@ class Nobody extends IPolicy
      */
     public function getPermissionDeniedSupportMsg()
     {
-        return \Yii::t('structure', '');
+        return \Yii::t('structure', 'policy_nobody_supp_denied');
     }
 
     /**
