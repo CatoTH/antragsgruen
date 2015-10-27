@@ -73,6 +73,7 @@ class HTMLValidator extends \Codeception\Module
         file_put_contents($filename, $html);
         exec($javaPath . " -Xss1024k -jar " . $vnuPath . " --format json " . $filename . " 2>&1", $return);
         $data = json_decode($return[0], true);
+        unlink($filename);
         if (!$data || !isset($data['messages']) || !is_array($data['messages'])) {
             throw new \Exception('Invalid data returned from validation service: ' . $return);
         }
