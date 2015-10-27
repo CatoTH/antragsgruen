@@ -651,25 +651,26 @@ class Diff
 
     /**
      * @param string[] $origParagraphs
-     * @param AmendmentSection $amSec
-     * @return ParagraphAmendment[]
+     * @param string[] $amParas
+     * @param int $currOrigLine
+     * @param int $lineLength
+     * @param AmendmentSection|null $amSec
+     * @return \app\models\db\MotionSectionParagraphAmendment[]
      * @throws Internal
      */
-    public function computeAmendmentParagraphDiff($origParagraphs, AmendmentSection $amSec)
+    public function computeAmendmentParagraphDiffInt($origParagraphs, $amParas, $currOrigLine, $lineLength, $amSec)
     {
-        $amParas       = HTMLTools::sectionSimpleHTML($amSec->data);
-        $diffEng       = new Engine();
-        $diff          = $diffEng->compareArrays($origParagraphs, $amParas);
-        $currOrigPara  = 0;
-        $currOrigLine  = $amSec->getFirstLineNumber();
-        $lineLength    = $amSec->amendment->motion->motionType->consultation->getSettings()->lineLength;
+        $diffEng      = new Engine();
+        $diff         = $diffEng->compareArrays($origParagraphs, $amParas);
+        $currOrigPara = 0;
+
         $pendingInsert = '';
         /** @var ParagraphAmendment[] $changed */
         $changed = [];
 
         for ($currDiffLine = 0; $currDiffLine < count($diff); $currDiffLine++) {
             $diffLine     = $diff[$currDiffLine];
-            $firstAffLine = $currOrigLine; // @TODO
+            $firstAffLine = $currOrigLine;
             if ($diffLine[1] == Engine::UNMODIFIED) {
                 if ($pendingInsert != '') {
                     $str                    = $pendingInsert . $diffLine[0];
@@ -705,9 +706,11 @@ class Diff
                     list ($deletes, $inserts, $count) = $updates;
                     $motionParaLines = 0;
                     for ($j = 0; $j < count($deletes); $j++) {
-                        $lineDiff  = $this->computeLineDiff($deletes[$j], $inserts[$j]);
+                        $ins       = $inserts[$j];
+                        $del       = $deletes[$j];
+                        $lineDiff  = $this->computeLineDiff($del, $ins);
                         $ignoreStr = $this->engine->getIgnoreStr();
-                        $split     = $this->getUnchangedPrefixPostfix($deletes[$j], $inserts[$j], $lineDiff, $ignoreStr);
+                        $split     = $this->getUnchangedPrefixPostfix($del, $ins, $lineDiff, $ignoreStr);
                         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
                         $motionParaLines += LineSplitter::countMotionParaLines($prefix, $lineLength);
 
@@ -730,17 +733,33 @@ class Diff
                         $changed[$paraNo] = new ParagraphAmendment($amSec, $paraNo, $changeStr, $currLine);
                     }
                     $currDiffLine += $count * 2 - 1;
+                    $currOrigPara += $count;
                 } else {
                     $deleteStr              = $this->wrapWithDelete($diffLine[0]);
                     $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);
+                    $currOrigPara++;
                 }
 
-                $currOrigPara++;
                 $currOrigLine += LineSplitter::countMotionParaLines($diffLine[0], $lineLength);
                 continue;
             }
         }
         return $changed;
+    }
+
+    /**
+     * @param string[] $origParagraphs
+     * @param AmendmentSection $amSec
+     * @return ParagraphAmendment[]
+     * @throws Internal
+     */
+    public function computeAmendmentParagraphDiff($origParagraphs, AmendmentSection $amSec)
+    {
+        $amParas = HTMLTools::sectionSimpleHTML($amSec->data);
+
+        $currOrigLine = $amSec->getFirstLineNumber();
+        $lineLength   = $amSec->amendment->motion->motionType->consultation->getSettings()->lineLength;
+        return $this->computeAmendmentParagraphDiffInt($origParagraphs, $amParas, $currOrigLine, $lineLength, $amSec);
     }
 
     /**
