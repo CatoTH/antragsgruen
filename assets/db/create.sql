@@ -338,6 +338,19 @@ CREATE TABLE IF NOT EXISTS `emailLog` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `migration`
+--
+
+CREATE TABLE `migration` (
+  `version`    VARCHAR(180) NOT NULL,
+  `apply_time` INT(11) DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `motion`
 --
 
@@ -703,6 +716,12 @@ ALTER TABLE `emailLog`
 ADD PRIMARY KEY (`id`),
 ADD KEY `fk_mail_log_userIdx` (`toUserId`),
 ADD KEY `fromSiteId` (`fromSiteId`);
+
+--
+-- Indexes for table `migration`
+--
+ALTER TABLE `migration`
+ADD PRIMARY KEY (`version`);
 
 --
 -- Indexes for table `motion`

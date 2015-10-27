@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS `amendmentAdminComment`;
 DROP TABLE IF EXISTS `amendmentComment`;
 DROP TABLE IF EXISTS `amendmentSupporter`;
 DROP TABLE IF EXISTS `amendmentSection`;
+DROP TABLE IF EXISTS `migration`;
 DROP TABLE IF EXISTS `motionAdminComment`;
 DROP TABLE IF EXISTS `motionSubscription`;
 DROP TABLE IF EXISTS `motionComment`;
