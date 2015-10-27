@@ -86,7 +86,7 @@ class LineSplitter
                             $currLine      = '';
                             $currLineCount = 0;
                         } else {
-                            $remainder   = mb_substr($currLine, $lastSeparator + 1);
+                            $remainder = mb_substr($currLine, $lastSeparator + 1);
                             /*
                             echo "Überhang: \"" . $ueberhang . "\"\n";
                             echo "Letztes ist Leerzeichen: " . $lastIsSpace . "\n";
@@ -127,9 +127,11 @@ class LineSplitter
      */
     public static function motionPara2lines($para, $lineNumbers, $lineLength)
     {
-        $cacheKey = [md5($para), $lineNumbers, $lineLength];
-        if ($cached = \yii::$app->cache->get($cacheKey)) {
-            return $cached;
+        if (!defined('YII_DEBUG') || !YII_DEBUG) {
+            $cacheKey = [md5($para), $lineNumbers, $lineLength];
+            if ($cached = \yii::$app->cache->get($cacheKey)) {
+                return $cached;
+            }
         }
 
         if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
@@ -161,7 +163,9 @@ class LineSplitter
             $linesOut = $linesIn;
         }
 
-        \yii::$app->cache->set($cacheKey, $linesOut, 7 * 24 * 3600);
+        if (!defined('YII_DEBUG') || !YII_DEBUG) {
+            \yii::$app->cache->set($cacheKey, $linesOut, 7 * 24 * 3600);
+        }
 
         return $linesOut;
     }
