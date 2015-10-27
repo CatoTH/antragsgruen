@@ -414,15 +414,25 @@ class Diff
         $prefixLen  = mb_strlen($prefix);
         $postfixLen = mb_strlen($postfix);
 
+        $prefixPre = $prefix;
         if ($prefixLen < 40) {
             $prefix = '';
         } else {
-            if ($prefixLen > 40 && mb_strrpos($prefix, '. ') > $prefixLen - 40) {
+            if ($prefixLen > 0 && mb_substr($prefix, $prefixLen - 1, 1) == '.') {
+                // Leave it unchanged
+            } elseif ($prefixLen > 40 && mb_strrpos($prefix, '. ') > $prefixLen - 40) {
                 $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '. ') + 2);
             } elseif ($prefixLen > 40 && mb_strrpos($prefix, '.') > $prefixLen - 40) {
                 $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '.') + 1);
             }
         }
+        if ($prefix == '') {
+            if (preg_match('/^(<(p|blockquote|ul|ol|li|pre)>)+/siu', $prefixPre, $matches)) {
+                $prefix = $matches[0];
+            }
+        }
+
+        $postfixPre = $postfix;
         if ($postfixLen < 40) {
             $postfix = '';
         } else {
@@ -430,6 +440,11 @@ class Diff
                 $postfix = mb_substr($postfix, mb_strpos($postfix, '. ') + 1);
             } elseif ($postfixLen > 40 && mb_strpos($postfix, '.') < 40) {
                 $postfix = mb_substr($postfix, mb_strpos($postfix, '.') + 1);
+            }
+        }
+        if ($postfix == '') {
+            if (preg_match('/(<\/(p|blockquote|ul|ol|li|pre)>)+$/siu', $postfixPre, $matches)) {
+                $postfix = $matches[0];
             }
         }
 
@@ -518,8 +533,11 @@ class Diff
                             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
                             if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
                                 $computedStr .= $prefix;
-                                $computedStr .= $this->wrapWithDelete($middleOrig) . "\n";
-                                $computedStr .= $this->wrapWithInsert($middleNew);
+                                $computedStr .= $this->wrapWithDelete($middleOrig);
+                                $insertStr = $this->wrapWithInsert($middleNew);
+                                if ($insertStr != '') {
+                                    $computedStr .= "\n" . $insertStr;
+                                }
                                 $computedStr .= $postfix . "\n";
                             } else {
                                 $computedStr .= $prefix;
