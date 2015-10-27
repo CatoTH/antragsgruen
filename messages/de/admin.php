@@ -29,4 +29,6 @@ return [
     'list_template_motion'    => 'Neuer Antrag auf dieser Basis',
     'list_confirm_del_motion' => 'Diesen Antrag wirklich löschen?',
     'list_confirm_del_amend'  => 'Diesen Änderungsantrag wirklich löschen?',
+    'cons_email_from'         => 'Absender-Name',
+    'cons_email_from_place'   => 'Standard: "%NAME%"',
 ];

@@ -120,29 +120,34 @@ class LoginUsernamePasswordForm extends Model
     {
         $this->doCreateAccountValidate($site);
 
-        $user                 = new User();
-        $user->auth           = 'email:' . $this->username;
-        $user->name           = $this->name;
-        $user->email          = $this->username;
-        $user->emailConfirmed = 0;
-        $user->pwdEnc         = password_hash($this->password, PASSWORD_DEFAULT);
+        $user         = new User();
+        $user->auth   = 'email:' . $this->username;
+        $user->name   = $this->name;
+        $user->email  = $this->username;
+        $user->pwdEnc = password_hash($this->password, PASSWORD_DEFAULT);
 
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if ($params->confirmEmailAddresses) {
-            $user->status = User::STATUS_UNCONFIRMED;
+            $user->status         = User::STATUS_UNCONFIRMED;
+            $user->emailConfirmed = 0;
         } else {
-            $user->status = User::STATUS_CONFIRMED;
+            $user->status         = User::STATUS_CONFIRMED;
+            $user->emailConfirmed = 1;
         }
 
         if ($user->save()) {
-            $user->refresh();
-            try {
-                $this->sendConfirmationEmail($user);
+            if ($params->confirmEmailAddresses) {
+                $user->refresh();
+                try {
+                    $this->sendConfirmationEmail($user);
+                    return $user;
+                } catch (MailNotSent $e) {
+                    $this->error = $e->getMessage();
+                    throw new Login($this->error);
+                }
+            } else {
                 return $user;
-            } catch (MailNotSent $e) {
-                $this->error = $e->getMessage();
-                throw new Login($this->error);
             }
         } else {
             $this->error = \Yii::t('base', 'err_unknown');

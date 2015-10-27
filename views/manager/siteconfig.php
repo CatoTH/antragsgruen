@@ -110,6 +110,7 @@ echo HTMLTools::fueluxSelectbox(
         'sendmail' => \yii::t('manager', 'email_sendmail'),
         'smtp'     => \yii::t('manager', 'email_smtp'),
         'mandrill' => \yii::t('manager', 'email_mandrill'),
+        'none'     => \yii::t('manager', 'email_none'),
     ],
     $currTransport,
     ['id' => 'emailTransport']
@@ -182,6 +183,14 @@ echo '<div class="form-group emailOption smtpPassword">
       value="' . Html::encode($currPassword) . '" class="form-control" id="smtpPassword">
   </div>
 </div>';
+
+echo '<div class="form-group"><label>';
+echo Html::checkbox(
+    'confirmEmailAddresses',
+    $config->confirmEmailAddresses,
+    ['id' => 'confirmEmailAddresses']
+);
+echo \Yii::t('manager', 'confirm_email_addresses') . '</label></div>';
 
 
 echo '<div class="saveholder">

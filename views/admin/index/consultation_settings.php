@@ -12,6 +12,8 @@ use yii\helpers\Html;
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
+/** @var \app\models\settings\AntragsgruenApp $params */
+$params = \Yii::$app->params;
 
 $layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
@@ -37,7 +39,6 @@ $booleanSettingRow = function ($settings, $field, &$handledSettings, $descriptio
     echo $description;
     echo '</label></div>';
 };
-
 
 
 echo '<h1>Einstellungen</h1>';
@@ -133,7 +134,7 @@ echo Html::dropDownList(
 echo '</div></div>';
 
 
-$layout = $consultation->site->getSettings()->siteLayout;
+$layout                = $consultation->site->getSettings()->siteLayout;
 $handledSiteSettings[] = 'siteLayout';
 echo '<fieldset class="form-group">
     <label class="col-sm-3 control-label" for="consultationPath">Layout:</label>
@@ -213,7 +214,6 @@ $booleanSettingRow($settings, 'iniatorsMayEdit', $handledSettings, $description)
 
 $description = 'Anträge (ausgegraut) anzeigen, auch wenn sie noch nicht freigeschaltet sind';
 $booleanSettingRow($settings, 'screeningMotionsShown', $handledSettings, $description);
-
 
 
 $tags = $consultation->getSortedTags();
@@ -317,10 +317,12 @@ echo '</div>
 </div></div>';
 
 $handledSiteSettings[] = 'emailFromName';
+$placeholder           = str_replace('%NAME%', $params->mailFromName, \Yii::t('admin', 'cons_email_from_place'));
 echo '<div class="form-group">
-    <label class="col-sm-3 control-label" for="emailReplyTo">Absender-Name:</label>
+    <label class="col-sm-3 control-label" for="emailReplyTo">' .
+    Html::encode(\Yii::t('admin', 'cons_email_from')) . ':</label>
     <div class="col-sm-9">
-    <input type="text" name="siteSettings[emailFromName]" placeholder="Standard: &quot;Antragsgrün&quot;" ' .
+    <input type="text" name="siteSettings[emailFromName]" placeholder="' . Html::encode($placeholder) . '" ' .
     'value="' . Html::encode($siteSettings->emailFromName) . '" class="form-control" id="emailFromName">
 </div></div>';
 

@@ -195,15 +195,19 @@ class ManagerController extends Base
         }
 
         if (isset($_POST['save'])) {
-            $config->resourceBase  = $_POST['resourceBase'];
-            $config->baseLanguage  = $_POST['baseLanguage'];
-            $config->tmpDir        = $_POST['tmpDir'];
-            $config->xelatexPath   = $_POST['xelatexPath'];
-            $config->xdvipdfmx     = $_POST['xdvipdfmx'];
-            $config->mailFromEmail = $_POST['mailFromEmail'];
-            $config->mailFromName  = $_POST['mailFromName'];
+            $config->resourceBase          = $_POST['resourceBase'];
+            $config->baseLanguage          = $_POST['baseLanguage'];
+            $config->tmpDir                = $_POST['tmpDir'];
+            $config->xelatexPath           = $_POST['xelatexPath'];
+            $config->xdvipdfmx             = $_POST['xdvipdfmx'];
+            $config->mailFromEmail         = $_POST['mailFromEmail'];
+            $config->mailFromName          = $_POST['mailFromName'];
+            $config->confirmEmailAddresses = isset($_POST['confirmEmailAddresses']);
 
             switch ($_POST['mailService']['transport']) {
+                case 'none':
+                    $config->mailService = ['transport' => 'none'];
+                    break;
                 case 'sendmail':
                     $config->mailService = ['transport' => 'sendmail'];
                     break;

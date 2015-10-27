@@ -11,7 +11,7 @@ abstract class Base
 {
     /**
      * @param null|array $params
-     * @return Mandrill|Sendmail|null
+     * @return Mandrill|\app\components\mail\Sendmail|null
      * @throws ServerConfiguration
      */
     public static function createMailer($params)
@@ -27,10 +27,13 @@ abstract class Base
                 return new Mandrill($params);
                 break;
             case 'sendmail':
-                return new Sendmail($params);
+                return new \app\components\mail\Sendmail($params);
                 break;
             case 'smtp':
                 return new SMTP($params);
+                break;
+            case 'none':
+                return new None($params);
                 break;
             default:
                 throw new ServerConfiguration('Invalid E-Mail-Transport: ' . $params['transport']);
@@ -44,7 +47,7 @@ abstract class Base
     abstract public function getMessageClass($type);
 
     /**
-     * @return \Zend\Mail\Transport\TransportInterface
+     * @return \Zend\Mail\Transport\TransportInterface|null
      */
     abstract public function getTransport();
 

@@ -8,6 +8,7 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
+use \app\components\mail\Tools as MailTools;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\web\IdentityInterface;
@@ -514,7 +515,7 @@ class User extends ActiveRecord implements IdentityInterface
         $text         = $gruss . $text . $sig;
         $type         = EMailLog::TYPE_MOTION_NOTIFICATION_USER;
         try {
-            \app\components\mail\Tools::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text);
+            MailTools::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text);
         } catch (MailNotSent $e) {
             \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
@@ -584,7 +585,7 @@ class User extends ActiveRecord implements IdentityInterface
         if (in_array($this->id, $params->adminUserIds)) {
             return true;
         }
-        // @Respect privilege table
+        // @TODO Respect privilege table
         foreach ($consultation->site->admins as $admin) {
             if ($admin->id == $this->id) {
                 return true;
@@ -654,7 +655,7 @@ class User extends ActiveRecord implements IdentityInterface
         $url      = UrlHelper::absolutizeLink($url);
         $text     = \Yii::t('user', 'recover_mail_body');
         $replaces = ['%URL%' => $url, '%CODE%' => $recoveryToken];
-        \app\components\mail\Tools::sendWithLog($type, null, $this->email, $this->id, $subject, $text, $replaces);
+        MailTools::sendWithLog($type, null, $this->email, $this->id, $subject, $text, $replaces);
     }
 
     /**
@@ -729,7 +730,7 @@ class User extends ActiveRecord implements IdentityInterface
         $url      = UrlHelper::absolutizeLink($url);
         $text     = \Yii::t('user', 'emailchange_mail_body');
         $replaces = ['%URL%' => $url];
-        \app\components\mail\Tools::sendWithLog($type, null, $newEmail, $this->id, $subject, $text, $replaces);
+        MailTools::sendWithLog($type, null, $newEmail, $this->id, $subject, $text, $replaces);
 
         $this->save();
     }
