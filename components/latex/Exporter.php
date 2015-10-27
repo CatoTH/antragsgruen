@@ -293,6 +293,7 @@ class Exporter
             Header('Content-Type: text/plain');
             echo $str;
             echo "\n\n%" . $cmd;
+            unlink($filenameBase . '.tex');
             die();
         }
 
@@ -308,6 +309,7 @@ class Exporter
         unlink($filenameBase . '.log');
         unlink($filenameBase . '.tex');
         unlink($filenameBase . '.pdf');
+        unlink($filenameBase . '.out');
 
         return $pdf;
     }
