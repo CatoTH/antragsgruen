@@ -67,7 +67,7 @@ Hier ist der Zugang:
 
 Liebe Grüße,
   Das Antragsgrün-Team',
-    'siteacc_accounts_expl'   => '<h3>Erklärung:</h3>
+    'siteacc_acc_expl_mail'   => '<h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
 kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
 <br>
@@ -77,6 +77,13 @@ Falls sie noch keinen eigenen Zugang auf Antragsgrün hatten, wird automatisch e
 und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
 (ansonsten verschwindet das %ACCOUNT% ersatzlos).<br>
 <strong>%LINK%</strong> wird immer durch einen Link auf die Antragsgrün-Seite ersetzt.',
+    'siteacc_acc_expl_nomail' => '<h3>Erklärung:</h3>
+Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
+kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
+<br>
+Um BenutzerInnen anzulegen, gib weiter unten die E-Mail-Adressen, die Namen und die Passwörter der Mitglieder ein.
+Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>Passwörter</strong> hier selbst erzeugen, im Klartext eingeben und selbst an die NutzerInnen schicken.<br><br>' .
+        'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die NutzerInnen schicken kann.',
     'siteacc_existing_users'  => 'Bereits eingetragene Benutzer_Innen',
     'siteacc_user_name'       => 'Name',
     'siteacc_user_login'      => 'Login',
@@ -86,10 +93,29 @@ und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
     'siteacc_perm_write'      => 'Schreibrechte',
     'siteacc_new_users'       => 'Benutzer_Innen eintragen',
     'siteacc_new_emails'      => 'E-Mail-Adressen:<br>
-                <small>(genau eine E-Mail-Adresse pro Zeile!)</small>',
+                <small>(Genau eine E-Mail-Adresse pro Zeile)</small>',
+    'siteacc_new_pass'        => 'Passwörter:<br>
+                <small>(Exakte Zuordnung zu den Zeilen links!)</small>',
     'siteacc_new_names'       => 'Namen der BenutzerInnen:<br>
-                <small>(Wichtig: Exakte Zuordnung zu den Zeilen links)</small>',
+                <small>(Exakte Zuordnung zu den Zeilen links!)</small>',
     'siteacc_new_text'        => 'Text der E-Mail',
-    'siteacc_new_do'          => 'Berechtigen + E-Mail schicken',
-
+    'siteacc_new_do'          => 'Berechtigen / Anlegen',
+    'siteacc_admin_add_done'  => '%username% hat nun auch Admin-Rechte.',
+    'siteacc_admin_add_had'   => '%username% hatte bereits Admin-Rechte.',
+    'siteacc_admin_del_done'  => 'Die Admin-Rechte wurden entzogen.',
+    'siteacc_admin_del_notf'  => 'Es gibt keinen Zugang mit diesem Namen',
+    'siteacc_mail_yourdata'   => "Du kannst dich mit folgenden Angaben einloggen:\nBenutzerInnenname: %EMAIL%\n" .
+        "Passwort: %PASSWORD%",
+    'siteacc_mail_youracc'    => 'Du kannst dich mit deinem BenutzerInnenname %EMAIL% einloggen.',
+    'sitacc_admmail_subj'     => 'Antragsgrün-Administration',
+    'sitacc_admmail_body'     => "Hallo!\n\nDu hast eben Admin-Zugang zu folgender Antragsgrün-Seite bekommen: %LINK%\n\n" .
+        "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team",
+    'siteacc_err_linenumber'  => 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein',
+    'siteacc_err_occ'         => 'Es sind Fehler aufgetreten',
+    'siteacc_user_had'        => 'Folgende BenutzerInnen hatten bereits Zugriff',
+    'siteacc_user_added_1'    => '%NUM% BenutzerIn wurde eingetragen.',
+    'siteacc_user_added_x'    => '%NUM% BenutzerInnen wurden eingetragen.',
+    'siteacc_user_added_0'    => 'Es wurde niemand eingetragen.',
+    'siteacc_user_saved'      => 'Die Berechtigungen wurden gespeichert.',
+    'siteacc_user_restr_done' => 'Nur noch eingetragene BenutzerInnen können Einträge erstellen.',
 ];

@@ -65,9 +65,10 @@ class ConsultationUserPrivilege extends ActiveRecord
      * @param string $email
      * @param string $name
      * @param string $emailText
+     * @param string|null $setPassword
      * @throws AlreadyExists
      */
-    public static function createWithUser(Consultation $consultation, $email, $name, $emailText)
+    public static function createWithUser(Consultation $consultation, $email, $name, $emailText, $setPassword = null)
     {
         $email = mb_strtolower($email);
         $auth  = 'email:' . $email;
@@ -75,7 +76,11 @@ class ConsultationUserPrivilege extends ActiveRecord
         /** @var User $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
         if (!$user) {
-            $password = User::createPassword();
+            if ($setPassword) {
+                $password = $setPassword;
+            } else {
+                $password = User::createPassword();
+            }
 
             $user                 = new User();
             $user->auth           = 'email:' . $email;

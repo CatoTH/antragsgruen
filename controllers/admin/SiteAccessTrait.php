@@ -11,6 +11,8 @@ use app\models\db\User;
 use app\models\exceptions\AlreadyExists;
 use app\models\exceptions\MailNotSent;
 use app\models\policies\IPolicy;
+use \app\components\mail\Tools as MailTools;
+use app\models\settings\AntragsgruenApp;
 use yii\db\IntegrityException;
 
 /**
@@ -28,14 +30,14 @@ trait SiteAccessTrait
     {
         try {
             $this->site->link('admins', $user);
-            $str = '%username% hat nun auch Admin-Rechte.';
+            $str = \Yii::t('admin', 'siteacc_admin_add_done');
             \Yii::$app->session->setFlash('success', str_replace('%username%', $username, $str));
         } catch (IntegrityException $e) {
             if (mb_strpos($e->getMessage(), 1062) !== false) {
-                $str = str_replace('%username%', $username, '%username% hatte bereits Admin-Rechte.');
+                $str = str_replace('%username%', $username, \Yii::t('admin', 'siteacc_admin_add_had'));
                 \Yii::$app->session->setFlash('success_login', $str);
             } else {
-                \Yii::$app->session->setFlash('error_login', 'Ein unbekannter Fehler ist aufgetreten');
+                \Yii::$app->session->setFlash('error_login', \Yii::t('base', 'err_unknown'));
             }
         }
     }
@@ -72,24 +74,21 @@ trait SiteAccessTrait
             $newUser->name           = '';
             $newUser->save();
 
-            $authText = "Du kannst dich mit folgenden Angaben einloggen:\nBenutzerInnenname: %EMAIL%\n" .
-                "Passwort: %PASSWORD%";
+            $authText = \Yii::t('admin', 'siteacc_mail_yourdata');
             $authText = str_replace(['%EMAIL%', '%PASSWORD%'], [$email, $newPassword], $authText);
         } else {
-            $authText = 'Du kannst dich mit deinem BenutzerInnenname %EMAIL% einloggen.';
+            $authText = \Yii::t('admin', 'siteacc_mail_youracc');
             $authText = str_replace('%EMAIL%', $email, $authText);
         }
         /** @var User $newUser */
         $this->linkAdmin($newUser, $email);
 
-        $subject = 'Antragsgrün-Administration';
+        $subject = \Yii::t('admin', 'sitacc_admmail_subj');
         $link    = UrlHelper::createUrl('consultation/index');
         $link    = UrlHelper::absolutizeLink($link);
-        $text    = "Hallo!\n\nDu hast eben Admin-Zugang zu folgender Antragsgrün-Seite bekommen: %LINK%\n\n" .
-            "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team";
-        $text    = str_replace(['%LINK%', '%ACCOUNT%'], [$link, $authText], $text);
+        $text    = str_replace(['%LINK%', '%ACCOUNT%'], [$link, $authText], \Yii::t('admin', 'sitacc_admmail_body'));
         try {
-            \app\components\mail\Tools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $this->site, $email, $newUser->id, $subject, $text);
+            MailTools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $this->site, $email, $newUser->id, $subject, $text);
         } catch (MailNotSent $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
             \yii::$app->session->setFlash('error', $errMsg);
@@ -100,15 +99,23 @@ trait SiteAccessTrait
      */
     private function addUsers()
     {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        $hasEmail     = ($params->mailService['transport'] != 'none');
+
         $emails = explode("\n", $_POST['emailAddresses']);
         $names  = explode("\n", $_POST['names']);
+        $passwords = ($hasEmail ? null : explode("\n", $_POST['passwords']));
+
         if (count($emails) != count($names)) {
-            $msg = 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein';
-            \Yii::$app->session->setFlash('error', $msg);
+            \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_err_linenumber'));
+        } elseif (!$hasEmail && count($emails) != count($passwords)) {
+            \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_err_linenumber'));
         } else {
             $errors         = [];
             $alreadyExisted = [];
             $created        = 0;
+
             for ($i = 0; $i < count($emails); $i++) {
                 if ($emails[$i] == '') {
                     continue;
@@ -118,7 +125,8 @@ trait SiteAccessTrait
                         $this->consultation,
                         trim($emails[$i]),
                         trim($names[$i]),
-                        $_POST['emailText']
+                        ($hasEmail ? $_POST['emailText'] : ''),
+                        ($hasEmail ? null : $passwords[$i])
                     );
                     $created++;
                 } catch (AlreadyExists $e) {
@@ -128,22 +136,23 @@ trait SiteAccessTrait
                 }
             }
             if (count($errors) > 0) {
-                \Yii::$app->session->setFlash('error', 'Es sind Fehler aufgetreten: ' . implode(', ', $errors));
+                $errMsg = \Yii::t('admin', 'siteacc_err_occ') . ': ' . implode(', ', $errors);
+                \Yii::$app->session->setFlash('error', $errMsg);
             }
             if (count($alreadyExisted) > 0) {
-                \Yii::$app->session->setFlash('info', 'Folgende BenutzerInnen hatten bereits Zugriff: ' .
+                \Yii::$app->session->setFlash('info', \Yii::t('admin', 'siteacc_user_had') . ': ' .
                     implode(', ', $alreadyExisted));
 
             }
             if ($created > 0) {
                 if ($created == 1) {
-                    $msg = str_replace('%NUM%', $created, '%NUM% BenutzerIn wurde eingetragen.');
+                    $msg = str_replace('%NUM%', $created, \Yii::t('admin', 'siteacc_user_added_x'));
                 } else {
-                    $msg = str_replace('%NUM%', $created, '%NUM% BenutzerInnen wurden eingetragen.');
+                    $msg = str_replace('%NUM%', $created, \Yii::t('admin', 'siteacc_user_added_x'));
                 }
                 \Yii::$app->session->setFlash('success', $msg);
             } else {
-                \Yii::$app->session->setFlash('error', 'Es wurde niemand eingetragen.');
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_user_added_0'));
             }
         }
     }
@@ -239,7 +248,7 @@ trait SiteAccessTrait
             $site->setSettings($settings);
             $site->save();
 
-            \yii::$app->session->setFlash('success_login', 'Gespeichert.');
+            \yii::$app->session->setFlash('success_login', \Yii::t('base', 'saved'));
         }
 
         if (isset($_POST['addAdmin'])) {
@@ -258,15 +267,15 @@ trait SiteAccessTrait
             $todel = User::findOne($_POST['removeAdmin']);
             if ($todel) {
                 $this->site->unlink('admins', $todel, true);
-                \Yii::$app->session->setFlash('success_login', 'Die Admin-Rechte wurden entzogen.');
+                \Yii::$app->session->setFlash('success_login', \Yii::t('admin', 'siteacc_admin_del_done'));
             } else {
-                \Yii::$app->session->setFlash('error_login', 'Es gibt keinen Zugang mit diesem Namen');
+                \Yii::$app->session->setFlash('error_login', \Yii::t('admin', 'siteacc_admin_del_notf'));
             }
         }
 
         if (isset($_POST['saveUsers'])) {
             $this->saveUsers();
-            \Yii::$app->session->setFlash('success', 'Die Berechtigungen wurden gespeichert.');
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_saved'));
         }
 
         if (isset($_POST['addUsers'])) {
@@ -275,8 +284,7 @@ trait SiteAccessTrait
 
         if (isset($_POST['policyRestrictToUsers'])) {
             $this->restrictToUsers();
-            $msg = 'Nur noch eingetragene BenutzerInnen können Einträge erstellen.';
-            \Yii::$app->session->setFlash('success_login', $msg);
+            \Yii::$app->session->setFlash('success_login', \Yii::t('admin', 'siteacc_user_restr_done'));
         }
 
         $policyWarning = $this->needsPolicyWarning();
