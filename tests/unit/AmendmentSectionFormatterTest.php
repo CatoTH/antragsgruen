@@ -13,16 +13,16 @@ class AmendmentSectionFormatterTest extends TestBase
 
     public function testInlineFormatting()
     {
-        $strPre                  = '<p>Test 123</p>';
-        $strPost                 = '<p>Test</p>';
+        $strPre                  = '<p>###LINENUMBER###Test 123</p>';
+        $strPost                 = '<p>###LINENUMBER###Test</p>';
         $computed                = AmendmentSectionFormatter::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, Diff::FORMATTING_INLINE, false);
         $blocks                  = AmendmentSectionFormatter::htmlDiff2LineBlocks($computed, 2);
         $getDiffLinesWithNumbers = AmendmentSectionFormatter::filterAffectedBlocks($blocks);
-        $this->assertEquals(2, count($getDiffLinesWithNumbers));
+        $this->assertEquals(1, count($getDiffLinesWithNumbers));
 
         $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
         $text = TextSimple::formatDiffGroup($grouped);
-        $expect = '<h4 class="lineSummary">Nach Zeile 1:</h4><span style="color: red;"><del>Test 123</del></span><br><span style="color: green;"><ins>Test</ins></span>';
+        $expect = '<h4 class="lineSummary">In Zeile 2 löschen:</h4><p>Test<span style="color: red;"><del> 123</del></span></p>';
         $this->assertEquals($expect, $text);
     }
 

@@ -7,7 +7,6 @@ use app\components\LineSplitter;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\Internal;
 use app\models\db\MotionSectionParagraphAmendment as ParagraphAmendment;
-use yii\helpers\Html;
 
 class Diff
 {
@@ -16,7 +15,7 @@ class Diff
     const FORMATTING_CLASSES = 0;
     const FORMATTING_INLINE  = 1;
 
-    const MAX_LINE_CHANGE_RATIO_MIN_LEN = 500;
+    const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
     const MAX_LINE_CHANGE_RATIO         = 0.4;
 
     private $formatting = 0;
@@ -157,6 +156,7 @@ class Diff
         $line = str_replace(" ", " \n", $line);
         $line = str_replace("<", "\n<", $line);
         $line = str_replace(">", ">\n", $line);
+        $line = str_replace("-", "-\n", $line);
         return $line;
     }
 
@@ -408,9 +408,9 @@ class Diff
      */
     public static function getUnchangedPrefixPostfix($orig, $new, $diff, $ignoreStr)
     {
-        $parts = preg_split('/<\/?(ins|del)>/siu', $diff);
-        $prefix  = $parts[0];
-        $postfix = $parts[count($parts) - 1];
+        $parts      = preg_split('/<\/?(ins|del)>/siu', $diff);
+        $prefix     = $parts[0];
+        $postfix    = $parts[count($parts) - 1];
         $prefixLen  = mb_strlen($prefix);
         $postfixLen = mb_strlen($postfix);
 
@@ -514,16 +514,18 @@ class Diff
                         $split     = $this->getUnchangedPrefixPostfix($del, $ins, $lineDiff, $ignoreStr);
                         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
 
-                        $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
-                        if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
-                            $computedStr .= $prefix;
-                            $computedStr .= $this->wrapWithDelete($middleOrig) . "\n";
-                            $computedStr .= $this->wrapWithInsert($middleNew);
-                            $computedStr .= $postfix . "\n";
-                        } elseif (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
-                            $computedStr .= $prefix;
-                            $computedStr .= $middleDiff;
-                            $computedStr .= $postfix . "\n";
+                        if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
+                            $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
+                            if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
+                                $computedStr .= $prefix;
+                                $computedStr .= $this->wrapWithDelete($middleOrig) . "\n";
+                                $computedStr .= $this->wrapWithInsert($middleNew);
+                                $computedStr .= $postfix . "\n";
+                            } else {
+                                $computedStr .= $prefix;
+                                $computedStr .= $middleDiff;
+                                $computedStr .= $postfix . "\n";
+                            }
                         } else {
                             $computedStr .= $lineDiff . "\n";
                         }
@@ -738,10 +740,9 @@ class Diff
         $html = str_replace('<ins><p>', '<p><ins>', $html);
         $html = str_replace('<ins></p>', '</p><ins>', $html);
         $html = str_replace('<del><p>', '<p><del>', $html);
-        $html = str_replace('<del></p>', '</p><del>', $html);
+        $html = str_replace('<dcel></p>', '</p><ins>', $html);
         $html = str_replace('<p></ins>', '</ins><p>', $html);
         $html = str_replace('</p></ins>', '</ins></p>', $html);
-        $html = str_replace('</p></del>', '</del></p>', $html);
         $html = str_replace('</p></del>', '</del></p>', $html);
         $html = str_replace('<ins></ins>', '', $html);
         $html = str_replace('<del></del>', '', $html);
