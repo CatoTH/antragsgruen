@@ -19,7 +19,7 @@ class All extends IPolicy
      */
     public static function getPolicyName()
     {
-        return 'Alle';
+        return \Yii::t('structure', 'policy_all_title');
     }
 
     /**
@@ -27,7 +27,7 @@ class All extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return 'Alle';
+        return \Yii::t('structure', 'policy_all_desc');
     }
 
     /**

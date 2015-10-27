@@ -21,7 +21,7 @@ class LoggedIn extends IPolicy
      */
     public static function getPolicyName()
     {
-        return 'Eingeloggte';
+        return \Yii::t('structure', 'policy_logged_title');
     }
 
     /**
@@ -45,7 +45,7 @@ class LoggedIn extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return 'Eingeloggte';
+        return \Yii::t('structure', 'policy_logged_desc');
     }
 
     /**
@@ -54,9 +54,9 @@ class LoggedIn extends IPolicy
     public function getPermissionDeniedMotionMsg()
     {
         if ($this->isWriteForbidden()) {
-            return 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Anträge stellen.';
+            return \Yii::t('structure', 'policy_specuser_motion_denied');
         }
-        return 'Du musst dich einloggen, um Anträge stellen zu können.';
+        return \Yii::t('structure', 'policy_logged_motion_denied');
     }
 
     /**
@@ -65,9 +65,9 @@ class LoggedIn extends IPolicy
     public function getPermissionDeniedAmendmentMsg()
     {
         if ($this->isWriteForbidden()) {
-            return 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Änderungsanträge stellen.';
+            return \Yii::t('structure', 'policy_specuser_amend_denied');
         }
-        return 'Du musst dich einloggen, um Änderungsanträge stellen zu können.';
+        return \Yii::t('structure', 'policy_logged_amend_denied');
     }
 
     /**
@@ -76,9 +76,9 @@ class LoggedIn extends IPolicy
     public function getPermissionDeniedSupportMsg()
     {
         if ($this->isWriteForbidden()) {
-            return 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Anträge unterstützen.';
+            return \Yii::t('structure', 'policy_specuser_supp_denied');
         }
-        return 'Du musst dich einloggen, um Anträge unterstützen zu können.';
+        return \Yii::t('structure', 'policy_logged_supp_denied');
     }
 
     /**
@@ -87,9 +87,9 @@ class LoggedIn extends IPolicy
     public function getPermissionDeniedCommentMsg()
     {
         if ($this->isWriteForbidden()) {
-            return 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Kommentare schreiben.';
+            return \Yii::t('structure', 'policy_specuser_comm_denied');
         }
-        return 'Du musst dich einloggen, um Kommentare schreiben zu können.';
+        return \Yii::t('structure', 'policy_logged_comm_denied');
     }
 
 

@@ -19,7 +19,7 @@ class Nobody extends IPolicy
      */
     public static function getPolicyName()
     {
-        return 'Niemand';
+        return \Yii::t('structure', 'policy_nobody_title');
     }
 
     /**
@@ -27,7 +27,7 @@ class Nobody extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return 'Niemand';
+        return \Yii::t('structure', 'policy_nobody_desc');
     }
 
     /**
@@ -35,7 +35,7 @@ class Nobody extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
-        return 'Momentan kann niemand Anträge stellen.';
+        return \Yii::t('structure', 'policy_nobody_motion_denied');
     }
 
     /**
@@ -43,7 +43,7 @@ class Nobody extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
-        return 'Momentan kann niemand Änderungsanträge stellen.';
+        return \Yii::t('structure', 'policy_nobody_amend_denied');
     }
 
     /**
@@ -51,7 +51,7 @@ class Nobody extends IPolicy
      */
     public function getPermissionDeniedSupportMsg()
     {
-        return '';
+        return \Yii::t('structure', '');
     }
 
     /**
@@ -59,7 +59,7 @@ class Nobody extends IPolicy
      */
     public function getPermissionDeniedCommentMsg()
     {
-        return 'Momentan kann niemand Kommentare schreiben.';
+        return \Yii::t('structure', 'policy_nobody_comm_denied');
     }
 
     /**

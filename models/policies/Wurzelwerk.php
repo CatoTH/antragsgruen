@@ -21,7 +21,7 @@ class Wurzelwerk extends IPolicy
      */
     public static function getPolicyName()
     {
-        return 'Wurzelwerk-NutzerInnen';
+        return \Yii::t('structure', 'policy_ww_title');
     }
 
     /**
@@ -29,7 +29,7 @@ class Wurzelwerk extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return 'Wurzelwerk-NutzerInnen';
+        return \Yii::t('structure', 'policy_ww_desc');
     }
 
     /**
@@ -37,7 +37,7 @@ class Wurzelwerk extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
-        return 'Nur Wurzelwerk-NutzerInnen dürfen Anträge anlegen.';
+        return \Yii::t('structure', 'policy_ww_motion_denied');
     }
 
     /**
@@ -45,7 +45,7 @@ class Wurzelwerk extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
-        return 'Nur Wurzelwerk-NutzerInnen dürfen Änderungsanträge anlegen.';
+        return \Yii::t('structure', 'policy_ww_amend_denied');
     }
 
     /**
@@ -61,7 +61,7 @@ class Wurzelwerk extends IPolicy
      */
     public function getPermissionDeniedCommentMsg()
     {
-        return 'Nur Wurzelwerk-NutzerInnen dürfen kommentieren';
+        return \Yii::t('structure', 'policy_ww_comm_denied');
     }
 
     /**

@@ -21,7 +21,7 @@ class Admins extends IPolicy
      */
     public static function getPolicyName()
     {
-        return 'Admins';
+        return \Yii::t('structure', 'policy_admin_title');
     }
 
     /**
@@ -29,7 +29,7 @@ class Admins extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return 'Admins';
+        return \Yii::t('structure', 'policy_admin_desc');
     }
 
     /**
@@ -37,7 +37,7 @@ class Admins extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
-        return 'Nur Admins dürfen Anträge anlegen.';
+        return \Yii::t('structure', 'policy_admin_motion_denied');
     }
 
     /**
@@ -45,7 +45,7 @@ class Admins extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
-        return 'Nur Admins dürfen Änderungsanträge anlegen.';
+        return \Yii::t('structure', 'policy_admin_amend_denied');
     }
 
     /**
@@ -53,7 +53,7 @@ class Admins extends IPolicy
      */
     public function getPermissionDeniedSupportMsg()
     {
-        return '';
+        return \Yii::t('structure', 'policy_admin_supp_denied');
     }
 
     /**
@@ -61,7 +61,7 @@ class Admins extends IPolicy
      */
     public function getPermissionDeniedCommentMsg()
     {
-        return 'Nur Admins dürfen kommentieren';
+        return \Yii::t('structure', 'policy_admin_comm_denied');
     }
 
     /**
