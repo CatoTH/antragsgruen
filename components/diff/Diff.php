@@ -303,7 +303,10 @@ class Diff
             if ($return[$i][1] == Engine::UNMODIFIED) {
                 $computedStrs[] = $return[$i][0];
             } elseif ($return[$i][1] == Engine::DELETED) {
-                if (isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED && $return[$i + 1][0][0] != '<') {
+                if (
+                    isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED &&
+                    strlen($return[$i + 1][0]) > 0 && $return[$i + 1][0][0] != '<'
+                ) {
                     $computedStrs[] = $this->computeWordDiff($return[$i][0], $return[$i + 1][0]);
                     $i++;
                 } else {
@@ -344,11 +347,101 @@ class Diff
     }
 
     /**
+     * @param string[] $deletes
+     * @param string[] $inserts
+     * @return string[][]
+     */
+    public static function matchInsertsToDeletesCalcVariants($deletes, $inserts)
+    {
+        $emptyArray  = function ($num) {
+            $arr = [];
+            for ($i = 0; $i < $num; $i++) {
+                $arr[] = '';
+            }
+            return $arr;
+        };
+        $spaceToFill = count($deletes) - count($inserts);
+
+        if ($spaceToFill == 0) {
+            return [$inserts];
+        }
+        if (count($inserts) == 0) {
+            return [$emptyArray($spaceToFill)];
+        }
+        $insVariants = [];
+        for ($trailingSpaces = 0; $trailingSpaces <= $spaceToFill; $trailingSpaces++) {
+            $tmpInserts = $inserts;
+            $tmpDeletes = $deletes;
+            $insBegin   = [];
+            for ($i = 0; $i < $trailingSpaces; $i++) {
+                $insBegin[] = '';
+                array_shift($tmpDeletes);
+            }
+            $insBegin[] = array_shift($tmpInserts);
+            array_shift($tmpDeletes);
+            $recVariants = static::matchInsertsToDeletesCalcVariants($tmpDeletes, $tmpInserts);
+            foreach ($recVariants as $recVariant) {
+                $mergedVariant = array_merge($insBegin, $recVariant);
+                $insVariants[] = $mergedVariant;
+            }
+        }
+        return $insVariants;
+    }
+
+    /**
+     * @param string[] $deletes
+     * @param string[] $inserts
+     * @return int
+     */
+    public static function matchInsertsBestFitCalSimilarity($deletes, $inserts)
+    {
+        $similarity = 0;
+        for ($i = 0; $i < count($deletes); $i++) {
+            $similarity += similar_text($deletes[$i], $inserts[$i]);
+        }
+        return $similarity;
+    }
+
+    /**
+     * @param string[] $deletes
+     * @param string[][] $insertVariants
+     * @return string[]
+     */
+    public static function matchInsertsBestFit($deletes, $insertVariants)
+    {
+        $bestVariant           = null;
+        $bestVariantSimilarity = 0;
+        foreach ($insertVariants as $insertVariant) {
+            $similarity = static::matchInsertsBestFitCalSimilarity($deletes, $insertVariant);
+            if ($similarity > $bestVariantSimilarity) {
+                $bestVariantSimilarity = $similarity;
+                $bestVariant           = $insertVariant;
+            }
+        }
+        return $bestVariant;
+    }
+
+    /**
+     * @param string[] $deletes
+     * @param string[] $inserts
+     * @return array
+     */
+    public static function matchInsertsToDeletes($deletes, $inserts)
+    {
+
+        $newDeletes     = $deletes;
+        $newInserts     = $inserts;
+        $insertVariants = static::matchInsertsToDeletesCalcVariants($newDeletes, $newInserts);
+        $bestFitInserts = static::matchInsertsBestFit($newDeletes, $insertVariants);
+        return [$newDeletes, $bestFitInserts];
+    }
+
+    /**
      * @param array $arr
      * @param int $idx
      * @return array|null
      */
-    private function computeSubsequentInsertsDeletes($arr, $idx)
+    public static function computeSubsequentInsertsDeletes($arr, $idx)
     {
         $numDeletes = 0;
         $deleteStrs = [];
@@ -358,13 +451,16 @@ class Diff
             $numDeletes++;
             $idx++;
         }
-        for ($i = 0; $i < $numDeletes; $i++) {
+        $goon = true;
+        for ($i = 0; $i < $numDeletes && $goon; $i++) {
             if (!isset($arr[$idx + $i]) || $arr[$idx + $i][1] != Engine::INSERTED) {
-                return null;
+                $goon = false;
+            } else {
+                $insertStrs[] = $arr[$idx + $i][0];
             }
-            $insertStrs[] = $arr[$idx + $i][0];
         }
-        return [$deleteStrs, $insertStrs, $numDeletes];
+        list($newDeletes, $newInserts) = static::matchInsertsToDeletes($deleteStrs, $insertStrs);
+        return [$newDeletes, $newInserts, count($deleteStrs) + count($insertStrs)];
     }
 
     /**
@@ -554,7 +650,7 @@ class Diff
                             $computedStr .= $lineDiff . "\n";
                         }
                     }
-                    $i += $count * 2 - 1;
+                    $i += $count - 1;
                 } else {
                     $computedStr .= $this->wrapWithDelete($return[$i][0]) . "\n";
                 }
@@ -642,7 +738,7 @@ class Diff
                         $changed[$currOrigPara] = $updates[1][$j];
                         $currOrigPara++;
                     }
-                    $currDiffLine += count($updates[0]) * 2 - 1;
+                    $currDiffLine += $updates[2] - 1;
                 } else {
                     $changed[$currOrigPara] = '';
                     $currOrigPara++;
@@ -738,8 +834,8 @@ class Diff
                         $paraNo           = $currOrigPara + $j;
                         $changed[$paraNo] = new ParagraphAmendment($amSec, $paraNo, $changeStr, $currLine);
                     }
-                    $currDiffLine += $count * 2 - 1;
-                    $currOrigPara += $count;
+                    $currDiffLine += $count - 1;
+                    $currOrigPara += count($deletes);
                 } else {
                     $deleteStr              = $this->wrapWithDelete($diffLine[0]);
                     $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);

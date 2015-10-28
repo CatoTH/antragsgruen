@@ -4,11 +4,48 @@ namespace unit;
 
 use app\components\diff\Diff;
 use app\components\diff\Engine;
+use app\components\HTMLTools;
 use Codeception\Specify;
 
 class DiffTest extends TestBase
 {
     use Specify;
+
+    /**
+     */
+    public function testDeleteMultipleParagraphs()
+    {
+        $orig = '<p>Noch Frieden</p>
+<p>Etwas Text in P</p>
+<ul>
+    <li>Eine erste Zeile</li>
+    <li>Zeile 2 mit etwas mehr</li>
+    <li>Ganz was anderes</li>
+    <li>Noch eine Zeile mit etwas Text</li>
+    <li>Voll <strong>fett</strong> der Text</li>
+</ul>
+<p>Und noch etwas zum Abschluss</p>';
+        $new  = '<p>Noch Frieden</p>
+<ul>
+    <li>Eine <em>erste</em> Zeile</li>
+    <li>Zeile 2 mit sdff etwas mehr</li>
+    <li>Noch sdfsd eine Zeile mit etwas Text</li>
+    <li>Voll <strong>fett</strong> der Text</li>
+</ul>
+<p>Und noch etwas zum Abschluss</p>';
+
+        $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
+        $newParagraphs = HTMLTools::sectionSimpleHTML($new);
+
+        $diff = new Diff();
+        $out  = $diff->computeAmendmentParagraphDiffInt($origParagraphs, $newParagraphs, 1, 80, null);
+
+        $this->assertEquals('<p><del>Etwas Text in P</del></p>' . "\n", $out[1]->strDiff);
+        $this->assertEquals('<ul><li>Eine <del>erste </del><ins><em>erste</em> </ins>Zeile</li></ul>' . "\n", $out[2]->strDiff);
+        $this->assertEquals('<ul><li>Zeile 2 mit <ins>sdff </ins>etwas mehr</li></ul>' . "\n", $out[3]->strDiff);
+        $this->assertEquals('<ul><li><del>Ganz was anderes</del></li></ul>' . "\n", $out[4]->strDiff);
+        $this->assertEquals('<ul><li>Noch <ins>sdfsd </ins>eine Zeile mit etwas Text</li></ul>' . "\n", $out[5]->strDiff);
+    }
 
     /**
      */
