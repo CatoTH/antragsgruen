@@ -12,8 +12,10 @@ use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\AdminTodoItem;
+use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
+use app\models\settings\AntragsgruenApp;
 
 class IndexController extends AdminBase
 {
@@ -72,6 +74,11 @@ class IndexController extends AdminBase
                     $description
                 );
             }
+        }
+
+        if (isset($_POST['flushCaches']) && User::currentUserIsSuperuser()) {
+            AntragsgruenApp::flushAllCaches();
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
         }
 
         return $this->render(

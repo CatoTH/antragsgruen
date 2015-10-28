@@ -4,6 +4,7 @@ namespace app\commands;
 use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\db\User;
+use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
 /**
@@ -74,13 +75,7 @@ class AdminController extends Controller
      */
     public function actionFlushAllConsultationCaches()
     {
-        $tables = ['amendment', 'amendmentSection', 'motion', 'motionSection'];
-        foreach ($tables as $table) {
-            $command = \yii::$app->db->createCommand();
-            $command->setSql('UPDATE `' . $table . '` SET cache = ""');
-            $command->execute();
-        }
-
+        AntragsgruenApp::flushAllCaches();
         $this->stdout('All caches of all consultations have been flushed' . "\n");
     }
 }

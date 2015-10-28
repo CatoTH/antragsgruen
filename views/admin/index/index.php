@@ -23,6 +23,8 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_admin'));
 echo '<h1>' . \Yii::t('admin', 'index_title') . '</h1>';
 
 
+echo $controller->showErrors();
+
 if (count($todo) > 0) {
     echo '<div class="row" style="margin-top: 20px;">';
     echo '<div class="col-md-7">';
@@ -147,18 +149,29 @@ echo Html::a(
 );
 echo '</li>';
 
+echo '</ul></div>';
+
 if (User::currentUserIsSuperuser()) {
-    echo '<li>';
+    echo '<h2 class="green">' . \Yii::t('admin', 'index_sys_admin') . '</h2>
+    <div class="content adminIndex">
+    <ul>
+    <li>';
     echo Html::a(
         \Yii::t('admin', 'index_site_config'),
         UrlHelper::createUrl('manager/siteconfig'),
         ['class' => 'siteConfigLink']
     );
-    echo '</li>';
+    echo '</li>
+    </ul>';
+
+    echo Html::beginForm('', 'post', ['class' => 'sysadminForm']);
+    echo '<button type="submit" name="flushCaches" class="btn btn-small btn-default">' .
+        \Yii::t('admin', 'index_flush_caches') . '</button>';
+    echo Html::endForm();
+
+    echo '</div>';
 }
 
-
-echo '</ul></div>';
 
 if (count($todo) > 0) {
     echo '</div><div class="col-md-5">';

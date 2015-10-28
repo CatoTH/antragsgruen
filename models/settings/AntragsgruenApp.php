@@ -2,6 +2,8 @@
 
 namespace app\models\settings;
 
+use yii\caching\FileCache;
+
 class AntragsgruenApp
 {
     use JsonConfigTrait;
@@ -71,5 +73,20 @@ class AntragsgruenApp
             return $this->pdfLogo;
         }
         return \yii::$app->basePath . DIRECTORY_SEPARATOR . $this->pdfLogo;
+    }
+
+    /**
+     * @throws \yii\db\Exception
+     */
+    public static function flushAllCaches()
+    {
+        $tables = ['amendment', 'amendmentSection', 'motion', 'motionSection'];
+        foreach ($tables as $table) {
+            $command = \yii::$app->db->createCommand();
+            $command->setSql('UPDATE `' . $table . '` SET cache = ""');
+            $command->execute();
+        }
+
+        \Yii::$app->cache->flush();
     }
 }
