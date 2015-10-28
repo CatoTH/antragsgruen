@@ -49,7 +49,7 @@ class MotionController extends Base
 
     /**
      * @param int $motionId
-     * @return Motion
+     * @return Motion|null
      */
     private function getMotionWithCheck($motionId)
     {
@@ -57,6 +57,7 @@ class MotionController extends Base
         $motion = Motion::findOne($motionId);
         if (!$motion) {
             $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return null;
         }
 
         $this->checkConsistency($motion);

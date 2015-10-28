@@ -23,16 +23,31 @@ class AmendmentController extends Base
     /**
      * @param int $motionId
      * @param int $amendmentId
-     * @return string
+     * @return Amendment|null
      */
-    public function actionPdf($motionId, $amendmentId)
+    private function getAmendmentWithCheck($motionId, $amendmentId)
     {
         $motion    = $this->consultation->getMotion($motionId);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
             $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return null;
         }
         $this->checkConsistency($motion, $amendment);
+        return $amendment;
+    }
+
+    /**
+     * @param int $motionId
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionPdf($motionId, $amendmentId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionId, $amendmentId);
+        if (!$amendment) {
+            return '';
+        }
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
@@ -70,8 +85,28 @@ class AmendmentController extends Base
         if ($this->getParams()->xelatexPath) {
             return $this->renderPartial('pdf_collection_tex', ['amendments' => $amendments]);
         } else {
-            return $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]); // @TODO
+            return $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]);
         }
+    }
+
+    /**
+     * @param int $motionId
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionOdt($motionId, $amendmentId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionId, $amendmentId);
+        if (!$amendment) {
+            return '';
+        }
+
+        $filename                    = 'Amendment_' . $amendment->titlePrefix . '.odt';
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+
+        return $this->renderPartial('odt', ['amendment' => $amendment]);
     }
 
     /**
@@ -82,12 +117,10 @@ class AmendmentController extends Base
      */
     public function actionView($motionId, $amendmentId, $commentId = 0)
     {
-        $motion    = $this->consultation->getMotion($motionId);
-        $amendment = $this->consultation->getAmendment($amendmentId);
-        if (!$amendment || !$motion) {
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+        $amendment = $this->getAmendmentWithCheck($motionId, $amendmentId);
+        if (!$amendment) {
+            return '';
         }
-        $this->checkConsistency($motion, $amendment);
 
         $this->layout = 'column2';
 

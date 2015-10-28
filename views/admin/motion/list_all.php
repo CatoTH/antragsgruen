@@ -191,7 +191,8 @@ foreach ($entries as $entry) {
             echo '<td></td>';
         }
         echo '<td class="exportCol">';
-        echo Html::a('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']);
+        echo Html::a('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
+        echo Html::a('ODT', UrlHelper::createAmendmentUrl($entry, 'odt'), ['class' => 'odt']);
         echo '</td>';
 
         echo '<td class="actionCol"><div class="btn-group">

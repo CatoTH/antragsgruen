@@ -28,7 +28,7 @@ try {
         \app\views\amendment\LayoutHelper::printToPDF($pdf, $pdfLayout, $amendment);
     }
 } catch (\Exception $e) {
-    echo 'Ein Fehler trat auf: ' . Html::encode($e);
+    echo \Yii::t('base', 'err_unknown') . ': ' . Html::encode($e);
     die();
 }
 

@@ -1,16 +1,17 @@
 <?php
 
+use app\models\db\Amendment;
 use app\models\db\ISupporter;
-use app\models\db\Motion;
+use yii\helpers\Html;
 
 /**
- * @var Motion $motion
+ * @var Amendment $amendment
  */
 
 /** @var \app\models\settings\AntragsgruenApp $config */
 $config = \yii::$app->params;
 
-$template = $motion->motionType->getOdtTemplate();
+$template = $amendment->motion->motionType->getOdtTemplate();
 
 $tmpZipFile = $config->tmpDir . uniqid('zip-');
 file_put_contents($tmpZipFile, $template);
@@ -32,7 +33,7 @@ $doc = new \app\components\opendocument\Text($content);
 
 $initiators = [];
 $supporters = [];
-foreach ($motion->motionSupporters as $supp) {
+foreach ($amendment->amendmentSupporters as $supp) {
     if ($supp->role == ISupporter::ROLE_INITIATOR) {
         $initiators[] = $supp->name;
     }
@@ -40,12 +41,25 @@ foreach ($motion->motionSupporters as $supp) {
         $supporters[] = $supp->name;
     }
 }
-$doc->addReplace("/\{\{ANTRAGSGRUEN:TITLE\}\}/siu", $motion->title);
+$doc->addReplace("/\{\{ANTRAGSGRUEN:TITLE\}\}/siu", $amendment->getTitle());
 $doc->addReplace("/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu", implode(', ', $initiators));
 
-foreach ($motion->getSortedSections() as $section) {
-    $htmls = $section->getSectionType()->printMotionToODT($doc);
+
+//    $htmls = $section->getSectionType()->printMotionToODT($doc);
+if ($amendment->changeEditorial != '') {
+    $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'editorial_hint')) . '</h2>', false);
+    $doc->addHtmlTextBlock($amendment->changeEditorial, false);
 }
+
+foreach ($amendment->getSortedSections(false) as $section) {
+    $section->getSectionType()->printAmendmentToODT($doc);
+}
+
+if ($amendment->changeExplanation != '') {
+    $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'reason')) . '</h2>', false);
+    $doc->addHtmlTextBlock($amendment->changeExplanation, false);
+}
+
 
 $content = $doc->convert();
 

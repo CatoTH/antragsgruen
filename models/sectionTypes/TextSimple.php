@@ -534,7 +534,22 @@ class TextSimple extends ISectionType
     public function printAmendmentToODT(Text $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[ÄNDERUNG]', false); // @TODO
+
+        /** @var AmendmentSection $section */
+        $section    = $this->section;
+        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
+        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        if (count($diffGroups) == 0) {
+            return;
+        }
+
+        $wrapStart = '<p>';
+        $wrapEnd   = '</p>';
+        $firstLine = $section->getFirstLineNumber();
+        $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
+        $str       = str_replace('###FORCELINEBREAK###', '<br>', $html);
+
+        $odt->addHtmlTextBlock($str, false);
     }
 
     /**
