@@ -769,6 +769,8 @@ class Diff
         $pendingInsert = '';
         /** @var ParagraphAmendment[] $changed */
         $changed = [];
+        /** @var string[] $unchanged */
+        $unchanged = [];
 
         for ($currDiffLine = 0; $currDiffLine < count($diff); $currDiffLine++) {
             $diffLine     = $diff[$currDiffLine];
@@ -778,6 +780,8 @@ class Diff
                     $str                    = $pendingInsert . $diffLine[0];
                     $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $str, $firstAffLine);
                     $pendingInsert          = '';
+                } else {
+                    $unchanged[$currOrigPara] = $diffLine[0];
                 }
                 $currOrigPara++;
                 $currOrigLine += LineSplitter::countMotionParaLines($diffLine[0], $lineLength);
@@ -790,7 +794,10 @@ class Diff
                     if (isset($changed[$prevLine])) {
                         $changed[$prevLine]->strDiff .= $insertStr;
                     } else {
-                        $newStr             = $diff[$prevLine][0] . $insertStr;
+                        if (!isset($unchanged[$prevLine])) {
+                            throw new Internal('unchanged[' . $prevLine . '] not set');
+                        }
+                        $newStr             = $unchanged[$prevLine] . $insertStr;
                         $changed[$prevLine] = new ParagraphAmendment($amSec, $prevLine, $newStr, $firstAffLine - 1);
                     }
                 } else {

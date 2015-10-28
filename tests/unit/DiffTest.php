@@ -35,7 +35,7 @@ class DiffTest extends TestBase
 <p>Und noch etwas zum Abschluss</p>';
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
-        $newParagraphs = HTMLTools::sectionSimpleHTML($new);
+        $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
         $diff = new Diff();
         $out  = $diff->computeAmendmentParagraphDiffInt($origParagraphs, $newParagraphs, 1, 80, null);
@@ -45,6 +45,38 @@ class DiffTest extends TestBase
         $this->assertEquals('<ul><li>Zeile 2 mit <ins>sdff </ins>etwas mehr</li></ul>' . "\n", $out[3]->strDiff);
         $this->assertEquals('<ul><li><del>Ganz was anderes</del></li></ul>' . "\n", $out[4]->strDiff);
         $this->assertEquals('<ul><li>Noch <ins>sdfsd </ins>eine Zeile mit etwas Text</li></ul>' . "\n", $out[5]->strDiff);
+    }
+
+    /**
+     */
+    public function testSwitchAndInsertListItems()
+    {
+        $orig = '<p>Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>
+<p>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>
+<ul>
+<li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li>
+	<li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li>
+	<li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li>
+</ul>';
+        $new  = '<p> </p>
+<p>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>
+<ul>
+<li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li>
+	<li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li>
+	<li> </li>
+	<li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li>
+</ul>';
+
+        $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
+        $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
+
+        $diff = new Diff();
+        $out  = $diff->computeAmendmentParagraphDiffInt($origParagraphs, $newParagraphs, 1, 80, null);
+
+        $this->assertEquals('<del><p>Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p></del>', trim($out[0]->strDiff));
+        $this->assertEquals('<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>', trim($out[1]->strDiff));
+        $this->assertEquals('<ul class="deleted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>', trim($out[2]->strDiff));
+        $this->assertEquals('<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li></ul><ul class="inserted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>', trim($out[3]->strDiff));
     }
 
     /**
