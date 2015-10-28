@@ -76,6 +76,12 @@ class MotionSorter
      */
     public static function getSortedMotionsSort($prefix1, $prefix2)
     {
+        // ad hoc reordering for board elections BDK Halle 2015
+        if ($prefix1 [0] == 'W' && $prefix2 [0] == 'W' && $prefix1 [1] != $prefix2 [1]) {
+            $order = ['V' => 0, 'P' => 1, 'S' => 2, 'B' => 3];
+            return $order [$prefix1 [1]] - $order [$prefix2 [1]];
+        }
+
         if ($prefix1 == '' && $prefix2 == '') {
             return 0;
         }
