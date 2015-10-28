@@ -187,7 +187,7 @@ class Site extends ActiveRecord
         $params = \Yii::$app->params;
 
         if (isset($params->siteBehaviorClasses[$this->id])) {
-            return $params->siteBehaviorClasses[$this->id];
+            return new $params->siteBehaviorClasses[$this->id];
         }
         return new DefaultBehavior();
     }

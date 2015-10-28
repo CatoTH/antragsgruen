@@ -68,7 +68,6 @@ if ($consultation->getSettings()->getStartLayoutView() == 'index_layout_agenda')
 }
 if ($showCreate) {
     $motionTypes = $consultation->motionTypes;
-    $motionLink  = $consultation->site->getBehaviorClass()->getSubmitMotionStr();
     $working     = [];
     foreach ($motionTypes as $motionType) {
         if ($motionType->getMotionPolicy()->checkCurrUser(false, true)) {
@@ -76,9 +75,7 @@ if ($showCreate) {
         }
     }
 
-    if ($motionLink != '') {
-        $layout->preSidebarHtml = $motionLink;
-    } elseif (count($working) > 0) {
+    if (count($working) > 0) {
         /** @var ConsultationMotionType[] $working */
         if (count($working) == 1) {
             if ($working[0]->getMotionPolicy()->checkCurrUser(false, true)) {
