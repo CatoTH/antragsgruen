@@ -688,20 +688,21 @@ class Diff
 
     /**
      * @param string[] $origParagraphs
-     * @param AmendmentSection $amSec
+     * @param string[] $amendParagraphs
      * @return string[]
      * @throws Internal
      */
-    public function computeAmendmentAffectedParagraphs($origParagraphs, AmendmentSection $amSec)
+    public function computeAmendmentAffectedParagraphs($origParagraphs, $amendParagraphs)
     {
-        $amParas = HTMLTools::sectionSimpleHTML($amSec->data);
         $diffEng = new Engine();
-        $diff    = $diffEng->compareArrays($origParagraphs, $amParas);
+        $diff    = $diffEng->compareArrays($origParagraphs, $amendParagraphs);
 
         $currOrigPara  = 0;
         $pendingInsert = '';
         /** @var ParagraphAmendment[] $changed */
         $changed = [];
+        /** @var string[] $unchanged */
+        $unchanged = [];
 
         for ($currDiffLine = 0; $currDiffLine < count($diff); $currDiffLine++) {
             $diffLine = $diff[$currDiffLine];
@@ -709,6 +710,8 @@ class Diff
                 if ($pendingInsert != '') {
                     $changed[$currOrigPara] = $pendingInsert . $diffLine[0];
                     $pendingInsert          = '';
+                } else {
+                    $unchanged[$currOrigPara] = $diffLine[0];
                 }
                 $currOrigPara++;
                 continue;
@@ -717,11 +720,10 @@ class Diff
                 $insertStr = $diffLine[0];
                 if ($currOrigPara > 0) {
                     $prevLine = $currOrigPara - 1;
-                    if (isset($changed[$prevLine])) {
-                        $changed[$prevLine] .= $insertStr;
-                    } else {
-                        $changed[$prevLine] = $diff[$prevLine][0] . $insertStr;
+                    if (!isset($unchanged[$prevLine])) {
+                        throw new Internal('unchanged[' . $prevLine . '] not set');
                     }
+                    $changed[$prevLine] = $unchanged[$prevLine] . $insertStr;
                 } else {
                     $pendingInsert .= $insertStr;
                 }

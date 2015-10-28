@@ -149,8 +149,9 @@ class AmendmentSection extends IMotionSection
      */
     public function getAffectedParagraphs($origParagraphs)
     {
+        $amParas      = HTMLTools::sectionSimpleHTML($this->data);
         $diff         = new Diff();
-        $amParagraphs = $diff->computeAmendmentAffectedParagraphs($origParagraphs, $this);
+        $amParagraphs = $diff->computeAmendmentAffectedParagraphs($origParagraphs, $amParas);
         return $amParagraphs;
     }
 }

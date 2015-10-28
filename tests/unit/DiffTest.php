@@ -401,5 +401,4 @@ class DiffTest extends TestBase
         $expected = '<p><strong>Balance von Freiheit und Sicherheit für <del>Solo-</del>Selbstständige und Existenzgründer*innen</strong></p>';
         $this->assertEquals($expected, $out);
     }
-
 }
