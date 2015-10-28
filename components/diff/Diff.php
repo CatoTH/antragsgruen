@@ -538,9 +538,9 @@ class Diff
         if ($postfixLen < 40) {
             $postfix = '';
         } else {
-            if ($postfixLen > 40 && mb_strpos($postfix, '. ') < 40) {
+            if ($postfixLen > 40 && mb_strpos($postfix, '. ') !== false && mb_strpos($postfix, '. ') < 40) {
                 $postfix = mb_substr($postfix, mb_strpos($postfix, '. ') + 1);
-            } elseif ($postfixLen > 40 && mb_strpos($postfix, '.') < 40) {
+            } elseif ($postfixLen > 40 && mb_strpos($postfix, '.') !== false && mb_strpos($postfix, '.') < 40) {
                 $postfix = mb_substr($postfix, mb_strpos($postfix, '.') + 1);
             }
         }
