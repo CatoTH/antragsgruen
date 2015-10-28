@@ -77,4 +77,6 @@ return [
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
     'published_email_title'             => 'Antrag veröffentlicht',
+    'err_create_permission'             => 'Keine Berechtigung zum Anlegen von Anträgen.',
+    'err_create'                        => 'Ein Fehler beim Anlegen ist aufgetreten',
 ];

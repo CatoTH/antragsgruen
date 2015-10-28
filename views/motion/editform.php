@@ -34,7 +34,7 @@ echo '<div class="form content hideIfEmpty">';
 
 echo $controller->showErrors();
 
-if ($form->motionType->getAmendmentPolicy()->checkCurrUser(true, true)) {
+if ($form->motionType->getAmendmentPolicy()->checkCurrUserAmendment(true, true)) {
     $msg = 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
         Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>
         bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".';

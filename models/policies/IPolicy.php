@@ -92,6 +92,37 @@ abstract class IPolicy
     abstract public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false);
 
     /**
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
+     * @return bool
+     */
+    public function checkCurrUserMotion($allowAdmins = true, $assumeLoggedIn = false)
+    {
+
+        if ($this->motionType->motionDeadlineIsOver()) {
+            if (!User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
+                return false;
+            }
+        }
+        return $this->checkCurrUser($allowAdmins, $assumeLoggedIn);
+    }
+
+    /**
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
+     * @return bool
+     */
+    public function checkCurrUserAmendment($allowAdmins = true, $assumeLoggedIn = false)
+    {
+        if ($this->motionType->amendmentDeadlineIsOver()) {
+            if (!User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
+                return false;
+            }
+        }
+        return $this->checkCurrUser($allowAdmins, $assumeLoggedIn);
+    }
+
+    /**
      * @abstract
      * @return string
      */

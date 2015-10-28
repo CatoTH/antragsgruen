@@ -40,16 +40,6 @@ Force a new password for an user:
 ./yii admin/set-user-password user@example.org mynewpassword
 ```
 
-Flush all caches of a specific consultation:
-```bash
-./yii admin/flush-consultation-caches subdomain consultationPath
-```
-
-Flush all caches of the whole system:
-```bash
-./yii admin/flush-all-consultation-caches
-```
-
 
 Development Setup
 -----------------
@@ -79,7 +69,8 @@ Testing
 * Install [PhantomJS](http://phantomjs.org/download.html)
 * For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed.
-* Start PhantomJS: phantomjs --webdriver=4444
+* Start PhantomJS: ```bash
+phantomjs --webdriver=4444```
 * Start debug server: ```bash
 tests/start_debug_server.sh```
 * Run all tests: ```bash

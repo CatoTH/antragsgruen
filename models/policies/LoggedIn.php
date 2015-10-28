@@ -56,6 +56,9 @@ class LoggedIn extends IPolicy
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_motion_denied');
         }
+        if ($this->motionType->motionDeadlineIsOver()) {
+            return \Yii::t('structure', 'policy_deadline_over');
+        }
         return \Yii::t('structure', 'policy_logged_motion_denied');
     }
 
@@ -66,6 +69,9 @@ class LoggedIn extends IPolicy
     {
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_amend_denied');
+        }
+        if ($this->motionType->motionDeadlineIsOver()) {
+            return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('structure', 'policy_logged_amend_denied');
     }

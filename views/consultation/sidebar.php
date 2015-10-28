@@ -49,7 +49,7 @@ $html .= '<div class="nav-list"><div class="nav-header">' . \Yii::t('con', 'sb_s
         placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
         title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="submit" title="Suche">
+        <button class="btn btn-default" type="submit" title="' . Html::encode(\Yii::t('con', 'sb_search_do')) . '">
             <span class="glyphicon glyphicon-search"></span> ' . \Yii::t('con', 'sb_search_do') . '
         </button>
       </span>
@@ -71,7 +71,7 @@ if ($showCreate) {
     $motionTypes = $consultation->motionTypes;
     $working     = [];
     foreach ($motionTypes as $motionType) {
-        if ($motionType->getMotionPolicy()->checkCurrUser(false, true)) {
+        if ($motionType->getMotionPolicy()->checkCurrUserMotion(false, true)) {
             $working[] = $motionType;
         }
     }
@@ -79,7 +79,7 @@ if ($showCreate) {
     if (count($working) > 0) {
         /** @var ConsultationMotionType[] $working */
         if (count($working) == 1) {
-            if ($working[0]->getMotionPolicy()->checkCurrUser(false, true)) {
+            if ($working[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
                 $link                         = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
                 $description                  = Html::encode(Yii::t('con', 'start_motion'));
                 $layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
@@ -97,7 +97,7 @@ if ($showCreate) {
       aria-expanded="false">' . Yii::t('con', 'create_new') . ' <span class="caret"></span></a>
                     <ul class="dropdown-menu">';
             foreach ($working as $motionType) {
-                if ($motionType->getMotionPolicy()->checkCurrUser(false, true)) {
+                if ($motionType->getMotionPolicy()->checkCurrUserMotion(false, true)) {
                     $motionCreateLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
                     $html .= '<li class="createMotion' . $motionType->id . '">';
                     $html .= '<a href="' . Html::encode($motionCreateLink) . '">';
@@ -156,7 +156,7 @@ if ($hasAmendments) {
 
 if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda') {
     /** @var ConsultationMotionType[] $motionTypes */
-    if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurrUser(false, true)) {
+    if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
         $newUrl                       = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
         $description                  = Html::encode(Yii::t('con', 'start_motion'));
         $layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .

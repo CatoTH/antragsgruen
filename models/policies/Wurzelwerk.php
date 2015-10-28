@@ -37,6 +37,9 @@ class Wurzelwerk extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
+        if ($this->motionType->motionDeadlineIsOver()) {
+            return \Yii::t('structure', 'policy_deadline_over');
+        }
         return \Yii::t('structure', 'policy_ww_motion_denied');
     }
 
@@ -45,6 +48,9 @@ class Wurzelwerk extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
+        if ($this->motionType->motionDeadlineIsOver()) {
+            return \Yii::t('structure', 'policy_deadline_over');
+        }
         return \Yii::t('structure', 'policy_ww_amend_denied');
     }
 

@@ -37,7 +37,7 @@ $html        = '<ul class="sidebarActions">';
 $sidebarRows = 0;
 
 $policy = $motion->motionType->getAmendmentPolicy();
-if ($policy->checkCurrUser(true, true)) {
+if ($policy->checkCurrUserAmendment(true, true)) {
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
@@ -188,7 +188,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
     <div class="content">';
 
     $policy = $motion->motionType->getAmendmentPolicy();
-    if ($policy->checkCurrUser(true, true)) {
+    if ($policy->checkCurrUserAmendment(true, true)) {
         echo '<div class="pull-right">';
         $title = '<span class="icon glyphicon glyphicon-flash"></span>';
         $title .= \Yii::t('motion', 'amendment_create');

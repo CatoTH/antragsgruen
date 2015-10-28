@@ -73,4 +73,7 @@ return [
     'initiated_by'                      => 'gestellt von',
     'affects_x_paragraphs'              => 'Bezieht sich auf insgesamt %num% Absätze',
     'singlepara_revert'                 => 'Änderungen rückgängig machen',
+    'err_create_permission'             => 'Keine Berechtigung zum Anlegen von Änderungsanträgen.',
+    'err_create'                        => 'Ein Fehler beim Anlegen ist aufgetreten',
+    'err_save'                          => 'Ein Fehler beim Speichern ist aufgetreten',
 ];

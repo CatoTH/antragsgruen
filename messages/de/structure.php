@@ -6,6 +6,7 @@ return [
     'section_image'   => 'Hilfe',
     'section_tabular' => 'Tabellarische Angaben',
 
+    'policy_deadline_over'    => 'Der Antragsschluss ist vorbei',
     'policy_ww_title'         => 'Wurzelwerk-NutzerInnen',
     'policy_ww_desc'          => 'Wurzelwerk-NutzerInnen',
     'policy_ww_motion_denied' => 'Nur Wurzelwerk-NutzerInnen dürfen Anträge anlegen.',

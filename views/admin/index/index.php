@@ -51,11 +51,12 @@ foreach ($consultation->motionTypes as $motionType) {
     <ul class="motionTypeSection' . $motionType->id . '">';
 
     $motionp = $motionType->getMotionPolicy();
-    if ($motionp->checkCurrUser()) {
+    if ($motionp->checkCurrUserMotion()) {
         $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
-        echo '<li>' . Html::a(\Yii::t('admin', 'index_motion_create'), $createUrl) . '</li>';
+        echo '<li>' . Html::a(\Yii::t('admin', 'index_motion_create'), $createUrl, ['class' => 'createLink']) . '</li>';
     } else {
-        echo '<li>' . \Yii::t('admin', 'index_motion_create') . ': <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em></li>';
+        echo '<li>' . \Yii::t('admin', 'index_motion_create') .
+            ': <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em></li>';
     }
 
     $odsUrl = UrlHelper::createUrl(['admin/motion/odslist', 'motionTypeId' => $motionType->id]);
@@ -64,7 +65,8 @@ foreach ($consultation->motionTypes as $motionType) {
 
     $excelUrl = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
     echo '<li class="secondary">';
-    echo Html::a(\Yii::t('admin', 'index_export_excel'), $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . ' (' . \Yii::t('admin', 'index_error_prone') . ')</li>';
+    echo Html::a(\Yii::t('admin', 'index_export_excel'), $excelUrl, ['class' => 'motionExcel' . $motionType->id]) .
+        ' (' . \Yii::t('admin', 'index_error_prone') . ')</li>';
 
     echo '</ul>';
 }

@@ -282,13 +282,13 @@ class AmendmentController extends Base
         }
 
         $policy = $motion->motionType->getAmendmentPolicy();
-        if (!$policy->checkCurrUser()) {
-            if ($policy->checkCurrUser(true, true)) {
+        if (!$policy->checkCurrUserAmendment()) {
+            if ($policy->checkCurrUserAmendment(true, true)) {
                 $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionId' => $motionId]);
                 $this->redirect($loginUrl);
                 return '';
             } else {
-                return $this->showErrorpage(403, 'Keine Berechtigung zum Anlegen von Änderungsanträgen.');
+                return $this->showErrorpage(403, \Yii::t('amend', 'err_create_permission'));
             }
         }
 

@@ -35,6 +35,9 @@ class Nobody extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
+        if ($this->motionType->motionDeadlineIsOver()) {
+            return \Yii::t('structure', 'policy_deadline_over');
+        }
         return \Yii::t('structure', 'policy_nobody_motion_denied');
     }
 
@@ -43,6 +46,9 @@ class Nobody extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
+        if ($this->motionType->motionDeadlineIsOver()) {
+            return \Yii::t('structure', 'policy_deadline_over');
+        }
         return \Yii::t('structure', 'policy_nobody_amend_denied');
     }
 

@@ -388,13 +388,13 @@ class MotionController extends Base
          */
 
         $policy = $motionType->getMotionPolicy();
-        if (!$policy->checkCurrUser()) {
-            if ($policy->checkCurrUser(true, true)) {
+        if (!$policy->checkCurrUserMotion()) {
+            if ($policy->checkCurrUserMotion(true, true)) {
                 $loginUrl = UrlHelper::createLoginUrl(['motion/create', 'motionTypeId' => $motionTypeId]);
                 $this->redirect($loginUrl);
                 return '';
             } else {
-                return $this->showErrorpage(403, 'Keine Berechtigung zum Anlegen von Anträgen.');
+                return $this->showErrorpage(403, \Yii::t('motion', 'err_create_permission'));
             }
         }
 

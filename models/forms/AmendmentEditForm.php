@@ -193,8 +193,8 @@ class AmendmentEditForm extends Model
      */
     public function createAmendment()
     {
-        if (!$this->motion->motionType->getAmendmentPolicy()->checkCurrUser()) {
-            throw new FormError('Keine Berechtigung zum Anlegen von Änderungsanträgen.');
+        if (!$this->motion->motionType->getAmendmentPolicy()->checkCurrUserAmendment()) {
+            throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
 
         $amendment = new Amendment();
@@ -228,7 +228,7 @@ class AmendmentEditForm extends Model
 
             return $amendment;
         } else {
-            throw new FormError('Ein Fehler beim Anlegen ist aufgetreten');
+            throw new FormError(\Yii::t('amend', 'err_create'));
         }
     }
 
@@ -265,8 +265,8 @@ class AmendmentEditForm extends Model
     public function saveAmendment(Amendment $amendment)
     {
         $motionType = $this->motion->motionType;
-        if (!$motionType->getAmendmentPolicy()->checkCurrUser()) {
-            throw new FormError('Keine Berechtigung zum Anlegen von Änderungsanträgen.');
+        if (!$motionType->getAmendmentPolicy()->checkCurrUserAmendment()) {
+            throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
 
         $this->supporters = $this->motion->motionType
