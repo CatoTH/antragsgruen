@@ -15,12 +15,12 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = 'Administration';
+$this->title = \Yii::t('admin', 'index_title');
 $layout->addCSS('css/backend.css');
-$layout->addBreadcrumb('Administration');
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_admin'));
 
 
-echo '<h1>Administration</h1>';
+echo '<h1>' . \Yii::t('admin', 'index_title') . '</h1>';
 
 
 if (count($todo) > 0) {
@@ -31,17 +31,17 @@ if (count($todo) > 0) {
 }
 
 
-echo '<h2 class="green">' . 'Anträge / Dokumente' . '</h2>
+echo '<h2 class="green">' . \Yii::t('admin', 'index_motions') . '</h2>
     <div class="content adminIndex">';
 
 echo '<h3>' . Html::a(
-        'Alle Anträge und Änderungsanträge',
+        \Yii::t('admin', 'index_all_motions'),
         UrlHelper::createUrl('admin/motion/listall'),
         ['class' => 'motionListAll']
     ) . '</h3>';
 echo '<ul>';
 $odsUrl = UrlHelper::createUrl('admin/motion/odslistall');
-echo '<li>' . Html::a('Export: Spreadsheet', $odsUrl) . '</li>';
+echo '<li>' . Html::a(\Yii::t('admin', 'index_export_ods'), $odsUrl) . '</li>';
 echo '</ul>';
 
 foreach ($consultation->motionTypes as $motionType) {
@@ -51,32 +51,32 @@ foreach ($consultation->motionTypes as $motionType) {
     $motionp = $motionType->getMotionPolicy();
     if ($motionp->checkCurrUser()) {
         $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
-        echo '<li>' . Html::a('Neu anlegen', $createUrl) . '</li>';
+        echo '<li>' . Html::a(\Yii::t('admin', 'index_motion_create'), $createUrl) . '</li>';
     } else {
-        echo '<li>Neu anlegen: <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em></li>';
+        echo '<li>' . \Yii::t('admin', 'index_motion_create') . ': <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em></li>';
     }
 
     $odsUrl = UrlHelper::createUrl(['admin/motion/odslist', 'motionTypeId' => $motionType->id]);
     echo '<li class="secondary">';
-    echo Html::a('Export: Spreadsheet', $odsUrl, ['class' => 'motionODS' . $motionType->id]) . '</li>';
+    echo Html::a(\Yii::t('admin', 'index_export_ods'), $odsUrl, ['class' => 'motionODS' . $motionType->id]) . '</li>';
 
     $excelUrl = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
     echo '<li class="secondary">';
-    echo Html::a('Export: Excel', $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . ' (fehleranfälliger)</li>';
+    echo Html::a(\Yii::t('admin', 'index_export_excel'), $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . ' (' . \Yii::t('admin', 'index_error_prone') . ')</li>';
 
     echo '</ul>';
 }
 
 $amendmentOdsLink = UrlHelper::createUrl('admin/amendment/odslist');
 $amendmentPDFLink = UrlHelper::createUrl('admin/amendment/pdflist');
-echo '<h3>Änderungsanträge</h3>
+echo '<h3>' . \Yii::t('admin', 'index_amendments') . '</h3>
 <ul>
     <li>' .
-    Html::a('Sammel-PDF', UrlHelper::createUrl('amendment/pdfcollection'), ['class' => 'amendmentsPdf']) .
+    Html::a(\Yii::t('admin', 'index_pdf_collection'), UrlHelper::createUrl('amendment/pdfcollection'), ['class' => 'amendmentsPdf']) .
     '</li>
-    <li class="secondary">' . Html::a('Liste aller PDFs', $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '</li>
+    <li class="secondary">' . Html::a(\Yii::t('admin', 'index_pdf_list'), $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '</li>
     <li class="secondary">' .
-    Html::a('Export: Spreadsheet', $amendmentOdsLink, ['class' => 'amendmentOds']) .
+    Html::a(\Yii::t('admin', 'index_export_ods'), $amendmentOdsLink, ['class' => 'amendmentOds']) .
     '</li>';
 
 /*
@@ -107,26 +107,24 @@ echo '</li>
 
 echo '</div>
 
-
-
-    <h2 class="green">' . 'Einstellungen' . '</h2>
+    <h2 class="green">' . \Yii::t('admin', 'index_settings') . '</h2>
     <div class="content adminIndex">
     <ul>
     <li>';
 
 $link = UrlHelper::createUrl('admin/index/consultation');
-echo Html::a('Diese Veranstaltung / Programmdiskussion', $link, ['id' => 'consultationLink']);
+echo Html::a(\Yii::t('admin', 'index_consultation_settings'), $link, ['id' => 'consultationLink']);
 
 echo '</li><li class="secondary">';
 echo Html::a(
-    Yii::t('backend', 'Translation / Wording'),
+    Yii::t('admin', 'Translation / Wording'),
     UrlHelper::createUrl('admin/index/translation'),
     ['id' => 'translationLink']
 );
 echo '</li>';
 
 
-echo '<li>Antragstypen bearbeiten<ul>';
+echo '<li>' . \Yii::t('admin', 'index_motion_types') . '<ul>';
 foreach ($consultation->motionTypes as $motionType) {
     echo '<li>';
     $sectionsUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
@@ -137,13 +135,13 @@ echo '</ul></li>';
 
 echo '<li>';
 echo Html::a(
-    'Login / BenutzerInnen / Admins',
+    \Yii::t('admin', 'index_site_access'),
     UrlHelper::createUrl('admin/index/siteaccess'),
     ['class' => 'siteAccessLink']
 );
 echo '</li><li>';
 echo Html::a(
-    'Weitere Veranstaltungen anlegen / verwalten',
+    \Yii::t('admin', 'index_site_consultations'),
     UrlHelper::createUrl('admin/index/siteconsultations'),
     ['class' => 'siteConsultationsLink']
 );
@@ -152,13 +150,12 @@ echo '</li>';
 if (User::currentUserIsSuperuser()) {
     echo '<li>';
     echo Html::a(
-        'Konfiguration der Antragsgrün-Installation',
+        \Yii::t('admin', 'index_site_config'),
         UrlHelper::createUrl('manager/siteconfig'),
         ['class' => 'siteConfigLink']
     );
     echo '</li>';
 }
-
 
 
 echo '</ul></div>';
@@ -168,7 +165,7 @@ if (count($todo) > 0) {
 
 
     if (count($todo) > 0) {
-        echo '<div  class="adminTodo"><h4>To Do</h4>';
+        echo '<div  class="adminTodo"><h4>' . \Yii::t('admin', 'index_todo') . '</h4>';
         echo '<ul>';
         foreach ($todo as $do) {
             echo '<li class="' . Html::encode($do->todoId) . '">';

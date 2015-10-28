@@ -45,7 +45,6 @@ class MessageSource extends \yii\i18n\MessageSource
             'amend'     => 'Amendment',
             'diff'      => 'Diff',
             'pdf'       => 'PDF',
-            'backend'   => 'Admin-Backend',
             'initiator' => 'InitiatorInnen',
             'manager'   => 'Seiten-Konfiguration',
             'admin'     => 'Administration',

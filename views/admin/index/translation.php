@@ -22,7 +22,7 @@ $this->title = 'Einstellungen';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Erweitert');
 
-echo '<h1>' . Yii::t('backend', 'Translation / Wording') . '</h1>
+echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>
 <div class="content">
 
 <div class="alert alert-info" role="alert">
@@ -41,7 +41,7 @@ echo $controller->showErrors();
 
 echo '<fieldset class="form-group">
         <label class="col-sm-4 control-label" for="startLayoutType">' .
-    Yii::t('backend', 'Base language variant') . ':</label>
+    Yii::t('admin', 'Base language variant') . ':</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
     'wordingBase',

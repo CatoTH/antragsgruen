@@ -22,9 +22,9 @@ class TabularDataType implements \JsonSerializable
     public static function getDataTypes()
     {
         return [
-            static::TYPE_STRING  => \yii::t('backend', 'tabulardatatype_string'),
-            static::TYPE_INTEGER => \yii::t('backend', 'tabulardatatype_integer'),
-            static::TYPE_DATE    => \yii::t('backend', 'tabulardatatype_date'),
+            static::TYPE_STRING  => \yii::t('admin', 'tabulardatatype_string'),
+            static::TYPE_INTEGER => \yii::t('admin', 'tabulardatatype_integer'),
+            static::TYPE_DATE    => \yii::t('admin', 'tabulardatatype_date'),
         ];
     }
 
