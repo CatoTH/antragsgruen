@@ -41,15 +41,16 @@ foreach ($consultation->motionTypes as $type) {
     }
 }
 
-$html = Html::beginForm(UrlHelper::createUrl("consultation/search"), 'post', ['class' => 'form-search']);
-$html .= '<div class="nav-list"><div class="nav-header">Suche</div>
+$html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', ['class' => 'form-search']);
+$html .= '<div class="nav-list"><div class="nav-header">' . \Yii::t('con', 'sb_search') . '</div>
     <div style="text-align: center; padding-left: 7px; padding-right: 7px;">
     <div class="input-group">
       <input type="text" class="form-control query" name="query"
-        placeholder="Suchbegriff" required title="Suchbegriff">
+        placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
+        title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
       <span class="input-group-btn">
         <button class="btn btn-default" type="submit" title="Suche">
-            <span class="glyphicon glyphicon-search"></span> Suche
+            <span class="glyphicon glyphicon-search"></span> ' . \Yii::t('con', 'sb_search_do') . '
         </button>
       </span>
     </div>
@@ -119,10 +120,10 @@ if ($hasMotions) {
     $html = '<div><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_motions') . '</li>';
     if (count($newestMotions) == 0) {
-        $html .= '<li><i>keine</i></li>';
+        $html .= '<li><i>' . \Yii::t('con', 'sb_motions_none') . '</i></li>';
     } else {
         foreach ($newestMotions as $motion) {
-            $motionLink = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
+            $motionLink = UrlHelper::createMotionUrl($motion);
             $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' . Html::encode($motion->title);
             $html .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
         }
@@ -135,7 +136,7 @@ if ($hasAmendments) {
     $html = '<div><ul class="nav nav-list amendments">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_amendments') . '</li>';
     if (count($newestAmendments) == 0) {
-        $html .= "<li><i>keine</i></li>";
+        $html .= '<li><i>' . \Yii::t('con', 'sb_amends_none') . '</i></li>';
     } else {
         foreach ($newestAmendments as $amendment) {
             $title = explode(' ', Html::encode($amendment->getShortTitle()));
@@ -143,13 +144,7 @@ if ($hasAmendments) {
                 $title[0] = '<strong>' . Html::encode($title[0]) . '</strong>';
             }
             $title         = implode(' ', $title);
-            $amendmentLink = UrlHelper::createUrl(
-                [
-                    'amendment/view',
-                    'amendmentId' => $amendment->id,
-                    'motionId'    => $amendment->motion->id
-                ]
-            );
+            $amendmentLink = UrlHelper::createAmendmentUrl($amendment);
             $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>' . $title;
             $html .= '<li>' . Html::a($linkTitle, $amendmentLink, ['class' => 'amendment' . $amendment->id]) . '</li>';
         }
@@ -175,9 +170,9 @@ if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda')
 
 
 if ($hasComments) {
-    $html = '<div><ul class="nav nav-list comments"><li class="nav-header">Neue Kommentare</li>';
+    $html = '<div><ul class="nav nav-list comments"><li class="nav-header">' . \Yii::t('con', 'new_comments') . '</li>';
     if (count($newestComments) == 0) {
-        $html .= "<li><i>keine</i></li>";
+        $html .= '<li><i>' . \Yii::t('con', 'sb_comm_none') . '</i></li>';
     } else {
         foreach ($newestComments as $comment) {
             $html .= '<li><a href="' . Html::encode($comment->getLink()) . '">';
@@ -186,10 +181,12 @@ if ($hasComments) {
             $html .= Tools::formatMysqlDateTime($comment->dateCreation);
             if (is_a($comment, \app\models\db\MotionComment::class)) {
                 /** @var \app\models\db\MotionComment $comment */
-                $html .= '<div>Zu ' . Html::encode($comment->motion->titlePrefix) . '</div>';
+                $html .= '<div>' . \Yii::t('con', 'sb_comm_to') . ' ' .
+                    Html::encode($comment->motion->titlePrefix) . '</div>';
             } elseif (is_a($comment, \app\models\db\AmendmentComment::class)) {
                 /** @var \app\models\db\AmendmentComment $comment */
-                $html .= '<div>Zu ' . Html::encode($comment->amendment->titlePrefix) . '</div>';
+                $html .= '<div>' . \Yii::t('con', 'sb_comm_to') . ' ' .
+                    Html::encode($comment->amendment->titlePrefix) . '</div>';
             }
             $html .= '</a></li>';
         }
@@ -214,7 +211,7 @@ if ($consultation->getSettings()->showFeeds) {
     $feedsHtml      = '';
     $feedsHtmlSmall = '<li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-      aria-expanded="false">' . 'Feeds' . ' <span class="caret"></span></a>
+      aria-expanded="false">' . \Yii::t('con', 'sb_feeds') . ' <span class="caret"></span></a>
                     <ul class="dropdown-menu">';
 
     if ($hasMotions) {
