@@ -22,7 +22,7 @@ class AmendmentSectionFormatterTest extends TestBase
 
         $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
         $text = TextSimple::formatDiffGroup($grouped);
-        $expect = '<h4 class="lineSummary">In Zeile 2 löschen:</h4><p>Test<span style="color: red;"><del> 123</del></span></p>';
+        $expect = '<h4 class="lineSummary">In Zeile 2 löschen:</h4><div><p>Test<span style="color: red;"><del> 123</del></span></p></div>';
         $this->assertEquals($expect, $text);
     }
 
