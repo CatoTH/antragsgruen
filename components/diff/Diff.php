@@ -604,6 +604,30 @@ class Diff
     }
 
     /**
+     * @param string $diff
+     * @return string
+     */
+    public static function fixLinebreakDiffErrors($diff)
+    {
+        $force = '###FORCELINEBREAK###';
+
+        $diff = str_replace($force . ' ' . static::ORIG_LINEBREAK, $force, $diff);
+        $diff = str_replace(static::ORIG_LINEBREAK, "\n", $diff);
+
+        $regexp = '/<del>(?<del>[^<]*###[a-z]+)<\/del><ins>(?<ins>[^<]*###[a-z]+)<\/ins>###/siuU';
+        $diff   = preg_replace_callback($regexp, function ($matches) {
+            return '<del>' . $matches['del'] . '###</del><ins>' . $matches['ins'] . '###</ins>';
+        }, $diff);
+
+        $diff = str_replace(
+            '<del> ###LINENUMBER###</del><ins>###FORCELINEBREAK###</ins>',
+            '<ins>###FORCELINEBREAK###</ins>###LINENUMBER###',
+            $diff
+        );
+        return $diff;
+    }
+
+    /**
      * @param string $strOld
      * @param string $strNew
      * @return string
@@ -660,11 +684,8 @@ class Diff
                 throw new Internal('Unknown type: ' . $return[$i][1]);
             }
         }
-        $force = '###FORCELINEBREAK###';
 
-        $computedStr = str_replace($force . ' ' . static::ORIG_LINEBREAK, $force, $computedStr);
-        $computedStr = str_replace(static::ORIG_LINEBREAK, "\n", $computedStr);
-
+        $computedStr = static::fixLinebreakDiffErrors($computedStr);
         return trim($computedStr);
     }
 
