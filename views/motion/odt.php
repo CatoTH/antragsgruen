@@ -40,6 +40,7 @@ foreach ($motion->motionSupporters as $supp) {
         $supporters[] = $supp->name;
     }
 }
+$doc->addReplace("/\{\{ANTRAGSGRUEN:ITEM\}\}/siu", $motion->agendaItem ? $motion->agendaItem->title : '');
 $doc->addReplace("/\{\{ANTRAGSGRUEN:TITLE\}\}/siu", $motion->title);
 $doc->addReplace("/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu", implode(', ', $initiators));
 
