@@ -96,6 +96,14 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         echo '</div></div>';
         echo $amendmentSection->strDiff;
         echo '</div>';
+
+        // Seems to be necessary to limit memory consumption
+        // Problem can be seen e.g. at https://bdk.antragsgruen.de/39/motion/144
+        unset($amParas);
+        unset($amendmentSection->amendmentSection);
+        unset($amendmentSection);
+        unset($amendment);
+        gc_collect_cycles();
     }
 
     if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
