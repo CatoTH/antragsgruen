@@ -32,22 +32,52 @@ LaTeX/XeTeX-based PDFs:
 * Poppler ([Homebrew](http://brew.sh/)-Package)
 
 
+Installation from the repository
+--------------------------------
+
+```bash
+git clone https://github.com/CatoTH/antragsgruen.git
+cd antragsgruen
+curl -sS https://getcomposer.org/installer | php
+./composer.phar global require "fxp/composer-asset-plugin:1.0.3"
+./composer.phar install --prefer-dist
+```
+
+If you want to use the web-based installer (recommended):
+```bash
+touch config/INSTALLING
+```
+
+If you don't want to use the web-based installer:
+```bash
+cp config/config.template.json config/config.json
+vi config/config.json # you're on your own now :-)
+```
+
+Set the permissions (example for Debian Linux):
+```bash
+sudo chown -R www-data:www-data web/assets
+sudo chown -R www-data:www-data runtime
+sudo chown -R www-data:www-data config #Can be skipped if you don't use the Installer
+```
+
+Set the permissions (example for Mac OS X):
+```bash
+sudo chown -R _www:_www web/assets
+sudo chown -R _www:_www runtime
+sudo chown -R _www:_www config #Can be skipped if you don't use the Installer
+```
+
+Set up the virtual host of your web server. Example files are provided here:
+* Example configuration for [nginx](docs/nginx.sample_single_site.conf)
+* Example configuration for [apache](docs/apache.sample.conf)
+
 Command Line Commands
 ---------------------
 
 Force a new password for an user:
 ```bash
 ./yii admin/set-user-password user@example.org mynewpassword
-```
-
-
-Development Setup
------------------
-
-```bash
-curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.0.3"
-./composer.phar install --prefer-dist
 ```
 
 
@@ -66,6 +96,10 @@ docker run -p 80:80 --name antragsgruen1 -d antragsgruen1
 Testing
 -------
 
+* Create a separate (MySQL-)database for testing
+* Set up the configuration file: ```bash
+cp config/config_tests.template.json config/config_tests.json
+vi config/config_tests.json```
 * Install [PhantomJS](http://phantomjs.org/download.html)
 * For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed.
@@ -77,4 +111,5 @@ tests/start_debug_server.sh```
 vendor/bin/codecept run```
 * Run a single acceptence-test: ```bash
 vendor/bin/codecept run acceptance MotionCreateCept```
+
 
