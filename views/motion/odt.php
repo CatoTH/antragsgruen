@@ -34,10 +34,10 @@ $initiators = [];
 $supporters = [];
 foreach ($motion->motionSupporters as $supp) {
     if ($supp->role == ISupporter::ROLE_INITIATOR) {
-        $initiators[] = $supp->name;
+        $initiators[] = $supp->getNameWithOrga();
     }
     if ($supp->role == ISupporter::ROLE_SUPPORTER) {
-        $supporters[] = $supp->name;
+        $supporters[] = $supp->getNameWithOrga();
     }
 }
 $doc->addReplace("/\{\{ANTRAGSGRUEN:ITEM\}\}/siu", $motion->agendaItem ? $motion->agendaItem->title : '');

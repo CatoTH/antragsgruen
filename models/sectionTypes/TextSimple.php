@@ -343,11 +343,13 @@ class TextSimple extends ISectionType
                 }
             }
             $out = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $diff['lineFrom']], $out) . '</h4>';
+            $out .= '<div>';
             if ($diff['text'][0] != '<') {
                 $out .= '<p>' . $diff['text'] . '</p>';
             } else {
                 $out .= $diff['text'];
             }
+            $out .= '</div>';
             $out .= $wrapEnd;
         }
         $out = str_replace('<del> </del>', '<del class="space">[' . \Yii::t('diff', 'space') . ']</del>', $out);
@@ -503,6 +505,9 @@ class TextSimple extends ISectionType
      */
     public function printMotionToODT(Text $odt)
     {
+        if ($this->isEmpty()) {
+            return;
+        }
         $section = $this->section;
         /** @var MotionSection $section */
         $odt->addHtmlTextBlock('<h2>' . Html::encode($section->consultationSetting->title) . '</h2>', false);
@@ -533,8 +538,6 @@ class TextSimple extends ISectionType
      */
     public function printAmendmentToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
-
         /** @var AmendmentSection $section */
         $section    = $this->section;
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
@@ -543,13 +546,13 @@ class TextSimple extends ISectionType
             return;
         }
 
-        $wrapStart = '<p>';
-        $wrapEnd   = '</p>';
-        $firstLine = $section->getFirstLineNumber();
-        $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
-        $str       = str_replace('###FORCELINEBREAK###', '<br>', $html);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
 
-        $odt->addHtmlTextBlock($str, false);
+        $firstLine = $section->getFirstLineNumber();
+        $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+        $html      = str_replace('###FORCELINEBREAK###', '<br>', $html);
+
+        $odt->addHtmlTextBlock($html, false);
     }
 
     /**

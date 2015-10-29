@@ -42,104 +42,105 @@ class Text extends Base
     /**
      * @param \DOMNode $srcNode
      * @param bool $lineNumbered
-     * @return \DOMNode
+     * @return \DOMNode[]
      * @throws Internal
      */
     protected function html2ooNodeInt($srcNode, $lineNumbered)
     {
+        $retNodes = [];
         switch ($srcNode->nodeType) {
             case XML_ELEMENT_NODE:
                 /** @var \DOMElement $srcNode */
                 if ($this->DEBUG) {
                     echo "Element - " . $srcNode->nodeName . " / Children: " . count($srcNode->childNodes) . "<br>";
                 }
-                $append_el = null;
+                $appendEl = null;
                 switch ($srcNode->nodeName) {
                     case 'span':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
                         if ($srcNode->hasAttribute('class')) {
                             $classes = explode(' ', $srcNode->getAttribute('class'));
                             if (in_array('underline', $classes)) {
-                                $dst_el->setAttribute('text:style-name', 'AntragsgruenUnderlined');
+                                $dstEl->setAttribute('text:style-name', 'AntragsgruenUnderlined');
                             }
                             if (in_array('strike', $classes)) {
-                                $dst_el->setAttribute('text:style-name', 'AntragsgruenStrike');
+                                $dstEl->setAttribute('text:style-name', 'AntragsgruenStrike');
                             }
                             if (in_array('ins', $classes)) {
-                                $dst_el->setAttribute('text:style-name', 'AntragsgruenIns');
+                                $dstEl->setAttribute('text:style-name', 'AntragsgruenIns');
                             }
                             if (in_array('inserted', $classes)) {
-                                $dst_el->setAttribute('text:style-name', 'AntragsgruenIns');
+                                $dstEl->setAttribute('text:style-name', 'AntragsgruenIns');
                             }
                             if (in_array('del', $classes)) {
-                                $dst_el->setAttribute('text:style-name', 'AntragsgruenDel');
+                                $dstEl->setAttribute('text:style-name', 'AntragsgruenDel');
                             }
                             if (in_array('deleted', $classes)) {
-                                $dst_el->setAttribute('text:style-name', 'AntragsgruenDel');
+                                $dstEl->setAttribute('text:style-name', 'AntragsgruenDel');
                             }
                             if (in_array('superscript', $classes)) {
-                                $dst_el->setAttribute('text:style-name', 'AntragsgruenSup');
+                                $dstEl->setAttribute('text:style-name', 'AntragsgruenSup');
                             }
                             if (in_array('subscritp', $classes)) {
-                                $dst_el->setAttribute('text:style-name', 'AntragsgruenSub');
+                                $dstEl->setAttribute('text:style-name', 'AntragsgruenSub');
                             }
                         }
                         break;
                     case 'b':
                     case 'strong':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenBold');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl->setAttribute('text:style-name', 'AntragsgruenBold');
                         break;
                     case 'i':
                     case 'em':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenItalic');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl->setAttribute('text:style-name', 'AntragsgruenItalic');
                         break;
                     case 's':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenStrike');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl->setAttribute('text:style-name', 'AntragsgruenStrike');
                         break;
                     case 'u':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenUnderlined');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl->setAttribute('text:style-name', 'AntragsgruenUnderlined');
                         break;
                     case 'sub':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenSub');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl->setAttribute('text:style-name', 'AntragsgruenSub');
                         break;
                     case 'sup':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenSup');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl->setAttribute('text:style-name', 'AntragsgruenSup');
                         break;
                     case 'br':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'line-break');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'line-break');
                         break;
                     case 'del':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenDel');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl->setAttribute('text:style-name', 'AntragsgruenDel');
                         break;
                     case 'ins':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'span');
-                        $dst_el->setAttribute('text:style-name', 'AntragsgruenIns');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'span');
+                        $dstEl->setAttribute('text:style-name', 'AntragsgruenIns');
                         break;
                     case 'a':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'a');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'a');
                         try {
                             $attr = $srcNode->getAttribute('href');
                             if ($attr) {
-                                $dst_el->setAttribute('xlink:href', $attr);
+                                $dstEl->setAttribute('xlink:href', $attr);
                             }
                         } catch (\Exception $e) {
                         }
                         break;
                     case 'p':
                     case 'div':
-                        $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $dstEl = $this->createNodeWithBaseStyle('p', $lineNumbered);
                         break;
                     case 'blockquote':
-                        $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
-                        $class  = ($lineNumbered ? 'Blockquote_Linenumbered' : 'Blockquote');
-                        $dst_el->setAttribute('text:style-name', 'Antragsgrün_20_' . $class);
+                        $dstEl = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $class = ($lineNumbered ? 'Blockquote_Linenumbered' : 'Blockquote');
+                        $dstEl->setAttribute('text:style-name', 'Antragsgrün_20_' . $class);
                         if (count($srcNode->childNodes) == 1) {
                             foreach ($srcNode->childNodes as $child) {
                                 if ($child->nodeName == 'p') {
@@ -149,25 +150,31 @@ class Text extends Base
                         }
                         break;
                     case 'ul':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'list');
                         break;
                     case 'ol':
-                        $dst_el = $this->doc->createElementNS(static::NS_TEXT, 'list');
+                        $dstEl = $this->doc->createElementNS(static::NS_TEXT, 'list');
                         break;
                     case 'li':
-                        $dst_el    = $this->doc->createElementNS(static::NS_TEXT, 'list-item');
-                        $append_el = $this->getNextNodeTemplate($lineNumbered);
-                        $dst_el->appendChild($append_el);
+                        $dstEl    = $this->doc->createElementNS(static::NS_TEXT, 'list-item');
+                        $appendEl = $this->getNextNodeTemplate($lineNumbered);
+                        $dstEl->appendChild($appendEl);
                         break;
                     case 'h1':
-                        $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
-                        $dst_el->setAttribute('text:style-name', 'Antragsgrün_20_H1');
+                        $dstEl = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $dstEl->setAttribute('text:style-name', 'Antragsgrün_20_H1');
                         break;
                     case 'h2':
+                        $dstEl = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $dstEl->setAttribute('text:style-name', 'Antragsgrün_20_H2');
+                        break;
                     case 'h3':
+                        $dstEl = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $dstEl->setAttribute('text:style-name', 'Antragsgrün_20_H3');
+                        break;
                     case 'h4':
-                        $dst_el = $this->createNodeWithBaseStyle('p', $lineNumbered);
-                        $dst_el->setAttribute('text:style-name', 'Antragsgrün_20_H2');
+                        $dstEl = $this->createNodeWithBaseStyle('p', $lineNumbered);
+                        $dstEl->setAttribute('text:style-name', 'Antragsgrün_20_H4');
                         break;
                     default:
                         throw new Internal('Unknown Tag: ' . $srcNode->nodeName);
@@ -178,20 +185,31 @@ class Text extends Base
                         echo "CHILD<br>" . $child->nodeType . "<br>";
                     }
 
-                    $dst_node = $this->html2ooNodeInt($child, $lineNumbered);
+                    $dstNodes = $this->html2ooNodeInt($child, $lineNumbered);
                     if ($this->DEBUG) {
                         echo "CHILD";
-                        var_dump($dst_node);
+                        var_dump($dstNodes);
                     }
-                    if ($dst_node) {
-                        if ($append_el) {
-                            $append_el->appendChild($dst_node);
+                    if ($dstNodes) {
+                        if ($appendEl) {
+                            foreach ($dstNodes as $dstNode) {
+                                $appendEl->appendChild($dstNode);
+                            }
                         } else {
-                            $dst_el->appendChild($dst_node);
+                            foreach ($dstNodes as $dstNode) {
+                                if (in_array($dstNode->nodeName, ['list', 'p'])) {
+                                    $newDst = $dstEl->cloneNode(false);
+                                    $retNodes[] = $dstEl;
+                                    $dstEl = $newDst;
+                                    $retNodes[] = $dstNode;
+                                } else {
+                                    $dstEl->appendChild($dstNode);
+                                }
+                            }
                         }
                     }
                 }
-                return $dst_el;
+                $retNodes[] = $dstEl;
                 break;
             case XML_TEXT_NODE:
                 /** @var \DOMText $srcNode */
@@ -200,20 +218,19 @@ class Text extends Base
                 if ($this->DEBUG) {
                     echo 'Text<br>';
                 }
-                return $textnode;
+                $retNodes[] = $textnode;
                 break;
             case XML_DOCUMENT_TYPE_NODE:
                 if ($this->DEBUG) {
                     echo 'Type Node<br>';
                 }
-                return null;
                 break;
             default:
                 if ($this->DEBUG) {
                     echo 'Unknown Node: ' . $srcNode->nodeType . '<br>';
                 }
-                return null;
         }
+        return $retNodes;
     }
 
     /**
@@ -225,7 +242,7 @@ class Text extends Base
     {
         $body = HTMLTools::html2DOM($html);
 
-        $new_nodes = [];
+        $retNodes = [];
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             $child = $body->childNodes->item($i);
 
@@ -235,7 +252,7 @@ class Text extends Base
                 if ($this->DEBUG) {
                     echo 'LIST<br>';
                 }
-                $new_node = $this->html2ooNodeInt($child, $lineNumbered);
+                $recNewNodes = $this->html2ooNodeInt($child, $lineNumbered);
             } else {
                 if ($child->nodeType == XML_TEXT_NODE) {
                     $new_node = $this->getNextNodeTemplate($lineNumbered);
@@ -246,18 +263,19 @@ class Text extends Base
                     $text       = new \DOMText();
                     $text->data = $child->data;
                     $new_node->appendChild($text);
+                    $recNewNodes = [$new_node];
                 } else {
                     if ($this->DEBUG) {
                         echo $child->nodeName . '!!!!!!!!!!!!<br>';
                     }
-                    $new_node = $this->html2ooNodeInt($child, $lineNumbered);
+                    $recNewNodes = $this->html2ooNodeInt($child, $lineNumbered);
                 }
             }
-            if ($new_node) {
-                $new_nodes[] = $new_node;
+            foreach ($recNewNodes as $recNewNode) {
+                $retNodes[] = $recNewNode;
             }
         }
-        return $new_nodes;
+        return $retNodes;
     }
 
     /**

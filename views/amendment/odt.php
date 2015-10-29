@@ -35,11 +35,16 @@ $initiators = [];
 $supporters = [];
 foreach ($amendment->amendmentSupporters as $supp) {
     if ($supp->role == ISupporter::ROLE_INITIATOR) {
-        $initiators[] = $supp->name;
+        $initiators[] = $supp->getNameWithOrga();
     }
     if ($supp->role == ISupporter::ROLE_SUPPORTER) {
-        $supporters[] = $supp->name;
+        $supporters[] = $supp->getNameWithOrga();
     }
+}
+if ($amendment->motion->agendaItem) {
+    $doc->addReplace("/\{\{ANTRAGSGRUEN:ITEM\}\}/siu", $amendment->motion->agendaItem->title);
+} else {
+    $doc->addReplace("/\{\{ANTRAGSGRUEN:ITEM\}\}/siu", '');
 }
 $doc->addReplace("/\{\{ANTRAGSGRUEN:TITLE\}\}/siu", $amendment->getTitle());
 $doc->addReplace("/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu", implode(', ', $initiators));
@@ -54,6 +59,7 @@ if ($amendment->changeEditorial != '') {
 foreach ($amendment->getSortedSections(false) as $section) {
     $section->getSectionType()->printAmendmentToODT($doc);
 }
+
 
 if ($amendment->changeExplanation != '') {
     $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'reason')) . '</h2>', false);
