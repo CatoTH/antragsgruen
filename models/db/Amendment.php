@@ -183,7 +183,7 @@ class Amendment extends IMotion implements IRSSItem
         $time       = Tools::dateSql2timestamp($this->dateCreation) * 1000;
         $changeData = ' data-cid="' . Html::encode($changeId) . '" data-userid="" ';
         $changeData .= 'data-username="' . Html::encode($this->getInitiatorsStr()) . '" ';
-        $changeData .= 'data-changedata="" data-time="' . $time . '" data-last-change-time="' . $time . '"';
+        $changeData .= 'data-changedata="" data-time="' . $time . '" data-last-change-time="' . $time . '" ';
         $changeData .= 'data-append-hint="[' . Html::encode($this->titlePrefix) . ']"';
         return $changeData;
     }

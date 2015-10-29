@@ -601,8 +601,8 @@ class TextSimple extends ISectionType
                     $changeset[$amendment->id][] = $cid;
                     $changeData                  = $amendment->getLiteChangeData($cid);
 
-                    $text = str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">', $text);
-                    $text = str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '">', $text);
+                    $text = str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '>', $text);
+                    $text = str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '>', $text);
                 }
 
                 $out .= $text;
