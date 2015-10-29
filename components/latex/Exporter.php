@@ -104,6 +104,8 @@ class Exporter
                     return '\newline' . "\n";
                 case 'p':
                     return $content . "\n";
+                case 'div':
+                    return $content . "\n";
                 case 'strong':
                 case 'b':
                     return '\textbf{' . $content . '}';
