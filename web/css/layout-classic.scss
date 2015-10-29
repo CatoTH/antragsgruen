@@ -2,6 +2,8 @@
 
 $OpenSansPath: "../fonts/OpenSans/fonts";
 @import "../fonts/OpenSans/open-sans.scss";
+$veraSansPath: "../fonts/BitstreamVeraSansMono";
+@import "../fonts/BitstreamVeraSansMono/verasans";
 
 $colorGreenDark: rgb(40, 95, 25);
 $colorGreenLight: rgb(175, 203, 8);
@@ -35,7 +37,9 @@ $bookmarkCommentColor: $colorMagenta;
 $bodyFont: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $deadlineCircleFont: "Open Sans", sans-serif;
 $buttonFont: "Open Sans", sans-serif;
-$motionFixedFont: 'Anonymous Pro', Consolas, Courier, sans-serif;
+$motionFixedFont: 'VeraMono', Consolas, Courier, sans-serif;
+$motionFixedFontColor: #222;
+$motionFixedWidth: 740px;
 $motionStdFontSize: 14px;
 $inlineAmendmentPreambleHeight: 30px;
 $inlineAmendmentPreambleColor: $colorMagenta;

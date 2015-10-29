@@ -4,6 +4,8 @@ $firaSansFontPath: "../fonts/firasans/";
 @import "../fonts/firasans/firasans";
 $ptSansFontPath: "../fonts/gruenes-ci/";
 @import "../fonts/gruenes-ci/ptsans";
+$veraSansPath: "../fonts/BitstreamVeraSansMono";
+@import "../fonts/BitstreamVeraSansMono/verasans";
 
 $colorDarkGrey: rgb(64, 64, 64);
 $colorMediumGrey: rgb(120, 120, 120);
@@ -45,7 +47,9 @@ $bodyFont: "FiraSans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans",
 $deadlineCircleFont: "FiraSans", sans-serif;
 $buttonFont: "FiraSans", sans-serif;
 
-$motionFixedFont: 'Anonymous Pro', Consolas, Courier, sans-serif;
+$motionFixedFont: 'VeraMono', Consolas, Courier, sans-serif;
+$motionFixedFontColor: #222;
+$motionFixedWidth: 740px;
 $motionStdFontSize: 14px;
 $inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: $colorRed;

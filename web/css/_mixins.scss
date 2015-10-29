@@ -55,7 +55,7 @@
   padding: 15px 10px 15px $fixedWidthTextStdPadding;
   font-size: $motionStdFontSize;
   //letter-spacing: -0.5px;
-  color: black;
+  color: $motionFixedFontColor;
   text-rendering: optimizeLegibility;
 
   span.underline {

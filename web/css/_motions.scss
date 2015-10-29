@@ -533,7 +533,7 @@
     }
 
     .textAmendment {
-      width: 733px;
+      width: $motionFixedWidth;
       position: relative;
       del, ul.deleted, blockquote.deleted {
         color: #ff0000;
