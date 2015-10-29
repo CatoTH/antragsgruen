@@ -12,6 +12,16 @@ class AmendmentDiffMerger
     private $paraData       = null;
     private $diffParagraphs = null;
 
+    public static $BLOCK_LEVEL_ELEMENTS_OPENING = [
+        '</ul>'         => '/^<ul[^>]*>$/siu',
+        '</ol>'         => '/^<ol[^>]*>$/siu',
+        '</li>'         => '/^<li[^>]*>$/siu',
+        '</p>'          => '/^<p[^>]*>$/siu',
+        '</pre>'        => '/^<pre[^>]*>$/siu',
+        '</blockquote>' => '/^<blockquote[^>]*>$/siu',
+        '</div>'        => '/^<div[^>]*>$/siu',
+    ];
+
     /**
      * @return array
      */
@@ -82,8 +92,29 @@ class AmendmentDiffMerger
             if (Diff::computeArrDiffChangeRatio($middle) <= Diff::MAX_LINE_CHANGE_RATIO) {
                 $flattenedDiff = array_merge($prefix, $middle, $postfix);
             } else {
-                $middle        = static::splitDiffToInsertDelete($middle);
-                $flattenedDiff = array_merge($prefix, $middle, $postfix);
+                list($deletes, $inserts) = static::splitDiffToInsertDelete($middle);
+                $goon = true;
+                while (count($postfix) > 0 && $goon) {
+                    if ($postfix[0][0] == '') {
+                            $inserts[] = [$postfix[0][0], Engine::INSERTED];
+                            $deletes[] = [$postfix[0][0], Engine::DELETED];
+                        array_shift($postfix);
+                    } elseif (isset(static::$BLOCK_LEVEL_ELEMENTS_OPENING[$postfix[0][0]])) {
+                        $openingTag      = static::$BLOCK_LEVEL_ELEMENTS_OPENING[$postfix[0][0]];
+                        $pendingInDelete = static::findPendingOpeningTag($deletes, $openingTag, $postfix[0][0]);
+                        $pendingInInsert = static::findPendingOpeningTag($inserts, $openingTag, $postfix[0][0]);
+                        if ($pendingInDelete && $pendingInInsert) {
+                            $inserts[] = [$postfix[0][0], Engine::INSERTED];
+                            $deletes[] = [$postfix[0][0], Engine::DELETED];
+                            array_shift($postfix);
+                        } else {
+                            $goon = false;
+                        }
+                    } else {
+                        $goon = false;
+                    }
+                }
+                $flattenedDiff = array_merge($prefix, $deletes, $inserts, $postfix);
             }
 
             $firstDiff = null;
@@ -139,12 +170,31 @@ class AmendmentDiffMerger
                 $deletes[] = $diffPart;
             } else {
                 $diffPart[1] = Engine::INSERTED;
-                $inserts[] = $diffPart;
+                $inserts[]   = $diffPart;
                 $diffPart[1] = Engine::DELETED;
-                $deletes[] = $diffPart;
+                $deletes[]   = $diffPart;
             }
         }
-        return array_merge($deletes, $inserts);
+        return [$deletes, $inserts];
+    }
+
+    /**
+     * @param array $diffTokens
+     * @param string $openingTagRegexp
+     * @param string $closingTag
+     * @return bool
+     */
+    public static function findPendingOpeningTag($diffTokens, $openingTagRegexp, $closingTag)
+    {
+        for ($i = count($diffTokens) - 1; $i >= 0; $i--) {
+            if ($diffTokens[$i][0] == $closingTag) {
+                return false;
+            }
+            if (preg_match($openingTagRegexp, $diffTokens[$i][0])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

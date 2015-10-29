@@ -11,6 +11,23 @@ class AmendmentDiffMergerTest extends TestBase
 {
     /**
      */
+    public function testPrependPToChangedList()
+    {
+        $merger = new AmendmentDiffMerger();
+        $merger->initByMotionParagraphs(['<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust</li></ul>']);
+        $merger->addAmendingParagraphs(1, [0 => '<p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert.</p><ul><li>Wir stellen uns immer wieder neu der Frage.</li></ul>']);
+        $merger->mergeParagraphs();
+        $this->assertEquals([
+            ['amendment' => 0, 'text' => ''],
+            [
+                'amendment' => 1,
+                'text' => '<ul><li><del>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust</del></li></ul><p><ins>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert.</ins></p><ul><li><ins>Wir stellen uns immer wieder neu der Frage.</ins></li></ul>',
+            ]
+        ], $merger->getGroupedParagraphData(0));
+    }
+
+    /**
+     */
     public function testChangeWholeParagraph()
     {
         $origText   = '<p><strong>Demokratie und Freiheit </strong><br>
@@ -38,7 +55,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
             ],
             [
                 'amendment' => 1,
-                'text' => '<del>Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird.</del><ins>Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die<br>gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir<br>sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese<br>Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen<br>werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung<br>der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die<br>Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</ins>',
+                'text'      => '<del>Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird.</del><ins>Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die<br>gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir<br>sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese<br>Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen<br>werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung<br>der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die<br>Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</ins>',
             ],
             [
                 'amendment' => 0,
@@ -219,7 +236,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
      */
     public function testAmendmentAffectedParagraphs()
     {
-        $orig = [
+        $orig     = [
             '<p><strong>Anspruch und Ausblick</strong></p>',
             '<p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkte und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang hier bleiben werden, diesen Prozess verstärken.</p>',
             '<p>Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
@@ -229,7 +246,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
             '<ul><li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li></ul>',
             '<ul><li>Den o.g. Diskursen müssen sich Jugendverbände kontinuierlich stellen – jeder für sich alleine und alle gemeinsam. Als Arbeitsgemeinschaft der Jugendverbände und Landesjugendringe sieht der DBJR hier eine Aufgabe. Er wird diese Diskurse anregen und dafür eine Plattform bieten.</li></ul>',
         ];
-        $amend = [
+        $amend    = [
             '<p><strong>Anspruch und Ausblick</strong></p>',
             '<p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkten und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang hier bleiben werden, diesen Prozess verstärken.</p>',
             '<p>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>',
@@ -247,7 +264,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ];
 
         $diff = new Diff();
-        $out = $diff->computeAmendmentAffectedParagraphs($orig, $amend);
+        $out  = $diff->computeAmendmentAffectedParagraphs($orig, $amend);
         $this->assertEquals($expected, $out);
     }
 }

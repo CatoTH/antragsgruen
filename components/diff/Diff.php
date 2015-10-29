@@ -720,10 +720,11 @@ class Diff
                 $insertStr = $diffLine[0];
                 if ($currOrigPara > 0) {
                     $prevLine = $currOrigPara - 1;
-                    if (!isset($unchanged[$prevLine])) {
-                        throw new Internal('unchanged[' . $prevLine . '] not set');
+                    if (isset($changed[$prevLine])) {
+                        $changed[$prevLine] = $changed[$prevLine] . $insertStr;
+                    } else {
+                        $changed[$prevLine] = $unchanged[$prevLine] . $insertStr;
                     }
-                    $changed[$prevLine] = $unchanged[$prevLine] . $insertStr;
                 } else {
                     $pendingInsert .= $insertStr;
                 }
