@@ -139,6 +139,8 @@ class AmendmentSectionFormatter
     {
         $inIns          = $inDel = false;
         $affectedBlocks = [];
+        $interveningCount = 2;
+        $lastBlock = null;
         foreach ($blocks as $block) {
             $hadDiff = false;
             if ($inIns) {
@@ -168,21 +170,32 @@ class AmendmentSectionFormatter
                     }
                 }
             }
+            $addBlock = false;
             if ($inIns) {
                 $block['text']    = $block['text'] . '</ins>';
-                $affectedBlocks[] = $block;
+                $addBlock = true;
             } elseif ($inDel) {
                 $block['text']    = $block['text'] . '</del>';
-                $affectedBlocks[] = $block;
+                $addBlock = true;
             } elseif ($hadDiff) {
-                $affectedBlocks[] = $block;
+                $addBlock = true;
             } else {
                 if (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                    $affectedBlocks[] = $block;
+                    $addBlock = true;
                 }
                 if (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                    $affectedBlocks[] = $block;
+                    $addBlock = true;
                 }
+            }
+            if ($addBlock) {
+                if ($interveningCount == 1)
+                    $affectedBlocks[] = $lastBlock;
+                $affectedBlocks[] = $block;
+                $interveningCount = 0;
+            }
+            else {
+                $interveningCount++;
+                $lastBlock = $block;
             }
         }
         return $affectedBlocks;
