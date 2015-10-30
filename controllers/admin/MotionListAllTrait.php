@@ -188,4 +188,21 @@ trait MotionListAllTrait
             'items'      => $this->consultation->getAgendaWithMotions(),
         ]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionHtmllistall()
+    {
+        @ini_set('memory_limit', '256M');
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'text/html');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.html');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        return $this->renderPartial('html_list_all', [
+            'items'      => $this->consultation->getAgendaWithMotions(),
+        ]);
+    }
 }

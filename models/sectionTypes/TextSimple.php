@@ -533,26 +533,25 @@ class TextSimple extends ISectionType
     }
 
     /**
-     * @param Text $odt
-     * @return mixed
+     * @return string[]
      */
-    public function printAmendmentToODT(Text $odt)
+    public function getAmendmentHTMLTextBlocks()
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
         $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
-        if (count($diffGroups) == 0) {
-            return;
+
+        $return = [];
+
+        if (count($diffGroups) != 0) {
+            $return[] = '<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>';
+
+            $firstLine = $section->getFirstLineNumber();
+            $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+            $return[]  = str_replace('###FORCELINEBREAK###', '<br>', $html);
         }
-
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
-
-        $firstLine = $section->getFirstLineNumber();
-        $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
-        $html      = str_replace('###FORCELINEBREAK###', '<br>', $html);
-
-        $odt->addHtmlTextBlock($html, false);
+        return $return;
     }
 
     /**

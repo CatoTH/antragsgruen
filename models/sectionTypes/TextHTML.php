@@ -169,13 +169,14 @@ class TextHTML extends ISectionType
     }
 
     /**
-     * @param Text $odt
-     * @return mixed
+     * @return string[]
      */
-    public function printAmendmentToODT(Text $odt)
+    public function getAmendmentHTMLTextBlocks()
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
+        $return = [];
+        $return[] = '<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>';
+        $return[] = '[Kann nicht angezeigt werden]'; // @TODO
+        return $return;
     }
 
     /**

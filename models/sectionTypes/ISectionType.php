@@ -115,6 +115,17 @@ abstract class ISectionType
     }
 
     /**
+     * @param Text $odt
+     * @return mixed
+     */
+
+    public function printAmendmentToODT(Text $odt)
+    {
+        foreach ($this->getAmendmentHTMLTextBlocks() as $block)
+            $odt->addHtmlTextBlock($block, false);
+    }
+
+    /**
      * @return bool
      */
     abstract public function isEmpty();
@@ -190,10 +201,9 @@ abstract class ISectionType
     abstract public function printMotionToODT(Text $odt);
 
     /**
-     * @param Text $odt
-     * @return mixed
+     * @return string[]
      */
-    abstract public function printAmendmentToODT(Text $odt);
+    abstract public function getAmendmentHTMLTextBlocks();
 
     /**
      * @return string

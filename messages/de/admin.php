@@ -8,6 +8,7 @@ return [
     'index_motions'               => 'Anträge / Dokumente',
     'index_all_motions'           => 'Alle Anträge und Änderungsanträge',
     'index_export_ods'            => 'Export: Spreadsheet',
+    'index_export_html'           => 'Export: HTML-Tabelle',
     'index_motion_create'         => 'Neu anlegen',
     'index_export_excel'          => 'Export: Excel',
     'index_error_prone'           => 'fehleranfälliger',

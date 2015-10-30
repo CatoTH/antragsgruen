@@ -44,6 +44,8 @@ echo '<h3>' . Html::a(
 echo '<ul>';
 $odsUrl = UrlHelper::createUrl('admin/motion/odslistall');
 echo '<li>' . Html::a(\Yii::t('admin', 'index_export_ods'), $odsUrl) . '</li>';
+$htmlUrl = UrlHelper::createUrl('admin/motion/htmllistall');
+echo '<li>' . Html::a(\Yii::t('admin', 'index_export_html'), $htmlUrl) . '</li>';
 echo '</ul>';
 
 foreach ($consultation->motionTypes as $motionType) {

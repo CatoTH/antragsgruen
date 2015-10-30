@@ -215,18 +215,18 @@ class Title extends ISectionType
     }
 
     /**
-     * @param Text $odt
-     * @return mixed
+     * @return string[]
      */
-    public function printAmendmentToODT(Text $odt)
+    public function getAmendmentHTMLTextBlocks()
     {
+        $return = [];
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data == $section->getOriginalMotionSection()->data) {
-            return;
+        if ($section->data != $section->getOriginalMotionSection()->data) {
+            $return[] = '<h2>Neuer Titel</h2>';
+            $return[] = '<p>' . Html::encode($section->data) . '</p>';
         }
-        $odt->addHtmlTextBlock('<h2>Neuer Titel</h2>', false);
-        $odt->addHtmlTextBlock('<p>' . Html::encode($section->data) . '</p>', false);
+        return $return;
     }
 
     /**

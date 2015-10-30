@@ -228,13 +228,14 @@ class Image extends ISectionType
     }
 
     /**
-     * @param Text $odt
-     * @return mixed
+     * @return string[]
      */
-    public function printAmendmentToODT(Text $odt)
+    public function getAmendmentHTMLTextBlocks()
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[BILD]', false); // @TODO
+        $return = [];
+        $return[] = '<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>';
+        $return[] = '[BILD]'; // @TODO
+        return $return;
     }
 
     /**
