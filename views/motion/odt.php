@@ -40,9 +40,11 @@ foreach ($motion->motionSupporters as $supp) {
         $supporters[] = $supp->getNameWithOrga();
     }
 }
-$doc->addReplace("/\{\{ANTRAGSGRUEN:ITEM\}\}/siu", $motion->agendaItem ? $motion->agendaItem->title : '');
-$doc->addReplace("/\{\{ANTRAGSGRUEN:TITLE\}\}/siu", $motion->title);
-$doc->addReplace("/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu", implode(', ', $initiators));
+$initiatorStr = (count($initiators) == 1 ? \Yii::t('pdf', 'InitiatorSingle') : \Yii::t('pdf', 'InitiatorMulti'));
+$initiatorStr .= ': ' . implode(', ', $initiators);
+$doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $motion->agendaItem ? $motion->agendaItem->title : '');
+$doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());
+$doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
 
 foreach ($motion->getSortedSections() as $section) {
     $htmls = $section->getSectionType()->printMotionToODT($doc);

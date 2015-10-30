@@ -41,13 +41,15 @@ foreach ($amendment->amendmentSupporters as $supp) {
         $supporters[] = $supp->getNameWithOrga();
     }
 }
+$initiatorStr = (count($initiators) == 1 ? \Yii::t('pdf', 'InitiatorSingle') : \Yii::t('pdf', 'InitiatorMulti'));
+$initiatorStr .= ': ' . implode(', ', $initiators);
 if ($amendment->motion->agendaItem) {
-    $doc->addReplace("/\{\{ANTRAGSGRUEN:ITEM\}\}/siu", $amendment->motion->agendaItem->title);
+    $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $amendment->motion->agendaItem->title);
 } else {
-    $doc->addReplace("/\{\{ANTRAGSGRUEN:ITEM\}\}/siu", '');
+    $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', '');
 }
-$doc->addReplace("/\{\{ANTRAGSGRUEN:TITLE\}\}/siu", $amendment->getTitle());
-$doc->addReplace("/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu", implode(', ', $initiators));
+$doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $amendment->getTitle());
+$doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
 
 
 //    $htmls = $section->getSectionType()->printMotionToODT($doc);
