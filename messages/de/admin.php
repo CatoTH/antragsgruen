@@ -3,6 +3,7 @@
 return [
     'bread_admin'                 => 'Administration',
     'bread_list'                  => 'Antragsliste',
+    'bread_amend'                 => 'Änderungsantrag',
     'saved'                       => 'Gespeichert.',
     'index_title'                 => 'Administration',
     'index_motions'               => 'Anträge / Dokumente',
@@ -143,4 +144,15 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'tabulardatatype_string'      => 'Text',
     'tabulardatatype_integer'     => 'Zahl',
     'tabulardatatype_date'        => 'Datum',
+    'internal_note'               => 'Interne Notiz',
+    'amend_edit_title'            => 'Änderungsantrag bearbeiten',
+    'amend_show'                  => 'Änderungsantrag anzeigen',
+    'amend_del'                   => 'Änderungsantrag löschen',
+    'amend_screen_as_x'           => 'Freischalten als %PREFIX%',
+    'amend_prefix_placeholder'    => 'z.B. "Ä1", "A23-0042"',
+    'amend_prefix_unique'         => 'Muss eindeutig sein',
+    'amend_created_at'            => 'Angelegt am',
+    'amend_resoluted_on'          => 'Beschlossen am',
+    'amend_edit_text_title'       => 'Text bearbeiten',
+    'amend_edit_text'             => 'Bearbeiten',
 ];
