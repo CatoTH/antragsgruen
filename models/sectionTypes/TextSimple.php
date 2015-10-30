@@ -624,14 +624,16 @@ class TextSimple extends ISectionType
                         $cid                         = static::$CHANGESET_COUNTER++;
                         $changeset[$amendment->id][] = $cid;
                         $changeData                  = $amendment->getLiteChangeData($cid);
-                        $text .= '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">';
-                        $text .= $group[0] . '</ins>';
+                        $insText                     = '<ins>' . $group[0] . '</ins>';
+                        $insText                     = AmendmentDiffMerger::cleanupParagraphData($insText);
+                        $text .= str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">', $insText);
                     } elseif ($group[1] == Engine::DELETED) {
                         $cid                         = static::$CHANGESET_COUNTER++;
                         $changeset[$amendment->id][] = $cid;
                         $changeData                  = $amendment->getLiteChangeData($cid);
-                        $text .= '<del class="ice-del ice-cts appendHint"' . $changeData . '">';
-                        $text .= $group[0] . '</del>';
+                        $delText                     = '<del>' . $group[0] . '</del>';
+                        $delText                     = AmendmentDiffMerger::cleanupParagraphData($delText);
+                        $text .= str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '">', $delText);
                     }
                 }
                 $out .= $text;
