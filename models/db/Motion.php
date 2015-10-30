@@ -500,7 +500,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function setScreened()
     {
-        $this->status = Motion::STATUS_DELETED;
+        $this->status = Motion::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix == '') {
             $this->titlePrefix = $this->consultation->getNextMotionPrefix($this->motionTypeId);
         }
