@@ -43,7 +43,7 @@ $I->seeElement('#motionScreenForm');
 $prefix = AcceptanceTester::FIRST_FREE_MOTION_TITLE_PREFIX;
 $I->executeJS('$("#motionScreenForm input[name=titlePrefix]").attr("value", "A3");');
 $I->submitForm('#motionScreenForm', [], ['screen']);
-$I->see('Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
+$I->see('Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.');
 
 
 $I->wantTo('screen the motion normally');
