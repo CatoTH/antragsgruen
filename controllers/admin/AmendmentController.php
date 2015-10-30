@@ -111,7 +111,9 @@ class AmendmentController extends AdminBase
             }
             $amendment->save();
             $amendment->motion->flushCacheWithChildren();
+            $amendment->refresh();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
+
         }
 
         return $this->render('update', ['amendment' => $amendment, 'form' => $form]);
