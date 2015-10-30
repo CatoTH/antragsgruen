@@ -96,8 +96,8 @@ class AmendmentDiffMerger
                 $goon = true;
                 while (count($postfix) > 0 && $goon) {
                     if ($postfix[0][0] == '') {
-                            $inserts[] = [$postfix[0][0], Engine::INSERTED];
-                            $deletes[] = [$postfix[0][0], Engine::DELETED];
+                        $inserts[] = [$postfix[0][0], Engine::INSERTED];
+                        $deletes[] = [$postfix[0][0], Engine::DELETED];
                         array_shift($postfix);
                     } elseif (isset(static::$BLOCK_LEVEL_ELEMENTS_OPENING[$postfix[0][0]])) {
                         $openingTag      = static::$BLOCK_LEVEL_ELEMENTS_OPENING[$postfix[0][0]];
@@ -292,6 +292,7 @@ class AmendmentDiffMerger
     public function mergeParagraphs()
     {
         $this->sortDiffParagraphs();
+
         foreach ($this->diffParagraphs as $paraNo => $para) {
             foreach ($para as $changeSet) {
                 if ($this->checkIsDiffColliding($paraNo, $changeSet['diff'])) {
@@ -503,6 +504,29 @@ class AmendmentDiffMerger
         $text = str_replace('<del><p>', '<p><del>', $text);
         $text = str_replace('</p></ins>', '</ins></p>', $text);
         $text = str_replace('</p></del>', '</del></p>', $text);
+
+        $text = preg_replace_callback('/<ins>.*<\/ins>/siuU', function ($matches) {
+            $html = $matches[0];
+            $html = preg_replace('/<\/p>\s*<p>/siu', '</ins>\\0<ins>', $html);
+            $html = preg_replace('/<\/blockquote>\s*<blockquote>/siu', '</ins>\\0<ins>', $html);
+            $html = preg_replace('/<\/pre>\s*<pre>/siu', '</ins>\\0<ins>', $html);
+            $html = preg_replace('/<\/li>\s*<\/ul>\s*<ul>\s*<li>/siu', '</ins>\\0<ins>', $html);
+            $html = preg_replace('/<\/li>\s*<\/ol>\s*<ol>\s*<li>/siu', '</ins>\\0<ins>', $html);
+            return $html;
+        }, $text);
+        $text = str_replace('<ins></ins>', '', $text);
+
+        $text = preg_replace_callback('/<del>.*<\/del>/siuU', function ($matches) {
+            $html = $matches[0];
+            $html = preg_replace('/<\/p>\s*<p>/siu', '</del>\\0<del>', $html);
+            $html = preg_replace('/<\/blockquote>\s*<blockquote>/siu', '</del>\\0<del>', $html);
+            $html = preg_replace('/<\/pre>\s*<pre>/siu', '</del>\\0<del>', $html);
+            $html = preg_replace('/<\/li>\s*<\/ul>\s*<ul>\s*<li>/siu', '</del>\\0<del>', $html);
+            $html = preg_replace('/<\/li>\s*<\/ol>\s*<ol>\s*<li>/siu', '</del>\\0<del>', $html);
+            return $html;
+        }, $text);
+        $text = str_replace('<del></del>', '', $text);
+
         return $text;
     }
 

@@ -11,6 +11,26 @@ class AmendmentDiffMergerTest extends TestBase
 {
     /**
      */
+    public function testInsertedParagraph()
+    {
+        $merger = new AmendmentDiffMerger();
+        $merger->initByMotionParagraphs(['<p>Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag zu einer weniger gewaltvollen Gesellschaft.</p>']);
+        $merger->addAmendingParagraphs(1, [0 => '<p>Der Kampf für Gleichberechtigung von Frauen und Männern stellt die Grundlage der präventiven Arbeit dar. Eine präventive Arbeit gegen sexualisierte Gewalt bedeutet eben auch sexistische Strukturen in der Gesellschaft aufzudecken und stetig dagegen anzugehen.</p>
+<p>Prävention sexualisierter Gewalt ist schon lange ein wichtiges Anliegen der Jugendverbände. Mit unseren Maßnahmen zur Prävention und Intervention gegen sexualisierte Gewalt leisten wir dabei einen wichtigen Beitrag.</p>
+<p>zu einer weniger gewaltvollen Gesellschaft.</p>']);
+        $merger->mergeParagraphs();
+
+        $this->assertEquals([
+            ['amendment' => 0, 'text' => '<p>'],
+            ['amendment' => 1, 'text' => '<del>Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag </del><ins>Der Kampf für Gleichberechtigung von Frauen und Männern stellt die Grundlage der präventiven Arbeit dar. Eine präventive Arbeit gegen sexualisierte Gewalt bedeutet eben auch sexistische Strukturen in der Gesellschaft aufzudecken und stetig dagegen anzugehen.</ins></p><p><ins>Prävention sexualisierter Gewalt ist schon lange ein wichtiges Anliegen der Jugendverbände. Mit unseren Maßnahmen zur Prävention und Intervention gegen sexualisierte Gewalt leisten wir dabei einen wichtigen Beitrag.</ins></p><p>'],
+            ['amendment' => 0, 'text' => 'zu einer weniger gewaltvollen Gesellschaft.</p>'],
+        ],
+            $merger->getGroupedParagraphData(0)
+        );
+    }
+
+    /**
+     */
     public function testPrependPToChangedList()
     {
         $merger = new AmendmentDiffMerger();
@@ -21,7 +41,7 @@ class AmendmentDiffMergerTest extends TestBase
             ['amendment' => 0, 'text' => ''],
             [
                 'amendment' => 1,
-                'text' => '<ul><li><del>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust</del></li></ul><p><ins>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert.</ins></p><ul><li><ins>Wir stellen uns immer wieder neu der Frage.</ins></li></ul>',
+                'text'      => '<ul><li><del>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust</del></li></ul><p><ins>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert.</ins></p><ul><li><ins>Wir stellen uns immer wieder neu der Frage.</ins></li></ul>',
             ]
         ], $merger->getGroupedParagraphData(0));
     }
