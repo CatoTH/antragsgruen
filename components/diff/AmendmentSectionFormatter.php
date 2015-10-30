@@ -68,7 +68,7 @@ class AmendmentSectionFormatter
     public static function getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, $diffFormatting, $debug)
     {
         $strPost = trim($strPost);
-        $strPre = trim($strPre);
+        $strPre  = trim($strPre);
 
         $diff = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
@@ -137,8 +137,10 @@ class AmendmentSectionFormatter
      */
     public static function filterAffectedBlocks($blocks)
     {
-        $inIns          = $inDel = false;
-        $affectedBlocks = [];
+        $inIns                 = $inDel = false;
+        $affectedBlocks        = [];
+        $middleUnchangedBlocks = [];
+
         foreach ($blocks as $block) {
             $hadDiff = false;
             if ($inIns) {
@@ -168,21 +170,29 @@ class AmendmentSectionFormatter
                     }
                 }
             }
+
+            $addBlock = false;
             if ($inIns) {
-                $block['text']    = $block['text'] . '</ins>';
-                $affectedBlocks[] = $block;
+                $block['text'] = $block['text'] . '</ins>';
+                $addBlock      = true;
             } elseif ($inDel) {
-                $block['text']    = $block['text'] . '</del>';
-                $affectedBlocks[] = $block;
+                $block['text'] = $block['text'] . '</del>';
+                $addBlock      = true;
             } elseif ($hadDiff) {
-                $affectedBlocks[] = $block;
+                $addBlock = true;
+            } elseif (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
+                $addBlock = true;
+            } elseif (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
+                $addBlock = true;
+            }
+            if ($addBlock) {
+                if (count($middleUnchangedBlocks) == 1) {
+                    $affectedBlocks[] = $middleUnchangedBlocks[0];
+                }
+                $affectedBlocks[]      = $block;
+                $middleUnchangedBlocks = [];
             } else {
-                if (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                    $affectedBlocks[] = $block;
-                }
-                if (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                    $affectedBlocks[] = $block;
-                }
+                $middleUnchangedBlocks[] = $block;
             }
         }
         return $affectedBlocks;
@@ -371,7 +381,7 @@ class AmendmentSectionFormatter
                 ];
             }
             if ($currBlock['text'] != '') {
-                $currBlock['text'] .= '<br>';
+                $currBlock['text'] .= '';
             }
             $currBlock['text'] .= $block['text'];
             $currBlock['lineTo'] = $block['lineTo'];

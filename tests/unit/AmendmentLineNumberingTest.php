@@ -54,7 +54,7 @@ class AmendmentLineNumberingTest extends DBTestBase
     public function testComplicatedParagraphReplace()
     {
         $diff         = $this->getSectionDiff(271, 21);
-        $expectedDiff = 'selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. <del>Auch werden wir </del><br><del>demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der </del><br><del>Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU </del><br><del>kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen </del><br><del>Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP </del><br><del>voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, </del><br><del>wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird.</del><br><ins>Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die###FORCELINEBREAK###gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir###FORCELINEBREAK###sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese###FORCELINEBREAK###Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen###FORCELINEBREAK###werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung###FORCELINEBREAK###der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die###FORCELINEBREAK###Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</ins>';
+        $expectedDiff = 'selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. <del>Auch werden wir </del><del>demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der </del><del>Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU </del><del>kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen </del><del>Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP </del><del>voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, </del><del>wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird.</del><ins>Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die###FORCELINEBREAK###gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir###FORCELINEBREAK###sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese###FORCELINEBREAK###Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen###FORCELINEBREAK###werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung###FORCELINEBREAK###der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die###FORCELINEBREAK###Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</ins>';
 
         $this->assertEquals([[
             'text'     => $expectedDiff,
@@ -135,17 +135,17 @@ class AmendmentLineNumberingTest extends DBTestBase
     {
         $in     = [
             [
-                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.</del>',
+                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do. </del>',
                 'lineFrom' => 16,
                 'lineTo'   => 16,
                 'newLine'  => false,
             ], [
-                'text'     => '<del>Marei, des um Godds wujn Biakriagal!</del>',
+                'text'     => '<del>Marei, des um Godds wujn Biakriagal! </del>',
                 'lineFrom' => 17,
                 'lineTo'   => 17,
                 'newLine'  => false,
             ], [
-                'text'     => '<del>is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
+                'text'     => '<del>is schee jedza hogg di hera dringma aweng Spezi nia Musi. </del>',
                 'lineFrom' => 18,
                 'lineTo'   => 18,
                 'newLine'  => false,
@@ -153,9 +153,9 @@ class AmendmentLineNumberingTest extends DBTestBase
         ];
         $expect = [
             [
-                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.</del><br>' .
-                    '<del>Marei, des um Godds wujn Biakriagal!</del><br>' .
-                    '<del>is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
+                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do. </del>' .
+                    '<del>Marei, des um Godds wujn Biakriagal! </del>' .
+                    '<del>is schee jedza hogg di hera dringma aweng Spezi nia Musi. </del>',
                 'lineFrom' => 16,
                 'lineTo'   => 18,
                 'newLine'  => false,

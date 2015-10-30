@@ -123,6 +123,12 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
                 'newLine'  => false,
             ],
             [
+                'text'     => 'Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen ',
+                'lineFrom' => 6,
+                'lineTo'   => 6,
+                'newLine'  => false,
+            ],
+            [
                 'text'     => 'Spaltung unserer Gesellschaften; ein<del>e Politik, die</del><ins> Wirtschaftsmodell, das</ins> auch un<del>populär</del><ins>bequem</ins>e ',
                 'lineFrom' => 7,
                 'lineTo'   => 7,
@@ -152,6 +158,11 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
     {
         $in       = [
             [
+                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
+                'lineFrom' => 14,
+                'lineTo'   => 14,
+                'newLine'  => false,
+            ], [
                 'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
                 'lineFrom' => 15,
                 'lineTo'   => 15,
@@ -242,6 +253,71 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 
 
     /**
+     * @throws \app\models\exceptions\Internal
+     */
+    public function testFilterAffectedBlocks3()
+    {
+        $in       = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 1.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 19,
+                'lineTo'   => 19,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 20,
+                'lineTo'   => 20,
+                'newLine'  => false,
+            ],
+        ];
+        $expect   = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 19,
+                'lineTo'   => 19,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 20,
+                'lineTo'   => 20,
+                'newLine'  => false,
+            ],
+        ];
+        $filtered = AmendmentSectionFormatter::filterAffectedBlocks($in);
+        $this->assertEquals($expect, $filtered);
+    }
+
+    /**
      */
     public function testLinesWithoutNumber()
     {
@@ -272,7 +348,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 
         $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
         $text    = TextSimple::formatDiffGroup($grouped);
-        $expect  = '<h4 class="lineSummary">In Zeile 6:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<ins class="space">[Zeilenumbruch]</ins><ins>###FORCELINEBREAK###</ins></p></div><h4 class="lineSummary">Von Zeile 8 bis 10:</h4><div><p>wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><br><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextrem</del><ins>populistisch</ins>e Propaganda <br><del>missbraucht</del><ins>missbrauchen</ins>.</p></div>';
+        $expect  = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<ins class="space">[Zeilenumbruch]</ins><ins>###FORCELINEBREAK###</ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextrem</del><ins>populistisch</ins>e Propaganda <del>missbraucht</del><ins>missbrauchen</ins>.</p></div>';
         $this->assertEquals($expect, $text);
     }
 }
