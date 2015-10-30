@@ -90,7 +90,7 @@ class MotionController extends AdminBase
             $this->sectionsSave($motionType);
             $this->sectionsDelete($motionType);
 
-            \yii::$app->session->setFlash('success', 'Gespeichert.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
         }
 
@@ -126,13 +126,13 @@ class MotionController extends AdminBase
 
         if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
             if ($this->consultation->findMotionWithPrefix($_POST['titlePrefix'], $motion)) {
-                \yii::$app->session->setFlash('error', 'Inzwischen gibt es einen anderen Antrag mit diesem Kürzel.');
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $_POST['titlePrefix'];
                 $motion->save();
                 $motion->onPublish();
-                \yii::$app->session->setFlash('success', 'Der Antrag wurde freigeschaltet.');
+                \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_screened'));
             }
         }
 
@@ -140,7 +140,7 @@ class MotionController extends AdminBase
             $motion->status = Motion::STATUS_DELETED;
             $motion->save();
             $motion->flushCacheStart();
-            \yii::$app->session->setFlash('success', 'Der Antrag wurde gelöscht.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
             return '';
         }
@@ -166,8 +166,7 @@ class MotionController extends AdminBase
             }
 
             if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
-                $msg = 'Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.';
-                \yii::$app->session->setFlash('error', $msg);
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
             } else {
                 $motion->titlePrefix = $_POST['motion']['titlePrefix'];
             }
@@ -185,7 +184,7 @@ class MotionController extends AdminBase
             }
 
             $motion->flushCacheWithChildren();
-            \yii::$app->session->setFlash('success', 'Gespeichert.');
+            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('update', ['motion' => $motion, 'form' => $form]);
