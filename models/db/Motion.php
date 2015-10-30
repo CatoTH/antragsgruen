@@ -487,7 +487,7 @@ class Motion extends IMotion implements IRSSItem
     public function withdraw()
     {
         if (in_array($this->status, $this->consultation->getInvisibleMotionStati())) {
-            $this->status = static::STATUS_DRAFT;
+            $this->status = static::STATUS_DELETED;
         } else {
             $this->status = static::STATUS_WITHDRAWN;
         }
@@ -500,7 +500,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function setScreened()
     {
-        $this->status = Motion::STATUS_SUBMITTED_SCREENED;
+        $this->status = Motion::STATUS_DELETED;
         if ($this->titlePrefix == '') {
             $this->titlePrefix = $this->consultation->getNextMotionPrefix($this->motionTypeId);
         }
