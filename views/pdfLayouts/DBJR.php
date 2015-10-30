@@ -16,13 +16,13 @@ class DBJR extends IPDFLayout
      */
     public function printMotionHeader(Motion $motion)
     {
-        $pdf      = $this->pdf;
+        $pdf = $this->pdf;
         /** @var AntragsgruenApp $site */
         $site = \yii::$app->params;
         $left = 23.5;
 
         if ($site->getAbsolutePdfLogo()) {
-            $scale = 149/280;
+            $scale = 149 / 280;
             $width = 50;
             $pdf->setJPEGQuality(100);
             $pdf->Image($site->getAbsolutePdfLogo(), 190 - $width, 18, $width, $width * $scale);
@@ -64,13 +64,13 @@ class DBJR extends IPDFLayout
      */
     public function printAmendmentHeader(Amendment $amendment)
     {
-        $pdf      = $this->pdf;
+        $pdf = $this->pdf;
         /** @var AntragsgruenApp $site */
         $site = \yii::$app->params;
         $left = 23.5;
 
         if ($site->getAbsolutePdfLogo()) {
-            $scale = 149/280;
+            $scale = 149 / 280;
             $width = 50;
             $pdf->setJPEGQuality(100);
             $pdf->Image($site->getAbsolutePdfLogo(), 190 - $width, 18, $width, $width * $scale);
@@ -79,7 +79,7 @@ class DBJR extends IPDFLayout
         $pdf->SetFont('helvetica', 'B', '35');
         $pdf->SetTextColor(40, 40, 40, 40);
         $pdf->SetXY($left, 22);
-        $pdf->Write(0, mb_strtoupper($amendment->motion->motionType->titleSingular));
+        $pdf->Write(0, 'Änderungsantrag ' . $amendment->titlePrefix);
 
         $pdf->SetTextColor(100, 100, 100, 100);
         $pdf->SetXY($left, 40);
@@ -91,7 +91,11 @@ class DBJR extends IPDFLayout
             $pdf->Ln(3);
         }
 
-        $data = $amendment->motion->getDataTable();
+        $pdf->SetX($left);
+        $pdf->MultiCell(42, 0, 'Antrag:', 0, 'L', false, 0);
+        $pdf->MultiCell(120, 0, $amendment->motion->getTitleWithPrefix(), 0, 'L');
+        $pdf->Ln(5);
+        $data = $amendment->getDataTable();
         foreach ($data as $key => $val) {
             $pdf->SetX($left);
             $pdf->MultiCell(42, 0, $key . ':', 0, 'L', false, 0);
@@ -101,12 +105,8 @@ class DBJR extends IPDFLayout
 
         $pdf->Ln(9);
 
-        $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->writeHTML('<h3>' . 'Änderungsantrag' . '</h3>');
-
         $pdf->SetFont('helvetica', '', 12);
         $pdf->ln(7);
-
     }
 
     /**
