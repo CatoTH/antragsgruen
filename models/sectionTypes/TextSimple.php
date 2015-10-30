@@ -352,18 +352,17 @@ class TextSimple extends ISectionType
             $out .= '</div>';
             $out .= $wrapEnd;
         }
-        $out = str_replace('<del> </del>', '<del class="space">[' . \Yii::t('diff', 'space') . ']</del>', $out);
-        $out = str_replace('<ins> </ins>', '<ins class="space">[' . \Yii::t('diff', 'space') . ']</ins>', $out);
-        $out = str_replace(
-            '<del>###FORCELINEBREAK###</del>',
-            '<del class="space">[' . \Yii::t('diff', 'newline') . ']</del><del>###FORCELINEBREAK###</del>',
-            $out
-        );
-        $out = str_replace(
-            '<ins>###FORCELINEBREAK###</ins>',
-            '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins><ins>###FORCELINEBREAK###</ins>',
-            $out
-        );
+
+        $strSpaceDel   = '<del class="space">[' . \Yii::t('diff', 'space') . ']</del>';
+        $strNewlineDel = '<del class="space">[' . \Yii::t('diff', 'newline') . ']</del><del>###FORCELINEBREAK###</del>';
+        $strSpaceIns   = '<ins class="space">[' . \Yii::t('diff', 'space') . ']</ins>';
+        $strNewlineIns = '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins><ins>###FORCELINEBREAK###</ins>';
+        $out           = str_replace('<del> </del>', $strSpaceDel, $out);
+        $out           = str_replace('<ins> </ins>', $strSpaceIns, $out);
+        $out           = str_replace('<del>###FORCELINEBREAK###</del>', $strNewlineDel, $out);
+        $out           = str_replace('<ins>###FORCELINEBREAK###</ins>', $strNewlineIns, $out);
+        $out           = str_replace($strSpaceDel . $strNewlineIns, $strNewlineIns, $out);
+        $out           = str_replace($strSpaceDel . '<ins></ins><br>', '<br>', $out);
         return $out;
     }
 

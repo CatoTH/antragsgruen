@@ -21,8 +21,8 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals(1, count($getDiffLinesWithNumbers));
 
         $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
-        $text = TextSimple::formatDiffGroup($grouped);
-        $expect = '<h4 class="lineSummary">In Zeile 2 löschen:</h4><div><p>Test<span style="color: red;"><del> 123</del></span></p></div>';
+        $text    = TextSimple::formatDiffGroup($grouped);
+        $expect  = '<h4 class="lineSummary">In Zeile 2 löschen:</h4><div><p>Test<span style="color: red;"><del> 123</del></span></p></div>';
         $this->assertEquals($expect, $text);
     }
 
@@ -30,14 +30,14 @@ class AmendmentSectionFormatterTest extends TestBase
      */
     public function testNoMessingUpLineNumbers()
     {
-        $strPre = '<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>
+        $strPre   = '<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>
 <p>###LINENUMBER###Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch ###LINENUMBER###weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft ###LINENUMBER###vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und ###LINENUMBER###biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkte ###LINENUMBER###und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die ###LINENUMBER###Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang ###LINENUMBER###hier bleiben werden, diesen Prozess verstärken.</p>
 <p>###LINENUMBER###Die Stärkung einer europäischen Identität – ohne die Verwischung historischer ###LINENUMBER###Verantwortung und politischer Kontinuitäten – ist für eine zukünftige ###LINENUMBER###Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen ###LINENUMBER###wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>
 <p>###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. ###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>';
-        $strPost = '<p><strong>Anspruch und Ausblick</strong></p>
+        $strPost  = '<p><strong>Anspruch und Ausblick</strong></p>
 <p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkten und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang hier bleiben werden, diesen Prozess verstärken.</p>
 <p>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>';
-        $computed                = AmendmentSectionFormatter::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, Diff::FORMATTING_CLASSES, false);
+        $computed = AmendmentSectionFormatter::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, Diff::FORMATTING_CLASSES, false);
 
         // Hint: could be further improved, by separating the leading 'n' from the big change block
         $this->assertEquals('<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>
@@ -92,7 +92,7 @@ class AmendmentSectionFormatterTest extends TestBase
      */
     public function testUlLiInlineFormatted()
     {
-        $in = '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>';
+        $in     = '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>';
         $expect = [
             '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>',
         ];
@@ -256,5 +256,23 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         ];
         $out    = AmendmentSectionFormatter::getDiffSplitToLines($in);
         $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testEmptyDeletedSpaceAtEnd()
+    {
+        $strPre  = '<p>###LINENUMBER###Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. ###LINENUMBER###Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier ###LINENUMBER###unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge ###LINENUMBER###– und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser ###LINENUMBER###Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich. Hier ###LINENUMBER###wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich dem rechten ###LINENUMBER###Mob entgegenstellen, der die Not von Schutzsuchenden für Hass und rechtsextreme Propaganda ###LINENUMBER###missbraucht.</p>';
+        $strPost = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.</p>
+<p>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich konsequent rechtsextremen Tendenzen entgegenstellen, welche die Not von Schutzsuchenden für Hass und populistische Propaganda missbrauchen.</p>';
+
+        $computed                = AmendmentSectionFormatter::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, Diff::FORMATTING_CLASSES, false);
+        $blocks                  = AmendmentSectionFormatter::htmlDiff2LineBlocks($computed, 2);
+        $getDiffLinesWithNumbers = AmendmentSectionFormatter::filterAffectedBlocks($blocks);
+
+        $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
+        $text    = TextSimple::formatDiffGroup($grouped);
+        $expect  = '<h4 class="lineSummary">In Zeile 6:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<ins class="space">[Zeilenumbruch]</ins><ins>###FORCELINEBREAK###</ins></p></div><h4 class="lineSummary">Von Zeile 8 bis 10:</h4><div><p>wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><br><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextrem</del><ins>populistisch</ins>e Propaganda <br><del>missbraucht</del><ins>missbrauchen</ins>.</p></div>';
+        $this->assertEquals($expect, $text);
     }
 }
