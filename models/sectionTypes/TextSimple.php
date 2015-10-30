@@ -613,7 +613,7 @@ class TextSimple extends ISectionType
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
             foreach ($colliding as $amendmentId => $paraText) {
                 $amendment = $amendmentsById[$amendmentId];
-                $text      = '<p><strong>' . 'Kollidierender Änderungsantrag: ';
+                $text      = '<p><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
                 $text .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
                 $text .= '</strong></p>';
 

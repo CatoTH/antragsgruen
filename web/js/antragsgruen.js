@@ -385,6 +385,43 @@
             });
         });
 
+        $(".wysiwyg-textarea .acceptAllChanges").click(function () {
+            var $this = $(this),
+                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
+                instance = CKEDITOR.instances[id];
+            bootbox.confirm("Wirklich alle verbleibenden Änderungen dieses Textabschnitts übernehmen?", function (result) {
+                if (result) {
+                    instance.plugins.lite.findPlugin(instance).acceptAll();
+                    $this.parents(".wysiwyg-textarea").find("> label").scrollintoview();
+                }
+            });
+        });
+
+        $(".wysiwyg-textarea .rejectAllChanges").click(function () {
+            var $this = $(this),
+                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
+                instance = CKEDITOR.instances[id];
+            bootbox.confirm("Wirklich alle verbleibenden Änderungen dieses Textabschnitts ablehnen?", function (result) {
+                if (result) {
+                    instance.plugins.lite.findPlugin(instance).rejectAll();
+                    $this.parents(".wysiwyg-textarea").find("> label").scrollintoview();
+                }
+            });
+        });
+
+        $(".wysiwyg-textarea .deactivateTracking").click(function () {
+            var $this = $(this),
+                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
+                instance = CKEDITOR.instances[id];
+            if (instance.plugins.lite.findPlugin(instance).countChanges() == 0) {
+                instance.plugins.lite.findPlugin(instance).toggleTracking(false, false);
+                $this.parents(".wysiwyg-textarea").find(".mergeTrackingDisabled").removeClass("hidden");
+                $this.parents(".wysiwyg-textarea").find(".mergeActionHolder").addClass("hidden");
+            } else {
+                bootbox.alert("Es müssen zunächst alle Änderungen angenommen oder abgelehnt werden, bevor der Änderungsmodus deaktiviert werden kann.");
+            }
+        });
+
         var $draftHint = $("#draftHint"),
             origMotionId = $draftHint.data("orig-motion-id"),
             newMotionId = $draftHint.data("new-motion-id");
