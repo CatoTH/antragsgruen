@@ -98,6 +98,20 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param int $amendmentId
+     * @return Amendment|null
+     */
+    public function getAmendment($amendmentId)
+    {
+        foreach ($this->amendments as $amendment) {
+            if ($amendment->id == $amendmentId && $amendment->status != Amendment::STATUS_DELETED) {
+                return $amendment;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return Amendment[]
      */
     public function getSortedAmendments()

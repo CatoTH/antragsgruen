@@ -427,14 +427,21 @@ class Amendment extends IMotion implements IRSSItem
         return $this->iAmInitiator();
     }
 
+    /** @var null|MotionSectionParagraphAmendment[] */
+    private $_changedParagraphCache = null;
+
     /**
+     * @param MotionSection[] $motionSections
      * @param bool $lineNumbers
      * @return MotionSectionParagraphAmendment[]
      */
-    public function getChangedParagraphs($lineNumbers)
+    public function getChangedParagraphs($motionSections, $lineNumbers)
     {
+        if ($lineNumbers && $this->_changedParagraphCache !== null) {
+            return $this->_changedParagraphCache;
+        }
         $paragraphs = [];
-        foreach ($this->motion->sections as $section) {
+        foreach ($motionSections as $section) {
             if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
@@ -446,6 +453,9 @@ class Amendment extends IMotion implements IRSSItem
                     }
                 }
             }
+        }
+        if ($lineNumbers) {
+            $this->_changedParagraphCache = $paragraphs;
         }
         return $paragraphs;
     }

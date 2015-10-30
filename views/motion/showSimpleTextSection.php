@@ -13,6 +13,7 @@ use app\models\forms\CommentForm;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
+$motion         = $section->motion;
 $hasLineNumbers = $section->consultationSetting->lineNumbers;
 $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
 $screenAdmin    = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
@@ -40,7 +41,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     echo '<ul class="bookmarks">';
     if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
-        $mayOpen = $section->motion->motionType->getCommentPolicy()->checkCurrUser(true, true);
+        $mayOpen     = $section->motion->motionType->getCommentPolicy()->checkCurrUser(true, true);
         $numComments = $paragraph->getVisibleComments($screenAdmin);
         if (count($numComments) > 0 || $mayOpen) {
             echo '<li class="comment">';
@@ -82,12 +83,12 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     echo '</div>';
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
-        $amendment = $amendmentSection->amendmentSection->amendment;
+        $amendment = $motion->getAmendment($amendmentSection->amendmentSection->amendmentId);
         echo '<div class="text textAmendment hidden amendment' . $amendment->id . '">';
         echo '<div class="preamble"><div>';
         echo '<h3>' . \Yii::t('amend', 'amendment') . ' ' . Html::encode($amendment->titlePrefix) . '</h3>';
         echo ', ' . \Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
-        $amParas = $amendment->getChangedParagraphs(true);
+        $amParas = $amendment->getChangedParagraphs($motion->sections, true);
         if (count($amParas) > 1) {
             echo '<div class="moreAffected">';
             echo str_replace('%num%', count($amParas), \Yii::t('amend', 'affects_x_paragraphs'));
