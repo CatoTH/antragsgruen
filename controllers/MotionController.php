@@ -304,6 +304,7 @@ class MotionController extends Base
         $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if (isset($_POST['save'])) {
+            $motion->flushCacheWithChildren();
             $form->setAttributes([$_POST, $_FILES]);
             try {
                 $form->saveMotion($motion);
