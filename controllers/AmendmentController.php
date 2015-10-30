@@ -269,6 +269,7 @@ class AmendmentController extends Base
         $form     = new AmendmentEditForm($amendment->motion, $amendment);
 
         if (isset($_POST['save'])) {
+            $amendment->flushCacheWithChildren();
             $form->setAttributes([$_POST, $_FILES]);
             try {
                 $form->saveAmendment($amendment);
