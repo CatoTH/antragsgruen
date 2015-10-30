@@ -25,7 +25,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde freigeschaltet.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened'));
         }
         if (isset($_REQUEST['motionUnscreen'])) {
             $motion = $this->consultation->getMotion($_REQUEST['motionUnscreen']);
@@ -33,7 +33,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setUnscreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde zurückgezogen.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened'));
         }
         if (isset($_REQUEST['motionDelete'])) {
             $motion = $this->consultation->getMotion($_REQUEST['motionDelete']);
@@ -41,7 +41,7 @@ trait MotionListAllTrait
                 return;
             }
             $motion->setDeleted();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Antrag wurde gelöscht.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted'));
         }
 
         if (!isset($_REQUEST['motions']) || !isset($_REQUEST['save'])) {
@@ -55,7 +55,7 @@ trait MotionListAllTrait
                 }
                 $motion->setScreened();
             }
-            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden freigeschaltet.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened_pl'));
         }
 
         if (isset($_REQUEST['unscreen'])) {
@@ -66,7 +66,7 @@ trait MotionListAllTrait
                 }
                 $motion->setUnscreened();
             }
-            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden zurückgezogen.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened_pl'));
         }
 
         if (isset($_REQUEST['delete'])) {
@@ -77,7 +77,7 @@ trait MotionListAllTrait
                 }
                 $motion->setDeleted();
             }
-            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden gelöscht.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted_pl'));
         }
     }
 
@@ -92,7 +92,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde freigeschaltet.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened'));
         }
         if (isset($_REQUEST['amendmentWithdraw'])) {
             $amendment = $this->consultation->getAmendment($_REQUEST['amendmentWithdraw']);
@@ -100,7 +100,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setScreened();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde zurückgezogen.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
         }
         if (isset($_REQUEST['amendmentDelete'])) {
             $amendment = $this->consultation->getAmendment($_REQUEST['amendmentDelete']);
@@ -108,7 +108,7 @@ trait MotionListAllTrait
                 return;
             }
             $amendment->setDeleted();
-            \yii::$app->session->setFlash('success', 'Der ausgewählte Änderungsantrag wurde gelöscht.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted'));
         }
         if (!isset($_REQUEST['amendments']) || !isset($_REQUEST['save'])) {
             return;
@@ -121,7 +121,7 @@ trait MotionListAllTrait
                 }
                 $amendment->setScreened();
             }
-            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden freigeschaltet.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened_pl'));
         }
 
         if (isset($_REQUEST['unscreen'])) {
@@ -132,7 +132,7 @@ trait MotionListAllTrait
                 }
                 $amendment->setUnscreened();
             }
-            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden zurückgezogen.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened_pl'));
         }
 
         if (isset($_REQUEST['delete'])) {
@@ -143,7 +143,7 @@ trait MotionListAllTrait
                 }
                 $amendment->setDeleted();
             }
-            \yii::$app->session->setFlash('success', 'Die ausgewählten Anträge wurden gelöscht.');
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted_pl'));
         }
     }
 
@@ -154,7 +154,7 @@ trait MotionListAllTrait
     public function actionListall()
     {
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_MOTION_EDIT)) {
-            $this->showErrorpage(403, 'Kein Zugriff auf diese Seite');
+            $this->showErrorpage(403, \Yii::t('admin', 'no_acccess'));
             return '';
         }
 
