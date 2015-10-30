@@ -75,8 +75,7 @@
                 countHTML: false,
                 countSpacesAsChars: true
             },
-            title: $el.attr("title"),
-            lite: {tooltips: false}
+            title: $el.attr("title")
         };
 
         if ($el.data('track-changed') == '1') {
@@ -88,6 +87,11 @@
                 'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline,strike,subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
                 'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
+            if ($el.data('track-changed-tooltips') == '1') {
+                ckeditorConfig.lite = {tooltips: true};
+            } else {
+                ckeditorConfig.lite = {tooltips: false};
+            }
         } else {
             ckeditorConfig.removePlugins += ',lite';
             allowedContent = 'strong s em u sub sup;' +
