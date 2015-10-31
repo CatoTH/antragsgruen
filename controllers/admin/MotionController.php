@@ -223,8 +223,6 @@ class MotionController extends AdminBase
     {
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
-        @ini_set('memory_limit', '256M');
-
         $excelMime                   = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', $excelMime);
