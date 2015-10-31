@@ -200,8 +200,6 @@ class MotionController extends AdminBase
     {
         $motionType = $this->consultation->getMotionType($motionTypeId);
 
-        @ini_set('memory_limit', '256M');
-
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');

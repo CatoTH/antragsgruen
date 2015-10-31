@@ -19,8 +19,6 @@ class AmendmentController extends AdminBase
      */
     public function actionOdslist($textCombined = false)
     {
-        @ini_set('memory_limit', '256M');
-
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
