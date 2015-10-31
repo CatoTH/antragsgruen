@@ -14,9 +14,9 @@ class HTMLNormalizeTest extends TestBase
      */
     public function testPrepareForCKEditor()
     {
-        $orig = '<p><strong> Test</strong></p> Test2';
+        $orig   = '<p><strong> Test</strong></p> Test2';
         $expect = '<p><strong>&nbsp;Test</strong></p> Test2';
-        $out = HTMLTools::prepareHTMLForCkeditor($orig);
+        $out    = HTMLTools::prepareHTMLForCkeditor($orig);
         $this->assertEquals($expect, $out);
     }
 
@@ -145,11 +145,24 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    /**
+     */
     public function testStripMultipleSpaces()
     {
         $orig   = '<p>Bla Bla   Bla</p><pre>Bla Bla  Bla</pre>';
         $expect = '<p>Bla Bla Bla</p>' . "\n" . '<pre>Bla Bla  Bla</pre>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testLigatures()
+    {
+        $orig   = 'ﬁ is fi and ﬂ is fl';
+        $expect = 'fi is fi and fl is fl';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+        $this->assertNotEquals($out, $orig);
     }
 }

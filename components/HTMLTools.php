@@ -24,6 +24,9 @@ class HTMLTools
         $html = preg_replace('/ {2,}/siu', ' ', $html);
         $html = str_replace(chr(194) . chr(160), ' ', $html);
 
+        // Ligature characters
+        $html = str_replace(['ﬁ', 'ﬂ', 'ﬀ', 'ﬃ', 'ﬄ', 'ﬆ'], ['fi', 'fl', 'ff', 'ffi', 'ffl', 'st'], $html);
+
         return $html;
     }
 
