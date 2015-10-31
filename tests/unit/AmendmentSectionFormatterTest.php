@@ -78,7 +78,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $expect = [
             '###LINENUMBER###Do nackata Wurscht i hob di ',
             '###LINENUMBER###narrisch gean, Diandldrahn Deandlgwand vui ',
-            '###LINENUMBER###Do nackata',
+            '###LINENUMBER###Do nackata###FORCELINEBREAK###',
             '<ul><li>###LINENUMBER###Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand ###LINENUMBER###huift vui woaß?</li></ul>',
             '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>'
         ];
@@ -325,10 +325,10 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
             '<p>###LINENUMBER###Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma ###LINENUMBER###sagrisch guad.</p>' . "\n" .
             '<ins><p>Neuer Absatz</p></ins>';
         $expect = [
-            '<ins>New line at beginning</ins>',
+            '<ins>New line at beginning###FORCELINEBREAK###</ins>',
             '###LINENUMBER###Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma ',
-            '###LINENUMBER###sagrisch guad.',
-            '<ins>Neuer Absatz</ins>',
+            '###LINENUMBER###sagrisch guad.###FORCELINEBREAK###',
+            '<ins>Neuer Absatz###FORCELINEBREAK###</ins>',
         ];
         $out    = AmendmentSectionFormatter::getDiffSplitToLines($in);
         $this->assertEquals($expect, $out);
@@ -348,7 +348,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 
         $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
         $text    = TextSimple::formatDiffGroup($grouped);
-        $expect  = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<ins class="space">[Zeilenumbruch]</ins><ins>###FORCELINEBREAK###</ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextrem</del><ins>populistisch</ins>e Propaganda <del>missbraucht</del><ins>missbrauchen</ins>.</p></div>';
+        $expect  = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextrem</del><ins>populistisch</ins>e Propaganda <del>missbraucht</del><ins>missbrauchen</ins>.</p></div>';
         $this->assertEquals($expect, $text);
     }
 }

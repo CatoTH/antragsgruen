@@ -362,7 +362,13 @@ class TextSimple extends ISectionType
         $out           = str_replace('<del>###FORCELINEBREAK###</del>', $strNewlineDel, $out);
         $out           = str_replace('<ins>###FORCELINEBREAK###</ins>', $strNewlineIns, $out);
         $out           = str_replace($strSpaceDel . $strNewlineIns, $strNewlineIns, $out);
+        $out           = str_replace($strSpaceDel . '###FORCELINEBREAK###' . $strNewlineIns, '<br>' . $strNewlineIns, $out);
         $out           = str_replace($strSpaceDel . '<ins></ins><br>', '<br>', $out);
+        $out           = str_replace('###FORCELINEBREAK###', '<br>', $out);
+        $repl          = '<br></p></div>';
+        if (mb_substr($out, mb_strlen($out) - mb_strlen($repl), mb_strlen($repl)) == $repl) {
+            $out = mb_substr($out, 0, mb_strlen($out) - mb_strlen($repl)) . '</p></div>';
+        }
         return $out;
     }
 

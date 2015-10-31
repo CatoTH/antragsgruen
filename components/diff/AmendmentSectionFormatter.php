@@ -225,6 +225,7 @@ class AmendmentSectionFormatter
             if (preg_match('/^(<div[^>]*>)?<(ul|blockquote|ol)/siu', $line)) {
                 $out[] = $line;
             } else {
+                $line          = str_replace('</p>', '</p>###FORCELINEBREAK###', $line);
                 $line          = preg_replace('/<\/?p>/siu', '', $line);
                 $hasLineNumber = (mb_strpos($line, '###LINENUMBER###') !== false);
                 $parts         = explode('###LINENUMBER###', $line);
