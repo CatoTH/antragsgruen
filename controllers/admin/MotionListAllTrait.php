@@ -94,12 +94,12 @@ trait MotionListAllTrait
             $amendment->setScreened();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened'));
         }
-        if (isset($_REQUEST['amendmentWithdraw'])) {
-            $amendment = $this->consultation->getAmendment($_REQUEST['amendmentWithdraw']);
+        if (isset($_REQUEST['amendmentUnscreen'])) {
+            $amendment = $this->consultation->getAmendment($_REQUEST['amendmentUnscreen']);
             if (!$amendment) {
                 return;
             }
-            $amendment->setScreened();
+            $amendment->setUnscreened();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
         }
         if (isset($_REQUEST['amendmentDelete'])) {
