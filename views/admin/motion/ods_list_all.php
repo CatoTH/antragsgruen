@@ -74,7 +74,7 @@ foreach ($items as $item) {
         $initiator = $item->getInitiators() [0];
         $email = $initiator->contactEmail;
         $phone = $initiator->contactPhone;
-        $name = $initiator->name;
+        $name = $initiator->getNameWithOrga();
         $firstName = StringSplitter::first ([' '],substr($name,0,4) == 'Dr. ' ? substr($name,4) : $name);
         if ($item instanceof Motion) {
             $doc->setCell($row, $COL_TITLE, Spreadsheet::TYPE_HTML, $item->title);
