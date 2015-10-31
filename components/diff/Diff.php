@@ -570,12 +570,15 @@ class Diff
      */
     public static function computeLineDiffChangeRatio($orig, $diff)
     {
+        $orig       = str_replace(['###LINENUMBER###', '###ORIGLINEBREAK###', '###FORCELINEBREAK###'], ['', '', ''], $orig);
+        $diff       = str_replace(['###LINENUMBER###', '###ORIGLINEBREAK###', '###FORCELINEBREAK###'], ['', '', ''], $diff);
         $origLength = mb_strlen(strip_tags($orig));
         if ($origLength == 0) {
             return 0;
         }
-        $strippedDiff       = preg_replace('/<ins>(.*)<\/ins>/siuU', '', $diff);
-        $strippedDiff       = preg_replace('/<del>(.*)<\/del>/siuU', '', $strippedDiff);
+        $strippedDiff = preg_replace('/<ins>(.*)<\/ins>/siuU', '', $diff);
+        $strippedDiff = preg_replace('/<del>(.*)<\/del>/siuU', '', $strippedDiff);
+
         $strippedDiffLength = mb_strlen(strip_tags($strippedDiff));
 
         return 1.0 - ($strippedDiffLength / $origLength);
