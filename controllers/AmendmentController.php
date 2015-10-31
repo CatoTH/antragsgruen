@@ -9,6 +9,7 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
 use app\models\db\EMailLog;
+use app\models\db\Motion;
 use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
@@ -70,11 +71,14 @@ class AmendmentController extends Base
         }
         $amendments = [];
         foreach ($motions as $motion) {
+            $motionAmendments = [];
             foreach ($motion->amendments as $amendment) {
                 if (!in_array($amendment->status, $this->consultation->getInvisibleAmendmentStati())) {
-                    $amendments[] = $amendment;
+                    $motionAmendments[] = $amendment;
                 }
             }
+            $motionAmendments = MotionSorter::getSortedAmendments($this->consultation, $motionAmendments);
+            $amendments = array_merge($amendments, $motionAmendments);
         }
         if (count($amendments) == 0) {
             $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
