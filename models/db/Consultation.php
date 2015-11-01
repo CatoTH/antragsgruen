@@ -260,6 +260,33 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @return Motion[]
+     */
+    public function getVisibleMotionsSorted()
+    {
+        $motions   = [];
+        $motionIds = [];
+        $items     = ConsultationAgendaItem::getSortedFromConsultation($this);
+        foreach ($items as $agendaItem) {
+            $newMotions = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions());
+            foreach ($newMotions as $newMotion) {
+                $motions[]   = $newMotion;
+                $motionIds[] = $newMotion->id;
+            }
+        }
+        $noAgendaMotions = [];
+        foreach ($this->getVisibleMotions() as $motion) {
+            if (!in_array($motion->id, $motionIds)) {
+                $noAgendaMotions[] = $motion;
+                $motionIds[]       = $motion->id;
+            }
+        }
+        $noAgendaMotions = MotionSorter::getSortedMotionsFlat($this, $noAgendaMotions);
+        $motions         = array_merge($motions, $noAgendaMotions);
+        return $motions;
+    }
+
+    /**
      * @param Site $site
      * @param User $currentUser
      * @param ISitePreset $preset

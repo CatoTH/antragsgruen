@@ -99,10 +99,8 @@ foreach ($motions as $motion) {
     $title .= ' (von: ' . Html::encode(implode(', ', $initiatorNames)) . ')';
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
 
-    foreach ($motion->amendments as $amendment) {
-        if (in_array($amendment->status, $consultation->getInvisibleAmendmentStati())) {
-            continue;
-        }
+    $amendments = $motion->getVisibleAmendmentsSorted();
+    foreach ($amendments as $amendment) {
         $row++;
 
         $initiatorNames   = [];

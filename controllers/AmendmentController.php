@@ -65,20 +65,13 @@ class AmendmentController extends Base
      */
     public function actionPdfcollection()
     {
-        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
+        $motions = $this->consultation->getVisibleMotionsSorted();
         if (count($motions) == 0) {
-            $this->showErrorpage(404, 'Es gibt noch keine Anträge');
+            $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
         $amendments = [];
         foreach ($motions as $motion) {
-            $motionAmendments = [];
-            foreach ($motion->amendments as $amendment) {
-                if (!in_array($amendment->status, $this->consultation->getInvisibleAmendmentStati())) {
-                    $motionAmendments[] = $amendment;
-                }
-            }
-            $motionAmendments = MotionSorter::getSortedAmendments($this->consultation, $motionAmendments);
-            $amendments = array_merge($amendments, $motionAmendments);
+            $amendments       = array_merge($amendments, $motion->getVisibleAmendmentsSorted());
         }
         if (count($amendments) == 0) {
             $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));

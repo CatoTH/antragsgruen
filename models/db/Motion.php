@@ -291,6 +291,14 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return Amendment[]
+     */
+    public function getVisibleAmendmentsSorted()
+    {
+        return MotionSorter::getSortedAmendments($this->consultation, $this->getVisibleAmendments());
+    }
+
+    /**
      * @param bool $screeningAdmin
      * @return MotionComment[]
      */

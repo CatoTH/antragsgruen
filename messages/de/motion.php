@@ -8,6 +8,7 @@ return [
     'Prerequisites for a motion'        => 'Voraussetzungen für einen Antrag',
     'amendment_create'                  => 'Änderungsantrag stellen',
     'amendments_merge'                  => 'Änderungsanträge einpflegen',
+    'none_yet'                          => 'Es gibt noch keine Anträge',
     'motion_edit'                       => 'Antrag bearbeiten',
     'motion_withdraw'                   => 'Antrag zurückziehen',
     'motion_admin_edit'                 => 'Admin: bearbeiten',
