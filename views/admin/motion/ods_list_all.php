@@ -100,8 +100,7 @@ foreach ($items as $item) {
         if ($phone)
             $doc->setCell($row, $COL_PHONE    , Spreadsheet::TYPE_LINK, ['href' => 'tel:' . StringSplitter::first (["//",","],$phone), 'text' => $phone]);
         $viewUrl = $item instanceof Motion ? UrlHelper::createMotionUrl($item) : UrlHelper::createAmendmentUrl($item);
-        // Hier müsste noch die richtige absolute URL gebildet werden:
-        $viewUrl = 'http://bdk.antragsgruen.de' . substr ($viewUrl,4);
+        $viewUrl = UrlHelper::absolutizeLink($viewUrl);
         $doc->setCell($row, $COL_LINK, Spreadsheet::TYPE_LINK, ['href' => Html::encode ($viewUrl),'text' => 'Antrag']);
     }
     else { // null
