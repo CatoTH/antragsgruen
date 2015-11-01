@@ -10,13 +10,13 @@ use yii\helpers\Html;
  * @var string $mode
  */
 
-$this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
+$this->title = \Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
 $params->breadcrumbs[] = $this->title;
-$params->breadcrumbs[] = 'Bestätigen';
+$params->breadcrumbs[] = \Yii::t('amend', 'confirm_bread');
 
 
-echo '<h1>' . Yii::t('amend', 'amendment_submitted') . '</h1>';
+echo '<h1>' . \Yii::t('amend', 'amendment_submitted') . '</h1>';
 
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
@@ -29,5 +29,6 @@ if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
 echo '</div>';
 
 echo Html::beginForm(UrlHelper::createMotionUrl($amendment->motion), 'post', ['id' => 'motionConfirmedForm']);
-echo '<p class="btnRow"><button type="submit" class="btn btn-success">Zurück zum Antrag</button></p>';
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . \Yii::t('amend', 'sidebar_back') .
+    '</button></p>';
 echo Html::endForm();
