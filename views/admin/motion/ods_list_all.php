@@ -75,18 +75,28 @@ foreach ($items as $item) {
     else if ($item instanceof Motion || $item instanceof Amendment) {
         $title = $item->title;
         $prefix = $item->titlePrefix;
+
+        if ($item instanceof Motion) {
+            $subject = 'Antrags ' . $prefix . ': ' . $title;
+            $body = $prefix . ' ("' . $title . '")';
+        }
+        else {
+            $subject = $title;
+            $title = mb_substr($title, mb_strlen($prefix) + 2);
+            $body = 'Änderungsantrags ' . $prefix . ' zum Antrag "' . $item->motion->title . '"';
+        }
         $initiator = $item->getInitiators() [0];
         $email = $initiator->contactEmail;
         $phone = $initiator->contactPhone;
         $name = $initiator->getNameWithOrga();
-        $firstName = StringSplitter::first ([' '],substr($name,0,4) == 'Dr. ' ? substr($name,4) : $name);
+        $firstName = StringSplitter::first ([' '],mb_substr($name,0,4) == 'Dr. ' ? mb_substr($name,4) : $name);
         if ($item instanceof Motion) {
             $doc->setCell($row, $COL_TITLE, Spreadsheet::TYPE_HTML, $item->title);
             $fill ([], ['fo:color' => motionColor]);
         }
         $doc->setCell($row, $COL_PREFIX   , Spreadsheet::TYPE_HTML, $prefix);
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_HTML, $name);
-        $doc->setCell($row, $COL_EMAIL    , Spreadsheet::TYPE_LINK, ['href' => 'mailto:' . $email . '?subject=' . $prefix . ': ' . $title . '&body=Hallo ' . $firstName . ',%0D%0A%0D%0Aich schreibe wegen Deines Antrags ' . $prefix . ' ("' . $title . '"), für den ich in der Antragskommission zuständig bin.','text' => $email]);
+        $doc->setCell($row, $COL_EMAIL    , Spreadsheet::TYPE_LINK, ['href' => 'mailto:' . $email . '?subject=' . $prefix . ': ' . $title . '&body=Hallo ' . $firstName . ',%0D%0A%0D%0Aich schreibe wegen Deines ' . $body . ', für den ich in der Antragskommission zuständig bin.','text' => $email]);
         if ($phone)
             $doc->setCell($row, $COL_PHONE    , Spreadsheet::TYPE_LINK, ['href' => 'tel:' . StringSplitter::first (["//",","],$phone), 'text' => $phone]);
         $viewUrl = $item instanceof Motion ? UrlHelper::createMotionUrl($item) : UrlHelper::createAmendmentUrl($item);
