@@ -19,7 +19,7 @@ class Diff
     const MAX_LINE_CHANGE_RATIO         = 0.4;
 
     // # is necessary for placeholders like ###LINENUMBER###
-    public static $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!'];
+    public static $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':'];
 
     private $formatting = 0;
 
@@ -337,6 +337,12 @@ class Diff
      */
     public function computeWordDiff($wordDel, $wordInsert)
     {
+        if (mb_substr($wordDel, 0, 16) == '###LINENUMBER###') {
+            $linenumber = '###LINENUMBER###';
+            $wordDel = mb_substr($wordDel, 16);
+        } else {
+            $linenumber = '';
+        }
         $preWords = $this->getCommonWordPrefix($wordDel, $wordInsert);
         $restDel  = mb_substr($wordDel, mb_strlen($preWords));
         $restIns  = mb_substr($wordInsert, mb_strlen($preWords));
@@ -361,11 +367,11 @@ class Diff
         $restInsC = mb_substr($restInsC, 0, mb_strlen($restInsC) - mb_strlen($postChars));
 
         if (mb_strlen($restDelC) <= 3 && mb_strlen($restInsC) <= 3) {
-            return $preWords . $preChars . $this->wrapWithDelete($restDelC) . $this->wrapWithInsert($restInsC) .
+            return $linenumber . $preWords . $preChars . $this->wrapWithDelete($restDelC) . $this->wrapWithInsert($restInsC) .
             $postChars . $postWords;
         }
-        return $preWords . $this->wrapWithDelete($preChars . $restDelC . $postChars) .
-            $this->wrapWithInsert($preChars . $restInsC . $postChars) . $postWords;
+        return $linenumber .$preWords . $this->wrapWithDelete($preChars . $restDelC . $postChars) .
+        $this->wrapWithInsert($preChars . $restInsC . $postChars) . $postWords;
     }
 
     /**
