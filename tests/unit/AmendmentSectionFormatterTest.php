@@ -129,7 +129,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
                 'newLine'  => false,
             ],
             [
-                'text'     => 'Spaltung unserer Gesellschaften; <del>eine Politik, die</del><ins>ein Wirtschaftsmodell, das</ins> auch un<del>populäre</del><ins>bequeme</ins> ',
+                'text'     => 'Spaltung unserer Gesellschaften; <del>eine Politik, die</del><ins>ein Wirtschaftsmodell, das</ins> auch <del>unpopuläre</del><ins>unbequeme</ins> ',
                 'lineFrom' => 7,
                 'lineTo'   => 7,
                 'newLine'  => false,
