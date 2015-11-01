@@ -19,7 +19,7 @@ class Diff
     const MAX_LINE_CHANGE_RATIO         = 0.4;
 
     // # is necessary for placeholders like ###LINENUMBER###
-    public static $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!'];
+    public static $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':'];
 
     private $formatting = 0;
 
