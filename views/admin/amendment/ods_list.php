@@ -19,7 +19,7 @@ $DEBUG = false;
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \yii::$app->params;
 
-$tmpZipFile   = $params->tmpDir . uniqid("zip-");
+$tmpZipFile   = $params->tmpDir . uniqid('zip-');
 $templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'OpenOffice-Template.ods';
 copy($templateFile, $tmpZipFile);
 
@@ -45,7 +45,7 @@ $COL_PROCEDURE  = $currCol++;
 
 // Title
 
-$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, 'Änderungsanträge');
+$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amendments'));
 $doc->setCellStyle(1, $firstCol, [], [
     'fo:font-size'   => '16pt',
     'fo:font-weight' => 'bold',
@@ -55,25 +55,25 @@ $doc->setMinRowHeight(1, 1.5);
 
 // Heading
 
-$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, 'ÄA-Nr.');
-$doc->setCellStyle(2, $COL_PREFIX, [], ["fo:font-weight" => "bold"]);
+$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
+$doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 
-$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, 'AntragstellerIn');
+$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
 $doc->setColumnWidth($COL_INITIATOR, 6);
 
-$doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, 'Zeile');
+$doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'line'));
 $doc->setColumnWidth($COL_FIRST_LINE, 3);
 
-$doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, 'Änderung');
+$doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_change'));
 $doc->setColumnWidth($COL_CHANGE, 10);
 
-$doc->setCell(2, $COL_REASON, Spreadsheet::TYPE_TEXT, 'Begründung');
+$doc->setCell(2, $COL_REASON, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_reason'));
 $doc->setColumnWidth($COL_REASON, 10);
 
-$doc->setCell(2, $COL_CONTACT, Spreadsheet::TYPE_TEXT, 'Kontakt');
+$doc->setCell(2, $COL_CONTACT, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'contact'));
 $doc->setColumnWidth($COL_CONTACT, 6);
 
-$doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, 'Verfahren');
+$doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
 $doc->setColumnWidth($COL_PROCEDURE, 6);
 
 $doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
@@ -126,7 +126,7 @@ foreach ($motions as $motion) {
 
         $change = '';
         if ($amendment->changeEditorial != '') {
-            $change .= '<h4>Redaktionelle Änderung</h4><br>';
+            $change .= '<h4>' . \Yii::t('amend', 'editorial_hint') . '</h4><br>';
             $change .= $amendment->changeEditorial;
         }
         foreach ($amendment->getSortedSections(false) as $section) {
@@ -145,7 +145,7 @@ try {
     if (in_array(YII_ENV, ['dev', 'test'])) {
         var_dump($e);
     } else {
-        echo 'Leider ist ein interner Fehler aufgetreten.';
+        echo \Yii::t('base', 'err_unknown');
     }
     die();
 }

@@ -20,8 +20,8 @@ $pdf       = $pdfLayout->createPDFClass();
 // set document information
 $pdf->SetCreator('Antragsgrün');
 $pdf->SetAuthor('Antragsgrün');
-$pdf->SetTitle(Yii::t('pdf', 'all_motions_title'));
-$pdf->SetSubject(Yii::t('pdf', 'all_motions_title'));
+$pdf->SetTitle(Yii::t('export', 'all_motions_title'));
+$pdf->SetSubject(Yii::t('export', 'all_motions_title'));
 
 
 try {

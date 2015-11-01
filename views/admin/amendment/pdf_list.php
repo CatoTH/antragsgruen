@@ -11,12 +11,12 @@ use yii\helpers\Html;
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
-$this->title = 'Administration';
+$this->title = \Yii::t('admin', 'amend_pdf_list');
 $params->addCSS('css/backend.css');
-$params->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$params->addBreadcrumb('Änderungsantrags-PDFs');
+$params->addBreadcrumb(\Yii::t('admin', 'Administration'), UrlHelper::createUrl('admin/index'));
+$params->addBreadcrumb(\Yii::t('admin', 'amend_pdf_list'));
 
-echo '<h1>Änderungsanträge: PDF-Liste</h1>
+echo '<h1>' . \Yii::t('admin', 'amend_pdf_list') . '</h1>
    <div class="content">';
 
 foreach ($motions as $motion) {

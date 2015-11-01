@@ -20,7 +20,7 @@ $DEBUG = false;
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \yii::$app->params;
 
-$tmpZipFile   = $params->tmpDir . uniqid("zip-");
+$tmpZipFile   = $params->tmpDir . uniqid('zip-');
 $templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'OpenOffice-Template.ods';
 copy($templateFile, $tmpZipFile);
 
@@ -58,7 +58,7 @@ $COL_PROCEDURE = $currCol++;
 
 // Title
 
-$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, 'Antragsübersicht');
+$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'all_motions_title'));
 $doc->setCellStyle(1, $firstCol, [], [
     'fo:font-size'   => '16pt',
     'fo:font-weight' => 'bold',
@@ -68,14 +68,14 @@ $doc->setMinRowHeight(1, 1.5);
 
 // Heading
 
-$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, 'Antragsnr.');
-$doc->setCellStyle(2, $COL_PREFIX, [], ["fo:font-weight" => "bold"]);
+$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
+$doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 
-$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, 'AntragstellerIn');
+$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
 $doc->setColumnWidth($COL_INITIATOR, 6);
 
 if ($textCombined) {
-    $doc->setCell(2, $COL_TEXTS[0], Spreadsheet::TYPE_TEXT, 'Text');
+    $doc->setCell(2, $COL_TEXTS[0], Spreadsheet::TYPE_TEXT, \Yii::t('export', 'text'));
     $doc->setColumnWidth($COL_TEXTS[0], 10);
 } else {
     foreach ($motionType->motionSections as $section) {
@@ -84,12 +84,12 @@ if ($textCombined) {
     }
 }
 if (isset($COL_TAGS)) {
-    $doc->setCell(2, $COL_TAGS, Spreadsheet::TYPE_TEXT, 'Themen');
+    $doc->setCell(2, $COL_TAGS, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'tags'));
     $doc->setColumnWidth($COL_TAGS, 6);
 }
-$doc->setCell(2, $COL_CONTACT, Spreadsheet::TYPE_TEXT, 'Kontakt');
+$doc->setCell(2, $COL_CONTACT, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'contact'));
 $doc->setColumnWidth($COL_CONTACT, 6);
-$doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, 'Verfahren');
+$doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
 $doc->setColumnWidth($COL_PROCEDURE, 6);
 
 $doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
@@ -102,7 +102,7 @@ $row = 2;
 foreach ($motions as $motion) {
     $row++;
 
-    $initiatorNames   = [];
+    $initiatorNames    = [];
     $initiatorContacts = [];
     foreach ($motion->getInitiators() as $supp) {
         $initiatorNames[] = $supp->getNameWithResolutionDate(false);

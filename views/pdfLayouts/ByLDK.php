@@ -72,7 +72,7 @@ class ByLDK extends IPDFLayout
         $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
         $pdf->SetY(90);
-        $intro = \Yii::t('pdf', 'introduction');
+        $intro = \Yii::t('export', 'introduction');
         if ($intro) {
             $pdf->SetX(24);
             $pdf->SetFont('helvetica', 'B', 12);
@@ -85,7 +85,7 @@ class ByLDK extends IPDFLayout
 
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
-        $pdf->MultiCell(50, 0, \Yii::t('pdf', 'Initiators') . ':', 0, 'L', false, 0);
+        $pdf->MultiCell(50, 0, \Yii::t('export', 'Initiators') . ':', 0, 'L', false, 0);
         $pdf->SetFont('helvetica', '', 12);
         $pdf->MultiCell(120, 0, $motion->getInitiatorsStr(), 0, 'L');
 
@@ -96,7 +96,7 @@ class ByLDK extends IPDFLayout
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
 
-        $pdf->MultiCell(50, 0, 'Gegenstand:', 0, 'L', false, 0);
+        $pdf->MultiCell(50, 0, \Yii::t('export', 'title') . ':', 0, 'L', false, 0);
         $pdf->SetFont('helvetica', 'B', 12);
         $borderStyle = ['width' => 0.3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => [150, 150, 150]];
         $pdf->MultiCell(
@@ -104,7 +104,7 @@ class ByLDK extends IPDFLayout
             0,
             $motion->title,
             ['B' => $borderStyle],
-            "L"
+            'L'
         );
 
         $pdf->Ln(9);
@@ -126,7 +126,7 @@ class ByLDK extends IPDFLayout
         if (!$settings->hideTitlePrefix) {
             $revName = $amendment->titlePrefix;
             if ($revName == '') {
-                $revName = 'Entwurf';
+                $revName = \Yii::t('export', 'draft');
                 $pdf->SetFont('helvetica', 'I', '25');
                 $width = $pdf->GetStringWidth($revName, 'helvetica', 'I', '25') + 3.1;
             } else {
@@ -173,7 +173,7 @@ class ByLDK extends IPDFLayout
         $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
         $pdf->SetY(90);
-        $intro = \Yii::t('pdf', 'introduction');
+        $intro = \Yii::t('export', 'introduction');
         if ($intro) {
             $pdf->SetX(24);
             $pdf->SetFont('helvetica', 'B', 12);
@@ -186,7 +186,7 @@ class ByLDK extends IPDFLayout
 
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
-        $pdf->MultiCell(50, 0, \Yii::t('pdf', 'Initiators') . ':', 0, 'L', false, 0);
+        $pdf->MultiCell(50, 0, \Yii::t('export', 'Initiators') . ':', 0, 'L', false, 0);
         $pdf->SetFont('helvetica', '', 12);
         $pdf->MultiCell(120, 0, $amendment->getInitiatorsStr(), 0, 'L');
 
@@ -197,7 +197,7 @@ class ByLDK extends IPDFLayout
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->MultiCell(12, 0, '', 0, 'L', false, 0);
 
-        $pdf->MultiCell(50, 0, 'Gegenstand:', 0, 'L', false, 0);
+        $pdf->MultiCell(50, 0, \Yii::t('export', 'title') . ':', 0, 'L', false, 0);
         $pdf->SetFont('helvetica', 'B', 12);
         $borderStyle = ['width' => 0.3, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => [150, 150, 150]];
         $pdf->MultiCell(

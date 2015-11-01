@@ -58,7 +58,7 @@ class BDKPDF extends \TCPDF
         $this->Cell(
             185,
             10,
-            Yii::t('pdf', 'Page') . ' ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(),
+            Yii::t('export', 'Page') . ' ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(),
             0,
             false,
             'R',
