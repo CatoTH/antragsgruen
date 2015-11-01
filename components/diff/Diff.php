@@ -18,6 +18,9 @@ class Diff
     const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
     const MAX_LINE_CHANGE_RATIO         = 0.4;
 
+    // # is necessary for placeholders like ###LINENUMBER###
+    public static $WORD_BREAKING_CHARACTSER = [' ', ',', '.', '#'];
+
     private $formatting = 0;
 
     private $debug = false;
@@ -266,11 +269,48 @@ class Diff
     }
 
     /**
+     * @param string $word1
+     * @param string $word2
+     * @return string
+     */
+    private function getCommonWordPrefix($word1, $word2)
+    {
+        $prefix = $this->getCommonPrefix($word1, $word2);
+        echo "Prefix: $prefix\n";
+        $len = mb_strlen($prefix);
+        for ($i = 0; $i <= $len; $i++) {
+            $char1 = mb_substr($prefix, $len - $i, 1);
+            if (in_array($char1, static::$WORD_BREAKING_CHARACTSER)) {
+                return mb_substr($prefix, $len - $i);
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @param string $word1
+     * @param string $word2
+     * @return string
+     */
+    private function getCommonWordSuffix($word1, $word2)
+    {
+        $suffix = $this->getCommonSuffix($word1, $word2);
+        $len    = mb_strlen($suffix);
+        for ($i = 0; $i < $len; $i++) {
+            $char1 = mb_substr($suffix, $i, 1);
+            if (in_array($char1, static::$WORD_BREAKING_CHARACTSER)) {
+                return mb_substr($suffix, $i);
+            }
+        }
+        return '';
+    }
+
+    /**
      * @param string $wordDel
      * @param string $wordInsert
      * @return string
      */
-    private function computeWordDiff($wordDel, $wordInsert)
+    public function computeWordDiff($wordDel, $wordInsert)
     {
         $pre     = $this->getCommonPrefix($wordDel, $wordInsert);
         $restDel = mb_substr($wordDel, mb_strlen($pre));
@@ -280,7 +320,25 @@ class Diff
         $restDel = mb_substr($restDel, 0, mb_strlen($restDel) - mb_strlen($post));
         $restIns = mb_substr($restIns, 0, mb_strlen($restIns) - mb_strlen($post));
 
-        return $pre . $this->wrapWithDelete($restDel) . $this->wrapWithInsert($restIns) . $post;
+        if (mb_strlen($restDel) <= 3 && mb_strlen($restIns) <= 3) {
+            // Only use character-level diff if only few characters were inserted/deleted, e.g. for typos
+            return $pre . $this->wrapWithDelete($restDel) . $this->wrapWithInsert($restIns) . $post;
+        } elseif ($restDel == '' || $restIns == '') {
+            // Only inserts or deletes
+            return $pre . $this->wrapWithDelete($restDel) . $this->wrapWithInsert($restIns) . $post;
+        } else {
+            if (!in_array($restDel[0], static::$WORD_BREAKING_CHARACTSER) && in_array($restIns[0], static::$WORD_BREAKING_CHARACTSER)) {
+                $pre = $this->getCommonWordPrefix($wordDel, $wordInsert);
+            }
+            $restDel = mb_substr($wordDel, mb_strlen($pre));
+            $restIns = mb_substr($wordInsert, mb_strlen($pre));
+
+            $post = $this->getCommonWordSuffix($restDel, $restIns);
+            $restDel = mb_substr($restDel, 0, mb_strlen($restDel) - mb_strlen($post));
+            $restIns = mb_substr($restIns, 0, mb_strlen($restIns) - mb_strlen($post));
+
+            return $pre . $this->wrapWithDelete($restDel) . $this->wrapWithInsert($restIns) . $post;
+        }
     }
 
     /**

@@ -11,15 +11,37 @@ class DiffTest extends TestBase
 {
     use Specify;
 
+    public function testWordDiff()
+    {
+        $diff = new Diff();
+
+        $orig = 'Zeichen das sie überwunden';
+        $new = 'Zeichen, dass sie überwunden';
+        $this->assertEquals('Zeichen<del> das</del><ins>, dass</ins> sie überwunden', $diff->computeWordDiff($orig, $new));
+
+        $orig = 'Hass';
+        $new  = 'Hass, dem Schüren von Ressentiments';
+        $this->assertEquals('Hass<ins>, dem Schüren von Ressentiments</ins>', $diff->computeWordDiff($orig, $new));
+
+        $orig = 'Bürger*innen ';
+        $new  = 'Menschen ';
+        $this->assertEquals('<del>Bürger*innen</del><ins>Menschen</ins> ', $diff->computeWordDiff($orig, $new));
+
+        $orig = 'dekonstruieren.';
+        $new = 'dekonstruieren. Andererseits sind gerade junge Menschen';
+        $this->assertEquals('dekonstruieren.<ins> Andererseits sind gerade junge Menschen</ins>', $diff->computeWordDiff($orig, $new));
+
+        $orig = 'dekonstruieren. Andererseits sind gerade junge Menschen';
+        $new = 'dekonstruieren.';
+        $this->assertEquals('dekonstruieren.<del> Andererseits sind gerade junge Menschen</del>', $diff->computeWordDiff($orig, $new));
+    }
 
     /**
      */
     public function testLinenumberForcelinebreak()
     {
-        $orig = '<p>###LINENUMBER###<strong>Kreislaufwirtschaft: Ressourcen immer wieder nutzen </strong></p>
-<p>###LINENUMBER###Wir wollen eine Wirtschaftsweise, in der alle Rohstoffe immer wieder neu verarbeitet und ###LINENUMBER###nicht auf einer Deponie landen oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts in Entwicklungs- und Schwellenländer ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäden. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von ###LINENUMBER###Produkten und Verpackungen eine Produktverantwortung zukommt, indem ambitionierte, aber ###LINENUMBER###machbare Recyclingziele eingeführt werden. Dadurch werden Rohstoffpreise befördert, die die ###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des ###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig. Wir setzen uns ###LINENUMBER###dafür ein, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen ###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
-        $new  = '<p><strong>Kreislaufwirtschaft und Zero Waste: Mit Effizienz und Recycling Ressourcenschonen</strong></p>
-<p>Der beste Abfall ist der, der nicht entsteht. Wir wollen eine Wirtschaftsweise, in der Material- und Rohstoffeffizienz an erster Stelle stehen und in der alle Rohstoffe immer wieder neu verarbeitet werden und nicht auf einer Deponie landen, in Entwicklungs- und Schwellenländer exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von###FORCELINEBREAK###Produkten und Verpackungen eine ökologische Produktverantwortung zukommt, indem ambitionierte, abermachbare Recyclingziele sowie Ziele zur Material- und Rohstoffeffizienz eingeführt werden. Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für die Verwendung von Recyclingmaterialien zu schaffen.</p>
+        $orig = '<p>###LINENUMBER###Wir wollen eine Wirtschaftsweise, in der alle Rohstoffe immer wieder neu verarbeitet und ###LINENUMBER###nicht auf einer Deponie landen oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts in Entwicklungs- und Schwellenländer ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäden. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von ###LINENUMBER###Produkten und Verpackungen eine Produktverantwortung zukommt, indem ambitionierte, aber ###LINENUMBER###machbare Recyclingziele eingeführt werden. Dadurch werden Rohstoffpreise befördert, die die ###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des ###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig. Wir setzen uns ###LINENUMBER###dafür ein, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen ###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
+        $new  = '<p>Der beste Abfall ist der, der nicht entsteht. Wir wollen eine Wirtschaftsweise, in der Material- und Rohstoffeffizienz an erster Stelle stehen und in der alle Rohstoffe immer wieder neu verarbeitet werden und nicht auf einer Deponie landen, in Entwicklungs- und Schwellenländer exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von###FORCELINEBREAK###Produkten und Verpackungen eine ökologische Produktverantwortung zukommt, indem ambitionierte, abermachbare Recyclingziele sowie Ziele zur Material- und Rohstoffeffizienz eingeführt werden. Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für die Verwendung von Recyclingmaterialien zu schaffen.</p>
 <p>Wir setzen uns dafür ein, dass die Rohstoffpreise die###FORCELINEBREAK###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des###FORCELINEBREAK###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird Ökologie zum Wettbewerbsvorteil: Wer weniger Rohstoffe verbraucht oder Recyclingmaterial anstattPrimärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann, setzen wir uns außerdem dafür ein , dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen###FORCELINEBREAK###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
 
         $diff = new Diff();
@@ -27,8 +49,7 @@ class DiffTest extends TestBase
         $diff->setFormatting(Diff::FORMATTING_CLASSES);
         $out = $diff->computeDiff($orig, $new);
 
-        $expect = '<p>###LINENUMBER###<strong>Kreislaufwirtschaft<del>: Ressourcen immer wieder nutzen </del><ins> und Zero Waste: Mit Effizienz und Recycling Ressourcenschonen</ins></strong></p>
-<p><ins>Der beste Abfall ist der, der nicht entsteht. </ins>###LINENUMBER###Wir wollen eine Wirtschaftsweise, <ins>in der Material- und Rohstoffeffizienz an erster Stelle stehen und </ins>in der alle Rohstoffe immer wieder neu verarbeitet <ins>werden </ins>und ###LINENUMBER###nicht auf einer Deponie landen<del> oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts</del><ins>,</ins> in Entwicklungs- und Schwellenländer <del>ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäd</del><ins>exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heb</ins>en. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<ins>###FORCELINEBREAK###</ins>###LINENUMBER###Produkten und Verpackungen eine <ins>ökologische </ins>Produktverantwortung zukommt, indem ambitionierte, aber<del> ###LINENUMBER###</del>machbare Recyclingziele <ins>sowie Ziele zur Material- und Rohstoffeffizienz </ins>eingeführt werden. <del>Dadurch werden Rohstoffpreise befördert,</del><ins>Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für</ins> die <ins>Verwendung von Recyclingmaterialien zu schaffen.</p>
+        $expect = '<p><ins>Der beste Abfall ist der, der nicht entsteht. </ins>###LINENUMBER###Wir wollen eine Wirtschaftsweise, <ins>in der Material- und Rohstoffeffizienz an erster Stelle stehen und </ins>in der alle Rohstoffe immer wieder neu verarbeitet <ins>werden </ins>und ###LINENUMBER###nicht auf einer Deponie landen<del> oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts</del><ins>,</ins> in Entwicklungs- und Schwellenländer <del>ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäden</del><ins>exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben</ins>. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<ins>###FORCELINEBREAK###</ins>###LINENUMBER###Produkten und Verpackungen eine <ins>ökologische </ins>Produktverantwortung zukommt, indem ambitionierte, aber<del> ###LINENUMBER###</del>machbare Recyclingziele <ins>sowie Ziele zur Material- und Rohstoffeffizienz </ins>eingeführt werden. <del>Dadurch werden Rohstoffpreise befördert,</del><ins>Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für</ins> die <ins>Verwendung von Recyclingmaterialien zu schaffen.</p>
 <p>Wir setzen uns dafür ein, dass </ins>die <del>###LINENUMBER###</del><ins>Rohstoffpreise die###FORCELINEBREAK###</ins>sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<ins>###FORCELINEBREAK###</ins>###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird <del>der ###LINENUMBER###Einsatz von</del><ins>Ökologie zum Wettbewerbsvorteil: Wer weniger Rohstoffe verbraucht oder</ins> Recyclingmaterial <del>gegenüber Primärmaterial wettbewerbsfähig. Wir</del><ins>anstattPrimärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann,</ins> setzen <ins>wir </ins>uns <ins>außerdem </ins>###LINENUMBER###dafür ein<ins> </ins>, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<ins>###FORCELINEBREAK###</ins>###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
         $this->assertEquals($expect, $out);
     }
@@ -178,12 +199,6 @@ class DiffTest extends TestBase
         $str1 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>' . "\n" . '<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
         $str2 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
 
-        /*
-        $expect = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa <del>Oachkatzlschwoaf hod Wiesn.</del></p>' . "<del>\n</del>" .
-            '<p>Oa<del>moi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds</del><ins>chsdfsdfsdf</ins> helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
-
-        */
-
         $expect = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. <del>Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</del></p>' . "\n" .
             '<p><del>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds</del>' . "\n" .
             '<ins>Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf</ins> helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
@@ -227,7 +242,7 @@ class DiffTest extends TestBase
 
         $str1   = 'uns dann als Zeichen das sie uns überwunden hatten';
         $str2   = 'uns dann als Zeichen, dass sie uns überwunden hatten';
-        $expect = 'uns dann als Zeichen<del> da</del><ins>, das</ins>s sie uns überwunden hatten';
+        $expect = 'uns dann als Zeichen<del> das</del><ins>, dass</ins> sie uns überwunden hatten';
 
         $diff = new Diff();
         $out  = $diff->computeDiff($str1, $str2);

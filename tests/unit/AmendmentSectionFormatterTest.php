@@ -108,11 +108,11 @@ class AmendmentSectionFormatterTest extends TestBase
     {
         // 'Line breaks within paragraphs'
         $orig = '<p>Um die ökonomischen, sozialen und ökologischen Probleme in Angriff zu nehmen, müssen wir umsteuern. Dazu brauchen wir einen Green New Deal für Europa, der eine umfassende Antwort auf die Krisen der Gegenwart gibt. Er enthält mehrere Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische Innovationen setzt statt auf maßlose Deregulierung; eine Politik der sozialen Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen Spaltung unserer Gesellschaften; eine Politik, die auch unpopuläre Strukturreformen angeht, wenn diese zu nachhaltigem Wachstum und mehr Gerechtigkeit beitragen; ein Politik die Probleme wie Korruption und mangelnde Rechtsstaatlichkeit angehen und eine Politik, die die Glaubwürdigkeit in Europa, dass Schulden auch bedient werden, untermauert.</p>
-<p>[b]Die Kaputtsparpolitik ist gescheitert[/b]<br>
+<p>Die Kaputtsparpolitik ist gescheitert<br>
 Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichtiges Ziel erreicht: Der Euro, als entscheidendes Element der europäischen Integration und des europäischen Zusammenhalts, konnte bislang gerettet werden. Dafür hat Europa neue Instrumente und Mechanismen geschaffen, wie den Euro-Rettungsschirm mit dem Europäischen Stabilitätsmechanismus (ESM) oder die Bankenunion. Aber diese Instrumente allein werden die tiefgreifenden Probleme nicht lösen - weder politisch noch wirtschaftlich.</p>';
 
         $new = '<p>Um die ökonomischen, sozialen und ökologischen Probleme in Angriff zu nehmen, müssen wir umsteuern. Dazu brauchen wir einen Green New Deal für Europa, der eine umfassende Antwort auf die Krisen der Gegenwart gibt. Er enthält mehrere Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische Innovationen setzt statt auf Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen Spaltung unserer Gesellschaften; ein Wirtschaftsmodell, das auch unbequeme Strukturreformen mit einbezieht, wenn diese zu nachhaltigem Wachstum und mehr Gerechtigkeit beitragen; ein Politik die Probleme wie Korruption und mangelnde Rechtsstaatlichkeit angehen und eine Politik, die die Glaubwürdigkeit in Europa, dass Schulden auch bedient werden, untermauert.</p>
-<p>[b]Die Kaputtsparpolitik ist gescheitert[/b]<br>
+<p>Die Kaputtsparpolitik ist gescheitert<br>
 Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichtiges Ziel erreicht: Der Euro, als entscheidendes Element der europäischen Integration und des europäischen Zusammenhalts, konnte bislang gerettet werden. Dafür hat Europa neue Instrumente und Mechanismen geschaffen, wie den Euro-Rettungsschirm mit dem Europäischen Stabilitätsmechanismus (ESM) oder die Bankenunion. Aber diese Instrumente allein werden die tiefgreifenden Probleme nicht lösen - weder politisch noch wirtschaftlich.</p>';
 
         $expect = [
@@ -129,13 +129,13 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
                 'newLine'  => false,
             ],
             [
-                'text'     => 'Spaltung unserer Gesellschaften; ein<del>e Politik, die</del><ins> Wirtschaftsmodell, das</ins> auch un<del>populär</del><ins>bequem</ins>e ',
+                'text'     => 'Spaltung unserer Gesellschaften; <del>eine Politik, die</del><ins>ein Wirtschaftsmodell, das</ins> auch un<del>populäre</del><ins>bequeme</ins> ',
                 'lineFrom' => 7,
                 'lineTo'   => 7,
                 'newLine'  => false,
             ],
             [
-                'text'     => 'Strukturreformen <del>ang</del><ins>mit einbezi</ins>eht, wenn diese zu nachhaltigem Wachstum und mehr ',
+                'text'     => 'Strukturreformen <del>angeht</del><ins>mit einbezieht</ins>, wenn diese zu nachhaltigem Wachstum und mehr ',
                 'lineFrom' => 8,
                 'lineTo'   => 8,
                 'newLine'  => false,
@@ -348,7 +348,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 
         $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
         $text    = TextSimple::formatDiffGroup($grouped);
-        $expect  = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextrem</del><ins>populistisch</ins>e Propaganda <del>missbraucht</del><ins>missbrauchen</ins>.</p></div>';
+        $expect  = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextreme</del><ins>populistische</ins> Propaganda <del>missbraucht</del><ins>missbrauchen</ins>.</p></div>';
         $this->assertEquals($expect, $text);
     }
 }
