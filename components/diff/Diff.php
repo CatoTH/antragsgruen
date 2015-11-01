@@ -337,7 +337,7 @@ class Diff
      */
     public function computeWordDiff($wordDel, $wordInsert)
     {
-        if (mb_substr($wordDel, 0, 16) == '###LINENUMBER###') {
+        if (mb_substr($wordDel, 0, 16) == '###LINENUMBER###' && mb_substr($wordInsert, 0, 16)  != '###LINENUMBER###') {
             $linenumber = '###LINENUMBER###';
             $wordDel = mb_substr($wordDel, 16);
         } else {
