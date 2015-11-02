@@ -378,6 +378,18 @@ class AmendmentDiffMerger
         return $grouped;
     }
 
+    /**
+     * @return boolean
+     */
+    public function hasCollodingParagraphs()
+    {
+        foreach ($this->paraData as $paragraph) {
+            if (count($paragraph['collidingParagraphs']) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * @param int $paraNo

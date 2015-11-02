@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\diff\AmendmentDiffMerger;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\sectionTypes\ISectionType;
@@ -245,5 +246,23 @@ class MotionSection extends IMotionSection
             }
         }
         throw new Internal('Did not find myself');
+    }
+
+    /** @var null|AmendmentDiffMerger */
+    private $amendmentDiffMerger = null;
+
+    /**
+     * @return AmendmentDiffMerger
+     */
+    public function getAmendmentDiffMerger()
+    {
+        if (is_null($this->amendmentDiffMerger)) {
+            $merger = new AmendmentDiffMerger();
+            $merger->initByMotionSection($this);
+            $merger->addAmendingSections($this->amendingSections);
+            $merger->mergeParagraphs();
+            $this->amendmentDiffMerger = $merger;
+        }
+        return $this->amendmentDiffMerger;
     }
 }

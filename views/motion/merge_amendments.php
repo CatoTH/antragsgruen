@@ -28,6 +28,13 @@ $layout->addOnLoadJS('$.Antragsgruen.motionMergeAmendmentsForm();');
 $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
+/** @var MotionSection[] $newSections */
+$newSections = [];
+foreach ($form->newMotion->getSortedSections(false) as $section) {
+    $newSections[$section->sectionId] = $section;
+}
+
+
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
 echo '<div class="motionData">';
@@ -35,6 +42,32 @@ echo '<div class="motionData">';
 if (!$motion->consultation->getSettings()->minimalisticUI) {
     include(__DIR__ . DIRECTORY_SEPARATOR . 'view_motiondata.php');
 }
+
+$hasCollidingParagraphs = false;
+foreach ($motion->getSortedSections(false) as $section) {
+    /** @var MotionSection $section */
+    $type = $section->consultationSetting;
+    if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+        if (!isset($newSections[$section->sectionId])) {
+            $diffMerger = $section->getAmendmentDiffMerger();
+            if ($diffMerger->hasCollodingParagraphs()) {
+                $hasCollidingParagraphs = true;
+            }
+        }
+    }
+}
+
+$explanation = \Yii::t('amend', 'merge_explanation');
+if ($hasCollidingParagraphs) {
+    $explanation = str_replace('###COLLIDINGHINT###', \Yii::t('amend', 'merge_explanation_colliding'), $explanation);
+} else {
+    $explanation = str_replace('###COLLIDINGHINT###', '', $explanation);
+}
+$explanation = str_replace('###NEWPREFIX###', $motion->getNewTitlePrefix(), $explanation);
+echo '<div class="alert alert-info alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' .
+    $explanation . '</div>';
+
 
 echo $controller->showErrors();
 
@@ -54,12 +87,6 @@ echo '<section class="newMotion">
 <div class="content">';
 
 $changesets = [];
-
-/** @var MotionSection[] $newSections */
-$newSections = [];
-foreach ($form->newMotion->getSortedSections(false) as $section) {
-    $newSections[$section->sectionId] = $section;
-}
 
 foreach ($motion->getSortedSections(false) as $section) {
     $type = $section->consultationSetting;

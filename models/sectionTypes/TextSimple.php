@@ -581,11 +581,8 @@ class TextSimple extends ISectionType
     public function getMotionTextWithInlineAmendments(&$changeset)
     {
         /** @var MotionSection $section */
-        $section = $this->section;
-        $merger  = new AmendmentDiffMerger();
-        $merger->initByMotionSection($section);
-        $merger->addAmendingSections($section->amendingSections);
-        $merger->mergeParagraphs();
+        $section    = $this->section;
+        $merger     = $section->getAmendmentDiffMerger();
         $paragraphs = $section->getTextParagraphObjects(false, false, false);
 
         /** @var Amendment[] $amendmentsById */
@@ -627,19 +624,21 @@ class TextSimple extends ISectionType
                     if ($group[1] == Engine::UNMODIFIED) {
                         $text .= $group[0];
                     } elseif ($group[1] == Engine::INSERTED) {
-                        $cid                         = static::$CHANGESET_COUNTER++;
-                        $changeset[$amendment->id][] = $cid;
-                        $changeData                  = $amendment->getLiteChangeData($cid);
-                        $insText                     = '<ins>' . $group[0] . '</ins>';
-                        $insText                     = AmendmentDiffMerger::cleanupParagraphData($insText);
-                        $text .= str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">', $insText);
+                        $cid                       = static::$CHANGESET_COUNTER++;
+                        $changeset[$amendmentId][] = $cid;
+                        $changeData                = $amendment->getLiteChangeData($cid);
+                        $insText                   = '<ins>' . $group[0] . '</ins>';
+                        $insText                   = AmendmentDiffMerger::cleanupParagraphData($insText);
+                        $insHtml                   = '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">';
+                        $text .= str_replace('<ins>', $insHtml, $insText);
                     } elseif ($group[1] == Engine::DELETED) {
-                        $cid                         = static::$CHANGESET_COUNTER++;
-                        $changeset[$amendment->id][] = $cid;
-                        $changeData                  = $amendment->getLiteChangeData($cid);
-                        $delText                     = '<del>' . $group[0] . '</del>';
-                        $delText                     = AmendmentDiffMerger::cleanupParagraphData($delText);
-                        $text .= str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '">', $delText);
+                        $cid                       = static::$CHANGESET_COUNTER++;
+                        $changeset[$amendmentId][] = $cid;
+                        $changeData                = $amendment->getLiteChangeData($cid);
+                        $delText                   = '<del>' . $group[0] . '</del>';
+                        $delText                   = AmendmentDiffMerger::cleanupParagraphData($delText);
+                        $delHtml                   = '<del class="ice-del ice-cts appendHint"' . $changeData . '">';
+                        $text .= str_replace('<del>', $delHtml, $delText);
                     }
                 }
                 $out .= $text;

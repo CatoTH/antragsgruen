@@ -54,6 +54,11 @@ return [
     'merge_reject_all'                  => 'Alle Änderungen ablehnen',
     'merge_track_deactivate'            => 'Änderungsmodus deaktivieren',
     'merge_track_deactivated'           => 'Änderungsmodus deaktiviert',
+    'merge_explanation'                 => 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. ' .
+        'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - klicke dazu einfach mit der rechten Maustaaste auf die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>' .
+        'Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>' .
+        'Anschließend kannst du den neuen Status der Änderungsanträge auswählen und dann auf "Weiter" klicken. Dadurch wird ein <strong>neuer Antrag "###NEWPREFIX###"</strong> erzeugt. Der ursprüngliche Antrag sowie die Änderungsanträge bleiben zur Referenz erhalten, werden aber als "veraltet" markiert.',
+    'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> Da es zu diesem Antrag mehrere Änderungsanträge gibt, die sich auf die selbe Textstelle beziehen - <strong>kollidierende Änderungsanträge</strong> - ist es notwendig, diese Änderungsanträge händisch einzupflegen. Lösche bitte anschließend den kollidierenden Änderungsantrag, indem du ihn zunächst mit der Entfernen/Del-Taste löschst, und diese Änderung dann mit der rechten Maustaste annimmst.',
     'unsaved_drafts'                    => 'Es gibt noch ungespeicherte Entwürfe, die wiederhergestellt werden können:',
     'confirm_amendment'                 => 'Änderungsantrag bestätigen',
     'amendment_submitted'               => 'Änderungsantrag eingereicht',
