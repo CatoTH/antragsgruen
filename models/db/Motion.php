@@ -372,7 +372,11 @@ class Motion extends IMotion implements IRSSItem
             if ($this->motionType->motionDeadlineIsOver()) {
                 return false;
             } else {
-                return true;
+                if (count($this->getVisibleAmendments()) > 0) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
         }
 

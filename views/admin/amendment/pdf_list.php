@@ -13,7 +13,7 @@ $params     = $controller->layoutParams;
 
 $this->title = \Yii::t('admin', 'amend_pdf_list');
 $params->addCSS('css/backend.css');
-$params->addBreadcrumb(\Yii::t('admin', 'Administration'), UrlHelper::createUrl('admin/index'));
+$params->addBreadcrumb(\Yii::t('admin', 'bread_admin'), UrlHelper::createUrl('admin/index'));
 $params->addBreadcrumb(\Yii::t('admin', 'amend_pdf_list'));
 
 echo '<h1>' . \Yii::t('admin', 'amend_pdf_list') . '</h1>

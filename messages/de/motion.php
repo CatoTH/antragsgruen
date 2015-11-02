@@ -78,6 +78,16 @@ return [
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
     'published_email_title'             => 'Antrag veröffentlicht',
+    'back_to_motion'                    => 'Zurück zum Antrag',
+    'edit_done'                         => 'Antrag bearbeitet',
+    'edit_done_msg'                     => 'Die Änderungen wurden übernommen.',
+    'edit_bread'                        => 'Bearbeiten',
+    'edit_mail_title'                   => 'Antrag überarbeitet',
+    'edit_mail_body'                    => 'Der Antrag \"%TITLE%\" wurde überarbeitet.\nLink: %LINK%',
     'err_create_permission'             => 'Keine Berechtigung zum Anlegen von Anträgen.',
     'err_create'                        => 'Ein Fehler beim Anlegen ist aufgetreten',
+    'err_edit_permission'               => 'Keine Berechtigung zum Bearbeiten dieses Antrags.',
+    'err_withdraw_permission'           => 'Not allowed to withdraw this motion.',
+    'err_not_found'                     => 'Antrag nicht gefunden.',
+    'withdraw_done'                     => 'Der Antrag wurde zurückgezogen.',
 ];

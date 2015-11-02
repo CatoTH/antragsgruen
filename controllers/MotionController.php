@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\components\mail\Tools;
-use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
@@ -291,12 +290,12 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canEdit()) {
-            \Yii::$app->session->setFlash('error', 'Not allowed to edit this motion.');
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
@@ -311,16 +310,19 @@ class MotionController extends Base
 
                 ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
 
-                $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
-                $this->redirect(UrlHelper::createUrl($nextUrl));
-                return '';
+                if ($motion->status == Motion::STATUS_DRAFT) {
+                    $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
+                    return $this->redirect(UrlHelper::createUrl($nextUrl));
+                } else {
+                    return $this->render('edit_done', ['motion' => $motion]);
+                }
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
 
         return $this->render(
-            'editform',
+            'edit_form',
             [
                 'mode'         => $fromMode,
                 'form'         => $form,
@@ -435,7 +437,7 @@ class MotionController extends Base
         }
 
         return $this->render(
-            'editform',
+            'edit_form',
             [
                 'mode'         => 'create',
                 'form'         => $form,
@@ -453,13 +455,13 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
             return '';
         }
 
         if (!$motion->canWithdraw()) {
-            \Yii::$app->session->setFlash('error', 'Not allowed to withdraw this motion.');
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_withdraw_permission'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
             return '';
         }
@@ -471,7 +473,7 @@ class MotionController extends Base
 
         if (isset($_POST['withdraw'])) {
             $motion->withdraw();
-            \Yii::$app->session->setFlash('success', 'Der Antrag wurde zurückgezogen.');
+            \Yii::$app->session->setFlash('success', \Yii::t('motion', 'withdraw_done'));
             $this->redirect(UrlHelper::createMotionUrl($motion));
             return '';
         }
@@ -488,7 +490,7 @@ class MotionController extends Base
     {
         $newMotion = $this->consultation->getMotion($motionId);
         if (!$newMotion || $newMotion->status != Motion::STATUS_DRAFT || !$newMotion->replacedMotion) {
-            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
         $oldMotion  = $newMotion->replacedMotion;
@@ -533,9 +535,9 @@ class MotionController extends Base
 
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($newMotion));
 
-            $mailText = "Der Antrag \"%title%\" wurde überarbeitet.\nLink: %link%";
+            $mailText = \Yii::t('motion', 'edit_mail_body');
             $mailText = str_replace(['%title%', '%link%'], [$newMotion->title, $motionLink], $mailText);
-            $newMotion->consultation->sendEmailToAdmins('Antrag überarbeitet', $mailText);
+            $newMotion->consultation->sendEmailToAdmins(\Yii::t('motion', 'edit_mail_title'), $mailText);
 
             return $this->render('merge_amendments_done', ['newMotion' => $newMotion]);
         }
@@ -558,19 +560,19 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', 'Motion not found.');
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canMergeAmendments()) {
-            \Yii::$app->session->setFlash('error', 'Not allowed to edit this motion.');
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($newMotionId > 0) {
             $newMotion = $this->consultation->getMotion($newMotionId);
             if (!$newMotion || $newMotion->parentMotionId != $motion->id) {
-                \Yii::$app->session->setFlash('error', 'Motion not found.');
+                \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
                 $this->redirect(UrlHelper::createMotionUrl($motion));
             }
         } else {

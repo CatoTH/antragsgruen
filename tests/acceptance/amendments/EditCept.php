@@ -25,4 +25,3 @@ $I->submitForm('#amendmentEditForm', [], 'save');
 $I->see('Die Änderungen wurden übernommen');
 $I->click('#motionConfirmedForm button');
 $I->see('attach some new text at the end', 'ins');
-

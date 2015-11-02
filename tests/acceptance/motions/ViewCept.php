@@ -37,21 +37,3 @@ $I->dontSeeElement('.sidebarActions .withdraw');
 $I->seeElement('.sidebarActions .mergeamendments');
 $I->seeElement('.sidebarActions .adminEdit');
 $I->seeElement('.sidebarActions .back');
-
-$I->wantTo('allow users to edit their motions');
-$I->gotoStdAdminPage()->gotoConsultation();
-$I->checkOption('#iniatorsMayEdit');
-$I->submitForm('#consultationSettingsForm', [], 'save');
-
-$I->wantTo('check that I can edit the motion now as the initiator');
-$I->gotoConsultationHome();
-$I->logout();
-$I->loginAsStdUser();
-$I->gotoMotion(true, 2);
-$I->seeElement('.sidebarActions .amendmentCreate');
-$I->seeElement('.sidebarActions .download');
-$I->seeElement('.sidebarActions .edit');
-$I->seeElement('.sidebarActions .withdraw');
-$I->seeElement('.sidebarActions .mergeamendments');
-$I->dontSeeElement('.sidebarActions .adminEdit');
-$I->seeElement('.sidebarActions .back');

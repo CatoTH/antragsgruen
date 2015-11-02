@@ -9,10 +9,15 @@ use yii\helpers\Html;
  * @var Amendment $amendment
  */
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+$layout     = $controller->layoutParams;
+
 $this->title = \Yii::t('amend', 'edit_done');
 
-$params->breadcrumbs[] = \Yii::t('amend', 'amendment');
-$params->breadcrumbs[] = \Yii::t('amend', 'confirm_bread');
+
+$layout->addBreadcrumb(\Yii::t('amend', 'amendment'));
+$layout->addBreadcrumb(\Yii::t('amend', 'edit_bread'));
 
 
 echo '<h1>' . \Yii::t('amend', 'edit_done') . '</h1>';

@@ -71,7 +71,7 @@ class AmendmentController extends Base
         }
         $amendments = [];
         foreach ($motions as $motion) {
-            $amendments       = array_merge($amendments, $motion->getVisibleAmendmentsSorted());
+            $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted());
         }
         if (count($amendments) == 0) {
             $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
@@ -272,14 +272,27 @@ class AmendmentController extends Base
 
                 ConsultationLog::logCurrUser($this->consultation, ConsultationLog::AMENDMENT_CHANGE, $amendment->id);
 
-                return $this->render('edit_done', ['amendment' => $amendment]);
+                if ($amendment->status == Amendment::STATUS_DRAFT) {
+                    $nextUrl = [
+                        'amendment/createconfirm',
+                        'motionId'    => $amendment->motionId,
+                        'amendmentId' => $amendment->id,
+                        'fromMode'    => $fromMode
+                    ];
+                    if (isset($_POST['draftId'])) {
+                        $nextUrl['draftId'] = $_POST['draftId'];
+                    }
+                    return $this->redirect(UrlHelper::createUrl($nextUrl));
+                } else {
+                    return $this->render('edit_done', ['amendment' => $amendment]);
+                }
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
 
         return $this->render(
-            'editform',
+            'edit_form',
             [
                 'mode'         => $fromMode,
                 'form'         => $form,
@@ -351,7 +364,7 @@ class AmendmentController extends Base
         }
 
         return $this->render(
-            'editform',
+            'edit_form',
             [
                 'mode'         => 'create',
                 'consultation' => $this->consultation,

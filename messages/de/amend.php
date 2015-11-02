@@ -69,6 +69,7 @@ return [
     'amendment_withdraw'                => 'Änderungsantrag zurückziehen',
     'edit_done'                         => 'Änderungsantrag bearbeitet',
     'edit_done_msg'                     => 'Die Änderungen wurden übernommen.',
+    'edit_bread'                        => 'Bearbeiten',
     'reason'                            => 'Begründung',
     'amendment_requirement'             => 'Voraussetzungen für einen Antrag',
     'button_submit'                     => 'Einreichen',

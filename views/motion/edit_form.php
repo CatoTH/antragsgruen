@@ -17,7 +17,11 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = $form->motionType->createTitle;
+if ($mode == 'create') {
+    $this->title = $form->motionType->createTitle;
+} else {
+    $this->title = \Yii::t('motion', 'Edit Motion');
+}
 
 $layout->loadCKEditor();
 $layout->loadDatepicker();
