@@ -398,7 +398,21 @@ class Amendment extends IMotion implements IRSSItem
     public function canEdit()
     {
         if ($this->status == static::STATUS_DRAFT) {
-            return true;
+            $hadLoggedInUser = false;
+            foreach ($this->amendmentSupporters as $supp) {
+                if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && $supp->userId > 0) {
+                    $hadLoggedInUser = true;
+                    $currUser = User::getCurrentUser();
+                    if ($currUser && $currUser->id == $supp->userId) {
+                        return true;
+                    }
+                }
+            }
+            if ($hadLoggedInUser) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
         if ($this->textFixed) {
