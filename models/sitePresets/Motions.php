@@ -19,7 +19,7 @@ class Motions implements ISitePreset
      */
     public static function getTitle()
     {
-        return 'Anträge';
+        return \Yii::t('structure', 'preset_motions_name');
     }
 
     /**
@@ -27,7 +27,7 @@ class Motions implements ISitePreset
      */
     public static function getDescription()
     {
-        return 'Nur Anträge';
+        return \Yii::t('structure', 'preset_motions_desc');
     }
 
     /**

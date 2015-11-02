@@ -19,9 +19,9 @@ trait MotionTrait
     {
         $type                              = new ConsultationMotionType();
         $type->consultationId              = $consultation->id;
-        $type->titleSingular               = 'Antrag';
-        $type->titlePlural                 = 'Anträge';
-        $type->createTitle                 = 'Antrag stellen';
+        $type->titleSingular               = \Yii::t('structure', 'preset_motion_singular');
+        $type->titlePlural                 = \Yii::t('structure', 'preset_motion_plural');
+        $type->createTitle                 = \Yii::t('structure', 'preset_motion_call');
         $type->position                    = 0;
         $type->policyMotions               = IPolicy::POLICY_ALL;
         $type->policyAmendments            = IPolicy::POLICY_ALL;
@@ -47,7 +47,7 @@ trait MotionTrait
         $section->type          = ISectionType::TYPE_TITLE;
         $section->position      = 0;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Titel';
+        $section->title         = \Yii::t('structure', 'preset_motion_title');
         $section->required      = 1;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
@@ -61,7 +61,7 @@ trait MotionTrait
         $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
         $section->position      = 1;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Antragstext';
+        $section->title         = \Yii::t('structure', 'preset_motion_text');
         $section->required      = 1;
         $section->maxLen        = 0;
         $section->fixedWidth    = 1;
@@ -75,7 +75,7 @@ trait MotionTrait
         $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
         $section->position      = 2;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Begründung';
+        $section->title         = \Yii::t('structure', 'preset_motion_reason');
         $section->required      = 0;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;

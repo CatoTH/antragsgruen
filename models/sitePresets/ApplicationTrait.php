@@ -19,9 +19,9 @@ trait ApplicationTrait
     {
         $type                              = new ConsultationMotionType();
         $type->consultationId              = $consultation->id;
-        $type->titleSingular               = 'Bewerbung';
-        $type->titlePlural                 = 'Bewerbungen';
-        $type->createTitle                 = 'Bewerben';
+        $type->titleSingular               = \Yii::t('structure', 'preset_app_singular');
+        $type->titlePlural                 = \Yii::t('structure', 'preset_app_plural');
+        $type->createTitle                 = \Yii::t('structure', 'preset_app_call');
         $type->position                    = 0;
         $type->policyMotions               = IPolicy::POLICY_ALL;
         $type->policyAmendments            = IPolicy::POLICY_NOBODY;
@@ -45,7 +45,7 @@ trait ApplicationTrait
         $section->type          = ISectionType::TYPE_TITLE;
         $section->position      = 0;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Name';
+        $section->title         = \Yii::t('structure', 'preset_app_name');
         $section->required      = 1;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
@@ -59,7 +59,7 @@ trait ApplicationTrait
         $section->type          = ISectionType::TYPE_IMAGE;
         $section->position      = 1;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Foto';
+        $section->title         = \Yii::t('structure', 'preset_app_photo');
         $section->required      = 1;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
@@ -73,7 +73,7 @@ trait ApplicationTrait
         $section->type          = ISectionType::TYPE_TABULAR;
         $section->position      = 2;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Angaben';
+        $section->title         = \Yii::t('structure', 'preset_app_data');
         $section->required      = 0;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
@@ -87,21 +87,21 @@ trait ApplicationTrait
                     '1' => new TabularDataType(
                         [
                             'rowId' => 1,
-                            'title' => 'Alter',
+                            'title' => \Yii::t('structure', 'preset_app_age'),
                             'type'  => TabularDataType::TYPE_INTEGER,
                         ]
                     ),
                     '2' => new TabularDataType(
                         [
                             'rowId' => 2,
-                            'title' => 'Geschlecht',
+                            'title' => \Yii::t('structure', 'preset_app_gender'),
                             'type'  => TabularDataType::TYPE_STRING,
                         ]
                     ),
                     '3' => new TabularDataType(
                         [
                             'rowId' => 3,
-                            'title' => 'Geburtsort',
+                            'title' => \Yii::t('structure', 'preset_app_birthcity'),
                             'type'  => TabularDataType::TYPE_STRING,
                         ]
                     ),
@@ -115,7 +115,7 @@ trait ApplicationTrait
         $section->type          = ISectionType::TYPE_TEXT_SIMPLE;
         $section->position      = 3;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
-        $section->title         = 'Selbstvorstellung';
+        $section->title         = \Yii::t('structure', 'preset_app_intro');
         $section->required      = 1;
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;

@@ -23,7 +23,7 @@ class BDK implements ISitePreset
      */
     public static function getTitle()
     {
-        return 'BDK';
+        return \Yii::t('structure', 'preset_bdk_name');
     }
 
     /**
@@ -31,8 +31,7 @@ class BDK implements ISitePreset
      */
     public static function getDescription()
     {
-        return 'Nur Anträge, min. 20 AntragstallerInnen oder eine Organisation, ' .
-        'Grünes CI, nur Wurzelwerk-Accounts';
+        return \Yii::t('structure', 'preset_bdk_desc');
     }
 
     /**
@@ -80,13 +79,13 @@ class BDK implements ISitePreset
      * @param Consultation $consultation
      * @return ConsultationMotionType
      */
-    public function doCreateMotionType(Consultation $consultation)
+    public static function doCreateMotionType(Consultation $consultation)
     {
         $type                              = new ConsultationMotionType();
         $type->consultationId              = $consultation->id;
-        $type->titleSingular               = 'Antrag';
-        $type->titlePlural                 = 'Anträge';
-        $type->createTitle                 = 'Antrag stellen';
+        $type->titleSingular               = \Yii::t('structure', 'preset_motion_singular');
+        $type->titlePlural                 = \Yii::t('structure', 'preset_motion_plural');
+        $type->createTitle                 = \Yii::t('structure', 'preset_motion_call');
         $type->position                    = 0;
         $type->pdfLayout                   = 1;
         $type->texTemplateId               = 1;

@@ -18,7 +18,7 @@ class Elections implements ISitePreset
      */
     public static function getTitle()
     {
-        return "Bewerbungsverfahren";
+        return \Yii::t('structure', 'preset_election_name');
     }
 
     /**
@@ -26,7 +26,7 @@ class Elections implements ISitePreset
      */
     public static function getDescription()
     {
-        return "irgendwas zum Bewerbungsverfahren";
+        return \Yii::t('structure', 'preset_election_desc');
     }
 
     /**

@@ -21,7 +21,7 @@ class PartyCongress implements ISitePreset
      */
     public static function getTitle()
     {
-        return 'Parteitag';
+        return \Yii::t('structure', 'preset_party_name');
     }
 
     /**
@@ -29,7 +29,7 @@ class PartyCongress implements ISitePreset
      */
     public static function getDescription()
     {
-        return 'Parteitag mit Tagesordnung, Anträgen und Wahlen';
+        return \Yii::t('structure', 'preset_party_desc');
     }
 
     /**
@@ -98,7 +98,7 @@ class PartyCongress implements ISitePreset
         $item->parentItemId   = null;
         $item->position       = 0;
         $item->code           = '0.';
-        $item->title          = 'Tagesordnung';
+        $item->title          = \Yii::t('structure', 'preset_party_top');
         $item->save();
 
         $wahlItem                 = new ConsultationAgendaItem();
@@ -106,7 +106,7 @@ class PartyCongress implements ISitePreset
         $wahlItem->parentItemId   = null;
         $wahlItem->position       = 1;
         $wahlItem->code           = '#';
-        $wahlItem->title          = 'Wahlen';
+        $wahlItem->title          = \Yii::t('structure', 'preset_party_elections');
         $wahlItem->save();
 
         $item                 = new ConsultationAgendaItem();
@@ -114,7 +114,7 @@ class PartyCongress implements ISitePreset
         $item->parentItemId   = $wahlItem->id;
         $item->position       = 0;
         $item->code           = '#';
-        $item->title          = 'Wahl: 1. Vorsitzende(r)';
+        $item->title          = \Yii::t('structure', 'preset_party_1leader');
         $item->motionTypeId   = $this->typeApplication->id;
         $item->save();
 
@@ -123,7 +123,7 @@ class PartyCongress implements ISitePreset
         $item->parentItemId   = $wahlItem->id;
         $item->position       = 1;
         $item->code           = '#';
-        $item->title          = 'Wahl: 2. Vorsitzende(r)';
+        $item->title          = \Yii::t('structure', 'preset_party_2leader');
         $item->motionTypeId   = $this->typeApplication->id;
         $item->save();
 
@@ -132,7 +132,7 @@ class PartyCongress implements ISitePreset
         $item->parentItemId   = $wahlItem->id;
         $item->position       = 2;
         $item->code           = '#';
-        $item->title          = 'Wahl: Schatzmeister(in)';
+        $item->title          = \Yii::t('structure', 'preset_party_treasure');
         $item->motionTypeId   = $this->typeApplication->id;
         $item->save();
 
@@ -141,7 +141,7 @@ class PartyCongress implements ISitePreset
         $item->parentItemId   = null;
         $item->position       = 2;
         $item->code           = '#';
-        $item->title          = 'Anträge';
+        $item->title          = \Yii::t('structure', 'preset_party_motions');
         $item->motionTypeId   = $this->typeMotion->id;
         $item->save();
 
@@ -150,7 +150,7 @@ class PartyCongress implements ISitePreset
         $item->parentItemId   = null;
         $item->position       = 3;
         $item->code           = '#';
-        $item->title          = 'Sonstiges';
+        $item->title          = \Yii::t('structure', 'preset_party_misc');
         $item->save();
     }
 }
