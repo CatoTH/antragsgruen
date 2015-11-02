@@ -8,6 +8,7 @@ use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\MailNotSent;
+use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
 use yii\db\ActiveQuery;
@@ -411,7 +412,11 @@ class Amendment extends IMotion implements IRSSItem
             if ($hadLoggedInUser) {
                 return false;
             } else {
-                return true;
+                if ($this->motion->motionType->getAmendmentPolicy()->getPolicyID() == All::getPolicyID()) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
 

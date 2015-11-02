@@ -8,6 +8,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
+use app\models\policies\All;
 use Yii;
 use yii\helpers\Html;
 
@@ -355,7 +356,11 @@ class Motion extends IMotion implements IRSSItem
             if ($hadLoggedInUser) {
                 return false;
             } else {
-                return true;
+                if ($this->motionType->getMotionPolicy()->getPolicyID() == All::getPolicyID()) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
 
