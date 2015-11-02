@@ -2,7 +2,7 @@
 
 /**
  * @var yii\web\View $this
- * @var \app\models\db\Motion[] $motions
+ * @var \app\models\db\Consultation $consultation
  */
 use app\components\UrlHelper;
 use yii\helpers\Html;
@@ -11,22 +11,21 @@ use yii\helpers\Html;
 $controller = $this->context;
 $params     = $controller->layoutParams;
 
-$this->title = 'Administration';
+$this->title = \Yii::t('admin', 'amend_pdf_list');
 $params->addCSS('css/backend.css');
-$params->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$params->addBreadcrumb('Änderungsantrags-PDFs');
+$params->addBreadcrumb(\Yii::t('admin', 'Administration'), UrlHelper::createUrl('admin/index'));
+$params->addBreadcrumb(\Yii::t('admin', 'amend_pdf_list'));
 
-echo '<h1>Änderungsanträge: PDF-Liste</h1>
+echo '<h1>' . \Yii::t('admin', 'amend_pdf_list') . '</h1>
    <div class="content">';
 
+$motions = $consultation->getVisibleMotionsSorted();
 foreach ($motions as $motion) {
-    if (count($motion->amendments) > 0) {
+    $amendments = $motion->getVisibleAmendmentsSorted();
+    if (count($amendments) > 0) {
         echo '<h2>' . Html::encode($motion->getTitleWithPrefix()) . '</h2>';
         echo '<ul>';
-        foreach ($motion->amendments as $amendment) {
-            if (in_array($amendment->status, $motion->consultation->getInvisibleAmendmentStati())) {
-                continue;
-            }
+        foreach ($amendments as $amendment) {
             echo '<li>';
             $url = UrlHelper::createAmendmentUrl($amendment, 'pdf');
             echo Html::a($amendment->titlePrefix, $url, ['class' => 'amendment' . $amendment->id]);

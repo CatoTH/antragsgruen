@@ -24,10 +24,8 @@ class AmendmentController extends AdminBase
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
-        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
-
         return $this->renderPartial('ods_list', [
-            'motions'      => $motions,
+            'motions'      => $this->consultation->getVisibleMotionsSorted(),
             'textCombined' => $textCombined,
         ]);
     }
@@ -37,8 +35,7 @@ class AmendmentController extends AdminBase
      */
     public function actionPdflist()
     {
-        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
-        return $this->render('pdf_list', ['motions' => $motions]);
+        return $this->render('pdf_list', ['consultation' => $this->consultation]);
     }
 
 

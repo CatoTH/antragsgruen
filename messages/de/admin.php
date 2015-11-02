@@ -171,4 +171,5 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'amend_edit_text_title'       => 'Text bearbeiten',
     'amend_edit_text'             => 'Bearbeiten',
     'no_access'                   => 'Kein Zugriff auf diese Seite',
+    'amend_pdf_list'              => 'Änderungsantrags-PDFs',
 ];

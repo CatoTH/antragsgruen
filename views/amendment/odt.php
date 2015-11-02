@@ -41,7 +41,7 @@ foreach ($amendment->amendmentSupporters as $supp) {
         $supporters[] = $supp->getNameWithOrga();
     }
 }
-$initiatorStr = (count($initiators) == 1 ? \Yii::t('pdf', 'InitiatorSingle') : \Yii::t('pdf', 'InitiatorMulti'));
+$initiatorStr = (count($initiators) == 1 ? \Yii::t('export', 'InitiatorSingle') : \Yii::t('export', 'InitiatorMulti'));
 $initiatorStr .= ': ' . implode(', ', $initiators);
 if ($amendment->motion->agendaItem) {
     $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $amendment->motion->agendaItem->title);

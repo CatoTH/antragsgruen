@@ -40,7 +40,7 @@ foreach ($motion->motionSupporters as $supp) {
         $supporters[] = $supp->getNameWithOrga();
     }
 }
-$initiatorStr = (count($initiators) == 1 ? \Yii::t('pdf', 'InitiatorSingle') : \Yii::t('pdf', 'InitiatorMulti'));
+$initiatorStr = (count($initiators) == 1 ? \Yii::t('export', 'InitiatorSingle') : \Yii::t('export', 'InitiatorMulti'));
 $initiatorStr .= ': ' . implode(', ', $initiators);
 $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $motion->agendaItem ? $motion->agendaItem->title : '');
 $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());

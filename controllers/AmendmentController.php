@@ -65,20 +65,13 @@ class AmendmentController extends Base
      */
     public function actionPdfcollection()
     {
-        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
+        $motions = $this->consultation->getVisibleMotionsSorted();
         if (count($motions) == 0) {
-            $this->showErrorpage(404, 'Es gibt noch keine Anträge');
+            $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
         $amendments = [];
         foreach ($motions as $motion) {
-            $motionAmendments = [];
-            foreach ($motion->amendments as $amendment) {
-                if (!in_array($amendment->status, $this->consultation->getInvisibleAmendmentStati())) {
-                    $motionAmendments[] = $amendment;
-                }
-            }
-            $motionAmendments = MotionSorter::getSortedAmendments($this->consultation, $motionAmendments);
-            $amendments = array_merge($amendments, $motionAmendments);
+            $amendments       = array_merge($amendments, $motion->getVisibleAmendmentsSorted());
         }
         if (count($amendments) == 0) {
             $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
@@ -184,13 +177,12 @@ class AmendmentController extends Base
         );
         if (!$amendment) {
             \Yii::$app->session->setFlash('error', 'Amendment not found.');
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (isset($_POST['modify'])) {
             $nextUrl = ['amendment/edit', 'amendmentId' => $amendment->id, 'motionId' => $amendment->motionId];
-            $this->redirect(UrlHelper::createUrl($nextUrl));
-            return '';
+            return $this->redirect(UrlHelper::createUrl($nextUrl));
         }
 
         if (isset($_POST['confirm'])) {
@@ -280,17 +272,7 @@ class AmendmentController extends Base
 
                 ConsultationLog::logCurrUser($this->consultation, ConsultationLog::AMENDMENT_CHANGE, $amendment->id);
 
-                $nextUrl = [
-                    'amendment/createconfirm',
-                    'motionId'    => $amendment->motionId,
-                    'amendmentId' => $amendment->id,
-                    'fromMode'    => $fromMode
-                ];
-                if (isset($_POST['draftId'])) {
-                    $nextUrl['draftId'] = $_POST['draftId'];
-                }
-                $this->redirect(UrlHelper::createUrl($nextUrl));
-                return '';
+                return $this->render('edit_done', ['amendment' => $amendment]);
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }

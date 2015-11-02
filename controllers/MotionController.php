@@ -89,9 +89,9 @@ class MotionController extends Base
      */
     public function actionPdfcollection()
     {
-        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $this->consultation->motions);
+        $motions = $this->consultation->getVisibleMotionsSorted();
         if (count($motions) == 0) {
-            $this->showErrorpage(404, 'Es gibt noch keine Anträge');
+            $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
 
         \yii::$app->response->format = Response::FORMAT_RAW;

@@ -69,10 +69,10 @@ class AmendmentEditForm extends Model
                 $this->sections[] = $amendmentSections[$sectionType->id];
             } else {
                 if (isset($motionSections[$sectionType->id])) {
-                    $data = $motionSections[$sectionType->id]->data;
+                    $data        = $motionSections[$sectionType->id]->data;
                     $origSection = $motionSections[$sectionType->id];
                 } else {
-                    $data = '';
+                    $data        = '';
                     $origSection = null;
                 }
                 $section            = new AmendmentSection();
@@ -99,7 +99,7 @@ class AmendmentEditForm extends Model
             [['type'], 'required'],
             [['id', 'type'], 'number'],
             [
-                'type', 'required', 'message' => 'Du musst einen Typ angeben.'
+                'type', 'required', 'message' => \Yii::t('amend', 'err_type_missing')
             ],
             [['supporters', 'tags', 'type'], 'safe'],
         ];
@@ -169,10 +169,10 @@ class AmendmentEditForm extends Model
         foreach ($this->sections as $section) {
             $type = $section->consultationSetting;
             if ($section->data == '' && $type->required) {
-                $errors[] = 'Keine Daten angegeben (Feld: ' . $type->title . ')';
+                $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
-                $errors[] = str_replace('%max%', $type->maxLen, 'Maximum length of %max% exceeded');
+                $errors[] = str_replace('%MAX%', $type->maxLen, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
 
@@ -243,10 +243,10 @@ class AmendmentEditForm extends Model
         foreach ($this->sections as $section) {
             $type = $section->consultationSetting;
             if ($section->data == '' && $type->required) {
-                $errors[] = 'Keine Daten angegeben (Feld: ' . $type->title . ')';
+                $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
-                $errors[] = str_replace('%max%', $type->maxLen, 'Maximum length of %max% exceeded');
+                $errors[] = str_replace('%MAX%', $type->maxLen, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
 
@@ -276,7 +276,7 @@ class AmendmentEditForm extends Model
             $this->saveAmendmentVerify();
         }
         $amendment->changeExplanation = $this->reason;
-        $amendment->changeEditorial = $this->editorial;
+        $amendment->changeEditorial   = $this->editorial;
 
         if ($amendment->save()) {
             $motionType->getAmendmentInitiatorFormClass()->submitAmendment($amendment);
@@ -292,7 +292,7 @@ class AmendmentEditForm extends Model
 
             $amendment->save();
         } else {
-            throw new FormError('Ein Fehler beim Speichern ist aufgetreten');
+            throw new FormError(\Yii::t('base', 'err_unknown'));
         }
     }
 }

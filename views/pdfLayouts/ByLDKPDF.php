@@ -31,7 +31,7 @@ class ByLDKPDF extends \TCPDF
         $this->Cell(
             0,
             10,
-            Yii::t('pdf', 'Page') . ' ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(),
+            Yii::t('export', 'Page') . ' ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(),
             0,
             false,
             'C',

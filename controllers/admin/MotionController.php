@@ -205,7 +205,12 @@ class MotionController extends AdminBase
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
-        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $motionType->motions);
+        $motions = [];
+        foreach ($this->consultation->getVisibleMotionsSorted() as $motion) {
+            if ($motion->motionTypeId == $motionTypeId) {
+                $motions[] = $motion;
+            }
+        }
 
         return $this->renderPartial('ods_list', [
             'motions'      => $motions,
@@ -229,7 +234,12 @@ class MotionController extends AdminBase
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
-        $motions = MotionSorter::getSortedMotionsFlat($this->consultation, $motionType->motions);
+        $motions = [];
+        foreach ($this->consultation->getVisibleMotionsSorted() as $motion) {
+            if ($motion->motionTypeId == $motionTypeId) {
+                $motions[] = $motion;
+            }
+        }
 
         return $this->renderPartial('excel_list', [
             'motions'      => $motions,
