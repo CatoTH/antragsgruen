@@ -15,7 +15,7 @@ trait ApplicationTrait
      * @param Consultation $consultation
      * @return ConsultationMotionType
      */
-    public function doCreateApplicationType(Consultation $consultation)
+    public static function doCreateApplicationType(Consultation $consultation)
     {
         $type                              = new ConsultationMotionType();
         $type->consultationId              = $consultation->id;
@@ -38,7 +38,7 @@ trait ApplicationTrait
     /**
      * @param ConsultationMotionType $motionType
      */
-    public function doCreateApplicationSections(ConsultationMotionType $motionType)
+    public static function doCreateApplicationSections(ConsultationMotionType $motionType)
     {
         $section                = new ConsultationSettingsMotionSection();
         $section->motionTypeId  = $motionType->id;

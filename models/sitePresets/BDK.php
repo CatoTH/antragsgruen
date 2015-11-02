@@ -113,7 +113,7 @@ class BDK implements ISitePreset
      */
     public function createMotionSections(Consultation $consultation)
     {
-        $this->doCreateMotionSections($this->typeMotion);
+        static::doCreateMotionSections($this->typeMotion);
         $this->typeMotion->refresh();
     }
 
@@ -122,7 +122,7 @@ class BDK implements ISitePreset
      */
     public function createMotionTypes(Consultation $consultation)
     {
-        $this->typeMotion = $this->doCreateMotionType($consultation);
+        $this->typeMotion = static::doCreateMotionType($consultation);
         $consultation->refresh();
     }
 

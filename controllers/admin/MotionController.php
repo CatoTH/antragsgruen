@@ -8,8 +8,11 @@ use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
+use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
+use app\models\sitePresets\ApplicationTrait;
+use app\models\sitePresets\MotionTrait;
 use yii\web\Response;
 
 class MotionController extends AdminBase
@@ -95,6 +98,57 @@ class MotionController extends AdminBase
         }
 
         return $this->render('type', ['motionType' => $motionType]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionTypecreate()
+    {
+        if (isset($_POST['create'])) {
+            $type         = $_POST['type'];
+            $sectionsFrom = null;
+            if (isset($type['preset']) && $type['preset'] == 'application') {
+                $motionType = ApplicationTrait::doCreateApplicationType($this->consultation);
+                ApplicationTrait::doCreateApplicationSections($motionType);
+            } elseif (isset($type['preset']) && $type['preset'] == 'motion') {
+                $motionType = MotionTrait::doCreateMotionType($this->consultation);
+                MotionTrait::doCreateMotionSections($motionType);
+            } else {
+                $motionType = null;
+                foreach ($this->consultation->motionTypes as $cType) {
+                    if ($cType->id == $type['preset']) {
+                        $motionType = new ConsultationMotionType();
+                        $motionType->setAttributes($cType->getAttributes(), false);
+                        $motionType->id = null;
+                        $sectionsFrom   = $cType;
+                    }
+                }
+                if (!$motionType) {
+                    $motionType                 = new ConsultationMotionType();
+                    $motionType->consultationId = $this->consultation->id;
+                }
+            }
+            $motionType->titleSingular = $type['titleSingular'];
+            $motionType->titlePlural   = $type['titlePlural'];
+            $motionType->createTitle   = $type['createTitle'];
+            $motionType->pdfLayout     = $type['pdfLayout'];
+            $motionType->motionPrefix  = $type['motionPrefix'];
+            $motionType->save();
+
+            if ($sectionsFrom) {
+                foreach ($sectionsFrom->motionSections as $cSection) {
+                    $motionSection = new ConsultationSettingsMotionSection();
+                    $motionSection->setAttributes($cSection->getAttributes(), false);
+                    $motionSection->id           = null;
+                    $motionSection->motionTypeId = $motionType->id;
+                    $motionSection->save();
+                }
+            }
+
+            return $this->redirect(UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]));
+        }
+        return $this->render('type_create', []);
     }
 
     /**

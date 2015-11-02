@@ -71,43 +71,24 @@ foreach ($consultation->motionTypes as $motionType) {
     echo '</ul>';
 }
 
-$amendmentOdsLink = UrlHelper::createUrl('admin/amendment/odslist');
-$amendmentPDFLink = UrlHelper::createUrl('admin/amendment/pdflist');
+$amendmentOdsLink  = UrlHelper::createUrl('admin/amendment/odslist');
+$amendmentPDFLink  = UrlHelper::createUrl('admin/amendment/pdflist');
+$pdfCollectionLink = UrlHelper::createUrl('amendment/pdfcollection');
 echo '<h3>' . \Yii::t('admin', 'index_amendments') . '</h3>
 <ul>
     <li>' .
-    Html::a(\Yii::t('admin', 'index_pdf_collection'), UrlHelper::createUrl('amendment/pdfcollection'), ['class' => 'amendmentsPdf']) .
+    Html::a(\Yii::t('admin', 'index_pdf_collection'), $pdfCollectionLink, ['class' => 'amendmentsPdf']) .
     '</li>
-    <li class="secondary">' . Html::a(\Yii::t('admin', 'index_pdf_list'), $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '</li>
+    <li class="secondary">' .
+    Html::a(\Yii::t('admin', 'index_pdf_list'), $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '
+    </li>
     <li class="secondary">' .
     Html::a(\Yii::t('admin', 'index_export_ods'), $amendmentOdsLink, ['class' => 'amendmentOds']) .
     '</li>';
 
-/*
-    <li class="secondary">
-    <a href="#ae_excel_export" onClick="$(\'#ae_excel_export\').toggle(); return false;" class="amendmentExcelOpener">
-    Export: Änderungsanträge als Excel-Datei</a>
-            <ul id="ae_excel_export" style="display: none;">
-                <li class="separated">';
-echo Html::a('Änderungsantragstext und Begründung getrennt', UrlHelper::createUrl('admin/amendment/excellist'));
-echo '</li><li class="combined">';
-$url = UrlHelper::createUrl(['admin/amendment/excellist', 'textCombined' => 1]);
-echo Html::a('Änderungsantragstext und Begründung in einer Spalte', $url);
-echo '</li>
-            </ul>
-    </li>
-*/
 
 echo '</ul>';
 
-/*
-<h3>Kommentare</h3>
-<ul>
-    <li class="secondary">';
-echo Html::a('Export: Excel', UrlHelper::createUrl('admin/index/kommentareexcel'));
-echo '</li>
-</ul>
-*/
 
 echo '</div>
 
@@ -135,6 +116,9 @@ foreach ($consultation->motionTypes as $motionType) {
     echo Html::a($motionType->titlePlural, $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
     echo '</li>';
 }
+echo '<li class="secondary motionTypeCreate">';
+echo Html::a(\Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(['admin/motion/typecreate']));
+echo '</li>';
 echo '</ul></li>';
 
 echo '<li>';

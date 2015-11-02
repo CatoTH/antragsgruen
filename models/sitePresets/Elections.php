@@ -70,7 +70,7 @@ class Elections implements ISitePreset
      */
     public function createMotionSections(Consultation $consultation)
     {
-        $this->doCreateApplicationSections($this->typeApplication);
+        static::doCreateApplicationSections($this->typeApplication);
         $this->typeApplication->refresh();
     }
 
@@ -79,7 +79,7 @@ class Elections implements ISitePreset
      */
     public function createMotionTypes(Consultation $consultation)
     {
-        $this->typeApplication = $this->doCreateApplicationType($consultation);
+        $this->typeApplication = static::doCreateApplicationType($consultation);
         $consultation->refresh();
     }
 

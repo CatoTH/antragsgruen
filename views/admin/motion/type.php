@@ -20,8 +20,8 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = 'Antragstyp bearbeiten';
-$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb('Abschnitte');
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_admin'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_types'));
 
 $layout->addCSS('css/backend.css');
 $layout->addJS('js/backend.js');
@@ -50,32 +50,44 @@ echo '<h3>' . 'Bezeichnung' . '</h3>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typeTitleSingular">';
-echo 'Titel (Einzahl)';
+echo \Yii::t('admin', 'motion_type_singular');
 echo '</label><div class="col-md-9">';
-$options = ['class' => 'form-control', 'id' => 'typeTitleSingular', 'placeholder' => 'Antrag'];
+$options = [
+    'class'       => 'form-control',
+    'id'          => 'typeTitleSingular',
+    'placeholder' => \Yii::t('admin', 'motion_type_singular_pl'),
+];
 echo Html::textInput('type[titleSingular]', $motionType->titleSingular, $options);
 echo '</div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typeTitlePlural">';
-echo 'Titel (Mehrzahl)';
+echo \Yii::t('admin', 'motion_type_plural');
 echo '</label><div class="col-md-9">';
-$options = ['class' => 'form-control', 'id' => 'typeTitlePlural', 'placeholder' => 'Anträge'];
+$options = [
+    'class'       => 'form-control',
+    'id'          => 'typeTitlePlural',
+    'placeholder' => \Yii::t('admin', 'motion_type_plural_pl'),
+];
 echo Html::textInput('type[titlePlural]', $motionType->titlePlural, $options);
 echo '</div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typeCreateTitle">';
-echo 'Aufruf zum Anlegen';
+echo \Yii::t('admin', 'motion_type_create_title');
 echo '</label><div class="col-md-9">';
 
-$options = ['class' => 'form-control', 'id' => 'typeCreateTitle', 'placeholder' => 'Antrag anlegen'];
+$options = [
+    'class'       => 'form-control',
+    'id'          => 'typeCreateTitle',
+    'placeholder' => \Yii::t('admin', 'motion_type_create_placeh')
+];
 echo HTMLTools::smallTextarea('type[createTitle]', $options, $motionType->createTitle);
 echo '</div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="pdfLayout">';
-echo 'PDF-Layout';
+echo \Yii::t('admin', 'motion_type_pdf_layout');
 echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[pdfLayout]',
@@ -87,7 +99,7 @@ echo '</div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typeMotionPrefix">';
-echo 'Antragskürzel-Präfix';
+echo \Yii::t('admin', 'motion_type_title_prefix');
 echo '</label><div class="col-md-2">';
 $options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
 echo Html::textInput('type[motionPrefix]', $motionType->motionPrefix, $options);

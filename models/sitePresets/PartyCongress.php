@@ -74,8 +74,8 @@ class PartyCongress implements ISitePreset
      */
     public function createMotionSections(Consultation $consultation)
     {
-        $this->doCreateApplicationSections($this->typeApplication);
-        $this->doCreateMotionSections($this->typeMotion);
+        static::doCreateApplicationSections($this->typeApplication);
+        static::doCreateMotionSections($this->typeMotion);
     }
 
     /**
@@ -83,8 +83,8 @@ class PartyCongress implements ISitePreset
      */
     public function createMotionTypes(Consultation $consultation)
     {
-        $this->typeMotion      = $this->doCreateMotionType($consultation);
-        $this->typeApplication = $this->doCreateApplicationType($consultation);
+        $this->typeMotion      = static::doCreateMotionType($consultation);
+        $this->typeApplication = static::doCreateApplicationType($consultation);
         $consultation->refresh();
     }
 

@@ -49,6 +49,14 @@ label.legend {
     &.secondary {
       font-weight: normal;
     }
+
+    li {
+      margin-top: 10px;
+    }
+  }
+  .motionTypeCreate {
+    font-weight: normal;
+    font-style: italic;
   }
 }
 
@@ -94,6 +102,7 @@ label.legend {
     }
   }
 }
+
 .consultationCreateForm {
   .fakeUrl {
     input.form-control {
@@ -399,7 +408,6 @@ label.legend {
   }
 }
 
-
 #accountsEditForm, #accountsCreateForm {
   h3.lightgreen {
     margin-left: -20px;
@@ -409,6 +417,7 @@ label.legend {
     width: 100%;
   }
 }
+
 .accountListTable {
   margin-top: 10px;
   .accessViewCol, .accessCreateCol {
@@ -422,4 +431,28 @@ label.legend {
 
 .sysadminForm {
   text-align: right;
+}
+
+.motionTypeCreateForm {
+  .typePreset {
+    font-weight: bold;
+    vertical-align: middle;
+
+    div {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    input {
+      vertical-align: middle;
+      margin-top: 0;
+      margin-right: 6px;
+    }
+  }
+  .typePresetInfo {
+    padding-left: 10px;
+    margin-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-left: solid 3px lightgray;
+  }
 }
