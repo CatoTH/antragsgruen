@@ -92,4 +92,10 @@ return [
     'err_create'                        => 'Ein Fehler beim Anlegen ist aufgetreten',
     'err_save'                          => 'Ein Fehler beim Speichern ist aufgetreten',
     'err_type_missing'                  => 'Du musst einen Typ angeben.',
+    'withdraw_done'                     => 'Der Änderungsantrag wurde zurückgezogen.',
+    'withdraw_bread'                    => 'Zurückziehen',
+    'withdraw'                          => 'Zurückziehen',
+    'withdraw_confirm'                  => 'Willst du diesen Änderungsantrag wirklich zurückziehen?',
+    'withdraw_no'                       => 'Doch nicht',
+    'withdraw_yes'                      => 'Zurückziehen',
 ];

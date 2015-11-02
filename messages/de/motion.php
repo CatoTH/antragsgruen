@@ -90,4 +90,9 @@ return [
     'err_withdraw_permission'           => 'Not allowed to withdraw this motion.',
     'err_not_found'                     => 'Antrag nicht gefunden.',
     'withdraw_done'                     => 'Der Antrag wurde zurückgezogen.',
+    'withdraw_bread'                    => 'Zurückziehen',
+    'withdraw'                          => 'Zurückziehen',
+    'withdraw_confirm'                  => 'Willst du diesen Antrag wirklich zurückziehen?',
+    'withdraw_no'                       => 'Doch nicht',
+    'withdraw_yes'                      => 'Zurückziehen',
 ];
