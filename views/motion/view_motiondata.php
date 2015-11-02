@@ -101,7 +101,7 @@ echo '</td>
 
 if ($motion->replacedMotion) {
     $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);
-    echo '<tr><th>' . Yii::t('motion', 'replaces_motion') . ':</th><td>';
+    echo '<tr class="replacesMotion"><th>' . Yii::t('motion', 'replaces_motion') . ':</th><td>';
     echo Html::a($motion->replacedMotion->getTitleWithPrefix(), $oldLink);
     echo '</td></tr>';
 }

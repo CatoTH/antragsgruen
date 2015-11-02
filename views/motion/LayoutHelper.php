@@ -412,7 +412,7 @@ class LayoutHelper
             } else {
                 $statusPre = $amendment->status;
             }
-            $opts = ['id' => 'amendmentSttus' . $amendment->id];
+            $opts = ['id' => 'amendmentStatus' . $amendment->id];
             echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $stati, $statusPre, $opts);
             echo '</div></div>';
         }
