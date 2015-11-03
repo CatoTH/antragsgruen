@@ -144,7 +144,7 @@ $jsStati = [
 ];
 
 echo '<section class="newAmendments" data-stati="' . Html::encode(json_encode($jsStati)) . '">';
-\app\views\motion\LayoutHelper::printAmendmentStatusSetter($motion->getVisibleAmendments(), $amendmentStati);
+\app\views\motion\LayoutHelper::printAmendmentStatusSetter($motion->getVisibleAmendmentsSorted(), $amendmentStati);
 echo '</section>';
 
 
