@@ -190,5 +190,11 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_create_placeh'   => 'Antrag anlegen',
     'motion_type_pdf_layout'      => 'PDF-Layout',
     'motion_type_title_prefix'    => 'Antragskürzel-Präfix',
-
+    'motion_type_created_msg'     => 'Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.',
+    'motion_type_del_caller'      => 'Antragstyp löschen',
+    'motion_type_del_btn'         => 'Löschen',
+    'motion_type_not_deletable'   => 'Dieser Antragstyp kann (noch) nicht gelöscht werden, da es noch Anträge gibt. ' .
+        'Bitte lösche zuerst alle Anträge dieses Typs, erst dann kann der Antragstyp gelöscht werden.',
+    'motion_type_deleted_head'    => 'Antragstyp gelöscht',
+    'motion_type_deleted_msg'     => 'Der Antragstyp wurde erfolgreich gelöscht.',
 ];

@@ -28,6 +28,7 @@ $layout->addJS('js/backend.js');
 $layout->addJS('js/bower/Sortable/Sortable.min.js');
 $layout->loadDatepicker();
 
+$myUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
 
 $policies = [];
 foreach (IPolicy::getPolicies() as $policy) {
@@ -39,7 +40,7 @@ $locale = Tools::getCurrentDateLocale();
 echo '<h1>Antragstyp bearbeiten</h1>';
 
 
-echo Html::beginForm('', 'post', ['class' => 'adminTypeForm form-horizontal']);
+echo Html::beginForm($myUrl, 'post', ['class' => 'adminTypeForm form-horizontal']);
 
 echo '<div class="content">';
 
@@ -434,14 +435,29 @@ echo '</ul>';
 
 echo '<a href="#" class="sectionAdder"><span class="glyphicon glyphicon-plus-sign"></span> Abschnitt hinzufügen</a>';
 
-echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">Speichern</button></div>';
+echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">' .
+    \Yii::t('base', 'save') . '</button></div>';
 
 $layout->addOnLoadJS('$.AntragsgruenAdmin.motionTypeEdit();');
 
 echo '</div>';
-
 echo Html::endForm();
 
 echo '<ul style="display: none;" id="sectionTemplate">';
 $renderSection(new ConsultationSettingsMotionSection());
 echo '</ul>';
+
+
+echo '<br><br><div class="deleteTypeOpener content">';
+echo '<a href="#">' . \Yii::t('admin', 'motion_type_del_caller') . '</a>';
+echo '</div>';
+echo Html::beginForm($myUrl, 'post', ['class' => 'deleteTypeForm hidden content']);
+
+if ($motionType->isDeletable()) {
+    echo '<div class="submitRow"><button type="submit" name="delete" class="btn btn-danger">' .
+        \Yii::t('admin', 'motion_type_del_btn') . '</button></div>';
+} else {
+    echo '<p class="notDeletable">' . \Yii::t('admin', 'motion_type_not_deletable') . '</p>';
+}
+
+echo Html::endForm();

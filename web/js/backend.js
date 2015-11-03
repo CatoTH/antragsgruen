@@ -108,7 +108,7 @@
         });
         $list.find('.maxLenSet').trigger('change');
 
-        $('.sectionAdder').click(function (ev) {
+        $('.sectionAdder').on('click', function (ev) {
             ev.preventDefault();
             var newStr = $('#sectionTemplate').html();
             newStr = newStr.replace(/#NEW#/g, 'new' + newCounter);
@@ -164,7 +164,7 @@
         $('#typeDeadlineAmendmentsHolder').datetimepicker({
             locale: $('#typeDeadlineAmendments').data('locale')
         });
-        $('#typeInitiatorForm').change(function () {
+        $('#typeInitiatorForm').on('change', function () {
             var hasSupporters = $(this).find("option:selected").data("has-supporters");
             if (hasSupporters) {
                 $('#typeMinSupportersRow').removeClass("hidden");
@@ -174,6 +174,12 @@
                 $('#typeAllowMoreSupporters').addClass("hidden");
             }
         }).change();
+
+        $('.deleteTypeOpener a').on('click', function (ev) {
+            ev.preventDefault();
+            $('.deleteTypeForm').removeClass('hidden');
+            $('.deleteTypeOpener').addClass('hidden');
+        });
     };
 
 

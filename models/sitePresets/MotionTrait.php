@@ -32,6 +32,7 @@ trait MotionTrait
         $type->initiatorForm               = IInitiatorForm::ONLY_INITIATOR;
         $type->texTemplateId               = 1;
         $type->amendmentMultipleParagraphs = 1;
+        $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->save();
 
         return $type;

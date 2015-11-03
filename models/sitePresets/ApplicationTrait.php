@@ -30,6 +30,7 @@ trait ApplicationTrait
         $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
         $type->amendmentMultipleParagraphs = 0;
+        $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->save();
 
         return $type;

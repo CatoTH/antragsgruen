@@ -456,3 +456,16 @@ label.legend {
     border-left: solid 3px lightgray;
   }
 }
+
+.deleteTypeOpener {
+  text-align: right;
+}
+
+.deleteTypeForm {
+  .notDeletable {
+    font-style: italic;
+  }
+  .submitRow {
+    text-align: right;
+  }
+}

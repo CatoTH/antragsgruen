@@ -9,6 +9,7 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
+use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
 use app\models\sitePresets\ApplicationTrait;
@@ -78,7 +79,20 @@ class MotionController extends AdminBase
      */
     public function actionType($motionTypeId)
     {
-        $motionType = $this->consultation->getMotionType($motionTypeId);
+        try {
+            $motionType = $this->consultation->getMotionType($motionTypeId);
+        } catch (ExceptionBase $e) {
+            return $this->showErrorpage(404, $e->getMessage());
+        }
+        if (isset($_POST['delete'])) {
+            if ($motionType->isDeletable()) {
+                $motionType->status = ConsultationMotionType::STATUS_DELETED;
+                $motionType->save();
+                return $this->render('type_deleted', []);
+            } else {
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_type_not_deletable'));
+            }
+        }
         if (isset($_POST['save'])) {
             $input = $_POST['type'];
             $motionType->setAttributes($input);
@@ -95,6 +109,9 @@ class MotionController extends AdminBase
 
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
+        }
+        if (isset($_REQUEST['msg']) && $_REQUEST['msg'] == 'created') {
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
         }
 
         return $this->render('type', ['motionType' => $motionType]);
@@ -146,7 +163,8 @@ class MotionController extends AdminBase
                 }
             }
 
-            return $this->redirect(UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]));
+            $url = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id, 'msg' => 'created']);
+            return $this->redirect($url);
         }
         return $this->render('type_create', []);
     }
@@ -252,7 +270,11 @@ class MotionController extends AdminBase
      */
     public function actionOdslist($motionTypeId, $textCombined = false)
     {
-        $motionType = $this->consultation->getMotionType($motionTypeId);
+        try {
+            $motionType = $this->consultation->getMotionType($motionTypeId);
+        } catch (ExceptionBase $e) {
+            return $this->showErrorpage(404, $e->getMessage());
+        }
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
@@ -280,7 +302,11 @@ class MotionController extends AdminBase
      */
     public function actionExcellist($motionTypeId, $textCombined = false)
     {
-        $motionType = $this->consultation->getMotionType($motionTypeId);
+        try {
+            $motionType = $this->consultation->getMotionType($motionTypeId);
+        } catch (ExceptionBase $e) {
+            return $this->showErrorpage(404, $e->getMessage());
+        }
 
         $excelMime                   = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         \yii::$app->response->format = Response::FORMAT_RAW;

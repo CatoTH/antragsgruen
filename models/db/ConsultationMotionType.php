@@ -30,6 +30,7 @@ use yii\db\ActiveRecord;
  * @property int $initiatorForm
  * @property string $initiatorFormSettings
  * @property int $amendmentMultipleParagraphs
+ * @property int $status
  *
  * @property Consultation $consultation
  * @property ConsultationSettingsMotionSection[] $motionSections
@@ -42,6 +43,9 @@ class ConsultationMotionType extends ActiveRecord
     const CONTACT_NA       = 0;
     const CONTACT_OPTIONAL = 1;
     const CONTACT_REQUIRED = 2;
+
+    const STATUS_VISIBLE = 0;
+    const STATUS_DELETED = -1;
 
     /**
      * @return string
@@ -174,7 +178,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function motionDeadlineIsOver()
     {
-        $normalized = str_replace(array(' ', ':', '-'), array('', '', ''), $this->deadlineMotions);
+        $normalized = str_replace([' ', ':', '-'], ['', '', ''], $this->deadlineMotions);
         if ($this->deadlineMotions != '' && date('YmdHis') > $normalized) {
             return true;
         } else {
@@ -187,12 +191,25 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function amendmentDeadlineIsOver()
     {
-        $normalized = str_replace(array(' ', ':', '-'), array('', '', ''), $this->deadlineAmendments);
+        $normalized = str_replace([' ', ':', '-'], ['', '', ''], $this->deadlineAmendments);
         if ($this->deadlineAmendments != '' && date('YmdHis') > $normalized) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeletable()
+    {
+        foreach ($this->motions as $motion) {
+            if ($motion->status != Motion::STATUS_DELETED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -203,9 +220,9 @@ class ConsultationMotionType extends ActiveRecord
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
-            [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs'], 'required'],
+            [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'status'], 'required'],
 
-            [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout'], 'number'],
+            [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
             [['amendmentMultipleParagraphs'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],

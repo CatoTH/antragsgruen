@@ -93,26 +93,26 @@ echo '</div><div class="col-md-9">';
 
 foreach ($controller->consultation->motionTypes as $motionType) {
     echo '<label class="typePreset">';
-    echo '<input type="radio" name="type[preset]" value="' . $motionType->id . '">';
+    echo '<input type="radio" name="type[preset]" value="' . $motionType->id . '" class="preset' . $motionType->id . '">';
     echo '<span>' . Html::encode($motionType->titleSingular) . '</span>';
     echo '</label>';
     echo '<div class="typePresetInfo"></div>';
 }
 
 echo '<label class="typePreset">';
-echo '<input type="radio" name="type[preset]" value="motion">';
+echo '<input type="radio" name="type[preset]" value="motion" class="presetMotion">';
 echo '<span>' . \Yii::t('admin', 'motion_type_templ_motion') . '</span>';
 echo '</label>';
 echo '<div class="typePresetInfo">' . \Yii::t('admin', 'motion_type_templ_motionh') . '</div>';
 
 echo '<label class="typePreset">';
-echo '<input type="radio" name="type[preset]" value="application">';
+echo '<input type="radio" name="type[preset]" value="application" class="presetApplication">';
 echo '<span>' . \Yii::t('admin', 'motion_type_templ_appl') . '</span>';
 echo '</label>';
 echo '<div class="typePresetInfo">' . \Yii::t('admin', 'motion_type_templ_applh') . '</div>';
 
 echo '<label class="typePreset">';
-echo '<input type="radio" name="type[preset]" value="none">';
+echo '<input type="radio" name="type[preset]" value="none" class="presetNone">';
 echo '<span>' . \Yii::t('admin', 'motion_type_templ_none') . '</span>';
 echo '</label>';
 echo '<div class="typePresetInfo"></div>';

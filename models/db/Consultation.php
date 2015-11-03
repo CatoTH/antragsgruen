@@ -187,7 +187,8 @@ class Consultation extends ActiveRecord
      */
     public function getMotionTypes()
     {
-        return $this->hasMany(ConsultationMotionType::class, ['consultationId' => 'id']);
+        return $this->hasMany(ConsultationMotionType::class, ['consultationId' => 'id'])
+            ->andWhere(ConsultationMotionType::tableName() . '.status != ' . ConsultationMotionType::STATUS_DELETED);
     }
 
     /**
