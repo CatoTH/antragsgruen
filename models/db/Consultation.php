@@ -11,6 +11,7 @@ use app\models\exceptions\NotFound;
 use app\models\SearchResult;
 use app\models\sitePresets\ISitePreset;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 
 /**
  * @package app\models\db
@@ -27,6 +28,7 @@ use yii\db\ActiveRecord;
  * @property string $eventDateFrom
  * @property string $eventDateTo
  * @property string $adminEmail
+ * @property string $dateCreation
  * @property string $settings
  *
  * @property Site $site
@@ -56,7 +58,7 @@ class Consultation extends ActiveRecord
     public function rules()
     {
         return [
-            [['title'], 'required'],
+            [['title', 'dateCreation'], 'required'],
             [['title', 'titleShort', 'eventDateFrom', 'eventDateTo', 'urlPath'], 'safe'],
             [['adminEmail', 'wordingBase', 'amendmentNumbering'], 'safe'],
         ];
@@ -308,6 +310,7 @@ class Consultation extends ActiveRecord
         $con->urlPath            = $subdomain;
         $con->adminEmail         = $currentUser->email;
         $con->amendmentNumbering = 0;
+        $con->dateCreation       = date('Y-m-d H:i:s');
 
         $settings                   = $con->getSettings();
         $settings->maintainanceMode = !$openNow;
@@ -318,6 +321,19 @@ class Consultation extends ActiveRecord
         if (!$con->save()) {
             throw new DB($con->getErrors());
         }
+
+        $contactHtml               = nl2br(Html::encode($site->contact));
+        $legalText                 = new ConsultationText();
+        $legalText->consultationId = $con->id;
+        $legalText->category       = 'pagedata';
+        $legalText->textId         = 'legal';
+        $legalText->text           = str_replace('%CONTACT%', $contactHtml, \Yii::t('base', 'legal_template'));
+        if (!$legalText->save()) {
+            var_dump($legalText->getErrors());
+            die();
+        }
+
+
         return $con;
     }
 

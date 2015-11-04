@@ -10,8 +10,8 @@ SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 INSERT INTO `amendment` (`id`, `motionId`, `titlePrefix`, `changeEditorial`, `changeText`, `changeExplanation`, `changeExplanationHtml`, `cache`, `dateCreation`, `datePublication`, `dateResolution`, `status`, `statusString`, `noteInternal`, `textFixed`)
 VALUES
   (1, 2, 'Ä1', '', '',
-   '<p>Auf gehds beim Schichtl pfiad de Charivari Wurschtsolod Gamsbart, Kneedl gwiss. Wos dringma aweng unbandig gfreit mi imma Habedehre, sei Sauwedda dringma aweng Maßkruag Schuabladdla! Do legst di nieda hob i an Suri wia Haferl Graudwiggal Klampfn Biakriagal i bin a woschechta Bayer ebba.</p>\n',
-   0, '', '2015-05-20 11:46:34', NULL, NULL, 3, '', NULL, 0),
+      '<p>Auf gehds beim Schichtl pfiad de Charivari Wurschtsolod Gamsbart, Kneedl gwiss. Wos dringma aweng unbandig gfreit mi imma Habedehre, sei Sauwedda dringma aweng Maßkruag Schuabladdla! Do legst di nieda hob i an Suri wia Haferl Graudwiggal Klampfn Biakriagal i bin a woschechta Bayer ebba.</p>\n',
+      0, '', '2015-05-20 11:46:34', NULL, NULL, 3, '', NULL, 0),
   (2, 3, 'Ä1', '', '', '<p>Um das ganze mal zu testen.</p>\n<p>Links<a href="https://www.antragsgruen.de">https://www.antragsgruen.de</a></p>\n', 0, '', '2015-07-03 14:14:41', NULL, NULL, 3, '', NULL, 0),
   (3, 2, 'Ä2', '', '', '<p>Diff-Test</p>\n', 0, '', '2015-07-04 17:49:25', NULL, NULL, 3, '', NULL, 0),
   (4, 5, 'F-01-004', '', '', '', 0, '', '2015-03-10 18:43:00', NULL, NULL, -2, '', '', 0),
@@ -858,20 +858,25 @@ VALUES
 -- Dumping data for table `consultation`
 --
 
-INSERT INTO `consultation` (`id`, `siteId`, `urlPath`, `type`, `wordingBase`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `amendmentNumbering`, `adminEmail`, `settings`)
+INSERT INTO `consultation` (`id`, `siteId`, `urlPath`, `type`, `wordingBase`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `amendmentNumbering`, `adminEmail`, `settings`, `dateCreation`)
 VALUES
-  (1, 1, 'std-parteitag', 0, 'de-parteitag', 'Test2', 'Test2', NULL, NULL, 0, 'tobias@hoessl.eu', NULL),
+  (1, 1, 'std-parteitag', 0, 'de-parteitag', 'Test2', 'Test2', NULL, NULL, 0, 'tobias@hoessl.eu', NULL, NOW()),
   (2, 2, 'vorstandswahlen', 1, 'de-bewerbung', 'Vorstandswahlen', 'Vorstandswahlen', NULL, NULL, 0,
-   'testadmin@example.org',
-   '{"maintainanceMode":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"lineNumberingGlobal":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotions":false,"screeningMotionsShown":false,"screeningAmendments":false,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":80,"startLayoutType":0,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}'),
+      'testadmin@example.org',
+   '{"maintainanceMode":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"lineNumberingGlobal":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotions":false,"screeningMotionsShown":false,"screeningAmendments":false,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":80,"startLayoutType":0,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}',
+   NOW()),
   (3, 3, 'parteitag', 2, 'de-parteitag', 'Parteitag', 'Parteitag', NULL, NULL, 0, 'testadmin@example.org',
-   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":80,"startLayoutType":3,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}'),
+   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"motionNeedsEmail":false,"motionNeedsPhone":false,"motionHasPhone":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"hasPDF":true,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":80,"startLayoutType":3,"logoUrl":null,"logoUrlFB":null,"motionIntro":null}',
+   NOW()),
   (4, 4, 'bdk', 3, 'de-parteitag', 'BDK', 'BDK', NULL, NULL, 2, 'testadmin@example.org',
-   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":92,"startLayoutType":0,"logoUrl":"","logoUrlFB":"","motionIntro":null,"pdfIntroduction":""}'),
+   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":92,"startLayoutType":0,"logoUrl":"","logoUrlFB":"","motionIntro":null,"pdfIntroduction":""}',
+   NOW()),
   (5, 5, '1laenderrat2015', 3, 'de-parteitag', 'Länderrat', 'Länderrat', NULL, NULL, 2, 'testadmin@example.org',
-   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":92,"startLayoutType":2,"logoUrl":null,"logoUrlFB":null,"motionIntro":null,"pdfIntroduction":""}'),
+   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"commentNeedsEmail":false,"iniatorsMayEdit":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":92,"startLayoutType":2,"logoUrl":null,"logoUrlFB":null,"motionIntro":null,"pdfIntroduction":""}',
+   NOW()),
   (6, 6, 'laenderrat-to', 3, 'de-parteitag', 'Länderrat TO', 'Länderrat TO', NULL, NULL, 2, 'testadmin@example.org',
-   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"iniatorsMayEdit":false,"commentNeedsEmail":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":92,"startLayoutType":4,"logoUrl":null,"logoUrlFB":null,"motionIntro":null,"pdfIntroduction":""}');
+   '{"maintainanceMode":false,"screeningMotions":true,"lineNumberingGlobal":false,"iniatorsMayEdit":false,"commentNeedsEmail":false,"adminsMayEdit":true,"initiatorConfirmEmails":false,"hideTitlePrefix":false,"minimalisticUI":false,"showFeeds":true,"commentsSupportable":false,"screeningMotionsShown":false,"screeningAmendments":true,"screeningComments":false,"initiatorsMayReject":false,"commentWholeMotions":false,"allowMultipleTags":false,"lineLength":92,"startLayoutType":4,"logoUrl":null,"logoUrlFB":null,"motionIntro":null,"pdfIntroduction":""}',
+   NOW());
 
 --
 -- Dumping data for table `consultationAgendaItem`
@@ -915,21 +920,29 @@ INSERT INTO `consultationLog` (`id`, `userId`, `consultationId`, `actionType`, `
 INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `texTemplateId`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `contactEmail`, `contactPhone`, `initiatorForm`, `initiatorFormSettings`, `amendmentMultipleParagraphs`, `status`)
 VALUES
   (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
-   '{"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0),
+                                                                          '{"hasOrganizations":true,"allowMoreSupporters":true}',
+                                                                          1, 0),
   (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
-   '{"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0),
+                                                                          '{"hasOrganizations":true,"allowMoreSupporters":true}',
+                                                                          1, 0),
   (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
-   '{"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0),
+                                                                           '{"hasOrganizations":true,"allowMoreSupporters":true}',
+                                                                           1, 0),
   (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
-   '{"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0),
+                                                                           '{"hasOrganizations":true,"allowMoreSupporters":true}',
+                                                                           1, 0),
   (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 2, 1, 0,
-   '{"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0),
+                                                                            '{"hasOrganizations":true,"allowMoreSupporters":true}',
+                                                                            1, 0),
   (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1,
-   '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0),
+                                                                           '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}',
+                                                                           1, 0),
   (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 2, 1, 1,
-   '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0),
+                                                                         '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}',
+                                                                         1, 0),
   (9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1,
-   '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0);
+                                                                           '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}',
+                                                                           1, 0);
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`
@@ -983,31 +996,39 @@ INSERT INTO `consultationSettingsTag` (`id`, `consultationId`, `position`, `titl
   (10, 1, 2, 'Soziales', 0);
 
 --
+-- Dumping data for table `consultationText`
+--
+
+INSERT INTO `consultationText` (`id`, `consultationId`, `category`, `textId`, `text`, `editDate`) VALUES
+  (1, NULL, 'pagedata', 'privacy', '<p>None of your data are belong to us</p>\n', '2015-11-04 12:37:38'),
+  (2, NULL, 'pagedata', 'legal', 'The administrator of this computer', '2015-11-04 13:14:29');
+
+--
 -- Dumping data for table `emailLog`
 --
 
 INSERT INTO `emailLog` (`id`, `fromSiteId`, `toEmail`, `toUserId`, `type`, `fromEmail`, `dateSent`, `subject`, `text`, `messageId`, `status`, `error`)
 VALUES
   (1, 1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIHYz?= <info@antragsgruen.de>', '2015-08-07 04:45:34',
-   'Neuer Antrag',
-   'Es wurde ein neuer Änderungsantrag "Ä6 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/2/amendment/274',
-   '55c6160def1b7@antragsgruen.de', 0, NULL),
+      'Neuer Antrag',
+      'Es wurde ein neuer Änderungsantrag "Ä6 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antraege-v3.hoessl.eu/std-parteitag/motion/2/amendment/274',
+      '55c6160def1b7@antragsgruen.de', 0, NULL),
   (2, 4, 'testadmin@example.org', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIFRlc3Q=?= <test@antragsgruen.de>',
-   '2015-08-26 06:06:00', 'Neuer Antrag',
-   'Es wurde ein neuer Antrag "Diff-Test" eingereicht.\nLink: http://bdk.antragsgruen-v3.localhost/bdk/motion/113',
-   '55df194817cb6@antragsgruen.de', 3, NULL),
+      '2015-08-26 06:06:00', 'Neuer Antrag',
+      'Es wurde ein neuer Antrag "Diff-Test" eingereicht.\nLink: http://bdk.antragsgruen-v3.localhost/bdk/motion/113',
+      '55df194817cb6@antragsgruen.de', 3, NULL),
   (3, 4, 'testadmin@example.org', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xuIFRlc3Q=?= <test@antragsgruen.de>',
-   '2015-08-26 06:12:40', 'Neuer Änderungsantrag',
-   'Es wurde ein neuer Änderungsantrag " zu A3: Diff-Test" eingereicht.\nLink: http://bdk.antragsgruen-v3.localhost/bdk/motion/113/amendment/275',
-   '55df1ad8bfe01@antragsgruen.de', 3, NULL),
+      '2015-08-26 06:12:40', 'Neuer Änderungsantrag',
+      'Es wurde ein neuer Änderungsantrag " zu A3: Diff-Test" eingereicht.\nLink: http://bdk.antragsgruen-v3.localhost/bdk/motion/113/amendment/275',
+      '55df1ad8bfe01@antragsgruen.de', 3, NULL),
   (4, 1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <antrag@dbjr.de>', '2015-10-15 19:16:48',
-   'Neuer Antrag',
-   'Es wurde ein neuer Antrag "Leerzeichen-Test" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/114',
-   '562106d026576@dbjr.de', 0, NULL),
+      'Neuer Antrag',
+      'Es wurde ein neuer Antrag "Leerzeichen-Test" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/114',
+      '562106d026576@dbjr.de', 0, NULL),
   (5, 1, 'tobias@hoessl.eu', NULL, 3, '=?UTF-8?B?QW50cmFnc2dyw7xu?= <antrag@dbjr.de>', '2015-10-17 01:19:26',
-   'Neuer Änderungsantrag',
-   'Es wurde ein neuer Änderungsantrag "Ä7 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/2/amendment/276',
-   '56224ade39c40@dbjr.de', 0, NULL);
+      'Neuer Änderungsantrag',
+      'Es wurde ein neuer Änderungsantrag "Ä7 zu A2: O’zapft is!" eingereicht.\nLink: http://stdparteitag.antragsgruen-v3.localhost/std-parteitag/motion/2/amendment/276',
+      '56224ade39c40@dbjr.de', 0, NULL);
 
 --
 -- Dumping data for table `motion`
@@ -1378,17 +1399,17 @@ INSERT INTO `motionTag` (`motionId`, `tagId`) VALUES
 -- Dumping data for table `site`
 --
 
-INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`)
+INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`, `dateCreation`)
 VALUES
-  (1, 'stdparteitag', 'Test2', 'Test2', NULL, 1, 1, 'Test2'),
-  (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen', '{"willingToPay":"1"}', 2, 1, 'Vorstandswahlen'),
-  (3, 'parteitag', 'Parteitag', 'Parteitag', '{"willingToPay":"1"}', 3, 1, 'Parteitag'),
-  (4, 'bdk', 'BDK', 'BDK', '{"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK'),
+  (1, 'stdparteitag', 'Test2', 'Test2', NULL, 1, 1, 'Test2', NOW()),
+  (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen', '{"willingToPay":"1"}', 2, 1, 'Vorstandswahlen', NOW()),
+  (3, 'parteitag', 'Parteitag', 'Parteitag', '{"willingToPay":"1"}', 3, 1, 'Parteitag', NOW()),
+  (4, 'bdk', 'BDK', 'BDK', '{"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK', NOW()),
   (5, '1laenderrat2015', 'Länderrat', 'Länderrat',
-   '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"willingToPay":"2"}', 5, 1, 'Länderrat'),
+   '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"willingToPay":"2"}', 5, 1, 'Länderrat', NOW()),
   (6, 'laenderrat-to', 'Länderrat TO', 'Länderrat TO',
    '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"loginMethods":[0,1,3],"forceLogin":false,"willingToPay":"2"}',
-   6, 1, 'Länderrat TO');
+   6, 1, 'Länderrat TO', NOW());
 
 --
 -- Dumping data for table `siteAdmin`
@@ -1409,21 +1430,21 @@ INSERT INTO `siteAdmin` (`siteId`, `userId`) VALUES
 INSERT INTO `user` (`id`, `name`, `email`, `emailConfirmed`, `auth`, `dateCreation`, `status`, `pwdEnc`, `authKey`, `recoveryToken`, `recoveryAt`, `emailChange`, `emailChangeAt`)
 VALUES
   (1, 'Testadmin', 'testadmin@example.org', 1, 'email:testadmin@example.org', '2015-03-19 01:04:44', 0,
-   '$2y$10$tDnD91WMHaiWOgVvdZaxOeoxYGXYIvotpKAzbIY26jUNHf6awCKfK',
-   0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
-   NULL, NULL, NULL, NULL),
+      '$2y$10$tDnD91WMHaiWOgVvdZaxOeoxYGXYIvotpKAzbIY26jUNHf6awCKfK',
+      0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      NULL, NULL, NULL, NULL),
   (2, 'Testuser', 'testuser@example.org', 1, 'email:testuser@example.org', '2015-03-19 01:08:14', 0,
-   '$2y$10$0AYIGO6ltNMnHbNVzFKEouLDFeUnDwWqEvXp1zvjpFLLupJOMZoHC',
-   0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
-   NULL, NULL, NULL, NULL),
+      '$2y$10$0AYIGO6ltNMnHbNVzFKEouLDFeUnDwWqEvXp1zvjpFLLupJOMZoHC',
+      0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      NULL, NULL, NULL, NULL),
   (3, 'Global Admin', 'globaladmin@example.org', 1, 'email:globaladmin@example.org', '2015-03-19 01:04:44', 0,
-   '$2y$10$tDnD91WMHaiWOgVvdZaxOeoxYGXYIvotpKAzbIY26jUNHf6awCKfK',
-   0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
-   NULL, NULL, NULL, NULL),
-   (4, 'TestuserWithoutEmail', '', 0, 'email:noemail@example.org', '2015-03-19 01:08:14', 0,
-   '$2y$10$0AYIGO6ltNMnHbNVzFKEouLDFeUnDwWqEvXp1zvjpFLLupJOMZoHC',
-   0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
-   NULL, NULL, NULL, NULL);
+      '$2y$10$tDnD91WMHaiWOgVvdZaxOeoxYGXYIvotpKAzbIY26jUNHf6awCKfK',
+      0x66353232373335386331326436636434383930306430376638343666316363373538623562396438000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      NULL, NULL, NULL, NULL),
+  (4, 'TestuserWithoutEmail', '', 0, 'email:noemail@example.org', '2015-03-19 01:08:14', 0,
+      '$2y$10$0AYIGO6ltNMnHbNVzFKEouLDFeUnDwWqEvXp1zvjpFLLupJOMZoHC',
+      0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      NULL, NULL, NULL, NULL);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

@@ -25,7 +25,7 @@ $I->seeCheckboxIsChecked('.hasAmendments');
 $I->dontSeeCheckboxIsChecked('.openNow');
 $I->click('#next-2');
 
-$I->fillField('textarea[name="SiteCreateForm[contact]"]', 'Meine Adresse');
+$I->fillField('textarea[name="SiteCreateForm[contact]"]', 'Ich selbst' . "\n" . 'Meine Adresse');
 $I->selectOption('input[name="SiteCreateForm[isWillingToPay]"]', 1);
 
 $I->submitForm('form.siteCreate', [], 'create');
@@ -47,6 +47,7 @@ $I->dontSee('Hallo auf Antragsgrün');
 $I->dontSee('BDK 2', 'h1');
 $I->see('Wartungsmodus', 'h1');
 
+
 $I->loginAsWurzelwerkUser();
 $I->see('Wartungsmodus', 'h1');
 $I->click('.homeLinkLogo');
@@ -54,3 +55,10 @@ $I->see('Wartungsmodus', 'h1');
 $I->logout();
 
 $I->seeInPageSource('layout-gruenes-ci.css');
+
+
+
+$I->wantTo('check the imprint');
+$I->click('#legalLink');
+$I->see('Ich selbst');
+$I->see('Meine Adresse');

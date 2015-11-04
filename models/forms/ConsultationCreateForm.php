@@ -59,6 +59,7 @@ class ConsultationCreateForm extends Model
         $consultation->titleShort         = $this->titleShort;
         $consultation->wordingBase        = $this->template->wordingBase;
         $consultation->adminEmail         = $this->template->adminEmail;
+        $consultation->dateCreation       = date('Y-m-d H:i:s');
         $consultation->settings           = $this->template->settings;
         if (!$consultation->save()) {
             throw new FormError(implode(', ', $consultation->getErrors()));
@@ -68,7 +69,7 @@ class ConsultationCreateForm extends Model
             $newType = new ConsultationMotionType();
             $newType->setAttributes($motionType->getAttributes(), false);
             $newType->consultationId = $consultation->id;
-            $newType->id = null;
+            $newType->id             = null;
             if (!$newType->save()) {
                 throw new FormError($newType->getErrors());
             }
@@ -78,7 +79,7 @@ class ConsultationCreateForm extends Model
             $newText = new ConsultationText();
             $newText->setAttributes($text->getAttributes(), false);
             $newText->consultationId = $consultation->id;
-            $newText->id = null;
+            $newText->id             = null;
             if (!$newText->save()) {
                 throw new FormError(implode(', ', $newText->getErrors()));
             }
@@ -88,7 +89,7 @@ class ConsultationCreateForm extends Model
             $newTag = new ConsultationSettingsTag();
             $newTag->setAttributes($tag->getAttributes(), false);
             $newTag->consultationId = $consultation->id;
-            $newTag->id = null;
+            $newTag->id             = null;
             if (!$newTag->save()) {
                 throw new FormError(implode(', ', $newTag->getErrors()));
             }

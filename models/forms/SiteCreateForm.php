@@ -63,6 +63,7 @@ class SiteCreateForm extends Model
             $preset,
             $this->subdomain,
             $this->title,
+            $this->contact,
             $this->isWillingToPay
         );
         $consultation = Consultation::createFromForm(

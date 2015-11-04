@@ -23,4 +23,9 @@ return [
     'content_maint_bread'   => 'Wartungsmodus',
     'content_maint_title'   => 'Wartungsmodus',
     'content_maint_text'    => '<p>Diese Veranstaltung wurde vom Admin noch nicht freigeschaltet.</p>',
+    'legal_multisite_hint'  => '<p>Antragsgrün bietet Nutzer*innen die Möglichkeit, Veranstaltungsseiten anzulegen, die eigenständig verwaltet werden.</p>',
+    'legal_base_title'      => 'Betreiber*in der Plattform Antragsgruen.de',
+    'legal_base_intro'      => 'Verantwortlich für die Software Antragsgrün und den Betrieb der technischen Plattform antragsgruen.de:',
+    'legal_site_title'      => 'Veranstaltungsseite %SITE%',
+    'legal_template'        => '<p><strong>Verantwortlich gemäß § 5 Telemediengesetz (TMG)</strong></p><address>%CONTACT%</address>',
 ];

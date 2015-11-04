@@ -114,15 +114,16 @@ CREATE TABLE IF NOT EXISTS `amendmentSupporter` (
 CREATE TABLE IF NOT EXISTS `consultation` (
   `id`                 INT(11)      NOT NULL,
   `siteId`             INT(11)      NOT NULL,
-  `urlPath`            VARCHAR(45)  DEFAULT NULL,
-  `type`               TINYINT(4)   DEFAULT NULL,
+  `urlPath`            VARCHAR(45)       DEFAULT NULL,
+  `type`               TINYINT(4)        DEFAULT NULL,
   `wordingBase`        VARCHAR(20)  NOT NULL,
   `title`              VARCHAR(200) NOT NULL,
   `titleShort`         VARCHAR(45)  NOT NULL,
-  `eventDateFrom`      DATE         DEFAULT NULL,
-  `eventDateTo`        DATE         DEFAULT NULL,
+  `eventDateFrom`      DATE              DEFAULT NULL,
+  `eventDateTo`        DATE              DEFAULT NULL,
   `amendmentNumbering` TINYINT(4)   NOT NULL,
-  `adminEmail`         VARCHAR(150) DEFAULT NULL,
+  `adminEmail`         VARCHAR(150)      DEFAULT NULL,
+  `dateCreation`       TIMESTAMP    NULL DEFAULT NULL,
   `settings`           TEXT
 )
   ENGINE = InnoDB
@@ -506,10 +507,11 @@ CREATE TABLE IF NOT EXISTS `site` (
   `id`                    INT(11)      NOT NULL,
   `subdomain`             VARCHAR(45)  NOT NULL,
   `title`                 VARCHAR(200) NOT NULL,
-  `titleShort`            VARCHAR(100) DEFAULT NULL,
+  `titleShort`            VARCHAR(100)      DEFAULT NULL,
+  `dateCreation`          TIMESTAMP    NULL DEFAULT NULL,
   `settings`              TEXT,
-  `currentConsultationId` INT(11)      DEFAULT NULL,
-  `public`                TINYINT(4)   DEFAULT '1',
+  `currentConsultationId` INT(11)           DEFAULT NULL,
+  `public`                TINYINT(4)        DEFAULT '1',
   `contact`               MEDIUMTEXT
 )
   ENGINE = InnoDB

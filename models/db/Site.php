@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property string $subdomain
  * @property string $title
  * @property string $titleShort
+ * @property string $dateCreation
  * @property string $settings
  * @property string $contact
  *
@@ -68,6 +69,18 @@ class Site extends ActiveRecord
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['subdomain', 'title', 'public', 'dateCreation'], 'required'],
+            [['title', 'titleShort', 'public', 'contact'], 'safe'],
+            [['id', 'currentConsultationId', 'public'], 'number'],
+        ];
+    }
+
 
     /** @var null|\app\models\settings\Site */
     private $settingsObject = null;
@@ -98,42 +111,47 @@ class Site extends ActiveRecord
      */
     public static function getSidebarSites()
     {
-        // @TODO
-
-        //$fp = fopen("/tmp/db.log", "a"); fwrite($fp, "Query\n"); fclose($fp);
-
+        $shownSites = [];
         /** @var Site[] $sites */
-        $sites = Site::find()->orderBy('id DESC')->all();
-        /*
-        $reihen2 = array();
-        foreach ($reihen as $reihe) {
-        if ($reihe->aktuelle_veranstaltung &&
-        !$reihe->aktuelle_veranstaltung->getEinstellungen()->wartungs_modus_aktiv) {
-            $reihen2[] = $reihe;
+        $sites = Site::find()->orderBy('dateCreation DESC')->all();
+        foreach ($sites as $site) {
+            if (!$site->public) {
+                continue;
+            }
+            if (!$site->currentConsultation) {
+                continue;
+            }
+            if ($site->currentConsultation->getSettings()->maintainanceMode) {
+                continue;
+            }
+            $shownSites[] = $site;
         }
-        */
-        return $sites;
+
+        return $shownSites;
     }
 
     /**
      * @param ISitePreset $preset
      * @param string $subdomain
      * @param string $title
+     * @param string $contact
      * @param int $isWillingToPay
      * @return Site
      * @throws DB
      */
-    public static function createFromForm(ISitePreset $preset, $subdomain, $title, $isWillingToPay)
+    public static function createFromForm(ISitePreset $preset, $subdomain, $title, $contact, $isWillingToPay)
     {
-        $site             = new Site();
-        $site->title      = $title;
-        $site->titleShort = $title;
-        $site->contact    = $title;
-        $site->subdomain  = $subdomain;
-        $site->public     = 1;
+        $site               = new Site();
+        $site->title        = $title;
+        $site->titleShort   = $title;
+        $site->contact      = $contact;
+        $site->subdomain    = $subdomain;
+        $site->public       = 1;
+        $site->dateCreation = date('Y-m-d H:i:s');
 
-        $siteSettings               = $site->getSettings();
-        $siteSettings->willingToPay = $isWillingToPay;
+        $siteSettings                          = $site->getSettings();
+        $siteSettings->willingToPay            = $isWillingToPay;
+        $siteSettings->willingToPayLastAskedTs = time();
         $site->setSettings($siteSettings);
 
         $preset->setSiteSettings($site);

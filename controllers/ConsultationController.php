@@ -18,6 +18,8 @@ use app\models\db\User;
 use app\models\db\UserNotification;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
+use app\models\forms\AntragsgruenInitForm;
+use app\models\settings\AntragsgruenApp;
 
 class ConsultationController extends Base
 {
@@ -238,7 +240,16 @@ class ConsultationController extends Base
      */
     public function actionLegal()
     {
-        return $this->renderContentPage('legal');
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if ($params->multisiteMode) {
+            $admin      = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
+            $saveUrl    = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'legal']);
+            $viewParams = ['pageKey' => 'legal', 'admin' => $admin, 'saveUrl' => $saveUrl];
+            return $this->render('imprint_multisite', $viewParams);
+        } else {
+            return $this->renderContentPage('legal');
+        }
     }
 
     /**

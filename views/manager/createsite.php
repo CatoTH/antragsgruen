@@ -121,7 +121,7 @@ echo '
 
 <div class="contact">
 <label>
-    <strong>Kontaktadresse:</strong> (postalisch + E-Mail; wird standardmäßig im Impressum genannt)';
+    <strong>Kontaktadresse:</strong> <small>(Name, E-Mail, postalische Adresse; wird standardmäßig im Impressum genannt)</small>';
 echo Html::textarea('SiteCreateForm[contact]', $model->contact, ['rows' => 5]);
 echo '</label>';
 
@@ -130,7 +130,7 @@ echo '
 <br><br>
 
     <div class="zahlung">
-    <strong>Wärest du bereit, einen freiwilligen Beitrag über 20€ an die Netzbegrünung zu leisten?</strong><br>
+    <strong>Wärst du bereit, einen freiwilligen Beitrag über 30€ für den Betrieb von Antragsgrün zu leisten?</strong><br>
     (Wenn ja, schicken wir dir eine Rechnung an die oben eingegebene Adresse)<br>
 ';
 foreach (\app\models\settings\Site::getPaysValues() as $payId => $payName) {

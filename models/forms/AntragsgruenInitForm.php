@@ -258,7 +258,7 @@ class AntragsgruenInitForm extends Model
             throw new \app\models\exceptions\Internal('Admin user not created');
         }
 
-        $site         = Site::createFromForm($preset, 'std', $this->siteTitle, SiteSettings::PAYS_NOT);
+        $site         = Site::createFromForm($preset, 'std', $this->siteTitle, '', SiteSettings::PAYS_NOT);
         $consultation = Consultation::createFromForm(
             $site,
             $this->adminUser,

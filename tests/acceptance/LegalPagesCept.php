@@ -9,5 +9,5 @@ $I->click('#legalLink');
 $I->see('Impressum', 'h1');
 
 $I->click('#privacyLink');
-$I->see('Datenschutz', 'h1');
-$I->see('§ 55 Abs. 2 RStV');
+$I->see(mb_strtoupper('Datenschutzerklärung'), 'h1');
+$I->see('None of your data are belong to us');
