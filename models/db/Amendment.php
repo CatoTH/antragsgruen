@@ -190,29 +190,33 @@ class Amendment extends IMotion implements IRSSItem
     }
 
 
-    private $firstDiffLine = null;
-
     /**
      * @return int
      */
     public function getFirstDiffLine()
     {
-        if ($this->firstDiffLine === null) {
-            foreach ($this->sections as $section) {
-                if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                    continue;
-                }
-                $formatter = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
-                $diff      = $formatter->getGroupedDiffLinesWithNumbers();
-                if (count($diff) > 0) {
-                    return $diff[0]['lineFrom'];
-                }
-            }
-
-            // Nothing changed in a simple text section
-            $this->firstDiffLine = $this->motion->getFirstLineNumber();
+        $cached = $this->getCacheItem('getFirstDiffLine');
+        if ($cached !== null) {
+            return $cached;
         }
-        return $this->firstDiffLine;
+
+        foreach ($this->sections as $section) {
+            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                continue;
+            }
+            $formatter = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
+            $diff      = $formatter->getGroupedDiffLinesWithNumbers();
+            if (count($diff) > 0) {
+                $firstLine = $diff[0]['lineFrom'];
+                $this->setCacheItem('getFirstDiffLine', $firstLine);
+                return $firstLine;
+            }
+        }
+
+        // Nothing changed in a simple text section
+        $firstLine = $this->motion->getFirstLineNumber();
+        $this->setCacheItem('getFirstDiffLine', $firstLine);
+        return $firstLine;
     }
 
     /**
@@ -403,7 +407,7 @@ class Amendment extends IMotion implements IRSSItem
             foreach ($this->amendmentSupporters as $supp) {
                 if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
-                    $currUser = User::getCurrentUser();
+                    $currUser        = User::getCurrentUser();
                     if ($currUser && $currUser->id == $supp->userId) {
                         return true;
                     }

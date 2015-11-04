@@ -7,12 +7,12 @@ use app\models\exceptions\Internal;
 class SitePresets
 {
     /** @var ISitePreset[] */
-    public static $PRESETS = array(
+    public static $PRESETS = [
         0 => Motions::class,
         1 => Elections::class,
         2 => PartyCongress::class,
         3 => BDK::class,
-    );
+    ];
 
     /**
      * @param int $presetId
