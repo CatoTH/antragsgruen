@@ -54,7 +54,7 @@ if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->dea
 }
 
 if ($admin) {
-    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'Edit') . '</a><br>';
+    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
     echo Html::beginForm($saveUrl, 'post');
 }
 

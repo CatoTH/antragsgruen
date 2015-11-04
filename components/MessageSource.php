@@ -210,34 +210,33 @@ class MessageSource extends \yii\i18n\MessageSource
         switch ($pageKey) {
             case 'maintainance':
                 $data                  = new PageData();
-                $data->pageTitle       = 'Wartungsmodus';
-                $data->breadcrumbTitle = 'Wartungsmodus';
-                $data->text            = '<p>Diese Veranstaltung wurde vom Admin noch nicht freigeschaltet.</p>';
+                $data->pageTitle       = \Yii::t('base', 'content_maint_title');
+                $data->breadcrumbTitle = \Yii::t('base', 'content_maint_bread');
+                $data->text            = \Yii::t('base', 'content_maint_text');
                 break;
             case 'help':
                 $data                  = new PageData();
-                $data->pageTitle       = 'Hilfe';
-                $data->breadcrumbTitle = 'Hilfe';
+                $data->pageTitle       = \Yii::t('base', 'content_help_title');
+                $data->breadcrumbTitle = \Yii::t('base', 'content_help_bread');
                 $data->text            = '<p>Hilfe...</p>';
                 break;
             case 'legal':
                 $data                  = new PageData();
-                $data->pageTitle       = 'Impressum';
-                $data->breadcrumbTitle = 'Impressum';
+                $data->pageTitle       = \Yii::t('base', 'content_imprint_title');
+                $data->breadcrumbTitle = \Yii::t('base', 'content_imprint_bread');
                 $data->text            = '<p>Impressum</p>';
                 break;
             case 'privacy':
-                // @TODO
                 $data                  = new PageData();
-                $data->pageTitle       = 'Datenschutz';
-                $data->breadcrumbTitle = 'Datenschutz';
-                $data->text            = '<p>Datenschutz</p><h3>Verantwortlich nach § 55 Abs. 2 RStV</h3>';
+                $data->pageTitle       = \Yii::t('base', 'content_privacy_title');
+                $data->breadcrumbTitle = \Yii::t('base', 'content_privacy_bread');
+                $data->text            = '';
                 break;
             case 'welcome':
                 $data                  = new PageData();
-                $data->pageTitle       = 'Willkommen';
-                $data->breadcrumbTitle = 'Willkommen';
-                $data->text            = '<p>Hallo auf Antragsgrün</p>';
+                $data->pageTitle       = \Yii::t('base', 'content_welcome');
+                $data->breadcrumbTitle = \Yii::t('base', 'content_welcome');
+                $data->text            = \Yii::t('base', 'content_welcome_text');
                 break;
             default:
                 throw new Internal('Unknown page Key: ' . $pageKey);
@@ -245,6 +244,13 @@ class MessageSource extends \yii\i18n\MessageSource
         if ($consultation) {
             foreach ($consultation->texts as $text) {
                 if ($text->category == 'pagedata' && $text->textId == $pageKey) {
+                    $data->text = $text->text;
+                }
+            }
+            if ($pageKey == 'privacy' && $data->text == '') {
+                /** @var ConsultationText $text */
+                $text = ConsultationText::findOne(['consultationId' => null, 'textId' => $pageKey]);
+                if ($text) {
                     $data->text = $text->text;
                 }
             }

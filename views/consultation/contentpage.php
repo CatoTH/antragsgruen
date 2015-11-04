@@ -28,7 +28,7 @@ echo '<h1>' . Html::encode($pageData->pageTitle) . '</h1>';
 echo '<div class="content contentPage">';
 
 if ($admin) {
-    echo '<a href="#" class="editCaller" style="float: right;">Bearbeiten</a><br>';
+    echo '<a href="#" class="editCaller" style="float: right;">' . \Yii::t('base', 'edit') . '</a><br>';
     echo Html::beginForm($saveUrl, 'post');
 }
 
@@ -39,7 +39,7 @@ echo '</article>';
 if ($admin) {
     echo '<div class="textSaver hidden">';
     echo '<button class="btn btn-primary" type="button" data-save-url="' . Html::encode($saveUrl) . '">';
-    echo 'Speichern</button></div>';
+    echo \Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();
     $layout->addOnLoadJS('$.Antragsgruen.contentPageEdit();');
