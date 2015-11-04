@@ -44,9 +44,6 @@ trait CacheTrait
      */
     public function getCacheItem($key)
     {
-        if (defined('YII_DEBUG') && YII_DEBUG) {
-            return null;
-        }
         $data = $this->getCacheObj();
         if (!isset($data[$key])) {
             return null;
@@ -61,14 +58,14 @@ trait CacheTrait
      */
     public function setCacheItem($key, $value, $save = true)
     {
-        if (defined('YII_DEBUG') && YII_DEBUG) {
-            return;
-        }
-        $data = $this->getCacheObj();
-        $data[$key] = $value;
+        $data           = $this->getCacheObj();
+        $data[$key]     = $value;
         $this->cacheObj = $data;
-        $this->cache = serialize($this->cacheObj);
+        $this->cache    = serialize($this->cacheObj);
         if ($save) {
+            if (defined('YII_DEBUG') && YII_DEBUG) {
+                return;
+            }
             $this->save();
         }
     }

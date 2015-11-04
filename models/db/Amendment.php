@@ -195,6 +195,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFirstDiffLine()
     {
+
         $cached = $this->getCacheItem('getFirstDiffLine');
         if ($cached !== null) {
             return $cached;
@@ -259,7 +260,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public static function sortVisibleByLineNumbers(Consultation $consultation, $amendments)
     {
-        $ams = array();
+        $ams = [];
         foreach ($amendments as $am) {
             if (!in_array($am->status, $consultation->getInvisibleAmendmentStati())) {
                 $am->getFirstDiffLine();
