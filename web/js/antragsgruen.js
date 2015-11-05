@@ -644,12 +644,12 @@
                 var $amendment = $(this),
                     firstLine = $amendment.data("first-line"),
                     targetOffset = (firstLine - $paraFirstLine.data("line-number")) * lineHeight,
-                    $prevBookmark = $amendment.prev(),
+                    $prevBookmark = $amendment.prevAll(),
                     delta = targetOffset;
                 $prevBookmark.each(function () {
                     var $pre = $(this);
                     delta -= $pre.height();
-                    delta -= $pre.css("margin-top");
+                    delta -= parseInt($pre.css("margin-top"));
                     delta -= 7;
                 });
                 if (delta < 0) {
