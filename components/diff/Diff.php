@@ -183,9 +183,11 @@ class Diff
         $return = [];
 
         $preOp        = null;
+        $preList      = false;
         $currentSpool = [];
         foreach ($operations as $operation) {
             $firstfour = mb_substr($operation[0], 0, 4);
+            $isList = $firstfour == '<ul>' || $firstfour == '<ol>';
             if ($operation[0] == static::ORIG_LINEBREAK || preg_match('/^<[^>]*>$/siu', $operation[0])) {
                 if (count($currentSpool) > 0) {
                     $return[] = [
@@ -199,7 +201,7 @@ class Diff
                 ];
                 $preOp        = null;
                 $currentSpool = [];
-            } elseif ($operation[1] !== $preOp || $firstfour == '<ul>' || $firstfour == '<ol>') {
+            } elseif ($operation[1] !== $preOp || $isList || $preList) {
                 if (count($currentSpool) > 0) {
                     $return[] = [
                         implode($groupBy, $currentSpool),
@@ -211,6 +213,7 @@ class Diff
             } else {
                 $currentSpool[] = $operation[0];
             }
+            $preList = $isList;
         }
         if (count($currentSpool) > 0) {
             $return[] = [
