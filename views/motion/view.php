@@ -7,6 +7,7 @@ use app\models\db\MotionComment;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
+use app\models\policies\Nobody;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
@@ -220,7 +221,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 }
 
 
-if ($commentWholeMotions) {
+if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() != Nobody::getPolicyID()) {
     echo '<section class="comments"><h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);

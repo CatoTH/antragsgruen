@@ -80,10 +80,12 @@ if ($showCreate) {
         /** @var ConsultationMotionType[] $working */
         if (count($working) == 1) {
             if ($working[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-                $link                         = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
-                $description                  = Html::encode(Yii::t('con', 'start_motion'));
+                $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $working[0]->id]);
+                $description = $working[0]->createTitle;
+
                 $layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
-                    '<a class="createMotion" href="' . Html::encode($link) . '" title="' . $description . '">' .
+                    '<a class="createMotion" href="' . Html::encode($link) . '"
+                    title="' . Html::encode($description) . '">' .
                     '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
                     '</a></div></div>';
                 $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '">' .
@@ -261,7 +263,7 @@ if ($hasPDF) {
     $html    = '<div><ul class="nav nav-list"><li class="nav-header">PDFs</li>';
     $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
-    $link = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, ['class' => 'motionPdfCompilation']);
+    $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, ['class' => 'motionPdfCompilation']);
     $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
 
     if ($hasAmendments) {
@@ -270,7 +272,7 @@ if ($hasPDF) {
         $linkTitle .= Yii::t('con', 'pdf_amendments');
         $html .= '<li>' . Html::a($linkTitle, $amendmentPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
 
-        $link = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendmentPdfLink, ['class' => 'amendmentPdfs']);
+        $link                     = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendmentPdfLink, ['class' => 'amendmentPdfs']);
         $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
     }
 
