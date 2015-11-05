@@ -452,4 +452,25 @@ class DiffTest extends TestBase
         $expected = '<p><strong>Balance von Freiheit und Sicherheit für <del>Solo-</del>Selbstständige und Existenzgründer*innen</strong></p>';
         $this->assertEquals($expected, $out);
     }
+
+    /**
+     */
+    public function testDeleteBeyondList()
+    {
+        $strPre = "<p>###LINENUMBER###Test.</p>
+<p>###LINENUMBER###<strong>To be deletedgi: </strong></p>
+<ul><li>###LINENUMBER###Test 2</li></ul>
+<ul><li>###LINENUMBER###Test 1</li></ul>
+<p>###LINENUMBER###Also to be deleted.</p>";
+        $strPost = "<p>Test.</p>";
+        $diff     = new Diff();
+        $diff->setIgnoreStr('###LINENUMBER###');
+        $out      = $diff->computeDiff($strPre, $strPost);
+        $expected = "<p>###LINENUMBER###Test.</p>
+<p><del>###LINENUMBER###</del><strong><del>To be deletedgi: </del></strong></p>
+<ul><li><del>###LINENUMBER###Test 2</del></li></ul>
+<ul><li><del>###LINENUMBER###Test 1</del></li></ul>
+<p><del>###LINENUMBER###Also to be deleted.</del></p>";
+        $this->assertEquals($expected, $out);
+    }
 }
