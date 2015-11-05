@@ -8,6 +8,9 @@ $I->populateDBData1();
 
 ManagerStartPage::openBy($I);
 
+$I->validateHTML();
+$I->validatePa11y();
+
 $I->wantTo('go to creation form');
 $I->loginAsStdAdmin();
 $I->seeElement('.siteCreateForm');
