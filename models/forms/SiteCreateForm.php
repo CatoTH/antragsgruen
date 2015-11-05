@@ -36,7 +36,7 @@ class SiteCreateForm extends Model
                 'required'
             ],
             [
-                'contact', 'required', 'message' => 'Du musst eine Kontaktadresse angeben.'
+                'contact', 'required', 'message' => \Yii::t('manager', 'site_err_conact'),
             ],
             [['isWillingToPay', 'preset'], 'number'],
             [['hasAmendments', 'hasComments', 'openNow'], 'boolean'],
@@ -44,7 +44,7 @@ class SiteCreateForm extends Model
                 'subdomain',
                 'unique',
                 'targetClass' => Site::class,
-                'message'     => 'Diese Subdomain wird bereits verwendet.'
+                'message'     => \Yii::t('manager', 'site_err_subdomain'),
             ],
             [['contact', 'title', 'preset'], 'safe'],
         ];

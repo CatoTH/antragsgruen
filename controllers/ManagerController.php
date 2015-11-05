@@ -131,8 +131,8 @@ class ManagerController extends Base
                         }
                     }
                 }
-            } catch (Exception $e) {
-                var_dump($e);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
             }
         }
 

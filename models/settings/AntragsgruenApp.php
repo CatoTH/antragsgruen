@@ -2,8 +2,6 @@
 
 namespace app\models\settings;
 
-use yii\caching\FileCache;
-
 class AntragsgruenApp
 {
     use JsonConfigTrait;
@@ -27,6 +25,7 @@ class AntragsgruenApp
     public $adminUserIds          = [];
     public $siteBehaviorClasses   = [];
     public $authClientCollection  = [];
+    public $blockedSubdomains     = ['www'];
     public $autoLoginDuration     = 31536000; // 1 Year
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;

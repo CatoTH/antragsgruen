@@ -38,4 +38,6 @@ return [
     'the_site'                => 'Die Seite',
     'finish_install'          => 'Installationsmodus beenden',
     'welcome'                 => 'Willkommen!',
+    'site_err_subdomain'      => 'Diese Subdomain wird bereits verwendet.',
+    'site_err_contact'        => 'Du musst eine Kontaktadresse angeben.',
 ];

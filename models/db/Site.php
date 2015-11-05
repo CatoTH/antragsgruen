@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\models\exceptions\DB;
 use app\models\sitePresets\ISitePreset;
@@ -138,9 +139,16 @@ class Site extends ActiveRecord
      * @param int $isWillingToPay
      * @return Site
      * @throws DB
+     * @throws FormError
      */
     public static function createFromForm(ISitePreset $preset, $subdomain, $title, $contact, $isWillingToPay)
     {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if (in_array($subdomain, $params->blockedSubdomains)) {
+            throw new FormError(\Yii::t('manager', 'site_err_subdomain'));
+        }
+
         $site               = new Site();
         $site->title        = $title;
         $site->titleShort   = $title;
