@@ -35,11 +35,11 @@ trait AmendmentActionsTrait
         /** @var AmendmentComment $comment */
         $comment = AmendmentComment::findOne($commentId);
         if (!$comment || $comment->amendmentId != $amendment->id || $comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar nicht gefunden');
+            throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
             if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-                throw new Internal('Keine Freischaltrechte');
+                throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
         return $comment;
@@ -88,7 +88,7 @@ trait AmendmentActionsTrait
     {
         $comment = $this->getComment($amendment, $commentId, false);
         if (!$comment->canDelete(User::getCurrentUser())) {
-            throw new Internal('Keine Berechtigung zum Löschen');
+            throw new Internal(\Yii::t('comment', 'err_no_del'));
         }
 
         $comment->status = IComment::STATUS_DELETED;
@@ -99,7 +99,7 @@ trait AmendmentActionsTrait
         $consultation = $amendment->motion->consultation;
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_COMMENT_DELETE, $comment->id);
 
-        \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
+        \Yii::$app->session->setFlash('success', \Yii::t('comment', 'del_done'));
     }
 
     /**
@@ -112,10 +112,10 @@ trait AmendmentActionsTrait
         /** @var AmendmentComment $comment */
         $comment = AmendmentComment::findOne($commentId);
         if (!$comment || $comment->amendmentId != $amendment->id) {
-            throw new Internal('Kommentar nicht gefunden');
+            throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('Keine Freischaltrechte');
+            throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
         $comment->status = IComment::STATUS_VISIBLE;
@@ -139,10 +139,10 @@ trait AmendmentActionsTrait
         /** @var AmendmentComment $comment */
         $comment = AmendmentComment::findOne($commentId);
         if (!$comment || $comment->amendmentId != $amendment->id) {
-            throw new Internal('Kommentar nicht gefunden');
+            throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('Keine Freischaltrechte');
+            throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
         $comment->status = IComment::STATUS_DELETED;

@@ -90,13 +90,14 @@ class ManagerController extends Base
     }
 
     /**
-     * @return User
+     * @return User|null
      */
     protected function requireEligibleToCreateUser()
     {
         $user = $this->eligibleToCreateUser();
         if (!$user) {
             $this->redirect(UrlHelper::createUrl('manager/index'));
+            return null;
         }
         return $user;
     }

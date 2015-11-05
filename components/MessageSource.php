@@ -47,6 +47,7 @@ class MessageSource extends \yii\i18n\MessageSource
             'export'    => 'Exports',
             'initiator' => 'InitiatorInnen',
             'manager'   => 'Seiten-Konfiguration',
+            'comment'   => 'Kommentare',
             'admin'     => 'Administration',
             'user'      => 'Account-Einstellungen',
         ];

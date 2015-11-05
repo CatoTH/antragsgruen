@@ -226,14 +226,13 @@ class MotionController extends Base
     {
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion || $motion->status != Motion::STATUS_DRAFT) {
-            \Yii::$app->session->setFlash('error', 'Motion not found.');
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (isset($_POST['modify'])) {
             $nextUrl = ['motion/edit', 'motionId' => $motion->id];
-            $this->redirect(UrlHelper::createUrl($nextUrl));
-            return '';
+            return $this->redirect(UrlHelper::createUrl($nextUrl));
         }
 
         if (isset($_POST['confirm'])) {
@@ -291,12 +290,12 @@ class MotionController extends Base
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canEdit()) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         $form     = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
@@ -382,8 +381,7 @@ class MotionController extends Base
             list($motionType, $agendaItem) = $ret;
         } catch (ExceptionBase $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
-            return '';
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         /**
@@ -395,8 +393,7 @@ class MotionController extends Base
         if (!$policy->checkCurrUserMotion()) {
             if ($policy->checkCurrUserMotion(true, true)) {
                 $loginUrl = UrlHelper::createLoginUrl(['motion/create', 'motionTypeId' => $motionTypeId]);
-                $this->redirect($loginUrl);
-                return '';
+                return $this->redirect($loginUrl);
             } else {
                 return $this->showErrorpage(403, \Yii::t('motion', 'err_create_permission'));
             }
@@ -411,8 +408,7 @@ class MotionController extends Base
                 if (isset($_POST['draftId'])) {
                     $nextUrl['draftId'] = $_POST['draftId'];
                 }
-                $this->redirect(UrlHelper::createUrl($nextUrl));
-                return '';
+                return $this->redirect(UrlHelper::createUrl($nextUrl));
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
@@ -456,26 +452,22 @@ class MotionController extends Base
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
-            return '';
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canWithdraw()) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_withdraw_permission'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
-            return '';
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (isset($_POST['cancel'])) {
-            $this->redirect(UrlHelper::createMotionUrl($motion));
-            return '';
+            return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
         if (isset($_POST['withdraw'])) {
             $motion->withdraw();
             \Yii::$app->session->setFlash('success', \Yii::t('motion', 'withdraw_done'));
-            $this->redirect(UrlHelper::createMotionUrl($motion));
-            return '';
+            return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
         return $this->render('withdraw', ['motion' => $motion]);
@@ -491,19 +483,18 @@ class MotionController extends Base
         $newMotion = $this->consultation->getMotion($motionId);
         if (!$newMotion || $newMotion->status != Motion::STATUS_DRAFT || !$newMotion->replacedMotion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
         $oldMotion  = $newMotion->replacedMotion;
         $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
 
         if (isset($_POST['modify'])) {
-            $this->redirect(UrlHelper::createUrl([
+            return $this->redirect(UrlHelper::createUrl([
                 'motion/mergeamendments',
                 'motionId'       => $oldMotion->id,
                 'newMotionId'    => $newMotion->id,
                 'amendmentStati' => $amendmentStati
             ]));
-            return '';
         }
 
         if (isset($_POST['confirm'])) {
@@ -561,19 +552,19 @@ class MotionController extends Base
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->canMergeAmendments()) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($newMotionId > 0) {
             $newMotion = $this->consultation->getMotion($newMotionId);
             if (!$newMotion || $newMotion->parentMotionId != $motion->id) {
                 \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-                $this->redirect(UrlHelper::createMotionUrl($motion));
+                return $this->redirect(UrlHelper::createMotionUrl($motion));
             }
         } else {
             $newMotion                 = new Motion();
@@ -601,8 +592,7 @@ class MotionController extends Base
                     if (isset($_POST['draftId'])) {
                         $nextUrl['draftId'] = $_POST['draftId'];
                     }
-                    $this->redirect(UrlHelper::createUrl($nextUrl));
-                    return '';
+                    return $this->redirect(UrlHelper::createUrl($nextUrl));
                 } catch (FormError $e) {
                     \Yii::$app->session->setFlash('error', $e->getMessage());
                 }

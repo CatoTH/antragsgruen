@@ -311,15 +311,14 @@ class AmendmentController extends Base
     {
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            throw new NotFound('Motion not found');
+            throw new NotFound(\Yii::t('motion', 'err_not_found'));
         }
 
         $policy = $motion->motionType->getAmendmentPolicy();
         if (!$policy->checkCurrUserAmendment()) {
             if ($policy->checkCurrUserAmendment(true, true)) {
                 $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionId' => $motionId]);
-                $this->redirect($loginUrl);
-                return '';
+                return $this->redirect($loginUrl);
             } else {
                 return $this->showErrorpage(403, \Yii::t('amend', 'err_create_permission'));
             }
@@ -339,8 +338,7 @@ class AmendmentController extends Base
                 if (isset($_POST['draftId'])) {
                     $nextUrl['draftId'] = $_POST['draftId'];
                 }
-                $this->redirect(UrlHelper::createUrl($nextUrl));
-                return '';
+                return $this->redirect(UrlHelper::createUrl($nextUrl));
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
@@ -381,25 +379,23 @@ class AmendmentController extends Base
     {
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
-            \Yii::$app->session->setFlash('error', 'Amendment not found.');
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$amendment->canWithdraw()) {
-            \Yii::$app->session->setFlash('error', 'Not allowed to withdraw this motion.');
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_withdraw_forbidden'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (isset($_POST['cancel'])) {
-            $this->redirect(UrlHelper::createAmendmentUrl($amendment));
-            return '';
+            return $this->redirect(UrlHelper::createAmendmentUrl($amendment));
         }
 
         if (isset($_POST['withdraw'])) {
             $amendment->withdraw();
-            \Yii::$app->session->setFlash('success', 'Der Änderungsantrag wurde zurückgezogen.');
-            $this->redirect(UrlHelper::createAmendmentUrl($amendment));
-            return '';
+            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'widthdraw_done'));
+            return $this->redirect(UrlHelper::createAmendmentUrl($amendment));
         }
 
         return $this->render('withdraw', ['amendment' => $amendment]);
