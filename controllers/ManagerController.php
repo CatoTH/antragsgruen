@@ -12,7 +12,6 @@ use app\models\exceptions\Internal;
 use app\models\forms\AntragsgruenInitForm;
 use app\models\forms\SiteCreateForm;
 use Yii;
-use yii\db\Exception;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -38,13 +37,22 @@ class ManagerController extends Base
      */
     protected function addSidebar()
     {
-        $sites = Site::getSidebarSites();
-
-        $html = '<ul class="nav nav-list einsatzorte-list">';
-        $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
+        $sites    = Site::getSidebarSites();
+        $siteData = [];
         foreach ($sites as $site) {
-            $url = UrlHelper::createUrl(['consultation/index', 'subdomain' => $site->subdomain]);
-            $html .= '<li>' . Html::a($site->title, $url) . '</li>' . "\n";
+            $url        = UrlHelper::createUrl(['consultation/index', 'subdomain' => $site->subdomain]);
+            $siteData[$site->subdomain] = [
+                'title' => $site->title,
+                'url'   => $url,
+            ];
+        }
+
+        $siteData = $this->getParams()->getBehaviorClass()->getManagerSidebarSites($siteData);
+
+        $html = '<ul class="nav nav-list current-uses-list">';
+        $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
+        foreach ($siteData as $data) {
+            $html .= '<li>' . Html::a($data['title'], $data['url']) . '</li>' . "\n";
         }
         $html .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
@@ -278,8 +286,7 @@ class ManagerController extends Base
         $form = new AntragsgruenInitForm($configFile);
 
         $baseUrl = parse_url($form->siteUrl);
-        if (
-            isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' &&
+        if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' &&
             isset($baseUrl['host']) && $baseUrl['host'] != $_SERVER['HTTP_HOST']
         ) {
             return $this->redirect($form->siteUrl);

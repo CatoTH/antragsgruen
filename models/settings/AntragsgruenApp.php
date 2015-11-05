@@ -2,6 +2,8 @@
 
 namespace app\models\settings;
 
+use app\models\behavior\DefaultBehavior;
+
 class AntragsgruenApp
 {
     use JsonConfigTrait;
@@ -24,6 +26,7 @@ class AntragsgruenApp
     public $mailFromEmail         = '';
     public $adminUserIds          = [];
     public $siteBehaviorClasses   = [];
+    public $behaviorClass         = null;
     public $authClientCollection  = [];
     public $blockedSubdomains     = ['www'];
     public $autoLoginDuration     = 31536000; // 1 Year
@@ -58,6 +61,17 @@ class AntragsgruenApp
             $this->domainPlain  = ($this->isHttps() ? 'https' : 'http');
             $this->domainPlain .= '://' . $_SERVER['HTTP_HOST'] . '/';
         }
+    }
+
+    /**
+     * @return DefaultBehavior
+     */
+    public function getBehaviorClass()
+    {
+        if ($this->behaviorClass !== null) {
+            return new $this->behaviorClass();
+        }
+        return new DefaultBehavior();
     }
 
     /**
