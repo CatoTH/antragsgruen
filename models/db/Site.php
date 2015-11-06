@@ -16,11 +16,13 @@ use yii\db\ActiveRecord;
  * @property int $currentConsultationId
  * @property int $public
  * @property string $subdomain
+ * @property string $organization
  * @property string $title
  * @property string $titleShort
  * @property string $dateCreation
  * @property string $settings
  * @property string $contact
+ * @property int $status
  *
  * @property Consultation $currentConsultation
  * @property Consultation[] $consultations
@@ -29,6 +31,10 @@ use yii\db\ActiveRecord;
  */
 class Site extends ActiveRecord
 {
+    const STATUS_ACTIVE   = 0;
+    const STATUS_INACTIVE = 1;
+    const STATUS_DELETED  = -1;
+
     /**
      * @return string
      */
@@ -77,8 +83,8 @@ class Site extends ActiveRecord
     {
         return [
             [['subdomain', 'title', 'public', 'dateCreation'], 'required'],
-            [['title', 'titleShort', 'public', 'contact'], 'safe'],
-            [['id', 'currentConsultationId', 'public'], 'number'],
+            [['title', 'titleShort', 'public', 'contact', 'organization'], 'safe'],
+            [['id', 'currentConsultationId', 'public', 'status'], 'number'],
         ];
     }
 
@@ -119,12 +125,6 @@ class Site extends ActiveRecord
             if (!$site->public) {
                 continue;
             }
-            if (!$site->currentConsultation) {
-                continue;
-            }
-            if ($site->currentConsultation->getSettings()->maintainanceMode) {
-                continue;
-            }
             $shownSites[] = $site;
         }
 
@@ -135,13 +135,15 @@ class Site extends ActiveRecord
      * @param ISitePreset $preset
      * @param string $subdomain
      * @param string $title
+     * @param string $orga
      * @param string $contact
      * @param int $isWillingToPay
+     * @param int $status
      * @return Site
      * @throws DB
      * @throws FormError
      */
-    public static function createFromForm(ISitePreset $preset, $subdomain, $title, $contact, $isWillingToPay)
+    public static function createFromForm($preset, $subdomain, $title, $orga, $contact, $isWillingToPay, $status)
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
@@ -152,9 +154,11 @@ class Site extends ActiveRecord
         $site               = new Site();
         $site->title        = $title;
         $site->titleShort   = $title;
+        $site->organization = $orga;
         $site->contact      = $contact;
         $site->subdomain    = $subdomain;
         $site->public       = 1;
+        $site->status       = $status;
         $site->dateCreation = date('Y-m-d H:i:s');
 
         $siteSettings                          = $site->getSettings();
@@ -216,5 +220,14 @@ class Site extends ActiveRecord
             return new $params->siteBehaviorClasses[$this->id];
         }
         return new DefaultBehavior();
+    }
+
+    /**
+     */
+    public function deleteSite()
+    {
+        $this->status    = static::STATUS_DELETED;
+        $this->subdomain = null;
+        $this->save(false);
     }
 }

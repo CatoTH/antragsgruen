@@ -7,7 +7,16 @@ class DefaultBehavior
      * @param array $sites
      * @return array
      */
-    public static function getManagerSidebarSites($sites)
+    public static function getManagerCurrentSidebarSites($sites)
+    {
+        return $sites;
+    }
+
+    /**
+     * @param array $sites
+     * @return array
+     */
+    public static function getManagerOldSidebarSites($sites)
     {
         return $sites;
     }

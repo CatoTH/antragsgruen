@@ -505,14 +505,16 @@ CREATE TABLE IF NOT EXISTS `motionTag` (
 
 CREATE TABLE IF NOT EXISTS `site` (
   `id`                    INT(11)      NOT NULL,
-  `subdomain`             VARCHAR(45)  NOT NULL,
+  `subdomain`             VARCHAR(45)       DEFAULT NULL,
   `title`                 VARCHAR(200) NOT NULL,
   `titleShort`            VARCHAR(100)      DEFAULT NULL,
   `dateCreation`          TIMESTAMP    NULL DEFAULT NULL,
   `settings`              TEXT,
   `currentConsultationId` INT(11)           DEFAULT NULL,
   `public`                TINYINT(4)        DEFAULT '1',
-  `contact`               MEDIUMTEXT
+  `contact`               MEDIUMTEXT,
+  `organization`          VARCHAR(255)      DEFAULT NULL,
+  `status`                SMALLINT(6)       DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

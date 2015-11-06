@@ -34,6 +34,8 @@ return [
             Um die Grundinstallation erneut aufzurufen, lege bitte folgende Datei an:<br>
             %FILE%',
     'sidebar_curr_uses'       => 'Aktuelle Einsatzorte',
+    'sidebar_old_uses'        => 'Frühere Einsatzorte',
+    'sidebar_old_uses_show'   => 'Alle anzeigen',
     'config_finished'         => 'Die Grundkonfiguration ist abgeschlossen.',
     'the_site'                => 'Die Seite',
     'finish_install'          => 'Installationsmodus beenden',

@@ -54,9 +54,9 @@ $controller->layoutParams->addCSS('css/manager.css');
             oder Kommentaren.
         </li>
         <li>Hohe <strong>Anpassbarkeit</strong>: Die Antrags- und Unterstützer*innen-Formulare sowie das „Wording“ lässt
-                    sich frei an die eigenen Bedürfnisse anpassen. Es stehen unterschiedliche Layout-Varianten zur
-                    Auswahl, Varianten zur Nummerierung von (Änderungs-)Anträgen usw. Wir versuchen, die gesamte grüne
-                    Vielfalt abzubilden :-).
+            sich frei an die eigenen Bedürfnisse anpassen. Es stehen unterschiedliche Layout-Varianten zur
+            Auswahl, Varianten zur Nummerierung von (Änderungs-)Anträgen usw. Wir versuchen, die gesamte grüne
+            Vielfalt abzubilden :-).
         </li>
         <li><strong>E-Mail-Benachrichtigungen</strong> über neue Anträge, Änderungsanträge und/oder Kommentare für alle
             Interessierte
@@ -83,18 +83,14 @@ echo '<h2 id="selbst_nutzen" class="green">Antragsgrün nutzen</h2>
 
 <div class="content infoSite">
 
-<p>Antragsgrün ist <strong><a href="#opensource" onClick="$(\'#opensource\').scrollintoview({top_offset: 50}); return false;">OpenSource-Software</a></strong>
-und kann von jeder und jedem frei genutzt werden.
-Wir können auch gerne das <strong>Hosting</strong> für Parteitage, Wahlprogramme usw. übernehmen,
-als Unterseite von antragsgruen.de oder als eigene Domain.</p>
-<p>Für grüne bzw. grünen-nahe Institutionen bieten wir das kostenlos an
-(wobei wir uns über einen kleinen freiwilligen Beitrag zum Betrieb und der Weiterentwicklung freuen würden).</p>
-<p>Sind speziellere <strong>programmiertechnische Anpassungen</strong> nötig,
-können wir diese auf Stundensatzbasis umsetzen. Bei Fragen und Wünschen sind wir immer
-<a href="#wer" onClick="$(\'#wer\').scrollintoview({top_offset: 50}); return false;">erreichbar</a>.
+<p>Antragsgrün ist <strong><a href="#opensource" onClick="$(\'#opensource\').scrollintoview({top_offset: -50}); return false;">OpenSource-Software</a></strong>
+und kann von jeder und jedem frei genutzt werden, sowohl um an Diskussionen teilzunehmen, als auch um eigene Programm-/Antragsdiskussionen einzurichten.</p>
+<p>Grünen bzw. Grünen-nahen Organisationen bieten wir an, sich eine <strong>Unterseite auf antransgruen.de</strong> einzurichten und dort ihre Parteitage / Programmdiskussionen zu organisieren. Dazu kannst du das Formular unter "<a href="#opensource" onClick="$(\'#asGreenMember\').scrollintoview({top_offset: -50}); return false;">Als Grünen-Mitglied nutzen</a>" nutzen und es dir innerhalb von zwei, drei Minuten selbst einrichten - kostenlos (wobei wir uns über einen kleinen freiwilligen Beitrag zum Betrieb und der Weiterentwicklung freuen würden). Benötigt wird nur ein Wurzelwerk-Zugang.</p>
+<p>Sind speziellere <strong>programmiertechnische Anpassungen</strong> nötig, oder sollen wir Antragsgrün auf einer <strong>eigenen Domain</strong> hosten, können wir diese auf Stundensatzbasis umsetzen. Bei Fragen und Wünschen sind wir immer
+<a href="#wer" onClick="$(\'#wer\').scrollintoview({top_offset: -50}); return false;">erreichbar</a>.
 </div>
 
-<h2 class="green">Als Grünen-Mitglied nutzen</h2>
+<h2 class="green" id="asGreenMember">Als Grünen-Mitglied nutzen</h2>
 <div class="content infoSite">';
 
 if (User::getCurrentUser()) {
@@ -117,7 +113,7 @@ if (User::getCurrentUser()) {
 <div class="form-group">
         <label for="wwoauth" style="vertical-align: top; margin-top: 5px;">
             Wurzelwerk-BenutzerInnenname<br>
-            <a href="https://www.netz.gruene.de/passwordForgotten.form" target="_blank" style="font-size: 0.8em;
+            <a href="https://netz.gruene.de/passwordForgotten.form" target="_blank" style="font-size: 0.8em;
             margin-top: -7px; display: inline-block; margin-bottom: 10px; font-weight: normal;">
                 Wurzelwerk-Zugangsdaten vergessen?</a>
         </label>

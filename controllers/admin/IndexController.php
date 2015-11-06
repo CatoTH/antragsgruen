@@ -12,6 +12,7 @@ use app\models\db\ConsultationText;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\AdminTodoItem;
+use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
@@ -32,33 +33,33 @@ class IndexController extends AdminBase
         if (!is_null($this->consultation)) {
             $motions = Motion::getScreeningMotions($this->consultation);
             foreach ($motions as $motion) {
-                $description = 'Von: ' . $motion->getInitiatorsStr();
+                $description = \Yii::t('admin', 'todo_from') . ': ' . $motion->getInitiatorsStr();
                 $todo[]      = new AdminTodoItem(
                     'motionScreen' . $motion->id,
                     $motion->getTitleWithPrefix(),
-                    'Antrag freischalten',
+                    \Yii::t('admin', 'todo_motion_screen'),
                     UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]),
                     $description
                 );
             }
             $amendments = Amendment::getScreeningAmendments($this->consultation);
             foreach ($amendments as $amend) {
-                $description = 'Von: ' . $amend->getInitiatorsStr();
+                $description = \Yii::t('admin', 'todo_from') . ': ' . $amend->getInitiatorsStr();
                 $todo[]      = new AdminTodoItem(
                     'amendmentsScreen' . $amend->id,
                     $amend->getTitle(),
-                    'Änderungsantrag freischalten',
+                    \Yii::t('admin', 'todo_amendment_screen'),
                     UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amend->id]),
                     $description
                 );
             }
             $comments = MotionComment::getScreeningComments($this->consultation);
             foreach ($comments as $comment) {
-                $description = 'Von: ' . $comment->name;
+                $description = \Yii::t('admin', 'todo_from') . ': ' . $comment->name;
                 $todo[]      = new AdminTodoItem(
                     'motionCommentScreen' . $comment->id,
-                    'Zu: ' . $comment->motion->getTitleWithPrefix(),
-                    'Kommentar freischalten',
+                    \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->motion->getTitleWithPrefix(),
+                    \Yii::t('admin', 'todo_comment_screen'),
                     $comment->getLink(),
                     $description
                 );
@@ -68,8 +69,8 @@ class IndexController extends AdminBase
                 $description = 'Von: ' . $comment->name;
                 $todo[]      = new AdminTodoItem(
                     'amendmentCommentScreen' . $comment->id,
-                    'Zu: ' . $comment->amendment->getTitle(),
-                    'Kommentar freischalten',
+                    \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->amendment->getTitle(),
+                    \Yii::t('admin', 'todo_comment_screen'),
                     $comment->getLink(),
                     $description
                 );
@@ -114,9 +115,12 @@ class IndexController extends AdminBase
 
             if ($model->save()) {
                 $settingsInput = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
-                $siteSettings = $model->site->getSettings();
+                $siteSettings  = $model->site->getSettings();
                 $siteSettings->saveForm($settingsInput, $_POST['siteSettingsFields']);
                 $model->site->setSettings($siteSettings);
+                if ($model->site->currentConsultationId == $model->id) {
+                    $model->site->status = ($settings->maintainanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
+                }
                 $model->site->save();
 
                 if (!$model->getSettings()->adminsMayEdit) {
@@ -129,10 +133,10 @@ class IndexController extends AdminBase
                 }
 
                 $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
-                $this->layoutParams->mainCssFile = $siteSettings->siteLayout;
+                $this->layoutParams->mainCssFile       = $siteSettings->siteLayout;
 
                 $model->flushCacheWithChildren();
-                \yii::$app->session->setFlash('success', 'Gespeichert.');
+                \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
             } else {
                 \yii::$app->session->setFlash('error', print_r($model->getErrors(), true));
             }
@@ -212,6 +216,7 @@ class IndexController extends AdminBase
 
         $consultation->refresh();
     }
+
     /**
      * @param string $category
      * @return string
@@ -223,7 +228,7 @@ class IndexController extends AdminBase
         if (isset($_POST['save']) && isset($_POST['wordingBase'])) {
             $consultation->wordingBase = $_POST['wordingBase'];
             $consultation->save();
-            \yii::$app->session->setFlash('success', 'Gespeichert.');
+            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         if (isset($_POST['save']) && isset($_POST['string'])) {
@@ -252,7 +257,7 @@ class IndexController extends AdminBase
                 }
             }
             $consultation->refresh();
-            \yii::$app->session->setFlash('success', 'Gespeichert.');
+            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('translation', ['consultation' => $consultation, 'category' => $category]);
@@ -265,7 +270,7 @@ class IndexController extends AdminBase
     {
         $site = $this->site;
 
-        $form = new ConsultationCreateForm();
+        $form           = new ConsultationCreateForm();
         $form->template = $this->consultation;
 
         if (isset($_POST['createConsultation'])) {
@@ -280,7 +285,7 @@ class IndexController extends AdminBase
             }
             try {
                 $form->createConsultation();
-                \yii::$app->session->setFlash('success', 'Die neue Veranstaltung wurde angelegt.');
+                \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_new_created'));
             } catch (FormError $e) {
                 \yii::$app->session->setFlash('error', $e->getMessage());
             }
@@ -292,9 +297,13 @@ class IndexController extends AdminBase
                 foreach ($site->consultations as $consultation) {
                     if ($consultation->id == $keys[0]) {
                         $site->currentConsultationId = $consultation->id;
+                        if ($consultation->getSettings()->maintainanceMode) {
+                            $site->status = Site::STATUS_INACTIVE;
+                        } else {
+                            $site->status = Site::STATUS_ACTIVE;
+                        }
                         $site->save();
-                        $msg = 'Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.';
-                        \yii::$app->session->setFlash('success', $msg);
+                        \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_std_set_done'));
                     }
                 }
             }

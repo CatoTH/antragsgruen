@@ -43,7 +43,7 @@
     "codeception/codeception": "2.1.3",
     "codeception/specify": "*",
     "codeception/verify": "*",
-    "facebook/webdriver": "1.0.2"
+    "facebook/webdriver": "1.0.3"
   },
   "extra": {
     "yii\\composer\\Installer::postCreateProject": {

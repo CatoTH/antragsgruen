@@ -15,6 +15,7 @@ class SiteCreateForm extends Model
     public $contact;
     public $title;
     public $subdomain;
+    public $organization;
 
     /** @var int */
     public $isWillingToPay = null;
@@ -32,11 +33,11 @@ class SiteCreateForm extends Model
     {
         return [
             [
-                ['title', 'subdomain', 'isWillingToPay', 'preset', 'hasAmendments', 'hasComments'],
+                ['title', 'organization', 'subdomain', 'isWillingToPay', 'preset', 'hasAmendments', 'hasComments'],
                 'required'
             ],
             [
-                'contact', 'required', 'message' => \Yii::t('manager', 'site_err_conact'),
+                'contact', 'required', 'message' => \Yii::t('manager', 'site_err_contact'),
             ],
             [['isWillingToPay', 'preset'], 'number'],
             [['hasAmendments', 'hasComments', 'openNow'], 'boolean'],
@@ -46,7 +47,7 @@ class SiteCreateForm extends Model
                 'targetClass' => Site::class,
                 'message'     => \Yii::t('manager', 'site_err_subdomain'),
             ],
-            [['contact', 'title', 'preset'], 'safe'],
+            [['contact', 'title', 'preset', 'organization'], 'safe'],
         ];
     }
 
@@ -63,8 +64,10 @@ class SiteCreateForm extends Model
             $preset,
             $this->subdomain,
             $this->title,
+            $this->organization,
             $this->contact,
-            $this->isWillingToPay
+            $this->isWillingToPay,
+            ($this->openNow ? Site::STATUS_ACTIVE : Site::STATUS_INACTIVE)
         );
         $consultation = Consultation::createFromForm(
             $site,

@@ -37,22 +37,50 @@ class ManagerController extends Base
      */
     protected function addSidebar()
     {
-        $sites    = Site::getSidebarSites();
-        $siteData = [];
+        $sites        = Site::getSidebarSites();
+        $sitesCurrent = [];
+        $sitesOld     = [];
         foreach ($sites as $site) {
-            $url        = UrlHelper::createUrl(['consultation/index', 'subdomain' => $site->subdomain]);
-            $siteData[$site->subdomain] = [
-                'title' => $site->title,
-                'url'   => $url,
+            $url      = UrlHelper::createUrl(['consultation/index', 'subdomain' => $site->subdomain]);
+            $siteData = [
+                'title'        => $site->title,
+                'organization' => $site->organization,
+                'url'          => $url,
             ];
+            if ($site->status == Site::STATUS_ACTIVE) {
+                $sitesCurrent[] = $siteData;
+            } else {
+                $sitesOld[] = $sitesOld;
+            }
         }
 
-        $siteData = $this->getParams()->getBehaviorClass()->getManagerSidebarSites($siteData);
 
-        $html = '<ul class="nav nav-list current-uses-list">';
+        $sitesCurrent = $this->getParams()->getBehaviorClass()->getManagerCurrentSidebarSites($sitesCurrent);
+        $html         = '<ul class="nav nav-list current-uses-list">';
         $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
-        foreach ($siteData as $data) {
-            $html .= '<li>' . Html::a($data['title'], $data['url']) . '</li>' . "\n";
+        foreach ($sitesCurrent as $data) {
+            $html .= '<li>';
+            if ($data['organization'] != '') {
+                $html .= '<span class="orga">' . Html::encode($data['organization']) . '</span>';
+            }
+            $html .= Html::a(Html::encode($data['title']), $data['url']) . '</li>' . "\n";
+        }
+        $html .= '</ul>';
+        $this->layoutParams->menusHtml[] = $html;
+
+
+        $sitesOld = $this->getParams()->getBehaviorClass()->getManagerOldSidebarSites($sitesOld);
+        $html     = '<ul class="nav nav-list current-uses-list old-uses-list">';
+        $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_old_uses') . '</li>';
+        $html .= '<li class="shower"><a href="#" onClick="$(\'.old-uses-list .hidden\').removeClass(\'hidden\');
+            $(\'.old-uses-list .shower\').addClass(\'hidden\'); return false;" style="font-style: italic;">' .
+            \Yii::t('manager', 'sidebar_old_uses_show') . '</a></li>';
+        foreach ($sitesOld as $data) {
+            $html .= '<li class="hidden">';
+            if ($data['organization'] != '') {
+                $html .= '<span class="orga">' . Html::encode($data['organization']) . '</span>';
+            }
+            $html .= Html::a(Html::encode($data['title']), $data['url']) . '</li>' . "\n";
         }
         $html .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;

@@ -5,7 +5,7 @@
 (function ($) {
     "use strict";
     var createInstance = function () {
-        var $steps = $('#AnlegenWizard').find('li'),
+        var $steps = $('#SiteCreateWizard').find('li'),
             $step1 = $('#step1'),
             $step2 = $('#step2'),
             $step3 = $('#step3');
@@ -20,30 +20,35 @@
         });
         $('#next-2').click(function (ev) {
             ev.preventDefault();
-            if ($step2.find('.name input').val() === '') {
-                $step2.find('.name .alert').removeClass("hidden");
-                $step2.find('.name input').focus();
+            if ($('#siteTitle').val() == '') {
+                bootbox.alert('Bitte gib den Namen der neuen Seite an.');
                 return;
             }
-            if ($step2.find('.url input').val() === '') {
-                $step2.find('.url .alert').removeClass("hidden");
-                $step2.find('.url input').focus();
+            if ($('#subdomain').val() == '') {
+                bootbox.alert('Es muss eine Subdomain ("Unter folgender Adresse soll es erreichbar sein") für die neue Seite angegeben werden.');
+                return;
+            }
+            if ($('#subdomain').val().match(/[^a-zA-Z0-9_\-]/)) {
+                bootbox.alert('Die Subdomain ("Unter folgender Adresse soll es erreichbar sein") darf nur Zahlen, Buchstaben, Unter- und Mittelstrich enthalten.');
                 return;
             }
             $step2.addClass("hidden");
             $step3.removeClass("hidden");
             $steps.eq(1).removeClass('active');
             $steps.eq(2).addClass('active');
+            window.scrollTo(0, 0);
         });
         $('#subdomain').on('blur', function () {
-            if ($(this).val().match(/[^a-zA-Z0-9_\-]/)) {
-                alert('Bei der Subdomain sind nur Zahlen, Buchstaben, Unter- und Mittelstrich möglich.');
-                $(this).focus();
+            var $this = $(this);
+            if ($this.val().match(/[^a-zA-Z0-9_\-]/)) {
+                bootbox.alert('Die Subdomain ("Unter folgender Adresse soll es erreichbar sein") darf nur Zahlen, Buchstaben, Unter- und Mittelstrich enthalten.');
             }
         });
+        /*
         $step3.find('button[type=submit]').click(function (ev) {
             console.log(ev);
         });
+        */
         $step1.find('.sitePreset input').change(function () {
             var $this = $(this);
             if (!$this.prop('checked')) {

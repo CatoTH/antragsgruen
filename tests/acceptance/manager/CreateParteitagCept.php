@@ -8,9 +8,6 @@ $I->populateDBData1();
 
 ManagerStartPage::openBy($I);
 
-$I->validateHTML();
-$I->validatePa11y();
-
 $I->wantTo('go to creation form');
 $I->loginAsStdAdmin();
 $I->seeElement('.siteCreateForm');
@@ -18,15 +15,15 @@ $I->submitForm('.siteCreateForm', [], '');
 
 
 $I->wantTo('fill in the creation form');
-$I->selectOption('input[name="SiteCreateForm[preset]"]', 3);
+$I->selectOption('input[name="SiteCreateForm[preset]"]', 2);
 $I->click('#next-1');
 
-$I->fillField('input[name="SiteCreateForm[organization]"]', 'Eine Organisation');
-$I->fillField('input[name="SiteCreateForm[title]"]', 'BDK 2');
-$I->fillField('input[name="SiteCreateForm[subdomain]"]', 'bdk-2');
+$I->fillField('input[name="SiteCreateForm[organization]"]', 'KV Neuland');
+$I->fillField('input[name="SiteCreateForm[title]"]', 'Internet-Konferenz');
+$I->fillField('input[name="SiteCreateForm[subdomain]"]', 'neuland');
 $I->seeCheckboxIsChecked('.hasComments');
 $I->seeCheckboxIsChecked('.hasAmendments');
-$I->dontSeeCheckboxIsChecked('.openNow');
+$I->seeCheckboxIsChecked('.openNow');
 $I->click('#next-2');
 
 $I->fillField('textarea[name="SiteCreateForm[contact]"]', 'Ich selbst' . "\n" . 'Meine Adresse');
@@ -42,27 +39,23 @@ $I->wantTo('open the consultation');
 $I->submitForm('.createdForm', [], '');
 
 $I->see('Hallo auf Antragsgrün');
-$I->see('BDK 2', 'h1');
+$I->see('Internet-Konferenz', 'h1');
 
 
-$I->wantTo('check that maintainance mode is on');
+$I->wantTo('check that maintainance mode is off');
 $I->logout();
-$I->dontSee('Hallo auf Antragsgrün');
-$I->dontSee('BDK 2', 'h1');
-$I->see('Wartungsmodus', 'h1');
-
-
-$I->loginAsWurzelwerkUser();
-$I->see('Wartungsmodus', 'h1');
-$I->click('.homeLinkLogo');
-$I->see('Wartungsmodus', 'h1');
-$I->logout();
-
-$I->seeInPageSource('layout-gruenes-ci.css');
-
+$I->see('Hallo auf Antragsgrün');
+$I->see('Internet-Konferenz', 'h1');
+$I->dontSee('Wartungsmodus', 'h1');
 
 
 $I->wantTo('check the imprint');
 $I->click('#legalLink');
 $I->see('Ich selbst');
 $I->see('Meine Adresse');
+
+
+$I->wantTo('check it is visible on the manager page');
+ManagerStartPage::openBy($I);
+$I->see('KV Neuland', '#sidebar');
+$I->see('Internet-Konferenz', '#sidebar');

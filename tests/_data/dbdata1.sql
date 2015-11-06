@@ -1399,17 +1399,19 @@ INSERT INTO `motionTag` (`motionId`, `tagId`) VALUES
 -- Dumping data for table `site`
 --
 
-INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `settings`, `currentConsultationId`, `public`, `contact`, `dateCreation`)
+INSERT INTO `site` (`id`, `subdomain`, `title`, `titleShort`, `dateCreation`, `settings`, `currentConsultationId`, `public`, `contact`, `organization`, `status`)
 VALUES
-  (1, 'stdparteitag', 'Test2', 'Test2', NULL, 1, 1, 'Test2', NOW()),
-  (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen', '{"willingToPay":"1"}', 2, 1, 'Vorstandswahlen', NOW()),
-  (3, 'parteitag', 'Parteitag', 'Parteitag', '{"willingToPay":"1"}', 3, 1, 'Parteitag', NOW()),
-  (4, 'bdk', 'BDK', 'BDK', '{"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK', NOW()),
-  (5, '1laenderrat2015', 'Länderrat', 'Länderrat',
-   '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"willingToPay":"2"}', 5, 1, 'Länderrat', NOW()),
-  (6, 'laenderrat-to', 'Länderrat TO', 'Länderrat TO',
-   '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"loginMethods":[0,1,3],"forceLogin":false,"willingToPay":"2"}',
-   6, 1, 'Länderrat TO', NOW());
+  (1, 'stdparteitag', 'Test2', 'Test2', '2015-11-06 09:16:30', NULL, 1, 1, 'Test2', 'Testorga', 0),
+  (2, 'vorstandswahlen', 'Vorstandswahlen', 'Vorstandswahlen', '2015-11-06 09:16:30', '{"willingToPay":"1"}', 2, 1,
+      'Vorstandswahlen', 'Testorga2', 0),
+  (3, 'parteitag', 'Parteitag', 'Parteitag', '2015-11-06 09:16:30', '{"willingToPay":"1"}', 3, 1, 'Parteitag', 'Testorga3', 0),
+  (4, 'bdk', 'BDK', 'BDK', '2015-11-06 09:16:30', '{"siteLayout":"layout-gruenes-ci","willingToPay":"2"}', 4, 1, 'BDK',
+      'Testorga4', 0),
+  (5, '1laenderrat2015', 'Länderrat', 'Länderrat', '2015-11-06 09:16:30',
+      '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"willingToPay":"2"}', 5, 1, 'Länderrat', 'Testorga5', 0),
+  (6, 'laenderrat-to', 'Länderrat TO', 'Länderrat TO', '2015-11-06 09:16:30',
+      '{"siteLayout":"layout-gruenes-ci","showAntragsgruenAd":true,"loginMethods":[0,1,3],"forceLogin":false,"willingToPay":"2"}',
+      6, 1, 'Länderrat TO', 'Testorga6', 0);
 
 --
 -- Dumping data for table `siteAdmin`

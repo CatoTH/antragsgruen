@@ -13,7 +13,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m151021_084634_supporter_organization_contact_person', 1445519132),
   ('m151025_123256_user_email_change', 1445802530),
   ('m151104_092212_motion_type_deletable', 1445802530),
-  ('m151104_132242_site_consultation_date_creation', 1445802530);
+  ('m151104_132242_site_consultation_date_creation', 1445802530),
+  ('m151106_083636_site_properties', 1446801672);
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;

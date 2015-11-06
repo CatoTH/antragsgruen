@@ -126,3 +126,13 @@
     }
   }
 }
+.current-uses-list {
+  li {
+    word-break: break-word;
+    span.orga {
+      font-size: 0.9em;
+      color: #767676;
+      display: block;
+    }
+  }
+}

@@ -22,7 +22,6 @@ $controller->layoutParams->addOnLoadJS('$.SiteManager.createInstance();');
 echo '<h1>Antragsgrün-Seite anlegen</h1>
 <div class="fuelux">';
 
-$form = \yii\widgets\ActiveForm::begin(['options' => ['class' => 'siteCreate']]);
 echo Html::beginForm(Url::toRoute('manager/createsite'), 'post', ['class' => 'siteCreate']);
 
 echo '<div id="SiteCreateWizard" class="wizard">
@@ -69,17 +68,24 @@ echo '
 <div class="step-pane" id="step2">
     <br><br>';
 
+echo '<div class="row"><div class="col-md-7">';
 
-echo '<label class="name">Name der Veranstaltung / des Programms:';
-echo Html::input('text', 'SiteCreateForm[title]', $model->title);
-echo '</label>';
+echo '<div class="form-group">';
+echo '<label class="name" for="siteOrganization">Name der Organisation:</label>';
+$opts = ['id' => 'siteOrganization', 'class' => 'form-control'];
+echo Html::input('text', 'SiteCreateForm[organization]', $model->title, $opts);
+echo '</div>';
 
-echo '<br><br>';
+echo '<div class="form-group">';
+echo '<label class="name" for="siteTitle">Name der Veranstaltung / des Programms:</label>';
+echo Html::input('text', 'SiteCreateForm[title]', $model->title, ['id' => 'siteTitle', 'class' => 'form-control']);
+echo '</div>';
 
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \yii::$app->params;
-$input = Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, ['id' => 'subdomain']);
-echo '<label class="url">Unter folgender Adresse soll es erreichbar sein:';
+$input  = Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, ['id' => 'subdomain']);
+echo '<div class="form-group">';
+echo '<label class="url" for="subdomain">Unter folgender Adresse soll es erreichbar sein:</label>';
 echo '<div class="fakeurl">';
 if (strpos($params->domainSubdomain, '<subdomain:[\w_-]+>') !== false) {
     echo str_replace('&lt;subdomain:[\w_-]+&gt;', $input, Html::encode($params->domainSubdomain));
@@ -88,9 +94,9 @@ if (strpos($params->domainSubdomain, '<subdomain:[\w_-]+>') !== false) {
 }
 echo '</div>';
 echo '<div class="labelSubInfo">Für die Subdomain sind nur Buchstaben, Zahlen, "_" und "-" möglich.</div>
-</label>';
+</div>';
 
-echo '<br><br>';
+echo '</div></div><br>';
 
 echo '<label class="policy">';
 echo Html::checkbox('SiteCreateForm[hasComments]', $model->hasComments, ['class' => 'hasComments']);
@@ -104,8 +110,8 @@ echo 'BenutzerInnen können Änderungsanträge stellen
 
 echo '<label class="policy">';
 echo Html::checkbox('SiteCreateForm[openNow]', $model->openNow, ['class' => 'openNow']);
-echo 'Die neue Antragsgrün-Instanz soll sofort aufrufbar sein<br>
-    <div class="labelSubInfo">(ansonsten: erst, wenn du exlizit den Wartungsmodus abschaltest)</div>
+echo 'Die neue Antragsgrün-Seite soll sofort aufrufbar sein<br>
+    <span class="labelSubInfo">(ansonsten: erst, wenn du exlizit den Wartungsmodus abschaltest)</span>
 </label>
 <br>';
 
