@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->gotoConsultationHome();
-$I->see('Neuen Antrag stellen');
+$I->see('Antrag stellen');
 
 $I->wantTo('set the deadline to the past');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
@@ -13,7 +13,7 @@ $I->fillField('#typeDeadlineMotions', date('d.m.Y 00:00:00', time() - 10));
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoConsultationHome();
-$I->dontSee('Neuen Antrag stellen');
+$I->dontSee('Antrag stellen');
 
 
 $I->wantTo('access the page as admin');
@@ -36,4 +36,4 @@ $I->fillField('#typeDeadlineMotions', date('d.m.Y 00:00:00', time() + 3600 * 24)
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoConsultationHome();
-$I->see('Neuen Antrag stellen');
+$I->see('Antrag stellen');

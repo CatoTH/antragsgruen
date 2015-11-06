@@ -7,4 +7,4 @@ use app\tests\_pages\ManagerStartPage;
 $I = new FunctionalTester($scenario);
 $I->wantTo('ensure that ManagerStartPage works');
 ManagerStartPage::openBy($I);
-$I->see('das Antragstool', 'h1');
+$I->see('das grüne Antragstool', 'h1');
