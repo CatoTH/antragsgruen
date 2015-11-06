@@ -9,9 +9,10 @@ class SitePresets
     /** @var ISitePreset[] */
     public static $PRESETS = [
         0 => Motions::class,
-        1 => Elections::class,
+        1 => Manifesto::class,
         2 => PartyCongress::class,
         3 => BDK::class,
+        //4 => Elections::class,
     ];
 
     /**

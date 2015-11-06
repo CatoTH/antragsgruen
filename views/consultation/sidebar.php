@@ -160,7 +160,7 @@ if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda')
     /** @var ConsultationMotionType[] $motionTypes */
     if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
         $newUrl                       = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
-        $description                  = Html::encode(Yii::t('con', 'start_motion'));
+        $description                  = $motionTypes[0]->createTitle;
         $layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
             '<a class="createMotion" href="' . Html::encode($newUrl) . '" title="' . $description . '">' .
             '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
