@@ -165,4 +165,21 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
         $this->assertNotEquals($out, $orig);
     }
+
+    /**
+     */
+    public function testStripTabs()
+    {
+        $orig   = '<ul><li>
+	<p><ins>Test 1<br />
+	Test 2.</ins></p></li></ul>';
+        $expect = '<ul>
+<li>
+<p>Test 1<br>
+Test 2.</p>
+</li>
+</ul>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
 }

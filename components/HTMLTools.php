@@ -21,6 +21,8 @@ class HTMLTools
         $html = preg_replace_callback('/<pre>.*<\/pre>/siuU', function ($matches) {
             return str_replace(' ', chr(194) . chr(160), $matches[0]);
         }, $html);
+        $html = str_replace("\n\t", "\n", $html);
+        $html = str_replace("\t", ' ', $html);
         $html = preg_replace('/ {2,}/siu', ' ', $html);
         $html = str_replace(chr(194) . chr(160), ' ', $html);
 
