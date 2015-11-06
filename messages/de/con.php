@@ -30,4 +30,5 @@ return [
     'sb_comm_none'         => 'keine',
     'sb_comm_to'           => 'Zu',
     'sb_feeds'             => 'Feeds',
+    'search_no_query'      => 'Kein Suchbegriff eingegeben',
 ];

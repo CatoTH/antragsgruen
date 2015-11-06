@@ -48,6 +48,7 @@ class UserController extends Base
      * @param int $login
      * @param string $login_sec
      * @param string $redirect
+     * @return \yii\web\Response
      */
     public function actionLoginbyredirecttoken($login, $login_sec, $redirect)
     {
@@ -58,7 +59,7 @@ class UserController extends Base
                 die('User not found');
             }
             Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
-            $this->redirect($redirect);
+            return $this->redirect($redirect);
         } else {
             die('Invalid Code');
         }

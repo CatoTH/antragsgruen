@@ -29,9 +29,8 @@ class ConsultationController extends Base
     public function actionSearch()
     {
         if (!isset($_REQUEST['query']) || trim($_REQUEST['query']) == '') {
-            \yii::$app->session->setFlash('error', 'Kein Suchbegriff eingegeben');
-            \yii::$app->response->redirect(UrlHelper::createUrl('consultation/index'));
-            return '';
+            \yii::$app->session->setFlash('error', \Yii::t('con', 'search_no_query'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         $results = $this->consultation->fulltextSearch($_REQUEST['query'], [
