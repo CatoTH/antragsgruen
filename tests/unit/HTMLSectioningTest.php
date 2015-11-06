@@ -85,4 +85,23 @@ Line 2, part 2</li><li>Line 3<strong>Strong</strong></li></ul>',
         $out  = HTMLTools::sectionSimpleHTML($orig, false);
         $this->assertEquals($expect, $out);
     }
+
+    /**
+     */
+    public function testLiPSomething()
+    {
+        return;
+        // https://bdk.antragsgruen.de/39/motion/133/amendment/323
+        // Depends on: improving sectioning, also required for https://github.com/CatoTH/antragsgruen/issues/120
+
+        $orig = '<ul>
+<li>
+	<p>Die Mobilisierung der Mittel für den internationalen Klimaschutz ist zum allergroßten Teil öffentliche Aufgabe, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</p>
+	.</li>
+</ul>';
+        $expect = ['<ul><li><p>Die Mobilisierung der Mittel für den internationalen Klimaschutz ist zum allergroßten Teil öffentliche Aufgabe, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</p>.</li></ul>'];
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out  = HTMLTools::sectionSimpleHTML($orig, false);
+        $this->assertEquals($expect, $out);
+    }
 }
