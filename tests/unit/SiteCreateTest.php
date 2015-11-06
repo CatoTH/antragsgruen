@@ -17,6 +17,7 @@ class SiteCreateTest extends DBTestBase
         expect('Form to complain about missing presets', $success)->false();
 
         $form->title          = 'Testveranstaltung 4';
+        $form->organization   = 'Organisator';
         $form->subdomain      = 'test4';
         $form->hasComments    = 1;
         $form->hasAmendments  = 1;
