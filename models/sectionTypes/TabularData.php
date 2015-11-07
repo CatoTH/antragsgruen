@@ -267,12 +267,16 @@ class TabularData extends ISectionType
         $data = json_decode($this->section->data, true);
         $type = $this->section->consultationSetting;
         $rows = static::getTabularDataRowsFromData($type->data);
+        if ($isRight) {
+            $content->textRight .= '\vspace{-0.3cm}\newline';
+        }
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
                 continue;
             }
             if ($isRight) {
                 $content->textRight .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}' . "\\newline\n";
+                $content->textRight .= '\vspace{0.2cm}';
                 $content->textRight .= Exporter::encodePlainString($rowData) . "\\newline\n";
             } else {
                 $content->textMain .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}' . "\\newline\n";

@@ -30,7 +30,7 @@ class TextSimple extends ISectionType
      */
     public function getMotionFormField()
     {
-        return $this->getTextMotionFormField(false);
+        return $this->getTextMotionFormField(false, $this->section->consultationSetting->fixedWidth);
     }
 
     /**
@@ -39,17 +39,19 @@ class TextSimple extends ISectionType
     public function getAmendmentFormField()
     {
         $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
+        $fixedWidth                                 = $this->section->consultationSetting->fixedWidth;
         if ($this->section->consultationSetting->motionType->amendmentMultipleParagraphs) {
-            return $this->getTextAmendmentFormField(false, $this->section->dataRaw);
+            return $this->getTextAmendmentFormField(false, $this->section->dataRaw, $fixedWidth);
         } else {
-            return $this->getTextAmendmentFormFieldSingleParagraph();
+            return $this->getTextAmendmentFormFieldSingleParagraph($fixedWidth);
         }
     }
 
     /**
+     * @param bool $fixedWidth
      * @return string
      */
-    public function getTextAmendmentFormFieldSingleParagraph()
+    public function getTextAmendmentFormFieldSingleParagraph($fixedWidth)
     {
         /** @var AmendmentSection $amSection */
         $amSection = $this->section;
@@ -84,7 +86,11 @@ class TextSimple extends ISectionType
                 'title="' . Html::encode($type->title) . '"></textarea>';
             $str .= '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
                 'title="' . Html::encode($type->title) . '"></textarea>';
-            $str .= '<div class="texteditor" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
+            $str .= '<div class="texteditor';
+            if ($fixedWidth) {
+                $str .= ' fixedWidthFont';
+            }
+            $str .= '" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
                 'title="' . Html::encode($type->title) . '">';
             $str .= $amParas[$paraNo];
             $str .= '</div>';
@@ -165,7 +171,11 @@ class TextSimple extends ISectionType
         $str = '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
         $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
-        $wrapStart = '<section class="paragraph"><div class="text">';
+        $wrapStart = '<section class="paragraph"><div class="text';
+        if ($section->consultationSetting->fixedWidth) {
+            $wrapStart .= ' fixedWidthFont';
+        }
+        $wrapStart .= '">';
         $wrapEnd   = '</div></section>';
         $firstLine = $section->getFirstLineNumber();
         $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);

@@ -6,6 +6,9 @@ class MotionSectionParagraph
     /** @var int */
     public $paragraphNo;
 
+    /** @var string */
+    public $origStr;
+
     /** @var string[] */
     public $lines;
 

@@ -207,7 +207,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_deleted_head'    => 'Antragstyp gelöscht',
     'motion_type_deleted_msg'     => 'Der Antragstyp wurde erfolgreich gelöscht.',
     'todo_from'                   => 'Von',
-    'todo_motion_screen'          => 'Antrag freischalten',
+    'todo_motion_screen'          => '%TYPE% freischalten',
     'todo_amendment_screen'       => 'Änderungsantrag freischalten',
     'todo_comment_screen'         => 'Kommentar freischalten',
     'todo_comment_to'             => 'Zu',

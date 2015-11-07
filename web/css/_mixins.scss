@@ -49,14 +49,10 @@
 }
 
 @mixin motionParagraphStd() {
-  font-family: $motionFixedFont;
   position: relative;
   margin-left: 0;
-  padding: 15px 10px 15px $fixedWidthTextStdPadding;
-  font-size: $motionStdFontSize;
-  //letter-spacing: -0.5px;
-  color: $motionFixedFontColor;
   text-rendering: optimizeLegibility;
+  font-size: $motionStdFontSize;
 
   span.underline {
     border-bottom: solid 1px black;
@@ -74,6 +70,12 @@
   .amendmentRef {
     font-size: 0.8em;
     opacity: 0.7;
+  }
+
+  &.fixedWidthFont {
+    font-family: $motionFixedFont;
+    //letter-spacing: -0.5px;
+    color: $motionFixedFontColor;
   }
 }
 

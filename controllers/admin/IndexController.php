@@ -37,7 +37,7 @@ class IndexController extends AdminBase
                 $todo[]      = new AdminTodoItem(
                     'motionScreen' . $motion->id,
                     $motion->getTitleWithPrefix(),
-                    \Yii::t('admin', 'todo_motion_screen'),
+                    str_replace('%TYPE%', $motion->motionType->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
                     UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]),
                     $description
                 );

@@ -82,6 +82,7 @@ a {
     text-decoration: none;
   }
 }
+
 .alert-info a {
   color: darken($colorLinks, 5%);
   &:hover {
@@ -127,7 +128,6 @@ a {
     line-height: 18px;
     text-transform: uppercase;
   }
-
 
   .content {
     padding: 15px 20px 30px;
@@ -200,13 +200,11 @@ a {
   @include linear-gradient(90deg, $btn-primary-bg, lighten($btn-primary-bg, 3.5%));
 }
 
-
 .saveholder {
   clear: both;
   padding: 10px;
   text-align: center;
 }
-
 
 label {
   input, textarea {
@@ -233,14 +231,14 @@ label {
       background-size: 300px 44px;
     }
   }
-    @media screen and (max-width: $screen-xs) {
-      .homeLinkLogo > img {
-        max-width: 90%;
-      }
-      .homeLinkLogo {
-        text-align: center;
-      }
+  @media screen and (max-width: $screen-xs) {
+    .homeLinkLogo > img {
+      max-width: 90%;
     }
+    .homeLinkLogo {
+      text-align: center;
+    }
+  }
 }
 
 .breadcrumb {
@@ -303,8 +301,6 @@ body > footer {
   height: $footer_height;
 }
 
-
-
 .labelSubInfo {
   font-weight: normal;
   font-size: 0.8em;
@@ -330,7 +326,6 @@ button.link {
   display: none;
 }
 
-
 del, ul.deleted, blockquote.deleted {
   color: #880000;
   text-decoration: line-through;
@@ -340,6 +335,7 @@ ins, ul.inserted, blockquote.inserted {
   color: #008800;
   text-decoration: underline;
 }
+
 del.space, ins.space, del.formatting, ins.formatting {
   font-style: italic;
   font-size: 0.8em;
@@ -367,9 +363,14 @@ del.space, ins.space, del.formatting, ins.formatting {
   &.boxed {
     @extend .texteditorBox;
   }
+  @include motionParagraphStd();
+  &.fixedWidthFont {
+    font-family: $motionFixedFont;
+    //letter-spacing: -0.5px;
+    color: $motionFixedFontColor;
+  }
 
   > * {
-    @include motionParagraphStd();
     padding-bottom: 5px;
     padding-top: 5px;
     padding-left: $fixedWidthTextStdPadding - 40;

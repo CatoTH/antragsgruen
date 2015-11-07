@@ -474,6 +474,8 @@
     }
 
     .text {
+      padding: 15px 20px 15px;
+
       @include motionParagraphStd;
 
       .lineNumber {
@@ -515,6 +517,9 @@
           font-size: 12px;
         }
       }
+    }
+    &.lineNumbers .text {
+      padding: 15px 10px 15px $fixedWidthTextStdPadding;
     }
 
     .text.collidingAmendment {

@@ -18,7 +18,7 @@ class TextHTML extends ISectionType
      */
     public function getMotionFormField()
     {
-        return $this->getTextMotionFormField(true);
+        return $this->getTextMotionFormField(true, $this->section->consultationSetting->fixedWidth);
     }
 
     /**
@@ -27,7 +27,8 @@ class TextHTML extends ISectionType
     public function getAmendmentFormField()
     {
         $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
-        return $this->getTextAmendmentFormField(true, $this->section->dataRaw);
+        $fixedWidth                                 = $this->section->consultationSetting->fixedWidth;
+        return $this->getTextAmendmentFormField(true, $this->section->dataRaw, $fixedWidth);
     }
 
     /**

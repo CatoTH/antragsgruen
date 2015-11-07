@@ -46,9 +46,10 @@ abstract class ISectionType
 
     /**
      * @param bool $fullHtml
+     * @param bool $fixedWidth
      * @return string
      */
-    protected function getTextMotionFormField($fullHtml)
+    protected function getTextMotionFormField($fullHtml, $fixedWidth)
     {
         $type   = $this->section->consultationSetting;
         $htmlId = 'sections_' . $type->id;
@@ -68,7 +69,11 @@ abstract class ISectionType
         $str .= '<textarea name="sections[' . $type->id . ']"  id="sections_' . $type->id . '" ' .
             'title="' . Html::encode($type->title) . '">';
         $str .= Html::encode($this->section->data) . '</textarea>';
-        $str .= '<div class="texteditor boxed" id="' . $htmlId . '_wysiwyg" ' .
+        $str .= '<div class="texteditor boxed';
+        if ($fixedWidth) {
+            $str .= ' fixedWidthFont';
+        }
+        $str .= '" id="' . $htmlId . '_wysiwyg" ' .
             'title="' . Html::encode($type->title) . '">';
         $str .= $this->section->data;
         $str .= '</div>';
@@ -87,10 +92,11 @@ abstract class ISectionType
     /**
      * @param bool $fullHtml
      * @param string $data
+     * @param bool $fixedWidth
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected function getTextAmendmentFormField($fullHtml, $data)
+    protected function getTextAmendmentFormField($fullHtml, $data, $fixedWidth)
     {
         $type     = $this->section->consultationSetting;
         $nameBase = 'sections[' . $type->id . ']';
@@ -105,7 +111,11 @@ abstract class ISectionType
             'title="' . Html::encode($type->title) . '"></textarea>';
         $str .= '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
             'title="' . Html::encode($type->title) . '"></textarea>';
-        $str .= '<div class="motionTextFormatted texteditor boxed" data-track-changed="1" ' .
+        $str .= '<div class="motionTextFormatted texteditor boxed';
+        if ($fixedWidth) {
+            $str .= ' fixedWidthFont';
+        }
+        $str .= '" data-track-changed="1" ' .
             'id="' . $htmlId . '_wysiwyg" title="' . Html::encode($type->title) . '">';
         $str .= HTMLTools::prepareHTMLForCkeditor($this->section->dataRaw);
         $str .= '</div>';

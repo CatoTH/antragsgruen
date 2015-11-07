@@ -3,7 +3,7 @@ return [
     'section_title'   => 'Titel',
     'section_text'    => 'Text',
     'section_html'    => 'Text (erweitert)',
-    'section_image'   => 'Hilfe',
+    'section_image'   => 'Bild',
     'section_tabular' => 'Tabellarische Angaben',
 
     'policy_deadline_over'    => 'Der Antragsschluss ist vorbei',

@@ -262,13 +262,16 @@ class Exporter
             return $textMain;
         }
 
-        // @TODO: Wrap Lists in: \parbox{12.5cm}{ ... }
-
+        $textMain = str_replace(
+            ['\begin{itemize}', '\end{itemize}'],
+            ['\parbox{12.5cm}{\raggedright\begin{itemize}', '\end{itemize}}'],
+            $textMain
+        );
         return '\begin{wrapfigure}{r}{0.23\textwidth}
 \vspace{-0.5cm}
 ' . $textRight . '
 \end{wrapfigure}
-' .$textMain;
+' . $textMain;
     }
 
     /**

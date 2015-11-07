@@ -141,6 +141,7 @@ class MotionSection extends IMotionSection
             $paragraph              = new MotionSectionParagraph();
             $paragraph->paragraphNo = $paraNo;
             $paragraph->lines       = $linesOut;
+            $paragraph->origStr     = $para;
 
             if ($includeAmendment) {
                 $paragraph->amendmentSections = [];

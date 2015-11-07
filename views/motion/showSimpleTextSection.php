@@ -68,18 +68,26 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     echo '</ul>';
 
-    echo '<div class="text textOrig">';
-    $linesArr = [];
-    foreach ($paragraph->lines as $line) {
-        if ($section->consultationSetting->lineNumbers) {
-            /** @var int $lineNo */
-            $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
-            $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
-        }
-        $line       = str_replace('###FORCELINEBREAK###', '', $line);
-        $linesArr[] = $line;
+    echo '<div class="text textOrig';
+    if ($section->consultationSetting->fixedWidth) {
+        echo ' fixedWidthFont';
     }
-    echo implode('<br>', $linesArr);
+    echo '">';
+    if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {
+        $linesArr = [];
+        foreach ($paragraph->lines as $line) {
+            if ($section->consultationSetting->lineNumbers) {
+                /** @var int $lineNo */
+                $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
+                $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
+            }
+            $line       = str_replace('###FORCELINEBREAK###', '', $line);
+            $linesArr[] = $line;
+        }
+        echo implode('<br>', $linesArr);
+    } else {
+        echo $paragraph->origStr;
+    }
     echo '</div>';
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
