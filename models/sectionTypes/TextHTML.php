@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
+use app\components\latex\Content;
 use app\components\opendocument\Text;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\FormError;
@@ -36,9 +37,8 @@ class TextHTML extends ISectionType
     public function setMotionData($data)
     {
         $this->section->dataRaw = $data;
-        $this->section->data = HTMLTools::cleanUntrustedHtml($data);
+        $this->section->data    = HTMLTools::cleanUntrustedHtml($data);
     }
-
 
 
     /**
@@ -48,15 +48,16 @@ class TextHTML extends ISectionType
     public function setAmendmentData($data)
     {
         /** @var AmendmentSection $section */
-        $section = $this->section;
-        $section->data = HTMLTools::cleanUntrustedHtml($data['consolidated']);
+        $section          = $this->section;
+        $section->data    = HTMLTools::cleanUntrustedHtml($data['consolidated']);
         $section->dataRaw = $data['raw'];
     }
 
     /**
+     * @param bool $isRight
      * @return string
      */
-    public function getSimple()
+    public function getSimple($isRight)
     {
         return $this->section->data;
     }
@@ -127,19 +128,29 @@ class TextHTML extends ISectionType
     }
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getMotionTeX()
+    public function printMotionTeX($isRight, Content $content)
     {
-        return 'Test'; //  @TODO
+        if ($isRight) {
+            $content->textRight .= '[TEST HTML]'; // @TODO
+        } else {
+            $content->textMain .= '[TEST HTML]'; // @TODO
+        }
     }
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getAmendmentTeX()
+    public function printAmendmentTeX($isRight, Content $content)
     {
-        return 'Test'; //  @TODO
+        if ($isRight) {
+            $content->textRight .= '[TEST HTML]'; // @TODO
+        } else {
+            $content->textMain .= '[TEST HTML]'; // @TODO
+        }
     }
 
     /**

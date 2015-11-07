@@ -89,7 +89,7 @@ echo '<!--[if lt IE 9]>
 
 echo '</head>';
 
-echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(" ", $bodyClasses) . '"' : '') . '>';
+echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
 
 echo '<script src="' . $layout->resourceUrl('js/modernizr.js') . '"></script>';
 
@@ -144,7 +144,7 @@ echo '</ul>
 echo '</header>';
 
 echo '<div class="row logo">
-<a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Startseite" class="homeLinkLogo">';
+<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo text-hide">' . \Yii::t('base', 'Home');
 if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != '') {
     $path     = parse_url($controller->consultation->getSettings()->logoUrl);
     $filename = basename($path['path']);

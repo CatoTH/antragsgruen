@@ -8,6 +8,22 @@ use app\models\settings\AntragsgruenApp;
 
 class Exporter
 {
+    /** @var Layout */
+    private $layout;
+
+    /** @var  AntragsgruenApp */
+    private $app;
+
+    /**
+     * @param Layout $layout
+     * @param AntragsgruenApp $app
+     */
+    public function __construct(Layout $layout, AntragsgruenApp $app)
+    {
+        $this->layout = $layout;
+        $this->app    = $app;
+    }
+
     /**
      * @param string $str
      * @return string
@@ -45,7 +61,7 @@ class Exporter
             /** @var \DOMText $node */
             $str = static::encodePlainString($node->data);
             if (in_array('underlined', $extraStyles)) {
-                $words = explode(' ', $str);
+                $words    = explode(' ', $str);
                 $words[0] = '\uline{' . $words[0] . '}';
                 for ($i = 1; $i < count($words); $i++) {
                     $words[$i] = '\uline{ ' . $words[$i] . '}';
@@ -236,6 +252,26 @@ class Exporter
     }
 
     /**
+     * @param string $textMain
+     * @param string $textRight
+     * @return string
+     */
+    public static function createTextWithRightString($textMain, $textRight)
+    {
+        if ($textRight == '') {
+            return $textMain;
+        }
+
+        // @TODO: Wrap Lists in: \parbox{12.5cm}{ ... }
+
+        return '\begin{wrapfigure}{r}{0.23\textwidth}
+\vspace{-0.5cm}
+' . $textRight . '
+\end{wrapfigure}
+' .$textMain;
+    }
+
+    /**
      * @param Content $content
      * @return string
      */
@@ -249,7 +285,7 @@ class Exporter
         $replaces['%TITLE_LONG%']         = $content->titleLong;
         $replaces['%AUTHOR%']             = $content->author;
         $replaces['%MOTION_DATA_TABLE%']  = $content->motionDataTable;
-        $replaces['%TEXT%']               = $content->text;
+        $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
         $replaces['%INTRODUCTION_BIG%']   = $content->introductionBig;
         $replaces['%INTRODUCTION_SMALL%'] = $content->introductionSmall;
         $template                         = str_replace(array_keys($replaces), array_values($replaces), $template);
@@ -257,37 +293,43 @@ class Exporter
     }
 
     /**
-     * @param Layout $layout
      * @param Content[] $contents
-     * @param AntragsgruenApp $app
      * @return string
      * @throws Internal
      */
-    public static function createPDF(Layout $layout, $contents, AntragsgruenApp $app)
+    public function createPDF($contents)
     {
-        if (!$app->xelatexPath) {
+        if (!$this->app->xelatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
         }
-        $layoutStr  = static::createLayoutString($layout);
+        $layoutStr  = static::createLayoutString($this->layout);
         $contentStr = '';
         $count      = 0;
+        $imageFiles = [];
         foreach ($contents as $content) {
             if ($count > 0) {
                 $contentStr .= "\n\\newpage\n";
             }
             $contentStr .= static::createContentString($content);
+            foreach ($content->imageData as $fileName => $fileData) {
+                if (preg_match('/[^a-z0-9_-]/siu', $fileName)) {
+                    throw new Internal('Invalid image filename');
+                }
+                file_put_contents($this->app->tmpDir . $fileName, $fileData);
+                $imageFiles[] = $this->app->tmpDir . $fileName;
+            }
             $count++;
         }
         $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
 
-        $filenameBase = $app->tmpDir . uniqid('motion-pdf');
+        $filenameBase = $this->app->tmpDir . uniqid('motion-pdf');
         file_put_contents($filenameBase . '.tex', $str);
 
-        $cmd = $app->xelatexPath;
+        $cmd = $this->app->xelatexPath;
         $cmd .= ' -interaction=batchmode';
-        $cmd .= ' -output-directory="' . $app->tmpDir . '"';
-        if ($app->xdvipdfmx) {
-            $cmd .= ' -output-driver="' . $app->xdvipdfmx . '"';
+        $cmd .= ' -output-directory="' . $this->app->tmpDir . '"';
+        if ($this->app->xdvipdfmx) {
+            $cmd .= ' -output-driver="' . $this->app->xdvipdfmx . '"';
         }
         $cmd .= ' "' . $filenameBase . '.tex"';
 
@@ -312,6 +354,10 @@ class Exporter
         unlink($filenameBase . '.tex');
         unlink($filenameBase . '.pdf');
         unlink($filenameBase . '.out');
+
+        foreach ($imageFiles as $file) {
+            unlink($file);
+        }
 
         return $pdf;
     }

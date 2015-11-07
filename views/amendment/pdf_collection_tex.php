@@ -22,11 +22,12 @@ $layout->title    = 'Änderungsanträge';
 /** @var AntragsgruenApp $params */
 $params = \yii::$app->params;
 try {
+    $exporter = new Exporter($layout, $params);
     $contents = [];
     foreach ($amendments as $amendment) {
         $contents[] = \app\views\amendment\LayoutHelper::renderTeX($amendment);
     }
-    echo Exporter::createPDF($layout, $contents, $params);
+    echo $exporter->createPDF($contents);
 } catch (\Exception $e) {
     echo 'Ein Fehler trat auf: ' . Html::encode($e);
     die();

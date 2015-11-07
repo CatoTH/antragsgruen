@@ -917,32 +917,32 @@ INSERT INTO `consultationLog` (`id`, `userId`, `consultationId`, `actionType`, `
 -- Dumping data for table `consultationMotionType`
 --
 
-INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `texTemplateId`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `contactEmail`, `contactPhone`, `initiatorForm`, `initiatorFormSettings`, `amendmentMultipleParagraphs`, `status`)
+INSERT INTO `consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `texTemplateId`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupport`, `contactEmail`, `contactPhone`, `initiatorForm`, `initiatorFormSettings`, `amendmentMultipleParagraphs`, `status`, `layoutTwoCols`)
 VALUES
   (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
                                                                           '{"hasOrganizations":true,"allowMoreSupporters":true}',
-                                                                          1, 0),
+                                                                          1, 0, 0),
   (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
                                                                           '{"hasOrganizations":true,"allowMoreSupporters":true}',
-                                                                          1, 0),
+                                                                          1, 0, 0),
   (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
                                                                            '{"hasOrganizations":true,"allowMoreSupporters":true}',
-                                                                           1, 0),
+                                                                           1, 0, 1),
   (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 2, 1, 0,
                                                                            '{"hasOrganizations":true,"allowMoreSupporters":true}',
-                                                                           1, 0),
+                                                                           1, 0, 0),
   (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 2, 1, 0,
                                                                             '{"hasOrganizations":true,"allowMoreSupporters":true}',
-                                                                            1, 0),
+                                                                            1, 0, 1),
   (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1,
                                                                            '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}',
-                                                                           1, 0),
+                                                                           1, 0, 0),
   (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 2, 1, 1,
                                                                          '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}',
-                                                                         1, 0),
+                                                                         1, 0, 0),
   (9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, NULL, NULL, 2, 2, 2, 0, 2, 1, 1,
                                                                            '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}',
-                                                                           1, 0);
+                                                                           1, 0, 0);
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`

@@ -25,19 +25,19 @@ class LayoutHelper
         $content->title    = $amendment->motion->title;
         if (!$amendment->motion->consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
             $content->titlePrefix = $amendment->titlePrefix;
-        } else {
-            $content->titlePrefix = '';
         }
         $content->titleLong = $amendment->titlePrefix . ' - ';
-        $content->titleLong .= str_replace('%PREFIX%', $amendment->motion->titlePrefix, 'Änderungsantrag zu %PREFIX%');
+        $content->titleLong .= str_replace(
+            '%PREFIX%',
+            $amendment->motion->titlePrefix,
+            \Yii::t('amend', 'amendment_for_prefix')
+        );
 
         $intro                    = explode("\n", $amendment->motion->consultation->getSettings()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         if (count($intro) > 1) {
             array_shift($intro);
             $content->introductionSmall = implode("\n", $intro);
-        } else {
-            $content->introductionSmall = '';
         }
 
         $initiators = [];
@@ -47,42 +47,39 @@ class LayoutHelper
         $initiatorsStr   = implode(', ', $initiators);
         $content->author = $initiatorsStr;
 
-        $content->motionDataTable = '';
         foreach ($amendment->getDataTable() as $key => $val) {
             $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 
-        $content->text = '';
-
         if ($amendment->changeEditorial != '') {
             $title = Exporter::encodePlainString(\Yii::t('amend', 'editorial_hint'));
-            $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+            $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $lines = LineSplitter::motionPara2lines($amendment->changeEditorial, false, PHP_INT_MAX);
-            $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
+            $content->textMain .= TextSimple::getMotionLinesToTeX($lines) . "\n";
         }
 
         foreach ($amendment->getSortedSections(false) as $section) {
-            $content->text .= $section->getSectionType()->getAmendmentTeX();
+            $section->getSectionType()->printAmendmentTeX(false, $content);
         }
 
         if ($amendment->changeExplanation != '') {
             $title = Exporter::encodePlainString(\Yii::t('amend', 'reason'));
-            $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+            $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $lines = LineSplitter::motionPara2lines($amendment->changeExplanation, false, PHP_INT_MAX);
-            $content->text .= TextSimple::getMotionLinesToTeX($lines) . "\n";
+            $content->textMain .= TextSimple::getMotionLinesToTeX($lines) . "\n";
         }
 
         $supporters = $amendment->getSupporters();
         if (count($supporters) > 0) {
             $title = Exporter::encodePlainString(\Yii::t('amend', 'supporters'));
-            $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+            $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $supps = [];
             foreach ($supporters as $supp) {
                 $supps[] = $supp->getNameWithOrga();
             }
             $suppStr = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
-            $content->text .= Exporter::encodeHTMLString($suppStr);
+            $content->textMain .= Exporter::encodeHTMLString($suppStr);
         }
 
         return $content;

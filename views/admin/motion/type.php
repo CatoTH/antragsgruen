@@ -47,7 +47,7 @@ echo '<div class="content">';
 echo $controller->showErrors();
 
 
-echo '<h3>' . 'Bezeichnung' . '</h3>';
+echo '<h3>' . \Yii::t('admin', 'motion_type_names') . '</h3>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typeTitleSingular">';
@@ -107,11 +107,11 @@ echo Html::textInput('type[motionPrefix]', $motionType->motionPrefix, $options);
 echo '</div></div>';
 
 
-echo '<h3>' . 'Berechtigungen für:' . '</h3>';
+echo '<h3>' . \Yii::t('admin', 'motion_type_perm') . '</h3>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typePolicyMotions">';
-echo 'Anträge';
+echo \Yii::t('admin', 'motion_type_perm_motion');
 echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policyMotions]',
@@ -123,7 +123,7 @@ echo '</div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typePolicyAmendments">';
-echo 'Änderungsanträge';
+echo \Yii::t('admin', 'motion_type_perm_amend');
 echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policyAmendments]',
@@ -139,13 +139,13 @@ echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
 if (!$motionType->amendmentMultipleParagraphs) {
     echo ' checked';
 }
-echo '> ' . 'Änderungsanträge dürfen sich nur auf einen Absatz beziehen' . '
+echo '> ' . \Yii::t('admin', 'motion_type_amend_singlep') . '
     </label></div>';
 echo '</div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typePolicyComments">';
-echo 'Kommentieren';
+echo \Yii::t('admin', 'motion_type_perm_comment');
 echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policyComments]',
@@ -158,7 +158,7 @@ echo '</div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typePolicySupport">';
-echo 'Zustimmen / Widersprechen';
+echo \Yii::t('admin', 'motion_type_perm_supp');
 echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
     'type[policySupport]',
@@ -169,7 +169,7 @@ echo Html::dropDownList(
 echo '</div></div>';
 
 
-echo '<h3>' . 'Antragsschluss' . '</h3>';
+echo '<h3>' . \Yii::t('admin', 'motion_type_deadline') . '</h3>';
 
 $deadlineMotions = Tools::dateSql2bootstraptime($motionType->deadlineMotions);
 echo '<div class="form-group">';
@@ -196,7 +196,7 @@ echo '</div>';
 echo '</div></div>';
 
 
-echo '<h3>' . 'AntragstellerIn / UnterstützerInnen:' . '</h3>';
+echo '<h3>' . \Yii::t('admin', 'motion_type_initiator') . '</h3>';
 
 
 echo '<div class="form-group">';

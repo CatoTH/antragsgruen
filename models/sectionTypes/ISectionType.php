@@ -2,6 +2,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
+use app\components\latex\Content;
 use app\components\opendocument\Text;
 use app\controllers\Base;
 use app\models\db\IMotionSection;
@@ -142,9 +143,10 @@ abstract class ISectionType
     abstract public function setAmendmentData($data);
 
     /**
+     * @param bool $isRight
      * @return string
      */
-    abstract public function getSimple();
+    abstract public function getSimple($isRight);
 
     /**
      * @return string
@@ -164,14 +166,23 @@ abstract class ISectionType
     abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf);
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    abstract public function getMotionTeX();
+    abstract public function printMotionTeX($isRight, Content $content);
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    abstract public function getAmendmentTeX();
+    abstract public function printAmendmentTeX($isRight, Content $content);
+
+    /**
+     */
+    public function cleanupAmendmentText()
+    {
+        return;
+    }
 
     /**
      * @return string

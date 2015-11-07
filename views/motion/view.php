@@ -137,24 +137,40 @@ echo $controller->showErrors();
 
 echo '</div>';
 
-
+$main = $right = '';
 foreach ($motion->getSortedSections(true) as $i => $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    echo '<section class="motionTextHolder motionTextHolder' . $i;
-    if ($motion->consultation->getSettings()->lineLength > 80) {
-        echo " smallFont";
+    if ($section->isLayoutRight() && $motion->motionType->layoutTwoCols) {
+        $right .= '<section class="sectionType' . $section->consultationSetting->type . '">';
+        $right .= $section->getSectionType()->getSimple(true);
+        $right .= '</section>';
+    } else {
+        $main .= '<section class="motionTextHolder sectionType' . $section->consultationSetting->type;
+        if ($motion->consultation->getSettings()->lineLength > 80) {
+            $main .= ' smallFont';
+        }
+        $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
+        $main .= '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+
+        $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
+        $main .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp, $consolidatedAmendments);
+
+        $main .= '</section>';
     }
-    echo '" id="section_' . $section->sectionId . '">';
-    echo '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
-
-    $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-    echo $section->getSectionType()->showMotionView($controller, $commentForm, $commOp, $consolidatedAmendments);
-
-    echo '</section>';
 }
 
+
+if ($right == '') {
+    echo $main;
+} else {
+    echo '<div class="row" style="margin-top: 2px;"><div class="col-md-9 motionMainCol">';
+    echo $main;
+    echo '</div><div class="col-md-3 motionRightCol">';
+    echo $right;
+    echo '</div></div>';
+}
 
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
 $supporters = $motion->getSupporters();

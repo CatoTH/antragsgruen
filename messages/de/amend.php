@@ -21,6 +21,7 @@ return [
     'prefix'                            => 'Antragsnummer',
     'none_yet'                          => 'Es gibt noch keine Änderungsanträge',
     'amendment_for'                     => 'Änderungsantrag zu',
+    'amendment_for_prefix'              => 'Änderungsantrag zu %PREFIX%',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
         'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
@@ -101,4 +102,6 @@ return [
     'withdraw_no'                       => 'Doch nicht',
     'withdraw_yes'                      => 'Zurückziehen',
     'widthdraw_done'                    => 'Der Änderungsantrag wurde zurückgezogen.',
+    'title_amend_to'                    => 'Ändern in',
+    'title_new'                         => 'Neuer Titel',
 ];

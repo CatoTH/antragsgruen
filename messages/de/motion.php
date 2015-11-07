@@ -19,6 +19,7 @@ return [
     'Initiator'                         => 'AntragstellerIn',
     'initiators_1'                      => 'AntragstellerIn',
     'initiators_x'                      => 'AntragstellerInnen',
+    'initiators_head'                   => 'Antragsteller_Innen',
     'Supporter'                         => 'UnterstützerIn',
     'supporters_heading'                => 'Unterstützer_Innen',
     'supporting_you'                    => 'Du!',
@@ -31,6 +32,8 @@ return [
     'dislikes'                          => 'Ablehnung',
     'dislikes_you'                      => 'Du!',
     'like_withdraw'                     => 'Doch nicht',
+    'button_submit'                     => 'Einreichen',
+    'button_correct'                    => 'Korrigieren',
     'Prefix'                            => 'Antragsnummer',
     'Title'                             => 'Titel',
     'replaces_motion'                   => 'Ersetzt',
@@ -95,4 +98,6 @@ return [
     'withdraw_confirm'                  => 'Willst du diesen Antrag wirklich zurückziehen?',
     'withdraw_no'                       => 'Doch nicht',
     'withdraw_yes'                      => 'Zurückziehen',
+    'max_len_hint'                      => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
+    'max_len_alert'                     => 'Der Text ist zu lang!',
 ];

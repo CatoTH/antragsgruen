@@ -2,6 +2,8 @@
 
 namespace app\models\sectionTypes;
 
+use app\components\latex\Content;
+use app\components\latex\Exporter;
 use app\components\opendocument\Text;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
@@ -78,27 +80,28 @@ class TabularData extends ISectionType
     }
 
     /**
+     * @param bool $isRight
      * @return string
      */
-    public function getSimple()
+    public function getSimple($isRight)
     {
         if ($this->isEmpty()) {
             return '';
         }
         $rows = static::getTabularDataRowsFromData($this->section->consultationSetting->data);
         $data = json_decode($this->section->data, true);
-        $str  = '<div class="content"><table class="tabularData table">';
+        $str  = '<dl class="tabularData table">';
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
                 continue;
             }
-            $str .= '<tr><th class="col-md-3">';
+            $str .= '<dt' . (!$isRight ? ' class="dl-horizontal"' : '') . '>';
             $str .= Html::encode($rows[$rowId]->title) . ':';
-            $str .= '</th><td class="col-md-9">';
+            $str .= '</dt><dd class="col-md-9">';
             $str .= Html::encode($rows[$rowId]->formatRow($rowData));
-            $str .= '</td></tr>';
+            $str .= '</dd>';
         }
-        $str .= '</table></div>';
+        $str .= '</dl>';
         return $str;
     }
 
@@ -109,7 +112,7 @@ class TabularData extends ISectionType
     {
         return ''; // @TODO
     }
-    
+
     /**
      * @return bool
      */
@@ -256,19 +259,42 @@ class TabularData extends ISectionType
     }
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getMotionTeX()
+    public function printMotionTeX($isRight, Content $content)
     {
-        return 'Test'; //  @TODO
+        $data = json_decode($this->section->data, true);
+        $type = $this->section->consultationSetting;
+        $rows = static::getTabularDataRowsFromData($type->data);
+        foreach ($data['rows'] as $rowId => $rowData) {
+            if (!isset($rows[$rowId])) {
+                continue;
+            }
+            if ($isRight) {
+                $content->textRight .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}' . "\\newline\n";
+                $content->textRight .= Exporter::encodePlainString($rowData) . "\\newline\n";
+            } else {
+                $content->textMain .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}' . "\\newline\n";
+                $content->textMain .= Exporter::encodePlainString($rowData) . "\\newline\n";
+            }
+        }
+        if ($isRight) {
+            $content->textRight .= '\newline' . "\n";
+        }
     }
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getAmendmentTeX()
+    public function printAmendmentTeX($isRight, Content $content)
     {
-        return 'Test'; //  @TODO
+        if ($isRight) {
+            $content->textRight .= '[TEST DATA]'; // @TODO
+        } else {
+            $content->textMain .= '[TEST DATA]'; // @TODO
+        }
     }
 
     /**
@@ -314,7 +340,7 @@ class TabularData extends ISectionType
      */
     public function matchesFulltextSearch($text)
     {
-        $type = $this->section->consultationSetting;
+        $type   = $this->section->consultationSetting;
         $data   = json_decode($this->section->data, true);
         $rows   = static::getTabularDataRowsFromData($type->data);
         $return = '';

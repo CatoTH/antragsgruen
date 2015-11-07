@@ -207,7 +207,8 @@ CREATE TABLE IF NOT EXISTS `consultationMotionType` (
   `initiatorForm`               INT(11)      NOT NULL,
   `initiatorFormSettings`       TEXT,
   `amendmentMultipleParagraphs` TINYINT(1)   NULL,
-  `status`                      SMALLINT(6)  NOT NULL
+  `status`                      SMALLINT(6)  NOT NULL,
+  `layoutTwoCols`               SMALLINT(6)           DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

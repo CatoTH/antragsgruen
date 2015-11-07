@@ -33,6 +33,7 @@ trait ManifestoTrait
         $type->texTemplateId               = 1;
         $type->amendmentMultipleParagraphs = 1;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
+        $type->layoutTwoCols               = 0;
         $type->save();
 
         return $type;

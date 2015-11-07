@@ -2,6 +2,7 @@
 
 namespace app\models\sectionTypes;
 
+use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\opendocument\Text;
 use app\models\db\AmendmentSection;
@@ -24,7 +25,11 @@ class Title extends ISectionType
         if ($type->maxLen != 0) {
             $len = abs($type->maxLen);
             $str .= '<div class="maxLenHint"><span class="glyphicon glyphicon-info-sign icon"></span> ';
-            $str .= str_replace('%LEN%', $len, 'Max. %LEN% Zeichen (Aktuell: <span class="counter"></span>)');
+            $str .= str_replace(
+                ['%LEN%', '%COUNT%'],
+                [$len, '<span class="counter"></span>'],
+                \Yii::t('motion', 'max_len_hint')
+            );
             $str .= '</div>';
         }
 
@@ -33,7 +38,7 @@ class Title extends ISectionType
 
         if ($type->maxLen != 0) {
             $str .= '<div class="alert alert-danger maxLenTooLong hidden" role="alert">';
-            $str .= '<span class="glyphicon glyphicon-alert"></span> ' . 'Der Text ist zu lang!';
+            $str .= '<span class="glyphicon glyphicon-alert"></span> ' . \Yii::t('motion', 'max_len_alert');
             $str .= '</div>';
         }
 
@@ -70,9 +75,10 @@ class Title extends ISectionType
     }
 
     /**
+     * @param bool $isRight
      * @return string
      */
-    public function getSimple()
+    public function getSimple($isRight)
     {
         return Html::encode($this->section->data);
     }
@@ -94,7 +100,7 @@ class Title extends ISectionType
         $str = '<section id="section_title" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
         $str .= '<div id="section_title_0" class="paragraph"><div class="text">';
-        $str .= '<h4 class="lineSummary">' . 'Ändern in' . ':</h4>';
+        $str .= '<h4 class="lineSummary">' . \Yii::t('amend', 'title_amend_to') . ':</h4>';
         $str .= '<p>' . Html::encode($section->data) . '</p>';
         $str .= '</div></div></section>';
 
@@ -137,7 +143,8 @@ class Title extends ISectionType
         $pdf->SetFont('Courier', '', 11);
         $pdf->Ln(7);
 
-        $html = '<p><strong>Ändern in:</strong><br>' . Html::encode($section->data) . '</p>';
+        $html = '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
+            Html::encode($section->data) . '</p>';
         $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         $pdf->Ln(7);
     }
@@ -159,28 +166,39 @@ class Title extends ISectionType
     }
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getMotionTeX()
+    public function printMotionTeX($isRight, Content $content)
     {
-        return Exporter::encodePlainString($this->section->data);
+        if ($isRight) {
+            $content->textRight .= Exporter::encodePlainString($this->section->data);
+        } else {
+            $content->textMain .= Exporter::encodePlainString($this->section->data);
+        }
     }
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getAmendmentTeX()
+    public function printAmendmentTeX($isRight, Content $content)
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
         if ($section->data == $section->getOriginalMotionSection()->data) {
-            return '';
+            return;
         }
         $title = Exporter::encodePlainString($section->consultationSetting->title);
         $tex   = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-        $html  = '<p><strong>Ändern in:</strong><br>' . Html::encode($this->section->data) . '</p>';
+        $html  = '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
+            Html::encode($this->section->data) . '</p>';
         $tex .= Exporter::encodeHTMLString($html);
-        return $tex;
+        if ($isRight) {
+            $content->textRight .= $tex;
+        } else {
+            $content->textMain .= $tex;
+        }
     }
 
 
@@ -202,7 +220,8 @@ class Title extends ISectionType
         if ($section->data == $section->getOriginalMotionSection()->data) {
             return '';
         }
-        return '<strong>Neuer Titel:</strong><br>' . Html::encode($section->data) . '<br><br>';
+        return '<strong>' . \Yii::t('amend', 'title_new') . ':</strong><br>' .
+        Html::encode($section->data) . '<br><br>';
     }
 
     /**
@@ -225,7 +244,7 @@ class Title extends ISectionType
         if ($section->data == $section->getOriginalMotionSection()->data) {
             return;
         }
-        $odt->addHtmlTextBlock('<h2>Neuer Titel</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . \Yii::t('amend', 'title_new') . '</h2>', false);
         $odt->addHtmlTextBlock('<p>' . Html::encode($section->data) . '</p>', false);
     }
 

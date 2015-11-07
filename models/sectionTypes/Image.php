@@ -2,10 +2,12 @@
 
 namespace app\models\sectionTypes;
 
+use app\components\latex\Content;
 use app\components\opendocument\Text;
 use app\components\UrlHelper;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
+use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 
@@ -79,9 +81,10 @@ class Image extends ISectionType
     }
 
     /**
+     * @param bool $isRight
      * @return string
      */
-    public function getSimple()
+    public function getSimple($isRight)
     {
         if ($this->isEmpty()) {
             return '';
@@ -97,8 +100,7 @@ class Image extends ISectionType
                 'sectionId' => $section->sectionId
             ]
         );
-        $str     = '<div style="text-align: center; padding: 10px;"><img src="' . Html::encode($url) . '" ';
-        $str .= 'alt="' . Html::encode($type->title) . '" style="max-height: 200px;"></div>';
+        $str     = '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
         return $str;
     }
 
@@ -174,6 +176,7 @@ class Image extends ISectionType
      */
     public function getMotionPlainText()
     {
+
         return '[BILD]';
     }
 
@@ -185,20 +188,39 @@ class Image extends ISectionType
         return '[BILD]';
     }
 
+    /** @var null|string */
+    private $texTmpFile = null;
+
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getMotionTeX()
+    public function printMotionTeX($isRight, Content $content)
     {
-        return 'BILD'; //  @TODO
+        /** @var AntragsgruenApp $params */
+        $params       = \Yii::$app->params;
+        $filenameBase = uniqid('motion-pdf-image');
+
+        $content->imageData[$filenameBase] = base64_decode($this->section->data);
+        if ($isRight) {
+            $content->textRight .= '\includegraphics[width=4cm]{' . $params->tmpDir . $filenameBase . '}' . "\n";
+            $content->textRight .= '\newline' . "\n";
+        } else {
+            $content->textMain .= '\includegraphics[width=10cm]{' . $params->tmpDir . $filenameBase . '}' . "\n";
+        }
     }
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getAmendmentTeX()
+    public function printAmendmentTeX($isRight, Content $content)
     {
-        return 'BILD'; //  @TODO
+        if ($isRight) {
+            $content->textRight .= '[BILD]';
+        } else {
+            $content->textMain .= '[BILD]';
+        }
     }
 
     /**
@@ -224,7 +246,7 @@ class Image extends ISectionType
     public function printMotionToODT(Text $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[BILD]', false); // @TODO
+        $odt->addHtmlTextBlock('[BILD]', false);
     }
 
     /**
@@ -234,7 +256,7 @@ class Image extends ISectionType
     public function printAmendmentToODT(Text $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[BILD]', false); // @TODO
+        $odt->addHtmlTextBlock('[BILD]', false);
     }
 
     /**

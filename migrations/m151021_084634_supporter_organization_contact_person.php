@@ -5,21 +5,6 @@ use yii\db\Migration;
 
 class m151021_084634_supporter_organization_contact_person extends Migration
 {
-    /*
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m151021_084634_supporter_organization_contact_person cannot be reverted.\n";
-
-        return false;
-    }
-    */
-
-    // Use safeUp/safeDown to run migration code within a transaction
     public function safeUp()
     {
         $orga = IntVal(\app\models\db\AmendmentSupporter::PERSON_ORGANIZATION);

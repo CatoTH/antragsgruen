@@ -7,10 +7,12 @@ class Content
     public $template;
     public $author;
     public $title;
-    public $titlePrefix;
+    public $titlePrefix       = '';
     public $titleLong;
     public $introductionBig;
-    public $introductionSmall;
-    public $motionDataTable;
-    public $text;
+    public $introductionSmall = '';
+    public $motionDataTable   = '';
+    public $textMain          = '';
+    public $textRight         = '';
+    public $imageData         = [];
 }

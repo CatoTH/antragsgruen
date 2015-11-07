@@ -20,11 +20,12 @@ $layout->template = $texTemplate->texLayout;
 $layout->author   = $motion->getInitiatorsStr();
 $layout->title    = $motion->getTitleWithPrefix();
 
-$content = \app\views\motion\LayoutHelper::renderTeX($motion);
-/** @var AntragsgruenApp $params */
-$params = \yii::$app->params;
 try {
-    echo Exporter::createPDF($layout, [$content], $params);
+    /** @var AntragsgruenApp $params */
+    $params   = \yii::$app->params;
+    $exporter = new Exporter($layout, $params);
+    $content  = \app\views\motion\LayoutHelper::renderTeX($motion, $exporter);
+    echo $exporter->createPDF([$content]);
 } catch (\Exception $e) {
     echo 'Ein Fehler trat auf: ' . Html::encode($e);
 }

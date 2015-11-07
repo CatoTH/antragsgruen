@@ -243,8 +243,6 @@ class LayoutHelper
         if (count($intro) > 1) {
             array_shift($intro);
             $content->introductionSmall = implode("\n", $intro);
-        } else {
-            $content->introductionSmall = '';
         }
         $initiators = [];
         foreach ($motion->getInitiators() as $init) {
@@ -253,27 +251,26 @@ class LayoutHelper
         $initiatorsStr   = implode(', ', $initiators);
         $content->author = $initiatorsStr;
 
-        $content->motionDataTable = '';
         foreach ($motion->getDataTable($hasAgenda) as $key => $val) {
             $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 
-        $content->text = '';
         foreach ($motion->getSortedSections(true) as $section) {
-            $content->text .= $section->getSectionType()->getMotionTeX();
+            $isRight = ($section->isLayoutRight() && $motion->motionType->layoutTwoCols);
+            $section->getSectionType()->printMotionTeX($isRight, $content);
         }
 
         $supporters = $motion->getSupporters();
         if (count($supporters) > 0) {
-            $title = Exporter::encodePlainString('UnterstützerInnen');
-            $content->text .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+            $title = Exporter::encodePlainString(\Yii::t('motion', 'initiators_head'));
+            $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $supps = [];
             foreach ($supporters as $supp) {
                 $supps[] = $supp->getNameWithOrga();
             }
             $suppStr = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
-            $content->text .= Exporter::encodeHTMLString($suppStr);
+            $content->textMain .= Exporter::encodeHTMLString($suppStr);
         }
 
         return $content;

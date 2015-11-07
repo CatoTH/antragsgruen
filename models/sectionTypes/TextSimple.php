@@ -7,6 +7,7 @@ use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\Diff;
 use app\components\diff\Engine;
 use app\components\HTMLTools;
+use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\LineSplitter;
 use app\components\opendocument\Text;
@@ -135,9 +136,10 @@ class TextSimple extends ISectionType
     }
 
     /**
+     * @param bool $isRight
      * @return string
      */
-    public function getSimple()
+    public function getSimple($isRight)
     {
         $sections = HTMLTools::sectionSimpleHTML($this->section->data);
         $str      = '';
@@ -404,15 +406,16 @@ class TextSimple extends ISectionType
     }
 
     /**
-     * @return string
+     * @param bool $isRight
+     * @param Content $content
      */
-    public function getMotionTeX()
+    public function printMotionTeX($isRight, Content $content)
     {
-        $tex = '';
         if ($this->isEmpty()) {
-            return $tex;
+            return;
         }
 
+        $tex = '';
         /** @var MotionSection $section */
         $section = $this->section;
 
@@ -445,14 +448,19 @@ class TextSimple extends ISectionType
                 $tex .= static::getMotionLinesToTeX($lines) . "\n";
             }
         }
-
-        return $tex;
+        if ($isRight) {
+            $content->textRight .= $tex;
+        } else {
+            $content->textMain .= $tex;
+        }
     }
 
     /**
+     * @param bool $isRight
+     * @param Content $content
      * @return string
      */
-    public function getAmendmentTeX()
+    public function printAmendmentTeX($isRight, Content $content)
     {
         $tex = '';
 
@@ -474,7 +482,11 @@ class TextSimple extends ISectionType
             $tex .= Exporter::encodeHTMLString($html);
         }
 
-        return $tex;
+        if ($isRight) {
+            $content->textRight .= $tex;
+        } else {
+            $content->textMain .= $tex;
+        }
     }
 
     /**

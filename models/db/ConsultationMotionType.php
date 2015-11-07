@@ -31,6 +31,7 @@ use yii\db\ActiveRecord;
  * @property string $initiatorFormSettings
  * @property int $amendmentMultipleParagraphs
  * @property int $status
+ * @property int $layoutTwoCols
  *
  * @property Consultation $consultation
  * @property ConsultationSettingsMotionSection[] $motionSections
@@ -218,16 +219,16 @@ class ConsultationMotionType extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'titleSingular', 'titlePlural', 'createTitle'], 'required'],
+            [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'layoutTwoCols'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
             [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'status'], 'required'],
 
             [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
-            [['amendmentMultipleParagraphs'], 'number'],
+            [['amendmentMultipleParagraphs', 'layoutTwoCols'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
             [['motionPrefix', 'position', 'initiatorForm', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],
-            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'safe'],
+            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'layoutTwoCols'], 'safe'],
         ];
     }
 }

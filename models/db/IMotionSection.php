@@ -57,4 +57,12 @@ abstract class IMotionSection extends ActiveRecord
      * @return int
      */
     abstract public function getFirstLineNumber();
+
+    /**
+     * @return bool
+     */
+    public function isLayoutRight()
+    {
+        return in_array($this->consultationSetting->type, [ISectionType::TYPE_IMAGE, ISectionType::TYPE_TABULAR]);
+    }
 }

@@ -24,8 +24,9 @@ $layout->title    = $amendment->getTitle();
 /** @var AntragsgruenApp $params */
 $params = \yii::$app->params;
 try {
+    $exporter = new Exporter($layout, $params);
     $content = \app\views\amendment\LayoutHelper::renderTeX($amendment);
-    echo Exporter::createPDF($layout, [$content], $params);
+    echo $exporter->createPDF([$content]);
 } catch (\Exception $e) {
     echo 'Ein Fehler trat auf: ' . Html::encode($e);
     die();

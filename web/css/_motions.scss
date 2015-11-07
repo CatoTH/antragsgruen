@@ -164,7 +164,7 @@
         }
         .motionPrefix {
           width: 90px;
-          float:left;
+          float: left;
           left: 30px;
           top: 13px;
         }
@@ -232,7 +232,6 @@
       right: 3px;
     }
   }
-
 
   .agendaItemAdder {
     padding-left: 35px;
@@ -769,5 +768,28 @@
     font-size: 16px;
     margin-bottom: 15px;
     margin-top: 15px;
+  }
+}
+
+.sectionType3 { // Images
+  padding: 10px;
+  img {
+    max-height: 200px;
+    max-width: 100%;
+  }
+}
+
+.motionRightCol {
+  padding-left: 0;
+  padding-top: 0;
+  &.col-md-3 {
+    padding-left: 0;
+    padding-top: 0;
+  }
+
+  > section {
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 20px;
   }
 }

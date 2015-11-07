@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\Motion;
+use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
 
 /**
@@ -19,22 +20,39 @@ $controller->layoutParams->addBreadcrumb('Bestätigen');
 
 echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->title) . '</h1>';
 
+$main = $right = '';
 foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    echo '<section class="motionTextHolder">';
-    echo '<h2 class="green">' . Html::encode($section->consultationSetting->title) . '</h2>';
-    echo '<div class="consolidated">';
+    if ($section->isLayoutRight() && $motion->motionType->layoutTwoCols) {
+        $right .= '<section class="sectionType' . $section->consultationSetting->type . '">';
+        $right .= $section->getSectionType()->getSimple(true);
+        $right .= '</section>';
+    } else {
+        $main .= '<section class="motionTextHolder sectionType' . $section->consultationSetting->type . '">';
+        $main .= '<h2 class="green">' . Html::encode($section->consultationSetting->title) . '</h2>';
+        $main .= '<div class="consolidated">';
 
-    echo $section->getSectionType()->getSimple();
+        $main .= $section->getSectionType()->getSimple(false);
 
-    echo '</div>';
-    echo '</section>';
+        $main .= '</div>';
+        $main .= '</section>';
+    }
+}
+
+if ($right == '') {
+    echo $main;
+} else {
+    echo '<div class="row" style="margin-top: 2px;"><div class="col-md-9 motionMainCol">';
+    echo $main;
+    echo '</div><div class="col-md-3 motionRightCol">';
+    echo $right;
+    echo '</div></div>';
 }
 
 echo '<div class="motionTextHolder">
-        <h3 class="green">Antragsteller_Innen</h3>
+        <h3 class="green">' . \Yii::t('motion', 'initiators_head') . '</h3>
 
         <div class="content">
             <ul>';
@@ -56,12 +74,12 @@ echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
 echo '<div class="content">
         <div style="float: right;">
             <button type="submit" name="confirm" class="btn btn-success">
-                <span class="glyphicon glyphicon-ok-sign"></span> Einreichen
+                <span class="glyphicon glyphicon-ok-sign"></span> ' . \Yii::t('motion', 'button_correct') . '
             </button>
         </div>
         <div style="float: left;">
             <button type="submit" name="modify" class="btn">
-                <span class="glyphicon glyphicon-remove-sign"></span> Korrigieren
+                <span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'button_submit') . '
             </button>
         </div>
     </div>';
