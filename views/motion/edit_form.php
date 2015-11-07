@@ -20,7 +20,7 @@ $layout     = $controller->layoutParams;
 if ($mode == 'create') {
     $this->title = $form->motionType->createTitle;
 } else {
-    $this->title = \Yii::t('motion', 'Edit Motion');
+    $this->title = str_replace('%TYPE%', $form->motionType->titleSingular, \Yii::t('motion', 'motion_edit'));
 }
 
 $layout->loadCKEditor();
@@ -39,13 +39,9 @@ echo '<div class="form content hideIfEmpty">';
 echo $controller->showErrors();
 
 if ($form->motionType->getAmendmentPolicy()->checkCurrUserAmendment(true, true)) {
-    $msg = 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
-        Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>
-        bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".';
-
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
-        'Antrag oder Änderungsantrag?' . '</div>' .
-        str_replace('%HOME%', UrlHelper::createUrl('consultation/index'), $msg) .
+        \Yii::t('motion', 'create_explanation_title') . '</div>' .
+        str_replace('%HOME%', UrlHelper::createUrl('consultation/index'), \Yii::t('motion', 'create_explanation')) .
         '<br><br>';
 }
 
@@ -53,7 +49,7 @@ if ($form->motionType->getAmendmentPolicy()->checkCurrUserAmendment(true, true))
 $motionPolicy = $form->motionType->getMotionPolicy();
 if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
-        Yii::t('motion', 'Prerequisites for a motion'), '</div>';
+        Yii::t('motion', 'create_prerequisites'), '</div>';
 
     echo $motionPolicy->getOnCreateDescription();
 }
@@ -92,7 +88,7 @@ if (count($tags) == 1) {
 } elseif (count($tags) > 0) {
     echo '<div class="form-group">';
     if ($consultation->getSettings()->allowMultipleTags) {
-        echo '<label class="legend">Thema</label>';
+        echo '<label class="legend">' . \Yii::t('motion', 'tag_tags') . '</label>';
         foreach ($tags as $id => $tag) {
             echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
             if (in_array($id, $form->tags)) {
@@ -107,7 +103,7 @@ if (count($tags) == 1) {
         foreach ($tags as $tag) {
             $tagOptions[$tag->id] = $tag->title;
         }
-        echo '<div class="label">Thema:</div><div style="position: relative;">';
+        echo '<div class="label">' . \Yii::t('motion', 'tag_tags') . ':</div><div style="position: relative;">';
         echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
         echo '</div>';
     }
@@ -125,7 +121,7 @@ $initiatorClass = $form->motionType->getMotionInitiatorFormClass();
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
-echo '<span class="glyphicon glyphicon-chevron-right"></span> Weiter';
+echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('motion', 'go_on');
 echo '</button></div>';
 
 $layout->addOnLoadJS('$.Antragsgruen.motionEditForm();');

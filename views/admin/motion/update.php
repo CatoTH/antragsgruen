@@ -70,7 +70,7 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
 }
 
 
-echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm']);
+echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm', 'enctype' => 'multipart/form-data']);
 
 echo '<div class="content form-horizontal">';
 

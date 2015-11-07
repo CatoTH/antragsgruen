@@ -47,7 +47,7 @@ if ($policy->checkCurrUserAmendment(true, true)) {
     $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '">' .
         $title . '</a>';
     $sidebarRows++;
-} else {
+} elseif ($policy->getPolicyID() != IPolicy::POLICY_NOBODY) {
     $msg = $policy->getPermissionDeniedAmendmentMsg();
     if ($msg != '') {
         $createLi = '<li class="amendmentCreate">';
@@ -86,7 +86,7 @@ if ($motion->canMergeAmendments() && count($motion->amendments) > 0) {
 if ($motion->canEdit()) {
     $editLi = '<li class="edit">';
     $title  = '<span class="icon glyphicon glyphicon-edit"></span>' .
-        \Yii::t('motion', 'motion_edit');
+        str_replace('%TYPE%', $motion->motionType->titleSingular, \Yii::t('motion', 'motion_edit'));
     $editLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'edit')) . '</li>';
     $html .= $editLi;
     $layout->menusHtmlSmall[] = $editLi;
@@ -96,7 +96,7 @@ if ($motion->canEdit()) {
 if ($motion->canWithdraw()) {
     $withdrawLi = '<li class="withdraw">';
     $title      = '<span class="icon glyphicon glyphicon-remove"></span>' .
-        \Yii::t('motion', 'motion_withdraw');
+        str_replace('%TYPE%', $motion->motionType->titleSingular, \Yii::t('motion', 'motion_withdraw'));
     $withdrawLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'withdraw')) . '</li>';
     $html .= $withdrawLi;
     $layout->menusHtmlSmall[] = $withdrawLi;

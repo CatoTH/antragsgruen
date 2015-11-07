@@ -2,15 +2,14 @@
 
 return [
     'Start a Motion'                    => 'Antrag stellen',
-    'Edit Motion'                       => 'Antrag bearbeiten',
     'Confirm Motion'                    => 'Antrag bestätigen',
     'Motion submitted'                  => 'Antrag eingereicht',
-    'Prerequisites for a motion'        => 'Voraussetzungen für einen Antrag',
+    'create_prerequisites'              => 'Voraussetzungen für einen Antrag',
     'amendment_create'                  => 'Änderungsantrag stellen',
     'amendments_merge'                  => 'Änderungsanträge einpflegen',
     'none_yet'                          => 'Es gibt noch keine Anträge',
-    'motion_edit'                       => 'Antrag bearbeiten',
-    'motion_withdraw'                   => 'Antrag zurückziehen',
+    'motion_edit'                       => '%TYPE% bearbeiten',
+    'motion_withdraw'                   => '%TYPE% zurückziehen',
     'motion_admin_edit'                 => 'Admin: bearbeiten',
     'back_start'                        => 'Zurück zur Übersicht',
     'pdf_version'                       => 'PDF-Version',
@@ -86,6 +85,7 @@ return [
     'edit_done_msg'                     => 'Die Änderungen wurden übernommen.',
     'edit_bread'                        => 'Bearbeiten',
     'edit_mail_title'                   => 'Antrag überarbeitet',
+    'edit_type'                         => '%TYPE% bearbeiten',
     'edit_mail_body'                    => 'Der Antrag \"%TITLE%\" wurde überarbeitet.\nLink: %LINK%',
     'err_create_permission'             => 'Keine Berechtigung zum Anlegen von Anträgen.',
     'err_create'                        => 'Ein Fehler beim Anlegen ist aufgetreten',
@@ -100,4 +100,9 @@ return [
     'withdraw_yes'                      => 'Zurückziehen',
     'max_len_hint'                      => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
     'max_len_alert'                     => 'Der Text ist zu lang!',
+    'create_explanation'                => 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
+        Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>
+        bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
+    'create_explanation_title'          => 'Antrag oder Änderungsantrag?',
+    'go_on'                             => 'Weiter',
 ];

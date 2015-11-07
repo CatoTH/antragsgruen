@@ -30,7 +30,7 @@ class AdminBase extends Base
         }
 
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_ANY)) {
-            $this->showErrorpage(403, 'Kein Zugriff auf diese Seite');
+            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return false;
         }
         return true;

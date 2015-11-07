@@ -13,19 +13,48 @@ use yii\helpers\Html;
 
 class Image extends ISectionType
 {
+    /**
+     * @return string
+     */
+    public function getImageUrl()
+    {
+        /** @var MotionSection $section */
+        $section = $this->section;
+        $url     = UrlHelper::createUrl(
+            [
+                'motion/viewimage',
+                'motionId'  => $section->motionId,
+                'sectionId' => $section->sectionId
+            ]
+        );
+        return $url;
+    }
 
     /**
      * @return string
      */
     public function getMotionFormField()
     {
-        $type     = $this->section->consultationSetting;
-        $required = ($type->required ? 'required' : '');
-        return '<div class="form-group">
+        /** @var MotionSection $section */
+        $type = $this->section->consultationSetting;
+        $str  = '';
+        if ($this->section->data) {
+            $str .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="Current Image"
+            style="float: right; max-width: 100px; max-height: 100px; margin-left: 20px;">';
+            $required = false;
+        } else {
+            $required = ($type->required ? 'required' : '');
+        }
+        $str .= '<div class="form-group" style="overflow: auto;">';
+        $str .= '
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
             <input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
-        ' name="sections[' . $type->id . ']">
+            ' name="sections[' . $type->id . ']">
         </div>';
+        if ($this->section->data) {
+            $str .= '<br style="clear: both;">';
+        }
+        return $str;
     }
 
     /**
@@ -93,14 +122,7 @@ class Image extends ISectionType
         /** @var MotionSection $section */
         $section = $this->section;
         $type    = $section->consultationSetting;
-        $url     = UrlHelper::createUrl(
-            [
-                'motion/viewimage',
-                'motionId'  => $section->motionId,
-                'sectionId' => $section->sectionId
-            ]
-        );
-        $str     = '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
+        $str     = '<img src="' . Html::encode($this->getImageUrl()) . '" alt="' . Html::encode($type->title) . '">';
         return $str;
     }
 
@@ -187,9 +209,6 @@ class Image extends ISectionType
     {
         return '[BILD]';
     }
-
-    /** @var null|string */
-    private $texTmpFile = null;
 
     /**
      * @param bool $isRight
