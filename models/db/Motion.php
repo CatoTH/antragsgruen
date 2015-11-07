@@ -654,7 +654,7 @@ class Motion extends IMotion implements IRSSItem
         $content = '';
         foreach ($this->getSortedSections(true) as $section) {
             $content .= '<h2>' . Html::encode($section->consultationSetting->title) . '</h2>';
-            $content .= $section->getSectionType()->getSimple();
+            $content .= $section->getSectionType()->getSimple(false);
         }
         $feed->addEntry(
             UrlHelper::createMotionUrl($this),

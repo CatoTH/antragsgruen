@@ -226,7 +226,7 @@ abstract class ISectionType
      */
     public function showMotionView(Base $controller, $commentForm, $openedComments, $consolidatedAmendments)
     {
-        return $this->getSimple();
+        return $this->getSimple(false);
     }
 
     /**
