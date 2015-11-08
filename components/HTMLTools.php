@@ -156,7 +156,6 @@ class HTMLTools
      */
     private static function sectionSimpleHTMLInt(\DOMElement $element, $split, $splitListItems, $pre, $post)
     {
-        echo "START " . $element->nodeName . " / " . $split . "\n";
         $inlineElements = ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b', 'sub', 'sup'];
         if (!$splitListItems) {
             $inlineElements[] = 'li';
@@ -245,7 +244,6 @@ class HTMLTools
             $pendingInline = null;
         }
         $return = str_replace("\r", "", $return); // @TODO Array ./. string?
-        echo "END " . $element->nodeName . " / " . $split . "\n";
         return $return;
     }
 
