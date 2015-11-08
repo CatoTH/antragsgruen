@@ -130,11 +130,31 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public static function getSortedFromConsultation(Consultation $consultation)
     {
-        $getSubItems = function (Consultation $consultation, ConsultationAgendaItem $item, $recFunc) {
-            $items    = [];
-            $children = static::getItemsByParent($consultation, $item->id);
+        // Needs to be synchronized with antragsgruen.js:recalcAgendaCodes
+        $calcNewShownCode = function ($currShownCode, $newInternalCode) {
+            if ($newInternalCode == '0' || $newInternalCode > 0) {
+                return $newInternalCode;
+            }
+            if ($newInternalCode == '#') {
+                $currParts = explode('.', $currShownCode);
+                $currParts[0]++;
+                return implode('.', $currParts);
+            }
+            return $currShownCode;
+        };
+
+        $getSubItems = function (Consultation $consultation, ConsultationAgendaItem $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode) {
+            $items         = [];
+            $currShownCode = '0.';
+            $children      = static::getItemsByParent($consultation, $item->id);
             foreach ($children as $child) {
-                $items = array_merge($items, [$child], $recFunc($consultation, $child, $recFunc));
+                $currShownCode = $calcNewShownCode($currShownCode, $item->code);
+                $child->setShownCode($currShownCode, $fullCodePrefix . $currShownCode);
+                $items = array_merge(
+                    $items,
+                    [$child],
+                    $recFunc($consultation, $child, $fullCodePrefix . $currShownCode, $recFunc)
+                );
             }
             return $items;
         };
@@ -147,9 +167,12 @@ class ConsultationAgendaItem extends ActiveRecord
             }
             $root[] = $item;
         }
-        $root = static::sortItems($root);
+        $root          = static::sortItems($root);
+        $currShownCode = '0.';
         foreach ($root as $item) {
-            $items = array_merge($items, [$item], $getSubItems($consultation, $item, $getSubItems));
+            $currShownCode = $calcNewShownCode($currShownCode, $item->code);
+            $item->setShownCode($currShownCode, $currShownCode);
+            $items = array_merge($items, [$item], $getSubItems($consultation, $item, $currShownCode, $getSubItems));
         }
 
         return $items;
@@ -176,6 +199,38 @@ class ConsultationAgendaItem extends ActiveRecord
             }
         );
         return $items;
+    }
+
+    /** @var string|null */
+    private $shownCode     = null;
+    private $shownCodeFull = null;
+
+    /**
+     * @param string $code
+     * @param string $codeFull
+     */
+    protected function setShownCode($code, $codeFull)
+    {
+        $this->shownCode     = $code;
+        $this->shownCodeFull = $codeFull;
+    }
+
+    /**
+     * @param bool $full
+     * @return string
+     */
+    public function getShownCode($full)
+    {
+        if ($this->shownCode === null) {
+            $items = static::getSortedFromConsultation($this->consultation);
+            foreach ($items as $item) {
+                if ($item->id == $this->id) {
+                    $this->shownCode     = $item->getShownCode(false);
+                    $this->shownCodeFull = $item->getShownCode(true);
+                }
+            }
+        }
+        return ($full ? $this->shownCodeFull : $this->shownCode);
     }
 
     /**

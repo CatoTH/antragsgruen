@@ -67,7 +67,7 @@ echo '<table class="motionDataTable">
 
 if ($motion->agendaItem) {
     echo '<tr><th>' . \Yii::t('motion', 'agenda_item') . ':</th><td>';
-    echo Html::encode($motion->agendaItem->code . ' ' . $motion->agendaItem->title);
+    echo Html::encode($motion->agendaItem->getShownCode(true) . ' ' . $motion->agendaItem->title);
     echo '</td></tr>';
 }
 

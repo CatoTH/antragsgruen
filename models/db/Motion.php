@@ -330,7 +330,7 @@ class Motion extends IMotion implements IRSSItem
             foreach ($this->motionSupporters as $supp) {
                 if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
-                    $currUser = User::getCurrentUser();
+                    $currUser        = User::getCurrentUser();
                     if ($currUser && $currUser->id == $supp->userId) {
                         return true;
                     }
@@ -698,7 +698,8 @@ class Motion extends IMotion implements IRSSItem
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
         }
         if ($this->agendaItem && !$skipAgenda) {
-            $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->code . ' ' . $this->agendaItem->title;
+            $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->getShownCode(true) .
+                ' ' . $this->agendaItem->title;
         }
         if (count($this->tags) > 1) {
             $tags = [];

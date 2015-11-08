@@ -922,6 +922,7 @@
         });
     };
 
+    // Needs to be synchronized with CunsultationAgendaItem:getSortedFromConsultation
     var recalcAgendaCodes = function () {
         var recalcAgendaNode = function ($ol) {
                 var currNumber = '0.',

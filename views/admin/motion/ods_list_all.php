@@ -69,7 +69,7 @@ $fill = function ($cellAttributes, $textAttributes) use ($doc, &$row, $colLimit)
 
 foreach ($items as $item) {
     if ($item instanceof ConsultationAgendaItem) {
-        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $item->code);
+        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $item->getShownCode(true));
         $fill (['fo:background-color' => agendaColor], []);
     } else {
         if ($item instanceof Motion || $item instanceof Amendment) {
