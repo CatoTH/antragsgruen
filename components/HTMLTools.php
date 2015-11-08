@@ -147,17 +147,22 @@ class HTMLTools
 
     /**
      * @param \DOMElement $element
+     * @param bool $split
+     * @param bool $splitListItems
      * @param string $pre
      * @param string $post
-     * @param bool $splitListsItems
      * @return \string[]
      * @throws Internal
      */
-    private static function sectionSimpleHTMLInt(\DOMElement $element, $splitListsItems, $pre, $post)
+    private static function sectionSimpleHTMLInt(\DOMElement $element, $split, $splitListItems, $pre, $post)
     {
+        echo "START " . $element->nodeName . " / " . $split . "\n";
         $inlineElements = ['strong', 'em', 'span', 'a', 's', 'u', 'i', 'b', 'sub', 'sup'];
-        if (!$splitListsItems) {
+        if (!$splitListItems) {
             $inlineElements[] = 'li';
+        }
+        if (in_array($element->nodeName, ['p', 'li'])) {
+            $split = false;
         }
         $return        = [];
         $children      = $element->childNodes;
@@ -173,7 +178,7 @@ class HTMLTools
                             $pendingInline = '';
                         }
                         $pendingInline .= '<br>';
-                    } elseif (in_array($child->nodeName, $inlineElements)) {
+                    } elseif (in_array($child->nodeName, $inlineElements) || !$split) {
                         if ($child->nodeName == 'a') {
                             $href = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
                             if ($child->hasAttribute('class')) {
@@ -189,7 +194,7 @@ class HTMLTools
                             $newPre = '<' . $child->nodeName . '>';
                         }
                         $newPost = '</' . $child->nodeName . '>';
-                        $newArrs = static::sectionSimpleHTMLInt($child, $splitListsItems, $newPre, $newPost);
+                        $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                         if ($pendingInline === null) {
                             $pendingInline = '';
                         }
@@ -204,18 +209,18 @@ class HTMLTools
                         if ($child->nodeName == 'ol') {
                             $newPre  = $pre . '<' . $child->nodeName . ' start="#LINO#">';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $splitListsItems, $newPre, $newPost);
+                            $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } elseif ($child->nodeName == 'li') {
                             $lino++;
                             $newPre  = str_replace('#LINO#', $lino, $pre) . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $splitListsItems, $newPre, $newPost);
+                            $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
-                        } elseif (in_array($child->nodeName, ['p', 'ul', 'blockquote'])) {
+                        } elseif (in_array($child->nodeName, ['ul', 'blockquote', 'p'])) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
-                            $newArrs = static::sectionSimpleHTMLInt($child, $splitListsItems, $newPre, $newPost);
+                            $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } else {
                             throw new Internal('Unknown Tag: ' . $child->nodeName);
@@ -239,7 +244,8 @@ class HTMLTools
             $return[]      = $pre . $pendingInline . $post;
             $pendingInline = null;
         }
-        $return = str_replace("\r", "", $return);
+        $return = str_replace("\r", "", $return); // @TODO Array ./. string?
+        echo "END " . $element->nodeName . " / " . $split . "\n";
         return $return;
     }
 
@@ -269,12 +275,18 @@ class HTMLTools
 
 
     /**
+     * Splits HTML into paragraphs
+     * Principles:
+     * - Root level lists are split into single list items, if $splitListItems == true. Nested lists are never split
+     * - Root level paragraphs are returned as paragraphs
+     * - Blockquotes can be split into paragraphs, if multiple P elements are contained
+     *
      * @param string $html
-     * @param bool $splitListsItems
+     * @param bool $splitListItems
      * @return \string[]
      * @throws Internal
      */
-    public static function sectionSimpleHTML($html, $splitListsItems = true)
+    public static function sectionSimpleHTML($html, $splitListItems = true)
     {
         $src_doc = new \DOMDocument();
         $src_doc->loadHTML(
@@ -286,7 +298,7 @@ class HTMLTools
         $body   = $bodies->item(0);
 
         /** @var \DOMElement $body */
-        return static::sectionSimpleHTMLInt($body, $splitListsItems, '', '');
+        return static::sectionSimpleHTMLInt($body, true, $splitListItems, '', '');
     }
 
 

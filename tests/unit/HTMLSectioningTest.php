@@ -57,6 +57,44 @@ Line 2, part 2</li></ul>',
 
     /**
      */
+    public function testNestedLists()
+    {
+        $orig   = '<ul>
+    <li>Normal item</li>
+    <li>
+        <ol>
+            <li>Nested 1</li>
+            <li>Nested 2<br>Line 3</li>
+        </ol>
+    </li>
+    <li>Normal again</li>
+</ul>
+<ol>
+    <li>Normal item</li>
+    <li>
+        <ul>
+            <li>Nested 1</li>
+            <li>Nested 2<br>Line 3</li>
+        </ul>
+    </li>
+    <li>Normal again</li>
+</ol>';
+        $expect = [
+            '<ul><li>Normal item</li></ul>',
+            '<ul><li><ol><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ol></li></ul>',
+            '<ul><li>Normal again</li></ul>',
+            '<ol start="1"><li>Normal item</li></ol>',
+            '<ol start="2"><li><ul><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ul></li></ol>',
+            '<ol start="3"><li>Normal again</li></ol>',
+        ];
+
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out  = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
     public function testNoSplitLists()
     {
         $orig   = '<p>Test1</p><p>Test <strong>2</strong> Test</p>
@@ -90,18 +128,15 @@ Line 2, part 2</li><li>Line 3<strong>Strong</strong></li></ul>',
      */
     public function testLiPSomething()
     {
-        return;
-        // https://bdk.antragsgruen.de/39/motion/133/amendment/323
-        // Depends on: improving sectioning, also required for https://github.com/CatoTH/antragsgruen/issues/120
-
-        $orig = '<ul>
+        // From https://bdk.antragsgruen.de/39/motion/133/amendment/323
+        $orig   = '<ul>
 <li>
 	<p>Die Mobilisierung der Mittel für den internationalen Klimaschutz ist zum allergroßten Teil öffentliche Aufgabe, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</p>
 	.</li>
 </ul>';
-        $expect = ['<ul><li><p>Die Mobilisierung der Mittel für den internationalen Klimaschutz ist zum allergroßten Teil öffentliche Aufgabe, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</p>.</li></ul>'];
-        $orig = HTMLTools::cleanSimpleHtml($orig);
-        $out  = HTMLTools::sectionSimpleHTML($orig, false);
+        $expect = ['<ul><li><p>Die Mobilisierung der Mittel für den internationalen Klimaschutz ist zum allergroßten Teil öffentliche Aufgabe, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</p>' . "\n" . '.</li></ul>'];
+        $orig   = HTMLTools::cleanSimpleHtml($orig);
+        $out    = HTMLTools::sectionSimpleHTML($orig, false);
         $this->assertEquals($expect, $out);
     }
 }
