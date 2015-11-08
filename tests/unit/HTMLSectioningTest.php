@@ -139,4 +139,61 @@ Line 2, part 2</li><li>Line 3<strong>Strong</strong></li></ul>',
         $out    = HTMLTools::sectionSimpleHTML($orig, false);
         $this->assertEquals($expect, $out);
     }
+
+    /**
+     */
+    public function testPre()
+    {
+        $orig   = '<pre>llkj
+lkj lkj    lkj
+oii</pre><pre>llkj
+lkj lkj    lkj
+oii</pre>';
+        $expect = [
+            '<pre>llkj
+lkj lkj    lkj
+oii</pre>',
+            '<pre>llkj
+lkj lkj    lkj
+oii</pre>'
+        ];
+        $orig   = HTMLTools::cleanSimpleHtml($orig);
+        $out    = HTMLTools::sectionSimpleHTML($orig, false);
+        $this->assertEquals($expect, $out);
+
+        $orig   = '<blockquote><pre>llkj
+lkj lkj    lkj
+oii</pre><pre>llkj
+lkj lkj    lkj
+oii</pre></blockquote>';
+        $expect = [
+            '<blockquote><pre>llkj
+lkj lkj    lkj
+oii</pre></blockquote>',
+            '<blockquote><pre>llkj
+lkj lkj    lkj
+oii</pre></blockquote>'
+        ];
+        $orig   = HTMLTools::cleanSimpleHtml($orig);
+        $out    = HTMLTools::sectionSimpleHTML($orig, false);
+        $this->assertEquals($expect, $out);
+
+
+        $orig   = '<ul><li><pre>llkj
+lkj lkj    lkj
+oii</pre></li><li><pre>llkj
+lkj lkj    lkj
+oii</pre><p>More</p><pre>PRE</pre></li></ul>';
+        $expect = [
+            '<ul><li><pre>llkj
+lkj lkj    lkj
+oii</pre></li></ul>',
+            '<ul><li><pre>llkj
+lkj lkj    lkj
+oii</pre><p>More</p><pre>PRE</pre></li></ul>'
+        ];
+        $orig   = HTMLTools::cleanSimpleHtml($orig);
+        $out    = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
+    }
 }

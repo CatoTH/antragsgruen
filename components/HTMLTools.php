@@ -161,7 +161,7 @@ class HTMLTools
         if (!$splitListItems) {
             $inlineElements[] = 'li';
         }
-        if (in_array($element->nodeName, ['p', 'li'])) {
+        if (in_array($element->nodeName, ['p', 'li', 'pre'])) {
             $split = false;
         }
         $return        = [];
@@ -217,7 +217,7 @@ class HTMLTools
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
-                        } elseif (in_array($child->nodeName, ['ul', 'blockquote', 'p'])) {
+                        } elseif (in_array($child->nodeName, ['ul', 'blockquote', 'p', 'pre'])) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
