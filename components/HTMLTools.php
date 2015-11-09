@@ -454,4 +454,50 @@ class HTMLTools
         $str .= '>' . $value . '</textarea>';
         return $str;
     }
+
+    /**
+     * @param \DOMNode $node
+     * @return string
+     */
+    public static function renderDomToHtml(\DOMNode $node)
+    {
+        if (is_a($node, \DOMElement::class)) {
+            /** @var \DOMElement $node */
+            $str = '<' . $node->nodeName . '>';
+            foreach ($node->childNodes as $child) {
+                $str .= static::renderDomToHtml($child);
+            }
+            $str .= '</' . $node->nodeName . '>';
+            return $str;
+        } else {
+            /** @var \DOMText $node */
+            return $node->data;
+        }
+    }
+
+    /**
+     * @param \DOMNode $node
+     * @return array
+     */
+    public static function getDomDebug(\DOMNode $node)
+    {
+        if (is_a($node, \DOMElement::class)) {
+            /** @var \DOMNode $node */
+            $node = [
+                'name'     => $node->nodeName,
+                'classes'  => '',
+                'children' => [],
+            ];
+            foreach ($node->childNodes as $child) {
+                $node['children'][] = static::getDomDebug($child);
+            }
+            return $node;
+        }
+        if (is_a($node, \DOMText::class)) {
+            /** @var \DOMText $node */
+            return [
+                'text' => $node->data,
+            ];
+        }
+    }
 }
