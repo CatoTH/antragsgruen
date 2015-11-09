@@ -490,4 +490,29 @@ class DiffTest extends TestBase
 <p><del>###LINENUMBER###Also to be deleted.</del></p>";
         $this->assertEquals($expected, $out);
     }
+
+    /**
+     */
+    public function testLiPSomething()
+    {
+        return;
+        
+        // From https://bdk.antragsgruen.de/39/motion/133/amendment/323
+        // @TODO
+        $strPre = '<ul><li>###LINENUMBER###Die Mobilisierung der Mittel für den internationalen Klimaschutz ist eine ###LINENUMBER###öffentliche Aufgabe.</li></ul>';
+        $strPost   = '<ul><li><p>Die Mobilisierung der Mittel für den internationalen Klimaschutz ist zum allergroßten Teil öffentliche Aufgabe, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</p>' . "\n" . '.</li></ul>';
+        $expect = '';
+
+
+        $diff    = new Diff();
+        $diff->setIgnoreStr('###LINENUMBER###');
+        $out      = $diff->computeDiff($strPre, $strPost);
+        $out = $diff->cleanupDiffProblems($out);
+        $this->assertEquals($expect, $out);
+
+        $expect = ['<ul><li><p>Die Mobilisierung der Mittel für den internationalen Klimaschutz ist zum allergroßten Teil öffentliche Aufgabe, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</p>' . "\n" . '.</li></ul>'];
+        $orig   = HTMLTools::cleanSimpleHtml($orig);
+        $out    = HTMLTools::sectionSimpleHTML($orig, false);
+        $this->assertEquals($expect, $out);
+    }
 }
