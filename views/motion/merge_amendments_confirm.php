@@ -34,7 +34,7 @@ foreach ($newMotion->getSortedSections(true) as $section) {
     echo '<h2 class="green">' . Html::encode($section->consultationSetting->title) . '</h2>';
     echo '<div class="consolidated">';
 
-    echo $section->getSectionType()->getSimple();
+    echo $section->getSectionType()->getSimple(false);
 
     echo '</div>';
     echo '</section>';
