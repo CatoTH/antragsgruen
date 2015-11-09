@@ -1,7 +1,9 @@
 <?php
 namespace app\commands;
 
+use app\models\db\Amendment;
 use app\models\db\Consultation;
+use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\settings\AntragsgruenApp;
@@ -77,5 +79,30 @@ class AdminController extends Controller
     {
         AntragsgruenApp::flushAllCaches();
         $this->stdout('All caches of all consultations have been flushed' . "\n");
+    }
+
+    /**
+     * Pre-caches some important data.
+     * HINT: Probably needs to be called several time, if the memory fills up or the execution time exeeds the limit
+     */
+    public function actionBuildCaches()
+    {
+        /** @var Motion[] $motions */
+        $motions = Motion::find()->all();
+        foreach ($motions as $motion) {
+            if ($motion->status == Motion::STATUS_DELETED) {
+                continue;
+            }
+            echo '- Motion ' . $motion->id . "\n";
+            $motion->getNumberOfCountableLines();
+            $motion->getFirstLineNumber();
+            foreach ($motion->amendments as $amendment) {
+                if ($amendment->status == Amendment::STATUS_DELETED) {
+                    continue;
+                }
+                echo '  - Amendment ' . $amendment->id . "\n";
+                $amendment->getFirstDiffLine();
+            }
+        }
     }
 }
