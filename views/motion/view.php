@@ -73,7 +73,7 @@ if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
     $sidebarRows++;
 }
 
-if ($motion->canMergeAmendments() && count($motion->amendments) > 0) {
+if ($motion->canMergeAmendments()) {
     $mergeLi = '<li class="mergeamendments">';
     $title   = '<span class="icon glyphicon glyphicon-scissors"></span>' .
         Yii::t('motion', 'amendments_merge');
