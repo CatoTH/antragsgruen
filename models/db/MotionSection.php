@@ -67,7 +67,7 @@ class MotionSection extends IMotionSection
     {
         $sections = [];
         foreach ($this->motion->amendments as $amend) {
-            if (in_array($amend->status, $this->motion->consultation->getInvisibleAmendmentStati())) {
+            if (in_array($amend->status, $this->motion->consultation->getInvisibleAmendmentStati(true))) {
                 continue;
             }
             foreach ($amend->sections as $section) {
@@ -159,7 +159,7 @@ class MotionSection extends IMotionSection
             $return[$paraNo] = $paragraph;
         }
         if ($includeAmendment) {
-            foreach ($this->motion->getVisibleAmendments() as $amendment) {
+            foreach ($this->motion->getVisibleAmendments(false) as $amendment) {
                 $amSec = null;
                 foreach ($amendment->sections as $section) {
                     if ($section->sectionId == $this->sectionId) {

@@ -249,13 +249,14 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @param bool $includeWithdrawn
      * @return Motion[]
      */
-    public function getVisibleMotions()
+    public function getVisibleMotions($includeWithdrawn = true)
     {
         $return = [];
         foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $this->getInvisibleMotionStati())) {
+            if (!in_array($motion->status, $this->getInvisibleMotionStati(!$includeWithdrawn))) {
                 $return[] = $motion;
             }
         }
@@ -376,23 +377,28 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @param bool $withdrawnInvisible
      * @return int[]
      */
-    public function getInvisibleMotionStati()
+    public function getInvisibleMotionStati($withdrawnInvisible = false)
     {
         $invisible = [Motion::STATUS_DELETED, Motion::STATUS_UNCONFIRMED, Motion::STATUS_DRAFT];
         if (!$this->getSettings()->screeningMotionsShown) {
             $invisible[] = Motion::STATUS_SUBMITTED_UNSCREENED;
         }
+        if ($withdrawnInvisible) {
+            $invisible[] = Motion::STATUS_WITHDRAWN;
+        }
         return $invisible;
     }
 
     /**
+     * @param bool $withdrawnInvisible
      * @return int[]
      */
-    public function getInvisibleAmendmentStati()
+    public function getInvisibleAmendmentStati($withdrawnInvisible = false)
     {
-        return $this->getInvisibleMotionStati();
+        return $this->getInvisibleMotionStati($withdrawnInvisible);
     }
 
     /**

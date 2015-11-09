@@ -261,13 +261,14 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $includeWithdrawn
      * @return Amendment[]
      */
-    public function getVisibleAmendments()
+    public function getVisibleAmendments($includeWithdrawn = true)
     {
         $amendments = [];
         foreach ($this->amendments as $amend) {
-            if (!in_array($amend->status, $this->consultation->getInvisibleAmendmentStati())) {
+            if (!in_array($amend->status, $this->consultation->getInvisibleAmendmentStati(!$includeWithdrawn))) {
                 $amendments[] = $amend;
             }
         }
@@ -275,11 +276,12 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $includeWithdrawn
      * @return Amendment[]
      */
-    public function getVisibleAmendmentsSorted()
+    public function getVisibleAmendmentsSorted($includeWithdrawn = true)
     {
-        return MotionSorter::getSortedAmendments($this->consultation, $this->getVisibleAmendments());
+        return MotionSorter::getSortedAmendments($this->consultation, $this->getVisibleAmendments($includeWithdrawn));
     }
 
     /**

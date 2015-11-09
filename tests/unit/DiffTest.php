@@ -496,7 +496,7 @@ class DiffTest extends TestBase
     public function testLiPSomething()
     {
         return;
-        
+
         // From https://bdk.antragsgruen.de/39/motion/133/amendment/323
         // @TODO
         $strPre = '<ul><li>###LINENUMBER###Die Mobilisierung der Mittel für den internationalen Klimaschutz ist eine ###LINENUMBER###öffentliche Aufgabe.</li></ul>';
