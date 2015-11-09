@@ -18,7 +18,7 @@ class DiffTest extends TestBase
         $diff = new Diff();
 
         $orig = 'Zeichen das sie überwunden';
-        $new = 'Zeichen, dass sie überwunden';
+        $new  = 'Zeichen, dass sie überwunden';
         $this->assertEquals('Zeichen<del> das</del><ins>, dass</ins> sie überwunden', $diff->computeWordDiff($orig, $new));
 
         $orig = 'Hass';
@@ -30,23 +30,23 @@ class DiffTest extends TestBase
         $this->assertEquals('<del>Bürger*innen</del><ins>Menschen</ins> ', $diff->computeWordDiff($orig, $new));
 
         $orig = 'dekonstruieren.';
-        $new = 'dekonstruieren. Andererseits sind gerade junge Menschen';
+        $new  = 'dekonstruieren. Andererseits sind gerade junge Menschen';
         $this->assertEquals('dekonstruieren.<ins> Andererseits sind gerade junge Menschen</ins>', $diff->computeWordDiff($orig, $new));
 
         $orig = 'dekonstruieren. Andererseits sind gerade junge Menschen';
-        $new = 'dekonstruieren.';
+        $new  = 'dekonstruieren.';
         $this->assertEquals('dekonstruieren.<del> Andererseits sind gerade junge Menschen</del>', $diff->computeWordDiff($orig, $new));
 
         $orig = 'So viele Menschen wie nie';
-        $new = 'Sie steht vor dieser Anstrengung gemeinsam usw. So viele Menschen wie nie';
+        $new  = 'Sie steht vor dieser Anstrengung gemeinsam usw. So viele Menschen wie nie';
         $this->assertEquals('<ins>Sie steht vor dieser Anstrengung gemeinsam usw. </ins>So viele Menschen wie nie', $diff->computeWordDiff($orig, $new));
 
         $orig = 'Test1 Test 2 der Test 3 Test4';
-        $new = 'Test1 Test 2 die Test 3 Test4';
+        $new  = 'Test1 Test 2 die Test 3 Test4';
         $this->assertEquals('Test1 Test 2 <del>der</del><ins>die</ins> Test 3 Test4', $diff->computeWordDiff($orig, $new));
 
         $orig = '###LINENUMBER###Bildungsbereich. Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.';
-        $new = 'Bildungsbereich.';
+        $new  = 'Bildungsbereich.';
         $this->assertEquals('###LINENUMBER###Bildungsbereich.<del> Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.</del>', $diff->computeWordDiff($orig, $new));
     }
 
@@ -318,6 +318,23 @@ class DiffTest extends TestBase
         $diff    = new Diff();
         $grouped = $diff->groupOperations($src, Diff::ORIG_LINEBREAK);
         $this->assertEquals($src, $grouped); // Should not be changed
+
+
+        $operations = [
+            ['test 123', Engine::UNMODIFIED],
+            ['<pre>###LINENUMBER###PRE', Engine::DELETED],
+            ['* Test', Engine::DELETED],
+            ['</pre>', Engine::DELETED],
+            ['test 123', Engine::UNMODIFIED],
+        ];
+        $expected   = [
+            ['test 123', Engine::UNMODIFIED],
+            ['<pre>###LINENUMBER###PRE' . "\n" . '* Test' . "\n" . '</pre>', Engine::DELETED],
+            ['test 123', Engine::UNMODIFIED],
+        ];
+        $diff       = new Diff();
+        $out        = $diff->groupOperations($operations, "\n");
+        $this->assertEquals($expected, $out);
     }
 
     /**
@@ -457,13 +474,13 @@ class DiffTest extends TestBase
      */
     public function testDeleteBeyondList()
     {
-        $strPre = "<p>###LINENUMBER###Test.</p>
+        $strPre  = "<p>###LINENUMBER###Test.</p>
 <p>###LINENUMBER###<strong>To be deletedgi: </strong></p>
 <ul><li>###LINENUMBER###Test 2</li></ul>
 <ul><li>###LINENUMBER###Test 1</li></ul>
 <p>###LINENUMBER###Also to be deleted.</p>";
         $strPost = "<p>Test.</p>";
-        $diff     = new Diff();
+        $diff    = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
         $out      = $diff->computeDiff($strPre, $strPost);
         $expected = "<p>###LINENUMBER###Test.</p>

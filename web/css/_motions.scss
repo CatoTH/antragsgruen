@@ -539,11 +539,11 @@
     .textAmendment {
       width: $motionFixedWidth;
       position: relative;
-      del, ul.deleted, blockquote.deleted {
+      del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted {
         color: #ff0000;
         text-decoration: line-through;
       }
-      ins, ul.inserted, blockquote.inserted {
+      ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted {
         text-decoration: underline;
       }
       .preamble {

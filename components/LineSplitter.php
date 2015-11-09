@@ -135,7 +135,7 @@ class LineSplitter
         }
 
         if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
-            mb_stripos($para, '<blockquote>') === 0
+            mb_stripos($para, '<blockquote>') === 0 || mb_stripos($para, '<pre>') === 0
         ) {
             $lineLength -= 6;
         }
@@ -144,7 +144,7 @@ class LineSplitter
 
         if ($lineNumbers) {
             $linesOut = [];
-            $pres     = ['<p>', '<ul><li>', '<ol( start="[0-9]+")?><li>', '<blockquote><p>'];
+            $pres     = ['<p>', '<ul><li>', '<ol( start="[0-9]+")?><li>', '<blockquote><p>', '<pre>'];
             $linePre  = '###LINENUMBER###';
             foreach ($linesIn as $line) {
                 $inserted = false;

@@ -1,5 +1,11 @@
 <?php
-
+/*
+ *
+ * ==========
+ * d        d
+ * e   f    g
+ * hjklkljkjlk
+ */
 namespace app\components;
 
 use app\models\exceptions\Internal;

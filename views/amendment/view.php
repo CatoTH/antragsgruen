@@ -1,6 +1,5 @@
 <?php
 
-use app\components\diff\AmendmentSectionFormatter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -9,8 +8,6 @@ use app\models\db\AmendmentSection;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 

@@ -180,10 +180,15 @@ class AmendmentSectionFormatter
                 $addBlock      = true;
             } elseif ($hadDiff) {
                 $addBlock = true;
-            } elseif (preg_match('/<(ul|ol) class="inserted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                $addBlock = true;
-            } elseif (preg_match('/<(ul|ol) class="deleted">.*<\/(ul|ol)>/siu', $block['text'])) {
-                $addBlock = true;
+            } else {
+                foreach (['ul', 'ol', 'pre', 'blockquote'] as $tag) {
+                    if (preg_match('/<(' . $tag . ') class="inserted">.*<\/(' . $tag . ')>/siuU', $block['text'])) {
+                        $addBlock = true;
+                    }
+                    if (preg_match('/<(' . $tag . ') class="deleted">.*<\/(' . $tag . ')>/siuU', $block['text'])) {
+                        $addBlock = true;
+                    }
+                }
             }
             if ($addBlock) {
                 if (count($middleUnchangedBlocks) == 1) {
@@ -204,6 +209,10 @@ class AmendmentSectionFormatter
      */
     public static function getDiffSplitToLines($computed)
     {
+        $computed = preg_replace_callback('/<pre[^>]*>.*<\/pre>/siuU', function ($matches) {
+            return str_replace("\n", '###FORCELINEBREAK###', $matches[0]);
+        }, $computed);
+
         $lines = explode("\n", $computed);
 
         for ($i = 0; $i < count($lines) - 1; $i++) {
@@ -222,7 +231,7 @@ class AmendmentSectionFormatter
         $out = [];
         for ($i = 0; $i < count($lines); $i++) {
             $line = $lines[$i];
-            if (preg_match('/^(<div[^>]*>)?<(ul|blockquote|ol)/siu', $line)) {
+            if (preg_match('/^(<div[^>]*>)?<(ul|blockquote|ol|pre)/siu', $line)) {
                 $out[] = $line;
             } else {
                 $line          = str_replace('</p>', '</p>###FORCELINEBREAK###', $line);
@@ -295,9 +304,9 @@ class AmendmentSectionFormatter
         $getDiffLinesWithNumbers = $this->section->getCacheItem('getDiffLinesWithNumbers');
         if ($getDiffLinesWithNumbers === null) {
             try {
-                $lineOffset              = $this->section->getFirstLineNumber();
-                $computed                = $this->getHtmlDiffWithLineNumberPlaceholders();
-                $blocks                  = static::htmlDiff2LineBlocks($computed, $lineOffset);
+                $lineOffset = $this->section->getFirstLineNumber();
+                $computed   = $this->getHtmlDiffWithLineNumberPlaceholders();
+                $blocks     = static::htmlDiff2LineBlocks($computed, $lineOffset);
                 $getDiffLinesWithNumbers = static::filterAffectedBlocks($blocks);
             } catch (Internal $e) {
                 $getDiffLinesWithNumbers = [];

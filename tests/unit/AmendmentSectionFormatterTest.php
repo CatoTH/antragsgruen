@@ -49,7 +49,6 @@ class AmendmentSectionFormatterTest extends TestBase
     }
 
     /**
-     *
      */
     public function testUlLiInserted()
     {
@@ -61,6 +60,24 @@ class AmendmentSectionFormatterTest extends TestBase
         $expect = $in;
         $out    = AmendmentSectionFormatter::filterAffectedBlocks($in);
         $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testPre()
+    {
+        // @TODO Not sure if this is really the best way; needs further test cases
+
+        $str    = '<pre class="inserted">Oamoi a Maß und no a Maß' . "\nNeue Zeile\n" . '</pre>';
+        $in     = [[
+            'text' => $str,
+        ]];
+        $expect = $in;
+        $out    = AmendmentSectionFormatter::filterAffectedBlocks($in);
+        $this->assertEquals($expect, $out);
+
+        $lines = AmendmentSectionFormatter::getDiffSplitToLines($str);
+        $this->assertEquals(['<pre class="inserted">Oamoi a Maß und no a Maß###FORCELINEBREAK###Neue Zeile###FORCELINEBREAK###</pre>'], $lines);
     }
 
     /**

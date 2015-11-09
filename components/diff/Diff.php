@@ -72,27 +72,32 @@ class Diff
             if (mb_stripos($str, '<ul>') === 0) {
                 return '<div style="color: green; margin: 0; padding: 0;"><ul class="inserted">' .
                 mb_substr($str, 4) . '</div>';
-            } elseif (mb_stripos($str, '<ol>') === 9) {
+            } elseif (mb_stripos($str, '<ol>') === 0) {
                 return '<div style="color: green; margin: 0; padding: 0;"><ol class="inserted">' .
                 mb_substr($str, 4) . '</div>';
-            } elseif (mb_stripos($str, '<ul>')) {
+            } elseif (mb_stripos($str, '<ul>') === 0) {
                 return '<div style="color: green; margin: 0; padding: 0;"><li class="inserted">' .
                 mb_substr($str, 12) . '</div>';
-            } elseif (mb_stripos($str, '<blockquote>')) {
+            } elseif (mb_stripos($str, '<blockquote>') === 0) {
                 return '<div style="color: green; margin: 0; padding: 0;"><blockquote class="inserted">' .
                 $str . '</div>';
+            } elseif (mb_stripos($str, '<pre>') === 0) {
+                return '<div style="color: green; margin: 0; padding: 0;"><pre class="inserted">' .
+                mb_substr($str, 5) . '</div>';
             } else {
                 return '<span style="color: green;"><ins>' . $str . '</ins></span>';
             }
         } else {
             if (mb_stripos($str, '<ul>') === 0) {
                 return '<ul class="inserted">' . mb_substr($str, 4);
-            } elseif (mb_stripos($str, '<ol>') === 9) {
+            } elseif (mb_stripos($str, '<ol>') === 0) {
                 return '<ol class="inserted">' . mb_substr($str, 4);
-            } elseif (mb_stripos($str, '<ul>')) {
+            } elseif (mb_stripos($str, '<ul>') === 0) {
                 return '<li class="inserted">' . mb_substr($str, 12);
-            } elseif (mb_stripos($str, '<blockquote>')) {
+            } elseif (mb_stripos($str, '<blockquote>') === 0) {
                 return '<blockquote class="inserted">' . $str;
+            } elseif (mb_stripos($str, '<pre>') === 0) {
+                return '<pre class="inserted">' . mb_substr($str, 5);
             } else {
                 return '<ins>' . $str . '</ins>';
             }
@@ -118,27 +123,32 @@ class Diff
             if (mb_stripos($str, '<ul>') === 0) {
                 return '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted">' .
                 mb_substr($str, 4) . '</div>';
-            } elseif (mb_stripos($str, '<ol>') === 9) {
+            } elseif (mb_stripos($str, '<ol>') === 0) {
                 return '<div style="color: red; margin: 0; padding: 0;"><ol class="deleted">' .
                 mb_substr($str, 4) . '</div>';
-            } elseif (mb_stripos($str, '<ul>')) {
+            } elseif (mb_stripos($str, '<ul>') === 0) {
                 return '<div style="color: red; margin: 0; padding: 0;"><li class="deleted">' .
                 mb_substr($str, 12) . '</div>';
-            } elseif (mb_stripos($str, '<blockquote>')) {
+            } elseif (mb_stripos($str, '<blockquote>') === 0) {
                 return '<div style="color: red; margin: 0; padding: 0;"><blockquote class="deleted">' .
                 $str . '</div>';
+            } elseif (mb_stripos($str, '<pre>') === 0) {
+                return '<div style="color: red; margin: 0; padding: 0;"><pre class="deleted">' .
+                mb_substr($str, 5) . '</div>';
             } else {
                 return '<span style="color: red;"><del>' . $str . '</del></span>';
             }
         } else {
             if (mb_stripos($str, '<ul>') === 0) {
                 return '<ul class="deleted">' . mb_substr($str, 4);
-            } elseif (mb_stripos($str, '<ol>') === 9) {
+            } elseif (mb_stripos($str, '<ol>') === 0) {
                 return '<ol class="deleted">' . mb_substr($str, 4);
-            } elseif (mb_stripos($str, '<ul>')) {
+            } elseif (mb_stripos($str, '<li>') === 0) {
                 return '<li class="deleted">' . mb_substr($str, 12);
             } elseif (mb_stripos($str, '<blockquote>')) {
                 return '<blockquote class="deleted">' . $str;
+            } elseif (mb_stripos($str, '<pre>') === 0) {
+                return '<pre class="deleted">' . mb_substr($str, 5);
             } else {
                 $str = str_replace('<p>', '<del><p>', $str);
                 $str = str_replace('</p>', '</p></del>', $str);
@@ -187,8 +197,8 @@ class Diff
         $currentSpool = [];
         foreach ($operations as $operation) {
             $firstfour = mb_substr($operation[0], 0, 4);
-            $isList = $firstfour == '<ul>' || $firstfour == '<ol>';
-            if ($operation[0] == static::ORIG_LINEBREAK || preg_match('/^<[^>]*>$/siu', $operation[0])) {
+            $isList    = $firstfour == '<ul>' || $firstfour == '<ol>';
+            if ($operation[0] == static::ORIG_LINEBREAK || (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] != '</pre>')) {
                 if (count($currentSpool) > 0) {
                     $return[] = [
                         implode($groupBy, $currentSpool),
@@ -340,9 +350,9 @@ class Diff
      */
     public function computeWordDiff($wordDel, $wordInsert)
     {
-        if (mb_substr($wordDel, 0, 16) == '###LINENUMBER###' && mb_substr($wordInsert, 0, 16)  != '###LINENUMBER###') {
+        if (mb_substr($wordDel, 0, 16) == '###LINENUMBER###' && mb_substr($wordInsert, 0, 16) != '###LINENUMBER###') {
             $linenumber = '###LINENUMBER###';
-            $wordDel = mb_substr($wordDel, 16);
+            $wordDel    = mb_substr($wordDel, 16);
         } else {
             $linenumber = '';
         }
@@ -373,7 +383,7 @@ class Diff
             return $linenumber . $preWords . $preChars . $this->wrapWithDelete($restDelC) . $this->wrapWithInsert($restInsC) .
             $postChars . $postWords;
         }
-        return $linenumber .$preWords . $this->wrapWithDelete($preChars . $restDelC . $postChars) .
+        return $linenumber . $preWords . $this->wrapWithDelete($preChars . $restDelC . $postChars) .
         $this->wrapWithInsert($preChars . $restInsC . $postChars) . $postWords;
     }
 
