@@ -13,4 +13,5 @@ return [
     'email'               => 'E-Mail',
     'text'                => 'Text',
     'submit_comment'      => 'Kommentar abschicken',
+    'link_comment'        => 'Kommentar verlinken',
 ];

@@ -91,7 +91,7 @@ class LayoutHelper
         }
         echo '</h3>';
 
-        echo nl2br(Html::encode($comment->text));
+        echo HTMLTools::textToHtmlWithLink($comment->text);
 
         if ($screening && $imadmin) {
             echo Html::beginForm($commLink, 'post', ['class' => 'screening']);
@@ -112,7 +112,7 @@ class LayoutHelper
         }
 
         echo '<div class="commentBottom"><div class="commentLink">';
-        echo Html::a("Kommentar verlinken", $commLink, ['class' => 'hoverElement']);
+        echo Html::a(\Yii::t('comment', 'link_comment'), $commLink, ['class' => 'hoverElement']);
         echo '</div>';
 
         /*
