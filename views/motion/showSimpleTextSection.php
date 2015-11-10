@@ -92,7 +92,11 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
         $amendment = $motion->getAmendment($amendmentSection->amendmentSection->amendmentId);
-        echo '<div class="text textAmendment hidden amendment' . $amendment->id . '">';
+        echo '<div class="text textAmendment hidden amendment' . $amendment->id;
+        if ($section->consultationSetting->fixedWidth) {
+            echo ' fixedWidthFont';
+        }
+        echo '">';
         echo '<div class="preamble"><div>';
         echo '<h3>' . \Yii::t('amend', 'amendment') . ' ' . Html::encode($amendment->titlePrefix) . '</h3>';
         echo ', ' . \Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
