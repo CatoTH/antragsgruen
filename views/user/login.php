@@ -15,8 +15,8 @@ use app\models\settings\Site as SiteSettings;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = 'Login';
-$layout->addBreadcrumb('Login');
+$this->title = \Yii::t('user', 'login_title');
+$layout->addBreadcrumb(\Yii::t('user', 'login_title'));
 $layout->robotsNoindex = true;
 
 if ($controller->site) {
@@ -27,14 +27,14 @@ if ($controller->site) {
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;
 
-echo '<h1>Login</h1>';
+echo '<h1>' . \Yii::t('user', 'login_title') . '</h1>';
 
 
 if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
     echo '<section class="loginUsername">
-    <h2 class="green">Login per Benutzer_Innenname / Passwort</h2>
+    <h2 class="green">' . \Yii::t('user', 'login_username_title') . '</h2>
     <div class="content row">';
 
     if ($usernamePasswordForm->error != "") {
@@ -54,7 +54,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         $pre_checked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
         echo '<div class="checkbox"><label>
             <input type="checkbox" name="createAccount" id="createAccount" ' . $pre_checked . '>
-            Neuen Zugang anlegen
+            ' . \Yii::t('user', 'login_create_account') . '
             </label></div>';
     } else {
         echo '<div class="alert alert-info">!';
@@ -68,36 +68,37 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     }
 
     echo '<div class="form-group">
-        <label for="username">E-Mail-Adresse / BenutzerInnenname:</label>
+        <label for="username">' . \Yii::t('user', 'login_username') . ':</label>
             <input class="form-control" name="username" id="username" type="text" autofocus required
-            placeholder="E-Mail-Adresse" value="' . Html::encode($preUsername) . '">
+            placeholder="' . Html::encode(\Yii::t('user', 'login_email_placeholder')) .
+          '" value="' . Html::encode($preUsername) . '">
         </div>
 
         <div class="form-group">
-            <label for="passwordInput">Passwort:</label>
+            <label for="passwordInput">' . \Yii::t('user', 'login_password') . ':</label>
             <input type="password" name="password" id="passwordInput" required class="form-control"
             data-min-len="' . $pwMinLen . '">
         </div>
 
         <div class="form-group hidden"  id="pwdConfirm">
-            <label for="passwordConfirm">Passwort (Bestätigung):</label>
+            <label for="passwordConfirm">' . \Yii::t('user', 'login_password_rep') . ':</label>
             <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control">
         </div>
 
         <div class="form-group hidden" id="regName">
-            <label for="name">Dein Name:</label>
+            <label for="name">' . \Yii::t('user', 'login_create_name') . ':</label>
             <input type="text" value="' . Html::encode($preName) . '" name="name" id="name" class="form-control">
         </div>
 
     <div class="row">
         <div class="col-md-6">
             <button type="submit" class="btn btn-primary" name="loginusernamepassword">
-                <span id="loginStr"><span class="glyphicon glyphicon-log-in"></span> Einloggen</span>
-                <span id="createStr"><span class="glyphicon glyphicon-plus-sign"></span> Anlegen</span>
+                <span id="loginStr"><span class="glyphicon glyphicon-log-in"></span> ' . \Yii::t('user', 'login_btn_login') . '</span>
+                <span id="createStr"><span class="glyphicon glyphicon-plus-sign"></span> ' . \Yii::t('user', 'login_btn_create') . '</span>
             </button>
         </div>
         <div class="col-md-6 passwordRecovery">
-            ' . Html::a('Passwort vergessen?', UrlHelper::createUrl('user/recovery')) . '
+            ' . Html::a(\Yii::t('user', 'login_forgot_pw'), UrlHelper::createUrl('user/recovery')) . '
         </div>
     </div>';
     echo Html::endForm();
@@ -159,18 +160,18 @@ if ($params->hasWurzelwerk) {
 
 if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
     echo '<section class="loginOpenID">
-    <h2 class="green">OpenID-Login</h2>
+    <h2 class="green">' . \Yii::t('user', 'login_openid') . '</h2>
 	<div class="content row">';
     echo Html::beginForm('', 'post', ['class' => 'col-sm-6']);
 
     echo '<div class="form-group">
-        <label for="openidUrl">OpenID-URL</label>
+        <label for="openidUrl">' . \Yii::t('user', 'login_openid_url') . '</label>
         <input class="form-control" name="OAuthLoginForm[openIdUrl]"
             id="openidUrl" type="text" placeholder="https://...">
       </div>
 
 	  <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-log-in"></span> Einloggen
+        <span class="glyphicon glyphicon-log-in"></span> ' . \Yii::t('user', 'login_btn_login') . '
       </button>
     ';
 

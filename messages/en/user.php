@@ -63,4 +63,19 @@ return [
     'acc_grant_email_title'     => 'Antragsgrün-Zugriff',
     'acc_grant_email_userdata' => "E-Mail / BenutzerInnenname: %EMAIL%\nPasswort: %PASSWORD%",
     */
+
+
+    'login_title'             => 'Login',
+    'login_username_title'    => 'Login using username/password',
+    'login_create_account'    => 'Create a new account',
+    'login_username'          => 'E-Mail-Address / Username',
+    'login_email_placeholder' => 'Your email-address',
+    'login_password'          => 'Password',
+    'login_password_rep'      => 'Password (Confirm)',
+    'login_create_name'       => 'Your name',
+    'login_btn_login'         => 'Log In',
+    'login_btn_create'        => 'Create',
+    'login_forgot_pw'         => 'Forgot your password?',
+    'login_openid'            => 'OpenID-Login',
+    'login_openid_url'        => 'OpenID-URL',
 ];
