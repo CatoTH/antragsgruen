@@ -5,7 +5,7 @@ namespace unit;
 use app\components\HTMLTools;
 use Codeception\Specify;
 
-class LineSplitTest extends TestBase
+class Text2HtmlTest extends TestBase
 {
     use Specify;
 
