@@ -162,80 +162,12 @@ class DiffRenderer
     }
 
     /**
-     * @param \DOMNode $dom
-     * @return array
-     */
-    protected function renderHtmlWithPlaceholdersIntInIns($dom)
-    {
-        if (!static::nodeContainsText($dom, static::INS_END)) {
-            return [[$this->cloneNode($dom)], true, false];
-        }
-
-        $inIns       = true;
-        $inDel       = false;
-        $newChildren = [];
-        foreach ($dom->childNodes as $child) {
-            echo "Child: ";
-            var_dump($child);
-            if (is_a($child, \DOMText::class)) {
-                /** @var \DOMText $child */
-                $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
-                list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel, $lastEl);
-                $newChildren = array_merge($newChildren, $currNewChildren);
-            } elseif (is_a($child, \DOMElement::class)) {
-                $this->renderHtmlWithPlaceholdersIntNormalElement($child, $newChildren, $inIns, $inDel);
-            }
-        }
-
-        $newDom = $this->nodeCreator->createElement($dom->nodeName);
-        foreach ($newChildren as $newChild) {
-            $newDom->appendChild($newChild);
-        }
-
-        return [[$newDom], $inIns, $inDel];
-    }
-
-    /**
-     * @param \DOMNode $dom
-     * @return array
-     */
-    protected function renderHtmlWithPlaceholdersIntInDel($dom)
-    {
-        if (!static::nodeContainsText($dom, static::DEL_END)) {
-            return [[$this->cloneNode($dom)], false, true];
-        }
-
-        $inIns       = false;
-        $inDel       = true;
-        $newChildren = [];
-        foreach ($dom->childNodes as $child) {
-            echo "Child: ";
-            var_dump($child);
-            if (is_a($child, \DOMText::class)) {
-                /** @var \DOMText $child */
-                $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
-                list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel, $lastEl);
-                $newChildren = array_merge($newChildren, $currNewChildren);
-            } elseif (is_a($child, \DOMElement::class)) {
-                $this->renderHtmlWithPlaceholdersIntNormalElement($child, $newChildren, $inIns, $inDel);
-            }
-        }
-
-        $newDom = $this->nodeCreator->createElement($dom->nodeName);
-        foreach ($newChildren as $newChild) {
-            $newDom->appendChild($newChild);
-        }
-
-        return [[$newDom], $inIns, $inDel];
-    }
-
-    /**
      * @param \DOMElement $child
      * @param array $newChildren
      * @param bool $inIns
      * @param bool $inDel
      */
-    protected function renderHtmlWithPlaceholdersIntNormalElement(\DOMElement $child, &$newChildren, &$inIns, &$inDel)
+    protected function renderHtmlWithPlaceholdersIntElement(\DOMElement $child, &$newChildren, &$inIns, &$inDel)
     {
         if ($inIns && static::nodeContainsText($child, static::INS_END)) {
             echo 'inIns with End ' . $child->nodeName . ' ' . " (start)\n";
@@ -292,12 +224,14 @@ class DiffRenderer
      * @param \DOMNode $dom
      * @return array
      */
-    protected function renderHtmlWithPlaceholdersIntNormal($dom)
+    protected function renderHtmlWithPlaceholdersIntInIns($dom)
     {
-        if (!static::nodeContainsText($dom, static::INS_START) && !static::nodeContainsText($dom, static::DEL_START)) {
-            return [[$this->cloneNode($dom)], false, false];
+        if (!static::nodeContainsText($dom, static::INS_END)) {
+            return [[$this->cloneNode($dom)], true, false];
         }
-        $inIns       = $inDel = false;
+
+        $inIns       = true;
+        $inDel       = false;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
             echo "Child: ";
@@ -308,7 +242,71 @@ class DiffRenderer
                 list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel, $lastEl);
                 $newChildren = array_merge($newChildren, $currNewChildren);
             } elseif (is_a($child, \DOMElement::class)) {
-                $this->renderHtmlWithPlaceholdersIntNormalElement($child, $newChildren, $inIns, $inDel);
+                $this->renderHtmlWithPlaceholdersIntElement($child, $newChildren, $inIns, $inDel);
+            }
+        }
+
+        $newDom = $this->nodeCreator->createElement($dom->nodeName);
+        foreach ($newChildren as $newChild) {
+            $newDom->appendChild($newChild);
+        }
+
+        return [[$newDom], $inIns, $inDel];
+    }
+
+    /**
+     * @param \DOMNode $dom
+     * @return array
+     */
+    protected function renderHtmlWithPlaceholdersIntInDel($dom)
+    {
+        if (!static::nodeContainsText($dom, static::DEL_END)) {
+            return [[$this->cloneNode($dom)], false, true];
+        }
+
+        $inIns       = false;
+        $inDel       = true;
+        $newChildren = [];
+        foreach ($dom->childNodes as $child) {
+            echo "Child: ";
+            var_dump($child);
+            if (is_a($child, \DOMText::class)) {
+                /** @var \DOMText $child */
+                $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
+                list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel, $lastEl);
+                $newChildren = array_merge($newChildren, $currNewChildren);
+            } elseif (is_a($child, \DOMElement::class)) {
+                $this->renderHtmlWithPlaceholdersIntElement($child, $newChildren, $inIns, $inDel);
+            }
+        }
+
+        $newDom = $this->nodeCreator->createElement($dom->nodeName);
+        foreach ($newChildren as $newChild) {
+            $newDom->appendChild($newChild);
+        }
+
+        return [[$newDom], $inIns, $inDel];
+    }
+
+    /**
+     * @param \DOMNode $dom
+     * @return array
+     */
+    protected function renderHtmlWithPlaceholdersIntNormal($dom)
+    {
+        if (!static::nodeContainsText($dom, static::INS_START) && !static::nodeContainsText($dom, static::DEL_START)) {
+            return [[$this->cloneNode($dom)], false, false];
+        }
+        $inIns       = $inDel = false;
+        $newChildren = [];
+        foreach ($dom->childNodes as $child) {
+            if (is_a($child, \DOMText::class)) {
+                /** @var \DOMText $child */
+                $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
+                list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel, $lastEl);
+                $newChildren = array_merge($newChildren, $currNewChildren);
+            } elseif (is_a($child, \DOMElement::class)) {
+                $this->renderHtmlWithPlaceholdersIntElement($child, $newChildren, $inIns, $inDel);
             }
         }
 

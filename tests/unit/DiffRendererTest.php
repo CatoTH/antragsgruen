@@ -105,4 +105,15 @@ class DiffRendererTest extends TestBase
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<p>Test 123<strong> Alt</strong><ins> Neu normal</ins><strong><ins>Neu fett </ins>alt</strong> Ende</p>', $rendered);
     }
+
+    /**
+     */
+    public function testLevel3()
+    {
+        $renderer = new DiffRenderer();
+
+        $html     = '<ul><li>Test###INS_START###<p>Neuer Absatz</p>###INS_END###.</li></ul>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<ul><li>Test<p class="inserted">Neuer Absatz</p>.</li></ul>', $rendered);
+    }
 }
