@@ -463,7 +463,12 @@ class HTMLTools
     {
         if (is_a($node, \DOMElement::class)) {
             /** @var \DOMElement $node */
-            $str = '<' . $node->nodeName . '>';
+            $str = '<' . $node->nodeName;
+            foreach ($node->attributes as $key => $val) {
+                $val = $node->getAttribute($key);
+                $str .= ' ' . $key . '="' . Html::encode($val) . '"';
+            }
+            $str .= '>';
             foreach ($node->childNodes as $child) {
                 $str .= static::renderDomToHtml($child);
             }

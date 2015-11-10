@@ -23,6 +23,33 @@ class DiffRenderer
 
     /**
      * @param \DOMNode $node
+     * @return boolean
+     */
+    public static function nodeCanBeAttachedToDelIns($node)
+    {
+        if (is_a($node, \DOMText::class)) {
+            return true;
+        }
+        /** @var \DOMElement $node */
+        return !in_array($node->nodeName, ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p']);
+    }
+
+    /**
+     * @param \DOMElement $node
+     * @param string $cssClass
+     */
+    public static function nodeAddClass(\DOMElement $node, $cssClass)
+    {
+        $prevClass = $node->getAttribute('class');
+        if ($prevClass != '') {
+            $prevClass .= ' ';
+        }
+        $prevClass .= $cssClass;
+        $node->setAttribute('class', $prevClass);
+    }
+
+    /**
+     * @param \DOMNode $node
      * @param string $text
      * @return bool
      */
@@ -65,20 +92,26 @@ class DiffRenderer
      * @param $text
      * @param bool $inIns
      * @param bool $inDel
+     * @param \DOMText|\DOMElement|null $lastEl
      * @return array
      */
-    public function textToNodes($text, $inIns, $inDel)
+    public function textToNodes($text, $inIns, $inDel, $lastEl)
     {
-        echo "\n" . $text . "\n\n";
-        $nodes = [];
+        $nodes     = [];
+        $lastIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
+        $lastIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
         while ($text != '') {
             if ($inIns) {
                 $split = preg_split('/###INS_END###/siu', $text, 2);
                 if ($split[0] != '') {
-                    $newNode = $this->nodeCreator->createElement('ins');
                     $newText = $this->nodeCreator->createTextNode($split[0]);
-                    $newNode->appendChild($newText);
-                    $nodes[] = $newNode;
+                    if ($lastIsIns) {
+                        $lastEl->appendChild($newText);
+                    } else {
+                        $newNode = $this->nodeCreator->createElement('ins');
+                        $newNode->appendChild($newText);
+                        $nodes[] = $newNode;
+                    }
                 }
                 if (count($split) == 2) {
                     $text  = $split[1];
@@ -89,10 +122,14 @@ class DiffRenderer
             } elseif ($inDel) {
                 $split = preg_split('/###DEL_END###/siu', $text, 2);
                 if ($split[0] != '') {
-                    $newNode = $this->nodeCreator->createElement('del');
                     $newText = $this->nodeCreator->createTextNode($split[0]);
-                    $newNode->appendChild($newText);
-                    $nodes[] = $newNode;
+                    if ($lastIsDel) {
+                        $lastEl->appendChild($newText);
+                    } else {
+                        $newNode = $this->nodeCreator->createElement('del');
+                        $newNode->appendChild($newText);
+                        $nodes[] = $newNode;
+                    }
                 }
                 if (count($split) == 2) {
                     $text  = $split[1];
@@ -102,7 +139,6 @@ class DiffRenderer
                 }
             } else {
                 $split = preg_split('/(###(?:INS|DEL)_START###)/siu', $text, 2, PREG_SPLIT_DELIM_CAPTURE);
-                var_dump($split);
                 if (count($split) == 3) {
                     if ($split[0] != '') {
                         $newText = $this->nodeCreator->createTextNode($split[0]);
@@ -120,6 +156,7 @@ class DiffRenderer
                     $text    = '';
                 }
             }
+            $lastEl = null;
         }
         return [$nodes, $inIns, $inDel];
     }
@@ -130,7 +167,32 @@ class DiffRenderer
      */
     protected function renderHtmlWithPlaceholdersIntInIns($dom)
     {
-        return $dom; // @TODO
+        if (!static::nodeContainsText($dom, static::INS_END)) {
+            return [[$this->cloneNode($dom)], true, false];
+        }
+
+        $inIns       = true;
+        $inDel       = false;
+        $newChildren = [];
+        foreach ($dom->childNodes as $child) {
+            echo "Child: ";
+            var_dump($child);
+            if (is_a($child, \DOMText::class)) {
+                /** @var \DOMText $child */
+                $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
+                list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel, $lastEl);
+                $newChildren = array_merge($newChildren, $currNewChildren);
+            } elseif (is_a($child, \DOMElement::class)) {
+                $this->renderHtmlWithPlaceholdersIntNormalElement($child, $newChildren, $inIns, $inDel);
+            }
+        }
+
+        $newDom = $this->nodeCreator->createElement($dom->nodeName);
+        foreach ($newChildren as $newChild) {
+            $newDom->appendChild($newChild);
+        }
+
+        return [[$newDom], $inIns, $inDel];
     }
 
     /**
@@ -139,7 +201,91 @@ class DiffRenderer
      */
     protected function renderHtmlWithPlaceholdersIntInDel($dom)
     {
-        return $dom; // @TODO
+        if (!static::nodeContainsText($dom, static::DEL_END)) {
+            return [[$this->cloneNode($dom)], false, true];
+        }
+
+        $inIns       = false;
+        $inDel       = true;
+        $newChildren = [];
+        foreach ($dom->childNodes as $child) {
+            echo "Child: ";
+            var_dump($child);
+            if (is_a($child, \DOMText::class)) {
+                /** @var \DOMText $child */
+                $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
+                list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel, $lastEl);
+                $newChildren = array_merge($newChildren, $currNewChildren);
+            } elseif (is_a($child, \DOMElement::class)) {
+                $this->renderHtmlWithPlaceholdersIntNormalElement($child, $newChildren, $inIns, $inDel);
+            }
+        }
+
+        $newDom = $this->nodeCreator->createElement($dom->nodeName);
+        foreach ($newChildren as $newChild) {
+            $newDom->appendChild($newChild);
+        }
+
+        return [[$newDom], $inIns, $inDel];
+    }
+
+    /**
+     * @param \DOMElement $child
+     * @param array $newChildren
+     * @param bool $inIns
+     * @param bool $inDel
+     */
+    protected function renderHtmlWithPlaceholdersIntNormalElement(\DOMElement $child, &$newChildren, &$inIns, &$inDel)
+    {
+        if ($inIns && static::nodeContainsText($child, static::INS_END)) {
+            echo 'inIns with End ' . $child->nodeName . ' ' . " (start)\n";
+            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child);
+            $newChildren = array_merge($newChildren, $currNewChildren);
+            echo 'inIns with End ' . $child->nodeName . ' ' . " (end)\n";
+        } elseif ($inDel && static::nodeContainsText($child, static::DEL_END)) {
+            echo 'inDel with End ' . $child->nodeName . ' ' . " (start)\n";
+            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child);
+            $newChildren = array_merge($newChildren, $currNewChildren);
+            echo 'inDel with End ' . $child->nodeName . ' ' . " (end)\n";
+        } elseif ($inIns) {
+            echo 'inIns 2 no End' . "\n";
+            /** @var \DOMElement $lastEl */
+            $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
+            $prevIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
+            if ($prevIsIns && static::nodeCanBeAttachedToDelIns($child)) {
+                $lastEl->appendChild(static::cloneNode($child));
+            } elseif (static::nodeCanBeAttachedToDelIns($child)) {
+                $delNode = $this->nodeCreator->createElement('ins');
+                $delNode->appendChild(static::cloneNode($child));
+                $newChildren[] = $delNode;
+            } else {
+                /** @var \DOMElement $clone */
+                $clone = static::cloneNode($child);
+                static::nodeAddClass($clone, 'inserted');
+                $newChildren[] = $clone;
+            }
+        } elseif ($inDel) {
+            /** @var \DOMElement $lastEl */
+            $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
+            $prevIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
+            if ($prevIsDel && static::nodeCanBeAttachedToDelIns($child)) {
+                $lastEl->appendChild(static::cloneNode($child));
+            } elseif (static::nodeCanBeAttachedToDelIns($child)) {
+                $delNode = $this->nodeCreator->createElement('del');
+                $delNode->appendChild(static::cloneNode($child));
+                $newChildren[] = $delNode;
+            } else {
+                /** @var \DOMElement $clone */
+                $clone = static::cloneNode($child);
+                static::nodeAddClass($clone, 'deleted');
+                $newChildren[] = $clone;
+            }
+        } else {
+            echo 'Putting ' . $child->nodeName . ' unchanged on newChildren' . "\n";
+            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntNormal($child);
+            echo 'Putting ' . $child->nodeName . ' unchanged on newChildren' . " (end)\n";
+            $newChildren = array_merge($newChildren, $currNewChildren);
+        }
     }
 
     /**
@@ -158,22 +304,11 @@ class DiffRenderer
             var_dump($child);
             if (is_a($child, \DOMText::class)) {
                 /** @var \DOMText $child */
-                echo 'Found TExt: ' . $child->nodeValue;
-                list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel);
-                echo ' => ' . count ($currNewChildren) . ' nodes' . "\n";
+                $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
+                list($currNewChildren, $inIns, $inDel) = $this->textToNodes($child->nodeValue, $inIns, $inDel, $lastEl);
                 $newChildren = array_merge($newChildren, $currNewChildren);
             } elseif (is_a($child, \DOMElement::class)) {
-                /** @var \DOMElement $child */
-                if ($inIns && static::nodeContainsText($dom, static::INS_END)) {
-                    echo 'inIns ' . $child->nodeName . ' ' . "\n";
-                } elseif ($inDel && static::nodeContainsText($dom, static::DEL_END)) {
-                    echo 'inDel ' . $child->nodeName . ' ' . "\n";
-                } else {
-                    echo 'Putting ' . $child->nodeName . ' unchanged on newChildren' . "\n";
-                    list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntNormal($child);
-                    echo 'Putting ' . $child->nodeName . ' unchanged on newChildren' . " (end)\n";
-                    $newChildren = array_merge($newChildren, $currNewChildren);
-                }
+                $this->renderHtmlWithPlaceholdersIntNormalElement($child, $newChildren, $inIns, $inDel);
             }
         }
 

@@ -18,7 +18,8 @@ class DiffRendererTest extends TestBase
         list($nodes, $inIns, $inDel) = $renderer->textToNodes(
             'Test1###INS_START###Inserted###INS_END###Bla###INS_START###Inserted###INS_END###Bla###DEL_START###Deleted###DEL_END###Ende',
             false,
-            false
+            false,
+            null
         );
         $this->assertEquals(7, count($nodes));
         $this->assertEquals('ins', $nodes[1]->nodeName);
@@ -34,7 +35,8 @@ class DiffRendererTest extends TestBase
         list($nodes, $inIns, $inDel) = $renderer->textToNodes(
             'Test1###INS_START###Inserted###INS_END###Bla###INS_START###Inserted###INS_END###Bla###DEL_START###Deleted',
             true,
-            false
+            false,
+            null
         );
 
         $this->assertEquals(5, count($nodes));
@@ -52,19 +54,19 @@ class DiffRendererTest extends TestBase
     {
         $renderer = new DiffRenderer();
 
-        $html = '<p>Test 1 ###INS_START###Inserted ###INS_END###Test 2</p>';
+        $html     = '<p>Test 1 ###INS_START###Inserted ###INS_END###Test 2</p>';
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<p>Test 1 <ins>Inserted </ins>Test 2</p>', $rendered);
 
-        $html = '<p>Test 1 ###INS_START###Inserted Test 2</p>';
+        $html     = '<p>Test 1 ###INS_START###Inserted Test 2</p>';
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<p>Test 1 <ins>Inserted Test 2</ins></p>', $rendered);
 
-        $html = '<p>Test 1 ###DEL_START###Deleted ###DEL_END###Test 2</p>';
+        $html     = '<p>Test 1 ###DEL_START###Deleted ###DEL_END###Test 2</p>';
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<p>Test 1 <del>Deleted </del>Test 2</p>', $rendered);
 
-        $html = '<p>Test 1 ###DEL_START###Deleted Test 2</p>';
+        $html     = '<p>Test 1 ###DEL_START###Deleted Test 2</p>';
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<p>Test 1 <del>Deleted Test 2</del></p>', $rendered);
     }
@@ -75,23 +77,32 @@ class DiffRendererTest extends TestBase
     {
         $renderer = new DiffRenderer();
 
-        $html = '<p>Test 1 <strong>Fett</strong> ###DEL_START###Deleted Test 2</p>';
+        $html     = '<p>Test 1 <strong>Fett</strong> ###DEL_START###Deleted Test 2</p>';
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<p>Test 1 <strong>Fett</strong> <del>Deleted Test 2</del></p>', $rendered);
 
-        $html = '<p>Test 1 ###DEL_START###Deleted <strong>Fett</strong> Test 2</p>';
+        $html     = '<p>Test 1 ###DEL_START###Deleted <strong>Fett</strong> Test 2</p>';
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<p>Test 1 <del>Deleted <strong>Fett</strong> Test 2</del></p>', $rendered);
-    }
 
-    /**
-     */
-    public function testStd()
-    {
-        return;
-        $html     = '<p>Test 123<strong> Alt###INS_START###</strong> Neu normal<strong>Neu fett ###INS_END###alt</strong> Ende</p>';
-        $renderer = new DiffRenderer();
+        $html     = '<p>Test 1 ###INS_START###Inserted <strong>Fett</strong> Test 2</p>';
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
-        HTMLTools::printDomDebug($rendered);
+        $this->assertEquals('<p>Test 1 <ins>Inserted <strong>Fett</strong> Test 2</ins></p>', $rendered);
+
+        $html     = '<ul><li>Test 1###INS_START###</li><li>Neuer Punkt</li><li>###INS_END###Test 2</li></ul>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<ul><li>Test 1</li><li class="inserted">Neuer Punkt</li><li>Test 2</li></ul>', $rendered);
+
+        $html     = '<ul><li>Test 1###DEL_START###</li><li>Gelöschter Punkt</li><li>###DEL_END###Test 2</li></ul>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<ul><li>Test 1</li><li class="deleted">Gelöschter Punkt</li><li>Test 2</li></ul>', $rendered);
+
+        $html     = '<ul><li>Test 1###INS_START###23</li><li>Neuer Punkt</li><li>Start###INS_END###Test 2</li></ul>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<ul><li>Test 1<ins>23</ins></li><li class="inserted">Neuer Punkt</li><li><ins>Start</ins>Test 2</li></ul>', $rendered);
+
+        $html     = '<p>Test 123<strong> Alt###INS_START###</strong> Neu normal<strong>Neu fett ###INS_END###alt</strong> Ende</p>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<p>Test 123<strong> Alt</strong><ins> Neu normal</ins><strong><ins>Neu fett </ins>alt</strong> Ende</p>', $rendered);
     }
 }
