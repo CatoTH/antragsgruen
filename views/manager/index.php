@@ -66,11 +66,12 @@ $controller->layoutParams->addCSS('css/manager.css');
         </li>
     </ul>
 
-    <strong>Das kann Antragsgrün nicht</strong> (und ist auch nicht geplant):
+    <strong>Das kann Antragsgrün nicht</strong>:
     <ul>
         <li><strong>Vor-Ort-Präsentationen</strong>. Auf Parteitagen selbst bietet sich der
             Einsatz von Tools an, die speziell dafür ausgelegt sind - wir empfehlen hier <a
                 href="http://openslides.org/de/">OpenSlides</a>.
+            (Antragsgrün bietet die Möglichkeit, Anträge und Änderungsanträge in Openslides zu exportieren.)
         </li>
         <li><strong>Wahlen / Abstimmungen</strong>.</li>
     </ul>

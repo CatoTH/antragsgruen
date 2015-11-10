@@ -23,8 +23,17 @@ foreach ($amendments as $amendment) {
     }
     $motionData[] = $text;
     $motionData[] = $amendment->changeExplanation;
-    $motionData[] = $amendment->getInitiatorsStr();
-    $topics       = [];
+    $initiators   = $amendment->getInitiators();
+    if (count($initiators) > 0) {
+        if ($initiators[0]->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+            $motionData[] = $initiators[0]->organization;
+        } else {
+            $motionData[] = $initiators[0]->name;
+        }
+    } else {
+        $motionData[] = '';
+    }
+    $topics = [];
     foreach ($amendment->motion->tags as $tag) {
         $topics[] = $tag->title;
     }

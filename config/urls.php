@@ -20,7 +20,7 @@ $domPlainPaths = 'legal|privacy|help|password|billing|createsite|savetextajax|si
 $domPlainPaths .= '|antragsgrueninitdbtest';
 $adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|odslistall|openslides';
 $adminAmendmentPaths = 'index|excellist|odslist|pdflist|openslides';
-$adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations';
+$adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
 
 $urlRules = [
     $domadmin . ''                                              => 'admin/index',

@@ -29,7 +29,16 @@ foreach ($motions as $motion) {
     }
     $motionData[] = $text;
     $motionData[] = $reason;
-    $motionData[] = $motion->getInitiatorsStr();
+    $initiators = $motion->getInitiators();
+    if (count($initiators) > 0) {
+        if ($initiators[0]->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+            $motionData[] = $initiators[0]->organization;
+        } else {
+            $motionData[] = $initiators[0]->name;
+        }
+    } else {
+        $motionData[] = '';
+    }
     $topics       = [];
     foreach ($motion->tags as $tag) {
         $topics[] = $tag->title;

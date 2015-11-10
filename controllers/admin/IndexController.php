@@ -9,6 +9,7 @@ use app\models\db\AmendmentComment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
+use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\AdminTodoItem;
@@ -17,6 +18,7 @@ use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
 use app\models\settings\AntragsgruenApp;
+use yii\web\Response;
 
 class IndexController extends AdminBase
 {
@@ -311,5 +313,33 @@ class IndexController extends AdminBase
         }
 
         return $this->render('site_consultations', ['site' => $site, 'createForm' => $form]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionOpenslidesusers()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'text/csv');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=Participants.csv');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        /** @var ISupporter[] $users */
+        $users = [];
+
+        foreach ($this->consultation->getVisibleMotions(false) as $motion) {
+            $initiators = $motion->getInitiators();
+            $users      = array_merge($users, $initiators);
+
+            foreach ($motion->getVisibleAmendments(false) as $amendment) {
+                $initiators = $amendment->getInitiators();
+                $users      = array_merge($users, $initiators);
+            }
+        }
+
+        return $this->renderPartial('openslides_user_list', [
+            'users' => $users,
+        ]);
     }
 }
