@@ -78,7 +78,7 @@ class LayoutHelper
         <h3 class="green">' . Html::encode($comment->name) . ':';
 
         if ($screening) {
-            echo ' <span class="screeningHint">(noch nicht freigeschaltet)</span>';
+            echo ' <span class="screeningHint">(' . \Yii::t('comment', 'not_screened_yet') . '</span>';
         }
 
         if ($comment->status == IComment::STATUS_VISIBLE && $comment->canDelete(User::getCurrentUser())) {
@@ -98,13 +98,13 @@ class LayoutHelper
             echo '<div style="display: inline-block; width: 49%; text-align: center;">';
 
             echo '<button type="submit" class="btn btn-success" name="commentScreeningAccept">';
-            echo '<span class="glyphicon glyphicon-thumbs-up"></span> Freischalten';
+            echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('comment', 'screen_yes');
             echo '</button>';
 
             echo '</div><div style="display: inline-block; width: 49%; text-align: center;">';
 
             echo '<button type="submit" class="btn btn-danger" name="commentScreeningReject">';
-            echo '<span class="glyphicon glyphicon-thumbs-down"></span> Löschen';
+            echo '<span class="glyphicon glyphicon-thumbs-down"></span> ' . \Yii::t('comment', 'screen_no');
             echo '</button>';
 
             echo '</div>';
@@ -166,12 +166,10 @@ class LayoutHelper
     {
         echo Html::beginForm('', 'post', ['class' => 'commentForm form-horizontal row']);
         echo '<fieldset class="col-md-8 col-md-offset-2">';
-        echo '<legend>Kommentar schreiben</legend>';
+        echo '<legend>' . \Yii::t('comment', 'comment_write_title') . '</legend>';
 
         if (\Yii::$app->user->isGuest) {
-            echo '<div class="jsProtectionHint">ACHTUNG: Um diese Funktion zu nutzen, muss entweder
-                JavaScript aktiviert sein, oder du musst eingeloggt sein.
-            </div>';
+            echo '<div class="jsProtectionHint">' . \Yii::t('base', 'err_js_or_login') . '</div>';
         }
 
         $formIdPre = 'comment_' . $sectionId . '_' . $paragraphNo;
@@ -183,14 +181,16 @@ class LayoutHelper
         if (!$nameIsFixed) {
             echo '
             <div class="form-group">
-                <label for="' . $formIdPre . '_name" class="control-label col-sm-3">Name:</label>
+                <label for="' . $formIdPre . '_name" class="control-label col-sm-3">' . \Yii::t('comment', 'name') .
+                ':</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control col-sm-9" id="' . $formIdPre . '_name"
                         name="comment[name]" value="' . Html::encode($form->name) . '" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="' . $formIdPre . '_email" class="control-label col-sm-3">E-Mail:</label>
+                <label for="' . $formIdPre . '_email" class="control-label col-sm-3">' . \Yii::t('comment', 'email') .
+                ':</label>
                 <div class="col-sm-9">
                     <input type="email" class="form-control" id="' . $formIdPre . '_email"
                     name="comment[email]" value="' . Html::encode($form->email) . '"';
@@ -200,7 +200,8 @@ class LayoutHelper
             echo '>
                 </div>
             </div><div class="form-group">
-            <label for="' . $formIdPre . '_text" class="control-label col-sm-3">Text:</label>
+            <label for="' . $formIdPre . '_text" class="control-label col-sm-3">' . \Yii::t('comment', 'text') .
+                ':</label>
                 <div class="col-sm-9">
                     <textarea name="comment[text]"  title="Text" class="form-control" rows="5"
                     id="' . $formIdPre . '_text">' . Html::encode($form->text) . '</textarea>
@@ -208,14 +209,15 @@ class LayoutHelper
             </div>';
         } else {
             echo '<div>
-            <label class="required sr-only">Text</label>
+            <label class="required sr-only">' . \Yii::t('comment', 'text') . '</label>
             <textarea name="comment[text]"  title="Text" class="form-control" rows="5"
                 id="' . $formIdPre . '_text">' . Html::encode($form->text) . '</textarea>
             </div>';
         }
         echo '
     <div class="submitrow">
-        <button class="btn btn-success" name="writeComment" type="submit">Kommentar abschicken</button>
+        <button class="btn btn-success" name="writeComment" type="submit">' . \Yii::t('comment', 'submit_comment') .
+            '</button>
     </div>
     </fieldset>';
 

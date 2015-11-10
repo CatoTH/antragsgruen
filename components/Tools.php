@@ -31,7 +31,7 @@ class Tools
      */
     public static function getCurrentDateLocale()
     {
-        return 'de';
+        return \Yii::$app->language;
     }
 
     /**
@@ -48,6 +48,13 @@ class Tools
 
         if ($locale == 'de') {
             $pattern = '/^(?<day>\\d{2})\.(?<month>\\d{2})\.(?<year>\\d{4}) (?<hour>\\d{2})\:(?<minute>\\d{2})$/';
+            if (preg_match($pattern, $time, $matches)) {
+                $date = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'] . ' ';
+                $date .= $matches['hour'] . ':' . $matches['minute'] . ':00';
+                return $date;
+            }
+        } elseif ($locale == 'en') {
+            $pattern = '/^(?<month>\\d{2})\/(?<day>\\d{2})\/(?<year>\\d{4}) (?<hour>\\d{2})\:(?<minute>\\d{2})$/';
             if (preg_match($pattern, $time, $matches)) {
                 $date = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'] . ' ';
                 $date .= $matches['hour'] . ':' . $matches['minute'] . ':00';
@@ -76,6 +83,11 @@ class Tools
             if (preg_match($pattern, $date, $matches)) {
                 return $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'];
             }
+        } elseif ($locale == 'en') {
+            $pattern = '/^(?<year>\\d{4})\-(?<month>\\d{2})\-(?<day>\\d{2})$/';
+            if (preg_match($pattern, $date, $matches)) {
+                return $matches['month'] . '/' . $matches['day'] . '/' . $matches['year'];
+            }
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
@@ -96,6 +108,11 @@ class Tools
 
         if ($locale == 'de') {
             $pattern = '/^(?<day>\\d{2})\.(?<month>\\d{2})\.(?<year>\\d{4})$/';
+            if (preg_match($pattern, $date, $matches)) {
+                return $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
+            }
+        } elseif ($locale == 'en') {
+            $pattern = '/^(?<month>\\d{2})\/(?<day>\\d{2})\/(?<year>\\d{4})$/';
             if (preg_match($pattern, $date, $matches)) {
                 return $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
             }
@@ -121,6 +138,14 @@ class Tools
                 '(?<hour>\\d{2})\:(?<minute>\\d{2})\:(?<second>\\d{2})$/';
             if (preg_match($pattern, $time, $matches)) {
                 $date = $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'] . ' ';
+                $date .= $matches['hour'] . ':' . $matches['minute'];
+                return $date;
+            }
+        } elseif ($locale == 'en') {
+            $pattern = '/^(?<year>\\d{4})\-(?<month>\\d{2})\-(?<day>\\d{2}) ' .
+                '(?<hour>\\d{2})\:(?<minute>\\d{2})\:(?<second>\\d{2})$/';
+            if (preg_match($pattern, $time, $matches)) {
+                $date = $matches['month'] . '/' . $matches['day'] . '/' . $matches['year'] . ' ';
                 $date .= $matches['hour'] . ':' . $matches['minute'];
                 return $date;
             }
@@ -166,12 +191,16 @@ class Tools
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }
-        if ($locale !== 'de') {
+
+        if ($locale == 'de') {
+            $date = explode('-', substr($mysqldate, 0, 10));
+            return sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]);
+        } elseif ($locale == 'en') {
+            $date = explode('-', substr($mysqldate, 0, 10));
+            return sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]);
+        } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
-
-        $date = explode("-", substr($mysqldate, 0, 10));
-        return sprintf("%02d.%02d.%04d", $date[2], $date[1], $date[0]);
     }
 
     /**
@@ -194,6 +223,6 @@ class Tools
             throw new Internal('Unsupported Locale: ' . $locale);
         }
 
-        return self::formatMysqlDate($mysqlDate) . ", " . substr($mysqlDate, 11, 5) . " Uhr";
+        return self::formatMysqlDate($mysqlDate) . ", " . substr($mysqlDate, 11, 5);
     }
 }

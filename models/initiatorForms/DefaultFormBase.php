@@ -2,6 +2,7 @@
 
 namespace app\models\initiatorForms;
 
+use app\components\Tools;
 use app\controllers\Base;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
@@ -381,11 +382,8 @@ abstract class DefaultFormBase extends IInitiatorForm
             $init->name         = $_POST['Initiator']['contactName'];
         }
 
-        $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
-        if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
-            $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
-        }
-        $return[] = $init;
+        $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
+        $return[]             = $init;
 
         if (isset($_POST['moreInitiators']) && isset($_POST['moreInitiators']['name'])) {
             foreach ($_POST['moreInitiators']['name'] as $i => $name) {
@@ -467,11 +465,8 @@ abstract class DefaultFormBase extends IInitiatorForm
             $init->name         = $_POST['Initiator']['contactName'];
         }
 
-        $dateRegexp = '/^(?<day>[0-9]{2})\. *(?<month>[0-9]{2})\. *(?<year>[0-9]{4})$/';
-        if (preg_match($dateRegexp, $init->resolutionDate, $matches)) {
-            $init->resolutionDate = $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'];
-        }
-        $return[] = $init;
+        $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
+        $return[]             = $init;
 
         if (isset($_POST['moreInitiators']) && isset($_POST['moreInitiators']['name'])) {
             foreach ($_POST['moreInitiators']['name'] as $i => $name) {

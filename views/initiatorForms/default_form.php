@@ -30,7 +30,7 @@ $locale = Tools::getCurrentDateLocale();
 
 echo '<fieldset class="supporterForm supporterFormStd">';
 
-echo '<legend class="green">' . 'Antragsteller_In' . '</legend>';
+echo '<legend class="green">' . \Yii::t('motion', 'initiators_head') . '</legend>';
 
 if ($initiator->personType == ISupporter::PERSON_NATURAL) {
     $prePrimaryName = Html::encode($initiator->name);

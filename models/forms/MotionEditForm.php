@@ -141,10 +141,10 @@ class MotionEditForm extends Model
         foreach ($this->sections as $section) {
             $type = $section->consultationSetting;
             if ($section->data == '' && $type->required) {
-                $errors[] = 'Keine Daten angegeben (Feld: ' . $type->title . ')';
+                $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
-                $errors[] = str_replace('%max%', $type->maxLen, 'Maximum length of %max% exceeded');
+                $errors[] = str_replace('%MAX%', $type->title, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
 
@@ -209,7 +209,7 @@ class MotionEditForm extends Model
 
             return $motion;
         } else {
-            throw new FormError('Ein Fehler beim Anlegen ist aufgetreten');
+            throw new FormError(\Yii::t('motion', 'err_create'));
         }
     }
 
@@ -223,10 +223,10 @@ class MotionEditForm extends Model
         foreach ($this->sections as $section) {
             $type = $section->consultationSetting;
             if ($section->data == '' && $type->required) {
-                $errors[] = 'Keine Daten angegeben (Feld: ' . $type->title . ')';
+                $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
-                $errors[] = str_replace('%max%', $type->maxLen, 'Maximum length of %max% exceeded');
+                $errors[] = str_replace('%MAX%', $type->title, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
 
@@ -282,7 +282,7 @@ class MotionEditForm extends Model
             $motion->refreshTitle();
             $motion->save();
         } else {
-            throw new FormError('Ein Fehler beim Anlegen ist aufgetreten');
+            throw new FormError(\Yii::t('motion', 'err_create'));
         }
     }
 }
