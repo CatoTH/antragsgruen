@@ -264,7 +264,7 @@ if ($hasSupporters) {
 
     if ($allowMoreSupporters) {
         echo '<div class="adderRow"><a href="#"><span class="glyphicon glyphicon-plus"></span> ';
-        echo 'UnterstützerIn hinzufügen';
+        echo \Yii::t('initiator', 'addSupporter');
         echo '</a></div>';
     }
 

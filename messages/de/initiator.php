@@ -17,6 +17,7 @@ return [
     'addInitiator'        => 'AntragstellerIn hinzufügen',
     'supporters'          => 'UnterstützerInnen',
     'supportersHead'      => 'Initiator_Innen',
+    'addSupporter'        => 'UntertützerIn hinzufügen',
     'minSupporters1'      => 'Min. %min% UnterstützerIn',
     'minSupportersX'      => 'Min. %min% UnterstützerInnen',
     'fullTextField'       => 'Volltextfeld',
