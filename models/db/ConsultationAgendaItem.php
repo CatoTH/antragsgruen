@@ -234,11 +234,12 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
+     * @param bool $includeWithdrawn
      * @return Motion[]
      */
-    public function getVisibleMotions()
+    public function getVisibleMotions($includeWithdrawn = true)
     {
-        $stati  = $this->consultation->getInvisibleMotionStati();
+        $stati  = $this->consultation->getInvisibleMotionStati(!$includeWithdrawn);
         $return = [];
         foreach ($this->motions as $motion) {
             if (!in_array($motion->status, $stati)) {

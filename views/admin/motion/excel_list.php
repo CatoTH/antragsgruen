@@ -5,7 +5,7 @@ use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 
 /**
- * @var $this yii\web\View
+ * @var \yii\web\View $this
  * @var Motion[] $motions
  * @var bool $textCombined
  * @var ConsultationMotionType $motionType

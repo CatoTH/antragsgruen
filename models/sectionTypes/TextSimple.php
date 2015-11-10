@@ -158,6 +158,39 @@ class TextSimple extends ISectionType
     /**
      * @return string
      */
+    public function getMotionPlainHtml()
+    {
+        $html = $this->section->data;
+        if (mb_strpos($html, 'strike') !== false) {
+        }
+        $html = str_replace('<span class="underline">', '<span style="text-decoration: underline;">', $html);
+        $html = str_replace('<span class="strike">', '<span style="text-decoration: line-through;">', $html);
+        return $html;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentPlainHtml()
+    {
+        /** @var AmendmentSection $section */
+        $section    = $this->section;
+        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_INLINE);
+        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        if (count($diffGroups) == 0) {
+            return '';
+        }
+
+        $str       = '<h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
+        $firstLine = $section->getFirstLineNumber();
+        $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+        $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
+        return $str;
+    }
+
+    /**
+     * @return string
+     */
     public function getAmendmentFormatted()
     {
         /** @var AmendmentSection $section */

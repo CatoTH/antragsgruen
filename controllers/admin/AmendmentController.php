@@ -113,4 +113,26 @@ class AmendmentController extends AdminBase
 
         return $this->render('update', ['amendment' => $amendment, 'form' => $form]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionOpenslides()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'text/csv');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=Amendments.csv');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        $amendments = [];
+        foreach ($this->consultation->getVisibleMotionsSorted(false) as $motion) {
+            foreach ($motion->getVisibleAmendmentsSorted(false) as $amendment) {
+                $amendments[] = $amendment;
+            }
+        }
+
+        return $this->renderPartial('openslides_list', [
+            'amendments' => $amendments,
+        ]);
+    }
 }

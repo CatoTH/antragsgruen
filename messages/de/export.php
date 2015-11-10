@@ -21,6 +21,7 @@ return [
     'line'                  => 'Zeile',
     'amend_change'          => 'Änderung',
     'amend_reason'          => 'Begründung',
+    'motion_reason'         => 'Begründung',
     'prefix_short'          => 'Antragsnr.',
     'initiator'             => 'AntragstellerIn',
     'text'                  => 'Text',

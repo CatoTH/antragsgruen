@@ -161,6 +161,22 @@ abstract class ISectionType
     /**
      * @return string
      */
+    public function getMotionPlainHtml()
+    {
+        return $this->getSimple(false);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentPlainHtml()
+    {
+        return $this->getSimple(false);
+    }
+
+    /**
+     * @return string
+     */
     abstract public function getAmendmentFormatted();
 
     /**

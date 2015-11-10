@@ -12,6 +12,7 @@ return [
     'index_export_ods'            => 'Export: Spreadsheet',
     'index_motion_create'         => 'Neu anlegen',
     'index_export_excel'          => 'Export: Excel',
+    'index_export_oslides'        => 'Export: OpenSlides (CSV)',
     'index_error_prone'           => 'fehleranfälliger',
     'index_amendments'            => 'Änderungsanträge',
     'index_pdf_collection'        => 'Sammel-PDF',

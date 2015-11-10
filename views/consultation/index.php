@@ -48,7 +48,7 @@ echo $layout->getMiniMenu('sidebarSmall');
 
 echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;">';
 
-if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->deadlineMotions != "") {
+if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->deadlineMotions != '') {
     echo '<p class="deadlineCircle">Antrags&shy;schluss: ';
     echo Tools::formatMysqlDateTime($consultation->motionTypes[0]->deadlineMotions) . "</p>\n";
 }

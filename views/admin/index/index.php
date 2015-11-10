@@ -68,12 +68,18 @@ foreach ($consultation->motionTypes as $motionType) {
     echo Html::a(\Yii::t('admin', 'index_export_excel'), $excelUrl, ['class' => 'motionExcel' . $motionType->id]) .
         ' (' . \Yii::t('admin', 'index_error_prone') . ')</li>';
 
+    $oslidesUrl = UrlHelper::createUrl(['admin/motion/openslides', 'motionTypeId' => $motionType->id]);
+    echo '<li class="secondary">';
+    echo Html::a(\Yii::t('admin', 'index_export_oslides'), $oslidesUrl, ['class' => 'motionOslides' . $motionType->id])
+        . '</li>';
+
     echo '</ul>';
 }
 
 $amendmentOdsLink  = UrlHelper::createUrl('admin/amendment/odslist');
 $amendmentPDFLink  = UrlHelper::createUrl('admin/amendment/pdflist');
 $pdfCollectionLink = UrlHelper::createUrl('amendment/pdfcollection');
+$openslidesLink    = UrlHelper::createUrl('admin/amendment/openslides');
 echo '<h3>' . \Yii::t('admin', 'index_amendments') . '</h3>
 <ul>
     <li>' .
@@ -84,6 +90,9 @@ echo '<h3>' . \Yii::t('admin', 'index_amendments') . '</h3>
     </li>
     <li class="secondary">' .
     Html::a(\Yii::t('admin', 'index_export_ods'), $amendmentOdsLink, ['class' => 'amendmentOds']) .
+    '</li>
+    <li class="secondary">' .
+    Html::a(\Yii::t('admin', 'index_export_oslides'), $openslidesLink, ['class' => 'amendmentOslides']) .
     '</li>';
 
 

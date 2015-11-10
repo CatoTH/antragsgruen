@@ -18,8 +18,8 @@ $userPaths   = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurze
 $userPaths .= '|consultationaccesserror|myaccount|emailchange';
 $domPlainPaths = 'legal|privacy|help|password|billing|createsite|savetextajax|siteconfig|antragsgrueninit';
 $domPlainPaths .= '|antragsgrueninitdbtest';
-$adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|odslistall';
-$adminAmendmentPaths = 'index|excellist|odslist|pdflist';
+$adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|odslistall|openslides';
+$adminAmendmentPaths = 'index|excellist|odslist|pdflist|openslides';
 $adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations';
 
 $urlRules = [

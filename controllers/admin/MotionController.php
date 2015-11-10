@@ -327,4 +327,34 @@ class MotionController extends AdminBase
             'motionType'   => $motionType,
         ]);
     }
+
+    /**
+     * @param int $motionTypeId
+     * @return string
+     */
+    public function actionOpenslides($motionTypeId)
+    {
+        try {
+            $motionType = $this->consultation->getMotionType($motionTypeId);
+        } catch (ExceptionBase $e) {
+            return $this->showErrorpage(404, $e->getMessage());
+        }
+
+        $filename                    = rawurlencode($motionType->titlePlural);
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'text/csv');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . $filename . '.csv');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        $motions = [];
+        foreach ($this->consultation->getVisibleMotionsSorted(false) as $motion) {
+            if ($motion->motionTypeId == $motionTypeId) {
+                $motions[] = $motion;
+            }
+        }
+
+        return $this->renderPartial('openslides_list', [
+            'motions' => $motions,
+        ]);
+    }
 }

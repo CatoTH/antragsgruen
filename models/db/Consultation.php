@@ -264,22 +264,23 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @param bool $includeWithdrawn
      * @return Motion[]
      */
-    public function getVisibleMotionsSorted()
+    public function getVisibleMotionsSorted($includeWithdrawn = true)
     {
         $motions   = [];
         $motionIds = [];
         $items     = ConsultationAgendaItem::getSortedFromConsultation($this);
         foreach ($items as $agendaItem) {
-            $newMotions = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions());
+            $newMotions = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions($includeWithdrawn));
             foreach ($newMotions as $newMotion) {
                 $motions[]   = $newMotion;
                 $motionIds[] = $newMotion->id;
             }
         }
         $noAgendaMotions = [];
-        foreach ($this->getVisibleMotions() as $motion) {
+        foreach ($this->getVisibleMotions($includeWithdrawn) as $motion) {
             if (!in_array($motion->id, $motionIds)) {
                 $noAgendaMotions[] = $motion;
                 $motionIds[]       = $motion->id;
