@@ -219,7 +219,7 @@ class Tools
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }
-        if ($locale !== 'de') {
+        if ($locale !== 'de' && $locale !== 'en') {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
 
