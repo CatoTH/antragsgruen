@@ -36,10 +36,10 @@ abstract class ISupporter extends ActiveRecord
     public static function getRoles()
     {
         return [
-            static::ROLE_INITIATOR => 'InitiatorIn',
-            static::ROLE_SUPPORTER => 'UnterstützerIn',
-            static::ROLE_LIKE      => 'Mag',
-            static::ROLE_DISLIKE   => 'Mag nicht',
+            static::ROLE_INITIATOR => \Yii::t('structure', 'role_initiator'),
+            static::ROLE_SUPPORTER => \Yii::t('structure', 'role_supporter'),
+            static::ROLE_LIKE      => \Yii::t('structure', 'role_likes'),
+            static::ROLE_DISLIKE   => \Yii::t('structure', 'role_dislikes'),
         ];
     }
 
@@ -49,8 +49,8 @@ abstract class ISupporter extends ActiveRecord
     public static function getPersonTypes()
     {
         return [
-            static::PERSON_NATURAL      => 'Natürliche Person',
-            static::PERSON_ORGANIZATION => 'Organisation / Gremium',
+            static::PERSON_NATURAL      => \Yii::t('structure', 'person_type_natural'),
+            static::PERSON_ORGANIZATION => \Yii::t('structure', 'person_type_orga'),
         ];
     }
 

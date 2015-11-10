@@ -37,20 +37,37 @@ class MessageSource extends \yii\i18n\MessageSource
      */
     public static function getTranslatableCategories()
     {
-        return [
-            'base'      => 'Basis-Layout',
-            'structure' => 'Interne Bezeichnungen',
-            'con'       => 'Consultation',
-            'motion'    => 'Motion',
-            'amend'     => 'Amendment',
-            'diff'      => 'Diff',
-            'export'    => 'Exports',
-            'initiator' => 'InitiatorInnen',
-            'manager'   => 'Seiten-Konfiguration',
-            'comment'   => 'Kommentare',
-            'admin'     => 'Administration',
-            'user'      => 'Account-Einstellungen',
-        ];
+        if (\Yii::$app->language == 'de') {
+            return [
+                'base'      => 'Basis-Layout',
+                'structure' => 'Interne Bezeichnungen',
+                'con'       => 'Veranstaltung',
+                'motion'    => 'Anträge',
+                'amend'     => 'Änderungsanträge',
+                'diff'      => 'Diff',
+                'export'    => 'Exports',
+                'initiator' => 'InitiatorInnen',
+                'manager'   => 'Seiten-Konfiguration',
+                'comment'   => 'Kommentare',
+                'admin'     => 'Administration',
+                'user'      => 'Account-Einstellungen',
+            ];
+        } else {
+            return [
+                'base'      => 'Basic layout',
+                'structure' => 'Internal labels',
+                'con'       => 'Consultation',
+                'motion'    => 'Motion',
+                'amend'     => 'Amendment',
+                'diff'      => 'Diff',
+                'export'    => 'Exports',
+                'initiator' => 'Proposers',
+                'manager'   => 'Site creation',
+                'comment'   => 'Comments',
+                'admin'     => 'Administration',
+                'user'      => 'User accounts',
+            ];
+        }
     }
 
     /**
@@ -66,6 +83,11 @@ class MessageSource extends \yii\i18n\MessageSource
                 'de-programm'  => 'Programmdiskussion',
             ];
         };
+        if ($language == 'en') {
+            return [
+                'en-ukcongress' => 'Conference (UK)',
+            ];
+        }
         return [];
     }
 
@@ -76,6 +98,7 @@ class MessageSource extends \yii\i18n\MessageSource
     {
         return [
             'de' => 'Deutsch',
+            'en' => 'English',
         ];
     }
 

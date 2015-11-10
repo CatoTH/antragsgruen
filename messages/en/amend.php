@@ -1,0 +1,108 @@
+<?php
+
+return [
+    'amendment'                         => 'Amendment',
+    'amendments'                        => 'Amendments',
+    'motion'                            => 'Motion',
+    'initiator'                         => 'Proposer',
+    'initiators_title'                  => 'Proposers',
+    'supporter'                         => 'Supporer',
+    'supporters'                        => 'Supporers',
+    'supporters_title'                  => 'Supporers',
+    'supporter_you'                     => 'You!',
+    'supporter_none'                    => 'none',
+    'status'                            => 'Status',
+    'resoluted_on'                      => 'Decided on',
+    'submitted_on'                      => 'Submitted',
+    'comments_title'                    => 'Comments',
+    'comment_screen_queue_1'            => '1 comment waiting for screening',
+    'comment_screen_queue_x'            => '%NUM% comments waiting for screening',
+    'comment_login_hint'                => 'Please log in to comment.',
+    'prefix'                            => 'Code',
+    'none_yet'                          => 'No amendment yet',
+    'amendment_for'                     => 'Amendment for',
+    'amendment_for_prefix'              => 'Amendment for %PREFIX%',
+    'confirmed_visible'                 => 'You submitted the amendment. It is visible immediatelly.',
+    'confirmed_screening'               => 'You submitted the amendment. It will be screened now.',
+    /*
+    'submitted_adminnoti_title'         => 'Neuer Änderungsantrag',
+    'submitted_adminnoti_body'          => "Es wurde ein neuer Änderungsantrag eingereicht.\nAntrag: %TITLE%\nAntragstellerIn: %INITIATOR%\nLink: %LINK%",
+    'submitted_screening_email'         => "Hallo,\n\ndu hast soeben einen Änderungsantrag eingereicht.\n" .
+        "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
+        "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
+        "Du kannst ihn hier einsehen: %LINK%\n\n" .
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
+    'submitted_screening_email_subject' => 'Änderungsantrag eingereicht',
+    */
+    'screened_hint'                     => 'Screened',
+    'amend_for'                         => ' to ',
+    'create_explanation'                => 'Please amend the motion as you like. Below at &quot;Reason&quot; you can explain the change.<br>' . "\n" .
+        'Please note that there is also the possibility to request &quot;editorial changes&quot;.',
+    'editorial_hint'                    => 'Editorial hint',
+    'merge_amend_stati'                 => 'Status of the amendments',
+    'merge_bread'                       => 'Revise',
+    'merge_title'                       => 'Revise %TITLE%',
+    'merge_new_text'                    => 'New Motion Text',
+    'merge_confirm_title'               => 'Confirm new version',
+    'merge_submitted'                   => 'New version confirmed',
+    'merge_submitted_title'             => '%TITLE% revised',
+    'merge_submitted_str'               => 'The new version of this motion has been saved',
+    'merge_submitted_to_motion'         => 'Go to the motion',
+    'merge_colliding'                   => 'Colliding amendment',
+    'merge_accept_all'                  => 'Accept all changes',
+    'merge_reject_all'                  => 'Reject all changes',
+    'merge_track_deactivate'            => 'Deactivate tracking changes',
+    'merge_track_deactivated'           => 'Tracking changes deactivated',
+    /*
+    'merge_explanation'                 => 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. ' .
+        'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - klicke dazu einfach mit der rechten Maustaste auf die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>' .
+        'Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>' .
+        'Anschließend kannst du den neuen Status der Änderungsanträge auswählen und dann auf "Weiter" klicken. Dadurch wird ein <strong>neuer Antrag "###NEWPREFIX###"</strong> erzeugt. Der ursprüngliche Antrag sowie die Änderungsanträge bleiben zur Referenz erhalten, werden aber als "veraltet" markiert.',
+    'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> Da es zu diesem Antrag mehrere Änderungsanträge gibt, die sich auf die selbe Textstelle beziehen - <strong>kollidierende Änderungsanträge</strong> - ist es notwendig, diese Änderungsanträge händisch einzupflegen. Lösche bitte anschließend den kollidierenden Änderungsantrag, indem du ihn zunächst mit der Entfernen/Del-Taste löschst, und diese Änderung dann mit der rechten Maustaste annimmst.',
+    */
+    'unsaved_drafts'                    => 'There are unsaved drafts that can be restored:',
+    'confirm_amendment'                 => 'Confirm amendment',
+    'amendment_submitted'               => 'Amendment submitted',
+    'amendment_create'                  => 'Create an amendment',
+    'amendment_edit'                    => 'Edit this amendment',
+    'amendment_create_x'                => 'Create an amendment to %prefix%',
+    'amendment_edit_x'                  => 'Edit the amendment to %prefix%',
+    'amendment_withdraw'                => 'Withdraw this amendment',
+    'edit_done'                         => 'Edit amendment',
+    'edit_done_msg'                     => 'The changes have been saved.',
+    'edit_bread'                        => 'Edit',
+    'reason'                            => 'Reason',
+    'amendment_requirement'             => 'Requirements for an amendment',
+    'button_submit'                     => 'Submit',
+    'button_correct'                    => 'Correct',
+    'confirm'                           => 'COnfirm',
+    'go_on'                             => 'Go on',
+    'published_email_body'              => "Hi,\n\nyour amendment has just been published on Antragsgrün. " .
+        "You can see it here: %LINK%\n\n" .
+        "Greetings,\n" .
+        "  The Antragsgrün-Team",
+    'published_email_title'             => 'Your amendment has been published',
+    'sidebar_adminedit'                 => 'Admin: edit',
+    'sidebar_back'                      => 'Back to the motion',
+    'back_to_amend'                     => 'Back to the amendment',
+    'initiated_by'                      => 'submitted by',
+    'confirm_bread'                     => 'Confirm',
+    'affects_x_paragraphs'              => 'Affects %num% paragraphs',
+    'singlepara_revert'                 => 'Revert changes',
+    'err_create_permission'             => 'No permission to create agenda items.',
+    'err_create'                        => 'An error occurred while creating it',
+    'err_save'                          => 'An error occurred while saving it',
+    'err_type_missing'                  => 'You have to enter a type.',
+    'err_not_found'                     => 'The amendment was not found',
+    'err_withdraw_forbidden'            => 'Not permission to withdraw this amendment.',
+    'withdraw_done'                     => 'The amendment has been withdrawn.',
+    'withdraw_bread'                    => 'Withdraw',
+    'withdraw'                          => 'Withdraw',
+    'withdraw_confirm'                  => 'Do you really want to withdraw this amendment?',
+    'withdraw_no'                       => 'No',
+    'withdraw_yes'                      => 'Yes, withdraw',
+    'widthdraw_done'                    => 'The amendment has been withdrawn.',
+    'title_amend_to'                    => 'Change to',
+    'title_new'                         => 'New title',
+];

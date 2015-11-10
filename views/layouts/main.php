@@ -107,12 +107,12 @@ echo '<ul class="nav navbar-nav">';
 if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
     if ($controller->consultation) {
         $homeUrl = UrlHelper::createUrl('consultation/index');
-        echo '<li class="active">' . Html::a(Yii::t('base', 'Home'), $homeUrl) . '</li>';
+        echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $homeUrl) . '</li>';
         $helpLink = UrlHelper::createUrl('consultation/help');
-        echo '<li>' . Html::a(Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+        echo '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
     } else {
         $startLink = UrlHelper::createUrl('manager/index');
-        echo '<li class="active">' . Html::a(Yii::t('base', 'Home'), $startLink) . '</li>';
+        echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';
     }
 
     if (!User::getCurrentUser() && !$minimalistic) {
@@ -125,8 +125,8 @@ if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
         echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink']) . '</li>';
     }
     if (User::getCurrentUser()) {
-        $myAccountLink = Html::a('Einstellungen', UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']);
-        echo '<li>' . $myAccountLink . '</li>';
+        $link = Html::a(\Yii::t('base', 'Settings'), UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']);
+        echo '<li>' . $link . '</li>';
 
         $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
         echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
@@ -192,13 +192,21 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 
 echo '<footer class="footer">
         <div class="container">
-            <a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">Impressum</a>
-            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">Datenschutz</a>
+            <a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
+    \Yii::t('base', 'imprint') . '</a>
+            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
+    \Yii::t('base', 'privacy_statement') . '</a>
 
-            <span class="version">
-                Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-                Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL) . '
-            </span>
+            <span class="version">';
+if (\Yii::$app->language == 'de') {
+    echo 'Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
+        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
+} else {
+    echo 'Antragsgrün by <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
+        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
+}
+
+echo '</span>
         </div>
     </footer>
 
