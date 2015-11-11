@@ -18,7 +18,7 @@ return [
     'feed_all'             => 'All',
     'feed'                 => 'Feed',
     'feeds'                => 'Feeds',
-    'pdf_all'              => 'Joined PDF',
+    'pdf_all'              => 'All Motions',
     'pdf_motions'          => 'PDFs: Motions',
     'pdf_amendments'       => 'All Amendments',
     'pdf_amendments_small' => 'PDFs: Amendments',

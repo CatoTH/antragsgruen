@@ -150,7 +150,11 @@ class TextSimple extends ISectionType
         $sections = HTMLTools::sectionSimpleHTML($this->section->data);
         $str      = '';
         foreach ($sections as $section) {
-            $str .= '<div class="paragraph"><div class="text">' . $section . '</div></div>';
+            $str .= '<div class="paragraph"><div class="text';
+            if ($this->section->consultationSetting->fixedWidth) {
+                $str .= ' fixedWidthFont';
+            }
+            $str .= '">' . $section . '</div></div>';
         }
         return $str;
     }
