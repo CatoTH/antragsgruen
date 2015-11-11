@@ -547,24 +547,21 @@ class Diff
      */
     public static function computeSubsequentInsertsDeletes($arr, $idx)
     {
-        $numDeletes = 0;
         $deleteStrs = [];
         $insertStrs = [];
         while ($idx < count($arr) && $arr[$idx][1] == Engine::DELETED) {
             $deleteStrs[] = $arr[$idx][0];
-            $numDeletes++;
             $idx++;
         }
-        $goon = true;
-        for ($i = 0; $i < $numDeletes && $goon; $i++) {
-            if (!isset($arr[$idx + $i]) || $arr[$idx + $i][1] != Engine::INSERTED) {
-                $goon = false;
-            } else {
-                $insertStrs[] = $arr[$idx + $i][0];
-            }
+        while ($idx < count($arr) && $arr[$idx][1] == Engine::INSERTED) {
+            $insertStrs[] = $arr[$idx][0];
+            $idx++;
         }
-        list($newDeletes, $newInserts) = static::matchInsertsToDeletes($deleteStrs, $insertStrs);
-        return [$newDeletes, $newInserts, count($deleteStrs) + count($insertStrs)];
+
+        $matcher = new ArrayMatcher();
+        $matcher->addIgnoredString('###LINENUMBER###');
+        $newInserts = $matcher->matchArray($deleteStrs, $insertStrs);
+        return [$deleteStrs, $newInserts, count($deleteStrs) + count($insertStrs)];
     }
 
     /**
@@ -1016,10 +1013,22 @@ class Diff
         $html = str_replace('<ins><p>', '<p><ins>', $html);
         $html = str_replace('<ins></p>', '</p><ins>', $html);
         $html = str_replace('<del><p>', '<p><del>', $html);
-        $html = str_replace('<dcel></p>', '</p><ins>', $html);
+        $html = str_replace('<del></p>', '</p><del>', $html);
         $html = str_replace('<p></ins>', '</ins><p>', $html);
         $html = str_replace('</p></ins>', '</ins></p>', $html);
         $html = str_replace('</p></del>', '</del></p>', $html);
+        $html = str_replace('</li></ul></ins>', '</ins></li></ul>', $html);
+        $html = str_replace('</li></ol></ins>', '</ins></li></ol>', $html);
+        $html = str_replace('</li></ul></del>', '</del></li></ul>', $html);
+        $html = str_replace('</li></ol></del>', '</del></li></ol>', $html);
+        $html = str_replace('<ins></li></ul>', '</li></ul><ins>', $html);
+        $html = str_replace('<ins></li></ol>', '</li></ol><ins>', $html);
+        $html = str_replace('<del></li></ul>', '</li></ul><del>', $html);
+        $html = str_replace('<del></li></ol>', '</li></ol><del>', $html);
+        $html = str_replace('<ins><li>', '<li><ins>', $html);
+        $html = str_replace('<del><li>', '<li><del>', $html);
+        $html = str_replace('</li></ins>', '</ins></li>', $html);
+        $html = str_replace('</li></del>', '</del></li>', $html);
         $html = str_replace('<ins></ins>', '', $html);
         $html = str_replace('<del></del>', '', $html);
 

@@ -87,18 +87,12 @@ class AmendmentLineNumberingTest extends DBTestBase
     public function testTwoChangesPerLine()
     {
         $diff = $this->getSectionDiffBlocks(270, 2);
-        $text = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand ' .
-            'Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul>';
+        $text = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul><ul class="inserted"><li><ins>Neue Zeile</ins></li></ul>';
         $this->assertEquals([[
             'text'     => $text,
             'lineFrom' => 8,
             'lineTo'   => 9,
             'newLine'  => false,
-        ], [
-            'text'     => '<ul class="inserted"><li>Neue Zeile</li></ul>',
-            'lineFrom' => 9,
-            'lineTo'   => 9,
-            'newLine'  => true,
         ]], $diff);
         $this->assertEquals($text, $diff[0]['text']);
     }
