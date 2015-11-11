@@ -451,96 +451,6 @@ class Diff
     }
 
     /**
-     * @param string[] $deletes
-     * @param string[] $inserts
-     * @return string[][]
-     */
-    public static function matchInsertsToDeletesCalcVariants($deletes, $inserts)
-    {
-        $emptyArray  = function ($num) {
-            $arr = [];
-            for ($i = 0; $i < $num; $i++) {
-                $arr[] = '';
-            }
-            return $arr;
-        };
-        $spaceToFill = count($deletes) - count($inserts);
-
-        if ($spaceToFill == 0) {
-            return [$inserts];
-        }
-        if (count($inserts) == 0) {
-            return [$emptyArray($spaceToFill)];
-        }
-        $insVariants = [];
-        for ($trailingSpaces = 0; $trailingSpaces <= $spaceToFill; $trailingSpaces++) {
-            $tmpInserts = $inserts;
-            $tmpDeletes = $deletes;
-            $insBegin   = [];
-            for ($i = 0; $i < $trailingSpaces; $i++) {
-                $insBegin[] = '';
-                array_shift($tmpDeletes);
-            }
-            $insBegin[] = array_shift($tmpInserts);
-            array_shift($tmpDeletes);
-            $recVariants = static::matchInsertsToDeletesCalcVariants($tmpDeletes, $tmpInserts);
-            foreach ($recVariants as $recVariant) {
-                $mergedVariant = array_merge($insBegin, $recVariant);
-                $insVariants[] = $mergedVariant;
-            }
-        }
-        return $insVariants;
-    }
-
-    /**
-     * @param string[] $deletes
-     * @param string[] $inserts
-     * @return int
-     */
-    public static function matchInsertsBestFitCalSimilarity($deletes, $inserts)
-    {
-        $similarity = 0;
-        for ($i = 0; $i < count($deletes); $i++) {
-            $similarity += similar_text($deletes[$i], $inserts[$i]);
-        }
-        return $similarity;
-    }
-
-    /**
-     * @param string[] $deletes
-     * @param string[][] $insertVariants
-     * @return string[]
-     */
-    public static function matchInsertsBestFit($deletes, $insertVariants)
-    {
-        $bestVariant           = null;
-        $bestVariantSimilarity = 0;
-        foreach ($insertVariants as $insertVariant) {
-            $similarity = static::matchInsertsBestFitCalSimilarity($deletes, $insertVariant);
-            if ($similarity > $bestVariantSimilarity) {
-                $bestVariantSimilarity = $similarity;
-                $bestVariant           = $insertVariant;
-            }
-        }
-        return $bestVariant;
-    }
-
-    /**
-     * @param string[] $deletes
-     * @param string[] $inserts
-     * @return array
-     */
-    public static function matchInsertsToDeletes($deletes, $inserts)
-    {
-
-        $newDeletes     = $deletes;
-        $newInserts     = $inserts;
-        $insertVariants = static::matchInsertsToDeletesCalcVariants($newDeletes, $newInserts);
-        $bestFitInserts = static::matchInsertsBestFit($newDeletes, $insertVariants);
-        return [$newDeletes, $bestFitInserts];
-    }
-
-    /**
      * @param array $arr
      * @param int $idx
      * @return array|null
@@ -791,24 +701,6 @@ class Diff
 
         $computedStr = static::fixLinebreakDiffErrors($computedStr);
         return trim($computedStr);
-    }
-
-    /**
-     * @param string $str1
-     * @param string $str2
-     * @return string
-     */
-    public static function getCommonBeginning($str1, $str2)
-    {
-        $common = '';
-        for ($i = 0; $i < mb_strlen($str1) && $i < mb_strlen($str2); $i++) {
-            if (mb_substr($str1, $i, 1) == mb_substr($str2, $i, 1)) {
-                $common .= mb_substr($str1, $i, 1);
-            } else {
-                return $common;
-            }
-        }
-        return $common;
     }
 
     /**
