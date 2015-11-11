@@ -21,7 +21,7 @@ return [
     'index_pdf_collection'        => 'All-In-One-PDF',
     'index_pdf_list'              => 'List of all PDFs',
     'index_settings'              => 'Settings',
-    'index_consultation_settings' => 'This Consultations',
+    'index_consultation_settings' => 'This Consultation',
     'index_motion_types'          => 'Edit motion types',
     'index_site_access'           => 'Login / Users / Admins',
     'index_site_consultations'    => 'Manage more consultations on this subdomain',

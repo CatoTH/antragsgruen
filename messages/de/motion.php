@@ -98,6 +98,7 @@ return [
     'withdraw_confirm'                  => 'Willst du diesen Antrag wirklich zurückziehen?',
     'withdraw_no'                       => 'Doch nicht',
     'withdraw_yes'                      => 'Zurückziehen',
+    'created_bread'                     => 'Angelegt',
     'max_len_hint'                      => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
     'max_len_alert'                     => 'Der Text ist zu lang!',
     'create_explanation'                => 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.

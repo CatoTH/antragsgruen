@@ -99,6 +99,7 @@ return [
     'withdraw_confirm'                  => 'Do you really want to withdraw this motion?',
     'withdraw_no'                       => 'No',
     'withdraw_yes'                      => 'Yes, withdraw',
+    'created_bread'                     => 'Angelegt',
     'max_len_hint'                      => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'                     => 'The text is too long!',
     'create_explanation'                => 'Here you can create a motion with no reference to another motion. ' .

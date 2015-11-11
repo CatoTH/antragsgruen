@@ -14,8 +14,8 @@ use yii\helpers\Html;
 $this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
 
 $controller = $this->context;
-$controller->layoutParams->addBreadcrumb($this->title);
-$controller->layoutParams->addBreadcrumb('Bestätigen');
+$controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
+$controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread'));
 
 
 echo '<h1>' . Yii::t('motion', 'Motion submitted') . '</h1>';
@@ -32,6 +32,7 @@ echo '</div>';
 
 
 echo Html::beginForm(UrlHelper::createUrl('consultation/index'), 'post', ['id' => 'motionConfirmedForm']);
-echo '<p class="btnRow"><button type="submit" class="btn btn-success">Zurück zur Startseite</button></p>';
+echo '<p class="btnRow"><button type="submit" class="btn btn-success">' .
+    \Yii::t('motion', 'back_start') . '</button></p>';
 echo Html::endForm();
 echo '</div>';

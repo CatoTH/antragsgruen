@@ -31,4 +31,6 @@ return [
     'mail_motion_x'         => 'Antrags %MOTION%',
     'mail_amendment_x_to_y' => 'Änderungsantrags %AMENDMENT% zum Antrag %MOTION%',
     'mail_body'             => "Hallo %NAME%,\n\nich schreibe wegen Deines %MOTION% , für den ich in der Antragskommission zuständig bin.",
+    'filename_amendments'   => 'Aenderungsantraege',
+    'filename_motions'      => 'Antraege',
 ];

@@ -98,7 +98,8 @@ class AmendmentController extends Base
             return '';
         }
 
-        $filename                    = 'Amendment_' . $amendment->titlePrefix . '.odt';
+        $filename = rawurlencode(\Yii::t('export', 'filename_amendments') . '_' . $amendment->titlePrefix . '.odt');
+
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
@@ -176,7 +177,7 @@ class AmendmentController extends Base
             ]
         );
         if (!$amendment) {
-            \Yii::$app->session->setFlash('error', 'Amendment not found.');
+            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
@@ -252,12 +253,12 @@ class AmendmentController extends Base
             ]
         );
         if (!$amendment) {
-            \Yii::$app->session->setFlash('error', 'Amendment not found.');
+            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$amendment->canEdit()) {
-            \Yii::$app->session->setFlash('error', 'Not allowed to edit this amendment.');
+            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_edit_forbidden'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 

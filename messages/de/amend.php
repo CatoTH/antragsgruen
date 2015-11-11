@@ -95,6 +95,7 @@ return [
     'err_type_missing'                  => 'Du musst einen Typ angeben.',
     'err_not_found'                     => 'Der Änderungsantrag wurde nicht gefunden',
     'err_withdraw_forbidden'            => 'Not allowed to withdraw this motion.',
+    'err_edit_forbidden'                => 'Not allowed to edit this motion.',
     'withdraw_done'                     => 'Der Änderungsantrag wurde zurückgezogen.',
     'withdraw_bread'                    => 'Zurückziehen',
     'withdraw'                          => 'Zurückziehen',
