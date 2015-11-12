@@ -1,9 +1,10 @@
-Antragsgrün v3
-==============
+Antragsgrün
+===========
 
 Antragsgrün 3 is the third generation of the Content Management System built for the german green party.
 It's a complete rewrite of the second generation and has some major advantages:
-* It's much more flexible on the structure of motions and wording. Motions event support image uploading now.
+* It's much more flexible on the structure of motions and wording. It even supports image uploading, e.g. for applications.
+* It supports multiple layouts for the website and the PDF-Export.
 * If follows test-driven design, using both unit and acceptance tests
 * The internal text is based completely on HTML and gets rid of the obsolete BBCode
 * The design of the motion supporter table is much cleaner and does not depend on the user database anymore
@@ -92,6 +93,11 @@ docker build -t antragsgruen1 -f Dockerfile .
 docker run -p 80:80 --name antragsgruen1 -d antragsgruen1
 ```
 
+
+Developing
+==========
+
+You can enable debug mode by creating an empty file config/DEBUG.
 
 Testing
 -------

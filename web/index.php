@@ -1,13 +1,17 @@
 <?php
 // @codingStandardsIgnoreFile
 
-// comment out the following two lines when deployed to production
-defined('YII_DEBUG') or define('YII_DEBUG', true);
-defined('YII_ENV') or define('YII_ENV', 'dev');
 
+if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+    defined('YII_DEBUG') or define('YII_DEBUG', true);
+    defined('YII_ENV') or define('YII_ENV', 'dev');
+} else {
+    defined('YII_DEBUG') or define('YII_DEBUG', false);
+    defined('YII_ENV') or define('YII_ENV', 'production');
+}
 
-$configDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config';
-$configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+$configDir   = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config';
+$configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
 $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
 if (!file_exists($configFile) && !file_exists($installFile)) {
     die('Antragsgrün is not configured yet. Please create the config/INSTALLING file and call this site again to open the installation wizard.');

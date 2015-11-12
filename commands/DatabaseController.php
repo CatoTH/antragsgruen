@@ -16,6 +16,10 @@ class DatabaseController extends Controller
      */
     public function actionDestroy()
     {
+        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+            $this->stderr('This action is only available in Debug-Mode' . "\n");
+            return;
+        }
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
             $deleteString = file_get_contents(
                 \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
@@ -33,6 +37,10 @@ class DatabaseController extends Controller
      */
     public function actionCreate()
     {
+        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+            $this->stderr('This action is only available in Debug-Mode' . "\n");
+            return;
+        }
         $createString = file_get_contents(
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'create.sql'
@@ -55,6 +63,10 @@ class DatabaseController extends Controller
      */
     public function actionInsertTestData()
     {
+        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+            $this->stderr('This action is only available in Debug-Mode' . "\n");
+            return;
+        }
         $testdata = file_get_contents(
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'tests' .
             DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata1.sql'
@@ -70,6 +82,10 @@ class DatabaseController extends Controller
      */
     public function actionCreateTest()
     {
+        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'DEBUG')) {
+            $this->stderr('This action is only available in Debug-Mode' . "\n");
+            return;
+        }
         if ($this->confirm('Do you really want to DESTROY and reinitialize the database?')) {
             $deleteString = file_get_contents(
                 \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
