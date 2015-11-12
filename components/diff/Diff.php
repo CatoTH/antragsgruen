@@ -470,7 +470,7 @@ class Diff
 
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
-        $newInserts = $matcher->matchArray($deleteStrs, $insertStrs);
+        $newInserts = $matcher->matchArrayResolved($deleteStrs, $insertStrs);
         return [$deleteStrs, $newInserts, count($deleteStrs) + count($insertStrs)];
     }
 

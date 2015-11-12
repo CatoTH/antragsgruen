@@ -22,6 +22,7 @@ class DiffRenderer
     }
 
     /**
+     * @internal
      * @param \DOMNode $node
      * @return boolean
      */
@@ -35,6 +36,7 @@ class DiffRenderer
     }
 
     /**
+     * @internal
      * @param \DOMElement $node
      * @param string $cssClass
      */
@@ -49,6 +51,7 @@ class DiffRenderer
     }
 
     /**
+     * @internal
      * @param \DOMNode $node
      * @param string $text
      * @return bool
@@ -59,6 +62,7 @@ class DiffRenderer
     }
 
     /**
+     * @internal
      * @param string $text
      * @return string[]
      */
@@ -89,6 +93,7 @@ class DiffRenderer
     }
 
     /**
+     * @internal
      * @param $text
      * @param bool $inIns
      * @param bool $inDel
@@ -170,17 +175,12 @@ class DiffRenderer
     protected function renderHtmlWithPlaceholdersIntElement(\DOMElement $child, &$newChildren, &$inIns, &$inDel)
     {
         if ($inIns && static::nodeContainsText($child, static::INS_END)) {
-            echo 'inIns with End ' . $child->nodeName . ' ' . " (start)\n";
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child);
             $newChildren = array_merge($newChildren, $currNewChildren);
-            echo 'inIns with End ' . $child->nodeName . ' ' . " (end)\n";
         } elseif ($inDel && static::nodeContainsText($child, static::DEL_END)) {
-            echo 'inDel with End ' . $child->nodeName . ' ' . " (start)\n";
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child);
             $newChildren = array_merge($newChildren, $currNewChildren);
-            echo 'inDel with End ' . $child->nodeName . ' ' . " (end)\n";
         } elseif ($inIns) {
-            echo 'inIns 2 no End' . "\n";
             /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
@@ -213,9 +213,7 @@ class DiffRenderer
                 $newChildren[] = $clone;
             }
         } else {
-            echo 'Putting ' . $child->nodeName . ' unchanged on newChildren' . "\n";
             list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntNormal($child);
-            echo 'Putting ' . $child->nodeName . ' unchanged on newChildren' . " (end)\n";
             $newChildren = array_merge($newChildren, $currNewChildren);
         }
     }
@@ -234,8 +232,6 @@ class DiffRenderer
         $inDel       = false;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
-            echo "Child: ";
-            var_dump($child);
             if (is_a($child, \DOMText::class)) {
                 /** @var \DOMText $child */
                 $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
@@ -268,8 +264,6 @@ class DiffRenderer
         $inDel       = true;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
-            echo "Child: ";
-            var_dump($child);
             if (is_a($child, \DOMText::class)) {
                 /** @var \DOMText $child */
                 $lastEl = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);

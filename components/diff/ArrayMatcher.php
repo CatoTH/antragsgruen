@@ -4,7 +4,16 @@ namespace app\components\diff;
 
 class ArrayMatcher
 {
+    /** @var string[] */
     private $ignoredStrings = ['###EMPTYINSERTED###'];
+
+    /** @var Engine */
+    private $diffEngine;
+
+    public function __construct()
+    {
+        $this->diffEngine = new Engine();
+    }
 
     /**
      * @param string $str
@@ -12,9 +21,11 @@ class ArrayMatcher
     public function addIgnoredString($str)
     {
         $this->ignoredStrings[] = $str;
+        $this->diffEngine->setIgnoreStr($str); // @TODO does not work with multiple strings yet
     }
 
     /**
+     * @internal
      * @param string[] $reference
      * @param string[] $toMatchArr
      * @return string[][]
@@ -57,6 +68,7 @@ class ArrayMatcher
     }
 
     /**
+     * @internal
      * @param string[] $arr1
      * @param string[] $arr2
      * @return int
@@ -81,6 +93,7 @@ class ArrayMatcher
     }
 
     /**
+     * @internal
      * @param string[] $reference
      * @param string[][] $variants
      * @return string[]
@@ -100,23 +113,32 @@ class ArrayMatcher
     }
 
     /**
+     * @internal
      * @param string[] $referenceArr
      * @param string[] $toMatchArr
      * @return string[]
      */
     public function matchArrayWithPlaceholder($referenceArr, $toMatchArr)
     {
+        if (count($toMatchArr) == 0) {
+            $bestFit = [];
+            for ($i = 0; $i < count($referenceArr); $i++) {
+                $bestFit[] = '';
+            }
+            return $bestFit;
+        }
         $variants = $this->calcVariants($referenceArr, $toMatchArr);
         $bestFit  = $this->getBestFit($referenceArr, $variants);
         return $bestFit;
     }
 
     /**
+     * @internal
      * @param string[] $referenceArr
      * @param string[] $toMatchArr
      * @return string[]
      */
-    public function matchArray($referenceArr, $toMatchArr)
+    public function matchArrayResolved($referenceArr, $toMatchArr)
     {
         if (count($referenceArr) == count($toMatchArr)) {
             return $toMatchArr;
@@ -129,10 +151,10 @@ class ArrayMatcher
             }
         } else {
             $matchRef = $this->matchArrayWithPlaceholder($toMatchArr, $referenceArr);
-            $return = [];
+            $return   = [];
             while (count($matchRef) > 0 && $matchRef[0] == '###EMPTYINSERTED###') {
                 array_shift($matchRef);
-                $firstl = array_shift($toMatchArr);
+                $firstl        = array_shift($toMatchArr);
                 $toMatchArr[0] = $firstl . $toMatchArr[0];
             }
             for ($i = 0; $i < count($matchRef); $i++) {
@@ -144,5 +166,84 @@ class ArrayMatcher
             }
         }
         return $return;
+    }
+
+    /**
+     * The reference array is returned as well and may contain more elements than before
+     * Newly created elements contain ###EMPTYINSERTED### and have to be handled later on
+     *
+     * The purpose is to help the diff later on: e.g. if a list item is added, it makes more sense
+     * not to merge two items
+     *
+     * @internal
+     * @param string[] $referenceArr
+     * @param string[] $toMatchArr
+     * @return array
+     */
+    public function matchArrayUnresolved($referenceArr, $toMatchArr)
+    {
+        if (count($referenceArr) == count($toMatchArr)) {
+            return [$referenceArr, $toMatchArr];
+        } elseif (count($referenceArr) > count($toMatchArr)) {
+            $return = $this->matchArrayWithPlaceholder($referenceArr, $toMatchArr);
+            return [$referenceArr, $return];
+        } else {
+            $matchRef = $this->matchArrayWithPlaceholder($toMatchArr, $referenceArr);
+            return [$matchRef, $toMatchArr];
+        }
+    }
+
+    /**
+     * @param array $arr
+     * @param int $idx
+     * @return array
+     */
+    private function getSubsequentInsertsDeletes($arr, $idx)
+    {
+        $deleteStrs = [];
+        $insertStrs = [];
+        while ($idx < count($arr) && $arr[$idx][1] == Engine::DELETED) {
+            $deleteStrs[] = $arr[$idx][0];
+            $idx++;
+        }
+        while ($idx < count($arr) && $arr[$idx][1] == Engine::INSERTED) {
+            $insertStrs[] = $arr[$idx][0];
+            $idx++;
+        }
+        return [$deleteStrs, $insertStrs];
+    }
+
+
+    /**
+     * Reference is usually the original motion, matching the amendment
+     * It returns two new arrays of the same size
+     * If new elements are inserted, they are marked by ###EMPTYINSERTED###
+     *
+     * @param string[] $referenceArr
+     * @param string[] $toMatchArr
+     * @return array
+     */
+    public function matchForDiff($referenceArr, $toMatchArr)
+    {
+        $diff   = $this->diffEngine->compareArrays($referenceArr, $toMatchArr);
+        $newRef = $newMatching = [];
+
+        for ($i = 0; $i < count($diff); $i++) {
+            if ($diff[$i][1] == Engine::UNMODIFIED) {
+                $newRef[]      = $diff[$i][0];
+                $newMatching[] = $diff[$i][0];
+            } elseif ($diff[$i][1] == Engine::DELETED) {
+                list($deletes, $inserts) = $this->getSubsequentInsertsDeletes($diff, $i);
+                list($tmpRef, $tmpMatch) = $this->matchArrayUnresolved($deletes, $inserts);
+                $newRef      = array_merge($newRef, $tmpRef);
+                $newMatching = array_merge($newMatching, $tmpMatch);
+                $i += count($deletes) + count($inserts) - 1;
+            } elseif ($diff[$i][1] == Engine::INSERTED) {
+                $newRef[]      = '###EMPTYINSERTED###';
+                $newMatching[] = $diff[$i][0];
+            }
+        }
+
+        return [$newRef, $newMatching];
     }
 }
