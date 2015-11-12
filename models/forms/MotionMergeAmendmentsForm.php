@@ -70,7 +70,7 @@ class MotionMergeAmendmentsForm extends Model
             $section->cache     = '';
             $section->refresh();
 
-            if ($section->consultationSetting->type == ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
                 $consolidated = $this->sections[$section->sectionId]['consolidated'];
                 $consolidated = str_replace('<li>&nbsp;</li>', '', $consolidated);
                 /** @var TextSimple data */

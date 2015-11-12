@@ -83,7 +83,7 @@ foreach ($items as $item) {
                 $subject = $title;
                 $title   = mb_substr($title, mb_strlen($prefix) + 2);
                 $body    = \Yii::t('export', 'mail_amendment_x_to_y');
-                $body    = str_replace(['%AMENDMENT%', '%MOTION%'], [$prefix, $item->motion->title], $body);
+                $body    = str_replace(['%AMENDMENT%', '%MOTION%'], [$prefix, $item->getMyMotion()->title], $body);
             }
             $initiator = $item->getInitiators() [0];
             $email     = $initiator->contactEmail;

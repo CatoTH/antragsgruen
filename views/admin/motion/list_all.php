@@ -176,7 +176,7 @@ foreach ($entries as $entry) {
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
         echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
         echo '<td class="titleCol"><span>' .
-            Html::a((trim($entry->motion->title) != '' ? $entry->motion->title : '-'), $editUrl) . '</span></td>';
+            Html::a((trim($entry->getMyMotion()->title) != '' ? $entry->getMyMotion()->title : '-'), $editUrl) . '</span></td>';
         echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {

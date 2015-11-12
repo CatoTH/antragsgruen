@@ -531,10 +531,10 @@ class User extends ActiveRecord implements IdentityInterface
         $link    = UrlHelper::absolutizeLink($link);
         $text    = str_replace(
             ['%CONSULTATION%', '%TITLE%', '%LINK%'],
-            [$motion->consultation->title, $motion->getTitleWithPrefix(), $link],
+            [$motion->getConsultation()->title, $motion->getTitleWithPrefix(), $link],
             \Yii::t('user', 'noti_new_motion_body')
         );
-        $this->notificationEmail($motion->consultation, $subject, $text);
+        $this->notificationEmail($motion->getConsultation(), $subject, $text);
     }
 
     /**
@@ -542,15 +542,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function notifyAmendment(Amendment $amendment)
     {
-        $motionTitle = $amendment->motion->getTitleWithPrefix();
+        $motionTitle = $amendment->getMyMotion()->getTitleWithPrefix();
         $subject     = str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_amend_title'));
         $link        = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
         $text        = str_replace(
             ['%CONSULTATION%', '%TITLE%', '%LINK%'],
-            [$amendment->motion->consultation->title, $motionTitle, $link],
+            [$amendment->getMyConsultation()->title, $motionTitle, $link],
             \Yii::t('user', 'noti_new_motion_body')
         );
-        $this->notificationEmail($amendment->motion->consultation, $subject, $text);
+        $this->notificationEmail($amendment->getMyConsultation(), $subject, $text);
     }
 
     /**

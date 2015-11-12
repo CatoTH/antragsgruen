@@ -18,8 +18,6 @@ use app\models\exceptions\Internal;
  * @property string $cache
  * @property string $metadata
  *
- * @property Motion $motion
- * @property ConsultationSettingsMotionSection $consultationSetting
  * @property MotionComment[] $comments
  * @property AmendmentSection[] $amendingSections
  */
@@ -36,19 +34,27 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ConsultationSettingsMotionSection
      */
-    public function getConsultationSetting()
+    public function getSettings()
     {
-        return $this->hasOne(ConsultationSettingsMotionSection::class, ['id' => 'sectionId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotion()
-    {
-        return $this->hasOne(Motion::class, ['id' => 'motionId']);
+        $motion = $this->getMotion();
+        if ($motion) {
+            foreach ($motion->motionType->motionSections as $section) {
+                if ($section->id == $this->sectionId) {
+                    return $section;
+                }
+            }
+        } else {
+            /** @var ConsultationSettingsMotionSection $section */
+            $section = ConsultationSettingsMotionSection::findOne($this->sectionId);
+            foreach ($section->motionType->motionSections as $section) {
+                if ($section->id == $this->sectionId) {
+                    return $section;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -61,13 +67,43 @@ class MotionSection extends IMotionSection
     }
 
     /**
+     * @return Consultation
+     */
+    public function getConsultation()
+    {
+        $current = Consultation::getCurrent();
+        if ($current && $current->getMotion($this->motionId)) {
+            return $current;
+        } else {
+            /** @var Motion $motion */
+            $motion = Motion::findOne($this->motionId);
+            if ($motion) {
+                return Consultation::findOne($motion->consultationId);
+            } else {
+                /** @var ConsultationSettingsMotionSection $section */
+                $section = ConsultationSettingsMotionSection::findOne($this->sectionId);
+                return $section->motionType->getConsultation();
+            }
+        }
+    }
+
+    /**
+     * @return Motion
+     */
+    public function getMotion()
+    {
+        return $this->getConsultation()->getMotion($this->motionId);
+    }
+
+    /**
      * @return AmendmentSection|null
      */
     public function getAmendingSections()
     {
         $sections = [];
-        foreach ($this->motion->amendments as $amend) {
-            if (in_array($amend->status, $this->motion->consultation->getInvisibleAmendmentStati(true))) {
+        $motion   = $this->getConsultation()->getMotion($this->motionId);
+        foreach ($motion->amendments as $amend) {
+            if (in_array($amend->status, $this->getConsultation()->getInvisibleAmendmentStati(true))) {
                 continue;
             }
             foreach ($amend->sections as $section) {
@@ -102,7 +138,7 @@ class MotionSection extends IMotionSection
             return $cached;
         }
 
-        if ($this->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
         $obj = HTMLTools::sectionSimpleHTML($this->data);
@@ -135,7 +171,7 @@ class MotionSection extends IMotionSection
         $return = [];
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $paraNo => $para) {
-            $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
+            $lineLength = $this->getConsultation()->getSettings()->lineLength;
             $linesOut   = LineSplitter::motionPara2lines($para, $lineNumbers, $lineLength);
 
             $paragraph              = new MotionSectionParagraph();
@@ -159,7 +195,8 @@ class MotionSection extends IMotionSection
             $return[$paraNo] = $paragraph;
         }
         if ($includeAmendment) {
-            foreach ($this->motion->getVisibleAmendments(false) as $amendment) {
+            $motion = $this->getConsultation()->getMotion($this->motionId);
+            foreach ($motion->getVisibleAmendments(false) as $amendment) {
                 $amSec = null;
                 foreach ($amendment->sections as $section) {
                     if ($section->sectionId == $this->sectionId) {
@@ -194,7 +231,7 @@ class MotionSection extends IMotionSection
         $return = '';
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $para) {
-            $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
+            $lineLength = $this->getConsultation()->getSettings()->lineLength;
             $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
             $return .= implode('', $linesOut) . "\n";
         }
@@ -207,10 +244,10 @@ class MotionSection extends IMotionSection
      */
     public function getNumberOfCountableLines()
     {
-        if ($this->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             return 0;
         }
-        if (!$this->consultationSetting->lineNumbers) {
+        if (!$this->getSettings()->lineNumbers) {
             return 0;
         }
 
@@ -222,7 +259,7 @@ class MotionSection extends IMotionSection
         $num   = 0;
         $paras = $this->getTextParagraphs();
         foreach ($paras as $para) {
-            $lineLength = $this->consultationSetting->motionType->consultation->getSettings()->lineLength;
+            $lineLength = $this->getConsultation()->getSettings()->lineLength;
             $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
             $num += count($linesOut);
         }
@@ -236,8 +273,9 @@ class MotionSection extends IMotionSection
      */
     public function getFirstLineNumber()
     {
-        $lineNo   = $this->motion->getFirstLineNumber();
-        $sections = $this->motion->getSortedSections();
+        $motion   = $this->getConsultation()->getMotion($this->motionId);
+        $lineNo   = $motion->getFirstLineNumber();
+        $sections = $motion->getSortedSections();
         foreach ($sections as $section) {
             /** @var MotionSection $section */
             if ($section->sectionId == $this->sectionId) {

@@ -6,6 +6,7 @@ use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\DB;
+use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
 use app\models\SearchResult;
@@ -44,6 +45,30 @@ use yii\helpers\Html;
  */
 class Consultation extends ActiveRecord
 {
+
+    /** @var null|Consultation */
+    private static $current = null;
+
+    /**
+     * @param Consultation $consultation
+     * @throws Internal
+     */
+    public static function setCurrent(Consultation $consultation)
+    {
+        if (static::$current) {
+            throw new Internal('Current consultation already set');
+        }
+        static::$current = $consultation;
+    }
+
+    /**
+     * @return Consultation|null
+     */
+    public static function getCurrent()
+    {
+        return static::$current;
+    }
+
     /**
      * @return string
      */

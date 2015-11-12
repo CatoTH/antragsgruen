@@ -15,6 +15,7 @@ return [
     'err_js_or_login'       => 'To use this, you need to be logged in or JavaScript needs to be enabled.',
     'err_no_data_given'     => 'No data entered (field: %FIELD%)',
     'err_max_len_exceed'    => 'Maximum length of %MAX% exceeded',
+    'err_no_site_internal'  => 'No site given. This is probably an error with the installation.',
     'content_privacy_title' => 'Privacy statement',
     'content_privacy_bread' => 'Privacy',
     'content_welcome'       => 'Welcome',

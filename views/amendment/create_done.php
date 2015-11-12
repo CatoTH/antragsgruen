@@ -28,7 +28,7 @@ if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
 }
 echo '</div>';
 
-echo Html::beginForm(UrlHelper::createMotionUrl($amendment->motion), 'post', ['id' => 'motionConfirmedForm']);
+echo Html::beginForm(UrlHelper::createMotionUrl($amendment->getMyMotion()), 'post', ['id' => 'motionConfirmedForm']);
 echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . \Yii::t('amend', 'sidebar_back') .
     '</button></p>';
 echo Html::endForm();

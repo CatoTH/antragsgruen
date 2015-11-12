@@ -36,7 +36,7 @@ class Image extends ISectionType
     public function getMotionFormField()
     {
         /** @var MotionSection $section */
-        $type = $this->section->consultationSetting;
+        $type = $this->section->getSettings();
         $str  = '';
         if ($this->section->data) {
             $str .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="Current Image"
@@ -121,7 +121,7 @@ class Image extends ISectionType
 
         /** @var MotionSection $section */
         $section = $this->section;
-        $type    = $section->consultationSetting;
+        $type    = $section->getSettings();
         $str     = '<img src="' . Html::encode($this->getImageUrl()) . '" alt="' . Html::encode($type->title) . '">';
         return $str;
     }
@@ -160,7 +160,7 @@ class Image extends ISectionType
         }
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
+            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
         $pdf->SetFont('Courier', '', 11);
@@ -264,7 +264,7 @@ class Image extends ISectionType
      */
     public function printMotionToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[BILD]', false);
     }
 
@@ -274,7 +274,7 @@ class Image extends ISectionType
      */
     public function printAmendmentToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[BILD]', false);
     }
 

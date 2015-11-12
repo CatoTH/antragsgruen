@@ -9,7 +9,7 @@ use yii\helpers\Html;
 /**
  * @var Amendment[] $amendments
  */
-$texTemplate = $amendments[0]->motion->motionType->texTemplate;
+$texTemplate = $amendments[0]->getMyMotion()->motionType->texTemplate;
 
 $layout            = new Layout();
 $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;

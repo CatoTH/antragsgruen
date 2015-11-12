@@ -31,7 +31,7 @@ if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
 }
 $layout->addBreadcrumb($motion->motionType->titleSingular);
 
-$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->consultation->title . ', Antragsgrün)';
+$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getConsultation()->title . ', Antragsgrün)';
 
 
 $html        = '<ul class="sidebarActions">';
@@ -120,7 +120,7 @@ $sidebarRows++;
 $html .= '</ul>';
 $layout->menusHtml[] = $html;
 
-$minimalisticUi = $motion->consultation->getSettings()->minimalisticUI;
+$minimalisticUi = $motion->getConsultation()->getSettings()->minimalisticUI;
 $minHeight      = $sidebarRows * 40 - 60;
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
@@ -143,16 +143,16 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
         continue;
     }
     if ($section->isLayoutRight() && $motion->motionType->layoutTwoCols) {
-        $right .= '<section class="sectionType' . $section->consultationSetting->type . '">';
+        $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
     } else {
-        $main .= '<section class="motionTextHolder sectionType' . $section->consultationSetting->type;
-        if ($motion->consultation->getSettings()->lineLength > 80) {
+        $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type;
+        if ($motion->getConsultation()->getSettings()->lineLength > 80) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        $main .= '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+        $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
         $main .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp, $consolidatedAmendments);
@@ -240,7 +240,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() != Nobody::getPolicyID()) {
     echo '<section class="comments"><h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
-    $screeningAdmin = User::currentUserHasPrivilege($motion->consultation, User::PRIVILEGE_SCREENING);
+    $screeningAdmin = User::currentUserHasPrivilege($motion->getConsultation(), User::PRIVILEGE_SCREENING);
 
     $screening = \Yii::$app->session->getFlash('screening', null, true);
     if ($screening) {
@@ -282,7 +282,7 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
     }
 
     if ($motion->motionType->getCommentPolicy()->checkCurrUser()) {
-        LayoutHelper::showCommentForm($form, $motion->consultation, -1, -1);
+        LayoutHelper::showCommentForm($form, $motion->getConsultation(), -1, -1);
     } elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in"></span>' .

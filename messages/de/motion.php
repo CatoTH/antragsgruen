@@ -3,6 +3,7 @@
 return [
     'Start a Motion'                    => 'Antrag stellen',
     'Confirm Motion'                    => 'Antrag bestätigen',
+    'confirm_bread'                     => 'Bestätigen',
     'Motion submitted'                  => 'Antrag eingereicht',
     'create_prerequisites'              => 'Voraussetzungen für einen Antrag',
     'amendment_create'                  => 'Änderungsantrag stellen',

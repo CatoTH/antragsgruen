@@ -100,7 +100,8 @@ abstract class IPolicy
     {
 
         if ($this->motionType->motionDeadlineIsOver()) {
-            if (!User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
+            $consultation = $this->motionType->getConsultation();
+            if (!User::currentUserHasPrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;
             }
         }
@@ -115,7 +116,8 @@ abstract class IPolicy
     public function checkCurrUserAmendment($allowAdmins = true, $assumeLoggedIn = false)
     {
         if ($this->motionType->amendmentDeadlineIsOver()) {
-            if (!User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
+            $consultation = $this->motionType->getConsultation();
+            if (!User::currentUserHasPrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;
             }
         }

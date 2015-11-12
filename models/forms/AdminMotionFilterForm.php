@@ -142,14 +142,14 @@ class AdminMotionFilterForm extends Model
             $title1 = $motion1->title;
         } else {
             /** @var Amendment $motion1 */
-            $title1 = $motion1->motion->title;
+            $title1 = $motion1->getMyMotion()->title;
         }
         if (is_a($motion2, Motion::class)) {
             /** @var Motion $motion2 */
             $title2 = $motion2->title;
         } else {
             /** @var Amendment $motion2 */
-            $title2 = $motion2->motion->title;
+            $title2 = $motion2->getMyMotion()->title;
         }
         return strnatcasecmp($title1, $title2);
     }
@@ -166,14 +166,14 @@ class AdminMotionFilterForm extends Model
             $rev1 = $motion1->titlePrefix;
         } else {
             /** @var Amendment $motion1 */
-            $rev1 = $motion1->titlePrefix . ' zu ' . $motion1->motion->titlePrefix;
+            $rev1 = $motion1->titlePrefix . ' zu ' . $motion1->getMyMotion()->titlePrefix;
         }
         if (is_a($motion2, Motion::class)) {
             /** @var Motion $motion2 */
             $rev2 = $motion2->titlePrefix;
         } else {
             /** @var Amendment $motion2 */
-            $rev2 = $motion2->titlePrefix . ' zu ' . $motion2->motion->titlePrefix;
+            $rev2 = $motion2->titlePrefix . ' zu ' . $motion2->getMyMotion()->titlePrefix;
         }
 
         return strnatcasecmp($rev1, $rev2);
@@ -361,7 +361,7 @@ class AdminMotionFilterForm extends Model
         if ($this->tag === null || $this->tag == 0) {
             return true;
         }
-        foreach ($amendment->motion->tags as $tag) {
+        foreach ($amendment->getMyMotion()->tags as $tag) {
             if ($tag->id == $this->tag) {
                 return true;
             }
@@ -391,7 +391,7 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
-            if ($this->title !== null && $this->title != "" && !mb_stripos($amend->motion->title, $this->title)) {
+            if ($this->title !== null && $this->title != '' && !mb_stripos($amend->getMyMotion()->title, $this->title)) {
                 $matches = false;
             }
 
@@ -505,7 +505,7 @@ class AdminMotionFilterForm extends Model
             }
         }
         foreach ($this->allAmendments as $amend) {
-            foreach ($amend->motion->tags as $tag) {
+            foreach ($amend->getMyMotion()->tags as $tag) {
                 if (!isset($tags[$tag->id])) {
                     $tags[$tag->id]      = 0;
                     $tagsNames[$tag->id] = $tag->title;

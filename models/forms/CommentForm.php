@@ -31,7 +31,7 @@ class CommentForm extends Model
      */
     public function saveMotionComment(Motion $motion)
     {
-        $settings = $motion->consultation->getSettings();
+        $settings = $motion->getConsultation()->getSettings();
         if ($settings->commentNeedsEmail && trim($this->email) == '') {
             throw new FormError('Keine E-Mail-Adresse angegeben');
         }
@@ -103,7 +103,7 @@ class CommentForm extends Model
      */
     public function saveAmendmentComment(Amendment $amendment)
     {
-        $settings = $amendment->motion->consultation->getSettings();
+        $settings = $amendment->getMyConsultation()->getSettings();
         if ($settings->commentNeedsEmail && trim($this->email) == "") {
             throw new FormError('No E-Mail-Address entered');
         }

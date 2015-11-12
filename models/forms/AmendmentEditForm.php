@@ -135,15 +135,15 @@ class AmendmentEditForm extends Model
         parent::setAttributes($values, $safeOnly);
 
         foreach ($this->sections as $section) {
-            if (isset($values['sections'][$section->consultationSetting->id])) {
-                $section->getSectionType()->setAmendmentData($values['sections'][$section->consultationSetting->id]);
+            if (isset($values['sections'][$section->getSettings()->id])) {
+                $section->getSectionType()->setAmendmentData($values['sections'][$section->getSettings()->id]);
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
-                if (!empty($files['sections']['tmp_name'][$section->consultationSetting->id])) {
+                if (!empty($files['sections']['tmp_name'][$section->getSettings()->id])) {
                     $data = [];
                     foreach ($files['sections'] as $key => $vals) {
-                        if (isset($vals[$section->consultationSetting->id])) {
-                            $data[$key] = $vals[$section->consultationSetting->id];
+                        if (isset($vals[$section->getSettings()->id])) {
+                            $data[$key] = $vals[$section->getSettings()->id];
                         }
                     }
                     $section->getSectionType()->setAmendmentData($data);
@@ -167,7 +167,7 @@ class AmendmentEditForm extends Model
         $errors = [];
 
         foreach ($this->sections as $section) {
-            $type = $section->consultationSetting;
+            $type = $section->getSettings();
             if ($section->data == '' && $type->required) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
@@ -208,7 +208,7 @@ class AmendmentEditForm extends Model
         $amendment->status            = Motion::STATUS_DRAFT;
         $amendment->statusString      = '';
         $amendment->motionId          = $this->motion->id;
-        $amendment->textFixed         = ($this->motion->consultation->getSettings()->adminsMayEdit ? 0 : 1);
+        $amendment->textFixed         = ($this->motion->getConsultation()->getSettings()->adminsMayEdit ? 0 : 1);
         $amendment->titlePrefix       = '';
         $amendment->dateCreation      = date('Y-m-d H:i:s');
         $amendment->changeEditorial   = $this->editorial;
@@ -241,7 +241,7 @@ class AmendmentEditForm extends Model
         $errors = [];
 
         foreach ($this->sections as $section) {
-            $type = $section->consultationSetting;
+            $type = $section->getSettings();
             if ($section->data == '' && $type->required) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }

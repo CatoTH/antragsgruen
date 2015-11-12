@@ -33,7 +33,6 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property int $textFixed
  *
- * @property Motion $motion
  * @property AmendmentComment[] $comments
  * @property AmendmentAdminComment[] $adminComments
  * @property AmendmentSupporter[] $amendmentSupporters
@@ -49,15 +48,6 @@ class Amendment extends IMotion implements IRSSItem
     public static function tableName()
     {
         return 'amendment';
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotion()
-    {
-        return $this->hasOne(Motion::class, ['id' => 'motionId'])
-            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
     /**
@@ -95,6 +85,20 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param int $sectionId
+     * @return AmendmentSection|null
+     */
+    public function getSection($sectionId)
+    {
+        foreach ($this->sections as $section) {
+            if ($section->sectionId == $sectionId) {
+                return $section;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return array
      */
     public function rules()
@@ -111,25 +115,26 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getTitle()
     {
-        if ($this->motion->titlePrefix != '') {
-            $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->motion->titlePrefix) === false);
+        $motion = $this->getMyMotion();
+        if ($motion->titlePrefix != '') {
+            $showMotionPrefix = (mb_stripos($this->titlePrefix, $motion->titlePrefix) === false);
         } else {
             $showMotionPrefix = false;
         }
         $prefix = ($this->titlePrefix != '' ? $this->titlePrefix : \yii::t('amend', 'amendment'));
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $prefix . \yii::t('amend', 'amend_for') . $this->motion->title;
+            return $prefix . \yii::t('amend', 'amend_for') . $motion->title;
         } else {
-            if ($this->motion->titlePrefix != '') {
+            if ($this->getMyMotion()->titlePrefix != '') {
                 if ($showMotionPrefix) {
                     $str = $prefix . \yii::t('amend', 'amend_for');
-                    $str .= $this->motion->titlePrefix . ': ' . $this->motion->title;
+                    $str .= $motion->titlePrefix . ': ' . $motion->title;
                     return $str;
                 } else {
-                    return $prefix . ': ' . $this->motion->title;
+                    return $prefix . ': ' . $motion->title;
                 }
             } else {
-                return $prefix . \yii::t('amend', 'amend_for') . $this->motion->title;
+                return $prefix . \yii::t('amend', 'amend_for') . $motion->title;
             }
         }
     }
@@ -139,22 +144,22 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getShortTitle()
     {
-        if ($this->motion->titlePrefix != '') {
-            $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->motion->titlePrefix) === false);
+        if ($this->getMyMotion()->titlePrefix != '') {
+            $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->getMyMotion()->titlePrefix) === false);
         } else {
             $showMotionPrefix = false;
         }
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->motion->title;
+            return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
         } else {
-            if ($this->motion->titlePrefix != '') {
+            if ($this->getMyMotion()->titlePrefix != '') {
                 if ($showMotionPrefix) {
-                    return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->motion->titlePrefix;
+                    return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->titlePrefix;
                 } else {
                     return $this->titlePrefix;
                 }
             } else {
-                return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->motion->title;
+                return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
             }
         }
     }
@@ -164,7 +169,44 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getMyConsultation()
     {
-        return $this->motion->consultation;
+        $current = Consultation::getCurrent();
+        if ($current && $current->getAmendment($this->id)) {
+            return $current;
+        } else {
+            /** @var Motion $motion */
+            $motion = Motion::findOne($this->motionId);
+            return Consultation::findOne($motion->consultationId);
+        }
+    }
+
+    private $myMotion = null;
+    /**
+     * @return Motion
+     */
+    public function getMyMotion()
+    {
+        if (!$this->myMotion) {
+            $current = Consultation::getCurrent();
+            if ($current) {
+                $motion = $current->getMotion($this->motionId);
+                if ($motion) {
+                    $this->myMotion = $motion;
+                } else {
+                    $this->myMotion = Motion::findOne($this->motionId);
+                }
+            }
+            $this->myMotion = Motion::findOne($this->motionId);
+        }
+        return $this->myMotion;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMotionJoin()
+    {
+        return $this->hasOne(Motion::class, ['id' => 'motionId'])
+            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
     /**
@@ -172,7 +214,8 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getMySections()
     {
-        return $this->motion->motionType->motionSections;
+
+        return $this->getMyMotion()->motionType->motionSections;
     }
 
     /**
@@ -202,7 +245,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         foreach ($this->sections as $section) {
-            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
             $formatter = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
@@ -215,7 +258,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         // Nothing changed in a simple text section
-        $firstLine = $this->motion->getFirstLineNumber();
+        $firstLine = $this->getMyMotion()->getFirstLineNumber();
         $this->setCacheItem('getFirstDiffLine', $firstLine);
         return $firstLine;
     }
@@ -285,7 +328,7 @@ class Amendment extends IMotion implements IRSSItem
         $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
         $query->joinWith(
             [
-                'motion' => function ($query) use ($invisibleStati, $consultation) {
+                'motionJoin' => function ($query) use ($invisibleStati, $consultation) {
                     /** @var ActiveQuery $query */
                     $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
                     $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
@@ -309,7 +352,7 @@ class Amendment extends IMotion implements IRSSItem
         $query->where('amendment.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
         $query->joinWith(
             [
-                'motion' => function ($query) use ($consultation) {
+                'motionJoin' => function ($query) use ($consultation) {
                     $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
                     /** @var ActiveQuery $query */
                     $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
@@ -417,7 +460,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($hadLoggedInUser) {
                 return false;
             } else {
-                if ($this->motion->motionType->getAmendmentPolicy()->getPolicyID() == All::getPolicyID()) {
+                if ($this->getMyMotion()->motionType->getAmendmentPolicy()->getPolicyID() == All::getPolicyID()) {
                     return true;
                 } else {
                     return false;
@@ -429,8 +472,8 @@ class Amendment extends IMotion implements IRSSItem
             return false;
         }
 
-        if ($this->motion->consultation->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
-            if ($this->motion->motionType->amendmentDeadlineIsOver()) {
+        if ($this->getMyConsultation()->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
+            if ($this->getMyMotion()->motionType->amendmentDeadlineIsOver()) {
                 return false;
             } else {
                 return true;
@@ -466,13 +509,13 @@ class Amendment extends IMotion implements IRSSItem
         }
         $paragraphs = [];
         foreach ($motionSections as $section) {
-            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
             $paras = $section->getTextParagraphObjects($lineNumbers, true, true);
             foreach ($paras as $para) {
                 foreach ($para->amendmentSections as $amSec) {
-                    if ($amSec->amendmentSection->amendmentId == $this->id) {
+                    if ($amSec->amendmentId == $this->id) {
                         $paragraphs[] = $amSec;
                     }
                 }
@@ -488,15 +531,15 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function withdraw()
     {
-        if (in_array($this->status, $this->motion->consultation->getInvisibleMotionStati())) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
             $this->status = static::STATUS_DELETED;
         } else {
             $this->status = static::STATUS_WITHDRAWN;
         }
         $this->save();
-        $this->motion->flushCacheStart();
+        $this->getMyMotion()->flushCacheStart();
 
-        ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_WITHDRAW, $this->id);
+        ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_WITHDRAW, $this->id);
     }
 
     /**
@@ -505,12 +548,12 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix == '') {
-            $numbering         = $this->motion->consultation->getAmendmentNumbering();
-            $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->motion);
+            $numbering         = $this->getMyConsultation()->getAmendmentNumbering();
+            $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
         }
         $this->save(true);
         $this->onPublish();
-        ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_SCREEN, $this->id);
+        ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_SCREEN, $this->id);
     }
 
     /**
@@ -519,7 +562,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
-        ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
+        ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
     }
 
     /**
@@ -528,7 +571,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $this->status = Amendment::STATUS_DELETED;
         $this->save();
-        ConsultationLog::logCurrUser($this->motion->consultation, ConsultationLog::AMENDMENT_DELETE, $this->id);
+        ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_DELETE, $this->id);
     }
 
     /**
@@ -540,12 +583,12 @@ class Amendment extends IMotion implements IRSSItem
 
         $init   = $this->getInitiators();
         $initId = (count($init) > 0 ? $init[0]->userId : null);
-        ConsultationLog::log($this->motion->consultation, $initId, ConsultationLog::AMENDMENT_PUBLISH, $this->id);
+        ConsultationLog::log($this->getMyConsultation(), $initId, ConsultationLog::AMENDMENT_PUBLISH, $this->id);
 
         if ($this->datePublication === null) {
             $motionType = UserNotification::NOTIFICATION_NEW_AMENDMENT;
             $notified   = [];
-            foreach ($this->motion->consultation->userNotifications as $noti) {
+            foreach ($this->getMyConsultation()->userNotifications as $noti) {
                 if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
                     $noti->user->notifyAmendment($this);
                     $notified[]             = $noti->userId;
@@ -556,7 +599,7 @@ class Amendment extends IMotion implements IRSSItem
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            if ($this->motion->consultation->getSettings()->initiatorConfirmEmails) {
+            if ($this->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
                     try {
@@ -564,7 +607,7 @@ class Amendment extends IMotion implements IRSSItem
                         $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
                         \app\components\mail\Tools::sendWithLog(
                             EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                            $this->motion->consultation->site,
+                            $this->getMyConsultation()->site,
                             trim($initiator[0]->contactEmail),
                             null,
                             \Yii::t('amend', 'published_email_title'),
@@ -584,10 +627,10 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function setTextFixedIfNecessary($save = true)
     {
-        if ($this->motion->consultation->getSettings()->adminsMayEdit) {
+        if ($this->getMyConsultation()->getSettings()->adminsMayEdit) {
             return;
         }
-        if (in_array($this->status, $this->motion->consultation->getInvisibleAmendmentStati())) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleAmendmentStati())) {
             return;
         }
         $this->textFixed = 1;
@@ -616,14 +659,14 @@ class Amendment extends IMotion implements IRSSItem
         // @TODO Inline styling
         $content = '';
         foreach ($this->sections as $section) {
-            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
             $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
             $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
 
             if (count($diffGroups) > 0) {
-                $content .= '<h2>' . Html::encode($section->consultationSetting->title) . '</h2>';
+                $content .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
                 $content .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
                 $content .= TextSimple::formatDiffGroup($diffGroups);
                 $content .= '</div>';

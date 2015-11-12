@@ -95,7 +95,7 @@ class DiffTest extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
         $diff = new Diff();
-        $out  = $diff->computeAmendmentParagraphDiffInt($origParagraphs, $newParagraphs, 1, 80, null);
+        $out  = $diff->computeAmendmentParagraphDiffInt($origParagraphs, $newParagraphs, 1, 80, null, null);
 
         $this->assertEquals('<p><del>Etwas Text in P</del></p>' . "\n", $out[1]->strDiff);
         $this->assertEquals('<ul><li>Eine <del>erste </del><ins><em>erste</em> </ins>Zeile</li></ul>' . "\n", $out[2]->strDiff);
@@ -128,7 +128,7 @@ class DiffTest extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
         $diff = new Diff();
-        $out  = $diff->computeAmendmentParagraphDiffInt($origParagraphs, $newParagraphs, 1, 80, null);
+        $out  = $diff->computeAmendmentParagraphDiffInt($origParagraphs, $newParagraphs, 1, 80, null, null);
 
         $this->assertEquals('<del><p>Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p></del>', trim($out[0]->strDiff));
         $this->assertEquals('<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>', trim($out[1]->strDiff));
@@ -143,7 +143,7 @@ class DiffTest extends TestBase
         $orig      = ['<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>'];
         $amend     = ['<p>Test 456</p>'];
         $diff      = new Diff();
-        $diffParas = $diff->computeAmendmentParagraphDiffInt($orig, $amend, 1, 80, null);
+        $diffParas = $diff->computeAmendmentParagraphDiffInt($orig, $amend, 1, 80, null, null);
         $diffStr   = $diff->cleanupDiffProblems($diffParas[0]->strDiff);
         $expected  = '<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
 <p><ins>Test 456</ins></p>

@@ -21,19 +21,19 @@ class LayoutHelper
     public static function renderTeX(Amendment $amendment)
     {
         $content           = new Content();
-        $content->template = $amendment->motion->motionType->texTemplate->texContent;
-        $content->title    = $amendment->motion->title;
-        if (!$amendment->motion->consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
+        $content->template = $amendment->getMyMotion()->motionType->texTemplate->texContent;
+        $content->title    = $amendment->getMyMotion()->title;
+        if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
             $content->titlePrefix = $amendment->titlePrefix;
         }
         $content->titleLong = $amendment->titlePrefix . ' - ';
         $content->titleLong .= str_replace(
             '%PREFIX%',
-            $amendment->motion->titlePrefix,
+            $amendment->getMyMotion()->titlePrefix,
             \Yii::t('amend', 'amendment_for_prefix')
         );
 
-        $intro                    = explode("\n", $amendment->motion->consultation->getSettings()->pdfIntroduction);
+        $intro                    = explode("\n", $amendment->getMyConsultation()->getSettings()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         if (count($intro) > 1) {
             array_shift($intro);

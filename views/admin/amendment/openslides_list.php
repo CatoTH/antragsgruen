@@ -15,8 +15,8 @@ $consultation = $controller->consultation;
 $data = [];
 foreach ($amendments as $amendment) {
     $motionData   = [];
-    $motionData[] = $amendment->titlePrefix . \Yii::t('amend', 'amend_for') . $amendment->motion->titlePrefix;
-    $motionData[] = $amendment->motion->title;
+    $motionData[] = $amendment->titlePrefix . \Yii::t('amend', 'amend_for') . $amendment->getMyMotion()->titlePrefix;
+    $motionData[] = $amendment->getMyMotion()->title;
     $text         = '';
     foreach ($amendment->getSortedSections(true) as $section) {
         $text .= $section->getSectionType()->getAmendmentPlainHtml();
@@ -34,7 +34,7 @@ foreach ($amendments as $amendment) {
         $motionData[] = '';
     }
     $topics = [];
-    foreach ($amendment->motion->tags as $tag) {
+    foreach ($amendment->getMyMotion()->tags as $tag) {
         $topics[] = $tag->title;
     }
     $motionData[] = implode(', ', $topics);

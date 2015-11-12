@@ -72,7 +72,7 @@ trait MotionActionsTrait
 
         try {
             $comment = $commentForm->saveMotionComment($motion);
-            ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT, $comment->id);
+            ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT, $comment->id);
             if ($comment->status == MotionComment::STATUS_SCREENING) {
                 \yii::$app->session->setFlash('screening', 'Der Kommentar wurde erstellt. ' .
                     'Er wird noch vom Admin kontrolliert und wird dann freigeschaltet.');
@@ -108,7 +108,7 @@ trait MotionActionsTrait
         if (!$comment->save(false)) {
             throw new DB($comment->getErrors());
         }
-        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
 
         \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
     }
@@ -134,7 +134,7 @@ trait MotionActionsTrait
 
         $motion->refresh();
 
-        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
 
         $comment->sendPublishNotifications();
     }
@@ -160,7 +160,7 @@ trait MotionActionsTrait
 
         $motion->refresh();
 
-        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
     }
 
     /**
@@ -200,7 +200,7 @@ trait MotionActionsTrait
     private function motionLike(Motion $motion)
     {
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, 'Du stimmst diesem Antrag nun zu.');
-        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_LIKE, $motion->id);
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_LIKE, $motion->id);
     }
 
     /**
@@ -209,7 +209,7 @@ trait MotionActionsTrait
     private function motionDislike(Motion $motion)
     {
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, 'Du lehnst diesen Antrag nun ab.');
-        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_DISLIKE, $motion->id);
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_DISLIKE, $motion->id);
     }
 
     /**
@@ -223,7 +223,7 @@ trait MotionActionsTrait
                 $motion->unlink('motionSupporters', $supp, true);
             }
         }
-        ConsultationLog::logCurrUser($motion->consultation, ConsultationLog::MOTION_UNLIKE, $motion->id);
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
         \Yii::$app->session->setFlash('success', 'Du stehst diesem Antrag wieder neutral gegenüber.');
     }
 
@@ -236,7 +236,7 @@ trait MotionActionsTrait
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal('Keine Freischaltrechte');
         }
-        foreach ($motion->consultation->tags as $tag) {
+        foreach ($motion->getConsultation()->tags as $tag) {
             if ($tag->id == $_POST['tagId']) {
                 $motion->link('tags', $tag);
             }
@@ -252,7 +252,7 @@ trait MotionActionsTrait
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal('Keine Freischaltrechte');
         }
-        foreach ($motion->consultation->tags as $tag) {
+        foreach ($motion->getConsultation()->tags as $tag) {
             if ($tag->id == $_POST['tagId']) {
                 $motion->unlink('tags', $tag, true);
             }

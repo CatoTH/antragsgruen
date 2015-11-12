@@ -37,7 +37,7 @@ class DBJR extends IPDFLayout
         $pdf->SetXY($left, 38);
 
         $pdf->SetFont('helvetica', 'I', 11);
-        $intro = $motion->consultation->getSettings()->pdfIntroduction;
+        $intro = $motion->getConsultation()->getSettings()->pdfIntroduction;
         if ($intro) {
             $pdf->MultiCell(160, 0, $intro, 0, 'L');
             $pdf->Ln(3);
@@ -85,7 +85,7 @@ class DBJR extends IPDFLayout
         $pdf->SetXY($left, 40);
 
         $pdf->SetFont('helvetica', 'I', 11);
-        $intro = $amendment->motion->consultation->getSettings()->pdfIntroduction;
+        $intro = $amendment->getMyConsultation()->getSettings()->pdfIntroduction;
         if ($intro) {
             $pdf->MultiCell(160, 0, $intro, 0, 'L');
             $pdf->Ln(3);
@@ -93,7 +93,7 @@ class DBJR extends IPDFLayout
 
         $pdf->SetX($left);
         $pdf->MultiCell(42, 0, 'Antrag:', 0, 'L', false, 0);
-        $pdf->MultiCell(120, 0, $amendment->motion->getTitleWithPrefix(), 0, 'L');
+        $pdf->MultiCell(120, 0, $amendment->getMyMotion()->getTitleWithPrefix(), 0, 'L');
         $pdf->Ln(5);
         $data = $amendment->getDataTable();
         foreach ($data as $key => $val) {
@@ -140,7 +140,7 @@ class DBJR extends IPDFLayout
      */
     public function isSkippingSectionTitles(IMotionSection $section)
     {
-        if ($section->consultationSetting->title == \Yii::t('motion', 'motion_text')) {
+        if ($section->getSettings()->title == \Yii::t('motion', 'motion_text')) {
             return true;
         }
         return false;

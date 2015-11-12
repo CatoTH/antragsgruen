@@ -18,17 +18,21 @@ use yii\db\ActiveRecord;
  * @property string $dataRaw
  * @property int $sectionId
  * @property string $metadata
- * @property ConsultationSettingsMotionSection $consultationSetting
  */
 abstract class IMotionSection extends ActiveRecord
 {
+    /**
+     * @return ConsultationSettingsMotionSection
+     */
+    abstract public function getSettings();
+
     /**
      * @return ISectionType
      * @throws Internal
      */
     public function getSectionType()
     {
-        switch ($this->consultationSetting->type) {
+        switch ($this->getSettings()->type) {
             case ISectionType::TYPE_TITLE:
                 return new Title($this);
             case ISectionType::TYPE_TEXT_HTML:
@@ -40,7 +44,7 @@ abstract class IMotionSection extends ActiveRecord
             case ISectionType::TYPE_TABULAR:
                 return new TabularData($this);
         }
-        throw new Internal('Unknown Field Type: ' . $this->consultationSetting->type);
+        throw new Internal('Unknown Field Type: ' . $this->getSettings()->type);
     }
 
 
@@ -63,6 +67,6 @@ abstract class IMotionSection extends ActiveRecord
      */
     public function isLayoutRight()
     {
-        return in_array($this->consultationSetting->type, [ISectionType::TYPE_IMAGE, ISectionType::TYPE_TABULAR]);
+        return in_array($this->getSettings()->type, [ISectionType::TYPE_IMAGE, ISectionType::TYPE_TABULAR]);
     }
 }

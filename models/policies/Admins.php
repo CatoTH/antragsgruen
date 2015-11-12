@@ -78,6 +78,6 @@ class Admins extends IPolicy
      */
     public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
     {
-        return User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY);
+        return User::currentUserHasPrivilege($this->motionType->getConsultation(), User::PRIVILEGE_ANY);
     }
 }

@@ -33,7 +33,6 @@ use yii\db\ActiveRecord;
  * @property int $status
  * @property int $layoutTwoCols
  *
- * @property Consultation $consultation
  * @property ConsultationSettingsMotionSection[] $motionSections
  * @property Motion[] $motions
  * @property ConsultationAgendaItem[] $agendaItems
@@ -57,11 +56,16 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return Consultation
      */
     public function getConsultation()
     {
-        return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
+        $current = Consultation::getCurrent();
+        if ($current && $current->id == $this->consultationId) {
+            return $current;
+        } else {
+            return Consultation::findOne($this->consultationId);
+        }
     }
 
     /**
@@ -166,7 +170,7 @@ class ConsultationMotionType extends ActiveRecord
     public function getOdtTemplate()
     {
         $dir = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-        if ($this->consultation->site->getSettings()->siteLayout == 'layout-gruenes-ci') {
+        if ($this->getConsultation()->site->getSettings()->siteLayout == 'layout-gruenes-ci') {
             return file_get_contents($dir . 'OpenOffice-Template-Gruen.odt');
         } else {
             return file_get_contents($dir . 'OpenOffice-Template-Std.odt');

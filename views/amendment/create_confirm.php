@@ -18,7 +18,7 @@ $params     = $controller->layoutParams;
 
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
-$params->addBreadcrumb($amendment->motion->titlePrefix, UrlHelper::createMotionUrl($amendment->motion));
+$params->addBreadcrumb($amendment->getMyMotion()->titlePrefix, UrlHelper::createMotionUrl($amendment->getMyMotion()));
 $params->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
 $params->addBreadcrumb(\Yii::t('amend', 'confirm'));
 

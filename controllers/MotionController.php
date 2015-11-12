@@ -148,7 +148,7 @@ class MotionController extends Base
         $openedComments = [];
         if ($commentId > 0) {
             foreach ($motion->sections as $section) {
-                if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
                 foreach ($section->getTextParagraphObjects(false, true, true) as $paragraph) {
@@ -173,7 +173,7 @@ class MotionController extends Base
 
         $commentWholeMotions = false;
         foreach ($motion->sections as $section) {
-            if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_MOTION) {
+            if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_MOTION) {
                 $commentWholeMotions = true;
             }
         }
@@ -239,7 +239,7 @@ class MotionController extends Base
             $screening      = $this->consultation->getSettings()->screeningMotions;
             $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
             if (!$screening && $motion->statusString == '') {
-                $motion->titlePrefix = $motion->consultation->getNextMotionPrefix($motion->motionTypeId);
+                $motion->titlePrefix = $motion->getConsultation()->getNextMotionPrefix($motion->motionTypeId);
             }
             $motion->save();
 
@@ -249,12 +249,12 @@ class MotionController extends Base
                 [$motion->title, $motionLink, $motion->getInitiatorsStr()],
                 \Yii::t('motion', 'submitted_adminnoti_body')
             );
-            $motion->consultation->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
+            $motion->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->onPublish();
             } else {
-                if ($motion->consultation->getSettings()->initiatorConfirmEmails) {
+                if ($motion->getConsultation()->getSettings()->initiatorConfirmEmails) {
                     $initiator = $motion->getInitiators();
                     if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
                         try {
@@ -528,7 +528,7 @@ class MotionController extends Base
 
             $mailText = \Yii::t('motion', 'edit_mail_body');
             $mailText = str_replace(['%title%', '%link%'], [$newMotion->title, $motionLink], $mailText);
-            $newMotion->consultation->sendEmailToAdmins(\Yii::t('motion', 'edit_mail_title'), $mailText);
+            $newMotion->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'edit_mail_title'), $mailText);
 
             return $this->render('merge_amendments_done', ['newMotion' => $newMotion]);
         }

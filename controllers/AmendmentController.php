@@ -193,8 +193,8 @@ class AmendmentController extends Base
             } else {
                 $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
                 if ($amendment->titlePrefix == '') {
-                    $numbering              = $amendment->motion->consultation->getAmendmentNumbering();
-                    $amendment->titlePrefix = $numbering->getAmendmentNumber($amendment, $amendment->motion);
+                    $numbering              = $amendment->getMyConsultation()->getAmendmentNumbering();
+                    $amendment->titlePrefix = $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
                 }
             }
             $amendment->save();
@@ -206,12 +206,12 @@ class AmendmentController extends Base
                 \Yii::t('amend', 'submitted_adminnoti_body')
             );
             $mailTitle     = \Yii::t('amend', 'submitted_adminnoti_title');
-            $amendment->motion->consultation->sendEmailToAdmins($mailTitle, $mailText);
+            $amendment->getMyConsultation()->sendEmailToAdmins($mailTitle, $mailText);
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->onPublish();
             } else {
-                if ($amendment->motion->consultation->getSettings()->initiatorConfirmEmails) {
+                if ($amendment->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
                     $initiator = $amendment->getInitiators();
                     if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
                         try {
@@ -263,7 +263,7 @@ class AmendmentController extends Base
         }
 
         $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
-        $form     = new AmendmentEditForm($amendment->motion, $amendment);
+        $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
 
         if (isset($_POST['save'])) {
             $amendment->flushCacheWithChildren();

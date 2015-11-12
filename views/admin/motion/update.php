@@ -55,7 +55,7 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
     if ($newRev == '') {
-        $newRev = $motion->consultation->getNextMotionPrefix($motion->motionTypeId);
+        $newRev = $motion->getConsultation()->getNextMotionPrefix($motion->motionTypeId);
     }
 
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';
@@ -201,7 +201,7 @@ if (!$motion->textFixed) {
 <div class="content hidden" id="motionTextEditHolder">';
 
     foreach ($form->sections as $section) {
-        if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+        if ($section->getSettings()->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
             continue;
         }
         echo $section->getSectionType()->getMotionFormField();

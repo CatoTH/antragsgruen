@@ -121,7 +121,7 @@ foreach ($motions as $motion) {
     if ($textCombined) {
         $text = '';
         foreach ($motion->getSortedSections(true) as $section) {
-            $text .= $section->consultationSetting->title . "\n\n";
+            $text .= $section->getSettings()->title . "\n\n";
             $text .= $section->getSectionType()->getMotionODS();
             $text .= "\n\n";
         }

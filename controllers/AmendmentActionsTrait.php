@@ -53,7 +53,7 @@ trait AmendmentActionsTrait
      */
     private function writeComment(Amendment $amendment, &$viewParameters)
     {
-        if (!$amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
+        if (!$amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser()) {
             throw new Access('No rights to write a comment');
         }
         $commentForm = new CommentForm();
@@ -65,7 +65,7 @@ trait AmendmentActionsTrait
 
         try {
             $comment      = $commentForm->saveAmendmentComment($amendment);
-            $consultation = $amendment->motion->consultation;
+            $consultation = $amendment->getMyConsultation();
             ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_COMMENT, $comment->id);
             $this->redirect(UrlHelper::createAmendmentCommentUrl($comment));
         } catch (\Exception $e) {
@@ -96,7 +96,7 @@ trait AmendmentActionsTrait
             throw new DB($comment->getErrors());
         }
 
-        $consultation = $amendment->motion->consultation;
+        $consultation = $amendment->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_COMMENT_DELETE, $comment->id);
 
         \Yii::$app->session->setFlash('success', \Yii::t('comment', 'del_done'));
@@ -123,7 +123,7 @@ trait AmendmentActionsTrait
 
         $amendment->refresh();
 
-        $consultation = $amendment->motion->consultation;
+        $consultation = $amendment->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
 
         $comment->sendPublishNotifications();
@@ -150,7 +150,7 @@ trait AmendmentActionsTrait
 
         $amendment->refresh();
 
-        $consultation = $amendment->motion->consultation;
+        $consultation = $amendment->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
     }
 
@@ -163,7 +163,7 @@ trait AmendmentActionsTrait
     private function amendmentLikeDislike(Amendment $amendment, $role, $string)
     {
         $currentUser = User::getCurrentUser();
-        if (!$amendment->motion->motionType->getSupportPolicy()->checkCurrUser() || $currentUser == null) {
+        if (!$amendment->getMyMotion()->motionType->getSupportPolicy()->checkCurrUser() || $currentUser == null) {
             throw new FormError('Supporting this motion is not possible');
         }
 
@@ -192,7 +192,7 @@ trait AmendmentActionsTrait
     {
         $msg = 'Du stimmst diesem Änderungsantrag nun zu.';
         $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_LIKE, $msg);
-        ConsultationLog::logCurrUser($amendment->motion->consultation, ConsultationLog::AMENDMENT_LIKE, $amendment->id);
+        ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_LIKE, $amendment->id);
     }
 
     /**
@@ -201,7 +201,7 @@ trait AmendmentActionsTrait
     private function amendmentDislike(Amendment $amendment)
     {
         $msg          = 'Du lehnst diesen Änderungsantrag nun ab.';
-        $consultation = $amendment->motion->consultation;
+        $consultation = $amendment->getMyConsultation();
         $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_DISLIKE, $msg);
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_DISLIKE, $amendment->id);
     }
@@ -217,7 +217,7 @@ trait AmendmentActionsTrait
                 $amendment->unlink('amendmentSupporters', $supp, true);
             }
         }
-        $consultation = $amendment->motion->consultation;
+        $consultation = $amendment->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_UNLIKE, $amendment->id);
         \Yii::$app->session->setFlash('success', 'Du stehst diesem Änderungsantrag wieder neutral gegenüber.');
     }

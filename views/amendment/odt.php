@@ -11,7 +11,7 @@ use yii\helpers\Html;
 /** @var \app\models\settings\AntragsgruenApp $config */
 $config = \yii::$app->params;
 
-$template = $amendment->motion->motionType->getOdtTemplate();
+$template = $amendment->getMyMotion()->motionType->getOdtTemplate();
 
 $tmpZipFile = $config->tmpDir . uniqid('zip-');
 file_put_contents($tmpZipFile, $template);
@@ -43,8 +43,8 @@ foreach ($amendment->amendmentSupporters as $supp) {
 }
 $initiatorStr = (count($initiators) == 1 ? \Yii::t('export', 'InitiatorSingle') : \Yii::t('export', 'InitiatorMulti'));
 $initiatorStr .= ': ' . implode(', ', $initiators);
-if ($amendment->motion->agendaItem) {
-    $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $amendment->motion->agendaItem->title);
+if ($amendment->getMyMotion()->agendaItem) {
+    $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $amendment->getMyMotion()->agendaItem->title);
 } else {
     $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', '');
 }

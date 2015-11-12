@@ -10,7 +10,7 @@ use yii\helpers\Html;
  * @var Amendment $amendment
  */
 
-$texTemplate = $amendment->motion->motionType->texTemplate;
+$texTemplate = $amendment->getMyMotion()->motionType->texTemplate;
 
 
 $layout            = new Layout();

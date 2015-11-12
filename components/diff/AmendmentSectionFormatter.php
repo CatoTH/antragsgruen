@@ -85,11 +85,11 @@ class AmendmentSectionFormatter
      */
     private function getHtmlDiffWithLineNumberPlaceholders()
     {
-        if ($this->section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Only supported for simple HTML');
         }
         $strPre = null;
-        foreach ($this->section->amendment->motion->sections as $section) {
+        foreach ($this->section->getMotion()->sections as $section) {
             if ($section->sectionId == $this->section->sectionId) {
                 $strPre = $section->getTextWithLineNumberPlaceholders();
             }
@@ -98,7 +98,7 @@ class AmendmentSectionFormatter
             throw new Internal('Original version not found');
         }
 
-        $lineLength = $this->section->consultationSetting->motionType->consultation->getSettings()->lineLength;
+        $lineLength = $this->section->getCachedConsultation()->getSettings()->lineLength;
         $strPost    = '';
         foreach ($this->section->getTextParagraphs() as $para) {
             $linesOut = LineSplitter::motionPara2lines($para, false, $lineLength);

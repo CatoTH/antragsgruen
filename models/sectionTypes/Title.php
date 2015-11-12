@@ -18,7 +18,7 @@ class Title extends ISectionType
      */
     public function getMotionFormField()
     {
-        $type = $this->section->consultationSetting;
+        $type = $this->section->getSettings();
         $str  = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">
             <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
 
@@ -52,7 +52,7 @@ class Title extends ISectionType
      */
     public function getAmendmentFormField()
     {
-        $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
+        $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         return $this->getMotionFormField();
     }
 
@@ -98,7 +98,7 @@ class Title extends ISectionType
             return '';
         }
         $str = '<section id="section_title" class="motionTextHolder">';
-        $str .= '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+        $str .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
         $str .= '<div id="section_title_0" class="paragraph"><div class="text">';
         $str .= '<h4 class="lineSummary">' . \Yii::t('amend', 'title_amend_to') . ':</h4>';
         $str .= '<p>' . Html::encode($section->data) . '</p>';
@@ -137,7 +137,7 @@ class Title extends ISectionType
         }
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
+            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
         $pdf->SetFont('Courier', '', 11);
@@ -189,7 +189,7 @@ class Title extends ISectionType
         if ($section->data == $section->getOriginalMotionSection()->data) {
             return;
         }
-        $title = Exporter::encodePlainString($section->consultationSetting->title);
+        $title = Exporter::encodePlainString($section->getSettings()->title);
         $tex   = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
         $html  = '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
             Html::encode($this->section->data) . '</p>';

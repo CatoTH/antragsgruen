@@ -49,15 +49,15 @@ class AmendmentController extends AdminBase
         if (!$amendment) {
             $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
         }
-        $this->checkConsistency($amendment->motion, $amendment);
+        $this->checkConsistency($amendment->getMyMotion(), $amendment);
 
         $this->layout = 'column2';
 
-        $form = new AmendmentEditForm($amendment->motion, $amendment);
+        $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
         $form->setAdminMode(true);
 
         if (isset($_POST['screen']) && $amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
-            if ($amendment->motion->findAmendmentWithPrefix($_POST['titlePrefix'], $amendment)) {
+            if ($amendment->getMyMotion()->findAmendmentWithPrefix($_POST['titlePrefix'], $amendment)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
             } else {
                 $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
@@ -71,7 +71,7 @@ class AmendmentController extends AdminBase
         if (isset($_POST['delete'])) {
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
-            $amendment->motion->flushCacheStart();
+            $amendment->getMyMotion()->flushCacheStart();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
             return '';
@@ -99,13 +99,13 @@ class AmendmentController extends AdminBase
                 $amendment->dateResolution = Tools::dateBootstraptime2sql($amdat['dateResolution']);
             }
 
-            if ($amendment->motion->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
+            if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
             } else {
                 $amendment->titlePrefix = $_POST['amendment']['titlePrefix'];
             }
             $amendment->save();
-            $amendment->motion->flushCacheWithChildren();
+            $amendment->getMyMotion()->flushCacheWithChildren();
             $amendment->refresh();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
 

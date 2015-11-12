@@ -15,6 +15,7 @@ return [
     'err_js_or_login'       => 'Um diese Funktion zu nutzen, muss entweder JavaScript aktiviert sein, oder du musst eingeloggt sein.',
     'err_no_data_given'     => 'Keine Daten angegeben (Feld: %FIELD%)',
     'err_max_len_exceed'    => 'Maximum length of %MAX% exceeded',
+    'err_no_site_internal'  => 'Keine Seite angegeben. Das dürfte ein Fehler bei der Installation sein.',
     'content_privacy_title' => 'Datenschutzerklärung',
     'content_privacy_bread' => 'Datenschutz',
     'content_welcome'       => 'Willkommen',

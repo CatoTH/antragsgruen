@@ -17,8 +17,6 @@ use app\models\sectionTypes\ISectionType;
  * @property string $cache
  * @property string $metadata
  *
- * @property Amendment $amendment
- * @property ConsultationSettingsMotionSection $consultationSetting
  * @property AmendmentSection
  */
 class AmendmentSection extends IMotionSection
@@ -26,7 +24,7 @@ class AmendmentSection extends IMotionSection
     use CacheTrait;
 
     /** @var null|MotionSection */
-    private $_originalMotionSection = null;
+    private $originalMotionSection = null;
 
     /**
      * @return string
@@ -37,19 +35,60 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ConsultationSettingsMotionSection
      */
-    public function getConsultationSetting()
+    public function getSettings()
     {
-        return $this->hasOne(ConsultationSettingsMotionSection::class, ['id' => 'sectionId']);
+        $section = $this->getOriginalMotionSection();
+        if ($section) {
+            return $section->getSettings();
+        } else {
+            /** @var ConsultationSettingsMotionSection $section */
+            return ConsultationSettingsMotionSection::findOne($this->sectionId);
+        }
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return Amendment|null
      */
     public function getAmendment()
     {
-        return $this->hasOne(Amendment::class, ['id' => 'amendmentId']);
+        return $this->getCachedConsultation()->getAmendment($this->amendmentId);
+    }
+
+    /**
+     * @return Motion|null
+     */
+    public function getMotion()
+    {
+        if ($this->originalMotionSection) {
+            return $this->originalMotionSection->getMotion();
+        }
+        if ($this->amendmentId === null) {
+            return null;
+        }
+        return $this->getCachedConsultation()->getMotion($this->getAmendment()->motionId);
+    }
+
+    /**
+     * @return Consultation|null
+     */
+    public function getCachedConsultation()
+    {
+        $current = Consultation::getCurrent();
+        if ($current) {
+            $amend = $current->getAmendment($this->amendmentId);
+            if ($amend) {
+                return $current;
+            }
+        }
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne($this->amendmentId);
+        if ($amendment) {
+            return $amendment->getMyConsultation();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -70,7 +109,7 @@ class AmendmentSection extends IMotionSection
      */
     public function getTextParagraphs()
     {
-        if ($this->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
         return HTMLTools::sectionSimpleHTML($this->data);
@@ -81,14 +120,19 @@ class AmendmentSection extends IMotionSection
      */
     public function getOriginalMotionSection()
     {
-        if ($this->_originalMotionSection === null) {
-            foreach ($this->amendment->motion->sections as $section) {
-                if ($section->sectionId == $this->sectionId) {
-                    $this->_originalMotionSection = $section;
+        if ($this->originalMotionSection === null) {
+            $motion = $this->getMotion();
+            if ($motion) {
+                foreach ($this->getMotion()->sections as $section) {
+                    if ($section->sectionId == $this->sectionId) {
+                        $this->originalMotionSection = $section;
+                    }
                 }
+            } else {
+                null;
             }
         }
-        return $this->_originalMotionSection;
+        return $this->originalMotionSection;
     }
 
     /**
@@ -96,7 +140,7 @@ class AmendmentSection extends IMotionSection
      */
     public function setOriginalMotionSection(MotionSection $motionSection)
     {
-        $this->_originalMotionSection = $motionSection;
+        $this->originalMotionSection = $motionSection;
     }
 
     /**
@@ -110,8 +154,8 @@ class AmendmentSection extends IMotionSection
             return $cached;
         }
 
-        $first = $this->amendment->motion->getFirstLineNumber();
-        foreach ($this->amendment->getSortedSections() as $section) {
+        $first = $this->getMotion()->getFirstLineNumber();
+        foreach ($this->getAmendment()->getSortedSections() as $section) {
             /** @var AmendmentSection $section */
             if ($section->sectionId == $this->sectionId) {
                 $this->setCacheItem('getFirstLineNumber', $first);

@@ -106,6 +106,6 @@ class WithSupporters extends DefaultFormBase
      */
     public function hasFullTextSupporterField()
     {
-        return User::currentUserHasPrivilege($this->motionType->consultation, User::PRIVILEGE_ANY);
+        return User::currentUserHasPrivilege($this->motionType->getConsultation(), User::PRIVILEGE_ANY);
     }
 }

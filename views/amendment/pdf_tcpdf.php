@@ -6,7 +6,7 @@ use app\models\db\Amendment;
  * @var Amendment $amendment
  */
 
-$pdfLayout = $amendment->motion->motionType->getPDFLayoutClass();
+$pdfLayout = $amendment->getMyMotion()->motionType->getPDFLayoutClass();
 $pdf       = $pdfLayout->createPDFClass();
 
 header('Content-type: application/pdf; charset=UTF-8');

@@ -33,10 +33,10 @@ class LoggedIn extends IPolicy
         if (!$user) {
             return false;
         }
-        if (!$this->motionType->consultation->site->getSettings()->managedUserAccounts) {
+        if (!$this->motionType->getConsultation()->site->getSettings()->managedUserAccounts) {
             return false;
         }
-        $privilege = $this->motionType->consultation->getUserPrivilege($user);
+        $privilege = $this->motionType->getConsultation()->getUserPrivilege($user);
         return ($privilege->privilegeCreate == 0);
     }
 
@@ -112,7 +112,7 @@ class LoggedIn extends IPolicy
         }
 
         if ($allowAdmins && User::getCurrentUser()) {
-            foreach ($this->motionType->consultation->site->admins as $admin) {
+            foreach ($this->motionType->getConsultation()->site->admins as $admin) {
                 if ($admin->id == User::getCurrentUser()->id) {
                     return true;
                 }

@@ -776,11 +776,12 @@ class Diff
      * @param string[] $amParas
      * @param int $currOrigLine
      * @param int $lineLength
-     * @param AmendmentSection|null $amSec
+     * @param int|null $amendId
+     * @param int|null $sectionId
      * @return \app\models\db\MotionSectionParagraphAmendment[]
      * @throws Internal
      */
-    public function computeAmendmentParagraphDiffInt($origParagraphs, $amParas, $currOrigLine, $lineLength, $amSec)
+    public function computeAmendmentParagraphDiffInt($origParagraphs, $amParas, $currOrigLine, $lineLength, $amendId, $sectionId)
     {
         $diffEng      = new Engine();
         $diff         = $diffEng->compareArrays($origParagraphs, $amParas);
@@ -798,7 +799,7 @@ class Diff
             if ($diffLine[1] == Engine::UNMODIFIED) {
                 if ($pendingInsert != '') {
                     $str                    = $pendingInsert . $diffLine[0];
-                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $str, $firstAffLine);
+                    $changed[$currOrigPara] = new ParagraphAmendment($amendId, $sectionId, $currOrigPara, $str, $firstAffLine);
                     $pendingInsert          = '';
                 } else {
                     $unchanged[$currOrigPara] = $diffLine[0];
@@ -818,7 +819,7 @@ class Diff
                             throw new Internal('unchanged[' . $prevLine . '] not set');
                         }
                         $newStr             = $unchanged[$prevLine] . $insertStr;
-                        $changed[$prevLine] = new ParagraphAmendment($amSec, $prevLine, $newStr, $firstAffLine - 1);
+                        $changed[$prevLine] = new ParagraphAmendment($amendId, $sectionId, $prevLine, $newStr, $firstAffLine - 1);
                     }
                 } else {
                     $pendingInsert .= $insertStr;
@@ -859,13 +860,13 @@ class Diff
 
                         $currLine         = $firstAffLine + $motionParaLines - 1 + $j;
                         $paraNo           = $currOrigPara + $j;
-                        $changed[$paraNo] = new ParagraphAmendment($amSec, $paraNo, $changeStr, $currLine);
+                        $changed[$paraNo] = new ParagraphAmendment($amendId, $sectionId, $paraNo, $changeStr, $currLine);
                     }
                     $currDiffLine += $count - 1;
                     $currOrigPara += count($deletes);
                 } else {
                     $deleteStr              = $this->wrapWithDelete($diffLine[0]);
-                    $changed[$currOrigPara] = new ParagraphAmendment($amSec, $currOrigPara, $deleteStr, $firstAffLine);
+                    $changed[$currOrigPara] = new ParagraphAmendment($amendId, $sectionId, $currOrigPara, $deleteStr, $firstAffLine);
                     $currOrigPara++;
                 }
 
@@ -886,8 +887,15 @@ class Diff
     {
         $amParas      = HTMLTools::sectionSimpleHTML($amSec->data);
         $currOrigLine = $amSec->getFirstLineNumber();
-        $lineLength   = $amSec->amendment->motion->motionType->consultation->getSettings()->lineLength;
-        return $this->computeAmendmentParagraphDiffInt($origParagraphs, $amParas, $currOrigLine, $lineLength, $amSec);
+        $lineLength   = $amSec->getCachedConsultation()->getSettings()->lineLength;
+        return $this->computeAmendmentParagraphDiffInt(
+            $origParagraphs,
+            $amParas,
+            $currOrigLine,
+            $lineLength,
+            $amSec->amendmentId,
+            $amSec->sectionId
+        );
     }
 
     /**

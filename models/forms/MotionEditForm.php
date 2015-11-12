@@ -51,7 +51,7 @@ class MotionEditForm extends Model
                 $this->tags[] = $tag->id;
             }
             foreach ($motion->sections as $section) {
-                $motionSections[$section->consultationSetting->id] = $section;
+                $motionSections[$section->sectionId] = $section;
             }
         }
         $this->sections = [];
@@ -111,18 +111,18 @@ class MotionEditForm extends Model
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
-            if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE && isset($values['motion']['title']))
+            if ($section->getSettings()->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE && isset($values['motion']['title']))
                 $section->getSectionType()->setAmendmentData($values['motion']['title']);
 
-            if (isset($values['sections'][$section->consultationSetting->id])) {
-                $section->getSectionType()->setMotionData($values['sections'][$section->consultationSetting->id]);
+            if (isset($values['sections'][$section->sectionId])) {
+                $section->getSectionType()->setMotionData($values['sections'][$section->sectionId]);
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
-                if (!empty($files['sections']['tmp_name'][$section->consultationSetting->id])) {
+                if (!empty($files['sections']['tmp_name'][$section->delete()])) {
                     $data = [];
                     foreach ($files['sections'] as $key => $vals) {
-                        if (isset($vals[$section->consultationSetting->id])) {
-                            $data[$key] = $vals[$section->consultationSetting->id];
+                        if (isset($vals[$section->delete()])) {
+                            $data[$key] = $vals[$section->delete()];
                         }
                     }
                     $section->getSectionType()->setMotionData($data);
@@ -139,7 +139,7 @@ class MotionEditForm extends Model
         $errors = [];
 
         foreach ($this->sections as $section) {
-            $type = $section->consultationSetting;
+            $type = $section->getSettings();
             if ($section->data == '' && $type->required) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
@@ -165,7 +165,7 @@ class MotionEditForm extends Model
      */
     public function createMotion()
     {
-        $consultation = $this->motionType->consultation;
+        $consultation = $this->motionType->getConsultation();
 
         if (!$this->motionType->getMotionPolicy()->checkCurrUserMotion()) {
             throw new FormError(\Yii::t('motion', 'err_create_permission'));
@@ -221,7 +221,7 @@ class MotionEditForm extends Model
         $errors = [];
 
         foreach ($this->sections as $section) {
-            $type = $section->consultationSetting;
+            $type = $section->getSettings();
             if ($section->data == '' && $type->required) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
@@ -244,7 +244,7 @@ class MotionEditForm extends Model
      */
     public function saveMotion(Motion $motion)
     {
-        $consultation = $this->motionType->consultation;
+        $consultation = $this->motionType->getConsultation();
         if (!$this->motionType->getMotionPolicy()->checkCurrUserMotion()) {
             throw new FormError(\Yii::t('motion', 'err_create_permission'));
         }

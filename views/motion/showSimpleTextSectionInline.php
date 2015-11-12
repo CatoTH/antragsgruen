@@ -16,7 +16,7 @@ $classes    = ['paragraph'];
 /** @var Amendment[] $amendmentsById */
 $amendmentsById = [];
 foreach ($section->amendingSections as $sect) {
-    $amendmentsById[$sect->amendmentId] = $sect->amendment;
+    $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
 }
 
 $merger = new \app\components\diff\AmendmentDiffMerger();

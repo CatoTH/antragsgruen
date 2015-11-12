@@ -30,7 +30,7 @@ class TextSimple extends ISectionType
      */
     public function getMotionFormField()
     {
-        return $this->getTextMotionFormField(false, $this->section->consultationSetting->fixedWidth);
+        return $this->getTextMotionFormField(false, $this->section->getSettings()->fixedWidth);
     }
 
     /**
@@ -38,9 +38,9 @@ class TextSimple extends ISectionType
      */
     public function getAmendmentFormField()
     {
-        $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
-        $fixedWidth                                 = $this->section->consultationSetting->fixedWidth;
-        if ($this->section->consultationSetting->motionType->amendmentMultipleParagraphs) {
+        $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
+        $fixedWidth                                 = $this->section->getSettings()->fixedWidth;
+        if ($this->section->getSettings()->motionType->amendmentMultipleParagraphs) {
             return $this->getTextAmendmentFormField(false, $this->section->dataRaw, $fixedWidth);
         } else {
             return $this->getTextAmendmentFormFieldSingleParagraph($fixedWidth);
@@ -67,7 +67,7 @@ class TextSimple extends ISectionType
             }
         }
 
-        $type = $this->section->consultationSetting;
+        $type = $this->section->getSettings();
         $str  = '<div class="label">' . Html::encode($type->title) . '</div>';
         $str .= '<div class="texteditorBox" data-section-id="' . $amSection->sectionId . '" ' .
             'data-changed-para-no="' . $changedParagraph . '">';
@@ -124,7 +124,7 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->consultationSetting->motionType->amendmentMultipleParagraphs) {
+        if ($section->getSettings()->motionType->amendmentMultipleParagraphs) {
             $section->data    = HTMLTools::cleanSimpleHtml($data['consolidated']);
             $section->dataRaw = $data['raw'];
         } else {
@@ -151,7 +151,7 @@ class TextSimple extends ISectionType
         $str      = '';
         foreach ($sections as $section) {
             $str .= '<div class="paragraph"><div class="text';
-            if ($this->section->consultationSetting->fixedWidth) {
+            if ($this->section->getSettings()->fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
             $str .= '">' . $section . '</div></div>';
@@ -185,7 +185,7 @@ class TextSimple extends ISectionType
             return '';
         }
 
-        $str       = '<h3>' . Html::encode($section->consultationSetting->title) . '</h3>';
+        $str       = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
         $firstLine = $section->getFirstLineNumber();
         $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
         $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
@@ -206,10 +206,10 @@ class TextSimple extends ISectionType
         }
 
         $str = '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str .= '<h3 class="green">' . Html::encode($section->consultationSetting->title) . '</h3>';
+        $str .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
         $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text';
-        if ($section->consultationSetting->fixedWidth) {
+        if ($section->getSettings()->fixedWidth) {
             $wrapStart .= ' fixedWidthFont';
         }
         $wrapStart .= '">';
@@ -238,21 +238,21 @@ class TextSimple extends ISectionType
         $section = $this->section;
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
+            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
-        $lineLength = $section->consultationSetting->motionType->consultation->getSettings()->lineLength;
+        $lineLength = $section->getConsultation()->getSettings()->lineLength;
         $linenr     = $section->getFirstLineNumber();
         $textSize   = ($lineLength > 70 ? 10 : 11);
-        if ($section->consultationSetting->fixedWidth) {
+        if ($section->getSettings()->fixedWidth) {
             $pdf->SetFont('dejavusansmono', '', $textSize);
         } else {
             $pdf->SetFont('helvetica', '', $textSize);
         }
         $pdf->Ln(7);
 
-        $hasLineNumbers = $section->consultationSetting->lineNumbers;
-        if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {
+        $hasLineNumbers = $section->getSettings()->lineNumbers;
+        if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
             $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
             foreach ($paragraphs as $paragraph) {
                 $linesArr = [];
@@ -304,7 +304,7 @@ class TextSimple extends ISectionType
 
         if (count($diffGroups) > 0) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-                $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
+                $pdfLayout->printSectionHeading($this->section->getSettings()->title);
                 $pdf->ln(7);
             }
 
@@ -466,15 +466,15 @@ class TextSimple extends ISectionType
         /** @var MotionSection $section */
         $section = $this->section;
 
-        $hasLineNumbers = $section->consultationSetting->lineNumbers;
+        $hasLineNumbers = $section->getSettings()->lineNumbers;
 
-        $title = Exporter::encodePlainString($section->consultationSetting->title);
-        if ($title == \Yii::t('motion', 'motion_text') && $section->motion->agendaItem) {
-            $title = $section->motion->title;
+        $title = Exporter::encodePlainString($section->getSettings()->title);
+        if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
+            $title = $section->getMotion()->title;
         }
         $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
 
-        if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {
+        if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
             if ($hasLineNumbers) {
                 $tex .= "\\linenumbers\n";
                 $tex .= "\\resetlinenumber[" . $section->getFirstLineNumber() . "]\n";
@@ -518,10 +518,10 @@ class TextSimple extends ISectionType
         $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
 
         if (count($diffGroups) > 0) {
-            $title = Exporter::encodePlainString($section->consultationSetting->title);
+            $title = Exporter::encodePlainString($section->getSettings()->title);
             if ($title == \Yii::t('motion', 'motion_text')) {
                 $titPattern = 'Änderungsantrag zu #MOTION#';
-                $title      = str_replace('#MOTION#', $section->amendment->motion->titlePrefix, $titPattern);
+                $title      = str_replace('#MOTION#', $section->getMotion()->titlePrefix, $titPattern);
             }
 
             $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
@@ -574,8 +574,8 @@ class TextSimple extends ISectionType
         }
         $section = $this->section;
         /** @var MotionSection $section */
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($section->consultationSetting->title) . '</h2>', false);
-        if ($section->consultationSetting->lineNumbers) {
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($section->getSettings()->title) . '</h2>', false);
+        if ($section->getSettings()->lineNumbers) {
             $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
                 $html = implode('<br>', $paragraph->lines);
@@ -610,7 +610,7 @@ class TextSimple extends ISectionType
             return;
         }
 
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
 
         $firstLine = $section->getFirstLineNumber();
         $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
@@ -647,7 +647,7 @@ class TextSimple extends ISectionType
         /** @var Amendment[] $amendmentsById */
         $amendmentsById = [];
         foreach ($section->amendingSections as $sect) {
-            $amendmentsById[$sect->amendmentId] = $sect->amendment;
+            $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
         }
 
         $out = '';

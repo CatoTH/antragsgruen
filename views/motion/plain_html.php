@@ -31,7 +31,7 @@ echo '</tbody></table>';
 $sections = $motion->getSortedSections(true);
 foreach ($sections as $section) {
     echo '<section>';
-    echo '<h2>' . Html::encode($section->consultationSetting->title) . '</h2>';
+    echo '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
     echo $section->getSectionType()->getMotionPlainHtml();
     echo '</section>';
 }

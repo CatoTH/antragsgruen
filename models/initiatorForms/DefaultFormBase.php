@@ -253,7 +253,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             $initiator       = new MotionSupporter();
             $initiator->role = MotionSupporter::ROLE_INITIATOR;
         }
-        $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::currentUserHasPrivilege($motionType->getConsultation(), User::PRIVILEGE_SCREENING);
         $isForOther         = false;
         if ($screeningPrivilege) {
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
@@ -302,7 +302,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 $supporters[] = $supporter;
             }
         }
-        $screeningPrivilege = User::currentUserHasPrivilege($motionType->consultation, User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::currentUserHasPrivilege($motionType->getConsultation(), User::PRIVILEGE_SCREENING);
         $isForOther         = false;
         if ($screeningPrivilege) {
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);

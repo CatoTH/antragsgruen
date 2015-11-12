@@ -13,10 +13,10 @@ use app\models\forms\CommentForm;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
-$motion         = $section->motion;
-$hasLineNumbers = $section->consultationSetting->lineNumbers;
+$motion         = $section->getMotion();
+$hasLineNumbers = $section->getSettings()->lineNumbers;
 $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
-$screenAdmin    = User::currentUserHasPrivilege($section->motion->consultation, User::PRIVILEGE_SCREENING);
+$screenAdmin    = User::currentUserHasPrivilege($section->getConsultation(), User::PRIVILEGE_SCREENING);
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
     $classes[] = 'lineNumbers';
@@ -40,8 +40,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
 
     echo '<ul class="bookmarks">';
-    if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
-        $mayOpen     = $section->motion->motionType->getCommentPolicy()->checkCurrUser(true, true);
+    if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+        $mayOpen     = $section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true);
         $numComments = $paragraph->getVisibleComments($screenAdmin);
         if (count($numComments) > 0 || $mayOpen) {
             echo '<li class="comment">';
@@ -58,7 +58,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     }
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
-        $amendment = $amendmentSection->amendmentSection->amendment;
+        $amendment = \app\models\db\Consultation::getCurrent()->getAmendment($amendmentSection->amendmentId);
         $amLink    = UrlHelper::createAmendmentUrl($amendment);
         $firstline = $amendmentSection->firstAffectedLine;
         echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $firstline . '">';
@@ -69,14 +69,14 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     echo '</ul>';
 
     echo '<div class="text textOrig';
-    if ($section->consultationSetting->fixedWidth) {
+    if ($section->getSettings()->fixedWidth) {
         echo ' fixedWidthFont';
     }
     echo '">';
-    if ($section->consultationSetting->fixedWidth || $hasLineNumbers) {
+    if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
         $linesArr = [];
         foreach ($paragraph->lines as $line) {
-            if ($section->consultationSetting->lineNumbers) {
+            if ($section->getSettings()->lineNumbers) {
                 /** @var int $lineNo */
                 $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
                 $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
@@ -91,9 +91,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     echo '</div>';
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
-        $amendment = $motion->getAmendment($amendmentSection->amendmentSection->amendmentId);
+        $amendment = \app\models\db\Consultation::getCurrent()->getAmendment($amendmentSection->amendmentId);
         echo '<div class="text textAmendment hidden amendment' . $amendment->id;
-        if ($section->consultationSetting->fixedWidth) {
+        if ($section->getSettings()->fixedWidth) {
             echo ' fixedWidthFont';
         }
         echo '">';
@@ -119,10 +119,10 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         gc_collect_cycles();
     }
 
-    if ($section->consultationSetting->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
-        if (count($paragraph->comments) > 0 || $section->motion->motionType->getCommentPolicy()) {
+    if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+        if (count($paragraph->comments) > 0 || $section->getMotion()->motionType->getCommentPolicy()) {
             echo '<section class="commentHolder">';
-            $motion = $section->motion;
+            $motion = $section->getMotion();
             $form   = $commentForm;
 
             if (in_array($paragraphNo, $openedComments)) {
@@ -163,9 +163,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 LayoutHelper::showComment($comment, $screenAdmin, $baseLink, $commLink);
             }
 
-            if ($section->motion->motionType->getCommentPolicy()->checkCurrUser()) {
-                LayoutHelper::showCommentForm($form, $motion->consultation, $section->sectionId, $paragraphNo);
-            } elseif ($section->motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+            if ($section->getMotion()->motionType->getCommentPolicy()->checkCurrUser()) {
+                LayoutHelper::showCommentForm($form, $motion->getConsultation(), $section->sectionId, $paragraphNo);
+            } elseif ($section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
                 echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in"></span>' . \Yii::t('amend', 'comments_please_log_in') . '</div>';
             }

@@ -57,7 +57,7 @@ class AmendmentComment extends IComment
      */
     public function getConsultation()
     {
-        return $this->amendment->motion->consultation;
+        return $this->amendment->getMyConsultation();
     }
 
     /**
@@ -83,7 +83,7 @@ class AmendmentComment extends IComment
     {
         $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
 
-        return static::find()->joinWith('amendment', true)->joinWith('amendment.motion', true)
+        return static::find()->joinWith('amendment', true)->joinWith('amendment.motionJoin', true)
             ->where('amendmentComment.status = ' . IntVal(static::STATUS_VISIBLE))
             ->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')')
             ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')')
@@ -97,7 +97,7 @@ class AmendmentComment extends IComment
      */
     public function getMotionTitle()
     {
-        return $this->amendment->titlePrefix . ' zu ' . $this->amendment->motion->getTitleWithPrefix();
+        return $this->amendment->titlePrefix . ' zu ' . $this->amendment->getMyMotion()->getTitleWithPrefix();
     }
 
     /**
@@ -148,7 +148,7 @@ class AmendmentComment extends IComment
 
                     $query->joinWith(
                         [
-                            'motion'    => function ($query) use ($consultation) {
+                            'motionJoin'    => function ($query) use ($consultation) {
                                 $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
                                 /** @var ActiveQuery $query */
                                 $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');

@@ -31,7 +31,8 @@
     "bower-asset/es5-shim": "*",
     "bower-asset/typeahead.js": "*",
     "bower-asset/shariff": "*",
-    "bower-asset/intl": "*"
+    "bower-asset/intl": "*",
+    "bower-asset/pdfjs-dist": "*"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "2.0.4",

@@ -69,7 +69,7 @@ class Base extends Controller
                     $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
                 }
             } elseif (get_class($this) != ManagerController::class && !$appParams->multisiteMode) {
-                $this->showErrorpage(500, 'Keine Seite angegeben. Das dürfte ein Fehler bei der Installation sein.');
+                $this->showErrorpage(500, \Yii::t('base', 'err_no_site_internal'));
             }
 
             // Login and Mainainance mode is always allowed
@@ -322,7 +322,7 @@ class Base extends Controller
             Yii::$app->end();
         }
 
-        if (is_object($checkMotion) && strtolower($checkMotion->consultation->urlPath) != $consultationId) {
+        if (is_object($checkMotion) && strtolower($checkMotion->getConsultation()->urlPath) != $consultationId) {
             Yii::$app->session->setFlash('error', 'Der Antrag gehört nicht zur Veranstaltung.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
             Yii::$app->end();
@@ -357,6 +357,7 @@ class Base extends Controller
 
         if (is_null($this->consultation)) {
             $this->consultation = Consultation::findOne(['urlPath' => $consultationId, 'siteId' => $this->site->id]);
+            Consultation::setCurrent($this->consultation);
         }
         if (is_null($this->consultation)) {
             $this->consultationNotFound();

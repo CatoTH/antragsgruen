@@ -5,26 +5,27 @@ namespace app\models\db;
 class MotionSectionParagraphAmendment
 {
     /**
-     * @param AmendmentSection $amSec
+     * @param int $amendmentId
+     * @param int $sectionId
      * @param int $paragraphNo
      * @param string $diff
      * @param int $firstLine
      */
-    public function __construct($amSec, $paragraphNo, $diff, $firstLine)
+    public function __construct($amendmentId, $sectionId, $paragraphNo, $diff, $firstLine)
     {
-        $this->amendmentSection  = $amSec;
+        $this->amendmentId       = $amendmentId;
+        $this->sectionId         = $sectionId;
         $this->origParagraphNo   = $paragraphNo;
         $this->strDiff           = $diff;
         $this->firstAffectedLine = $firstLine;
     }
 
-    /** @var AmendmentSection */
-    public $amendmentSection;
-
     /** @var string */
     public $strDiff;
 
     /** @var int */
+    public $amendmentId;
+    public $sectionId;
     public $origParagraphNo;
     public $firstAffectedLine;
 }

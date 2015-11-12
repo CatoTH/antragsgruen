@@ -134,7 +134,7 @@ abstract class IMotion extends ActiveRecord
     public function getTitleSection()
     {
         foreach ($this->sections as $section) {
-            if ($section->consultationSetting->type == ISectionType::TYPE_TITLE) {
+            if ($section->getSettings()->type == ISectionType::TYPE_TITLE) {
                 return $section;
             }
         }
@@ -151,7 +151,7 @@ abstract class IMotion extends ActiveRecord
         $title = $this->getTitleSection();
         foreach ($this->sections as $section) {
             if (!$withoutTitle || $section != $title) {
-                $sectionsIn[$section->consultationSetting->id] = $section;
+                $sectionsIn[$section->sectionId] = $section;
             }
         }
         $sectionsOut = [];

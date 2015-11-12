@@ -15,7 +15,7 @@ class ByLDK extends IPDFLayout
     public function printMotionHeader(Motion $motion)
     {
         $pdf      = $this->pdf;
-        $settings = $this->motionType->consultation->getSettings();
+        $settings = $this->motionType->getConsultation()->getSettings();
 
         if (file_exists($settings->logoUrl)) {
             $pdf->setJPEGQuality(100);
@@ -116,7 +116,7 @@ class ByLDK extends IPDFLayout
     public function printAmendmentHeader(Amendment $amendment)
     {
         $pdf      = $this->pdf;
-        $settings = $this->motionType->consultation->getSettings();
+        $settings = $this->motionType->getConsultation()->getSettings();
 
         if (file_exists($settings->logoUrl)) {
             $pdf->setJPEGQuality(100);
@@ -158,7 +158,7 @@ class ByLDK extends IPDFLayout
             );
         }
 
-        $str = $amendment->motion->motionType->titleSingular;
+        $str = $amendment->getMyMotion()->motionType->titleSingular;
         $pdf->SetFont('helvetica', 'B', '25');
         $width = $pdf->GetStringWidth($str);
 

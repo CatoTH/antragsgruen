@@ -39,15 +39,15 @@ echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
 echo '<div class="motionData">';
 
-if (!$motion->consultation->getSettings()->minimalisticUI) {
+if (!$motion->getConsultation()->getSettings()->minimalisticUI) {
     include(__DIR__ . DIRECTORY_SEPARATOR . 'view_motiondata.php');
 }
 
 $hasCollidingParagraphs = false;
 foreach ($motion->getSortedSections(false) as $section) {
     /** @var MotionSection $section */
-    $type = $section->consultationSetting;
-    if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+    $type = $section->getSettings();
+    if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
         if (!isset($newSections[$section->sectionId])) {
             $diffMerger = $section->getAmendmentDiffMerger();
             if ($diffMerger->hasCollodingParagraphs()) {
@@ -89,8 +89,8 @@ echo '<section class="newMotion">
 $changesets = [];
 
 foreach ($motion->getSortedSections(false) as $section) {
-    $type = $section->consultationSetting;
-    if ($section->consultationSetting->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+    $type = $section->getSettings();
+    if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
         /** @var TextSimple $simpleSection */
         $simpleSection = $section->getSectionType();
 

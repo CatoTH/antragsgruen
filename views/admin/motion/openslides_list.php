@@ -21,7 +21,7 @@ foreach ($motions as $motion) {
     $reason       = '';
     foreach ($motion->getSortedSections(true) as $section) {
         $html = $section->getSectionType()->getMotionPlainHtml();
-        if ($section->consultationSetting->title == \Yii::t('export', 'motion_reason')) {
+        if ($section->getSettings()->title == \Yii::t('export', 'motion_reason')) {
             $reason .= $html;
         } else {
             $text .= $html;

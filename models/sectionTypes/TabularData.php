@@ -17,7 +17,7 @@ class TabularData extends ISectionType
      */
     public function getMotionFormField()
     {
-        $type = $this->section->consultationSetting;
+        $type = $this->section->getSettings();
 
         $rows = static::getTabularDataRowsFromData($type->data);
         $data = json_decode($this->section->data, true);
@@ -54,7 +54,7 @@ class TabularData extends ISectionType
      */
     public function setMotionData($data)
     {
-        $type = $this->section->consultationSetting;
+        $type = $this->section->getSettings();
         $rows = static::getTabularDataRowsFromData($type->data);
 
         $dataOut = ['rows' => []];
@@ -88,7 +88,7 @@ class TabularData extends ISectionType
         if ($this->isEmpty()) {
             return '';
         }
-        $rows = static::getTabularDataRowsFromData($this->section->consultationSetting->data);
+        $rows = static::getTabularDataRowsFromData($this->section->getSettings()->data);
         $data = json_decode($this->section->data, true);
         $str  = '<dl class="tabularData table">';
         foreach ($data['rows'] as $rowId => $rowData) {
@@ -136,13 +136,13 @@ class TabularData extends ISectionType
         }
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
+            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
         $pdf->SetFont('Courier', '', 11);
         $pdf->Ln(7);
 
-        $rows = static::getTabularDataRowsFromData($this->section->consultationSetting->data);
+        $rows = static::getTabularDataRowsFromData($this->section->getSettings()->data);
         $data = json_decode($this->section->data, true);
 
         foreach ($data['rows'] as $rowId => $rowData) {
@@ -265,7 +265,7 @@ class TabularData extends ISectionType
     public function printMotionTeX($isRight, Content $content)
     {
         $data = json_decode($this->section->data, true);
-        $type = $this->section->consultationSetting;
+        $type = $this->section->getSettings();
         $rows = static::getTabularDataRowsFromData($type->data);
         if ($isRight) {
             $content->textRight .= '\vspace{-0.3cm}\newline';
@@ -323,7 +323,7 @@ class TabularData extends ISectionType
      */
     public function printMotionToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
     }
 
@@ -333,7 +333,7 @@ class TabularData extends ISectionType
      */
     public function printAmendmentToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
     }
 
@@ -344,7 +344,7 @@ class TabularData extends ISectionType
      */
     public function matchesFulltextSearch($text)
     {
-        $type   = $this->section->consultationSetting;
+        $type   = $this->section->getSettings();
         $data   = json_decode($this->section->data, true);
         $rows   = static::getTabularDataRowsFromData($type->data);
         $return = '';

@@ -110,7 +110,7 @@ class MotionComment extends IComment
      */
     public function getConsultation()
     {
-        return $this->motion->consultation;
+        return $this->motion->getConsultation();
     }
 
     /**

@@ -24,14 +24,14 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller   = $this->context;
 $layout       = $controller->layoutParams;
-$consultation = $amendment->motion->consultation;
+$consultation = $amendment->getMyConsultation();
 
 if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
     $layout->addBreadcrumb($_REQUEST['backTitle'], $_REQUEST['backUrl']);
     $layout->addBreadcrumb($amendment->getShortTitle());
 } else {
-    $motionUrl = UrlHelper::createMotionUrl($amendment->motion);
-    $layout->addBreadcrumb($amendment->motion->motionType->titleSingular, $motionUrl);
+    $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
+    $layout->addBreadcrumb($amendment->getMyMotion()->motionType->titleSingular, $motionUrl);
     if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
         $layout->addBreadcrumb($amendment->titlePrefix);
     } else {
@@ -45,7 +45,7 @@ $this->title = $amendment->getTitle() . ' (' . $consultation->title . ', Antrags
 $html        = '<ul class="sidebarActions">';
 $sidebarRows = 0;
 
-if ($amendment->motion->motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
+if ($amendment->getMyMotion()->motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
     $html .= '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
         Yii::t('motion', 'download_pdf');
@@ -79,7 +79,7 @@ if ($adminEdit) {
 
 $html .= '<li class="back">';
 $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('amend', 'sidebar_back');
-$html .= Html::a($title, UrlHelper::createMotionUrl($amendment->motion)) . '</li>';
+$html .= Html::a($title, UrlHelper::createMotionUrl($amendment->getMyMotion())) . '</li>';
 $sidebarRows++;
 
 $html .= '</ul>';
@@ -92,7 +92,7 @@ $minHeight = $sidebarRows * 40 - 60;
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
 
-if (!$amendment->motion->consultation->site->getSettings()->forceLogin) {
+if (!$amendment->getMyConsultation()->site->getSettings()->forceLogin) {
     $layout->loadShariff();
     $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
     $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
@@ -108,7 +108,7 @@ echo '<table class="motionDataTable">
                 <tr>
                     <th>' . Yii::t('amend', 'motion') . ':</th>
                     <td>' .
-    Html::a($amendment->motion->title, UrlHelper::createMotionUrl($amendment->motion)) . '</td>
+    Html::a($amendment->getMyMotion()->title, UrlHelper::createMotionUrl($amendment->getMyMotion())) . '</td>
                 </tr>
                 <tr>
                     <th>' . Yii::t('amend', 'initiator'), ':</th>
@@ -197,9 +197,9 @@ if (count($supporters) > 0) {
     echo '</div></section>';
 }
 
-MotionLayoutHelper::printSupportSection($amendment, $amendment->motion->motionType->getSupportPolicy(), $supportStatus);
+MotionLayoutHelper::printSupportSection($amendment, $amendment->getMyMotion()->motionType->getSupportPolicy(), $supportStatus);
 
-if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
+if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '<section class="comments"><h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
 
     $form        = $commentForm;
@@ -238,9 +238,9 @@ if ($amendment->motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
         }
     }
 
-    if ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser()) {
+    if ($amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser()) {
         MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
-    } elseif ($amendment->motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+    } elseif ($amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in"></span>' . \Yii::t('amend', 'comments_please_log_in') . '</div>';
     }

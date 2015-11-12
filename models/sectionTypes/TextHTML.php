@@ -18,7 +18,7 @@ class TextHTML extends ISectionType
      */
     public function getMotionFormField()
     {
-        return $this->getTextMotionFormField(true, $this->section->consultationSetting->fixedWidth);
+        return $this->getTextMotionFormField(true, $this->section->getSettings()->fixedWidth);
     }
 
     /**
@@ -26,8 +26,8 @@ class TextHTML extends ISectionType
      */
     public function getAmendmentFormField()
     {
-        $this->section->consultationSetting->maxLen = 0; // @TODO Dirty Hack
-        $fixedWidth                                 = $this->section->consultationSetting->fixedWidth;
+        $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
+        $fixedWidth                                 = $this->section->getSettings()->fixedWidth;
         return $this->getTextAmendmentFormField(true, $this->section->dataRaw, $fixedWidth);
     }
 
@@ -91,7 +91,7 @@ class TextHTML extends ISectionType
         }
 
         if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
-            $pdfLayout->printSectionHeading($this->section->consultationSetting->title);
+            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
         $html = $this->section->data;
@@ -176,7 +176,7 @@ class TextHTML extends ISectionType
      */
     public function printMotionToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
     }
 
@@ -186,7 +186,7 @@ class TextHTML extends ISectionType
      */
     public function printAmendmentToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->consultationSetting->title) . '</h2>', false);
+        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
     }
 

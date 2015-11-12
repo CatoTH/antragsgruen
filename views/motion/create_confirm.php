@@ -16,7 +16,7 @@ $controller = $this->context;
 
 $this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
 $controller->layoutParams->addBreadcrumb($this->title);
-$controller->layoutParams->addBreadcrumb('Bestätigen');
+$controller->layoutParams->addBreadcrumb(\Yii::T('motion', 'confirm_bread'));
 
 echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->title) . '</h1>';
 
@@ -26,12 +26,12 @@ foreach ($motion->getSortedSections(true) as $section) {
         continue;
     }
     if ($section->isLayoutRight() && $motion->motionType->layoutTwoCols) {
-        $right .= '<section class="sectionType' . $section->consultationSetting->type . '">';
+        $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
     } else {
-        $main .= '<section class="motionTextHolder sectionType' . $section->consultationSetting->type . '">';
-        $main .= '<h2 class="green">' . Html::encode($section->consultationSetting->title) . '</h2>';
+        $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type . '">';
+        $main .= '<h2 class="green">' . Html::encode($section->getSettings()->title) . '</h2>';
         $main .= '<div class="consolidated">';
 
         $main .= $section->getSectionType()->getSimple(false);

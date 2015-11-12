@@ -30,7 +30,7 @@ class BugfixController extends Controller
         }
         $changedCount = 0;
         foreach ($motion->sections as $section) {
-            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
             $newText = HTMLTools::cleanSimpleHtml($section->data);
@@ -60,7 +60,7 @@ class BugfixController extends Controller
         }
         $changedCount = 0;
         foreach ($amendment->sections as $section) {
-            if ($section->consultationSetting->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
 

@@ -31,7 +31,7 @@ foreach ($newMotion->getSortedSections(true) as $section) {
         continue;
     }
     echo '<section class="motionTextHolder">';
-    echo '<h2 class="green">' . Html::encode($section->consultationSetting->title) . '</h2>';
+    echo '<h2 class="green">' . Html::encode($section->getSettings()->title) . '</h2>';
     echo '<div class="consolidated">';
 
     echo $section->getSectionType()->getSimple(false);

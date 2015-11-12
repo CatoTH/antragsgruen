@@ -42,10 +42,10 @@ class CachingTest extends DBTestBase
 
 
         // Enable global line numbering
-        $settings = $motion3->consultation->getSettings();
+        $settings = $motion3->getConsultation()->getSettings();
         $settings->lineNumberingGlobal = true;
-        $motion3->consultation->setSettings($settings);
-        $motion3->consultation->save();
+        $motion3->getConsultation()->setSettings($settings);
+        $motion3->getConsultation()->save();
 
 
         // Flush the cache of another motion again

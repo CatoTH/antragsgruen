@@ -233,7 +233,7 @@ class LayoutHelper
         $hasAgenda                = ($motion->agendaItem !== null);
         $content                  = new Content();
         $content->template        = $motion->motionType->texTemplate->texContent;
-        $intro                    = explode("\n", $motion->consultation->getSettings()->pdfIntroduction);
+        $intro                    = explode("\n", $motion->getConsultation()->getSettings()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         $content->titlePrefix     = $motion->titlePrefix;
         $content->titleLong       = $motion->getTitleWithPrefix();

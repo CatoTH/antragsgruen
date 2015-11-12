@@ -51,7 +51,7 @@ abstract class ISectionType
      */
     protected function getTextMotionFormField($fullHtml, $fixedWidth)
     {
-        $type   = $this->section->consultationSetting;
+        $type   = $this->section->getSettings();
         $htmlId = 'sections_' . $type->id;
 
         $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
@@ -98,7 +98,7 @@ abstract class ISectionType
      */
     protected function getTextAmendmentFormField($fullHtml, $data, $fixedWidth)
     {
-        $type     = $this->section->consultationSetting;
+        $type     = $this->section->getSettings();
         $nameBase = 'sections[' . $type->id . ']';
         $htmlId   = 'sections_' . $type->id;
 

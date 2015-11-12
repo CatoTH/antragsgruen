@@ -61,8 +61,8 @@ if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'amendmentScreenForm']);
     $newRev = $amendment->titlePrefix;
     if ($newRev == '') {
-        $numbering = $amendment->motion->consultation->getAmendmentNumbering();
-        $newRev    = $numbering->getAmendmentNumber($amendment, $amendment->motion);
+        $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
+        $newRev    = $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
     }
 
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';
