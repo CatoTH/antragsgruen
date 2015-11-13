@@ -38,7 +38,19 @@ class AmendmentController extends AdminBase
         return $this->render('pdf_list', ['consultation' => $this->consultation]);
     }
 
+    /**
+     * @return string
+     */
+    public function actionPdfziplist()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/zip');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.zip');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
+        return $this->renderPartial('pdf_zip_list', ['consultation' => $this->consultation]);
+    }
+    
     /**
      * @param int $amendmentId
      * @return string

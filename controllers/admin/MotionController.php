@@ -357,4 +357,17 @@ class MotionController extends AdminBase
             'motions' => $motions,
         ]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionPdfziplist()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/zip');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.zip');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        return $this->renderPartial('pdf_zip_list', ['consultation' => $this->consultation]);
+    }
 }

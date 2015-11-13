@@ -3,6 +3,8 @@
 namespace app\components\latex;
 
 use app\components\HTMLTools;
+use app\models\db\Amendment;
+use app\models\db\Motion;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 
@@ -363,5 +365,47 @@ class Exporter
         }
 
         return $pdf;
+    }
+
+    /**
+     * @param $motion Motion
+     */
+    public static function createMotionPdf ($motion) {
+        $texTemplate = $motion->motionType->texTemplate;
+
+        $layout            = new Layout();
+        $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+        //$layout->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
+        //    'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
+        $layout->template = $texTemplate->texLayout;
+        $layout->author   = $motion->getInitiatorsStr();
+        $layout->title    = $motion->getTitleWithPrefix();
+
+        /** @var AntragsgruenApp $params */
+        $params   = \yii::$app->params;
+        $exporter = new Exporter($layout, $params);
+        $content  = \app\views\motion\LayoutHelper::renderTeX($motion, $exporter);
+        return $exporter->createPDF([$content]);
+    }
+
+    /**
+     * @param $amendment Amendment
+     */
+    public static function createAmendmentPdf ($amendment) {
+        $texTemplate = $amendment->getMyMotion()->motionType->texTemplate;
+
+        $layout            = new Layout();
+        $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+        //$layout->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
+        //    'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
+        $layout->template = $texTemplate->texLayout;
+        $layout->author   = $amendment->getInitiatorsStr();
+        $layout->title    = $amendment->getTitle();
+
+        /** @var AntragsgruenApp $params */
+        $params = \yii::$app->params;
+        $exporter = new Exporter($layout, $params);
+        $content = \app\views\amendment\LayoutHelper::renderTeX($amendment);
+        return $exporter->createPDF([$content]);
     }
 }
