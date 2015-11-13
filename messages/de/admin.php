@@ -20,6 +20,7 @@ return [
     'index_amendments'            => 'Änderungsanträge',
     'index_pdf_collection'        => 'Sammel-PDF',
     'index_pdf_list'              => 'Liste aller PDFs',
+    'index_pdf_zip_list'          => 'ZIP-Archiv aller PDFs',
     'index_settings'              => 'Einstellungen',
     'index_consultation_settings' => 'Diese Veranstaltung / Programmdiskussion',
     'index_motion_types'          => 'Antragstypen bearbeiten',
