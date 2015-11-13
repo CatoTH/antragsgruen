@@ -118,11 +118,11 @@ class MotionEditForm extends Model
                 $section->getSectionType()->setMotionData($values['sections'][$section->sectionId]);
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
-                if (!empty($files['sections']['tmp_name'][$section->delete()])) {
+                if (!empty($files['sections']['tmp_name'][$section->sectionId])) {
                     $data = [];
                     foreach ($files['sections'] as $key => $vals) {
-                        if (isset($vals[$section->delete()])) {
-                            $data[$key] = $vals[$section->delete()];
+                        if (isset($vals[$section->sectionId])) {
+                            $data[$key] = $vals[$section->sectionId];
                         }
                     }
                     $section->getSectionType()->setMotionData($data);

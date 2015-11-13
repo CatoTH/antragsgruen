@@ -48,6 +48,26 @@ class MotionController extends Base
 
     /**
      * @param int $motionId
+     * @param int $sectionId
+     * @return string
+     */
+    public function actionViewpdf($motionId, $sectionId)
+    {
+        $motionId = IntVal($motionId);
+        $motion   = $this->getMotionWithCheck($motionId);
+
+        foreach ($motion->sections as $section) {
+            if ($section->sectionId == $sectionId) {
+                Header('Content-type: application/pdf');
+                echo base64_decode($section->data);
+                \Yii::$app->end(200);
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @param int $motionId
      * @return Motion|null
      */
     private function getMotionWithCheck($motionId)

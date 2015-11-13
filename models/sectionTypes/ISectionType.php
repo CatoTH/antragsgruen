@@ -18,6 +18,7 @@ abstract class ISectionType
     const TYPE_TEXT_HTML   = 2;
     const TYPE_IMAGE       = 3;
     const TYPE_TABULAR     = 4;
+    const TYPE_PDF         = 5;
 
     /** @var IMotionSection */
     protected $section;
@@ -41,6 +42,7 @@ abstract class ISectionType
             static::TYPE_TEXT_HTML   => \yii::t('structure', 'section_html'),
             static::TYPE_IMAGE       => \yii::t('structure', 'section_image'),
             static::TYPE_TABULAR     => \yii::t('structure', 'section_tabular'),
+            static::TYPE_PDF         => \yii::t('structure', 'section_pdf'),
         ];
     }
 
@@ -62,7 +64,11 @@ abstract class ISectionType
         if ($type->maxLen != 0) {
             $len = abs($type->maxLen);
             $str .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
-            $str .= str_replace('%LEN%', $len, 'Max. %LEN% Zeichen (Aktuell: <span class="counter"></span>)');
+            $str .= str_replace(
+                ['%LEN%', '%COUNT%'],
+                [$len, '<span class="counter"></span>'],
+                \Yii::t('motion', 'max_len_hint')
+            );
             $str .= '</div>';
         }
 
@@ -80,7 +86,7 @@ abstract class ISectionType
 
         if ($type->maxLen != 0) {
             $str .= '<div class="alert alert-danger maxLenTooLong hidden" role="alert">';
-            $str .= '<span class="glyphicon glyphicon-alert"></span> ' . 'Der Text ist zu lang!';
+            $str .= '<span class="glyphicon glyphicon-alert"></span> ' . \Yii::t('motion', 'max_len_alert');
             $str .= '</div>';
         }
 

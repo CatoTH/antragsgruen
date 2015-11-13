@@ -5,6 +5,7 @@ return [
     'section_html'    => 'Text (enhanced)',
     'section_image'   => 'Image',
     'section_tabular' => 'Tabular Data',
+    'section_pdf'     => 'PDF-File',
 
     'policy_deadline_over'    => 'The deadline is over',
     'policy_ww_title'         => 'Wurzelwerk-Users',

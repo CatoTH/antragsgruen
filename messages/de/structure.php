@@ -5,6 +5,7 @@ return [
     'section_html'    => 'Text (erweitert)',
     'section_image'   => 'Bild',
     'section_tabular' => 'Tabellarische Angaben',
+    'section_pdf'     => 'PDF-Datei',
 
     'policy_deadline_over'    => 'Der Antragsschluss ist vorbei',
     'policy_ww_title'         => 'Wurzelwerk-NutzerInnen',
