@@ -15,8 +15,8 @@ $consultation = $controller->consultation;
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \yii::$app->params;
 
-$tmpZipFile   = $params->tmpDir . uniqid('zip-');
-$zip = new ZipArchive();
+$tmpZipFile = $params->tmpDir . uniqid('zip-');
+$zip        = new ZipArchive();
 if ($zip->open($tmpZipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
     die("cannot open <$tmpZipFile>\n");
 }
@@ -24,7 +24,7 @@ if ($zip->open($tmpZipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true
 $motions = $consultation->getVisibleMotionsSorted();
 foreach ($motions as $motion) {
     \Yii::info('memo: ' . memory_get_usage(false) . " / " . memory_get_usage(false));
-    $zip->addFromString($motion->titlePrefix . '.pdf',Exporter::createMotionPdf($motion));
+    $zip->addFromString($motion->titlePrefix . '.pdf', Exporter::createMotionPdf($motion));
 }
 $zip->close();
 
