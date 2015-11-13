@@ -126,9 +126,17 @@
     }
   }
 }
+
 .current-uses-list {
   li {
+    padding-left: 15px;
+
+    -webkit-hyphens: auto;
     word-break: break-word;
+    -moz-hyphens: auto;
+    hyphens: auto;
+    overflow: hidden;
+
     span.orga {
       font-size: 0.9em;
       color: #767676;
