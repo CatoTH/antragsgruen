@@ -14,6 +14,48 @@ class Diff2Test extends TestBase
 
     /**
      */
+    public function testGroupOperations()
+    {
+        $src     = [
+            [
+                '<p>###LINENUMBER###Wui helfgod Wiesn. Sauwedda an Brezn, abfieseln.</p>',
+                Engine::DELETED
+            ],
+            [
+                '<p>###LINENUMBER###Wui helfgod Wiesn.</p>',
+                Engine::INSERTED
+            ],
+            [
+                '',
+                Engine::UNMODIFIED
+            ]
+        ];
+        $diff    = new Diff2();
+        $grouped = $diff->groupOperations($src, Diff2::ORIG_LINEBREAK);
+        $this->assertEquals($src, $grouped); // Should not be changed
+
+
+        $operations = [
+            ['test 123', Engine::UNMODIFIED],
+            ['<pre>###LINENUMBER###PRE', Engine::DELETED],
+            ['* Test', Engine::DELETED],
+            ['</pre>', Engine::DELETED],
+            ['test 123', Engine::UNMODIFIED],
+        ];
+        $expected   = [
+            ['test 123', Engine::UNMODIFIED],
+            ['<pre>###LINENUMBER###PRE' . "\n" . '* Test' . "\n" . '</pre>', Engine::DELETED],
+            ['test 123', Engine::UNMODIFIED],
+        ];
+        $diff       = new Diff2();
+        $out        = $diff->groupOperations($operations, "\n");
+        $this->assertEquals($expected, $out);
+
+    }
+
+
+    /**
+     */
     public function testWordDiff()
     {
         $diff     = new Diff2();
@@ -252,7 +294,7 @@ class Diff2Test extends TestBase
     public function testParagraphs()
     {
         $diff = new Diff2();
-
+        $diff->setIgnoreStr('###LINENUMBER###');
 
         $str1 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p><p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
         $str2 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
@@ -270,6 +312,7 @@ class Diff2Test extends TestBase
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs);
+
         $this->assertEquals($expect, $diffParas);
 
 
@@ -280,6 +323,7 @@ class Diff2Test extends TestBase
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs);
+
         $this->assertEquals($expect, $diffParas);
 
 
@@ -344,46 +388,6 @@ class Diff2Test extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs);
         $this->assertEquals($expect, $diffParas);
-    }
-
-    /**
-     */
-    public function testGroupOperations()
-    {
-        $src     = [
-            [
-                '<p>###LINENUMBER###Wui helfgod Wiesn. Sauwedda an Brezn, abfieseln.</p>',
-                Engine::DELETED
-            ],
-            [
-                '<p>###LINENUMBER###Wui helfgod Wiesn.</p>',
-                Engine::INSERTED
-            ],
-            [
-                '',
-                Engine::UNMODIFIED
-            ]
-        ];
-        $diff    = new Diff2();
-        $grouped = $diff->groupOperations($src, Diff2::ORIG_LINEBREAK);
-        $this->assertEquals($src, $grouped); // Should not be changed
-
-
-        $operations = [
-            ['test 123', Engine::UNMODIFIED],
-            ['<pre>###LINENUMBER###PRE', Engine::DELETED],
-            ['* Test', Engine::DELETED],
-            ['</pre>', Engine::DELETED],
-            ['test 123', Engine::UNMODIFIED],
-        ];
-        $expected   = [
-            ['test 123', Engine::UNMODIFIED],
-            ['<pre>###LINENUMBER###PRE' . "\n" . '* Test' . "\n" . '</pre>', Engine::DELETED],
-            ['test 123', Engine::UNMODIFIED],
-        ];
-        $diff       = new Diff2();
-        $out        = $diff->groupOperations($operations, "\n");
-        $this->assertEquals($expected, $out);
     }
 
     /**
@@ -505,10 +509,10 @@ class Diff2Test extends TestBase
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff2();
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs);
+        $diff->setIgnoreStr('###LINENUMBER###');
+        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs);
 
-        $expected = ['<p>###LINENUMBER###Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten ###LINENUMBER###sozialen Absicherung. <del>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen ###LINENUMBER###Renten-, Kranken- und Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus ist ###LINENUMBER###es in der Anfangsphase der Selbständigkeit und insbesondere bei Start-ups oft schwierig, die ###LINENUMBER###vollen Beitragslasten zu tragen. Wir wollen an Lösungen arbeiten, die angelehnt an den ###LINENUMBER###Gedanken der Künstlersozialkasse, für eine temporäre Unterstützung an dieser Stelle sorgen. </del>
-<ins><em>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus wollen wir eine Bürger*innenversicherung in Gesundheit und Pflege einführen. Auch die Rentenversicherung wollen wir schrittweise zu einer Bürger*innenversicherung weiterentwickeln. In einem ersten Schritt wollen wir die bisher nicht pflichtversicherten Selbständigen in die gesetzliche Rentenversicherung einbeziehen. Die Grüne Garantierente soll ein Signal speziell an Selbständige mit geringem Einkommen senden, dass sich die Beiträge zur Rentenversicherung auch lohnen. </em> </ins>###LINENUMBER###Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen ###LINENUMBER###Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich ###LINENUMBER###verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen ###LINENUMBER###abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>'];
+        $expected = ['<p>###LINENUMBER###Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten ###LINENUMBER###sozialen Absicherung. <del>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen ###LINENUMBER###Renten-, Kranken- und Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus ist ###LINENUMBER###es in der Anfangsphase der Selbständigkeit und insbesondere bei Start-ups oft schwierig, die ###LINENUMBER###vollen Beitragslasten zu tragen. Wir wollen an Lösungen arbeiten, die angelehnt an den ###LINENUMBER###Gedanken der Künstlersozialkasse, für eine temporäre Unterstützung an dieser Stelle sorgen. </del><ins><em>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus wollen wir eine Bürger*innenversicherung in Gesundheit und Pflege einführen. Auch die Rentenversicherung wollen wir schrittweise zu einer Bürger*innenversicherung weiterentwickeln. In einem ersten Schritt wollen wir die bisher nicht pflichtversicherten Selbständigen in die gesetzliche Rentenversicherung einbeziehen. Die Grüne Garantierente soll ein Signal speziell an Selbständige mit geringem Einkommen senden, dass sich die Beiträge zur Rentenversicherung auch lohnen. </em> </ins>###LINENUMBER###Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen ###LINENUMBER###Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich ###LINENUMBER###verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen ###LINENUMBER###abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>'];
         $this->assertEquals($expected, $diffParas);
     }
 
@@ -546,7 +550,7 @@ class Diff2Test extends TestBase
         var_dump($origParagraphs);
         var_dump($newParagraphs);
 
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs);
+        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs);
 
         $expected = ['<p>###LINENUMBER###Test.</p>',
             '<p class="deleted">###LINENUMBER###<strong>To be deletedgi: </strong></p>',
@@ -567,7 +571,8 @@ class Diff2Test extends TestBase
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
-        $diff      = new Diff2();
+        $diff           = new Diff2();
+        $diff->setIgnoreStr('###LINENUMBER###');
         $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs);
 
         $this->assertEquals($expect, $diffParas);

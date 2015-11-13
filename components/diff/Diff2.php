@@ -79,11 +79,27 @@ class Diff2
      */
     public static function tokenizeLine($line)
     {
-        $line = str_replace(" ", " \n", $line);
-        $line = str_replace("<", "\n<", $line);
-        $line = str_replace(">", ">\n", $line);
-        $line = str_replace("-", "-\n", $line);
-        return $line;
+        $htmlTag = '/(<[^>]+>)/siuU';
+        $arr     = preg_split($htmlTag, $line, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $out     = [];
+        foreach ($arr as $arr2) {
+            if (preg_match($htmlTag, $arr2)) {
+                $out[] = $arr2;
+            } else {
+                foreach (preg_split('/([ \-])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
+                    if ($tok == ' ' || $tok == '-') {
+                        if (count($out) == 0) {
+                            $out[] = $tok;
+                        } else {
+                            $out[count($out) - 1] .= $tok;
+                        }
+                    } else {
+                        $out[] = $tok;
+                    }
+                }
+            }
+        }
+        return $out;
     }
 
     /**
@@ -110,12 +126,9 @@ class Diff2
         foreach ($operations as $operation) {
             $firstfour = mb_substr($operation[0], 0, 4);
             $isList    = $firstfour == '<ul>' || $firstfour == '<ol>';
-            if ($operation[0] == static::ORIG_LINEBREAK || (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] != '</pre>')) {
+            if (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] != '</pre>') {
                 if (count($currentSpool) > 0) {
-                    $return[] = [
-                        implode($groupBy, $currentSpool),
-                        $preOp
-                    ];
+                    $return[] = [implode($groupBy, $currentSpool), $preOp];
                 }
                 $return[]     = [
                     $operation[0],
@@ -312,7 +325,8 @@ class Diff2
         $lineOldArr   = static::tokenizeLine($lineOld);
         $lineNewArr   = static::tokenizeLine($lineNew);
 
-        $return = $this->engine->compareStrings($lineOldArr, $lineNewArr);
+        $return = $this->engine->compareArrays($lineOldArr, $lineNewArr);
+        var_dump($return);
 
         $return = $this->groupOperations($return, '');
 
