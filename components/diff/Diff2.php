@@ -6,8 +6,6 @@ use app\models\exceptions\Internal;
 
 class Diff2
 {
-    const ORIG_LINEBREAK = '###ORIGLINEBREAK###';
-
     const FORMATTING_CLASSES = 0;
     const FORMATTING_INLINE  = 1;
 
@@ -326,7 +324,6 @@ class Diff2
         $lineNewArr   = static::tokenizeLine($lineNew);
 
         $return = $this->engine->compareArrays($lineOldArr, $lineNewArr);
-        var_dump($return);
 
         $return = $this->groupOperations($return, '');
 
@@ -363,7 +360,6 @@ class Diff2
 
         $split = $this->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
-        var_dump($split);
 
         if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
@@ -484,8 +480,8 @@ class Diff2
      */
     public function computeLineDiffChangeRatio($orig, $diff)
     {
-        $orig       = str_replace(['###LINENUMBER###', '###ORIGLINEBREAK###', '###FORCELINEBREAK###'], ['', '', ''], $orig);
-        $diff       = str_replace(['###LINENUMBER###', '###ORIGLINEBREAK###', '###FORCELINEBREAK###'], ['', '', ''], $diff);
+        $orig       = str_replace(['###LINENUMBER###'], [''], $orig);
+        $diff       = str_replace(['###LINENUMBER###'], [''], $diff);
         $origLength = mb_strlen(strip_tags($orig));
         if ($origLength == 0) {
             return 0;
@@ -517,6 +513,7 @@ class Diff2
         $diffSections = [];
         for ($i = 0; $i < count($adjustedRef); $i++) {
             $diffLine       = $this->computeLineDiff($adjustedRef[$i], $adjustedMatching[$i]);
+            var_dump($diffLine);
             $diffSections[] = $renderer->renderHtmlWithPlaceholders($diffLine);
         }
 

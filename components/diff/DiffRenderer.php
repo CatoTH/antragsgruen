@@ -162,6 +162,7 @@ class DiffRenderer
                 }
             }
             $lastEl = null;
+            $lastIsIns = $lastIsDel = false;
         }
         return [$nodes, $inIns, $inDel];
     }
