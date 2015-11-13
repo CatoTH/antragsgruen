@@ -2,27 +2,22 @@
 
 namespace unit;
 
-use app\models\db\Motion;
+use app\models\db\Consultation;
 use app\models\db\MotionSection;
 use Codeception\Specify;
 
 class CachingTest extends DBTestBase
 {
     /**
-     * @param int $motionId
-     * @return Motion
-     */
-    private function getMotion($motionId)
-    {
-        return Motion::findOne($motionId);
-    }
-
-    /**
      */
     public function testGlobalLineNumbering()
     {
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(1);
+
         // Create the cache
-        $motion3 = $this->getMotion(3);
+        $motion3 = $consultation->getMotion(3);
+
         /** @var MotionSection $section */
         $section = $motion3->getSortedSections(true)[1];
         $this->assertEquals('', $section->cache);
@@ -30,33 +25,34 @@ class CachingTest extends DBTestBase
         $this->assertNotEquals('', $section->cache);
 
         // Flush the cache of another motion
-        $motion58 = $this->getMotion(58);
+        $motion58 = $consultation->getMotion(58);
         $motion58->flushCacheStart();
 
 
         // The cache of the first motion still should be there
-        $motion3 = $this->getMotion(3);
+        $motion3 = $consultation->getMotion(3);
         /** @var MotionSection $section */
         $section = $motion3->getSortedSections(true)[1];
         $this->assertNotEquals('', $section->cache);
 
 
         // Enable global line numbering
-        $settings = $motion3->getConsultation()->getSettings();
+        $settings = $consultation->getSettings();
         $settings->lineNumberingGlobal = true;
-        $motion3->getConsultation()->setSettings($settings);
-        $motion3->getConsultation()->save();
-
+        $consultation->setSettings($settings);
+        $consultation->save();
 
         // Flush the cache of another motion again
-        $motion58 = $this->getMotion(58);
+        $motion58 = $consultation->getMotion(58);
         $motion58->flushCacheStart();
 
-
         // The cache of the first motion still should be flushed now
-        $motion3 = $this->getMotion(3);
+        $motion3 = $consultation->getMotion(3);
+        $motion3->refresh();
+
         /** @var MotionSection $section */
         $section = $motion3->getSortedSections(true)[1];
+        $section->refresh();
         $this->assertEquals('', $section->cache);
     }
 }
