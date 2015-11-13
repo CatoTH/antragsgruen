@@ -645,9 +645,18 @@ class Amendment extends IMotion implements IRSSItem
     public function flushCacheWithChildren()
     {
         $this->flushCache();
+        \Yii::$app->cache->delete($this->getPdfCacheKey());
         foreach ($this->sections as $section) {
             $section->flushCache();
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPdfCacheKey()
+    {
+        return 'amendment-pdf-' . $this->id;
     }
 
 

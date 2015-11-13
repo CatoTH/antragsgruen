@@ -369,8 +369,14 @@ class Exporter
 
     /**
      * @param $motion Motion
+     * @return string
      */
-    public static function createMotionPdf ($motion) {
+    public static function createMotionPdf($motion)
+    {
+        $cache = \Yii::$app->cache->get($motion->getPdfCacheKey());
+        if ($cache) {
+            return $cache;
+        }
         $texTemplate = $motion->motionType->texTemplate;
 
         $layout            = new Layout();
@@ -384,14 +390,22 @@ class Exporter
         /** @var AntragsgruenApp $params */
         $params   = \yii::$app->params;
         $exporter = new Exporter($layout, $params);
-        $content  = \app\views\motion\LayoutHelper::renderTeX($motion, $exporter);
-        return $exporter->createPDF([$content]);
+        $content  = \app\views\motion\LayoutHelper::renderTeX($motion);
+        $pdf = $exporter->createPDF([$content]);
+        \Yii::$app->cache->set($motion->getPdfCacheKey(), $pdf);
+        return $pdf;
     }
 
     /**
      * @param $amendment Amendment
+     * @return string
      */
-    public static function createAmendmentPdf ($amendment) {
+    public static function createAmendmentPdf($amendment)
+    {
+        $cache = \Yii::$app->cache->get($amendment->getPdfCacheKey());
+        if ($cache) {
+            return $cache;
+        }
         $texTemplate = $amendment->getMyMotion()->motionType->texTemplate;
 
         $layout            = new Layout();
@@ -403,9 +417,11 @@ class Exporter
         $layout->title    = $amendment->getTitle();
 
         /** @var AntragsgruenApp $params */
-        $params = \yii::$app->params;
+        $params   = \yii::$app->params;
         $exporter = new Exporter($layout, $params);
-        $content = \app\views\amendment\LayoutHelper::renderTeX($amendment);
-        return $exporter->createPDF([$content]);
+        $content  = \app\views\amendment\LayoutHelper::renderTeX($amendment);
+        $pdf = $exporter->createPDF([$content]);
+        \Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);
+        return $pdf;
     }
 }
