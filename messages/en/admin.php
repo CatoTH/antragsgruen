@@ -20,6 +20,7 @@ return [
     'index_amendments'            => 'Amendments',
     'index_pdf_collection'        => 'All-In-One-PDF',
     'index_pdf_list'              => 'List of all PDFs',
+    'index_pdf_zip_list'          => 'ZIP archive of all PDFs',
     'index_settings'              => 'Settings',
     'index_consultation_settings' => 'This Consultation',
     'index_motion_types'          => 'Edit motion types',

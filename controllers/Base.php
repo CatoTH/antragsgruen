@@ -97,11 +97,11 @@ class Base extends Controller
     protected function renderContentPage($pageKey)
     {
         if ($this->consultation) {
-            $admin = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
+            $admin   = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
             $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => $pageKey]);
         } else {
-            $user = User::getCurrentUser();
-            $admin = ($user && in_array($user->id, $this->getParams()->adminUserIds));
+            $user    = User::getCurrentUser();
+            $admin   = ($user && in_array($user->id, $this->getParams()->adminUserIds));
             $saveUrl = UrlHelper::createUrl(['manager/savetextajax', 'pageKey' => $pageKey]);
         }
         return $this->render(
@@ -357,10 +357,11 @@ class Base extends Controller
 
         if (is_null($this->consultation)) {
             $this->consultation = Consultation::findOne(['urlPath' => $consultationId, 'siteId' => $this->site->id]);
-            Consultation::setCurrent($this->consultation);
         }
         if (is_null($this->consultation)) {
             $this->consultationNotFound();
+        } else {
+            Consultation::setCurrent($this->consultation);
         }
 
         UrlHelper::setCurrentConsultation($this->consultation);

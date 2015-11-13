@@ -462,6 +462,9 @@ class HTMLTools
     public static function renderDomToHtml(\DOMNode $node)
     {
         if (is_a($node, \DOMElement::class)) {
+            if ($node->nodeName == 'br') {
+                return '<br>';
+            }
             /** @var \DOMElement $node */
             $str = '<' . $node->nodeName;
             foreach ($node->attributes as $key => $val) {

@@ -645,12 +645,21 @@ class Motion extends IMotion implements IRSSItem
     public function flushCacheWithChildren()
     {
         $this->flushCache();
+        \Yii::$app->cache->delete($this->getPdfCacheKey());
         foreach ($this->sections as $section) {
             $section->flushCache();
         }
         foreach ($this->amendments as $amend) {
             $amend->flushCacheWithChildren();
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getPdfCacheKey()
+    {
+        return 'motion-pdf-' . $this->id;
     }
 
     /**

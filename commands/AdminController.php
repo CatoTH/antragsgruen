@@ -1,6 +1,7 @@
 <?php
 namespace app\commands;
 
+use app\components\latex\Exporter;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
@@ -87,6 +88,9 @@ class AdminController extends Controller
      */
     public function actionBuildCaches()
     {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+
         /** @var Motion[] $motions */
         $motions = Motion::find()->all();
         foreach ($motions as $motion) {
@@ -96,13 +100,25 @@ class AdminController extends Controller
             echo '- Motion ' . $motion->id . "\n";
             $motion->getNumberOfCountableLines();
             $motion->getFirstLineNumber();
+            if ($params->xelatexPath) {
+                Exporter::createMotionPdf($motion);
+            }
             foreach ($motion->amendments as $amendment) {
                 if ($amendment->status == Amendment::STATUS_DELETED) {
                     continue;
                 }
                 echo '  - Amendment ' . $amendment->id . "\n";
                 $amendment->getFirstDiffLine();
+                if ($params->xelatexPath) {
+                    Exporter::createAmendmentPdf($amendment);
+                }
             }
+        }
+        if ($params->xelatexPath) {
+            $this->stdout(
+                'Please remember to ensure the runtime/cache-directory and all files are still writable ' .
+                'by the web process if the current process is being run with a different user.'  . "\n"
+            );
         }
     }
 }

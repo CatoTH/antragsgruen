@@ -6,8 +6,6 @@ use app\models\exceptions\Internal;
 
 class Diff2
 {
-    const ORIG_LINEBREAK = '###ORIGLINEBREAK###';
-
     const FORMATTING_CLASSES = 0;
     const FORMATTING_INLINE  = 1;
 
@@ -79,11 +77,27 @@ class Diff2
      */
     public static function tokenizeLine($line)
     {
-        $line = str_replace(" ", " \n", $line);
-        $line = str_replace("<", "\n<", $line);
-        $line = str_replace(">", ">\n", $line);
-        $line = str_replace("-", "-\n", $line);
-        return $line;
+        $htmlTag = '/(<[^>]+>)/siuU';
+        $arr     = preg_split($htmlTag, $line, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $out     = [];
+        foreach ($arr as $arr2) {
+            if (preg_match($htmlTag, $arr2)) {
+                $out[] = $arr2;
+            } else {
+                foreach (preg_split('/([ \-])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
+                    if ($tok == ' ' || $tok == '-') {
+                        if (count($out) == 0) {
+                            $out[] = $tok;
+                        } else {
+                            $out[count($out) - 1] .= $tok;
+                        }
+                    } else {
+                        $out[] = $tok;
+                    }
+                }
+            }
+        }
+        return $out;
     }
 
     /**
@@ -110,12 +124,9 @@ class Diff2
         foreach ($operations as $operation) {
             $firstfour = mb_substr($operation[0], 0, 4);
             $isList    = $firstfour == '<ul>' || $firstfour == '<ol>';
-            if ($operation[0] == static::ORIG_LINEBREAK || (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] != '</pre>')) {
+            if (preg_match('/^<[^>]*>$/siu', $operation[0]) && $operation[0] != '</pre>') {
                 if (count($currentSpool) > 0) {
-                    $return[] = [
-                        implode($groupBy, $currentSpool),
-                        $preOp
-                    ];
+                    $return[] = [implode($groupBy, $currentSpool), $preOp];
                 }
                 $return[]     = [
                     $operation[0],
@@ -312,7 +323,7 @@ class Diff2
         $lineOldArr   = static::tokenizeLine($lineOld);
         $lineNewArr   = static::tokenizeLine($lineNew);
 
-        $return = $this->engine->compareStrings($lineOldArr, $lineNewArr);
+        $return = $this->engine->compareArrays($lineOldArr, $lineNewArr);
 
         $return = $this->groupOperations($return, '');
 
@@ -349,7 +360,6 @@ class Diff2
 
         $split = $this->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
-        var_dump($split);
 
         if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
@@ -470,8 +480,8 @@ class Diff2
      */
     public function computeLineDiffChangeRatio($orig, $diff)
     {
-        $orig       = str_replace(['###LINENUMBER###', '###ORIGLINEBREAK###', '###FORCELINEBREAK###'], ['', '', ''], $orig);
-        $diff       = str_replace(['###LINENUMBER###', '###ORIGLINEBREAK###', '###FORCELINEBREAK###'], ['', '', ''], $diff);
+        $orig       = str_replace(['###LINENUMBER###'], [''], $orig);
+        $diff       = str_replace(['###LINENUMBER###'], [''], $diff);
         $origLength = mb_strlen(strip_tags($orig));
         if ($origLength == 0) {
             return 0;
@@ -503,6 +513,7 @@ class Diff2
         $diffSections = [];
         for ($i = 0; $i < count($adjustedRef); $i++) {
             $diffLine       = $this->computeLineDiff($adjustedRef[$i], $adjustedMatching[$i]);
+            var_dump($diffLine);
             $diffSections[] = $renderer->renderHtmlWithPlaceholders($diffLine);
         }
 
