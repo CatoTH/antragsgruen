@@ -171,7 +171,7 @@
   overflow: visible;
   border: 9px solid transparent;
   background-clip: content-box;
-  border-image: url(images/shadow.png) 9 9 repeat;
+  /* border-image: url(images/shadow.png) 9 9 repeat;  // Antragsgrün-Modification */
   background-color: white;
 }
 
@@ -230,8 +230,10 @@ html {
 
 body {
   height: 100%;
+  /*
   background-color: #404040;
-  background-image: url(images/texture.png);
+  background-image: url(images/texture.png); // Antragsgrün-Modification
+  */
 }
 
 body,
@@ -494,9 +496,19 @@ html[dir='rtl'] #toolbarSidebar {
 #toolbarContainer, .findbar, .secondaryToolbar {
   position: relative;
   height: 32px;
-  background-color: #474747; /* fallback */
+  /*
+  background-color: #474747;
   background-image: url(images/texture.png),
                     linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
+                    */
+
+  /* Antragsgrün-Modification */
+  background: #285f19;
+    background: -moz-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
+    background: -webkit-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
+    background: -o-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
+    background: -ms-linear-gradient(90deg, #285f19 0%, #2c681b 100%);
+    background: linear-gradient(90deg, #285f19 0%, #2c681b 100%);
 }
 html[dir='ltr'] #toolbarContainer, .findbar, .secondaryToolbar {
   box-shadow: inset 1px 0 0 hsla(0,0%,100%,.08),
@@ -2044,4 +2056,10 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   #scaleSelectContainer, #pageNumberLabel {
     display: none;
   }
+}
+
+
+/* Antragsgrün */
+#viewBookmark, #openFile {
+  display: none !important;
 }

@@ -152,7 +152,9 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        if ($section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_PDF) {
+            $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
         $main .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp, $consolidatedAmendments);
