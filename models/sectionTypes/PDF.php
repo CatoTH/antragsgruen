@@ -110,9 +110,11 @@ class PDF extends ISectionType
             return '';
         }
 
-        $str = '<div class="content">';
-        $str .= '<a href="' . Html::encode($this->getPdfUrl()) . '" alt="Current PDF">PDF herunterladen</a>';
-        $str .= '</div>';
+        $pdfUrl = $this->getPdfUrl();
+        $iframeUrl = UrlHelper::createUrl(['motion/embeddedpdf', 'file' => $pdfUrl]);
+
+        $str = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
+
         return $str;
     }
 

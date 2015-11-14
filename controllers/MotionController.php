@@ -67,6 +67,14 @@ class MotionController extends Base
     }
 
     /**
+     * @return string
+     */
+    public function actionEmbeddedpdf()
+    {
+        return $this->renderPartial('pdf_embed', []);
+    }
+
+    /**
      * @param int $motionId
      * @return Motion|null
      */
@@ -264,7 +272,7 @@ class MotionController extends Base
             $motion->save();
 
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-            $mailText = str_replace(
+            $mailText   = str_replace(
                 ['%TITLE%', '%LINK%', '%INITIATOR%'],
                 [$motion->title, $motionLink, $motion->getInitiatorsStr()],
                 \Yii::t('motion', 'submitted_adminnoti_body')

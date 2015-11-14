@@ -2,13 +2,11 @@
 
 namespace app\controllers\admin;
 
-use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
-use app\models\db\MotionSection;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
