@@ -208,16 +208,20 @@ if (\Yii::$app->language == 'de') {
 
 echo '</span>
         </div>
-    </footer>
+    </footer>';
 
-    <script src="' . $layout->resourceUrl('js/bootstrap.js') . '"></script>
+if (defined('YII_DEBUG') && YII_DEBUG) {
+    echo '<script src="' . $layout->resourceUrl('js/bootstrap.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/bower/bootbox/bootbox.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/scrollintoview.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/jquery.isonscreen.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/bower/intl/dist/Intl.min.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/antragsgruen-de.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>
-';
+    <script src="' . $layout->resourceUrl('js/antragsgruen-de.js') . '"></script>';
+} else {
+    echo '<script src="' . $layout->resourceUrl('js/build/antragsgruen.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/build/antragsgruen-de.min.js') . '"></script>';
+}
 
 foreach ($layout->extraJs as $file) {
     echo '<script src="' . $layout->resourceUrl($file) . '"></script>' . "\n";

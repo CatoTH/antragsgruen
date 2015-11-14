@@ -46,21 +46,13 @@ See https://github.com/adobe-type-tools/cmap-resources
     <link rel="resource" type="application/l10n" href="<?=$pdfjsPath?>locale/locale.properties"/>
     <!--#endif-->
 
-    <!--#if !(MOZCENTRAL || CHROME || MINIFIED)-->
+    <script src="<?=$params->resourceBase?>js/build/pdfjs-viewer.min.js"></script>
+
+    <!--
     <script src="<?= $pdfjsPath ?>compatibility.js"></script>
-    <!--#endif-->
-
-    <!--#if !PRODUCTION-->
     <script src="<?=$pdfjsPath?>l10n.js"></script>
-    <!--#endif-->
-
     <script src="/js/bower/pdfjs-dist/build/pdf.js"></script>
 
-    <!--#if (GENERIC && !MINIFIED) -->
-    <!--#include viewer-snippet.html-->
-    <!--#endif-->
-
-    <!--#if !PRODUCTION-->
     <script src="<?=$pdfjsPath?>ui_utils.js"></script>
     <script src="<?=$pdfjsPath?>default_preferences.js"></script>
     <script src="<?=$pdfjsPath?>preferences.js"></script>
@@ -86,14 +78,8 @@ See https://github.com/adobe-type-tools/cmap-resources
     <script src="<?=$pdfjsPath?>overlay_manager.js"></script>
     <script src="<?=$pdfjsPath?>password_prompt.js"></script>
     <script src="<?=$pdfjsPath?>pdf_document_properties.js"></script>
-    <!--#endif-->
-
-    <!--#if !MINIFIED -->
     <script src="<?= $pdfjsPath ?>viewer.js"></script>
-    <!--#else-->
-    <!--#include viewer-snippet-minified.html-->
-    <!--#endif-->
-
+    -->
 </head>
 
 <body tabindex="1" class="loadingInProgress">

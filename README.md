@@ -42,6 +42,8 @@ cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.0.3"
 ./composer.phar install --prefer-dist
+sudo npm install -g gulp
+npm install gulp gulp-uglify gulp-concat gulp-concat-css gulp-minify-css gulp-sass gulp-sourcemaps
 ```
 
 If you want to use the web-based installer (recommended):
@@ -95,9 +97,16 @@ docker run -p 80:80 --name antragsgruen1 -d antragsgruen1
 
 
 Developing
-==========
+----------
 
 You can enable debug mode by creating an empty file config/DEBUG.
+
+After updating the source code from git, do:
+```bash
+./composer.phar update
+./yii migrate
+gulp
+```
 
 Testing
 -------

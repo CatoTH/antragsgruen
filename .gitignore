@@ -7,7 +7,10 @@ dist
 test.php
 config/config.json
 config/config_tests.json
+config/DEBUG
 web/js/bower
+web/js/build
 assets/local/
 tests/_output/*
 tests/_output/*
+node_modules/
