@@ -326,12 +326,12 @@ button.link {
   display: none;
 }
 
-del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted {
+del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted {
   color: #880000;
   text-decoration: line-through;
 }
 
-ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted {
+ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted, div.inserted, p.inserted {
   color: #008800;
   text-decoration: underline;
 }
