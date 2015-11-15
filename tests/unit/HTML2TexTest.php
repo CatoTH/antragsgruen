@@ -50,7 +50,7 @@ class HTML2TexTest extends TestBase
             "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, \\linebreak\n" .
             "Oaschgsicht, greißlicha Uhu, oida Daddara!\n";
 
-        $lines = LineSplitter::motionPara2lines($orig, true, 80);
+        $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $out   = TextSimple::getMotionLinesToTeX($lines);
         $this->assertEquals($expect, $out);
     }

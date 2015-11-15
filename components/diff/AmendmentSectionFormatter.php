@@ -58,7 +58,7 @@ class AmendmentSectionFormatter
      */
     public static function addLineNumberPlaceholders($text, $lineLength)
     {
-        $linesOut = LineSplitter::motionPara2lines($text, true, $lineLength);
+        $linesOut = LineSplitter::splitHtmlToLines($text, $lineLength, '###LINENUMBER###');
         return implode('', $linesOut);
     }
 
@@ -198,11 +198,11 @@ class AmendmentSectionFormatter
             if (preg_match('/^(<div[^>]*>)?<(' . $blockElements . ')/siu', $line)) {
                 $out[] = $line;
             } else {
-                $parts         = explode('###LINENUMBER###', $line);
+                $parts = explode('###LINENUMBER###', $line);
                 for ($j = 1; $j < count($parts); $j++) {
                     $parts[$j] = '###LINENUMBER###' . $parts[$j];
                 }
-                $dangling      = '';
+                $dangling = '';
                 foreach ($parts as $j => $part) {
                     if ($part != '' || $j > 0) {
                         if ($part == '<ins>' || $part == '<del>') {
@@ -283,7 +283,7 @@ class AmendmentSectionFormatter
             $diffSections = $diff->compareSectionedHtml($originals, $this->sectionsNew);
             $htmlDiff     = implode("\n", $diffSections);
 
-            $blocks = static::htmlDiff2LineBlocks($htmlDiff, $this->firstLine);
+            $blocks         = static::htmlDiff2LineBlocks($htmlDiff, $this->firstLine);
             $affectedBlocks = static::filterAffectedBlocks($blocks);
         } catch (Internal $e) {
             var_dump($e);

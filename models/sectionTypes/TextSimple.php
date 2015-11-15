@@ -502,8 +502,7 @@ class TextSimple extends ISectionType
         } else {
             $paras = $section->getTextParagraphs();
             foreach ($paras as $para) {
-                $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
-                $tex .= static::getMotionLinesToTeX($lines) . "\n";
+                $tex .= static::getMotionLinesToTeX([$para]) . "\n";
             }
         }
         if ($isRight) {
@@ -601,8 +600,7 @@ class TextSimple extends ISectionType
         } else {
             $paras = $section->getTextParagraphs();
             foreach ($paras as $para) {
-                $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
-                $odt->addHtmlTextBlock(implode('<br>', $lines), false);
+                $odt->addHtmlTextBlock([$para], false);
             }
         }
     }
