@@ -6,16 +6,11 @@ use app\models\exceptions\Internal;
 
 class Diff2
 {
-    const FORMATTING_CLASSES = 0;
-    const FORMATTING_INLINE  = 1;
-
     const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
     const MAX_LINE_CHANGE_RATIO         = 0.4;
 
     // # is necessary for placeholders like ###LINENUMBER###
     public static $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
-
-    private $formatting = 0;
 
     /** @var Engine */
     private $engine;
@@ -25,15 +20,6 @@ class Diff2
     public function __construct()
     {
         $this->engine = new Engine();
-    }
-
-
-    /**
-     * @param int $formatting
-     */
-    public function setFormatting($formatting)
-    {
-        $this->formatting = $formatting;
     }
 
     /**
@@ -497,14 +483,16 @@ class Diff2
     /**
      * @param string[] $referenceSections
      * @param string[] $newSections
+     * @param int $diffFormatting
      * @return string[]
      * @throws Internal
      */
-    public function compareSectionedHtml($referenceSections, $newSections)
+    public function compareSectionedHtml($referenceSections, $newSections, $diffFormatting)
     {
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
         $renderer = new DiffRenderer();
+        $renderer->setFormatting($diffFormatting);
 
         list($adjustedRef, $adjustedMatching) = $matcher->matchForDiff($referenceSections, $newSections);
         if (count($adjustedRef) != count($adjustedMatching)) {

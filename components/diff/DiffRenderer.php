@@ -6,6 +6,9 @@ use app\components\HTMLTools;
 
 class DiffRenderer
 {
+    const FORMATTING_CLASSES = 0;
+    const FORMATTING_INLINE  = 1;
+
     const INS_START = '###INS_START###';
     const INS_END   = '###INS_END###';
     const DEL_START = '###DEL_START###';
@@ -14,11 +17,22 @@ class DiffRenderer
     /** @var \DOMDocument */
     private $nodeCreator;
 
+    /** @var int */
+    private $formatting = 0;
+
     /**
      */
     public function __construct()
     {
         $this->nodeCreator = new \DOMDocument();
+    }
+
+    /**
+     * @param int $formatting
+     */
+    public function setFormatting($formatting)
+    {
+        $this->formatting = $formatting;
     }
 
     /**
@@ -161,7 +175,7 @@ class DiffRenderer
                     $text    = '';
                 }
             }
-            $lastEl = null;
+            $lastEl    = null;
             $lastIsIns = $lastIsDel = false;
         }
         return [$nodes, $inIns, $inDel];

@@ -3,9 +3,7 @@ namespace app\components\diff;
 
 use app\components\HTMLTools;
 use app\components\LineSplitter;
-use app\models\db\AmendmentSection;
 use app\models\exceptions\Internal;
-use app\models\sectionTypes\ISectionType;
 
 class AmendmentSectionFormatter
 {
@@ -279,8 +277,7 @@ class AmendmentSectionFormatter
 
             $diff = new Diff2();
             $diff->setIgnoreStr('###LINENUMBER###');
-            $diff->setFormatting($diffFormatting);
-            $diffSections = $diff->compareSectionedHtml($originals, $this->sectionsNew);
+            $diffSections = $diff->compareSectionedHtml($originals, $this->sectionsNew, $diffFormatting);
             $htmlDiff     = implode("\n", $diffSections);
 
             $blocks         = static::htmlDiff2LineBlocks($htmlDiff, $this->firstLine);

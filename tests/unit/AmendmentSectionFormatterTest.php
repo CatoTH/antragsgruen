@@ -3,8 +3,7 @@
 namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\Diff;
-use app\components\diff\Diff2;
+use app\components\diff\DiffRenderer;
 use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
 
@@ -21,36 +20,15 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setTextOriginal($strPre);
         $formatter->setTextNew($strPost);
         $formatter->setFirstLineNo(1);
-        $diffGroups = $formatter->getDiffLinesWithNumbers(80, Diff2::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_INLINE, true);
 
         $this->assertEquals(1, count($diffGroups));
 
-        $text    = TextSimple::formatDiffGroup($grouped);
+        $text    = TextSimple::formatDiffGroup($diffGroups);
         $expect  = '<h4 class="lineSummary">In Zeile 2 löschen:</h4><div><p>Test<span style="color: red;"><del> 123</del></span></p></div>';
         $this->assertEquals($expect, $text);
     }
 
-    /**
-     */
-    public function testNoMessingUpLineNumbers()
-    {
-        $strPre   = '<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>
-<p>###LINENUMBER###Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch ###LINENUMBER###weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft ###LINENUMBER###vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und ###LINENUMBER###biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkte ###LINENUMBER###und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die ###LINENUMBER###Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang ###LINENUMBER###hier bleiben werden, diesen Prozess verstärken.</p>
-<p>###LINENUMBER###Die Stärkung einer europäischen Identität – ohne die Verwischung historischer ###LINENUMBER###Verantwortung und politischer Kontinuitäten – ist für eine zukünftige ###LINENUMBER###Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen ###LINENUMBER###wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>
-<p>###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. ###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>';
-        $strPost  = '<p><strong>Anspruch und Ausblick</strong></p>
-<p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkten und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang hier bleiben werden, diesen Prozess verstärken.</p>
-<p>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>';
-        $computed = AmendmentSectionFormatter::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, Diff::FORMATTING_CLASSES, false);
-
-        // Hint: could be further improved, by separating the leading 'n' from the big change block
-        $this->assertEquals('<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>
-<p>###LINENUMBER###Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch ###LINENUMBER###weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft ###LINENUMBER###vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und ###LINENUMBER###biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkte<del> ###LINENUMBER###und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die ###LINENUMBER###Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang ###LINENUMBER###hier bleiben werden, diesen Prozess verstärken.</del></p>
-<p><del>###LINENUMBER###Die Stärkung einer europäischen Identität – ohne die Verwischung historischer ###LINENUMBER###Verantwortung und politischer Kontinuitäten – ist für eine zukünftige ###LINENUMBER###Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen ###LINENUMBER###wird und in der Erinnerungsarbeit aufgegriffen werden muss.</del></p>
-<p><del>###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>
-<ins>n und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang hier bleiben werden, diesen Prozess verstärken.</p>
-</ins><p>###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>', $computed);
-    }
 
     /**
      */
@@ -163,9 +141,14 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
             ],
         ];
 
-        $out = AmendmentSectionFormatter::getDiffLinesWithNumbersDebug($orig, $new);
+                $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($orig);
+        $formatter->setTextNew($new);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, false);
 
-        $this->assertEquals($expect, $out);
+
+        $this->assertEquals($expect, $diffGroups);
 
         // @TODO:
         // - <li>s that are changed
@@ -363,12 +346,13 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $strPost = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.</p>
 <p>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich konsequent rechtsextremen Tendenzen entgegenstellen, welche die Not von Schutzsuchenden für Hass und populistische Propaganda missbrauchen.</p>';
 
-        $computed                = AmendmentSectionFormatter::getHtmlDiffWithLineNumberPlaceholdersInt($strPre, $strPost, Diff::FORMATTING_CLASSES, false);
-        $blocks                  = AmendmentSectionFormatter::htmlDiff2LineBlocks($computed, 2);
-        $getDiffLinesWithNumbers = AmendmentSectionFormatter::filterAffectedBlocks($blocks);
+                $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($strPre);
+        $formatter->setTextNew($strPost);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_INLINE, true);
 
-        $grouped = AmendmentSectionFormatter::groupAffectedDiffBlocks($getDiffLinesWithNumbers);
-        $text    = TextSimple::formatDiffGroup($grouped);
+        $text    = TextSimple::formatDiffGroup($diffGroups);
         $expect  = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextreme</del><ins>populistische</ins> Propaganda missbrauch<del>t</del><ins>en</ins>.</p></div>';
         $this->assertEquals($expect, $text);
     }
