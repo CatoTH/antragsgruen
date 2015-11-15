@@ -3,8 +3,7 @@
 namespace app\models\db;
 
 use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\Diff;
-use app\components\diff\Diff2;
+use app\components\diff\DiffRenderer;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -256,7 +255,7 @@ class Amendment extends IMotion implements IRSSItem
             $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
-            $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, Diff2::FORMATTING_CLASSES, true);
+            $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
 
             if (count($diffGroups) > 0) {
                 $firstLine = $diffGroups[0]['lineFrom'];
@@ -676,10 +675,8 @@ class Amendment extends IMotion implements IRSSItem
         // @TODO Inline styling
         $content = '';
 
-        /** @var AmendmentSection $section */
-        $section    = $this->section;
-        $firstLine  = $section->getFirstLineNumber();
-        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+        $firstLine  = $this->getMyMotion()->getFirstLineNumber();
+        $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
 
         foreach ($this->sections as $section) {
             if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
@@ -690,7 +687,7 @@ class Amendment extends IMotion implements IRSSItem
             $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
-            $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, Diff2::FORMATTING_INLINE, true);
+            $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
 
             if (count($diffGroups) > 0) {
                 $content .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';

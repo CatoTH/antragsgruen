@@ -4,7 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\diff\AmendmentDiffMerger;
 use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\Diff2;
+use app\components\diff\DiffRenderer;
 use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\components\latex\Content;
@@ -185,7 +185,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, Diff2::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
         if (count($diffGroups) == 0) {
             return '';
         }
@@ -210,7 +210,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, Diff2::FORMATTING_CLASSES, true);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
 
         if (count($diffGroups) == 0) {
             return '';
@@ -315,7 +315,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, Diff2::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
 
         if (count($diffGroups) > 0) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
@@ -534,7 +534,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, Diff2::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
 
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->getSettings()->title);
@@ -577,7 +577,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, Diff2::FORMATTING_CLASSES, true);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
 
         $diff = static::formatDiffGroup($diffGroups);
         $diff = str_replace('<h4', '<br><h4', $diff);
@@ -636,7 +636,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, Diff2::FORMATTING_CLASSES, true);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
 
         if (count($diffGroups) == 0) {
             return;

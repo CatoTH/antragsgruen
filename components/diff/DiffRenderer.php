@@ -86,6 +86,56 @@ class DiffRenderer
     }
 
     /**
+     * @return \DOMElement
+     */
+    private function createIns()
+    {
+        $ins = $this->nodeCreator->createElement('ins');
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            $ins->setAttribute('style', 'color: green; text-decoration: underline;');
+        }
+        return $ins;
+    }
+
+    /**
+     * @return \DOMElement
+     */
+    private function createDel()
+    {
+        $ins = $this->nodeCreator->createElement('del');
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            $ins->setAttribute('style', 'color: red; text-decoration: line-through;');
+        }
+        return $ins;
+    }
+
+    /**
+     * @param \DOMElement $element
+     */
+    private function addInsStyles(\DOMElement $element)
+    {
+        if ($this->formatting == static::FORMATTING_CLASSES) {
+            static::nodeAddClass($element, 'inserted');
+        }
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            $element->setAttribute('style', 'color: green; text-decoration: underline;');
+        }
+    }
+
+    /**
+     * @param \DOMElement $element
+     */
+    private function addDelStyles(\DOMElement $element)
+    {
+        if ($this->formatting == static::FORMATTING_CLASSES) {
+            static::nodeAddClass($element, 'deleted');
+        }
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            $element->setAttribute('style', 'color: red; text-decoration: line-through;');
+        }
+    }
+
+    /**
      * @param \DOMNode $node
      * @return \DOMNode
      */
@@ -94,7 +144,10 @@ class DiffRenderer
         if (is_a($node, \DOMElement::class)) {
             /** @var \DOMElement $node */
             $newNode = $this->nodeCreator->createElement($node->nodeName);
-            // @TODO Attributes
+            foreach ($node->attributes as $key => $val) {
+                $val = $node->getAttribute($key);
+                $newNode->setAttribute($key, $val);
+            }
             foreach ($node->childNodes as $child) {
                 $newNode->appendChild($this->cloneNode($child));
             }
@@ -127,7 +180,7 @@ class DiffRenderer
                     if ($lastIsIns) {
                         $lastEl->appendChild($newText);
                     } else {
-                        $newNode = $this->nodeCreator->createElement('ins');
+                        $newNode = $this->createIns();
                         $newNode->appendChild($newText);
                         $nodes[] = $newNode;
                     }
@@ -145,7 +198,7 @@ class DiffRenderer
                     if ($lastIsDel) {
                         $lastEl->appendChild($newText);
                     } else {
-                        $newNode = $this->nodeCreator->createElement('del');
+                        $newNode = $this->createDel();
                         $newNode->appendChild($newText);
                         $nodes[] = $newNode;
                     }
@@ -202,13 +255,13 @@ class DiffRenderer
             if ($prevIsIns && static::nodeCanBeAttachedToDelIns($child)) {
                 $lastEl->appendChild(static::cloneNode($child));
             } elseif (static::nodeCanBeAttachedToDelIns($child)) {
-                $delNode = $this->nodeCreator->createElement('ins');
+                $delNode = $this->createIns();
                 $delNode->appendChild(static::cloneNode($child));
                 $newChildren[] = $delNode;
             } else {
                 /** @var \DOMElement $clone */
                 $clone = static::cloneNode($child);
-                static::nodeAddClass($clone, 'inserted');
+                $this->addInsStyles($clone);
                 $newChildren[] = $clone;
             }
         } elseif ($inDel) {
@@ -218,13 +271,13 @@ class DiffRenderer
             if ($prevIsDel && static::nodeCanBeAttachedToDelIns($child)) {
                 $lastEl->appendChild(static::cloneNode($child));
             } elseif (static::nodeCanBeAttachedToDelIns($child)) {
-                $delNode = $this->nodeCreator->createElement('del');
+                $delNode = $this->createDel();
                 $delNode->appendChild(static::cloneNode($child));
                 $newChildren[] = $delNode;
             } else {
                 /** @var \DOMElement $clone */
                 $clone = static::cloneNode($child);
-                static::nodeAddClass($clone, 'deleted');
+                $this->addDelStyles($clone);
                 $newChildren[] = $clone;
             }
         } else {
