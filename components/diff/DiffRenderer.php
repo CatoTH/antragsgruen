@@ -46,7 +46,7 @@ class DiffRenderer
             return true;
         }
         /** @var \DOMElement $node */
-        return !in_array($node->nodeName, ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p']);
+        return !in_array($node->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS);
     }
 
     /**

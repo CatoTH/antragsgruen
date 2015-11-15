@@ -95,6 +95,9 @@ class AmendmentSectionFormatter
         $middleUnchangedBlocks = [];
 
         foreach ($blocks as $block) {
+            if ($block['text'] == '') {
+                continue;
+            }
             $hadDiff = false;
             if ($inIns) {
                 $block['text'] = '<ins>' . $block['text'];
@@ -102,24 +105,17 @@ class AmendmentSectionFormatter
             if ($inDel) {
                 $block['text'] = '<del>' . $block['text'];
             }
-            if (preg_match_all('/<\/?(ins|del)>/siu', $block['text'], $matches)) {
+            if (preg_match_all('/<(\/?)(ins|del)( [^>]*)>/siu', $block['text'], $matches)) {
                 $hadDiff = true;
-                foreach ($matches[0] as $found) {
-                    switch ($found) {
-                        case '<ins>':
-                            $inIns = true;
-                            break;
-                        case '</ins>':
-                            $inIns = false;
-                            break;
-                        case '<del>':
-                            $inDel = true;
-                            break;
-                        case '</del>':
-                            $inDel = false;
-                            break;
-                        default:
-                            throw new Internal('Unknown token: ' . $found[0]);
+                for ($i = 0; $i < count($matches[0]); $i++) {
+                    if ($matches[1][$i] == '' && $matches[2][$i] == 'ins') {
+                        $inIns = true;
+                    } elseif ($matches[1][$i] == '/' && $matches[2][$i] == 'ins') {
+                        $inIns = false;
+                    } elseif ($matches[1][$i] == '' && $matches[2][$i] == 'del') {
+                        $inDel = true;
+                    } elseif ($matches[1][$i] == '/' && $matches[2][$i] == 'del') {
+                        $inDel = false;
                     }
                 }
             }
@@ -134,7 +130,7 @@ class AmendmentSectionFormatter
             } elseif ($hadDiff) {
                 $addBlock = true;
             } else {
-                foreach (['ul', 'ol', 'pre', 'blockquote', 'div', 'p'] as $tag) {
+                foreach (HTMLTools::$KNOWN_BLOCK_ELEMENTS as $tag) {
                     if (preg_match('/<(' . $tag . ') class="inserted">.*<\/(' . $tag . ')>/siuU', $block['text'])) {
                         $addBlock = true;
                     }
@@ -280,7 +276,12 @@ class AmendmentSectionFormatter
             $diffSections = $diff->compareSectionedHtml($originals, $this->sectionsNew, $diffFormatting);
             $htmlDiff     = implode("\n", $diffSections);
 
+            echo "\n\n\n";
+            echo $htmlDiff;
+            echo "\n\n\n";
+
             $blocks         = static::htmlDiff2LineBlocks($htmlDiff, $this->firstLine);
+            var_dump($blocks);
 
             $affectedBlocks = static::filterAffectedBlocks($blocks);
         } catch (Internal $e) {

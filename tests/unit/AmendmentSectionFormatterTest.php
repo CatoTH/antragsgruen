@@ -11,6 +11,28 @@ class AmendmentSectionFormatterTest extends TestBase
 {
     use Specify;
 
+    /**
+     */
+    public function testEmptyDeletedSpaceAtEnd()
+    {
+        $strPre  = '<p>###LINENUMBER###Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. ###LINENUMBER###Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier ###LINENUMBER###unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge ###LINENUMBER###– und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser ###LINENUMBER###Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich. Hier ###LINENUMBER###wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich dem rechten ###LINENUMBER###Mob entgegenstellen, der die Not von Schutzsuchenden für Hass und rechtsextreme Propaganda ###LINENUMBER###missbraucht.</p>';
+        $strPost = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.</p>
+<p>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich konsequent rechtsextremen Tendenzen entgegenstellen, welche die Not von Schutzsuchenden für Hass und populistische Propaganda missbrauchen.</p>';
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($strPre);
+        $formatter->setTextNew($strPost);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_INLINE, true);
+
+        var_dump($diffGroups);
+        die();
+
+        $text   = TextSimple::formatDiffGroup($diffGroups);
+        $expect = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextreme</del><ins>populistische</ins> Propaganda missbrauch<del>t</del><ins>en</ins>.</p></div>';
+        $this->assertEquals($expect, $text);
+    }
+
     public function testInlineFormatting()
     {
         $strPre  = '<p>Test 123</p>';
@@ -323,22 +345,4 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
-    public function testEmptyDeletedSpaceAtEnd()
-    {
-        $strPre  = '<p>###LINENUMBER###Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. ###LINENUMBER###Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier ###LINENUMBER###unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge ###LINENUMBER###– und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser ###LINENUMBER###Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich. Hier ###LINENUMBER###wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich dem rechten ###LINENUMBER###Mob entgegenstellen, der die Not von Schutzsuchenden für Hass und rechtsextreme Propaganda ###LINENUMBER###missbraucht.</p>';
-        $strPost = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.</p>
-<p>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich konsequent rechtsextremen Tendenzen entgegenstellen, welche die Not von Schutzsuchenden für Hass und populistische Propaganda missbrauchen.</p>';
-
-        $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($strPre);
-        $formatter->setTextNew($strPost);
-        $formatter->setFirstLineNo(1);
-        $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_INLINE, true);
-
-        $text   = TextSimple::formatDiffGroup($diffGroups);
-        $expect = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextreme</del><ins>populistische</ins> Propaganda missbrauch<del>t</del><ins>en</ins>.</p></div>';
-        $this->assertEquals($expect, $text);
-    }
 }

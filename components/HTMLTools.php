@@ -14,6 +14,8 @@ use yii\helpers\HtmlPurifier;
 
 class HTMLTools
 {
+    public static $KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section'];
+
     /**
      * @param string $html
      * @return string
@@ -42,7 +44,7 @@ class HTMLTools
      * @param string $html
      * @return string
      */
-    public static function cleanUntrustedHtml($html)
+    public static function cleanTrustedHtml($html)
     {
         $html = static::cleanMessedUpHtmlCharacters($html);
         $html = str_replace("\r", '', $html);

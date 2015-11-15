@@ -127,7 +127,6 @@ class LineSplitter
      */
     private static function splitHtmlToLinesInt(\DOMElement $node, $lineLength, $prependLines)
     {
-        $blockElements    = ['div', 'p', 'ol', 'ul', 'li', 'section', 'pre', 'blockquote'];
         $indentedElements = ['ol', 'ul', 'pre', 'blockquote'];
         $out              = [];
         $inlineTextSpool  = '';
@@ -137,7 +136,7 @@ class LineSplitter
                 $inlineTextSpool .= $child->data;
             } else {
                 /** @var \DOMElement $child */
-                if (in_array($child->nodeName, $blockElements)) {
+                if (in_array($child->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
                     if ($inlineTextSpool != '') {
                         $spl = new static($inlineTextSpool, $lineLength);
                         $arr = $spl->splitLines();
@@ -204,60 +203,6 @@ class LineSplitter
         }
     }
 
-
-    /**
-     * @deprecated
-     * Return value contains ###FORCELINEBREAK###
-     *
-     * @param string $para
-     * @param bool $lineNumbers
-     * @param int $lineLength
-     * @return string[]
-     */
-    public static function motionPara2lines($para, $lineNumbers, $lineLength)
-    {
-        if (!defined('YII_DEBUG') || !YII_DEBUG) {
-            $cacheKey = [md5($para), $lineNumbers, $lineLength];
-            if ($cached = \yii::$app->cache->get($cacheKey)) {
-                return $cached;
-            }
-        }
-
-        if (mb_stripos($para, '<ul>') === 0 || mb_stripos($para, '<ol>') === 0 ||
-            mb_stripos($para, '<blockquote>') === 0 || mb_stripos($para, '<pre>') === 0
-        ) {
-            $lineLength -= 6;
-        }
-        $splitter = new LineSplitter($para, $lineLength);
-        $linesIn  = $splitter->splitLines();
-
-        if ($lineNumbers) {
-            $linesOut = [];
-            $pres     = ['<p>', '<ul><li>', '<ol( start="[0-9]+")?><li>', '<blockquote><p>', '<pre>'];
-            $linePre  = '###LINENUMBER###';
-            foreach ($linesIn as $line) {
-                $inserted = false;
-                foreach ($pres as $pre) {
-                    if (preg_match('/^' . $pre . '/siu', $line, $matches)) {
-                        $inserted = true;
-                        $line     = str_ireplace($matches[0], $matches[0] . $linePre, $line);
-                    }
-                }
-                if (!$inserted) {
-                    $line = $linePre . $line;
-                }
-                $linesOut[] = $line;
-            }
-        } else {
-            $linesOut = $linesIn;
-        }
-
-        if (!defined('YII_DEBUG') || !YII_DEBUG) {
-            \yii::$app->cache->set($cacheKey, $linesOut, 7 * 24 * 3600);
-        }
-
-        return $linesOut;
-    }
 
     /**
      * @param string $para

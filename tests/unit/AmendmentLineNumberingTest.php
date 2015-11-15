@@ -3,7 +3,7 @@
 namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\Diff2;
+use app\components\diff\DiffRenderer;
 use app\models\db\Amendment;
 use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
@@ -31,7 +31,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($section->getFirstLineNumber());
-        return $formatter->getDiffLinesWithNumbers(80, Diff2::FORMATTING_CLASSES, true);
+        return $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, true);
     }
 
     /**
@@ -54,7 +54,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($section->getFirstLineNumber());
-        return $formatter->getDiffLinesWithNumbers(80, Diff2::FORMATTING_CLASSES, true);
+        return $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, true);
     }
 
     /**
