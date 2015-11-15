@@ -13,8 +13,8 @@ class AmendmentSectionFormatterTest extends TestBase
 
     public function testInlineFormatting()
     {
-        $strPre                  = '<p>###LINENUMBER###Test 123</p>';
-        $strPost                 = '<p>###LINENUMBER###Test</p>';
+        $strPre  = '<p>Test 123</p>';
+        $strPost = '<p>Test</p>';
 
         $formatter = new AmendmentSectionFormatter();
         $formatter->setTextOriginal($strPre);
@@ -24,8 +24,8 @@ class AmendmentSectionFormatterTest extends TestBase
 
         $this->assertEquals(1, count($diffGroups));
 
-        $text    = TextSimple::formatDiffGroup($diffGroups);
-        $expect  = '<h4 class="lineSummary">In Zeile 2 löschen:</h4><div><p>Test<span style="color: red;"><del> 123</del></span></p></div>';
+        $text   = TextSimple::formatDiffGroup($diffGroups);
+        $expect = '<h4 class="lineSummary">In Zeile 1 löschen:</h4><div><p>Test<del style="color: red; text-decoration: line-through;"> 123</del></p></div>';
         $this->assertEquals($expect, $text);
     }
 
@@ -46,24 +46,6 @@ class AmendmentSectionFormatterTest extends TestBase
 
     /**
      */
-    public function testPre()
-    {
-        // @TODO Not sure if this is really the best way; needs further test cases
-
-        $str    = '<pre class="inserted">Oamoi a Maß und no a Maß' . "\nNeue Zeile\n" . '</pre>';
-        $in     = [[
-            'text' => $str,
-        ]];
-        $expect = $in;
-        $out    = AmendmentSectionFormatter::filterAffectedBlocks($in);
-        $this->assertEquals($expect, $out);
-
-        $lines = AmendmentSectionFormatter::getDiffSplitToLines($str);
-        $this->assertEquals(['<pre class="inserted">Oamoi a Maß und no a Maß###FORCELINEBREAK###Neue Zeile###FORCELINEBREAK###</pre>'], $lines);
-    }
-
-    /**
-     */
     public function testUlLiWithLineBreaks()
     {
         // 'Line breaks within lists'
@@ -75,9 +57,10 @@ class AmendmentSectionFormatterTest extends TestBase
             '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>';
 
         $expect = [
+            '<p>',
             '###LINENUMBER###Do nackata Wurscht i hob di ',
             '###LINENUMBER###narrisch gean, Diandldrahn Deandlgwand vui ',
-            '###LINENUMBER###Do nackata###FORCELINEBREAK###',
+            '###LINENUMBER###Do nackata</p>',
             '<ul><li>###LINENUMBER###Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand ###LINENUMBER###huift vui woaß?</li></ul>',
             '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>'
         ];
@@ -93,7 +76,8 @@ class AmendmentSectionFormatterTest extends TestBase
     {
         $in     = '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>';
         $expect = [
-            '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>',
+            '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
+            '</div>',
         ];
 
         $out = AmendmentSectionFormatter::getDiffSplitToLines($in);
@@ -141,7 +125,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
             ],
         ];
 
-                $formatter = new AmendmentSectionFormatter();
+        $formatter = new AmendmentSectionFormatter();
         $formatter->setTextOriginal($orig);
         $formatter->setTextNew($new);
         $formatter->setFirstLineNo(1);
@@ -325,14 +309,15 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
      */
     public function testLinesWithoutNumber()
     {
-        $in     = '<ins><p>New line at beginning</p></ins>' . "\n" .
+        $in     = '<p><ins>New line at beginning</ins></p>' . "\n" .
             '<p>###LINENUMBER###Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma ###LINENUMBER###sagrisch guad.</p>' . "\n" .
-            '<ins><p>Neuer Absatz</p></ins>';
+            '<p><ins>Neuer Absatz</ins></p>';
         $expect = [
-            '<ins>New line at beginning###FORCELINEBREAK###</ins>',
+            '<p><ins>New line at beginning</ins></p>',
+            '<p>',
             '###LINENUMBER###Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma ',
-            '###LINENUMBER###sagrisch guad.###FORCELINEBREAK###',
-            '<ins>Neuer Absatz###FORCELINEBREAK###</ins>',
+            '###LINENUMBER###sagrisch guad.</p>',
+            '<p><ins>Neuer Absatz</ins></p>',
         ];
         $out    = AmendmentSectionFormatter::getDiffSplitToLines($in);
         $this->assertEquals($expect, $out);
@@ -346,14 +331,14 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $strPost = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.</p>
 <p>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich konsequent rechtsextremen Tendenzen entgegenstellen, welche die Not von Schutzsuchenden für Hass und populistische Propaganda missbrauchen.</p>';
 
-                $formatter = new AmendmentSectionFormatter();
+        $formatter = new AmendmentSectionFormatter();
         $formatter->setTextOriginal($strPre);
         $formatter->setTextNew($strPost);
         $formatter->setFirstLineNo(1);
         $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_INLINE, true);
 
-        $text    = TextSimple::formatDiffGroup($diffGroups);
-        $expect  = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextreme</del><ins>populistische</ins> Propaganda missbrauch<del>t</del><ins>en</ins>.</p></div>';
+        $text   = TextSimple::formatDiffGroup($diffGroups);
+        $expect = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextreme</del><ins>populistische</ins> Propaganda missbrauch<del>t</del><ins>en</ins>.</p></div>';
         $this->assertEquals($expect, $text);
     }
 }

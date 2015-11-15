@@ -281,6 +281,7 @@ class AmendmentSectionFormatter
             $htmlDiff     = implode("\n", $diffSections);
 
             $blocks         = static::htmlDiff2LineBlocks($htmlDiff, $this->firstLine);
+
             $affectedBlocks = static::filterAffectedBlocks($blocks);
         } catch (Internal $e) {
             var_dump($e);

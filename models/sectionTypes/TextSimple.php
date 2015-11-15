@@ -373,8 +373,19 @@ class TextSimple extends ISectionType
         $out = '';
         foreach ($diffGroups as $diff) {
             $text      = $diff['text'];
-            $hasInsert = (mb_strpos($text, '<ins>') !== false || mb_strpos($text, 'class="inserted"') !== false);
-            $hasDelete = (mb_strpos($text, '<del>') !== false || mb_strpos($text, 'class="deleted"') !== false);
+            $hasInsert = $hasDelete = false;
+            if (mb_strpos($text, 'class="inserted"') !== false) {
+                $hasInsert = true;
+            }
+            if (mb_strpos($text, 'class="deleted"') !== false) {
+                $hasDelete = true;
+            }
+            if (preg_match('/<ins( [^>]*)?>/siu', $text)) {
+                $hasInsert = true;
+            }
+            if (preg_match('/<del( [^>]*)?>/siu', $text)) {
+                $hasDelete = true;
+            }
             $out .= $wrapStart;
             $out .= '<h4 class="lineSummary">';
             if ($diff['newLine']) {
