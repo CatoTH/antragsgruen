@@ -210,6 +210,7 @@ echo '</span>
         </div>
     </footer>';
 
+$jsLang = $layout->getJSLanguageCode();
 if (defined('YII_DEBUG') && YII_DEBUG) {
     echo '<script src="' . $layout->resourceUrl('js/bootstrap.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/bower/bootbox/bootbox.js') . '"></script>
@@ -217,10 +218,10 @@ if (defined('YII_DEBUG') && YII_DEBUG) {
     <script src="' . $layout->resourceUrl('js/jquery.isonscreen.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/bower/intl/dist/Intl.min.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/antragsgruen-de.js') . '"></script>';
+    <script src="' . $layout->resourceUrl('js/antragsgruen-' . $jsLang . '.js') . '"></script>';
 } else {
     echo '<script src="' . $layout->resourceUrl('js/build/antragsgruen.min.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/build/antragsgruen-de.min.js') . '"></script>';
+    <script src="' . $layout->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js') . '"></script>';
 }
 
 foreach ($layout->extraJs as $file) {

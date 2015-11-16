@@ -44,4 +44,18 @@ gulp.task('default', function () {
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
+
+    gulp.src(["web/js/antragsgruen-en.js"])
+        .pipe(sourcemaps.init())
+        .pipe(concat('antragsgruen-en.min.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./web/js/build/'));
+
+    gulp.src(["web/js/antragsgruen-en-gb.js"])
+        .pipe(sourcemaps.init())
+        .pipe(concat('antragsgruen-en-gb.min.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./web/js/build/'));
 });
