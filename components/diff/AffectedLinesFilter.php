@@ -8,7 +8,9 @@ use yii\helpers\Html;
 
 class AffectedLinesFilter
 {
+
     /**
+     * @internal
      * @param string $string
      * @param int $firstLine
      * @return string[]
@@ -18,17 +20,22 @@ class AffectedLinesFilter
         $out   = [];
         $line  = $firstLine;
         $parts = explode('###LINENUMBER###', $string);
-        if (strip_tags($parts[0]) == '') {
-            $firstLine++;
+        for ($i = 1; $i < count($parts); $i++) {
+            $parts[$i] = '###LINENUMBER###' . $parts[$i];
         }
+        if (strip_tags($parts[0]) == '' && count($parts) > 1) {
+            $first    = array_shift($parts);
+            $parts[0] = $first . $parts[0];
+        }
+
         for ($i = 0; $i < count($parts); $i++) {
-            if ($i == 0 && $parts[0] == '') {
-                continue;
+            if ($i == 0 && mb_strpos($parts[$i], '###LINENUMBER###') === false) {
+                $line--;
             }
             $out[] = [
-                'text'     => ($i == 0 ? $parts[$i] : '###LINENUMBER###' . $parts[$i]),
-                'lineFrom' => $firstLine,
-                'lineTo'   => $firstLine,
+                'text'     => $parts[$i],
+                'lineFrom' => $line,
+                'lineTo'   => $line,
             ];
             $line++;
         }
@@ -38,6 +45,7 @@ class AffectedLinesFilter
 
 
     /**
+     * @internal
      * @param array $blocks
      * @return array
      * @throws Internal
@@ -90,6 +98,7 @@ class AffectedLinesFilter
     }
 
     /**
+     * @internal
      * @param array $blocks
      * @return array
      */
@@ -134,11 +143,11 @@ class AffectedLinesFilter
      * @param int $firstLine
      * @return array
      */
-    public static function splitToAffectedLinesInt(\DOMElement $node, $firstLine)
+    private static function splitToAffectedLinesInt(\DOMElement $node, $firstLine)
     {
         $out             = [];
         $inlineTextSpool = '';
-        $currLine = $firstLine;
+        $currLine        = $firstLine;
 
         $addToOut = function ($inlineHtml) use (&$out, $currLine) {
             $lines    = static::splitToLines($inlineHtml, $currLine);
@@ -169,7 +178,7 @@ class AffectedLinesFilter
                         $inlineHtml = HTMLTools::renderDomToHtml($child);
                         $lines      = static::splitToLines($inlineHtml, $currLine);
                         $grouped    = static::groupAffectedDiffBlocks($lines);
-                        $out                    = array_merge($out, $grouped);
+                        $out        = array_merge($out, $grouped);
                     } else {
                         $arr = static::splitToAffectedLinesInt($child, $currLine);
                         foreach ($arr as $newEl) {

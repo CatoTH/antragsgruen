@@ -185,7 +185,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
         if (count($diffGroups) == 0) {
             return '';
         }
@@ -210,7 +210,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
 
         if (count($diffGroups) == 0) {
             return '';
@@ -315,7 +315,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
 
         if (count($diffGroups) > 0) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
@@ -430,17 +430,15 @@ class TextSimple extends ISectionType
         }
 
         $strSpaceDel   = '<del class="space">[' . \Yii::t('diff', 'space') . ']</del>';
-        $strNewlineDel = '<del class="space">[' . \Yii::t('diff', 'newline') . ']</del><del>###FORCELINEBREAK###</del>';
+        $strNewlineDel = '<del class="space">[' . \Yii::t('diff', 'newline') . ']</del>';
         $strSpaceIns   = '<ins class="space">[' . \Yii::t('diff', 'space') . ']</ins>';
-        $strNewlineIns = '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins><ins>###FORCELINEBREAK###</ins>';
+        $strNewlineIns = '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins>';
         $out           = str_replace('<del> </del>', $strSpaceDel, $out);
         $out           = str_replace('<ins> </ins>', $strSpaceIns, $out);
-        $out           = str_replace('<del>###FORCELINEBREAK###</del>', $strNewlineDel, $out);
-        $out           = str_replace('<ins>###FORCELINEBREAK###</ins>', $strNewlineIns, $out);
         $out           = str_replace($strSpaceDel . $strNewlineIns, $strNewlineIns, $out);
         $out           = str_replace($strSpaceDel . '###FORCELINEBREAK###' . $strNewlineIns, '<br>' . $strNewlineIns, $out);
         $out           = str_replace($strSpaceDel . '<ins></ins><br>', '<br>', $out);
-        $out           = str_replace('###FORCELINEBREAK###', '<br>', $out);
+        $out           = str_replace('###LINENUMBER###', '', $out);
         $repl          = '<br></p></div>';
         if (mb_substr($out, mb_strlen($out) - mb_strlen($repl), mb_strlen($repl)) == $repl) {
             $out = mb_substr($out, 0, mb_strlen($out) - mb_strlen($repl)) . '</p></div>';
@@ -546,7 +544,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
 
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->getSettings()->title);
@@ -589,7 +587,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
 
         $diff = static::formatDiffGroup($diffGroups);
         $diff = str_replace('<h4', '<br><h4', $diff);
@@ -648,7 +646,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
 
         if (count($diffGroups) == 0) {
             return;

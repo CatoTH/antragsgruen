@@ -31,7 +31,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($section->getFirstLineNumber());
-        return $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, true);
+        return $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
     }
 
     /**
@@ -54,7 +54,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($section->getFirstLineNumber());
-        return $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, true);
+        return $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
     }
 
     /**

@@ -15,31 +15,32 @@ class AffectedLinesFilterTest extends TestBase
 
     /**
      */
-    public function testFilterAffected()
+    public function testMultilineParagraph()
     {
-        $lines    = [
-            ['text' => '###LINENUMBER###Test Test<ins>2</ins>', 'lineFrom' => 1, 'lineTo' => 1],
-        ];
-        $expected = [
-            ['text' => '###LINENUMBER###Test Test<ins>2</ins>', 'lineFrom' => 1, 'lineTo' => 1],
-        ];
-        $filtered = AffectedLinesFilter::filterAffectedBlocks($lines);
-        $this->assertEquals($expected, $filtered);
+        $diff           = '<p class="deleted">###LINENUMBER###Leonhardifahrt ma da middn. Greichats an naa do. Af Schuabladdla Leonhardifahrt ###LINENUMBER###Marei, des um Godds wujn Biakriagal! Hallelujah sog i, luja schüds nei koa des ###LINENUMBER###is schee jedza hogg di hera dringma aweng Spezi nia Musi. Wurschtsolod jo mei is ###LINENUMBER###des schee gor Ramasuri ozapfa no gfreit mi i hob di liab auffi, Schbozal. Hogg ###LINENUMBER###di hera nia need Biakriagal so schee, Schdarmbeaga See.</p>';
+        $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($diff, 1);
+        $expected       = [[
+            'text'     => $diff,
+            'lineFrom' => 1,
+            'lineTo'   => 5,
+        ]];
+        $this->assertEquals($expected, $affectedBlocks);
+
+    }
 
 
-        $lines    = [
-            ['text' => '###LINENUMBER###Test Test<ins>2', 'lineFrom' => 1, 'lineTo' => 1],
-            ['text' => '###LINENUMBER###Test Test2', 'lineFrom' => 2, 'lineTo' => 2],
-            ['text' => '###LINENUMBER###Test Test2</ins>', 'lineFrom' => 3, 'lineTo' => 3],
-            ['text' => '###LINENUMBER###Test Test2', 'lineFrom' => 4, 'lineTo' => 4],
-        ];
-        $expected = [
-            ['text' => '###LINENUMBER###Test Test<ins>2', 'lineFrom' => 1, 'lineTo' => 1],
-            ['text' => '###LINENUMBER###Test Test2', 'lineFrom' => 2, 'lineTo' => 2],
-            ['text' => '###LINENUMBER###Test Test2</ins>', 'lineFrom' => 3, 'lineTo' => 3],
-        ];
-        $filtered = AffectedLinesFilter::filterAffectedBlocks($lines);
-        $this->assertEquals($expected, $filtered);
+    /**
+     */
+    public function testInsertedLi()
+    {
+        $htmlDiff       = '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul><ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>';
+        $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($htmlDiff, 1);
+        $expected       = [[
+            'text'     => '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>',
+            'lineFrom' => 1,
+            'lineTo'   => 1,
+        ]];
+        $this->assertEquals($expected, $affectedBlocks);
     }
 
     /**
@@ -67,9 +68,39 @@ class AffectedLinesFilterTest extends TestBase
             ['text' => '<p class="deleted">###LINENUMBER###Test</p><ul class="inserted"><li>Test 3</li></ul>', 'lineFrom' => 4, 'lineTo' => 4],
         ];
         $diff      = implode('', $diffParas);
-        $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 0);
+        $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 1);
 
         $this->assertEquals($expected, $lines);
+    }
+
+
+    /**
+     */
+    public function testFilterAffected()
+    {
+        $lines    = [
+            ['text' => '###LINENUMBER###Test Test<ins>2</ins>', 'lineFrom' => 1, 'lineTo' => 1],
+        ];
+        $expected = [
+            ['text' => '###LINENUMBER###Test Test<ins>2</ins>', 'lineFrom' => 1, 'lineTo' => 1],
+        ];
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($lines);
+        $this->assertEquals($expected, $filtered);
+
+
+        $lines    = [
+            ['text' => '###LINENUMBER###Test Test<ins>2', 'lineFrom' => 1, 'lineTo' => 1],
+            ['text' => '###LINENUMBER###Test Test2', 'lineFrom' => 2, 'lineTo' => 2],
+            ['text' => '###LINENUMBER###Test Test2</ins>', 'lineFrom' => 3, 'lineTo' => 3],
+            ['text' => '###LINENUMBER###Test Test2', 'lineFrom' => 4, 'lineTo' => 4],
+        ];
+        $expected = [
+            ['text' => '###LINENUMBER###Test Test<ins>2', 'lineFrom' => 1, 'lineTo' => 1],
+            ['text' => '###LINENUMBER###Test Test2', 'lineFrom' => 2, 'lineTo' => 2],
+            ['text' => '###LINENUMBER###Test Test2</ins>', 'lineFrom' => 3, 'lineTo' => 3],
+        ];
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($lines);
+        $this->assertEquals($expected, $filtered);
     }
 
 
@@ -152,7 +183,7 @@ class AffectedLinesFilterTest extends TestBase
             ['text' => '<p class="deleted">###LINENUMBER###Test</p>', 'lineFrom' => 6, 'lineTo' => 6]
         ];
         $diff      = implode('', $diffParas);
-        $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 0);
+        $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 1);
         $this->assertEquals($expected, $lines);
     }
 }

@@ -501,7 +501,6 @@ class Diff2
         $diffSections = [];
         for ($i = 0; $i < count($adjustedRef); $i++) {
             $diffLine       = $this->computeLineDiff($adjustedRef[$i], $adjustedMatching[$i]);
-            var_dump($diffLine);
             $diffSections[] = $renderer->renderHtmlWithPlaceholders($diffLine);
         }
 

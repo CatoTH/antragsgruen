@@ -23,7 +23,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setTextOriginal($strPre);
         $formatter->setTextNew($strPost);
         $formatter->setFirstLineNo(1);
-        $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_INLINE);
 
         var_dump($diffGroups);
         die();
@@ -42,7 +42,7 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setTextOriginal($strPre);
         $formatter->setTextNew($strPost);
         $formatter->setFirstLineNo(1);
-        $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_INLINE, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_INLINE);
 
         $this->assertEquals(1, count($diffGroups));
 
@@ -151,7 +151,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $formatter->setTextOriginal($orig);
         $formatter->setTextNew($new);
         $formatter->setFirstLineNo(1);
-        $diffGroups = $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, false);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES,);
 
 
         $this->assertEquals($expect, $diffGroups);

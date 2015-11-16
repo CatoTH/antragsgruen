@@ -255,7 +255,7 @@ class Amendment extends IMotion implements IRSSItem
             $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
-            $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
 
             if (count($diffGroups) > 0) {
                 $firstLine = $diffGroups[0]['lineFrom'];
@@ -687,7 +687,7 @@ class Amendment extends IMotion implements IRSSItem
             $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
-            $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
 
             if (count($diffGroups) > 0) {
                 $content .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
