@@ -9,14 +9,6 @@
     var consultationSettingsForm = function () {
         var $form = $("#consultationSettingsForm");
 
-        $("#antrag_neu_kann_telefon").change(function () {
-            if ($(this).prop("checked")) {
-                $("#antrag_neu_braucht_telefon_holder").removeClass("hidden");
-            } else {
-                $("#antrag_neu_braucht_telefon_holder").addClass("hidden");
-            }
-        }).trigger("change");
-
         $('.urlPathHolder .shower a').click(function (ev) {
             ev.preventDefault();
             $('.urlPathHolder .shower').addClass('hidden');

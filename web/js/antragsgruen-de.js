@@ -1,5 +1,25 @@
 /*global Intl */
 
+ANTRAGSGRUEN_STRINGS = {
+    "std": {
+        "del_confirm": "Wirklich löschen?",
+        "draft_del": "Entwurf löschen",
+        "draft_del_confirm": "Entwurf wirklich löschen?",
+        "draft_restore_confirm": "Diesen Entwurf wiederherstellen?",
+        "min_x_supporter": "Es müssen mindestens %NUM% UnterstützerInnen angegeben werden.",
+        "missing_resolution_date": "Es muss ein Beschlussdatum angegeben werden.",
+        "pw_x_chars": "Das Password muss mindestens %NUM% Buchstaben haben.",
+        "pw_no_match": 'Die beiden Passwörter stimmen nicht überein.'
+    },
+    "merge": {
+        "accept_all": "Wirklich alle verbleibenden Änderungen dieses Textabschnitts übernehmen?",
+        "reject_all": "Wirklich alle verbleibenden Änderungen dieses Textabschnitts ablehnen?",
+        "err_pending_changes": "Es müssen zunächst alle Änderungen angenommen oder abgelehnt werden, bevor der Änderungsmodus deaktiviert werden kann.",
+        
+    }
+};
+
+
 if (typeof(Intl.__addLocaleData) != 'undefined') {
     Intl.__addLocaleData({
         "locale": "de",

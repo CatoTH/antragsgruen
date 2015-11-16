@@ -1,5 +1,26 @@
 /*global Intl */
 
+
+ANTRAGSGRUEN_STRINGS = {
+    "std": {
+        "del_confirm": "Really delete it?",
+        "draft_del": "Delete draft",
+        "draft_del_confirm": "Really delete this draft?",
+        "draft_restore_confirm": "Really restore this draft?",
+        "min_x_supporter": "You have to enter at least %NUM% supporters.",
+        "missing_resolution_date": "A resolution date has to be entered.",
+        "pw_x_chars": "The password needs to be at least %NUM% characters long.",
+        "pw_no_match": 'The passwords do not match.'
+    },
+    "merge": {
+        "accept_all": "Do you really want to accept all remaining changes?",
+        "reject_all": "Do you really want to reject all remaining changes?",
+        "err_pending_changes": "You have to accept or reject all changes before deactivating the change-tracking mode.",
+
+    }
+};
+
+
 if (typeof(Intl.__addLocaleData) != 'undefined') {
     Intl.__addLocaleData({
         "locale": "en",

@@ -1,6 +1,19 @@
 /*global browser: true, regexp: true, localStorage */
-/*global $, jQuery, alert, console, CKEDITOR, document, Intl, JSON */
+/*global $, jQuery, alert, console, CKEDITOR, document, Intl, JSON, ANTRAGSGRUEN_STRINGS */
 /*jslint regexp: true*/
+
+function __t(category, str) {
+    if (typeof(ANTRAGSGRUEN_STRINGS) == "undefined") {
+        return '@TRANSLATION STRINGS NOT LOADED';
+    }
+    if (typeof(ANTRAGSGRUEN_STRINGS[category]) == "undefined") {
+        return "@UNKNOWN CATEGORY: " + category
+    }
+    if (typeof(ANTRAGSGRUEN_STRINGS[category][str]) == "undefined") {
+        return "@UNKNOWN STRING: " + category + " / " + str;
+    }
+    return ANTRAGSGRUEN_STRINGS[category][str];
+}
 
 (function ($) {
     "use strict";
@@ -229,7 +242,8 @@
                 var data = JSON.parse(localStorage.getItem(key)),
                     lastEdit = new Date(data['lastEdit']),
                     $link = $("<li><a href='#' class='restore'></a> " +
-                        "<a href='#' class='delete glyphicon glyphicon-trash' title='Entwurf löschen'></a></li>");
+                        "<a href='#' class='delete glyphicon glyphicon-trash' title='" + __t("std", "draft_del") +
+                        "'></a></li>");
 
 
                 $link.data("key", key);
@@ -240,7 +254,7 @@
                 $link.find('.restore').text('Entwurf vom: ' + dateStr).click(function (ev) {
                     ev.preventDefault();
                     var $li = $(this).parents("li").first();
-                    bootbox.confirm("Diesen Entwurf wiederherstellen?", function (result) {
+                    bootbox.confirm(__t("std", "draft_restore_confirm"), function (result) {
                         if (result) {
                             doRestore($li);
                         }
@@ -249,7 +263,7 @@
                 $link.find('.delete').click(function (ev) {
                     ev.preventDefault();
                     var $li = $(this).parents("li").first();
-                    bootbox.confirm("Entwurf wirklich löschen?", function (result) {
+                    bootbox.confirm(__t("std", "draft_del_confirm"), function (result) {
                         if (result) {
                             doDelete($li);
                         }
@@ -389,7 +403,7 @@
             var $this = $(this),
                 id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
                 instance = CKEDITOR.instances[id];
-            bootbox.confirm("Wirklich alle verbleibenden Änderungen dieses Textabschnitts übernehmen?", function (result) {
+            bootbox.confirm(__t("merge", "accept_all"), function (result) {
                 if (result) {
                     instance.plugins.lite.findPlugin(instance).acceptAll();
                     $this.parents(".wysiwyg-textarea").find("> label").scrollintoview();
@@ -401,7 +415,7 @@
             var $this = $(this),
                 id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
                 instance = CKEDITOR.instances[id];
-            bootbox.confirm("Wirklich alle verbleibenden Änderungen dieses Textabschnitts ablehnen?", function (result) {
+            bootbox.confirm(__t("merge", "reject_all"), function (result) {
                 if (result) {
                     instance.plugins.lite.findPlugin(instance).rejectAll();
                     $this.parents(".wysiwyg-textarea").find("> label").scrollintoview();
@@ -418,7 +432,7 @@
                 $this.parents(".wysiwyg-textarea").find(".mergeTrackingDisabled").removeClass("hidden");
                 $this.parents(".wysiwyg-textarea").find(".mergeActionHolder").addClass("hidden");
             } else {
-                bootbox.alert("Es müssen zunächst alle Änderungen angenommen oder abgelehnt werden, bevor der Änderungsmodus deaktiviert werden kann.");
+                bootbox.alert(__t("merge", "err_pending_changes"));
             }
         });
 
@@ -683,7 +697,7 @@
         $("form.delLink").submit(function (ev) {
             ev.preventDefault();
             var form = this;
-            bootbox.confirm("Wirklich löschen?", function (result) {
+            bootbox.confirm(__t("std", "del_confirm"), function (result) {
                 if (result) {
                     form.submit();
                 }
@@ -700,7 +714,7 @@
         $("form.delLink").submit(function (ev) {
             ev.preventDefault();
             var form = this;
-            bootbox.confirm("Wirklich löschen?", function (result) {
+            bootbox.confirm(__t("std", "del_confirm"), function (result) {
                 if (result) {
                     form.submit();
                 }
@@ -836,7 +850,7 @@
                 });
                 if (found < $supporterData.data('min-supporters')) {
                     ev.preventDefault();
-                    bootbox.alert('Es müssen mindestens %num% UnterstützerInnen angegeben werden.'.replace(/%num%/, $supporterData.data('min-supporters')));
+                    bootbox.alert(__t("std", "min_x_supporter").replace(/%NUM%/, $supporterData.data('min-supporters')));
                 }
             });
         }
@@ -845,7 +859,7 @@
             if ($('#personTypeOrga').prop('checked')) {
                 if ($('#resolutionDate').val() == '') {
                     ev.preventDefault();
-                    bootbox.alert('Es muss ein Beschlussdatum angegeben werden.');
+                    bootbox.alert(__t("std", "missing_resolution_date"));
                 }
             }
         });
@@ -873,12 +887,12 @@
             var pwd = $("#passwordInput").val();
             if (pwd.length < pwMinLen) {
                 ev.preventDefault();
-                bootbox.alert('Das Passwort muss mindestens ' + pwMinLen + ' Buchstaben haben.');
+                bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, pwMinLen));
             }
             if ($form.find("input[name=createAccount]").prop("checked")) {
                 if (pwd != $("#passwordConfirm").val()) {
                     ev.preventDefault();
-                    bootbox.alert('Die beiden Passwörter stimmen nicht überein.');
+                    bootbox.alert(__t("std", "pw_no_match"));
                 }
             }
         });
@@ -913,10 +927,10 @@
             if (pwd != '' || pwd2 != '') {
                 if (pwd.length < pwMinLen) {
                     ev.preventDefault();
-                    bootbox.alert('Das Passwort muss mindestens ' + pwMinLen + ' Buchstaben haben.');
+                    bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, pwMinLen));
                 } else if (pwd != pwd2) {
                     ev.preventDefault();
-                    bootbox.alert('Die beiden Passwörter stimmen nicht überein.');
+                    bootbox.alert(__t("std", "pw_no_match"));
                 }
             }
         });

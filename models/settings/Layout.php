@@ -89,6 +89,27 @@ class Layout
         return $this;
     }
 
+    public function getHTMLLanguageCode()
+    {
+        if (!$this->consultation) {
+            /** @var AntragsgruenApp $params */
+            $params = \yii::$app->params;
+            $lang   = explode('-', $params->baseLanguage);
+            if ($lang[0] == 'de') {
+                return 'de';
+            } else {
+                return 'en';
+            }
+        }
+        $langs = explode(',', $this->consultation->wordingBase);
+        $lang  = explode('-', $langs[0]);
+        if ($lang[0] == 'de') {
+            return 'de';
+        } else {
+            return 'en';
+        }
+    }
+
     /**
      * @return string
      */
@@ -108,8 +129,6 @@ class Layout
         }
         $langs = explode(',', $this->consultation->wordingBase);
         $lang  = explode('-', $langs[0]);
-        var_dump($langs);
-        var_dump($lang);
         if ($lang[0] == 'de') {
             return 'de';
         } elseif ($langs[0] == 'en-gb') {
