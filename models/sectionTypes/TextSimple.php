@@ -646,7 +646,7 @@ class TextSimple extends ISectionType
         $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
 
         if (count($diffGroups) == 0) {
             return;

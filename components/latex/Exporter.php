@@ -52,6 +52,22 @@ class Exporter
     }
 
     /**
+     * @param string $content
+     * @param string[] $extraStyles
+     * @return string
+     */
+    private static function addInsDelExtraStyles($content, $extraStyles)
+    {
+        if (in_array('ins', $extraStyles)) {
+            $content = '\textcolor{Insert}{' . $content . '}';
+        }
+        if (in_array('del', $extraStyles)) {
+            $content = '\textcolor{Delete}{\sout{' . $content . '}}';
+        }
+        return $content;
+    }
+
+    /**
      * @param \DOMNode $node
      * @param array $extraStyles
      * @return string
@@ -80,31 +96,32 @@ class Exporter
                 $classes = [];
             }
 
+            $childStyles = [];
+            if (in_array($node->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
+                if (in_array('ins', $classes) || in_array('inserted', $classes)) {
+                    $extraStyles[] = 'ins';
+                    $childStyles[] = 'underlined';
+                }
+                if (in_array('del', $classes) || in_array('deleted', $classes)) {
+                    $extraStyles[] = 'del';
+                }
+            } elseif ($node->nodeName == 'u') {
+                $childStyles[] = 'underlined';
+            } elseif ($node->nodeName == 'ins') {
+                $childStyles[] = 'underlined';
+            } elseif ($node->nodeName == 'span') {
+                if (in_array('underline', $classes)) {
+                    $childStyles[] = 'underlined';
+                }
+                if (in_array('ins', $classes) || in_array('inserted', $classes)) {
+                    $childStyles[] = 'underlined';
+                }
+            }
+            if (in_array('underlined', $extraStyles)) {
+                $childStyles[] = 'underlined';
+            }
+
             foreach ($node->childNodes as $child) {
-                $childStyles = [];
-                if (in_array('underlined', $extraStyles)) {
-                    $childStyles[] = 'underlined';
-                }
-                if ($node->nodeName == 'ul' || $node->nodeName == 'ol' || $node->nodeName == 'li') {
-                    if (in_array('ins', $classes) || in_array('inserted', $classes)) {
-                        $childStyles[] = 'ins';
-                        $childStyles[] = 'underlined';
-                    }
-                    if (in_array('del', $classes) || in_array('deleted', $classes)) {
-                        $childStyles[] = 'del';
-                    }
-                } elseif ($node->nodeName == 'u') {
-                    $childStyles[] = 'underlined';
-                } elseif ($node->nodeName == 'ins') {
-                    $childStyles[] = 'underlined';
-                } elseif ($node->nodeName == 'span') {
-                    if (in_array('underline', $classes)) {
-                        $childStyles[] = 'underlined';
-                    }
-                    if (in_array('ins', $classes) || in_array('inserted', $classes)) {
-                        $childStyles[] = 'underlined';
-                    }
-                }
                 /** @var \DOMNode $child */
                 $content .= static::encodeHTMLNode($child, $childStyles);
             }
@@ -121,8 +138,10 @@ class Exporter
                 case 'br':
                     return '\newline' . "\n";
                 case 'p':
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return $content . "\n";
                 case 'div':
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return $content . "\n";
                 case 'strong':
                 case 'b':
@@ -140,23 +159,20 @@ class Exporter
                 case 'sup':
                     return '\textsuperscript{' . $content . '}';
                 case 'blockquote':
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
                     $firstLine = '';
+                    $content   = static::addInsDelExtraStyles($content, $extraStyles);
                     if ($node->hasAttribute('start')) {
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
                     }
                     return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
-                    if (in_array('ins', $extraStyles)) {
-                        //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
-                        $content = '\textcolor{Insert}{' . $content . '}';
-                    }
-                    if (in_array('del', $extraStyles)) {
-                        $content = '\textcolor{Delete}{\sout{' . $content . '}}';
-                    }
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return '\item ' . $content . "\n";
                 case 'a':
                     if ($node->hasAttribute('href')) {
@@ -391,7 +407,7 @@ class Exporter
         $params   = \yii::$app->params;
         $exporter = new Exporter($layout, $params);
         $content  = \app\views\motion\LayoutHelper::renderTeX($motion);
-        $pdf = $exporter->createPDF([$content]);
+        $pdf      = $exporter->createPDF([$content]);
         \Yii::$app->cache->set($motion->getPdfCacheKey(), $pdf);
         return $pdf;
     }
@@ -420,7 +436,7 @@ class Exporter
         $params   = \yii::$app->params;
         $exporter = new Exporter($layout, $params);
         $content  = \app\views\amendment\LayoutHelper::renderTeX($amendment);
-        $pdf = $exporter->createPDF([$content]);
+        $pdf      = $exporter->createPDF([$content]);
         \Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);
         return $pdf;
     }

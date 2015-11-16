@@ -507,16 +507,16 @@ class Diff2
         $pendingInsert = '';
         $resolved      = [];
         foreach ($diffSections as $diffS) {
-            if (mb_strpos($diffS, '<del>###EMPTYINSERTED###</del>') === 0) {
-                $str = str_replace('<del>###EMPTYINSERTED###</del>', '', $diffS);
+            if (preg_match('/^<del( [^>]*)>###EMPTYINSERTED###<\/del>/siu', $diffS)) {
+                $str = preg_replace('/^<del( [^>]*)>###EMPTYINSERTED###<\/del>/siu', '', $diffS);
                 if (count($resolved) > 0) {
                     $resolved[count($resolved) - 1] .= $str;
                 } else {
                     $pendingInsert .= $str;
                 }
             } else {
-                $diffS         = str_replace('<ins>###EMPTYINSERTED###</ins>', '', $diffS);
-                $resolved[]    = $pendingInsert . $diffS;
+                $str = preg_replace('/^<ins( [^>]*)>###EMPTYINSERTED###<\/ins>/siu', '', $diffS);
+                $resolved[]    = $pendingInsert . $str;
                 $pendingInsert = '';
             }
         }

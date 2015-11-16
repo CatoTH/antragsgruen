@@ -81,6 +81,8 @@ class AmendmentSectionFormatter
             $diffSections = $diff->compareSectionedHtml($originals, $this->paragraphsNew, $diffFormatting);
             $htmlDiff     = implode("\n", $diffSections);
 
+            echo $htmlDiff . "\n\n";
+
             $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($htmlDiff, $this->firstLine);
         } catch (Internal $e) {
             var_dump($e);

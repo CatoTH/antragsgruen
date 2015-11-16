@@ -151,4 +151,24 @@ class HTML2TexTest extends TestBase
         $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
+
+    /**
+     */
+    public function testInserted()
+    {
+        $orig   = "<p class='inserted'>Neu <em>Neu2</em></p>";
+        $expect = "\\textcolor{Insert}{\\uline{Neu}\\uline{ }\\emph{\\uline{Neu2}}}\n";
+        $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testDeleted()
+    {
+        $orig   = "<p class='deleted'>Neu Neu2</p>";
+        $expect = "\\textcolor{Delete}{\\sout{Neu Neu2}}\n";
+        $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
 }
