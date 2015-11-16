@@ -55,8 +55,7 @@ class LayoutHelper
         if ($amendment->changeEditorial != '') {
             $title = Exporter::encodePlainString(\Yii::t('amend', 'editorial_hint'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-            $lines = LineSplitter::motionPara2lines($amendment->changeEditorial, false, PHP_INT_MAX);
-            $content->textMain .= TextSimple::getMotionLinesToTeX($lines) . "\n";
+            $content->textMain .= TextSimple::getMotionLinesToTeX([$amendment->changeEditorial]) . "\n";
         }
 
         foreach ($amendment->getSortedSections(false) as $section) {
@@ -66,8 +65,7 @@ class LayoutHelper
         if ($amendment->changeExplanation != '') {
             $title = Exporter::encodePlainString(\Yii::t('amend', 'reason'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-            $lines = LineSplitter::motionPara2lines($amendment->changeExplanation, false, PHP_INT_MAX);
-            $content->textMain .= TextSimple::getMotionLinesToTeX($lines) . "\n";
+            $content->textMain .= TextSimple::getMotionLinesToTeX([$amendment->changeExplanation]) . "\n";
         }
 
         $supporters = $amendment->getSupporters();

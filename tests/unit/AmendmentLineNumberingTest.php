@@ -3,6 +3,7 @@
 namespace unit;
 
 use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\DiffRenderer;
 use app\models\db\Amendment;
 use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
@@ -25,8 +26,12 @@ class AmendmentLineNumberingTest extends DBTestBase
                 $section = $sect;
             }
         }
-        $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        return $formatter->getGroupedDiffLinesWithNumbers();
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($section->getFirstLineNumber());
+        return $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, true);
     }
 
     /**
@@ -45,8 +50,11 @@ class AmendmentLineNumberingTest extends DBTestBase
                 $section = $sect;
             }
         }
-        $formatter = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        return $formatter->getDiffLinesWithNumbers();
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($section->getFirstLineNumber());
+        return $formatter->getDiffLinesWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, true);
     }
 
     /**
@@ -87,7 +95,7 @@ class AmendmentLineNumberingTest extends DBTestBase
     public function testTwoChangesPerLine()
     {
         $diff = $this->getSectionDiffBlocks(270, 2);
-        $text = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul><ul class="inserted"><li><ins>Neue Zeile</ins></li></ul>';
+        $text = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?<ins>Abcdsfd#</ins></li></ul><ul class="inserted"><li>Neue Zeile</li></ul>';
         $this->assertEquals([[
             'text'     => $text,
             'lineFrom' => 8,

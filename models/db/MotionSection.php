@@ -172,7 +172,7 @@ class MotionSection extends IMotionSection
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $paraNo => $para) {
             $lineLength = $this->getConsultation()->getSettings()->lineLength;
-            $linesOut   = LineSplitter::motionPara2lines($para, $lineNumbers, $lineLength);
+            $linesOut   = LineSplitter::splitHtmlToLines($para, $lineLength, '###LINENUMBER###');
 
             $paragraph              = new MotionSectionParagraph();
             $paragraph->paragraphNo = $paraNo;
@@ -232,7 +232,7 @@ class MotionSection extends IMotionSection
         $paras  = $this->getTextParagraphs();
         foreach ($paras as $para) {
             $lineLength = $this->getConsultation()->getSettings()->lineLength;
-            $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
+            $linesOut   = LineSplitter::splitHtmlToLines($para, $lineLength, '###LINENUMBER###');
             $return .= implode('', $linesOut) . "\n";
         }
         $return = trim($return);
@@ -260,7 +260,7 @@ class MotionSection extends IMotionSection
         $paras = $this->getTextParagraphs();
         foreach ($paras as $para) {
             $lineLength = $this->getConsultation()->getSettings()->lineLength;
-            $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
+            $linesOut   = LineSplitter::splitHtmlToLines($para, $lineLength, '###LINENUMBER###');
             $num += count($linesOut);
         }
         $this->setCacheItem('getNumberOfCountableLines', $num);

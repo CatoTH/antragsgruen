@@ -4,12 +4,11 @@ namespace app\models\sectionTypes;
 
 use app\components\diff\AmendmentDiffMerger;
 use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\Diff;
+use app\components\diff\DiffRenderer;
 use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
-use app\components\LineSplitter;
 use app\components\opendocument\Text;
 use app\components\UrlHelper;
 use app\controllers\Base;
@@ -39,7 +38,7 @@ class TextSimple extends ISectionType
     public function getAmendmentFormField()
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
-        $fixedWidth                                 = $this->section->getSettings()->fixedWidth;
+        $fixedWidth                           = $this->section->getSettings()->fixedWidth;
         if ($this->section->getSettings()->motionType->amendmentMultipleParagraphs) {
             return $this->getTextAmendmentFormField(false, $this->section->dataRaw, $fixedWidth);
         } else {
@@ -179,15 +178,20 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_INLINE);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
         if (count($diffGroups) == 0) {
             return '';
         }
 
-        $str       = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
-        $firstLine = $section->getFirstLineNumber();
-        $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+        $str  = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
+        $html = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
         $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
         return $str;
     }
@@ -199,8 +203,15 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+        $firstLine  = $section->getFirstLineNumber();
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
+
         if (count($diffGroups) == 0) {
             return '';
         }
@@ -213,9 +224,8 @@ class TextSimple extends ISectionType
             $wrapStart .= ' fixedWidthFont';
         }
         $wrapStart .= '">';
-        $wrapEnd   = '</div></section>';
-        $firstLine = $section->getFirstLineNumber();
-        $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
+        $wrapEnd = '</div></section>';
+        $html    = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
         $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
         $str .= '</div>';
         $str .= '</section>';
@@ -297,10 +307,15 @@ class TextSimple extends ISectionType
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
         /** @var AmendmentSection $section */
-        $section = $this->section;
+        $section    = $this->section;
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
 
         if (count($diffGroups) > 0) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
@@ -358,8 +373,19 @@ class TextSimple extends ISectionType
         $out = '';
         foreach ($diffGroups as $diff) {
             $text      = $diff['text'];
-            $hasInsert = (mb_strpos($text, '<ins>') !== false || mb_strpos($text, 'class="inserted"') !== false);
-            $hasDelete = (mb_strpos($text, '<del>') !== false || mb_strpos($text, 'class="deleted"') !== false);
+            $hasInsert = $hasDelete = false;
+            if (mb_strpos($text, 'class="inserted"') !== false) {
+                $hasInsert = true;
+            }
+            if (mb_strpos($text, 'class="deleted"') !== false) {
+                $hasDelete = true;
+            }
+            if (preg_match('/<ins( [^>]*)?>/siu', $text)) {
+                $hasInsert = true;
+            }
+            if (preg_match('/<del( [^>]*)?>/siu', $text)) {
+                $hasDelete = true;
+            }
             $out .= $wrapStart;
             $out .= '<h4 class="lineSummary">';
             if ($diff['newLine']) {
@@ -491,8 +517,7 @@ class TextSimple extends ISectionType
         } else {
             $paras = $section->getTextParagraphs();
             foreach ($paras as $para) {
-                $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
-                $tex .= static::getMotionLinesToTeX($lines) . "\n";
+                $tex .= static::getMotionLinesToTeX([$para]) . "\n";
             }
         }
         if ($isRight) {
@@ -512,10 +537,15 @@ class TextSimple extends ISectionType
         $tex = '';
 
         /** @var AmendmentSection $section */
-        $section = $this->section;
+        $section    = $this->section;
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE, true);
 
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->getSettings()->title);
@@ -551,12 +581,19 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
-        $diff       = static::formatDiffGroup($diffGroups);
-        $diff       = str_replace('<h4', '<br><h4', $diff);
-        $diff       = str_replace('</h4>', '</h4><br>', $diff);
-        $diff       = str_replace('###FORCELINEBREAK###', '<br>', $diff);
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
+
+        $diff = static::formatDiffGroup($diffGroups);
+        $diff = str_replace('<h4', '<br><h4', $diff);
+        $diff = str_replace('</h4>', '</h4><br>', $diff);
+        $diff = str_replace('###FORCELINEBREAK###', '<br>', $diff);
         if (mb_substr($diff, 0, 4) == '<br>') {
             $diff = mb_substr($diff, 4);
         }
@@ -590,8 +627,7 @@ class TextSimple extends ISectionType
         } else {
             $paras = $section->getTextParagraphs();
             foreach ($paras as $para) {
-                $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
-                $odt->addHtmlTextBlock(implode('<br>', $lines), false);
+                $odt->addHtmlTextBlock([$para], false);
             }
         }
     }
@@ -604,8 +640,15 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffLinesWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, true);
+
         if (count($diffGroups) == 0) {
             return;
         }
