@@ -80,8 +80,8 @@ class LineSplit2Test extends TestBase
         $orig   = "1angehen, ist von<br>gro&szlig;em Wert f&uuml;r<br>\nunser Land. Ver&auml;nderung " .
             "kann nur gelingen, wenn sie von Vielen sdfsdf sdfsdsdf dfdfs sf d";
         $expect = [
-            "1angehen, ist von###FORCELINEBREAK###",
-            "großem Wert für###FORCELINEBREAK###",
+            "1angehen, ist von<br>",
+            "großem Wert für<br>",
             "unser Land. Veränderung kann nur gelingen, wenn sie von Vielen sdfsdf sdfsdsdf ",
             "dfdfs sf d"
         ];
