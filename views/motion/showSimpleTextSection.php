@@ -81,7 +81,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
                 $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
             }
-            $line       = str_replace('###FORCELINEBREAK###', '', $line);
+            $line       = str_replace('<br>', '', $line);
             $linesArr[] = $line;
         }
         echo implode('<br>', $linesArr);

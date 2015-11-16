@@ -46,7 +46,6 @@ class Exporter
             '^'                          => '\^{}',
             '\#\#\#LINENUMBER\#\#\#'     => '###LINENUMBER###',
             '\#\#\#LINEBREAK\#\#\#'      => '###LINEBREAK###',
-            '\#\#\#FORCELINEBREAK\#\#\#' => '###FORCELINEBREAK###',
         ];
         return str_replace(array_keys($replaces), array_values($replaces), $str);
     }
@@ -243,8 +242,6 @@ class Exporter
             $out .= static::encodeHTMLNode($child);
         }
 
-        $out = str_replace('###FORCELINEBREAK###', "\n\\newline\n", $out);
-
         if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
             $out = str_replace(' ', '{\color{white}.}', $out);
         }
@@ -390,7 +387,7 @@ class Exporter
     public static function createMotionPdf($motion)
     {
         $cache = \Yii::$app->cache->get($motion->getPdfCacheKey());
-        if ($cache) {
+        if ($cache && !YII_DEBUG) {
             return $cache;
         }
         $texTemplate = $motion->motionType->texTemplate;

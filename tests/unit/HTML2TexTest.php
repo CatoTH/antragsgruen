@@ -31,11 +31,10 @@ class HTML2TexTest extends TestBase
     public function testLineBreaks()
     {
         $orig   = [
-            '<p>###LINENUMBER###Normaler Text <strong>fett und <em>kursiv</em></strong>###FORCELINEBREAK###',
+            '<p>###LINENUMBER###Normaler Text <strong>fett und <em>kursiv</em></strong><br>',
             '###LINENUMBER###Zeilenumbruch <span class="underline">unterstrichen</span></p>',
         ];
-        $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}' . "\n" .
-            '\\newline' . "\n" .
+        $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}\linebreak' . "\n" .
             'Zeilenumbruch \uline{unterstrichen}' . "\n";
         $out    = TextSimple::getMotionLinesToTeX($orig);
         $this->assertEquals($expect, $out);
@@ -45,8 +44,7 @@ class HTML2TexTest extends TestBase
             'Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, ' .
             'greißlicha Uhu, oida Daddara!</p>';
         $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, \\linebreak\n" .
-            "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\n" .
-            "\\newline\n" .
+            "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\linebreak\n" .
             "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, \\linebreak\n" .
             "Oaschgsicht, greißlicha Uhu, oida Daddara!\n";
 

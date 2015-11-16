@@ -81,7 +81,7 @@ class LineSplit2Test extends TestBase
             "kann nur gelingen, wenn sie von Vielen sdfsdf sdfsdsdf dfdfs sf d";
         $expect = [
             "1angehen, ist von<br>",
-            "großem Wert für<br>",
+            "großem Wert für<br>\n",
             "unser Land. Veränderung kann nur gelingen, wenn sie von Vielen sdfsdf sdfsdsdf ",
             "dfdfs sf d"
         ];
@@ -193,8 +193,8 @@ class LineSplit2Test extends TestBase
         $orig   = '<p><br><strong>Demokratie und Freiheit </strong><br>' . "\r\n" .
             'Demokratie und Freiheit gehören untrennbar zusammen.</p>';
         $expect = [
-            '<p>###LINENUMBER######FORCELINEBREAK###',
-            '###LINENUMBER###<strong>Demokratie und Freiheit </strong>###FORCELINEBREAK###',
+            '<p>###LINENUMBER###<br>',
+            '###LINENUMBER###<strong>Demokratie und Freiheit </strong><br>' . "\n",
             '###LINENUMBER###Demokratie und Freiheit gehören untrennbar zusammen.</p>',
         ];
         $out    = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');

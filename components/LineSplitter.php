@@ -50,10 +50,11 @@ class LineSplitter
                 }
             } else {
                 if (mb_substr($this->text, $i, 4) == '<br>') {
-                    $lines[] = mb_substr($currLine, 0, mb_strlen($currLine) - 1) . '###FORCELINEBREAK###';
+                    $lines[] = mb_substr($currLine, 0, mb_strlen($currLine) - 1) . '<br>';
                     $i += 3;
                     if (mb_substr($this->text, $i + 1, 1) == "\n") {
                         $i++;
+                        $lines[count($lines) - 1] .= "\n";
                     }
                     $currLine      = '';
                     $currLineCount = 1;

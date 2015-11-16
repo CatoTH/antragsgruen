@@ -191,7 +191,7 @@ class TextSimple extends ISectionType
         }
 
         $str  = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
-        $html = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+        $str .= TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
         return $str;
     }
 
@@ -224,7 +224,7 @@ class TextSimple extends ISectionType
         }
         $wrapStart .= '">';
         $wrapEnd = '</div></section>';
-        $html    = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
+        $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
         $str .= '</div>';
         $str .= '</section>';
 
@@ -466,6 +466,8 @@ class TextSimple extends ISectionType
     public static function getMotionLinesToTeX($lines)
     {
         $str = implode('###LINEBREAK###', $lines);
+        $str = str_replace('<br>###LINEBREAK###', '###LINEBREAK###', $str);
+        $str = str_replace('<br>' . "\n" . '###LINEBREAK###', '###LINEBREAK###', $str);
         $str = Exporter::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
