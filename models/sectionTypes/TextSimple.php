@@ -192,7 +192,6 @@ class TextSimple extends ISectionType
 
         $str  = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
         $html = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
-        $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
         return $str;
     }
 
@@ -226,7 +225,6 @@ class TextSimple extends ISectionType
         $wrapStart .= '">';
         $wrapEnd = '</div></section>';
         $html    = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
-        $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
         $str .= '</div>';
         $str .= '</section>';
 
@@ -268,7 +266,6 @@ class TextSimple extends ISectionType
                 $linesArr = [];
                 foreach ($paragraph->lines as $line) {
                     $line       = str_replace('###LINENUMBER###', '', $line);
-                    $line       = str_replace('###FORCELINEBREAK###', '', $line);
                     $linesArr[] = $line . '';
                 }
 
@@ -324,7 +321,6 @@ class TextSimple extends ISectionType
             }
 
             $html = static::formatDiffGroup($diffGroups);
-            $html = str_replace('###FORCELINEBREAK###', '<br>', $html);
 
             $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         }
@@ -435,8 +431,9 @@ class TextSimple extends ISectionType
         $strNewlineIns = '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins>';
         $out           = str_replace('<del> </del>', $strSpaceDel, $out);
         $out           = str_replace('<ins> </ins>', $strSpaceIns, $out);
+        $out           = str_replace('<del><br></del>', $strNewlineDel . '<del><br></del>', $out);
+        $out           = str_replace('<ins><br></ins>', $strNewlineIns . '<ins><br></ins>', $out);
         $out           = str_replace($strSpaceDel . $strNewlineIns, $strNewlineIns, $out);
-        $out           = str_replace($strSpaceDel . '###FORCELINEBREAK###' . $strNewlineIns, '<br>' . $strNewlineIns, $out);
         $out           = str_replace($strSpaceDel . '<ins></ins><br>', '<br>', $out);
         $out           = str_replace('###LINENUMBER###', '', $out);
         $repl          = '<br></p></div>';
@@ -469,11 +466,9 @@ class TextSimple extends ISectionType
     public static function getMotionLinesToTeX($lines)
     {
         $str = implode('###LINEBREAK###', $lines);
-        $str = str_replace('###FORCELINEBREAK######LINEBREAK###', '###FORCELINEBREAK###', $str);
         $str = Exporter::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
-        $str = str_replace('###FORCELINEBREAK###\linebreak', '\newline', $str);
         return $str;
     }
 
@@ -592,7 +587,6 @@ class TextSimple extends ISectionType
         $diff = static::formatDiffGroup($diffGroups);
         $diff = str_replace('<h4', '<br><h4', $diff);
         $diff = str_replace('</h4>', '</h4><br>', $diff);
-        $diff = str_replace('###FORCELINEBREAK###', '<br>', $diff);
         if (mb_substr($diff, 0, 4) == '<br>') {
             $diff = mb_substr($diff, 4);
         }
@@ -616,7 +610,6 @@ class TextSimple extends ISectionType
             foreach ($paragraphs as $paragraph) {
                 $html = implode('<br>', $paragraph->lines);
                 $html = str_replace('###LINENUMBER###', '', $html);
-                $html = str_replace('###FORCELINEBREAK###', '', $html);
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';
                 }
@@ -656,7 +649,6 @@ class TextSimple extends ISectionType
 
         $firstLine = $section->getFirstLineNumber();
         $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
-        $html      = str_replace('###FORCELINEBREAK###', '<br>', $html);
 
         $odt->addHtmlTextBlock($html, false);
     }

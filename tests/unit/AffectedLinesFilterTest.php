@@ -13,6 +13,63 @@ use Codeception\Specify;
 class AffectedLinesFilterTest extends TestBase
 {
 
+
+    /**
+     */
+    public function testUlLiInserted()
+    {
+
+        // 'Inserted LIs should be shown'
+        $in     = '<ul class="inserted"><li>Oamoi a Maß und no a Maß</li></ul>';
+        $expect = [[
+            'text'     => '<ul class="inserted"><li>Oamoi a Maß und no a Maß</li></ul>',
+            'lineFrom' => 0,
+            'lineTo'   => 0,
+        ]];
+        $out    = AffectedLinesFilter::splitToAffectedLines($in, 1);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testUlLiWithLineBreaks()
+    {
+        // 'Line breaks within lists'
+
+        $in = '<p>###LINENUMBER###Do nackata Wurscht i hob di ' .
+            '###LINENUMBER###narrisch gean, Diandldrahn Deandlgwand vui ' .
+            '###LINENUMBER###Do nackata</p>' . "\n" .
+            '<ul><li>###LINENUMBER###Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand ###LINENUMBER###huift vui woaß?</li></ul>' . "\n" .
+            '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>';
+
+        $expect = [[
+            'text'     => '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>',
+            'lineFrom' => 5,
+            'lineTo'   => 5
+        ]];
+
+        $out = AffectedLinesFilter::splitToAffectedLines($in, 1);
+
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testUlLiInlineFormatted()
+    {
+        $in     = '<div style="color:#FF0000; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>';
+        $expect = [[
+            'text'     => '<div style="color:#FF0000;margin:0;padding:0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>',
+            'lineFrom' => 1,
+            'lineTo'   => 1,
+        ]];
+
+        $out = AffectedLinesFilter::splitToAffectedLines($in, 1);
+
+        $this->assertEquals($expect, $out);
+    }
+
+
     /**
      */
     public function testMultilineParagraph()
@@ -185,5 +242,172 @@ class AffectedLinesFilterTest extends TestBase
         $diff      = implode('', $diffParas);
         $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 1);
         $this->assertEquals($expected, $lines);
+    }
+
+
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
+    public function testFilterAffectedBlocks1()
+    {
+        $in       = [
+            [
+                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
+                'lineFrom' => 14,
+                'lineTo'   => 14,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Marei, des um Godds wujn Biakriagal!',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
+                'lineFrom' => 18,
+                'lineTo'   => 1,
+                'newLine'  => false,
+            ],
+        ];
+        $expect   = [
+            [
+                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Marei, des um Godds wujn Biakriagal!',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
+                'lineFrom' => 18,
+                'lineTo'   => 1,
+                'newLine'  => false,
+            ],
+        ];
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($in);
+        $this->assertEquals($expect, $filtered);
+    }
+
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
+    public function testFilterAffectedBlocks2()
+    {
+        $in       = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 1.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
+                'newLine'  => false,
+            ],
+        ];
+        $expect   = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
+                'newLine'  => false,
+            ],
+        ];
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($in);
+        $this->assertEquals($expect, $filtered);
+    }
+
+
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
+    public function testFilterAffectedBlocks3()
+    {
+        $in       = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 1.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 19,
+                'lineTo'   => 19,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 20,
+                'lineTo'   => 20,
+                'newLine'  => false,
+            ],
+        ];
+        $expect   = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 19,
+                'lineTo'   => 19,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 20,
+                'lineTo'   => 20,
+                'newLine'  => false,
+            ],
+        ];
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($in);
+        $this->assertEquals($expect, $filtered);
     }
 }

@@ -239,7 +239,6 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFirstDiffLine()
     {
-
         $cached = $this->getCacheItem('getFirstDiffLine');
         if ($cached !== null) {
             return $cached;

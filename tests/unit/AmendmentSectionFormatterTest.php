@@ -25,9 +25,6 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setFirstLineNo(1);
         $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_INLINE);
 
-        var_dump($diffGroups);
-        die();
-
         $text   = TextSimple::formatDiffGroup($diffGroups);
         $expect = '<h4 class="lineSummary">Von Zeile 6 bis 10:</h4><div><p>Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.<br><ins class="space">[Zeilenumbruch]</ins><ins><br></ins>Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich <del>dem rechten </del><del>Mob</del><ins>konsequent rechtsextremen Tendenzen</ins> entgegenstellen, <del>der</del><ins>welche</ins> die Not von Schutzsuchenden für Hass und <del>rechtsextreme</del><ins>populistische</ins> Propaganda missbrauch<del>t</del><ins>en</ins>.</p></div>';
         $this->assertEquals($expect, $text);
@@ -47,65 +44,10 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals(1, count($diffGroups));
 
         $text   = TextSimple::formatDiffGroup($diffGroups);
-        $expect = '<h4 class="lineSummary">In Zeile 1 löschen:</h4><div><p>Test<del style="color: red; text-decoration: line-through;"> 123</del></p></div>';
+        $expect = '<h4 class="lineSummary">In Zeile 1 löschen:</h4><div><p>Test<del style="color:#FF0000;text-decoration:line-through;"> 123</del></p></div>';
         $this->assertEquals($expect, $text);
     }
 
-
-    /**
-     */
-    public function testUlLiInserted()
-    {
-
-        // 'Inserted LIs should be shown'
-        $in     = [[
-            'text' => '<ul class="inserted"><li>Oamoi a Maß und no a Maß</li></ul>',
-        ]];
-        $expect = $in;
-        $out    = AmendmentSectionFormatter::filterAffectedBlocks($in);
-        $this->assertEquals($expect, $out);
-    }
-
-    /**
-     */
-    public function testUlLiWithLineBreaks()
-    {
-        // 'Line breaks within lists'
-
-        $in = '<p>###LINENUMBER###Do nackata Wurscht i hob di ' .
-            '###LINENUMBER###narrisch gean, Diandldrahn Deandlgwand vui ' .
-            '###LINENUMBER###Do nackata</p>' . "\n" .
-            '<ul><li>###LINENUMBER###Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand ###LINENUMBER###huift vui woaß?</li></ul>' . "\n" .
-            '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>';
-
-        $expect = [
-            '<p>',
-            '###LINENUMBER###Do nackata Wurscht i hob di ',
-            '###LINENUMBER###narrisch gean, Diandldrahn Deandlgwand vui ',
-            '###LINENUMBER###Do nackata</p>',
-            '<ul><li>###LINENUMBER###Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand ###LINENUMBER###huift vui woaß?</li></ul>',
-            '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>'
-        ];
-
-        $out = AmendmentSectionFormatter::getDiffSplitToLines($in);
-
-        $this->assertEquals($expect, $out);
-    }
-
-    /**
-     */
-    public function testUlLiInlineFormatted()
-    {
-        $in     = '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>';
-        $expect = [
-            '<div style="color: red; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
-            '</div>',
-        ];
-
-        $out = AmendmentSectionFormatter::getDiffSplitToLines($in);
-
-        $this->assertEquals($expect, $out);
-    }
 
     /**
      */
@@ -122,13 +64,13 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 
         $expect = [
             [
-                'text'     => 'Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ',
+                'text'     => '###LINENUMBER###Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ',
                 'lineFrom' => 5,
                 'lineTo'   => 5,
                 'newLine'  => false,
             ],
             [
-                'text'     => 'Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen ',
+                'text'     => '###LINENUMBER###Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen ',
                 'lineFrom' => 6,
                 'lineTo'   => 6,
                 'newLine'  => false,
@@ -151,7 +93,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $formatter->setTextOriginal($orig);
         $formatter->setTextNew($new);
         $formatter->setFirstLineNo(1);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES,);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
 
 
         $this->assertEquals($expect, $diffGroups);
@@ -160,189 +102,4 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         // - <li>s that are changed
         // - <li>s that are deleted
     }
-
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
-    public function testFilterAffectedBlocks1()
-    {
-        $in       = [
-            [
-                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
-                'lineFrom' => 14,
-                'lineTo'   => 14,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
-                'lineFrom' => 15,
-                'lineTo'   => 15,
-                'newLine'  => false,
-            ], [
-                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.',
-                'lineFrom' => 16,
-                'lineTo'   => 16,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Marei, des um Godds wujn Biakriagal!',
-                'lineFrom' => 17,
-                'lineTo'   => 17,
-                'newLine'  => false,
-            ], [
-                'text'     => 'is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
-                'lineFrom' => 18,
-                'lineTo'   => 1,
-                'newLine'  => false,
-            ],
-        ];
-        $expect   = [
-            [
-                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.</del>',
-                'lineFrom' => 16,
-                'lineTo'   => 16,
-                'newLine'  => false,
-            ], [
-                'text'     => '<del>Marei, des um Godds wujn Biakriagal!</del>',
-                'lineFrom' => 17,
-                'lineTo'   => 17,
-                'newLine'  => false,
-            ], [
-                'text'     => '<del>is schee jedza hogg di hera dringma aweng Spezi nia Musi.</del>',
-                'lineFrom' => 18,
-                'lineTo'   => 1,
-                'newLine'  => false,
-            ],
-        ];
-        $filtered = AmendmentSectionFormatter::filterAffectedBlocks($in);
-        $this->assertEquals($expect, $filtered);
-    }
-
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
-    public function testFilterAffectedBlocks2()
-    {
-        $in       = [
-            [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 15,
-                'lineTo'   => 15,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Bla 1.',
-                'lineFrom' => 16,
-                'lineTo'   => 16,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Bla 2.',
-                'lineFrom' => 17,
-                'lineTo'   => 17,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 18,
-                'lineTo'   => 18,
-                'newLine'  => false,
-            ],
-        ];
-        $expect   = [
-            [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 15,
-                'lineTo'   => 15,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 18,
-                'lineTo'   => 18,
-                'newLine'  => false,
-            ],
-        ];
-        $filtered = AmendmentSectionFormatter::filterAffectedBlocks($in);
-        $this->assertEquals($expect, $filtered);
-    }
-
-
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
-    public function testFilterAffectedBlocks3()
-    {
-        $in       = [
-            [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 15,
-                'lineTo'   => 15,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Bla 1.',
-                'lineFrom' => 16,
-                'lineTo'   => 16,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Bla 2.',
-                'lineFrom' => 17,
-                'lineTo'   => 17,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 18,
-                'lineTo'   => 18,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Bla 2.',
-                'lineFrom' => 19,
-                'lineTo'   => 19,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 20,
-                'lineTo'   => 20,
-                'newLine'  => false,
-            ],
-        ];
-        $expect   = [
-            [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 15,
-                'lineTo'   => 15,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 18,
-                'lineTo'   => 18,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Bla 2.',
-                'lineFrom' => 19,
-                'lineTo'   => 19,
-                'newLine'  => false,
-            ], [
-                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
-                'lineFrom' => 20,
-                'lineTo'   => 20,
-                'newLine'  => false,
-            ],
-        ];
-        $filtered = AmendmentSectionFormatter::filterAffectedBlocks($in);
-        $this->assertEquals($expect, $filtered);
-    }
-
-    /**
-     */
-    public function testLinesWithoutNumber()
-    {
-        $in     = '<p><ins>New line at beginning</ins></p>' . "\n" .
-            '<p>###LINENUMBER###Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma ###LINENUMBER###sagrisch guad.</p>' . "\n" .
-            '<p><ins>Neuer Absatz</ins></p>';
-        $expect = [
-            '<p><ins>New line at beginning</ins></p>',
-            '<p>',
-            '###LINENUMBER###Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma ',
-            '###LINENUMBER###sagrisch guad.</p>',
-            '<p><ins>Neuer Absatz</ins></p>',
-        ];
-        $out    = AmendmentSectionFormatter::getDiffSplitToLines($in);
-        $this->assertEquals($expect, $out);
-    }
-
 }
