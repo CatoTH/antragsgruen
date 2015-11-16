@@ -114,9 +114,7 @@ class DiffRenderer
      */
     private function addInsStyles(\DOMElement $element)
     {
-        if ($this->formatting == static::FORMATTING_CLASSES) {
-            static::nodeAddClass($element, 'inserted');
-        }
+        static::nodeAddClass($element, 'inserted');
         if ($this->formatting == static::FORMATTING_INLINE) {
             $element->setAttribute('style', 'color: green; text-decoration: underline;');
         }
@@ -127,9 +125,7 @@ class DiffRenderer
      */
     private function addDelStyles(\DOMElement $element)
     {
-        if ($this->formatting == static::FORMATTING_CLASSES) {
-            static::nodeAddClass($element, 'deleted');
-        }
+        static::nodeAddClass($element, 'deleted');
         if ($this->formatting == static::FORMATTING_INLINE) {
             $element->setAttribute('style', 'color: red; text-decoration: line-through;');
         }

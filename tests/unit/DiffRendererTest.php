@@ -116,4 +116,17 @@ class DiffRendererTest extends TestBase
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<ul><li>Test<p class="inserted">Neuer Absatz</p>.</li></ul>', $rendered);
     }
+
+    /**
+     */
+    public function testInsertedListElement()
+    {
+        return; // @TODO
+
+        $renderer = new DiffRenderer();
+
+        $html     = '<ul><li>###LINENUMBER###Nested 1###INS_START###</li><li>Nested <strong>2</strong>###INS_END###</li></ul>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<ul><li>###LINENUMBER###Nested 1</li><li class="inserted">Nested <strong>2</strong></li></ul>', $rendered);
+    }
 }

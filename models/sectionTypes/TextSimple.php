@@ -388,7 +388,8 @@ class TextSimple extends ISectionType
             }
             $out .= $wrapStart;
             $out .= '<h4 class="lineSummary">';
-            if ($diff['newLine']) {
+            $isInsertedLine = (mb_strpos($diff['text'], '###LINENUMBER###') === false);
+            if ($isInsertedLine) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
                     $out .= \Yii::t('diff', 'after_line');
                 } elseif ($hasDelete) {

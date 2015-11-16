@@ -203,6 +203,20 @@ class LineSplitter
         }
     }
 
+    /**
+     * @param string[] $paragraphs
+     * @param int $lineLength
+     * @return \string[]
+     */
+    public static function addLineNumbersToParagraphs($paragraphs, $lineLength)
+    {
+        for ($i = 0; $i < count($paragraphs); $i++) {
+            $lines          = static::splitHtmlToLines($paragraphs[$i], $lineLength, '###LINENUMBER###');
+            $paragraphs[$i] = implode('', $lines);
+        }
+        return $paragraphs;
+    }
+
 
     /**
      * @param string $para
