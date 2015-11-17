@@ -286,11 +286,12 @@ class TextSimple extends ISectionType
                 $pdf->Ln(7);
             }
         } else {
-            $paras = $section->getTextParagraphs();
+            $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
+                $html = str_replace('###LINENUMBER###', '', implode('', $para));
                 $y = $pdf->getY();
                 $pdf->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
-                $pdf->writeHTMLCell(173, '', 24, '', $para, 0, 1, 0, true, '', true);
+                $pdf->writeHTMLCell(173, '', 24, '', $html, 0, 1, 0, true, '', true);
 
                 $pdf->Ln(7);
             }
@@ -511,9 +512,10 @@ class TextSimple extends ISectionType
                 $tex .= "\n\\nolinenumbers\n";
             }
         } else {
-            $paras = $section->getTextParagraphs();
+            $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
-                $tex .= static::getMotionLinesToTeX([$para]) . "\n";
+                $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $tex .= static::getMotionLinesToTeX([$html]) . "\n";
             }
         }
         if ($isRight) {
@@ -619,9 +621,10 @@ class TextSimple extends ISectionType
                 $odt->addHtmlTextBlock($html, true);
             }
         } else {
-            $paras = $section->getTextParagraphs();
+            $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
-                $odt->addHtmlTextBlock($para, false);
+                $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $odt->addHtmlTextBlock($html, false);
             }
         }
     }

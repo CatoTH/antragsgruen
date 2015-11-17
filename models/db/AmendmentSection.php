@@ -2,7 +2,8 @@
 
 namespace app\models\db;
 
-use app\components\diff\Diff;
+use app\components\diff\Diff2;
+use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
@@ -170,32 +171,46 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
-     * @param array $origParagraphs
+     * @param array $origParagraphLines
      * @return MotionSectionParagraphAmendment[]
      */
-    public function diffToOrigParagraphs($origParagraphs)
+    public function diffToOrigParagraphs($origParagraphLines)
     {
         $cached = $this->getCacheItem('diffToOrigParagraphs');
         if ($cached !== null) {
             return $cached;
         }
 
-        $diff         = new Diff();
-        $amParagraphs = $diff->computeAmendmentParagraphDiff($origParagraphs, $this);
+        $origParagraphs = [];
+        foreach ($origParagraphLines as $paraNo => $para) {
+            $origParagraphs[$paraNo] = implode('', $para);
+        }
+
+        $firstLine   = $this->getFirstLineNumber();
+
+        $amParagraphs = [];
+        $newSections  = HTMLTools::sectionSimpleHTML($this->data);
+        $diff         = new Diff2();
+        $diffParas    = $diff->compareSectionedHtml($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
+
+        foreach ($diffParas as $paraNo => $diffPara) {
+            $firstDiffPos = DiffRenderer::lineContainsDiff($diffPara);
+            if ($firstDiffPos !== false) {
+                $unchanged = mb_substr($diffPara, 0, $firstDiffPos);
+                $firstDiffLine = $firstLine + mb_substr_count($unchanged, '###LINENUMBER###') - 1;
+                $amSec          = new MotionSectionParagraphAmendment(
+                    $this->amendmentId,
+                    $this->sectionId,
+                    $paraNo,
+                    $diffPara,
+                    $firstDiffLine
+                );
+                $amParagraphs[] = $amSec;
+            }
+            $firstLine += mb_substr_count($diffPara, '###LINENUMBER###');
+        }
 
         $this->setCacheItem('diffToOrigParagraphs', $amParagraphs);
-        return $amParagraphs;
-    }
-
-    /**
-     * @param array $origParagraphs
-     * @return string[]
-     */
-    public function getAffectedParagraphs($origParagraphs)
-    {
-        $amParas      = HTMLTools::sectionSimpleHTML($this->data);
-        $diff         = new Diff();
-        $amParagraphs = $diff->computeAmendmentAffectedParagraphs($origParagraphs, $amParas);
         return $amParagraphs;
     }
 }

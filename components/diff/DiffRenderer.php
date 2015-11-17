@@ -392,4 +392,34 @@ class DiffRenderer
         }
         return $str;
     }
+
+    /**
+     * @param string $line
+     * @return false|int
+     */
+    public static function lineContainsDiff($line)
+    {
+        $firstDiffs = [];
+        if (preg_match('/(<ins( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+            // Workaround: PREG_OFFSET_CAPTURE ignores utf-8
+            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
+            $firstDiffs[] = $pos;
+        }
+        if (preg_match('/(<del( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
+            $firstDiffs[] = $pos;
+        }
+        if (preg_match('/(<[^>]+[ "]inserted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
+            $firstDiffs[] = $pos;
+        }
+        if (preg_match('/(<[^>]+[ "]deleted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
+            $firstDiffs[] = $pos;
+        }
+        if (count($firstDiffs) == 0) {
+            return false;
+        }
+        return min($firstDiffs);
+    }
 }

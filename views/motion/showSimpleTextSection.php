@@ -107,7 +107,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             echo '</div>';
         }
         echo '</div></div>';
-        echo $amendmentSection->strDiff;
+        echo str_replace('###LINENUMBER###', '', $amendmentSection->strDiff);
         echo '</div>';
 
         // Seems to be necessary to limit memory consumption

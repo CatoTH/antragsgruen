@@ -141,6 +141,7 @@ class AmendmentDiffMerger
             $this->diffParagraphs[$para] = [];
         }
         foreach ($sections as $section) {
+
             $affectedParas = $section->getAffectedParagraphs($this->paras);
             $this->addAmendingParagraphs($section->amendmentId, $affectedParas);
         }

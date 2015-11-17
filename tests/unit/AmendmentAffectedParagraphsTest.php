@@ -2,17 +2,24 @@
 
 namespace unit;
 
+use app\components\HTMLTools;
 use app\models\db\AmendmentSection;
 use Codeception\Specify;
 
 class AmendmentAffectedParagraphsTest extends DBTestBase
 {
+    /**
+     * @param int $amendmentId
+     * @param int $sectionId
+     * @return \string[]
+     * @throws \app\models\exceptions\Internal
+     */
     private function getAffected($amendmentId, $sectionId)
     {
         /** @var AmendmentSection $section */
         $section   = AmendmentSection::findOne(['amendmentId' => $amendmentId, 'sectionId' => $sectionId]);
         $orig      = $section->getOriginalMotionSection();
-        $origParas = $orig->getTextParagraphs();
+        $origParas = HTMLTools::sectionSimpleHTML($orig->data);
         return $section->getAffectedParagraphs($origParas);
     }
 

@@ -129,4 +129,34 @@ class DiffRendererTest extends TestBase
         $rendered = $renderer->renderHtmlWithPlaceholders($html);
         $this->assertEquals('<ul><li>###LINENUMBER###Nested 1</li><li class="inserted">Nested <strong>2</strong></li></ul>', $rendered);
     }
+
+    /**
+     */
+    public function testLineContainsDiff()
+    {
+        $str = 'Test<ins class="irgendwas">Bla';
+        $this->assertEquals(4, DiffRenderer::lineContainsDiff($str));
+
+        $str = 'Test ä<ins class="irgendwas">Bla';
+        $this->assertEquals(6, DiffRenderer::lineContainsDiff($str));
+
+        $str = 'Test<inserted class="irgendwas">Bla';
+        $this->assertFalse(DiffRenderer::lineContainsDiff($str));
+
+        $str = 'Test</ins>';
+        $this->assertFalse(DiffRenderer::lineContainsDiff($str));
+
+        $str = '<pre class="inserted">Blabla';
+        $this->assertEquals(0, DiffRenderer::lineContainsDiff($str));
+
+        $str = '<pre class="x inserted bold">Blabla';
+        $this->assertEquals(0, DiffRenderer::lineContainsDiff($str));
+
+        $str = '<pre class="insertedbold">Blabla';
+        $this->assertEquals(0, DiffRenderer::lineContainsDiff($str));
+
+        $str = '<pre> class="inserted" Blabla';
+        $this->assertEquals(0, DiffRenderer::lineContainsDiff($str));
+    }
+
 }
