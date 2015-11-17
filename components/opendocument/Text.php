@@ -240,6 +240,11 @@ class Text extends Base
      */
     protected function html2ooNodes($html, $lineNumbered)
     {
+        if (!is_string($html)) {
+            echo print_r($html, true);
+            echo print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
+            die();
+        }
         $body = HTMLTools::html2DOM($html);
 
         $retNodes = [];

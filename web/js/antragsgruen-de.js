@@ -8,7 +8,7 @@ ANTRAGSGRUEN_STRINGS = {
         "draft_restore_confirm": "Diesen Entwurf wiederherstellen?",
         "min_x_supporter": "Es müssen mindestens %NUM% UnterstützerInnen angegeben werden.",
         "missing_resolution_date": "Es muss ein Beschlussdatum angegeben werden.",
-        "pw_x_chars": "Das Password muss mindestens %NUM% Buchstaben haben.",
+        "pw_x_chars": "Das Passwort muss mindestens %NUM% Buchstaben haben.",
         "pw_no_match": 'Die beiden Passwörter stimmen nicht überein.'
     },
     "merge": {

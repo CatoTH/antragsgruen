@@ -621,7 +621,7 @@ class TextSimple extends ISectionType
         } else {
             $paras = $section->getTextParagraphs();
             foreach ($paras as $para) {
-                $odt->addHtmlTextBlock([$para], false);
+                $odt->addHtmlTextBlock($para, false);
             }
         }
     }
