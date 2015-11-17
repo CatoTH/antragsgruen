@@ -45,8 +45,12 @@ class AmendmentDiffMerger
      */
     public function initByMotionSection(MotionSection $section)
     {
-        $paras = $section->getTextParagraphs();
-        $this->initByMotionParagraphs($paras);
+        $paras    = $section->getTextParagraphLines();
+        $sections = [];
+        foreach ($paras as $para) {
+            $sections[] = str_replace('###LINENUMBER###', '', implode('', $para));
+        }
+        $this->initByMotionParagraphs($sections);
     }
 
     /**
@@ -54,6 +58,8 @@ class AmendmentDiffMerger
      */
     public function initByMotionParagraphs($paras)
     {
+        echo "MOTION";
+        var_dump($paras);
         $this->paras    = $paras;
         $this->paraData = [];
         foreach ($paras as $paraNo => $paraStr) {
@@ -82,6 +88,9 @@ class AmendmentDiffMerger
      */
     public function addAmendingParagraphs($amendmentId, $affectedParas)
     {
+        echo "AMENDING";
+        var_dump($affectedParas);
+
         $diffEngine = new Engine();
         foreach ($affectedParas as $amendPara => $amendText) {
             $newTokens  = Diff::tokenizeLine($amendText);
@@ -141,8 +150,16 @@ class AmendmentDiffMerger
             $this->diffParagraphs[$para] = [];
         }
         foreach ($sections as $section) {
-
-            $affectedParas = $section->getAffectedParagraphs($this->paras);
+            $newParas      = HTMLTools::sectionSimpleHTML($section->data);
+            $origParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            $diff          = new Diff2();
+            $diffParas     = $diff->compareSectionedHtml($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
+            $affectedParas = [];
+            foreach ($diffParas as $paraNo => $para) {
+                if (DiffRenderer::lineContainsDiff($para)) {
+                    $affectedParas[$paraNo] = $para;
+                }
+            }
             $this->addAmendingParagraphs($section->amendmentId, $affectedParas);
         }
     }

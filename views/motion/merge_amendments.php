@@ -104,7 +104,11 @@ foreach ($motion->getSortedSections(false) as $section) {
             'title="' . Html::encode($type->title) . '"></textarea>';
         echo '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
             'title="' . Html::encode($type->title) . '"></textarea>';
-        echo '<div class="texteditor boxed" data-track-changed="1" data-track-changed-tooltips="1" ' .
+        echo '<div class="texteditor boxed';
+        if ($section->getSettings()->fixedWidth) {
+            echo ' fixedWidthFont';
+        }
+        echo '" data-track-changed="1" data-track-changed-tooltips="1" ' .
             'id="' . $htmlId . '_wysiwyg" title="">';
 
         if (isset($newSections[$section->sectionId])) {
