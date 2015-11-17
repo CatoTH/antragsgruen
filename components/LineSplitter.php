@@ -134,7 +134,7 @@ class LineSplitter
         foreach ($node->childNodes as $child) {
             if (is_a($child, \DOMText::class)) {
                 /** @var \DOMText $child */
-                $inlineTextSpool .= $child->data;
+                $inlineTextSpool .= Html::encode($child->data);
             } else {
                 /** @var \DOMElement $child */
                 if (in_array($child->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {

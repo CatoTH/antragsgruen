@@ -122,8 +122,7 @@ foreach ($motions as $motion) {
             $text .= $section->getSectionType()->getMotionPlainText();
             $text .= "\n\n";
         }
-        $splitter = new LineSplitter($text, 80);
-        $lines = $splitter->splitLines();
+        $lines = LineSplitter::splitHtmlToLines($text, 80, '');
         if (count($lines) > $maxRows) {
             $maxRows = count($lines);
         }
@@ -136,8 +135,7 @@ foreach ($motions as $motion) {
                     $text .= $sect->getSectionType()->getMotionPlainText();
                 }
             }
-            $splitter = new LineSplitter($text, 80);
-            $lines = $splitter->splitLines();
+            $lines = LineSplitter::splitHtmlToLines($text, 80, '');
             if (count($lines) > $maxRows) {
                 $maxRows = count($lines);
             }

@@ -481,7 +481,7 @@ class HTMLTools
             return $str;
         } else {
             /** @var \DOMText $node */
-            return $node->data;
+            return Html::encode($node->data);
         }
     }
 
