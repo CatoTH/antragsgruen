@@ -50,10 +50,9 @@ class ManagerController extends Base
             if ($site->status == Site::STATUS_ACTIVE) {
                 $sitesCurrent[] = $siteData;
             } else {
-                $sitesOld[] = $sitesOld;
+                $sitesOld[] = $siteData;
             }
         }
-
 
         $sitesCurrent = $this->getParams()->getBehaviorClass()->getManagerCurrentSidebarSites($sitesCurrent);
         $html         = '<ul class="nav nav-list current-uses-list">';
@@ -75,6 +74,7 @@ class ManagerController extends Base
         $html .= '<li class="shower"><a href="#" onClick="$(\'.old-uses-list .hidden\').removeClass(\'hidden\');
             $(\'.old-uses-list .shower\').addClass(\'hidden\'); return false;" style="font-style: italic;">' .
             \Yii::t('manager', 'sidebar_old_uses_show') . '</a></li>';
+
         foreach ($sitesOld as $data) {
             $html .= '<li class="hidden">';
             if ($data['organization'] != '') {
