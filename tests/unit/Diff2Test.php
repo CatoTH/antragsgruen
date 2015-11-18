@@ -112,7 +112,7 @@ class Diff2Test extends TestBase
 
         $diff = new Diff2();
         $diff->setIgnoreStr('###LINENUMBER###');
-        $out = $diff->compareSectionedHtml([$orig], [$new], DiffRenderer::FORMATTING_CLASSES);
+        $out = $diff->compareHtmlParagraphs([$orig], [$new], DiffRenderer::FORMATTING_CLASSES);
 
         $expect = ['<p><ins>Der beste Abfall ist der, der nicht entsteht. </ins>###LINENUMBER###Wir wollen eine Wirtschaftsweise, <ins>in der Material- und Rohstoffeffizienz an erster Stelle stehen und </ins>in der alle Rohstoffe immer wieder neu verarbeitet <ins>werden </ins>und ###LINENUMBER###nicht auf einer Deponie landen<del> oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts</del><ins>,</ins> in Entwicklungs- und Schwellenländer <del>ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäden</del><ins>exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben</ins>. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<del> </del><ins><br></ins>###LINENUMBER###Produkten und Verpackungen eine <ins>ökologische </ins>Produktverantwortung zukommt, indem ambitionierte, <del>aber ###LINENUMBER###machbare</del><ins>abermachbare</ins> Recyclingziele <ins>sowie Ziele zur Material- und Rohstoffeffizienz </ins>eingeführt werden. <del>Dadurch werden Rohstoffpreise befördert,</del><ins>Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für</ins> die <ins>Verwendung von Recyclingmaterialien zu schaffen.</ins></p>' .
             '<p><ins>Wir setzen uns dafür ein, dass </ins>die <ins>Rohstoffpreise die<br></ins>###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<del> </del><ins><br></ins>###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird <del>der ###LINENUMBER###Einsatz von</del><ins>Ökologie zum Wettbewerbsvorteil: Wer weniger Rohstoffe verbraucht oder</ins> Recyclingmaterial <del>gegenüber Primärmaterial wettbewerbsfähig. Wir</del><ins>anstatt Primärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann,</ins> setzen <ins>wir </ins>uns <ins>außerdem </ins>###LINENUMBER###dafür ein<ins> </ins>, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<del> </del><ins><br></ins>###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>'];
@@ -156,7 +156,7 @@ class Diff2Test extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
         $diff = new Diff2();
-        $out  = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expectedDiff, $out);
     }
 
@@ -168,7 +168,7 @@ class Diff2Test extends TestBase
         $new      = ['<ul><li>Wir bla bla</li></ul>', '<ul><li>Wir sind Nummer 1</li></ul>'];
         $expected = ['<ul class="inserted"><li>Wir bla bla</li></ul><ul><li>Wir sind Nummer 1</li></ul>'];
         $diff     = new Diff2();
-        $out      = $diff->compareSectionedHtml($orig, $new, DiffRenderer::FORMATTING_CLASSES);
+        $out      = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expected, $out);
     }
 
@@ -196,7 +196,7 @@ class Diff2Test extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
         $diff = new Diff2();
-        $out  = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals('<p class="deleted">Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>', $out[0]);
         $this->assertEquals('<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>', $out[1]);
@@ -216,7 +216,7 @@ class Diff2Test extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
         $diff      = new Diff2();
-        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul>',
             '<ul class="deleted"><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li></ul>',
@@ -256,7 +256,7 @@ class Diff2Test extends TestBase
             '<p><del>Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, entscheidet sich heute oft in ernüchternder Weise: Selbst wenn Paare gleichberechtigt und in gegenseitigem Einvernehmen die Rollenverteilung miteinander ausmachen wollen, scheitern sie zu oft an der Realität – und leben plötzlich Rollenbilder, die sie eigentlich so nie wollten. Verkrustete Strukturen und Fehlanreize regieren in ihr Leben hinein; sie verhindern, dass Frauen und Männer selbstbestimmt und auf Augenhöhe ihre Entscheidungen treffen können.</del>' .
             '<ins>Diesen Wunsch der Paare in die Realität umzusetzen ist das Ziel unserer Zeitpolitik. Hierfür sind verkrustete patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis akzeptieren und darf keine Lebensmodelle stigmatisieren.</ins></p>'];
 
-        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expect, $diffParas);
 
@@ -268,7 +268,7 @@ class Diff2Test extends TestBase
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
 
-        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
     }
 
@@ -282,7 +282,7 @@ class Diff2Test extends TestBase
         $expect         = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.<del> Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</del></p>'];
 
         $diff      = new Diff2();
-        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
     }
 
@@ -308,7 +308,7 @@ class Diff2Test extends TestBase
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expect, $diffParas);
 
@@ -319,7 +319,7 @@ class Diff2Test extends TestBase
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expect, $diffParas);
 
@@ -330,7 +330,7 @@ class Diff2Test extends TestBase
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
 
 
@@ -340,7 +340,7 @@ class Diff2Test extends TestBase
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
 
 
@@ -350,7 +350,7 @@ class Diff2Test extends TestBase
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
 
 
@@ -360,7 +360,7 @@ class Diff2Test extends TestBase
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
     }
 
@@ -383,7 +383,7 @@ class Diff2Test extends TestBase
         $diff           = new Diff2();
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
     }
 
@@ -405,7 +405,7 @@ class Diff2Test extends TestBase
         $diff           = new Diff2();
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
     }
 
@@ -490,7 +490,7 @@ class Diff2Test extends TestBase
         $strPre    = ['<ul><li>Listenpunkt</li></ul>'];
         $strPost   = ['<p>Test</p>'];
         $diff      = new Diff2();
-        $diffParas = $diff->compareSectionedHtml($strPre, $strPost, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($strPre, $strPost, DiffRenderer::FORMATTING_CLASSES);
         $expected  = ['<ul class="deleted"><li>Listenpunkt</li></ul><p class="inserted">Test</p>'];
         $this->assertEquals($expected, $diffParas);
     }
@@ -507,7 +507,7 @@ class Diff2Test extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff2();
         $diff->setIgnoreStr('###LINENUMBER###');
-        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<p>###LINENUMBER###Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten ###LINENUMBER###sozialen Absicherung. <del>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen ###LINENUMBER###Renten-, Kranken- und Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus ist ###LINENUMBER###es in der Anfangsphase der Selbständigkeit und insbesondere bei Start-ups oft schwierig, die ###LINENUMBER###vollen Beitragslasten zu tragen. Wir wollen an Lösungen arbeiten, die angelehnt an den ###LINENUMBER###Gedanken der Künstlersozialkasse, für eine temporäre Unterstützung an dieser Stelle sorgen. </del><ins><em>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus wollen wir eine Bürger*innenversicherung in Gesundheit und Pflege einführen. Auch die Rentenversicherung wollen wir schrittweise zu einer Bürger*innenversicherung weiterentwickeln. In einem ersten Schritt wollen wir die bisher nicht pflichtversicherten Selbständigen in die gesetzliche Rentenversicherung einbeziehen. Die Grüne Garantierente soll ein Signal speziell an Selbständige mit geringem Einkommen senden, dass sich die Beiträge zur Rentenversicherung auch lohnen. </em> </ins>###LINENUMBER###Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen ###LINENUMBER###Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich ###LINENUMBER###verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen ###LINENUMBER###abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>'];
         $this->assertEquals($expected, $diffParas);
@@ -523,7 +523,7 @@ class Diff2Test extends TestBase
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff2();
-        $diffParas      = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<p><strong>Balance von Freiheit und Sicherheit für <del>Solo-</del>Selbstständige und Existenzgründer*innen</strong></p>'];
         $this->assertEquals($expected, $diffParas);
@@ -547,7 +547,7 @@ class Diff2Test extends TestBase
         var_dump($origParagraphs);
         var_dump($newParagraphs);
 
-        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<p>###LINENUMBER###Test.</p>',
             '<p class="deleted">###LINENUMBER###<strong>To be deletedgi: </strong></p>',
@@ -570,7 +570,7 @@ class Diff2Test extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff2();
         $diff->setIgnoreStr('###LINENUMBER###');
-        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expect, $diffParas);
     }
@@ -597,7 +597,7 @@ class Diff2Test extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff2();
         $diff->setIgnoreStr('###LINENUMBER###');
-        $diffParas = $diff->compareSectionedHtml($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expected, $diffParas);
     }

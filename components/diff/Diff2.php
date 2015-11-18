@@ -481,20 +481,20 @@ class Diff2
     }
 
     /**
-     * @param string[] $referenceSections
-     * @param string[] $newSections
+     * @param string[] $referenceParas
+     * @param string[] $newParas
      * @param int $diffFormatting
      * @return string[]
      * @throws Internal
      */
-    public function compareSectionedHtml($referenceSections, $newSections, $diffFormatting)
+    public function compareHtmlParagraphs($referenceParas, $newParas, $diffFormatting)
     {
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
         $renderer = new DiffRenderer();
         $renderer->setFormatting($diffFormatting);
 
-        list($adjustedRef, $adjustedMatching) = $matcher->matchForDiff($referenceSections, $newSections);
+        list($adjustedRef, $adjustedMatching) = $matcher->matchForDiff($referenceParas, $newParas);
         if (count($adjustedRef) != count($adjustedMatching)) {
             throw new Internal('compareSectionedHtml: number of sections does not match');
         }
@@ -515,12 +515,31 @@ class Diff2
                     $pendingInsert .= $str;
                 }
             } else {
-                $str = preg_replace('/<ins( [^>]*)?>###EMPTYINSERTED###<\/ins>/siu', '', $diffS);
+                $str           = preg_replace('/<ins( [^>]*)?>###EMPTYINSERTED###<\/ins>/siu', '', $diffS);
                 $resolved[]    = $pendingInsert . $str;
                 $pendingInsert = '';
             }
         }
 
         return $resolved;
+    }
+
+    /**
+     * @param array $referenceParas
+     * @param array $newParas
+     * @param int $diffFormatting
+     * @return array[]
+     */
+    public static function computeAffectedParagraphs($referenceParas, $newParas, $diffFormatting)
+    {
+        $diff          = new static();
+        $diffParas     = $diff->compareHtmlParagraphs($referenceParas, $newParas, $diffFormatting);
+        $affectedParas = [];
+        foreach ($diffParas as $paraNo => $para) {
+            if (DiffRenderer::paragraphContainsDiff($para) !== false) {
+                $affectedParas[$paraNo] = $para;
+            }
+        }
+        return $affectedParas;
     }
 }

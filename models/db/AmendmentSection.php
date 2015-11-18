@@ -191,10 +191,10 @@ class AmendmentSection extends IMotionSection
         $amParagraphs = [];
         $newSections  = HTMLTools::sectionSimpleHTML($this->data);
         $diff         = new Diff2();
-        $diffParas    = $diff->compareSectionedHtml($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas    = $diff->compareHtmlParagraphs($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
 
         foreach ($diffParas as $paraNo => $diffPara) {
-            $firstDiffPos = DiffRenderer::lineContainsDiff($diffPara);
+            $firstDiffPos = DiffRenderer::paragraphContainsDiff($diffPara);
             if ($firstDiffPos !== false) {
                 $unchanged = mb_substr($diffPara, 0, $firstDiffPos);
                 $firstDiffLine = $firstLine + mb_substr_count($unchanged, '###LINENUMBER###') - 1;

@@ -152,14 +152,7 @@ class AmendmentDiffMerger
         foreach ($sections as $section) {
             $newParas      = HTMLTools::sectionSimpleHTML($section->data);
             $origParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
-            $diff          = new Diff2();
-            $diffParas     = $diff->compareSectionedHtml($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
-            $affectedParas = [];
-            foreach ($diffParas as $paraNo => $para) {
-                if (DiffRenderer::lineContainsDiff($para)) {
-                    $affectedParas[$paraNo] = $para;
-                }
-            }
+            $affectedParas = Diff2::computeAffectedParagraphs($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
             $this->addAmendingParagraphs($section->amendmentId, $affectedParas);
         }
     }

@@ -397,7 +397,7 @@ class DiffRenderer
      * @param string $line
      * @return false|int
      */
-    public static function lineContainsDiff($line)
+    public static function paragraphContainsDiff($line)
     {
         $firstDiffs = [];
         if (preg_match('/(<ins( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {

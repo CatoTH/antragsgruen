@@ -132,31 +132,31 @@ class DiffRendererTest extends TestBase
 
     /**
      */
-    public function testLineContainsDiff()
+    public function testParagraphContainsDiff()
     {
         $str = 'Test<ins class="irgendwas">Bla';
-        $this->assertEquals(4, DiffRenderer::lineContainsDiff($str));
+        $this->assertEquals(4, DiffRenderer::paragraphContainsDiff($str));
 
         $str = 'Test ä<ins class="irgendwas">Bla';
-        $this->assertEquals(6, DiffRenderer::lineContainsDiff($str));
+        $this->assertEquals(6, DiffRenderer::paragraphContainsDiff($str));
 
         $str = 'Test<inserted class="irgendwas">Bla';
-        $this->assertFalse(DiffRenderer::lineContainsDiff($str));
+        $this->assertFalse(DiffRenderer::paragraphContainsDiff($str));
 
         $str = 'Test</ins>';
-        $this->assertFalse(DiffRenderer::lineContainsDiff($str));
+        $this->assertFalse(DiffRenderer::paragraphContainsDiff($str));
 
         $str = '<pre class="inserted">Blabla';
-        $this->assertEquals(0, DiffRenderer::lineContainsDiff($str));
+        $this->assertEquals(0, DiffRenderer::paragraphContainsDiff($str));
 
         $str = '<pre class="x inserted bold">Blabla';
-        $this->assertEquals(0, DiffRenderer::lineContainsDiff($str));
+        $this->assertEquals(0, DiffRenderer::paragraphContainsDiff($str));
 
         $str = '<pre class="insertedbold">Blabla';
-        $this->assertEquals(0, DiffRenderer::lineContainsDiff($str));
+        $this->assertEquals(0, DiffRenderer::paragraphContainsDiff($str));
 
         $str = '<pre> class="inserted" Blabla';
-        $this->assertEquals(0, DiffRenderer::lineContainsDiff($str));
+        $this->assertEquals(0, DiffRenderer::paragraphContainsDiff($str));
     }
 
 }

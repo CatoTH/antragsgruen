@@ -78,7 +78,7 @@ class AmendmentSectionFormatter
 
             $diff = new Diff2();
             $diff->setIgnoreStr('###LINENUMBER###');
-            $diffSections = $diff->compareSectionedHtml($originals, $this->paragraphsNew, $diffFormatting);
+            $diffSections = $diff->compareHtmlParagraphs($originals, $this->paragraphsNew, $diffFormatting);
             $htmlDiff     = implode("\n", $diffSections);
 
             $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($htmlDiff, $this->firstLine);
