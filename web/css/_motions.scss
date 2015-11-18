@@ -163,6 +163,8 @@
           display: none;
         }
         .motionPrefix {
+          word-break: break-all;
+          word-wrap: break-word;
           width: 90px;
           float: left;
           left: 30px;
@@ -804,6 +806,7 @@ iframe.pdfViewer {
   height: 600px;
   border: none;
 }
+
 section.sectionType5 {
   margin-left: -1px;
   margin-right: -1px;
