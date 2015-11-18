@@ -580,7 +580,7 @@ class Diff2
                 } elseif ($inDel) {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        if (in_array($prevLastChar, $wordSplitChars) || $i == 0) {
+                        if (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<' || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
                                 'word' => '',
@@ -597,7 +597,7 @@ class Diff2
                 } else {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        if (in_array($prevLastChar, $wordSplitChars) || $i == 0) {
+                        if (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<' || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
                                 'word' => '',

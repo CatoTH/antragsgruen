@@ -18,6 +18,28 @@ class Diff2Test extends TestBase
     public function testInlineDiffToWordBased()
     {
 
+        $orig = ['<strong>Tes1 45666</strong> kjhkjh kljlkjlkj'];
+        $new  = ['Tes1 45666 kjhkjh<br>kljlkjlkj'];
+        $diff = new Diff2();
+        try {
+            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
+
+        var_dump($words);
+        die();
+
+        $this->assertEquals([
+            ['word' => 'Test1 ', 'diff' => 'Test1 '],
+            ['word' => 'test123456test ', 'diff' => 'test123###DEL_START###4###DEL_END###56test '],
+            ['word' => 'Test4', 'diff' => 'Test4'],
+        ], $words[0]);
+
+
+
         $orig = ['<ul><li>Wir sind Nummer 1</li></ul>'];
         $new  = ['<ul><li>Wir bla bla</li></ul>', '<ul><li>Wir sind Nummer 1</li></ul>'];
         $diff = new Diff2();
@@ -62,21 +84,6 @@ class Diff2Test extends TestBase
         ], $words[0]);
 
 
-        $orig = ['<stong>Tes1 45666</stong> kjhkjh kljlkjlkj'];
-        $new  = ['Tes1 45666 kjhkjh<br>kljlkjlkj'];
-        $diff = new Diff2();
-        try {
-            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
-        } catch (Internal $e) {
-            echo $e->getMessage();
-            echo "\n";
-            die();
-        }
-        $this->assertEquals([
-            ['word' => 'Test1 ', 'diff' => 'Test1 '],
-            ['word' => 'test123456test ', 'diff' => 'test123###DEL_START###4###DEL_END###56test '],
-            ['word' => 'Test4', 'diff' => 'Test4'],
-        ], $words[0]);
     }
 
 
