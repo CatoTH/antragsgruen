@@ -32,4 +32,5 @@ return [
     'legal_base_intro'      => 'Responsible for the Software Antragsgrün and the operation of the platform antragsgruen.de:',
     'legal_site_title'      => 'Consultation site %SITE%',
     'legal_template'        => '<p><strong>Responsible for the contents (§ 5 TMG)</strong></p><address>%CONTACT%</address>',
+    'html_meta'             => 'Antragsgrün is a content-management-system specifically built for political parties.',
 ];

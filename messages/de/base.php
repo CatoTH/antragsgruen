@@ -32,4 +32,5 @@ return [
     'legal_base_intro'      => 'Verantwortlich für die Software Antragsgrün und den Betrieb der technischen Plattform antragsgruen.de:',
     'legal_site_title'      => 'Veranstaltungsseite %SITE%',
     'legal_template'        => '<p><strong>Verantwortlich gemäß § 5 Telemediengesetz (TMG)</strong></p><address>%CONTACT%</address>',
+    'html_meta'             => 'Antragsgrün ist ein Antrags-Verwaltungs-System, das speziell für Parteitage, Verbandstagungen sowie Programmdiskussionen entwickelt wurde.',
 ];
