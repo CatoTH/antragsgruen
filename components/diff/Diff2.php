@@ -537,17 +537,9 @@ class Diff2
      */
     private function convertToWordArray($orig, $diff)
     {
-        /*
-        $origArr = self::tokenizeLine($orig);
-        echo "ORIGINAL\n";
-        var_dump($origArr);
-        echo "\n\n";
 
 
-        echo "DIFF\n";
-        var_dump($diffPartArr);
-        echo "\n\n";
-*/
+
         $wordSplitChars = [' ', '-', '>', '<'];
         $words          = [
             0 => [
@@ -557,10 +549,19 @@ class Diff2
         ];
 
         $diffPartArr       = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $origArr = self::tokenizeLine($orig);
+        echo "ORIGINAL\n";
+        var_dump($origArr);
+        echo "\n\n";
+
+        echo "DIFF\n";
+        var_dump($diffPartArr);
+        echo "\n\n";
+
         $inDel             = $inIns = false;
         $originalWordPos   = 0;
         $pendingOpeningDel = false;
-        foreach ($diffPartArr as $i => $diffPart) {
+        foreach ($diffPartArr as $diffPart) {
             if ($diffPart == '###INS_START###') {
                 $words[$originalWordPos]['diff'] .= $diffPart;
                 $inIns = true;
@@ -580,7 +581,8 @@ class Diff2
                 } elseif ($inDel) {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        if (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<' || $originalWordPos == 0) {
+                        $isNewWord = (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<');
+                        if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
                                 'word' => '',
@@ -592,12 +594,13 @@ class Diff2
                             $words[$originalWordPos]['diff'] .= '###DEL_START###';
                             $pendingOpeningDel = false;
                         }
-                        $words[$originalWordPos]['diff'] .= implode('', $diffPartWords);
+                        $words[$originalWordPos]['diff'] .= $diffPartWord;
                     }
                 } else {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        if (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<' || $originalWordPos == 0) {
+                        $isNewWord = (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<');
+                        if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
                                 'word' => '',
@@ -606,7 +609,6 @@ class Diff2
                         }
                         $words[$originalWordPos]['word'] .= $diffPartWord;
                         $words[$originalWordPos]['diff'] .= $diffPartWord;
-
                     }
                 }
             }

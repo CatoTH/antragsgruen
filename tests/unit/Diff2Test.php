@@ -28,15 +28,7 @@ class Diff2Test extends TestBase
             echo "\n";
             die();
         }
-
-        var_dump($words);
-        die();
-
-        $this->assertEquals([
-            ['word' => 'Test1 ', 'diff' => 'Test1 '],
-            ['word' => 'test123456test ', 'diff' => 'test123###DEL_START###4###DEL_END###56test '],
-            ['word' => 'Test4', 'diff' => 'Test4'],
-        ], $words[0]);
+        $this->assertEquals(['word' => 'kjhkjh ', 'diff' => 'kjhkjh ###DEL_END######INS_START###45666 kjhkjh<br>###INS_END###'], $words[0][5]);
 
 
 
