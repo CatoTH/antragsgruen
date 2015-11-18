@@ -537,24 +537,26 @@ class Diff2
      */
     private function convertToWordArray($orig, $diff)
     {
+        /*
         $origArr = self::tokenizeLine($orig);
         echo "ORIGINAL\n";
         var_dump($origArr);
         echo "\n\n";
 
-        $diffPartArr = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         echo "DIFF\n";
         var_dump($diffPartArr);
         echo "\n\n";
-
+*/
         $wordSplitChars = [' ', '-', '>', '<'];
-        $words             = [
+        $words          = [
             0 => [
                 'word' => '',
                 'diff' => '',
             ]
         ];
+
+        $diffPartArr       = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
         $inDel             = $inIns = false;
         $originalWordPos   = 0;
         $pendingOpeningDel = false;
@@ -566,7 +568,7 @@ class Diff2
                 $words[$originalWordPos]['diff'] .= $diffPart;
                 $inIns = false;
             } elseif ($diffPart == '###DEL_START###') {
-                $inDel = true;
+                $inDel             = true;
                 $pendingOpeningDel = true;
             } elseif ($diffPart == '###DEL_END###') {
                 $words[$originalWordPos]['diff'] .= $diffPart;
@@ -610,7 +612,7 @@ class Diff2
             }
         }
 
-        $first            = array_shift($words);
+        $first = array_shift($words);
         if (count($words) == 0) {
             return [$first];
         } else {
@@ -665,7 +667,7 @@ class Diff2
         }
         $diffSections = [];
         for ($i = 0; $i < count($adjustedRef); $i++) {
-            $origLine = str_replace('###EMPTYINSERTED###', '', $adjustedRef[$i]);
+            $origLine  = str_replace('###EMPTYINSERTED###', '', $adjustedRef[$i]);
             $diffLine  = $this->computeLineDiff($origLine, $adjustedMatching[$i]);
             $wordArray = $this->convertToWordArray($origLine, $diffLine);
             var_dump($diffLine);

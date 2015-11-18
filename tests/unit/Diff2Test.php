@@ -60,6 +60,23 @@ class Diff2Test extends TestBase
             ['word' => 'test123456test ', 'diff' => 'test123###DEL_START###4###DEL_END###56test '],
             ['word' => 'Test4', 'diff' => 'Test4'],
         ], $words[0]);
+
+
+        $orig = ['<stong>Tes1 45666</stong> kjhkjh kljlkjlkj'];
+        $new  = ['Tes1 45666 kjhkjh<br>kljlkjlkj'];
+        $diff = new Diff2();
+        try {
+            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
+        $this->assertEquals([
+            ['word' => 'Test1 ', 'diff' => 'Test1 '],
+            ['word' => 'test123456test ', 'diff' => 'test123###DEL_START###4###DEL_END###56test '],
+            ['word' => 'Test4', 'diff' => 'Test4'],
+        ], $words[0]);
     }
 
 
