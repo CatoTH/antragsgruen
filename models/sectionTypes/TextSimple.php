@@ -692,6 +692,7 @@ class TextSimple extends ISectionType
         $out = '';
         foreach (array_keys($paragraphs) as $paragraphNo) {
             $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
+            echo print_r($groupedParaData, true);
             foreach ($groupedParaData as $part) {
                 $text = $part['text'];
 

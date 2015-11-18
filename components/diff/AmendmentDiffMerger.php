@@ -88,9 +88,6 @@ class AmendmentDiffMerger
      */
     public function addAmendingParagraphs($amendmentId, $affectedParas)
     {
-        echo "AMENDING";
-        var_dump($affectedParas);
-
         $diffEngine = new Engine();
         foreach ($affectedParas as $amendPara => $amendText) {
             $newTokens  = Diff::tokenizeLine($amendText);
@@ -138,6 +135,7 @@ class AmendmentDiffMerger
                 'diff'      => $flattenedDiff,
             ];
         }
+        echo print_r($this->diffParagraphs, true);
     }
 
     /**

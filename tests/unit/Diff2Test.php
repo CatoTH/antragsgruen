@@ -6,11 +6,62 @@ use app\components\diff\Diff2;
 use app\components\diff\DiffRenderer;
 use app\components\diff\Engine;
 use app\components\HTMLTools;
+use app\models\exceptions\Internal;
 use Codeception\Specify;
 
 class Diff2Test extends TestBase
 {
     use Specify;
+
+    /**
+     */
+    public function testInlineDiffToWordBased()
+    {
+
+        $orig = ['<ul><li>Wir sind Nummer 1</li></ul>'];
+        $new  = ['<ul><li>Wir bla bla</li></ul>', '<ul><li>Wir sind Nummer 1</li></ul>'];
+        $diff = new Diff2();
+        try {
+            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
+        $this->assertEquals(1, count($words[0]));
+        $this->assertEquals('###INS_START###<ul><li>Wir bla bla</li></ul>###INS_END###', $words[0][0]['diff']);
+
+
+        $orig = ['Test1 Test 2 der Test 3 Test4'];
+        $new  = ['Test1 Test 2 die Test 3 Test4'];
+        $diff = new Diff2();
+        try {
+            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
+        $this->assertEquals('###DEL_START###der###DEL_END######INS_START###die###INS_END### ', $words[0][3]['diff']);
+
+
+        $orig = ['Test1 test123456test Test4'];
+        $new  = ['Test1 test12356test Test4'];
+        $diff = new Diff2();
+        try {
+            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
+        $this->assertEquals([
+            ['word' => 'Test1 ', 'diff' => 'Test1 '],
+            ['word' => 'test123456test ', 'diff' => 'test123###DEL_START###4###DEL_END###56test '],
+            ['word' => 'Test4', 'diff' => 'Test4'],
+        ], $words[0]);
+    }
+
 
     /**
      */

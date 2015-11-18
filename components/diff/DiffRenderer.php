@@ -6,6 +6,7 @@ use app\components\HTMLTools;
 
 class DiffRenderer
 {
+    const FORMATTING_NONE    = -1;
     const FORMATTING_CLASSES = 0;
     const FORMATTING_INLINE  = 1;
 
