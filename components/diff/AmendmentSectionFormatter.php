@@ -77,7 +77,6 @@ class AmendmentSectionFormatter
             }
 
             $diff = new Diff2();
-            $diff->setIgnoreStr('###LINENUMBER###');
             $diffSections = $diff->compareHtmlParagraphs($originals, $this->paragraphsNew, $diffFormatting);
             $htmlDiff     = implode("\n", $diffSections);
 

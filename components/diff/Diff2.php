@@ -70,7 +70,7 @@ class Diff2
             if (preg_match($htmlTag, $arr2)) {
                 $out[] = $arr2;
             } else {
-                foreach (preg_split('/([ \-])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
+                foreach (preg_split('/([ \-\.\:])/', $arr2, -1, PREG_SPLIT_DELIM_CAPTURE) as $tok) {
                     if ($tok == ' ' || $tok == '-') {
                         if (count($out) == 0) {
                             $out[] = $tok;
@@ -330,13 +330,19 @@ class Diff2
                     $computedStrs[] = $this->computeWordDiff($return[$i][0], $return[$i + 1][0]);
                     $i++;
                 } else {
-                    $delParts = explode("\n", str_replace(" ", " \n", $return[$i][0]));
+                    $delParts = explode(' ', $return[$i][0]);
+                    for ($j = 0; $j < count($delParts) - 1; $j++) {
+                        $delParts[$j] .= ' ';
+                    }
                     foreach ($delParts as $delPart) {
                         $computedStrs[] = $this->wrapWithDelete($delPart);
                     }
                 }
             } elseif ($return[$i][1] == Engine::INSERTED) {
-                $insParts = explode("\n", str_replace(" ", " \n", $return[$i][0]));
+                $insParts = explode(' ', $return[$i][0]);
+                for ($j = 0; $j < count($insParts) - 1; $j++) {
+                    $insParts[$j] .= ' ';
+                }
                 foreach ($insParts as $insPart) {
                     $computedStrs[] = $this->wrapWithInsert($insPart);
                 }
@@ -353,7 +359,7 @@ class Diff2
         $split = $this->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
 
-        if (mb_strlen($middleOrig) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
+        if (mb_strlen(str_replace('###LINENUMBER###', '', $middleOrig)) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
             if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
                 $combined = $prefix;
@@ -497,6 +503,7 @@ class Diff2
     {
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
+        $this->setIgnoreStr('###LINENUMBER###');
         $renderer = new DiffRenderer();
         $renderer->setFormatting($diffFormatting);
 
@@ -539,7 +546,6 @@ class Diff2
     {
 
 
-
         $wordSplitChars = [' ', '-', '>', '<'];
         $words          = [
             0 => [
@@ -548,8 +554,8 @@ class Diff2
             ]
         ];
 
-        $diffPartArr       = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $origArr = self::tokenizeLine($orig);
+        $diffPartArr = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $origArr     = self::tokenizeLine($orig);
         echo "ORIGINAL\n";
         var_dump($origArr);
         echo "\n\n";
@@ -581,7 +587,7 @@ class Diff2
                 } elseif ($inDel) {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        $isNewWord = (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<');
+                        $isNewWord    = (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<');
                         if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
@@ -599,7 +605,7 @@ class Diff2
                 } else {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        $isNewWord = (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<');
+                        $isNewWord    = (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<');
                         if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
@@ -654,8 +660,8 @@ class Diff2
     }
 
     /**
-     * @param string $referenceParas
-     * @param string $newParas
+     * @param string[] $referenceParas
+     * @param string[] $newParas
      * @throws Internal
      * @return array
      */
@@ -669,10 +675,15 @@ class Diff2
         }
         $diffSections = [];
         for ($i = 0; $i < count($adjustedRef); $i++) {
-            $origLine  = str_replace('###EMPTYINSERTED###', '', $adjustedRef[$i]);
+            $origLine = str_replace('###EMPTYINSERTED###', '', $adjustedRef[$i]);
+
+            echo "Orig:\n";
+            var_dump($origLine);
+
+
             $diffLine  = $this->computeLineDiff($origLine, $adjustedMatching[$i]);
-            $wordArray = $this->convertToWordArray($origLine, $diffLine);
             var_dump($diffLine);
+            $wordArray = $this->convertToWordArray($origLine, $diffLine);
             $this->checkWordArrayConsistency($origLine, $wordArray);
             $diffSections[$i] = $wordArray;
         }

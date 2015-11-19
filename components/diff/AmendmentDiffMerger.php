@@ -12,6 +12,8 @@ class AmendmentDiffMerger
     private $paraData       = null;
     private $diffParagraphs = null;
 
+    private $sectionParagraphs = [];
+
     public static $BLOCK_LEVEL_ELEMENTS_OPENING = [
         '</ul>'         => '/^<ul[^>]*>$/siu',
         '</ol>'         => '/^<ol[^>]*>$/siu',
@@ -58,8 +60,8 @@ class AmendmentDiffMerger
      */
     public function initByMotionParagraphs($paras)
     {
-        echo "MOTION";
-        var_dump($paras);
+        $this->sectionParagraphs = $paras;
+
         $this->paras    = $paras;
         $this->paraData = [];
         foreach ($paras as $paraNo => $paraStr) {
@@ -150,6 +152,11 @@ class AmendmentDiffMerger
         foreach ($sections as $section) {
             $newParas      = HTMLTools::sectionSimpleHTML($section->data);
             $origParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+
+            $diff = new Diff2();
+            $wordArray = $diff->compareHtmlParagraphsToWordArray($origParas, $newParas);
+            echo print_r($wordArray, true);
+
             $affectedParas = Diff2::computeAffectedParagraphs($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
             $this->addAmendingParagraphs($section->amendmentId, $affectedParas);
         }
