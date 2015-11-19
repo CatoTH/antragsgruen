@@ -133,7 +133,6 @@ class ArrayMatcher
     }
 
     /**
-     * @internal
      * @param string[] $referenceArr
      * @param string[] $toMatchArr
      * @return string[]

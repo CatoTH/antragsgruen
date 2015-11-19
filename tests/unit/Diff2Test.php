@@ -17,6 +17,17 @@ class Diff2Test extends TestBase
      */
     public function testInlineDiffToWordBased()
     {
+        $orig = ['<ul><li>Seltsame Zeichen: Test</li></ul>'];
+        $new  = ['<ul><li>Seltsame Zeichen: Test</li></ul>'];
+        $diff = new Diff2();
+        try {
+            $diff->compareHtmlParagraphsToWordArray($orig, $new);
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
+
         $orig = ['<strong>Tes1 45666</strong> kjhkjh kljlkjlkj'];
         $new  = ['Tes1 45666 kjhkjh<br>kljlkjlkj'];
         $diff = new Diff2();
@@ -82,7 +93,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $new  = ['<p>Normaler Text wieder.</p>'];
         $diff = new Diff2();
         try {
-            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
+            $words = $diff->compareHtmlParagraphsToWordArray($orig, $new, ['amendmentId' => 1]);
         } catch (Internal $e) {
             echo $e->getMessage();
             echo "\n";

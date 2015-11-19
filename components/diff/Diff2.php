@@ -540,13 +540,14 @@ class Diff2
     /**
      * @param string $orig
      * @param string $diff
+     * @param array $amParams
      * @return array
      */
-    private function convertToWordArray($orig, $diff)
+    public function convertToWordArray($orig, $diff, $amParams)
     {
 
 
-        $wordSplitChars = [' ', '-', '>', '<'];
+        $wordSplitChars = [' ', '-', '>', '<', ':', '.'];
         $words          = [
             0 => [
                 'word' => '',
@@ -556,14 +557,6 @@ class Diff2
 
         $diffPartArr = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
         $origArr     = self::tokenizeLine($orig);
-        echo "ORIGINAL\n";
-        var_dump($origArr);
-        echo "\n\n";
-
-        echo "DIFF\n";
-        var_dump($diffPartArr);
-        echo "\n\n";
-
         $inDel             = $inIns = false;
         $originalWordPos   = 0;
         $pendingOpeningDel = false;
@@ -584,10 +577,11 @@ class Diff2
                 $diffPartWords = static::tokenizeLine($diffPart);
                 if ($inIns) {
                     $words[$originalWordPos]['diff'] .= implode('', $diffPartWords);
+                    $words[$originalWordPos] = array_merge($words[$originalWordPos], $amParams);
                 } elseif ($inDel) {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        $isNewWord    = (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<');
+                        $isNewWord    = (in_array($prevLastChar, $wordSplitChars) || (in_array($diffPartWord, $wordSplitChars) && $diffPartWord != ' ' && $diffPartWord != '-') || $diffPartWord[0] == '<');
                         if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
@@ -601,11 +595,13 @@ class Diff2
                             $pendingOpeningDel = false;
                         }
                         $words[$originalWordPos]['diff'] .= $diffPartWord;
+                        $words[$originalWordPos] = array_merge($words[$originalWordPos], $amParams);
                     }
                 } else {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        $isNewWord    = (in_array($prevLastChar, $wordSplitChars) || $diffPartWord[0] == '<');
+                        $isNewWord    = (in_array($prevLastChar, $wordSplitChars) || (in_array($diffPartWord, $wordSplitChars) && $diffPartWord != ' ' && $diffPartWord != '-') || $diffPartWord[0] == '<');
+
                         if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
@@ -662,10 +658,11 @@ class Diff2
     /**
      * @param string[] $referenceParas
      * @param string[] $newParas
+     * @param array $amParams
      * @throws Internal
      * @return array
      */
-    public function compareHtmlParagraphsToWordArray($referenceParas, $newParas)
+    public function compareHtmlParagraphsToWordArray($referenceParas, $newParas, $amParams = [])
     {
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
@@ -677,13 +674,8 @@ class Diff2
         for ($i = 0; $i < count($adjustedRef); $i++) {
             $origLine = str_replace('###EMPTYINSERTED###', '', $adjustedRef[$i]);
 
-            echo "Orig:\n";
-            var_dump($origLine);
-
-
             $diffLine  = $this->computeLineDiff($origLine, $adjustedMatching[$i]);
-            var_dump($diffLine);
-            $wordArray = $this->convertToWordArray($origLine, $diffLine);
+            $wordArray = $this->convertToWordArray($origLine, $diffLine, $amParams);
             $this->checkWordArrayConsistency($origLine, $wordArray);
             $diffSections[$i] = $wordArray;
         }
