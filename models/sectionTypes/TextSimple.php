@@ -190,7 +190,7 @@ class TextSimple extends ISectionType
             return '';
         }
 
-        $str  = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
         $str .= TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
         return $str;
     }
@@ -289,7 +289,7 @@ class TextSimple extends ISectionType
             $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
                 $html = str_replace('###LINENUMBER###', '', implode('', $para));
-                $y = $pdf->getY();
+                $y    = $pdf->getY();
                 $pdf->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
                 $pdf->writeHTMLCell(173, '', 24, '', $html, 0, 1, 0, true, '', true);
 
@@ -714,22 +714,35 @@ class TextSimple extends ISectionType
                     $text = str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '>', $text);
                     $text = str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '>', $text);
                     */
-                    //$text = str_replace('###INS_START###', '###INS_START' . $cid . '-' . $amendment->id . '###', $text);
-                    //$text = str_replace('###DEL_START###', '###DEL_START' . $cid . '-' . $amendment->id . '###', $text);
+                    $text = str_replace('###INS_START###', '###INS_START' . $cid . '-' . $amendment->id . '###', $text);
+                    $text = str_replace('###DEL_START###', '###DEL_START' . $cid . '-' . $amendment->id . '###', $text);
                 }
 
                 $paragraphText .= $text;
             }
             $renderer = new DiffRenderer();
-            $renderer->setInsCallback(function($cid, $amendmentId) use ($amendmentsById) {
-                $amendment = $amendmentsById[$amendmentId];
-                echo "INS CALLBACK";
-                var_dump($amendment->getLiteChangeData($cid));
+            $renderer->setInsCallback(function ($node, $params) use ($amendmentsById) {
+                /** @var \DOMElement $node */
+                $params    = explode('-', $params);
+                $amendment = $amendmentsById[$params[1]];
+                foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
+                    $node->setAttribute($key, $val);
+                }
+                $classes = explode(' ', $node->getAttribute('class'));
+                $classes = array_merge($classes, ['ice-ins', 'ice-cts', 'appendHint']);
+                $node->setAttribute('class', implode(' ', $classes));
+
             });
-            $renderer->setDelCallback(function($cid, $amendmentId) use ($amendmentsById) {
-                $amendment = $amendmentsById[$amendmentId];
-                echo "DEL CALLBACK";
-                var_dump($amendment->getLiteChangeData($cid));
+            $renderer->setDelCallback(function ($node, $params) use ($amendmentsById) {
+                /** @var \DOMElement $node */
+                $params    = explode('-', $params);
+                $amendment = $amendmentsById[$params[1]];
+                foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
+                    $node->setAttribute($key, $val);
+                }
+                $classes = explode(' ', $node->getAttribute('class'));
+                $classes = array_merge($classes, ['ice-del', 'ice-cts', 'appendHint']);
+                $node->setAttribute('class', implode(' ', $classes));
             });
             $out .= $renderer->renderHtmlWithPlaceholders($paragraphText);
 

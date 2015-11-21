@@ -221,16 +221,20 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * @param string $changeId
-     * @return string
+     * @return array
      */
     public function getLiteChangeData($changeId)
     {
-        $time       = Tools::dateSql2timestamp($this->dateCreation) * 1000;
-        $changeData = ' data-cid="' . Html::encode($changeId) . '" data-userid="" ';
-        $changeData .= 'data-username="' . Html::encode($this->getInitiatorsStr()) . '" ';
-        $changeData .= 'data-changedata="" data-time="' . $time . '" data-last-change-time="' . $time . '" ';
-        $changeData .= 'data-append-hint="[' . Html::encode($this->titlePrefix) . ']"';
-        return $changeData;
+        $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
+        return [
+            'data-cid'              => $changeId,
+            'data-userid'           => '',
+            'data-username'         => $this->getInitiatorsStr(),
+            'data-changedata'       => '',
+            'data-time'             => $time,
+            'data-last-change-time' => $time,
+            'data-append-hint'      => '[' . $this->titlePrefix . ']',
+        ];
     }
 
 
@@ -243,7 +247,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($cached !== null) {
             return $cached;
         }
-        $firstLine = $this->getMyMotion()->getFirstLineNumber();
+        $firstLine  = $this->getMyMotion()->getFirstLineNumber();
         $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
 
         foreach ($this->sections as $section) {
