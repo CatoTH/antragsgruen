@@ -613,6 +613,10 @@ class TextSimple extends ISectionType
             $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
                 $html = implode('<br>', $paragraph->lines);
+                /* Modifications for BDK
+                $html = implode('', $paragraph->lines);
+                $html = preg_replace('/' . '<br>\\s*' . '/siu', '<br>', $html);
+                */
                 $html = str_replace('###LINENUMBER###', '', $html);
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';
@@ -693,6 +697,7 @@ class TextSimple extends ISectionType
         foreach (array_keys($paragraphs) as $paragraphNo) {
             $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
             echo print_r($groupedParaData, true);
+            $paragraphText = '';
             foreach ($groupedParaData as $part) {
                 $text = $part['text'];
 
@@ -703,14 +708,30 @@ class TextSimple extends ISectionType
                         $changeset[$amendment->id] = [];
                     }
                     $changeset[$amendment->id][] = $cid;
+                    /*
                     $changeData                  = $amendment->getLiteChangeData($cid);
 
                     $text = str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '>', $text);
                     $text = str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '>', $text);
+                    */
+                    //$text = str_replace('###INS_START###', '###INS_START' . $cid . '-' . $amendment->id . '###', $text);
+                    //$text = str_replace('###DEL_START###', '###DEL_START' . $cid . '-' . $amendment->id . '###', $text);
                 }
 
-                $out .= $text;
+                $paragraphText .= $text;
             }
+            $renderer = new DiffRenderer();
+            $renderer->setInsCallback(function($cid, $amendmentId) use ($amendmentsById) {
+                $amendment = $amendmentsById[$amendmentId];
+                echo "INS CALLBACK";
+                var_dump($amendment->getLiteChangeData($cid));
+            });
+            $renderer->setDelCallback(function($cid, $amendmentId) use ($amendmentsById) {
+                $amendment = $amendmentsById[$amendmentId];
+                echo "DEL CALLBACK";
+                var_dump($amendment->getLiteChangeData($cid));
+            });
+            $out .= $renderer->renderHtmlWithPlaceholders($paragraphText);
 
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
             foreach ($colliding as $amendmentId => $paraText) {

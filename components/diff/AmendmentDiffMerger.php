@@ -297,11 +297,11 @@ class AmendmentDiffMerger
      */
     public function mergeParagraph($paraNo, $changeSet)
     {
-        $words   = $this->paraData[$paraNo]['words'];
+        $words = $this->paraData[$paraNo]['words'];
         foreach ($changeSet['diff'] as $i => $token) {
             if (isset($token['amendmentId'])) {
                 $words[$i]['modification'] = $token['diff'];
-                $words[$i]['modifiedBy'] = $token['amendmentId'];
+                $words[$i]['modifiedBy']   = $token['amendmentId'];
             }
         }
         $this->paraData[$paraNo]['words'] = $words;
@@ -369,7 +369,8 @@ class AmendmentDiffMerger
      */
     public function getGroupedParagraphData($paraNo)
     {
-        $para             = $this->paraData[$paraNo];
+        $para = $this->paraData[$paraNo];
+
         $groupedParaData  = [];
         $pending          = '';
         $pendingCurrAmend = 0;
@@ -377,7 +378,8 @@ class AmendmentDiffMerger
         $addToGrouped = function ($pendingCurrAmend, $text) use (&$groupedParaData) {
             $groupedParaData[] = [
                 'amendment' => $pendingCurrAmend,
-                'text'      => static::cleanupParagraphData($text),
+                //'text'      => static::cleanupParagraphData($text),
+                'text'      => $text,
             ];
         };
 

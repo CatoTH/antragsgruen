@@ -12,6 +12,51 @@ class DiffRendererTest extends TestBase
 
     /**
      */
+    public function testCallback()
+    {
+        $renderer = new DiffRenderer();
+        $renderer->setInsCallback(function ($node, $params) use (&$cbParam) {
+            /** @var \DOMElement $node */
+            $cbParam = $params;
+            $node->setAttribute('test', '1');
+        });
+        $renderer->setDelCallback(function ($node, $params) use (&$cbParam) {
+            /** @var \DOMElement $node */
+            $cbParam = $params;
+            $node->setAttribute('test', '2');
+        });
+
+
+        $str      = 'Test 123 ###INS_START0-2### kjhkjh';
+        $cbParam  = null;
+        $rendered = $renderer->renderHtmlWithPlaceholders($str);
+        $this->assertEquals('0-2', $cbParam);
+        $this->assertEquals('Test 123 <ins test="1"> kjhkjh</ins>', $rendered);
+
+
+        $str      = 'Test 123 ###DEL_START0-2### kjhkjh';
+        $cbParam  = null;
+        $rendered = $renderer->renderHtmlWithPlaceholders($str);
+        $this->assertEquals('0-2', $cbParam);
+        $this->assertEquals('Test 123 <del test="2"> kjhkjh</del>', $rendered);
+
+
+        $str      = '###DEL_START0-2### kjhkjh <ul><li>List</li></ul>###DEL_END### Ende';
+        $cbParam  = null;
+        $rendered = $renderer->renderHtmlWithPlaceholders($str);
+        $this->assertEquals('0-2', $cbParam);
+        $this->assertEquals('<del test="2"> kjhkjh </del><ul class="deleted" test="2"><li>List</li></ul> Ende', $rendered);
+
+
+        $str      = '###INS_START0-2### kjhkjh <ul><li>List</li></ul>###INS_END### Ende';
+        $cbParam  = null;
+        $rendered = $renderer->renderHtmlWithPlaceholders($str);
+        $this->assertEquals('0-2', $cbParam);
+        $this->assertEquals('<ins test="1"> kjhkjh </ins><ul class="inserted" test="1"><li>List</li></ul> Ende', $rendered);
+    }
+
+    /**
+     */
     public function testSplitText()
     {
         $renderer = new DiffRenderer();
@@ -45,7 +90,7 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('Bla', $nodes[1]->nodeValue);
         $this->assertEquals('del', $nodes[4]->nodeName);
         $this->assertEquals(false, $inIns);
-        $this->assertEquals(true, $inDel);
+        $this->assertEquals('', $inDel);
     }
 
     /**
@@ -158,5 +203,4 @@ class DiffRendererTest extends TestBase
         $str = '<pre> class="inserted" Blabla';
         $this->assertEquals(0, DiffRenderer::paragraphContainsDiff($str));
     }
-
 }
