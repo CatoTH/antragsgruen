@@ -696,8 +696,7 @@ class TextSimple extends ISectionType
         $out = '';
         foreach (array_keys($paragraphs) as $paragraphNo) {
             $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
-            echo print_r($groupedParaData, true);
-            $paragraphText = '';
+            $paragraphText   = '';
             foreach ($groupedParaData as $part) {
                 $text = $part['text'];
 
@@ -708,73 +707,40 @@ class TextSimple extends ISectionType
                         $changeset[$amendment->id] = [];
                     }
                     $changeset[$amendment->id][] = $cid;
-                    /*
-                    $changeData                  = $amendment->getLiteChangeData($cid);
-
-                    $text = str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '>', $text);
-                    $text = str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '>', $text);
-                    */
-                    $text = str_replace('###INS_START###', '###INS_START' . $cid . '-' . $amendment->id . '###', $text);
-                    $text = str_replace('###DEL_START###', '###DEL_START' . $cid . '-' . $amendment->id . '###', $text);
+                    $text                        = str_replace('###INS_START###', '###INS_START' . $cid . '-' . $amendment->id . '###', $text);
+                    $text                        = str_replace('###DEL_START###', '###DEL_START' . $cid . '-' . $amendment->id . '###', $text);
                 }
 
                 $paragraphText .= $text;
             }
-            $renderer = new DiffRenderer();
-            $renderer->setInsCallback(function ($node, $params) use ($amendmentsById) {
-                /** @var \DOMElement $node */
-                $params    = explode('-', $params);
-                $amendment = $amendmentsById[$params[1]];
-                foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
-                    $node->setAttribute($key, $val);
-                }
-                $classes = explode(' ', $node->getAttribute('class'));
-                $classes = array_merge($classes, ['ice-ins', 'ice-cts', 'appendHint']);
-                $node->setAttribute('class', implode(' ', $classes));
-
-            });
-            $renderer->setDelCallback(function ($node, $params) use ($amendmentsById) {
-                /** @var \DOMElement $node */
-                $params    = explode('-', $params);
-                $amendment = $amendmentsById[$params[1]];
-                foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
-                    $node->setAttribute($key, $val);
-                }
-                $classes = explode(' ', $node->getAttribute('class'));
-                $classes = array_merge($classes, ['ice-del', 'ice-cts', 'appendHint']);
-                $node->setAttribute('class', implode(' ', $classes));
-            });
-            $out .= $renderer->renderHtmlWithPlaceholders($paragraphText);
+            $out .= DiffRenderer::renderForCkeditorLite($paragraphText, $amendmentsById);
 
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
-            foreach ($colliding as $amendmentId => $paraText) {
+            foreach ($colliding as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                $text      = '<p><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
-                $text .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
-                $text .= '</strong></p>';
+                $out      .= '<p><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
+                $out .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
+                $out .= '</strong></p>';
+                $paragraphText = '';
 
-                foreach ($paraText as $group) {
-                    if ($group[1] == Engine::UNMODIFIED) {
-                        $text .= $group[0];
-                    } elseif ($group[1] == Engine::INSERTED) {
-                        $cid                       = static::$CHANGESET_COUNTER++;
-                        $changeset[$amendmentId][] = $cid;
-                        $changeData                = $amendment->getLiteChangeData($cid);
-                        $insText                   = '<ins>' . $group[0] . '</ins>';
-                        $insText                   = AmendmentDiffMerger::cleanupParagraphData($insText);
-                        $insHtml                   = '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">';
-                        $text .= str_replace('<ins>', $insHtml, $insText);
-                    } elseif ($group[1] == Engine::DELETED) {
-                        $cid                       = static::$CHANGESET_COUNTER++;
-                        $changeset[$amendmentId][] = $cid;
-                        $changeData                = $amendment->getLiteChangeData($cid);
-                        $delText                   = '<del>' . $group[0] . '</del>';
-                        $delText                   = AmendmentDiffMerger::cleanupParagraphData($delText);
-                        $delHtml                   = '<del class="ice-del ice-cts appendHint"' . $changeData . '">';
-                        $text .= str_replace('<del>', $delHtml, $delText);
+                foreach ($paraData as $part) {
+                    $text = $part['text'];
+
+                    if ($part['amendment'] > 0) {
+                        $amendment = $amendmentsById[$part['amendment']];
+                        $cid       = static::$CHANGESET_COUNTER++;
+                        if (!isset($changeset[$amendment->id])) {
+                            $changeset[$amendment->id] = [];
+                        }
+                        $changeset[$amendment->id][] = $cid;
+
+                        $text = str_replace('###INS_START###', '###INS_START' . $cid . '-' . $amendment->id . '###', $text);
+                        $text = str_replace('###DEL_START###', '###DEL_START' . $cid . '-' . $amendment->id . '###', $text);
                     }
+
+                    $paragraphText .= $text;
                 }
-                $out .= $text;
+                $out .= DiffRenderer::renderForCkeditorLite($paragraphText, $amendmentsById);
             }
         }
 

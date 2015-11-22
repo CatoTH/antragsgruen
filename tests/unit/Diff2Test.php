@@ -17,6 +17,20 @@ class Diff2Test extends TestBase
      */
     public function testInlineDiffToWordBased()
     {
+        $orig = ['<p>Biawambn gscheid:<br>
+Griasd eich</p>'];
+        $new  = ['<p>Biawambn gscheid: Griasd eich</p>'];
+        $diff = new Diff2();
+        try {
+            $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
+            var_dump($arr);
+            die();
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
+
         $orig = ['<ul><li>Seltsame Zeichen: Test</li></ul>'];
         $new  = ['<ul><li>Seltsame Zeichen: Test</li></ul>'];
         $diff = new Diff2();

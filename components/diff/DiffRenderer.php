@@ -3,6 +3,7 @@
 namespace app\components\diff;
 
 use app\components\HTMLTools;
+use app\models\db\Amendment;
 
 class DiffRenderer
 {
@@ -479,5 +480,39 @@ class DiffRenderer
             return false;
         }
         return min($firstDiffs);
+    }
+
+    /**
+     * @param string $diff
+     * @param Amendment[] $amendmentsById
+     * @return string
+     */
+    public static function renderForCkeditorLite($diff, $amendmentsById)
+    {
+        $renderer = new DiffRenderer();
+        $renderer->setInsCallback(function ($node, $params) use ($amendmentsById) {
+            /** @var \DOMElement $node */
+            $params    = explode('-', $params);
+            $amendment = $amendmentsById[$params[1]];
+            foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
+                $node->setAttribute($key, $val);
+            }
+            $classes = explode(' ', $node->getAttribute('class'));
+            $classes = array_merge($classes, ['ice-ins', 'ice-cts', 'appendHint']);
+            $node->setAttribute('class', implode(' ', $classes));
+
+        });
+        $renderer->setDelCallback(function ($node, $params) use ($amendmentsById) {
+            /** @var \DOMElement $node */
+            $params    = explode('-', $params);
+            $amendment = $amendmentsById[$params[1]];
+            foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
+                $node->setAttribute($key, $val);
+            }
+            $classes = explode(' ', $node->getAttribute('class'));
+            $classes = array_merge($classes, ['ice-del', 'ice-cts', 'appendHint']);
+            $node->setAttribute('class', implode(' ', $classes));
+        });
+        return $renderer->renderHtmlWithPlaceholders($diff);
     }
 }
