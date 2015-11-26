@@ -95,6 +95,7 @@ class AmendmentDiffMerger
         $diff     = new Diff2();
         $amParams = ['amendmentId' => $amendmentId];
         $paraArr  = $diff->compareHtmlParagraphsToWordArray($origParas, $amendingParas, $amParams);
+
         foreach ($paraArr as $paraNo => $wordArr) {
             $hasChanges = false;
             $firstDiff  = null;

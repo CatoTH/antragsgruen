@@ -17,14 +17,17 @@ class Diff2Test extends TestBase
      */
     public function testInlineDiffToWordBased()
     {
-        $orig = ['<p>Biawambn gscheid:<br>
-Griasd eich</p>'];
-        $new  = ['<p>Biawambn gscheid: Griasd eich</p>'];
+        $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>'];
+        $new = ['<ul><li>Test1</li></ul>', '<ul><li>Test2</li></ul>', '<ul><li>Test3</li></ul>'];
         $diff = new Diff2();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
-            var_dump($arr);
-            die();
+            $this->assertEquals(2, count($arr));
+            $elements = count($arr[0]);
+            $this->assertEquals(
+                ['word' => '</ul>', 'diff' => '</ul>###INS_START###<ul><li>Test2</li></ul>###INS_END###'],
+                $arr[0][$elements - 1]
+            );
         } catch (Internal $e) {
             echo $e->getMessage();
             echo "\n";
@@ -68,8 +71,8 @@ Griasd eich</p>'];
             echo "\n";
             die();
         }
-        $this->assertEquals(1, count($words[0]));
-        $this->assertEquals('###INS_START###<ul><li>Wir bla bla</li></ul>###INS_END###', $words[0][0]['diff']);
+        $this->assertEquals(1, count($words));
+        $this->assertEquals('###INS_START###<ul><li>Wir bla bla</li></ul>###INS_END###<ul>', $words[0][0]['diff']);
 
 
         $orig = ['Test1 Test 2 der Test 3 Test4'];
