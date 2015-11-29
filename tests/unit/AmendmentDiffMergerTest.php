@@ -9,6 +9,48 @@ use Codeception\Specify;
 
 class AmendmentDiffMergerTest extends TestBase
 {
+
+
+    public function testBasic()
+    {
+        $orig   = [
+            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>'
+        ];
+        $new    = [
+            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. etza nix Gwiass woass ma ned owe.</p>'
+        ];
+        $merger = new AmendmentDiffMerger();
+        $merger->initByMotionParagraphs($orig);
+        $merger->addAmendingParagraphs(1, $orig, $new);
+        $merger->mergeParagraphs();
+        $groupedParaData = $merger->getGroupedParagraphData(0);
+        $this->assertEquals([
+            ['amendment' => 0, 'text' => '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. '],
+            ['amendment' => 1, 'text' => '###DEL_START###Griasd eich midnand ###DEL_END###'],
+            ['amendment' => 0, 'text' => 'etza nix Gwiass woass ma ned owe.</p>'],
+        ], $groupedParaData);
+    }
+
+    public function testInsertedLinebreak()
+    {
+        $orig = [
+            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>'
+        ];
+        $new  = [
+            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.</p>',
+            '<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>',
+        ];
+        $merger = new AmendmentDiffMerger();
+        $merger->initByMotionParagraphs($orig);
+        $merger->addAmendingParagraphs(1, $orig, $new);
+        $merger->mergeParagraphs();
+        $groupedParaData = $merger->getGroupedParagraphData(0);
+        $this->assertEquals([
+            ['amendment' => 0, 'text' => '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.'],
+            ['amendment' => 1, 'text' => '###DEL_START### Griasd eich midnand etza nix Gwiass woass ma ned owe.###DEL_END###</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###'],
+        ], $groupedParaData);
+    }
+
     /**
      */
     public function testInsertedParagraph()

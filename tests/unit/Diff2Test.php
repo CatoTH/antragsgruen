@@ -117,6 +117,30 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
             die();
         }
         $this->assertEquals(16, count($words[0]));
+
+
+        $orig = [
+            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>'
+        ];
+        $new  = [
+            '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.</p>',
+            '<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>',
+        ];
+        $diff = new Diff2();
+        try {
+            $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new, ['amendmentId' => 1]);
+            $this->assertEquals(1, count($arr));
+            $this->assertEquals(
+                ['word' => '.', 'diff' => '.###DEL_END###', 'amendmentId' => 1], $arr[0][21]
+            );
+            $this->assertEquals(
+                ['word' => '</p>', 'diff' => '</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###', 'amendmentId' => 1], $arr[0][22]
+            );
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
     }
 
 

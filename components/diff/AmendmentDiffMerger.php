@@ -209,7 +209,7 @@ class AmendmentDiffMerger
     private function checkIsDiffColliding($paraNo, $diff)
     {
         for ($i = 0; $i < count($diff); $i++) {
-            if ($this->paraData[$paraNo]['words'][$i]['modifiedBy'] > 0) {
+            if ($this->paraData[$paraNo]['words'][$i]['modifiedBy'] > 0 && isset($diff[$i]['amendmentId'])) {
                 return true;
             }
         }

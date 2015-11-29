@@ -545,8 +545,6 @@ class Diff2
      */
     public function convertToWordArray($orig, $diff, $amParams)
     {
-
-
         $wordSplitChars = [' ', '-', '>', '<', ':', '.'];
         $words          = [
             0 => [
@@ -556,23 +554,25 @@ class Diff2
         ];
 
         $diffPartArr       = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $origArr           = self::tokenizeLine($orig);
         $inDel             = $inIns = false;
         $originalWordPos   = 0;
         $pendingOpeningDel = false;
         foreach ($diffPartArr as $diffPart) {
             if ($diffPart == '###INS_START###') {
                 $words[$originalWordPos]['diff'] .= $diffPart;
-                $inIns = true;
+                $words[$originalWordPos] = array_merge($words[$originalWordPos], $amParams);
+                $inIns                   = true;
             } elseif ($diffPart == '###INS_END###') {
                 $words[$originalWordPos]['diff'] .= $diffPart;
-                $inIns = false;
+                $words[$originalWordPos] = array_merge($words[$originalWordPos], $amParams);
+                $inIns                   = false;
             } elseif ($diffPart == '###DEL_START###') {
                 $inDel             = true;
                 $pendingOpeningDel = true;
             } elseif ($diffPart == '###DEL_END###') {
                 $words[$originalWordPos]['diff'] .= $diffPart;
-                $inDel = false;
+                $words[$originalWordPos] = array_merge($words[$originalWordPos], $amParams);
+                $inDel                   = false;
             } else {
                 $diffPartWords = static::tokenizeLine($diffPart);
                 if ($inIns) {
@@ -686,6 +686,8 @@ class Diff2
                     $last   = count($diffSections) - 1;
                     $lastEl = count($diffSections[$last]) - 1;
                     $diffSections[$last][$lastEl]['diff'] .= $wordArray[0]['diff'];
+                    $diffSections[$last][$lastEl] = array_merge($diffSections[$last][$lastEl], $amParams);
+
                 }
             } else {
                 $origLine  = $adjustedRef[$i];
@@ -694,6 +696,8 @@ class Diff2
                 $this->checkWordArrayConsistency($origLine, $wordArray);
                 if ($pendingInsert != '') {
                     $wordArray[0]['diff'] = $pendingInsert . $wordArray[0]['diff'];
+                    $wordArray[0]         = array_merge($wordArray[0], $amParams);
+                    $pendingInsert        = '';
                 }
                 $diffSections[] = $wordArray;
             }
