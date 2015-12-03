@@ -87,14 +87,13 @@ class AmendmentDiffMerger
 
     /**
      * @param int $amendmentId
-     * @param array $origParas
      * @param string[] $amendingParas
      */
-    public function addAmendingParagraphs($amendmentId, $origParas, $amendingParas)
+    public function addAmendingParagraphs($amendmentId, $amendingParas)
     {
         $diff     = new Diff2();
         $amParams = ['amendmentId' => $amendmentId];
-        $paraArr  = $diff->compareHtmlParagraphsToWordArray($origParas, $amendingParas, $amParams);
+        $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->sectionParagraphs, $amendingParas, $amParams);
 
         foreach ($paraArr as $paraNo => $wordArr) {
             $hasChanges = false;
@@ -122,11 +121,9 @@ class AmendmentDiffMerger
      */
     public function addAmendingSections($sections)
     {
-
         foreach ($sections as $section) {
             $newParas  = HTMLTools::sectionSimpleHTML($section->data);
-            $origParas = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
-            $this->addAmendingParagraphs($section->amendmentId, $origParas, $newParas);
+            $this->addAmendingParagraphs($section->amendmentId, $newParas);
         }
     }
 
