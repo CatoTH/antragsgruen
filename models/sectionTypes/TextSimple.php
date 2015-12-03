@@ -330,15 +330,13 @@ class TextSimple extends ISectionType
      * @param Base $controller
      * @param CommentForm $commentForm
      * @param int[] $openedComments
-     * @param bool $consolidatedAmendments
      * @return string
      */
-    public function showMotionView(Base $controller, $commentForm, $openedComments, $consolidatedAmendments)
+    public function showMotionView(Base $controller, $commentForm, $openedComments)
     {
         $view   = new View();
-        $script = ($consolidatedAmendments ? 'showSimpleTextSectionInline' : 'showSimpleTextSection');
         return $view->render(
-            '@app/views/motion/' . $script,
+            '@app/views/motion/showSimpleTextSection',
             [
                 'section'        => $this->section,
                 'openedComments' => $openedComments,

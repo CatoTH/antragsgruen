@@ -163,10 +163,9 @@ class MotionController extends Base
     /**
      * @param int $motionId
      * @param int $commentId
-     * @param bool $consolidatedAmendments
      * @return string
      */
-    public function actionView($motionId, $commentId = 0, $consolidatedAmendments = false)
+    public function actionView($motionId, $commentId = 0)
     {
         $motionId = IntVal($motionId);
         $motion   = $this->getMotionWithCheck($motionId);
@@ -212,7 +211,6 @@ class MotionController extends Base
             'adminEdit'              => $adminEdit,
             'commentForm'            => null,
             'commentWholeMotions'    => $commentWholeMotions,
-            'consolidatedAmendments' => $consolidatedAmendments,
         ];
 
         try {

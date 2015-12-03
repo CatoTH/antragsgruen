@@ -19,7 +19,6 @@ use yii\helpers\Html;
  * @var null|string $supportStatus
  * @var null|CommentForm $commentForm
  * @var bool $commentWholeMotions
- * @var bool $consolidatedAmendments
  */
 
 /** @var \app\controllers\Base $controller */
@@ -157,7 +156,7 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
         }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-        $main .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp, $consolidatedAmendments);
+        $main .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
 
         $main .= '</section>';
     }
