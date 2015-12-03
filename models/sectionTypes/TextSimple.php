@@ -2,10 +2,8 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\diff\AmendmentDiffMerger;
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
-use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
@@ -707,18 +705,21 @@ class TextSimple extends ISectionType
                         $changeset[$amendment->id] = [];
                     }
                     $changeset[$amendment->id][] = $cid;
-                    $text                        = str_replace('###INS_START###', '###INS_START' . $cid . '-' . $amendment->id . '###', $text);
-                    $text                        = str_replace('###DEL_START###', '###DEL_START' . $cid . '-' . $amendment->id . '###', $text);
+
+                    $mid  = $cid . '-' . $amendment->id;
+                    $text = str_replace('###INS_START###', '###INS_START' . $mid . '###', $text);
+                    $text = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $text);
                 }
 
                 $paragraphText .= $text;
             }
+
             $out .= DiffRenderer::renderForCkeditorLite($paragraphText, $amendmentsById);
 
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
             foreach ($colliding as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                $out      .= '<p><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
+                $out .= '<p><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
                 $out .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
                 $out .= '</strong></p>';
                 $paragraphText = '';
@@ -734,8 +735,9 @@ class TextSimple extends ISectionType
                         }
                         $changeset[$amendment->id][] = $cid;
 
-                        $text = str_replace('###INS_START###', '###INS_START' . $cid . '-' . $amendment->id . '###', $text);
-                        $text = str_replace('###DEL_START###', '###DEL_START' . $cid . '-' . $amendment->id . '###', $text);
+                        $mid  = $cid . '-' . $amendment->id;
+                        $text = str_replace('###INS_START###', '###INS_START' . $mid . '###', $text);
+                        $text = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $text);
                     }
 
                     $paragraphText .= $text;
@@ -743,27 +745,6 @@ class TextSimple extends ISectionType
                 $out .= DiffRenderer::renderForCkeditorLite($paragraphText, $amendmentsById);
             }
         }
-
-        $out = str_replace('</ul><ul>', '', $out);
-        /*
-        $out = preg_replace_callback('/<li>(.*)<\/li>/siuU', function ($matches) {
-            $inner  = $matches[1];
-            $last6  = mb_substr($inner, mb_strlen($inner) - 6);
-            $numIns = mb_substr_count($inner, '<ins');
-            $numDel = mb_substr_count($inner, '<del');
-            if (mb_stripos($inner, '<ins') === 0 && $last6 == '</ins>' && $numIns == 1 && $numDel == 0) {
-                $ret = str_replace('</ins>', '', $matches[0]);
-                $ret = str_replace('<li><ins', '<li', $ret);
-                return $ret;
-            } elseif (mb_stripos($inner, '<del') === 0 && $last6 == '</del>' && $numIns == 0 && $numDel == 1) {
-                $ret = str_replace('</del>', '', $matches[0]);
-                $ret = str_replace('<li><del', '<li', $ret);
-                return $ret;
-            } else {
-                return $matches[0];
-            }
-        }, $out);
-        */
 
         return $out;
     }
