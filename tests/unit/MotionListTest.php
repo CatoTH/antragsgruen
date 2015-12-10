@@ -19,6 +19,7 @@ class MotionListTest extends DBTestBase
     {
         $out = [];
         foreach ($motions as $motion) {
+            var_dump($motion->titlePrefix);
             $out[] = $motion->titlePrefix;
         }
         return $out;
@@ -53,7 +54,7 @@ class MotionListTest extends DBTestBase
         $form->setAttributes(['title' => 'zeit', 'sort' => AdminMotionFilterForm::SORT_INITIATOR]);
         $entries = $this->serializeMotions($form->getSorted());
         $first = array_slice($entries, 0, 5);
-        $this->assertEquals(['Z-01-194-2', '', 'Z-01', 'U-10', 'U-07'], $first);
+        $this->assertEquals(['Z-01-194-2', '', 'U-07', 'U-10', 'Z-01'], $first);
 
         $form         = new AdminMotionFilterForm($consultation, $consultation->motions, true);
         $form->setAttributes(['sort' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
@@ -65,6 +66,6 @@ class MotionListTest extends DBTestBase
         $form->setAttributes(['initiator' => 'Bundesvorstand', 'sort' => AdminMotionFilterForm::SORT_TAG]);
         $entries = $this->serializeMotions($form->getSorted());
         $first = array_slice($entries, 0, 5);
-        $this->assertEquals(['S-01', 'S-ohne Nummer', 'T-01', 'F-01', 'U-10'], $first);
+        $this->assertEquals(['S-01', 'S-ohne Nummer', 'F-01', 'T-01', 'U-01'], $first);
     }
 }

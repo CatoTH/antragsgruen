@@ -151,7 +151,12 @@ class AdminMotionFilterForm extends Model
             /** @var Amendment $motion2 */
             $title2 = $motion2->getMyMotion()->title;
         }
-        return strnatcasecmp($title1, $title2);
+        $cmp = strnatcasecmp($title1, $title2);
+        if ($cmp == 0) {
+            return ($motion1->id < $motion2->id ? 1 : -1);
+        } else {
+            return $cmp;
+        }
     }
 
     /**
@@ -188,7 +193,12 @@ class AdminMotionFilterForm extends Model
     {
         $init1 = $motion1->getInitiatorsStr();
         $init2 = $motion2->getInitiatorsStr();
-        return strnatcasecmp($init1, $init2);
+        $cmp   = strnatcasecmp($init1, $init2);
+        if ($cmp == 0) {
+            return $this->sortTitlePrefix($motion1, $motion2);
+        } else {
+            return $cmp;
+        }
     }
 
     /**
@@ -225,7 +235,12 @@ class AdminMotionFilterForm extends Model
         } elseif ($tag2 === null) {
             return -1;
         } else {
-            return strnatcasecmp($tag1->title, $tag2->title);
+            $cmp = strnatcasecmp($tag1->title, $tag2->title);
+            if ($cmp == 0) {
+                return $this->sortTitlePrefix($motion1, $motion2);
+            } else {
+                return $cmp;
+            }
         }
     }
 
