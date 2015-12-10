@@ -312,6 +312,8 @@ class MotionController extends AdminBase
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
+        error_reporting(E_ALL & ~E_DEPRECATED); // PHPExcel ./. PHP 7
+
         $motions = [];
         foreach ($this->consultation->getVisibleMotionsSorted() as $motion) {
             if ($motion->motionTypeId == $motionTypeId) {
