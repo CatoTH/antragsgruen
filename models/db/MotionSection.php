@@ -209,7 +209,8 @@ class MotionSection extends IMotionSection
                 if (!$amSec) {
                     continue;
                 }
-                $amParagraphs = $amSec->diffToOrigParagraphs($paras);
+                $paragraphs = HTMLTools::sectionSimpleHTML($this->data);
+                $amParagraphs = $amSec->diffToOrigParagraphs($paragraphs);
                 foreach ($amParagraphs as $amParagraph) {
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
                 }

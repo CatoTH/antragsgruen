@@ -171,25 +171,21 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
-     * @param array $origParagraphLines
+     * @param string[] $origParagraphs
+     * @param bool $splitListItems
      * @return MotionSectionParagraphAmendment[]
      */
-    public function diffToOrigParagraphs($origParagraphLines)
+    public function diffToOrigParagraphs($origParagraphs, $splitListItems = true)
     {
         $cached = $this->getCacheItem('diffToOrigParagraphs');
         if ($cached !== null) {
             return $cached;
         }
 
-        $origParagraphs = [];
-        foreach ($origParagraphLines as $paraNo => $para) {
-            $origParagraphs[$paraNo] = implode('', $para);
-        }
-
         $firstLine   = $this->getFirstLineNumber();
 
         $amParagraphs = [];
-        $newSections  = HTMLTools::sectionSimpleHTML($this->data);
+        $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
         $diff         = new Diff2();
         $diffParas    = $diff->compareHtmlParagraphs($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
 
@@ -205,7 +201,7 @@ class AmendmentSection extends IMotionSection
                     $diffPara,
                     $firstDiffLine
                 );
-                $amParagraphs[] = $amSec;
+                $amParagraphs[$paraNo] = $amSec;
             }
             $firstLine += mb_substr_count($diffPara, '###LINENUMBER###');
         }
