@@ -34,6 +34,20 @@ class Diff2Test extends TestBase
             die();
         }
 
+        $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>', '<ul><li>Test3</li></ul>'];
+        $new = ['<p>Neue Zeile</p>'];
+        $diff = new Diff2();
+        try {
+            $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
+            // @TODO Insert at the beginning or end, not in the middle
+            $all = json_encode($arr);
+            $this->assertFalse(mb_strpos($all, '###EMPTYINSERTED###'));
+        } catch (Internal $e) {
+            echo $e->getMessage();
+            echo "\n";
+            die();
+        }
+
         $orig = ['<ul><li>Seltsame Zeichen: Test</li></ul>'];
         $new  = ['<ul><li>Seltsame Zeichen: Test</li></ul>'];
         $diff = new Diff2();

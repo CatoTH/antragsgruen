@@ -691,7 +691,8 @@ class Diff2
                 }
             } else {
                 $origLine  = $adjustedRef[$i];
-                $diffLine  = $this->computeLineDiff($origLine, $adjustedMatching[$i]);
+                $matchingRow = str_replace('###EMPTYINSERTED###', '', $adjustedMatching[$i]);
+                $diffLine  = $this->computeLineDiff($origLine, $matchingRow);
                 $wordArray = $this->convertToWordArray($origLine, $diffLine, $amParams);
                 $this->checkWordArrayConsistency($origLine, $wordArray);
                 if ($pendingInsert != '') {
