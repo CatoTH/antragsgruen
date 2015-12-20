@@ -712,12 +712,13 @@ class TextSimple extends ISectionType
                 $paragraphText .= $text;
             }
 
-            $out .= DiffRenderer::renderForCkeditorLite($paragraphText, $amendmentsById);
+            $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
             foreach ($colliding as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                $out .= '<p><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
+                $out .= '<section class="collidingParagraph">';
+                $out .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
                 $out .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
                 $out .= '</strong></p>';
                 $paragraphText = '';
@@ -740,7 +741,8 @@ class TextSimple extends ISectionType
 
                     $paragraphText .= $text;
                 }
-                $out .= DiffRenderer::renderForCkeditorLite($paragraphText, $amendmentsById);
+                $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
+                $out .= '</section>';
             }
         }
 

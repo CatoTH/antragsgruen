@@ -42,7 +42,6 @@ function __t(category, str) {
     }
 
     function ckeditorInit(id) {
-
         var $el = $("#" + id),
             initialized = $el.data("ckeditor_initialized"),
             allowedContent;
@@ -91,15 +90,26 @@ function __t(category, str) {
             title: $el.attr("title")
         };
 
-        if ($el.data('track-changed') == '1') {
-            ckeditorConfig.extraPlugins += ',lite';
+        if ($el.data('track-changed') == '1' || $el.data('allow-diff-formattings') == '1') {
             allowedContent = 'strong s em u sub sup;' +
                 'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint){border,margin,padding};' +
+                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead){border,margin,padding};' +
                 'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline,strike,subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
-                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
+                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);' +
+                'section(collidingParagraph)';
+        } else {
+            allowedContent = 'strong s em u sub sup;' +
+                'ul ol li {list-style-type};' +
+                    //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                'p blockquote {border,margin,padding};' +
+                'span(underline,strike,subscript,superscript);' +
+                'a[href];';
+        }
+
+        if ($el.data('track-changed') == '1') {
+            ckeditorConfig.extraPlugins += ',lite';
             if ($el.data('track-changed-tooltips') == '1') {
                 ckeditorConfig.lite = {tooltips: true};
             } else {
@@ -107,12 +117,6 @@ function __t(category, str) {
             }
         } else {
             ckeditorConfig.removePlugins += ',lite';
-            allowedContent = 'strong s em u sub sup;' +
-                'ul ol li {list-style-type};' +
-                    //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-                'p blockquote {border,margin,padding};' +
-                'span(underline,strike,subscript,superscript);' +
-                'a[href];';
         }
         ckeditorConfig.allowedContent = allowedContent;
         ckeditorConfig.pasteFilter = allowedContent;
@@ -392,49 +396,148 @@ function __t(category, str) {
 
             $textarea.parents("form").submit(function () {
                 $textarea.parent().find("textarea.raw").val(editor.getData());
-                if (typeof(editor.plugins.lite) != 'undefined') {
-                    editor.plugins.lite.findPlugin(editor).acceptAll();
-                    $textarea.parent().find("textarea.consolidated").val(editor.getData());
-                }
+                $textarea.parent().find("textarea.consolidated").val(editor.getData());
+            });
+
+            var $text = $('<div>' + editor.getData() + '</div>');
+            $text.find("ul.appendHint, ol.appendHint").each(function () {
+                var $this = $(this),
+                    appendHint = $this.data("append-hint");
+                $this.find("> li").addClass("appendHint").attr("data-append-hint", appendHint);
+                $this.removeClass("appendHint").removeData("append-hint");
+            });
+            var newText = $text.html();
+            editor.setData(newText);
+
+            var closeTooltip = function (el) {
+                    var $el = $(el);
+                    if (el.nodeName.toLowerCase() == 'ul' || el.nodeName.toLowerCase() == 'ol') {
+                        $el = $el.children();
+                    }
+                    $el.popover("hide").popover("destroy");
+                    $holder.removeData("popover-shown");
+                },
+                insertReject = function () {
+                    closeTooltip(this);
+                    $(this).remove();
+                },
+                insertAccept = function () {
+                    var $this = $(this);
+                    closeTooltip(this);
+                    $this.removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+                    if (this.nodeName.toLowerCase() == 'ul' || this.nodeName.toLowerCase() == 'ol') {
+                        $this.children().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+                    }
+                    if (this.nodeName.toLowerCase() == 'ins') {
+                        $this.replaceWith($this.html());
+                    }
+                },
+                deleteReject = function () {
+                    var $this = $(this);
+                    closeTooltip(this);
+                    $this.removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+                    if (this.nodeName.toLowerCase() == 'ul' || this.nodeName.toLowerCase() == 'ol') {
+                        $this.children().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+                    }
+                    if (this.nodeName.toLowerCase() == 'del') {
+                        $this.replaceWith($this.html());
+                    }
+                },
+                deleteAccept = function () {
+                    closeTooltip(this);
+                    $(this).remove();
+                },
+                popoverContent = function () {
+                    var $this = $(this),
+                        html = '<div><button type="button" class="accept btn btn-small btn-default"></button>';
+                    html += '<button type="button" class="reject btn btn-small btn-default"></button></div>';
+                    var $el = $(html);
+                    if ($this.hasClass("ice-ins")) {
+                        $el.find("button.accept").text("Übernehmen").click(insertAccept.bind($this[0]));
+                        $el.find("button.reject").text("Verwerfen").click(insertReject.bind($this[0]));
+                    } else if ($this.hasClass("ice-del")) {
+                        $el.find("button.accept").text("Löschen").click(deleteAccept.bind($this[0]));
+                        $el.find("button.reject").text("Behalten").click(deleteReject.bind($this[0]));
+                    } else if ($this[0].nodeName.toLowerCase() == 'li') {
+                        var $list = $this.parent();
+                        if ($list.hasClass("ice-ins")) {
+                            $el.find("button.accept").text("Übernehmen").click(insertAccept.bind($list[0]));
+                            $el.find("button.reject").text("Verwerfen").click(insertReject.bind($list[0]));
+                        } else if ($list.hasClass("ice-del")) {
+                            $el.find("button.accept").text("Löschen").click(deleteAccept.bind($list[0]));
+                            $el.find("button.reject").text("Behalten").click(deleteReject.bind($list[0]));
+                        } else {
+                            console.log("unknown", $list);
+                        }
+                    } else {
+                        console.log("unknown", $this);
+                        alert("unknown");
+                    }
+                    return $el;
+                };
+
+            $holder.on('mouseover', '.collidingParagraphHead', function () {
+                $(this).parents(".collidingParagraph").addClass("hovered");
+            }).on('mouseout', '.collidingParagraphHead', function () {
+                $(this).parents(".collidingParagraph").removeClass("hovered");
+            });
+
+            $holder.on("mouseover", ".appendHint", function () {
+                var $previous = $holder.data("popover-shown");
+                if ($previous) $previous.popover("hide").popover("destroy");
+                var $this = $(this);
+                $this.popover({
+                    'container': $holder,
+                    'animation': false,
+                    'trigger': 'manual',
+                    'placement': 'bottom',
+                    'html': true,
+                    'title': function () {
+                        return $this.data("appendHint");
+                    },
+                    'content': popoverContent
+                });
+                $this.popover('show');
+                $holder.data("popover-shown", $this);
+            });
+
+            var callPopoverContent = function () {
+                var $this = $(this),
+                    html = '<div><button type="button" class="btn btn-small btn-default delTitle">X</button>';
+                html += '<button type="button" class="reject btn btn-small btn-default">Verwerfen</button>';
+                html += '<a href="#" class="btn btn-small btn-default opener" target="_blank">öffnen</a>';
+                html += '</div>';
+                var $el = $(html);
+                $el.find("a.opener").attr("href", $this.find("a").attr("href"));
+                $el.find(".reject").click(function () {
+                    $this.popover("hide").popover("destroy");
+                    $this.parents(".collidingParagraph").remove();
+                });
+                $el.find(".delTitle").click(function () {
+                    $this.popover("hide").popover("destroy");
+                    $this.remove();
+                });
+                return $el;
+            };
+
+            $holder.on("mouseover", ".collidingParagraphHead", function () {
+                var $previous = $holder.data("popover-shown");
+                if ($previous) $previous.popover("hide").popover("destroy");
+                var $this = $(this);
+                $this.popover({
+                    'container': $holder,
+                    'animation': false,
+                    'trigger': 'manual',
+                    'placement': 'right',
+                    'html': true,
+                    'title': 'Kollidierender ÄA',
+                    'content': callPopoverContent
+                });
+                $this.popover('show');
+                $holder.data("popover-shown", $this);
             });
         });
 
-        $(".wysiwyg-textarea .acceptAllChanges").click(function () {
-            var $this = $(this),
-                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
-                instance = CKEDITOR.instances[id];
-            bootbox.confirm(__t("merge", "accept_all"), function (result) {
-                if (result) {
-                    instance.plugins.lite.findPlugin(instance).acceptAll();
-                    $this.parents(".wysiwyg-textarea").find("> label").scrollintoview();
-                }
-            });
-        });
-
-        $(".wysiwyg-textarea .rejectAllChanges").click(function () {
-            var $this = $(this),
-                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
-                instance = CKEDITOR.instances[id];
-            bootbox.confirm(__t("merge", "reject_all"), function (result) {
-                if (result) {
-                    instance.plugins.lite.findPlugin(instance).rejectAll();
-                    $this.parents(".wysiwyg-textarea").find("> label").scrollintoview();
-                }
-            });
-        });
-
-        $(".wysiwyg-textarea .deactivateTracking").click(function () {
-            var $this = $(this),
-                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
-                instance = CKEDITOR.instances[id];
-            if (instance.plugins.lite.findPlugin(instance).countChanges() == 0) {
-                instance.plugins.lite.findPlugin(instance).toggleTracking(false, false);
-                $this.parents(".wysiwyg-textarea").find(".mergeTrackingDisabled").removeClass("hidden");
-                $this.parents(".wysiwyg-textarea").find(".mergeActionHolder").addClass("hidden");
-            } else {
-                bootbox.alert(__t("merge", "err_pending_changes"));
-            }
-        });
 
         var $draftHint = $("#draftHint"),
             origMotionId = $draftHint.data("orig-motion-id"),

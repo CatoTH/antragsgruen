@@ -223,7 +223,7 @@ class Amendment extends IMotion implements IRSSItem
      * @param string $changeId
      * @return array
      */
-    public function getLiteChangeData($changeId)
+    public function getInlineChangeData($changeId)
     {
         $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
         return [

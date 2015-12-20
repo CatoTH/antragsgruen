@@ -65,7 +65,8 @@ if ($hasCollidingParagraphs) {
 }
 $explanation = str_replace('###NEWPREFIX###', $motion->getNewTitlePrefix(), $explanation);
 echo '<div class="alert alert-info alert-dismissible" role="alert">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' .
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' .
+    '<span aria-hidden="true">&times;</span></button>' .
     $explanation . '</div>';
 
 
@@ -104,11 +105,11 @@ foreach ($motion->getSortedSections(false) as $section) {
             'title="' . Html::encode($type->title) . '"></textarea>';
         echo '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
             'title="' . Html::encode($type->title) . '"></textarea>';
-        echo '<div class="texteditor boxed';
+        echo '<div class="texteditor boxed ICE-Tracking';
         if ($section->getSettings()->fixedWidth) {
             echo ' fixedWidthFont';
         }
-        echo '" data-track-changed="1" data-track-changed-tooltips="1" ' .
+        echo '" data-allow-diff-formattings="1" ' .
             'id="' . $htmlId . '_wysiwyg" title="">';
 
         if (isset($newSections[$section->sectionId])) {

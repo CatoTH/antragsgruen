@@ -487,14 +487,14 @@ class DiffRenderer
      * @param Amendment[] $amendmentsById
      * @return string
      */
-    public static function renderForCkeditorLite($diff, $amendmentsById)
+    public static function renderForInlineDiff($diff, $amendmentsById)
     {
         $renderer = new DiffRenderer();
         $renderer->setInsCallback(function ($node, $params) use ($amendmentsById) {
             /** @var \DOMElement $node */
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
-            foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
+            foreach ($amendment->getInlineChangeData($params[1]) as $key => $val) {
                 $node->setAttribute($key, $val);
             }
             $classes = explode(' ', $node->getAttribute('class'));
@@ -506,7 +506,7 @@ class DiffRenderer
             /** @var \DOMElement $node */
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
-            foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
+            foreach ($amendment->getInlineChangeData($params[1]) as $key => $val) {
                 $node->setAttribute($key, $val);
             }
             $classes = explode(' ', $node->getAttribute('class'));
