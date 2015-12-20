@@ -474,6 +474,15 @@ function __t(category, str) {
                         alert("unknown");
                     }
                     return $el;
+                },
+                removePopupIfInactive = function () {
+                    if ($(this).is(":hover")) {
+                        return window.setTimeout(removePopupIfInactive.bind(this), 500);
+                    }
+                    if ($holder.find(".popover").length > 0 && $holder.find(".popover").is(":hover")) {
+                        return window.setTimeout(removePopupIfInactive.bind(this), 500);
+                    }
+                    $(this).popover("hide").popover("destroy");
                 };
 
             $holder.on('mouseover', '.collidingParagraphHead', function () {
@@ -499,6 +508,7 @@ function __t(category, str) {
                 });
                 $this.popover('show');
                 $holder.data("popover-shown", $this);
+                window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
             });
 
             var callPopoverContent = function () {
@@ -535,6 +545,7 @@ function __t(category, str) {
                 });
                 $this.popover('show');
                 $holder.data("popover-shown", $this);
+                window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
             });
         });
 
