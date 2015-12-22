@@ -392,7 +392,12 @@ function __t(category, str) {
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor"),
-                editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+                editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id")),
+                currMouseX = null;
+
+            $holder.on("mousemove", function(ev) {
+                currMouseX = ev.offsetX;
+            });
 
             $textarea.parents("form").submit(function () {
                 $textarea.parent().find("textarea.raw").val(editor.getData());
@@ -418,10 +423,12 @@ function __t(category, str) {
                     $holder.removeData("popover-shown");
                 },
                 insertReject = function () {
+                    editor.fire( 'saveSnapshot' );
                     closeTooltip(this);
                     $(this).remove();
                 },
                 insertAccept = function () {
+                    editor.fire( 'saveSnapshot' );
                     var $this = $(this);
                     closeTooltip(this);
                     $this.removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
@@ -433,6 +440,7 @@ function __t(category, str) {
                     }
                 },
                 deleteReject = function () {
+                    editor.fire( 'saveSnapshot' );
                     var $this = $(this);
                     closeTooltip(this);
                     $this.removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
@@ -444,13 +452,14 @@ function __t(category, str) {
                     }
                 },
                 deleteAccept = function () {
+                    editor.fire( 'saveSnapshot' );
                     closeTooltip(this);
                     $(this).remove();
                 },
                 popoverContent = function () {
                     var $this = $(this),
-                        html = '<div><button type="button" class="accept btn btn-small btn-default"></button>';
-                    html += '<button type="button" class="reject btn btn-small btn-default"></button></div>';
+                        html = '<div><button type="button" class="accept btn btn-sm btn-default"></button>';
+                    html += '<button type="button" class="reject btn btn-sm btn-default"></button></div>';
                     var $el = $(html);
                     if ($this.hasClass("ice-ins")) {
                         $el.find("button.accept").text("Übernehmen").click(insertAccept.bind($this[0]));
@@ -501,29 +510,32 @@ function __t(category, str) {
                     'trigger': 'manual',
                     'placement': 'bottom',
                     'html': true,
-                    'title': function () {
-                        return $this.data("appendHint");
-                    },
                     'content': popoverContent
                 });
                 $this.popover('show');
                 $holder.data("popover-shown", $this);
+                var $popover = $holder.find("> .popover"),
+                    width = $popover.width();
+                $popover.css("left", Math.floor(currMouseX - (width / 2) + 20) + "px");
+                $popover.on("mousemove", function(ev) { ev.stopPropagation(); });
                 window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
             });
 
             var callPopoverContent = function () {
                 var $this = $(this),
-                    html = '<div><button type="button" class="btn btn-small btn-default delTitle">X</button>';
-                html += '<button type="button" class="reject btn btn-small btn-default">Verwerfen</button>';
-                html += '<a href="#" class="btn btn-small btn-default opener" target="_blank">öffnen</a>';
+                    html = '<div style="white-space: nowrap;"><button type="button" class="btn btn-small btn-default delTitle" title="Die Überschrift &quot;Kollidierender Änderungsantrag: ...&quot; entfernen"><span style="text-decoration: line-through">Überschrift</span></button>';
+                html += '<button type="button" class="reject btn btn-small btn-default" title="Den kompletten kollidierenden Block entfernen"><span class="glyphicon glyphicon-trash"></span></button>';
+                html += '<a href="#" class="btn btn-small btn-default opener" target="_blank" title="Den Änderungsantrag in einem neuen Fenster öffnen"><span class="glyphicon glyphicon-new-window"></span></a>';
                 html += '</div>';
                 var $el = $(html);
                 $el.find("a.opener").attr("href", $this.find("a").attr("href"));
                 $el.find(".reject").click(function () {
+                    editor.fire( 'saveSnapshot' );
                     $this.popover("hide").popover("destroy");
                     $this.parents(".collidingParagraph").remove();
                 });
                 $el.find(".delTitle").click(function () {
+                    editor.fire( 'saveSnapshot' );
                     $this.popover("hide").popover("destroy");
                     $this.remove();
                 });
@@ -538,13 +550,17 @@ function __t(category, str) {
                     'container': $holder,
                     'animation': false,
                     'trigger': 'manual',
-                    'placement': 'right',
+                    'placement': 'top',
                     'html': true,
                     'title': 'Kollidierender ÄA',
                     'content': callPopoverContent
                 });
                 $this.popover('show');
                 $holder.data("popover-shown", $this);
+                var $popover = $holder.find("> .popover"),
+                    width = $popover.width();
+                $popover.css("left", Math.floor(currMouseX - (width / 2) + 20) + "px");
+                $popover.on("mousemove", function(ev) { ev.stopPropagation(); });
                 window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
             });
         });
@@ -1095,3 +1111,6 @@ function __t(category, str) {
     $(".jsProtectionHint").remove();
 
 }(jQuery));
+
+
+

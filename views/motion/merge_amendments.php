@@ -125,10 +125,7 @@ foreach ($motion->getSortedSections(false) as $section) {
             \Yii::t('amend', 'merge_accept_all') . '</button> ';
         echo '<button type="button" class="rejectAllChanges btn btn-small btn-default">' .
             \Yii::t('amend', 'merge_reject_all') . '</button>';
-        echo '<button type="button" class="deactivateTracking btn btn-small btn-default" style="float:right;">' .
-            \Yii::t('amend', 'merge_track_deactivate') . '</button>';
         echo '</div>';
-        echo '<div class="mergeTrackingDisabled hidden">' . \Yii::t('amend', 'merge_track_deactivated') . '</div>';
 
         echo '</div>';
     } else {
