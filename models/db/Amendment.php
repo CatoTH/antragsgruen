@@ -669,6 +669,17 @@ class Amendment extends IMotion implements IRSSItem
         return 'amendment-pdf-' . $this->id;
     }
 
+    /**
+     * @param bool
+     * @return string
+     */
+    public function getFilenameBase($noUmlaut)
+    {
+        $motionTitle = $this->getMyMotion()->title;
+        $motionTitle = (mb_strlen($motionTitle) > 100 ? mb_substr($motionTitle, 0, 100) : $motionTitle);
+        $titel       = $this->titlePrefix . ' ' . $motionTitle;
+        return Tools::sanitizeFilename($titel, $noUmlaut);
+    }
 
     /**
      * @param RSSExporter $feed

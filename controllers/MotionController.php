@@ -101,8 +101,10 @@ class MotionController extends Base
         $motionId = IntVal($motionId);
         $motion   = $this->getMotionWithCheck($motionId);
 
+        $filename                    = $motion->getFilenameBase(false) . '.pdf';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
         if ($this->getParams()->xelatexPath) {
             return $this->renderPartial('pdf_tex', ['motion' => $motion]);
@@ -139,7 +141,7 @@ class MotionController extends Base
         $motionId = IntVal($motionId);
         $motion   = $this->getMotionWithCheck($motionId);
 
-        $filename                    = 'Motion_' . $motion->titlePrefix . '.odt';
+        $filename                    = $motion->getFilenameBase(false) . '.odt';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');

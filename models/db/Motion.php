@@ -663,6 +663,17 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool
+     * @return string
+     */
+    public function getFilenameBase($noUmlaut)
+    {
+        $motionTitle = (mb_strlen($this->title) > 100 ? mb_substr($this->title, 0, 100) : $this->title);
+        $title       = $this->titlePrefix . ' ' . $motionTitle;
+        return Tools::sanitizeFilename($title, $noUmlaut);
+    }
+
+    /**
      * @param RSSExporter $feed
      */
     public function addToFeed(RSSExporter $feed)
