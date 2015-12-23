@@ -449,9 +449,7 @@ function __t(category, str) {
                     }
                 },
                 deleteReject = function () {
-                    editor.fire('saveSnapshot');
                     var $this = $(this);
-                    closeTooltip(this);
                     $this.removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
                     if (this.nodeName.toLowerCase() == 'ul' || this.nodeName.toLowerCase() == 'ol') {
                         $this.children().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
@@ -464,8 +462,6 @@ function __t(category, str) {
                     }
                 },
                 deleteAccept = function () {
-                    editor.fire('saveSnapshot');
-                    closeTooltip(this);
                     $(this).parents(".ice-del").remove();
                     $(this).remove();
                 },
@@ -579,6 +575,34 @@ function __t(category, str) {
                     ev.stopPropagation();
                 });
                 window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
+            });
+
+
+            $holder.find(".acceptAllChanges").click(function () {
+                editor.fire('saveSnapshot');
+                $holder.find(".collidingParagraph").each(function () {
+                    var $this = $(this);
+                    $this.find(".collidingParagraphHead").remove();
+                    $this.replaceWith($this.children());
+                });
+                $holder.find(".ice-ins").each(function() {
+                    insertAccept.call(this);
+                });
+                $holder.find(".ice-del").each(function() {
+                    deleteAccept.call(this);
+                });
+            });
+            $holder.find(".rejectAllChanges").click(function () {
+                editor.fire('saveSnapshot');
+                $holder.find(".collidingParagraph").each(function () {
+                    $(this).remove();
+                });
+                $holder.find(".ice-ins").each(function() {
+                    insertReject.call(this);
+                });
+                $holder.find(".ice-del").each(function() {
+                    deleteReject.call(this);
+                });
             });
         });
 
