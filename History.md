@@ -6,6 +6,7 @@ Version 3.1
 - New Inline Amendment Merging
 - Upgrade of Bootsrap, CKEditor and FuelUX
 - Gender-Star
+- Don't allow strike-through text in amendments
 
 Version 3.0
 ===========

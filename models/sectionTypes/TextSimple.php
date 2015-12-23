@@ -87,7 +87,7 @@ class TextSimple extends ISectionType
             if ($fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
-            $str .= '" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
+            $str .= '" data-track-changed="1" data-no-strike="1" id="' . $htmlId . '_wysiwyg" ' .
                 'title="' . Html::encode($type->title) . '">';
             $str .= $amParas[$paraNo];
             $str .= '</div>';
@@ -141,6 +141,7 @@ class TextSimple extends ISectionType
     /**
      * @param bool $isRight
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getSimple($isRight)
     {

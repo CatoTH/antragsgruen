@@ -90,21 +90,24 @@ function __t(category, str) {
             title: $el.attr("title")
         };
 
+        var strikeEl = ($el.data("no-strike") == '1' ? '' : ' s'),
+            strikeClass = ($el.data("no-strike") == '1' ? '' : ',strike');
+
         if ($el.data('track-changed') == '1' || $el.data('allow-diff-formattings') == '1') {
-            allowedContent = 'strong s em u sub sup;' +
+            allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead){border,margin,padding};' +
-                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline,strike,subscript,superscript);' +
+                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
                 'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);' +
                 'section(collidingParagraph)';
         } else {
-            allowedContent = 'strong s em u sub sup;' +
+            allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul ol li {list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +
-                'span(underline,strike,subscript,superscript);' +
+                'span(underline' + strikeClass + ',subscript,superscript);' +
                 'a[href];';
         }
 
@@ -395,7 +398,7 @@ function __t(category, str) {
                 editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id")),
                 currMouseX = null;
 
-            $holder.on("mousemove", function(ev) {
+            $holder.on("mousemove", function (ev) {
                 currMouseX = ev.offsetX;
             });
 
@@ -422,8 +425,8 @@ function __t(category, str) {
                     $el.popover("hide").popover("destroy");
                     $holder.removeData("popover-shown");
                 },
-                performActionWithUI = function(action) {
-                    editor.fire( 'saveSnapshot' );
+                performActionWithUI = function (action) {
+                    editor.fire('saveSnapshot');
                     closeTooltip(this);
                     action.call(this);
                     $("section.collidingParagraph:empty").remove();
@@ -446,7 +449,7 @@ function __t(category, str) {
                     }
                 },
                 deleteReject = function () {
-                    editor.fire( 'saveSnapshot' );
+                    editor.fire('saveSnapshot');
                     var $this = $(this);
                     closeTooltip(this);
                     $this.removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
@@ -461,7 +464,7 @@ function __t(category, str) {
                     }
                 },
                 deleteAccept = function () {
-                    editor.fire( 'saveSnapshot' );
+                    editor.fire('saveSnapshot');
                     closeTooltip(this);
                     $(this).parents(".ice-del").remove();
                     $(this).remove();
@@ -527,7 +530,9 @@ function __t(category, str) {
                 var $popover = $holder.find("> .popover"),
                     width = $popover.width();
                 $popover.css("left", Math.floor(currMouseX - (width / 2) + 20) + "px");
-                $popover.on("mousemove", function(ev) { ev.stopPropagation(); });
+                $popover.on("mousemove", function (ev) {
+                    ev.stopPropagation();
+                });
                 window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
             });
 
@@ -540,12 +545,12 @@ function __t(category, str) {
                 var $el = $(html);
                 $el.find("a.opener").attr("href", $this.find("a").attr("href"));
                 $el.find(".reject").click(function () {
-                    performActionWithUI.call($this[0], function() {
+                    performActionWithUI.call($this[0], function () {
                         $this.parents(".collidingParagraph").remove();
                     });
                 });
                 $el.find(".delTitle").click(function () {
-                    performActionWithUI.call($this[0], function() {
+                    performActionWithUI.call($this[0], function () {
                         $this.remove();
                     });
                 });
@@ -570,7 +575,9 @@ function __t(category, str) {
                 var $popover = $holder.find("> .popover"),
                     width = $popover.width();
                 $popover.css("left", Math.floor(currMouseX - (width / 2) + 20) + "px");
-                $popover.on("mousemove", function(ev) { ev.stopPropagation(); });
+                $popover.on("mousemove", function (ev) {
+                    ev.stopPropagation();
+                });
                 window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
             });
         });
