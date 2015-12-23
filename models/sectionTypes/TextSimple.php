@@ -320,6 +320,12 @@ class TextSimple extends ISectionType
             }
 
             $html = static::formatDiffGroup($diffGroups);
+            $replaces = [];
+            $replaces['<ins '] = '<span ';
+            $replaces['</ins>'] = '</span>';
+            $replaces['<del '] = '<span ';
+            $replaces['</del>'] = '</span>';
+            $html = str_replace(array_keys($replaces), array_values($replaces), $html);
 
             $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         }
