@@ -422,18 +422,24 @@ function __t(category, str) {
                     $el.popover("hide").popover("destroy");
                     $holder.removeData("popover-shown");
                 },
-                insertReject = function () {
+                performActionWithUI = function(action) {
                     editor.fire( 'saveSnapshot' );
                     closeTooltip(this);
+                    action.call(this);
+                    $("section.collidingParagraph:empty").remove();
+                    $textarea.focus();
+                },
+                insertReject = function () {
                     $(this).remove();
                 },
                 insertAccept = function () {
-                    editor.fire( 'saveSnapshot' );
                     var $this = $(this);
-                    closeTooltip(this);
                     $this.removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
                     if (this.nodeName.toLowerCase() == 'ul' || this.nodeName.toLowerCase() == 'ol') {
                         $this.children().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+                    }
+                    if (this.nodeName.toLowerCase() == 'li') {
+                        $this.parent().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
                     }
                     if (this.nodeName.toLowerCase() == 'ins') {
                         $this.replaceWith($this.html());
@@ -445,7 +451,10 @@ function __t(category, str) {
                     closeTooltip(this);
                     $this.removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
                     if (this.nodeName.toLowerCase() == 'ul' || this.nodeName.toLowerCase() == 'ol') {
-                        $this.children().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+                        $this.children().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+                    }
+                    if (this.nodeName.toLowerCase() == 'li') {
+                        $this.parent().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
                     }
                     if (this.nodeName.toLowerCase() == 'del') {
                         $this.replaceWith($this.html());
@@ -454,6 +463,7 @@ function __t(category, str) {
                 deleteAccept = function () {
                     editor.fire( 'saveSnapshot' );
                     closeTooltip(this);
+                    $(this).parents(".ice-del").remove();
                     $(this).remove();
                 },
                 popoverContent = function () {
@@ -462,19 +472,19 @@ function __t(category, str) {
                     html += '<button type="button" class="reject btn btn-sm btn-default"></button></div>';
                     var $el = $(html);
                     if ($this.hasClass("ice-ins")) {
-                        $el.find("button.accept").text("Übernehmen").click(insertAccept.bind($this[0]));
-                        $el.find("button.reject").text("Verwerfen").click(insertReject.bind($this[0]));
+                        $el.find("button.accept").text("Übernehmen").click(performActionWithUI.bind($this[0], insertAccept));
+                        $el.find("button.reject").text("Verwerfen").click(performActionWithUI.bind($this[0], insertReject));
                     } else if ($this.hasClass("ice-del")) {
-                        $el.find("button.accept").text("Löschen").click(deleteAccept.bind($this[0]));
-                        $el.find("button.reject").text("Behalten").click(deleteReject.bind($this[0]));
+                        $el.find("button.accept").text("Löschen").click(performActionWithUI.bind($this[0], deleteAccept));
+                        $el.find("button.reject").text("Behalten").click(performActionWithUI.bind($this[0], deleteReject));
                     } else if ($this[0].nodeName.toLowerCase() == 'li') {
                         var $list = $this.parent();
                         if ($list.hasClass("ice-ins")) {
-                            $el.find("button.accept").text("Übernehmen").click(insertAccept.bind($list[0]));
-                            $el.find("button.reject").text("Verwerfen").click(insertReject.bind($list[0]));
+                            $el.find("button.accept").text("Übernehmen").click(performActionWithUI.bind($this[0], insertAccept));
+                            $el.find("button.reject").text("Verwerfen").click(performActionWithUI.bind($this[0], insertReject));
                         } else if ($list.hasClass("ice-del")) {
-                            $el.find("button.accept").text("Löschen").click(deleteAccept.bind($list[0]));
-                            $el.find("button.reject").text("Behalten").click(deleteReject.bind($list[0]));
+                            $el.find("button.accept").text("Löschen").click(performActionWithUI.bind($this[0], deleteAccept));
+                            $el.find("button.reject").text("Behalten").click(performActionWithUI.bind($this[0], deleteReject));
                         } else {
                             console.log("unknown", $list);
                         }
@@ -530,14 +540,14 @@ function __t(category, str) {
                 var $el = $(html);
                 $el.find("a.opener").attr("href", $this.find("a").attr("href"));
                 $el.find(".reject").click(function () {
-                    editor.fire( 'saveSnapshot' );
-                    $this.popover("hide").popover("destroy");
-                    $this.parents(".collidingParagraph").remove();
+                    performActionWithUI.call($this[0], function() {
+                        $this.parents(".collidingParagraph").remove();
+                    });
                 });
                 $el.find(".delTitle").click(function () {
-                    editor.fire( 'saveSnapshot' );
-                    $this.popover("hide").popover("destroy");
-                    $this.remove();
+                    performActionWithUI.call($this[0], function() {
+                        $this.remove();
+                    });
                 });
                 return $el;
             };
@@ -573,7 +583,6 @@ function __t(category, str) {
     };
 
     var amendmentEditFormMultiPara = function () {
-        console.log("amendmentEditFormMultiPara");
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor");
@@ -582,7 +591,6 @@ function __t(category, str) {
             }
             var editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
             $textarea.parents("form").submit(function () {
-                console.log("save", $textarea.parent().find("textarea.raw"), editor.getData());
                 $textarea.parent().find("textarea.raw").val(editor.getData());
                 if (typeof(editor.plugins.lite) != 'undefined') {
                     editor.plugins.lite.findPlugin(editor).acceptAll();
