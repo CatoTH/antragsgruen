@@ -80,7 +80,7 @@ echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
 echo '</div>';
 
 
-echo Html::beginForm('', 'post', ['class' => 'motionMergeForm fuelux']);
+echo Html::beginForm('', 'post', ['class' => 'motionMergeForm fuelux', 'enctype' => 'multipart/form-data']);
 
 
 echo '<section class="newMotion">
