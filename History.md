@@ -7,6 +7,7 @@ Version 3.1
 - Upgrade of Bootsrap, CKEditor and FuelUX
 - Gender-Star
 - Don't allow strike-through text in amendments
+- More informative filenames for PDF- and ODT-exports
 
 Version 3.0
 ===========
