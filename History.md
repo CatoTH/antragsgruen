@@ -8,6 +8,7 @@ Version 3.1
 - Gender-Star
 - Don't allow strike-through text in amendments
 - More informative filenames for PDF- and ODT-exports
+- When submitting motions or amendments, the text is sent as part of the confirmation e-mail
 
 Version 3.0
 ===========

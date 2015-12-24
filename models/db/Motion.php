@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\HTMLTools;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
@@ -287,7 +288,8 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getVisibleAmendmentsSorted($includeWithdrawn = true)
     {
-        return MotionSorter::getSortedAmendments($this->getConsultation(), $this->getVisibleAmendments($includeWithdrawn));
+        $amendments = $this->getVisibleAmendments($includeWithdrawn);
+        return MotionSorter::getSortedAmendments($this->getConsultation(), $amendments);
     }
 
     /**
@@ -591,23 +593,74 @@ class Motion extends IMotion implements IRSSItem
 
             if ($this->getConsultation()->getSettings()->initiatorConfirmEmails) {
                 $initiator = $this->getInitiators();
+
+                $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
+                $plain      = \Yii::t('motion', 'published_email_body');
+                $plain      = str_replace('%LINK%', $motionLink, $plain);
+                $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . '</h1>';
+                $sections   = $this->getSortedSections(true);
+
+                foreach ($sections as $section) {
+                    $motionHtml .= '<div>';
+                    $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
+                    $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
+                    $motionHtml .= '</div>';
+                }
+                $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+                $plain .= HTMLTools::toPlainText($html);
+
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
                     try {
-                        $text       = \Yii::t('motion', 'published_email_body');
-                        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
                         \app\components\mail\Tools::sendWithLog(
                             EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                             $this->getConsultation()->site,
                             trim($initiator[0]->contactEmail),
                             null,
                             \Yii::t('motion', 'published_email_title'),
-                            str_replace('%LINK%', $motionLink, $text)
+                            $plain,
+                            $html
                         );
                     } catch (MailNotSent $e) {
                         $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                         \yii::$app->session->setFlash('error', $errMsg);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * @throws Internal
+     */
+    public function sendSubmissionConfirmMail()
+    {
+        $initiator = $this->getInitiators();
+        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
+            $plain      = str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'));
+            $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . '</h1>';
+            $sections   = $this->getSortedSections(true);
+
+            foreach ($sections as $section) {
+                $motionHtml .= '<div>';
+                $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
+                $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
+                $motionHtml .= '</div>';
+            }
+            $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+            $plain .= HTMLTools::toPlainText($html);
+
+            try {
+                \app\components\mail\Tools::sendWithLog(
+                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                    $this->getMyConsultation()->site,
+                    trim($initiator[0]->contactEmail),
+                    null,
+                    \Yii::t('motion', 'submitted_screening_email_subject'),
+                    $plain,
+                    $html
+                );
+            } catch (MailNotSent $e) {
             }
         }
     }

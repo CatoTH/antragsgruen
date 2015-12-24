@@ -2,8 +2,10 @@
 namespace app\commands;
 
 use app\components\latex\Exporter;
+use app\components\mail\Tools;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
+use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
@@ -117,7 +119,7 @@ class AdminController extends Controller
         if ($params->xelatexPath) {
             $this->stdout(
                 'Please remember to ensure the runtime/cache-directory and all files are still writable ' .
-                'by the web process if the current process is being run with a different user.'  . "\n"
+                'by the web process if the current process is being run with a different user.' . "\n"
             );
         }
     }

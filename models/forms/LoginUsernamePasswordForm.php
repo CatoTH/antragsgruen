@@ -49,8 +49,8 @@ class LoginUsernamePasswordForm extends Model
         $params   = ['user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
         $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
 
-        $send_text = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n";
-        $send_text .= "%bestLink%\n\n"
+        $sendText = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n";
+        $sendText .= "%bestLink%\n\n"
             . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
             . "Liebe Grüße,\n\tDas Antragsgrün-Team.";
 
@@ -60,7 +60,8 @@ class LoginUsernamePasswordForm extends Model
             $this->username,
             $user->id,
             'Anmeldung bei Antragsgrün',
-            $send_text,
+            $sendText,
+            '',
             [
                 '%code%'     => $bestCode,
                 '%bestLink%' => $link,

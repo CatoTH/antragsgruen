@@ -2,20 +2,17 @@
 
 namespace app\controllers;
 
-use app\components\mail\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\forms\MotionEditForm;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\ISectionType;
@@ -241,7 +238,7 @@ class MotionController extends Base
      */
     public function actionConsolidated($motionId)
     {
-        return $this->actionView($motionId, 0, true);
+        return $this->actionView($motionId, 0);
     }
 
 
@@ -283,20 +280,7 @@ class MotionController extends Base
                 $motion->onPublish();
             } else {
                 if ($motion->getConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $initiator = $motion->getInitiators();
-                    if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                        try {
-                            Tools::sendWithLog(
-                                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                                $this->site,
-                                trim($initiator[0]->contactEmail),
-                                null,
-                                \Yii::t('motion', 'submitted_screening_email_subject'),
-                                str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'))
-                            );
-                        } catch (MailNotSent $e) {
-                        }
-                    }
+                    $motion->sendSubmissionConfirmMail();
                 }
             }
 

@@ -5,6 +5,7 @@ namespace app\components\mail;
 use app\models\db\EMailBlacklist;
 use app\models\db\EMailLog;
 use app\models\exceptions\ServerConfiguration;
+use yii\helpers\Html;
 use Zend\Mail\Header\ContentType;
 
 abstract class Base
@@ -80,6 +81,10 @@ abstract class Base
             $content->addParameter('charset', 'UTF-8');
             $mail->getHeaders()->addHeader($content);
         } else {
+            $html = '<!DOCTYPE html><html>
+            <head><meta charset="utf-8"><title>' . Html::encode($subject) . '</title>
+            </head><body>' . $html . '</body></html>';
+            
             $converter = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles($html);
             $converter->setStripOriginalStyleTags(true);
             $converter->setUseInlineStylesBlock(true);

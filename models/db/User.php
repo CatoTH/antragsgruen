@@ -655,7 +655,7 @@ class User extends ActiveRecord implements IdentityInterface
         $url      = UrlHelper::absolutizeLink($url);
         $text     = \Yii::t('user', 'recover_mail_body');
         $replaces = ['%URL%' => $url, '%CODE%' => $recoveryToken];
-        MailTools::sendWithLog($type, null, $this->email, $this->id, $subject, $text, $replaces);
+        MailTools::sendWithLog($type, null, $this->email, $this->id, $subject, $text, '', $replaces);
     }
 
     /**
@@ -730,7 +730,7 @@ class User extends ActiveRecord implements IdentityInterface
         $url      = UrlHelper::absolutizeLink($url);
         $text     = \Yii::t('user', 'emailchange_mail_body');
         $replaces = ['%URL%' => $url];
-        MailTools::sendWithLog($type, null, $newEmail, $this->id, $subject, $text, $replaces);
+        MailTools::sendWithLog($type, null, $newEmail, $this->id, $subject, $text, '', $replaces);
 
         $this->save();
     }
