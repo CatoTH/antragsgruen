@@ -44,6 +44,9 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 	color: #555;
 	background-color: #ff6666;
 }
+.ICE-Tracking ins.ice-del, .ICE-Tracking del.ice-del {
+	display: inline;
+}
 
 .ICE-Tracking .ice-del.ice-cts-1 {
 	background-color: #ff6666 !important;
