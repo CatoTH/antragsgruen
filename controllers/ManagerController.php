@@ -50,7 +50,7 @@ class ManagerController extends Base
             if ($site->status == Site::STATUS_ACTIVE) {
                 $sitesCurrent[] = $siteData;
             } else {
-                $sitesOld[] = $sitesOld;
+                $sitesOld[] = $siteData;
             }
         }
 

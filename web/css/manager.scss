@@ -127,21 +127,23 @@
   }
 }
 
-.current-uses-list {
-  li {
-    padding-left: 15px;
-    padding-right: 5px;
+#sidebar {
+  .current-uses-list.nav-list {
+    > li {
+      padding-left: 15px;
+      padding-right: 5px;
 
-    -webkit-hyphens: auto;
-    word-break: break-word;
-    -moz-hyphens: auto;
-    hyphens: auto;
-    overflow: hidden;
+      -webkit-hyphens: auto;
+      word-break: break-word;
+      -moz-hyphens: auto;
+      hyphens: auto;
+      overflow: hidden;
 
-    span.orga {
-      font-size: 0.9em;
-      color: #767676;
-      display: block;
+      span.orga {
+        font-size: 0.9em;
+        color: #767676;
+        display: block;
+      }
     }
   }
 }
