@@ -113,11 +113,7 @@ function __t(category, str) {
 
         if ($el.data('track-changed') == '1') {
             ckeditorConfig.extraPlugins += ',lite';
-            if ($el.data('track-changed-tooltips') == '1') {
-                ckeditorConfig.lite = {tooltips: true};
-            } else {
-                ckeditorConfig.lite = {tooltips: false};
-            }
+            ckeditorConfig.lite = {tooltips: false};
         } else {
             ckeditorConfig.removePlugins += ',lite';
         }

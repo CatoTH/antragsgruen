@@ -39,7 +39,7 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 }
 
 .ICE-Tracking .ice-del {
-	/* display: inline; */
+	display: inherit;
 	text-decoration: line-through;
 	color: #555;
 	background-color: #ff6666;
