@@ -639,14 +639,15 @@ class Motion extends IMotion implements IRSSItem
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
             $plain      = str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'));
             $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . '</h1>';
-            $sections   = $this->getSortedSections(true);
 
+            $sections   = $this->getSortedSections(true);
             foreach ($sections as $section) {
                 $motionHtml .= '<div>';
                 $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
                 $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
                 $motionHtml .= '</div>';
             }
+
             $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
             $plain .= HTMLTools::toPlainText($html);
 

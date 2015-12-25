@@ -365,6 +365,19 @@ class HTMLTools
             $text = "/" . $matches[1] . "/";
             return $text;
         }, $text);
+
+        $text = preg_replace_callback("/<ins[^>]*>(.*)<\/ins>/siU", function ($matches) {
+            $ins = \Yii::t('diff', 'plain_text_ins');
+            $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
+            return $text;
+        }, $text);
+
+        $text = preg_replace_callback("/<del[^>]*>(.*)<\/del>/siU", function ($matches) {
+            $ins = \Yii::t('diff', 'plain_text_del');
+            $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
+            return $text;
+        }, $text);
+
         $text = str_ireplace("</tr>", "\n", $text);
 
         $appendLineBr = function ($matches) {
@@ -373,7 +386,7 @@ class HTMLTools
                 $text .= "\n";
             }
             $text .= $matches[2];
-            if (isset($matches[3]) && $matches[3] != "\n" && $matches[3] != "<" && $matches[3] != "") {
+            if (isset($matches[3]) && $matches[3] != "\n" && $matches[3] != "") {
                 $text .= "\n";
             }
             if (isset($matches[3])) {
@@ -390,6 +403,7 @@ class HTMLTools
             $text    = preg_replace_callback("/(.)?<h1.*>(.*)<\/h1>(.)/siU", $appendLineBr, $text);
             $text    = preg_replace_callback("/(.)?<h2.*>(.*)<\/h2>(.)/siU", $appendLineBr, $text);
             $text    = preg_replace_callback("/(.)?<h3.*>(.*)<\/h3>(.)/siU", $appendLineBr, $text);
+            $text    = preg_replace_callback("/(.)?<h4.*>(.*)<\/h4>(.)/siU", $appendLineBr, $text);
         }
 
         $text = strip_tags($text);
@@ -402,6 +416,7 @@ class HTMLTools
                 $text .= "[$nr] $link\n";
             }
         }
+
         return trim($text);
     }
 

@@ -15,4 +15,14 @@ class HTML2PlainTextTest extends TestBase
         $out    = HTMLTools::toPlainText($orig);
         $this->assertEquals($expect, $out);
     }
+
+    /**
+     */
+    public function testCase2()
+    {
+        $orig   = '<h3>Antragstext</h3><h4 class="lineSummary">In Zeile 1:</h4><div><p><del style="color:#FF0000;text-decoration:line-through;">Test</del><ins style="color:#008000;text-decoration:underline;">sdlfklkj</ins></p></div>';
+        $expect = "Antragstext\nIn Zeile 1:\n[LÖSCHUNG]Test[/LÖSCHUNG][EINFÜGUNG]sdlfklkj[/EINFÜGUNG]";
+        $out    = HTMLTools::toPlainText($orig);
+        $this->assertEquals($expect, $out);
+    }
 }

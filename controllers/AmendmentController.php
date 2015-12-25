@@ -213,20 +213,7 @@ class AmendmentController extends Base
                 $amendment->onPublish();
             } else {
                 if ($amendment->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $initiator = $amendment->getInitiators();
-                    if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                        try {
-                            Tools::sendWithLog(
-                                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                                $this->site,
-                                trim($initiator[0]->contactEmail),
-                                null,
-                                \Yii::t('amend', 'submitted_screening_email_subject'),
-                                str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'submitted_screening_email'))
-                            );
-                        } catch (MailNotSent $e) {
-                        }
-                    }
+                    $amendment->sendSubmissionConfirmMail();
                 }
             }
 
