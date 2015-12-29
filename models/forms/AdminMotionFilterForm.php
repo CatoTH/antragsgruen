@@ -245,6 +245,48 @@ class AdminMotionFilterForm extends Model
     }
 
     /**
+     * @param IMotion[] $entries
+     */
+    public function moveAmendmentsToMotions($entries)
+    {
+        $foundMotions = [];
+        foreach ($entries as $entry) {
+            if (is_a($entry, Motion::class)) {
+                $foundMotions[] = $entry->id;
+            }
+        }
+        /** @var IMotion[] $newArr1 */
+        $newArr1 = [];
+        /** @var Amendment[] $movingAmendments */
+        $movingAmendments = [];
+        foreach ($entries as $entry) {
+            if (is_a($entry, Amendment::class)) {
+                /** @var Amendment $entry */
+                if (in_array($entry->motionId, $foundMotions)) {
+                    $movingAmendments[] = $entry;
+                } else {
+                    $newArr1[] = $entry;
+                }
+            } else {
+                $newArr1[] = $entry;
+            }
+        }
+        /** @var IMotion[] $result */
+        $result = [];
+        foreach ($newArr1 as $entry) {
+            $result[] = $entry;
+            if (is_a($entry, Motion::class)) {
+                foreach ($movingAmendments as $amendment) {
+                    if ($amendment->motionId == $entry->id) {
+                        $result[] = $amendment;
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * @return IMotion[]
      */
     public function getSorted()
@@ -269,6 +311,9 @@ class AdminMotionFilterForm extends Model
             case static::SORT_TYPE:
             default:
                 usort($merge, [static::class, 'sortDefault']);
+        }
+        if (!in_array($this->sort, [static::SORT_STATUS, static::SORT_INITIATOR, static::SORT_TAG])) {
+            $merge = $this->moveAmendmentsToMotions($merge);
         }
         return $merge;
     }
