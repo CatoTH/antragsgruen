@@ -177,6 +177,14 @@ function __t(category, str) {
 
     var $html = $('html');
 
+    var motionInitiatorShow = function () {
+        $(".motionData .contactShow").click(function (ev) {
+            ev.preventDefault();
+            $(this).addClass("hidden");
+            $(".motionData .contactDetails").removeClass("hidden");
+        });
+    };
+
     var draftSavingEngine = function (keyBase) {
         if (!$html.hasClass("localstorage")) {
             return;
@@ -388,6 +396,7 @@ function __t(category, str) {
     };
 
     var motionMergeAmendmentsForm = function () {
+        motionInitiatorShow();
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor"),
@@ -581,10 +590,10 @@ function __t(category, str) {
                     $this.find(".collidingParagraphHead").remove();
                     $this.replaceWith($this.children());
                 });
-                $holder.find(".ice-ins").each(function() {
+                $holder.find(".ice-ins").each(function () {
                     insertAccept.call(this);
                 });
-                $holder.find(".ice-del").each(function() {
+                $holder.find(".ice-del").each(function () {
                     deleteAccept.call(this);
                 });
             });
@@ -593,10 +602,10 @@ function __t(category, str) {
                 $holder.find(".collidingParagraph").each(function () {
                     $(this).remove();
                 });
-                $holder.find(".ice-ins").each(function() {
+                $holder.find(".ice-ins").each(function () {
                     insertReject.call(this);
                 });
-                $holder.find(".ice-del").each(function() {
+                $holder.find(".ice-del").each(function () {
                     deleteReject.call(this);
                 });
             });
@@ -783,6 +792,7 @@ function __t(category, str) {
     };
 
     var motionShow = function () {
+        motionInitiatorShow();
         var $paragraphs = $('.motionTextHolder .paragraph');
         $paragraphs.find('.comment .shower').click(function (ev) {
             ev.preventDefault();
@@ -871,6 +881,7 @@ function __t(category, str) {
     };
 
     var amendmentShow = function () {
+        motionInitiatorShow();
         var s = location.hash.split('#comm');
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});

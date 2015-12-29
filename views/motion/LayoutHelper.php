@@ -35,7 +35,9 @@ class LayoutHelper
             }
             $admin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
-                $name .= '<br><small>' . \Yii::t('initiator', 'contact_only_admion') . ': ';
+                $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
+                $name .= \Yii::t('initiator', 'contact_show') . '</a>';
+                $name .= '<div class="contactDetails hidden">' . \Yii::t('initiator', 'contact_only_admin') . ': ';
                 if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
                     if ($supp->name != '') {
                         $name .= Html::encode($supp->name) . ', ';
@@ -57,7 +59,7 @@ class LayoutHelper
                 if ($supp->contactPhone != '') {
                     $name .= \Yii::t('initiator', 'phone') . ': ' . Html::encode($supp->contactPhone);
                 }
-                $name .= '</small>';
+                $name .= '</div>';
             }
             $inits[] = $name;
         }

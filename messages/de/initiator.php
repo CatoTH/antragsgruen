@@ -25,6 +25,7 @@ return [
     'fullTextSyntax'      => 'Name 1, KV 1; Name 2, KV 2; Name 3; ...',
     'email_confirmed'     => 'E-Mail-Adresse bestätigt',
     'email_not_confirmed' => 'E-Mail-Adresse nicht bestätigt',
-    'contact_only_admion' => 'Kontaktdaten, nur als Admin sichtbar',
+    'contact_show'        => 'Kontaktdaten',
+    'contact_only_admin'  => 'Nur als Admin sichtbar',
     'ww_profile'          => 'Wurzelwerk-Profil',
 ];
