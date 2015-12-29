@@ -8,6 +8,7 @@ return [
     'create_prerequisites'              => 'Voraussetzungen für einen Antrag',
     'amendment_create'                  => 'Änderungsantrag stellen',
     'amendments_merge'                  => 'Änderungsanträge einpflegen',
+    'amendments_merge_noamend'          => 'Änderungen einpflegen',
     'none_yet'                          => 'Es gibt noch keine Anträge',
     'motion_edit'                       => '%TYPE% bearbeiten',
     'motion_withdraw'                   => '%TYPE% zurückziehen',
