@@ -101,7 +101,7 @@ function __t(category, str) {
                 'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
                 'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);' +
-                'section(collidingParagraph)';
+                'section[data-*](collidingParagraph)';
         } else {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul ol li {list-style-type};' +
@@ -413,12 +413,17 @@ function __t(category, str) {
             });
 
             var $text = $('<div>' + editor.getData() + '</div>');
+
+            // Move the amendment-Data from OL's and UL's to their list items
             $text.find("ul.appendHint, ol.appendHint").each(function () {
                 var $this = $(this),
                     appendHint = $this.data("append-hint");
-                $this.find("> li").addClass("appendHint").attr("data-append-hint", appendHint);
+                $this.find("> li").addClass("appendHint").attr("data-append-hint", appendHint)
+                    .attr("data-link", $this.data("link"))
+                    .attr("data-username", $this.data("username"));
                 $this.removeClass("appendHint").removeData("append-hint");
             });
+
             var newText = $text.html();
             editor.setData(newText);
 
@@ -472,23 +477,29 @@ function __t(category, str) {
                 },
                 popoverContent = function () {
                     var $this = $(this),
-                        html = '<div><button type="button" class="accept btn btn-sm btn-default"></button>';
-                    html += '<button type="button" class="reject btn btn-sm btn-default"></button></div>';
+                        html = '<div>';
+                    html += '<button type="button" class="accept btn btn-sm btn-default"></button>';
+                    html += '<button type="button" class="reject btn btn-sm btn-default"></button>';
+                    html += '<a href="#" class="btn btn-small btn-default opener" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>';
+                    html += '<div class="initiator" style="font-size: 0.8em;"></div>';
+                    html += '</div>';
                     var $el = $(html);
+                    $el.find(".opener").attr("href", $this.data("link")).attr("title", __t("merge", "title_open_in_blank"));
+                    $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $this.data("username"));
                     if ($this.hasClass("ice-ins")) {
-                        $el.find("button.accept").text("Übernehmen").click(performActionWithUI.bind($this[0], insertAccept));
-                        $el.find("button.reject").text("Verwerfen").click(performActionWithUI.bind($this[0], insertReject));
+                        $el.find("button.accept").text(__t("merge", "insert_accept")).click(performActionWithUI.bind($this[0], insertAccept));
+                        $el.find("button.reject").text(__t("merge", "insert_reject")).click(performActionWithUI.bind($this[0], insertReject));
                     } else if ($this.hasClass("ice-del")) {
-                        $el.find("button.accept").text("Löschen").click(performActionWithUI.bind($this[0], deleteAccept));
-                        $el.find("button.reject").text("Behalten").click(performActionWithUI.bind($this[0], deleteReject));
+                        $el.find("button.accept").text(__t("merge", "delete_accept")).click(performActionWithUI.bind($this[0], deleteAccept));
+                        $el.find("button.reject").text(__t("merge", "delete_reject")).click(performActionWithUI.bind($this[0], deleteReject));
                     } else if ($this[0].nodeName.toLowerCase() == 'li') {
                         var $list = $this.parent();
                         if ($list.hasClass("ice-ins")) {
-                            $el.find("button.accept").text("Übernehmen").click(performActionWithUI.bind($this[0], insertAccept));
-                            $el.find("button.reject").text("Verwerfen").click(performActionWithUI.bind($this[0], insertReject));
+                            $el.find("button.accept").text(__t("merge", "insert_accept")).click(performActionWithUI.bind($this[0], insertAccept));
+                            $el.find("button.reject").text(__t("merge", "insert_reject")).click(performActionWithUI.bind($this[0], insertReject));
                         } else if ($list.hasClass("ice-del")) {
-                            $el.find("button.accept").text("Löschen").click(performActionWithUI.bind($this[0], deleteAccept));
-                            $el.find("button.reject").text("Behalten").click(performActionWithUI.bind($this[0], deleteReject));
+                            $el.find("button.accept").text(__t("merge", "delete_accept")).click(performActionWithUI.bind($this[0], deleteAccept));
+                            $el.find("button.reject").text(__t("merge", "delete_reject")).click(performActionWithUI.bind($this[0], deleteReject));
                         } else {
                             console.log("unknown", $list);
                         }
@@ -539,12 +550,18 @@ function __t(category, str) {
 
             var callPopoverContent = function () {
                 var $this = $(this),
-                    html = '<div style="white-space: nowrap;"><button type="button" class="btn btn-small btn-default delTitle" title="Die Überschrift &quot;Kollidierender Änderungsantrag: ...&quot; entfernen"><span style="text-decoration: line-through">Überschrift</span></button>';
-                html += '<button type="button" class="reject btn btn-small btn-default" title="Den kompletten kollidierenden Block entfernen"><span class="glyphicon glyphicon-trash"></span></button>';
-                html += '<a href="#" class="btn btn-small btn-default opener" target="_blank" title="Den Änderungsantrag in einem neuen Fenster öffnen"><span class="glyphicon glyphicon-new-window"></span></a>';
+                    html = '<div style="white-space: nowrap;"><button type="button" class="btn btn-small btn-default delTitle">' +
+                        '<span style="text-decoration: line-through">' + __t("merge", "title") + '</span></button>';
+                html += '<button type="button" class="reject btn btn-small btn-default"><span class="glyphicon glyphicon-trash"></span></button>';
+                html += '<a href="#" class="btn btn-small btn-default opener" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>';
+                html += '<div class="initiator" style="font-size: 0.8em;"></div>';
                 html += '</div>';
                 var $el = $(html);
-                $el.find("a.opener").attr("href", $this.find("a").attr("href"));
+                console.log(this);
+                $el.find(".delTitle").attr("title", __t("merge", "title_del_title"));
+                $el.find(".reject").attr("title", __t("merge", "title_del_colliding"));
+                $el.find("a.opener").attr("href", $this.find("a").attr("href")).attr("title", __t("merge", "title_open_in_blank"));
+                $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $this.parents(".collidingParagraph").data("username"));
                 $el.find(".reject").click(function () {
                     performActionWithUI.call($this[0], function () {
                         $this.parents(".collidingParagraph").remove();
@@ -568,7 +585,7 @@ function __t(category, str) {
                     'trigger': 'manual',
                     'placement': 'top',
                     'html': true,
-                    'title': 'Kollidierender ÄA',
+                    'title': __t("merge", "colliding_title"),
                     'content': callPopoverContent
                 });
                 $this.popover('show');

@@ -724,7 +724,9 @@ class TextSimple extends ISectionType
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
             foreach ($colliding as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                $out .= '<section class="collidingParagraph">';
+                $out .= '<section class="collidingParagraph"';
+                $out .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
+                $out .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
                 $out .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
                 $out .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
                 $out .= '</strong></p>';
