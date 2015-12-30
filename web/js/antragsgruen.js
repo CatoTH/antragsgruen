@@ -443,7 +443,22 @@ function __t(category, str) {
                     $textarea.focus();
                 },
                 insertReject = function () {
-                    $(this).remove();
+                    var $removeEl,
+                        name = this.nodeName.toLowerCase();
+                    if (name == 'li') {
+                        $removeEl = $(this).parent();
+                    } else {
+                        $removeEl = $(this);
+                    }
+                    if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
+                        $removeEl.css("overflow", "hidden").height($removeEl.height());
+                        $removeEl.animate({"height": "0"}, 250, function () {
+                            $removeEl.remove();
+                            $("section.collidingParagraph:empty").remove();
+                        });
+                    } else {
+                        $removeEl.remove();
+                    }
                 },
                 insertAccept = function () {
                     var $this = $(this);
@@ -472,8 +487,23 @@ function __t(category, str) {
                     }
                 },
                 deleteAccept = function () {
-                    $(this).parents(".ice-del").remove();
-                    $(this).remove();
+                    var name = this.nodeName.toLowerCase(),
+                        $removeEl;
+                    if (name == 'li') {
+                        $removeEl = $(this).parent();
+                    } else {
+                        $removeEl = $(this);
+                    }
+
+                    if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
+                        $removeEl.css("overflow", "hidden").height($removeEl.height());
+                        $removeEl.animate({"height": "0"}, 250, function () {
+                            $removeEl.remove();
+                            $("section.collidingParagraph:empty").remove();
+                        });
+                    } else {
+                        $removeEl.remove();
+                    }
                 },
                 popoverContent = function () {
                     var $this = $(this),
@@ -557,14 +587,17 @@ function __t(category, str) {
                 html += '<div class="initiator" style="font-size: 0.8em;"></div>';
                 html += '</div>';
                 var $el = $(html);
-                console.log(this);
                 $el.find(".delTitle").attr("title", __t("merge", "title_del_title"));
                 $el.find(".reject").attr("title", __t("merge", "title_del_colliding"));
                 $el.find("a.opener").attr("href", $this.find("a").attr("href")).attr("title", __t("merge", "title_open_in_blank"));
                 $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $this.parents(".collidingParagraph").data("username"));
                 $el.find(".reject").click(function () {
                     performActionWithUI.call($this[0], function () {
-                        $this.parents(".collidingParagraph").remove();
+                        var $para = $this.parents(".collidingParagraph");
+                        $para.css({"overflow": "hidden"}).height($para.height());
+                        $para.animate({"height": "0"}, 250, function () {
+                            $para.remove();
+                        });
                     });
                 });
                 $el.find(".delTitle").click(function () {
@@ -583,7 +616,7 @@ function __t(category, str) {
                     'container': $holder,
                     'animation': false,
                     'trigger': 'manual',
-                    'placement': 'top',
+                    'placement': 'bottom',
                     'html': true,
                     'title': __t("merge", "colliding_title"),
                     'content': callPopoverContent
