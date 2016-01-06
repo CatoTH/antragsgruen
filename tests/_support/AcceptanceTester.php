@@ -33,7 +33,8 @@ class AcceptanceTester extends \Codeception\Actor
 
     public static $ACCEPTED_HTML_ERRORS = [
         'Bad value “popup” for attribute “rel”',
-        'CKEDITOR'
+        'CKEDITOR',
+        'autocomplete'
     ];
 
     /**
