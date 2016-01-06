@@ -23,6 +23,7 @@ modules:
             browser: firefox
             window_size: 1024x768
             wait: 0
+            http_proxy: direct
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
         \Helper\AccessibilityValidator:
