@@ -494,7 +494,7 @@ class DiffRenderer
             /** @var \DOMElement $node */
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
-            foreach ($amendment->getInlineChangeData($params[1]) as $key => $val) {
+            foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
                 $node->setAttribute($key, $val);
             }
             $classes = explode(' ', $node->getAttribute('class'));
@@ -506,7 +506,7 @@ class DiffRenderer
             /** @var \DOMElement $node */
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
-            foreach ($amendment->getInlineChangeData($params[1]) as $key => $val) {
+            foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
                 $node->setAttribute($key, $val);
             }
             $classes = explode(' ', $node->getAttribute('class'));

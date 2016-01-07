@@ -12,32 +12,38 @@ $I->loginAsStdAdmin();
 $I->click('.sidebarActions .mergeamendments a');
 $I->see('annehmen oder ablehnen');
 $I->see('kollidierende Änderungsanträge');
-$I->see('Neue Zeile', 'ins.ice-cts');
-$I->see('Neuer Punkt', 'ins.ice-cts');
-$I->see('Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.', 'del.ice-cts');
-$ret = $I->executeJS('return CKEDITOR.instances.sections_2_wysiwyg.plugins.lite.findPlugin(CKEDITOR.instances.sections_2_wysiwyg).countChanges();');
-if ($ret < 10) {
-    $I->fail('Number of changes: ' . $ret . ' (Should be: 16)');
+$I->see('Neuer Punkt', '.ice-ins');
+$I->see('Oamoi a Maß', '.ice-ins');
+$I->see('Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.', '.ice-del');
+$cid0 = $I->executeJS('return $("[data-cid=0]").length;');
+$cid1 = $I->executeJS('return $("[data-cid=1]").length;');
+$cid2 = $I->executeJS('return $("[data-cid=2]").length;');
+$cid3 = $I->executeJS('return $("[data-cid=3]").length;');
+if ($cid0 != 2 || $cid1 != 1 || $cid2 != 1 || $cid3 != 1) {
+    $I->fail('wrong number of cid\'s: ' . $cid0 . ' / ' . $cid1 . ' / ' . $cid2 . ' / ' . $cid3);
 }
-$I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.plugins.lite.findPlugin(CKEDITOR.instances.sections_2_wysiwyg).acceptChange($("ins[data-cid=1]")[0]);');
-$I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.plugins.lite.findPlugin(CKEDITOR.instances.sections_2_wysiwyg).rejectChange($("ins[data-cid=2]")[0]);');
-$I->dontSee('Neue Zeile', 'ins.ice-cts');
-$I->dontSee('Neuer Punkt', 'ins.ice-cts');
-$I->see('Neue Zeile');
+
+$I->executeJS('$("[data-cid=1] .appendHint").trigger("mouseover"); $("button.reject").click();');
+$I->executeJS('$("[data-cid=4] .appendHint").trigger("mouseover"); $("button.accept").click();');
+$I->wait(1);
+
+$I->dontSee('Neuer Punkt', '.ice-ins');
+$I->dontSee('Oamoi a Maß', '.ice-ins');
 $I->dontSee('Neuer Punkt');
+$I->see('Oamoi a Maß');
 
 $I->see('Alternatives Ende');
 $I->click('#section_holder_2 .rejectAllChanges');
-$I->seeBootboxDialog('Wirklich alle verbleibenden Änderungen dieses Textabschnitts ablehnen?');
-$I->acceptBootboxConfirm();
 $I->dontSee('Alternatives Ende');
 
+// @TODO When accepting/rejecting cid=1, both parts of it should be accepted/rejected
 // @TODO Set amendment status
+// @TODO cid=3 should not be colliding
 
 $I->submitForm('.motionMergeForm', [], 'save');
 
 $I->see('Überarbeitung kontrollieren', 'h1');
-$I->see('Neue Zeile');
+$I->see('Oamoi a Maß');
 $I->dontSee('Neuer Punkt');
 $I->dontSee('Alternatives Ende');
 
@@ -51,7 +57,7 @@ $I->submitForm('#motionConfirmedForm', [], '');
 
 $I->wantTo('check if the modifications were made');
 $I->see('A2neu', 'h1');
-$I->see('Neue Zeile');
+$I->see('Oamoi a Maß');
 $I->dontSee('Neuer Punkt');
 $I->dontSee('Alternatives Ende');
 $I->see('A2:', '.replacesMotion');
