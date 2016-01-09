@@ -32,10 +32,7 @@ function __t(category, str) {
     }
 
     function ckeditor_charcount(text) {
-        var normalizedText = text.
-        replace(/(\r\n|\n|\r)/gm, "").
-        replace(/^\s+|\s+$/g, "").
-        replace("&nbsp;", "");
+        var normalizedText = text.replace(/(\r\n|\n|\r)/gm, "").replace(/^\s+|\s+$/g, "").replace("&nbsp;", "");
         normalizedText = ckeditor_strip(normalizedText).replace(/^([\s\t\r\n]*)$/, "");
 
         return normalizedText.length;
@@ -442,6 +439,36 @@ function __t(category, str) {
                     $("section.collidingParagraph:empty").remove();
                     $textarea.focus();
                 },
+                affectedChangesets = function (node) {
+                    var $node = $(node),
+                        cid = $node.data("cid");
+                    if (cid == undefined) {
+                        cid = $node.parent().data("cid");
+                    }
+                    return $node.parents(".texteditor").find("[data-cid=" + cid + "]");
+                },
+                accept = function () {
+                    var $nodes = affectedChangesets(this);
+                    $nodes.each(function () {
+                        if ($(this).hasClass("ice-ins")) {
+                            insertAccept.apply(this);
+                        }
+                        if ($(this).hasClass("ice-del")) {
+                            deleteAccept.apply(this);
+                        }
+                    });
+                },
+                reject = function () {
+                    var $nodes = affectedChangesets(this);
+                    $nodes.each(function () {
+                        if ($(this).hasClass("ice-ins")) {
+                            insertReject.apply(this);
+                        }
+                        if ($(this).hasClass("ice-del")) {
+                            deleteReject.apply(this);
+                        }
+                    });
+                },
                 insertReject = function () {
                     var $removeEl,
                         name = this.nodeName.toLowerCase();
@@ -507,7 +534,14 @@ function __t(category, str) {
                 },
                 popoverContent = function () {
                     var $this = $(this),
-                        html = '<div>';
+                        html,
+                        cid = $this.data("cid");
+                    if (cid == undefined) {
+                        cid = $this.parent().data("cid");
+                    }
+                    $this.parents(".texteditor").first().find("[data-cid=" + cid + "]").addClass("hover");
+
+                    html = '<div>';
                     html += '<button type="button" class="accept btn btn-sm btn-default"></button>';
                     html += '<button type="button" class="reject btn btn-sm btn-default"></button>';
                     html += '<a href="#" class="btn btn-small btn-default opener" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>';
@@ -517,19 +551,19 @@ function __t(category, str) {
                     $el.find(".opener").attr("href", $this.data("link")).attr("title", __t("merge", "title_open_in_blank"));
                     $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $this.data("username"));
                     if ($this.hasClass("ice-ins")) {
-                        $el.find("button.accept").text(__t("merge", "insert_accept")).click(performActionWithUI.bind($this[0], insertAccept));
-                        $el.find("button.reject").text(__t("merge", "insert_reject")).click(performActionWithUI.bind($this[0], insertReject));
+                        $el.find("button.accept").text(__t("merge", "insert_accept")).click(performActionWithUI.bind($this[0], accept));
+                        $el.find("button.reject").text(__t("merge", "insert_reject")).click(performActionWithUI.bind($this[0], reject));
                     } else if ($this.hasClass("ice-del")) {
-                        $el.find("button.accept").text(__t("merge", "delete_accept")).click(performActionWithUI.bind($this[0], deleteAccept));
-                        $el.find("button.reject").text(__t("merge", "delete_reject")).click(performActionWithUI.bind($this[0], deleteReject));
+                        $el.find("button.accept").text(__t("merge", "delete_accept")).click(performActionWithUI.bind($this[0], accept));
+                        $el.find("button.reject").text(__t("merge", "delete_reject")).click(performActionWithUI.bind($this[0], reject));
                     } else if ($this[0].nodeName.toLowerCase() == 'li') {
                         var $list = $this.parent();
                         if ($list.hasClass("ice-ins")) {
-                            $el.find("button.accept").text(__t("merge", "insert_accept")).click(performActionWithUI.bind($this[0], insertAccept));
-                            $el.find("button.reject").text(__t("merge", "insert_reject")).click(performActionWithUI.bind($this[0], insertReject));
+                            $el.find("button.accept").text(__t("merge", "insert_accept")).click(performActionWithUI.bind($this[0], accept));
+                            $el.find("button.reject").text(__t("merge", "insert_reject")).click(performActionWithUI.bind($this[0], reject));
                         } else if ($list.hasClass("ice-del")) {
-                            $el.find("button.accept").text(__t("merge", "delete_accept")).click(performActionWithUI.bind($this[0], deleteAccept));
-                            $el.find("button.reject").text(__t("merge", "delete_reject")).click(performActionWithUI.bind($this[0], deleteReject));
+                            $el.find("button.accept").text(__t("merge", "delete_accept")).click(performActionWithUI.bind($this[0], accept));
+                            $el.find("button.reject").text(__t("merge", "delete_reject")).click(performActionWithUI.bind($this[0], reject));
                         } else {
                             console.log("unknown", $list);
                         }
@@ -540,13 +574,20 @@ function __t(category, str) {
                     return $el;
                 },
                 removePopupIfInactive = function () {
-                    if ($(this).is(":hover")) {
+                    var $this = $(this);
+                    if ($this.is(":hover")) {
                         return window.setTimeout(removePopupIfInactive.bind(this), 500);
                     }
                     if ($holder.find(".popover").length > 0 && $holder.find(".popover").is(":hover")) {
                         return window.setTimeout(removePopupIfInactive.bind(this), 500);
                     }
-                    $(this).popover("hide").popover("destroy");
+                    $this.popover("hide").popover("destroy");
+
+                    var cid = $this.data("cid");
+                    if (cid == undefined) {
+                        cid = $this.parent().data("cid");
+                    }
+                    $this.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
                 };
 
             $holder.on('mouseover', '.collidingParagraphHead', function () {

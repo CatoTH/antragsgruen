@@ -15,6 +15,10 @@ $I->see('kollidierende Änderungsanträge');
 $I->see('Neuer Punkt', '.ice-ins');
 $I->see('Oamoi a Maß', '.ice-ins');
 $I->see('Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.', '.ice-del');
+
+$I->see('Woibbadinga damischa', '#section_holder_4 .ice-del');
+$I->see('Schooe', '#section_holder_4 .ice-ins');
+
 $cid0 = $I->executeJS('return $("[data-cid=0]").length;');
 $cid1 = $I->executeJS('return $("[data-cid=1]").length;');
 $cid2 = $I->executeJS('return $("[data-cid=2]").length;');
@@ -25,6 +29,7 @@ if ($cid0 != 2 || $cid1 != 1 || $cid2 != 1 || $cid3 != 1) {
 
 $I->executeJS('$("[data-cid=1] .appendHint").trigger("mouseover"); $("button.reject").click();');
 $I->executeJS('$("[data-cid=4] .appendHint").trigger("mouseover"); $("button.accept").click();');
+$I->executeJS('$("[data-cid=16].appendHint").first().trigger("mouseover"); $("button.accept").click();');
 $I->wait(1);
 
 $I->dontSee('Neuer Punkt', '.ice-ins');
@@ -32,11 +37,14 @@ $I->dontSee('Oamoi a Maß', '.ice-ins');
 $I->dontSee('Neuer Punkt');
 $I->see('Oamoi a Maß');
 
-$I->see('Alternatives Ende');
-$I->click('#section_holder_2 .rejectAllChanges');
-$I->dontSee('Alternatives Ende');
+$I->dontSee('Woibbadinga damischa', '#section_holder_4 .ice-del');
+$I->dontSee('Schooe', '#section_holder_4 .ice-ins');
+$I->see('Schooe', '#section_holder_4');
 
-// @TODO When accepting/rejecting cid=1, both parts of it should be accepted/rejected
+$I->see('Something');
+$I->click('#section_holder_2 .rejectAllChanges');
+$I->dontSee('Something');
+
 // @TODO Set amendment status
 // @TODO cid=3 should not be colliding
 
@@ -58,6 +66,7 @@ $I->submitForm('#motionConfirmedForm', [], '');
 $I->wantTo('check if the modifications were made');
 $I->see('A2neu', 'h1');
 $I->see('Oamoi a Maß');
+$I->see('Schooe');
 $I->dontSee('Neuer Punkt');
 $I->dontSee('Alternatives Ende');
 $I->see('A2:', '.replacesMotion');
