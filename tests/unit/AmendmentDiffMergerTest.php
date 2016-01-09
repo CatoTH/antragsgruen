@@ -226,61 +226,6 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $colliding[2]);
     }
 
-
-    /**
-     */
-    public function testMergeWithComplicationOrdering()
-    {
-        $origText = '<ul><li>Hblas2 Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li></ul>';
-
-        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
-
-        $merger = new AmendmentDiffMerger();
-        $merger->initByMotionParagraphs($paragraphs);
-
-        $merger->addAmendingParagraphs(1, [0 => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 1</li></ul>']);
-        $merger->addAmendingParagraphs(2, [0 => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Addition 2</li><li>Addition 3</li></ul>']);
-
-        $merger->mergeParagraphs();
-        var_dump($merger->getGroupedParagraphData(0));
-
-        $colliding = $merger->getCollidingParagraphGroups(0);
-        var_dump($colliding);
-        die();
-
-        $this->assertEquals([
-            [
-                'amendment' => 0,
-                'text'      => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li>',
-            ],
-            [
-                'amendment' => 1,
-                'text'      => '###INS_START###<li>Addition 1</li>###INS_END###',
-            ],
-            [
-                'amendment' => 0,
-                'text'      => '</ul>',
-            ],
-        ], $merger->getGroupedParagraphData(0));
-
-        $colliding = $merger->getCollidingParagraphGroups(0);
-        $this->assertTrue(isset($colliding[2]));
-        $this->assertEquals([
-            [
-                'amendment' => 0,
-                'text'      => '<ul>',
-            ],
-            [
-                'amendment' => 2,
-                'text'      => '###INS_START###<li>Addition 2</li>###INS_END###',
-            ],
-            [
-                'amendment' => 0,
-                'text'      => '</ul>',
-            ]
-        ], $colliding[2]);
-    }
-
     /**
      */
     public function testMerge1()
