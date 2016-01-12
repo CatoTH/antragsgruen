@@ -100,7 +100,8 @@ if ($adminMode) {
 echo '<div class="form-group">
   <label class="col-sm-3 control-label" for="initiatorPrimaryName">' . Yii::t('initiator', 'name') . '</label>
   <div class="col-sm-4">
-    <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]" value="' . $prePrimaryName . '" required>
+    <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
+        value="' . $prePrimaryName . '" autocomplete="name" required>
   </div>
 </div>';
 
@@ -123,9 +124,11 @@ echo '</div></div>
 </div>';
 
 echo '<div class="form-group contactNameRow">
-  <label class="col-sm-3 control-label" for="initiatorContactName">' . Yii::t('initiator', 'orga_contact_name') . '</label>
+  <label class="col-sm-3 control-label" for="initiatorContactName">' . Yii::t('initiator', 'orga_contact_name') .
+    '</label>
   <div class="col-sm-4">
-    <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]" value="' . $preContactName . '">
+    <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]"
+    value="' . $preContactName . '" autocomplete="name">
   </div>
 </div>';
 
@@ -137,7 +140,7 @@ if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
     if ($motionType->contactEmail == ConsultationMotionType::CONTACT_REQUIRED && !$adminMode) {
         echo 'required ';
     }
-    echo 'value="' . Html::encode($preEmail) . '">
+    echo 'autocomplete="email" value="' . Html::encode($preEmail) . '">
     <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';
@@ -152,7 +155,7 @@ if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
     if ($motionType->contactPhone == ConsultationMotionType::CONTACT_REQUIRED && !$adminMode) {
         echo 'required ';
     }
-    echo 'value="' . Html::encode($prePhone) . '">
+    echo 'autocomplete="tel" value="' . Html::encode($prePhone) . '">
     <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';

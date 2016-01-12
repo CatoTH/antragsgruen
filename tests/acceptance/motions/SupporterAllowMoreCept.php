@@ -9,7 +9,7 @@ $I->wantTo('check that allowing more supporters is enabled');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
 $I->click('.createMotion');
-$I->see('Initiator_Innen', '.supporterDataHead');
+$I->see('Initiator*innen', '.supporterDataHead');
 $I->seeElement('.supporterData .adderRow');
 
 $I->click('#adminLink');
@@ -24,5 +24,5 @@ $I->cantSeeCheckboxIsChecked('#typeAllowMoreSupporters input');
 
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->click('.createMotion');
-$I->see('Initiator_Innen', '.supporterDataHead');
+$I->see('Initiator*innen', '.supporterDataHead');
 $I->dontSeeElement('.supporterData .adderRow');

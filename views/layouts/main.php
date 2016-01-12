@@ -235,8 +235,31 @@ foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
 
+/** @var \app\models\settings\AntragsgruenApp $params */
+$params = \Yii::$app->params;
 
 $this->endBody();
-echo '</body></html>';
+echo '
+<script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "' . Html::encode($params->domainPlain) . '",
+      "logo": "' . Html::encode($params->domainPlain) . 'img/logo.png"
+    }
+</script>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Organization",
+  "name" : "Antragsgrün",
+  "url" : "' . Html::encode($params->domainPlain) . '",
+  "sameAs" : [
+    "https://www.facebook.com/Antragsgruen",
+    "https://twitter.com/Antragsgruen"
+  ]
+}
+</script>
+</body></html>';
 
 $this->endPage();

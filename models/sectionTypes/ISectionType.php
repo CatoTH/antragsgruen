@@ -121,7 +121,7 @@ abstract class ISectionType
         if ($fixedWidth) {
             $str .= ' fixedWidthFont';
         }
-        $str .= '" data-track-changed="1" ' .
+        $str .= '" data-track-changed="1" data-no-strike="1" ' .
             'id="' . $htmlId . '_wysiwyg" title="' . Html::encode($type->title) . '">';
         $str .= HTMLTools::prepareHTMLForCkeditor($this->section->dataRaw);
         $str .= '</div>';

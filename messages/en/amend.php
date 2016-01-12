@@ -52,8 +52,6 @@ return [
     'merge_colliding'           => 'Colliding amendment',
     'merge_accept_all'          => 'Accept all changes',
     'merge_reject_all'          => 'Reject all changes',
-    'merge_track_deactivate'    => 'Deactivate tracking changes',
-    'merge_track_deactivated'   => 'Tracking changes deactivated',
     /*
     'merge_explanation'                 => 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. ' .
         'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - klicke dazu einfach mit der rechten Maustaste auf die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>' .

@@ -34,6 +34,6 @@ foreach ($motion->getSortedSections(true) as $section) {
 }
 
 
-$pdf->Output('Motion_' . $motion->titlePrefix . '.pdf', 'I');
+$pdf->Output($motion->getFilenameBase(true) . '.pdf', 'I');
 
 die();

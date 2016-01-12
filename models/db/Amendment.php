@@ -4,9 +4,11 @@ namespace app\models\db;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
+use app\components\HTMLTools;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
 use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
@@ -223,7 +225,7 @@ class Amendment extends IMotion implements IRSSItem
      * @param string $changeId
      * @return array
      */
-    public function getLiteChangeData($changeId)
+    public function getInlineChangeData($changeId)
     {
         $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
         return [
@@ -234,6 +236,7 @@ class Amendment extends IMotion implements IRSSItem
             'data-time'             => $time,
             'data-last-change-time' => $time,
             'data-append-hint'      => '[' . $this->titlePrefix . ']',
+            'data-link'             => UrlHelper::createAmendmentUrl($this),
         ];
     }
 
@@ -505,7 +508,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /** @var null|MotionSectionParagraphAmendment[] */
-    private $_changedParagraphCache = null;
+    private $changedParagraphCache = null;
 
     /**
      * @param MotionSection[] $motionSections
@@ -514,8 +517,8 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getChangedParagraphs($motionSections, $lineNumbers)
     {
-        if ($lineNumbers && $this->_changedParagraphCache !== null) {
-            return $this->_changedParagraphCache;
+        if ($lineNumbers && $this->changedParagraphCache !== null) {
+            return $this->changedParagraphCache;
         }
         $paragraphs = [];
         foreach ($motionSections as $section) {
@@ -532,7 +535,7 @@ class Amendment extends IMotion implements IRSSItem
             }
         }
         if ($lineNumbers) {
-            $this->_changedParagraphCache = $paragraphs;
+            $this->changedParagraphCache = $paragraphs;
         }
         return $paragraphs;
     }
@@ -612,22 +615,71 @@ class Amendment extends IMotion implements IRSSItem
             if ($this->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+                    $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
+                    $plain         = str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'published_email_body'));
+                    $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
+
+                    $sections = $this->getSortedSections(true);
+                    foreach ($sections as $section) {
+                        $amendmentHtml .= '<div>';
+                        $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
+                        $amendmentHtml .= '</div>';
+                    }
+
+                    $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
+                    $plain .= HTMLTools::toPlainText($html);
+
                     try {
-                        $text          = \Yii::t('amend', 'published_email_body');
-                        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
                         \app\components\mail\Tools::sendWithLog(
                             EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                             $this->getMyConsultation()->site,
                             trim($initiator[0]->contactEmail),
                             null,
                             \Yii::t('amend', 'published_email_title'),
-                            str_replace('%LINK%', $amendmentLink, $text)
+                            $plain,
+                            $html
                         );
                     } catch (MailNotSent $e) {
                         $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                         \yii::$app->session->setFlash('error', $errMsg);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * @throws Internal
+     */
+    public function sendSubmissionConfirmMail()
+    {
+        $initiator = $this->getInitiators();
+        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
+            $plain         = str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'submitted_screening_email'));
+            $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
+
+            $sections = $this->getSortedSections(true);
+            foreach ($sections as $section) {
+                $amendmentHtml .= '<div>';
+                $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
+                $amendmentHtml .= '</div>';
+            }
+
+            $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
+            $plain .= HTMLTools::toPlainText($html);
+
+            try {
+                \app\components\mail\Tools::sendWithLog(
+                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
+                    $this->getMyConsultation()->site,
+                    trim($initiator[0]->contactEmail),
+                    null,
+                    \Yii::t('amend', 'submitted_screening_email_subject'),
+                    $plain,
+                    $html
+                );
+            } catch (MailNotSent $e) {
             }
         }
     }
@@ -669,6 +721,17 @@ class Amendment extends IMotion implements IRSSItem
         return 'amendment-pdf-' . $this->id;
     }
 
+    /**
+     * @param bool
+     * @return string
+     */
+    public function getFilenameBase($noUmlaut)
+    {
+        $motionTitle = $this->getMyMotion()->title;
+        $motionTitle = (mb_strlen($motionTitle) > 100 ? mb_substr($motionTitle, 0, 100) : $motionTitle);
+        $titel       = $this->titlePrefix . ' ' . $motionTitle;
+        return Tools::sanitizeFilename($titel, $noUmlaut);
+    }
 
     /**
      * @param RSSExporter $feed

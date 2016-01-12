@@ -225,4 +225,23 @@ class Tools
 
         return self::formatMysqlDate($mysqlDate) . ", " . substr($mysqlDate, 11, 5);
     }
+
+    /**
+     * @param string $filename
+     * @param bool $noUmlaut
+     * @return string
+     */
+    public static function sanitizeFilename($filename, $noUmlaut)
+    {
+        $filename = str_replace(' ', '_', $filename);
+        $filename = preg_replace('/[^\w0-9_-]/siu', '', $filename);
+        if ($noUmlaut) {
+            $filename = str_replace(
+                ['ä', 'Ä', 'ö', 'Ö', 'ü', 'Ü', 'ß'],
+                ['ae', 'Ae', 'oe', 'Oe', 'ue', 'Ue', 'ss'],
+                $filename
+            );
+        }
+        return $filename;
+    }
 }

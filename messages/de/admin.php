@@ -24,7 +24,7 @@ return [
     'index_settings'              => 'Einstellungen',
     'index_consultation_settings' => 'Diese Veranstaltung / Programmdiskussion',
     'index_motion_types'          => 'Antragstypen bearbeiten',
-    'index_site_access'           => 'Login / BenutzerInnen / Admins',
+    'index_site_access'           => 'Login / Benutzer*innen / Admins',
     'index_site_consultations'    => 'Weitere Veranstaltungen anlegen / verwalten',
     'index_site_config'           => 'Konfiguration der Antragsgrün-Installation',
     'index_sys_admin'             => 'System-Konfiguration',
@@ -41,7 +41,7 @@ return [
     'list_action'                 => 'Aktion',
     'list_export'                 => 'Export',
     'list_tag'                    => 'Thema',
-    'list_initiators'             => 'InitiatorInnen',
+    'list_initiators'             => 'Initiator*innen',
     'list_status'                 => 'Status',
     'list_title'                  => 'Titel',
     'list_prefix'                 => 'Antragsnr.',
@@ -76,28 +76,28 @@ return [
     'siteacc_bread'               => 'Zugang',
     'siteacc_title'               => 'Zugang zur Seite',
     'siteacc_policywarning'       => '<h3>Hinweis:</h3>
-Die BenutzerInnenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
- von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte BenutzerInnen" gestellt werden. Aktuell ist
+Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
+ von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte Benutzer*innen" gestellt werden. Aktuell ist
  das nicht der Fall.<br>
  <br>
- Falls die nur für unten eingetragene BenutzerInnen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
- dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene BenutzerInnen
+ Falls die nur für unten eingetragene Benutzer*innen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
+ dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene Benutzer*innen
  Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:',
-    'siteacc_policy_login'        => 'Auf BenutzerInnen einschränken',
-    'siteacc_forcelogin'          => 'Nur eingeloggte BenutzerInnen dürfen zugreifen (inkl. <em>lesen</em>)',
-    'siteacc_managedusers'        => 'Nur ausgewählten BenutzerInnen das Login erlauben <small class="showManagedUsers">(siehe unten)</small>',
+    'siteacc_policy_login'        => 'Auf Benutzer*innen einschränken',
+    'siteacc_forcelogin'          => 'Nur eingeloggte Benutzer*innen dürfen zugreifen (inkl. <em>lesen</em>)',
+    'siteacc_managedusers'        => 'Nur ausgewählten Benutzer*innen das Login erlauben <small class="showManagedUsers">(siehe unten)</small>',
     'siteacc_logins'              => 'Folgende Login-Varianten sind möglich',
     'siteacc_useraccounts'        => 'Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>',
     'siteacc_ww'                  => 'Wurzelwerk <small>(alle mit Wurzelwerk-Zugang)</small>',
     'siteacc_otherlogins'         => 'Sonstige Methoden <small>(OpenID, evtl. zufünftig auch Login per Facebook / Twitter)</small>',
-    'siteacc_admins_title'        => 'Administrator_Innen der Reihe',
+    'siteacc_admins_title'        => 'Administrator*innen der Reihe',
     'siteacc_admins_add'          => 'Neu eintragen',
     'siteacc_add_ww'              => 'Wurzelwerk-Name',
     'siteacc_add_email'           => 'E-Mail-Adresse',
-    'siteacc_add_name_title'      => 'Wurzelwerk-BenutzerInnenname / E-Mail-Adresse',
+    'siteacc_add_name_title'      => 'Wurzelwerk-Benutzer*innenname / E-Mail-Adresse',
     'siteacc_add_name_place'      => 'Name',
     'siteacc_add_btn'             => 'Hinzufügen',
-    'siteacc_accounts_title'      => 'Benutzer_Innen-Accounts',
+    'siteacc_accounts_title'      => 'Benutzer*innen-Accounts',
     'siteacc_email_text_pre'      => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .
@@ -111,7 +111,7 @@ Liebe Grüße,
   Das Antragsgrün-Team',
     'siteacc_acc_expl_mail'       => '<h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
-kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
+kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
 <br>
 Um BenutzerInnen anzulegen, gib weiter unten die E-Mail-Adressen der Mitglieder ein.
 Diese Mitglieder bekommen daraufhin eine Benachrichtigungs-E-Mail zugesandt.<br>

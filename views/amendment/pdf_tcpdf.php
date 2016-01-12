@@ -26,6 +26,6 @@ $pdf->SetSubject(Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());
 
 \app\views\amendment\LayoutHelper::printToPDF($pdf, $pdfLayout, $amendment);
 
-$pdf->Output('Amendment_' . str_replace('Ä', 'AE', $amendment->titlePrefix) . '.pdf', 'I');
+$pdf->Output($amendment->getFilenameBase(true) . '.pdf', 'I');
 
 die();

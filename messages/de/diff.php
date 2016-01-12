@@ -13,4 +13,6 @@ return [
     'line_to_ins'    => 'Von Zeile #LINEFROM# bis #LINETO# einfügen:',
     'space'          => 'Leerzeichen',
     'newline'        => 'Zeilenumbruch',
+    'plain_text_del' => 'LÖSCHUNG',
+    'plain_text_ins' => 'EINFÜGUNG',
 ];

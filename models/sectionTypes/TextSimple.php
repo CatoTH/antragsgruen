@@ -87,7 +87,7 @@ class TextSimple extends ISectionType
             if ($fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
-            $str .= '" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
+            $str .= '" data-track-changed="1" data-no-strike="1" id="' . $htmlId . '_wysiwyg" ' .
                 'title="' . Html::encode($type->title) . '">';
             $str .= $amParas[$paraNo];
             $str .= '</div>';
@@ -141,6 +141,7 @@ class TextSimple extends ISectionType
     /**
      * @param bool $isRight
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getSimple($isRight)
     {
@@ -320,6 +321,12 @@ class TextSimple extends ISectionType
             }
 
             $html = static::formatDiffGroup($diffGroups);
+            $replaces = [];
+            $replaces['<ins '] = '<span ';
+            $replaces['</ins>'] = '</span>';
+            $replaces['<del '] = '<span ';
+            $replaces['</del>'] = '</span>';
+            $html = str_replace(array_keys($replaces), array_values($replaces), $html);
 
             $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         }
@@ -712,12 +719,15 @@ class TextSimple extends ISectionType
                 $paragraphText .= $text;
             }
 
-            $out .= DiffRenderer::renderForCkeditorLite($paragraphText, $amendmentsById);
+            $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
             foreach ($colliding as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                $out .= '<p><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
+                $out .= '<section class="collidingParagraph"';
+                $out .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
+                $out .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
+                $out .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
                 $out .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
                 $out .= '</strong></p>';
                 $paragraphText = '';
@@ -740,7 +750,8 @@ class TextSimple extends ISectionType
 
                     $paragraphText .= $text;
                 }
-                $out .= DiffRenderer::renderForCkeditorLite($paragraphText, $amendmentsById);
+                $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
+                $out .= '</section>';
             }
         }
 

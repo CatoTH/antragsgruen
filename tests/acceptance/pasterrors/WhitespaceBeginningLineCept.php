@@ -17,5 +17,5 @@ $I->fillField('#initiatorEmail', 'test@example.org');
 $I->submitForm('#amendmentEditForm', [], 'save');
 
 $I->see(mb_strtoupper('Änderungsantrag bestätigen'), 'h1');
-$I->see('Antragsteller_Innen');
+$I->see('Antragsteller*innen');
 $I->dontSee('Von Zeile');

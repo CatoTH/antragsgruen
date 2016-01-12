@@ -2,7 +2,7 @@
 
 return [
     'Page'                  => 'Seite',
-    'Initiators'            => 'InitiatorInnen',
+    'Initiators'            => 'Initiator*innen',
     'introduction'          => 'Antrag an die...',
     'InitiatorSingle'       => 'Antragsteller/in',
     'InitiatorMulti'        => 'Antragsteller/innen',
@@ -23,7 +23,7 @@ return [
     'amend_reason'          => 'Begründung',
     'motion_reason'         => 'Begründung',
     'prefix_short'          => 'Antragsnr.',
-    'initiator'             => 'AntragstellerIn',
+    'initiator'             => 'Antragsteller*in',
     'text'                  => 'Text',
     'tags'                  => 'Themen',
     'contact'               => 'Kontakt',

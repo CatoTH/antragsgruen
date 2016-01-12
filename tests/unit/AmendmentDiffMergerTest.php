@@ -32,10 +32,10 @@ class AmendmentDiffMergerTest extends TestBase
 
     public function testInsertedLinebreak()
     {
-        $orig = [
+        $orig   = [
             '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>'
         ];
-        $new  = [
+        $new    = [
             '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.</p>',
             '<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>',
         ];
@@ -174,6 +174,56 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $colliding = $merger->getCollidingParagraphGroups(0);
         $this->assertTrue(isset($colliding[2]));
         $this->assertEquals('###DEL_START###Woibbadinga damischa ###DEL_END###', $colliding[2][1]['text']);
+    }
+
+
+    /**
+     */
+    public function testMergeWithComplicationStripUnchangedLi()
+    {
+        $origText = '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li></ul>';
+
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new AmendmentDiffMerger();
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 1</li></ul>']);
+        $merger->addAmendingParagraphs(2, [0 => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 2</li></ul>']);
+
+        $merger->mergeParagraphs();
+
+        $this->assertEquals([
+            [
+                'amendment' => 0,
+                'text'      => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li>',
+            ],
+            [
+                'amendment' => 1,
+                'text'      => '###INS_START###<li>Addition 1</li>###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => '</ul>',
+            ],
+        ], $merger->getGroupedParagraphData(0));
+
+        $colliding = $merger->getCollidingParagraphGroups(0);
+        $this->assertTrue(isset($colliding[2]));
+        $this->assertEquals([
+            [
+                'amendment' => 0,
+                'text'      => '<ul>',
+            ],
+            [
+                'amendment' => 2,
+                'text'      => '###INS_START###<li>Addition 2</li>###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => '</ul>',
+            ]
+        ], $colliding[2]);
     }
 
     /**

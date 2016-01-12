@@ -12,10 +12,16 @@ ANTRAGSGRUEN_STRINGS = {
         "pw_no_match": 'Die beiden Passwörter stimmen nicht überein.'
     },
     "merge": {
-        "accept_all": "Wirklich alle verbleibenden Änderungen dieses Textabschnitts übernehmen?",
-        "reject_all": "Wirklich alle verbleibenden Änderungen dieses Textabschnitts ablehnen?",
-        "err_pending_changes": "Es müssen zunächst alle Änderungen angenommen oder abgelehnt werden, bevor der Änderungsmodus deaktiviert werden kann.",
-        
+        "initiated_by": "Gestellt von",
+        "title_open_in_blank": "Den Änderungsantrag in einem neuen Fenster öffnen",
+        "title_del_title": "Die Überschrift \"Kollidierender Änderungsantrag: ...\" entfernen",
+        "title_del_colliding": "Den kompletten kollidierenden Block entfernen",
+        "title": "Überschrift",
+        "insert_accept": "Übernehmen",
+        "insert_reject": "Verwerfen",
+        "delete_accept": "Löschen",
+        "delete_reject": "Behalten",
+        "colliding_title": "Kollidierender ÄA"
     }
 };
 

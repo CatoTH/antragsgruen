@@ -122,7 +122,7 @@ class AmendmentDiffMerger
     public function addAmendingSections($sections)
     {
         foreach ($sections as $section) {
-            $newParas  = HTMLTools::sectionSimpleHTML($section->data);
+            $newParas = HTMLTools::sectionSimpleHTML($section->data);
             $this->addAmendingParagraphs($section->amendmentId, $newParas);
         }
     }
@@ -342,6 +342,25 @@ class AmendmentDiffMerger
     }
 
     /**
+     * Somewhat special case: if two amendments are inserting a bullet point at the same place,
+     * they are colliding. We cannot change this fact right now, so at least
+     * let's try not to print the previous line that wasn't actually changed twice.
+     *
+     * @param string $str
+     * @return string
+     */
+    private function stripUnchangedLiFromColliding($str)
+    {
+        if (mb_substr($str, 0, 8) != '<ul><li>' && mb_substr($str, 0, 8) != '<ol><li>') {
+            return $str;
+        }
+        if (mb_substr_count($str, '<li>') != 1 || mb_substr_count($str, '</li>') != 1) {
+            return $str;
+        }
+        return preg_replace('/<li>.*<\/li>/siu', '', $str);
+    }
+
+    /**
      * @param int $paraNo
      * @return array
      */
@@ -364,7 +383,13 @@ class AmendmentDiffMerger
                     $words[$i]['modifiedBy']   = $token['amendmentId'];
                 }
             }
-            $grouped[$section['amendment']] = $this->groupParagraphData(['words' => $words]);
+            $data = $this->groupParagraphData(['words' => $words]);
+            foreach ($data as $i => $dat) {
+                if ($dat['amendment'] == 0) {
+                    $data[$i]['text'] = $this->stripUnchangedLiFromColliding($dat['text']);
+                }
+            }
+            $grouped[$section['amendment']] = $data;
         }
 
         return $grouped;

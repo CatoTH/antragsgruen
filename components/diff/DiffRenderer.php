@@ -298,10 +298,10 @@ class DiffRenderer
     protected function renderHtmlWithPlaceholdersIntElement(\DOMElement $child, &$newChildren, &$inIns, &$inDel)
     {
         if ($inIns !== false && static::nodeContainsText($child, static::INS_END)) {
-            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child);
+            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child, $inIns);
             $newChildren = array_merge($newChildren, $currNewChildren);
         } elseif ($inDel !== false && static::nodeContainsText($child, static::DEL_END)) {
-            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child);
+            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child, $inDel);
             $newChildren = array_merge($newChildren, $currNewChildren);
         } elseif ($inIns !== false) {
             /** @var \DOMElement $lastEl */
@@ -343,15 +343,15 @@ class DiffRenderer
 
     /**
      * @param \DOMNode $dom
+     * @param bool|string $inIns
      * @return array
      */
-    protected function renderHtmlWithPlaceholdersIntInIns($dom)
+    protected function renderHtmlWithPlaceholdersIntInIns($dom, $inIns)
     {
         if (!static::nodeContainsText($dom, static::INS_END)) {
-            return [[$this->cloneNode($dom)], true, false];
+            return [[$this->cloneNode($dom)], $inIns, false];
         }
 
-        $inIns       = true;
         $inDel       = false;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
@@ -375,16 +375,16 @@ class DiffRenderer
 
     /**
      * @param \DOMNode $dom
+     * @param bool|string $inDel
      * @return array
      */
-    protected function renderHtmlWithPlaceholdersIntInDel($dom)
+    protected function renderHtmlWithPlaceholdersIntInDel($dom, $inDel)
     {
         if (!static::nodeContainsText($dom, static::DEL_END)) {
-            return [[$this->cloneNode($dom)], false, true];
+            return [[$this->cloneNode($dom)], false, $inDel];
         }
 
         $inIns       = false;
-        $inDel       = true;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
             if (is_a($child, \DOMText::class)) {
@@ -487,14 +487,14 @@ class DiffRenderer
      * @param Amendment[] $amendmentsById
      * @return string
      */
-    public static function renderForCkeditorLite($diff, $amendmentsById)
+    public static function renderForInlineDiff($diff, $amendmentsById)
     {
         $renderer = new DiffRenderer();
         $renderer->setInsCallback(function ($node, $params) use ($amendmentsById) {
             /** @var \DOMElement $node */
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
-            foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
+            foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
                 $node->setAttribute($key, $val);
             }
             $classes = explode(' ', $node->getAttribute('class'));
@@ -506,7 +506,7 @@ class DiffRenderer
             /** @var \DOMElement $node */
             $params    = explode('-', $params);
             $amendment = $amendmentsById[$params[1]];
-            foreach ($amendment->getLiteChangeData($params[1]) as $key => $val) {
+            foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
                 $node->setAttribute($key, $val);
             }
             $classes = explode(' ', $node->getAttribute('class'));

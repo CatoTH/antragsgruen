@@ -41,10 +41,10 @@
     "yiisoft/yii2-apidoc": "2.0.4",
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.3.*",
-    "codeception/codeception": "2.1.4",
+    "codeception/codeception": "2.1.5",
     "codeception/specify": "*",
     "codeception/verify": "*",
-    "facebook/webdriver": "1.0.3"
+    "facebook/webdriver": "1.1.1"
   },
   "extra": {
     "yii\\composer\\Installer::postCreateProject": {

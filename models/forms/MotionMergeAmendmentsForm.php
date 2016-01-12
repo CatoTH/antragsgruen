@@ -55,6 +55,7 @@ class MotionMergeAmendmentsForm extends Model
         $this->newMotion->agendaItemId   = $this->origMotion->agendaItemId;
         $this->newMotion->consultationId = $this->origMotion->consultationId;
         $this->newMotion->parentMotionId = $this->origMotion->id;
+        $this->newMotion->cache          = '';
         $this->newMotion->title          = '';
         $this->newMotion->dateCreation   = date('Y-m-d H:i:s');
         $this->newMotion->status         = Motion::STATUS_DRAFT;
@@ -68,6 +69,8 @@ class MotionMergeAmendmentsForm extends Model
             $section->sectionId = $sectionType->id;
             $section->motionId  = $this->newMotion->id;
             $section->cache     = '';
+            $section->data      = '';
+            $section->dataRaw   = '';
             $section->refresh();
 
             if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {

@@ -103,10 +103,13 @@ echo '</th>
 
 $motionStati    = Motion::getStati();
 $amendmentStati = Amendment::getStati();
+/** @var null|Motion $lastMotion */
+$lastMotion = null;
 
 foreach ($entries as $entry) {
     if (is_a($entry, Motion::class)) {
         /** @var Motion $entry */
+        $lastMotion = $entry;
         $viewUrl = UrlHelper::createMotionUrl($entry);
         $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
         echo '<tr class="motion' . $entry->id . '">';
@@ -174,9 +177,15 @@ foreach ($entries as $entry) {
         echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>' . \Yii::t('admin', 'list_amend_short') . '</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
+        if ($lastMotion && $entry->motionId == $lastMotion->id) {
+            echo "&#8627;";
+        }
         echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
-        echo '<td class="titleCol"><span>' .
-            Html::a((trim($entry->getMyMotion()->title) != '' ? $entry->getMyMotion()->title : '-'), $editUrl) . '</span></td>';
+        echo '<td class="titleCol"><span>';
+        if ($lastMotion && $entry->motionId == $lastMotion->id) {
+            echo "&#8627;";
+        }
+        echo Html::a((trim($entry->getMyMotion()->title) != '' ? $entry->getMyMotion()->title : '-'), $editUrl) . '</span></td>';
         echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
         $initiators = [];
         foreach ($entry->getInitiators() as $initiator) {

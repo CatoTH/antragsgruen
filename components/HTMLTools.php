@@ -347,8 +347,8 @@ class HTMLTools
 
         $text = preg_replace_callback("/<a.*href=[\"'](.*)[\"'].*>(.*)<\/a>/siU", function ($matches) {
             $begr = trim($matches[2]);
-            if ($begr == "") {
-                return "";
+            if ($begr == '') {
+                return '';
             }
 
             if (static::$LINKS) {
@@ -365,31 +365,50 @@ class HTMLTools
             $text = "/" . $matches[1] . "/";
             return $text;
         }, $text);
+
+        $text = preg_replace_callback("/<ins[^>]*>(.*)<\/ins>/siU", function ($matches) {
+            $ins = \Yii::t('diff', 'plain_text_ins');
+            $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
+            return $text;
+        }, $text);
+
+        $text = preg_replace_callback("/<del[^>]*>(.*)<\/del>/siU", function ($matches) {
+            $ins = \Yii::t('diff', 'plain_text_del');
+            $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
+            return $text;
+        }, $text);
+
         $text = str_ireplace("</tr>", "\n", $text);
 
+        $appendLineBr = function ($matches) {
+            $text = $matches[1];
+            if ($matches[1] != "\n" && $matches[1] != ">" && $matches[1] != "") {
+                $text .= "\n";
+            }
+            $text .= $matches[2];
+            if (isset($matches[3]) && $matches[3] != "\n" && $matches[3] != "") {
+                $text .= "\n";
+            }
+            if (isset($matches[3])) {
+                $text .= $matches[3];
+            }
+            return $text;
+        };
 
-        $text_old = "";
-        while ($text != $text_old) {
-            $text_old = $text;
-            $text     = preg_replace_callback("/(.)?<div.*>(.*)<\/div>(.)?/siU", function ($matches) {
-                $text = $matches[1];
-                if ($matches[1] != "\n" && $matches[1] != ">" && $matches[1] != "") {
-                    $text .= "\n";
-                }
-                $text .= $matches[2];
-                if (isset($matches[3]) && $matches[3] != "\n" && $matches[3] != "<" && $matches[3] != "") {
-                    $text .= "\n";
-                }
-                if (isset($matches[3])) {
-                    $text .= $matches[3];
-                }
-                return $text;
-            }, $text);
+        $textOld = '';
+        while ($text != $textOld) {
+            $textOld = $text;
+            $text    = preg_replace_callback("/(.)?<div.*>(.*)<\/div>(.)/siU", $appendLineBr, $text);
+            $text    = preg_replace_callback("/(.)?<p.*>(.*)<\/p>(.)/siU", $appendLineBr, $text);
+            $text    = preg_replace_callback("/(.)?<h1.*>(.*)<\/h1>(.)/siU", $appendLineBr, $text);
+            $text    = preg_replace_callback("/(.)?<h2.*>(.*)<\/h2>(.)/siU", $appendLineBr, $text);
+            $text    = preg_replace_callback("/(.)?<h3.*>(.*)<\/h3>(.)/siU", $appendLineBr, $text);
+            $text    = preg_replace_callback("/(.)?<h4.*>(.*)<\/h4>(.)/siU", $appendLineBr, $text);
         }
 
         $text = strip_tags($text);
 
-        $text = html_entity_decode($text, ENT_COMPAT, "UTF-8");
+        $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
 
         if ($linksAtEnd && count(static::$LINK_CACHE) > 0) {
             $text .= "\n\n\nLinks:\n";
@@ -397,6 +416,7 @@ class HTMLTools
                 $text .= "[$nr] $link\n";
             }
         }
+
         return trim($text);
     }
 

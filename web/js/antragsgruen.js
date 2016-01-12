@@ -32,17 +32,13 @@ function __t(category, str) {
     }
 
     function ckeditor_charcount(text) {
-        var normalizedText = text.
-        replace(/(\r\n|\n|\r)/gm, "").
-        replace(/^\s+|\s+$/g, "").
-        replace("&nbsp;", "");
+        var normalizedText = text.replace(/(\r\n|\n|\r)/gm, "").replace(/^\s+|\s+$/g, "").replace("&nbsp;", "");
         normalizedText = ckeditor_strip(normalizedText).replace(/^([\s\t\r\n]*)$/, "");
 
         return normalizedText.length;
     }
 
     function ckeditorInit(id) {
-
         var $el = $("#" + id),
             initialized = $el.data("ckeditor_initialized"),
             allowedContent;
@@ -91,28 +87,32 @@ function __t(category, str) {
             title: $el.attr("title")
         };
 
-        if ($el.data('track-changed') == '1') {
-            ckeditorConfig.extraPlugins += ',lite';
-            allowedContent = 'strong s em u sub sup;' +
+        var strikeEl = ($el.data("no-strike") == '1' ? '' : ' s'),
+            strikeClass = ($el.data("no-strike") == '1' ? '' : ',strike');
+
+        if ($el.data('track-changed') == '1' || $el.data('allow-diff-formattings') == '1') {
+            allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint){border,margin,padding};' +
-                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline,strike,subscript,superscript);' +
+                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead){border,margin,padding};' +
+                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
-                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
-            if ($el.data('track-changed-tooltips') == '1') {
-                ckeditorConfig.lite = {tooltips: true};
-            } else {
-                ckeditorConfig.lite = {tooltips: false};
-            }
+                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);' +
+                'section[data-*](collidingParagraph)';
         } else {
-            ckeditorConfig.removePlugins += ',lite';
-            allowedContent = 'strong s em u sub sup;' +
+            allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul ol li {list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +
-                'span(underline,strike,subscript,superscript);' +
+                'span(underline' + strikeClass + ',subscript,superscript);' +
                 'a[href];';
+        }
+
+        if ($el.data('track-changed') == '1') {
+            ckeditorConfig.extraPlugins += ',lite';
+            ckeditorConfig.lite = {tooltips: false};
+        } else {
+            ckeditorConfig.removePlugins += ',lite';
         }
         ckeditorConfig.allowedContent = allowedContent;
         ckeditorConfig.pasteFilter = allowedContent;
@@ -173,6 +173,14 @@ function __t(category, str) {
     "use strict";
 
     var $html = $('html');
+
+    var motionInitiatorShow = function () {
+        $(".motionData .contactShow").click(function (ev) {
+            ev.preventDefault();
+            $(this).addClass("hidden");
+            $(".motionData .contactDetails").removeClass("hidden");
+        });
+    };
 
     var draftSavingEngine = function (keyBase) {
         if (!$html.hasClass("localstorage")) {
@@ -385,56 +393,315 @@ function __t(category, str) {
     };
 
     var motionMergeAmendmentsForm = function () {
+        motionInitiatorShow();
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor"),
-                editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+                editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id")),
+                currMouseX = null;
+
+            $holder.on("mousemove", function (ev) {
+                currMouseX = ev.offsetX;
+            });
 
             $textarea.parents("form").submit(function () {
                 $textarea.parent().find("textarea.raw").val(editor.getData());
-                if (typeof(editor.plugins.lite) != 'undefined') {
-                    editor.plugins.lite.findPlugin(editor).acceptAll();
-                    $textarea.parent().find("textarea.consolidated").val(editor.getData());
-                }
+                $textarea.parent().find("textarea.consolidated").val(editor.getData());
+            });
+
+            var $text = $('<div>' + editor.getData() + '</div>');
+
+            // Move the amendment-Data from OL's and UL's to their list items
+            $text.find("ul.appendHint, ol.appendHint").each(function () {
+                var $this = $(this),
+                    appendHint = $this.data("append-hint");
+                $this.find("> li").addClass("appendHint").attr("data-append-hint", appendHint)
+                    .attr("data-link", $this.data("link"))
+                    .attr("data-username", $this.data("username"));
+                $this.removeClass("appendHint").removeData("append-hint");
+            });
+
+            var newText = $text.html();
+            editor.setData(newText);
+
+            var closeTooltip = function (el) {
+                    var $el = $(el);
+                    if (el.nodeName.toLowerCase() == 'ul' || el.nodeName.toLowerCase() == 'ol') {
+                        $el = $el.children();
+                    }
+                    $el.popover("hide").popover("destroy");
+                    $holder.removeData("popover-shown");
+                },
+                performActionWithUI = function (action) {
+                    editor.fire('saveSnapshot');
+                    closeTooltip(this);
+                    action.call(this);
+                    $("section.collidingParagraph:empty").remove();
+                    $textarea.focus();
+                },
+                affectedChangesets = function (node) {
+                    var $node = $(node),
+                        cid = $node.data("cid");
+                    if (cid == undefined) {
+                        cid = $node.parent().data("cid");
+                    }
+                    return $node.parents(".texteditor").find("[data-cid=" + cid + "]");
+                },
+                accept = function () {
+                    var $nodes = affectedChangesets(this);
+                    $nodes.each(function () {
+                        if ($(this).hasClass("ice-ins")) {
+                            insertAccept.apply(this);
+                        }
+                        if ($(this).hasClass("ice-del")) {
+                            deleteAccept.apply(this);
+                        }
+                    });
+                },
+                reject = function () {
+                    var $nodes = affectedChangesets(this);
+                    $nodes.each(function () {
+                        if ($(this).hasClass("ice-ins")) {
+                            insertReject.apply(this);
+                        }
+                        if ($(this).hasClass("ice-del")) {
+                            deleteReject.apply(this);
+                        }
+                    });
+                },
+                insertReject = function () {
+                    var $removeEl,
+                        name = this.nodeName.toLowerCase();
+                    if (name == 'li') {
+                        $removeEl = $(this).parent();
+                    } else {
+                        $removeEl = $(this);
+                    }
+                    if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
+                        $removeEl.css("overflow", "hidden").height($removeEl.height());
+                        $removeEl.animate({"height": "0"}, 250, function () {
+                            $removeEl.remove();
+                            $("section.collidingParagraph:empty").remove();
+                        });
+                    } else {
+                        $removeEl.remove();
+                    }
+                },
+                insertAccept = function () {
+                    var $this = $(this);
+                    $this.removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+                    if (this.nodeName.toLowerCase() == 'ul' || this.nodeName.toLowerCase() == 'ol') {
+                        $this.children().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+                    }
+                    if (this.nodeName.toLowerCase() == 'li') {
+                        $this.parent().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+                    }
+                    if (this.nodeName.toLowerCase() == 'ins') {
+                        $this.replaceWith($this.html());
+                    }
+                },
+                deleteReject = function () {
+                    var $this = $(this);
+                    $this.removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+                    if (this.nodeName.toLowerCase() == 'ul' || this.nodeName.toLowerCase() == 'ol') {
+                        $this.children().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+                    }
+                    if (this.nodeName.toLowerCase() == 'li') {
+                        $this.parent().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+                    }
+                    if (this.nodeName.toLowerCase() == 'del') {
+                        $this.replaceWith($this.html());
+                    }
+                },
+                deleteAccept = function () {
+                    var name = this.nodeName.toLowerCase(),
+                        $removeEl;
+                    if (name == 'li') {
+                        $removeEl = $(this).parent();
+                    } else {
+                        $removeEl = $(this);
+                    }
+
+                    if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
+                        $removeEl.css("overflow", "hidden").height($removeEl.height());
+                        $removeEl.animate({"height": "0"}, 250, function () {
+                            $removeEl.remove();
+                            $("section.collidingParagraph:empty").remove();
+                        });
+                    } else {
+                        $removeEl.remove();
+                    }
+                },
+                popoverContent = function () {
+                    var $this = $(this),
+                        html,
+                        cid = $this.data("cid");
+                    if (cid == undefined) {
+                        cid = $this.parent().data("cid");
+                    }
+                    $this.parents(".texteditor").first().find("[data-cid=" + cid + "]").addClass("hover");
+
+                    html = '<div>';
+                    html += '<button type="button" class="accept btn btn-sm btn-default"></button>';
+                    html += '<button type="button" class="reject btn btn-sm btn-default"></button>';
+                    html += '<a href="#" class="btn btn-small btn-default opener" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>';
+                    html += '<div class="initiator" style="font-size: 0.8em;"></div>';
+                    html += '</div>';
+                    var $el = $(html);
+                    $el.find(".opener").attr("href", $this.data("link")).attr("title", __t("merge", "title_open_in_blank"));
+                    $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $this.data("username"));
+                    if ($this.hasClass("ice-ins")) {
+                        $el.find("button.accept").text(__t("merge", "insert_accept")).click(performActionWithUI.bind($this[0], accept));
+                        $el.find("button.reject").text(__t("merge", "insert_reject")).click(performActionWithUI.bind($this[0], reject));
+                    } else if ($this.hasClass("ice-del")) {
+                        $el.find("button.accept").text(__t("merge", "delete_accept")).click(performActionWithUI.bind($this[0], accept));
+                        $el.find("button.reject").text(__t("merge", "delete_reject")).click(performActionWithUI.bind($this[0], reject));
+                    } else if ($this[0].nodeName.toLowerCase() == 'li') {
+                        var $list = $this.parent();
+                        if ($list.hasClass("ice-ins")) {
+                            $el.find("button.accept").text(__t("merge", "insert_accept")).click(performActionWithUI.bind($this[0], accept));
+                            $el.find("button.reject").text(__t("merge", "insert_reject")).click(performActionWithUI.bind($this[0], reject));
+                        } else if ($list.hasClass("ice-del")) {
+                            $el.find("button.accept").text(__t("merge", "delete_accept")).click(performActionWithUI.bind($this[0], accept));
+                            $el.find("button.reject").text(__t("merge", "delete_reject")).click(performActionWithUI.bind($this[0], reject));
+                        } else {
+                            console.log("unknown", $list);
+                        }
+                    } else {
+                        console.log("unknown", $this);
+                        alert("unknown");
+                    }
+                    return $el;
+                },
+                removePopupIfInactive = function () {
+                    var $this = $(this);
+                    if ($this.is(":hover")) {
+                        return window.setTimeout(removePopupIfInactive.bind(this), 500);
+                    }
+                    if ($holder.find(".popover").length > 0 && $holder.find(".popover").is(":hover")) {
+                        return window.setTimeout(removePopupIfInactive.bind(this), 500);
+                    }
+                    $this.popover("hide").popover("destroy");
+
+                    var cid = $this.data("cid");
+                    if (cid == undefined) {
+                        cid = $this.parent().data("cid");
+                    }
+                    $this.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
+                };
+
+            $holder.on('mouseover', '.collidingParagraphHead', function () {
+                $(this).parents(".collidingParagraph").addClass("hovered");
+            }).on('mouseout', '.collidingParagraphHead', function () {
+                $(this).parents(".collidingParagraph").removeClass("hovered");
+            });
+
+            $holder.on("mouseover", ".appendHint", function () {
+                var $previous = $holder.data("popover-shown");
+                if ($previous) $previous.popover("hide").popover("destroy");
+                var $this = $(this);
+                $this.popover({
+                    'container': $holder,
+                    'animation': false,
+                    'trigger': 'manual',
+                    'placement': 'bottom',
+                    'html': true,
+                    'content': popoverContent
+                });
+                $this.popover('show');
+                $holder.data("popover-shown", $this);
+                var $popover = $holder.find("> .popover"),
+                    width = $popover.width();
+                $popover.css("left", Math.floor(currMouseX - (width / 2) + 20) + "px");
+                $popover.on("mousemove", function (ev) {
+                    ev.stopPropagation();
+                });
+                window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
+            });
+
+            var callPopoverContent = function () {
+                var $this = $(this),
+                    html = '<div style="white-space: nowrap;"><button type="button" class="btn btn-small btn-default delTitle">' +
+                        '<span style="text-decoration: line-through">' + __t("merge", "title") + '</span></button>';
+                html += '<button type="button" class="reject btn btn-small btn-default"><span class="glyphicon glyphicon-trash"></span></button>';
+                html += '<a href="#" class="btn btn-small btn-default opener" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>';
+                html += '<div class="initiator" style="font-size: 0.8em;"></div>';
+                html += '</div>';
+                var $el = $(html);
+                $el.find(".delTitle").attr("title", __t("merge", "title_del_title"));
+                $el.find(".reject").attr("title", __t("merge", "title_del_colliding"));
+                $el.find("a.opener").attr("href", $this.find("a").attr("href")).attr("title", __t("merge", "title_open_in_blank"));
+                $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $this.parents(".collidingParagraph").data("username"));
+                $el.find(".reject").click(function () {
+                    performActionWithUI.call($this[0], function () {
+                        var $para = $this.parents(".collidingParagraph");
+                        $para.css({"overflow": "hidden"}).height($para.height());
+                        $para.animate({"height": "0"}, 250, function () {
+                            $para.remove();
+                        });
+                    });
+                });
+                $el.find(".delTitle").click(function () {
+                    performActionWithUI.call($this[0], function () {
+                        $this.remove();
+                    });
+                });
+                return $el;
+            };
+
+            $holder.on("mouseover", ".collidingParagraphHead", function () {
+                var $previous = $holder.data("popover-shown");
+                if ($previous) $previous.popover("hide").popover("destroy");
+                var $this = $(this);
+                $this.popover({
+                    'container': $holder,
+                    'animation': false,
+                    'trigger': 'manual',
+                    'placement': 'bottom',
+                    'html': true,
+                    'title': __t("merge", "colliding_title"),
+                    'content': callPopoverContent
+                });
+                $this.popover('show');
+                $holder.data("popover-shown", $this);
+                var $popover = $holder.find("> .popover"),
+                    width = $popover.width();
+                $popover.css("left", Math.floor(currMouseX - (width / 2) + 20) + "px");
+                $popover.on("mousemove", function (ev) {
+                    ev.stopPropagation();
+                });
+                window.setTimeout(removePopupIfInactive.bind($this[0]), 500);
+            });
+
+
+            $holder.find(".acceptAllChanges").click(function () {
+                editor.fire('saveSnapshot');
+                $holder.find(".collidingParagraph").each(function () {
+                    var $this = $(this);
+                    $this.find(".collidingParagraphHead").remove();
+                    $this.replaceWith($this.children());
+                });
+                $holder.find(".ice-ins").each(function () {
+                    insertAccept.call(this);
+                });
+                $holder.find(".ice-del").each(function () {
+                    deleteAccept.call(this);
+                });
+            });
+            $holder.find(".rejectAllChanges").click(function () {
+                editor.fire('saveSnapshot');
+                $holder.find(".collidingParagraph").each(function () {
+                    $(this).remove();
+                });
+                $holder.find(".ice-ins").each(function () {
+                    insertReject.call(this);
+                });
+                $holder.find(".ice-del").each(function () {
+                    deleteReject.call(this);
+                });
             });
         });
 
-        $(".wysiwyg-textarea .acceptAllChanges").click(function () {
-            var $this = $(this),
-                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
-                instance = CKEDITOR.instances[id];
-            bootbox.confirm(__t("merge", "accept_all"), function (result) {
-                if (result) {
-                    instance.plugins.lite.findPlugin(instance).acceptAll();
-                    $this.parents(".wysiwyg-textarea").find("> label").scrollintoview();
-                }
-            });
-        });
-
-        $(".wysiwyg-textarea .rejectAllChanges").click(function () {
-            var $this = $(this),
-                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
-                instance = CKEDITOR.instances[id];
-            bootbox.confirm(__t("merge", "reject_all"), function (result) {
-                if (result) {
-                    instance.plugins.lite.findPlugin(instance).rejectAll();
-                    $this.parents(".wysiwyg-textarea").find("> label").scrollintoview();
-                }
-            });
-        });
-
-        $(".wysiwyg-textarea .deactivateTracking").click(function () {
-            var $this = $(this),
-                id = $this.parents(".wysiwyg-textarea").find(".cke_editable").attr("id"),
-                instance = CKEDITOR.instances[id];
-            if (instance.plugins.lite.findPlugin(instance).countChanges() == 0) {
-                instance.plugins.lite.findPlugin(instance).toggleTracking(false, false);
-                $this.parents(".wysiwyg-textarea").find(".mergeTrackingDisabled").removeClass("hidden");
-                $this.parents(".wysiwyg-textarea").find(".mergeActionHolder").addClass("hidden");
-            } else {
-                bootbox.alert(__t("merge", "err_pending_changes"));
-            }
-        });
 
         var $draftHint = $("#draftHint"),
             origMotionId = $draftHint.data("orig-motion-id"),
@@ -443,7 +710,6 @@ function __t(category, str) {
     };
 
     var amendmentEditFormMultiPara = function () {
-        console.log("amendmentEditFormMultiPara");
         $(".wysiwyg-textarea").each(function () {
             var $holder = $(this),
                 $textarea = $holder.find(".texteditor");
@@ -452,7 +718,6 @@ function __t(category, str) {
             }
             var editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
             $textarea.parents("form").submit(function () {
-                console.log("save", $textarea.parent().find("textarea.raw"), editor.getData());
                 $textarea.parent().find("textarea.raw").val(editor.getData());
                 if (typeof(editor.plugins.lite) != 'undefined') {
                     editor.plugins.lite.findPlugin(editor).acceptAll();
@@ -618,6 +883,7 @@ function __t(category, str) {
     };
 
     var motionShow = function () {
+        motionInitiatorShow();
         var $paragraphs = $('.motionTextHolder .paragraph');
         $paragraphs.find('.comment .shower').click(function (ev) {
             ev.preventDefault();
@@ -706,6 +972,7 @@ function __t(category, str) {
     };
 
     var amendmentShow = function () {
+        motionInitiatorShow();
         var s = location.hash.split('#comm');
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
@@ -981,3 +1248,6 @@ function __t(category, str) {
     $(".jsProtectionHint").remove();
 
 }(jQuery));
+
+
+

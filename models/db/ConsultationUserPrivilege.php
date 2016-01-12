@@ -128,6 +128,7 @@ class ConsultationUserPrivilege extends ActiveRecord
                 $user->id,
                 \Yii::t('user', 'acc_grant_email_title'),
                 $emailText,
+                '',
                 ['%ACCOUNT%' => $accountText]
             );
         } catch (MailNotSent $e) {
