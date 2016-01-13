@@ -187,8 +187,15 @@ echo '<div class="form-group sqlOption mysqlOption">
 echo '<div class="form-group sqlOption mysqlOption">
     <label class="col-sm-4 control-label" for="sqlPassword">' . 'Passwort' . ':</label>
     <div class="col-sm-8">
-        <input type="password" name="sqlPassword"
-        value="' . Html::encode($form->sqlPassword) . '" class="form-control" id="sqlPassword">
+        <input type="password" name="sqlPassword" value="" class="form-control" id="sqlPassword"';
+if ($form->sqlPassword != '') {
+    echo ' placeholder="' . 'Unverändert lassen' . '"';
+}
+echo '>
+        <label style="font-weight: normal; font-size: 0.9em;">
+            <input type="checkbox" name="sqlPasswordNone" value="" id="sqlPasswordNone">
+            Kein Passwort
+        </label>
     </div>
 </div>';
 

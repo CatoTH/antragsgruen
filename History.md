@@ -9,6 +9,7 @@ Version 3.1
 - Don't allow strike-through text in amendments
 - More informative filenames for PDF- and ODT-exports
 - When submitting motions or amendments, the text is sent as part of the confirmation e-mail
+- Fixing a security problem while using the web-based installer
 
 Version 3.0
 ===========

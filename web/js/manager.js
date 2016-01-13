@@ -45,10 +45,10 @@
             }
         });
         /*
-        $step3.find('button[type=submit]').click(function (ev) {
-            console.log(ev);
-        });
-        */
+         $step3.find('button[type=submit]').click(function (ev) {
+         console.log(ev);
+         });
+         */
         $step1.find('.sitePreset input').change(function () {
             var $this = $(this);
             if (!$this.prop('checked')) {
@@ -86,24 +86,37 @@
     };
 
     var antragsgruenInit = function () {
+        $('#sqlPassword').on('keyup', function () {
+            $('#sqlPasswordNone').prop('checked', false);
+        });
+        $('#sqlPasswordNone').on('change', function () {
+            if ($(this).prop('checked')) {
+                $('#sqlPassword').val('').attr('placeholder', '');
+            }
+        });
         $('.testDBcaller').click(function () {
             var $pending = $('.testDBRpending'),
                 $success = $('.testDBsuccess'),
                 $error = $('.testDBerror'),
                 $createTables = $('.createTables'),
                 csrf = $('input[name=_csrf]').val(),
-                url = $(this).data('url');
+                url = $(this).data('url'),
+                params = {
+                    'sqlType': $("input[name=sqlType]").val(),
+                    'sqlHost': $("input[name=sqlHost]").val(),
+                    'sqlUsername': $("input[name=sqlUsername]").val(),
+                    'sqlPassword': $("input[name=sqlPassword]").val(),
+                    'sqlDB': $("input[name=sqlDB]").val(),
+                    '_csrf': csrf
+                };
+            if ($("input[name=sqlPasswordNone]").prop("checked")) {
+                params['sqlPasswordNone'] = 1;
+            }
             $pending.removeClass('hidden');
             $error.addClass('hidden');
             $success.addClass('hidden');
-            $.post(url, {
-                'sqlType': $("input[name=sqlType]").val(),
-                'sqlHost': $("input[name=sqlHost]").val(),
-                'sqlUsername': $("input[name=sqlUsername]").val(),
-                'sqlPassword': $("input[name=sqlPassword]").val(),
-                'sqlDB': $("input[name=sqlDB]").val(),
-                '_csrf': csrf
-            }, function (ret) {
+
+            $.post(url, params, function (ret) {
                 if (ret['success']) {
                     $success.removeClass('hidden');
                     if (ret['alreadyCreated']) {

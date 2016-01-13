@@ -22,7 +22,7 @@ class AntragsgruenInitForm extends Model
     public $siteEmail;
     public $sitePreset;
 
-    public $sqlType = 'mysql';
+    public $sqlType         = 'mysql';
     public $sqlHost;
     public $sqlUsername;
     public $sqlPassword;
@@ -92,6 +92,7 @@ class AntragsgruenInitForm extends Model
         if (isset($params['password'])) {
             $this->sqlPassword = $params['password'];
         }
+
         $parts = explode(':', $params['dsn']);
         if (count($parts) != 2) {
             return;
@@ -120,7 +121,7 @@ class AntragsgruenInitForm extends Model
         return [
             [['siteUrl', 'siteTitle', 'siteEmail', 'sqlType', 'adminUsername', 'adminPassword'], 'required'],
             [['sitePreset'], 'number'],
-            [['sqlType', 'sqlHost', 'sqlFile', 'sqlUsername', 'sqlPassword', 'sqlDB', 'sqlCreateTables'], 'safe'],
+            [['sqlType', 'sqlHost', 'sqlFile', 'sqlUsername', 'sqlDB', 'sqlCreateTables'], 'safe'],
             [['siteUrl', 'siteTitle', 'sitePreset', 'adminUsername', 'adminPassword'], 'safe'],
         ];
     }
