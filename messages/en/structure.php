@@ -72,6 +72,7 @@ return [
     'preset_app_name'      => 'Name',
     'preset_app_photo'     => 'Photo',
     'preset_app_data'      => 'Data',
+    'preset_app_signature' => 'Signature (scanned)',
     'preset_app_age'       => 'Age',
     'preset_app_gender'    => 'Gender',
     'preset_app_birthcity' => 'Birthplace',
@@ -109,4 +110,8 @@ return [
     'STATUS_PAUSED'               => 'Paused',
     'STATUS_MISSING_INFORMATION'  => 'Missing information',
     'STATUS_DISMISSED'            => 'Dismissed',
+
+    'section_comment_none'      => 'No comments',
+    'section_comment_motion'    => 'Comment the whole motion as one',
+    'section_comment_paragraph' => 'Comment single paragraphs',
 ];

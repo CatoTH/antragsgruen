@@ -56,6 +56,7 @@ trait ApplicationTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
+        $section->positionRight = 0;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -70,6 +71,7 @@ trait ApplicationTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
+        $section->positionRight = 1;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -84,6 +86,7 @@ trait ApplicationTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
+        $section->positionRight = 1;
         $section->data          = json_encode(
             [
                 'maxRowId' => 2,
@@ -126,6 +129,22 @@ trait ApplicationTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
+        $section->positionRight = 0;
+        $section->save();
+
+        $section                = new ConsultationSettingsMotionSection();
+        $section->motionTypeId  = $motionType->id;
+        $section->type          = ISectionType::TYPE_IMAGE;
+        $section->position      = 4;
+        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+        $section->title         = \Yii::t('structure', 'preset_app_signature');
+        $section->required      = 1;
+        $section->maxLen        = 0;
+        $section->fixedWidth    = 0;
+        $section->lineNumbers   = 0;
+        $section->hasComments   = 0;
+        $section->hasAmendments = 0;
+        $section->positionRight = 0;
         $section->save();
     }
 }

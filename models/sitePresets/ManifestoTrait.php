@@ -56,6 +56,7 @@ trait ManifestoTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 1;
+        $section->positionRight = 0;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -70,6 +71,7 @@ trait ManifestoTrait
         $section->lineNumbers   = 1;
         $section->hasComments   = 1;
         $section->hasAmendments = 1;
+        $section->positionRight = 0;
         $section->save();
     }
 }

@@ -70,6 +70,7 @@ return [
     'preset_app_name'      => 'Name',
     'preset_app_photo'     => 'Foto',
     'preset_app_data'      => 'Angaben',
+    'preset_app_signature' => 'Unterschrift (eingescannt)',
     'preset_app_age'       => 'Alter',
     'preset_app_gender'    => 'Geschlecht',
     'preset_app_birthcity' => 'Geburtsort',
@@ -107,4 +108,8 @@ return [
     'STATUS_PAUSED'               => 'Pausiert',
     'STATUS_MISSING_INFORMATION'  => 'Informationen fehlen',
     'STATUS_DISMISSED'            => 'Nicht zugelassen',
+
+    'section_comment_none'  => 'Keine Kommentare',
+    'section_comment_motion' => 'Abschnitt als ganzes kommentierbar',
+    'section_comment_paragraph' => 'Einzelne Absätze sind kommentierbar'
 ];
