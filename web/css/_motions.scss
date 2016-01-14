@@ -501,6 +501,22 @@
         .lineNumber {
           left: $lineNumberOffset + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
         }
+        ul, ol {
+          .lineNumber {
+            left: $lineNumberOffset + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+          }
+          ul, ol {
+            .lineNumber {
+              left: $lineNumberOffset + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+            }
+            ul, ol {
+              .lineNumber {
+                left: $lineNumberOffset + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+              }
+            }
+          }
+        }
+
       }
 
       > blockquote {
