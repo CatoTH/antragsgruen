@@ -1213,15 +1213,17 @@ function __t(category, str) {
                         code = $li.data('code'),
                         currStr = '',
                         $subitems = $li.find('> ol');
-                    if (code[0] == '0' || code > 0) {
-                        currStr = currNumber = code;
-                    } else if (code == '#') {
-                        var x = currNumber.split('.');
-                        x[0]++;
-                        currNumber = currStr = x.join('.');
+                    if (code == '#') {
+                        var parts = currNumber.split('.'),
+                            matches = parts[0].match(/^(.*[^0-9])?([0-9]*)$/),
+                            nonNumeric = (typeof(matches[1]) == 'undefined' ? '' : matches[1]),
+                            numeric = (matches[2] == '' ? 1 : matches[2]);
+                        parts[0] = nonNumeric + ++numeric;
+                        currNumber = currStr = parts.join('.');
                     } else {
-                        currStr = code;
+                        currStr = currNumber = code;
                     }
+
                     $li.find('> div > h3 .code').text(currStr);
                     if ($subitems.length > 0) {
                         recalcAgendaNode($subitems);

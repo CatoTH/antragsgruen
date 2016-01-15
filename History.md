@@ -12,6 +12,7 @@ Version 3.1
 - Fixing a security problem while using the web-based installer
 - Support for image-upload in motions / applications, esp. for PDF-export of images
 - Add a two-column PDF template designed for applications
+- In the motion/amendment-list for admins, amendments are shown right next to their motions
  
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 Some features were sponsored by the [Green Party of Berlin](https://www.gruene-berlin.de/).

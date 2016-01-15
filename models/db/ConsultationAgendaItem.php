@@ -132,28 +132,32 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         // Needs to be synchronized with antragsgruen.js:recalcAgendaCodes
         $calcNewShownCode = function ($currShownCode, $newInternalCode) {
-            if ($newInternalCode == '0' || $newInternalCode > 0) {
-                return $newInternalCode;
-            }
             if ($newInternalCode == '#') {
                 $currParts = explode('.', $currShownCode);
-                $currParts[0]++;
+                preg_match('/^(?<non_numeric>.*[^0-9])?(?<numeric>[0-9]*)$/su', $currParts[0], $matches);
+                $nonNumeric = $matches['non_numeric'];
+                $numeric = ($matches['numeric'] == '' ? 1 : $matches['numeric']);
+                $currParts[0] = $nonNumeric . ++$numeric;
                 return implode('.', $currParts);
+            } else {
+                return $newInternalCode;
             }
-            return $currShownCode;
         };
 
-        $getSubItems = function (Consultation $consultation, ConsultationAgendaItem $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode) {
+        $getSubItems = function ($consultation, $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode) {
+            /** @var Consultation $consultation $items */
+            /** @var ConsultationAgendaItem $item */
             $items         = [];
             $currShownCode = '0.';
             $children      = static::getItemsByParent($consultation, $item->id);
             foreach ($children as $child) {
-                $currShownCode = $calcNewShownCode($currShownCode, $item->code);
-                $child->setShownCode($currShownCode, $fullCodePrefix . $currShownCode);
+                $currShownCode = $calcNewShownCode($currShownCode, $child->code);
+                $prevCode = $fullCodePrefix . ($fullCodePrefix[strlen($fullCodePrefix) - 1] == '.' ? '' : '.');
+                $child->setShownCode($currShownCode, $prevCode . $currShownCode);
                 $items = array_merge(
                     $items,
                     [$child],
-                    $recFunc($consultation, $child, $fullCodePrefix . $currShownCode, $recFunc)
+                    $recFunc($consultation, $child, $prevCode . $currShownCode, $recFunc)
                 );
             }
             return $items;
