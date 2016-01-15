@@ -74,7 +74,7 @@ if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
 
 if ($motion->canMergeAmendments()) {
     $mergeLi = '<li class="mergeamendments">';
-    $title = (count($motion->getVisibleAmendments(false)) > 0 ? 'amendments_merge' : 'amendments_merge_noamend');
+    $title   = (count($motion->getVisibleAmendments(false)) > 0 ? 'amendments_merge' : 'amendments_merge_noamend');
     $title   = '<span class="icon glyphicon glyphicon-scissors"></span>' .
         Yii::t('motion', $title);
     $mergeLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
@@ -152,7 +152,9 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        if ($section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_PDF) {
+        if ($section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_PDF &&
+            $section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_IMAGE
+        ) {
             $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
         }
 

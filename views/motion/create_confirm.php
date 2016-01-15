@@ -31,7 +31,11 @@ foreach ($motion->getSortedSections(true) as $section) {
         $right .= '</section>';
     } else {
         $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type . '">';
-        $main .= '<h2 class="green">' . Html::encode($section->getSettings()->title) . '</h2>';
+        if ($section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_PDF &&
+            $section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_IMAGE
+        ) {
+            $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        }
         $main .= '<div class="consolidated">';
 
         $main .= $section->getSectionType()->getSimple(false);

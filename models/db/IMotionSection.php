@@ -70,6 +70,6 @@ abstract class IMotionSection extends ActiveRecord
      */
     public function isLayoutRight()
     {
-        return in_array($this->getSettings()->type, [ISectionType::TYPE_IMAGE, ISectionType::TYPE_TABULAR]);
+        return ($this->getSettings()->positionRight == 1);
     }
 }

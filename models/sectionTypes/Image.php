@@ -112,6 +112,7 @@ class Image extends ISectionType
     /**
      * @param bool $isRight
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getSimple($isRight)
     {
