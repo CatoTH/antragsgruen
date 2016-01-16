@@ -616,7 +616,7 @@ class TextSimple extends ISectionType
             $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
                 $html = implode('<br>', $paragraph->lines);
-                /* Modifications for BDK
+                /* Modifications for BDK @TODO
                 $html = implode('', $paragraph->lines);
                 $html = preg_replace('/' . '<br>\\s*' . '/siu', '<br>', $html);
                 */
