@@ -33,22 +33,37 @@ class Exporter
     public static function encodePlainString($str)
     {
         $replaces = [
-            '\\'                         => '\textbackslash{}',
-            '&'                          => '\&',
-            '%'                          => '\%',
-            '$'                          => '\$',
-            '#'                          => '\#',
-            '_'                          => '\_',
-            '{'                          => '\{',
-            '}'                          => '\}',
-            '\textbackslash\{\}'         => '\textbackslash{}',
-            '~'                          => '\texttt{\~{}}',
-            '^'                          => '\^{}',
-            '\#\#\#LINENUMBER\#\#\#'     => '###LINENUMBER###',
-            '\#\#\#LINEBREAK\#\#\#'      => '###LINEBREAK###',
-            '\#\#\#FORCELINEBREAK\#\#\#' => '###FORCELINEBREAK###',
+            '\\'                     => '\textbackslash{}',
+            '&'                      => '\&',
+            '%'                      => '\%',
+            '$'                      => '\$',
+            '#'                      => '\#',
+            '_'                      => '\_',
+            '{'                      => '\{',
+            '}'                      => '\}',
+            '\textbackslash\{\}'     => '\textbackslash{}',
+            '~'                      => '\texttt{\~{}}',
+            '^'                      => '\^{}',
+            '\#\#\#LINENUMBER\#\#\#' => '###LINENUMBER###',
+            '\#\#\#LINEBREAK\#\#\#'  => '###LINEBREAK###',
         ];
         return str_replace(array_keys($replaces), array_values($replaces), $str);
+    }
+
+    /**
+     * @param string $content
+     * @param string[] $extraStyles
+     * @return string
+     */
+    private static function addInsDelExtraStyles($content, $extraStyles)
+    {
+        if (in_array('ins', $extraStyles)) {
+            $content = '\textcolor{Insert}{' . $content . '}';
+        }
+        if (in_array('del', $extraStyles)) {
+            $content = '\textcolor{Delete}{\sout{' . $content . '}}';
+        }
+        return $content;
     }
 
     /**
@@ -88,45 +103,39 @@ class Exporter
                 $classes = [];
             }
 
+            $childStyles = [];
+            if (in_array($node->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
+                if (in_array('ins', $classes) || in_array('inserted', $classes)) {
+                    $extraStyles[] = 'ins';
+                    $childStyles[] = 'underlined';
+                }
+                if (in_array('del', $classes) || in_array('deleted', $classes)) {
+                    $extraStyles[] = 'del';
+                }
+            } elseif ($node->nodeName == 'u') {
+                $childStyles[] = 'underlined';
+            } elseif ($node->nodeName == 'ins') {
+                $childStyles[] = 'underlined';
+            } elseif ($node->nodeName == 's') {
+                $childStyles[] = 'strike';
+            } elseif ($node->nodeName == 'del') {
+                $childStyles[] = 'strike';
+            } elseif ($node->nodeName == 'span') {
+                if (in_array('underline', $classes)) {
+                    $childStyles[] = 'underlined';
+                }
+                if (in_array('ins', $classes) || in_array('inserted', $classes)) {
+                    $childStyles[] = 'underlined';
+                }
+            }
+            if (in_array('underlined', $extraStyles)) {
+                $childStyles[] = 'underlined';
+            }
+            if (in_array('strike', $extraStyles)) {
+                $childStyles[] = 'strike';
+            }
+
             foreach ($node->childNodes as $child) {
-                $childStyles = [];
-                if (in_array('underlined', $extraStyles)) {
-                    $childStyles[] = 'underlined';
-                }
-                if (in_array('strike', $extraStyles)) {
-                    $childStyles[] = 'strike';
-                }
-                if ($node->nodeName == 'ul' || $node->nodeName == 'ol' || $node->nodeName == 'li') {
-                    if (in_array('ins', $classes) || in_array('inserted', $classes)) {
-                        $childStyles[] = 'ins';
-                        $childStyles[] = 'underlined';
-                    }
-                    if (in_array('del', $classes) || in_array('deleted', $classes)) {
-                        $childStyles[] = 'del';
-                        $childStyles[] = 'strike';
-                    }
-                } elseif ($node->nodeName == 'u') {
-                    $childStyles[] = 'underlined';
-                } elseif ($node->nodeName == 'ins') {
-                    $childStyles[] = 'underlined';
-                } elseif ($node->nodeName == 's') {
-                    $childStyles[] = 'underlined';
-                } elseif ($node->nodeName == 'del') {
-                    $childStyles[] = 'underlined';
-                } elseif ($node->nodeName == 'span') {
-                    if (in_array('underline', $classes)) {
-                        $childStyles[] = 'underlined';
-                    }
-                    if (in_array('ins', $classes) || in_array('inserted', $classes)) {
-                        $childStyles[] = 'underlined';
-                    }
-                    if (in_array('strike', $classes)) {
-                        $childStyles[] = 'strike';
-                    }
-                    if (in_array('del', $classes) || in_array('deleted', $classes)) {
-                        $childStyles[] = 'strike';
-                    }
-                }
                 /** @var \DOMNode $child */
                 $content .= static::encodeHTMLNode($child, $childStyles);
             }
@@ -143,8 +152,10 @@ class Exporter
                 case 'br':
                     return '\newline' . "\n";
                 case 'p':
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return $content . "\n";
                 case 'div':
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return $content . "\n";
                 case 'strong':
                 case 'b':
@@ -163,24 +174,20 @@ class Exporter
                 case 'sup':
                     return '\textsuperscript{' . $content . '}';
                 case 'blockquote':
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
                     $firstLine = '';
+                    $content   = static::addInsDelExtraStyles($content, $extraStyles);
                     if ($node->hasAttribute('start')) {
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
                     }
                     return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
                 case 'li':
-                    if (in_array('ins', $extraStyles)) {
-                        //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
-                        $content = '\textcolor{Insert}{' . $content . '}';
-                    }
-                    if (in_array('del', $extraStyles)) {
-                        //$content = '\textcolor{Delete}{\sout{' . $content . '}}';
-                        $content = '\textcolor{Delete}{' . $content . '}';
-                    }
+                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return '\item ' . $content . "\n";
                 case 'a':
                     if ($node->hasAttribute('href')) {
@@ -195,7 +202,7 @@ class Exporter
                         // $content = '\uline{' . $content . '}';
                     }
                     if (in_array('strike', $classes)) {
-                        //$content = '\sout{' . $content . '}';
+                        // $content = '\sout{' . $content . '}';
                     }
                     if (in_array('ins', $classes)) {
                         //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
@@ -205,11 +212,9 @@ class Exporter
                         $content = '\textcolor{Insert}{' . $content . '}';
                     }
                     if (in_array('del', $classes)) {
-                        //$content = '\textcolor{Delete}{\sout{' . $content . '}}';
                         $content = '\textcolor{Delete}{' . $content . '}';
                     }
                     if (in_array('deleted', $classes)) {
-                        //$content = '\textcolor{Delete}{\sout{' . $content . '}}';
                         $content = '\textcolor{Delete}{' . $content . '}';
                     }
                     if (in_array('subscript', $classes)) {
@@ -220,7 +225,6 @@ class Exporter
                     }
                     return $content;
                 case 'del':
-                    //return '\textcolor{Delete}{\sout{' . $content . '}}';
                     return '\textcolor{Delete}{' . $content . '}';
                 case 'ins':
                     //return '\textcolor{Insert}{\uline{' . $content . '}}';
@@ -253,8 +257,6 @@ class Exporter
             $child = $body->childNodes->item($i);
             $out .= static::encodeHTMLNode($child);
         }
-
-        $out = str_replace('###FORCELINEBREAK###', "\n\\newline\n", $out);
 
         if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
             $out = str_replace(' ', '{\color{white}.}', $out);
@@ -401,7 +403,7 @@ class Exporter
     public static function createMotionPdf($motion)
     {
         $cache = \Yii::$app->cache->get($motion->getPdfCacheKey());
-        if ($cache) {
+        if ($cache && !YII_DEBUG) {
             return $cache;
         }
         $texTemplate = $motion->motionType->texTemplate;
@@ -430,7 +432,7 @@ class Exporter
     public static function createAmendmentPdf($amendment)
     {
         $cache = \Yii::$app->cache->get($amendment->getPdfCacheKey());
-        if ($cache && !isset($_REQUEST["latex_src"])) {
+        if ($cache) {
             return $cache;
         }
         $texTemplate = $amendment->getMyMotion()->motionType->texTemplate;
