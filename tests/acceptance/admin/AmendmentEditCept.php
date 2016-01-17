@@ -25,7 +25,7 @@ $I->submitForm('#amendmentUpdateForm', [], 'save');
 $I->wantTo('verify the changes are visible');
 $I->click('.sidebarActions .view');
 $I->see(mb_strtoupper('Ä1neu zu A2'));
-$I->see('Test 123', 'ins');
+$I->see('Test 123', 'p.inserted');
 $I->see('Another Reason');
 $I->see('02.03.2015');
 $I->see('01.01.2015');

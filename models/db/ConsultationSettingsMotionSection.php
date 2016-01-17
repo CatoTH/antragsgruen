@@ -23,6 +23,7 @@ use yii\db\ActiveRecord;
  * @property int $lineNumbers
  * @property int $hasComments
  * @property int $hasAmendments
+ * @property int $positionRight
  *
  * @property MotionSection[] $sections
  * @property ConsultationMotionType $motionType
@@ -50,9 +51,9 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     public static function getCommentTypes()
     {
         return [
-            static::COMMENTS_NONE       => 'Keine Kommentare',
-            static::COMMENTS_MOTION     => 'Abschnitt als ganzes kommentierbar',
-            static::COMMENTS_PARAGRAPHS => 'Einzelne Absätze sind kommentierbar'
+            static::COMMENTS_NONE       => \Yii::t('structure', 'section_comment_none'),
+            static::COMMENTS_MOTION     => \Yii::t('structure', 'section_comment_motion'),
+            static::COMMENTS_PARAGRAPHS => \Yii::t('structure', 'section_comment_paragraph'),
         ];
     }
 
@@ -84,6 +85,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         $this->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
         $this->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
         $this->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
+        $this->positionRight = (isset($data['positionRight']) && $data['positionRight'] == 1 ? 1 : 0);
         if (isset($data['maxLenSet'])) {
             $this->maxLen = $data['maxLenVal'];
             if (isset($data['maxLenSoft'])) {
@@ -107,7 +109,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     {
         return [
             [['motionTypeId', 'title', 'type', 'position', 'status', 'required'], 'required'],
-            [['id', 'type', 'motionTypeId', 'status', 'required'], 'number'],
+            [['id', 'type', 'motionTypeId', 'status', 'required', 'positionRight'], 'number'],
             [['position', 'fixedWidth', 'maxLen', 'lineNumbers', 'hasComments', 'hasAmendments'], 'number'],
             [['title', 'maxLen', 'hasComments', 'hasAmendments'], 'safe'],
         ];

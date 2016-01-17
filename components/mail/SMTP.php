@@ -19,7 +19,7 @@ class SMTP extends Base
     public function __construct($params)
     {
         if (!isset($params['host'])) {
-            throw new ServerConfiguration('authType not set');
+            throw new ServerConfiguration('host not set');
         }
         $this->host = $params['host'];
 

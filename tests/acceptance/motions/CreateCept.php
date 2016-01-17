@@ -114,5 +114,8 @@ $I->dontSee('+49-123-456789');
 $I->logout();
 $I->loginAsStdAdmin();
 $I->see('My real name');
+$I->dontSee('test2@example.org');
+$I->dontSee('+49-123-456789');
+$I->click('.contactShow');
 $I->see('test2@example.org');
 $I->see('+49-123-456789');

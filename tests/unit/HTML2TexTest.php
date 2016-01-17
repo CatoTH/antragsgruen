@@ -31,11 +31,10 @@ class HTML2TexTest extends TestBase
     public function testLineBreaks()
     {
         $orig   = [
-            '<p>###LINENUMBER###Normaler Text <strong>fett und <em>kursiv</em></strong>###FORCELINEBREAK###',
+            '<p>###LINENUMBER###Normaler Text <strong>fett und <em>kursiv</em></strong><br>',
             '###LINENUMBER###Zeilenumbruch <span class="underline">unterstrichen</span></p>',
         ];
-        $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}' . "\n" .
-            '\\newline' . "\n" .
+        $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}\linebreak' . "\n" .
             'Zeilenumbruch \uline{unterstrichen}' . "\n";
         $out    = TextSimple::getMotionLinesToTeX($orig);
         $this->assertEquals($expect, $out);
@@ -45,12 +44,11 @@ class HTML2TexTest extends TestBase
             'Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, ' .
             'greißlicha Uhu, oida Daddara!</p>';
         $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, \\linebreak\n" .
-            "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\n" .
-            "\\newline\n" .
+            "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\linebreak\n" .
             "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, \\linebreak\n" .
             "Oaschgsicht, greißlicha Uhu, oida Daddara!\n";
 
-        $lines = LineSplitter::motionPara2lines($orig, true, 80);
+        $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $out   = TextSimple::getMotionLinesToTeX($lines);
         $this->assertEquals($expect, $out);
     }
@@ -148,6 +146,26 @@ class HTML2TexTest extends TestBase
     {
         $orig   = "<p>Test <em>kursiv</em> <ins>Neu</ins> </strong></p>";
         $expect = "Test \\emph{kursiv} \\textcolor{Insert}{\\uline{Neu}} \n";
+        $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testInserted()
+    {
+        $orig   = "<p class='inserted'>Neu <em>Neu2</em></p>";
+        $expect = "\\textcolor{Insert}{\\uline{Neu}\\uline{ }\\emph{\\uline{Neu2}}}\n";
+        $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testDeleted()
+    {
+        $orig   = "<p class='deleted'>Neu Neu2</p>";
+        $expect = "\\textcolor{Delete}{\\sout{Neu Neu2}}\n";
         $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }

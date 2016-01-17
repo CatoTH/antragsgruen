@@ -17,8 +17,8 @@ $I->dontSee('Neuer Punkt');
 $I->see('Auffi Gamsbart nimma');
 
 $I->see('Woibbadinga noch da Giasinga');
-$I->dontSee('Woibbadinga noch da Giasinga', 'del');
+$I->dontSee('Woibbadinga noch da Giasinga', '.deleted');
 $I->executeJS('$("#section_2_4").find("ul.bookmarks .amendment3").mouseover()');
-$I->see('Woibbadinga noch da Giasinga', 'del');
+$I->see('Woibbadinga noch da Giasinga', '.deleted');
 $I->executeJS('$("#section_2_4").find("ul.bookmarks .amendment3").mouseout()');
-$I->dontSee('Woibbadinga noch da Giasinga', 'del');
+$I->dontSee('Woibbadinga noch da Giasinga', '.deleted');

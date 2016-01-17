@@ -39,8 +39,8 @@ $motionPage = $I->gotoMotion(true, $motionId);
 $I->see(mb_strtoupper('random new motion'), 'h1');
 
 $firstLineNo = $motionPage->getFirstLineNumber();
-if ($firstLineNo != 96) {
-    $I->fail('first line number is 96 - got: ' . $firstLineNo);
+if ($firstLineNo != 119) {
+    $I->fail('first line number is 119 - got: ' . $firstLineNo);
 }
 
 

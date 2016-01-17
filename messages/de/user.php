@@ -12,7 +12,7 @@ return [
     'name'                      => 'Name',
     'err_pwd_different'         => 'Die beiden Passwörter stimmen nicht überein.',
     'err_pwd_length'            => 'Das Passwort muss mindestens %MINLEN% Zeichen lang sein.',
-    'err_user_acode_notfound'   => 'BenutzerIn nicht gefunden / Ungültiger Code',
+    'err_user_acode_notfound'   => 'Benutzer*in nicht gefunden / Ungültiger Code',
     'err_user_notfound'         => 'Der Account %USER% wurde nicht gefunden.',
     'err_code_wrong'            => 'Der angegebene Code stimmt leider nicht.',
     'pwd_recovery_sent'         => 'Dir wurde eine Passwort-Wiederherstellungs-Mail geschickt.',
@@ -49,7 +49,7 @@ return [
         ein Login ist auch nicht mehr möglich. Deine E-Mail-Adresse, Name, Passwort usw. werden damit aus unserem
         System gelöscht.<br>
         Eingebrachte (Änderungs-)Anträge bleiben aber erhalten. Um eingebrachte Anträge zu entfernen,
-        wende dich bitte an die AdministratorInnen der jeweiligen Unterseite.',
+        wende dich bitte an die Administrator*innen der jeweiligen Unterseite.',
     'del_confirm'               => 'Löschen bestätigen',
     'del_do'                    => 'Löschen',
     'noti_greeting'             => 'Hallo %NAME%,',
@@ -64,12 +64,12 @@ return [
     'noti_new_comment_title'    => '[Antragsgrün] Neuer Kommentar zu %TITLE%',
     'noti_new_comment_body'     => "Es wurde ein neuer Kommentar zu %TITLE% geschrieben:\n%LINK%",
     'acc_grant_email_title'     => 'Antragsgrün-Zugriff',
-    'acc_grant_email_userdata'  => "E-Mail / BenutzerInnenname: %EMAIL%\nPasswort: %PASSWORD%",
+    'acc_grant_email_userdata'  => "E-Mail / Benutzer*innenname: %EMAIL%\nPasswort: %PASSWORD%",
 
     'login_title'             => 'Login',
-    'login_username_title'    => 'Login per Benutzer_Innenname / Passwort',
+    'login_username_title'    => 'Login per Benutzer*innenname / Passwort',
     'login_create_account'    => 'Neuen Zugang anlegen',
-    'login_username'          => 'E-Mail-Adresse / BenutzerInnenname',
+    'login_username'          => 'E-Mail-Adresse / Benutzer*innenname',
     'login_email_placeholder' => 'E-Mail-Adresse',
     'login_password'          => 'Passwort',
     'login_password_rep'      => 'Passwort (Bestätigung)',

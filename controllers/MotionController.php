@@ -2,20 +2,17 @@
 
 namespace app\controllers;
 
-use app\components\mail\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\forms\MotionEditForm;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\ISectionType;
@@ -48,6 +45,34 @@ class MotionController extends Base
 
     /**
      * @param int $motionId
+     * @param int $sectionId
+     * @return string
+     */
+    public function actionViewpdf($motionId, $sectionId)
+    {
+        $motionId = IntVal($motionId);
+        $motion   = $this->getMotionWithCheck($motionId);
+
+        foreach ($motion->sections as $section) {
+            if ($section->sectionId == $sectionId) {
+                Header('Content-type: application/pdf');
+                echo base64_decode($section->data);
+                \Yii::$app->end(200);
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function actionEmbeddedpdf()
+    {
+        return $this->renderPartial('pdf_embed', []);
+    }
+
+    /**
+     * @param int $motionId
      * @return Motion|null
      */
     private function getMotionWithCheck($motionId)
@@ -73,8 +98,10 @@ class MotionController extends Base
         $motionId = IntVal($motionId);
         $motion   = $this->getMotionWithCheck($motionId);
 
+        $filename                    = $motion->getFilenameBase(false) . '.pdf';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
         if ($this->getParams()->xelatexPath) {
             return $this->renderPartial('pdf_tex', ['motion' => $motion]);
@@ -111,7 +138,7 @@ class MotionController extends Base
         $motionId = IntVal($motionId);
         $motion   = $this->getMotionWithCheck($motionId);
 
-        $filename                    = 'Motion_' . $motion->titlePrefix . '.odt';
+        $filename                    = $motion->getFilenameBase(false) . '.odt';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
@@ -135,10 +162,9 @@ class MotionController extends Base
     /**
      * @param int $motionId
      * @param int $commentId
-     * @param bool $consolidatedAmendments
      * @return string
      */
-    public function actionView($motionId, $commentId = 0, $consolidatedAmendments = false)
+    public function actionView($motionId, $commentId = 0)
     {
         $motionId = IntVal($motionId);
         $motion   = $this->getMotionWithCheck($motionId);
@@ -184,7 +210,6 @@ class MotionController extends Base
             'adminEdit'              => $adminEdit,
             'commentForm'            => null,
             'commentWholeMotions'    => $commentWholeMotions,
-            'consolidatedAmendments' => $consolidatedAmendments,
         ];
 
         try {
@@ -213,7 +238,7 @@ class MotionController extends Base
      */
     public function actionConsolidated($motionId)
     {
-        return $this->actionView($motionId, 0, true);
+        return $this->actionView($motionId, 0);
     }
 
 
@@ -244,7 +269,7 @@ class MotionController extends Base
             $motion->save();
 
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-            $mailText = str_replace(
+            $mailText   = str_replace(
                 ['%TITLE%', '%LINK%', '%INITIATOR%'],
                 [$motion->title, $motionLink, $motion->getInitiatorsStr()],
                 \Yii::t('motion', 'submitted_adminnoti_body')
@@ -255,20 +280,7 @@ class MotionController extends Base
                 $motion->onPublish();
             } else {
                 if ($motion->getConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $initiator = $motion->getInitiators();
-                    if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                        try {
-                            Tools::sendWithLog(
-                                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                                $this->site,
-                                trim($initiator[0]->contactEmail),
-                                null,
-                                \Yii::t('motion', 'submitted_screening_email_subject'),
-                                str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'))
-                            );
-                        } catch (MailNotSent $e) {
-                        }
-                    }
+                    $motion->sendSubmissionConfirmMail();
                 }
             }
 

@@ -21,7 +21,7 @@ class CachingTest extends DBTestBase
         /** @var MotionSection $section */
         $section = $motion3->getSortedSections(true)[1];
         $this->assertEquals('', $section->cache);
-        $section->getTextParagraphs();
+        $section->getTextParagraphLines();
         $this->assertNotEquals('', $section->cache);
 
         // Flush the cache of another motion

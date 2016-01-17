@@ -240,6 +240,11 @@ class Text extends Base
      */
     protected function html2ooNodes($html, $lineNumbered)
     {
+        if (!is_string($html)) {
+            echo print_r($html, true);
+            echo print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
+            die();
+        }
         $body = HTMLTools::html2DOM($html);
 
         $retNodes = [];
@@ -303,10 +308,21 @@ class Text extends Base
             'style:text-line-through-type'  => 'single',
         ]);
         $this->appendTextStyleNode('AntragsgruenIns', [
-            'fo:color' => '#00ff00',
+            'fo:color'                   => '#00ff00',
+            'style:text-underline-style' => 'solid',
+            'style:text-underline-width' => 'auto',
+            'style:text-underline-color' => 'font-color',
+            'fo:font-weight'             => 'bold',
+            'style:font-weight-asian'    => 'bold',
+            'style:font-weight-complex'  => 'bold',
         ]);
         $this->appendTextStyleNode('AntragsgruenDel', [
-            'fo:color' => '#ff0000',
+            'fo:color'                      => '#ff0000',
+            'style:text-line-through-style' => 'solid',
+            'style:text-line-through-type'  => 'single',
+            'fo:font-style'                 => 'italic',
+            'style:font-style-asian'        => 'italic',
+            'style:font-style-complex'      => 'italic',
         ]);
         $this->appendTextStyleNode('AntragsgruenSub', [
             'style:text-position' => 'sub 58%',

@@ -9,6 +9,7 @@ use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\db\MotionSupporter;
 use app\models\exceptions\FormError;
+use app\models\sectionTypes\ISectionType;
 use yii\base\Model;
 
 class MotionEditForm extends Model
@@ -111,18 +112,18 @@ class MotionEditForm extends Model
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
-            if ($section->getSettings()->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE && isset($values['motion']['title']))
-                $section->getSectionType()->setAmendmentData($values['motion']['title']);
-
+            if ($section->getSettings()->type == ISectionType::TYPE_TITLE && isset($values['motion']['title'])) {
+                $section->getSectionType()->setMotionData($values['motion']['title']);
+            }
             if (isset($values['sections'][$section->sectionId])) {
                 $section->getSectionType()->setMotionData($values['sections'][$section->sectionId]);
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
-                if (!empty($files['sections']['tmp_name'][$section->delete()])) {
+                if (!empty($files['sections']['tmp_name'][$section->sectionId])) {
                     $data = [];
                     foreach ($files['sections'] as $key => $vals) {
-                        if (isset($vals[$section->delete()])) {
-                            $data[$key] = $vals[$section->delete()];
+                        if (isset($vals[$section->sectionId])) {
+                            $data[$key] = $vals[$section->sectionId];
                         }
                     }
                     $section->getSectionType()->setMotionData($data);

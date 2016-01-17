@@ -163,6 +163,8 @@
           display: none;
         }
         .motionPrefix {
+          word-break: break-all;
+          word-wrap: break-word;
           width: 90px;
           float: left;
           left: 30px;
@@ -499,6 +501,22 @@
         .lineNumber {
           left: $lineNumberOffset + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
         }
+        ul, ol {
+          .lineNumber {
+            left: $lineNumberOffset + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+          }
+          ul, ol {
+            .lineNumber {
+              left: $lineNumberOffset + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+            }
+            ul, ol {
+              .lineNumber {
+                left: $lineNumberOffset + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+              }
+            }
+          }
+        }
+
       }
 
       > blockquote {
@@ -797,4 +815,15 @@
     padding-top: 0;
     padding-bottom: 20px;
   }
+}
+
+iframe.pdfViewer {
+  width: 100%;
+  height: 600px;
+  border: none;
+}
+
+section.sectionType5 {
+  margin-left: -1px;
+  margin-right: -1px;
 }

@@ -77,6 +77,7 @@ class Title extends ISectionType
     /**
      * @param bool $isRight
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getSimple($isRight)
     {
@@ -118,6 +119,7 @@ class Title extends ISectionType
     /**
      * @param IPDFLayout $pdfLayout
      * @param \TCPDF $pdf
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {

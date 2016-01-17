@@ -10,6 +10,75 @@ class AgendaTest extends DBTestBase
 {
     /**
      */
+    public function testNonNumericAgenda()
+    {
+        /** @var ConsultationAgendaItem $item6 */
+        $item6       = ConsultationAgendaItem::findOne(6);
+        $item6->code = 'V';
+        $item6->save();
+        /** @var ConsultationAgendaItem $item7 */
+        $item7 = ConsultationAgendaItem::findOne(7);
+
+        $newItem                 = new ConsultationAgendaItem();
+        $newItem->consultationId = $item6->consultationId;
+        $newItem->parentItemId   = $item6->id;
+        $newItem->position       = 0;
+        $newItem->title          = 'New Item';
+        $newItem->code           = '#';
+        $newItem->save();
+        $item6->refresh();
+
+        $newItem2                 = new ConsultationAgendaItem();
+        $newItem2->consultationId = $item7->consultationId;
+        $newItem2->parentItemId   = $item7->id;
+        $newItem2->position       = 0;
+        $newItem2->title          = 'New Item';
+        $newItem2->code           = '#';
+        $newItem2->save();
+
+        $newItem3                 = new ConsultationAgendaItem();
+        $newItem3->consultationId = $newItem->consultationId;
+        $newItem3->parentItemId   = $newItem->id;
+        $newItem3->position       = 0;
+        $newItem3->title          = 'New Item';
+        $newItem3->code           = '#';
+        $newItem3->save();
+
+        $newItem4                 = new ConsultationAgendaItem();
+        $newItem4->consultationId = $newItem->consultationId;
+        $newItem4->parentItemId   = $newItem->id;
+        $newItem4->position       = 1;
+        $newItem4->title          = 'New Item2';
+        $newItem4->code           = '#';
+        $newItem4->save();
+
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(3);
+        $items        = ConsultationAgendaItem::getSortedFromConsultation($consultation);
+        $item6        = $item7 = null;
+        foreach ($items as $item) {
+            if ($item->id == 6) {
+                $item6 = $item;
+            }
+            if ($item->id == 7) {
+                $item7 = $item;
+            }
+        }
+
+        $this->assertEquals('V', $item6->getShownCode(true));
+        $this->assertEquals('V', $item6->getShownCode(false));
+        $this->assertEquals('V2', $item7->getShownCode(true));
+        $this->assertEquals('V2', $item7->getShownCode(false));
+        $this->assertEquals('1.', $newItem->getShownCode(false));
+        $this->assertEquals('V.1.', $newItem->getShownCode(true));
+        $this->assertEquals('1.', $newItem2->getShownCode(false));
+        $this->assertEquals('V2.1.', $newItem2->getShownCode(true));
+        $this->assertEquals('2.', $newItem4->getShownCode(false));
+        $this->assertEquals('V.1.2.', $newItem4->getShownCode(true));
+    }
+
+    /**
+     */
     public function testShownCodes()
     {
         /** @var Consultation $consultation */

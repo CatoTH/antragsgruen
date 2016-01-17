@@ -3,22 +3,62 @@
 namespace app\components\diff;
 
 use app\components\HTMLTools;
+use app\models\db\Amendment;
 
 class DiffRenderer
 {
+    const FORMATTING_NONE    = -1;
+    const FORMATTING_CLASSES = 0;
+    const FORMATTING_INLINE  = 1;
+
     const INS_START = '###INS_START###';
     const INS_END   = '###INS_END###';
     const DEL_START = '###DEL_START###';
     const DEL_END   = '###DEL_END###';
 
+    const INS_START_MATCH = '/###INS_START([^#]{0,20})###/siu';
+    const DEL_START_MATCH = '/###DEL_START([^#]{0,20})###/siu';
+
     /** @var \DOMDocument */
     private $nodeCreator;
+
+    /** @var int */
+    private $formatting = 0;
+
+    /** @var null|callable */
+    private $insCallback = null;
+    /** @var null|callable */
+    private $delCallback = null;
 
     /**
      */
     public function __construct()
     {
         $this->nodeCreator = new \DOMDocument();
+    }
+
+    /**
+     * @param int $formatting
+     */
+    public function setFormatting($formatting)
+    {
+        $this->formatting = $formatting;
+    }
+
+    /**
+     * @param callable $callback
+     */
+    public function setInsCallback($callback)
+    {
+        $this->insCallback = $callback;
+    }
+
+    /**
+     * @param callable $callback
+     */
+    public function setDelCallback($callback)
+    {
+        $this->delCallback = $callback;
     }
 
     /**
@@ -32,7 +72,7 @@ class DiffRenderer
             return true;
         }
         /** @var \DOMElement $node */
-        return !in_array($node->nodeName, ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p']);
+        return !in_array($node->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS);
     }
 
     /**
@@ -62,6 +102,21 @@ class DiffRenderer
     }
 
     /**
+     * @param \DOMNode $node
+     * @return bool
+     */
+    public static function nodeStartInsDel($node)
+    {
+        if (preg_match(static::INS_START_MATCH, $node->nodeValue)) {
+            return true;
+        }
+        if (preg_match(static::DEL_START_MATCH, $node->nodeValue)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @internal
      * @param string $text
      * @return string[]
@@ -69,6 +124,70 @@ class DiffRenderer
     public function splitTextByMarkers($text)
     {
         return preg_split('/###(INS|DEL)_(START|END)###/siu', $text);
+    }
+
+    /**
+     * @internal
+     * @param string $param
+     * @return \DOMElement
+     */
+    private function createIns($param)
+    {
+        $ins = $this->nodeCreator->createElement('ins');
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            $ins->setAttribute('style', 'color: green; text-decoration: underline;');
+        }
+        if ($this->insCallback) {
+            call_user_func($this->insCallback, $ins, $param);
+        }
+        return $ins;
+    }
+
+    /**
+     * @internal
+     * @param string $param
+     * @return \DOMElement
+     */
+    private function createDel($param)
+    {
+        $ins = $this->nodeCreator->createElement('del');
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            $ins->setAttribute('style', 'color: red; text-decoration: line-through;');
+        }
+        if ($this->delCallback) {
+            call_user_func($this->delCallback, $ins, $param);
+        }
+        return $ins;
+    }
+
+    /**
+     * @param \DOMElement $element
+     * @param string $param
+     */
+    private function addInsStyles(\DOMElement $element, $param)
+    {
+        static::nodeAddClass($element, 'inserted');
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            $element->setAttribute('style', 'color: green; text-decoration: underline;');
+        }
+        if ($this->insCallback) {
+            call_user_func($this->insCallback, $element, $param);
+        }
+    }
+
+    /**
+     * @param \DOMElement $element
+     * @param string $param
+     */
+    private function addDelStyles(\DOMElement $element, $param)
+    {
+        static::nodeAddClass($element, 'deleted');
+        if ($this->formatting == static::FORMATTING_INLINE) {
+            $element->setAttribute('style', 'color: red; text-decoration: line-through;');
+        }
+        if ($this->delCallback) {
+            call_user_func($this->delCallback, $element, $param);
+        }
     }
 
     /**
@@ -80,7 +199,10 @@ class DiffRenderer
         if (is_a($node, \DOMElement::class)) {
             /** @var \DOMElement $node */
             $newNode = $this->nodeCreator->createElement($node->nodeName);
-            // @TODO Attributes
+            foreach ($node->attributes as $key => $val) {
+                $val = $node->getAttribute($key);
+                $newNode->setAttribute($key, $val);
+            }
             foreach ($node->childNodes as $child) {
                 $newNode->appendChild($this->cloneNode($child));
             }
@@ -106,14 +228,14 @@ class DiffRenderer
         $lastIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
         $lastIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
         while ($text != '') {
-            if ($inIns) {
+            if ($inIns !== false) {
                 $split = preg_split('/###INS_END###/siu', $text, 2);
                 if ($split[0] != '') {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
                     if ($lastIsIns) {
                         $lastEl->appendChild($newText);
                     } else {
-                        $newNode = $this->nodeCreator->createElement('ins');
+                        $newNode = $this->createIns($inIns);
                         $newNode->appendChild($newText);
                         $nodes[] = $newNode;
                     }
@@ -124,14 +246,14 @@ class DiffRenderer
                 } else {
                     $text = '';
                 }
-            } elseif ($inDel) {
+            } elseif ($inDel !== false) {
                 $split = preg_split('/###DEL_END###/siu', $text, 2);
                 if ($split[0] != '') {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
                     if ($lastIsDel) {
                         $lastEl->appendChild($newText);
                     } else {
-                        $newNode = $this->nodeCreator->createElement('del');
+                        $newNode = $this->createDel($inDel);
                         $newNode->appendChild($newText);
                         $nodes[] = $newNode;
                     }
@@ -143,17 +265,17 @@ class DiffRenderer
                     $text = '';
                 }
             } else {
-                $split = preg_split('/(###(?:INS|DEL)_START###)/siu', $text, 2, PREG_SPLIT_DELIM_CAPTURE);
-                if (count($split) == 3) {
+                $split = preg_split('/(###(?:INS|DEL)_START([^#]{0,20})###)/siu', $text, 2, PREG_SPLIT_DELIM_CAPTURE);
+                if (count($split) == 4) {
                     if ($split[0] != '') {
                         $newText = $this->nodeCreator->createTextNode($split[0]);
                         $nodes[] = $newText;
                     }
-                    $text = $split[2];
-                    if ($split[1] == '###INS_START###') {
-                        $inIns = true;
-                    } elseif ($split[1] == '###DEL_START###') {
-                        $inDel = true;
+                    $text = $split[3];
+                    if (preg_match(static::INS_START_MATCH, $split[1])) {
+                        $inIns = $split[2];
+                    } elseif (preg_match(static::DEL_START_MATCH, $split[1])) {
+                        $inDel = $split[2];
                     }
                 } else {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
@@ -161,7 +283,7 @@ class DiffRenderer
                     $text    = '';
                 }
             }
-            $lastEl = null;
+            $lastEl    = null;
             $lastIsIns = $lastIsDel = false;
         }
         return [$nodes, $inIns, $inDel];
@@ -175,42 +297,42 @@ class DiffRenderer
      */
     protected function renderHtmlWithPlaceholdersIntElement(\DOMElement $child, &$newChildren, &$inIns, &$inDel)
     {
-        if ($inIns && static::nodeContainsText($child, static::INS_END)) {
-            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child);
+        if ($inIns !== false && static::nodeContainsText($child, static::INS_END)) {
+            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInIns($child, $inIns);
             $newChildren = array_merge($newChildren, $currNewChildren);
-        } elseif ($inDel && static::nodeContainsText($child, static::DEL_END)) {
-            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child);
+        } elseif ($inDel !== false && static::nodeContainsText($child, static::DEL_END)) {
+            list($currNewChildren, $inIns, $inDel) = $this->renderHtmlWithPlaceholdersIntInDel($child, $inDel);
             $newChildren = array_merge($newChildren, $currNewChildren);
-        } elseif ($inIns) {
+        } elseif ($inIns !== false) {
             /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
             if ($prevIsIns && static::nodeCanBeAttachedToDelIns($child)) {
                 $lastEl->appendChild(static::cloneNode($child));
             } elseif (static::nodeCanBeAttachedToDelIns($child)) {
-                $delNode = $this->nodeCreator->createElement('ins');
+                $delNode = $this->createIns($inIns);
                 $delNode->appendChild(static::cloneNode($child));
                 $newChildren[] = $delNode;
             } else {
                 /** @var \DOMElement $clone */
                 $clone = static::cloneNode($child);
-                static::nodeAddClass($clone, 'inserted');
+                $this->addInsStyles($clone, $inIns);
                 $newChildren[] = $clone;
             }
-        } elseif ($inDel) {
+        } elseif ($inDel !== false) {
             /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
             $prevIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
             if ($prevIsDel && static::nodeCanBeAttachedToDelIns($child)) {
                 $lastEl->appendChild(static::cloneNode($child));
             } elseif (static::nodeCanBeAttachedToDelIns($child)) {
-                $delNode = $this->nodeCreator->createElement('del');
+                $delNode = $this->createDel($inDel);
                 $delNode->appendChild(static::cloneNode($child));
                 $newChildren[] = $delNode;
             } else {
                 /** @var \DOMElement $clone */
                 $clone = static::cloneNode($child);
-                static::nodeAddClass($clone, 'deleted');
+                $this->addDelStyles($clone, $inDel);
                 $newChildren[] = $clone;
             }
         } else {
@@ -221,15 +343,15 @@ class DiffRenderer
 
     /**
      * @param \DOMNode $dom
+     * @param bool|string $inIns
      * @return array
      */
-    protected function renderHtmlWithPlaceholdersIntInIns($dom)
+    protected function renderHtmlWithPlaceholdersIntInIns($dom, $inIns)
     {
         if (!static::nodeContainsText($dom, static::INS_END)) {
-            return [[$this->cloneNode($dom)], true, false];
+            return [[$this->cloneNode($dom)], $inIns, false];
         }
 
-        $inIns       = true;
         $inDel       = false;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
@@ -253,16 +375,16 @@ class DiffRenderer
 
     /**
      * @param \DOMNode $dom
+     * @param bool|string $inDel
      * @return array
      */
-    protected function renderHtmlWithPlaceholdersIntInDel($dom)
+    protected function renderHtmlWithPlaceholdersIntInDel($dom, $inDel)
     {
         if (!static::nodeContainsText($dom, static::DEL_END)) {
-            return [[$this->cloneNode($dom)], false, true];
+            return [[$this->cloneNode($dom)], false, $inDel];
         }
 
         $inIns       = false;
-        $inDel       = true;
         $newChildren = [];
         foreach ($dom->childNodes as $child) {
             if (is_a($child, \DOMText::class)) {
@@ -289,7 +411,7 @@ class DiffRenderer
      */
     protected function renderHtmlWithPlaceholdersIntNormal($dom)
     {
-        if (!static::nodeContainsText($dom, static::INS_START) && !static::nodeContainsText($dom, static::DEL_START)) {
+        if (!static::nodeStartInsDel($dom)) {
             return [[$this->cloneNode($dom)], false, false];
         }
         $inIns       = $inDel = false;
@@ -328,5 +450,69 @@ class DiffRenderer
             $str .= HTMLTools::renderDomToHtml($child);
         }
         return $str;
+    }
+
+    /**
+     * @param string $line
+     * @return false|int
+     */
+    public static function paragraphContainsDiff($line)
+    {
+        $firstDiffs = [];
+        if (preg_match('/(<ins( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+            // Workaround: PREG_OFFSET_CAPTURE ignores utf-8
+            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
+            $firstDiffs[] = $pos;
+        }
+        if (preg_match('/(<del( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
+            $firstDiffs[] = $pos;
+        }
+        if (preg_match('/(<[^>]+[ "]inserted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
+            $firstDiffs[] = $pos;
+        }
+        if (preg_match('/(<[^>]+[ "]deleted[ "][^>]*>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
+            $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
+            $firstDiffs[] = $pos;
+        }
+        if (count($firstDiffs) == 0) {
+            return false;
+        }
+        return min($firstDiffs);
+    }
+
+    /**
+     * @param string $diff
+     * @param Amendment[] $amendmentsById
+     * @return string
+     */
+    public static function renderForInlineDiff($diff, $amendmentsById)
+    {
+        $renderer = new DiffRenderer();
+        $renderer->setInsCallback(function ($node, $params) use ($amendmentsById) {
+            /** @var \DOMElement $node */
+            $params    = explode('-', $params);
+            $amendment = $amendmentsById[$params[1]];
+            foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
+                $node->setAttribute($key, $val);
+            }
+            $classes = explode(' ', $node->getAttribute('class'));
+            $classes = array_merge($classes, ['ice-ins', 'ice-cts', 'appendHint']);
+            $node->setAttribute('class', implode(' ', $classes));
+
+        });
+        $renderer->setDelCallback(function ($node, $params) use ($amendmentsById) {
+            /** @var \DOMElement $node */
+            $params    = explode('-', $params);
+            $amendment = $amendmentsById[$params[1]];
+            foreach ($amendment->getInlineChangeData($params[0]) as $key => $val) {
+                $node->setAttribute($key, $val);
+            }
+            $classes = explode(' ', $node->getAttribute('class'));
+            $classes = array_merge($classes, ['ice-del', 'ice-cts', 'appendHint']);
+            $node->setAttribute('class', implode(' ', $classes));
+        });
+        return $renderer->renderHtmlWithPlaceholders($diff);
     }
 }

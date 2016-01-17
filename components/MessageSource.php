@@ -85,7 +85,8 @@ class MessageSource extends \yii\i18n\MessageSource
         };
         if ($language == 'en') {
             return [
-                'en-ukcongress' => 'Conference (UK)',
+                'en-uk'       => 'English (UK)',
+                'en-congress' => 'Convention',
             ];
         }
         return [];
@@ -172,18 +173,23 @@ class MessageSource extends \yii\i18n\MessageSource
             $baseFile = $this->getMessageFilePath($category, $language);
             return $this->loadMessagesFromFile($baseFile);
         };
-        $parts = explode('-', $consultation->wordingBase);
+        $languages = explode(',', $consultation->wordingBase);
 
-        $baseFile     = $this->getMessageFilePath($category, $parts[0]);
-        $baseMessages = $this->loadMessagesFromFile($baseFile);
-        if (!is_array($baseMessages)) {
-            $baseMessages = [];
-        }
+        $baseMessages = $extMessages = [];
+        foreach ($languages as $lang) {
+            $parts = explode('-', $lang);
 
-        $extFile     = $this->getMessageFilePath($category, $consultation->wordingBase);
-        $extMessages = $this->loadMessagesFromFile($extFile);
-        if (!is_array($extMessages)) {
-            $extMessages = [];
+            $baseFile     = $this->getMessageFilePath($category, $parts[0]);
+            $messages     = $this->loadMessagesFromFile($baseFile);
+            if ($messages) {
+                $baseMessages = array_merge($baseMessages, $messages);
+            }
+
+            $extFile     = $this->getMessageFilePath($category, $lang);
+            $messages    = $this->loadMessagesFromFile($extFile);
+            if ($messages) {
+                $extMessages = array_merge($extMessages, $messages);
+            }
         }
 
         $conSpecific = [];

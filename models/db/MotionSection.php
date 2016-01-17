@@ -128,12 +128,12 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return \string[]
+     * @return \string[][]
      * @throws Internal
      */
-    public function getTextParagraphs()
+    public function getTextParagraphLines()
     {
-        $cached = $this->getCacheItem('getTextParagraphs');
+        $cached = $this->getCacheItem('getTextParagraphLines');
         if ($cached !== null) {
             return $cached;
         }
@@ -141,9 +141,15 @@ class MotionSection extends IMotionSection
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
-        $obj = HTMLTools::sectionSimpleHTML($this->data);
-        $this->setCacheItem('getTextParagraphs', $obj);
-        return $obj;
+        $lineLength = $this->getConsultation()->getSettings()->lineLength;
+        $paragraphs = HTMLTools::sectionSimpleHTML($this->data);
+        $paragraphsLines = [];
+        foreach ($paragraphs as $paraNo => $paragraph) {
+            $lines = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
+            $paragraphsLines[$paraNo] = $lines;
+        }
+        $this->setCacheItem('getTextParagraphLines', $paragraphsLines);
+        return $paragraphsLines;
     }
 
     /**
@@ -169,15 +175,12 @@ class MotionSection extends IMotionSection
         }
         /** @var MotionSectionParagraph[] $return */
         $return = [];
-        $paras  = $this->getTextParagraphs();
+        $paras  = $this->getTextParagraphLines();
         foreach ($paras as $paraNo => $para) {
-            $lineLength = $this->getConsultation()->getSettings()->lineLength;
-            $linesOut   = LineSplitter::motionPara2lines($para, $lineNumbers, $lineLength);
-
             $paragraph              = new MotionSectionParagraph();
             $paragraph->paragraphNo = $paraNo;
-            $paragraph->lines       = $linesOut;
-            $paragraph->origStr     = $para;
+            $paragraph->lines       = $para;
+            $paragraph->origStr     = str_replace('###LINENUMBER###', '', implode('', $para));
 
             if ($includeAmendment) {
                 $paragraph->amendmentSections = [];
@@ -206,7 +209,8 @@ class MotionSection extends IMotionSection
                 if (!$amSec) {
                     continue;
                 }
-                $amParagraphs = $amSec->diffToOrigParagraphs($paras);
+                $paragraphs = HTMLTools::sectionSimpleHTML($this->data);
+                $amParagraphs = $amSec->diffToOrigParagraphs($paragraphs);
                 foreach ($amParagraphs as $amParagraph) {
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
                 }
@@ -229,11 +233,9 @@ class MotionSection extends IMotionSection
     public function getTextWithLineNumberPlaceholders()
     {
         $return = '';
-        $paras  = $this->getTextParagraphs();
+        $paras  = $this->getTextParagraphLines();
         foreach ($paras as $para) {
-            $lineLength = $this->getConsultation()->getSettings()->lineLength;
-            $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
-            $return .= implode('', $linesOut) . "\n";
+            $return .= implode('', $para) . "\n";
         }
         $return = trim($return);
         return $return;
@@ -257,11 +259,9 @@ class MotionSection extends IMotionSection
         }
 
         $num   = 0;
-        $paras = $this->getTextParagraphs();
+        $paras = $this->getTextParagraphLines();
         foreach ($paras as $para) {
-            $lineLength = $this->getConsultation()->getSettings()->lineLength;
-            $linesOut   = LineSplitter::motionPara2lines($para, true, $lineLength);
-            $num += count($linesOut);
+            $num += count($para);
         }
         $this->setCacheItem('getNumberOfCountableLines', $num);
         return $num;

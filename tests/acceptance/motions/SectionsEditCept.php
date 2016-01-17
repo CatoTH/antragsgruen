@@ -51,6 +51,7 @@ $I->fillField('.sectionnew0 .sectionTitle input', 'Some tabular data');
 $I->fillField('.sectionnew0 .tabularDataRow ul li.no0 input', 'Testrow');
 $I->fillField('.sectionnew0 .tabularDataRow ul li.no1 input', 'Testrow 2');
 $I->fillField('.sectionnew0 .tabularDataRow ul li.no2 input', 'Testrow 3');
+$I->selectOption('.sectionnew0 .positionRow input', "1");
 
 $I->wantTo('rearrange the tabular data section');
 
@@ -74,7 +75,7 @@ $newCss = '.section' . AcceptanceTester::FIRST_FREE_MOTION_SECTION;
 $I->seeElement($newCss);
 $I->seeInField($newCss . ' .sectionTitle input', 'Some tabular data');
 $I->seeInField($newCss . ' .tabularDataRow ul li.no1 input', 'Testrow 3');
-
+$I->seeOptionIsSelected($newCss . ' .positionRow input', "1");
 
 
 $I->wantTo('change the tabular data afterwards');

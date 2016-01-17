@@ -2,14 +2,11 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\diff\AmendmentDiffMerger;
 use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\Diff;
-use app\components\diff\Engine;
+use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
-use app\components\LineSplitter;
 use app\components\opendocument\Text;
 use app\components\UrlHelper;
 use app\controllers\Base;
@@ -39,7 +36,7 @@ class TextSimple extends ISectionType
     public function getAmendmentFormField()
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
-        $fixedWidth                                 = $this->section->getSettings()->fixedWidth;
+        $fixedWidth                           = $this->section->getSettings()->fixedWidth;
         if ($this->section->getSettings()->motionType->amendmentMultipleParagraphs) {
             return $this->getTextAmendmentFormField(false, $this->section->dataRaw, $fixedWidth);
         } else {
@@ -61,7 +58,7 @@ class TextSimple extends ISectionType
         $amParas          = $moParas;
         $changedParagraph = -1;
         if (!$amSection->isNewRecord) {
-            foreach ($amSection->diffToOrigParagraphs($moParas) as $paraNo => $para) {
+            foreach ($amSection->diffToOrigParagraphs($moParas, false) as $paraNo => $para) {
                 $amParas[$paraNo] = $para->strDiff;
                 $changedParagraph = $paraNo;
             }
@@ -90,7 +87,7 @@ class TextSimple extends ISectionType
             if ($fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
-            $str .= '" data-track-changed="1" id="' . $htmlId . '_wysiwyg" ' .
+            $str .= '" data-track-changed="1" data-no-strike="1" id="' . $htmlId . '_wysiwyg" ' .
                 'title="' . Html::encode($type->title) . '">';
             $str .= $amParas[$paraNo];
             $str .= '</div>';
@@ -144,6 +141,7 @@ class TextSimple extends ISectionType
     /**
      * @param bool $isRight
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getSimple($isRight)
     {
@@ -179,16 +177,20 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_INLINE);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
         if (count($diffGroups) == 0) {
             return '';
         }
 
-        $str       = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
-        $firstLine = $section->getFirstLineNumber();
-        $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
-        $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
+        $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str .= TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
         return $str;
     }
 
@@ -199,8 +201,15 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+        $firstLine  = $section->getFirstLineNumber();
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
         if (count($diffGroups) == 0) {
             return '';
         }
@@ -213,10 +222,8 @@ class TextSimple extends ISectionType
             $wrapStart .= ' fixedWidthFont';
         }
         $wrapStart .= '">';
-        $wrapEnd   = '</div></section>';
-        $firstLine = $section->getFirstLineNumber();
-        $html      = TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
-        $str .= str_replace('###FORCELINEBREAK###', '<br>', $html);
+        $wrapEnd = '</div></section>';
+        $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
         $str .= '</div>';
         $str .= '</section>';
 
@@ -258,7 +265,6 @@ class TextSimple extends ISectionType
                 $linesArr = [];
                 foreach ($paragraph->lines as $line) {
                     $line       = str_replace('###LINENUMBER###', '', $line);
-                    $line       = str_replace('###FORCELINEBREAK###', '', $line);
                     $linesArr[] = $line . '';
                 }
 
@@ -279,11 +285,12 @@ class TextSimple extends ISectionType
                 $pdf->Ln(7);
             }
         } else {
-            $paras = $section->getTextParagraphs();
+            $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
-                $y = $pdf->getY();
+                $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $y    = $pdf->getY();
                 $pdf->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
-                $pdf->writeHTMLCell(173, '', 24, '', $para, 0, 1, 0, true, '', true);
+                $pdf->writeHTMLCell(173, '', 24, '', $html, 0, 1, 0, true, '', true);
 
                 $pdf->Ln(7);
             }
@@ -297,10 +304,15 @@ class TextSimple extends ISectionType
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
     {
         /** @var AmendmentSection $section */
-        $section = $this->section;
+        $section    = $this->section;
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_INLINE);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
 
         if (count($diffGroups) > 0) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
@@ -309,7 +321,12 @@ class TextSimple extends ISectionType
             }
 
             $html = static::formatDiffGroup($diffGroups);
-            $html = str_replace('###FORCELINEBREAK###', '<br>', $html);
+            $replaces = [];
+            $replaces['<ins '] = '<span ';
+            $replaces['</ins>'] = '</span>';
+            $replaces['<del '] = '<span ';
+            $replaces['</del>'] = '</span>';
+            $html = str_replace(array_keys($replaces), array_values($replaces), $html);
 
             $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         }
@@ -320,15 +337,13 @@ class TextSimple extends ISectionType
      * @param Base $controller
      * @param CommentForm $commentForm
      * @param int[] $openedComments
-     * @param bool $consolidatedAmendments
      * @return string
      */
-    public function showMotionView(Base $controller, $commentForm, $openedComments, $consolidatedAmendments)
+    public function showMotionView(Base $controller, $commentForm, $openedComments)
     {
         $view   = new View();
-        $script = ($consolidatedAmendments ? 'showSimpleTextSectionInline' : 'showSimpleTextSection');
         return $view->render(
-            '@app/views/motion/' . $script,
+            '@app/views/motion/showSimpleTextSection',
             [
                 'section'        => $this->section,
                 'openedComments' => $openedComments,
@@ -358,11 +373,23 @@ class TextSimple extends ISectionType
         $out = '';
         foreach ($diffGroups as $diff) {
             $text      = $diff['text'];
-            $hasInsert = (mb_strpos($text, '<ins>') !== false || mb_strpos($text, 'class="inserted"') !== false);
-            $hasDelete = (mb_strpos($text, '<del>') !== false || mb_strpos($text, 'class="deleted"') !== false);
+            $hasInsert = $hasDelete = false;
+            if (mb_strpos($text, 'class="inserted"') !== false) {
+                $hasInsert = true;
+            }
+            if (mb_strpos($text, 'class="deleted"') !== false) {
+                $hasDelete = true;
+            }
+            if (preg_match('/<ins( [^>]*)?>/siu', $text)) {
+                $hasInsert = true;
+            }
+            if (preg_match('/<del( [^>]*)?>/siu', $text)) {
+                $hasDelete = true;
+            }
             $out .= $wrapStart;
             $out .= '<h4 class="lineSummary">';
-            if ($diff['newLine']) {
+            $isInsertedLine = (mb_strpos($diff['text'], '###LINENUMBER###') === false);
+            if ($isInsertedLine) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
                     $out .= \Yii::t('diff', 'after_line');
                 } elseif ($hasDelete) {
@@ -403,17 +430,16 @@ class TextSimple extends ISectionType
         }
 
         $strSpaceDel   = '<del class="space">[' . \Yii::t('diff', 'space') . ']</del>';
-        $strNewlineDel = '<del class="space">[' . \Yii::t('diff', 'newline') . ']</del><del>###FORCELINEBREAK###</del>';
+        $strNewlineDel = '<del class="space">[' . \Yii::t('diff', 'newline') . ']</del>';
         $strSpaceIns   = '<ins class="space">[' . \Yii::t('diff', 'space') . ']</ins>';
-        $strNewlineIns = '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins><ins>###FORCELINEBREAK###</ins>';
+        $strNewlineIns = '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins>';
         $out           = str_replace('<del> </del>', $strSpaceDel, $out);
         $out           = str_replace('<ins> </ins>', $strSpaceIns, $out);
-        $out           = str_replace('<del>###FORCELINEBREAK###</del>', $strNewlineDel, $out);
-        $out           = str_replace('<ins>###FORCELINEBREAK###</ins>', $strNewlineIns, $out);
+        $out           = str_replace('<del><br></del>', $strNewlineDel . '<del><br></del>', $out);
+        $out           = str_replace('<ins><br></ins>', $strNewlineIns . '<ins><br></ins>', $out);
         $out           = str_replace($strSpaceDel . $strNewlineIns, $strNewlineIns, $out);
-        $out           = str_replace($strSpaceDel . '###FORCELINEBREAK###' . $strNewlineIns, '<br>' . $strNewlineIns, $out);
         $out           = str_replace($strSpaceDel . '<ins></ins><br>', '<br>', $out);
-        $out           = str_replace('###FORCELINEBREAK###', '<br>', $out);
+        $out           = str_replace('###LINENUMBER###', '', $out);
         $repl          = '<br></p></div>';
         if (mb_substr($out, mb_strlen($out) - mb_strlen($repl), mb_strlen($repl)) == $repl) {
             $out = mb_substr($out, 0, mb_strlen($out) - mb_strlen($repl)) . '</p></div>';
@@ -444,11 +470,11 @@ class TextSimple extends ISectionType
     public static function getMotionLinesToTeX($lines)
     {
         $str = implode('###LINEBREAK###', $lines);
-        $str = str_replace('###FORCELINEBREAK######LINEBREAK###', '###FORCELINEBREAK###', $str);
+        $str = str_replace('<br>###LINEBREAK###', '###LINEBREAK###', $str);
+        $str = str_replace('<br>' . "\n" . '###LINEBREAK###', '###LINEBREAK###', $str);
         $str = Exporter::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
-        $str = str_replace('###FORCELINEBREAK###\linebreak', '\newline', $str);
         return $str;
     }
 
@@ -489,10 +515,10 @@ class TextSimple extends ISectionType
                 $tex .= "\n\\nolinenumbers\n";
             }
         } else {
-            $paras = $section->getTextParagraphs();
+            $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
-                $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
-                $tex .= static::getMotionLinesToTeX($lines) . "\n";
+                $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $tex .= static::getMotionLinesToTeX([$html]) . "\n";
             }
         }
         if ($isRight) {
@@ -512,10 +538,15 @@ class TextSimple extends ISectionType
         $tex = '';
 
         /** @var AmendmentSection $section */
-        $section = $this->section;
+        $section    = $this->section;
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
 
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->getSettings()->title);
@@ -551,12 +582,18 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
-        $diff       = static::formatDiffGroup($diffGroups);
-        $diff       = str_replace('<h4', '<br><h4', $diff);
-        $diff       = str_replace('</h4>', '</h4><br>', $diff);
-        $diff       = str_replace('###FORCELINEBREAK###', '<br>', $diff);
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+        $diff = static::formatDiffGroup($diffGroups);
+        $diff = str_replace('<h4', '<br><h4', $diff);
+        $diff = str_replace('</h4>', '</h4><br>', $diff);
         if (mb_substr($diff, 0, 4) == '<br>') {
             $diff = mb_substr($diff, 4);
         }
@@ -579,8 +616,11 @@ class TextSimple extends ISectionType
             $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
                 $html = implode('<br>', $paragraph->lines);
+                /* Modifications for BDK @TODO
+                $html = implode('', $paragraph->lines);
+                $html = preg_replace('/' . '<br>\\s*' . '/siu', '<br>', $html);
+                */
                 $html = str_replace('###LINENUMBER###', '', $html);
-                $html = str_replace('###FORCELINEBREAK###', '', $html);
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';
                 }
@@ -588,10 +628,10 @@ class TextSimple extends ISectionType
                 $odt->addHtmlTextBlock($html, true);
             }
         } else {
-            $paras = $section->getTextParagraphs();
+            $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
-                $lines = LineSplitter::motionPara2lines($para, false, PHP_INT_MAX);
-                $odt->addHtmlTextBlock(implode('<br>', $lines), false);
+                $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $odt->addHtmlTextBlock($html, false);
             }
         }
     }
@@ -604,8 +644,15 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $formatter  = new AmendmentSectionFormatter($section, \app\components\diff\Diff::FORMATTING_CLASSES);
-        $diffGroups = $formatter->getGroupedDiffLinesWithNumbers();
+        $firstLine  = $section->getFirstLineNumber();
+        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
         if (count($diffGroups) == 0) {
             return;
         }
@@ -614,7 +661,6 @@ class TextSimple extends ISectionType
 
         $firstLine = $section->getFirstLineNumber();
         $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
-        $html      = str_replace('###FORCELINEBREAK###', '<br>', $html);
 
         $odt->addHtmlTextBlock($html, false);
     }
@@ -653,6 +699,7 @@ class TextSimple extends ISectionType
         $out = '';
         foreach (array_keys($paragraphs) as $paragraphNo) {
             $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
+            $paragraphText   = '';
             foreach ($groupedParaData as $part) {
                 $text = $part['text'];
 
@@ -663,67 +710,50 @@ class TextSimple extends ISectionType
                         $changeset[$amendment->id] = [];
                     }
                     $changeset[$amendment->id][] = $cid;
-                    $changeData                  = $amendment->getLiteChangeData($cid);
 
-                    $text = str_replace('<ins>', '<ins class="ice-ins ice-cts appendHint"' . $changeData . '>', $text);
-                    $text = str_replace('<del>', '<del class="ice-del ice-cts appendHint"' . $changeData . '>', $text);
+                    $mid  = $cid . '-' . $amendment->id;
+                    $text = str_replace('###INS_START###', '###INS_START' . $mid . '###', $text);
+                    $text = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $text);
                 }
 
-                $out .= $text;
+                $paragraphText .= $text;
             }
+
+            $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
-            foreach ($colliding as $amendmentId => $paraText) {
+            foreach ($colliding as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                $text      = '<p><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
-                $text .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
-                $text .= '</strong></p>';
+                $out .= '<section class="collidingParagraph"';
+                $out .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
+                $out .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
+                $out .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
+                $out .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
+                $out .= '</strong></p>';
+                $paragraphText = '';
 
-                foreach ($paraText as $group) {
-                    if ($group[1] == Engine::UNMODIFIED) {
-                        $text .= $group[0];
-                    } elseif ($group[1] == Engine::INSERTED) {
-                        $cid                       = static::$CHANGESET_COUNTER++;
-                        $changeset[$amendmentId][] = $cid;
-                        $changeData                = $amendment->getLiteChangeData($cid);
-                        $insText                   = '<ins>' . $group[0] . '</ins>';
-                        $insText                   = AmendmentDiffMerger::cleanupParagraphData($insText);
-                        $insHtml                   = '<ins class="ice-ins ice-cts appendHint"' . $changeData . '">';
-                        $text .= str_replace('<ins>', $insHtml, $insText);
-                    } elseif ($group[1] == Engine::DELETED) {
-                        $cid                       = static::$CHANGESET_COUNTER++;
-                        $changeset[$amendmentId][] = $cid;
-                        $changeData                = $amendment->getLiteChangeData($cid);
-                        $delText                   = '<del>' . $group[0] . '</del>';
-                        $delText                   = AmendmentDiffMerger::cleanupParagraphData($delText);
-                        $delHtml                   = '<del class="ice-del ice-cts appendHint"' . $changeData . '">';
-                        $text .= str_replace('<del>', $delHtml, $delText);
+                foreach ($paraData as $part) {
+                    $text = $part['text'];
+
+                    if ($part['amendment'] > 0) {
+                        $amendment = $amendmentsById[$part['amendment']];
+                        $cid       = static::$CHANGESET_COUNTER++;
+                        if (!isset($changeset[$amendment->id])) {
+                            $changeset[$amendment->id] = [];
+                        }
+                        $changeset[$amendment->id][] = $cid;
+
+                        $mid  = $cid . '-' . $amendment->id;
+                        $text = str_replace('###INS_START###', '###INS_START' . $mid . '###', $text);
+                        $text = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $text);
                     }
+
+                    $paragraphText .= $text;
                 }
-                $out .= $text;
+                $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
+                $out .= '</section>';
             }
         }
-
-        $out = str_replace('</ul><ul>', '', $out);
-        /*
-        $out = preg_replace_callback('/<li>(.*)<\/li>/siuU', function ($matches) {
-            $inner  = $matches[1];
-            $last6  = mb_substr($inner, mb_strlen($inner) - 6);
-            $numIns = mb_substr_count($inner, '<ins');
-            $numDel = mb_substr_count($inner, '<del');
-            if (mb_stripos($inner, '<ins') === 0 && $last6 == '</ins>' && $numIns == 1 && $numDel == 0) {
-                $ret = str_replace('</ins>', '', $matches[0]);
-                $ret = str_replace('<li><ins', '<li', $ret);
-                return $ret;
-            } elseif (mb_stripos($inner, '<del') === 0 && $last6 == '</del>' && $numIns == 0 && $numDel == 1) {
-                $ret = str_replace('</del>', '', $matches[0]);
-                $ret = str_replace('<li><del', '<li', $ret);
-                return $ret;
-            } else {
-                return $matches[0];
-            }
-        }, $out);
-        */
 
         return $out;
     }

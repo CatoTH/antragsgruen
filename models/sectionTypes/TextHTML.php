@@ -38,7 +38,7 @@ class TextHTML extends ISectionType
     public function setMotionData($data)
     {
         $this->section->dataRaw = $data;
-        $this->section->data    = HTMLTools::cleanUntrustedHtml($data);
+        $this->section->data    = HTMLTools::correctHtmlErrors($data);
     }
 
 
@@ -50,7 +50,7 @@ class TextHTML extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section          = $this->section;
-        $section->data    = HTMLTools::cleanUntrustedHtml($data['consolidated']);
+        $section->data    = HTMLTools::correctHtmlErrors($data['consolidated']);
         $section->dataRaw = $data['raw'];
     }
 

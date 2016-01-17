@@ -50,7 +50,7 @@ class Base extends Controller
     {
         \yii::$app->response->headers->add('X-Xss-Protection', '1');
         \yii::$app->response->headers->add('X-Content-Type-Options', 'nosniff');
-        \yii::$app->response->headers->add('X-Frame-Options', 'deny');
+        \yii::$app->response->headers->add('X-Frame-Options', 'sameorigin');
         if (parent::beforeAction($action)) {
             $params = \Yii::$app->request->resolve();
             /** @var AntragsgruenApp $appParams */

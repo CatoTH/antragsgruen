@@ -328,6 +328,11 @@ class ManagerController extends Base
 
         if (isset($_POST['save'])) {
             $form->setAttributes($_POST);
+            if (isset($_POST['sqlPassword']) && $_POST['sqlPassword'] != '') {
+                $form->sqlPassword = $_POST['sqlPassword'];
+            } elseif (isset($_POST['sqlPasswordNone'])) {
+                $form->sqlPassword = '';
+            }
             $form->sqlCreateTables = isset($_POST['sqlCreateTables']);
             $form->prettyUrls      = isset($_POST['prettyUrls']);
 
@@ -395,6 +400,11 @@ class ManagerController extends Base
 
         $form = new AntragsgruenInitForm($configFile);
         $form->setAttributes($_POST);
+        if (isset($_POST['sqlPassword']) && $_POST['sqlPassword'] != '') {
+            $form->sqlPassword = $_POST['sqlPassword'];
+        } elseif (isset($_POST['sqlPasswordNone'])) {
+            $form->sqlPassword = '';
+        }
 
         try {
             $success = $form->verifyDBConnection(true);

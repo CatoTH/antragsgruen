@@ -50,8 +50,10 @@ class AmendmentController extends Base
             return '';
         }
 
+        $filename = rawurlencode($amendment->getFilenameBase(false) . '.pdf');
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
         if ($this->getParams()->xelatexPath) {
             return $this->renderPartial('pdf_tex', ['amendment' => $amendment]);
@@ -98,8 +100,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $filename = rawurlencode(\Yii::t('export', 'filename_amendments') . '_' . $amendment->titlePrefix . '.odt');
-
+        $filename = rawurlencode($amendment->getFilenameBase(false) . '.odt');
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
@@ -212,20 +213,7 @@ class AmendmentController extends Base
                 $amendment->onPublish();
             } else {
                 if ($amendment->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $initiator = $amendment->getInitiators();
-                    if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                        try {
-                            Tools::sendWithLog(
-                                EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                                $this->site,
-                                trim($initiator[0]->contactEmail),
-                                null,
-                                \Yii::t('amend', 'submitted_screening_email_subject'),
-                                str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'submitted_screening_email'))
-                            );
-                        } catch (MailNotSent $e) {
-                        }
-                    }
+                    $amendment->sendSubmissionConfirmMail();
                 }
             }
 

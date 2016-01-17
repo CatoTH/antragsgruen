@@ -5,6 +5,7 @@ namespace app\models\sitePresets;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\initiatorForms\IInitiatorForm;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularDataType;
@@ -29,6 +30,7 @@ trait ApplicationTrait
         $type->policySupport               = IPolicy::POLICY_NOBODY;
         $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
+        $type->initiatorForm               = IInitiatorForm::ONLY_INITIATOR;
         $type->amendmentMultipleParagraphs = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->layoutTwoCols               = 1;
@@ -54,6 +56,7 @@ trait ApplicationTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
+        $section->positionRight = 0;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -68,6 +71,7 @@ trait ApplicationTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
+        $section->positionRight = 1;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -82,6 +86,7 @@ trait ApplicationTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
+        $section->positionRight = 1;
         $section->data          = json_encode(
             [
                 'maxRowId' => 2,
@@ -124,6 +129,22 @@ trait ApplicationTrait
         $section->lineNumbers   = 0;
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
+        $section->positionRight = 0;
+        $section->save();
+
+        $section                = new ConsultationSettingsMotionSection();
+        $section->motionTypeId  = $motionType->id;
+        $section->type          = ISectionType::TYPE_IMAGE;
+        $section->position      = 4;
+        $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
+        $section->title         = \Yii::t('structure', 'preset_app_signature');
+        $section->required      = 1;
+        $section->maxLen        = 0;
+        $section->fixedWidth    = 0;
+        $section->lineNumbers   = 0;
+        $section->hasComments   = 0;
+        $section->hasAmendments = 0;
+        $section->positionRight = 0;
         $section->save();
     }
 }

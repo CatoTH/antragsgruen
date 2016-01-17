@@ -4,11 +4,11 @@ return [
     'amendment'                         => 'Änderungsantrag',
     'amendments'                        => 'Änderungsanträge',
     'motion'                            => 'Antrag',
-    'initiator'                         => 'AntragstellerIn',
-    'initiators_title'                  => 'Antragsteller_Innen',
-    'supporter'                         => 'UnterstützerIn',
-    'supporters'                        => 'UnterstützerInnen',
-    'supporters_title'                  => 'Unterstützer_Innen',
+    'initiator'                         => 'Antragsteller*in',
+    'initiators_title'                  => 'Antragsteller*innen',
+    'supporter'                         => 'Unterstützer*in',
+    'supporters'                        => 'Unterstützer*innen',
+    'supporters_title'                  => 'Unterstützer*innen',
     'supporter_you'                     => 'Du!',
     'supporter_none'                    => 'keine',
     'status'                            => 'Status',
@@ -53,8 +53,6 @@ return [
     'merge_colliding'                   => 'Kollidierender Änderungsantrag',
     'merge_accept_all'                  => 'Alle Änderungen übernehmen',
     'merge_reject_all'                  => 'Alle Änderungen ablehnen',
-    'merge_track_deactivate'            => 'Änderungsmodus deaktivieren',
-    'merge_track_deactivated'           => 'Änderungsmodus deaktiviert',
     'merge_explanation'                 => 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. ' .
         'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - klicke dazu einfach mit der rechten Maustaste auf die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>' .
         'Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>' .

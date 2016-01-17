@@ -35,7 +35,9 @@ class LayoutHelper
             }
             $admin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
-                $name .= '<br><small>' . \Yii::t('initiator', 'contact_only_admion') . ': ';
+                $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
+                $name .= \Yii::t('initiator', 'contact_show') . '</a>';
+                $name .= '<div class="contactDetails hidden">' . \Yii::t('initiator', 'contact_only_admin') . ': ';
                 if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
                     if ($supp->name != '') {
                         $name .= Html::encode($supp->name) . ', ';
@@ -57,7 +59,7 @@ class LayoutHelper
                 if ($supp->contactPhone != '') {
                     $name .= \Yii::t('initiator', 'phone') . ': ' . Html::encode($supp->contactPhone);
                 }
-                $name .= '</small>';
+                $name .= '</div>';
             }
             $inits[] = $name;
         }
@@ -184,16 +186,16 @@ class LayoutHelper
                 <label for="' . $formIdPre . '_name" class="control-label col-sm-3">' . \Yii::t('comment', 'name') .
                 ':</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control col-sm-9" id="' . $formIdPre . '_name"
-                        name="comment[name]" value="' . Html::encode($form->name) . '" required>
+                    <input type="text" class="form-control col-sm-9" id="' . $formIdPre . '_name" ' .
+                        'name="comment[name]" value="' . Html::encode($form->name) . '" required autocomplete="name">
                 </div>
             </div>
             <div class="form-group">
                 <label for="' . $formIdPre . '_email" class="control-label col-sm-3">' . \Yii::t('comment', 'email') .
                 ':</label>
                 <div class="col-sm-9">
-                    <input type="email" class="form-control" id="' . $formIdPre . '_email"
-                    name="comment[email]" value="' . Html::encode($form->email) . '"';
+                    <input type="email" class="form-control" id="' . $formIdPre . '_email" autocomplete="email" ' .
+                    'name="comment[email]" value="' . Html::encode($form->email) . '"';
             if ($consultation->getSettings()->commentNeedsEmail) {
                 echo ' required';
             }

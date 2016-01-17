@@ -65,7 +65,8 @@ if ($hasCollidingParagraphs) {
 }
 $explanation = str_replace('###NEWPREFIX###', $motion->getNewTitlePrefix(), $explanation);
 echo '<div class="alert alert-info alert-dismissible" role="alert">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' .
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' .
+    '<span aria-hidden="true">&times;</span></button>' .
     $explanation . '</div>';
 
 
@@ -79,7 +80,7 @@ echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
 echo '</div>';
 
 
-echo Html::beginForm('', 'post', ['class' => 'motionMergeForm fuelux']);
+echo Html::beginForm('', 'post', ['class' => 'motionMergeForm fuelux', 'enctype' => 'multipart/form-data']);
 
 
 echo '<section class="newMotion">
@@ -104,7 +105,11 @@ foreach ($motion->getSortedSections(false) as $section) {
             'title="' . Html::encode($type->title) . '"></textarea>';
         echo '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
             'title="' . Html::encode($type->title) . '"></textarea>';
-        echo '<div class="texteditor boxed" data-track-changed="1" data-track-changed-tooltips="1" ' .
+        echo '<div class="texteditor boxed ICE-Tracking';
+        if ($section->getSettings()->fixedWidth) {
+            echo ' fixedWidthFont';
+        }
+        echo '" data-allow-diff-formattings="1" ' .
             'id="' . $htmlId . '_wysiwyg" title="">';
 
         if (isset($newSections[$section->sectionId])) {
@@ -120,10 +125,7 @@ foreach ($motion->getSortedSections(false) as $section) {
             \Yii::t('amend', 'merge_accept_all') . '</button> ';
         echo '<button type="button" class="rejectAllChanges btn btn-small btn-default">' .
             \Yii::t('amend', 'merge_reject_all') . '</button>';
-        echo '<button type="button" class="deactivateTracking btn btn-small btn-default" style="float:right;">' .
-            \Yii::t('amend', 'merge_track_deactivate') . '</button>';
         echo '</div>';
-        echo '<div class="mergeTrackingDisabled hidden">' . \Yii::t('amend', 'merge_track_deactivated') . '</div>';
 
         echo '</div>';
     } else {

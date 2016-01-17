@@ -15,7 +15,8 @@ class Tools
      * @param string $toEmail
      * @param null|int $toPersonId
      * @param string $subject
-     * @param string $text
+     * @param string $textPlain
+     * @param string $textHtml
      * @param null|array $noLogReplaces
      * @throws MailNotSent
      */
@@ -25,7 +26,8 @@ class Tools
         $toEmail,
         $toPersonId,
         $subject,
-        $text,
+        $textPlain,
+        $textHtml = '',
         $noLogReplaces = null
     )
     {
@@ -36,11 +38,16 @@ class Tools
             throw new MailNotSent('E-Mail not configured');
         }
 
-        $sendText = ($noLogReplaces ? str_replace(
+        $sendTextPlain = ($noLogReplaces ? str_replace(
             array_keys($noLogReplaces),
             array_values($noLogReplaces),
-            $text
-        ) : $text);
+            $textPlain
+        ) : $textPlain);
+        $sendTextHtml = ($noLogReplaces ? str_replace(
+            array_keys($noLogReplaces),
+            array_values($noLogReplaces),
+            $textHtml
+        ) : $textHtml);
 
         $fromEmail = $params->mailFromEmail;
         $fromName  = $params->mailFromName;
@@ -66,8 +73,8 @@ class Tools
             $message = $mailer->createMessage(
                 $mailType,
                 $subject,
-                $sendText,
-                '',
+                $sendTextPlain,
+                $sendTextHtml,
                 $fromName,
                 $fromEmail,
                 $replyTo,
@@ -90,7 +97,7 @@ class Tools
         $obj->type      = $mailType;
         $obj->fromEmail = mb_encode_mimeheader($fromName) . ' <' . $fromEmail . '>';
         $obj->subject   = $subject;
-        $obj->text      = $text;
+        $obj->text      = $textPlain;
         $obj->dateSent  = date('Y-m-d H:i:s');
         $obj->status    = $status;
         $obj->messageId = $messageId;

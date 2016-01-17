@@ -5,14 +5,15 @@ return [
     'section_html'    => 'Text (erweitert)',
     'section_image'   => 'Bild',
     'section_tabular' => 'Tabellarische Angaben',
+    'section_pdf'     => 'PDF-Datei',
 
     'policy_deadline_over'    => 'Der Antragsschluss ist vorbei',
-    'policy_ww_title'         => 'Wurzelwerk-NutzerInnen',
-    'policy_ww_desc'          => 'Wurzelwerk-NutzerInnen',
-    'policy_ww_motion_denied' => 'Nur Wurzelwerk-NutzerInnen dürfen Anträge anlegen.',
-    'policy_ww_amend_denied'  => 'Nur Wurzelwerk-NutzerInnen dürfen Änderungsanträge anlegen.',
-    'policy_ww_comm_denied'   => 'Nur Wurzelwerk-NutzerInnen dürfen kommentieren',
-    'policy_ww_supp_denied'   => 'Nur Wurzelwerk-NutzerInnen dürfen unterstützen',
+    'policy_ww_title'         => 'Wurzelwerk-Nutzer*innen',
+    'policy_ww_desc'          => 'Wurzelwerk-Nutzer*innen',
+    'policy_ww_motion_denied' => 'Nur Wurzelwerk-Nutzer*innen dürfen Anträge anlegen.',
+    'policy_ww_amend_denied'  => 'Nur Wurzelwerk-Nutzer*innen dürfen Änderungsanträge anlegen.',
+    'policy_ww_comm_denied'   => 'Nur Wurzelwerk-Nutzer*innen dürfen kommentieren',
+    'policy_ww_supp_denied'   => 'Nur Wurzelwerk-Nutzer*innen dürfen unterstützen',
 
     'policy_admin_title'         => 'Admins',
     'policy_admin_desc'          => 'Admins',
@@ -31,10 +32,10 @@ return [
 
     'policy_logged_title'           => 'Eingeloggte',
     'policy_logged_desc'            => 'Eingeloggte',
-    'policy_specuser_motion_denied' => 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Anträge stellen.',
-    'policy_specuser_amend_denied'  => 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Änderungsanträge stellen.',
-    'policy_specuser_supp_denied'   => 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Anträge unterstützen.',
-    'policy_specuser_comm_denied'   => 'Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Kommentare schreiben.',
+    'policy_specuser_motion_denied' => 'Nur von den Administrator*innen explizit zugelassene Benutzer*innen können Anträge stellen.',
+    'policy_specuser_amend_denied'  => 'Nur von den Administrator*innen explizit zugelassene Benutzer*innen können Änderungsanträge stellen.',
+    'policy_specuser_supp_denied'   => 'Nur von den Administrator*innen explizit zugelassene Benutzer*innen können Anträge unterstützen.',
+    'policy_specuser_comm_denied'   => 'Nur von den Administrator*innen explizit zugelassene Benutzer*innen können Kommentare schreiben.',
     'policy_logged_motion_denied'   => 'Du musst dich einloggen, um Anträge stellen zu können.',
     'policy_logged_amend_denied'    => 'Du musst dich einloggen, um Änderungsanträge stellen zu können.',
     'policy_logged_supp_denied'     => 'Du musst dich einloggen, um Anträge unterstützen zu können.',
@@ -69,6 +70,7 @@ return [
     'preset_app_name'      => 'Name',
     'preset_app_photo'     => 'Foto',
     'preset_app_data'      => 'Angaben',
+    'preset_app_signature' => 'Unterschrift (eingescannt)',
     'preset_app_age'       => 'Alter',
     'preset_app_gender'    => 'Geschlecht',
     'preset_app_birthcity' => 'Geburtsort',
@@ -106,4 +108,8 @@ return [
     'STATUS_PAUSED'               => 'Pausiert',
     'STATUS_MISSING_INFORMATION'  => 'Informationen fehlen',
     'STATUS_DISMISSED'            => 'Nicht zugelassen',
+
+    'section_comment_none'  => 'Keine Kommentare',
+    'section_comment_motion' => 'Abschnitt als ganzes kommentierbar',
+    'section_comment_paragraph' => 'Einzelne Absätze sind kommentierbar'
 ];

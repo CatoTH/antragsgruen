@@ -21,8 +21,8 @@ $I->seeInField('#typeTitleSingular', 'Bewerbung');
 $I->seeInField('#typeTitlePlural', 'Bewerbungen');
 $I->seeInField('#typeCreateTitle', 'Bewirb dich!');
 $I->seeInField('#typeMotionPrefix', 'B');
-$I->seeInField('.section29 .sectionTitle input', 'Name');
-$I->seeInField('.section30 .sectionTitle input', 'Foto');
+$I->seeInField('.section30 .sectionTitle input', 'Name');
+$I->seeInField('.section31 .sectionTitle input', 'Foto');
 
 
 
@@ -42,8 +42,8 @@ $I->seeInField('#typeTitleSingular', 'Abc1');
 $I->seeInField('#typeTitlePlural', 'Abc2');
 $I->seeInField('#typeCreateTitle', 'Abc3');
 $I->seeInField('#typeMotionPrefix', 'C');
-$I->seeInField('.section33 .sectionTitle input', 'Name');
-$I->seeInField('.section34 .sectionTitle input', 'Foto');
+$I->seeInField('.section35 .sectionTitle input', 'Name');
+$I->seeInField('.section36 .sectionTitle input', 'Foto');
 
 
 $I->wantTo('check if I can see the new types');

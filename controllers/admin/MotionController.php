@@ -2,13 +2,11 @@
 
 namespace app\controllers\admin;
 
-use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
-use app\models\db\MotionSection;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
@@ -313,6 +311,8 @@ class MotionController extends AdminBase
         \yii::$app->response->headers->add('Content-Type', $excelMime);
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        error_reporting(E_ALL & ~E_DEPRECATED); // PHPExcel ./. PHP 7
 
         $motions = [];
         foreach ($this->consultation->getVisibleMotionsSorted() as $motion) {

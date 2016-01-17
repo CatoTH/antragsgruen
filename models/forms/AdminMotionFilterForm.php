@@ -151,7 +151,12 @@ class AdminMotionFilterForm extends Model
             /** @var Amendment $motion2 */
             $title2 = $motion2->getMyMotion()->title;
         }
-        return strnatcasecmp($title1, $title2);
+        $cmp = strnatcasecmp($title1, $title2);
+        if ($cmp == 0) {
+            return ($motion1->id < $motion2->id ? 1 : -1);
+        } else {
+            return $cmp;
+        }
     }
 
     /**
@@ -188,7 +193,12 @@ class AdminMotionFilterForm extends Model
     {
         $init1 = $motion1->getInitiatorsStr();
         $init2 = $motion2->getInitiatorsStr();
-        return strnatcasecmp($init1, $init2);
+        $cmp   = strnatcasecmp($init1, $init2);
+        if ($cmp == 0) {
+            return $this->sortTitlePrefix($motion1, $motion2);
+        } else {
+            return $cmp;
+        }
     }
 
     /**
@@ -225,8 +235,55 @@ class AdminMotionFilterForm extends Model
         } elseif ($tag2 === null) {
             return -1;
         } else {
-            return strnatcasecmp($tag1->title, $tag2->title);
+            $cmp = strnatcasecmp($tag1->title, $tag2->title);
+            if ($cmp == 0) {
+                return $this->sortTitlePrefix($motion1, $motion2);
+            } else {
+                return $cmp;
+            }
         }
+    }
+
+    /**
+     * @param IMotion[] $entries
+     */
+    public function moveAmendmentsToMotions($entries)
+    {
+        $foundMotions = [];
+        foreach ($entries as $entry) {
+            if (is_a($entry, Motion::class)) {
+                $foundMotions[] = $entry->id;
+            }
+        }
+        /** @var IMotion[] $newArr1 */
+        $newArr1 = [];
+        /** @var Amendment[] $movingAmendments */
+        $movingAmendments = [];
+        foreach ($entries as $entry) {
+            if (is_a($entry, Amendment::class)) {
+                /** @var Amendment $entry */
+                if (in_array($entry->motionId, $foundMotions)) {
+                    $movingAmendments[] = $entry;
+                } else {
+                    $newArr1[] = $entry;
+                }
+            } else {
+                $newArr1[] = $entry;
+            }
+        }
+        /** @var IMotion[] $result */
+        $result = [];
+        foreach ($newArr1 as $entry) {
+            $result[] = $entry;
+            if (is_a($entry, Motion::class)) {
+                foreach ($movingAmendments as $amendment) {
+                    if ($amendment->motionId == $entry->id) {
+                        $result[] = $amendment;
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
     /**
@@ -254,6 +311,9 @@ class AdminMotionFilterForm extends Model
             case static::SORT_TYPE:
             default:
                 usort($merge, [static::class, 'sortDefault']);
+        }
+        if (!in_array($this->sort, [static::SORT_STATUS, static::SORT_INITIATOR, static::SORT_TAG])) {
+            $merge = $this->moveAmendmentsToMotions($merge);
         }
         return $merge;
     }

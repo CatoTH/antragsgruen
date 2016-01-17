@@ -9,6 +9,7 @@ use app\models\sectionTypes\TabularData;
 use app\models\sectionTypes\TextHTML;
 use app\models\sectionTypes\TextSimple;
 use app\models\sectionTypes\Title;
+use app\models\sectionTypes\PDF;
 use yii\db\ActiveRecord;
 
 /**
@@ -43,6 +44,8 @@ abstract class IMotionSection extends ActiveRecord
                 return new Image($this);
             case ISectionType::TYPE_TABULAR:
                 return new TabularData($this);
+            case ISectionType::TYPE_PDF:
+                return new PDF($this);
         }
         throw new Internal('Unknown Field Type: ' . $this->getSettings()->type);
     }
@@ -67,6 +70,6 @@ abstract class IMotionSection extends ActiveRecord
      */
     public function isLayoutRight()
     {
-        return in_array($this->getSettings()->type, [ISectionType::TYPE_IMAGE, ISectionType::TYPE_TABULAR]);
+        return ($this->getSettings()->positionRight == 1);
     }
 }

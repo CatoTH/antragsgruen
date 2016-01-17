@@ -29,16 +29,20 @@ if (mb_strpos($title, 'Antragsgrün') === false) {
 
 $minimalistic   = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 $controllerBase = ($controller->consultation ? 'consultation/' : 'manager/');
-$lang           = Yii::$app->language;
 
 $this->beginPage();
 
 
 echo '<!DOCTYPE HTML>
-<html lang="' . Html::encode($lang) . '">
+<html lang="' . Html::encode($layout->getHTMLLanguageCode()) . '"';
+if ($controller->consultation) {
+    echo ' data-lang-variant="' . Html::encode($controller->consultation->wordingBase) . '"';
+}
+echo '>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">' . "\n";
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="' . Html::encode(\Yii::t('base', 'html_meta')) . '">' . "\n";
 echo '<title>' . Html::encode($title) . '</title>' . "\n";
 echo Html::csrfMetaTags();
 
@@ -64,10 +68,10 @@ foreach ($layout->extraCss as $file) {
 echo '<link rel="stylesheet" href="' . $layout->resourceUrl('css/' . $layout->mainCssFile . '.css') . '">' . "\n";
 
 echo '<!--[if lt IE 9]>
-    <script src="' . $layout->resourceUrl('js/jquery-1.11.3.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/jquery-1.12.0.min.js') . '"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
-    <script src="' . $layout->resourceUrl('js/bower/jquery/dist/jquery.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/jquery-2.2.0.min.js') . '"></script>
     <!--<![endif]-->
 
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">
@@ -208,16 +212,21 @@ if (\Yii::$app->language == 'de') {
 
 echo '</span>
         </div>
-    </footer>
+    </footer>';
 
-    <script src="' . $layout->resourceUrl('js/bootstrap.js') . '"></script>
+$jsLang = $layout->getJSLanguageCode();
+if (defined('YII_DEBUG') && YII_DEBUG) {
+    echo '<script src="' . $layout->resourceUrl('js/bootstrap.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/bower/bootbox/bootbox.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/scrollintoview.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/jquery.isonscreen.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/bower/intl/dist/Intl.min.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/antragsgruen-de.js') . '"></script>
     <script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>
-';
+    <script src="' . $layout->resourceUrl('js/antragsgruen-' . $jsLang . '.js') . '"></script>';
+} else {
+    echo '<script src="' . $layout->resourceUrl('js/build/antragsgruen.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js') . '"></script>';
+}
 
 foreach ($layout->extraJs as $file) {
     echo '<script src="' . $layout->resourceUrl($file) . '"></script>' . "\n";
@@ -226,8 +235,31 @@ foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
 
+/** @var \app\models\settings\AntragsgruenApp $params */
+$params = \Yii::$app->params;
 
 $this->endBody();
-echo '</body></html>';
+echo '
+<script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "url": "' . Html::encode($params->domainPlain) . '",
+      "logo": "' . Html::encode($params->domainPlain) . 'img/logo.png"
+    }
+</script>
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Organization",
+  "name" : "Antragsgrün",
+  "url" : "' . Html::encode($params->domainPlain) . '",
+  "sameAs" : [
+    "https://www.facebook.com/Antragsgruen",
+    "https://twitter.com/Antragsgruen"
+  ]
+}
+</script>
+</body></html>';
 
 $this->endPage();

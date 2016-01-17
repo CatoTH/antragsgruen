@@ -15,7 +15,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
   ('m151104_092212_motion_type_deletable', 1445802530),
   ('m151104_132242_site_consultation_date_creation', 1445802530),
   ('m151106_083636_site_properties', 1446801672),
-  ('m151106_183055_motion_type_two_cols', 1446834722);
+  ('m151106_183055_motion_type_two_cols', 1446834722),
+  ('m160114_200337_motion_section_is_right', 1452801905);
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;

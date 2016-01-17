@@ -316,7 +316,15 @@ $renderSection = function (ConsultationSettingsMotionSection $section) {
     echo 'value="' . Html::encode($section->title) . '" required placeholder="Titel" class="form-control">';
     echo '</label>';
 
-    echo '</div><div class="bottomrow"><div class="assignmentRow">';
+    echo '</div><div class="bottomrow"><div class="positionRow">';
+
+    echo '<div>' . \Yii::t('admin', 'motion_type_pos') . '</div>';
+    echo '<label class="positionSection">';
+    echo Html::radio($sectionName . '[positionRight]', ($section->positionRight != 1), ['value' => 0]);
+    echo ' ' . \Yii::t('admin', 'motion_type_pos_left') . '</label><br>';
+    echo '<label class="positionSection">';
+    echo Html::radio($sectionName . '[positionRight]', ($section->positionRight == 1), ['value' => 1]);
+    echo ' ' . \Yii::t('admin', 'motion_type_pos_right') . '</label><br>';
 
     echo '</div><div class="optionsRow">';
 
