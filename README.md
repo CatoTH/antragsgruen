@@ -16,7 +16,7 @@ Required Software (Debian Linux)
 --------------------------------
 ```bash
 # Using PHP7-packages from [DotDeb](https://www.dotdeb.org/instructions/):
-apt-get install apt-get install php7.0 php7.0-cli php7.0-fpm php7.0-intl php7.0-json php7.0-mcrypt php7.0-mysql php7.0-opcache
+apt-get install apt-get install php7.0 php7.0-cli php7.0-fpm php7.0-intl php7.0-json php7.0-mcrypt php7.0-mysql php7.0-opcache php7.0-curl
 
 # Using PHP5-packages from Debian:
 apt-get install php5-cli php5-fpm php5-mysqlnd php5-mcrypt php5-intl php5-curl
