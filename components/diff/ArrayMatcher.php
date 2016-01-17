@@ -47,6 +47,16 @@ class ArrayMatcher
         if (count($toMatchArr) == 0) {
             return [$emptyArray($spaceToFill)];
         }
+        if ($spaceToFill > 10) {
+            // @TODO Find a better solution for this
+            // As the number of variants grows exponentially with the number of elements to fill, we need
+            // a fallback for this kind of situation. Better a suboptimal solution than a broken site.
+            // Thus usually happens when a lot of paragraphs are deleted or inserted.
+            for ($i = 0; $i < $spaceToFill; $i++) {
+                $toMatchArr[] = '###EMPTYINSERTED###';
+            }
+            return [$toMatchArr];
+        }
         $variants = [];
         for ($trailingSpaces = 0; $trailingSpaces <= $spaceToFill; $trailingSpaces++) {
             $tmpMatchArr  = $toMatchArr;
@@ -113,6 +123,8 @@ class ArrayMatcher
     }
 
     /**
+     * $referenceArr is guaranteed to always have more elements than $toMatchArr
+     *
      * @internal
      * @param string[] $referenceArr
      * @param string[] $toMatchArr
