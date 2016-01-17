@@ -15,7 +15,7 @@ It's a complete rewrite of the second generation and has some major advantages:
 Required Software (Debian Linux)
 --------------------------------
 ```bash
-apt-get install php5-cli php5-fpm php5-mysqlnd php5-mcrypt php5-intl php5-curl
+apt-get install apt-get install php7.0 php7.0-cli php7.0-fpm php7.0-intl php7.0-json php7.0-mcrypt php7.0-mysql php7.0-opcache
 ```
 
 Optional, for LaTeX/XeTeX-based PDFs:
