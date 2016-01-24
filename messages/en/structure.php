@@ -114,4 +114,9 @@ return [
     'section_comment_none'      => 'No comments',
     'section_comment_motion'    => 'Comment the whole motion as one',
     'section_comment_paragraph' => 'Comment single paragraphs',
+
+    'home_layout_std'             => 'Standard',
+    'home_layout_tags'            => 'Tabular, grouped by tags',
+    'home_layout_agenda'          => 'Agenda',
+    'home_layout_agenda_long'     => 'Agenda (many motions)',
 ];

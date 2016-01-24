@@ -320,13 +320,13 @@ class TextSimple extends ISectionType
                 $pdf->ln(7);
             }
 
-            $html = static::formatDiffGroup($diffGroups);
-            $replaces = [];
-            $replaces['<ins '] = '<span ';
+            $html               = static::formatDiffGroup($diffGroups);
+            $replaces           = [];
+            $replaces['<ins ']  = '<span ';
             $replaces['</ins>'] = '</span>';
-            $replaces['<del '] = '<span ';
+            $replaces['<del ']  = '<span ';
             $replaces['</del>'] = '</span>';
-            $html = str_replace(array_keys($replaces), array_values($replaces), $html);
+            $html               = str_replace(array_keys($replaces), array_values($replaces), $html);
 
             $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         }
@@ -341,7 +341,7 @@ class TextSimple extends ISectionType
      */
     public function showMotionView(Base $controller, $commentForm, $openedComments)
     {
-        $view   = new View();
+        $view = new View();
         return $view->render(
             '@app/views/motion/showSimpleTextSection',
             [
@@ -611,15 +611,12 @@ class TextSimple extends ISectionType
         }
         $section = $this->section;
         /** @var MotionSection $section */
+        $lineNumbers = $section->getMotion()->getMyConsultation()->getSettings()->odtExportHasLineNumers;
         $odt->addHtmlTextBlock('<h2>' . Html::encode($section->getSettings()->title) . '</h2>', false);
-        if ($section->getSettings()->lineNumbers) {
+        if ($section->getSettings()->lineNumbers && $lineNumbers) {
             $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
                 $html = implode('<br>', $paragraph->lines);
-                /* Modifications for BDK @TODO
-                $html = implode('', $paragraph->lines);
-                $html = preg_replace('/' . '<br>\\s*' . '/siu', '<br>', $html);
-                */
                 $html = str_replace('###LINENUMBER###', '', $html);
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';

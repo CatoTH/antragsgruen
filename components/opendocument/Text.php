@@ -389,7 +389,6 @@ class Text extends Base
             }
         } else {
             $node->setAttribute('text:style-name', 'Antragsgrün_20_Standard');
-            return $this->nodeText->cloneNode();
         }
         return $node;
     }

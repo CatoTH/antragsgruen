@@ -32,11 +32,12 @@ class Consultation
     // SETTINGS WITHOUT TEST CASES
 
     /** @var bool */
-    public $minimalisticUI        = false;
-    public $commentsSupportable   = false;
-    public $screeningMotionsShown = false;
-    public $initiatorsMayReject   = false;
-    public $allowMultipleTags     = false;
+    public $minimalisticUI         = false;
+    public $commentsSupportable    = false;
+    public $screeningMotionsShown  = false;
+    public $initiatorsMayReject    = false;
+    public $allowMultipleTags      = false;
+    public $odtExportHasLineNumers = true;
 
     /** @var int */
     public $lineLength      = 80;
@@ -54,10 +55,10 @@ class Consultation
     public static function getStartLayouts()
     {
         return [
-            static::START_LAYOUT_STD         => 'Standard',
-            static::START_LAYOUT_TAGS        => 'Tabellarisch, gegliedert nach Schlagworten',
-            static::START_LAYOUT_AGENDA      => 'Tagesordnung',
-            static::START_LAYOUT_AGENDA_LONG => 'Tagesordnung (viele Anträge)',
+            static::START_LAYOUT_STD         => \Yii::t('structure', 'home_layout_std'),
+            static::START_LAYOUT_TAGS        => \Yii::t('structure', 'home_layout_tags'),
+            static::START_LAYOUT_AGENDA      => \Yii::t('structure', 'home_layout_agenda'),
+            static::START_LAYOUT_AGENDA_LONG => \Yii::t('structure', 'home_layout_agenda_long'),
         ];
     }
 

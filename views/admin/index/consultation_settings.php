@@ -208,6 +208,9 @@ echo '<strong>Freischaltung</strong> von Anträgen
 $description = 'Admins dürfen Antrags-Texte <strong>nachträglich ändern</strong>.';
 $booleanSettingRow($settings, 'adminsMayEdit', $handledSettings, $description);
 
+$description = '<strong>ODT-Export</strong>: Zeilennummern und feste Zeilenumbrüche';
+$booleanSettingRow($settings, 'odtExportHasLineNumers', $handledSettings, $description);
+
 $description = 'Antragsteller*innen dürfen Anträge <strong>nachträglich ändern</strong>.';
 $booleanSettingRow($settings, 'iniatorsMayEdit', $handledSettings, $description);
 
