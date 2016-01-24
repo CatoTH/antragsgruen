@@ -368,7 +368,7 @@ class ConsultationController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/json');
         $shariff = new \Heise\Shariff\Backend([
             'domain'   => $_SERVER['HTTP_HOST'],
-            'services' => ['Facebook', 'Twitter'],
+            'services' => ['Facebook'],
             'cache'    => [
                 'ttl'      => 60,
                 'cacheDir' => $this->getParams()->tmpDir,
