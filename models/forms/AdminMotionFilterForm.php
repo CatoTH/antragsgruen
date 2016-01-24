@@ -504,7 +504,7 @@ class AdminMotionFilterForm extends Model
         }
 
         $str .= '<div>';
-        $str .= '<label for="initiatorSelect" style="margin-bottom: 0;">AntragstellerInnen:</label><br>';
+        $str .= '<label for="initiatorSelect" style="margin-bottom: 0;">Antragsteller*innen:</label><br>';
 
         $values        = [];
         $initiatorList = $this->getInitiatorList();

@@ -78,7 +78,7 @@ $I->wantTo('add my test users to the list');
 
 $I->fillField('#emailText', '%LINK% / %ACCOUNT%');
 $I->submitForm('#accountsCreateForm', [], 'addUsers');
-$I->see('2 BenutzerInnen wurden eingetragen.', '.showManagedUsers');
+$I->see('2 Benutzer*innen wurden eingetragen.', '.showManagedUsers');
 $I->seeElement('#accountsEditForm');
 $I->seeElement('#accountsCreateForm');
 
@@ -89,7 +89,7 @@ $I->fillField('#emailAddresses', "testuser2@example.org");
 $I->fillField('#names', "Test user");
 $I->submitForm('#accountsCreateForm', [], 'addUsers');
 
-$I->see('Folgende BenutzerInnen hatten bereits Zugriff: testuser2@example.org', '.showManagedUsers');
+$I->see('Folgende Benutzer*innen hatten bereits Zugriff: testuser2@example.org', '.showManagedUsers');
 $I->see('testuser@example.org', '.accountListTable');
 
 $I->logout();

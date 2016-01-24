@@ -77,12 +77,12 @@ return [
     'siteacc_title'               => 'Access to this site',
         /*
     'siteacc_policywarning'       => '<h3>Hinweis:</h3>
-Die BenutzerInnenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
- von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte BenutzerInnen" gestellt werden. Aktuell ist
+Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
+ von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte Benutzer*innen" gestellt werden. Aktuell ist
  das nicht der Fall.<br>
  <br>
- Falls die nur für unten eingetragene BenutzerInnen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
- dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene BenutzerInnen
+ Falls die nur für unten eingetragene Benutzer*innen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
+ dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene Benutzer*innen
  Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:',
         */
     'siteacc_policy_login'        => 'Restrict to users',
@@ -113,9 +113,9 @@ Bye,
         /*
     'siteacc_acc_expl_mail'       => '<h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
-kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
+kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
 <br>
-Um BenutzerInnen anzulegen, gib weiter unten die E-Mail-Adressen der Mitglieder ein.
+Um Benutzer*innen anzulegen, gib weiter unten die E-Mail-Adressen der Mitglieder ein.
 Diese Mitglieder bekommen daraufhin eine Benachrichtigungs-E-Mail zugesandt.<br>
 Falls sie noch keinen eigenen Zugang auf Antragsgrün hatten, wird automatisch einer eingerichtet
 und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
@@ -123,11 +123,11 @@ und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
 <strong>%LINK%</strong> wird immer durch einen Link auf die Antragsgrün-Seite ersetzt.',
     'siteacc_acc_expl_nomail'     => '<h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
-kannst du hier die BenutzerInnen anlegen, die Zugriff haben sollen.<br>
+kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
 <br>
-Um BenutzerInnen anzulegen, gib weiter unten die E-Mail-Adressen, die Namen und die Passwörter der Mitglieder ein.
-Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>Passwörter</strong> hier selbst erzeugen, im Klartext eingeben und selbst an die NutzerInnen schicken.<br><br>' .
-        'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die NutzerInnen schicken kann.',
+Um Benutzer*innen anzulegen, gib weiter unten die E-Mail-Adressen, die Namen und die Passwörter der Mitglieder ein.
+Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>Passwörter</strong> hier selbst erzeugen, im Klartext eingeben und selbst an die Nutzer*innen schicken.<br><br>' .
+        'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die Nutzer*innen schicken kann.',
         */
     'siteacc_existing_users'      => 'Existing users',
     'siteacc_user_name'           => 'Name',

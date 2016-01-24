@@ -87,7 +87,7 @@ class LoginUsernamePasswordForm extends Model
             throw new Login($this->error);
         }
         if (!preg_match("/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/siu", $this->username)) {
-            $this->error = 'Bitte gib eine gültige E-Mail-Adresse als BenutzerInnenname ein.';
+            $this->error = 'Bitte gib eine gültige E-Mail-Adresse als Benutzer*innenname ein.';
             throw new Login($this->error);
         }
         if (strlen($this->password) < static::PASSWORD_MIN_LEN) {
@@ -215,13 +215,13 @@ class LoginUsernamePasswordForm extends Model
         }
 
         if (!in_array(SiteSettings::LOGIN_STD, $methods)) {
-            $this->error = 'Das Login mit BenutzerInnenname und Passwort ist bei dieser Veranstaltung nicht möglich.';
+            $this->error = 'Das Login mit Benutzer*innenname und Passwort ist bei dieser Veranstaltung nicht möglich.';
             throw new Login($this->error);
         }
         $candidates = $this->getCandidates($site);
 
         if (count($candidates) == 0) {
-            $this->error = 'BenutzerInnenname nicht gefunden.';
+            $this->error = 'Benutzer*innenname nicht gefunden.';
             throw new Login($this->error);
         }
         foreach ($candidates as $tryUser) {

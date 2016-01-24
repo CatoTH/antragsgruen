@@ -12,7 +12,7 @@ class WithSupporters extends DefaultFormBase
      */
     public static function getTitle()
     {
-        return 'Mit UnterstützerInnen';
+        return 'Mit Unterstützer*innen';
     }
 
     /** @var int */

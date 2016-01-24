@@ -85,9 +85,9 @@ $createPage->saveForm();
 
 $I->wait(1);
 $I->dontSee(mb_strtoupper('Antrag bestätigen'), 'h1');
-$I->see('Es müssen mindestens 2 UnterstützerInnen angegeben werden');
+$I->see('Es müssen mindestens 2 Unterstützer*innen angegeben werden');
 $I->acceptBootboxAlert();
-$I->dontSee('Es müssen mindestens 2 UnterstützerInnen angegeben werden');
+$I->dontSee('Es müssen mindestens 2 Unterstützer*innen angegeben werden');
 
 
 

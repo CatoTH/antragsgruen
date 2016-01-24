@@ -25,7 +25,7 @@ $I->wantTo('Create an account');
 $I->fillField(['id' => 'username'], 'non_existant@example.org');
 $I->fillField(['id' => 'passwordInput'], 'doesntmatter');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->see('BenutzerInnenname nicht gefunden.');
+$I->see('Benutzer*innenname nicht gefunden.');
 
 $I->cantSee('Passwort (Bestätigung):');
 $I->checkOption(['id' => 'createAccount']);

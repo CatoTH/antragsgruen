@@ -6,7 +6,7 @@ ANTRAGSGRUEN_STRINGS = {
         "draft_del": "Entwurf löschen",
         "draft_del_confirm": "Entwurf wirklich löschen?",
         "draft_restore_confirm": "Diesen Entwurf wiederherstellen?",
-        "min_x_supporter": "Es müssen mindestens %NUM% UnterstützerInnen angegeben werden.",
+        "min_x_supporter": "Es müssen mindestens %NUM% Unterstützer*innen angegeben werden.",
         "missing_resolution_date": "Es muss ein Beschlussdatum angegeben werden.",
         "pw_x_chars": "Das Passwort muss mindestens %NUM% Buchstaben haben.",
         "pw_no_match": 'Die beiden Passwörter stimmen nicht überein.'

@@ -14,6 +14,6 @@ echo '<h1>Kein Zugriff</h1>
 
 <div class="content">
     Dein Zugang ist für diese Seite nicht freigeschaltet. Falls du meinst, dass das ein Fehler ist,
-    wende dich bitte an die AdministratorInnen dieser Seite (Impressum).
+    wende dich bitte an die Administrator*innen dieser Seite (Impressum).
 </div>
 ';

@@ -17,4 +17,4 @@ $I->dontSee('Einstellungen', '.breadcrumb');
 $I->gotoConsultationHome();
 $I->loginAsStdUser();
 
-$I->see('BenutzerInnenname nicht gefunden.');
+$I->see('Benutzer*innenname nicht gefunden.');

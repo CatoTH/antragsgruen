@@ -141,7 +141,7 @@ if ($params->hasWurzelwerk) {
     echo Html::endForm();
     echo '<div id="loginWurzelwerkHint">
     <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://service.gruene.de/" umgeleitet,
-    die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-BenutzerInnenname/Passwort
+    die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-Benutzer*innenname/Passwort
     eingeben und bestätigen, dass deine E-Mail-Adresse an Antragsgrün übermittelt wird.
     Dein Wurzelwerk-Passwort bleibt geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
     <br><br>

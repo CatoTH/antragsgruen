@@ -17,7 +17,7 @@ $I->selectOption('#typePolicyComments', \app\models\policies\LoggedIn::getPolicy
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoStdAdminPage();
-$I->dontSee('Nur von den AdministratorInnen explizit zugelassene BenutzerInnen können Anträge stellen.');
+$I->dontSee('Nur von den Administrator*innen explizit zugelassene Benutzer*innen können Anträge stellen.');
 $I->see('Neu anlegen', '.motionTypeSection1');
 
 $I->gotoConsultationHome();

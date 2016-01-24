@@ -35,7 +35,7 @@ if ($email) {
 echo Html::beginForm(UrlHelper::createUrl($params), 'post', ['id' => 'confirmAccountForm']);
 
 echo '<div class="row"><div class="form-group col-md-6">
-    <label for="username">E-Mail-Adresse / BenutzerInnenname:</label>
+    <label for="username">E-Mail-Adresse / Benutzer*innenname:</label>
     <input type="text" value="' . Html::encode($email) . '" id="username" name="email" class="form-control" ';
 if ($email != '') {
     echo "disabled";

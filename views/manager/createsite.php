@@ -100,12 +100,12 @@ echo '</div></div><br>';
 
 echo '<label class="policy">';
 echo Html::checkbox('SiteCreateForm[hasComments]', $model->hasComments, ['class' => 'hasComments']);
-echo 'BenutzerInnen können (Änderungs-)Anträge kommentieren
+echo 'Benutzer*innen können (Änderungs-)Anträge kommentieren
 </label>';
 
 echo '<label class="policy">';
 echo Html::checkbox('SiteCreateForm[hasAmendments]', $model->hasAmendments, ['class' => 'hasAmendments']);
-echo 'BenutzerInnen können Änderungsanträge stellen
+echo 'Benutzer*innen können Änderungsanträge stellen
 </label>';
 
 echo '<label class="policy">';

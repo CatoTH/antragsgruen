@@ -46,7 +46,7 @@ return [
         ein Login ist auch nicht mehr möglich. Deine E-Mail-Adresse, Name, Passwort usw. werden damit aus unserem
         System gelöscht.<br>
         Eingebrachte (Änderungs-)Anträge bleiben aber erhalten. Um eingebrachte Anträge zu entfernen,
-        wende dich bitte an die AdministratorInnen der jeweiligen Unterseite.',
+        wende dich bitte an die Administrator*innen der jeweiligen Unterseite.',
     'del_confirm'               => 'Löschen bestätigen',
     'del_do'                    => 'Löschen',
     'noti_greeting'             => 'Hallo %NAME%,',
@@ -61,7 +61,7 @@ return [
     'noti_new_comment_title'    => '[Antragsgrün] Neuer Kommentar zu %TITLE%',
     'noti_new_comment_body'     => "Es wurde ein neuer Kommentar zu %TITLE% geschrieben:\n%LINK%",
     'acc_grant_email_title'     => 'Antragsgrün-Zugriff',
-    'acc_grant_email_userdata' => "E-Mail / BenutzerInnenname: %EMAIL%\nPasswort: %PASSWORD%",
+    'acc_grant_email_userdata' => "E-Mail / Benutzer*innenname: %EMAIL%\nPasswort: %PASSWORD%",
     */
 
 

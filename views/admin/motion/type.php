@@ -244,7 +244,7 @@ $curForm = $motionType->getMotionInitiatorFormClass();
 
 echo '<div class="form-group" id="typeMinSupportersRow">';
 echo '<label class="col-md-3 control-label" for="typeMinSupporters">';
-echo 'UnterstützerInnen';
+echo 'Unterstützer*innen';
 echo '</label><div class="col-md-2">';
 echo '<input type="number" name="initiator[minSupporters]" class="form-control" id="typeMinSupporters"';
 if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
@@ -259,7 +259,7 @@ echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
 if ($curForm->allowMoreSupporters()) {
     echo ' checked';
 }
-echo '> ' . 'Auch mehr UnterstützerInnen zulassen' . '
+echo '> ' . 'Auch mehr Unterstützer*innen zulassen' . '
     </label></div>';
 echo '</div>';
 

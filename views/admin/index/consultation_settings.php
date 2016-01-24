@@ -208,7 +208,7 @@ echo '<strong>Freischaltung</strong> von Anträgen
 $description = 'Admins dürfen Antrags-Texte <strong>nachträglich ändern</strong>.';
 $booleanSettingRow($settings, 'adminsMayEdit', $handledSettings, $description);
 
-$description = 'AntragstellerInnen dürfen Anträge <strong>nachträglich ändern</strong>.';
+$description = 'Antragsteller*innen dürfen Anträge <strong>nachträglich ändern</strong>.';
 $booleanSettingRow($settings, 'iniatorsMayEdit', $handledSettings, $description);
 
 

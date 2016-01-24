@@ -113,7 +113,7 @@ if (User::getCurrentUser()) {
     Wurzelwerk-Account ein.<br><br>
 <div class="form-group">
         <label for="wwoauth" style="vertical-align: top; margin-top: 5px;">
-            Wurzelwerk-BenutzerInnenname<br>
+            Wurzelwerk-Benutzer*innenname<br>
             <a href="https://netz.gruene.de/passwordForgotten.form" target="_blank" style="font-size: 0.8em;
             margin-top: -7px; display: inline-block; margin-bottom: 10px; font-weight: normal;">
                 Wurzelwerk-Zugangsdaten vergessen?</a>
@@ -123,9 +123,9 @@ if (User::getCurrentUser()) {
     <button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
 
     echo '<div class="privacyHint"><strong>Erklärung / Datenschutz:</strong><br>
-Du wirst, nachdem du hier deinen BenutzerInnenname eingegeben hast, auf eine "OpenID"-Seite umgeleitet, die vom
+Du wirst, nachdem du hier deinen Benutzer*innenname eingegeben hast, auf eine "OpenID"-Seite umgeleitet, die vom
 grünen Bundesverband betrieben wird (Adresse im Browser: https://service.gruene.de). Dort wirst du (ggf. auf
-englisch) aufgefordert, deinen Wurzelwerk-BenutzerInnenname und -Passwort einzugeben. Diese Seite bestätigt
+englisch) aufgefordert, deinen Wurzelwerk-Benutzer*innenname und -Passwort einzugeben. Diese Seite bestätigt
 gegenüber Antragsgrün, dass du Parteimitglied bist und leitet deinen Namen und E-Mail-Adresse weiter - nicht
 aber das Wurzelwerk-Passwort.</div>';
 

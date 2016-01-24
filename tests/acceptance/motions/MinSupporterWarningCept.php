@@ -17,7 +17,7 @@ $I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->fillField('#initiatorEmail', 'test@example.org');
 $I->submitForm('#motionEditForm', [], 'save');
 
-$I->seeBootboxDialog('Es müssen mindestens 19 UnterstützerInnen angegeben werden');
+$I->seeBootboxDialog('Es müssen mindestens 19 Unterstützer*innen angegeben werden');
 $I->acceptBootboxAlert();
 
 
@@ -33,6 +33,6 @@ $I->acceptBootboxAlert();
 $I->fillField('#resolutionDate', '01.01.2000');
 $I->submitForm('#motionEditForm', [], 'save');
 
-$I->dontSeeBootboxDialog('Es müssen mindestens 19 UnterstützerInnen angegeben werden');
+$I->dontSeeBootboxDialog('Es müssen mindestens 19 Unterstützer*innen angegeben werden');
 $I->dontSee('Not enough supporters.');
 $I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
