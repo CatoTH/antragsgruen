@@ -267,14 +267,13 @@ class Base extends Controller
     protected function showErrorpage($status, $message)
     {
         $this->layoutParams->robotsNoindex = true;
-        echo $this->render(
+        Yii::$app->response->statusCode = $status;
+        return $this->render(
             '@app/views/errors/error',
             [
                 "message" => $message
             ]
         );
-        Yii::$app->end($status);
-        return '';
     }
 
     /**
