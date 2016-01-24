@@ -268,12 +268,13 @@ class Base extends Controller
     {
         $this->layoutParams->robotsNoindex = true;
         Yii::$app->response->statusCode = $status;
-        return $this->render(
+        Yii::$app->response->content = $this->render(
             '@app/views/errors/error',
             [
                 "message" => $message
             ]
         );
+        Yii::$app->end();
     }
 
     /**
