@@ -7,6 +7,7 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Consultation;
+use app\models\db\ConsultationAgendaItem;
 use app\models\db\IMotion;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
@@ -24,8 +25,9 @@ class AdminMotionFilterForm extends Model
     const SORT_TAG          = 5;
 
     /** @var int */
-    public $status = null;
-    public $tag    = null;
+    public $status     = null;
+    public $tag        = null;
+    public $agendaItem = null;
 
     /** @var string */
     public $initiator = null;
@@ -77,8 +79,8 @@ class AdminMotionFilterForm extends Model
     public function rules()
     {
         return [
-            [['status', 'tag', 'sort'], 'number'],
-            [['status', 'tag', 'title', 'initiator'], 'safe'],
+            [['status', 'tag', 'sort', 'agendaItem'], 'number'],
+            [['status', 'tag', 'title', 'initiator', 'agendaItem'], 'safe'],
         ];
     }
 
@@ -246,6 +248,7 @@ class AdminMotionFilterForm extends Model
 
     /**
      * @param IMotion[] $entries
+     * @return IMotion[]
      */
     public function moveAmendmentsToMotions($entries)
     {
@@ -358,6 +361,18 @@ class AdminMotionFilterForm extends Model
     }
 
     /**
+     * @param Motion $motion
+     * @return bool
+     */
+    private function motionMatchesAgendaItem(Motion $motion)
+    {
+        if ($this->agendaItem === null || $this->agendaItem == 0) {
+            return true;
+        }
+        return ($motion->agendaItemId == $this->agendaItem);
+    }
+
+    /**
      * @return Motion[]
      */
     public function getFilteredMotions()
@@ -375,6 +390,10 @@ class AdminMotionFilterForm extends Model
             }
 
             if (!$this->motionMatchesInitiator($motion)) {
+                $matches = false;
+            }
+
+            if (!$this->motionMatchesAgendaItem($motion)) {
                 $matches = false;
             }
 
@@ -429,6 +448,17 @@ class AdminMotionFilterForm extends Model
         return false;
     }
 
+    /**
+     * @param Amendment $amendment
+     * @return bool
+     */
+    private function amendmentMatchesAgendaItem(Amendment $amendment)
+    {
+        if ($this->agendaItem === null || $this->agendaItem == 0) {
+            return true;
+        }
+        return ($amendment->getMyMotion()->agendaItemId == $this->agendaItem);
+    }
 
     /**
      * @return Amendment[]
@@ -451,7 +481,13 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
-            if ($this->title !== null && $this->title != '' && !mb_stripos($amend->getMyMotion()->title, $this->title)) {
+            if (!$this->amendmentMatchesAgendaItem($amend)) {
+                $matches = false;
+            }
+
+            if ($this->title !== null && $this->title != '' &&
+                !mb_stripos($amend->getMyMotion()->title, $this->title)
+            ) {
                 $matches = false;
             }
 
@@ -469,13 +505,13 @@ class AdminMotionFilterForm extends Model
     {
         $str = '';
 
-        $str .= '<label>Titel:<br>';
+        $str .= '<label>' . \Yii::t('admin', 'filter_title') . ':<br>';
         $title = Html::encode($this->title);
         $str .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
         $str .= '</label>';
 
-        $str .= '<label>Status:<br>';
-        $stati       = ['' => '- egal -'];
+        $str .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
+        $stati       = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getStatusList() as $statusId => $statusName) {
             $stati[$statusId] = $statusName;
@@ -493,9 +529,9 @@ class AdminMotionFilterForm extends Model
 
         $tagsList = $this->getTagList();
         if (count($tagsList) > 0) {
-            $name = 'Schlagwort:';
+            $name = \Yii::t('admin', 'filter_tag') . ':';
             $str .= '<label>' . $name . '<br>';
-            $tags = ['' => '- egal -'];
+            $tags = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
             }
@@ -503,8 +539,21 @@ class AdminMotionFilterForm extends Model
             $str .= '</label>';
         }
 
+        $agendaItemList = $this->getAgendaItemList();
+        if (count($agendaItemList) > 0) {
+            $name = \Yii::t('admin', 'filter_agenda_item') . ':';
+            $str .= '<label>' . $name . '<br>';
+            $items = ['' => \Yii::t('admin', 'filter_na')];
+            foreach ($agendaItemList as $itemId => $itemName) {
+                $items[$itemId] = $itemName;
+            }
+            $str .= HTMLTools::fueluxSelectbox('Search[agendaItem]', $items, $this->agendaItem);
+            $str .= '</label>';
+        }
+
         $str .= '<div>';
-        $str .= '<label for="initiatorSelect" style="margin-bottom: 0;">Antragsteller*innen:</label><br>';
+        $str .= '<label for="initiatorSelect" style="margin-bottom: 0;">' .
+            \Yii::t('admin', 'filter_initiator') . ':</label><br>';
 
         $values        = [];
         $initiatorList = $this->getInitiatorList();
@@ -513,7 +562,8 @@ class AdminMotionFilterForm extends Model
         }
 
         $str .= '<div>
-            <input id="initiatorSelect" class="typeahead form-control" type="text" placeholder="AntragstellerIn"
+            <input id="initiatorSelect" class="typeahead form-control" type="text"
+                placeholder="' . \Yii::t('admin', 'filter_initiator_name') . '"
                 name="Search[initiator]" value="' . Html::encode($this->initiator) . '"
                 data-values="' . Html::encode(json_encode($values)) . '"></div>';
         $str .= '</div>';
@@ -584,6 +634,21 @@ class AdminMotionFilterForm extends Model
     /**
      * @return array
      */
+    public function getAgendaItemList()
+    {
+        $agendaItems = [];
+        foreach ($this->consultation->agendaItems as $agendaItem) {
+            $num = count($agendaItem->motions);
+            if ($num > 0) {
+                $agendaItems[$agendaItem->id] = $agendaItem->title . ' (' . $num . ')';
+            }
+        }
+        return $agendaItems;
+    }
+
+    /**
+     * @return array
+     */
     public function getInitiatorList()
     {
         $initiators = [];
@@ -635,11 +700,12 @@ class AdminMotionFilterForm extends Model
     public function getCurrentUrl($baseUrl, $add = [])
     {
         return UrlHelper::createUrl(array_merge([$baseUrl], [
-            'Search[status]'    => $this->status,
-            'Search[tag]'       => $this->tag,
-            'Search[initiator]' => $this->initiator,
-            'Search[title]'     => $this->title,
-            'Search[sort]'      => $this->sort,
+            'Search[status]'     => $this->status,
+            'Search[tag]'        => $this->tag,
+            'Search[initiator]'  => $this->initiator,
+            'Search[title]'      => $this->title,
+            'Search[sort]'       => $this->sort,
+            'Search[agendaItem]' => $this->agendaItem,
         ], $add));
     }
 }
