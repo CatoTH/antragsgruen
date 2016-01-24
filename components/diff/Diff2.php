@@ -296,7 +296,8 @@ class Diff2
         $restInsC = mb_substr($restInsC, 0, mb_strlen($restInsC) - mb_strlen($postChars));
 
         if (mb_strlen($restDelC) <= 3 && mb_strlen($restInsC) <= 3) {
-            return $linenumber . $preWords . $preChars . $this->wrapWithDelete($restDelC) . $this->wrapWithInsert($restInsC) .
+            return $linenumber . $preWords . $preChars .
+            $this->wrapWithDelete($restDelC) . $this->wrapWithInsert($restInsC) .
             $postChars . $postWords;
         }
         return $linenumber . $preWords . $this->wrapWithDelete($preChars . $restDelC . $postChars) .
@@ -359,7 +360,9 @@ class Diff2
         $split = $this->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
 
-        if (mb_strlen(str_replace('###LINENUMBER###', '', $middleOrig)) > static::MAX_LINE_CHANGE_RATIO_MIN_LEN) {
+        $middleLen  = mb_strlen(str_replace('###LINENUMBER###', '', $middleOrig));
+        $breaksList = (mb_stripos($middleDiff, '</li>') !== false);
+        if ($middleLen > static::MAX_LINE_CHANGE_RATIO_MIN_LEN && !$breaksList) {
             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
             if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
                 $combined = $prefix;
@@ -690,10 +693,10 @@ class Diff2
 
                 }
             } else {
-                $origLine  = $adjustedRef[$i];
+                $origLine    = $adjustedRef[$i];
                 $matchingRow = str_replace('###EMPTYINSERTED###', '', $adjustedMatching[$i]);
-                $diffLine  = $this->computeLineDiff($origLine, $matchingRow);
-                $wordArray = $this->convertToWordArray($origLine, $diffLine, $amParams);
+                $diffLine    = $this->computeLineDiff($origLine, $matchingRow);
+                $wordArray   = $this->convertToWordArray($origLine, $diffLine, $amParams);
                 $this->checkWordArrayConsistency($origLine, $wordArray);
                 if ($pendingInsert != '') {
                     $wordArray[0]['diff'] = $pendingInsert . $wordArray[0]['diff'];

@@ -15,6 +15,37 @@ class Diff2Test extends TestBase
 
     /**
      */
+    public function testNoGroupingBeyondLists() {
+        $orig = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, doch das Blindtextchen ließ sich nicht beirren.</p></li></ul></li></ul>';
+        $new = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, doch das Blindtextchen ließ sich nicht beirren.</p></li><li><p>Noch eine neuer Punkt an dritter Stelle</p></li></ul></li></ul>';
+        $expected = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, ###DEL_START###da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, ###DEL_END###doch das Blindtextchen ließ sich nicht beirren.###INS_START###</p></li><li><p>Noch eine neuer Punkt an dritter Stelle###INS_END###</p></li></ul></li></ul>';
+        $diff = new Diff2();
+        $out  = $diff->computeLineDiff($orig, $new);
+        $this->assertEquals($expected, $out);
+    }
+
+    /**
+     */
+    public function testBreakListpintIntoTwo() {
+        $this->markTestIncomplete('Does not work yet');
+
+        $orig = [
+            '<ul><li><p>Es packte seine sieben Versalien, schob sich sein Initial in den Gürtel und machte sich auf den Weg.</p><ul><li><p>Als es die ersten Hügel des Kursivgebirges erklommen hatte, warf es einen letzten Blick zurück auf die Skyline</p></li><li><p>seiner Heimatstadt Buchstabhausen, die Headline von Alphabetdorf und die Subline seiner eigenen Straße, der Zeilengasse.</p></li></ul></li></ul>'
+        ];
+        $new = [
+            '<ul><li><p>Es packte seine sieben Versalien, schob sich sein Initial in den Gürtel und machte sich auf den Weg.</p></li></ul>',
+            '<ul><li><p>Als es die ersten Hügel des Kursivgebirges erklommen hatte, warf es einen letzten Blick zurück auf die Skyline</p><ul><li><p>Bla 2</p></li><li><p>seiner Heimatstadt Buchstabhausen, die Headline von Alphabetdorf und die Subline seiner eigenen Straße, der Zeilengasse.</p></li></ul></li></ul>'
+        ];
+        $expect = [
+            // @TODO
+        ];
+        $diff = new Diff2();
+        $arr = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals($expect, $arr);
+    }
+
+    /**
+     */
     public function testInlineDiffToWordBased()
     {
         $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>'];
