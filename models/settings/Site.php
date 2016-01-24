@@ -17,6 +17,7 @@ class Site
     /** @var int */
     public $willingToPay            = 0;
     public $willingToPayLastAskedTs = 0;
+    public $billSent                = 0;
 
     /** @var int[] */
     public $loginMethods = [0, 1, 3];

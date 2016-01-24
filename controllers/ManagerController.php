@@ -420,4 +420,28 @@ class ManagerController extends Base
             ]);
         }
     }
+
+    /**
+     */
+    public function actionPaymentadmin()
+    {
+        if (!User::currentUserIsSuperuser()) {
+            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+        }
+
+        /** @var Site[] $sites */
+        $sites = Site::find()->all();
+
+        if (isset($_POST['save'])) {
+            $set = (isset($_POST['billSent']) ? $_POST['billSent'] : []);
+            foreach ($sites as $site) {
+                $settings           = $site->getSettings();
+                $settings->billSent = (in_array($site->id, $set) ? 1 : 0);
+                $site->setSettings($settings);
+                $site->save();
+            }
+        }
+
+        return $this->render('payment_admin', ['sites' => $sites]);
+    }
 }

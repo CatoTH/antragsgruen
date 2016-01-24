@@ -147,3 +147,16 @@
     }
   }
 }
+
+.paymentAdmin {
+  table {
+    width: 100%;
+    td {
+      vertical-align: top;
+      padding-top: 10px;
+      .organization {
+        color: gray;
+      }
+    }
+  }
+}
