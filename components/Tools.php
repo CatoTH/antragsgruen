@@ -234,6 +234,7 @@ class Tools
     public static function sanitizeFilename($filename, $noUmlaut)
     {
         $filename = str_replace(' ', '_', $filename);
+        $filename = str_replace('/', '-', $filename);
         $filename = preg_replace('/[^\w0-9_-]/siu', '', $filename);
         if ($noUmlaut) {
             $filename = str_replace(

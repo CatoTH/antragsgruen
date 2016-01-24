@@ -24,7 +24,8 @@ if ($zip->open($tmpZipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true
 $motions = $consultation->getVisibleMotionsSorted();
 foreach ($motions as $motion) {
     \Yii::info('memo: ' . memory_get_usage(false) . " / " . memory_get_usage(false));
-    $zip->addFromString($motion->titlePrefix . '.pdf', Exporter::createMotionPdf($motion));
+    $filename = $motion->getFilenameBase(false) . '.pdf';
+    $zip->addFromString($filename, Exporter::createMotionPdf($motion));
 }
 $zip->close();
 
