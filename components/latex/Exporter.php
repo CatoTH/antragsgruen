@@ -124,6 +124,9 @@ class Exporter
                 if (in_array('underline', $classes)) {
                     $childStyles[] = 'underlined';
                 }
+                if (in_array('strike', $classes)) {
+                    $childStyles[] = 'strike';
+                }
                 if (in_array('ins', $classes) || in_array('inserted', $classes)) {
                     $childStyles[] = 'underlined';
                 }
