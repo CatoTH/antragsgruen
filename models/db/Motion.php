@@ -790,7 +790,7 @@ class Motion extends IMotion implements IRSSItem
             }
             $return[\Yii::t('export', 'TopicMulti')] = implode("\n", $tags);
         } elseif (count($this->tags) == 1) {
-            $return[\Yii::t('export', 'InitiatorSingle')] = $this->tags[0]->title;
+            $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
         }
 
         return $return;
