@@ -98,7 +98,7 @@ class BDK extends IPDFLayout
         $amendmentData .= '<br><br>';
 
         $amendmentData .= '<table>';
-        $amendmentData .= '<tr><th style="width: 28%;">Antragsteller/innen:</th>';
+        $amendmentData .= '<tr><th style="width: 28%;">Antragsteller*innen:</th>';
         $amendmentData .= '<td>' . Html::encode($amendment->getInitiatorsStr()) . '</td></tr>';
 
         $amendmentData .= '</table>';
