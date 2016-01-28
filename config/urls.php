@@ -19,8 +19,8 @@ $userPaths  = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzel
 $userPaths .= '|consultationaccesserror|myaccount|emailchange';
 $domPlainPaths = 'legal|privacy|help|password|billing|createsite|savetextajax|siteconfig|antragsgrueninit';
 $domPlainPaths .= '|antragsgrueninitdbtest|paymentadmin';
-$adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|pdfziplist|odslistall|openslides';
-$adminAmendmentPaths = 'index|excellist|odslist|pdflist|pdfziplist|openslides';
+$adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|pdfziplist|odtziplist|odslistall|openslides';
+$adminAmendmentPaths = 'index|excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
 
 $urlRules = [

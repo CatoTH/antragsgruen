@@ -8,6 +8,7 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
+use app\views\amendment\LayoutHelper;
 use yii\web\Response;
 
 class AmendmentController extends AdminBase
@@ -43,14 +44,41 @@ class AmendmentController extends AdminBase
      */
     public function actionPdfziplist()
     {
+        $zip = new \app\components\ZipWriter();
+        foreach ($this->consultation->getVisibleMotions() as $motion) {
+            foreach ($motion->getVisibleAmendments() as $amendment) {
+                $zip->addFile($amendment->getFilenameBase(false) . '.pdf', LayoutHelper::createPdf($amendment));
+            }
+        }
+
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.zip');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments_pdf.zip');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
-        return $this->renderPartial('pdf_zip_list', ['consultation' => $this->consultation]);
+        return $zip->getContentAndFlush();
     }
-    
+
+    /**
+     * @return string
+     */
+    public function actionOdtziplist()
+    {
+        $zip = new \app\components\ZipWriter();
+        foreach ($this->consultation->getVisibleMotions() as $motion) {
+            foreach ($motion->getVisibleAmendments() as $amendment) {
+                $zip->addFile($amendment->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($amendment));
+            }
+        }
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/zip');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments_odt.zip');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        return $zip->getContentAndFlush();
+    }
+
     /**
      * @param int $amendmentId
      * @return string

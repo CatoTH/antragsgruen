@@ -12,6 +12,7 @@ use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
 use app\models\sitePresets\ApplicationTrait;
 use app\models\sitePresets\MotionTrait;
+use app\views\motion\LayoutHelper;
 use yii\web\Response;
 
 class MotionController extends AdminBase
@@ -363,11 +364,34 @@ class MotionController extends AdminBase
      */
     public function actionPdfziplist()
     {
+        $zip = new \app\components\ZipWriter();
+        foreach ($this->consultation->getVisibleMotions() as $motion) {
+            $zip->addFile($motion->getFilenameBase(false) . '.pdf', LayoutHelper::createPdf($motion));
+        }
+
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.zip');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_pdf.zip');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
-        return $this->renderPartial('pdf_zip_list', ['consultation' => $this->consultation]);
+        return $zip->getContentAndFlush();
+    }
+
+    /**
+     * @return string
+     */
+    public function actionOdtziplist()
+    {
+        $zip = new \app\components\ZipWriter();
+        foreach ($this->consultation->getVisibleMotions() as $motion) {
+            $zip->addFile($motion->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($motion));
+        }
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/zip');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_odt.zip');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        return $zip->getContentAndFlush();
     }
 }
