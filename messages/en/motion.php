@@ -59,6 +59,7 @@ return [
     'tag_select'               => 'Select Tag',
     'tag_new'                  => 'New',
     'tag_del'                  => 'del',
+    'tags_head'                => 'Tags',
     'amends_none'              => 'none',
     'replaced_by_hint'         => 'Hint: this is a old version. The current version is available here:',
     'confirmed_visible'        => 'You submitted the motion. It is visible immediatelly.',

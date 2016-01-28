@@ -60,6 +60,7 @@ return [
     'tag_select'                        => 'Thema aussuchen',
     'tag_new'                           => 'Neu',
     'tag_del'                           => 'del',
+    'tags_head'                         => 'Themenbereich',
     'amends_none'                       => 'keine',
     'replaced_by_hint'                  => 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:',
     'confirmed_visible'                 => 'Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.',

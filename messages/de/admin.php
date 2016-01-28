@@ -78,6 +78,7 @@ return [
     'filter_initiator'            => 'Antragsteller*in',
     'filter_initiator_name'       => 'Name',
     'filter_agenda_item'          => 'Tagesordnungspunkt',
+    'filter_prefix'               => 'Antragsnr.',
     'cons_email_from'             => 'Absender-Name',
     'cons_email_from_place'       => 'Standard: "%NAME%"',
     'siteacc_bread'               => 'Zugang',

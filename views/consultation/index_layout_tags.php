@@ -46,7 +46,7 @@ if ($hasNoTagMotions) {
 echo '<section class="motionListTags">';
 
 if (count($sortedTags) > 0 && mb_stripos($sortedTags[0]->title, \Yii::t('motion', 'agenda_filter')) === false) {
-    echo '<h3 class="green">' . 'Themenbereiche' . '</h3>';
+    echo '<h3 class="green">' . \Yii::t('motion', 'tags_head') . '</h3>';
     echo '<ul id="tagList" class="content">';
 
     foreach ($tagIds as $tagId) {

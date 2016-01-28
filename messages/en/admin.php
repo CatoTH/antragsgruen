@@ -78,20 +78,21 @@ return [
     'filter_initiator'            => 'Proposer',
     'filter_initiator_name'       => 'Name',
     'filter_agenda_item'          => 'Agenda Item',
+    'filter_prefix'               => 'Prefix',
     'cons_email_from'             => 'From Name',
     'cons_email_from_place'       => 'Standard: "%NAME%"',
     'siteacc_bread'               => 'Access',
     'siteacc_title'               => 'Access to this site',
-        /*
-    'siteacc_policywarning'       => '<h3>Hinweis:</h3>
+    /*
+'siteacc_policywarning'       => '<h3>Hinweis:</h3>
 Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
- von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte Benutzer*innen" gestellt werden. Aktuell ist
- das nicht der Fall.<br>
- <br>
- Falls die nur für unten eingetragene Benutzer*innen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
- dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene Benutzer*innen
- Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:',
-        */
+von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte Benutzer*innen" gestellt werden. Aktuell ist
+das nicht der Fall.<br>
+<br>
+Falls die nur für unten eingetragene Benutzer*innen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
+dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene Benutzer*innen
+Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:',
+    */
     'siteacc_policy_login'        => 'Restrict to users',
     'siteacc_forcelogin'          => 'Only logged in users are allowed to access (incl. <em>reading</em>)',
     'siteacc_managedusers'        => 'Only allow selected users to log in <small class="showManagedUsers">(see below)</small>',
@@ -117,8 +118,8 @@ Here are your login data:
 
 Bye,
   Team Antragsgrün',
-        /*
-    'siteacc_acc_expl_mail'       => '<h3>Erklärung:</h3>
+    /*
+'siteacc_acc_expl_mail'       => '<h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
 kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
 <br>
@@ -128,14 +129,14 @@ Falls sie noch keinen eigenen Zugang auf Antragsgrün hatten, wird automatisch e
 und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
 (ansonsten verschwindet das %ACCOUNT% ersatzlos).<br>
 <strong>%LINK%</strong> wird immer durch einen Link auf die Antragsgrün-Seite ersetzt.',
-    'siteacc_acc_expl_nomail'     => '<h3>Erklärung:</h3>
+'siteacc_acc_expl_nomail'     => '<h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
 kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
 <br>
 Um Benutzer*innen anzulegen, gib weiter unten die E-Mail-Adressen, die Namen und die Passwörter der Mitglieder ein.
 Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>Passwörter</strong> hier selbst erzeugen, im Klartext eingeben und selbst an die Nutzer*innen schicken.<br><br>' .
-        'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die Nutzer*innen schicken kann.',
-        */
+    'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die Nutzer*innen schicken kann.',
+    */
     'siteacc_existing_users'      => 'Existing users',
     'siteacc_user_name'           => 'Name',
     'siteacc_user_login'          => 'Login',

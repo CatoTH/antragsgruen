@@ -42,6 +42,11 @@ class MotionListTest extends DBTestBase
         $entries = $form->getSorted();
         $this->assertEquals(['F-01', 'T-01', ''], $this->serializeMotions($entries));
 
+        $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
+        $form->setAttributes(['prefix' => 'S']);
+        $entries = $form->getSorted();
+        $this->assertEquals(['S-01', 'S-ohne Nummer'], $this->serializeMotions($entries));
+
 
         $consultation = Consultation::findOne(6);
 

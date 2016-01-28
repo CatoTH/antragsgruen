@@ -7,7 +7,6 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Consultation;
-use app\models\db\ConsultationAgendaItem;
 use app\models\db\IMotion;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
@@ -23,6 +22,7 @@ class AdminMotionFilterForm extends Model
     const SORT_TITLE_PREFIX = 3;
     const SORT_INITIATOR    = 4;
     const SORT_TAG          = 5;
+    const SORT_PUBLICATION  = 6;
 
     /** @var int */
     public $status     = null;
@@ -31,6 +31,8 @@ class AdminMotionFilterForm extends Model
 
     /** @var string */
     public $initiator = null;
+    public $title     = null;
+    public $prefix    = null;
 
     /** @var Motion [] */
     public $allMotions;
@@ -40,9 +42,6 @@ class AdminMotionFilterForm extends Model
 
     /** @var Consultation */
     public $consultation;
-
-    /** @var string */
-    public $title = null;
 
     /** @var int */
     public $sort = 0;
@@ -80,7 +79,7 @@ class AdminMotionFilterForm extends Model
     {
         return [
             [['status', 'tag', 'sort', 'agendaItem'], 'number'],
-            [['status', 'tag', 'title', 'initiator', 'agendaItem'], 'safe'],
+            [['status', 'tag', 'title', 'initiator', 'agendaItem', 'prefix'], 'safe'],
         ];
     }
 
@@ -401,6 +400,11 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
+            $prefix = $this->prefix;
+            if ($prefix !== null && $prefix != '' && mb_stripos($motion->titlePrefix, $prefix) === false) {
+                $matches = false;
+            }
+
             if ($matches) {
                 $out[] = $motion;
             }
@@ -485,9 +489,13 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
-            if ($this->title !== null && $this->title != '' &&
-                !mb_stripos($amend->getMyMotion()->title, $this->title)
-            ) {
+            $title = $this->title;
+            if ($title !== null && $title != '' && !mb_stripos($amend->getMyMotion()->title, $title)) {
+                $matches = false;
+            }
+
+            $prefix = $this->prefix;
+            if ($prefix !== null && $prefix != '' && !mb_stripos($amend->titlePrefix, $prefix)) {
                 $matches = false;
             }
 
@@ -504,6 +512,11 @@ class AdminMotionFilterForm extends Model
     public function getFilterFormFields()
     {
         $str = '';
+
+        $str .= '<label>' . \Yii::t('admin', 'filter_prefix') . ':<br>';
+        $prefix = Html::encode($this->prefix);
+        $str .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
+        $str .= '</label>';
 
         $str .= '<label>' . \Yii::t('admin', 'filter_title') . ':<br>';
         $title = Html::encode($this->title);
@@ -706,6 +719,7 @@ class AdminMotionFilterForm extends Model
             'Search[title]'      => $this->title,
             'Search[sort]'       => $this->sort,
             'Search[agendaItem]' => $this->agendaItem,
+            'Search[prefix]'     => $this->prefix,
         ], $add));
     }
 }
