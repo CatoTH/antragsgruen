@@ -1,6 +1,5 @@
 <?php
 
-use app\components\latex\Exporter;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -9,7 +8,7 @@ use yii\helpers\Html;
  */
 
 try {
-    echo Exporter::createMotionPdf($motion);
+    echo \app\views\motion\LayoutHelper::createPdf($motion);
 } catch (\Exception $e) {
     echo 'Ein Fehler trat auf: ' . Html::encode($e);
 }

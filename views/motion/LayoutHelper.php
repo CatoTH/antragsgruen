@@ -5,6 +5,7 @@ namespace app\views\motion;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
+use app\components\latex\Layout;
 use app\components\Tools;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
@@ -15,7 +16,9 @@ use app\models\db\Motion;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
+use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
+use ZipArchive;
 
 class LayoutHelper
 {
@@ -187,7 +190,7 @@ class LayoutHelper
                 ':</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control col-sm-9" id="' . $formIdPre . '_name" ' .
-                        'name="comment[name]" value="' . Html::encode($form->name) . '" required autocomplete="name">
+                'name="comment[name]" value="' . Html::encode($form->name) . '" required autocomplete="name">
                 </div>
             </div>
             <div class="form-group">
@@ -195,7 +198,7 @@ class LayoutHelper
                 ':</label>
                 <div class="col-sm-9">
                     <input type="email" class="form-control" id="' . $formIdPre . '_email" autocomplete="email" ' .
-                    'name="comment[email]" value="' . Html::encode($form->email) . '"';
+                'name="comment[email]" value="' . Html::encode($form->email) . '"';
             if ($consultation->getSettings()->commentNeedsEmail) {
                 echo ' required';
             }
@@ -419,5 +422,103 @@ class LayoutHelper
         }
 
         echo '</div>';
+    }
+
+
+    /**
+     * @param Motion $motion
+     * @return string
+     */
+    public static function createPdf(Motion $motion)
+    {
+        $cache = \Yii::$app->cache->get($motion->getPdfCacheKey());
+        if ($cache && !YII_DEBUG) {
+            return $cache;
+        }
+        $texTemplate = $motion->motionType->texTemplate;
+
+        $layout            = new Layout();
+        $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+        //$layout->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
+        //    'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
+        $layout->template = $texTemplate->texLayout;
+        $layout->author   = $motion->getInitiatorsStr();
+        $layout->title    = $motion->getTitleWithPrefix();
+
+        /** @var AntragsgruenApp $params */
+        $params   = \yii::$app->params;
+        $exporter = new Exporter($layout, $params);
+        $content  = LayoutHelper::renderTeX($motion);
+        $pdf      = $exporter->createPDF([$content]);
+        \Yii::$app->cache->set($motion->getPdfCacheKey(), $pdf);
+        return $pdf;
+    }
+
+    /**
+     * @param Motion $motion
+     * @return string
+     */
+    public static function createOdt(Motion $motion)
+    {
+        /** @var \app\models\settings\AntragsgruenApp $config */
+        $config = \yii::$app->params;
+
+        $template = $motion->motionType->getOdtTemplate();
+
+        $tmpZipFile = $config->tmpDir . uniqid('zip-');
+        file_put_contents($tmpZipFile, $template);
+
+        $zip = new ZipArchive();
+        if ($zip->open($tmpZipFile) !== true) {
+            die("cannot open <$tmpZipFile>\n");
+        }
+
+        $content = $zip->getFromName('content.xml');
+
+        $DEBUG = (isset($_REQUEST['src']) && YII_ENV == 'dev');
+
+        if ($DEBUG) {
+            echo "<pre>";
+        }
+
+        $doc = new \app\components\opendocument\Text($content);
+
+        $initiators = [];
+        $supporters = [];
+        foreach ($motion->motionSupporters as $supp) {
+            if ($supp->role == ISupporter::ROLE_INITIATOR) {
+                $initiators[] = $supp->getNameWithOrga();
+            }
+            if ($supp->role == ISupporter::ROLE_SUPPORTER) {
+                $supporters[] = $supp->getNameWithOrga();
+            }
+        }
+        if (count($initiators) == 1) {
+            $initiatorStr = \Yii::t('export', 'InitiatorSingle');
+        } else {
+            $initiatorStr = \Yii::t('export', 'InitiatorMulti');
+        }
+        $initiatorStr .= ': ' . implode(', ', $initiators);
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $motion->agendaItem ? $motion->agendaItem->title : '');
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
+
+        foreach ($motion->getSortedSections() as $section) {
+            $section->getSectionType()->printMotionToODT($doc);
+        }
+
+        $content = $doc->convert();
+
+        if ($DEBUG) {
+            $doc->debugOutput();
+        }
+
+        $zip->deleteName('content.xml');
+        $zip->addFromString('content.xml', $content);
+        $zip->close();
+
+        $content = file_get_contents($tmpZipFile);
+        unlink($tmpZipFile);
+        return $content;
     }
 }

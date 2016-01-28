@@ -143,7 +143,7 @@ class MotionController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
-        return $this->renderPartial('odt', ['motion' => $motion]);
+        return \app\views\motion\LayoutHelper::createOdt($motion);
     }
 
 

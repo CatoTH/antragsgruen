@@ -1,6 +1,5 @@
 <?php
 
-use app\components\latex\Exporter;
 use app\models\db\Amendment;
 use yii\helpers\Html;
 
@@ -9,7 +8,7 @@ use yii\helpers\Html;
  */
 
 try {
-    echo Exporter::createAmendmentPdf($amendment);
+    echo \app\views\amendment\LayoutHelper::createPdf($amendment);
 } catch (\Exception $e) {
     echo 'Ein Fehler trat auf: ' . Html::encode($e);
     die();

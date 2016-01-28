@@ -4,12 +4,15 @@ namespace app\views\amendment;
 
 use app\components\latex\Content;
 use app\components\latex\Exporter;
-use app\components\LineSplitter;
+use app\components\latex\Layout;
 use app\models\db\Amendment;
+use app\models\db\ISupporter;
 use app\models\sectionTypes\TextSimple;
+use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
 use TCPDF;
 use yii\helpers\Html;
+use ZipArchive;
 
 class LayoutHelper
 {
@@ -121,5 +124,118 @@ class LayoutHelper
             $pdf->writeHTMLCell(170, '', 27, '', implode(', ', $supportersStr), 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @return string
+     */
+    public static function createPdf(Amendment $amendment)
+    {
+        $cache = \Yii::$app->cache->get($amendment->getPdfCacheKey());
+        if ($cache) {
+            return $cache;
+        }
+        $texTemplate = $amendment->getMyMotion()->motionType->texTemplate;
+
+        $layout            = new Layout();
+        $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+        //$layout->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
+        //    'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
+        $layout->template = $texTemplate->texLayout;
+        $layout->author   = $amendment->getInitiatorsStr();
+        $layout->title    = $amendment->getTitle();
+
+        /** @var AntragsgruenApp $params */
+        $params   = \yii::$app->params;
+        $exporter = new Exporter($layout, $params);
+        $content  = \app\views\amendment\LayoutHelper::renderTeX($amendment);
+        $pdf      = $exporter->createPDF([$content]);
+        \Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);
+        return $pdf;
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @return string
+     */
+    public static function createOdt(Amendment $amendment)
+    {
+        /** @var \app\models\settings\AntragsgruenApp $config */
+        $config = \yii::$app->params;
+
+        $template = $amendment->getMyMotion()->motionType->getOdtTemplate();
+
+        $tmpZipFile = $config->tmpDir . uniqid('zip-');
+        file_put_contents($tmpZipFile, $template);
+
+        $zip = new ZipArchive();
+        if ($zip->open($tmpZipFile) !== true) {
+            die("cannot open <$tmpZipFile>\n");
+        }
+
+        $content = $zip->getFromName('content.xml');
+
+        $DEBUG = (isset($_REQUEST['src']) && YII_ENV == 'dev');
+
+        if ($DEBUG) {
+            echo "<pre>";
+        }
+
+        $doc = new \app\components\opendocument\Text($content);
+
+        $initiators = [];
+        $supporters = [];
+        foreach ($amendment->amendmentSupporters as $supp) {
+            if ($supp->role == ISupporter::ROLE_INITIATOR) {
+                $initiators[] = $supp->getNameWithOrga();
+            }
+            if ($supp->role == ISupporter::ROLE_SUPPORTER) {
+                $supporters[] = $supp->getNameWithOrga();
+            }
+        }
+        if (count($initiators) == 1) {
+            $initiatorStr = \Yii::t('export', 'InitiatorSingle');
+        } else {
+            $initiatorStr = \Yii::t('export', 'InitiatorMulti');
+        }
+        $initiatorStr .= ': ' . implode(', ', $initiators);
+        if ($amendment->getMyMotion()->agendaItem) {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $amendment->getMyMotion()->agendaItem->title);
+        } else {
+            $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', '');
+        }
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $amendment->getTitle());
+        $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
+
+
+        if ($amendment->changeEditorial != '') {
+            $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'editorial_hint')) . '</h2>', false);
+            $doc->addHtmlTextBlock($amendment->changeEditorial, false);
+        }
+
+        foreach ($amendment->getSortedSections(false) as $section) {
+            $section->getSectionType()->printAmendmentToODT($doc);
+        }
+
+        if ($amendment->changeExplanation != '') {
+            $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'reason')) . '</h2>', false);
+            $doc->addHtmlTextBlock($amendment->changeExplanation, false);
+        }
+
+        $content = $doc->convert();
+
+        if ($DEBUG) {
+            $doc->debugOutput();
+        }
+
+
+        $zip->deleteName('content.xml');
+        $zip->addFromString('content.xml', $content);
+        $zip->close();
+
+        $content = file_get_contents($tmpZipFile);
+        unlink($tmpZipFile);
+        return $content;
     }
 }

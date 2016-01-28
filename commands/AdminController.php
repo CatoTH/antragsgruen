@@ -1,7 +1,6 @@
 <?php
 namespace app\commands;
 
-use app\components\latex\Exporter;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
@@ -101,7 +100,7 @@ class AdminController extends Controller
             $motion->getNumberOfCountableLines();
             $motion->getFirstLineNumber();
             if ($params->xelatexPath) {
-                Exporter::createMotionPdf($motion);
+                \app\views\motion\LayoutHelper::createPdf($motion);
             }
             foreach ($motion->amendments as $amendment) {
                 if ($amendment->status == Amendment::STATUS_DELETED) {
@@ -110,7 +109,7 @@ class AdminController extends Controller
                 echo '  - Amendment ' . $amendment->id . "\n";
                 $amendment->getFirstDiffLine();
                 if ($params->xelatexPath) {
-                    Exporter::createAmendmentPdf($amendment);
+                    \app\views\amendment\LayoutHelper::createPdf($amendment);
                 }
             }
         }
