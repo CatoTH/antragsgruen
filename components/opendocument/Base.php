@@ -2,8 +2,6 @@
 
 namespace app\components\opendocument;
 
-use yii\helpers\Html;
-
 abstract class Base
 {
     const NS_OFFICE   = 'urn:oasis:names:tc:opendocument:xmlns:office:1.0';
@@ -21,6 +19,9 @@ abstract class Base
     /** @var bool */
     protected $DEBUG = false;
 
+    /** @var string */
+    protected $tmpPath = '/tmp/';
+
     /**
      * @param string $content
      */
@@ -28,6 +29,53 @@ abstract class Base
     {
         $this->doc = new \DOMDocument();
         $this->doc->loadXML($content);
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setTmpPath($path)
+    {
+        $this->tmpPath = $path;
+    }
+
+    /**
+     * @param string $html
+     * @param array $config
+     * @return string
+     */
+    protected function purifyHTML($html, $config)
+    {
+        $configInstance               = \HTMLPurifier_Config::create($config);
+        $configInstance->autoFinalize = false;
+        $purifier                     = \HTMLPurifier::instance($configInstance);
+        $purifier->config->set('Cache.SerializerPath', $this->tmpPath);
+
+        return $purifier->purify($html);
+    }
+
+    /**
+     * @param string $html
+     * @return \DOMNode
+     */
+    public function html2DOM($html)
+    {
+        $html = $this->purifyHTML(
+            $html,
+            [
+                'HTML.Doctype' => 'HTML 4.01 Transitional',
+                'HTML.Trusted' => true,
+                'CSS.Trusted'  => true,
+            ]
+        );
+
+        $src_doc = new \DOMDocument();
+        $src_doc->loadHTML('<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head><body>' . $html . "</body></html>");
+        $bodies = $src_doc->getElementsByTagName('body');
+
+        return $bodies->item(0);
     }
 
     /***
@@ -44,7 +92,7 @@ abstract class Base
     {
         $this->doc->preserveWhiteSpace = false;
         $this->doc->formatOutput       = true;
-        echo Html::encode($this->doc->saveXML());
+        echo htmlentities($this->doc->saveXML(), ENT_COMPAT, 'UTF-8');
         die();
     }
 

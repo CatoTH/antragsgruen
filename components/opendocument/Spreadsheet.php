@@ -2,8 +2,6 @@
 
 namespace app\components\opendocument;
 
-use app\components\HTMLTools;
-
 class Spreadsheet extends Base
 {
     const TYPE_TEXT   = 0;
@@ -145,23 +143,23 @@ class Spreadsheet extends Base
 
     /**
      * @param int $col
-     * @param float $cm
+     * @param float $widthInCm
      */
-    public function setColumnWidth($col, $cm)
+    public function setColumnWidth($col, $widthInCm)
     {
-        $this->matrixColWidths[$col] = $cm;
+        $this->matrixColWidths[$col] = $widthInCm;
     }
 
     /**
      * @param int $row
-     * @param float $cm
+     * @param float $minHeightInCm
      */
-    public function setMinRowHeight($row, $cm)
+    public function setMinRowHeight($row, $minHeightInCm)
     {
         $this->initRow($row);
         $rowHeight = (isset($this->matrixRowHeights[$row]) ? $this->matrixRowHeights[$row] : 1);
-        if ($cm > $rowHeight) {
-            $rowHeight = $cm;
+        if ($minHeightInCm > $rowHeight) {
+            $rowHeight = $minHeightInCm;
         }
         $this->matrixRowHeights[$row] = $rowHeight;
     }
@@ -192,14 +190,14 @@ class Spreadsheet extends Base
     protected function setColStyles()
     {
         for ($col = 0; $col <= $this->matrixCols; $col++) {
-            $el = $this->doc->createElementNS(static::NS_TABLE, 'table-column');
+            $element = $this->doc->createElementNS(static::NS_TABLE, 'table-column');
             if (isset($this->matrixColWidths[$col])) {
-                $el->setAttribute('table:style-name', 'Antragsgruen_col_' . $col);
+                $element->setAttribute('table:style-name', 'Antragsgruen_col_' . $col);
                 $this->appendColStyleNode('Antragsgruen_col_' . $col, [
                     'style:column-width' => $this->matrixColWidths[$col] . 'cm',
                 ]);
             }
-            $this->domTable->appendChild($el);
+            $this->domTable->appendChild($element);
         }
     }
 
@@ -218,26 +216,26 @@ class Spreadsheet extends Base
                     $cell = $this->matrix[$row][$col];
                     switch ($cell["type"]) {
                         case static::TYPE_TEXT:
-                            $p              = $this->doc->createElementNS(static::NS_TEXT, 'p');
-                            $p->textContent = $cell['content'];
-                            $currentCell->appendChild($p);
+                            $elementP              = $this->doc->createElementNS(static::NS_TEXT, 'p');
+                            $elementP->textContent = $cell['content'];
+                            $currentCell->appendChild($elementP);
                             break;
                         case static::TYPE_NUMBER:
-                            $p              = $this->doc->createElementNS(static::NS_TEXT, 'p');
-                            $p->textContent = $cell['content'];
-                            $currentCell->appendChild($p);
+                            $elementP              = $this->doc->createElementNS(static::NS_TEXT, 'p');
+                            $elementP->textContent = $cell['content'];
+                            $currentCell->appendChild($elementP);
                             $currentCell->setAttribute('calctext:value-type', 'float');
                             $currentCell->setAttribute('office:value-type', 'float');
                             $currentCell->setAttribute('office:value', (string)$cell['content']);
                             break;
                         case static::TYPE_LINK:
-                            $p = $this->doc->createElementNS(static::NS_TEXT, 'p');
-                            $a = $this->doc->createElementNS(static::NS_TEXT, 'a');
-                            $a->setAttributeNS(static::NS_XLINK, 'xlink:href', $cell['content']['href']);
+                            $elementP = $this->doc->createElementNS(static::NS_TEXT, 'p');
+                            $elementA = $this->doc->createElementNS(static::NS_TEXT, 'a');
+                            $elementA->setAttributeNS(static::NS_XLINK, 'xlink:href', $cell['content']['href']);
                             $textNode = $this->doc->createTextNode($cell['content']['text']);
-                            $a->appendChild($textNode);
-                            $p->appendChild($a);
-                            $currentCell->appendChild($p);
+                            $elementA->appendChild($textNode);
+                            $elementP->appendChild($elementA);
+                            $currentCell->appendChild($elementP);
                             break;
                         case static::TYPE_HTML:
                             $nodes = $this->html2OdsNodes($cell['content']);
@@ -583,7 +581,7 @@ class Spreadsheet extends Base
      */
     public function html2OdsNodes($html)
     {
-        $body     = HTMLTools::html2DOM($html);
+        $body     = $this->html2DOM($html);
         $tokens   = $this->tokenizeFlattenHtml($body, []);
         $nodes    = [];
         $currentP = $this->doc->createElementNS(static::NS_TEXT, 'p');

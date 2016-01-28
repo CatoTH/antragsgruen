@@ -2,10 +2,6 @@
 
 namespace app\components\opendocument;
 
-use app\components\HTMLTools;
-use app\models\exceptions\Internal;
-use yii\helpers\Html;
-
 class Text extends Base
 {
     /** @var null|\DOMElement */
@@ -43,7 +39,7 @@ class Text extends Base
      * @param \DOMNode $srcNode
      * @param bool $lineNumbered
      * @return \DOMNode[]
-     * @throws Internal
+     * @throws \Exception
      */
     protected function html2ooNodeInt($srcNode, $lineNumbered)
     {
@@ -177,7 +173,7 @@ class Text extends Base
                         $dstEl->setAttribute('text:style-name', 'Antragsgrün_20_H4');
                         break;
                     default:
-                        throw new Internal('Unknown Tag: ' . $srcNode->nodeName);
+                        throw new \Exception('Unknown Tag: ' . $srcNode->nodeName);
                 }
                 foreach ($srcNode->childNodes as $child) {
                     /** @var \DOMNode $child */
@@ -245,7 +241,7 @@ class Text extends Base
             echo print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
             die();
         }
-        $body = HTMLTools::html2DOM($html);
+        $body = $this->html2DOM($html);
 
         $retNodes = [];
         for ($i = 0; $i < $body->childNodes->length; $i++) {
@@ -263,7 +259,7 @@ class Text extends Base
                     $new_node = $this->getNextNodeTemplate($lineNumbered);
                     /** @var \DOMText $child */
                     if ($this->DEBUG) {
-                        echo $child->nodeName . ' - ' . Html::encode($child->data) . '!!!!!!!!!!!!<br>';
+                        echo $child->nodeName . ' - ' . htmlentities($child->data, ENT_COMPAT, 'UTF-8') . '<br>';
                     }
                     $text       = new \DOMText();
                     $text->data = $child->data;
