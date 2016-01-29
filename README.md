@@ -44,7 +44,7 @@ Installation from the repository
 git clone https://github.com/CatoTH/antragsgruen.git
 cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.0.3"
+./composer.phar global require "fxp/composer-asset-plugin:1.1.1"
 ./composer.phar install --prefer-dist
 sudo npm install -g gulp
 npm install gulp gulp-uglify gulp-concat gulp-concat-css gulp-minify-css gulp-sass gulp-sourcemaps
