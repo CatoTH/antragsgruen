@@ -13,6 +13,7 @@ Version 3.1
 - Support for image-upload in motions / applications, esp. for PDF-export of images
 - Add a two-column PDF template designed for applications
 - In the motion/amendment-list for admins, amendments are shown right next to their motions
+- All ODTs of motions and amendments can be downloaded as a bundled ZIP-file
  
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 Some features were sponsored by the [Green Party of Berlin](https://www.gruene-berlin.de/).
