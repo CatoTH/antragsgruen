@@ -1,6 +1,6 @@
 <?php
 
-use \app\components\opendocument\Spreadsheet;
+use CatoTH\HTML2OpenDocument\Spreadsheet;
 use app\components\StringSplitter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -23,17 +23,9 @@ $DEBUG = false;
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \yii::$app->params;
 
-$tmpZipFile   = $params->tmpDir . uniqid('zip-');
-$templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'OpenOffice-Template.ods';
-copy($templateFile, $tmpZipFile);
-
-$zip = new ZipArchive();
-if ($zip->open($tmpZipFile) !== true) {
-    die("cannot open <$tmpZipFile>\n");
-}
-
-$content = $zip->getFromName('content.xml');
-$doc     = new Spreadsheet($content);
+$doc = new Spreadsheet([
+    'tmpPath' => $params->tmpDir
+]);
 
 $currCol = 0;
 
@@ -114,15 +106,4 @@ foreach ($items as $item) {
     $row++;
 }
 
-$content = $doc->create();
-
-if ($DEBUG) {
-    $doc->debugOutput();
-}
-
-$zip->deleteName('content.xml');
-$zip->addFromString('content.xml', $content);
-$zip->close();
-
-readfile($tmpZipFile);
-unlink($tmpZipFile);
+echo $doc->finishAndGetDocument();

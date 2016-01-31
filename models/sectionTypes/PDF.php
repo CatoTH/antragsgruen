@@ -3,12 +3,12 @@
 namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
-use app\components\opendocument\Text;
 use app\components\UrlHelper;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
+use CatoTH\HTML2OpenDocument\Text;
 
 class PDF extends ISectionType
 {

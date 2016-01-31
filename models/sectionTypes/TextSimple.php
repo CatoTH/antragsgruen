@@ -7,7 +7,6 @@ use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
-use app\components\opendocument\Text;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\Amendment;
@@ -18,6 +17,7 @@ use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 use yii\web\View;
+use CatoTH\HTML2OpenDocument\Text;
 
 class TextSimple extends ISectionType
 {

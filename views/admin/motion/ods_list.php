@@ -2,7 +2,7 @@
 
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
-use \app\components\opendocument\Spreadsheet;
+use CatoTH\HTML2OpenDocument\Spreadsheet;
 
 /**
  * @var $this yii\web\View
@@ -20,18 +20,9 @@ $DEBUG = false;
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \yii::$app->params;
 
-$tmpZipFile   = $params->tmpDir . uniqid('zip-');
-$templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'OpenOffice-Template.ods';
-copy($templateFile, $tmpZipFile);
-
-$zip = new ZipArchive();
-if ($zip->open($tmpZipFile) !== true) {
-    die("cannot open <$tmpZipFile>\n");
-}
-
-$content = $zip->getFromName('content.xml');
-$doc     = new Spreadsheet($content);
-
+$doc = new Spreadsheet([
+    'tmpPath' => $params->tmpDir
+]);
 
 $currCol = $firstCol = 1;
 
@@ -146,16 +137,4 @@ foreach ($motions as $motion) {
     }
 }
 
-
-$content = $doc->create();
-
-if ($DEBUG) {
-    $doc->debugOutput();
-}
-
-$zip->deleteName('content.xml');
-$zip->addFromString('content.xml', $content);
-$zip->close();
-
-readfile($tmpZipFile);
-unlink($tmpZipFile);
+echo $doc->finishAndGetDocument();

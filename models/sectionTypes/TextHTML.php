@@ -4,11 +4,11 @@ namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\components\latex\Content;
-use app\components\opendocument\Text;
 use app\models\db\AmendmentSection;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
+use \CatoTH\HTML2OpenDocument\Text;
 
 class TextHTML extends ISectionType
 {

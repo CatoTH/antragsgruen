@@ -3,12 +3,12 @@ namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\components\latex\Content;
-use app\components\opendocument\Text;
 use app\controllers\Base;
 use app\models\db\IMotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
+use CatoTH\HTML2OpenDocument\Text;
 use yii\helpers\Html;
 
 abstract class ISectionType

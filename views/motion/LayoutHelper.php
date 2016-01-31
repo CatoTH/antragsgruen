@@ -18,7 +18,6 @@ use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
-use ZipArchive;
 
 class LayoutHelper
 {
@@ -463,25 +462,17 @@ class LayoutHelper
         /** @var \app\models\settings\AntragsgruenApp $config */
         $config = \yii::$app->params;
 
-        $template = $motion->motionType->getOdtTemplate();
-
-        $tmpZipFile = $config->tmpDir . uniqid('zip-');
-        file_put_contents($tmpZipFile, $template);
-
-        $zip = new ZipArchive();
-        if ($zip->open($tmpZipFile) !== true) {
-            die("cannot open <$tmpZipFile>\n");
-        }
-
-        $content = $zip->getFromName('content.xml');
+        $template = $motion->motionType->getOdtTemplateFile();
+        $doc      = new \CatoTH\HTML2OpenDocument\Text([
+            'templateFile' => $template,
+            'tmpPath'      => $config->tmpDir,
+        ]);
 
         $DEBUG = (isset($_REQUEST['src']) && YII_ENV == 'dev');
 
         if ($DEBUG) {
             echo "<pre>";
         }
-
-        $doc = new \app\components\opendocument\Text($content);
 
         $initiators = [];
         $supporters = [];
@@ -507,18 +498,6 @@ class LayoutHelper
             $section->getSectionType()->printMotionToODT($doc);
         }
 
-        $content = $doc->convert();
-
-        if ($DEBUG) {
-            $doc->debugOutput();
-        }
-
-        $zip->deleteName('content.xml');
-        $zip->addFromString('content.xml', $content);
-        $zip->close();
-
-        $content = file_get_contents($tmpZipFile);
-        unlink($tmpZipFile);
-        return $content;
+        return $doc->finishAndGetDocument();
     }
 }
