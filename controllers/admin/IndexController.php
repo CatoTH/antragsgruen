@@ -80,7 +80,7 @@ class IndexController extends AdminBase
         }
 
         if (isset($_POST['flushCaches']) && User::currentUserIsSuperuser()) {
-            AntragsgruenApp::flushAllCaches();
+            $this->consultation->flushCacheWithChildren();
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
         }
 
