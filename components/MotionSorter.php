@@ -4,6 +4,7 @@ namespace app\components;
 use app\models\amendmentNumbering\ByLine;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
+use app\models\db\ConsultationAgendaItem;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 
@@ -138,7 +139,7 @@ class MotionSorter
      * @param Motion[] $motions
      * @return array|array[]
      */
-    public static function getSortedMotions(Consultation $consultation, $motions)
+    public static function getSortedMotionsStd(Consultation $consultation, $motions)
     {
         $motionsSorted   = [];
         $motionsNoPrefix = [];
@@ -173,6 +174,73 @@ class MotionSorter
         }
 
         return $motionsSorted;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param Motion[] $motions
+     * @return array|array[]
+     */
+    public static function getSortedMotionsAgenda(Consultation $consultation, $motions)
+    {
+        $motionsSorted       = [];
+        $foundMotionIds      = [];
+        $motionIdsToBeSorted = [];
+
+        foreach ($motions as $motion) {
+            $motionIdsToBeSorted[] = $motion->id;
+        }
+
+        $inivisible   = $consultation->getInvisibleMotionStati();
+        $inivisible[] = IMotion::STATUS_MODIFIED;
+
+        $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
+        foreach ($items as $agendaItem) {
+            $agendaMotions = $agendaItem->getVisibleMotions();
+            foreach ($agendaMotions as $agendaMotion) {
+                if (!in_array($agendaMotion->id, $motionIdsToBeSorted)) {
+                    continue;
+                }
+                if (!isset($motionsSorted['agenda' . $agendaItem->id])) {
+                    $motionsSorted['agenda' . $agendaItem->id] = [];
+                }
+                $key = $agendaMotion->titlePrefix;
+                $motionsSorted['agenda' . $agendaItem->id][$key] = $agendaMotion;
+                $foundMotionIds[]                 = $agendaMotion->id;
+            }
+        }
+        foreach ($motions as $motion) {
+            if (!in_array($motion->id, $foundMotionIds)) {
+                if (!isset($motionsSorted['noAgenda'])) {
+                    $motionsSorted['noAgenda'] = [];
+                }
+                $motionsSorted['noAgenda'][$motion->titlePrefix] = $motion;
+            }
+        }
+
+        $siteBehavior = $consultation->site->getBehaviorClass();
+        foreach (array_keys($motionsSorted) as $key) {
+            uksort($motionsSorted[$key], [get_class($siteBehavior), 'getSortedMotionsSort']);
+        }
+
+        return $motionsSorted;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param Motion[] $motions
+     * @return array|array[]
+     */
+    public static function getSortedMotions(Consultation $consultation, $motions)
+    {
+        switch ($consultation->getSettings()->startLayoutType) {
+            case \app\models\settings\Consultation::START_LAYOUT_AGENDA:
+            case \app\models\settings\Consultation::START_LAYOUT_AGENDA_LONG:
+                return static::getSortedMotionsAgenda($consultation, $motions);
+            // @TODO Tags?
+            default:
+                return static::getSortedMotionsStd($consultation, $motions);
+        }
     }
 
     /**
