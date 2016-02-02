@@ -277,7 +277,7 @@ class Exporter
         $replaces                = [];
         $replaces['%LANGUAGE%']  = $layout->language;
         $replaces['%ASSETROOT%'] = $layout->assetRoot;
-        $replaces['%TITLE%']     = $layout->title;
+        $replaces['%TITLE%']     = static::encodePlainString($layout->title);
         $replaces['%AUTHOR%']    = $layout->author;
         $template                = str_replace(array_keys($replaces), array_values($replaces), $template);
         return $template;
@@ -315,9 +315,9 @@ class Exporter
         $template                         = $content->template;
         $template                         = str_replace("\r", "", $template);
         $replaces                         = [];
-        $replaces['%TITLE%']              = $content->title;
-        $replaces['%TITLEPREFIX%']        = $content->titlePrefix;
-        $replaces['%TITLE_LONG%']         = $content->titleLong;
+        $replaces['%TITLE%']              = static::encodePlainString($content->title);
+        $replaces['%TITLEPREFIX%']        = static::encodePlainString($content->titlePrefix);
+        $replaces['%TITLE_LONG%']         = static::encodePlainString($content->titleLong);
         $replaces['%AUTHOR%']             = $content->author;
         $replaces['%MOTION_DATA_TABLE%']  = $content->motionDataTable;
         $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
