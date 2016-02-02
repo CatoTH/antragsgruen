@@ -444,7 +444,8 @@ class Motion extends IMotion implements IRSSItem
         }
 
         if ($this->getConsultation()->getSettings()->lineNumberingGlobal) {
-            $motionBlocks = MotionSorter::getSortedMotions($this->getConsultation(), $this->getConsultation()->motions);
+            $motions      = $this->getConsultation()->getVisibleMotions(false);
+            $motionBlocks = MotionSorter::getSortedMotions($this->getConsultation(), $motions);
             $lineNo       = 1;
             foreach ($motionBlocks as $motions) {
                 foreach ($motions as $motion) {
@@ -640,7 +641,7 @@ class Motion extends IMotion implements IRSSItem
             $plain      = str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'));
             $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . '</h1>';
 
-            $sections   = $this->getSortedSections(true);
+            $sections = $this->getSortedSections(true);
             foreach ($sections as $section) {
                 $motionHtml .= '<div>';
                 $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
