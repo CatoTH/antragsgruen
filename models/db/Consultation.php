@@ -414,6 +414,8 @@ class Consultation extends ActiveRecord
         }
         if ($withdrawnInvisible) {
             $invisible[] = Motion::STATUS_WITHDRAWN;
+            $invisible[] = Motion::STATUS_MODIFIED;
+            $invisible[] = Motion::STATUS_MODIFIED_ACCEPTED;
         }
         return $invisible;
     }
