@@ -24,6 +24,11 @@
 <li>Add the lite plugin to ckeditor. The simplest way to do this is by adding the following line to ckeditor's
 <code>config.js</code>:<pre><code class="lang-javascript">  config.extraPlugins = 'lite';</code></pre>
 </li>
+<li><p>Include the localization file in your source. Currently, english and german localization is available, other languages are welcome.</p>
+<pre><code class="lang-javascript">
+	<span class="hljs-tag"><span class="hljs-title">script</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text/javascript"</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"ckeditor/plugins/lite/lang/en.js"</span>></span><span class="javascript"></span><span class="hljs-tag"></<span class="hljs-title">script</span>></span>
+</code></pre>
+</li>
 <li><p>Optionally include <code>lite-interface.js</code> in your source, so you can use the various constants defined in it rather than string literals.</p>
 <pre><code class="lang-javascript">&lt;script type="text/javascript" src="ckeditor/plugins/lite/lite-interface.js"&gt;&lt;/script&gt;</code></pre>
 </li>
