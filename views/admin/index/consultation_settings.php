@@ -345,7 +345,7 @@ echo Html::checkbox(
     $settings->initiatorConfirmEmails,
     ['id' => 'initiatorConfirmEmails']
 );
-echo 'Beim Anlegen/Freischalten eines Antrags: Bestätigungs-E-Mail an die AntragstellerIn schicken
+echo 'Beim Anlegen/Freischalten eines Antrags: Bestätigungs-E-Mail an die Antragsteller*in schicken
     </label></div>';
 
 

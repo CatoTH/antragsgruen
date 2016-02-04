@@ -19,10 +19,11 @@ class AntragsgruenInitForm extends Model
 
     public $siteUrl;
     public $siteTitle;
+    public $siteSubdomain = 'std';
     public $siteEmail;
     public $sitePreset;
 
-    public $sqlType         = 'mysql';
+    public $sqlType = 'mysql';
     public $sqlHost;
     public $sqlUsername;
     public $sqlPassword;
@@ -58,6 +59,10 @@ class AntragsgruenInitForm extends Model
                 $this->siteEmail  = $config->mailFromEmail;
                 $this->setDatabaseFromParams($config->dbConnection);
                 $this->adminIds = $config->adminUserIds;
+
+                if ($config->siteSubdomain) {
+                    $this->siteSubdomain = $config->siteSubdomain;
+                }
 
                 if ($this->verifyDBConnection(false)) {
                     $site = $this->getDefaultSite();
@@ -216,7 +221,7 @@ class AntragsgruenInitForm extends Model
         if (!$this->verifyDBConnection(false) || !$this->tablesAreCreated()) {
             return null;
         }
-        $sites = Site::findAll(['1=1']);
+        $sites = Site::find()->all();
         if (count($sites) > 0) {
             return $sites[0];
         } else {
@@ -261,7 +266,7 @@ class AntragsgruenInitForm extends Model
 
         $site         = Site::createFromForm(
             $preset,
-            'std',
+            $this->siteSubdomain,
             $this->siteTitle,
             '',
             '',
@@ -274,7 +279,7 @@ class AntragsgruenInitForm extends Model
             $preset,
             $this->sitePreset,
             $this->siteTitle,
-            'std',
+            $this->siteSubdomain,
             1
         );
         $site->link('currentConsultation', $consultation);
@@ -425,6 +430,7 @@ class AntragsgruenInitForm extends Model
         $config->mailFromEmail = $this->siteEmail;
         $config->mailFromName  = $this->siteTitle;
         $config->dbConnection  = $this->getDBConfig();
+        $config->siteSubdomain = $this->siteSubdomain;
 
         try {
             $defaultSite = $this->getDefaultSite();

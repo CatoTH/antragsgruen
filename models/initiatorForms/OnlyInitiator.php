@@ -11,7 +11,7 @@ class OnlyInitiator extends DefaultFormBase
      */
     public static function getTitle()
     {
-        return 'Nur die AntragstellerIn';
+        return 'Nur die Antragsteller*in';
     }
 
     /**
