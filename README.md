@@ -48,6 +48,7 @@ curl -sS https://getcomposer.org/installer | php
 ./composer.phar install --prefer-dist
 sudo npm install -g gulp
 npm install gulp gulp-uglify gulp-concat gulp-concat-css gulp-minify-css gulp-sass gulp-sourcemaps
+gulp
 ```
 
 If you want to use the web-based installer (recommended):
