@@ -360,12 +360,26 @@ class MotionController extends AdminBase
     }
 
     /**
+     * @param int $motionTypeId
      * @return string
      */
-    public function actionPdfziplist()
+    public function actionPdfziplist($motionTypeId = 0)
     {
+        try {
+            if ($motionTypeId > 0) {
+                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions();
+            } else {
+                $motions = $this->consultation->getVisibleMotions();
+            }
+            if (count($motions) == 0) {
+                return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+            }
+        } catch (ExceptionBase $e) {
+            return $this->showErrorpage(404, $e->getMessage());
+        }
+
         $zip = new \app\components\ZipWriter();
-        foreach ($this->consultation->getVisibleMotions() as $motion) {
+        foreach ($motions as $motion) {
             $zip->addFile($motion->getFilenameBase(false) . '.pdf', LayoutHelper::createPdf($motion));
         }
 
@@ -378,12 +392,26 @@ class MotionController extends AdminBase
     }
 
     /**
+     * @param int $motionTypeId
      * @return string
      */
-    public function actionOdtziplist()
+    public function actionOdtziplist($motionTypeId = 0)
     {
+        try {
+            if ($motionTypeId > 0) {
+                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions();
+            } else {
+                $motions = $this->consultation->getVisibleMotions();
+            }
+            if (count($motions) == 0) {
+                return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+            }
+        } catch (ExceptionBase $e) {
+            return $this->showErrorpage(404, $e->getMessage());
+        }
+
         $zip = new \app\components\ZipWriter();
-        foreach ($this->consultation->getVisibleMotions() as $motion) {
+        foreach ($motions as $motion) {
             $zip->addFile($motion->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($motion));
         }
 

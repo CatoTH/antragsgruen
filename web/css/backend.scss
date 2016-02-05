@@ -1,4 +1,7 @@
 @charset "UTF-8";
+@import "variables";
+@import "bootstrap-3.3.6-sass/bootstrap/variables";
+@import "bootstrap-3.3.6-sass/bootstrap/glyphicons";
 
 .adminForm {
   label {
@@ -60,6 +63,30 @@ label.legend {
   .motionTypeCreate {
     font-weight: normal;
     font-style: italic;
+  }
+  .exportList {
+    display: inline;
+    padding: 0;
+    list-style-type: none;
+    > li {
+      font-weight: normal;
+      display: inline-block;
+      margin-right: 10px;
+      &:after {
+        content: "\002a";
+        @extend .glyphicon;
+        margin-left: 10px;
+        font-size: 0.5em;
+        color: #444;
+        line-height: 17px;
+        vertical-align: middle;
+        display: inline-block;
+        padding-bottom: 3px;
+      }
+      &:last-child:after {
+        content: "";
+      }
+    }
   }
 }
 

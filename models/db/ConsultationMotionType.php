@@ -235,4 +235,19 @@ class ConsultationMotionType extends ActiveRecord
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'layoutTwoCols'], 'safe'],
         ];
     }
+
+    /**
+     * @param bool $includeWithdrawn
+     * @return Motion[]
+     */
+    public function getVisibleMotions($includeWithdrawn = true)
+    {
+        $return = [];
+        foreach ($this->motions as $motion) {
+            if (!in_array($motion->status, $this->getConsultation()->getInvisibleMotionStati(!$includeWithdrawn))) {
+                $return[] = $motion;
+            }
+        }
+        return $return;
+    }
 }
