@@ -401,12 +401,17 @@ class AenderungsantragController extends AntragsgruenController
         }
 
         $antragstellerIn = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));
+        $unterstuetzerInnen = array();
+        foreach ($antrag->antragUnterstuetzerInnen as $unt) {
+            if ($unt->rolle == IUnterstuetzerInnen::$ROLLE_UNTERSTUETZERIN) $unterstuetzerInnen[] = $unt->person;
+        }
 
         $this->render('bearbeiten_form', array(
             "mode"             => "bearbeiten",
             "antrag"           => $antrag,
             "aenderungsantrag" => $aenderungsantrag,
             "antragstellerIn"  => $antragstellerIn,
+            "unterstuetzerInnen" => $unterstuetzerInnen,
             "hiddens"          => $hiddens,
             "js_protection"    => $js_protection,
             "sprache"          => $aenderungsantrag->antrag->veranstaltung->getSprache(),

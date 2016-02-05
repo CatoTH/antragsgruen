@@ -71,6 +71,10 @@ $cs->registerScriptFile($assets_base . '/js/antraege.js', CClientScript::POS_END
 
 <body <?php if (count($row_classes) > 0) echo "class='" . implode(" ", $row_classes) . "'"; ?>>
 
+<section style="background: #fafafa; padding: 5px; border-bottom: solid 1px #e0e0e0;">
+	<a href="https://antragsgruen.de/"><strong>Antragsgrün</strong> <span style="color: black;">- die Online-Antragsverwaltung für Parteitage, Verbandstagungen und Mitgliederversammlungen</span></a>
+</section>
+
 <div class="container" id="page">
 	<div id="mainmenu">
 		<div class="navbar">

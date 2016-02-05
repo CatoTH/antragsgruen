@@ -31,7 +31,7 @@ if ($antrag_link) {
 	$this->menus_html[] = '<a class="neuer-antrag" href="' . CHtml::encode($antrag_stellen_link) . '" title="' . CHtml::encode($sprache->get("Neuen Antrag stellen")) . '"></a>';
 }
 
-if (!in_array($veranstaltung->policy_antraege, array("Admins"))) {
+if (!in_array($veranstaltung->policy_antraege, array("Admins")) || count($neueste_antraege) > 0) {
 	$html = "<div><ul class='nav nav-list neue-antraege'><li class='nav-header'>" . $sprache->get("Neue Anträge") . "</li>";
 	if (count($neueste_antraege) == 0) $html .= "<li><i>keine</i></li>";
 	else foreach ($neueste_antraege as $ant) {

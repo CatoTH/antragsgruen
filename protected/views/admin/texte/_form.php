@@ -42,7 +42,7 @@ $app->getClientScript()->registerScriptFile($this->getAssetsBase() . '/js/ckedit
 
 	if ($model->edit_datum != null) echo "Zuletzt geändert: " . $model->edit_datum;
 
-	if (in_array($model->text_id, Veranstaltung::getHTMLStandardtextIDs())) {
+	if (in_array(mb_strtolower($model->text_id), Veranstaltung::getHTMLStandardtextIDs())) {
 		?>
 		<script>
 

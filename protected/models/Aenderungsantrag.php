@@ -366,6 +366,7 @@ class Aenderungsantrag extends IAntrag
 
 		for ($i = 0; $i < count($abs_alt); $i++) {
 			$ae_absatz_nr = count($this->absaetze) + $i;
+			if (!isset($abs_neu[$i])) continue;
 			if ($abs_neu[$i] == "") {
 				$this->absaetze[] = null;
 			} else {
@@ -554,7 +555,6 @@ class Aenderungsantrag extends IAntrag
 	 */
 	public function binInitiatorIn()
 	{
-
 		if (!Yii::app()->user->isGuest) {
 			/** @var Person $current_user */
 			$current_user = Person::model()->findByAttributes(array("auth" => Yii::app()->user->id));

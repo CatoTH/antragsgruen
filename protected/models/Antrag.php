@@ -41,6 +41,7 @@ class Antrag extends IAntrag
 	public static $TYP_DRINGLICHKEITSANTRAG = 7;
 	public static $TYP_TAGESORDNUNG = 8;
 	public static $TYP_ENTWURF = 9;
+	public static $TYP_BEISPIELPROJEKT = 10;
 
 	public static $TYPEN = array(
 		0 => "Antrag",
@@ -53,6 +54,7 @@ class Antrag extends IAntrag
 		7 => "Dringlichkeitsantrag",
 		8 => "Tagesordnung",
 		9 => "Entwurf",
+		10 => "Beispielprojekt",
 	);
 
 	public static $TYP_PREFIX = array(
@@ -66,11 +68,12 @@ class Antrag extends IAntrag
 		7 => "D",
 		8 => "T",
 		9 => "E",
+		10 => "B",
 	);
 
     public static $TYPEN_SORTED = array(
         8, // Tagesordnung
-        2, 7, 4, 3, 0, 5, 6, 9,
+        2, 7, 4, 3, 6, 0, 5, 9, 10,
         1, // Satzung
     );
 

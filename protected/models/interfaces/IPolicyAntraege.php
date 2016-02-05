@@ -121,6 +121,7 @@ abstract class IPolicyAntraege
                 $antragstellerIn->attributes     = $_REQUEST["Person"];
                 $antragstellerIn->telefon        = (isset($_REQUEST["Person"]["telefon"]) ? $_REQUEST["Person"]["telefon"] : "");
                 $antragstellerIn->typ            = (isset($_REQUEST["Person"]["typ"]) && $_REQUEST["Person"]["typ"] == "organisation" ? Person::$TYP_ORGANISATION : Person::$TYP_PERSON);
+		$antragstellerIn->email          = (isset($_REQUEST["Person"]["email"]) ? $_REQUEST["Person"]["email"] : "");
                 $antragstellerIn->angelegt_datum = new CDbExpression('NOW()');
                 $antragstellerIn->status         = Person::$STATUS_UNCONFIRMED;
                 $antragstellerIn->save();

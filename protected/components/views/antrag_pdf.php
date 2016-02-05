@@ -101,6 +101,19 @@ if ($header) {
             "L"
         );
     } else {
+        if (count($antrag->tags) > 0) {
+            $bereiche = [];
+            foreach ($antrag->tags as $tag) {
+                $bereiche[] = $tag->name;
+            }
+            $pdf->MultiCell(50, 0, "Themenbereich:", 0, "L", false, 0);
+            $pdf->SetFont("helvetica", "B", 12);
+            $pdf->MultiCell(100, 0, implode(", ", $bereiche), null, "L");
+
+            $pdf->Ln(5);
+            $pdf->SetX(12);
+            $pdf->MultiCell(12, 0, "", 0, "L", false, 0);
+        }
         $pdf->MultiCell(50, 0, "Gegenstand:", 0, "L", false, 0);
         $pdf->SetFont("helvetica", "B", 12);
         $pdf->MultiCell(100, 0, $gegenstand,
@@ -187,9 +200,9 @@ foreach ($absae as $i => $abs) {
     $text2 = implode("<br>", $zeilennrs);
 
     $y = $pdf->getY();
+
     $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
     $pdf->writeHTMLCell(173, '', 24, '', $text, 0, 1, 0, true, '', true);
-
     $pdf->Ln(7);
 
 }
