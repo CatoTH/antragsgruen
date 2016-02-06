@@ -54,15 +54,24 @@ class ManagerController extends Base
             }
         }
 
+        $encodeWithShy = function ($title) {
+            $title     = Html::encode($title);
+            $shyAfters = ['itglieder', 'enden', 'voll', 'undex', 'gierten', 'wahl', 'andes'];
+            foreach ($shyAfters as $shyAfter) {
+                $title = str_replace($shyAfter, $shyAfter . '&shy;', $title);
+            }
+            return $title;
+        };
+
         $sitesCurrent = $this->getParams()->getBehaviorClass()->getManagerCurrentSidebarSites($sitesCurrent);
         $html         = '<ul class="nav nav-list current-uses-list">';
         $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
         foreach ($sitesCurrent as $data) {
             $html .= '<li>';
             if ($data['organization'] != '') {
-                $html .= '<span class="orga">' . Html::encode($data['organization']) . '</span>';
+                $html .= '<span class="orga">' . $encodeWithShy($data['organization']) . '</span>';
             }
-            $html .= Html::a(Html::encode($data['title']), $data['url']) . '</li>' . "\n";
+            $html .= Html::a($encodeWithShy($data['title']), $data['url']) . '</li>' . "\n";
         }
         $html .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
@@ -78,9 +87,9 @@ class ManagerController extends Base
         foreach ($sitesOld as $data) {
             $html .= '<li class="hidden">';
             if ($data['organization'] != '') {
-                $html .= '<span class="orga">' . Html::encode($data['organization']) . '</span>';
+                $html .= '<span class="orga">' . $encodeWithShy($data['organization']) . '</span>';
             }
-            $html .= Html::a(Html::encode($data['title']), $data['url']) . '</li>' . "\n";
+            $html .= Html::a($encodeWithShy($data['title']), $data['url']) . '</li>' . "\n";
         }
         $html .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
