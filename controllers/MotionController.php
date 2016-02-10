@@ -111,13 +111,22 @@ class MotionController extends Base
     }
 
     /**
+     * @param int $motionTypeId
      * @return string
      */
-    public function actionPdfcollection()
+    public function actionPdfcollection($motionTypeId = 0)
     {
-        $motions = $this->consultation->getVisibleMotionsSorted();
-        if (count($motions) == 0) {
-            $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+        try {
+            if ($motionTypeId > 0) {
+                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions();
+            } else {
+                $motions = $this->consultation->getVisibleMotionsSorted();
+            }
+            if (count($motions) == 0) {
+                return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+            }
+        } catch (ExceptionBase $e) {
+            return $this->showErrorpage(404, $e->getMessage());
         }
 
         \yii::$app->response->format = Response::FORMAT_RAW;
@@ -205,11 +214,11 @@ class MotionController extends Base
         }
 
         $motionViewParams = [
-            'motion'                 => $motion,
-            'openedComments'         => $openedComments,
-            'adminEdit'              => $adminEdit,
-            'commentForm'            => null,
-            'commentWholeMotions'    => $commentWholeMotions,
+            'motion'              => $motion,
+            'openedComments'      => $openedComments,
+            'adminEdit'           => $adminEdit,
+            'commentForm'         => null,
+            'commentWholeMotions' => $commentWholeMotions,
         ];
 
         try {

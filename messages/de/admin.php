@@ -18,6 +18,7 @@ return [
     'index_export_oslides_amend'  => 'Änderungsanträge',
     'index_error_prone'           => 'fehleranfälliger',
     'index_amendments'            => 'Änderungsanträge',
+    'index_motion_export'         => 'Export',
     'index_pdf_collection'        => 'Sammel-PDF',
     'index_pdf_list'              => 'Liste aller PDFs',
     'index_pdf_zip_list'          => 'ZIP-Archiv aller PDFs',

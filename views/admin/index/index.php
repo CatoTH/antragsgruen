@@ -59,26 +59,39 @@ foreach ($consultation->motionTypes as $motionType) {
             ': <em>' . $motionp->getPermissionDeniedMotionMsg() . '</em></li>';
     }
 
+    echo '<li>' . \Yii::t('admin', 'index_motion_export') . ': ';
+
+    echo '<ul class="exportList">';
+
     if ($controller->getParams()->xelatexPath) {
-        $zipURL = UrlHelper::createUrl('admin/motion/pdfziplist');
-        echo '<li class="secondary">';
+        $zipURL = UrlHelper::createUrl(['motion/pdfcollection', 'motionTypeId' => $motionType->id]);
+        echo '<li>';
+        echo Html::a(\Yii::t('admin', 'index_pdf_collection'), $zipURL, ['class' => 'motionPDF' . $motionType->id]);
+        echo '</li>';
+    }
+
+    if ($controller->getParams()->xelatexPath) {
+        $zipURL = UrlHelper::createUrl(['admin/motion/pdfziplist', 'motionTypeId' => $motionType->id]);
+        echo '<li>';
         echo Html::a(\Yii::t('admin', 'index_pdf_zip_list'), $zipURL, ['class' => 'motionZIP' . $motionType->id]);
         echo '</li>';
     }
 
-    $zipURL = UrlHelper::createUrl('admin/motion/odtziplist');
-    echo '<li class="secondary">';
+    $zipURL = UrlHelper::createUrl(['admin/motion/odtziplist', 'motionTypeId' => $motionType->id]);
+    echo '<li>';
     echo Html::a(\Yii::t('admin', 'index_odt_zip_list'), $zipURL, ['class' => 'motionOdtZIP' . $motionType->id]);
     echo '</li>';
 
     $odsUrl = UrlHelper::createUrl(['admin/motion/odslist', 'motionTypeId' => $motionType->id]);
-    echo '<li class="secondary">';
+    echo '<li>';
     echo Html::a(\Yii::t('admin', 'index_export_ods'), $odsUrl, ['class' => 'motionODS' . $motionType->id]) . '</li>';
 
     $excelUrl = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
-    echo '<li class="secondary">';
+    echo '<li>';
     echo Html::a(\Yii::t('admin', 'index_export_excel'), $excelUrl, ['class' => 'motionExcel' . $motionType->id]) .
         ' (' . \Yii::t('admin', 'index_error_prone') . ')</li>';
+
+    echo '</ul>';
 
     echo '</ul>';
 }
@@ -87,27 +100,31 @@ $amendmentOdsLink  = UrlHelper::createUrl('admin/amendment/odslist');
 $amendmentPDFLink  = UrlHelper::createUrl('admin/amendment/pdflist');
 $pdfCollectionLink = UrlHelper::createUrl('amendment/pdfcollection');
 echo '<h3>' . \Yii::t('admin', 'index_amendments') . '</h3>
-<ul>
-    <li>' .
-    Html::a(\Yii::t('admin', 'index_pdf_collection'), $pdfCollectionLink, ['class' => 'amendmentsPdf']) .
-    '</li>
-    <li class="secondary">' .
-    Html::a(\Yii::t('admin', 'index_pdf_list'), $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '
-    </li>';
+<ul>';
+
+echo '<li>' . \Yii::t('admin', 'index_motion_export') . ': ';
+
+echo '<ul class="exportList">';
+
+echo '<li>' . Html::a(\Yii::t('admin', 'index_pdf_collection'), $pdfCollectionLink, ['class' => 'amendmentsPdf']) . '
+</li>';
 if ($controller->getParams()->xelatexPath) {
     $amendmentPDFZIPLink = UrlHelper::createUrl('admin/amendment/pdfziplist');
-    echo '<li class="secondary">' .
+    echo '<li>' .
         Html::a(\Yii::t('admin', 'index_pdf_zip_list'), $amendmentPDFZIPLink, ['class' => 'amendmentPdfZipList']) . '
     </li>';
 }
 $amendmentODTZIPLink = UrlHelper::createUrl('admin/amendment/odtziplist');
-echo '<li class="secondary">' .
+echo '<li>' .
     Html::a(\Yii::t('admin', 'index_odt_zip_list'), $amendmentODTZIPLink, ['class' => 'amendmentOdtZipList']) . '
     </li>';
-echo '<li class="secondary">' .
+echo '<li>' .
     Html::a(\Yii::t('admin', 'index_export_ods'), $amendmentOdsLink, ['class' => 'amendmentOds']) .
     '</li>';
 
+echo '<li>' . Html::a(\Yii::t('admin', 'index_pdf_list'), $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '</li>';
+
+echo '</ul>';
 
 echo '</ul>';
 

@@ -446,6 +446,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->getConsultation()->getSettings()->lineNumberingGlobal) {
             $motions      = $this->getConsultation()->getVisibleMotions(false);
             $motionBlocks = MotionSorter::getSortedMotions($this->getConsultation(), $motions);
+if (isset($_REQUEST['test'])) var_dump($motionBlocks);
             $lineNo       = 1;
             foreach ($motionBlocks as $motions) {
                 foreach ($motions as $motion) {
