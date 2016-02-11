@@ -133,7 +133,9 @@ class UserController extends Base
      */
     public function actionLogin($backUrl = '')
     {
-        $this->layout = 'column2';
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
 
         if ($backUrl == '') {
             $backUrl = '/';

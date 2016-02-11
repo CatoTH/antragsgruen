@@ -30,6 +30,9 @@ class Base extends Controller
     /** @var string */
     public $layout = 'column1';
 
+	/** @var bool */
+	public $wordpressMode = false;
+
     /**
      * @param string $cid the ID of this controller.
      * @param Module $module the module that this controller belongs to.
@@ -40,6 +43,13 @@ class Base extends Controller
         parent::__construct($cid, $module, $config);
         $this->layoutParams = new Layout();
     }
+
+	/**
+	 */
+	public function setWordpressMode() {
+		$this->wordpressMode = true;
+		$this->layout = false;
+	}
 
     /**
      * @param \yii\base\Action $action
@@ -88,6 +98,13 @@ class Base extends Controller
         } else {
             return false;
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getSidebarContent() {
+        return 'SIDEBAR Wordpress';
     }
 
     /**

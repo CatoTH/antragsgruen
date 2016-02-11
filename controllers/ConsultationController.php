@@ -383,7 +383,9 @@ class ConsultationController extends Base
      */
     public function actionIndex()
     {
-        $this->layout = 'column2';
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
         $this->consultationSidebar($this->consultation);
 
         if (isset($_POST['saveAgenda'])) {

@@ -121,7 +121,9 @@ class AmendmentController extends Base
             return '';
         }
 
-        $this->layout = 'column2';
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
 
         $openedComments = [];
 

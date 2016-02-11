@@ -178,7 +178,9 @@ class MotionController extends Base
         $motionId = IntVal($motionId);
         $motion   = $this->getMotionWithCheck($motionId);
 
-        $this->layout = 'column2';
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
 
         $openedComments = [];
         if ($commentId > 0) {

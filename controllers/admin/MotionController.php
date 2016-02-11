@@ -190,7 +190,9 @@ class MotionController extends AdminBase
         }
         $this->checkConsistency($motion);
 
-        $this->layout = 'column2';
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
 
         $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
         $form->setAdminMode(true);

@@ -101,7 +101,9 @@ class ManagerController extends Base
      */
     public function actionIndex()
     {
-        $this->layout = 'column2';
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
 
         $this->addSidebar();
         return $this->render('index');
