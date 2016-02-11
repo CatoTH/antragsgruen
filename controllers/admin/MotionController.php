@@ -233,8 +233,8 @@ class MotionController extends AdminBase
         }
 
         if (isset($_POST['save'])) {
-            $form->setAttributes([$_POST, $_FILES]);
             try {
+                $form->setAttributes([$_POST, $_FILES]);
                 $form->saveMotion($motion);
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
