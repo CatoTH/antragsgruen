@@ -5,7 +5,9 @@ $configDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'model
 require_once($configDir . 'JsonConfigTrait.php');
 require_once($configDir . 'AntragsgruenApp.php');
 
-if (YII_ENV == 'test') {
+if (YII_ENV == 'wordpress') {
+    $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_wordpress.json';
+} elseif (YII_ENV == 'test') {
     $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json';
 } else {
     $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.json';
