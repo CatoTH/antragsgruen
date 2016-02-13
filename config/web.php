@@ -6,21 +6,23 @@ require_once($configDir . 'JsonConfigTrait.php');
 require_once($configDir . 'AntragsgruenApp.php');
 
 if (YII_ENV == 'wordpress') {
-    $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_wordpress.json';
-} elseif (YII_ENV == 'test') {
-    $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json';
-} else {
-    $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.json';
-}
-if (file_exists($configFile)) {
-    $config = file_get_contents($configFile);
-} else {
-    $config = '';
+    /** @var $config */
+}  else {
+    if ( YII_ENV == 'test' ) {
+        $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json';
+    } else {
+        $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.json';
+    }
+    if ( file_exists( $configFile ) ) {
+        $config = file_get_contents( $configFile );
+    } else {
+        $config = '';
+    }
 }
 try {
     $params = new \app\models\settings\AntragsgruenApp($config);
 } catch (\Exception $e) {
-    die('Could not load configuration; probably due to a syntax error in config/config.json?');	
+    die('Could not load configuration; probably due to a syntax error in config/config.json?');
 }
 
 if (YII_DEBUG === false) {
