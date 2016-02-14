@@ -28,7 +28,9 @@ class UserNotification extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'userNotification';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'userNotification';
     }
 
     /**

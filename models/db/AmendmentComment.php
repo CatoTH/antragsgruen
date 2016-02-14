@@ -31,7 +31,9 @@ class AmendmentComment extends IComment
      */
     public static function tableName()
     {
-        return 'amendmentComment';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'amendmentComment';
     }
 
     /**

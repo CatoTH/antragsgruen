@@ -11,6 +11,7 @@ class AntragsgruenApp
     public $dbConnection          = null;
     public $siteSubdomain         = null;
     public $prettyUrl             = true;
+    public $tablePrefix           = '';
     public $resourceBase          = '/';
     public $baseLanguage          = 'de';
     public $randomSeed            = '';

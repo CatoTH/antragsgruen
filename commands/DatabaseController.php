@@ -1,6 +1,7 @@
 <?php
 namespace app\commands;
 
+use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
 /**
@@ -9,6 +10,17 @@ use yii\console\Controller;
  */
 class DatabaseController extends Controller
 {
+    /**
+     * @return string
+     */
+    private function getDbPrefix()
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+
+        return $params->tablePrefix;
+    }
+
     /**
      * Deletes the whole database. CAUTION!
      *
@@ -25,6 +37,7 @@ class DatabaseController extends Controller
                 \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
                 'db' . DIRECTORY_SEPARATOR . 'delete.sql'
             );
+            $deleteString = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $deleteString);
             $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
         }
@@ -45,6 +58,7 @@ class DatabaseController extends Controller
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'create.sql'
         );
+        $createString = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $createString);
         $command      = \Yii::$app->db->createCommand($createString);
         $command->execute();
 
@@ -52,6 +66,7 @@ class DatabaseController extends Controller
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'data.sql'
         );
+        $createString = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $createString);
         $command      = \Yii::$app->db->createCommand($createString);
         $command->execute();
     }
@@ -71,6 +86,7 @@ class DatabaseController extends Controller
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'tests' .
             DIRECTORY_SEPARATOR . '_data' . DIRECTORY_SEPARATOR . 'dbdata1.sql'
         );
+        $testdata = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $testdata);
         $command  = \Yii::$app->db->createCommand($testdata);
         $command->execute();
     }
@@ -91,6 +107,7 @@ class DatabaseController extends Controller
                 \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
                 'db' . DIRECTORY_SEPARATOR . 'delete.sql'
             );
+            $deleteString = str_replace('###TABLE_PREFIX###', $this->getDbPrefix(), $deleteString);
             $command      = \Yii::$app->db->createCommand($deleteString);
             $command->execute();
             unset($command);

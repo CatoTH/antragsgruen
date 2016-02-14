@@ -23,7 +23,9 @@ class TexTemplate extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'texTemplate';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'texTemplate';
     }
 
     /**

@@ -23,7 +23,9 @@ class MotionCommentSupporter extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'motionCommentSupporter';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'motionCommentSupporter';
     }
 
     /**

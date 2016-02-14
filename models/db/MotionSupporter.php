@@ -29,7 +29,9 @@ class MotionSupporter extends ISupporter
      */
     public static function tableName()
     {
-        return 'motionSupporter';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'motionSupporter';
     }
 
     /**

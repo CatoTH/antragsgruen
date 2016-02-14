@@ -42,7 +42,9 @@ class ConsultationSettingsMotionSection extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'consultationSettingsMotionSection';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'consultationSettingsMotionSection';
     }
 
     /**

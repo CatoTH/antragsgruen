@@ -22,7 +22,9 @@ class ConsultationSettingsTag extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'consultationSettingsTag';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'consultationSettingsTag';
     }
 
     /**
