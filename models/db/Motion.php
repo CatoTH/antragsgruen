@@ -599,7 +599,8 @@ if (isset($_REQUEST['test'])) var_dump($motionBlocks);
                 $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
                 $plain      = \Yii::t('motion', 'published_email_body');
                 $plain      = str_replace('%LINK%', $motionLink, $plain);
-                $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . '</h1>';
+                $title      = $this->motionType->titleSingular . ': ' . $this->title;
+                $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
                 $sections   = $this->getSortedSections(true);
 
                 foreach ($sections as $section) {

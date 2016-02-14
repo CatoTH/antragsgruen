@@ -49,6 +49,7 @@ curl -sS https://getcomposer.org/installer | php
 sudo npm install -g gulp
 npm install gulp gulp-uglify gulp-concat gulp-concat-css gulp-minify-css gulp-sass gulp-sourcemaps
 gulp
+gulp pdfjs
 ```
 
 If you want to use the web-based installer (recommended):
