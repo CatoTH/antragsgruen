@@ -42,7 +42,7 @@ if ($admin) {
     echo \Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();
-    $layout->addOnLoadJS('$.Antragsgruen.contentPageEdit();');
+    $layout->addOnLoadJS('jQuery.Antragsgruen.contentPageEdit();');
 }
 
 echo '</div>';

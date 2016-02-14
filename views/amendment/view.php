@@ -247,4 +247,4 @@ if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOB
     echo '</section>';
 }
 
-$layout->addOnLoadJS('$.Antragsgruen.amendmentShow();');
+$layout->addOnLoadJS('jQuery.Antragsgruen.amendmentShow();');

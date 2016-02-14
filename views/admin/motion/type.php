@@ -446,7 +446,7 @@ echo '<a href="#" class="sectionAdder"><span class="glyphicon glyphicon-plus-sig
 echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">' .
     \Yii::t('base', 'save') . '</button></div>';
 
-$layout->addOnLoadJS('$.AntragsgruenAdmin.motionTypeEdit();');
+$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.motionTypeEdit();');
 
 echo '</div>';
 echo Html::endForm();

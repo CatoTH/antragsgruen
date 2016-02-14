@@ -24,7 +24,7 @@ $this->title = 'Einstellungen';
 $layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Veranstaltung');
 
-$layout->addOnLoadJS('$.AntragsgruenAdmin.consultationSettingsForm();');
+$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.consultationSettingsForm();');
 
 /**
  * @param \app\models\settings\Consultation $settings

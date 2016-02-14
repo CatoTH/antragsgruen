@@ -194,4 +194,4 @@ echo '<div class="saveholder">
 
 echo Html::endForm();
 
-$layout->addOnLoadJS('$.AntragsgruenAdmin.amendmentEditInit();');
+$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.amendmentEditInit();');

@@ -133,6 +133,6 @@ echo '<div class="submitHolder content"><button type="submit" name="save" class=
 echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on');
 echo '</button></div>';
 
-$layout->addOnLoadJS('$.Antragsgruen.amendmentEditForm(' . ($multipleParagraphs ? 1 : 0) . ');');
+$layout->addOnLoadJS('jQuery.Antragsgruen.amendmentEditForm(' . ($multipleParagraphs ? 1 : 0) . ');');
 
 echo Html::endForm();

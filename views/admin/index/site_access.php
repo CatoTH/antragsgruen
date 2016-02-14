@@ -151,4 +151,4 @@ echo '</div>
 echo Html::endForm();
 
 
-$layout->addOnLoadJS('$.AntragsgruenAdmin.siteAccessInit();');
+$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.siteAccessInit();');

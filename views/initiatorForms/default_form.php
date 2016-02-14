@@ -298,5 +298,5 @@ if ($hasSupporters) {
 echo '</fieldset>';
 
 $controller->layoutParams->addOnLoadJS(
-    '$.Antragsgruen.defaultInitiatorForm();'
+    'jQuery.Antragsgruen.defaultInitiatorForm();'
 );
