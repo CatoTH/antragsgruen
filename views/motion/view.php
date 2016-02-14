@@ -296,4 +296,4 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
     echo '</section>';
 }
 
-$layout->addOnLoadJS('$.Antragsgruen.motionShow();');
+$layout->addOnLoadJS('jQuery.Antragsgruen.motionShow();');

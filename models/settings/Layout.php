@@ -139,6 +139,31 @@ class Layout
     }
 
     /**
+     * @return string[]
+     */
+    public function getJSFiles() {
+        $jsLang = $this->getJSLanguageCode();
+        $files = [];
+        if (defined('YII_DEBUG') && YII_DEBUG) {
+            $files[] = $this->resourceUrl('js/bootstrap.js');
+            $files[] = $this->resourceUrl('js/bower/bootbox/bootbox.js');
+            $files[] = $this->resourceUrl('js/scrollintoview.js');
+            $files[] = $this->resourceUrl('js/jquery.isonscreen.js');
+            $files[] = $this->resourceUrl('js/bower/intl/dist/Intl.min.js');
+            $files[] = $this->resourceUrl('js/antragsgruen.js');
+            $files[] = $this->resourceUrl('js/antragsgruen-' . $jsLang . '.js');
+        } else {
+            $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
+            $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
+        }
+	    foreach ($this->extraJs as $extraJs) {
+		    $files[] = $this->resourceUrl($extraJs);
+	    }
+
+        return $files;
+    }
+
+    /**
      * @param string $name
      * @param null|string $path
      * @return $this

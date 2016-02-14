@@ -179,4 +179,4 @@ if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
     echo '</div></section>';
 }
 
-$layout->addOnLoadJS('$.Antragsgruen.loginForm();');
+$layout->addOnLoadJS('jQuery.Antragsgruen.loginForm();');

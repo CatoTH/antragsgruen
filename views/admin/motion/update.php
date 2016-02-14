@@ -221,4 +221,4 @@ echo '<div class="saveholder">
 
 echo Html::endForm();
 
-$layout->addOnLoadJS('$.AntragsgruenAdmin.motionEditInit();');
+$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.motionEditInit();');

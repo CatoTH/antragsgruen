@@ -124,6 +124,6 @@ echo '<div class="submitHolder content"><button type="submit" name="save" class=
 echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('motion', 'go_on');
 echo '</button></div>';
 
-$layout->addOnLoadJS('$.Antragsgruen.motionEditForm();');
+$layout->addOnLoadJS('jQuery.Antragsgruen.motionEditForm();');
 
 echo Html::endForm();

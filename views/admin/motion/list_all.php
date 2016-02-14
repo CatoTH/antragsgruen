@@ -28,7 +28,7 @@ $layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
 
-$layout->addOnLoadJS('$.AntragsgruenAdmin.motionListAll();');
+$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.motionListAll();');
 
 $route   = 'admin/motion/listall';
 $hasTags = (count($controller->consultation->tags) > 0);

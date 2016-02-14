@@ -115,4 +115,4 @@ echo '<h2 class="green">' . \Yii::t('user', 'del_title') . '</h2>' .
     ' . Html::endForm();
 
 
-$layout->addOnLoadJS('$.Antragsgruen.accountEdit();');
+$layout->addOnLoadJS('jQuery.Antragsgruen.accountEdit();');

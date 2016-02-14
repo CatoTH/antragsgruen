@@ -214,22 +214,8 @@ echo '</span>
         </div>
     </footer>';
 
-$jsLang = $layout->getJSLanguageCode();
-if (defined('YII_DEBUG') && YII_DEBUG) {
-    echo '<script src="' . $layout->resourceUrl('js/bootstrap.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/bower/bootbox/bootbox.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/scrollintoview.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/jquery.isonscreen.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/bower/intl/dist/Intl.min.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/antragsgruen.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/antragsgruen-' . $jsLang . '.js') . '"></script>';
-} else {
-    echo '<script src="' . $layout->resourceUrl('js/build/antragsgruen.min.js') . '"></script>
-    <script src="' . $layout->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js') . '"></script>';
-}
-
-foreach ($layout->extraJs as $file) {
-    echo '<script src="' . $layout->resourceUrl($file) . '"></script>' . "\n";
+foreach ($layout->getJSFiles() as $jsFile) {
+    echo '<script src="' . $jsFile . '"></script>' . "\n";
 }
 foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
