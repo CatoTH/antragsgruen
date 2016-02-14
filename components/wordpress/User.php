@@ -13,8 +13,8 @@ class User extends \yii\web\User
     /** @var \WP_User */
     private $_wordpressUser;
 
-    /** @var DBUser */
-    private $_identity;
+    /** @var DBUser|null */
+    private $_identity = null;
 
     /**
      * Initializes the application component.
@@ -24,7 +24,9 @@ class User extends \yii\web\User
         parent::init();
 
         $this->_wordpressUser = wp_get_current_user();
-        $this->_identity = $this->getOrCreateUser();
+        if ($this->_wordpressUser->ID > 0) {
+            $this->_identity = $this->getOrCreateUser();
+        }
     }
 
     /**
