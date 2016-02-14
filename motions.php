@@ -10,10 +10,13 @@
 
 use app\components\wordpress\WordpressCompatibility;
 
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
 defined( 'YII_DEBUG' ) or define( 'YII_DEBUG', true );
 defined( 'YII_ENV' ) or define( 'YII_ENV', 'wordpress' );
 
 define( 'ANTRAGSGRUEN_WP_PATH', '/motions' );
+define( 'ANTRAGSGRUEN_WP_VERSION', '0.1.1' );
 
 require( __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php' );
 require( __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR .

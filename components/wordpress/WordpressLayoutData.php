@@ -6,6 +6,9 @@ class WordpressLayoutData {
 	/** @var string */
 	public $content;
 	public $sidebar;
+	public $jsFiles;
+	public $cssFiles;
+	public $onLoadJs;
 
 	/** @var null|WordpressLayoutData */
 	protected static $instance = null;
