@@ -59,37 +59,36 @@ class WordpressCompatibility
             $wp_query->is_404      = false;
         }, 10);
 
-        try {
-            static::$app->run();
+        add_action('init', function () {
+            try {
 
-            $data = WordpressLayoutData::getInstance();
-            foreach ($data->jsFiles as $name => $file) {
-                wp_enqueue_script('motions-' . $name, $file, ['jquery-core'], ANTRAGSGRUEN_WP_VERSION, true);
-            }
-            foreach ($data->cssFiles as $name => $file) {
-                wp_enqueue_style('motions-layout', $file);
-            }
+                static::$app->run();
 
-            add_filter('the_content', function () {
-                $wpdata  = WordpressLayoutData::getInstance();
-                $content = $wpdata->content;
+                $data = WordpressLayoutData::getInstance();
+                foreach ($data->jsFiles as $name => $file) {
+                    wp_enqueue_script('motions-' . $name, $file, ['jquery-core'], ANTRAGSGRUEN_WP_VERSION, true);
+                }
+                foreach ($data->cssFiles as $name => $file) {
+                    wp_enqueue_style('motions-layout', $file);
+                }
+            } catch (\Exception $e) {
+                add_filter('the_content', function () use ($e) {
+                    return $e->getMessage();
+                }, 10);
+            }
+        });
+
+        add_filter('the_content', function () {
+            $wpdata  = WordpressLayoutData::getInstance();
+            $content = $wpdata->content;
+            if ($wpdata->onLoadJs) {
                 foreach ($wpdata->onLoadJs as $onLoadJs) {
                     $content .= '<script>jQuery(function() {' . $onLoadJs . '});</script>';
                 }
+            }
 
-                return $content;
-            }, 10);
-        } catch (\Exception $e) {
-            add_filter('the_content', function () use ($e) {
-                return $e->getMessage();
-            }, 10);
-        }
-
-        add_action('init', function () {
-            //add_rewrite_rule( 'motions/(.*)?', 'index.php?motions=$matches[1]', 'top' );
-            //flush_rewrite_rules( true );
-
-        });
+            return $content;
+        }, 10);
     }
 
     /**

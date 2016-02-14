@@ -43,7 +43,7 @@ class Application extends \yii\web\Application
             'request'      => ['class' => 'yii\web\Request'],
             'response'     => ['class' => 'app\components\wordpress\Response'],
             'session'      => ['class' => 'yii\web\Session'],
-            'user'         => ['class' => 'yii\web\User'],
+            'user'         => ['class' => 'app\components\wordpress\User'],
             'errorHandler' => ['class' => 'yii\web\ErrorHandler'],
         ]);
     }

@@ -403,6 +403,15 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @param int $id
+     * @return string
+     */
+    public static function wordpressId2Auth($id)
+    {
+        return 'wordpress:' . $id;
+    }
+
+    /**
      * @param string $password
      * @return bool
      */
