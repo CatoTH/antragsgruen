@@ -47,7 +47,9 @@ class ConsultationLog extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'consultationLog';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'consultationLog';
     }
 
     /**

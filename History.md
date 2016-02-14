@@ -1,6 +1,12 @@
 Version 3.1
 ===========
 
+- Support database table prefixes
+
+
+Version 3.1
+===========
+
 - PHP 7.0 Compatibility
 - Rewrite of the Diff-Algorithms
 - New Inline Amendment Merging

@@ -53,7 +53,9 @@ class Motion extends IMotion implements IRSSItem
      */
     public static function tableName()
     {
-        return 'motion';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'motion';
     }
 
     /**

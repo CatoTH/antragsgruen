@@ -20,7 +20,9 @@ class ConsultationOdtTemplate extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'consultationOdtTemplate';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'consultationOdtTemplate';
     }
 
     /**

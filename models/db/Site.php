@@ -40,7 +40,9 @@ class Site extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'site';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'site';
     }
 
     /**

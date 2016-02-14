@@ -31,7 +31,9 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'consultationAgendaItem';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'consultationAgendaItem';
     }
 
     /**

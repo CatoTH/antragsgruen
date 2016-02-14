@@ -74,7 +74,9 @@ class Consultation extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'consultation';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'consultation';
     }
 
     /**

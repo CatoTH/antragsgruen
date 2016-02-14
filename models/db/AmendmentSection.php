@@ -32,7 +32,9 @@ class AmendmentSection extends IMotionSection
      */
     public static function tableName()
     {
-        return 'amendmentSection';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'amendmentSection';
     }
 
     /**

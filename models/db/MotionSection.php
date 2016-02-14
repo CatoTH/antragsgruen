@@ -30,7 +30,9 @@ class MotionSection extends IMotionSection
      */
     public static function tableName()
     {
-        return 'motionSection';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'motionSection';
     }
 
     /**

@@ -29,7 +29,9 @@ class AmendmentSupporter extends ISupporter
      */
     public static function tableName()
     {
-        return 'amendmentSupporter';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'amendmentSupporter';
     }
 
     /**

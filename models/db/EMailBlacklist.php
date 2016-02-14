@@ -15,7 +15,9 @@ class EMailBlacklist extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'emailBlacklist';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'emailBlacklist';
     }
 
     /**

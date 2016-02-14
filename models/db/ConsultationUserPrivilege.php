@@ -27,7 +27,9 @@ class ConsultationUserPrivilege extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'consultationUserPrivilege';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'consultationUserPrivilege';
     }
 
     /**

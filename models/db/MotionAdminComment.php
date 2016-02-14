@@ -27,7 +27,9 @@ class MotionAdminComment extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'motionAdminComment';
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app->tablePrefix . 'motionAdminComment';
     }
 
     /**
