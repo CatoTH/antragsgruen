@@ -111,16 +111,22 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionTypeId
+     * @param string $motionTypeId
      * @return string
      */
-    public function actionPdfcollection($motionTypeId = 0)
+    public function actionPdfcollection($motionTypeId = '')
     {
         try {
-            if ($motionTypeId > 0) {
-                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions();
-            } else {
-                $motions = $this->consultation->getVisibleMotionsSorted();
+            $motions = $this->consultation->getVisibleMotionsSorted();
+            if ($motionTypeId != '' && $motionTypeId != '0') {
+                $motionTypeIds = explode(',', $motionTypeId);
+                $motionsFiltered = [];
+                foreach ($motions as $motion) {
+                    if (in_array($motion->motionTypeId, $motionTypeIds)) {
+                        $motionsFiltered[] = $motion;
+                    }
+                }
+                $motions = $motionsFiltered;
             }
             if (count($motions) == 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
