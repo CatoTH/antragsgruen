@@ -18,7 +18,6 @@ use app\models\db\User;
 use app\models\db\UserNotification;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
-use app\models\forms\AntragsgruenInitForm;
 use app\models\settings\AntragsgruenApp;
 
 class ConsultationController extends Base
@@ -366,15 +365,19 @@ class ConsultationController extends Base
     {
         \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
-        $shariff = new \Heise\Shariff\Backend([
-            'domain'   => $_SERVER['HTTP_HOST'],
-            'services' => ['Facebook'],
-            'cache'    => [
-                'ttl'      => 60,
-                'cacheDir' => $this->getParams()->tmpDir,
-            ]
-        ]);
-        return json_encode($shariff->get($url));
+        try {
+            $shariff = new \Heise\Shariff\Backend([
+                'domain'   => $_SERVER['HTTP_HOST'],
+                'services' => ['Facebook'],
+                'cache'    => [
+                    'ttl'      => 60,
+                    'cacheDir' => $this->getParams()->tmpDir,
+                ]
+            ]);
+            return json_encode($shariff->get($url));
+        } catch (\Exception $e) {
+            return json_encode([]);
+        }
     }
 
 
