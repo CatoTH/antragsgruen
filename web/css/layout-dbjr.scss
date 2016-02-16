@@ -57,10 +57,11 @@ $inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: $colorRed;
 $createMotionBtnColor: $colorRed;
 
+@import "bootstrap";
 @import "base_layout";
 @import "motions";
 @import "styles";
-
+@import "sidebar";
 
 .well h1 {
   font-family: "FiraSans", sans-serif;

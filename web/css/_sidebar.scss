@@ -1,0 +1,181 @@
+.sidebarSmall.navbar {
+  .nav li {
+    padding: 4px;
+  }
+  .nav li a {
+    margin-left: 20px;
+  }
+}
+
+
+#sidebar {
+  .nav-list {
+    padding: 0;
+    margin-bottom: 20px;
+
+    > li {
+      padding: 0 10px 10px 38px;
+      a {
+        color: $colorLinks;
+        padding: 0;
+        background: none;
+        filter: none;
+        margin: 0;
+        text-shadow: none;
+        display: inline;
+
+        &:link, &:visited {
+          color: $colorLinks;
+        }
+
+        .glyphicon {
+          position: absolute;
+          left: -25px;
+        }
+      }
+      &.nav-header {
+        padding: 5px 0 5px 15px;
+      }
+      &.notifications {
+        a span {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .nav-header {
+      margin-bottom: 12px;
+    }
+  }
+
+  .antragsgruenAd {
+    margin-top: 30px;
+    .content > div {
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+
+  $createMotionButtonOffset: 10px;
+
+  html.no-csstransforms & .createMotion, html.no-borderradius & .createMotion {
+    @extend .text-hide;
+    position: absolute;
+    top: 6px - $createMotionButtonOffset;
+    right: -58px;
+    display: block;
+    width: 58px;
+    height: 276px;
+    background-image: url(../img/neuer-antrag.png);
+  }
+
+  html.csstransforms.borderradius & {
+    .createMotionHolder1 {
+      position: absolute;
+      top: 10px - $createMotionButtonOffset;
+      right: -1px;
+    }
+    .createMotionHolder2 {
+      position: absolute;
+      left: 0;
+      top: 0;
+      -moz-transform: rotate(270deg) translateX(-100%);
+      -webkit-transform: rotate(270deg) translateX(-100%);
+      -o-transform: rotate(270deg) translateX(-100%);
+      -ms-transform: rotate(270deg) translateX(-100%);
+      transform: rotate(270deg) translateX(-100%);
+
+      -moz-transform-origin: 0% 0%;
+      -ms-transform-origin: 0% 0%;
+      -o-transform-origin: 0% 0%;
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+
+      display: inline-block;
+      overflow: hidden;
+      padding: 0 10px 10px;
+    }
+    .createMotion {
+      background: $createMotionBtnColor; /* Old browsers */
+      background: -moz-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $createMotionBtnColor), color-stop(100%, lighten($createMotionBtnColor, 2.3%))); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* IE10+ */
+      background: linear-gradient(to bottom, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* W3C */
+      padding: 10px 30px;
+      color: white;
+      text-decoration: none;
+      font-family: $headingFont;
+      font-weight: bold;
+      font-size: 14px;
+      -webkit-border-radius: 0 0 10px 10px;
+      border-radius: 0 0 10px 10px;
+      border: solid 1px lighten($createMotionBtnColor, 1.8%);
+
+      text-transform: uppercase;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+
+      -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+      display: inline-block;
+      white-space: nowrap;
+
+      > span {
+        padding-right: 10px;
+        font-size: 15px;
+      }
+    }
+  }
+
+  .search-query {
+    width: 140px;
+  }
+}
+
+ul.sidebarActions {
+  @include linear-gradient(90deg, lighten($sidebarBackground, 2.3%), $sidebarBackground);
+  padding: 7px 0 1px 21px;
+  list-style-type: none;
+  margin: -1px; // prevents white border
+  position: relative;
+  @include border-radius(10px);
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+
+  font-family: $sidebarActionFont;
+  font-style: normal;
+  font-weight: bold;
+
+  li a, li > span, form {
+    display: block;
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 18px;
+    color: #fff;
+    padding-bottom: 10px;
+    text-indent: -12px;
+    margin: 7px 0 7px 15px;
+  }
+
+  li a:hover {
+    color: rgb(246, 224, 235);
+  }
+
+  .icon {
+    color: #fff;
+    margin-right: 10px;
+  }
+  button {
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 18px;
+    color: #fff;
+    text-indent: -9px;
+    text-align: left;
+  }
+}
