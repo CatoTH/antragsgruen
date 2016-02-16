@@ -74,7 +74,10 @@ class Site extends ActiveRecord
      */
     public function getAdmins()
     {
-        return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('siteAdmin', ['siteId' => 'id'])
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $this->hasMany(User::class, ['id' => 'userId'])
+            ->viaTable($app->tablePrefix . 'siteAdmin', ['siteId' => 'id'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 

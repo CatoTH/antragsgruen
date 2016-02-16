@@ -338,19 +338,23 @@ class Amendment extends IMotion implements IRSSItem
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
         $query          = Amendment::find();
-        $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+        $query->where($tpre . 'amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
         $query->joinWith(
             [
-                'motionJoin' => function ($query) use ($invisibleStati, $consultation) {
+                'motionJoin' => function ($query) use ($invisibleStati, $consultation, $tpre) {
                     /** @var ActiveQuery $query */
-                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-                    $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                    $query->andWhere($tpre . 'motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id));
                 }
             ]
         );
-        $query->orderBy("amendment.dateCreation DESC");
+        $query->orderBy($tpre . 'amendment.dateCreation DESC');
         $query->offset(0)->limit($limit);
 
         return $query->all();
@@ -363,19 +367,23 @@ class Amendment extends IMotion implements IRSSItem
      */
     public static function getScreeningAmendments(Consultation $consultation)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $query = Amendment::find();
-        $query->where('amendment.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
+        $query->where($tpre . 'amendment.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
         $query->joinWith(
             [
-                'motionJoin' => function ($query) use ($consultation) {
+                'motionJoin' => function ($query) use ($consultation, $tpre) {
                     $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
                     /** @var ActiveQuery $query */
-                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-                    $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                    $query->andWhere($tpre . 'motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id));
                 }
             ]
         );
-        $query->orderBy("dateCreation DESC");
+        $query->orderBy($tpre . 'dateCreation DESC');
 
         return $query->all();
     }

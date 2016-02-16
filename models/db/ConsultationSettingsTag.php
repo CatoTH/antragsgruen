@@ -40,7 +40,10 @@ class ConsultationSettingsTag extends ActiveRecord
      */
     public function getMotions()
     {
-        return $this->hasMany(Motion::class, ['id' => 'motionId'])->viaTable('motionTag', ['tagId' => 'id'])
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $this->hasMany(Motion::class, ['id' => 'motionId'])
+            ->viaTable($app->tablePrefix . 'motionTag', ['tagId' => 'id'])
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
