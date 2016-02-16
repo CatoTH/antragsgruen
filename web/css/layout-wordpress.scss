@@ -1,10 +1,5 @@
 @charset "UTF-8";
 
-$OpenSansPath: "../fonts/OpenSans/fonts";
-@import "../fonts/OpenSans/open-sans.scss";
-$veraSansPath: "../fonts/BitstreamVeraSansMono";
-@import "../fonts/BitstreamVeraSansMono/verasans";
-
 $colorGreenDark: rgb(40, 95, 25);
 $colorGreenLight: rgb(175, 203, 8);
 $colorLinksLight: #6d7e00;
@@ -16,7 +11,7 @@ $brand-primary: $colorMagenta;
 $text-color: rgb(72, 70, 73);
 $btn-success-bg: #2c882c;
 
-$headingFont: "Open Sans", sans-serif;
+$headingFont: sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
 $headingPrimaryBackground: rgb(40, 95, 25);
 $headingSecondaryText: rgb(255, 255, 255);
@@ -24,20 +19,20 @@ $headingSecondaryBackground: rgb(175, 203, 8);
 $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(27, 74, 251);
 
-$menuFont: "Open Sans", sans-serif;
+$menuFont: sans-serif;
 $menuLink: #6d7e00;
 $menuActive: rgb(115, 115, 115);
 
 $sidebarBackground: $colorMagenta;
-$sidebarActionFont: "Open Sans", sans-serif;
+$sidebarActionFont: sans-serif;
 
 $bookmarkAmendmentColor: $colorGreenLight;
 $bookmarkCommentColor: $colorMagenta;
 
-$bodyFont: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$deadlineCircleFont: "Open Sans", sans-serif;
-$buttonFont: "Open Sans", sans-serif;
-$motionFixedFont: 'VeraMono', Consolas, Courier, sans-serif;
+$bodyFont: Helvetica, Arial, sans-serif;
+$deadlineCircleFont: sans-serif;
+$buttonFont: sans-serif;
+$motionFixedFont: Courier, sans-serif;
 $motionFixedFontColor: #222;
 $motionFixedWidth: 740px;
 $motionStdFontSize: 14px;
@@ -45,13 +40,8 @@ $inlineAmendmentPreambleHeight: 30px;
 $inlineAmendmentPreambleColor: $colorMagenta;
 $createMotionBtnColor: $colorMagenta;
 
-@import "base_layout";
-@import "motions";
-@import "styles";
-
-html {
-  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
-}
-body {
-  background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
+.entry-content {
+  @import "bootstrap";
+  @import "motions";
+  @import "styles";
 }
