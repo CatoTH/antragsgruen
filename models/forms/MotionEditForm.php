@@ -238,6 +238,25 @@ class MotionEditForm extends Model
         }
     }
 
+    /**
+     * @param Motion $motion
+     */
+    private function overwriteSections(Motion $motion)
+    {
+        /** @var MotionSection[] $sectionsById */
+        $sectionsById = [];
+        foreach ($motion->sections as $section) {
+            $sectionsById[$section->sectionId] = $section;
+        }
+        foreach ($this->sections as $section) {
+            if (isset($sectionsById[$section->sectionId])) {
+                $section = $sectionsById[$section->sectionId];
+            }
+            $section->motionId = $motion->id;
+            $section->save();
+        }
+    }
+
 
     /**
      * @param Motion $motion
@@ -271,14 +290,7 @@ class MotionEditForm extends Model
                 }
             }
 
-            // Sections
-            foreach ($motion->sections as $section) {
-                $section->delete();
-            }
-            foreach ($this->sections as $section) {
-                $section->motionId = $motion->id;
-                $section->save();
-            }
+            $this->overwriteSections($motion);
 
             $motion->refreshTitle();
             $motion->save();
