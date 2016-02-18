@@ -40,7 +40,7 @@ class Application extends \yii\web\Application
     public function coreComponents()
     {
         return array_merge(parent::coreComponents(), [
-            'request'      => ['class' => 'yii\web\Request'],
+            'request'      => ['class' => 'app\components\wordpress\Request'],
             'response'     => ['class' => 'app\components\wordpress\Response'],
             'session'      => ['class' => 'yii\web\Session'],
             'user'         => ['class' => 'app\components\wordpress\User'],
