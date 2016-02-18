@@ -1,7 +1,8 @@
-Version 3.1
+Version 3.2
 ===========
 
 - Support database table prefixes
+- Bugfix: Motions with section-based comments could not be edited in the admin-screen
 
 
 Version 3.1
