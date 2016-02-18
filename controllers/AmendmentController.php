@@ -2,17 +2,12 @@
 
 namespace app\controllers;
 
-use app\components\mail\Tools;
-use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
-use app\models\db\EMailLog;
-use app\models\db\Motion;
 use app\models\db\User;
 use app\models\exceptions\FormError;
-use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use yii\web\Response;
@@ -50,7 +45,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $filename = rawurlencode($amendment->getFilenameBase(false) . '.pdf');
+        $filename                    = rawurlencode($amendment->getFilenameBase(false) . '.pdf');
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
@@ -100,7 +95,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $filename = rawurlencode($amendment->getFilenameBase(false) . '.odt');
+        $filename                    = rawurlencode($amendment->getFilenameBase(false) . '.odt');
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
@@ -182,12 +177,14 @@ class AmendmentController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (isset($_POST['modify'])) {
+        $post = \Yii::$app->request->post();
+
+        if (isset($post['modify'])) {
             $nextUrl = ['amendment/edit', 'amendmentId' => $amendment->id, 'motionId' => $amendment->motionId];
             return $this->redirect(UrlHelper::createUrl($nextUrl));
         }
 
-        if (isset($_POST['confirm'])) {
+        if (isset($post['confirm'])) {
             $screening = $this->consultation->getSettings()->screeningAmendments;
             if ($screening) {
                 $amendment->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
@@ -220,9 +217,11 @@ class AmendmentController extends Base
             return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);
 
         } else {
-            $params                  = ['amendment' => $amendment, 'mode' => $fromMode];
-            $params['deleteDraftId'] = (isset($_REQUEST['draftId']) ? $_REQUEST['draftId'] : null);
-            return $this->render('create_confirm', $params);
+            return $this->render('create_confirm', [
+                'amendment'     => $amendment,
+                'mode'          => $fromMode,
+                'deleteDraftId' => \Yii::$app->request->get('draftId'),
+            ]);
         }
     }
 
@@ -253,7 +252,8 @@ class AmendmentController extends Base
         $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
         $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
 
-        if (isset($_POST['save'])) {
+        $post = \Yii::$app->request->post();
+        if (isset($post['save'])) {
             $amendment->flushCacheWithChildren();
             $form->setAttributes([$_POST, $_FILES]);
             try {
@@ -268,8 +268,8 @@ class AmendmentController extends Base
                         'amendmentId' => $amendment->id,
                         'fromMode'    => $fromMode
                     ];
-                    if (isset($_POST['draftId'])) {
-                        $nextUrl['draftId'] = $_POST['draftId'];
+                    if (isset($post['draftId'])) {
+                        $nextUrl['draftId'] = $post['draftId'];
                     }
                     return $this->redirect(UrlHelper::createUrl($nextUrl));
                 } else {
@@ -315,18 +315,17 @@ class AmendmentController extends Base
 
         $form = new AmendmentEditForm($motion, null);
 
-        if (isset($_POST['save'])) {
+        $post = \Yii::$app->request->post();
+        if (isset($post['save'])) {
             try {
                 $amendment = $form->createAmendment();
                 $nextUrl   = [
                     'amendment/createconfirm',
                     'motionId'    => $amendment->motionId,
                     'amendmentId' => $amendment->id,
-                    'fromMode'    => 'create'
+                    'fromMode'    => 'create',
+                    'draftId'     => \Yii::$app->request->post('draftId'),
                 ];
-                if (isset($_POST['draftId'])) {
-                    $nextUrl['draftId'] = $_POST['draftId'];
-                }
                 return $this->redirect(UrlHelper::createUrl($nextUrl));
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
@@ -377,11 +376,12 @@ class AmendmentController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (isset($_POST['cancel'])) {
+        $post = \Yii::$app->request->post();
+        if (isset($post['cancel'])) {
             return $this->redirect(UrlHelper::createAmendmentUrl($amendment));
         }
 
-        if (isset($_POST['withdraw'])) {
+        if (isset($post['withdraw'])) {
             $amendment->withdraw();
             \Yii::$app->session->setFlash('success', \Yii::t('amend', 'widthdraw_done'));
             return $this->redirect(UrlHelper::createAmendmentUrl($amendment));

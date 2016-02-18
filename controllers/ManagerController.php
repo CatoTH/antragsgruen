@@ -153,9 +153,10 @@ class ManagerController extends Base
         $model  = new SiteCreateForm();
         $errors = [];
 
-        if (isset($_POST['create'])) {
+        $post = \Yii::$app->request->post();
+        if (isset($post['create'])) {
             try {
-                $model->setAttributes($_POST['SiteCreateForm']);
+                $model->setAttributes($post['SiteCreateForm']);
                 if ($model->validate()) {
                     $site = $model->createSiteFromForm(User::getCurrentUser());
 
@@ -218,7 +219,7 @@ class ManagerController extends Base
         if (!User::currentUserIsSuperuser()) {
             throw new Access('No permissions to edit this page');
         }
-        if (MessageSource::savePageData(null, $pageKey, $_POST['data'])) {
+        if (MessageSource::savePageData(null, $pageKey, \Yii::$app->request->post('data'))) {
             return '1';
         } else {
             return '0';
@@ -239,18 +240,19 @@ class ManagerController extends Base
         if ($config->multisiteMode) {
             return $this->showErrorpage(500, 'This configuration tool can only be used for single-site installations.');
         }
+        
+        $post = \Yii::$app->request->post();
+        if (isset($post['save'])) {
+            $config->resourceBase          = $post['resourceBase'];
+            $config->baseLanguage          = $post['baseLanguage'];
+            $config->tmpDir                = $post['tmpDir'];
+            $config->xelatexPath           = $post['xelatexPath'];
+            $config->xdvipdfmx             = $post['xdvipdfmx'];
+            $config->mailFromEmail         = $post['mailFromEmail'];
+            $config->mailFromName          = $post['mailFromName'];
+            $config->confirmEmailAddresses = isset($post['confirmEmailAddresses']);
 
-        if (isset($_POST['save'])) {
-            $config->resourceBase          = $_POST['resourceBase'];
-            $config->baseLanguage          = $_POST['baseLanguage'];
-            $config->tmpDir                = $_POST['tmpDir'];
-            $config->xelatexPath           = $_POST['xelatexPath'];
-            $config->xdvipdfmx             = $_POST['xdvipdfmx'];
-            $config->mailFromEmail         = $_POST['mailFromEmail'];
-            $config->mailFromName          = $_POST['mailFromName'];
-            $config->confirmEmailAddresses = isset($_POST['confirmEmailAddresses']);
-
-            switch ($_POST['mailService']['transport']) {
+            switch ($post['mailService']['transport']) {
                 case 'none':
                     $config->mailService = ['transport' => 'none'];
                     break;
@@ -260,19 +262,19 @@ class ManagerController extends Base
                 case 'mandrill':
                     $config->mailService = [
                         'transport' => 'mandrill',
-                        'apiKey'    => $_POST['mailService']['mandrillApiKey'],
+                        'apiKey'    => $post['mailService']['mandrillApiKey'],
                     ];
                     break;
                 case 'smtp':
                     $config->mailService = [
                         'transport' => 'smtp',
-                        'host'      => $_POST['mailService']['smtpHost'],
-                        'port'      => $_POST['mailService']['smtpPort'],
-                        'authType'  => $_POST['mailService']['smtpAuthType'],
+                        'host'      => $post['mailService']['smtpHost'],
+                        'port'      => $post['mailService']['smtpPort'],
+                        'authType'  => $post['mailService']['smtpAuthType'],
                     ];
-                    if ($_POST['mailService']['smtpAuthType'] != 'none') {
-                        $config->mailService['username'] = $_POST['mailService']['smtpUsername'];
-                        $config->mailService['password'] = $_POST['mailService']['smtpPassword'];
+                    if ($post['mailService']['smtpAuthType'] != 'none') {
+                        $config->mailService['username'] = $post['mailService']['smtpUsername'];
+                        $config->mailService['password'] = $post['mailService']['smtpPassword'];
                     }
                     break;
             }
@@ -329,21 +331,23 @@ class ManagerController extends Base
         ) {
             return $this->redirect($form->siteUrl);
         }
+        
+        $post = \Yii::$app->request->post();
 
-        if (isset($_POST['finishInit'])) {
+        if (isset($post['finishInit'])) {
             unlink($installFile);
             return $this->render('antragsgruen_init_done');
         }
 
-        if (isset($_POST['save'])) {
-            $form->setAttributes($_POST);
-            if (isset($_POST['sqlPassword']) && $_POST['sqlPassword'] != '') {
-                $form->sqlPassword = $_POST['sqlPassword'];
-            } elseif (isset($_POST['sqlPasswordNone'])) {
+        if (isset($post['save'])) {
+            $form->setAttributes($post);
+            if (isset($post['sqlPassword']) && $post['sqlPassword'] != '') {
+                $form->sqlPassword = $post['sqlPassword'];
+            } elseif (isset($post['sqlPasswordNone'])) {
                 $form->sqlPassword = '';
             }
-            $form->sqlCreateTables = isset($_POST['sqlCreateTables']);
-            $form->prettyUrls      = isset($_POST['prettyUrls']);
+            $form->sqlCreateTables = isset($post['sqlCreateTables']);
+            $form->prettyUrls      = isset($post['prettyUrls']);
 
             if ($editable) {
                 $form->saveConfig();
@@ -407,11 +411,12 @@ class ManagerController extends Base
             throw new Internal('Installation mode not activated');
         }
 
+        $post = \Yii::$app->request->post();
         $form = new AntragsgruenInitForm($configFile);
-        $form->setAttributes($_POST);
-        if (isset($_POST['sqlPassword']) && $_POST['sqlPassword'] != '') {
-            $form->sqlPassword = $_POST['sqlPassword'];
-        } elseif (isset($_POST['sqlPasswordNone'])) {
+        $form->setAttributes($post);
+        if (isset($post['sqlPassword']) && $post['sqlPassword'] != '') {
+            $form->sqlPassword = $post['sqlPassword'];
+        } elseif (isset($post['sqlPasswordNone'])) {
             $form->sqlPassword = '';
         }
 
@@ -440,9 +445,10 @@ class ManagerController extends Base
 
         /** @var Site[] $sites */
         $sites = Site::find()->all();
+        $post = \Yii::$app->request->post();
 
-        if (isset($_POST['save'])) {
-            $set = (isset($_POST['billSent']) ? $_POST['billSent'] : []);
+        if (isset($post['save'])) {
+            $set = (isset($post['billSent']) ? $post['billSent'] : []);
             foreach ($sites as $site) {
                 $settings           = $site->getSettings();
                 $settings->billSent = (in_array($site->id, $set) ? 1 : 0);
