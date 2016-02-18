@@ -41,7 +41,15 @@ $inlineAmendmentPreambleColor: $colorMagenta;
 $createMotionBtnColor: $colorMagenta;
 
 .entry-content {
-  @import "bootstrap";
+  @import "bootstrap_wordpress";
   @import "motions";
   @import "styles";
+
+  .motionTextHolder {
+    padding-right: 50px;
+  }
+
+  .texteditor blockquote:not(.alignleft):not(.alignright) {
+    margin-left: $fixedWidthTextQuoteMargin;
+  }
 }

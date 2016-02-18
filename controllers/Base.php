@@ -50,8 +50,9 @@ class Base extends Controller
      */
     public function setWordpressMode()
     {
-        $this->wordpressMode = true;
-        $this->layout        = false;
+        $this->wordpressMode            = true;
+        $this->layout                   = false;
+        $this->layoutParams->useShariff = false;
     }
 
     /**

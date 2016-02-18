@@ -14,6 +14,7 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
  * @var string|null $adminEdit
  * @var null|string $supportStatus
  * @var bool $consolidatedAmendments
+ * @var \app\models\settings\Layout $layout
  */
 
 echo '<div class="content">';
@@ -26,7 +27,8 @@ foreach ($motion->replacedByMotions as $replMotion) {
     }
 }
 
-if (!$motion->getConsultation()->site->getSettings()->forceLogin && count($replacedByMotions) == 0) {
+$forceLogin = $motion->getConsultation()->site->getSettings()->forceLogin;
+if (!$forceLogin && count($replacedByMotions) == 0 && $layout->useShariff) {
     $layout->loadShariff();
     $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
     $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));

@@ -92,7 +92,7 @@ $minHeight = $sidebarRows * 40 - 60;
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
 
-if (!$amendment->getMyConsultation()->site->getSettings()->forceLogin) {
+if (!$amendment->getMyConsultation()->site->getSettings()->forceLogin && $layout->useShariff) {
     $layout->loadShariff();
     $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
     $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));

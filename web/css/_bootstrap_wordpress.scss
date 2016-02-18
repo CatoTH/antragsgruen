@@ -10,28 +10,21 @@ $icon-font-path: "../fonts/";
 @import "bootstrap-3.3.6-sass/bootstrap/mixins";
 
 // Reset and dependencies
-@import "bootstrap-3.3.6-sass/bootstrap/normalize";
 @import "bootstrap-3.3.6-sass/bootstrap/print";
 @import "bootstrap-3.3.6-sass/bootstrap/glyphicons";
 
 // Core CSS
 @import "bootstrap-3.3.6-sass/bootstrap/scaffolding";
 @import "bootstrap-3.3.6-sass/bootstrap/type";
-//@import "bootstrap-3.3.6-sass/bootstrap/code";
 @import "bootstrap-3.3.6-sass/bootstrap/grid";
 @import "bootstrap-3.3.6-sass/bootstrap/tables";
 @import "bootstrap-3.3.6-sass/bootstrap/forms";
 @import "bootstrap-3.3.6-sass/bootstrap/buttons";
 
 // Components
-@import "bootstrap-3.3.6-sass/bootstrap/component-animations";
 @import "bootstrap-3.3.6-sass/bootstrap/input-groups";
 @import "bootstrap-3.3.6-sass/bootstrap/dropdowns";
-@import "bootstrap-3.3.6-sass/bootstrap/navs";
-@import "bootstrap-3.3.6-sass/bootstrap/navbar";
 @import "bootstrap-3.3.6-sass/bootstrap/alerts";
-@import "bootstrap-3.3.6-sass/bootstrap/breadcrumbs";
-//@import "bootstrap-3.3.6-sass/bootstrap/labels";
 @import "bootstrap-3.3.6-sass/bootstrap/wells";
 @import "bootstrap-3.3.6-sass/bootstrap/close";
 

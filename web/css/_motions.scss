@@ -486,6 +486,7 @@
         width: 0;
         display: inline-block;
         float: left; // otherwise problems appear at li > p constucts
+        white-space: nowrap;
       }
       .lineNumber:after {
         content: attr(data-line-number);
