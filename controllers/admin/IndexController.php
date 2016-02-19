@@ -17,7 +17,6 @@ use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
-use app\models\settings\AntragsgruenApp;
 use yii\web\Response;
 
 class IndexController extends AdminBase
@@ -79,7 +78,7 @@ class IndexController extends AdminBase
             }
         }
 
-        if (isset($_POST['flushCaches']) && User::currentUserIsSuperuser()) {
+        if ($this->isPostSet('flushCaches') && User::currentUserIsSuperuser()) {
             $this->consultation->flushCacheWithChildren();
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
         }
@@ -104,21 +103,22 @@ class IndexController extends AdminBase
 
         $locale = Tools::getCurrentDateLocale();
 
-        if (isset($_POST['save'])) {
+        if ($this->isPostSet('save')) {
             $this->saveTags($model);
+            $post = \Yii::$app->request->post();
 
-            $data = $_POST['consultation'];
+            $data = $post['consultation'];
             $model->setAttributes($data);
 
-            $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
+            $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
             $settings      = $model->getSettings();
-            $settings->saveForm($settingsInput, $_POST['settingsFields']);
+            $settings->saveForm($settingsInput, $post['settingsFields']);
             $model->setSettings($settings);
 
             if ($model->save()) {
-                $settingsInput = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
+                $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
                 $siteSettings  = $model->site->getSettings();
-                $siteSettings->saveForm($settingsInput, $_POST['siteSettingsFields']);
+                $siteSettings->saveForm($settingsInput, $post['siteSettingsFields']);
                 $model->site->setSettings($siteSettings);
                 if ($model->site->currentConsultationId == $model->id) {
                     $model->site->status = ($settings->maintainanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);

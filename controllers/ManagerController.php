@@ -334,12 +334,12 @@ class ManagerController extends Base
         
         $post = \Yii::$app->request->post();
 
-        if (isset($post['finishInit'])) {
+        if ($this->isPostSet('finishInit')) {
             unlink($installFile);
             return $this->render('antragsgruen_init_done');
         }
 
-        if (isset($post['save'])) {
+        if ($this->isPostSet('save')) {
             $form->setAttributes($post);
             if (isset($post['sqlPassword']) && $post['sqlPassword'] != '') {
                 $form->sqlPassword = $post['sqlPassword'];
@@ -445,10 +445,9 @@ class ManagerController extends Base
 
         /** @var Site[] $sites */
         $sites = Site::find()->all();
-        $post = \Yii::$app->request->post();
 
-        if (isset($post['save'])) {
-            $set = (isset($post['billSent']) ? $post['billSent'] : []);
+        if ($this->isPostSet('save')) {
+            $set = \Yii::$app->request->post('billSent', []);
             foreach ($sites as $site) {
                 $settings           = $site->getSettings();
                 $settings->billSent = (in_array($site->id, $set) ? 1 : 0);

@@ -27,10 +27,7 @@ class ConsultationController extends Base
      */
     public function actionSearch()
     {
-        $query = \Yii::$app->request->post('query');
-        if (!$query) {
-            $query = \Yii::$app->request->get('query');
-        }
+        $query = $this->getRequestValue('query');
         if (!$query || trim($query) == '') {
             \yii::$app->session->setFlash('error', \Yii::t('con', 'search_no_query'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
@@ -187,9 +184,8 @@ class ConsultationController extends Base
         $user = User::getCurrentUser();
         $con  = $this->consultation;
 
-        $post = \Yii::$app->request->post();
-        if (isset($post['save'])) {
-            $newNotis = (isset($post['notifications']) ? $post['notifications'] : []);
+        if ($this->isPostSet('save')) {
+            $newNotis = \Yii::$app->request->post('notifications', []);
             if (in_array('motion', $newNotis)) {
                 UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_MOTION);
             } else {

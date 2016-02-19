@@ -28,7 +28,7 @@ class MotionController extends AdminBase
     private function sectionsSave(ConsultationMotionType $motionType)
     {
         $position = 0;
-        foreach ($_POST['sections'] as $sectionId => $data) {
+        foreach (\Yii::$app->request->post('sections') as $sectionId => $data) {
             if (preg_match('/^new[0-9]+$/', $sectionId)) {
                 $section               = new ConsultationSettingsMotionSection();
                 $section->motionTypeId = $motionType->id;
@@ -56,10 +56,10 @@ class MotionController extends AdminBase
      */
     private function sectionsDelete(ConsultationMotionType $motionType)
     {
-        if (!isset($_POST['sectionsTodelete'])) {
+        if (!$this->isPostSet('sectionsTodelete')) {
             return;
         }
-        foreach ($_POST['sectionsTodelete'] as $sectionId) {
+        foreach (\Yii::$app->request->post('sectionsTodelete') as $sectionId) {
             if ($sectionId > 0) {
                 $sectionId = IntVal($sectionId);
                 /** @var ConsultationSettingsMotionSection $section */
@@ -85,7 +85,7 @@ class MotionController extends AdminBase
         } catch (ExceptionBase $e) {
             return $this->showErrorpage(404, $e->getMessage());
         }
-        if (isset($_POST['delete'])) {
+        if ($this->isPostSet('delete')) {
             if ($motionType->isDeletable()) {
                 $motionType->status = ConsultationMotionType::STATUS_DELETED;
                 $motionType->save();
@@ -94,14 +94,14 @@ class MotionController extends AdminBase
                 \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_type_not_deletable'));
             }
         }
-        if (isset($_POST['save'])) {
-            $input = $_POST['type'];
+        if ($this->isPostSet('save')) {
+            $input = \Yii::$app->request->post('type');
             $motionType->setAttributes($input);
             $motionType->deadlineMotions             = Tools::dateBootstraptime2sql($input['deadlineMotions']);
             $motionType->deadlineAmendments          = Tools::dateBootstraptime2sql($input['deadlineAmendments']);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
             $form                                    = $motionType->getMotionInitiatorFormClass();
-            $form->setSettings($_POST['initiator']);
+            $form->setSettings(\Yii::$app->request->post('initiator'));
             $motionType->initiatorFormSettings = $form->getSettings();
             $motionType->save();
 
@@ -111,7 +111,7 @@ class MotionController extends AdminBase
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
         }
-        if (isset($_REQUEST['msg']) && $_REQUEST['msg'] == 'created') {
+        if ($this->isRequestSet('msg') && $this->getRequestValue('msg') == 'created') {
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
         }
 
@@ -123,8 +123,8 @@ class MotionController extends AdminBase
      */
     public function actionTypecreate()
     {
-        if (isset($_POST['create'])) {
-            $type         = $_POST['type'];
+        if ($this->isPostSet('create')) {
+            $type         = \Yii::$app->request->post('type');
             $sectionsFrom = null;
             if (isset($type['preset']) && $type['preset'] == 'application') {
                 $motionType = ApplicationTrait::doCreateApplicationType($this->consultation);
@@ -207,23 +207,24 @@ class MotionController extends AdminBase
         $this->checkConsistency($motion);
 
         $this->layout = 'column2';
+        $post = \Yii::$app->request->post();
 
         $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
         $form->setAdminMode(true);
 
-        if (isset($_POST['screen']) && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
-            if ($this->consultation->findMotionWithPrefix($_POST['titlePrefix'], $motion)) {
+        if ($this->isPostSet('screen') && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+            if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
-                $motion->titlePrefix = $_POST['titlePrefix'];
+                $motion->titlePrefix = $post['titlePrefix'];
                 $motion->save();
                 $motion->onPublish();
                 \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_screened'));
             }
         }
 
-        if (isset($_POST['delete'])) {
+        if ($this->isPostSet('delete')) {
             $motion->status = Motion::STATUS_DELETED;
             $motion->save();
             $motion->flushCacheStart();
@@ -232,15 +233,15 @@ class MotionController extends AdminBase
             return '';
         }
 
-        if (isset($_POST['save'])) {
+        if ($this->isPostSet('save')) {
             try {
-                $form->setAttributes([$_POST, $_FILES]);
+                $form->setAttributes([$post, $_FILES]);
                 $form->saveMotion($motion);
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
 
-            $modat                  = $_POST['motion'];
+            $modat                  = $post['motion'];
             $motion->title          = $modat['title'];
             $motion->statusString   = $modat['statusString'];
             $motion->dateCreation   = Tools::dateBootstraptime2sql($modat['dateCreation']);
@@ -255,12 +256,12 @@ class MotionController extends AdminBase
             if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
             } else {
-                $motion->titlePrefix = $_POST['motion']['titlePrefix'];
+                $motion->titlePrefix = $post['motion']['titlePrefix'];
             }
             $motion->save();
 
             foreach ($this->consultation->tags as $tag) {
-                if (!isset($_POST['tags']) || !in_array($tag->id, $_POST['tags'])) {
+                if (!$this->isPostSet('tags') || !in_array($tag->id, $post['tags'])) {
                     $motion->unlink('tags', $tag);
                 } else {
                     try {

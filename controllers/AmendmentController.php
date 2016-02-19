@@ -177,14 +177,12 @@ class AmendmentController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $post = \Yii::$app->request->post();
-
-        if (isset($post['modify'])) {
+        if ($this->isPostSet('modify')) {
             $nextUrl = ['amendment/edit', 'amendmentId' => $amendment->id, 'motionId' => $amendment->motionId];
             return $this->redirect(UrlHelper::createUrl($nextUrl));
         }
 
-        if (isset($post['confirm'])) {
+        if ($this->isPostSet('confirm')) {
             $screening = $this->consultation->getSettings()->screeningAmendments;
             if ($screening) {
                 $amendment->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
@@ -252,10 +250,9 @@ class AmendmentController extends Base
         $fromMode = ($amendment->status == Amendment::STATUS_DRAFT ? 'create' : 'edit');
         $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
 
-        $post = \Yii::$app->request->post();
-        if (isset($post['save'])) {
+        if ($this->isPostSet('save')) {
             $amendment->flushCacheWithChildren();
-            $form->setAttributes([$_POST, $_FILES]);
+            $form->setAttributes([\Yii::$app->request->post(), $_FILES]);
             try {
                 $form->saveAmendment($amendment);
 
@@ -266,11 +263,9 @@ class AmendmentController extends Base
                         'amendment/createconfirm',
                         'motionId'    => $amendment->motionId,
                         'amendmentId' => $amendment->id,
-                        'fromMode'    => $fromMode
+                        'fromMode'    => $fromMode,
+                        'draftId'     => $this->getRequestValue('draftId'),
                     ];
-                    if (isset($post['draftId'])) {
-                        $nextUrl['draftId'] = $post['draftId'];
-                    }
                     return $this->redirect(UrlHelper::createUrl($nextUrl));
                 } else {
                     return $this->render('edit_done', ['amendment' => $amendment]);
@@ -315,8 +310,7 @@ class AmendmentController extends Base
 
         $form = new AmendmentEditForm($motion, null);
 
-        $post = \Yii::$app->request->post();
-        if (isset($post['save'])) {
+        if ($this->isPostSet('save')) {
             try {
                 $amendment = $form->createAmendment();
                 $nextUrl   = [
@@ -324,7 +318,7 @@ class AmendmentController extends Base
                     'motionId'    => $amendment->motionId,
                     'amendmentId' => $amendment->id,
                     'fromMode'    => 'create',
-                    'draftId'     => \Yii::$app->request->post('draftId'),
+                    'draftId'     => $this->getRequestValue('draftId'),
                 ];
                 return $this->redirect(UrlHelper::createUrl($nextUrl));
             } catch (FormError $e) {
@@ -376,12 +370,11 @@ class AmendmentController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $post = \Yii::$app->request->post();
-        if (isset($post['cancel'])) {
+        if ($this->isPostSet('cancel')) {
             return $this->redirect(UrlHelper::createAmendmentUrl($amendment));
         }
 
-        if (isset($post['withdraw'])) {
+        if ($this->isPostSet('withdraw')) {
             $amendment->withdraw();
             \Yii::$app->session->setFlash('success', \Yii::t('amend', 'widthdraw_done'));
             return $this->redirect(UrlHelper::createAmendmentUrl($amendment));

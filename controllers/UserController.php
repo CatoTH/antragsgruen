@@ -78,13 +78,13 @@ class UserController extends Base
         }
 
         if ($backUrl == '') {
-            $backUrl = (isset($_POST['backUrl']) ? $_POST['backUrl'] : UrlHelper::homeUrl());
+            $backUrl = \Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
         }
 
         if (YII_ENV == 'test') {
             $client = new WurzelwerkAuthClientTest();
-            if (isset($_REQUEST['username'])) {
-                $client->setClaimedId($_REQUEST['username']);
+            if ($this->getRequestValue('username')) {
+                $client->setClaimedId($this->getRequestValue('username'));
                 $this->redirect($client->getFakeRedirectUrl($backUrl));
                 return '';
             }
@@ -92,17 +92,17 @@ class UserController extends Base
             $client = new WurzelwerkAuthClient();
         }
 
-        if (isset($_REQUEST['openid_claimed_id'])) {
-            $client->setClaimedId($_REQUEST['openid_claimed_id']);
-        } elseif (isset($_REQUEST['username'])) {
-            $client->setClaimedId($_REQUEST['username']);
+        if ($this->isRequestSet('openid_claimed_id')) {
+            $client->setClaimedId($this->getRequestValue('openid_claimed_id'));
+        } elseif ($this->isRequestSet('username')) {
+            $client->setClaimedId($this->getRequestValue('username'));
         }
 
-        if (isset($_REQUEST['openid_mode'])) {
-            if ($_REQUEST['openid_mode'] == 'error') {
-                \yii::$app->session->setFlash('error', 'An error occurred: ' . $_REQUEST['openid_error']);
+        if ($this->isRequestSet('openid_mode')) {
+            if ($this->getRequestValue('openid_mode') == 'error') {
+                \yii::$app->session->setFlash('error', 'An error occurred: ' . $this->getRequestValue('openid_error'));
                 return $this->actionLogin($backUrl);
-            } elseif ($_REQUEST['openid_mode'] == 'cancel') {
+            } elseif ($this->getRequestValue('openid_mode') == 'cancel') {
                 \yii::$app->session->setFlash('error', 'Login abgebrochen');
                 return $this->actionLogin($backUrl);
             } elseif ($client->validate()) {
@@ -141,21 +141,19 @@ class UserController extends Base
 
         $usernamePasswordForm = new LoginUsernamePasswordForm();
 
-        if (isset($_POST['loginusernamepassword'])) {
-            $usernamePasswordForm->setAttributes($_POST);
+        if ($this->isPostSet('loginusernamepassword')) {
+            $usernamePasswordForm->setAttributes(\Yii::$app->request->post());
             try {
                 $user = $usernamePasswordForm->getOrCreateUser($this->site);
                 $this->loginUser($user);
 
                 $unconfirmed = $user->status == User::STATUS_UNCONFIRMED;
                 if ($unconfirmed && $this->getParams()->confirmEmailAddresses) {
-                    $backUrl = UrlHelper::createUrl(
-                        [
-                            'user/confirmregistration',
-                            'backUrl' => $backUrl,
-                            'email'   => $user->email,
-                        ]
-                    );
+                    $backUrl = UrlHelper::createUrl([
+                        'user/confirmregistration',
+                        'backUrl' => $backUrl,
+                        'email'   => $user->email,
+                    ]);
                 } else {
                     \Yii::$app->session->setFlash('success', \Yii::t('user', 'welcome'));
                 }
@@ -194,12 +192,12 @@ class UserController extends Base
     {
         $msgError = '';
 
-        if (isset($_REQUEST['email']) && isset($_REQUEST['code'])) {
+        if ($this->isRequestSet('email') && $this->isRequestSet('code')) {
             /** @var User $user */
-            $user = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
+            $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             if (!$user) {
                 $msgError = \Yii::t('user', 'err_email_acc_notfound');
-            } elseif ($user->checkEmailConfirmationCode($_REQUEST['code'])) {
+            } elseif ($user->checkEmailConfirmationCode($this->getRequestValue('code'))) {
                 $user->emailConfirmed = 1;
                 $user->status         = User::STATUS_CONFIRMED;
                 if ($user->save()) {
@@ -237,14 +235,14 @@ class UserController extends Base
      */
     public function actionRecovery($email = '', $code = '')
     {
-        if (isset($_POST['send'])) {
+        if ($this->isPostSet('send')) {
             /** @var User $user */
-            $user = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
+            $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             if (!$user) {
-                $msg = str_replace('%USER%', $_REQUEST['email'], \Yii::t('user', 'err_user_notfound'));
+                $msg = str_replace('%USER%', $this->getRequestValue('email'), \Yii::t('user', 'err_user_notfound'));
                 \yii::$app->session->setFlash('error', $msg);
             } else {
-                $email = $_REQUEST['email'];
+                $email = $this->getRequestValue('email');
                 try {
                     $user->sendRecoveryMail();
                     $msg = \Yii::t('user', 'pwd_recovery_sent');
@@ -256,21 +254,21 @@ class UserController extends Base
             }
         }
 
-        if (isset($_POST['recover'])) {
+        if ($this->isPostSet('recover')) {
             /** @var User $user */
-            $user     = User::findOne(['auth' => 'email:' . $_REQUEST['email']]);
+            $user     = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
             if (!$user) {
-                $msg = str_replace('%USER%', $_REQUEST['email'], \Yii::t('user', 'err_user_notfound'));
+                $msg = str_replace('%USER%', $this->getRequestValue('email'), \Yii::t('user', 'err_user_notfound'));
                 \yii::$app->session->setFlash('error', $msg);
-            } elseif (mb_strlen($_POST['newPassword']) < $pwMinLen) {
+            } elseif (mb_strlen($this->getRequestValue('newPassword')) < $pwMinLen) {
                 $msg = str_replace('%MINLEN%', $pwMinLen, \Yii::t('user', 'err_pwd_length'));
                 \yii::$app->session->setFlash('error', $msg);
             } else {
-                $email = $_REQUEST['email'];
+                $email = $this->getRequestValue('email');
                 try {
-                    if ($user->checkRecoveryToken($_REQUEST['recoveryCode'])) {
-                        $user->changePassword($_REQUEST['newPassword']);
+                    if ($user->checkRecoveryToken($this->getRequestValue('recoveryCode'))) {
+                        $user->changePassword($this->getRequestValue('newPassword'));
                         return $this->render('recovery_confirmed');
                     }
                 } catch (ExceptionBase $e) {
@@ -310,7 +308,7 @@ class UserController extends Base
         $user     = User::getCurrentUser();
         $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
-        if (isset($_POST['resendEmailChange'])) {
+        if ($this->isPostSet('resendEmailChange')) {
             $changeRequested = $user->getChangeRequestedEmailAddress();
             if ($changeRequested) {
                 $lastRequest = time() - Tools::dateSql2timestamp($user->emailChangeAt);
@@ -327,44 +325,45 @@ class UserController extends Base
                 }
             }
         }
-        if (isset($_POST['save'])) {
-            if (trim($_POST['name']) != '') {
-                if ($user->name != $_POST['name']) {
+        if ($this->isPostSet('save')) {
+            $post = \Yii::$app->request->post();
+            if (trim($post['name']) != '') {
+                if ($user->name != $post['name']) {
                 }
-                $user->name = $_POST['name'];
+                $user->name = $post['name'];
             }
 
-            if ($_POST['pwd'] != '' || $_POST['pwd2'] != '') {
-                if ($_POST['pwd'] != $_POST['pwd2']) {
+            if ($post['pwd'] != '' || $post['pwd2'] != '') {
+                if ($post['pwd'] != $post['pwd2']) {
                     \yii::$app->session->setFlash('error', \Yii::t('user', 'err_pwd_different'));
-                } elseif (mb_strlen($_POST['pwd']) < $pwMinLen) {
+                } elseif (mb_strlen($post['pwd']) < $pwMinLen) {
                     $msg = \Yii::t('user', 'err_pwd_length');
                     \yii::$app->session->setFlash('error', str_replace('%MINLEN%', $pwMinLen, $msg));
                 } else {
-                    $user->pwdEnc = password_hash($_POST['pwd'], PASSWORD_DEFAULT);
+                    $user->pwdEnc = password_hash($post['pwd'], PASSWORD_DEFAULT);
                 }
             }
 
             $user->save();
 
             if ($user->email != '' && $user->emailConfirmed) {
-                if (isset($_POST['emailBlacklist'])) {
+                if (isset($post['emailBlacklist'])) {
                     EMailBlacklist::addToBlacklist($user->email);
                 } else {
                     EMailBlacklist::removeFromBlacklist($user->email);
                 }
             }
 
-            if ($_POST['email'] != '' && $_POST['email'] != $user->email) {
+            if ($post['email'] != '' && $post['email'] != $user->email) {
                 /** @var AntragsgruenApp $params */
                 $params = \Yii::$app->params;
                 if ($params->confirmEmailAddresses) {
                     $changeRequested = $user->getChangeRequestedEmailAddress();
-                    if ($changeRequested && $changeRequested == $_POST['email']) {
+                    if ($changeRequested && $changeRequested == $post['email']) {
                         \yii::$app->session->setFlash('error', \Yii::t('user', 'err_emailchange_mail_sent'));
-                    } elseif (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                    } elseif (filter_var($post['email'], FILTER_VALIDATE_EMAIL)) {
                         try {
-                            $user->sendEmailChangeMail($_POST['email']);
+                            $user->sendEmailChangeMail($post['email']);
                             \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
                         } catch (FormError $e) {
                             \yii::$app->session->setFlash('error', $e->getMessage());
@@ -376,7 +375,7 @@ class UserController extends Base
                         \yii::$app->session->setFlash('error', \Yii::t('user', 'err_invalid_email'));
                     }
                 } else {
-                    $user->changeEmailAddress($_POST['email'], '');
+                    $user->changeEmailAddress($post['email'], '');
                     \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
                 }
             } else {
@@ -384,7 +383,7 @@ class UserController extends Base
             }
         }
 
-        if (isset($_POST['accountDeleteConfirm']) && isset($_POST['accountDelete'])) {
+        if ($this->isPostSet('accountDeleteConfirm') && $this->isPostSet('accountDelete')) {
             $user->deleteAccount();
             \yii::$app->user->logout(true);
             return $this->render('account_deleted');
@@ -404,7 +403,9 @@ class UserController extends Base
     }
 
     /**
+     * @param string $code
      * @return string
+     * @throws \Exception
      */
     public function actionEmailblacklist($code)
     {
@@ -413,21 +414,22 @@ class UserController extends Base
             return $this->showErrorpage(403, \Yii::t('user', 'err_user_acode_notfound'));
         }
 
-        if (isset($_POST['save'])) {
-            if (isset($_POST['unsubscribeOption']) && $_POST['unsubscribeOption'] == 'consultation') {
+        if ($this->isPostSet('save')) {
+            $post = \Yii::$app->request->post();
+            if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] == 'consultation') {
                 $notis = UserNotification::getUserConsultationNotis($user, $this->consultation);
                 foreach ($notis as $noti) {
                     $noti->delete();
                 }
             }
 
-            if (isset($_POST['unsubscribeOption']) && $_POST['unsubscribeOption'] == 'all') {
+            if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] == 'all') {
                 foreach ($user->notifications as $noti) {
                     $noti->delete();
                 }
             }
 
-            if (isset($_POST['emailBlacklist'])) {
+            if (isset($post['emailBlacklist'])) {
                 EMailBlacklist::addToBlacklist($user->email);
             } else {
                 EMailBlacklist::removeFromBlacklist($user->email);
