@@ -226,8 +226,8 @@ class ConsultationMotionType extends ActiveRecord
     {
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'layoutTwoCols'], 'required'],
-            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport'], 'required'],
-            [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'status'], 'required'],
+            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'initiatorForm'], 'required'],
+            [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position', 'status'], 'required'],
 
             [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
             [['amendmentMultipleParagraphs', 'layoutTwoCols'], 'number'],

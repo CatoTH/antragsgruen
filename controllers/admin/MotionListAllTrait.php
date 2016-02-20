@@ -12,6 +12,9 @@ use yii\web\Response;
  * @method showErrorpage(int $code, string $message)
  * @method render(string $view, array $options)
  * @method renderPartial(string $view, array $options)
+ * @method isPostSet(string $name)
+ * @method isRequestSet(string $name)
+ * @method getRequestValue(string $name)
  */
 trait MotionListAllTrait
 {
@@ -19,24 +22,24 @@ trait MotionListAllTrait
      */
     protected function actionListallMotions()
     {
-        if (isset($_REQUEST['motionScreen'])) {
-            $motion = $this->consultation->getMotion($_REQUEST['motionScreen']);
+        if ($this->isRequestSet('motionScreen')) {
+            $motion = $this->consultation->getMotion($this->getRequestValue('motionScreen'));
             if (!$motion) {
                 return;
             }
             $motion->setScreened();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened'));
         }
-        if (isset($_REQUEST['motionUnscreen'])) {
-            $motion = $this->consultation->getMotion($_REQUEST['motionUnscreen']);
+        if ($this->isRequestSet('motionUnscreen')) {
+            $motion = $this->consultation->getMotion($this->getRequestValue('motionUnscreen'));
             if (!$motion) {
                 return;
             }
             $motion->setUnscreened();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened'));
         }
-        if (isset($_REQUEST['motionDelete'])) {
-            $motion = $this->consultation->getMotion($_REQUEST['motionDelete']);
+        if ($this->isRequestSet('motionDelete')) {
+            $motion = $this->consultation->getMotion($this->getRequestValue('motionDelete'));
             if (!$motion) {
                 return;
             }
@@ -44,11 +47,11 @@ trait MotionListAllTrait
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_deleted'));
         }
 
-        if (!isset($_REQUEST['motions']) || !isset($_REQUEST['save'])) {
+        if (!$this->isRequestSet('motions') || !$this->isRequestSet('save')) {
             return;
         }
-        if (isset($_REQUEST['screen'])) {
-            foreach ($_REQUEST['motions'] as $motionId) {
+        if ($this->isRequestSet('screen')) {
+            foreach ($this->getRequestValue('motions') as $motionId) {
                 $motion = $this->consultation->getMotion($motionId);
                 if (!$motion) {
                     continue;
@@ -58,8 +61,8 @@ trait MotionListAllTrait
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_screened_pl'));
         }
 
-        if (isset($_REQUEST['unscreen'])) {
-            foreach ($_REQUEST['motions'] as $motionId) {
+        if ($this->isRequestSet('unscreen')) {
+            foreach ($this->getRequestValue('motions') as $motionId) {
                 $motion = $this->consultation->getMotion($motionId);
                 if (!$motion) {
                     continue;
@@ -69,8 +72,8 @@ trait MotionListAllTrait
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_unscreened_pl'));
         }
 
-        if (isset($_REQUEST['delete'])) {
-            foreach ($_REQUEST['motions'] as $motionId) {
+        if ($this->isRequestSet('delete')) {
+            foreach ($this->getRequestValue('motions') as $motionId) {
                 $motion = $this->consultation->getMotion($motionId);
                 if (!$motion) {
                     continue;
@@ -86,35 +89,35 @@ trait MotionListAllTrait
      */
     protected function actionListallAmendments()
     {
-        if (isset($_REQUEST['amendmentScreen'])) {
-            $amendment = $this->consultation->getAmendment($_REQUEST['amendmentScreen']);
+        if ($this->isRequestSet('amendmentScreen')) {
+            $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentScreen'));
             if (!$amendment) {
                 return;
             }
             $amendment->setScreened();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened'));
         }
-        if (isset($_REQUEST['amendmentUnscreen'])) {
-            $amendment = $this->consultation->getAmendment($_REQUEST['amendmentUnscreen']);
+        if ($this->isRequestSet('amendmentUnscreen')) {
+            $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentUnscreen'));
             if (!$amendment) {
                 return;
             }
             $amendment->setUnscreened();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened'));
         }
-        if (isset($_REQUEST['amendmentDelete'])) {
-            $amendment = $this->consultation->getAmendment($_REQUEST['amendmentDelete']);
+        if ($this->isRequestSet('amendmentDelete')) {
+            $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentDelete'));
             if (!$amendment) {
                 return;
             }
             $amendment->setDeleted();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_deleted'));
         }
-        if (!isset($_REQUEST['amendments']) || !isset($_REQUEST['save'])) {
+        if (!$this->isRequestSet('amendments') || !$this->isRequestSet('save')) {
             return;
         }
-        if (isset($_REQUEST['screen'])) {
-            foreach ($_REQUEST['amendments'] as $amendmentId) {
+        if ($this->isRequestSet('screen')) {
+            foreach ($this->getRequestValue('amendments') as $amendmentId) {
                 $amendment = $this->consultation->getAmendment($amendmentId);
                 if (!$amendment) {
                     continue;
@@ -124,8 +127,8 @@ trait MotionListAllTrait
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_screened_pl'));
         }
 
-        if (isset($_REQUEST['unscreen'])) {
-            foreach ($_REQUEST['amendments'] as $amendmentId) {
+        if ($this->isRequestSet('unscreen')) {
+            foreach ($this->getRequestValue('amendments') as $amendmentId) {
                 $amendment = $this->consultation->getAmendment($amendmentId);
                 if (!$amendment) {
                     continue;
@@ -135,8 +138,8 @@ trait MotionListAllTrait
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_am_unscreened_pl'));
         }
 
-        if (isset($_REQUEST['delete'])) {
-            foreach ($_REQUEST['amendments'] as $amendmentId) {
+        if ($this->isRequestSet('delete')) {
+            foreach ($this->getRequestValue('amendments') as $amendmentId) {
                 $amendment = $this->consultation->getAmendment($amendmentId);
                 if (!$amendment) {
                     continue;
@@ -162,8 +165,8 @@ trait MotionListAllTrait
         $this->actionListallAmendments();
 
         $search = new AdminMotionFilterForm($this->consultation, $this->consultation->motions, true);
-        if (isset($_REQUEST['Search'])) {
-            $search->setAttributes($_REQUEST['Search']);
+        if ($this->isRequestSet('Search')) {
+            $search->setAttributes($this->getRequestValue('Search'));
         }
 
         return $this->render('list_all', [

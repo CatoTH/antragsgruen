@@ -36,7 +36,7 @@ class AntragsgruenApp
     public $xdvipdfmx             = null;
 
     /** @var null|array */
-    public $mailService = null;
+    public $mailService = ['transport' => 'sendmail'];
 
     /**
      * @return bool

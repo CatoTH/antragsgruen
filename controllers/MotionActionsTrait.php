@@ -55,13 +55,14 @@ trait MotionActionsTrait
         if (!$motion->motionType->getCommentPolicy()->checkCurrUser()) {
             throw new Access('No rights to write a comment');
         }
+        $postComment = \Yii::$app->request->post('comment');
         $commentForm = new CommentForm();
-        $commentForm->setAttributes($_POST['comment']);
+        $commentForm->setAttributes($postComment);
         $commentForm->sectionId = null;
-        if ($_POST['comment']['sectionId'] > 0) {
+        if ($postComment['sectionId'] > 0) {
             foreach ($motion->sections as $section) {
-                if ($section->sectionId == $_POST['comment']['sectionId']) {
-                    $commentForm->sectionId = $_POST['comment']['sectionId'];
+                if ($section->sectionId == $postComment['sectionId']) {
+                    $commentForm->sectionId = $postComment['sectionId'];
                 }
             }
         }
@@ -237,7 +238,7 @@ trait MotionActionsTrait
             throw new Internal('Keine Freischaltrechte');
         }
         foreach ($motion->getConsultation()->tags as $tag) {
-            if ($tag->id == $_POST['tagId']) {
+            if ($tag->id == \Yii::$app->request->post('tagId')) {
                 $motion->link('tags', $tag);
             }
         }
@@ -253,7 +254,7 @@ trait MotionActionsTrait
             throw new Internal('Keine Freischaltrechte');
         }
         foreach ($motion->getConsultation()->tags as $tag) {
-            if ($tag->id == $_POST['tagId']) {
+            if ($tag->id == \Yii::$app->request->post('tagId')) {
                 $motion->unlink('tags', $tag, true);
             }
         }
@@ -266,34 +267,35 @@ trait MotionActionsTrait
      */
     private function performShowActions(Motion $motion, $commentId, &$viewParameters)
     {
-        if ($commentId == 0 && isset($_POST['commentId'])) {
-            $commentId = IntVal($_POST['commentId']);
+        $post = \Yii::$app->request->post();
+        if ($commentId == 0 && isset($post['commentId'])) {
+            $commentId = IntVal($post['commentId']);
         }
-        if (isset($_POST['deleteComment'])) {
+        if (isset($post['deleteComment'])) {
             $this->deleteComment($motion, $commentId);
 
-        } elseif (isset($_POST['commentScreeningAccept'])) {
+        } elseif (isset($post['commentScreeningAccept'])) {
             $this->screenCommentAccept($motion, $commentId);
 
-        } elseif (isset($_POST['commentScreeningReject'])) {
+        } elseif (isset($post['commentScreeningReject'])) {
             $this->screenCommentReject($motion, $commentId);
 
-        } elseif (isset($_POST['motionLike'])) {
+        } elseif (isset($post['motionLike'])) {
             $this->motionLike($motion);
 
-        } elseif (isset($_POST['motionDislike'])) {
+        } elseif (isset($post['motionDislike'])) {
             $this->motionDislike($motion);
 
-        } elseif (isset($_POST['motionSupportRevoke'])) {
+        } elseif (isset($post['motionSupportRevoke'])) {
             $this->motionSupportRevoke($motion);
 
-        } elseif (isset($_POST['motionAddTag'])) {
+        } elseif (isset($post['motionAddTag'])) {
             $this->motionAddTag($motion);
 
-        } elseif (isset($_POST['motionDelTag'])) {
+        } elseif (isset($post['motionDelTag'])) {
             $this->motionDelTag($motion);
 
-        } elseif (isset($_POST['writeComment'])) {
+        } elseif (isset($post['writeComment'])) {
             $this->writeComment($motion, $viewParameters);
         }
     }

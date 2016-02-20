@@ -123,6 +123,53 @@ class Base extends Controller
         return $str;
     }
 
+    /*
+     * @param string $name
+     * @return bool
+     */
+    protected function isPostSet($name)
+    {
+        $post = \Yii::$app->request->post();
+        return isset($post[$name]);
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    protected function isGetSet($name)
+    {
+        $get = \Yii::$app->request->get();
+        return isset($get[$name]);
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function isRequestSet($name)
+    {
+        return $this->isPostSet($name) || $this->isGetSet($name);
+    }
+
+    /**
+     * @param string $name
+     * @param null|mixed $default
+     * @return mixed
+     */
+    public function getRequestValue($name, $default = null)
+    {
+        $post = \Yii::$app->request->post();
+        if (isset($post[$name])) {
+            return $post[$name];
+        }
+        $get = \Yii::$app->request->get();
+        if (isset($get[$name])) {
+            return $get[$name];
+        }
+        return $default;
+    }
+
     /**
      * @param string $pageKey
      *

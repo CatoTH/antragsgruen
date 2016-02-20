@@ -458,7 +458,6 @@ class Motion extends IMotion implements IRSSItem
         if ($this->getConsultation()->getSettings()->lineNumberingGlobal) {
             $motions      = $this->getConsultation()->getVisibleMotions(false);
             $motionBlocks = MotionSorter::getSortedMotions($this->getConsultation(), $motions);
-if (isset($_REQUEST['test'])) var_dump($motionBlocks);
             $lineNo       = 1;
             foreach ($motionBlocks as $motions) {
                 foreach ($motions as $motion) {
@@ -611,7 +610,8 @@ if (isset($_REQUEST['test'])) var_dump($motionBlocks);
                 $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
                 $plain      = \Yii::t('motion', 'published_email_body');
                 $plain      = str_replace('%LINK%', $motionLink, $plain);
-                $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . '</h1>';
+                $title      = $this->motionType->titleSingular . ': ' . $this->title;
+                $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
                 $sections   = $this->getSortedSections(true);
 
                 foreach ($sections as $section) {

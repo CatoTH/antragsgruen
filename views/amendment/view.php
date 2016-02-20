@@ -26,8 +26,8 @@ $controller   = $this->context;
 $layout       = $controller->layoutParams;
 $consultation = $amendment->getMyConsultation();
 
-if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
-    $layout->addBreadcrumb($_REQUEST['backTitle'], $_REQUEST['backUrl']);
+if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
+    $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
     $layout->addBreadcrumb($amendment->getShortTitle());
 } else {
     $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());

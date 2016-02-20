@@ -199,7 +199,7 @@ class AmendmentEditForm extends Model
 
         $amendment = new Amendment();
 
-        $this->setAttributes([$_POST, $_FILES]);
+        $this->setAttributes([\Yii::$app->request->post(), $_FILES]);
         $this->supporters = $this->motion->motionType->getAmendmentInitiatorFormClass()
             ->getAmendmentSupporters($amendment);
 

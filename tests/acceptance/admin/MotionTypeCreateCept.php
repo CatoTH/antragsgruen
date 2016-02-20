@@ -80,3 +80,19 @@ $I->dontSeeElement('.deleteTypeForm');
 $I->click('.deleteTypeOpener a');
 $I->dontSeeElement('.deleteTypeOpener');
 $I->see('Dieser Antragstyp kann (noch) nicht gelöscht werden');
+
+
+
+
+$I->wantTo('create a motion type without template');
+$I->click('#adminLink');
+$I->click('.motionTypeCreate a');
+$I->fillField('#typeTitleSingular', 'Abc1');
+$I->fillField('#typeTitlePlural', 'Abc2');
+$I->fillField('#typeCreateTitle', 'Abc3');
+$I->selectOption('#pdfLayout', 'DBJR');
+$I->fillField('#typeMotionPrefix', 'C');
+$I->checkOption('.presetNone');
+$I->submitForm('.motionTypeCreateForm', [], 'create');
+
+$I->see('Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.');

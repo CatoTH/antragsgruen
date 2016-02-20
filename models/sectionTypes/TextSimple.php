@@ -121,6 +121,8 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
+        $post = \Yii::$app->request->post();
+        
         if ($section->getSettings()->motionType->amendmentMultipleParagraphs) {
             $section->data    = HTMLTools::cleanSimpleHtml($data['consolidated']);
             $section->dataRaw = $data['raw'];
@@ -128,10 +130,10 @@ class TextSimple extends ISectionType
             $moSection = $section->getOriginalMotionSection();
             $paras     = HTMLTools::sectionSimpleHTML($moSection->data, false);
             $parasRaw  = $paras;
-            if ($_POST['modifiedParagraphNo'] !== '' && $_POST['modifiedSectionId'] == $section->sectionId) {
-                $paraNo            = IntVal($_POST['modifiedParagraphNo']);
-                $paras[$paraNo]    = $_POST['sections'][$section->sectionId][$paraNo]['consolidated'];
-                $parasRaw[$paraNo] = $_POST['sections'][$section->sectionId][$paraNo]['raw'];
+            if ($post['modifiedParagraphNo'] !== '' && $post['modifiedSectionId'] == $section->sectionId) {
+                $paraNo            = IntVal($post['modifiedParagraphNo']);
+                $paras[$paraNo]    = $post['sections'][$section->sectionId][$paraNo]['consolidated'];
+                $parasRaw[$paraNo] = $post['sections'][$section->sectionId][$paraNo]['raw'];
             }
             $section->data    = HTMLTools::cleanSimpleHtml(implode('', $paras));
             $section->dataRaw = implode('', $parasRaw);

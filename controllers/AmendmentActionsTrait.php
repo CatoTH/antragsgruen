@@ -57,7 +57,7 @@ trait AmendmentActionsTrait
             throw new Access('No rights to write a comment');
         }
         $commentForm = new CommentForm();
-        $commentForm->setAttributes($_POST['comment']);
+        $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
 
         if (User::getCurrentUser()) {
             $commentForm->userId = User::getCurrentUser()->id;
@@ -229,27 +229,28 @@ trait AmendmentActionsTrait
      */
     private function performShowActions(Amendment $amendment, $commentId, &$viewParameters)
     {
-        if ($commentId == 0 && isset($_POST['commentId'])) {
-            $commentId = IntVal($_POST['commentId']);
+        $post = \Yii::$app->request->post();
+        if ($commentId == 0 && isset($post['commentId'])) {
+            $commentId = IntVal($post['commentId']);
         }
-        if (isset($_POST['deleteComment'])) {
+        if (isset($post['deleteComment'])) {
             $this->deleteComment($amendment, $commentId);
-        } elseif (isset($_POST['commentScreeningAccept'])) {
+        } elseif (isset($post['commentScreeningAccept'])) {
             $this->screenCommentAccept($amendment, $commentId);
 
-        } elseif (isset($_POST['commentScreeningReject'])) {
+        } elseif (isset($post['commentScreeningReject'])) {
             $this->screenCommentReject($amendment, $commentId);
 
-        } elseif (isset($_POST['motionLike'])) {
+        } elseif (isset($post['motionLike'])) {
             $this->amendmentLike($amendment);
 
-        } elseif (isset($_POST['motionDislike'])) {
+        } elseif (isset($post['motionDislike'])) {
             $this->amendmentDislike($amendment);
 
-        } elseif (isset($_POST['motionSupportRevoke'])) {
+        } elseif (isset($post['motionSupportRevoke'])) {
             $this->amendmentSupportRevoke($amendment);
 
-        } elseif (isset($_POST['writeComment'])) {
+        } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
         }
     }

@@ -17,7 +17,6 @@ use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
-use app\models\settings\AntragsgruenApp;
 use yii\web\Response;
 
 class IndexController extends AdminBase
@@ -79,7 +78,7 @@ class IndexController extends AdminBase
             }
         }
 
-        if (isset($_POST['flushCaches']) && User::currentUserIsSuperuser()) {
+        if ($this->isPostSet('flushCaches') && User::currentUserIsSuperuser()) {
             $this->consultation->flushCacheWithChildren();
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
         }
@@ -104,21 +103,22 @@ class IndexController extends AdminBase
 
         $locale = Tools::getCurrentDateLocale();
 
-        if (isset($_POST['save'])) {
+        if ($this->isPostSet('save')) {
             $this->saveTags($model);
+            $post = \Yii::$app->request->post();
 
-            $data = $_POST['consultation'];
+            $data = $post['consultation'];
             $model->setAttributes($data);
 
-            $settingsInput = (isset($_POST['settings']) ? $_POST['settings'] : []);
+            $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
             $settings      = $model->getSettings();
-            $settings->saveForm($settingsInput, $_POST['settingsFields']);
+            $settings->saveForm($settingsInput, $post['settingsFields']);
             $model->setSettings($settings);
 
             if ($model->save()) {
-                $settingsInput = (isset($_POST['siteSettings']) ? $_POST['siteSettings'] : []);
+                $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
                 $siteSettings  = $model->site->getSettings();
-                $siteSettings->saveForm($settingsInput, $_POST['siteSettingsFields']);
+                $siteSettings->saveForm($settingsInput, $post['siteSettingsFields']);
                 $model->site->setSettings($siteSettings);
                 if ($model->site->currentConsultationId == $model->id) {
                     $model->site->status = ($settings->maintainanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
@@ -152,7 +152,7 @@ class IndexController extends AdminBase
      */
     private function saveTags(Consultation $consultation)
     {
-        if (!isset($_POST['tags'])) {
+        if (!$this->isPostSet('tags')) {
             return;
         }
 
@@ -184,7 +184,7 @@ class IndexController extends AdminBase
         };
 
         $foundTags = [];
-        $newTags   = json_decode($_POST['tags'], true);
+        $newTags   = json_decode(\Yii::$app->request->post('tags'), true);
         foreach ($newTags as $pos => $newTag) {
             if ($newTag['id'] == 0) {
                 if ($getByName($newTag['name'])) {
@@ -227,14 +227,14 @@ class IndexController extends AdminBase
     {
         $consultation = $this->consultation;
 
-        if (isset($_POST['save']) && isset($_POST['wordingBase'])) {
-            $consultation->wordingBase = $_POST['wordingBase'];
+        if ($this->isPostSet('save') && $this->isPostSet('wordingBase')) {
+            $consultation->wordingBase = \Yii::$app->request->post('wordingBase');
             $consultation->save();
             \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        if (isset($_POST['save']) && isset($_POST['string'])) {
-            foreach ($_POST['string'] as $key => $val) {
+        if ($this->isPostSet('save') && $this->isPostSet('string')) {
+            foreach (\Yii::$app->request->post('string') as $key => $val) {
                 $key   = urldecode($key);
                 $found = false;
                 foreach ($consultation->texts as $text) {
@@ -274,13 +274,14 @@ class IndexController extends AdminBase
 
         $form           = new ConsultationCreateForm();
         $form->template = $this->consultation;
+        $post = \Yii::$app->request->post();
 
-        if (isset($_POST['createConsultation'])) {
+        if ($this->isPostSet('createConsultation')) {
             $form->setAttributes($_POST['newConsultation'], true);
-            $form->setAsDefault = isset($_POST['newConsultation']['setStandard']);
-            if (isset($_POST['newConsultation']['template'])) {
+            $form->setAsDefault = isset($post['newConsultation']['setStandard']);
+            if (isset($post['newConsultation']['template'])) {
                 foreach ($this->site->consultations as $cons) {
-                    if ($cons->id == $_POST['newConsultation']['template']) {
+                    if ($cons->id == $post['newConsultation']['template']) {
                         $form->template = $cons;
                     }
                 }
@@ -293,9 +294,9 @@ class IndexController extends AdminBase
             }
             $this->site->refresh();
         }
-        if (isset($_POST['setStandard'])) {
-            if (is_array($_POST['setStandard']) && count($_POST['setStandard']) == 1) {
-                $keys = array_keys($_POST['setStandard']);
+        if ($this->isPostSet('setStandard')) {
+            if (is_array($post['setStandard']) && count($post['setStandard']) == 1) {
+                $keys = array_keys($post['setStandard']);
                 foreach ($site->consultations as $consultation) {
                     if ($consultation->id == $keys[0]) {
                         $site->currentConsultationId = $consultation->id;

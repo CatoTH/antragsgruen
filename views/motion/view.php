@@ -25,8 +25,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-if (isset($_REQUEST['backUrl']) && $_REQUEST['backTitle']) {
-    $layout->addBreadcrumb($_REQUEST['backTitle'], $_REQUEST['backUrl']);
+if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
+    $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
 }
 $layout->addBreadcrumb($motion->motionType->titleSingular);
 
