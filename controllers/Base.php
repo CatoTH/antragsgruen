@@ -114,7 +114,7 @@ class Base extends Controller
      * @param string $name
      * @return bool
      */
-    protected function isRequestSet($name)
+    public function isRequestSet($name)
     {
         return $this->isPostSet($name) || $this->isGetSet($name);
     }
@@ -124,7 +124,7 @@ class Base extends Controller
      * @param null|mixed $default
      * @return mixed
      */
-    protected function getRequestValue($name, $default = null)
+    public function getRequestValue($name, $default = null)
     {
         $post = \Yii::$app->request->post();
         if (isset($post[$name])) {

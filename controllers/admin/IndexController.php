@@ -152,7 +152,7 @@ class IndexController extends AdminBase
      */
     private function saveTags(Consultation $consultation)
     {
-        if (!isset($_POST['tags'])) {
+        if (!$this->isPostSet('tags')) {
             return;
         }
 
@@ -184,7 +184,7 @@ class IndexController extends AdminBase
         };
 
         $foundTags = [];
-        $newTags   = json_decode($_POST['tags'], true);
+        $newTags   = json_decode(\Yii::$app->request->post('tags'), true);
         foreach ($newTags as $pos => $newTag) {
             if ($newTag['id'] == 0) {
                 if ($getByName($newTag['name'])) {
@@ -227,14 +227,14 @@ class IndexController extends AdminBase
     {
         $consultation = $this->consultation;
 
-        if (isset($_POST['save']) && isset($_POST['wordingBase'])) {
-            $consultation->wordingBase = $_POST['wordingBase'];
+        if ($this->isPostSet('save') && $this->isPostSet('wordingBase')) {
+            $consultation->wordingBase = \Yii::$app->request->post('wordingBase');
             $consultation->save();
             \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
-        if (isset($_POST['save']) && isset($_POST['string'])) {
-            foreach ($_POST['string'] as $key => $val) {
+        if ($this->isPostSet('save') && $this->isPostSet('string')) {
+            foreach (\Yii::$app->request->post('string') as $key => $val) {
                 $key   = urldecode($key);
                 $found = false;
                 foreach ($consultation->texts as $text) {
@@ -274,13 +274,14 @@ class IndexController extends AdminBase
 
         $form           = new ConsultationCreateForm();
         $form->template = $this->consultation;
+        $post = \Yii::$app->request->post();
 
-        if (isset($_POST['createConsultation'])) {
+        if ($this->isPostSet('createConsultation')) {
             $form->setAttributes($_POST['newConsultation'], true);
-            $form->setAsDefault = isset($_POST['newConsultation']['setStandard']);
-            if (isset($_POST['newConsultation']['template'])) {
+            $form->setAsDefault = isset($post['newConsultation']['setStandard']);
+            if (isset($post['newConsultation']['template'])) {
                 foreach ($this->site->consultations as $cons) {
-                    if ($cons->id == $_POST['newConsultation']['template']) {
+                    if ($cons->id == $post['newConsultation']['template']) {
                         $form->template = $cons;
                     }
                 }
@@ -293,9 +294,9 @@ class IndexController extends AdminBase
             }
             $this->site->refresh();
         }
-        if (isset($_POST['setStandard'])) {
-            if (is_array($_POST['setStandard']) && count($_POST['setStandard']) == 1) {
-                $keys = array_keys($_POST['setStandard']);
+        if ($this->isPostSet('setStandard')) {
+            if (is_array($post['setStandard']) && count($post['setStandard']) == 1) {
+                $keys = array_keys($post['setStandard']);
                 foreach ($site->consultations as $consultation) {
                     if ($consultation->id == $keys[0]) {
                         $site->currentConsultationId = $consultation->id;
