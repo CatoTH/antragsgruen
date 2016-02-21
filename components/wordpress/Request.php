@@ -9,6 +9,15 @@ use yii\web\NotFoundHttpException;
 
 class Request extends \yii\web\Request
 {
+    protected $adminDefaultRoute = '';
+
+    /**
+     * @param string $route
+     */
+    public function setAdminDefaultRoute($route) {
+        $this->adminDefaultRoute = $route;
+    }
+
     /**
      * Converts `$_COOKIE` into an array of [[Cookie]].
      * @return array the cookies obtained from request
@@ -127,18 +136,26 @@ class Request extends \yii\web\Request
      */
     public function resolve()
     {
-        $result = Yii::$app->getUrlManager()->parseRequest($this);
-        if ($result !== false) {
-            list ($route, $params) = $result;
-            if ($this->_queryParams === null) {
-                $_GET = $params + $_GET; // preserve numeric keys
+        if (is_admin()) {
+            if (isset($_GET['route'])) {
+                return [stripslashes($_GET['route']), $this->getQueryParams()];
             } else {
-                $this->_queryParams = $params + $this->_queryParams;
+                return [$this->adminDefaultRoute, $this->getQueryParams()];
             }
-
-            return [$route, $this->getQueryParams()];
         } else {
-            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+            $result = Yii::$app->getUrlManager()->parseRequest($this);
+            if ($result !== false) {
+                list ($route, $params) = $result;
+                if ($this->_queryParams === null) {
+                    $_GET = $params + $_GET; // preserve numeric keys
+                } else {
+                    $this->_queryParams = $params + $this->_queryParams;
+                }
+
+                return [$route, $this->getQueryParams()];
+            } else {
+                throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+            }
         }
     }
 }

@@ -4,9 +4,18 @@ namespace app\components\wordpress;
 
 class WordpressCompatibility
 {
+    const SETTINGS_PAGE_HANDLE = 'motions_settings_handle';
 
     /** @var Application */
     public static $app;
+
+    /**
+     * @param Application $app
+     */
+    public static function setApp($app)
+    {
+        static::$app = $app;
+    }
 
     /**
      * @param string $uri
@@ -22,7 +31,7 @@ class WordpressCompatibility
 
     /**
      */
-    public static function registerComponents()
+    public static function registerGlobalComponents()
     {
         add_action('widgets_init', function () {
             register_widget(Sidebar::class);
@@ -30,16 +39,70 @@ class WordpressCompatibility
     }
 
     /**
-     * @param Application $app
+     * @param string $defaultRoute
      */
-    public static function runApp($app)
+    public static function renderAdminPage($defaultRoute)
     {
-        static::$app = $app;
+        /** @var Request $request */
+        $request = \Yii::$app->request;
+        $request->setAdminDefaultRoute($defaultRoute);
 
-        if ( ! WordpressCompatibility::isRelevantUri($_SERVER['REQUEST_URI'])) {
+        try {
+            static::$app->run();
+
+            $data = WordpressLayoutData::getInstance();
+            foreach ($data->jsFiles as $name => $file) {
+                wp_enqueue_script('motions-' . $name, $file, ['jquery-core'], ANTRAGSGRUEN_WP_VERSION,
+                    true);
+            }
+            foreach ($data->cssFiles as $name => $file) {
+                wp_enqueue_style('motions-layout', $file);
+            }
+
+            echo $data->content;
+
+            if ($data->onLoadJs) {
+                foreach ($data->onLoadJs as $onLoadJs) {
+                    echo '<script>jQuery(function() {' . $onLoadJs . '});</script>';
+                }
+            }
+        } catch (\Exception $e) {
+            echo esc_html($e->getMessage());
+        }
+    }
+
+    /**
+     */
+    public static function registerAdminComponents()
+    {
+        if ( ! is_admin()) {
             return;
         }
+
+        add_action('admin_menu', function () {
+            add_menu_page(
+                'Motions Administration',
+                'Motions',
+                /* $capability */
+                'manage_options',
+                /* $menu_slug  */
+                self::SETTINGS_PAGE_HANDLE,
+                function() {
+                    WordpressCompatibility::renderAdminPage('admin/index');
+                },
+                WP_PLUGIN_URL . '/motions/web/favicon-16x16.png'
+            );
+        });
+    }
+
+    /**
+     */
+    public static function runFrontendApp()
+    {
         if (is_admin()) {
+            return;
+        }
+        if ( ! WordpressCompatibility::isRelevantUri($_SERVER['REQUEST_URI'])) {
             return;
         }
 

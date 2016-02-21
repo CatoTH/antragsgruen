@@ -65,5 +65,7 @@ $config = require(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR
 
 $app = new app\components\wordpress\Application($config);
 
-WordpressCompatibility::registerComponents();
-WordpressCompatibility::runApp($app);
+WordpressCompatibility::setApp($app);
+WordpressCompatibility::registerGlobalComponents();
+WordpressCompatibility::registerAdminComponents();
+WordpressCompatibility::runFrontendApp();
