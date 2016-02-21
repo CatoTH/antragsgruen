@@ -527,7 +527,7 @@ class MotionController extends Base
             ]));
         }
 
-        if ($this->isPostSet('modify')) {
+        if ($this->isPostSet('confirm')) {
             $invisible = $this->consultation->getInvisibleAmendmentStati();
             foreach ($oldMotion->getVisibleAmendments() as $amendment) {
                 if (isset($amendStati[$amendment->id]) && $amendStati[$amendment->id] != $amendment->status) {

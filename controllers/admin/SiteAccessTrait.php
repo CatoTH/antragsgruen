@@ -239,7 +239,7 @@ trait SiteAccessTrait
             $settings                      = $site->getSettings();
             $settings->forceLogin          = isset($post['forceLogin']);
             $settings->managedUserAccounts = isset($post['managedUserAccounts']);
-            if ($this->isPostSet('save')) {
+            if ($this->isPostSet('login')) {
                 $settings->loginMethods = $post['login'];
             } else {
                 $settings->loginMethods = [];
