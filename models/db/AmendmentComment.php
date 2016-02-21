@@ -154,7 +154,7 @@ class AmendmentComment extends IComment
                     $invisibleStati = array_map('IntVal', $consultation->getInvisibleAmendmentStati());
                     /** @var ActiveQuery $query */
                     $query->andWhere($tpre . 'amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-                    $query->andWhere($tpre . 'amendment.motionId = motion.id');
+                    $query->andWhere($tpre . 'amendment.motionId = ' . $tpre . 'motion.id');
 
                     $query->joinWith(
                         [

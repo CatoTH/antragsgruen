@@ -383,7 +383,7 @@ class Amendment extends IMotion implements IRSSItem
                 }
             ]
         );
-        $query->orderBy($tpre . 'dateCreation DESC');
+        $query->orderBy('dateCreation DESC');
 
         return $query->all();
     }
