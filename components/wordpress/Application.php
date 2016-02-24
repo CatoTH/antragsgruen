@@ -45,6 +45,7 @@ class Application extends \yii\web\Application
             'session'      => ['class' => 'yii\web\Session'],
             'user'         => ['class' => 'app\components\wordpress\User'],
             'errorHandler' => ['class' => 'yii\web\ErrorHandler'],
+            'urlManager'   => ['class' => 'app\components\wordpress\UrlManager'],
         ]);
     }
 

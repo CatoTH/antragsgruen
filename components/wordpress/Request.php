@@ -137,8 +137,8 @@ class Request extends \yii\web\Request
     public function resolve()
     {
         if (is_admin()) {
-            if (isset($_GET['route'])) {
-                return [stripslashes($_GET['route']), $this->getQueryParams()];
+            if (isset($_GET['r'])) {
+                return [stripslashes($_GET['r']), $this->getQueryParams()];
             } else {
                 return [$this->adminDefaultRoute, $this->getQueryParams()];
             }

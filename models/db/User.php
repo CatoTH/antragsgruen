@@ -608,6 +608,11 @@ class User extends ActiveRecord implements IdentityInterface
         if (in_array($this->id, $params->adminUserIds)) {
             return true;
         }
+        if (YII_ENV == 'wordpress') {
+            if (current_user_can('manage_options')) {
+                return true;
+            }
+        }
         // @TODO Respect privilege table
         foreach ($consultation->site->admins as $admin) {
             if ($admin->id == $this->id) {
