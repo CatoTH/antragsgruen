@@ -14,8 +14,22 @@ class Request extends \yii\web\Request
     /**
      * @param string $route
      */
-    public function setAdminDefaultRoute($route) {
+    public function setAdminDefaultRoute($route)
+    {
         $this->adminDefaultRoute = $route;
+    }
+
+    /**
+     * Returns the relative URL for the application.
+     * This is similar to [[scriptUrl]] except that it does not include the script file name,
+     * and the ending slashes are removed.
+     * @return string the relative URL for the application
+     * @see setScriptUrl()
+     */
+    public function getBaseUrl()
+    {
+        $url = parse_url(get_site_url());
+        return (isset($url['path']) ? $url['path'] : '/');
     }
 
     /**

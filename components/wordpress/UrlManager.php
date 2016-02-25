@@ -4,16 +4,6 @@ namespace app\components\wordpress;
 
 class UrlManager extends \yii\web\UrlManager
 {
-    /**
-     * Initializes UrlManager.
-     */
-    public function init()
-    {
-        parent::init();
-        if (is_admin()) {
-            $this->enablePrettyUrl = false;
-        }
-    }
 
     /** @param string|array $params use a string to represent a route (e.g. `site/index`),
      * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
@@ -21,11 +11,29 @@ class UrlManager extends \yii\web\UrlManager
      */
     public function createUrl($params)
     {
-        // @TODO Special handling if "page" parameter is set from the app
-        $get = \Yii::$app->request->get();
-        if (isset($get['page'])) {
-            $params['page'] = $get['page'];
+        $this->showScriptName = false;
+
+        $targetRoute   = $params[0];
+        $isAdminTarget = false;
+        $origPretty    = $this->enablePrettyUrl;
+        foreach (WordpressCompatibility::$SETTING_PAGE_ROUTES as $route => $page) {
+            if (strpos($targetRoute, $route) === 0) {
+                $isAdminTarget = $page;
+            }
         }
-        return parent::createUrl($params);
+
+        if ($isAdminTarget) {
+            $params['page']        = $isAdminTarget;
+            $this->enablePrettyUrl = false;
+        }
+
+        $url                   = parent::createUrl($params);
+        $this->enablePrettyUrl = $origPretty;
+
+        if ( ! $isAdminTarget) {
+            $url = get_site_url() . $url;
+        }
+
+        return $url;
     }
 }

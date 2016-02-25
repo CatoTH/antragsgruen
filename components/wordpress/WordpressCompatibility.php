@@ -6,6 +6,10 @@ class WordpressCompatibility
 {
     const SETTINGS_PAGE_HANDLE = 'motions_settings_handle';
 
+    public static $SETTING_PAGE_ROUTES = [
+        'admin/' => WordpressCompatibility::SETTINGS_PAGE_HANDLE,
+    ];
+
     /** @var Application */
     public static $app;
 
@@ -87,7 +91,7 @@ class WordpressCompatibility
                 'manage_options',
                 /* $menu_slug  */
                 self::SETTINGS_PAGE_HANDLE,
-                function() {
+                function () {
                     WordpressCompatibility::renderAdminPage('admin/index');
                 },
                 WP_PLUGIN_URL . '/motions/web/favicon-16x16.png'
