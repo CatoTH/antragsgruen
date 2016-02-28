@@ -108,7 +108,7 @@ class LayoutHelper
             $motionCreateLink = UrlHelper::createUrl(['motion/create', 'agendaItemId' => $agendaItem->id]);
             echo '<a href="' . Html::encode($motionCreateLink) . '" class="motionCreateLink btn btn-default btn-xs"';
             echo ' title="' . Html::encode($agendaItem->title . ': ' . $agendaItem->motionType->createTitle) . '"';
-            echo '><span class="glyphicon glyphicon-plus"></span> ';
+            echo ' rel="nofollow"><span class="glyphicon glyphicon-plus"></span> ';
             echo nl2br(Html::encode($agendaItem->motionType->createTitle)) . '</a>';
         }
 

@@ -22,6 +22,7 @@ if ($mode == 'create') {
 } else {
     $this->title = str_replace('%TYPE%', $form->motionType->titleSingular, \Yii::t('motion', 'motion_edit'));
 }
+$layout->robotsNoindex = true;
 
 $layout->loadCKEditor();
 $layout->loadDatepicker();

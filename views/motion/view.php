@@ -42,9 +42,9 @@ if ($policy->checkCurrUserAmendment(true, true)) {
     $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
     $title .= \Yii::t('motion', 'amendment_create');
-    $html .= Html::a($title, $amendCreateUrl) . '</li>';
-    $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '">' .
-        $title . '</a>';
+    $html .= Html::a($title, $amendCreateUrl, ['rel' => 'nofollow']) . '</li>';
+    $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '" ' .
+        'rel="nofollow">' . $title . '</a>';
     $sidebarRows++;
 } elseif ($policy->getPolicyID() != IPolicy::POLICY_NOBODY) {
     $msg = $policy->getPermissionDeniedAmendmentMsg();
@@ -214,7 +214,8 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
         $title = '<span class="icon glyphicon glyphicon-flash"></span>';
         $title .= \Yii::t('motion', 'amendment_create');
         $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
-        echo '<a class="btn btn-default btn-sm" href="' . Html::encode($amendCreateUrl) . '">' . $title . '</a>';
+        echo '<a class="btn btn-default btn-sm" href="' . Html::encode($amendCreateUrl) . '" rel="nofollow">' .
+            $title . '</a>';
         echo '</div>';
     }
 

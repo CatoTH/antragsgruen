@@ -14,13 +14,14 @@ use yii\helpers\Html;
  */
 
 $controller = $this->context;
-$params     = $controller->layoutParams;
+$layout     = $controller->layoutParams;
 
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
-$params->addBreadcrumb($amendment->getMyMotion()->titlePrefix, UrlHelper::createMotionUrl($amendment->getMyMotion()));
-$params->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
-$params->addBreadcrumb(\Yii::t('amend', 'confirm'));
+$layout->robotsNoindex = true;
+$layout->addBreadcrumb($amendment->getMyMotion()->titlePrefix, UrlHelper::createMotionUrl($amendment->getMyMotion()));
+$layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
+$layout->addBreadcrumb(\Yii::t('amend', 'confirm'));
 
 echo '<h1>' . Yii::t('amend', 'confirm_amendment') . '</h1>';
 
