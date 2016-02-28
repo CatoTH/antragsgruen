@@ -16,13 +16,13 @@ $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
-$I->seeOptionIsSelected('#typeInitiatorForm', \app\models\supportTypes\OnlyInitiator::getTitle());
-$I->selectOption('#typeInitiatorForm', \app\models\supportTypes\GivenByInitiator::getTitle());
+$I->seeOptionIsSelected('#typeSupportType', \app\models\supportTypes\OnlyInitiator::getTitle());
+$I->selectOption('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
 $I->fillField('#typeMinSupporters', 0);
 $I->uncheckOption('#typeHasOrgaRow input[type=checkbox]');
 
 $motionTypePage->saveForm();
-$I->seeOptionIsSelected('#typeInitiatorForm', \app\models\supportTypes\GivenByInitiator::getTitle());
+$I->seeOptionIsSelected('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
 
 
 

@@ -7,10 +7,10 @@ $I->populateDBData1();
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typeInitiatorForm', \app\models\supportTypes\GivenByInitiator::getTitle());
+$I->selectOption('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
 $I->fillField('#typeMinSupporters', 0);
 $motionTypePage->saveForm();
-$I->seeOptionIsSelected('#typeInitiatorForm', \app\models\supportTypes\GivenByInitiator::getTitle());
+$I->seeOptionIsSelected('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
 
 
 $I->gotoConsultationHome();
