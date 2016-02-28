@@ -1,7 +1,7 @@
 Antragsgrün
 ===========
 
-Antragsgrün 3 is the third generation of the Content Management System built for the german green party.
+Antragsgrün 3 is the third generation of the Content Management System built for the [German Green Party](https://www.gruene.de/) and the [German Federal Youth Council](http://www.dbjr.de/).
 It's a complete rewrite of the second generation and has some major advantages:
 * It's much more flexible on the structure of motions and wording. It even supports image uploading, e.g. for applications.
 * It supports multiple layouts for the website and the PDF-Export.
@@ -20,7 +20,8 @@ Installation
 Required Software (Debian Linux):
 ```bash
 # Using PHP7-packages from [DotDeb](https://www.dotdeb.org/instructions/):
-apt-get install php7.0 php7.0-cli php7.0-fpm php7.0-intl php7.0-json php7.0-mcrypt php7.0-mysql php7.0-opcache php7.0-curl
+apt-get install php7.0 php7.0-cli php7.0-fpm php7.0-intl php7.0-json php7.0-mcrypt \
+                php7.0-mysql php7.0-opcache php7.0-curl
 
 # Using PHP5-packages from Debian:
 apt-get install php5-cli php5-fpm php5-mysqlnd php5-mcrypt php5-intl php5-curl

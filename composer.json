@@ -8,9 +8,9 @@
     "source": "https://github.com/CatoTH/antragsgruen"
   },
   "keywords": [
-    "gruen",
-    "antrag",
-    "netzbegruenung"
+    "motions",
+    "amendments",
+    "party"
   ],
   "minimum-stability": "dev",
   "homepage": "https://www.antragsgruen.de/",
