@@ -133,7 +133,7 @@ class WurzelwerkAuthClient extends OpenId
      */
     protected function defaultReturnUrl()
     {
-        $params = $_GET;
+        $params = \Yii::$app->request->get();
         $keys   = array_keys($params);
         foreach ($keys as $name) {
             if (strncmp('openid', $name, 6) === 0) {

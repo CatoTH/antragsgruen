@@ -119,7 +119,7 @@ class MotionController extends Base
         try {
             $motions = $this->consultation->getVisibleMotionsSorted();
             if ($motionTypeId != '' && $motionTypeId != '0') {
-                $motionTypeIds = explode(',', $motionTypeId);
+                $motionTypeIds   = explode(',', $motionTypeId);
                 $motionsFiltered = [];
                 foreach ($motions as $motion) {
                     if (in_array($motion->motionTypeId, $motionTypeIds)) {
@@ -270,12 +270,12 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (isset($_POST['modify'])) {
+        if ($this->isPostSet('modify')) {
             $nextUrl = ['motion/edit', 'motionId' => $motion->id];
             return $this->redirect(UrlHelper::createUrl($nextUrl));
         }
 
-        if (isset($_POST['confirm'])) {
+        if ($this->isPostSet('confirm')) {
             $screening      = $this->consultation->getSettings()->screeningMotions;
             $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
             if (!$screening && $motion->statusString == '') {
@@ -303,7 +303,7 @@ class MotionController extends Base
 
         } else {
             $params                  = ['motion' => $motion, 'mode' => $fromMode];
-            $params['deleteDraftId'] = (isset($_REQUEST['draftId']) ? $_REQUEST['draftId'] : null);
+            $params['deleteDraftId'] = $this->getRequestValue('draftId');
             return $this->render('create_confirm', $params);
         }
     }
@@ -328,9 +328,9 @@ class MotionController extends Base
         $form     = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
         $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
 
-        if (isset($_POST['save'])) {
+        if ($this->isPostSet('save')) {
             $motion->flushCacheWithChildren();
-            $form->setAttributes([$_POST, $_FILES]);
+            $form->setAttributes([\Yii::$app->request->post(), $_FILES]);
             try {
                 $form->saveMotion($motion);
 
@@ -428,14 +428,15 @@ class MotionController extends Base
 
         $form = new MotionEditForm($motionType, $agendaItem, null);
 
-        if (isset($_POST['save'])) {
+        if ($this->isPostSet('save')) {
             try {
-                $motion  = $form->createMotion();
-                $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => 'create'];
-                if (isset($_POST['draftId'])) {
-                    $nextUrl['draftId'] = $_POST['draftId'];
-                }
-                return $this->redirect(UrlHelper::createUrl($nextUrl));
+                $motion = $form->createMotion();
+                return $this->redirect(UrlHelper::createUrl([
+                    'motion/createconfirm',
+                    'motionId' => $motion->id,
+                    'fromMode' => 'create',
+                    'draftId'  => $this->getRequestValue('draftId'),
+                ]));
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
@@ -487,11 +488,11 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (isset($_POST['cancel'])) {
+        if ($this->isPostSet('cancel')) {
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
-        if (isset($_POST['withdraw'])) {
+        if ($this->isPostSet('withdraw')) {
             $motion->withdraw();
             \Yii::$app->session->setFlash('success', \Yii::t('motion', 'withdraw_done'));
             return $this->redirect(UrlHelper::createMotionUrl($motion));
@@ -515,7 +516,7 @@ class MotionController extends Base
         $oldMotion  = $newMotion->replacedMotion;
         $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
 
-        if (isset($_POST['modify'])) {
+        if ($this->isPostSet('modify')) {
             return $this->redirect(UrlHelper::createUrl([
                 'motion/mergeamendments',
                 'motionId'       => $oldMotion->id,
@@ -524,7 +525,7 @@ class MotionController extends Base
             ]));
         }
 
-        if (isset($_POST['confirm'])) {
+        if ($this->isPostSet('confirm')) {
             $invisible = $this->consultation->getInvisibleAmendmentStati();
             foreach ($oldMotion->getVisibleAmendments() as $amendment) {
                 if (isset($amendStati[$amendment->id]) && $amendStati[$amendment->id] != $amendment->status) {
@@ -606,20 +607,17 @@ class MotionController extends Base
         $form       = new MotionMergeAmendmentsForm($motion, $newMotion);
 
         try {
-            if (isset($_POST['save'])) {
-                $form->setAttributes($_POST);
+            if ($this->isPostSet('save')) {
+                $form->setAttributes(\Yii::$app->request->post());
                 try {
                     $newMotion = $form->createNewMotion();
-                    $nextUrl   = [
+                    return $this->redirect(UrlHelper::createUrl([
                         'motion/mergeamendmentconfirm',
                         'motionId'       => $newMotion->id,
                         'fromMode'       => 'create',
                         'amendmentStati' => json_encode($form->amendStatus),
-                    ];
-                    if (isset($_POST['draftId'])) {
-                        $nextUrl['draftId'] = $_POST['draftId'];
-                    }
-                    return $this->redirect(UrlHelper::createUrl($nextUrl));
+                        'draftId'        => $this->getRequestValue('draftId'),
+                    ]));
                 } catch (FormError $e) {
                     \Yii::$app->session->setFlash('error', $e->getMessage());
                 }
