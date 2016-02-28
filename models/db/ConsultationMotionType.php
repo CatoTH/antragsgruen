@@ -1,7 +1,7 @@
 <?php
 namespace app\models\db;
 
-use app\models\initiatorForms\IInitiatorForm;
+use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
@@ -27,8 +27,8 @@ use yii\db\ActiveRecord;
  * @property string $policySupport
  * @property int $contactEmail
  * @property int $contactPhone
- * @property int $initiatorForm
- * @property string $initiatorFormSettings
+ * @property int $supportType
+ * @property string $supportTypeSettings
  * @property int $amendmentMultipleParagraphs
  * @property int $status
  * @property int $layoutTwoCols
@@ -139,19 +139,19 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return IInitiatorForm
+     * @return ISupportType
      */
-    public function getMotionInitiatorFormClass()
+    public function getMotionSupportTypeClass()
     {
-        return IInitiatorForm::getImplementation($this->initiatorForm, $this, $this->initiatorFormSettings);
+        return ISupportType::getImplementation($this->supportType, $this, $this->supportTypeSettings);
     }
 
     /**
-     * @return IInitiatorForm
+     * @return ISupportType
      */
-    public function getAmendmentInitiatorFormClass()
+    public function getAmendmentSupportTypeClass()
     {
-        return IInitiatorForm::getImplementation($this->initiatorForm, $this, $this->initiatorFormSettings);
+        return ISupportType::getImplementation($this->supportType, $this, $this->supportTypeSettings);
     }
 
     /**
@@ -226,14 +226,14 @@ class ConsultationMotionType extends ActiveRecord
     {
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'layoutTwoCols'], 'required'],
-            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'initiatorForm'], 'required'],
+            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'supportType'], 'required'],
             [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position', 'status'], 'required'],
 
             [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
             [['amendmentMultipleParagraphs', 'layoutTwoCols'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
-            [['motionPrefix', 'position', 'initiatorForm', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],
+            [['motionPrefix', 'position', 'supportType', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'layoutTwoCols'], 'safe'],
         ];
     }

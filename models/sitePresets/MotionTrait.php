@@ -5,7 +5,7 @@ namespace app\models\sitePresets;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
-use app\models\initiatorForms\IInitiatorForm;
+use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 
@@ -29,7 +29,7 @@ trait MotionTrait
         $type->policySupport               = IPolicy::POLICY_NOBODY;
         $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
-        $type->initiatorForm               = IInitiatorForm::ONLY_INITIATOR;
+        $type->supportType                 = ISupportType::ONLY_INITIATOR;
         $type->texTemplateId               = 1;
         $type->amendmentMultipleParagraphs = 1;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;

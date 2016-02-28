@@ -203,8 +203,8 @@ CREATE TABLE `###TABLE_PREFIX###consultationMotionType` (
   `policySupport`               INT(11)      NOT NULL,
   `contactEmail`                TINYINT(4)   NOT NULL,
   `contactPhone`                TINYINT(4)   NOT NULL,
-  `initiatorForm`               INT(11)      NOT NULL,
-  `initiatorFormSettings`       TEXT,
+  `supportType`                 INT(11)      NOT NULL,
+  `supportTypeSettings`         TEXT,
   `amendmentMultipleParagraphs` TINYINT(1)            DEFAULT NULL,
   `status`                      SMALLINT(6)  NOT NULL,
   `layoutTwoCols`               SMALLINT(6)           DEFAULT '0'

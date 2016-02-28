@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\initiatorForms;
+namespace app\models\supportTypes;
 
 use app\controllers\Base;
 use app\models\db\Amendment;
@@ -13,21 +13,23 @@ use app\models\exceptions\Internal;
 use app\models\forms\AmendmentEditForm;
 use app\models\forms\MotionEditForm;
 
-abstract class IInitiatorForm
+abstract class ISupportType
 {
-    const ONLY_INITIATOR = 0;
-    const WITH_SUPPORTER = 1;
+    const ONLY_INITIATOR        = 0;
+    const GIVEN_BY_INITIATOR    = 1;
+    const COLLECTING_SUPPORTERS = 2;
 
     protected $adminMode = false;
 
     /**
-     * @return IInitiatorForm[]
+     * @return ISupportType[]
      */
     public static function getImplementations()
     {
         return [
-            static::ONLY_INITIATOR => OnlyInitiator::class,
-            static::WITH_SUPPORTER => WithSupporters::class,
+            static::ONLY_INITIATOR        => OnlyInitiator::class,
+            static::GIVEN_BY_INITIATOR    => GivenByInitiator::class,
+            static::COLLECTING_SUPPORTERS => CollectBeforePublish::class,
         ];
     }
 
@@ -35,16 +37,18 @@ abstract class IInitiatorForm
      * @param int $formId
      * @param ConsultationMotionType $motionType
      * @param string $settings
-     * @return IInitiatorForm
+     * @return ISupportType
      * @throws Internal
      */
     public static function getImplementation($formId, ConsultationMotionType $motionType, $settings)
     {
         switch ($formId) {
-            case 0:
+            case static::ONLY_INITIATOR:
                 return new OnlyInitiator($motionType, $settings);
-            case 1:
-                return new WithSupporters($motionType, $settings);
+            case static::GIVEN_BY_INITIATOR:
+                return new GivenByInitiator($motionType, $settings);
+            case static::COLLECTING_SUPPORTERS:
+                return new CollectBeforePublish($motionType, $settings);
             default:
                 throw new Internal('Supporter form type not found');
         }
@@ -80,6 +84,14 @@ abstract class IInitiatorForm
      * @return bool
      */
     public static function hasSupporters()
+    {
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function collectSupportersBeforePublication()
     {
         return false;
     }

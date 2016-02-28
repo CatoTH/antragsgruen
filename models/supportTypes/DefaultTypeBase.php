@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\initiatorForms;
+namespace app\models\supportTypes;
 
 use app\components\Tools;
 use app\controllers\Base;
@@ -17,7 +17,7 @@ use app\models\forms\AmendmentEditForm;
 use app\models\forms\MotionEditForm;
 use yii\web\View;
 
-abstract class DefaultFormBase extends IInitiatorForm
+abstract class DefaultTypeBase extends ISupportType
 {
     /** @var Consultation $motionType $motionType */
     protected $motionType;

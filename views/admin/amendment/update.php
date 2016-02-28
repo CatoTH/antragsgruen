@@ -183,7 +183,7 @@ if (!$amendment->textFixed) {
 }
 
 
-$initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();
+$initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
 $initiatorClass->setAdminMode(true);
 echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 

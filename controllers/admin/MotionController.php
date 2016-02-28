@@ -10,7 +10,7 @@ use app\models\db\Motion;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
-use app\models\initiatorForms\IInitiatorForm;
+use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\sitePresets\ApplicationTrait;
 use app\models\sitePresets\MotionTrait;
@@ -100,9 +100,9 @@ class MotionController extends AdminBase
             $motionType->deadlineMotions             = Tools::dateBootstraptime2sql($input['deadlineMotions']);
             $motionType->deadlineAmendments          = Tools::dateBootstraptime2sql($input['deadlineAmendments']);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
-            $form                                    = $motionType->getMotionInitiatorFormClass();
+            $form                                    = $motionType->getMotionSupportTypeClass();
             $form->setSettings(\Yii::$app->request->post('initiator'));
-            $motionType->initiatorFormSettings = $form->getSettings();
+            $motionType->supportTypeSettings = $form->getSettings();
             $motionType->save();
 
             $this->sectionsSave($motionType);
@@ -154,7 +154,7 @@ class MotionController extends AdminBase
                     $motionType->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->amendmentMultipleParagraphs = 1;
                     $motionType->position                    = 0;
-                    $motionType->initiatorForm               = IInitiatorForm::ONLY_INITIATOR;
+                    $motionType->supportType                 = ISupportType::ONLY_INITIATOR;
                     $motionType->status                      = 0;
                 }
             }
@@ -207,7 +207,7 @@ class MotionController extends AdminBase
         $this->checkConsistency($motion);
 
         $this->layout = 'column2';
-        $post = \Yii::$app->request->post();
+        $post         = \Yii::$app->request->post();
 
         $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
         $form->setAdminMode(true);

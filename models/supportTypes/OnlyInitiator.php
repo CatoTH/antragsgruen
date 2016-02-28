@@ -1,17 +1,17 @@
 <?php
 
-namespace app\models\initiatorForms;
+namespace app\models\supportTypes;
 
 use app\models\db\ConsultationMotionType;
 
-class OnlyInitiator extends DefaultFormBase
+class OnlyInitiator extends DefaultTypeBase
 {
     /**
      * @return string
      */
     public static function getTitle()
     {
-        return 'Nur die Antragsteller*in';
+        return \Yii::t('structure', 'supp_only_initiators');
     }
 
     /**

@@ -1,18 +1,18 @@
 <?php
 
-namespace app\models\initiatorForms;
+namespace app\models\supportTypes;
 
 use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 
-class WithSupporters extends DefaultFormBase
+class CollectBeforePublish extends DefaultTypeBase
 {
     /**
      * @return string
      */
     public static function getTitle()
     {
-        return 'Mit Unterstützer*innen';
+        return \Yii::t('structure', 'supp_collect_before');
     }
 
     /** @var int */
@@ -36,9 +36,6 @@ class WithSupporters extends DefaultFormBase
         if (isset($json['minSupporters'])) {
             $this->minSupporters = IntVal($json['minSupporters']);
         }
-        if (isset($json['hasOrganizations'])) {
-            $this->hasOrganizations = ($json['hasOrganizations'] == true);
-        }
         if (isset($json['allowMoreSupporters'])) {
             $this->allowMoreSupporters = ($json['allowMoreSupporters'] == true);
         }
@@ -51,7 +48,6 @@ class WithSupporters extends DefaultFormBase
     {
         return json_encode([
             'minSupporters'       => $this->minSupporters,
-            'hasOrganizations'    => $this->hasOrganizations,
             'allowMoreSupporters' => $this->allowMoreSupporters,
         ]);
     }
@@ -64,7 +60,7 @@ class WithSupporters extends DefaultFormBase
         if (isset($settings['minSupporters']) && $settings['minSupporters'] >= 0) {
             $this->minSupporters = IntVal($settings['minSupporters']);
         }
-        $this->hasOrganizations    = (isset($settings['hasOrganizations']));
+        $this->hasOrganizations    = false;
         $this->allowMoreSupporters = (isset($settings['allowMoreSupporters']));
     }
 
@@ -100,6 +96,13 @@ class WithSupporters extends DefaultFormBase
         return $this->allowMoreSupporters;
     }
 
+    /**
+     * @return bool
+     */
+    public static function collectSupportersBeforePublication()
+    {
+        return true;
+    }
 
     /**
      * @return bool

@@ -150,7 +150,7 @@ class MotionEditForm extends Model
         }
 
         try {
-            $this->motionType->getMotionInitiatorFormClass()->validateMotion();
+            $this->motionType->getMotionSupportTypeClass()->validateMotion();
         } catch (FormError $e) {
             $errors = array_merge($errors, $e->getMessages());
         }
@@ -175,7 +175,7 @@ class MotionEditForm extends Model
         $motion = new Motion();
 
         $this->setAttributes([\Yii::$app->request->post(), $_FILES]);
-        $this->supporters = $this->motionType->getMotionInitiatorFormClass()->getMotionSupporters($motion);
+        $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
 
         $this->createMotionVerify();
 
@@ -190,7 +190,7 @@ class MotionEditForm extends Model
         $motion->agendaItemId   = ($this->agendaItem ? $this->agendaItem->id : null);
 
         if ($motion->save()) {
-            $this->motionType->getMotionInitiatorFormClass()->submitMotion($motion);
+            $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
 
             foreach ($this->tags as $tagId) {
                 /** @var ConsultationSettingsTag $tag */
@@ -231,7 +231,7 @@ class MotionEditForm extends Model
             }
         }
 
-        $this->motionType->getMotionInitiatorFormClass()->validateMotion();
+        $this->motionType->getMotionSupportTypeClass()->validateMotion();
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
@@ -269,14 +269,14 @@ class MotionEditForm extends Model
             throw new FormError(\Yii::t('motion', 'err_create_permission'));
         }
 
-        $this->supporters = $this->motionType->getMotionInitiatorFormClass()->getMotionSupporters($motion);
+        $this->supporters = $this->motionType->getMotionSupportTypeClass()->getMotionSupporters($motion);
 
         if (!$this->adminMode) {
             $this->saveMotionVerify();
         }
 
         if ($motion->save()) {
-            $this->motionType->getMotionInitiatorFormClass()->submitMotion($motion);
+            $this->motionType->getMotionSupportTypeClass()->submitMotion($motion);
 
             // Tags
             foreach ($motion->tags as $tag) {
