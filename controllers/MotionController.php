@@ -276,20 +276,7 @@ class MotionController extends Base
         }
 
         if ($this->isPostSet('confirm')) {
-            $screening      = $this->consultation->getSettings()->screeningMotions;
-            $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
-            if (!$screening && $motion->statusString == '') {
-                $motion->titlePrefix = $motion->getConsultation()->getNextMotionPrefix($motion->motionTypeId);
-            }
-            $motion->save();
-
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-            $mailText   = str_replace(
-                ['%TITLE%', '%LINK%', '%INITIATOR%'],
-                [$motion->title, $motionLink, $motion->getInitiatorsStr()],
-                \Yii::t('motion', 'submitted_adminnoti_body')
-            );
-            $motion->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
+            $motion->setInitialSubmitted();
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->onPublish();

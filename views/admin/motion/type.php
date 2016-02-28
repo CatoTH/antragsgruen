@@ -206,7 +206,7 @@ echo '</label><div class="col-md-9">';
 echo '<select name="type[supportType]" class="form-control" id="typeSupportType">';
 foreach (\app\models\supportTypes\ISupportType::getImplementations() as $formId => $formClass) {
     echo '<option value="' . Html::encode($formId) . '" ';
-    echo 'data-has-supporters="' . ($formClass::hasSupporters() ? 1 : 0) . '"';
+    echo 'data-has-supporters="' . ($formClass::hasInitiatorGivenSupporters() ? 1 : 0) . '"';
     if ($motionType->supportType == $formId) {
         echo ' selected';
     }

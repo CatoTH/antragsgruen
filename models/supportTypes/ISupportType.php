@@ -83,7 +83,7 @@ abstract class ISupportType
     /**
      * @return bool
      */
-    public static function hasSupporters()
+    public static function hasInitiatorGivenSupporters()
     {
         return false;
     }

@@ -404,6 +404,20 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return bool
+     */
+    public function isSocialSharable()
+    {
+        if ($this->getConsultation()->site->getSettings()->forceLogin) {
+            return false;
+        }
+        if (in_array($this->status, $this->getConsultation()->getInvisibleMotionStati(true))) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @return string
      */
     public function getIconCSSClass()
@@ -535,6 +549,33 @@ class Motion extends IMotion implements IRSSItem
         $this->save();
         $this->flushCacheStart();
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_WITHDRAW, $this->id);
+    }
+
+    /**
+     */
+    public function setInitialSubmitted()
+    {
+        if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+            $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
+        } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
+            $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+        } else {
+            $this->status = Motion::STATUS_SUBMITTED_SCREENED;
+            if ($this->statusString == '') {
+                $motion->titlePrefix = $motion->getConsultation()->getNextMotionPrefix($motion->motionTypeId);
+            }
+        }
+        $this->save();
+
+        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
+        $mailText   = str_replace(
+            ['%TITLE%', '%LINK%', '%INITIATOR%'],
+            [$this->title, $motionLink, $this->getInitiatorsStr()],
+            \Yii::t('motion', 'submitted_adminnoti_body')
+        );
+
+        // @TODO Use different texts depending on the status
+        $this->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
     }
 
     /**

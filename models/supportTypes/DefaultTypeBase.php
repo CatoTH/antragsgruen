@@ -48,7 +48,7 @@ abstract class DefaultTypeBase extends ISupportType
     /**
      * @return bool
      */
-    public static function hasSupporters()
+    public static function hasInitiatorGivenSupporters()
     {
         return false;
     }
@@ -156,7 +156,7 @@ abstract class DefaultTypeBase extends ISupportType
             }
         }
 
-        if ($this->hasSupporters()) {
+        if ($this->hasInitiatorGivenSupporters()) {
             $supporters = $this->parseSupporters(new MotionSupporter());
             $num        = count($supporters);
             if ($personType != ISupporter::PERSON_ORGANIZATION) {
@@ -269,7 +269,7 @@ abstract class DefaultTypeBase extends ISupportType
                 'supporters'          => $supporters,
                 'allowOther'          => $screeningPrivilege,
                 'isForOther'          => $isForOther,
-                'hasSupporters'       => $this->hasSupporters(),
+                'hasSupporters'       => $this->hasInitiatorGivenSupporters(),
                 'minSupporters'       => $this->getMinNumberOfSupporters(),
                 'allowMoreSupporters' => $this->allowMoreSupporters(),
                 'supporterFulltext'   => $this->hasFullTextSupporterField(),
@@ -318,7 +318,7 @@ abstract class DefaultTypeBase extends ISupportType
                 'supporters'          => $supporters,
                 'allowOther'          => $screeningPrivilege,
                 'isForOther'          => $isForOther,
-                'hasSupporters'       => $this->hasSupporters(),
+                'hasSupporters'       => $this->hasInitiatorGivenSupporters(),
                 'minSupporters'       => $this->getMinNumberOfSupporters(),
                 'allowMoreSupporters' => $this->allowMoreSupporters(),
                 'supporterFulltext'   => $this->hasFullTextSupporterField(),

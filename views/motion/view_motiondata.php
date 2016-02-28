@@ -26,7 +26,7 @@ foreach ($motion->replacedByMotions as $replMotion) {
     }
 }
 
-if (!$motion->getConsultation()->site->getSettings()->forceLogin && count($replacedByMotions) == 0) {
+if ($motion->isSocialSharable() && count($replacedByMotions) == 0) {
     $layout->loadShariff();
     $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
     $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));

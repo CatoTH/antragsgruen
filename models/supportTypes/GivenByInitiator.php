@@ -71,7 +71,7 @@ class GivenByInitiator extends DefaultTypeBase
     /**
      * @return bool
      */
-    public static function hasSupporters()
+    public static function hasInitiatorGivenSupporters()
     {
         return true;
     }
