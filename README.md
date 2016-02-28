@@ -32,7 +32,7 @@ Install the sources and dependencies from the repository:
 git clone https://github.com/CatoTH/antragsgruen.git
 cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.1.1"
+./composer.phar global require "fxp/composer-asset-plugin:1.1.2"
 ./composer.phar install --prefer-dist
 ```
 
