@@ -252,6 +252,9 @@ class UserController extends Base
                 } catch (MailNotSent $e) {
                     $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                     \yii::$app->session->setFlash('error', $errMsg);
+                } catch (FormError $e) {
+                    $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                    \yii::$app->session->setFlash('error', $errMsg);
                 }
             }
         }
