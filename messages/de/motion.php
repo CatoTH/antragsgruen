@@ -93,7 +93,7 @@ return [
     'err_create_permission'             => 'Keine Berechtigung zum Anlegen von Anträgen.',
     'err_create'                        => 'Ein Fehler beim Anlegen ist aufgetreten',
     'err_edit_permission'               => 'Keine Berechtigung zum Bearbeiten dieses Antrags.',
-    'err_withdraw_permission'           => 'Not allowed to withdraw this motion.',
+    'err_withdraw_permission'           => 'Dieser Antrag kann nicht zurückgezogen werden.',
     'err_not_found'                     => 'Antrag nicht gefunden.',
     'withdraw_done'                     => 'Der Antrag wurde zurückgezogen.',
     'withdraw_bread'                    => 'Zurückziehen',
@@ -108,5 +108,12 @@ return [
         Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>
         bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
     'create_explanation_title'          => 'Antrag oder Änderungsantrag?',
+    'support_collect_explanation_title' => 'Unterstützer*innen sammeln',
+    'support_collect_explanation'       => 'Anträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um als eigenständiger Antrag zugelassen zu werden. Um einen solchen Antrag einzureichen, gehe wie folgt vor:<br>
+<ol>
+<li><strong>Antragsentwurf</strong>: Trage zunächst hier den Antrag ein und hinterlege deine Kontaktdaten. Bestätige auf der nächsten Seite, das du den Antrag einbringen willst.</li>
+<li><strong>Untertützung</strong>: Du erhältst dann einen Link, den du an potentielle Interessierte schicken kannst. Jeder, der den Link kennt, kann den Antragsentwurf einsehen. Jede*r Delegierte*r kann den Antrag nun hier auf Antragsgrün unterstützen.</li>
+<li><strong>Antrag einbringen</strong>: Sobald sich %MIN% Unterstützer*innen gefunden haben, bekommst du eine Benachrichtigungs-E-Mail. Ab dann kannst du den Antrag offiziell einbringen. Auch danach ist es noch möglich, dass sich Unterstützer*innen für diesen Antrag eintragen.</li>
+</ol>',
     'go_on'                             => 'Weiter',
 ];

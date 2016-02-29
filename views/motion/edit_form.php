@@ -45,6 +45,12 @@ if ($form->motionType->getAmendmentPolicy()->checkCurrUserAmendment(true, true))
         str_replace('%HOME%', UrlHelper::createUrl('consultation/index'), \Yii::t('motion', 'create_explanation')) .
         '<br><br>';
 }
+if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+    echo '<div style="font-weight: bold; text-decoration: underline;">' .
+        \Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
+        \Yii::t('motion', 'support_collect_explanation') .
+        '<br><br>';
+}
 
 
 $motionPolicy = $form->motionType->getMotionPolicy();
