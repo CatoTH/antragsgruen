@@ -22,6 +22,7 @@ return [
     'amend_change'          => 'Change',
     'amend_reason'          => 'Reason',
     'motion_reason'         => 'Reason',
+    'agenda_item'           => 'Agenda',
     'prefix_short'          => 'Code',
     'initiator'             => 'Proposer',
     'text'                  => 'Text',
