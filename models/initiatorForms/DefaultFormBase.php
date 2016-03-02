@@ -343,7 +343,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             if (isset($_POST['otherInitiator'])) {
                 $userId = null;
                 foreach ($motion->motionSupporters as $supporter) {
-                    if ($supporter->userId > 0) {
+                    if ($supporter->role == MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
                         $userId = $supporter->userId;
                     }
                 }
@@ -426,7 +426,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             if (isset($_POST['otherInitiator'])) {
                 $userId = null;
                 foreach ($amendment->amendmentSupporters as $supporter) {
-                    if ($supporter->userId > 0) {
+                    if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
                         $userId = $supporter->userId;
                     }
                 }
