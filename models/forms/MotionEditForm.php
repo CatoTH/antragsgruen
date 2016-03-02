@@ -174,7 +174,7 @@ class MotionEditForm extends Model
 
         $motion = new Motion();
 
-        $this->setAttributes([$_POST, $_FILES]);
+        $this->setAttributes([\Yii::$app->request->post(), $_FILES]);
         $this->supporters = $this->motionType->getMotionInitiatorFormClass()->getMotionSupporters($motion);
 
         $this->createMotionVerify();

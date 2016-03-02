@@ -15,6 +15,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
+$controller->layoutParams->robotsNoindex = true;
 $controller->layoutParams->addBreadcrumb($this->title);
 $controller->layoutParams->addBreadcrumb(\Yii::T('motion', 'confirm_bread'));
 

@@ -93,22 +93,23 @@ class AmendmentController extends AdminBase
 
         $this->layout = 'column2';
 
+        $post = \Yii::$app->request->post();
         $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
         $form->setAdminMode(true);
 
-        if (isset($_POST['screen']) && $amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
-            if ($amendment->getMyMotion()->findAmendmentWithPrefix($_POST['titlePrefix'], $amendment)) {
+        if ($this->isPostSet('screen') && $amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
+            if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
             } else {
                 $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
-                $amendment->titlePrefix = $_POST['titlePrefix'];
+                $amendment->titlePrefix = $post['titlePrefix'];
                 $amendment->save();
                 $amendment->onPublish();
                 \yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_screened'));
             }
         }
 
-        if (isset($_POST['delete'])) {
+        if ($this->isPostSet('delete')) {
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
             $amendment->getMyMotion()->flushCacheStart();
@@ -117,9 +118,8 @@ class AmendmentController extends AdminBase
             return '';
         }
 
-        if (isset($_POST['save'])) {
-            $post = $_POST;
-            if (!isset($_POST['edittext'])) {
+        if ($this->isPostSet('save')) {
+            if (!isset($post['edittext'])) {
                 unset($post['sections']);
             }
             $form->setAttributes([$post, $_FILES]);
@@ -129,7 +129,7 @@ class AmendmentController extends AdminBase
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
 
-            $amdat                     = $_POST['amendment'];
+            $amdat                     = $post['amendment'];
             $amendment->statusString   = $amdat['statusString'];
             $amendment->dateCreation   = Tools::dateBootstraptime2sql($amdat['dateCreation']);
             $amendment->noteInternal   = $amdat['noteInternal'];
@@ -142,7 +142,7 @@ class AmendmentController extends AdminBase
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
             } else {
-                $amendment->titlePrefix = $_POST['amendment']['titlePrefix'];
+                $amendment->titlePrefix = $post['amendment']['titlePrefix'];
             }
             $amendment->save();
             $amendment->getMyMotion()->flushCacheWithChildren();

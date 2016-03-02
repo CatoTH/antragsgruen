@@ -19,6 +19,7 @@ use yii\db\IntegrityException;
  * @property Site $site
  * @property Consultation $consultation
  * @method render(string $view, array $options)
+ * @method isPostSet(string $name)
  */
 trait SiteAccessTrait
 {
@@ -100,12 +101,13 @@ trait SiteAccessTrait
     private function addUsers()
     {
         /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        $hasEmail     = ($params->mailService['transport'] != 'none');
+        $params   = \Yii::$app->params;
+        $post     = \Yii::$app->request->post();
+        $hasEmail = ($params->mailService['transport'] != 'none');
 
-        $emails = explode("\n", $_POST['emailAddresses']);
-        $names  = explode("\n", $_POST['names']);
-        $passwords = ($hasEmail ? null : explode("\n", $_POST['passwords']));
+        $emails    = explode("\n", $post['emailAddresses']);
+        $names     = explode("\n", $post['names']);
+        $passwords = ($hasEmail ? null : explode("\n", $post['passwords']));
 
         if (count($emails) != count($names)) {
             \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_err_linenumber'));
@@ -125,7 +127,7 @@ trait SiteAccessTrait
                         $this->consultation,
                         trim($emails[$i]),
                         trim($names[$i]),
-                        ($hasEmail ? $_POST['emailText'] : ''),
+                        ($hasEmail ? $post['emailText'] : ''),
                         ($hasEmail ? null : $passwords[$i])
                     );
                     $created++;
@@ -161,9 +163,10 @@ trait SiteAccessTrait
      */
     private function saveUsers()
     {
+        $postAccess = \Yii::$app->request->post('access');
         foreach ($this->consultation->userPrivileges as $privilege) {
-            if (isset($_POST['access'][$privilege->userId])) {
-                $access                     = $_POST['access'][$privilege->userId];
+            if (isset($postAccess[$privilege->userId])) {
+                $access                     = $postAccess[$privilege->userId];
                 $privilege->privilegeView   = (in_array('view', $access) ? 1 : 0);
                 $privilege->privilegeCreate = (in_array('create', $access) ? 1 : 0);
             } else {
@@ -230,12 +233,14 @@ trait SiteAccessTrait
     {
         $site = $this->site;
 
-        if (isset($_POST['saveLogin'])) {
+        $post = \Yii::$app->request->post();
+
+        if ($this->isPostSet('saveLogin')) {
             $settings                      = $site->getSettings();
-            $settings->forceLogin          = isset($_POST['forceLogin']);
-            $settings->managedUserAccounts = isset($_POST['managedUserAccounts']);
-            if (isset($_POST['login'])) {
-                $settings->loginMethods = $_POST['login'];
+            $settings->forceLogin          = isset($post['forceLogin']);
+            $settings->managedUserAccounts = isset($post['managedUserAccounts']);
+            if ($this->isPostSet('login')) {
+                $settings->loginMethods = $post['login'];
             } else {
                 $settings->loginMethods = [];
             }
@@ -251,20 +256,20 @@ trait SiteAccessTrait
             \yii::$app->session->setFlash('success_login', \Yii::t('base', 'saved'));
         }
 
-        if (isset($_POST['addAdmin'])) {
-            switch ($_POST['addType']) {
+        if ($this->isPostSet('addAdmin')) {
+            switch ($post['addType']) {
                 case 'wurzelwerk':
-                    $this->addAdminWurzelwerk($_POST['addUsername']);
+                    $this->addAdminWurzelwerk($post['addUsername']);
                     break;
                 case 'email':
-                    $this->addAdminEmail($_POST['addUsername']);
+                    $this->addAdminEmail($post['addUsername']);
                     break;
             }
         }
 
-        if (isset($_POST['removeAdmin'])) {
+        if ($this->isPostSet('removeAdmin')) {
             /** @var User $todel */
-            $todel = User::findOne($_POST['removeAdmin']);
+            $todel = User::findOne($post['removeAdmin']);
             if ($todel) {
                 $this->site->unlink('admins', $todel, true);
                 \Yii::$app->session->setFlash('success_login', \Yii::t('admin', 'siteacc_admin_del_done'));
@@ -273,16 +278,16 @@ trait SiteAccessTrait
             }
         }
 
-        if (isset($_POST['saveUsers'])) {
+        if ($this->isPostSet('saveUsers')) {
             $this->saveUsers();
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_saved'));
         }
 
-        if (isset($_POST['addUsers'])) {
+        if ($this->isPostSet('addUsers')) {
             $this->addUsers();
         }
 
-        if (isset($_POST['policyRestrictToUsers'])) {
+        if ($this->isPostSet('policyRestrictToUsers')) {
             $this->restrictToUsers();
             \Yii::$app->session->setFlash('success_login', \Yii::t('admin', 'siteacc_user_restr_done'));
         }

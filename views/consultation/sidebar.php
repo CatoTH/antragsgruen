@@ -85,10 +85,10 @@ if ($showCreate) {
 
                 $layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
                     '<a class="createMotion" href="' . Html::encode($link) . '"
-                    title="' . Html::encode($description) . '">' .
+                    title="' . Html::encode($description) . '" rel="nofollow">' .
                     '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
                     '</a></div></div>';
-                $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '">' .
+                $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
                     '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
             }
         } else {
@@ -102,11 +102,11 @@ if ($showCreate) {
                 if ($motionType->getMotionPolicy()->checkCurrUserMotion(false, true)) {
                     $motionCreateLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
                     $html .= '<li class="createMotion' . $motionType->id . '">';
-                    $html .= '<a href="' . Html::encode($motionCreateLink) . '">';
+                    $html .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
                     $html .= Html::encode($motionType->titleSingular) . '</a></li>';
 
                     $htmlSmall .= '<li class="createMotion' . $motionType->id . '">';
-                    $htmlSmall .= '<a href="' . Html::encode($motionCreateLink) . '">';
+                    $htmlSmall .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
                     $htmlSmall .= Html::encode($motionType->titleSingular) . '</a></li>';
                 }
             }
@@ -162,10 +162,10 @@ if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda')
         $newUrl                       = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
         $description                  = $motionTypes[0]->createTitle;
         $layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
-            '<a class="createMotion" href="' . Html::encode($newUrl) . '" title="' . $description . '">' .
+            '<a class="createMotion" href="' . Html::encode($newUrl) . '" title="' . $description . '" rel="nofollow">' .
             '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
             '</a></div></div>';
-        $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($newUrl) . '">' .
+        $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($newUrl) . '" rel="nofollow">' .
             '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
     }
 }

@@ -1,11 +1,13 @@
-Version 3.1
-===========
+# Version history
+
+## Version 3.2 [Not released yet]
 
 - Support database table prefixes
+- Bugfix: Motions with section-based comments could not be edited in the admin-screen
+- Compiled assets (stylesheets, scripts) are now included in the repository. This makes installation from the repository a lot easier.
 
 
-Version 3.1
-===========
+## Version 3.1 (2016-02-14)
 
 - PHP 7.0 Compatibility
 - Rewrite of the Diff-Algorithms
@@ -22,10 +24,8 @@ Version 3.1
 - All ODTs of motions and amendments can be downloaded as a bundled ZIP-file
  
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
-Some features were sponsored by the [Green Party of Berlin](https://www.gruene-berlin.de/).
 
-Version 3.0
-===========
+## Version 3.0 (2015-11-16)
 
 - Complete rewrite of Antragsgrün
 

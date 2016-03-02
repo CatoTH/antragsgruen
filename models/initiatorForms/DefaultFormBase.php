@@ -92,8 +92,9 @@ abstract class DefaultFormBase extends IInitiatorForm
     protected function parseSupporters(ISupporter $model)
     {
         $ret = [];
-        if (isset($_POST['supporters']) && is_array($_POST['supporters']['name'])) {
-            foreach ($_POST['supporters']['name'] as $i => $name) {
+        $post = \Yii::$app->request->post();
+        if (isset($post['supporters']) && is_array($post['supporters']['name'])) {
+            foreach ($post['supporters']['name'] as $i => $name) {
                 if (!$this->isValidName($name)) {
                     continue;
                 }
@@ -103,8 +104,8 @@ abstract class DefaultFormBase extends IInitiatorForm
                 $sup->userId     = null;
                 $sup->personType = ISupporter::PERSON_NATURAL;
                 $sup->position   = $i;
-                if (isset($_POST['supporters']['organization']) && isset($_POST['supporters']['organization'][$i])) {
-                    $sup->organization = trim($_POST['supporters']['organization'][$i]);
+                if (isset($post['supporters']['organization']) && isset($post['supporters']['organization'][$i])) {
+                    $sup->organization = trim($post['supporters']['organization'][$i]);
                 }
                 $ret[] = $sup;
             }
@@ -118,11 +119,12 @@ abstract class DefaultFormBase extends IInitiatorForm
      */
     public function validateMotion()
     {
-        if (!isset($_POST['Initiator'])) {
+        $post = \Yii::$app->request->post();
+        if (!isset($post['Initiator'])) {
             throw new FormError('No Initiator data given');
         }
 
-        $initiator = $_POST['Initiator'];
+        $initiator = $post['Initiator'];
         $required  = ConsultationMotionType::CONTACT_REQUIRED;
 
         $errors = [];
@@ -335,12 +337,14 @@ abstract class DefaultFormBase extends IInitiatorForm
     {
         /** @var MotionSupporter[] $return */
         $return = [];
+        
+        $post = \Yii::$app->request->post();
 
         if (\Yii::$app->user->isGuest) {
             $init         = new MotionSupporter();
             $init->userId = null;
         } else {
-            if (isset($_POST['otherInitiator'])) {
+            if (isset($post['otherInitiator'])) {
                 $userId = null;
                 foreach ($motion->motionSupporters as $supporter) {
                     if ($supporter->role == MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
@@ -366,35 +370,35 @@ abstract class DefaultFormBase extends IInitiatorForm
 
         $posCount = 0;
 
-        $init->setAttributes($_POST['Initiator']);
+        $init->setAttributes($post['Initiator']);
         $init->motionId = $motion->id;
         $init->role     = MotionSupporter::ROLE_INITIATOR;
         $init->position = $posCount++;
         if ($init->personType == ISupporter::PERSON_NATURAL) {
-            $init->name = $_POST['Initiator']['primaryName'];
-            if (isset($_POST['Initiator']['organization'])) {
-                $init->organization = $_POST['Initiator']['organization'];
+            $init->name = $post['Initiator']['primaryName'];
+            if (isset($post['Initiator']['organization'])) {
+                $init->organization = $post['Initiator']['organization'];
             } else {
                 $init->organization = '';
             }
         } else {
-            $init->organization = $_POST['Initiator']['primaryName'];
-            $init->name         = $_POST['Initiator']['contactName'];
+            $init->organization = $post['Initiator']['primaryName'];
+            $init->name         = $post['Initiator']['contactName'];
         }
 
         $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
         $return[]             = $init;
 
-        if (isset($_POST['moreInitiators']) && isset($_POST['moreInitiators']['name'])) {
-            foreach ($_POST['moreInitiators']['name'] as $i => $name) {
+        if (isset($post['moreInitiators']) && isset($post['moreInitiators']['name'])) {
+            foreach ($post['moreInitiators']['name'] as $i => $name) {
                 $init             = new MotionSupporter();
                 $init->motionId   = $motion->id;
                 $init->role       = MotionSupporter::ROLE_INITIATOR;
                 $init->position   = $posCount++;
                 $init->personType = MotionSupporter::PERSON_NATURAL;
                 $init->name       = $name;
-                if (isset($_POST['moreInitiators']['organization'])) {
-                    $init->organization = $_POST['moreInitiators']['organization'][$i];
+                if (isset($post['moreInitiators']['organization'])) {
+                    $init->organization = $post['moreInitiators']['organization'][$i];
                 }
                 $return[] = $init;
             }
@@ -418,12 +422,13 @@ abstract class DefaultFormBase extends IInitiatorForm
     {
         /** @var AmendmentSupporter[] $return */
         $return = [];
+        $post = \Yii::$app->request->post();
 
         if (\Yii::$app->user->isGuest) {
             $init         = new AmendmentSupporter();
             $init->userId = null;
         } else {
-            if (isset($_POST['otherInitiator'])) {
+            if (isset($post['otherInitiator'])) {
                 $userId = null;
                 foreach ($amendment->amendmentSupporters as $supporter) {
                     if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
@@ -449,35 +454,35 @@ abstract class DefaultFormBase extends IInitiatorForm
 
         $posCount = 0;
 
-        $init->setAttributes($_POST['Initiator']);
+        $init->setAttributes($post['Initiator']);
         $init->amendmentId = $amendment->id;
         $init->role        = AmendmentSupporter::ROLE_INITIATOR;
         $init->position    = $posCount++;
         if ($init->personType == ISupporter::PERSON_NATURAL) {
-            $init->name = $_POST['Initiator']['primaryName'];
-            if (isset($_POST['Initiator']['organization'])) {
-                $init->organization = $_POST['Initiator']['organization'];
+            $init->name = $post['Initiator']['primaryName'];
+            if (isset($post['Initiator']['organization'])) {
+                $init->organization = $post['Initiator']['organization'];
             } else {
                 $init->organization = '';
             }
         } else {
-            $init->organization = $_POST['Initiator']['primaryName'];
-            $init->name         = $_POST['Initiator']['contactName'];
+            $init->organization = $post['Initiator']['primaryName'];
+            $init->name         = $post['Initiator']['contactName'];
         }
 
         $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
         $return[]             = $init;
 
-        if (isset($_POST['moreInitiators']) && isset($_POST['moreInitiators']['name'])) {
-            foreach ($_POST['moreInitiators']['name'] as $i => $name) {
+        if (isset($post['moreInitiators']) && isset($post['moreInitiators']['name'])) {
+            foreach ($post['moreInitiators']['name'] as $i => $name) {
                 $init              = new AmendmentSupporter();
                 $init->amendmentId = $amendment->id;
                 $init->role        = AmendmentSupporter::ROLE_INITIATOR;
                 $init->position    = $posCount++;
                 $init->personType  = MotionSupporter::PERSON_NATURAL;
                 $init->name        = $name;
-                if (isset($_POST['moreInitiators']['organization'])) {
-                    $init->organization = $_POST['moreInitiators']['organization'][$i];
+                if (isset($post['moreInitiators']['organization'])) {
+                    $init->organization = $post['moreInitiators']['organization'][$i];
                 }
                 $return[] = $init;
             }

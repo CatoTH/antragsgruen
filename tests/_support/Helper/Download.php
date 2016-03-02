@@ -15,7 +15,7 @@ class Download extends \Codeception\Module
         $webdriver = $this->getModule('WebDriver');
         return $webdriver->executeJS('
             var $element = $("' . $selector . '");
-            return $element.attr("href");
+            //return $element.attr("href");
             var a = document.createElement("a");
 	        a.href = $element.attr("href");
 	        return a.href;

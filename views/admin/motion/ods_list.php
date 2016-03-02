@@ -27,9 +27,17 @@ $doc = new Spreadsheet([
 $currCol = $firstCol = 1;
 
 
-$hasTags = ($consultation->tags > 0);
+$hasTags        = ($consultation->tags > 0);
+$hasAgendaItems = false;
+foreach ($motions as $motion) {
+    if ($motion->agendaItem) {
+        $hasAgendaItems = true;
+    }
+}
 
-
+if ($hasAgendaItems) {
+    $COL_AGENDA_ITEM = $currCol++;
+}
 $COL_PREFIX    = $currCol++;
 $COL_INITIATOR = $currCol++;
 $COL_TEXTS     = [];
@@ -58,6 +66,11 @@ $doc->setMinRowHeight(1, 1.5);
 
 
 // Heading
+
+if ($hasAgendaItems) {
+    $doc->setCell(2, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'agenda_item'));
+    $doc->setCellStyle(2, $COL_AGENDA_ITEM, [], ['fo:font-weight' => 'bold']);
+}
 
 $doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
 $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
@@ -105,6 +118,9 @@ foreach ($motions as $motion) {
         }
     }
 
+    if ($hasAgendaItems && $motion->agendaItem) {
+        $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $motion->agendaItem->getShownCode(true));
+    }
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
     $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacts));

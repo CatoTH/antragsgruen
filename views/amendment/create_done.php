@@ -12,8 +12,8 @@ use yii\helpers\Html;
 
 $this->title = \Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
-$params->breadcrumbs[] = $this->title;
-$params->breadcrumbs[] = \Yii::t('amend', 'confirm_bread');
+$layout->breadcrumbs[] = $this->title;
+$layout->breadcrumbs[] = \Yii::t('amend', 'confirm_bread');
 
 
 echo '<h1>' . \Yii::t('amend', 'amendment_submitted') . '</h1>';

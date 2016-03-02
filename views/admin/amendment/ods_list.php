@@ -25,6 +25,16 @@ $doc = new Spreadsheet([
 
 $currCol = $firstCol = 1;
 
+$hasAgendaItems = false;
+foreach ($motions as $motion) {
+    if ($motion->agendaItem) {
+        $hasAgendaItems = true;
+    }
+}
+
+if ($hasAgendaItems) {
+    $COL_AGENDA_ITEM = $currCol++;
+}
 $COL_PREFIX     = $currCol++;
 $COL_INITIATOR  = $currCol++;
 $COL_FIRST_LINE = $currCol++;
@@ -45,6 +55,11 @@ $doc->setMinRowHeight(1, 1.5);
 
 
 // Heading
+
+if ($hasAgendaItems) {
+    $doc->setCell(2, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'agenda_item'));
+    $doc->setCellStyle(2, $COL_AGENDA_ITEM, [], ['fo:font-weight' => 'bold']);
+}
 
 $doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
 $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
@@ -88,6 +103,9 @@ foreach ($motions as $motion) {
 
     $title = '<strong>' . $motion->getTitleWithPrefix() . '</strong>';
     $title .= ' (von: ' . Html::encode(implode(', ', $initiatorNames)) . ')';
+    if ($hasAgendaItems && $motion->agendaItem) {
+        $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $motion->agendaItem->getShownCode(true));
+    }
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
 
     $amendments = $motion->getVisibleAmendmentsSorted();
@@ -107,6 +125,9 @@ foreach ($motions as $motion) {
         }
         $firstLine = $amendment->getFirstDiffLine();
 
+        if ($hasAgendaItems && $motion->agendaItem) {
+            $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $motion->agendaItem->getShownCode(true));
+        }
         $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
         $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorContacs));

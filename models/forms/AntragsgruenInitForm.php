@@ -29,6 +29,7 @@ class AntragsgruenInitForm extends Model
     public $sqlPassword;
     public $sqlDB;
     public $sqlFile;
+    public $sqlTablePrefix = '';
 
     public $adminUsername;
     public $adminPassword;
@@ -386,6 +387,7 @@ class AntragsgruenInitForm extends Model
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'create.sql'
         );
+        $createString = str_replace('###TABLE_PREFIX###', $this->sqlTablePrefix, $createString);
         $command      = $connection->createCommand($createString);
         $command->execute();
 
@@ -393,6 +395,7 @@ class AntragsgruenInitForm extends Model
             \Yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR .
             'db' . DIRECTORY_SEPARATOR . 'data.sql'
         );
+        $createString = str_replace('###TABLE_PREFIX###', $this->sqlTablePrefix, $createString);
         $command      = $connection->createCommand($createString);
         $command->execute();
     }

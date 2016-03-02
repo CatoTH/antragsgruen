@@ -27,20 +27,21 @@ class ConsultationController extends Base
      */
     public function actionSearch()
     {
-        if (!isset($_REQUEST['query']) || trim($_REQUEST['query']) == '') {
+        $query = $this->getRequestValue('query');
+        if (!$query || trim($query) == '') {
             \yii::$app->session->setFlash('error', \Yii::t('con', 'search_no_query'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $results = $this->consultation->fulltextSearch($_REQUEST['query'], [
+        $results = $this->consultation->fulltextSearch($query, [
             'backTitle' => 'Suche',
-            'backUrl'   => UrlHelper::createUrl(['consultation/search', 'query' => $_REQUEST['query']]),
+            'backUrl'   => UrlHelper::createUrl(['consultation/search', 'query' => $query]),
         ]);
 
         return $this->render(
             'search_results',
             [
-                'query'   => $_REQUEST['query'],
+                'query'   => $query,
                 'results' => $results
             ]
         );
@@ -183,8 +184,8 @@ class ConsultationController extends Base
         $user = User::getCurrentUser();
         $con  = $this->consultation;
 
-        if (isset($_POST['save'])) {
-            $newNotis = (isset($_POST['notifications']) ? $_POST['notifications'] : []);
+        if ($this->isPostSet('save')) {
+            $newNotis = \Yii::$app->request->post('notifications', []);
             if (in_array('motion', $newNotis)) {
                 UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_MOTION);
             } else {
@@ -218,7 +219,7 @@ class ConsultationController extends Base
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to edit this page');
         }
-        if (MessageSource::savePageData($this->consultation, $pageKey, $_POST['data'])) {
+        if (MessageSource::savePageData($this->consultation, $pageKey, \Yii::$app->request->post('data'))) {
             return '1';
         } else {
             return '0';
@@ -333,7 +334,7 @@ class ConsultationController extends Base
             return;
         }
 
-        $data = json_decode($_POST['data'], true);
+        $data = json_decode(\Yii::$app->request->post('data'), true);
         if (!is_array($data)) {
             \Yii::$app->session->setFlash('error', 'Could not parse input');
             return;
@@ -389,7 +390,7 @@ class ConsultationController extends Base
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
-        if (isset($_POST['saveAgenda'])) {
+        if (isset(\Yii::$app->request->post()['saveAgenda'])) {
             $this->saveAgenda();
         }
 
