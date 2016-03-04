@@ -51,6 +51,8 @@ if ($controller->consultation && $controller->consultation->getSettings()->logoU
 }
 if ($layout->robotsNoindex) {
     echo '<meta name="robots" content="noindex, nofollow">' . "\n";
+} else {
+    echo '<meta name="robots" content="index, follow">' . "\n";
 }
 
 echo '<!--[if lt IE 9]>
@@ -126,7 +128,7 @@ if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $backUrl = \yii::$app->request->url;
         }
         $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => $backUrl]);
-        echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink']) . '</li>';
+        echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) . '</li>';
     }
     if (User::getCurrentUser()) {
         $link = Html::a(\Yii::t('base', 'Settings'), UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']);

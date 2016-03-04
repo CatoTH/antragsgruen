@@ -31,6 +31,7 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property string $cache
  * @property int $textFixed
+ * @property string $slug
  *
  * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
@@ -414,6 +415,20 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return bool
+     */
+    public function isSocialSharable()
+    {
+        if ($this->getConsultation()->site->getSettings()->forceLogin) {
+            return false;
+        }
+        if (in_array($this->status, $this->getConsultation()->getInvisibleMotionStati(true))) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @return string
      */
     public function getIconCSSClass()
@@ -545,6 +560,33 @@ class Motion extends IMotion implements IRSSItem
         $this->save();
         $this->flushCacheStart();
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_WITHDRAW, $this->id);
+    }
+
+    /**
+     */
+    public function setInitialSubmitted()
+    {
+        if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+            $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
+        } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
+            $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+        } else {
+            $this->status = Motion::STATUS_SUBMITTED_SCREENED;
+            if ($this->statusString == '') {
+                $this->titlePrefix = $this->getConsultation()->getNextMotionPrefix($this->motionTypeId);
+            }
+        }
+        $this->save();
+
+        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
+        $mailText   = str_replace(
+            ['%TITLE%', '%LINK%', '%INITIATOR%'],
+            [$this->title, $motionLink, $this->getInitiatorsStr()],
+            \Yii::t('motion', 'submitted_adminnoti_body')
+        );
+
+        // @TODO Use different texts depending on the status
+        $this->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
     }
 
     /**
@@ -739,6 +781,31 @@ class Motion extends IMotion implements IRSSItem
         $motionTitle = (mb_strlen($this->title) > 100 ? mb_substr($this->title, 0, 100) : $this->title);
         $title       = $this->titlePrefix . ' ' . $motionTitle;
         return Tools::sanitizeFilename($title, $noUmlaut);
+    }
+
+    /**
+     * @return string
+     */
+    public function createSlug()
+    {
+        $motionTitle = (mb_strlen($this->title) > 70 ? mb_substr($this->title, 0, 70) : $this->title);
+        $title       = Tools::sanitizeFilename($motionTitle, true);
+
+        $random = \Yii::$app->getSecurity()->generateRandomKey(2);
+        $random = ord($random[0]) + ord($random[1]) * 256;
+        return $title . '-' . $random;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionSlug()
+    {
+        if ($this->slug != '') {
+            return $this->slug;
+        } else {
+            return $this->id;
+        }
     }
 
     /**

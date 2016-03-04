@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\initiatorForms;
+namespace app\models\supportTypes;
 
 use app\components\Tools;
 use app\controllers\Base;
@@ -17,7 +17,7 @@ use app\models\forms\AmendmentEditForm;
 use app\models\forms\MotionEditForm;
 use yii\web\View;
 
-abstract class DefaultFormBase extends IInitiatorForm
+abstract class DefaultTypeBase extends ISupportType
 {
     /** @var Consultation $motionType $motionType */
     protected $motionType;
@@ -48,7 +48,7 @@ abstract class DefaultFormBase extends IInitiatorForm
     /**
      * @return bool
      */
-    public static function hasSupporters()
+    public static function hasInitiatorGivenSupporters()
     {
         return false;
     }
@@ -156,7 +156,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             }
         }
 
-        if ($this->hasSupporters()) {
+        if ($this->hasInitiatorGivenSupporters()) {
             $supporters = $this->parseSupporters(new MotionSupporter());
             $num        = count($supporters);
             if ($personType != ISupporter::PERSON_ORGANIZATION) {
@@ -269,7 +269,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 'supporters'          => $supporters,
                 'allowOther'          => $screeningPrivilege,
                 'isForOther'          => $isForOther,
-                'hasSupporters'       => $this->hasSupporters(),
+                'hasSupporters'       => $this->hasInitiatorGivenSupporters(),
                 'minSupporters'       => $this->getMinNumberOfSupporters(),
                 'allowMoreSupporters' => $this->allowMoreSupporters(),
                 'supporterFulltext'   => $this->hasFullTextSupporterField(),
@@ -318,7 +318,7 @@ abstract class DefaultFormBase extends IInitiatorForm
                 'supporters'          => $supporters,
                 'allowOther'          => $screeningPrivilege,
                 'isForOther'          => $isForOther,
-                'hasSupporters'       => $this->hasSupporters(),
+                'hasSupporters'       => $this->hasInitiatorGivenSupporters(),
                 'minSupporters'       => $this->getMinNumberOfSupporters(),
                 'allowMoreSupporters' => $this->allowMoreSupporters(),
                 'supporterFulltext'   => $this->hasFullTextSupporterField(),
@@ -347,7 +347,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             if (isset($post['otherInitiator'])) {
                 $userId = null;
                 foreach ($motion->motionSupporters as $supporter) {
-                    if ($supporter->userId > 0) {
+                    if ($supporter->role == MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
                         $userId = $supporter->userId;
                     }
                 }
@@ -431,7 +431,7 @@ abstract class DefaultFormBase extends IInitiatorForm
             if (isset($post['otherInitiator'])) {
                 $userId = null;
                 foreach ($amendment->amendmentSupporters as $supporter) {
-                    if ($supporter->userId > 0) {
+                    if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
                         $userId = $supporter->userId;
                     }
                 }

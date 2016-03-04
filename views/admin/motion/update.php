@@ -210,7 +210,7 @@ if (!$motion->textFixed) {
     echo '</div>';
 }
 
-$initiatorClass = $form->motionType->getMotionInitiatorFormClass();
+$initiatorClass = $form->motionType->getMotionSupportTypeClass();
 $initiatorClass->setAdminMode(true);
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 

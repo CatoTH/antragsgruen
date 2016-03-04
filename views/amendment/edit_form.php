@@ -34,7 +34,7 @@ if ($form->motion->titlePrefix != '') {
     $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 }
 
-
+$layout->robotsNoindex = true;
 $layout->loadCKEditor();
 $layout->addBreadcrumb($form->motion->motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
 $layout->addBreadcrumb(Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit'));
@@ -120,7 +120,7 @@ echo '</div>';
 echo '</div>';
 
 
-$initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();
+$initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
 echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 
 

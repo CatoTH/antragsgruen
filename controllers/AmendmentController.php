@@ -17,13 +17,13 @@ class AmendmentController extends Base
     use AmendmentActionsTrait;
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $amendmentId
      * @return Amendment|null
      */
-    private function getAmendmentWithCheck($motionId, $amendmentId)
+    private function getAmendmentWithCheck($motionSlug, $amendmentId)
     {
-        $motion    = $this->consultation->getMotion($motionId);
+        $motion    = $this->consultation->getMotion($motionSlug);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
             $this->redirect(UrlHelper::createUrl('consultation/index'));
@@ -34,13 +34,13 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $amendmentId
      * @return string
      */
-    public function actionPdf($motionId, $amendmentId)
+    public function actionPdf($motionSlug, $amendmentId)
     {
-        $amendment = $this->getAmendmentWithCheck($motionId, $amendmentId);
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
             return '';
         }
@@ -84,13 +84,13 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $amendmentId
      * @return string
      */
-    public function actionOdt($motionId, $amendmentId)
+    public function actionOdt($motionSlug, $amendmentId)
     {
-        $amendment = $this->getAmendmentWithCheck($motionId, $amendmentId);
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
             return '';
         }
@@ -104,14 +104,14 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $amendmentId
      * @param int $commentId
      * @return string
      */
-    public function actionView($motionId, $amendmentId, $commentId = 0)
+    public function actionView($motionSlug, $amendmentId, $commentId = 0)
     {
-        $amendment = $this->getAmendmentWithCheck($motionId, $amendmentId);
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
             return '';
         }
@@ -159,18 +159,19 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $amendmentId
      * @param string $fromMode
      * @return string
      */
-    public function actionCreateconfirm($motionId, $amendmentId, $fromMode)
+    public function actionCreateconfirm($motionSlug, $amendmentId, $fromMode)
     {
+        $motion = $this->consultation->getMotion($motionSlug);
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne(
             [
                 'id'       => $amendmentId,
-                'motionId' => $motionId,
+                'motionId' => $motion->id,
                 'status'   => Amendment::STATUS_DRAFT
             ]
         );
@@ -180,7 +181,7 @@ class AmendmentController extends Base
         }
 
         if ($this->isPostSet('modify')) {
-            $nextUrl = ['amendment/edit', 'amendmentId' => $amendment->id, 'motionId' => $amendment->motionId];
+            $nextUrl = ['amendment/edit', 'amendmentId' => $amendment->id, 'motionSlug' => $motionSlug];
             return $this->redirect(UrlHelper::createUrl($nextUrl));
         }
 
@@ -226,17 +227,18 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $amendmentId
      * @return string
      */
-    public function actionEdit($motionId, $amendmentId)
+    public function actionEdit($motionSlug, $amendmentId)
     {
+        $motion = $this->consultation->getMotion($motionSlug);
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne(
             [
                 'id'       => $amendmentId,
-                'motionId' => $motionId,
+                'motionId' => $motion->id,
             ]
         );
         if (!$amendment) {
@@ -263,7 +265,7 @@ class AmendmentController extends Base
                 if ($amendment->status == Amendment::STATUS_DRAFT) {
                     $nextUrl = [
                         'amendment/createconfirm',
-                        'motionId'    => $amendment->motionId,
+                        'motionSlug'  => $motionSlug,
                         'amendmentId' => $amendment->id,
                         'fromMode'    => $fromMode,
                         'draftId'     => $this->getRequestValue('draftId'),
@@ -288,14 +290,14 @@ class AmendmentController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $adoptInitiators
      * @return string
      * @throws NotFound
      */
-    public function actionCreate($motionId, $adoptInitiators = 0)
+    public function actionCreate($motionSlug, $adoptInitiators = 0)
     {
-        $motion = $this->consultation->getMotion($motionId);
+        $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             throw new NotFound(\Yii::t('motion', 'err_not_found'));
         }
@@ -303,7 +305,7 @@ class AmendmentController extends Base
         $policy = $motion->motionType->getAmendmentPolicy();
         if (!$policy->checkCurrUserAmendment()) {
             if ($policy->checkCurrUserAmendment(true, true)) {
-                $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionId' => $motionId]);
+                $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
                 return $this->redirect($loginUrl);
             } else {
                 return $this->showErrorpage(403, \Yii::t('amend', 'err_create_permission'));
@@ -317,7 +319,7 @@ class AmendmentController extends Base
                 $amendment = $form->createAmendment();
                 $nextUrl   = [
                     'amendment/createconfirm',
-                    'motionId'    => $amendment->motionId,
+                    'motionSlug'  => $motionSlug,
                     'amendmentId' => $amendment->id,
                     'fromMode'    => 'create',
                     'draftId'     => $this->getRequestValue('draftId'),

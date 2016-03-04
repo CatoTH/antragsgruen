@@ -36,8 +36,12 @@ $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';
 $html .= '<span class="glyphicon glyphicon-file"></span> ' . \Yii::t('admin', 'amend_show') . '' . '</a></li>';
 
-$params   = ['amendment/create', 'motionId' => $amendment->motionId, 'adoptInitiators' => $amendment->id];
-$cloneUrl = Html::encode(UrlHelper::createUrl($params));
+$cloneUrl = Html::encode(UrlHelper::createUrl([
+        'amendment/create',
+        'motionSlug'      => $amendment->getMyMotion()->getMotionSlug(),
+        'adoptInitiators' => $amendment->id
+    ]
+));
 $html .= '<li><a href="' . $cloneUrl . '" class="clone">';
 $html .= '<span class="glyphicon glyphicon-duplicate"></span> ' .
     \Yii::t('admin', 'list_template_amendment') . '</a></li>';
@@ -183,7 +187,7 @@ if (!$amendment->textFixed) {
 }
 
 
-$initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();
+$initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
 $initiatorClass->setAdminMode(true);
 echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 

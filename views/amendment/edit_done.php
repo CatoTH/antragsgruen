@@ -15,7 +15,7 @@ $layout     = $controller->layoutParams;
 
 $this->title = \Yii::t('amend', 'edit_done');
 
-
+$layout->robotsNoindex = true;
 $layout->addBreadcrumb(\Yii::t('amend', 'amendment'));
 $layout->addBreadcrumb(\Yii::t('amend', 'edit_bread'));
 

@@ -22,6 +22,7 @@ if ($mode == 'create') {
 } else {
     $this->title = str_replace('%TYPE%', $form->motionType->titleSingular, \Yii::t('motion', 'motion_edit'));
 }
+$layout->robotsNoindex = true;
 
 $layout->loadCKEditor();
 $layout->loadDatepicker();
@@ -42,6 +43,12 @@ if ($form->motionType->getAmendmentPolicy()->checkCurrUserAmendment(true, true))
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         \Yii::t('motion', 'create_explanation_title') . '</div>' .
         str_replace('%HOME%', UrlHelper::createUrl('consultation/index'), \Yii::t('motion', 'create_explanation')) .
+        '<br><br>';
+}
+if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+    echo '<div style="font-weight: bold; text-decoration: underline;">' .
+        \Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
+        \Yii::t('motion', 'support_collect_explanation') .
         '<br><br>';
 }
 
@@ -117,7 +124,7 @@ foreach ($form->sections as $section) {
 echo '</div>';
 
 
-$initiatorClass = $form->motionType->getMotionInitiatorFormClass();
+$initiatorClass = $form->motionType->getMotionSupportTypeClass();
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';

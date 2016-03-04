@@ -19,6 +19,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
+$layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 $layout->loadCKEditor();

@@ -177,7 +177,7 @@ class AmendmentEditForm extends Model
         }
 
         try {
-            $this->motion->motionType->getAmendmentInitiatorFormClass()->validateAmendment();
+            $this->motion->motionType->getAmendmentSupportTypeClass()->validateAmendment();
         } catch (FormError $e) {
             $errors = array_merge($errors, $e->getMessages());
         }
@@ -200,7 +200,7 @@ class AmendmentEditForm extends Model
         $amendment = new Amendment();
 
         $this->setAttributes([\Yii::$app->request->post(), $_FILES]);
-        $this->supporters = $this->motion->motionType->getAmendmentInitiatorFormClass()
+        $this->supporters = $this->motion->motionType->getAmendmentSupportTypeClass()
             ->getAmendmentSupporters($amendment);
 
         $this->createAmendmentVerify();
@@ -217,7 +217,7 @@ class AmendmentEditForm extends Model
         $amendment->cache             = '';
 
         if ($amendment->save()) {
-            $this->motion->motionType->getAmendmentInitiatorFormClass()->submitAmendment($amendment);
+            $this->motion->motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
             foreach ($this->sections as $section) {
                 $section->amendmentId = $amendment->id;
@@ -250,7 +250,7 @@ class AmendmentEditForm extends Model
             }
         }
 
-        $this->motion->motionType->getAmendmentInitiatorFormClass()->validateAmendment();
+        $this->motion->motionType->getAmendmentSupportTypeClass()->validateAmendment();
 
         if (count($errors) > 0) {
             throw new FormError(implode("\n", $errors));
@@ -270,7 +270,7 @@ class AmendmentEditForm extends Model
         }
 
         $this->supporters = $this->motion->motionType
-            ->getAmendmentInitiatorFormClass()->getAmendmentSupporters($amendment);
+            ->getAmendmentSupportTypeClass()->getAmendmentSupporters($amendment);
 
         if (!$this->adminMode) {
             $this->saveAmendmentVerify();
@@ -279,7 +279,7 @@ class AmendmentEditForm extends Model
         $amendment->changeEditorial   = $this->editorial;
 
         if ($amendment->save()) {
-            $motionType->getAmendmentInitiatorFormClass()->submitAmendment($amendment);
+            $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
             // Sections
             foreach ($amendment->sections as $section) {

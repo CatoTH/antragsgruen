@@ -13,6 +13,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
+$layout->robotsNoindex = true;
 $layout->addBreadcrumb($newMotion->motionType->titleSingular, UrlHelper::createMotionUrl($newMotion));
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_submitted'));
 

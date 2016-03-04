@@ -13,21 +13,21 @@ class AmendmentPage extends BasePage
     public $route = 'amendment/view';
 
     /**
-     * @param $subdomain
-     * @param $consultationPath
-     * @param $motionId
-     * @param $amendmentId
+     * @param string $subdomain
+     * @param string $consultationPath
+     * @param string $motionSlug
+     * @param int $amendmentId
      * @return AmendmentPage
      * @internal param bool $check
      */
-    public function gotoAmendmentPage($subdomain, $consultationPath, $motionId, $amendmentId)
+    public function gotoAmendmentPage($subdomain, $consultationPath, $motionSlug, $amendmentId)
     {
         $page = AmendmentPage::openBy(
             $this->actor,
             [
                 'subdomain'        => ($subdomain ? $subdomain : 'stdparteitag'),
                 'consultationPath' => ($consultationPath ? $consultationPath : 'std-parteitag'),
-                'motionId'         => $motionId,
+                'motionSlug'       => $motionSlug,
                 'amendmentId'      => $amendmentId,
             ]
         );

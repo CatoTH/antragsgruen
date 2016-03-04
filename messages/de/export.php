@@ -22,6 +22,7 @@ return [
     'amend_change'          => 'Änderung',
     'amend_reason'          => 'Begründung',
     'motion_reason'         => 'Begründung',
+    'agenda_item'           => 'TOP',
     'prefix_short'          => 'Antragsnr.',
     'initiator'             => 'Antragsteller*in',
     'text'                  => 'Text',

@@ -156,7 +156,7 @@
         $('#typeDeadlineAmendmentsHolder').datetimepicker({
             locale: $('#typeDeadlineAmendments').data('locale')
         });
-        $('#typeInitiatorForm').on('change', function () {
+        $('#typeSupportType').on('change', function () {
             var hasSupporters = $(this).find("option:selected").data("has-supporters");
             if (hasSupporters) {
                 $('#typeMinSupportersRow').removeClass("hidden");

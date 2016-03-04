@@ -110,8 +110,8 @@ foreach ($entries as $entry) {
     if (is_a($entry, Motion::class)) {
         /** @var Motion $entry */
         $lastMotion = $entry;
-        $viewUrl = UrlHelper::createMotionUrl($entry);
-        $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
+        $viewUrl    = UrlHelper::createMotionUrl($entry);
+        $editUrl    = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
         echo '<tr class="motion' . $entry->id . '">';
         echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>' . \Yii::t('admin', 'list_motion_short') . '</td>';
@@ -219,9 +219,12 @@ foreach ($entries as $entry) {
             $link = Html::encode($search->getCurrentUrl($route, ['amendmentUnscreen' => $entry->id]));
             echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
         }
-        $name   = Html::encode(\Yii::t('admin', 'list_template_amendment'));
-        $params = ['amendment/create', 'motionId' => $entry->motionId, 'adoptInitiators' => $entry->id];
-        $link   = Html::encode(UrlHelper::createUrl($params));
+        $name = Html::encode(\Yii::t('admin', 'list_template_amendment'));
+        $link = Html::encode(UrlHelper::createUrl([
+            'amendment/create',
+            'motionSlug'      => $entry->getMyMotion()->getMotionSlug(),
+            'adoptInitiators' => $entry->id
+        ]));
         echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
 
         $delLink = Html::encode($search->getCurrentUrl($route, ['amendmentDelete' => $entry->id]));

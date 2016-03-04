@@ -16,6 +16,7 @@ $layout     = $controller->layoutParams;
 
 $this->title = 'Passwort zurücksetzen';
 $layout->addBreadcrumb('Passwort');
+$layout->robotsNoindex = true;
 
 echo '<h1>' . 'Passwort zurücksetzen' . '</h1>';
 

@@ -15,6 +15,7 @@ $layout     = $controller->layoutParams;
 
 $this->title = \Yii::t('motion', 'edit_done');
 
+$layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(\Yii::t('motion', 'edit_bread'));
 

@@ -200,14 +200,14 @@ echo '<h3>' . \Yii::t('admin', 'motion_type_initiator') . '</h3>';
 
 
 echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="typeInitiatorForm">';
+echo '<label class="col-md-3 control-label" for="typeSupportType">';
 echo 'Formular';
 echo '</label><div class="col-md-9">';
-echo '<select name="type[initiatorForm]" class="form-control" id="typeInitiatorForm">';
-foreach (\app\models\initiatorForms\IInitiatorForm::getImplementations() as $formId => $formClass) {
+echo '<select name="type[supportType]" class="form-control" id="typeSupportType">';
+foreach (\app\models\supportTypes\ISupportType::getImplementations() as $formId => $formClass) {
     echo '<option value="' . Html::encode($formId) . '" ';
-    echo 'data-has-supporters="' . ($formClass::hasSupporters() ? 1 : 0) . '"';
-    if ($motionType->initiatorForm == $formId) {
+    echo 'data-has-supporters="' . ($formClass::hasInitiatorGivenSupporters() ? 1 : 0) . '"';
+    if ($motionType->supportType == $formId) {
         echo ' selected';
     }
     echo '>' . Html::encode($formClass::getTitle()) . '</option>';
@@ -240,15 +240,15 @@ echo Html::radioList('type[contactPhone]', $motionType->contactPhone, $options, 
 echo '</div></div>';
 
 
-$curForm = $motionType->getMotionInitiatorFormClass();
+$curForm = $motionType->getMotionSupportTypeClass();
 
 echo '<div class="form-group" id="typeMinSupportersRow">';
 echo '<label class="col-md-3 control-label" for="typeMinSupporters">';
 echo 'Unterstützer*innen';
 echo '</label><div class="col-md-2">';
 echo '<input type="number" name="initiator[minSupporters]" class="form-control" id="typeMinSupporters"';
-if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
-    /** @var \app\models\initiatorForms\DefaultFormBase $curForm */
+if (is_subclass_of($curForm, \app\models\supportTypes\DefaultTypeBase::class)) {
+    /** @var \app\models\supportTypes\DefaultTypeBase $curForm */
     echo ' value="' . Html::encode($curForm->getMinNumberOfSupporters()) . '"';
 }
 echo '></div></div>';
@@ -266,8 +266,8 @@ echo '</div>';
 echo '<div class="form-group checkbox" id="typeHasOrgaRow">';
 echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
       <input type="checkbox" name="initiator[hasOrganizations]"';
-if (is_subclass_of($curForm, \app\models\initiatorForms\DefaultFormBase::class)) {
-    /** @var \app\models\initiatorForms\DefaultFormBase $curForm */
+if (is_subclass_of($curForm, \app\models\supportTypes\DefaultTypeBase::class)) {
+    /** @var \app\models\supportTypes\DefaultTypeBase $curForm */
     if ($curForm->hasOrganizations()) {
         echo ' checked';
     }

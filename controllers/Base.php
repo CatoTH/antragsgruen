@@ -124,6 +124,19 @@ class Base extends Controller
     }
 
     /*
+     * @param array|string $url
+     * @param int $statusCode
+     * @return mixed
+     * @throws \yii\base\ExitException
+     */
+    public function redirect($url, $statusCode = 302)
+    {
+        $response = parent::redirect($url, $statusCode);
+        \Yii::$app->end();
+        return $response;
+    }
+
+    /**
      * @param string $name
      * @return bool
      */
