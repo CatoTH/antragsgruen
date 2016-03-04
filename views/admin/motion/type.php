@@ -11,15 +11,16 @@ use app\models\sectionTypes\TabularDataType;
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
+ * @var \yii\web\View $this
  * @var ConsultationMotionType $motionType
+ * @var string $supportCollPolicyWarning
  */
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = 'Antragstyp bearbeiten';
+$this->title = \Yii::t('motion', 'motion_type_edit');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_admin'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_types'));
 
@@ -37,8 +38,17 @@ foreach (IPolicy::getPolicies() as $policy) {
 $locale = Tools::getCurrentDateLocale();
 
 
-echo '<h1>Antragstyp bearbeiten</h1>';
+echo '<h1>' . \Yii::t('motion', 'motion_type_edit') . '</h1>';
 
+if ($supportCollPolicyWarning) {
+    echo '<div class="adminTypePolicyFix alert alert-info alert-dismissible" role="alert">
+<button type="button" class="close" data-dismiss="alert"
+aria-label="Close"><span aria-hidden="true">&times;</span></button>' .
+        Html::beginForm('', 'post', ['id' => 'policyFixForm']) . \Yii::t('admin', 'support_coll_policy_warning') .
+        '<div class="saveholder"><button type="submit" name="supportCollPolicyFix" class="btn btn-primary">' .
+        \Yii::t('admin', 'support_coll_policy_fix') . '</button></div>' .
+        Html::endForm() . '</div>';
+}
 
 echo Html::beginForm($myUrl, 'post', ['class' => 'adminTypeForm form-horizontal']);
 

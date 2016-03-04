@@ -231,4 +231,9 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'todo_comment_to'             => 'To',
     'cons_new_created'            => 'The new consultation has been created.',
     'cons_std_set_done'           => 'This consultation has been set as the new standard.',
+        /*
+    'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
+        'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
+        */
+    'support_coll_policy_fix'     => 'Fix settings',
 ];

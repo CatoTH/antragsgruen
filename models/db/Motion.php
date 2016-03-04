@@ -682,9 +682,20 @@ class Motion extends IMotion implements IRSSItem
     {
         $initiator = $this->getInitiators();
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+            if ($this->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+                $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
+                $min        = $this->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+                $emailText  = str_replace('%MIN%', $min, $emailText);
+                $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
+            } else {
+                $emailText  = \Yii::t('motion', 'submitted_screening_email');
+                $emailTitle = \Yii::t('motion', 'submitted_screening_email_subject');
+            }
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-            $plain      = str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'));
-            $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . '</h1>';
+            $plain      = $emailText;
+            $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . ': ';
+            $motionHtml .= Html::encode($this->title);
+            $motionHtml .= '</h1>';
 
             $sections = $this->getSortedSections(true);
             foreach ($sections as $section) {
@@ -697,13 +708,16 @@ class Motion extends IMotion implements IRSSItem
             $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
             $plain .= HTMLTools::toPlainText($html);
 
+            $plain = str_replace('%LINK%', $motionLink, $plain);
+            $html  = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
+
             try {
                 \app\components\mail\Tools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                     $this->getMyConsultation()->site,
                     trim($initiator[0]->contactEmail),
                     null,
-                    \Yii::t('motion', 'submitted_screening_email_subject'),
+                    $emailTitle,
                     $plain,
                     $html
                 );
