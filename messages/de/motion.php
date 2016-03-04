@@ -66,6 +66,9 @@ return [
     'confirmed_visible'                 => 'Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Antrag eingereicht. ' .
         'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
+    'confirmed_support_phase'           => 'Du hast den Antrag eingestellt.<br>
+        Um ihn offiziell einzureichen, benötigt er nun <strong>mindestens %MIN% Unterstützer*innen</strong>.<br><br>
+        Du kannst Interessierten folgenden Link schicken, damit sie den Antrag dort unterstützen können:',
     'submitted_screening_email'         => "Hallo,\n\ndu hast soeben einen Antrag eingereicht.\n" .
         "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
         "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
@@ -115,5 +118,7 @@ return [
 <li><strong>Untertützung</strong>: Du erhältst dann einen Link, den du an potentielle Interessierte schicken kannst. Jeder, der den Link kennt, kann den Antragsentwurf einsehen. Jede*r Delegierte*r kann den Antrag nun hier auf Antragsgrün unterstützen.</li>
 <li><strong>Antrag einbringen</strong>: Sobald sich %MIN% Unterstützer*innen gefunden haben, bekommst du eine Benachrichtigungs-E-Mail. Ab dann kannst du den Antrag offiziell einbringen. Auch danach ist es noch möglich, dass sich Unterstützer*innen für diesen Antrag eintragen.</li>
 </ol>',
+    'support_collect_status'            => 'Aktueller Stand',
+    'support_collect_min'               => 'min.',
     'go_on'                             => 'Weiter',
 ];

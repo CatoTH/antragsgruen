@@ -159,4 +159,9 @@ abstract class ISupportType
      * @return AmendmentSupporter[]
      */
     abstract public function getAmendmentSupporters(Amendment $amendment);
+    
+    /**
+     * @return int
+     */
+    abstract public function getMinNumberOfSupporters();
 }
