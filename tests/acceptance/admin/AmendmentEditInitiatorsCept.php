@@ -8,7 +8,7 @@ $I->wantTo('edit an initiator');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typeInitiatorForm', \app\models\supportTypes\GivenByInitiator::getTitle());
+$I->selectOption('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $page = $I->gotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(2);

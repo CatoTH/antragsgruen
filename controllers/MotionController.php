@@ -82,6 +82,7 @@ class MotionController extends Base
         }
         /** @var Motion $motion */
         if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
             \Yii::$app->end();
             return null;

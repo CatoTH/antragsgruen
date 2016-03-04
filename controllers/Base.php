@@ -429,19 +429,16 @@ class Base extends Controller
                 "die Veranstaltung gehört nicht zur Veranstaltungsreihe."
             );
             $this->redirect(UrlHelper::createUrl('consultation/index'));
-            Yii::$app->end();
         }
 
         if (is_object($checkMotion) && strtolower($checkMotion->getConsultation()->urlPath) != $consultationId) {
-            Yii::$app->session->setFlash('error', 'Der Antrag gehört nicht zur Veranstaltung.');
+            Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
-            Yii::$app->end();
         }
 
         if ($checkAmendment != null && ($checkMotion == null || $checkAmendment->motionId != $checkMotion->id)) {
             Yii::$app->session->setFlash('error', 'Der Änderungsantrag gehört nicht zum Antrag.');
             $this->redirect(UrlHelper::createUrl('consultation/index'));
-            Yii::$app->end();
         }
     }
 
