@@ -206,6 +206,7 @@ class MotionEditForm extends Model
             }
 
             $motion->refreshTitle();
+            $motion->slug = $motion->createSlug();
             $motion->save();
 
             return $motion;

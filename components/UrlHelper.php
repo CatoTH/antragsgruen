@@ -80,7 +80,10 @@ class UrlHelper
         if (in_array(
             $route[0],
             [
-                'consultation/legal', 'consultation/privacy', 'admin/index/admins', 'admin/index/consultations',
+                'consultation/legal',
+                'consultation/privacy',
+                'admin/index/admins',
+                'admin/index/consultations',
             ]
         )) {
             unset($route['consultationPath']);
@@ -185,7 +188,7 @@ class UrlHelper
      */
     public static function createMotionUrl(Motion $motion, $mode = 'view', $addParams = [])
     {
-        $params = array_merge(['motion/' . $mode, 'motionId' => $motion->id], $addParams);
+        $params = array_merge(['motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);
         return static::createUrl($params);
     }
 
@@ -198,9 +201,9 @@ class UrlHelper
         return static::createUrl(
             [
                 'motion/view',
-                'motionId'  => $motionComment->motionId,
-                'commentId' => $motionComment->id,
-                '#'         => 'comm' . $motionComment->id
+                'motionSlug' => $motionComment->motion->getMotionSlug(),
+                'commentId'  => $motionComment->id,
+                '#'          => 'comm' . $motionComment->id
             ]
         );
     }
@@ -215,7 +218,7 @@ class UrlHelper
     {
         $params = array_merge([
             'amendment/' . $mode,
-            'motionId'    => $amendment->motionId,
+            'motionSlug'  => $amendment->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendment->id
         ], $addParams);
         return static::createUrl($params);
@@ -230,7 +233,7 @@ class UrlHelper
         return static::createUrl(
             [
                 'amendment/view',
-                'motionId'    => $amendmentComment->amendment->motionId,
+                'motionSlug'  => $amendmentComment->amendment->getMyMotion()->getMotionSlug(),
                 'amendmentId' => $amendmentComment->amendmentId,
                 'commentId'   => $amendmentComment->id,
                 '#'           => 'comm' . $amendmentComment->id

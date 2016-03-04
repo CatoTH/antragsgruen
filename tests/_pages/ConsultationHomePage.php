@@ -34,18 +34,18 @@ class ConsultationHomePage extends BasePage
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param bool $check
      * @return AmendmentCreatePage
      */
-    public function gotoAmendmentCreatePage($motionId = 2, $check = true)
+    public function gotoAmendmentCreatePage($motionSlug = '2', $check = true)
     {
         $page = AmendmentCreatePage::openBy(
             $this->actor,
             [
                 'subdomain'        => 'stdparteitag',
                 'consultationPath' => 'std-parteitag',
-                'motionId'         => $motionId,
+                'motionSlug'       => $motionSlug,
             ]
         );
         if ($check) {

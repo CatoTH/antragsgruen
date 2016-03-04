@@ -88,18 +88,18 @@ CREATE TABLE `###TABLE_PREFIX###amendmentSection` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###amendmentSupporter` (
-  `id`             INT(11)                                            NOT NULL,
-  `amendmentId`    INT(11)                                            NOT NULL,
-  `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
-  `userId`         INT(11)                                                     DEFAULT NULL,
-  `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
+  `id`             INT(11)                                             NOT NULL,
+  `amendmentId`    INT(11)                                             NOT NULL,
+  `position`       SMALLINT(6)                                         NOT NULL DEFAULT '0',
+  `userId`         INT(11)                                                      DEFAULT NULL,
+  `role`           ENUM ('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
   `comment`        MEDIUMTEXT,
-  `personType`     TINYINT(4)                                                  DEFAULT NULL,
+  `personType`     TINYINT(4)                                                   DEFAULT NULL,
   `name`           TEXT,
   `organization`   TEXT,
-  `resolutionDate` DATE                                                        DEFAULT NULL,
-  `contactEmail`   VARCHAR(100)                                                DEFAULT NULL,
-  `contactPhone`   VARCHAR(100)                                                DEFAULT NULL
+  `resolutionDate` DATE                                                         DEFAULT NULL,
+  `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
+  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -372,7 +372,8 @@ CREATE TABLE `###TABLE_PREFIX###motion` (
   `statusString`    VARCHAR(55)          DEFAULT NULL,
   `noteInternal`    TEXT,
   `cache`           LONGTEXT    NOT NULL,
-  `textFixed`       TINYINT(4)           DEFAULT '0'
+  `textFixed`       TINYINT(4)           DEFAULT '0',
+  `slug`            VARCHAR(100)         DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -469,18 +470,18 @@ CREATE TABLE `###TABLE_PREFIX###motionSubscription` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###motionSupporter` (
-  `id`             INT(11)                                            NOT NULL,
-  `motionId`       INT(11)                                            NOT NULL,
-  `position`       SMALLINT(6)                                        NOT NULL DEFAULT '0',
-  `userId`         INT(11)                                                     DEFAULT NULL,
-  `role`           ENUM('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
+  `id`             INT(11)                                             NOT NULL,
+  `motionId`       INT(11)                                             NOT NULL,
+  `position`       SMALLINT(6)                                         NOT NULL DEFAULT '0',
+  `userId`         INT(11)                                                      DEFAULT NULL,
+  `role`           ENUM ('initiates', 'supports', 'likes', 'dislikes') NOT NULL,
   `comment`        MEDIUMTEXT,
-  `personType`     TINYINT(4)                                                  DEFAULT NULL,
+  `personType`     TINYINT(4)                                                   DEFAULT NULL,
   `name`           TEXT,
   `organization`   TEXT,
-  `resolutionDate` DATE                                                        DEFAULT NULL,
-  `contactEmail`   VARCHAR(100)                                                DEFAULT NULL,
-  `contactPhone`   VARCHAR(100)                                                DEFAULT NULL
+  `resolutionDate` DATE                                                         DEFAULT NULL,
+  `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
+  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -734,6 +735,7 @@ ADD PRIMARY KEY (`version`);
 --
 ALTER TABLE `###TABLE_PREFIX###motion`
 ADD PRIMARY KEY (`id`),
+ADD UNIQUE KEY `motionSlug` (`consultationId`, `slug`),
 ADD KEY `consultation` (`consultationId`),
 ADD KEY `parent_motion` (`parentMotionId`),
 ADD KEY `type` (`motionTypeId`),
@@ -860,7 +862,7 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 493;
 -- AUTO_INCREMENT for table `consultation`
 --
 ALTER TABLE `###TABLE_PREFIX###consultation`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 7;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 8;
 --
 -- AUTO_INCREMENT for table `consultationAgendaItem`
 --
@@ -875,7 +877,7 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 11;
 -- AUTO_INCREMENT for table `consultationMotionType`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationMotionType`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 10;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 11;
 --
 -- AUTO_INCREMENT for table `consultationOdtTemplate`
 --
@@ -885,7 +887,7 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `consultationSettingsMotionSection`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationSettingsMotionSection`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 29;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 33;
 --
 -- AUTO_INCREMENT for table `consultationSettingsTag`
 --
@@ -895,17 +897,17 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 11;
 -- AUTO_INCREMENT for table `consultationText`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationText`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 3;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 4;
 --
 -- AUTO_INCREMENT for table `emailLog`
 --
 ALTER TABLE `###TABLE_PREFIX###emailLog`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 8;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 9;
 --
 -- AUTO_INCREMENT for table `motion`
 --
 ALTER TABLE `###TABLE_PREFIX###motion`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 116;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 117;
 --
 -- AUTO_INCREMENT for table `motionAdminComment`
 --
@@ -925,12 +927,12 @@ MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `motionSupporter`
 --
 ALTER TABLE `###TABLE_PREFIX###motionSupporter`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 151;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 152;
 --
 -- AUTO_INCREMENT for table `site`
 --
 ALTER TABLE `###TABLE_PREFIX###site`
-MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 7;
+MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 8;
 --
 -- AUTO_INCREMENT for table `texTemplate`
 --
@@ -1202,6 +1204,7 @@ ADD CONSTRAINT `texTemplate_ibfk_1` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_
 ALTER TABLE `###TABLE_PREFIX###userNotification`
 ADD CONSTRAINT `userNotification_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`),
 ADD CONSTRAINT `userNotification_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
+
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;

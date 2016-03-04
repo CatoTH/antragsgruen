@@ -23,7 +23,7 @@ der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die<br>
 Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</ins></p>
 ';
         /** @var MotionSection $section */
-        $section    = MotionSection::findOne(['motionId' => 112, 'sectionId' => 21]);
+        $section    = MotionSection::findOne(['motionSlug' => '112', 'sectionId' => 21]);
         $paragraphs = $section->getTextParagraphObjects(true, true, true);
 
         $this->assertEquals(1, count($paragraphs));

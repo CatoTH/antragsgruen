@@ -31,6 +31,7 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property string $cache
  * @property int $textFixed
+ * @property string $slug
  *
  * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
@@ -770,6 +771,31 @@ class Motion extends IMotion implements IRSSItem
         $motionTitle = (mb_strlen($this->title) > 100 ? mb_substr($this->title, 0, 100) : $this->title);
         $title       = $this->titlePrefix . ' ' . $motionTitle;
         return Tools::sanitizeFilename($title, $noUmlaut);
+    }
+
+    /**
+     * @return string
+     */
+    public function createSlug()
+    {
+        $motionTitle = (mb_strlen($this->title) > 70 ? mb_substr($this->title, 0, 70) : $this->title);
+        $title       = Tools::sanitizeFilename($motionTitle, true);
+
+        $random = \Yii::$app->getSecurity()->generateRandomKey(2);
+        $random = ord($random[0]) + ord($random[1]) * 256;
+        return $title . '-' . $random;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionSlug()
+    {
+        if ($this->slug != '') {
+            return $this->slug;
+        } else {
+            return $this->id;
+        }
     }
 
     /**

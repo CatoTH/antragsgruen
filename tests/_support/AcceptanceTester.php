@@ -60,17 +60,17 @@ class AcceptanceTester extends \Codeception\Actor
 
     /**
      * @param bool $check
-     * @param int $motionId
+     * @param string $motionSlug
      * @return MotionPage
      */
-    public function gotoMotion($check = true, $motionId = 2)
+    public function gotoMotion($check = true, $motionSlug = '2')
     {
         $page = MotionPage::openBy(
             $this,
             [
                 'subdomain'        => 'stdparteitag',
                 'consultationPath' => 'std-parteitag',
-                'motionId'         => $motionId,
+                'motionSlug'       => $motionSlug,
             ]
         );
         if ($check) {
@@ -81,18 +81,18 @@ class AcceptanceTester extends \Codeception\Actor
 
     /**
      * @param bool $check
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $amendmentId
      * @return MotionPage
      */
-    public function gotoAmendment($check = true, $motionId = 2, $amendmentId = 1)
+    public function gotoAmendment($check = true, $motionSlug = '2', $amendmentId = 1)
     {
         $page = AmendmentPage::openBy(
             $this,
             [
                 'subdomain'        => 'stdparteitag',
                 'consultationPath' => 'std-parteitag',
-                'motionId'         => $motionId,
+                'motionSlug'       => $motionSlug,
                 'amendmentId'      => $amendmentId
             ]
         );
@@ -143,6 +143,7 @@ class AcceptanceTester extends \Codeception\Actor
         $this->fillField('#passwordInput', 'testadmin');
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
     }
+
     /**
      *
      */

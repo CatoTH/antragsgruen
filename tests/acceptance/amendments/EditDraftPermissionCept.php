@@ -15,7 +15,7 @@ $I->wantTo('edit the draft');
 \app\tests\_pages\AmendmentEditPage::openBy($I, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
-    'motionId'         => 3,
+    'motionSlug'       => '3',
     'amendmentId'      => AcceptanceTester::FIRST_FREE_AMENDMENT_ID
 ]);
 $I->see('Änderungsantrag zu A3 stellen', 'h1');
@@ -34,7 +34,7 @@ $I->wantTo('edit the draft');
 \app\tests\_pages\AmendmentEditPage::openBy($I, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
-    'motionId'         => 3,
+    'motionSlug'       => '3',
     'amendmentId'      => AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1
 ]);
 $I->see('Änderungsantrag zu A3 stellen', 'h1');
@@ -46,7 +46,7 @@ $I->logout();
 \app\tests\_pages\AmendmentEditPage::openBy($I, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
-    'motionId'         => 3,
+    'motionSlug'       => '3',
     'amendmentId'      => AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1
 ]);
 $I->dontSee('Änderungsantrag zu A3 stellen', 'h1');

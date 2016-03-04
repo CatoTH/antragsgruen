@@ -109,13 +109,16 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @return Motion|null
      */
-    public function getMotion($motionId)
+    public function getMotion($motionSlug)
     {
         foreach ($this->motions as $motion) {
-            if ($motion->id == $motionId && $motion->status != Motion::STATUS_DELETED) {
+            if (is_numeric($motionSlug) && $motion->id == $motionSlug && $motion->status != Motion::STATUS_DELETED) {
+                return $motion;
+            }
+            if (!is_numeric($motionSlug) && $motion->slug == $motionSlug && $motion->status != Motion::STATUS_DELETED) {
                 return $motion;
             }
         }
