@@ -21,9 +21,8 @@ $I->seeInField('#typeTitleSingular', 'Bewerbung');
 $I->seeInField('#typeTitlePlural', 'Bewerbungen');
 $I->seeInField('#typeCreateTitle', 'Bewirb dich!');
 $I->seeInField('#typeMotionPrefix', 'B');
-$I->seeInField('.section30 .sectionTitle input', 'Name');
-$I->seeInField('.section31 .sectionTitle input', 'Foto');
-
+$I->seeInField('.section' . AcceptanceTester::FIRST_FREE_MOTION_SECTION . ' .sectionTitle input', 'Name');
+$I->seeInField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .sectionTitle input', 'Foto');
 
 
 $I->wantTo('create another motion type');
@@ -34,7 +33,7 @@ $I->fillField('#typeTitlePlural', 'Abc2');
 $I->fillField('#typeCreateTitle', 'Abc3');
 $I->selectOption('#pdfLayout', 'DBJR');
 $I->fillField('#typeMotionPrefix', 'C');
-$I->checkOption('.preset10');
+$I->checkOption('.preset' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 $I->submitForm('.motionTypeCreateForm', [], 'create');
 
 $I->see('Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.');
@@ -42,24 +41,24 @@ $I->seeInField('#typeTitleSingular', 'Abc1');
 $I->seeInField('#typeTitlePlural', 'Abc2');
 $I->seeInField('#typeCreateTitle', 'Abc3');
 $I->seeInField('#typeMotionPrefix', 'C');
-$I->seeInField('.section35 .sectionTitle input', 'Name');
-$I->seeInField('.section36 .sectionTitle input', 'Foto');
+$I->seeInField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 5) . ' .sectionTitle input', 'Name');
+$I->seeInField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 6) . ' .sectionTitle input', 'Foto');
 
 
 $I->wantTo('check if I can see the new types');
 $I->gotoConsultationHome();
-$I->seeElement('#sidebar .createMotion10');
-$I->seeElement('#sidebar .createMotion11');
-$I->click('#sidebar .createMotion11 a');
+$I->seeElement('#sidebar .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeElement('#sidebar .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
+$I->click('#sidebar .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1) . ' a');
 $I->see('Geschlecht');
 $I->see('Alter');
 $I->click('#adminLink');
-$I->seeElement('.motionTypeSection10');
-$I->seeElement('.motionTypeSection11');
+$I->seeElement('.motionTypeSection' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeElement('.motionTypeSection' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
 
 
 $I->wantTo('delete the first motion type again');
-$I->click('.motionType10');
+$I->click('.motionType' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 $I->dontSeeElement('.deleteTypeForm');
 $I->click('.deleteTypeOpener a');
 $I->dontSeeElement('.deleteTypeOpener');
@@ -67,10 +66,10 @@ $I->seeElement('.deleteTypeForm');
 $I->submitForm('.deleteTypeForm', [], 'delete');
 $I->see('Der Antragstyp wurde erfolgreich gelöscht.');
 $I->click('#adminLink');
-$I->dontSeeElement('.motionTypeSection10');
-$I->seeElement('.motionTypeSection11');
+$I->dontSeeElement('.motionTypeSection' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeElement('.motionTypeSection' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
 $I->gotoConsultationHome();
-$I->dontSeeElement('#sidebar .createMotion10');
+$I->dontSeeElement('#sidebar .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 
 
 $I->wantTo('delete the original motion type - should not work');
@@ -80,8 +79,6 @@ $I->dontSeeElement('.deleteTypeForm');
 $I->click('.deleteTypeOpener a');
 $I->dontSeeElement('.deleteTypeOpener');
 $I->see('Dieser Antragstyp kann (noch) nicht gelöscht werden');
-
-
 
 
 $I->wantTo('create a motion type without template');
