@@ -163,7 +163,10 @@ trait AmendmentActionsTrait
     private function amendmentLikeDislike(Amendment $amendment, $role, $string)
     {
         $currentUser = User::getCurrentUser();
-        if (!$amendment->getMyMotion()->motionType->getSupportPolicy()->checkCurrUser() || $currentUser == null) {
+        if ($currentUser == null) {
+            throw new FormError('Supporting this motion is not possible');
+        }
+        if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this motion is not possible');
         }
 

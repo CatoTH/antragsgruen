@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+use app\models\db\Motion;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -12,14 +14,15 @@ $I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
 $I->gotoConsultationHome();
 
 $I->wantTo('edit the draft');
+/** @var Motion $motion */
+$motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID);
 \app\tests\_pages\MotionEditPage::openBy($I, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
-    'motionId'         => AcceptanceTester::FIRST_FREE_MOTION_ID,
+    'motionSlug'       => $motion->getMotionSlug(),
 ]);
 $I->see('Antrag stellen', 'h1');
 $I->seeInField(['name' => 'sections[1]'], 'Testantrag 1');
-
 
 
 $I->wantTo('create a draft motion logged in');
@@ -31,10 +34,12 @@ $I->see(mb_strtoupper('Antrag bestätigen'), 'h1');
 $I->gotoConsultationHome();
 
 $I->wantTo('edit the draft');
+/** @var Motion $motion */
+$motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID + 1);
 \app\tests\_pages\MotionEditPage::openBy($I, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
-    'motionId'         => AcceptanceTester::FIRST_FREE_MOTION_ID + 1,
+    'motionSlug'         => $motion->getMotionSlug(),
 ]);
 $I->see('Antrag stellen', 'h1');
 $I->seeInField(['name' => 'sections[1]'], 'Testantrag 2');
@@ -42,10 +47,12 @@ $I->seeInField(['name' => 'sections[1]'], 'Testantrag 2');
 
 $I->wantTo('edit the draft logged out (should not work)');
 $I->logout();
+/** @var Motion $motion */
+$motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID + 1);
 \app\tests\_pages\MotionEditPage::openBy($I, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
-    'motionId'         => AcceptanceTester::FIRST_FREE_MOTION_ID + 1,
+    'motionSlug'         => $motion->getMotionSlug(),
 ]);
 $I->dontSee('Antrag stellen', 'h1');
 $I->dontSeeElement(['name' => 'sections[1]']);

@@ -14,7 +14,7 @@ $I->wantTo('enable supporting motions for logged in users');
 
 $I->loginAsStdAdmin();
 $mtPage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption(['name' => 'type[policySupport]'], \app\models\policies\IPolicy::POLICY_LOGGED_IN);
+$I->selectOption(['name' => 'type[policySupportMotions]'], \app\models\policies\IPolicy::POLICY_LOGGED_IN);
 $mtPage->saveForm();
 
 $I->gotoConsultationHome();

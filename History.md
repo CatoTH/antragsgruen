@@ -2,8 +2,12 @@
 
 ## Version 3.2 [Not released yet]
 
+- We now support a "support collection phase", where a motion has to be supported by a given number of supporters before it is officially published.
+- Motions now have a more verbose URL including a secure token. The URL of unpublished motions is therefore not guessable anymore.
 - Support database table prefixes
+- Support policy of motions and amendments can now be set independently
 - Bugfix: Motions with section-based comments could not be edited in the admin-screen
+- Bugfix: a security problem was fixed that occurred under the following two conditions: 1) Everyone can create a motion, without login and 2) Supporting motions was enabled
 - Compiled assets (stylesheets, scripts) are now included in the repository. This makes installation from the repository a lot easier.
 
 

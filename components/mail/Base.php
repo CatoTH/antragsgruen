@@ -85,13 +85,8 @@ abstract class Base
             <head><meta charset="utf-8"><title>' . Html::encode($subject) . '</title>
             </head><body>' . $html . '</body></html>';
             
-            $converter = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles($html);
-            $converter->setStripOriginalStyleTags(true);
-            $converter->setUseInlineStylesBlock(true);
-            $converter->setEncoding('UTF-8');
-            $converter->setCleanup(false);
-            $converter->setExcludeMediaQueries(true);
-            $contentHtml = $converter->convert();
+            $converter = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
+            $contentHtml = $converter->convert($html);
             $contentHtml = preg_replace("/ data\-[a-z0-9_-]+=\"[^\"]*\"/siu", "", $contentHtml);
 
             $textPart          = new \Zend\Mime\Part($plain);

@@ -46,9 +46,11 @@ if ($form->motionType->getAmendmentPolicy()->checkCurrUserAmendment(true, true))
         '<br><br>';
 }
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+    /** @var \app\models\supportTypes\CollectBeforePublish $supp */
+    $supp = $form->motionType->getMotionSupportTypeClass();
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         \Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
-        \Yii::t('motion', 'support_collect_explanation') .
+        str_replace('%MIN%', $supp->getMinNumberOfSupporters(), \Yii::t('motion', 'support_collect_explanation')) .
         '<br><br>';
 }
 

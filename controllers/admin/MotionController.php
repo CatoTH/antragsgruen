@@ -111,11 +111,43 @@ class MotionController extends AdminBase
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
         }
+
+        $supportCollPolicyWarning = false;
+        if ($motionType->supportType == ISupportType::COLLECTING_SUPPORTERS) {
+
+            if ($this->isPostSet('supportCollPolicyFix')) {
+                if ($motionType->policyMotions == IPolicy::POLICY_ALL) {
+                    $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->save();
+                }
+                $support = $motionType->policySupportMotions;
+                if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
+                    $motionType->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->save();
+                }
+                if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
+                    $settings                         = $this->consultation->getSettings();
+                    $settings->initiatorConfirmEmails = true;
+                    $this->consultation->setSettings($settings);
+                    $this->consultation->save();
+                }
+            }
+
+            $support                  = $motionType->policySupportMotions;
+            $createAll                = ($motionType->policyMotions == IPolicy::POLICY_ALL);
+            $supportAll               = ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY);
+            $noEmail                  = !$this->consultation->getSettings()->initiatorConfirmEmails;
+            $supportCollPolicyWarning = ($createAll || $supportAll || $noEmail);
+        }
+
         if ($this->isRequestSet('msg') && $this->getRequestValue('msg') == 'created') {
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
         }
 
-        return $this->render('type', ['motionType' => $motionType]);
+        return $this->render('type', [
+            'motionType'               => $motionType,
+            'supportCollPolicyWarning' => $supportCollPolicyWarning
+        ]);
     }
 
     /**
@@ -149,7 +181,8 @@ class MotionController extends AdminBase
                     $motionType->policyMotions               = IPolicy::POLICY_ALL;
                     $motionType->policyAmendments            = IPolicy::POLICY_ALL;
                     $motionType->policyComments              = IPolicy::POLICY_NOBODY;
-                    $motionType->policySupport               = IPolicy::POLICY_ALL;
+                    $motionType->policySupportMotions        = IPolicy::POLICY_ALL;
+                    $motionType->policySupportAmendments     = IPolicy::POLICY_ALL;
                     $motionType->contactEmail                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->amendmentMultipleParagraphs = 1;

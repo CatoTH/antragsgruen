@@ -89,7 +89,7 @@ return [
     'edit_bread'               => 'Edit',
     'edit_mail_title'          => 'Motion edited',
     'edit_type'                => 'Edit %TYPE%',
-    'edit_mail_body'           => 'The motion \"%TITLE%\" has been edited.\nLink: %LINK%',
+    'edit_mail_body'           => 'The motion "%TITLE%" has been edited.\nLink: %LINK%',
     'err_create_permission'    => 'No permission to create motions.',
     'err_create'               => 'An error occurred.',
     'err_edit_permission'      => 'No permission to edit this motion.',
@@ -107,5 +107,16 @@ return [
     'create_explanation'       => 'Here you can create a motion with no reference to another motion. ' .
         'If you want to amend an existing motion instead, please open that motion first and choose "Create Amendment" on the sidebar to the right',
     'create_explanation_title' => 'Motion or Amendment?',
+    /*
+'support_collect_explanation_title' => 'Unterstützer*innen sammeln',
+'support_collect_explanation'       => 'Anträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um als eigenständiger Antrag zugelassen zu werden. Um einen solchen Antrag einzureichen, gehe wie folgt vor:<br>
+<ol>
+<li><strong>Antragsentwurf</strong>: Trage zunächst hier den Antrag ein und hinterlege deine Kontaktdaten. Bestätige auf der nächsten Seite, das du den Antrag einbringen willst.</li>
+<li><strong>Untertützung</strong>: Du erhältst dann einen Link, den du an potentielle Interessierte schicken kannst. Jeder, der den Link kennt, kann den Antragsentwurf einsehen. Jede*r Delegierte*r kann den Antrag nun hier auf Antragsgrün unterstützen.</li>
+<li><strong>Antrag einbringen</strong>: Sobald sich %MIN% Unterstützer*innen gefunden haben, bekommst du eine Benachrichtigungs-E-Mail. Ab dann kannst du den Antrag offiziell einbringen. Auch danach ist es noch möglich, dass sich Unterstützer*innen für diesen Antrag eintragen.</li>
+</ol>',
+*/
+    'support_collect_status'   => 'Currently',
+    'support_collect_min'      => 'min.',
     'go_on'                    => 'Go on',
 ];

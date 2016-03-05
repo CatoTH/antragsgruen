@@ -101,6 +101,13 @@ if ($myself) {
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
                 echo '</span>';
             }
+            if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+                echo '<div>' . \Yii::t('motion', 'support_collect_status') . ': ';
+                echo count($motion->getSupporters());
+                echo ' <small>(' . \Yii::t('motion', 'support_collect_min') . ': ';
+                echo $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+                echo ')</small></div>';
+            }
             echo "</li>\n";
         }
         echo '</ul></div>';

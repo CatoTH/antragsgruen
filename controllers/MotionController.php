@@ -539,7 +539,7 @@ class MotionController extends Base
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($newMotion));
 
             $mailText = \Yii::t('motion', 'edit_mail_body');
-            $mailText = str_replace(['%title%', '%link%'], [$newMotion->title, $motionLink], $mailText);
+            $mailText = str_replace(['%TITLE%', '%LINK%'], [$newMotion->title, $motionLink], $mailText);
             $newMotion->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'edit_mail_title'), $mailText);
 
             return $this->render('merge_amendments_done', ['newMotion' => $newMotion]);
