@@ -120,9 +120,9 @@ class MotionController extends AdminBase
                     $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
                     $motionType->save();
                 }
-                $support = $motionType->policySupport;
+                $support = $motionType->policySupportMotions;
                 if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
-                    $motionType->policySupport = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
                     $motionType->save();
                 }
                 if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
@@ -133,7 +133,7 @@ class MotionController extends AdminBase
                 }
             }
 
-            $support                  = $motionType->policySupport;
+            $support                  = $motionType->policySupportMotions;
             $createAll                = ($motionType->policyMotions == IPolicy::POLICY_ALL);
             $supportAll               = ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY);
             $noEmail                  = !$this->consultation->getSettings()->initiatorConfirmEmails;
@@ -181,7 +181,8 @@ class MotionController extends AdminBase
                     $motionType->policyMotions               = IPolicy::POLICY_ALL;
                     $motionType->policyAmendments            = IPolicy::POLICY_ALL;
                     $motionType->policyComments              = IPolicy::POLICY_NOBODY;
-                    $motionType->policySupport               = IPolicy::POLICY_ALL;
+                    $motionType->policySupportMotions        = IPolicy::POLICY_ALL;
+                    $motionType->policySupportAmendments     = IPolicy::POLICY_ALL;
                     $motionType->contactEmail                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->amendmentMultipleParagraphs = 1;

@@ -201,7 +201,7 @@ if (count($supporters) > 0) {
     echo '</div></section>';
 }
 
-LayoutHelper::printSupportSection($motion, $motion->motionType->getSupportPolicy(), $supportStatus);
+LayoutHelper::printSupportSection($motion, $motion->motionType->getMotionSupportPolicy(), $supportStatus);
 
 $amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {

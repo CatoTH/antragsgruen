@@ -20,7 +20,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('motion', 'motion_type_edit');
+$this->title = \Yii::t('admin', 'motion_type_edit');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_admin'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_types'));
 
@@ -38,7 +38,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 $locale = Tools::getCurrentDateLocale();
 
 
-echo '<h1>' . \Yii::t('motion', 'motion_type_edit') . '</h1>';
+echo '<h1>' . \Yii::t('admin', 'motion_type_edit') . '</h1>';
 
 if ($supportCollPolicyWarning) {
     echo '<div class="adminTypePolicyFix alert alert-info alert-dismissible" role="alert">
@@ -167,14 +167,26 @@ echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="typePolicySupport">';
-echo \Yii::t('admin', 'motion_type_perm_supp');
+echo '<label class="col-md-3 control-label" for="typePolicySupportMotions">';
+echo \Yii::t('admin', 'motion_type_perm_supp_mot');
 echo '</label><div class="col-md-9">';
 echo Html::dropDownList(
-    'type[policySupport]',
-    $motionType->policySupport,
+    'type[policySupportMotions]',
+    $motionType->policySupportMotions,
     $policies,
-    ['id' => 'typePolicySupport', 'class' => 'form-control']
+    ['id' => 'typePolicySupportMotions', 'class' => 'form-control']
+);
+echo '</div></div>';
+
+echo '<div class="form-group">';
+echo '<label class="col-md-3 control-label" for="typePolicySupportAmendments">';
+echo \Yii::t('admin', 'motion_type_perm_supp_amend');
+echo '</label><div class="col-md-9">';
+echo Html::dropDownList(
+    'type[policySupportAmendments]',
+    $motionType->policySupportAmendments,
+    $policies,
+    ['id' => 'typePolicySupportAmendments', 'class' => 'form-control']
 );
 echo '</div></div>';
 

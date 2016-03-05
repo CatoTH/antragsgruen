@@ -173,7 +173,7 @@ trait MotionActionsTrait
     private function motionLikeDislike(Motion $motion, $role, $string)
     {
         $currentUser = User::getCurrentUser();
-        if (!$motion->motionType->getSupportPolicy()->checkCurrUser() || $currentUser == null) {
+        if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser() || $currentUser == null) {
             throw new FormError('Supporting this motion is not possible');
         }
 

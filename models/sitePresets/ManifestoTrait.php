@@ -26,7 +26,8 @@ trait ManifestoTrait
         $type->policyMotions               = IPolicy::POLICY_ADMINS;
         $type->policyAmendments            = IPolicy::POLICY_ALL;
         $type->policyComments              = IPolicy::POLICY_ALL;
-        $type->policySupport               = IPolicy::POLICY_NOBODY;
+        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
         $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
         $type->supportType                 = ISupportType::ONLY_INITIATOR;
