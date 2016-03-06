@@ -202,7 +202,7 @@ if (count($supporters) > 0) {
 }
 
 $supportPolicy = $motion->motionType->getMotionSupportPolicy();
-LayoutHelper::printSupportSection($motion, $supportPolicy, $supportStatus);
+LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
 
 $amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {

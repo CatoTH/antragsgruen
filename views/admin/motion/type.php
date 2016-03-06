@@ -187,19 +187,22 @@ echo '</div></div>';
 echo '<div class="form-group">';
 echo '<div class="col-md-9 col-md-offset-3 contactDetails contactPhone"><div class="form-control">';
 
-echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_LIKE . '"';
+echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" class="motionLike"
+    value="' . ISupportType::LIKEDISLIKE_LIKE . '"';
 if ($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_LIKE) {
     echo ' checked';
 }
 echo '>' . \Yii::t('admin', 'motion_type_like_like') . '</label>';
 
-echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_DISLIKE . '"';
+echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" class="motionDislike" 
+    value="' . ISupportType::LIKEDISLIKE_DISLIKE . '"';
 if ($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_DISLIKE) {
     echo ' checked';
 }
 echo '>' . \Yii::t('admin', 'motion_type_like_dislike') . '</label>';
 
-echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_SUPPORT . '"';
+echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" class="motionSupport"
+    value="' . ISupportType::LIKEDISLIKE_SUPPORT . '"';
 if ($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) {
     echo ' checked';
 }
@@ -228,19 +231,22 @@ echo '</div></div>';
 echo '<div class="form-group">';
 echo '<div class="col-md-9 col-md-offset-3 contactDetails contactPhone"><div class="form-control">';
 
-echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_LIKE . '"';
+echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" class="amendmentLike"
+    value="' . ISupportType::LIKEDISLIKE_LIKE . '"';
 if ($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_LIKE) {
     echo ' checked';
 }
 echo '>' . \Yii::t('admin', 'motion_type_like_like') . '</label>';
 
-echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_DISLIKE . '"';
+echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" class="amendmentDislike"
+    value="' . ISupportType::LIKEDISLIKE_DISLIKE . '"';
 if ($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_DISLIKE) {
     echo ' checked';
 }
 echo '>' . \Yii::t('admin', 'motion_type_like_dislike') . '</label>';
 
-echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_SUPPORT . '"';
+echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" class="amendmentSupport"
+    value="' . ISupportType::LIKEDISLIKE_SUPPORT . '"';
 if ($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) {
     echo ' checked';
 }

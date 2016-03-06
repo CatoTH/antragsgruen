@@ -891,4 +891,20 @@ class Motion extends IMotion implements IRSSItem
         $numbering = $this->getConsultation()->getAmendmentNumbering();
         return $numbering->findAmendmentWithPrefix($this, $prefix, $ignore);
     }
+
+    /**
+     * @return ConsultationMotionType
+     */
+    public function getMyMotionType()
+    {
+        return $this->motionType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLikeDislikeSettings()
+    {
+        return $this->motionType->motionLikesDislikes;
+    }
 }

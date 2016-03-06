@@ -125,4 +125,7 @@ return [
     'support_collect_status'             => 'Aktueller Stand',
     'support_collect_min'                => 'min.',
     'go_on'                              => 'Weiter',
+    'like_done'                          => 'Du stimmst diesem Antrag nun zu.',
+    'dislike_done'                       => 'Du lehnst diesen Antrag nun ab.',
+    'neutral_done'                       => 'Du stehst diesem Antrag wieder neutral gegenüber.',
 ];
