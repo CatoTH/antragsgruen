@@ -193,7 +193,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentLike(Amendment $amendment)
     {
-        $msg = 'Du stimmst diesem Änderungsantrag nun zu.';
+        $msg = \Yii::t('amend', 'amend_like_done');
         $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_LIKE, $msg);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_LIKE, $amendment->id);
     }
@@ -203,7 +203,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentDislike(Amendment $amendment)
     {
-        $msg          = 'Du lehnst diesen Änderungsantrag nun ab.';
+        $msg          = \Yii::t('amend', 'amend_dislike_done');
         $consultation = $amendment->getMyConsultation();
         $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_DISLIKE, $msg);
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_DISLIKE, $amendment->id);
@@ -222,7 +222,7 @@ trait AmendmentActionsTrait
         }
         $consultation = $amendment->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_UNLIKE, $amendment->id);
-        \Yii::$app->session->setFlash('success', 'Du stehst diesem Änderungsantrag wieder neutral gegenüber.');
+        \Yii::$app->session->setFlash('success', \Yii::t('amend', 'amend_neutral_done'));
     }
 
     /**

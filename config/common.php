@@ -35,6 +35,7 @@ if (defined('INSTALLING_MODE') || YII_ENV == 'test') {
 $urlManagerClass = (YII_ENV == 'wordpress' ? \app\components\wordpress\UrlManager::class : \yii\web\UrlManager::class);
 
 return [
+    'name'         => 'Antragsgrün',
     'bootstrap'    => ['log'],
     'basePath'     => dirname(__DIR__),
     'components'   => [

@@ -100,6 +100,20 @@ class MotionController extends AdminBase
             $motionType->deadlineMotions             = Tools::dateBootstraptime2sql($input['deadlineMotions']);
             $motionType->deadlineAmendments          = Tools::dateBootstraptime2sql($input['deadlineAmendments']);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
+
+            $motionType->motionLikesDislikes = 0;
+            if (isset($input['motionLikesDislikes'])) {
+                foreach ($input['motionLikesDislikes'] as $val) {
+                    $motionType->motionLikesDislikes += $val;
+                }
+            }
+            $motionType->amendmentLikesDislikes = 0;
+            if (isset($input['amendmentLikesDislikes'])) {
+                foreach ($input['amendmentLikesDislikes'] as $val) {
+                    $motionType->amendmentLikesDislikes += $val;
+                }
+            }
+
             $form                                    = $motionType->getMotionSupportTypeClass();
             $form->setSettings(\Yii::$app->request->post('initiator'));
             $motionType->supportTypeSettings = $form->getSettings();

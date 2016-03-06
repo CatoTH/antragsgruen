@@ -18,6 +18,9 @@ class CollectBeforePublish extends DefaultTypeBase
     /** @var int */
     protected $minSupporters = 1;
 
+    /** @var bool */
+    protected $skipForOrganizations = true;
+
     /**
      * @param ConsultationMotionType $motionType
      * @param string $settings
@@ -39,6 +42,9 @@ class CollectBeforePublish extends DefaultTypeBase
         if (isset($json['allowMoreSupporters'])) {
             $this->allowMoreSupporters = ($json['allowMoreSupporters'] == true);
         }
+        if (isset($json['skipForOrganizations'])) {
+            $this->skskipForOrganizations = $json['skipForOrganizations'];
+        }
     }
 
     /**
@@ -47,8 +53,9 @@ class CollectBeforePublish extends DefaultTypeBase
     public function getSettings()
     {
         return json_encode([
-            'minSupporters'       => $this->minSupporters,
-            'allowMoreSupporters' => $this->allowMoreSupporters,
+            'minSupporters'        => $this->minSupporters,
+            'allowMoreSupporters'  => $this->allowMoreSupporters,
+            'skipForOrganizations' => $this->skipForOrganizations,
         ]);
     }
 
@@ -59,6 +66,9 @@ class CollectBeforePublish extends DefaultTypeBase
     {
         if (isset($settings['minSupporters']) && $settings['minSupporters'] >= 0) {
             $this->minSupporters = IntVal($settings['minSupporters']);
+        }
+        if (isset($settings['skipForOrganizations'])) {
+            $this->skipForOrganizations = $settings['skipForOrganizations'];
         }
         $this->hasOrganizations    = false;
         $this->allowMoreSupporters = (isset($settings['allowMoreSupporters']));
@@ -110,5 +120,12 @@ class CollectBeforePublish extends DefaultTypeBase
     public function hasFullTextSupporterField()
     {
         return User::currentUserHasPrivilege($this->motionType->getConsultation(), User::PRIVILEGE_ANY);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getSkipForOrganizations() {
+        return $this->skipForOrganizations;
     }
 }

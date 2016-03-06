@@ -21,11 +21,13 @@ use yii\db\ActiveRecord;
  * @property int $texTemplateId
  * @property string $deadlineMotions
  * @property string $deadlineAmendments
- * @property string $policyMotions
- * @property string $policyAmendments
- * @property string $policyComments
- * @property string $policySupportMotions
- * @property string $policySupportAmendments
+ * @property int $policyMotions
+ * @property int $policyAmendments
+ * @property int $policyComments
+ * @property int $policySupportMotions
+ * @property int $policySupportAmendments
+ * @property int $motionLikesDislikes
+ * @property int $amendmentLikesDislikes
  * @property int $contactEmail
  * @property int $contactPhone
  * @property int $supportType
@@ -240,7 +242,7 @@ class ConsultationMotionType extends ActiveRecord
             [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position', 'status'], 'required'],
 
             [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
-            [['amendmentMultipleParagraphs', 'layoutTwoCols'], 'number'],
+            [['amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes', 'layoutTwoCols'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
             [['motionPrefix', 'position', 'supportType', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],

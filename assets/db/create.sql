@@ -202,6 +202,8 @@ CREATE TABLE `###TABLE_PREFIX###consultationMotionType` (
   `policyComments`              INT(11)      NOT NULL,
   `policySupportMotions`        INT(11)      NOT NULL,
   `policySupportAmendments`     INT(11)      NOT NULL,
+  `motionLikesDislikes`         INT(11)      NOT NULL,
+  `amendmentLikesDislikes`      INT(11)      NOT NULL,
   `contactEmail`                TINYINT(4)   NOT NULL,
   `contactPhone`                TINYINT(4)   NOT NULL,
   `supportType`                 INT(11)      NOT NULL,
