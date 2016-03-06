@@ -11,8 +11,8 @@ class m160305_214526_support_likes_dislikes extends Migration
     {
         $this->addColumn('consultationMotionType', 'motionLikesDislikes', 'int');
         $this->addColumn('consultationMotionType', 'amendmentLikesDislikes', 'int');
-        $this->update('consultationMotionType', ['motionLikesDislikes' => new Expression('policySupportMotions != 0')]);
-        $this->update('consultationMotionType', ['amendmentLikesDislikes' => new Expression('policySupportAmendments != 0')]);
+        $this->update('consultationMotionType', ['motionLikesDislikes' => new Expression('IF(policySupportMotions != 0, 3, 0)')]);
+        $this->update('consultationMotionType', ['amendmentLikesDislikes' => new Expression('IF(policySupportAmendments != 0, 3, 0)')]);
     }
 
     /**

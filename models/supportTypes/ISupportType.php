@@ -19,6 +19,10 @@ abstract class ISupportType
     const GIVEN_BY_INITIATOR    = 1;
     const COLLECTING_SUPPORTERS = 2;
 
+    const LIKEDISLIKE_LIKE    = 1;
+    const LIKEDISLIKE_DISLIKE = 2;
+    const LIKEDISLIKE_SUPPORT = 4;
+
     protected $adminMode = false;
 
     /**
@@ -159,7 +163,7 @@ abstract class ISupportType
      * @return AmendmentSupporter[]
      */
     abstract public function getAmendmentSupporters(Amendment $amendment);
-    
+
     /**
      * @return int
      */

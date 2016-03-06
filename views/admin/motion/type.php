@@ -8,6 +8,7 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularDataType;
+use app\models\supportTypes\ISupportType;
 use yii\helpers\Html;
 
 /**
@@ -166,6 +167,8 @@ echo Html::dropDownList(
 echo '</div></div>';
 
 
+/* Support policy for motions */
+
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typePolicySupportMotions">';
 echo \Yii::t('admin', 'motion_type_perm_supp_mot');
@@ -177,6 +180,35 @@ echo Html::dropDownList(
     ['id' => 'typePolicySupportMotions', 'class' => 'form-control']
 );
 echo '</div></div>';
+
+
+/* Support types for motions (Likes, Dislikes, Official support) */
+
+echo '<div class="form-group">';
+echo '<div class="col-md-9 col-md-offset-3 contactDetails contactPhone"><div class="form-control">';
+
+echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_LIKE . '"';
+if ($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_LIKE) {
+    echo ' checked';
+}
+echo '>' . \Yii::t('admin', 'motion_type_like_like') . '</label>';
+
+echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_DISLIKE . '"';
+if ($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_DISLIKE) {
+    echo ' checked';
+}
+echo '>' . \Yii::t('admin', 'motion_type_like_dislike') . '</label>';
+
+echo '<label><input type="checkbox" name="type[motionLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_SUPPORT . '"';
+if ($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) {
+    echo ' checked';
+}
+echo '>' . \Yii::t('admin', 'motion_type_like_support') . '</label>';
+
+echo '</div></div></div>';
+
+
+/* Support policy for amendments */
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="typePolicySupportAmendments">';
@@ -190,6 +222,34 @@ echo Html::dropDownList(
 );
 echo '</div></div>';
 
+
+/* Support types for motions (Likes, Dislikes, Official support) */
+
+echo '<div class="form-group">';
+echo '<div class="col-md-9 col-md-offset-3 contactDetails contactPhone"><div class="form-control">';
+
+echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_LIKE . '"';
+if ($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_LIKE) {
+    echo ' checked';
+}
+echo '>' . \Yii::t('admin', 'motion_type_like_like') . '</label>';
+
+echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_DISLIKE . '"';
+if ($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_DISLIKE) {
+    echo ' checked';
+}
+echo '>' . \Yii::t('admin', 'motion_type_like_dislike') . '</label>';
+
+echo '<label><input type="checkbox" name="type[amendmentLikesDislikes][]" value="' . ISupportType::LIKEDISLIKE_SUPPORT . '"';
+if ($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) {
+    echo ' checked';
+}
+echo '>' . \Yii::t('admin', 'motion_type_like_support') . '</label>';
+
+echo '</div></div></div>';
+
+
+/* Deadlines */
 
 echo '<h3>' . \Yii::t('admin', 'motion_type_deadline') . '</h3>';
 
@@ -239,24 +299,24 @@ echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<div class="col-md-3 control-label label">' . 'E-Mail-Angabe';
+echo '<div class="col-md-3 control-label label">' . \Yii::t('admin', 'motion_type_email');
 echo '</div><div class="col-md-9 contactDetails contactEMail">';
 $options = [
-    ConsultationMotionType::CONTACT_NA       => 'Nicht abfragen',
-    ConsultationMotionType::CONTACT_OPTIONAL => 'Freiwillig',
-    ConsultationMotionType::CONTACT_REQUIRED => 'Benötigt',
+    ConsultationMotionType::CONTACT_NA       => \Yii::t('admin', 'motion_type_skip'),
+    ConsultationMotionType::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
+    ConsultationMotionType::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
 ];
 echo Html::radioList('type[contactEmail]', $motionType->contactEmail, $options, ['class' => 'form-control']);
 echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<div class="col-md-3 control-label label">' . 'Telefon-Angabe';
+echo '<div class="col-md-3 control-label label">' . \Yii::t('admin', 'motion_type_phone');
 echo '</div><div class="col-md-9 contactDetails contactPhone">';
 $options = [
-    ConsultationMotionType::CONTACT_NA       => 'Nicht abfragen',
-    ConsultationMotionType::CONTACT_OPTIONAL => 'Freiwillig',
-    ConsultationMotionType::CONTACT_REQUIRED => 'Benötigt',
+    ConsultationMotionType::CONTACT_NA       => \Yii::t('admin', 'motion_type_skip'),
+    ConsultationMotionType::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
+    ConsultationMotionType::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
 ];
 echo Html::radioList('type[contactPhone]', $motionType->contactPhone, $options, ['class' => 'form-control']);
 echo '</div></div>';
@@ -281,7 +341,7 @@ echo '<div class="checkbox col-md-9 col-md-offset-3"><label>
 if ($curForm->allowMoreSupporters()) {
     echo ' checked';
 }
-echo '> ' . 'Auch mehr Unterstützer*innen zulassen' . '
+echo '> ' . \Yii::t('admin', 'motion_type_allow_more_supp') . '
     </label></div>';
 echo '</div>';
 
@@ -294,12 +354,13 @@ if (is_subclass_of($curForm, \app\models\supportTypes\DefaultTypeBase::class)) {
         echo ' checked';
     }
 }
-echo '> Gremium/Organisation auch bei natürlichen Personen abfragen
+echo '> ' . \Yii::t('admin', 'motion_type_ask_orga') . '
     </label></div>';
 echo '</div>';
 
 
-echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">Speichern</button></div>';
+echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">' .
+    \Yii::t('admin', 'save') . '</button></div>';
 
 echo '</div>';
 
