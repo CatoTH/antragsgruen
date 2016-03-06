@@ -25,6 +25,7 @@ return [
     'supporters_heading'                 => 'Unterstützer*innen',
     'supporting_you'                     => 'Du!',
     'supporting_none'                    => 'keine',
+    'support'                            => 'Unterstützen',
     'likes_title'                        => 'Zustimmung',
     'like'                               => 'Zustimmung',
     'likes'                              => 'Zustimmung',
@@ -127,5 +128,8 @@ return [
     'go_on'                              => 'Weiter',
     'like_done'                          => 'Du stimmst diesem Antrag nun zu.',
     'dislike_done'                       => 'Du lehnst diesen Antrag nun ab.',
+    'support_done'                       => 'Du unterstützt diesen Antrag nun.',
     'neutral_done'                       => 'Du stehst diesem Antrag wieder neutral gegenüber.',
+    'support_collection_hint'            => 'Dieser Antrag ist noch nicht offiziell eingereicht. Nötig sind mindestens %MIN% Unterstützer*innen (aktueller Stand: %CURR%). Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
+    'support_collection_reached_hint'    => 'Dieser Antrag ist noch nicht offiziell eingereicht. Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen.',
 ];

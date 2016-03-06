@@ -884,7 +884,7 @@ INSERT INTO `###TABLE_PREFIX###consultationMotionType` (`id`, `consultationId`, 
 (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 2, 1, 1, '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0, 0),
 (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 0, 0, 0, 2, 1, 1, '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0, 0),
 (9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 2, 1, 1, '{"minSupporters":19,"hasOrganizations":true,"allowMoreSupporters":true}', 1, 0, 0),
-(10, 7, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 4, 0, 2, 1, 2, '{"minSupporters":1,"allowMoreSupporters":true}', 1, 0, 0);
+(10, 7, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 2, 0, 4, 0, 2, 1, 2, '{"minSupporters":1,"allowMoreSupporters":true}', 1, 0, 0);
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`

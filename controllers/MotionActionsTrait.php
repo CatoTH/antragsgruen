@@ -212,6 +212,19 @@ trait MotionActionsTrait
      * @param Motion $motion
      * @throws FormError
      */
+    private function motionSupport(Motion $motion)
+    {
+        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+            throw new FormError('Not supported');
+        }
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_SUPPORTER, \Yii::t('motion', 'support_done'));
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
+    }
+
+    /**
+     * @param Motion $motion
+     * @throws FormError
+     */
     private function motionDislike(Motion $motion)
     {
         if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE)) {
@@ -293,6 +306,9 @@ trait MotionActionsTrait
 
         } elseif (isset($post['motionDislike'])) {
             $this->motionDislike($motion);
+
+        } elseif (isset($post['motionSupport'])) {
+            $this->motionSupport($motion);
 
         } elseif (isset($post['motionSupportRevoke'])) {
             $this->motionSupportRevoke($motion);

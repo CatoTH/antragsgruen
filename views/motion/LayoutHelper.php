@@ -292,7 +292,7 @@ class LayoutHelper
     {
         $user = User::getCurrentUser();
 
-        $hasLike = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE);
+        $hasLike    = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE);
         $hasDislike = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE);
 
         if (!$hasLike && !$hasDislike) {
@@ -392,6 +392,59 @@ class LayoutHelper
             }
         }
         echo '</section>';
+    }
+
+    /**
+     * @param IMotion $motion
+     * @param IPolicy $policy
+     * @param bool $iAmSupporting
+     */
+    public static function printSupportingSection(IMotion $motion, IPolicy $policy, $iAmSupporting)
+    {
+        $user = User::getCurrentUser();
+
+        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+            return;
+        }
+
+        $canSupport = $policy->checkCurrUser();
+        foreach ($motion->getInitiators() as $supp) {
+            if ($user && $supp->userId == $user->id) {
+                $canSupport = false;
+            }
+        }
+
+        $cantSupportMsg = $policy->getPermissionDeniedSupportMsg();
+        $nobody         = \Yii::t('structure', 'policy_nobody_supp_denied');
+        if ($cantSupportMsg == $nobody && !$canSupport) {
+            return;
+        }
+
+
+        if ($canSupport) {
+            echo Html::beginForm();
+
+            echo '<div style="text-align: center; margin-bottom: 20px;">';
+            if ($iAmSupporting) {
+                echo '<button type="submit" name="motionSupportRevoke" class="btn">';
+                echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
+                echo '</button>';
+            } else {
+                echo '<button type="submit" name="motionSupport" class="btn btn-success">';
+                echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'support');
+                echo '</button>';
+            }
+            echo '</div>';
+            echo Html::endForm();
+        } else {
+            if ($cantSupportMsg != '') {
+                echo '<div class="alert alert-danger" role="alert">
+                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                ' . Html::encode($cantSupportMsg) . '
+            </div>';
+            }
+        }
     }
 
 
