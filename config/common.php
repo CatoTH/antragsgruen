@@ -34,6 +34,7 @@ if (defined('INSTALLING_MODE') || YII_ENV == 'test') {
 }
 
 return [
+    'name'         => 'Antragsgrün',
     'bootstrap'    => ['log'],
     'basePath'     => dirname(__DIR__),
     'components'   => [
