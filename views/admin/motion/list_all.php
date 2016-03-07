@@ -53,12 +53,7 @@ echo '<table class="adminMotionTable">';
 echo '<thead><tr>
     <th class="markCol"></th>
     <th class="typeCol">';
-if ($search->sort == AdminMotionFilterForm::SORT_TYPE) {
-    echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_type') . '</span>';
-} else {
-    $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TYPE]);
-    echo Html::a(\Yii::t('admin', 'list_type'), $url);
-}
+echo '<span>' . \Yii::t('admin', 'list_type') . '</span>';
 echo '</th><th class="prefixCol">';
 if ($search->sort == AdminMotionFilterForm::SORT_TITLE_PREFIX) {
     echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_prefix') . '</span>';
