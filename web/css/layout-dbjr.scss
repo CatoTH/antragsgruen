@@ -77,3 +77,11 @@ html {
 body {
   background: #f5f5f5
 }
+
+.adminMotionTable {
+  tr.motion {
+    .prefixCol, .titleCol {
+      font-weight: bold;
+    }
+  }
+}

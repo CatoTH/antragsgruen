@@ -107,7 +107,7 @@ foreach ($entries as $entry) {
         $lastMotion = $entry;
         $viewUrl = UrlHelper::createMotionUrl($entry);
         $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
-        echo '<tr class="motion' . $entry->id . '">';
+        echo '<tr class="motion motion' . $entry->id . '">';
         echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>' . \Yii::t('admin', 'list_motion_short') . '</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
@@ -168,7 +168,7 @@ foreach ($entries as $entry) {
         /** @var Amendment $entry */
         $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
         $viewUrl = UrlHelper::createAmendmentUrl($entry);
-        echo '<tr class="amendment' . $entry->id . '">';
+        echo '<tr class="amendment amendment' . $entry->id . '">';
         echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
         echo '<td>' . \Yii::t('admin', 'list_amend_short') . '</td>';
         echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
