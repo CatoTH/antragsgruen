@@ -247,8 +247,6 @@ class ArrayMatcher
     {
         $diff   = $this->diffEngine->compareArrays($referenceArr, $toMatchArr);
 
-        var_dump($diff);
-
         $newRef = $newMatching = [];
 
         for ($i = 0; $i < count($diff); $i++) {

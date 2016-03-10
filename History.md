@@ -5,6 +5,7 @@
 - Support database table prefixes
 - Bugfix: Motions with section-based comments could not be edited in the admin-screen
 - Compiled assets (stylesheets, scripts) are now included in the repository. This makes installation from the repository a lot easier.
+- To-Do-Items on the admin page are now sorted (by date) 
 
 
 ## Version 3.1 (2016-02-14)
