@@ -16,7 +16,6 @@ use yii\helpers\Html;
 
 class AdminMotionFilterForm extends Model
 {
-    const SORT_TYPE         = 0;
     const SORT_STATUS       = 1;
     const SORT_TITLE        = 2;
     const SORT_TITLE_PREFIX = 3;
@@ -44,7 +43,7 @@ class AdminMotionFilterForm extends Model
     public $consultation;
 
     /** @var int */
-    public $sort = 0;
+    public $sort = 3;
 
     /**
      * @param Consultation $consultation
@@ -310,9 +309,8 @@ class AdminMotionFilterForm extends Model
             case static::SORT_TAG:
                 usort($merge, [static::class, 'sortTag']);
                 break;
-            case static::SORT_TYPE:
             default:
-                usort($merge, [static::class, 'sortDefault']);
+                usort($merge, [static::class, 'sortTitlePrefix']);
         }
         if (!in_array($this->sort, [static::SORT_STATUS, static::SORT_INITIATOR, static::SORT_TAG])) {
             $merge = $this->moveAmendmentsToMotions($merge);

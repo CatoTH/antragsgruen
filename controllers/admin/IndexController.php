@@ -30,52 +30,8 @@ class IndexController extends AdminBase
     {
         /** @var AdminTodoItem[] $todo */
         $todo = [];
-
         if (!is_null($this->consultation)) {
-            $motions = Motion::getScreeningMotions($this->consultation);
-            foreach ($motions as $motion) {
-                $description = \Yii::t('admin', 'todo_from') . ': ' . $motion->getInitiatorsStr();
-                $todo[]      = new AdminTodoItem(
-                    'motionScreen' . $motion->id,
-                    $motion->getTitleWithPrefix(),
-                    str_replace('%TYPE%', $motion->motionType->titleSingular, \Yii::t('admin', 'todo_motion_screen')),
-                    UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]),
-                    $description
-                );
-            }
-            $amendments = Amendment::getScreeningAmendments($this->consultation);
-            foreach ($amendments as $amend) {
-                $description = \Yii::t('admin', 'todo_from') . ': ' . $amend->getInitiatorsStr();
-                $todo[]      = new AdminTodoItem(
-                    'amendmentsScreen' . $amend->id,
-                    $amend->getTitle(),
-                    \Yii::t('admin', 'todo_amendment_screen'),
-                    UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amend->id]),
-                    $description
-                );
-            }
-            $comments = MotionComment::getScreeningComments($this->consultation);
-            foreach ($comments as $comment) {
-                $description = \Yii::t('admin', 'todo_from') . ': ' . $comment->name;
-                $todo[]      = new AdminTodoItem(
-                    'motionCommentScreen' . $comment->id,
-                    \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->motion->getTitleWithPrefix(),
-                    \Yii::t('admin', 'todo_comment_screen'),
-                    $comment->getLink(),
-                    $description
-                );
-            }
-            $comments = AmendmentComment::getScreeningComments($this->consultation);
-            foreach ($comments as $comment) {
-                $description = 'Von: ' . $comment->name;
-                $todo[]      = new AdminTodoItem(
-                    'amendmentCommentScreen' . $comment->id,
-                    \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->amendment->getTitle(),
-                    \Yii::t('admin', 'todo_comment_screen'),
-                    $comment->getLink(),
-                    $description
-                );
-            }
+            $todo = AdminTodoItem::getConsultationTodos($this->consultation);
         }
 
         if ($this->isPostSet('flushCaches') && User::currentUserIsSuperuser()) {
