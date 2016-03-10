@@ -730,9 +730,15 @@ class Amendment extends IMotion implements IRSSItem
     public function getFilenameBase($noUmlaut)
     {
         $motionTitle = $this->getMyMotion()->title;
-        $motionTitle = (mb_strlen($motionTitle) > 100 ? mb_substr($motionTitle, 0, 100) : $motionTitle);
-        $titel       = $this->titlePrefix . ' ' . $motionTitle;
-        return Tools::sanitizeFilename($titel, $noUmlaut);
+        $motionPrefix = $this->getMyMotion()->titlePrefix;
+        if (mb_strpos($this->titlePrefix, $motionPrefix) === false) {
+            $title = $motionPrefix . '_' . $this->titlePrefix . ' ' . $motionTitle;
+        } else {
+            $title = $this->titlePrefix . ' ' . $motionTitle;
+        }
+        $filename    = Tools::sanitizeFilename($title, $noUmlaut);
+        $filename    = (mb_strlen($filename) > 59 ? mb_substr($filename, 0, 59) : $filename);
+        return $filename;
     }
 
     /**
