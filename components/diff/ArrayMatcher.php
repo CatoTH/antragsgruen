@@ -77,6 +77,9 @@ class ArrayMatcher
         return $variants;
     }
 
+
+    private static $calcSimilarityCache = [];
+
     /**
      * @internal
      * @param string[] $arr1
@@ -89,6 +92,11 @@ class ArrayMatcher
         if (count($arr1) != count($arr2)) {
             throw new \Exception('calcSimilarity: The number of elements does not match');
         }
+        $cacheKey = md5(serialize($arr1), serialize($arr2));
+        if (isset(static::$calcSimilarityCache[$cacheKey])) {
+            return static::$calcSimilarityCache[$cacheKey];
+        }
+
         $replaces = [];
         for ($i = 0; $i < count($this->ignoredStrings); $i++) {
             $replaces[] = '';
@@ -99,6 +107,7 @@ class ArrayMatcher
             $val2 = str_replace($this->ignoredStrings, $replaces, $arr2[$i]);
             $similarity += similar_text($val1, $val2);
         }
+        static::$calcSimilarityCache[$cacheKey] = $similarity;
         return $similarity;
     }
 
@@ -237,6 +246,7 @@ class ArrayMatcher
     public function matchForDiff($referenceArr, $toMatchArr)
     {
         $diff   = $this->diffEngine->compareArrays($referenceArr, $toMatchArr);
+
         $newRef = $newMatching = [];
 
         for ($i = 0; $i < count($diff); $i++) {

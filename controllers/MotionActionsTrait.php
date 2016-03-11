@@ -15,6 +15,7 @@ use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
+use app\models\supportTypes\ISupportType;
 
 /**
  * @property Consultation $consultation
@@ -200,16 +201,36 @@ trait MotionActionsTrait
      */
     private function motionLike(Motion $motion)
     {
-        $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, 'Du stimmst diesem Antrag nun zu.');
+        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE)) {
+            throw new FormError('Not supported');
+        }
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, \Yii::t('motion', 'like_done'));
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_LIKE, $motion->id);
     }
 
     /**
      * @param Motion $motion
+     * @throws FormError
+     */
+    private function motionSupport(Motion $motion)
+    {
+        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+            throw new FormError('Not supported');
+        }
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_SUPPORTER, \Yii::t('motion', 'support_done'));
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
+    }
+
+    /**
+     * @param Motion $motion
+     * @throws FormError
      */
     private function motionDislike(Motion $motion)
     {
-        $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, 'Du lehnst diesen Antrag nun ab.');
+        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE)) {
+            throw new FormError('Not supported');
+        }
+        $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, \Yii::t('motion', 'dislike_done'));
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_DISLIKE, $motion->id);
     }
 
@@ -225,7 +246,7 @@ trait MotionActionsTrait
             }
         }
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
-        \Yii::$app->session->setFlash('success', 'Du stehst diesem Antrag wieder neutral gegenüber.');
+        \Yii::$app->session->setFlash('success', \Yii::t('motion', 'neutral_done'));
     }
 
     /**
@@ -251,7 +272,7 @@ trait MotionActionsTrait
     private function motionDelTag(Motion $motion)
     {
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('Keine Freischaltrechte');
+            throw new Internal('No screening rights');
         }
         foreach ($motion->getConsultation()->tags as $tag) {
             if ($tag->id == \Yii::$app->request->post('tagId')) {
@@ -285,6 +306,9 @@ trait MotionActionsTrait
 
         } elseif (isset($post['motionDislike'])) {
             $this->motionDislike($motion);
+
+        } elseif (isset($post['motionSupport'])) {
+            $this->motionSupport($motion);
 
         } elseif (isset($post['motionSupportRevoke'])) {
             $this->motionSupportRevoke($motion);

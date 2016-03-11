@@ -164,4 +164,14 @@ abstract class IMotion extends ActiveRecord
         }
         return $sectionsOut;
     }
+
+    /**
+     * @return ConsultationMotionType
+     */
+    abstract public function getMyMotionType();
+
+    /**
+     * @return int
+     */
+    abstract public function getLikeDislikeSettings();
 }

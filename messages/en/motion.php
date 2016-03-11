@@ -119,4 +119,7 @@ return [
     'support_collect_status'   => 'Currently',
     'support_collect_min'      => 'min.',
     'go_on'                    => 'Go on',
+    'like_done'                 => 'You liked this motion.',
+    'dislike_done'              => 'You disliked this motion.',
+    'neutral_done'              => 'You withdrew your like or dislike.',
 ];

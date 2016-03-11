@@ -824,4 +824,20 @@ class Amendment extends IMotion implements IRSSItem
 
         return $return;
     }
+
+    /**
+     * @return ConsultationMotionType
+     */
+    public function getMyMotionType()
+    {
+        return $this->getMyMotion()->motionType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLikeDislikeSettings()
+    {
+        return $this->getMyMotion()->motionType->amendmentLikesDislikes;
+    }
 }

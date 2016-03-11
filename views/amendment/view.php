@@ -198,7 +198,7 @@ if (count($supporters) > 0) {
 }
 
 $supportPolicy = $amendment->getMyMotion()->motionType->getAmendmentSupportPolicy();
-MotionLayoutHelper::printSupportSection($amendment, $supportPolicy, $supportStatus);
+MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
 if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '<section class="comments"><h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';

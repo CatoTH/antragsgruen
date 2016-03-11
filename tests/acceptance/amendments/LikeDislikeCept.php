@@ -14,6 +14,8 @@ $I->wantTo('enable supporting amendments for logged in users');
 $I->loginAsStdAdmin();
 $mtPage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->selectOption(['name' => 'type[policySupportAmendments]'], \app\models\policies\IPolicy::POLICY_LOGGED_IN);
+$I->checkOption('.amendmentLike');
+$I->checkOption('.amendmentDislike');
 $mtPage->saveForm();
 
 $I->gotoConsultationHome();

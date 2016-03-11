@@ -104,7 +104,7 @@ return [
     'widthdraw_done'            => 'The amendment has been withdrawn.',
     'title_amend_to'            => 'Change to',
     'title_new'                 => 'New title',
-    'amend_like_done'           => 'You liked this amendment.',
-    'amend_dislike_done'        => 'You disliked this amendment.',
-    'amend_neutral_done'        => 'You withdrew your like or dislike.',
+    'like_done'                 => 'You liked this amendment.',
+    'dislike_done'              => 'You disliked this amendment.',
+    'neutral_done'              => 'You withdrew your like or dislike.',
 ];

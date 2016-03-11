@@ -15,6 +15,7 @@ use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
+use app\models\supportTypes\ISupportType;
 
 /**
  * @property Consultation $consultation
@@ -193,17 +194,24 @@ trait AmendmentActionsTrait
      */
     private function amendmentLike(Amendment $amendment)
     {
-        $msg = \Yii::t('amend', 'amend_like_done');
+        if (!($amendment->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE)) {
+            throw new FormError('Not supported');
+        }
+        $msg = \Yii::t('amend', 'like_done');
         $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_LIKE, $msg);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_LIKE, $amendment->id);
     }
 
     /**
      * @param Amendment $amendment
+     * @throws FormError
      */
     private function amendmentDislike(Amendment $amendment)
     {
-        $msg          = \Yii::t('amend', 'amend_dislike_done');
+        if (!($amendment->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE)) {
+            throw new FormError('Not supported');
+        }
+        $msg          = \Yii::t('amend', 'dislike_done');
         $consultation = $amendment->getMyConsultation();
         $this->amendmentLikeDislike($amendment, AmendmentSupporter::ROLE_DISLIKE, $msg);
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_DISLIKE, $amendment->id);
@@ -222,7 +230,7 @@ trait AmendmentActionsTrait
         }
         $consultation = $amendment->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_UNLIKE, $amendment->id);
-        \Yii::$app->session->setFlash('success', \Yii::t('amend', 'amend_neutral_done'));
+        \Yii::$app->session->setFlash('success', \Yii::t('amend', 'neutral_done'));
     }
 
     /**
