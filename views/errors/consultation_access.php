@@ -8,12 +8,8 @@
 $controller            = $this->context;
 $layout                = $controller->layoutParams;
 $layout->robotsNoindex = true;
-$this->title           = 'Kein Zugriff';
+$this->title           = \Yii::t('user', 'access_denied_title');
 
-echo '<h1>Kein Zugriff</h1>
+echo '<h1>' . \Yii::t('user', 'access_denied_title') . '</h1>
 
-<div class="content">
-    Dein Zugang ist für diese Seite nicht freigeschaltet. Falls du meinst, dass das ein Fehler ist,
-    wende dich bitte an die Administrator*innen dieser Seite (Impressum).
-</div>
-';
+<div class="content">' . \Yii::t('user', 'access_denied_body') . '</div>';
