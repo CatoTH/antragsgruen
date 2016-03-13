@@ -488,7 +488,7 @@ class AdminMotionFilterForm extends Model
             }
 
             $title = $this->title;
-            if ($title !== null && $title != '' && !mb_stripos($amend->getMyMotion()->title, $title)) {
+            if ($title !== null && $title != '' && mb_stripos($amend->getMyMotion()->title, $title) === false) {
                 $matches = false;
             }
 
