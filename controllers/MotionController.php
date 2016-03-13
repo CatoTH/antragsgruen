@@ -77,9 +77,16 @@ class MotionController extends Base
     private function getMotionWithCheck($motionSlug)
     {
         if (is_numeric($motionSlug)) {
-            $motion = Motion::findOne(['consultationId' => $this->consultation->id, 'id' => $motionSlug, 'slug' => null]);
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'id'             => $motionSlug,
+                'slug'           => null
+            ]);
         } else {
-            $motion = Motion::findOne(['consultationId' => $this->consultation->id, 'slug' => $motionSlug]);
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'slug'           => $motionSlug
+            ]);
         }
         /** @var Motion $motion */
         if (!$motion) {

@@ -522,7 +522,7 @@ class Consultation extends ActiveRecord
                             $found             = true;
                             $result            = new SearchResult();
                             $result->id        = 'amendment' . $amend->id;
-                            $result->typeTitle = 'Änderungsantrag';
+                            $result->typeTitle = \Yii::t('amend', 'amendment');
                             $result->type      = SearchResult::TYPE_AMENDMENT;
                             $result->title     = $amend->getTitle();
                             $result->link      = UrlHelper::createAmendmentUrl($amend, 'view', $backParams);
