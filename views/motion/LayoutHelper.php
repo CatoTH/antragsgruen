@@ -348,7 +348,6 @@ class LayoutHelper
             echo '</ul>';
             echo "<br>";
         }
-        echo '</div>';
 
         if ($canSupport) {
             echo Html::beginForm();
@@ -391,6 +390,7 @@ class LayoutHelper
             </div>';
             }
         }
+        echo '</div>';
         echo '</section>';
     }
 
@@ -422,7 +422,7 @@ class LayoutHelper
 
 
         if ($canSupport) {
-            echo Html::beginForm();
+            echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
 
             echo '<div style="text-align: center; margin-bottom: 20px;">';
             if ($iAmSupporting) {
