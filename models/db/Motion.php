@@ -727,6 +727,39 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @throws Internal
+     */
+    public function sendSupporterMinimumReached()
+    {
+        $initiator = $this->getInitiators();
+        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+            $emailText  = \Yii::t('motion', 'support_reached_email_body');
+            $emailTitle = \Yii::t('motion', 'support_reached_email_subject');
+
+            $emailText = str_replace('%TITLE%', $this->getTitleWithPrefix(), $emailText);
+            $html      = $emailText;
+            $plain     = HTMLTools::toPlainText($html);
+
+            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
+            $plain      = str_replace('%LINK%', $motionLink, $plain);
+            $html       = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
+
+            try {
+                \app\components\mail\Tools::sendWithLog(
+                    EMailLog::TYPE_MOTION_SUPPORTER_REACHED,
+                    $this->getMyConsultation()->site,
+                    trim($initiator[0]->contactEmail),
+                    null,
+                    $emailTitle,
+                    $plain,
+                    $html
+                );
+            } catch (MailNotSent $e) {
+            }
+        }
+    }
+
+    /**
      * @param bool $save
      */
     public function setTextFixedIfNecessary($save = true)
