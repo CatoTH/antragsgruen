@@ -34,6 +34,7 @@ class EMailLog extends ActiveRecord
     const TYPE_SITE_ADMIN                = 7;
     const TYPE_MOTION_SUBMIT_CONFIRM     = 8;
     const TYPE_EMAIL_CHANGE              = 9;
+    const TYPE_MOTION_SUPPORTER_REACHED  = 10;
 
     const STATUS_SENT              = 0;
     const STATUS_SKIPPED_BLACKLIST = 1;

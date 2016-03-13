@@ -217,8 +217,19 @@ trait MotionActionsTrait
         if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
             throw new FormError('Not supported');
         }
+        foreach ($motion->getSupporters() as $supporter) {
+            if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
+                \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_already'));
+                return;
+            }
+        }
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_SUPPORTER, \Yii::t('motion', 'support_done'));
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
+
+        $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+        if (count($motion->getSupporters()) == $minSupporters) {
+            $motion->sendSupporterMinimumReached();
+        }
     }
 
     /**
