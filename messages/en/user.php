@@ -78,4 +78,7 @@ return [
     'login_forgot_pw'         => 'Forgot your password?',
     'login_openid'            => 'OpenID-Login',
     'login_openid_url'        => 'OpenID-URL',
+
+    'access_denied_title' => 'No access',
+    'access_denied_body'  => 'You don\' have access to this site. If you think this is an error, please contact the site administrator (as stated in the imprint).',
 ];

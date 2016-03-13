@@ -79,4 +79,7 @@ return [
     'login_forgot_pw'         => 'Passwort vergessen?',
     'login_openid'            => 'OpenID-Login',
     'login_openid_url'        => 'OpenID-URL',
+
+    'access_denied_title' => 'Kein Zugriff',
+    'access_denied_body'  => 'Dein Zugang ist für diese Seite nicht freigeschaltet. Falls du meinst, dass das ein Fehler ist, wende dich bitte an die Administrator*innen dieser Seite (Impressum).',
 ];
