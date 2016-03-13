@@ -1,10 +1,8 @@
 <?php
 
-namespace components;
+namespace app\components;
 
-use app\components\HTMLTools;
 use app\components\mail\Tools;
-use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\EMailLog;
 use app\models\db\Motion;

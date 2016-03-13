@@ -2,15 +2,13 @@
 
 namespace app\models\db;
 
-use app\components\HTMLTools;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\components\EmailNotifications;
 use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\policies\All;
-use components\EmailNotifications;
 use Yii;
 use yii\helpers\Html;
 
@@ -408,6 +406,22 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return bool
      */
+    public function canFinishSupportCollection()
+    {
+        if (!$this->iAmInitiator()) {
+            return false;
+        }
+        if ($this->status != Motion::STATUS_COLLECTING_SUPPORTERS) {
+            return false;
+        }
+        $supporters = count($this->getSupporters());
+        $minSupporters = $this->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+        return ($supporters >= $minSupporters);
+    }
+
+    /**
+     * @return bool
+     */
     public function isSocialSharable()
     {
         if ($this->getConsultation()->site->getSettings()->forceLogin) {
@@ -557,7 +571,17 @@ class Motion extends IMotion implements IRSSItem
      */
     public function setInitialSubmitted()
     {
+        $needsCollectionPhase = false;
         if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+            // @TODO No supporting phase for organizations
+            $supporters = count($this->getSupporters());
+            $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+            if ($supporters < $minSupporters) {
+                $needsCollectionPhase = true;
+            }
+        }
+
+        if ($needsCollectionPhase) {
             $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
         } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
             $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;

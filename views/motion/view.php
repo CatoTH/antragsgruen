@@ -147,6 +147,17 @@ if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
     }
     echo '</div>';
 }
+if ($motion->canFinishSupportCollection()) {
+    echo Html::beginForm();
+
+    echo '<div style="text-align: center; margin-bottom: 20px;">';
+
+    echo '<button type="submit" name="motionSupportFinish" class="btn btn-success">';
+    echo \Yii::t('motion', 'support_finish_btn');
+    echo '</button>';
+
+    echo Html::endForm();
+}
 
 
 echo '</div>';

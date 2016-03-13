@@ -10,7 +10,7 @@ use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
-use components\EmailNotifications;
+use app\components\EmailNotifications;
 use yii\web\Response;
 
 class AmendmentController extends Base

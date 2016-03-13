@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\UrlHelper;
+use app\components\EmailNotifications;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
@@ -16,7 +17,6 @@ use app\models\exceptions\Internal;
 use app\models\forms\MotionEditForm;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\ISectionType;
-use components\EmailNotifications;
 use yii\web\Response;
 
 class MotionController extends Base

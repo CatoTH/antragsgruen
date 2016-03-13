@@ -410,7 +410,7 @@ class LayoutHelper
         $canSupport = $policy->checkCurrUser();
         foreach ($motion->getInitiators() as $supp) {
             if ($user && $supp->userId == $user->id) {
-                $canSupport = false;
+                return;
             }
         }
 

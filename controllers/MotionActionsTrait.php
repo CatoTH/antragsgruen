@@ -16,7 +16,7 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
 use app\models\supportTypes\ISupportType;
-use components\EmailNotifications;
+use app\components\EmailNotifications;
 
 /**
  * @property Consultation $consultation
@@ -262,6 +262,28 @@ trait MotionActionsTrait
 
     /**
      * @param Motion $motion
+     */
+    private function motionSupportFinish(Motion $motion)
+    {
+        if (!$motion->canFinishSupportCollection()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'support_finish_err'));
+            return;
+        }
+
+        $motion->setInitialSubmitted();
+
+        if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
+            $motion->onPublish();
+        } else {
+            EmailNotifications::sendMotionSubmissionConfirm($motion);
+        }
+        
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT_FINISH, $motion->id);
+        \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_finish_done'));
+    }
+
+    /**
+     * @param Motion $motion
      * @throws Internal
      */
     private function motionAddTag(Motion $motion)
@@ -323,6 +345,9 @@ trait MotionActionsTrait
 
         } elseif (isset($post['motionSupportRevoke'])) {
             $this->motionSupportRevoke($motion);
+
+        } elseif (isset($post['motionSupportFinish'])) {
+            $this->motionSupportFinish($motion);
 
         } elseif (isset($post['motionAddTag'])) {
             $this->motionAddTag($motion);

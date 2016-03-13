@@ -8,12 +8,10 @@ use app\components\HTMLTools;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
-use components\EmailNotifications;
+use app\components\EmailNotifications;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
