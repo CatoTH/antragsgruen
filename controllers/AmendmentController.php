@@ -10,6 +10,7 @@ use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
+use components\EmailNotifications;
 use yii\web\Response;
 
 class AmendmentController extends Base
@@ -208,9 +209,7 @@ class AmendmentController extends Base
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->onPublish();
             } else {
-                if ($amendment->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $amendment->sendSubmissionConfirmMail();
-                }
+                EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
             }
 
             return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);

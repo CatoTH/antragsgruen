@@ -16,6 +16,7 @@ use app\models\exceptions\Internal;
 use app\models\forms\MotionEditForm;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\ISectionType;
+use components\EmailNotifications;
 use yii\web\Response;
 
 class MotionController extends Base
@@ -280,9 +281,7 @@ class MotionController extends Base
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->onPublish();
             } else {
-                if ($motion->getConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $motion->sendSubmissionConfirmMail();
-                }
+                EmailNotifications::sendMotionSubmissionConfirm($motion);
             }
 
             return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);

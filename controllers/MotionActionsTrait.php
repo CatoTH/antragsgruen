@@ -16,6 +16,7 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
 use app\models\supportTypes\ISupportType;
+use components\EmailNotifications;
 
 /**
  * @property Consultation $consultation
@@ -228,7 +229,7 @@ trait MotionActionsTrait
 
         $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
         if (count($motion->getSupporters()) == $minSupporters) {
-            $motion->sendSupporterMinimumReached();
+            EmailNotifications::sendMotionSupporterMinimumReached($motion);
         }
     }
 

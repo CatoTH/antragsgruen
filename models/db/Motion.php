@@ -10,6 +10,7 @@ use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
 use app\models\policies\All;
+use components\EmailNotifications;
 use Yii;
 use yii\helpers\Html;
 
@@ -636,126 +637,7 @@ class Motion extends IMotion implements IRSSItem
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            if ($this->getConsultation()->getSettings()->initiatorConfirmEmails) {
-                $initiator = $this->getInitiators();
-
-                $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-                $plain      = \Yii::t('motion', 'published_email_body');
-                $plain      = str_replace('%LINK%', $motionLink, $plain);
-                $title      = $this->motionType->titleSingular . ': ' . $this->title;
-                $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
-                $sections   = $this->getSortedSections(true);
-
-                foreach ($sections as $section) {
-                    $motionHtml .= '<div>';
-                    $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                    $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
-                    $motionHtml .= '</div>';
-                }
-                $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-                $plain .= HTMLTools::toPlainText($html);
-
-                if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                    try {
-                        \app\components\mail\Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                            $this->getConsultation()->site,
-                            trim($initiator[0]->contactEmail),
-                            null,
-                            \Yii::t('motion', 'published_email_title'),
-                            $plain,
-                            $html
-                        );
-                    } catch (MailNotSent $e) {
-                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                        \yii::$app->session->setFlash('error', $errMsg);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @throws Internal
-     */
-    public function sendSubmissionConfirmMail()
-    {
-        $initiator = $this->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            if ($this->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
-                $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
-                $min        = $this->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
-                $emailText  = str_replace('%MIN%', $min, $emailText);
-                $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
-            } else {
-                $emailText  = \Yii::t('motion', 'submitted_screening_email');
-                $emailTitle = \Yii::t('motion', 'submitted_screening_email_subject');
-            }
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-            $plain      = $emailText;
-            $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . ': ';
-            $motionHtml .= Html::encode($this->title);
-            $motionHtml .= '</h1>';
-
-            $sections = $this->getSortedSections(true);
-            foreach ($sections as $section) {
-                $motionHtml .= '<div>';
-                $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
-                $motionHtml .= '</div>';
-            }
-
-            $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-            $plain .= HTMLTools::toPlainText($html);
-
-            $plain = str_replace('%LINK%', $motionLink, $plain);
-            $html  = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
-
-            try {
-                \app\components\mail\Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $this->getMyConsultation()->site,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    $emailTitle,
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-            }
-        }
-    }
-
-    /**
-     * @throws Internal
-     */
-    public function sendSupporterMinimumReached()
-    {
-        $initiator = $this->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            $emailText  = \Yii::t('motion', 'support_reached_email_body');
-            $emailTitle = \Yii::t('motion', 'support_reached_email_subject');
-
-            $emailText = str_replace('%TITLE%', $this->getTitleWithPrefix(), $emailText);
-            $html      = $emailText;
-            $plain     = HTMLTools::toPlainText($html);
-
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-            $plain      = str_replace('%LINK%', $motionLink, $plain);
-            $html       = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
-
-            try {
-                \app\components\mail\Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUPPORTER_REACHED,
-                    $this->getMyConsultation()->site,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    $emailTitle,
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-            }
+            EmailNotifications::sendMotionOnPublish($this);
         }
     }
 
