@@ -626,7 +626,12 @@ class Amendment extends IMotion implements IRSSItem
                 $initiator = $this->getInitiators();
                 if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
                     $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
-                    $plain         = str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'published_email_body'));
+                    $plain         = str_replace(
+                        ['%LINK%', '%MOTION%'],
+                        [$amendmentLink, $this->getMyMotion()->titlePrefix],
+                        \Yii::t('amend', 'published_email_body')
+                    );
+
                     $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
 
                     $sections = $this->getSortedSections(true);
@@ -737,10 +742,16 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFilenameBase($noUmlaut)
     {
-        $motionTitle = $this->getMyMotion()->title;
-        $motionTitle = (mb_strlen($motionTitle) > 100 ? mb_substr($motionTitle, 0, 100) : $motionTitle);
-        $titel       = $this->titlePrefix . ' ' . $motionTitle;
-        return Tools::sanitizeFilename($titel, $noUmlaut);
+        $motionTitle  = $this->getMyMotion()->title;
+        $motionPrefix = $this->getMyMotion()->titlePrefix;
+        if (mb_strpos($this->titlePrefix, $motionPrefix) === false) {
+            $title = $motionPrefix . '_' . $this->titlePrefix . ' ' . $motionTitle;
+        } else {
+            $title = $this->titlePrefix . ' ' . $motionTitle;
+        }
+        $filename = Tools::sanitizeFilename($title, $noUmlaut);
+        $filename = (mb_strlen($filename) > 59 ? mb_substr($filename, 0, 59) : $filename);
+        return $filename;
     }
 
     /**

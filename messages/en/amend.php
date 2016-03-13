@@ -76,7 +76,7 @@ return [
     'button_correct'            => 'Correct',
     'confirm'                   => 'Confirm',
     'go_on'                     => 'Go on',
-    'published_email_body'      => "Hi,\n\nyour amendment has just been published on Antragsgrün. " .
+    'published_email_body'      => "Hi,\n\nyour amendment to %MOTION% has just been published on Antragsgrün. " .
         "You can see it here: %LINK%\n\n" .
         "Greetings,\n" .
         "  The Antragsgrün-Team",
