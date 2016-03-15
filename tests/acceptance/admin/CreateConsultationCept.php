@@ -18,7 +18,7 @@ $I->uncheckOption('#newSetStandard');
 $I->submitForm('.consultationCreateForm', [], 'createConsultation');
 
 $I->see('Die neue Veranstaltung wurde angelegt.');
-$I->see('Neue Veranstaltung 1', '.consultation7');
+$I->see('Neue Veranstaltung 1', '.consultation' . AcceptanceTester::FIRST_FREE_CONSULTATION_ID);
 $I->see('Standard-Veranstaltung', '.consultation1');
 
 ConsultationHomePage::openBy($I, [
@@ -49,8 +49,8 @@ $I->checkOption('#newSetStandard');
 $I->submitForm('.consultationCreateForm', [], 'createConsultation');
 
 $I->see('Die neue Veranstaltung wurde angelegt.');
-$I->see('Noch eine neue Veranstaltung', '.consultation8');
-$I->see('Standard-Veranstaltung', '.consultation8');
+$I->see('Noch eine neue Veranstaltung', '.consultation' . (AcceptanceTester::FIRST_FREE_CONSULTATION_ID + 1));
+$I->see('Standard-Veranstaltung', '.consultation' . (AcceptanceTester::FIRST_FREE_CONSULTATION_ID + 1));
 
 ConsultationHomePage::openBy($I, [
     'subdomain' => 'stdparteitag'
@@ -63,7 +63,7 @@ $I->wantTo('set another consultation as standard');
 
 $I->gotoStdAdminPage()->gotoConsultationCreatePage();
 
-$I->click('.consultation7 .stdbox button');
+$I->click('.consultation' . AcceptanceTester::FIRST_FREE_CONSULTATION_ID . ' .stdbox button');
 $I->see('Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.');
 
 ConsultationHomePage::openBy($I, [

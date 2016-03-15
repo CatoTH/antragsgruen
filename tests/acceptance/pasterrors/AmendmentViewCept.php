@@ -11,7 +11,7 @@ $page = AmendmentPage::openBy(
     [
         'subdomain'        => 'stdparteitag',
         'consultationPath' => 'std-parteitag',
-        'motionId'         => 2,
+        'motionSlug'       => '2',
         'amendmentId'      => 1,
     ]
 );
@@ -24,7 +24,7 @@ $page = AmendmentPage::openBy(
     [
         'subdomain'        => 'stdparteitag',
         'consultationPath' => 'std-parteitag',
-        'motionId'         => 3,
+        'motionSlug'       => '3',
         'amendmentId'      => 2,
     ]
 );

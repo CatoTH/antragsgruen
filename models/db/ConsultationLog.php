@@ -29,6 +29,8 @@ class ConsultationLog extends ActiveRecord
     const MOTION_UNLIKE            = 9;
     const MOTION_DISLIKE           = 10;
     const MOTION_CHANGE            = 12;
+    const MOTION_SUPPORT           = 24;
+    const MOTION_SUPPORT_FINISH    = 26;
     const AMENDMENT_PUBLISH        = 13;
     const AMENDMENT_WITHDRAW       = 14;
     const AMENDMENT_DELETE         = 15;

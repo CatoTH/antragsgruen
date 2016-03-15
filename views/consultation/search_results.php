@@ -1,12 +1,6 @@
 <?php
 
-use \app\components\Tools;
-use app\models\db\Amendment;
-use app\models\db\AmendmentSupporter;
-use app\models\db\Motion;
-use app\models\db\MotionSupporter;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /**
  * @var yii\web\View $this

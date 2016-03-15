@@ -10,7 +10,7 @@ use app\models\db\Motion;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
-use app\models\initiatorForms\IInitiatorForm;
+use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\sitePresets\ApplicationTrait;
 use app\models\sitePresets\MotionTrait;
@@ -100,9 +100,23 @@ class MotionController extends AdminBase
             $motionType->deadlineMotions             = Tools::dateBootstraptime2sql($input['deadlineMotions']);
             $motionType->deadlineAmendments          = Tools::dateBootstraptime2sql($input['deadlineAmendments']);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
-            $form                                    = $motionType->getMotionInitiatorFormClass();
+
+            $motionType->motionLikesDislikes = 0;
+            if (isset($input['motionLikesDislikes'])) {
+                foreach ($input['motionLikesDislikes'] as $val) {
+                    $motionType->motionLikesDislikes += $val;
+                }
+            }
+            $motionType->amendmentLikesDislikes = 0;
+            if (isset($input['amendmentLikesDislikes'])) {
+                foreach ($input['amendmentLikesDislikes'] as $val) {
+                    $motionType->amendmentLikesDislikes += $val;
+                }
+            }
+
+            $form                                    = $motionType->getMotionSupportTypeClass();
             $form->setSettings(\Yii::$app->request->post('initiator'));
-            $motionType->initiatorFormSettings = $form->getSettings();
+            $motionType->supportTypeSettings = $form->getSettings();
             $motionType->save();
 
             $this->sectionsSave($motionType);
@@ -111,11 +125,43 @@ class MotionController extends AdminBase
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
         }
+
+        $supportCollPolicyWarning = false;
+        if ($motionType->supportType == ISupportType::COLLECTING_SUPPORTERS) {
+
+            if ($this->isPostSet('supportCollPolicyFix')) {
+                if ($motionType->policyMotions == IPolicy::POLICY_ALL) {
+                    $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->save();
+                }
+                $support = $motionType->policySupportMotions;
+                if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
+                    $motionType->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->save();
+                }
+                if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
+                    $settings                         = $this->consultation->getSettings();
+                    $settings->initiatorConfirmEmails = true;
+                    $this->consultation->setSettings($settings);
+                    $this->consultation->save();
+                }
+            }
+
+            $support                  = $motionType->policySupportMotions;
+            $createAll                = ($motionType->policyMotions == IPolicy::POLICY_ALL);
+            $supportAll               = ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY);
+            $noEmail                  = !$this->consultation->getSettings()->initiatorConfirmEmails;
+            $supportCollPolicyWarning = ($createAll || $supportAll || $noEmail);
+        }
+
         if ($this->isRequestSet('msg') && $this->getRequestValue('msg') == 'created') {
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
         }
 
-        return $this->render('type', ['motionType' => $motionType]);
+        return $this->render('type', [
+            'motionType'               => $motionType,
+            'supportCollPolicyWarning' => $supportCollPolicyWarning
+        ]);
     }
 
     /**
@@ -149,12 +195,13 @@ class MotionController extends AdminBase
                     $motionType->policyMotions               = IPolicy::POLICY_ALL;
                     $motionType->policyAmendments            = IPolicy::POLICY_ALL;
                     $motionType->policyComments              = IPolicy::POLICY_NOBODY;
-                    $motionType->policySupport               = IPolicy::POLICY_ALL;
+                    $motionType->policySupportMotions        = IPolicy::POLICY_ALL;
+                    $motionType->policySupportAmendments     = IPolicy::POLICY_ALL;
                     $motionType->contactEmail                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->amendmentMultipleParagraphs = 1;
                     $motionType->position                    = 0;
-                    $motionType->initiatorForm               = IInitiatorForm::ONLY_INITIATOR;
+                    $motionType->supportType                 = ISupportType::ONLY_INITIATOR;
                     $motionType->status                      = 0;
                 }
             }
@@ -207,7 +254,7 @@ class MotionController extends AdminBase
         $this->checkConsistency($motion);
 
         $this->layout = 'column2';
-        $post = \Yii::$app->request->post();
+        $post         = \Yii::$app->request->post();
 
         $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
         $form->setAdminMode(true);

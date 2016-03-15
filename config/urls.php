@@ -7,8 +7,8 @@
 $dom       = $params->domainSubdomain;
 $domv      = $dom . '<consultationPath:[\w_-]+>/';
 $domadmin  = $domv . 'admin/';
-$dommotion = $domv . 'motion/<motionId:\d+>';
-$domamend  = $domv . 'motion/<motionId:\d+>/amendment/<amendmentId:\d+>';
+$dommotion = $domv . 'motion/<motionSlug:[^\/]+>';
+$domamend  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
 $consultationPaths = 'help|search|savetextajax|maintainance|notifications|shariffbackend';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';

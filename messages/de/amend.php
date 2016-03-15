@@ -103,4 +103,7 @@ return [
     'widthdraw_done'                    => 'Der Änderungsantrag wurde zurückgezogen.',
     'title_amend_to'                    => 'Ändern in',
     'title_new'                         => 'Neuer Titel',
+    'like_done'                         => 'Du stimmst diesem Änderungsantrag nun zu.',
+    'dislike_done'                      => 'Du lehnst diesen Änderungsantrag nun ab.',
+    'neutral_done'                      => 'Du stehst diesem Änderungsantrag wieder neutral gegenüber.',
 ];

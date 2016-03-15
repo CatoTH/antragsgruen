@@ -8,11 +8,10 @@ use app\components\HTMLTools;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
+use app\components\EmailNotifications;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -614,80 +613,7 @@ class Amendment extends IMotion implements IRSSItem
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            if ($this->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-                $initiator = $this->getInitiators();
-                if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                    $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
-                    $plain         = str_replace(
-                        ['%LINK%', '%MOTION%'],
-                        [$amendmentLink, $this->getMyMotion()->titlePrefix],
-                        \Yii::t('amend', 'published_email_body')
-                    );
-
-                    $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
-
-                    $sections = $this->getSortedSections(true);
-                    foreach ($sections as $section) {
-                        $amendmentHtml .= '<div>';
-                        $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-                        $amendmentHtml .= '</div>';
-                    }
-
-                    $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-                    $plain .= HTMLTools::toPlainText($html);
-
-                    try {
-                        \app\components\mail\Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                            $this->getMyConsultation()->site,
-                            trim($initiator[0]->contactEmail),
-                            null,
-                            \Yii::t('amend', 'published_email_title'),
-                            $plain,
-                            $html
-                        );
-                    } catch (MailNotSent $e) {
-                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                        \yii::$app->session->setFlash('error', $errMsg);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @throws Internal
-     */
-    public function sendSubmissionConfirmMail()
-    {
-        $initiator = $this->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
-            $plain         = str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'submitted_screening_email'));
-            $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
-
-            $sections = $this->getSortedSections(true);
-            foreach ($sections as $section) {
-                $amendmentHtml .= '<div>';
-                $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-                $amendmentHtml .= '</div>';
-            }
-
-            $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-            $plain .= HTMLTools::toPlainText($html);
-
-            try {
-                \app\components\mail\Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $this->getMyConsultation()->site,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    \Yii::t('amend', 'submitted_screening_email_subject'),
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-            }
+            EmailNotifications::sendAmendmentOnPublish($this);
         }
     }
 
@@ -826,5 +752,21 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $return;
+    }
+
+    /**
+     * @return ConsultationMotionType
+     */
+    public function getMyMotionType()
+    {
+        return $this->getMyMotion()->motionType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLikeDislikeSettings()
+    {
+        return $this->getMyMotion()->motionType->amendmentLikesDislikes;
     }
 }

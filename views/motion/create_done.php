@@ -28,10 +28,21 @@ if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
 if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
     echo \Yii::t('motion', 'confirmed_screening');
 }
+if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+    $min = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+    echo str_replace('%MIN%', $min, \Yii::t('motion', 'confirmed_support_phase'));
+}
 echo '</div>';
 
 
 echo Html::beginForm(UrlHelper::createUrl('consultation/index'), 'post', ['id' => 'motionConfirmedForm']);
+
+if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+    echo '<br><div class="alert alert-info promoUrl" role="alert">';
+    echo Html::encode(UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)));
+    echo '</div>';
+}
+
 echo '<p class="btnRow"><button type="submit" class="btn btn-success">' .
     \Yii::t('motion', 'back_start') . '</button></p>';
 echo Html::endForm();

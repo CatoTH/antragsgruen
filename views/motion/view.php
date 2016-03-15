@@ -39,7 +39,7 @@ $sidebarRows = 0;
 $policy = $motion->motionType->getAmendmentPolicy();
 if ($policy->checkCurrUserAmendment(true, true)) {
     $html .= '<li class="amendmentCreate">';
-    $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
+    $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
     $title .= \Yii::t('motion', 'amendment_create');
     $html .= Html::a($title, $amendCreateUrl, ['rel' => 'nofollow']) . '</li>';
@@ -135,6 +135,31 @@ if (!$minimalisticUi) {
 
 echo $controller->showErrors();
 
+
+if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+    echo '<div class="alert alert-info supportCollectionHint" role="alert">';
+    $min  = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+    $curr = count($motion->getSupporters());
+    if ($curr >= $min) {
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_reached_hint'));
+    } else {
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_hint'));
+    }
+    echo '</div>';
+}
+if ($motion->canFinishSupportCollection()) {
+    echo Html::beginForm('', 'post', ['class' => 'motionSupportFinishForm']);
+
+    echo '<div style="text-align: center; margin-bottom: 20px;">';
+
+    echo '<button type="submit" name="motionSupportFinish" class="btn btn-success">';
+    echo \Yii::t('motion', 'support_finish_btn');
+    echo '</button>';
+
+    echo Html::endForm();
+}
+
+
 echo '</div>';
 
 $main = $right = '';
@@ -179,16 +204,18 @@ if ($right == '') {
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
 $supporters = $motion->getSupporters();
 
-if (count($supporters) > 0) {
+if (count($supporters) > 0 || $motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
+    $iAmSupporting = false;
     if (count($supporters) > 0) {
         echo '<ul>';
         foreach ($supporters as $supp) {
             echo '<li>';
-            if ($supp->id == $currUserId) {
+            if ($supp->userId == $currUserId) {
                 echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
+                $iAmSupporting = true;
             }
             echo Html::encode($supp->getNameWithOrga());
             echo '</li>';
@@ -197,11 +224,13 @@ if (count($supporters) > 0) {
     } else {
         echo '<em>' . \Yii::t('motion', 'supporting_none') . '</em><br>';
     }
-    echo "<br>";
+    echo '<br>';
+    LayoutHelper::printSupportingSection($motion, $motion->motionType->getMotionSupportPolicy(), $iAmSupporting);
     echo '</div></section>';
 }
 
-LayoutHelper::printSupportSection($motion, $motion->motionType->getSupportPolicy(), $supportStatus);
+$supportPolicy = $motion->motionType->getMotionSupportPolicy();
+LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
 
 $amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
@@ -213,7 +242,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
         echo '<div class="pull-right">';
         $title = '<span class="icon glyphicon glyphicon-flash"></span>';
         $title .= \Yii::t('motion', 'amendment_create');
-        $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionId' => $motion->id]);
+        $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
         echo '<a class="btn btn-default btn-sm" href="' . Html::encode($amendCreateUrl) . '" rel="nofollow">' .
             $title . '</a>';
         echo '</div>';

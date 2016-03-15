@@ -224,6 +224,22 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
         'Please delete all motions of this type, then you can delete the type itself.',
     'motion_type_deleted_head'    => 'Motion type deleted',
     'motion_type_deleted_msg'     => 'The motion type has successfully been deleted.',
+    'motion_section_del'          => 'Delete section',
+    'motion_section_add'          => 'Add section',
+    'motion_section_add_line'     => 'Add line',
+    'motion_section_fixed_width'  => 'Fixed character width',
+    'motion_section_tab_data'     => 'Data',
+    'motion_section_required'     => 'Required',
+    'motion_section_line_numbers' => 'Line numbers',
+    'motion_section_limit'        => 'Length limit',
+    'motion_section_chars'        => 'characters',
+    'motion_section_limit_soft'   => 'Soft limit',
+    'motion_section_comm'         => 'Comments',
+    'motion_section_comm_none'    => 'None',
+    'motion_section_comm_whole'   => 'Whole comment',
+    'motion_section_comm_para'    => 'Paragraph-based',
+    'motion_section_amendable'    => 'Amendable',
+    'motion_section_name'         => 'Name of this section',
     'todo_from'                   => 'By',
     'todo_motion_screen'          => 'Screen %TYPE%',
     'todo_amendment_screen'       => 'Screen amendment',
@@ -231,4 +247,9 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'todo_comment_to'             => 'To',
     'cons_new_created'            => 'The new consultation has been created.',
     'cons_std_set_done'           => 'This consultation has been set as the new standard.',
+        /*
+    'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
+        'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
+        */
+    'support_coll_policy_fix'     => 'Fix settings',
 ];

@@ -109,13 +109,19 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $motionId
+     * @param string|null $motionSlug
      * @return Motion|null
      */
-    public function getMotion($motionId)
+    public function getMotion($motionSlug)
     {
+        if (is_null($motionSlug)) {
+            return null;
+        }
         foreach ($this->motions as $motion) {
-            if ($motion->id == $motionId && $motion->status != Motion::STATUS_DELETED) {
+            if (is_numeric($motionSlug) && $motion->id == $motionSlug && $motion->status != Motion::STATUS_DELETED) {
+                return $motion;
+            }
+            if (!is_numeric($motionSlug) && $motion->slug == $motionSlug && $motion->status != Motion::STATUS_DELETED) {
                 return $motion;
             }
         }
@@ -410,7 +416,12 @@ class Consultation extends ActiveRecord
      */
     public function getInvisibleMotionStati($withdrawnInvisible = false)
     {
-        $invisible = [Motion::STATUS_DELETED, Motion::STATUS_UNCONFIRMED, Motion::STATUS_DRAFT];
+        $invisible = [
+            Motion::STATUS_DELETED,
+            Motion::STATUS_UNCONFIRMED,
+            Motion::STATUS_DRAFT,
+            Motion::STATUS_COLLECTING_SUPPORTERS
+        ];
         if (!$this->getSettings()->screeningMotionsShown) {
             $invisible[] = Motion::STATUS_SUBMITTED_UNSCREENED;
         }
@@ -511,7 +522,7 @@ class Consultation extends ActiveRecord
                             $found             = true;
                             $result            = new SearchResult();
                             $result->id        = 'amendment' . $amend->id;
-                            $result->typeTitle = 'Änderungsantrag';
+                            $result->typeTitle = \Yii::t('amend', 'amendment');
                             $result->type      = SearchResult::TYPE_AMENDMENT;
                             $result->title     = $amend->getTitle();
                             $result->link      = UrlHelper::createAmendmentUrl($amend, 'view', $backParams);

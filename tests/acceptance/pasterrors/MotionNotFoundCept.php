@@ -9,7 +9,7 @@ $I->populateDBData1();
     [
         'subdomain'        => 'stdparteitag',
         'consultationPath' => 'std-parteitag',
-        'motionId'         => 112,
+        'motionSlug'       => '112',
     ]
 );
-$I->see('Der Antrag gehört nicht zur Veranstaltung.');
+$I->see('Antrag nicht gefunden.');

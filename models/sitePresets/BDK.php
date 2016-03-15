@@ -7,7 +7,7 @@ use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Site;
 use app\models\settings\Consultation as ConsultationSettings;
-use app\models\initiatorForms\IInitiatorForm;
+use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 
 class BDK implements ISitePreset
@@ -92,11 +92,12 @@ class BDK implements ISitePreset
         $type->policyMotions               = IPolicy::POLICY_LOGGED_IN;
         $type->policyAmendments            = IPolicy::POLICY_LOGGED_IN;
         $type->policyComments              = IPolicy::POLICY_LOGGED_IN;
-        $type->policySupport               = IPolicy::POLICY_NOBODY;
+        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
         $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
-        $type->initiatorForm               = IInitiatorForm::WITH_SUPPORTER;
-        $type->initiatorFormSettings       = json_encode([
+        $type->supportType                 = ISupportType::GIVEN_BY_INITIATOR;
+        $type->supportTypeSettings         = json_encode([
             'minSupporters'               => 19,
             'supportersHaveOrganizations' => true,
         ]);

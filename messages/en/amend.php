@@ -74,7 +74,7 @@ return [
     'amendment_requirement'     => 'Requirements for an amendment',
     'button_submit'             => 'Submit',
     'button_correct'            => 'Correct',
-    'confirm'                   => 'COnfirm',
+    'confirm'                   => 'Confirm',
     'go_on'                     => 'Go on',
     'published_email_body'      => "Hi,\n\nyour amendment to %MOTION% has just been published on Antragsgrün. " .
         "You can see it here: %LINK%\n\n" .
@@ -104,4 +104,7 @@ return [
     'widthdraw_done'            => 'The amendment has been withdrawn.',
     'title_amend_to'            => 'Change to',
     'title_new'                 => 'New title',
+    'like_done'                 => 'You liked this amendment.',
+    'dislike_done'              => 'You disliked this amendment.',
+    'neutral_done'              => 'You withdrew your like or dislike.',
 ];

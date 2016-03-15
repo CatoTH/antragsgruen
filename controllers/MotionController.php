@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\UrlHelper;
+use app\components\EmailNotifications;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
@@ -23,14 +24,13 @@ class MotionController extends Base
     use MotionActionsTrait;
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $sectionId
      * @return string
      */
-    public function actionViewimage($motionId, $sectionId)
+    public function actionViewimage($motionSlug, $sectionId)
     {
-        $motionId = IntVal($motionId);
-        $motion   = $this->getMotionWithCheck($motionId);
+        $motion = $this->getMotionWithCheck($motionSlug);
 
         foreach ($motion->sections as $section) {
             if ($section->sectionId == $sectionId) {
@@ -44,14 +44,13 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $sectionId
      * @return string
      */
-    public function actionViewpdf($motionId, $sectionId)
+    public function actionViewpdf($motionSlug, $sectionId)
     {
-        $motionId = IntVal($motionId);
-        $motion   = $this->getMotionWithCheck($motionId);
+        $motion = $this->getMotionWithCheck($motionSlug);
 
         foreach ($motion->sections as $section) {
             if ($section->sectionId == $sectionId) {
@@ -72,15 +71,28 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @return Motion|null
      */
-    private function getMotionWithCheck($motionId)
+    private function getMotionWithCheck($motionSlug)
     {
+        if (is_numeric($motionSlug)) {
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'id'             => $motionSlug,
+                'slug'           => null
+            ]);
+        } else {
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'slug'           => $motionSlug
+            ]);
+        }
         /** @var Motion $motion */
-        $motion = Motion::findOne($motionId);
         if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
+            \Yii::$app->end();
             return null;
         }
 
@@ -90,13 +102,12 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @return string
      */
-    public function actionPdf($motionId)
+    public function actionPdf($motionSlug)
     {
-        $motionId = IntVal($motionId);
-        $motion   = $this->getMotionWithCheck($motionId);
+        $motion = $this->getMotionWithCheck($motionSlug);
 
         $filename                    = $motion->getFilenameBase(false) . '.pdf';
         \yii::$app->response->format = Response::FORMAT_RAW;
@@ -145,13 +156,12 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @return string
      */
-    public function actionOdt($motionId)
+    public function actionOdt($motionSlug)
     {
-        $motionId = IntVal($motionId);
-        $motion   = $this->getMotionWithCheck($motionId);
+        $motion = $this->getMotionWithCheck($motionSlug);
 
         $filename                    = $motion->getFilenameBase(false) . '.odt';
         \yii::$app->response->format = Response::FORMAT_RAW;
@@ -163,26 +173,24 @@ class MotionController extends Base
 
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @return string
      */
-    public function actionPlainhtml($motionId)
+    public function actionPlainhtml($motionSlug)
     {
-        $motionId = IntVal($motionId);
-        $motion   = $this->getMotionWithCheck($motionId);
+        $motion = $this->getMotionWithCheck($motionSlug);
 
         return $this->renderPartial('plain_html', ['motion' => $motion]);
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $commentId
      * @return string
      */
-    public function actionView($motionId, $commentId = 0)
+    public function actionView($motionSlug, $commentId = 0)
     {
-        $motionId = IntVal($motionId);
-        $motion   = $this->getMotionWithCheck($motionId);
+        $motion = $this->getMotionWithCheck($motionSlug);
 
         $this->layout = 'column2';
 
@@ -207,7 +215,7 @@ class MotionController extends Base
 
 
         if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motionId]);
+            $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
         } else {
             $adminEdit = null;
         }
@@ -248,55 +256,39 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @return string
      */
-    public function actionConsolidated($motionId)
+    public function actionConsolidated($motionSlug)
     {
-        return $this->actionView($motionId, 0);
+        return $this->actionView($motionSlug, 0);
     }
 
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param string $fromMode
      * @return string
      */
-    public function actionCreateconfirm($motionId, $fromMode)
+    public function actionCreateconfirm($motionSlug, $fromMode)
     {
-        $motion = $this->consultation->getMotion($motionId);
+        $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion || $motion->status != Motion::STATUS_DRAFT) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($this->isPostSet('modify')) {
-            $nextUrl = ['motion/edit', 'motionId' => $motion->id];
-            return $this->redirect(UrlHelper::createUrl($nextUrl));
+            return $this->redirect(UrlHelper::createMotionUrl($motion, 'edit'));
         }
 
         if ($this->isPostSet('confirm')) {
-            $screening      = $this->consultation->getSettings()->screeningMotions;
-            $motion->status = ($screening ? Motion::STATUS_SUBMITTED_UNSCREENED : Motion::STATUS_SUBMITTED_SCREENED);
-            if (!$screening && $motion->statusString == '') {
-                $motion->titlePrefix = $motion->getConsultation()->getNextMotionPrefix($motion->motionTypeId);
-            }
-            $motion->save();
-
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-            $mailText   = str_replace(
-                ['%TITLE%', '%LINK%', '%INITIATOR%'],
-                [$motion->title, $motionLink, $motion->getInitiatorsStr()],
-                \Yii::t('motion', 'submitted_adminnoti_body')
-            );
-            $motion->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
+            $motion->setInitialSubmitted();
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->onPublish();
             } else {
-                if ($motion->getConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $motion->sendSubmissionConfirmMail();
-                }
+                EmailNotifications::sendMotionSubmissionConfirm($motion);
             }
 
             return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
@@ -309,12 +301,12 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @return string
      */
-    public function actionEdit($motionId)
+    public function actionEdit($motionSlug)
     {
-        $motion = $this->consultation->getMotion($motionId);
+        $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
@@ -337,8 +329,8 @@ class MotionController extends Base
                 ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
 
                 if ($motion->status == Motion::STATUS_DRAFT) {
-                    $nextUrl = ['motion/createconfirm', 'motionId' => $motion->id, 'fromMode' => $fromMode];
-                    return $this->redirect(UrlHelper::createUrl($nextUrl));
+                    $nextUrl = UrlHelper::createMotionUrl($motion, 'createconfirm', ['fromMode' => $fromMode]);
+                    return $this->redirect($nextUrl);
                 } else {
                     return $this->render('edit_done', ['motion' => $motion]);
                 }
@@ -431,9 +423,7 @@ class MotionController extends Base
         if ($this->isPostSet('save')) {
             try {
                 $motion = $form->createMotion();
-                return $this->redirect(UrlHelper::createUrl([
-                    'motion/createconfirm',
-                    'motionId' => $motion->id,
+                return $this->redirect(UrlHelper::createMotionUrl($motion, 'createconfirm', [
                     'fromMode' => 'create',
                     'draftId'  => $this->getRequestValue('draftId'),
                 ]));
@@ -472,12 +462,12 @@ class MotionController extends Base
 
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @return string
      */
-    public function actionWithdraw($motionId)
+    public function actionWithdraw($motionSlug)
     {
-        $motion = $this->consultation->getMotion($motionId);
+        $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
@@ -502,13 +492,13 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param string $amendmentStati
      * @return string
      */
-    public function actionMergeamendmentconfirm($motionId, $amendmentStati = '')
+    public function actionMergeamendmentconfirm($motionSlug, $amendmentStati = '')
     {
-        $newMotion = $this->consultation->getMotion($motionId);
+        $newMotion = $this->consultation->getMotion($motionSlug);
         if (!$newMotion || $newMotion->status != Motion::STATUS_DRAFT || !$newMotion->replacedMotion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
@@ -517,9 +507,7 @@ class MotionController extends Base
         $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
 
         if ($this->isPostSet('modify')) {
-            return $this->redirect(UrlHelper::createUrl([
-                'motion/mergeamendments',
-                'motionId'       => $oldMotion->id,
+            return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'mergeamendments', [
                 'newMotionId'    => $newMotion->id,
                 'amendmentStati' => $amendmentStati
             ]));
@@ -570,14 +558,14 @@ class MotionController extends Base
     }
 
     /**
-     * @param int $motionId
+     * @param string $motionSlug
      * @param int $newMotionId
      * @param string $amendmentStati
      * @return string
      */
-    public function actionMergeamendments($motionId, $newMotionId = 0, $amendmentStati = '')
+    public function actionMergeamendments($motionSlug, $newMotionId = 0, $amendmentStati = '')
     {
-        $motion = $this->consultation->getMotion($motionId);
+        $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
@@ -611,9 +599,7 @@ class MotionController extends Base
                 $form->setAttributes(\Yii::$app->request->post());
                 try {
                     $newMotion = $form->createNewMotion();
-                    return $this->redirect(UrlHelper::createUrl([
-                        'motion/mergeamendmentconfirm',
-                        'motionId'       => $newMotion->id,
+                    return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'mergeamendmentconfirm', [
                         'fromMode'       => 'create',
                         'amendmentStati' => json_encode($form->amendStatus),
                         'draftId'        => $this->getRequestValue('draftId'),

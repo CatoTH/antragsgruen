@@ -1,6 +1,5 @@
 @charset "UTF-8";
 
-
 button.link {
   background: transparent;
   border: none;
@@ -97,7 +96,6 @@ del.space, ins.space, del.formatting, ins.formatting {
   }
 }
 
-
 #mainmenu {
   .nav > li {
     display: inline-block;
@@ -186,7 +184,6 @@ del.space, ins.space, del.formatting, ins.formatting {
 .cke_skin_kama {
   border: none !important;
 }
-
 
 #loginWurzelwerkHint {
   border-left: solid 1px #808080;
@@ -290,6 +287,10 @@ del.space, ins.space, del.formatting, ins.formatting {
 }
 
 #motionConfirmedForm {
+  .promoUrl {
+    font-weight: bold;
+    font-family: $motionFixedFont;
+  }
   .btnRow {
     padding: 15px;
     text-align: center;

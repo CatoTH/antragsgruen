@@ -16,7 +16,10 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m151104_132242_site_consultation_date_creation', 1445802530),
   ('m151106_083636_site_properties', 1446801672),
   ('m151106_183055_motion_type_two_cols', 1446834722),
-  ('m160114_200337_motion_section_is_right', 1452801905);
+  ('m160114_200337_motion_section_is_right', 1452801905),
+  ('m160228_152511_motion_type_rename_initiator_form', 1457086233),
+  ('m160304_095858_motion_slug', 1457086236),
+  ('m160305_201135_support_separate_to_motions_and_amendments', '1457209261');
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;

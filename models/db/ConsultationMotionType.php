@@ -1,7 +1,7 @@
 <?php
 namespace app\models\db;
 
-use app\models\initiatorForms\IInitiatorForm;
+use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
@@ -21,14 +21,17 @@ use yii\db\ActiveRecord;
  * @property int $texTemplateId
  * @property string $deadlineMotions
  * @property string $deadlineAmendments
- * @property string $policyMotions
- * @property string $policyAmendments
- * @property string $policyComments
- * @property string $policySupport
+ * @property int $policyMotions
+ * @property int $policyAmendments
+ * @property int $policyComments
+ * @property int $policySupportMotions
+ * @property int $policySupportAmendments
+ * @property int $motionLikesDislikes
+ * @property int $amendmentLikesDislikes
  * @property int $contactEmail
  * @property int $contactPhone
- * @property int $initiatorForm
- * @property string $initiatorFormSettings
+ * @property int $supportType
+ * @property string $supportTypeSettings
  * @property int $amendmentMultipleParagraphs
  * @property int $status
  * @property int $layoutTwoCols
@@ -133,25 +136,33 @@ class ConsultationMotionType extends ActiveRecord
     /**
      * @return IPolicy
      */
-    public function getSupportPolicy()
+    public function getMotionSupportPolicy()
     {
-        return IPolicy::getInstanceByID($this->policySupport, $this);
+        return IPolicy::getInstanceByID($this->policySupportMotions, $this);
     }
 
     /**
-     * @return IInitiatorForm
+     * @return IPolicy
      */
-    public function getMotionInitiatorFormClass()
+    public function getAmendmentSupportPolicy()
     {
-        return IInitiatorForm::getImplementation($this->initiatorForm, $this, $this->initiatorFormSettings);
+        return IPolicy::getInstanceByID($this->policySupportAmendments, $this);
     }
 
     /**
-     * @return IInitiatorForm
+     * @return ISupportType
      */
-    public function getAmendmentInitiatorFormClass()
+    public function getMotionSupportTypeClass()
     {
-        return IInitiatorForm::getImplementation($this->initiatorForm, $this, $this->initiatorFormSettings);
+        return ISupportType::getImplementation($this->supportType, $this, $this->supportTypeSettings);
+    }
+
+    /**
+     * @return ISupportType
+     */
+    public function getAmendmentSupportTypeClass()
+    {
+        return ISupportType::getImplementation($this->supportType, $this, $this->supportTypeSettings);
     }
 
     /**
@@ -226,15 +237,17 @@ class ConsultationMotionType extends ActiveRecord
     {
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'layoutTwoCols'], 'required'],
-            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'initiatorForm'], 'required'],
+            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'required'],
+            [['policySupportAmendments', 'supportType'], 'required'],
             [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position', 'status'], 'required'],
 
             [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
-            [['amendmentMultipleParagraphs', 'layoutTwoCols'], 'number'],
+            [['amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes', 'layoutTwoCols'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
-            [['motionPrefix', 'position', 'initiatorForm', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],
-            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupport', 'layoutTwoCols'], 'safe'],
+            [['motionPrefix', 'position', 'supportType', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],
+            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
+            [['policySupportAmendments', 'layoutTwoCols'], 'safe'],
         ];
     }
 

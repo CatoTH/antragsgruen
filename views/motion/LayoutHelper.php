@@ -17,6 +17,7 @@ use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
+use app\models\supportTypes\ISupportType;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -287,9 +288,16 @@ class LayoutHelper
      * @param IPolicy $policy
      * @param int $supportStatus
      */
-    public static function printSupportSection(IMotion $motion, IPolicy $policy, $supportStatus)
+    public static function printLikeDislikeSection(IMotion $motion, IPolicy $policy, $supportStatus)
     {
         $user = User::getCurrentUser();
+
+        $hasLike    = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE);
+        $hasDislike = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE);
+
+        if (!$hasLike && !$hasDislike) {
+            return;
+        }
 
         $canSupport = $policy->checkCurrUser();
         foreach ($motion->getInitiators() as $supp) {
@@ -311,7 +319,7 @@ class LayoutHelper
         echo '<section class="likes"><h2 class="green">' . \Yii::t('motion', 'likes_title') . '</h2>
     <div class="content">';
 
-        if (count($likes) > 0) {
+        if ($hasLike && count($likes) > 0) {
             echo '<strong>' . \Yii::t('motion', 'likes') . ':</strong><br>';
             echo '<ul>';
             foreach ($likes as $supp) {
@@ -326,7 +334,7 @@ class LayoutHelper
             echo "<br>";
         }
 
-        if (count($dislikes) > 0) {
+        if ($hasDislike && count($dislikes) > 0) {
             echo '<strong>' . \Yii::t('motion', 'dislikes') . ':</strong><br>';
             echo '<ul>';
             foreach ($dislikes as $supp) {
@@ -340,7 +348,6 @@ class LayoutHelper
             echo '</ul>';
             echo "<br>";
         }
-        echo '</div>';
 
         if ($canSupport) {
             echo Html::beginForm();
@@ -360,13 +367,17 @@ class LayoutHelper
                     echo '</button>';
                     break;
                 default:
-                    echo '<button type="submit" name="motionLike" class="btn btn-success">';
-                    echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'like');
-                    echo '</button>';
+                    if ($hasLike) {
+                        echo '<button type="submit" name="motionLike" class="btn btn-success">';
+                        echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'like');
+                        echo '</button>';
+                    }
 
-                    echo '<button type="submit" name="motionDislike" class="btn btn-alert">';
-                    echo '<span class="glyphicon glyphicon-thumbs-down"></span> ' . \Yii::t('motion', 'dislike');
-                    echo '</button>';
+                    if ($hasDislike) {
+                        echo '<button type="submit" name="motionDislike" class="btn btn-alert">';
+                        echo '<span class="glyphicon glyphicon-thumbs-down"></span> ' . \Yii::t('motion', 'dislike');
+                        echo '</button>';
+                    }
             }
             echo '</div>';
             echo Html::endForm();
@@ -379,7 +390,61 @@ class LayoutHelper
             </div>';
             }
         }
+        echo '</div>';
         echo '</section>';
+    }
+
+    /**
+     * @param IMotion $motion
+     * @param IPolicy $policy
+     * @param bool $iAmSupporting
+     */
+    public static function printSupportingSection(IMotion $motion, IPolicy $policy, $iAmSupporting)
+    {
+        $user = User::getCurrentUser();
+
+        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+            return;
+        }
+
+        $canSupport = $policy->checkCurrUser();
+        foreach ($motion->getInitiators() as $supp) {
+            if ($user && $supp->userId == $user->id) {
+                return;
+            }
+        }
+
+        $cantSupportMsg = $policy->getPermissionDeniedSupportMsg();
+        $nobody         = \Yii::t('structure', 'policy_nobody_supp_denied');
+        if ($cantSupportMsg == $nobody && !$canSupport) {
+            return;
+        }
+
+
+        if ($canSupport) {
+            echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
+
+            echo '<div style="text-align: center; margin-bottom: 20px;">';
+            if ($iAmSupporting) {
+                echo '<button type="submit" name="motionSupportRevoke" class="btn">';
+                echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
+                echo '</button>';
+            } else {
+                echo '<button type="submit" name="motionSupport" class="btn btn-success">';
+                echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'support');
+                echo '</button>';
+            }
+            echo '</div>';
+            echo Html::endForm();
+        } else {
+            if ($cantSupportMsg != '') {
+                echo '<div class="alert alert-danger" role="alert">
+                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                ' . Html::encode($cantSupportMsg) . '
+            </div>';
+            }
+        }
     }
 
 

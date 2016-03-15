@@ -120,7 +120,7 @@ echo '</div>';
 echo '</div>';
 
 
-$initiatorClass = $form->motion->motionType->getAmendmentInitiatorFormClass();
+$initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
 echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
 
 

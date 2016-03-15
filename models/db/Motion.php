@@ -2,13 +2,12 @@
 
 namespace app\models\db;
 
-use app\components\HTMLTools;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\components\EmailNotifications;
 use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\policies\All;
 use Yii;
 use yii\helpers\Html;
@@ -31,6 +30,7 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property string $cache
  * @property int $textFixed
+ * @property string $slug
  *
  * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
@@ -404,6 +404,36 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return bool
+     */
+    public function canFinishSupportCollection()
+    {
+        if (!$this->iAmInitiator()) {
+            return false;
+        }
+        if ($this->status != Motion::STATUS_COLLECTING_SUPPORTERS) {
+            return false;
+        }
+        $supporters = count($this->getSupporters());
+        $minSupporters = $this->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+        return ($supporters >= $minSupporters);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSocialSharable()
+    {
+        if ($this->getConsultation()->site->getSettings()->forceLogin) {
+            return false;
+        }
+        if (in_array($this->status, $this->getConsultation()->getInvisibleMotionStati(true))) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @return string
      */
     public function getIconCSSClass()
@@ -539,6 +569,48 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      */
+    public function setInitialSubmitted()
+    {
+        $needsCollectionPhase = false;
+        if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+            $isOrganization = false;
+            foreach ($this->getInitiators() as $initiator) {
+                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
+                    $isOrganization = true;
+                }
+            }
+            $supporters = count($this->getSupporters());
+            $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+            if ($supporters < $minSupporters && !$isOrganization) {
+                $needsCollectionPhase = true;
+            }
+        }
+
+        if ($needsCollectionPhase) {
+            $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
+        } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
+            $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
+        } else {
+            $this->status = Motion::STATUS_SUBMITTED_SCREENED;
+            if ($this->statusString == '') {
+                $this->titlePrefix = $this->getConsultation()->getNextMotionPrefix($this->motionTypeId);
+            }
+        }
+        $this->save();
+
+        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
+        $mailText   = str_replace(
+            ['%TITLE%', '%LINK%', '%INITIATOR%'],
+            [$this->title, $motionLink, $this->getInitiatorsStr()],
+            \Yii::t('motion', 'submitted_adminnoti_body')
+        );
+
+        // @TODO Use different texts depending on the status
+        $this->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
+    }
+
+    /**
+     */
     public function setScreened()
     {
         $this->status = Motion::STATUS_SUBMITTED_SCREENED;
@@ -594,79 +666,7 @@ class Motion extends IMotion implements IRSSItem
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            if ($this->getConsultation()->getSettings()->initiatorConfirmEmails) {
-                $initiator = $this->getInitiators();
-
-                $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-                $plain      = \Yii::t('motion', 'published_email_body');
-                $plain      = str_replace('%LINK%', $motionLink, $plain);
-                $title      = $this->motionType->titleSingular . ': ' . $this->title;
-                $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
-                $sections   = $this->getSortedSections(true);
-
-                foreach ($sections as $section) {
-                    $motionHtml .= '<div>';
-                    $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                    $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
-                    $motionHtml .= '</div>';
-                }
-                $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-                $plain .= HTMLTools::toPlainText($html);
-
-                if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                    try {
-                        \app\components\mail\Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                            $this->getConsultation()->site,
-                            trim($initiator[0]->contactEmail),
-                            null,
-                            \Yii::t('motion', 'published_email_title'),
-                            $plain,
-                            $html
-                        );
-                    } catch (MailNotSent $e) {
-                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                        \yii::$app->session->setFlash('error', $errMsg);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @throws Internal
-     */
-    public function sendSubmissionConfirmMail()
-    {
-        $initiator = $this->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-            $plain      = str_replace('%LINK%', $motionLink, \Yii::t('motion', 'submitted_screening_email'));
-            $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . '</h1>';
-
-            $sections = $this->getSortedSections(true);
-            foreach ($sections as $section) {
-                $motionHtml .= '<div>';
-                $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
-                $motionHtml .= '</div>';
-            }
-
-            $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-            $plain .= HTMLTools::toPlainText($html);
-
-            try {
-                \app\components\mail\Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $this->getMyConsultation()->site,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    \Yii::t('motion', 'submitted_screening_email_subject'),
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-            }
+            EmailNotifications::sendMotionOnPublish($this);
         }
     }
 
@@ -729,6 +729,31 @@ class Motion extends IMotion implements IRSSItem
         $motionTitle = (mb_strlen($this->title) > 100 ? mb_substr($this->title, 0, 100) : $this->title);
         $title       = $this->titlePrefix . ' ' . $motionTitle;
         return Tools::sanitizeFilename($title, $noUmlaut);
+    }
+
+    /**
+     * @return string
+     */
+    public function createSlug()
+    {
+        $motionTitle = (mb_strlen($this->title) > 70 ? mb_substr($this->title, 0, 70) : $this->title);
+        $title       = Tools::sanitizeFilename($motionTitle, true);
+
+        $random = \Yii::$app->getSecurity()->generateRandomKey(2);
+        $random = ord($random[0]) + ord($random[1]) * 256;
+        return $title . '-' . $random;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionSlug()
+    {
+        if ($this->slug != '') {
+            return $this->slug;
+        } else {
+            return $this->id;
+        }
     }
 
     /**
@@ -809,5 +834,21 @@ class Motion extends IMotion implements IRSSItem
     {
         $numbering = $this->getConsultation()->getAmendmentNumbering();
         return $numbering->findAmendmentWithPrefix($this, $prefix, $ignore);
+    }
+
+    /**
+     * @return ConsultationMotionType
+     */
+    public function getMyMotionType()
+    {
+        return $this->motionType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLikeDislikeSettings()
+    {
+        return $this->motionType->motionLikesDislikes;
     }
 }

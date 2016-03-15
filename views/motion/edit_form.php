@@ -45,6 +45,14 @@ if ($form->motionType->getAmendmentPolicy()->checkCurrUserAmendment(true, true))
         str_replace('%HOME%', UrlHelper::createUrl('consultation/index'), \Yii::t('motion', 'create_explanation')) .
         '<br><br>';
 }
+if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+    /** @var \app\models\supportTypes\CollectBeforePublish $supp */
+    $supp = $form->motionType->getMotionSupportTypeClass();
+    echo '<div style="font-weight: bold; text-decoration: underline;">' .
+        \Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
+        str_replace('%MIN%', $supp->getMinNumberOfSupporters(), \Yii::t('motion', 'support_collect_explanation')) .
+        '<br><br>';
+}
 
 
 $motionPolicy = $form->motionType->getMotionPolicy();
@@ -118,7 +126,7 @@ foreach ($form->sections as $section) {
 echo '</div>';
 
 
-$initiatorClass = $form->motionType->getMotionInitiatorFormClass();
+$initiatorClass = $form->motionType->getMotionSupportTypeClass();
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';

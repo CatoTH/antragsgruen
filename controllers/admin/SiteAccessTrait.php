@@ -192,8 +192,11 @@ trait SiteAccessTrait
             if (!in_array($type->policyComments, $allowed)) {
                 $type->policyComments = IPolicy::POLICY_LOGGED_IN;
             }
-            if (!in_array($type->policySupport, $allowed)) {
-                $type->policySupport = IPolicy::POLICY_LOGGED_IN;
+            if (!in_array($type->policySupportMotions, $allowed)) {
+                $type->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
+            }
+            if (!in_array($type->policySupportAmendments, $allowed)) {
+                $type->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
             }
             $type->save();
         }
@@ -217,7 +220,10 @@ trait SiteAccessTrait
                 if (!in_array($type->policyComments, $allowed)) {
                     $policyWarning = true;
                 }
-                if (!in_array($type->policySupport, $allowed)) {
+                if (!in_array($type->policySupportMotions, $allowed)) {
+                    $policyWarning = true;
+                }
+                if (!in_array($type->policySupportAmendments, $allowed)) {
                     $policyWarning = true;
                 }
             }
