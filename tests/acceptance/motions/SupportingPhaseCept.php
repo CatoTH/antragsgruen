@@ -13,6 +13,19 @@ function gotoSupportingMotion($I)
     ]);
 }
 
+
+$I->wantTo('check the admin settings');
+$I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
+$I->seeInField('#typeMinSupporters', 1);
+$I->selectOption('#typeSupportType', \app\models\supportTypes\ISupportType::ONLY_INITIATOR);
+$I->dontSeeElement('#typeMinSupporters');
+$I->selectOption('#typeSupportType', \app\models\supportTypes\ISupportType::COLLECTING_SUPPORTERS);
+$I->seeElement('#typeMinSupporters');
+
+$I->logout();
+
+
+
 $I->wantTo('enable/disable liking and disliking');
 gotoSupportingMotion($I);
 $I->see('Dieser Antrag ist noch nicht offiziell eingereicht.');

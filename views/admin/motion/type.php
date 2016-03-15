@@ -5,6 +5,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\supportTypes\CollectBeforePublish;
 use yii\helpers\Html;
 
 /**
@@ -120,7 +121,7 @@ echo '<h3>' . \Yii::t('admin', 'motion_type_deadline') . '</h3>';
 $deadlineMotions = Tools::dateSql2bootstraptime($motionType->deadlineMotions);
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="typeDeadlineMotions">';
-echo 'Anträge';
+echo \Yii::t('admin', 'motion_type_deadline_mot');
 echo '</label><div class="col-md-8">';
 echo '<div class="input-group date" id="typeDeadlineMotionsHolder">';
 echo '<input id="typeDeadlineMotions" type="text" class="form-control" name="type[deadlineMotions]" ';
@@ -132,7 +133,7 @@ echo '</div></div>';
 $deadlineAmendments = Tools::dateSql2bootstraptime($motionType->deadlineAmendments);
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="typeDeadlineAmendments">';
-echo 'ÄA-Antragsschluss';
+echo \Yii::t('admin', 'motion_type_amend_deadline');
 echo '</label><div class="col-md-8">';
 echo '<div class="input-group date" id="typeDeadlineAmendmentsHolder">';
 echo '<input id="typeDeadlineAmendments" type="text" class="form-control" name="type[deadlineAmendments]" ';
@@ -147,12 +148,13 @@ echo '<h3>' . \Yii::t('admin', 'motion_type_initiator') . '</h3>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-4 control-label" for="typeSupportType">';
-echo 'Formular';
+echo \Yii::t('admin', 'motion_type_supp_form');
 echo '</label><div class="col-md-8">';
 echo '<select name="type[supportType]" class="form-control" id="typeSupportType">';
 foreach (\app\models\supportTypes\ISupportType::getImplementations() as $formId => $formClass) {
+    $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass == CollectBeforePublish::class);
     echo '<option value="' . Html::encode($formId) . '" ';
-    echo 'data-has-supporters="' . ($formClass::hasInitiatorGivenSupporters() ? 1 : 0) . '"';
+    echo 'data-has-supporters="' . ($supporters ? 1 : 0) . '"';
     if ($motionType->supportType == $formId) {
         echo ' selected';
     }
@@ -163,7 +165,7 @@ echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<div class="col-md-4 control-label label">' . \Yii::t('admin', 'motion_type_email');
+echo '<div class="col-md-4 label" style="text-align: right;">' . \Yii::t('admin', 'motion_type_email');
 echo '</div><div class="col-md-8 contactDetails contactEMail">';
 $options = [
     ConsultationMotionType::CONTACT_NA       => \Yii::t('admin', 'motion_type_skip'),
@@ -175,7 +177,7 @@ echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<div class="col-md-4 control-label label">' . \Yii::t('admin', 'motion_type_phone');
+echo '<div class="col-md-4 label" style="text-align: right;">' . \Yii::t('admin', 'motion_type_phone');
 echo '</div><div class="col-md-8 contactDetails contactPhone">';
 $options = [
     ConsultationMotionType::CONTACT_NA       => \Yii::t('admin', 'motion_type_skip'),
@@ -190,7 +192,7 @@ $curForm = $motionType->getMotionSupportTypeClass();
 
 echo '<div class="form-group" id="typeMinSupportersRow">';
 echo '<label class="col-md-4 control-label" for="typeMinSupporters">';
-echo 'Unterstützer*innen';
+echo \Yii::t('admin', 'motion_type_supp_min');
 echo '</label><div class="col-md-2">';
 echo '<input type="number" name="initiator[minSupporters]" class="form-control" id="typeMinSupporters"';
 if (is_subclass_of($curForm, \app\models\supportTypes\DefaultTypeBase::class)) {
