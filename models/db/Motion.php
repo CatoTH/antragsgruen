@@ -573,10 +573,15 @@ class Motion extends IMotion implements IRSSItem
     {
         $needsCollectionPhase = false;
         if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
-            // @TODO No supporting phase for organizations
+            $isOrganization = false;
+            foreach ($this->getInitiators() as $initiator) {
+                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
+                    $isOrganization = true;
+                }
+            }
             $supporters = count($this->getSupporters());
             $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
-            if ($supporters < $minSupporters) {
+            if ($supporters < $minSupporters && !$isOrganization) {
                 $needsCollectionPhase = true;
             }
         }

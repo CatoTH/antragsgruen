@@ -81,3 +81,34 @@ $I->see('Testuser', 'section.supporters');
 $I->submitForm('.motionSupportFinishForm', [], 'motionSupportFinish');
 $I->see('Der Antrag ist nun offiziell eingereicht');
 $I->see('Eingereicht (ungeprüft)', '.motionData');
+
+
+$I->logout();
+
+
+$I->wantTo('check that motions created as normal person are in supporting phase');
+
+$I->loginAsStdUser();
+$I->gotoConsultationHome(false, 'supporter', 'supporter')->gotoMotionCreatePage(10, true, 'supporter', 'supporter');
+$I->fillField('#sections_30', 'Title as normal person');
+$I->executeJS('CKEDITOR.instances.sections_31_wysiwyg.setData("<p><strong>Test</strong></p>");');
+$I->submitForm('#motionEditForm', [], 'save');
+$I->submitForm('#motionConfirmForm', [], 'confirm');
+$I->see('Um ihn offiziell einzureichen, benötigt er nun mindestens 1 Unterstützer*innen.');
+
+
+$I->wantTo('check that motions created as organizations are not in supporting phase');
+
+$I->gotoConsultationHome(false, 'supporter', 'supporter')->gotoMotionCreatePage(10, true, 'supporter', 'supporter');
+$I->fillField('#sections_30', 'Title as organization');
+$I->executeJS('CKEDITOR.instances.sections_31_wysiwyg.setData("<p><strong>Test</strong></p>");');
+$I->checkOption('#personTypeOrga');
+$I->fillField('#resolutionDate', '01.01.2016');
+$I->submitForm('#motionEditForm', [], 'save');
+$I->submitForm('#motionConfirmForm', [], 'confirm');
+$I->see('Du hast den Antrag eingereicht. Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.');
+
+
+$I->gotoConsultationHome(false, 'supporter', 'supporter');
+$I->see('Eingereicht (ungeprüft)', '.myMotionList');
+$I->see('Unterstützer*innen sammeln', '.myMotionList');

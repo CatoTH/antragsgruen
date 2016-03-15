@@ -121,5 +121,5 @@ return [
 
     'supp_only_initiators'    => 'Nur die Antragsteller*in',
     'supp_given_by_initiator' => 'Von der Antragsteller*in angegeben',
-    'supp_collect_before'     => 'Unterstützungs-Phase vor Veröffentlichung',
+    'supp_collect_before'     => 'Unterstützungs-Phase vor Veröffentlichung (außer bei Gremien)',
 ];
