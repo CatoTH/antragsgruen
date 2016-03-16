@@ -28,6 +28,9 @@ class MotionController extends AdminBase
     private function sectionsSave(ConsultationMotionType $motionType)
     {
         $position = 0;
+        if (!\Yii::$app->request->post('sections')) {
+            return;
+        }
         foreach (\Yii::$app->request->post('sections') as $sectionId => $data) {
             if (preg_match('/^new[0-9]+$/', $sectionId)) {
                 $section               = new ConsultationSettingsMotionSection();
