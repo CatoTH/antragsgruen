@@ -7,6 +7,7 @@
 - Support database table prefixes
 - Support policy of motions and amendments can now be set independently
 - Bugfix: creating a new consultation based on a template did not clone the motion sections and therefore created empty motion types
+- Bugfix: Dangling &nbsp;'s at the end of a line were not stripped at a motion, but at the amendments.
 - Bugfix: Motions with section-based comments could not be edited in the admin-screen
 - Bugfix: a security problem was fixed that occurred under the following two conditions: 1) Everyone can create a motion, without login and 2) Supporting motions was enabled
 - Compiled assets (stylesheets, scripts) are now included in the repository. This makes installation from the repository a lot easier.

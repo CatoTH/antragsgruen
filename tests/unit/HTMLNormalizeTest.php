@@ -12,6 +12,16 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
+    public function testDanglingNbsp()
+    {
+        $orig   = '<p><span>so ein Fahrradanteil von 30 % und mehr erreicht werden kann.&nbsp;</span></p>';
+        $expect = '<p>so ein Fahrradanteil von 30 % und mehr erreicht werden kann.</p>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
     public function testPrepareForCKEditor()
     {
         $orig   = '<p><strong> Test</strong></p> Test2';
