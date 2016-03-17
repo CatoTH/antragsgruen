@@ -4,6 +4,7 @@ namespace app\models\forms;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
+use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
 use app\models\db\ConsultationUserPrivilege;
@@ -72,6 +73,16 @@ class ConsultationCreateForm extends Model
             $newType->id             = null;
             if (!$newType->save()) {
                 throw new FormError($newType->getErrors());
+            }
+
+            foreach ($motionType->motionSections as $section) {
+                $newSection = new ConsultationSettingsMotionSection();
+                $newSection->setAttributes($section->getAttributes(), false);
+                $newSection->motionTypeId = $newType->id;
+                $newSection->id           = null;
+                if (!$newSection->save()) {
+                    throw new FormError($newType->getErrors());
+                }
             }
         }
 
