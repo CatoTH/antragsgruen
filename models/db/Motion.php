@@ -490,7 +490,9 @@ class Motion extends IMotion implements IRSSItem
                     }
                 }
             }
-            throw new Internal('Did not find myself');
+            
+            // This is a invisible motion. The final line numbers are therefore not determined yet
+            return 1;
         } else {
             $this->setCacheItem('getFirstLineNumber', 1);
             return 1;
