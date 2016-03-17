@@ -128,7 +128,6 @@ class MotionController extends AdminBase
 
         $supportCollPolicyWarning = false;
         if ($motionType->supportType == ISupportType::COLLECTING_SUPPORTERS) {
-
             if ($this->isPostSet('supportCollPolicyFix')) {
                 if ($motionType->policyMotions == IPolicy::POLICY_ALL) {
                     $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
