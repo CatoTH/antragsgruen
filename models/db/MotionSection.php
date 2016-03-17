@@ -289,7 +289,7 @@ class MotionSection extends IMotionSection
                 $lineNo += $section->getNumberOfCountableLines();
             }
         }
-        throw new Internal('Did not find myself');
+        throw new Internal('Did not find myself: Motion ' . $this->motionId . ' / Section ' . $this->sectionId);
     }
 
     /** @var null|AmendmentDiffMerger */
