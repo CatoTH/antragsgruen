@@ -70,7 +70,7 @@ return [
     'edit_done_msg'                     => 'Die Änderungen wurden übernommen.',
     'edit_bread'                        => 'Bearbeiten',
     'reason'                            => 'Begründung',
-    'amendment_requirement'             => 'Voraussetzungen für einen Antrag',
+    'amendment_requirement'             => 'Voraussetzungen für einen Änderungsantrag',
     'button_submit'                     => 'Einreichen',
     'button_correct'                    => 'Korrigieren',
     'confirm'                           => 'Bestätigen',

@@ -50,13 +50,13 @@ echo '</div><br style="clear: both;">';
 
 echo $controller->showErrors();
 
-$motionPolicy = $form->motion->motionType->getMotionPolicy();
-if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
+$amendmentPolicy = $form->motion->motionType->getAmendmentPolicy();
+if (!in_array($amendmentPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
     echo '<div>
                 <legend>' . Yii::t('amend', 'amendment_requirement'), '</legend>
             </div>';
 
-    echo $motionPolicy->getOnCreateDescription();
+    echo $amendmentPolicy->getOnCreateDescription();
 }
 
 if (\Yii::$app->user->isGuest) {
