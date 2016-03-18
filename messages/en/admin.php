@@ -5,6 +5,8 @@ return [
     'bread_list'                  => 'Motion list',
     'bread_amend'                 => 'Amendment',
     'bread_types'                 => 'Motion types',
+    'bread_motions'               => 'Motions',
+    'bread_motion'                => 'Motion',
     'saved'                       => 'Saved.',
     'index_title'                 => 'Administration',
     'index_motions'               => 'Motions / Documents',
@@ -39,6 +41,24 @@ return [
     'motion_prefix_collission'    => 'The given Code is already being used by another motion.',
     'motion_deleted'              => 'The motion has been deleted.',
     'motion_screened'             => 'The motion has been screened.',
+    'motion_edit_text'            => 'Edit text',
+    'motion_edit_text_warn'       => '<strong>Attention:</strong> It\'s rather dangerous to edit the text once there are comments or amendments to the motion! Please don\'t do this unless you really know what you are doing.',
+    'motion_edit_btn'             => 'Edit',
+    'motion_date_resolution'      => 'Decided on',
+    'motion_date_created'         => 'Submitted',
+    'motion_prefix'               => 'Prefix',
+    'motion_prefix_hint'          => 'like "A1", "A1new", "S1"',
+    'motion_prefix_unique'        => 'Has to be unique.',
+    'motion_titile'               => 'Title',
+    'motion_agenda_item'          => 'Agenda item',
+    'motion_status'               => 'Status',
+    'motion_replaces'             => 'Replaces',
+    'motion_screen_as_x'          => 'Screen as %PREFIX%',
+    'motion_del'                  => 'Delete motion',
+    'motion_new_base_on_this'     => 'Create a new motion based on this one',
+    'motion_show'                 => 'Show motion',
+    'motion_topics'               => 'Topics',
+    'motion_note_internal'        => 'Internal remark',
     'list_head_title'             => 'List: motions, amendments',
     'list_action'                 => 'Action',
     'list_export'                 => 'Export',
@@ -251,9 +271,9 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'todo_comment_to'             => 'To',
     'cons_new_created'            => 'The new consultation has been created.',
     'cons_std_set_done'           => 'This consultation has been set as the new standard.',
-        /*
-    'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
-        'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
-        */
+    /*
+'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
+    'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
+    */
     'support_coll_policy_fix'     => 'Fix settings',
 ];
