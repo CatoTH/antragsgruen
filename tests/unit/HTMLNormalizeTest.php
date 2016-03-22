@@ -22,6 +22,16 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
+    public function testStripLeadingSpaces()
+    {
+        $orig = '<p> Test 123 </p>';
+        $expect = '<p>Test 123</p>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
     public function testPrepareForCKEditor()
     {
         $orig   = '<p><strong> Test</strong></p> Test2';
