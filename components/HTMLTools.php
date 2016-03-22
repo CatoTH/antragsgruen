@@ -1,11 +1,5 @@
 <?php
-/*
- *
- * ==========
- * d        d
- * e   f    g
- * hjklkljkjlk
- */
+
 namespace app\components;
 
 use app\models\exceptions\Internal;
@@ -134,6 +128,7 @@ class HTMLTools
         $html = str_replace('&nbsp;', ' ', $html);
 
         $html = static::cleanMessedUpHtmlCharacters($html);
+        $html = preg_replace('/<p> +/siu', '<p>', $html);
         $html = preg_replace('/ +<\/p>/siu', '</p>', $html);
         $html = preg_replace('/ +<br>/siu', '<br>', $html);
 
