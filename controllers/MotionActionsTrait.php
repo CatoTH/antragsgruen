@@ -36,11 +36,11 @@ trait MotionActionsTrait
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar nicht gefunden');
+            throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
             if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-                throw new Internal('Keine Freischaltrechte');
+                throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
         return $comment;
@@ -169,9 +169,11 @@ trait MotionActionsTrait
      * @param Motion $motion
      * @param string $role
      * @param string $string
+     * @param string $name
+     * @param string $orga
      * @throws FormError
      */
-    private function motionLikeDislike(Motion $motion, $role, $string)
+    private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '')
     {
         $currentUser = User::getCurrentUser();
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser() || $currentUser == null) {
@@ -183,11 +185,13 @@ trait MotionActionsTrait
                 $motion->unlink('motionSupporters', $supp, true);
             }
         }
-        $support           = new MotionSupporter();
-        $support->motionId = $motion->id;
-        $support->userId   = $currentUser->id;
-        $support->position = 0;
-        $support->role     = $role;
+        $support               = new MotionSupporter();
+        $support->motionId     = $motion->id;
+        $support->userId       = $currentUser->id;
+        $support->name         = $name;
+        $support->organization = $orga;
+        $support->position     = 0;
+        $support->role         = $role;
         $support->save();
 
         $motion->refresh();
@@ -223,7 +227,10 @@ trait MotionActionsTrait
                 return;
             }
         }
-        $this->motionLikeDislike($motion, MotionSupporter::ROLE_SUPPORTER, \Yii::t('motion', 'support_done'));
+        $role = MotionSupporter::ROLE_SUPPORTER;
+        $name = \Yii::$app->request->post('motionSupportName', '');
+        $orga = \Yii::$app->request->post('motionSupportOrga', '');
+        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga);
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 
         $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
@@ -277,7 +284,7 @@ trait MotionActionsTrait
         } else {
             EmailNotifications::sendMotionSubmissionConfirm($motion);
         }
-        
+
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT_FINISH, $motion->id);
         \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_finish_done'));
     }

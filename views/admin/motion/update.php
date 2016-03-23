@@ -5,6 +5,7 @@ use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use yii\helpers\Html;
 
 /**
@@ -25,8 +26,10 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_motion'));
 
 $layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
+$layout->addJS('js/bower/Sortable/Sortable.min.js');
 $layout->loadDatepicker();
 $layout->loadCKEditor();
+$layout->loadFuelux();
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
@@ -71,7 +74,7 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
 }
 
 
-echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm', 'enctype' => 'multipart/form-data']);
+echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm', 'enctype' => 'multipart/form-data', 'class' => 'fuelux']);
 
 echo '<div class="content form-horizontal">';
 
@@ -215,6 +218,54 @@ if (!$motion->textFixed) {
 $initiatorClass = $form->motionType->getMotionSupportTypeClass();
 $initiatorClass->setAdminMode(true);
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
+
+
+$getSupporterRow = function (MotionSupporter $supporter) {
+    $str = '<li><div class="row">';
+    $str .= '<input type="hidden" name="supporterId[]" value="' . Html::encode($supporter->id) . '">';
+
+    $title = Html::encode(\Yii::t('admin', 'motion_supp_name'));
+    $str .= '<div class="col-md-4 nameCol">';
+
+    $str .= '<span class="glyphicon glyphicon-resize-vertical moveHandle"></span> ';
+
+    $str .= '<input type="text" name="supporterName[]" value="' . Html::encode($supporter->name) . '" ';
+    $str .= ' class="form-control" placeholder="' . $title . '" title="' . $title . '">';
+    $str .= '</div>';
+
+    $title = Html::encode(\Yii::t('admin', 'motion_supp_orga'));
+    $str .= '<div class="col-md-4">';
+    $str .= '<input type="text" name="supporterOrga[]" value="' . Html::encode($supporter->organization) . '" ';
+    $str .= ' class="form-control" placeholder="' . $title . '" title="' . $title . '">';
+    $str .= '</div>';
+
+    $str .= '<div class="col-md-4">';
+    $str .= '<a href="#" class="delSupporter"><span class="glyphicon glyphicon-minus-sign"></span></a>';
+    if ($supporter->user) {
+        $str .= Html::encode($supporter->user->getAuthName());
+    }
+    $str .= '</div>';
+
+
+    $str .= '</div></li>';
+    return $str;
+};
+
+echo '<h2 class="green">' . \Yii::t('admin', 'motion_edit_supporters') . '</h2>
+<div class="content" id="motionSupporterHolder">
+<ul>';
+
+foreach ($motion->getSupporters() as $supporter) {
+    echo $getSupporterRow($supporter);
+}
+
+$template = $getSupporterRow(new MotionSupporter());
+echo '</li>
+</ul>
+<a href="#" class="supporterRowAdder" data-content="' . Html::encode($template) . '">
+    <span class="glyphicon glyphicon-plus-sign"></span> ' . \Yii::t('admin', 'motion_edit_supporters_add') . '
+</a>
+</div>';
 
 
 echo '<div class="saveholder">

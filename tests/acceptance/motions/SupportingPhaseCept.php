@@ -61,11 +61,15 @@ $I->seeElement('button[name=motionSupport]');
 
 $I->wantTo('support this motion');
 
+$I->fillField('motionSupportName', 'My name');
+$I->fillField('motionSupportOrga', 'My organisation');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->see('Du unterstützt diesen Antrag nun.');
 $I->dontSeeElement('button[name=motionSupport]');
 $I->see('Du!', 'section.supporters');
-$I->see('Testuser', 'section.supporters');
+$I->dontSee('Testuser', 'section.supporters');
+$I->see('My name', 'section.supporters');
+$I->see('My organisation', 'section.supporters');
 $I->see('Die Mindestzahl an Unterstützer*innen (1) wurde erreicht');
 $I->seeElement('button[name=motionSupportRevoke]');
 

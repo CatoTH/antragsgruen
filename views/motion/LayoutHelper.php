@@ -424,17 +424,34 @@ class LayoutHelper
         if ($canSupport) {
             echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
 
-            echo '<div style="text-align: center; margin-bottom: 20px;">';
             if ($iAmSupporting) {
+                echo '<div style="text-align: center; margin-bottom: 20px;">';
                 echo '<button type="submit" name="motionSupportRevoke" class="btn">';
                 echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
                 echo '</button>';
+                echo '</div>';
             } else {
+                echo '<div class="label" style="margin-top: 10px;">' . \Yii::t('motion', 'support_question') . '</div>';
+                echo '<div class="row">';
+
+                echo '<div class="col-md-4">';
+                $name = ($user ? $user->name : '');
+                echo '<input type="text" name="motionSupportName" class="form-control" required
+                value="' . Html::encode($name) . '" placeholder="' . \Yii::t('motion', 'support_name') . '">';
+                echo '</div>';
+
+                echo '<div class="col-md-4">';
+                echo '<input type="text" name="motionSupportOrga" class="form-control" value=""
+                placeholder="' . \Yii::t('motion', 'support_orga') . '">';
+                echo '</div>';
+
+                echo '<div class="col-md-4" style="text-align: right">';
                 echo '<button type="submit" name="motionSupport" class="btn btn-success">';
                 echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'support');
-                echo '</button>';
+                echo '</button></div>';
+
+                echo '</div>';
             }
-            echo '</div>';
             echo Html::endForm();
         } else {
             if ($cantSupportMsg != '') {

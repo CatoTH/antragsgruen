@@ -188,18 +188,24 @@ abstract class DefaultTypeBase extends ISupportType
      */
     public function submitMotion(Motion $motion)
     {
-        // Supporters
+        $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
+        if ($this->hasInitiatorGivenSupporters()) {
+            $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
+        }
+
         foreach ($motion->motionSupporters as $supp) {
-            if (in_array($supp->role, [MotionSupporter::ROLE_INITIATOR, MotionSupporter::ROLE_SUPPORTER])) {
+            if (in_array($supp->role, $affectedRoles)) {
                 $supp->delete();
             }
         }
 
         $supporters = $this->getMotionSupporters($motion);
         foreach ($supporters as $sup) {
-            /** @var MotionSupporter $sup */
-            $sup->motionId = $motion->id;
-            $sup->save();
+            if (in_array($sup->role, $affectedRoles)) {
+                /** @var MotionSupporter $sup */
+                $sup->motionId = $motion->id;
+                $sup->save();
+            }
         }
     }
 
@@ -210,18 +216,24 @@ abstract class DefaultTypeBase extends ISupportType
      */
     public function submitAmendment(Amendment $amendment)
     {
-        // Supporters
+        $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
+        if ($this->hasInitiatorGivenSupporters()) {
+            $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
+        }
+
         foreach ($amendment->amendmentSupporters as $supp) {
-            if (in_array($supp->role, [AmendmentSupporter::ROLE_INITIATOR, AmendmentSupporter::ROLE_SUPPORTER])) {
+            if (in_array($supp->role, $affectedRoles)) {
                 $supp->delete();
             }
         }
 
         $supporters = $this->getAmendmentSupporters($amendment);
         foreach ($supporters as $sup) {
-            /** @var AmendmentSupporter $sup */
-            $sup->amendmentId = $amendment->id;
-            $sup->save();
+            if (in_array($sup->role, $affectedRoles)) {
+                /** @var AmendmentSupporter $sup */
+                $sup->amendmentId = $amendment->id;
+                $sup->save();
+            }
         }
 
     }
@@ -404,11 +416,13 @@ abstract class DefaultTypeBase extends ISupportType
             }
         }
 
-        $supporters = $this->parseSupporters(new MotionSupporter());
-        foreach ($supporters as $sup) {
-            /** @var MotionSupporter $sup */
-            $sup->motionId = $motion->id;
-            $return[]      = $sup;
+        if ($this->hasInitiatorGivenSupporters()) {
+            $supporters = $this->parseSupporters(new MotionSupporter());
+            foreach ($supporters as $sup) {
+                /** @var MotionSupporter $sup */
+                $sup->motionId = $motion->id;
+                $return[]      = $sup;
+            }
         }
 
         return $return;
@@ -488,11 +502,13 @@ abstract class DefaultTypeBase extends ISupportType
             }
         }
 
-        $supporters = $this->parseSupporters(new AmendmentSupporter());
-        foreach ($supporters as $sup) {
-            /** @var AmendmentSupporter $sup */
-            $sup->amendmentId = $amendment->id;
-            $return[]         = $sup;
+        if ($this->hasInitiatorGivenSupporters()) {
+            $supporters = $this->parseSupporters(new AmendmentSupporter());
+            foreach ($supporters as $sup) {
+                /** @var AmendmentSupporter $sup */
+                $sup->amendmentId = $amendment->id;
+                $return[]         = $sup;
+            }
         }
 
         return $return;

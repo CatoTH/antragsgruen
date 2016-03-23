@@ -414,7 +414,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->status != Motion::STATUS_COLLECTING_SUPPORTERS) {
             return false;
         }
-        $supporters = count($this->getSupporters());
+        $supporters    = count($this->getSupporters());
         $minSupporters = $this->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
         return ($supporters >= $minSupporters);
     }
@@ -490,7 +490,7 @@ class Motion extends IMotion implements IRSSItem
                     }
                 }
             }
-            
+
             // This is a invisible motion. The final line numbers are therefore not determined yet
             return 1;
         } else {
@@ -524,6 +524,21 @@ class Motion extends IMotion implements IRSSItem
                 $return[] = $supp;
             }
         };
+        usort($return, function (MotionSupporter $supp1, MotionSupporter $supp2) {
+            if ($supp1->position > $supp2->position) {
+                return 1;
+            }
+            if ($supp1->position < $supp2->position) {
+                return -1;
+            }
+            if ($supp1->id > $supp2->id) {
+                return 1;
+            }
+            if ($supp1->id < $supp2->id) {
+                return -1;
+            }
+            return 0;
+        });
         return $return;
     }
 
@@ -581,7 +596,7 @@ class Motion extends IMotion implements IRSSItem
                     $isOrganization = true;
                 }
             }
-            $supporters = count($this->getSupporters());
+            $supporters    = count($this->getSupporters());
             $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
             if ($supporters < $minSupporters && !$isOrganization) {
                 $needsCollectionPhase = true;

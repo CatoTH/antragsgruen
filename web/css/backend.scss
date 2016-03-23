@@ -503,3 +503,43 @@ label.legend {
     text-align: right;
   }
 }
+
+#motionSupporterHolder {
+  ul {
+    list-style-type: none;
+    padding: 0;
+
+    > li {
+      padding: 5px 0px 5px 40px;
+    }
+    .nameCol {
+      position: relative;
+      .moveHandle {
+        position: absolute;
+        left: -15px;
+        top: 5px;
+        font-size: 1.5em;
+        color: lightgrey;
+        cursor: move;
+        display: none;
+      }
+    }
+    .delSupporter {
+      float: right;
+      color: #f77;
+      visibility: hidden;
+      margin-top: 5px;
+    }
+    > li:hover {
+      .moveHandle {
+        display: inherit;
+      }
+      .delSupporter {
+        visibility: visible;
+      }
+    }
+  }
+  .supporterRowAdder {
+    margin-left: 42px;
+  }
+}

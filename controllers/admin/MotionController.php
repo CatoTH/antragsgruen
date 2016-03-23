@@ -7,6 +7,7 @@ use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
@@ -117,7 +118,7 @@ class MotionController extends AdminBase
                 }
             }
 
-            $form                                    = $motionType->getMotionSupportTypeClass();
+            $form = $motionType->getMotionSupportTypeClass();
             $form->setSettings(\Yii::$app->request->post('initiator'));
             $motionType->supportTypeSettings = $form->getSettings();
             $motionType->save();
@@ -243,6 +244,48 @@ class MotionController extends AdminBase
     }
 
     /**
+     * @param Motion $motion
+     */
+    private function saveMotionSupporters(Motion $motion)
+    {
+        $names         = \Yii::$app->request->post('supporterName', []);
+        $orgas         = \Yii::$app->request->post('supporterOrga', []);
+        $preIds        = \Yii::$app->request->post('supporterId', []);
+        $newSupporters = [];
+        /** @var MotionSupporter[] $preSupporters */
+        $preSupporters = [];
+        foreach ($motion->getSupporters() as $supporter) {
+            $preSupporters[$supporter->id] = $supporter;
+        }
+        for ($i = 0; $i < count($names); $i++) {
+            if (isset($preSupporters[$preIds[$i]])) {
+                $supporter = $preSupporters[$preIds[$i]];
+            } else {
+                $supporter             = new MotionSupporter();
+                $supporter->motionId   = $motion->id;
+                $supporter->role       = MotionSupporter::ROLE_SUPPORTER;
+                $supporter->personType = MotionSupporter::PERSON_NATURAL;
+            }
+            $supporter->name         = $names[$i];
+            $supporter->organization = $orgas[$i];
+            $supporter->position     = $i;
+            if (!$supporter->save()) {
+                var_dump($supporter->getErrors());
+                die();
+            }
+            $newSupporters[$supporter->id] = $supporter;
+        }
+
+        foreach ($preSupporters as $supporter) {
+            if (!isset($newSupporters[$supporter->id])) {
+                $supporter->delete();
+            }
+        }
+
+        $motion->refresh();
+    }
+
+    /**
      * @param int $motionId
      * @return string
      */
@@ -319,6 +362,8 @@ class MotionController extends AdminBase
                     }
                 }
             }
+
+            $this->saveMotionSupporters($motion);
 
             $motion->flushCacheWithChildren();
             \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));

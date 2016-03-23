@@ -438,6 +438,18 @@
                 }
             });
         });
+
+        var $sortable = $("#motionSupporterHolder").find("> ul");
+        Sortable.create($sortable[0], {draggable: 'li'});
+
+        $(".supporterRowAdder").click(function (ev) {
+            $sortable.append($(this).data("content"));
+            ev.preventDefault();
+        });
+        $sortable.on("click", ".delSupporter", function(ev) {
+            ev.preventDefault();
+            $(this).parents("li").first().remove();
+        });
     };
 
     var amendmentEditInit = function () {
