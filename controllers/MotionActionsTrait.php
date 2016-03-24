@@ -180,9 +180,12 @@ trait MotionActionsTrait
             throw new FormError('Supporting this motion is not possible');
         }
 
+        $maxPos = 0;
         foreach ($motion->motionSupporters as $supp) {
             if ($supp->userId == $currentUser->id) {
                 $motion->unlink('motionSupporters', $supp, true);
+            } elseif ($supp->position > $maxPos) {
+                $maxPos = $supp->position;
             }
         }
         $support               = new MotionSupporter();
@@ -190,7 +193,7 @@ trait MotionActionsTrait
         $support->userId       = $currentUser->id;
         $support->name         = $name;
         $support->organization = $orga;
-        $support->position     = 0;
+        $support->position     = $maxPos + 1;
         $support->role         = $role;
         $support->save();
 
@@ -221,6 +224,7 @@ trait MotionActionsTrait
         if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
             throw new FormError('Not supported');
         }
+        $maxPos = 0;
         foreach ($motion->getSupporters() as $supporter) {
             if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
                 \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_already'));

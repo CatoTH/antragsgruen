@@ -230,13 +230,13 @@ $getSupporterRow = function (MotionSupporter $supporter) {
     $str .= '<span class="glyphicon glyphicon-resize-vertical moveHandle"></span> ';
 
     $str .= '<input type="text" name="supporterName[]" value="' . Html::encode($supporter->name) . '" ';
-    $str .= ' class="form-control" placeholder="' . $title . '" title="' . $title . '">';
+    $str .= ' class="form-control supporterName" placeholder="' . $title . '" title="' . $title . '">';
     $str .= '</div>';
 
     $title = Html::encode(\Yii::t('admin', 'motion_supp_orga'));
     $str .= '<div class="col-md-4">';
     $str .= '<input type="text" name="supporterOrga[]" value="' . Html::encode($supporter->organization) . '" ';
-    $str .= ' class="form-control" placeholder="' . $title . '" title="' . $title . '">';
+    $str .= ' class="form-control supporterOrga" placeholder="' . $title . '" title="' . $title . '">';
     $str .= '</div>';
 
     $str .= '<div class="col-md-4">';

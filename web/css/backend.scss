@@ -510,7 +510,7 @@ label.legend {
     padding: 0;
 
     > li {
-      padding: 5px 0px 5px 40px;
+      padding: 5px 0 5px 40px;
     }
     .nameCol {
       position: relative;
@@ -521,21 +521,29 @@ label.legend {
         font-size: 1.5em;
         color: lightgrey;
         cursor: move;
-        display: none;
       }
     }
     .delSupporter {
       float: right;
       color: #f77;
-      visibility: hidden;
       margin-top: 5px;
     }
-    > li:hover {
-      .moveHandle {
-        display: inherit;
+    html.no-touchevents & {
+      > li {
+        .moveHandle {
+          display: none;
+        }
+        .delSupporter {
+          visibility: hidden;
+        }
       }
-      .delSupporter {
-        visibility: visible;
+      > li:hover {
+        .moveHandle {
+          display: inherit;
+        }
+        .delSupporter {
+          visibility: visible;
+        }
       }
     }
   }
