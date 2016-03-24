@@ -244,7 +244,7 @@ class ConsultationMotionType extends ActiveRecord
             [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
             [['amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes', 'layoutTwoCols'], 'number'],
 
-            [['titleSingular', 'titlePlural', 'createTitle'], 'safe'],
+            [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
             [['motionPrefix', 'position', 'supportType', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
             [['policySupportAmendments', 'layoutTwoCols'], 'safe'],

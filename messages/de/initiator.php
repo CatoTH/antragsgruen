@@ -16,7 +16,7 @@ return [
     'moreInitiators'      => 'Weitere Antragssteller*in',
     'addInitiator'        => 'Antragsteller*in hinzufügen',
     'supporters'          => 'Unterstützer*innen',
-    'supportersHead'      => 'Initiator*innen',
+    'supportersHead'      => 'Unterstützer*innen',
     'addSupporter'        => 'Untertützer*in hinzufügen',
     'minSupporters1'      => 'Min. %min% Unterstützer*in',
     'minSupportersX'      => 'Min. %min% Unterstützer*innen',

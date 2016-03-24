@@ -76,7 +76,7 @@ $sectionName = 'sections[' . $sectionId . ']';
                     <?= Html::checkbox($sectionName . '[maxLenSet]', ($section->maxLen != 0), ['class' => 'maxLenSet']) ?>
                     <?= Yii::t('admin', 'motion_section_limit') ?></label>
 
-                <label class="maxLenInput"><input type="number" min="1" name="' . $sectionName . '[maxLenVal]" value="<?php
+                <label class="maxLenInput"><input type="number" min="1" name="<?=$sectionName?>[maxLenVal]" value="<?php
                     if ($section->maxLen > 0) {
                         echo $section->maxLen;
                     }
