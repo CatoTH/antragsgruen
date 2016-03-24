@@ -55,3 +55,32 @@ $I->submitForm('#motionUpdateForm', [], 'save');
 ]);
 $firstName = $I->executeJS('return $("section.supporters ul li:nth(0)").text()');
 $I->assertContains('My login-name 2', $firstName);
+
+
+
+
+
+$I->wantTo('add some suporters using full-text');
+
+$I->gotoStdAdminPage(false, 'supporter', 'supporter')->gotoMotionList()->gotoMotionEdit(116);
+
+$I->dontSeeElement('#fullTextHolder');
+$I->click('.fullTextAdder a');
+$I->seeElement('#fullTextHolder');
+
+$I->fillField('#fullTextHolder textarea', 'Yet another name, KV München; Another Name 3');
+$I->click('#fullTextHolder .fullTextAdd');
+
+$I->submitForm('#motionUpdateForm', [], 'save');
+
+
+\app\tests\_pages\MotionPage::openBy($I, [
+    'subdomain'        => 'supporter',
+    'consultationPath' => 'supporter',
+    'motionSlug'       => 116,
+]);
+
+$fifthName = $I->executeJS('return $("section.supporters ul li:nth(4)").text()');
+$I->assertContains('Another Name 3', $fifthName);
+$fourthName = $I->executeJS('return $("section.supporters ul li:nth(3)").text()');
+$I->assertContains('KV München', $fourthName);

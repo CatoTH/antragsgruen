@@ -261,11 +261,25 @@ foreach ($motion->getSupporters() as $supporter) {
 
 $template = $getSupporterRow(new MotionSupporter());
 echo '</li>
-</ul>
-<a href="#" class="supporterRowAdder" data-content="' . Html::encode($template) . '">
+</ul>';
+
+echo '<div class="fullTextAdder"><a href="#">' . Yii::t('initiator', 'fullTextField') . '</a></div>';
+
+echo '<a href="#" class="supporterRowAdder" data-content="' . Html::encode($template) . '">
     <span class="glyphicon glyphicon-plus-sign"></span> ' . \Yii::t('admin', 'motion_edit_supporters_add') . '
-</a>
-</div>';
+</a>';
+
+$fullTextSyntax = Yii::t('initiator', 'fullTextSyntax');
+echo '<div class="form-group hidden" id="fullTextHolder">';
+echo '<div class="col-md-9">';
+echo '<textarea class="form-control" placeholder="' . Html::encode($fullTextSyntax) . '" rows="10"></textarea>';
+echo '</div><div class="col-md-3">';
+echo '<button type="button" class="btn btn-success fullTextAdd">';
+echo '<span class="glyphicon glyphicon-plus"></span> ' . Yii::t('initiator', 'fullTextAdd') . '</button>';
+echo '</div>';
+echo '</div>';
+
+echo '</div>';
 
 
 echo '<div class="saveholder">

@@ -22,15 +22,6 @@ $I->fillField('.initiatorData .initiatorRow .name', 'My Friend');
 $I->fillField('.initiatorData .initiatorRow .organization', 'Her KV');
 */
 
-$I->wantTo('add some suporters using full-text');
-
-$I->dontSeeElement('#fullTextHolder');
-$I->click('.fullTextAdder a');
-$I->seeElement('#fullTextHolder');
-
-$I->fillField('#fullTextHolder textarea', 'Tobias Hößl, KV München; Test 2');
-$I->click('#fullTextHolder .fullTextAdd');
-
 
 $I->submitForm('#motionUpdateForm', [], 'save');
 
@@ -49,9 +40,3 @@ $I->seeInField('.initiatorData .initiatorRow .name', 'My Friend');
 $I->seeInField('.initiatorData .initiatorRow .organization', 'Her KV');
 */
 
-$name1 = $I->executeJS('return $(".supporterRow").eq(0).find("input.name").val()');
-$orga1 = $I->executeJS('return $(".supporterRow").eq(0).find("input.organization").val()');
-$name2 = $I->executeJS('return $(".supporterRow").eq(1).find("input.name").val()');
-if ($name1 != 'Tobias Hößl' || $orga1 != 'KV München' || $name2 != 'Test 2') {
-    $I->fail('Got invalid supporter Data: ' . $name1 . ' (' . $orga1 . ') / ' . $name2);
-}

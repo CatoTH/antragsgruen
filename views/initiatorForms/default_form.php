@@ -209,7 +209,7 @@ echo '<div id="newInitiatorTemplate" style="display: none;" data-html="' . Html:
 echo '</div>';
 
 
-if ($hasSupporters) {
+if ($hasSupporters && !$adminMode) {
     $getSupporterRow = function (ISupporter $supporter, $hasOrganizations, $allowMoreSupporters) {
         $str = '<div class="form-group supporterRow">';
         $str .= '<div class="col-md-6">';

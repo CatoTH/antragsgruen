@@ -189,7 +189,7 @@ abstract class DefaultTypeBase extends ISupportType
     public function submitMotion(Motion $motion)
     {
         $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
-        if ($this->hasInitiatorGivenSupporters()) {
+        if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
             $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
         }
 
@@ -217,7 +217,7 @@ abstract class DefaultTypeBase extends ISupportType
     public function submitAmendment(Amendment $amendment)
     {
         $affectedRoles = [MotionSupporter::ROLE_INITIATOR];
-        if ($this->hasInitiatorGivenSupporters()) {
+        if ($this->hasInitiatorGivenSupporters() && !$this->adminMode) {
             $affectedRoles[] = MotionSupporter::ROLE_SUPPORTER;
         }
 

@@ -2,6 +2,7 @@
 @import "variables";
 @import "bootstrap-3.3.6-sass/bootstrap/variables";
 @import "bootstrap-3.3.6-sass/bootstrap/glyphicons";
+@import "bootstrap-3.3.6-sass/bootstrap/mixins";
 
 .adminForm {
   label {
@@ -549,5 +550,12 @@ label.legend {
   }
   .supporterRowAdder {
     margin-left: 42px;
+  }
+  .fullTextAdder {
+    float: right;
+  }
+  #fullTextHolder {
+    @include clearfix();
+    padding-left: 25px;
   }
 }

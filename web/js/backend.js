@@ -439,7 +439,8 @@
             });
         });
 
-        var $sortable = $("#motionSupporterHolder").find("> ul");
+        var $supporterHolder = $("#motionSupporterHolder"),
+            $sortable = $supporterHolder.find("> ul");
         Sortable.create($sortable[0], {draggable: 'li'});
 
         $(".supporterRowAdder").click(function (ev) {
@@ -449,6 +450,42 @@
         $sortable.on("click", ".delSupporter", function(ev) {
             ev.preventDefault();
             $(this).parents("li").first().remove();
+        });
+
+        var $fullTextHolder = $("#fullTextHolder");
+        $supporterHolder.find(".fullTextAdd").click(function() {
+            var lines = $fullTextHolder.find('textarea').val().split(";"),
+                template = $(".supporterRowAdder").data("content"),
+                getNewElement = function () {
+                    var $rows = $sortable.find("> li");
+                    for (var i = 0; i < $rows.length; i++) {
+                        var $row = $rows.eq(i);
+                        if ($row.find(".supporterName").val() == '' && $row.find(".supporterOrga").val() == '') return $row;
+                    }
+                    // No empty row found
+                    var $newEl = $(template);
+                    $sortable.append($newEl);
+                    return $newEl;
+                };
+            var $firstAffectedRow = null;
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i] == '') {
+                    continue;
+                }
+                var $newEl = getNewElement();
+                if ($firstAffectedRow == null) $firstAffectedRow = $newEl;
+                if ($newEl.find('input.supporterOrga').length > 0) {
+                    var parts = lines[i].split(',');
+                    $newEl.find('input.supporterName').val(parts[0].trim());
+                    if (parts.length > 1) {
+                        $newEl.find('input.supporterOrga').val(parts[1].trim());
+                    }
+                } else {
+                    $newEl.find('input.supporterName').val(lines[i]);
+                }
+            }
+            $fullTextHolder.find('textarea').select().focus();
+            $firstAffectedRow.scrollintoview();
         });
     };
 

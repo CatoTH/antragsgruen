@@ -208,11 +208,13 @@ class MotionController extends AdminBase
                     $motionType->status                      = 0;
                 }
             }
-            $motionType->titleSingular = $type['titleSingular'];
-            $motionType->titlePlural   = $type['titlePlural'];
-            $motionType->createTitle   = $type['createTitle'];
-            $motionType->pdfLayout     = $type['pdfLayout'];
-            $motionType->motionPrefix  = $type['motionPrefix'];
+            $motionType->titleSingular          = $type['titleSingular'];
+            $motionType->titlePlural            = $type['titlePlural'];
+            $motionType->createTitle            = $type['createTitle'];
+            $motionType->pdfLayout              = $type['pdfLayout'];
+            $motionType->motionPrefix           = $type['motionPrefix'];
+            $motionType->motionLikesDislikes    = 0;
+            $motionType->amendmentLikesDislikes = 0;
             if (!$motionType->save()) {
                 var_dump($motionType->getErrors());
                 die();
