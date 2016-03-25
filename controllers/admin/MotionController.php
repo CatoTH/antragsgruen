@@ -260,6 +260,9 @@ class MotionController extends AdminBase
             $preSupporters[$supporter->id] = $supporter;
         }
         for ($i = 0; $i < count($names); $i++) {
+            if (trim($names[$i]) == '' && trim($orgas[$i]) == '') {
+                continue;
+            }
             if (isset($preSupporters[$preIds[$i]])) {
                 $supporter = $preSupporters[$preIds[$i]];
             } else {

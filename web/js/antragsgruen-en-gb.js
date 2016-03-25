@@ -15,7 +15,9 @@ ANTRAGSGRUEN_STRINGS = {
         "accept_all": "Do you really want to accept all remaining changes?",
         "reject_all": "Do you really want to reject all remaining changes?",
         "err_pending_changes": "You have to accept or reject all changes before deactivating the change-tracking mode.",
-
+    },
+    "admin": {
+        
     }
 };
 

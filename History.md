@@ -7,7 +7,8 @@
 - Support database table prefixes
 - Support policy of motions and amendments can now be set independently
 - Compiled assets (stylesheets, scripts) are now included in the repository. This makes installation from the repository a lot easier.
-- To-Do-Items on the admin page are now sorted (by date) 
+- To-Do-Items on the admin page are now sorted (by date)
+- The supporters of a motion/amendment can now be reorderd in the backend using drag&drop
 - Bugfix: creating a new consultation based on a template did not clone the motion sections and therefore created empty motion types
 - Bugfix: Dangling &nbsp;'s at the end of a line were not stripped at a motion, but at the amendments.
 - Bugfix: Motions with section-based comments could not be edited in the admin-screen

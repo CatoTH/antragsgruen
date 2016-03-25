@@ -15,8 +15,20 @@ ANTRAGSGRUEN_STRINGS = {
     "merge": {
         "accept_all": "Do you really want to accept all remaining changes?",
         "reject_all": "Do you really want to reject all remaining changes?",
-        "err_pending_changes": "You have to accept or reject all changes before deactivating the change-tracking mode.",
-
+        "err_pending_changes": "You have to accept or reject all changes before deactivating the change-tracking mode."
+    },
+    "admin": {
+        "adminMayEditConfirm": "If this is deactivated, this cannot be undone for all motions created up to now.",
+        "deleteDataConfirm": "Really delete this?",
+        "agendaAddEntry": "Add entry",
+        "agendaDelEntryConfirm": "Delete this agenda item and all sub-items?",
+        "removeAdminConfirm": "Do you really want to remove admin right from this user?",
+        "emailMissingCode": "The text needs to contain the code %ACCOUNT%.",
+        "emailMissingLink": "The text needs to contain the code %LINK%.",
+        "emailMissingTo": "No e-mail-address was entered.",
+        "emailNumberMismatch": "The number of names and e-mail-addresses does not match.",
+        "delMotionConfirm": "Do you really want to delete this motion?",
+        "delAmendmentConfirm": "Do you really want to delete this amendment?"
     }
 };
 
