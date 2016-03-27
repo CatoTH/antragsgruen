@@ -116,7 +116,7 @@ return [
         bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
     'create_explanation_title'           => 'Antrag oder Änderungsantrag?',
     'support_collect_explanation_title'  => 'Unterstützer*innen sammeln',
-    'support_collect_explanation'        => 'Anträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um als eigenständiger Antrag zugelassen zu werden. Um einen solchen Antrag einzureichen, gehe wie folgt vor:<br>
+    'support_collect_explanation'        => '(Änderungs-)Anträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um als eigenständiger Antrag zugelassen zu werden. Um einen solchen Antrag einzureichen, gehe wie folgt vor:<br>
 <ol>
 <li><strong>Antragsentwurf</strong>: Trage zunächst hier den Antrag ein und hinterlege deine Kontaktdaten. Bestätige auf der nächsten Seite, das du den Antrag einbringen willst.</li>
 <li><strong>Untertützung</strong>: Du erhältst dann einen Link, den du an potentielle Interessierte schicken kannst. Jeder, der den Link kennt, kann den Antragsentwurf einsehen. Jede*r Delegierte*r kann den Antrag nun hier auf Antragsgrün unterstützen.</li>

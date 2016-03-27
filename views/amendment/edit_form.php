@@ -50,6 +50,15 @@ echo '</div><br style="clear: both;">';
 
 echo $controller->showErrors();
 
+if ($form->motion->motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
+    /** @var \app\models\supportTypes\CollectBeforePublish $supp */
+    $supp = $form->motion->motionType->getAmendmentSupportTypeClass();
+    echo '<div style="font-weight: bold; text-decoration: underline;">' .
+        \Yii::t('amend', 'support_collect_explanation_title') . '</div>' .
+        str_replace('%MIN%', $supp->getMinNumberOfSupporters(), \Yii::t('amend', 'support_collect_explanation')) .
+        '<br><br>';
+}
+
 $amendmentPolicy = $form->motion->motionType->getAmendmentPolicy();
 if (!in_array($amendmentPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
     echo '<div>

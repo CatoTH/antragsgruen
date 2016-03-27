@@ -25,6 +25,9 @@ return [
     'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
         'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
+    'confirmed_support_phase'           => 'Du hast den Änderungsantrag eingestellt.<br>
+        Um ihn offiziell einzureichen, benötigt er nun <strong>mindestens %MIN% Unterstützer*innen</strong>.<br><br>
+        Du kannst Interessierten folgenden Link schicken, damit sie den Änderungsantrag dort unterstützen können:',
     'submitted_adminnoti_title'         => 'Neuer Änderungsantrag',
     'submitted_adminnoti_body'          => "Es wurde ein neuer Änderungsantrag eingereicht.\nAntrag: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
     'submitted_screening_email'         => "Hallo,\n\ndu hast soeben einen Änderungsantrag eingereicht.\n" .
@@ -40,6 +43,13 @@ return [
         'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
         'Falls dein Änderungsantrag Hinweise an die Programmkommission enthält, kannst du diese als ' . "\n" .
         '&quot;<strong>Redaktionelle Änderung</strong>&quot; beifügen.',
+    'support_collect_explanation_title' => 'Unterstützer*innen sammeln',
+    'support_collect_explanation'       => 'Änderungsanträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um zugelassen zu werden. Um einen solchen Änderungsantrag einzureichen, gehe wie folgt vor:<br>
+<ol>
+<li><strong>Entwurf</strong>: Trage zunächst hier den Änderungsantrag ein und hinterlege deine Kontaktdaten. Bestätige auf der nächsten Seite, das du den Änderungsantrag einbringen willst.</li>
+<li><strong>Untertützung</strong>: Du erhältst dann einen Link, den du an potentielle Interessierte schicken kannst. Jeder, der den Link kennt, kann den Entwurf einsehen. Jede*r Delegierte*r kann den Änderungsantrag nun hier auf Antragsgrün unterstützen.</li>
+<li><strong>Änderungsantrag einbringen</strong>: Sobald sich %MIN% Unterstützer*innen gefunden haben, bekommst du eine Benachrichtigungs-E-Mail. Ab dann kannst du den Änderungsantrag offiziell einbringen. Auch danach ist es noch möglich, dass sich Unterstützer*innen für diesen Änderungsantrag eintragen.</li>
+</ol>',
     'editorial_hint'                    => 'Redaktionelle Änderung',
     'merge_amend_stati'                 => 'Status der Änderungsanträge',
     'merge_bread'                       => 'Überarbeiten',
@@ -106,4 +116,17 @@ return [
     'like_done'                         => 'Du stimmst diesem Änderungsantrag nun zu.',
     'dislike_done'                      => 'Du lehnst diesen Änderungsantrag nun ab.',
     'neutral_done'                      => 'Du stehst diesem Änderungsantrag wieder neutral gegenüber.',
+    'support'                            => 'Unterstützen',
+    'support_question'                   => 'Willst du den Änderungsantrag unterstützen?',
+    'support_orga'                       => 'Organisation',
+    'support_name'                       => 'Name',
+    'support_done'                       => 'Du unterstützt diesen Änderungsantrag nun.',
+    'support_already'                    => 'Du unterstützt diesen Änderungsantrag bereits',
+    'support_collection_hint'            => 'Dieser Änderungsantrag ist noch nicht offiziell eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen (aktueller Stand: %CURR%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
+    'support_collection_reached_hint'    => 'Dieser Änderungsantrag ist noch nicht offiziell eingereicht. <strong>Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen.',
+    'support_reached_email_subject'      => 'Änderungsantrag: Unterstützer*innen-Anzahl erreicht',
+    'support_reached_email_body'         => 'Hallo,<br><br>Dein Änderungsantrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht. Damit kannst du ihn ab jetzt hier einreichen:<br><br><strong>%LINK%</strong><br><br>Bitte beachte, dass es <strong>zwingend notwendig</strong> ist, ihn nun explizit einzureichen.<br><br>Mit freundlichen Grüßen,<br>  Das Antragsgrün-Team',
+    'support_finish_btn'                 => 'Änderungsantrag offiziell einreichen',
+    'support_finish_err'                 => 'Das ist derzeit (noch) nicht möglich',
+    'support_finish_done'                => 'Der Änderungsantrag ist nun offiziell eingereicht',
 ];

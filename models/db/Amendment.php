@@ -4,7 +4,6 @@ namespace app\models\db;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
-use app\components\HTMLTools;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -508,6 +507,36 @@ class Amendment extends IMotion implements IRSSItem
         return $this->iAmInitiator();
     }
 
+    /**
+     * @return bool
+     */
+    public function canFinishSupportCollection()
+    {
+        if (!$this->iAmInitiator()) {
+            return false;
+        }
+        if ($this->status != Amendment::STATUS_COLLECTING_SUPPORTERS) {
+            return false;
+        }
+        $supporters    = count($this->getSupporters());
+        $minSupporters = $this->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+        return ($supporters >= $minSupporters);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSocialSharable()
+    {
+        if ($this->getMyConsultation()->site->getSettings()->forceLogin) {
+            return false;
+        }
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
+            return false;
+        }
+        return true;
+    }
+
     /** @var null|MotionSectionParagraphAmendment[] */
     private $changedParagraphCache = null;
 
@@ -554,6 +583,50 @@ class Amendment extends IMotion implements IRSSItem
         $this->getMyMotion()->flushCacheStart();
 
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_WITHDRAW, $this->id);
+    }
+
+    /**
+     */
+    public function setInitialSubmitted()
+    {
+        $needsCollectionPhase = false;
+        $motionType           = $this->getMyMotion()->motionType;
+        if ($motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
+            $isOrganization = false;
+            foreach ($this->getInitiators() as $initiator) {
+                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
+                    $isOrganization = true;
+                }
+            }
+            $supporters    = count($this->getSupporters());
+            $minSupporters = $motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+            if ($supporters < $minSupporters && !$isOrganization) {
+                $needsCollectionPhase = true;
+            }
+        }
+
+        if ($needsCollectionPhase) {
+            $this->status = Amendment::STATUS_COLLECTING_SUPPORTERS;
+        } elseif ($this->getMyConsultation()->getSettings()->screeningMotions) {
+            $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
+        } else {
+            $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
+            if ($this->titlePrefix == '') {
+                $numbering         = $this->getMyConsultation()->getAmendmentNumbering();
+                $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
+            }
+        }
+        $this->save();
+
+        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
+        $mailText      = str_replace(
+            ['%TITLE%', '%LINK%', '%INITIATOR%'],
+            [$this->getTitle(), $amendmentLink, $this->getInitiatorsStr()],
+            \Yii::t('amend', 'submitted_adminnoti_body')
+        );
+
+        // @TODO Use different texts depending on the status
+        $this->getMyConsultation()->sendEmailToAdmins(\Yii::t('amend', 'submitted_adminnoti_title'), $mailText);
     }
 
     /**

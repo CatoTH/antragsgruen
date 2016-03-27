@@ -417,18 +417,18 @@ class Consultation extends ActiveRecord
     public function getInvisibleMotionStati($withdrawnInvisible = false)
     {
         $invisible = [
-            Motion::STATUS_DELETED,
-            Motion::STATUS_UNCONFIRMED,
-            Motion::STATUS_DRAFT,
-            Motion::STATUS_COLLECTING_SUPPORTERS
+            IMotion::STATUS_DELETED,
+            IMotion::STATUS_UNCONFIRMED,
+            IMotion::STATUS_DRAFT,
+            IMotion::STATUS_COLLECTING_SUPPORTERS
         ];
         if (!$this->getSettings()->screeningMotionsShown) {
-            $invisible[] = Motion::STATUS_SUBMITTED_UNSCREENED;
+            $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;
         }
         if ($withdrawnInvisible) {
-            $invisible[] = Motion::STATUS_WITHDRAWN;
-            $invisible[] = Motion::STATUS_MODIFIED;
-            $invisible[] = Motion::STATUS_MODIFIED_ACCEPTED;
+            $invisible[] = IMotion::STATUS_WITHDRAWN;
+            $invisible[] = IMotion::STATUS_MODIFIED;
+            $invisible[] = IMotion::STATUS_MODIFIED_ACCEPTED;
         }
         return $invisible;
     }

@@ -142,6 +142,15 @@ class MotionController extends AdminBase
                     $motionType->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
                     $motionType->save();
                 }
+                if ($motionType->policyAmendments == IPolicy::POLICY_ALL) {
+                    $motionType->policyAmendments = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->save();
+                }
+                $support = $motionType->policySupportAmendments;
+                if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
+                    $motionType->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->save();
+                }
                 if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
                     $settings                         = $this->consultation->getSettings();
                     $settings->initiatorConfirmEmails = true;
@@ -150,11 +159,15 @@ class MotionController extends AdminBase
                 }
             }
 
-            $support                  = $motionType->policySupportMotions;
-            $createAll                = ($motionType->policyMotions == IPolicy::POLICY_ALL);
-            $supportAll               = ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY);
-            $noEmail                  = !$this->consultation->getSettings()->initiatorConfirmEmails;
-            $supportCollPolicyWarning = ($createAll || $supportAll || $noEmail);
+            $supportMotion = $motionType->policySupportMotions;
+            $supportAmend  = $motionType->policySupportAmendments;
+            $createMotion  = ($motionType->policyMotions == IPolicy::POLICY_ALL);
+            $createAmend   = ($motionType->policyAmendments == IPolicy::POLICY_ALL);
+            $supportMotion = ($supportMotion == IPolicy::POLICY_ALL || $supportMotion == IPolicy::POLICY_NOBODY);
+            $supportAmend  = ($supportAmend == IPolicy::POLICY_ALL || $supportAmend == IPolicy::POLICY_NOBODY);
+            $noEmail       = !$this->consultation->getSettings()->initiatorConfirmEmails;
+
+            $supportCollPolicyWarning = ($createMotion || $createAmend || $supportMotion || $supportAmend || $noEmail);
         }
 
         if ($this->isRequestSet('msg') && $this->getRequestValue('msg') == 'created') {

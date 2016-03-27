@@ -26,9 +26,21 @@ if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
 if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
     echo \Yii::t('amend', 'confirmed_screening');
 }
+if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+    $min = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+    echo str_replace('%MIN%', $min, \Yii::t('amend', 'confirmed_support_phase'));
+}
+
 echo '</div>';
 
 echo Html::beginForm(UrlHelper::createMotionUrl($amendment->getMyMotion()), 'post', ['id' => 'motionConfirmedForm']);
+
+if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+    echo '<br><div class="alert alert-info promoUrl" role="alert">';
+    echo Html::encode(UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)));
+    echo '</div>';
+}
+
 echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . \Yii::t('amend', 'sidebar_back') .
     '</button></p>';
 echo Html::endForm();

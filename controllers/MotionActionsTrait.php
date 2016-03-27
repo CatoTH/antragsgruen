@@ -224,7 +224,6 @@ trait MotionActionsTrait
         if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
             throw new FormError('Not supported');
         }
-        $maxPos = 0;
         foreach ($motion->getSupporters() as $supporter) {
             if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
                 \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_already'));

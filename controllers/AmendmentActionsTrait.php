@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\EmailNotifications;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
@@ -157,11 +158,41 @@ trait AmendmentActionsTrait
 
     /**
      * @param Amendment $amendment
-     * @param string $role
-     * @param string $string
      * @throws FormError
      */
-    private function amendmentLikeDislike(Amendment $amendment, $role, $string)
+    private function amendmentSupport(Amendment $amendment)
+    {
+        if (!($amendment->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+            throw new FormError('Not supported');
+        }
+        foreach ($amendment->getSupporters() as $supporter) {
+            if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
+                \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_already'));
+                return;
+            }
+        }
+        $role = AmendmentSupporter::ROLE_SUPPORTER;
+        $name = \Yii::$app->request->post('motionSupportName', '');
+        $orga = \Yii::$app->request->post('motionSupportOrga', '');
+        $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga);
+        ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $amendment->id);
+
+        $supportClass  = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
+        $minSupporters = $supportClass->getMinNumberOfSupporters();
+        if (count($amendment->getSupporters()) == $minSupporters) {
+            EmailNotifications::sendAmendmentSupporterMinimumReached($amendment);
+        }
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param string $role
+     * @param string $string
+     * @param string $name
+     * @param string $orga
+     * @throws FormError
+     */
+    private function amendmentLikeDislike(Amendment $amendment, $role, $string, $name = '', $orga = '')
     {
         $currentUser = User::getCurrentUser();
         if ($currentUser == null) {
@@ -171,16 +202,21 @@ trait AmendmentActionsTrait
             throw new FormError('Supporting this motion is not possible');
         }
 
+        $maxPos = 0;
         foreach ($amendment->amendmentSupporters as $supp) {
             if ($supp->userId == $currentUser->id) {
                 $amendment->unlink('amendmentSupporters', $supp, true);
+            } elseif ($supp->position > $maxPos) {
+                $maxPos = $supp->position;
             }
         }
-        $support              = new AmendmentSupporter();
-        $support->amendmentId = $amendment->id;
-        $support->userId      = $currentUser->id;
-        $support->position    = 0;
-        $support->role        = $role;
+        $support               = new AmendmentSupporter();
+        $support->amendmentId  = $amendment->id;
+        $support->userId       = $currentUser->id;
+        $support->name         = $name;
+        $support->organization = $orga;
+        $support->position     = $maxPos + 1;
+        $support->role         = $role;
         $support->save();
 
         $amendment->refresh();
@@ -235,6 +271,29 @@ trait AmendmentActionsTrait
 
     /**
      * @param Amendment $amendment
+     */
+    private function amendmentSupportFinish(Amendment $amendment)
+    {
+        if (!$amendment->canFinishSupportCollection()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'support_finish_err'));
+            return;
+        }
+
+        $amendment->setInitialSubmitted();
+
+        if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
+            $amendment->onPublish();
+        } else {
+            EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
+        }
+
+        $consultation = $amendment->getMyConsultation();
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_SUPPORT_FINISH, $amendment->id);
+        \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_finish_done'));
+    }
+
+    /**
+     * @param Amendment $amendment
      * @param int $commentId
      * @param array $viewParameters
      */
@@ -258,8 +317,14 @@ trait AmendmentActionsTrait
         } elseif (isset($post['motionDislike'])) {
             $this->amendmentDislike($amendment);
 
+        } elseif (isset($post['motionSupport'])) {
+            $this->amendmentSupport($amendment);
+
         } elseif (isset($post['motionSupportRevoke'])) {
             $this->amendmentSupportRevoke($amendment);
+
+        } elseif (isset($post['amendmentSupportFinish'])) {
+            $this->amendmentSupportFinish($amendment);
 
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);

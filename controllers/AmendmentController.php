@@ -185,26 +185,7 @@ class AmendmentController extends Base
         }
 
         if ($this->isPostSet('confirm')) {
-            $screening = $this->consultation->getSettings()->screeningAmendments;
-            if ($screening) {
-                $amendment->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
-            } else {
-                $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
-                if ($amendment->titlePrefix == '') {
-                    $numbering              = $amendment->getMyConsultation()->getAmendmentNumbering();
-                    $amendment->titlePrefix = $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
-                }
-            }
-            $amendment->save();
-
-            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-            $mailText      = str_replace(
-                ['%TITLE%', '%LINK%', '%INITIATOR%'],
-                [$amendment->getTitle(), $amendmentLink, $amendment->getInitiatorsStr()],
-                \Yii::t('amend', 'submitted_adminnoti_body')
-            );
-            $mailTitle     = \Yii::t('amend', 'submitted_adminnoti_title');
-            $amendment->getMyConsultation()->sendEmailToAdmins($mailTitle, $mailText);
+            $amendment->setInitialSubmitted();
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->onPublish();

@@ -137,6 +137,13 @@ if ($myself) {
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo '</span>';
             }
+            if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+                echo '<div>' . \Yii::t('motion', 'support_collect_status') . ': ';
+                echo count($amendment->getSupporters());
+                echo ' <small>(' . \Yii::t('motion', 'support_collect_min') . ': ';
+                echo $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+                echo ')</small></div>';
+            }
             echo '</li>';
         }
         echo '</ul></div>';
