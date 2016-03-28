@@ -61,8 +61,8 @@ $I->seeElement('button[name=motionSupport]');
 
 $I->wantTo('support this motion');
 
-$I->fillField('.motionSupportName', 'My name');
-$I->fillField('.motionSupportOrga', 'My organisation');
+$I->fillField('input[name=motionSupportName]', 'My name');
+$I->fillField('input[name=motionSupportOrga]', 'My organisation');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->see('Du unterstützt diesen Antrag nun.');
 $I->dontSeeElement('button[name=motionSupport]');

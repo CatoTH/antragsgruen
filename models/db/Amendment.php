@@ -607,7 +607,7 @@ class Amendment extends IMotion implements IRSSItem
 
         if ($needsCollectionPhase) {
             $this->status = Amendment::STATUS_COLLECTING_SUPPORTERS;
-        } elseif ($this->getMyConsultation()->getSettings()->screeningMotions) {
+        } elseif ($this->getMyConsultation()->getSettings()->screeningAmendments) {
             $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
         } else {
             $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
