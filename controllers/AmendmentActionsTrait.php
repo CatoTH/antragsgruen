@@ -196,10 +196,10 @@ trait AmendmentActionsTrait
     {
         $currentUser = User::getCurrentUser();
         if ($currentUser == null) {
-            throw new FormError('Supporting this motion is not possible');
+            throw new FormError('Supporting this amendment is not possible');
         }
         if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
-            throw new FormError('Supporting this motion is not possible');
+            throw new FormError('Supporting this amendment is not possible');
         }
 
         $maxPos = 0;
@@ -275,7 +275,7 @@ trait AmendmentActionsTrait
     private function amendmentSupportFinish(Amendment $amendment)
     {
         if (!$amendment->canFinishSupportCollection()) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'support_finish_err'));
+            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'support_finish_err'));
             return;
         }
 
@@ -289,7 +289,7 @@ trait AmendmentActionsTrait
 
         $consultation = $amendment->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_SUPPORT_FINISH, $amendment->id);
-        \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_finish_done'));
+        \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_finish_done'));
     }
 
     /**

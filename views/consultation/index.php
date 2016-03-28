@@ -134,6 +134,7 @@ if ($myself) {
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_SUPPORTER) {
                 echo ' (' . Yii::t('amend', 'supporter') . ')';
             }
+            echo ': ' . Html::encode($amendment->getStati()[$amendment->status]);
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo '</span>';
             }
