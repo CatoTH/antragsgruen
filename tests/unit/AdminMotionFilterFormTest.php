@@ -7,7 +7,7 @@ use app\models\db\IMotion;
 use app\models\forms\AdminMotionFilterForm;
 use Codeception\Specify;
 
-class MotionListTest extends DBTestBase
+class AdminMotionFilterFormTest extends DBTestBase
 {
     use Specify;
 
@@ -40,7 +40,7 @@ class MotionListTest extends DBTestBase
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
         $form->setAttributes(['tag' => '3']);
         $entries = $form->getSorted();
-        $this->assertEquals(['F-01', 'T-01', ''], $this->serializeMotions($entries));
+        $this->assertEquals(['', 'F-01', 'T-01'], $this->serializeMotions($entries));
 
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true);
         $form->setAttributes(['prefix' => 'S']);

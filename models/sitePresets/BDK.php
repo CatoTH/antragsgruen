@@ -102,6 +102,8 @@ class BDK implements ISitePreset
             'supportersHaveOrganizations' => true,
         ]);
         $type->amendmentMultipleParagraphs = 1;
+        $type->motionLikesDislikes         = 0;
+        $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->layoutTwoCols               = 0;
         $type->save();
