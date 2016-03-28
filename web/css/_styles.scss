@@ -331,6 +331,18 @@ del.space, ins.space, del.formatting, ins.formatting {
   .ICE-Tracking .ice-ins.hover, .ICE-Tracking .ice-ins.hover p {
     background-color: darken(rgba(100, 255, 100, 0.6), 10%);
   }
+  .editorialAmendments {
+    h3 {
+      font-size: 1em;
+      font-weight: bold;
+    }
+    .content {
+      border-bottom: solid 1px $headingSecondaryBackground;
+      &:first-child {
+        border-bottom: none;
+      }
+    }
+  }
 }
 
 .userAccountForm {
