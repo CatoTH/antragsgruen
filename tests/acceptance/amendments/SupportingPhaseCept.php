@@ -24,7 +24,9 @@ $I->loginAsStdUser();
     'motionSlug'       => 116,
 ]);
 $I->click("#sidebar .amendmentCreate a");
+$I->wait(0.2);
 $I->fillField('#sections_30', 'New title');
+$I->wait(0.2);
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 
@@ -90,6 +92,7 @@ $I->dontSeeCheckboxIsChecked('.amendmentDislike');
 $I->dontSeeCheckboxIsChecked('.amendmentLike');
 $I->checkOption('.amendmentLike');
 $I->checkOption('.amendmentDislike');
+$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 
@@ -127,6 +130,11 @@ $I->see('aktueller Stand: 0');
 
 $I->wantTo('support it again');
 
+$I->submitForm('.motionSupportForm', [], 'motionSupport');
+$I->dontSee('Du unterstützt diesen Änderungsantrag nun.');
+$I->see('No organization entered');
+
+$I->fillField('input[name=motionSupportOrga]', 'My organisation');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->see('Du unterstützt diesen Änderungsantrag nun.');
 

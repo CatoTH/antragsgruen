@@ -199,6 +199,8 @@ if ($amendment->changeExplanation != '') {
 
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
 $supporters = $amendment->getSupporters();
+$supportPolicy = $amendment->getMyMotion()->motionType->getAmendmentSupportPolicy();
+$supportType = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
 
 if (count($supporters) > 0 || $amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
@@ -221,12 +223,10 @@ if (count($supporters) > 0 || $amendment->status == Amendment::STATUS_COLLECTING
         echo '<em>' . \Yii::t('amend', 'supporter_none') . '</em><br>';
     }
     echo '<br>';
-    $policy = $amendment->getMyMotion()->motionType->getAmendmentSupportPolicy();
-    MotionLayoutHelper::printSupportingSection($amendment, $policy, $iAmSupporting);
+    MotionLayoutHelper::printSupportingSection($amendment, $supportPolicy, $supportType, $iAmSupporting);
     echo '</div></section>';
 }
 
-$supportPolicy = $amendment->getMyMotion()->motionType->getAmendmentSupportPolicy();
 MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
 if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOBODY) {

@@ -46,6 +46,7 @@ $I->dontSeeCheckboxIsChecked('.motionDislike');
 $I->dontSeeCheckboxIsChecked('.motionLike');
 $I->checkOption('.motionLike');
 $I->checkOption('.motionDislike');
+$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 
@@ -84,8 +85,12 @@ $I->see('aktueller Stand: 0');
 $I->wantTo('support it again');
 
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
-$I->see('Du unterstützt diesen Antrag nun.');
+$I->dontSee('Du unterstützt diesen Antrag nun.');
+$I->see('No organization entered');
 
+$I->fillField('input[name=motionSupportOrga]', 'My organisation');
+$I->submitForm('.motionSupportForm', [], 'motionSupport');
+$I->see('Du unterstützt diesen Antrag nun.');
 
 $I->logout();
 

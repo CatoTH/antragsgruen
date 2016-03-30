@@ -130,7 +130,7 @@ class EmailNotifications
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
             $plain      = str_replace('%LINK%', $motionLink, $plain);
             $html       = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
-
+            
             try {
                 Tools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUPPORTER_REACHED,

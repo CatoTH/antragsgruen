@@ -202,7 +202,7 @@ if (is_subclass_of($curForm, \app\models\supportTypes\DefaultTypeBase::class)) {
 echo '></div></div>';
 
 echo '<div class="form-group checkbox" id="typeAllowMoreSupporters">';
-echo '<div class="checkbox col-md-8 col-md-offset-3"><label>
+echo '<div class="checkbox col-md-8 col-md-offset-4"><label>
       <input type="checkbox" name="initiator[allowMoreSupporters]"';
 if ($curForm->allowMoreSupporters()) {
     echo ' checked';
@@ -212,7 +212,7 @@ echo '> ' . \Yii::t('admin', 'motion_type_allow_more_supp') . '
 echo '</div>';
 
 echo '<div class="form-group checkbox" id="typeHasOrgaRow">';
-echo '<div class="checkbox col-md-8 col-md-offset-3"><label>
+echo '<div class="checkbox col-md-8 col-md-offset-4"><label>
       <input type="checkbox" name="initiator[hasOrganizations]"';
 if (is_subclass_of($curForm, \app\models\supportTypes\DefaultTypeBase::class)) {
     /** @var \app\models\supportTypes\DefaultTypeBase $curForm */

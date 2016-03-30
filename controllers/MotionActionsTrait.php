@@ -230,14 +230,18 @@ trait MotionActionsTrait
                 return;
             }
         }
-        $role = MotionSupporter::ROLE_SUPPORTER;
-        $name = \Yii::$app->request->post('motionSupportName', '');
-        $orga = \Yii::$app->request->post('motionSupportOrga', '');
+        $supportType = $motion->motionType->getMotionSupportTypeClass();
+        $role        = MotionSupporter::ROLE_SUPPORTER;
+        $name        = \Yii::$app->request->post('motionSupportName', '');
+        $orga        = \Yii::$app->request->post('motionSupportOrga', '');
+        if ($supportType->hasOrganizations() && $orga == '') {
+            \Yii::$app->session->setFlash('error', 'No organization entered');
+            return;
+        }
         $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga);
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 
-        $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
-        if (count($motion->getSupporters()) == $minSupporters) {
+        if (count($motion->getSupporters()) == $supportType->getMinNumberOfSupporters()) {
             EmailNotifications::sendMotionSupporterMinimumReached($motion);
         }
     }

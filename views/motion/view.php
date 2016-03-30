@@ -201,8 +201,10 @@ if ($right == '') {
     echo '</div></div>';
 }
 
-$currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
-$supporters = $motion->getSupporters();
+$currUserId    = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
+$supporters    = $motion->getSupporters();
+$supportType   = $motion->motionType->getMotionSupportTypeClass();
+$supportPolicy = $motion->motionType->getMotionSupportPolicy();
 
 if (count($supporters) > 0 || $motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
@@ -225,11 +227,10 @@ if (count($supporters) > 0 || $motion->status == Motion::STATUS_COLLECTING_SUPPO
         echo '<em>' . \Yii::t('motion', 'supporting_none') . '</em><br>';
     }
     echo '<br>';
-    LayoutHelper::printSupportingSection($motion, $motion->motionType->getMotionSupportPolicy(), $iAmSupporting);
+    LayoutHelper::printSupportingSection($motion, $supportPolicy, $supportType, $iAmSupporting);
     echo '</div></section>';
 }
 
-$supportPolicy = $motion->motionType->getMotionSupportPolicy();
 LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
 
 $amendments = $motion->getVisibleAmendments();

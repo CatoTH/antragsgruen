@@ -23,9 +23,6 @@ abstract class DefaultTypeBase extends ISupportType
     protected $motionType;
 
     /** @var bool */
-    protected $hasOrganizations = false;
-
-    /** @var bool */
     protected $allowMoreSupporters = true;
 
     /**
@@ -75,14 +72,6 @@ abstract class DefaultTypeBase extends ISupportType
     public function hasFullTextSupporterField()
     {
         return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasOrganizations()
-    {
-        return $this->hasOrganizations;
     }
 
     /**

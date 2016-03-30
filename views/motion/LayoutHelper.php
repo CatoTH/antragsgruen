@@ -397,9 +397,10 @@ class LayoutHelper
     /**
      * @param IMotion $motion
      * @param IPolicy $policy
+     * @param ISupportType $supportType
      * @param bool $iAmSupporting
      */
-    public static function printSupportingSection(IMotion $motion, IPolicy $policy, $iAmSupporting)
+    public static function printSupportingSection($motion, $policy, $supportType, $iAmSupporting)
     {
         $user = User::getCurrentUser();
 
@@ -439,11 +440,13 @@ class LayoutHelper
                 echo '<input type="text" name="motionSupportName" class="form-control" required
                 value="' . Html::encode($name) . '" placeholder="' . \Yii::t('motion', 'support_name') . '">';
                 echo '</div>';
-
-                echo '<div class="col-md-4">';
-                echo '<input type="text" name="motionSupportOrga" class="form-control" value=""
-                placeholder="' . \Yii::t('motion', 'support_orga') . '">';
-                echo '</div>';
+                
+                if ($supportType->hasOrganizations()) {
+                    echo '<div class="col-md-4">';
+                    echo '<input type="text" name="motionSupportOrga" class="form-control" value=""
+                    placeholder="' . \Yii::t('motion', 'support_orga') . '" required>';
+                    echo '</div>';
+                }
 
                 echo '<div class="col-md-4" style="text-align: right">';
                 echo '<button type="submit" name="motionSupport" class="btn btn-success">';

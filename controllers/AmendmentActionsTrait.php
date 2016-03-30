@@ -171,13 +171,17 @@ trait AmendmentActionsTrait
                 return;
             }
         }
-        $role = AmendmentSupporter::ROLE_SUPPORTER;
-        $name = \Yii::$app->request->post('motionSupportName', '');
-        $orga = \Yii::$app->request->post('motionSupportOrga', '');
+        $supportClass = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
+        $role         = AmendmentSupporter::ROLE_SUPPORTER;
+        $name         = \Yii::$app->request->post('motionSupportName', '');
+        $orga         = \Yii::$app->request->post('motionSupportOrga', '');
+        if ($supportClass->hasOrganizations() && $orga == '') {
+            \Yii::$app->session->setFlash('error', 'No organization entered');
+            return;
+        }
         $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $amendment->id);
 
-        $supportClass  = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
         $minSupporters = $supportClass->getMinNumberOfSupporters();
         if (count($amendment->getSupporters()) == $minSupporters) {
             EmailNotifications::sendAmendmentSupporterMinimumReached($amendment);
