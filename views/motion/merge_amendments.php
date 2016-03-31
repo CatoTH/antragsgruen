@@ -140,6 +140,32 @@ foreach ($motion->getSortedSections(false) as $section) {
 
 echo '</div></section>';
 
+
+$editorials = [];
+foreach ($motion->getVisibleAmendments(false) as $amendment) {
+    if ($amendment->changeEditorial != '') {
+        $str = '<div class="amendment content"><h3>';
+        $str .= str_replace(
+            ['%TITLE%', '%INITIATOR%'],
+            [$amendment->titlePrefix, $amendment->getInitiatorsStr()],
+            \Yii::t('amend', 'merge_amend_by')
+        );
+        $str .= '</h3>';
+        $str .= '<div class="text">';
+        $str .= $amendment->changeEditorial;
+        $str .= '</div></div>';
+        $editorials[] = $str;
+    }
+}
+if (count($editorials) > 0) {
+    echo '<section class="editorialAmendments">
+<h2 class="green">' . \Yii::t('amend', 'merge_amend_editorials') . '</h2>
+<div>';
+    echo implode('', $editorials);
+    echo '</div></section>';
+}
+
+
 $jsStati = [
     'accepted'          => Amendment::STATUS_ACCEPTED,
     'rejected'          => Amendment::STATUS_REJECTED,
