@@ -361,6 +361,22 @@ label.legend {
   }
 }
 
+.motionListExportRow {
+  padding: 10px 19px;
+  border-bottom: solid 1px rgb(40, 95, 25);
+  background: lighten(rgb(175, 203, 8), 50%);
+  text-align: right;
+  @include clearfix();
+
+  .title {
+    line-height: 33px;
+    vertical-align: middle;
+    font-weight: bold;
+  }
+
+
+}
+
 .motionListSearchForm {
   margin-bottom: 20px;
   margin-top: 20px;
