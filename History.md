@@ -16,6 +16,7 @@
 - Bugfix: when global line numbering was enabled, unscreened motions could not be viewed by the admin
 - Bugfix: the amendment creation view showed the creation policy for motions, not for amendments
 - Bugfix: the "tag"-based home page was buggy in several ways 
+- Bugfix: Texts containing links to domains with german umlauts could not be saved
 
 ## Version 3.1 (2016-02-14)
 

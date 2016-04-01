@@ -202,4 +202,13 @@ Test 2.</p>
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }
+
+    /**
+     */
+    public function testUmlautDomains() {
+$orig = 'Test <a href="http://www.hössl.org">My Domain</a>';
+        $expect = 'Test <a href="http://www.xn--hssl-5qa.org">My Domain</a>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
 }

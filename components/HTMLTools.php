@@ -11,6 +11,18 @@ class HTMLTools
     public static $KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section'];
 
     /**
+     * Required by HTML Purifier to handle Umlaut domains
+     */
+    public static function loadNetIdna2()
+    {
+        $dir = __DIR__ . DIRECTORY_SEPARATOR . 'Net_IDNA2-0.1.1' . DIRECTORY_SEPARATOR . 'Net' . DIRECTORY_SEPARATOR;
+        $dir2 = $dir . 'IDNA2' . DIRECTORY_SEPARATOR;
+        @require_once $dir2 . 'Exception.php';
+        @require_once $dir2 . 'Exception' . DIRECTORY_SEPARATOR . 'Nameprep.php';
+        @require_once $dir . 'IDNA2.php';
+    }
+
+    /**
      * @param string $html
      * @return string
      */
@@ -52,6 +64,7 @@ class HTMLTools
      */
     public static function correctHtmlErrors($html)
     {
+        static::loadNetIdna2();
         $str = HtmlPurifier::process(
             $html,
             function ($config) {
@@ -89,6 +102,7 @@ class HTMLTools
     {
         $html = str_replace("\r", '', $html);
 
+        static::loadNetIdna2();
         $html = HtmlPurifier::process(
             $html,
             function ($config) {
@@ -256,6 +270,7 @@ class HTMLTools
      */
     public static function html2DOM($html)
     {
+        static::loadNetIdna2();
         $html = HtmlPurifier::process(
             $html,
             [
@@ -362,13 +377,13 @@ class HTMLTools
         }, $text);
 
         $text = preg_replace_callback("/<ins[^>]*>(.*)<\/ins>/siU", function ($matches) {
-            $ins = \Yii::t('diff', 'plain_text_ins');
+            $ins  = \Yii::t('diff', 'plain_text_ins');
             $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
             return $text;
         }, $text);
 
         $text = preg_replace_callback("/<del[^>]*>(.*)<\/del>/siU", function ($matches) {
-            $ins = \Yii::t('diff', 'plain_text_del');
+            $ins  = \Yii::t('diff', 'plain_text_del');
             $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
             return $text;
         }, $text);
