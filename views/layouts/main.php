@@ -114,8 +114,10 @@ if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
     if ($controller->consultation) {
         $homeUrl = UrlHelper::createUrl('consultation/index');
         echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $homeUrl) . '</li>';
-        $helpLink = UrlHelper::createUrl('consultation/help');
-        echo '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+        if ($controller->consultation->hasHelpPage()) {
+            $helpLink = UrlHelper::createUrl('consultation/help');
+            echo '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+        }
     } else {
         $startLink = UrlHelper::createUrl('manager/index');
         echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';

@@ -24,6 +24,7 @@ return [
     'content_imprint_bread' => 'Impressum',
     'content_help_title'    => 'Hilfe',
     'content_help_bread'    => 'Hilfe',
+    'content_help_place'    => '<p>Hilfe...</p>',
     'content_maint_bread'   => 'Wartungsmodus',
     'content_maint_title'   => 'Wartungsmodus',
     'content_maint_text'    => '<p>Diese Veranstaltung wurde vom Admin noch nicht freigeschaltet.</p>',

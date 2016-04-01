@@ -9,6 +9,7 @@
 - Compiled assets (stylesheets, scripts) are now included in the repository. This makes installation from the repository a lot easier.
 - To-Do-Items on the admin page are now sorted (by date)
 - The supporters of a motion/amendment can now be reorderd in the backend using drag&drop
+- The "Help" link in the menu is only shown after explicitly created by the admin (on the admin page) 
 - Bugfix: creating a new consultation based on a template did not clone the motion sections and therefore created empty motion types
 - Bugfix: Dangling &nbsp;'s at the end of a line were not stripped at a motion, but at the amendments.
 - Bugfix: Motions with section-based comments could not be edited in the admin-screen
