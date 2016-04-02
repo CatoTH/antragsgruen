@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
@@ -21,7 +22,8 @@ $DEBUG = false;
 $params = \yii::$app->params;
 
 $doc = new Spreadsheet([
-    'tmpPath' => $params->tmpDir
+    'tmpPath'   => $params->tmpDir,
+    'trustHtml' => true,
 ]);
 
 $currCol = $firstCol = 1;
@@ -132,6 +134,7 @@ foreach ($motions as $motion) {
             $text .= $section->getSectionType()->getMotionODS();
             $text .= "\n\n";
         }
+        $text = HTMLTools::correctHtmlErrors($text);
         $doc->setCell($row, $COL_TEXTS[0], Spreadsheet::TYPE_HTML, $text);
     } else {
         foreach ($motionType->motionSections as $section) {
@@ -141,6 +144,7 @@ foreach ($motions as $motion) {
                     $text = $sect->getSectionType()->getMotionODS();
                 }
             }
+            $text = HTMLTools::correctHtmlErrors($text);
             $doc->setCell($row, $COL_TEXTS[$section->id], Spreadsheet::TYPE_HTML, $text);
         }
     }

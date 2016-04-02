@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\models\db\Motion;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
@@ -20,7 +21,8 @@ $DEBUG = false;
 $params = \yii::$app->params;
 
 $doc = new Spreadsheet([
-    'tmpPath' => $params->tmpDir
+    'tmpPath'   => $params->tmpDir,
+    'trustHtml' => true,
 ]);
 
 $currCol = $firstCol = 1;
@@ -106,6 +108,7 @@ foreach ($motions as $motion) {
     if ($hasAgendaItems && $motion->agendaItem) {
         $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $motion->agendaItem->getShownCode(true));
     }
+    $title = HTMLTools::correctHtmlErrors($title);
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
 
     $amendments = $motion->getVisibleAmendmentsSorted();
@@ -132,7 +135,8 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
         $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorContacs));
         $doc->setCell($row, $COL_FIRST_LINE, Spreadsheet::TYPE_NUMBER, $firstLine);
-        $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $amendment->changeExplanation);
+        $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
+        $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $changeExplanation);
 
         $change = '';
         if ($amendment->changeEditorial != '') {
@@ -142,6 +146,7 @@ foreach ($motions as $motion) {
         foreach ($amendment->getSortedSections(false) as $section) {
             $change .= $section->getSectionType()->getAmendmentODS();
         }
+        $change = HTMLTools::correctHtmlErrors($change);
         $doc->setCell($row, $COL_CHANGE, Spreadsheet::TYPE_HTML, $change);
     }
 

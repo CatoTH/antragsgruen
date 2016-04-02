@@ -24,7 +24,7 @@
     "tijsverkoyen/css-to-inline-styles": "*",
     "heise/shariff": "dev-master",
     "phpoffice/phpexcel": "dev-master",
-    "catoth/html2opendocument": "*",
+    "catoth/html2opendocument": "0.4",
     "bower-asset/eonasdan-bootstrap-datetimepicker": "4.17.*",
     "bower-asset/html5shiv": "*",
     "bower-asset/Sortable": "*",

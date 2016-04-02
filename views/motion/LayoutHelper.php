@@ -557,6 +557,7 @@ class LayoutHelper
         $doc      = new \CatoTH\HTML2OpenDocument\Text([
             'templateFile' => $template,
             'tmpPath'      => $config->tmpDir,
+            'trustHtml'    => true,
         ]);
 
         $DEBUG = (isset($_REQUEST['src']) && YII_ENV == 'dev');

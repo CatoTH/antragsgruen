@@ -623,13 +623,14 @@ class TextSimple extends ISectionType
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';
                 }
-
+                $html = HTMLTools::correctHtmlErrors($html);
                 $odt->addHtmlTextBlock($html, true);
             }
         } else {
             $paras = $section->getTextParagraphLines();
             foreach ($paras as $para) {
                 $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                $html = HTMLTools::correctHtmlErrors($html);
                 $odt->addHtmlTextBlock($html, false);
             }
         }
@@ -661,6 +662,7 @@ class TextSimple extends ISectionType
         $firstLine = $section->getFirstLineNumber();
         $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
 
+        $html = HTMLTools::correctHtmlErrors($html);
         $odt->addHtmlTextBlock($html, false);
     }
 
