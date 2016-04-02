@@ -320,7 +320,7 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
         LayoutHelper::showCommentForm($form, $motion->getConsultation(), -1, -1);
     } elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>' .
+        <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
             \Yii::t('motion', 'comment_login_hint') .
             '</div>';
     }

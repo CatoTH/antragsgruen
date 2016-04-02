@@ -272,7 +272,8 @@ if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOB
         MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
     } elseif ($amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>' . \Yii::t('amend', 'comments_please_log_in') . '</div>';
+        <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
+            \Yii::t('amend', 'comments_please_log_in') . '</div>';
     }
     echo '</section>';
 }

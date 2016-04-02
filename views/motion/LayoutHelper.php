@@ -383,11 +383,14 @@ class LayoutHelper
             echo Html::endForm();
         } else {
             if ($cantSupportMsg != '') {
-                echo '<div class="alert alert-danger" role="alert">
-                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                ' . Html::encode($cantSupportMsg) . '
-            </div>';
+                if ($cantSupportMsg == \Yii::t('structure', 'policy_logged_supp_denied')) {
+                    $icon = '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ';
+                } else {
+                    $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
+                }
+                echo '<div class="alert alert-info" role="alert">' .
+                    $icon . '<span class="sr-only">Error:</span>' . Html::encode($cantSupportMsg) . '
+                    </div>';
             }
         }
         echo '</div>';
@@ -440,7 +443,7 @@ class LayoutHelper
                 echo '<input type="text" name="motionSupportName" class="form-control" required
                 value="' . Html::encode($name) . '" placeholder="' . \Yii::t('motion', 'support_name') . '">';
                 echo '</div>';
-                
+
                 if ($supportType->hasOrganizations()) {
                     echo '<div class="col-md-4">';
                     echo '<input type="text" name="motionSupportOrga" class="form-control" value=""
@@ -458,10 +461,13 @@ class LayoutHelper
             echo Html::endForm();
         } else {
             if ($cantSupportMsg != '') {
-                echo '<div class="alert alert-danger" role="alert">
-                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                ' . Html::encode($cantSupportMsg) . '
+                if ($cantSupportMsg == \Yii::t('structure', 'policy_logged_supp_denied')) {
+                    $icon = '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ';
+                } else {
+                    $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
+                }
+                echo '<div class="alert alert-info" role="alert">' . $icon .
+                    '<span class="sr-only">Error:</span>' . Html::encode($cantSupportMsg) . '
             </div>';
             }
         }
