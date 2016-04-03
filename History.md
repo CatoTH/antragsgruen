@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.2 [Not released yet]
+## Version 3.2 (2016-04-03)
 
 - We now support a "support collection phase", where a motion has to be supported by a given number of supporters before it is officially published.
 - Motions now have a more verbose URL including a secure token. The URL of unpublished motions is therefore not guessable anymore.
