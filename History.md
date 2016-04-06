@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.2.1 [Not yet released]
+
+- Bugfix: Admins could not edit drafts they created for other persons
+
 ## Version 3.2 (2016-04-03)
 
 - We now support a "support collection phase", where a motion has to be supported by a given number of supporters before it is officially published.
