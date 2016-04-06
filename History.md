@@ -1,6 +1,12 @@
 # Version history
 
-## Version 3.2 [Not released yet]
+## Version 3.2.1 (2016-04-06)
+
+- Support for Mailgun as mail service
+- Bugfix: Admins could not edit drafts they created for other persons
+
+
+## Version 3.2 (2016-04-03)
 
 - We now support a "support collection phase", where a motion has to be supported by a given number of supporters before it is officially published.
 - Motions now have a more verbose URL including a secure token. The URL of unpublished motions is therefore not guessable anymore.
@@ -9,6 +15,7 @@
 - Compiled assets (stylesheets, scripts) are now included in the repository. This makes installation from the repository a lot easier.
 - To-Do-Items on the admin page are now sorted (by date)
 - The supporters of a motion/amendment can now be reorderd in the backend using drag&drop
+- The "Help" link in the menu is only shown after explicitly created by the admin (on the admin page) 
 - Bugfix: creating a new consultation based on a template did not clone the motion sections and therefore created empty motion types
 - Bugfix: Dangling &nbsp;'s at the end of a line were not stripped at a motion, but at the amendments.
 - Bugfix: Motions with section-based comments could not be edited in the admin-screen

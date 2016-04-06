@@ -104,6 +104,7 @@ class Tools
         $obj->save();
 
         if ($exception) {
+            \Yii::error($exception->getMessage());
             /** @var \Exception $exception */
             throw new MailNotSent($exception->getMessage());
         }

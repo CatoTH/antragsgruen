@@ -24,7 +24,8 @@ $DEBUG = false;
 $params = \yii::$app->params;
 
 $doc = new Spreadsheet([
-    'tmpPath' => $params->tmpDir
+    'tmpPath'   => $params->tmpDir,
+    'trustHtml' => true,
 ]);
 
 $currCol = 0;
@@ -61,7 +62,7 @@ $fill = function ($cellAttributes, $textAttributes) use ($doc, &$row, $colLimit)
 
 foreach ($items as $item) {
     if ($item instanceof ConsultationAgendaItem) {
-        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $item->getShownCode(true));
+        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $item->getShownCode(true));
         $fill (['fo:background-color' => agendaColor], []);
     } else {
         if ($item instanceof Motion || $item instanceof Amendment) {
@@ -83,11 +84,11 @@ foreach ($items as $item) {
             $name      = $initiator->getNameWithOrga();
             $firstName = StringSplitter::first([' '], mb_substr($name, 0, 4) == 'Dr. ' ? mb_substr($name, 4) : $name);
             if ($item instanceof Motion) {
-                $doc->setCell($row, $COL_TITLE, Spreadsheet::TYPE_HTML, $item->title);
+                $doc->setCell($row, $COL_TITLE, Spreadsheet::TYPE_TEXT, $item->title);
                 $fill ([], ['fo:color' => motionColor]);
             }
-            $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $prefix);
-            $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_HTML, $name);
+            $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $prefix);
+            $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $name);
             $mailbody = str_replace(['%MOTION%', '%NAME%'], [$body, $firstName], \Yii::t('export', 'mail_body'));
             $href     = 'mailto:' . $email . '?subject=' . $prefix . ': ' . $title . '&body=' . rawurlencode($mailbody);
             $doc->setCell($row, $COL_EMAIL, Spreadsheet::TYPE_LINK, ['href' => $href, 'text' => $email]);
@@ -99,7 +100,7 @@ foreach ($items as $item) {
             $linkParams = ['href' => UrlHelper::absolutizeLink($viewUrl), 'text' => \Yii::t('export', 'motion')];
             $doc->setCell($row, $COL_LINK, Spreadsheet::TYPE_LINK, $linkParams);
         } else { // null
-            $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, \Yii::t('export', 'misc'));
+            $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'misc'));
             $fill (['fo:background-color' => agendaColor], []);
         }
     }

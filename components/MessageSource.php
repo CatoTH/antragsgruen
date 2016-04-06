@@ -248,7 +248,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 $data                  = new PageData();
                 $data->pageTitle       = \Yii::t('base', 'content_help_title');
                 $data->breadcrumbTitle = \Yii::t('base', 'content_help_bread');
-                $data->text            = '<p>Hilfe...</p>';
+                $data->text            = \Yii::t('base', 'content_help_place');
                 break;
             case 'legal':
                 $data                  = new PageData();

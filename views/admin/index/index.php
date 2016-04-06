@@ -164,6 +164,14 @@ echo Html::a(
     UrlHelper::createUrl('admin/index/translation'),
     ['id' => 'translationLink']
 );
+if (!$consultation->hasHelpPage()) {
+    echo '</li><li class="secondary">';
+    echo Html::a(
+        Yii::t('admin', 'help_page_create'),
+        UrlHelper::createUrl('consultation/help'),
+        ['id' => 'helpCreateLink']
+    );
+}
 echo '</li>';
 
 

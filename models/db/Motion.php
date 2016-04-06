@@ -340,10 +340,15 @@ class Motion extends IMotion implements IRSSItem
         if ($this->status == static::STATUS_DRAFT) {
             $hadLoggedInUser = false;
             foreach ($this->motionSupporters as $supp) {
+                $currUser        = User::getCurrentUser();
                 if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
-                    $currUser        = User::getCurrentUser();
                     if ($currUser && $currUser->id == $supp->userId) {
+                        return true;
+                    }
+                }
+                if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
+                    if ($currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
                         return true;
                     }
                 }
