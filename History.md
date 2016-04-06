@@ -1,8 +1,10 @@
 # Version history
 
-## Version 3.2.1 [Not yet released]
+## Version 3.2.1 (2016-04-06)
 
+- Support for Mailgun as mail service
 - Bugfix: Admins could not edit drafts they created for other persons
+
 
 ## Version 3.2 (2016-04-03)
 

@@ -109,6 +109,7 @@ echo HTMLTools::fueluxSelectbox(
     [
         'sendmail' => \yii::t('manager', 'email_sendmail'),
         'smtp'     => \yii::t('manager', 'email_smtp'),
+        'mailgun'  => \yii::t('manager', 'email_mailgun'),
         'mandrill' => \yii::t('manager', 'email_mandrill'),
         'none'     => \yii::t('manager', 'email_none'),
     ],
@@ -124,6 +125,26 @@ echo '<div class="form-group emailOption mandrillApiKey">
   <div class="col-sm-8">
     <input type="text" name="mailService[mandrillApiKey]" placeholder=""
       value="' . Html::encode($currApiKey) . '" class="form-control" id="mandrillApiKey">
+  </div>
+</div>';
+
+
+$currApiKey = (isset($config->mailService['apiKey']) ? $config->mailService['apiKey'] : '');
+echo '<div class="form-group emailOption mailgunApiKey">
+  <label class="col-sm-4 control-label" for="mailgunApiKey">' . \yii::t('manager', 'mailgun_api') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" name="mailService[mailgunApiKey]" placeholder=""
+      value="' . Html::encode($currApiKey) . '" class="form-control" id="mailgunApiKey">
+  </div>
+</div>';
+
+
+$currDomain = (isset($config->mailService['domain']) ? $config->mailService['domain'] : '');
+echo '<div class="form-group emailOption mailgunDomain">
+  <label class="col-sm-4 control-label" for="mailgunDomain">' . \yii::t('manager', 'mailgun_domain') . ':</label>
+  <div class="col-sm-8">
+    <input type="text" name="mailService[mailgunDomain]" placeholder=""
+      value="' . Html::encode($currDomain) . '" class="form-control" id="mailgunDomain">
   </div>
 </div>';
 
