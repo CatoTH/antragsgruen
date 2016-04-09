@@ -24,6 +24,9 @@ abstract class Base
             throw new ServerConfiguration('Invalid E-Mail configuration');
         }
         switch ($params['transport']) {
+            case 'mailgun':
+                return new Mailgun($params);
+                break;
             case 'mandrill':
                 return new Mandrill($params);
                 break;

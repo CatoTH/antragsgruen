@@ -29,7 +29,7 @@ echo '<div class="content contentPage">';
 
 if ($admin) {
     echo '<a href="#" class="editCaller" style="float: right;">' . \Yii::t('base', 'edit') . '</a><br>';
-    echo Html::beginForm($saveUrl, 'post');
+    echo Html::beginForm($saveUrl, 'post', ['class' => 'contentEditForm']);
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';
@@ -38,7 +38,7 @@ echo '</article>';
 
 if ($admin) {
     echo '<div class="textSaver hidden">';
-    echo '<button class="btn btn-primary" type="button" data-save-url="' . Html::encode($saveUrl) . '">';
+    echo '<button class="btn btn-primary submitBtn" type="button" data-save-url="' . Html::encode($saveUrl) . '">';
     echo \Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();

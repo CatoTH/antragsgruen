@@ -348,7 +348,6 @@ class LayoutHelper
             echo '</ul>';
             echo "<br>";
         }
-        echo '</div>';
 
         if ($canSupport) {
             echo Html::beginForm();
@@ -384,22 +383,27 @@ class LayoutHelper
             echo Html::endForm();
         } else {
             if ($cantSupportMsg != '') {
-                echo '<div class="alert alert-danger" role="alert">
-                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                ' . Html::encode($cantSupportMsg) . '
-            </div>';
+                if ($cantSupportMsg == \Yii::t('structure', 'policy_logged_supp_denied')) {
+                    $icon = '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ';
+                } else {
+                    $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
+                }
+                echo '<div class="alert alert-info" role="alert">' .
+                    $icon . '<span class="sr-only">Error:</span>' . Html::encode($cantSupportMsg) . '
+                    </div>';
             }
         }
+        echo '</div>';
         echo '</section>';
     }
 
     /**
      * @param IMotion $motion
      * @param IPolicy $policy
+     * @param ISupportType $supportType
      * @param bool $iAmSupporting
      */
-    public static function printSupportingSection(IMotion $motion, IPolicy $policy, $iAmSupporting)
+    public static function printSupportingSection($motion, $policy, $supportType, $iAmSupporting)
     {
         $user = User::getCurrentUser();
 
@@ -410,7 +414,7 @@ class LayoutHelper
         $canSupport = $policy->checkCurrUser();
         foreach ($motion->getInitiators() as $supp) {
             if ($user && $supp->userId == $user->id) {
-                $canSupport = false;
+                return;
             }
         }
 
@@ -422,26 +426,48 @@ class LayoutHelper
 
 
         if ($canSupport) {
-            echo Html::beginForm();
+            echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
 
-            echo '<div style="text-align: center; margin-bottom: 20px;">';
             if ($iAmSupporting) {
+                echo '<div style="text-align: center; margin-bottom: 20px;">';
                 echo '<button type="submit" name="motionSupportRevoke" class="btn">';
                 echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
                 echo '</button>';
+                echo '</div>';
             } else {
+                echo '<div class="label" style="margin-top: 10px;">' . \Yii::t('motion', 'support_question') . '</div>';
+                echo '<div class="row">';
+
+                echo '<div class="col-md-4">';
+                $name = ($user ? $user->name : '');
+                echo '<input type="text" name="motionSupportName" class="form-control" required
+                value="' . Html::encode($name) . '" placeholder="' . \Yii::t('motion', 'support_name') . '">';
+                echo '</div>';
+
+                if ($supportType->hasOrganizations()) {
+                    echo '<div class="col-md-4">';
+                    echo '<input type="text" name="motionSupportOrga" class="form-control" value=""
+                    placeholder="' . \Yii::t('motion', 'support_orga') . '" required>';
+                    echo '</div>';
+                }
+
+                echo '<div class="col-md-4" style="text-align: right">';
                 echo '<button type="submit" name="motionSupport" class="btn btn-success">';
                 echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'support');
-                echo '</button>';
+                echo '</button></div>';
+
+                echo '</div>';
             }
-            echo '</div>';
             echo Html::endForm();
         } else {
             if ($cantSupportMsg != '') {
-                echo '<div class="alert alert-danger" role="alert">
-                <span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                ' . Html::encode($cantSupportMsg) . '
+                if ($cantSupportMsg == \Yii::t('structure', 'policy_logged_supp_denied')) {
+                    $icon = '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ';
+                } else {
+                    $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
+                }
+                echo '<div class="alert alert-info" role="alert">' . $icon .
+                    '<span class="sr-only">Error:</span>' . Html::encode($cantSupportMsg) . '
             </div>';
             }
         }
@@ -531,6 +557,7 @@ class LayoutHelper
         $doc      = new \CatoTH\HTML2OpenDocument\Text([
             'templateFile' => $template,
             'tmpPath'      => $config->tmpDir,
+            'trustHtml'    => true,
         ]);
 
         $DEBUG = (isset($_REQUEST['src']) && YII_ENV == 'dev');

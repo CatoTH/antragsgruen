@@ -42,8 +42,11 @@ class CollectBeforePublish extends DefaultTypeBase
         if (isset($json['allowMoreSupporters'])) {
             $this->allowMoreSupporters = ($json['allowMoreSupporters'] == true);
         }
+        if (isset($json['hasOrganizations'])) {
+            $this->hasOrganizations = ($json['hasOrganizations'] == true);
+        }
         if (isset($json['skipForOrganizations'])) {
-            $this->skskipForOrganizations = $json['skipForOrganizations'];
+            $this->skipForOrganizations = $json['skipForOrganizations'];
         }
     }
 
@@ -56,6 +59,7 @@ class CollectBeforePublish extends DefaultTypeBase
             'minSupporters'        => $this->minSupporters,
             'allowMoreSupporters'  => $this->allowMoreSupporters,
             'skipForOrganizations' => $this->skipForOrganizations,
+            'hasOrganizations'     => $this->hasOrganizations,
         ]);
     }
 
@@ -70,8 +74,8 @@ class CollectBeforePublish extends DefaultTypeBase
         if (isset($settings['skipForOrganizations'])) {
             $this->skipForOrganizations = $settings['skipForOrganizations'];
         }
-        $this->hasOrganizations    = false;
-        $this->allowMoreSupporters = (isset($settings['allowMoreSupporters']));
+        $this->hasOrganizations    = isset($settings['hasOrganizations']);
+        $this->allowMoreSupporters = isset($settings['allowMoreSupporters']);
     }
 
     /**
@@ -125,7 +129,8 @@ class CollectBeforePublish extends DefaultTypeBase
     /**
      * @return bool
      */
-    public function getSkipForOrganizations() {
+    public function getSkipForOrganizations()
+    {
         return $this->skipForOrganizations;
     }
 }

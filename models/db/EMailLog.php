@@ -42,16 +42,17 @@ class EMailLog extends ActiveRecord
     const STATUS_SKIPPED_OTHER     = 3;
 
     public static $MANDRILL_TAGS = [
-        0 => 'other',
-        1 => 'registration',
-        2 => 'motion-notification-user',
-        3 => 'motion-notification-admin',
-        4 => 'access-granted',
-        5 => 'debug',
-        6 => 'password-recovery',
-        7 => 'site-admin',
-        8 => 'motion-submitted',
-        9 => 'email-change',
+        0  => 'other',
+        1  => 'registration',
+        2  => 'motion-notification-user',
+        3  => 'motion-notification-admin',
+        4  => 'access-granted',
+        5  => 'debug',
+        6  => 'password-recovery',
+        7  => 'site-admin',
+        8  => 'motion-submitted',
+        9  => 'email-change',
+        10 => 'motion-supporter-reached',
     ];
 
     /**

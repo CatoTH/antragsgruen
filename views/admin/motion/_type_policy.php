@@ -59,18 +59,18 @@ foreach (IPolicy::getPolicies() as $policy) {
         <div class="form-control">
             <?php
             $checkboxes = [
-                ISupportType::LIKEDISLIKE_LIKE    => \Yii::t('admin', 'motion_type_like_like'),
-                ISupportType::LIKEDISLIKE_DISLIKE => \Yii::t('admin', 'motion_type_like_dislike'),
-                ISupportType::LIKEDISLIKE_SUPPORT => \Yii::t('admin', 'motion_type_like_support')
+                [ISupportType::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'motionLike'],
+                [ISupportType::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'motionDislike'],
+                [ISupportType::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'motionSupport'],
             ];
-            foreach ($checkboxes as $val => $name) {
+            foreach ($checkboxes as $checkbox) {
                 echo '<label>';
                 echo Html::checkbox(
                     'type[motionLikesDislikes][]',
-                    ($motionType->motionLikesDislikes & $val),
-                    ['value' => $val, 'class' => 'motionLike',]
+                    ($motionType->motionLikesDislikes & $checkbox[0]),
+                    ['value' => $checkbox[0], 'class' => $checkbox[2]]
                 );
-                echo $name . '</label>';
+                echo $checkbox[1] . '</label>';
             }
             ?>
         </div>
@@ -127,18 +127,18 @@ foreach (IPolicy::getPolicies() as $policy) {
         <div class="form-control">
             <?php
             $checkboxes = [
-                ISupportType::LIKEDISLIKE_LIKE    => \Yii::t('admin', 'motion_type_like_like'),
-                ISupportType::LIKEDISLIKE_DISLIKE => \Yii::t('admin', 'motion_type_like_dislike'),
-                ISupportType::LIKEDISLIKE_SUPPORT => \Yii::t('admin', 'motion_type_like_support')
+                [ISupportType::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'amendmentLike'],
+                [ISupportType::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'amendmentDislike'],
+                [ISupportType::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'amendmentSupport'],
             ];
-            foreach ($checkboxes as $val => $name) {
+            foreach ($checkboxes as $checkbox) {
                 echo '<label>';
                 echo Html::checkbox(
                     'type[amendmentLikesDislikes][]',
-                    ($motionType->amendmentLikesDislikes & $val),
-                    ['value' => $val, 'class' => 'amendmentLike',]
+                    ($motionType->amendmentLikesDislikes & $checkbox[0]),
+                    ['value' => $checkbox[0], 'class' => $checkbox[2]]
                 );
-                echo $name . '</label>';
+                echo $checkbox[1] . '</label>';
             }
             ?>
         </div>

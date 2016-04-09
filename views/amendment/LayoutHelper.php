@@ -2,6 +2,7 @@
 
 namespace app\views\amendment;
 
+use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\latex\Layout;
@@ -167,6 +168,7 @@ class LayoutHelper
         $doc      = new \CatoTH\HTML2OpenDocument\Text([
             'templateFile' => $template,
             'tmpPath'      => $config->tmpDir,
+            'trustHtml'    => true,
         ]);
 
         $DEBUG = (isset($_REQUEST['src']) && YII_ENV == 'dev');
@@ -202,7 +204,8 @@ class LayoutHelper
 
         if ($amendment->changeEditorial != '') {
             $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'editorial_hint')) . '</h2>', false);
-            $doc->addHtmlTextBlock($amendment->changeEditorial, false);
+            $editorial = HTMLTools::correctHtmlErrors($amendment->changeEditorial);
+            $doc->addHtmlTextBlock($editorial, false);
         }
 
         foreach ($amendment->getSortedSections(false) as $section) {
@@ -211,7 +214,8 @@ class LayoutHelper
 
         if ($amendment->changeExplanation != '') {
             $doc->addHtmlTextBlock('<h2>' . Html::encode(\Yii::t('amend', 'reason')) . '</h2>', false);
-            $doc->addHtmlTextBlock($amendment->changeExplanation, false);
+            $explanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
+            $doc->addHtmlTextBlock($explanation, false);
         }
 
         return $doc->finishAndGetDocument();

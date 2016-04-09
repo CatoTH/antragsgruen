@@ -92,7 +92,7 @@ $minHeight = $sidebarRows * 40 - 60;
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
 
-if (!$amendment->getMyConsultation()->site->getSettings()->forceLogin && $layout->useShariff) {
+if ($amendment->isSocialSharable()) {
     $layout->loadShariff();
     $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
     $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
@@ -146,6 +146,30 @@ echo '</table>';
 
 echo $controller->showErrors();
 
+
+if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+    echo '<div class="alert alert-info supportCollectionHint" role="alert">';
+    $min  = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+    $curr = count($amendment->getSupporters());
+    if ($curr >= $min) {
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('amend', 'support_collection_reached_hint'));
+    } else {
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('amend', 'support_collection_hint'));
+    }
+    echo '</div>';
+}
+if ($amendment->canFinishSupportCollection()) {
+    echo Html::beginForm('', 'post', ['class' => 'amendmentSupportFinishForm']);
+
+    echo '<div style="text-align: center; margin-bottom: 20px;">';
+
+    echo '<button type="submit" name="amendmentSupportFinish" class="btn btn-success">';
+    echo \Yii::t('amend', 'support_finish_btn');
+    echo '</button>';
+
+    echo Html::endForm();
+}
+
 echo '</div>';
 echo '</div>';
 
@@ -175,16 +199,21 @@ if ($amendment->changeExplanation != '') {
 
 $currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
 $supporters = $amendment->getSupporters();
-if (count($supporters) > 0) {
-    echo '<section class="supporters"><h2 class="green">' . \Yii::t('amend', 'supporters_title') . '</h2>
+$supportPolicy = $amendment->getMyMotion()->motionType->getAmendmentSupportPolicy();
+$supportType = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
+
+if (count($supporters) > 0 || $amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+    echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
+    $iAmSupporting = false;
     if (count($supporters) > 0) {
         echo '<ul>';
         foreach ($supporters as $supp) {
             echo '<li>';
-            if ($supp->id == $currUserId) {
+            if ($currUserId && $supp->userId == $currUserId) {
                 echo '<span class="label label-info">' . \Yii::t('amend', 'supporter_you') . '</span> ';
+                $iAmSupporting = true;
             }
             echo Html::encode($supp->getNameWithOrga());
             echo '</li>';
@@ -193,11 +222,11 @@ if (count($supporters) > 0) {
     } else {
         echo '<em>' . \Yii::t('amend', 'supporter_none') . '</em><br>';
     }
-    echo "<br>";
+    echo '<br>';
+    MotionLayoutHelper::printSupportingSection($amendment, $supportPolicy, $supportType, $iAmSupporting);
     echo '</div></section>';
 }
 
-$supportPolicy = $amendment->getMyMotion()->motionType->getAmendmentSupportPolicy();
 MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
 if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOBODY) {
@@ -243,7 +272,8 @@ if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOB
         MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
     } elseif ($amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>' . \Yii::t('amend', 'comments_please_log_in') . '</div>';
+        <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
+            \Yii::t('amend', 'comments_please_log_in') . '</div>';
     }
     echo '</section>';
 }

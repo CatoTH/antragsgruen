@@ -2,13 +2,12 @@
 
 namespace app\models\db;
 
-use app\components\HTMLTools;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\components\EmailNotifications;
 use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\policies\All;
 use Yii;
 use yii\helpers\Html;
@@ -351,10 +350,15 @@ class Motion extends IMotion implements IRSSItem
         if ($this->status == static::STATUS_DRAFT) {
             $hadLoggedInUser = false;
             foreach ($this->motionSupporters as $supp) {
+                $currUser        = User::getCurrentUser();
                 if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
-                    $currUser        = User::getCurrentUser();
                     if ($currUser && $currUser->id == $supp->userId) {
+                        return true;
+                    }
+                }
+                if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
+                    if ($currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
                         return true;
                     }
                 }
@@ -412,6 +416,22 @@ class Motion extends IMotion implements IRSSItem
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canFinishSupportCollection()
+    {
+        if (!$this->iAmInitiator()) {
+            return false;
+        }
+        if ($this->status != Motion::STATUS_COLLECTING_SUPPORTERS) {
+            return false;
+        }
+        $supporters    = count($this->getSupporters());
+        $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+        return ($supporters >= $minSupporters);
     }
 
     /**
@@ -485,7 +505,9 @@ class Motion extends IMotion implements IRSSItem
                     }
                 }
             }
-            throw new Internal('Did not find myself');
+
+            // This is a invisible motion. The final line numbers are therefore not determined yet
+            return 1;
         } else {
             $this->setCacheItem('getFirstLineNumber', 1);
             return 1;
@@ -517,6 +539,21 @@ class Motion extends IMotion implements IRSSItem
                 $return[] = $supp;
             }
         };
+        usort($return, function (MotionSupporter $supp1, MotionSupporter $supp2) {
+            if ($supp1->position > $supp2->position) {
+                return 1;
+            }
+            if ($supp1->position < $supp2->position) {
+                return -1;
+            }
+            if ($supp1->id > $supp2->id) {
+                return 1;
+            }
+            if ($supp1->id < $supp2->id) {
+                return -1;
+            }
+            return 0;
+        });
         return $return;
     }
 
@@ -566,7 +603,22 @@ class Motion extends IMotion implements IRSSItem
      */
     public function setInitialSubmitted()
     {
+        $needsCollectionPhase = false;
         if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
+            $isOrganization = false;
+            foreach ($this->getInitiators() as $initiator) {
+                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
+                    $isOrganization = true;
+                }
+            }
+            $supporters    = count($this->getSupporters());
+            $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+            if ($supporters < $minSupporters && !$isOrganization) {
+                $needsCollectionPhase = true;
+            }
+        }
+
+        if ($needsCollectionPhase) {
             $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
         } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
             $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
@@ -646,126 +698,7 @@ class Motion extends IMotion implements IRSSItem
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            if ($this->getConsultation()->getSettings()->initiatorConfirmEmails) {
-                $initiator = $this->getInitiators();
-
-                $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-                $plain      = \Yii::t('motion', 'published_email_body');
-                $plain      = str_replace('%LINK%', $motionLink, $plain);
-                $title      = $this->motionType->titleSingular . ': ' . $this->title;
-                $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
-                $sections   = $this->getSortedSections(true);
-
-                foreach ($sections as $section) {
-                    $motionHtml .= '<div>';
-                    $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                    $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
-                    $motionHtml .= '</div>';
-                }
-                $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-                $plain .= HTMLTools::toPlainText($html);
-
-                if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                    try {
-                        \app\components\mail\Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                            $this->getConsultation()->site,
-                            trim($initiator[0]->contactEmail),
-                            null,
-                            \Yii::t('motion', 'published_email_title'),
-                            $plain,
-                            $html
-                        );
-                    } catch (MailNotSent $e) {
-                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                        \yii::$app->session->setFlash('error', $errMsg);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @throws Internal
-     */
-    public function sendSubmissionConfirmMail()
-    {
-        $initiator = $this->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            if ($this->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
-                $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
-                $min        = $this->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
-                $emailText  = str_replace('%MIN%', $min, $emailText);
-                $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
-            } else {
-                $emailText  = \Yii::t('motion', 'submitted_screening_email');
-                $emailTitle = \Yii::t('motion', 'submitted_screening_email_subject');
-            }
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-            $plain      = $emailText;
-            $motionHtml = '<h1>' . Html::encode($this->motionType->titleSingular) . ': ';
-            $motionHtml .= Html::encode($this->title);
-            $motionHtml .= '</h1>';
-
-            $sections = $this->getSortedSections(true);
-            foreach ($sections as $section) {
-                $motionHtml .= '<div>';
-                $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
-                $motionHtml .= '</div>';
-            }
-
-            $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-            $plain .= HTMLTools::toPlainText($html);
-
-            $plain = str_replace('%LINK%', $motionLink, $plain);
-            $html  = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
-
-            try {
-                \app\components\mail\Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $this->getMyConsultation()->site,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    $emailTitle,
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-            }
-        }
-    }
-
-    /**
-     * @throws Internal
-     */
-    public function sendSupporterMinimumReached()
-    {
-        $initiator = $this->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            $emailText  = \Yii::t('motion', 'support_reached_email_body');
-            $emailTitle = \Yii::t('motion', 'support_reached_email_subject');
-
-            $emailText = str_replace('%TITLE%', $this->getTitleWithPrefix(), $emailText);
-            $html      = $emailText;
-            $plain     = HTMLTools::toPlainText($html);
-
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-            $plain      = str_replace('%LINK%', $motionLink, $plain);
-            $html       = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
-
-            try {
-                \app\components\mail\Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUPPORTER_REACHED,
-                    $this->getMyConsultation()->site,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    $emailTitle,
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-            }
+            EmailNotifications::sendMotionOnPublish($this);
         }
     }
 

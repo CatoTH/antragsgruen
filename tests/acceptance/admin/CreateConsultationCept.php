@@ -21,6 +21,13 @@ $I->see('Die neue Veranstaltung wurde angelegt.');
 $I->see('Neue Veranstaltung 1', '.consultation' . AcceptanceTester::FIRST_FREE_CONSULTATION_ID);
 $I->see('Standard-Veranstaltung', '.consultation1');
 
+
+$I->wantTo('check that the motion types where cloned successfully');
+$I->gotoStdAdminPage(false, 'stdparteitag', 'neukurz')->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeNumberOfElements('#sectionsList > li', 5);
+
+
+
 ConsultationHomePage::openBy($I, [
     'subdomain' => 'stdparteitag'
 ]);
@@ -56,7 +63,6 @@ ConsultationHomePage::openBy($I, [
     'subdomain' => 'stdparteitag'
 ]);
 $I->see('Noch eine neue Veranstaltung', 'h1');
-
 
 
 $I->wantTo('set another consultation as standard');

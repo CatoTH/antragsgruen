@@ -6,6 +6,7 @@ use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentSupporter;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
 use app\views\amendment\LayoutHelper;
@@ -80,6 +81,51 @@ class AmendmentController extends AdminBase
     }
 
     /**
+     * @param Amendment $motion
+     */
+    private function saveAmendmentSupporters(Amendment $amendment)
+    {
+        $names         = \Yii::$app->request->post('supporterName', []);
+        $orgas         = \Yii::$app->request->post('supporterOrga', []);
+        $preIds        = \Yii::$app->request->post('supporterId', []);
+        $newSupporters = [];
+        /** @var AmendmentSupporter[] $preSupporters */
+        $preSupporters = [];
+        foreach ($amendment->getSupporters() as $supporter) {
+            $preSupporters[$supporter->id] = $supporter;
+        }
+        for ($i = 0; $i < count($names); $i++) {
+            if (trim($names[$i]) == '' && trim($orgas[$i]) == '') {
+                continue;
+            }
+            if (isset($preSupporters[$preIds[$i]])) {
+                $supporter = $preSupporters[$preIds[$i]];
+            } else {
+                $supporter              = new AmendmentSupporter();
+                $supporter->amendmentId = $amendment->id;
+                $supporter->role        = AmendmentSupporter::ROLE_SUPPORTER;
+                $supporter->personType  = AmendmentSupporter::PERSON_NATURAL;
+            }
+            $supporter->name         = $names[$i];
+            $supporter->organization = $orgas[$i];
+            $supporter->position     = $i;
+            if (!$supporter->save()) {
+                var_dump($supporter->getErrors());
+                die();
+            }
+            $newSupporters[$supporter->id] = $supporter;
+        }
+
+        foreach ($preSupporters as $supporter) {
+            if (!isset($newSupporters[$supporter->id])) {
+                $supporter->delete();
+            }
+        }
+
+        $amendment->refresh();
+    }
+
+    /**
      * @param int $amendmentId
      * @return string
      */
@@ -147,6 +193,9 @@ class AmendmentController extends AdminBase
                 $amendment->titlePrefix = $post['amendment']['titlePrefix'];
             }
             $amendment->save();
+
+            $this->saveAmendmentSupporters($amendment);
+
             $amendment->getMyMotion()->flushCacheWithChildren();
             $amendment->refresh();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));

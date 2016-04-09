@@ -71,6 +71,9 @@
                 // Nothing to do
             } else if (transport == 'mandrill') {
                 $('.emailOption.mandrillApiKey').show();
+            } else if (transport == 'mailgun') {
+                $('.emailOption.mailgunApiKey').show();
+                $('.emailOption.mailgunDomain').show();
             } else if (transport == 'smtp') {
                 $('.emailOption.smtpHost').show();
                 $('.emailOption.smtpPort').show();

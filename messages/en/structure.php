@@ -123,5 +123,5 @@ return [
 
     'supp_only_initiators'    => 'Only proposer',
     'supp_given_by_initiator' => 'Supporters given by propser',
-    'supp_collect_before'     => 'Collecting phase before publication',
+    'supp_collect_before'     => 'Collecting phase before publication (not for organizations)',
 ];

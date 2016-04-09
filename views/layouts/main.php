@@ -70,10 +70,10 @@ foreach ($layout->extraCss as $file) {
 echo '<link rel="stylesheet" href="' . $layout->resourceUrl('css/' . $layout->mainCssFile . '.css') . '">' . "\n";
 
 echo '<!--[if lt IE 9]>
-    <script src="' . $layout->resourceUrl('js/jquery-1.12.1.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/jquery-1.12.2.min.js') . '"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
-    <script src="' . $layout->resourceUrl('js/jquery-2.2.1.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/jquery-2.2.2.min.js') . '"></script>
     <!--<![endif]-->
 
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">
@@ -114,8 +114,10 @@ if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
     if ($controller->consultation) {
         $homeUrl = UrlHelper::createUrl('consultation/index');
         echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $homeUrl) . '</li>';
-        $helpLink = UrlHelper::createUrl('consultation/help');
-        echo '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+        if ($controller->consultation->hasHelpPage()) {
+            $helpLink = UrlHelper::createUrl('consultation/help');
+            echo '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+        }
     } else {
         $startLink = UrlHelper::createUrl('manager/index');
         echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';

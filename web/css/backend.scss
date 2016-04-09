@@ -2,6 +2,7 @@
 @import "variables";
 @import "bootstrap-3.3.6-sass/bootstrap/variables";
 @import "bootstrap-3.3.6-sass/bootstrap/glyphicons";
+@import "bootstrap-3.3.6-sass/bootstrap/mixins";
 
 .adminForm {
   label {
@@ -501,5 +502,60 @@ label.legend {
   }
   .submitRow {
     text-align: right;
+  }
+}
+
+#motionSupporterHolder {
+  ul {
+    list-style-type: none;
+    padding: 0;
+
+    > li {
+      padding: 5px 0 5px 40px;
+    }
+    .nameCol {
+      position: relative;
+      .moveHandle {
+        position: absolute;
+        left: -15px;
+        top: 5px;
+        font-size: 1.5em;
+        color: lightgrey;
+        cursor: move;
+      }
+    }
+    .delSupporter {
+      float: right;
+      color: #f77;
+      margin-top: 5px;
+    }
+    html.no-touchevents & {
+      > li {
+        .moveHandle {
+          display: none;
+        }
+        .delSupporter {
+          visibility: hidden;
+        }
+      }
+      > li:hover {
+        .moveHandle {
+          display: inherit;
+        }
+        .delSupporter {
+          visibility: visible;
+        }
+      }
+    }
+  }
+  .supporterRowAdder {
+    margin-left: 42px;
+  }
+  .fullTextAdder {
+    float: right;
+  }
+  #fullTextHolder {
+    @include clearfix();
+    padding-left: 25px;
   }
 }

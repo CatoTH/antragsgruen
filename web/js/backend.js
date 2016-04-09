@@ -39,8 +39,7 @@
             if ($(this).prop("checked")) {
                 $iniatorsMayEdit.removeClass("hidden");
             } else {
-                var confirmMessage = "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus " +
-                    "und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?";
+                var confirmMessage = __t("admin", "adminMayEditConfirm");
                 bootbox.confirm(confirmMessage, function (result) {
                     if (result) {
                         $iniatorsMayEdit.addClass("hidden");
@@ -134,7 +133,7 @@
         $list.on('click', '.tabularDataRow .delRow', function (ev) {
             var $this = $(this);
             ev.preventDefault();
-            bootbox.confirm('Diese Angabe wirklich löschen?', function (result) {
+            bootbox.confirm(__t('admin', 'deleteDataConfirm'), function (result) {
                 if (result) {
                     $this.parents("li").first().remove();
                 }
@@ -177,7 +176,8 @@
 
     var agendaEdit = function () {
         var adderClasses = 'agendaItemAdder mjs-nestedSortable-no-nesting mjs-nestedSortable-disabled',
-            adder = '<li class="' + adderClasses + '"><a href="#"><span class="glyphicon glyphicon-plus-sign"></span> Eintrag hinzufügen</a></li>',
+            adder = '<li class="' + adderClasses + '"><a href="#"><span class="glyphicon glyphicon-plus-sign"></span> ' +
+                __t('admin', 'agendaAddEntry') + '</a></li>',
             prepareAgendaItem = function ($item) {
                 $item.find('> div').prepend('<span class="glyphicon glyphicon-resize-vertical moveHandle"></span>');
                 $item.find('> div > h3').append('<a href="#" class="editAgendaItem"><span class="glyphicon glyphicon-pencil"></span></a>');
@@ -245,7 +245,7 @@
         $agenda.on('click', '.delAgendaItem', function (ev) {
             var $this = $(this);
             ev.preventDefault();
-            bootbox.confirm('Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?', function (result) {
+            bootbox.confirm(__t("admin", "agendaDelEntryConfirm"), function (result) {
                 if (result) {
                     showSaver();
                     $this.parents('li.agendaItem').first().remove();
@@ -345,7 +345,7 @@
         $(".removeAdmin").click(function () {
             var $button = $(this),
                 $form = $(this).parents("form").first();
-            bootbox.confirm("Diesem Zugang wirklich die Admin-Rechte entziehen?", function (result) {
+            bootbox.confirm(__t("admin", "removeAdminConfirm"), function (result) {
                 if (result) {
                     var id = $button.data("id");
                     $form.append('<input type="hidden" name="removeAdmin" value="' + id + '">');
@@ -367,11 +367,11 @@
         $("#accountsCreateForm").submit(function (ev) {
             var text = $("#emailText").val();
             if (text.indexOf("%ACCOUNT%") == -1) {
-                bootbox.alert("Im E-Mail-Text muss der Code %ACCOUNT% vorkommen.");
+                bootbox.alert(__t("admin", "emailMissingCode"));
                 ev.preventDefault();
             }
             if (text.indexOf("%LINK%") == -1) {
-                bootbox.alert("Im E-Mail-Text muss der Code %LINK% vorkommen.");
+                bootbox.alert(__t("admin", "emailMissingLink"));
                 ev.preventDefault();
             }
 
@@ -379,10 +379,10 @@
                 names = $("#names").val().split("\n");
             if (emails.length == 1 && emails[0] == "") {
                 ev.preventDefault();
-                bootbox.alert("Es wurden keine E-Mail-Adressen angegeben.");
+                bootbox.alert(__t("admin", "emailMissingTo"));
             }
             if (emails.length != names.length) {
-                bootbox.alert("Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!");
+                bootbox.alert(__t("admin", "emailNumberMismatch"));
                 ev.preventDefault();
             }
         });
@@ -396,6 +396,57 @@
             if ($(this).prop("checked")) {
                 $(this).parents('tr').first().find('.accessViewCol input[type=checkbox]').prop('checked', true);
             }
+        });
+    };
+
+    var motionSupporterEdit = function() {
+        var $supporterHolder = $("#motionSupporterHolder"),
+            $sortable = $supporterHolder.find("> ul");
+        Sortable.create($sortable[0], {draggable: 'li'});
+
+        $(".supporterRowAdder").click(function (ev) {
+            $sortable.append($(this).data("content"));
+            ev.preventDefault();
+        });
+        $sortable.on("click", ".delSupporter", function(ev) {
+            ev.preventDefault();
+            $(this).parents("li").first().remove();
+        });
+
+        var $fullTextHolder = $("#fullTextHolder");
+        $supporterHolder.find(".fullTextAdd").click(function() {
+            var lines = $fullTextHolder.find('textarea').val().split(";"),
+                template = $(".supporterRowAdder").data("content"),
+                getNewElement = function () {
+                    var $rows = $sortable.find("> li");
+                    for (var i = 0; i < $rows.length; i++) {
+                        var $row = $rows.eq(i);
+                        if ($row.find(".supporterName").val() == '' && $row.find(".supporterOrga").val() == '') return $row;
+                    }
+                    // No empty row found
+                    var $newEl = $(template);
+                    $sortable.append($newEl);
+                    return $newEl;
+                };
+            var $firstAffectedRow = null;
+            for (var i = 0; i < lines.length; i++) {
+                if (lines[i] == '') {
+                    continue;
+                }
+                var $newEl = getNewElement();
+                if ($firstAffectedRow == null) $firstAffectedRow = $newEl;
+                if ($newEl.find('input.supporterOrga').length > 0) {
+                    var parts = lines[i].split(',');
+                    $newEl.find('input.supporterName').val(parts[0].trim());
+                    if (parts.length > 1) {
+                        $newEl.find('input.supporterOrga').val(parts[1].trim());
+                    }
+                } else {
+                    $newEl.find('input.supporterName').val(lines[i]);
+                }
+            }
+            $fullTextHolder.find('textarea').select().focus();
+            $firstAffectedRow.scrollintoview();
         });
     };
 
@@ -432,12 +483,14 @@
             }
             var $form = $(this);
             ev.preventDefault();
-            bootbox.confirm('Diesen Antrag wirklich löschen?', function (result) {
+            bootbox.confirm(__t("admin", "delMotionConfirm"), function (result) {
                 if (result) {
                     $form.trigger("submit", {'confirmed': true});
                 }
             });
         });
+
+        motionSupporterEdit();
     };
 
     var amendmentEditInit = function () {
@@ -474,12 +527,14 @@
             }
             var $form = $(this);
             ev.preventDefault();
-            bootbox.confirm('Diesen Änderungsantrag wirklich löschen?', function (result) {
+            bootbox.confirm(__t("admin", "delAmendmentConfirm"), function (result) {
                 if (result) {
                     $form.trigger("submit", {'confirmed': true});
                 }
             });
         });
+
+        motionSupporterEdit();
     };
 
     $.AntragsgruenAdmin = {

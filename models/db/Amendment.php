@@ -4,15 +4,13 @@ namespace app\models\db;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
-use app\components\HTMLTools;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
+use app\components\EmailNotifications;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -517,6 +515,36 @@ class Amendment extends IMotion implements IRSSItem
         return $this->iAmInitiator();
     }
 
+    /**
+     * @return bool
+     */
+    public function canFinishSupportCollection()
+    {
+        if (!$this->iAmInitiator()) {
+            return false;
+        }
+        if ($this->status != Amendment::STATUS_COLLECTING_SUPPORTERS) {
+            return false;
+        }
+        $supporters    = count($this->getSupporters());
+        $minSupporters = $this->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+        return ($supporters >= $minSupporters);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSocialSharable()
+    {
+        if ($this->getMyConsultation()->site->getSettings()->forceLogin) {
+            return false;
+        }
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
+            return false;
+        }
+        return true;
+    }
+
     /** @var null|MotionSectionParagraphAmendment[] */
     private $changedParagraphCache = null;
 
@@ -563,6 +591,50 @@ class Amendment extends IMotion implements IRSSItem
         $this->getMyMotion()->flushCacheStart();
 
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_WITHDRAW, $this->id);
+    }
+
+    /**
+     */
+    public function setInitialSubmitted()
+    {
+        $needsCollectionPhase = false;
+        $motionType           = $this->getMyMotion()->motionType;
+        if ($motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
+            $isOrganization = false;
+            foreach ($this->getInitiators() as $initiator) {
+                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
+                    $isOrganization = true;
+                }
+            }
+            $supporters    = count($this->getSupporters());
+            $minSupporters = $motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+            if ($supporters < $minSupporters && !$isOrganization) {
+                $needsCollectionPhase = true;
+            }
+        }
+
+        if ($needsCollectionPhase) {
+            $this->status = Amendment::STATUS_COLLECTING_SUPPORTERS;
+        } elseif ($this->getMyConsultation()->getSettings()->screeningAmendments) {
+            $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
+        } else {
+            $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
+            if ($this->titlePrefix == '') {
+                $numbering         = $this->getMyConsultation()->getAmendmentNumbering();
+                $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
+            }
+        }
+        $this->save();
+
+        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
+        $mailText      = str_replace(
+            ['%TITLE%', '%LINK%', '%INITIATOR%'],
+            [$this->getTitle(), $amendmentLink, $this->getInitiatorsStr()],
+            \Yii::t('amend', 'submitted_adminnoti_body')
+        );
+
+        // @TODO Use different texts depending on the status
+        $this->getMyConsultation()->sendEmailToAdmins(\Yii::t('amend', 'submitted_adminnoti_title'), $mailText);
     }
 
     /**
@@ -622,80 +694,7 @@ class Amendment extends IMotion implements IRSSItem
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            if ($this->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-                $initiator = $this->getInitiators();
-                if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-                    $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
-                    $plain         = str_replace(
-                        ['%LINK%', '%MOTION%'],
-                        [$amendmentLink, $this->getMyMotion()->titlePrefix],
-                        \Yii::t('amend', 'published_email_body')
-                    );
-
-                    $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
-
-                    $sections = $this->getSortedSections(true);
-                    foreach ($sections as $section) {
-                        $amendmentHtml .= '<div>';
-                        $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-                        $amendmentHtml .= '</div>';
-                    }
-
-                    $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-                    $plain .= HTMLTools::toPlainText($html);
-
-                    try {
-                        \app\components\mail\Tools::sendWithLog(
-                            EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                            $this->getMyConsultation()->site,
-                            trim($initiator[0]->contactEmail),
-                            null,
-                            \Yii::t('amend', 'published_email_title'),
-                            $plain,
-                            $html
-                        );
-                    } catch (MailNotSent $e) {
-                        $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                        \yii::$app->session->setFlash('error', $errMsg);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @throws Internal
-     */
-    public function sendSubmissionConfirmMail()
-    {
-        $initiator = $this->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
-            $plain         = str_replace('%LINK%', $amendmentLink, \Yii::t('amend', 'submitted_screening_email'));
-            $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
-
-            $sections = $this->getSortedSections(true);
-            foreach ($sections as $section) {
-                $amendmentHtml .= '<div>';
-                $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-                $amendmentHtml .= '</div>';
-            }
-
-            $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-            $plain .= HTMLTools::toPlainText($html);
-
-            try {
-                \app\components\mail\Tools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $this->getMyConsultation()->site,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    \Yii::t('amend', 'submitted_screening_email_subject'),
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-            }
+            EmailNotifications::sendAmendmentOnPublish($this);
         }
     }
 

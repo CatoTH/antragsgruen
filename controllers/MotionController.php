@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\UrlHelper;
+use app\components\EmailNotifications;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
@@ -76,9 +77,16 @@ class MotionController extends Base
     private function getMotionWithCheck($motionSlug)
     {
         if (is_numeric($motionSlug)) {
-            $motion = Motion::findOne(['consultationId' => $this->consultation->id, 'id' => $motionSlug, 'slug' => null]);
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'id'             => $motionSlug,
+                'slug'           => null
+            ]);
         } else {
-            $motion = Motion::findOne(['consultationId' => $this->consultation->id, 'slug' => $motionSlug]);
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'slug'           => $motionSlug
+            ]);
         }
         /** @var Motion $motion */
         if (!$motion) {
@@ -282,9 +290,7 @@ class MotionController extends Base
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->onPublish();
             } else {
-                if ($motion->getConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $motion->sendSubmissionConfirmMail();
-                }
+                EmailNotifications::sendMotionSubmissionConfirm($motion);
             }
 
             return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);

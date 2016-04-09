@@ -134,8 +134,16 @@ if ($myself) {
             if ($amendmentSupport->role == AmendmentSupporter::ROLE_SUPPORTER) {
                 echo ' (' . Yii::t('amend', 'supporter') . ')';
             }
+            echo ': ' . Html::encode($amendment->getStati()[$amendment->status]);
             if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
                 echo '</span>';
+            }
+            if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+                echo '<div>' . \Yii::t('motion', 'support_collect_status') . ': ';
+                echo count($amendment->getSupporters());
+                echo ' <small>(' . \Yii::t('motion', 'support_collect_min') . ': ';
+                echo $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+                echo ')</small></div>';
             }
             echo '</li>';
         }

@@ -1,11 +1,5 @@
 <?php
-/*
- *
- * ==========
- * d        d
- * e   f    g
- * hjklkljkjlk
- */
+
 namespace app\components;
 
 use app\models\exceptions\Internal;
@@ -15,6 +9,27 @@ use yii\helpers\HtmlPurifier;
 class HTMLTools
 {
     public static $KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section'];
+
+    /**
+     * @param string $str
+     * @return bool
+     */
+    public static function isStringCachable($str)
+    {
+        return strlen($str) > 1000;
+    }
+
+    /**
+     * Required by HTML Purifier to handle Umlaut domains
+     */
+    public static function loadNetIdna2()
+    {
+        $dir  = __DIR__ . DIRECTORY_SEPARATOR . 'Net_IDNA2-0.1.1' . DIRECTORY_SEPARATOR . 'Net' . DIRECTORY_SEPARATOR;
+        $dir2 = $dir . 'IDNA2' . DIRECTORY_SEPARATOR;
+        @require_once $dir2 . 'Exception.php';
+        @require_once $dir2 . 'Exception' . DIRECTORY_SEPARATOR . 'Nameprep.php';
+        @require_once $dir . 'IDNA2.php';
+    }
 
     /**
      * @param string $html
@@ -53,13 +68,19 @@ class HTMLTools
     }
 
     /**
-     * @param string $html
+     * @param string $htmlIn
      * @return string
      */
-    public static function correctHtmlErrors($html)
+    public static function correctHtmlErrors($htmlIn)
     {
+        $cacheKey = 'correctHtmlErrors_' . md5($htmlIn);
+        if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
+            return \Yii::$app->getCache()->get($cacheKey);
+        }
+
+        static::loadNetIdna2();
         $str = HtmlPurifier::process(
-            $html,
+            $htmlIn,
             function ($config) {
                 /** @var \HTMLPurifier_Config $config */
                 $conf = [
@@ -83,18 +104,27 @@ class HTMLTools
             }
         );
         $str = static::cleanMessedUpHtmlCharacters($str);
+        if (static::isStringCachable($htmlIn)) {
+            \Yii::$app->getCache()->set($cacheKey, $str);
+        }
         return $str;
     }
 
 
     /**
-     * @param string $html
+     * @param string $htmlIn
      * @return string
      */
-    public static function cleanSimpleHtml($html)
+    public static function cleanSimpleHtml($htmlIn)
     {
-        $html = str_replace("\r", '', $html);
+        $cacheKey = 'cleanSimpleHtml_' . md5($htmlIn);
+        if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
+            return \Yii::$app->getCache()->get($cacheKey);
+        }
 
+        $html = str_replace("\r", '', $htmlIn);
+
+        static::loadNetIdna2();
         $html = HtmlPurifier::process(
             $html,
             function ($config) {
@@ -131,13 +161,18 @@ class HTMLTools
         $html = preg_replace("/\\n+/siu", "\n", $html);
         $html = str_replace("<p><br>\n", "<p>", $html);
         $html = str_replace("<br>\n</p>", "</p>", $html);
-        $html = preg_replace('/ +<\/p>/siu', '</p>', $html);
-        $html = preg_replace('/ +<br>/siu', '<br>', $html);
         $html = str_replace('&nbsp;', ' ', $html);
 
         $html = static::cleanMessedUpHtmlCharacters($html);
+        $html = preg_replace('/<p> +/siu', '<p>', $html);
+        $html = preg_replace('/ +<\/p>/siu', '</p>', $html);
+        $html = preg_replace('/ +<br>/siu', '<br>', $html);
 
         $html = trim($html);
+
+        if (static::isStringCachable($htmlIn)) {
+            \Yii::$app->getCache()->set($cacheKey, $html);
+        }
 
         return $html;
     }
@@ -261,22 +296,16 @@ class HTMLTools
      */
     public static function html2DOM($html)
     {
-        $html = HtmlPurifier::process(
-            $html,
-            [
-                'HTML.Doctype' => 'HTML 4.01 Transitional',
-                'HTML.Trusted' => true,
-                'CSS.Trusted'  => true,
-            ]
-        );
+        $html = static::correctHtmlErrors($html);
 
         $src_doc = new \DOMDocument();
         $src_doc->loadHTML('<html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head><body>' . $html . "</body></html>");
         $bodies = $src_doc->getElementsByTagName('body');
+        $str    = $bodies->item(0);
 
-        return $bodies->item(0);
+        return $str;
     }
 
 
@@ -367,13 +396,13 @@ class HTMLTools
         }, $text);
 
         $text = preg_replace_callback("/<ins[^>]*>(.*)<\/ins>/siU", function ($matches) {
-            $ins = \Yii::t('diff', 'plain_text_ins');
+            $ins  = \Yii::t('diff', 'plain_text_ins');
             $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
             return $text;
         }, $text);
 
         $text = preg_replace_callback("/<del[^>]*>(.*)<\/del>/siU", function ($matches) {
-            $ins = \Yii::t('diff', 'plain_text_del');
+            $ins  = \Yii::t('diff', 'plain_text_del');
             $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
             return $text;
         }, $text);

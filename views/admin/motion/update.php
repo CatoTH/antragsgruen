@@ -5,6 +5,7 @@ use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use yii\helpers\Html;
 
 /**
@@ -19,27 +20,30 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = 'Antrag bearbeiten: ' . $motion->getTitleWithPrefix();
-$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb('Anträge', UrlHelper::createUrl('admin/motion/listall'));
-$layout->addBreadcrumb('Antrag');
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_admin'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_motions'), UrlHelper::createUrl('admin/motion/listall'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_motion'));
 
 $layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
+$layout->addJS('js/bower/Sortable/Sortable.min.js');
 $layout->loadDatepicker();
 $layout->loadCKEditor();
+$layout->loadFuelux();
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
-$html .= '<span class="glyphicon glyphicon-file"></span> Antrag anzeigen' . '</a></li>';
+$html .= '<span class="glyphicon glyphicon-file"></span> ' . \Yii::t('admin', 'motion_show') . '</a></li>';
 
 $cloneUrl = UrlHelper::createUrl(['motion/create', 'adoptInitiators' => $motion->id]);
 $html .= '<li><a href="' . Html::encode($cloneUrl) . '" class="clone">';
-$html .= '<span class="glyphicon glyphicon-duplicate"></span> Neuer Antrag auf dieser Basis</a></li>';
+$html .= '<span class="glyphicon glyphicon-duplicate"></span> ' .
+    \Yii::t('admin', 'motion_new_base_on_this') . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
 $html .= '<input type="hidden" name="delete" value="1">';
 $html .= '<button type="submit" class="link"><span class="glyphicon glyphicon-trash"></span> '
-    . 'Antrag löschen' . '</button>';
+    . \Yii::t('admin', 'motion_del') . '</button>';
 $html .= Html::endForm() . '</li>';
 
 $html .= '</ul>';
@@ -61,7 +65,7 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';
 
     echo '<div style="text-align: center;"><button type="submit" class="btn btn-primary" name="screen">';
-    echo Html::encode('Freischalten als ' . $newRev);
+    echo Html::encode(str_replace('%PREFIX%', $newRev, \Yii::t('admin', 'motion_screen_as_x')));
     echo '</button></div>';
 
     echo Html::endForm();
@@ -70,13 +74,13 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
 }
 
 
-echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm', 'enctype' => 'multipart/form-data']);
+echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm', 'enctype' => 'multipart/form-data', 'class' => 'fuelux']);
 
 echo '<div class="content form-horizontal">';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="parentMotion">';
-echo 'Überarbeitete Fassung von';
+echo \Yii::t('admin', 'motion_replaces');
 echo ':</label><div class="col-md-9">';
 echo '<select class="form-control" name="motion[parentMotionId]" id="parentMotion"><option>-</option>';
 foreach ($consultation->motions as $mot) {
@@ -92,7 +96,7 @@ echo '</select></div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionStatus">';
-echo 'Status';
+echo \Yii::t('admin', 'motion_status');
 echo ':</label><div class="col-md-4">';
 $options = ['class' => 'form-control', 'id' => 'motionStatus'];
 echo Html::dropDownList('motion[status]', $motion->status, Motion::getStati(), $options);
@@ -104,7 +108,7 @@ echo '</div></div>';
 if (count($consultation->agendaItems) > 0) {
     echo '<div class="form-group">';
     echo '<label class="col-md-3 control-label" for="motionStatus">';
-    echo 'Tagesordnungspunkt';
+    echo \Yii::t('admin', 'motion_agenda_item');
     echo ':</label><div class="col-md-9">';
     $options    = ['class' => 'form-control', 'id' => 'agendaItemId'];
     $selections = [];
@@ -119,20 +123,23 @@ if (count($consultation->agendaItems) > 0) {
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionTitle">';
-echo 'Titel';
+echo \Yii::t('admin', 'motion_titile');
 echo ':</label><div class="col-md-9">';
-$options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => 'Titel'];
+$options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => \Yii::t('admin', 'motion_titile')];
 echo Html::textInput('motion[title]', $motion->title, $options);
 echo '</div></div>';
 
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionTitlePrefix">';
-echo 'Antragskürzel';
+echo \Yii::t('admin', 'motion_prefix');
 echo ':</label><div class="col-md-4">';
-$options = ['class' => 'form-control', 'id' => 'motionTitlePrefix', 'placeholder' => 'z.B. "A1", "A1neu", "S1"'];
-echo Html::textInput('motion[titlePrefix]', $motion->titlePrefix, $options);
-echo '<small>Muss eindeutig sein.</small>';
+echo Html::textInput('motion[titlePrefix]', $motion->titlePrefix, [
+    'class'       => 'form-control',
+    'id'          => 'motionTitlePrefix',
+    'placeholder' => \Yii::t('admin', 'motion_prefix_hint')
+]);
+echo '<small>' . \Yii::t('admin', 'motion_prefix_unique') . '</small>';
 echo '</div></div>';
 
 
@@ -141,7 +148,7 @@ $locale = Tools::getCurrentDateLocale();
 $date = Tools::dateSql2bootstraptime($motion->dateCreation);
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionDateCreation">';
-echo 'Angelegt am';
+echo \Yii::t('admin', 'motion_date_created');
 echo ':</label><div class="col-md-4"><div class="input-group date" id="motionDateCreationHolder">';
 echo '<input type="text" class="form-control" name="motion[dateCreation]" id="motionDateCreation"
                 value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
@@ -151,7 +158,7 @@ echo '</div></div></div>';
 $date = Tools::dateSql2bootstraptime($motion->dateResolution);
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionDateResolution">';
-echo 'Beschlossen am';
+echo \Yii::t('admin', 'motion_date_resolution');
 echo ':</label><div class="col-md-4"><div class="input-group date" id="motionDateResolutionHolder">';
 echo '<input type="text" class="form-control" name="motion[dateResolution]" id="motionDateResolution"
                 value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
@@ -162,7 +169,7 @@ echo '</div></div></div>';
 if (count($consultation->tags) > 0) {
     echo '<div class="form-group">';
     echo '<div class="col-md-3 control-label label">';
-    echo 'Themen';
+    echo \Yii::t('admin', 'motion_topics');
     echo ':</div><div class="col-md-9 tagList">';
     foreach ($consultation->tags as $tag) {
         echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
@@ -179,7 +186,7 @@ if (count($consultation->tags) > 0) {
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionNoteInternal">';
-echo 'Interne Notiz';
+echo \Yii::t('admin', 'motion_note_internal');
 echo ':</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'motionNoteInternal'];
 echo Html::textarea('motion[noteInternal]', $motion->noteInternal, $options);
@@ -190,13 +197,11 @@ echo '</div>';
 
 
 if (!$motion->textFixed) {
-    echo '<h2 class="green">' . 'Text bearbeiten' . '</h2>
-<div class="content" id="motionTextEditCaller">
-    <strong>Vorsicht:</strong> Wenn es bereits Änderungsanträge und Kommentare zu einem Antrag gibt,
-    ist es gefährlich, den Text zu ändern, da sich die Absatzzuordnung ändern und sich zusätzliche Änderungen
-    einschleichen könnten.
+    echo '<h2 class="green">' . \Yii::t('admin', 'motion_edit_text') . '</h2>
+<div class="content" id="motionTextEditCaller">' .
+        \Yii::t('admin', 'motion_edit_text_warn') . '
     <br><br>
-    <button type="button" class="btn btn-default">Bearbeiten</button>
+    <button type="button" class="btn btn-default">' . \Yii::t('admin', 'motion_edit_btn') . '</button>
 </div>
 <div class="content hidden" id="motionTextEditHolder">';
 
@@ -214,9 +219,13 @@ $initiatorClass = $form->motionType->getMotionSupportTypeClass();
 $initiatorClass->setAdminMode(true);
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
+echo $this->render('_update_supporter', [
+    'supporters'  => $motion->getSupporters(),
+    'newTemplate' => new MotionSupporter()
+]);
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">Speichern</button>
+<button type="submit" name="save" class="btn btn-primary">' . \Yii::t('admin', 'save') . '</button>
 </div>';
 
 echo Html::endForm();

@@ -12,6 +12,26 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
+    public function testDanglingNbsp()
+    {
+        $orig   = '<p><span>so ein Fahrradanteil von 30 % und mehr erreicht werden kann.&nbsp;</span></p>';
+        $expect = '<p>so ein Fahrradanteil von 30 % und mehr erreicht werden kann.</p>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testStripLeadingSpaces()
+    {
+        $orig = '<p> Test 123 </p>';
+        $expect = '<p>Test 123</p>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
     public function testPrepareForCKEditor()
     {
         $orig   = '<p><strong> Test</strong></p> Test2';
@@ -179,6 +199,15 @@ class HTMLNormalizeTest extends TestBase
 Test 2.</p>
 </li>
 </ul>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testUmlautDomains() {
+$orig = 'Test <a href="http://www.hössl.org">My Domain</a>';
+        $expect = 'Test <a href="http://www.xn--hssl-5qa.org">My Domain</a>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }

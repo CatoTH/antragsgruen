@@ -16,6 +16,7 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
 use app\models\supportTypes\ISupportType;
+use app\components\EmailNotifications;
 
 /**
  * @property Consultation $consultation
@@ -35,11 +36,11 @@ trait MotionActionsTrait
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId != $motion->id || $comment->status != IComment::STATUS_VISIBLE) {
-            throw new Internal('Kommentar nicht gefunden');
+            throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
             if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-                throw new Internal('Keine Freischaltrechte');
+                throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
         return $comment;
@@ -76,10 +77,9 @@ trait MotionActionsTrait
             $comment = $commentForm->saveMotionComment($motion);
             ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT, $comment->id);
             if ($comment->status == MotionComment::STATUS_SCREENING) {
-                \yii::$app->session->setFlash('screening', 'Der Kommentar wurde erstellt. ' .
-                    'Er wird noch vom Admin kontrolliert und wird dann freigeschaltet.');
+                \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
             } else {
-                \yii::$app->session->setFlash('screening', 'Der Kommentar wurde erstellt.');
+                \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created'));
             }
             $this->redirect(UrlHelper::createMotionCommentUrl($comment));
             \yii::$app->end();
@@ -103,7 +103,7 @@ trait MotionActionsTrait
     {
         $comment = $this->getComment($motion, $commentId, false);
         if (!$comment->canDelete(User::getCurrentUser())) {
-            throw new Internal('Keine Berechtigung zum Löschen');
+            throw new Internal(\Yii::t('comment', 'err_no_del'));
         }
 
         $comment->status = IComment::STATUS_DELETED;
@@ -112,7 +112,7 @@ trait MotionActionsTrait
         }
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
 
-        \Yii::$app->session->setFlash('success', 'Der Kommentar wurde gelöscht.');
+        \Yii::$app->session->setFlash('success', \Yii::t('comment', 'del_done'));
     }
 
     /**
@@ -125,10 +125,10 @@ trait MotionActionsTrait
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId != $motion->id) {
-            throw new Internal('Kommentar nicht gefunden');
+            throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('Keine Freischaltrechte');
+            throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
         $comment->status = IComment::STATUS_VISIBLE;
@@ -151,10 +151,10 @@ trait MotionActionsTrait
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
         if (!$comment || $comment->motionId != $motion->id) {
-            throw new Internal('Kommentar nicht gefunden');
+            throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('Keine Freischaltrechte');
+            throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
         $comment->status = IComment::STATUS_DELETED;
@@ -169,25 +169,32 @@ trait MotionActionsTrait
      * @param Motion $motion
      * @param string $role
      * @param string $string
+     * @param string $name
+     * @param string $orga
      * @throws FormError
      */
-    private function motionLikeDislike(Motion $motion, $role, $string)
+    private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '')
     {
         $currentUser = User::getCurrentUser();
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser() || $currentUser == null) {
             throw new FormError('Supporting this motion is not possible');
         }
 
+        $maxPos = 0;
         foreach ($motion->motionSupporters as $supp) {
             if ($supp->userId == $currentUser->id) {
                 $motion->unlink('motionSupporters', $supp, true);
+            } elseif ($supp->position > $maxPos) {
+                $maxPos = $supp->position;
             }
         }
-        $support           = new MotionSupporter();
-        $support->motionId = $motion->id;
-        $support->userId   = $currentUser->id;
-        $support->position = 0;
-        $support->role     = $role;
+        $support               = new MotionSupporter();
+        $support->motionId     = $motion->id;
+        $support->userId       = $currentUser->id;
+        $support->name         = $name;
+        $support->organization = $orga;
+        $support->position     = $maxPos + 1;
+        $support->role         = $role;
         $support->save();
 
         $motion->refresh();
@@ -223,12 +230,19 @@ trait MotionActionsTrait
                 return;
             }
         }
-        $this->motionLikeDislike($motion, MotionSupporter::ROLE_SUPPORTER, \Yii::t('motion', 'support_done'));
+        $supportType = $motion->motionType->getMotionSupportTypeClass();
+        $role        = MotionSupporter::ROLE_SUPPORTER;
+        $name        = \Yii::$app->request->post('motionSupportName', '');
+        $orga        = \Yii::$app->request->post('motionSupportOrga', '');
+        if ($supportType->hasOrganizations() && $orga == '') {
+            \Yii::$app->session->setFlash('error', 'No organization entered');
+            return;
+        }
+        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga);
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 
-        $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
-        if (count($motion->getSupporters()) == $minSupporters) {
-            $motion->sendSupporterMinimumReached();
+        if (count($motion->getSupporters()) == $supportType->getMinNumberOfSupporters()) {
+            EmailNotifications::sendMotionSupporterMinimumReached($motion);
         }
     }
 
@@ -262,12 +276,34 @@ trait MotionActionsTrait
 
     /**
      * @param Motion $motion
+     */
+    private function motionSupportFinish(Motion $motion)
+    {
+        if (!$motion->canFinishSupportCollection()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'support_finish_err'));
+            return;
+        }
+
+        $motion->setInitialSubmitted();
+
+        if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
+            $motion->onPublish();
+        } else {
+            EmailNotifications::sendMotionSubmissionConfirm($motion);
+        }
+
+        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT_FINISH, $motion->id);
+        \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_finish_done'));
+    }
+
+    /**
+     * @param Motion $motion
      * @throws Internal
      */
     private function motionAddTag(Motion $motion)
     {
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('Keine Freischaltrechte');
+            throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getConsultation()->tags as $tag) {
             if ($tag->id == \Yii::$app->request->post('tagId')) {
@@ -283,7 +319,7 @@ trait MotionActionsTrait
     private function motionDelTag(Motion $motion)
     {
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            throw new Internal('No screening rights');
+            throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getConsultation()->tags as $tag) {
             if ($tag->id == \Yii::$app->request->post('tagId')) {
@@ -323,6 +359,9 @@ trait MotionActionsTrait
 
         } elseif (isset($post['motionSupportRevoke'])) {
             $this->motionSupportRevoke($motion);
+
+        } elseif (isset($post['motionSupportFinish'])) {
+            $this->motionSupportFinish($motion);
 
         } elseif (isset($post['motionAddTag'])) {
             $this->motionAddTag($motion);

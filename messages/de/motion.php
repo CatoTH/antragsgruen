@@ -25,7 +25,6 @@ return [
     'supporters_heading'                 => 'Unterstützer*innen',
     'supporting_you'                     => 'Du!',
     'supporting_none'                    => 'keine',
-    'support'                            => 'Unterstützen',
     'likes_title'                        => 'Zustimmung',
     'like'                               => 'Zustimmung',
     'likes'                              => 'Zustimmung',
@@ -117,7 +116,7 @@ return [
         bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
     'create_explanation_title'           => 'Antrag oder Änderungsantrag?',
     'support_collect_explanation_title'  => 'Unterstützer*innen sammeln',
-    'support_collect_explanation'        => 'Anträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um als eigenständiger Antrag zugelassen zu werden. Um einen solchen Antrag einzureichen, gehe wie folgt vor:<br>
+    'support_collect_explanation'        => '(Änderungs-)Anträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um als eigenständiger Antrag zugelassen zu werden. Um einen solchen Antrag einzureichen, gehe wie folgt vor:<br>
 <ol>
 <li><strong>Antragsentwurf</strong>: Trage zunächst hier den Antrag ein und hinterlege deine Kontaktdaten. Bestätige auf der nächsten Seite, das du den Antrag einbringen willst.</li>
 <li><strong>Untertützung</strong>: Du erhältst dann einen Link, den du an potentielle Interessierte schicken kannst. Jeder, der den Link kennt, kann den Antragsentwurf einsehen. Jede*r Delegierte*r kann den Antrag nun hier auf Antragsgrün unterstützen.</li>
@@ -128,11 +127,18 @@ return [
     'go_on'                              => 'Weiter',
     'like_done'                          => 'Du stimmst diesem Antrag nun zu.',
     'dislike_done'                       => 'Du lehnst diesen Antrag nun ab.',
+    'support'                            => 'Unterstützen',
+    'support_question'                   => 'Willst du den Antrag unterstützen?',
+    'support_orga'                       => 'Organisation',
+    'support_name'                       => 'Name',
     'support_done'                       => 'Du unterstützt diesen Antrag nun.',
     'neutral_done'                       => 'Du stehst diesem Antrag wieder neutral gegenüber.',
     'support_already'                    => 'Du unterstützt diesen Antrag bereits',
     'support_collection_hint'            => 'Dieser Antrag ist noch nicht offiziell eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen (aktueller Stand: %CURR%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
     'support_collection_reached_hint'    => 'Dieser Antrag ist noch nicht offiziell eingereicht. <strong>Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen.',
     'support_reached_email_subject'      => 'Antrag: Unterstützer*innen-Anzahl erreicht',
-    'support_reached_email_body'         => 'Hallo,<br><br>Dein Antrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht. Damit kannst du ihn ab jetzt auf hier einreichen:<br><br><strong>%LINK%</strong><br><br>Bitte beachte, dass es <strong>zwingend notwendig</strong> ist, ihn nun explizit einzureichen.<br><br>',
+    'support_reached_email_body'         => 'Hallo,<br><br>Dein Antrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht. Damit kannst du ihn ab jetzt hier einreichen:<br><br><strong>%LINK%</strong><br><br>Bitte beachte, dass es <strong>zwingend notwendig</strong> ist, ihn nun explizit einzureichen.<br><br>Mit freundlichen Grüßen,<br>  Das Antragsgrün-Team',
+    'support_finish_btn'                 => 'Antrag offiziell einreichen',
+    'support_finish_err'                 => 'Das ist derzeit (noch) nicht möglich',
+    'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',
 ];

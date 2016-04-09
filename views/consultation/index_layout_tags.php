@@ -105,7 +105,11 @@ foreach ($tagIds as $tagId) {
         echo '</div></td><td class="initiatorRow">';
         $initiators = [];
         foreach ($motion->getInitiators() as $init) {
-            $initiators[] = $init->name;
+            if ($init->personType == \app\models\db\MotionSupporter::PERSON_NATURAL) {
+                $initiators[] = $init->name;
+            } else {
+                $initiators[] = $init->organization;
+            }
         }
         echo Html::encode(implode(', ', $initiators));
         if ($motion->status != Motion::STATUS_SUBMITTED_SCREENED) {
@@ -126,14 +130,18 @@ foreach ($tagIds as $tagId) {
             echo '<td class="titleCol"><div class="titleLink">';
             $title = \Yii::t('amend', 'amendment_for') . ' ' . $motion->titlePrefix;
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
-            if ($motion->status == Motion::STATUS_WITHDRAWN) {
-                echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
+            if ($amend->status == Amendment::STATUS_WITHDRAWN) {
+                echo ' <span class="status">(' . Html::encode($amend->getStati()[$amend->status]) . ')</span>';
             }
             echo '</div></td>';
             echo '<td class="initiatorRow">';
             $initiators = [];
-            foreach ($motion->getInitiators() as $init) {
-                $initiators[] = $init->name;
+            foreach ($amend->getInitiators() as $init) {
+                if ($init->personType == \app\models\db\MotionSupporter::PERSON_NATURAL) {
+                    $initiators[] = $init->name;
+                } else {
+                    $initiators[] = $init->organization;
+                }
             }
             echo Html::encode(implode(', ', $initiators));
             if ($amend->status != Amendment::STATUS_SUBMITTED_SCREENED) {

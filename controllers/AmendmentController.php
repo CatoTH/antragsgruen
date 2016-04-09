@@ -10,6 +10,7 @@ use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
+use app\components\EmailNotifications;
 use yii\web\Response;
 
 class AmendmentController extends Base
@@ -186,33 +187,12 @@ class AmendmentController extends Base
         }
 
         if ($this->isPostSet('confirm')) {
-            $screening = $this->consultation->getSettings()->screeningAmendments;
-            if ($screening) {
-                $amendment->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
-            } else {
-                $amendment->status = Amendment::STATUS_SUBMITTED_SCREENED;
-                if ($amendment->titlePrefix == '') {
-                    $numbering              = $amendment->getMyConsultation()->getAmendmentNumbering();
-                    $amendment->titlePrefix = $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
-                }
-            }
-            $amendment->save();
-
-            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-            $mailText      = str_replace(
-                ['%TITLE%', '%LINK%', '%INITIATOR%'],
-                [$amendment->getTitle(), $amendmentLink, $amendment->getInitiatorsStr()],
-                \Yii::t('amend', 'submitted_adminnoti_body')
-            );
-            $mailTitle     = \Yii::t('amend', 'submitted_adminnoti_title');
-            $amendment->getMyConsultation()->sendEmailToAdmins($mailTitle, $mailText);
+            $amendment->setInitialSubmitted();
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
                 $amendment->onPublish();
             } else {
-                if ($amendment->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-                    $amendment->sendSubmissionConfirmMail();
-                }
+                EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
             }
 
             return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);

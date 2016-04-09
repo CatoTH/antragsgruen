@@ -417,6 +417,15 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isEmailAuthUser()
+    {
+        $authParts = explode(':', $this->auth);
+        return ($authParts[0] == 'email');
+    }
+
+    /**
      * @param string $password
      * @return bool
      */
@@ -732,11 +741,11 @@ class User extends ActiveRecord implements IdentityInterface
         if ($this->emailChange != $newEmail || $this->emailChange === null) {
             throw new FormError(\Yii::t('user', 'err_emailchange_notfound'));
         }
-        $ts = Tools::dateSql2timestamp($this->emailChangeAt);
-        if ($ts < time() - 24 * 3600) {
+        $timestamp = Tools::dateSql2timestamp($this->emailChangeAt);
+        if ($timestamp < time() - 24 * 3600) {
             throw new FormError(\Yii::t('user', 'err_change_toolong'));
         }
-        if ($code != $this->createEmailChangeToken($newEmail, $ts)) {
+        if ($code != $this->createEmailChangeToken($newEmail, $timestamp)) {
             throw new FormError(\Yii::t('user', 'err_code_wrong'));
         }
     }

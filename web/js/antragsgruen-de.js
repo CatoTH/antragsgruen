@@ -22,6 +22,19 @@ ANTRAGSGRUEN_STRINGS = {
         "delete_accept": "Löschen",
         "delete_reject": "Behalten",
         "colliding_title": "Kollidierender ÄA"
+    },
+    "admin": {
+        "adminMayEditConfirm": "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?",
+        "deleteDataConfirm": "Diese Angabe wirklich löschen?",
+        "agendaAddEntry": "Eintrag hinzufügen",
+        "agendaDelEntryConfirm": "Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?",
+        "removeAdminConfirm": "Diesem Zugang wirklich die Admin-Rechte entziehen?",
+        "emailMissingCode": "Im E-Mail-Text muss der Code %ACCOUNT% vorkommen.",
+        "emailMissingLink": "Im E-Mail-Text muss der Code %LINK% vorkommen.",
+        "emailMissingTo": "Es wurden keine E-Mail-Adressen angegeben.",
+        "emailNumberMismatch": "Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!",
+        "delMotionConfirm": "Diesen Antrag wirklich löschen?",
+        "delAmendmentConfirm": "Diesen Änderungsantrag wirklich löschen?"
     }
 };
 

@@ -15,32 +15,34 @@ class Diff2Test extends TestBase
 
     /**
      */
-    public function testNoGroupingBeyondLists() {
-        $orig = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, doch das Blindtextchen ließ sich nicht beirren.</p></li></ul></li></ul>';
-        $new = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, doch das Blindtextchen ließ sich nicht beirren.</p></li><li><p>Noch eine neuer Punkt an dritter Stelle</p></li></ul></li></ul>';
+    public function testNoGroupingBeyondLists()
+    {
+        $orig     = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, doch das Blindtextchen ließ sich nicht beirren.</p></li></ul></li></ul>';
+        $new      = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, doch das Blindtextchen ließ sich nicht beirren.</p></li><li><p>Noch eine neuer Punkt an dritter Stelle</p></li></ul></li></ul>';
         $expected = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, ###DEL_START###da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, ###DEL_END###doch das Blindtextchen ließ sich nicht beirren.###INS_START###</p></li><li><p>Noch eine neuer Punkt an dritter Stelle###INS_END###</p></li></ul></li></ul>';
-        $diff = new Diff2();
-        $out  = $diff->computeLineDiff($orig, $new);
+        $diff     = new Diff2();
+        $out      = $diff->computeLineDiff($orig, $new);
         $this->assertEquals($expected, $out);
     }
 
     /**
      */
-    public function testBreakListpintIntoTwo() {
+    public function testBreakListpintIntoTwo()
+    {
         $this->markTestIncomplete('Does not work yet');
 
-        $orig = [
+        $orig   = [
             '<ul><li><p>Es packte seine sieben Versalien, schob sich sein Initial in den Gürtel und machte sich auf den Weg.</p><ul><li><p>Als es die ersten Hügel des Kursivgebirges erklommen hatte, warf es einen letzten Blick zurück auf die Skyline</p></li><li><p>seiner Heimatstadt Buchstabhausen, die Headline von Alphabetdorf und die Subline seiner eigenen Straße, der Zeilengasse.</p></li></ul></li></ul>'
         ];
-        $new = [
+        $new    = [
             '<ul><li><p>Es packte seine sieben Versalien, schob sich sein Initial in den Gürtel und machte sich auf den Weg.</p></li></ul>',
             '<ul><li><p>Als es die ersten Hügel des Kursivgebirges erklommen hatte, warf es einen letzten Blick zurück auf die Skyline</p><ul><li><p>Bla 2</p></li><li><p>seiner Heimatstadt Buchstabhausen, die Headline von Alphabetdorf und die Subline seiner eigenen Straße, der Zeilengasse.</p></li></ul></li></ul>'
         ];
         $expect = [
             // @TODO
         ];
-        $diff = new Diff2();
-        $arr = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
+        $diff   = new Diff2();
+        $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
     }
 
@@ -49,7 +51,7 @@ class Diff2Test extends TestBase
     public function testInlineDiffToWordBased()
     {
         $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>'];
-        $new = ['<ul><li>Test1</li></ul>', '<ul><li>Test2</li></ul>', '<ul><li>Test3</li></ul>'];
+        $new  = ['<ul><li>Test1</li></ul>', '<ul><li>Test2</li></ul>', '<ul><li>Test3</li></ul>'];
         $diff = new Diff2();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
@@ -66,7 +68,7 @@ class Diff2Test extends TestBase
         }
 
         $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>', '<ul><li>Test3</li></ul>'];
-        $new = ['<p>Neue Zeile</p>'];
+        $new  = ['<p>Neue Zeile</p>'];
         $diff = new Diff2();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
@@ -288,7 +290,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $new  = '<p>Der beste Abfall ist der, der nicht entsteht. Wir wollen eine Wirtschaftsweise, in der Material- und Rohstoffeffizienz an erster Stelle stehen und in der alle Rohstoffe immer wieder neu verarbeitet werden und nicht auf einer Deponie landen, in Entwicklungs- und Schwellenländer exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<br>Produkten und Verpackungen eine ökologische Produktverantwortung zukommt, indem ambitionierte, abermachbare Recyclingziele sowie Ziele zur Material- und Rohstoffeffizienz eingeführt werden. Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für die Verwendung von Recyclingmaterialien zu schaffen.</p><p>Wir setzen uns dafür ein, dass die Rohstoffpreise die<br>sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<br>Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird Ökologie zum Wettbewerbsvorteil: Wer weniger Rohstoffe verbraucht oder Recyclingmaterial anstatt Primärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann, setzen wir uns außerdem dafür ein , dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<br>Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
 
         $diff = new Diff2();
-        $out = $diff->compareHtmlParagraphs([$orig], [$new], DiffRenderer::FORMATTING_CLASSES);
+        $out  = $diff->compareHtmlParagraphs([$orig], [$new], DiffRenderer::FORMATTING_CLASSES);
 
         $expect = ['<p><ins>Der beste Abfall ist der, der nicht entsteht. </ins>###LINENUMBER###Wir wollen eine Wirtschaftsweise, <ins>in der Material- und Rohstoffeffizienz an erster Stelle stehen und </ins>in der alle Rohstoffe immer wieder neu verarbeitet <ins>werden </ins>und ###LINENUMBER###nicht auf einer Deponie landen<del> oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts</del><ins>,</ins> in Entwicklungs- und Schwellenländer <del>ist keine Lösung</del><ins>exportiert oder verbrannt werden</ins>. <del>Sie verursacht dort ###LINENUMBER###schwere Umweltschäden</del><ins>Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben</ins>. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<del> </del><ins><br></ins>###LINENUMBER###Produkten und Verpackungen eine <ins>ökologische </ins>Produktverantwortung zukommt, indem ambitionierte, <del>aber ###LINENUMBER###machbare</del><ins>abermachbare</ins> Recyclingziele <ins>sowie Ziele zur Material- und Rohstoffeffizienz </ins>eingeführt werden. <del>Dadurch werden Rohstoffpreise befördert,</del><ins>Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für</ins> die <ins>Verwendung von Recyclingmaterialien zu schaffen.</ins></p><p><ins>Wir setzen uns dafür ein, dass </ins>die <ins>Rohstoffpreise die<br></ins>###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<del> </del><ins><br></ins>###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird <del>der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig.</del><ins>Ökologie zum Wettbewerbsvorteil:</ins> <del>Wir</del><ins>Wer weniger Rohstoffe verbraucht oder Recyclingmaterial anstatt Primärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann,</ins> setzen <ins>wir </ins>uns <ins>außerdem </ins>###LINENUMBER###dafür ein<ins> </ins>, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<del> </del><ins><br></ins>###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>'];
         $this->assertEquals($expect, $out);
@@ -385,7 +387,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
      */
     public function testReplaceListByP()
     {
-        $orig           = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
+        $orig           = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li>' .
+            '<li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li>' .
+            '<li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li>' .
+            '<li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
         $new            = '<p>Test 456</p>';
         $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
@@ -393,9 +398,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $diff      = new Diff2();
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $expected = ['<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul>',
+        $expected = ['<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul>' .
+            '<p class="inserted">Test 456</p>',
             '<ul class="deleted"><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li></ul>',
-            '<ul class="deleted"><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li></ul><p class="inserted">Test 456</p>',
+            '<ul class="deleted"><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li></ul>',
             '<ul class="deleted"><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
         ];
         $this->assertEquals($expected, $diffParas);
@@ -467,8 +473,13 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     {
         $diff = new Diff2();
 
-        $str1 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p><p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
-        $str2 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
+        $str1 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. ' .
+            'Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>' .
+            '<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. ' .
+            'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
+        $str2 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. ' .
+            'Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf helfgod im Beidl des basd scho i hob di liab. ' .
+            'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
 
         /*
         $expect = ['<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. <del>Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</del></p>',
@@ -476,8 +487,12 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
             '<ins>Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf</ins> helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>'];
         */
         $expect = [
-            '<p class="deleted">I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>',
-            '<p><del>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds</del><ins>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf</ins> helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>',
+            '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. ' .
+            'Biaschlegl soi oans, zwoa, gsuffa <del>Oachkatzlschwoaf hod Wiesn</del><ins>Oachsdfsdfsdf helfgod im Beidl des basd scho i hob di liab. ' .
+            'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn</ins>.</p>',
+
+            '<p class="deleted">Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. ' .
+            'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>',
         ];
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
@@ -680,7 +695,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff2();
-        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<p>###LINENUMBER###Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten ###LINENUMBER###sozialen Absicherung. <del>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen ###LINENUMBER###Renten-, Kranken- und Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus ist ###LINENUMBER###es in der Anfangsphase der Selbständigkeit und insbesondere bei Start-ups oft schwierig, die ###LINENUMBER###vollen Beitragslasten zu tragen. Wir wollen an Lösungen arbeiten, die angelehnt an den ###LINENUMBER###Gedanken der Künstlersozialkasse, für eine temporäre Unterstützung an dieser Stelle sorgen.</del><ins><em>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus wollen wir eine Bürger*innenversicherung in Gesundheit und Pflege einführen. Auch die Rentenversicherung wollen wir schrittweise zu einer Bürger*innenversicherung weiterentwickeln. In einem ersten Schritt wollen wir die bisher nicht pflichtversicherten Selbständigen in die gesetzliche Rentenversicherung einbeziehen. Die Grüne Garantierente soll ein Signal speziell an Selbständige mit geringem Einkommen senden, dass sich die Beiträge zur Rentenversicherung auch lohnen. </em></ins> ###LINENUMBER###Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen ###LINENUMBER###Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich ###LINENUMBER###verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen ###LINENUMBER###abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>'];
         $this->assertEquals($expected, $diffParas);
@@ -743,7 +758,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff2();
-        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expect, $diffParas);
     }
@@ -762,14 +777,14 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 <p>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>';
         $expected = ['<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>',
             '<p>###LINENUMBER###Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch ###LINENUMBER###weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft ###LINENUMBER###vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und ###LINENUMBER###biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkte<ins>n</ins> ###LINENUMBER###und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die ###LINENUMBER###Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang ###LINENUMBER###hier bleiben werden, diesen Prozess verstärken.</p>',
-            '<p class="deleted">###LINENUMBER###Die Stärkung einer europäischen Identität – ohne die Verwischung historischer ###LINENUMBER###Verantwortung und politischer Kontinuitäten – ist für eine zukünftige ###LINENUMBER###Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen ###LINENUMBER###wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
-            '<p><del>###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>'];
+            '<p><del>###LINENUMBER###Die Stärkung einer europäischen Identität – ohne die Verwischung historischer ###LINENUMBER###Verantwortung und politischer Kontinuitäten – ist für eine zukünftige ###LINENUMBER###Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen ###LINENUMBER###wird und in der Erinnerungsarbeit aufgegriffen werden muss.</del><ins>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</ins></p>',
+            '<p class="deleted">###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. ###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>'];
         // Hint: could be further improved, by separating the leading 'n' from the big change block
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
         $diff           = new Diff2();
-        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expected, $diffParas);
     }
@@ -782,7 +797,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $origParagraphs = ['<p>wieder<sup>Test</sup>.</p>'];
         $newParagraphs  = ['<p>wieder.</p>'];
         $diff           = new Diff2();
-        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals('<p>wieder<del><sup>Test</sup></del>.</p>', $diffParas[0]);
     }
 }

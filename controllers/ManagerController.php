@@ -267,6 +267,13 @@ class ManagerController extends Base
                         'apiKey'    => $post['mailService']['mandrillApiKey'],
                     ];
                     break;
+                case 'mailgun':
+                    $config->mailService = [
+                        'transport' => 'mailgun',
+                        'apiKey'    => $post['mailService']['mailgunApiKey'],
+                        'domain'    => $post['mailService']['mailgunDomain'],
+                    ];
+                    break;
                 case 'smtp':
                     $config->mailService = [
                         'transport' => 'smtp',

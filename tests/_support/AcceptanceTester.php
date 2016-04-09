@@ -110,13 +110,15 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
+     * @param string $subdomain
+     * @param string $path
      * @return AdminIndexPage
      */
-    public function loginAndGotoStdAdminPage()
+    public function loginAndGotoStdAdminPage($subdomain = 'stdparteitag', $path = 'std-parteitag')
     {
-        $this->gotoConsultationHome();
+        $this->gotoConsultationHome(false, $subdomain, $path);
         $this->loginAsStdAdmin();
-        return $this->gotoStdAdminPage();
+        return $this->gotoStdAdminPage(false, $subdomain, $path);
     }
 
     /**

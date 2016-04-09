@@ -6,18 +6,27 @@ $I->populateDBData1();
 
 $I->wantTo('Login as regular user');
 $I->gotoConsultationHome();
-$I->loginAsStdUser();
 $I->dontSee('ADMIN', '#adminLink');
 $I->dontSee('Bearbeiten', '.editCaller');
+$I->dontSeeElement('#helpLink');
 
-$I->wantTo('Login as admin');
-$I->logout();
+$I->wantTo('create the help page');
 $I->loginAsStdAdmin();
+$I->gotoStdAdminPage();
+$I->click('#helpCreateLink');
+$I->click('.editCaller');
+$I->wait(1);
+$I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<p>New text</p>");');
+$I->click('.submitBtn');
+
+$I->wantTo('see the help page');
+$I->gotoConsultationHome();
+$I->seeElement('#helpLink');
 $I->see('ADMIN', '#adminLink');
 $I->see('Bearbeiten', '.editCaller');
 $I->see('Hallo auf Antragsgrün');
 
-$I->wantTo('Edit the content');
+$I->wantTo('Edit the home page content');
 $I->executeJS('$(".contentPageWelcome").find(".editCaller").click();');
 $I->wait(2);
 $I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<b>Bold test</b>");');

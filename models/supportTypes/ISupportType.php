@@ -23,7 +23,11 @@ abstract class ISupportType
     const LIKEDISLIKE_DISLIKE = 2;
     const LIKEDISLIKE_SUPPORT = 4;
 
+    /** @var bool */
     protected $adminMode = false;
+
+    /** @var bool */
+    protected $hasOrganizations = false;
 
     /**
      * @return ISupportType[]
@@ -72,6 +76,15 @@ abstract class ISupportType
     public function setAdminMode($set)
     {
         $this->adminMode = $set;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function hasOrganizations()
+    {
+        return $this->hasOrganizations;
     }
 
     /**

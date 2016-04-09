@@ -7,6 +7,7 @@ use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
@@ -28,6 +29,9 @@ class MotionController extends AdminBase
     private function sectionsSave(ConsultationMotionType $motionType)
     {
         $position = 0;
+        if (!\Yii::$app->request->post('sections')) {
+            return;
+        }
         foreach (\Yii::$app->request->post('sections') as $sectionId => $data) {
             if (preg_match('/^new[0-9]+$/', $sectionId)) {
                 $section               = new ConsultationSettingsMotionSection();
@@ -114,7 +118,7 @@ class MotionController extends AdminBase
                 }
             }
 
-            $form                                    = $motionType->getMotionSupportTypeClass();
+            $form = $motionType->getMotionSupportTypeClass();
             $form->setSettings(\Yii::$app->request->post('initiator'));
             $motionType->supportTypeSettings = $form->getSettings();
             $motionType->save();
@@ -128,7 +132,6 @@ class MotionController extends AdminBase
 
         $supportCollPolicyWarning = false;
         if ($motionType->supportType == ISupportType::COLLECTING_SUPPORTERS) {
-
             if ($this->isPostSet('supportCollPolicyFix')) {
                 if ($motionType->policyMotions == IPolicy::POLICY_ALL) {
                     $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
@@ -139,6 +142,15 @@ class MotionController extends AdminBase
                     $motionType->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
                     $motionType->save();
                 }
+                if ($motionType->policyAmendments == IPolicy::POLICY_ALL) {
+                    $motionType->policyAmendments = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->save();
+                }
+                $support = $motionType->policySupportAmendments;
+                if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
+                    $motionType->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
+                    $motionType->save();
+                }
                 if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
                     $settings                         = $this->consultation->getSettings();
                     $settings->initiatorConfirmEmails = true;
@@ -147,11 +159,15 @@ class MotionController extends AdminBase
                 }
             }
 
-            $support                  = $motionType->policySupportMotions;
-            $createAll                = ($motionType->policyMotions == IPolicy::POLICY_ALL);
-            $supportAll               = ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY);
-            $noEmail                  = !$this->consultation->getSettings()->initiatorConfirmEmails;
-            $supportCollPolicyWarning = ($createAll || $supportAll || $noEmail);
+            $supportMotion = $motionType->policySupportMotions;
+            $supportAmend  = $motionType->policySupportAmendments;
+            $createMotion  = ($motionType->policyMotions == IPolicy::POLICY_ALL);
+            $createAmend   = ($motionType->policyAmendments == IPolicy::POLICY_ALL);
+            $supportMotion = ($supportMotion == IPolicy::POLICY_ALL || $supportMotion == IPolicy::POLICY_NOBODY);
+            $supportAmend  = ($supportAmend == IPolicy::POLICY_ALL || $supportAmend == IPolicy::POLICY_NOBODY);
+            $noEmail       = !$this->consultation->getSettings()->initiatorConfirmEmails;
+
+            $supportCollPolicyWarning = ($createMotion || $createAmend || $supportMotion || $supportAmend || $noEmail);
         }
 
         if ($this->isRequestSet('msg') && $this->getRequestValue('msg') == 'created') {
@@ -205,11 +221,13 @@ class MotionController extends AdminBase
                     $motionType->status                      = 0;
                 }
             }
-            $motionType->titleSingular = $type['titleSingular'];
-            $motionType->titlePlural   = $type['titlePlural'];
-            $motionType->createTitle   = $type['createTitle'];
-            $motionType->pdfLayout     = $type['pdfLayout'];
-            $motionType->motionPrefix  = $type['motionPrefix'];
+            $motionType->titleSingular          = $type['titleSingular'];
+            $motionType->titlePlural            = $type['titlePlural'];
+            $motionType->createTitle            = $type['createTitle'];
+            $motionType->pdfLayout              = $type['pdfLayout'];
+            $motionType->motionPrefix           = $type['motionPrefix'];
+            $motionType->motionLikesDislikes    = 0;
+            $motionType->amendmentLikesDislikes = 0;
             if (!$motionType->save()) {
                 var_dump($motionType->getErrors());
                 die();
@@ -238,6 +256,51 @@ class MotionController extends AdminBase
     {
         $motions = $this->consultation->motions;
         return $this->render('index', ['motions' => $motions]);
+    }
+
+    /**
+     * @param Motion $motion
+     */
+    private function saveMotionSupporters(Motion $motion)
+    {
+        $names         = \Yii::$app->request->post('supporterName', []);
+        $orgas         = \Yii::$app->request->post('supporterOrga', []);
+        $preIds        = \Yii::$app->request->post('supporterId', []);
+        $newSupporters = [];
+        /** @var MotionSupporter[] $preSupporters */
+        $preSupporters = [];
+        foreach ($motion->getSupporters() as $supporter) {
+            $preSupporters[$supporter->id] = $supporter;
+        }
+        for ($i = 0; $i < count($names); $i++) {
+            if (trim($names[$i]) == '' && trim($orgas[$i]) == '') {
+                continue;
+            }
+            if (isset($preSupporters[$preIds[$i]])) {
+                $supporter = $preSupporters[$preIds[$i]];
+            } else {
+                $supporter             = new MotionSupporter();
+                $supporter->motionId   = $motion->id;
+                $supporter->role       = MotionSupporter::ROLE_SUPPORTER;
+                $supporter->personType = MotionSupporter::PERSON_NATURAL;
+            }
+            $supporter->name         = $names[$i];
+            $supporter->organization = $orgas[$i];
+            $supporter->position     = $i;
+            if (!$supporter->save()) {
+                var_dump($supporter->getErrors());
+                die();
+            }
+            $newSupporters[$supporter->id] = $supporter;
+        }
+
+        foreach ($preSupporters as $supporter) {
+            if (!isset($newSupporters[$supporter->id])) {
+                $supporter->delete();
+            }
+        }
+
+        $motion->refresh();
     }
 
     /**
@@ -319,6 +382,8 @@ class MotionController extends AdminBase
                     }
                 }
             }
+
+            $this->saveMotionSupporters($motion);
 
             $motion->flushCacheWithChildren();
             \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));

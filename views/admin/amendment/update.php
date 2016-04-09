@@ -28,6 +28,7 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_amend'));
 
 $layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
+$layout->addJS('js/bower/Sortable/Sortable.min.js');
 $layout->loadDatepicker();
 $layout->loadCKEditor();
 
@@ -190,6 +191,11 @@ if (!$amendment->textFixed) {
 $initiatorClass = $form->motion->motionType->getAmendmentSupportTypeClass();
 $initiatorClass->setAdminMode(true);
 echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $controller);
+
+echo $this->render('../motion/_update_supporter', [
+    'supporters'  => $amendment->getSupporters(),
+    'newTemplate' => new \app\models\db\AmendmentSupporter()
+]);
 
 
 echo '<div class="saveholder">
