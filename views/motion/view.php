@@ -215,7 +215,7 @@ if (count($supporters) > 0 || $motion->status == Motion::STATUS_COLLECTING_SUPPO
         echo '<ul>';
         foreach ($supporters as $supp) {
             echo '<li>';
-            if ($supp->userId == $currUserId) {
+            if ($currUserId && $supp->userId == $currUserId) {
                 echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
                 $iAmSupporting = true;
             }
