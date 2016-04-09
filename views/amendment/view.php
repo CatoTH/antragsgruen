@@ -211,7 +211,7 @@ if (count($supporters) > 0 || $amendment->status == Amendment::STATUS_COLLECTING
         echo '<ul>';
         foreach ($supporters as $supp) {
             echo '<li>';
-            if ($supp->userId == $currUserId) {
+            if ($currUserId && $supp->userId == $currUserId) {
                 echo '<span class="label label-info">' . \Yii::t('amend', 'supporter_you') . '</span> ';
                 $iAmSupporting = true;
             }
