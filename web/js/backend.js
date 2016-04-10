@@ -331,6 +331,26 @@
         });
     };
 
+    var exportRowInit = function () {
+        var $exportRow = $(".motionListExportRow");
+        $exportRow.find("li.checkbox").on("click", function (ev) {
+            ev.stopPropagation();
+        });
+        $exportRow.find(".exportMotionDd, .exportAmendmentDd").each(function () {
+            var $dd = $(this),
+                recalcLinks = function () {
+                    var withdrawn = ($dd.find("input[name=withdrawn]").prop("checked") ? 1 : 0);
+                    $dd.find(".exportLink a").each(function () {
+                        var link = $(this).data("href-tpl");
+                        link = link.replace("WITHDRAWN", withdrawn);
+                        console.log(link);
+                        $(this).attr("href", link);
+                    });
+                };
+            $dd.find("input[type=checkbox]").change(recalcLinks)
+        });
+    };
+
     var siteAccessInit = function () {
         var $siteForm = $("#siteSettingsForm");
         $siteForm.find(".loginMethods .namespaced input").change(function () {
@@ -399,7 +419,7 @@
         });
     };
 
-    var motionSupporterEdit = function() {
+    var motionSupporterEdit = function () {
         var $supporterHolder = $("#motionSupporterHolder"),
             $sortable = $supporterHolder.find("> ul");
         Sortable.create($sortable[0], {draggable: 'li'});
@@ -408,13 +428,13 @@
             $sortable.append($(this).data("content"));
             ev.preventDefault();
         });
-        $sortable.on("click", ".delSupporter", function(ev) {
+        $sortable.on("click", ".delSupporter", function (ev) {
             ev.preventDefault();
             $(this).parents("li").first().remove();
         });
 
         var $fullTextHolder = $("#fullTextHolder");
-        $supporterHolder.find(".fullTextAdd").click(function() {
+        $supporterHolder.find(".fullTextAdd").click(function () {
             var lines = $fullTextHolder.find('textarea').val().split(";"),
                 template = $(".supporterRowAdder").data("content"),
                 getNewElement = function () {
@@ -542,6 +562,7 @@
         'motionTypeEdit': motionTypeEdit,
         'agendaEdit': agendaEdit,
         'motionListAll': motionListAll,
+        'exportRowInit': exportRowInit,
         'siteAccessInit': siteAccessInit,
         'siteAccessUsersInit': siteAccessUsersInit,
         'motionEditInit': motionEditInit,

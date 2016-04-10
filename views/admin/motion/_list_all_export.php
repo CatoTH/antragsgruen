@@ -7,6 +7,20 @@ use yii\helpers\Html;
 $controller   = $this->context;
 $consultation = $controller->consultation;
 
+$layout = $controller->layoutParams;
+$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.exportRowInit();');
+
+
+$getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
+    $link    = UrlHelper::createUrl([$route, 'motionTypeId' => $motionTypeId, 'withdrawn' => '0']);
+    $linkTpl = UrlHelper::createUrl([$route, 'motionTypeId' => $motionTypeId, 'withdrawn' => 'WITHDRAWN']);
+    if ($motionTypeId) {
+        $cssClass .= $motionTypeId;
+    }
+    $attrs   = ['class' => $cssClass, 'data-href-tpl' => $linkTpl];
+    return '<li class="exportLink">' . Html::a($title, $link, $attrs) . '</li>';
+}
+
 ?>
 <div class="motionListExportRow">
     <span class="title pull-left">Export:</span>
@@ -18,7 +32,7 @@ $consultation = $controller->consultation;
     <div class="dropdown dropdown-menu-left exportOpenslidesDd pull-right">
         <button class="btn btn-default dropdown-toggle" type="button" id="exportOpenslidesBtn"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Openslides
+            <?= \Yii::t('export', 'btn_openslides') ?>
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="exportOpenslidesBtn">
@@ -44,37 +58,33 @@ $consultation = $controller->consultation;
     <div class="dropdown dropdown-menu-left exportAmendmentDd pull-right">
         <button class="btn btn-default dropdown-toggle" type="button" id="exportAmendmentsBtn"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Änderungsanträge
+            <?= \Yii::t('export', 'btn_amendments') ?>
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="exportAmendmentsBtn">
-            <li><label>
-                    <input type="checkbox" class="withdrawn"> Zurückgezogene
+            <li class="checkbox"><label>
+                    <input type="checkbox" class="withdrawn" name="withdrawn">
+                    <?= \Yii::t('export', 'incl_withdrawn') ?>
                 </label></li>
             <li role="separator" class="divider"></li>
             <?php
-            $amendmentOdsLink  = UrlHelper::createUrl('admin/amendment/odslist');
-            $amendmentPDFLink  = UrlHelper::createUrl('admin/amendment/pdflist');
-            $pdfCollectionLink = UrlHelper::createUrl('amendment/pdfcollection');
 
-            if ($controller->getParams()->xelatexPath) {
-                $amendmentPDFZIPLink = UrlHelper::createUrl('admin/amendment/pdfziplist');
-                $ttle                = \Yii::t('admin', 'index_pdf_zip_list');
-                echo '<li>' .
-                    Html::a($title, $amendmentPDFZIPLink, ['class' => 'amendmentPdfZipList']) . '
-    </li>';
-            }
-            $amendmentODTZIPLink = UrlHelper::createUrl('admin/amendment/odtziplist');
-            $title               = \Yii::t('admin', 'index_odt_zip_list');
-            echo '<li>' .
-                Html::a($title, $amendmentODTZIPLink, ['class' => 'amendmentOdtZipList']) . '
-    </li>';
-            echo '<li>' .
-                Html::a(\Yii::t('admin', 'index_export_ods'), $amendmentOdsLink, ['class' => 'amendmentOds']) .
-                '</li>';
+            $title = Yii::t('admin', 'index_export_ods');
+            echo $getExportLinkLi($title, 'admin/amendment/odslist', null, 'amendmentOds');
+
+            $title = \Yii::t('admin', 'index_pdf_collection');
+            echo $getExportLinkLi($title, 'amendment/pdfcollection', null, 'amendmentPDF');
 
             $title = \Yii::t('admin', 'index_pdf_list');
-            echo '<li>' . Html::a($title, $amendmentPDFLink, ['class' => 'amendmentPdfList']) . '</li>';
+            echo $getExportLinkLi($title, 'admin/amendment/pdflist', null, 'amendmentPdfList');
+
+            if ($controller->getParams()->xelatexPath) {
+                $title = \Yii::t('admin', 'index_pdf_zip_list');
+                echo $getExportLinkLi($title, 'admin/amendment/pdfziplist', null, 'amendmentPdfZipList');
+            }
+
+            $title = \Yii::t('admin', 'index_odt_zip_list');
+            echo $getExportLinkLi($title, 'admin/amendment/odtziplist', null, 'amendmentOdtZipList');
             ?>
         </ul>
     </div>
@@ -89,42 +99,31 @@ $consultation = $controller->consultation;
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="exportMotionBtn<?= $motionType->id ?>">
-                <li><label>
-                        <input type="checkbox" class="withdrawn"> Zurückgezogene
+                <li class="checkbox"><label>
+                        <input type="checkbox" class="withdrawn" name="withdrawn">
+                        <?= \Yii::t('export', 'incl_withdrawn') ?>
                     </label></li>
                 <li role="separator" class="divider"></li>
                 <?php
                 if ($controller->getParams()->xelatexPath) {
-                    $zipURL = UrlHelper::createUrl(['motion/pdfcollection', 'motionTypeId' => $motionType->id]);
                     $title  = \Yii::t('admin', 'index_pdf_collection');
-                    echo '<li>';
-                    echo Html::a($title, $zipURL, ['class' => 'motionPDF' . $motionType->id]);
-                    echo '</li>';
+                    echo $getExportLinkLi($title, 'motion/pdfcollection', $motionType->id, 'motionPDF');
                 }
 
                 if ($controller->getParams()->xelatexPath) {
-                    $zipURL = UrlHelper::createUrl(['admin/motion/pdfziplist', 'motionTypeId' => $motionType->id]);
                     $title  = \Yii::t('admin', 'index_pdf_zip_list');
-                    echo '<li>';
-                    echo Html::a($title, $zipURL, ['class' => 'motionZIP' . $motionType->id]);
-                    echo '</li>';
+                    echo $getExportLinkLi($title, 'admin/motion/pdfziplist', $motionType->id, 'motionZIP');
                 }
 
-                $zipURL = UrlHelper::createUrl(['admin/motion/odtziplist', 'motionTypeId' => $motionType->id]);
                 $title  = \Yii::t('admin', 'index_odt_zip_list');
-                echo '<li>';
-                echo Html::a($title, $zipURL, ['class' => 'motionOdtZIP' . $motionType->id]);
-                echo '</li>';
+                echo $getExportLinkLi($title, 'admin/motion/odtziplist', $motionType->id, 'motionOdtZIP');
 
-                $odsUrl = UrlHelper::createUrl(['admin/motion/odslist', 'motionTypeId' => $motionType->id]);
                 $title  = \Yii::t('admin', 'index_export_ods');
-                echo '<li>';
-                echo Html::a($title, $odsUrl, ['class' => 'motionODS' . $motionType->id]) . '</li>';
+                echo $getExportLinkLi($title, 'admin/motion/odslist', $motionType->id, 'motionODS');
 
-                $excelUrl = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
                 $title    = \Yii::t('admin', 'index_export_excel') .
                     ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';
-                echo '<li>' . Html::a($title, $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . '</li>';
+                echo $getExportLinkLi($title, 'admin/motion/excellist', $motionType->id, 'motionExcel');
                 ?>
             </ul>
         </div>

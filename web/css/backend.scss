@@ -378,6 +378,12 @@ label.legend {
     font-size: 0.9em;
   }
 
+  li.checkbox {
+    label {
+      font-weight: normal;
+      padding: 0 0 0 30px;
+    }
+  }
 }
 
 .motionListSearchForm {
