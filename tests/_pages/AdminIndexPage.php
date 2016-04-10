@@ -47,16 +47,6 @@ class AdminIndexPage extends BasePage
     }
 
     /**
-     * @return AdminMotionListPage
-     */
-    public function gotoMotionList()
-    {
-        $this->actor->click('.motionListAll');
-        $this->actor->see(mb_strtoupper('Liste: Anträge, Änderungsanträge'), 'h1');
-        return new AdminMotionListPage($this->actor);
-    }
-
-    /**
      */
     public function gotoSiteAccessPage()
     {

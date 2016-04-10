@@ -25,7 +25,7 @@ $page->fillInValidSampleData('Neuer Testantrag');
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 
-$I->gotoStdAdminPage()->gotoMotionList();
+$I->gotoMotionList();
 $I->dontSee(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX);
 $I->checkOption('.adminMotionTable .amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .selectbox');
 $I->submitForm('.motionListForm', [], 'screen');
@@ -39,7 +39,7 @@ $I->gotoConsultationHome()->gotoMotionCreatePage()->fillInValidSampleData();
 $I->submitForm('#motionEditForm', [], 'save');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
 
-$I->gotoStdAdminPage()->gotoMotionList();
+$I->gotoMotionList();
 $I->dontSee(AcceptanceTester::FIRST_FREE_MOTION_TITLE_PREFIX);
 $I->checkOption('.adminMotionTable .motion' . AcceptanceTester::FIRST_FREE_MOTION_ID . ' .selectbox');
 $I->submitForm('.motionListForm', [], 'screen');

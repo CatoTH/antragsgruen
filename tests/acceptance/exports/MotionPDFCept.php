@@ -47,7 +47,7 @@ if (strlen($pdf) == 0) {
 
 
 $I->wantTo('test the single-motion-PDF from the admin interface');
-$I->loginAndGotoStdAdminPage()->gotoMotionList();
+$I->loginAndGotoMotionList();
 $pdf = $I->downloadLink('.adminMotionTable .motion3 a.pdf');
 if (strlen($pdf) == 0) {
     $I->fail('PDF has no content');
