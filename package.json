@@ -1,0 +1,14 @@
+{
+    "devDependencies": {
+        "gulp": "^3.9.0",
+        "gulp-uglify": "^1.5.1",
+        "gulp-concat": "^2.6.0",
+        "gulp-sass": "^2.1.1",
+        "gulp-sourcemaps": "^1.6.0",
+        "pa11y": "^3.5.1",
+        "phantomjs-prebuilt": "^2.1.4"
+    },
+    "directories": {
+        "bin": "./bin/"
+    }
+}
