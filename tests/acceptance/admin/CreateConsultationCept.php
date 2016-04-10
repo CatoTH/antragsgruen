@@ -23,7 +23,7 @@ $I->see('Standard-Veranstaltung', '.consultation1');
 
 
 $I->wantTo('check that the motion types where cloned successfully');
-$I->gotoStdAdminPage(false, 'stdparteitag', 'neukurz')->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 $I->seeNumberOfElements('#sectionsList > li', 5);
 
 

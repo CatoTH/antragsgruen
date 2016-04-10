@@ -12,23 +12,23 @@ $I->click('#translationLink');
 
 
 
-$I->wantTo('Change the help link');
+$I->wantTo('Change the home link');
 
-$I->see('Hilfe', '#helpLink');
+$I->see('Start', '#homeLink');
 
-$I->seeElement('textarea[placeholder=Hilfe]');
-$I->fillField('textarea[placeholder=Hilfe]', 'HelpMe');
+$I->seeElement('textarea[placeholder=Start]');
+$I->fillField('textarea[placeholder=Start]', 'Home');
 $I->submitForm('#translationForm', [], 'save');
 
-$I->dontSee('Hilfe', '#helpLink');
-$I->see('HelpMe', '#helpLink');
-$I->seeInField('textarea[placeholder=Hilfe]', 'HelpMe');
+$I->dontSee('Start', '#homeLink');
+$I->see('Home', '#homeLink');
+$I->seeInField('textarea[placeholder=Start]', 'Home');
 
 
 $I->wantTo('Revert the change');
-$I->fillField('textarea[placeholder=Hilfe]', '');
+$I->fillField('textarea[placeholder=Start]', '');
 $I->submitForm('#translationForm', [], 'save');
 
-$I->see('Hilfe', '#helpLink');
-$I->dontSee('HelpMe', '#helpLink');
-$I->seeInField('textarea[placeholder=Hilfe]', '');
+$I->see('Start', '#homeLink');
+$I->dontSee('Home', '#homeLink');
+$I->seeInField('textarea[placeholder=Start]', '');
