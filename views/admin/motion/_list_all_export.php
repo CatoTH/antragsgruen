@@ -122,14 +122,13 @@ $consultation = $controller->consultation;
                 echo Html::a($title, $odsUrl, ['class' => 'motionODS' . $motionType->id]) . '</li>';
 
                 $excelUrl = UrlHelper::createUrl(['admin/motion/excellist', 'motionTypeId' => $motionType->id]);
-                $title    = \Yii::t('admin', 'index_export_excel');
-                echo '<li>';
-                echo Html::a($title, $excelUrl, ['class' => 'motionExcel' . $motionType->id]) .
-                    ' (' . \Yii::t('admin', 'index_error_prone') . ')</li>';
+                $title    = \Yii::t('admin', 'index_export_excel') .
+                    ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';
+                echo '<li>' . Html::a($title, $excelUrl, ['class' => 'motionExcel' . $motionType->id]) . '</li>';
                 ?>
             </ul>
         </div>
-    <?php
+        <?php
     }
     ?>
 </div>

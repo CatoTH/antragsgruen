@@ -70,4 +70,4 @@ gulp.task('watch', function () {
     gulp.watch(["web/css/*.scss"], ['build-css']);
 });
 
-gulp.task('default', ['build-jd', 'build-css']);
+gulp.task('default', ['build-js', 'build-css']);

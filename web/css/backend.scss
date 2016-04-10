@@ -363,8 +363,8 @@ label.legend {
 
 .motionListExportRow {
   padding: 10px 19px;
-  border-bottom: solid 1px rgb(40, 95, 25);
-  background: lighten(rgb(175, 203, 8), 50%);
+  border-bottom: solid 1px #aaa;
+  background: #f7f7f7;
   text-align: right;
   @include clearfix();
 
@@ -374,6 +374,9 @@ label.legend {
     font-weight: bold;
   }
 
+  .errorProne {
+    font-size: 0.9em;
+  }
 
 }
 
