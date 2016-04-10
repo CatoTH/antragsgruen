@@ -36,7 +36,7 @@ $I->dontSee('#section_21_1 .motionComment .delLink');
 $I->wantTo('enable screening and force e-mails');
 $I->logout();
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage(true, 'bdk', 'bdk')->gotoConsultation();
+$I->gotoStdAdminPage('bdk', 'bdk')->gotoConsultation();
 $I->dontSeeCheckboxIsChecked('#screeningComments');
 $I->dontSeeCheckboxIsChecked('#commentNeedsEmail');
 $I->checkOption('#screeningComments');

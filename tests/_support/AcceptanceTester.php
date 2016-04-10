@@ -118,16 +118,15 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $this->gotoConsultationHome(false, $subdomain, $path);
         $this->loginAsStdAdmin();
-        return $this->gotoStdAdminPage(false, $subdomain, $path);
+        return $this->gotoStdAdminPage($subdomain, $path);
     }
 
     /**
-     * @param bool $check
      * @param string $subdomain
      * @param string $path
      * @return AdminIndexPage
      */
-    public function gotoStdAdminPage($check = true, $subdomain = 'stdparteitag', $path = 'std-parteitag')
+    public function gotoStdAdminPage($subdomain = 'stdparteitag', $path = 'std-parteitag')
     {
         $page = AdminIndexPage::openBy(
             $this,

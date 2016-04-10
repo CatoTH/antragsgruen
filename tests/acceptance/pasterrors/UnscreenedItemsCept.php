@@ -32,7 +32,7 @@ $layoutTypes = Consultation::getStartLayouts();
 foreach ($layoutTypes as $typeId => $typeName) {
     $I->wantTo('switch to: ' . $typeName);
 
-    $page = $I->gotoStdAdminPage(true, 'bdk', 'bdk');
+    $page = $I->gotoStdAdminPage('bdk', 'bdk');
     $I->see($title);
     $page->gotoConsultation();
     $I->selectOption('#startLayoutType', $typeName);

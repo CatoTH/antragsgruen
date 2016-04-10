@@ -8,7 +8,7 @@ $I->wantTo('test if I can create a motion using another one as template');
 $I->gotoConsultationHome(true, '1laenderrat2015', '1laenderrat2015');
 $I->loginAsStdAdmin();
 
-$I->gotoStdAdminPage(true, '1laenderrat2015', '1laenderrat2015')->gotoMotionList();
+$I->gotoStdAdminPage('1laenderrat2015', '1laenderrat2015')->gotoMotionList();
 $I->click('.adminMotionTable .motion8 .actionCol .dropdown-toggle');
 $I->click('.adminMotionTable .motion8 .actionCol .asTemplate');
 $I->see('Antrag stellen', 'h1');
@@ -20,7 +20,7 @@ $I->seeCheckboxIsChecked('#personTypeOrga');
 $I->seeCheckboxIsChecked('input[name=otherInitiator]');
 
 
-$I->gotoStdAdminPage(true, '1laenderrat2015', '1laenderrat2015')->gotoMotionList();
+$I->gotoStdAdminPage('1laenderrat2015', '1laenderrat2015')->gotoMotionList();
 $I->click('.adminMotionTable .motion48 .actionCol .dropdown-toggle');
 $I->click('.adminMotionTable .motion48 .actionCol .asTemplate');
 $I->see('Antrag stellen', 'h1');
@@ -36,7 +36,7 @@ if ($name1 != 'Felix Deist' || $name2 != 'Tarek Al-Wazir') {
 }
 
 
-$I->gotoStdAdminPage(true, '1laenderrat2015', '1laenderrat2015')->gotoMotionList();
+$I->gotoStdAdminPage('1laenderrat2015', '1laenderrat2015')->gotoMotionList();
 $I->click('.adminMotionTable .amendment13 .actionCol .dropdown-toggle');
 $I->click('.adminMotionTable .amendment13 .actionCol .asTemplate');
 $I->see('Änderungsantrag', 'h1');

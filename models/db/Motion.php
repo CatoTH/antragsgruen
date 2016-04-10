@@ -348,7 +348,7 @@ class Motion extends IMotion implements IRSSItem
                     }
                 }
                 if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
-                    if ($currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+                    if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
                         return true;
                     }
                 }

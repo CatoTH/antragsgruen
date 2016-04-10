@@ -27,7 +27,7 @@ modules:
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
         \Helper\AccessibilityValidator:
-            pa11yPath: pa11y
+            pa11yPath: node_modules/.bin/pa11y
         \Helper\HTMLValidator:
             javaPath: java
             vnuPath: /usr/local/bin/vnu.jar

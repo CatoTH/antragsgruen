@@ -15,6 +15,10 @@ $I->executeJS('$("#motionSupporterHolder > ul > li:nth(0) .supporterOrga").val("
 $I->executeJS('$("#motionSupporterHolder > ul > li:nth(1) .supporterName").val("My Name 2");');
 $I->submitForm('#motionUpdateForm', [], 'save');
 
+$I->gotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
+$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
+$I->submitForm('.adminTypeForm', [], 'save');
+
 $I->logout();
 
 
@@ -62,7 +66,7 @@ $I->assertContains('My login-name 2', $firstName);
 
 $I->wantTo('add some suporters using full-text');
 
-$I->gotoStdAdminPage(false, 'supporter', 'supporter')->gotoMotionList()->gotoMotionEdit(116);
+$I->gotoStdAdminPage('supporter', 'supporter')->gotoMotionList()->gotoMotionEdit(116);
 
 $I->dontSeeElement('#fullTextHolder');
 $I->click('.fullTextAdder a');
