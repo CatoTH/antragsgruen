@@ -37,6 +37,10 @@ class HTMLTools
      */
     public static function cleanMessedUpHtmlCharacters($html)
     {
+        if (function_exists('normalizer_normalize')) {
+            $html = normalizer_normalize($html);
+        }
+
         $html = str_replace(chr(194) . chr(160), ' ', $html); // Long space
         $html = str_replace(chr(0xef) . chr(0xbb) . chr(0xbf), '', $html); // Byte order Mark
 
@@ -123,6 +127,10 @@ class HTMLTools
         }
 
         $html = str_replace("\r", '', $htmlIn);
+
+        // When coming from amendment creating
+        // should only happen in some edge cases where the editor was not used correctly
+        $html = preg_replace('/<del[^>]*>.*<\/del>/siuU', '', $html);
 
         static::loadNetIdna2();
         $html = HtmlPurifier::process(

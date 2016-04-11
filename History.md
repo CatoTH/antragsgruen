@@ -3,6 +3,7 @@
 ## Version 3.2.2 [Not yet released]
 
 - Bugfix: some supporters where tagged with "You!" for logged-out users
+- Bugfix: better string normalization
 
 ## Version 3.2.1 (2016-04-06)
 
