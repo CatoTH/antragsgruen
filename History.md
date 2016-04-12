@@ -1,9 +1,10 @@
 # Version history
 
-## Version 3.2.2 [Not yet released]
+## Version 3.2.2 (2016-04-13)
 
 - Bugfix: some supporters where tagged with "You!" for logged-out users
 - Bugfix: better string normalization
+- Bugfix: editing amendments on the administration page did not work when single-paragraph-mode was activated
 
 ## Version 3.2.1 (2016-04-06)
 
