@@ -24,7 +24,7 @@ class HTMLNormalizeTest extends TestBase
      */
     public function testStripLeadingSpaces()
     {
-        $orig = '<p> Test 123 </p>';
+        $orig   = '<p> Test 123 </p>';
         $expect = '<p>Test 123</p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
@@ -205,9 +205,43 @@ Test 2.</p>
 
     /**
      */
-    public function testUmlautDomains() {
-$orig = 'Test <a href="http://www.hössl.org">My Domain</a>';
+    public function testUmlautDomains()
+    {
+        $orig   = 'Test <a href="http://www.hössl.org">My Domain</a>';
         $expect = 'Test <a href="http://www.xn--hssl-5qa.org">My Domain</a>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testStripDelTags()
+    {
+        $orig   = 'Test <del>this should <strong>be</strong> deleted</del> more <del>this as well</del>.';
+        $expect = 'Test more .';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+
+    }
+
+    /**
+     */
+    public function testDontStripInsTags()
+    {
+        $orig   = 'Test <ins>this should <strong>be</strong> inserted</ins> more <ins>this as well</ins>.';
+        $expect = 'Test this should <strong>be</strong> inserted more this as well.';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testNormalizeUmlauts()
+    {
+        $orig = chr(195) . chr(164) . chr(97) . chr(204) . chr(136);
+        $expect = 'ää';
+        $this->assertNotEquals($expect, $orig);
+
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }

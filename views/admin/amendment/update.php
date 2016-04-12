@@ -1,13 +1,10 @@
 <?php
 
-use app\components\diff\AmendmentSectionFormatter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
 /**
@@ -82,7 +79,7 @@ if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
 }
 
 
-echo Html::beginForm('', 'post', ['id' => 'amendmentUpdateForm']);
+echo Html::beginForm('', 'post', ['id' => 'amendmentUpdateForm', 'class' => 'motionEditForm']);
 
 echo '<div class="content form-horizontal">';
 
@@ -161,6 +158,8 @@ if ($amendment->changeExplanation != '') {
     echo '</section>';
 }
 
+$multipleParagraphs = $form->motion->motionType->amendmentMultipleParagraphs;
+
 if (!$amendment->textFixed) {
     echo '<h2 class="green">' . \Yii::t('admin', 'amend_edit_text_title') . '</h2>
 <div class="content" id="amendmentTextEditCaller">
@@ -170,6 +169,11 @@ if (!$amendment->textFixed) {
 
     foreach ($form->sections as $section) {
         echo $section->getSectionType()->getAmendmentFormField();
+    }
+
+    if (!$multipleParagraphs) {
+        echo '<input type="hidden" name="modifiedSectionId" value="">';
+        echo '<input type="hidden" name="modifiedParagraphNo" value="">';
     }
 
 
@@ -204,4 +208,4 @@ echo '<div class="saveholder">
 
 echo Html::endForm();
 
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.amendmentEditInit();');
+$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.amendmentEditInit(' . ($multipleParagraphs ? 1 : 0) . ');');

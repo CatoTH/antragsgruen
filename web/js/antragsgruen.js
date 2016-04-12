@@ -1241,6 +1241,7 @@ function __t(category, str) {
         'motionEditForm': motionEditForm,
         'motionMergeAmendmentsForm': motionMergeAmendmentsForm,
         'amendmentEditForm': amendmentEditForm,
+        'amendmentEditFormSinglePara': amendmentEditFormSinglePara,
         'contentPageEdit': contentPageEdit,
         'defaultInitiatorForm': defaultInitiatorForm,
         'accountEdit': accountEdit,

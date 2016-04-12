@@ -5,11 +5,9 @@ namespace app\commands;
 use app\components\HTMLTools;
 use app\models\db\Amendment;
 use app\models\db\Motion;
+use app\models\db\Site;
 use app\models\sectionTypes\ISectionType;
 use yii\console\Controller;
-use Zend\Mail\Transport\Smtp as SmtpTransport;
-use Zend\Mail\Transport\SmtpOptions;
-use Zend\Mail\Message;
 
 /**
  * Tool to fix some problems (usually only during development)
@@ -78,6 +76,47 @@ class BugfixController extends Controller
         } else {
             $this->stdout('No sections changed' . "\n");
         }
+    }
+
+    /**
+     * Fixes all texts of a given consultation
+     *
+     * @param string $subdomain
+     * @param string $consultation
+     */
+    public function actionFixAllConsultationTexts($subdomain, $consultation)
+    {
+        if ($subdomain == '' || $consultation == '') {
+            $this->stdout('yii bugfix/fix-all-consultation-texts [subdomain] [consultationPath]' . "\n");
+            return;
+        }
+        /** @var Site $site */
+        $site = Site::findOne(['subdomain' => $subdomain]);
+        if (!$site) {
+            $this->stderr('Site not found' . "\n");
+            return;
+        }
+        $con = null;
+        foreach ($site->consultations as $cons) {
+            if ($cons->urlPath == $consultation) {
+                $con = $cons;
+            }
+        }
+        if (!$con) {
+            $this->stderr('Consultation not found' . "\n");
+            return;
+        }
+        foreach ($con->motions as $motion) {
+            $this->stdout('- Motion ' . $motion->id . ':' . "\n");
+            $this->actionFixMotionText($motion->id);
+            foreach ($motion->amendments as $amendment) {
+                $this->stdout('- Amendment ' . $amendment->id . ':' . "\n");
+                $this->actionFixAmendmentText($amendment->id);
+            }
+        }
+        $con->flushCacheWithChildren();
+
+        $this->stdout('Finished' . "\n");
     }
 
     /**
