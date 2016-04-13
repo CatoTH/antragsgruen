@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.2.3 [Not released yet]
+
+- Bugfix: In some cases, single lines were shown as modified with deletions where no deletion was actually made.
+
 ## Version 3.2.2 (2016-04-13)
 
 - Bugfix: some supporters where tagged with "You!" for logged-out users
