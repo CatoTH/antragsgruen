@@ -3,6 +3,7 @@
 ## Version 3.2.3 [Not released yet]
 
 - Bugfix: In some cases, single lines were shown as modified with deletions where no deletion was actually made.
+- Bugfix: When amendments are numbered by the first affected line number, the numbering got wrong once more than two amendments started at the same line.
 
 ## Version 3.2.2 (2016-04-13)
 

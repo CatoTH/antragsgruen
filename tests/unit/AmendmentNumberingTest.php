@@ -138,5 +138,21 @@ class AmendmentNumberingTest extends DBTestBase
 
         $this->assertEquals($expect, $out);
 
+
+
+        $amendment              = Amendment::findOne(273);
+        $amendment->titlePrefix = '';
+        foreach ($amendment->getMyMotion()->amendments as $amend) {
+            if ($amend->id == 272) {
+                $amend->titlePrefix = 'A2-027';
+            }
+            if ($amend->id == 274) {
+                $amend->titlePrefix = 'A2-027-2';
+            }
+        }
+        $out                    = $sorter->getAmendmentNumber($amendment, $amendment->getMyMotion());
+        $expect                 = 'A2-027-3';
+
+        $this->assertEquals($expect, $out);
     }
 }
