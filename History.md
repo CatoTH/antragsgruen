@@ -3,6 +3,7 @@
 ### Version 3.2.3 (2016-04-15)
 
 - Using the enter key when creating an amendment does not create a new paragraph anymore, but only a line break. This is a "hack" to improve the diff.
+- Editorial hints in amendments are no shown in the admin backend (and can be edited)
 - Bugfix: In some cases, single lines were shown as modified with deletions where no deletion was actually made.
 - Bugfix: When amendments are numbered by the first affected line number, the numbering got wrong once more than two amendments started at the same line.
 
