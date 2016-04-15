@@ -41,28 +41,24 @@ return [
     'emailchange_call'          => 'change',
     'emailchange_resend'        => 'New confirmation mail',
     'del_title'                 => 'Delete account',
-    /*
-    'del_explanation'           => 'Hier kannst du diesen Zugang von Antragsgrün löschen. Du erhältst keine E-Mail-Benachrichtigungen mehr,
-        ein Login ist auch nicht mehr möglich. Deine E-Mail-Adresse, Name, Passwort usw. werden damit aus unserem
-        System gelöscht.<br>
-        Eingebrachte (Änderungs-)Anträge bleiben aber erhalten. Um eingebrachte Anträge zu entfernen,
-        wende dich bitte an die Administrator*innen der jeweiligen Unterseite.',
-    'del_confirm'               => 'Löschen bestätigen',
-    'del_do'                    => 'Löschen',
-    'noti_greeting'             => 'Hallo %NAME%,',
-    'noti_bye'                  => "Liebe Grüße,\n   Das Antragsgrün-Team\n\n--\n\n" .
-        "Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\n",
-    'noti_new_motion_title'     => '[Antragsgrün] Neuer Antrag:',
-    'noti_new_motion_body'      => "Es wurde ein neuer Antrag eingereicht:\nAnlass: %CONSULTATION%\n" .
+    'del_explanation'           => 'Here you can delete this account. You will not receive any more emails, no login will be possible after this.
+        Your e-mail-address, name and contact data will be deleted.<br>
+        Motions and amendments you submitted will remain visible. To withdraw already submitted motions, please contact the administrators of the according convention.',
+    'del_confirm'               => 'Confirm delete',
+    'del_do'                    => 'Delete',
+    'noti_greeting'             => 'Hi %NAME%,',
+    'noti_bye'                  => "Kind regards,\n   The Antrgsgrün-Team\n\n--\n\n" .
+        "If you do not want to receive any more e-mails, you can unsubscribe here:\n",
+    'noti_new_motion_title'     => '[Antragsgrün] New motion:',
+    'noti_new_motion_body'      => "A new motion was submitted:\nConsultation: %CONSULTATION%\n" .
         "Name: %TITLE%\nLink: %LINK%",
-    'noti_new_amend_title'      => '[Antragsgrün] Neuer Änderungsantrag zu %TITLE%',
-    'noti_new_amend_body'       => "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: %CONSULTATION%\n" .
-        "Antrag: %TITLE%\nLink: %LINK%",
-    'noti_new_comment_title'    => '[Antragsgrün] Neuer Kommentar zu %TITLE%',
-    'noti_new_comment_body'     => "Es wurde ein neuer Kommentar zu %TITLE% geschrieben:\n%LINK%",
-    'acc_grant_email_title'     => 'Antragsgrün-Zugriff',
-    'acc_grant_email_userdata' => "E-Mail / Benutzer*innenname: %EMAIL%\nPasswort: %PASSWORD%",
-    */
+    'noti_new_amend_title'      => '[Antragsgrün] New amendment for %TITLE%',
+    'noti_new_amend_body'       => "A new amendment was submitted:\nConsultation: %CONSULTATION%\n" .
+        "Motion: %TITLE%\nLink: %LINK%",
+    'noti_new_comment_title'    => '[Antragsgrün] New comment to %TITLE%',
+    'noti_new_comment_body'     => "%TITLE% was commented:\n%LINK%",
+    'acc_grant_email_title'     => 'Antragsgrün-access',
+    'acc_grant_email_userdata' => "E-Mail / Username: %EMAIL%\nPassword: %PASSWORD%",
 
 
     'login_title'             => 'Login',

@@ -151,7 +151,7 @@ class BugfixController extends Controller
             $trans = $messageSource->getBaseMessages($category, $language);
             foreach ($orig as $origKey => $origName) {
                 if (!isset($trans[$origKey])) {
-                    echo " \"" . addslashes($origKey) . "\" => \"\", // " . str_replace("\n", "\\n", $origName) . "\n";
+                    echo " '" . addslashes($origKey) . "' => '', // '" . str_replace("\n", "\\n", $origName) . "'\n";
                 }
             }
         }

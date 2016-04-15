@@ -149,25 +149,7 @@ Here are your login data:
 
 Bye,
   Team Antragsgrün',
-    /*
-'siteacc_acc_expl_mail'       => '<h3>Erklärung:</h3>
-Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
-kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
-<br>
-Um Benutzer*innen anzulegen, gib weiter unten die E-Mail-Adressen der Mitglieder ein.
-Diese Mitglieder bekommen daraufhin eine Benachrichtigungs-E-Mail zugesandt.<br>
-Falls sie noch keinen eigenen Zugang auf Antragsgrün hatten, wird automatisch einer eingerichtet
-und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
-(ansonsten verschwindet das %ACCOUNT% ersatzlos).<br>
-<strong>%LINK%</strong> wird immer durch einen Link auf die Antragsgrün-Seite ersetzt.',
-'siteacc_acc_expl_nomail'     => '<h3>Erklärung:</h3>
-Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
-kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
-<br>
-Um Benutzer*innen anzulegen, gib weiter unten die E-Mail-Adressen, die Namen und die Passwörter der Mitglieder ein.
-Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>Passwörter</strong> hier selbst erzeugen, im Klartext eingeben und selbst an die Nutzer*innen schicken.<br><br>' .
-    'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die Nutzer*innen schicken kann.',
-    */
+
     'siteacc_existing_users'      => 'Existing users',
     'siteacc_user_name'           => 'Name',
     'siteacc_user_login'          => 'Login',
@@ -280,9 +262,24 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'todo_comment_to'             => 'To',
     'cons_new_created'            => 'The new consultation has been created.',
     'cons_std_set_done'           => 'This consultation has been set as the new standard.',
-    /*
-'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
-    'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
-    */
     'support_coll_policy_fix'     => 'Fix settings',
+
+    'save'                        => 'Save', // 'Speichern'
+    'motion_type_edit'            => 'Edit motion type',
+    'motion_type_perm_supp_mot'   => 'Supporting motions',
+    'motion_type_perm_supp_amend' => 'Supporting amendments',
+    'motion_type_email'           => 'E-mail',
+    'motion_type_phone'           => 'Phone number',
+    'motion_type_skip'            => 'Don\'t ask',
+    'motion_type_optional'        => 'Optional',
+    'motion_type_required'        => 'Required',
+    'motion_type_allow_more_supp' => 'Allow more supporters than required',
+    'motion_type_ask_orga'        => 'Ask for organizations at natural persons',
+    'motion_type_pos'             => 'Position (in the PDF)',
+    'motion_type_pos_left'        => 'Left',
+    'motion_type_pos_right'       => 'Right',
+    'motion_type_like_like'       => 'Likes',
+    'motion_type_like_dislike'    => 'Dislikes',
+    'motion_type_like_support'    => 'Official support',
+    'help_page_create'            => 'Create a help-page',
 ];

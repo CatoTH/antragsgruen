@@ -24,6 +24,7 @@ return [
     'content_imprint_bread' => 'Imprint',
     'content_help_title'    => 'Help',
     'content_help_bread'    => 'Help',
+    'content_help_place'    => '<p>Help...</p>',
     'content_maint_bread'   => 'Maintainance',
     'content_maint_title'   => 'Maintainance Mode',
     'content_maint_text'    => '<p>This consultation has not been made public yet.</p>',
