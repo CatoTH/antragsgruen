@@ -149,6 +149,15 @@ foreach ($sections as $section) {
     echo $section->getSectionType()->getAmendmentFormatted();
 }
 
+if ($amendment->changeEditorial != '') {
+    echo '<section id="amendmentEditorialHint" class="motionTextHolder">';
+    echo '<h3 class="green">' . \Yii::t('amend', 'editorial_hint') . '</h3>';
+    echo '<div class="paragraph"><div class="text">';
+    echo $amendment->changeEditorial;
+    echo '</div></div>';
+    echo '</section>';
+}
+
 if ($amendment->changeExplanation != '') {
     echo '<section id="amendmentExplanation" class="motionTextHolder">';
     echo '<h3 class="green">' . \Yii::t('amend', 'reason') . '</h3>';
@@ -170,6 +179,15 @@ if (!$amendment->textFixed) {
     foreach ($form->sections as $section) {
         echo $section->getSectionType()->getAmendmentFormField();
     }
+
+    echo '<section class="editorialChange">
+    <div class="form-group wysiwyg-textarea" id="section_holder_editorial" data-full-html="0" data-max-len="0">
+        <label for="sections_editorial">' . \Yii::t('amend', 'editorial_hint') . '</label>
+        <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
+        Html::encode($form->editorial) . '</textarea>
+        <div class="texteditor boxed" id="amendmentEditorial_wysiwyg">';
+    echo $form->editorial;
+    echo '</div></section>';
 
     if (!$multipleParagraphs) {
         echo '<input type="hidden" name="modifiedSectionId" value="">';
