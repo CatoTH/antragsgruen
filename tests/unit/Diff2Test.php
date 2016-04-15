@@ -800,4 +800,24 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals('<p>wieder<del><sup>Test</sup></del>.</p>', $diffParas[0]);
     }
+
+
+    /**
+     */
+    public function testStripEmptyLinenumberDels()
+    {
+        $orig   = [
+            '<p>###LINENUMBER###<em><strong>Test</strong></em> bla bla bla bla bla lkj bla',
+        ];
+        $new    = [
+            '<p><em><strong>Test</strong></em> bla bla bla bla bla bla',
+        ];
+        $expect = [
+            '<p>###LINENUMBER###<em><strong>Test</strong></em> bla bla bla bla bla <del>lkj </del>bla</p>',
+        ];
+        $diff   = new Diff2();
+        $diff->setIgnoreStr('###LINENUMBER###');
+        $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals($expect, $arr);
+    }
 }

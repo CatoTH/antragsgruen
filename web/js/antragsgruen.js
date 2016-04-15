@@ -114,6 +114,12 @@ function __t(category, str) {
         } else {
             ckeditorConfig.removePlugins += ',lite';
         }
+        console.log($el, $el.data("enter-mode"));
+        if ($el.data('enter-mode') == 'br') {
+            ckeditorConfig.enterMode = CKEDITOR.ENTER_BR;
+        } else {
+            ckeditorConfig.enterMode = CKEDITOR.ENTER_P;
+        }
         ckeditorConfig.allowedContent = allowedContent;
         ckeditorConfig.pasteFilter = allowedContent;
 

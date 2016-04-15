@@ -3,6 +3,7 @@
 namespace app\commands;
 
 use app\components\HTMLTools;
+use app\components\MessageSource;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\Site;
@@ -134,6 +135,25 @@ class BugfixController extends Controller
         $motions = Motion::find()->where('status != ' . Motion::STATUS_DELETED)->all();
         foreach ($motions as $motion) {
             $this->actionFixMotionText($motion->id);
+        }
+    }
+
+    /**
+     * Find translation strings that exist in german, but not in the given language (english by default)
+     * @param string $language
+     */
+    public function actionFindMissingTranslations($language = 'en')
+    {
+        $messageSource = new MessageSource();
+        foreach (MessageSource::getTranslatableCategories() as $category => $categoryName) {
+            echo "$category ($categoryName):\n";
+            $orig  = $messageSource->getBaseMessages($category, 'de');
+            $trans = $messageSource->getBaseMessages($category, $language);
+            foreach ($orig as $origKey => $origName) {
+                if (!isset($trans[$origKey])) {
+                    echo " \"" . addslashes($origKey) . "\" => \"\", // " . str_replace("\n", "\\n", $origName) . "\n";
+                }
+            }
         }
     }
 }

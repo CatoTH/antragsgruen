@@ -163,6 +163,11 @@ class HTMLNormalizeTest extends TestBase
         $expect = '<p>Test 123<br>' . "\n" . 'Test 123</p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
+
+        $orig   = "<ul>\n<li>Test 123 </li>\n</ul>";
+        $expect = "<ul>\n<li>Test 123</li>\n</ul>";
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
     }
 
     /**

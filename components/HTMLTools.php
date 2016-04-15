@@ -174,6 +174,7 @@ class HTMLTools
         $html = static::cleanMessedUpHtmlCharacters($html);
         $html = preg_replace('/<p> +/siu', '<p>', $html);
         $html = preg_replace('/ +<\/p>/siu', '</p>', $html);
+        $html = preg_replace('/ +<\/li>/siu', '</li>', $html);
         $html = preg_replace('/ +<br>/siu', '<br>', $html);
 
         $html = trim($html);

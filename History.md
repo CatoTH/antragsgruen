@@ -1,12 +1,18 @@
 # Version history
 
-## Version 3.2.2 (2016-04-13)
+### Version 3.2.3 (2016-04-15)
+
+- Using the enter key when creating an amendment does not create a new paragraph anymore, but only a line break. This is a "hack" to improve the diff.
+- Bugfix: In some cases, single lines were shown as modified with deletions where no deletion was actually made.
+- Bugfix: When amendments are numbered by the first affected line number, the numbering got wrong once more than two amendments started at the same line.
+
+### Version 3.2.2 (2016-04-13)
 
 - Bugfix: some supporters where tagged with "You!" for logged-out users
 - Bugfix: better string normalization
 - Bugfix: editing amendments on the administration page did not work when single-paragraph-mode was activated
 
-## Version 3.2.1 (2016-04-06)
+### Version 3.2.1 (2016-04-06)
 
 - Support for Mailgun as mail service
 - Bugfix: Admins could not edit drafts they created for other persons
