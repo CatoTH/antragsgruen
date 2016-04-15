@@ -27,4 +27,6 @@ return [
     'email_not_confirmed' => 'E-Mail-Adrdress not confirmed',
     'contact_only_admion' => 'Contact, only visible for admins',
     'ww_profile'          => 'Wurzelwerk-Profile',
+    'contact_show'        => 'Contact data', // 'Kontaktdaten'
+    'contact_only_admin'  => 'Only visible for administrators',
 ];
