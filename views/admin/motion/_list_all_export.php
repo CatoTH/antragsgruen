@@ -105,6 +105,9 @@ $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
                     </label></li>
                 <li role="separator" class="divider"></li>
                 <?php
+                $title  = \Yii::t('admin', 'index_export_ods');
+                echo $getExportLinkLi($title, 'admin/motion/odslist', $motionType->id, 'motionODS');
+
                 if ($controller->getParams()->xelatexPath) {
                     $title  = \Yii::t('admin', 'index_pdf_collection');
                     echo $getExportLinkLi($title, 'motion/pdfcollection', $motionType->id, 'motionPDF');
@@ -117,9 +120,6 @@ $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
 
                 $title  = \Yii::t('admin', 'index_odt_zip_list');
                 echo $getExportLinkLi($title, 'admin/motion/odtziplist', $motionType->id, 'motionOdtZIP');
-
-                $title  = \Yii::t('admin', 'index_export_ods');
-                echo $getExportLinkLi($title, 'admin/motion/odslist', $motionType->id, 'motionODS');
 
                 $title    = \Yii::t('admin', 'index_export_excel') .
                     ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';

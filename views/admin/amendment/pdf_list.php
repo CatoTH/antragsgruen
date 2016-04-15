@@ -3,6 +3,7 @@
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Consultation $consultation
+ * @var bool $withdrawn
  */
 use app\components\UrlHelper;
 use yii\helpers\Html;
@@ -19,9 +20,9 @@ $params->addBreadcrumb(\Yii::t('admin', 'amend_pdf_list'));
 echo '<h1>' . \Yii::t('admin', 'amend_pdf_list') . '</h1>
    <div class="content">';
 
-$motions = $consultation->getVisibleMotionsSorted();
+$motions = $consultation->getVisibleMotionsSorted($withdrawn);
 foreach ($motions as $motion) {
-    $amendments = $motion->getVisibleAmendmentsSorted();
+    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
     if (count($amendments) > 0) {
         echo '<h2>' . Html::encode($motion->getTitleWithPrefix()) . '</h2>';
         echo '<ul>';

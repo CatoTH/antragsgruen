@@ -347,7 +347,7 @@
                         $(this).attr("href", link);
                     });
                 };
-            $dd.find("input[type=checkbox]").change(recalcLinks)
+            $dd.find("input[type=checkbox]").change(recalcLinks).trigger("change");
         });
     };
 
