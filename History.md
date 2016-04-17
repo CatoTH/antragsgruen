@@ -1,5 +1,10 @@
 # Version history
 
+## Version 3.3 [Not yet released]
+
+- The administration has been split up into three separate parts: the Motion List, the To Do List and the Settings Page
+- Exporting motions and amendments can now be done from the motion list. There now is an option to include or exclude withdrawn motions/amendments
+
 ### Version 3.2.3 (2016-04-15)
 
 - Using the enter key when creating an amendment does not create a new paragraph anymore, but only a line break. This is a "hack" to improve the diff.
