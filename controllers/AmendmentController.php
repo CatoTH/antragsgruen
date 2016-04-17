@@ -59,17 +59,19 @@ class AmendmentController extends Base
     }
 
     /**
+     * @param int $withdrawn
      * @return string
      */
-    public function actionPdfcollection()
+    public function actionPdfcollection($withdrawn = 0)
     {
-        $motions = $this->consultation->getVisibleMotionsSorted();
+        $withdrawn = ($withdrawn == 1);
+        $motions   = $this->consultation->getVisibleMotionsSorted($withdrawn);
         if (count($motions) == 0) {
             $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
         $amendments = [];
         foreach ($motions as $motion) {
-            $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted());
+            $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }
         if (count($amendments) == 0) {
             $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));

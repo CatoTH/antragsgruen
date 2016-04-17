@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('ensure the text doesn\'t get deleted');
-$I->loginAndGotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(1);
+$I->loginAndGotoMotionList()->gotoAmendmentEdit(1);
 $I->submitForm('#amendmentUpdateForm', [], 'save');
 $I->click('.sidebarActions .view');
 $I->dontSeeElement('del');

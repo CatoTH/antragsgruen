@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('edit a motion');
-$I->loginAndGotoStdAdminPage()->gotoMotionList()->gotoMotionEdit(2);
+$I->loginAndGotoMotionList()->gotoMotionEdit(2);
 $I->dontSeeElementInDOM('#sections_1');
 $I->dontSeeElement('#sections_2');
 $I->click('#motionTextEditCaller button');

@@ -19,7 +19,6 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = \Yii::t('admin', 'amend_edit_title') . ': ' . $amendment->getTitle();
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_admin'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion/listall'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_amend'));
 

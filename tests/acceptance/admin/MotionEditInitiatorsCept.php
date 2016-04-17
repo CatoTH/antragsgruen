@@ -5,9 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('edit an initiator');
-$I->gotoConsultationHome(true, 'bdk', 'bdk');
-$I->loginAsStdAdmin();
-$page = $I->gotoStdAdminPage('bdk', 'bdk')->gotoMotionList()->gotoMotionEdit(4);
+$I->loginAndGotoMotionList('bdk', 'bdk')->gotoMotionEdit(4);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->fillField('#initiatorPrimaryName', 'Another test user');
 $I->fillField('#initiatorOrga', 'KV Test');
@@ -27,7 +25,7 @@ $I->submitForm('#motionUpdateForm', [], 'save');
 
 $I->wantTo('confirm the changes are saved');
 
-$page = $I->gotoStdAdminPage('bdk', 'bdk')->gotoMotionList()->gotoMotionEdit(4);
+$page = $I->gotoMotionList()->gotoMotionEdit(4);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->seeInField('#initiatorPrimaryName', 'Another test user');
 $I->seeInField('#initiatorOrga', 'KV Test');

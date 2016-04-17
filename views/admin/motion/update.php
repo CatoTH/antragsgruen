@@ -20,8 +20,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = 'Antrag bearbeiten: ' . $motion->getTitleWithPrefix();
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_admin'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_motions'), UrlHelper::createUrl('admin/motion/listall'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion/listall'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_motion'));
 
 $layout->addJS('js/backend.js');

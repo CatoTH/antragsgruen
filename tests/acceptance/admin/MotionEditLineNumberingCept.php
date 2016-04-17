@@ -48,7 +48,7 @@ if ($firstLineNo != 119) {
 
 $I->wantTo('set an invalid title prefix');
 
-$motionAdminPage = $I->gotoStdAdminPage()->gotoMotionList()->gotoMotionEdit($motionId);
+$motionAdminPage = $I->gotoMotionList()->gotoMotionEdit($motionId);
 $I->fillField('#motionTitlePrefix', 'A2');
 $I->fillField('#motionTitle', 'Another Title');
 $motionAdminPage->saveForm();

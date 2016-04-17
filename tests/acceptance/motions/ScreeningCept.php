@@ -7,6 +7,7 @@ $I->populateDBData1();
 $I->wantTo('switch to motion screening mode');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
+$I->dontSeeElement('#adminTodo');
 $consultationSettingPage = $I->gotoStdAdminPage()->gotoConsultation();
 $I->cantSeeCheckboxIsChecked('#screeningMotions');
 $I->checkOption('#screeningMotions');
@@ -32,7 +33,7 @@ $I->dontSee($motionTitle);
 $I->wantTo('go to the admin page');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage();
+$I->click('#adminTodo');
 
 $I->see($motionTitle, '.adminTodo');
 

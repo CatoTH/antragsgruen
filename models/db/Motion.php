@@ -340,7 +340,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->status == static::STATUS_DRAFT) {
             $hadLoggedInUser = false;
             foreach ($this->motionSupporters as $supp) {
-                $currUser        = User::getCurrentUser();
+                $currUser = User::getCurrentUser();
                 if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
                     if ($currUser && $currUser->id == $supp->userId) {
@@ -842,6 +842,9 @@ class Motion extends IMotion implements IRSSItem
             $return[\Yii::t('export', 'TopicMulti')] = implode("\n", $tags);
         } elseif (count($this->tags) == 1) {
             $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
+        }
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
+            $return[\Yii::t('motion', 'status')] = IMotion::getStati()[$this->status];
         }
 
         return $return;

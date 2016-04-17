@@ -123,12 +123,14 @@ class MotionController extends Base
 
     /**
      * @param string $motionTypeId
+     * @param int $withdrawn
      * @return string
      */
-    public function actionPdfcollection($motionTypeId = '')
+    public function actionPdfcollection($motionTypeId = '', $withdrawn = 0)
     {
+        $withdrawn = ($withdrawn == 1);
         try {
-            $motions = $this->consultation->getVisibleMotionsSorted();
+            $motions = $this->consultation->getVisibleMotionsSorted($withdrawn);
             if ($motionTypeId != '' && $motionTypeId != '0') {
                 $motionTypeIds   = explode(',', $motionTypeId);
                 $motionsFiltered = [];

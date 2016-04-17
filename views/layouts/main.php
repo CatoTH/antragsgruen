@@ -1,5 +1,6 @@
 <?php
 use app\components\UrlHelper;
+use app\models\AdminTodoItem;
 use app\models\db\User;
 use yii\helpers\Html;
 
@@ -113,7 +114,7 @@ echo '<ul class="nav navbar-nav">';
 if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
     if ($controller->consultation) {
         $homeUrl = UrlHelper::createUrl('consultation/index');
-        echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $homeUrl) . '</li>';
+        echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) . '</li>';
         if ($controller->consultation->hasHelpPage()) {
             $helpLink = UrlHelper::createUrl('consultation/help');
             echo '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
@@ -129,19 +130,35 @@ if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
         } else {
             $backUrl = \yii::$app->request->url;
         }
-        $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => $backUrl]);
-        echo '<li>' . Html::a('Login', $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) . '</li>';
+        $loginUrl   = UrlHelper::createUrl(['user/login', 'backUrl' => $backUrl]);
+        $loginTitle = \Yii::t('base', 'menu_login');
+        echo '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) . '</li>';
     }
     if (User::getCurrentUser()) {
-        $link = Html::a(\Yii::t('base', 'Settings'), UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']);
+        $settingsTitle = \Yii::t('base', 'menu_account');
+        $link          = Html::a($settingsTitle, UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']);
         echo '<li>' . $link . '</li>';
 
-        $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
+        $logoutUrl   = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
+        $logoutTitle = \Yii::t('base', 'menu_logout');
         echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
     }
+    if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING)) {
+        $adminUrl   = UrlHelper::createUrl('admin/motion/listall');
+        $adminTitle = \Yii::t('base', 'menu_motion_list');
+        echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink']) . '</li>';
+    }
     if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_ANY)) {
-        $adminUrl = UrlHelper::createUrl('admin/index');
-        echo '<li><a href="' . Html::encode($adminUrl) . '" id="adminLink">Admin</a></li>';
+        $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
+        if (count($todo) > 0) {
+            $adminUrl   = UrlHelper::createUrl('admin/index/todo');
+            $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
+            echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo']) . '</li>';
+        }
+
+        $adminUrl   = UrlHelper::createUrl('admin/index');
+        $adminTitle = \Yii::t('base', 'menu_admin');
+        echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink']) . '</li>';
     }
 }
 echo '</ul>

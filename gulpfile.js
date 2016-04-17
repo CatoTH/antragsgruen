@@ -2,7 +2,12 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
-    sourcemaps = require('gulp-sourcemaps');
+    sourcemaps = require('gulp-sourcemaps'),
+
+    main_js_files = [
+        "web/js/bootstrap.js", "web/js/bower/bootbox/bootbox.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
+        "web/js/bower/intl/dist/Intl.min.js", "web/js/antragsgruen.js"
+    ];
 
 gulp.task('pdfjs', function () {
     gulp.src([
@@ -21,17 +26,8 @@ gulp.task('pdfjs', function () {
         .pipe(gulp.dest('./web/js/build/'));
 });
 
-gulp.task('default', function () {
-    gulp.src("web/css/*.scss")
-        .pipe(sourcemaps.init())
-        .pipe(sass({outputStyle: 'compressed'}))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('web/css/'));
-
-    gulp.src([
-            "web/js/bootstrap.js", "web/js/bower/bootbox/bootbox.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
-            "web/js/bower/intl/dist/Intl.min.js", "web/js/antragsgruen.js"
-        ])
+gulp.task('build-js', function () {
+    gulp.src(main_js_files)
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen.min.js'))
         .pipe(uglify())
@@ -59,3 +55,19 @@ gulp.task('default', function () {
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
 });
+
+gulp.task('build-css', function () {
+    gulp.src("web/css/*.scss")
+        .pipe(sourcemaps.init())
+        .pipe(sass({outputStyle: 'compressed'}))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('web/css/'));
+});
+
+
+gulp.task('watch', function () {
+    gulp.watch(main_js_files, ['build-js']);
+    gulp.watch(["web/css/*.scss"], ['build-css']);
+});
+
+gulp.task('default', ['build-js', 'build-css']);

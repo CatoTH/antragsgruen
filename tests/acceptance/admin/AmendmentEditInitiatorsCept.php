@@ -11,7 +11,7 @@ $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->selectOption('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
 $I->submitForm('.adminTypeForm', [], 'save');
 
-$page = $I->gotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(2);
+$page = $I->gotoMotionList()->gotoAmendmentEdit(2);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->dontSeeElement('#initiatorOrga');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_NATURAL);
@@ -33,7 +33,7 @@ $I->submitForm('#amendmentUpdateForm', [], 'save');
 
 $I->wantTo('confirm the changes are saved');
 
-$page = $I->gotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(2);
+$page = $I->gotoMotionList()->gotoAmendmentEdit(2);
 $I->see('E-Mail: testuser@example.org', '.supporterForm');
 $I->seeInField('#initiatorPrimaryName', 'Another test user');
 $I->seeInField('#initiatorOrga', 'KV Test');

@@ -32,7 +32,7 @@ Install the sources and dependencies from the repository:
 git clone https://github.com/CatoTH/antragsgruen.git
 cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.1.2"
+./composer.phar global require "fxp/composer-asset-plugin:1.1.3"
 ./composer.phar install --prefer-dist
 ```
 
@@ -98,10 +98,10 @@ You can enable debug mode by creating an empty file config/DEBUG.
 
 To compile the JavaScript- and CSS-Files, you need to install Gulp:
 ```bash
-sudo npm install -g gulp
-npm install gulp gulp-uglify gulp-concat gulp-concat-css gulp-minify-css gulp-sass gulp-sourcemaps
-gulp # Compiles the regular JS/CSS-files
-gulp pdfjs # Compiles PDF.JS
+npm install
+node_modules/.bin/gulp # Compiles the regular JS/CSS-files
+node_modules/.bin/gulp watch # Listens for changes in JS/CSS-files and compiles them immediatelly
+node_modules/.bin/gulp pdfjs # Compiles PDF.JS
 ```
 
 After updating the source code from git, do:
@@ -118,11 +118,10 @@ Testing
 * Set up the configuration file: ```bash
 cp config/config_tests.template.json config/config_tests.json
 vi config/config_tests.json```
-* Install [PhantomJS](http://phantomjs.org/download.html)
 * For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed.
 * Start PhantomJS: ```bash
-phantomjs --webdriver=4444```
+node_modules/.bin/phantomjs --webdriver=4444```
 * Start debug server: ```bash
 tests/start_debug_server.sh```
 * Run all tests: ```bash
