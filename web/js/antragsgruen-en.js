@@ -13,9 +13,16 @@ ANTRAGSGRUEN_STRINGS = {
         "pw_no_match": 'The passwords do not match.'
     },
     "merge": {
-        "accept_all": "Do you really want to accept all remaining changes?",
-        "reject_all": "Do you really want to reject all remaining changes?",
-        "err_pending_changes": "You have to accept or reject all changes before deactivating the change-tracking mode."
+        "initiated_by": "Proposed by",
+        "title_open_in_blank": "Open the amendment in a new window",
+        "title_del_title": "Remove the headline \"Colliding Amendment: ...\"",
+        "title_del_colliding": "Rmove the whole colliding paragraph",
+        "title": "Headline",
+        "insert_accept": "Accept",
+        "insert_reject": "Reject",
+        "delete_accept": "Delete",
+        "delete_reject": "Keep it",
+        "colliding_title": "Colliding amendm."
     },
     "admin": {
         "adminMayEditConfirm": "If this is deactivated, this cannot be undone for all motions created up to now.",
