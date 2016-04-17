@@ -22,6 +22,7 @@ $domPlainPaths .= '|antragsgrueninitdbtest|paymentadmin';
 $adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|pdfziplist|odtziplist|odslistall|openslides';
 $adminAmendmentPaths = 'index|excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
+$adminPaths .= '|todo';
 
 $urlRules = [
     $domadmin . ''                                              => 'admin/index',

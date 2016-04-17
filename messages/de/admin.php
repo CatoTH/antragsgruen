@@ -1,12 +1,15 @@
 <?php
 
 return [
+    'bread_settings'              => 'Einstellungen',
     'bread_admin'                 => 'Administration',
     'bread_list'                  => 'Antragsliste',
     'bread_amend'                 => 'Änderungsantrag',
     'bread_types'                 => 'Antragstypen',
     'bread_motions'               => 'Anträge',
     'bread_motion'                => 'Antrag',
+    'bread_todo'                  => 'To Do',
+    'bread_consultation'          => 'Veranstaltung',
     'saved'                       => 'Gespeichert.',
     'save'                        => 'Speichern',
     'index_title'                 => 'Administration',
@@ -286,6 +289,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_section_comm_para'    => 'Pro Absatz',
     'motion_section_amendable'    => 'In Änderungsanträgen',
     'motion_section_name'         => 'Name des Abschnitts',
+    'todo_title'                  => 'To Do',
     'todo_from'                   => 'Von',
     'todo_motion_screen'          => '%TYPE% freischalten',
     'todo_amendment_screen'       => 'Änderungsantrag freischalten',
@@ -297,4 +301,5 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
         'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
     'support_coll_policy_fix'     => 'Einstellungen so setzen',
     'help_page_create'            => 'Hilfe-Seite anlegen',
+    'con_title'                   => 'Veranstaltungs-Einstellungen',
 ];

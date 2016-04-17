@@ -1,5 +1,6 @@
 <?php
 use app\components\UrlHelper;
+use app\models\AdminTodoItem;
 use app\models\db\User;
 use yii\helpers\Html;
 
@@ -138,7 +139,7 @@ if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
         $link          = Html::a($settingsTitle, UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']);
         echo '<li>' . $link . '</li>';
 
-        $logoutUrl = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
+        $logoutUrl   = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
         $logoutTitle = \Yii::t('base', 'menu_logout');
         echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
     }
@@ -148,6 +149,13 @@ if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
         echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink']) . '</li>';
     }
     if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_ANY)) {
+        $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
+        if (count($todo) > 0) {
+            $adminUrl   = UrlHelper::createUrl('admin/index/todo');
+            $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
+            echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo']) . '</li>';
+        }
+
         $adminUrl   = UrlHelper::createUrl('admin/index');
         $adminTitle = \Yii::t('base', 'menu_admin');
         echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink']) . '</li>';
