@@ -105,6 +105,7 @@ return [
     'list_am_screened_pl'         => 'The selected amendments were screened.',
     'list_am_unscreened_pl'       => 'The selected amendments were un-screened.',
     'list_am_deleted_pl'          => 'The selected amendments were deleted.',
+    'list_new'                    => 'Create',
     'filter_na'                   => '- all -',
     'filter_title'                => 'Title',
     'filter_status'               => 'Status',

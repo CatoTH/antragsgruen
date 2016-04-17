@@ -103,6 +103,7 @@ return [
     'list_am_screened_pl'         => 'Die ausgewählten Anträge wurden freigeschaltet.',
     'list_am_unscreened_pl'       => 'Die ausgewählten Anträge wurden zurückgezogen.',
     'list_am_deleted_pl'          => 'Die ausgewählten Anträge wurden gelöscht.',
+    'list_new'                    => 'Neu',
     'filter_na'                   => '- egal -',
     'filter_title'                => 'Titel',
     'filter_status'               => 'Status',

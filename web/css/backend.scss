@@ -365,8 +365,19 @@ label.legend {
   padding: 10px 19px;
   border-bottom: solid 1px #aaa;
   background: #f7f7f7;
-  text-align: right;
-  @include clearfix();
+  display: table;
+  width: 100%;
+
+  > .new {
+    display: table-cell;
+  }
+  > .export {
+    display: table-cell;
+    text-align: right;
+    > * {
+      display: inline-block;
+    }
+  }
 
   .title {
     line-height: 33px;
