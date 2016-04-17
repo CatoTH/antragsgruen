@@ -17,8 +17,7 @@ if (strlen($pdf) == 0) {
 $I->wantTo('test a single amendment PDF from the admin interface');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
-$I->click('#adminLink');
-$I->click('.motionListAll');
+$I->click('#motionListLink');
 $pdf = $I->downloadLink('.adminMotionTable .amendment1 a.pdf');
 if (strlen($pdf) == 0) {
     $I->fail('PDF has no content');
@@ -34,8 +33,9 @@ if (strlen($pdf) == 0) {
 
 
 $I->wantTo('test amendment PDF compilation from the admin interface');
-$I->gotoStdAdminPage();
-$pdf = $I->downloadLink('.amendmentsPdf');
+$I->gotoMotionList();
+$I->click('#exportAmendmentsBtn');
+$pdf = $I->downloadLink('.amendmentPDF');
 if (strlen($pdf) == 0) {
     $I->fail('PDF has no content');
 }

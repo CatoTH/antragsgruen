@@ -119,7 +119,6 @@
 
         var dataNewCounter = 0;
         $list.on('click', '.tabularDataRow .addRow', function (ev) {
-            console.log(dataNewCounter);
             ev.preventDefault();
             var $this = $(this),
                 $ul = $this.parent().find("ul"),
@@ -343,7 +342,6 @@
                     $dd.find(".exportLink a").each(function () {
                         var link = $(this).data("href-tpl");
                         link = link.replace("WITHDRAWN", withdrawn);
-                        console.log(link);
                         $(this).attr("href", link);
                     });
                 };

@@ -5,7 +5,8 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('go to the list of all amendments-PDFs');
-$I->loginAndGotoStdAdminPage();
+$I->loginAndGotoMotionList();
+$I->click('#exportAmendmentsBtn');
 $I->click('.amendmentPdfList');
 
 $I->see('A2: O’zapft is!');
