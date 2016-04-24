@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -126,7 +127,7 @@ if ($hasMotions) {
     } else {
         foreach ($newestMotions as $motion) {
             $motionLink = UrlHelper::createMotionUrl($motion);
-            $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' . Html::encode($motion->title);
+            $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' . HTMLTools::encodeAddShy($motion->title);
             $html .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
         }
     }

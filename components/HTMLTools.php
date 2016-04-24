@@ -606,4 +606,18 @@ class HTMLTools
 
         return $html;
     }
+
+    /**
+     * @param string $str
+     * @return string
+     */
+    public static function encodeAddShy($str)
+    {
+        $str       = Html::encode($str);
+        $shyAfters = ['itglieder', 'enden', 'voll', 'undex', 'gierten', 'wahl', 'andes'];
+        foreach ($shyAfters as $shyAfter) {
+            $str = str_replace($shyAfter, $shyAfter . '&shy;', $str);
+        }
+        return $str;
+    }
 }
