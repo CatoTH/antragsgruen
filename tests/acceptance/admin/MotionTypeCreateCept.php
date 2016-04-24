@@ -53,8 +53,8 @@ $I->click('#sidebar .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE +
 $I->see('Geschlecht');
 $I->see('Alter');
 $I->click('#adminLink');
-$I->seeElement('.motionTypeSection' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
-$I->seeElement('.motionTypeSection' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
+$I->seeElement('.motionType' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeElement('.motionType' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
 
 
 $I->wantTo('delete the first motion type again');
@@ -66,8 +66,8 @@ $I->seeElement('.deleteTypeForm');
 $I->submitForm('.deleteTypeForm', [], 'delete');
 $I->see('Der Antragstyp wurde erfolgreich gelöscht.');
 $I->click('#adminLink');
-$I->dontSeeElement('.motionTypeSection' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
-$I->seeElement('.motionTypeSection' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
+$I->dontSeeElement('.motionType' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeElement('.motionType' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
 $I->gotoConsultationHome();
 $I->dontSeeElement('#sidebar .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 

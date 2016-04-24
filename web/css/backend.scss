@@ -361,6 +361,42 @@ label.legend {
   }
 }
 
+.motionListExportRow {
+  padding: 10px 19px;
+  border-bottom: solid 1px #aaa;
+  background: #f7f7f7;
+  display: table;
+  width: 100%;
+
+  > .new {
+    display: table-cell;
+  }
+  > .export {
+    display: table-cell;
+    text-align: right;
+    > * {
+      display: inline-block;
+    }
+  }
+
+  .title {
+    line-height: 33px;
+    vertical-align: middle;
+    font-weight: bold;
+  }
+
+  .errorProne {
+    font-size: 0.9em;
+  }
+
+  li.checkbox {
+    label {
+      font-weight: normal;
+      padding: 0 0 0 30px;
+    }
+  }
+}
+
 .motionListSearchForm {
   margin-bottom: 20px;
   margin-top: 20px;

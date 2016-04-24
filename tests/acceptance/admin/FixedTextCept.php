@@ -40,12 +40,12 @@ $I->submitForm('#motionConfirmForm', [], 'confirm');
 
 $I->wantTo('screen two of them; editing is still possible');
 
-$I->gotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->seeElement('#amendmentTextEditCaller');
 $I->submitForm('#amendmentScreenForm', [], 'screen');
 $I->seeElement('#amendmentTextEditCaller');
 
-$I->gotoStdAdminPage()->gotoMotionList()->gotoMotionEdit(AcceptanceTester::FIRST_FREE_MOTION_ID);
+$I->gotoMotionList()->gotoMotionEdit(AcceptanceTester::FIRST_FREE_MOTION_ID);
 $I->seeElement('#motionTextEditCaller');
 $I->submitForm('#motionScreenForm', [], 'screen');
 $I->seeElement('#motionTextEditCaller');
@@ -66,16 +66,16 @@ $I->submitForm('#consultationSettingsForm', [], 'save');
 
 $I->wantTo('check that published motions are not editable anymore');
 
-$I->gotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->dontSeeElement('#amendmentTextEditCaller');
-$I->gotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1);
+$I->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID + 1);
 $I->seeElement('#amendmentTextEditCaller');
 $I->submitForm('#amendmentScreenForm', [], 'screen');
 $I->dontSeeElement('#amendmentTextEditCaller');
 
-$I->gotoStdAdminPage()->gotoMotionList()->gotoMotionEdit(AcceptanceTester::FIRST_FREE_MOTION_ID);
+$I->gotoMotionList()->gotoMotionEdit(AcceptanceTester::FIRST_FREE_MOTION_ID);
 $I->dontSeeElement('#motionTextEditCaller');
-$I->gotoStdAdminPage()->gotoMotionList()->gotoMotionEdit(AcceptanceTester::FIRST_FREE_MOTION_ID + 1);
+$I->gotoMotionList()->gotoMotionEdit(AcceptanceTester::FIRST_FREE_MOTION_ID + 1);
 $I->seeElement('#motionTextEditCaller');
 $I->submitForm('#motionScreenForm', [], 'screen');
 $I->dontSeeElement('#motionTextEditCaller');

@@ -7,6 +7,7 @@ $I->populateDBData1();
 $I->wantTo('switch to amendment screening mode');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
+$I->dontSeeElement('#adminTodo');
 $consultationSettingPage = $I->gotoStdAdminPage()->gotoConsultation();
 $I->cantSeeCheckboxIsChecked('#screeningAmendments');
 $I->checkOption('#screeningAmendments');
@@ -40,8 +41,8 @@ $I->dontSeeElement('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->wantTo('go to the admin page');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage();
 
+$I->click('#adminTodo');
 $I->seeElement('.adminTodo .amendmentsScreen' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 

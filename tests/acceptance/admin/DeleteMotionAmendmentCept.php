@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('delete a motion');
-$page = $I->loginAndGotoStdAdminPage()->gotoMotionList();
+$page = $I->loginAndGotoMotionList();
 $I->see('A2');
 $I->see('A3');
 $I->see('Ä2');

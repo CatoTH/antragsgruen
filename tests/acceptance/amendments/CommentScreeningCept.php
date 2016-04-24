@@ -11,6 +11,7 @@ $I->gotoConsultationHome()->gotoAmendmentView(1);
 
 $I->wantTo('enable screening and force e-mails');
 $I->loginAsStdAdmin();
+$I->dontSeeElement('#adminTodo');
 $I->gotoStdAdminPage()->gotoConsultation();
 $I->dontSeeCheckboxIsChecked('#screeningComments');
 $I->checkOption('#screeningComments');
@@ -48,7 +49,8 @@ $I->see('2 Kommentare warten auf Freischaltung', 'section.comments');
 $I->wantTo('screen the comment');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
-$I->click('#adminLink');
+
+$I->click('#adminTodo');
 $I->seeElement('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 0));
 $I->seeElement('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1));
 $I->click('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1) . ' a');
@@ -71,6 +73,4 @@ $I->dontSee('Noch ein dritter Kommentar');
 
 
 $I->gotoConsultationHome();
-$I->click('#adminLink');
-$I->dontSeeElement('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 0));
-$I->dontSeeElement('.adminTodo .amendmentCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1));
+$I->dontSeeElement('#adminTodo');

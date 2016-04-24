@@ -31,7 +31,7 @@ $I->fillField('#initiatorEmail', 'test@example.org');
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 
-$I->gotoStdAdminPage(true, 'bdk', 'bdk')->gotoMotionList();
+$I->gotoMotionList();
 $I->click('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .prefixCol a');
 
 $I->see('Person 13', '.supporters');

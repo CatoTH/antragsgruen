@@ -20,9 +20,9 @@ $layout->addCSS('css/backend.css');
 $layout->addJS('js/bower/Sortable/Sortable.min.js');
 $layout->loadFuelux();
 
-$this->title = 'Einstellungen';
-$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb('Veranstaltung');
+$this->title = \Yii::t('admin', 'con_title');
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_consultation'));
 
 $layout->addOnLoadJS('jQuery.AntragsgruenAdmin.consultationSettingsForm();');
 

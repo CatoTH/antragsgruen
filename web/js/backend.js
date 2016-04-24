@@ -119,7 +119,6 @@
 
         var dataNewCounter = 0;
         $list.on('click', '.tabularDataRow .addRow', function (ev) {
-            console.log(dataNewCounter);
             ev.preventDefault();
             var $this = $(this),
                 $ul = $this.parent().find("ul"),
@@ -331,6 +330,25 @@
         });
     };
 
+    var exportRowInit = function () {
+        var $exportRow = $(".motionListExportRow");
+        $exportRow.find("li.checkbox").on("click", function (ev) {
+            ev.stopPropagation();
+        });
+        $exportRow.find(".exportMotionDd, .exportAmendmentDd").each(function () {
+            var $dd = $(this),
+                recalcLinks = function () {
+                    var withdrawn = ($dd.find("input[name=withdrawn]").prop("checked") ? 1 : 0);
+                    $dd.find(".exportLink a").each(function () {
+                        var link = $(this).data("href-tpl");
+                        link = link.replace("WITHDRAWN", withdrawn);
+                        $(this).attr("href", link);
+                    });
+                };
+            $dd.find("input[type=checkbox]").change(recalcLinks).trigger("change");
+        });
+    };
+
     var siteAccessInit = function () {
         var $siteForm = $("#siteSettingsForm");
         $siteForm.find(".loginMethods .namespaced input").change(function () {
@@ -399,7 +417,7 @@
         });
     };
 
-    var motionSupporterEdit = function() {
+    var motionSupporterEdit = function () {
         var $supporterHolder = $("#motionSupporterHolder"),
             $sortable = $supporterHolder.find("> ul");
         Sortable.create($sortable[0], {draggable: 'li'});
@@ -408,13 +426,13 @@
             $sortable.append($(this).data("content"));
             ev.preventDefault();
         });
-        $sortable.on("click", ".delSupporter", function(ev) {
+        $sortable.on("click", ".delSupporter", function (ev) {
             ev.preventDefault();
             $(this).parents("li").first().remove();
         });
 
         var $fullTextHolder = $("#fullTextHolder");
-        $supporterHolder.find(".fullTextAdd").click(function() {
+        $supporterHolder.find(".fullTextAdd").click(function () {
             var lines = $fullTextHolder.find('textarea').val().split(";"),
                 template = $(".supporterRowAdder").data("content"),
                 getNewElement = function () {
@@ -493,7 +511,7 @@
         motionSupporterEdit();
     };
 
-    var amendmentEditInit = function () {
+    var amendmentEditInit = function (multipleParagraphs) {
         var lang = $("html").attr("lang");
         $("#amendmentDateCreationHolder").datetimepicker({
             locale: lang
@@ -506,18 +524,22 @@
         $("#amendmentTextEditCaller").find("button").click(function () {
             $("#amendmentTextEditCaller").addClass("hidden");
             $("#amendmentTextEditHolder").removeClass("hidden");
-            $(".wysiwyg-textarea").each(function () {
-                var $holder = $(this),
-                    $textarea = $holder.find(".texteditor"),
-                    editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
-                $textarea.parents("form").submit(function () {
-                    $textarea.parent().find("textarea.raw").val(editor.getData());
-                    if (typeof(editor.plugins.lite) != 'undefined') {
-                        editor.plugins.lite.findPlugin(editor).acceptAll();
-                        $textarea.parent().find("textarea.consolidated").val(editor.getData());
-                    }
+            if (multipleParagraphs) {
+                $(".wysiwyg-textarea").each(function () {
+                    var $holder = $(this),
+                        $textarea = $holder.find(".texteditor"),
+                        editor = $.AntragsgruenCKEDITOR.init($textarea.attr("id"));
+                    $textarea.parents("form").submit(function () {
+                        $textarea.parent().find("textarea.raw").val(editor.getData());
+                        if (typeof(editor.plugins.lite) != 'undefined') {
+                            editor.plugins.lite.findPlugin(editor).acceptAll();
+                            $textarea.parent().find("textarea.consolidated").val(editor.getData());
+                        }
+                    });
                 });
-            });
+            } else {
+                $.Antragsgruen.amendmentEditFormSinglePara();
+            }
             $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
         });
 
@@ -542,6 +564,7 @@
         'motionTypeEdit': motionTypeEdit,
         'agendaEdit': agendaEdit,
         'motionListAll': motionListAll,
+        'exportRowInit': exportRowInit,
         'siteAccessInit': siteAccessInit,
         'siteAccessUsersInit': siteAccessUsersInit,
         'motionEditInit': motionEditInit,

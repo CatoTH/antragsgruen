@@ -523,6 +523,7 @@ class Diff2
         $pendingInsert = '';
         $resolved      = [];
         foreach ($diffSections as $diffS) {
+            $diffS = str_replace('<del>###LINENUMBER###</del>', '###LINENUMBER###', $diffS);
             if (preg_match('/<del( [^>]*)?>###EMPTYINSERTED###<\/del>/siu', $diffS)) {
                 $str = preg_replace('/<del( [^>]*)?>###EMPTYINSERTED###<\/del>/siu', '', $diffS);
                 if (count($resolved) > 0) {

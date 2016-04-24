@@ -23,12 +23,6 @@ class IndexController extends AdminBase
      */
     public function actionIndex()
     {
-        /** @var AdminTodoItem[] $todo */
-        $todo = [];
-        if (!is_null($this->consultation)) {
-            $todo = AdminTodoItem::getConsultationTodos($this->consultation);
-        }
-
         if ($this->isPostSet('flushCaches') && User::currentUserIsSuperuser()) {
             $this->consultation->flushCacheWithChildren();
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
@@ -37,7 +31,6 @@ class IndexController extends AdminBase
         return $this->render(
             'index',
             [
-                'todo'         => $todo,
                 'site'         => $this->site,
                 'consultation' => $this->consultation
             ]
@@ -96,6 +89,16 @@ class IndexController extends AdminBase
         }
 
         return $this->render('consultation_settings', ['consultation' => $this->consultation, 'locale' => $locale]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionTodo()
+    {
+        $todo = AdminTodoItem::getConsultationTodos($this->consultation);
+
+        return $this->render('todo', ['todo' => $todo]);
     }
 
     /**
@@ -225,7 +228,7 @@ class IndexController extends AdminBase
 
         $form           = new ConsultationCreateForm();
         $form->template = $this->consultation;
-        $post = \Yii::$app->request->post();
+        $post           = \Yii::$app->request->post();
 
         if ($this->isPostSet('createConsultation')) {
             $form->setAttributes($_POST['newConsultation'], true);

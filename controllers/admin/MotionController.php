@@ -395,11 +395,13 @@ class MotionController extends AdminBase
     /**
      * @param int $motionTypeId
      * @param bool $textCombined
+     * @param int $withdrawn
      * @return string
-     * @throws \app\models\exceptions\NotFound
      */
-    public function actionOdslist($motionTypeId, $textCombined = false)
+    public function actionOdslist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
+        $withdrawn = ($withdrawn == 1);
+
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
@@ -412,7 +414,7 @@ class MotionController extends AdminBase
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         $motions = [];
-        foreach ($this->consultation->getVisibleMotionsSorted() as $motion) {
+        foreach ($this->consultation->getVisibleMotionsSorted($withdrawn) as $motion) {
             if ($motion->motionTypeId == $motionTypeId) {
                 $motions[] = $motion;
             }
@@ -428,10 +430,13 @@ class MotionController extends AdminBase
     /**
      * @param int $motionTypeId
      * @param bool $textCombined
+     * @param int $withdrawn
      * @return string
      */
-    public function actionExcellist($motionTypeId, $textCombined = false)
+    public function actionExcellist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
+        $withdrawn = ($withdrawn == 1);
+
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
@@ -447,7 +452,7 @@ class MotionController extends AdminBase
         error_reporting(E_ALL & ~E_DEPRECATED); // PHPExcel ./. PHP 7
 
         $motions = [];
-        foreach ($this->consultation->getVisibleMotionsSorted() as $motion) {
+        foreach ($this->consultation->getVisibleMotionsSorted($withdrawn) as $motion) {
             if ($motion->motionTypeId == $motionTypeId) {
                 $motions[] = $motion;
             }
@@ -492,15 +497,18 @@ class MotionController extends AdminBase
 
     /**
      * @param int $motionTypeId
+     * @param int $withdrawn
      * @return string
      */
-    public function actionPdfziplist($motionTypeId = 0)
+    public function actionPdfziplist($motionTypeId = 0, $withdrawn = 0)
     {
+        $withdrawn = ($withdrawn == 1);
+
         try {
             if ($motionTypeId > 0) {
-                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions();
+                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions($withdrawn);
             } else {
-                $motions = $this->consultation->getVisibleMotions();
+                $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
             if (count($motions) == 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
@@ -524,15 +532,18 @@ class MotionController extends AdminBase
 
     /**
      * @param int $motionTypeId
+     * @param int $withdrawn
      * @return string
      */
-    public function actionOdtziplist($motionTypeId = 0)
+    public function actionOdtziplist($motionTypeId = 0, $withdrawn = 0)
     {
+        $withdrawn = ($withdrawn == 1);
+
         try {
             if ($motionTypeId > 0) {
-                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions();
+                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions($withdrawn);
             } else {
-                $motions = $this->consultation->getVisibleMotions();
+                $motions = $this->consultation->getVisibleMotions($withdrawn);
             }
             if (count($motions) == 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));

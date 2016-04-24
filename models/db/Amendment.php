@@ -470,10 +470,15 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->status == static::STATUS_DRAFT) {
             $hadLoggedInUser = false;
             foreach ($this->amendmentSupporters as $supp) {
+                $currUser = User::getCurrentUser();
                 if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
-                    $currUser        = User::getCurrentUser();
                     if ($currUser && $currUser->id == $supp->userId) {
+                        return true;
+                    }
+                }
+                if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
+                    if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
                         return true;
                     }
                 }
@@ -830,6 +835,9 @@ class Amendment extends IMotion implements IRSSItem
                 $initiators[] = $init->getNameWithResolutionDate(false);
             }
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
+        }
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
+            $return[\Yii::t('motion', 'status')] = IMotion::getStati()[$this->status];
         }
 
         return $return;

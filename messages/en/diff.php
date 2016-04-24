@@ -13,4 +13,6 @@ return [
     'line_to_ins'    => 'Insert from line #LINEFROM# to #LINETO#:',
     'space'          => 'Space',
     'newline'        => 'Newline',
+    'plain_text_del' => 'DELETE',
+    'plain_text_ins' => 'INSERT',
 ];

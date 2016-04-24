@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('check if the page can be opened at all');
-$page = $I->loginAndGotoStdAdminPage()->gotoMotionList();
+$I->loginAndGotoMotionList();
 $I->see('O’zapft is!');
 $I->see('Textformatierungen');
 $I->see('Ä2');

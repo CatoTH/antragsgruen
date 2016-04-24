@@ -1,5 +1,6 @@
 <?php
 use app\tests\_pages\AdminIndexPage;
+use app\tests\_pages\AdminMotionListPage;
 use app\tests\_pages\AmendmentPage;
 use app\tests\_pages\ConsultationHomePage;
 use app\tests\_pages\MotionPage;
@@ -118,16 +119,27 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $this->gotoConsultationHome(false, $subdomain, $path);
         $this->loginAsStdAdmin();
-        return $this->gotoStdAdminPage(false, $subdomain, $path);
+        return $this->gotoStdAdminPage($subdomain, $path);
     }
 
     /**
-     * @param bool $check
+     * @param string $subdomain
+     * @param string $path
+     * @return AdminMotionListPage
+     */
+    public function loginAndGotoMotionList($subdomain = 'stdparteitag', $path = 'std-parteitag')
+    {
+        $this->gotoConsultationHome(false, $subdomain, $path);
+        $this->loginAsStdAdmin();
+        return $this->gotoMotionList();
+    }
+
+    /**
      * @param string $subdomain
      * @param string $path
      * @return AdminIndexPage
      */
-    public function gotoStdAdminPage($check = true, $subdomain = 'stdparteitag', $path = 'std-parteitag')
+    public function gotoStdAdminPage($subdomain = 'stdparteitag', $path = 'std-parteitag')
     {
         $page = AdminIndexPage::openBy(
             $this,
@@ -140,7 +152,17 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
-     *
+     * @return AdminMotionListPage
+     */
+    public function gotoMotionList()
+    {
+        $this->click('#motionListLink');
+        $this->see(mb_strtoupper('Liste: Anträge, Änderungsanträge'), 'h1');
+        return new AdminMotionListPage($this);
+    }
+
+    /**
+     * @return $this
      */
     public function loginAsStdAdmin()
     {
@@ -151,6 +173,8 @@ class AcceptanceTester extends \Codeception\Actor
         $this->fillField('#username', 'testadmin@example.org');
         $this->fillField('#passwordInput', 'testadmin');
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+
+        return $this;
     }
 
     /**

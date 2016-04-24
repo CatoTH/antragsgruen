@@ -16,9 +16,9 @@ $I->selectOption('#typePolicyAmendments', \app\models\policies\LoggedIn::getPoli
 $I->selectOption('#typePolicyComments', \app\models\policies\LoggedIn::getPolicyName());
 $I->submitForm('.adminTypeForm', [], 'save');
 
-$I->gotoStdAdminPage();
-$I->dontSee('Nur von den Administrator*innen explizit zugelassene Benutzer*innen können Anträge stellen.');
-$I->see('Neu anlegen', '.motionTypeSection1');
+$I->gotoMotionList();
+$I->click('#newMotionBtn');
+$I->seeElement('.createMotion1');
 
 $I->gotoConsultationHome();
 $I->dontSeeElement('.createMotion');

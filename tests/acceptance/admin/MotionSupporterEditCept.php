@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('edit a motion');
-$I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionList()->gotoMotionEdit(116);
+$I->loginAndGotoMotionList('supporter', 'supporter')->gotoMotionEdit(116);
 $I->seeNumberOfElements('#motionSupporterHolder > ul > li', 0);
 $I->click('.supporterRowAdder');
 $I->click('.supporterRowAdder');
@@ -14,6 +14,10 @@ $I->executeJS('$("#motionSupporterHolder > ul > li:nth(0) .supporterName").val("
 $I->executeJS('$("#motionSupporterHolder > ul > li:nth(0) .supporterOrga").val("My Orga 1");');
 $I->executeJS('$("#motionSupporterHolder > ul > li:nth(1) .supporterName").val("My Name 2");');
 $I->submitForm('#motionUpdateForm', [], 'save');
+
+$I->gotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
+$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
+$I->submitForm('.adminTypeForm', [], 'save');
 
 $I->logout();
 
@@ -38,7 +42,7 @@ $I->logout();
 
 
 $I->wantTo('edit the motion again');
-$I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionList()->gotoMotionEdit(116);
+$I->loginAndGotoMotionList('supporter', 'supporter')->gotoMotionEdit(116);
 $I->seeNumberOfElements('#motionSupporterHolder > ul > li', 3);
 $I->seeInField('#motionSupporterHolder > ul > li .supporterName', 'My login-name');
 $I->see('testuser@example.org', '#motionSupporterHolder > ul > li');
@@ -62,7 +66,7 @@ $I->assertContains('My login-name 2', $firstName);
 
 $I->wantTo('add some suporters using full-text');
 
-$I->gotoStdAdminPage(false, 'supporter', 'supporter')->gotoMotionList()->gotoMotionEdit(116);
+$I->gotoMotionList()->gotoMotionEdit(116);
 
 $I->dontSeeElement('#fullTextHolder');
 $I->click('.fullTextAdder a');

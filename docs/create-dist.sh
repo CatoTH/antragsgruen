@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 if [[ ! -d ./controllers ]]; then
     echo "Please run this script from the project's root directory"
     exit
@@ -19,7 +20,7 @@ rsync -av --exclude='./local' --exclude='.git' . ./local/build-dist
 cd local/build-dist
 
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.1.2"
+./composer.phar global require "fxp/composer-asset-plugin:1.1.3"
 ./composer.phar install --prefer-dist
 
 rm -R local dist docker-vagrant

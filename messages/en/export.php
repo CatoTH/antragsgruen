@@ -34,4 +34,7 @@ return [
     'mail_body'             => "Hi %NAME%,\n\nI contact you because of your %MOTION%, which I am responsible for.",
     'filename_amendments'   => 'Amendment',
     'filename_motions'      => 'Motion',
+    'incl_withdrawn'        => 'Incl. Withdrawn',
+    'btn_openslides'        => 'Openslides',
+    'btn_amendments'        => 'Amendments',
 ];

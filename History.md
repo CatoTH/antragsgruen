@@ -1,10 +1,24 @@
 # Version history
 
-## Version 3.2.2 [Not yet released]
+## Version 3.3 [Not yet released]
+
+- The administration has been split up into three separate parts: the Motion List, the To Do List and the Settings Page
+- Exporting motions and amendments can now be done from the motion list. There now is an option to include or exclude withdrawn motions/amendments
+
+### Version 3.2.3 (2016-04-15)
+
+- Using the enter key when creating an amendment does not create a new paragraph anymore, but only a line break. This is a "hack" to improve the diff.
+- Editorial hints in amendments are no shown in the admin backend (and can be edited)
+- Bugfix: In some cases, single lines were shown as modified with deletions where no deletion was actually made.
+- Bugfix: When amendments are numbered by the first affected line number, the numbering got wrong once more than two amendments started at the same line.
+
+### Version 3.2.2 (2016-04-13)
 
 - Bugfix: some supporters where tagged with "You!" for logged-out users
+- Bugfix: better string normalization
+- Bugfix: editing amendments on the administration page did not work when single-paragraph-mode was activated
 
-## Version 3.2.1 (2016-04-06)
+### Version 3.2.1 (2016-04-06)
 
 - Support for Mailgun as mail service
 - Bugfix: Admins could not edit drafts they created for other persons

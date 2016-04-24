@@ -36,7 +36,8 @@ $I->dontSee('#section_21_1 .motionComment .delLink');
 $I->wantTo('enable screening and force e-mails');
 $I->logout();
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage(true, 'bdk', 'bdk')->gotoConsultation();
+$I->dontSeeElement('#adminTodo');
+$I->gotoStdAdminPage('bdk', 'bdk')->gotoConsultation();
 $I->dontSeeCheckboxIsChecked('#screeningComments');
 $I->dontSeeCheckboxIsChecked('#commentNeedsEmail');
 $I->checkOption('#screeningComments');
@@ -85,7 +86,7 @@ $I->logout();
 $I->wantTo('screen the comment');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
-$I->click('#adminLink');
+$I->click('#adminTodo');
 $I->seeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1));
 $I->seeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 2));
 $I->click('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 2) . ' a');
@@ -108,6 +109,4 @@ $I->dontSee('Noch ein dritter Kommentar');
 
 
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
-$I->click('#adminLink');
-$I->dontSeeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1));
-$I->dontSeeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 2));
+$I->dontSeeElement('#adminTodo');

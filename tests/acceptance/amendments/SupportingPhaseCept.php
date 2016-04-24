@@ -87,7 +87,7 @@ $I->dontSeeElement('button[name=motionLike]');
 $I->dontSeeElement('button[name=motionDislike]');
 
 
-$I->gotoStdAdminPage(false, 'supporter', 'supporter')->gotoMotionTypes(10);
+$I->gotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->dontSeeCheckboxIsChecked('.amendmentDislike');
 $I->dontSeeCheckboxIsChecked('.amendmentLike');
 $I->checkOption('.amendmentLike');

@@ -6,15 +6,15 @@ $I->populateDBData1();
 
 $I->wantTo('remove all motion prefixes');
 
-$I->loginAndGotoStdAdminPage()->gotoMotionList()->gotoMotionEdit(2);
+$I->loginAndGotoMotionList()->gotoMotionEdit(2);
 $I->fillField('#motionTitlePrefix', '');
 $I->submitForm('#motionUpdateForm', [], 'save');
 
-$I->gotoStdAdminPage()->gotoMotionList()->gotoMotionEdit(3);
+$I->gotoMotionList()->gotoMotionEdit(3);
 $I->fillField('#motionTitlePrefix', '');
 $I->submitForm('#motionUpdateForm', [], 'save');
 
-$I->gotoStdAdminPage()->gotoMotionList()->gotoMotionEdit(58);
+$I->gotoMotionList()->gotoMotionEdit(58);
 $I->fillField('#motionTitlePrefix', '');
 $I->submitForm('#motionUpdateForm', [], 'save');
 

@@ -8,7 +8,7 @@ use yii\helpers\Html;
 /**
  * @var $this yii\web\View
  * @var Motion[] $motions
- * @var bool $textCombined
+ * @var bool $withdrawn
  */
 
 /** @var \app\controllers\Base $controller */
@@ -111,7 +111,7 @@ foreach ($motions as $motion) {
     $title = HTMLTools::correctHtmlErrors($title);
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
 
-    $amendments = $motion->getVisibleAmendmentsSorted();
+    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
     foreach ($amendments as $amendment) {
         $row++;
 

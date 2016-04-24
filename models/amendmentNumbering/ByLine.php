@@ -12,7 +12,7 @@ class ByLine extends IAmendmentNumbering
      */
     public static function getName()
     {
-        return 'A-01-070 (Zählung nach betroffener Zeile)';
+        return 'A01-070 (Zählung nach betroffener Zeile)';
     }
 
     /**
@@ -32,7 +32,7 @@ class ByLine extends IAmendmentNumbering
      */
     public function getAmendmentNumber(Amendment $amendment, Motion $motion, $lineStrLen = 3)
     {
-        $line    = $amendment->getFirstDiffLine();
+        $line = $amendment->getFirstDiffLine();
         while (mb_strlen($line) < $lineStrLen) {
             $line = '0' . $line;
         }
@@ -41,8 +41,11 @@ class ByLine extends IAmendmentNumbering
         foreach ($motion->amendments as $amend) {
             if ($amend->titlePrefix) {
                 $x = explode($revBase, $amend->titlePrefix);
-                if (count ($x) == 2) {
-                    $maxRev = max($maxRev, strlen($x [1]) == 0 ? 1 : IntVal($x [1]));
+                if (count($x) == 2) {
+                    if (strlen($x[1]) > 0 && $x[1][0] == '-') {
+                        $x[1] = substr($x[1], 1);
+                    }
+                    $maxRev = max($maxRev, strlen($x[1]) == 0 ? 1 : IntVal($x[1]));
                 }
             }
         }

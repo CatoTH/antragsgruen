@@ -2,7 +2,6 @@
 
 namespace app\controllers\admin;
 
-use app\components\MotionSorter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -16,38 +15,45 @@ class AmendmentController extends AdminBase
 {
     /**
      * @param bool $textCombined
+     * @param int $withdrawn
      * @return string
-     * @throws \app\models\exceptions\NotFound
      */
-    public function actionOdslist($textCombined = false)
+    public function actionOdslist($textCombined = false, $withdrawn = 0)
     {
+        $withdrawn = ($withdrawn == 1);
+
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list', [
-            'motions'      => $this->consultation->getVisibleMotionsSorted(),
+            'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
             'textCombined' => $textCombined,
+            'withdrawn'    => $withdrawn,
         ]);
     }
 
     /**
+     * @param int $withdrawn
      * @return string
      */
-    public function actionPdflist()
+    public function actionPdflist($withdrawn = 0)
     {
-        return $this->render('pdf_list', ['consultation' => $this->consultation]);
+        $withdrawn = ($withdrawn == 1);
+        return $this->render('pdf_list', ['consultation' => $this->consultation, 'withdrawn' => $withdrawn]);
     }
 
     /**
+     * @param int $withdrawn
      * @return string
      */
-    public function actionPdfziplist()
+    public function actionPdfziplist($withdrawn = 0)
     {
+        $withdrawn = ($withdrawn == 1);
         $zip = new \app\components\ZipWriter();
-        foreach ($this->consultation->getVisibleMotions() as $motion) {
-            foreach ($motion->getVisibleAmendments() as $amendment) {
+        foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
+            foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 $zip->addFile($amendment->getFilenameBase(false) . '.pdf', LayoutHelper::createPdf($amendment));
             }
         }
@@ -61,13 +67,15 @@ class AmendmentController extends AdminBase
     }
 
     /**
+     * @param int $withdrawn
      * @return string
      */
-    public function actionOdtziplist()
+    public function actionOdtziplist($withdrawn = 0)
     {
+        $withdrawn = ($withdrawn == 1);
         $zip = new \app\components\ZipWriter();
-        foreach ($this->consultation->getVisibleMotions() as $motion) {
-            foreach ($motion->getVisibleAmendments() as $amendment) {
+        foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
+            foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 $zip->addFile($amendment->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($amendment));
             }
         }
@@ -81,7 +89,7 @@ class AmendmentController extends AdminBase
     }
 
     /**
-     * @param Amendment $motion
+     * @param Amendment $amendment
      */
     private function saveAmendmentSupporters(Amendment $amendment)
     {

@@ -17,8 +17,9 @@ $I->dontSee('Antrag stellen');
 
 
 $I->wantTo('access the page as admin');
-$I->gotoStdAdminPage();
-$I->click('.motionTypeSection1 .createLink');
+$I->gotoMotionList();
+$I->click('#newMotionBtn');
+$I->click('.createMotion1');
 $I->see('Antrag stellen', 'h1');
 
 

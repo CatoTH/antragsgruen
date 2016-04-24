@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('edit an amendment');
-$I->loginAndGotoStdAdminPage()->gotoMotionList()->gotoAmendmentEdit(1);
+$I->loginAndGotoMotionList()->gotoAmendmentEdit(1);
 $I->see('Lorem ipsum dolor sit amet');
 $I->see('Oamoi a Maß');
 $I->see('Auf gehds beim Schichtl');

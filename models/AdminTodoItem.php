@@ -39,11 +39,15 @@ class AdminTodoItem
     }
 
     /**
-     * @param Consultation $consultation
+     * @param Consultation|null $consultation
      * @return AdminTodoItem[]
      */
-    public static function getConsultationTodos(Consultation $consultation)
+    public static function getConsultationTodos($consultation)
     {
+        if (!$consultation) {
+            return [];
+        }
+
         $todo = [];
 
         $motions = Motion::getScreeningMotions($consultation);

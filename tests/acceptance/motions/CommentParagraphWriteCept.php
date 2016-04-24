@@ -7,7 +7,7 @@ $I->populateDBData1();
 $I->wantTo('allow comments for everyone');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
-$I->gotoStdAdminPage(true, 'bdk', 'bdk')->gotoMotionTypes(7);
+$I->gotoStdAdminPage('bdk', 'bdk')->gotoMotionTypes(7);
 $I->selectOption('#typePolicyComments', \app\models\policies\All::getPolicyName());
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->logout();

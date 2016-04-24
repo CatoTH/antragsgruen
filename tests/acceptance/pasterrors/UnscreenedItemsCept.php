@@ -31,10 +31,9 @@ $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $layoutTypes = Consultation::getStartLayouts();
 foreach ($layoutTypes as $typeId => $typeName) {
     $I->wantTo('switch to: ' . $typeName);
-
-    $page = $I->gotoStdAdminPage(true, 'bdk', 'bdk');
+    $I->click('#adminTodo');
     $I->see($title);
-    $page->gotoConsultation();
+    $I->gotoStdAdminPage('bdk', 'bdk')->gotoConsultation();
     $I->selectOption('#startLayoutType', $typeName);
     $I->submitForm('#consultationSettingsForm', [], 'save');
 

@@ -7,7 +7,7 @@ $I->populateDBData1();
 $I->wantTo('Login as regular user');
 $I->gotoConsultationHome();
 $I->loginAsStdUser();
-$I->dontSee('ADMIN', '#adminLink');
+$I->dontSee('Einstellungen', '#adminLink');
 
 $I->wantTo('Logout again');
 $I->logout();
@@ -28,7 +28,7 @@ $I->wantTo('Login in as testuser');
 $I->logout();
 $I->gotoConsultationHome();
 $I->loginAsStdUser();
-$I->see('ADMIN', '#adminLink');
+$I->see('Einstellungen', '#adminLink');
 
 
 $I->wantTo('Go to admin administration');
@@ -53,4 +53,4 @@ $I->wantTo('Login in as testadmin');
 $I->logout();
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
-$I->dontsee('ADMIN', '#adminLink');
+$I->dontsee('Einstellungen', '#adminLink');

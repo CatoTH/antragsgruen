@@ -114,6 +114,11 @@ function __t(category, str) {
         } else {
             ckeditorConfig.removePlugins += ',lite';
         }
+        if ($el.data('enter-mode') == 'br') {
+            ckeditorConfig.enterMode = CKEDITOR.ENTER_BR;
+        } else {
+            ckeditorConfig.enterMode = CKEDITOR.ENTER_P;
+        }
         ckeditorConfig.allowedContent = allowedContent;
         ckeditorConfig.pasteFilter = allowedContent;
 
@@ -1241,6 +1246,7 @@ function __t(category, str) {
         'motionEditForm': motionEditForm,
         'motionMergeAmendmentsForm': motionMergeAmendmentsForm,
         'amendmentEditForm': amendmentEditForm,
+        'amendmentEditFormSinglePara': amendmentEditFormSinglePara,
         'contentPageEdit': contentPageEdit,
         'defaultInitiatorForm': defaultInitiatorForm,
         'accountEdit': accountEdit,
