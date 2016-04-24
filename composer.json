@@ -36,11 +36,11 @@
     "bower-asset/pdfjs-dist": "*"
   },
   "require-dev": {
-    "yiisoft/yii2-codeception": "2.0.4",
+    "yiisoft/yii2-codeception": "2.0.5",
     "yiisoft/yii2-debug": "2.0.5",
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.3.*",
-    "codeception/codeception": "2.1.7",
+    "codeception/codeception": "2.1.8",
     "codeception/specify": "^0.4.3",
     "codeception/verify": "^0.3.0",
     "facebook/webdriver": "1.1.1"
