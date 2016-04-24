@@ -14,11 +14,11 @@ $controller = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 
 $this->title = 'Zahlungsverwaltung';
-echo '<h1>Zahlungsverwaltung</h1>';
+echo '<h1>Seitenverweltung</h1>';
 
 echo Html::beginForm(UrlHelper::createUrl('manager/paymentadmin'), 'post', ['class' => 'content paymentAdmin']);
 
-echo '<table><thead><tr><th>Seite</th><th>Zahlungsbereit</th><th>Rechnung</th></tr></thead><tbody>';
+echo '<table><thead><tr><th>Seite</th><th>Zahlungsbereit</th><th>Rechnung</th><th>Aktiv</th></tr></thead><tbody>';
 foreach ($sites as $site) {
     $siteUrl  = UrlHelper::createUrl(['consultation/index', 'subdomain' => $site->subdomain]);
     $settings = $site->getSettings();
@@ -40,6 +40,13 @@ foreach ($sites as $site) {
         echo ' disabled';
     }
     echo '></td>';
+
+    echo '<td><input type="checkbox" name="siteActive[]" value="' . $site->id . '" title="Akitiv (Sidebar)"';
+    if ($site->status == Site::STATUS_ACTIVE) {
+        echo ' checked';
+    }
+    echo '></td>';
+
     echo '</tr>';
 }
 echo '</tbody></table>';

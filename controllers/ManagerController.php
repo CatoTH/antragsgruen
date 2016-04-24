@@ -240,7 +240,7 @@ class ManagerController extends Base
         if ($config->multisiteMode) {
             return $this->showErrorpage(500, 'This configuration tool can only be used for single-site installations.');
         }
-        
+
         $post = \Yii::$app->request->post();
         if (isset($post['save'])) {
             $config->resourceBase          = $post['resourceBase'];
@@ -338,7 +338,7 @@ class ManagerController extends Base
         ) {
             return $this->redirect($form->siteUrl);
         }
-        
+
         $post = \Yii::$app->request->post();
 
         if ($this->isPostSet('finishInit')) {
@@ -451,14 +451,16 @@ class ManagerController extends Base
         }
 
         /** @var Site[] $sites */
-        $sites = Site::find()->all();
+        $sites = Site::find()->where('status != ' . Site::STATUS_DELETED)->all();
 
         if ($this->isPostSet('save')) {
-            $set = \Yii::$app->request->post('billSent', []);
+            $set    = \Yii::$app->request->post('billSent', []);
+            $active = \Yii::$app->request->post('siteActive', []);
             foreach ($sites as $site) {
                 $settings           = $site->getSettings();
                 $settings->billSent = (in_array($site->id, $set) ? 1 : 0);
                 $site->setSettings($settings);
+                $site->status = (in_array($site->id, $active) ? Site::STATUS_ACTIVE : Site::STATUS_INACTIVE);
                 $site->save();
             }
         }
