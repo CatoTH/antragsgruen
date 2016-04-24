@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 
 /**
  * @property int $id
@@ -43,6 +44,14 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_UNLIKE         = 22;
     const AMENDMENT_DISLIKE        = 23;
     const AMENDMENT_CHANGE         = 25;
+
+    public static $MOTION_ACTION_TYPES    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 24, 26];
+    public static $AMENDMENT_ACTION_TYPES = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25];
+
+    /** @var null|Motion */
+    private $motion = null;
+    /** @var null|Amendment */
+    private $amendment = null;
 
     /**
      * @return string
@@ -115,5 +124,76 @@ class ConsultationLog extends ActiveRecord
         $log->actionReferenceId = $typeRefId;
         $log->actionTime        = date('Y-m-d H:i:s');
         $log->save();
+    }
+
+    /**
+     * @param string $str
+     * @param int $amendmentId
+     */
+    private function formatLogEntryAmendment($str, $amendmentId)
+    {
+        if (!$this->amendment || $this->amendment->id != $amendmentId) {
+            $this->amendment = Amendment::findOne($amendmentId);
+        }
+        if ($this->amendment) {
+            return str_replace('###AMENDMENT###', Html::encode($this->amendment->getTitle()), $str);
+        } else {
+            $deletedStr = '<span class="deleted">' . \Yii::t('structure', 'activity_deleted') . '</span>';
+            return str_replace('###AMENDMENT###', $deletedStr, $str);
+        }
+    }
+
+    /**
+     * @param string $str
+     * @param int $motionId
+     */
+    private function formatLogEntryMotion($str, $motionId)
+    {
+        if (!$this->motion || $this->motion->id != $motionId) {
+            $this->motion = Motion::findOne($motionId);
+        }
+        if ($this->motion) {
+            return str_replace('###MOTION###', Html::encode($this->motion->getTitleWithPrefix()), $str);
+        } else {
+            $deletedStr = '<span class="deleted">' . \Yii::t('structure', 'activity_deleted') . '</span>';
+            return str_replace('###MOTION###', $deletedStr, $str);
+        }
+    }
+
+    /**
+     * @param string $str
+     * @param string $fallback
+     * @return string
+     */
+    private function formatLogEntryUser($str, $fallback)
+    {
+        if ($this->user) {
+            return str_replace('###USER###', Html::encode($this->user->name), $str);
+        } else {
+            return str_replace('###USER###', Html::encode($fallback), $str);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function formatLogEntry()
+    {
+        switch ($this->actionType) {
+            case static::MOTION_PUBLISH:
+                $str      = \Yii::t('structure', 'activity_MOTION_PUBLISH');
+                $str      = $this->formatLogEntryMotion($str, $this->actionReferenceId);
+                $fallback = ($this->motion ? $this->motion->getInitiatorsStr() : '-');
+                $str      = $this->formatLogEntryUser($str, $fallback);
+                return $str;
+            case static::AMENDMENT_PUBLISH:
+                $str      = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
+                $str      = $this->formatLogEntryAmendment($str, $this->actionReferenceId);
+                $fallback = ($this->amendment ? $this->amendment->getInitiatorsStr() : '-');
+                $str      = $this->formatLogEntryUser($str, $fallback);
+                return $str;
+            default:
+                return $this->actionType;
+        }
     }
 }

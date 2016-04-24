@@ -119,6 +119,23 @@ if ($showCreate) {
     }
 }
 
+
+$html = '<div><ul class="nav nav-list"><li class="nav-header">' .
+    Yii::t('con', 'news') . '</li>';
+
+$title = '<span class="glyphicon glyphicon-th-list"></span>' . Yii::t('con', 'activity_log');
+$link  = UrlHelper::createUrl('consultation/activitylog');
+$html .= '<li class="activitylog">' . Html::a($title, $link) . '</li>';
+
+$title = '<span class="glyphicon glyphicon-bell"></span>' . Yii::t('con', 'email_notifications');
+$link  = UrlHelper::createUrl('consultation/notifications');
+$html .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
+
+$html .= '</ul></div>';
+$layout->menusHtml[]      = $html;
+$layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'notifications'), $link) . '</li>';
+
+
 if ($hasMotions) {
     $html = '<div><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_motions') . '</li>';
@@ -197,17 +214,6 @@ if ($hasComments) {
     $html .= '</ul></div>';
     $layout->menusHtml[] = $html;
 }
-
-$title = '<span class="glyphicon glyphicon-bell"></span>';
-$title .= Yii::t('con', 'email_notifications');
-$link = UrlHelper::createUrl('consultation/notifications');
-$html = '<div><ul class="nav nav-list"><li class="nav-header">' .
-    Yii::t('con', 'notifications') . '</li>';
-$html .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
-$html .= '</ul></div>';
-$layout->menusHtml[]      = $html;
-$layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'notifications'), $link) . '</li>';
-
 
 if ($consultation->getSettings()->showFeeds) {
     $feeds          = 0;
