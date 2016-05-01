@@ -26,18 +26,6 @@ foreach ($motion->replacedByMotions as $replMotion) {
     }
 }
 
-if ($motion->isSocialSharable() && count($replacedByMotions) == 0) {
-    $layout->loadShariff();
-    $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
-    $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-    $lang           = Yii::$app->language;
-    $dataTitle      = $motion->getTitleWithPrefix();
-    echo '<div class="shariff" data-backend-url="' . Html::encode($shariffBackend) . '" data-theme="white"
-           data-url="' . Html::encode($myUrl) . '"
-           data-services="[&quot;twitter&quot;, &quot;facebook&quot;]"
-           data-lang="' . Html::encode($lang) . '" data-title="' . Html::encode($dataTitle) . '"></div>';
-}
-
 if (count($replacedByMotions) > 0) {
     echo '<div class="alert alert-danger motionReplayedBy" role="alert">';
     echo \Yii::t('motion', 'replaced_by_hint');
