@@ -421,14 +421,17 @@ class ConsultationController extends Base
     }
 
     /**
+     * @param int $page
+     * 
      * @return string
      */
-    public function actionActivitylog()
+    public function actionActivitylog($page = 0)
     {
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
         $form = new ConsultationActivityFilterForm($this->consultation);
+        $form->setPage($page);
         return $this->render('activity_log', ['form' => $form]);
     }
 }

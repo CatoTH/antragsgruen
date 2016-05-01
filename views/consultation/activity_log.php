@@ -5,6 +5,7 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  */
 
+use app\components\Tools;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -19,15 +20,36 @@ $layout->addBreadcrumb(\Yii::t('con', 'activity_bc'));
 echo '<h1>' . Html::encode(\Yii::t('con', 'activity_title')) . '</h1>';
 echo '<div class="content activityLogPage">';
 
-$entries = $form->getLogEntries(0, 20);
+
+echo $form->getPagination('consultation/activitylog');
+
+$entries = $form->getLogEntries();
 
 echo '<ul class="list-group activityLog">';
 foreach ($entries as $entry) {
-    echo '<li class="list-group-item">';
-    echo '<div class="date">' . $entry->actionTime . '</div>';
-    echo $entry->formatLogEntry();
-    echo '</li>';
+    $link = $entry->getLink();
+    if ($link) {
+        echo '<a href="' . Html::encode($link) . '" class="list-group-item">';
+    } else {
+        echo '<li class="list-group-item">';
+    }
+    echo '<div class="date" title="' . Html::encode(Tools::formatMysqlDateTime($entry->actionTime)) . '">';
+    echo $entry->getTimeAgoFormatted() . '</div>';
+
+    if ($motion = $entry->getMotion()) {
+        echo '<div class="motion">' . Html::encode($motion->getTitleWithPrefix()) . '</div>';
+    }
+
+    echo '<div class="description">' . $entry->formatLogEntry() . '</div>';
+
+    if ($link) {
+        echo '</a>';
+    } else {
+        echo '</li>';
+    }
 }
 echo '</ul>';
+
+echo $form->getPagination('consultation/activitylog');
 
 echo '</div>';

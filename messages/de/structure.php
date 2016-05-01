@@ -123,7 +123,13 @@ return [
     'supp_given_by_initiator' => 'Von der Antragsteller*in angegeben',
     'supp_collect_before'     => 'Unterstützungs-Phase vor Veröffentlichung (außer bei Gremien)',
 
-    'activity_deleted'           => 'gelöscht',
-    'activity_MOTION_PUBLISH'    => '###USER### hat den Antrag ###MOTION### eingereicht',
-    'activity_AMENDMENT_PUBLISH' => '###USER### hat den Änderungsantrag ###AMENDMENT### eingereicht',
+    'activity_someone'                    => 'Ein*e Benutzer*in',
+    'activity_deleted'                    => 'gelöscht',
+    'activity_MOTION_DELETE'              => '###USER### hat einen <strong>Antrag ###MOTION### gelöscht</strong>',
+    'activity_MOTION_DELETE_PUBLISHED'    => '###USER### hat den <strong>Antrag ###MOTION### nachträglich gelöscht</strong>',
+    'activity_MOTION_PUBLISH'             => '###USER### hat den <strong>Antrag eingereicht</strong>',
+    'activity_AMENDMENT_PUBLISH'          => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### eingereicht</strong>',
+    'activity_AMENDMENT_CHANGE'           => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### überarbeitet</strong>',
+    'activity_AMENDMENT_DELETE'           => '###USER### hat einen <strong>Änderungsantrag ###AMENDMENT### gelöscht</strong>',
+    'activity_AMENDMENT_DELETE_PUBLISHED' => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### nachträglich gelöscht</strong>',
 ];
