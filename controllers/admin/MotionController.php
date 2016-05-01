@@ -135,22 +135,21 @@ class MotionController extends AdminBase
             if ($this->isPostSet('supportCollPolicyFix')) {
                 if ($motionType->policyMotions == IPolicy::POLICY_ALL) {
                     $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
-                    $motionType->save();
                 }
                 $support = $motionType->policySupportMotions;
                 if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
                     $motionType->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
-                    $motionType->save();
                 }
                 if ($motionType->policyAmendments == IPolicy::POLICY_ALL) {
                     $motionType->policyAmendments = IPolicy::POLICY_LOGGED_IN;
-                    $motionType->save();
                 }
                 $support = $motionType->policySupportAmendments;
                 if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
                     $motionType->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
-                    $motionType->save();
                 }
+                $motionType->motionLikesDislikes |= ISupportType::LIKEDISLIKE_SUPPORT;
+                $motionType->amendmentLikesDislikes |= ISupportType::LIKEDISLIKE_SUPPORT;
+                $motionType->save();
                 if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
                     $settings                         = $this->consultation->getSettings();
                     $settings->initiatorConfirmEmails = true;
@@ -165,9 +164,14 @@ class MotionController extends AdminBase
             $createAmend   = ($motionType->policyAmendments == IPolicy::POLICY_ALL);
             $supportMotion = ($supportMotion == IPolicy::POLICY_ALL || $supportMotion == IPolicy::POLICY_NOBODY);
             $supportAmend  = ($supportAmend == IPolicy::POLICY_ALL || $supportAmend == IPolicy::POLICY_NOBODY);
+            $noOffMotion   = (($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) == 0);
+            $noOffAmend    = (($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) == 0);
             $noEmail       = !$this->consultation->getSettings()->initiatorConfirmEmails;
 
-            $supportCollPolicyWarning = ($createMotion || $createAmend || $supportMotion || $supportAmend || $noEmail);
+            $supportCollPolicyWarning = (
+                $createMotion || $createAmend || $supportMotion || $supportAmend || $noEmail ||
+                $noOffMotion || $noOffAmend
+            );
         }
 
         if ($this->isRequestSet('msg') && $this->getRequestValue('msg') == 'created') {
