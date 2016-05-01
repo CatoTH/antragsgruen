@@ -35,16 +35,19 @@ class LayoutHelper
         echo '<li class="' . implode(' ', $classes) . '">';
         echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
         echo '<p class="title">' . "\n";
+
+        $motionUrl = UrlHelper::createMotionUrl($motion);
+        echo '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
+
         echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
         if (!$consultation->getSettings()->hideTitlePrefix && $motion->titlePrefix != '') {
-            $linkOpts = ['class' => 'motionPrefix motionLink' . $motion->id];
-            echo Html::a($motion->titlePrefix, UrlHelper::createMotionUrl($motion), $linkOpts);
+            echo '<span class="motionPrefix">' . Html::encode($motion->titlePrefix) . '</span>';
         }
-        echo ' ';
 
-        $title    = ($motion->title == '' ? '-' : $motion->title);
-        echo '<a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" ' .
-            'class="motionTitle motionLink' . $motion->id . '">' . Html::encode($title) . '</a>';
+        $title = ($motion->title == '' ? '-' : $motion->title);
+        echo ' <span class="motionTitle">' . Html::encode($title) . '</span>';
+
+        echo '</a>';
 
         if ($hasPDF) {
             $html = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
