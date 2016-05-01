@@ -10,8 +10,9 @@ return [
     'Agenda'               => 'Tagesordnung',
     'Other Motions'        => 'Sonstige Anträge',
     'no motions'           => 'Keine Anträge',
-    'email_notifications'  => 'E-Mail-Benachrichtigung bei neuen Anträgen',
-    'notifications'        => 'Benachrichtigungen',
+    'news'                 => 'Neuigkeiten',
+    'email_notifications'  => 'E-Mail-Benachrichtigungen',
+    'activity_log'         => 'Aktivitäten',
     'feed_motions'         => 'Anträge',
     'feed_amendments'      => 'Änderungsanträge',
     'feed_comments'        => 'Kommentare',
@@ -31,4 +32,7 @@ return [
     'sb_comm_to'           => 'Zu',
     'sb_feeds'             => 'Feeds',
     'search_no_query'      => 'Kein Suchbegriff eingegeben',
+
+    'activity_bc'    => 'Aktivitäten',
+    'activity_title' => 'Aktivitäts-Protokoll',
 ];

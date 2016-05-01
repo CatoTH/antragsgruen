@@ -445,6 +445,21 @@ ul.searchResults {
   }
 }
 
+.activityLogPage {
+  .date {
+    float: right;
+    color: gray;
+  }
+  .description {
+    margin-top: 10px;
+  }
+  .deleted {
+    color: gray;
+    //font-weight: normal;
+    font-style: italic;
+  }
+}
+
 @font-face {
   font-family: FontAwesome;
   src: url(../fonts/fontawesome-webfont.eot);

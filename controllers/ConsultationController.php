@@ -18,12 +18,13 @@ use app\models\db\User;
 use app\models\db\UserNotification;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
+use app\models\forms\ConsultationActivityFilterForm;
 use app\models\settings\AntragsgruenApp;
 
 class ConsultationController extends Base
 {
     /**
-     *
+     * @return string
      */
     public function actionSearch()
     {
@@ -49,7 +50,7 @@ class ConsultationController extends Base
 
 
     /**
-     *
+     * @return string
      */
     public function actionFeedmotions()
     {
@@ -75,7 +76,7 @@ class ConsultationController extends Base
     }
 
     /**
-     *
+     * @return string
      */
     public function actionFeedamendments()
     {
@@ -101,7 +102,7 @@ class ConsultationController extends Base
     }
 
     /**
-     *
+     * @return string
      */
     public function actionFeedcomments()
     {
@@ -127,7 +128,7 @@ class ConsultationController extends Base
     }
 
     /**
-     *
+     * @return string
      */
     public function actionFeedall()
     {
@@ -417,5 +418,20 @@ class ConsultationController extends Base
                 'saveUrl'      => $saveUrl,
             ]
         );
+    }
+
+    /**
+     * @param int $page
+     * 
+     * @return string
+     */
+    public function actionActivitylog($page = 0)
+    {
+        $this->layout = 'column2';
+        $this->consultationSidebar($this->consultation);
+
+        $form = new ConsultationActivityFilterForm($this->consultation);
+        $form->setPage($page);
+        return $this->render('activity_log', ['form' => $form]);
     }
 }
