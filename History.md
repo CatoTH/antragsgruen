@@ -2,6 +2,7 @@
 
 ## Version 3.3 [Not yet released]
 
+- There is now a activity page for every consultation, listing all bigger events of this consultation in a timeline.
 - The administration has been split up into three separate parts: the Motion List, the To Do List and the Settings Page
 - Exporting motions and amendments can now be done from the motion list. There now is an option to include or exclude withdrawn motions/amendments
 
