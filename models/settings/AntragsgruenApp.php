@@ -18,7 +18,8 @@ class AntragsgruenApp
     public $multisiteMode         = false;
     public $domainPlain           = 'http://antragsgruen-v3.localhost/';
     public $domainSubdomain       = '';
-    public $hasWurzelwerk         = true;
+    public $hasWurzelwerk         = false;
+    public $hasSaml               = false;
     public $createNeedsWurzelwerk = false;
     public $prependWWWToSubdomain = true;
     public $pdfLogo               = '';

@@ -7,6 +7,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
 use app\components\WurzelwerkAuthClientTest;
+use app\components\WurzelwerkSimplesamlClient;
 use app\models\db\EMailBlacklist;
 use app\models\db\User;
 use app\models\db\UserNotification;
@@ -63,6 +64,38 @@ class UserController extends Base
         } else {
             die('Invalid Code');
         }
+    }
+
+    /**
+     * @param string $backUrl
+     * @return int|string
+     */
+    public function actionLoginsaml($backUrl = '')
+    {
+        /** @var AntragsgruenApp $params */
+        $params = Yii::$app->params;
+        if (!$params->hasSaml) {
+            return 'SAML is not supported';
+        }
+
+        if ($backUrl == '') {
+            $backUrl = \Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
+        }
+
+        try {
+            $samlClient = new WurzelwerkSimplesamlClient();
+            $samlClient->requireAuth();
+
+            $this->loginUser($samlClient->getOrCreateUser());
+            $this->redirect($backUrl);
+        } catch (\Exception $e) {
+            return $this->showErrorpage(
+                500,
+                \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
+            );
+        }
+
+        return '';
     }
 
     /**

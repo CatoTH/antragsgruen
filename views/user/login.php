@@ -71,7 +71,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         <label for="username">' . \Yii::t('user', 'login_username') . ':</label>
             <input class="form-control" name="username" id="username" type="text" autofocus required
             placeholder="' . Html::encode(\Yii::t('user', 'login_email_placeholder')) .
-          '" value="' . Html::encode($preUsername) . '">
+        '" value="' . Html::encode($preUsername) . '">
         </div>
 
         <div class="form-group">
@@ -108,6 +108,50 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
 
 }
 
+
+if ($params->hasSaml) {
+    $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
+    echo '<section class="loginSimplesaml">';
+    if ($hide_ww_login) {
+        echo '<div class="content">
+        <a href="#" onClick="$(\'#admin_login_saml\').toggleClass(\'hidden\'); return false;">Admin-Login</a>
+    </div>
+    <div id="admin_login_saml" class="hidden">';
+    }
+
+    echo '<h2 class="green">Wurzelwerk-Login</h2>
+    <div class="content row">';
+
+    if ($controller->consultation) {
+        $backUrl = UrlHelper::createUrl('consultation/index');
+    } else {
+        $backUrl = UrlHelper::createUrl('manager/index');
+    }
+    $action = UrlHelper::createUrl(['user/loginsaml', 'backUrl' => $backUrl]);
+    echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'samlLoginForm']);
+
+    echo '<button type="submit" class="btn btn-primary" name="samlLogin">
+            <span class="glyphicon glyphicon-log-in"></span> Einloggen
+    </button>';
+
+    echo Html::endForm();
+    echo '<div id="loginSamlHint">
+    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://netz.gruene.de/" umgeleitet,
+    die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-Benutzer*innenname/Passwort
+    eingeben. Dein Wurzelwerk-Passwort bleibt geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
+    <br><br>
+    <a href="https://netz.gruene.de/passwordForgotten.form" class="loginWurzelwerkForgot" target="_blank">
+        Wurzelwerk-Zugangsdaten vergessen?
+    </a>
+        </div>
+</div>';
+
+    if ($hide_ww_login) {
+        echo '</div>';
+    }
+    echo '</section>';
+}
+
 if ($params->hasWurzelwerk) {
     $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
     echo '<section class="loginWurzelwerk">';
@@ -126,7 +170,7 @@ if ($params->hasWurzelwerk) {
     } else {
         $backUrl = UrlHelper::createUrl('manager/index');
     }
-    $action  = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
+    $action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
     echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'wurzelwerkLoginForm']);
 
     echo '<div class="form-group">
