@@ -8,7 +8,7 @@ use app\models\settings\Site as SiteSettings;
 /**
  * @var yii\web\View $this
  * @var LoginUsernamePasswordForm $usernamePasswordForm
- * @var string $msg_err
+ * @var string $backUrl
  */
 
 /** @var \app\controllers\UserController $controller */
@@ -122,15 +122,13 @@ if ($params->hasSaml) {
     echo '<h2 class="green">Wurzelwerk-Login</h2>
     <div class="content row">';
 
-    if ($controller->consultation) {
-        $backUrl = UrlHelper::createUrl('consultation/index');
-    } else {
-        $backUrl = UrlHelper::createUrl('manager/index');
-    }
-    $action = UrlHelper::createUrl(['user/loginsaml', 'backUrl' => $backUrl]);
+    $action = $params->domainPlain . 'user/loginsaml';
     echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'samlLoginForm']);
 
-    echo '<button type="submit" class="btn btn-primary" name="samlLogin">
+    $absoluteBack = UrlHelper::absolutizeLink($backUrl);
+    echo '
+        <input type="hidden" name="backUrl" value="' . Html::encode($absoluteBack) . '">
+        <button type="submit" class="btn btn-primary" name="samlLogin">
             <span class="glyphicon glyphicon-log-in"></span> Einloggen
     </button>';
 
@@ -166,11 +164,11 @@ if ($params->hasWurzelwerk) {
     <div class="content row">';
 
     if ($controller->consultation) {
-        $backUrl = UrlHelper::createUrl('consultation/index');
+        $wwBackUrl = UrlHelper::createUrl('consultation/index');
     } else {
-        $backUrl = UrlHelper::createUrl('manager/index');
+        $wwBackUrl = UrlHelper::createUrl('manager/index');
     }
-    $action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
+    $action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $wwBackUrl]);
     echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'wurzelwerkLoginForm']);
 
     echo '<div class="form-group">

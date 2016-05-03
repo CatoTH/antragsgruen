@@ -7,7 +7,7 @@ use SimpleSAML_Auth_Simple;
 use yii\authclient\ClientInterface;
 use app\models\db\User;
 
-class WurzelwerkSimplesamlClient implements ClientInterface
+class WurzelwerkSamlClient implements ClientInterface
 {
     const PARAM_EMAIL        = 'gmnMail';
     const PARAM_USERNAME     = 'urn:oid:0.9.2342.19200300.100.1.1';

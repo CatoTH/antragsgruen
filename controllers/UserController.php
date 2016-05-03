@@ -7,7 +7,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
 use app\components\WurzelwerkAuthClientTest;
-use app\components\WurzelwerkSimplesamlClient;
+use app\components\WurzelwerkSamlClient;
 use app\models\db\EMailBlacklist;
 use app\models\db\User;
 use app\models\db\UserNotification;
@@ -19,6 +19,7 @@ use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class UserController extends Base
 {
@@ -83,11 +84,39 @@ class UserController extends Base
         }
 
         try {
-            $samlClient = new WurzelwerkSimplesamlClient();
+            $samlClient = new WurzelwerkSamlClient();
             $samlClient->requireAuth();
 
             $this->loginUser($samlClient->getOrCreateUser());
-            $this->redirect($backUrl);
+
+            $url      = parse_url($backUrl);
+            $fullhost = $url['scheme'] . '://' . $url['host'] . '/';
+            if ($params->domainPlain == $fullhost) {
+                $this->redirect($backUrl);
+            } else {
+                $preg = str_replace('<subdomain:[\\w_-]+>', '[\\w_-]+', $params->domainSubdomain);
+                $preg = '/^' . preg_quote($preg, '/') . '$/u';
+                $preg = str_replace('\\[\\\\w_\\-\\]\\+', '(?<subdomain>[\\w_-]+)', $preg);
+                if (!preg_match($preg, $fullhost, $matches)) {
+                    return $this->showErrorpage(
+                        500,
+                        'The target host name (' . $fullhost . ') does
+                        not match the internal domain (' . $params->domainSubdomain . ')'
+                    );
+                }
+
+                $loginId   = User::getCurrentUser()->id;
+                $loginCode = AntiXSS::createToken($loginId);
+
+                $url = Url::to([
+                    'user/loginbyredirecttoken',
+                    'subdomain' => $matches['subdomain'],
+                    'login'     => $loginId,
+                    'login_sec' => $loginCode,
+                    'redirect'  => $backUrl
+                ]);
+                $this->redirect($url);
+            }
         } catch (\Exception $e) {
             return $this->showErrorpage(
                 500,
@@ -211,6 +240,7 @@ class UserController extends Base
         return $this->render(
             'login',
             [
+                'backUrl'              => $backUrl,
                 'usernamePasswordForm' => $usernamePasswordForm,
             ]
         );
@@ -471,7 +501,7 @@ class UserController extends Base
                 EMailBlacklist::removeFromBlacklist($user->email);
             }
 
-            \yii::$app->session->setFlash('success', 'Gespeichert.');
+            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('email_blacklist', [
