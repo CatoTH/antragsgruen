@@ -17,6 +17,7 @@
   "randomSeed": "123456",
   "mailFromName": "Antragsgrün Test",
   "mailFromEmail": "test@antragsgruen.de",
+  "hasWurzelwerk": true,
   "adminUserIds": [
     3
   ]
