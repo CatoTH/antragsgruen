@@ -119,7 +119,7 @@ if ($params->hasSaml) {
     <div id="admin_login_saml" class="hidden">';
     }
 
-    echo '<h2 class="green">Wurzelwerk-Login</h2>
+    echo '<h2 class="green">&quot;Grünes Netz&quot;-Login (Wurzelwerk)</h2>
     <div class="content row">';
 
     $action = $params->domainPlain . 'user/loginsaml';
@@ -135,11 +135,11 @@ if ($params->hasSaml) {
     echo Html::endForm();
     echo '<div id="loginSamlHint">
     <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://netz.gruene.de/" umgeleitet,
-    die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-Benutzer*innenname/Passwort
-    eingeben. Dein Wurzelwerk-Passwort bleibt geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
+    die vom Bundesverband betrieben wird.<br>Dort musst du dein Benutzer*innenname/Passwort des Grünen Netzes
+    (Wurzelwerk) eingeben. Dein Passwort bleibt dabei geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
     <br><br>
     <a href="https://netz.gruene.de/passwordForgotten.form" class="loginWurzelwerkForgot" target="_blank">
-        Wurzelwerk-Zugangsdaten vergessen?
+        Zugangsdaten vergessen?
     </a>
         </div>
 </div>';
@@ -148,9 +148,7 @@ if ($params->hasSaml) {
         echo '</div>';
     }
     echo '</section>';
-}
-
-if ($params->hasWurzelwerk) {
+} elseif ($params->hasWurzelwerk) {
     $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
     echo '<section class="loginWurzelwerk">';
     if ($hide_ww_login) {
