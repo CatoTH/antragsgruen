@@ -5,6 +5,8 @@
 - There is now a activity page for every consultation, listing all bigger events of this consultation in a timeline.
 - The administration has been split up into three separate parts: the Motion List, the To Do List and the Settings Page
 - Exporting motions and amendments can now be done from the motion list. There now is an option to include or exclude withdrawn motions/amendments
+- The social share buttons were moved from the main content to the sidebar
+- Use SimpleSAML instead of OpenID to authenticate against Wurzelwerk / Grünes Netz. OpenID is still supported as legacy system.
 
 ### Version 3.2.3 (2016-04-15)
 

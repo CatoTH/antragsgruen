@@ -7,6 +7,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
 use app\components\WurzelwerkAuthClientTest;
+use app\components\WurzelwerkSamlClient;
 use app\models\db\EMailBlacklist;
 use app\models\db\User;
 use app\models\db\UserNotification;
@@ -18,6 +19,7 @@ use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 class UserController extends Base
 {
@@ -63,6 +65,55 @@ class UserController extends Base
         } else {
             die('Invalid Code');
         }
+    }
+
+    /**
+     * @param string $backUrl
+     * @return int|string
+     */
+    public function actionLoginsaml($backUrl = '')
+    {
+        /** @var AntragsgruenApp $params */
+        $params = Yii::$app->params;
+        if (!$params->hasSaml) {
+            return 'SAML is not supported';
+        }
+
+        if ($backUrl == '') {
+            $backUrl = \Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
+        }
+
+        try {
+            $samlClient = new WurzelwerkSamlClient();
+            $samlClient->requireAuth();
+
+            $this->loginUser($samlClient->getOrCreateUser());
+
+            $subdomain = UrlHelper::getSubdomain($backUrl);
+            if ($subdomain) {
+                $loginId   = User::getCurrentUser()->id;
+                $loginCode = AntiXSS::createToken($loginId);
+
+                $url = Url::to([
+                    'user/loginbyredirecttoken',
+                    'subdomain' => $subdomain,
+                    'login'     => $loginId,
+                    'login_sec' => $loginCode,
+                    'redirect'  => $backUrl
+                ]);
+                $this->redirect($url);
+
+            } else {
+                $this->redirect($backUrl);
+            }
+        } catch (\Exception $e) {
+            return $this->showErrorpage(
+                500,
+                \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
+            );
+        }
+
+        return '';
     }
 
     /**
@@ -178,6 +229,7 @@ class UserController extends Base
         return $this->render(
             'login',
             [
+                'backUrl'              => $backUrl,
                 'usernamePasswordForm' => $usernamePasswordForm,
             ]
         );
@@ -221,11 +273,63 @@ class UserController extends Base
 
     /**
      * @param string $backUrl
+     * @return int|string
+     */
+    private function logoutSaml($backUrl = '')
+    {
+        try {
+            /** @var AntragsgruenApp $params */
+            $params        = Yii::$app->params;
+            $backSubdomain = UrlHelper::getSubdomain($backUrl);
+            $currDomain    = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+            $currSubdomain = UrlHelper::getSubdomain($currDomain);
+
+            if ($currSubdomain) {
+                // First step on the subdomain: logout and redirect to the main domain
+                \Yii::$app->user->logout();
+                $backUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
+                $this->redirect($params->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
+            } elseif ($backSubdomain) {
+                // Second step: we are on the main domain. Logout and redirect to the subdomain
+                $samlClient = new WurzelwerkSamlClient();
+                $samlClient->logout();
+                $this->redirect($backUrl);
+            } else {
+                // No subdomain is involved, local logout on the main domain
+                $samlClient = new WurzelwerkSamlClient();
+                $samlClient->logout();
+                $this->redirect($backUrl);
+            }
+            return '';
+        } catch (\Exception $e) {
+            return $this->showErrorpage(
+                500,
+                \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
+            );
+        }
+    }
+
+
+    /**
+     * @param string $backUrl
+     * @return int|string
      */
     public function actionLogout($backUrl)
     {
-        \Yii::$app->user->logout();
-        $this->redirect($backUrl, 307);
+        /** @var AntragsgruenApp $params */
+        $params = Yii::$app->params;
+
+        if ($backUrl == '') {
+            $backUrl = \Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
+        }
+
+        if ($params->hasSaml) {
+            return $this->logoutSaml($backUrl);
+        } else {
+            \Yii::$app->user->logout();
+            $this->redirect($backUrl, 307);
+            return '';
+        }
     }
 
     /**
@@ -438,7 +542,7 @@ class UserController extends Base
                 EMailBlacklist::removeFromBlacklist($user->email);
             }
 
-            \yii::$app->session->setFlash('success', 'Gespeichert.');
+            \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         return $this->render('email_blacklist', [

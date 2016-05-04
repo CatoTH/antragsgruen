@@ -185,13 +185,28 @@ del.space, ins.space, del.formatting, ins.formatting {
   border: none !important;
 }
 
-#loginWurzelwerkHint {
+#loginWurzelwerkHint, #loginSamlHint, .login_saml .privacyHint {
   border-left: solid 1px #808080;
   padding-left: 10px;
   margin-left: 20px;
   margin-top: 10px;
   font-size: 0.8em;
   overflow: auto;
+}
+
+.login_saml {
+  .privacyHint {
+    border-left: solid 1px #808080;
+    padding-left: 10px;
+    margin-left: 20px;
+    margin-top: 0;
+    font-size: 0.8em;
+    overflow: auto;
+  }
+  .btn {
+    float: left;
+    margin-right: 30px;
+  }
 }
 
 #loginWurzelwerkForgot {

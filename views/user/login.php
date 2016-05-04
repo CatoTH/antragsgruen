@@ -8,7 +8,7 @@ use app\models\settings\Site as SiteSettings;
 /**
  * @var yii\web\View $this
  * @var LoginUsernamePasswordForm $usernamePasswordForm
- * @var string $msg_err
+ * @var string $backUrl
  */
 
 /** @var \app\controllers\UserController $controller */
@@ -71,7 +71,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         <label for="username">' . \Yii::t('user', 'login_username') . ':</label>
             <input class="form-control" name="username" id="username" type="text" autofocus required
             placeholder="' . Html::encode(\Yii::t('user', 'login_email_placeholder')) .
-          '" value="' . Html::encode($preUsername) . '">
+        '" value="' . Html::encode($preUsername) . '">
         </div>
 
         <div class="form-group">
@@ -108,7 +108,47 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
 
 }
 
-if ($params->hasWurzelwerk) {
+
+if ($params->hasSaml) {
+    $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
+    echo '<section class="loginSimplesaml">';
+    if ($hide_ww_login) {
+        echo '<div class="content">
+        <a href="#" onClick="$(\'#admin_login_saml\').toggleClass(\'hidden\'); return false;">Admin-Login</a>
+    </div>
+    <div id="admin_login_saml" class="hidden">';
+    }
+
+    echo '<h2 class="green">&quot;Grünes Netz&quot;-Login (Wurzelwerk)</h2>
+    <div class="content row">';
+
+    $action = $params->domainPlain . 'user/loginsaml';
+    echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'samlLoginForm']);
+
+    $absoluteBack = UrlHelper::absolutizeLink($backUrl);
+    echo '
+        <input type="hidden" name="backUrl" value="' . Html::encode($absoluteBack) . '">
+        <button type="submit" class="btn btn-primary" name="samlLogin">
+            <span class="glyphicon glyphicon-log-in"></span> Einloggen
+    </button>';
+
+    echo Html::endForm();
+    echo '<div id="loginSamlHint">
+    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://netz.gruene.de/" umgeleitet,
+    die vom Bundesverband betrieben wird.<br>Dort musst du dein Benutzer*innenname/Passwort des Grünen Netzes
+    (Wurzelwerk) eingeben. Dein Passwort bleibt dabei geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
+    <br><br>
+    <a href="https://netz.gruene.de/passwordForgotten.form" class="loginWurzelwerkForgot" target="_blank">
+        Zugangsdaten vergessen?
+    </a>
+        </div>
+</div>';
+
+    if ($hide_ww_login) {
+        echo '</div>';
+    }
+    echo '</section>';
+} elseif ($params->hasWurzelwerk) {
     $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
     echo '<section class="loginWurzelwerk">';
     if ($hide_ww_login) {
@@ -122,11 +162,11 @@ if ($params->hasWurzelwerk) {
     <div class="content row">';
 
     if ($controller->consultation) {
-        $backUrl = UrlHelper::createUrl('consultation/index');
+        $wwBackUrl = UrlHelper::createUrl('consultation/index');
     } else {
-        $backUrl = UrlHelper::createUrl('manager/index');
+        $wwBackUrl = UrlHelper::createUrl('manager/index');
     }
-    $action  = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $backUrl]);
+    $action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $wwBackUrl]);
     echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'wurzelwerkLoginForm']);
 
     echo '<div class="form-group">
