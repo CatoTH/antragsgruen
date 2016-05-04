@@ -278,11 +278,29 @@ class UserController extends Base
     private function logoutSaml($backUrl = '')
     {
         try {
-            $samlClient = new WurzelwerkSamlClient();
-            $samlClient->logout();
+            /** @var AntragsgruenApp $params */
+            $params        = Yii::$app->params;
+            $backSubdomain = UrlHelper::getSubdomain($backUrl);
+            $currDomain    = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+            $currSubdomain = UrlHelper::getSubdomain($currDomain);
 
-            UrlHelper::getSubdomain($backUrl); // Triggers an exception if an invalid url is given
-            $this->redirect($backUrl);
+            if ($currSubdomain) {
+                // First step on the subdomain: logout and redirect to the main domain
+                \Yii::$app->user->logout();
+                $backUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
+                $this->redirect($params->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
+            } elseif ($backSubdomain) {
+                // Second step: we are on the main domain. Logout and redirect to the subdomain
+                $samlClient = new WurzelwerkSamlClient();
+                $samlClient->logout();
+                $this->redirect($backUrl);
+            } else {
+                // No subdomain is involved, local logout on the main domain
+                $samlClient = new WurzelwerkSamlClient();
+                $samlClient->logout();
+                $this->redirect($backUrl);
+            }
+            return '';
         } catch (\Exception $e) {
             return $this->showErrorpage(
                 500,
@@ -294,17 +312,23 @@ class UserController extends Base
 
     /**
      * @param string $backUrl
+     * @return int|string
      */
     public function actionLogout($backUrl)
     {
-        \Yii::$app->user->logout();
-
         /** @var AntragsgruenApp $params */
         $params = Yii::$app->params;
+
+        if ($backUrl == '') {
+            $backUrl = \Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
+        }
+
         if ($params->hasSaml) {
-            $this->logoutSaml($backUrl);
+            return $this->logoutSaml($backUrl);
         } else {
+            \Yii::$app->user->logout();
             $this->redirect($backUrl, 307);
+            return '';
         }
     }
 

@@ -185,7 +185,7 @@ class UrlHelper
             } elseif ($params->hasWurzelwerk) {
                 return Url::toRoute(['user/loginwurzelwerk', 'backUrl' => $target_url]);
             } else {
-
+                return '';
             }
         } else {
             return $target_url;
