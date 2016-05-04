@@ -74,7 +74,18 @@ class WurzelwerkSamlClient implements ClientInterface
     }
 
     /**
+     *
+     */
+    public function logout()
+    {
+        if ($this->auth->isAuthenticated()) {
+            $this->auth->logout();
+        }
+    }
+
+    /**
      * @param string $id service id.
+     * @throws Internal
      */
     public function setId($id)
     {
@@ -83,6 +94,7 @@ class WurzelwerkSamlClient implements ClientInterface
 
     /**
      * @return string service id
+     * @throws Internal
      */
     public function getId()
     {
@@ -91,6 +103,7 @@ class WurzelwerkSamlClient implements ClientInterface
 
     /**
      * @return string service name.
+     * @throws Internal
      */
     public function getName()
     {
@@ -99,6 +112,7 @@ class WurzelwerkSamlClient implements ClientInterface
 
     /**
      * @param string $name service name.
+     * @throws Internal
      */
     public function setName($name)
     {
@@ -107,6 +121,7 @@ class WurzelwerkSamlClient implements ClientInterface
 
     /**
      * @return string service title.
+     * @throws Internal
      */
     public function getTitle()
     {
@@ -123,6 +138,7 @@ class WurzelwerkSamlClient implements ClientInterface
 
     /**
      * @return array list of user attributes
+     * @throws Internal
      */
     public function getUserAttributes()
     {
@@ -131,6 +147,7 @@ class WurzelwerkSamlClient implements ClientInterface
 
     /**
      * @return array view options in format: optionName => optionValue
+     * @throws Internal
      */
     public function getViewOptions()
     {

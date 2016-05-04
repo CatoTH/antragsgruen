@@ -8,6 +8,8 @@ use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\Site;
+use app\models\exceptions\FormError;
+use app\models\settings\AntragsgruenApp;
 use Yii;
 use yii\helpers\Url;
 
@@ -172,9 +174,19 @@ class UrlHelper
      */
     public static function createWurzelwerkLoginUrl($route)
     {
+        /** @var \app\models\settings\AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+
         $target_url = Url::toRoute($route);
+
         if (Yii::$app->user->isGuest) {
-            return Url::toRoute(['user/loginwurzelwerk', 'backUrl' => $target_url]);
+            if ($params->hasSaml) {
+                return Url::toRoute(['user/loginsaml', 'backUrl' => $target_url]);
+            } elseif ($params->hasWurzelwerk) {
+                return Url::toRoute(['user/loginwurzelwerk', 'backUrl' => $target_url]);
+            } else {
+
+            }
         } else {
             return $target_url;
         }
@@ -239,5 +251,36 @@ class UrlHelper
                 '#'           => 'comm' . $amendmentComment->id
             ]
         );
+    }
+
+    /**
+     * Returns the subdomain or null, if this is the main domain
+     * Throws an error if the given URL does not belong to the current system (hacking attempt?)
+     *
+     * @param string $url
+     * @return string|null
+     * @throws FormError
+     */
+    public static function getSubdomain($url)
+    {
+        /** @var AntragsgruenApp $params */
+        $params = Yii::$app->params;
+
+        $urlParts = parse_url($url);
+        $scheme   = (isset($urlParts['scheme']) ? $urlParts['scheme'] : $_SERVER['REQUEST_SCHEME']);
+        $host     = (isset($urlParts['host']) ? $urlParts['host'] : $_SERVER['HTTP_HOST']);
+        $fullhost = $scheme . '://' . $host . '/';
+        if ($params->domainPlain == $fullhost) {
+            return null;
+        } else {
+            $preg = str_replace('<subdomain:[\\w_-]+>', '[\\w_-]+', $params->domainSubdomain);
+            $preg = '/^' . preg_quote($preg, '/') . '$/u';
+            $preg = str_replace('\\[\\\\w_\\-\\]\\+', '(?<subdomain>[\\w_-]+)', $preg);
+            if (preg_match($preg, $fullhost, $matches)) {
+                return $matches['subdomain'];
+            } else {
+                throw new FormError('Unknown domain: ' . $urlParts['host']);
+            }
+        }
     }
 }

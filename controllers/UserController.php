@@ -89,33 +89,22 @@ class UserController extends Base
 
             $this->loginUser($samlClient->getOrCreateUser());
 
-            $url      = parse_url($backUrl);
-            $fullhost = $url['scheme'] . '://' . $url['host'] . '/';
-            if ($params->domainPlain == $fullhost) {
-                $this->redirect($backUrl);
-            } else {
-                $preg = str_replace('<subdomain:[\\w_-]+>', '[\\w_-]+', $params->domainSubdomain);
-                $preg = '/^' . preg_quote($preg, '/') . '$/u';
-                $preg = str_replace('\\[\\\\w_\\-\\]\\+', '(?<subdomain>[\\w_-]+)', $preg);
-                if (!preg_match($preg, $fullhost, $matches)) {
-                    return $this->showErrorpage(
-                        500,
-                        'The target host name (' . $fullhost . ') does
-                        not match the internal domain (' . $params->domainSubdomain . ')'
-                    );
-                }
-
+            $subdomain = UrlHelper::getSubdomain($backUrl);
+            if ($subdomain) {
                 $loginId   = User::getCurrentUser()->id;
                 $loginCode = AntiXSS::createToken($loginId);
 
                 $url = Url::to([
                     'user/loginbyredirecttoken',
-                    'subdomain' => $matches['subdomain'],
+                    'subdomain' => $subdomain,
                     'login'     => $loginId,
                     'login_sec' => $loginCode,
                     'redirect'  => $backUrl
                 ]);
                 $this->redirect($url);
+
+            } else {
+                $this->redirect($backUrl);
             }
         } catch (\Exception $e) {
             return $this->showErrorpage(
@@ -284,11 +273,39 @@ class UserController extends Base
 
     /**
      * @param string $backUrl
+     * @return int|string
+     */
+    private function logoutSaml($backUrl = '')
+    {
+        try {
+            $samlClient = new WurzelwerkSamlClient();
+            $samlClient->logout();
+
+            UrlHelper::getSubdomain($backUrl); // Triggers an exception if an invalid url is given
+            $this->redirect($backUrl);
+        } catch (\Exception $e) {
+            return $this->showErrorpage(
+                500,
+                \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
+            );
+        }
+    }
+
+
+    /**
+     * @param string $backUrl
      */
     public function actionLogout($backUrl)
     {
         \Yii::$app->user->logout();
-        $this->redirect($backUrl, 307);
+
+        /** @var AntragsgruenApp $params */
+        $params = Yii::$app->params;
+        if ($params->hasSaml) {
+            $this->logoutSaml($backUrl);
+        } else {
+            $this->redirect($backUrl, 307);
+        }
     }
 
     /**
