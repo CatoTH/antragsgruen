@@ -8,6 +8,7 @@
 - The social share buttons were moved from the main content to the sidebar
 - Use SimpleSAML instead of OpenID to authenticate against Wurzelwerk / Grünes Netz. OpenID is still supported as legacy system
 - A (very basic) user list to the admin page
+- Bugfix: Inserted / Deleted paragraphs were not formatted as such in the OpenDocument-Export
 
 ### Version 3.2.3 (2016-04-15)
 
