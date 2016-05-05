@@ -34,6 +34,7 @@ return [
     'index_site_access'           => 'Login / Users / Admins',
     'index_site_consultations'    => 'Manage more consultations on this subdomain',
     'index_site_config'           => 'Configuration of this Antragsgrün-Installation',
+    'index_site_user_list'        => 'Registered users',
     'index_sys_admin'             => 'System-Configuration',
     'index_flush_caches'          => 'Flush System Caches',
     'index_flushed_cached'        => 'All caches have been flushed',
@@ -288,4 +289,10 @@ Bye,
     'motion_type_like_support'    => 'Official support',
     'help_page_create'            => 'Create a help-page',
     'con_title'                   => 'Consultation-Settings',
+
+    'users_head'       => 'Registered users',
+    'users_bc'         => 'Users',
+    'users_name'       => 'Name',
+    'users_auth'       => 'Authentification',
+    'users_registered' => 'Registered',
 ];

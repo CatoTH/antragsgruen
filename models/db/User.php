@@ -616,7 +616,7 @@ class User extends ActiveRecord implements IdentityInterface
                 return 'E-Mail: ' . $authparts[1];
             case 'openid':
                 if ($this->isWurzelwerkUser()) {
-                    return 'Wurzelwerk: ' . $this->getWurzelwerkName();
+                    return 'Grünes Netz: ' . $this->getWurzelwerkName();
                 } else {
                     return $this->auth;
                 }

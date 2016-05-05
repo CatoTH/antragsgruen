@@ -219,6 +219,7 @@ class ManagerController extends Base
     }
 
     /**
+     * @return string
      */
     public function actionSiteconfig()
     {
@@ -298,6 +299,7 @@ class ManagerController extends Base
     }
 
     /**
+     * @return string
      */
     public function actionAntragsgrueninit()
     {
@@ -435,6 +437,7 @@ class ManagerController extends Base
     }
 
     /**
+     * @return string
      */
     public function actionPaymentadmin()
     {
@@ -458,5 +461,19 @@ class ManagerController extends Base
         }
 
         return $this->render('payment_admin', ['sites' => $sites]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionUserlist()
+    {
+        if (!User::currentUserIsSuperuser()) {
+            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+        }
+
+        $users = User::find()->orderBy('dateCreation DESC')->all();
+
+        return $this->render('userlist', ['users' => $users]);
     }
 }
