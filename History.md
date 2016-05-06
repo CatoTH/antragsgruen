@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.3 [Not yet released]
+## Version 3.3 (2016-05-06)
 
 - There is now a activity page for every consultation, listing all bigger events of this consultation in a timeline
 - The administration has been split up into three separate parts: the Motion List, the To Do List and the Settings Page
