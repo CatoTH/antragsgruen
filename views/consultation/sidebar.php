@@ -123,7 +123,7 @@ if ($showCreate) {
 $html = '<div><ul class="nav nav-list"><li class="nav-header">' .
     Yii::t('con', 'news') . '</li>';
 
-$title = '<span class="icon fontello-globe"></span>' . Yii::t('con', 'activity_log');
+$title = '<span class="fontello fontello-globe"></span>' . Yii::t('con', 'activity_log');
 $link  = UrlHelper::createUrl('consultation/activitylog');
 $html .= '<li class="activitylog">' . Html::a($title, $link) . '</li>';
 
@@ -226,7 +226,7 @@ if ($consultation->getSettings()->showFeeds) {
     if ($hasMotions) {
         $feedUrl = UrlHelper::createUrl('consultation/feedmotions');
         $link    = Html::a(
-            '<span class="icon fontello-rss-squared"></span>' . Yii::t('con', 'feed_motions'),
+            '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feed_motions'),
             $feedUrl, ['class' => 'feedMotions']
         );
         $feedsHtml .= '<li>' . $link . '</li>';
@@ -237,7 +237,7 @@ if ($consultation->getSettings()->showFeeds) {
     if ($hasAmendments) {
         $feedUrl = UrlHelper::createUrl('consultation/feedamendments');
         $link    = Html::a(
-            '<span class="icon fontello-rss-squared"></span>' . Yii::t('con', 'feed_amendments'),
+            '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feed_amendments'),
             $feedUrl, ['class' => 'feedAmendments']
         );
         $feedsHtml .= '<li>' . $link . '</li>';
@@ -248,7 +248,7 @@ if ($consultation->getSettings()->showFeeds) {
     if ($hasComments) {
         $feedUrl = UrlHelper::createUrl('consultation/feedcomments');
         $link    = Html::a(
-            '<span class="icon fontello-rss-squared"></span>' . Yii::t('con', 'feed_comments'),
+            '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feed_comments'),
             $feedUrl, ['class' => 'feedComments']
         );
         $feedsHtml .= '<li>' . $link . '</li>';
@@ -259,7 +259,7 @@ if ($consultation->getSettings()->showFeeds) {
     if ($feeds > 1) {
         $feedUrl = UrlHelper::createUrl('consultation/feedall');
         $link    = Html::a(
-            '<span class="icon fontello-rss-squared"></span>' . Yii::t('con', 'feed_all'),
+            '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feed_all'),
             $feedUrl, ['class' => 'feedAll']
         );
         $feedsHtml .= '<li>' . $link . '</li>';
