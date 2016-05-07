@@ -592,4 +592,22 @@ class LayoutHelper
 
         return $doc->finishAndGetDocument();
     }
+
+    /**
+     * @param string $url
+     * @param string $title
+     * @return string
+     */
+    public static function getShareButtons($url, $title) {
+        $twitter = Html::encode('https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url));
+        $facebook = Html::encode('https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url));
+        return '<div class="share_buttons"><ul>
+              <li class="twitter"><a href="' . $twitter . '" rel="popup" title="Bei Twitter teilen">
+                 <span class="icon fontello-twitter"></span> <span class="share_text">tweet</span>
+              </a></li>
+              <li class="facebook"><a href="' . $facebook . '" rel="popup" title="Bei Facebook teilen">
+                  <span class="icon fontello-facebook"></span> <span class="share_text">teilen</span>
+              </a></li>
+            </ul></div>';
+    }
 }

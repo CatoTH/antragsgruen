@@ -22,7 +22,6 @@
     "tecnickcom/tcpdf": "^6.2",
     "slm/mail": "^1.6.0",
     "tijsverkoyen/css-to-inline-styles": "*",
-    "heise/shariff": "^5.2",
     "phpoffice/phpexcel": "^1.8.1",
     "catoth/html2opendocument": "0.5",
     "simplesamlphp/simplesamlphp": "^1.14.3",
@@ -32,7 +31,6 @@
     "bower-asset/bootbox": "*",
     "bower-asset/es5-shim": "*",
     "bower-asset/typeahead.js": "*",
-    "bower-asset/shariff": "*",
     "bower-asset/intl": "*",
     "bower-asset/pdfjs-dist": "*"
   },

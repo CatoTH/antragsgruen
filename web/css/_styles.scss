@@ -483,24 +483,6 @@ ul.searchResults {
   font-style: normal
 }
 
-@media only screen and (min-width: 640px) {
-  .shariff .orientation-horizontal.col-2 li {
-    max-width: 204px !important;
-  }
-}
-
-.shariff {
-  .theme-white .twitter a, .theme-white .twitter a:link, .theme-white .twitter a:visited {
-    color: #247bbd;
-  }
-  .theme-white .facebook a, .theme-white .facebook a:link, .theme-white .facebook a:visited {
-    color: #247bbd;
-  }
-  li {
-    width: 106px;
-  }
-}
-
 .fuelux {
   .pillbox > .pill-group {
     list-style-type: none;

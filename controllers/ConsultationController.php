@@ -360,30 +360,6 @@ class ConsultationController extends Base
     }
 
     /**
-     * @param string $url
-     * @return string
-     */
-    public function actionShariffbackend($url)
-    {
-        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
-        try {
-            $shariff = new \Heise\Shariff\Backend([
-                'domain'   => $_SERVER['HTTP_HOST'],
-                'services' => ['Facebook'],
-                'cache'    => [
-                    'ttl'      => 60,
-                    'cacheDir' => $this->getParams()->tmpDir,
-                ]
-            ]);
-            return json_encode($shariff->get($url));
-        } catch (\Exception $e) {
-            return json_encode([]);
-        }
-    }
-
-
-    /**
      * @return string
      */
     public function actionIndex()

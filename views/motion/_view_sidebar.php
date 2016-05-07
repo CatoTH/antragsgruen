@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\policies\IPolicy;
+use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -107,15 +108,9 @@ $sidebarRows++;
 $html .= '</ul>';
 
 if ($motion->isSocialSharable() && count($replacedByMotions) == 0) {
-    $layout->loadShariff();
-    $shariffBackend = UrlHelper::createUrl('consultation/shariffbackend');
     $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-    $lang           = Yii::$app->language;
     $dataTitle      = $motion->getTitleWithPrefix();
-    $html .= '</div><div class="hidden-xs"><div class="shariff" data-backend-url="' . Html::encode($shariffBackend) . '"
-           data-theme="white" data-url="' . Html::encode($myUrl) . '"
-           data-services="[&quot;twitter&quot;, &quot;facebook&quot;]"
-           data-lang="' . Html::encode($lang) . '" data-title="' . Html::encode($dataTitle) . '"></div>';
+    $html .= '</div><div class="hidden-xs">' . LayoutHelper::getShareButtons($myUrl, $dataTitle) . '</div>';
     $sidebarRows++;
 }
 

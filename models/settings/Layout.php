@@ -210,14 +210,6 @@ class Layout
     }
 
     /**
-     */
-    public function loadShariff()
-    {
-        $this->addJS('js/bower/shariff/build/shariff.min.js');
-        $this->addCSS('js/bower/shariff/build/shariff.min.css');
-    }
-
-    /**
      * @param string $htmlId
      * @return string
      */
