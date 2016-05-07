@@ -1,5 +1,10 @@
 # Version history
 
+## Version 3.3.1 (2016-05-07)
+
+- Remove the "motion/"- and "amendment/"-parts from the URLs
+- Replace Shariff by a custom sharing widget, saving HTTP Requests
+
 ## Version 3.3 (2016-05-06)
 
 - There is now a activity page for every consultation, listing all bigger events of this consultation in a timeline
