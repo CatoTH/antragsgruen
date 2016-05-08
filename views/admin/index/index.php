@@ -79,6 +79,14 @@ echo '</li>';
 if (User::currentUserIsSuperuser()) {
     echo '<li>';
     echo Html::a(
+        \Yii::t('admin', 'index_site_user_list'),
+        UrlHelper::createUrl('manager/userlist'),
+        ['class' => 'siteUserList']
+    );
+    echo '</li>';
+
+    echo '<li>';
+    echo Html::a(
         \Yii::t('admin', 'index_site_config'),
         UrlHelper::createUrl('manager/siteconfig'),
         ['class' => 'siteConfigLink']

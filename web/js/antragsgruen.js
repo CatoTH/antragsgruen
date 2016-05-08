@@ -974,6 +974,13 @@ function __t(category, str) {
                 }
             });
         });
+        
+        $(".share_buttons a").click(function(ev) {
+            var target = $(this).attr("href");
+            if (window.open(target, '_blank', 'width=600,height=460')) {
+                ev.preventDefault();
+            }
+        });
     };
 
     var amendmentShow = function () {
@@ -991,6 +998,13 @@ function __t(category, str) {
                     form.submit();
                 }
             });
+        });
+
+        $(".share_buttons a").click(function(ev) {
+            var target = $(this).attr("href");
+            if (window.open(target, '_blank', 'width=600,height=460')) {
+                ev.preventDefault();
+            }
         });
     };
 

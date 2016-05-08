@@ -185,13 +185,28 @@ del.space, ins.space, del.formatting, ins.formatting {
   border: none !important;
 }
 
-#loginWurzelwerkHint {
+#loginWurzelwerkHint, #loginSamlHint, .login_saml .privacyHint {
   border-left: solid 1px #808080;
   padding-left: 10px;
   margin-left: 20px;
   margin-top: 10px;
   font-size: 0.8em;
   overflow: auto;
+}
+
+.login_saml {
+  .privacyHint {
+    border-left: solid 1px #808080;
+    padding-left: 10px;
+    margin-left: 20px;
+    margin-top: 0;
+    font-size: 0.8em;
+    overflow: auto;
+  }
+  .btn {
+    float: left;
+    margin-right: 30px;
+  }
 }
 
 #loginWurzelwerkForgot {
@@ -445,27 +460,27 @@ ul.searchResults {
   }
 }
 
+.activityLogPage {
+  .date {
+    float: right;
+    color: gray;
+  }
+  .description {
+    margin-top: 10px;
+  }
+  .deleted {
+    color: gray;
+    //font-weight: normal;
+    font-style: italic;
+  }
+}
+
 @font-face {
   font-family: FontAwesome;
   src: url(../fonts/fontawesome-webfont.eot);
   src: url(../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0) format('embedded-opentype'), url(../fonts/fontawesome-webfont.woff2) format('woff2'), url(../fonts/fontawesome-webfont.woff) format('woff'), url(../fonts/fontawesome-webfont.ttf) format('truetype'), url(../fonts/fontawesome-webfont.svg#fontawesomeregular) format('svg');
   font-weight: 400;
   font-style: normal
-}
-
-@media only screen and (min-width: 640px) {
-  .shariff .orientation-horizontal.col-2 li {
-    max-width: 204px !important;
-  }
-}
-
-.shariff {
-  .theme-white .twitter a, .theme-white .twitter a:link, .theme-white .twitter a:visited {
-    color: #247bbd;
-  }
-  .theme-white .facebook a, .theme-white .facebook a:link, .theme-white .facebook a:visited {
-    color: #247bbd;
-  }
 }
 
 .fuelux {

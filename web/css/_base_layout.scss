@@ -269,3 +269,13 @@ html.no-touchevents .hoverHolder {
     }
   }
 }
+
+.antragsgruen-content {
+  // Amendment-Markers at the side of a motion should be above the sidebar in case of a collission
+  > main {
+    z-index: 1;
+  }
+  > aside {
+    z-index: 0;
+  }
+}

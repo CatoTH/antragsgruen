@@ -35,6 +35,7 @@ return [
     'index_site_access'           => 'Login / Benutzer*innen / Admins',
     'index_site_consultations'    => 'Weitere Veranstaltungen anlegen / verwalten',
     'index_site_config'           => 'Konfiguration der Antragsgrün-Installation',
+    'index_site_user_list'        => 'Registrierte Benutzer*innen',
     'index_sys_admin'             => 'System-Konfiguration',
     'index_flush_caches'          => 'Alle System-Caches leeren',
     'index_flushed_cached'        => 'Die Caches wurden geleert',
@@ -303,4 +304,10 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'support_coll_policy_fix'     => 'Einstellungen so setzen',
     'help_page_create'            => 'Hilfe-Seite anlegen',
     'con_title'                   => 'Veranstaltungs-Einstellungen',
+
+    'users_head'       => 'Registrierte Benutzer*innen',
+    'users_bc'         => 'Benutzer*innen',
+    'users_name'       => 'Name',
+    'users_auth'       => 'Anmeldedaten',
+    'users_registered' => 'Registriert',
 ];

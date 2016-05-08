@@ -23,6 +23,7 @@ $I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>This is my
 $I->wait(0.3);
 $I->fillField('#initiatorPrimaryName', 'My Name');
 $I->fillField('#initiatorEmail', 'test@example.org');
+$I->wait(0.3);
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 

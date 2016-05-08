@@ -14,6 +14,9 @@ $this->title = 'Antragsgrün - die grüne Online-Antragsverwaltung';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 
+/** @var \app\models\settings\AntragsgruenApp $params */
+$params = \Yii::$app->params;
+
 ?>
 <h1>Antragsgrün - das grüne Antragstool</h1>
 
@@ -86,53 +89,58 @@ echo '<h2 id="selbst_nutzen" class="green">Antragsgrün nutzen</h2>
 
 <p>Antragsgrün ist <strong><a href="#opensource" onClick="$(\'#opensource\').scrollintoview({top_offset: -50}); return false;">OpenSource-Software</a></strong>
 und kann von jeder und jedem frei genutzt werden, sowohl um an Diskussionen teilzunehmen, als auch um eigene Programm-/Antragsdiskussionen einzurichten.</p>
-<p>Grünen bzw. Grünen-nahen Organisationen bieten wir an, sich eine <strong>Unterseite auf antransgruen.de</strong> einzurichten und dort ihre Parteitage / Programmdiskussionen zu organisieren. Dazu kannst du das Formular unter "<a href="#opensource" onClick="$(\'#asGreenMember\').scrollintoview({top_offset: -50}); return false;">Als Grünen-Mitglied nutzen</a>" nutzen und es dir innerhalb von zwei, drei Minuten selbst einrichten - kostenlos (wobei wir uns über einen kleinen freiwilligen Beitrag zum Betrieb und der Weiterentwicklung freuen würden). Benötigt wird nur ein Wurzelwerk-Zugang.</p>
+<p>Grünen bzw. Grünen-nahen Organisationen bieten wir an, sich eine <strong>Unterseite auf antransgruen.de</strong> einzurichten und dort ihre Parteitage / Programmdiskussionen zu organisieren.
+Dazu kannst du das Formular unter "<a href="#opensource" onClick="$(\'#asGreenMember\').scrollintoview({top_offset: -50}); return false;">Als Grünen-Mitglied nutzen</a>" nutzen und es dir innerhalb von zwei, drei Minuten selbst einrichten - kostenlos (wobei wir uns über einen kleinen freiwilligen Beitrag zum Betrieb und der Weiterentwicklung freuen würden).
+Benötigt wird nur ein Zugang beim Grünen Netz bzw. beim Wurzelwerk.</p>
 <p>Sind speziellere <strong>programmiertechnische Anpassungen</strong> nötig, oder sollen wir Antragsgrün auf einer <strong>eigenen Domain</strong> hosten, können wir diese auf Stundensatzbasis umsetzen. Bei Fragen und Wünschen sind wir immer
 <a href="#wer" onClick="$(\'#wer\').scrollintoview({top_offset: -50}); return false;">erreichbar</a>.
-</div>
+</div>';
 
-<h2 class="green" id="asGreenMember">Als Grünen-Mitglied nutzen</h2>
+if ($params->hasWurzelwerk || $params->hasSaml) {
+    echo '<h2 class="green" id="asGreenMember">Als Grünen-Mitglied nutzen</h2>
 <div class="content infoSite">';
 
-if (User::getCurrentUser()) {
-    $url = Html::encode(UrlHelper::createUrl('manager/createsite'));
-    echo '<form method="GET" action="' . $url . '" class="siteCreateForm">
+    if (User::getCurrentUser()) {
+        $url = Html::encode(UrlHelper::createUrl('manager/createsite'));
+        echo '<form method="GET" action="' . $url . '" class="siteCreateForm">
         <button type="submit" class="btn btn-success">
         <span class="glyphicon glyphicon-chevron-right"></span> Seite anlegen</button></form>';
-} else {
-    echo Html::beginForm(
-        UrlHelper::createWurzelwerkLoginUrl('manager/createsite'),
-        'post',
-        [
-            'class' => 'form-inline',
-            'style' => 'margin-top: 20px;'
-        ]
-    );
-    echo '
+    } else {
+        echo Html::beginForm(
+            UrlHelper::createWurzelwerkLoginUrl('manager/createsite'),
+            'post',
+            [
+                'class' => 'form-inline login_' . ($params->hasSaml ? 'saml' : 'openid'),
+                'style' => 'margin-top: 20px;'
+            ]
+        );
+        echo '
         Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
-    Wurzelwerk-Account ein.<br><br>
-<div class="form-group">
+    &quot;Grünes Netz&quot;-Account (Wurzelwerk) ein.<br><br>';
+        if ($params->hasWurzelwerk && !$params->hasSaml) {
+            echo '<div class="form-group">
         <label for="wwoauth" style="vertical-align: top; margin-top: 5px;">
-            Wurzelwerk-Benutzer*innenname<br>
+            Benutzer*innenname<br>
             <a href="https://netz.gruene.de/passwordForgotten.form" target="_blank" style="font-size: 0.8em;
             margin-top: -7px; display: inline-block; margin-bottom: 10px; font-weight: normal;">
-                Wurzelwerk-Zugangsdaten vergessen?</a>
+                -Zugangsdaten vergessen?</a>
         </label>
         <input type="text" class="form-control" id="wwoauth" name="username" placeholder="Jane Doe">
-    </div>
-    <button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
+    </div>';
+        }
+        echo '<button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
 
-    echo '<div class="privacyHint"><strong>Erklärung / Datenschutz:</strong><br>
+        echo '<div class="privacyHint"><strong>Erklärung / Datenschutz:</strong><br>
 Du wirst, nachdem du hier deinen Benutzer*innenname eingegeben hast, auf eine "OpenID"-Seite umgeleitet, die vom
-grünen Bundesverband betrieben wird (Adresse im Browser: https://service.gruene.de). Dort wirst du (ggf. auf
-englisch) aufgefordert, deinen Wurzelwerk-Benutzer*innenname und -Passwort einzugeben. Diese Seite bestätigt
+grünen Bundesverband betrieben wird (Adresse im Browser: https://service.gruene.de). Dort wirst du aufgefordert,
+deinen Benutzer*innenname und -Passwort des Grünen Netzes einzugeben. Diese Seite bestätigt
 gegenüber Antragsgrün, dass du Parteimitglied bist und leitet deinen Namen und E-Mail-Adresse weiter - nicht
-aber das Wurzelwerk-Passwort.</div>';
+aber das Passwort.</div>';
 
-    echo Html::endForm();
+        echo Html::endForm();
+    }
+    echo '</div>';
 }
-echo '</div>';
-
 ?>
 <h2 id="wer" class="green">Kontakt</h2>
 

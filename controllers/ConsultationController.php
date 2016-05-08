@@ -18,12 +18,13 @@ use app\models\db\User;
 use app\models\db\UserNotification;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
+use app\models\forms\ConsultationActivityFilterForm;
 use app\models\settings\AntragsgruenApp;
 
 class ConsultationController extends Base
 {
     /**
-     *
+     * @return string
      */
     public function actionSearch()
     {
@@ -49,7 +50,7 @@ class ConsultationController extends Base
 
 
     /**
-     *
+     * @return string
      */
     public function actionFeedmotions()
     {
@@ -75,7 +76,7 @@ class ConsultationController extends Base
     }
 
     /**
-     *
+     * @return string
      */
     public function actionFeedamendments()
     {
@@ -101,7 +102,7 @@ class ConsultationController extends Base
     }
 
     /**
-     *
+     * @return string
      */
     public function actionFeedcomments()
     {
@@ -127,7 +128,7 @@ class ConsultationController extends Base
     }
 
     /**
-     *
+     * @return string
      */
     public function actionFeedall()
     {
@@ -359,30 +360,6 @@ class ConsultationController extends Base
     }
 
     /**
-     * @param string $url
-     * @return string
-     */
-    public function actionShariffbackend($url)
-    {
-        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
-        try {
-            $shariff = new \Heise\Shariff\Backend([
-                'domain'   => $_SERVER['HTTP_HOST'],
-                'services' => ['Facebook'],
-                'cache'    => [
-                    'ttl'      => 60,
-                    'cacheDir' => $this->getParams()->tmpDir,
-                ]
-            ]);
-            return json_encode($shariff->get($url));
-        } catch (\Exception $e) {
-            return json_encode([]);
-        }
-    }
-
-
-    /**
      * @return string
      */
     public function actionIndex()
@@ -419,5 +396,20 @@ class ConsultationController extends Base
                 'saveUrl'      => $saveUrl,
             ]
         );
+    }
+
+    /**
+     * @param int $page
+     * 
+     * @return string
+     */
+    public function actionActivitylog($page = 0)
+    {
+        $this->layout = 'column2';
+        $this->consultationSidebar($this->consultation);
+
+        $form = new ConsultationActivityFilterForm($this->consultation);
+        $form->setPage($page);
+        return $this->render('activity_log', ['form' => $form]);
     }
 }

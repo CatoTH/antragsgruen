@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\AntiXSS;
+use app\components\HTMLTools;
 use app\components\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\Site;
@@ -54,24 +55,15 @@ class ManagerController extends Base
             }
         }
 
-        $encodeWithShy = function ($title) {
-            $title     = Html::encode($title);
-            $shyAfters = ['itglieder', 'enden', 'voll', 'undex', 'gierten', 'wahl', 'andes'];
-            foreach ($shyAfters as $shyAfter) {
-                $title = str_replace($shyAfter, $shyAfter . '&shy;', $title);
-            }
-            return $title;
-        };
-
         $sitesCurrent = $this->getParams()->getBehaviorClass()->getManagerCurrentSidebarSites($sitesCurrent);
         $html         = '<ul class="nav nav-list current-uses-list">';
         $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
         foreach ($sitesCurrent as $data) {
             $html .= '<li>';
             if ($data['organization'] != '') {
-                $html .= '<span class="orga">' . $encodeWithShy($data['organization']) . '</span>';
+                $html .= '<span class="orga">' . HTMLTools::encodeAddShy($data['organization']) . '</span>';
             }
-            $html .= Html::a($encodeWithShy($data['title']), $data['url']) . '</li>' . "\n";
+            $html .= Html::a(HTMLTools::encodeAddShy($data['title']), $data['url']) . '</li>' . "\n";
         }
         $html .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
@@ -87,9 +79,9 @@ class ManagerController extends Base
         foreach ($sitesOld as $data) {
             $html .= '<li class="hidden">';
             if ($data['organization'] != '') {
-                $html .= '<span class="orga">' . $encodeWithShy($data['organization']) . '</span>';
+                $html .= '<span class="orga">' . HTMLTools::encodeAddShy($data['organization']) . '</span>';
             }
-            $html .= Html::a($encodeWithShy($data['title']), $data['url']) . '</li>' . "\n";
+            $html .= Html::a(HTMLTools::encodeAddShy($data['title']), $data['url']) . '</li>' . "\n";
         }
         $html .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
@@ -229,6 +221,7 @@ class ManagerController extends Base
     }
 
     /**
+     * @return string
      */
     public function actionSiteconfig()
     {
@@ -308,6 +301,7 @@ class ManagerController extends Base
     }
 
     /**
+     * @return string
      */
     public function actionAntragsgrueninit()
     {
@@ -445,6 +439,7 @@ class ManagerController extends Base
     }
 
     /**
+     * @return string
      */
     public function actionPaymentadmin()
     {
@@ -468,5 +463,19 @@ class ManagerController extends Base
         }
 
         return $this->render('payment_admin', ['sites' => $sites]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionUserlist()
+    {
+        if (!User::currentUserIsSuperuser()) {
+            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+        }
+
+        $users = User::find()->orderBy('dateCreation DESC')->all();
+
+        return $this->render('userlist', ['users' => $users]);
     }
 }

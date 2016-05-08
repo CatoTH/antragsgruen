@@ -4,21 +4,23 @@
  * @var app\models\settings\AntragsgruenApp $params
  */
 
-$dom       = $params->domainSubdomain;
-$domv      = $dom . '<consultationPath:[\w_-]+>/';
-$domadmin  = $domv . 'admin/';
-$dommotion = $domv . 'motion/<motionSlug:[^\/]+>';
-$domamend  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
+$dom          = $params->domainSubdomain;
+$domv         = $dom . '<consultationPath:[\w_-]+>/';
+$domadmin     = $domv . 'admin/';
+$dommotion    = $domv . '<motionSlug:[^\/]+\-\d+>';
+$domamend     = $domv . '<motionSlug:[^\/]+[^\/]+\-\d+>/<amendmentId:\d+>';
+$dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
+$domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
-$consultationPaths = 'help|search|savetextajax|maintainance|notifications|shariffbackend';
+$consultationPaths = 'help|search|savetextajax|maintainance|notifications|activitylog|shariffbackend';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
 $motionPaths = 'createconfirm|edit|pdf|odt|plainhtml|consolidated|mergeamendments|mergeamendmentconfirm|withdraw';
 $motionPaths .= '|viewimage|viewpdf|embeddedpdf';
 $amendPaths = 'pdf|odt|createconfirm|edit|withdraw';
 $userPaths  = 'login|logout|confirmregistration|loginbyredirecttoken|loginwurzelwerk|emailblacklist|recovery';
-$userPaths .= '|consultationaccesserror|myaccount|emailchange';
+$userPaths .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange';
 $domPlainPaths = 'legal|privacy|help|password|billing|createsite|savetextajax|siteconfig|antragsgrueninit';
-$domPlainPaths .= '|antragsgrueninitdbtest|paymentadmin';
+$domPlainPaths .= '|antragsgrueninitdbtest|paymentadmin|userlist';
 $adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|pdfziplist|odtziplist|odslistall|openslides';
 $adminAmendmentPaths = 'index|excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
@@ -47,16 +49,21 @@ $urlRules = [
     $dom . 'checkemail'                => 'user/ajaxIsEmailRegistered',
     $dom . '<_a:(legal|privacy)>'      => 'consultation/<_a>',
 
-    $domv . '<_a:(' . $consultationPaths . ')>' => 'consultation/<_a>',
-    $domv . 'motion/pdfcollection'              => 'motion/pdfcollection',
-    $domv . 'motion/create'                     => 'motion/create',
-    $domv . 'amendment/pdfcollection'           => 'amendment/pdfcollection',
-    $dommotion                                  => 'motion/view',
-    $dommotion . '/<_a:(' . $motionPaths . ')>' => 'motion/<_a>',
-    $domamend                                   => 'amendment/view',
-    $domamend . '/<_a:(' . $amendPaths . ')>'   => 'amendment/<_a>',
-    $dommotion . '/amendment/create'            => 'amendment/create',
-    $domv                                       => 'consultation/index',
+    $domv . '<_a:(' . $consultationPaths . ')>'    => 'consultation/<_a>',
+    $domv . 'motion/pdfcollection'                 => 'motion/pdfcollection',
+    $domv . 'motion/create'                        => 'motion/create',
+    $domv . 'amendment/pdfcollection'              => 'amendment/pdfcollection',
+    $dommotion                                     => 'motion/view',
+    $dommotion . '/<_a:(' . $motionPaths . ')>'    => 'motion/<_a>',
+    $domamend                                      => 'amendment/view',
+    $domamend . '/<_a:(' . $amendPaths . ')>'      => 'amendment/<_a>',
+    $dommotion . '/amendment/create'               => 'amendment/create',
+    $dommotionOld                                  => 'motion/view',
+    $dommotionOld . '/<_a:(' . $motionPaths . ')>' => 'motion/<_a>',
+    $domamendOld                                   => 'amendment/view',
+    $domamendOld . '/<_a:(' . $amendPaths . ')>'   => 'amendment/<_a>',
+    $dommotionOld . '/amendment/create'            => 'amendment/create',
+    $domv                                          => 'consultation/index',
 ];
 
 if ($params->domainPlain != $params->domainSubdomain) {

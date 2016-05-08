@@ -1,9 +1,19 @@
 # Version history
 
-## Version 3.3 [Not yet released]
+## Version 3.3.1 (2016-05-07)
 
+- Remove the "motion/"- and "amendment/"-parts from the URLs
+- Replace Shariff by a custom sharing widget, saving HTTP Requests
+
+## Version 3.3 (2016-05-06)
+
+- There is now a activity page for every consultation, listing all bigger events of this consultation in a timeline
 - The administration has been split up into three separate parts: the Motion List, the To Do List and the Settings Page
 - Exporting motions and amendments can now be done from the motion list. There now is an option to include or exclude withdrawn motions/amendments
+- The social share buttons were moved from the main content to the sidebar
+- Use SimpleSAML instead of OpenID to authenticate against Wurzelwerk / Grünes Netz. OpenID is still supported as legacy system
+- A (very basic) user list to the admin page
+- Bugfix: Inserted / Deleted paragraphs were not formatted as such in the OpenDocument-Export
 
 ### Version 3.2.3 (2016-04-15)
 

@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -118,6 +119,23 @@ if ($showCreate) {
     }
 }
 
+
+$html = '<div><ul class="nav nav-list"><li class="nav-header">' .
+    Yii::t('con', 'news') . '</li>';
+
+$title = '<span class="fontello fontello-globe"></span>' . Yii::t('con', 'activity_log');
+$link  = UrlHelper::createUrl('consultation/activitylog');
+$html .= '<li class="activitylog">' . Html::a($title, $link) . '</li>';
+
+$title = '<span class="glyphicon glyphicon-bell"></span>' . Yii::t('con', 'email_notifications');
+$link  = UrlHelper::createUrl('consultation/notifications');
+$html .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
+
+$html .= '</ul></div>';
+$layout->menusHtml[]      = $html;
+$layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'notifications'), $link) . '</li>';
+
+
 if ($hasMotions) {
     $html = '<div><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_motions') . '</li>';
@@ -126,7 +144,7 @@ if ($hasMotions) {
     } else {
         foreach ($newestMotions as $motion) {
             $motionLink = UrlHelper::createMotionUrl($motion);
-            $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' . Html::encode($motion->title);
+            $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' . HTMLTools::encodeAddShy($motion->title);
             $html .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
         }
     }
@@ -197,17 +215,6 @@ if ($hasComments) {
     $layout->menusHtml[] = $html;
 }
 
-$title = '<span class="glyphicon glyphicon-bell"></span>';
-$title .= Yii::t('con', 'email_notifications');
-$link = UrlHelper::createUrl('consultation/notifications');
-$html = '<div><ul class="nav nav-list"><li class="nav-header">' .
-    Yii::t('con', 'notifications') . '</li>';
-$html .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
-$html .= '</ul></div>';
-$layout->menusHtml[]      = $html;
-$layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'notifications'), $link) . '</li>';
-
-
 if ($consultation->getSettings()->showFeeds) {
     $feeds          = 0;
     $feedsHtml      = '';
@@ -218,7 +225,10 @@ if ($consultation->getSettings()->showFeeds) {
 
     if ($hasMotions) {
         $feedUrl = UrlHelper::createUrl('consultation/feedmotions');
-        $link    = Html::a(Yii::t('con', 'feed_motions'), $feedUrl, ['class' => 'feedMotions']);
+        $link    = Html::a(
+            '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feed_motions'),
+            $feedUrl, ['class' => 'feedMotions']
+        );
         $feedsHtml .= '<li>' . $link . '</li>';
         $feedsHtmlSmall .= '<li>' . $link . '</li>';
         $feeds++;
@@ -226,7 +236,10 @@ if ($consultation->getSettings()->showFeeds) {
 
     if ($hasAmendments) {
         $feedUrl = UrlHelper::createUrl('consultation/feedamendments');
-        $link    = Html::a(Yii::t('con', 'feed_amendments'), $feedUrl, ['class' => 'feedAmendments']);
+        $link    = Html::a(
+            '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feed_amendments'),
+            $feedUrl, ['class' => 'feedAmendments']
+        );
         $feedsHtml .= '<li>' . $link . '</li>';
         $feedsHtmlSmall .= '<li>' . $link . '</li>';
         $feeds++;
@@ -234,7 +247,10 @@ if ($consultation->getSettings()->showFeeds) {
 
     if ($hasComments) {
         $feedUrl = UrlHelper::createUrl('consultation/feedcomments');
-        $link    = Html::a(Yii::t('con', 'feed_comments'), $feedUrl, ['class' => 'feedComments']);
+        $link    = Html::a(
+            '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feed_comments'),
+            $feedUrl, ['class' => 'feedComments']
+        );
         $feedsHtml .= '<li>' . $link . '</li>';
         $feedsHtmlSmall .= '<li>' . $link . '</li>';
         $feeds++;
@@ -242,7 +258,10 @@ if ($consultation->getSettings()->showFeeds) {
 
     if ($feeds > 1) {
         $feedUrl = UrlHelper::createUrl('consultation/feedall');
-        $link    = Html::a(Yii::t('con', 'feed_all'), $feedUrl, ['class' => 'feedAll']);
+        $link    = Html::a(
+            '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feed_all'),
+            $feedUrl, ['class' => 'feedAll']
+        );
         $feedsHtml .= '<li>' . $link . '</li>';
         $feedsHtmlSmall .= '<li>' . $link . '</li>';
     }
