@@ -108,9 +108,17 @@ $I->see('Eingereicht (ungeprüft)', '.motionData');
 $I->logout();
 
 
+$I->wantTo('ensure I can\'t revoke my support once the motion has been submitted');
+$I->loginAsStdUser();
+gotoSupportingMotion($I);
+$I->see('Du!', 'section.supporters');
+$I->dontSeeElement('button[name=motionSupportRevoke]');
+
+
+
+
 $I->wantTo('check that motions created as normal person are in supporting phase');
 
-$I->loginAsStdUser();
 $I->gotoConsultationHome(false, 'supporter', 'supporter')->gotoMotionCreatePage(10, true, 'supporter', 'supporter');
 $I->fillField('#sections_30', 'Title as normal person');
 $I->executeJS('CKEDITOR.instances.sections_31_wysiwyg.setData("<p><strong>Test</strong></p>");');

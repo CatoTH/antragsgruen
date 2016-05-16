@@ -423,7 +423,9 @@ class LayoutHelper
         if ($cantSupportMsg == $nobody && !$canSupport) {
             return;
         }
-
+        if (!$motion->isSupportingPossibleAtThisStatus()) {
+            return;
+        }
 
         if ($canSupport) {
             echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
@@ -598,8 +600,9 @@ class LayoutHelper
      * @param string $title
      * @return string
      */
-    public static function getShareButtons($url, $title) {
-        $twitter = Html::encode('https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url));
+    public static function getShareButtons($url, $title)
+    {
+        $twitter  = Html::encode('https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url));
         $facebook = Html::encode('https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url));
         return '<div class="share_buttons"><ul>
               <li class="twitter"><a href="' . $twitter . '" rel="popup" title="Bei Twitter teilen">

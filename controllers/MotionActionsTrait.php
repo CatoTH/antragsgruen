@@ -221,8 +221,8 @@ trait MotionActionsTrait
      */
     private function motionSupport(Motion $motion)
     {
-        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
-            throw new FormError('Not supported');
+        if (!$motion->isSupportingPossibleAtThisStatus()) {
+            throw new FormError('Not possible given the current motion status');
         }
         foreach ($motion->getSupporters() as $supporter) {
             if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
@@ -261,9 +261,13 @@ trait MotionActionsTrait
 
     /**
      * @param Motion $motion
+     * @throws FormError
      */
     private function motionSupportRevoke(Motion $motion)
     {
+        if (!$motion->isSupportingPossibleAtThisStatus()) {
+            throw new FormError('Not possible given the current motion status');
+        }
         $currentUser = User::getCurrentUser();
         foreach ($motion->motionSupporters as $supp) {
             if ($supp->userId == $currentUser->id) {
