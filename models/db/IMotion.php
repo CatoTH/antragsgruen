@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\sectionTypes\ISectionType;
+use app\models\supportTypes\ISupportType;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
@@ -174,4 +175,20 @@ abstract class IMotion extends ActiveRecord
      * @return int
      */
     abstract public function getLikeDislikeSettings();
+
+    /**
+     * @return bool
+     */
+    public function isSupportingPossibleAtThisStatus()
+    {
+        if (!($this->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+            return false;
+        }
+        if ($this->getMyMotionType()->supportType == ISupportType::COLLECTING_SUPPORTERS) {
+            if ($this->status != IMotion::STATUS_COLLECTING_SUPPORTERS) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

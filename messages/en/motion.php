@@ -121,7 +121,7 @@ return [
     'support_collect_explanation'        => 'Motions and amendments by individuals have to find at least %MIN% supporters to submit it. To submit such a motion, please proceed like this:<br><ol>
         <li><strong>Create a draft:</strong> Enter the motion and your contact data on this page. Please confirm on the following page that you want to create this motion.</li>
         <li><strong>Finding supporters:</strong> You will find a link that you can send to interested persons. Everyone can access this page given this link. Everyone having the necessary privileges can support this motion on this page.</li>
-        <li><strong>Submit the motion:</strong> Once %MIN% people are supporting this motion, you will receive a notification by e-mail. Now you can officially submit the motion. After this, it is still possible for other interested persons to support this motion.</li>
+        <li><strong>Submit the motion:</strong> Once %MIN% people are supporting this motion, you will receive a notification by e-mail. Now you can officially submit the motion. After submitting, the supporting list ist closed.</li>
         </ol>',
     'support'                            => 'Support',
     'support_done'                       => 'Now you support this motion.',

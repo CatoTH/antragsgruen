@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.3.2 (2016-05-16)
+
+- Once a motion or amendment is submitted after collecting enough supporters, no more supporters can be added or revoked.
+
 ## Version 3.3.1 (2016-05-07)
 
 - Remove the "motion/"- and "amendment/"-parts from the URLs

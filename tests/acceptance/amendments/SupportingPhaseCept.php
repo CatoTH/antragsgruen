@@ -151,3 +151,12 @@ $I->submitForm('.amendmentSupportFinishForm', [], 'amendmentSupportFinish');
 $I->see('Der Änderungsantrag ist nun offiziell eingereicht');
 $I->see('Eingereicht (ungeprüft)', '.motionData');
 
+$I->logout();
+
+
+
+$I->wantTo('ensure I can\'t revoke my support once the amendment has been submitted');
+$I->loginAsStdAdmin();
+gotoSupportingAmendment($I);
+$I->see('Du!', 'section.supporters');
+$I->dontSeeElement('button[name=motionSupportRevoke]');
