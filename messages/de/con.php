@@ -5,6 +5,7 @@ return [
     'new_amendments'       => 'Neue Änderungsanträge',
     'new_comments'         => 'Neue Kommentare',
     'create_new'           => 'Anlegen...',
+    'deadline_circle'      => 'Antrags&shy;schluss',
     'My Motions'           => 'Meine Anträge',
     'My Amendments'        => 'Meine Änderungsanträge',
     'Agenda'               => 'Tagesordnung',
