@@ -129,6 +129,17 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @return Motion|null
+     */
+    public function getForcedMotion()
+    {
+        if ($this->getSettings()->forceMotion === null) {
+            return null;
+        }
+        return $this->getMotion($this->getSettings()->forceMotion);
+    }
+
+    /**
      * @param int $amendmentId
      * @return Amendment|null
      */

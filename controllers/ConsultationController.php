@@ -364,6 +364,10 @@ class ConsultationController extends Base
      */
     public function actionIndex()
     {
+        if ($this->consultation->getForcedMotion()) {
+            $this->redirect(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
+        }
+        
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 

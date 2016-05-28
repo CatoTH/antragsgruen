@@ -29,6 +29,8 @@ class Consultation
     public $initiatorConfirmEmails = false;
     public $adminsMayEdit          = true;
 
+    public $forceMotion = null;
+
     // SETTINGS WITHOUT TEST CASES
 
     /** @var bool */
