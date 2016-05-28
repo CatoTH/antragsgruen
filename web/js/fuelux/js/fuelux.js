@@ -1,5 +1,5 @@
 /*!
- * Fuel UX v3.15.0 
+ * Fuel UX v3.15.4 
  * Copyright 2012-2016 ExactTarget
  * Licensed under the BSD-3-Clause license (https://github.com/ExactTarget/fuelux/blob/master/LICENSE)
  */
@@ -298,12 +298,22 @@
 			},
 
 			doSelect: function( $item ) {
+
 				if ( typeof $item[ 0 ] !== 'undefined' ) {
-					$item.addClass( 'selected' );
+					// remove selection from old item, may result in remove and 
+					// re-addition of class if item is the same
+					this.$element.find( 'li.selected:first' ).removeClass( 'selected' );
+
+					// add selection to new item
 					this.$selectedItem = $item;
+					this.$selectedItem.addClass( 'selected' );
+
+					// update input
 					this.$input.val( this.$selectedItem.text().trim() );
 				} else {
+					// this is a custom input, not in the menu
 					this.$selectedItem = null;
+					this.$element.find( 'li.selected:first' ).removeClass( 'selected' );
 				}
 			},
 
@@ -335,7 +345,8 @@
 					}, this.$selectedItem.data() );
 				} else {
 					data = {
-						text: this.$input.val().trim()
+						text: this.$input.val().trim(),
+						notFound: true
 					};
 				}
 
@@ -447,7 +458,6 @@
 					}
 
 					this.$inputGroupBtn.removeClass( 'open' );
-					this.inputchanged( e );
 				} else if ( e.which === ESC ) {
 					e.preventDefault();
 					this.clearSelection();
@@ -471,8 +481,7 @@
 								$selected = this.$dropMenu.find( 'li:not(.hidden):last' );
 							}
 						}
-						this.$dropMenu.find( 'li' ).removeClass( 'selected' );
-						$selected.addClass( 'selected' );
+						this.doSelect( $selected );
 					}
 				}
 
@@ -485,10 +494,13 @@
 			},
 
 			inputchanged: function( e, extra ) {
+				var val = $( e.target ).val();
 				// skip processing for internally-generated synthetic event
 				// to avoid double processing
-				if ( extra && extra.synthetic ) return;
-				var val = $( e.target ).val();
+				if ( extra && extra.synthetic ) {
+					this.selectByText( val );
+					return;
+				}
 				this.selectByText( val );
 
 				// find match based on input
@@ -2263,7 +2275,7 @@
 
 			this.$button = this.$element.find( 'button' );
 			this.$input = this.$element.find( 'input' );
-			this.$icon = this.$element.find( '.glyphicon' );
+			this.$icon = this.$element.find( '.glyphicon, .fuelux-icon' );
 
 			this.$button.on( 'click.fu.search', $.proxy( this.buttonclicked, this ) );
 			this.$input.on( 'keyup.fu.search', $.proxy( this.keypress, this ) );
@@ -2296,6 +2308,9 @@
 				if ( this.$icon.hasClass( 'glyphicon' ) ) {
 					this.$icon.removeClass( 'glyphicon-search' ).addClass( 'glyphicon-remove' );
 				}
+				if ( this.$icon.hasClass( 'fuelux-icon' ) ) {
+					this.$icon.removeClass( 'fuelux-icon-search' ).addClass( 'fuelux-icon-remove' );
+				}
 
 				this.activeSearch = searchText;
 				this.$element.addClass( 'searched pending' );
@@ -2305,6 +2320,9 @@
 			clear: function() {
 				if ( this.$icon.hasClass( 'glyphicon' ) ) {
 					this.$icon.removeClass( 'glyphicon-remove' ).addClass( 'glyphicon-search' );
+				}
+				if ( this.$icon.hasClass( 'fuelux-icon' ) ) {
+					this.$icon.removeClass( 'fuelux-icon-remove' ).addClass( 'fuelux-icon-search' );
 				}
 
 				if ( this.$element.hasClass( 'pending' ) ) {
@@ -2755,9 +2773,6 @@
 			this.$element.on( 'keydown.fu.spinbox', this.$input, $.proxy( this.keydown, this ) );
 			this.$element.on( 'keyup.fu.spinbox', this.$input, $.proxy( this.keyup, this ) );
 
-			this.bindMousewheelListeners();
-			this.mousewheelTimeout = {};
-
 			if ( this.options.hold ) {
 				this.$element.on( 'mousedown.fu.spinbox', '.spinbox-up', $.proxy( function() {
 					this.startSpin( true );
@@ -3062,47 +3077,8 @@
 				if ( keyCode === 38 || keyCode === 40 ) {
 					this.triggerChangedEvent();
 				}
-			},
-
-			bindMousewheelListeners: function bindMousewheelListeners() {
-				var inputEl = this.$input.get( 0 );
-				if ( inputEl.addEventListener ) {
-					//IE 9, Chrome, Safari, Opera
-					inputEl.addEventListener( 'mousewheel', $.proxy( this.mousewheelHandler, this ), false );
-					// Firefox
-					inputEl.addEventListener( 'DOMMouseScroll', $.proxy( this.mousewheelHandler, this ), false );
-				} else {
-					// IE <9
-					inputEl.attachEvent( 'onmousewheel', $.proxy( this.mousewheelHandler, this ) );
-				}
-			},
-
-			mousewheelHandler: function mousewheelHandler( event ) {
-				if ( !this.options.disabled ) {
-					var e = window.event || event; // old IE support
-					var delta = Math.max( -1, Math.min( 1, ( e.wheelDelta || -e.detail ) ) );
-					var self = this;
-
-					clearTimeout( this.mousewheelTimeout );
-					this.mousewheelTimeout = setTimeout( function() {
-						self.triggerChangedEvent();
-					}, 300 );
-
-					if ( delta < 0 ) {
-						this.step( true );
-					} else {
-						this.step( false );
-					}
-
-					if ( e.preventDefault ) {
-						e.preventDefault();
-					} else {
-						e.returnValue = false;
-					}
-
-					return false;
-				}
 			}
+
 		};
 
 
@@ -5245,8 +5221,7 @@
 			} );
 			this.$prevBtn.on( 'click.fu.repeater', $.proxy( this.previous, this ) );
 			this.$primaryPaging.find( '.combobox' ).on( 'changed.fu.combobox', function( evt, data ) {
-				self.$element.trigger( 'pageChanged.fu.repeater', [ data.text, data ] );
-				self.pageInputChange( data.text );
+				self.pageInputChange( data.text, data );
 			} );
 			this.$search.on( 'searched.fu.search cleared.fu.search', function( e, value ) {
 				self.$element.trigger( 'searchChanged.fu.repeater', value );
@@ -5622,13 +5597,15 @@
 				} );
 			},
 
-			pageInputChange: function( val ) {
+			pageInputChange: function( val, dataFromCombobox ) {
+				// dataFromCombobox is a proxy for data from combobox's changed event,
+				// if no combobox is present data will be undefined
 				var pageInc;
 				if ( val !== this.lastPageInput ) {
 					this.lastPageInput = val;
 					val = parseInt( val, 10 ) - 1;
 					pageInc = val - this.currentPage;
-					this.$element.trigger( 'pageChanged.fu.repeater', val );
+					this.$element.trigger( 'pageChanged.fu.repeater', [ val, dataFromCombobox ] );
 					this.render( {
 						pageIncrement: pageInc
 					} );
@@ -6209,6 +6186,13 @@
 					$frozenThead.find( 'tbody' ).remove();
 					var $frozenTheadWrapper = $( '<div class="frozen-thead-wrapper"></div>' ).append( $frozenThead );
 
+					//this gets a little messy with all the cloning. We need to make sure the ID and FOR
+					//attribs are unique for the 'top most' cloned checkbox
+					var $checkbox = $frozenTheadWrapper.find( 'th input[type="checkbox"]' );
+					$checkbox.attr( 'id', $checkbox.attr( 'id' ) + '_cloned' );
+					var $label = $frozenTheadWrapper.find( 'th label' );
+					$label.attr( 'for', $label.attr( 'for' ) + '_cloned' );
+
 					$frozenColumnWrapper.append( $frozenColumn );
 					repeaterWrapper.append( $frozenTheadWrapper );
 					this.$canvas.addClass( 'frozen-enabled' );
@@ -6424,7 +6408,10 @@
 
 				$checkboxes.checkbox();
 
-				this.$element.find( '.table-frozen tbody .checkbox-inline' ).on( 'change', function( e ) {
+				// Row checkboxes
+				var $rowCheckboxes = this.$element.find( '.table-frozen tbody .checkbox-inline' );
+				var $checkAll = this.$element.find( '.frozen-thead-wrapper thead .checkbox-inline input' );
+				$rowCheckboxes.on( 'change', function( e ) {
 					e.preventDefault();
 
 					if ( !self.list_revertingCheckbox ) {
@@ -6434,16 +6421,29 @@
 							var row = $( this ).attr( 'data-row' );
 							row = parseInt( row ) + 1;
 							self.$element.find( '.repeater-list-wrapper > table tbody tr:nth-child(' + row + ')' ).click();
+
+							var numSelected = self.$element.find( '.table-frozen tbody .checkbox-inline.checked' ).length;
+							if ( numSelected === 0 ) {
+								$checkAll.prop( 'checked', false );
+								$checkAll.prop( 'indeterminate', false );
+							} else if ( numSelected === $rowCheckboxes.length ) {
+								$checkAll.prop( 'checked', true );
+								$checkAll.prop( 'indeterminate', false );
+							} else {
+								$checkAll.prop( 'checked', false );
+								$checkAll.prop( 'indeterminate', true );
+							}
 						}
 					}
 				} );
 
-				this.$element.find( '.frozen-thead-wrapper thead .checkbox-inline' ).on( 'change', function( e ) {
+				// "Check All" checkbox
+				$checkAll.on( 'change', function( e ) {
 					if ( !self.list_revertingCheckbox ) {
 						if ( self.isDisabled ) {
 							revertCheckbox( $( e.currentTarget ) );
 						} else {
-							if ( $( this ).checkbox( 'isChecked' ) ) {
+							if ( $( this ).is( ':checked' ) ) {
 								self.$element.find( '.repeater-list-wrapper > table tbody tr:not(.selected)' ).click();
 								self.$element.trigger( 'selected.fu.repeaterList', $checkboxes );
 							} else {
@@ -6538,6 +6538,13 @@
 					var $listContainer = helpers.container.find( '.repeater-list' );
 					var self = this;
 					var $table;
+
+					// this is a patch, it was pulled out of `renderThead`
+					if ( helpers.data.count > 0 ) {
+						this.list_noItems = false;
+					} else {
+						this.list_noItems = true;
+					}
 
 					if ( $listContainer.length < 1 ) {
 						$listContainer = $( '<div class="repeater-list ' + this.list_specialBrowserClass + '" data-preserve="shallow"><div class="repeater-list-wrapper" data-infinite="true" data-preserve="shallow"><table aria-readonly="true" class="table" data-preserve="shallow" role="grid"></table></div></div>' );
@@ -6663,8 +6670,9 @@
 			var chevron = '.glyphicon.rlc:first';
 			var chevUp = 'glyphicon-chevron-up';
 			var $div = $( '<div class="repeater-list-heading"><span class="glyphicon rlc"></span></div>' );
-			var checkBoxMarkup = '<div class="repeater-list-heading header-checkbox"><label class="checkbox-custom checkbox-inline repeater-select-checkbox">' +
-				'<input class="sr-only" type="checkbox"></label><div class="clearfix"></div></div>';
+			var checkAllID = ( this.$element.attr( 'id' ) + '_' || '' ) + 'checkall';
+			var checkBoxMarkup = '<div class="repeater-list-heading header-checkbox"><div class="checkbox checkbox-inline"><input type="checkbox" id="' + checkAllID + '">' +
+				'<label for="' + checkAllID + '"></label></div></div>';
 			var $header = $( '<th></th>' );
 			var self = this;
 			var $both, className, sortable, $span, $spans;
@@ -6774,7 +6782,7 @@
 							if ( $item.is( '.selected' ) ) {
 								$item.removeClass( 'selected' );
 								if ( isMulti ) {
-									$checkBox.checkbox( 'uncheck' );
+									$checkBox.click();
 									$frozenRow.removeClass( 'selected' );
 									if ( isActions ) {
 										$actionsRow.removeClass( 'selected' );
@@ -6795,7 +6803,7 @@
 									$item.addClass( 'selected' );
 									$frozenRow.addClass( 'selected' );
 								} else {
-									$checkBox.checkbox( 'check' );
+									$checkBox.click();
 									$item.addClass( 'selected' );
 									$frozenRow.addClass( 'selected' );
 									if ( isActions ) {
@@ -6866,9 +6874,7 @@
 			if ( this.list_firstRender || areDifferentColumns( this.list_columns, columns ) || $thead.length === 0 ) {
 				$thead.remove();
 
-				if ( data.count < 1 ) {
-					this.list_noItems = true;
-				}
+				// list_noItems is set in `before` method
 
 				if ( this.viewOptions.list_selectable === 'multi' && !this.list_noItems ) {
 					var checkboxColumn = {
@@ -6883,7 +6889,8 @@
 				this.list_firstRender = false;
 				this.$loader.removeClass( 'noHeader' );
 
-				if ( this.viewOptions.list_actions && !this.list_noItems ) {
+				// keep action column header even when empty, you'll need it later....
+				if ( this.viewOptions.list_actions ) {
 					var actionsColumn = {
 						label: this.viewOptions.list_actions.label || '<span class="actions-hidden">a</span>',
 						property: '@_ACTIONS_@',
