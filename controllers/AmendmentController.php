@@ -282,9 +282,8 @@ class AmendmentController extends Base
             throw new NotFound(\Yii::t('motion', 'err_not_found'));
         }
 
-        $policy = $motion->motionType->getAmendmentPolicy();
-        if (!$policy->checkCurrUserAmendment()) {
-            if ($policy->checkCurrUserAmendment(true, true)) {
+        if (!$motion->isCurrentlyAmendable()) {
+            if ($motion->isCurrentlyAmendable(true, true)) {
                 $loginUrl = UrlHelper::createLoginUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
                 return $this->redirect($loginUrl);
             } else {

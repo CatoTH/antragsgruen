@@ -109,22 +109,6 @@ abstract class IPolicy
     }
 
     /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     */
-    public function checkCurrUserAmendment($allowAdmins = true, $assumeLoggedIn = false)
-    {
-        if ($this->motionType->amendmentDeadlineIsOver()) {
-            $consultation = $this->motionType->getConsultation();
-            if (!User::currentUserHasPrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
-                return false;
-            }
-        }
-        return $this->checkCurrUser($allowAdmins, $assumeLoggedIn);
-    }
-
-    /**
      * @abstract
      * @return string
      */
