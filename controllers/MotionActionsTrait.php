@@ -265,12 +265,14 @@ trait MotionActionsTrait
      */
     private function motionSupportRevoke(Motion $motion)
     {
-        if (!$motion->isSupportingPossibleAtThisStatus()) {
-            throw new FormError('Not possible given the current motion status');
-        }
         $currentUser = User::getCurrentUser();
         foreach ($motion->motionSupporters as $supp) {
             if ($supp->userId == $currentUser->id) {
+                if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
+                    if (!$motion->isSupportingPossibleAtThisStatus()) {
+                        throw new FormError('Not possible given the current motion status');
+                    }
+                }
                 $motion->unlink('motionSupporters', $supp, true);
             }
         }

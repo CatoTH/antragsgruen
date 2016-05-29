@@ -163,7 +163,7 @@ trait AmendmentActionsTrait
     private function amendmentSupport(Amendment $amendment)
     {
         if (!$amendment->isSupportingPossibleAtThisStatus()) {
-            throw new FormError('Not possible given the current motion status');
+            throw new FormError('Not possible given the current amendment status');
         }
         foreach ($amendment->getSupporters() as $supporter) {
             if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
@@ -263,12 +263,14 @@ trait AmendmentActionsTrait
      */
     private function amendmentSupportRevoke(Amendment $amendment)
     {
-        if (!$amendment->isSupportingPossibleAtThisStatus()) {
-            throw new FormError('Not possible given the current motion status');
-        }
         $currentUser = User::getCurrentUser();
         foreach ($amendment->amendmentSupporters as $supp) {
             if ($supp->userId == $currentUser->id) {
+                if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
+                    if (!$amendment->isSupportingPossibleAtThisStatus()) {
+                        throw new FormError('Not possible given the current amendment status');
+                    }
+                }
                 $amendment->unlink('amendmentSupporters', $supp, true);
             }
         }

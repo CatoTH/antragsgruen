@@ -8,12 +8,12 @@ $I->populateDBData1();
 $I->wantTo('see the sharing buttons');
 
 $I->gotoMotion();
-$I->seeElement('.shariff .twitter');
-$I->seeElement('.shariff .facebook');
+$I->seeElement('.share_buttons .twitter');
+$I->seeElement('.share_buttons .facebook');
 
 $I->gotoAmendment();
-$I->seeElement('.shariff .twitter');
-$I->seeElement('.shariff .facebook');
+$I->seeElement('.share_buttons .twitter');
+$I->seeElement('.share_buttons .facebook');
 
 
 $I->wantTo('enforce login');
@@ -26,9 +26,9 @@ $I->submitForm('#siteSettingsForm', [], 'saveLogin');
 $I->wantTo('verify that sharing buttons are deactivated');
 
 $I->gotoMotion();
-$I->dontSeeElement('.shariff .twitter');
-$I->dontSeeElement('.shariff .facebook');
+$I->dontSeeElement('.share_buttons .twitter');
+$I->dontSeeElement('.share_buttons .facebook');
 
 $I->gotoAmendment();
-$I->dontSeeElement('.shariff .twitter');
-$I->dontSeeElement('.shariff .facebook');
+$I->dontSeeElement('.share_buttons .twitter');
+$I->dontSeeElement('.share_buttons .facebook');
