@@ -106,6 +106,8 @@ return [
     'err_not_found'                     => 'Der Änderungsantrag wurde nicht gefunden',
     'err_withdraw_forbidden'            => 'Not allowed to withdraw this motion.',
     'err_edit_forbidden'                => 'Not allowed to edit this motion.',
+    'err_not_visible_yet_title'         => 'Noch nicht sichtbar',
+    'err_not_visible_yet'               => 'Dieser Änderungsantrag ist noch nicht sichtbar.',
     'withdraw_done'                     => 'Der Änderungsantrag wurde zurückgezogen.',
     'withdraw_bread'                    => 'Zurückziehen',
     'withdraw'                          => 'Zurückziehen',

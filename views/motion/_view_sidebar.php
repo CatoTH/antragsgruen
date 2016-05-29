@@ -2,7 +2,6 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
-use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 

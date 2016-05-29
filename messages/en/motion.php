@@ -86,7 +86,7 @@ return [
     'err_withdraw_permission'   => 'Not allowed to withdraw this motion.',
     'err_not_found'             => 'Motion not found.',
     'err_not_visible_yet_title' => 'Not visible yet',
-    'err_not_visible_yet'       => 'This motion is not yet visible',
+    'err_not_visible_yet'       => 'This motion is not yet visible.',
     'withdraw_done'             => 'The motion has been withdrawn.',
     'withdraw_bread'            => 'Withdraw',
     'withdraw'                  => 'Withdraw',

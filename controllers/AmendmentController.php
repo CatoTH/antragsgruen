@@ -45,6 +45,9 @@ class AmendmentController extends Base
         if (!$amendment) {
             return '';
         }
+        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
+        }
 
         $filename                    = rawurlencode($amendment->getFilenameBase(false) . '.pdf');
         \yii::$app->response->format = Response::FORMAT_RAW;
@@ -97,6 +100,9 @@ class AmendmentController extends Base
         if (!$amendment) {
             return '';
         }
+        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
+        }
 
         $filename                    = rawurlencode($amendment->getFilenameBase(false) . '.odt');
         \yii::$app->response->format = Response::FORMAT_RAW;
@@ -114,14 +120,12 @@ class AmendmentController extends Base
      */
     public function actionView($motionSlug, $amendmentId, $commentId = 0)
     {
+        $this->layout = 'column2';
+
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
             return '';
         }
-
-        $this->layout = 'column2';
-
-        $openedComments = [];
 
         if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);
@@ -129,7 +133,11 @@ class AmendmentController extends Base
             $adminEdit = null;
         }
 
+        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => $adminEdit]);
+        }
 
+        $openedComments      = [];
         $amendmentViewParams = [
             'amendment'      => $amendment,
             'editLink'       => $amendment->canEdit(),

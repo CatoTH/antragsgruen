@@ -87,6 +87,13 @@ abstract class IMotion extends ActiveRecord
         return !in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati());
     }
 
+    /**
+     * @return bool
+     */
+    public function isReadable()
+    {
+        return !in_array($this->status, $this->getMyConsultation()->getUnreadableStati());
+    }
 
     /**
      * @return ISupporter[]
