@@ -19,30 +19,30 @@ use yii\helpers\Html;
                 '</div>';
         }
         ?>
-        <legend>Was soll diskutiert werden?</legend>
-        <div class="description">Das wirkt sich ausschließlich auf das &quot;Wording&quot; aus.</div>
+        <legend><?=$t('purpose_title')?></legend>
+        <div class="description"><?=$t('purpose_title')?></div>
         <div class="options">
             <label class="radio-label">
-                <div class="title">Anträge</div>
-                <div class="description"></div>
-                <div class="input">
+                <span class="title"><?=$t('purpose_motions')?></span>
+                <span class="description"></span>
+                <span class="input">
                     <?= Html::radio(
                         'SiteCreateForm2[wording]',
                         $model->wording == SiteCreateForm2::WORDING_MOTIONS,
                         ['value' => SiteCreateForm2::WORDING_MOTIONS, "data-wording-name" => "motion"]
                     ); ?>
-                </div>
+                </span>
             </label>
             <label class="radio-label">
-                <div class="title">Programm</div>
-                <div class="description">(Wahl-/Partei)&shy;Programme</div>
-                <div class="input">
+                <span class="title"><?=$t('purpose_manifesto')?></span>
+                <span class="description"><?=$t('purpose_manifesto_desc')?></span>
+                <span class="input">
                     <?= Html::radio(
                         'SiteCreateForm2[wording]',
                         $model->wording == SiteCreateForm2::WORDING_MANIFESTO,
                         ['value' => SiteCreateForm2::WORDING_MANIFESTO, "data-wording-name" => "manifesto"]
                     ); ?>
-                </div>
+                </span>
             </label>
         </div>
     </fieldset>

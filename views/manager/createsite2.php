@@ -48,7 +48,8 @@ $t = function ($string) {
     </div>
     <div class="content">
         <?= $this->render('_createsite_purpose', ['model' => $model, 'errors' => $errors, 't' => $t]) ?>
-        <?= $this->render('_createsite_single_motion', ['model' => $model, 'errors' => $errors, 't' => $t]) ?>
+        <?= $this->render('_createsite_single_motion', ['model' => $model, 't' => $t]) ?>
+        <?= $this->render('_createsite_motion_who', ['model' => $model, 't' => $t]) ?>
         <!--
         <div class="step-pane" id="step2">
             <br><br>

@@ -7,6 +7,7 @@
 
     var createInstance2 = function () {
         var $form = $("form.siteCreate"),
+            $activePanel = null,
             getRadioValue = function (fieldsetClass, defaultVal) {
                 var $input = $("fieldset." + fieldsetClass).find("input:checked");
                 if ($input.length > 0) {
@@ -27,8 +28,21 @@
                 $form.find(".wizard .steps li").removeClass("active");
                 $form.find(".wizard .steps ." + step).addClass("active");
 
-                $form.find(".step-pane").removeClass("active").addClass("inactive");
+                if ($activePanel) {
+                    $activePanel.removeClass("active").addClass("inactive");
+                }
                 $panel.addClass("active").removeClass("inactive");
+                $activePanel = $panel;
+            },
+            getNextPanel = function ($currPanel) {
+                switch ($currPanel.attr("id")) {
+                    case 'panelPurpose':
+                        return $("#panelSingleMotion");
+                    case 'panelSingleMotion':
+                        return $("#panelMotionWho");
+                    case 'panelMotionWho':
+                        //
+                }
             },
             data = getWizardState;
 
@@ -49,12 +63,13 @@
 
         $form.find(".navigation .btn-next").click(function (ev) {
             ev.preventDefault();
-            showPanel($("#panelSingleMotion"));
+            showPanel(getNextPanel($activePanel));
         });
         $form.find(".navigation .btn-prev").click(function (ev) {
             ev.preventDefault();
         });
 
+        $form.find(".step-pane").addClass("inactive");
         showPanel($("#panelPurpose"));
     };
 
