@@ -109,6 +109,10 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
+        if (!$motion->isVisible() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+        }
+
         $filename                    = $motion->getFilenameBase(false) . '.pdf';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
@@ -165,6 +169,10 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
+        if (!$motion->isVisible() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+        }
+
         $filename                    = $motion->getFilenameBase(false) . '.odt';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
@@ -182,6 +190,10 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
+        if (!$motion->isVisible() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+        }
+
         return $this->renderPartial('plain_html', ['motion' => $motion]);
     }
 
@@ -192,9 +204,18 @@ class MotionController extends Base
      */
     public function actionView($motionSlug, $commentId = 0)
     {
-        $motion = $this->getMotionWithCheck($motionSlug);
-
         $this->layout = 'column2';
+
+        $motion = $this->getMotionWithCheck($motionSlug);
+        if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
+        } else {
+            $adminEdit = null;
+        }
+
+        if (!$motion->isVisible()) {
+            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => $adminEdit]);
+        }
 
         $openedComments = [];
         if ($commentId > 0) {
@@ -215,12 +236,6 @@ class MotionController extends Base
             }
         }
 
-
-        if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
-        } else {
-            $adminEdit = null;
-        }
 
         $commentWholeMotions = false;
         foreach ($motion->sections as $section) {
