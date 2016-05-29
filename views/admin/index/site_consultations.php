@@ -120,7 +120,7 @@ echo '</div>
 </div>
 
 <div class="form-group">
-    <div class="label col-md-4 control-label">Standard:</div>
+    <label for="newSetStandard" class="col-md-4 control-label">Standard:</label>
     <div class="col-md-8 checkbox">
         <label>' .
     Html::checkbox('newConsultation[setStandard]', $createForm->setAsDefault, ['id' => 'newSetStandard']) .

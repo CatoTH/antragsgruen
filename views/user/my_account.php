@@ -48,7 +48,7 @@ echo '
 </div>';
 if ($user->email) {
     echo '<div class="form-group emailExistingRow">
-    <div class="col-md-4 control-label label">' . \Yii::t('user', 'email_address') . ':</div>
+    <label class="col-md-4 control-label">' . \Yii::t('user', 'email_address') . ':</label>
     <div class="col-md-8"><span class="currentEmail">';
     if ($user->emailConfirmed) {
         echo Html::encode($user->email);

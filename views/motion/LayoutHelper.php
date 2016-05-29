@@ -437,7 +437,7 @@ class LayoutHelper
                 echo '</button>';
                 echo '</div>';
             } else {
-                echo '<div class="label" style="margin-top: 10px;">' . \Yii::t('motion', 'support_question') . '</div>';
+                echo '<label style="margin-top: 10px;">' . \Yii::t('motion', 'support_question') . '</label>';
                 echo '<div class="row">';
 
                 echo '<div class="col-md-4">';
