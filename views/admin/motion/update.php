@@ -167,9 +167,9 @@ echo '</div></div></div>';
 
 if (count($consultation->tags) > 0) {
     echo '<div class="form-group">';
-    echo '<div class="col-md-3 control-label label">';
+    echo '<label class="col-md-3 control-label">';
     echo \Yii::t('admin', 'motion_topics');
-    echo ':</div><div class="col-md-9 tagList">';
+    echo ':</label><div class="col-md-9 tagList">';
     foreach ($consultation->tags as $tag) {
         echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
         foreach ($motion->tags as $mtag) {

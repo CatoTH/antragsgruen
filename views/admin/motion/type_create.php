@@ -86,9 +86,9 @@ echo '</div></div>';
 
 
 echo '<div class="form-group">';
-echo '<div class="col-md-3 control-label label">';
+echo '<label class="col-md-3 control-label">';
 echo \Yii::t('admin', 'motion_type_templ') . ':';
-echo '</div><div class="col-md-9">';
+echo '</label><div class="col-md-9">';
 
 
 foreach ($controller->consultation->motionTypes as $motionType) {

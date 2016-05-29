@@ -112,7 +112,7 @@ if (count($tags) == 1) {
         foreach ($tags as $tag) {
             $tagOptions[$tag->id] = $tag->title;
         }
-        echo '<div class="label">' . \Yii::t('motion', 'tag_tags') . ':</div><div style="position: relative;">';
+        echo '<label>' . \Yii::t('motion', 'tag_tags') . ':</label><div style="position: relative;">';
         echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
         echo '</div>';
     }

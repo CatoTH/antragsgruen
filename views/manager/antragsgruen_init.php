@@ -133,9 +133,9 @@ echo '</label>
 </div>';
 
 if (!$form->hasDefaultData()) {
-    echo '<div class="form-group"><div class="col-sm-4 label control-label">';
+    echo '<div class="form-group"><label class="col-sm-4 control-label">';
     echo 'Voreinstellung:';
-    echo '</div><div class="col-sm-8">';
+    echo '</label><div class="col-sm-8">';
     foreach (\app\models\sitePresets\SitePresets::$PRESETS as $presetId => $preset) {
         $defaults = json_encode($preset::getDetailDefaults());
         echo '<label class="sitePreset" data-defaults="' . Html::encode($defaults) . '">';
