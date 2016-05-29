@@ -9,9 +9,10 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\Base $controller */
-$controller   = $this->context;
-$layout       = $controller->layoutParams;
-$consultation = $amendment->getMyConsultation();
+$controller            = $this->context;
+$layout                = $controller->layoutParams;
+$consultation          = $amendment->getMyConsultation();
+$layout->robotsNoindex = true;
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
