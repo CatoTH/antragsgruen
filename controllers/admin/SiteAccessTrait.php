@@ -257,9 +257,12 @@ trait SiteAccessTrait
                 $settings->loginMethods[] = \app\models\settings\Site::LOGIN_EXTERNAL;
             }
             $site->setSettings($settings);
-            $site->save();
-
-            \yii::$app->session->setFlash('success_login', \Yii::t('base', 'saved'));
+            if ($site->save()) {
+                \yii::$app->session->setFlash('success_login', \Yii::t('base', 'saved'));
+            } else {
+                \yii::$app->session->setFlash('error_login', 'An error occurred: ' . print_r($site->getErrors(), true));
+            }
+            $site->refresh();
         }
 
         if ($this->isPostSet('addAdmin')) {
