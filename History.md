@@ -1,5 +1,10 @@
 # Version history
 
+## Version 3.3.3 (2016-05-29)
+
+- Style fixes (some labeles were invisible)
+- Revoking likes/dislikes was not possible
+
 ## Version 3.3.2 (2016-05-16)
 
 - Once a motion or amendment is submitted after collecting enough supporters, no more supporters can be added or revoked.
