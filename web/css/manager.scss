@@ -160,3 +160,79 @@
     }
   }
 }
+
+/* New version */
+.siteCreate {
+  fieldset {
+    > legend {
+      border-bottom: none;
+      margin-bottom: 0;
+      text-align: center;
+    }
+    > .description {
+      text-align: center;
+      font-style: italic;
+    }
+    .options {
+      margin-top: 20px;
+      text-align: center;
+      vertical-align: top;
+    }
+    .radio-label {
+      display: inline-block;
+      width: 160px;
+      height: 160px;
+      border: solid 1px gray;
+      vertical-align: top;
+      cursor: pointer;
+      margin: 20px;
+      position: relative;
+      padding: 10px;
+      &.active {
+        background-color: lightgrey;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+      .description {
+        font-weight: normal;
+        margin-top: 20px;
+      }
+      input {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+      }
+    }
+  }
+  .navigation {
+    margin-top: 20px;
+    overflow: auto;
+    padding-right: 100px;
+    padding-left: 100px;
+
+    .btn-prev {
+      float: left;
+    }
+    .btn-next {
+      float: right;
+    }
+  }
+
+  .step-pane {
+    &.active {
+
+    }
+    &.inactive {
+      display: none;
+    }
+  }
+
+  &.wording_manifesto .only-motion {
+    display: none;
+  }
+  &.wording_motion .only-manifesto {
+    display: none;
+  }
+}

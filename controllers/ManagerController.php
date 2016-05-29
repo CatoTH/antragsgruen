@@ -12,6 +12,7 @@ use app\models\exceptions\Access;
 use app\models\exceptions\Internal;
 use app\models\forms\AntragsgruenInitForm;
 use app\models\forms\SiteCreateForm;
+use app\models\forms\SiteCreateForm2;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -137,6 +138,10 @@ class ManagerController extends Base
      */
     public function actionCreatesite()
     {
+        if (\Yii::$app->request->get('wizard', '1') == '2') {
+            return $this->actionCreatesite2();
+        }
+
         $this->requireEligibleToCreateUser();
 
         $this->layout = 'column2';
@@ -183,6 +188,55 @@ class ManagerController extends Base
             ]
         );
 
+    }
+
+    /**
+     * @return string
+     */
+    public function actionCreatesite2()
+    {
+        $this->requireEligibleToCreateUser();
+
+        $model  = new SiteCreateForm2();
+        $errors = [];
+
+        $post = \Yii::$app->request->post();
+        if (isset($post['create'])) {
+            try {
+                $model->setAttributes($post['SiteCreateForm']);
+                if ($model->validate()) {
+                    $site = $model->createSiteFromForm(User::getCurrentUser());
+
+                    $login_id   = User::getCurrentUser()->id;
+                    $login_code = AntiXSS::createToken($login_id);
+
+                    return $this->render(
+                        'created',
+                        [
+                            'site'       => $site,
+                            'login_id'   => $login_id,
+                            'login_code' => $login_code,
+                        ]
+                    );
+                } else {
+                    foreach ($model->getErrors() as $message) {
+                        foreach ($message as $message2) {
+                            $errors[] = $message2;
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
+
+        return $this->render(
+            'createsite2',
+            [
+                'model'  => $model,
+                'errors' => $errors
+            ]
+        );
     }
 
     /**

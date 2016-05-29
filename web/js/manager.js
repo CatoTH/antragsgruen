@@ -4,6 +4,60 @@
 
 (function ($) {
     "use strict";
+
+    var createInstance2 = function () {
+        var $form = $("form.siteCreate"),
+            getRadioValue = function (fieldsetClass, defaultVal) {
+                var $input = $("fieldset." + fieldsetClass).find("input:checked");
+                if ($input.length > 0) {
+                    return $input.val();
+                } else {
+                    return defaultVal;
+                }
+            },
+            getWizardState = function () {
+                var data = {
+                    wording: getRadioValue('wording', 1)
+                };
+
+                return data;
+            },
+            showPanel = function ($panel) {
+                var step = $panel.data("tab");
+                $form.find(".wizard .steps li").removeClass("active");
+                $form.find(".wizard .steps ." + step).addClass("active");
+
+                $form.find(".step-pane").removeClass("active").addClass("inactive");
+                $panel.addClass("active").removeClass("inactive");
+            },
+            data = getWizardState;
+
+        $form.find("input").change(function () {
+            data = getWizardState();
+        });
+        $form.find(".radio-label input").change(function () {
+            var $fieldset = $(this).parents("fieldset").first();
+            $fieldset.find(".radio-label").removeClass("active");
+            var $active = $fieldset.find(".radio-label input:checked");
+            $active.parents(".radio-label").first().addClass("active");
+        }).trigger("change");
+
+        $form.find("fieldset.wording input").change(function () {
+            var wording = $form.find("fieldset.wording input:checked").data("wording-name");
+            $form.removeClass("wording_motion").removeClass("wording_manifesto").addClass("wording_" + wording);
+        }).trigger("change");
+
+        $form.find(".navigation .btn-next").click(function (ev) {
+            ev.preventDefault();
+            showPanel($("#panelSingleMotion"));
+        });
+        $form.find(".navigation .btn-prev").click(function (ev) {
+            ev.preventDefault();
+        });
+
+        showPanel($("#panelPurpose"));
+    };
+
     var createInstance = function () {
         var $steps = $('#SiteCreateWizard').find('li'),
             $step1 = $('#step1'),
@@ -139,6 +193,7 @@
 
     $.SiteManager = {
         "createInstance": createInstance,
+        "createInstance2": createInstance2,
         "siteConfig": siteConfig,
         "antragsgruenInit": antragsgruenInit
     };
