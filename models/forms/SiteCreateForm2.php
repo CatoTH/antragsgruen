@@ -25,7 +25,7 @@ class SiteCreateForm2 extends Model
     public $wording = 1;
 
     /** @var bool */
-    public $singleMotion  = true;
+    public $singleMotion  = false;
     public $hasAmendments = true;
     public $useScreening  = true;
 

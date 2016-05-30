@@ -32,4 +32,16 @@ return [
     'motdead_title' => 'Gibt es einen Antragsschluss?',
     'motdead_no'    => 'Nein',
     'motdead_yes'   => 'Ja:',
+
+    'screening_mot_title' => 'Vorabkontroller neuer Anträge?',
+    'screening_man_title' => 'Vorabkontroller neuer Kapitel?',
+    'screening_desc'      => 'Soll eine Freischaltung durch einen Admin erfolgen, bevor sie öffentlich sichtbar sind?',
+    'screening_yes'       => 'Ja, Vorabkontrolle',
+    'screening_no'        => 'Keine Vorabkontrolle',
+
+    'supporters_title' => 'Unterstützer*innen abfragen?',
+    'supporters_desc'  => 'Muss die Antragsteller*in beim Eintragen von Anträgen Unterstützer*innen benennen?',
+    'supporters_yes'   => 'Ja, mindestens:',
+    'supporters_no'    => 'Nein',
+
 ];

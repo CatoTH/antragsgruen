@@ -40,7 +40,7 @@ $date   = Tools::dateSql2bootstraptime($model->motionDeadline);
                 <span class="input">
                     <?= Html::radio(
                         'SiteCreateForm2[motionsDeadlineExists]',
-                        $model->motionDeadline === null,
+                        $model->motionDeadline !== null,
                         ['value' => 1]
                     ); ?>
                 </span>

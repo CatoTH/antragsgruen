@@ -23,7 +23,10 @@
                     singleMotion: getRadioValue('singleMotion', 0),
                     motionsInitiatedBy: getRadioValue('motionsInitiatedBy', 1),
                     motionsDeadlineExists: getRadioValue('motionsDeadline', 0),
-                    motionsDeadline: $form.find("fieldset.motionsDeadline .date input").val()
+                    motionsDeadline: $form.find("fieldset.motionsDeadline .date input").val(),
+                    useScreening: getRadioValue('useScreening', 1),
+                    needsSupporters: getRadioValue('needsSupporters', 0),
+                    minSupporters: $form.find("input.minSupporters").val()
                 };
 
                 return data;
@@ -64,7 +67,11 @@
                     case 'panelMotionWho':
                         return $("#panelMotionDeadline");
                     case 'panelMotionDeadline':
-                    //
+                        return $("#panelUseScreening");
+                    case 'panelUseScreening':
+                        return $("#panelNeedsSupporters");
+                    case 'panelNeedsSupporters':
+                        //
                 }
             },
             data = getWizardState;

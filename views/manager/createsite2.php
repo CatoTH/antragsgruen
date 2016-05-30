@@ -53,6 +53,8 @@ $t = function ($string) {
         <?= $this->render('_createsite_single_motion', ['model' => $model, 't' => $t]) ?>
         <?= $this->render('_createsite_motion_who', ['model' => $model, 't' => $t]) ?>
         <?= $this->render('_createsite_motion_deadline', ['model' => $model, 't' => $t]) ?>
+        <?= $this->render('_createsite_motion_screening', ['model' => $model, 't' => $t]) ?>
+        <?= $this->render('_createsite_supporters', ['model' => $model, 't' => $t]) ?>
         <!--
         <div class="step-pane" id="step2">
             <br><br>
