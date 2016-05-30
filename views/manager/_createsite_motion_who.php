@@ -14,6 +14,7 @@ use yii\helpers\Html;
             <span class="only-motion"><?= $t('motwho_mot_title') ?></span>
             <span class="only-manifesto"><?= $t('motwho_man_title') ?></span>
         </legend>
+        <div class="description">&nbsp;</div>
         <div class="options">
             <label class="radio-label">
                 <span class="title"><?= $t('motwho_admins') ?></span>
@@ -27,7 +28,7 @@ use yii\helpers\Html;
                 </span>
             </label>
             <label class="radio-label">
-                <span class="title"><?= $t('motwho_loggedin') ?></span>
+                <span class="title long"><?= $t('motwho_loggedin') ?></span>
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio(

@@ -168,6 +168,8 @@
       border-bottom: none;
       margin-bottom: 0;
       text-align: center;
+      font-size: 24px;
+      padding-top: 30px;
     }
     > .description {
       text-align: center;
@@ -180,29 +182,38 @@
     }
     .radio-label {
       display: inline-block;
-      width: 160px;
-      height: 160px;
-      border: solid 1px gray;
+      width: 190px;
+      height: 190px;
+      border: solid 1px #999;
       vertical-align: top;
       cursor: pointer;
       margin: 20px;
       position: relative;
-      padding: 10px;
+      padding: 10px 5px;
+      border-radius: 10px;
       &.active {
-        background-color: lightgrey;
+        background-color: #9f9;
       }
 
       .title {
+        display: block;
         font-size: 24px;
+        &.long {
+          font-size: 19px;
+        }
       }
       .description {
+        display: block;
         font-weight: normal;
         margin-top: 20px;
       }
-      input {
+      .input {
+        display: block;
+        text-align: center;
+        width: 100%;
         position: absolute;
         bottom: 20px;
-        left: 50%;
+        margin-left: -10px;
       }
     }
   }

@@ -28,4 +28,8 @@ return [
     'motwho_admins'    => 'Admins',
     'motwho_loggedin'  => 'Registrierte Benutzer*innen',
     'motwho_all'       => 'Alle',
+
+    'motdead_title' => 'Gibt es einen Antragsschluss?',
+    'motdead_no'    => 'Nein',
+    'motdead_yes'   => 'Ja:',
 ];

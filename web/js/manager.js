@@ -6,7 +6,8 @@
     "use strict";
 
     var createInstance2 = function () {
-        var $form = $("form.siteCreate"),
+        var firstPanel = "#panelPurpose",
+            $form = $("form.siteCreate"),
             $activePanel = null,
             getRadioValue = function (fieldsetClass, defaultVal) {
                 var $input = $("fieldset." + fieldsetClass).find("input:checked");
@@ -18,12 +19,19 @@
             },
             getWizardState = function () {
                 var data = {
-                    wording: getRadioValue('wording', 1)
+                    wording: getRadioValue('wording', 1),
+                    singleMotion: getRadioValue('singleMotion', 0),
+                    motionsInitiatedBy: getRadioValue('motionsInitiatedBy', 1),
+                    motionsDeadlineExists: getRadioValue('motionsDeadline', 0),
+                    motionsDeadline: $form.find("fieldset.motionsDeadline .date input").val()
                 };
 
                 return data;
             },
             showPanel = function ($panel) {
+                data = getWizardState();
+                console.log(data);
+
                 var step = $panel.data("tab");
                 $form.find(".wizard .steps li").removeClass("active");
                 $form.find(".wizard .steps ." + step).addClass("active");
@@ -33,6 +41,19 @@
                 }
                 $panel.addClass("active").removeClass("inactive");
                 $activePanel = $panel;
+
+                try {
+                    var isCorrect = (window.location.hash == "#" + $panel.attr("id"));
+                    if ((window.location.hash == "" || window.location.hash == "#") && "#" + $panel.attr("id") == firstPanel) {
+                        isCorrect = true;
+                    }
+                    if (!isCorrect) {
+                        console.log("change");
+                        window.location.hash = "#" + $panel.attr("id");
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
             },
             getNextPanel = function ($currPanel) {
                 switch ($currPanel.attr("id")) {
@@ -41,7 +62,9 @@
                     case 'panelSingleMotion':
                         return $("#panelMotionWho");
                     case 'panelMotionWho':
-                        //
+                        return $("#panelMotionDeadline");
+                    case 'panelMotionDeadline':
+                    //
                 }
             },
             data = getWizardState;
@@ -61,16 +84,38 @@
             $form.removeClass("wording_motion").removeClass("wording_manifesto").addClass("wording_" + wording);
         }).trigger("change");
 
+        $form.find(".input-group.date").each(function () {
+            var $this = $(this);
+            $this.datetimepicker({
+                locale: $this.find("input").data('locale')
+            });
+        });
+
         $form.find(".navigation .btn-next").click(function (ev) {
             ev.preventDefault();
             showPanel(getNextPanel($activePanel));
         });
         $form.find(".navigation .btn-prev").click(function (ev) {
             ev.preventDefault();
+            if (window.location.hash != "") {
+                window.history.back();
+            }
+        });
+
+        $(window).on("hashchange", function (ev) {
+            ev.preventDefault();
+            var hash = window.location.hash;
+            if (hash.length == 0) {
+                hash = firstPanel;
+            }
+            var $panel = $(hash);
+            if ($panel.length > 0) {
+                showPanel($panel);
+            }
         });
 
         $form.find(".step-pane").addClass("inactive");
-        showPanel($("#panelPurpose"));
+        showPanel($(firstPanel));
     };
 
     var createInstance = function () {

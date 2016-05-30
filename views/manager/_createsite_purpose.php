@@ -47,7 +47,6 @@ use yii\helpers\Html;
         </div>
     </fieldset>
     <div class="navigation">
-        <button class="btn btn-lg btn-prev"><span class="icon-chevron-left"></span> <?= $t('prev') ?></button>
         <button class="btn btn-lg btn-next btn-primary"><span class="icon-chevron-right"></span> <?= $t('next') ?>
         </button>
     </div>
