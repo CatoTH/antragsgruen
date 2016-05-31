@@ -44,4 +44,12 @@ return [
     'supporters_yes'   => 'Ja, mindestens:',
     'supporters_no'    => 'Nein',
 
+    'amend_title' => 'Sind Änderungsanträge zugelassen?',
+    'amend_no'    => 'Nein',
+    'amend_yes'   => 'Ja',
+
+    'amend_singlepara_title'  => 'Änderungsnträge auf mehrere Textstellen?',
+    'amend_singlepara_desc'   => 'Dürfen sich ÄAs nur auf einen Absatz beziehen, oder auf mehrere?',
+    'amend_singlepara_single' => 'Nur eine Textstelle',
+    'amend_singlepara_multi'  => 'Mehrere Textstellen',
 ];

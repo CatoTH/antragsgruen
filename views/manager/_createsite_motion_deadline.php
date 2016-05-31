@@ -31,7 +31,7 @@ $date   = Tools::dateSql2bootstraptime($model->motionDeadline);
             <label class="radio-label broad">
                 <span class="title long"><?= $t('motdead_yes') ?></span>
                 <span class="description">
-                    <span class="input-group date">
+                    <span class="input-group date motionsDeadline">
                         <input type="text" class="form-control" name="SiteCreateForm2[motionsDeadline]"
                                value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
@@ -41,7 +41,7 @@ $date   = Tools::dateSql2bootstraptime($model->motionDeadline);
                     <?= Html::radio(
                         'SiteCreateForm2[motionsDeadlineExists]',
                         $model->motionDeadline !== null,
-                        ['value' => 1]
+                        ['value' => 1, 'class' => 'motionsDeadlineExists']
                     ); ?>
                 </span>
             </label>

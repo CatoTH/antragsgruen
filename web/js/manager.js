@@ -21,12 +21,14 @@
                 var data = {
                     wording: getRadioValue('wording', 1),
                     singleMotion: getRadioValue('singleMotion', 0),
-                    motionsInitiatedBy: getRadioValue('motionsInitiatedBy', 1),
-                    motionsDeadlineExists: getRadioValue('motionsDeadline', 0),
-                    motionsDeadline: $form.find("fieldset.motionsDeadline .date input").val(),
+                    motionsInitiatedBy: getRadioValue('motionWho', 1),
+                    motionsDeadlineExists: getRadioValue('motionDeadline', 0),
+                    motionsDeadline: $form.find("fieldset.motionDeadline .date input").val(),
                     useScreening: getRadioValue('useScreening', 1),
                     needsSupporters: getRadioValue('needsSupporters', 0),
-                    minSupporters: $form.find("input.minSupporters").val()
+                    minSupporters: $form.find("input.minSupporters").val(),
+                    hasAmendments: getRadioValue('hasAmendments', 1),
+                    amendSinglePara: getRadioValue('amendSinglePara', 0)
                 };
 
                 return data;
@@ -71,7 +73,10 @@
                     case 'panelUseScreening':
                         return $("#panelNeedsSupporters");
                     case 'panelNeedsSupporters':
-                        //
+                        return $("#panelHasAmendments");
+                    case 'panelHasAmendments':
+                        return $("#panelAmendSinglePara");
+                    case 'panelAmendSinglePara':
                 }
             },
             data = getWizardState;
@@ -96,6 +101,12 @@
             $this.datetimepicker({
                 locale: $this.find("input").data('locale')
             });
+        });
+        $form.find(".date.motionsDeadline").on("dp.change", function() {
+            $("input.motionsDeadlineExists").prop("checked", true).change();
+        });
+        $form.find("input.minSupporters").change(function() {
+           $("input.needsSupporters").prop("checked", true).change();
         });
 
         $form.find(".navigation .btn-next").click(function (ev) {
