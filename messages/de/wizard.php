@@ -29,9 +29,19 @@ return [
     'motwho_loggedin'  => 'Registrierte Benutzer*innen',
     'motwho_all'       => 'Alle',
 
-    'motdead_title' => 'Gibt es einen Antragsschluss?',
-    'motdead_no'    => 'Nein',
-    'motdead_yes'   => 'Ja:',
+    'amendwho_title'    => 'Wer darf Änderungsanträge einreichen?',
+    'amendwho_admins'   => 'Admins',
+    'amendwho_loggedin' => 'Registrierte Benutzer*innen',
+    'amendwho_all'      => 'Alle',
+
+    'motdead_title'   => 'Gibt es einen Antragsschluss?',
+    'motdead_desc'    => 'Der Zeitpunkt, bis zu dem Anträge eingereicht werden können',
+    'motdead_no'      => 'Nein',
+    'motdead_yes'     => 'Ja:',
+    'amenddead_title' => 'Antragsschluss für Änderungsanträge?',
+    'amenddead_desc'  => 'Der Zeitpunkt, bis zu dem Änderungsanträge eingereicht werden können',
+    'amenddead_no'    => 'Nein',
+    'amenddead_yes'   => 'Ja:',
 
     'screening_mot_title' => 'Vorabkontroller neuer Anträge?',
     'screening_man_title' => 'Vorabkontroller neuer Kapitel?',

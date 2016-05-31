@@ -57,6 +57,8 @@ $t = function ($string) {
         <?= $this->render('_createsite_supporters', ['model' => $model, 't' => $t]) ?>
         <?= $this->render('_createsite_amendments', ['model' => $model, 't' => $t]) ?>
         <?= $this->render('_createsite_amend_single_para', ['model' => $model, 't' => $t]) ?>
+        <?= $this->render('_createsite_amend_who', ['model' => $model, 't' => $t]) ?>
+        <?= $this->render('_createsite_amend_deadline', ['model' => $model, 't' => $t]) ?>
         <!--
         <div class="step-pane" id="step2">
             <br><br>

@@ -28,7 +28,10 @@
                     needsSupporters: getRadioValue('needsSupporters', 0),
                     minSupporters: $form.find("input.minSupporters").val(),
                     hasAmendments: getRadioValue('hasAmendments', 1),
-                    amendSinglePara: getRadioValue('amendSinglePara', 0)
+                    amendSinglePara: getRadioValue('amendSinglePara', 0),
+                    amendmentInitiatedBy: getRadioValue('amendmentWho', 1),
+                    amendmentDeadlineExists: getRadioValue('amendmentDeadline', 0),
+                    amendmentDeadline: $form.find("fieldset.amendmentDeadline .date input").val()
                 };
 
                 return data;
@@ -77,6 +80,10 @@
                     case 'panelHasAmendments':
                         return $("#panelAmendSinglePara");
                     case 'panelAmendSinglePara':
+                        return $("#panelAmendWho");
+                    case 'panelAmendWho':
+                        return $("#panelAmendDeadline");
+                    case 'panelAmendDeadline':
                 }
             },
             data = getWizardState;
@@ -102,11 +109,14 @@
                 locale: $this.find("input").data('locale')
             });
         });
-        $form.find(".date.motionsDeadline").on("dp.change", function() {
+        $form.find(".date.motionsDeadline").on("dp.change", function () {
             $("input.motionsDeadlineExists").prop("checked", true).change();
         });
-        $form.find("input.minSupporters").change(function() {
-           $("input.needsSupporters").prop("checked", true).change();
+        $form.find(".date.amendmentDeadline").on("dp.change", function () {
+            $("input.amendDeadlineExists").prop("checked", true).change();
+        });
+        $form.find("input.minSupporters").change(function () {
+            $("input.needsSupporters").prop("checked", true).change();
         });
 
         $form.find(".navigation .btn-next").click(function (ev) {

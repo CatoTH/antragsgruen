@@ -9,39 +9,39 @@ use yii\helpers\Html;
  */
 
 $locale = Tools::getCurrentDateLocale();
-$date   = Tools::dateSql2bootstraptime($model->motionDeadline);
+$date   = Tools::dateSql2bootstraptime($model->amendmentDeadline);
 
 ?>
-<div class="step-pane active" id="panelMotionDeadline" data-tab="stepMotion">
-    <fieldset class="motionDeadline">
-        <legend><?= $t('motdead_title') ?></legend>
-        <div class="description"><?= $t('motdead_desc') ?></div>
+<div class="step-pane active" id="panelAmendDeadline" data-tab="stepAmendment">
+    <fieldset class="amendmentDeadline">
+        <legend><?= $t('amenddead_title') ?></legend>
+        <div class="description"><?= $t('amenddead_desc') ?></div>
         <div class="options">
             <label class="radio-label">
-                <span class="title"><?= $t('motdead_no') ?></span>
+                <span class="title"><?= $t('amenddead_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[motionsDeadlineExists]',
-                        $model->motionDeadline === null,
+                        'SiteCreateForm2[amendDeadlineExists]',
+                        $model->amendmentDeadline === null,
                         ['value' => 0]
                     ); ?>
                 </span>
             </label>
             <label class="radio-label broad">
-                <span class="title long"><?= $t('motdead_yes') ?></span>
+                <span class="title long"><?= $t('amenddead_yes') ?></span>
                 <span class="description">
-                    <span class="input-group date motionsDeadline">
-                        <input type="text" class="form-control" name="SiteCreateForm2[motionsDeadline]"
+                    <span class="input-group date amendmentDeadline">
+                        <input type="text" class="form-control" name="SiteCreateForm2[amendmentDeadline]"
                                value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[motionsDeadlineExists]',
-                        $model->motionDeadline !== null,
-                        ['value' => 1, 'class' => 'motionsDeadlineExists']
+                        'SiteCreateForm2[amendDeadlineExists]',
+                        $model->amendmentDeadline !== null,
+                        ['value' => 1, 'class' => 'amendDeadlineExists']
                     ); ?>
                 </span>
             </label>
