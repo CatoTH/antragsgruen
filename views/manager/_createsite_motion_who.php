@@ -27,7 +27,7 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label">
+            <label class="radio-label two-lines">
                 <span class="title long"><?= $t('motwho_loggedin') ?></span>
                 <span class="description"></span>
                 <span class="input">

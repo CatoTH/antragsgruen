@@ -14,7 +14,7 @@ return [
     'purpose_desc'           => 'Das wirkt sich ausschließlich auf das &quot;Wording&quot; aus.',
     'purpose_motions'        => 'Anträge',
     'purpose_manifesto'      => 'Programm',
-    'purpose_manifesto_desc' => '(Wahl-/Partei)&shy;Programme',
+    'purpose_manifesto_desc' => '(Wahl-/Partei-)',
 
     'single_mot_title' => 'Werden mehrere Anträge diskutiert?',
     'single_man_title' => 'Gibt es mehrere Kapitel?',

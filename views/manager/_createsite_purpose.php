@@ -33,9 +33,9 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label">
-                <span class="title"><?=$t('purpose_manifesto')?></span>
+            <label class="radio-label description-first">
                 <span class="description"><?=$t('purpose_manifesto_desc')?></span>
+                <span class="title"><?=$t('purpose_manifesto')?></span>
                 <span class="input">
                     <?= Html::radio(
                         'SiteCreateForm2[wording]',

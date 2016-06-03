@@ -28,7 +28,7 @@ $date   = Tools::dateSql2bootstraptime($model->motionDeadline);
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label broad">
+            <label class="radio-label date-label broad">
                 <span class="title long"><?= $t('motdead_yes') ?></span>
                 <span class="description">
                     <span class="input-group date motionsDeadline">
