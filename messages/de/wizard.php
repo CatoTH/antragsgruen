@@ -43,11 +43,12 @@ return [
     'amenddead_no'    => 'Nein',
     'amenddead_yes'   => 'Ja:',
 
-    'screening_mot_title' => 'Vorabkontroller neuer Anträge?',
-    'screening_man_title' => 'Vorabkontroller neuer Kapitel?',
-    'screening_desc'      => 'Soll eine Freischaltung durch einen Admin erfolgen, bevor sie öffentlich sichtbar sind?',
-    'screening_yes'       => 'Ja, Vorabkontrolle',
-    'screening_no'        => 'Keine Vorabkontrolle',
+    'screening_mot_title'   => 'Vorabkontrolle neuer Anträge?',
+    'screening_man_title'   => 'Vorabkontrolle neuer Kapitel?',
+    'screening_amend_title' => 'Vorabkontrolle von Änderungsanträgen?',
+    'screening_desc'        => 'Soll eine Freischaltung durch einen Admin erfolgen, bevor sie öffentlich sichtbar sind?',
+    'screening_yes'         => 'Ja, Vorabkontrolle',
+    'screening_no'          => 'Keine Vorabkontrolle',
 
     'supporters_title' => 'Unterstützer*innen abfragen?',
     'supporters_desc'  => 'Muss die Antragsteller*in beim Eintragen von Anträgen Unterstützer*innen benennen?',
@@ -62,4 +63,14 @@ return [
     'amend_singlepara_desc'   => 'Dürfen sich ÄAs nur auf einen Absatz beziehen, oder auf mehrere?',
     'amend_singlepara_single' => 'Nur eine Textstelle',
     'amend_singlepara_multi'  => 'Mehrere Textstellen',
+
+    'comments_title' => 'Kommentieren von Anträgen?',
+    'comments_desc'  => 'Benutzer*innen können (Änderungs-)Anträge absatzweise kommentieren',
+    'comments_no'    => 'Nein',
+    'comments_yes'   => 'Ja',
+
+    'agenda_title' => 'Gibt es eine Tagesordnung?',
+    'agenda_desc'  => 'Auf der Startseite kann dann eine Tagesordnung festgelegt werden',
+    'agenda_no'    => 'Nein',
+    'agenda_yes'   => 'Ja',
 ];

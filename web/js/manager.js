@@ -24,14 +24,17 @@
                     motionsInitiatedBy: getRadioValue('motionWho', 1),
                     motionsDeadlineExists: getRadioValue('motionDeadline', 0),
                     motionsDeadline: $form.find("fieldset.motionDeadline .date input").val(),
-                    useScreening: getRadioValue('useScreening', 1),
+                    motionScreening: getRadioValue('motionScreening', 1),
                     needsSupporters: getRadioValue('needsSupporters', 0),
                     minSupporters: $form.find("input.minSupporters").val(),
                     hasAmendments: getRadioValue('hasAmendments', 1),
                     amendSinglePara: getRadioValue('amendSinglePara', 0),
                     amendmentInitiatedBy: getRadioValue('amendmentWho', 1),
                     amendmentDeadlineExists: getRadioValue('amendmentDeadline', 0),
-                    amendmentDeadline: $form.find("fieldset.amendmentDeadline .date input").val()
+                    amendmentDeadline: $form.find("fieldset.amendmentDeadline .date input").val(),
+                    amendScreening: getRadioValue('amendScreening', 1),
+                    hasComments: getRadioValue('hasComments', 1),
+                    hasAgenda: getRadioValue('hasAgenda', 0)
                 };
 
                 return data;
@@ -72,8 +75,8 @@
                     case 'panelMotionWho':
                         return $("#panelMotionDeadline");
                     case 'panelMotionDeadline':
-                        return $("#panelUseScreening");
-                    case 'panelUseScreening':
+                        return $("#panelMotionScreening");
+                    case 'panelMotionScreening':
                         return $("#panelNeedsSupporters");
                     case 'panelNeedsSupporters':
                         return $("#panelHasAmendments");
@@ -84,6 +87,12 @@
                     case 'panelAmendWho':
                         return $("#panelAmendDeadline");
                     case 'panelAmendDeadline':
+                        return $("#panelAmendScreening");
+                    case 'panelAmendScreening':
+                        return $("#panelComments");
+                    case 'panelComments':
+                        return $("#panelAgenda");
+                    case 'panelAgenda':
                 }
             },
             data = getWizardState;

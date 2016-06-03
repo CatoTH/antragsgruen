@@ -8,26 +8,23 @@ use yii\helpers\Html;
  */
 
 ?>
-<div class="step-pane active" id="panelMotionScreening" data-tab="stepMotion">
-    <fieldset class="motionScreening">
-        <legend>
-            <span class="only-motion"><?= $t('screening_mot_title') ?></span>
-            <span class="only-manifesto"><?= $t('screening_man_title') ?></span>
-        </legend>
+<div class="step-pane active" id="panelAmendScreening" data-tab="stepAmendments">
+    <fieldset class="amendScreening">
+        <legend><?= $t('screening_amend_title') ?></legend>
         <div class="description"><?= $t('screening_desc') ?></div>
         <div class="options">
             <label class="radio-label two-lines">
                 <span class="title"><?= $t('screening_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[motionScreening]', !$model->motionScreening, ['value' => 0]); ?>
+                    <?= Html::radio('SiteCreateForm2[amendScreening]', !$model->amendScreening, ['value' => 0]); ?>
                 </span>
             </label>
             <label class="radio-label two-lines">
                 <span class="title"><?= $t('screening_yes') ?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[motionScreening]', $model->motionScreening, ['value' => 1]); ?>
+                    <?= Html::radio('SiteCreateForm2[amendScreening]', $model->amendScreening, ['value' => 1]); ?>
                 </span>
             </label>
         </div>
