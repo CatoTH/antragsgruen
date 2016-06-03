@@ -18,7 +18,7 @@
                 }
             },
             getWizardState = function () {
-                var data = {
+                return {
                     wording: getRadioValue('wording', 1),
                     singleMotion: getRadioValue('singleMotion', 0),
                     motionsInitiatedBy: getRadioValue('motionWho', 1),
@@ -34,10 +34,13 @@
                     amendmentDeadline: $form.find("fieldset.amendmentDeadline .date input").val(),
                     amendScreening: getRadioValue('amendScreening', 1),
                     hasComments: getRadioValue('hasComments', 1),
-                    hasAgenda: getRadioValue('hasAgenda', 0)
+                    hasAgenda: getRadioValue('hasAgenda', 0),
+                    openNow: getRadioValue('openNow', 0),
+                    title: $("#siteTitle").val(),
+                    organization: $("#siteOrganization").val(),
+                    subdomain: $("#siteSubdomain").val(),
+                    contact: $("#siteContact").val()
                 };
-
-                return data;
             },
             showPanel = function ($panel) {
                 data = getWizardState();
@@ -93,6 +96,9 @@
                     case 'panelComments':
                         return $("#panelAgenda");
                     case 'panelAgenda':
+                        return $("#panelOpenNow");
+                    case 'panelOpenNow':
+                        return $("#panelSiteData")
                 }
             },
             data = getWizardState;
@@ -129,6 +135,9 @@
         });
 
         $form.find(".navigation .btn-next").click(function (ev) {
+            if ($(this).attr("type") == "submit") {
+                return;
+            }
             ev.preventDefault();
             showPanel(getNextPanel($activePanel));
         });
@@ -137,6 +146,9 @@
             if (window.location.hash != "") {
                 window.history.back();
             }
+        });
+        $form.submit(function (ev) {
+
         });
 
         $(window).on("hashchange", function (ev) {

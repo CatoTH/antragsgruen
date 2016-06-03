@@ -212,7 +212,7 @@
       }
       &.two-lines {
         .title {
-          margin-top: 45px;
+          margin-top: 40px;
         }
       }
       &.date-label {
@@ -285,6 +285,10 @@
     &.inactive {
       display: none;
     }
+  }
+
+  .siteData .firstrow {
+    margin-top: 20px;
   }
 
   &.wording_manifesto .only-motion {

@@ -7,8 +7,9 @@ return [
     'step_special'    => 'Sonderfälle',
     'step_site'       => 'Organisatorisches',
 
-    'next' => 'Weiter',
-    'prev' => 'Zurück',
+    'next'   => 'Weiter',
+    'prev'   => 'Zurück',
+    'finish' => 'Fertig / Seite anlegen',
 
     'purpose_title'          => 'Was soll diskutiert werden?',
     'purpose_desc'           => 'Das wirkt sich ausschließlich auf das &quot;Wording&quot; aus.',
@@ -73,4 +74,18 @@ return [
     'agenda_desc'  => 'Auf der Startseite kann dann eine Tagesordnung festgelegt werden',
     'agenda_no'    => 'Nein',
     'agenda_yes'   => 'Ja',
+
+    'opennow_title' => 'Die Seite sofort veröffentlichen?',
+    'opennow_desc'  => 'Oder zuerst im Wartungsmodus belassen?',
+    'opennow_no'    => 'Zuerst in den Wartungsmodus',
+    'opennow_yes'   => 'Sofort starten',
+
+    'sitedate_title'          => 'Fast geschafft!',
+    'sitedate_desc'           => 'Noch ein paar organisatorische Angaben...',
+    'sitedata_sitetitle'      => 'Name der Veranstaltung / des Programms',
+    'sitedata_organization'   => 'Name der veranstaltenden Organisation',
+    'sitedata_subdomain'      => 'Unter folgender Adresse soll es erreichbar sein',
+    'sitedata_subdomain_hint' => 'Es sind nur Buchstaben, Zahlen, "_" und "-" möglich.',
+    'sitedata_contact'        => 'Kontaktadresse',
+    'sitedata_contact_hint'   => '(Name, E-Mail, postalische Adresse; wird standardmäßig im Impressum genannt)',
 ];
