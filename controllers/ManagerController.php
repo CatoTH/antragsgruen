@@ -132,6 +132,20 @@ class ManagerController extends Base
         return $user;
     }
 
+    /**
+     * @param string $test
+     */
+    public function actionCheckSubdomain($test)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $available = Site::isSubdomainAvailable($test);
+        return json_encode([
+            'available' => $available
+        ]);
+    }
+
 
     /**
      * @return string

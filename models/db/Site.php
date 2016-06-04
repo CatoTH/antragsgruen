@@ -114,6 +114,20 @@ class Site extends ActiveRecord
         $this->settings       = $settings->toJSON();
     }
 
+    /**
+     * @param string $subdomain
+     * @return boolean
+     */
+    public static function isSubdomainAvailable($subdomain)
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if (in_array($subdomain, $params->blockedSubdomains)) {
+            return false;
+        }
+        $site = Site::findOne(['subdomain' => $subdomain]);
+        return ($site === null);
+    }
 
     /**
      * @return Site[]

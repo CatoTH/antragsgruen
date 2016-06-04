@@ -84,8 +84,9 @@ return [
     'sitedate_desc'           => 'Noch ein paar organisatorische Angaben...',
     'sitedata_sitetitle'      => 'Name der Veranstaltung / des Programms',
     'sitedata_organization'   => 'Name der veranstaltenden Organisation',
-    'sitedata_subdomain'      => 'Unter folgender Adresse soll es erreichbar sein',
+    'sitedata_subdomain'      => 'Internet-Adresse der Seite',
     'sitedata_subdomain_hint' => 'Es sind nur Buchstaben, Zahlen, "_" und "-" möglich.',
     'sitedata_contact'        => 'Kontaktadresse',
-    'sitedata_contact_hint'   => '(Name, E-Mail, postalische Adresse; wird standardmäßig im Impressum genannt)',
+    'sitedata_contact_hint'   => 'Name, E-Mail, postalische Adresse fürs Impressum',
+    'sitedata_subdomain_err'  => 'Die Subdomain "%SUBDOMAIN%" ist nicht verfügbar.',
 ];

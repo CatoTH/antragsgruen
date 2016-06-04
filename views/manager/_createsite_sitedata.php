@@ -16,7 +16,7 @@ use yii\helpers\Html;
         <div class="row firstrow">
             <div class="col-md-6 col-md-offset-3">
 
-                <div class="form-group">
+                <div class="form-group has-feedback">
                     <label class="name" for="siteTitle"><?= $t('sitedata_sitetitle') ?>:</label>
                     <?= Html::input(
                         'text',
@@ -24,9 +24,11 @@ use yii\helpers\Html;
                         $model->title,
                         ['id' => 'siteTitle', 'class' => 'form-control']
                     ); ?>
+                    <span class="error glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                    <span class="success glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group has-feedback">
                     <label class="name" for="siteOrganization"><?= $t('sitedata_organization') ?>:</label>
                     <?= Html::input(
                         'text',
@@ -34,15 +36,21 @@ use yii\helpers\Html;
                         $model->organization,
                         ['id' => 'siteOrganization', 'class' => 'form-control']
                     ); ?>
+                    <span class="error glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                    <span class="success glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
                 </div>
 
                 <?php
 
                 /** @var \app\models\settings\AntragsgruenApp $params */
                 $params = \yii::$app->params;
-                $input  = Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, ['id' => 'siteSubdomain']);
+                $input  = '<div class="form-group has-feedback">';
+                $input .= Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, ['id' => 'siteSubdomain', 'class' => 'form-control']);
+                $input .= '<span class="error glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>';
+                $input .= '<span class="success glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>';
+                $input .= '</div>';
                 ?>
-                <div class="form-group">
+                <div class="subdomainRow">
                     <label class="url" for="subdomain"><?= $t('sitedata_subdomain') ?>:</label>
                     <div class="fakeurl">
                         <?php
@@ -54,13 +62,18 @@ use yii\helpers\Html;
                         ?>
                     </div>
                     <div class="labelSubInfo"><?= $t('sitedata_subdomain_hint') ?></div>
+                    <div class="subdomainError" data-template="<?=Html::encode($t('sitedata_subdomain_err'))?>"><?=$t('sitedata_subdomain_err')?></div>
                 </div>
 
-                <div class="contact">
+                <div class="contactRow">
                     <label>
-                        <strong><?= $t('sitedata_contact') ?>:</strong>
+                        <strong><?= $t('sitedata_contact') ?>:</strong><br>
                         <small><?= $t('sitedata_contact_hint') ?></small>
-                        <?= Html::textarea('SiteCreateForm[contact]', $model->contact, ['rows' => 5, 'required', 'id' => 'siteContact']) ?>
+                        <?= Html::textarea(
+                            'SiteCreateForm[contact]',
+                            $model->contact,
+                            ['rows' => 5, 'required' => 'required', 'id' => 'siteContact', 'class' => 'form-control']
+                        ) ?>
                     </label>
 
                 </div>

@@ -63,7 +63,7 @@
                     }
                     if (!isCorrect) {
                         console.log("change");
-                        window.location.hash = "#" + $panel.attr("id");
+                        window.location.hash = "#" + $panel.attr("id").substring(5);
                     }
                 } catch (e) {
                     console.log(e);
@@ -153,7 +153,7 @@
 
         $(window).on("hashchange", function (ev) {
             ev.preventDefault();
-            var hash = window.location.hash;
+            var hash = "#panel" + window.location.hash.substring(1);
             if (hash.length == 0) {
                 hash = firstPanel;
             }

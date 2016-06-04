@@ -1,66 +1,5 @@
 @charset "UTF-8";
 
-.siteCreate {
-  .next {
-    text-align: right;
-  }
-  .sitePreset {
-    font-size: 16px;
-    font-weight: bold;
-    vertical-align: middle;
-    margin-top: 30px;
-
-    div {
-      display: inline-block;
-      vertical-align: middle;
-    }
-    input {
-      vertical-align: middle;
-      margin-top: 0;
-      margin-right: 6px;
-    }
-
-  }
-  .sitePresetInfo {
-    padding-left: 10px;
-    margin-left: 20px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border-left: solid 3px lightgray;
-  }
-  .url .domain {
-    font-size: 16px;
-  }
-  .url .domain input {
-    width: 130px;
-    padding: 0;
-    margin-left: 2px;
-    margin-top: 0;
-  }
-  .url .fakeurl {
-    font-weight: normal;
-  }
-  label.name, label.url {
-    font-weight: bold;
-  }
-  .payment label {
-    display: inline;
-  }
-
-  .policy {
-    margin-bottom: 20px;
-  }
-
-  .contact textarea {
-    width: 300px;
-    height: 80px;
-  }
-
-  label {
-    display: block;
-  }
-}
-
 .antragsgruenInitForm {
   .testDB {
     overflow: auto;
@@ -163,6 +102,9 @@
 
 /* New version */
 .siteCreate {
+  .wizard {
+    font-family: "Open Sans", sans-serif;
+  }
   fieldset {
     > legend {
       border-bottom: none;
@@ -203,6 +145,7 @@
       }
 
       .title {
+        font-family: "Open Sans", sans-serif;
         margin-top: 60px;
         display: block;
         font-size: 24px;
@@ -240,6 +183,9 @@
         position: absolute;
         bottom: 10px;
         margin-left: -5px;
+        input:focus {
+          outline: none;
+        }
         input[type=radio] {
           -webkit-appearance: none;
           -moz-appearance: none;
@@ -262,6 +208,9 @@
           }
         }
       }
+      .form-control {
+        padding: 6px;
+      }
     }
   }
   .navigation {
@@ -277,7 +226,6 @@
       float: right;
     }
   }
-
   .step-pane {
     &.active {
 
@@ -287,8 +235,41 @@
     }
   }
 
-  .siteData .firstrow {
-    margin-top: 20px;
+  .siteData {
+    .error {
+      display: none;
+    }
+    .has-error .error {
+      display: block;
+    }
+    .success {
+      display: none;
+    }
+    .has-success .success {
+      display: block;
+    }
+    .firstrow {
+      margin-top: 20px;
+    }
+    .subdomainRow .form-group {
+      width: 130px;
+      display: inline-block;
+    }
+    .subdomainRow {
+      .subdomainError {
+        color: red;
+        font-weight: bold;
+      }
+    }
+    .contactRow {
+      margin-top: 20px;
+      small {
+        font-weight: normal;
+      }
+    }
+    .fakeurl .form-group {
+      margin-bottom: 0;
+    }
   }
 
   &.wording_manifesto .only-motion {
