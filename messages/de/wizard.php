@@ -89,4 +89,10 @@ return [
     'sitedata_contact'        => 'Kontaktadresse',
     'sitedata_contact_hint'   => 'Name, E-Mail, postalische Adresse fürs Impressum',
     'sitedata_subdomain_err'  => 'Die Subdomain "%SUBDOMAIN%" ist nicht verfügbar.',
+
+    'created_title'          => 'Veranstaltung angelegt',
+    'created_msg'            => 'Die Veranstaltung wurde angelegt.',
+    'created_goto_con'       => 'Zur neu angelegten Veranstaltung',
+    'created_goto_motion'    => 'Hier kannst du nun den Antrag anlegen',
+    'created_goto_manifesto' => 'Hier kannst du nun den Text eingeben',
 ];

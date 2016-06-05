@@ -8,6 +8,8 @@ use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationText;
+use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
@@ -57,6 +59,13 @@ class SiteCreateForm extends Model
     public $hasAgenda   = false;
 
     public $openNow = false;
+
+    /** @var Consultation|null */
+    public $consultation = null;
+    /** @var Site|null */
+    public $site;
+    /** @var Motion|null */
+    public $motion;
 
     /**
      * @return array
@@ -111,7 +120,6 @@ class SiteCreateForm extends Model
 
     /**
      * @param User $currentUser
-     * @return Site
      * @throws FormError
      */
     public function createSite(User $currentUser)
@@ -135,6 +143,7 @@ class SiteCreateForm extends Model
         if (!$site->save()) {
             throw new FormError($site->getErrors());
         }
+        $this->site = $site;
 
         $con                     = new Consultation();
         $con->siteId             = $site->id;
@@ -169,6 +178,8 @@ class SiteCreateForm extends Model
             $site->delete();
             throw new FormError($con->getErrors());
         }
+        $this->consultation = $con;
+
 
         $site->link('currentConsultation', $con);
         $site->link('admins', $currentUser);
@@ -187,7 +198,33 @@ class SiteCreateForm extends Model
 
         $this->createImprint($site, $con);
 
-        return $site;
+        if ($this->singleMotion) {
+            $motion                 = new Motion();
+            $motion->consultationId = $con->id;
+            $motion->motionTypeId   = $type->id;
+            $motion->dateCreation   = date('Y-m-d H:i:s');
+            $motion->status         = Motion::STATUS_DRAFT;
+            if (!$motion->save()) {
+                throw new FormError($motion->getErrors());
+            }
+
+            $supporter           = new MotionSupporter();
+            $supporter->motionId = $motion->id;
+            $supporter->userId   = $currentUser->id;
+            $supporter->role     = MotionSupporter::ROLE_INITIATOR;
+            $supporter->position = 0;
+            if (!$supporter->save()) {
+                throw new FormError($motion->getErrors());
+            }
+
+            $this->motion = $motion;
+
+            $conSett                   = $this->consultation->getSettings();
+            $conSett->forceMotion      = $motion->id;
+            $conSett->screeningMotions = false;
+            $this->consultation->setSettings($conSett);
+            $this->consultation->save();
+        }
     }
 
 
@@ -229,10 +266,15 @@ class SiteCreateForm extends Model
         } else {
             $type->policyComments = IPolicy::POLICY_NOBODY;
         }
-        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
-        $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
-        $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
+        $type->policySupportMotions    = IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments = IPolicy::POLICY_NOBODY;
+        if ($this->singleMotion) {
+            $type->contactPhone = ConsultationMotionType::CONTACT_NONE;
+            $type->contactEmail = ConsultationMotionType::CONTACT_NONE;
+        } else {
+            $type->contactPhone = ConsultationMotionType::CONTACT_OPTIONAL;
+            $type->contactEmail = ConsultationMotionType::CONTACT_REQUIRED;
+        }
         $type->supportType                 = ISupportType::ONLY_INITIATOR;
         $type->texTemplateId               = 1;
         $type->amendmentMultipleParagraphs = 1;

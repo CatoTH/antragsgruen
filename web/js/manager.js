@@ -112,7 +112,11 @@
                     case 'panelAmendScreening':
                         return $("#panelComments");
                     case 'panelComments':
-                        return $("#panelAgenda");
+                        if (data.singleMotion == 1) {
+                            return $("#panelOpenNow");
+                        } else {
+                            return $("#panelAgenda");
+                        }
                     case 'panelAgenda':
                         return $("#panelOpenNow");
                     case 'panelOpenNow':
