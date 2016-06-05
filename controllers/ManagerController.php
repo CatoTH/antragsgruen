@@ -9,6 +9,7 @@ use app\components\UrlHelper;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Access;
+use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\AntragsgruenInitForm;
 use app\models\forms\SiteCreateForm;
@@ -234,11 +235,7 @@ class ManagerController extends Base
                         ]
                     );
                 } else {
-                    foreach ($model->getErrors() as $message) {
-                        foreach ($message as $message2) {
-                            $errors[] = $message2;
-                        }
-                    }
+                    throw new FormError($model->getErrors());
                 }
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
