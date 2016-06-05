@@ -7,8 +7,8 @@
 class_name: AcceptanceTester
 modules:
     enabled:
-        - WebDriver
         - Asserts
+        - \Helper\AntragsgruenWebDriver
         - \Helper\Acceptance
         - \Helper\HTMLValidator
         - \Helper\Download
@@ -16,7 +16,7 @@ modules:
         - \Helper\AccessibilityValidator
         - \Helper\ConfigurationChanger
     config:
-        WebDriver:
+        \Helper\AntragsgruenWebDriver:
             url: 'http://localhost:8080/'
             host: 127.0.0.1
             port: 4444

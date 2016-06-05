@@ -11,8 +11,16 @@ class Download extends \Codeception\Module
      */
     public function getAbsoluteHref($selector)
     {
-        /** @var \Codeception\Module\WebDriver $webdriver */
-        $webdriver = $this->getModule('WebDriver');
+        if ($this->hasModule('\Helper\AntragsgruenWebDriver')) {
+            /** @var \Helper\AntragsgruenWebDriver $webdriver */
+            $webdriver = $this->getModule('\Helper\AntragsgruenWebDriver');
+        } elseif ($this->hasModule('WebDriver')) {
+            /** @var \Codeception\Module\WebDriver $webdriver */
+            $webdriver = $this->getModule('WebDriver');
+        } else {
+            throw new \Exception("WebDriver not found");
+        }
+
         return $webdriver->executeJS('
             var $element = $("' . $selector . '");
             //return $element.attr("href");
@@ -29,8 +37,8 @@ class Download extends \Codeception\Module
      */
     public function downloadLink($selector)
     {
-        $url = $this->getAbsoluteHref($selector);
-        $handle  = curl_init();
+        $url    = $this->getAbsoluteHref($selector);
+        $handle = curl_init();
         curl_setopt($handle, CURLOPT_URL, $url);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
         $data = curl_exec($handle);

@@ -26,7 +26,7 @@ class Acceptance extends \Codeception\Module
     /**
      * @param string $page
      */
-    public function amOnPage($page)
+    public function amOnPage2($page)
     {
         $urlParts = parse_url($page);
         /** @var WebDriver $webdriver */

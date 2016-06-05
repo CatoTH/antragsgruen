@@ -75,7 +75,11 @@ class AccessibilityValidator extends \Codeception\Module
      */
     private function getPageUrl()
     {
-        if ($this->hasModule('WebDriver')) {
+        if ($this->hasModule('\Helper\AntragsgruenWebDriver')) {
+            /** @var \Helper\AntragsgruenWebDriver $webdriver */
+            $webdriver = $this->getModule('\Helper\AntragsgruenWebDriver');
+            return $webdriver->webDriver->getCurrentURL();
+        } elseif ($this->hasModule('WebDriver')) {
             /** @var \Codeception\Module\WebDriver $webdriver */
             $webdriver = $this->getModule('WebDriver');
             return $webdriver->webDriver->getCurrentURL();
