@@ -1,9 +1,8 @@
 <?php
-use app\models\forms\SiteCreateForm2;
 use yii\helpers\Html;
 
 /**
- * @var SiteCreateForm2 $model
+ * @var \app\models\forms\SiteCreateForm $model
  * @var \Callable $t
  */
 
@@ -22,7 +21,7 @@ use yii\helpers\Html;
                         'text',
                         'SiteCreateForm[title]',
                         $model->title,
-                        ['id' => 'siteTitle', 'class' => 'form-control']
+                        ['id' => 'siteTitle', 'class' => 'form-control', 'required' => 'required']
                     ); ?>
                     <span class="error glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                     <span class="success glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
@@ -34,7 +33,7 @@ use yii\helpers\Html;
                         'text',
                         'SiteCreateForm[organization]',
                         $model->organization,
-                        ['id' => 'siteOrganization', 'class' => 'form-control']
+                        ['id' => 'siteOrganization', 'class' => 'form-control', 'required' => 'required']
                     ); ?>
                     <span class="error glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                     <span class="success glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
@@ -44,8 +43,10 @@ use yii\helpers\Html;
 
                 /** @var \app\models\settings\AntragsgruenApp $params */
                 $params = \yii::$app->params;
+                $requestUrl = \app\components\UrlHelper::createUrl(['manager/check-subdomain', 'test' => 'SUBDOMAIN']);
                 $input  = '<div class="form-group has-feedback">';
-                $input .= Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, ['id' => 'siteSubdomain', 'class' => 'form-control']);
+                $opts = ['id' => 'siteSubdomain', 'class' => 'form-control', 'data-query-url' => $requestUrl, 'required' => 'required'];
+                $input .= Html::input('text', 'SiteCreateForm[subdomain]', $model->subdomain, $opts);
                 $input .= '<span class="error glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>';
                 $input .= '<span class="success glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>';
                 $input .= '</div>';
@@ -62,7 +63,7 @@ use yii\helpers\Html;
                         ?>
                     </div>
                     <div class="labelSubInfo"><?= $t('sitedata_subdomain_hint') ?></div>
-                    <div class="subdomainError" data-template="<?=Html::encode($t('sitedata_subdomain_err'))?>"><?=$t('sitedata_subdomain_err')?></div>
+                    <div class="subdomainError hidden" data-template="<?=Html::encode($t('sitedata_subdomain_err'))?>"><?=$t('sitedata_subdomain_err')?></div>
                 </div>
 
                 <div class="contactRow">
@@ -82,7 +83,8 @@ use yii\helpers\Html;
     </fieldset>
     <div class="navigation">
         <button class="btn btn-lg btn-prev"><span class="icon-chevron-left"></span> <?= $t('prev') ?></button>
-        <button type="submit" class="btn btn-lg btn-next btn-primary"><span class="icon-chevron-right"></span> <?= $t('finish') ?>
+        <button type="submit" class="btn btn-lg btn-next btn-primary" name="create">
+            <span class="icon-chevron-right"></span> <?= $t('finish') ?>
         </button>
     </div>
 </div>

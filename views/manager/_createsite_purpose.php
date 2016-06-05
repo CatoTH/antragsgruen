@@ -1,10 +1,10 @@
 <?php
-use app\models\forms\SiteCreateForm2;
+use app\models\forms\SiteCreateForm;
 use yii\helpers\Html;
 
 /**
  * @var string[] $errors
- * @var SiteCreateForm2 $model
+ * @var SiteCreateForm $model
  * @var \Callable $t
  */
 
@@ -27,9 +27,9 @@ use yii\helpers\Html;
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[wording]',
-                        $model->wording == SiteCreateForm2::WORDING_MOTIONS,
-                        ['value' => SiteCreateForm2::WORDING_MOTIONS, "data-wording-name" => "motion"]
+                        'SiteCreateForm[wording]',
+                        $model->wording == SiteCreateForm::WORDING_MOTIONS,
+                        ['value' => SiteCreateForm::WORDING_MOTIONS, "data-wording-name" => "motion"]
                     ); ?>
                 </span>
             </label>
@@ -38,9 +38,9 @@ use yii\helpers\Html;
                 <span class="title"><?=$t('purpose_manifesto')?></span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[wording]',
-                        $model->wording == SiteCreateForm2::WORDING_MANIFESTO,
-                        ['value' => SiteCreateForm2::WORDING_MANIFESTO, "data-wording-name" => "manifesto"]
+                        'SiteCreateForm[wording]',
+                        $model->wording == SiteCreateForm::WORDING_MANIFESTO,
+                        ['value' => SiteCreateForm::WORDING_MANIFESTO, "data-wording-name" => "manifesto"]
                     ); ?>
                 </span>
             </label>

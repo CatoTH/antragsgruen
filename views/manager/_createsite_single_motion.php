@@ -1,9 +1,8 @@
 <?php
-use app\models\forms\SiteCreateForm2;
 use yii\helpers\Html;
 
 /**
- * @var SiteCreateForm2 $model
+ * @var \app\models\forms\SiteCreateForm $model
  * @var \Callable $t
  */
 
@@ -23,14 +22,14 @@ use yii\helpers\Html;
                 <span class="title"><?=$t('single_one')?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[singleMotion]', $model->singleMotion, ['value' => 1]); ?>
+                    <?= Html::radio('SiteCreateForm[singleMotion]', $model->singleMotion, ['value' => 1]); ?>
                 </span>
             </label>
             <label class="radio-label">
                 <span class="title"><?=$t('single_multi')?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[singleMotion]', !$model->singleMotion, ['value' => 0]); ?>
+                    <?= Html::radio('SiteCreateForm[singleMotion]', !$model->singleMotion, ['value' => 0]); ?>
                 </span>
             </label>
         </div>

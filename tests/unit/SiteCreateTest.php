@@ -4,14 +4,14 @@ namespace unit;
 
 use app\models\db\Site;
 use app\models\db\User;
-use app\models\forms\SiteCreateForm;
+use app\models\forms\SiteCreateFormOld;
 use Codeception\Specify;
 
 class SiteCreateTest extends DBTestBase
 {
     public function testParteitag()
     {
-        $form = new SiteCreateForm();
+        $form = new SiteCreateFormOld();
 
         $success = $form->validate();
         expect('Form to complain about missing presets', $success)->false();

@@ -1,9 +1,8 @@
 <?php
-use app\models\forms\SiteCreateForm2;
 use yii\helpers\Html;
 
 /**
- * @var SiteCreateForm2 $model
+ * @var \app\models\forms\SiteCreateForm $model
  * @var \Callable $t
  */
 
@@ -17,18 +16,18 @@ use yii\helpers\Html;
                 <span class="title"><?= $t('supporters_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[needsSupporters]', !$model->needsSupporters, ['value' => 0]); ?>
+                    <?= Html::radio('SiteCreateForm[needsSupporters]', !$model->needsSupporters, ['value' => 0]); ?>
                 </span>
             </label>
             <label class="radio-label date-label">
                 <span class="title long"><?= $t('supporters_yes') ?></span>
                 <span class="description">
-                    <input type="number" name="SiteCreateForm2[minSupporters]" value="<?= $model->minSupporters ?>"
+                    <input type="number" name="SiteCreateForm[minSupporters]" value="<?= $model->minSupporters ?>"
                            class="minSupporters form-control">
                 </span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[needsSupporters]',
+                        'SiteCreateForm[needsSupporters]',
                         $model->needsSupporters,
                         ['value' => 1, 'class' => 'needsSupporters']
                     ); ?>

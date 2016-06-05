@@ -1,9 +1,9 @@
 <?php
-use app\models\forms\SiteCreateForm2;
+use app\models\forms\SiteCreateForm;
 use yii\helpers\Html;
 
 /**
- * @var SiteCreateForm2 $model
+ * @var SiteCreateForm $model
  * @var \Callable $t
  */
 
@@ -18,9 +18,9 @@ use yii\helpers\Html;
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[amendmentsInitiatedBy]',
-                        $model->amendmentsInitiatedBy == SiteCreateForm2::MOTION_INITIATED_ADMINS,
-                        ['value' => SiteCreateForm2::MOTION_INITIATED_ADMINS]
+                        'SiteCreateForm[amendInitiatedBy]',
+                        $model->amendmentsInitiatedBy == SiteCreateForm::MOTION_INITIATED_ADMINS,
+                        ['value' => SiteCreateForm::MOTION_INITIATED_ADMINS]
                     ); ?>
                 </span>
             </label>
@@ -29,9 +29,9 @@ use yii\helpers\Html;
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[amendmentsInitiatedBy]',
-                        $model->amendmentsInitiatedBy == SiteCreateForm2::MOTION_INITIATED_LOGGED_IN,
-                        ['value' => SiteCreateForm2::MOTION_INITIATED_LOGGED_IN]
+                        'SiteCreateForm[amendInitiatedBy]',
+                        $model->amendmentsInitiatedBy == SiteCreateForm::MOTION_INITIATED_LOGGED_IN,
+                        ['value' => SiteCreateForm::MOTION_INITIATED_LOGGED_IN]
                     ); ?>
                 </span>
             </label>
@@ -40,9 +40,9 @@ use yii\helpers\Html;
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[amendmentsInitiatedBy]',
-                        $model->amendmentsInitiatedBy == SiteCreateForm2::MOTION_INITIATED_ALL,
-                        ['value' => SiteCreateForm2::MOTION_INITIATED_ALL]
+                        'SiteCreateForm[amendInitiatedBy]',
+                        $model->amendmentsInitiatedBy == SiteCreateForm::MOTION_INITIATED_ALL,
+                        ['value' => SiteCreateForm::MOTION_INITIATED_ALL]
                     ); ?>
                 </span>
             </label>

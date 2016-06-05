@@ -12,7 +12,7 @@ use app\models\exceptions\Access;
 use app\models\exceptions\Internal;
 use app\models\forms\AntragsgruenInitForm;
 use app\models\forms\SiteCreateForm;
-use app\models\forms\SiteCreateForm2;
+use app\models\forms\SiteCreateFormOld;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -142,7 +142,8 @@ class ManagerController extends Base
 
         $available = Site::isSubdomainAvailable($test);
         return json_encode([
-            'available' => $available
+            'available' => $available,
+            'subdomain' => $test,
         ]);
     }
 
@@ -150,18 +151,14 @@ class ManagerController extends Base
     /**
      * @return string
      */
-    public function actionCreatesite()
+    public function actionCreatesite_old()
     {
-        if (\Yii::$app->request->get('wizard', '1') == '2') {
-            return $this->actionCreatesite2();
-        }
-
         $this->requireEligibleToCreateUser();
 
         $this->layout = 'column2';
         $this->addSidebar();
 
-        $model  = new SiteCreateForm();
+        $model  = new SiteCreateFormOld();
         $errors = [];
 
         $post = \Yii::$app->request->post();
@@ -207,11 +204,15 @@ class ManagerController extends Base
     /**
      * @return string
      */
-    public function actionCreatesite2()
+    public function actionCreatesite()
     {
+        if (\Yii::$app->request->get('wizard', '2') == '1') {
+            return $this->actionCreatesite_old();
+        }
+
         $this->requireEligibleToCreateUser();
 
-        $model  = new SiteCreateForm2();
+        $model  = new SiteCreateForm();
         $errors = [];
 
         $post = \Yii::$app->request->post();

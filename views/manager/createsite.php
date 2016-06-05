@@ -1,11 +1,10 @@
 <?php
-use app\models\forms\SiteCreateForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
  * @var yii\web\View $this
- * @var SiteCreateForm $model
+ * @var \app\models\forms\SiteCreateFormOld $model
  * @var array $errors
  * @var \app\controllers\Base $controller
  */

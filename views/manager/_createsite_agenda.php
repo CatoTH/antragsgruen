@@ -1,9 +1,8 @@
 <?php
-use app\models\forms\SiteCreateForm2;
 use yii\helpers\Html;
 
 /**
- * @var SiteCreateForm2 $model
+ * @var app\models\forms\SiteCreateForm $model
  * @var \Callable $t
  */
 
@@ -17,14 +16,14 @@ use yii\helpers\Html;
                 <span class="title"><?= $t('agenda_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[hasAgenda]', !$model->hasAgenda, ['value' => 0]); ?>
+                    <?= Html::radio('SiteCreateForm[hasAgenda]', !$model->hasAgenda, ['value' => 0]); ?>
                 </span>
             </label>
             <label class="radio-label">
                 <span class="title"><?= $t('agenda_yes') ?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[hasAgenda]', $model->hasAgenda, ['value' => 1]); ?>
+                    <?= Html::radio('SiteCreateForm[hasAgenda]', $model->hasAgenda, ['value' => 1]); ?>
                 </span>
             </label>
         </div>

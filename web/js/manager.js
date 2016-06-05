@@ -133,6 +133,45 @@
         $form.find("input.minSupporters").change(function () {
             $("input.needsSupporters").prop("checked", true).change();
         });
+        $form.find("#siteSubdomain").on("keyup change", function () {
+            var $this = $(this),
+                subdomain = $this.val(),
+                $group = $this.parents(".subdomainRow").first(),
+                requesturl = $this.data("query-url").replace(/SUBDOMAIN/, subdomain);
+            $.get(requesturl, function (ret) {
+                var $err = $group.find(".subdomainError");
+                if (ret['available']) {
+                    $err.addClass("hidden");
+                    $group.removeClass("has-error");
+                    $form.find("button[type=submit]").prop("disabled", false);
+                    if (ret['subdomain'] == $this.val()) {
+                        $group.addClass("has-success");
+                    }
+                } else {
+                    $err.removeClass("hidden");
+                    $err.html($err.data("template").replace(/%SUBDOMAIN%/, ret['subdomain']));
+                    $group.removeClass("has-success");
+                    if (ret['subdomain'] == $this.val()) {
+                        $form.find("button[type=submit]").prop("disabled", true);
+                        $group.addClass("has-error");
+                    }
+                }
+            });
+        });
+        $form.find("#siteTitle").on("keyup change", function () {
+            if ($(this).val().length >= 5) {
+                $(this).parents(".form-group").first().addClass("has-success");
+            } else {
+                $(this).parents(".form-group").first().removeClass("has-success");
+            }
+        });
+        $form.find("#siteOrganization").on("keyup change", function () {
+            if ($(this).val().length >= 5) {
+                $(this).parents(".form-group").first().addClass("has-success");
+            } else {
+                $(this).parents(".form-group").first().removeClass("has-success");
+            }
+        });
 
         $form.find(".navigation .btn-next").click(function (ev) {
             if ($(this).attr("type") == "submit") {
@@ -153,9 +192,11 @@
 
         $(window).on("hashchange", function (ev) {
             ev.preventDefault();
-            var hash = "#panel" + window.location.hash.substring(1);
-            if (hash.length == 0) {
+            var hash;
+            if (window.location.hash.substring(1) == 0) {
                 hash = firstPanel;
+            } else {
+                hash = "#panel" + window.location.hash.substring(1);
             }
             var $panel = $(hash);
             if ($panel.length > 0) {

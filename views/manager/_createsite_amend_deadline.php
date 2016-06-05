@@ -1,10 +1,9 @@
 <?php
 use app\components\Tools;
-use app\models\forms\SiteCreateForm2;
 use yii\helpers\Html;
 
 /**
- * @var SiteCreateForm2 $model
+ * @var \app\models\forms\SiteCreateForm $model
  * @var \Callable $t
  */
 
@@ -22,7 +21,7 @@ $date   = Tools::dateSql2bootstraptime($model->amendmentDeadline);
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[amendDeadlineExists]',
+                        'SiteCreateForm[amendDeadlineExists]',
                         $model->amendmentDeadline === null,
                         ['value' => 0]
                     ); ?>
@@ -32,14 +31,14 @@ $date   = Tools::dateSql2bootstraptime($model->amendmentDeadline);
                 <span class="title long"><?= $t('amenddead_yes') ?></span>
                 <span class="description">
                     <span class="input-group date amendmentDeadline">
-                        <input type="text" class="form-control" name="SiteCreateForm2[amendmentDeadline]"
+                        <input type="text" class="form-control" name="SiteCreateForm[amendDeadline]"
                                value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </span>
                 <span class="input">
                     <?= Html::radio(
-                        'SiteCreateForm2[amendDeadlineExists]',
+                        'SiteCreateForm[amendDeadlineExists]',
                         $model->amendmentDeadline !== null,
                         ['value' => 1, 'class' => 'amendDeadlineExists']
                     ); ?>

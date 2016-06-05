@@ -8,7 +8,7 @@ use app\models\db\User;
 use app\models\sitePresets\SitePresets;
 use yii\base\Model;
 
-class SiteCreateForm2 extends Model
+class SiteCreateFormOld extends Model
 {
 
     /** @var string */
@@ -19,41 +19,37 @@ class SiteCreateForm2 extends Model
 
     /** @var int */
     public $isWillingToPay = null;
-
-    const WORDING_MOTIONS   = 1;
-    const WORDING_MANIFESTO = 2;
-    public $wording = 1;
+    public $preset         = 0;
 
     /** @var bool */
-    public $singleMotion    = false;
-    public $hasAmendments   = true;
-    public $amendSinglePara = false;
-    public $motionScreening = true;
-    public $amendScreening  = true;
+    public $hasAmendments = false;
+    public $hasComments   = false;
+    public $openNow       = false;
 
-    /** @var int */
-    public $motionsInitiatedBy    = 2;
-    public $amendmentsInitiatedBy = 2;
-    const MOTION_INITIATED_ADMINS    = 1;
-    const MOTION_INITIATED_LOGGED_IN = 2;
-    const MOTION_INITIATED_ALL       = 3;
-
-    /** @var null|\DateTime */
-    public $motionDeadline    = null;
-    public $amendmentDeadline = null;
-
-    public $needsSupporters     = false;
-    public $minSupporters       = 3;
-    public $supportersWithOrgas = false;
-
-    /** @var bool */
-    public $hasComments     = false;
-    public $hasAgenda       = false;
-    public $hasApplications = false;
-
-    public $openNow    = false;
-    public $forceLogin = false;
-
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [
+                ['title', 'organization', 'subdomain', 'isWillingToPay', 'preset', 'hasAmendments', 'hasComments'],
+                'required'
+            ],
+            [
+                'contact', 'required', 'message' => \Yii::t('manager', 'site_err_contact'),
+            ],
+            [['isWillingToPay', 'preset'], 'number'],
+            [['hasAmendments', 'hasComments', 'openNow'], 'boolean'],
+            [
+                'subdomain',
+                'unique',
+                'targetClass' => Site::class,
+                'message'     => \Yii::t('manager', 'site_err_subdomain'),
+            ],
+            [['contact', 'title', 'preset', 'organization'], 'safe'],
+        ];
+    }
 
     /**
      * @param User $currentUser
@@ -62,8 +58,6 @@ class SiteCreateForm2 extends Model
      */
     public function createSiteFromForm(User $currentUser)
     {
-        var_dump($this);
-        die();
         $preset = SitePresets::getPreset($this->preset);
 
         $site         = Site::createFromForm(

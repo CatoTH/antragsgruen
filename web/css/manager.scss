@@ -251,14 +251,17 @@
     .firstrow {
       margin-top: 20px;
     }
-    .subdomainRow .form-group {
-      width: 130px;
-      display: inline-block;
-    }
     .subdomainRow {
       .subdomainError {
         color: red;
         font-weight: bold;
+      }
+      .form-group {
+        width: 160px;
+        display: inline-block;
+      }
+      #siteSubdomain {
+        padding-right: 20px;
       }
     }
     .contactRow {

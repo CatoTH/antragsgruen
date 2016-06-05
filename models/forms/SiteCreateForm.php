@@ -2,10 +2,10 @@
 
 namespace app\models\forms;
 
+use app\components\Tools;
 use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\db\User;
-use app\models\sitePresets\SitePresets;
 use yii\base\Model;
 
 class SiteCreateForm extends Model
@@ -17,14 +17,36 @@ class SiteCreateForm extends Model
     public $subdomain;
     public $organization;
 
-    /** @var int */
-    public $isWillingToPay = null;
-    public $preset         = 0;
+    const WORDING_MOTIONS   = 1;
+    const WORDING_MANIFESTO = 2;
+    public $wording = 1;
 
     /** @var bool */
-    public $hasAmendments = false;
-    public $hasComments   = false;
-    public $openNow       = false;
+    public $singleMotion    = false;
+    public $hasAmendments   = true;
+    public $amendSinglePara = false;
+    public $motionScreening = true;
+    public $amendScreening  = true;
+
+    /** @var int */
+    public $motionsInitiatedBy    = 2;
+    public $amendmentsInitiatedBy = 2;
+    const MOTION_INITIATED_ADMINS    = 1;
+    const MOTION_INITIATED_LOGGED_IN = 2;
+    const MOTION_INITIATED_ALL       = 3;
+
+    /** @var null|\DateTime */
+    public $motionDeadline    = null;
+    public $amendmentDeadline = null;
+
+    public $needsSupporters = false;
+    public $minSupporters   = 3;
+
+    /** @var bool */
+    public $hasComments = false;
+    public $hasAgenda   = false;
+
+    public $openNow = false;
 
     /**
      * @return array
@@ -32,23 +54,49 @@ class SiteCreateForm extends Model
     public function rules()
     {
         return [
-            [
-                ['title', 'organization', 'subdomain', 'isWillingToPay', 'preset', 'hasAmendments', 'hasComments'],
-                'required'
-            ],
-            [
-                'contact', 'required', 'message' => \Yii::t('manager', 'site_err_contact'),
-            ],
-            [['isWillingToPay', 'preset'], 'number'],
-            [['hasAmendments', 'hasComments', 'openNow'], 'boolean'],
+            [['title', 'contact', 'organization', 'subdomain'], 'required'],
             [
                 'subdomain',
                 'unique',
                 'targetClass' => Site::class,
-                'message'     => \Yii::t('manager', 'site_err_subdomain'),
             ],
-            [['contact', 'title', 'preset', 'organization'], 'safe'],
+            [['contact', 'title', 'subdomain', 'organization'], 'safe'],
         ];
+    }
+
+    /**
+     * @param array $values
+     * @param bool $safeOnly
+     */
+    public function setAttributes($values, $safeOnly = true)
+    {
+        parent::setAttributes($values, $safeOnly);
+
+        $this->wording               = IntVal($values['wording']);
+        $this->singleMotion          = ($values['singleMotion'] == 1);
+        $this->hasAmendments         = ($values['hasAmendments'] == 1);
+        $this->amendSinglePara       = ($values['amendSinglePara'] == 1);
+        $this->motionScreening       = ($values['motionScreening'] == 1);
+        $this->amendScreening        = ($values['amendScreening'] == 1);
+        $this->motionsInitiatedBy    = IntVal($values['motionsInitiatedBy']);
+        $this->amendmentsInitiatedBy = IntVal($values['amendInitiatedBy']);
+        if ($values['motionsDeadlineExists']) {
+            $deadline = Tools::dateBootstraptime2sql($values['motionsDeadline']);
+            if ($deadline) {
+                $this->motionDeadline = new \DateTime($deadline);
+            }
+        }
+        if ($values['amendDeadlineExists']) {
+            $deadline = Tools::dateBootstraptime2sql($values['amendDeadline']);
+            if ($deadline) {
+                $this->amendmentDeadline = new \DateTime($deadline);
+            }
+        }
+        $this->needsSupporters = ($values['needsSupporters'] == 1);
+        $this->minSupporters   = IntVal($values['minSupporters']);
+        $this->hasComments     = ($values['hasComments'] == 1);
+        $this->hasAgenda       = ($values['hasAgenda'] == 1);
+        $this->openNow         = ($values['openNow'] == 1);
     }
 
     /**
@@ -58,6 +106,8 @@ class SiteCreateForm extends Model
      */
     public function createSiteFromForm(User $currentUser)
     {
+        var_dump($this);
+        die();
         $preset = SitePresets::getPreset($this->preset);
 
         $site         = Site::createFromForm(

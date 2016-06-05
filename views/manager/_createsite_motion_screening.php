@@ -1,9 +1,8 @@
 <?php
-use app\models\forms\SiteCreateForm2;
 use yii\helpers\Html;
 
 /**
- * @var SiteCreateForm2 $model
+ * @var \app\models\forms\SiteCreateForm $model
  * @var \Callable $t
  */
 
@@ -20,14 +19,14 @@ use yii\helpers\Html;
                 <span class="title"><?= $t('screening_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[motionScreening]', !$model->motionScreening, ['value' => 0]); ?>
+                    <?= Html::radio('SiteCreateForm[motionScreening]', !$model->motionScreening, ['value' => 0]); ?>
                 </span>
             </label>
             <label class="radio-label two-lines">
                 <span class="title"><?= $t('screening_yes') ?></span>
                 <span class="description"></span>
                 <span class="input">
-                    <?= Html::radio('SiteCreateForm2[motionScreening]', $model->motionScreening, ['value' => 1]); ?>
+                    <?= Html::radio('SiteCreateForm[motionScreening]', $model->motionScreening, ['value' => 1]); ?>
                 </span>
             </label>
         </div>
