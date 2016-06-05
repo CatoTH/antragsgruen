@@ -58,7 +58,6 @@
             } else {
                 $("#forceMotionRow").addClass("hidden");
             }
-                console.log($("#forceMotionRow"));
         }).change();
 
     };

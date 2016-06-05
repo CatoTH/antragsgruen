@@ -53,7 +53,6 @@ class ConsultationCreateForm extends Model
 
         $consultation                     = new Consultation();
         $consultation->siteId             = $this->template->siteId;
-        $consultation->type               = $this->template->type;
         $consultation->amendmentNumbering = $this->template->amendmentNumbering;
         $consultation->urlPath            = $this->urlPath;
         $consultation->title              = $this->title;

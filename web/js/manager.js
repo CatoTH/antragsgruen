@@ -70,13 +70,23 @@
                 }
             },
             getNextPanel = function ($currPanel) {
+                data = getWizardState();
+
                 switch ($currPanel.attr("id")) {
                     case 'panelPurpose':
                         return $("#panelSingleMotion");
                     case 'panelSingleMotion':
-                        return $("#panelMotionWho");
+                        if (data.singleMotion == 1) {
+                            return $("#panelHasAmendments");
+                        } else {
+                            return $("#panelMotionWho");
+                        }
                     case 'panelMotionWho':
-                        return $("#panelMotionDeadline");
+                        if (data.motionsInitiatedBy == 1) { // MOTION_INITIATED_ADMINS
+                            return $("#panelHasAmendments");
+                        } else {
+                            return $("#panelMotionDeadline");
+                        }
                     case 'panelMotionDeadline':
                         return $("#panelMotionScreening");
                     case 'panelMotionScreening':
@@ -84,11 +94,19 @@
                     case 'panelNeedsSupporters':
                         return $("#panelHasAmendments");
                     case 'panelHasAmendments':
-                        return $("#panelAmendSinglePara");
+                        if (data.hasAmendments == 1) {
+                            return $("#panelAmendSinglePara");
+                        } else {
+                            return $("#panelComments");
+                        }
                     case 'panelAmendSinglePara':
                         return $("#panelAmendWho");
                     case 'panelAmendWho':
-                        return $("#panelAmendDeadline");
+                        if (data.amendmentInitiatedBy == 1) { // MOTION_INITIATED_ADMINS
+                            return $("#panelComments");
+                        } else {
+                            return $("#panelAmendDeadline");
+                        }
                     case 'panelAmendDeadline':
                         return $("#panelAmendScreening");
                     case 'panelAmendScreening':

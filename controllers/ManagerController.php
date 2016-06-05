@@ -192,7 +192,7 @@ class ManagerController extends Base
         }
 
         return $this->render(
-            'createsite',
+            'createsite_old',
             [
                 'model'  => $model,
                 'errors' => $errors
@@ -220,7 +220,7 @@ class ManagerController extends Base
             try {
                 $model->setAttributes($post['SiteCreateForm']);
                 if ($model->validate()) {
-                    $site = $model->createSiteFromForm(User::getCurrentUser());
+                    $site = $model->createSite(User::getCurrentUser());
 
                     $login_id   = User::getCurrentUser()->id;
                     $login_code = AntiXSS::createToken($login_id);
@@ -246,7 +246,7 @@ class ManagerController extends Base
         }
 
         return $this->render(
-            'createsite2',
+            'createsite',
             [
                 'model'  => $model,
                 'errors' => $errors

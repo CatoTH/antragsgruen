@@ -21,7 +21,7 @@ return [
     'single_man_title' => 'Gibt es mehrere Kapitel?',
     'single_mot_desc'  => 'Bei nur einem entfällt die Antragsübersicht',
     'single_man_desc'  => 'Bei nur einem entfällt die Übersichtsseite',
-    'single_one'       => 'Nur eins',
+    'single_one'       => 'Nur einer',
     'single_multi'     => 'Mehrere',
 
     'motwho_mot_title' => 'Wer darf Anträge einreichen?',
@@ -60,8 +60,8 @@ return [
     'amend_no'    => 'Nein',
     'amend_yes'   => 'Ja',
 
-    'amend_singlepara_title'  => 'Änderungsnträge auf mehrere Textstellen?',
-    'amend_singlepara_desc'   => 'Dürfen sich ÄAs nur auf einen Absatz beziehen, oder auf mehrere?',
+    'amend_singlepara_title'  => 'Dürfen mehrere Textstellen geändert werden?',
+    'amend_singlepara_desc'   => 'Änderungsanträge können auch auf einen Absatz beschränkt werden',
     'amend_singlepara_single' => 'Nur eine Textstelle',
     'amend_singlepara_multi'  => 'Mehrere Textstellen',
 

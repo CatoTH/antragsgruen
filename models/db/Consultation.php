@@ -19,7 +19,6 @@ use yii\helpers\Html;
  *
  * @property int $id
  * @property int $siteId
- * @property int $type
  * @property int $amendmentNumbering
  *
  * @property string $urlPath
@@ -352,7 +351,6 @@ class Consultation extends ActiveRecord
         $con->siteId             = $site->id;
         $con->title              = $title;
         $con->titleShort         = $title;
-        $con->type               = $type;
         $con->urlPath            = $subdomain;
         $con->adminEmail         = $currentUser->email;
         $con->amendmentNumbering = 0;

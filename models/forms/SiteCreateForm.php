@@ -6,6 +6,7 @@ use app\components\Tools;
 use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\db\User;
+use app\models\exceptions\FormError;
 use yii\base\Model;
 
 class SiteCreateForm extends Model
@@ -104,36 +105,50 @@ class SiteCreateForm extends Model
      * @return Site
      * @throws \app\models\exceptions\DB
      */
-    public function createSiteFromForm(User $currentUser)
+    public function createSite(User $currentUser)
     {
         var_dump($this);
-        die();
-        $preset = SitePresets::getPreset($this->preset);
+        if (!Site::isSubdomainAvailable($this->subdomain)) {
+            throw new FormError(\Yii::t('manager', 'site_err_subdomain'));
+        }
+        if (!$this->validate()) {
+            throw new FormError($this->getErrors());
+        }
 
-        $site         = Site::createFromForm(
-            $preset,
-            $this->subdomain,
-            $this->title,
-            $this->organization,
-            $this->contact,
-            $this->isWillingToPay,
-            ($this->openNow ? Site::STATUS_ACTIVE : Site::STATUS_INACTIVE)
-        );
-        $consultation = Consultation::createFromForm(
-            $site,
-            $currentUser,
-            $preset,
-            $this->preset,
-            $this->title,
-            $this->subdomain,
-            $this->openNow
-        );
-        $site->link('currentConsultation', $consultation);
+        $site               = new Site();
+        $site->title        = $this->title;
+        $site->titleShort   = $this->title;
+        $site->organization = $this->organization;
+        $site->contact      = $this->contact;
+        $site->subdomain    = $this->subdomain;
+        $site->public       = 1;
+        $site->status       = ($this->openNow ? Site::STATUS_ACTIVE : Site::STATUS_INACTIVE);
+        $site->dateCreation = date('Y-m-d H:i:s');
+        if (!$site->save()) {
+            throw new FormError($site->getErrors());
+        }
+        
+        $con                     = new Consultation();
+        $con->siteId             = $site->id;
+        $con->title              = $this->title;
+        $con->titleShort         = $this->title;
+        $con->urlPath            = $this->subdomain;
+        $con->adminEmail         = $currentUser->email;
+        $con->amendmentNumbering = 0;
+        $con->dateCreation       = date('Y-m-d H:i:s');
+
+        $settings                   = $con->getSettings();
+        $settings->maintainanceMode = !$this->openNow;
+        $con->setSettings($settings);
+        if (!$con->save()) {
+            $site->delete();
+            throw new FormError($con->getErrors());
+        }
+
+        $site->link('currentConsultation', $con);
         $site->link('admins', $currentUser);
 
-        $preset->createMotionTypes($consultation);
-        $preset->createMotionSections($consultation);
-        $preset->createAgenda($consultation);
+        die();
 
         return $site;
     }
