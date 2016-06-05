@@ -11,7 +11,7 @@ class Bootbox extends \Codeception\Module
      */
     public function getWebDriver()
     {
-        return $this->getModule('WebDriver');
+        return $this->getModule('\Helper\AntragsgruenWebDriver');
     }
 
     /**

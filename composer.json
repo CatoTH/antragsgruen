@@ -12,8 +12,8 @@
     "amendments",
     "party"
   ],
-  "minimum-stability": "dev",
   "homepage": "https://www.antragsgruen.de/",
+  "minimum-stability": "stable",
   "require": {
     "php": ">=5.5.0",
     "fxp/composer-asset-plugin": "~1.1.4",
@@ -21,28 +21,29 @@
     "yiisoft/yii2-authclient": "2.0.5",
     "tecnickcom/tcpdf": "^6.2",
     "slm/mail": "^1.6.0",
-    "tijsverkoyen/css-to-inline-styles": "*",
+    "tijsverkoyen/css-to-inline-styles": "^2.0.0",
     "phpoffice/phpexcel": "^1.8.1",
     "catoth/html2opendocument": "0.5",
     "simplesamlphp/simplesamlphp": "^1.14.3",
     "bower-asset/eonasdan-bootstrap-datetimepicker": "4.17.*",
-    "bower-asset/html5shiv": "*",
-    "bower-asset/Sortable": "*",
-    "bower-asset/bootbox": "*",
-    "bower-asset/es5-shim": "*",
-    "bower-asset/typeahead.js": "*",
-    "bower-asset/intl": "*",
-    "bower-asset/pdfjs-dist": "*"
+    "bower-asset/moment": "dev-master",
+    "bower-asset/moment-timezone": "dev-master",
+    "bower-asset/Sortable": "dev-master",
+    "bower-asset/bootbox": "^4.4.0-dev",
+    "bower-asset/html5shiv": "^3.7.3-dev",
+    "bower-asset/typeahead.js": "^0.11.1-dev",
+    "bower-asset/intl": "^1.1.0-dev",
+    "bower-asset/pdfjs-dist": "dev-master"
   },
   "require-dev": {
-    "yiisoft/yii2-codeception": "2.0.5",
-    "yiisoft/yii2-debug": "2.0.5",
+    "yiisoft/yii2-codeception": "^2.0.5",
+    "yiisoft/yii2-debug": "^2.0.5",
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.3.*",
-    "codeception/codeception": "2.1.8",
+    "codeception/codeception": "^2.2.1",
     "codeception/specify": "^0.4.3",
     "codeception/verify": "^0.3.0",
-    "facebook/webdriver": "1.1.1"
+    "facebook/webdriver": "^1.1.1"
   },
   "extra": {
     "yii\\composer\\Installer::postCreateProject": {
