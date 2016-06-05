@@ -22,7 +22,7 @@ use yii\helpers\Html;
         <legend><?=$t('purpose_title')?></legend>
         <div class="description"><?=$t('purpose_title')?></div>
         <div class="options">
-            <label class="radio-label">
+            <label class="radio-label value-motion">
                 <span class="title"><?=$t('purpose_motions')?></span>
                 <span class="description"></span>
                 <span class="input">
@@ -33,7 +33,7 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label description-first">
+            <label class="radio-label description-first value-manifesto">
                 <span class="description"><?=$t('purpose_manifesto_desc')?></span>
                 <span class="title"><?=$t('purpose_manifesto')?></span>
                 <span class="input">

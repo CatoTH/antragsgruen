@@ -29,7 +29,6 @@ if (mb_strpos($title, 'Antragsgrün') === false) {
 }
 
 $minimalistic   = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
-$controllerBase = ($controller->consultation ? 'consultation/' : 'manager/');
 
 $this->beginPage();
 
@@ -208,8 +207,13 @@ if (is_array($layout->breadcrumbs)) {
 /** @var string $content */
 echo $content;
 
-$legalLink   = UrlHelper::createUrl($controllerBase . 'legal');
-$privacyLink = UrlHelper::createUrl($controllerBase . 'privacy');
+if ($controller->consultation) {
+    $legalLink   = UrlHelper::createUrl('consultation/legal');
+    $privacyLink = UrlHelper::createUrl('consultation/privacy');
+} else {
+    $legalLink   = UrlHelper::createUrl('manager/site-legal');
+    $privacyLink = UrlHelper::createUrl('manager/site-privacy');
+}
 
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>

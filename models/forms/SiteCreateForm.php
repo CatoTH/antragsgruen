@@ -7,6 +7,7 @@ use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\db\ConsultationText;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
@@ -14,6 +15,7 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\ISupportType;
 use yii\base\Model;
+use yii\helpers\Html;
 
 class SiteCreateForm extends Model
 {
@@ -182,6 +184,8 @@ class SiteCreateForm extends Model
         if ($this->hasAgenda) {
             $this->createAgenda($con);
         }
+
+        $this->createImprint($site, $con);
 
         return $site;
     }
@@ -427,7 +431,7 @@ class SiteCreateForm extends Model
         $item->position       = 0;
         $item->code           = '#';
         $item->title          = \Yii::t('structure', 'preset_party_1leader');
-        $item->motionTypeId   = $this->typeApplication->id;
+        $item->motionTypeId   = null;
         $item->save();
 
         $item                 = new ConsultationAgendaItem();
@@ -436,7 +440,7 @@ class SiteCreateForm extends Model
         $item->position       = 1;
         $item->code           = '#';
         $item->title          = \Yii::t('structure', 'preset_party_2leader');
-        $item->motionTypeId   = $this->typeApplication->id;
+        $item->motionTypeId   = null;
         $item->save();
 
         $item                 = new ConsultationAgendaItem();
@@ -445,7 +449,7 @@ class SiteCreateForm extends Model
         $item->position       = 2;
         $item->code           = '#';
         $item->title          = \Yii::t('structure', 'preset_party_treasure');
-        $item->motionTypeId   = $this->typeApplication->id;
+        $item->motionTypeId   = null;
         $item->save();
 
         $item                 = new ConsultationAgendaItem();
@@ -454,7 +458,7 @@ class SiteCreateForm extends Model
         $item->position       = 2;
         $item->code           = '#';
         $item->title          = \Yii::t('structure', 'preset_party_motions');
-        $item->motionTypeId   = $this->typeMotion->id;
+        $item->motionTypeId   = null;
         $item->save();
 
         $item                 = new ConsultationAgendaItem();
@@ -464,5 +468,23 @@ class SiteCreateForm extends Model
         $item->code           = '#';
         $item->title          = \Yii::t('structure', 'preset_party_misc');
         $item->save();
+    }
+
+    /**
+     * @var Site $site
+     * @param Consultation $consultation
+     * @throws FormError
+     */
+    private function createImprint(Site $site, Consultation $consultation)
+    {
+        $contactHtml               = nl2br(Html::encode($site->contact));
+        $legalText                 = new ConsultationText();
+        $legalText->consultationId = $consultation->id;
+        $legalText->category       = 'pagedata';
+        $legalText->textId         = 'legal';
+        $legalText->text           = str_replace('%CONTACT%', $contactHtml, \Yii::t('base', 'legal_template'));
+        if (!$legalText->save()) {
+            throw new FormError($legalText->getErrors());
+        }
     }
 }

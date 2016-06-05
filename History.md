@@ -2,6 +2,7 @@
 
 ## Version 3.4.0 [Not released yet]
 
+- A new wizard to create sites is introduced
 - Single-Motion-Consultations are now supported: consultations that only exist of one single motion that is, skipping the regular home page.
 
 ### Version 3.3.3 (2016-05-29)

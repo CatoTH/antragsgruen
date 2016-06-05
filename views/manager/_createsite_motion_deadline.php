@@ -8,15 +8,15 @@ use yii\helpers\Html;
  */
 
 $locale = Tools::getCurrentDateLocale();
-$date   = Tools::dateSql2bootstraptime($model->motionDeadline);
+$date   = Tools::date2bootstraptime($model->motionDeadline);
 
 ?>
-<div class="step-pane active" id="panelMotionDeadline" data-tab="stepMotion">
+<div class="step-pane active" id="panelMotionDeadline" data-tab="stepMotions">
     <fieldset class="motionDeadline">
         <legend><?= $t('motdead_title') ?></legend>
         <div class="description"><?= $t('motdead_desc') ?></div>
         <div class="options">
-            <label class="radio-label">
+            <label class="radio-label value-0">
                 <span class="title"><?= $t('motdead_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
@@ -27,7 +27,7 @@ $date   = Tools::dateSql2bootstraptime($model->motionDeadline);
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label date-label broad">
+            <label class="radio-label date-label broad value-1">
                 <span class="title long"><?= $t('motdead_yes') ?></span>
                 <span class="description">
                     <span class="input-group date motionsDeadline">

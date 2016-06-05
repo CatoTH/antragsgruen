@@ -18,14 +18,14 @@ use yii\helpers\Html;
             <span class="only-manifesto"><?=$t('single_man_desc')?></span>
         </div>
         <div class="options">
-            <label class="radio-label">
+            <label class="radio-label value-1">
                 <span class="title"><?=$t('single_one')?></span>
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio('SiteCreateForm[singleMotion]', $model->singleMotion, ['value' => 1]); ?>
                 </span>
             </label>
-            <label class="radio-label">
+            <label class="radio-label value-0">
                 <span class="title"><?=$t('single_multi')?></span>
                 <span class="description"></span>
                 <span class="input">

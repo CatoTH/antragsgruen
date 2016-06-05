@@ -254,7 +254,7 @@ class ManagerController extends Base
     /**
      * @return string
      */
-    public function actionLegal()
+    public function actionSiteLegal()
     {
         return $this->renderContentPage('legal');
     }
@@ -262,7 +262,7 @@ class ManagerController extends Base
     /**
      * @return string
      */
-    public function actionPrivacy()
+    public function actionSitePrivacy()
     {
         return $this->renderContentPage('privacy');
     }

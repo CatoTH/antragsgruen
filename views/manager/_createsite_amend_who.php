@@ -13,7 +13,7 @@ use yii\helpers\Html;
         <legend><?= $t('amendwho_title') ?></legend>
         <div class="description">&nbsp;</div>
         <div class="options">
-            <label class="radio-label">
+            <label class="radio-label value-1">
                 <span class="title"><?= $t('amendwho_admins') ?></span>
                 <span class="description"></span>
                 <span class="input">
@@ -24,7 +24,7 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label two-lines">
+            <label class="radio-label two-lines value-2">
                 <span class="title long"><?= $t('amendwho_loggedin') ?></span>
                 <span class="description"></span>
                 <span class="input">
@@ -35,7 +35,7 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label">
+            <label class="radio-label value-3">
                 <span class="title"><?= $t('amendwho_all') ?></span>
                 <span class="description"></span>
                 <span class="input">

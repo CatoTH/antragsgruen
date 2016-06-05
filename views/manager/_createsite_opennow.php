@@ -12,14 +12,14 @@ use yii\helpers\Html;
         <legend><?= $t('opennow_title') ?></legend>
         <div class="description"><?= $t('opennow_desc') ?></div>
         <div class="options">
-            <label class="radio-label two-lines">
+            <label class="radio-label two-lines value-0">
                 <span class="title long"><?= $t('opennow_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio('SiteCreateForm[openNow]', !$model->openNow, ['value' => 0]); ?>
                 </span>
             </label>
-            <label class="radio-label">
+            <label class="radio-label value-1">
                 <span class="title"><?= $t('opennow_yes') ?></span>
                 <span class="description"></span>
                 <span class="input">

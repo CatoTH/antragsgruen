@@ -3,6 +3,7 @@
 namespace app\components;
 
 use app\models\exceptions\Internal;
+use PHPExcel\Calculation\DateTime;
 
 class Tools
 {
@@ -159,6 +160,30 @@ class Tools
             $date = $matches['month'] . '/' . $matches['day'] . '/' . $matches['year'] . ' ';
             $date .= $matches['hour'] . ':' . $matches['minute'];
             return $date;
+        } else {
+            throw new Internal('Unsupported Locale: ' . $locale);
+        }
+    }
+
+    /**
+     * @param \DateTime|null $time
+     * @param string|null $locale
+     * @return string
+     * @throws Internal
+     */
+    public static function date2bootstraptime($time, $locale = null)
+    {
+        if ($time === null) {
+            return '';
+        }
+        if ($locale === null) {
+            $locale = Tools::getCurrentDateLocale();
+        }
+
+        if ($locale == 'de') {
+            return $time->format('d.m.Y H:i');
+        } elseif ($locale == 'en') {
+            return $time->format('m/d/Y H:i');
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }

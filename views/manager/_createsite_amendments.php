@@ -12,14 +12,14 @@ use yii\helpers\Html;
         <legend><?= $t('amend_title') ?></legend>
         <div class="description">&nbsp;</div>
         <div class="options">
-            <label class="radio-label">
+            <label class="radio-label value-0">
                 <span class="title"><?= $t('amend_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio('SiteCreateForm[hasAmendments]', !$model->hasAmendments, ['value' => 0]); ?>
                 </span>
             </label>
-            <label class="radio-label">
+            <label class="radio-label value-1">
                 <span class="title"><?= $t('amend_yes') ?></span>
                 <span class="description"></span>
                 <span class="input">

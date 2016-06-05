@@ -8,7 +8,7 @@ use yii\helpers\Html;
  */
 
 ?>
-<div class="step-pane active" id="panelMotionWho" data-tab="stepMotion">
+<div class="step-pane active" id="panelMotionWho" data-tab="stepMotions">
     <fieldset class="motionWho">
         <legend>
             <span class="only-motion"><?= $t('motwho_mot_title') ?></span>
@@ -16,7 +16,7 @@ use yii\helpers\Html;
         </legend>
         <div class="description">&nbsp;</div>
         <div class="options">
-            <label class="radio-label">
+            <label class="radio-label value-1">
                 <span class="title"><?= $t('motwho_admins') ?></span>
                 <span class="description"></span>
                 <span class="input">
@@ -27,7 +27,7 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label two-lines">
+            <label class="radio-label two-lines value-2">
                 <span class="title long"><?= $t('motwho_loggedin') ?></span>
                 <span class="description"></span>
                 <span class="input">
@@ -38,7 +38,7 @@ use yii\helpers\Html;
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label">
+            <label class="radio-label value-3">
                 <span class="title"><?= $t('motwho_all') ?></span>
                 <span class="description"></span>
                 <span class="input">

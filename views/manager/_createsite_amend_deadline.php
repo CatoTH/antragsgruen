@@ -8,7 +8,7 @@ use yii\helpers\Html;
  */
 
 $locale = Tools::getCurrentDateLocale();
-$date   = Tools::dateSql2bootstraptime($model->amendmentDeadline);
+$date   = Tools::date2bootstraptime($model->amendmentDeadline);
 
 ?>
 <div class="step-pane active" id="panelAmendDeadline" data-tab="stepAmendment">
@@ -16,7 +16,7 @@ $date   = Tools::dateSql2bootstraptime($model->amendmentDeadline);
         <legend><?= $t('amenddead_title') ?></legend>
         <div class="description"><?= $t('amenddead_desc') ?></div>
         <div class="options">
-            <label class="radio-label">
+            <label class="radio-label value-0">
                 <span class="title"><?= $t('amenddead_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
@@ -27,7 +27,7 @@ $date   = Tools::dateSql2bootstraptime($model->amendmentDeadline);
                     ); ?>
                 </span>
             </label>
-            <label class="radio-label broad date-label">
+            <label class="radio-label broad date-label value-1">
                 <span class="title long"><?= $t('amenddead_yes') ?></span>
                 <span class="description">
                     <span class="input-group date amendmentDeadline">

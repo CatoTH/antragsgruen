@@ -12,14 +12,14 @@ use yii\helpers\Html;
         <legend><?= $t('screening_amend_title') ?></legend>
         <div class="description"><?= $t('screening_desc') ?></div>
         <div class="options">
-            <label class="radio-label two-lines">
+            <label class="radio-label two-lines value-0">
                 <span class="title"><?= $t('screening_no') ?></span>
                 <span class="description"></span>
                 <span class="input">
                     <?= Html::radio('SiteCreateForm[amendScreening]', !$model->amendScreening, ['value' => 0]); ?>
                 </span>
             </label>
-            <label class="radio-label two-lines">
+            <label class="radio-label two-lines value-1">
                 <span class="title"><?= $t('screening_yes') ?></span>
                 <span class="description"></span>
                 <span class="input">
