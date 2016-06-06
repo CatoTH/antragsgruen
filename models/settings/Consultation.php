@@ -28,6 +28,7 @@ class Consultation
     public $screeningComments      = false;
     public $initiatorConfirmEmails = false;
     public $adminsMayEdit          = true;
+    public $forceMotion            = null;
 
     // SETTINGS WITHOUT TEST CASES
 

@@ -19,7 +19,7 @@ $layout     = $controller->layoutParams;
 $layout->addCSS('css/backend.css');
 
 $this->title = 'Einstellungen';
-$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Erweitert');
 
 echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>

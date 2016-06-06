@@ -51,6 +51,16 @@
             }
         });
         if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.addClass("hidden");
+
+        $("#singleMotionMode").change(function() {
+            if ($(this).prop("checked")) {
+                $("#forceMotionRow").removeClass("hidden");
+            } else {
+                $("#forceMotionRow").addClass("hidden");
+            }
+                console.log($("#forceMotionRow"));
+        }).change();
+
     };
 
 

@@ -1,15 +1,19 @@
 # Version history
 
-## Version 3.3.3 (2016-05-29)
+## Version 3.4.0 [Not released yet]
+
+- Single-Motion-Consultations are now supported: consultations that only exist of one single motion that is, skipping the regular home page.
+
+### Version 3.3.3 (2016-05-29)
 
 - Style fixes (some labeles were invisible)
 - Revoking likes/dislikes was not possible
 
-## Version 3.3.2 (2016-05-16)
+### Version 3.3.2 (2016-05-16)
 
 - Once a motion or amendment is submitted after collecting enough supporters, no more supporters can be added or revoked.
 
-## Version 3.3.1 (2016-05-07)
+### Version 3.3.1 (2016-05-07)
 
 - Remove the "motion/"- and "amendment/"-parts from the URLs
 - Replace Shariff by a custom sharing widget, saving HTTP Requests

@@ -28,7 +28,9 @@ $layout     = $controller->layoutParams;
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
 }
-$layout->addBreadcrumb($motion->motionType->titleSingular);
+if (!$motion->getConsultation()->getForcedMotion()) {
+    $layout->addBreadcrumb($motion->motionType->titleSingular);
+}
 
 $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getConsultation()->title . ', Antragsgrün)';
 
@@ -152,8 +154,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
-    $policy = $motion->motionType->getAmendmentPolicy();
-    if ($policy->checkCurrUserAmendment(true, true)) {
+    if ($motion->isCurrentlyAmendable(true, true)) {
         echo '<div class="pull-right">';
         $title = '<span class="icon glyphicon glyphicon-flash"></span>';
         $title .= \Yii::t('motion', 'amendment_create');

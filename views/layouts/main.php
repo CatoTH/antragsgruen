@@ -113,7 +113,7 @@ echo '<ul class="nav navbar-nav">';
 
 if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
     if ($controller->consultation) {
-        $homeUrl = UrlHelper::createUrl('consultation/index');
+        $homeUrl = UrlHelper::homeUrl();
         echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) . '</li>';
         if ($controller->consultation->hasHelpPage()) {
             $helpLink = UrlHelper::createUrl('consultation/help');
