@@ -13,7 +13,6 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\AntragsgruenInitForm;
 use app\models\forms\SiteCreateForm;
-use app\models\forms\SiteCreateFormOld;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -148,69 +147,11 @@ class ManagerController extends Base
         ]);
     }
 
-
-    /**
-     * @return string
-     */
-    public function actionCreatesite_old()
-    {
-        $this->requireEligibleToCreateUser();
-
-        $this->layout = 'column2';
-        $this->addSidebar();
-
-        $model  = new SiteCreateFormOld();
-        $errors = [];
-
-        $post = \Yii::$app->request->post();
-        if (isset($post['create'])) {
-            try {
-                $model->setAttributes($post['SiteCreateForm']);
-                if ($model->validate()) {
-                    $site = $model->createSiteFromForm(User::getCurrentUser());
-
-                    $login_id   = User::getCurrentUser()->id;
-                    $login_code = AntiXSS::createToken($login_id);
-
-                    return $this->render(
-                        'created',
-                        [
-                            'site'       => $site,
-                            'login_id'   => $login_id,
-                            'login_code' => $login_code,
-                        ]
-                    );
-                } else {
-                    foreach ($model->getErrors() as $message) {
-                        foreach ($message as $message2) {
-                            $errors[] = $message2;
-                        }
-                    }
-                }
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-        }
-
-        return $this->render(
-            'createsite_old',
-            [
-                'model'  => $model,
-                'errors' => $errors
-            ]
-        );
-
-    }
-
     /**
      * @return string
      */
     public function actionCreatesite()
     {
-        if (\Yii::$app->request->get('wizard', '2') == '1') {
-            return $this->actionCreatesite_old();
-        }
-
         $this->requireEligibleToCreateUser();
 
         $model  = new SiteCreateForm();

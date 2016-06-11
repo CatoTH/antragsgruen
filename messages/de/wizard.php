@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'title' => 'Antragsgrün-Seite anlegen',
+    
     'step_purpose'    => 'Einsatzzweck',
     'step_motions'    => 'Anträge',
     'step_amendments' => 'Änderungsanträge',

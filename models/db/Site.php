@@ -120,6 +120,9 @@ class Site extends ActiveRecord
      */
     public static function isSubdomainAvailable($subdomain)
     {
+        if ($subdomain == '') {
+            return false;
+        }
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if (in_array($subdomain, $params->blockedSubdomains)) {

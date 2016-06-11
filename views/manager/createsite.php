@@ -4,7 +4,7 @@ use yii\helpers\Url;
 
 /**
  * @var yii\web\View $this
- * @var \app\models\forms\SiteCreateFormOld $model
+ * @var \app\models\forms\SiteCreateForm $model
  * @var array $errors
  * @var \app\controllers\Base $controller
  */
@@ -12,19 +12,19 @@ use yii\helpers\Url;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = 'Antragsgrün-Seite anlegen';
+$this->title = \Yii::t('wizard', 'title');
 $controller->layoutParams->addCSS('css/formwizard.css');
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->addJS("js/manager.js");
 $layout->loadDatepicker();
-$controller->layoutParams->addOnLoadJS('$.SiteManager.createInstance2();');
+$controller->layoutParams->addOnLoadJS('$.SiteManager.createInstance();');
 
 $t = function ($string) {
     return \Yii::t('wizard', $string);
 };
 
 ?>
-<h1>Antragsgrün-Seite anlegen</h1>
+<h1><?= Html::encode($this->title) ?></h1>
 <div class="fuelux">
     <?php echo Html::beginForm(Url::toRoute('manager/createsite'), 'post', ['class' => 'siteCreate']); ?>
 
