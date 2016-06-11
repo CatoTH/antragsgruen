@@ -1,5 +1,10 @@
 # Version history
 
+## Version 3.3.4 (2016-06-11)
+
+- Bugfix: empty lines vanished under some circumstances
+- Bugfix: a class name collission in EmailNotifications.php was resolved
+
 ## Version 3.3.3 (2016-05-29)
 
 - Style fixes (some labeles were invisible)
