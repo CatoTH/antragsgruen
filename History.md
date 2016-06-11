@@ -4,6 +4,7 @@
 
 - Bugfix: empty lines vanished under some circumstances
 - Bugfix: a class name collission in EmailNotifications.php was resolved
+- Bugfix: uploaded images in motions / applications were not shown 
 
 ## Version 3.3.3 (2016-05-29)
 
