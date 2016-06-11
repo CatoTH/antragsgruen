@@ -441,7 +441,7 @@ function __t(category, str) {
                     editor.fire('saveSnapshot');
                     closeTooltip(this);
                     action.call(this);
-                    $("section.collidingParagraph:empty").remove();
+                    $(".collidingParagraph:empty").remove();
                     $textarea.focus();
                 },
                 affectedChangesets = function (node) {
@@ -486,7 +486,7 @@ function __t(category, str) {
                         $removeEl.css("overflow", "hidden").height($removeEl.height());
                         $removeEl.animate({"height": "0"}, 250, function () {
                             $removeEl.remove();
-                            $("section.collidingParagraph:empty").remove();
+                            $(".collidingParagraph:empty").remove();
                         });
                     } else {
                         $removeEl.remove();
@@ -531,7 +531,7 @@ function __t(category, str) {
                         $removeEl.css("overflow", "hidden").height($removeEl.height());
                         $removeEl.animate({"height": "0"}, 250, function () {
                             $removeEl.remove();
-                            $("section.collidingParagraph:empty").remove();
+                            $(".collidingParagraph:empty").remove();
                         });
                     } else {
                         $removeEl.remove();
