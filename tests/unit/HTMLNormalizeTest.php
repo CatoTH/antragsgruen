@@ -10,6 +10,20 @@ class HTMLNormalizeTest extends TestBase
 {
     use Specify;
 
+
+    /**
+     */
+    public function testStripEmptySpans()
+    {
+        $orig   = '<p>Test</p><p><span class="underlined"><span>&nbsp;</span></span></p>';
+        $expect = '<p>Test</p>' . "\n" . '<p></p>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+
+        $out = HTMLTools::cleanSimpleHtml($out);
+        $this->assertEquals($expect, $out);
+    }
+
     /**
      */
     public function testDanglingNbsp()
@@ -243,11 +257,11 @@ Test 2.</p>
      */
     public function testNormalizeUmlauts()
     {
-        $orig = chr(195) . chr(164) . chr(97) . chr(204) . chr(136);
+        $orig   = chr(195) . chr(164) . chr(97) . chr(204) . chr(136);
         $expect = 'ää';
         $this->assertNotEquals($expect, $orig);
 
-        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }
 }

@@ -133,6 +133,7 @@ class HTMLTools
         $html = preg_replace('/<del[^>]*>.*<\/del>/siuU', '', $html);
 
         static::loadNetIdna2();
+        $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
         $html = HtmlPurifier::process(
             $html,
             function ($config) {
@@ -159,6 +160,7 @@ class HTMLTools
                 }
             }
         );
+        $html = str_replace('<p>###EMPTY###</p>', '<p></p>', $html);
 
         $html = str_ireplace("</li>", "</li>\n", $html);
         $html = str_ireplace("<ul>", "<ul>\n", $html);

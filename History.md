@@ -5,6 +5,12 @@
 - A new wizard to create sites is introduced
 - Single-Motion-Consultations are now supported: consultations that only exist of one single motion that is, skipping the regular home page.
 
+### Version 3.3.4 (2016-06-11)
+
+- Bugfix: empty lines vanished under some circumstances
+- Bugfix: a class name collission in EmailNotifications.php was resolved
+- Bugfix: uploaded images in motions / applications were not shown 
+
 ### Version 3.3.3 (2016-05-29)
 
 - Style fixes (some labeles were invisible)

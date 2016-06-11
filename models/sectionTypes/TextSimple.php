@@ -216,7 +216,7 @@ class TextSimple extends ISectionType
             return '';
         }
 
-        $str = '<section id="section_' . $section->sectionId . '" class="motionTextHolder">';
+        $str = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
         $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text';
@@ -227,7 +227,7 @@ class TextSimple extends ISectionType
         $wrapEnd = '</div></section>';
         $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
         $str .= '</div>';
-        $str .= '</section>';
+        $str .= '</div>';
 
         return $str;
     }
@@ -725,7 +725,7 @@ class TextSimple extends ISectionType
             $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
             foreach ($colliding as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                $out .= '<section class="collidingParagraph"';
+                $out .= '<div class="collidingParagraph"';
                 $out .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
                 $out .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
                 $out .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
@@ -752,7 +752,7 @@ class TextSimple extends ISectionType
                     $paragraphText .= $text;
                 }
                 $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
-                $out .= '</section>';
+                $out .= '</div>';
             }
         }
 
