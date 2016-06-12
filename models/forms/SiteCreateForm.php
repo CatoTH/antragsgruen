@@ -73,7 +73,7 @@ class SiteCreateForm extends Model
     public function rules()
     {
         return [
-            [['title', 'contact', 'organization', 'subdomain'], 'required'],
+            [['title', 'contact', 'subdomain'], 'required'],
             [
                 'subdomain',
                 'unique',

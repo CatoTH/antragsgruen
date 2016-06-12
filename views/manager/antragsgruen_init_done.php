@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var \app\models\forms\AntragsgruenInitForm $form
+ * @var \app\models\forms\AntragsgruenInitSite $form
  * @var string $delInstallFileCmd
  * @var bool $installFileDeletable
  */
@@ -29,6 +29,22 @@ echo $controller->showErrors();
 
 $link = UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index'));
 $link = '<br>' . Html::a($link, $link) . '<br><br>';
+
+if ($installFileDeletable) {
+    echo '<div class="saveholder">';
+    echo '<button class="btn btn-success" name="finishInit">';
+    echo \yii::t('manager', 'finish_install');
+    echo '</button></div>';
+} else {
+    echo '<div class="alert alert-info" role="alert">';
+    echo str_replace('%DELCMD%', Html::encode($delInstallFileCmd), 'Um den Installationsmodus zu beenden,
+                lösche die Datei config/INSTALLING.
+                Je nach Betriebssystem könnte der Befehl dazu z.B. folgendermaßen lauten:<pre>%DELCMD%</pre>
+                Rufe danach diese Seite hier neu auf.
+                ');
+    echo '</div>';
+}
+
 
 echo '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>

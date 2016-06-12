@@ -33,28 +33,6 @@
       }
     }
   }
-  .sitePreset {
-    font-size: 14px;
-    font-weight: bold;
-    vertical-align: middle;
-    margin-top: 10px;
-
-    div {
-      display: inline-block;
-      vertical-align: middle;
-    }
-    input {
-      vertical-align: middle;
-      margin-top: 0;
-      margin-right: 6px;
-    }
-
-  }
-  .sitePresetInfo {
-    padding-left: 10px;
-    margin-left: 20px;
-    border-left: solid 3px lightgray;
-  }
 }
 
 .infoSite {
@@ -100,7 +78,6 @@
   }
 }
 
-/* New version */
 .siteCreate {
   .wizard {
     font-family: "Open Sans", sans-serif;
@@ -266,6 +243,11 @@
     }
     .contactRow {
       margin-top: 20px;
+      margin-left: -15px;
+      margin-right: -15px;
+      > label {
+        width: 100%;
+      }
       small {
         font-weight: normal;
       }

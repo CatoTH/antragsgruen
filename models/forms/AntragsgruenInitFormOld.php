@@ -12,7 +12,7 @@ use app\models\sitePresets\SitePresets;
 use yii\base\Model;
 use yii\db\Connection;
 
-class AntragsgruenInitForm extends Model
+class AntragsgruenInitFormOld extends Model
 {
     /** @var string */
     public $configFile;
