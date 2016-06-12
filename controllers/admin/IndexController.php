@@ -12,6 +12,7 @@ use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
+use app\models\forms\SiteCreateForm;
 use yii\web\Response;
 
 class IndexController extends AdminBase
@@ -228,6 +229,7 @@ class IndexController extends AdminBase
 
         $form           = new ConsultationCreateForm();
         $form->template = $this->consultation;
+        $wizardModel    = new SiteCreateForm();
         $post           = \Yii::$app->request->post();
 
         if ($this->isPostSet('createConsultation')) {
@@ -267,7 +269,11 @@ class IndexController extends AdminBase
             $this->site->refresh();
         }
 
-        return $this->render('site_consultations', ['site' => $site, 'createForm' => $form]);
+        return $this->render('site_consultations', [
+            'site'        => $site,
+            'createForm'  => $form,
+            'wizardModel' => $wizardModel,
+        ]);
     }
 
     /**

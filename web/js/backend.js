@@ -52,7 +52,7 @@
         });
         if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.addClass("hidden");
 
-        $("#singleMotionMode").change(function() {
+        $("#singleMotionMode").change(function () {
             if ($(this).prop("checked")) {
                 $("#forceMotionRow").removeClass("hidden");
             } else {
@@ -568,6 +568,20 @@
         motionSupporterEdit();
     };
 
+    var consultationCreate = function () {
+        $(".settingsType").find("input[type=radio]").change(function() {
+            if ($("#settingsTypeWizard").prop("checked")) {
+                $(".settingsTypeWizard").removeClass("hidden");
+                $(".settingsTypeTemplate").addClass("hidden");
+            } else {
+                $(".settingsTypeWizard").addClass("hidden");
+                $(".settingsTypeTemplate").removeClass("hidden");
+            }
+        }).change();
+        
+        new SiteCreateWizard($, $(".siteCreate"));
+    };
+
     $.AntragsgruenAdmin = {
         'consultationSettingsForm': consultationSettingsForm,
         'motionTypeEdit': motionTypeEdit,
@@ -577,7 +591,8 @@
         'siteAccessInit': siteAccessInit,
         'siteAccessUsersInit': siteAccessUsersInit,
         'motionEditInit': motionEditInit,
-        'amendmentEditInit': amendmentEditInit
+        'amendmentEditInit': amendmentEditInit,
+        'consultationCreate': consultationCreate
     };
 
 }(jQuery));
