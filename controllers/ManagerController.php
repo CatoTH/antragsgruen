@@ -405,22 +405,21 @@ class ManagerController extends Base
 
             if ($dbForm->verifyDBConnection(false)) {
                 $dbForm->saveConfig();
+
+                if ($dbForm->sqlCreateTables && $dbForm->verifyDBConnection(false) && !$dbForm->tablesAreCreated()) {
+                    $dbForm->createTables();
+                    \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_site_created'));
+                } else {
+                    \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_config_saved'));
+                }
+
+                $dbForm->overwriteYiiConnection();
+
+                if ($dbForm->adminUsername != '' && $dbForm->adminPassword != '') {
+                    $dbForm->createOrUpdateAdminAccount();
+                    $dbForm->saveConfig();
+                }
             }
-
-            if ($dbForm->sqlCreateTables && $dbForm->verifyDBConnection(false) && !$dbForm->tablesAreCreated()) {
-                $dbForm->createTables();
-                \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_site_created'));
-            } else {
-                \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_config_saved'));
-            }
-
-            $dbForm->overwriteYiiConnection();
-
-            if ($dbForm->adminUsername != '' && $dbForm->adminPassword != '') {
-                $dbForm->createOrUpdateAdminAccount();
-                $dbForm->saveConfig();
-            }
-
         }
 
         if ($dbForm->verifyDBConnection(false) && $dbForm->tablesAreCreated() && $dbForm->hasAdminAccount()) {
