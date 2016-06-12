@@ -11,7 +11,7 @@ $locale = Tools::getCurrentDateLocale();
 $date   = Tools::date2bootstraptime($model->amendmentDeadline);
 
 ?>
-<div class="step-pane active" id="panelAmendDeadline" data-tab="stepAmendment">
+<div class="step-pane active" id="panelAmendDeadline" data-tab="stepAmendments">
     <fieldset class="amendmentDeadline">
         <legend><?= $t('amenddead_title') ?></legend>
         <div class="description"><?= $t('amenddead_desc') ?></div>

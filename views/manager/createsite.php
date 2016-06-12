@@ -24,7 +24,7 @@ $controller->layoutParams->addOnLoadJS('new SiteCreateWizard($, $("form.siteCrea
 <div class="fuelux">
     <?php echo Html::beginForm(Url::toRoute('manager/createsite'), 'post', ['class' => 'siteCreate']); ?>
 
-    <?= $this->render('_createsite', ['model' => $model, 'errors' => $errors, 'multisite' => true]) ?>
+    <?= $this->render('_createsite', ['model' => $model, 'errors' => $errors, 'mode' => 'subdomain']) ?>
 
     <?= Html::endForm() ?>
 </div>

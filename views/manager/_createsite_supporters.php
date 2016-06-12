@@ -7,7 +7,7 @@ use yii\helpers\Html;
  */
 
 ?>
-<div class="step-pane active" id="panelNeedsSupporters" data-tab="stepMotion">
+<div class="step-pane active" id="panelNeedsSupporters" data-tab="stepMotions">
     <fieldset class="needsSupporters">
         <legend><?= $t('supporters_title') ?></legend>
         <div class="description"><?= $t('supporters_desc') ?></div>

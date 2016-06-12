@@ -38,19 +38,10 @@ use yii\helpers\Html;
                 </div>
 
                 <div class="form-group">
-                    <label class="name" for="siteUrl"><?= 'URL' ?>:</label>
-                    <?= Html::input(
-                        'text',
-                        'SiteCreateForm[siteUrl]',
-                        $model->siteUrl,
-                        ['id' => 'siteEmail', 'class' => 'form-control', 'placeholder' => 'https://...', 'required' => 'required']
-                    );
-                    echo '<label>';
-                    echo Html::checkbox('SiteCreateForm[prettyUrls]', $model->prettyUrls, ['id' => 'prettyUrls']);
-                    echo '"Hübsche" URLs (benötigt URL-Rewriting)';
-                    echo '</label>';
-                    ?>
-
+                    <label>
+                        <?= Html::checkbox('SiteCreateForm[prettyUrls]', $model->prettyUrls, ['id' => 'prettyUrls']) ?>
+                        "Hübsche" URLs (benötigt URL-Rewriting)
+                    </label>
                 </div>
 
                 <div class="contactRow">

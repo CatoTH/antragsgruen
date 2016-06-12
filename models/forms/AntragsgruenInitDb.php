@@ -268,7 +268,9 @@ class AntragsgruenInitDb extends Model
                 var_dump($user->getErrors());
                 die();
             }
-            $this->adminIds[] = $user->id;
+            if (!in_array($user->id, $this->adminIds)) {
+                $this->adminIds[] = $user->id;
+            }
             $this->adminUser  = $user;
         } else {
             $this->createAdminAccount();

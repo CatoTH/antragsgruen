@@ -118,7 +118,8 @@ class SiteCreateWizard {
     }
 
     initEvents() {
-        var $form = this.$root;
+        var $form = this.$root,
+            $ = this.$;
 
         this.$activePanel = null;
         this.data = this.getWizardState();
@@ -165,7 +166,7 @@ class SiteCreateWizard {
                 $group.removeClass("has-error").removeClass("has-success");
                 return;
             }
-            this.$.get(requesturl, function (ret) {
+            $.get(requesturl, function (ret) {
                 if (ret['available']) {
                     $err.addClass("hidden");
                     $group.removeClass("has-error");
@@ -239,8 +240,7 @@ class SiteCreateWizard {
         this.$ = $;
         this.firstPanel = "#panelPurpose";
         this.$root = $root;
-        this.multisite = ($("#SiteCreateWizard").data("multisite") == 1);
-        console.log("Multisite:", this.multisite);
+        this.mode = $("#SiteCreateWizard").data("mode");
         this.initEvents();
     }
 }

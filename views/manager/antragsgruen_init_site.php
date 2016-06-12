@@ -31,7 +31,7 @@ echo Html::beginForm('', 'post', ['class' => 'siteCreate antragsgruenInitForm fo
 
 echo $controller->showErrors();
 
-echo $this->render('_createsite', ['model' => $form, 'errors' => [], 'multisite' => false]);
+echo $this->render('_createsite', ['model' => $form, 'errors' => [], 'mode' => 'singlesite']);
 
 
 echo Html::endForm();

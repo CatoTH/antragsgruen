@@ -8,7 +8,7 @@ use yii\helpers\Html;
  */
 
 ?>
-<div class="step-pane active" id="panelAmendWho" data-tab="stepAmendment">
+<div class="step-pane active" id="panelAmendWho" data-tab="stepAmendments">
     <fieldset class="amendmentWho">
         <legend><?= $t('amendwho_title') ?></legend>
         <div class="description">&nbsp;</div>

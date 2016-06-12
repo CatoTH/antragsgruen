@@ -7,7 +7,7 @@ use yii\helpers\Html;
  */
 
 ?>
-<div class="step-pane active" id="panelSingleMotion" data-tab="stepMotion">
+<div class="step-pane active" id="panelSingleMotion" data-tab="stepMotions">
     <fieldset class="singleMotion">
         <legend>
             <span class="only-motion"><?=$t('single_mot_title')?></span>

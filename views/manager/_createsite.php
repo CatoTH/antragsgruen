@@ -1,8 +1,10 @@
 <?php
 
+use yii\helpers\Html;
+
 /**
  * @var string[] $errors
- * @var boolean $multisite
+ * @var string $mode
  * @var \app\models\forms\SiteCreateForm $model
  */
 
@@ -12,7 +14,7 @@ $t = function ($string) {
 
 
 ?>
-<div id="SiteCreateWizard" class="wizard" data-multisite="<?= ($multisite ? 1 : 0) ?>">
+<div id="SiteCreateWizard" class="wizard" data-mode="<?= Html::encode($mode) ?>">
     <ul class="steps">
         <li data-target="#stepPurpose" class="stepPurpose">
             <?= $t('step_purpose') ?><span class="chevron"></span>
@@ -47,10 +49,13 @@ $t = function ($string) {
     <?= $this->render('_createsite_agenda', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('_createsite_opennow', ['model' => $model, 't' => $t]) ?>
     <?php
-    if ($multisite) {
-        echo $this->render('_createsite_sitedata_multisite', ['model' => $model, 't' => $t]);
-    } else {
-        echo $this->render('_createsite_sitedata_singlesite', ['model' => $model, 't' => $t]);
+    switch ($mode) {
+        case 'subdomain':
+            echo $this->render('_createsite_sitedata_subdomain', ['model' => $model, 't' => $t]);
+            break;
+        case 'singlesite':
+            echo $this->render('_createsite_sitedata_singlesite', ['model' => $model, 't' => $t]);
+            break;
     }
     ?>
 </div>

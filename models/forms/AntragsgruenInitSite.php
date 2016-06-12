@@ -9,7 +9,6 @@ class AntragsgruenInitSite extends SiteCreateForm
 {
     use AntragsgruenInitConfigwriteTrait;
 
-    public $siteUrl;
     public $siteEmail;
 
     /** @var boolean */
@@ -23,14 +22,13 @@ class AntragsgruenInitSite extends SiteCreateForm
         parent::__construct();
         $config = $this->readConfigFromFile($configFile);
 
-        $this->siteUrl    = trim($config->domainPlain, '/') . $config->resourceBase;
         $this->prettyUrls = $config->prettyUrl;
         $this->siteEmail  = $config->mailFromEmail;
 
         if ($config->siteSubdomain) {
             $this->subdomain = $config->siteSubdomain;
         } else {
-            $this->subdomain = 'std';
+            $this->subdomain = 'std' . rand(0, 99999999);
         }
     }
 
@@ -39,13 +37,24 @@ class AntragsgruenInitSite extends SiteCreateForm
      */
     public function getDefaultSite()
     {
-        
+
         $sites = Site::find()->all();
         if (count($sites) > 0) {
             return $sites[0];
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param array $values
+     * @param bool $safeOnly
+     */
+    public function setAttributes($values, $safeOnly = true)
+    {
+        parent::setAttributes($values, $safeOnly);
+        $this->siteEmail  = $values['siteEmail'];
+        $this->prettyUrls = isset($values['prettyUrls']);
     }
 
     /**
@@ -57,6 +66,5 @@ class AntragsgruenInitSite extends SiteCreateForm
         $config->mailFromName  = $this->title;
         $config->siteSubdomain = $this->subdomain;
         $config->prettyUrl     = $this->prettyUrls;
-        //$config->resourceBase = ; @TODO
     }
 }

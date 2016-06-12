@@ -337,29 +337,25 @@ class ManagerController extends Base
         $siteForm   = new AntragsgruenInitSite($configFile);
 
         if ($this->isPostSet('create')) {
-            $post = \Yii::$app->request->post();
-            $siteForm->setAttributes($post['SiteCreateForm']);
-            $siteForm->prettyUrls = isset($post['prettyUrls']);
+            try {
+                $post = \Yii::$app->request->post();
+                $siteForm->setAttributes($post['SiteCreateForm']);
+                $siteForm->prettyUrls = isset($post['prettyUrls']);
 
-            $siteForm->saveConfig();
+                $siteForm->saveConfig();
 
-            $admin = User::findOne($siteForm->readConfigFromFile()->adminUserIds[0]);
-            $siteForm->createSite($admin);
+                $admin = User::findOne($siteForm->readConfigFromFile()->adminUserIds[0]);
+                $siteForm->createSite($admin);
 
-            unlink($installFile);
-            return $this->render('antragsgruen_init_done', [
-                'installFileDeletable' => is_writable($configDir),
-                'delInstallFileCmd'    => $delInstallFileCmd,
-            ]);
+                unlink($installFile);
+                return $this->render('antragsgruen_init_done', [
+                    'installFileDeletable' => is_writable($configDir),
+                    'delInstallFileCmd'    => $delInstallFileCmd,
+                ]);
+            } catch (\Exception $e) {
+                \yii::$app->session->setFlash('error', $e->getMessage());
+            }
         }
-
-        $baseUrl = parse_url($siteForm->siteUrl);
-        if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' &&
-            isset($baseUrl['host']) && $baseUrl['host'] != $_SERVER['HTTP_HOST']
-        ) {
-            return $this->redirect($siteForm->siteUrl);
-        }
-
 
         return $this->render('antragsgruen_init_site', [
             'form'                 => $siteForm,
