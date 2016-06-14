@@ -134,18 +134,26 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
             <div class="col-md-4 control-label">Einstellungen:</div>
             <div class="col-md-8">
                 <label class="radio settingsTypeLabel">
-                    <input type="radio" name="settingsType" id="settingsTypeWizard"> Einrichtungs-Assistenten verwenden
+                    <input type="radio" name="newConsultation[settingsType]" id="settingsTypeWizard" required
+                           value="wizard">
+                    Einrichtungs-Assistenten verwenden
                 </label>
                 <label class="radio settingsTypeLabel">
-                    <input type="radio" name="settingsType" id="settingsTypeTemplate" checked> Einstellungen übernehmen von:
+                    <input type="radio" name="newConsultation[settingsType]" id="settingsTypeTemplate" required
+                           value="template" checked>
+                    Einstellungen übernehmen von:
                 </label>
-                <?
+                <?php
                 $templates = [];
                 foreach ($site->consultations as $cons) {
                     $templates[$cons->id] = $cons->title;
                 }
                 echo '<div class="settingsTypeTemplate">';
-                echo HTMLTools::fueluxSelectbox('newConsultation[template]', $templates, $createForm->template->id);
+                echo HTMLTools::fueluxSelectbox(
+                    'newConsultation[template]',
+                    $templates,
+                    ($createForm->template ? $createForm->template->id : 0)
+                );
                 echo '</div>';
                 ?>
             </div>

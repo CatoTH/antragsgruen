@@ -12,7 +12,6 @@ use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
-use app\models\forms\SiteCreateForm;
 use yii\web\Response;
 
 class IndexController extends AdminBase
@@ -227,15 +226,15 @@ class IndexController extends AdminBase
     {
         $site = $this->site;
 
-        $form           = new ConsultationCreateForm();
+        $form           = new ConsultationCreateForm($site);
         $form->template = $this->consultation;
-        $wizardModel    = new SiteCreateForm();
         $post           = \Yii::$app->request->post();
 
         if ($this->isPostSet('createConsultation')) {
-            $form->setAttributes($_POST['newConsultation'], true);
-            $form->setAsDefault = isset($post['newConsultation']['setStandard']);
-            if (isset($post['newConsultation']['template'])) {
+            $newcon = $post['newConsultation'];
+            $form->setAttributes($newcon, true);
+            $form->siteCreateWizard->setAttributes($post['SiteCreateForm']);
+            if (isset($newcon['template'])) {
                 foreach ($this->site->consultations as $cons) {
                     if ($cons->id == $post['newConsultation']['template']) {
                         $form->template = $cons;
@@ -245,6 +244,8 @@ class IndexController extends AdminBase
             try {
                 $form->createConsultation();
                 \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_new_created'));
+
+                $form = new ConsultationCreateForm($site);
             } catch (FormError $e) {
                 \yii::$app->session->setFlash('error', $e->getMessage());
             }
@@ -272,7 +273,7 @@ class IndexController extends AdminBase
         return $this->render('site_consultations', [
             'site'        => $site,
             'createForm'  => $form,
-            'wizardModel' => $wizardModel,
+            'wizardModel' => $form->siteCreateWizard,
         ]);
     }
 

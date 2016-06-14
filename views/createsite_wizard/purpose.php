@@ -20,7 +20,7 @@ use yii\helpers\Html;
         }
         ?>
         <legend><?=$t('purpose_title')?></legend>
-        <div class="description"><?=$t('purpose_title')?></div>
+        <div class="description"><?=$t('purpose_desc')?></div>
         <div class="options">
             <label class="radio-label value-motion">
                 <span class="title"><?=$t('purpose_motions')?></span>

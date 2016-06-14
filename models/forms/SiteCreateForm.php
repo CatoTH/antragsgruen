@@ -119,18 +119,12 @@ class SiteCreateForm extends Model
     }
 
     /**
-     * @param User $currentUser
+     * @param User $user
+     * @return Site
      * @throws FormError
      */
-    public function createSite(User $currentUser)
+    public function createSite(User $user)
     {
-        if (!Site::isSubdomainAvailable($this->subdomain)) {
-            throw new FormError(\Yii::t('manager', 'site_err_subdomain'));
-        }
-        if (!$this->validate()) {
-            throw new FormError($this->getErrors());
-        }
-
         $site               = new Site();
         $site->title        = $this->title;
         $site->titleShort   = $this->title;
@@ -145,12 +139,18 @@ class SiteCreateForm extends Model
         }
         $this->site = $site;
 
-        $con                     = new Consultation();
-        $con->siteId             = $site->id;
-        $con->title              = $this->title;
-        $con->titleShort         = $this->title;
-        $con->urlPath            = $this->subdomain;
-        $con->adminEmail         = $currentUser->email;
+        $site->link('admins', $user);
+
+        return $site;
+    }
+
+    /**
+     * @param Consultation $con
+     * @throws FormError
+     * @throws \Exception
+     */
+    public function createConsultation(Consultation $con)
+    {
         $con->amendmentNumbering = 0;
         $con->dateCreation       = date('Y-m-d H:i:s');
         $con->wordingBase        = ($this->wording == static::WORDING_MANIFESTO ? 'de-programm' : 'de-parteitag');
@@ -175,15 +175,18 @@ class SiteCreateForm extends Model
         $settings->screeningComments = false;
         $con->setSettings($settings);
         if (!$con->save()) {
-            $site->delete();
             throw new FormError($con->getErrors());
         }
         $this->consultation = $con;
+    }
 
-
-        $site->link('currentConsultation', $con);
-        $site->link('admins', $currentUser);
-
+    /**
+     * @param Consultation $con
+     * @param User $user
+     * @throws FormError
+     */
+    public function createMotionTypes(Consultation $con, User $user)
+    {
         if ($this->wording == static::WORDING_MANIFESTO) {
             $type = $this->doCreateManifestoType($con);
             $this->doCreateManifestoSections($type);
@@ -192,14 +195,11 @@ class SiteCreateForm extends Model
             $this->doCreateMotionSections($type);
         }
 
-        if ($this->hasAgenda) {
-            $this->createAgenda($con);
-        }
-
-        $this->createImprint($site, $con);
-
         if ($this->singleMotion) {
             $motion                 = new Motion();
+            $motion->title          = '';
+            $motion->titlePrefix    = '';
+            $motion->cache          = '';
             $motion->consultationId = $con->id;
             $motion->motionTypeId   = $type->id;
             $motion->dateCreation   = date('Y-m-d H:i:s');
@@ -210,7 +210,7 @@ class SiteCreateForm extends Model
 
             $supporter           = new MotionSupporter();
             $supporter->motionId = $motion->id;
-            $supporter->userId   = $currentUser->id;
+            $supporter->userId   = $user->id;
             $supporter->role     = MotionSupporter::ROLE_INITIATOR;
             $supporter->position = 0;
             if (!$supporter->save()) {
@@ -225,6 +225,68 @@ class SiteCreateForm extends Model
             $this->consultation->setSettings($conSett);
             $this->consultation->save();
         }
+    }
+
+    /**
+     * @param User $currentUser
+     * @param Site $site
+     * @param Consultation $con
+     * @param bool $setDefault
+     * @return Consultation
+     * @throws FormError
+     */
+    public function createWithoutSite(User $currentUser, $site, $con, $setDefault = true)
+    {
+        $this->createConsultation($con);
+        if ($setDefault) {
+            $site->link('currentConsultation', $con);
+        }
+
+        $this->createMotionTypes($con, $currentUser);
+
+        if ($this->hasAgenda) {
+            $this->createAgenda($con);
+        }
+
+        $this->createImprint($site, $con);
+
+        return $con;
+    }
+
+    /**
+     * @param User $currentUser
+     * @return Consultation
+     * @throws FormError
+     */
+    public function create(User $currentUser)
+    {
+        if (!Site::isSubdomainAvailable($this->subdomain)) {
+            throw new FormError(\Yii::t('manager', 'site_err_subdomain'));
+        }
+        if (!$this->validate()) {
+            throw new FormError($this->getErrors());
+        }
+        $site = $this->createSite($currentUser);
+
+        $con             = new Consultation();
+        $con->siteId     = $site->id;
+        $con->title      = $this->title;
+        $con->titleShort = $this->title;
+        $con->urlPath    = $this->subdomain;
+        $con->adminEmail = $currentUser->email;
+        $this->createConsultation($con);
+
+        $site->link('currentConsultation', $con);
+
+        $this->createMotionTypes($con, $currentUser);
+
+        if ($this->hasAgenda) {
+            $this->createAgenda($con);
+        }
+
+        $this->createImprint($site, $con);
+
+        return $con;
     }
 
 

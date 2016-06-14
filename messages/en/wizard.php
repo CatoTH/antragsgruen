@@ -17,7 +17,7 @@ return [
     'purpose_desc'           => 'This only affects the wording.',
     'purpose_motions'        => 'Motions',
     'purpose_manifesto'      => 'Manifesto',
-    'purpose_manifesto_desc' => '',
+    'purpose_manifesto_desc' => '&nbsp;',
 
     'single_mot_title' => 'Will there multiple motions?',
     'single_man_title' => 'Will there be multiple chapters / documents?',

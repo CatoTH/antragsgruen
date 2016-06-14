@@ -163,7 +163,7 @@ class ManagerController extends Base
             try {
                 $model->setAttributes($post['SiteCreateForm']);
                 if ($model->validate()) {
-                    $model->createSite(User::getCurrentUser());
+                    $model->create(User::getCurrentUser());
 
                     $loginId   = User::getCurrentUser()->id;
                     $loginCode = AntiXSS::createToken($loginId);
@@ -345,7 +345,7 @@ class ManagerController extends Base
                 $siteForm->saveConfig();
 
                 $admin = User::findOne($siteForm->readConfigFromFile()->adminUserIds[0]);
-                $siteForm->createSite($admin);
+                $siteForm->create($admin);
 
                 unlink($installFile);
                 return $this->render('antragsgruen_init_done', [
