@@ -102,6 +102,8 @@ return [
     'err_edit_permission'                => 'Keine Berechtigung zum Bearbeiten dieses Antrags.',
     'err_withdraw_permission'            => 'Dieser Antrag kann nicht zurückgezogen werden.',
     'err_not_found'                      => 'Antrag nicht gefunden.',
+    'err_not_visible_yet_title'          => 'Noch nicht sichtbar',
+    'err_not_visible_yet'                => 'Dieser Antrag ist noch nicht sichtbar.',
     'withdraw_done'                      => 'Der Antrag wurde zurückgezogen.',
     'withdraw_bread'                     => 'Zurückziehen',
     'withdraw'                           => 'Zurückziehen',

@@ -168,7 +168,7 @@ echo '<div class="form-group">';
 echo '<label class="col-md-4" style="text-align: right;">' . \Yii::t('admin', 'motion_type_email');
 echo '</label><div class="col-md-8 contactDetails contactEMail">';
 $options = [
-    ConsultationMotionType::CONTACT_NA       => \Yii::t('admin', 'motion_type_skip'),
+    ConsultationMotionType::CONTACT_NONE       => \Yii::t('admin', 'motion_type_skip'),
     ConsultationMotionType::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
     ConsultationMotionType::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
 ];
@@ -180,7 +180,7 @@ echo '<div class="form-group">';
 echo '<label class="col-md-4" style="text-align: right;">' . \Yii::t('admin', 'motion_type_phone');
 echo '</label><div class="col-md-8 contactDetails contactPhone">';
 $options = [
-    ConsultationMotionType::CONTACT_NA       => \Yii::t('admin', 'motion_type_skip'),
+    ConsultationMotionType::CONTACT_NONE       => \Yii::t('admin', 'motion_type_skip'),
     ConsultationMotionType::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
     ConsultationMotionType::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
 ];

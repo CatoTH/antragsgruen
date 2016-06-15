@@ -8,12 +8,18 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
 use app\models\db\ConsultationUserPrivilege;
+use app\models\db\Site;
+use app\models\db\User;
 use app\models\exceptions\FormError;
 use yii\base\Model;
 
 class ConsultationCreateForm extends Model
 {
+    /** @var Site */
+    private $site;
+
     /** @var string */
+    public $settingsType;
     public $urlPath;
     public $title;
     public $titleShort;
@@ -24,6 +30,16 @@ class ConsultationCreateForm extends Model
     /** @var boolean */
     public $setAsDefault = true;
 
+    /** @var SiteCreateForm */
+    public $siteCreateWizard;
+
+    public function __construct(Site $site, $config = [])
+    {
+        parent::__construct($config);
+        $this->site             = $site;
+        $this->siteCreateWizard = new SiteCreateForm();
+    }
+
     /**
      * @return array
      */
@@ -32,28 +48,28 @@ class ConsultationCreateForm extends Model
         return [
             [['urlPath', 'title', 'titleShort', 'template'], 'required'],
             [['setAsDefault'], 'boolean'],
-            [['urlPath', 'title', 'titleShort', 'setAsDefault'], 'safe'],
+            [['urlPath', 'title', 'titleShort', 'setAsDefault', 'settingsType'], 'safe'],
         ];
+    }
+
+    /**
+     * @param array $values
+     * @param bool $safeOnly
+     */
+    public function setAttributes($values, $safeOnly = true)
+    {
+        parent::setAttributes($values, $safeOnly);
+
+        $this->setAsDefault = isset($values['setStandard']);
     }
 
     /**
      * @throws FormError
      */
-    public function createConsultation()
+    private function createConsultationFromTemplate()
     {
-        if ($this->title == '' || $this->titleShort == '' || $this->urlPath == '') {
-            throw new FormError('Bitte fülle alle Felder aus');
-        }
-        foreach ($this->template->site->consultations as $cons) {
-            if (mb_strtolower($cons->urlPath) == mb_strtolower($this->urlPath)) {
-                $msg = 'Diese Adresse ist leider schon von einer anderen Veranstaltung auf dieser Seite vergeben.';
-                throw new FormError($msg);
-            }
-        }
-
         $consultation                     = new Consultation();
-        $consultation->siteId             = $this->template->siteId;
-        $consultation->type               = $this->template->type;
+        $consultation->siteId             = $this->site->id;
         $consultation->amendmentNumbering = $this->template->amendmentNumbering;
         $consultation->urlPath            = $this->urlPath;
         $consultation->title              = $this->title;
@@ -116,8 +132,53 @@ class ConsultationCreateForm extends Model
         }
 
         if ($this->setAsDefault) {
-            $this->template->site->currentConsultationId = $consultation->id;
-            $this->template->site->save();
+            $this->site->currentConsultationId = $consultation->id;
+            $this->site->save();
+        }
+    }
+
+    /**
+     * @return FormError
+     */
+    private function createConsultationFromWizard()
+    {
+        $this->siteCreateWizard->subdomain = $this->site->subdomain;
+        $this->siteCreateWizard->contact   = $this->site->contact;
+        $this->siteCreateWizard->title     = $this->site->title;
+
+        $user = User::getCurrentUser();
+
+        $con               = new Consultation();
+        $con->siteId       = $this->site->id;
+        $con->urlPath      = $this->urlPath;
+        $con->title        = $this->title;
+        $con->titleShort   = $this->titleShort;
+        $con->dateCreation = date('Y-m-d H:i:s');
+        $con->adminEmail   = $user->email;
+
+        $this->siteCreateWizard->createWithoutSite($user, $this->site, $con, $this->setAsDefault);
+    }
+
+    /**
+     * @throws FormError
+     */
+    public function createConsultation()
+    {
+        if ($this->title == '' || $this->titleShort == '' || $this->urlPath == '') {
+            throw new FormError('Bitte fülle alle Felder aus');
+        }
+        foreach ($this->template->site->consultations as $cons) {
+            if (mb_strtolower($cons->urlPath) == mb_strtolower($this->urlPath)) {
+                $msg = 'Diese Adresse ist leider schon von einer anderen Veranstaltung auf dieser Seite vergeben.';
+                throw new FormError($msg);
+            }
+        }
+
+        if ($this->settingsType == 'wizard') {
+            $this->createConsultationFromWizard();
+        }
+        if ($this->settingsType == 'template') {
+            $this->createConsultationFromTemplate();
         }
     }
 }

@@ -132,7 +132,7 @@ echo '<div class="form-group contactNameRow">
   </div>
 </div>';
 
-if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
+if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NONE) {
     echo '<div class="form-group">
   <label class="col-sm-3 control-label" for="initiatorEmail">' . Yii::t('initiator', 'email') . '</label>
   <div class="col-sm-4">
@@ -147,7 +147,7 @@ if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NA) {
 }
 
 
-if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NA) {
+if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NONE) {
     echo '<div class="form-group phone_row">
         <label class="col-sm-3 control-label" for="initiatorPhone">' . Yii::t('initiator', 'phone') . '</label>
   <div class="col-sm-4">

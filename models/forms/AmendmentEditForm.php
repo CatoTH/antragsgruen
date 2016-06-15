@@ -99,7 +99,9 @@ class AmendmentEditForm extends Model
             [['type'], 'required'],
             [['id', 'type'], 'number'],
             [
-                'type', 'required', 'message' => \Yii::t('amend', 'err_type_missing')
+                'type',
+                'required',
+                'message' => \Yii::t('amend', 'err_type_missing')
             ],
             [['supporters', 'tags', 'type'], 'safe'],
         ];
@@ -193,7 +195,7 @@ class AmendmentEditForm extends Model
      */
     public function createAmendment()
     {
-        if (!$this->motion->motionType->getAmendmentPolicy()->checkCurrUserAmendment()) {
+        if (!$this->motion->isCurrentlyAmendable()) {
             throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
 
@@ -264,8 +266,7 @@ class AmendmentEditForm extends Model
      */
     public function saveAmendment(Amendment $amendment)
     {
-        $motionType = $this->motion->motionType;
-        if (!$motionType->getAmendmentPolicy()->checkCurrUserAmendment()) {
+        if (!$this->motion->isCurrentlyAmendable()) {
             throw new FormError(\Yii::t('amend', 'err_create_permission'));
         }
 
@@ -279,6 +280,7 @@ class AmendmentEditForm extends Model
         $amendment->changeEditorial   = $this->editorial;
 
         if ($amendment->save()) {
+            $motionType = $this->motion->motionType;
             $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
             // Sections

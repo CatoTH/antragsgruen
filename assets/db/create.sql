@@ -114,7 +114,6 @@ CREATE TABLE `###TABLE_PREFIX###consultation` (
   `id`                 INT(11)      NOT NULL,
   `siteId`             INT(11)      NOT NULL,
   `urlPath`            VARCHAR(45)       DEFAULT NULL,
-  `type`               TINYINT(4)        DEFAULT NULL,
   `wordingBase`        VARCHAR(20)  NOT NULL,
   `title`              VARCHAR(200) NOT NULL,
   `titleShort`         VARCHAR(45)  NOT NULL,

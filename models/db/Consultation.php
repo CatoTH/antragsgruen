@@ -5,21 +5,17 @@ namespace app\models\db;
 use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
-use app\models\exceptions\DB;
 use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
 use app\models\SearchResult;
-use app\models\sitePresets\ISitePreset;
 use yii\db\ActiveRecord;
-use yii\helpers\Html;
 
 /**
  * @package app\models\db
  *
  * @property int $id
  * @property int $siteId
- * @property int $type
  * @property int $amendmentNumbering
  *
  * @property string $urlPath
@@ -126,6 +122,17 @@ class Consultation extends ActiveRecord
             }
         }
         return null;
+    }
+
+    /**
+     * @return Motion|null
+     */
+    public function getForcedMotion()
+    {
+        if ($this->getSettings()->forceMotion === null) {
+            return null;
+        }
+        return $this->getMotion($this->getSettings()->forceMotion);
     }
 
     /**
@@ -325,54 +332,6 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param Site $site
-     * @param User $currentUser
-     * @param ISitePreset $preset
-     * @param int $type
-     * @param string $title
-     * @param string $subdomain
-     * @param int $openNow
-     * @return Consultation
-     * @throws DB
-     */
-    public static function createFromForm($site, $currentUser, $preset, $type, $title, $subdomain, $openNow)
-    {
-        $con                     = new Consultation();
-        $con->siteId             = $site->id;
-        $con->title              = $title;
-        $con->titleShort         = $title;
-        $con->type               = $type;
-        $con->urlPath            = $subdomain;
-        $con->adminEmail         = $currentUser->email;
-        $con->amendmentNumbering = 0;
-        $con->dateCreation       = date('Y-m-d H:i:s');
-
-        $settings                   = $con->getSettings();
-        $settings->maintainanceMode = !$openNow;
-        $con->setSettings($settings);
-
-        $preset->setConsultationSettings($con);
-
-        if (!$con->save()) {
-            throw new DB($con->getErrors());
-        }
-
-        $contactHtml               = nl2br(Html::encode($site->contact));
-        $legalText                 = new ConsultationText();
-        $legalText->consultationId = $con->id;
-        $legalText->category       = 'pagedata';
-        $legalText->textId         = 'legal';
-        $legalText->text           = str_replace('%CONTACT%', $contactHtml, \Yii::t('base', 'legal_template'));
-        if (!$legalText->save()) {
-            var_dump($legalText->getErrors());
-            die();
-        }
-
-
-        return $con;
-    }
-
-    /**
      * @param int $privilege
      * @return bool
      *
@@ -430,6 +389,19 @@ class Consultation extends ActiveRecord
             $invisible[] = IMotion::STATUS_MODIFIED;
             $invisible[] = IMotion::STATUS_MODIFIED_ACCEPTED;
         }
+        return $invisible;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getUnreadableStati()
+    {
+        $invisible = [
+            IMotion::STATUS_DELETED,
+            IMotion::STATUS_UNCONFIRMED,
+            IMotion::STATUS_DRAFT,
+        ];
         return $invisible;
     }
 

@@ -5,6 +5,8 @@
         "gulp-concat": "^2.6.0",
         "gulp-sass": "^2.1.1",
         "gulp-sourcemaps": "^1.6.0",
+        "gulp-babel": "^6.1.2",
+        "babel-preset-es2015": "*",
         "pa11y": "^3.5.1",
         "phantomjs-prebuilt": "^2.1.4"
     },

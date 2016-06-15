@@ -39,10 +39,11 @@ echo '<div class="form content hideIfEmpty">';
 
 echo $controller->showErrors();
 
-if ($form->motionType->getAmendmentPolicy()->checkCurrUserAmendment(true, true)) {
+$publicPolicies = [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_WURZELWERK];
+if (in_array($form->motionType->policyAmendments, $publicPolicies)) {
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         \Yii::t('motion', 'create_explanation_title') . '</div>' .
-        str_replace('%HOME%', UrlHelper::createUrl('consultation/index'), \Yii::t('motion', 'create_explanation')) .
+        str_replace('%HOME%', UrlHelper::homeUrl(), \Yii::t('motion', 'create_explanation')) .
         '<br><br>';
 }
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
@@ -56,7 +57,7 @@ if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePubli
 
 
 $motionPolicy = $form->motionType->getMotionPolicy();
-if (!in_array($motionPolicy::getPolicyID(), [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
+if (!in_array($motionPolicy::getPolicyID(), $publicPolicies)) {
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         Yii::t('motion', 'create_prerequisites'), '</div>';
 

@@ -2,7 +2,6 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
-use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
@@ -23,8 +22,9 @@ foreach ($motion->replacedByMotions as $replMotion) {
 $html        = '<ul class="sidebarActions">';
 $sidebarRows = 0;
 
-$policy = $motion->motionType->getAmendmentPolicy();
-if ($policy->checkCurrUserAmendment(true, true)) {
+try {
+    $motion->isCurrentlyAmendable(true, true, true);
+    
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
@@ -33,14 +33,13 @@ if ($policy->checkCurrUserAmendment(true, true)) {
     $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '" ' .
         'rel="nofollow">' . $title . '</a>';
     $sidebarRows++;
-} elseif ($policy->getPolicyID() != IPolicy::POLICY_NOBODY) {
-    $msg = $policy->getPermissionDeniedAmendmentMsg();
-    if ($msg != '') {
+} catch (\app\models\exceptions\NotAmendable $e) {
+    if ($e->isMessagePublic()) {
         $createLi = '<li class="amendmentCreate">';
         $createLi .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
         $createLi .= Html::encode(Yii::t('motion', 'amendment_create'));
         $createLi .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
-        $createLi .= Html::encode($msg) . '</span></span></li>';
+        $createLi .= Html::encode($e->getMessage()) . '</span></span></li>';
 
         $html .= $createLi;
         $layout->menusHtmlSmall[] = $createLi;
@@ -99,11 +98,12 @@ if ($adminEdit) {
     $sidebarRows++;
 }
 
-$html .= '<li class="back">';
-$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('motion', 'back_start');
-$html .= Html::a($title, UrlHelper::createUrl('consultation/index')) . '</li>';
-$sidebarRows++;
-
+if (!$motion->getConsultation()->getForcedMotion()) {
+    $html .= '<li class="back">';
+    $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('motion', 'back_start');
+    $html .= Html::a($title, UrlHelper::homeUrl()) . '</li>';
+    $sidebarRows++;
+}
 
 $html .= '</ul>';
 
@@ -114,8 +114,10 @@ if ($motion->isSocialSharable() && count($replacedByMotions) == 0) {
     $sidebarRows++;
 }
 
-$layout->menusHtml[] = $html;
 
+if ($sidebarRows > 0) {
+    $layout->menusHtml[] = $html;
+}
 
 
 return $sidebarRows;

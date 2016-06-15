@@ -2,11 +2,12 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
+    babel = require('gulp-babel'),
     sourcemaps = require('gulp-sourcemaps'),
 
     main_js_files = [
         "web/js/bootstrap.js", "web/js/bower/bootbox/bootbox.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
-        "web/js/bower/intl/dist/Intl.min.js", "web/js/antragsgruen.js"
+        "web/js/bower/intl/dist/Intl.min.js", "web/js/antragsgruen.js", "web/js/src/*.es6"
     ];
 
 gulp.task('pdfjs', function () {
@@ -23,6 +24,18 @@ gulp.task('pdfjs', function () {
         ])
         .pipe(concat('pdfjs-viewer.min.js'))
         .pipe(uglify())
+        .pipe(gulp.dest('./web/js/build/'));
+});
+
+gulp.task('build-wizard', function() {
+    gulp.src('./web/js/src/SiteCreateWizard.es6')
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+			presets: ['es2015']
+		}))
+        .pipe(concat('SiteCreateWizard.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
 });
 
@@ -68,6 +81,7 @@ gulp.task('build-css', function () {
 gulp.task('watch', function () {
     gulp.watch(main_js_files, ['build-js']);
     gulp.watch(["web/css/*.scss"], ['build-css']);
+    gulp.watch(['./web/js/src/SiteCreateWizard.es6'], ['build-wizard']);
 });
 
 gulp.task('default', ['build-js', 'build-css']);

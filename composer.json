@@ -37,13 +37,14 @@
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "^2.0.5",
-    "yiisoft/yii2-debug": "^2.0.5",
+    "yiisoft/yii2-debug": "^2.0.6",
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.3.*",
     "codeception/codeception": "^2.2.1",
     "codeception/specify": "^0.4.3",
     "codeception/verify": "^0.3.0",
-    "facebook/webdriver": "^1.1.1"
+    "facebook/webdriver": "^1.1.1",
+    "bower-asset/yii2-pjax": "^2.0.3.9999999-dev"
   },
   "extra": {
     "yii\\composer\\Installer::postCreateProject": {

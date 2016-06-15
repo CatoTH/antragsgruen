@@ -7,6 +7,7 @@
  */
 use app\components\UrlHelper;
 use app\models\db\Consultation;
+use app\models\db\Motion;
 use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */
@@ -191,6 +192,32 @@ echo '</div>
 <h2 class="green">Anträge</h2>
 <div class="content">';
 
+echo '<div><label>';
+echo Html::checkbox('settings[singleMotionMode]', ($settings->forceMotion !== null), ['id' => 'singleMotionMode']);
+echo 'Es wird nur <string>ein einziger Antrag</string> diskutiert, auf eine einleitende Übersichts-Startseite wird verzichtet
+    </label></div>';
+
+
+$handledSettings[] = 'forceMotion';
+$motions = [];
+foreach ($consultation->motions as $motion) {
+    if ($motion->status != Motion::STATUS_DELETED) {
+        $motions[$motion->id] = $motion->getTitleWithPrefix();
+    }
+}
+echo '<div class="form-group" id="forceMotionRow">
+        <label class="col-sm-3 control-label" for="startLayoutType">Dieser Antrag ist:</label>
+        <div class="col-sm-9">';
+echo Html::dropDownList(
+    'settings[forceMotion]',
+    $settings->forceMotion,
+    $motions,
+    ['id' => 'forceMotion', 'class' => 'form-control']
+);
+echo '</div></div>';
+
+
+
 $handledSettings[] = 'lineNumberingGlobal';
 echo '<div><label>';
 echo Html::checkbox('settings[lineNumberingGlobal]', $settings->lineNumberingGlobal, ['id' => 'lineNumberingGlobal']);
@@ -280,18 +307,6 @@ echo '</div>
 <h2 class="green">Kommentare</h2>
 
 <div class="content">';
-/*
-<div class="form-group">
-        <label class="col-sm-3 control-label" for="policyComments">Kommentieren dürfen:</label>
-        <div class="col-sm-9">';
-echo Html::dropDownList(
-    'consultation[policyComments]',
-    $consultation->policyComments,
-    IPolicy::getPolicyNames(),
-    ['id' => 'policyComments', 'class' => 'form-control']
-);
-echo '</div></div>';
-*/
 
 $handledSettings[] = 'screeningComments';
 echo '<div><label>';

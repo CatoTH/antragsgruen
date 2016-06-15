@@ -2,10 +2,7 @@
 
 namespace app\models\db;
 
-use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
-use app\models\exceptions\DB;
-use app\models\sitePresets\ISitePreset;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\db\ActiveRecord;
 
@@ -114,6 +111,23 @@ class Site extends ActiveRecord
         $this->settings       = $settings->toJSON();
     }
 
+    /**
+     * @param string $subdomain
+     * @return boolean
+     */
+    public static function isSubdomainAvailable($subdomain)
+    {
+        if ($subdomain == '') {
+            return false;
+        }
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if (in_array($subdomain, $params->blockedSubdomains)) {
+            return false;
+        }
+        $site = Site::findOne(['subdomain' => $subdomain]);
+        return ($site === null);
+    }
 
     /**
      * @return Site[]
@@ -131,50 +145,6 @@ class Site extends ActiveRecord
         }
 
         return $shownSites;
-    }
-
-    /**
-     * @param ISitePreset $preset
-     * @param string $subdomain
-     * @param string $title
-     * @param string $orga
-     * @param string $contact
-     * @param int $isWillingToPay
-     * @param int $status
-     * @return Site
-     * @throws DB
-     * @throws FormError
-     */
-    public static function createFromForm($preset, $subdomain, $title, $orga, $contact, $isWillingToPay, $status)
-    {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        if (in_array($subdomain, $params->blockedSubdomains)) {
-            throw new FormError(\Yii::t('manager', 'site_err_subdomain'));
-        }
-
-        $site               = new Site();
-        $site->title        = $title;
-        $site->titleShort   = $title;
-        $site->organization = $orga;
-        $site->contact      = $contact;
-        $site->subdomain    = $subdomain;
-        $site->public       = 1;
-        $site->status       = $status;
-        $site->dateCreation = date('Y-m-d H:i:s');
-
-        $siteSettings                          = $site->getSettings();
-        $siteSettings->willingToPay            = $isWillingToPay;
-        $siteSettings->willingToPayLastAskedTs = time();
-        $site->setSettings($siteSettings);
-
-        $preset->setSiteSettings($site);
-
-        if (!$site->save()) {
-            throw new DB($site->getErrors());
-        }
-
-        return $site;
     }
 
     /**

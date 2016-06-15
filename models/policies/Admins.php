@@ -48,9 +48,6 @@ class Admins extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
-        if ($this->motionType->motionDeadlineIsOver()) {
-            return \Yii::t('structure', 'policy_deadline_over');
-        }
         return \Yii::t('structure', 'policy_admin_amend_denied');
     }
 

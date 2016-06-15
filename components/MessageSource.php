@@ -51,6 +51,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'comment'   => 'Kommentare',
                 'admin'     => 'Administration',
                 'user'      => 'Account-Einstellungen',
+                'wizard'    => 'Wizard',
             ];
         } else {
             return [
@@ -66,6 +67,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'comment'   => 'Comments',
                 'admin'     => 'Administration',
                 'user'      => 'User accounts',
+                'wizard'    => 'Wizard',
             ];
         }
     }
@@ -179,14 +181,14 @@ class MessageSource extends \yii\i18n\MessageSource
         foreach ($languages as $lang) {
             $parts = explode('-', $lang);
 
-            $baseFile     = $this->getMessageFilePath($category, $parts[0]);
-            $messages     = $this->loadMessagesFromFile($baseFile);
+            $baseFile = $this->getMessageFilePath($category, $parts[0]);
+            $messages = $this->loadMessagesFromFile($baseFile);
             if ($messages) {
                 $baseMessages = array_merge($baseMessages, $messages);
             }
 
-            $extFile     = $this->getMessageFilePath($category, $lang);
-            $messages    = $this->loadMessagesFromFile($extFile);
+            $extFile  = $this->getMessageFilePath($category, $lang);
+            $messages = $this->loadMessagesFromFile($extFile);
             if ($messages) {
                 $extMessages = array_merge($extMessages, $messages);
             }

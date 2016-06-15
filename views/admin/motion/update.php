@@ -106,7 +106,7 @@ echo '</div></div>';
 
 if (count($consultation->agendaItems) > 0) {
     echo '<div class="form-group">';
-    echo '<label class="col-md-3 control-label" for="motionStatus">';
+    echo '<label class="col-md-3 control-label" for="agendaItemId">';
     echo \Yii::t('admin', 'motion_agenda_item');
     echo ':</label><div class="col-md-9">';
     $options    = ['class' => 'form-control', 'id' => 'agendaItemId'];
