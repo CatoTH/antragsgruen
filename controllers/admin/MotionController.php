@@ -13,8 +13,8 @@ use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
-use app\models\sitePresets\ApplicationTrait;
-use app\models\sitePresets\MotionTrait;
+use app\components\motionTypeTemplates\Application as ApplicationTemplate;
+use app\components\motionTypeTemplates\Motion as MotionTemplate;
 use app\views\motion\LayoutHelper;
 use yii\web\Response;
 
@@ -193,11 +193,11 @@ class MotionController extends AdminBase
             $type         = \Yii::$app->request->post('type');
             $sectionsFrom = null;
             if (isset($type['preset']) && $type['preset'] == 'application') {
-                $motionType = ApplicationTrait::doCreateApplicationType($this->consultation);
-                ApplicationTrait::doCreateApplicationSections($motionType);
+                $motionType = ApplicationTemplate::doCreateApplicationType($this->consultation);
+                ApplicationTemplate::doCreateApplicationSections($motionType);
             } elseif (isset($type['preset']) && $type['preset'] == 'motion') {
-                $motionType = MotionTrait::doCreateMotionType($this->consultation);
-                MotionTrait::doCreateMotionSections($motionType);
+                $motionType = MotionTemplate::doCreateMotionType($this->consultation);
+                MotionTemplate::doCreateMotionSections($motionType);
             } else {
                 $motionType = null;
                 foreach ($this->consultation->motionTypes as $cType) {

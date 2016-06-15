@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\sitePresets;
+namespace app\components\motionTypeTemplates;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
@@ -9,7 +9,7 @@ use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 
-trait MotionTrait
+trait Motion
 {
     /**
      * @param Consultation $consultation
