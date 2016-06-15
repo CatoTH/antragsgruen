@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\sitePresets;
+namespace app\components\motionTypeTemplates;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
@@ -10,7 +10,7 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularDataType;
 
-trait ApplicationTrait
+trait Application
 {
     /**
      * @param Consultation $consultation
