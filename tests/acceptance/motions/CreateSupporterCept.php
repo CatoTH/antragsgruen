@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 
-$I->wantTo('check that supporters are disabled by deafult');
+$I->wantTo('check that supporters are disabled by default');
 $I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->dontSeeElement('.supporterData');
 
