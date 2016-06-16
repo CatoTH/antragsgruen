@@ -24,6 +24,21 @@ use app\models\settings\AntragsgruenApp;
 class ConsultationController extends Base
 {
     /**
+     * @param \yii\base\Action $action
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function beforeAction($action)
+    {
+        $return = parent::beforeAction($action);
+        if (!$this->consultation) {
+            $this->consultationNotFound();
+            return false;
+        }
+        return $return;
+    }
+
+    /**
      * @return string
      */
     public function actionSearch()
@@ -367,7 +382,7 @@ class ConsultationController extends Base
         if ($this->consultation->getForcedMotion()) {
             $this->redirect(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
         }
-        
+
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
@@ -402,7 +417,7 @@ class ConsultationController extends Base
 
     /**
      * @param int $page
-     * 
+     *
      * @return string
      */
     public function actionActivitylog($page = 0)
