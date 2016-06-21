@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
@@ -57,14 +58,30 @@ class Base extends Controller
             $appParams = \Yii::$app->params;
 
             if ($appParams->siteSubdomain) {
+                if (strpos($appParams->siteSubdomain, 'xn--') === 0) {
+                    HTMLTools::loadNetIdna2();
+                    $idna = new \Net_IDNA2();
+                    $subdomain = $idna->decode($appParams->siteSubdomain);
+                } else {
+                    $subdomain = $appParams->siteSubdomain;
+                }
+
                 $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
-                $this->loadConsultation($appParams->siteSubdomain, $consultation);
+                $this->loadConsultation($subdomain, $consultation);
                 if ($this->site) {
                     $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
                 }
             } elseif (isset($params[1]['subdomain'])) {
+                if (strpos($params[1]['subdomain'], 'xn--') === 0) {
+                    HTMLTools::loadNetIdna2();
+                    $idna = new \Net_IDNA2();
+                    $subdomain = $idna->decode($params[1]['subdomain']);
+                } else {
+                    $subdomain = $params[1]['subdomain'];
+                }
+
                 $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
-                $this->loadConsultation($params[1]['subdomain'], $consultation);
+                $this->loadConsultation($subdomain, $consultation);
                 if ($this->site) {
                     $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
                 }
