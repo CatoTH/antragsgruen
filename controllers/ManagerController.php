@@ -135,6 +135,7 @@ class ManagerController extends Base
 
     /**
      * @param string $test
+     * @return string
      */
     public function actionCheckSubdomain($test)
     {

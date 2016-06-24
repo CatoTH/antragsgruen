@@ -422,7 +422,13 @@ class Motion extends IMotion implements IRSSItem
         $iAmAdmin = User::currentUserHasPrivilege($this->getConsultation(), User::PRIVILEGE_ANY);
 
         if (!($allowAdmins && $iAmAdmin)) {
-            if (in_array($this->status, [static::STATUS_DELETED, static::STATUS_DRAFT])) {
+            $notAmendableStati = [
+                static::STATUS_DELETED,
+                static::STATUS_DRAFT,
+                static::STATUS_COLLECTING_SUPPORTERS,
+                static::STATUS_SUBMITTED_UNSCREENED,
+            ];
+            if (in_array($this->status, $notAmendableStati)) {
                 if ($throwExceptions) {
                     throw new NotAmendable('Not amendable in the current state', false);
                 } else {

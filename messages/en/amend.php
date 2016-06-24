@@ -72,7 +72,7 @@ return [
     'confirm_bread'                     => 'Confirm',
     'affects_x_paragraphs'              => 'Affects %num% paragraphs',
     'singlepara_revert'                 => 'Revert changes',
-    'err_create_permission'             => 'No permission to create agenda items.',
+    'err_create_permission'             => 'No permission to create amendments.',
     'err_create'                        => 'An error occurred while creating it',
     'err_save'                          => 'An error occurred while saving it',
     'err_type_missing'                  => 'You have to enter a type.',
