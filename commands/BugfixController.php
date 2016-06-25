@@ -5,6 +5,7 @@ namespace app\commands;
 use app\components\HTMLTools;
 use app\components\MessageSource;
 use app\models\db\Amendment;
+use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\sectionTypes\ISectionType;
@@ -154,6 +155,30 @@ class BugfixController extends Controller
                     echo " '" . addslashes($origKey) . "' => '', // '" . str_replace("\n", "\\n", $origName) . "'\n";
                 }
             }
+        }
+    }
+
+    /**
+     * Sends a test e-mail to the given e-mail-address in order to test the e-mail-delivery-configuration
+     *
+     * @param string $email_to
+     */
+    public function actionTestEmail($email_to)
+    {
+        try {
+            \app\components\mail\Tools::sendWithLog(
+                EMailLog::TYPE_DEBUG,
+                null,
+                $email_to,
+                null,
+                'Test-E-Mail',
+                'This is a test e-mail sent from the command line',
+                '',
+                null
+            );
+            $this->stdout("The e-mail want sent.\n");
+        } catch (\Exception $e) {
+            $this->stderr("An exception occurred: " . $e->getMessage());
         }
     }
 }
