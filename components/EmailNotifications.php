@@ -226,7 +226,7 @@ class EmailNotifications
             }
 
             $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-            $plain .= HTMLTools::toPlainText($html);
+            $plain .= "\n\n" . HTMLTools::toPlainText($amendmentHtml);
 
             $plain = str_replace('%LINK%', $amendmentLink, $plain);
             $html  = str_replace('%LINK%', Html::a($amendmentLink, $amendmentLink), $html);
