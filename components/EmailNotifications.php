@@ -47,7 +47,7 @@ class EmailNotifications
             }
 
             $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-            $plain .= HTMLTools::toPlainText($html);
+            $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
 
             $plain = str_replace('%LINK%', $motionLink, $plain);
             $html  = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
