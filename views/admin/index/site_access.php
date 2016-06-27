@@ -71,7 +71,7 @@ if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_STD) {
 echo ' ' . \Yii::t('admin', 'siteacc_useraccounts') . '</label>
 </div>';
 
-if ($controller->getParams()->hasWurzelwerk) {
+if ($controller->getParams()->hasWurzelwerk || $controller->getParams()->hasSaml) {
     $method = SiteSettings::LOGIN_WURZELWERK;
     echo '<div class="checkbox wurzelwerk">
   <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) .
