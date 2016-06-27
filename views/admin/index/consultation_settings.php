@@ -416,7 +416,7 @@ $handledSiteSettings = [];
 
 
         <div class="saveholder">
-            <button type="submit" name="save" class="btn btn-primary"><?= \Yii::t('admin', 'save') ?>?></button>
+            <button type="submit" name="save" class="btn btn-primary"><?= \Yii::t('admin', 'save') ?></button>
         </div>
 
 
