@@ -375,7 +375,7 @@ $handledSiteSettings = [];
 
 
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="adminEmail"><?= \Yii::t('admin', 'con_email_admins') ?>x:</label>
+            <label class="col-sm-3 control-label" for="adminEmail"><?= \Yii::t('admin', 'con_email_admins') ?>:</label>
             <div class="col-sm-9">
                 <input type="text" name="consultation[adminEmail]"
                        value="<?= Html::encode($consultation->adminEmail) ?>"
@@ -416,7 +416,7 @@ $handledSiteSettings = [];
 
 
         <div class="saveholder">
-            <button type="submit" name="save" class="btn btn-primary"><?= \Yii::t('admin', 'save') ?>?></button>
+            <button type="submit" name="save" class="btn btn-primary"><?= \Yii::t('admin', 'save') ?></button>
         </div>
 
 
