@@ -5,6 +5,7 @@ return [
     'new_amendments'       => 'New Amendments',
     'new_comments'         => 'New Comments',
     'create_new'           => 'Create...',
+    'deadline_circle'      => 'Deadline',
     'My Motions'           => 'My motions',
     'My Amendments'        => 'My amendments',
     'Agenda'               => 'Agenda',

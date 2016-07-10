@@ -8,7 +8,9 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\EmailNotifications;
 use app\models\exceptions\Internal;
+use app\models\exceptions\NotAmendable;
 use app\models\policies\All;
+use app\models\policies\IPolicy;
 use Yii;
 use yii\helpers\Html;
 
@@ -416,6 +418,53 @@ class Motion extends IMotion implements IRSSItem
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
+     * @param bool $throwExceptions
+     * @return bool
+     * @throws NotAmendable
+     */
+    public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
+    {
+        $iAmAdmin = User::currentUserHasPrivilege($this->getConsultation(), User::PRIVILEGE_ANY);
+
+        if (!($allowAdmins && $iAmAdmin)) {
+            $notAmendableStati = [
+                static::STATUS_DELETED,
+                static::STATUS_DRAFT,
+                static::STATUS_COLLECTING_SUPPORTERS,
+                static::STATUS_SUBMITTED_UNSCREENED,
+            ];
+            if (in_array($this->status, $notAmendableStati)) {
+                if ($throwExceptions) {
+                    throw new NotAmendable('Not amendable in the current state', false);
+                } else {
+                    return false;
+                }
+            }
+            if ($this->motionType->amendmentDeadlineIsOver()) {
+                if ($throwExceptions) {
+                    throw new NotAmendable(\Yii::t('structure', 'policy_deadline_over'), true);
+                } else {
+                    return false;
+                }
+            }
+        }
+        $policy  = $this->motionType->getAmendmentPolicy();
+        $allowed = $policy->checkCurrUser($allowAdmins, $assumeLoggedIn);
+        if (!$allowed) {
+            if ($throwExceptions) {
+                $msg    = $policy->getPermissionDeniedAmendmentMsg();
+                $public = ($msg != '' && $policy->getPolicyID() != IPolicy::POLICY_NOBODY);
+                throw new NotAmendable($msg, $public);
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

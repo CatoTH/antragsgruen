@@ -29,7 +29,6 @@ if (mb_strpos($title, 'Antragsgrün') === false) {
 }
 
 $minimalistic   = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
-$controllerBase = ($controller->consultation ? 'consultation/' : 'manager/');
 
 $this->beginPage();
 
@@ -71,10 +70,10 @@ foreach ($layout->extraCss as $file) {
 echo '<link rel="stylesheet" href="' . $layout->resourceUrl('css/' . $layout->mainCssFile . '.css') . '">' . "\n";
 
 echo '<!--[if lt IE 9]>
-    <script src="' . $layout->resourceUrl('js/jquery-1.12.2.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/jquery-1.12.4.min.js') . '"></script>
     <![endif]-->
     <!--[if gte IE 9]><!-->
-    <script src="' . $layout->resourceUrl('js/jquery-2.2.2.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('js/jquery-2.2.4.min.js') . '"></script>
     <!--<![endif]-->
 
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">
@@ -113,7 +112,7 @@ echo '<ul class="nav navbar-nav">';
 
 if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
     if ($controller->consultation) {
-        $homeUrl = UrlHelper::createUrl('consultation/index');
+        $homeUrl = UrlHelper::homeUrl();
         echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) . '</li>';
         if ($controller->consultation->hasHelpPage()) {
             $helpLink = UrlHelper::createUrl('consultation/help');
@@ -208,8 +207,13 @@ if (is_array($layout->breadcrumbs)) {
 /** @var string $content */
 echo $content;
 
-$legalLink   = UrlHelper::createUrl($controllerBase . 'legal');
-$privacyLink = UrlHelper::createUrl($controllerBase . 'privacy');
+if ($controller->consultation) {
+    $legalLink   = UrlHelper::createUrl('consultation/legal');
+    $privacyLink = UrlHelper::createUrl('consultation/privacy');
+} else {
+    $legalLink   = UrlHelper::createUrl('manager/site-legal');
+    $privacyLink = UrlHelper::createUrl('manager/site-privacy');
+}
 
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>

@@ -130,7 +130,17 @@ class UrlHelper
     public static function homeUrl()
     {
         if (static::$currentConsultation) {
-            return static::createUrl('consultation/index');
+            if (static::$currentConsultation->getSettings()->forceMotion) {
+                $forceMotion = static::$currentConsultation->getSettings()->forceMotion;
+                $motion = static::$currentConsultation->getMotion($forceMotion);
+                if ($motion) {
+                    return static::createMotionUrl($motion);
+                } else {
+                    return static::createUrl('consultation/index');
+                }
+            } else {
+                return static::createUrl('consultation/index');
+            }
         } else {
             return static::createUrl('manager/index');
         }

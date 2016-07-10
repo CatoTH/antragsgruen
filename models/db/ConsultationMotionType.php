@@ -43,7 +43,7 @@ use yii\db\ActiveRecord;
  */
 class ConsultationMotionType extends ActiveRecord
 {
-    const CONTACT_NA       = 0;
+    const CONTACT_NONE       = 0;
     const CONTACT_OPTIONAL = 1;
     const CONTACT_REQUIRED = 2;
 

@@ -2,7 +2,7 @@
 
 namespace app\components;
 
-use app\components\mail\Tools;
+use app\components\mail\Tools as MailTools;
 use app\models\db\Amendment;
 use app\models\db\EMailLog;
 use app\models\db\Motion;
@@ -47,13 +47,13 @@ class EmailNotifications
             }
 
             $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-            $plain .= HTMLTools::toPlainText($html);
+            $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
 
             $plain = str_replace('%LINK%', $motionLink, $plain);
             $html  = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
 
             try {
-                Tools::sendWithLog(
+                MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                     $motion->getMyConsultation()->site,
                     trim($initiator[0]->contactEmail),
@@ -97,7 +97,7 @@ class EmailNotifications
 
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
             try {
-                Tools::sendWithLog(
+                MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                     $motion->getConsultation()->site,
                     trim($initiator[0]->contactEmail),
@@ -132,7 +132,7 @@ class EmailNotifications
             $html       = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
             
             try {
-                Tools::sendWithLog(
+                MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUPPORTER_REACHED,
                     $motion->getMyConsultation()->site,
                     trim($initiator[0]->contactEmail),
@@ -177,7 +177,7 @@ class EmailNotifications
             $plain .= HTMLTools::toPlainText($html);
 
             try {
-                Tools::sendWithLog(
+                MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                     $amendment->getMyConsultation()->site,
                     trim($initiator[0]->contactEmail),
@@ -226,13 +226,13 @@ class EmailNotifications
             }
 
             $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-            $plain .= HTMLTools::toPlainText($html);
+            $plain .= "\n\n" . HTMLTools::toPlainText($amendmentHtml);
 
             $plain = str_replace('%LINK%', $amendmentLink, $plain);
             $html  = str_replace('%LINK%', Html::a($amendmentLink, $amendmentLink), $html);
 
             try {
-                Tools::sendWithLog(
+                MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
                     $amendment->getMyConsultation()->site,
                     trim($initiator[0]->contactEmail),
@@ -265,7 +265,7 @@ class EmailNotifications
             $html       = str_replace('%LINK%', Html::a($amendmentLink, $amendmentLink), $html);
 
             try {
-                Tools::sendWithLog(
+                MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUPPORTER_REACHED,
                     $amendment->getMyConsultation()->site,
                     trim($initiator[0]->contactEmail),

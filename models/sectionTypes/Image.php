@@ -23,7 +23,7 @@ class Image extends ISectionType
         $url     = UrlHelper::createUrl(
             [
                 'motion/viewimage',
-                'motionId'  => $section->motionId,
+                'motionSlug'  => $section->getMotion()->getMotionSlug(),
                 'sectionId' => $section->sectionId
             ]
         );

@@ -9,8 +9,10 @@ use app\components\UrlHelper;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Access;
+use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
-use app\models\forms\AntragsgruenInitForm;
+use app\models\forms\AntragsgruenInitDb;
+use app\models\forms\AntragsgruenInitSite;
 use app\models\forms\SiteCreateForm;
 use Yii;
 use yii\helpers\Html;
@@ -133,6 +135,21 @@ class ManagerController extends Base
         return $user;
     }
 
+    /**
+     * @param string $test
+     * @return string
+     */
+    public function actionCheckSubdomain($test)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $available = Site::isSubdomainAvailable($test);
+        return json_encode([
+            'available' => $available,
+            'subdomain' => $test,
+        ]);
+    }
 
     /**
      * @return string
@@ -140,9 +157,6 @@ class ManagerController extends Base
     public function actionCreatesite()
     {
         $this->requireEligibleToCreateUser();
-
-        $this->layout = 'column2';
-        $this->addSidebar();
 
         $model  = new SiteCreateForm();
         $errors = [];
@@ -152,25 +166,21 @@ class ManagerController extends Base
             try {
                 $model->setAttributes($post['SiteCreateForm']);
                 if ($model->validate()) {
-                    $site = $model->createSiteFromForm(User::getCurrentUser());
+                    $model->create(User::getCurrentUser());
 
-                    $login_id   = User::getCurrentUser()->id;
-                    $login_code = AntiXSS::createToken($login_id);
+                    $loginId   = User::getCurrentUser()->id;
+                    $loginCode = AntiXSS::createToken($loginId);
 
                     return $this->render(
                         'created',
                         [
-                            'site'       => $site,
-                            'login_id'   => $login_id,
-                            'login_code' => $login_code,
+                            'form'      => $model,
+                            'loginId'   => $loginId,
+                            'loginCode' => $loginCode,
                         ]
                     );
                 } else {
-                    foreach ($model->getErrors() as $message) {
-                        foreach ($message as $message2) {
-                            $errors[] = $message2;
-                        }
-                    }
+                    throw new FormError($model->getErrors());
                 }
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
@@ -184,13 +194,12 @@ class ManagerController extends Base
                 'errors' => $errors
             ]
         );
-
     }
 
     /**
      * @return string
      */
-    public function actionLegal()
+    public function actionSiteLegal()
     {
         return $this->renderContentPage('legal');
     }
@@ -198,7 +207,7 @@ class ManagerController extends Base
     /**
      * @return string
      */
-    public function actionPrivacy()
+    public function actionSitePrivacy()
     {
         return $this->renderContentPage('privacy');
     }
@@ -301,6 +310,64 @@ class ManagerController extends Base
     }
 
     /**
+     * @param AntragsgruenInitDb $dbForm
+     * @param string $delInstallFileCmd
+     * @param string $makeEditabeCommand
+     * @param string $configDir
+     * @param boolean $editable
+     * @return string
+     */
+    private function antragsgruenInitDb($dbForm, $delInstallFileCmd, $makeEditabeCommand, $configDir, $editable)
+    {
+        return $this->render('antragsgruen_init_db', [
+            'form'                 => $dbForm,
+            'installFileDeletable' => is_writable($configDir),
+            'delInstallFileCmd'    => $delInstallFileCmd,
+            'editable'             => $editable,
+            'makeEditabeCommand'   => $makeEditabeCommand,
+        ]);
+    }
+
+    /**
+     * @param string $installFile
+     * @param string $delInstallFileCmd
+     * @param string $configDir
+     * @return string
+     */
+    private function antragsgruenInitSite($installFile, $delInstallFileCmd, $configDir)
+    {
+        $configFile = $configDir . DIRECTORY_SEPARATOR . 'config.json';
+        $siteForm   = new AntragsgruenInitSite($configFile);
+
+        if ($this->isPostSet('create')) {
+            try {
+                $post = \Yii::$app->request->post();
+                $siteForm->setAttributes($post['SiteCreateForm']);
+                $siteForm->prettyUrls = isset($post['prettyUrls']);
+
+                $siteForm->saveConfig();
+
+                $admin = User::findOne($siteForm->readConfigFromFile()->adminUserIds[0]);
+                $siteForm->create($admin);
+
+                unlink($installFile);
+                return $this->render('antragsgruen_init_done', [
+                    'installFileDeletable' => is_writable($configDir),
+                    'delInstallFileCmd'    => $delInstallFileCmd,
+                ]);
+            } catch (\Exception $e) {
+                \yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('antragsgruen_init_site', [
+            'form'                 => $siteForm,
+            'installFileDeletable' => is_writable($configDir),
+            'delInstallFileCmd'    => $delInstallFileCmd,
+        ]);
+    }
+
+    /**
      * @return string
      */
     public function actionAntragsgrueninit()
@@ -326,75 +393,39 @@ class ManagerController extends Base
             $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir;
         }
 
-        $form = new AntragsgruenInitForm($configFile);
-
-        $baseUrl = parse_url($form->siteUrl);
-        if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' &&
-            isset($baseUrl['host']) && $baseUrl['host'] != $_SERVER['HTTP_HOST']
-        ) {
-            return $this->redirect($form->siteUrl);
-        }
-
-        $post = \Yii::$app->request->post();
-
-        if ($this->isPostSet('finishInit')) {
-            unlink($installFile);
-            return $this->render('antragsgruen_init_done');
-        }
-
-        if ($this->isPostSet('save')) {
-            $form->setAttributes($post);
-            if (isset($post['sqlPassword']) && $post['sqlPassword'] != '') {
-                $form->sqlPassword = $post['sqlPassword'];
-            } elseif (isset($post['sqlPasswordNone'])) {
-                $form->sqlPassword = '';
-            }
-            $form->sqlCreateTables = isset($post['sqlCreateTables']);
-            $form->prettyUrls      = isset($post['prettyUrls']);
-
-            if ($editable) {
-                $form->saveConfig();
-            }
-
-            if ($form->sqlCreateTables && $form->verifyDBConnection(false) && !$form->tablesAreCreated()) {
-                $form->createTables();
-                \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_site_created'));
-            } else {
-                \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_config_saved'));
-            }
-
-            if ($form->tablesAreCreated()) {
-                $connConfig          = $form->getDBConfig();
-                $connConfig['class'] = \yii\db\Connection::class;
-                \yii::$app->set('db', $connConfig);
-
-                if ($form->adminUsername != '' && $form->adminPassword != '') {
-                    $form->createOrUpdateAdminAccount();
-                }
-                if ($form->adminUser) {
-                    if ($form->getDefaultSite()) {
-                        $form->updateSite();
-                    } else {
-                        $form->createSite();
-                    }
-                }
-                if ($editable) {
-                    $form->saveConfig();
-                }
-            }
-
-            return $this->redirect($form->getConfig()->resourceBase);
-        }
-
         $delInstallFileCmd = 'rm ' . $installFile;
 
-        return $this->render('antragsgruen_init', [
-            'form'                 => $form,
-            'installFileDeletable' => is_writable($configDir),
-            'delInstallFileCmd'    => $delInstallFileCmd,
-            'editable'             => $editable,
-            'makeEditabeCommand'   => $makeEditabeCommand,
-        ]);
+        $dbForm = new AntragsgruenInitDb($configFile);
+
+
+        $post = \Yii::$app->request->post();
+        if ($this->isPostSet('saveDb')) {
+            $dbForm->setAttributes($post);
+
+            if ($dbForm->verifyDBConnection(false)) {
+                $dbForm->saveConfig();
+
+                if ($dbForm->sqlCreateTables && $dbForm->verifyDBConnection(false) && !$dbForm->tablesAreCreated()) {
+                    $dbForm->createTables();
+                    \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_site_created'));
+                } else {
+                    \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_config_saved'));
+                }
+
+                $dbForm->overwriteYiiConnection();
+
+                if ($dbForm->adminUsername != '' && $dbForm->adminPassword != '') {
+                    $dbForm->createOrUpdateAdminAccount();
+                    $dbForm->saveConfig();
+                }
+            }
+        }
+
+        if ($dbForm->verifyDBConnection(false) && $dbForm->tablesAreCreated() && $dbForm->hasAdminAccount()) {
+            return $this->antragsgruenInitSite($installFile, $delInstallFileCmd, $configDir);
+        } else {
+            return $this->antragsgruenInitDb($dbForm, $delInstallFileCmd, $makeEditabeCommand, $configDir, $editable);
+        }
     }
 
     /**
@@ -415,7 +446,7 @@ class ManagerController extends Base
         }
 
         $post = \Yii::$app->request->post();
-        $form = new AntragsgruenInitForm($configFile);
+        $form = new AntragsgruenInitDb($configFile);
         $form->setAttributes($post);
         if (isset($post['sqlPassword']) && $post['sqlPassword'] != '') {
             $form->sqlPassword = $post['sqlPassword'];

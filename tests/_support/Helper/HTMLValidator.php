@@ -88,13 +88,19 @@ class HTMLValidator extends \Codeception\Module
      */
     private function getPageSource()
     {
-        if (!$this->hasModule('WebDriver')) {
+        if (!$this->hasModule('WebDriver') && !$this->hasModule('\Helper\AntragsgruenWebDriver')) {
             throw new \Exception('This validator needs WebDriver to work');
         }
 
-        /** @var \Codeception\Module\WebDriver $webdriver */
-        $webdriver = $this->getModule('WebDriver');
-        return $webdriver->webDriver->getPageSource();
+        if ($this->hasModule('\Helper\AntragsgruenWebDriver')) {
+            $webdriver = $this->getModule('\Helper\AntragsgruenWebDriver');
+            return $webdriver->webDriver->getPageSource();
+        } elseif ($this->hasModule('WebDriver')) {
+            $webdriver = $this->getModule('WebDriver');
+            return $webdriver->webDriver->getPageSource();
+        } else {
+            throw new \Exception('This validator needs WebDriver to work');
+        }
     }
 
     /**

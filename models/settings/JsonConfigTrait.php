@@ -58,7 +58,13 @@ trait JsonConfigTrait
                 throw new FormError('Unknown field: ' . $key);
             }
             $val = $fields[$key];
-            if (is_bool($val)) {
+            if ($key == 'forceMotion') {
+                if (isset($formdata['singleMotionMode'])) {
+                    $this->forceMotion = (int)$formdata[$key];
+                } else {
+                    $this->forceMotion = null;
+                }
+            } elseif (is_bool($val)) {
                 $this->$key = (isset($formdata[$key]) && (bool)$formdata[$key]);
             } elseif (is_int($val)) {
                 $this->$key = (int)$formdata[$key];

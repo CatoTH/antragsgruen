@@ -28,7 +28,7 @@ abstract class IPolicy
         ];
         /** @var AntragsgruenApp $params */
         $params = \yii::$app->params;
-        if ($params->hasWurzelwerk) {
+        if ($params->hasWurzelwerk || $params->hasSaml) {
             $policies[static::POLICY_WURZELWERK] = Wurzelwerk::class;
         }
         return $policies;
@@ -100,22 +100,6 @@ abstract class IPolicy
     {
 
         if ($this->motionType->motionDeadlineIsOver()) {
-            $consultation = $this->motionType->getConsultation();
-            if (!User::currentUserHasPrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
-                return false;
-            }
-        }
-        return $this->checkCurrUser($allowAdmins, $assumeLoggedIn);
-    }
-
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     */
-    public function checkCurrUserAmendment($allowAdmins = true, $assumeLoggedIn = false)
-    {
-        if ($this->motionType->amendmentDeadlineIsOver()) {
             $consultation = $this->motionType->getConsultation();
             if (!User::currentUserHasPrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;

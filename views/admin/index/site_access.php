@@ -18,7 +18,7 @@ $layout     = $controller->layoutParams;
 $this->title = \Yii::t('admin', 'siteacc_title');
 $layout->addCSS('css/backend.css');
 $layout->addJS('js/backend.js');
-$layout->addBreadcrumb('Administration', UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'siteacc_bread'));
 $layout->loadFuelux();
 
@@ -71,7 +71,7 @@ if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_STD) {
 echo ' ' . \Yii::t('admin', 'siteacc_useraccounts') . '</label>
 </div>';
 
-if ($controller->getParams()->hasWurzelwerk) {
+if ($controller->getParams()->hasWurzelwerk || $controller->getParams()->hasSaml) {
     $method = SiteSettings::LOGIN_WURZELWERK;
     echo '<div class="checkbox wurzelwerk">
   <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) .

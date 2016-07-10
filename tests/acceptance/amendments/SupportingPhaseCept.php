@@ -14,6 +14,22 @@ function gotoSupportingAmendment($I)
     ]);
 }
 
+$I->wantTo('publish the motion');
+$I->gotoConsultationHome(false, 'supporter', 'supporter');
+\app\tests\_pages\MotionPage::openBy($I, [
+    'subdomain'        => 'supporter',
+    'consultationPath' => 'supporter',
+    'motionSlug'       => 116,
+]);
+$I->dontSeeElement("#sidebar .amendmentCreate a");
+$I->loginAsStdAdmin();
+$I->seeElement("#sidebar .amendmentCreate a");
+$I->click('#sidebar .adminEdit a');
+$I->selectOption('#motionStatus', \app\models\db\Motion::STATUS_SUBMITTED_SCREENED);
+$I->submitForm('#motionUpdateForm', [], 'save');
+$I->logout();
+
+
 $I->wantTo('check that amendments created as normal person are in supporting phase');
 
 $I->gotoConsultationHome(false, 'supporter', 'supporter');
@@ -151,3 +167,12 @@ $I->submitForm('.amendmentSupportFinishForm', [], 'amendmentSupportFinish');
 $I->see('Der Änderungsantrag ist nun offiziell eingereicht');
 $I->see('Eingereicht (ungeprüft)', '.motionData');
 
+$I->logout();
+
+
+
+$I->wantTo('ensure I can\'t revoke my support once the amendment has been submitted');
+$I->loginAsStdAdmin();
+gotoSupportingAmendment($I);
+$I->see('Du!', 'section.supporters');
+$I->dontSeeElement('button[name=motionSupportRevoke]');

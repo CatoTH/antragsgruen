@@ -44,7 +44,7 @@ class UserController extends Base
     protected function loginUser(User $user)
     {
         Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
-    }
+    }N
 
     /**
      * @param int $login

@@ -106,7 +106,7 @@ echo '</div></div>';
 
 if (count($consultation->agendaItems) > 0) {
     echo '<div class="form-group">';
-    echo '<label class="col-md-3 control-label" for="motionStatus">';
+    echo '<label class="col-md-3 control-label" for="agendaItemId">';
     echo \Yii::t('admin', 'motion_agenda_item');
     echo ':</label><div class="col-md-9">';
     $options    = ['class' => 'form-control', 'id' => 'agendaItemId'];
@@ -167,9 +167,9 @@ echo '</div></div></div>';
 
 if (count($consultation->tags) > 0) {
     echo '<div class="form-group">';
-    echo '<div class="col-md-3 control-label label">';
+    echo '<label class="col-md-3 control-label">';
     echo \Yii::t('admin', 'motion_topics');
-    echo ':</div><div class="col-md-9 tagList">';
+    echo ':</label><div class="col-md-9 tagList">';
     foreach ($consultation->tags as $tag) {
         echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
         foreach ($motion->tags as $mtag) {

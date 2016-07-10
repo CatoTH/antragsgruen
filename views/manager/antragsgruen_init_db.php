@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var \app\models\forms\AntragsgruenInitForm $form
+ * @var \app\models\forms\AntragsgruenInitDb $form
  * @var string $delInstallFileCmd
  * @var bool $installFileDeletable
  * @var bool $editable
@@ -23,7 +23,7 @@ $layout->loadFuelux();
 $layout->robotsNoindex = true;
 $layout->addJS('js/manager.js');
 $layout->addCSS('css/manager.css');
-$layout->addOnLoadJS('$.SiteManager.antragsgruenInit();');
+$layout->addOnLoadJS('$.SiteManager.antragsgruenInitDb();');
 
 echo '<h1>' . \yii::t('manager', 'title_install') . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
@@ -42,14 +42,9 @@ if (!$editable) {
 
 
 if ($form->isConfigured()) {
-    $errors = $form->verifyConfiguration();
-    if (count($errors) > 0) {
-        echo '<div class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                ' . nl2br(Html::encode(implode("\n", $errors))) . '
-            </div>';
-    } else {
+    try {
+        $form->verifyDBConnection();
+
         echo '<div class="alert alert-success" role="alert">
         <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
         <span class="sr-only">Success:</span>';
@@ -68,21 +63,12 @@ if ($form->isConfigured()) {
             <pre>assets/db/create.sql</pre>';
             echo '</div>';
         }
-
-        if ($installFileDeletable) {
-            echo '<div class="saveholder">';
-            echo '<button class="btn btn-success" name="finishInit">';
-            echo \yii::t('manager', 'finish_install');
-            echo '</button></div>';
-        } else {
-            echo '<div class="alert alert-info" role="alert">';
-            echo str_replace('%DELCMD%', Html::encode($delInstallFileCmd), 'Um den Installationsmodus zu beenden,
-                lösche die Datei config/INSTALLING.
-                Je nach Betriebssystem könnte der Befehl dazu z.B. folgendermaßen lauten:<pre>%DELCMD%</pre>
-                Rufe danach diese Seite hier neu auf.
-                ');
-            echo '</div>';
-        }
+    } catch (\Exception $e) {
+        echo '<div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                ' . nl2br(Html::encode($e->getMessage())) . '
+            </div>';
     }
 } else {
     echo '<div class="alert alert-info" role="alert">
@@ -98,58 +84,6 @@ echo Html::endForm();
 
 
 echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
-
-echo '<h2 class="green">' . \yii::t('manager', 'the_site') . '</h2>';
-echo '<div class="content">';
-
-echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="siteTitle">' . 'Name' . ':</label>
-    <div class="col-sm-8">
-    <input type="text" required name="siteTitle" placeholder="Vollversammlung d. Verbands XY"
-        value="' . Html::encode($form->siteTitle) . '" class="form-control" id="siteTitle">
-    </div>
-</div>';
-
-echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="siteEmail">' . 'System-E-Mail-Adresse' . ':</label>
-    <div class="col-sm-8">
-    <input type="email" required name="siteEmail"
-        value="' . Html::encode($form->siteEmail) . '" class="form-control" id="siteEmail">
-    </div>
-</div>';
-
-
-echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="siteUrl">' . 'URL' . ':</label>
-    <div class="col-sm-8">
-    <input type="text" required name="siteUrl" placeholder="https://..."
-        value="' . Html::encode($form->siteUrl) . '" class="form-control" id="siteUrl"><br>
-
-        <label>';
-echo Html::checkbox('prettyUrls', $form->prettyUrls, ['id' => 'prettyUrls']);
-echo '"Hübsche" URLs (benötigt URL-Rewriting)';
-echo '</label>
-    </div>
-</div>';
-
-if (!$form->hasDefaultData()) {
-    echo '<div class="form-group"><div class="col-sm-4 label control-label">';
-    echo 'Voreinstellung:';
-    echo '</div><div class="col-sm-8">';
-    foreach (\app\models\sitePresets\SitePresets::$PRESETS as $presetId => $preset) {
-        $defaults = json_encode($preset::getDetailDefaults());
-        echo '<label class="sitePreset" data-defaults="' . Html::encode($defaults) . '">';
-        echo Html::radio('sitePreset', ($form->sitePreset == $presetId), ['value' => $presetId]);
-        echo '<span>' . Html::encode($preset::getTitle()) . '</span>';
-        echo '</label><div class="sitePresetInfo">';
-        echo $preset::getDescription();
-        echo '</div>';
-    }
-    echo '</div></div>';
-}
-
-echo '</div>';
-
 
 echo '<h2 class="green">' . 'Datenbank' . '</h2>';
 echo '<div class="content">';
@@ -263,7 +197,7 @@ echo '</div>';
 
 
 echo '<div class="content saveholder">
-<button type="submit" name="save" class="btn btn-primary">Speichern</button>
+<button type="submit" name="saveDb" class="btn btn-primary">Speichern</button>
 </div>';
 
 

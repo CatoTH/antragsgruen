@@ -72,13 +72,15 @@ return [
     'confirm_bread'                     => 'Confirm',
     'affects_x_paragraphs'              => 'Affects %num% paragraphs',
     'singlepara_revert'                 => 'Revert changes',
-    'err_create_permission'             => 'No permission to create agenda items.',
+    'err_create_permission'             => 'No permission to create amendments.',
     'err_create'                        => 'An error occurred while creating it',
     'err_save'                          => 'An error occurred while saving it',
     'err_type_missing'                  => 'You have to enter a type.',
     'err_not_found'                     => 'The amendment was not found',
     'err_withdraw_forbidden'            => 'Not permission to withdraw this amendment.',
-    'err_edit_forbidden'                => 'Not allowed to edit this motion.',
+    'err_edit_forbidden'                => 'Not allowed to edit this amendment.',
+    'err_not_visible_yet_title'         => 'Not visible yet',
+    'err_not_visible_yet'               => 'This amendment is not yet visible.',
     'withdraw_done'                     => 'The amendment has been withdrawn.',
     'withdraw_bread'                    => 'Withdraw',
     'withdraw'                          => 'Withdraw',
@@ -105,11 +107,14 @@ return [
         <li><strong>Finding supporters:</strong> You will find a link that you can send to interested persons. Everyone can access this page given this link. Everyone having the necessary privileges can support this amendment on this page.</li>
         <li><strong>Submit the motion:</strong> Once %MIN% people are supporting this amendments, you will receive a notification by e-mail. Now you can officially submit it. After this, it is still possible for other interested persons to support this amendment.</li>
         </ol>',
-    'merge_explanation'                 => '', // 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - klicke dazu einfach mit der rechten Maustaste auf die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>Anschließend kannst du den neuen Status der Änderungsanträge auswählen und dann auf "Weiter" klicken. Dadurch wird ein <strong>neuer Antrag "###NEWPREFIX###"</strong> erzeugt. Der ursprüngliche Antrag sowie die Änderungsanträge bleiben zur Referenz erhalten, werden aber als "veraltet" markiert.'
-    'merge_explanation_colliding'       => '', // '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> Da es zu diesem Antrag mehrere Änderungsanträge gibt, die sich auf die selbe Textstelle beziehen - <strong>kollidierende Änderungsanträge</strong> - ist es notwendig, diese Änderungsanträge händisch einzupflegen. Lösche bitte anschließend den kollidierenden Änderungsantrag, indem du ihn zunächst mit der Entfernen/Del-Taste löschst, und diese Änderung dann mit der rechten Maustaste annimmst.'
+    'merge_explanation'                 => '',
+    // 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - klicke dazu einfach mit der rechten Maustaste auf die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>Anschließend kannst du den neuen Status der Änderungsanträge auswählen und dann auf "Weiter" klicken. Dadurch wird ein <strong>neuer Antrag "###NEWPREFIX###"</strong> erzeugt. Der ursprüngliche Antrag sowie die Änderungsanträge bleiben zur Referenz erhalten, werden aber als "veraltet" markiert.'
+    'merge_explanation_colliding'       => '',
+    // '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> Da es zu diesem Antrag mehrere Änderungsanträge gibt, die sich auf die selbe Textstelle beziehen - <strong>kollidierende Änderungsanträge</strong> - ist es notwendig, diese Änderungsanträge händisch einzupflegen. Lösche bitte anschließend den kollidierenden Änderungsantrag, indem du ihn zunächst mit der Entfernen/Del-Taste löschst, und diese Änderung dann mit der rechten Maustaste annimmst.'
     'merge_amend_by'                    => '%TITLE%, by %INITIATOR%',
     'merge_amend_editorials'            => 'Editorial amendment',
-    'support'                           => 'Support', // 'Unterstützen'
+    'support'                           => 'Support',
+    // 'Unterstützen'
     'support_question'                  => 'Do you really want to support this amendment?',
     'support_orga'                      => 'Organization',
     'support_name'                      => 'Name',

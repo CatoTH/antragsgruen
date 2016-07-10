@@ -36,7 +36,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         $parClasses[] = 'commentsOpened';
     }
     $id = 'section_' . $section->sectionId . '_' . $paragraphNo;
-    echo '<section class="' . implode(' ', $parClasses) . '" id="' . $id . '">';
+    echo '<div class="' . implode(' ', $parClasses) . '" id="' . $id . '">';
 
 
     echo '<ul class="bookmarks">';
@@ -174,5 +174,5 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     }
 
 
-    echo '</section>';
+    echo '</div>';
 }

@@ -423,7 +423,9 @@ class LayoutHelper
         if ($cantSupportMsg == $nobody && !$canSupport) {
             return;
         }
-
+        if (!$motion->isSupportingPossibleAtThisStatus()) {
+            return;
+        }
 
         if ($canSupport) {
             echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
@@ -435,7 +437,7 @@ class LayoutHelper
                 echo '</button>';
                 echo '</div>';
             } else {
-                echo '<div class="label" style="margin-top: 10px;">' . \Yii::t('motion', 'support_question') . '</div>';
+                echo '<label style="margin-top: 10px;">' . \Yii::t('motion', 'support_question') . '</label>';
                 echo '<div class="row">';
 
                 echo '<div class="col-md-4">';
@@ -598,14 +600,15 @@ class LayoutHelper
      * @param string $title
      * @return string
      */
-    public static function getShareButtons($url, $title) {
-        $twitter = Html::encode('https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url));
+    public static function getShareButtons($url, $title)
+    {
+        $twitter  = Html::encode('https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url));
         $facebook = Html::encode('https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url));
         return '<div class="share_buttons"><ul>
-              <li class="twitter"><a href="' . $twitter . '" rel="popup" title="Bei Twitter teilen">
+              <li class="twitter"><a href="' . $twitter . '" title="Bei Twitter teilen">
                  <span class="icon fontello-twitter"></span> <span class="share_text">tweet</span>
               </a></li>
-              <li class="facebook"><a href="' . $facebook . '" rel="popup" title="Bei Facebook teilen">
+              <li class="facebook"><a href="' . $facebook . '" title="Bei Facebook teilen">
                   <span class="icon fontello-facebook"></span> <span class="share_text">teilen</span>
               </a></li>
             </ul></div>';

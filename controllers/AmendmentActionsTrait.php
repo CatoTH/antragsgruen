@@ -162,8 +162,8 @@ trait AmendmentActionsTrait
      */
     private function amendmentSupport(Amendment $amendment)
     {
-        if (!($amendment->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
-            throw new FormError('Not supported');
+        if (!$amendment->isSupportingPossibleAtThisStatus()) {
+            throw new FormError('Not possible given the current amendment status');
         }
         foreach ($amendment->getSupporters() as $supporter) {
             if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
@@ -259,12 +259,18 @@ trait AmendmentActionsTrait
 
     /**
      * @param Amendment $amendment
+     * @throws FormError
      */
     private function amendmentSupportRevoke(Amendment $amendment)
     {
         $currentUser = User::getCurrentUser();
         foreach ($amendment->amendmentSupporters as $supp) {
             if ($supp->userId == $currentUser->id) {
+                if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
+                    if (!$amendment->isSupportingPossibleAtThisStatus()) {
+                        throw new FormError('Not possible given the current amendment status');
+                    }
+                }
                 $amendment->unlink('amendmentSupporters', $supp, true);
             }
         }
