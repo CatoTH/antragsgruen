@@ -18,7 +18,7 @@ if (file_exists($configFile)) {
 try {
     $params = new \app\models\settings\AntragsgruenApp($config);
 } catch (\Exception $e) {
-    die('Could not load configuration; probably due to a syntax error in config/config.json?');	
+    die('Could not load configuration; probably due to a syntax error in config/config.json?');
 }
 
 if (YII_DEBUG === false) {
@@ -51,6 +51,15 @@ $config = yii\helpers\ArrayHelper::merge(
         ],
     ]
 );
+if ($params->domainPlain) {
+    $config['components']['session'] = [
+        'cookieParams' => [
+            'httponly' => true,
+            'domain'   => '.' . parse_url($params->domainPlain, PHP_URL_HOST),
+        ]
+    ];
+}
+
 if ($params->hasWurzelwerk && !isset($config['components']['authClientCollection']['clients']['wurzelwerk'])) {
     $config['components']['authClientCollection']['clients']['wurzelwerk'] = [
         'class' => 'app\components\WurzelwerkAuthClient',

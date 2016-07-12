@@ -165,18 +165,7 @@ class ManagerController extends Base
                 $model->setAttributes($post['SiteCreateForm']);
                 if ($model->validate()) {
                     $model->create(User::getCurrentUser());
-
-                    $loginId   = User::getCurrentUser()->id;
-                    $loginCode = AntiXSS::createToken($loginId);
-
-                    return $this->render(
-                        'created',
-                        [
-                            'form'      => $model,
-                            'loginId'   => $loginId,
-                            'loginCode' => $loginCode,
-                        ]
-                    );
+                    return $this->render('created', ['form' => $model]);
                 } else {
                     throw new FormError($model->getErrors());
                 }
