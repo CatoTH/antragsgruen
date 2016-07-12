@@ -974,7 +974,7 @@ function __t(category, str) {
                 }
             });
         });
-        
+
         $(".share_buttons a").click(function(ev) {
             var target = $(this).attr("href");
             if (window.open(target, '_blank', 'width=600,height=460')) {

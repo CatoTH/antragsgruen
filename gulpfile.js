@@ -42,6 +42,9 @@ gulp.task('build-wizard', function() {
 gulp.task('build-js', function () {
     gulp.src(main_js_files)
         .pipe(sourcemaps.init())
+        .pipe(babel({
+			presets: ['es2015']
+		}))
         .pipe(concat('antragsgruen.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
