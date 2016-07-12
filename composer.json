@@ -17,8 +17,8 @@
   "require": {
     "php": ">=5.5.0",
     "fxp/composer-asset-plugin": "~1.1.4",
-    "yiisoft/yii2": "2.0.8",
-    "yiisoft/yii2-authclient": "2.0.5",
+    "yiisoft/yii2": "^2.0.9",
+    "yiisoft/yii2-authclient": "^2.0.6",
     "tecnickcom/tcpdf": "^6.2",
     "slm/mail": "^1.6.0",
     "tijsverkoyen/css-to-inline-styles": "^2.0.0",
