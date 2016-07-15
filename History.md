@@ -1,11 +1,12 @@
 # Version history
 
-## Version 3.4.0 [Not released yet]
+## Version 3.4.0
 
 - A new wizard to create new consultation is introduced. It's used when creating new consultations within one site, when creating new sites in a multi-site-environment and when installing a new single-site-instance of Antragsgrün.
 - Single-Motion-Consultations are now supported: consultations that only exist of one single motion that is, skipping the regular home page.
 - Internationalized subdomains (IDNA) are now supported (containing characters like german Umlauts)
 - Motions are not amendable anymore before official publication (e.g. in support collection phase and during screening)
+- The login system was slightly improved: the login / logout action is now valid for all subdomains at once
 - Bugfix: a depencency necessary for direct SMTP-support for system e-mails was missing
 
 ### Version 3.3.4 (2016-06-11)
