@@ -1,4 +1,4 @@
-<?
+<?php
 
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
