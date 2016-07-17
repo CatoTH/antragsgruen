@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.4.0
+## Version 3.4.0 (2016-07-17)
 
 - A new wizard to create new consultation is introduced. It's used when creating new consultations within one site, when creating new sites in a multi-site-environment and when installing a new single-site-instance of Antragsgrün.
 - Single-Motion-Consultations are now supported: consultations that only exist of one single motion that is, skipping the regular home page.
