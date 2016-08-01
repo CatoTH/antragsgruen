@@ -1,5 +1,10 @@
 # Version history
 
+### Version 3.4.1 (2016-08-01)
+
+- Bugfix: building the bundled JavaScript-files was broken
+- Upgrade to jQuery 3.1.0 and Bootstrap 3.3.7
+
 ## Version 3.4.0 (2016-07-17)
 
 - A new wizard to create new consultation is introduced. It's used when creating new consultations within one site, when creating new sites in a multi-site-environment and when installing a new single-site-instance of Antragsgrün.

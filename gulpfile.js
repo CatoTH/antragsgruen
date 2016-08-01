@@ -7,7 +7,7 @@ var gulp = require('gulp'),
 
     main_js_files = [
         "web/js/bootstrap.js", "web/js/bower/bootbox/bootbox.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
-        "web/js/bower/intl/dist/Intl.min.js", "web/js/antragsgruen.js", "web/js/src/*.es6"
+        "web/js/bower/intl/dist/Intl.min.js", "web/js/antragsgruen.js"
     ];
 
 gulp.task('pdfjs', function () {
@@ -42,9 +42,6 @@ gulp.task('build-wizard', function() {
 gulp.task('build-js', function () {
     gulp.src(main_js_files)
         .pipe(sourcemaps.init())
-        .pipe(babel({
-			presets: ['es2015']
-		}))
         .pipe(concat('antragsgruen.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
