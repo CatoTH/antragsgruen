@@ -2,6 +2,7 @@
 
 ### Version 3.4.1 (2016-08-01)
 
+- Bugfix: bundle bootstrap-datetimepicker in a modified version, compatible to jQuery 3
 - Bugfix: building the bundled JavaScript-files was broken
 - Upgrade to jQuery 3.1.0 and Bootstrap 3.3.7
 

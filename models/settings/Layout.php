@@ -187,8 +187,8 @@ class Layout
     public function loadDatepicker()
     {
         $this->addJS('js/bower/moment/min/moment-with-locales.min.js');
-        $this->addJS('js/bower/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js');
-        $this->addCSS('js/bower/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css');
+        $this->addJS('js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js');
+        $this->addCSS('js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css');
     }
 
     /**
