@@ -44,6 +44,8 @@ class JPDPDF extends \TCPDF
             $this->Image($site->getAbsolutePdfLogo(), $this->footerlogo['x'], $this->footerlogo['y'], $this->footerlogo['w'], $this->footerlogo['h']);
         }
 
+        $this->SetTextColor(100, 0, 80, 10);
+
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font

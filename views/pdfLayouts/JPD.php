@@ -24,11 +24,9 @@ class JPD extends IPDFLayout
         $fontsize = 20;
 
         $pdf->SetFont('helvetica', 'B', $fontsize);
-        $pdf->SetTextColor(100, 0, 80, 10);
+        $pdf->SetTextColor(100, 85, 0, 0);
         //$pdf->SetXY($left, $wraptop);
         $pdf->Write(0, mb_strtoupper($motion->motionType->titleSingular, 'UTF-8') . "\n");
-
-        $pdf->SetTextColor(100, 100, 100, 100);
 
         $wraptop = $pdf->getY()+$abs;
         $pdf->SetXY($left, $wraptop);
@@ -50,8 +48,12 @@ class JPD extends IPDFLayout
 
         $pdf->Ln(9);
 
+        $pdf->SetTextColor(100, 0, 80, 10);
+
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->writeHTML('<h3>' . Html::encode($motion->getTitleWithPrefix()) . '</h3>');
+
+        $pdf->SetTextColor(100, 100, 100, 100);
 
         $pdf->SetFont('helvetica', '', 12);
     }
