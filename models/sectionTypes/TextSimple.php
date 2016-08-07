@@ -282,7 +282,15 @@ class TextSimple extends ISectionType
 
                 $y = $pdf->getY();
                 $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
-                $pdf->writeHTMLCell(173, '', 24, $y, implode('<br>', $linesArr), 0, 1, 0, true, '', true);
+                $text1 = implode('<br>', $linesArr);
+
+                // instead of <span class="strike"></span> TCPDF can only handle <s></s>
+                // for striking through text
+                $pattern = '/<span class="strike">(.*)<\/span>/iUs';
+                $replace = '<s>${1}</s>';
+                $text1 = preg_replace($pattern, $replace, $text1);
+
+                $pdf->writeHTMLCell(173, '', 24, $y, $text1, 0, 1, 0, true, '', true);
 
                 $pdf->Ln(7);
             }
@@ -329,6 +337,12 @@ class TextSimple extends ISectionType
             $replaces['<del ']  = '<span ';
             $replaces['</del>'] = '</span>';
             $html               = str_replace(array_keys($replaces), array_values($replaces), $html);
+
+            // instead of <span class="strike"></span> TCPDF can only handle <s></s>
+            // for striking through text
+            $pattern = '/<span class="strike">(.*)<\/span>/iUs';
+            $replace = '<s>${1}</s>';
+            $html = preg_replace($pattern, $replace, $html);
 
             $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         }
