@@ -23,6 +23,7 @@ abstract class IPDFLayout
             0  => 'LDK Bayern',
             1  => 'BDK',
             2  => 'DBJR',
+            3  => 'JPD',
         ];
     }
 
@@ -42,6 +43,8 @@ abstract class IPDFLayout
                 return BDK::class;
             case 2:
                 return DBJR::class;
+            case 3:
+                return JPD::class;
             default:
                 throw new Internal('Unknown PDF Layout');
         }
