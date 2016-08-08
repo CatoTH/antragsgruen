@@ -95,6 +95,11 @@ class TextHTML extends ISectionType
         }
 
         $html = $this->section->data;
+        // instead of <span class="strike"></span> TCPDF can only handle <s></s>
+        // for striking through text
+        $pattern = '/<span class="strike">(.*)<\/span>/iUs';
+        $replace = '<s>${1}</s>';
+        $html = preg_replace($pattern, $replace, $html);
         // Some umlaut characters with unusual UTF-8-encoding (0x61CC88 for "ü")
         // are not shown correctly in PDF => convert them to the normal encoding
         if (function_exists('normalizer_normalize')) {
