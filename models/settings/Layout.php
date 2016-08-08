@@ -35,6 +35,7 @@ class Layout
             'layout-classic'    => 'Antragsgrün-Standard',
             'layout-gruenes-ci' => 'Grünes CI',
             'layout-dbjr'       => 'DBJR',
+            'layout-jpd'       => 'JPD',
         ];
     }
 
