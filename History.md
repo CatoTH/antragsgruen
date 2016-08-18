@@ -1,5 +1,10 @@
 # Version history
 
+### Version 3.4.2 (2016-08-18)
+
+- Bugfix: displaying uploaded PDF-files wasn't working properly
+- Motions in the agenda view of a consultation are now sorted by their prefix
+
 ### Version 3.4.1 (2016-08-01)
 
 - Bugfix: bundle bootstrap-datetimepicker in a modified version, compatible to jQuery 3
