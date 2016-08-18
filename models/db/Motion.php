@@ -11,7 +11,6 @@ use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
 use app\models\policies\All;
 use app\models\policies\IPolicy;
-use Yii;
 use yii\helpers\Html;
 
 /**
@@ -180,7 +179,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ConsultationSettingsMotionSection
+     * @return ConsultationSettingsMotionSection[]
      */
     public function getMySections()
     {
