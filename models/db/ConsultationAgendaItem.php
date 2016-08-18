@@ -252,6 +252,7 @@ class ConsultationAgendaItem extends ActiveRecord
                 $return[] = $motion;
             }
         }
+
         return $return;
     }
 }

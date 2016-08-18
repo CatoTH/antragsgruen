@@ -138,6 +138,7 @@ class LayoutHelper
         $shownMotions = [];
         if ($showMotions) {
             $motions = $agendaItem->getMotionsFromConsultation();
+            $motions = MotionSorter::getSortedMotionsFlat($consultation, $motions);
             if (count($motions) > 0) {
                 echo '<ul class="motions">';
                 foreach ($motions as $motion) {
