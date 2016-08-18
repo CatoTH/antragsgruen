@@ -22,8 +22,8 @@ class PDF extends ISectionType
         $url     = UrlHelper::createUrl(
             [
                 'motion/viewpdf',
-                'motionId'  => $section->motionId,
-                'sectionId' => $section->sectionId
+                'motionSlug' => $section->getMotion()->getMotionSlug(),
+                'sectionId'  => $section->sectionId
             ]
         );
         return $url;
@@ -110,7 +110,7 @@ class PDF extends ISectionType
             return '';
         }
 
-        $pdfUrl = $this->getPdfUrl();
+        $pdfUrl    = $this->getPdfUrl();
         $iframeUrl = UrlHelper::createUrl(['motion/embeddedpdf', 'file' => $pdfUrl]);
 
         $str = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
