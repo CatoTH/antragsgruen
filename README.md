@@ -13,6 +13,19 @@ It's a complete rewrite of the second generation and has some major advantages:
 
 
 
+Installation using the pre-bundled package
+------------------------------------------
+
+Requirements:
+- A MySQL-database
+- A fully configured web server running PHP
+
+Installation:
+- Download the latest package of Antragsgrün: [antragsgruen-3.4.3.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.4.3.tar.bz2)
+- Extract the contents into your web folder
+- Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
+- Use the web-based installer to configure the database and further settings
+
 Installation
 ------------
 
@@ -32,7 +45,7 @@ Install the sources and dependencies from the repository:
 git clone https://github.com/CatoTH/antragsgruen.git
 cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.1.4"
+./composer.phar global require "fxp/composer-asset-plugin:1.2.1"
 ./composer.phar install --prefer-dist
 ```
 
