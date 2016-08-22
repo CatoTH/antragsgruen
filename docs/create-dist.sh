@@ -51,9 +51,9 @@ rm -R vendor/phpoffice/phpexcel/unitTests/
 rm -R vendor/phpoffice/phpexcel/Examples/
 rm -R vendor/fzaninotto/faker/
 rm -R tests/
-find . -name ".git" -exec rm -r {} \;
+find . -name ".git" -exec rm -rf {} \;
 rm config/config.json
-rm config/config/config_tests.json
+rm config/config_tests.json
 touch config/INSTALLING
 
 cd ..
