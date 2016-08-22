@@ -1,5 +1,10 @@
 # Version history
 
+### Version 3.4.3 (2016-08-22)
+
+- A pre-bundled package of Antragsgrün is now provided for easier installation, especially on hosts with no shell access
+- Updates to some internal libraries
+
 ### Version 3.4.2 (2016-08-18)
 
 - Bugfix: displaying uploaded PDF-files wasn't working properly
