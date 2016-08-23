@@ -862,6 +862,8 @@ class Motion extends IMotion implements IRSSItem
     {
         $return = [];
 
+        $return[\Yii::t('motion', 'Motion submitted')] = Tools::formatMysqlDateTime($this->dateCreation);
+
         $inits = $this->getInitiators();
         if (count($inits) == 1) {
             $first = $inits[0];
