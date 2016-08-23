@@ -15,4 +15,5 @@ tests/_output/*
 node_modules/
 web/css/layout-jpd.css
 web/css/layout-jpd.css.map
-
+pma/*
+.DC_*
