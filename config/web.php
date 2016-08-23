@@ -55,6 +55,15 @@ $config = yii\helpers\ArrayHelper::merge(
         ],
     ]
 );
+if ($params->domainPlain) {
+    $config['components']['session'] = [
+        'cookieParams' => [
+            'httponly' => true,
+            'domain'   => '.' . parse_url($params->domainPlain, PHP_URL_HOST),
+        ]
+    ];
+}
+
 if ($params->hasWurzelwerk && !isset($config['components']['authClientCollection']['clients']['wurzelwerk'])) {
     $config['components']['authClientCollection']['clients']['wurzelwerk'] = [
         'class' => 'app\components\WurzelwerkAuthClient',

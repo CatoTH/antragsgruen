@@ -72,8 +72,8 @@ echo '<link rel="stylesheet" href="' . $layout->resourceUrl('css/' . $layout->ma
 echo '<!--[if lt IE 9]>
     <script src="' . $layout->resourceUrl('js/jquery-1.12.4.min.js') . '"></script>
     <![endif]-->
-    <!--[if gte IE 9]><!-->
-    <script src="' . $layout->resourceUrl('js/jquery-2.2.4.min.js') . '"></script>
+    <!--[if gte IE 9]> -->
+    <script src="' . $layout->resourceUrl('js/jquery-3.1.0.min.js') . '"></script>
     <!--<![endif]-->
 
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">

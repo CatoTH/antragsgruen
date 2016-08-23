@@ -20,10 +20,10 @@ $I->executeJS('window.newText = window.newText.replace(/woschechta Bayer/g, "Sau
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(window.newText);');
 $I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>This is my reason</p>");');
 
-$I->wait(0.3);
+$I->wait(1);
 $I->fillField('#initiatorPrimaryName', 'My Name');
 $I->fillField('#initiatorEmail', 'test@example.org');
-$I->wait(0.3);
+
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 

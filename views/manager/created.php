@@ -19,12 +19,16 @@ $this->title = \Yii::t('wizard', 'created_title');
 if ($form->singleMotion) {
     $redirectUrl = Url::toRoute([
         'motion/edit',
-        'subdomain'    => $form->site->subdomain,
-        'consultation' => $form->consultation,
-        'motionSlug'     => $form->motion->id
+        'subdomain'        => $form->site->subdomain,
+        'consultationPath' => $form->consultation->urlPath,
+        'motionSlug'       => $form->motion->id
     ]);
 } else {
-    $redirectUrl = Url::toRoute(['consultation/index', 'subdomain' => $form->site->subdomain]);
+    $redirectUrl = Url::toRoute([
+        'consultation/index',
+        'subdomain'        => $form->site->subdomain,
+        'consultationPath' => $form->consultation->urlPath
+    ]);
 }
 ?>
 <h1><?= \Yii::t('wizard', 'created_title') ?></h1>
@@ -33,17 +37,7 @@ if ($form->singleMotion) {
         <?= \Yii::t('wizard', 'created_msg') ?>
     </div>
     <?php
-    echo Html::beginForm(
-        [
-            'user/loginbyredirecttoken',
-            'subdomain' => $form->site->subdomain,
-            'login'     => $loginId,
-            'login_sec' => $loginCode,
-            'redirect'  => $redirectUrl
-        ],
-        'post',
-        ['class' => 'createdForm']
-    );
+    echo Html::beginForm($redirectUrl, 'get', ['class' => 'createdForm']);
     ?>
     <br><br>
 

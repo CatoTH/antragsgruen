@@ -18,11 +18,12 @@ if (!file_exists($configFile) && !file_exists($installFile)) {
 
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require(__DIR__ . '/../components/yii/Application.php');
 
 try {
     $config = require(__DIR__ . '/../config/web.php');
 
-    (new yii\web\Application($config))->run();
+    (new \app\components\yii\Application($config))->run();
 } catch (\yii\base\InvalidConfigException $e) {
     $error = htmlentities($e->getMessage(), ENT_COMPAT, 'UTF-8');
     echo str_replace('%ERROR%', $error, 'Leider ist die Antragsgrün-Konfigurationsdatei (config/config.json) fehlerhaft.

@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\AntiXSS;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
@@ -19,7 +18,6 @@ use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 class UserController extends Base
 {
@@ -47,27 +45,6 @@ class UserController extends Base
     }N
 
     /**
-     * @param int $login
-     * @param string $login_sec
-     * @param string $redirect
-     * @return \yii\web\Response
-     */
-    public function actionLoginbyredirecttoken($login, $login_sec, $redirect)
-    {
-        if ($login_sec == AntiXSS::createToken($login)) {
-            /** @var User $user */
-            $user = User::findOne($login);
-            if (!$user) {
-                die('User not found');
-            }
-            Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
-            return $this->redirect($redirect);
-        } else {
-            die('Invalid Code');
-        }
-    }
-
-    /**
      * @param string $backUrl
      * @return int|string
      */
@@ -89,23 +66,7 @@ class UserController extends Base
 
             $this->loginUser($samlClient->getOrCreateUser());
 
-            $subdomain = UrlHelper::getSubdomain($backUrl);
-            if ($subdomain) {
-                $loginId   = User::getCurrentUser()->id;
-                $loginCode = AntiXSS::createToken($loginId);
-
-                $url = Url::to([
-                    'user/loginbyredirecttoken',
-                    'subdomain' => $subdomain,
-                    'login'     => $loginId,
-                    'login_sec' => $loginCode,
-                    'redirect'  => $backUrl
-                ]);
-                $this->redirect($url);
-
-            } else {
-                $this->redirect($backUrl);
-            }
+            $this->redirect($backUrl);
         } catch (\Exception $e) {
             return $this->showErrorpage(
                 500,
