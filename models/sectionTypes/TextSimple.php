@@ -234,10 +234,10 @@ class TextSimple extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      * @throws \app\models\exceptions\Internal
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -309,9 +309,9 @@ class TextSimple extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;

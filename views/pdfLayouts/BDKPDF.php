@@ -5,7 +5,7 @@ namespace app\views\pdfLayouts;
 use Yii;
 use yii\helpers\Html;
 
-class BDKPDF extends \TCPDF
+class BDKPDF extends \FPDI
 {
     private $headerTitle;
     private $headerPrefix;

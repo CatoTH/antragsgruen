@@ -128,22 +128,22 @@ class PDF extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         if ($this->isEmpty()) {
             return;
         }
 
-        $pdf->writeHTML('<p>[PDF]</p>'); // @TODO
+        $pdf->writeHTML('<p>[PDF] – import not implemented yet</p>'); // @TODO
     }
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }

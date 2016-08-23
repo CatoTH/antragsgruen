@@ -118,19 +118,19 @@ class Title extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         // TODO: Implement printMotionToPDF() method.
     }
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
