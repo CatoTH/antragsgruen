@@ -22,6 +22,7 @@ class Layout
     public $fullWidth            = false;
     public $fullScreen           = false;
     public $mainCssFile          = 'layout-classic';
+    public $useShariff           = true;
 
     /** @var \app\models\db\Consultation|null */
     private $consultation;

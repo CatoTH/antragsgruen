@@ -83,14 +83,18 @@ class AmendmentComment extends IComment
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
 
         return static::find()->joinWith('amendment', true)->joinWith('amendment.motionJoin', true)
-            ->where('amendmentComment.status = ' . IntVal(static::STATUS_VISIBLE))
-            ->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')')
-            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')')
-            ->andWhere('motion.consultationId = ' . IntVal($consultation->id))
-            ->orderBy('amendmentComment.dateCreation DESC')
+            ->where($tpre . 'amendmentComment.status = ' . IntVal(static::STATUS_VISIBLE))
+            ->andWhere($tpre . 'amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')')
+            ->andWhere($tpre . 'motion.status NOT IN (' . implode(', ', $invisibleStati) . ')')
+            ->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id))
+            ->orderBy($tpre . 'amendmentComment.dateCreation DESC')
             ->offset(0)->limit($limit)->all();
     }
 
@@ -138,30 +142,34 @@ class AmendmentComment extends IComment
      */
     public static function getScreeningComments(Consultation $consultation)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $query = AmendmentComment::find();
-        $query->where('amendmentComment.status = ' . static::STATUS_SCREENING);
+        $query->where($tpre . 'amendmentComment.status = ' . static::STATUS_SCREENING);
         $query->joinWith(
             [
-                'amendment' => function ($query) use ($consultation) {
+                'amendment' => function ($query) use ($consultation, $tpre) {
                     $invisibleStati = array_map('IntVal', $consultation->getInvisibleAmendmentStati());
                     /** @var ActiveQuery $query */
-                    $query->andWhere('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-                    $query->andWhere('amendment.motionId = motion.id');
+                    $query->andWhere($tpre . 'amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere($tpre . 'amendment.motionId = ' . $tpre . 'motion.id');
 
                     $query->joinWith(
                         [
-                            'motionJoin'    => function ($query) use ($consultation) {
+                            'motionJoin'    => function ($query) use ($consultation, $tpre) {
                                 $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
                                 /** @var ActiveQuery $query */
-                                $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-                                $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                                $query->andWhere($tpre . 'motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                                $query->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id));
                             }
                         ]
                     );
                 }
             ]
         );
-        $query->orderBy("dateCreation DESC");
+        $query->orderBy('dateCreation DESC');
 
         return $query->all();
     }

@@ -145,7 +145,9 @@ class AmendmentController extends AdminBase
         }
         $this->checkConsistency($amendment->getMyMotion(), $amendment);
 
-        $this->layout = 'column2';
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
 
         $post = \Yii::$app->request->post();
         $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment);

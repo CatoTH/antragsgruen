@@ -1,0 +1,39 @@
+$screen-lg-min: 10000px; // deaktivieren
+$container-md: 1024px;
+$container-desktop: 1024px;
+$grid-float-breakpoint: 992px; // $screen-md-min;
+
+$icon-font-path: "../fonts/";
+
+// Core variables and mixins
+@import "bootstrap-3.3.7-sass/bootstrap/variables";
+@import "bootstrap-3.3.7-sass/bootstrap/mixins";
+
+// Reset and dependencies
+@import "bootstrap-3.3.7-sass/bootstrap/print";
+@import "bootstrap-3.3.7-sass/bootstrap/glyphicons";
+
+// Core CSS
+@import "bootstrap-3.3.7-sass/bootstrap/scaffolding";
+@import "bootstrap-3.3.7-sass/bootstrap/type";
+@import "bootstrap-3.3.7-sass/bootstrap/grid";
+@import "bootstrap-3.3.7-sass/bootstrap/tables";
+@import "bootstrap-3.3.7-sass/bootstrap/forms";
+@import "bootstrap-3.3.7-sass/bootstrap/buttons";
+
+// Components
+@import "bootstrap-3.3.7-sass/bootstrap/input-groups";
+@import "bootstrap-3.3.7-sass/bootstrap/dropdowns";
+@import "bootstrap-3.3.7-sass/bootstrap/alerts";
+@import "bootstrap-3.3.7-sass/bootstrap/wells";
+@import "bootstrap-3.3.7-sass/bootstrap/close";
+
+// Components w/ JavaScript
+@import "bootstrap-3.3.7-sass/bootstrap/modals";
+@import "bootstrap-3.3.7-sass/bootstrap/popovers";
+
+// Utility classes
+@import "bootstrap-3.3.7-sass/bootstrap/utilities";
+@import "bootstrap-3.3.7-sass/bootstrap/responsive-utilities";
+
+@import "mixins";

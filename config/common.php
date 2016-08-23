@@ -32,6 +32,7 @@ if (defined('INSTALLING_MODE') || YII_ENV == 'test') {
 } else {
     $params->dbConnection['class'] = 'app\\components\\DBConnection';
 }
+$urlManagerClass = (YII_ENV == 'wordpress' ? \app\components\wordpress\UrlManager::class : \yii\web\UrlManager::class);
 
 return [
     'name'         => 'Antragsgrün',
@@ -61,7 +62,7 @@ return [
         ],
         'db'           => $params->dbConnection,
         'urlManager'   => [
-            'class'           => 'app\components\UrlManager',
+            'class'           => $urlManagerClass,
             'showScriptName'  => false,
             'enablePrettyUrl' => $params->prettyUrl,
             'rules'           => $urls

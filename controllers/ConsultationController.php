@@ -379,11 +379,14 @@ class ConsultationController extends Base
      */
     public function actionIndex()
     {
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
+
         if ($this->consultation->getForcedMotion()) {
             $this->redirect(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
         }
 
-        $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
         if (isset(\Yii::$app->request->post()['saveAgenda'])) {

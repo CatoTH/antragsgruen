@@ -217,6 +217,10 @@ class MotionController extends Base
             $adminEdit = null;
         }
 
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
+
         if (!$motion->isReadable()) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => $adminEdit]);
         }

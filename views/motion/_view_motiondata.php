@@ -14,6 +14,7 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
  * @var string|null $adminEdit
  * @var null|string $supportStatus
  * @var bool $consolidatedAmendments
+ * @var \app\models\settings\Layout $layout
  */
 
 echo '<div class="content">';

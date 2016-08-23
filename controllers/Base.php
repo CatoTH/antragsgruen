@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\HTMLTools;
 use app\components\UrlHelper;
+use app\components\wordpress\ExitException as WordpressExitException;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
@@ -13,6 +14,7 @@ use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
 use Yii;
+use yii\base\ExitException;
 use yii\base\Module;
 use yii\helpers\Html;
 use yii\web\Controller;
@@ -31,6 +33,9 @@ class Base extends Controller
     /** @var string */
     public $layout = 'column1';
 
+    /** @var bool */
+    public $wordpressMode = false;
+
     /**
      * @param string $cid the ID of this controller.
      * @param Module $module the module that this controller belongs to.
@@ -43,7 +48,17 @@ class Base extends Controller
     }
 
     /**
+     */
+    public function setWordpressMode()
+    {
+        $this->wordpressMode            = true;
+        $this->layout                   = false;
+        $this->layoutParams->useShariff = false;
+    }
+
+    /**
      * @param \yii\base\Action $action
+     *
      * @return bool
      * @throws \yii\web\BadRequestHttpException
      */
@@ -85,7 +100,7 @@ class Base extends Controller
                 if ($this->site) {
                     $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
                 }
-            } elseif (get_class($this) != ManagerController::class && !$appParams->multisiteMode) {
+            } elseif (get_class($this) != ManagerController::class && ! $appParams->multisiteMode) {
                 $this->showErrorpage(500, \Yii::t('base', 'err_no_site_internal'));
             }
 
@@ -101,6 +116,7 @@ class Base extends Controller
             if ($this->testMaintainanceMode() || $this->testSiteForcedLogin()) {
                 return false;
             }
+
             return true;
         } else {
             return false;
@@ -108,6 +124,23 @@ class Base extends Controller
     }
 
     /**
+     * @return string
+     */
+    public function getSidebarContent()
+    {
+        $params = $this->layoutParams;
+        $str    = $params->preSidebarHtml;
+        if (count($params->menusHtml) > 0) {
+            $str .= '<div class="well hidden-xs">';
+            $str .= implode('', $params->menusHtml);
+            $str .= '</div>';
+        }
+        $str .= $params->postSidebarHtml;
+
+        return $str;
+    }
+
+    /*
      * @param array|string $url
      * @param int $statusCode
      * @return mixed
@@ -169,6 +202,7 @@ class Base extends Controller
 
     /**
      * @param string $pageKey
+     *
      * @return string
      */
     protected function renderContentPage($pageKey)
@@ -181,6 +215,7 @@ class Base extends Controller
             $admin   = ($user && in_array($user->id, $this->getParams()->adminUserIds));
             $saveUrl = UrlHelper::createUrl(['manager/savetextajax', 'pageKey' => $pageKey]);
         }
+
         return $this->render(
             '@app/views/consultation/contentpage',
             [
@@ -194,6 +229,7 @@ class Base extends Controller
     /**
      * @param string $view
      * @param array $options
+     *
      * @return string
      */
     public function render($view, $options = array())
@@ -204,6 +240,7 @@ class Base extends Controller
             ],
             $options
         );
+
         return parent::render($view, $params);
     }
 
@@ -217,18 +254,20 @@ class Base extends Controller
 
     /**
      * @param int $privilege
+     *
      * @return bool
      * @throws Internal
      */
     public function currentUserHasPrivilege($privilege)
     {
-        if (!$this->consultation) {
+        if ( ! $this->consultation) {
             throw new Internal('No consultation set');
         }
         $user = User::getCurrentUser();
-        if (!$user) {
+        if ( ! $user) {
             return false;
         }
+
         return $user->hasPrivilege($this->consultation, $privilege);
     }
 
@@ -244,10 +283,12 @@ class Base extends Controller
         /** @var \app\models\settings\Consultation $settings */
         $settings = $this->consultation->getSettings();
         $admin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
-        if ($settings->maintainanceMode && !$admin) {
+        if ($settings->maintainanceMode && ! $admin) {
             $this->redirect(UrlHelper::createUrl('consultation/maintainance'));
+
             return true;
         }
+
         return false;
     }
 
@@ -259,22 +300,25 @@ class Base extends Controller
         if ($this->site == null) {
             return false;
         }
-        if (!$this->site->getSettings()->forceLogin) {
+        if ( ! $this->site->getSettings()->forceLogin) {
             return false;
         }
         if (\Yii::$app->user->getIsGuest()) {
             $this->redirect(UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
+
             return true;
         }
         if ($this->site->getSettings()->managedUserAccounts) {
-            if ($this->consultation && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_ANY)) {
+            if ($this->consultation && ! User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_ANY)) {
                 $privilege = User::getCurrentUser()->getConsultationPrivilege($this->consultation);
-                if (!$privilege || !$privilege->privilegeView) {
+                if ( ! $privilege || ! $privilege->privilegeView) {
                     $this->redirect(UrlHelper::createUrl('user/consultationaccesserror'));
+
                     return true;
                 }
             }
         }
+
         return false;
     }
 
@@ -338,11 +382,17 @@ class Base extends Controller
     /**
      * @param $status
      * @param $message
+     *
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws WordpressExitException
+     * @throws ExitException
      */
     protected function showErrorpage($status, $message)
     {
+        if ($this->wordpressMode) {
+            throw new WordpressExitException($message);
+        }
+
         $this->layoutParams->robotsNoindex = true;
         Yii::$app->response->statusCode    = $status;
         Yii::$app->response->content       = $this->render(
@@ -361,10 +411,10 @@ class Base extends Controller
     {
         $url     = Html::encode($this->getParams()->domainPlain);
         $message = 'Die angegebene Veranstaltung wurde nicht gefunden. ' .
-            'Höchstwahrscheinlich liegt das an einem Tippfehler in der Adresse im Browser.<br>
+                   'Höchstwahrscheinlich liegt das an einem Tippfehler in der Adresse im Browser.<br>
 					<br>
 					Auf der <a href="' . $url . '">Antragsgrün-Startseite</a> ' .
-            'siehst du rechts eine Liste der aktiven Veranstaltungen.';
+                   'siehst du rechts eine Liste der aktiven Veranstaltungen.';
         $this->showErrorpage(404, $message);
     }
 
@@ -374,8 +424,8 @@ class Base extends Controller
     protected function consultationError()
     {
         $message = "Leider existiert die aufgerufene Seite nicht. " .
-            "Falls du der Meinung bist, dass das ein Fehler ist, " .
-            "melde dich bitte per E-Mail (info@antragsgruen.de) bei uns.";
+                   "Falls du der Meinung bist, dass das ein Fehler ist, " .
+                   "melde dich bitte per E-Mail (info@antragsgruen.de) bei uns.";
 
         $this->showErrorpage(500, $message);
     }
@@ -414,6 +464,7 @@ class Base extends Controller
      * @param string $consultationId
      * @param null|Motion $checkMotion
      * @param null|Amendment $checkAmendment
+     *
      * @return null|Consultation
      */
     public function loadConsultation($subdomain, $consultationId = '', $checkMotion = null, $checkAmendment = null)

@@ -97,13 +97,17 @@ class MotionComment extends IComment
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
 
         return static::find()->joinWith('motion', true)
-            ->where('motionComment.status = ' . IntVal(static::STATUS_VISIBLE))
-            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')')
-            ->andWhere('motion.consultationId = ' . IntVal($consultation->id))
-            ->orderBy('motionComment.dateCreation DESC')
+            ->where($tpre . 'motionComment.status = ' . IntVal(static::STATUS_VISIBLE))
+            ->andWhere($tpre . 'motion.status NOT IN (' . implode(', ', $invisibleStati) . ')')
+            ->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id))
+            ->orderBy($tpre . 'motionComment.dateCreation DESC')
             ->offset(0)->limit($limit)->all();
     }
 
@@ -159,19 +163,23 @@ class MotionComment extends IComment
      */
     public static function getScreeningComments(Consultation $consultation)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $query = MotionComment::find();
-        $query->where('motionComment.status = ' . static::STATUS_SCREENING);
+        $query->where($tpre . 'motionComment.status = ' . static::STATUS_SCREENING);
         $query->joinWith(
             [
-                'motion' => function ($query) use ($consultation) {
+                'motion' => function ($query) use ($consultation, $tpre) {
                     $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
                     /** @var ActiveQuery $query */
-                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-                    $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+                    $query->andWhere($tpre . 'motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id));
                 }
             ]
         );
-        $query->orderBy("dateCreation DESC");
+        $query->orderBy('dateCreation DESC');
 
         return $query->all();
     }

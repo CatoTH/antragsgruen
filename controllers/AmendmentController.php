@@ -120,12 +120,16 @@ class AmendmentController extends Base
      */
     public function actionView($motionSlug, $amendmentId, $commentId = 0)
     {
-        $this->layout = 'column2';
-
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
             return '';
         }
+
+        if (!$this->wordpressMode) {
+            $this->layout = 'column2';
+        }
+
+        $openedComments = [];
 
         if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);

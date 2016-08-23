@@ -126,8 +126,10 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getTags()
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
         return $this->hasMany(ConsultationSettingsTag::class, ['id' => 'tagId'])
-            ->viaTable('motionTag', ['motionId' => 'id']);
+            ->viaTable($app->tablePrefix . 'motionTag', ['motionId' => 'id']);
     }
 
     /**
@@ -219,12 +221,16 @@ class Motion extends IMotion implements IRSSItem
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
 
         $query = Motion::find();
-        $query->where('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
-        $query->orderBy("dateCreation DESC");
+        $query->where($tpre . 'motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+        $query->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id));
+        $query->orderBy('dateCreation DESC');
         $query->offset(0)->limit($limit);
 
         return $query->all();
@@ -236,10 +242,14 @@ class Motion extends IMotion implements IRSSItem
      */
     public static function getScreeningMotions(Consultation $consultation)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $query = Motion::find();
-        $query->where('motion.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
-        $query->orderBy("dateCreation DESC");
+        $query->where($tpre . 'motion.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
+        $query->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id));
+        $query->orderBy('dateCreation DESC');
 
         return $query->all();
     }

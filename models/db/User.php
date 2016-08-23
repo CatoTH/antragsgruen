@@ -170,7 +170,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAdminSites()
     {
-        return $this->hasMany(Site::class, ['id' => 'siteId'])->viaTable('siteAdmin', ['userId' => 'id']);
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $this->hasMany(Site::class, ['id' => 'siteId'])
+            ->viaTable($app->tablePrefix . 'siteAdmin', ['userId' => 'id']);
     }
 
     /**
@@ -405,6 +408,15 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @param int $id
+     * @return string
+     */
+    public static function wordpressId2Auth($id)
+    {
+        return 'wordpress:' . $id;
+    }
+
+    /**
      * @return bool
      */
     public function isEmailAuthUser()
@@ -439,16 +451,21 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMySupportedMotionsByConsultation(Consultation $consultation)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $initiator = MotionSupporter::ROLE_INITIATOR;
         $query     = MotionSupporter::find();
         $query->innerJoin(
-            'motion',
-            'motionSupporter.motionId = motion.id AND motionSupporter.role = "' . addslashes($initiator) . '"'
+            $tpre . 'motion',
+            $tpre . 'motionSupporter.motionId = ' . $tpre . 'motion.id ' .
+            'AND ' . $tpre . 'motionSupporter.role = "' . addslashes($initiator) . '"'
         );
-        $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
-        $query->andWhere('motionSupporter.userId = ' . IntVal($this->id));
-        $query->orderBy("motion.dateCreation DESC");
+        $query->where($tpre . 'motion.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id));
+        $query->andWhere($tpre . 'motionSupporter.userId = ' . IntVal($this->id));
+        $query->orderBy($tpre . 'motion.dateCreation DESC');
 
         return $query->all();
     }
@@ -459,19 +476,23 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMySupportedAmendmentsByConsultation(Consultation $consultation)
     {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $tpre = $app->tablePrefix;
+
         $initiator = AmendmentSupporter::ROLE_INITIATOR;
         $query     = AmendmentSupporter::find();
         $query->innerJoin(
-            'amendment',
-            'amendmentSupporter.amendmentId = amendment.id AND ' .
-            'amendmentSupporter.role = "' . addslashes($initiator) . '"'
+            $tpre . 'amendment',
+            $tpre . 'amendmentSupporter.amendmentId = ' . $tpre . 'amendment.id AND ' .
+            $tpre . 'amendmentSupporter.role = "' . addslashes($initiator) . '"'
         );
-        $query->innerJoin('motion', 'motion.id = amendment.motionId');
-        $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->andWhere('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
-        $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
-        $query->andWhere('amendmentSupporter.userId = ' . IntVal($this->id));
-        $query->orderBy("amendment.dateCreation DESC");
+        $query->innerJoin($tpre . 'motion', $tpre . 'motion.id = ' . $tpre . 'amendment.motionId');
+        $query->where($tpre . 'motion.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->andWhere($tpre . 'amendment.status != ' . IntVal(Motion::STATUS_DELETED));
+        $query->andWhere($tpre . 'motion.consultationId = ' . IntVal($consultation->id));
+        $query->andWhere($tpre . 'amendmentSupporter.userId = ' . IntVal($this->id));
+        $query->orderBy($tpre . 'amendment.dateCreation DESC');
 
         return $query->all();
     }
@@ -595,6 +616,11 @@ class User extends ActiveRecord implements IdentityInterface
         $params = \yii::$app->params;
         if (in_array($this->id, $params->adminUserIds)) {
             return true;
+        }
+        if (YII_ENV == 'wordpress') {
+            if (current_user_can('manage_options')) {
+                return true;
+            }
         }
         // @TODO Respect privilege table
         foreach ($consultation->site->admins as $admin) {
