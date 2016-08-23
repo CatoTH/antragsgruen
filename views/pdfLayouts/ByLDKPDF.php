@@ -4,7 +4,7 @@ namespace app\views\pdfLayouts;
 
 use Yii;
 
-class ByLDKPDF extends \TCPDF
+class ByLDKPDF extends \FPDI
 {
     /** @var IPDFLayout */
     private $layout;

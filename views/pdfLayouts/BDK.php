@@ -13,7 +13,7 @@ class BDK extends IPDFLayout
     protected $pdf;
 
     /**
-     * @return \TCPDF
+     * @return \FPDI
      */
     public function createPDFClass()
     {
