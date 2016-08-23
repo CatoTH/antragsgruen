@@ -4,7 +4,7 @@ namespace app\views\pdfLayouts;
 
 use Yii;
 
-class DBJRPDF extends \TCPDF
+class DBJRPDF extends \FPDI
 {
     /** @var IPDFLayout */
     private $layout;

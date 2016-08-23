@@ -187,15 +187,15 @@ abstract class ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      */
-    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf);
+    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf);
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      */
-    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf);
+    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf);
 
     /**
      * @param bool $isRight
