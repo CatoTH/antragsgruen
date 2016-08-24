@@ -862,7 +862,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $return = [];
 
-        $return[\Yii::t('motion', 'Motion submitted')] = Tools::formatMysqlDateTime($this->dateCreation);
+        $return[\Yii::t('motion', 'submitted_on')] = Tools::formatMysqlDateTime($this->dateCreation);
 
         $inits = $this->getInitiators();
         if (count($inits) == 1) {
@@ -893,7 +893,7 @@ class Motion extends IMotion implements IRSSItem
         } elseif (count($this->tags) == 1) {
             $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
         }
-        if (!in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
+        if (!in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
             $status = IMotion::getStati()[$this->status];
             if (trim($this->statusString) != '') {
                 $status .= ' (' . $this->statusString . ')';
