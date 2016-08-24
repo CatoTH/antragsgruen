@@ -893,13 +893,11 @@ class Motion extends IMotion implements IRSSItem
         } elseif (count($this->tags) == 1) {
             $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
         }
-        if (!in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
-            $status = IMotion::getStati()[$this->status];
-            if (trim($this->statusString) != '') {
-                $status .= ' (' . $this->statusString . ')';
-            }
-            $return[\Yii::t('motion', 'status')] = $status;
+        $status = IMotion::getStati()[$this->status];
+        if (trim($this->statusString) != '') {
+            $status .= ' (' . $this->statusString . ')';
         }
+        $return[\Yii::t('motion', 'status')] = $status;
 
         return $return;
     }
