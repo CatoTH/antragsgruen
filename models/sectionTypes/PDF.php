@@ -6,6 +6,7 @@ use app\components\latex\Content;
 use app\components\UrlHelper;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
+use app\models\VarStream;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
@@ -136,7 +137,11 @@ class PDF extends ISectionType
             return;
         }
 
-        $pdf->writeHTML('<p>[PDF] – import not implemented yet</p>'); // @TODO
+        $pdf->writeHTML('<p>[PDF]</p>');
+
+        $data = $this->section->data;
+
+        $pdf->setSourceFile(VarStream::createReference( $data ));
     }
 
     /**
