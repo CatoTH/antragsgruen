@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.5.0 [not yet released]
+
+- Improvements in the Plain-PHP PDF-Export, like attaching user-uploaded PDFs
+
 ### Version 3.4.3 (2016-08-22)
 
 - A pre-bundled package of Antragsgrün is now provided for easier installation, especially on hosts with no shell access
