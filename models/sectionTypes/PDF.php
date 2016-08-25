@@ -6,6 +6,7 @@ use app\components\latex\Content;
 use app\components\UrlHelper;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
+use app\models\VarStream;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
@@ -128,22 +129,33 @@ class PDF extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         if ($this->isEmpty()) {
             return;
         }
 
-        $pdf->writeHTML('<p>[PDF]</p>'); // @TODO
+        $pdf->writeHTML('<h3>'.$this->section->getSettings()->title.' [PDF]</h3>');
+
+        $data = base64_decode($this->section->data);
+
+        $pageCount = $pdf->setSourceFile(VarStream::createReference( $data ));
+
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $page = $pdf->ImportPage($pageNo);
+            $dim = $pdf->getTemplatesize($page);
+            $pdf->AddPage($dim['w'] > $dim['h'] ? 'L' : 'P', array($dim['w'], $dim['h']));
+            $pdf->useTemplate($page);
+        }
     }
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \TCPDF $pdf
+     * @param \FPDI $pdf
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \TCPDF $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }

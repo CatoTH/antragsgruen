@@ -33,7 +33,8 @@
     "bower-asset/html5shiv": "^3.7.3-dev",
     "bower-asset/typeahead.js": "^0.11.1-dev",
     "bower-asset/intl": "^1.1.0-dev",
-    "bower-asset/pdfjs-dist": "dev-master"
+    "bower-asset/pdfjs-dist": "dev-master",
+    "setasign/fpdi-tcpdf": "^1.6"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "^2.0.5",
