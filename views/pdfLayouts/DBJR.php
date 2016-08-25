@@ -11,6 +11,9 @@ use yii\helpers\Html;
 
 class DBJR extends IPDFLayout
 {
+
+    private $headerlogo = array();
+
     /**
      * @param Motion $motion
      */
@@ -20,21 +23,39 @@ class DBJR extends IPDFLayout
         /** @var AntragsgruenApp $site */
         $site = \yii::$app->params;
         $left = 23.5;
+        $abs = 5;
+        $fontsize = 35;
+
+        $dim = $pdf->getPageDimensions();
 
         if ($site->getAbsolutePdfLogo()) {
-            $scale = 149 / 280;
-            $width = 50;
+            if (empty($this->headerlogo)) {
+                $this->headerlogo['dim'] = getimagesize($site->getAbsolutePdfLogo());
+                $this->headerlogo['w'] = 50;
+                $this->headerlogo['scale'] = $this->headerlogo['w'] / $this->headerlogo['dim'][0];
+                $this->headerlogo['h'] = $this->headerlogo['dim'][1] * $this->headerlogo['scale'];
+                $this->headerlogo['x'] = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
+                if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
+                    $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
+                }
+                else {
+                    $this->headerlogo['y'] = $dim['tm'];
+                }
+            }
+            $position = 'L';
             $pdf->setJPEGQuality(100);
-            $pdf->Image($site->getAbsolutePdfLogo(), 190 - $width, 18, $width, $width * $scale);
+            $pdf->Image($site->getAbsolutePdfLogo(), $this->headerlogo['x'], $this->headerlogo['y'], $this->headerlogo['w'], $this->headerlogo['h']);
+            $pdf->setY($this->headerlogo['y'] + $this->headerlogo['h'] + $abs);
         }
 
-        $pdf->SetFont('helvetica', 'B', '35');
+        $pdf->SetFont('helvetica', 'B', $fontsize);
         $pdf->SetTextColor(40, 40, 40, 40);
-        $pdf->SetXY($left, 22);
-        $pdf->Write(0, mb_strtoupper($motion->motionType->titleSingular));
+        //$pdf->SetXY($left, $wraptop);
+        $pdf->Write(0, mb_strtoupper($motion->motionType->titleSingular, 'UTF-8') . "\n");
 
         $pdf->SetTextColor(100, 100, 100, 100);
-        $pdf->SetXY($left, 38);
+        $wraptop = $pdf->getY()+$abs;
+        $pdf->SetXY($left, $wraptop);
 
         $pdf->SetFont('helvetica', 'I', 11);
         $intro = $motion->getConsultation()->getSettings()->pdfIntroduction;
@@ -68,21 +89,38 @@ class DBJR extends IPDFLayout
         /** @var AntragsgruenApp $site */
         $site = \yii::$app->params;
         $left = 23.5;
+        $abs = 5;
+        $fontsize = 35;
+
+        $dim = $pdf->getPageDimensions();
 
         if ($site->getAbsolutePdfLogo()) {
-            $scale = 149 / 280;
-            $width = 50;
+            if (empty($this->headerlogo)) {
+                $this->headerlogo['dim'] = getimagesize($site->getAbsolutePdfLogo());
+                $this->headerlogo['w'] = 50;
+                $this->headerlogo['scale'] = $this->headerlogo['w'] / $this->headerlogo['dim'][0];
+                $this->headerlogo['h'] = $this->headerlogo['dim'][1] * $this->headerlogo['scale'];
+                $this->headerlogo['x'] = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
+                if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
+                    $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
+                }
+                else {
+                    $this->headerlogo['y'] = $dim['tm'];
+                }
+            }
+            $position = 'L';
             $pdf->setJPEGQuality(100);
-            $pdf->Image($site->getAbsolutePdfLogo(), 190 - $width, 18, $width, $width * $scale);
+            $pdf->Image($site->getAbsolutePdfLogo(), $this->headerlogo['x'], $this->headerlogo['y'], $this->headerlogo['w'], $this->headerlogo['h']);
+            $pdf->setY($this->headerlogo['y'] + $this->headerlogo['h'] + $abs);
         }
 
         $pdf->SetFont('helvetica', 'B', '35');
         $pdf->SetTextColor(40, 40, 40, 40);
-        $pdf->SetXY($left, 22);
-        $pdf->Write(0, 'Änderungsantrag ' . $amendment->titlePrefix);
+        $pdf->Write(0, mb_strtoupper('Änderungsantrag ' . $amendment->titlePrefix, 'UTF-8') . "\n");
 
         $pdf->SetTextColor(100, 100, 100, 100);
-        $pdf->SetXY($left, 40);
+        $wraptop = $pdf->getY()+$abs;
+        $pdf->SetXY($left, $wraptop);
 
         $pdf->SetFont('helvetica', 'I', 11);
         $intro = $amendment->getMyConsultation()->getSettings()->pdfIntroduction;
