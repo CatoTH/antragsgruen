@@ -137,7 +137,7 @@ class PDF extends ISectionType
             return;
         }
 
-        $pdf->writeHTML('<p>[PDF]</p>');
+        $pdf->writeHTML('<h3>'.$this->section->getSettings()->title.' [PDF]</h3>');
 
         $data = base64_decode($this->section->data);
 
