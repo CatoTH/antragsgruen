@@ -139,9 +139,16 @@ class PDF extends ISectionType
 
         $pdf->writeHTML('<p>[PDF]</p>');
 
-        $data = $this->section->data;
+        $data = base64_decode($this->section->data);
 
-        $pdf->setSourceFile(VarStream::createReference( $data ));
+        $pageCount = $pdf->setSourceFile(VarStream::createReference( $data ));
+
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $page = $pdf->ImportPage($pageNo);
+            $dim = $pdf->getTemplatesize($page);
+            $pdf->AddPage($dim['w'] > $dim['h'] ? 'L' : 'P', array($dim['w'], $dim['h']));
+            $pdf->useTemplate($page);
+        }
     }
 
     /**

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Source: SETASIGN FPDI FAQ – Using a pdf from a php variable instead of a file
+ * https://www.setasign.com/support/faq/miscellaneous/using-a-pdf-from-a-php-variable-instead-of-a-file/
+ */
+
 namespace app\models;
 
 class VarStream
