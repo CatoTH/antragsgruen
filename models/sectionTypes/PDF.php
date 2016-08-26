@@ -203,7 +203,7 @@ class PDF extends ISectionType
                     $config = $params->pdfExportIntegFrame;
                     $color = [0,0,0];
                     $lw = 0.1;
-                    $abs = true;
+                    $absolute = true;
                     if (isset($config['color'])) {
                         $color = $config['color'];
                         unset($config['color']);
@@ -213,7 +213,7 @@ class PDF extends ISectionType
                         unset($config['lw']);
                     }
                     if (isset($config['abs'])) {
-                        $abs = $config['abs'];
+                        $absolute = $config['abs'];
                         unset($config['abs']);
                     }
                     foreach ($config as $key => $length) {
