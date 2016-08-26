@@ -137,7 +137,14 @@ class PDF extends ISectionType
             return;
         }
 
-        $pdf->writeHTML('<h3>'.$this->section->getSettings()->title.' [PDF]</h3>');
+        $abs = 5;
+        $pdf->setY($pdf->getY() + $abs);
+
+        $title = $this->section->getSettings()->title;
+        if (str_replace('pdf','',strtolower($title))==strtolower($title)) {
+            $title .= ' [PDF]';
+        }
+        $pdf->writeHTML('<h3>'.$title.'</h3>');
 
         $data = base64_decode($this->section->data);
 
@@ -146,7 +153,7 @@ class PDF extends ISectionType
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $page = $pdf->ImportPage($pageNo);
             $dim = $pdf->getTemplatesize($page);
-            $pdf->AddPage($dim['w'] > $dim['h'] ? 'L' : 'P', array($dim['w'], $dim['h']));
+            $pdf->AddPage($dim['w'] > $dim['h'] ? 'L' : 'P', array($dim['w'], $dim['h']), false, false, false);
             $pdf->useTemplate($page);
         }
     }
