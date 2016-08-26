@@ -196,6 +196,65 @@ class PDF extends ISectionType
                 }
                 $pdf->useTemplate($page, $print['x'], $print['y'], $print['w'], $print['h']);
 
+                if (is_numeric($params->pdfExportIntegFrame)) {
+                    $pdf->Rect($print['x'], $print['y'], $print['w'], $print['h'], 'D', ['all' => ['width'=>$params->pdfExportIntegFrame, 'color'=>[0, 0, 0], 'dash' => 0]]);
+                }
+                elseif (is_array($params->pdfExportIntegFrame)) {
+                    $config = $params->pdfExportIntegFrame;
+                    $color = [0,0,0];
+                    $lw = 0.1;
+                    $abs = true;
+                    if (isset($config['color'])) {
+                        $color = $config['color'];
+                        unset($config['color']);
+                    }
+                    if (isset($config['lw'])) {
+                        $linewith = $config['lw'];
+                        unset($config['lw']);
+                    }
+                    if (isset($config['abs'])) {
+                        $abs = $config['abs'];
+                        unset($config['abs']);
+                    }
+                    foreach ($config as $key => $length) {
+                        if (in_array($key, ['tld', 'tlr', 'trd', 'trl', 'blu', 'blr', 'bru', 'brl'])) {
+                            if (in_array(substr($key,-1), ['u','l'])) {
+                                $length = -$length;
+                            }
+                            if (!$abs) {
+                                if (in_array(substr($key,-1), ['r','l'])) {
+                                    $length = $length * $print['w'];
+                                }
+                                else {
+                                    $length = $length * $print['h'];
+                                }
+                            }
+                            $larr = [];
+                            if (in_array(substr($key,-1), ['u','d'])) {
+                                $larr['x'] = 0;
+                                $larr['y'] = $length;
+                            }
+                            else {
+                                $larr['x'] = $length;
+                                $larr['y'] = 0;
+                            }
+                            if (substr($key,0,1) == 't') {
+                                $line['y'] = $print['y'];
+                            }
+                            else {
+                                $line['y'] = $print['y'] + $print['h'];
+                            }
+                            if (substr($key,1,1) == 'l') {
+                                $line['x'] = $print['x'];
+                            }
+                            else {
+                                $line['x'] = $print['x'] + $print['w'];
+                            }
+                            $pdf->Line($line['x'], $line['y'], $line['x'] + $larr['x'], $line['y'] + $larr['y'], ['width' => $linewith, 'color' => $color]);
+                        }
+                    }
+                }
+
                 $pdf->setXY($print['x'] + $print['w'], $print['y'] + $print['h']);
                 $lastprint = $print;
             }
