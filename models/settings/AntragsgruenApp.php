@@ -35,6 +35,7 @@ class AntragsgruenApp
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
     public $xdvipdfmx             = null;
+    public $pdfExportConcat       = true;
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];

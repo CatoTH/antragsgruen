@@ -20,5 +20,6 @@
   "hasWurzelwerk": true,
   "adminUserIds": [
     3
-  ]
+  ],
+  "pdfExportConcat": true
 }

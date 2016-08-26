@@ -137,6 +137,9 @@ class PDF extends ISectionType
             return;
         }
 
+        /** @var AntragsgruenApp $params */
+        $params = \yii::$app->params;
+
         $abs = 5;
         $pdf->setY($pdf->getY() + $abs);
 
@@ -150,11 +153,52 @@ class PDF extends ISectionType
 
         $pageCount = $pdf->setSourceFile(VarStream::createReference( $data ));
 
+        $pdim = $pdf->getPageDimensions();
+        $printArea = array(
+            'w' => $pdim['wk'] - ($pdim['lm'] + $pdim['rm']),
+            'h' => $pdim['hk'] - ($pdim['tm'] + $pdim['bm']),
+        );
+        $pdf->setX($pdim['lm']);
+
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $page = $pdf->ImportPage($pageNo);
             $dim = $pdf->getTemplatesize($page);
-            $pdf->AddPage($dim['w'] > $dim['h'] ? 'L' : 'P', array($dim['w'], $dim['h']), false, false, false);
-            $pdf->useTemplate($page);
+            if ($params->pdfExportConcat) {
+                $pdf->AddPage($dim['w'] > $dim['h'] ? 'L' : 'P', array($dim['w'], $dim['h']), false, false, false);
+                $pdf->useTemplate($page);
+            }
+            else {
+                $scale = min(array(
+                    1,
+                    $printArea['w'] / $dim['w'],
+                    $printArea['h'] / $dim['h'],
+                ));
+                $print = array(
+                    'w' => $scale * $dim['w'],
+                    'h' => $scale * $dim['h'],
+                );
+                $curX = $pdf->getX();
+                if ($curX > $pdim['lm'] and $print['w'] < $pdim['wk'] - ($curX + $pdim['rm'])) {
+                    $curX += $abs;
+                    $curY = $pdf->getY() - $lastprint['h'];
+                }
+                else {
+                    $curX = $pdim['lm'];
+                    $curY = $pdf->getY() + $abs;
+                }
+                $print['x'] = $curX;
+                if ($print['h'] < $pdim['hk'] - ($curY + $pdim['bm'])) {
+                    $print['y'] = $curY;
+                }
+                else {
+                    $pdf->AddPage();
+                    $print['y'] = $pdim['tm'];
+                }
+                $pdf->useTemplate($page, $print['x'], $print['y'], $print['w'], $print['h']);
+
+                $pdf->setXY($print['x'] + $print['w'], $print['y'] + $print['h']);
+                $lastprint = $print;
+            }
         }
     }
 
