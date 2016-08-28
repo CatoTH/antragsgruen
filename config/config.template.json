@@ -13,5 +13,6 @@
   "randomSeed": "RANDOMSEED",
   "domainPlain": "https://www.example.org/",
   "domainSubdomain": "https://<subdomain:[\\w_-]+>.example.org/",
-  "siteBehaviorClasses": []
+  "siteBehaviorClasses": [],
+  "pdfExportConcat": true
 }

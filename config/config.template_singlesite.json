@@ -18,5 +18,6 @@
   "resourceBase": "/antragsgruen/web/",
   "mailFromName": "Antragsgrün",
   "mailFromEmail": "info@example.org",
-  "autoLoginDuration": 604800
+  "autoLoginDuration": 604800,
+  "pdfExportConcat": true
 }
