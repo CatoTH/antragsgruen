@@ -209,16 +209,17 @@ class Tools
      * @static
      * @param string $mysqldate
      * @param string|null $locale
+     * @param bool $allowRelativeDates
      * @return string
      * @throws Internal
      */
-    public static function formatMysqlDate($mysqldate, $locale = null)
+    public static function formatMysqlDate($mysqldate, $locale = null, $allowRelativeDates = true)
     {
         if (strlen($mysqldate) == 0) {
             return '-';
-        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d")) {
+        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d") && $allowRelativeDates) {
             return \yii::t('base', 'Today');
-        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d" - 3600 * 24)) {
+        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d" - 3600 * 24) && $allowRelativeDates) {
             return \yii::t('base', 'Yesterday');
         }
 

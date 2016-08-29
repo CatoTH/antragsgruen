@@ -865,9 +865,10 @@ class Motion extends IMotion implements IRSSItem
         $inits = $this->getInitiators();
         if (count($inits) == 1) {
             $first = $inits[0];
-            if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
+            $resolutionDate = $first->resolutionDate;
+            if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $resolutionDate > 0) {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->organization;
-                $return[\Yii::t('export', 'ResolutionDate')]  = Tools::formatMysqlDate($first->resolutionDate);
+                $return[\Yii::t('export', 'ResolutionDate')]  = Tools::formatMysqlDate($resolutionDate, null, false);
             } else {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->getNameWithResolutionDate(false);
             }
