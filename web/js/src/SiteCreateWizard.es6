@@ -166,6 +166,11 @@ class SiteCreateWizard {
                 $group.removeClass("has-error").removeClass("has-success");
                 return;
             }
+            if (!subdomain.match(/^[A-Z0-9äöü](?:[A-Z0-9äöü_\-]{0,61}[A-Z0-9äöü])?$/i)) {
+                $group.removeClass("has-success").addClass("has-error");
+                $form.find("button[type=submit]").prop("disabled", true);
+                return;
+            }
             $.get(requesturl, function (ret) {
                 if (ret['available']) {
                     $err.addClass("hidden");
