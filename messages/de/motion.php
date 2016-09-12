@@ -25,7 +25,7 @@ return [
     'supporters_heading'                 => 'Unterstützer*innen',
     'supporting_you'                     => 'Du!',
     'supporting_none'                    => 'keine',
-    'supporting_logged_out_warning'      => 'Achtung: Du bist nicht eingeloggt. Unterstützung, die ohne Login ausgesprochen werden, können nur für kurze Zeit zurückgenommen werden',
+    'supporting_logged_out_warning'      => 'Achtung: Du bist nicht eingeloggt. Unterstützung, die ohne Login ausgesprochen werden, können nur für kurze Zeit zurückgenommen werden.',
     'likes_title'                        => 'Zustimmung',
     'like'                               => 'Zustimmung',
     'likes'                              => 'Zustimmung',
