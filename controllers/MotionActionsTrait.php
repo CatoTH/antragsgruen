@@ -178,9 +178,6 @@ trait MotionActionsTrait
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this motion is not possible');
         }
-        if (trim($name) == '') {
-            throw new FormError('You need to enter a name');
-        }
 
         MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role);
 
@@ -225,6 +222,11 @@ trait MotionActionsTrait
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
         }
+        if (trim($name) == '') {
+            \Yii::$app->session->setFlash('error', 'You need to enter a name');
+            return;
+        }
+
         $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga);
         ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 

@@ -178,6 +178,11 @@ trait AmendmentActionsTrait
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
         }
+        if (trim($name) == '') {
+            \Yii::$app->session->setFlash('error', 'You need to enter a name');
+            return;
+        }
+
         $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $amendment->id);
 
@@ -200,9 +205,6 @@ trait AmendmentActionsTrait
         $currentUser = User::getCurrentUser();
         if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this amendment is not possible');
-        }
-        if (trim($name) == '') {
-            throw new FormError('You need to enter a name');
         }
 
         AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role);
