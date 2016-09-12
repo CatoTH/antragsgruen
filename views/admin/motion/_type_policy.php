@@ -55,7 +55,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 <!--Support types for motions (Likes, Dislikes, Official support) -->
 
 <div class="form-group">
-    <div class="col-md-8 col-md-offset-4 contactDetails contactPhone">
+    <div class="col-md-8 col-md-offset-4 contactDetails motionSupportPolicy">
         <div class="form-control">
             <?php
             $checkboxes = [
@@ -123,7 +123,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 <!-- Support types for amendments (Likes, Dislikes, Official support) -->
 
 <div class="form-group">
-    <div class="col-md-8 col-md-offset-4 contactDetails contactPhone">
+    <div class="col-md-8 col-md-offset-4 contactDetails amendmentSupportPolicy">
         <div class="form-control">
             <?php
             $checkboxes = [

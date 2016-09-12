@@ -50,7 +50,6 @@ trait AmendmentActionsTrait
     /**
      * @param Amendment $amendment
      * @param array $viewParameters
-     * @return AmendmentComment
      * @throws Access
      */
     private function writeComment(Amendment $amendment, &$viewParameters)
@@ -199,29 +198,14 @@ trait AmendmentActionsTrait
     private function amendmentLikeDislike(Amendment $amendment, $role, $string, $name = '', $orga = '')
     {
         $currentUser = User::getCurrentUser();
-        if ($currentUser == null) {
-            throw new FormError('Supporting this amendment is not possible');
-        }
         if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this amendment is not possible');
         }
-
-        $maxPos = 0;
-        foreach ($amendment->amendmentSupporters as $supp) {
-            if ($supp->userId == $currentUser->id) {
-                $amendment->unlink('amendmentSupporters', $supp, true);
-            } elseif ($supp->position > $maxPos) {
-                $maxPos = $supp->position;
-            }
+        if (trim($name) == '') {
+            throw new FormError('You need to enter a name');
         }
-        $support               = new AmendmentSupporter();
-        $support->amendmentId  = $amendment->id;
-        $support->userId       = $currentUser->id;
-        $support->name         = $name;
-        $support->organization = $orga;
-        $support->position     = $maxPos + 1;
-        $support->role         = $role;
-        $support->save();
+
+        AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role);
 
         $amendment->refresh();
 
@@ -263,9 +247,10 @@ trait AmendmentActionsTrait
      */
     private function amendmentSupportRevoke(Amendment $amendment)
     {
-        $currentUser = User::getCurrentUser();
+        $currentUser          = User::getCurrentUser();
+        $anonymouslySupported = AmendmentSupporter::getMyAnonymousSupportIds();
         foreach ($amendment->amendmentSupporters as $supp) {
-            if ($supp->userId == $currentUser->id) {
+            if (($currentUser && $supp->userId == $currentUser->id) || in_array($supp->id, $anonymouslySupported)) {
                 if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
                     if (!$amendment->isSupportingPossibleAtThisStatus()) {
                         throw new FormError('Not possible given the current amendment status');

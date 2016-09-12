@@ -458,6 +458,11 @@ class LayoutHelper
                 echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'support');
                 echo '</button></div>';
 
+                if (!$user) {
+                    echo '<div class="col-md-8" style="font-size: 0.8em; margin-top: 6px;">' .
+                        \Yii::t('motion', 'supporting_logged_out_warning') . '</div>';
+                }
+
                 echo '</div>';
             }
             echo Html::endForm();

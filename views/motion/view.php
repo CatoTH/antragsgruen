@@ -36,8 +36,9 @@ $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getConsultation()
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
-$minimalisticUi = $motion->getConsultation()->getSettings()->minimalisticUI;
-$minHeight      = $sidebarRows * 40 - 100;
+$minimalisticUi          = $motion->getConsultation()->getSettings()->minimalisticUI;
+$minHeight               = $sidebarRows * 40 - 100;
+$supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS);
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
@@ -52,7 +53,7 @@ if (!$minimalisticUi) {
 echo $controller->showErrors();
 
 
-if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+if ($supportCollectingStatus) {
     echo '<div class="alert alert-info supportCollectionHint" role="alert">';
     $min  = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
     $curr = count($motion->getSupporters());
@@ -122,16 +123,17 @@ $supporters    = $motion->getSupporters();
 $supportType   = $motion->motionType->getMotionSupportTypeClass();
 $supportPolicy = $motion->motionType->getMotionSupportPolicy();
 
-if (count($supporters) > 0 || $motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser()) {
     echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
-    $iAmSupporting = false;
+    $iAmSupporting        = false;
+    $anonymouslySupported = \app\models\db\MotionSupporter::getMyAnonymousSupportIds();
     if (count($supporters) > 0) {
         echo '<ul>';
         foreach ($supporters as $supp) {
             echo '<li>';
-            if ($currUserId && $supp->userId == $currUserId) {
+            if (($currUserId && $supp->userId == $currUserId) || in_array($supp->id, $anonymouslySupported)) {
                 echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
                 $iAmSupporting = true;
             }

@@ -43,6 +43,67 @@ class AmendmentSupporter extends ISupporter
     }
 
     /**
+     * @return int[]
+     */
+    public static function getMyAnonymousSupportIds()
+    {
+        return \Yii::$app->session->get('anonymous_amendment_supports', []);
+    }
+
+    /**
+     * @param AmendmentSupporter $support
+     */
+    public static function addAnonymouslySupportedAmendment($support)
+    {
+        $pre   = \Yii::$app->session->get('anonymous_amendment_supports', []);
+        $pre[] = IntVal($support->id);
+        \Yii::$app->session->set('anonymous_amendment_supports', $pre);
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param User|null $user
+     * @param string $name
+     * @param string $orga
+     * @param null $role
+     */
+    public static function createSupport(Amendment $amendment, $user, $name, $orga, $role)
+    {
+        $maxPos = 0;
+        if ($user) {
+            foreach ($amendment->amendmentSupporters as $supp) {
+                if ($supp->userId == $user->id) {
+                    $amendment->unlink('amendmentSupporters', $supp, true);
+                } elseif ($supp->position > $maxPos) {
+                    $maxPos = $supp->position;
+                }
+            }
+        } else {
+            $alreadySupported = static::getMyAnonymousSupportIds();
+            foreach ($amendment->amendmentSupporters as $supp) {
+                if (in_array($supp->id, $alreadySupported)) {
+                    $amendment->unlink('amendmentSupporters', $supp, true);
+                } elseif ($supp->position > $maxPos) {
+                    $maxPos = $supp->position;
+                }
+            }
+        }
+
+        $support               = new AmendmentSupporter();
+        $support->amendmentId  = $amendment->id;
+        $support->userId       = ($user ? $user->id : null);
+        $support->name         = $name;
+        $support->organization = $orga;
+        $support->position     = $maxPos + 1;
+        $support->role         = $role;
+        $support->save();
+
+        if (!$user) {
+            static::addAnonymouslySupportedAmendment($support);
+        }
+    }
+
+    /**
      * @return array
      */
     public function rules()

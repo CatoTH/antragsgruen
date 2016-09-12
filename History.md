@@ -3,6 +3,7 @@
 ## Version 3.5.0 [not yet released]
 
 - Improvements in the Plain-PHP PDF-Export, like attaching user-uploaded PDFs
+- Supporting motions and amendments is now supported (if "All" is selected in the motion type settings)
 
 ### Version 3.4.3 (2016-08-22)
 

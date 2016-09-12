@@ -49,7 +49,6 @@ trait MotionActionsTrait
     /**
      * @param Motion $motion
      * @param array $viewParameters
-     * @return MotionComment
      * @throws Access
      */
     private function writeComment(Motion $motion, &$viewParameters)
@@ -176,26 +175,14 @@ trait MotionActionsTrait
     private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '')
     {
         $currentUser = User::getCurrentUser();
-        if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser() || $currentUser == null) {
+        if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this motion is not possible');
         }
-
-        $maxPos = 0;
-        foreach ($motion->motionSupporters as $supp) {
-            if ($supp->userId == $currentUser->id) {
-                $motion->unlink('motionSupporters', $supp, true);
-            } elseif ($supp->position > $maxPos) {
-                $maxPos = $supp->position;
-            }
+        if (trim($name) == '') {
+            throw new FormError('You need to enter a name');
         }
-        $support               = new MotionSupporter();
-        $support->motionId     = $motion->id;
-        $support->userId       = $currentUser->id;
-        $support->name         = $name;
-        $support->organization = $orga;
-        $support->position     = $maxPos + 1;
-        $support->role         = $role;
-        $support->save();
+
+        MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role);
 
         $motion->refresh();
 
@@ -265,9 +252,10 @@ trait MotionActionsTrait
      */
     private function motionSupportRevoke(Motion $motion)
     {
-        $currentUser = User::getCurrentUser();
+        $currentUser          = User::getCurrentUser();
+        $anonymouslySupported = MotionSupporter::getMyAnonymousSupportIds();
         foreach ($motion->motionSupporters as $supp) {
-            if ($supp->userId == $currentUser->id) {
+            if (($currentUser && $supp->userId == $currentUser->id) || in_array($supp->id, $anonymouslySupported)) {
                 if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
                     if (!$motion->isSupportingPossibleAtThisStatus()) {
                         throw new FormError('Not possible given the current motion status');

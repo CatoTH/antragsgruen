@@ -46,6 +46,7 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
 $minHeight = $sidebarRows * 40 - 100;
+$supportCollectingStatus = ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS);
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
 
@@ -92,7 +93,7 @@ echo '</table>';
 echo $controller->showErrors();
 
 
-if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+if ($supportCollectingStatus) {
     echo '<div class="alert alert-info supportCollectionHint" role="alert">';
     $min  = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
     $curr = count($amendment->getSupporters());
@@ -147,16 +148,17 @@ $supporters = $amendment->getSupporters();
 $supportPolicy = $amendment->getMyMotion()->motionType->getAmendmentSupportPolicy();
 $supportType = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
 
-if (count($supporters) > 0 || $amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser()) {
     echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
     $iAmSupporting = false;
+    $anonymouslySupported = \app\models\db\AmendmentSupporter::getMyAnonymousSupportIds();
     if (count($supporters) > 0) {
         echo '<ul>';
         foreach ($supporters as $supp) {
             echo '<li>';
-            if ($currUserId && $supp->userId == $currUserId) {
+            if (($currUserId && $supp->userId == $currUserId) || in_array($supp->id, $anonymouslySupported)) {
                 echo '<span class="label label-info">' . \Yii::t('amend', 'supporter_you') . '</span> ';
                 $iAmSupporting = true;
             }
