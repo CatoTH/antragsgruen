@@ -32,9 +32,10 @@ class Layout
     public static function getCssLayouts()
     {
         return [
-            'layout-classic'    => 'Antragsgrün-Standard',
-            'layout-gruenes-ci' => 'Grünes CI',
-            'layout-dbjr'       => 'DBJR',
+            'layout-classic'     => 'Antragsgrün-Standard',
+            'layout-gruenes-ci'  => 'Grünes CI',
+            'layout-gruenes-ci2' => 'Grünes CI v2',
+            'layout-dbjr'        => 'DBJR',
         ];
     }
 
@@ -145,9 +146,10 @@ class Layout
     /**
      * @return string[]
      */
-    public function getJSFiles() {
+    public function getJSFiles()
+    {
         $jsLang = $this->getJSLanguageCode();
-        $files = [];
+        $files  = [];
         if (defined('YII_DEBUG') && YII_DEBUG) {
             $files[] = $this->resourceUrl('js/bootstrap.js');
             $files[] = $this->resourceUrl('js/bower/bootbox/bootbox.js');
@@ -160,9 +162,9 @@ class Layout
             $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
             $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
         }
-	    foreach ($this->extraJs as $extraJs) {
-		    $files[] = $this->resourceUrl($extraJs);
-	    }
+        foreach ($this->extraJs as $extraJs) {
+            $files[] = $this->resourceUrl($extraJs);
+        }
 
         return $files;
     }
