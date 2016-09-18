@@ -56,7 +56,7 @@ $createMotionBtnColor: $colorMagenta;
 @import "sidebar";
 
 body {
-  background-image: url(/img/backgroundGruene.jpg);
+  background-image: url(/img/gruenes_ci2_background.jpg);
   background-repeat: repeat;
   background-position: top center;
   background-attachment: fixed;
@@ -66,6 +66,91 @@ body {
   font-family: "Arvo Gruen", sans-serif;
   font-weight: normal;
 }
-.motionListStd .motion .title a  {
+
+.motionListStd .motion .title a {
   font-family: "Arvo", sans-serif;
+}
+
+#mainmenu {
+  display: block;
+  background: #0a321e;
+  text-align: right;
+  padding: 0.5em 0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  position: relative;
+
+  .navbar {
+    min-height: 36px;
+    .nav li a {
+      &, &:visited, &:link {
+        color: white;
+        font-family: $bodyFont;
+        font-size: 16px;
+        font-weight: normal;
+        text-transform: none;
+        line-height: 36px;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .navbar-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+}
+
+.row.logo {
+  margin-bottom: 4em;
+  position: relative;
+
+  #logo {
+    display: inline-block;
+    width: 20%;
+    z-index: 2;
+    position: relative;
+    margin-top: 0.5em;
+  }
+
+  .hgroup {
+    display: inline-block;
+    width: auto!important;
+    text-align: right;
+    z-index: 2;
+    position: absolute;
+    top: 43%;
+    right: 0;
+    border-top: 0.2em solid #fff;
+    border-bottom: 0.2em solid #fff;
+    padding: 0.5em 0;
+  }
+  a, a:link, a:visited {
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+  }
+  h1, h2 {
+    padding: 0 0 0 5px;
+    margin: 0;
+    line-height: 1em;
+    display: block;
+    text-align: right;
+  }
+  h1 {
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+    font-family: 'Arvo Gruen','Arvo Regular', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+    font-size: 40px;
+  }
+
+  h2 {
+    text-align: right;
+    margin-top: 0.5em;
+    font-size: 18px;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+    color: #ffe000;
+    font-family: 'Arvo Regular', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+  }
 }

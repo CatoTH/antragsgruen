@@ -4,7 +4,8 @@ namespace app\models\settings;
 
 use app\components\UrlHelper;
 use app\views\hooks\LayoutHooks;
-use app\views\hooks\StdLayout;
+use app\views\hooks\LayoutStd;
+use app\views\hooks\LayoutGruenesCi2;
 use yii\helpers\Html;
 
 class Layout
@@ -53,8 +54,11 @@ class Layout
     {
         $this->mainCssFile = $layout;
         switch ($layout) {
+            case 'layout-gruenes-ci2':
+                $this->hooks = new LayoutGruenesCi2($this);
+                break;
             default:
-                $this->hooks = new StdLayout($this);
+                $this->hooks = new LayoutStd($this);
         }
     }
 

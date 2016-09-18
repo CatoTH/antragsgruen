@@ -105,27 +105,7 @@ echo $layout->hooks->beforePage();
 echo '<div class="container" id="page">';
 echo $layout->hooks->beginPage();
 
-echo '<div class="row logo">
-<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo text-hide">' . \Yii::t('base', 'Home');
-if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != '') {
-    $path     = parse_url($controller->consultation->getSettings()->logoUrl);
-    $filename = basename($path['path']);
-    $filename = substr($filename, 0, strrpos($filename, '.'));
-    $filename = str_replace(
-        ['_', 'ue', 'ae', 'oe', 'Ue', 'Oe', 'Ae'],
-        [' ', 'ü', 'ä', 'ö', 'Ü' . 'Ö', 'Ä'],
-        $filename
-    );
-    $logoUrl  = $controller->consultation->getSettings()->logoUrl;
-    if (!isset($path['host']) && $logoUrl[0] != '/') {
-        $logoUrl = $resourceBase . $logoUrl;
-    }
-    echo '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
-} else {
-    echo '<span class="logoImg"></span>';
-}
-echo '</a></div>';
-
+echo $layout->hooks->logoRow();
 
 echo $controller->showErrors();
 

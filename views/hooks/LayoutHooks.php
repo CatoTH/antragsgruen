@@ -33,4 +33,12 @@ abstract class LayoutHooks
     {
         return '';
     }
+
+    /**
+     * @return string
+     */
+    public function logoRow()
+    {
+        return '';
+    }
 }

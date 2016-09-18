@@ -98,4 +98,29 @@ trait StdFunctionTrait
 
         return $out;
     }
+
+    protected function getLogoStr()
+    {
+        /** @var Base $controller */
+        $controller   = \Yii::$app->controller;
+        $resourceBase = $controller->getParams()->resourceBase;
+
+        if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != '') {
+            $path     = parse_url($controller->consultation->getSettings()->logoUrl);
+            $filename = basename($path['path']);
+            $filename = substr($filename, 0, strrpos($filename, '.'));
+            $filename = str_replace(
+                ['_', 'ue', 'ae', 'oe', 'Ue', 'Oe', 'Ae'],
+                [' ', 'ü', 'ä', 'ö', 'Ü' . 'Ö', 'Ä'],
+                $filename
+            );
+            $logoUrl  = $controller->consultation->getSettings()->logoUrl;
+            if (!isset($path['host']) && $logoUrl[0] != '/') {
+                $logoUrl = $resourceBase . $logoUrl;
+            }
+            return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
+        } else {
+            return '<span class="logoImg"></span>';
+        }
+    }
 }
