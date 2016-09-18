@@ -69,7 +69,9 @@ class Base extends Controller
                 $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
                 $this->loadConsultation($subdomain, $consultation);
                 if ($this->site) {
-                    $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
+                    $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
+                } else {
+                    $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
                 }
             } elseif (isset($params[1]['subdomain'])) {
                 if (strpos($params[1]['subdomain'], 'xn--') === 0) {
@@ -83,10 +85,15 @@ class Base extends Controller
                 $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
                 $this->loadConsultation($subdomain, $consultation);
                 if ($this->site) {
-                    $this->layoutParams->mainCssFile = $this->site->getSettings()->siteLayout;
+                    $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
+                } else {
+                    $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
                 }
             } elseif (get_class($this) != ManagerController::class && !$appParams->multisiteMode) {
+                $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
                 $this->showErrorpage(500, \Yii::t('base', 'err_no_site_internal'));
+            } else {
+                $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
             }
 
             // Login and Mainainance mode is always allowed

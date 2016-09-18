@@ -3,10 +3,14 @@
 namespace app\models\settings;
 
 use app\components\UrlHelper;
+use app\views\hooks\LayoutHooks;
+use app\views\hooks\StdLayout;
 use yii\helpers\Html;
 
 class Layout
 {
+    const DEFAULT_LAYOUT = 'layout-classic';
+
     public $menu                 = [];
     public $breadcrumbs          = null;
     public $multimenu            = [];
@@ -21,7 +25,10 @@ class Layout
     public $onloadJs             = [];
     public $fullWidth            = false;
     public $fullScreen           = false;
-    public $mainCssFile          = 'layout-classic';
+    public $mainCssFile          = null;
+
+    /** @var LayoutHooks */
+    public $hooks = null;
 
     /** @var \app\models\db\Consultation|null */
     private $consultation;
@@ -37,6 +44,18 @@ class Layout
             'layout-gruenes-ci2' => 'Grünes CI v2',
             'layout-dbjr'        => 'DBJR',
         ];
+    }
+
+    /**
+     * @param string $layout
+     */
+    public function setLayout($layout)
+    {
+        $this->mainCssFile = $layout;
+        switch ($layout) {
+            default:
+                $this->hooks = new StdLayout($this);
+        }
     }
 
     /**
