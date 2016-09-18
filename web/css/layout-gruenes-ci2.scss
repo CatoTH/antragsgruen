@@ -141,7 +141,7 @@ body {
     color: #fff;
     text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
     text-transform: uppercase;
-    font-family: 'Arvo Gruen','Arvo Regular', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+    font-family: 'Arvo Gruen','Arvo', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
     font-size: 40px;
   }
 
@@ -151,6 +151,85 @@ body {
     font-size: 18px;
     text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
     color: #ffe000;
-    font-family: 'Arvo Regular', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+    font-family: 'Arvo', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+  }
+}
+
+.navwrap {
+  margin-bottom: 2em;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+#mainmenu {
+  .unsichtbar {
+    display: none;
+  }
+  .navigation {
+    background: #0a321e;
+    font-size: 20.8px;
+    font-family: 'Arvo', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+    font-weight: normal;
+    ul {
+      list-style-type: none;
+    }
+    li {
+      display: block;
+      float: left;
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+    a, a:link, a:visited {
+      padding: 1em;
+      display: block;
+      background: transparent;
+      color: #fff;
+      border: 0;
+    }
+  }
+}
+.breadcrumb {
+    display: block;
+    z-index: 2;
+    position: relative;
+    background: #ffee00;
+    color: #0a321e;
+    padding: 0.3em 1em;
+    font-size: 14.4px;
+    font-family: 'PT Sans Bold', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+    font-weight: normal;
+    text-transform: none;
+    margin: 0;
+    color: #0a321e;
+    a, a:link, a:visited {
+      color: #0a321e;
+    }
+}
+
+footer.footer {
+  text-align: center;
+  font-size: 12.8px;
+  color: white;
+  padding: 1em;
+  margin-bottom: 30px;
+
+  .version {
+    font-size: 12.8px;
+  }
+
+  a, a:link, a:visited {
+    color: #ffe000;
+  }
+}
+
+.well {
+  border-radius: 0;
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+
+  &>:first-child {
+    border-radius: 0;
+  }
+  &>:last-child {
+    border-radius: 0;
   }
 }

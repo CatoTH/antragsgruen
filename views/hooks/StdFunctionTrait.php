@@ -27,12 +27,7 @@ trait StdFunctionTrait
         $controller   = \Yii::$app->controller;
         $minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 
-        $out = '<header id="mainmenu">';
-        $out .= '<div class="navbar">
-        <div class="navbar-inner">
-            <div class="container">';
-
-        $out .= '<ul class="nav navbar-nav">';
+        $out = '<ul class="nav navbar-nav">';
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             if ($controller->consultation) {
@@ -89,16 +84,14 @@ trait StdFunctionTrait
                 $out .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink']) . '</li>';
             }
         }
-        $out .= '</ul>
-            </div>
-        </div>
-    </div>';
-
-        $out .= '</header>';
+        $out .= '</ul>';
 
         return $out;
     }
 
+    /**
+     * @return string
+     */
     protected function getLogoStr()
     {
         /** @var Base $controller */
@@ -122,5 +115,64 @@ trait StdFunctionTrait
         } else {
             return '<span class="logoImg"></span>';
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function breadcrumbs()
+    {
+        $out = '';
+        if (is_array($this->layout->breadcrumbs)) {
+            $out .= '<ol class="breadcrumb">';
+            foreach ($this->layout->breadcrumbs as $link => $name) {
+                if ($link == '' || is_null($link)) {
+                    $out .= '<li>' . Html::encode($name) . '</li>';
+                } else {
+                    $out .= '<li>' . Html::a($name, $link) . '</li>';
+                }
+            }
+            $out .= '</ol>';
+        }
+
+        return $out;
+    }
+
+    /**
+     * @return string
+     */
+    public function footerLine()
+    {
+        /** @var Base $controller */
+        $controller = \Yii::$app->controller;
+        if ($controller->consultation) {
+            $legalLink   = UrlHelper::createUrl('consultation/legal');
+            $privacyLink = UrlHelper::createUrl('consultation/privacy');
+        } else {
+            $legalLink   = UrlHelper::createUrl('manager/site-legal');
+            $privacyLink = UrlHelper::createUrl('manager/site-privacy');
+        }
+
+        $out = '<footer class="footer">
+        <div class="container">
+            <a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
+            \Yii::t('base', 'imprint') . '</a>
+            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
+            \Yii::t('base', 'privacy_statement') . '</a>
+
+            <span class="version">';
+        if (\Yii::$app->language == 'de') {
+            $out .= 'Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
+        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
+        } else {
+            $out .= 'Antragsgrün by <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
+        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
+        }
+
+        $out .= '</span>
+        </div>
+    </footer>';
+
+        return $out;
     }
 }

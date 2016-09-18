@@ -106,56 +106,19 @@ echo '<div class="container" id="page">';
 echo $layout->hooks->beginPage();
 
 echo $layout->hooks->logoRow();
-
 echo $controller->showErrors();
-
-if (is_array($layout->breadcrumbs)) {
-    echo '<ol class="breadcrumb">';
-    foreach ($layout->breadcrumbs as $link => $name) {
-        if ($link == '' || is_null($link)) {
-            echo '<li>' . Html::encode($name) . '</li>';
-        } else {
-            echo '<li>' . Html::a($name, $link) . '</li>';
-        }
-    }
-    echo '</ol>';
-}
-
+echo $layout->hooks->beforeContent();
 
 /** @var string $content */
 echo $content;
 
-if ($controller->consultation) {
-    $legalLink   = UrlHelper::createUrl('consultation/legal');
-    $privacyLink = UrlHelper::createUrl('consultation/privacy');
-} else {
-    $legalLink   = UrlHelper::createUrl('manager/site-legal');
-    $privacyLink = UrlHelper::createUrl('manager/site-privacy');
-}
 
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
 </div></div>';
 
-echo '<footer class="footer">
-        <div class="container">
-            <a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
-    \Yii::t('base', 'imprint') . '</a>
-            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
-    \Yii::t('base', 'privacy_statement') . '</a>
+echo $layout->hooks->endPage();
 
-            <span class="version">';
-if (\Yii::$app->language == 'de') {
-    echo 'Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
-} else {
-    echo 'Antragsgrün by <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
-}
-
-echo '</span>
-        </div>
-    </footer>';
 
 foreach ($layout->getJSFiles() as $jsFile) {
     echo '<script src="' . $jsFile . '"></script>' . "\n";

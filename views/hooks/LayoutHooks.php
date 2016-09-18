@@ -41,4 +41,36 @@ abstract class LayoutHooks
     {
         return '';
     }
+
+    /**
+     * @return string
+     */
+    public function beforeContent()
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function afterContent()
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function beginContent()
+    {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function endPage()
+    {
+        return '';
+    }
 }

@@ -12,14 +12,6 @@ class LayoutGruenesCi2 extends LayoutHooks
     /**
      * @return string
      */
-    public function beforePage()
-    {
-        return $this->getStdNavbarHeader();
-    }
-
-    /**
-     * @return string
-     */
     public function logoRow()
     {
         $out = '<header class="row logo" role="banner">' .
@@ -35,5 +27,28 @@ class LayoutGruenesCi2 extends LayoutHooks
             '</header>';
 
         return $out;
+    }
+
+    /**
+     * @return string
+     */
+    public function beforeContent()
+    {
+        $out = '<section class="navwrap">' .
+            '<nav role="navigation" class="pos" id="mainmenu"><h6 class="unsichtbar">Hauptmenü:</h6>' .
+            '<div class="navigation nav-fallback clearfix">';
+        $out .= $this->getStdNavbarHeader();
+        $out .= '</div></nav>';
+        $out .= $this->breadcrumbs();
+        $out .= '</section>';
+        return $out;
+    }
+
+    /**
+     * @return string
+     */
+    public function endPage()
+    {
+        return $this->footerLine();
     }
 }

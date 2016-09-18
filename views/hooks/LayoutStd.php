@@ -3,7 +3,6 @@
 namespace app\views\hooks;
 
 use app\components\UrlHelper;
-use app\controllers\Base;
 use yii\helpers\Html;
 
 class LayoutStd extends LayoutHooks
@@ -15,7 +14,18 @@ class LayoutStd extends LayoutHooks
      */
     public function beginPage()
     {
-        return $this->getStdNavbarHeader();
+        $out = '<header id="mainmenu">';
+        $out .= '<div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">';
+        $out .= $this->getStdNavbarHeader();
+        $out .= '</div>
+        </div>
+    </div>';
+
+        $out .= '</header>';
+
+        return $out;
     }
 
     /**
@@ -29,5 +39,21 @@ class LayoutStd extends LayoutHooks
         $out .= '</a></div>';
 
         return $out;
+    }
+
+    /**
+     * @return string
+     */
+    public function beforeContent()
+    {
+        return $this->breadcrumbs();
+    }
+
+    /**
+     * @return string
+     */
+    public function endPage()
+    {
+        return $this->footerLine();
     }
 }
