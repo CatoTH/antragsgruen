@@ -257,7 +257,7 @@ class Layout
         $params   = \yii::$app->params;
         $absolute = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR .
             str_replace('/', DIRECTORY_SEPARATOR, $url);
-        $mtime    = filemtime($absolute);
+        $mtime    = (file_exists($absolute) ? filemtime($absolute) : 0);
         $age      = time() - $mtime;
         if ($age < 604800) { // 1 Week
             $url .= (mb_strpos($url, '?') !== false ? '&' : '?');
