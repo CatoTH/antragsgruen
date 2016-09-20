@@ -635,7 +635,11 @@ class TextSimple extends ISectionType
         if ($section->getSettings()->lineNumbers && $lineNumbers) {
             $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
-                $html = implode('<br>', $paragraph->lines);
+                $lines = [];
+                foreach ($paragraph->lines as $line) {
+                    $lines[] = preg_replace('/<br> ?\n?$/', '', $line);
+                }
+                $html = implode('<br>', $lines);
                 $html = str_replace('###LINENUMBER###', '', $html);
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';

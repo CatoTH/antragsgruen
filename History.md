@@ -2,8 +2,10 @@
 
 ## Version 3.5.0 [not yet released]
 
+- Support for H2, H3 and H4 headlines in motion texts
 - Improvements in the Plain-PHP PDF-Export, like attaching user-uploaded PDFs
 - Supporting motions and amendments is now supported (if "All" is selected in the motion type settings)
+- Bugfixes in the ODT-Export
 
 ### Version 3.4.3 (2016-08-22)
 
