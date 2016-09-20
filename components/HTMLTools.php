@@ -137,7 +137,7 @@ class HTMLTools
         $html = HtmlPurifier::process(
             $html,
             function ($config) {
-                $allowedTags = 'p,strong,em,ul,ol,li,span,a,br,blockquote,sub,sup,pre';
+                $allowedTags = 'p,strong,em,ul,ol,li,span,a,br,blockquote,sub,sup,pre,h2,h3,h4';
                 /** @var \HTMLPurifier_Config $config */
                 $conf = [
                     'HTML.Doctype'                            => 'HTML 4.01 Transitional',
@@ -270,7 +270,9 @@ class HTMLTools
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
-                        } elseif (in_array($child->nodeName, ['ul', 'blockquote', 'p', 'pre'])) {
+                        } elseif (in_array($child->nodeName,
+                            ['ul', 'blockquote', 'p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+                        ) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
