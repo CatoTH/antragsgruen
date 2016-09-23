@@ -93,6 +93,17 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
+    public function testAllowH2H3H4()
+    {
+        $orig   = '<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4>';
+        $expect = 'H1<h2>H2</h2><h3>H3</h3><h4>H4</h4>';
+
+        $out = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
     public function testAllowStrike()
     {
         $orig   = "<span class='strike'>Strike</span> Normal";

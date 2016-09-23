@@ -121,8 +121,8 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        $post = \Yii::$app->request->post();
-        
+        $post    = \Yii::$app->request->post();
+
         if ($section->getSettings()->motionType->amendmentMultipleParagraphs) {
             $section->data    = HTMLTools::cleanSimpleHtml($data['consolidated']);
             $section->dataRaw = $data['raw'];
@@ -288,7 +288,7 @@ class TextSimple extends ISectionType
                 // for striking through text
                 $pattern = '/<span class="strike">(.*)<\/span>/iUs';
                 $replace = '<s>${1}</s>';
-                $text1 = preg_replace($pattern, $replace, $text1);
+                $text1   = preg_replace($pattern, $replace, $text1);
 
                 $pdf->writeHTMLCell(173, '', 24, $y, $text1, 0, 1, 0, true, '', true);
 
@@ -342,7 +342,7 @@ class TextSimple extends ISectionType
             // for striking through text
             $pattern = '/<span class="strike">(.*)<\/span>/iUs';
             $replace = '<s>${1}</s>';
-            $html = preg_replace($pattern, $replace, $html);
+            $html    = preg_replace($pattern, $replace, $html);
 
             $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         }
@@ -528,6 +528,9 @@ class TextSimple extends ISectionType
             }
 
             if ($hasLineNumbers) {
+                if (substr($tex, -9, 9) == "\\newline\n") {
+                    $tex = substr($tex, 0, strlen($tex) - 9) . "\n";
+                }
                 $tex .= "\n\\nolinenumbers\n";
             }
         } else {
@@ -632,7 +635,11 @@ class TextSimple extends ISectionType
         if ($section->getSettings()->lineNumbers && $lineNumbers) {
             $paragraphs = $section->getTextParagraphObjects(true, false, false);
             foreach ($paragraphs as $paragraph) {
-                $html = implode('<br>', $paragraph->lines);
+                $lines = [];
+                foreach ($paragraph->lines as $line) {
+                    $lines[] = preg_replace('/<br> ?\n?$/', '', $line);
+                }
+                $html = implode('<br>', $lines);
                 $html = str_replace('###LINENUMBER###', '', $html);
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';

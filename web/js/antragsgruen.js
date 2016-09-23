@@ -72,7 +72,7 @@ function __t(category, str) {
                 {name: 'colors'},
                 {name: 'others'}
             ],
-            removePlugins: 'stylescombo,format,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,bbcode',
+            removePlugins: 'stylescombo,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,bbcode',
             extraPlugins: 'autogrow,wordcount,tabletools',
             scayt_sLang: 'de_DE',
             autoGrow_bottomSpace: 20,
@@ -92,6 +92,7 @@ function __t(category, str) {
 
         if ($el.data('track-changed') == '1' || $el.data('allow-diff-formattings') == '1') {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
+                'h2 h3 h4;' +
                 'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead){border,margin,padding};' +
@@ -102,6 +103,7 @@ function __t(category, str) {
         } else {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul ol li {list-style-type};' +
+                'h2 h3 h4;' +
                     //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +
                 'span(underline' + strikeClass + ',subscript,superscript);' +
@@ -123,16 +125,6 @@ function __t(category, str) {
         ckeditorConfig.pasteFilter = allowedContent;
 
         var editor = CKEDITOR.inline(id, ckeditorConfig);
-
-        /*
-         editor.on('paste', function (data) {
-         if (data.data.type != 'html') {
-         return;
-         }
-         var html = data.data.dataValue;
-         console.log(data, CKEDITOR.instances.sections_2_wysiwyg.focusManager.currentActive, CKEDITOR.instances.sections_2_wysiwyg.focusManager);
-         });
-         */
 
         var $fieldset = $el.parents(".wysiwyg-textarea").first();
         if ($fieldset.data("max-len") != 0) {
