@@ -20,7 +20,7 @@ $btn-success-bg: #2c882c;
 
 $headingFont: "Arvo", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
-$headingPrimaryBackground: rgb(40, 95, 25);
+$headingPrimaryBackground: #0a321e;
 $headingSecondaryText: rgb(255, 255, 255);
 $headingSecondaryBackground: rgb(175, 203, 8);
 $headingTertiaryText: black;
@@ -130,14 +130,14 @@ body {
     text-decoration: none;
     text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
   }
-  h1, h2 {
+  #site-title, #site-description {
     padding: 0 0 0 5px;
     margin: 0;
     line-height: 1em;
     display: block;
     text-align: right;
   }
-  h1 {
+  #site-title {
     color: #fff;
     text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
     text-transform: uppercase;
@@ -145,7 +145,7 @@ body {
     font-size: 40px;
   }
 
-  h2 {
+  #site-description {
     text-align: right;
     margin-top: 0.5em;
     font-size: 18px;
@@ -231,5 +231,66 @@ footer.footer {
   }
   &>:last-child {
     border-radius: 0;
+  }
+}
+
+#sidebar {
+  font-size: 16px;
+  padding-right: 0;
+  padding-left: 30px;
+
+  .form-search {
+    margin-bottom: 2em;
+
+    .invisible, label {
+      display: none;
+    }
+    .query {
+      padding: 1em 5%;
+      border: 1px solid #0a321e;
+      width: 100%;
+    }
+    button {
+      border: 0;
+      background: #0a321e;
+      color: #fff;
+      font-family: 'Arvo', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+      padding: 0.5em 1em;
+      margin-top: 1em;
+      font-size: 1em;
+      font-weight: normal;
+    }
+
+    @media only screen and (min-width: 770px) {
+     .query {
+        box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+      }
+      button {
+        box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+      }
+    }
+  }
+  .sidebar-box, .sidebarActions {
+    margin: 0 0 2em 0;
+    padding: 1.5em;
+    border: 0;
+    background: #e6e6e6;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+
+    li a, .icon {
+      color: #46962b;
+    }
+  }
+  .nav-list {
+    margin-bottom: 0;
+  }
+  .nav-list>li.nav-header {
+    padding: 5px 0 5px 0;
+    color: #0a321e;
+    font-size: 24px;
+    font-family: 'Arvo', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+  }
+  .nav-list>li {
+    padding: 0 10px 10px 23px
   }
 }

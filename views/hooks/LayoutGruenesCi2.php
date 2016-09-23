@@ -19,10 +19,10 @@ class LayoutGruenesCi2 extends LayoutHooks
             '<img src="/img/gruenes_ci2_logo.png" width="185" height="100" alt="Bündnis 90 / Die GRÜNEN Logo">' .
             '</a></p>' .
             '<div class="hgroup">' .
-            '<h1 id="site-title"><span>' .
+            '<div id="site-title"><span>' .
             '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">Antragsgrün</a>' .
-            '</span></h1>' .
-            '<h2 id="site-description">Anträge zur BDK 2016</h2>' .
+            '</span></div>' .
+            '<div id="site-description">Anträge zur BDK 2016</div>' .
             '</div>' .
             '</header>';
 
@@ -50,5 +50,40 @@ class LayoutGruenesCi2 extends LayoutHooks
     public function endPage()
     {
         return $this->footerLine();
+    }
+
+    /**
+     * @return string
+     */
+    public function renderSidebar()
+    {
+        $str = $this->layout->preSidebarHtml;
+        if (count($this->layout->menusHtml) > 0) {
+            $str .= '<div class="hidden-xs">';
+            $str .= implode('', $this->layout->menusHtml);
+            $str .= '</div>';
+        }
+        $str .= $this->layout->postSidebarHtml;
+
+        return $str;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchForm()
+    {
+        $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', ['class' => 'form-search']);
+        $html .= '<h6 class="invisible">Suchformular</h6>';
+        $html .= '<label for="search">Der Suchbegriff nach dem die Website durchsucht werden soll.</label>
+    <input type="text" class="query" name="query"
+        placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
+        title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
+        
+    <button type="submit" class="button-submit">
+                <span class="fa fa-search"></span> <span class="text">Suchen</span>
+            </button>';
+        $html .= Html::endForm();
+        return $html;
     }
 }
