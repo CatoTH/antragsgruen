@@ -99,8 +99,8 @@ class LayoutStd extends LayoutHooks
      */
     public function setSidebarCreateMotionButton($motionType)
     {
-        $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType[0]->id]);
-        $description = $motionType[0]->createTitle;
+        $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
+        $description = $motionType->createTitle;
 
         $this->layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
             '<a class="createMotion" href="' . Html::encode($link) . '"
