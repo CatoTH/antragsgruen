@@ -304,11 +304,11 @@ footer.footer {
   .nav-list>li.nav-header {
     padding: 5px 0 5px 0;
     color: #0a321e;
-    font-size: 24px;
+    font-size: 20px;
     font-family: 'Arvo', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
   }
   .nav-list>li {
-    padding: 0 10px 10px 0;
+    padding: 0;
   }
   .nav > li > a {
     padding: 10px 0;
@@ -316,7 +316,6 @@ footer.footer {
 
   .createMotionHolder2 {
     margin-bottom: 2em;
-
     .createMotion {
       display: block;
       box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
