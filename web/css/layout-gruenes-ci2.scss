@@ -53,7 +53,6 @@ $createMotionBtnColor: $colorMagenta;
 @import "base_layout";
 @import "motions";
 @import "styles";
-@import "sidebar";
 
 body {
   background-image: url(/img/gruenes_ci2_background.jpg);
@@ -93,6 +92,9 @@ body {
         vertical-align: middle;
       }
     }
+  }
+  .navbar-nav {
+    margin: 7.5px 0 7.5px 15px;
   }
 
   .navbar-inner {
@@ -142,6 +144,10 @@ body {
 
   .hgroup {
     display: inline-block;
+    @media screen and (max-width: 550px) {
+      display: none;
+
+    }
     width: auto!important;
     text-align: right;
     z-index: 2;
@@ -302,6 +308,29 @@ footer.footer {
     font-family: 'Arvo', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
   }
   .nav-list>li {
-    padding: 0 10px 10px 23px
+    padding: 0 10px 10px 0;
+  }
+  .nav > li > a {
+    padding: 10px 0;
+  }
+
+  .createMotionHolder2 {
+    margin-bottom: 2em;
+
+    .createMotion {
+      display: block;
+      box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+      border: 0;
+      background: #0a321e;
+      color: #fff;
+      font-family: 'Arvo', 'Arvo Gruen', Trebuchet, Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+      padding: 0.5em 1em;
+      margin-top: 1em;
+      font-size: 1em;
+      font-weight: normal;
+      span {
+        margin-right: 0.5em;
+      }
+    }
   }
 }

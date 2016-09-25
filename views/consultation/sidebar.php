@@ -66,16 +66,7 @@ if ($showCreate) {
         /** @var ConsultationMotionType[] $working */
         if (count($working) == 1) {
             if ($working[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-                $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $working[0]->id]);
-                $description = $working[0]->createTitle;
-
-                $layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
-                    '<a class="createMotion" href="' . Html::encode($link) . '"
-                    title="' . Html::encode($description) . '" rel="nofollow">' .
-                    '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
-                    '</a></div></div>';
-                $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
-                    '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
+                $layout->hooks->setSidebarCreateMotionButton($working[0]);
             }
         } else {
             $html = '<div class="sidebar-box"><ul class="nav nav-list motions">';
@@ -159,20 +150,6 @@ if ($hasAmendments) {
     $layout->menusHtml[] = $html;
 }
 
-
-if ($consultation->getSettings()->getStartLayoutView() != 'index_layout_agenda') {
-    /** @var ConsultationMotionType[] $motionTypes */
-    if (count($motionTypes) == 1 && $motionTypes[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-        $newUrl                       = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionTypes[0]->id]);
-        $description                  = $motionTypes[0]->createTitle;
-        $layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
-            '<a class="createMotion" href="' . Html::encode($newUrl) . '" title="' . $description . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
-            '</a></div></div>';
-        $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($newUrl) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
-    }
-}
 
 
 if ($hasComments) {

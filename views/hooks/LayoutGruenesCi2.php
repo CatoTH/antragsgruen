@@ -86,4 +86,21 @@ class LayoutGruenesCi2 extends LayoutHooks
         $html .= Html::endForm();
         return $html;
     }
+
+    /**
+     * @param \app\models\db\ConsultationMotionType $motionType
+     */
+    public function setSidebarCreateMotionButton($motionType)
+    {
+        $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
+        $description = $motionType->createTitle;
+
+        $this->layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
+            '<a class="createMotion" href="' . Html::encode($link) . '"
+                    title="' . Html::encode($description) . '" rel="nofollow">' .
+            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
+            '</a></div></div>';
+        $this->layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
+            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
+    }
 }
