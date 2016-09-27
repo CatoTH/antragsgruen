@@ -33,4 +33,5 @@ return [
     'sb_comm_to'           => 'To',
     'sb_feeds'             => 'Feeds',
     'search_no_query'      => 'To search term entered',
+    'new_item'             => 'New Item',
 ];

@@ -371,7 +371,7 @@ class ConsultationController extends Base
 
         $this->consultation->refresh();
 
-        \Yii::$app->session->setFlash('success', 'Saved');
+        \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
     }
 
     /**

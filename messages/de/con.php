@@ -33,6 +33,7 @@ return [
     'sb_comm_to'           => 'Zu',
     'sb_feeds'             => 'Feeds',
     'search_no_query'      => 'Kein Suchbegriff eingegeben',
+    'new_item'             => 'Tagesordnungspunkt',
 
     'activity_bc'    => 'Aktivitäten',
     'activity_title' => 'Aktivitäts-Protokoll',

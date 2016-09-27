@@ -122,7 +122,7 @@ function __t(category, str) {
             ckeditorConfig.enterMode = CKEDITOR.ENTER_P;
         }
         ckeditorConfig.allowedContent = allowedContent;
-        ckeditorConfig.pasteFilter = allowedContent;
+        // ckeditorConfig.pasteFilter = allowedContent; // Seems to break copy/pasting some <strong> formatting in 4.5.11
 
         var editor = CKEDITOR.inline(id, ckeditorConfig);
 
